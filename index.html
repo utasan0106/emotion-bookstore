@@ -10,6 +10,18 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="感情書店">
 <meta name="theme-color" content="#EFE6CD">
+<!-- OGP：XやLINEでシェアされた時にプレビューカードを出すための設定 -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="みんなの感情書店 — 名もなき気持ちに、名前をあげる。">
+<meta property="og:description" content="感情の書店で、自分だけの一冊を見つけよう。15の感情の棚、店主との対話、あなただけの本棚。登録不要・この端末にのみ保存。">
+<meta property="og:url" content="https://emotion-bookstore.vercel.app/">
+<meta property="og:image" content="https://emotion-bookstore.vercel.app/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="みんなの感情書店">
+<meta name="twitter:description" content="名もなき気持ちに、名前をあげる。感情の書店で、自分だけの一冊を。">
+<meta name="twitter:image" content="https://emotion-bookstore.vercel.app/ogp.png">
 <!-- アイコン：外部ファイル不要のSVGデータURI（本の絵文字風）。公開時に180x180のPNGに差し替えるとより綺麗 -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%236E2A34'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E">
 <title>みんなの感情書店</title>
@@ -226,6 +238,10 @@ body.no-motion #moodLayer{display:none;}
   padding:36px 24px;
   border-bottom:1px solid var(--paper-shadow);
 }
+.intro-explainer.in-header{
+  border-bottom:none;
+  padding:30px 0 6px;
+}
 .intro-kicker{
   font-family:var(--font-display);
   font-size:13px;
@@ -245,6 +261,14 @@ body.no-motion #moodLayer{display:none;}
   background:rgba(255,255,255,0.35);
   border:1px solid var(--paper-shadow);
   border-radius:6px;
+  font-family:var(--font-body);
+  cursor:pointer;
+  transition:transform .15s ease, background .15s ease, border-color .15s ease;
+}
+.intro-step:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,0.6);
+  border-color:var(--gold);
 }
 .intro-num{
   display:inline-flex;
@@ -680,6 +704,8 @@ body:not(.no-motion) .shelf-tab.glow{
   font-weight:600;
 }
 .recommend-buy.rakuten{ color:#BF0000; }
+.recommend-buy.kindle{ color:#2E6E8E; }
+.recommend-buy.audible{ color:#8E5A2E; }
 .recommend-buy:hover{text-decoration:underline;}
 .recommend-shuffle{
   font-size:11px;
@@ -1440,6 +1466,38 @@ footer.shop-footer{
 }
 
 /* ---- 携帯（スマホ）向けの包括的な調整 ---- */
+/* ---- 夜の書店モード（22時〜5時に自動適用：セピアを帯びた深い夜の読書室） ---- */
+body.night{
+  --paper:#2A2620;
+  --paper-2:#221E19;
+  --paper-shadow:#4A4236;
+  --ink:#D8CCB4;
+  --ink-soft:#A89878;
+  --wine:#B77884;
+  --wine-2:#C98A96;
+  --gold:#C9A860;
+  --sage:#8FA382;
+  --wood:#1C1610;
+  --wood-2:#141008;
+}
+body.night .episode-card,
+body.night .recommend-chip,
+body.night .shelf-display,
+body.night .fair,
+body.night .intro-step,
+body.night .desk-form,
+body.night .trend,
+body.night .chat-window .bubble.shopkeeper{
+  background:#332E26;
+}
+body.night .chat-window .bubble.user{ background:#4A3038; }
+body.night .modal-card,
+body.night .purify-card,
+body.night .share-menu{ background:#2E2922; }
+body.night .page-nav{ background:linear-gradient(180deg, rgba(34,30,25,0.97), rgba(34,30,25,0.9)); }
+body.night .page-tab{ background:#332E26; }
+body.night textarea, body.night input, body.night select{ background:#262219; color:var(--ink); }
+
 /* ---- タブレット（〜768px）向けの調整 ---- */
 @media (max-width:768px){
   section{ padding:44px 20px; }
@@ -1520,6 +1578,33 @@ footer.shop-footer{
     <h1>みんなの感情書店</h1>
     <p class="tagline">名もなき気持ちに、名前をあげる。</p>
     <p class="sub-tagline">感情の書店で、自分だけの一冊を見つけよう。</p>
+
+    <div class="intro-explainer in-header">
+      <p class="intro-kicker">この書店でできること — 好きな場所から、自由に巡れます</p>
+      <div class="intro-steps">
+        <button type="button" class="intro-step" onclick="goToPage('counter')">
+          <span class="intro-num">①</span>
+          <p class="intro-title">店主に話す</p>
+          <p class="intro-text">今の気持ちを、選択肢か自由な言葉で伝えます。</p>
+        </button>
+        <button type="button" class="intro-step" onclick="goToPage('shelves')">
+          <span class="intro-num">②</span>
+          <p class="intro-title">棚を巡る</p>
+          <p class="intro-text">15種類の感情の棚から、名言や本、曲に出会います。</p>
+        </button>
+        <button type="button" class="intro-step" onclick="goToPage('desk')">
+          <span class="intro-num">③</span>
+          <p class="intro-title">物語を綴る</p>
+          <p class="intro-text">自分の体験を書き、製本して棚に納めます。</p>
+        </button>
+        <button type="button" class="intro-step" onclick="goToPage('bookshelf')">
+          <span class="intro-num">④</span>
+          <p class="intro-title">本棚が育つ</p>
+          <p class="intro-text">綴った物語が積み重なり、自分だけの本棚に。</p>
+        </button>
+      </div>
+    </div>
+
     <button class="enter-btn" onclick="goToPage('counter')">扉をひらく →</button>
     <div class="pref-row">
       <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切">演出：入</button>
@@ -1540,33 +1625,6 @@ footer.shop-footer{
   </nav>
 
   <div class="page-turn-overlay" id="pageTurnOverlay" aria-hidden="true"></div>
-
-  <section class="intro-explainer reveal">
-    <p class="intro-kicker">はじめての方へ — このサイトでできること</p>
-    <div class="intro-steps">
-      <div class="intro-step">
-        <span class="intro-num">1</span>
-        <p class="intro-title">店主に話す</p>
-        <p class="intro-text">今の気持ちを、選択肢か自由な言葉で伝えます。</p>
-      </div>
-      <div class="intro-step">
-        <span class="intro-num">2</span>
-        <p class="intro-title">棚を巡る</p>
-        <p class="intro-text">15種類の感情の棚から、名言やエピソード、本や曲に出会います。</p>
-      </div>
-      <div class="intro-step">
-        <span class="intro-num">3</span>
-        <p class="intro-title">物語を綴る</p>
-        <p class="intro-text">自分の体験を書き、製本して棚に納めます。</p>
-      </div>
-      <div class="intro-step">
-        <span class="intro-num">4</span>
-        <p class="intro-title">本棚が育つ</p>
-        <p class="intro-text">綴った物語が積み重なり、自分だけの本棚になります。</p>
-      </div>
-    </div>
-  </section>
-
 
   <section id="counter" class="reveal">
     <div class="section-head"><span class="section-num">1</span><h2>番台 — 店主に相談する</h2></div>
@@ -1680,6 +1738,7 @@ footer.shop-footer{
       </div>
     </div>
     <div class="shelf-controls">
+      <button class="reset-link" id="exportDiary">📥 記録をテキストで書き出す</button>
       <button class="reset-link" id="resetShelf">本棚をリセットする</button>
     </div>
     <div class="trend hidden" id="trendBox">
@@ -1739,7 +1798,7 @@ footer.shop-footer{
 <div class="purify-overlay hidden" id="purifyOverlay" role="dialog" aria-label="気持ちを手放す">
   <div class="purify-card">
     <button class="purify-close" id="purifyClose">×</button>
-    <p class="purify-kicker">手放す — 誰にも保存されません</p>
+    <p class="purify-kicker">手放す — 誰にも見られません。この端末の「手放しの記録」にだけ、そっと残ります</p>
     <p class="purify-lead" id="purifyLead"></p>
     <textarea id="purifyInput" placeholder="その気持ちを、ここにそのまま書き出してみてください。" rows="4"></textarea>
     <button class="purify-btn" id="purifyBtn">🕯 手放す</button>
@@ -2116,16 +2175,26 @@ const PINNED_RECOMMEND = {
 // サーバーを使わない静的サイトなので、本当の意味での「毎月自動追加」はできない。
 // 代わりに、あらかじめ仕込んだ大きなプール（6waveぶん）を、月を追うごとに解禁する形で「毎月増える」体験を再現している。
 /* ---------- 収益化の設定（ここを書き換えるだけで全リンクに反映） ---------- */
-// AmazonアソシエイトID。取得したら 'your_id-22' を自分のIDに書き換える。
-// 未設定（初期値のまま）なら、タグなしの通常リンクとして動く（リンク切れにはならない）。
-const AMAZON_ASSOCIATE_ID = 'your_id-22';
+// AmazonアソシエイトID（設定済み）。
+const AMAZON_ASSOCIATE_ID = 'uta0106-22';
+// 楽天アフィリエイトID（設定済み）。楽天のリンクはこのIDを通した形式で生成される。
+const RAKUTEN_AFFILIATE_ID = '5590cc07.86ee74b4.5590cc08.a766f047';
 
-function amazonSearchUrl(query){
+function amazonSearchUrl(query, indexParam){
   let url = 'https://www.amazon.co.jp/s?k=' + encodeURIComponent(query);
+  if(indexParam) url += '&i=' + indexParam;
   if(AMAZON_ASSOCIATE_ID && AMAZON_ASSOCIATE_ID !== 'your_id-22'){
     url += '&tag=' + encodeURIComponent(AMAZON_ASSOCIATE_ID);
   }
   return url;
+}
+
+function rakutenSearchUrl(query){
+  const target = 'https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(query) + '/';
+  if(RAKUTEN_AFFILIATE_ID){
+    return 'https://hb.afl.rakuten.co.jp/hgc/' + RAKUTEN_AFFILIATE_ID + '/?pc=' + encodeURIComponent(target) + '&m=' + encodeURIComponent(target);
+  }
+  return target;
 }
 
 const SHOP_OPEN_DATE = new Date('2026-07-01T00:00:00+09:00');
@@ -2579,15 +2648,17 @@ const STORY_LIMIT = 700;
 let activeCategory = CATEGORIES[0].id;
 let libraryCache = [];
 
-/* ---------- storage (browser localStorage) ---------- */
-// 保存先はこの端末のブラウザのみ（機種変更・ブラウザのデータ削除で消えます）。
-// 将来データ形式を変える時のための簡易バージョン番号。
+/* ---------- storage（IndexedDB優先・localStorageへ自動フォールバック） ----------
+   保存先はこの端末のブラウザのみ（機種変更・全データ削除で消えます）。
+   IndexedDBはlocalStorageより容量が大きく、タブを閉じても消えにくい保存領域。
+   万一IndexedDBが使えない環境（古いブラウザ・一部のプライベートモード）では、
+   自動的にlocalStorageに切り替わる。既存のlocalStorageのデータは初回に自動移行する。 */
 const STORAGE_VERSION = 1;
+const IDB_NAME = 'emotion-bookstore';
+const IDB_STORE = 'kv';
 let storageWarned = false;
-
-function storageAvailable(){
-  return true; // artifact環境ではwindow.storageを使うため常にtrue扱い
-}
+let idbHandle = null;   // 開いたデータベースの使い回し
+let idbBroken = false;  // IndexedDBが使えないと判明したらtrue（以降localStorageのみ）
 
 function warnStorageOnce(message){
   if(storageWarned) return;
@@ -2596,37 +2667,179 @@ function warnStorageOnce(message){
   if(msg) msg.textContent = message;
 }
 
-async function loadJSON(key, fallback){
-  if(!storageAvailable()){
-    warnStorageOnce('この端末では本棚の保存ができないようです（プライベートブラウズ中や、保存容量の設定をご確認ください）。');
-    return fallback;
-  }
-  try{
-    const res = await window.storage.get(key, false);
-    if(!res || !res.value) return fallback;
-    const parsed = JSON.parse(res.value);
-    if(parsed && typeof parsed === 'object' && 'v' in parsed && 'data' in parsed){
-      return parsed.data;
+function idbOpen(){
+  if(idbBroken || !window.indexedDB) return Promise.resolve(null);
+  if(idbHandle) return Promise.resolve(idbHandle);
+  return new Promise((resolve)=>{
+    let settled = false;
+    const done = (db)=>{ if(!settled){ settled = true; resolve(db); } };
+    try{
+      const req = indexedDB.open(IDB_NAME, 1);
+      req.onupgradeneeded = ()=>{
+        const db = req.result;
+        if(!db.objectStoreNames.contains(IDB_STORE)){
+          db.createObjectStore(IDB_STORE);
+        }
+      };
+      req.onsuccess = ()=>{
+        idbHandle = req.result;
+        // 別タブでの削除等に備える
+        idbHandle.onclose = ()=>{ idbHandle = null; };
+        done(idbHandle);
+      };
+      req.onerror = ()=>{ idbBroken = true; done(null); };
+      req.onblocked = ()=>{ done(null); };
+      // 一部環境でイベントが一切発火しないケースへの保険
+      setTimeout(()=>{ if(!settled){ idbBroken = true; done(null); } }, 3000);
+    }catch(e){
+      idbBroken = true;
+      done(null);
     }
-    return parsed;
+  });
+}
+
+function idbGet(key){
+  return idbOpen().then(db=>{
+    if(!db) return undefined;
+    return new Promise((resolve)=>{
+      try{
+        const tx = db.transaction(IDB_STORE, 'readonly');
+        const req = tx.objectStore(IDB_STORE).get(key);
+        req.onsuccess = ()=>resolve(req.result);
+        req.onerror = ()=>resolve(undefined);
+      }catch(e){ resolve(undefined); }
+    });
+  });
+}
+
+function idbSet(key, value){
+  return idbOpen().then(db=>{
+    if(!db) return false;
+    return new Promise((resolve)=>{
+      try{
+        const tx = db.transaction(IDB_STORE, 'readwrite');
+        tx.objectStore(IDB_STORE).put(value, key);
+        tx.oncomplete = ()=>resolve(true);
+        tx.onerror = ()=>resolve(false);
+        tx.onabort = ()=>resolve(false);
+      }catch(e){ resolve(false); }
+    });
+  });
+}
+
+function idbDelete(key){
+  return idbOpen().then(db=>{
+    if(!db) return false;
+    return new Promise((resolve)=>{
+      try{
+        const tx = db.transaction(IDB_STORE, 'readwrite');
+        tx.objectStore(IDB_STORE).delete(key);
+        tx.oncomplete = ()=>resolve(true);
+        tx.onerror = ()=>resolve(false);
+      }catch(e){ resolve(false); }
+    });
+  });
+}
+
+function lsGet(key){
+  try{
+    const raw = localStorage.getItem(key);
+    if(!raw) return undefined;
+    return JSON.parse(raw);
+  }catch(e){ return undefined; }
+}
+
+function lsSet(key, wrapped){
+  try{
+    localStorage.setItem(key, JSON.stringify(wrapped));
+    return true;
+  }catch(e){ return false; }
+}
+
+async function loadJSON(key, fallback){
+  // 1) IndexedDBを見る → 2) なければlocalStorage（旧データの移行も兼ねる）
+  let wrapped = await idbGet(key);
+  if(wrapped === undefined){
+    wrapped = lsGet(key);
+    if(wrapped !== undefined){
+      // 旧localStorageのデータをIndexedDBへ移行（失敗してもデータは残る）
+      idbSet(key, wrapped);
+    }
+  }
+  if(wrapped === undefined || wrapped === null) return fallback;
+  try{
+    if(typeof wrapped === 'object' && 'v' in wrapped && 'data' in wrapped){
+      return wrapped.data;
+    }
+    return wrapped;
   }catch(e){
     return fallback;
   }
 }
 
 async function saveJSON(key, value){
-  if(!storageAvailable()){
-    warnStorageOnce('この端末では本棚の保存ができないようです（プライベートブラウズ中や、保存容量の設定をご確認ください）。');
+  const wrapped = { v: STORAGE_VERSION, data: value };
+  // IndexedDBとlocalStorageの両方に書く（二重の備え。片方が失敗しても残る）
+  const okIdb = await idbSet(key, wrapped);
+  const okLs = lsSet(key, wrapped);
+  if(!okIdb && !okLs){
+    warnStorageOnce('この端末では保存ができないようです（プライベートブラウズ中や、保存容量の設定をご確認ください）。');
     return false;
   }
-  try{
-    await window.storage.set(key, JSON.stringify({ v: STORAGE_VERSION, data: value }), false);
-    return true;
-  }catch(e){
-    warnStorageOnce('本棚がいっぱいで保存しきれませんでした。古い本を整理してから、もう一度お試しください。');
-    console.error('保存に失敗しました', e);
-    return false;
+  return true;
+}
+
+async function deleteKey(key){
+  await idbDelete(key);
+  try{ localStorage.removeItem(key); }catch(e){}
+}
+
+/* ---------- 日記ログのエクスポート（自分の端末にテキストで保存） ---------- */
+const PURIFY_LOG_KEY = 'emotion-bookstore-purify-log';
+
+async function exportDiaryText(){
+  const lib = await loadJSON('emotion-bookstore-library', []);
+  const purifyLog = await loadJSON(PURIFY_LOG_KEY, []);
+  const shiori = await loadJSON('emotion-bookstore-shiori', null);
+  const lines = [];
+  lines.push('『みんなの感情書店』 わたしの記録');
+  lines.push('書き出した日：' + new Date().toLocaleString('ja-JP'));
+  lines.push('='.repeat(40));
+  lines.push('');
+  lines.push('【本棚の物語】 ' + lib.length + '冊');
+  lines.push('');
+  lib.forEach((e, i)=>{
+    const cat = CATEGORIES.find(c=>c.id===e.category);
+    lines.push('--- ' + (i+1) + '冊目 ---');
+    lines.push('タイトル：' + e.title);
+    lines.push('棚：' + (cat ? cat.label : e.category));
+    lines.push('日付：' + (e.date ? new Date(e.date).toLocaleDateString('ja-JP') : '不明'));
+    if(e.sealed) lines.push('（以前を振り返って綴った一冊）');
+    lines.push(e.story);
+    if(e.note) lines.push('店主のことば：' + e.note);
+    lines.push('');
+  });
+  lines.push('【手放した気持ちの記録】 ' + purifyLog.length + '件');
+  lines.push('');
+  purifyLog.forEach((p, i)=>{
+    const cat = CATEGORIES.find(c=>c.id===p.category);
+    lines.push('--- ' + (i+1) + '件目（' + (cat ? cat.label : p.category) + '） ' + new Date(p.date).toLocaleDateString('ja-JP') + ' ---');
+    lines.push(p.text);
+    lines.push('');
+  });
+  if(shiori && shiori.text){
+    lines.push('【最後に受け取った栞】');
+    lines.push(shiori.text);
   }
+  const blob = new Blob([lines.join('\n')], { type:'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const d = new Date();
+  a.download = `感情書店の記録_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
 }
 
 /* ---------- 店主の審査・栞（ローカル判定・通信なし） ---------- */
@@ -2655,6 +2868,7 @@ const PURIFY_CLOSING = [
 
 function openPurify(shelfId){
   const overlay = document.getElementById('purifyOverlay');
+  overlay.dataset.shelf = shelfId;
   const lead = document.getElementById('purifyLead');
   const input = document.getElementById('purifyInput');
   const msg = document.getElementById('purifyMsg');
@@ -2697,6 +2911,13 @@ document.getElementById('purifyBtn').onclick = async ()=>{
   btn.disabled = true;
   input.disabled = true;
   buzz(12);
+  // 消える前に「手放しの記録」へ静かに残す（この端末のみ・エクスポート可能）
+  const shelfId = document.getElementById('purifyOverlay').dataset.shelf || '';
+  const logEntry = { category: shelfId, text: input.value.trim(), date: new Date().toISOString() };
+  loadJSON(PURIFY_LOG_KEY, []).then(log=>{
+    log.push(logEntry);
+    saveJSON(PURIFY_LOG_KEY, log);
+  });
   if(prefs.motion){
     input.classList.add('dissolving');
     await wait(1000);
@@ -3026,15 +3247,20 @@ function renderShelfDisplay(){
         <p class="recommend-subtext">読むための本というより、この気持ちのお守りになる一冊です（今月は${unlockedWaveCount()}/${MAX_WAVE}段階まで棚が開いています）</p>
         <div class="recommend-row">
         ${recs.map(r=>{
-          const amazonUrl = amazonSearchUrl(r.title + ' ' + r.by);
-          const rakutenUrl = 'https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(r.title + ' ' + r.by) + '/';
+          const q = r.title + ' ' + r.by;
+          const amazonUrl = amazonSearchUrl(q);
+          const kindleUrl = amazonSearchUrl(q, 'digital-text');
+          const audibleUrl = amazonSearchUrl(q, 'audible');
+          const rakutenUrl = rakutenSearchUrl(q);
           return `<span class="recommend-chip" title="${r.why || ''}">
             ${r.hook ? `<span class="recommend-hook">${r.hook}</span>` : ''}
             『${r.title}』${r.by}
             <span class="recommend-why">${r.why || ''}</span>
             <span class="recommend-shop-links">
-              <a class="recommend-buy" href="${amazonUrl}" target="_blank" rel="noopener">Amazon →</a>
-              <a class="recommend-buy rakuten" href="${rakutenUrl}" target="_blank" rel="noopener">楽天市場 →</a>
+              <a class="recommend-buy" href="${amazonUrl}" target="_blank" rel="noopener">Amazon</a>
+              <a class="recommend-buy kindle" href="${kindleUrl}" target="_blank" rel="noopener">Kindle</a>
+              <a class="recommend-buy audible" href="${audibleUrl}" target="_blank" rel="noopener">Audible</a>
+              <a class="recommend-buy rakuten" href="${rakutenUrl}" target="_blank" rel="noopener">楽天</a>
             </span>
             ${r.source ? `<a class="recommend-source" href="${r.sourceUrl}" target="_blank" rel="noopener">出典：${r.source}</a>` : ''}
           </span>`;
@@ -3477,8 +3703,13 @@ document.getElementById('shioriBtn').onclick = async ()=>{
   const topId = topCategoryId();
   const topLabel = (CATEGORIES.find(c=>c.id===topId) || {}).label || 'あなた';
   const text = localShiori(topLabel);
-  await saveJSON('emotion-bookstore-shiori', { date: todayStr(), text });
-  renderShioriCard();
+  // 先に表示してから保存する（保存に失敗しても、栞自体は必ず受け取れる）
+  document.getElementById('shioriText').textContent = text;
+  document.getElementById('shioriSlip').classList.remove('hidden');
+  btn.classList.add('hidden');
+  document.getElementById('storyImageBtn').classList.remove('hidden');
+  document.getElementById('storyImageHint').classList.remove('hidden');
+  saveJSON('emotion-bookstore-shiori', { date: todayStr(), text });
 };
 
 function formatDate(iso){
@@ -3630,6 +3861,33 @@ function updateStoryCount(){
 }
 document.getElementById('storyInput').addEventListener('input', updateStoryCount);
 
+/* ---------- 下書きの自動保存（書いている途中で消えない） ---------- */
+const DRAFT_KEY = 'emotion-bookstore-draft';
+let draftTimer = null;
+document.getElementById('storyInput').addEventListener('input', ()=>{
+  // 打鍵のたびに保存すると重いので、0.5秒落ち着いたタイミングで保存する
+  clearTimeout(draftTimer);
+  draftTimer = setTimeout(()=>{
+    const text = document.getElementById('storyInput').value;
+    if(text.trim()){
+      saveJSON(DRAFT_KEY, { text, date: new Date().toISOString() });
+    }else{
+      deleteKey(DRAFT_KEY);
+    }
+  }, 500);
+});
+
+async function restoreDraftIfAny(){
+  const draft = await loadJSON(DRAFT_KEY, null);
+  if(!draft || !draft.text) return;
+  const ta = document.getElementById('storyInput');
+  if(ta.value.trim()) return; // すでに何か書いていたら邪魔しない
+  const msg = document.getElementById('deskMsg');
+  ta.value = draft.text;
+  updateStoryCount();
+  if(msg) msg.textContent = '書きかけの下書きを復元しました。続きからどうぞ。';
+}
+
 /* ---------- submit (店主の審査 → 製本) ---------- */
 document.getElementById('submitStory').onclick = async ()=>{
   const chosenId = document.getElementById('categorySelect').value;
@@ -3678,6 +3936,7 @@ document.getElementById('submitStory').onclick = async ()=>{
       renderShelfTabs();
       document.getElementById('titleInput').value = '';
       document.getElementById('storyInput').value = '';
+      deleteKey(DRAFT_KEY);
       document.getElementById('tweetInput').value = '';
       document.getElementById('whenSelect').value = 'now';
       updateStoryCount();
@@ -3728,6 +3987,18 @@ document.getElementById('submitStory').onclick = async ()=>{
 
   msg.textContent = '';
   bind(chosenId, cur.note);
+};
+
+document.getElementById('exportDiary').onclick = async ()=>{
+  const btn = document.getElementById('exportDiary');
+  btn.textContent = '書き出しています…';
+  try{
+    await exportDiaryText();
+    btn.textContent = '書き出しました ✓';
+  }catch(e){
+    btn.textContent = '書き出しに失敗しました';
+  }
+  setTimeout(()=>{ btn.textContent = '📥 記録をテキストで書き出す'; }, 2500);
 };
 
 document.getElementById('resetShelf').onclick = async ()=>{
@@ -4133,6 +4404,8 @@ function appendBubble(role, text){
 
 function wait(ms){ return new Promise(r=>setTimeout(r, ms)); }
 
+let freeTextTurns = 0;
+
 async function sendToShopkeeper(){
   const text = userInput.value.trim();
   if(!text) return;
@@ -4160,12 +4433,45 @@ async function sendToShopkeeper(){
   appendBubble('shopkeeper', reply);
   chatHistory.push({ role:'assistant', content:reply });
 
+  // 打った後に返答が見えない問題への対応：店主の返答へ視点を移動する
+  const bubbles = chatWindow.querySelectorAll('.bubble.shopkeeper');
+  const lastReply = bubbles[bubbles.length - 1];
+  if(lastReply && lastReply.scrollIntoView){
+    lastReply.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block:'nearest' });
+  }
+
   const isCrisis = CRISIS_PATTERNS.some(w=>text.includes(w));
   const suggestedShelf = isCrisis ? null : detectShelfFromText(text, 1);
   if(suggestedShelf){
     renderSuggestionActions(suggestedShelf);
   }else{
     renderChartOptions('root');
+  }
+
+  // 3往復を超えたら、より深く話せる相手（生成AI）への案内を一度だけ添える
+  freeTextTurns++;
+  if(freeTextTurns === 3 && !isCrisis){
+    appendBubble('shopkeeper',
+      '……私は決まった言葉しか持たない、しがない店番です。もしもっと深く話を聞いてほしい夜は、' +
+      '言葉の達者な相談相手（ChatGPTやGeminiのようなAI）を訪ねてみるのも一つの手です。' +
+      'ここの棚は、いつでも開けておきますから。');
+    const container = document.getElementById('chartOptions');
+    if(container){
+      const gptLink = document.createElement('a');
+      gptLink.className = 'chart-btn';
+      gptLink.href = 'https://chatgpt.com/';
+      gptLink.target = '_blank';
+      gptLink.rel = 'noopener';
+      gptLink.textContent = 'ChatGPTと話してみる';
+      const gemLink = document.createElement('a');
+      gemLink.className = 'chart-btn';
+      gemLink.href = 'https://gemini.google.com/';
+      gemLink.target = '_blank';
+      gemLink.rel = 'noopener';
+      gemLink.textContent = 'Geminiと話してみる';
+      container.prepend(gemLink);
+      container.prepend(gptLink);
+    }
   }
 
   sendBtn.disabled = false;
@@ -4239,8 +4545,18 @@ function applySeasonalAccent(){
   document.documentElement.style.setProperty('--season-accent', color);
 }
 
+/* ---------- 夜の書店モード（22時〜朝5時は、ランプの灯る真夜中の読書室に） ---------- */
+function applyNightModeIfNeeded(){
+  const hour = new Date().getHours();
+  if(hour >= 22 || hour < 5){
+    document.body.classList.add('night');
+  }
+}
+
 (async function init(){
   applySeasonalAccent();
+  applyNightModeIfNeeded();
+  restoreDraftIfAny();
   await initPrefs();
   renderFair();
   renderCategorySelect();
