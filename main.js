@@ -99,9 +99,9 @@ let currentTone = 'neutral';
 let counterDraftText = '';
 
 const MIDNIGHT_GREETINGS = [
-  '……こんな時間まで、おつかれさまです。就活のこと、これからのことを考えていると、夜はどこまでも長くなりますね。今日の気持ちを、一冊だけ預けていきませんか。',
-  '……夜更けの来店、歓迎します。エントリーシートには書けない本音ほど、この棚には似合うんですよ。誰にも見られません。ここだけの話にしましょう。',
-  '……眠れない夜は、無理に眠らなくてもいいと思うんです。面接では言えなかった言葉を、ここでだけ、そっと綴ってみませんか。'
+  '……こんな時間まで、おつかれさまです。これからのことを考えていると、夜はどこまでも長くなりますね。今日の気持ちを、一冊だけ預けていきませんか。',
+  '……夜更けの来店、歓迎します。SNSには書けない本音ほど、この棚には似合うんですよ。誰にも見られません。ここだけの話にしましょう。',
+  '……眠れない夜は、無理に眠らなくてもいいと思うんです。直接では言えなかった言葉を、ここでだけ、そっと綴ってみませんか。'
 ];
 
 /* ---------- storage ---------- */
@@ -1617,7 +1617,7 @@ async function sendToShopkeeper(){
   if(freeTextTurns === 3 && !isCrisis){
     appendBubble('shopkeeper',
       '……私は決まった言葉しか持たない、しがない店番です。もしもっと深く話を聞いてほしい夜は、' +
-      '言葉の達者な相談相手（ChatGPTやGeminiのようなAI）を訪ねてみるのも一つの手です。' +
+      '言葉の達者な相談相手を訪ねてみるのも一つの手です。' +
       'ここの棚は、いつでも開けておきますから。');
     const container = document.getElementById('chartOptions');
     if(container){
@@ -1687,6 +1687,14 @@ async function chooseTexture(group, btnEl){
   appendBubble('shopkeeper', group.keeper);
   if(kf) setTimeout(()=>kf.classList.remove('listening'), 2500);
   renderEmotionChips(group);
+
+  // ★【UI改善】感情チップが出現した瞬間に、そのエリアが画面中央に来るよう自動スクロール
+  const container = document.getElementById('chartOptions');
+  if(container){
+    setTimeout(() => {
+      container.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block: 'center' });
+    }, prefs.motion ? 200 : 20); // フェードインアニメーションの出だしに合わせてスクロール
+  }
 }
 
 function renderEmotionChips(group){
@@ -1725,6 +1733,14 @@ async function chooseEmotionShelf(shelfId){
   appendBubble('shopkeeper', `『${shelfLabelOf(shelfId)}』の棚ですね。文字を打たなくても大丈夫。そのまま棚を眺めても、一冊綴っていっても構いませんよ。`);
   if(kf) setTimeout(()=>kf.classList.remove('listening'), 2500);
   renderSuggestionActions(shelfId);
+
+  // ★【UI改善】「棚を見る」「書き留める」ボタンが出現した瞬間に自動スクロール
+  const container = document.getElementById('chartOptions');
+  if(container){
+    setTimeout(() => {
+      container.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block: 'center' });
+    }, prefs.motion ? 200 : 20);
+  }
 }
 
 function syncCounterDraftToDesk(){
