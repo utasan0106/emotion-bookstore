@@ -7,25 +7,17 @@
  * <script src="main.js"></script>
  * ============================================================ */
 
-function generateTitle(categoryId){
-  const pool = TITLE_TEMPLATES[categoryId] || ['名前のない一冊'];
-  return pool[Math.floor(Math.random()*pool.length)];
-}
-
-function recommendReasonFor(catId){
-  const pool = RECOMMEND_TEMPLATES[catId];
-  if(!pool || !pool.length) return '';
-  return pool[Math.floor(Math.random()*pool.length)];
-}
-
-/* ---------- 収益化の設定（ここを書き換えるだけで全リンクに反映） ---------- */
+/* ============================================================
+ * 収益化・計測IDの定数化（ここを書き換えるだけで全リンクに反映）
+ * ============================================================ */
+const GA4_MEASUREMENT_ID = 'G-TGLD3KW523';
 const AMAZON_ASSOCIATE_ID = 'uta0106-22';
-const RAKUTEN_AFFILIATE_ID = '5590cc07.86ee74b4.5590cc08.a766f047';
+const RAKUTEN_AFFILIATE_ID = '559f40bd.f0ebdb3f.559f40be.23fb194a';
 
 function amazonSearchUrl(query, indexParam){
   let url = 'https://www.amazon.co.jp/s?k=' + encodeURIComponent(query);
   if(indexParam) url += '&i=' + indexParam;
-  if(AMAZON_ASSOCIATE_ID && AMAZON_ASSOCIATE_ID !== 'your_id-22'){
+  if(AMAZON_ASSOCIATE_ID){
     url += '&tag=' + encodeURIComponent(AMAZON_ASSOCIATE_ID);
   }
   return url;
@@ -37,6 +29,41 @@ function rakutenSearchUrl(query){
     return 'https://hb.afl.rakuten.co.jp/hgc/' + RAKUTEN_AFFILIATE_ID + '/?pc=' + encodeURIComponent(target) + '&m=' + encodeURIComponent(target);
   }
   return target;
+}
+
+/* 選ばれた棚（tier）に応じて、DETOUR_POOLからデータを取得し、
+ * IDを合体させたアフィリエイトURLを動的に生成する。 */
+function buildDetourLinks(item){
+  if(!item || !item.query) return null;
+  return {
+    amazon: amazonSearchUrl(item.query),
+    rakuten: rakutenSearchUrl(item.query)
+  };
+}
+
+function detourItemsFor(catId){
+  return DETOUR_POOL[catId] || [];
+}
+
+function generateTitle(categoryId, story){
+  if(story){
+    const kw = extractCategoryKeyword(story, categoryId);
+    if(kw){
+      const tone = NEGATIVE_SHELVES.includes(categoryId) ? 'heavy' : 'neutral';
+      const suffixes = TITLE_SUFFIXES[tone];
+      const suf = suffixes[Math.floor(Math.random()*suffixes.length)];
+      const cleaned = kw.replace(/(する|した|してる|な)$/, '');
+      return cleaned + suf;
+    }
+  }
+  const pool = TITLE_TEMPLATES[categoryId] || ['名前のない一冊'];
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function recommendReasonFor(catId){
+  const pool = RECOMMEND_TEMPLATES[catId];
+  if(!pool || !pool.length) return '';
+  return pool[Math.floor(Math.random()*pool.length)];
 }
 
 const SHOP_OPEN_DATE = new Date('2026-07-01T00:00:00+09:00');
@@ -63,13 +90,29 @@ const STORY_LIMIT = 700;
 let activeCategory = CATEGORIES[0].id;
 let libraryCache = [];
 
+/* ---------- 感情棚のうち、重めのトーンを持つ棚 ---------- */
+const NEGATIVE_SHELVES = ['moyamoya','ushirometai','kuyashii','kodoku','aseri','shitto','hazukashii','gakkari'];
+
+const TITLE_SUFFIXES = {
+  heavy: ['の夜','だけの時間','を抱えて','という日','に、そっと','を噛みしめて'],
+  neutral: ['の欠片','という日','を、そっと','がくれたもの','の頁','の記録']
+};
+
+function extractCategoryKeyword(text, categoryId){
+  const words = (CATEGORY_KEYWORDS[categoryId] || []).slice().sort((a,b)=>b.length-a.length);
+  for(const w of words){
+    if(text.includes(w)) return w;
+  }
+  return null;
+}
+
 /* ---------- 番台：脱・言語化の2ステップUI ---------- */
 const TEXTURE_GROUPS = [
   {
     id:'sink',
     label:'心が重く沈んでいる、気分が落ち込んでいる（静かな憂鬱）',
     keeper:'少しお疲れのようですね。このあたりの棚に、今の心に寄り添う本があるかもしれません。',
-    shelves:['moya','kodoku','gakkari','hazukashii','ushirometai'],
+    shelves:['moyamoya','kodoku','gakkari','hazukashii','ushirometai'],
     tone:'heavy'
   },
   {
@@ -98,19 +141,13 @@ const TEXTURE_GROUPS = [
 let currentTone = 'neutral';
 let counterDraftText = '';
 
-const MIDNIGHT_GREETINGS = [
-  '……こんな時間まで、おつかれさまです。これからのことを考えていると、夜はどこまでも長くなりますね。今日の気持ちを、一冊だけ預けていきませんか。',
-  '……夜更けの来店、歓迎します。SNSには書けない本音ほど、この棚には似合うんですよ。誰にも見られません。ここだけの話にしましょう。',
-  '……眠れない夜は、無理に眠らなくてもいいと思うんです。直接では言えなかった言葉を、ここでだけ、そっと綴ってみませんか。'
-];
-
 /* ---------- storage ---------- */
 const STORAGE_VERSION = 1;
 const IDB_NAME = 'emotion-bookstore';
 const IDB_STORE = 'kv';
 let storageWarned = false;
-let idbHandle = null; 
-let idbBroken = false; 
+let idbHandle = null;
+let idbBroken = false;
 
 function warnStorageOnce(message){
   if(storageWarned) return;
@@ -241,56 +278,8 @@ async function deleteKey(key){
   try{ localStorage.removeItem(key); }catch(e){}
 }
 
-/* ---------- 日記ログのエクスポート ---------- */
-const PURIFY_LOG_KEY = 'emotion-bookstore-purify-log';
-
-async function exportDiaryText(){
-  const lib = await loadJSON('emotion-bookstore-library', []);
-  const purifyLog = await loadJSON(PURIFY_LOG_KEY, []);
-  const shiori = await loadJSON('emotion-bookstore-shiori', null);
-  const lines = [];
-  lines.push('『みんなの感情書店』 わたしの記録');
-  lines.push('書き出した日：' + new Date().toLocaleString('ja-JP'));
-  lines.push('='.repeat(40));
-  lines.push('');
-  lines.push('【本棚の物語】 ' + lib.length + '冊');
-  lines.push('');
-  lib.forEach((e, i)=>{
-    const cat = CATEGORIES.find(c=>c.id===e.category);
-    lines.push('--- ' + (i+1) + '冊目 ---');
-    lines.push('タイトル：' + e.title);
-    lines.push('棚：' + (cat ? cat.label : e.category));
-    lines.push('日付：' + (e.date ? new Date(e.date).toLocaleDateString('ja-JP') : '不明'));
-    if(e.sealed) lines.push('（以前を振り返って綴った一冊）');
-    lines.push(e.story);
-    if(e.note) lines.push('店主のことば：' + e.note);
-    lines.push('');
-  });
-  lines.push('【手放した気持ちの記録】 ' + purifyLog.length + '件');
-  lines.push('');
-  purifyLog.forEach((p, i)=>{
-    const cat = CATEGORIES.find(c=>c.id===p.category);
-    lines.push('--- ' + (i+1) + '件目（' + (cat ? cat.label : p.category) + '） ' + new Date(p.date).toLocaleDateString('ja-JP') + ' ---');
-    lines.push(p.text);
-    lines.push('');
-  });
-  if(shiori && shiori.text){
-    lines.push('【最後に受け取った栞】');
-    lines.push(shiori.text);
-  }
-  const blob = new Blob([lines.join('\n')], { type:'text/plain;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  const d = new Date();
-  a.download = `感情書店の記録_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.txt`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
-}
-
 /* ---------- 気持ちを手放す ---------- */
-const NEGATIVE_SHELVES = ['moya','ushirometai','kuyashii','kodoku','aseri','shitto','hazukashii','gakkari'];
+const PURIFY_LOG_KEY = 'emotion-bookstore-purify-log';
 
 function openPurify(shelfId){
   const overlay = document.getElementById('purifyOverlay');
@@ -377,9 +366,8 @@ async function showPurifyLog(){
     showCurateBox('まだ、手放した気持ちの記録はありません。', [{label:'閉じる', primary:true, onClick:()=>{} }]);
     return;
   }
-  // ログを整形
   const msg = log.map(p => `[${new Date(p.date).toLocaleDateString('ja-JP')} / ${(CATEGORIES.find(c=>c.id===p.category)||{}).label || ''}]\n${p.text}`).join('\n\n---\n\n');
-  
+
   const mCat = document.getElementById('modalCat');
   if(mCat) mCat.textContent = '記録';
   const mTitle = document.getElementById('modalTitle');
@@ -388,22 +376,22 @@ async function showPurifyLog(){
   if(mDate) mDate.textContent = '';
   const mStory = document.getElementById('modalStory');
   if(mStory) mStory.textContent = msg;
-  
+
   const mNote = document.getElementById('modalNote');
   if(mNote) mNote.classList.add('hidden');
   const mTweet = document.getElementById('modalTweet');
   if(mTweet) mTweet.classList.add('hidden');
   const mPhoto = document.getElementById('modalPhoto');
   if(mPhoto) mPhoto.classList.add('hidden');
-  
+
   const mDel = document.getElementById('modalDel');
-  if(mDel) mDel.style.display = 'none'; 
+  if(mDel) mDel.style.display = 'none';
   const mGoShelf = document.getElementById('modalGoShelf');
-  if(mGoShelf) mGoShelf.style.display = 'none'; 
-  
+  if(mGoShelf) mGoShelf.style.display = 'none';
+
   const bModal = document.getElementById('bookModal');
   if(bModal) bModal.classList.remove('hidden');
-  
+
   const closeBtn = document.getElementById('modalClose');
   const originalClose = closeBtn.onclick;
   closeBtn.onclick = () => {
@@ -418,13 +406,86 @@ const PERSONAL_INFO_PATTERNS = [/\d{2,4}-\d{3,4}-\d{3,4}/, /[\w.+-]+@[\w-]+\.[\w
 const ATTACK_WORDS = ['死ね','殺す','消えろ','ぶっ殺'];
 const CRISIS_STORY_PATTERNS = ['死にたい','消えたい','自分を傷つけ','リストカット'];
 
-function detectShelfFromText(text, minScore){
-  let bestId = null, bestScore = 0;
+/* ============================================================
+ * 感情分析エンジン（完全ローカル・超軽量センチメント分析）
+ * Step1: 否定語チェック（正規表現）でポジ→ネガの反転補正
+ * Step2: スコア加算方式で最も合計スコアが高い棚を決定
+ * Step3: どれにも引っかからない／拮抗した場合はnullを返し、
+ *        呼び出し側で「名もなき夜の棚」へ軟着陸させる
+ * ============================================================ */
+const NEGATION_SUFFIX_RE = /^(ない|ません|ず|とは言えない|ではない|じゃない|わけではない)/;
+const POSITIVE_FLIP_TARGET = {
+  wakuwaku:'gakkari', hokorashii:'hazukashii', ando:'aseri',
+  itooshii:'kodoku', kansha:'gakkari', akogare:'gakkari'
+};
+
+function scoreEmotions(text){
+  const scores = {};
+  const add = (id, n)=>{ scores[id] = (scores[id] || 0) + n; };
   for(const id in CATEGORY_KEYWORDS){
-    const score = CATEGORY_KEYWORDS[id].reduce((n,w)=>n + (text.includes(w) ? 1 : 0), 0);
-    if(score > bestScore){ bestScore = score; bestId = id; }
+    const words = CATEGORY_KEYWORDS[id];
+    for(const w of words){
+      let from = 0, idx;
+      while((idx = text.indexOf(w, from)) !== -1){
+        const after = text.slice(idx + w.length, idx + w.length + 8);
+        if(NEGATION_SUFFIX_RE.test(after)){
+          const flipTarget = POSITIVE_FLIP_TARGET[id];
+          if(flipTarget) add(flipTarget, 1); else add(id, -1);
+        }else{
+          add(id, 1);
+        }
+        from = idx + w.length;
+      }
+    }
   }
+  return scores;
+}
+
+function extractTopKeyword(text){
+  let best = null;
+  for(const id in CATEGORY_KEYWORDS){
+    for(const w of CATEGORY_KEYWORDS[id]){
+      if(text.includes(w) && (!best || w.length > best.length)) best = w;
+    }
+  }
+  return best;
+}
+
+function detectShelfFromText(text, minScore){
+  const scores = scoreEmotions(text);
+  let bestId = null, bestScore = 0, secondScore = 0;
+  for(const id in scores){
+    if(scores[id] > bestScore){
+      secondScore = bestScore;
+      bestScore = scores[id];
+      bestId = id;
+    }else if(scores[id] > secondScore){
+      secondScore = scores[id];
+    }
+  }
+  if(bestScore <= 0) return null;
+  if(bestScore === secondScore) return null; // 完全に拮抗 → セーフティネットへ
   return bestScore >= (minScore || 1) ? bestId : null;
+}
+
+/* ---------- ペルソナ自動判定 ---------- */
+function detectPersona(text){
+  for(const p of PERSONA_PATTERNS){
+    if(p.pattern.test(text)) return p.id;
+  }
+  return null;
+}
+
+/* 可変報酬型メッセージ：確率5%で激レア演出を差し込む */
+function personaFlavorReply(personaId){
+  if(!personaId) return null;
+  const rarePool = PERSONA_RARE_MESSAGES[personaId];
+  if(rarePool && rarePool.length && Math.random() < 0.05){
+    return rarePool[Math.floor(Math.random()*rarePool.length)];
+  }
+  const pool = PERSONA_MESSAGES[personaId];
+  if(!pool || !pool.length) return null;
+  return pool[Math.floor(Math.random()*pool.length)];
 }
 
 function localCurate(title, story, chosenId){
@@ -441,10 +502,10 @@ function localCurate(title, story, chosenId){
   if(ATTACK_WORDS.some(w=>combined.includes(w))){
     return { approved:false, category:null, note:'', reason:'誰かを深く傷つける言葉が含まれているようです。ご自身の気持ちの部分だけ、綴り直してみてください。' };
   }
+  const scores = scoreEmotions(combined);
   let bestId = chosenId, bestScore = 0;
-  for(const id in CATEGORY_KEYWORDS){
-    const score = CATEGORY_KEYWORDS[id].reduce((n,w)=>n + (combined.includes(w) ? 1 : 0), 0);
-    if(score > bestScore){ bestScore = score; bestId = id; }
+  for(const id in scores){
+    if(scores[id] > bestScore){ bestScore = scores[id]; bestId = id; }
   }
   const suggested = (bestScore >= 2 && bestId !== chosenId) ? bestId : chosenId;
   return {
@@ -453,6 +514,15 @@ function localCurate(title, story, chosenId){
     note: SHOPKEEPER_NOTES[Math.floor(Math.random()*SHOPKEEPER_NOTES.length)],
     reason:''
   };
+}
+
+/* コールドリーディング的な、誰にでも当てはまりそうな一言（バーナム効果）
+ * を、最初のやり取りで低確率にだけ差し込む。 */
+function fillColdReadOpener(shelfId){
+  const cat = CATEGORIES.find(c=>c.id===shelfId);
+  if(!cat) return null;
+  const tmpl = COLD_READ_OPENERS[Math.floor(Math.random()*COLD_READ_OPENERS.length)];
+  return tmpl.replace('{def}', cat.def).replace('{label}', cat.label);
 }
 
 function localShiori(topLabel){
@@ -563,11 +633,10 @@ function setMood(text){
   }
 }
 
-// ★【UI改善】ヘッダーに隠れないようにオフセットを付けてスクロール
 function scrollToId(id){
   const el = document.getElementById(id);
   if(el) {
-    const y = el.getBoundingClientRect().top + window.scrollY - 20; 
+    const y = el.getBoundingClientRect().top + window.scrollY - 20;
     window.scrollTo({ top: y, behavior: prefs.motion ? 'smooth' : 'auto' });
   }
 }
@@ -591,7 +660,7 @@ function goToPage(id){
     return;
   }
   overlay.classList.remove('active');
-  void overlay.offsetWidth; 
+  void overlay.offsetWidth;
   overlay.classList.add('active');
   buzz(10);
   setTimeout(()=>scrollToId(id), 260);
@@ -621,6 +690,23 @@ function goToPage(id){
   }else{
     targets.forEach(el=>el.classList.add('visible'));
   }
+})();
+
+/* ---------- ページ最下部での「トップに戻る」ボタン ---------- */
+(function(){
+  const btn = document.getElementById('backToTopBtn');
+  if(!btn) return;
+  const onScroll = ()=>{
+    if(window.scrollY > 480) btn.classList.remove('hidden');
+    else btn.classList.add('hidden');
+  };
+  window.addEventListener('scroll', onScroll, { passive:true });
+  onScroll();
+  btn.onclick = ()=>{
+    buzz(6);
+    window.scrollTo({ top:0, behavior: prefs.motion ? 'smooth' : 'auto' });
+    setActivePageTab('');
+  };
 })();
 
 function renderFair(){
@@ -714,10 +800,10 @@ function renderShelfDisplay(){
             『${r.title}』${r.by}
             <span class="recommend-why">${r.why || ''}</span>
             <span class="recommend-shop-links">
-              <a class="recommend-buy" href="${amazonUrl}" target="_blank" rel="noopener">Amazon</a>
-              <a class="recommend-buy kindle" href="${kindleUrl}" target="_blank" rel="noopener">Kindle</a>
-              <a class="recommend-buy audible" href="${audibleUrl}" target="_blank" rel="noopener">Audible</a>
-              <a class="recommend-buy rakuten" href="${rakutenUrl}" target="_blank" rel="noopener">楽天</a>
+              <a class="recommend-buy" href="${amazonUrl}" target="_blank" rel="noopener sponsored">Amazon</a>
+              <a class="recommend-buy kindle" href="${kindleUrl}" target="_blank" rel="noopener sponsored">Kindle</a>
+              <a class="recommend-buy audible" href="${audibleUrl}" target="_blank" rel="noopener sponsored">Audible</a>
+              <a class="recommend-buy rakuten" href="${rakutenUrl}" target="_blank" rel="noopener sponsored">楽天</a>
             </span>
             ${r.source ? `<a class="recommend-source" href="${r.sourceUrl}" target="_blank" rel="noopener">出典：${r.source}</a>` : ''}
           </span>`;
@@ -727,29 +813,33 @@ function renderShelfDisplay(){
         </div>
        </div>`
     : '';
-  const playlist = PINNED_SONGS[cat.id];
+
+  /* ★感情の「処方箋ソング」— MUSIC_QUERIESからランダムに1曲を抽出して反映 */
+  const songs = MUSIC_QUERIES[cat.id] || [];
   let musicHtml;
-  if(playlist && playlist.length){
-    const items = playlist.map(song=>{
-      const q = song.title + ' ' + song.artist;
-      const amUrl = amazonSearchUrl(q + ' 音楽');
-      const ytUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q);
-      const spUrl = 'https://open.spotify.com/search/' + encodeURIComponent(q);
-      return `<div class="playlist-track-row">
+  if(songs.length){
+    const song = songs[Math.floor(Math.random()*songs.length)];
+    const q = song.title + ' ' + song.artist;
+    const amUrl = amazonSearchUrl(q + ' 音楽', 'digital-music');
+    const ytUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q);
+    const spUrl = 'https://open.spotify.com/search/' + encodeURIComponent(q);
+    musicHtml = `<div class="music-row prescription">
+      <p class="playlist-label">🎵 店主の処方箋ソング — 「${cat.label}」なあなたに、今日はこの一曲を</p>
+      <div class="playlist-track-row">
         <span class="playlist-track-name">『${song.title}』${song.artist}</span>
         <span class="playlist-services">
           <a href="${spUrl}" target="_blank" rel="noopener">Spotify</a>
-          <a href="${amUrl}" target="_blank" rel="noopener">Amazon Music</a>
+          <a href="${amUrl}" target="_blank" rel="noopener sponsored">Amazon Music</a>
           <a href="${ytUrl}" target="_blank" rel="noopener">YouTube</a>
         </span>
-      </div>`;
-    }).join('');
-    musicHtml = `<div class="music-row"><p class="playlist-label">🎵 「${cat.label}」なプレイリスト — 好きなサービスで聴けます</p><div class="playlist-tracks">${items}</div></div>`;
+      </div>
+      <button type="button" class="recommend-shuffle" onclick="renderShelfDisplay()" title="別の一曲を処方してもらう">🔀 別の一曲を処方してもらう</button>
+    </div>`;
   }else{
-    const musicQuery = MUSIC_QUERIES[cat.id] || (cat.label + ' 邦楽 プレイリスト');
-    const musicUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(musicQuery);
+    const musicUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(cat.label + ' 邦楽 プレイリスト');
     musicHtml = `<div class="music-row"><a class="music-link" href="${musicUrl}" target="_blank" rel="noopener">🎵 YouTubeでBGMを探す</a></div>`;
   }
+
   const myEntries = libraryCache.filter(e=>e.category===cat.id);
   const myEpisodesHtml = myEntries.map(entry=>
     `<div class="episode-card mine" data-entry-id="${entry.id}"><span class="who mine-who">あなたの物語${entry.tweetUrl ? ' 🐦' : ''}</span>『${entry.title}』${entry.story.length > 60 ? entry.story.slice(0,60) + '…' : entry.story}</div>`
@@ -795,8 +885,6 @@ function renderShelfDisplay(){
     requestAnimationFrame(()=>{ el.style.opacity = '1'; });
   }
 }
-
-// ★【UI改善】スマホで意味をなしていなかったスワイプ移動機能（enableSwipe）を完全削除しました。
 
 function renderCategorySelect(){
   const sel = document.getElementById('categorySelect');
@@ -911,7 +999,7 @@ async function renderShioriCard(){
   const imgBtn = document.getElementById('storyImageBtn');
   const imgHint = document.getElementById('storyImageHint');
   if(!card || !slip || !btn || !imgBtn || !imgHint) return;
-  
+
   if(libraryCache.length === 0){
     card.classList.add('hidden');
     return;
@@ -966,7 +1054,7 @@ if(btnStoryImg) {
         }
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'emotion-bookstore-story.png';
+        a.download = 'emotion-bookstore-shiori.png';
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -992,19 +1080,19 @@ if(btnShiori){
     const topId = topCategoryId();
     const topLabel = (CATEGORIES.find(c=>c.id===topId) || {}).label || 'あなた';
     const text = localShiori(topLabel);
-    
+
     const sText = document.getElementById('shioriText');
     if(sText) sText.textContent = text;
-    
+
     const slip = document.getElementById('shioriSlip');
     if(slip) slip.classList.remove('hidden');
     btn.classList.add('hidden');
-    
+
     const imgBtn = document.getElementById('storyImageBtn');
     if(imgBtn) imgBtn.classList.remove('hidden');
     const imgHint = document.getElementById('storyImageHint');
     if(imgHint) imgHint.classList.remove('hidden');
-    
+
     saveJSON('emotion-bookstore-shiori', { date: todayStr(), text });
   };
 }
@@ -1027,7 +1115,7 @@ function ensureTwitterWidgets(){
     s.src = 'https://platform.twitter.com/widgets.js';
     s.async = true;
     s.onload = resolve;
-    s.onerror = resolve; 
+    s.onerror = resolve;
     document.body.appendChild(s);
   });
   return twitterWidgetsLoading;
@@ -1052,7 +1140,7 @@ function openBook(entry){
   if(mTitle) mTitle.textContent = entry.title;
   const mDate = document.getElementById('modalDate');
   if(mDate) mDate.textContent = (entry.date ? formatDate(entry.date) : '') + (entry.sealed ? ' 🔖 以前を振り返って綴った一冊' : '');
-  
+
   const photoBox = document.getElementById('modalPhoto');
   if(photoBox){
     if(entry.image){
@@ -1064,7 +1152,7 @@ function openBook(entry){
   }
   const mStory = document.getElementById('modalStory');
   if(mStory) mStory.textContent = entry.story;
-  
+
   const noteSlip = document.getElementById('modalNote');
   if(noteSlip){
     if(entry.note){
@@ -1074,7 +1162,7 @@ function openBook(entry){
       noteSlip.classList.add('hidden');
     }
   }
-  
+
   const tweetBox = document.getElementById('modalTweet');
   if(tweetBox){
     if(entry.tweetUrl){
@@ -1084,16 +1172,16 @@ function openBook(entry){
       tweetBox.innerHTML = '';
     }
   }
-  
+
   const bModal = document.getElementById('bookModal');
   if(bModal) bModal.classList.remove('hidden');
-  
+
   const goShelf = document.getElementById('modalGoShelf');
   if(goShelf) goShelf.onclick = ()=>{
     if(bModal) bModal.classList.add('hidden');
     goToShelf(entry.category);
   };
-  
+
   const mDel = document.getElementById('modalDel');
   if(mDel) mDel.onclick = async ()=>{
     libraryCache = libraryCache.filter(e=>e.id !== entry.id);
@@ -1133,6 +1221,8 @@ function runBinding(onDone){
   ov.onclick = finish;
 }
 
+/* ★推薦状：INVITES本文に加えて、DETOUR_POOLを使ってAmazon/楽天の
+ * 実リンク（アフィリエイトタグ付き）を動的生成して添える */
 function showInvitation(catId){
   const inv = INVITES[catId];
   if(!inv) return;
@@ -1140,6 +1230,19 @@ function showInvitation(catId){
   if(t) t.textContent = inv.t;
   const b = document.getElementById('invBody');
   if(b) b.textContent = inv.b;
+
+  const productBox = document.getElementById('invProduct');
+  if(productBox){
+    const items = [{ label:inv.productQuery ? '店主の一番のおすすめ' : '', query: inv.productQuery }]
+      .concat(detourItemsFor(catId).slice(0, 2))
+      .filter(it=>it && it.query);
+    productBox.innerHTML = items.map(it=>{
+      const links = buildDetourLinks(it);
+      if(!links) return '';
+      return `<span class="inv-product-chip">${it.label ? it.label + '：' : ''}<a href="${links.amazon}" target="_blank" rel="noopener sponsored">Amazon</a><a href="${links.rakuten}" target="_blank" rel="noopener sponsored">楽天</a></span>`;
+    }).join('');
+  }
+
   const c = document.getElementById('invitationCard');
   if(c) c.classList.remove('hidden');
 }
@@ -1219,7 +1322,7 @@ async function restoreDraftIfAny(){
   if(!draft || !draft.text) return;
   const ta = document.getElementById('storyInput');
   if(!ta) return;
-  if(ta.value.trim()) return; 
+  if(ta.value.trim()) return;
   const msg = document.getElementById('deskMsg');
   ta.value = draft.text;
   updateStoryCount();
@@ -1242,7 +1345,7 @@ if(btnSubmit) {
       return;
     }
     const tInput = document.getElementById('titleInput');
-    const title = (tInput ? tInput.value.trim() : '') || generateTitle(chosenId);
+    const title = (tInput ? tInput.value.trim() : '') || generateTitle(chosenId, story);
     if(story.length > STORY_LIMIT){
       if(msg) msg.textContent = '本文は' + STORY_LIMIT + '字までに収めてください。';
       return;
@@ -1256,7 +1359,7 @@ if(btnSubmit) {
     const tweetUrl = /^https:\/\/(x\.com|twitter\.com)\/[^\/]+\/status\/\d+/.test(tweetRaw) ? tweetRaw : '';
     const wSel = document.getElementById('whenSelect');
     const isPast = wSel ? (wSel.value === 'past') : false;
-    
+
     if(tweetRaw && !tweetUrl){
       if(msg) msg.textContent = 'Xの投稿リンクの形式が正しくないようです（例：https://x.com/ユーザー名/status/12345）。';
       btn.disabled = false;
@@ -1293,14 +1396,13 @@ if(btnSubmit) {
         if(msg) msg.textContent = priorCount > 0
           ? `製本して、本棚に納品しました。「${label}」の棚に綴るのは、これで${priorCount + 1}冊目です。`
           : '製本して、本棚に納品しました。';
-        
+
         await saveJSON('emotion-bookstore-library', libraryCache);
         await celebrateMilestoneIfNeeded(libraryCache.length);
         btn.disabled = false;
         const boundMsg = msg ? msg.textContent : '';
         setTimeout(()=>{ if(msg && msg.textContent === boundMsg) msg.textContent = ''; }, 4200);
 
-        // ★【UI改善】推薦状がある場合はポップアップ後、閉じたタイミングで「④ 本棚」へ遷移するフローに改修
         const inv = INVITES[finalCategory];
         if(inv){
           showInvitation(finalCategory);
@@ -1309,10 +1411,9 @@ if(btnSubmit) {
           closeBtn.onclick = () => {
              document.getElementById('invitationCard').classList.add('hidden');
              goToPage('bookshelf');
-             closeBtn.onclick = originalClick; // 戻す
+             closeBtn.onclick = originalClick;
           };
         } else {
-          // 推薦状がない場合は、少し間を置いてから直接本棚へ遷移
           setTimeout(() => goToPage('bookshelf'), 1500);
         }
       });
@@ -1354,21 +1455,6 @@ if(btnSubmit) {
   };
 }
 
-const btnExport = document.getElementById('exportDiary');
-if(btnExport) {
-  btnExport.onclick = async ()=>{
-    const btn = document.getElementById('exportDiary');
-    btn.textContent = '書き出しています…';
-    try{
-      await exportDiaryText();
-      btn.textContent = '書き出しました ✓';
-    }catch(e){
-      btn.textContent = '書き出しに失敗しました';
-    }
-    setTimeout(()=>{ btn.textContent = '📥 これまでの記録をテキストでダウンロード'; }, 2500);
-  };
-}
-
 const btnReset = document.getElementById('resetShelf');
 if(btnReset) {
   btnReset.onclick = async ()=>{
@@ -1394,7 +1480,17 @@ function matchShopkeeperReply(text){
       return entry.replies[Math.floor(Math.random()*entry.replies.length)];
     }
   }
-  if(text.includes('？') || text.includes('?') || /(か|の)$/.test(text.trim())){
+  const isQuestion = text.includes('？') || text.includes('?') || /(か|の)$/.test(text.trim());
+  const scores = scoreEmotions(text);
+  const hasScore = Object.keys(scores).some(id=>scores[id] > 0);
+  if(!hasScore){
+    if(isQuestion){
+      return GENERIC_QUESTION_REPLIES[Math.floor(Math.random()*GENERIC_QUESTION_REPLIES.length)];
+    }
+    // ★感情分析Step3：セーフティネット（名もなき夜の棚へ軟着陸）
+    return '……言葉にならない、複雑な夜ですね。それでも、ここに来て話してくれてありがとうございます。';
+  }
+  if(isQuestion){
     return GENERIC_QUESTION_REPLIES[Math.floor(Math.random()*GENERIC_QUESTION_REPLIES.length)];
   }
   return GENERIC_REPLIES[Math.floor(Math.random()*GENERIC_REPLIES.length)];
@@ -1460,6 +1556,7 @@ function renderChartOptions(nodeKey){
     container.appendChild(writeBtn);
     container.appendChild(moreBtn);
   }
+  focusLatestTurn(null);
 }
 
 function renderSuggestionActions(shelfId){
@@ -1486,6 +1583,7 @@ function renderSuggestionActions(shelfId){
   container.appendChild(goBtn);
   container.appendChild(writeBtn);
   container.appendChild(moreBtn);
+  focusLatestTurn(null);
 }
 
 async function handleChartChoice(label, nextKey){
@@ -1508,10 +1606,11 @@ async function handleChartChoice(label, nextKey){
   loadingBubble.remove();
   const node = CHAT_TREE[nextKey];
   const replyText = pickReply(node.reply);
-  appendBubble('shopkeeper', replyText);
+  const bubble = appendBubble('shopkeeper', replyText);
   setMood(replyText);
   if(kf) setTimeout(()=>kf.classList.remove('listening'), 3000);
   renderChartOptions(nextKey);
+  focusLatestTurn(bubble);
 }
 
 function pickReply(reply){
@@ -1540,11 +1639,15 @@ function typeIntoNode(node, text, speed){
   step();
 }
 
+/* ★見た目の変化がすぐ分かるよう、新しい吹き出しに一瞬だけ
+ * ハイライトのアニメーションを掛ける（バグと誤解されない工夫） */
 function appendBubble(role, text){
   const cw = document.getElementById('chatWindow');
   if(!cw) return null;
   const div = document.createElement('div');
   div.className = 'bubble ' + (role === 'user' ? 'you' : 'shopkeeper');
+  div.classList.add('bubble-flash');
+  setTimeout(()=>div.classList.remove('bubble-flash'), role === 'user' ? 900 : 1300);
   if(role !== 'user'){
     if(currentTone === 'heavy') div.classList.add('tone-heavy');
     const name = document.createElement('span');
@@ -1560,6 +1663,25 @@ function appendBubble(role, text){
   cw.appendChild(div);
   cw.scrollTop = cw.scrollHeight;
   return div;
+}
+
+/* ★スクロールを見直し、対話を送ったら必ず最新の吹き出し（と、その
+ * 下の選択肢）が画面内に来るように、内側スクロール＋外側スクロール
+ * の両方を一度にまとめて行う。 */
+function focusLatestTurn(bubbleEl){
+  const cw = document.getElementById('chatWindow');
+  if(cw) cw.scrollTop = cw.scrollHeight;
+  requestAnimationFrame(()=>{
+    if(bubbleEl && bubbleEl.scrollIntoView){
+      bubbleEl.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block:'center' });
+    }
+  });
+  setTimeout(()=>{
+    const opts = document.getElementById('chartOptions');
+    if(opts && opts.children.length){
+      opts.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block:'end' });
+    }
+  }, prefs.motion ? 380 : 60);
 }
 
 function wait(ms){ return new Promise(r=>setTimeout(r, ms)); }
@@ -1578,19 +1700,14 @@ async function sendToShopkeeper(){
     appendBubble('shopkeeper', '（ゆっくりで大丈夫です。長いお話は、少しずつに分けてお聞かせください。）');
     return;
   }
-  appendBubble('user', text);
+  const userBubble = appendBubble('user', text);
   counterDraftText = counterDraftText ? (counterDraftText + '\n' + text) : text;
   chatHistory.push({ role:'user', content:text });
   ui.value = '';
   if(sb) sb.disabled = true;
   if(kf) kf.classList.add('listening');
   setMood(text);
-
-  // ★【UI改善】文字を送信した瞬間に、最新の吹き出しへ確実に追従する
-  const scrollToBottom = () => {
-    if(cw) cw.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block: 'end' });
-  };
-  scrollToBottom();
+  focusLatestTurn(userBubble);
 
   const loadingBubble = document.createElement('div');
   loadingBubble.className = 'bubble loading';
@@ -1602,35 +1719,72 @@ async function sendToShopkeeper(){
 
   await wait(prefs.motion ? (700 + Math.random()*600) : 60);
   currentTone = HEAVY_WORDS.some(w=>text.includes(w)) ? 'heavy' : 'neutral';
-  const reply = matchShopkeeperReply(text);
-  loadingBubble.remove();
-  appendBubble('shopkeeper', reply);
-  chatHistory.push({ role:'assistant', content:reply });
-
-  // ★【UI改善】店主の返信後にも確実にスクロール追従する
-  scrollToBottom();
-
   const isCrisis = CRISIS_PATTERNS.some(w=>text.includes(w));
+  const personaId = isCrisis ? null : detectPersona(text);
+
+  let reply = matchShopkeeperReply(text);
+
+  // ★バックトラッキング（オウム返し）：2回目以降のやり取りで、
+  // ユーザーの言葉をそのまま一部返してから応じる
+  if(!isCrisis && freeTextTurns >= 1){
+    const kwHit = extractTopKeyword(text);
+    if(kwHit) reply = `「${kwHit}」……${reply}`;
+  }
+  // ★心理学的リフレーミングを、たまに差し込む（怒り＝期待の裏返し 等）
   const suggestedShelf = isCrisis ? null : detectShelfFromText(text, 1);
-  if(suggestedShelf){
+  if(!isCrisis && suggestedShelf && REFRAME_LINES[suggestedShelf] && Math.random() < 0.4){
+    reply += '\n' + REFRAME_LINES[suggestedShelf];
+  }
+  // ★コールドリーディング：最初のやり取りだけ、当てはまりやすい一言を低確率で前置きする
+  if(!isCrisis && freeTextTurns === 0 && suggestedShelf && Math.random() < 0.35){
+    const opener = fillColdReadOpener(suggestedShelf);
+    if(opener) reply = opener + '\n' + reply;
+  }
+
+  loadingBubble.remove();
+  const replyBubble = appendBubble('shopkeeper', reply);
+  chatHistory.push({ role:'assistant', content:reply });
+  focusLatestTurn(replyBubble);
+
+  // ★可変報酬型メッセージ：判定されたペルソナに応じて、聴く・共感する
+  // ことに徹したメッセージを追加で差し込む（5%で激レア演出）
+  if(!isCrisis && personaId){
+    const flavor = personaFlavorReply(personaId);
+    if(flavor){
+      await wait(prefs.motion ? 450 : 30);
+      const flavorBubble = appendBubble('shopkeeper', flavor);
+      focusLatestTurn(flavorBubble);
+    }
+  }
+
+  freeTextTurns++;
+
+  if(isCrisis){
+    renderChartOptions('root');
+  }else if(freeTextTurns >= 2){
+    // ★3往復目以降は会話が拡散しがちなので、占い師のイエス誘導法・
+    // フット・イン・ザ・ドアを参考に、必ず選べる選択肢へ滑らかに誘導する
+    const yesPrompt = YES_LADDER_PROMPTS[Math.floor(Math.random()*YES_LADDER_PROMPTS.length)];
+    const yesBubble = appendBubble('shopkeeper', yesPrompt);
+    focusLatestTurn(yesBubble);
+    renderSuggestionActions(suggestedShelf || 'moyamoya');
+  }else if(suggestedShelf){
     renderSuggestionActions(suggestedShelf);
   }else{
     renderChartOptions('root');
   }
 
-  freeTextTurns++;
   if(freeTextTurns === 3 && !isCrisis){
     appendBubble('shopkeeper',
       '……私は決まった言葉しか持たない、しがない店番です。もしもっと深く話を聞いてほしい夜は、' +
       '言葉の達者な相談相手（AI）を訪ねてみるのも一つの手です。ここの棚は、いつでも開けておきますから。');
-    
-    // ★【UI改善】外部AIへのリンクを、他の選択肢に紛れさせず、店主の言葉のすぐ真下に専用エリアとして配置する
+
     const linkDiv = document.createElement('div');
     linkDiv.style.textAlign = 'left';
-    linkDiv.style.marginLeft = '50px'; 
+    linkDiv.style.marginLeft = '50px';
     linkDiv.style.marginTop = '8px';
     linkDiv.style.marginBottom = '16px';
-    
+
     const gptLink = document.createElement('a');
     gptLink.className = 'chart-btn';
     gptLink.href = 'https://chatgpt.com/';
@@ -1639,7 +1793,7 @@ async function sendToShopkeeper(){
     gptLink.textContent = 'ChatGPTと話してみる';
     gptLink.style.display = 'inline-block';
     gptLink.style.marginRight = '8px';
-    
+
     const gemLink = document.createElement('a');
     gemLink.className = 'chart-btn';
     gemLink.href = 'https://gemini.google.com/';
@@ -1647,18 +1801,11 @@ async function sendToShopkeeper(){
     gemLink.rel = 'noopener';
     gemLink.textContent = 'Geminiと話してみる';
     gemLink.style.display = 'inline-block';
-    
+
     linkDiv.appendChild(gptLink);
     linkDiv.appendChild(gemLink);
-    
-    if(cw) cw.appendChild(linkDiv);
-  }
 
-  const container = document.getElementById('chartOptions');
-  if(container){
-    setTimeout(() => {
-      container.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block: 'center' });
-    }, prefs.motion ? 300 : 50);
+    if(cw) cw.appendChild(linkDiv);
   }
 
   if(sb) sb.disabled = false;
@@ -1707,16 +1854,10 @@ async function chooseTexture(group, btnEl){
   const kf = document.getElementById('keeperFigure');
   if(kf) kf.classList.add('listening');
   await wait(prefs.motion ? 420 : 30);
-  appendBubble('shopkeeper', group.keeper);
+  const bubble = appendBubble('shopkeeper', group.keeper);
   if(kf) setTimeout(()=>kf.classList.remove('listening'), 2500);
   renderEmotionChips(group);
-
-  const container = document.getElementById('chartOptions');
-  if(container){
-    setTimeout(() => {
-      container.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block: 'center' });
-    }, prefs.motion ? 200 : 20);
-  }
+  focusLatestTurn(bubble);
 }
 
 function renderEmotionChips(group){
@@ -1745,6 +1886,8 @@ function renderEmotionChips(group){
   container.appendChild(back);
 }
 
+/* ★棚を選んだ後、CHAT_TREEを使ってもう一段だけ深く聞き返す
+ * （バックトラッキングで「聴いてもらえている」感覚を強める） */
 async function chooseEmotionShelf(shelfId){
   currentTone = NEGATIVE_SHELVES.includes(shelfId) ? 'heavy' : 'neutral';
   buzz(6);
@@ -1752,23 +1895,23 @@ async function chooseEmotionShelf(shelfId){
   const kf = document.getElementById('keeperFigure');
   if(kf) kf.classList.add('listening');
   await wait(prefs.motion ? 380 : 30);
-  appendBubble('shopkeeper', `『${shelfLabelOf(shelfId)}』の棚ですね。文字を打たなくても大丈夫。そのまま棚を眺めても、一冊綴っていっても構いませんよ。`);
+  const node = CHAT_TREE[shelfId];
+  const replyText = node ? pickReply(node.reply) : `『${shelfLabelOf(shelfId)}』の棚ですね。文字を打たなくても大丈夫。そのまま棚を眺めても、一冊綴っていっても構いませんよ。`;
+  const bubble = appendBubble('shopkeeper', replyText);
   if(kf) setTimeout(()=>kf.classList.remove('listening'), 2500);
-  renderSuggestionActions(shelfId);
-
-  const container = document.getElementById('chartOptions');
-  if(container){
-    setTimeout(() => {
-      container.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block: 'center' });
-    }, prefs.motion ? 200 : 20);
+  if(node){
+    renderChartOptions(shelfId);
+  }else{
+    renderSuggestionActions(shelfId);
   }
+  focusLatestTurn(bubble);
 }
 
 function syncCounterDraftToDesk(){
   if(!counterDraftText) return;
   const ta = document.getElementById('storyInput');
   if(!ta) return;
-  if(ta.value.includes(counterDraftText)) return; 
+  if(ta.value.includes(counterDraftText)) return;
   ta.value = ta.value.trim()
     ? (ta.value.replace(/\s+$/, '') + '\n' + counterDraftText)
     : counterDraftText;
@@ -1809,7 +1952,7 @@ async function compressImageFile(file){
   c.getContext('2d').drawImage(img, 0, 0, w, h);
   let dataUrl = c.toDataURL('image/webp', 0.7);
   if(!dataUrl.startsWith('data:image/webp')){
-    dataUrl = c.toDataURL('image/jpeg', 0.7); 
+    dataUrl = c.toDataURL('image/jpeg', 0.7);
   }
   return dataUrl;
 }
@@ -1836,7 +1979,7 @@ function clearAttachedPhoto(){
       if(imgEl) imgEl.src = attachedPhoto;
       if(prev){
         prev.classList.remove('hidden');
-        void prev.offsetWidth; 
+        void prev.offsetWidth;
         prev.classList.add('pop');
       }
       buzz(8);
@@ -1941,7 +2084,7 @@ function renderRecordCorner(){
   if(!box) return;
   const slot = RECORD_PICKS[currentRecordSlot()];
   const day = Math.floor(Date.now() / 86400000);
-  const song = slot.songs[day % slot.songs.length]; 
+  const song = slot.songs[day % slot.songs.length];
   const q = song.title + ' ' + song.artist;
   const amUrl = amazonSearchUrl(q, 'digital-music');
   const cdUrl = amazonSearchUrl(q + ' CD');
@@ -1962,14 +2105,6 @@ function renderRecordCorner(){
     </div>`;
   box.classList.remove('hidden');
 }
-
-const EMOTION_GRADIENTS = {
-  moya:['#5C6B8A','#2E3A5C'], kodoku:['#3E4A6B','#1E2440'], gakkari:['#8A7A6B','#4A4038'],
-  hazukashii:['#D8909B','#8A4A5C'], ushirometai:['#6B5C7A','#3A3048'], aseri:['#C97F5A','#7A3E2E'],
-  kuyashii:['#A85C5C','#5C2E2E'], shitto:['#5C7A5C','#2E402E'], akogare:['#7FA8C9','#3E5C8A'],
-  wakuwaku:['#F0C060','#C97F3D'], ando:['#A8C9A0','#5C8A6B'], kansha:['#E8B87F','#B7791F'],
-  itooshii:['#E8A0B0','#C96B8A'], hokorashii:['#C9A85C','#8A6B2E'], natsukashii:['#D8B48A','#8A6B4A']
-};
 
 function drawImageCover(ctx, img, x, y, w, h){
   const iw = img.naturalWidth || img.width;
@@ -1999,12 +2134,17 @@ function roundRectPath(ctx, x, y, w, h, r){
   ctx.closePath();
 }
 
+/* ============================================================
+ * ストーリー用の画像を生成する（添付画像 image.png のしおりの
+ * 雰囲気：上下の黒帯＋クリーム色の紙面＋太字の言葉＋控えめな
+ * クレジット、という構成をオリジナルの意匠で再現する）
+ * ============================================================ */
 async function generateStoryImage(){
   try{
     if(document.fonts && document.fonts.ready) await document.fonts.ready;
   }catch(e){}
 
-  const W = 1080, H = 1920; 
+  const W = 1080, H = 1920;
   const canvas = document.createElement('canvas');
   const dpr = Math.min(window.devicePixelRatio || 2, 3);
   canvas.width = W * dpr;
@@ -2015,159 +2155,87 @@ async function generateStoryImage(){
 
   const latest = libraryCache.length ? libraryCache[libraryCache.length - 1] : null;
   const cachedShiori = await loadJSON('emotion-bookstore-shiori', null);
-  let keeperWords = (cachedShiori && cachedShiori.text)
+  let words = (cachedShiori && cachedShiori.text)
     ? cachedShiori.text
     : ((latest && latest.note) ? latest.note : '今日も、自分の気持ちに名前をあげられましたね。');
-  if(keeperWords.length > 96) keeperWords = keeperWords.slice(0, 95) + '…';
-  const photo = (latest && latest.image) ? await loadImageFromDataUrl(latest.image) : null;
+  if(words.length > 60) words = words.slice(0, 59) + '…';
 
-  const hour = new Date().getHours();
-  const pair = (latest && EMOTION_GRADIENTS[latest.category])
-    || ((hour >= 17 || hour < 5) ? ['#8A5C6B','#1E2440'] : ['#E8C9A0','#C97F8A']); 
-  const grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, pair[0]);
-  grad.addColorStop(1, pair[1]);
-  ctx.fillStyle = grad;
+  const CREAM = '#F1E9D2';
+  const INK = '#1C1712';
+  const topH = Math.round(H * 0.15);
+  const bottomH = Math.round(H * 0.13);
+
+  ctx.fillStyle = CREAM;
   ctx.fillRect(0, 0, W, H);
-  if(photo){
-    try{
-      ctx.save();
-      ctx.filter = 'blur(42px) brightness(0.55)';
-      drawImageCover(ctx, photo, -60, -60, W + 120, H + 120);
-      ctx.restore();
-    }catch(e){}
-    ctx.fillStyle = 'rgba(20,14,20,0.35)';
-    ctx.fillRect(0, 0, W, H);
-  }
+  ctx.fillStyle = INK;
+  ctx.fillRect(0, 0, W, topH);
+  ctx.fillRect(0, H - bottomH, W, bottomH);
 
-  ctx.fillStyle = 'rgba(255,245,220,0.20)';
-  for(let i = 0; i < 26; i++){
-    const px = (i * 137) % W, py = (i * 263) % H, pr = 2 + (i % 3);
-    ctx.beginPath(); ctx.arc(px, py, pr, 0, Math.PI * 2); ctx.fill();
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(241,233,210,0.8)';
+  ctx.font = '600 26px ' + MINCHO;
+  ctx.fillText('EMOTIONAL BINDERY & BOOKSHOP', W / 2, topH * 0.42);
+  ctx.fillStyle = CREAM;
+  ctx.font = '700 42px ' + MINCHO;
+  ctx.fillText('みんなの感情書店', W / 2, topH * 0.78);
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = INK;
+  ctx.font = '700 56px ' + MINCHO;
+  const pad = 90;
+  const maxWidth = W - pad * 2;
+  const lines = wrapTextLines(ctx, words, maxWidth).slice(0, 6);
+  let ty = topH + 130;
+  lines.forEach(line=>{
+    ctx.fillText(line, pad, ty);
+    ty += 78;
+  });
+
+  ctx.font = '400 24px ' + MINCHO;
+  ctx.fillStyle = 'rgba(28,23,18,0.55)';
+  ctx.fillText('— 今日の栞 —', pad, ty + 40);
+
+  const photo = (latest && latest.image) ? await loadImageFromDataUrl(latest.image) : null;
+  const markCx = W / 2, markCy = H - bottomH - 260;
+  if(photo){
+    const pSize = 260;
+    const pX = markCx - pSize / 2, pY = markCy - pSize / 2;
+    ctx.save();
+    roundRectPath(ctx, pX, pY, pSize, pSize, 8);
+    ctx.clip();
+    drawImageCover(ctx, photo, pX, pY, pSize, pSize);
+    ctx.restore();
+    ctx.strokeStyle = INK;
+    ctx.lineWidth = 3;
+    roundRectPath(ctx, pX, pY, pSize, pSize, 8);
+    ctx.stroke();
+  }else{
+    // オリジナルの「灯り」のマーク（円と炎のシルエット）
+    ctx.save();
+    ctx.strokeStyle = INK;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(markCx, markCy, 70, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(markCx, markCy - 34);
+    ctx.quadraticCurveTo(markCx + 22, markCy, markCx, markCy + 34);
+    ctx.quadraticCurveTo(markCx - 22, markCy, markCx, markCy - 34);
+    ctx.fillStyle = INK;
+    ctx.fill();
+    ctx.restore();
   }
 
   ctx.textAlign = 'center';
-  ctx.fillStyle = 'rgba(255,249,236,0.92)';
-  ctx.font = '600 30px ' + MINCHO;
-  ctx.fillText('EMOTIONAL BINDERY & BOOKSHOP', W / 2, 150);
-  ctx.font = '700 46px ' + MINCHO;
-  ctx.fillText('みんなの感情書店', W / 2, 215);
-
-  const cardW = 800, cardX = (W - cardW) / 2, cardY = 330, pad = 56;
-  const photoSize = cardW - pad * 2; 
-  ctx.font = '400 38px ' + MINCHO;
-  const wordLines = wrapTextLines(ctx, keeperWords, photoSize - 20).slice(0, 7);
-  const cardH = pad + photoSize + 70 + 60 + wordLines.length * 62 + 120;
-  ctx.save();
-  ctx.shadowColor = 'rgba(0,0,0,0.35)';
-  ctx.shadowBlur = 50;
-  ctx.shadowOffsetY = 18;
-  ctx.fillStyle = '#FFFDF6';
-  roundRectPath(ctx, cardX, cardY, cardW, cardH, 10);
-  ctx.fill();
-  ctx.restore();
-
-  const pX = cardX + pad, pY = cardY + pad;
-  if(photo){
-    ctx.save();
-    roundRectPath(ctx, pX, pY, photoSize, photoSize, 6);
-    ctx.clip();
-    drawImageCover(ctx, photo, pX, pY, photoSize, photoSize);
-    ctx.restore();
-  }else{
-    const g2 = ctx.createLinearGradient(pX, pY, pX, pY + photoSize);
-    g2.addColorStop(0, pair[0]);
-    g2.addColorStop(1, pair[1]);
-    ctx.fillStyle = g2;
-    roundRectPath(ctx, pX, pY, photoSize, photoSize, 6);
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(255,249,236,0.85)';
-    ctx.setLineDash([12, 9]);
-    ctx.lineWidth = 3;
-    ctx.strokeRect(pX + 30, pY + 30, photoSize - 60, photoSize - 60);
-    ctx.setLineDash([]);
-    ctx.fillStyle = 'rgba(255,249,236,0.95)';
-    ctx.font = '600 46px ' + MINCHO;
-    ctx.fillText('栞', pX + photoSize / 2, pY + photoSize / 2 - 40);
-    ctx.font = '400 30px ' + MINCHO;
-    ctx.fillText('— 店主より —', pX + photoSize / 2, pY + photoSize / 2 + 30);
-    ctx.fillText(`蔵書 ${libraryCache.length}冊の本棚`, pX + photoSize / 2, pY + photoSize / 2 + 90);
-  }
-
-  const titleText = latest ? ('『' + latest.title + '』') : '『これからの一冊』';
-  ctx.fillStyle = '#3A2E22';
-  ctx.font = '700 46px ' + MINCHO;
-  ctx.fillText(titleText, W / 2, pY + photoSize + 85);
+  ctx.fillStyle = CREAM;
+  ctx.font = '400 26px ' + MINCHO;
   const d = (latest && latest.date) ? new Date(latest.date) : new Date();
-  ctx.fillStyle = '#8A7A5C';
-  ctx.font = '400 30px ' + MINCHO;
-  ctx.fillText(`${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`, W / 2, pY + photoSize + 140);
-
-  ctx.fillStyle = '#4A3B2C';
-  ctx.font = '400 38px ' + MINCHO;
-  let ty = pY + photoSize + 225;
-  for(const line of wordLines){
-    ctx.fillText(line, W / 2, ty);
-    ty += 62;
-  }
-
-  ctx.fillStyle = 'rgba(255,249,236,0.85)';
-  ctx.font = '400 28px ' + MINCHO;
-  ctx.fillText('名もなき気持ちに、名前をあげる。', W / 2, H - 140);
-  ctx.font = '400 24px ' + MINCHO;
-  ctx.fillText('みんなの感情書店', W / 2, H - 90);
+  ctx.fillText(`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`, W / 2, H - bottomH * 0.55);
+  ctx.font = '600 24px ' + MINCHO;
+  ctx.fillText('— 店主より（みんなの感情書店）', W / 2, H - bottomH * 0.22);
 
   return canvas;
 }
-
-const BACKUP_KEYS = [
-  'emotion-bookstore-library',
-  PURIFY_LOG_KEY,
-  'emotion-bookstore-shiori',
-  'emotion-bookstore-prefs',
-  'emotion-bookstore-milestones',
-  DRAFT_KEY
-];
-
-async function downloadBackup(){
-  const stores = {};
-  for(const key of BACKUP_KEYS){
-    stores[key] = await loadJSON(key, null); 
-  }
-  const payload = {
-    app: 'みんなの感情書店',
-    format: 'emotion-bookstore-backup',
-    version: STORAGE_VERSION,
-    exportedAt: new Date().toISOString(),
-    bookCount: Array.isArray(stores['emotion-bookstore-library']) ? stores['emotion-bookstore-library'].length : 0,
-    stores
-  };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  const d = new Date();
-  a.download = `感情書店_本棚の鍵_${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}.json`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
-}
-
-(function(){
-  const backupBtn = document.getElementById('backupBtn');
-  if(!backupBtn) return;
-  backupBtn.onclick = async ()=>{
-    backupBtn.textContent = '鍵を作っています…';
-    try{
-      await downloadBackup();
-      backupBtn.textContent = '鍵を更新しました ✓';
-      buzz(10);
-    }catch(e){
-      backupBtn.textContent = '鍵の更新に失敗しました';
-    }
-    setTimeout(()=>{ backupBtn.textContent = '🔑 本棚のデータをバックアップ保存する'; }, 2500);
-  };
-})();
 
 const SHARE_TEXT = '名もなき気持ちに、名前をあげる。「みんなの感情書店」— 感情をラベリングして棚に並べる、体験型のプロトタイプです。';
 
@@ -2229,7 +2297,7 @@ function openShareMenu(url){
       await navigator.clipboard.writeText(window.location.href);
       copyUrlBtn.textContent = 'コピーしました ✓';
     }catch(e){
-      openShareMenu(window.location.href); 
+      openShareMenu(window.location.href);
     }
     setTimeout(()=>{ copyUrlBtn.textContent = '📋 URLをコピー'; }, 2000);
   };
@@ -2252,18 +2320,24 @@ function openShareMenu(url){
 function applySeasonalAccent(){
   const month = new Date().getMonth() + 1;
   let color;
-  if(month >= 3 && month <= 5) color = '#C97FA0';      
-  else if(month >= 6 && month <= 8) color = '#4F9E8C';  
-  else if(month >= 9 && month <= 11) color = '#C9793D'; 
-  else color = '#5E7FA8';                                
+  if(month >= 3 && month <= 5) color = '#C97FA0';
+  else if(month >= 6 && month <= 8) color = '#4F9E8C';
+  else if(month >= 9 && month <= 11) color = '#C9793D';
+  else color = '#5E7FA8';
   document.documentElement.style.setProperty('--season-accent', color);
 }
 
-function applyNightModeIfNeeded(){
+function timeBucketNow(){
   const hour = new Date().getHours();
-  if(hour >= 22 || hour < 5){
-    document.body.classList.add('night');
-  }
+  if(hour >= 5 && hour < 11) return 'morning';
+  if(hour >= 11 && hour < 17) return 'day';
+  if(hour >= 17 && hour < 22) return 'evening';
+  return 'night';
+}
+
+function applyNightModeIfNeeded(){
+  const bucket = timeBucketNow();
+  document.body.classList.toggle('night', bucket === 'night');
 }
 
 (async function init(){
@@ -2272,13 +2346,11 @@ function applyNightModeIfNeeded(){
   restoreDraftIfAny();
   const greetingEl = document.getElementById('firstGreetingText');
   if(greetingEl){
-    const hour = new Date().getHours();
-    let line;
-    if(hour >= 22 || hour < 5){
-      line = MIDNIGHT_GREETINGS[Math.floor(Math.random()*MIDNIGHT_GREETINGS.length)];
-    }else{
-      line = GREETING_LINES[Math.floor(Math.random()*GREETING_LINES.length)] + '近いものを選んでも、下に自由に書いてもらっても構いません。';
-    }
+    // ★時間帯メッセージ：来店時刻の4区分（朝／昼／夕／夜）で第一声を変える
+    const bucket = timeBucketNow();
+    const pool = TIME_GREETINGS[bucket] || TIME_GREETINGS.day;
+    let line = pool[Math.floor(Math.random()*pool.length)];
+    if(bucket !== 'night') line += '近いものを選んでも、下に自由に書いてもらっても構いません。';
     typeIntoNode(greetingEl, line);
   }
   await initPrefs();
@@ -2290,12 +2362,6 @@ function applyNightModeIfNeeded(){
   renderShelf();
   updateStoryCount();
   renderChartOptions('root');
-
-  // ★【UI改善】初期化時に文言を直感的なものに強制上書きし、さらに手放した気持ちの履歴ボタンを追加する
-  const backupBtn = document.getElementById('backupBtn');
-  if(backupBtn) backupBtn.innerHTML = '🔑 本棚のデータをバックアップ保存する';
-  const exportBtn = document.getElementById('exportDiary');
-  if(exportBtn) exportBtn.innerHTML = '📥 これまでの記録をテキストでダウンロード';
 
   const shelfControls = document.querySelector('.shelf-controls');
   if(shelfControls && !document.getElementById('viewPurifyLogBtn')){
