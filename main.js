@@ -63,33 +63,33 @@ const STORY_LIMIT = 700;
 let activeCategory = CATEGORIES[0].id;
 let libraryCache = [];
 
-/* ---------- 番台：脱・言語化の2ステップUI ---------- */
+/* ---------- 番台：脱・言語化の2ステップUI（文稿ブラッシュアップ版） ---------- */
 const TEXTURE_GROUPS = [
   {
     id:'sink',
-    label:'胸の奥が、すこし重たく沈んでいる',
-    keeper:'その気持ちは、このあたりの棚が近いかもしれません……',
+    label:'心が重く沈んでいる、気分が落ち込んでいる（静かな憂鬱）',
+    keeper:'少しお疲れのようですね。このあたりの棚に、今の心に寄り添う本があるかもしれません。',
     shelves:['moya','kodoku','gakkari','hazukashii','ushirometai'],
     tone:'heavy'
   },
   {
     id:'wave',
-    label:'ざわざわと波が立ち、落ち着かない',
-    keeper:'その心のざわめきは、こちらの棚に並ぶ本と似ているかもしれません。',
+    label:'心がざわざわして落ち着かない、焦りや不安がある（動的な葛藤）',
+    keeper:'感情が波立っているのですね。こちらの棚に並ぶ言葉が、ヒントになるかもしれません。',
     shelves:['aseri','kuyashii','shitto','akogare'],
     tone:'heavy'
   },
   {
     id:'light',
-    label:'心に光が灯る、またはホッとしている',
-    keeper:'素敵な心の状態ですね。このあたりの棚を覗いてみませんか。',
+    label:'心が穏やか、または前向きでワクワクしている（ポジティブ）',
+    keeper:'素敵な心の状態ですね。今の明るい気分にぴったりの棚を覗いてみませんか。',
     shelves:['wakuwaku','ando','kansha','itooshii','hokorashii'],
     tone:'neutral'
   },
   {
     id:'sepia',
-    label:'セピア色の、遠い記憶を辿っている',
-    keeper:'過去の頁をめくっているのですね。この棚がおすすめです。',
+    label:'過去の出来事や、懐かしい記憶を振り返っている（追憶）',
+    keeper:'過去の頁をめくっているのですね。思い出に浸れるこちらの棚がおすすめです。',
     shelves:['natsukashii','ushirometai','kansha'],
     tone:'neutral'
   }
