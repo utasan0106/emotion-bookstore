@@ -12,7 +12,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <!-- ===== SEO用 Meta Tags ===== -->
-<meta name="description" content="名もなき気持ちに、名前をあげる。「みんなの感情書店」は登録不要・完全無料の感情日記アプリ。書いた言葉はサーバーには1文字も送信されません。誰にも見られない、あなただけの絶対に安全な本棚です。">
+<meta name="description" content="名もなき気持ちに、名前をあげる。「みんなの感情書店」は登録不要・完全無料の感情日記アプリ。書いた言葉はサーバーには送信されません。誰にも見られない、あなただけの絶対に安全な本棚です。">
 <meta name="keywords" content="感情日記,日記アプリ,自己分析,感情の言語化,ジャーナリング,メンタルケア,就活 自己分析,登録不要,無料,感情書店">
 <meta name="robots" content="index,follow">
 <meta name="author" content="みんなの感情書店">
@@ -26,7 +26,7 @@
 <!-- OGP：XやLINEでシェアされた時にプレビューカードを出すための設定 -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="みんなの感情書店 — 名もなき気持ちに、名前をあげる。">
-<meta property="og:description" content="感情の書店で、自分だけの一冊を見つけよう。15の感情の棚、店主との対話、あなただけの本棚。登録不要。サーバーには1文字も送信されない、あなただけの絶対に安全な本棚です。">
+<meta property="og:description" content="感情の書店で、自分だけの一冊を見つけよう。15の感情の棚、店主との対話、あなただけの本棚。登録不要。サーバーには送信されない、あなただけの絶対に安全な本棚です。">
 <meta property="og:url" content="https://emotion-bookstore.vercel.app/">
 <meta property="og:image" content="https://emotion-bookstore.vercel.app/ogp.png">
 <meta property="og:image:width" content="1200">
@@ -140,6 +140,8 @@
     <div class="fair" id="fairBox"></div>
     <div class="shelf-tabs" id="shelfTabs"></div>
     <div class="shelf-display" id="shelfDisplay"></div>
+    <div class="detour-section" id="detourSection"></div>
+    <p class="swipe-hint">← 左右にスワイプでも棚を移動できます →</p>
   </section>
 
   <section id="desk" class="reveal">
@@ -198,13 +200,13 @@
         <span class="desk-msg" id="deskMsg"></span>
       </div>
     </div>
+    <!-- 推薦状（item 5）：商品・アフィリエイト要素は一切含めない。店主の支援的な言葉と棚への導線のみ。 -->
     <div class="invitation hidden" id="invitationCard">
       <div class="inv-seal">封</div>
       <p class="inv-kicker">推薦状</p>
       <p class="inv-title" id="invTitle"></p>
       <p class="inv-body" id="invBody"></p>
-      <div class="inv-product" id="invProduct"></div>
-      <p class="inv-note">※この気持ちに寄り添う体験・アイテムのご提案です。Amazon・楽天のリンクにはアフィリエイトタグが含まれます（詳しくは利用規約をご覧ください）。</p>
+      <button class="inv-goshelf" id="invGoShelf">棚を見てみる</button>
       <button class="inv-close" id="invClose">しおりに挟む</button>
     </div>
   </section>
@@ -221,6 +223,7 @@
     <div class="shelf-controls">
       <button class="reset-link" id="resetShelf">本棚をリセットする</button>
     </div>
+    <p class="backup-hint"></p>
     <div class="trend hidden" id="trendBox">
       <p id="trendSummary" class="trend-summary-main"></p>
       <details class="trend-detail">
@@ -241,18 +244,16 @@
 
   <footer class="shop-footer">
     『みんなの感情書店』<br>
+    あなたが綴った言葉は、サーバーには送信されません。<br>
     誰にも見られない、あなただけの絶対に安全な本棚です。<br>
-    いいね・閲覧数・返信はありません。ここは、静かな書店です。
+    いいね・閲覧数・返信はありません。ここは、静かな書店です。<br>
+    もやもや・孤独・焦り・わくわく・懐かしいなど15の感情の棚を巡り、店主との対話を通して、気持ちの言語化と自己分析を手伝います。眠れない夜の心の整理にもお使いいただけます。
     <div class="share-row">
       <button class="share-btn" id="shareBtn">🔗 この書店をシェアする</button>
       <button class="share-btn" id="copyUrlBtn">📋 URLをコピー</button>
       <button class="share-btn" id="pwaPinBtn">📌 ホーム画面にピン留め</button>
     </div>
-    <div class="seo-text">
-      <h2 class="seo-heading">みんなの感情書店とは</h2>
-      <p>「みんなの感情書店」は、名もなき気持ちに名前をあげる、アカウント登録不要・完全無料の感情日記（ジャーナリング）Webアプリです。15の感情の棚を巡り、気持ちの言語化と自己分析を手伝います。自己分析やメンタルケア、眠れない夜の心の整理にもお使いいただけます。綴った物語はあなたの端末（ブラウザのIndexedDB）にのみ保存され、サーバーには送信されません。使うほどに背表紙が増え、本棚が少しずつ豪華に育っていく——ここは、静かな夜にひらく、あなただけの感情の避難所です。</p>
-    </div>
-    <p class="affiliate-note">みんなの感情書店の利用規約については<a href="./terms.html">こちら</a>をご覧ください。</p>
+    <p class="affiliate-note">みんなの感情書店は、Amazonアソシエイト・プログラムおよび楽天アフィリエイトの参加者です。</p>
     <div class="legal-row">
       <a href="./privacy.html">プライバシーポリシー</a>
       <span class="legal-sep">・</span>
@@ -260,8 +261,6 @@
     </div>
   </footer>
 </div>
-
-<button class="back-to-top hidden" id="backToTopBtn" aria-label="ページの一番上に戻る" title="トップに戻る">▲<span>戻る</span></button>
 
 <div class="share-menu hidden" id="shareMenu">
   <p class="share-menu-title">シェアする</p>
@@ -294,6 +293,9 @@
     <p class="purify-msg hidden" id="purifyMsg"></p>
   </div>
 </div>
+
+<!-- 手放した気持ちの履歴モーダル（item 6）は main.js の buildPurifyLogOverlay() が
+     初回表示時に動的生成します（閉じるボタン・表示を隠すボタンを含む）。 -->
 
 <div class="modal hidden" id="bookModal">
   <div class="modal-card">
