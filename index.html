@@ -78,7 +78,7 @@
     <button class="enter-btn" onclick="goToPage('counter')">扉をひらく →</button>
     <div class="pref-row">
       <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切">演出：入</button>
-      <button class="pref-toggle" id="soundToggle" title="店内の環境音の入/切">環境音：切</button>
+      <button class="pref-toggle" id="profileBtn" title="お名前と属性の設定（任意・この端末にのみ保存）">🪪 来店カード</button>
     </div>
     <div class="trust-row">
       <span class="trust-badge">登録不要</span>
@@ -119,7 +119,7 @@
       </div>
       <details class="keeper-bio">
         <summary>店主について</summary>
-        <p>この書店の店主。名前は「巡（めぐる）」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚の名言のうち出典のないものは、巡自身の手帳に書き留めてきた言葉です。</p>
+        <p>この書店の店主。名前は「巡（めぐる）」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、巡が長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。</p>
       </details>
       <div class="chat-window" id="chatWindow">
         <div class="bubble shopkeeper" id="firstGreeting"><span class="name">店主</span><span id="firstGreetingText">……いらっしゃいませ。ちょうど頁を閉じたところです。今はどんな気分に近いですか。近いものを選んでも、下に自由に書いてもらっても構いません。</span></div>
@@ -146,7 +146,8 @@
 
   <section id="desk" class="reveal">
     <div class="section-head"><span class="section-num">3</span><h2>編纂机 — 物語を綴る</h2></div>
-    <p class="section-sub">今の棚は「<span id="deskCategoryLabel"></span>」です。書き終えたら、タイトルは店主が考えます。今の気持ちだけでなく、以前のことを振り返って綴ることもできます。</p>
+    <p class="desk-lead hidden" id="deskLead"></p>
+    <p class="section-sub">今の棚は「<span id="deskCategoryLabel"></span>」です。書き終えたら、タイトルは店主が考えます（自分でつけても構いません）。今の気持ちだけでなく、以前のことを振り返って綴ることもできます。</p>
     <div class="desk-form">
       <div class="field">
         <textarea id="storyInput" placeholder="いつ、どこで、何があって、どう感じたか。短くても、拙くても構いません。" rows="6"></textarea>
@@ -176,6 +177,7 @@
             <input id="titleInput" maxlength="16" placeholder="空欄なら店主が考えます">
           </div>
         </div>
+        <div class="title-suggest" id="titleSuggest"></div>
         <div class="field-row" style="margin-top:12px;">
           <div class="field">
             <label for="whenSelect">いつの気持ちですか</label>
@@ -237,23 +239,18 @@
       <p class="trend-note">あなたの本棚を眺めた店主から、一枚。</p>
       <span class="shiori-slip hidden" id="shioriSlip"><span class="shiori-label">栞 — 店主より</span><span id="shioriText"></span></span>
       <button class="curate-btn" id="shioriBtn">栞を受け取る</button>
-      <button class="story-image-btn hidden" id="storyImageBtn">📸 ストーリー用の画像で保存</button>
-      <p class="story-image-hint hidden" id="storyImageHint">縦長（9:16）の1枚画像として端末に保存されます。そのままInstagramのストーリーに載せられます。</p>
     </div>
   </section>
 
   <footer class="shop-footer">
-    『みんなの感情書店』<br>
-    あなたが綴った言葉は、サーバーには送信されません。<br>
-    誰にも見られない、あなただけの絶対に安全な本棚です。<br>
-    いいね・閲覧数・返信はありません。ここは、静かな書店です。<br>
-    もやもや・孤独・焦り・わくわく・懐かしいなど15の感情の棚を巡り、店主との対話を通して、気持ちの言語化と自己分析を手伝います。眠れない夜の心の整理にもお使いいただけます。
+    『みんなの感情書店』 — 名もなき気持ちに、名前をあげる。<br>
+    綴った言葉はサーバーには送信されず、この端末にのみ保存されます。<br>
+    サービスについて詳しくは、利用規約をご覧ください。
     <div class="share-row">
       <button class="share-btn" id="shareBtn">🔗 この書店をシェアする</button>
       <button class="share-btn" id="copyUrlBtn">📋 URLをコピー</button>
       <button class="share-btn" id="pwaPinBtn">📌 ホーム画面にピン留め</button>
     </div>
-    <p class="affiliate-note">みんなの感情書店は、Amazonアソシエイト・プログラムおよび楽天アフィリエイトの参加者です。</p>
     <div class="legal-row">
       <a href="./privacy.html">プライバシーポリシー</a>
       <span class="legal-sep">・</span>

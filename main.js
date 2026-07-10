@@ -7,6 +7,42 @@
  * <script src="main.js"></script>
  * ============================================================ */
 
+function scoreLabelForStory(label, story){
+  if(!story) return 0;
+  const chars = Array.from(new Set(label.replace(/[のをにがはでへと日頁記録一]/g,'').split('')));
+  let s = 0;
+  chars.forEach(ch=>{ if(story.includes(ch)) s++; });
+  return s;
+}
+
+/* 物語の本文に最も響き合う背表紙ラベルを、各感情50種の中から選ぶ */
+function suggestTitles(catId, story, n){
+  const pool = TITLE_TEMPLATES[catId] || [];
+  if(!pool.length) return [];
+  const scored = shuffleArray(pool).map(l=>({ l, s: scoreLabelForStory(l, story) })).sort((a,b)=>b.s-a.s);
+  return scored.slice(0, n || 4).map(x=>x.l);
+}
+
+function renderTitleSuggest(){
+  const box = document.getElementById('titleSuggest');
+  const sel = document.getElementById('categorySelect');
+  if(!box || !sel) return;
+  const ta = document.getElementById('storyInput');
+  const tInput = document.getElementById('titleInput');
+  const story = ta ? ta.value.trim() : '';
+  const picks = suggestTitles(sel.value || activeCategory, story, 4);
+  if(!picks.length){ box.innerHTML = ''; return; }
+  box.innerHTML = '<span class="title-suggest-label">店主の見立て（タップで採用・自分で書き換えても）：</span>';
+  picks.forEach(l=>{
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'title-chip';
+    b.textContent = l;
+    b.onclick = ()=>{ if(tInput){ tInput.value = l; buzz(5); } };
+    box.appendChild(b);
+  });
+}
+
 function generateTitle(categoryId){
   const pool = TITLE_TEMPLATES[categoryId] || ['名前のない一冊'];
   return pool[Math.floor(Math.random()*pool.length)];
@@ -41,11 +77,9 @@ function rakutenSearchUrl(query){
 
 /* 楽天トラベルの検索URLを、rakutenSearchUrlと同じID付与方式で生成する */
 function rakutenTravelSearchUrl(query){
-  const target = 'https://travel.rakuten.co.jp/dsearch/?f_keyword=' + encodeURIComponent(query) + '&f_hi_item=1';
-  if(RAKUTEN_AFFILIATE_ID){
-    return 'https://hb.afl.rakuten.co.jp/hgc/' + RAKUTEN_AFFILIATE_ID + '/?pc=' + encodeURIComponent(target) + '&m=' + encodeURIComponent(target);
-  }
-  return target;
+  /* 楽天トラベルは hb.afl のラッパーURLだと遷移に失敗することがあるため、
+     リンク切れを絶対に起こさないよう検索結果へ直接リンクする */
+  return 'https://travel.rakuten.co.jp/dsearch/?f_keyword=' + encodeURIComponent(query) + '&f_hi_item=1';
 }
 
 function detourUrlFor(item){
@@ -88,7 +122,7 @@ function pickRecommend(catId){
 }
 
 const STORY_LIMIT = 700;
-let activeCategory = (CATEGORIES && CATEGORIES.length) ? CATEGORIES[0].id : 'moya';
+let activeCategory = (CATEGORIES && CATEGORIES.length) ? CATEGORIES[0].id : 'moyamoya';
 let libraryCache = [];
 
 /* ---------- 番台：脱・言語化の2ステップUI ---------- */
@@ -97,7 +131,7 @@ const TEXTURE_GROUPS = [
     id:'sink',
     label:'心が重く沈んでいる、気分が落ち込んでいる（静かな憂鬱）',
     keeper:'少しお疲れのようですね。このあたりの棚に、今の心に寄り添う本があるかもしれません。',
-    shelves:['moya','kodoku','gakkari','hazukashii','ushirometai'],
+    shelves:['moyamoya','kodoku','gakkari','hazukashii','ushirometai'],
     tone:'heavy'
   },
   {
@@ -318,7 +352,7 @@ async function exportDiaryText(){
 }
 
 /* ---------- 気持ちを手放す ---------- */
-const NEGATIVE_SHELVES = ['moya','ushirometai','kuyashii','kodoku','aseri','shitto','hazukashii','gakkari'];
+const NEGATIVE_SHELVES = ['moyamoya','ushirometai','kuyashii','kodoku','aseri','shitto','hazukashii','gakkari'];
 
 function openPurify(shelfId){
   const overlay = document.getElementById('purifyOverlay');
@@ -488,7 +522,8 @@ function detectCounselingPersona(text){
   for(const t of PERSONA_TRIGGERS){
     if(t.patterns.some(p=>text.includes(p))) return t.persona;
   }
-  return 'young_worker'; // 最も汎用性の高いデフォルト
+  // 来店カードで設定された属性を最優先のデフォルトにする
+  return (userProfile && userProfile.persona) || 'young_worker';
 }
 
 const STATE_TRIGGERS = [
@@ -571,16 +606,10 @@ const reduceQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-moti
 function applyPrefs(){
   document.body.classList.toggle('no-motion', !prefs.motion);
   const mt = document.getElementById('motionToggle');
-  const st = document.getElementById('soundToggle');
   if(mt){
     mt.textContent = '演出：' + (prefs.motion ? '入' : '切');
     mt.classList.toggle('on', prefs.motion);
   }
-  if(st){
-    st.textContent = '環境音：' + (prefs.sound ? '入' : '切');
-    st.classList.toggle('on', prefs.sound);
-  }
-  if(prefs.sound) startAmbience(); else stopAmbience();
 }
 
 async function initPrefs(){
@@ -599,53 +628,9 @@ if(mtBtn) mtBtn.onclick = ()=>{
   applyPrefs();
   saveJSON('emotion-bookstore-prefs', prefs);
 };
-const stBtn = document.getElementById('soundToggle');
-if(stBtn) stBtn.onclick = ()=>{
-  prefs.sound = !prefs.sound;
-  applyPrefs();
-  saveJSON('emotion-bookstore-prefs', prefs);
-};
 
-/* ---------- ambience ---------- */
-let audioCtx = null, ambGain = null;
-function startAmbience(){
-  const AC = window.AudioContext || window.webkitAudioContext;
-  if(!AC) return;
-  if(audioCtx){
-    if(audioCtx.state === 'suspended') audioCtx.resume();
-    if(ambGain) ambGain.gain.setTargetAtTime(0.02, audioCtx.currentTime, 0.8);
-    return;
-  }
-  audioCtx = new AC();
-  const len = audioCtx.sampleRate * 2;
-  const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
-  const d = buf.getChannelData(0);
-  let last = 0;
-  for(let i=0;i<len;i++){
-    const w = Math.random()*2-1;
-    last = (last + 0.02*w) / 1.02;
-    d[i] = last * 3.5;
-  }
-  const src = audioCtx.createBufferSource();
-  src.buffer = buf; src.loop = true;
-  const filt = audioCtx.createBiquadFilter();
-  filt.type = 'lowpass'; filt.frequency.value = 380;
-  ambGain = audioCtx.createGain();
-  ambGain.gain.value = 0;
-  src.connect(filt); filt.connect(ambGain); ambGain.connect(audioCtx.destination);
-  src.start();
-  ambGain.gain.setTargetAtTime(0.02, audioCtx.currentTime, 1.2);
-  if(audioCtx.state === 'suspended'){
-    const kick = ()=>{ audioCtx.resume(); document.removeEventListener('pointerdown', kick); };
-    document.addEventListener('pointerdown', kick);
-  }
-}
-function stopAmbience(){
-  if(ambGain && audioCtx){
-    ambGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.4);
-  }
-}
-
+/* ---------- ambience ----------
+ * 環境音機能は「オンにすれば必ず鳴る」保証ができない（ブラウザの自動再生制限）ため撤去しました */
 function buzz(ms){
   if(prefs.motion && navigator.vibrate){
     try{ navigator.vibrate(ms); }catch(e){}
@@ -684,7 +669,7 @@ function setActivePageTab(id){
 
 function goToPage(id){
   setActivePageTab(id);
-  if(id === 'desk') syncCounterDraftToDesk();
+  if(id === 'desk'){ syncCounterDraftToDesk(); updateDeskLead(); }
   if(!prefs.motion){
     // レイアウトが確定してからスクロール計算するため、次フレームまで待つ
     requestAnimationFrame(()=>requestAnimationFrame(()=>scrollToId(id)));
@@ -807,19 +792,20 @@ function renderDetourSection(catId){
     return;
   }
   const tierLabel = { low:'ちいさな寄り道', medium:'すこし贅沢な寄り道', high:'とっておきの寄り道' };
+  /* 各感情に3点仕込み、月ごとに紹介する一品を入れ替える（月替わりの小さな特集） */
+  const featured = items[new Date().getMonth() % items.length];
+  const url = detourUrlFor(featured);
   box.innerHTML = `
-    <p class="detour-heading">寄り道（今日のあなたへ）<span class="detour-pr">［PR・広告リンクを含みます］</span></p>
+    <p class="detour-heading">今月の寄り道 — 月替わりの小さな特集<span class="detour-pr">［PR・広告リンクを含みます］</span></p>
     <div class="detour-cards">
-      ${items.map(it=>{
-        const url = detourUrlFor(it);
-        return `<div class="detour-card detour-tier-${it.tier}">
-          <span class="detour-tier-badge">${tierLabel[it.tier] || it.tier}</span>
-          <p class="detour-name">${it.name}</p>
-          <p class="detour-desc">${it.description}</p>
-          <a class="detour-link" href="${url}" target="_blank" rel="noopener sponsored">見てみる →</a>
-        </div>`;
-      }).join('')}
-    </div>`;
+      <div class="detour-card detour-tier-${featured.tier}">
+        <span class="detour-tier-badge">${tierLabel[featured.tier] || featured.tier}</span>
+        <p class="detour-name">${featured.name}</p>
+        <p class="detour-desc">${featured.description}</p>
+        <a class="detour-link" href="${url}" target="_blank" rel="noopener sponsored">見てみる →</a>
+      </div>
+    </div>
+    <p class="detour-note">寄り道の品揃えは月替わりです。来月は、またちがう一品をご用意しておきます。</p>`;
 }
 
 function renderShelfDisplay(){
@@ -840,7 +826,7 @@ function renderShelfDisplay(){
     const recommendHtml = (recs && recs.length)
       ? `<div class="recommend-section">
           <p class="recommend-heading">「${cat.label}」な今のあなたに、店主が選んだ本</p>
-          <p class="recommend-subtext">読むための本というより、この気持ちのお守りになる一冊です（今月は${unlockedWaveCount()}/${MAX_WAVE}段階まで棚が開いています）</p>
+          <p class="recommend-subtext">読むための本というより、この気持ちのお守りになる一冊です</p>
           <div class="recommend-row">
           ${recs.map(r=>{
             const q2 = r.title + ' ' + r.by;
@@ -866,16 +852,23 @@ function renderShelfDisplay(){
           </div>
          </div>`
       : '';
-    const playlist = PINNED_SONGS[cat.id];
+    /* 音楽：MUSIC_QUERIES（各感情10曲・店主コメント付き）から3曲を選んで表示。
+       「他も見る」で選曲が入れ替わる。 */
+    const mq = MUSIC_QUERIES[cat.id] || [];
+    const pinnedSongs = PINNED_SONGS[cat.id] || [];
+    const trackSrc = mq.length
+      ? shuffleArray(mq).slice(0, 3).map(t=>({ title:t.title, artist:t.artist, comment:t.comment || '' }))
+      : pinnedSongs.map(t=>({ title:t.title, artist:t.artist, comment:'' }));
     let musicHtml;
-    if(playlist && playlist.length){
-      const items = playlist.map(song=>{
+    if(trackSrc.length){
+      const items = trackSrc.map(song=>{
         const q3 = song.title + ' ' + song.artist;
         const amUrl = amazonSearchUrl(q3 + ' 音楽');
         const ytUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q3);
         const spUrl = 'https://open.spotify.com/search/' + encodeURIComponent(q3);
         return `<div class="playlist-track-row">
           <span class="playlist-track-name">『${song.title}』${song.artist}</span>
+          ${song.comment ? `<span class="playlist-track-comment">${song.comment}</span>` : ''}
           <span class="playlist-services">
             <a href="${spUrl}" target="_blank" rel="noopener">Spotify</a>
             <a href="${amUrl}" target="_blank" rel="noopener">Amazon Music</a>
@@ -883,21 +876,11 @@ function renderShelfDisplay(){
           </span>
         </div>`;
       }).join('');
-      musicHtml = `<div class="music-row"><p class="playlist-label">🎵 「${cat.label}」なプレイリスト — 好きなサービスで聴けます</p><div class="playlist-tracks">${items}</div></div>`;
+      musicHtml = `<div class="music-row"><p class="playlist-label">🎵 「${cat.label}」なプレイリスト — 店主の選曲</p><div class="playlist-tracks">${items}</div></div>`;
     }else{
-      const mq = MUSIC_QUERIES[cat.id];
-      let musicUrl, musicLinkLabel;
-      if(Array.isArray(mq) && mq.length){
-        const pick = mq[Math.floor(Math.random()*mq.length)];
-        const q4 = pick.title + ' ' + pick.artist;
-        musicUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q4);
-        musicLinkLabel = `🎵 『${pick.title}』${pick.artist} — ${pick.comment || ''}`;
-      }else{
-        const fallbackQuery = cat.label + ' 邦楽 プレイリスト';
-        musicUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(fallbackQuery);
-        musicLinkLabel = '🎵 YouTubeでBGMを探す';
-      }
-      musicHtml = `<div class="music-row"><a class="music-link" href="${musicUrl}" target="_blank" rel="noopener">${musicLinkLabel}</a></div>`;
+      const fallbackQuery = cat.label + ' 邦楽 プレイリスト';
+      const musicUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(fallbackQuery);
+      musicHtml = `<div class="music-row"><a class="music-link" href="${musicUrl}" target="_blank" rel="noopener">🎵 YouTubeでBGMを探す</a></div>`;
     }
     const myEntries = libraryCache.filter(e=>e.category===cat.id);
     const myEpisodesHtml = myEntries.map(entry=>
@@ -906,7 +889,7 @@ function renderShelfDisplay(){
     const storyPool = STORIES_POOL[cat.id] || [];
     const shuffledStories = shuffleArray(storyPool).slice(0, 3);
     const sampleEpisodesHtml = shuffledStories.map(s=>`<div class="episode-card"><span class="who">${s.author || '名もなき誰かの物語'}</span>${s.text}</div>`).join('');
-    const episodesNote = `<p class="episodes-note">※棚に並ぶ物語には、店主・巡が見聞きし書き留めた創作が含まれます。</p>`;
+    const episodesNote = '';
     const purifyHtml = NEGATIVE_SHELVES.includes(cat.id)
       ? `<button type="button" class="purify-trigger" onclick="openPurify('${cat.id}')">🕯 この気持ちを手放す</button>`
       : '';
@@ -958,7 +941,14 @@ function renderCategorySelect(){
   sel.addEventListener('change', ()=>{
     const deskLabel = document.getElementById('deskCategoryLabel');
     if(deskLabel) deskLabel.textContent = shelfLabelOf(sel.value);
+    renderTitleSuggest();
   });
+}
+
+function textColorFor(hex){
+  const c = (hex || '#000000').replace('#','');
+  const r = parseInt(c.substr(0,2),16), g = parseInt(c.substr(2,2),16), b = parseInt(c.substr(4,2),16);
+  return (0.299*r + 0.587*g + 0.114*b) > 150 ? '#3A2A14' : '#F6ECD4';
 }
 
 function spineColorFor(catId){
@@ -988,6 +978,7 @@ function renderShelf(markNewest){
     const spine = document.createElement('div');
     spine.className = 'spine';
     spine.style.background = spineColorFor(entry.category);
+    spine.style.color = textColorFor(spineColorFor(entry.category));
     spine.style.height = (140 + (entry.title.length % 4) * 12) + 'px';
     const tilt = ((entry.title.length * 7 + i * 13) % 5) - 2;
     spine.style.setProperty('--tilt', tilt + 'deg');
@@ -1027,6 +1018,22 @@ async function celebrateMilestoneIfNeeded(count){
   }, prefs.motion ? 4200 : 2000);
 }
 
+let trendPeriod = 'all';
+const EMOTION_GLYPHS = {
+  moyamoya:'🌫', kodoku:'🌙', gakkari:'🌧', hazukashii:'🫥', ushirometai:'🥀',
+  aseri:'⏳', kuyashii:'⚡', shitto:'🌵', akogare:'🌠', wakuwaku:'✨',
+  ando:'☕', kansha:'🌷', itooshii:'💐', hokorashii:'🏅', natsukashii:'📜'
+};
+function trendEntries(){
+  const now = new Date();
+  return libraryCache.filter(e=>{
+    if(trendPeriod === 'all') return true;
+    if(!e.date) return false;
+    const d = new Date(e.date);
+    if(trendPeriod === 'year') return d.getFullYear() === now.getFullYear();
+    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+  });
+}
 function renderTrend(){
   const box = document.getElementById('trendBox');
   const bars = document.getElementById('trendBars');
@@ -1037,19 +1044,43 @@ function renderTrend(){
     return;
   }
   box.classList.remove('hidden');
+  let tabs = document.getElementById('trendPeriodTabs');
+  if(!tabs){
+    tabs = document.createElement('div');
+    tabs.id = 'trendPeriodTabs';
+    tabs.className = 'trend-period-tabs';
+    bars.parentNode.insertBefore(tabs, bars);
+  }
+  tabs.innerHTML = '';
+  [['month','今月'],['year','今年'],['all','すべて']].forEach(([k,lbl])=>{
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'trend-period-btn' + (trendPeriod === k ? ' active' : '');
+    b.textContent = lbl;
+    b.onclick = ()=>{ trendPeriod = k; renderTrend(); };
+    tabs.appendChild(b);
+  });
+  const entries = trendEntries();
   const counts = {};
-  libraryCache.forEach(e=>{ counts[e.category] = (counts[e.category]||0) + 1; });
+  entries.forEach(e=>{ counts[e.category] = (counts[e.category]||0) + 1; });
+  if(!entries.length){
+    bars.innerHTML = '<p class="trend-empty">この期間に綴られた頁は、まだありません。</p>';
+    sum.textContent = 'いまのあなたの本棚を、期間を変えて眺められます。';
+    return;
+  }
   const max = Math.max(...Object.values(counts));
   bars.innerHTML = CATEGORIES.filter(c=>counts[c.id]).map(c=>{
     const n = counts[c.id];
     const w = Math.max(8, Math.round(n / max * 100));
-    return `<div class="trend-row" data-cat="${c.id}" style="cursor:pointer" title="『${c.label}』の棚を見る"><span class="trend-label">${c.label}</span><div class="trend-bar" style="width:${w}%;background:${spineColorFor(c.id)}"></div><span class="trend-count">${n}冊</span></div>`;
+    const glyph = EMOTION_GLYPHS[c.id] || '';
+    return `<div class="trend-row" data-cat="${c.id}" style="cursor:pointer" title="『${c.label}』の棚を見る"><span class="trend-label"><span class="trend-glyph">${glyph}</span>${c.label}</span><div class="trend-bar" style="width:${w}%;background:${spineColorFor(c.id)}"></div><span class="trend-count">${n}冊</span></div>`;
   }).join('');
   bars.querySelectorAll('.trend-row').forEach(row=>{
     row.onclick = ()=>goToShelf(row.dataset.cat);
   });
-  const top = CATEGORIES.find(c=>c.id===topCategoryId());
-  if(top) sum.textContent = `いまのあなたの本棚は、「${top.label}」の棚がいちばん厚いようです。`;
+  const periodLabel = trendPeriod === 'month' ? '今月' : (trendPeriod === 'year' ? '今年' : '');
+  const withCounts = CATEGORIES.filter(c=>counts[c.id]).sort((a,b)=>counts[b.id]-counts[a.id]);
+  if(withCounts.length) sum.textContent = `${periodLabel ? periodLabel + 'の' : 'いまの'}あなたの本棚は、「${withCounts[0].label}」の棚がいちばん厚いようです。`;
 }
 
 function todayStr(){
@@ -1061,9 +1092,7 @@ async function renderShioriCard(){
   const card = document.getElementById('shioriCard');
   const slip = document.getElementById('shioriSlip');
   const btn = document.getElementById('shioriBtn');
-  const imgBtn = document.getElementById('storyImageBtn');
-  const imgHint = document.getElementById('storyImageHint');
-  if(!card || !slip || !btn || !imgBtn || !imgHint) return;
+  if(!card || !slip || !btn) return;
 
   if(libraryCache.length === 0){
     card.classList.add('hidden');
@@ -1076,63 +1105,12 @@ async function renderShioriCard(){
     if(stext) stext.textContent = cached.text;
     slip.classList.remove('hidden');
     btn.classList.add('hidden');
-    imgBtn.classList.remove('hidden');
-    imgHint.classList.remove('hidden');
   }else{
     slip.classList.add('hidden');
     btn.classList.remove('hidden');
     btn.disabled = false;
     btn.textContent = '栞を受け取る';
-    imgBtn.classList.add('hidden');
-    imgHint.classList.add('hidden');
   }
-}
-
-function wrapTextLines(ctx, text, maxWidth){
-  const lines = [];
-  let line = '';
-  for(const ch of text){
-    if(ctx.measureText(line + ch).width > maxWidth && line){
-      lines.push(line);
-      line = ch;
-    }else{
-      line += ch;
-    }
-  }
-  if(line) lines.push(line);
-  return lines;
-}
-
-const btnStoryImg = document.getElementById('storyImageBtn');
-if(btnStoryImg) {
-  btnStoryImg.onclick = async ()=>{
-    const btn = document.getElementById('storyImageBtn');
-    btn.disabled = true;
-    btn.textContent = '画像を作っています…';
-    try{
-      const canvas = await generateStoryImage();
-      canvas.toBlob((blob)=>{
-        if(!blob){
-          btn.textContent = '生成に失敗しました';
-          btn.disabled = false;
-          return;
-        }
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'emotion-bookstore-story.png';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
-        btn.textContent = '保存しました ✓（もう一度押せば再生成）';
-        btn.disabled = false;
-        buzz(12);
-      }, 'image/png');
-    }catch(e){
-      btn.textContent = '生成に失敗しました（もう一度お試しください）';
-      btn.disabled = false;
-    }
-  };
 }
 
 const btnShiori = document.getElementById('shioriBtn');
@@ -1152,11 +1130,6 @@ if(btnShiori){
     const slip = document.getElementById('shioriSlip');
     if(slip) slip.classList.remove('hidden');
     btn.classList.add('hidden');
-
-    const imgBtn = document.getElementById('storyImageBtn');
-    if(imgBtn) imgBtn.classList.remove('hidden');
-    const imgHint = document.getElementById('storyImageHint');
-    if(imgHint) imgHint.classList.remove('hidden');
 
     saveJSON('emotion-bookstore-shiori', { date: todayStr(), text });
   };
@@ -1374,6 +1347,7 @@ if(inputStory) {
       }else{
         deleteKey(DRAFT_KEY);
       }
+      renderTitleSuggest();
     }, 500);
   });
 }
@@ -1406,7 +1380,7 @@ if(btnSubmit) {
       return;
     }
     const tInput = document.getElementById('titleInput');
-    const title = (tInput ? tInput.value.trim() : '') || generateTitle(chosenId);
+    const title = (tInput ? tInput.value.trim() : '') || (suggestTitles(chosenId, story, 1)[0]) || generateTitle(chosenId);
     if(story.length > STORY_LIMIT){
       if(msg) msg.textContent = '本文は' + STORY_LIMIT + '字までに収めてください。';
       return;
@@ -1559,9 +1533,9 @@ function matchShopkeeperReply(text, fallbackShelfId){
     }
   }
   // 5%の確率でカウンセリング人格の一言を混ぜる（旧PERSONA_RARE_MESSAGESのレア演出を踏襲）
-  if(Math.random() < 0.35){
+  {
     const flavor = counselingFlavorReply(text, fallbackShelfId);
-    if(flavor) return flavor;
+    if(flavor && Math.random() < 0.6) return flavor;
   }
   if(text.includes('？') || text.includes('?') || /(か|の)$/.test(text.trim())){
     return GENERIC_QUESTION_REPLIES[Math.floor(Math.random()*GENERIC_QUESTION_REPLIES.length)];
@@ -1603,10 +1577,24 @@ function goToShelf(shelfId){
   });
 }
 
+let deskFlowFlag = false;
+function updateDeskLead(){
+  const el = document.getElementById('deskLead');
+  if(!el) return;
+  if(deskFlowFlag || counterDraftText){
+    el.textContent = '——ここまでを踏まえて。番台や棚で出会った気持ちを、今度はあなた自身の言葉で綴ってみましょう。';
+    el.classList.remove('hidden');
+  }else{
+    el.classList.add('hidden');
+  }
+}
+
 function goToDeskWithCategory(shelfId){
   const sel = document.getElementById('categorySelect');
   if(sel) sel.value = shelfId;
+  deskFlowFlag = true;
   goToPage('desk');
+  renderTitleSuggest();
   setTimeout(()=>{
     const ta = document.getElementById('storyInput');
     if(ta) ta.focus();
@@ -1647,6 +1635,7 @@ function renderChartOptions(nodeKey){
     moreBtn.onclick = ()=>{
       appendBubble('shopkeeper', '……今はどんな気分に近いですか。');
       renderChartOptions('root');
+  renderTitleSuggest();
     };
     container.appendChild(goBtn);
     container.appendChild(writeBtn);
@@ -1701,6 +1690,7 @@ async function handleChartChoice(label, nextKey){
   const node = CHAT_TREE[nextKey];
   if(!node){
     renderChartOptions('root');
+  renderTitleSuggest();
     return;
   }
   if(node.options){
@@ -1788,9 +1778,8 @@ async function sendToShopkeeper(){
   setMood(text);
 
   // 文字を送信した瞬間に、最新の吹き出しへ確実に追従する
-  const scrollToBottom = () => {
-    if(cw) cw.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block: 'end' });
-  };
+  // ページ全体を動かさず、チャット窓の内部だけを最新までスクロールする
+  const scrollToBottom = () => { if(cw) cw.scrollTop = cw.scrollHeight; };
   scrollToBottom();
 
   const loadingBubble = document.createElement('div');
@@ -1817,6 +1806,7 @@ async function sendToShopkeeper(){
     renderSuggestionActions(suggestedShelf);
   }else{
     renderChartOptions('root');
+  renderTitleSuggest();
   }
 
   freeTextTurns++;
@@ -1855,12 +1845,6 @@ async function sendToShopkeeper(){
     if(cw) cw.appendChild(linkDiv);
   }
 
-  const container = document.getElementById('chartOptions');
-  if(container){
-    setTimeout(() => {
-      container.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block: 'center' });
-    }, prefs.motion ? 300 : 50);
-  }
 
   if(sb) sb.disabled = false;
   if(kf) setTimeout(()=>kf.classList.remove('listening'), 3500);
@@ -1912,12 +1896,6 @@ async function chooseTexture(group, btnEl){
   if(kf) setTimeout(()=>kf.classList.remove('listening'), 2500);
   renderEmotionChips(group);
 
-  const container = document.getElementById('chartOptions');
-  if(container){
-    setTimeout(() => {
-      container.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block: 'center' });
-    }, prefs.motion ? 200 : 20);
-  }
 }
 
 function renderEmotionChips(group){
@@ -1942,6 +1920,7 @@ function renderEmotionChips(group){
   back.onclick = ()=>{
     appendBubble('shopkeeper', '……今は、どんな手ざわりに近いですか。');
     renderChartOptions('root');
+  renderTitleSuggest();
   };
   container.appendChild(back);
 }
@@ -1957,12 +1936,6 @@ async function chooseEmotionShelf(shelfId){
   if(kf) setTimeout(()=>kf.classList.remove('listening'), 2500);
   renderSuggestionActions(shelfId);
 
-  const container = document.getElementById('chartOptions');
-  if(container){
-    setTimeout(() => {
-      container.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block: 'center' });
-    }, prefs.motion ? 200 : 20);
-  }
 }
 
 function syncCounterDraftToDesk(){
@@ -2164,169 +2137,13 @@ function renderRecordCorner(){
   box.classList.remove('hidden');
 }
 
-const EMOTION_GRADIENTS = {
-  moya:['#5C6B8A','#2E3A5C'], kodoku:['#3E4A6B','#1E2440'], gakkari:['#8A7A6B','#4A4038'],
-  hazukashii:['#D8909B','#8A4A5C'], ushirometai:['#6B5C7A','#3A3048'], aseri:['#C97F5A','#7A3E2E'],
-  kuyashii:['#A85C5C','#5C2E2E'], shitto:['#5C7A5C','#2E402E'], akogare:['#7FA8C9','#3E5C8A'],
-  wakuwaku:['#F0C060','#C97F3D'], ando:['#A8C9A0','#5C8A6B'], kansha:['#E8B87F','#B7791F'],
-  itooshii:['#E8A0B0','#C96B8A'], hokorashii:['#C9A85C','#8A6B2E'], natsukashii:['#D8B48A','#8A6B4A']
-};
-
-function drawImageCover(ctx, img, x, y, w, h){
-  const iw = img.naturalWidth || img.width;
-  const ih = img.naturalHeight || img.height;
-  const scale = Math.max(w / iw, h / ih);
-  const sw = w / scale, sh = h / scale;
-  const sx = (iw - sw) / 2, sy = (ih - sh) / 2;
-  ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
-}
-
-function loadImageFromDataUrl(url){
-  return new Promise((resolve)=>{
-    const img = new Image();
-    img.onload = ()=>resolve(img);
-    img.onerror = ()=>resolve(null);
-    img.src = url;
-  });
-}
-
-function roundRectPath(ctx, x, y, w, h, r){
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.arcTo(x + w, y, x + w, y + h, r);
-  ctx.arcTo(x + w, y + h, x, y + h, r);
-  ctx.arcTo(x, y + h, x, y, r);
-  ctx.arcTo(x, y, x + w, y, r);
-  ctx.closePath();
-}
-
-async function generateStoryImage(){
-  try{
-    if(document.fonts && document.fonts.ready) await document.fonts.ready;
-  }catch(e){}
-
-  const W = 1080, H = 1920;
-  const canvas = document.createElement('canvas');
-  const dpr = Math.min(window.devicePixelRatio || 2, 3);
-  canvas.width = W * dpr;
-  canvas.height = H * dpr;
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-  const MINCHO = '"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif';
-
-  const latest = libraryCache.length ? libraryCache[libraryCache.length - 1] : null;
-  const cachedShiori = await loadJSON('emotion-bookstore-shiori', null);
-  let keeperWords = (cachedShiori && cachedShiori.text)
-    ? cachedShiori.text
-    : ((latest && latest.note) ? latest.note : '今日も、自分の気持ちに名前をあげられましたね。');
-  if(keeperWords.length > 96) keeperWords = keeperWords.slice(0, 95) + '…';
-  const photo = (latest && latest.image) ? await loadImageFromDataUrl(latest.image) : null;
-
-  const hour = new Date().getHours();
-  const pair = (latest && EMOTION_GRADIENTS[latest.category])
-    || ((hour >= 17 || hour < 5) ? ['#8A5C6B','#1E2440'] : ['#E8C9A0','#C97F8A']);
-  const grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, pair[0]);
-  grad.addColorStop(1, pair[1]);
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, W, H);
-  if(photo){
-    try{
-      ctx.save();
-      ctx.filter = 'blur(42px) brightness(0.55)';
-      drawImageCover(ctx, photo, -60, -60, W + 120, H + 120);
-      ctx.restore();
-    }catch(e){}
-    ctx.fillStyle = 'rgba(20,14,20,0.35)';
-    ctx.fillRect(0, 0, W, H);
-  }
-
-  ctx.fillStyle = 'rgba(255,245,220,0.20)';
-  for(let i = 0; i < 26; i++){
-    const px = (i * 137) % W, py = (i * 263) % H, pr = 2 + (i % 3);
-    ctx.beginPath(); ctx.arc(px, py, pr, 0, Math.PI * 2); ctx.fill();
-  }
-
-  ctx.textAlign = 'center';
-  ctx.fillStyle = 'rgba(255,249,236,0.92)';
-  ctx.font = '600 30px ' + MINCHO;
-  ctx.fillText('EMOTIONAL BINDERY & BOOKSHOP', W / 2, 150);
-  ctx.font = '700 46px ' + MINCHO;
-  ctx.fillText('みんなの感情書店', W / 2, 215);
-
-  const cardW = 800, cardX = (W - cardW) / 2, cardY = 330, pad = 56;
-  const photoSize = cardW - pad * 2;
-  ctx.font = '400 38px ' + MINCHO;
-  const wordLines = wrapTextLines(ctx, keeperWords, photoSize - 20).slice(0, 7);
-  const cardH = pad + photoSize + 70 + 60 + wordLines.length * 62 + 120;
-  ctx.save();
-  ctx.shadowColor = 'rgba(0,0,0,0.35)';
-  ctx.shadowBlur = 50;
-  ctx.shadowOffsetY = 18;
-  ctx.fillStyle = '#FFFDF6';
-  roundRectPath(ctx, cardX, cardY, cardW, cardH, 10);
-  ctx.fill();
-  ctx.restore();
-
-  const pX = cardX + pad, pY = cardY + pad;
-  if(photo){
-    ctx.save();
-    roundRectPath(ctx, pX, pY, photoSize, photoSize, 6);
-    ctx.clip();
-    drawImageCover(ctx, photo, pX, pY, photoSize, photoSize);
-    ctx.restore();
-  }else{
-    const g2 = ctx.createLinearGradient(pX, pY, pX, pY + photoSize);
-    g2.addColorStop(0, pair[0]);
-    g2.addColorStop(1, pair[1]);
-    ctx.fillStyle = g2;
-    roundRectPath(ctx, pX, pY, photoSize, photoSize, 6);
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(255,249,236,0.85)';
-    ctx.setLineDash([12, 9]);
-    ctx.lineWidth = 3;
-    ctx.strokeRect(pX + 30, pY + 30, photoSize - 60, photoSize - 60);
-    ctx.setLineDash([]);
-    ctx.fillStyle = 'rgba(255,249,236,0.95)';
-    ctx.font = '600 46px ' + MINCHO;
-    ctx.fillText('栞', pX + photoSize / 2, pY + photoSize / 2 - 40);
-    ctx.font = '400 30px ' + MINCHO;
-    ctx.fillText('— 店主より —', pX + photoSize / 2, pY + photoSize / 2 + 30);
-    ctx.fillText(`蔵書 ${libraryCache.length}冊の本棚`, pX + photoSize / 2, pY + photoSize / 2 + 90);
-  }
-
-  const titleText = latest ? ('『' + latest.title + '』') : '『これからの一冊』';
-  ctx.fillStyle = '#3A2E22';
-  ctx.font = '700 46px ' + MINCHO;
-  ctx.fillText(titleText, W / 2, pY + photoSize + 85);
-  const d = (latest && latest.date) ? new Date(latest.date) : new Date();
-  ctx.fillStyle = '#8A7A5C';
-  ctx.font = '400 30px ' + MINCHO;
-  ctx.fillText(`${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`, W / 2, pY + photoSize + 140);
-
-  ctx.fillStyle = '#4A3B2C';
-  ctx.font = '400 38px ' + MINCHO;
-  let ty = pY + photoSize + 225;
-  for(const line of wordLines){
-    ctx.fillText(line, W / 2, ty);
-    ty += 62;
-  }
-
-  ctx.fillStyle = 'rgba(255,249,236,0.85)';
-  ctx.font = '400 28px ' + MINCHO;
-  ctx.fillText('名もなき気持ちに、名前をあげる。', W / 2, H - 140);
-  ctx.font = '400 24px ' + MINCHO;
-  ctx.fillText('みんなの感情書店', W / 2, H - 90);
-
-  return canvas;
-}
-
 const BACKUP_KEYS = [
   'emotion-bookstore-library',
   PURIFY_LOG_KEY,
   'emotion-bookstore-shiori',
   'emotion-bookstore-prefs',
   'emotion-bookstore-milestones',
+  'emotion-bookstore-profile',
   DRAFT_KEY
 ];
 
@@ -2498,17 +2315,107 @@ function ensureBackToTopButton(){
   toggleVisibility();
 }
 
+/* ---------- 来店カード（お名前・属性。任意・この端末にのみ保存） ---------- */
+const PROFILE_KEY = 'emotion-bookstore-profile';
+let userProfile = { name:'', persona:'' };
+const PERSONA_CHOICES = [
+  { id:'student',       label:'学生・10代' },
+  { id:'jobhunter',     label:'就活生・受験生' },
+  { id:'young_worker',  label:'新社会人・若手' },
+  { id:'middle_worker', label:'中堅・リーダー' },
+  { id:'career_woman',  label:'キャリアを生きる女性' },
+  { id:'mother',        label:'子育ての真ん中' },
+  { id:'romance',       label:'恋に悩んでいる' },
+  { id:'creater',       label:'クリエイター・表現者' },
+  { id:'resting',       label:'人生の転換期・お休み中' },
+  { id:'sensitive',     label:'夜型・繊細な気質' },
+  { id:'',              label:'ひみつ（設定しない）' }
+];
+
+function buildProfileOverlay(){
+  let ov = document.getElementById('profileOverlay');
+  if(ov) return ov;
+  ov = document.createElement('div');
+  ov.id = 'profileOverlay';
+  ov.className = 'profile-overlay hidden';
+  ov.setAttribute('role', 'dialog');
+  ov.setAttribute('aria-label', '来店カード');
+  ov.innerHTML = `
+    <div class="profile-card">
+      <button type="button" class="profile-close" id="profileClose" aria-label="閉じる">×</button>
+      <p class="profile-kicker">🪪 来店カード</p>
+      <p class="profile-lead">よろしければ、呼び名と「いまのあなた」に近い立場を教えてください。店主の言葉が、あなたに向けた一言に変わります。</p>
+      <p class="profile-note">どちらも任意です。この端末にのみ保存され、サーバーには送信されません。あとから「🪪 来店カード」でいつでも変更できます。</p>
+      <label class="profile-label" for="profileName">呼び名</label>
+      <input id="profileName" maxlength="12" placeholder="例：ゆう" autocomplete="off">
+      <p class="profile-label">いまのあなたに近いのは</p>
+      <div class="profile-personas" id="profilePersonas"></div>
+      <button type="button" class="profile-save" id="profileSave">この内容で来店する</button>
+    </div>`;
+  document.body.appendChild(ov);
+  ov.addEventListener('click', (e)=>{ if(e.target.id === 'profileOverlay') ov.classList.add('hidden'); });
+  const x = ov.querySelector('#profileClose');
+  if(x) x.onclick = ()=>ov.classList.add('hidden');
+  return ov;
+}
+
+function showProfileCard(){
+  const ov = buildProfileOverlay();
+  const nameInput = ov.querySelector('#profileName');
+  if(nameInput) nameInput.value = userProfile.name || '';
+  const grid = ov.querySelector('#profilePersonas');
+  let chosen = userProfile.persona || '';
+  if(grid){
+    grid.innerHTML = '';
+    PERSONA_CHOICES.forEach(p=>{
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'persona-chip' + (chosen === p.id ? ' selected' : '');
+      b.textContent = p.label;
+      b.onclick = ()=>{
+        chosen = p.id;
+        grid.querySelectorAll('.persona-chip').forEach(el=>el.classList.toggle('selected', el === b));
+      };
+      grid.appendChild(b);
+    });
+  }
+  const saveBtn = ov.querySelector('#profileSave');
+  if(saveBtn) saveBtn.onclick = async ()=>{
+    userProfile.name = nameInput ? nameInput.value.trim().slice(0, 12) : '';
+    userProfile.persona = chosen;
+    await saveJSON(PROFILE_KEY, userProfile);
+    ov.classList.add('hidden');
+    let welcome = userProfile.name
+      ? ('……' + userProfile.name + 'さん、ですね。お名前、覚えました。')
+      : '……ようこそ。ゆっくりしていってください。';
+    if(userProfile.persona && typeof MIDNIGHT_MESSAGES !== 'undefined' && MIDNIGHT_MESSAGES[userProfile.persona]){
+      const pool = MIDNIGHT_MESSAGES[userProfile.persona];
+      welcome += '\n' + pool[Math.floor(Math.random()*pool.length)];
+    }
+    appendBubble('shopkeeper', welcome);
+    buzz(8);
+  };
+  ov.classList.remove('hidden');
+}
+
 (async function init(){
   applySeasonalAccent();
   applyNightModeIfNeeded();
   restoreDraftIfAny();
   ensureBackToTopButton();
+  const savedProfile = await loadJSON(PROFILE_KEY, null);
+  if(savedProfile && typeof savedProfile === 'object'){
+    userProfile = Object.assign(userProfile, savedProfile);
+  }
   const greetingEl = document.getElementById('firstGreetingText');
   if(greetingEl){
     const hour = new Date().getHours();
     let line;
     if(hour >= 22 || hour < 5){
-      line = MIDNIGHT_GREETINGS[Math.floor(Math.random()*MIDNIGHT_GREETINGS.length)];
+      const nightPool = (userProfile.persona && typeof MIDNIGHT_MESSAGES !== 'undefined' && MIDNIGHT_MESSAGES[userProfile.persona])
+        ? MIDNIGHT_MESSAGES[userProfile.persona]
+        : MIDNIGHT_GREETINGS;
+      line = nightPool[Math.floor(Math.random()*nightPool.length)];
     }else{
       let bucket;
       if(hour >= 5 && hour < 11) bucket = TIME_GREETINGS.morning;
@@ -2517,17 +2424,37 @@ function ensureBackToTopButton(){
       if(!bucket || !bucket.length) bucket = TIME_GREETINGS.day;
       line = bucket[Math.floor(Math.random()*bucket.length)] + '近いものを選んでも、下に自由に書いてもらっても構いません。';
     }
+    if(userProfile.name){
+      line = '……おかえりなさい、' + userProfile.name + 'さん。\n' + line;
+    }
     typeIntoNode(greetingEl, line);
   }
+  if(!savedProfile){
+    // 初来店：来店カードをおすすめする（任意）
+    setTimeout(()=>showProfileCard(), 1400);
+  }
+  const profileBtn = document.getElementById('profileBtn');
+  if(profileBtn) profileBtn.onclick = ()=>showProfileCard();
   await initPrefs();
   renderFair();
   renderCategorySelect();
   libraryCache = await loadJSON('emotion-bookstore-library', []);
+  // 旧カテゴリID（moya）で保存された本を新ID（moyamoya）へ移行
+  let _migrated = false;
+  libraryCache.forEach(e=>{ if(e && e.category === 'moya'){ e.category = 'moyamoya'; _migrated = true; } });
+  if(_migrated) saveJSON('emotion-bookstore-library', libraryCache);
+  loadJSON(PURIFY_LOG_KEY, []).then(plog=>{
+    if(Array.isArray(plog) && plog.some(p=>p && p.category === 'moya')){
+      plog.forEach(p=>{ if(p && p.category === 'moya') p.category = 'moyamoya'; });
+      saveJSON(PURIFY_LOG_KEY, plog);
+    }
+  });
   renderShelfTabs();
   renderShelfDisplay();
   renderShelf();
   updateStoryCount();
   renderChartOptions('root');
+  renderTitleSuggest();
 
   // 初期化時に文言を直感的なものに強制上書きし、さらに手放した気持ちの履歴ボタンを追加する
   const backupBtn = document.getElementById('backupBtn');
