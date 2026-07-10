@@ -1,6 +1,5 @@
-JavaScript
 /* ============================================================
- * main.js — 对話ロジック・IndexedDB・番台制御など
+ * main.js — 対話ロジック・IndexedDB・番台制御など
  * 「みんなの感情書店」のロジック本体です。
  * data.js（BOOK_POOL, CATEGORIES, CHAT_TREE などのデータ）を
  * 先に読み込んだ後にこのファイルを読み込んでください。
@@ -69,7 +68,7 @@ const TEXTURE_GROUPS = [
   {
     id:'sink',
     label:'心が重く沈んでいる、気分が落ち込んでいる（静かな憂鬱）',
-    keeper:'少しお疲れのようですね。このあたりの棚に、今の心に寄り慢う本があるかもしれません。',
+    keeper:'少しお疲れのようですね。このあたりの棚に、今の心に寄り添う本があるかもしれません。',
     shelves:['moya','kodoku','gakkari','hazukashii','ushirometai'],
     tone:'heavy'
   },
@@ -101,8 +100,8 @@ let counterDraftText = '';
 
 const MIDNIGHT_GREETINGS = [
   '……こんな時間まで、おつかれさまです。これからのことを考えていると、夜はどこまでも長くなりますね。今日の気持ちを、一冊だけ預けていきませんか。',
-  '……夜更けの来店、歓迎します。SNSには書けない本音ほど、この棚には似合うんですよ。誰にも見られません。ここだけの話にしましょう。',
-  '……眠れない夜は、無理に眠らなくてもいいと思うんです。直接では言えなかった言葉を、ここでだけ、そっと綴ってみませんか。'
+  '……夜更けの来店、歓迎します。どこにも書けない本音ほど、この棚には似合うんですよ。誰にも見られません。ここだけの話にしましょう。',
+  '……眠れない夜は、無理に眠らなくてもいいと思うんです。本人に言えなかった言葉を、ここでだけ、そっと綴ってみませんか。'
 ];
 
 /* ---------- storage ---------- */
@@ -371,6 +370,50 @@ if(btnPurify) btnPurify.onclick = async ()=>{
   btn.disabled = false;
 };
 
+/* ★手放した気持ちの履歴を表示する関数 */
+async function showPurifyLog(){
+  const log = await loadJSON(PURIFY_LOG_KEY, []);
+  if(log.length === 0){
+    showCurateBox('まだ、手放した気持ちの記録はありません。', [{label:'閉じる', primary:true, onClick:()=>{} }]);
+    return;
+  }
+  // ログを整形
+  const msg = log.map(p => `[${new Date(p.date).toLocaleDateString('ja-JP')} / ${(CATEGORIES.find(c=>c.id===p.category)||{}).label || ''}]\n${p.text}`).join('\n\n---\n\n');
+  
+  const mCat = document.getElementById('modalCat');
+  if(mCat) mCat.textContent = '記録';
+  const mTitle = document.getElementById('modalTitle');
+  if(mTitle) mTitle.textContent = '手放した気持ち';
+  const mDate = document.getElementById('modalDate');
+  if(mDate) mDate.textContent = '';
+  const mStory = document.getElementById('modalStory');
+  if(mStory) mStory.textContent = msg;
+  
+  const mNote = document.getElementById('modalNote');
+  if(mNote) mNote.classList.add('hidden');
+  const mTweet = document.getElementById('modalTweet');
+  if(mTweet) mTweet.classList.add('hidden');
+  const mPhoto = document.getElementById('modalPhoto');
+  if(mPhoto) mPhoto.classList.add('hidden');
+  
+  const mDel = document.getElementById('modalDel');
+  if(mDel) mDel.style.display = 'none'; 
+  const mGoShelf = document.getElementById('modalGoShelf');
+  if(mGoShelf) mGoShelf.style.display = 'none'; 
+  
+  const bModal = document.getElementById('bookModal');
+  if(bModal) bModal.classList.remove('hidden');
+  
+  const closeBtn = document.getElementById('modalClose');
+  const originalClose = closeBtn.onclick;
+  closeBtn.onclick = () => {
+    if(bModal) bModal.classList.add('hidden');
+    if(mDel) mDel.style.display = '';
+    if(mGoShelf) mGoShelf.style.display = '';
+    closeBtn.onclick = originalClose;
+  };
+}
+
 const PERSONAL_INFO_PATTERNS = [/\d{2,4}-\d{3,4}-\d{3,4}/, /[\w.+-]+@[\w-]+\.[\w.-]+/, /(本名|住所|電話番号|LINE\s*ID)[:：]/];
 const ATTACK_WORDS = ['死ね','殺す','消えろ','ぶっ殺'];
 const CRISIS_STORY_PATTERNS = ['死にたい','消えたい','自分を傷つけ','リストカット'];
@@ -520,9 +563,13 @@ function setMood(text){
   }
 }
 
+// ★【UI改善】ヘッダーに隠れないようにオフセットを付けてスクロール
 function scrollToId(id){
   const el = document.getElementById(id);
-  if(el) el.scrollIntoView({behavior: prefs.motion ? 'smooth' : 'auto'});
+  if(el) {
+    const y = el.getBoundingClientRect().top + window.scrollY - 20; 
+    window.scrollTo({ top: y, behavior: prefs.motion ? 'smooth' : 'auto' });
+  }
 }
 
 function setActivePageTab(id){
@@ -749,66 +796,7 @@ function renderShelfDisplay(){
   }
 }
 
-function shiftCategory(dir){
-  const i = CATEGORIES.findIndex(c=>c.id===activeCategory);
-  const n = CATEGORIES.length;
-  activeCategory = CATEGORIES[(i + dir + n) % n].id;
-  renderShelfTabs();
-  renderShelfDisplay();
-}
-
-(function enableSwipe(){
-  const area = document.getElementById('shelfDisplay');
-  if(!area) return;
-  let sx = null, sy = null, dragging = false;
-  area.style.touchAction = 'pan-y';
-  area.style.willChange = 'transform';
-
-  function idxOf(){ return CATEGORIES.findIndex(c=>c.id===activeCategory); }
-
-  area.addEventListener('touchstart', (e)=>{
-    const t = e.touches[0];
-    sx = t.clientX; sy = t.clientY; dragging = true;
-    area.style.transition = 'none';
-  }, {passive:true});
-
-  area.addEventListener('touchmove', (e)=>{
-    if(!dragging || sx === null) return;
-    const t = e.touches[0];
-    const dx = t.clientX - sx;
-    const dy = t.clientY - sy;
-    if(Math.abs(dy) > Math.abs(dx)) return; 
-    const i = idxOf();
-    const atStart = i === 0 && dx > 0;
-    const atEnd = i === CATEGORIES.length - 1 && dx < 0;
-    const damped = (atStart || atEnd) ? dx / 3 : dx / 1.5;
-    area.style.transform = `translateX(${damped}px)`;
-  }, {passive:true});
-
-  area.addEventListener('touchend', (e)=>{
-    if(sx === null) return;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - sx;
-    const dy = t.clientY - sy;
-    area.style.transition = 'transform .25s ease';
-    area.style.transform = 'translateX(0)';
-    if(Math.abs(dx) > 50 && Math.abs(dy) < 60){
-      const dir = dx < 0 ? 1 : -1;
-      const i = idxOf();
-      const target = i + dir;
-      if(target >= 0 && target < CATEGORIES.length){
-        area.style.transform = `translateX(${dir < 0 ? '' : '-'}${24}px)`;
-        setTimeout(()=>{
-          shiftCategory(dir);
-          area.style.transition = 'transform .22s ease, opacity .18s ease';
-          area.style.transform = 'translateX(0)';
-        }, prefs.motion ? 120 : 0);
-        buzz(6);
-      }
-    }
-    sx = null; sy = null; dragging = false;
-  }, {passive:true});
-})();
+// ★【UI改善】スマホで意味をなしていなかったスワイプ移動機能（enableSwipe）を完全削除しました。
 
 function renderCategorySelect(){
   const sel = document.getElementById('categorySelect');
@@ -1305,12 +1293,28 @@ if(btnSubmit) {
         if(msg) msg.textContent = priorCount > 0
           ? `製本して、本棚に納品しました。「${label}」の棚に綴るのは、これで${priorCount + 1}冊目です。`
           : '製本して、本棚に納品しました。';
-        showInvitation(finalCategory);
+        
         await saveJSON('emotion-bookstore-library', libraryCache);
         await celebrateMilestoneIfNeeded(libraryCache.length);
         btn.disabled = false;
         const boundMsg = msg ? msg.textContent : '';
         setTimeout(()=>{ if(msg && msg.textContent === boundMsg) msg.textContent = ''; }, 4200);
+
+        // ★【UI改善】推薦状がある場合はポップアップ後、閉じたタイミングで「④ 本棚」へ遷移するフローに改修
+        const inv = INVITES[finalCategory];
+        if(inv){
+          showInvitation(finalCategory);
+          const closeBtn = document.getElementById('invClose');
+          const originalClick = closeBtn.onclick;
+          closeBtn.onclick = () => {
+             document.getElementById('invitationCard').classList.add('hidden');
+             goToPage('bookshelf');
+             closeBtn.onclick = originalClick; // 戻す
+          };
+        } else {
+          // 推薦状がない場合は、少し間を置いてから直接本棚へ遷移
+          setTimeout(() => goToPage('bookshelf'), 1500);
+        }
       });
     };
 
@@ -1361,7 +1365,7 @@ if(btnExport) {
     }catch(e){
       btn.textContent = '書き出しに失敗しました';
     }
-    setTimeout(()=>{ btn.textContent = '📥 記録をテキストで書き出す'; }, 2500);
+    setTimeout(()=>{ btn.textContent = '📥 これまでの記録をテキストでダウンロード'; }, 2500);
   };
 }
 
@@ -1582,12 +1586,11 @@ async function sendToShopkeeper(){
   if(kf) kf.classList.add('listening');
   setMood(text);
 
-  // ★【UI改善①】送信した瞬間、チャットウィンドウ（会話のやり取り）自体を画面中央にスッと引き上げる
-  if(cw){
-    setTimeout(() => {
-      cw.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block: 'nearest' });
-    }, 50);
-  }
+  // ★【UI改善】文字を送信した瞬間に、最新の吹き出しへ確実に追従する
+  const scrollToBottom = () => {
+    if(cw) cw.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block: 'end' });
+  };
+  scrollToBottom();
 
   const loadingBubble = document.createElement('div');
   loadingBubble.className = 'bubble loading';
@@ -1604,13 +1607,8 @@ async function sendToShopkeeper(){
   appendBubble('shopkeeper', reply);
   chatHistory.push({ role:'assistant', content:reply });
 
-  if(cw){
-    const bubbles = cw.querySelectorAll('.bubble.shopkeeper');
-    const lastReply = bubbles[bubbles.length - 1];
-    if(lastReply && lastReply.scrollIntoView){
-      lastReply.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block:'nearest' });
-    }
-  }
+  // ★【UI改善】店主の返信後にも確実にスクロール追従する
+  scrollToBottom();
 
   const isCrisis = CRISIS_PATTERNS.some(w=>text.includes(w));
   const suggestedShelf = isCrisis ? null : detectShelfFromText(text, 1);
@@ -1624,28 +1622,38 @@ async function sendToShopkeeper(){
   if(freeTextTurns === 3 && !isCrisis){
     appendBubble('shopkeeper',
       '……私は決まった言葉しか持たない、しがない店番です。もしもっと深く話を聞いてほしい夜は、' +
-      '言葉の達者な相談相手（ChatGPTやGeminiのようなAI）を訪ねてみるのも一つの手です。' +
-      'ここの棚は、いつでも開けておきますから。');
-    const container = document.getElementById('chartOptions');
-    if(container){
-      const gptLink = document.createElement('a');
-      gptLink.className = 'chart-btn';
-      gptLink.href = 'https://chatgpt.com/';
-      gptLink.target = '_blank';
-      gptLink.rel = 'noopener';
-      gptLink.textContent = 'ChatGPTと話してみる';
-      const gemLink = document.createElement('a');
-      gemLink.className = 'chart-btn';
-      gemLink.href = 'https://gemini.google.com/';
-      gemLink.target = '_blank';
-      gemLink.rel = 'noopener';
-      gemLink.textContent = 'Geminiと話してみる';
-      container.prepend(gemLink);
-      container.prepend(gptLink);
-    }
+      '言葉の達者な相談相手（AI）を訪ねてみるのも一つの手です。ここの棚は、いつでも開けておきますから。');
+    
+    // ★【UI改善】外部AIへのリンクを、他の選択肢に紛れさせず、店主の言葉のすぐ真下に専用エリアとして配置する
+    const linkDiv = document.createElement('div');
+    linkDiv.style.textAlign = 'left';
+    linkDiv.style.marginLeft = '50px'; 
+    linkDiv.style.marginTop = '8px';
+    linkDiv.style.marginBottom = '16px';
+    
+    const gptLink = document.createElement('a');
+    gptLink.className = 'chart-btn';
+    gptLink.href = 'https://chatgpt.com/';
+    gptLink.target = '_blank';
+    gptLink.rel = 'noopener';
+    gptLink.textContent = 'ChatGPTと話してみる';
+    gptLink.style.display = 'inline-block';
+    gptLink.style.marginRight = '8px';
+    
+    const gemLink = document.createElement('a');
+    gemLink.className = 'chart-btn';
+    gemLink.href = 'https://gemini.google.com/';
+    gemLink.target = '_blank';
+    gemLink.rel = 'noopener';
+    gemLink.textContent = 'Geminiと話してみる';
+    gemLink.style.display = 'inline-block';
+    
+    linkDiv.appendChild(gptLink);
+    linkDiv.appendChild(gemLink);
+    
+    if(cw) cw.appendChild(linkDiv);
   }
 
-  // ★【UI改善②】店主のセリフと、次の選択肢ボタン（chartOptions）が出揃ったタイミングで、そのボタンエリアを画面にスッと映し出す
   const container = document.getElementById('chartOptions');
   if(container){
     setTimeout(() => {
@@ -2157,7 +2165,7 @@ async function downloadBackup(){
     }catch(e){
       backupBtn.textContent = '鍵の更新に失敗しました';
     }
-    setTimeout(()=>{ backupBtn.textContent = '🔑 本棚の鍵を更新する（全データ保存）'; }, 2500);
+    setTimeout(()=>{ backupBtn.textContent = '🔑 本棚のデータをバックアップ保存する'; }, 2500);
   };
 })();
 
@@ -2282,5 +2290,20 @@ function applyNightModeIfNeeded(){
   renderShelf();
   updateStoryCount();
   renderChartOptions('root');
-})();
 
+  // ★【UI改善】初期化時に文言を直感的なものに強制上書きし、さらに手放した気持ちの履歴ボタンを追加する
+  const backupBtn = document.getElementById('backupBtn');
+  if(backupBtn) backupBtn.innerHTML = '🔑 本棚のデータをバックアップ保存する';
+  const exportBtn = document.getElementById('exportDiary');
+  if(exportBtn) exportBtn.innerHTML = '📥 これまでの記録をテキストでダウンロード';
+
+  const shelfControls = document.querySelector('.shelf-controls');
+  if(shelfControls && !document.getElementById('viewPurifyLogBtn')){
+    const btn = document.createElement('button');
+    btn.id = 'viewPurifyLogBtn';
+    btn.className = 'reset-link';
+    btn.textContent = '🕯 手放した気持ちの記録を見る';
+    btn.onclick = showPurifyLog;
+    shelfControls.insertBefore(btn, shelfControls.firstChild);
+  }
+})();
