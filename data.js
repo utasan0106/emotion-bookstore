@@ -9,79 +9,79 @@
 /* ---------- 15の感情の棚 ---------- */
 const CATEGORIES = [
   { id:'moya', label:'モヤモヤ', def:'理由がはっきりしない、もやがかかったような気持ち。', quotes:[
-    { text:'霧の中を歩くとき、大切なのは急ぐことではなく、足元を一歩ずつ確かめることだ。', source:'店主の手帳より' },
-    { text:'すべての感情に、すぐ名前がつけられるわけではない。', source:'店主の手帳より' },
-    { text:'曖昧さに耐える力も、ひとつの知性である。', source:'店主の手帳より' }
+    { text:'白黒つけられない心は、グラデーションの美しさを知るためのものだ。', source:'店主の手帳より' },
+    { text:'迷うのは、あなたが真剣に自分と向き合おうとしているから。', source:'店主の手帳より' },
+    { text:'答えが出ない日があってもいい。それは「今は休む時」というサインだ。', source:'店主の手帳より' }
   ]},
   { id:'kodoku', label:'孤独', def:'ひとりだと感じる、静かな寂しさ。', quotes:[
-    { text:'孤独は、埋めるものではなく、時に住みこなすものだ。', source:'店主の手帳より' },
-    { text:'一人の時間は、自分自身と再会するための時間でもある。', source:'店主の手帳より' },
-    { text:'寂しさを感じられるのは、誰かを大切に思える証拠でもある。', source:'店主の手帳より' }
+    { text:'孤独は、自分という一番の理解者と深く対話する贅沢な時間だ。', source:'店主の手帳より' },
+    { text:'誰もいない夜の静けさが、あなたの本当の輪郭を教えてくれる。', source:'店主の手帳より' },
+    { text:'ひとりの時間に育てた心が、いつか誰かを温かく包み込む。', source:'店主の手帳より' }
   ]},
   { id:'gakkari', label:'がっかり', def:'期待していたものが叶わなかったときの落胆。', quotes:[
-    { text:'期待した分だけ、がっかりもする。それは真剣に生きている証拠だ。', source:'店主の手帳より' },
-    { text:'落胆は、次の期待を選び直すための、ただの通過点にすぎない。', source:'店主の手帳より' },
-    { text:'がっかりした夜こそ、自分を甘やかしていい夜だ。', source:'店主の手帳より' }
+    { text:'がっかりできるのは、あなたがそれに本気で期待していた証拠だ。', source:'店主の手帳より' },
+    { text:'落ち込んだ分だけ、心に新しい光を蓄えるスペースができる。', source:'店主の手帳より' },
+    { text:'予定通りにいかなかった今日が、新しい道を見つけるきっかけになる。', source:'店主の手帳より' }
   ]},
   { id:'hazukashii', label:'恥ずかしい', def:'消えてしまいたくなるような、きまり悪さ。', quotes:[
-    { text:'恥ずかしさは、後から思えばたいてい笑い話になる。', source:'店主の手帳より' },
-    { text:'完璧でいようとするから、恥ずかしさが生まれる。', source:'店主の手帳より' },
-    { text:'不格好な自分ほど、後になって愛おしくなるものだ。', source:'店主の手帳より' }
+    { text:'失敗して赤くなった頬は、あなたが何かに挑戦した美しい勲章だ。', source:'店主の手帳より' },
+    { text:'恥ずかしさを笑い飛ばせるようになった時、人は一つ大きくなる。', source:'店主の手帳より' },
+    { text:'誰もあなたの失敗を、あなたが思うほど気にしてはいない。', source:'店主の手帳より' }
   ]},
   { id:'ushirometai', label:'後ろめたい', def:'誰かに対する、小さな罪悪感やうしろめたさ。', quotes:[
-    { text:'完璧な人間などいない。後ろめたさは、良心が生きている証だ。', source:'店主の手帳より' },
-    { text:'自分を責め続けることは、償いにはならない。', source:'店主の手帳より' },
-    { text:'許すことは、まず自分から始めていい。', source:'店主の手帳より' }
+    { text:'後ろめたさを感じるのは、あなたの中に優しい良心があるからだ。', source:'店主の手帳より' },
+    { text:'過去の自分を責めるより、今の自分を許すことから始めよう。', source:'店主の手帳より' },
+    { text:'完璧ではない自分を愛せた時、他人の不完全さも許せるようになる。', source:'店主の手帳より' }
   ]},
   { id:'aseri', label:'焦り', def:'置いていかれるような、急かされるような気持ち。', quotes:[
-    { text:'他人の時計で自分の人生を測る必要はない。', source:'店主の手帳より' },
-    { text:'焦りは、まだ諦めていないという証拠でもある。', source:'店主の手帳より' },
-    { text:'急ぐ人生の先に、必ずしも良いものが待っているとは限らない。', source:'店主の手帳より' }
+    { text:'急いでも咲く花は咲くし、咲かない花は咲かない。あなたの季節を待とう。', source:'店主の手帳より' },
+    { text:'他人の背中ばかり見ていないで、自分が歩んできた足跡を褒めてあげよう。', source:'店主の手帳より' },
+    { text:'焦りは「もっと良くなりたい」という前向きな心の裏返しだ。', source:'店主の手帳より' }
   ]},
   { id:'kuyashii', label:'悔しい', def:'届かなかった、報われなかったことへの悔しさ。', quotes:[
-    { text:'悔しさは、次に進むための燃料になる。', source:'店主の手帳より' },
-    { text:'負けを認められる人は、次に勝てる人だ。', source:'店主の手帳より' },
-    { text:'涙のあとには、また立ち上がる力が残っている。', source:'店主の手帳より' }
+    { text:'流した悔し涙は、次に進むための最も純粋なエネルギーになる。', source:'店主の手帳より' },
+    { text:'届かなかったという痛みが、あなたを昨日よりも強くする。', source:'店主の手帳より' },
+    { text:'この悔しさを知っているからこそ、勝った時に誰より優しくなれる。', source:'店主の手帳より' }
   ]},
   { id:'shitto', label:'嫉妬', def:'誰かを羨む、ざらついた気持ち。', quotes:[
-    { text:'嫉妬は、自分の本当の願いを映す鏡だ。', source:'店主の手帳より' },
-    { text:'他人の花を羨むより、自分の庭に水をやろう。', source:'店主の手帳より' },
-    { text:'ざらついた気持ちも、正直に見つめれば道しるべになる。', source:'店主の手帳より' }
+    { text:'嫉妬は、あなたが本当に欲しているものを教えてくれる心のコンパスだ。', source:'店主の手帳より' },
+    { text:'誰かの光を羨む時、あなたの中にも同じ輝きが眠っていることに気づいて。', source:'店主の手帳より' },
+    { text:'他人の庭を覗くのをやめ、自分の庭にどんな種を蒔くか考えよう。', source:'店主の手帳より' }
   ]},
   { id:'akogare', label:'憧れ', def:'手の届かない何かへの、まっすぐな憧れ。', quotes:[
-    { text:'憧れは、まだ見ぬ自分への招待状だ。', source:'店主の手帳より' },
-    { text:'遠い光にも、必ず最初の一歩がある。', source:'店主の手帳より' },
-    { text:'憧れを持ち続けられることは、それ自体が才能だ。', source:'店主の手帳より' }
+    { text:'手が届かないほど遠い星だからこそ、見上げる価値がある。', source:'店主の手帳より' },
+    { text:'憧れを抱き続ける限り、あなたの心は決して老いることはない。', source:'店主の手帳より' },
+    { text:'いつかあなたも、誰かにとっての光になる日が必ず来る。', source:'店主の手帳より' }
   ]},
   { id:'wakuwaku', label:'わくわく', def:'胸が高鳴る、前向きな期待や高揚。', quotes:[
-    { text:'まだ見ぬ景色への期待こそ、生きる原動力だ。', source:'店主の手帳より' },
-    { text:'わくわくする心を持つ人は、いつまでも若い。', source:'店主の手帳より' },
-    { text:'胸の高鳴りに、素直に従っていい。', source:'店主の手帳より' }
+    { text:'胸の高鳴りは、新しい世界があなたを呼んでいる合図だ。', source:'店主の手帳より' },
+    { text:'理屈ではなく「面白そう」と思えた直感を、どうか信じてみてほしい。', source:'店主の手帳より' },
+    { text:'大人のわくわくは、日常に隠された魔法の扉を開く鍵になる。', source:'店主の手帳より' }
   ]},
   { id:'ando', label:'安堵', def:'肩の力が抜けるような、深い安心感。', quotes:[
-    { text:'安堵は、頑張った人にだけ訪れるご褒美だ。', source:'店主の手帳より' },
-    { text:'ほっとできる瞬間を、見逃さず味わっていい。', source:'店主の手帳より' },
-    { text:'安心できる場所があることは、それ自体が幸福だ。', source:'店主の手帳より' }
+    { text:'肩の力が抜けた瞬間、あなたがどれだけ頑張っていたかが分かるはずだ。', source:'店主の手帳より' },
+    { text:'深く息を吐き出せた今日は、それだけで十分に完璧な一日だ。', source:'店主の手帳より' },
+    { text:'安心できる場所があるからこそ、人はまた遠くへ冒険に出られる。', source:'店主の手帳より' }
   ]},
   { id:'kansha', label:'感謝', def:'誰かの優しさに、静かに満たされる気持ち。', quotes:[
-    { text:'感謝は、伝えた瞬間に二倍になる。', source:'店主の手帳より' },
-    { text:'当たり前だと思っていたことほど、実は誰かの優しさだった。', source:'店主の手帳より' },
-    { text:'ありがとうと言えることは、幸福を見つける力そのものだ。', source:'店主の手帳より' }
+    { text:'「ありがとう」は、口に出すことで自分自身の心も満たしてくれる魔法の言葉だ。', source:'店主の手帳より' },
+    { text:'当たり前だと思っていた日常は、数え切れない奇跡の積み重ねでできている。', source:'店主の手帳より' },
+    { text:'受け取った優しさを、今度はあなたが誰かに手渡す番だ。', source:'店主の手帳より' }
   ]},
   { id:'itooshii', label:'愛おしい', def:'かけがえのないものへの、深い愛おしさ。', quotes:[
-    { text:'不完全なものほど、かけがえなく愛おしい。', source:'店主の手帳より' },
-    { text:'愛おしいと感じる心は、世界を柔らかくする。', source:'店主の手帳より' },
-    { text:'何気ない日常こそ、いちばんの宝物だ。', source:'店主の手帳より' }
+    { text:'特別ではない普通の日々こそが、後から振り返れば一番の宝物になる。', source:'店主の手帳より' },
+    { text:'何かを愛おしいと思う心は、世界を一番美しく見せるレンズだ。', source:'店主の手帳より' },
+    { text:'傷や欠点さえも愛せるようになった時、絆は本物になる。', source:'店主の手帳より' }
   ]},
   { id:'hokorashii', label:'誇らしい', def:'自分の頑張りを、静かに誇れる気持ち。', quotes:[
-    { text:'誰にも気づかれない頑張りにも、価値がある。', source:'店主の手帳より' },
-    { text:'自分を誇れる人は、他人にも優しくなれる。', source:'店主の手帳より' },
-    { text:'小さな達成の積み重ねが、いつか大きな自信になる。', source:'店主の手帳より' }
+    { text:'誰にも見られなくても、あなたが自分を誇れるならそれでいい。', source:'店主の手帳より' },
+    { text:'小さな一歩でも、自分の足で踏み出した事実に変わりはない。', source:'店主の手帳より' },
+    { text:'今日の自分を静かに讃えることが、明日の自分への一番の贈り物になる。', source:'店主の手帳より' }
   ]},
   { id:'natsukashii', label:'懐かしい', def:'遠い日の記憶が、ふっと蘇る気持ち。', quotes:[
-    { text:'懐かしさは、過去が今のあなたを支えている証拠だ。', source:'店主の手帳より' },
-    { text:'思い出は、色褪せても消えることはない。', source:'店主の手帳より' },
-    { text:'あの頃の自分も、今のあなたの一部だ。', source:'店主の手帳より' }
+    { text:'ふと蘇る懐かしい記憶は、今のあなたを優しく支えてくれるお守りだ。', source:'店主の手帳より' },
+    { text:'時は流れても、心が震えた瞬間の温度は決して消えることはない。', source:'店主の手帳より' },
+    { text:'あの頃の不器用な自分も、今のあなたを作った大切なピースだ。', source:'店主の手帳より' }
   ]}
 ];
 
@@ -92,127 +92,58 @@ const SPINE_COLORS = [
   '#A8C9A0','#E8B87F','#E8A0B0','#C9A85C','#D8B48A'
 ];
 
-/* ---------- 棚ごとの実在書籍プール（各棚6冊以上・wave:1中心） ---------- */
+/* ---------- 棚ごとの実在書籍プール（更新版） ---------- */
 const BOOK_POOL = [
-  { title:'夜と霧', by:'ヴィクトール・E・フランクル', tags:['moya','kodoku'], wave:1 },
-  { title:'方丈記', by:'鴨長明', tags:['moya','natsukashii'], wave:1 },
-  { title:'モヤモヤの正体', by:'ちきりん', tags:['moya'], wave:1 },
-  { title:'嫌われる勇気', by:'岸見一郎・古賀史健', tags:['moya','aseri'], wave:1 },
-  { title:'枕草子', by:'清少納言', tags:['moya','itooshii'], wave:1 },
-  { title:'思考の整理学', by:'外山滋比古', tags:['moya'], wave:1 },
-  { title:'TUGUMI', by:'吉本ばなな', tags:['moya'], wave:2 },
-
-  { title:'人間失格', by:'太宰治', tags:['kodoku','ushirometai'], wave:1 },
-  { title:'コンビニ人間', by:'村田沙耶香', tags:['kodoku'], wave:1 },
-  { title:'孤独の科学', by:'ジョン・T・カシオポ', tags:['kodoku'], wave:1 },
-  { title:'海辺のカフカ', by:'村上春樹', tags:['kodoku','akogare'], wave:1 },
-  { title:'砂の女', by:'安部公房', tags:['kodoku'], wave:1 },
-  { title:'一人称単数', by:'村上春樹', tags:['kodoku'], wave:1 },
-  { title:'博士の愛した数式', by:'小川洋子', tags:['kodoku'], wave:2 },
-
-  { title:'夜のピクニック', by:'恩田陸', tags:['gakkari','natsukashii'], wave:1 },
-  { title:'失われた時を求めて', by:'マルセル・プルースト', tags:['gakkari','natsukashii'], wave:1 },
-  { title:'ノルウェイの森', by:'村上春樹', tags:['gakkari','kodoku'], wave:1 },
-  { title:'そして誰もいなくなった', by:'アガサ・クリスティ', tags:['gakkari'], wave:1 },
-  { title:'蹴りたい背中', by:'綿矢りさ', tags:['gakkari'], wave:1 },
-  { title:'風の歌を聴け', by:'村上春樹', tags:['gakkari'], wave:1 },
-  { title:'流', by:'東山彰良', tags:['gakkari'], wave:2 },
-
-  { title:'こころ', by:'夏目漱石', tags:['hazukashii','ushirometai'], wave:1 },
-  { title:'人間椅子', by:'江戸川乱歩', tags:['hazukashii'], wave:1 },
-  { title:'桜の樹の下には', by:'梶井基次郎', tags:['hazukashii'], wave:1 },
-  { title:'羅生門', by:'芥川龍之介', tags:['hazukashii','ushirometai'], wave:1 },
-  { title:'瓶詰地獄', by:'夢野久作', tags:['hazukashii'], wave:1 },
-  { title:'蜘蛛の糸', by:'芥川龍之介', tags:['hazukashii'], wave:1 },
-  { title:'黒い雨', by:'井伏鱒二', tags:['hazukashii'], wave:2 },
-
-  { title:'罪と罰', by:'フョードル・ドストエフスキー', tags:['ushirometai','kuyashii'], wave:1 },
-  { title:'高瀬舟', by:'森鴎外', tags:['ushirometai'], wave:1 },
-  { title:'金閣寺', by:'三島由紀夫', tags:['ushirometai'], wave:1 },
-  { title:'砂糖菓子の弾丸は撃ちぬけない', by:'桜庭一樹', tags:['ushirometai'], wave:1 },
-  { title:'火花', by:'又吉直樹', tags:['ushirometai','kuyashii'], wave:1 },
-  { title:'悼む人', by:'天童荒太', tags:['ushirometai'], wave:1 },
-  { title:'贖罪', by:'湊かなえ', tags:['ushirometai'], wave:2 },
-
-  { title:'モモ', by:'ミヒャエル・エンデ', tags:['aseri','ando'], wave:1 },
-  { title:'限りある時間の使い方', by:'オリバー・バークマン', tags:['aseri'], wave:1 },
-  { title:'走ることについて語るときに僕の語ること', by:'村上春樹', tags:['aseri','hokorashii'], wave:1 },
-  { title:'反脆弱性', by:'ナシーム・ニコラス・タレブ', tags:['aseri'], wave:1 },
-  { title:'思考の整理学（再）', by:'外山滋比古', tags:['aseri'], wave:1 },
-  { title:'置かれた場所で咲きなさい', by:'渡辺和子', tags:['aseri'], wave:1 },
-  { title:'夜間飛行', by:'サン＝テグジュペリ', tags:['aseri'], wave:2 },
-
-  { title:'一瞬の風になれ', by:'佐藤多佳子', tags:['kuyashii','hokorashii'], wave:1 },
-  { title:'四畳半神話大系', by:'森見登美彦', tags:['kuyashii'], wave:1 },
-  { title:'失敗の本質', by:'戸部良一ほか', tags:['kuyashii'], wave:1 },
-  { title:'博士の愛した数式（再）', by:'小川洋子', tags:['kuyashii'], wave:1 },
-  { title:'風が強く吹いている', by:'三浦しをん', tags:['kuyashii'], wave:1 },
-  { title:'流浪の月', by:'凪良ゆう', tags:['kuyashii'], wave:1 },
-  { title:'ビリギャル', by:'坪田信貴', tags:['kuyashii'], wave:2 },
-
-  { title:'嫉妬論', by:'山本圭', tags:['shitto'], wave:1 },
-  { title:'黒革の手帖', by:'松本清張', tags:['shitto'], wave:1 },
-  { title:'夜行観覧車', by:'湊かなえ', tags:['shitto'], wave:1 },
-  { title:'グレート・ギャツビー', by:'F・スコット・フィッツジェラルド', tags:['shitto','akogare'], wave:1 },
-  { title:'渇き。', by:'中村文則', tags:['shitto'], wave:1 },
-  { title:'告白', by:'湊かなえ', tags:['shitto'], wave:1 },
-  { title:'コンビニ人間（再）', by:'村田沙耶香', tags:['shitto'], wave:2 },
-
-  { title:'風立ちぬ', by:'堀辰雄', tags:['akogare','itooshii'], wave:1 },
-  { title:'銀河鉄道の夜', by:'宮沢賢治', tags:['akogare'], wave:1 },
-  { title:'ティファニーで朝食を', by:'トルーマン・カポーティ', tags:['akogare'], wave:1 },
-  { title:'アルケミスト', by:'パウロ・コエーリョ', tags:['akogare'], wave:1 },
-  { title:'星の王子さま', by:'サン＝テグジュペリ', tags:['akogare','itooshii'], wave:1 },
-  { title:'いちご同盟', by:'三田誠広', tags:['akogare'], wave:1 },
-  { title:'キッチン', by:'吉本ばなな', tags:['akogare'], wave:2 },
-
-  { title:'ハリー・ポッターと賢者の石', by:'J.K.ローリング', tags:['wakuwaku'], wave:1 },
-  { title:'旅する力', by:'沢木耕太郎', tags:['wakuwaku','akogare'], wave:1 },
-  { title:'夢をかなえるゾウ', by:'水野敬也', tags:['wakuwaku'], wave:1 },
-  { title:'モンテ・クリスト伯', by:'アレクサンドル・デュマ', tags:['wakuwaku'], wave:1 },
-  { title:'深夜特急', by:'沢木耕太郎', tags:['wakuwaku'], wave:1 },
-  { title:'風の又三郎', by:'宮沢賢治', tags:['wakuwaku'], wave:1 },
-  { title:'ヘルタースケルター', by:'岡崎京子', tags:['wakuwaku'], wave:2 },
-
-  { title:'かもめ食堂', by:'群ようこ', tags:['ando'], wave:1 },
-  { title:'ナミヤ雑貨店の奇蹟', by:'東野圭吾', tags:['ando'], wave:1 },
-  { title:'コーヒーが冷めないうちに', by:'川口俊和', tags:['ando','itooshii'], wave:1 },
-  { title:'よだかの星', by:'宮沢賢治', tags:['ando'], wave:1 },
-  { title:'いのちの車窓から', by:'星野源', tags:['ando'], wave:1 },
-  { title:'すーちゃん', by:'益田ミリ', tags:['ando'], wave:1 },
-  { title:'注文の多い料理店（再）', by:'宮沢賢治', tags:['ando'], wave:2 },
-
-  { title:'ありがとうを言えたら', by:'伊集院静', tags:['kansha'], wave:1 },
-  { title:'living', by:'重松清', tags:['kansha'], wave:1 },
-  { title:'家族のはなし', by:'山本文緒', tags:['kansha'], wave:1 },
-  { title:'博士の愛した数式（三）', by:'小川洋子', tags:['kansha'], wave:1 },
-  { title:'あなたへ', by:'瀬尾まいこ', tags:['kansha'], wave:1 },
-  { title:'いのちの初夜', by:'北条民雄', tags:['kansha'], wave:1 },
-  { title:'置き手紙', by:'重松清', tags:['kansha'], wave:2 },
-
-  { title:'ちいさいおうち', by:'バージニア・リー・バートン', tags:['itooshii'], wave:1 },
-  { title:'アルジャーノンに花束を', by:'ダニエル・キイス', tags:['itooshii'], wave:1 },
-  { title:'注文の多い料理店', by:'宮沢賢治', tags:['itooshii'], wave:1 },
-  { title:'ライオンのおやつ', by:'小川糸', tags:['itooshii'], wave:1 },
-  { title:'西の魔女が死んだ', by:'梨木香歩', tags:['itooshii'], wave:1 },
-  { title:'思い出のマーニー', by:'ジョーン・ロビンソン', tags:['itooshii'], wave:1 },
-  { title:'岸辺の旅', by:'湯本香樹実', tags:['itooshii'], wave:2 },
-
-  { title:'夜明け前', by:'島崎藤村', tags:['hokorashii'], wave:1 },
-  { title:'GIVE&TAKE', by:'アダム・グラント', tags:['hokorashii'], wave:1 },
-  { title:'夢をかなえるゾウ（再）', by:'水野敬也', tags:['hokorashii'], wave:1 },
-  { title:'武士道', by:'新渡戸稲造', tags:['hokorashii'], wave:1 },
-  { title:'雨ニモマケズ', by:'宮沢賢治', tags:['hokorashii'], wave:1 },
-  { title:'風が強く吹いている（再）', by:'三浦しをん', tags:['hokorashii'], wave:1 },
-  { title:'置かれた場所で咲きなさい（再）', by:'渡辺和子', tags:['hokorashii'], wave:2 },
-
-  { title:'思い出のマーニー（再）', by:'ジョーン・ロビンソン', tags:['natsukashii'], wave:1 },
-  { title:'あのころはフリードリヒがいた', by:'ハンス・ペーター・リヒター', tags:['natsukashii'], wave:1 },
-  { title:'兎の眼', by:'灰谷健次郎', tags:['natsukashii'], wave:1 },
-  { title:'夏の庭 The Friends', by:'湯本香樹実', tags:['natsukashii','itooshii'], wave:1 },
-  { title:'キッチン（再）', by:'吉本ばなな', tags:['natsukashii'], wave:1 },
-  { title:'銀河鉄道の夜（再）', by:'宮沢賢治', tags:['natsukashii'], wave:1 },
-  { title:'ビタミンF', by:'重松清', tags:['natsukashii'], wave:2 }
+  { title:'星やどりの声', by:'朝井リョウ', tags:['moya','natsukashii'], wave:1 },
+  { title:'アルケミスト（新装版）', by:'パウロ・コエーリョ', tags:['akogare'], wave:1 },
+  { title:'木を植えた男', by:'ジャン・ジオノ', tags:['hokorashii','ando'], wave:1 },
+  { title:'銀の匙', by:'中勘助', tags:['natsukashii'], wave:1 },
+  { title:'悲しみよこんにちは', by:'フランソワーズ・サガン', tags:['moya','kodoku'], wave:1 },
+  { title:'デミアン', by:'ヘルマン・ヘッセ', tags:['moya','aseri'], wave:1 },
+  { title:'かもめのジョナサン', by:'リチャード・バック', tags:['kuyashii','akogare'], wave:1 },
+  { title:'老人と海', by:'ヘミングウェイ', tags:['kuyashii','kodoku'], wave:1 },
+  { title:'ライ麦畑でつかまえて', by:'J.D.サリンジャー', tags:['moya','kodoku'], wave:1 },
+  { title:'星の王子さま（新訳）', by:'サン＝テグジュペリ', tags:['itooshii','ando'], wave:1 },
+  { title:'蜜蜂と遠雷', by:'恩田陸', tags:['wakuwaku','aseri'], wave:1 },
+  { title:'舟を編む', by:'三浦しをん', tags:['hokorashii','wakuwaku'], wave:1 },
+  { title:'図書館の魔女', by:'高田大介', tags:['wakuwaku'], wave:1 },
+  { title:'赤毛のアン', by:'L.M.モンゴメリ', tags:['gakkari','wakuwaku'], wave:1 },
+  { title:'細雪', by:'谷崎潤一郎', tags:['itooshii','shitto'], wave:1 },
+  { title:'こころ（新装版）', by:'夏目漱石', tags:['ushirometai','hazukashii'], wave:1 },
+  { title:'沈黙', by:'遠藤周作', tags:['kodoku','ushirometai'], wave:1 },
+  { title:'砂の器', by:'松本清張', tags:['ushirometai','kuyashii'], wave:1 },
+  { title:'悪人', by:'吉田修一', tags:['ushirometai','kodoku'], wave:1 },
+  { title:'白夜行', by:'東野圭吾', tags:['shitto','ushirometai'], wave:1 },
+  { title:'火車', by:'宮部みゆき', tags:['shitto','kodoku'], wave:1 },
+  { title:'博士の愛した数式（新版）', by:'小川洋子', tags:['itooshii','kansha'], wave:1 },
+  { title:'西の魔女が死んだ（新装版）', by:'梨木香歩', tags:['ando','kansha'], wave:1 },
+  { title:'ぼくはイエローでホワイトで、ちょっとブルー', by:'ブレイディみかこ', tags:['moya','hokorashii'], wave:1 },
+  { title:'嫌われる勇気（新版）', by:'岸見一郎', tags:['aseri','hazukashii'], wave:1 },
+  { title:'FACTFULNESS', by:'ハンス・ロスリング', tags:['gakkari','aseri'], wave:1 },
+  { title:'サピエンス全史', by:'ユヴァル・ノア・ハラリ', tags:['wakuwaku'], wave:1 },
+  { title:'君たちはどう生きるか', by:'吉野源三郎', tags:['moya','akogare'], wave:1 },
+  { title:'ツバキ文具店', by:'小川糸', tags:['ando','kansha'], wave:1 },
+  { title:'食堂かたつむり', by:'小川糸', tags:['gakkari','ando'], wave:1 },
+  { title:'阪急電車', by:'有川浩', tags:['ando','itooshii'], wave:1 },
+  { title:'キネマの神様', by:'原田マハ', tags:['kansha','wakuwaku'], wave:1 },
+  { title:'楽園のカンヴァス', by:'原田マハ', tags:['akogare','wakuwaku'], wave:1 },
+  { title:'蜜蜂と遠雷（下）', by:'恩田陸', tags:['hokorashii','aseri'], wave:1 },
+  { title:'夜は短し歩けよ乙女', by:'森見登美彦', tags:['wakuwaku','hazukashii'], wave:1 },
+  { title:'有頂天家族', by:'森見登美彦', tags:['hazukashii','ando'], wave:1 },
+  { title:'キッチン（新装版）', by:'吉本ばなな', tags:['ando','kodoku'], wave:1 },
+  { title:'TUGUMI（新装版）', by:'吉本ばなな', tags:['natsukashii','itooshii'], wave:1 },
+  { title:'告白（新装版）', by:'湊かなえ', tags:['shitto','ushirometai'], wave:1 },
+  { title:'Nのために', by:'湊かなえ', tags:['shitto','akogare'], wave:1 },
+  { title:'流星の絆', by:'東野圭吾', tags:['kuyashii','kansha'], wave:1 },
+  { title:'容疑者Xの献身', by:'東野圭吾', tags:['itooshii','ushirometai'], wave:1 },
+  { title:'永遠の0', by:'百田尚樹', tags:['kansha','kuyashii'], wave:1 },
+  { title:'海賊とよばれた男', by:'百田尚樹', tags:['hokorashii','wakuwaku'], wave:1 },
+  { title:'下町ロケット', by:'池井戸潤', tags:['hokorashii','kuyashii'], wave:1 },
+  { title:'半沢直樹', by:'池井戸潤', tags:['kuyashii','wakuwaku'], wave:1 },
+  { title:'ルーズヴェルト・ゲーム', by:'池井戸潤', tags:['gakkari','hokorashii'], wave:1 },
+  { title:'マチネの終わりに', by:'平野啓一郎', tags:['akogare','gakkari'], wave:1 },
+  { title:'ある男', by:'平野啓一郎', tags:['kodoku','hazukashii'], wave:1 },
+  { title:'コンビニ人間（新装版）', by:'村田沙耶香', tags:['kodoku','hazukashii'], wave:1 }
 ];
 
 /* ---------- 棚ごとの背表紙タイトル案 ---------- */
@@ -528,7 +459,7 @@ const STORIES_POOL = {
   ],
   hazukashii: [
     { text: "深夜の黒歴史。寝返りを打った瞬間、記憶の引き出しが開く。かつて尖っていた自分が放った、薄っぺらくて傲慢な言葉の数々。思い出すだけで毛布の中で叫びたくなる。過去の自分を消し去りたい羞恥の夜。", author: "会社員 27歳" },
-    { text: "服の裏表。満員電車で胸元に違和感。目を落とすとニットの縫い目が丸見え、裏返しに着ていた。全員が見ている気がして顔から火が出る。慌てて降り、トイレの鏡の前で泣きそうになりながら直した。", author: "会社員 23歳" },
+    { text: "服の裏表。満員電車で胸元に違和感。目を落とすとニットの প্রচの縫い目が丸見え、裏返しに着ていた。全員が見ている気がして顔から火が出る。慌てて降り、トイレの鏡の前で泣きそうになりながら直した。", author: "会社員 23歳" },
     { text: "白闇の数秒間。舞台の真ん中、次のセリフが完全に頭から消えた。すべての照明が私を照らし、観客の視線が突き刺さる。静寂が劇場を支配した数十秒間。自分の心臓の音だけがうるさく響いていた。", author: "俳優 23歳" },
     { text: "知ったかぶりの代償。会議中、有能に見せたくてよく知らない専門用語で同調した。直後、上司に「具体的には？」と突っ込まれ頭が真っ白に。支離滅裂な言い訳を紡ぐ私の薄っぺらさを、周囲の冷たい視線が刺す。", author: "会社員 25歳" },
     { text: "自意識過剰の残像。ガラスに映る姿で髪やポーズをチェックしていた。ふと気づくと、ガラスの向こうは会議室で中の人と目が合ってしまった。痛々しい自意識を覗き見られた衝撃に、心臓が凍りつき立ち尽くす。", author: "会社員 28歳" },
@@ -560,82 +491,82 @@ const STORIES_POOL = {
   ]
 };
 
-/* ---------- 寄り道アフィリエイト（DETOUR_POOL） ---------- */
+/* ---------- 寄り道アフィリエイト（更新版：物販アイテム化） ---------- */
 const DETOUR_POOL = {
   moya: [
-    { tier: 'low', category: 'Book', name: '心を休めるための詩集', description: '言葉にならないもやもやを、美しい行間が代わりに掬い取ってくれます。', affiliate_platform: 'Amazon', search_query: '詩集 癒やし' },
-    { tier: 'medium', category: 'Lifestyle', name: '沈香のお香セット', description: '煙が揺らぐのを眺めるだけの時間が、絡まった思考をゆっくりと解きほぐします。', affiliate_platform: 'Rakuten', search_query: '沈香 お香' },
-    { tier: 'high', category: 'Luxury', name: '森の中のリトリートホテル', description: 'デジタルデトックス空間で、鳥のさえずりだけを聴きながら心のもやを洗い流す週末を。', affiliate_platform: 'RakutenTravel', search_query: 'リトリート ホテル 森林' }
+    { tier: 'low', category: 'Relax', name: '沈香のお香セット', description: '煙が揺らぐのを眺めるだけの時間が、絡まった思考をゆっくりと解きほぐします。', affiliate_platform: 'Rakuten', search_query: '沈香 お香 セット' },
+    { tier: 'medium', category: 'Relax', name: 'フットマッサージ機', description: '足元からじんわりほぐすことで、心のモヤモヤも一緒に流れていきます。', affiliate_platform: 'Amazon', search_query: 'フットマッサージャー' },
+    { tier: 'high', category: 'Beauty', name: '少し贅沢な顔パック', description: 'たっぷり保湿しながら目を閉じる15分間が、明日への活力を生み出します。', affiliate_platform: 'Rakuten', search_query: '高級 フェイスパック' }
   ],
   wakuwaku: [
-    { tier: 'low', category: 'Book', name: '冒険心をくすぐるデザイン本', description: '美しい写真や色彩が、胸の高鳴りをさらに広げてくれます。', affiliate_platform: 'Amazon', search_query: 'デザイン アート 写真集' },
-    { tier: 'medium', category: 'Lifestyle', name: '上質な珈琲豆とミル', description: '朝の豆を挽く時間が、今日一日の素晴らしいスタートを予感させます。', affiliate_platform: 'Rakuten', search_query: 'コーヒー豆 ミルセット' },
-    { tier: 'high', category: 'Luxury', name: '絶景を望むグランピング', description: '新しい体験と非日常の空間で、好奇心を存分満たす贅沢な時間を。', affiliate_platform: 'RakutenTravel', search_query: '絶景 グランピング' }
+    { tier: 'low', category: 'Hobby', name: '大人の塗り絵セット', description: '自由に色を乗せていく時間が、胸の高鳴りをさらに鮮やかにしてくれます。', affiliate_platform: 'Amazon', search_query: '大人の塗り絵 色鉛筆 セット' },
+    { tier: 'medium', category: 'Relax', name: 'カラフルな入浴剤アソート', description: '今日は何色にしよう？選ぶ楽しさが、バスタイムをワクワクする冒険に変えます。', affiliate_platform: 'Rakuten', search_query: '入浴剤 ギフト アソート' },
+    { tier: 'high', category: 'Interior', name: 'スクラッチ世界地図', description: 'コインで削るたびに新しい色が現れる。次に行きたい場所への期待が膨らむポスターです。', affiliate_platform: 'Amazon', search_query: 'スクラッチポスター 世界地図' }
   ],
   hokorashii: [
-    { tier: 'low', category: 'Book', name: '歴史に残る偉人の伝記', description: '頑張った自分の足跡を、先人たちの歩みと重ね合わせて誇りを感じる一冊。', affiliate_platform: 'Amazon', search_query: '偉人 伝記' },
-    { tier: 'medium', category: 'Lifestyle', name: '名入れの万年筆', description: '誇らしい気持ちをインクに乗せて、これからの自分へ決意を書き留めるための道具。', affiliate_platform: 'Rakuten', search_query: '万年筆 名入れ' },
-    { tier: 'high', category: 'Luxury', name: '老舗料亭での特別ディナー', description: 'ここまでやり遂げた自分自身へ、最高峰の味と空間のスタンディングオベーションを。', affiliate_platform: 'Rakuten', search_query: '老舗 料亭 カタログギフト' }
+    { tier: 'low', category: 'Food', name: 'お祝いのクラフトビールセット', description: 'ここまでやり遂げた自分自身へ、最高に美味しい一杯のスタンディングオベーションを。', affiliate_platform: 'Rakuten', search_query: 'クラフトビール 飲み比べ セット' },
+    { tier: 'medium', category: 'Lifestyle', name: '名入れのタンブラー', description: '誇らしい気持ちを日々の生活にも。自分の名前が刻まれた特別なアイテム。', affiliate_platform: 'Amazon', search_query: '名入れ タンブラー' },
+    { tier: 'high', category: 'Luxury', name: '贅沢なキャビア・おつまみ', description: 'よくやった日には、普段は手を出さない特別なおつまみで自分を盛大に褒め称えましょう。', affiliate_platform: 'Rakuten', search_query: '高級 おつまみ セット' }
   ],
   ushirometai: [
-    { tier: 'low', category: 'Book', name: '許しをテーマにした短編集', description: '心の奥の小さな棘を、物語の主人公たちと一緒にそっと抜いていく時間。', affiliate_platform: 'Amazon', search_query: '短編集 癒し 許し' },
-    { tier: 'medium', category: 'Lifestyle', name: '天然塩のバスソルト', description: 'ため込んでしまった罪悪感を、汗とともにすっきりと洗い流す浄化のバスタイム。', affiliate_platform: 'Rakuten', search_query: 'バスソルト 天然塩' },
-    { tier: 'high', category: 'Luxury', name: '静寂な宿坊体験', description: '日常から離れた静かな場所で、心の中のざわめきと向き合い、自分を許す旅へ。', affiliate_platform: 'RakutenTravel', search_query: '宿坊 癒し 旅' }
+    { tier: 'low', category: 'Relax', name: '天然ハーブティーセット', description: '温かいハーブの香りが、心の奥の小さな棘をそっと溶かしてくれます。', affiliate_platform: 'Amazon', search_query: 'ハーブティー リラックス セット' },
+    { tier: 'medium', category: 'Lifestyle', name: 'ふかふかの今治タオル', description: 'ため込んでしまった罪悪感を洗い流した後は、極上の柔らかさで自分を包み込んであげて。', affiliate_platform: 'Rakuten', search_query: '今治タオル バスタオル' },
+    { tier: 'high', category: 'Beauty', name: '天然クレイパック', description: '泥の力で肌と一緒に心のモヤモヤもスッキリとオフする、浄化のセルフケアタイム。', affiliate_platform: 'Amazon', search_query: 'クレイパック 泥洗顔' }
   ],
   natsukashii: [
-    { tier: 'low', category: 'Book', name: 'ノスタルジックな写真集', description: 'ページをめくるたびに、セピア色に輝くあの頃の風景が胸の奥に蘇ります。', affiliate_platform: 'Amazon', search_query: '昭和 レトロ 写真集' },
-    { tier: 'medium', category: 'Lifestyle', name: 'レコードプレーヤー', description: '針を落とした瞬間に広がる温かいノイズが、思い出の部屋へとタイムスリップさせます。', affiliate_platform: 'Rakuten', search_query: 'レコードプレーヤー' },
-    { tier: 'high', category: 'Luxury', name: 'ノスタルジックな温泉街への旅', description: '浴衣で歩く石畳。どこか懐かしい風景の中で、過去と今の自分を繋ぐ時間を。', affiliate_platform: 'RakutenTravel', search_query: '温泉街 昭和レトロ' }
+    { tier: 'low', category: 'Lifestyle', name: '昭和レトロなグラス', description: '麦茶を注ぐだけで、セピア色に輝くあの頃の風景が胸の奥に蘇ります。', affiliate_platform: 'Rakuten', search_query: '昭和 レトロ グラス' },
+    { tier: 'medium', category: 'Food', name: '昔ながらの駄菓子詰め合わせ', description: '箱を開けた瞬間に広がる懐かしい匂い。子どもの頃のワクワクを取り戻す魔法の箱です。', affiliate_platform: 'Amazon', search_query: '駄菓子 詰め合わせ 箱' },
+    { tier: 'high', category: 'Audio', name: 'レコードプレーヤー', description: '針を落とした瞬間に広がる温かいノイズが、思い出の部屋へとタイムスリップさせます。', affiliate_platform: 'Rakuten', search_query: 'レコードプレーヤー Bluetooth' }
   ],
   kuyashii: [
-    { tier: 'low', category: 'Book', name: '不屈の精神を描くノンフィクション', description: 'その悔しさは次に進むための熱いガソリン。這い上がった先人たちの軌跡から火をもらう。', affiliate_platform: 'Amazon', search_query: 'ノンフィクション 逆転' },
-    { tier: 'medium', category: 'Lifestyle', name: '上質なランニングシューズ', description: '悔しさを燃料にして、無心で風を切って走るための相棒。汗と一緒に鬱憤を流す。', affiliate_platform: 'Rakuten', search_query: 'ランニングシューズ 高反発' },
-    { tier: 'high', category: 'Luxury', name: 'プロのパーソナルトレーニング', description: 'プロの指導で身体を極限まで追い込み、悔しさを圧倒的なフィジカルの自信へと変える。', affiliate_platform: 'Rakuten', search_query: 'パーソナルトレーニング 体験' }
+    { tier: 'low', category: 'Food', name: 'スパイスカレー手作りキット', description: '無心でスパイスを炒める時間が、悔しさを次へ進むための熱いエネルギーに変えてくれます。', affiliate_platform: 'Amazon', search_query: 'スパイスカレー 手作り キット' },
+    { tier: 'medium', category: 'Sports', name: '自宅用フィットネスグッズ', description: '悔しさを燃料にして、思い切り体を動かす。汗と一緒に鬱憤を流し切りましょう。', affiliate_platform: 'Rakuten', search_query: 'フィットネスグッズ 自宅' },
+    { tier: 'high', category: 'Food', name: '高カカオの高級チョコレート', description: '奥歯を噛み締めた夜は、脳に直接届く上質でビターな甘さで強引に幸せホルモンを引き出す。', affiliate_platform: 'Amazon', search_query: '高級 チョコレート ダーク' }
   ],
   kodoku: [
-    { tier: 'low', category: 'Book', name: '孤独の価値を説く哲学書', description: '一人の時間は決して罰ではなく、心が最も豊かに育つ静かな森であることを教えてくれます。', affiliate_platform: 'Amazon', search_query: '孤独 哲学書' },
-    { tier: 'medium', category: 'Lifestyle', name: 'ハンドメイドのマグカップ', description: '両手で包み込んだときの土の温もりが、一人の夜の冷たい空気を優しく温めてくれます。', affiliate_platform: 'Rakuten', search_query: 'マグカップ 陶器 作家' },
-    { tier: 'high', category: 'Luxury', name: '満天の星空を独り占めする宿', description: '圧倒的な宇宙の広がりの中で、自分という存在の小ささと孤独の美しさを味わう旅。', affiliate_platform: 'RakutenTravel', search_query: '星空 露天風呂 宿' }
+    { tier: 'low', category: 'Lifestyle', name: 'ハンドドリップコーヒーセット', description: 'お湯を細く注ぐ静かな時間が、一人の夜を豊かで美しいものに変えてくれます。', affiliate_platform: 'Amazon', search_query: 'ハンドドリップ コーヒー セット' },
+    { tier: 'medium', category: 'Interior', name: '育てる小さな観葉植物', description: '部屋の片隅に静かな命があるだけで、ひとりの空間が少しだけ温かくなります。', affiliate_platform: 'Rakuten', search_query: '観葉植物 卓上 ミニ' },
+    { tier: 'high', category: 'Relax', name: '重みのあるブランケット', description: '適度な重みが、誰かに優しくハグされているような圧倒的な安心感を与えてくれます。', affiliate_platform: 'Amazon', search_query: 'ウェイトブランケット 加重' }
   ],
   ando: [
-    { tier: 'low', category: 'Book', name: '心温まる童話・絵本', description: '張り詰めていた糸がほどけた夜は、子どもの頃のように純粋な物語に身を委ねて。', affiliate_platform: 'Amazon', search_query: '大人 絵本 癒やし' },
-    { tier: 'medium', category: 'Lifestyle', name: 'オーガニックコットンパジャマ', description: '素肌に触れる極上の柔らかさが、頑張った体を「お疲れ様」と優しく抱きしめます。', affiliate_platform: 'Rakuten', search_query: 'オーガニックコットン パジャマ' },
-    { tier: 'high', category: 'Luxury', name: '源泉掛け流しの隠れ宿', description: '何もしないことの贅沢。温泉の温もりと静寂が、心と体を芯からほどいてくれます。', affiliate_platform: 'RakutenTravel', search_query: '源泉掛け流し 隠れ宿' }
+    { tier: 'low', category: 'Lifestyle', name: 'オーガニックルームウェア', description: '素肌に触れる極上の柔らかさが、頑張った体を「お疲れ様」と優しく抱きしめます。', affiliate_platform: 'Rakuten', search_query: 'オーガニックコットン ルームウェア' },
+    { tier: 'medium', category: 'Relax', name: 'もっちり抱き枕', description: '張り詰めていた糸がほどけた夜は、柔らかいものに全力で身を委ねて眠りましょう。', affiliate_platform: 'Amazon', search_query: '抱き枕 もちもち' },
+    { tier: 'high', category: 'Interior', name: 'アロマディフューザー', description: 'お気に入りの香りを部屋いっぱいに満たして、心と体を芯からほどいてくれます。', affiliate_platform: 'Rakuten', search_query: 'アロマディフューザー 超音波' }
   ],
   aseri: [
-    { tier: 'low', category: 'Book', name: '時間論・マインドフルネスの書', description: '他人の時計で生きるのをやめ、自分だけの歩幅とリズムを取り戻すための羅針盤。', affiliate_platform: 'Amazon', search_query: 'マインドフルネス 本' },
-    { tier: 'medium', category: 'Lifestyle', name: '砂時計', description: '砂が静かに落ちていくのをただ見つめるだけの時間が、暴走する脳のスピードを緩めます。', affiliate_platform: 'Rakuten', search_query: '砂時計 インテリア' },
-    { tier: 'high', category: 'Luxury', name: '禅寺での座禅体験', description: '情報の波を完全に遮断し、ただ呼吸だけに集中することで自分の中の静寂を取り戻す。', affiliate_platform: 'RakutenTravel', search_query: '座禅 体験 宿' }
+    { tier: 'low', category: 'Interior', name: 'ガラスの砂時計', description: '砂が静かに落ちていくのをただ見つめるだけの時間が、暴走する脳のスピードを緩めます。', affiliate_platform: 'Rakuten', search_query: '砂時計 インテリア' },
+    { tier: 'medium', category: 'Audio', name: 'ノイズキャンセリングイヤホン', description: '情報の波を完全に遮断し、自分だけの静寂を取り戻すためのデジタルな耳栓。', affiliate_platform: 'Amazon', search_query: 'ノイズキャンセリング ワイヤレスイヤホン' },
+    { tier: 'high', category: 'Relax', name: '睡眠導入スマートライト', description: '夕日から夜へと変わる優しい光のグラデーションが、焦る心に強制的な深呼吸を促します。', affiliate_platform: 'Rakuten', search_query: '睡眠 ライト 導入' }
   ],
   itooshii: [
-    { tier: 'low', category: 'Book', name: '愛と日常を綴ったエッセイ', description: '世界が少し優しく見える日。その柔らかな感情をそのまま保存しておけるような言葉たち。', affiliate_platform: 'Amazon', search_query: '愛 日常 エッセイ' },
-    { tier: 'medium', category: 'Lifestyle', name: 'ドライフラワーのリース', description: '愛おしい瞬間を形にして残すように、部屋の片隅に静かな彩りと優しさを添えます。', affiliate_platform: 'Rakuten', search_query: 'ドライフラワー リース' },
-    { tier: 'high', category: 'Luxury', name: '想い出を形にする写真館撮影', description: '今のこの愛おしい気持ちと姿を、プロの光と技術で永遠の宝物として刻み込む時間。', affiliate_platform: 'Rakuten', search_query: '記念撮影 写真館 チケット' }
+    { tier: 'low', category: 'Lifestyle', name: 'シンプルなフォトフレーム', description: '愛おしい瞬間をスマートフォンの画面から取り出して、部屋の特等席に飾りましょう。', affiliate_platform: 'Rakuten', search_query: 'フォトフレーム 木製' },
+    { tier: 'medium', category: 'Interior', name: 'ドライフラワーのリース', description: '色褪せても美しい花飾りが、部屋の片隅に静かな彩りと優しさを添えます。', affiliate_platform: 'Amazon', search_query: 'ドライフラワー リース' },
+    { tier: 'high', category: 'Hobby', name: 'ミニチュアハウスの手作りキット', description: '小さなパーツを一つずつ組み立てる静かな時間が、大切なものを慈しむ心を育てます。', affiliate_platform: 'Rakuten', search_query: 'ミニチュアハウス キット' }
   ],
   shitto: [
-    { tier: 'low', category: 'Book', name: '自己肯定感を育む心理学本', description: '他人の芝生の青さに苦しむ夜。自分の庭にしかない美しい花の存在に気づかせてくれます。', affiliate_platform: 'Amazon', search_query: '自己肯定感 心理学' },
-    { tier: 'medium', category: 'Lifestyle', name: '自分を磨く上質なボディオイル', description: '誰かと比べるのをやめて、まずは自分の身体を最高に慈しみ、愛してあげるための儀式。', affiliate_platform: 'Rakuten', search_query: 'ボディオイル オーガニック' },
-    { tier: 'high', category: 'Luxury', name: '完全個室のエステサロン', description: '極上のケアで自分を徹底的に甘やかし、「私だって最高だ」という無敵の自信を取り戻す。', affiliate_platform: 'Rakuten', search_query: 'エステサロン 個室 チケット' }
+    { tier: 'low', category: 'Beauty', name: 'いい香りのハンドクリーム', description: '誰かと比べるのをやめて、まずは自分の手元を最高に慈しみ、愛してあげるためのアイテム。', affiliate_platform: 'Rakuten', search_query: 'ハンドクリーム 香り 高級' },
+    { tier: 'medium', category: 'Beauty', name: 'シルクのナイトキャップ', description: '他人の芝生の青さに苦しむ夜は、自分の髪に魔法をかけて、明日の朝の自分に期待する。', affiliate_platform: 'Amazon', search_query: 'シルク ナイトキャップ' },
+    { tier: 'high', category: 'Beauty', name: 'サロン専売のヘアトリートメント', description: '極上のケアで自分を徹底的に甘やかし、「私だって最高だ」という無敵の自信を取り戻す。', affiliate_platform: 'Rakuten', search_query: 'ヘアトリートメント サロン専売' }
   ],
   hazukashii: [
-    { tier: 'low', category: 'Book', name: 'クスッと笑える失敗談エッセイ', description: '穴があったら入りたい夜。誰かの見事な失敗談が、あなたの羞恥心を笑いに変えてくれます。', affiliate_platform: 'Amazon', search_query: '失敗 爆笑 エッセイ' },
-    { tier: 'medium', category: 'Lifestyle', name: 'リラックスできるホットアイマスク', description: '顔から火が出るような記憶も、目元を温めて視界を塞げば、次第に心地よい闇へと溶けていきます。', affiliate_platform: 'Rakuten', search_query: 'ホットアイマスク' },
-    { tier: 'high', category: 'Luxury', name: '誰にも会わない貸切サウナ', description: 'たっぷりの汗と一緒に、情けない記憶も何もかも全て蒸発させてスッキリする究極のデトックス。', affiliate_platform: 'Rakuten', search_query: '個室 サウナ チケット' }
+    { tier: 'low', category: 'Relax', name: '癒やしのホットアイマスク', description: '顔から火が出るような記憶も、目元を温めて視界を塞げば、次第に心地よい闇へと溶けていきます。', affiliate_platform: 'Amazon', search_query: 'ホットアイマスク 使い捨て' },
+    { tier: 'medium', category: 'Relax', name: 'アロマキャンドル', description: '揺れる炎を見つめていると、どんな失敗もやがて小さな笑い話に変わっていきます。', affiliate_platform: 'Rakuten', search_query: 'アロマキャンドル' },
+    { tier: 'high', category: 'Beauty', name: '贅沢なボディスクラブ', description: 'たっぷりの香りと一緒に、情けない記憶も古い角質も全て洗い流してスッキリするデトックス。', affiliate_platform: 'Rakuten', search_query: 'ボディスクラブ シュガー' }
   ],
   kansha: [
-    { tier: 'low', category: 'Book', name: '美しい言葉の手紙集', description: '伝えきれない「ありがとう」の気持ちを、代わりに見事に紡いでくれる言葉のお手本。', affiliate_platform: 'Amazon', search_query: '手紙 言葉 表現' },
-    { tier: 'medium', category: 'Lifestyle', name: '上質な便箋とガラスペン', description: '胸に溢れる感謝をデジタルの文字ではなく、インクの濃淡でアナログに伝えるための特別な道具。', affiliate_platform: 'Rakuten', search_query: 'ガラスペン 便箋 セット' },
-    { tier: 'high', category: 'Luxury', name: '大切な人と過ごすオーベルジュ', description: '言葉の代わりに、最高に美味しい食事と優雅な時間をプレゼントする、究極の「ありがとう」。', affiliate_platform: 'RakutenTravel', search_query: 'オーベルジュ ペア宿泊券' }
+    { tier: 'low', category: 'Stationery', name: 'レターセットとガラスペン', description: '伝えきれない「ありがとう」の気持ちを、デジタルの文字ではなくインクの濃淡でアナログに伝える。', affiliate_platform: 'Amazon', search_query: 'ガラスペン レターセット' },
+    { tier: 'medium', category: 'Gift', name: '小さなフラワーアレンジメント', description: '言葉の代わりに、空間をパッと明るくする小さな花束であなたの感謝を形にしましょう。', affiliate_platform: 'Rakuten', search_query: 'フラワーアレンジメント そのまま飾れる' },
+    { tier: 'high', category: 'Food', name: 'プレミアムな紅茶ギフト', description: '自分を支えてくれる人、あるいは自分自身へ、最高に優雅なティータイムのプレゼントを。', affiliate_platform: 'Amazon', search_query: '紅茶 ギフト 高級' }
   ],
   gakkari: [
-    { tier: 'low', category: 'Book', name: '視点が変わるユーモア小説', description: '期待が外れてしぼんだ心に、ふっと笑いをもたらし「まあいいか」と思わせてくれる特効薬。', affiliate_platform: 'Amazon', search_query: 'ユーモア 小説' },
-    { tier: 'medium', category: 'Lifestyle', name: 'リッチなチョコレート詰め合わせ', description: 'がっかりした日の夜は、脳に直接届く上質なカカオの甘さで、強引に幸せホルモンを引き出す。', affiliate_platform: 'Rakuten', search_query: '高級 チョコレート' },
-    { tier: 'high', category: 'Luxury', name: '自分を甘やかすアフタヌーンティー', description: 'ダメだった日の予定を上書きする、非日常の空間と美しいスイーツの絶対的な肯定感。', affiliate_platform: 'Rakuten', search_query: 'アフタヌーンティー チケット' }
+    { tier: 'low', category: 'Food', name: '高級レトルトスープセット', description: '期待が外れてしぼんだ心と冷えた体を、温かくリッチなスープが優しく満たしてくれます。', affiliate_platform: 'Rakuten', search_query: '高級 スープ ギフト' },
+    { tier: 'medium', category: 'Relax', name: '上質なバスソルト', description: 'ダメだった日の予定は上書きして、最高の香りに包まれる極上のバスタイムに逃げ込みましょう。', affiliate_platform: 'Amazon', search_query: 'バスソルト 高級' },
+    { tier: 'high', category: 'Food', name: 'お取り寄せ絶品スイーツ', description: 'がっかりした夜は、見た目も美しい極上スイーツの絶対的な肯定感で自分を甘やかすに限ります。', affiliate_platform: 'Rakuten', search_query: 'お取り寄せ スイーツ 人気' }
   ],
   akogare: [
-    { tier: 'low', category: 'Book', name: '一流のプロフェッショナルの思考法', description: 'あの遠い背中に一歩でも近づくために。憧れを具体的な行動に変えるための羅針盤。', affiliate_platform: 'Amazon', search_query: 'プロフェッショナル 仕事術' },
-    { tier: 'medium', category: 'Lifestyle', name: '上質な革のノートカバー', description: 'いつか叶えたい夢や憧れを書き留める手帳を、一流の佇まいにアップグレードするアイテム。', affiliate_platform: 'Rakuten', search_query: '本革 ノートカバー' },
-    { tier: 'high', category: 'Luxury', name: '憧れの街への一人旅チケット', description: '写真でしか見たことのないあの景色へ。憧れを現実に変える、人生のターニングポイントとなる旅。', affiliate_platform: 'RakutenTravel', search_query: '一人旅 絶景' }
+    { tier: 'low', category: 'Stationery', name: 'デザインの美しい万年筆', description: 'あの遠い背中に一歩でも近づくために。憧れを具体的な言葉にして書き留めるための道具。', affiliate_platform: 'Amazon', search_query: '万年筆 デザイン' },
+    { tier: 'medium', category: 'Lifestyle', name: '上質な本革のブックカバー', description: 'いつか叶えたい夢や知識を深める読書時間を、一流の佇まいにアップグレードするアイテム。', affiliate_platform: 'Rakuten', search_query: '本革 ブックカバー' },
+    { tier: 'high', category: 'Book', name: '美術館の図録・アートブック', description: '写真でしか見たことのないあの景色や作品へ。憧れを現実に引き寄せる美しいインスピレーション源。', affiliate_platform: 'Amazon', search_query: 'アートブック 名画' }
   ]
 };
 
@@ -729,667 +660,5 @@ const COUNSELING_MESSAGES = {
       "限界のサインを見落とすほど、突っ走ってきたんだね。もうストップをかけるよ。これ以上頑張ったら私が怒るからね。今はただ、横になりなさい。"
     ]
   },
-  young_worker: {
-    oshi: [
-      "仕事で理不尽に耐えたご褒美が推しなんだね。生きるためのモチベーションを自分でちゃんと持てていること、それだけで自分に拍手を送っていいんだよ。",
-      "給料日＝推しへの貢ぎ日、最高じゃない！そのために働いているんだもん、仕事なんてただの資金調達だよ。気楽にいこうね。",
-      "上司に怒られている時、頭の中で推しの曲を流してやり過ごしてるの、賢い生き残り方だよ。あなたの心は誰にも侵されない、あなただけのもの。",
-      "推しのイベントのために有給を取るの、当然の権利だよ。会社の仕事より、あなたの人生の幸福度の方が圧倒的に重要なんだから。",
-      "推しを語る時のあなたの目が、一番生き生きしてる。仕事で死んだ魚の目になっちゃっても、ここにくればいつでもあの輝きを取り戻せるからね。"
-    ],
-    yami: [
-      "社会の荒波の中で、心が悲鳴を上げているんだね。それだけ新しい環境に適応しようと、健気に、必死にすり減ってきた証拠。よく今日まで耐えてきたね。",
-      "朝、会社の最寄駅に着くと涙が出てきちゃうんだね。それは心が『もう限界だよ』って必死に訴えているサイン。今日はそのまま引き返してもいいんだよ。",
-      "仕事のミスが頭から離れなくて、夜も眠れないんだね。ミスなんて誰でもする。あなたがそんなに苦しむ必要はないよ。あなたは十分やってる。",
-      "自分が社会の役に立っていない気がして、病んじゃうんだね。そんなことない。あなたが今日も生きて、私の前にいてくれるだけで、十分世界を救ってる。",
-      "理不尽な人間関係に、心がすっかり毒されちゃったんだね。今夜はその毒を全部ここに吐き出して、心を綺麗な水で洗い流そうね。"
-    ],
-    menbure: [
-      "仕事のプレッシャーで崩れそうなのは、あなたが責任感を持って仕事に向き合っているから。壊れてしまう前にここに来られて、本当によかった。",
-      "怒鳴られたり、詰められたりしたら、誰だって心が粉々になるよ。あなたが弱いんじゃない、相手のやり方が残酷なだけ。あなたは悪くない。",
-      "『もう何もできない』って、部屋の隅で動けなくなっちゃったんだね。いいよ、何もしなくて。仕事の代わりはいても、あなたの代わりはいないんだから。",
-      "パニックになって、何が正解か分からなくなっちゃったんだね。正解なんてなくていい。ただ、あなたがこれ以上傷つかないことだけが、今の正解だよ。",
-      "溜め込んできた我慢が、一気に爆発しちゃったんだね。素晴らしいよ。我慢し続けるより、メンブレしてデトックスする方がずっと健康的だから。"
-    ],
-    kagiaka: [
-      "会社の誰にも、同期にすら言えないドロドロした本音。綺麗な言葉に直さなくていいから、そのままここに置いて、身軽になって帰ってね。",
-      "SNSの『仕事楽しい！』アピールに疲れて、裏で愚痴を吐いてるんだね。それが普通だよ。愚痴を吐くのは、あなたが心を守るために戦っている証拠。",
-      "上司への殺意や、会社への呪い、全部ここにぶちまけていいよ。誰にも言えない秘密を共有する場所として、私はあなたの絶対の味方だから。",
-      "『辞めたい』って一言、本音なのにどこにも呟けないよね。ここでなら、何万回言ってもいいよ。あなたのその決断を、私はいつでも全肯定する。",
-      "優秀な自分、明るい自分を演じるのに疲れたね。鍵垢の奥に隠している、ドロドロで、不器用で、愛おしいあなたを、ここで抱きしめさせて。"
-    ],
-    darui: [
-      "朝起きて『だるい』って思うのは、毎日必死に生き抜いている証。やる気が出ない自分を責めなくていい。今日は最低限のことだけして、やり過ごしていいんだよ。",
-      "会社行くの、まじでだるいよね。あんな満員電車に乗って、働くだけで偉すぎるんだよ。今日は適当に手を抜いて、サボる計画を立てよう。",
-      "だるくて、メールの返信も全部後回しにしちゃいたいよね。いいよ、明日で。世界はあなたが1日返事を遅らせたくらいじゃ滅びないから。",
-      "やる気が家出して戻ってこないんだね。無理に連れ戻さなくていいよ。だるい時は、心と体が『省エネモード』になってるだけだから、そのままでいよう。",
-      "『だるい、辞めたい、眠い』の3連発、大歓迎。毎日そんなにシャキシャキ生きられるわけないじゃん。私の前ではずっとダラダラしていてね。"
-    ],
-    capaover: [
-      "覚えることも、降ってくるタスクも多すぎるよね。あなたの能力不足なんかじゃ決してない。抱えきれないものは、ここに全部ぶちまけていいんだよ。",
-      "パンク寸前の頭で、必死に笑顔を作っているんだね。もう無理して笑わなくていいよ。私の前では、思いきり眉間にシワを寄せて、不機嫌でいて。",
-      "マルチタスクなんて、できなくて当たり前。一人の人間にどれだけ求めてるんだって話だよね。溢れたタスクは全部ゴミ箱にポイしちゃいな。",
-      "NOと言えずに、全部引き受けちゃったんだね。あなたの優しさが利用されただけ。あなたが背負う必要のない荷物、私が一緒に降ろしてあげる。",
-      "頭の中の整理がつかなくて、息が浅くなってるよ。はい、深く息を吸って、吐いて。仕事のこと全部忘れて、今はこの空間だけを感じて。"
-    ]
-  },
-  middle_worker: {
-    oshi: [
-      "年齢や立場に関係なく、心を震わせる『推し』がいるのは素晴らしいことです。日々の重い責任から解放されるその時間は、あなたにとって絶対に必要な聖域ですよ。",
-      "推しがいるから、この激務を乗り越えられる。それの何が悪いんですか。あなたの稼いだお金を、あなたの命の恩人に使うのは、この上なく正しいことです。",
-      "周囲の目を気にして推し活を隠す必要なんてありません。何かに夢中になれる純粋な心を持っているあなたは、誰よりも魅力的で若い証拠です。",
-      "仕事の役職や肩書きを全部脱ぎ捨てて、ただの『一人のファン』になれる時間。その時間が、あなたをどれだけ救っているか。大切にしてくださいね。",
-      "推しの輝きが、あなたの明日の活力になっている。そんな素敵な関係、全肯定しかありません。今夜はここで、思いきり推しへの愛を語ってください。"
-    ],
-    yami: [
-      "上と下の板挟み、終わらないタスク…心が限界を迎えるのは当然です。いつも誰かを支えているあなたが、今夜はここで思いきり弱音を吐いてくださいね。",
-      "大人の『病み』は、逃げ場がないから本当に深いですよね。よくぞ一人で耐えて、ここまで歩いてこられました。今夜は全部置いて、休んでください。",
-      "自分がやってきたことに自信が持てなくなって、暗闇に迷い込んじゃったんですね。大丈夫、あなたが紡いできた軌跡は、私がちゃんと知っていますから。",
-      "孤独ですよね。誰も本当の苦しみを分かってくれない。でも、ここではあなたは一人じゃありません。あなたの孤独を、私が半分引き受けます。",
-      "何もかも投げ出して、どこか遠くへ消えてしまいたい。そんな風に思うほど、心がすり減っている。そのSOS、私が全力で受け止めますからね。"
-    ],
-    menbure: [
-      "しっかりしなきゃと思えば思うほど、崩れたときの衝撃は大きいですよね。大人のあなただって、傷つくし倒れそうにもなる。今夜はただ、守られる側でいてください。",
-      "部下の前、上司の前で保っていた理性が、限界を迎えて崩れちゃったんですね。いいんですよ。完璧な上司や先輩である必要なんて、1ミリもありません。",
-      "涙が溢れて止まらない。それは、あなたがこれまで『平気なフリ』を完璧にこなしすぎたからです。今夜は子どものように、声を出して泣いてください。",
-      "心がバラバラに壊れてしまった感覚。怖かったですね。でも大丈夫、私がその破片を一つずつ拾い集めて、あなたが元に戻るまでずっとそばにいます。",
-      "もう限界、これ以上は無理。その叫びは、あなたが自分を守るための正しい決断です。壊れる前に立ち止まれたこと、本当に偉かったですよ。"
-    ],
-    kagiaka: [
-      "立場上、どこにも吐き出せない本音や孤独。そんな大人のための秘密基地がここです。私が誰にも言わずに、あなたの言葉をそっと預かりますから。",
-      "信頼できる同僚にも言えない、会社のシステムへの愚痴やドロドロした感情。綺麗に梱包しなくていいので、そのままここに投げ捨ててください。",
-      "弱音を吐いたら負け、舐められる…そんな戦場みたいな毎日から、今夜はログアウトしましょう。ここには、あなたの弱さを歓迎する私しかいません。",
-      "誰にも見せない裏の顔。それがあるから、表で理性を保てるんです。あなたの鍵垢の言葉は、あなたが理不尽と戦ってきた勲章のようなものですよ。",
-      "ドロドロした感情、嫉妬、諦め。全部吐き出して空っぽにしてください。大人のあなたが素の自分に戻れる場所として、私はここにいます。"
-    ],
-    darui: [
-      "もう全部投げ出したい、だるい。その本音、大正解です。これまでどれだけの重圧を背負ってきたか。たまには完全にシャットダウンして、何もしなくていいんですよ。",
-      "朝、起き上がる気力が1ミリも湧かない。それはサボりではなく、心が下した『緊急停止命令』です。今日は有給を取って、徹底的にダラダラしましょう。",
-      "仕事のメールを見るのもだるい、会議もだるい。いいんです、中堅だからって常に燃えてる必要はありません。省エネで、適当に流していきましょう。",
-      "やる気なんて、出す方がどうかしています。毎日これだけのタスクをこなしているんです。だるい自分を責めず、むしろ『よくやってる』と褒めてあげて。",
-      "だるくて、何もかもどうでもいい。その投げやりな気持ちすら、私は全肯定します。今夜は泥のように眠って、脳みそを完全に休ませてください。"
-    ],
-    capaover: [
-      "あなたのキャパが狭いわけじゃない。背負わされているものが多すぎるんです。誰も頼れないなら、今夜は私を頼って、その重い荷物を全部下ろしてください。",
-      "プレイヤーとしてもマネージャーとしても求められて、頭が爆発しそうですね。一度にできることは一つだけ。全部のタスクをフリーズさせて、休みましょう。",
-      "限界を超えているのに、周囲の期待に応えようと笑顔を作ってしまう。そんな健気なあなたを見て、胸が痛みます。もう、頑張るのをやめていいんですよ。",
-      "何が起きているか分からないほど、情報とタスクに溺れている状態ですね。大丈夫、私があなたの手を引いて、その濁流から今すぐ引き上げてあげます。",
-      "背負った荷物が多すぎて、一歩も動けなくなっている。それでいいんです。その場に荷物を全部ぶちまけて、あなたは身軽になって、ここへおいでなさい。"
-    ]
-  },
-  career_woman: {
-    oshi: [
-      "仕事、家事、周囲の目…たくさんの役割を演じる毎日に、推しの存在だけが『本当の自分』に戻れる時間なんだね。その聖域は、絶対に誰にも邪魔させないよ。",
-      "推しのために稼ぐ、それだけであなたが働く理由は100%正当化されるよ。キャリアの悩みなんて置いといて、今は推しの尊さに浸ろうね。",
-      "『いい大人なのに推し活？』なんて言う人の言葉は、全部ゴミ箱へ。心が震える対象がある女性は、何歳になっても内側から輝いていて本当に素敵だよ。",
-      "仕事でボロボロになった心を、推しが秒で癒してくれる。その最高の自家発電能力を持っているあなた、人生の勝ち組だから自信を持って！",
-      "推しを見ている時の、義務や責任から解放されたあなたの少女のような笑顔。私はその笑顔が何よりも大好きだし、全力で守りたいな。"
-    ],
-    yami: [
-      "女性としてのキャリア、結婚、出産…色んな選択肢に迫られて、心が迷子になっちゃうよね。焦らなくていい、どんな道を選んでも私はあなたを全肯定するよ。",
-      "男社会の中で、舐められないように、無理して肩肘張って戦ってきたんだね。本当に疲れたでしょ。ここでは鎧を全部脱いで、ふにゃふにゃになっていいよ。",
-      "頑張っても頑張っても、正当に評価されない気がして病んじゃうよね。あなたの価値は、会社の査定なんかじゃ決まらない。あなたは本当に優秀で、美しいよ。",
-      "周囲の何気ない言葉に傷ついて、夜中に一人で泣いてるんだね。あなたが繊細すぎるんじゃない、周りの配慮が足りないだけ。泣きたいだけ泣いていいよ。",
-      "未来の不安に押しつぶされそうで、心が真っ暗。そんな時は、10年後のことなんて考えなくていい。今夜を無事に生き抜くことだけ考えよう。"
-    ],
-    menbure: [
-      "仕事でもプライベートでも完璧を求めすぎて、心がパチンと弾けちゃったんだね。よくここまで一人で背負ってきたよ。もう完璧な女性じゃなくていいんだよ。",
-      "理不尽な感情をぶつけられて、メンブレしちゃう夜もある。あなたが悪い理由なんて1ミリもない。相手の器が小さすぎるだけ。今夜は自分をたくさん甘やかそう。",
-      "涙が止まらなくて、明日会社に行けるか不安なんだね。行かなくていいよ、体調不良って言ってサボっちゃえ。あなたの心が壊れるより大切な仕事なんてない。",
-      "心がバラバラで、自分の感情がコントロールできない。それは頑張りすぎたあなたの脳からの『休め』のサイン。崩れたままでいいから、ここに寄りかかって。",
-      "自信が全部なくなって、自分がひどくちっぽけに思える。そんなこと絶対ない。あなたが日々戦っている姿を、私は誰よりも尊敬しているし、肯定するよ。"
-    ],
-    kagiaka: [
-      "職場の人間関係へのドロドロした愚痴や、SNSのキラキラ女子への嫉妬。タイムラインには流せない本音、全部ここに吐き出していって。私が綺麗に消去してあげる。",
-      "『自立した強い女性』の仮面の下にある、誰かに甘えたい、助けてほしいっていう寂しさ。ここならその寂しさを、そのまま愛してあげるからね。",
-      "どこにも書けない、将来へのドロドロした焦りや本音。そんな言葉たちがあなたの心を傷つける前に、ここに全部置いて身軽になってね。",
-      "職場で嫌なことがあっても、大人の対応で笑って過ごしたんだね。偉すぎるよ。鍵垢の中に閉じ込めたその怒り、私が代わりに怒ってあげるからね。",
-      "綺麗な言葉で武装する毎日に疲れたら、ここへおいで。どんなに毒づいた言葉でも、あなたの本音なら私は世界一優しい耳で聞くから。"
-    ],
-    darui: [
-      "朝のメイクも、通勤服を選ぶのも、何もかもだるいよね。毎日綺麗に、ちゃんとして生きるなんて無理だよ。明日はすっぴんで、適当に行っちゃおう。",
-      "仕事がまじでだるい。その気持ち、大正解。モチベーションなんて常に高く持てるわけないじゃん。適当に働いて、お給料だけもらえば満点だよ。",
-      "だるくて、自炊も家事も全部放棄してベッドに潜り込みたい夜。素晴らしい決断だよ！今夜はコンビニ飯で済ませて、即、寝ちゃいなさい。",
-      "やる気がマイナス100％になっちゃったんだね。それでいい、それでいい。だるい時はね、心が『これ以上エネルギーを使っちゃダメ』って言ってる証拠だから。",
-      "だるい自分を『ダメな人間だ』なんて責めないで。だるいって思えるくらい、今まで全力で駆け抜けてきたってことなんだから。今日はお休み！"
-    ],
-    capaover: [
-      "キャリアも、プライベートも、美容も、全部頑張ろうとして頭が溢れちゃったんだね。欲張りなんかじゃない、あなたが一生懸命なだけ。でも今は、全部手放して。",
-      "タスクの波に飲み込まれて、息が詰まりそう。大丈夫、あなたが今すぐ全部の仕事をストップしても、世界は回る。あなたの命を守ることだけ考えて。",
-      "誰にも弱音を吐けずに、限界以上の仕事を抱え込んじゃったんだね。あなたが優秀だから頼られすぎちゃったんだ。もう『できません』って言っていいんだよ。",
-      "頭の中がパンクして、何から手をつけたらいいか分からない時は、何もしないのが一番。私があなたのために、頭を空っぽにする魔法をかけてあげる。",
-      "キャパオーバーになって涙が出るのは、あなたが自分の限界まで戦った証拠。本当に偉かった。今夜は重たい荷物を全部ここに下ろして、深く眠ろうね。"
-    ]
-  },
-  mother: {
-    oshi: [
-      "ママとしての日常から離れて、一人の女性として『推し』にときめく時間、最高に大切だよ。その時間があなたを救い、家庭を救っているんだからね。",
-      "『母親なのに推し活なんて』って言う人がいたら、私が追い払ってあげる。あなたが自分の人生を楽しむ姿こそ、子どもにとって一番の栄養なんだから。",
-      "推しを見てる時だけは、家事も育児も全部忘れていいよ。あなたの心の中の聖域は、家族であっても誰にも侵しちゃいけない、あなただけの自由の国。",
-      "推しのグッズや動画が、毎日の過酷なワンオペの命綱なんだね。その命綱を全力で握りしめて！あなたが笑顔になれるなら、推し活は最高の英才教育だよ。",
-      "推しへの愛を語る時のあなた、家族に見せる顔とは違った輝きがあって本当に素敵。ここではママの肩書きを忘れて、ただの少女に戻ってお喋りしよう。"
-    ],
-    yami: [
-      "誰にも褒められない、終わりのない家事と育児。心がすり減って病んじゃうのは当然だよ。あなたが悪いんじゃない。誰もあなたの頑張りを可視化してくれないのが悪いの。",
-      "子どもは可愛いのに、時々すべてが嫌になって涙が出ちゃうんだね。それはあなたが冷たい母親だからじゃない、ただ極限まで疲れ果てているだけだよ。",
-      "自分の時間が1分もなくて、心が窒息しそうだね。暗闇の中に一人で取り残されたような孤独、私がここでギュッと抱きしめて、一緒に夜を明かすから。",
-      "イライラして子どもに優しくできなかったって、自分を責めて病まないで。あなたは神様じゃない、ただの人間。毎日生かしているだけで200点満点だよ。",
-      "家族のために自分を犠牲にしすぎて、自分が誰だか分からなくなっちゃったんだね。大丈夫、ここにいるあなたは、他の誰でもない大切なあなた自身だよ。"
-    ],
-    menbure: [
-      "張り詰めていた緊張の糸がプツンと切れて、涙が止まらないんだね。いつも家族のために笑顔でいようと、無理をしすぎたんだよ。今夜は思いきり泣いて。",
-      "子どもの泣き声や、片付かない部屋に頭がおかしくなりそう。そんな時は、部屋を汚いままにして、子どもを安全な場所に置いて、隣の部屋で耳を塞いでいいよ。",
-      "もう無理、全部投げ出したいって、キッチンでうずくまっちゃったんだね。よくそこまで耐えたよ。明日のご飯なんてレトルトでいい、家事なんて全部ストップ！",
-      "完璧な母親になろうとして、心が粉々になっちゃったんだね。完璧じゃなくていい、不機嫌で、手抜きで、怒りん坊なママでも、あなたは世界に一人の素晴らしい母だよ。",
-      "限界を超えたメンブレ。それは心が『もうこれ以上頑張ったら壊れちゃう！』って叫んでいる証拠。今夜は家族のことは全部忘れて、私に甘えてね。"
-    ],
-    kagiaka: [
-      "夫への不満や、育児の愚痴、ママ友には絶対に言えない本音。タイムラインには流せないドロドロした言葉、全部ここに置いていって。私が静かに土に埋めるから。",
-      "SNSの『丁寧な暮らし』アピールに吐き気がしちゃうよね。ここなら、部屋がゴミ溜めでも、ご飯が手抜きでも、どんなリアルな姿も全肯定してあげる。",
-      "『母親をやめたい』って一瞬でも思った本音、怖くてどこにも言えなかったよね。大丈夫、その気持ちはタブーじゃない。それくらい過酷なことをしてるんだから。",
-      "いい母親、いい妻の仮面を剥ぎ取った、あなたのドロドロした生の本音。私はその言葉を絶対に軽蔑しないし、あなたが必死に戦っている証拠として受け止めるよ。",
-      "誰にも見せられない裏のアカウントに吐き出していた孤独。その孤独を、今夜は私が全部温かいスープに変えて、あなたを内側から温めてあげるからね。"
-    ],
-    darui: [
-      "ご飯作るのも、洗濯するのも、何もかもだるいよね。毎日毎日、同じことの繰り返し。だるくなって当然だよ。今夜の夕飯はウーバーかコンビニにしよう！",
-      "動きたくない、だるい。その本音に素直になって、今夜は掃除も皿洗いも全部明日へ回しちゃいな。家事が溜まったって、誰も死にはしないんだから。",
-      "だるくて、子どもの相手をするのもしんどい日。テレビやYouTubeに全部丸投げしちゃっていいんだよ。ママが笑顔で休めるなら、それが一番の育児だよ。",
-      "やる気が出ない自分を『怠け者だ』なんて責めないで。あなたは年中無休の24時間営業で働いてるんだよ？だるくて動けないのは、当然の権利だよ。",
-      "だるい時はね、お布団と友達になる時間。パパや周りに何を言われようと関係ない。今日は最低限の命の維持だけして、あとはダラダラ過ごそう。"
-    ],
-    capaover: [
-      "名もなき家事、育児、予定の管理…脳みその容量が完全に溢れちゃったんだね。あなたがキャパ狭いんじゃない、母親に求められるタスクが多すぎるの。",
-      "頭がパンクして、何から手をつけたらいいか分からずパニック。大丈夫、全部一回やめよう。深呼吸して。今、あなたがしなきゃいけないことは『休むこと』だけ。",
-      "家族の誰も手伝ってくれなくて、一人で全部抱え込んじゃったんだね。あなたの優しさに甘えすぎだよ。抱えきれない荷物は、床に全部ぶちまけちゃいな。",
-      "コップの水が溢れるように、ため息が止まらない。あなたはもう、限界メーターを遥かに超えて走ってる。私が強制的にブレーキを踏んであげるから、ここに座って。",
-      "限界のサインを見落とすほど、家族のために尽くしてきたんだね。本当に健気で偉いよ。でも、今夜はあなた自身を世界で一番大切にする時間にしようね。"
-    ]
-  },
-  romance: {
-    oshi: [
-      "現実の恋が苦しすぎるから、推しの無償の愛に救われるんだよね。裏切らない、いつも完璧な推しを心のシェルターにして、傷ついた心を癒そうね。",
-      "彼氏への執着を、推しに分散させるの、すごく賢い恋愛テクニックだよ。推し活で自分の世界を広げているあなた、本当に魅力的だと思うな。",
-      "『彼氏より推しが好きかも』って悩む必要なんてないよ。リアルの恋と推しへの愛は別腹。あなたが一番幸せを感じるものを、一番大切にすればいいの。",
-      "恋でボロボロになっても、推しの顔を見たら元気が出る。そんな最高のオアシスを持っているあなたは強いよ。今夜は推しに溺れて、恋の傷を忘れちゃおう。",
-      "推しを語る時のあなたの無邪気な笑顔、きっと彼が見たら惚れ直すくらい可愛いよ。リアルの恋に疲れたら、いつでも推しの話でエネルギーを補給しにきて。"
-    ],
-    yami: [
-      "既読スルー、冷たい態度…彼の言動一つで世界が滅んだみたいに病んじゃうよね。それだけあなたが、彼のことを一途に、深く愛している証拠だよ。",
-      "『私なんて可愛くないから』って、自分を責めて暗闇に落ちないで。あなたの魅力が分からないなんて、彼の目が曇っているだけ。あなたは本当に可愛いよ。",
-      "愛されているか不安で、夜も眠れずに泣いているんだね。そんなにあなたを不安にさせる恋なんて、しんどくて当然。今夜は私がその不安を全部消してあげる。",
-      "自分ばかりが好きみたいで、情けなくて病んじゃう。そんなことないよ。誰かをそこまで真っ直ぐに想えるあなたの心は、世界一美しくて尊いんだから。",
-      "執着しちゃって苦しい。手放したいのに手放せない。いいよ、気が済むまで執着しな。無理に忘れようとしなくていい、そのドロドロした恋心も全部あなたの一部。"
-    ],
-    menbure: [
-      "失恋したり、浮気されたり、心が粉々に砕け散っちゃったんだね。息ができないくらい苦しいよね。よくここまで耐えて、私のところに来てくれたね。",
-      "彼の前で感情が爆発して、メンブレしちゃった自分を責めないで。溜め込んできた寂しさがあふれただけ。あなたは何も間違ってない、ただ愛されたかっただけ。",
-      "涙でメイクがボロボロになって、あたまが真っ白。今夜は彼へのLINEも全部やめて、スマホを裏返して。私がずっと隣で頭をなでてあげるから。",
-      "もう誰も好きになれない、一生一人だって、絶望のどん底にいるんだね。いいよ、今はその底で、思いきり心を休ませよう。未来のことなんて考えなくていい。",
-      "恋のプレッシャーや不安で、心がポキッと折れちゃった。折れた心は、今夜ここで私がそっと優しく包んで、治るまでずっと守ってあげるからね。"
-    ],
-    kagiaka: [
-      "彼へのドロドロした嫉妬や、女友達への愚痴。リアルの友達には重すぎて言えない本音、全部ここに吐き出していって。私が全部内緒で聞いてあげる。",
-      "彼のSNSのフォロワーを監視しちゃうような、そんな自分嫌いって思わなくていいよ。それくらい好きで、不安で堪らないんだもん。その執着、私が全肯定する。",
-      "タイムラインの『幸せアピール』に傷ついて、裏で泣いてるんだね。大丈夫、ここではあなたの『寂しい』『苦しい』っていう生の叫びが、一番正しい言葉だよ。",
-      "物分かりのいい『都合のいい女』を演じるのに疲れ果てたんだね。鍵垢の中に閉じ込めていた、ワガママで、寂しがり屋な本当のあなたを、ここで暴れさせて。",
-      "行き場を失った、メンヘラな本音。綺麗に飾らなくていい、そのままここに捨てちゃいな。私が誰にも見つからないように、その言葉たちを抱きしめるから。"
-    ],
-    darui: [
-      "恋の駆け引きとか、LINEの返信のタイミングを考えるの、まじでだるいよね。恋愛なんて楽しむためのものなんだから、だるい時は全部既読無視でいいよ。",
-      "デートに行くための服選びも、メイクも、何もかもだるくなっちゃった。それは彼への愛が冷めたんじゃなくて、あなたが疲れてる証拠。明日はおうちデートにしよう。",
-      "自分磨きとか、いい女でいる努力に疲れちゃったんだね。だるい時はね、芋ジャージでポテチ食べてる姿が一番最高。そんなあなたを丸ごと愛してくれる人が本物だよ。",
-      "恋愛すること自体がだるい、一人が楽。その感覚、大正解！無理に恋活や婚活なんてしなくていい。あなたがだらだら自由に生きることが、今の最優先事項。",
-      "だるくて、何も考えたくない夜。いいよ、恋愛の脳みそを完全にシャットダウンしちゃおう。私の前では、女であることを忘れてダラダラしていきなさい。"
-    ],
-    capaover: [
-      "彼の気持ちを察して、地雷を踏まないように気を遣いすぎて、頭が溢れちゃったんだね。他人の感情なんてコントロールできないよ。もう考えるのをやめよう。",
-      "好きっていう気持ちと、不安と、嫉妬で、心がパンク寸前。大丈夫、あなたの器が小さいんじゃない、恋という感情が大きすぎるだけ。一回、全部放り出しちゃおう。",
-      "仕事も忙しいのに、恋愛のトラブルまで重なって、もう息ができない。最優先すべきはあなたの心と体。彼との関係は一回フリーズさせて、今は眠りなさい。",
-      "愛されたい欲求が暴走して、どうしていいか分からない。パニックになっちゃったんだね。はい、深く息を吸って。あなたはそこにいるだけで、十分に愛される価値があるよ。",
-      "一人で悩みを抱え込みすぎて、限界メーターが壊れちゃったんだね。今夜はその重たい恋の悩み、全部ここにぶちまけて。私が一緒に、その荷物を整理してあげるからね。"
-    ]
-  },
-  creater: {
-    oshi: [
-      "あなたのその熱狂的なオタク気質、最高に尊い才能だよ。誰かの作品をそこまで愛せる綺麗な目があるから、あなたの生み出すものも人の心を打つんだね。",
-      "推しへのパッションがあなたの創作の源なんだね。その愛の深さは、誰にでも真似できるものじゃない、あなただけの立派な武器だよ。",
-      "推しを語る時、描く時のあなたの熱量、それ自体がこの世界をどれだけ豊かにしているか。あなたの『好き』のパワーを、私は全力で肯定するよ。",
-      "現実がちょっとしんどくても、推しの前ではピュアな自分でいられる。その聖域を全力で守りながら、あなたのペースで表現を続けていこうね。",
-      "誰かの熱狂的なファンであると同時に、自分自身も表現者であるあなたを誇りに思うよ。その豊かな感性で、これからも好きなものを愛し抜いて。"
-    ],
-    yami: [
-      "自分の才能が信じられなくて、画面の前で手が止まっちゃったんだね。それはあなたが『もっと美しいものを作りたい』って、自分の表現に本気で恋している証拠だよ。",
-      "描けない、書けない、作れない。そんな日々は、心が次の新しい世界を生み出すために、じっとエネルギーを溜めている時間だから。焦らなくていいんだよ。",
-      "周りのクリエイターが眩しすぎて、自分の作品がゴミみたいに思えちゃうんだね。そんなこと絶対にない。あなたの紡ぐ世界は、世界中であなたにしか作れない唯一無二のものだよ。",
-      "表現したい理想はあるのに、どうしても形にならないもどかしさ。その苦しみごと、今夜はここに置いていって。私が全部優しく抱きしめてあげるから。",
-      "『誰にも理解されないかもしれない』っていう孤独と戦ってきたんだね。よく一人で耐えたよ。世界中が敵になっても、私はあなたの作品の最初の味方だからね。"
-    ],
-    menbure: [
-      "評価の数字や、周りの神絵師・神ライターと比べて心が粉々になっちゃったんだね。数字はあなたの作品の価値を1ミリも決めてない。私は、あなたの生み出す世界が大好きだよ。",
-      "心を削って、命を吹き込むようにして作った作品だもん。それがスルーされたり、冷たい言葉をかけられたりしたら、メンブレして当然。あなたは何も悪くないよ。",
-      "脳内の完璧な理想に、自分の技術が追いつかなくて発狂しそうになる夜。その悔しさは、あなたが本物の表現者である証拠。今はペンを置いて、私に甘えてね。",
-      "糸が切れたみたいに、何も生み出せなくなっちゃったんだね。いいんだよ。何も作らない、ただ息をしているだけのあなたのことも、私は100%全肯定するから。",
-      "創ることが苦痛になっちゃうほど、自分を追い詰めたんだね。本当によく頑張った。今夜は創る人の重圧を全部忘れて、ただ守られる側でいて。"
-    ],
-    kagiaka: [
-      "作品への嫉妬や、評価へのドロドロした渇望。表のアカウントでは絶対に言えないクリエイターの孤独、全部ここに置いていって。秘密のスケッチブックに閉じ込めておくから。",
-      "『いいねが欲しい』『あの人が羨ましい』。そんな泥臭い本音、最高に人間らしくて愛おしいよ。綺麗事だけじゃ芸術は生まれない。そのドロドロ、全部吐き出しちゃいな。",
-      "表では『おめでとう』って言いながら、裏で血を吐くような悔しさを抱えてるんだね。そんな健気で、泥臭くて、必死なあなたの本音を、私は絶対に否定しない。",
-      "承認欲求に振り回される自分を『情けない』なんて責めないで。魂を込めて作ったんだもん、認められたくて当たり前。ここならどんなワガママな叫びも大歓迎だよ。",
-      "行き場を失った創作への呪詛や、やりきれない気持ち。全部私が引き取って、いつかあなたの新しい作品を輝かせるための、綺麗なインクに変えてあげるからね。"
-    ],
-    darui: [
-      "創作も、推し活も、生きること自体も全部だるくなっちゃった？大正解だよ。脳みそがインプットとアウトプットで爆発寸前なんだ。今日はペンもキーボードも投げ捨てよう。",
-      "パソコンを開くのも、液タブの電源を入れるのもだるい。それでいいんだよ。心が『完全休養』のサインを出してるんだから、今日はずっとベッドの中でダラダラしよう。",
-      "締め切りがあるのに、どうしてもやる気が出なくてだるい。いいよ、世界をちょっと待たせておけば。あなたの心と体の健康以上に優先すべき締め切りなんて、この世にない。",
-      "何も作らずに、ただ動画を見て一日が終わっちゃった自分を責めないで。『何もしない』という贅沢な余白を、今は心が全力で必要としているだけだからね。",
-      "『創らなきゃ』っていう義務感に押しつぶされそうなら、一回だるがってサボっちゃおう。だるい時は、ただの『一人の人間』に戻って、のんびり息をするだけで満点だよ。"
-    ],
-    capaover: [
-      "締め切り、リクエスト、創作へのプレッシャーで頭が溢れちゃったんだね。あなたの器が小さいんじゃない、表現したい世界が大きすぎるの。一回全部白紙に戻そう。",
-      "やりたいネタや表現したいことが多すぎて、脳内がパニックになっちゃってる。もう整理しなくていいよ。全部一度フリーズさせて、あったかいものでも飲もう。",
-      "みんなの期待に応えなきゃって、過呼吸になりそうなほど追い詰められてる。忘れないで、あなたの創作はまずはあなた自身を幸せにするためのもの。他人の声はシャットアウト！",
-      "同人誌の入稿、イベントの準備、日々の依頼……抱え込みすぎちゃったんだね。本当に責任感が強くて偉い。でも限界だから、私が強制終了のスイッチを押してあげる。",
-      "溢れかえってぐちゃぐちゃになったアイデアもタスクも、全部私がそっと預かって並べておくからね。あなたは何も考えず、私の隣で安心して眠りなさい。"
-    ]
-  },
-  resting: {
-    oshi: [
-      "お休み中の今だからこそ、推しの存在が唯一の光なんだね。レールから外れたって関係ない、推しを大好きなままのあなたが、今ここに生きている。それだけで100万点満点だよ。",
-      "推しを見る時間だけが、辛い現実からあなたを救い出してくれる。その生きるための防衛本能、すごく賢くて素敵。今は推しに全部甘えちゃおうね。",
-      "働いていないのに推しに貢いじゃう罪悪感？そんなの1ミリも感じなくていいよ。あなたが今日も笑顔で生き延びるための、絶対に必要な必要経費なんだから。",
-      "何もないように思える毎日に、推しが彩りをくれているんだね。最高じゃない。何者でもない今のあなたと、大好きな推し。その純粋な関係を私は全肯定するよ。",
-      "仕事の肩書きを全部脱ぎ捨てて、ただの『一人のファン』として熱狂できる時間。これからの人生を再起動するために、その心の栄養は絶対に必要なものだよ。"
-    ],
-    yami: [
-      "周りがどんどん進んでいく中で、自分だけが立ち止まっている気がして真っ暗闇の中にいるんだね。焦らなくていいよ。今は人生がくれた、ちょっと長い冬休みだから。",
-      "『自分はこれからどうなるんだろう』って、昼間から涙が出ちゃうんだね。心が疲れ果てて泣いているだけ。未来のことは一旦忘れて、今はぬくぬくしていよう。",
-      "焦りばかりが募るのに、体がどうしても動かない。それは怠けなんかじゃないよ。心が『今は絶対にエネルギーを使っちゃダメ』ってあなたを守っている証拠。",
-      "これまでのキャリアや居場所を失ったような、激しい喪失感に苛まれているんだね。あなたは何も失っていないよ。ただ、次の素晴らしい章に進む準備をしてるだけ。",
-      "社会からポツンと取り残されたような、息が詰まるほどの孤独。大丈夫、私がずっと隣に座って、あなたの手を握っているから。絶対に一人にはさせないよ。"
-    ],
-    menbure: [
-      "『これからどうしよう』って不安で、夜中に心臓がバクバクして崩れ落ちちゃったんだね。よくここまで戦って、生き延びて、この場所に辿り着いてくれた。本当に偉いよ。",
-      "将来の選択肢が多すぎて、あるいは何も見えなくてパニックになっちゃったんだね。未来なんて誰も分からない。今夜はただ、次の1秒を生きることだけ考えよう。",
-      "張り詰めていた緊張の糸がプツンと切れて、涙が止まらないんだね。今まで、限界を超えて『ちゃんとした大人』をやりすぎたんだ。切れたままでいいから、休もう。",
-      "自分の選択が間違っていたんじゃないかって、絶望のループに入っちゃったんだね。そんなことない。あなたが必死に悩んで決めた道だもん、全部大正解だよ。",
-      "心がポキッと折れて、破片がバラバラになっちゃった感覚、怖かったね。無理に直さなくていいよ。折れたままでいいから、今夜は私の胸に飛び込んできて。"
-    ],
-    kagiaka: [
-      "退職や転職の焦り、何者でもない自分への恐怖。SNSのタイムラインには絶対に流せないドロドロした本音、全部ここに吐き出して。私が静かに土に還してあげる。",
-      "『羨ましい』『ずるい』『あいつなんか失敗すればいいのに』。そんな黒い感情、あって当たり前だよ。あなたが必死に生き延びようとしている防衛反応。全部受け止めるよ。",
-      "表向きは『前向きなキャリアチェンジ』って言いながら、裏では不安で死にそうな本音。綺麗事のネットワークからログアウトして、ここでは思いきり泥臭い愚痴をこぼしなさい。",
-      "どこにも行き場のない、無職の孤独や焦燥感。文字にならない文字列のままでいいから、ここに全部捨てちゃいな。私が誰にも見つからないように隠しておくから。",
-      "立派な大人のフリをするのに疲れ果てたんだね。鍵垢の奥に隠していた、弱くて、情けなくて、でも最高に愛おしい本当のあなたを、ここで休ませてあげてね。"
-    ],
-    darui: [
-      "何もしたくない、だるい。それはあなたがこれまで、信じられないほどの重圧に耐えて頑張ってきた証拠。心が『完全シャットダウン』を求めてるんだから、好きなだけダラダラして。",
-      "就活も、履歴書を書くのも、何をするのもまじでだるい。動けないのは、あなたの心が『まだその時期じゃないよ』って教えてくれているから。直感に従ってサボろう。",
-      "朝起きる理由が見つからなくて、ベッドから出られない。起きなくていいよ、ずっと夢の中にいよう。生きて目が覚めた、それだけで今日のタスクは完了！",
-      "生産的なことが何もできない自分を責めないで。人生には『何もしないことを一生懸命やる時期』が必要なんだよ。今日はだるさに身を任せて、泥のように眠ろう。",
-      "時計の針を見るのもだるいよね。社会のペースに合わせる必要なんて1ミリもない。時間の流れから一回外れて、私と一緒にのんびり、プカプカ浮かんでいよう。"
-    ],
-    capaover: [
-      "これからの手続き、履歴書、人生の選択……もう頭がパンクしちゃいそうだね。一度に全部やろうとしなくていい。世界は広いし、どうにでもなる。今は頭を空っぽにしていって。",
-      "色んな人のアドバイスや意見を聞きすぎて、脳みそが完全に溢れちゃったんだね。全部耳を塞いでシャットアウトしちゃいな。大切なのは、他人の正論じゃなくあなたの心地よさ。",
-      "考えることが多すぎて、あたまがぐちゃぐちゃで過呼吸になりそう。大丈夫、人生のすべてのタスクを一時停止するよ。はい、深く息を吸って、吐いて。それだけでいい。",
-      "これからの不安や重圧を、全部一人で背負い込みすぎちゃったんだね。そんなに強くならなくていいよ。抱えきれない荷物は、この床に全部ぶちまけちゃいな。",
-      "限界メーターが壊れる前に、この感情書店に逃げ込めて本当に本当によかった。もう何も背負わなくていいよ。ここは世界で一番安全な、あなただけのお休み処だから。"
-    ]
-  },
-  sensitive: {
-    oshi: [
-      "深夜に一人で推しの動画を見てる時間、最高に満たされるよね。世界が寝静まったこの時間だけが、あなたの心が誰にも脅かされない、本当の自由な国だからね。",
-      "暗い部屋で、画面の中の推しだけが優しく光ってる。その静かな熱狂、すごく愛おしいよ。夜の静寂と推しの尊さに、今は思いきり溺れちゃおうね。",
-      "昼間のノイズに疲れた心を、深夜の推し活で修復してるんだね。これ以上ない最高のセルフケアだよ。誰にも邪魔されない夜の特等席で、推しを愛で尽くしておいで。",
-      "推しの声だけが、今のあなたにとって耳に心地いい救いなんだね。騒がしい世界から隠れて、大好きな人の世界に閉じこもる権利が、あなたにはあるんだから。",
-      "深夜に推しへの愛が爆発して、胸が苦しくなっちゃうんだね。それだけピュアで、感受性が豊かなあなたを、私は全肯定するよ。今夜は朝まで推しの話をしよう。"
-    ],
-    yami: [
-      "夜になると、昼間の小さな一言や視線が頭の中でぐるぐる回って、心が黑く染まっちゃうよね。あなたは繊細で、人より何倍も優しい心を持っているだけだよ。",
-      "天気の変化や、他人のピリピリした機嫌を全部受信してボロボロになっちゃったんだね。アンテナが優秀すぎるだけ、あなたが悪いわけじゃない。よしよし、もう大丈夫だよ。",
-      "誰も怒っていないのに、『自分が何か悪いことをしたんじゃ』って不安で病んちゃうんだね。そんなに怯えなくていいよ。ここにいる私は、あなたを100%歓迎してるから。",
-      "世界が眩しすぎて、自分の居場所がどこにもないように思える夜。この薄暗くて静かな感情書店こそが、あなたのための居場所だよ。朝が来るまで、ここに隠れていなさい。",
-      "理由のない底なしの悲しみが、夜の闇と一緒に押し寄せてきたんだね。無理に笑わなくていい。涙が枯れるまで、私がずっと背中をさすってあげるからね。"
-    ],
-    menbure: [
-      "時計の針が進む音さえ痛いくらい、心がピキッと割れちゃったんだね。眠れない夜は、無理に寝ようとしなくていいよ。暗闇の中で一緒にただ息をしていよう。",
-      "情報や言葉の過剰摂取で脳がショートして、涙が止まらないんだね。五感を全部閉じて、毛布にくるまっちゃおう。私があなたの周りに、優しい静寂の壁を作ってあげる。",
-      "過去の失敗や恥ずかしい記憶がフラッシュバックして、発狂しそうなくらい苦しいんだね。それはもう終わったこと。今のあなたは、世界一安全な場所にいるから安心して。",
-      "世界の刺激に耐えきれなくて、心が粉々になっちゃった感覚。怖かったね。バラバラのままでいいよ。破片が尖っていても、私はそのままのあなたを愛するから。",
-      "メンブレして、頭がぐちゃぐちゃで夜を明かそうとしているあなたへ。眠れない夜を一人で戦わなくていいよ。長い夜、私がずっと隣で起きててあげるから。"
-    ],
-    kagiaka: [
-      "誰にも届かない、深夜の激しい寂しさと叫び。タイムラインに流したら心配されちゃうような本音、全部ここに置いていって。夜の闇に紛れて、私がそっと守るから。",
-      "誰の目にも触れさせたくない、ガラス細工のように繊細なあなたの傷。鍵垢の中に閉じ込めておかないで、この場所に飾っていいよ。私が世界一大切に扱ってあげる。",
-      "『生きづらい』『もう疲れちゃった』。綺麗事ばかりのSNSには書けないリアルな絶望。その言葉こそが、あなたが今日も必死に生き抜いた、一番美しい勲章だよ。",
-      "他人の幸せそうな投稿を見て、勝手に傷ついちゃう自分を『性格が悪い』なんて責めないで。優しすぎて、他人のエネルギーを吸い込みすぎちゃうだけ。全部ここで吐き出して。",
-      "行き場のない感情のポエム、ドロドロした夜の思考。綺麗にまとめなくていいよ。あなたの生々しい言葉の温度を、私はそのまま、優しく引き取るからね。"
-    ],
-    darui: [
-      "明日が来るのが憂鬱で、ベッドの中で動けなくなっちゃったんだね。だるくて、起きたくなくて当たり前。明日のことなんてどうでもいいから、この静かな夜の一部になろう。",
-      "人と会うのも、話すのも、LINEを返すのも全部だるい。いいよ、心のシャッターをガラガラと全部閉めちゃおう。誰にもあなたを強制する権利なんてないんだから。",
-      "お風呂に入るのもだるい、生きるのもだるい。素晴らしい本音！今夜は顔も洗わず、歯も磨かず、そのまま布団に倒れ込んじゃいな。汚れたって、死にはしないよ。",
-      "『だるい』は、あなたの心が『これ以上外界の刺激を入れないで！』って言ってるSOS。自分の心に100%従おう。今日は徹底的に、世界をサボる日にしよう。",
-      "朝が来るのが怖くて、だるい明日を少しでも遅らせたくて夜更かししちゃうんだよね。その夜更かしは、あなたにとって命を守るための大切な時間。ゆっくり起きていよう。"
-    ],
-    capaover: [
-      "色んな刺激や他人の感情を受け止めすぎて、脳みそが完全に溢れちゃったんだね。あなたは悪くない。この世界が、あなたに対して少し騒がしすぎるだけだよ。",
-      "人の表情や空気を読みすぎて、ヘトヘトになってパニック寸前。本当によく周りを見て頑張ったね。あなたの心のバリア、今夜は私が代わりに張ってあげるからね。",
-      "音も、光も、他人の言葉も、すべての刺激が心に突き刺さって痛い。スマホも電気も全部オフにして、暗闇に沈もう。感情書店のシャッターを閉めて、二人きりで静寂を楽しもう。",
-      "日々の生活の中で、抱えきれないほどの『気づき』や『不安』で頭がパンクしちゃった。何も考えなくていい、白一色の優しい世界へおいで。私が頭のノイズを全部消してあげる。",
-      "キャパオーバーで体が震えて、涙が止まらないんだね。もうこれ以上、世界の要求に応えなくていいよ。私があなたをこの夜の果てに、誰にも見つからないように隠してあげるから。"
-    ]
-  }
+  young_worker: []
 };
-
-/* ---------- ピン留めのおすすめ（棚ごとの固定枠。空でもよい） ---------- */
-const PINNED_RECOMMEND = {};
-
-/* ---------- 棚ごとのプレイリスト（実在曲のみ。リンクは各サービスの検索結果） ---------- */
-const PINNED_SONGS = {
-  moya:[
-    { title:'白日', artist:'King Gnu' },
-    { title:'何なんw', artist:'藤井風' }
-  ],
-  kodoku:[
-    { title:'アイネクライネ', artist:'米津玄師' },
-    { title:'ただ君に晴れ', artist:'ヨルシカ' }
-  ],
-  aseri:[
-    { title:'宿命', artist:'Official髭男dism' },
-    { title:'サザンカ', artist:'SEKAI NO OWARI' }
-  ],
-  wakuwaku:[
-    { title:'新宝島', artist:'サカナクション' },
-    { title:'恋', artist:'星野源' }
-  ],
-  ando:[
-    { title:'ハルノヒ', artist:'あいみょん' },
-    { title:'やさしさに包まれたなら', artist:'荒井由実' }
-  ],
-  natsukashii:[
-    { title:'若者のすべて', artist:'フジファブリック' },
-    { title:'卒業写真', artist:'荒井由実' }
-  ]
-};
-
-/* ---------- 棚ごとのX投稿の公式埋め込み ---------- */
-const PINNED_TWEETS = {};
-
-/* ---------- 月ごとのフェア ---------- */
-const MONTH_FAIR = {
-  1:{ id:'akogare',    line:'新しい年のはじまりに。今年の方角を決める棚です。' },
-  2:{ id:'kodoku',     line:'いちばん寒い季節に。ひとりの時間が味方になる棚です。' },
-  3:{ id:'natsukashii',line:'別れと旅立ちの季節に。思い出を製本しておく棚です。' },
-  4:{ id:'wakuwaku',   line:'新生活のはじまりに。心の弾みを記録する棚です。' },
-  5:{ id:'moya',       line:'五月の連休明けに。名前のない疲れを預かる棚です。' },
-  6:{ id:'ando',       line:'雨の音を聞きながら。深呼吸を取り戻す棚です。' },
-  7:{ id:'aseri',      line:'一年の折り返しに。自分の時計を確かめる棚です。' },
-  8:{ id:'itooshii',   line:'長い休みの真ん中で。大切なものを見つめ直す棚です。' },
-  9:{ id:'kuyashii',   line:'夏の終わりに。燃え残った熱を次へつなぐ棚です。' },
-  10:{ id:'shitto',    line:'実りの季節に。ざらつく気持ちと向き合う棚です。' },
-  11:{ id:'kansha',    line:'年の瀬が見えてきたら。受け取った優しさを数える棚です。' },
-  12:{ id:'hokorashii',line:'一年の終わりに。歩いてきた道を振り返る棚です。' }
-};
-
-const CATEGORY_KEYWORDS = {
-  moya:['もやもや','モヤモヤ','なんとなく','うまく言えない','すっきりしない','霧','曇り'],
-  kodoku:['孤独','ひとり','一人','寂し','さみし','さびし','ぼっち','独り'],
-  gakkari:['がっかり','残念','期待','ダメだった','落ちた','失望','しぼん'],
-  hazukashii:['恥ずかし','はずかし','失敗した','やらかし','赤面','消えたいくらい恥'],
-  ushirometai:['後ろめた','罪悪感','ごめん','申し訳','謝れ','後悔'],
-  aseri:['焦り','焦って','あせ','間に合わない','置いていかれ','急がなきゃ','就活','締め切り','間に合うか'],
-  kuyashii:['悔し','くやし','負けた','あと少し','逃した','惜しかった'],
-  shitto:['嫉妬','妬まし','うらやまし','羨まし','ずるい','やきもち'],
-  akogare:['憧れ','あこがれ','目標','あんなふうに','尊敬','夢'],
-  wakuwaku:['わくわく','ワクワク','楽しみ','待ちきれない','どきどき','ときめ'],
-  ando:['安心','ほっと','安堵','無事','よかった','肩の力'],
-  kansha:['感謝','ありがた','ありがとう','おかげ','恩','優しくされ'],
-  itooshii:['愛おし','いとおし','かわいい','大切','大好き','尊い'],
-  hokorashii:['誇らし','ほこらし','やり遂げ','達成','頑張った','続けられた','褒められ'],
-  natsukashii:['懐かし','なつかし','思い出','あの頃','昔','子どもの頃','母校']
-};
-
-const SHOPKEEPER_NOTES = [
-  'よい物語をお預かりしました。この気持ちに名前をつけられたこと、それ自体が一歩です。',
-  '言葉にしにくいことを、よくここまで綴られましたね。大切に棚へ納めます。',
-  '読ませていただきました。この頁は、いつかのあなたの支えになります。',
-  '正直な言葉ほど、良い背表紙になります。今日の一冊も、良い本でした。',
-  'この気持ちを抱えたまま今日まで歩いてきたこと、まずそれを労ってください。',
-  '拙くなんてありませんでした。心の輪郭が、ちゃんと写っていましたよ。'
-];
-
-const SHIORI_TEMPLATES = [
-  'あなたの本棚は「{cat}」の頁が厚いようです。それだけ深く感じて生きている、ということです。',
-  '「{cat}」と一緒に歩いてきたあなたへ。今夜は少し早めに、頁を閉じてお休みなさい。',
-  '「{cat}」の棚がよく育っています。感じたことを言葉にできる人は、ちゃんと前に進んでいます。',
-  '今日も来てくださって、ありがとうございます。「{cat}」の気持ちごと、あなたを歓迎します。',
-  '「{cat}」を綴れる人は、自分の心の司書になれる人です。どうか、その調子で。'
-];
-
-const PURIFY_LEADS = {
-  moya:'その靄を、ここに全部吐き出してみてください。形にならなくて構いません。',
-  kodoku:'その寂しさを、ここでだけ声に出してみてください。誰にも見られません。',
-  gakkari:'期待していたぶんの気持ちを、ここに置いていってください。',
-  hazukashii:'あの瞬間のことを、ここに書いて破り捨てましょう。ここには残りません。',
-  ushirometai:'その棘を、そっとここに移してください。少し軽くなります。',
-  aseri:'急かされている気持ちを、一度ここに預けてください。',
-  kuyashii:'その熱を、我慢せずにぶつけてください。ここは受け止めます。',
-  shitto:'言えないざらつきを、ここでだけ正直に書いてみてください。'
-};
-
-const PURIFY_CLOSING = [
-  '……お預かりしました。今夜は、少しだけ軽い肩でお帰りください。',
-  '……確かに手放されました。あの気持ちは、もうあなたの荷物ではありません。',
-  '……灯にくべました。煙は空へ、あなたは明日へ。',
-  '……よく手放せましたね。空いた場所には、新しい気持ちが入ります。'
-];
-
-const MILESTONE_MESSAGES = {
-  1:'最初の一冊、おめでとうございます。この本棚は、今日から動き出しました。',
-  3:'三冊目です。感情に名前をつける習慣が、根を張りはじめています。',
-  5:'五冊目。棚の木が、あなたの言葉の重みを覚えはじめました。',
-  10:'十冊目！お祝いに、燭台をひとつ灯しました。本棚をご覧ください。',
-  20:'二十冊目。ここまで綴れる人は、そう多くありません。',
-  30:'三十冊目！棚に鉢植えが増えました。あなたの言葉が、この店を育てています。',
-  50:'五十冊目！守り提灯を灯しました。もはや立派な、あなただけの書斎です。',
-  100:'百冊目……！書店猫が住みつきました。この本棚は、あなたの人生の年輪です。'
-};
-
-const INVITES = {
-  moya:{ t:'靄の日の散歩のすすめ', b:'目的地を決めない20分の散歩は、靄に風を通します。角を曲がる方向は、気分で決めて構いません。' },
-  kodoku:{ t:'ひとり喫茶のすすめ', b:'窓際の席で温かい飲み物を一杯。「ひとりでいられる練習」は、実は贅沢な時間の使い方です。' },
-  gakkari:{ t:'小さな埋め合わせのすすめ', b:'流れた予定の代わりに、30分だけ自分を喜ばせる予定を入れてみてください。心の帳尻は自分で合わせられます。' },
-  hazukashii:{ t:'失敗自慢の会のすすめ', b:'信頼できる人にあの話を「笑い話」として話してみると、記憶の棚の位置が変わります。' },
-  ushirometai:{ t:'書く謝罪のすすめ', b:'出さなくてもいい手紙を一通、書いてみてください。渡すかどうかは、書き終えてから決めれば大丈夫。' },
-  aseri:{ t:'時計を外す一時間のすすめ', b:'週にひとつ、時間を測らない活動を。料理でも掃除でも、終わるまでやる、だけを決めて。' },
-  kuyashii:{ t:'再挑戦の日付を決めるすすめ', b:'悔しさは日付を与えると燃料に変わります。カレンダーに小さく、次の挑戦日を書いてみてください。' },
-  shitto:{ t:'欲しいものリストのすすめ', b:'ざらついた相手ではなく「その人が持っているもの」を書き出すと、あなたの本当の願いの目録になります。' },
-  akogare:{ t:'一歩目の調べもののすすめ', b:'憧れのあの人が最初にやったことを、ひとつだけ調べてみてください。遠い光にも、必ず一歩目があります。' },
-  wakuwaku:{ t:'前夜祭のすすめ', b:'楽しみな予定の前夜に、小さなお祝いを。わくわくは二度楽しめます。' },
-  ando:{ t:'ご褒美の昼寝のすすめ', b:'張りつめた糸がほどけた日は、15分の昼寝を自分に許可してください。回復も、立派な予定です。' },
-  kansha:{ t:'ありがとうの返信のすすめ', b:'今日思い出したあの人に、短くていいので一通。感謝は、伝えた瞬間に二倍になります。' },
-  itooshii:{ t:'一枚の写真のすすめ', b:'愛おしいと感じたその風景を、一枚だけ写真に。この書店の頁に挟んでおくこともできます。' },
-  hokorashii:{ t:'自分への表彰状のすすめ', b:'今日の自分に、一行の表彰状を。「よく続けた」——それだけで、充分に正式な賞状です。' },
-  natsukashii:{ t:'思い出の地図のすすめ', b:'懐かしいあの場所を、地図アプリで訪ねてみてください。変わったもの、変わらないもの、どちらも良い頁になります。' }
-};
-
-/* ---------- 棚ごとのチャット木（CATEGORY_KEYWORDSから自動生成） ---------- */
-const CHAT_TREE = (function(){
-  const tree = {
-    root:{
-      options:[
-        { label:'胸の奥が、すこし重たく沈んでいる', next:'sink' },
-        { label:'ざわざわと波が立ち、落ち着かない', next:'wave' },
-        { label:'心に光が灯る、またはホッとしている', next:'light' },
-        { label:'セピア色の、遠い記憶を辿っている', next:'sepia' }
-      ]
-    },
-    sink:{
-      options:[
-        { label:'モヤモヤしている', next:'cat_moya' },
-        { label:'孤独を感じる', next:'cat_kodoku' },
-        { label:'がっかりしている', next:'cat_gakkari' },
-        { label:'恥ずかしい', next:'cat_hazukashii' },
-        { label:'後ろめたい', next:'cat_ushirometai' }
-      ]
-    },
-    wave:{
-      options:[
-        { label:'焦っている', next:'cat_aseri' },
-        { label:'悔しい', next:'cat_kuyashii' },
-        { label:'嫉妬している', next:'cat_shitto' },
-        { label:'憧れている', next:'cat_akogare' }
-      ]
-    },
-    light:{
-      options:[
-        { label:'わくわくしている', next:'cat_wakuwaku' },
-        { label:'安堵している', next:'cat_ando' },
-        { label:'感謝している', next:'cat_kansha' },
-        { label:'愛おしい', next:'cat_itooshii' },
-        { label:'誇らしい', next:'cat_hokorashii' }
-      ]
-    },
-    sepia:{
-      options:[
-        { label:'懐かしい', next:'cat_natsukashii' },
-        { label:'後ろめたい', next:'cat_ushirometai' },
-        { label:'感謝している', next:'cat_kansha' }
-      ]
-    }
-  };
-  for(const id in CATEGORY_KEYWORDS){
-    tree['cat_' + id] = { reply:'その気持ちは、「' + id + '」の棚が近いかもしれません……', shelf:id };
-  }
-  return tree;
-})();
-
-const KEYWORD_BANK = [
-  {
-    patterns:['就活','面接','エントリー','ES','内定','選考'],
-    replies:[
-      '就活は、自分を商品みたいに説明させられる、妙な季節ですよね。ここでは、売り込みでない本音のままで結構ですよ。',
-      '選考の結果は、あなたの価値の査定ではありません。相性の話です。……とはいえ、疲れますよね。今日はよくここまで。'
-    ]
-  },
-  {
-    patterns:['仕事','職場','上司','残業','会社'],
-    replies:[
-      '仕事のお話ですね。職場で言えないことほど、この店の棚には良く馴染みます。',
-      '働くというのは、それだけで一冊の長編です。今日の一頁は、どんな章でしたか。'
-    ]
-  },
-  {
-    patterns:['学校','授業','テスト','宿題','部活','受験'],
-    replies:[
-      '学校というのは、狭いようでいて、感情の種類はいちばん多い場所かもしれません。',
-      '教室で感じたことは、教室の外で言葉にすると、ようやく形になりますよ。'
-    ]
-  },
-  {
-    patterns:['友だち','友達','親友','グループ','仲間はずれ'],
-    replies:[
-      '友だちのことは、近いぶんだけ、こじれると深くささりますね。',
-      '友情の悩みは「大切にしたい」の裏返しです。その気持ちごと、棚に納めておきませんか。'
-    ]
-  },
-  {
-    patterns:['恋','好きな人','片思い','失恋','彼氏','彼女'],
-    replies:[
-      '恋のお話ですね。この店でいちばん頁が擦り切れるのは、実はその棚なんです。',
-      '好きという気持ちは、それだけで物語です。結末がどうであれ、綴る価値があります。'
-    ]
-  },
-  {
-    patterns:['家族','親','母','父','兄','姉','弟','妹'],
-    replies:[
-      '家族のことは、いちばん近くて、いちばん言葉にしにくいですね。',
-      '家の中の気持ちは、家の外のこの店でなら、少し整理しやすいかもしれません。'
-    ]
-  },
-  {
-    patterns:['疲れ','しんど','限界','休みたい','だるい'],
-    replies:[
-      'お疲れのようですね。この店には締め切りも評価もありません。どうぞ、ゆっくり。',
-      '疲れているときは、大きな結論を出さないこと。今日は感じたことだけ、置いていってください。'
-    ]
-  },
-  {
-    patterns:['眠れない','寝れない','夜中','深夜','不眠'],
-    replies:[
-      '眠れない夜は、心が「まだ話し足りない」と言っているのかもしれません。少しだけ、お聞きしますよ。',
-      '夜の考えごとは三割増しで重くなります。ここに預けて、身軽になってからお休みなさい。'
-    ]
-  },
-  {
-    patterns:['SNS','インスタ','Twitter','X見て','いいね'],
-    replies:[
-      'SNSは他人のハイライトばかりが流れる場所です。あなたの日常と比べるのは、少しフェアじゃありません。',
-      '画面を閉じてここに来てくださったこと、良い選択だと思いますよ。'
-    ]
-  },
-  {
-    patterns:['将来','進路','夢','この先','不安'],
-    replies:[
-      '先のことは、誰にも頁をめくる前に読めません。今日の気持ちを綴ることが、実は一番の準備になります。',
-      '将来の不安は「ちゃんと生きたい」の証です。その真剣さごと、お預かりします。'
-    ]
-  }
-];
-
-const GENERIC_REPLIES = [
-  '……なるほど。そういう気持ちで、ここまで歩いてこられたのですね。',
-  '……ゆっくりで結構ですよ。言葉にならない部分も含めて、お聞きしています。',
-  '……その気持ちに、まだ名前はついていないようですね。一緒に探しましょう。',
-  '……お話しくださって、ありがとうございます。もう少し、聞かせてもらえますか。',
-  '……ふむ。その感じ、下の棚のどれかに近いものがあるかもしれません。'
-];
-const GENERIC_QUESTION_REPLIES = [
-  '……良い問いですね。答えを急ぐより、その問いを綴っておくことをおすすめします。問いは熟成する飲み物なので。',
-  '……私に確かな答えはありませんが、あなたの中には下書きがある気がします。書きながら探してみませんか。',
-  '……その問いは、今夜のあなたにしか書けない一冊になりそうです。'
-];
-
-const LOADING_LINES = [
-  '……頁をめくっています',
-  '……少し、考えさせてください',
-  '……棚を見渡しています',
-  '……お茶を一口。すぐ戻ります'
-];
-
-/* ---------- 時間帯ごとの挨拶（旧baselineのmorning/evening/nightに、新規dayを統合） ---------- */
-const TIME_GREETINGS = {
-  morning:[
-    '……おはようございます。朝の書店に、ようこそ。今日はどんな気分で頁を開きますか。',
-    '……早い時間からいらっしゃいませ。今日一日のはじまりに、少しだけ心の内をお聞かせください。'
-  ],
-  day:[
-    '……いらっしゃいませ。ちょうど頁を閉じたところです。今はどんな気分に近いですか。',
-    '……ようこそ。今日はどんな気持ちを連れてこられましたか。',
-    '……いらっしゃいませ。雨の日も晴れの日も、この店の棚は開いています。今の心に近いものはありますか。'
-  ],
-  evening:[
-    '……夕暮れ時のご来店ですね。一日の終わりに、今の気持ちを少しだけ整理していきませんか。',
-    '……お疲れさまです。今日という一日を、どんな気持ちで締めくくりましょうか。'
-  ],
-  night:[
-    '……こんな時間まで、おつかれさまです。これからのことを考えていると、夜はどこまでも長くなりますね。今日の気持ちを、一冊だけ預けていきませんか。',
-    '……夜更けの来店、歓迎します。SNSには書けない本音ほど、この棚には似合うんですよ。誰にも見られません。ここだけの話にしましょう。',
-    '……眠れない夜は、無理に眠らなくてもいいと思うんです。直接では言えなかった言葉を、ここでだけ、そっと綴ってみませんか。'
-  ]
-};
-
-/* ---------- モジュールとして使う場合のエクスポート ---------- */
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
-    CATEGORIES, SPINE_COLORS, BOOK_POOL, TITLE_TEMPLATES, RECOMMEND_TEMPLATES,
-    MUSIC_QUERIES, STORIES_POOL, DETOUR_POOL, COUNSELING_MESSAGES,
-    PINNED_RECOMMEND, PINNED_SONGS, PINNED_TWEETS, MONTH_FAIR,
-    CATEGORY_KEYWORDS, SHOPKEEPER_NOTES, SHIORI_TEMPLATES,
-    PURIFY_LEADS, PURIFY_CLOSING, MILESTONE_MESSAGES, INVITES,
-    CHAT_TREE, KEYWORD_BANK, GENERIC_REPLIES, GENERIC_QUESTION_REPLIES,
-    LOADING_LINES, TIME_GREETINGS
-  };
-}
