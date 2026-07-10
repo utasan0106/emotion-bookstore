@@ -3468,82 +3468,81 @@ const STORIES_POOL = {
 };
 
 /* ---------- 寄り道アフィリエイト（DETOUR_POOL） ---------- */
-
 const DETOUR_POOL = {
   moya: [
     { tier: 'low', category: 'Book', name: '心を休めるための詩集', description: '言葉にならないもやもやを、美しい行間が代わりに掬い取ってくれます。', affiliate_platform: 'Amazon', search_query: '詩集 癒やし' },
     { tier: 'medium', category: 'Lifestyle', name: '沈香のお香セット', description: '煙が揺らぐのを眺めるだけの時間が、絡まった思考をゆっくりと解きほぐします。', affiliate_platform: 'Rakuten', search_query: '沈香 お香' },
-    { tier: 'high', category: 'Luxury', name: '森の中のリトリートホテル', description: 'デジタルデトックス空間で、鳥のさえずりだけを聴きながら心のもやを洗い流す週末を。', affiliate_platform: 'RakutenTravel', search_query: 'リトリート ホテル 森林' }
+    { tier: 'high', category: 'Luxury', name: '森の中のリトリートホテル', description: 'デジタルデトックス空間で、鳥のさえずりだけを聴きながら心のもやを洗い流す週末を。', affiliate_platform: 'RakutenTravel', search_query: 'リトリート 森林浴 温泉' }
   ],
   wakuwaku: [
     { tier: 'low', category: 'Book', name: '冒険心をくすぐるデザイン本', description: '美しい写真や色彩が、胸の高鳴りをさらに広げてくれます。', affiliate_platform: 'Amazon', search_query: 'デザイン アート 写真集' },
     { tier: 'medium', category: 'Lifestyle', name: '上質な珈琲豆とミル', description: '朝の豆を挽く時間が、今日一日の素晴らしいスタートを予感させます。', affiliate_platform: 'Rakuten', search_query: 'コーヒー豆 ミルセット' },
-    { tier: 'high', category: 'Luxury', name: '絶景を望むグランピング', description: '新しい体験と非日常の空間で、好奇心を存分満たす贅沢な時間を。', affiliate_platform: 'RakutenTravel', search_query: '絶景 グランピング' }
+    { tier: 'high', category: 'Luxury', name: '絶景を望むグランピング', description: '新しい体験と非日常の空間で、好奇心を存分満たす贅沢な時間を。', affiliate_platform: 'RakutenTravel', search_query: 'ドーム型 グランピング 絶景' }
   ],
   hokorashii: [
     { tier: 'low', category: 'Book', name: '歴史に残る偉人の伝記', description: '頑張った自分の足跡を、先人たちの歩みと重ね合わせて誇りを感じる一冊。', affiliate_platform: 'Amazon', search_query: '偉人 伝記' },
     { tier: 'medium', category: 'Lifestyle', name: '名入れの万年筆', description: '誇らしい気持ちをインクに乗せて、これからの自分へ決意を書き留めるための道具。', affiliate_platform: 'Rakuten', search_query: '万年筆 名入れ' },
-    { tier: 'high', category: 'Luxury', name: '老舗料亭での特別ディナー', description: 'ここまでやり遂げた自分自身へ、最高峰の味と空間のスタンディングオベーションを。', affiliate_platform: 'Rakuten', search_query: '老舗 料亭 カタログギフト' }
+    { tier: 'high', category: 'Luxury', name: '老舗料亭での特別ディナー', description: 'ここまでやり遂げた自分自身へ、最高峰の味と空間のスタンディングオベーションを。', affiliate_platform: 'Rakuten', search_query: '高級料亭 カタログギフト' }
   ],
   ushirometai: [
     { tier: 'low', category: 'Book', name: '許しをテーマにした短編集', description: '心の奥の小さな棘を、物語の主人公たちと一緒にそっと抜いていく時間。', affiliate_platform: 'Amazon', search_query: '短編集 癒し 許し' },
     { tier: 'medium', category: 'Lifestyle', name: '天然塩のバスソルト', description: 'ため込んでしまった罪悪感を、汗とともにすっきりと洗い流す浄化のバスタイム。', affiliate_platform: 'Rakuten', search_query: 'バスソルト 天然塩' },
-    { tier: 'high', category: 'Luxury', name: '静寂な宿坊体験', description: '日常から離れた静かな場所で、心の中のざわめきと向き合い、自分を許す旅へ。', affiliate_platform: 'RakutenTravel', search_query: '宿坊 癒し 旅' }
+    { tier: 'high', category: 'Luxury', name: '静寂な宿坊体験', description: '日常から離れた静かな場所で、心の中のざわめきと向き合い、自分を許す旅へ。', affiliate_platform: 'RakutenTravel', search_query: '宿坊 寺 参拝' }
   ],
   natsukashii: [
     { tier: 'low', category: 'Book', name: 'ノスタルジックな写真集', description: 'ページをめくるたびに、セピア色に輝くあの頃の風景が胸の奥に蘇ります。', affiliate_platform: 'Amazon', search_query: '昭和 レトロ 写真集' },
     { tier: 'medium', category: 'Lifestyle', name: 'レコードプレーヤー', description: '針を落とした瞬間に広がる温かいノイズが、思い出の部屋へとタイムスリップさせます。', affiliate_platform: 'Rakuten', search_query: 'レコードプレーヤー' },
-    { tier: 'high', category: 'Luxury', name: 'ノスタルジックな温泉街への旅', description: '浴衣で歩く石畳。どこか懐かしい風景の中で、過去と今の自分を繋ぐ時間を。', affiliate_platform: 'RakutenTravel', search_query: '温泉街 昭和レトロ' }
+    { tier: 'high', category: 'Luxury', name: 'ノスタルジックな温泉街への旅', description: '浴衣で歩く石畳。どこか懐かしい風景の中で、過去と今の自分を繋ぐ時間を。', affiliate_platform: 'RakutenTravel', search_query: '温泉街 レトロ 旅館' }
   ],
   kuyashii: [
     { tier: 'low', category: 'Book', name: '不屈の精神を描くノンフィクション', description: 'その悔しさは次に進むための熱いガソリン。這い上がった先人たちの軌跡から火をもらう。', affiliate_platform: 'Amazon', search_query: 'ノンフィクション 逆転' },
     { tier: 'medium', category: 'Lifestyle', name: '上質なランニングシューズ', description: '悔しさを燃料にして、無心で風を切って走るための相棒。汗と一緒に鬱憤を流す。', affiliate_platform: 'Rakuten', search_query: 'ランニングシューズ 高反発' },
-    { tier: 'high', category: 'Luxury', name: 'プロのパーソナルトレーニング', description: 'プロの指導で身体を極限まで追い込み、悔しさを圧倒的なフィジカルの自信へと変える。', affiliate_platform: 'Rakuten', search_query: 'パーソナルトレーニング 体験' }
+    { tier: 'high', category: 'Luxury', name: 'プロのパーソナルトレーニング', description: 'プロの指導で身体を極限まで追い込み、悔しさを圧倒的なフィジカルの自信へと変える。', affiliate_platform: 'Rakuten', search_query: 'フィットネス カタログギフト' }
   ],
   kodoku: [
     { tier: 'low', category: 'Book', name: '孤独の価値を説く哲学書', description: '一人の時間は決して罰ではなく、心が最も豊かに育つ静かな森であることを教えてくれます。', affiliate_platform: 'Amazon', search_query: '孤独 哲学書' },
     { tier: 'medium', category: 'Lifestyle', name: 'ハンドメイドのマグカップ', description: '両手で包み込んだときの土の温もりが、一人の夜の冷たい空気を優しく温めてくれます。', affiliate_platform: 'Rakuten', search_query: 'マグカップ 陶器 作家' },
-    { tier: 'high', category: 'Luxury', name: '満天の星空を独り占めする宿', description: '圧倒的な宇宙の広がりの中で、自分という存在の小ささと孤独の美しさを味わう旅。', affiliate_platform: 'RakutenTravel', search_query: '星空 露天風呂 宿' }
+    { tier: 'high', category: 'Luxury', name: '満天の星空を独り占めする宿', description: '圧倒的な宇宙の広がりの中で、自分という存在の小ささと孤独の美しさを味わう旅。', affiliate_platform: 'RakutenTravel', search_query: '天体観測 星空 露天風呂' }
   ],
   ando: [
     { tier: 'low', category: 'Book', name: '心温まる童話・絵本', description: '張り詰めていた糸がほどけた夜は、子どもの頃のように純粋な物語に身を委ねて。', affiliate_platform: 'Amazon', search_query: '大人 絵本 癒やし' },
     { tier: 'medium', category: 'Lifestyle', name: 'オーガニックコットンパジャマ', description: '素肌に触れる極上の柔らかさが、頑張った体を「お疲れ様」と優しく抱きしめます。', affiliate_platform: 'Rakuten', search_query: 'オーガニックコットン パジャマ' },
-    { tier: 'high', category: 'Luxury', name: '源泉掛け流しの隠れ宿', description: '何もしないことの贅沢。温泉の温もりと静寂が、心と体を芯からほどいてくれます。', affiliate_platform: 'RakutenTravel', search_query: '源泉掛け流し 隠れ宿' }
+    { tier: 'high', category: 'Luxury', name: '源泉掛け流しの隠れ宿', description: '何もしないことの贅沢。温泉の温もりと静寂が、心と体を芯からほどいてくれます。', affiliate_platform: 'RakutenTravel', search_query: '源泉掛け流し 隠れ宿 客室露天' }
   ],
   aseri: [
     { tier: 'low', category: 'Book', name: '時間論・マインドフルネスの書', description: '他人の時計で生きるのをやめ、自分だけの歩幅とリズムを取り戻すための羅針盤。', affiliate_platform: 'Amazon', search_query: 'マインドフルネス 本' },
     { tier: 'medium', category: 'Lifestyle', name: '砂時計', description: '砂が静かに落ちていくのをただ見つめるだけの時間が、暴走する脳のスピードを緩めます。', affiliate_platform: 'Rakuten', search_query: '砂時計 インテリア' },
-    { tier: 'high', category: 'Luxury', name: '禅寺での座禅体験', description: '情報の波を完全に遮断し、ただ呼吸だけに集中することで自分の中の静寂を取り戻す。', affiliate_platform: 'RakutenTravel', search_query: '座禅 体験 宿' }
+    { tier: 'high', category: 'Luxury', name: '禅寺での座禅体験', description: '情報の波を完全に遮断し、ただ呼吸だけに集中することで自分の中の静寂を取り戻す。', affiliate_platform: 'RakutenTravel', search_query: '宿坊 座禅 体験' }
   ],
   itooshii: [
     { tier: 'low', category: 'Book', name: '愛と日常を綴ったエッセイ', description: '世界が少し優しく見える日。その柔らかな感情をそのまま保存しておけるような言葉たち。', affiliate_platform: 'Amazon', search_query: '愛 日常 エッセイ' },
     { tier: 'medium', category: 'Lifestyle', name: 'ドライフラワーのリース', description: '愛おしい瞬間を形にして残すように、部屋の片隅に静かな彩りと優しさを添えます。', affiliate_platform: 'Rakuten', search_query: 'ドライフラワー リース' },
-    { tier: 'high', category: 'Luxury', name: '想い出を形にする写真館撮影', description: '今のこの愛おしい気持ちと姿を、プロの光と技術で永遠の宝物として刻み込む時間。', affiliate_platform: 'Rakuten', search_query: '記念撮影 写真館 チケット' }
+    { tier: 'high', category: 'Luxury', name: '想い出を形にする写真館撮影', description: '今のこの愛おしい気持ちと姿を、プロの光と技術で永遠の宝物として刻み込む時間。', affiliate_platform: 'Rakuten', search_query: 'フォトスタジオ 撮影 カタログギフト' }
   ],
   shitto: [
     { tier: 'low', category: 'Book', name: '自己肯定感を育む心理学本', description: '他人の芝生の青さに苦しむ夜。自分の庭にしかない美しい花の存在に気づかせてくれます。', affiliate_platform: 'Amazon', search_query: '自己肯定感 心理学' },
     { tier: 'medium', category: 'Lifestyle', name: '自分を磨く上質なボディオイル', description: '誰かと比べるのをやめて、まずは自分の身体を最高に慈しみ、愛してあげるための儀式。', affiliate_platform: 'Rakuten', search_query: 'ボディオイル オーガニック' },
-    { tier: 'high', category: 'Luxury', name: '完全個室のエステサロン', description: '極上のケアで自分を徹底的に甘やかし、「私だって最高だ」という無敵の自信を取り戻す。', affiliate_platform: 'Rakuten', search_query: 'エステサロン 個室 チケット' }
+    { tier: 'high', category: 'Luxury', name: '完全個室のエステサロン', description: '極上のケアで自分を徹底的に甘やかし、「私だって最高だ」という無敵の自信を取り戻す。', affiliate_platform: 'Rakuten', search_query: '個室エステ 体験 カタログギフト' }
   ],
   hazukashii: [
     { tier: 'low', category: 'Book', name: 'クスッと笑える失敗談エッセイ', description: '穴があったら入りたい夜。誰かの見事な失敗談が、あなたの羞恥心を笑いに変えてくれます。', affiliate_platform: 'Amazon', search_query: '失敗 爆笑 エッセイ' },
     { tier: 'medium', category: 'Lifestyle', name: 'リラックスできるホットアイマスク', description: '顔から火が出るような記憶も、目元を温めて視界を塞げば、次第に心地よい闇へと溶けていきます。', affiliate_platform: 'Rakuten', search_query: 'ホットアイマスク' },
-    { tier: 'high', category: 'Luxury', name: '誰にも会わない貸切サウナ', description: 'たっぷりの汗と一緒に、情けない記憶も何もかも全て蒸発させてスッキリする究極のデトックス。', affiliate_platform: 'Rakuten', search_query: '個室 サウナ チケット' }
+    { tier: 'high', category: 'Luxury', name: '誰にも会わない貸切サウナ', description: 'たっぷりの汗と一緒に、情けない記憶も何もかも全て蒸発させてスッキリする究極のデトックス。', affiliate_platform: 'Rakuten', search_query: 'プライベートサウナ 貸切' }
   ],
   kansha: [
     { tier: 'low', category: 'Book', name: '美しい言葉の手紙集', description: '伝えきれない「ありがとう」の気持ちを、代わりに見事に紡いでくれる言葉のお手本。', affiliate_platform: 'Amazon', search_query: '手紙 言葉 表現' },
     { tier: 'medium', category: 'Lifestyle', name: '上質な便箋とガラスペン', description: '胸に溢れる感謝をデジタルの文字ではなく、インクの濃淡でアナログに伝えるための特別な道具。', affiliate_platform: 'Rakuten', search_query: 'ガラスペン 便箋 セット' },
-    { tier: 'high', category: 'Luxury', name: '大切な人と過ごすオーベルジュ', description: '言葉の代わりに、最高に美味しい食事と優雅な時間をプレゼントする、究極の「ありがとう」。', affiliate_platform: 'RakutenTravel', search_query: 'オーベルジュ ペア宿泊券' }
+    { tier: 'high', category: 'Luxury', name: '大切な人と過ごすオーベルジュ', description: '言葉の代わりに、最高に美味しい食事と優雅な時間をプレゼントする、究極の「ありがとう」。', affiliate_platform: 'RakutenTravel', search_query: 'オーベルジュ 記念日 贅沢' }
   ],
   gakkari: [
     { tier: 'low', category: 'Book', name: '視点が変わるユーモア小説', description: '期待が外れてしぼんだ心に、ふっと笑いをもたらし「まあいいか」と思わせてくれる特効薬。', affiliate_platform: 'Amazon', search_query: 'ユーモア 小説' },
     { tier: 'medium', category: 'Lifestyle', name: 'リッチなチョコレート詰め合わせ', description: 'がっかりした日の夜は、脳に直接届く上質なカカオの甘さで、強引に幸せホルモンを引き出す。', affiliate_platform: 'Rakuten', search_query: '高級 チョコレート' },
-    { tier: 'high', category: 'Luxury', name: '自分を甘やかすアフタヌーンティー', description: 'ダメだった日の予定を上書きする、非日常の空間と美しいスイーツの絶対的な肯定感。', affiliate_platform: 'Rakuten', search_query: 'アフタヌーンティー チケット' }
+    { tier: 'high', category: 'Luxury', name: '自分を甘やかすアフタヌーンティー', description: 'ダメだった日の予定を上書きする、非日常の空間と美しいスイーツの絶対的な肯定感。', affiliate_platform: 'Rakuten', search_query: 'アフタヌーンティー カタログギフト' }
   ],
   akogare: [
     { tier: 'low', category: 'Book', name: '一流のプロフェッショナルの思考法', description: 'あの遠い背中に一歩でも近づくために。憧れを具体的な行動に変えるための羅針盤。', affiliate_platform: 'Amazon', search_query: 'プロフェッショナル 仕事術' },
     { tier: 'medium', category: 'Lifestyle', name: '上質な革のノートカバー', description: 'いつか叶えたい夢や憧れを書き留める手帳を、一流の佇まいにアップグレードするアイテム。', affiliate_platform: 'Rakuten', search_query: '本革 ノートカバー' },
-    { tier: 'high', category: 'Luxury', name: '憧れの街への一人旅チケット', description: '写真でしか見たことのないあの景色へ。憧れを現実に変える、人生のターニングポイントとなる旅。', affiliate_platform: 'RakutenTravel', search_query: '一人旅 絶景' }
+    { tier: 'high', category: 'Luxury', name: '憧れの街への一人旅チケット', description: '写真でしか見たことのないあの景色へ。憧れを現実に変える、人生のターニングポイントとなる旅。', affiliate_platform: 'RakutenTravel', search_query: '一人旅 贅沢 絶景' }
   ]
 };
 
