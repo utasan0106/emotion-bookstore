@@ -108,6 +108,46 @@ function shuffleArray(arr){
   return a;
 }
 
+/* ---------- item 6: 日付シードのデイリーメッセージ生成（掛け算式 intro + body + outro） ---------- */
+function dailySeedNumber(){
+  const d = new Date();
+  return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+}
+function seededPickFromArray(arr, seed, salt){
+  if(!arr || !arr.length) return '';
+  let h = (seed ^ Math.imul(salt + 1, 2654435761)) >>> 0;
+  h = Math.imul(h ^ (h >>> 15), 2246822519) >>> 0;
+  h = Math.imul(h ^ (h >>> 13), 3266489917) >>> 0;
+  h = (h ^ (h >>> 16)) >>> 0;
+  return arr[h % arr.length];
+}
+function composeDailyMessage(kind, saltBase, label){
+  if(typeof DAILY_MESSAGE_PARTS === 'undefined') return '';
+  const parts = DAILY_MESSAGE_PARTS[kind];
+  if(!parts) return '';
+  const seed = dailySeedNumber();
+  let text = seededPickFromArray(parts.intro, seed, saltBase + 1)
+    + seededPickFromArray(parts.body, seed, saltBase + 2)
+    + seededPickFromArray(parts.outro, seed, saltBase + 3);
+  if(label) text = text.split('{label}').join(label);
+  return text;
+}
+
+/* ---------- item 7: 「あなたの物語・みんなの物語」アコーディオンの開閉 ---------- */
+function toggleEpisodes(){
+  const more = document.getElementById('episodesMore');
+  const btn = document.getElementById('episodesToggle');
+  if(!more || !btn) return;
+  if(more.classList.contains('hidden')){
+    more.classList.remove('hidden');
+    btn.textContent = '閉じる';
+  }else{
+    more.classList.add('hidden');
+    btn.textContent = btn.dataset.moreLabel || 'もっと見る';
+  }
+  if(typeof buzz === 'function') buzz(6);
+}
+
 function pickRecommend(catId){
   const pinned = PINNED_RECOMMEND[catId] || [];
   const wave = unlockedWaveCount();
@@ -792,20 +832,22 @@ function renderDetourSection(catId){
     return;
   }
   const tierLabel = { low:'ちいさな寄り道', medium:'すこし贅沢な寄り道', high:'とっておきの寄り道' };
-  /* 各感情に3点仕込み、月ごとに紹介する一品を入れ替える（月替わりの小さな特集） */
-  const featured = items[new Date().getMonth() % items.length];
-  const url = detourUrlFor(featured);
-  box.innerHTML = `
-    <p class="detour-heading">今月の寄り道 — 月替わりの小さな特集<span class="detour-pr">［PR・広告リンクを含みます］</span></p>
-    <div class="detour-cards">
+  /* item 8: DETOUR_POOL から毎回3件をランダムに表示する */
+  const picks = shuffleArray(items).slice(0, 3);
+  const cardsHtml = picks.map(featured=>{
+    const url = detourUrlFor(featured);
+    return `
       <div class="detour-card detour-tier-${featured.tier}">
         <span class="detour-tier-badge">${tierLabel[featured.tier] || featured.tier}</span>
         <p class="detour-name">${featured.name}</p>
         <p class="detour-desc">${featured.description}</p>
         <a class="detour-link" href="${url}" target="_blank" rel="noopener sponsored">見てみる →</a>
-      </div>
-    </div>
-    <p class="detour-note">寄り道の品揃えは月替わりです。来月は、またちがう一品をご用意しておきます。</p>`;
+      </div>`;
+  }).join('');
+  box.innerHTML = `
+    <p class="detour-heading">今月の寄り道<span class="detour-pr">［PR・広告リンクを含みます］</span></p>
+    <div class="detour-cards">${cardsHtml}</div>
+    <p class="detour-note">寄り道の品揃えは、棚を巡るたびに入れ替わります。</p>`;
 }
 
 function renderShelfDisplay(){
@@ -883,12 +925,19 @@ function renderShelfDisplay(){
       musicHtml = `<div class="music-row"><a class="music-link" href="${musicUrl}" target="_blank" rel="noopener">🎵 YouTubeでBGMを探す</a></div>`;
     }
     const myEntries = libraryCache.filter(e=>e.category===cat.id);
-    const myEpisodesHtml = myEntries.map(entry=>
+    const myEpisodeCards = myEntries.map(entry=>
       `<div class="episode-card mine" data-entry-id="${entry.id}"><span class="who mine-who">あなたの物語${entry.tweetUrl ? ' 🐦' : ''}</span>『${entry.title}』${entry.story.length > 60 ? entry.story.slice(0,60) + '…' : entry.story}</div>`
-    ).join('');
+    );
     const storyPool = STORIES_POOL[cat.id] || [];
     const shuffledStories = shuffleArray(storyPool).slice(0, 3);
-    const sampleEpisodesHtml = shuffledStories.map(s=>`<div class="episode-card"><span class="who">${s.author || '名もなき誰かの物語'}</span>${s.text}</div>`).join('');
+    const sampleEpisodeCards = shuffledStories.map(s=>`<div class="episode-card"><span class="who">${s.author || '名もなき誰かの物語'}</span>${s.text}</div>`);
+    /* item 7: 初期表示は2件のみ。残りは「もっと見る」で開閉するアコーディオンに収納 */
+    const allEpisodeCards = myEpisodeCards.concat(sampleEpisodeCards);
+    const visibleEpisodesHtml = allEpisodeCards.slice(0, 2).join('');
+    const hiddenEpisodeCards = allEpisodeCards.slice(2);
+    const hiddenEpisodesHtml = hiddenEpisodeCards.length
+      ? `<div class="episodes-more hidden" id="episodesMore">${hiddenEpisodeCards.join('')}</div><button type="button" class="episodes-toggle" id="episodesToggle" data-more-label="もっと見る（あと${hiddenEpisodeCards.length}件）" onclick="toggleEpisodes()">もっと見る（あと${hiddenEpisodeCards.length}件）</button>`
+      : '';
     const episodesNote = '';
     const purifyHtml = NEGATIVE_SHELVES.includes(cat.id)
       ? `<button type="button" class="purify-trigger" onclick="openPurify('${cat.id}')">🕯 この気持ちを手放す</button>`
@@ -897,9 +946,10 @@ function renderShelfDisplay(){
       <p class="definition"><b>${cat.label}</b> — ${cat.def}</p>
       <p class="quote-card">${q.text}</p>
       <p class="quote-source">— ${q.source}</p>
+      <p class="episodes-heading">あなたの物語・みんなの物語</p>
       <div class="episodes">
-        ${myEpisodesHtml}
-        ${sampleEpisodesHtml}
+        ${visibleEpisodesHtml}
+        ${hiddenEpisodesHtml}
       </div>
       ${episodesNote}
       <div class="shelf-tweets" id="shelfTweets"></div>
@@ -1268,7 +1318,12 @@ function showInvitation(catId){
   const t = document.getElementById('invTitle');
   if(t) t.textContent = inv.t;
   const b = document.getElementById('invBody');
-  if(b) b.textContent = inv.b;
+  if(b){
+    /* item 6: 推薦状の中身は DAILY_MESSAGE_PARTS から日付シードで毎日自動生成・変化する */
+    const catIdx = Math.max(0, CATEGORIES.findIndex(c=>c.id===catId));
+    const dailyBody = composeDailyMessage('invitation', 100 + catIdx * 7, shelfLabelOf(catId));
+    b.textContent = dailyBody || inv.b;
+  }
   const goBtn = document.getElementById('invGoShelf');
   if(goBtn){
     goBtn.onclick = ()=>{
@@ -2427,6 +2482,9 @@ function showProfileCard(){
     if(userProfile.name){
       line = '……おかえりなさい、' + userProfile.name + 'さん。\n' + line;
     }
+    /* item 6: 店主のデイリーメッセージ（DAILY_MESSAGE_PARTS を日付シードで合成、毎日変化） */
+    const dailyLine = composeDailyMessage('daily', 11);
+    if(dailyLine) line += '\n' + dailyLine;
     typeIntoNode(greetingEl, line);
   }
   if(!savedProfile){

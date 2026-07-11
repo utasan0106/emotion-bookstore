@@ -525,8 +525,8 @@ section:last-of-type{border-bottom:none;}
 }
 .shelf-tab{
   font-family:var(--font-body);
-  font-size:13px;
-  padding:7px 14px;
+  font-size:15px;
+  padding:8px 16px;
   border:1px solid var(--gold);
   background:transparent;
   color:var(--ink-soft);
@@ -581,7 +581,7 @@ body:not(.no-motion) .shelf-tab.glow{
   padding-bottom:16px;
   border-bottom:1px dashed var(--paper-shadow);
 }
-.definition b{color:var(--wine);}
+.definition b{color:var(--wine); font-size:15px;}
 .quote-card{
   font-family:var(--font-display);
   font-size:16px;
@@ -1452,7 +1452,7 @@ body.night{
   --paper-2:#221E19;
   --paper-shadow:#4A4236;
   --ink:#D8CCB4;
-  --ink-soft:#A89878;
+  --ink-soft:#BFB194;
   --wine:#B77884;
   --wine-2:#C98A96;
   --gold:#C9A860;
@@ -1518,7 +1518,7 @@ body.night textarea, body.night input, body.night select{ background:#262219; co
   .chart-btn{ font-size:12px; padding:7px 12px; flex:1 1 auto; }
 
   .shelf-tabs{ gap:6px; }
-  .shelf-tab{ font-size:12px; padding:6px 11px; }
+  .shelf-tab{ font-size:13.5px; padding:7px 13px; }
   .wander-btn{ font-size:11.5px; }
   .shelf-display{ padding:16px; }
   .episodes{ grid-template-columns:1fr; }
@@ -2272,4 +2272,71 @@ body.night #profileName, body.night .persona-chip{ background:#3A2E22; color:#E8
   color:var(--ink-soft);
   line-height:1.7;
   margin:2px 0 4px;
+}
+
+
+/* ============ Priority 3 追加スタイル ============ */
+
+/* item 1: 夜の書店モードのコントラスト改善 — 明るい下地のカードが夜の文字色と衝突していた問題を解消 */
+body.night .quote-card{
+  background:#332E26;
+  box-shadow:0 2px 10px rgba(0,0,0,0.3);
+}
+body.night .desk-lead{
+  background:#332E26;
+}
+body.night .swipe-hint,
+body.night .detour-note,
+body.night .quote-source,
+body.night .definition{
+  color:#BFB194;
+}
+body.night footer.shop-footer,
+body.night .legal-row a{
+  color:#BFB194;
+}
+
+/* item 7: 「あなたの物語・みんなの物語」アコーディオン */
+.episodes-heading{
+  font-family:var(--font-display);
+  font-size:14.5px;
+  color:var(--wine);
+  margin:18px 0 8px;
+  letter-spacing:.04em;
+}
+.episodes-more{ display:contents; }
+.episodes-toggle{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  background:none;
+  border:1px dashed var(--paper-shadow);
+  border-radius:20px;
+  padding:7px 16px;
+  cursor:pointer;
+  align-self:flex-start;
+}
+.episodes-toggle:hover{
+  color:var(--wine);
+  border-color:var(--wine);
+}
+body.night .episodes-toggle{ color:#BFB194; }
+
+/* item 10: 各セクション下部の「番台へ戻る」ボタン */
+.section-return{
+  text-align:center;
+  margin-top:28px;
+}
+.back-to-bandai{
+  font-family:var(--font-body);
+  font-size:13.5px;
+  color:var(--wine);
+  background:transparent;
+  border:1px solid var(--wine);
+  border-radius:20px;
+  padding:9px 24px;
+  cursor:pointer;
+  letter-spacing:.06em;
+}
+.back-to-bandai:hover{
+  background:rgba(110,42,52,0.08);
 }
