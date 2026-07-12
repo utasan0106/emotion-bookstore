@@ -164,6 +164,8 @@ function pickRecommend(catId){
 }
 
 const STORY_LIMIT = 700;
+/* 絵文字（サロゲートペア）でカウントがズレないよう、コードポイント単位で数える */
+function countChars(str){ return Array.from(str || '').length; }
 let activeCategory = (CATEGORIES && CATEGORIES.length) ? CATEGORIES[0].id : 'moyamoya';
 let libraryCache = [];
 
@@ -1382,7 +1384,7 @@ function updateStoryCount(){
   const ta = document.getElementById('storyInput');
   const el = document.getElementById('storyCount');
   if(!ta || !el) return;
-  const len = ta.value.length;
+  const len = countChars(ta.value);
   el.textContent = len + ' / ' + STORY_LIMIT + '字';
   el.classList.toggle('over', len > STORY_LIMIT);
 }
@@ -1438,7 +1440,7 @@ if(btnSubmit) {
     }
     const tInput = document.getElementById('titleInput');
     const title = (tInput ? tInput.value.trim() : '') || (suggestTitles(chosenId, story, 1)[0]) || generateTitle(chosenId);
-    if(story.length > STORY_LIMIT){
+    if(countChars(story) > STORY_LIMIT){
       if(msg) msg.textContent = '本文は' + STORY_LIMIT + '字までに収めてください。';
       return;
     }
@@ -2455,9 +2457,25 @@ function showProfileCard(){
   ov.classList.remove('hidden');
 }
 
+function warnInAppBrowserIfNeeded(){
+  try{
+    const ua = navigator.userAgent || '';
+    const inApp = /Line\//i.test(ua) || /FBAV|FB_IAB|Instagram|TikTok|Twitter for/i.test(ua);
+    if(!inApp || document.getElementById('inAppBrowserNote')) return;
+    const bar = document.createElement('div');
+    bar.id = 'inAppBrowserNote';
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:sticky;top:0;z-index:300;background:#6E2A34;color:#F6ECD4;font-size:12.5px;line-height:1.7;padding:10px 40px 10px 14px;';
+    bar.innerHTML = 'アプリ内ブラウザで開いています。この環境では<b>記録が保存されない場合があります</b>。Safari や Chrome で開き直すことをおすすめします。<button type="button" aria-label="閉じる" style="position:absolute;right:8px;top:8px;background:none;border:none;color:#F6ECD4;font-size:16px;cursor:pointer;">×</button>';
+    bar.querySelector('button').onclick = ()=>bar.remove();
+    document.body.insertBefore(bar, document.body.firstChild);
+  }catch(e){}
+}
+
 (async function init(){
   applySeasonalAccent();
   applyNightModeIfNeeded();
+  warnInAppBrowserIfNeeded();
   restoreDraftIfAny();
   ensureBackToTopButton();
   const savedProfile = await loadJSON(PROFILE_KEY, null);
