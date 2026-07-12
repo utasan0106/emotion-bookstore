@@ -122,6 +122,7 @@ const MESSAGES = {
     restoreInvalidFile: "このファイルは『みんなの感情書店』のバックアップ形式ではないようです。別のファイルをお試しください。",
     restoreSuccess: "復元しました。画面を更新します…",
     restoreFail: "復元に失敗しました。ファイルの内容をご確認ください。",
+    mitateYesBtn: "聞いてみる", mitateNoBtn: "今はいい",
     deskLeadFromCounter: "——ここまでを踏まえて。番台や棚で出会った気持ちを、今度はあなた自身の言葉で綴ってみましょう。",
     writeAtDeskBtn: "この気持ちを書き留める",
     chooseAgainBtn: "また選び直す",
@@ -246,6 +247,7 @@ const MESSAGES = {
     restoreInvalidFile: "This file doesn't look like an Emotion Bookstore backup. Please try a different file.",
     restoreSuccess: "Restored. Reloading…",
     restoreFail: "Restore failed. Please check the contents of the file.",
+    mitateYesBtn: "Yes, tell me", mitateNoBtn: "Not right now",
     deskLeadFromCounter: "——Building on that. Try writing the feeling you shared at the counter or on the shelves, now in your own words.",
     writeAtDeskBtn: "Write this feeling down",
     chooseAgainBtn: "Choose again",
@@ -2372,7 +2374,8 @@ async function sendToShopkeeper(){
     const closingLine = '……なるほど。私のようなしがない店番が言葉を返すより、今のあなたにはご自身の気持ちを静かに見つめる時間のほうが合っているかもしれません。よろしければ、今の気持ちをそのまま一冊の本として綴ってみませんか？ または、静かに棚を巡るのも良いでしょう。';
     appendBubble('shopkeeper', closingLine);
     chatHistory.push({ role:'assistant', content:closingLine });
-    renderLoopEndActions(suggestedShelf || activeCategory);
+    await wait(prefs.motion ? 650 : 30);
+    renderMitateOffer(suggestedShelf || activeCategory);
     lockFreeInput(true);
   }else if(suggestedShelf){
     renderSuggestionActions(suggestedShelf);
@@ -2383,6 +2386,53 @@ async function sendToShopkeeper(){
 
   if(sb) sb.disabled = isLoopEnd ? true : false;
   if(kf) setTimeout(()=>kf.classList.remove('listening'), 3500);
+}
+
+// ★追加：占いが持つ「本音の言語化・自己肯定・背中押し」という価値を、
+// 書店の世界観（＝店主の"見立て"）のまま提供する機能。
+// 会話が一区切りついたタイミングで、ユーザーが望んだときにだけ差し出す一言。
+function pickHonneMitate(shelfId){
+  const pool = (typeof HONNE_MITATE !== 'undefined' && HONNE_MITATE[shelfId] && HONNE_MITATE[shelfId].length)
+    ? HONNE_MITATE[shelfId]
+    : (typeof HONNE_MITATE_GENERIC !== 'undefined' ? HONNE_MITATE_GENERIC : []);
+  if(!pool.length) return '';
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function renderMitateOffer(shelfId){
+  const container = document.getElementById('chartOptions');
+  if(!container) return;
+  container.innerHTML = '';
+
+  const offerLine = '……少しだけ、あなたの言葉から見えたものを、お伝えしてもいいですか？（当たっていなければ、聞き流してくださいね）';
+  appendBubble('shopkeeper', offerLine);
+  chatHistory.push({ role:'assistant', content:offerLine });
+
+  const yesBtn = document.createElement('button');
+  yesBtn.type = 'button';
+  yesBtn.className = 'chart-btn primary';
+  yesBtn.textContent = t('mitateYesBtn');
+  yesBtn.onclick = async ()=>{
+    container.innerHTML = '';
+    const line = pickHonneMitate(shelfId);
+    if(line){
+      appendBubble('shopkeeper', line);
+      chatHistory.push({ role:'assistant', content:line });
+    }
+    await wait(prefs.motion ? 700 : 30);
+    renderLoopEndActions(shelfId);
+  };
+
+  const noBtn = document.createElement('button');
+  noBtn.type = 'button';
+  noBtn.className = 'chart-btn ghost';
+  noBtn.textContent = t('mitateNoBtn');
+  noBtn.onclick = ()=>{
+    renderLoopEndActions(shelfId);
+  };
+
+  container.appendChild(yesBtn);
+  container.appendChild(noBtn);
 }
 
 // ★追加：3回目のやりとりで表示する、次のアクションへの3択ボタン
