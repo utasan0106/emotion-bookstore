@@ -868,7 +868,16 @@ async function toggleFavorite(type, title, by, category, extra){
     nowFav = true;
   }
   await saveJSON(FAVORITES_KEY, favoritesCache);
+  updateFavoritesBtnLabel();
   return nowFav;
+}
+
+// ★追加：「気になる」の総数を、本棚ページのボタンに常時表示する（押した先がどこにあるか一目でわかるように）
+function updateFavoritesBtnLabel(){
+  const btn = document.getElementById('viewFavoritesBtn');
+  if(!btn) return;
+  const base = t('favListBtn');
+  btn.textContent = favoritesCache.length ? base + `（${favoritesCache.length}）` : base;
 }
 
 function favBtnHtml(type, title, by, category, extra){
@@ -3716,8 +3725,8 @@ function warnInAppBrowserIfNeeded(){
     const favListBtn = document.createElement('button');
     favListBtn.id = 'viewFavoritesBtn';
     favListBtn.className = 'reset-link';
-    favListBtn.textContent = t('favListBtn');
     favListBtn.onclick = showFavorites;
     shelfControls.insertBefore(favListBtn, shelfControls.firstChild);
+    updateFavoritesBtnLabel();
   }
 })();
