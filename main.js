@@ -1332,7 +1332,8 @@ function renderShelfDisplay(){
     }else{
       const fallbackQuery = cat.label + ' 邦楽 プレイリスト';
       const musicUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(fallbackQuery);
-      musicHtml = `<div class="music-row"><a class="music-link" href="${musicUrl}" target="_blank" rel="noopener">🎵 YouTubeでBGMを探す</a></div>`;
+      const musicUrlAmc = 'https://music.apple.com/jp/search?term=' + encodeURIComponent(fallbackQuery);
+      musicHtml = `<div class="music-row"><a class="music-link" href="${musicUrl}" target="_blank" rel="noopener">🎵 YouTubeでBGMを探す</a> <a class="music-link" href="${musicUrlAmc}" target="_blank" rel="noopener">Apple Musicで探す</a></div>`;
     }
     const myEntries = libraryCache.filter(e=>e.category===cat.id);
     // ★修正（XSS対策）：ユーザーが編纂机で入力したタイトル・本文をinnerHTMLへ差し込む前に
