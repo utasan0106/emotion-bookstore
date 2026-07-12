@@ -103,7 +103,42 @@ const MESSAGES = {
     pwaSteps: "iPhone（Safari）：下の「共有」ボタン →「ホーム画面に追加」<br>Android（Chrome）：右上のメニュー（⋮）→「ホーム画面に追加」",
     pwaNote: "アプリのように、いつでも1タップで扉をひらけるようになります。",
     inAppBrowserWarning: "アプリ内ブラウザで開いています。この環境では<b>記録が保存されない場合があります</b>。Safari や Chrome で開き直すことをおすすめします。",
-    langScopeNote: "※ 会話の内容や名言・おすすめは、現在この端末では日本語のままです。"
+    langScopeNote: "※ 会話の内容や名言・おすすめは、現在この端末では日本語のままです。",
+    fairGoBtn: "棚へ",
+    wanderBtn: "⚘ 気の向くままに巡る",
+    shioriChoosingWords: "店主が言葉を選んでいます…",
+    bindTextStep2: "表紙を綴じています…",
+    draftRestored: "書きかけの下書きを復元しました。続きからどうぞ。",
+    storyTooShort: "まずは、そのときの気持ちを書いてみてください。",
+    storyLimitWarning: "本文は{max}字までに収めてください。",
+    storyReviewing: "店主が物語に目を通しています…",
+    tweetLinkInvalid: "Xの投稿リンクの形式が正しくないようです（例：https://x.com/ユーザー名/status/12345）。",
+    exportingBtn: "書き出しています…", exportedBtn: "書き出しました ✓", exportFailBtn: "書き出しに失敗しました",
+    exportDefaultBtn: "📥 これまでの記録をテキストでダウンロード",
+    deskLeadFromCounter: "——ここまでを踏まえて。番台や棚で出会った気持ちを、今度はあなた自身の言葉で綴ってみましょう。",
+    writeAtDeskBtn: "この気持ちを書き留める",
+    chooseAgainBtn: "また選び直す",
+    chooseFromOptionsBtn: "選択肢からも選べます",
+    writeAtDeskBtn2: "この気持ちを机で書き留める",
+    restartChatBtn: "最初から話し直す",
+    backToTextureBtn: "質感から選び直す",
+    syncedToDeskMsg: "番台でお聞きしたお話を、原稿用紙に書き留めておきました。続きをどうぞ、あなたのペースで綴ってください",
+    photoLoadFail: "写真を読み込めませんでした。別の写真でお試しください。",
+    ghostNextBook: "＋ 次の一冊",
+    backupCreatingBtn: "鍵を作っています…", backupDoneBtn: "鍵を更新しました ✓", backupFailBtn: "鍵の更新に失敗しました",
+    backupDefaultBtn: "🔑 本棚のデータをバックアップ保存する",
+    copyDoneBtn: "コピーしました ✓", copyLinkDefaultBtn: "リンクをコピー", copyManualBtn: "↓の欄からコピーしてください",
+    copyUrlDoneBtn: "コピーしました ✓", copyUrlDefaultBtn: "📋 URLをコピー",
+    purifyLogBtn: "🕯 手放した気持ちの記録を見る",
+    trendEmptyOwn: "いまのあなたの本棚を、期間を変えて眺められます。",
+    aiReferralLead: "もし込み入った専門的な話（法律・医療・技術的な相談など）でしたら、こちらでより詳しく聞けるかもしれません。",
+    aiReferralGpt: "ChatGPTに聞いてみる ↗", aiReferralGemini: "Geminiに聞いてみる ↗",
+    goToShelfBtn: "『{shelf}』の棚を見てみる",
+    dataAboutTitle: "この書店とデータについて",
+    dataAboutOpenLabel: "データはどこに保存されるの？",
+    dataAboutBody: "「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す簡単な仕組みです（特定のAIモデルと会話しているわけではありません）。<br>「物語を綴る」「製本する」で書いた内容は、どこにも公開されず、この端末のブラウザ内（IndexedDB/localStorage）だけに保存されます。外部サーバーへは送信されません。アカウント登録もなく、他の人があなたの記録を見ることはできません。<br>「気持ちを手放す」は、この端末だけに残る「手放しの記録」に静かに移すことで、本棚の一覧からは見えなくなる機能です（完全な削除ではなく、専用の記録欄に移されます）。<br>「みんなの本棚」の「みんな」は他ユーザーとの共有ではなく、あなた自身の本棚が育っていく様子を指す名前です。<br>ブラウザのデータを消去するとこの記録も失われるため、「🔑 バックアップ保存」から定期的にファイルへ書き出すことをおすすめします。サービスとして終了する場合も、事前にバックアップを取っていただければお手元にデータが残ります。",
+    keeperNotAiHint: "※AIチャットボットではなく、あらかじめ用意した言葉を返す簡単な仕組みです。会話はモデルに送信されません。",
+    submitStoryHint: "※外部には公開されず、この端末のブラウザ内にのみ保存されます。"
   },
   en: {
     tagline: "Put your feelings into words,<br>a diary that's yours alone.",
@@ -185,7 +220,42 @@ const MESSAGES = {
     pwaSteps: "iPhone (Safari): tap the \"Share\" button below → \"Add to Home Screen\"<br>Android (Chrome): tap the menu (⋮) top right → \"Add to Home Screen\"",
     pwaNote: "Just like an app, you'll be able to open the door with a single tap anytime.",
     inAppBrowserWarning: "You're viewing this inside an in-app browser. <b>Your records may not be saved</b> in this environment. We recommend reopening in Safari or Chrome.",
-    langScopeNote: "※ Conversation content, quotes, and recommendations are currently shown in Japanese only."
+    langScopeNote: "※ Conversation content, quotes, and recommendations are currently shown in Japanese only.",
+    fairGoBtn: "Go",
+    wanderBtn: "⚘ Wander wherever it leads",
+    shioriChoosingWords: "The shopkeeper is choosing their words…",
+    bindTextStep2: "Binding the cover…",
+    draftRestored: "Your draft has been restored. Please continue where you left off.",
+    storyTooShort: "First, try writing how you felt at that moment.",
+    storyLimitWarning: "Please keep the text within {max} characters.",
+    storyReviewing: "The shopkeeper is reading through your story…",
+    tweetLinkInvalid: "That doesn't look like a valid link to a post on X (e.g. https://x.com/username/status/12345).",
+    exportingBtn: "Exporting…", exportedBtn: "Exported ✓", exportFailBtn: "Export failed",
+    exportDefaultBtn: "📥 Download your records as text",
+    deskLeadFromCounter: "——Building on that. Try writing the feeling you shared at the counter or on the shelves, now in your own words.",
+    writeAtDeskBtn: "Write this feeling down",
+    chooseAgainBtn: "Choose again",
+    chooseFromOptionsBtn: "You can also pick from the options",
+    writeAtDeskBtn2: "Write this feeling down at the desk",
+    restartChatBtn: "Start the conversation over",
+    backToTextureBtn: "Choose the texture again",
+    syncedToDeskMsg: "I've jotted down what you told me at the counter onto the manuscript paper. Please continue at your own pace.",
+    photoLoadFail: "Couldn't load that photo. Please try a different one.",
+    ghostNextBook: "+ Next book",
+    backupCreatingBtn: "Creating a key…", backupDoneBtn: "Key updated ✓", backupFailBtn: "Key update failed",
+    backupDefaultBtn: "🔑 Back up your bookshelf data",
+    copyDoneBtn: "Copied ✓", copyLinkDefaultBtn: "Copy link", copyManualBtn: "Please copy from the field below",
+    copyUrlDoneBtn: "Copied ✓", copyUrlDefaultBtn: "📋 Copy URL",
+    purifyLogBtn: "🕯 View your release log",
+    trendEmptyOwn: "You can view your own bookshelf across different time ranges.",
+    aiReferralLead: "If this is a complex, specialized topic (legal, medical, technical, etc.), you may get a more detailed answer here:",
+    aiReferralGpt: "Ask ChatGPT ↗", aiReferralGemini: "Ask Gemini ↗",
+    goToShelfBtn: "View the \"{shelf}\" shelf",
+    dataAboutTitle: "About this bookstore & your data",
+    dataAboutOpenLabel: "Where is my data stored?",
+    dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it's a simple system that returns pre-written lines based on context (you're not talking to any particular AI model).<br>Anything you write in \"Write your story\" or have \"bound\" is never published anywhere. It's stored only inside this device's browser (IndexedDB/localStorage) and never sent to an external server. There's no account, so no one else can see your records.<br>\"Let go of a feeling\" quietly moves that entry into a device-only \"release log\" so it no longer appears on your bookshelf — it isn't permanently deleted, just moved to its own log.<br>\"Everyone's Bookshelf\" doesn't mean sharing with other users — \"everyone\" here just names the idea of your own bookshelf growing over time.<br>Clearing your browser data will also erase these records, so we recommend periodically exporting a backup file via \"🔑 Back up your data.\" Even if this service were ever discontinued, your data would remain safe on your device as long as you've backed it up beforehand.",
+    keeperNotAiHint: "※ Not an AI chatbot — a simple system that replies with pre-written lines. Nothing is sent to a model.",
+    submitStoryHint: "※ Never published anywhere — stored only inside this device's browser."
   }
 };
 
@@ -399,7 +469,7 @@ function toggleEpisodes(){
   if(!more || !btn) return;
   if(more.classList.contains('hidden')){
     more.classList.remove('hidden');
-    btn.textContent = '閉じる';
+    btn.textContent = t('closeBtn');
   }else{
     more.classList.add('hidden');
     btn.textContent = btn.dataset.moreLabel || 'もっと見る';
@@ -693,7 +763,7 @@ function openPurify(shelfId){
   }
   if(btn){
     btn.disabled = false;
-    btn.textContent = '🕯 手放す';
+    btn.textContent = t('purifyBtn');
     btn.dataset.stage = 'input';
   }
   if(msg){
@@ -749,7 +819,7 @@ if(btnPurify) btnPurify.onclick = async ()=>{
     msg.textContent = PURIFY_CLOSING[Math.floor(Math.random()*PURIFY_CLOSING.length)];
     msg.classList.remove('hidden');
   }
-  btn.textContent = '閉じる';
+  btn.textContent = t('closeBtn');
   btn.dataset.stage = 'done';
   btn.disabled = false;
 };
@@ -1041,7 +1111,7 @@ function renderFair(){
     line.textContent = fair.line;
     const go = document.createElement('button');
     go.className = 'fair-go';
-    go.textContent = '棚へ';
+    go.textContent = t('fairGoBtn');
     go.onclick = ()=>goToShelf(fair.id);
     box.appendChild(title); box.appendChild(line); box.appendChild(go);
   }catch(e){ console.error('renderFair failed', e); }
@@ -1079,7 +1149,7 @@ function renderShelfTabs(){
     });
     const wander = document.createElement('button');
     wander.className = 'wander-btn';
-    wander.textContent = '⚘ 気の向くままに巡る';
+    wander.textContent = t('wanderBtn');
     wander.onclick = ()=>{
       let pick = activeCategory;
       while(pick === activeCategory && CATEGORIES.length > 1){
@@ -1380,7 +1450,7 @@ function renderTrend(){
   entries.forEach(e=>{ counts[e.category] = (counts[e.category]||0) + 1; });
   if(!entries.length){
     bars.innerHTML = '<p class="trend-empty">この期間に綴られた頁は、まだありません。</p>';
-    sum.textContent = 'いまのあなたの本棚を、期間を変えて眺められます。';
+    sum.textContent = t('trendEmptyOwn');
     return;
   }
   const max = Math.max(...Object.values(counts));
@@ -1424,7 +1494,7 @@ async function renderShioriCard(){
     slip.classList.add('hidden');
     btn.classList.remove('hidden');
     btn.disabled = false;
-    btn.textContent = '栞を受け取る';
+    btn.textContent = t('shioriBtn');
   }
 }
 
@@ -1433,7 +1503,7 @@ if(btnShiori){
   btnShiori.onclick = async ()=>{
     const btn = document.getElementById('shioriBtn');
     btn.disabled = true;
-    btn.textContent = '店主が言葉を選んでいます…';
+    btn.textContent = t('shioriChoosingWords');
     await wait(prefs.motion ? 600 : 50);
     const topId = topCategoryId();
     const topLabel = (CATEGORIES.find(c=>c.id===topId) || {}).label || 'あなた';
@@ -1568,8 +1638,8 @@ function runBinding(onDone){
   }
   ov.classList.remove('hidden');
   ov.classList.add('animating');
-  txt.textContent = '糸をかけています…';
-  t1 = setTimeout(()=>{ txt.textContent = '表紙を綴じています…'; }, 850);
+  txt.textContent = t('bindText');
+  t1 = setTimeout(()=>{ txt.textContent = t('bindTextStep2'); }, 850);
   t2 = setTimeout(finish, 1800);
   ov.onclick = finish;
 }
@@ -1677,7 +1747,7 @@ async function restoreDraftIfAny(){
   const msg = document.getElementById('deskMsg');
   ta.value = draft.text;
   updateStoryCount();
-  if(msg) msg.textContent = '書きかけの下書きを復元しました。続きからどうぞ。';
+  if(msg) msg.textContent = t('draftRestored');
 }
 
 const btnSubmit = document.getElementById('submitStory');
@@ -1692,17 +1762,17 @@ if(btnSubmit) {
     const btn = document.getElementById('submitStory');
     hideCurateBox();
     if(!story){
-      if(msg) msg.textContent = 'まずは、そのときの気持ちを書いてみてください。';
+      if(msg) msg.textContent = t('storyTooShort');
       return;
     }
     const tInput = document.getElementById('titleInput');
     const title = (tInput ? tInput.value.trim() : '') || (suggestTitles(chosenId, story, 1)[0]) || generateTitle(chosenId);
     if(countChars(story) > STORY_LIMIT){
-      if(msg) msg.textContent = '本文は' + STORY_LIMIT + '字までに収めてください。';
+      if(msg) msg.textContent = t('storyLimitWarning').replace('{max}', STORY_LIMIT);
       return;
     }
     btn.disabled = true;
-    if(msg) msg.textContent = '店主が物語に目を通しています…';
+    if(msg) msg.textContent = t('storyReviewing');
 
     const chosenLabel = (CATEGORIES.find(c=>c.id===chosenId) || {}).label || '';
     const twInput = document.getElementById('tweetInput');
@@ -1712,7 +1782,7 @@ if(btnSubmit) {
     const isPast = wSel ? (wSel.value === 'past') : false;
 
     if(tweetRaw && !tweetUrl){
-      if(msg) msg.textContent = 'Xの投稿リンクの形式が正しくないようです（例：https://x.com/ユーザー名/status/12345）。';
+      if(msg) msg.textContent = t('tweetLinkInvalid');
       btn.disabled = false;
       return;
     }
@@ -1810,14 +1880,14 @@ const btnExport = document.getElementById('exportDiary');
 if(btnExport) {
   btnExport.onclick = async ()=>{
     const btn = document.getElementById('exportDiary');
-    btn.textContent = '書き出しています…';
+    btn.textContent = t('exportingBtn');
     try{
       await exportDiaryText();
-      btn.textContent = '書き出しました ✓';
+      btn.textContent = t('exportedBtn');
     }catch(e){
-      btn.textContent = '書き出しに失敗しました';
+      btn.textContent = t('exportFailBtn');
     }
-    setTimeout(()=>{ btn.textContent = '📥 これまでの記録をテキストでダウンロード'; }, 2500);
+    setTimeout(()=>{ btn.textContent = t('exportDefaultBtn'); }, 2500);
   };
 }
 
@@ -1852,6 +1922,41 @@ const AI_MISMATCH_REPLIES = [
   '……そのご質問には、私よりもっと物知りな方が向いているかもしれません。私にできるのは、いま揺れているあなたの心に、そっと寄り添うことくらいです。',
   '……むずかしいお話ですね。明快な答えは持ち合わせていませんが、それに触れて浮かんだ気持ちになら、近い棚があるかもしれません。'
 ];
+
+// ★追加：AI_MISMATCH_PATTERNSに該当する「店主では力になれない難しい話題」のとき、
+// ChatGPT／Geminiへそっと案内するリンクを会話の下に表示する
+function isAiMismatchTopic(text){
+  return AI_MISMATCH_PATTERNS.some(p=>text.includes(p));
+}
+function renderAiReferralLinks(userText){
+  const cw = document.getElementById('chatWindow');
+  if(!cw) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'ai-referral-wrap';
+  const lead = document.createElement('p');
+  lead.className = 'ai-referral-lead';
+  lead.textContent = t('aiReferralLead');
+  wrap.appendChild(lead);
+  const row = document.createElement('div');
+  row.className = 'ai-referral-links';
+  const gpt = document.createElement('a');
+  gpt.href = 'https://chatgpt.com/?q=' + encodeURIComponent(userText || '');
+  gpt.target = '_blank';
+  gpt.rel = 'noopener';
+  gpt.className = 'chart-btn ghost ai-referral-link';
+  gpt.textContent = t('aiReferralGpt');
+  const gem = document.createElement('a');
+  gem.href = 'https://gemini.google.com/app';
+  gem.target = '_blank';
+  gem.rel = 'noopener';
+  gem.className = 'chart-btn ghost ai-referral-link';
+  gem.textContent = t('aiReferralGemini');
+  row.appendChild(gpt);
+  row.appendChild(gem);
+  wrap.appendChild(row);
+  cw.appendChild(wrap);
+  scrollPageToLatestBubble(wrap);
+}
 
 function matchShopkeeperReply(text, fallbackShelfId){
   for(const entry of KEYWORD_BANK){
@@ -1909,7 +2014,7 @@ function updateDeskLead(){
   const el = document.getElementById('deskLead');
   if(!el) return;
   if(deskFlowFlag || counterDraftText){
-    el.textContent = '——ここまでを踏まえて。番台や棚で出会った気持ちを、今度はあなた自身の言葉で綴ってみましょう。';
+    el.textContent = t('deskLeadFromCounter');
     el.classList.remove('hidden');
   }else{
     el.classList.add('hidden');
@@ -1954,15 +2059,15 @@ function renderChartOptions(nodeKey){
   } else if(node.shelf){
     const goBtn = document.createElement('button');
     goBtn.className = 'chart-btn primary';
-    goBtn.textContent = `『${shelfLabelOf(node.shelf)}』の棚を見てみる`;
+    goBtn.textContent = t('goToShelfBtn').replace('{shelf}', shelfLabelOf(node.shelf));
     goBtn.onclick = ()=>goToShelf(node.shelf);
     const writeBtn = document.createElement('button');
     writeBtn.className = 'chart-btn';
-    writeBtn.textContent = 'この気持ちを書き留める';
+    writeBtn.textContent = t('writeAtDeskBtn');
     writeBtn.onclick = ()=>goToDeskWithCategory(node.shelf);
     const moreBtn = document.createElement('button');
     moreBtn.className = 'chart-btn';
-    moreBtn.textContent = 'また選び直す';
+    moreBtn.textContent = t('chooseAgainBtn');
     moreBtn.onclick = ()=>{
       appendBubble('shopkeeper', '……今はどんな気分に近いですか。');
       renderChartOptions('root');
@@ -1982,17 +2087,17 @@ function renderSuggestionActions(shelfId){
 
   const goBtn = document.createElement('button');
   goBtn.className = 'chart-btn primary';
-  goBtn.textContent = `『${label}』の棚を見てみる`;
+  goBtn.textContent = t('goToShelfBtn').replace('{shelf}', label);
   goBtn.onclick = ()=>goToShelf(shelfId);
 
   const writeBtn = document.createElement('button');
   writeBtn.className = 'chart-btn';
-  writeBtn.textContent = 'この気持ちを書き留める';
+  writeBtn.textContent = t('writeAtDeskBtn');
   writeBtn.onclick = ()=>goToDeskWithCategory(shelfId);
 
   const moreBtn = document.createElement('button');
   moreBtn.className = 'chart-btn';
-  moreBtn.textContent = '選択肢からも選べます';
+  moreBtn.textContent = t('chooseFromOptionsBtn');
   moreBtn.onclick = ()=>renderChartOptions('root');
 
   container.appendChild(goBtn);
@@ -2159,6 +2264,11 @@ async function sendToShopkeeper(){
   appendBubble('shopkeeper', reply);
   chatHistory.push({ role:'assistant', content:reply });
 
+  // ★追加：店主では答えにくい難しい話題のときは、ChatGPT/Geminiへの案内リンクを添える
+  if(isAiMismatchTopic(text)){
+    renderAiReferralLinks(text);
+  }
+
   freeTextTurns++;
   // ★修正：3回目の自由入力で会話をきれいに区切り、ループさせずに
   // 「棚へ行く／机で綴る／話し直す」の3択で次のアクションへ誘導する
@@ -2192,19 +2302,19 @@ function renderLoopEndActions(shelfId){
   const goBtn = document.createElement('button');
   goBtn.type = 'button';
   goBtn.className = 'chart-btn primary';
-  goBtn.textContent = `『${label}』の棚を見てみる`;
+  goBtn.textContent = t('goToShelfBtn').replace('{shelf}', label);
   goBtn.onclick = ()=>goToShelf(shelfId);
 
   const writeBtn = document.createElement('button');
   writeBtn.type = 'button';
   writeBtn.className = 'chart-btn';
-  writeBtn.textContent = 'この気持ちを机で書き留める';
+  writeBtn.textContent = t('writeAtDeskBtn2');
   writeBtn.onclick = ()=>goToDeskWithCategory(shelfId);
 
   const restartBtn = document.createElement('button');
   restartBtn.type = 'button';
   restartBtn.className = 'chart-btn ghost';
-  restartBtn.textContent = '最初から話し直す';
+  restartBtn.textContent = t('restartChatBtn');
   restartBtn.onclick = ()=>restartCounterChat();
 
   container.appendChild(goBtn);
@@ -2328,7 +2438,7 @@ function renderEmotionChips(group){
   back.type = 'button';
   back.className = 'chart-btn ghost fade-in';
   back.style.animationDelay = (shelves.length * 90) + 'ms';
-  back.textContent = '質感から選び直す';
+  back.textContent = t('backToTextureBtn');
   back.onclick = ()=>{
     appendBubble('shopkeeper', '……今は、どんな手ざわりに近いですか。');
     renderChartOptions('root');
@@ -2362,7 +2472,7 @@ function syncCounterDraftToDesk(){
     : counterDraftText;
   ta.dispatchEvent(new Event('input'));
   const msg = document.getElementById('deskMsg');
-  if(msg) msg.textContent = '番台でお聞きしたお話を、原稿用紙に書き留めておきました。続きをどうぞ、あなたのペースで綴ってください';
+  if(msg) msg.textContent = t('syncedToDeskMsg');
 }
 
 (function(){
@@ -2430,7 +2540,7 @@ function clearAttachedPhoto(){
       buzz(8);
     }catch(e){
       attachedPhoto = '';
-      if(msg) msg.textContent = '写真を読み込めませんでした。別の写真でお試しください。';
+      if(msg) msg.textContent = t('photoLoadFail');
     }
   });
   const removeBtn = document.getElementById('photoRemove');
@@ -2470,7 +2580,7 @@ function appendEmptySpine(shelf){
   if(!shelf) return;
   const ghost = document.createElement('div');
   ghost.className = 'spine empty-spine';
-  ghost.textContent = '＋ 次の一冊';
+  ghost.textContent = t('ghostNextBook');
   ghost.title = 'まだ中身が書かれていない、空の背表紙。タップすると編纂机へ。';
   ghost.onclick = ()=>{ buzz(6); goToPage('desk'); };
   shelf.appendChild(ghost);
@@ -2589,15 +2699,15 @@ async function downloadBackup(){
   const backupBtn = document.getElementById('backupBtn');
   if(!backupBtn) return;
   backupBtn.onclick = async ()=>{
-    backupBtn.textContent = '鍵を作っています…';
+    backupBtn.textContent = t('backupCreatingBtn');
     try{
       await downloadBackup();
-      backupBtn.textContent = '鍵を更新しました ✓';
+      backupBtn.textContent = t('backupDoneBtn');
       buzz(10);
     }catch(e){
-      backupBtn.textContent = '鍵の更新に失敗しました';
+      backupBtn.textContent = t('backupFailBtn');
     }
-    setTimeout(()=>{ backupBtn.textContent = '🔑 本棚のデータをバックアップ保存する'; }, 2500);
+    setTimeout(()=>{ backupBtn.textContent = t('backupDefaultBtn'); }, 2500);
   };
 })();
 
@@ -2630,14 +2740,14 @@ function openShareMenu(url){
     try{
       if(!navigator.clipboard || !navigator.clipboard.writeText) throw new Error('clipboard API unavailable');
       await navigator.clipboard.writeText(url);
-      copyBtn.textContent = 'コピーしました ✓';
-      setTimeout(()=>{ copyBtn.textContent = 'リンクをコピー'; }, 2000);
+      copyBtn.textContent = t('copyDoneBtn');
+      setTimeout(()=>{ copyBtn.textContent = t('copyLinkDefaultBtn'); }, 2000);
     }catch(e){
       if(urlInput){
         urlInput.select();
         urlInput.setSelectionRange(0, url.length);
       }
-      copyBtn.textContent = '↓の欄からコピーしてください';
+      copyBtn.textContent = t('copyManualBtn');
     }
   };
   menu.classList.remove('hidden');
@@ -2659,11 +2769,11 @@ function openShareMenu(url){
   copyUrlBtn.onclick = async ()=>{
     try{
       await navigator.clipboard.writeText(window.location.href);
-      copyUrlBtn.textContent = 'コピーしました ✓';
+      copyUrlBtn.textContent = t('copyDoneBtn');
     }catch(e){
       openShareMenu(window.location.href);
     }
-    setTimeout(()=>{ copyUrlBtn.textContent = '📋 URLをコピー'; }, 2000);
+    setTimeout(()=>{ copyUrlBtn.textContent = t('copyUrlDefaultBtn'); }, 2000);
   };
 })();
 
@@ -2892,16 +3002,16 @@ function warnInAppBrowserIfNeeded(){
   renderTitleSuggest();
 
   const backupBtn = document.getElementById('backupBtn');
-  if(backupBtn) backupBtn.innerHTML = '🔑 本棚のデータをバックアップ保存する';
+  if(backupBtn) backupBtn.innerHTML = t('backupDefaultBtn');
   const exportBtn = document.getElementById('exportDiary');
-  if(exportBtn) exportBtn.innerHTML = '📥 これまでの記録をテキストでダウンロード';
+  if(exportBtn) exportBtn.innerHTML = t('exportDefaultBtn');
 
   const shelfControls = document.querySelector('.shelf-controls');
   if(shelfControls && !document.getElementById('viewPurifyLogBtn')){
     const btn = document.createElement('button');
     btn.id = 'viewPurifyLogBtn';
     btn.className = 'reset-link';
-    btn.textContent = '🕯 手放した気持ちの記録を見る';
+    btn.textContent = t('purifyLogBtn');
     btn.onclick = showPurifyLog;
     shelfControls.insertBefore(btn, shelfControls.firstChild);
   }

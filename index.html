@@ -145,6 +145,47 @@ body.night .about-accordion-content {
   background: #332E26;
   border-color: var(--paper-shadow);
 }
+/* --- 追加：データの保存場所・バックアップ説明アコーディオン --- */
+.about-data-accordion{
+  max-width: 600px;
+  margin: 0 auto 24px;
+  text-align: left;
+}
+.about-data-accordion summary{
+  cursor: pointer;
+  text-align: center;
+  list-style: none;
+  font-size: 12px;
+  color: var(--ink-soft);
+  padding: 4px 8px;
+  transition: color 0.2s ease;
+}
+.about-data-accordion summary::-webkit-details-marker{ display:none; }
+.about-data-accordion summary:before{ content: "📦 "; }
+.about-data-accordion summary:hover{ color: var(--wine); }
+.about-data-accordion[open] summary{ color: var(--wine); }
+.about-data-content{
+  margin-top: 10px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.4);
+  border: 1px solid var(--paper-shadow);
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--ink);
+}
+.about-data-content b{
+  display: block;
+  font-family: var(--font-display);
+  color: var(--wine);
+  margin-bottom: 8px;
+  font-size: 14.5px;
+  text-align: center;
+}
+body.night .about-data-content{
+  background: #332E26;
+  border-color: var(--paper-shadow);
+}
 </style>
 </head>
 <body>
@@ -197,6 +238,16 @@ body.night .about-accordion-content {
     </script>
     <!-- ===== /追加：サービス説明のアコーディオン ===== -->
 
+    <!-- ===== 追加：データの保存場所・バックアップの説明 ===== -->
+    <details class="about-data-accordion">
+      <summary data-i18n="dataAboutOpenLabel">データはどこに保存されるの？</summary>
+      <div class="about-data-content">
+        <b data-i18n="dataAboutTitle">この書店とデータについて</b>
+        <p data-i18n-html="dataAboutBody">「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す簡単な仕組みです（特定のAIモデルと会話しているわけではありません）。<br>「物語を綴る」「製本する」で書いた内容は、どこにも公開されず、この端末のブラウザ内（IndexedDB/localStorage）だけに保存されます。外部サーバーへは送信されません。アカウント登録もなく、他の人があなたの記録を見ることはできません。<br>「気持ちを手放す」は、この端末だけに残る「手放しの記録」に静かに移すことで、本棚の一覧からは見えなくなる機能です（完全な削除ではなく、専用の記録欄に移されます）。<br>「みんなの本棚」の「みんな」は他ユーザーとの共有ではなく、あなた自身の本棚が育っていく様子を指す名前です。<br>ブラウザのデータを消去するとこの記録も失われるため、「🔑 バックアップ保存」から定期的にファイルへ書き出すことをおすすめします。サービスとして終了する場合も、事前にバックアップを取っていただければお手元にデータが残ります。</p>
+      </div>
+    </details>
+    <!-- ===== /追加：データの保存場所・バックアップの説明 ===== -->
+
     <div class="intro-explainer in-header">
       <p class="intro-kicker" data-i18n-html="introKicker">この書店でできること<br>— 好きな場所から、自由に巡れます</p>
       <div class="intro-steps">
@@ -248,6 +299,7 @@ body.night .about-accordion-content {
   <section id="counter" class="reveal">
     <div class="section-head"><span class="section-num">1</span><h2 data-i18n="sectionHead1">番台 — 店主に相談する</h2></div>
     <p class="section-sub" data-i18n="sectionSub1">今のモヤモヤを、そのまま話してください。</p>
+    <p class="field-hint" style="margin:-4px 0 10px;" data-i18n="keeperNotAiHint">※AIチャットボットではなく、あらかじめ用意した言葉を返す簡単な仕組みです。会話はモデルに送信されません。</p>
     <div class="counter-wrap">
       <div class="keeper-vignette" aria-hidden="true">
         <svg viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg">
@@ -361,6 +413,7 @@ body.night .about-accordion-content {
       <div class="desk-actions">
         <button class="bind-btn" id="submitStory" data-i18n="submitStory">店主に預けて製本する</button>
         <span class="desk-msg" id="deskMsg"></span>
+        <p class="field-hint" style="margin-top:4px;" data-i18n="submitStoryHint">※外部には公開されず、この端末のブラウザ内にのみ保存されます。</p>
       </div>
     </div>
     <div class="invitation hidden" id="invitationCard">
