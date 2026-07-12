@@ -7,6 +7,245 @@
  * <script src="main.js"></script>
  * ============================================================ */
 
+/* ============================================================
+ * ★追加：日本語 / English 切り替え（i18n）
+ * ここでは「画面まわりの静的UI文言」（ナビゲーション・ボタン・フォーム・
+ * フッター・各種オーバーレイなど）をすべて英訳して切り替えられるようにしています。
+ * 一方で、棚の名言・店主の会話（CHAT_TREE / KEYWORD_BANK / COUNSELING_MESSAGES）・
+ * おすすめ本や音楽・エピソードなど「data.js の膨大なコンテンツ本文」は、
+ * 日本語の文章に深く組み込まれた表現が数千行規模であるため、今回のスコープでは
+ * 意図的に対象外とし、言語を切り替えても日本語のまま表示されます
+ * （中途半端な単語だけの差し替えでは不自然な文になってしまうための判断です）。
+ * ============================================================ */
+const LANG_STORAGE_KEY = 'emotion-bookstore-lang';
+let appLang = 'ja';
+
+function currentLang(){ return appLang; }
+
+const MESSAGES = {
+  ja: {
+    tagline: "モヤモヤを言語化して整理する、<br>あなただけの感情日記。",
+    subTagline: "感情の書店で、自分だけの一冊を見つけよう。",
+    accordionSummary: "言語化できない今の「心の質感」を選ぶだけ。<br>店主のみちびきで、自分だけの本棚が育つ日記アプリ。",
+    accordionOpenLabel: "どんな体験ができるの？",
+    accordionCloseLabel: "閉じる",
+    accordionTitle: "みんなの感情書店とは",
+    accordionP1: "言語化できない「今の心の質感」を直感的に選ぶだけで、店主が優しくナビゲートしてくれます。<br>そして、あなたの感情にそっと寄り添う「本」や「音楽」との思いがけない出会いをご提案します。",
+    accordionP2: "モヤモヤした気持ちや言葉にならない本音は、美しい背表紙の一冊の本に。<br>誰の目も気にしなくていいこの場所で、あなただけの本棚を少しずつ育ててみませんか？<br>他人の視線に疲れた心が、スッと軽くなる体験をお届けします。",
+    introKicker: "この書店でできること<br>— 好きな場所から、自由に巡れます",
+    introTitle1: "店主に話す", introText1: "今の気持ちを、選択肢か自由な言葉で伝えます。",
+    introTitle2: "棚を巡る", introText2: "15種類の感情の棚から、名言や本、曲に出会います。",
+    introTitle3: "物語を綴る", introText3: "自分の体験を書き、製本して棚に納めます。",
+    introTitle4: "本棚が育つ", introText4: "綴った物語が積み重なり、自分だけの本棚に。",
+    enterBtn: "扉をひらく →",
+    motionToggleOn: "演出：入", motionToggleOff: "演出：切",
+    motionToggleTitle: "演出アニメーションの入/切",
+    profileBtn: "🪪 来店カード", profileBtnTitle: "お名前と属性の設定（任意・この端末にのみ保存）",
+    trustBadge1: "登録不要", trustBadge2: "この端末にのみ保存", trustBadge3: "AIの学習には使われません",
+    pageNavAria: "ページを選ぶ",
+    pageTab1: "① 番台", pageTab2: "② 棚", pageTab3: "③ 編纂机", pageTab4: "④ 本棚",
+    sectionHead1: "番台 — 店主に相談する", sectionSub1: "今のモヤモヤを、そのまま話してください。",
+    keeperBioSummary: "店主について",
+    keeperBioText: "この書店の店主。名前は「巡（めぐる）」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、巡が長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。",
+    keeperNameLabel: "店主",
+    firstGreeting: "……いらっしゃいませ。ちょうど頁を閉じたところです。今はどんな気分に近いですか。近いものを選んでも、下に自由に書いてもらっても構いません。",
+    textureStepAria: "心の質感を選ぶ",
+    guideLead: "👇 当てはまるものがない場合は、下の枠に言葉を書いて「話す」を押してください",
+    freeformHintDesk: "※書いた言葉は、そのまま編纂机の原稿用紙に写しておきます。",
+    earlyFreeformHint: "当てはまるものがない場合は、この枠に気持ちを書いて「話す」を押してください。",
+    userInputPlaceholder: "例：うまく言えないけど、朝からずっとモヤモヤしている…",
+    sendBtn: "話す",
+    sectionHead2: "感情の棚", sectionSub2: "棚を選んでも、あてもなく巡っても。",
+    swipeHint: "← 左右にスワイプでも棚を移動できます →",
+    backToBandai: "⤴ 番台へ戻る",
+    sectionHead3: "編纂机 — 物語を綴る",
+    sectionSub3: "今の棚は「{shelf}」です。書き終えたら、タイトルは店主が考えます（自分でつけても構いません）。今の気持ちだけでなく、以前のことを振り返って綴ることもできます。",
+    storyInputPlaceholder: "いつ、どこで、何があって、どう感じたか。短くても、拙くても構いません。",
+    assistBtn: "書き出しに迷ったら、店主の助け舟",
+    storyCountFormat: "{count} / {max}字",
+    photoLabel: "📷 今日の一枚を、頁に挟む（任意）",
+    photoPreviewAlt: "添付写真のプレビュー",
+    photoRemoveAria: "写真を外す",
+    photoHint: "写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。",
+    deskExtraSummary: "✍️ 棚・タイトル・いつの気持ちかを、自分で決める（任意）",
+    fieldLabelShelf: "棚", fieldLabelTitle: "背表紙のタイトル", titleInputPlaceholder: "空欄なら店主が考えます",
+    fieldLabelWhen: "いつの気持ちですか", whenOptionNow: "今の気持ち", whenOptionPast: "以前のことを振り返って",
+    fieldLabelTweet: "関連するXの投稿があれば", tweetInputPlaceholder: "例：https://x.com/username/status/1234567890",
+    fieldHint: "「以前のことを振り返って」を選ぶと、あの時の気持ちをそのまま本棚に閉じ込めておけます。困った時に開き直すと、前にも同じ気持ちを乗り越えてきたことがわかります。Xの投稿へのリンクを貼ると、本を開いたときに公式の埋め込みで表示されます。本文や画像を直接お預かりすることはありません。",
+    submitStory: "店主に預けて製本する",
+    invSeal: "封", invKicker: "推薦状", invGoShelf: "棚を見てみる", invClose: "しおりに挟む",
+    sectionHead4: "あなたの本棚",
+    sectionSub4: "納品した物語が背表紙になって並びます。クリックすると読めます。困った時にここを開くと、前にも同じ気持ちを乗り越えてきたことがわかります。",
+    shelfEmptyMsg: "まだ本がありません。編纂机で最初の一冊を綴ってみましょう。",
+    recordCornerAria: "店主のレコード棚",
+    resetShelf: "本棚をリセットする",
+    trendDetailSummary: "感情の地図を詳しく見る",
+    trendNote: "※月次「感情取扱説明書」レポートの簡易デモです。この地図はあなたにだけ見えています。",
+    shioriCardTitle: "今日の栞", shioriCardNote: "あなたの本棚を眺めた店主から、一枚。",
+    shioriLabel: "栞 — 店主より", shioriBtn: "栞を受け取る",
+    footerBrand: "『みんなの感情書店』",
+    footerNote: "綴った言葉はサーバーには送信されず、この端末にのみ保存されます。",
+    shareBtn: "🔗 この書店をシェアする", copyUrlBtn: "📋 URLをコピー", pwaPinBtn: "📌 ホーム画面にピン留め",
+    privacyLink: "プライバシーポリシー", termsLink: "利用規約",
+    shareMenuTitle: "シェアする", shareX: "Xでシェア", shareLine: "LINEでシェア",
+    shareNative: "端末の共有機能を使う", shareCopy: "リンクをコピー",
+    shareMenuHint: "コピーできない場合は、上の欄をタップして全選択→コピーしてください。",
+    closeBtn: "閉じる",
+    bindText: "糸をかけています…", bindSkip: "タップで即座に完了",
+    purifyOverlayAria: "気持ちを手放す",
+    purifyKicker: "手放す — 誰にも見られません。この端末の「手放しの記録」にだけ、そっと残ります",
+    purifyInputPlaceholder: "その気持ちを、ここにそのまま書き出してみてください。",
+    purifyBtn: "🕯 手放す",
+    modalPhotoAlt: "この頁に挟まれた写真", modalNoteLabel: "店主のことば",
+    modalGoShelf: "この棚をもう一度見る", modalDel: "この本を棚から下げる",
+    pwaPopupAria: "ホーム画面に追加する案内",
+    pwaTitle: "📌 この書店をスマホのホーム画面にピン留めする",
+    pwaSteps: "iPhone（Safari）：下の「共有」ボタン →「ホーム画面に追加」<br>Android（Chrome）：右上のメニュー（⋮）→「ホーム画面に追加」",
+    pwaNote: "アプリのように、いつでも1タップで扉をひらけるようになります。",
+    inAppBrowserWarning: "アプリ内ブラウザで開いています。この環境では<b>記録が保存されない場合があります</b>。Safari や Chrome で開き直すことをおすすめします。",
+    langScopeNote: "※ 会話の内容や名言・おすすめは、現在この端末では日本語のままです。"
+  },
+  en: {
+    tagline: "Put your feelings into words,<br>a diary that's yours alone.",
+    subTagline: "Find the one book that's meant for you.",
+    accordionSummary: "Just pick the \"texture\" of how you feel right now.<br>An app where your own bookshelf grows, guided gently by the shopkeeper.",
+    accordionOpenLabel: "What can I do here?",
+    accordionCloseLabel: "Close",
+    accordionTitle: "About Emotion Bookstore",
+    accordionP1: "Simply choose the \"texture of your heart\" that you can't quite put into words, and the shopkeeper will gently guide you.<br>We'll also introduce you to unexpected encounters with \"books\" and \"music\" that quietly sit with your feelings.",
+    accordionP2: "That murky feeling, that honest voice you can't quite say out loud — let it become a single book with a beautiful spine.<br>In a place where no one else's eyes matter, why not slowly grow a bookshelf that's entirely your own?<br>A heart tired of being watched can finally feel a little lighter.",
+    introKicker: "What this bookstore offers<br>— wander freely, starting wherever you like",
+    introTitle1: "Talk to the shopkeeper", introText1: "Share how you feel now — pick an option, or write freely.",
+    introTitle2: "Browse the shelves", introText2: "Discover quotes, books and songs across 15 emotion shelves.",
+    introTitle3: "Write your story", introText3: "Write your experience, and have it bound onto the shelf.",
+    introTitle4: "Watch your shelf grow", introText4: "Every story you write adds up to a bookshelf all your own.",
+    enterBtn: "Open the door →",
+    motionToggleOn: "Motion: On", motionToggleOff: "Motion: Off",
+    motionToggleTitle: "Toggle animation effects on/off",
+    profileBtn: "🪪 Visitor card", profileBtnTitle: "Set your name and details (optional, stored on this device only)",
+    trustBadge1: "No sign-up", trustBadge2: "Stored on this device only", trustBadge3: "Never used to train AI",
+    pageNavAria: "Choose a page",
+    pageTab1: "① Counter", pageTab2: "② Shelves", pageTab3: "③ Writing desk", pageTab4: "④ Bookshelf",
+    sectionHead1: "The Counter — Talk to the shopkeeper", sectionSub1: "Tell us whatever's on your mind, just as it is.",
+    keeperBioSummary: "About the shopkeeper",
+    keeperBioText: "The keeper of this bookstore goes by \"Meguru.\" Their age and gender remain unrevealed. They usually read quietly at the back of the counter, and their job is to listen to what customers have to say. The shelves are lined with quotes old and new, sourced and collected by Meguru over many years in a notebook.",
+    keeperNameLabel: "Shopkeeper",
+    firstGreeting: "……Welcome. I just closed a page. What mood are you closest to right now? You can pick something close, or write freely below.",
+    textureStepAria: "Choose the texture of your heart",
+    guideLead: "👇 If nothing quite fits, write your own words in the box below and press \"Talk\"",
+    freeformHintDesk: "※ What you write here will also be copied onto the manuscript paper at the writing desk.",
+    earlyFreeformHint: "If nothing quite fits, write how you feel in this box and press \"Talk.\"",
+    userInputPlaceholder: "e.g. I can't quite explain it, but I've felt unsettled all morning…",
+    sendBtn: "Talk",
+    sectionHead2: "The Emotion Shelves", sectionSub2: "Pick a shelf, or just wander without a destination.",
+    swipeHint: "← Swipe left or right to move between shelves →",
+    backToBandai: "⤴ Back to the counter",
+    sectionHead3: "The Writing Desk — Write your story",
+    sectionSub3: "The current shelf is \"{shelf}.\" Once you're done, the shopkeeper will come up with a title (or you can write your own). You can write about how you feel now, or look back on something from before.",
+    storyInputPlaceholder: "When, where, what happened, and how it felt. Short and imperfect is fine.",
+    assistBtn: "Not sure how to start? Ask the shopkeeper for a hand",
+    storyCountFormat: "{count} / {max} chars",
+    photoLabel: "📷 Slip in today's photo (optional)",
+    photoPreviewAlt: "Preview of attached photo",
+    photoRemoveAria: "Remove photo",
+    photoHint: "Photos are resized to a maximum of 800px and kept only on this device. Nothing is sent to a server.",
+    deskExtraSummary: "✍️ Choose the shelf, title, and timing yourself (optional)",
+    fieldLabelShelf: "Shelf", fieldLabelTitle: "Spine title", titleInputPlaceholder: "Leave blank and the shopkeeper will decide",
+    fieldLabelWhen: "When did you feel this?", whenOptionNow: "Right now", whenOptionPast: "Looking back on the past",
+    fieldLabelTweet: "Link a related post on X, if any", tweetInputPlaceholder: "e.g. https://x.com/username/status/1234567890",
+    fieldHint: "Choosing \"looking back on the past\" lets you seal that moment's feeling onto the shelf just as it was. Opening it again when you're struggling shows you that you've gotten through this feeling before. A link to a post on X will show up as an official embed when the book is opened — we never store the post's text or images directly.",
+    submitStory: "Hand it to the shopkeeper for binding",
+    invSeal: "Sealed", invKicker: "Letter of Recommendation", invGoShelf: "Take a look at the shelf", invClose: "Tuck it away as a bookmark",
+    sectionHead4: "Your Bookshelf",
+    sectionSub4: "Your delivered stories line up as book spines. Click to read them. Opening this when you're struggling shows you that you've gotten through this feeling before.",
+    shelfEmptyMsg: "No books yet. Try writing your first one at the writing desk.",
+    recordCornerAria: "Shopkeeper's record corner",
+    resetShelf: "Reset bookshelf",
+    trendDetailSummary: "See your emotion map in detail",
+    trendNote: "※ A simple demo of the monthly \"Emotion Handbook\" report. This map is visible only to you.",
+    shioriCardTitle: "Today's Bookmark", shioriCardNote: "A note from the shopkeeper, after looking over your bookshelf.",
+    shioriLabel: "Bookmark — from the shopkeeper", shioriBtn: "Receive today's bookmark",
+    footerBrand: "\"Emotion Bookstore\"",
+    footerNote: "What you write is never sent to a server — it's stored only on this device.",
+    shareBtn: "🔗 Share this bookstore", copyUrlBtn: "📋 Copy URL", pwaPinBtn: "📌 Pin to home screen",
+    privacyLink: "Privacy Policy", termsLink: "Terms of Service",
+    shareMenuTitle: "Share", shareX: "Share on X", shareLine: "Share on LINE",
+    shareNative: "Use device share menu", shareCopy: "Copy link",
+    shareMenuHint: "If copying doesn't work, tap the field above to select all, then copy.",
+    closeBtn: "Close",
+    bindText: "Binding the thread…", bindSkip: "Tap to finish instantly",
+    purifyOverlayAria: "Let go of a feeling",
+    purifyKicker: "Let go — no one will see this. It's kept quietly only in this device's \"release log.\"",
+    purifyInputPlaceholder: "Write that feeling out here, just as it is.",
+    purifyBtn: "🕯 Let it go",
+    modalPhotoAlt: "Photo attached to this page", modalNoteLabel: "A word from the shopkeeper",
+    modalGoShelf: "See this shelf again", modalDel: "Remove this book from the shelf",
+    pwaPopupAria: "Instructions for adding to home screen",
+    pwaTitle: "📌 Pin this bookstore to your phone's home screen",
+    pwaSteps: "iPhone (Safari): tap the \"Share\" button below → \"Add to Home Screen\"<br>Android (Chrome): tap the menu (⋮) top right → \"Add to Home Screen\"",
+    pwaNote: "Just like an app, you'll be able to open the door with a single tap anytime.",
+    inAppBrowserWarning: "You're viewing this inside an in-app browser. <b>Your records may not be saved</b> in this environment. We recommend reopening in Safari or Chrome.",
+    langScopeNote: "※ Conversation content, quotes, and recommendations are currently shown in Japanese only."
+  }
+};
+
+function t(key){
+  const dict = MESSAGES[appLang] || MESSAGES.ja;
+  return (dict && dict[key] !== undefined) ? dict[key] : (MESSAGES.ja[key] || '');
+}
+
+function applyLanguage(){
+  document.documentElement.lang = appLang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{
+    el.innerHTML = t(el.getAttribute('data-i18n-html'));
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+    el.placeholder = t(el.getAttribute('data-i18n-ph'));
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(el=>{
+    el.title = t(el.getAttribute('data-i18n-title'));
+  });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el=>{
+    el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria')));
+  });
+  document.querySelectorAll('[data-i18n-alt]').forEach(el=>{
+    el.alt = t(el.getAttribute('data-i18n-alt'));
+  });
+  // 「今の棚は「◯◯」です…」のように、途中に動的な棚名が挟まる文言はテンプレート差し込みで処理
+  const sectionSub3 = document.querySelector('#desk .section-sub');
+  if(sectionSub3){
+    const [before, after] = t('sectionSub3').split('{shelf}');
+    sectionSub3.innerHTML = `${before}「<span id="deskCategoryLabel">${(typeof shelfLabelOf === 'function' && typeof activeCategory !== 'undefined') ? shelfLabelOf(activeCategory) : ''}</span>」${after}`;
+  }
+  // 演出トグル・文字数カウンターなど、JS側で直接書き換えているUI文言も追従させる
+  if(typeof applyPrefs === 'function') applyPrefs();
+  if(typeof updateStoryCount === 'function') updateStoryCount();
+  const langBtn = document.getElementById('langToggle');
+  if(langBtn) langBtn.textContent = appLang === 'ja' ? '🌐 JP / EN' : '🌐 EN / JP';
+  const titleEl = document.querySelector('title');
+  if(titleEl){
+    titleEl.textContent = appLang === 'ja'
+      ? 'みんなの感情書店 — 感情日記・自己分析アプリ｜登録不要・無料'
+      : 'Emotion Bookstore — A journaling app for putting feelings into words';
+  }
+}
+
+async function initLanguage(){
+  const saved = await loadJSON(LANG_STORAGE_KEY, null);
+  if(saved === 'en' || saved === 'ja') appLang = saved;
+  applyLanguage();
+}
+
+function toggleLanguage(){
+  appLang = appLang === 'ja' ? 'en' : 'ja';
+  saveJSON(LANG_STORAGE_KEY, appLang);
+  applyLanguage();
+  buzz(6);
+}
+
 function scoreLabelForStory(label, story){
   if(!story) return 0;
   const chars = Array.from(new Set(label.replace(/[のをにがはでへと日頁記録一]/g,'').split('')));
@@ -651,7 +890,7 @@ function applyPrefs(){
   document.body.classList.toggle('no-motion', !prefs.motion);
   const mt = document.getElementById('motionToggle');
   if(mt){
-    mt.textContent = '演出：' + (prefs.motion ? '入' : '切');
+    mt.textContent = t(prefs.motion ? 'motionToggleOn' : 'motionToggleOff');
     mt.classList.toggle('on', prefs.motion);
   }
 }
@@ -672,6 +911,10 @@ if(mtBtn) mtBtn.onclick = ()=>{
   applyPrefs();
   saveJSON('emotion-bookstore-prefs', prefs);
 };
+
+// ★追加：🌐 JP / EN 言語切り替えボタン
+const langBtn = document.getElementById('langToggle');
+if(langBtn) langBtn.onclick = toggleLanguage;
 
 function buzz(ms){
   if(prefs.motion && navigator.vibrate){
@@ -1371,7 +1614,7 @@ function updateStoryCount(){
   const el = document.getElementById('storyCount');
   if(!ta || !el) return;
   const len = countChars(ta.value);
-  el.textContent = len + ' / ' + STORY_LIMIT + '字';
+  el.textContent = t('storyCountFormat').replace('{count}', len).replace('{max}', STORY_LIMIT);
   el.classList.toggle('over', len > STORY_LIMIT);
 }
 
@@ -1753,7 +1996,7 @@ function pickReply(reply){
 const chatHistory = [];
 
 // ★1文字あたりの表示間隔（30〜40ms の範囲で調整可能。既定は34ms）
-const TYPE_SPEED_MS = 34;
+const TYPE_SPEED_MS = 30;
 
 function typeIntoNode(node, text, speed, onDone){
   // 演出設定がオフ、または長文（260字超）の場合は、従来どおり一瞬で全文を表示する
@@ -1799,7 +2042,7 @@ function appendBubble(role, text){
     if(currentTone === 'heavy') div.classList.add('tone-heavy');
     const name = document.createElement('span');
     name.className = 'name';
-    name.textContent = '店主';
+    name.textContent = t('keeperNameLabel');
     div.appendChild(name);
     const body = document.createElement('span');
     div.appendChild(body);
@@ -2496,13 +2739,16 @@ function warnInAppBrowserIfNeeded(){
     bar.id = 'inAppBrowserNote';
     bar.setAttribute('role', 'status');
     bar.style.cssText = 'position:sticky;top:0;z-index:300;background:#6E2A34;color:#F6ECD4;font-size:12.5px;line-height:1.7;padding:10px 40px 10px 14px;';
-    bar.innerHTML = 'アプリ内ブラウザで開いています。この環境では<b>記録が保存されない場合があります</b>。Safari や Chrome で開き直すことをおすすめします。<button type="button" aria-label="閉じる" style="position:absolute;right:8px;top:8px;background:none;border:none;color:#F6ECD4;font-size:16px;cursor:pointer;">×</button>';
+    const closeLabel = (typeof t === 'function') ? t('closeBtn') : '閉じる';
+    const warnText = (typeof t === 'function') ? t('inAppBrowserWarning') : 'アプリ内ブラウザで開いています。この環境では<b>記録が保存されない場合があります</b>。Safari や Chrome で開き直すことをおすすめします。';
+    bar.innerHTML = warnText + `<button type="button" aria-label="${closeLabel}" style="position:absolute;right:8px;top:8px;background:none;border:none;color:#F6ECD4;font-size:16px;cursor:pointer;">×</button>`;
     bar.querySelector('button').onclick = ()=>bar.remove();
     document.body.insertBefore(bar, document.body.firstChild);
   }catch(e){}
 }
 
 (async function init(){
+  await initLanguage();
   applySeasonalAccent();
   applyNightModeIfNeeded();
   warnInAppBrowserIfNeeded();
@@ -2513,7 +2759,9 @@ function warnInAppBrowserIfNeeded(){
     userProfile = Object.assign(userProfile, savedProfile);
   }
   const greetingEl = document.getElementById('firstGreetingText');
-  if(greetingEl){
+  // ★注：この時間帯別・ペルソナ別の挨拶ライブラリ（TIME_GREETINGS等）は日本語のみのため、
+  // English表示中はapplyLanguage()が設定した既定の英語挨拶（firstGreeting）をそのまま使う
+  if(greetingEl && appLang === 'ja'){
     const hour = new Date().getHours();
     let line;
     if(hour >= 22 || hour < 5){

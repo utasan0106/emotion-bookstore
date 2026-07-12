@@ -153,96 +153,101 @@ body.night .about-accordion-content {
   <header class="entrance">
     <p class="eyebrow">EMOTIONAL BINDERY &amp; BOOKSHOP</p>
     <h1>みんなの感情書店</h1>
-    <p class="tagline">モヤモヤを言語化して整理する、<br>あなただけの感情日記。</p>
-    <p class="sub-tagline">感情の書店で、自分だけの一冊を見つけよう。</p>
+    <p class="tagline" data-i18n-html="tagline">モヤモヤを言語化して整理する、<br>あなただけの感情日記。</p>
+    <p class="sub-tagline" data-i18n="subTagline">感情の書店で、自分だけの一冊を見つけよう。</p>
 
     <!-- ===== 追加：サービス説明のアコーディオン ===== -->
     <div class="about-accordion-wrap">
-      <div class="about-accordion-summary">
+      <div class="about-accordion-summary" data-i18n-html="accordionSummary">
         言語化できない今の「心の質感」を選ぶだけ。<br>
         店主のみちびきで、自分だけの本棚が育つ日記アプリ。
       </div>
       <button class="about-accordion-btn" id="aboutAccordionBtn" onclick="toggleAboutAccordion()">
-        <span id="aboutAccordionIcon">▼</span> どんな体験ができるの？
+        <span id="aboutAccordionIcon">▼</span> <span id="aboutAccordionBtnLabel" data-i18n="accordionOpenLabel">どんな体験ができるの？</span>
       </button>
       <div class="about-accordion-content" id="aboutAccordionContent">
-        <b>みんなの感情書店とは</b>
-        <p>言語化できない「今の心の質感」を直感的に選ぶだけで、店主が優しくナビゲートしてくれます。<br>
+        <b data-i18n="accordionTitle">みんなの感情書店とは</b>
+        <p data-i18n-html="accordionP1">言語化できない「今の心の質感」を直感的に選ぶだけで、店主が優しくナビゲートしてくれます。<br>
         そして、あなたの感情にそっと寄り添う「本」や「音楽」との思いがけない出会いをご提案します。</p>
-        <p style="margin-top:8px;">モヤモヤした気持ちや言葉にならない本音は、美しい背表紙の一冊の本に。<br>
+        <p style="margin-top:8px;" data-i18n-html="accordionP2">モヤモヤした気持ちや言葉にならない本音は、美しい背表紙の一冊の本に。<br>
         誰の目も気にしなくていいこの場所で、あなただけの本棚を少しずつ育ててみませんか？<br>
         他人の視線に疲れた心が、スッと軽くなる体験をお届けします。</p>
       </div>
     </div>
-    
+
     <script>
       function toggleAboutAccordion() {
         const content = document.getElementById('aboutAccordionContent');
         const btn = document.getElementById('aboutAccordionBtn');
         const icon = document.getElementById('aboutAccordionIcon');
-        
+        const labelEl = document.getElementById('aboutAccordionBtnLabel');
+        const lang = (typeof currentLang === 'function') ? currentLang() : 'ja';
+        const closeLabel = (typeof MESSAGES !== 'undefined') ? MESSAGES[lang].accordionCloseLabel : '閉じる';
+        const openLabel = (typeof MESSAGES !== 'undefined') ? MESSAGES[lang].accordionOpenLabel : 'どんな体験ができるの？';
+
         content.classList.toggle('open');
         if (content.classList.contains('open')) {
           icon.textContent = '▲';
-          btn.innerHTML = '<span id="aboutAccordionIcon">▲</span> 閉じる';
+          if (labelEl) labelEl.textContent = closeLabel;
         } else {
           icon.textContent = '▼';
-          btn.innerHTML = '<span id="aboutAccordionIcon">▼</span> どんな体験ができるの？';
+          if (labelEl) labelEl.textContent = openLabel;
         }
       }
     </script>
     <!-- ===== /追加：サービス説明のアコーディオン ===== -->
 
     <div class="intro-explainer in-header">
-      <p class="intro-kicker">この書店でできること<br>— 好きな場所から、自由に巡れます</p>
+      <p class="intro-kicker" data-i18n-html="introKicker">この書店でできること<br>— 好きな場所から、自由に巡れます</p>
       <div class="intro-steps">
         <button type="button" class="intro-step" onclick="goToPage('counter')">
           <span class="intro-num">①</span>
-          <p class="intro-title">店主に話す</p>
-          <p class="intro-text">今の気持ちを、選択肢か自由な言葉で伝えます。</p>
+          <p class="intro-title" data-i18n="introTitle1">店主に話す</p>
+          <p class="intro-text" data-i18n="introText1">今の気持ちを、選択肢か自由な言葉で伝えます。</p>
         </button>
         <button type="button" class="intro-step" onclick="goToPage('shelves')">
           <span class="intro-num">②</span>
-          <p class="intro-title">棚を巡る</p>
-          <p class="intro-text">15種類の感情の棚から、名言や本、曲に出会います。</p>
+          <p class="intro-title" data-i18n="introTitle2">棚を巡る</p>
+          <p class="intro-text" data-i18n="introText2">15種類の感情の棚から、名言や本、曲に出会います。</p>
         </button>
         <button type="button" class="intro-step" onclick="goToPage('desk')">
           <span class="intro-num">③</span>
-          <p class="intro-title">物語を綴る</p>
-          <p class="intro-text">自分の体験を書き、製本して棚に納めます。</p>
+          <p class="intro-title" data-i18n="introTitle3">物語を綴る</p>
+          <p class="intro-text" data-i18n="introText3">自分の体験を書き、製本して棚に納めます。</p>
         </button>
         <button type="button" class="intro-step" onclick="goToPage('bookshelf')">
           <span class="intro-num">④</span>
-          <p class="intro-title">本棚が育つ</p>
-          <p class="intro-text">綴った物語が積み重なり、自分だけの本棚に。</p>
+          <p class="intro-title" data-i18n="introTitle4">本棚が育つ</p>
+          <p class="intro-text" data-i18n="introText4">綴った物語が積み重なり、自分だけの本棚に。</p>
         </button>
       </div>
     </div>
 
-    <button class="enter-btn" onclick="goToPage('counter')">扉をひらく →</button>
+    <button class="enter-btn" onclick="goToPage('counter')" data-i18n="enterBtn">扉をひらく →</button>
     <div class="pref-row">
-      <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切">演出：入</button>
-      <button class="pref-toggle" id="profileBtn" title="お名前と属性の設定（任意・この端末にのみ保存）">🪪 来店カード</button>
+      <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切" data-i18n-title="motionToggleTitle">演出：入</button>
+      <button class="pref-toggle" id="profileBtn" title="お名前と属性の設定（任意・この端末にのみ保存）" data-i18n="profileBtn" data-i18n-title="profileBtnTitle">🪪 来店カード</button>
+      <button class="pref-toggle" id="langToggle" title="言語切り替え / Language">🌐 JP / EN</button>
     </div>
     <div class="trust-row">
-      <span class="trust-badge">登録不要</span>
-      <span class="trust-badge">この端末にのみ保存</span>
-      <span class="trust-badge">AIの学習には使われません</span>
+      <span class="trust-badge" data-i18n="trustBadge1">登録不要</span>
+      <span class="trust-badge" data-i18n="trustBadge2">この端末にのみ保存</span>
+      <span class="trust-badge" data-i18n="trustBadge3">AIの学習には使われません</span>
     </div>
   </header>
 
-  <nav class="page-nav" id="pageNav" aria-label="ページを選ぶ">
-    <button class="page-tab" data-page="counter" onclick="goToPage('counter')">① 番台</button>
-    <button class="page-tab" data-page="shelves" onclick="goToPage('shelves')">② 棚</button>
-    <button class="page-tab" data-page="desk" onclick="goToPage('desk')">③ 編纂机</button>
-    <button class="page-tab" data-page="bookshelf" onclick="goToPage('bookshelf')">④ 本棚</button>
+  <nav class="page-nav" id="pageNav" aria-label="ページを選ぶ" data-i18n-aria="pageNavAria">
+    <button class="page-tab" data-page="counter" onclick="goToPage('counter')" data-i18n="pageTab1">① 番台</button>
+    <button class="page-tab" data-page="shelves" onclick="goToPage('shelves')" data-i18n="pageTab2">② 棚</button>
+    <button class="page-tab" data-page="desk" onclick="goToPage('desk')" data-i18n="pageTab3">③ 編纂机</button>
+    <button class="page-tab" data-page="bookshelf" onclick="goToPage('bookshelf')" data-i18n="pageTab4">④ 本棚</button>
   </nav>
 
   <div class="page-turn-overlay" id="pageTurnOverlay" aria-hidden="true"></div>
 
   <section id="counter" class="reveal">
-    <div class="section-head"><span class="section-num">1</span><h2>番台 — 店主に相談する</h2></div>
-    <p class="section-sub">今のモヤモヤを、そのまま話してください。</p>
+    <div class="section-head"><span class="section-num">1</span><h2 data-i18n="sectionHead1">番台 — 店主に相談する</h2></div>
+    <p class="section-sub" data-i18n="sectionSub1">今のモヤモヤを、そのまま話してください。</p>
     <div class="counter-wrap">
       <div class="keeper-vignette" aria-hidden="true">
         <svg viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg">
@@ -262,168 +267,168 @@ body.night .about-accordion-content {
         </svg>
       </div>
       <details class="keeper-bio">
-        <summary>店主について</summary>
-        <p>この書店の店主。名前は「巡（めぐる）」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、巡が長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。</p>
+        <summary data-i18n="keeperBioSummary">店主について</summary>
+        <p data-i18n="keeperBioText">この書店の店主。名前は「巡（めぐる）」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、巡が長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。</p>
       </details>
       <div class="chat-window" id="chatWindow">
-        <div class="bubble shopkeeper" id="firstGreeting"><span class="name">店主</span><span id="firstGreetingText">……いらっしゃいませ。ちょうど頁を閉じたところです。今はどんな気分に近いですか。近いものを選んでも、下に自由に書いてもらっても構いません。</span></div>
+        <div class="bubble shopkeeper" id="firstGreeting"><span class="name" data-i18n="keeperNameLabel">店主</span><span id="firstGreetingText" data-i18n="firstGreeting">……いらっしゃいませ。ちょうど頁を閉じたところです。今はどんな気分に近いですか。近いものを選んでも、下に自由に書いてもらっても構いません。</span></div>
       </div>
-      <div class="texture-step" id="textureStep" aria-label="心の質感を選ぶ"></div>
-      
+      <div class="texture-step" id="textureStep" aria-label="心の質感を選ぶ" data-i18n-aria="textureStepAria"></div>
+
       <div class="chart-options" id="chartOptions"></div>
 
       <div id="nextActionGuideWrapper" class="hidden">
         <div class="next-action-guide">
-          <p class="guide-lead">👇 当てはまるものがない場合は、下の枠に言葉を書いて「話す」を押してください</p>
-          <p class="freeform-hint">※書いた言葉は、そのまま編纂机の原稿用紙に写しておきます。</p>
+          <p class="guide-lead" data-i18n="guideLead">👇 当てはまるものがない場合は、下の枠に言葉を書いて「話す」を押してください</p>
+          <p class="freeform-hint" data-i18n="freeformHintDesk">※書いた言葉は、そのまま編纂机の原稿用紙に写しておきます。</p>
         </div>
       </div>
 
       <!-- ===== 追加：最初から表示する控えめな一言（何を入力する場所か分かりにくい対策） ===== -->
-      <p class="freeform-hint early-freeform-hint" id="earlyFreeformHint">当てはまるものがない場合は、この枠に気持ちを書いて「話す」を押してください。</p>
+      <p class="freeform-hint early-freeform-hint" id="earlyFreeformHint" data-i18n="earlyFreeformHint">当てはまるものがない場合は、この枠に気持ちを書いて「話す」を押してください。</p>
 
       <div class="chat-input-row">
-        <textarea id="userInput" placeholder="例：うまく言えないけど、朝からずっとモヤモヤしている…" rows="2"></textarea>
-        <button class="send-btn" id="sendBtn">話す</button>
+        <textarea id="userInput" placeholder="例：うまく言えないけど、朝からずっとモヤモヤしている…" rows="2" data-i18n-ph="userInputPlaceholder"></textarea>
+        <button class="send-btn" id="sendBtn" data-i18n="sendBtn">話す</button>
       </div>
     </div>
   </section>
 
   <section id="shelves" class="reveal">
-    <div class="section-head"><span class="section-num">2</span><h2>感情の棚</h2></div>
-    <p class="section-sub">棚を選んでも、あてもなく巡っても。</p>
+    <div class="section-head"><span class="section-num">2</span><h2 data-i18n="sectionHead2">感情の棚</h2></div>
+    <p class="section-sub" data-i18n="sectionSub2">棚を選んでも、あてもなく巡っても。</p>
     <div class="fair" id="fairBox"></div>
     <div class="shelf-tabs" id="shelfTabs"></div>
     <div class="shelf-display" id="shelfDisplay"></div>
     <div class="detour-section" id="detourSection"></div>
-    <p class="swipe-hint">← 左右にスワイプでも棚を移動できます →</p>
-    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')">⤴ 番台へ戻る</button></div>
+    <p class="swipe-hint" data-i18n="swipeHint">← 左右にスワイプでも棚を移動できます →</p>
+    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')" data-i18n="backToBandai">⤴ 番台へ戻る</button></div>
   </section>
 
   <section id="desk" class="reveal">
-    <div class="section-head"><span class="section-num">3</span><h2>編纂机 — 物語を綴る</h2></div>
+    <div class="section-head"><span class="section-num">3</span><h2 data-i18n="sectionHead3">編纂机 — 物語を綴る</h2></div>
     <p class="desk-lead hidden" id="deskLead"></p>
-    <p class="section-sub">今の棚は「<span id="deskCategoryLabel"></span>」です。書き終えたら、タイトルは店主が考えます（自分でつけても構いません）。今の気持ちだけでなく、以前のことを振り返って綴ることもできます。</p>
+    <p class="section-sub" data-i18n-html="sectionSub3">今の棚は「<span id="deskCategoryLabel"></span>」です。書き終えたら、タイトルは店主が考えます（自分でつけても構いません）。今の気持ちだけでなく、以前のことを振り返って綴ることもできます。</p>
     <div class="desk-form">
       <div class="field">
-        <textarea id="storyInput" placeholder="いつ、どこで、何があって、どう感じたか。短くても、拙くても構いません。" rows="6"></textarea>
+        <textarea id="storyInput" placeholder="いつ、どこで、何があって、どう感じたか。短くても、拙くても構いません。" rows="6" data-i18n-ph="storyInputPlaceholder"></textarea>
         <div class="count-row">
-          <button type="button" class="assist-link" id="assistBtn">書き出しに迷ったら、店主の助け舟</button>
+          <button type="button" class="assist-link" id="assistBtn" data-i18n="assistBtn">書き出しに迷ったら、店主の助け舟</button>
           <span class="story-count" id="storyCount">0 / 700字</span>
         </div>
       </div>
       <div class="photo-row">
-        <label class="photo-label" for="photoInput">📷 今日の一枚を、頁に挟む（任意）</label>
+        <label class="photo-label" for="photoInput" data-i18n="photoLabel">📷 今日の一枚を、頁に挟む（任意）</label>
         <input type="file" id="photoInput" accept="image/*" class="hidden-file">
         <div class="photo-preview hidden" id="photoPreview">
-          <img id="photoPreviewImg" alt="添付写真のプレビュー">
-          <button type="button" class="photo-remove" id="photoRemove" aria-label="写真を外す">×</button>
+          <img id="photoPreviewImg" alt="添付写真のプレビュー" data-i18n-alt="photoPreviewAlt">
+          <button type="button" class="photo-remove" id="photoRemove" aria-label="写真を外す" data-i18n-aria="photoRemoveAria">×</button>
         </div>
-        <span class="photo-hint">写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。</span>
+        <span class="photo-hint" data-i18n="photoHint">写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。</span>
       </div>
       <details class="desk-extra">
-        <summary>✍️ 棚・タイトル・いつの気持ちかを、自分で決める（任意）</summary>
+        <summary data-i18n="deskExtraSummary">✍️ 棚・タイトル・いつの気持ちかを、自分で決める（任意）</summary>
         <div class="field-row" style="margin-top:12px;">
           <div class="field">
-            <label for="categorySelect">棚</label>
+            <label for="categorySelect" data-i18n="fieldLabelShelf">棚</label>
             <select id="categorySelect"></select>
           </div>
           <div class="field">
-            <label for="titleInput">背表紙のタイトル</label>
-            <input id="titleInput" maxlength="16" placeholder="空欄なら店主が考えます">
+            <label for="titleInput" data-i18n="fieldLabelTitle">背表紙のタイトル</label>
+            <input id="titleInput" maxlength="16" placeholder="空欄なら店主が考えます" data-i18n-ph="titleInputPlaceholder">
           </div>
         </div>
         <div class="title-suggest" id="titleSuggest"></div>
         <div class="field-row" style="margin-top:12px;">
           <div class="field">
-            <label for="whenSelect">いつの気持ちですか</label>
+            <label for="whenSelect" data-i18n="fieldLabelWhen">いつの気持ちですか</label>
             <select id="whenSelect">
-              <option value="now">今の気持ち</option>
-              <option value="past">以前のことを振り返って</option>
+              <option value="now" data-i18n="whenOptionNow">今の気持ち</option>
+              <option value="past" data-i18n="whenOptionPast">以前のことを振り返って</option>
             </select>
           </div>
           <div class="field">
-            <label for="tweetInput">関連するXの投稿があれば</label>
-            <input id="tweetInput" type="url" placeholder="例：https://x.com/username/status/1234567890">
+            <label for="tweetInput" data-i18n="fieldLabelTweet">関連するXの投稿があれば</label>
+            <input id="tweetInput" type="url" placeholder="例：https://x.com/username/status/1234567890" data-i18n-ph="tweetInputPlaceholder">
           </div>
         </div>
-        <span class="field-hint">「以前のことを振り返って」を選ぶと、あの時の気持ちをそのまま本棚に閉じ込めておけます。困った時に開き直すと、前にも同じ気持ちを乗り越えてきたことがわかります。Xの投稿へのリンクを貼ると、本を開いたときに公式の埋め込みで表示されます。本文や画像を直接お預かりすることはありません。</span>
+        <span class="field-hint" data-i18n="fieldHint">「以前のことを振り返って」を選ぶと、あの時の気持ちをそのまま本棚に閉じ込めておけます。困った時に開き直すと、前にも同じ気持ちを乗り越えてきたことがわかります。Xの投稿へのリンクを貼ると、本を開いたときに公式の埋め込みで表示されます。本文や画像を直接お預かりすることはありません。</span>
       </details>
       <div class="curate-box hidden" id="curateBox">
         <p class="curate-msg" id="curateMsg"></p>
         <div class="curate-actions" id="curateActions"></div>
       </div>
       <div class="desk-actions">
-        <button class="bind-btn" id="submitStory">店主に預けて製本する</button>
+        <button class="bind-btn" id="submitStory" data-i18n="submitStory">店主に預けて製本する</button>
         <span class="desk-msg" id="deskMsg"></span>
       </div>
     </div>
     <div class="invitation hidden" id="invitationCard">
-      <div class="inv-seal">封</div>
-      <p class="inv-kicker">推薦状</p>
+      <div class="inv-seal" data-i18n="invSeal">封</div>
+      <p class="inv-kicker" data-i18n="invKicker">推薦状</p>
       <p class="inv-title" id="invTitle"></p>
       <p class="inv-body" id="invBody"></p>
-      <button class="inv-goshelf" id="invGoShelf">棚を見てみる</button>
-      <button class="inv-close" id="invClose">しおりに挟む</button>
+      <button class="inv-goshelf" id="invGoShelf" data-i18n="invGoShelf">棚を見てみる</button>
+      <button class="inv-close" id="invClose" data-i18n="invClose">しおりに挟む</button>
     </div>
-    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')">⤴ 番台へ戻る</button></div>
+    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')" data-i18n="backToBandai">⤴ 番台へ戻る</button></div>
   </section>
 
   <section id="bookshelf" class="reveal">
-    <div class="section-head"><span class="section-num">4</span><h2>あなたの本棚</h2><span class="shelf-count" id="shelfCount"></span></div>
-    <p class="section-sub">納品した物語が背表紙になって並びます。クリックすると読めます。困った時にここを開くと、前にも同じ気持ちを乗り越えてきたことがわかります。</p>
+    <div class="section-head"><span class="section-num">4</span><h2 data-i18n="sectionHead4">あなたの本棚</h2><span class="shelf-count" id="shelfCount"></span></div>
+    <p class="section-sub" data-i18n="sectionSub4">納品した物語が背表紙になって並びます。クリックすると読めます。困った時にここを開くと、前にも同じ気持ちを乗り越えてきたことがわかります。</p>
     <div class="wood-shelf">
       <div class="shelf-row" id="myShelf">
-        <div class="shelf-empty" id="shelfEmptyMsg">まだ本がありません。編纂机で最初の一冊を綴ってみましょう。</div>
+        <div class="shelf-empty" id="shelfEmptyMsg" data-i18n="shelfEmptyMsg">まだ本がありません。編纂机で最初の一冊を綴ってみましょう。</div>
       </div>
     </div>
-    <div class="record-corner hidden" id="recordCorner" aria-label="店主のレコード棚"></div>
+    <div class="record-corner hidden" id="recordCorner" aria-label="店主のレコード棚" data-i18n-aria="recordCornerAria"></div>
     <div class="shelf-controls">
-      <button class="reset-link" id="resetShelf">本棚をリセットする</button>
+      <button class="reset-link" id="resetShelf" data-i18n="resetShelf">本棚をリセットする</button>
     </div>
     <p class="backup-hint"></p>
     <div class="trend hidden" id="trendBox">
       <p id="trendSummary" class="trend-summary-main"></p>
       <details class="trend-detail">
-        <summary>感情の地図を詳しく見る</summary>
-        <p class="trend-note">※月次「感情取扱説明書」レポートの簡易デモです。この地図はあなたにだけ見えています。</p>
+        <summary data-i18n="trendDetailSummary">感情の地図を詳しく見る</summary>
+        <p class="trend-note" data-i18n="trendNote">※月次「感情取扱説明書」レポートの簡易デモです。この地図はあなたにだけ見えています。</p>
         <div id="trendBars"></div>
       </details>
     </div>
     <div class="trend hidden" id="shioriCard">
-      <h3>今日の栞</h3>
-      <p class="trend-note">あなたの本棚を眺めた店主から、一枚。</p>
-      <span class="shiori-slip hidden" id="shioriSlip"><span class="shiori-label">栞 — 店主より</span><span id="shioriText"></span></span>
-      <button class="curate-btn" id="shioriBtn">栞を受け取る</button>
+      <h3 data-i18n="shioriCardTitle">今日の栞</h3>
+      <p class="trend-note" data-i18n="shioriCardNote">あなたの本棚を眺めた店主から、一枚。</p>
+      <span class="shiori-slip hidden" id="shioriSlip"><span class="shiori-label" data-i18n="shioriLabel">栞 — 店主より</span><span id="shioriText"></span></span>
+      <button class="curate-btn" id="shioriBtn" data-i18n="shioriBtn">栞を受け取る</button>
     </div>
-    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')">⤴ 番台へ戻る</button></div>
+    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')" data-i18n="backToBandai">⤴ 番台へ戻る</button></div>
   </section>
 
   <footer class="shop-footer">
-    『みんなの感情書店』<br>
-    綴った言葉はサーバーには送信されず、この端末にのみ保存されます。
+    <span data-i18n="footerBrand">『みんなの感情書店』</span><br>
+    <span data-i18n="footerNote">綴った言葉はサーバーには送信されず、この端末にのみ保存されます。</span>
     <div class="share-row">
-      <button class="share-btn" id="shareBtn">🔗 この書店をシェアする</button>
-      <button class="share-btn" id="copyUrlBtn">📋 URLをコピー</button>
-      <button class="share-btn" id="pwaPinBtn">📌 ホーム画面にピン留め</button>
+      <button class="share-btn" id="shareBtn" data-i18n="shareBtn">🔗 この書店をシェアする</button>
+      <button class="share-btn" id="copyUrlBtn" data-i18n="copyUrlBtn">📋 URLをコピー</button>
+      <button class="share-btn" id="pwaPinBtn" data-i18n="pwaPinBtn">📌 ホーム画面にピン留め</button>
     </div>
     <div class="legal-row">
-      <a href="./privacy.html">プライバシーポリシー</a>
+      <a href="./privacy.html" data-i18n="privacyLink">プライバシーポリシー</a>
       <span class="legal-sep">・</span>
-      <a href="./terms.html">利用規約</a>
+      <a href="./terms.html" data-i18n="termsLink">利用規約</a>
     </div>
   </footer>
 </div>
 
 <div class="share-menu hidden" id="shareMenu">
-  <p class="share-menu-title">シェアする</p>
-  <a class="share-option" id="shareX" href="#" target="_blank" rel="noopener">Xでシェア</a>
-  <a class="share-option" id="shareLine" href="#" target="_blank" rel="noopener">LINEでシェア</a>
-  <button class="share-option" id="shareNative">端末の共有機能を使う</button>
-  <button class="share-option" id="shareCopy">リンクをコピー</button>
+  <p class="share-menu-title" data-i18n="shareMenuTitle">シェアする</p>
+  <a class="share-option" id="shareX" href="#" target="_blank" rel="noopener" data-i18n="shareX">Xでシェア</a>
+  <a class="share-option" id="shareLine" href="#" target="_blank" rel="noopener" data-i18n="shareLine">LINEでシェア</a>
+  <button class="share-option" id="shareNative" data-i18n="shareNative">端末の共有機能を使う</button>
+  <button class="share-option" id="shareCopy" data-i18n="shareCopy">リンクをコピー</button>
   <input class="share-url-input" id="shareUrlInput" readonly onclick="this.select()">
-  <p class="share-menu-hint">コピーできない場合は、上の欄をタップして全選択→コピーしてください。</p>
-  <button class="share-option share-close" id="shareMenuClose">閉じる</button>
+  <p class="share-menu-hint" data-i18n="shareMenuHint">コピーできない場合は、上の欄をタップして全選択→コピーしてください。</p>
+  <button class="share-option share-close" id="shareMenuClose" data-i18n="closeBtn">閉じる</button>
 </div>
 
 <div class="bind-overlay hidden" id="bindOverlay" role="status">
@@ -432,17 +437,17 @@ body.night .about-accordion-content {
     <div class="bind-pages"></div>
     <div class="bind-cover"></div>
   </div>
-  <p class="bind-text" id="bindText">糸をかけています…</p>
-  <p class="bind-skip">タップで即座に完了</p>
+  <p class="bind-text" id="bindText" data-i18n="bindText">糸をかけています…</p>
+  <p class="bind-skip" data-i18n="bindSkip">タップで即座に完了</p>
 </div>
 
-<div class="purify-overlay hidden" id="purifyOverlay" role="dialog" aria-label="気持ちを手放す">
+<div class="purify-overlay hidden" id="purifyOverlay" role="dialog" aria-label="気持ちを手放す" data-i18n-aria="purifyOverlayAria">
   <div class="purify-card">
     <button class="purify-close" id="purifyClose">×</button>
-    <p class="purify-kicker">手放す — 誰にも見られません。この端末の「手放しの記録」にだけ、そっと残ります</p>
+    <p class="purify-kicker" data-i18n="purifyKicker">手放す — 誰にも見られません。この端末の「手放しの記録」にだけ、そっと残ります</p>
     <p class="purify-lead" id="purifyLead"></p>
-    <textarea id="purifyInput" placeholder="その気持ちを、ここにそのまま書き出してみてください。" rows="4"></textarea>
-    <button class="purify-btn" id="purifyBtn">🕯 手放す</button>
+    <textarea id="purifyInput" placeholder="その気持ちを、ここにそのまま書き出してみてください。" rows="4" data-i18n-ph="purifyInputPlaceholder"></textarea>
+    <button class="purify-btn" id="purifyBtn" data-i18n="purifyBtn">🕯 手放す</button>
     <p class="purify-msg hidden" id="purifyMsg"></p>
   </div>
 </div>
@@ -453,22 +458,22 @@ body.night .about-accordion-content {
     <p class="modal-cat" id="modalCat"></p>
     <h3 id="modalTitle"></h3>
     <p class="modal-date" id="modalDate"></p>
-    <div class="modal-photo hidden" id="modalPhoto"><img id="modalPhotoImg" alt="この頁に挟まれた写真"></div>
+    <div class="modal-photo hidden" id="modalPhoto"><img id="modalPhotoImg" alt="この頁に挟まれた写真" data-i18n-alt="modalPhotoAlt"></div>
     <div class="modal-story" id="modalStory"></div>
     <div class="modal-tweet hidden" id="modalTweet"></div>
-    <span class="shiori-slip hidden" id="modalNote"><span class="shiori-label">店主のことば</span><span id="modalNoteText"></span></span>
+    <span class="shiori-slip hidden" id="modalNote"><span class="shiori-label" data-i18n="modalNoteLabel">店主のことば</span><span id="modalNoteText"></span></span>
     <div class="modal-actions">
-      <button class="modal-goshelf" id="modalGoShelf">この棚をもう一度見る</button>
-      <button class="modal-del" id="modalDel">この本を棚から下げる</button>
+      <button class="modal-goshelf" id="modalGoShelf" data-i18n="modalGoShelf">この棚をもう一度見る</button>
+      <button class="modal-del" id="modalDel" data-i18n="modalDel">この本を棚から下げる</button>
     </div>
   </div>
 </div>
 
-<div class="pwa-popup hidden" id="pwaPopup" role="dialog" aria-label="ホーム画面に追加する案内">
-  <p class="pwa-title">📌 この書店をスマホのホーム画面にピン留めする</p>
-  <p class="pwa-steps">iPhone（Safari）：下の「共有」ボタン →「ホーム画面に追加」<br>Android（Chrome）：右上のメニュー（⋮）→「ホーム画面に追加」</p>
-  <p class="pwa-note">アプリのように、いつでも1タップで扉をひらけるようになります。</p>
-  <button class="share-option share-close" id="pwaClose">閉じる</button>
+<div class="pwa-popup hidden" id="pwaPopup" role="dialog" aria-label="ホーム画面に追加する案内" data-i18n-aria="pwaPopupAria">
+  <p class="pwa-title" data-i18n="pwaTitle">📌 この書店をスマホのホーム画面にピン留めする</p>
+  <p class="pwa-steps" data-i18n-html="pwaSteps">iPhone（Safari）：下の「共有」ボタン →「ホーム画面に追加」<br>Android（Chrome）：右上のメニュー（⋮）→「ホーム画面に追加」</p>
+  <p class="pwa-note" data-i18n="pwaNote">アプリのように、いつでも1タップで扉をひらけるようになります。</p>
+  <button class="share-option share-close" id="pwaClose" data-i18n="closeBtn">閉じる</button>
 </div>
 
 <div id="particleLayer" aria-hidden="true">
