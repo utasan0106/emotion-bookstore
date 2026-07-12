@@ -864,6 +864,37 @@ body.night .recommend-why{ color:var(--gold); }
   margin:8px 2px 0 !important;
   opacity:.7;
 }
+
+/* ---- 追加：番台での対話が進むほど、店主が「見えてきている」ことを示す気配メーター
+   （Akinatorのテーマ選択・確信度演出を参考に、答えを断定するのではなく
+   「少しずつ寄り添っている」ニュアンスに寄せている） ---- */
+.mitate-meter{
+  margin:6px 2px 2px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  transition:opacity .3s ease;
+}
+.mitate-meter-label{
+  font-size:11px;
+  color:var(--ink-soft);
+  white-space:nowrap;
+}
+.mitate-meter-bar{
+  flex:1 1 auto;
+  height:4px;
+  border-radius:2px;
+  background:var(--paper-shadow);
+  overflow:hidden;
+}
+.mitate-meter-fill{
+  height:100%;
+  width:0%;
+  background:var(--gold);
+  border-radius:2px;
+  transition:width .5s ease;
+}
+body.no-motion .mitate-meter-fill{ transition:none; }
 .playlist-services a{
   font-size:10.5px;
   color:var(--wine);

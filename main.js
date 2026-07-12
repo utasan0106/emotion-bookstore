@@ -2372,6 +2372,7 @@ async function sendToShopkeeper(){
   }
 
   freeTextTurns++;
+  updateMitateMeter(freeTextTurns);
   // ★修正：3回目の自由入力で会話をきれいに区切り、ループさせずに
   // 「棚へ行く／机で綴る／話し直す」の3択で次のアクションへ誘導する
   const isLoopEnd = freeTextTurns >= 3 && !isCrisis;
@@ -2486,9 +2487,34 @@ function lockFreeInput(locked){
   if(earlyHint) earlyHint.classList.toggle('hidden', locked);
 }
 
+// ★追加：Akinatorのテーマ選択・確信度演出を参考に、対話が進むほど
+// 「店主が少しずつ見えてきている」ことをそっと示す気配メーター。
+// 断定はせず、あくまで寄り添いのニュアンスに留める。
+const MITATE_METER_LABELS = [
+  '……お話を、伺っています',
+  '……少しずつ、輪郭が見えてきました',
+  '……もう少しで、お伝えできそうです'
+];
+function updateMitateMeter(turns){
+  const meter = document.getElementById('mitateMeter');
+  const fill = document.getElementById('mitateMeterFill');
+  const label = document.getElementById('mitateMeterLabel');
+  if(!meter || !fill || !label) return;
+  if(turns <= 0){
+    meter.classList.add('hidden');
+    fill.style.width = '0%';
+    return;
+  }
+  meter.classList.remove('hidden');
+  const clamped = Math.min(turns, 3);
+  fill.style.width = Math.round((clamped / 3) * 100) + '%';
+  label.textContent = MITATE_METER_LABELS[clamped - 1] || '';
+}
+
 // ★追加：「最初から話し直す」— ターン数をリセットし、自由入力を再開する
 function restartCounterChat(){
   freeTextTurns = 0;
+  updateMitateMeter(0);
   lockFreeInput(false);
   renderChartOptions('root');
   renderTitleSuggest();
