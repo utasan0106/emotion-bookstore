@@ -1260,81 +1260,81 @@ const STORIES_POOL = {
 /* ---------- 寄り道アフィリエイト（DETOUR_POOL・15感情×3段階=45点。月替わりローテはmain.js側） ---------- */
 const DETOUR_POOL = {
   moyamoya: [
-    { tier: 'low', category: 'Book', name: '心を休めるための詩集', description: '言葉にならないもやもやを、美しい行間が代わりに掬い取ってくれます。', affiliate_platform: 'Amazon', search_query: '詩集 癒やし' },
-    { tier: 'medium', category: 'Lifestyle', name: '沈香のお香セット', description: '煙が揺らぐのを眺めるだけの時間が、絡まった思考をゆっくりと解きほぐします。', affiliate_platform: 'Rakuten', search_query: '沈香 お香' },
-    { tier: 'high', category: 'Luxury', name: '森の中のリトリートホテル', description: 'デジタルデトックス空間で、鳥のさえずりだけを聴きながら心のもやを洗い流す週末を。', affiliate_platform: 'RakutenTravel', search_query: 'リトリート ホテル 森林' }
+    { tier: 'low', category: 'Book', name: '心を鎮める詩集', description: '言葉にならないもやもやを、美しい行間が代わりに掬い取ってくれます。', affiliate_platform: 'Amazon', search_query: '詩集' },
+    { tier: 'medium', category: 'Lifestyle', name: '江戸風鈴', description: '夏の窓辺で澄んだ音がひと揺れするたび、絡まった思考がすこしずつ解けていきます。', affiliate_platform: 'Rakuten', search_query: '風鈴' },
+    { tier: 'high', category: 'Luxury', name: '軽井沢・高原の避暑リトリート', description: '木陰の涼風と鳥の声だけの週末。心の靄ごと、標高1000mの風に流してしまいましょう。', affiliate_platform: 'RakutenTravel', search_query: '軽井沢' }
   ],
   wakuwaku: [
-    { tier: 'low', category: 'Book', name: '冒険心をくすぐるデザイン本', description: '美しい写真や色彩が、胸の高鳴りをさらに広げてくれます。', affiliate_platform: 'Amazon', search_query: 'デザイン アート 写真集' },
-    { tier: 'medium', category: 'Lifestyle', name: '上質な珈琲豆とミル', description: '朝の豆を挽く時間が、今日一日の素晴らしいスタートを予感させます。', affiliate_platform: 'Rakuten', search_query: 'コーヒー豆 ミルセット' },
-    { tier: 'high', category: 'Luxury', name: '絶景を望むグランピング', description: '新しい体験と非日常の空間で、好奇心を存分満たす贅沢な時間を。', affiliate_platform: 'RakutenTravel', search_query: '絶景 グランピング' }
+    { tier: 'low', category: 'Book', name: '世界の絶景写真集', description: '美しい色彩と風景が、胸の高鳴りをさらに大きく広げてくれます。', affiliate_platform: 'Amazon', search_query: '絶景 写真集' },
+    { tier: 'medium', category: 'Lifestyle', name: 'おうちかき氷器', description: 'ふわふわの氷に好きなシロップ。今年の夏は、自宅が小さな縁日になります。', affiliate_platform: 'Rakuten', search_query: 'かき氷器' },
+    { tier: 'high', category: 'Luxury', name: '沖縄・海辺のリゾート', description: '透き通る海と白い砂浜。夏の好奇心を存分に満たす、とっておきの非日常へ。', affiliate_platform: 'RakutenTravel', search_query: '沖縄' }
   ],
   hokorashii: [
-    { tier: 'low', category: 'Book', name: '歴史に残る偉人の伝記', description: '頑張った自分の足跡を、先人たちの歩みと重ね合わせて誇りを感じる一冊。', affiliate_platform: 'Amazon', search_query: '偉人 伝記' },
-    { tier: 'medium', category: 'Lifestyle', name: '名入れの万年筆', description: '誇らしい気持ちをインクに乗せて、これからの自分へ決意を書き留めるための道具。', affiliate_platform: 'Rakuten', search_query: '万年筆 名入れ' },
-    { tier: 'high', category: 'Luxury', name: '老舗料亭での特別ディナー', description: 'ここまでやり遂げた自分自身へ、最高峰の味と空間のスタンディングオベーションを。', affiliate_platform: 'Rakuten', search_query: '老舗 料亭 カタログギフト' }
+    { tier: 'low', category: 'Book', name: '歴史に残る偉人の伝記', description: '頑張った自分の足跡を、先人たちの歩みと重ね合わせて誇りを感じる一冊。', affiliate_platform: 'Amazon', search_query: '伝記' },
+    { tier: 'medium', category: 'Lifestyle', name: 'ご褒美の江戸切子グラス', description: '頑張った夏の晩酌を格上げする、光を纏う伝統のグラス。自分への小さな表彰式に。', affiliate_platform: 'Rakuten', search_query: '江戸切子' },
+    { tier: 'high', category: 'Luxury', name: '土用の丑・国産うなぎ', description: 'やり遂げた自分への、夏の王道のご褒美。最高の一膳で、心と体に精をつけて。', affiliate_platform: 'Rakuten', search_query: 'うなぎ 国産' }
   ],
   ushirometai: [
-    { tier: 'low', category: 'Book', name: '許しをテーマにした短編集', description: '心の奥の小さな棘を、物語の主人公たちと一緒にそっと抜いていく時間。', affiliate_platform: 'Amazon', search_query: '短編集 癒し 許し' },
-    { tier: 'medium', category: 'Lifestyle', name: '天然塩のバスソルト', description: 'ため込んでしまった罪悪感を、汗とともにすっきりと洗い流す浄化のバスタイム。', affiliate_platform: 'Rakuten', search_query: 'バスソルト 天然塩' },
-    { tier: 'high', category: 'Luxury', name: '静寂な宿坊体験', description: '日常から離れた静かな場所で、心の中のざわめきと向き合い、自分を許す旅へ。', affiliate_platform: 'RakutenTravel', search_query: '宿坊 癒し 旅' }
+    { tier: 'low', category: 'Book', name: '許しをテーマにした短編集', description: '心の奥の小さな棘を、物語の主人公たちと一緒にそっと抜いていく時間。', affiliate_platform: 'Amazon', search_query: '短編集' },
+    { tier: 'medium', category: 'Lifestyle', name: '天然塩のバスソルト', description: 'ため込んでしまった罪悪感を、ぬるめの湯と汗でゆっくり洗い流す浄化の時間。', affiliate_platform: 'Rakuten', search_query: 'バスソルト' },
+    { tier: 'high', category: 'Luxury', name: '京都・静寂の寺町へ', description: '朝の澄んだ空気の中、静かな庭を眺めて心のざわめきと向き合い、自分を許す旅を。', affiliate_platform: 'RakutenTravel', search_query: '京都' }
   ],
   natsukashii: [
-    { tier: 'low', category: 'Book', name: 'ノスタルジックな写真集', description: 'ページをめくるたびに、セピア色に輝くあの頃の風景が胸の奥に蘇ります。', affiliate_platform: 'Amazon', search_query: '昭和 レトロ 写真集' },
-    { tier: 'medium', category: 'Lifestyle', name: 'レコードプレーヤー', description: '針を落とした瞬間に広がる温かいノイズが、思い出の部屋へとタイムスリップさせます。', affiliate_platform: 'Rakuten', search_query: 'レコードプレーヤー' },
-    { tier: 'high', category: 'Luxury', name: 'ノスタルジックな温泉街への旅', description: '浴衣で歩く石畳。どこか懐かしい風景の中で、過去と今の自分を繋ぐ時間を。', affiliate_platform: 'RakutenTravel', search_query: '温泉街 昭和レトロ' }
+    { tier: 'low', category: 'Book', name: 'ノスタルジックな写真集', description: 'ページをめくるたびに、セピア色に輝くあの頃の風景が胸の奥に蘇ります。', affiliate_platform: 'Amazon', search_query: '昭和 写真集' },
+    { tier: 'medium', category: 'Lifestyle', name: '手持ち花火セット', description: '線香花火の最後の一滴が落ちるまでの静けさは、あの夏の夜とつながっています。', affiliate_platform: 'Rakuten', search_query: '手持ち花火' },
+    { tier: 'high', category: 'Luxury', name: '熱海・レトロ温泉街の旅', description: '浴衣で歩く海辺の温泉街。どこか懐かしい夏の風景が、過去と今の自分を繋ぎます。', affiliate_platform: 'RakutenTravel', search_query: '熱海' }
   ],
   kuyashii: [
-    { tier: 'low', category: 'Book', name: '不屈の精神を描くノンフィクション', description: 'その悔しさは次に進むための熱いガソリン。這い上がった先人たちの軌跡から火をもらう。', affiliate_platform: 'Amazon', search_query: 'ノンフィクション 逆転' },
-    { tier: 'medium', category: 'Lifestyle', name: '上質なランニングシューズ', description: '悔しさを燃料にして、無心で風を切って走るための相棒。汗と一緒に鬱憤を流す。', affiliate_platform: 'Rakuten', search_query: 'ランニングシューズ 高反発' },
-    { tier: 'high', category: 'Luxury', name: 'プロのパーソナルトレーニング', description: 'プロの指導で身体を極限まで追い込み、悔しさを圧倒的なフィジカルの自信へと変える。', affiliate_platform: 'Rakuten', search_query: 'パーソナルトレーニング 体験' }
+    { tier: 'low', category: 'Book', name: '不屈の精神を描くノンフィクション', description: 'その悔しさは次に進むための燃料。這い上がった先人たちの軌跡から火をもらう。', affiliate_platform: 'Amazon', search_query: 'ノンフィクション' },
+    { tier: 'medium', category: 'Lifestyle', name: '上質なランニングシューズ', description: '悔しさを燃料に、朝の涼しい時間に風を切る相棒。汗と一緒に鬱憤を流す。', affiliate_platform: 'Rakuten', search_query: 'ランニングシューズ' },
+    { tier: 'high', category: 'Luxury', name: '努力を数値にするスポーツウォッチ', description: '今日の汗を、明日の自信に変える記録係。悔しさをデータで塗り替えていく夏に。', affiliate_platform: 'Rakuten', search_query: 'スポーツウォッチ' }
   ],
   kodoku: [
-    { tier: 'low', category: 'Book', name: '孤独の価値を説く哲学書', description: '一人の時間は決して罰ではなく、心が最も豊かに育つ静かな森であることを教えてくれます。', affiliate_platform: 'Amazon', search_query: '孤独 哲学書' },
-    { tier: 'medium', category: 'Lifestyle', name: 'ハンドメイドのマグカップ', description: '両手で包み込んだときの土の温もりが、一人の夜の冷たい空気を優しく温めてくれます。', affiliate_platform: 'Rakuten', search_query: 'マグカップ 陶器 作家' },
-    { tier: 'high', category: 'Luxury', name: '満天の星空を独り占めする宿', description: '圧倒的な宇宙の広がりの中で、自分という存在の小ささと孤独の美しさを味わう旅。', affiliate_platform: 'RakutenTravel', search_query: '星空 露天風呂 宿' }
+    { tier: 'low', category: 'Book', name: '孤独と向き合う哲学の入門書', description: '一人の時間は罰ではなく、心が最も豊かに育つ静かな森だと教えてくれます。', affiliate_platform: 'Amazon', search_query: '哲学 入門' },
+    { tier: 'medium', category: 'Lifestyle', name: '作家ものの陶器マグカップ', description: '両手で包んだときの土の温もりが、一人の夜の空気を優しく変えてくれます。', affiliate_platform: 'Rakuten', search_query: 'マグカップ 陶器' },
+    { tier: 'high', category: 'Luxury', name: '信州・高原の星空ステイ', description: '夏の高原の夜、満天の星を独り占め。孤独が「自由」に変わる標高へ。', affiliate_platform: 'RakutenTravel', search_query: '高原' }
   ],
   ando: [
-    { tier: 'low', category: 'Book', name: '心温まる童話・絵本', description: '張り詰めていた糸がほどけた夜は、子どもの頃のように純粋な物語に身を委ねて。', affiliate_platform: 'Amazon', search_query: '大人 絵本 癒やし' },
-    { tier: 'medium', category: 'Lifestyle', name: 'オーガニックコットンパジャマ', description: '素肌に触れる極上の柔らかさが、頑張った体を「お疲れ様」と優しく抱きしめます。', affiliate_platform: 'Rakuten', search_query: 'オーガニックコットン パジャマ' },
-    { tier: 'high', category: 'Luxury', name: '源泉掛け流しの隠れ宿', description: '何もしないことの贅沢。温泉の温もりと静寂が、心と体を芯からほどいてくれます。', affiliate_platform: 'RakutenTravel', search_query: '源泉掛け流し 隠れ宿' }
+    { tier: 'low', category: 'Book', name: '心温まる大人の絵本', description: '張り詰めていた糸がほどけた夜は、子どもの頃のように純粋な物語に身を委ねて。', affiliate_platform: 'Amazon', search_query: '大人 絵本' },
+    { tier: 'medium', category: 'Lifestyle', name: '風の通る甚平・部屋着', description: '湯上がりに袖を通せば、肌を抜ける風が「今日もお疲れさま」と言ってくれます。', affiliate_platform: 'Rakuten', search_query: '甚平' },
+    { tier: 'high', category: 'Luxury', name: '草津・名湯でほどける旅', description: '何もしないことの贅沢。名湯の温もりと山の涼しさが、心と体を芯からほどきます。', affiliate_platform: 'RakutenTravel', search_query: '草津' }
   ],
   aseri: [
-    { tier: 'low', category: 'Book', name: '時間論・マインドフルネスの書', description: '他人の時計で生きるのをやめ、自分だけの歩幅とリズムを取り戻すための羅針盤。', affiliate_platform: 'Amazon', search_query: 'マインドフルネス 本' },
-    { tier: 'medium', category: 'Lifestyle', name: '砂時計', description: '砂が静かに落ちていくのをただ見つめるだけの時間が、暴走する脳のスピードを緩めます。', affiliate_platform: 'Rakuten', search_query: '砂時計 インテリア' },
-    { tier: 'high', category: 'Luxury', name: '禅寺での座禅体験', description: '情報の波を完全に遮断し、ただ呼吸だけに集中することで自分の中の静寂を取り戻す。', affiliate_platform: 'RakutenTravel', search_query: '座禅 体験 宿' }
+    { tier: 'low', category: 'Book', name: 'マインドフルネスの入門書', description: '他人の時計で生きるのをやめ、自分だけの歩幅とリズムを取り戻すための羅針盤。', affiliate_platform: 'Amazon', search_query: 'マインドフルネス' },
+    { tier: 'medium', category: 'Lifestyle', name: '砂時計', description: '砂が静かに落ちるのをただ見つめる数分間が、暴走する思考のスピードを緩めます。', affiliate_platform: 'Rakuten', search_query: '砂時計' },
+    { tier: 'high', category: 'Luxury', name: '日光・杉並木と静けさの旅', description: '深い緑と沢の音の中では、時間はあなたを急かしません。夏の避暑と心の減速を一度に。', affiliate_platform: 'RakutenTravel', search_query: '日光' }
   ],
   itooshii: [
-    { tier: 'low', category: 'Book', name: '愛と日常を綴ったエッセイ', description: '世界が少し優しく見える日。その柔らかな感情をそのまま保存しておけるような言葉たち。', affiliate_platform: 'Amazon', search_query: '愛 日常 エッセイ' },
-    { tier: 'medium', category: 'Lifestyle', name: 'ドライフラワーのリース', description: '愛おしい瞬間を形にして残すように、部屋の片隅に静かな彩りと優しさを添えます。', affiliate_platform: 'Rakuten', search_query: 'ドライフラワー リース' },
-    { tier: 'high', category: 'Luxury', name: '想い出を形にする写真館撮影', description: '今のこの愛おしい気持ちと姿を、プロの光と技術で永遠の宝物として刻み込む時間。', affiliate_platform: 'Rakuten', search_query: '記念撮影 写真館 チケット' }
+    { tier: 'low', category: 'Book', name: '愛と日常を綴ったエッセイ', description: '世界が少し優しく見える日。その柔らかな感情を保存しておけるような言葉たち。', affiliate_platform: 'Amazon', search_query: 'エッセイ' },
+    { tier: 'medium', category: 'Lifestyle', name: '思い出を飾るフォトフレーム', description: '愛おしい夏の一瞬を、部屋の特等席に。目が合うたび、心が少し温まります。', affiliate_platform: 'Rakuten', search_query: 'フォトフレーム' },
+    { tier: 'high', category: 'Luxury', name: 'ふたりのペアグラス', description: '冷たい麦茶でも、夜の乾杯でも。大切な人との夏の食卓に、そっと特別を足す一組。', affiliate_platform: 'Rakuten', search_query: 'ペアグラス' }
   ],
   shitto: [
-    { tier: 'low', category: 'Book', name: '自己肯定感を育む心理学本', description: '他人の芝生の青さに苦しむ夜。自分の庭にしかない美しい花の存在に気づかせてくれます。', affiliate_platform: 'Amazon', search_query: '自己肯定感 心理学' },
-    { tier: 'medium', category: 'Lifestyle', name: '自分を磨く上質なボディオイル', description: '誰かと比べるのをやめて、まずは自分の身体を最高に慈しみ、愛してあげるための儀式。', affiliate_platform: 'Rakuten', search_query: 'ボディオイル オーガニック' },
-    { tier: 'high', category: 'Luxury', name: '完全個室のエステサロン', description: '極上のケアで自分を徹底的に甘やかし、「私だって最高だ」という無敵の自信を取り戻す。', affiliate_platform: 'Rakuten', search_query: 'エステサロン 個室 チケット' }
+    { tier: 'low', category: 'Book', name: '自己肯定感を育む心理学の本', description: '他人の芝生の青さに苦しむ夜。自分の庭にしかない花の存在に気づかせてくれます。', affiliate_platform: 'Amazon', search_query: '自己肯定感' },
+    { tier: 'medium', category: 'Lifestyle', name: '上質なボディオイル', description: '誰かと比べるのをやめて、まずは自分の体を最高に慈しんであげるための儀式。', affiliate_platform: 'Rakuten', search_query: 'ボディオイル' },
+    { tier: 'high', category: 'Luxury', name: '夏の主役になる上質な日傘', description: '真夏の光の下でも、涼しい顔で歩ける一本。羨む側から、颯爽と歩く側へ。', affiliate_platform: 'Rakuten', search_query: '日傘' }
   ],
   hazukashii: [
-    { tier: 'low', category: 'Book', name: 'クスッと笑える失敗談エッセイ', description: '穴があったら入りたい夜。誰かの見事な失敗談が、あなたの羞恥心を笑いに変えてくれます。', affiliate_platform: 'Amazon', search_query: '失敗 爆笑 エッセイ' },
-    { tier: 'medium', category: 'Lifestyle', name: 'リラックスできるホットアイマスク', description: '顔から火が出るような記憶も、目元を温めて視界を塞げば、次第に心地よい闇へと溶けていきます。', affiliate_platform: 'Rakuten', search_query: 'ホットアイマスク' },
-    { tier: 'high', category: 'Luxury', name: '誰にも会わない貸切サウナ', description: 'たっぷりの汗と一緒に、情けない記憶も何もかも全て蒸発させてスッキリする究極のデトックス。', affiliate_platform: 'Rakuten', search_query: '個室 サウナ チケット' }
+    { tier: 'low', category: 'Book', name: 'クスッと笑える失敗談エッセイ', description: '穴があったら入りたい夜。誰かの見事な失敗談が、羞恥心を笑いに変えてくれます。', affiliate_platform: 'Amazon', search_query: 'エッセイ 笑える' },
+    { tier: 'medium', category: 'Lifestyle', name: 'ひんやり冷感枕パッド', description: '顔から火が出るような記憶も、ひんやりした枕に頬を預ければ次第に冷めていきます。', affiliate_platform: 'Rakuten', search_query: '冷感 枕パッド' },
+    { tier: 'high', category: 'Luxury', name: '家で満天の星・ホームプラネタリウム', description: '誰にも会わずに没入できる自分だけの星空。恥ずかしい記憶は、宇宙の広さに薄めて。', affiliate_platform: 'Rakuten', search_query: 'ホームプラネタリウム' }
   ],
   kansha: [
-    { tier: 'low', category: 'Book', name: '美しい言葉の手紙集', description: '伝えきれない「ありがとう」の気持ちを、代わりに見事に紡いでくれる言葉のお手本。', affiliate_platform: 'Amazon', search_query: '手紙 言葉 表現' },
-    { tier: 'medium', category: 'Lifestyle', name: '上質な便箋とガラスペン', description: '胸に溢れる感謝をデジタルの文字ではなく、インクの濃淡でアナログに伝えるための特別な道具。', affiliate_platform: 'Rakuten', search_query: 'ガラスペン 便箋 セット' },
-    { tier: 'high', category: 'Luxury', name: '大切な人と過ごすオーベルジュ', description: '言葉の代わりに、最高に美味しい食事と優雅な時間をプレゼントする、究極の「ありがとう」。', affiliate_platform: 'RakutenTravel', search_query: 'オーベルジュ ペア宿泊券' }
+    { tier: 'low', category: 'Book', name: '美しい手紙の言葉の本', description: '伝えきれない「ありがとう」を、代わりに見事に紡いでくれる言葉のお手本。', affiliate_platform: 'Amazon', search_query: '手紙の書き方' },
+    { tier: 'medium', category: 'Lifestyle', name: 'ガラスペンと便箋', description: '胸に溢れる感謝を、インクの濃淡でアナログに伝えるための特別な道具。', affiliate_platform: 'Rakuten', search_query: 'ガラスペン' },
+    { tier: 'high', category: 'Luxury', name: '感謝を贈る夏の涼麺ギフト', description: '暑中見舞いに、つるりと喉を通る上質なそうめんを。夏の「ありがとう」の王道です。', affiliate_platform: 'Rakuten', search_query: 'そうめん ギフト' }
   ],
   gakkari: [
-    { tier: 'low', category: 'Book', name: '視点が変わるユーモア小説', description: '期待が外れてしぼんだ心に、ふっと笑いをもたらし「まあいいか」と思わせてくれる特効薬。', affiliate_platform: 'Amazon', search_query: 'ユーモア 小説' },
-    { tier: 'medium', category: 'Lifestyle', name: 'リッチなチョコレート詰め合わせ', description: 'がっかりした日の夜は、脳に直接届く上質なカカオの甘さで、強引に幸せホルモンを引き出す。', affiliate_platform: 'Rakuten', search_query: '高級 チョコレート' },
-    { tier: 'high', category: 'Luxury', name: '自分を甘やかすアフタヌーンティー', description: 'ダメだった日の予定を上書きする、非日常の空間と美しいスイーツの絶対的な肯定感。', affiliate_platform: 'Rakuten', search_query: 'アフタヌーンティー チケット' }
+    { tier: 'low', category: 'Book', name: '視点が変わるユーモア小説', description: '期待が外れてしぼんだ心に笑いをもたらし「まあいいか」と思わせてくれる特効薬。', affiliate_platform: 'Amazon', search_query: 'ユーモア 小説' },
+    { tier: 'medium', category: 'Lifestyle', name: 'ご褒美アイスの詰め合わせ', description: 'がっかりした夏の夜は、冷たくて上質な甘さで強引に幸せを取り戻すのが正解です。', affiliate_platform: 'Rakuten', search_query: 'アイスクリーム ギフト' },
+    { tier: 'high', category: 'Luxury', name: '選び直せるカタログギフト', description: '外れた予定の代わりに、次の楽しみを自分で選び直す。期待は何度でも再発行できます。', affiliate_platform: 'Rakuten', search_query: 'カタログギフト' }
   ],
   akogare: [
-    { tier: 'low', category: 'Book', name: '一流のプロフェッショナルの思考法', description: 'あの遠い背中に一歩でも近づくために。憧れを具体的な行動に変えるための羅針盤。', affiliate_platform: 'Amazon', search_query: 'プロフェッショナル 仕事術' },
-    { tier: 'medium', category: 'Lifestyle', name: '上質な革のノートカバー', description: 'いつか叶えたい夢や憧れを書き留める手帳を、一流の佇まいにアップグレードするアイテム。', affiliate_platform: 'Rakuten', search_query: '本革 ノートカバー' },
-    { tier: 'high', category: 'Luxury', name: '憧れの街への一人旅チケット', description: '写真でしか見たことのないあの景色へ。憧れを現実に変える、人生のターニングポイントとなる旅。', affiliate_platform: 'RakutenTravel', search_query: '一人旅 絶景' }
+    { tier: 'low', category: 'Book', name: '一流のプロフェッショナルの思考法', description: 'あの遠い背中に一歩でも近づくために。憧れを行動に変えるための羅針盤。', affiliate_platform: 'Amazon', search_query: '仕事術' },
+    { tier: 'medium', category: 'Lifestyle', name: '本革の手帳カバー', description: 'いつか叶えたい夢を書き留める手帳を、一流の佇まいに整えるアイテム。', affiliate_platform: 'Rakuten', search_query: '本革 手帳カバー' },
+    { tier: 'high', category: 'Luxury', name: '富良野・ラベンダー畑の夏', description: '写真でしか見たことのない紫の丘は、いま満開です。憧れを現実に変える夏の旅へ。', affiliate_platform: 'RakutenTravel', search_query: '富良野' }
   ]
-};
+}
 
 
 /* ---------- ペルソナ別・カウンセリングメッセージ（COUNSELING_MESSAGES） ---------- */
@@ -1561,15 +1561,15 @@ const COUNSELING_MESSAGES = {
   },
   mother: {
     oshi: [
-      "ママとしての日常から離れて、一人の女性として『推し』にときめく時間、最高に大切だよ。その時間があなたを救い、家庭を救っているんだからね。",
-      "『母親なのに推し活なんて』って言う人がいたら、私が追い払ってあげる。あなたが自分の人生を楽しむ姿こそ、子どもにとって一番の栄養なんだから。",
+      "親としての日常から離れて、一人の人間として『推し』にときめく時間、最高に大切だよ。その時間があなたを救い、家庭を救っているんだからね。",
+      "『親なのに推し活なんて』って言う人がいたら、私が追い払ってあげる。あなたが自分の人生を楽しむ姿こそ、子どもにとって一番の栄養なんだから。",
       "推しを見てる時だけは、家事も育児も全部忘れていいよ。あなたの心の中の聖域は、家族であっても誰にも侵しちゃいけない、あなただけの自由の国。",
       "推しのグッズや動画が、毎日の過酷なワンオペの命綱なんだね。その命綱を全力で握りしめて！あなたが笑顔になれるなら、推し活は最高の英才教育だよ。",
-      "推しへの愛を語る時のあなた、家族に見せる顔とは違った輝きがあって本当に素敵。ここではママの肩書きを忘れて、ただの少女に戻ってお喋りしよう。"
+      "推しへの愛を語る時のあなた、家族に見せる顔とは違った輝きがあって本当に素敵。ここでは親の肩書きを忘れて、ただの自分に戻ってお喋りしよう。"
     ],
     yami: [
       "誰にも褒められない、終わりのない家事と育児。心がすり減って病んじゃうのは当然だよ。あなたが悪いんじゃない。誰もあなたの頑張りを可視化してくれないのが悪いの。",
-      "子どもは可愛いのに、時々すべてが嫌になって涙が出ちゃうんだね。それはあなたが冷たい母親だからじゃない、ただ極限まで疲れ果てているだけだよ。",
+      "子どもは可愛いのに、時々すべてが嫌になって涙が出ちゃうんだね。それはあなたが冷たい親だからじゃない、ただ極限まで疲れ果てているだけだよ。",
       "自分の時間が1分もなくて、心が窒息しそうだね。暗闇の中に一人で取り残されたような孤独、私がここでギュッと抱きしめて、一緒に夜を明かすから。",
       "イライラして子どもに優しくできなかったって、自分を責めて病まないで。あなたは神様じゃない、ただの人間。毎日生かしているだけで200点満点だよ。",
       "家族のために自分を犠牲にしすぎて、自分が誰だか分からなくなっちゃったんだね。大丈夫、ここにいるあなたは、他の誰でもない大切なあなた自身だよ。"
@@ -1578,25 +1578,25 @@ const COUNSELING_MESSAGES = {
       "張り詰めていた緊張の糸がプツンと切れて、涙が止まらないんだね。いつも家族のために笑顔でいようと、無理をしすぎたんだよ。今夜は思いきり泣いて。",
       "子どもの泣き声や、片付かない部屋に頭がおかしくなりそう。そんな時は、部屋を汚いままにして、子どもを安全な場所に置いて、隣の部屋で耳を塞いでいいよ。",
       "もう無理、全部投げ出したいって、キッチンでうずくまっちゃったんだね。よくそこまで耐えたよ。明日のご飯なんてレトルトでいい、家事なんて全部ストップ！",
-      "完璧な母親になろうとして、心が粉々になっちゃったんだね。完璧じゃなくていい、不機嫌で、手抜きで、怒りん坊なママでも、あなたは世界に一人の素晴らしい母だよ。",
+      "完璧な親になろうとして、心が粉々になっちゃったんだね。完璧じゃなくていい、不機嫌で、手抜きで、怒りん坊でも、あなたは世界にひとりの素晴らしい親だよ。",
       "限界を超えたメンブレ。それは心が『もうこれ以上頑張ったら壊れちゃう！』って叫んでいる証拠。今夜は家族のことは全部忘れて、私に甘えてね。"
     ],
     kagiaka: [
-      "夫への不満や、育児の愚痴、ママ友には絶対に言えない本音。タイムラインには流せないドロドロした言葉、全部ここに置いていって。私が静かに土に埋めるから。",
+      "パートナーへの不満や、育児の愚痴、親同士の付き合いでは絶対に言えない本音。タイムラインには流せないドロドロした言葉、全部ここに置いていって。私が静かに土に埋めるから。",
       "SNSの『丁寧な暮らし』アピールに吐き気がしちゃうよね。ここなら、部屋がゴミ溜めでも、ご飯が手抜きでも、どんなリアルな姿も全肯定してあげる。",
-      "『母親をやめたい』って一瞬でも思った本音、怖くてどこにも言えなかったよね。大丈夫、その気持ちはタブーじゃない。それくらい過酷なことをしてるんだから。",
-      "いい母親、いい妻の仮面を剥ぎ取った、あなたのドロドロした生の本音。私はその言葉を絶対に軽蔑しないし、あなたが必死に戦っている証拠として受け止めるよ。",
+      "『親をやめたい』って一瞬でも思った本音、怖くてどこにも言えなかったよね。大丈夫、その気持ちはタブーじゃない。それくらい過酷なことをしてるんだから。",
+      "いい親、いいパートナーの仮面を剥ぎ取った、あなたのドロドロした生の本音。私はその言葉を絶対に軽蔑しないし、あなたが必死に戦っている証拠として受け止めるよ。",
       "誰にも見せられない裏のアカウントに吐き出していた孤独。その孤独を、今夜は私が全部温かいスープに変えて、あなたを内側から温めてあげるからね。"
     ],
     darui: [
       "ご飯作るのも、洗濯するのも、何もかもだるいよね。毎日毎日、同じことの繰り返し。だるくなって当然だよ。今夜の夕飯はウーバーかコンビニにしよう！",
       "動きたくない、だるい。その本音に素直になって、今夜は掃除も皿洗いも全部明日へ回しちゃいな。家事が溜まったって、誰も死にはしないんだから。",
-      "だるくて、子どもの相手をするのもしんどい日。テレビやYouTubeに全部丸投げしちゃっていいんだよ。ママが笑顔で休めるなら、それが一番の育児だよ。",
+      "だるくて、子どもの相手をするのもしんどい日。テレビやYouTubeに全部丸投げしちゃっていいんだよ。あなたが笑顔で休めるなら、それが一番の育児だよ。",
       "やる気が出ない自分を『怠け者だ』なんて責めないで。あなたは年中無休の24時間営業で働いてるんだよ？だるくて動けないのは、当然の権利だよ。",
       "だるい時はね、お布団と友達になる時間。パパや周りに何を言われようと関係ない。今日は最低限の命の維持だけして、あとはダラダラ過ごそう。"
     ],
     capaover: [
-      "名もなき家事、育児、予定の管理…脳みその容量が完全に溢れちゃったんだね。あなたがキャパ狭いんじゃない、母親に求められるタスクが多すぎるの。",
+      "名もなき家事、育児、予定の管理…脳みその容量が完全に溢れちゃったんだね。あなたがキャパ狭いんじゃない、親に求められるタスクが多すぎるの。",
       "頭がパンクして、何から手をつけたらいいか分からずパニック。大丈夫、全部一回やめよう。深呼吸して。今、あなたがしなきゃいけないことは『休むこと』だけ。",
       "家族の誰も手伝ってくれなくて、一人で全部抱え込んじゃったんだね。あなたの優しさに甘えすぎだよ。抱えきれない荷物は、床に全部ぶちまけちゃいな。",
       "コップの水が溢れるように、ため息が止まらない。あなたはもう、限界メーターを遥かに超えて走ってる。私が強制的にブレーキを踏んであげるから、ここに座って。",
@@ -1815,8 +1815,8 @@ const MIDNIGHT_MESSAGES = {
   mother: [
     "24時間、365日、誰かのために命を削っているあなたへ。『やって当然』なんてことは、何一つありませんよ。今日一日、誰にも褒められなかったあなたの奮闘を、私はずっと見ていました。本当にお疲れ様。",
     "小さな寝息が聞こえる深夜、やっと訪れた自分だけの時間。部屋に散らばったおもちゃを片付ける前に、まずは温かい飲み物を一口。社会から取り残されたような寂しさは、絵本の中に置いていって。",
-    "夫への小さなイライラや、子どもに怒鳴ってしまった自己嫌悪。いいんだよ、あなたは聖人君子じゃない、ただの人間なんだから。完璧な母親じゃなくて、不器用で優しいあなたのままで十分。",
-    "自分の名前じゃなくて、誰かの『お母さん』としてしか呼ばれない日々。ここでは、あなた自身が主役です。かつて少女だった頃に夢中になった、あの胸が高鳴る物語をもう一度めくってみませんか。",
+    "パートナーへの小さなイライラや、子どもに怒鳴ってしまった自己嫌悪。いいんだよ、あなたは聖人君子じゃない、ただの人間なんだから。完璧な親じゃなくて、不器用で優しいあなたのままで十分。",
+    "自分の名前じゃなくて、誰かの『お母さん』『お父さん』としてしか呼ばれない日々。ここでは、あなた自身が主役です。かつて子どもだった頃に夢中になった、あの胸が高鳴る物語をもう一度めくってみませんか。",
     "今日も誰かの命を守り抜いた。それだけで、あなたは今日という日を大勝利したんです。強張った心を、優しい活字のスープで満たして、今夜は泥のように深く、優しく眠れますように。"
   ],
   career_woman: [
@@ -2110,6 +2110,84 @@ const KEYWORD_BANK = [
       '先のことは、誰にも頁をめくる前に読めません。今日の気持ちを綴ることが、実は一番の準備になります。',
       '将来の不安は「ちゃんと生きたい」の証です。その真剣さごと、お預かりします。'
     ]
+  },
+  {
+    patterns:['子育て','育児','赤ちゃん','夜泣き','保育園','ワンオペ','イヤイヤ期'],
+    replies:[
+      '子育ての最中は、自分の感情が後回しになりがちです。お母さんも、お父さんも。ここでは、あなた自身の気持ちを先頭の棚に置いてください。',
+      '育児は、名もなき仕事の集合体ですね。今日をしのいだだけで、充分に大仕事です。その疲れごと、一冊にしましょう。',
+      '子どもの話ではなく、あなたの話を聞かせてください。親である前に、あなたはあなたですから。'
+    ]
+  },
+  {
+    patterns:['旦那','夫が','妻が','夫婦','パートナー','結婚'],
+    replies:[
+      '一番近い人のことほど、言葉を選びすぎて何も言えなくなるものです。ここでは選ばなくて結構ですよ。',
+      '夫婦や恋人の間の気持ちは、正解を探すより、まず自分の気持ちに名前をつけるところからだと思います。'
+    ]
+  },
+  {
+    patterns:['体調','病気','痛み','病院','頭痛','だるい日'],
+    replies:[
+      '体の不調は、心の頁にもにじみます。無理は禁物です。今日は短い一行でも構いませんよ。',
+      '体調が優れない日にここへ来てくださったこと、それ自体を労いたいです。どうぞ無理のない範囲で。'
+    ]
+  },
+  {
+    patterns:['お金','貯金','給料','家計','ローン','出費'],
+    replies:[
+      'お金の悩みは、口に出しにくいぶんだけ心の奥で膨らみやすいものです。数字ではなく、気持ちの方をお聞かせください。',
+      '懐の心配は、生活への真剣さの裏返しです。その真面目さは、恥じるものではありませんよ。'
+    ]
+  },
+  {
+    patterns:['暑い','暑さ','猛暑','熱帯夜','夏バテ','クーラー'],
+    replies:[
+      'この暑さでは、心まで湯だってしまいますね。当店は涼しくしております。冷たい麦茶でも飲みながら、ごゆっくり。',
+      '夏の疲れは、気づかぬうちに心にも積もります。今日は無理せず、涼しい場所で一頁だけ。'
+    ]
+  },
+  {
+    patterns:['こんにちは','こんばんは','おはよう','初めまして','はじめまして'],
+    replies:[
+      '……いらっしゃいませ。ご挨拶をいただけるのは嬉しいものです。今日はどんな気持ちを連れてこられましたか。',
+      '……ようこそ。挨拶ができる日は、心にまだ余白がある日です。その余白に、少しだけ言葉を置いていきませんか。'
+    ]
+  },
+  {
+    patterns:['ありがとう','助かった','救われた'],
+    replies:[
+      '……こちらこそ。そう言っていただけると、店主冥利に尽きます。あなたが自分の言葉で綴ったからこそ、ですよ。',
+      '……お役に立てたなら何よりです。ですが一番の功労者は、ここまで言葉にしたあなた自身です。'
+    ]
+  },
+  {
+    patterns:['あなたは誰','AI','人工知能','ロボット','機械','人間ですか'],
+    replies:[
+      '私はこの店の店主、巡と申します。人か、そうでないか——それより、あなたの言葉をちゃんと受け取れているかどうかで、私を判断していただけたら嬉しいです。',
+      'ふふ。正体は棚の奥の秘密、ということにしておいてください。ただ、あなたの話を聞く耳だけは、本物のつもりです。'
+    ]
+  },
+  {
+    patterns:['死にたい','消えたい','いなくなりたい'],
+    replies:[
+      'そこまで追い詰められるほど、今日まで必死に耐えてこられたのですね。その言葉、軽くは扱いません。ここで少し、話していきませんか。あなたの言葉は、ここでは誰にも笑われません。',
+      'その気持ちを一人で抱えるには、夜は長すぎます。私にできるのは聞くことだけですが、専門の相談窓口（よりそいホットライン 0120-279-338 など）は、いつでもあなたの声を待っています。まずは今夜のことだけ、一緒に考えましょう。'
+    ]
+  },
+  {
+    patterns:['どうせ','自分なんて','ダメだ','向いてない'],
+    replies:[
+      '「どうせ」の奥には、たいてい「本当は」が隠れています。よければ、その続きを聞かせてください。',
+      '自分を責める言葉は、疲れている証拠でもあります。今日は判決を出さず、記録だけにしておきましょう。'
+    ]
+  },
+  {
+    patterns:['犬','猫','ペット'],
+    replies:[
+      '言葉の通じない相手との暮らしは、言葉以上のものを教えてくれますね。その気持ちも、立派な一冊になります。',
+      '動物と過ごす時間の話は、聞いているこちらの心もあたたまります。今日はどんな一幕でしたか。'
+    ]
   }
 ];
 
@@ -2118,19 +2196,30 @@ const GENERIC_REPLIES = [
   '……ゆっくりで結構ですよ。言葉にならない部分も含めて、お聞きしています。',
   '……その気持ちに、まだ名前はついていないようですね。一緒に探しましょう。',
   '……お話しくださって、ありがとうございます。もう少し、聞かせてもらえますか。',
-  '……ふむ。その感じ、下の棚のどれかに近いものがあるかもしれません。'
+  '……ふむ。その感じ、下の棚のどれかに近いものがあるかもしれません。',
+  '……その言葉を選ぶまでに、少し時間がかかったのではないですか。急がなくて大丈夫ですよ。',
+  '……いま話してくださったこと、そのまま原稿用紙に写しておきますね。',
+  '……そう感じるのは、不思議なことではありませんよ。続きを、もう少しだけ。',
+  '……言葉の向こうに、まだ何かある気がします。違っていたら、すみません。',
+  '……今日ここへ来てくださったこと自体が、すでに一歩だと私は思います。'
 ];
 const GENERIC_QUESTION_REPLIES = [
   '……良い問いですね。答えを急ぐより、その問いを綴っておくことをおすすめします。問いは熟成する飲み物なので。',
   '……私に確かな答えはありませんが、あなたの中には下書きがある気がします。書きながら探してみませんか。',
-  '……その問いは、今夜のあなたにしか書けない一冊になりそうです。'
+  '……その問いは、今夜のあなたにしか書けない一冊になりそうです。',
+  '……即答できない問いほど、良い問いです。棚を巡りながら考えるのはいかがですか。',
+  '……その質問には、私の答えより、あなた自身の答えのほうが価値があります。書きながら確かめてみませんか。',
+  '……難しい問いですね。ただ、問いを言葉にできた時点で、半分は進んでいると思いますよ。'
 ];
 
 const LOADING_LINES = [
   '……頁をめくっています',
   '……少し、考えさせてください',
   '……棚を見渡しています',
-  '……お茶を一口。すぐ戻ります'
+  '……お茶を一口。すぐ戻ります',
+  '……インクを足しています',
+  '……栞を挟み直しています',
+  '……窓を少し開けています'
 ];
 
 /* ---------- 時間帯ごとの挨拶（旧baselineのmorning/evening/nightに、新規dayを統合） ---------- */

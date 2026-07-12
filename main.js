@@ -75,11 +75,12 @@ function rakutenSearchUrl(query){
   return target;
 }
 
-/* 楽天トラベルの検索URLを、rakutenSearchUrlと同じID付与方式で生成する */
+/* 楽天トラベルの検索URL生成 */
 function rakutenTravelSearchUrl(query){
-  /* 楽天トラベルは hb.afl のラッパーURLだと遷移に失敗することがあるため、
-     リンク切れを絶対に起こさないよう検索結果へ直接リンクする */
-  return 'https://travel.rakuten.co.jp/dsearch/?f_keyword=' + encodeURIComponent(query) + '&f_hi_item=1';
+  /* 【P0バグ修正】旧 /dsearch/?f_keyword= 形式はエンドポイント廃止で404になるため、
+     現行のキーワード検索エンドポイント（kw.travel.rakuten.co.jp）へ変更。
+     2026-07-12 実機検証済み：「富良野」で399件の正規検索結果ページを確認。 */
+  return 'https://kw.travel.rakuten.co.jp/keyword/Search.do?f_query=' + encodeURIComponent(query) + '&f_max=30';
 }
 
 function detourUrlFor(item){
