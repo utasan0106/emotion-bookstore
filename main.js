@@ -551,18 +551,18 @@ async function showPurifyLog(){
  * state:   oshi, yami, menbure, kagiaka, darui, capaover
  */
 const PERSONA_TRIGGERS = [
-  { persona:'jobhunter',    patterns:['就活','面接','エントリーシート','ES','説明会','内定','選考','企業研究'] },
-  { persona:'student',      patterns:['学校','授業','宿題','部活','テスト','受験','クラス','先生','高校','中学'] },
-  { persona:'mother',       patterns:['育児','ワンオペ','子ども','子供','ママ友','保育園','夜泣き','旦那'] },
+  { persona:'jobhunter',   patterns:['就活','面接','エントリーシート','ES','説明会','内定','選考','企業研究'] },
+  { persona:'student',     patterns:['学校','授業','宿題','部活','テスト','受験','クラス','先生','高校','中学'] },
+  { persona:'mother',      patterns:['育児','ワンオペ','子ども','子供','ママ友','保育園','夜泣き','旦那'] },
   { persona:'career_woman', patterns:['キャリア','女性として','管理職','女子会','産休','昇進'] },
   { persona:'young_worker', patterns:['新卒','入社','新人','若手','社会人1年目','社会人２年目'] },
   { persona:'middle_worker',patterns:['部下','上司','板挟み','マネージャー','中間管理職','後輩指導'] },
-  { persona:'romance',      patterns:['彼氏','彼女','恋人','失恋','片思い','浮気','デート','LINEの返信'] },
-  { persona:'creater',      patterns:['創作','絵師','小説','同人','締め切り','イラスト','原稿'] },
-  { persona:'resting',      patterns:['無職','休職','退職','ニート','療養中','休養中'] },
-  { persona:'sensitive',    patterns:['繊細','HSP','敏感','眠れない','深夜','夜中'] },
-  { persona:'freelance',    patterns:['フリーランス','自営業','個人事業','クライアント','納品','案件','受注'] },
-  { persona:'caregiver',    patterns:['介護','看病','付き添い','通院','ケアマネ','老人ホーム','入院'] },
+  { persona:'romance',     patterns:['彼氏','彼女','恋人','失恋','片思い','浮気','デート','LINEの返信'] },
+  { persona:'creater',     patterns:['創作','絵師','小説','同人','締め切り','イラスト','原稿'] },
+  { persona:'resting',     patterns:['無職','休職','退職','ニート','療養中','休養中'] },
+  { persona:'sensitive',   patterns:['繊細','HSP','敏感','眠れない','深夜','夜中'] },
+  { persona:'freelance',   patterns:['フリーランス','自営業','個人事業','クライアント','納品','案件','受注'] },
+  { persona:'caregiver',   patterns:['介護','看病','付き添い','通院','ケアマネ','老人ホーム','入院'] },
   { persona:'second_life',  patterns:['定年','老後','年金','孫が','セカンドライフ','シニア'] }
 ];
 
@@ -1667,6 +1667,11 @@ function goToDeskWithCategory(shelfId){
 function renderChartOptions(nodeKey){
   const container = document.getElementById('chartOptions');
   if(!container) return;
+  
+  // ガイドを一旦非表示にする
+  const guideWrapper = document.getElementById('nextActionGuideWrapper');
+  if(guideWrapper) guideWrapper.classList.add('hidden');
+
   if(nodeKey === 'root'){
     container.innerHTML = '';
     renderTextureStep();
@@ -1840,6 +1845,10 @@ async function sendToShopkeeper(){
   if(kf) kf.classList.add('listening');
   setMood(text);
 
+  // ガイドを一旦非表示にする
+  const guideWrapper = document.getElementById('nextActionGuideWrapper');
+  if(guideWrapper) guideWrapper.classList.add('hidden');
+
   // 文字を送信した瞬間に、最新の吹き出しへ確実に追従する
   // ページ全体を動かさず、チャット窓の内部だけを最新までスクロールする
   const scrollToBottom = () => { if(cw) cw.scrollTop = cw.scrollHeight; };
@@ -1959,6 +1968,9 @@ async function chooseTexture(group, btnEl){
   if(kf) setTimeout(()=>kf.classList.remove('listening'), 2500);
   renderEmotionChips(group);
 
+  // 感情チップが表示されたタイミングでガイドを表示
+  const guideWrapper = document.getElementById('nextActionGuideWrapper');
+  if(guideWrapper) guideWrapper.classList.remove('hidden');
 }
 
 function renderEmotionChips(group){
@@ -1998,7 +2010,10 @@ async function chooseEmotionShelf(shelfId){
   appendBubble('shopkeeper', `『${shelfLabelOf(shelfId)}』の棚ですね。文字を打たなくても大丈夫。そのまま棚を眺めても、一冊綴っていっても構いませんよ。`);
   if(kf) setTimeout(()=>kf.classList.remove('listening'), 2500);
   renderSuggestionActions(shelfId);
-
+  
+  // 棚が決定されたらガイドは非表示にする
+  const guideWrapper = document.getElementById('nextActionGuideWrapper');
+  if(guideWrapper) guideWrapper.classList.add('hidden');
 }
 
 function syncCounterDraftToDesk(){
