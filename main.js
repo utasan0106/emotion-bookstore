@@ -142,6 +142,10 @@ const MESSAGES = {
     copyDoneBtn: "コピーしました ✓", copyLinkDefaultBtn: "リンクをコピー", copyManualBtn: "↓の欄からコピーしてください",
     copyUrlDoneBtn: "コピーしました ✓", copyUrlDefaultBtn: "📋 URLをコピー",
     purifyLogBtn: "🕯 手放した気持ちの記録を見る",
+    favListBtn: "☆ 気になるリストを見る",
+    favEmpty: "まだ「気になる」に入れた本・曲はありません。棚のおすすめにある☆ボタンから追加できます。",
+    favRemoveBtn: "リストから外す",
+    favOverlayTitle: "気になるリスト",
     trendEmptyOwn: "いまのあなたの本棚を、期間を変えて眺められます。",
     aiReferralLead: "もし込み入った専門的な話（法律・医療・技術的な相談など）でしたら、こちらでより詳しく聞けるかもしれません。",
     aiReferralGpt: "ChatGPTに聞いてみる ↗", aiReferralGemini: "Geminiに聞いてみる ↗",
@@ -271,6 +275,10 @@ const MESSAGES = {
     copyDoneBtn: "Copied ✓", copyLinkDefaultBtn: "Copy link", copyManualBtn: "Please copy from the field below",
     copyUrlDoneBtn: "Copied ✓", copyUrlDefaultBtn: "📋 Copy URL",
     purifyLogBtn: "🕯 View your release log",
+    favListBtn: "☆ View your \"curious about\" list",
+    favEmpty: "You haven't saved any books or music yet. Tap the ☆ button on a shelf's picks to add one.",
+    favRemoveBtn: "Remove from list",
+    favOverlayTitle: "Your \"curious about\" list",
     trendEmptyOwn: "You can view your own bookshelf across different time ranges.",
     aiReferralLead: "If this is a complex, specialized topic (legal, medical, technical, etc.), you may get a more detailed answer here:",
     aiReferralGpt: "Ask ChatGPT ↗", aiReferralGemini: "Ask Gemini ↗",
@@ -762,22 +770,27 @@ function todayStamp(){
 
 // Google Books API から、季節＋棚のラベルに合う本を数冊取得する。
 // 失敗時は null を返す（呼び出し側でフォールバック判定に使う）。
-async function fetchSeasonalBooks(catLabel, extraWord){
+// opts.granularity: 'day'（毎日入れ替え・既定）または 'month'（月内は同じ結果で安定させる）
+// opts.count: 何件返すか（取得したプールからランダムに選ぶ件数）
+async function fetchSeasonalBooks(catLabel, extraWord, opts){
+  opts = opts || {};
+  const granularity = opts.granularity === 'month' ? 'month' : 'day';
+  const count = opts.count || 1;
   try{
     const seasonWord = currentSeasonWord();
-    const cacheKey = 'emotion-bookstore-bookapi-' + (new Date().getMonth()+1) + '-' + catLabel + '-' + (extraWord||'');
+    const month = new Date().getMonth() + 1;
+    const cacheKey = 'emotion-bookstore-bookapi-' + month + '-' + catLabel + '-' + (extraWord||'') + '-' + granularity;
     const cached = await loadJSON(cacheKey, null);
-    const today = todayStamp();
-    if(cached && cached.date === today && Array.isArray(cached.items)) return cached.items;
+    const stampNow = granularity === 'month' ? String(month) : todayStamp();
+    if(cached && cached.stamp === stampNow && Array.isArray(cached.items) && cached.items.length) return cached.items;
 
     const q = encodeURIComponent([seasonWord, catLabel, extraWord||''].filter(Boolean).join(' '));
-    const url = 'https://www.googleapis.com/books/v1/volumes?q=' + q + '&maxResults=8&langRestrict=ja&country=JP';
+    const url = 'https://www.googleapis.com/books/v1/volumes?q=' + q + '&maxResults=12&langRestrict=ja&country=JP';
     const res = await fetch(url, { method:'GET' });
     if(!res.ok) throw new Error('Google Books API response not ok: ' + res.status);
     const json = await res.json();
-    const items = (json.items || [])
+    const pool = (json.items || [])
       .filter(it=>it.volumeInfo && it.volumeInfo.title)
-      .slice(0, 4)
       .map(it=>{
         const vi = it.volumeInfo;
         return {
@@ -787,7 +800,8 @@ async function fetchSeasonalBooks(catLabel, extraWord){
           infoLink: vi.infoLink || ''
         };
       });
-    await saveJSON(cacheKey, { date: today, items });
+    const items = shuffleArray(pool).slice(0, Math.max(count, 1));
+    await saveJSON(cacheKey, { stamp: stampNow, items });
     return items;
   }catch(e){
     console.warn('fetchSeasonalBooks: falling back to static data', e);
@@ -827,6 +841,122 @@ async function fetchSeasonalMusic(catLabel){
 }
 
 const PURIFY_LOG_KEY = 'emotion-bookstore-purify-log';
+
+// ★「気になる」機能：棚・寄り道・レコード棚で紹介した本や音楽を、あとで見返せるように
+//   端末内（IndexedDB/localStorage）だけに保存する。会員登録・ログインは不要。
+const FAVORITES_KEY = 'emotion-bookstore-favorites';
+let favoritesCache = [];
+
+function favKeyOf(type, title, by){
+  return type + '::' + title + '::' + (by || '');
+}
+
+function isFavorited(type, title, by){
+  const key = favKeyOf(type, title, by);
+  return favoritesCache.some(f => favKeyOf(f.type, f.title, f.by) === key);
+}
+
+async function toggleFavorite(type, title, by, category, extra){
+  const key = favKeyOf(type, title, by);
+  const idx = favoritesCache.findIndex(f => favKeyOf(f.type, f.title, f.by) === key);
+  let nowFav;
+  if(idx >= 0){
+    favoritesCache.splice(idx, 1);
+    nowFav = false;
+  }else{
+    favoritesCache.push({ type, title, by: by || '', category: category || '', extra: extra || '', addedAt: new Date().toISOString() });
+    nowFav = true;
+  }
+  await saveJSON(FAVORITES_KEY, favoritesCache);
+  return nowFav;
+}
+
+function favBtnHtml(type, title, by, category, extra){
+  if(!title) return '';
+  const fav = isFavorited(type, title, by);
+  return `<button type="button" class="fav-btn${fav ? ' is-fav' : ''}" data-fav-type="${escapeHtml(type)}" data-fav-title="${escapeHtml(title)}" data-fav-by="${escapeHtml(by || '')}" data-fav-category="${escapeHtml(category || '')}" data-fav-extra="${escapeHtml((extra || '').slice(0, 80))}" aria-pressed="${fav}">${fav ? '★ 気になる' : '☆ 気になる'}</button>`;
+}
+
+document.addEventListener('click', async (e)=>{
+  const btn = e.target.closest('.fav-btn');
+  if(!btn) return;
+  e.preventDefault();
+  const { favType, favTitle, favBy, favCategory, favExtra } = btn.dataset;
+  const nowFav = await toggleFavorite(favType, favTitle, favBy, favCategory, favExtra);
+  if(btn.closest('#favoritesOverlay')){
+    showFavorites();
+    return;
+  }
+  document.querySelectorAll('.fav-btn').forEach(b=>{
+    if(b.dataset.favType === favType && b.dataset.favTitle === favTitle && (b.dataset.favBy || '') === (favBy || '')){
+      b.classList.toggle('is-fav', nowFav);
+      b.setAttribute('aria-pressed', String(nowFav));
+      b.textContent = nowFav ? '★ 気になる' : '☆ 気になる';
+    }
+  });
+  if(typeof buzz === 'function') buzz(6);
+});
+
+function buildFavoritesOverlay(){
+  let overlay = document.getElementById('favoritesOverlay');
+  if(overlay) return overlay;
+  overlay = document.createElement('div');
+  overlay.id = 'favoritesOverlay';
+  overlay.className = 'purify-log-overlay hidden';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-label', '気になるリスト');
+  overlay.innerHTML = `
+    <div class="purify-log-card">
+      <button type="button" class="purify-log-close" id="favoritesClose" aria-label="閉じる">×</button>
+      <p class="purify-log-kicker">${escapeHtml(t('favOverlayTitle'))}</p>
+      <div class="purify-log-list" id="favoritesList"></div>
+      <div class="purify-log-actions">
+        <button type="button" class="purify-log-close-btn" id="favoritesCloseBtn">${escapeHtml(t('closeBtn'))}</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', (e)=>{
+    if(e.target.id === 'favoritesOverlay') hideFavoritesOverlay();
+  });
+  const closeX = overlay.querySelector('#favoritesClose');
+  if(closeX) closeX.onclick = hideFavoritesOverlay;
+  const closeBtn = overlay.querySelector('#favoritesCloseBtn');
+  if(closeBtn) closeBtn.onclick = hideFavoritesOverlay;
+  return overlay;
+}
+
+function hideFavoritesOverlay(){
+  const overlay = document.getElementById('favoritesOverlay');
+  if(overlay) overlay.classList.add('hidden');
+}
+
+async function showFavorites(){
+  favoritesCache = await loadJSON(FAVORITES_KEY, []);
+  const overlay = buildFavoritesOverlay();
+  const list = document.getElementById('favoritesList');
+  if(list){
+    if(favoritesCache.length === 0){
+      list.innerHTML = `<p class="purify-log-empty">${escapeHtml(t('favEmpty'))}</p>`;
+    }else{
+      list.innerHTML = favoritesCache.slice().reverse().map(f=>{
+        const cat = CATEGORIES.find(c=>c.id===f.category);
+        const label = cat ? cat.label : '';
+        const q5 = f.title + ' ' + (f.by || '');
+        const isMusic = f.type === 'music';
+        const links = isMusic
+          ? `<a href="https://open.spotify.com/search/${encodeURIComponent(q5)}" target="_blank" rel="noopener">Spotify</a> <a href="https://music.apple.com/jp/search?term=${encodeURIComponent(q5)}" target="_blank" rel="noopener">Apple Music</a> <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(q5)}" target="_blank" rel="noopener">YouTube</a>`
+          : `<a href="${amazonSearchUrl(q5)}" target="_blank" rel="noopener">Amazon</a> <a href="${rakutenSearchUrl(q5)}" target="_blank" rel="noopener">楽天</a>`;
+        return `<div class="purify-log-entry">
+          <p class="purify-log-meta">${isMusic ? '🎵' : '📖'} ${escapeHtml(label)}</p>
+          <p class="purify-log-text">${escapeHtml(f.title)}${f.by ? ' — ' + escapeHtml(f.by) : ''}</p>
+          <p class="field-hint">${links}</p>
+          <button type="button" class="fav-btn is-fav" data-fav-type="${escapeHtml(f.type)}" data-fav-title="${escapeHtml(f.title)}" data-fav-by="${escapeHtml(f.by || '')}" data-fav-category="${escapeHtml(f.category || '')}" data-fav-extra="">★ ${escapeHtml(t('favRemoveBtn'))}</button>
+        </div>`;
+      }).join('');
+    }
+  }
+  overlay.classList.remove('hidden');
+}
 
 async function exportDiaryText(){
   const lib = await loadJSON('emotion-bookstore-library', []);
@@ -1414,7 +1544,9 @@ async function renderDetourSection(catId){
 
   box.innerHTML = `<p class="detour-heading">今月の寄り道</p><p class="detour-loading">……季節に合う一冊を探しています</p>`;
 
-  const liveItems = await fetchSeasonalBooks(catLabel, '寄り道');
+  // 同じ感情の棚でも3種類ほどランダムに、かつ月が変わるまでは同じ顔ぶれになるように
+  // {granularity:'month', count:3} を指定して取得する。
+  const liveItems = await fetchSeasonalBooks(catLabel, '寄り道', { granularity:'month', count:3 });
 
   // 取得中に棚が切り替わっていたら、古い結果は描画しない
   if(activeCategory !== requestedCategory) return;
@@ -1428,12 +1560,13 @@ async function renderDetourSection(catId){
           <p class="detour-name">${escapeHtml(b.title)}</p>
           <p class="detour-desc">${escapeHtml(b.by)}${b.hook ? ' — ' + escapeHtml(b.hook) : ''}</p>
           <a class="detour-link" href="${url}" target="_blank" rel="noopener">見てみる →</a>
+          ${favBtnHtml('book', b.title, b.by, catId, b.hook || '')}
         </div>`;
     }).join('');
     box.innerHTML = `
       <p class="detour-heading">今月の寄り道<span class="detour-pr">［外部の書籍情報サービスから取得］</span></p>
       <div class="detour-cards">${cardsHtml}</div>
-      <p class="detour-note">季節と今の棚の気分に合わせて、外部サービスから毎月自動で選ばれています。</p>`;
+      <p class="detour-note">同じ棚でも3種類をランダムに表示し、月が変わるとまた新しい顔ぶれになります。</p>`;
     return;
   }
 
@@ -1465,6 +1598,7 @@ async function renderLiveNewReleases(cat){
       <p class="live-pick-name">${escapeHtml(b.title)}</p>
       <p class="live-pick-desc">${escapeHtml(b.by)}${b.hook ? ' — ' + escapeHtml(b.hook) : ''}</p>
       <a class="live-pick-link" href="${url}" target="_blank" rel="noopener">見てみる →</a>
+      ${favBtnHtml('book', b.title, b.by, cat.id, b.hook || '')}
     </div>`;
   }
   if(songs && songs.length){
@@ -1476,6 +1610,7 @@ async function renderLiveNewReleases(cat){
       <p class="live-pick-name">『${escapeHtml(s.title)}』${escapeHtml(s.artist)}</p>
       ${s.comment ? `<p class="live-pick-desc">${escapeHtml(s.comment)}</p>` : ''}
       <a class="live-pick-link" href="${spUrl}" target="_blank" rel="noopener">聴いてみる →</a>
+      ${favBtnHtml('music', s.title, s.artist, cat.id, s.comment || '')}
     </div>`;
   }
   wrapEl.innerHTML = html
@@ -1519,6 +1654,7 @@ function renderShelfDisplay(){
                 <a class="recommend-buy audible" href="${audibleUrl}" target="_blank" rel="noopener">Audible</a>
                 <a class="recommend-buy rakuten" href="${rakutenUrl}" target="_blank" rel="noopener">楽天</a>
               </span>
+              ${favBtnHtml('book', r.title, r.by, cat.id, r.hook || r.why || '')}
               ${r.source ? `<a class="recommend-source" href="${r.sourceUrl}" target="_blank" rel="noopener">出典：${r.source}</a>` : ''}
             </span>`;
           }).join('')}
@@ -1549,6 +1685,7 @@ function renderShelfDisplay(){
             <a href="${amUrl}" target="_blank" rel="noopener">Amazon Music</a>
             <a href="${ytUrl}" target="_blank" rel="noopener">YouTube</a>
           </span>
+          ${favBtnHtml('music', song.title, song.artist, cat.id, song.comment || '')}
         </div>`;
       }).join('');
       musicHtml = `<div class="music-row"><p class="playlist-label">🎵 「${cat.label}」なプレイリスト — 店主の選曲</p><div class="playlist-tracks">${items}</div><p class="field-hint apple-music-note">${escapeHtml(t('appleMusicNote'))}</p></div>`;
@@ -3017,22 +3154,38 @@ const RECORD_PICKS = {
   morning:{ label:'今朝のレコード', line:'開店前の掃除のとき、店主がよくかけている一枚。', songs:[
     { title:'風をあつめて', artist:'はっぴいえんど' },
     { title:'やさしさに包まれたなら', artist:'荒井由実' },
-    { title:'虹', artist:'菅田将暉' }
+    { title:'虹', artist:'菅田将暉' },
+    { title:'Presence', artist:'Awesome City Club' },
+    { title:'朝が来る前に', artist:'never young beach' },
+    { title:'アイネクライネ', artist:'米津玄師' },
+    { title:'たしかなこと', artist:'小田和正' }
   ]},
   daytime:{ label:'昼下がりのレコード', line:'頁をめくる音に混ざっても、邪魔をしない一枚。', songs:[
     { title:'日曜日よりの使者', artist:'ザ・ハイロウズ' },
     { title:'小さな恋のうた', artist:'MONGOL800' },
-    { title:'ありがとう', artist:'いきものがかり' }
+    { title:'ありがとう', artist:'いきものがかり' },
+    { title:'サボテンの花', artist:'チューリップ' },
+    { title:'ライオン', artist:'加藤登紀子' },
+    { title:'ハナミズキ', artist:'一青窈' },
+    { title:'虹を待つ人', artist:'絢香' }
   ]},
   evening:{ label:'夕暮れのレコード', line:'棚の影が伸びる時間に、店主が針を落とす一枚。', songs:[
     { title:'茜色の約束', artist:'いきものがかり' },
     { title:'花火', artist:'aiko' },
-    { title:'ワタリドリ', artist:'[Alexandros]' }
+    { title:'ワタリドリ', artist:'[Alexandros]' },
+    { title:'アポロ', artist:'ポルノグラフィティ' },
+    { title:'とんぼ', artist:'長渕剛' },
+    { title:'糸', artist:'中島みゆき' },
+    { title:'夕焼け', artist:'サザンオールスターズ' }
   ]},
   night:{ label:'今夜のレコード', line:'閉店後の書店で、ランプの灯りとよく合う一枚。', songs:[
     { title:'First Love', artist:'宇多田ヒカル' },
     { title:'くだらないの中に', artist:'星野源' },
-    { title:'夜空ノムコウ', artist:'SMAP' }
+    { title:'夜空ノムコウ', artist:'SMAP' },
+    { title:'アルデバラン', artist:'菅田将暉' },
+    { title:'白日', artist:'King Gnu' },
+    { title:'Lemon', artist:'米津玄師' },
+    { title:'夜に駆ける', artist:'YOASOBI' }
   ]}
 };
 
@@ -3044,6 +3197,9 @@ function currentRecordSlot(){
   return 'night';
 }
 
+// ★時間帯（朝/昼/夕/夜）ごとのプールから、日付（Date.now()を86400000で割った日数）を
+//   インデックスにして選ぶことで、日をまたぐたびに必ず違う一枚になる仕組み。
+//   プールを7曲ずつに増やし、1週間は同じ曲が続かないようにした。
 function renderRecordCorner(){
   const box = document.getElementById('recordCorner');
   if(!box) return;
@@ -3069,6 +3225,7 @@ function renderRecordCorner(){
         <a href="${amcUrl}" target="_blank" rel="noopener">Apple Music</a>
         <a href="${ytUrl}" target="_blank" rel="noopener">YouTube</a>
       </p>
+      ${favBtnHtml('music', song.title, song.artist, '', slot.label)}
       <p class="field-hint apple-music-note">${escapeHtml(t('appleMusicNote'))}</p>
     </div>`;
   box.classList.remove('hidden');
@@ -3520,6 +3677,7 @@ function warnInAppBrowserIfNeeded(){
   renderFair();
   renderCategorySelect();
   libraryCache = await loadJSON('emotion-bookstore-library', []);
+  favoritesCache = await loadJSON(FAVORITES_KEY, []);
   let _migrated = false;
   libraryCache.forEach(e=>{ if(e && e.category === 'moya'){ e.category = 'moyamoya'; _migrated = true; } });
   if(_migrated) saveJSON('emotion-bookstore-library', libraryCache);
@@ -3553,5 +3711,13 @@ function warnInAppBrowserIfNeeded(){
     btn.textContent = t('purifyLogBtn');
     btn.onclick = showPurifyLog;
     shelfControls.insertBefore(btn, shelfControls.firstChild);
+  }
+  if(shelfControls && !document.getElementById('viewFavoritesBtn')){
+    const favListBtn = document.createElement('button');
+    favListBtn.id = 'viewFavoritesBtn';
+    favListBtn.className = 'reset-link';
+    favListBtn.textContent = t('favListBtn');
+    favListBtn.onclick = showFavorites;
+    shelfControls.insertBefore(favListBtn, shelfControls.firstChild);
   }
 })();

@@ -2235,6 +2235,40 @@ body.night .purify-log-entry{ background:#332E26; }
   text-align:center;
   padding:20px 0;
 }
+
+/* ---- 「気になる」ボタン／気になるリスト ---- */
+.fav-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  font-family:var(--font-display);
+  font-size:12px;
+  color:var(--wine);
+  background:rgba(255,255,255,0.6);
+  border:1px solid var(--paper-shadow);
+  border-radius:14px;
+  padding:5px 12px;
+  min-height:32px;
+  cursor:pointer;
+  margin-top:6px;
+  transition:background .15s ease, color .15s ease, border-color .15s ease;
+}
+.fav-btn:hover{ background:rgba(255,255,255,0.9); }
+.fav-btn.is-fav{
+  background:var(--wine);
+  color:#fff;
+  border-color:var(--wine);
+}
+body.night .fav-btn{
+  color:#E8C97A;
+  background:rgba(0,0,0,0.2);
+  border-color:#3A342A;
+}
+body.night .fav-btn.is-fav{
+  background:#E8C97A;
+  color:#2E241A;
+  border-color:#E8C97A;
+}
 .purify-log-actions{
   display:flex;
   gap:10px;
