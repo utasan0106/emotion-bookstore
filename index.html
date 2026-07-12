@@ -1,380 +1,261 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<!-- ===== Google Analytics 4（GA4）計測タグ — head内最上部に設置 ===== -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-TGLD3KW523');
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "みんなの感情書店は無料ですか？登録は必要ですか？",
-      "acceptedAnswer": { "@type": "Answer", "text": "完全無料で、会員登録も不要です。ブラウザで開いてすぐに使えます。" }
-    },
-    {
-      "@type": "Question",
-      "name": "書いた日記や感情の記録は誰かに見られますか？",
-      "acceptedAnswer": { "@type": "Answer", "text": "綴った言葉はサーバーには送信されず、お使いの端末の中にのみ保存されます。AIの学習にも使われません。" }
-    },
-    {
-      "@type": "Question",
-      "name": "どんなことができるアプリですか？",
-      "acceptedAnswer": { "@type": "Answer", "text": "15種類の感情の棚から名言・本・音楽に出会い、店主との対話で気持ちを整理し、自分の体験を綴って自分だけの本棚を育てられる感情日記アプリです。自己分析やジャーナリング、メンタルケアに活用できます。" }
-    },
-    {
-      "@type": "Question",
-      "name": "スマホのホーム画面から使えますか？",
-      "acceptedAnswer": { "@type": "Answer", "text": "SafariやChromeの「ホーム画面に追加」で、アプリのように1タップで開けるようになります。" }
-    }
-  ]
-}
-</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<!-- ===== SEO用 Meta Tags ===== -->
-<meta name="description" content="名もなき気持ちに、名前をあげる。「みんなの感情書店」は登録不要・完全無料の感情日記アプリ。書いた言葉はサーバーには送信されません。誰にも見られない、あなただけの絶対に安全な本棚です。">
-<meta name="keywords" content="感情日記,日記アプリ,自己分析,感情の言語化,ジャーナリング,メンタルケア,就活 自己分析,登録不要,無料,感情書店">
-<meta name="robots" content="index,follow">
-<meta name="author" content="みんなの感情書店">
-<link rel="canonical" href="https://emotion-bookstore.vercel.app/">
-<!-- ホーム画面に追加した時にアプリのような全画面表示になる（PWA風） -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="感情書店">
-<meta name="theme-color" content="#EFE6CD">
-<!-- OGP：XやLINEでシェアされた時にプレビューカードを出すための設定 -->
-<meta property="og:type" content="website">
-<meta property="og:title" content="みんなの感情書店 — 名もなき気持ちに、名前をあげる。">
-<meta property="og:description" content="感情の書店で、自分だけの一冊を見つけよう。15の感情の棚、店主との対話、あなただけの本棚。登録不要。サーバーには送信されない、あなただけの絶対に安全な本棚です。">
-<meta property="og:url" content="https://emotion-bookstore.vercel.app/">
-<meta property="og:image" content="https://emotion-bookstore.vercel.app/ogp.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="みんなの感情書店">
-<meta name="twitter:description" content="名もなき気持ちに、名前をあげる。感情の書店で、自分だけの一冊を。">
-<meta name="twitter:image" content="https://emotion-bookstore.vercel.app/ogp.png">
-<!-- アイコン：外部ファイル不要のSVGデータURI（本の絵文字風）。公開時に180x180のPNGに差し替えるとより綺麗 -->
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%236E2A34'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E">
-<title>みんなの感情書店 — 感情日記・自己分析アプリ｜登録不要・無料</title>
-<!-- ===== 構造化データ（JSON-LD）：Google検索でのリッチリザルト用 ===== -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "みんなの感情書店",
-  "alternateName": "感情書店",
-  "url": "https://emotion-bookstore.vercel.app/",
-  "description": "名もなき気持ちに、名前をあげる。登録不要・完全無料の感情日記アプリ。15の感情の棚、店主との対話、あなただけの本棚。書いた言葉はサーバーには送信されません。",
-  "applicationCategory": "LifestyleApplication",
-  "operatingSystem": "Web",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
-  "inLanguage": "ja",
-  "keywords": "感情日記,日記アプリ,自己分析,感情の言語化,ジャーナリング,メンタルケア"
-}
-</script>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>みんなの感情書店</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            background-color: #fdfbf7;
+            color: #4a3e3d;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 0.1em;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* アコーディオン部分のスタイル */
+        .about-section {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 40px;
+            border-top: 1px dashed #d1c8c1;
+            border-bottom: 1px dashed #d1c8c1;
+            padding: 10px 0;
+        }
+
+        .about-summary {
+            font-size: 0.95rem;
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .accordion-button {
+            background: none;
+            border: none;
+            color: #8b7d7b;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 5px;
+            outline: none;
+            transition: color 0.3s;
+        }
+        
+        .accordion-button:hover {
+            color: #4a3e3d;
+        }
+
+        .accordion-icon {
+            margin-right: 5px;
+            font-size: 0.8rem;
+            transition: transform 0.3s;
+        }
+
+        .accordion-button.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease-out;
+            opacity: 0;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            background-color: #f5f0ea;
+            border-radius: 8px;
+            margin-top: 0;
+        }
+
+        .accordion-content.open {
+            max-height: 500px; /* 十分な高さを確保 */
+            opacity: 1;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .section-title::before, .section-title::after {
+            content: "";
+            display: inline-block;
+            width: 30px;
+            height: 1px;
+            background-color: #4a3e3d;
+            vertical-align: middle;
+            margin: 0 10px;
+        }
+
+        /* 既存のグリッドスタイル（モックアップ用） */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 600px;
+            width: 100%;
+            background-color: #7b6855;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .grid-item {
+            background-color: #fdfbf7;
+            border-radius: 4px;
+            padding: 15px 5px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+        }
+
+        .item-number {
+            font-size: 0.7rem;
+            font-weight: bold;
+            align-self: flex-start;
+            margin-bottom: 5px;
+            background-color: #4a3e3d;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-text {
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-top: auto;
+        }
+        
+        .placeholder-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #eaddd3;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="shop">
-  <header class="entrance">
-    <p class="eyebrow">EMOTIONAL BINDERY &amp; BOOKSHOP</p>
-    <h1>みんなの感情書店</h1>
-    <p class="tagline">名もなき気持ちに、名前をあげる。</p>
-    <p class="sub-tagline">感情の書店で、自分だけの一冊を見つけよう。</p>
+    <div class="header">
+        <div class="title">みんなの感情書店</div>
+        <div class="subtitle">
+            名もなき気持ちに、名前をあげる。<br>
+            感情の書店で、自分だけの一冊を見つけよう。
+        </div>
+    </div>
 
-    <div class="intro-explainer in-header">
-      <p class="intro-kicker">この書店でできること<br>— 好きな場所から、自由に巡れます</p>
-      <div class="intro-steps">
-        <button type="button" class="intro-step" onclick="goToPage('counter')">
-          <span class="intro-num">①</span>
-          <p class="intro-title">店主に話す</p>
-          <p class="intro-text">今の気持ちを、選択肢か自由な言葉で伝えます。</p>
+    <!-- 追加したアコーディオンセクション -->
+    <div class="about-section">
+        <div class="about-summary">
+            言語化できない今の「心の質感」を選ぶだけ。<br>
+            店主のナビゲートで、自分だけの本棚が育っていく日記アプリです。
+        </div>
+        <button class="accordion-button" onclick="toggleAccordion()">
+            <span class="accordion-icon">▼</span> どんな体験ができるの？
         </button>
-        <button type="button" class="intro-step" onclick="goToPage('shelves')">
-          <span class="intro-num">②</span>
-          <p class="intro-title">棚を巡る</p>
-          <p class="intro-text">15種類の感情の棚から、名言や本、曲に出会います。</p>
-        </button>
-        <button type="button" class="intro-step" onclick="goToPage('desk')">
-          <span class="intro-num">③</span>
-          <p class="intro-title">物語を綴る</p>
-          <p class="intro-text">自分の体験を書き、製本して棚に納めます。</p>
-        </button>
-        <button type="button" class="intro-step" onclick="goToPage('bookshelf')">
-          <span class="intro-num">④</span>
-          <p class="intro-title">本棚が育つ</p>
-          <p class="intro-text">綴った物語が積み重なり、自分だけの本棚に。</p>
-        </button>
-      </div>
-    </div>
-
-    <button class="enter-btn" onclick="goToPage('counter')">扉をひらく →</button>
-    <div class="pref-row">
-      <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切">演出：入</button>
-      <button class="pref-toggle" id="profileBtn" title="お名前と属性の設定（任意・この端末にのみ保存）">🪪 来店カード</button>
-    </div>
-    <div class="trust-row">
-      <span class="trust-badge">登録不要</span>
-      <span class="trust-badge">この端末にのみ保存</span>
-      <span class="trust-badge">AIの学習には使われません</span>
-    </div>
-  </header>
-
-  <nav class="page-nav" id="pageNav" aria-label="ページを選ぶ">
-    <button class="page-tab" data-page="counter" onclick="goToPage('counter')">① 番台</button>
-    <button class="page-tab" data-page="shelves" onclick="goToPage('shelves')">② 棚</button>
-    <button class="page-tab" data-page="desk" onclick="goToPage('desk')">③ 編纂机</button>
-    <button class="page-tab" data-page="bookshelf" onclick="goToPage('bookshelf')">④ 本棚</button>
-  </nav>
-
-  <div class="page-turn-overlay" id="pageTurnOverlay" aria-hidden="true"></div>
-
-  <section id="counter" class="reveal">
-    <div class="section-head"><span class="section-num">1</span><h2>番台 — 店主に相談する</h2></div>
-    <p class="section-sub">今のモヤモヤを、そのまま話してください。</p>
-    <div class="counter-wrap">
-      <div class="keeper-vignette" aria-hidden="true">
-        <svg viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="70" cy="26" rx="22" ry="13" fill="var(--gold-soft)" opacity="0.45"/>
-          <circle cx="70" cy="24" r="7" fill="var(--gold)"/>
-          <line x1="70" y1="31" x2="70" y2="86" stroke="var(--wood)" stroke-width="3"/>
-          <g class="keeper" id="keeperFigure">
-            <path d="M198,88 C200,56 212,44 222,42 C232,44 244,56 246,88 Z" fill="var(--ink)"/>
-            <circle class="head" cx="222" cy="30" r="12" fill="var(--ink)"/>
-            <g class="book">
-              <rect x="204" y="46" width="36" height="22" rx="2" fill="#fdf6e6" stroke="var(--paper-shadow)"/>
-              <line x1="222" y1="46" x2="222" y2="68" stroke="var(--paper-shadow)"/>
-            </g>
-          </g>
-          <rect x="10" y="88" width="300" height="10" fill="var(--wood-2)" rx="2"/>
-          <rect x="10" y="96" width="300" height="6" fill="var(--wood)" rx="2"/>
-        </svg>
-      </div>
-      <details class="keeper-bio">
-        <summary>店主について</summary>
-        <p>この書店の店主。名前は「巡（めぐる）」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、巡が長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。</p>
-      </details>
-      <div class="chat-window" id="chatWindow">
-        <div class="bubble shopkeeper" id="firstGreeting"><span class="name">店主</span><span id="firstGreetingText">……いらっしゃいませ。ちょうど頁を閉じたところです。今はどんな気分に近いですか。近いものを選んでも、下に自由に書いてもらっても構いません。</span></div>
-      </div>
-      <div class="texture-step" id="textureStep" aria-label="心の質感を選ぶ"></div>
-      
-      <div class="chart-options" id="chartOptions"></div>
-
-      <div id="nextActionGuideWrapper" class="hidden">
-        <div class="next-action-guide">
-          <p class="guide-lead">👇 当てはまるものがない場合は、下の枠に言葉を書いて「話す」を押してください</p>
-          <p class="freeform-hint">※書いた言葉は、そのまま編纂机の原稿用紙に写しておきます。</p>
+        <div class="accordion-content" id="aboutContent">
+            <b>みんなの感情書店とは</b><br><br>
+            言語化できない「今の心の質感」を直感的に選ぶだけで、店主が優しくナビゲートしてくれます。<br>
+            そして、あなたの感情にそっと寄り添う「本」や「音楽」との思いがけない出会いをご提案します。<br><br>
+            モヤモヤした気持ちや言葉にならない本音は、美しい背表紙の一冊の本に。<br>
+            誰の目も気にしなくていいこの場所で、あなただけの本棚を少しずつ育ててみませんか？<br>
+            他人の視線に疲れた心が、スッと軽くなる体験をお届けします。
         </div>
-      </div>
-
-      <div class="chat-input-row">
-        <textarea id="userInput" placeholder="例：うまく言えないけど、朝からずっとモヤモヤしている…" rows="2"></textarea>
-        <button class="send-btn" id="sendBtn">話す</button>
-      </div>
     </div>
-  </section>
+    <!-- /追加したアコーディオンセクション -->
 
-  <section id="shelves" class="reveal">
-    <div class="section-head"><span class="section-num">2</span><h2>感情の棚</h2></div>
-    <p class="section-sub">棚を選んでも、あてもなく巡っても。</p>
-    <div class="fair" id="fairBox"></div>
-    <div class="shelf-tabs" id="shelfTabs"></div>
-    <div class="shelf-display" id="shelfDisplay"></div>
-    <div class="detour-section" id="detourSection"></div>
-    <p class="swipe-hint">← 左右にスワイプでも棚を移動できます →</p>
-    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')">⤴ 番台へ戻る</button></div>
-  </section>
+    <div class="section-title">この書店でできること</div>
 
-  <section id="desk" class="reveal">
-    <div class="section-head"><span class="section-num">3</span><h2>編纂机 — 物語を綴る</h2></div>
-    <p class="desk-lead hidden" id="deskLead"></p>
-    <p class="section-sub">今の棚は「<span id="deskCategoryLabel"></span>」です。書き終えたら、タイトルは店主が考えます（自分でつけても構いません）。今の気持ちだけでなく、以前のことを振り返って綴ることもできます。</p>
-    <div class="desk-form">
-      <div class="field">
-        <textarea id="storyInput" placeholder="いつ、どこで、何があって、どう感じたか。短くても、拙くても構いません。" rows="6"></textarea>
-        <div class="count-row">
-          <button type="button" class="assist-link" id="assistBtn">書き出しに迷ったら、店主の助け舟</button>
-          <span class="story-count" id="storyCount">0 / 700字</span>
+    <div class="grid-container">
+        <div class="grid-item">
+            <div class="item-number">1</div>
+            <div class="placeholder-icon"></div>
+            <div class="item-text">店主と対話</div>
         </div>
-      </div>
-      <div class="photo-row">
-        <label class="photo-label" for="photoInput">📷 今日の一枚を、頁に挟む（任意）</label>
-        <input type="file" id="photoInput" accept="image/*" class="hidden-file">
-        <div class="photo-preview hidden" id="photoPreview">
-          <img id="photoPreviewImg" alt="添付写真のプレビュー">
-          <button type="button" class="photo-remove" id="photoRemove" aria-label="写真を外す">×</button>
+        <div class="grid-item">
+            <div class="item-number">2</div>
+            <div class="placeholder-icon"></div>
+            <div class="item-text">感情を選ぶ</div>
         </div>
-        <span class="photo-hint">写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。</span>
-      </div>
-      <details class="desk-extra">
-        <summary>✍️ 棚・タイトル・いつの気持ちかを、自分で決める（任意）</summary>
-        <div class="field-row" style="margin-top:12px;">
-          <div class="field">
-            <label for="categorySelect">棚</label>
-            <select id="categorySelect"></select>
-          </div>
-          <div class="field">
-            <label for="titleInput">背表紙のタイトル</label>
-            <input id="titleInput" maxlength="16" placeholder="空欄なら店主が考えます">
-          </div>
+        <div class="grid-item">
+            <div class="item-number">3</div>
+            <div class="placeholder-icon"></div>
+            <div class="item-text">棚を巡る</div>
         </div>
-        <div class="title-suggest" id="titleSuggest"></div>
-        <div class="field-row" style="margin-top:12px;">
-          <div class="field">
-            <label for="whenSelect">いつの気持ちですか</label>
-            <select id="whenSelect">
-              <option value="now">今の気持ち</option>
-              <option value="past">以前のことを振り返って</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="tweetInput">関連するXの投稿があれば</label>
-            <input id="tweetInput" type="url" placeholder="例：https://x.com/username/status/1234567890">
-          </div>
+        <div class="grid-item">
+            <div class="item-number">4</div>
+            <div class="placeholder-icon"></div>
+            <div class="item-text">物語を綴る</div>
         </div>
-        <span class="field-hint">「以前のことを振り返って」を選ぶと、あの時の気持ちをそのまま本棚に閉じ込めておけます。困った時に開き直すと、前にも同じ気持ちを乗り越えてきたことがわかります。Xの投稿へのリンクを貼ると、本を開いたときに公式の埋め込みで表示されます。本文や画像を直接お預かりすることはありません。</span>
-      </details>
-      <div class="curate-box hidden" id="curateBox">
-        <p class="curate-msg" id="curateMsg"></p>
-        <div class="curate-actions" id="curateActions"></div>
-      </div>
-      <div class="desk-actions">
-        <button class="bind-btn" id="submitStory">店主に預けて製本する</button>
-        <span class="desk-msg" id="deskMsg"></span>
-      </div>
+        <div class="grid-item">
+            <div class="item-number">5</div>
+            <div class="placeholder-icon"></div>
+            <div class="item-text">製本する</div>
+        </div>
+        <div class="grid-item">
+            <div class="item-number">6</div>
+            <div class="placeholder-icon"></div>
+            <div class="item-text">本棚に納める</div>
+        </div>
     </div>
-    <div class="invitation hidden" id="invitationCard">
-      <div class="inv-seal">封</div>
-      <p class="inv-kicker">推薦状</p>
-      <p class="inv-title" id="invTitle"></p>
-      <p class="inv-body" id="invBody"></p>
-      <button class="inv-goshelf" id="invGoShelf">棚を見てみる</button>
-      <button class="inv-close" id="invClose">しおりに挟む</button>
-    </div>
-    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')">⤴ 番台へ戻る</button></div>
-  </section>
 
-  <section id="bookshelf" class="reveal">
-    <div class="section-head"><span class="section-num">4</span><h2>あなたの本棚</h2><span class="shelf-count" id="shelfCount"></span></div>
-    <p class="section-sub">納品した物語が背表紙になって並びます。クリックすると読めます。困った時にここを開くと、前にも同じ気持ちを乗り越えてきたことがわかります。</p>
-    <div class="wood-shelf">
-      <div class="shelf-row" id="myShelf">
-        <div class="shelf-empty" id="shelfEmptyMsg">まだ本がありません。編纂机で最初の一冊を綴ってみましょう。</div>
-      </div>
-    </div>
-    <div class="record-corner hidden" id="recordCorner" aria-label="店主のレコード棚"></div>
-    <div class="shelf-controls">
-      <button class="reset-link" id="resetShelf">本棚をリセットする</button>
-    </div>
-    <p class="backup-hint"></p>
-    <div class="trend hidden" id="trendBox">
-      <p id="trendSummary" class="trend-summary-main"></p>
-      <details class="trend-detail">
-        <summary>感情の地図を詳しく見る</summary>
-        <p class="trend-note">※月次「感情取扱説明書」レポートの簡易デモです。この地図はあなたにだけ見えています。</p>
-        <div id="trendBars"></div>
-      </details>
-    </div>
-    <div class="trend hidden" id="shioriCard">
-      <h3>今日の栞</h3>
-      <p class="trend-note">あなたの本棚を眺めた店主から、一枚。</p>
-      <span class="shiori-slip hidden" id="shioriSlip"><span class="shiori-label">栞 — 店主より</span><span id="shioriText"></span></span>
-      <button class="curate-btn" id="shioriBtn">栞を受け取る</button>
-    </div>
-    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')">⤴ 番台へ戻る</button></div>
-  </section>
-
-  <footer class="shop-footer">
-    『みんなの感情書店』<br>
-    綴った言葉はサーバーには送信されず、この端末にのみ保存されます。
-    <div class="share-row">
-      <button class="share-btn" id="shareBtn">🔗 この書店をシェアする</button>
-      <button class="share-btn" id="copyUrlBtn">📋 URLをコピー</button>
-      <button class="share-btn" id="pwaPinBtn">📌 ホーム画面にピン留め</button>
-    </div>
-    <div class="legal-row">
-      <a href="./privacy.html">プライバシーポリシー</a>
-      <span class="legal-sep">・</span>
-      <a href="./terms.html">利用規約</a>
-    </div>
-  </footer>
-</div>
-
-<div class="share-menu hidden" id="shareMenu">
-  <p class="share-menu-title">シェアする</p>
-  <a class="share-option" id="shareX" href="#" target="_blank" rel="noopener">Xでシェア</a>
-  <a class="share-option" id="shareLine" href="#" target="_blank" rel="noopener">LINEでシェア</a>
-  <button class="share-option" id="shareNative">端末の共有機能を使う</button>
-  <button class="share-option" id="shareCopy">リンクをコピー</button>
-  <input class="share-url-input" id="shareUrlInput" readonly onclick="this.select()">
-  <p class="share-menu-hint">コピーできない場合は、上の欄をタップして全選択→コピーしてください。</p>
-  <button class="share-option share-close" id="shareMenuClose">閉じる</button>
-</div>
-
-<div class="bind-overlay hidden" id="bindOverlay" role="status">
-  <div class="bind-book">
-    <div class="bind-spine-strip"></div>
-    <div class="bind-pages"></div>
-    <div class="bind-cover"></div>
-  </div>
-  <p class="bind-text" id="bindText">糸をかけています…</p>
-  <p class="bind-skip">タップで即座に完了</p>
-</div>
-
-<div class="purify-overlay hidden" id="purifyOverlay" role="dialog" aria-label="気持ちを手放す">
-  <div class="purify-card">
-    <button class="purify-close" id="purifyClose">×</button>
-    <p class="purify-kicker">手放す — 誰にも見られません。この端末の「手放しの記録」にだけ、そっと残ります</p>
-    <p class="purify-lead" id="purifyLead"></p>
-    <textarea id="purifyInput" placeholder="その気持ちを、ここにそのまま書き出してみてください。" rows="4"></textarea>
-    <button class="purify-btn" id="purifyBtn">🕯 手放す</button>
-    <p class="purify-msg hidden" id="purifyMsg"></p>
-  </div>
-</div>
-
-<div class="modal hidden" id="bookModal">
-  <div class="modal-card">
-    <button class="modal-close" id="modalClose">×</button>
-    <p class="modal-cat" id="modalCat"></p>
-    <h3 id="modalTitle"></h3>
-    <p class="modal-date" id="modalDate"></p>
-    <div class="modal-photo hidden" id="modalPhoto"><img id="modalPhotoImg" alt="この頁に挟まれた写真"></div>
-    <div class="modal-story" id="modalStory"></div>
-    <div class="modal-tweet hidden" id="modalTweet"></div>
-    <span class="shiori-slip hidden" id="modalNote"><span class="shiori-label">店主のことば</span><span id="modalNoteText"></span></span>
-    <div class="modal-actions">
-      <button class="modal-goshelf" id="modalGoShelf">この棚をもう一度見る</button>
-      <button class="modal-del" id="modalDel">この本を棚から下げる</button>
-    </div>
-  </div>
-</div>
-
-<div class="pwa-popup hidden" id="pwaPopup" role="dialog" aria-label="ホーム画面に追加する案内">
-  <p class="pwa-title">📌 この書店をスマホのホーム画面にピン留めする</p>
-  <p class="pwa-steps">iPhone（Safari）：下の「共有」ボタン →「ホーム画面に追加」<br>Android（Chrome）：右上のメニュー（⋮）→「ホーム画面に追加」</p>
-  <p class="pwa-note">アプリのように、いつでも1タップで扉をひらけるようになります。</p>
-  <button class="share-option share-close" id="pwaClose">閉じる</button>
-</div>
-
-<div id="particleLayer" aria-hidden="true">
-  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-</div>
-
-<div id="moodLayer" aria-hidden="true"></div>
-
-<script src="data.js"></script>
-<script src="main.js"></script>
+    <script>
+        function toggleAccordion() {
+            var content = document.getElementById("aboutContent");
+            var button = document.querySelector(".accordion-button");
+            
+            content.classList.toggle("open");
+            button.classList.toggle("active");
+            
+            if (content.classList.contains("open")) {
+                button.innerHTML = '<span class="accordion-icon">▲</span> 閉じる';
+            } else {
+                button.innerHTML = '<span class="accordion-icon">▼</span> どんな体験ができるの？';
+            }
+        }
+    </script>
 </body>
 </html>
