@@ -123,6 +123,7 @@ const MESSAGES = {
     restoreSuccess: "復元しました。画面を更新します…",
     restoreFail: "復元に失敗しました。ファイルの内容をご確認ください。",
     mitateYesBtn: "聞いてみる", mitateNoBtn: "今はいい",
+    loopShelfReferralBtn: "こちらの『{shelf}』の棚が、合うかもしれません。行ってみてください",
     deskLeadFromCounter: "——ここまでを踏まえて。番台や棚で出会った気持ちを、今度はあなた自身の言葉で綴ってみましょう。",
     writeAtDeskBtn: "この気持ちを書き留める",
     chooseAgainBtn: "また選び直す",
@@ -248,6 +249,7 @@ const MESSAGES = {
     restoreSuccess: "Restored. Reloading…",
     restoreFail: "Restore failed. Please check the contents of the file.",
     mitateYesBtn: "Yes, tell me", mitateNoBtn: "Not right now",
+    loopShelfReferralBtn: "The \"{shelf}\" shelf might suit you — please take a look",
     deskLeadFromCounter: "——Building on that. Try writing the feeling you shared at the counter or on the shelves, now in your own words.",
     writeAtDeskBtn: "Write this feeling down",
     chooseAgainBtn: "Choose again",
@@ -2442,10 +2444,12 @@ function renderLoopEndActions(shelfId){
   container.innerHTML = '';
   const label = shelfLabelOf(shelfId);
 
+  // ★修正：店主はあくまで"コンシェルジュ"として、答えを出すのではなく
+  // 合いそうな棚へそっと案内するに留める、という位置づけの文言に変更
   const goBtn = document.createElement('button');
   goBtn.type = 'button';
   goBtn.className = 'chart-btn primary';
-  goBtn.textContent = t('goToShelfBtn').replace('{shelf}', label);
+  goBtn.textContent = t('loopShelfReferralBtn').replace('{shelf}', label);
   goBtn.onclick = ()=>goToShelf(shelfId);
 
   const writeBtn = document.createElement('button');
