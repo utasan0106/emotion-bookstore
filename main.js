@@ -158,7 +158,8 @@ function pickRecommend(catId){
   const pool = BOOK_POOL.filter(b=>b.tags.includes(catId) && b.wave <= wave);
   const shuffled = shuffleArray(pool);
   const picked = shuffled.slice(0, 3).map(b=>({
-    title:b.title, by:b.by, why:recommendReasonFor(catId)
+    /* 各書籍固有の内容紹介（hook）を店主コメントとして優先使用。無い本のみ汎用文で補完 */
+    title:b.title, by:b.by, why:(b.hook || recommendReasonFor(catId))
   }));
   return pinned.concat(picked);
 }
