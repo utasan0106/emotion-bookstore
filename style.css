@@ -648,6 +648,11 @@ body:not(.no-motion) .shelf-tab.glow{
   margin:8px 2px 0;
   letter-spacing:.05em;
 }
+/* ★修正：スワイプはタッチ操作の話なので、マウス操作の（＝スワイプできない）
+   デスクトップ環境では表示しない。実際にスワイプで棚を移動できる端末にだけ案内する。 */
+@media (hover:hover) and (pointer:fine){
+  .swipe-hint{ display:none; }
+}
 .definition{
   font-size:13px;
   color:var(--ink-soft);
@@ -1487,6 +1492,23 @@ body.night .desk-extra summary{
   border-radius:20px;
   cursor:pointer;
 }
+.modal-share{
+  font-size:12px;
+  color:#1d9bf0;
+  background:none;
+  border:1px solid #1d9bf0;
+  padding:6px 14px;
+  border-radius:20px;
+  cursor:pointer;
+}
+.modal-share-note{
+  font-size:11px;
+  color:var(--ink-soft);
+  opacity:0.75;
+  margin-top:6px;
+}
+body.night .modal-share{ color:#6cc2f7; border-color:#6cc2f7; }
+body.night .modal-share-note{ color:#cbd0dc; }
 
 footer.shop-footer{
   text-align:center;
@@ -2517,6 +2539,20 @@ body.night .pwa-popup{ background:#2E2922; }
 .persona-chip.selected{
   background:var(--wine); border-color:var(--wine); color:#FFF6E8;
 }
+.profile-keeper-style{ display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 4px; }
+.keeper-style-chip{
+  font-size:12.5px; padding:8px 13px;
+  border-radius:20px;
+  border:1px solid var(--paper-shadow);
+  background:#fff; color:var(--ink);
+  cursor:pointer;
+  transition:all .12s ease;
+}
+.keeper-style-chip.selected{
+  background:var(--wine); border-color:var(--wine); color:#FFF6E8;
+}
+body.night .keeper-style-chip{ background:#2E2922; color:#EFE3C8; border-color:#3A342A; }
+body.night .keeper-style-chip.selected{ background:#E8C97A; border-color:#E8C97A; color:#2E241A; }
 .profile-save{
   display:block; width:100%;
   margin-top:18px;

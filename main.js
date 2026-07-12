@@ -98,6 +98,7 @@ const MESSAGES = {
     purifyBtn: "🕯 手放す",
     modalPhotoAlt: "この頁に挟まれた写真", modalNoteLabel: "店主のことば",
     modalGoShelf: "この棚をもう一度見る", modalDel: "この本を棚から下げる",
+    modalShare: "🐦 Xでシェア", modalShareNote: "※本文はそのまま送信されません。投稿画面が開くだけで、実際に投稿するかはあなた次第です。",
     pwaPopupAria: "ホーム画面に追加する案内",
     pwaTitle: "📌 この書店をスマホのホーム画面にピン留めする",
     pwaSteps: "iPhone（Safari）：下の「共有」ボタン →「ホーム画面に追加」<br>Android（Chrome）：右上のメニュー（⋮）→「ホーム画面に追加」",
@@ -231,6 +232,7 @@ const MESSAGES = {
     purifyBtn: "🕯 Let it go",
     modalPhotoAlt: "Photo attached to this page", modalNoteLabel: "A word from the shopkeeper",
     modalGoShelf: "See this shelf again", modalDel: "Remove this book from the shelf",
+    modalShare: "🐦 Share on X", modalShareNote: "Nothing is sent anywhere on its own — this only opens the post composer, and whether you actually post is entirely up to you.",
     pwaPopupAria: "Instructions for adding to home screen",
     pwaTitle: "📌 Pin this bookstore to your phone's home screen",
     pwaSteps: "iPhone (Safari): tap the \"Share\" button below → \"Add to Home Screen\"<br>Android (Chrome): tap the menu (⋮) top right → \"Add to Home Screen\"",
@@ -416,6 +418,25 @@ function rakutenSearchUrl(query){
 
 function rakutenTravelSearchUrl(query){
   return 'https://kw.travel.rakuten.co.jp/keyword/Search.do?f_query=' + encodeURIComponent(query) + '&f_max=30&charset=utf-8';
+}
+
+// ★本棚エントリのXシェア機能
+// 設計方針：日記本文はそのまま自動送信しない。棚名＋店主がつけたタイトルの短い定型文だけを
+// 事前入力し、あとはX（twitter.com/intent/tweet）自身のcompose画面でユーザーが確認・編集した上で
+// 「投稿するか」を自分で判断する。intent URLを新しいタブで開くだけなので、当店のサーバー（＝存在しない）
+// への送信は一切発生しない。
+function buildShareText(entry){
+  const cat = CATEGORIES.find(c=>c.id===entry.category);
+  const shelfLabel = cat ? cat.label : '';
+  const title = entry.title || '';
+  return `「${title}」を、みんなの感情書店の「${shelfLabel}の棚」に綴りました。`;
+}
+
+function twitterIntentUrl(text, url){
+  let u = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+  if(url) u += '&url=' + encodeURIComponent(url);
+  u += '&hashtags=' + encodeURIComponent('みんなの感情書店');
+  return u;
 }
 
 function detourUrlFor(item){
@@ -1137,7 +1158,7 @@ if(btnPurify) btnPurify.onclick = async ()=>{
   input.value = '';
   input.style.display = 'none';
   if(msg){
-    msg.textContent = PURIFY_CLOSING[Math.floor(Math.random()*PURIFY_CLOSING.length)];
+    msg.textContent = pickByStyle(PURIFY_CLOSING, PURIFY_CLOSING_TSUNDERE);
     msg.classList.remove('hidden');
   }
   btn.textContent = t('closeBtn');
@@ -1304,7 +1325,15 @@ function localShiori(topLabel){
   return t.replace('{cat}', topLabel);
 }
 
-let prefs = { motion:true, sound:false };
+let prefs = { motion:true, sound:false, keeperStyle:'gentle' };
+
+// ★追加：店主の性格（優しい／ツンデレ）で、口調だけを切り替える薄いヘルパー。
+// どちらを選んでも中身の温かさ・味方であることは変わらず、言い回しだけがツンデレ寄りになる。
+function isTsundere(){ return prefs.keeperStyle === 'tsundere'; }
+function pickByStyle(gentleArr, tsundereArr){
+  const pool = (isTsundere() && Array.isArray(tsundereArr) && tsundereArr.length) ? tsundereArr : gentleArr;
+  return pool[Math.floor(Math.random()*pool.length)];
+}
 const reduceQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
 
 function applyPrefs(){
@@ -1485,6 +1514,7 @@ function renderShelfTabs(){
       shelvesInGroup.forEach(cat=>{
         const btn = document.createElement('button');
         btn.className = 'shelf-tab' + (cat.id===activeCategory ? ' active' : '');
+        btn.dataset.catId = cat.id;
         if(cat.id === topId){
           btn.classList.add('glow');
           btn.title = 'あなたの本棚と縁の深い棚';
@@ -1781,6 +1811,54 @@ function renderCategorySelect(){
   });
 }
 
+// ★修正：「左右にスワイプでも棚を移動できます」という案内文があったが、
+// 実際にはタッチ操作を検出する仕組みが存在せず、案内と実態が一致していなかった（不具合）。
+// ここで本物のスワイプ検出を実装し、案内文の内容を実現する。
+// ・タッチデバイスのみで有効（マウスのデスクトップではCSS側でヒント自体を非表示にしている）
+// ・縦スクロールと誤検出しないよう、横移動量が縦移動量を明確に上回る場合のみ反応
+function navigateShelfBySwipe(direction){
+  const tabs = Array.from(document.querySelectorAll('#shelfTabs .shelf-tab'));
+  const ids = tabs.map(btn=>btn.dataset.catId).filter(Boolean);
+  if(ids.length < 2) return;
+  let idx = ids.indexOf(activeCategory);
+  if(idx === -1) idx = 0;
+  idx = (idx + direction + ids.length) % ids.length;
+  activeCategory = ids[idx];
+  renderShelfTabs();
+  renderShelfDisplay();
+  const activeTab = document.querySelector('#shelfTabs .shelf-tab.active');
+  if(activeTab && activeTab.scrollIntoView){
+    try{ activeTab.scrollIntoView({behavior: prefs.motion ? 'smooth' : 'auto', inline:'center', block:'nearest'}); }catch(e){}
+  }
+  if(navigator.vibrate) try{ navigator.vibrate(10); }catch(e){}
+}
+
+function setupShelfSwipe(){
+  const el = document.getElementById('shelfDisplay');
+  if(!el || el.dataset.swipeBound) return;
+  el.dataset.swipeBound = '1';
+  const SWIPE_THRESHOLD = 45;
+  let startX = 0, startY = 0, tracking = false;
+  el.addEventListener('touchstart', (e)=>{
+    if(!e.touches || e.touches.length !== 1){ tracking = false; return; }
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    tracking = true;
+  }, {passive:true});
+  el.addEventListener('touchend', (e)=>{
+    if(!tracking) return;
+    tracking = false;
+    const touch = e.changedTouches && e.changedTouches[0];
+    if(!touch) return;
+    const dx = touch.clientX - startX;
+    const dy = touch.clientY - startY;
+    if(Math.abs(dx) < SWIPE_THRESHOLD) return;
+    if(Math.abs(dx) < Math.abs(dy) * 1.2) return; // 縦スクロールとの誤検出防止
+    navigateShelfBySwipe(dx < 0 ? 1 : -1);
+  }, {passive:true});
+  el.addEventListener('touchcancel', ()=>{ tracking = false; }, {passive:true});
+}
+
 function textColorFor(hex){
   const c = (hex || '#000000').replace('#','');
   const r = parseInt(c.substr(0,2),16), g = parseInt(c.substr(2,2),16), b = parseInt(c.substr(4,2),16);
@@ -2057,6 +2135,16 @@ function openBook(entry){
   if(goShelf) goShelf.onclick = ()=>{
     if(bModal) bModal.classList.add('hidden');
     goToShelf(entry.category);
+  };
+
+  const mShare = document.getElementById('modalShare');
+  if(mShare) mShare.onclick = ()=>{
+    // ★日記の本文（entry.story）はここでは一切使わない。棚名＋タイトルの短い定型文のみ。
+    // window.openを同期的に呼ぶことでポップアップブロック回避（ユーザー操作直下）。
+    const text = buildShareText(entry);
+    const shareUrl = (typeof location !== 'undefined' && location.origin) ? location.origin + location.pathname : '';
+    const win = window.open(twitterIntentUrl(text, shareUrl), '_blank', 'noopener');
+    if(win) win.opener = null;
   };
 
   const mDel = document.getElementById('modalDel');
@@ -2447,9 +2535,9 @@ function matchShopkeeperReply(text, fallbackShelfId){
     return DEEP_DIVE_REPLIES[Math.floor(Math.random()*DEEP_DIVE_REPLIES.length)];
   }
   if(text.includes('？') || text.includes('?') || /(か|の)$/.test(text.trim())){
-    return GENERIC_QUESTION_REPLIES[Math.floor(Math.random()*GENERIC_QUESTION_REPLIES.length)];
+    return pickByStyle(GENERIC_QUESTION_REPLIES, GENERIC_QUESTION_REPLIES_TSUNDERE);
   }
-  return GENERIC_REPLIES[Math.floor(Math.random()*GENERIC_REPLIES.length)];
+  return pickByStyle(GENERIC_REPLIES, GENERIC_REPLIES_TSUNDERE);
 }
 
 function shelfLabelOf(id){
@@ -2585,7 +2673,7 @@ async function handleChartChoice(label, nextKey){
 
   const loadingBubble = document.createElement('div');
   loadingBubble.className = 'bubble loading';
-  loadingBubble.textContent = LOADING_LINES[Math.floor(Math.random()*LOADING_LINES.length)];
+  loadingBubble.textContent = pickByStyle(LOADING_LINES, LOADING_LINES_TSUNDERE);
   const cw = document.getElementById('chatWindow');
   if(cw){
     cw.appendChild(loadingBubble);
@@ -2717,7 +2805,7 @@ async function sendToShopkeeper(){
   // ここで即座に scrollTop を動かすと「瞬間移動」の原因になる。二重の即時スクロールは行わない。
   const loadingBubble = document.createElement('div');
   loadingBubble.className = 'bubble loading';
-  loadingBubble.textContent = LOADING_LINES[Math.floor(Math.random()*LOADING_LINES.length)];
+  loadingBubble.textContent = pickByStyle(LOADING_LINES, LOADING_LINES_TSUNDERE);
   if(cw){
     cw.appendChild(loadingBubble);
     scrollPageToLatestBubble(loadingBubble);
@@ -2756,8 +2844,15 @@ async function sendToShopkeeper(){
       '……お話をうかがっていると、「' + closeShelfLabel + '」という気持ちが、繰り返し顔をのぞかせていたように感じました。',
       '……今夜綴ってくださった言葉の奥には、「' + closeShelfLabel + '」という気持ちが流れているように、私には聞こえました。'
     ];
-    const closingLine = summaryOpeners[Math.floor(Math.random()*summaryOpeners.length)]
-      + ' 私のようなしがない店番が言葉を返すより、今のあなたにはご自身の気持ちを静かに見つめる時間のほうが合っているかもしれません。よろしければ、今の気持ちをそのまま一冊の本として綴ってみませんか？ または、静かに棚を巡るのも良いでしょう。';
+    const summaryOpenersTsundere = [
+      '……今日は「' + closeShelfLabel + '」に近いお気持ちを、いくつも聞かせてもらいましたね。……別に全部覚えてる、とかじゃないですけど。',
+      '……話を聞いてると、「' + closeShelfLabel + '」って気持ちが何度も顔を出してた気がします。……気のせいかもしれませんけどね。',
+      '……今夜綴ってくれた言葉の奥に、「' + closeShelfLabel + '」って気持ちが流れてる気がしました。……ふん、勘ですよ、勘。'
+    ];
+    const closingTail = isTsundere()
+      ? ' 私みたいな店番があれこれ言うより、今のあなたには自分の気持ちを静かに見つめる時間のほうが合ってると思いますよ。……素直に応援してる、とかじゃないですからね。よかったら、今の気持ちをそのまま一冊の本として綴ってみませんか？ 静かに棚を巡るのも、まあ、悪くないと思いますけど。'
+      : ' 私のようなしがない店番が言葉を返すより、今のあなたにはご自身の気持ちを静かに見つめる時間のほうが合っているかもしれません。よろしければ、今の気持ちをそのまま一冊の本として綴ってみませんか？ または、静かに棚を巡るのも良いでしょう。';
+    const closingLine = pickByStyle(summaryOpeners, summaryOpenersTsundere) + closingTail;
     appendBubble('shopkeeper', closingLine);
     chatHistory.push({ role:'assistant', content:closingLine });
     await wait(prefs.motion ? 650 : 30);
@@ -3543,6 +3638,12 @@ function buildProfileOverlay(){
       <input id="profileName" maxlength="12" placeholder="例：ゆう" autocomplete="off">
       <p class="profile-label">いまのあなたに近いのは</p>
       <div class="profile-personas" id="profilePersonas"></div>
+      <p class="profile-label">店主の口調は</p>
+      <p class="profile-note" style="margin-top:-4px;">どちらを選んでも、基本的にあなたの味方であることは変わりません。言葉遣いが少し変わるだけです。</p>
+      <div class="profile-keeper-style" id="profileKeeperStyle">
+        <button type="button" class="keeper-style-chip" data-style="gentle">🌸 やさしい店主</button>
+        <button type="button" class="keeper-style-chip" data-style="tsundere">😼 ツンデレな店主</button>
+      </div>
       <button type="button" class="profile-save" id="profileSave">この内容で来店する</button>
     </div>`;
   document.body.appendChild(ov);
@@ -3604,11 +3705,26 @@ function showProfileCard(){
       grid.appendChild(row);
     }
   }
+  const styleBox = ov.querySelector('#profileKeeperStyle');
+  let chosenStyle = prefs.keeperStyle || 'gentle';
+  if(styleBox){
+    const markStyle = ()=>{
+      styleBox.querySelectorAll('.keeper-style-chip').forEach(el=>{
+        el.classList.toggle('selected', el.dataset.style === chosenStyle);
+      });
+    };
+    styleBox.querySelectorAll('.keeper-style-chip').forEach(el=>{
+      el.onclick = ()=>{ chosenStyle = el.dataset.style; markStyle(); };
+    });
+    markStyle();
+  }
   const saveBtn = ov.querySelector('#profileSave');
   if(saveBtn) saveBtn.onclick = async ()=>{
     userProfile.name = nameInput ? nameInput.value.trim().slice(0, 12) : '';
     userProfile.persona = chosen;
     await saveJSON(PROFILE_KEY, userProfile);
+    prefs.keeperStyle = chosenStyle;
+    saveJSON('emotion-bookstore-prefs', prefs);
     ov.classList.add('hidden');
     let welcome = userProfile.name
       ? ('……' + userProfile.name + 'さん、ですね。お名前、覚えました。')
@@ -3647,6 +3763,7 @@ function warnInAppBrowserIfNeeded(){
   warnInAppBrowserIfNeeded();
   restoreDraftIfAny();
   ensureBackToTopButton();
+  setupShelfSwipe();
   const savedProfile = await loadJSON(PROFILE_KEY, null);
   if(savedProfile && typeof savedProfile === 'object'){
     userProfile = Object.assign(userProfile, savedProfile);
@@ -3663,11 +3780,12 @@ function warnInAppBrowserIfNeeded(){
         : MIDNIGHT_GREETINGS;
       line = nightPool[Math.floor(Math.random()*nightPool.length)];
     }else{
+      const greetSrc = isTsundere() ? TIME_GREETINGS_TSUNDERE : TIME_GREETINGS;
       let bucket;
-      if(hour >= 5 && hour < 11) bucket = TIME_GREETINGS.morning;
-      else if(hour >= 11 && hour < 17) bucket = TIME_GREETINGS.day;
-      else bucket = TIME_GREETINGS.evening;
-      if(!bucket || !bucket.length) bucket = TIME_GREETINGS.day;
+      if(hour >= 5 && hour < 11) bucket = greetSrc.morning;
+      else if(hour >= 11 && hour < 17) bucket = greetSrc.day;
+      else bucket = greetSrc.evening;
+      if(!bucket || !bucket.length) bucket = greetSrc.day;
       line = bucket[Math.floor(Math.random()*bucket.length)] + '近いものを選んでも、下に自由に書いてもらっても構いません。';
     }
     if(userProfile.name){
