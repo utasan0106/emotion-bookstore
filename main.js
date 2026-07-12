@@ -116,6 +116,12 @@ const MESSAGES = {
     exportingBtn: "書き出しています…", exportedBtn: "書き出しました ✓", exportFailBtn: "書き出しに失敗しました",
     exportDefaultBtn: "📥 これまでの記録をテキストでダウンロード",
     csvExportDefaultBtn: "📊 これまでの記録をCSVでダウンロード（Excel等で開けます）",
+    restoreDefaultBtn: "📤 バックアップから復元する",
+    restoreLoadingBtn: "復元しています…", restoreDoneBtn: "復元しました ✓", restoreFailBtn: "復元に失敗しました",
+    restoreConfirm: "選択したファイルには{count}冊分の記録が含まれています。\nこの端末の現在のデータを上書きして復元します。\nこの操作は取り消せません。よろしいですか？",
+    restoreInvalidFile: "このファイルは『みんなの感情書店』のバックアップ形式ではないようです。別のファイルをお試しください。",
+    restoreSuccess: "復元しました。画面を更新します…",
+    restoreFail: "復元に失敗しました。ファイルの内容をご確認ください。",
     deskLeadFromCounter: "——ここまでを踏まえて。番台や棚で出会った気持ちを、今度はあなた自身の言葉で綴ってみましょう。",
     writeAtDeskBtn: "この気持ちを書き留める",
     chooseAgainBtn: "また選び直す",
@@ -234,6 +240,12 @@ const MESSAGES = {
     exportingBtn: "Exporting…", exportedBtn: "Exported ✓", exportFailBtn: "Export failed",
     exportDefaultBtn: "📥 Download your records as text",
     csvExportDefaultBtn: "📊 Download your records as CSV (opens in Excel, etc.)",
+    restoreDefaultBtn: "📤 Restore from a backup file",
+    restoreLoadingBtn: "Restoring…", restoreDoneBtn: "Restored ✓", restoreFailBtn: "Restore failed",
+    restoreConfirm: "The selected file contains {count} book(s).\nThis will overwrite the current data on this device.\nThis cannot be undone. Continue?",
+    restoreInvalidFile: "This file doesn't look like an Emotion Bookstore backup. Please try a different file.",
+    restoreSuccess: "Restored. Reloading…",
+    restoreFail: "Restore failed. Please check the contents of the file.",
     deskLeadFromCounter: "——Building on that. Try writing the feeling you shared at the counter or on the shelves, now in your own words.",
     writeAtDeskBtn: "Write this feeling down",
     chooseAgainBtn: "Choose again",
@@ -930,9 +942,9 @@ async function showPurifyLog(){
         const cat = CATEGORIES.find(c=>c.id===p.category);
         const label = cat ? cat.label : (p.category || '');
         const dateStr = new Date(p.date).toLocaleDateString('ja-JP');
-        const safeText = (p.text || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        const safeText = escapeHtml(p.text || '');
         return `<div class="purify-log-entry">
-          <p class="purify-log-meta">${dateStr}　/　${label}</p>
+          <p class="purify-log-meta">${escapeHtml(dateStr)}　/　${escapeHtml(label)}</p>
           <p class="purify-log-text">${safeText}</p>
         </div>`;
       }).join('');
@@ -1317,9 +1329,15 @@ function renderShelfDisplay(){
       musicHtml = `<div class="music-row"><a class="music-link" href="${musicUrl}" target="_blank" rel="noopener">🎵 YouTubeでBGMを探す</a></div>`;
     }
     const myEntries = libraryCache.filter(e=>e.category===cat.id);
-    const myEpisodeCards = myEntries.map(entry=>
-      `<div class="episode-card mine" data-entry-id="${entry.id}"><span class="who mine-who">あなたの物語${entry.tweetUrl ? ' 🐦' : ''}</span>『${entry.title}』${entry.story.length > 60 ? entry.story.slice(0,60) + '…' : entry.story}</div>`
-    );
+    // ★修正（XSS対策）：ユーザーが編纂机で入力したタイトル・本文をinnerHTMLへ差し込む前に
+    // 必ずescapeHtml()を通す（<script>等のタグ注入を無害化する）
+    const myEpisodeCards = myEntries.map(entry=>{
+      const safeTitle = escapeHtml(entry.title);
+      const safeStoryRaw = entry.story.length > 60 ? entry.story.slice(0,60) + '…' : entry.story;
+      const safeStory = escapeHtml(safeStoryRaw);
+      const safeId = escapeHtml(entry.id);
+      return `<div class="episode-card mine" data-entry-id="${safeId}"><span class="who mine-who">あなたの物語${entry.tweetUrl ? ' 🐦' : ''}</span>『${safeTitle}』${safeStory}</div>`;
+    });
     const storyPool = STORIES_POOL[cat.id] || [];
     const shuffledStories = shuffleArray(storyPool).slice(0, 3);
     const sampleEpisodeCards = shuffledStories.map(s=>`<div class="episode-card"><span class="who">${s.author || '名もなき誰かの物語'}</span>${s.text}</div>`);
@@ -1600,7 +1618,10 @@ function ensureTwitterWidgets(){
 }
 
 async function renderTweetEmbed(container, tweetUrl){
-  container.innerHTML = `<blockquote class="twitter-tweet"><a class="tweet-fallback" href="${tweetUrl}" target="_blank" rel="noopener">Xの投稿を見る →</a></blockquote>`;
+  // ★修正（XSS対策・多層防御）：呼び出し元で検証済みのURLでも、念のためエスケープしてから
+  // href属性へ差し込む（属性コンテキストからの脱出を防ぐ）
+  const safeTweetUrl = escapeHtml(tweetUrl);
+  container.innerHTML = `<blockquote class="twitter-tweet"><a class="tweet-fallback" href="${safeTweetUrl}" target="_blank" rel="noopener">Xの投稿を見る →</a></blockquote>`;
   container.classList.remove('hidden');
   try{
     await ensureTwitterWidgets();
@@ -1832,7 +1853,9 @@ if(btnSubmit) {
     const chosenLabel = (CATEGORIES.find(c=>c.id===chosenId) || {}).label || '';
     const twInput = document.getElementById('tweetInput');
     const tweetRaw = twInput ? twInput.value.trim() : '';
-    const tweetUrl = /^https:\/\/(x\.com|twitter\.com)\/[^\/]+\/status\/\d+/.test(tweetRaw) ? tweetRaw : '';
+    // ★修正（XSS対策）：末尾アンカー($)が無く、URLの後ろに任意の文字列（<script>等）を
+    // 継ぎ足しても通ってしまっていたバリデーションを、末尾まで厳密に一致させる形に修正
+    const tweetUrl = /^https:\/\/(x\.com|twitter\.com)\/[A-Za-z0-9_]{1,30}\/status\/\d{1,25}\/?$/.test(tweetRaw) ? tweetRaw : '';
     const wSel = document.getElementById('whenSelect');
     const isPast = wSel ? (wSel.value === 'past') : false;
 
@@ -2765,6 +2788,74 @@ async function downloadBackup(){
   setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
 }
 
+// ★追加：バックアップJSONファイルからの復元。
+// フォーマット検証 → 内容の型チェック → 確認ダイアログ → 上書き保存 → 再描画（リロード）の順で行う。
+function isValidBackupPayload(payload){
+  if(!payload || typeof payload !== 'object') return false;
+  if(payload.format !== 'emotion-bookstore-backup') return false;
+  if(!payload.stores || typeof payload.stores !== 'object') return false;
+  // 既知のキー以外は無視しつつ、既知キーの値が明らかに壊れていないかだけ緩やかに検査する
+  const lib = payload.stores['emotion-bookstore-library'];
+  if(lib !== undefined && lib !== null && !Array.isArray(lib)) return false;
+  const purify = payload.stores[PURIFY_LOG_KEY];
+  if(purify !== undefined && purify !== null && !Array.isArray(purify)) return false;
+  return true;
+}
+
+async function restoreBackupFromPayload(payload){
+  for(const key of BACKUP_KEYS){
+    if(Object.prototype.hasOwnProperty.call(payload.stores, key)){
+      const value = payload.stores[key];
+      if(value === null || value === undefined) continue;
+      await saveJSON(key, value);
+    }
+  }
+}
+
+function readFileAsText(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=>resolve(String(reader.result || ''));
+    reader.onerror = ()=>reject(reader.error || new Error('read error'));
+    reader.readAsText(file, 'utf-8');
+  });
+}
+
+async function handleRestoreFile(file){
+  const btn = document.getElementById('restoreBtn');
+  const msg = document.getElementById('restoreMsg');
+  if(!file) return;
+  try{
+    const text = await readFileAsText(file);
+    let payload;
+    try{
+      payload = JSON.parse(text);
+    }catch(e){
+      if(msg) msg.textContent = t('restoreInvalidFile');
+      return;
+    }
+    if(!isValidBackupPayload(payload)){
+      if(msg) msg.textContent = t('restoreInvalidFile');
+      return;
+    }
+    const count = Number.isFinite(payload.bookCount)
+      ? payload.bookCount
+      : (Array.isArray(payload.stores['emotion-bookstore-library']) ? payload.stores['emotion-bookstore-library'].length : 0);
+    const confirmMsg = t('restoreConfirm').replace('{count}', count);
+    if(!confirm(confirmMsg)) return;
+
+    if(btn) btn.textContent = t('restoreLoadingBtn');
+    await restoreBackupFromPayload(payload);
+    if(msg) msg.textContent = t('restoreSuccess');
+    if(btn) btn.textContent = t('restoreDoneBtn');
+    setTimeout(()=>{ location.reload(); }, 900);
+  }catch(e){
+    if(msg) msg.textContent = t('restoreFail');
+    if(btn) btn.textContent = t('restoreFailBtn');
+    setTimeout(()=>{ if(btn) btn.textContent = t('restoreDefaultBtn'); }, 2500);
+  }
+}
+
 (function(){
   const backupBtn = document.getElementById('backupBtn');
   if(!backupBtn) return;
@@ -2778,6 +2869,18 @@ async function downloadBackup(){
       backupBtn.textContent = t('backupFailBtn');
     }
     setTimeout(()=>{ backupBtn.textContent = t('backupDefaultBtn'); }, 2500);
+  };
+})();
+
+(function(){
+  const restoreBtn = document.getElementById('restoreBtn');
+  const restoreInput = document.getElementById('restoreFileInput');
+  if(!restoreBtn || !restoreInput) return;
+  restoreBtn.onclick = ()=>restoreInput.click();
+  restoreInput.onchange = async (e)=>{
+    const file = e.target.files && e.target.files[0];
+    await handleRestoreFile(file);
+    restoreInput.value = '';
   };
 })();
 
@@ -3077,6 +3180,8 @@ function warnInAppBrowserIfNeeded(){
   if(exportBtn) exportBtn.innerHTML = t('exportDefaultBtn');
   const exportCsvBtn = document.getElementById('exportDiaryCsv');
   if(exportCsvBtn) exportCsvBtn.innerHTML = t('csvExportDefaultBtn');
+  const restoreBtnInit = document.getElementById('restoreBtn');
+  if(restoreBtnInit) restoreBtnInit.innerHTML = t('restoreDefaultBtn');
 
   const shelfControls = document.querySelector('.shelf-controls');
   if(shelfControls && !document.getElementById('viewPurifyLogBtn')){

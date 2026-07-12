@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<!-- ===== 追加：Content Security Policy（CSP） =====
+     静的ホスティング（Vercel等）で完結させるため<meta>タグ方式で設定。
+     head内の最上部に置くことで、以降にパースされる要素（GA4・Xの埋め込み・インラインscript等）すべてに適用される。
+     許可した外部通信先：
+       - GA4（googletagmanager.com / google-analytics.com）
+       - Xの投稿埋め込み（platform.twitter.com / twimg.com / syndication.twitter.com）
+       - Googleフォント（style.css内@importで読み込んでいるfonts.googleapis.com / fonts.gstatic.com）
+       - Amazon／楽天／YouTube／Spotifyへのリンク（<a>タグでの遷移のみ。fetch等での送信はconnect-srcで制限）
+     'unsafe-inline'（script-src）について：本ページは複数箇所にインラインscript（GA4初期化・アコーディオン開閉など）を
+     ビルド工程なしの静的ファイルとして直接記述しているため、nonce/hashを使わない<meta>方式のCSPでは
+     'unsafe-inline'を外すとそれらが機能しなくなる。XSS対策の主眼は「ユーザー入力を描画前にエスケープすること」
+     （main.js側で対応済み）に置き、CSPはobject-src/base-uri/frame-src等の制限による多層防御として設定している。
+-->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://platform.twitter.com https://*.twimg.com;
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  img-src 'self' data: https:;
+  font-src 'self' data: https://fonts.gstatic.com;
+  connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://*.twitter.com https://*.x.com https://*.twimg.com;
+  frame-src https://platform.twitter.com https://syndication.twitter.com https://twitter.com https://x.com https://*.twimg.com;
+  base-uri 'self';
+  form-action 'self';
+  object-src 'none';
+">
 <!-- ===== Google Analytics 4（GA4）計測タグ — head内最上部に設置 ===== -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"></script>
 <script>
@@ -443,7 +468,10 @@ body.night .about-data-content{
       <button type="button" class="share-btn" id="backupBtn">🔑 本棚のデータをバックアップ保存する</button>
       <button type="button" class="share-btn" id="exportDiary">📥 これまでの記録をテキストでダウンロード</button>
       <button type="button" class="share-btn" id="exportDiaryCsv">📊 これまでの記録をCSVでダウンロード（Excel等で開けます）</button>
+      <button type="button" class="share-btn" id="restoreBtn">📤 バックアップから復元する</button>
+      <input type="file" id="restoreFileInput" accept="application/json,.json" class="hidden" aria-hidden="true">
     </div>
+    <p class="field-hint" id="restoreMsg" style="text-align:center;margin-top:4px;"></p>
     <div class="trend hidden" id="trendBox">
       <p id="trendSummary" class="trend-summary-main"></p>
       <details class="trend-detail">
