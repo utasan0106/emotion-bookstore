@@ -1752,7 +1752,11 @@ function pickReply(reply){
 
 const chatHistory = [];
 
+// ★1文字あたりの表示間隔（30〜40ms の範囲で調整可能。既定は34ms）
+const TYPE_SPEED_MS = 34;
+
 function typeIntoNode(node, text, speed, onDone){
+  // 演出設定がオフ、または長文（260字超）の場合は、従来どおり一瞬で全文を表示する
   if(!prefs.motion || text.length > 260){
     node.textContent = text;
     if(onDone) onDone();
@@ -1764,10 +1768,11 @@ function typeIntoNode(node, text, speed, onDone){
   const step = ()=>{
     if(i >= text.length){ if(onDone) onDone(); return; }
     node.textContent += text[i++];
-    if(node.closest && node.closest('.chat-window') && cw){
+    // 1文字出力するたびに、チャットウィンドウを最下部までスクロールして追従させる
+    if(cw && node.closest && node.closest('.chat-window')){
       cw.scrollTop = cw.scrollHeight;
     }
-    setTimeout(step, speed || 34);
+    setTimeout(step, speed || TYPE_SPEED_MS);
   };
   step();
 }
