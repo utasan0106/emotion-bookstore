@@ -522,14 +522,14 @@ const TEXTURE_GROUPS = [
     id:'sink',
     label:'心が重く沈んでいる、気分が落ち込んでいる（静かな憂鬱）',
     keeper:'少しお疲れのようですね。このあたりの棚に、今の心に寄り添う本があるかもしれません。',
-    shelves:['moyamoya','kodoku','gakkari','hazukashii','ushirometai'],
+    shelves:['moyamoya','kodoku','gakkari','hazukashii','ushirometai','kanashii'],
     tone:'heavy'
   },
   {
     id:'wave',
     label:'心がざわざわして落ち着かない、焦りや不安がある（動的な葛藤）',
     keeper:'感情が波立っているのですね。こちらの棚に並ぶ言葉が、ヒントになるかもしれません。',
-    shelves:['aseri','kuyashii','shitto','akogare','ikari'],
+    shelves:['aseri','kuyashii','shitto','akogare','ikari','fuan'],
     tone:'heavy'
   },
   {
@@ -821,7 +821,7 @@ async function exportDiaryCsv(){
   setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
 }
 
-const NEGATIVE_SHELVES = ['moyamoya','ushirometai','kuyashii','kodoku','aseri','shitto','hazukashii','gakkari','ikari'];
+const NEGATIVE_SHELVES = ['moyamoya','ushirometai','kuyashii','kodoku','aseri','shitto','hazukashii','gakkari','ikari','kanashii','fuan'];
 
 function openPurify(shelfId){
   const overlay = document.getElementById('purifyOverlay');
@@ -975,8 +975,10 @@ const PERSONA_TRIGGERS = [
   { persona:'resting',     patterns:['無職','休職','退職','ニート','療養中','休養中'] },
   { persona:'sensitive',   patterns:['繊細','HSP','敏感','眠れない','深夜','夜中'] },
   { persona:'freelance',   patterns:['フリーランス','自営業','個人事業','クライアント','納品','案件','受注'] },
-  { persona:'caregiver',   patterns:['介護','看病','付き添い','通院','ケアマネ','老人ホーム','入院'] },
-  { persona:'second_life',  patterns:['定年','老後','年金','孫が','セカンドライフ','シニア'] }
+  { persona:'caregiver',   patterns:['介護','看病','付き添い','ケアマネ','老人ホーム'] },
+  { persona:'second_life',  patterns:['定年','老後','年金','孫が','セカンドライフ','シニア'] },
+  { persona:'illness',     patterns:['闘病','持病','通院','入院中','治療中','検査結果','リハビリ','体調が優れ'] },
+  { persona:'jobchanger',  patterns:['転職','転職活動','今の会社を辞め','キャリアチェンジ','異業種','転職エージェント','退職を考え'] }
 ];
 
 function detectCounselingPersona(text){
@@ -1203,6 +1205,13 @@ function topCategoryId(){
   return withCounts.sort((a,b)=>counts[b.id]-counts[a.id])[0].id;
 }
 
+const SHELF_GROUP_LABELS = {
+  sink:  { ja:'静かに沈む気持ち', en:'Quiet & heavy' },
+  wave:  { ja:'ざわつく気持ち',   en:'Restless & turbulent' },
+  light: { ja:'明るい気持ち',     en:'Bright & warm' },
+  sepia: { ja:'懐かしい気持ち',   en:'Nostalgic' }
+};
+
 function renderShelfTabs(){
   try{
     const wrap = document.getElementById('shelfTabs');
@@ -1213,17 +1222,39 @@ function renderShelfTabs(){
     if(catSelect && catSelect.options.length) catSelect.value = activeCategory;
     const deskLabel = document.getElementById('deskCategoryLabel');
     if(deskLabel) deskLabel.textContent = shelfLabelOf(activeCategory);
-    CATEGORIES.forEach(cat=>{
-      const btn = document.createElement('button');
-      btn.className = 'shelf-tab' + (cat.id===activeCategory ? ' active' : '');
-      if(cat.id === topId){
-        btn.classList.add('glow');
-        btn.title = 'あなたの本棚と縁の深い棚';
+    const lang = (appLang === 'en') ? 'en' : 'ja';
+
+    TEXTURE_GROUPS.forEach(group=>{
+      const shelvesInGroup = group.shelves.map(id=>CATEGORIES.find(c=>c.id===id)).filter(Boolean);
+      if(!shelvesInGroup.length) return;
+      const groupEl = document.createElement('div');
+      groupEl.className = 'shelf-group';
+      const labelInfo = SHELF_GROUP_LABELS[group.id];
+      if(labelInfo){
+        const label = document.createElement('span');
+        label.className = 'shelf-group-label';
+        label.textContent = labelInfo[lang] || labelInfo.ja;
+        groupEl.appendChild(label);
       }
-      btn.textContent = cat.label;
-      btn.onclick = ()=>{ activeCategory = cat.id; renderShelfTabs(); renderShelfDisplay(); };
-      wrap.appendChild(btn);
+      const row = document.createElement('div');
+      row.className = 'shelf-group-row';
+      shelvesInGroup.forEach(cat=>{
+        const btn = document.createElement('button');
+        btn.className = 'shelf-tab' + (cat.id===activeCategory ? ' active' : '');
+        if(cat.id === topId){
+          btn.classList.add('glow');
+          btn.title = 'あなたの本棚と縁の深い棚';
+        }
+        btn.textContent = cat.label;
+        btn.onclick = ()=>{ activeCategory = cat.id; renderShelfTabs(); renderShelfDisplay(); };
+        row.appendChild(btn);
+      });
+      groupEl.appendChild(row);
+      wrap.appendChild(groupEl);
     });
+
+    const wanderRow = document.createElement('div');
+    wanderRow.className = 'shelf-wander-row';
     const wander = document.createElement('button');
     wander.className = 'wander-btn';
     wander.textContent = t('wanderBtn');
@@ -1236,7 +1267,8 @@ function renderShelfTabs(){
       renderShelfTabs();
       renderShelfDisplay();
     };
-    wrap.appendChild(wander);
+    wanderRow.appendChild(wander);
+    wrap.appendChild(wanderRow);
   }catch(e){ console.error('renderShelfTabs failed', e); }
 }
 
@@ -2383,7 +2415,16 @@ async function sendToShopkeeper(){
 
   if(isLoopEnd){
     await wait(prefs.motion ? 500 : 20);
-    const closingLine = '……なるほど。私のようなしがない店番が言葉を返すより、今のあなたにはご自身の気持ちを静かに見つめる時間のほうが合っているかもしれません。よろしければ、今の気持ちをそのまま一冊の本として綴ってみませんか？ または、静かに棚を巡るのも良いでしょう。';
+    // ★カウンセリング技法「要約」の応用：ここまでの対話で見えてきた気持ちの傾向を、
+    // 検出済みの棚名を用いて一言でまとめ返してから、次の行動へつなぐ。
+    const closeShelfLabel = shelfLabelOf(suggestedShelf || activeCategory);
+    const summaryOpeners = [
+      '……今日は「' + closeShelfLabel + '」に近いお気持ちを、いくつかの言葉でお話しくださいましたね。',
+      '……お話をうかがっていると、「' + closeShelfLabel + '」という気持ちが、繰り返し顔をのぞかせていたように感じました。',
+      '……今夜綴ってくださった言葉の奥には、「' + closeShelfLabel + '」という気持ちが流れているように、私には聞こえました。'
+    ];
+    const closingLine = summaryOpeners[Math.floor(Math.random()*summaryOpeners.length)]
+      + ' 私のようなしがない店番が言葉を返すより、今のあなたにはご自身の気持ちを静かに見つめる時間のほうが合っているかもしれません。よろしければ、今の気持ちをそのまま一冊の本として綴ってみませんか？ または、静かに棚を巡るのも良いでしょう。';
     appendBubble('shopkeeper', closingLine);
     chatHistory.push({ role:'assistant', content:closingLine });
     await wait(prefs.motion ? 650 : 30);
@@ -3118,7 +3159,17 @@ const PERSONA_CHOICES = [
   { id:'freelance',     label:'フリーランス・自営業' },
   { id:'caregiver',     label:'介護・看病の日々' },
   { id:'second_life',   label:'セカンドライフ・シニア' },
+  { id:'illness',       label:'体調と付き合う日々' },
+  { id:'jobchanger',    label:'転職を考えている' },
   { id:'',              label:'ひみつ（設定しない）' }
+];
+
+/* ---------- 来店カードのペルソナ選択をグループ化するためのラベル（棚選択UIと同じ考え方） ---------- */
+const PERSONA_GROUPS = [
+  { label:'学び・キャリアの入り口', ids:['student','jobhunter','young_worker','jobchanger'] },
+  { label:'働き方・立場',         ids:['middle_worker','career_woman','freelance'] },
+  { label:'暮らしと関わり',       ids:['mother','romance','caregiver','illness'] },
+  { label:'自分のペースで',       ids:['creater','resting','sensitive','second_life'] }
 ];
 
 function buildProfileOverlay(){
@@ -3156,17 +3207,49 @@ function showProfileCard(){
   let chosen = userProfile.persona || '';
   if(grid){
     grid.innerHTML = '';
-    PERSONA_CHOICES.forEach(p=>{
+    const byId = {};
+    PERSONA_CHOICES.forEach(p=>{ byId[p.id] = p; });
+    const markSelected = ()=>{
+      grid.querySelectorAll('.persona-chip').forEach(el=>{
+        el.classList.toggle('selected', el.dataset.personaId === chosen);
+      });
+    };
+    const makeChip = p=>{
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'persona-chip' + (chosen === p.id ? ' selected' : '');
+      b.dataset.personaId = p.id;
       b.textContent = p.label;
-      b.onclick = ()=>{
-        chosen = p.id;
-        grid.querySelectorAll('.persona-chip').forEach(el=>el.classList.toggle('selected', el === b));
-      };
-      grid.appendChild(b);
+      b.onclick = ()=>{ chosen = p.id; markSelected(); };
+      return b;
+    };
+    const usedIds = new Set();
+    (typeof PERSONA_GROUPS !== 'undefined' ? PERSONA_GROUPS : []).forEach(group=>{
+      const idsHere = group.ids.filter(id=>byId[id]);
+      if(!idsHere.length) return;
+      const groupEl = document.createElement('div');
+      groupEl.className = 'persona-group';
+      const label = document.createElement('span');
+      label.className = 'persona-group-label';
+      label.textContent = group.label;
+      groupEl.appendChild(label);
+      const row = document.createElement('div');
+      row.className = 'persona-group-row';
+      idsHere.forEach(id=>{
+        row.appendChild(makeChip(byId[id]));
+        usedIds.add(id);
+      });
+      groupEl.appendChild(row);
+      grid.appendChild(groupEl);
     });
+    // グループ未分類の選択肢（「ひみつ」等）は最後に単独行で表示
+    const remaining = PERSONA_CHOICES.filter(p=>!usedIds.has(p.id));
+    if(remaining.length){
+      const row = document.createElement('div');
+      row.className = 'persona-group-row persona-group-row-other';
+      remaining.forEach(p=>row.appendChild(makeChip(p)));
+      grid.appendChild(row);
+    }
   }
   const saveBtn = ov.querySelector('#profileSave');
   if(saveBtn) saveBtn.onclick = async ()=>{
