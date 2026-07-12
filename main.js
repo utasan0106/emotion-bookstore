@@ -1316,11 +1316,13 @@ function renderShelfDisplay(){
         const amUrl = amazonSearchUrl(q3 + ' 音楽');
         const ytUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q3);
         const spUrl = 'https://open.spotify.com/search/' + encodeURIComponent(q3);
+        const amcUrl = 'https://music.apple.com/jp/search?term=' + encodeURIComponent(q3);
         return `<div class="playlist-track-row">
           <span class="playlist-track-name">『${song.title}』${song.artist}</span>
           ${song.comment ? `<span class="playlist-track-comment">${song.comment}</span>` : ''}
           <span class="playlist-services">
             <a href="${spUrl}" target="_blank" rel="noopener">Spotify</a>
+            <a href="${amcUrl}" target="_blank" rel="noopener">Apple Music</a>
             <a href="${amUrl}" target="_blank" rel="noopener">Amazon Music</a>
             <a href="${ytUrl}" target="_blank" rel="noopener">YouTube</a>
           </span>
@@ -2792,6 +2794,7 @@ function renderRecordCorner(){
   const cdUrl = amazonSearchUrl(q + ' CD');
   const ytUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q);
   const spUrl = 'https://open.spotify.com/search/' + encodeURIComponent(q);
+  const amcUrl = 'https://music.apple.com/jp/search?term=' + encodeURIComponent(q);
   box.innerHTML = `
     <div class="record-disc" aria-hidden="true"></div>
     <div class="record-body">
@@ -2802,6 +2805,7 @@ function renderRecordCorner(){
         <a href="${amUrl}" target="_blank" rel="noopener sponsored">Amazon Music</a>
         <a href="${cdUrl}" target="_blank" rel="noopener sponsored">CD・レコードを探す</a>
         <a href="${spUrl}" target="_blank" rel="noopener">Spotify</a>
+        <a href="${amcUrl}" target="_blank" rel="noopener">Apple Music</a>
         <a href="${ytUrl}" target="_blank" rel="noopener">YouTube</a>
       </p>
     </div>`;

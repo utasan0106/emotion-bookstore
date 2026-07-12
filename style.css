@@ -857,6 +857,7 @@ body.night .recommend-why{ color:var(--gold); }
 }
 .playlist-services{
   display:inline-flex;
+  flex-wrap:wrap;
   gap:10px;
 }
 .playlist-services a{
