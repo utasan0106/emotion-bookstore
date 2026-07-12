@@ -9,10 +9,15 @@
        - Xの投稿埋め込み（platform.twitter.com / twimg.com / syndication.twitter.com）
        - Googleフォント（style.css内@importで読み込んでいるfonts.googleapis.com / fonts.gstatic.com）
        - Amazon／楽天／YouTube／Spotifyへのリンク（<a>タグでの遷移のみ。fetch等での送信はconnect-srcで制限）
+       - Google Books API（www.googleapis.com）／iTunes Search API（itunes.apple.com）：
+         「今月の寄り道」および棚の本・音楽おすすめで、季節や気分のキーワードから最新の作品を
+         取得するためにブラウザから直接呼び出す。送信されるのは検索キーワードのみで、
+         利用者が編纂机で綴った文章やその他の個人情報は一切含まれない（main.js側で徹底）。
      'unsafe-inline'（script-src）について：本ページは複数箇所にインラインscript（GA4初期化・アコーディオン開閉など）を
      ビルド工程なしの静的ファイルとして直接記述しているため、nonce/hashを使わない<meta>方式のCSPでは
      'unsafe-inline'を外すとそれらが機能しなくなる。XSS対策の主眼は「ユーザー入力を描画前にエスケープすること」
-     （main.js側で対応済み）に置き、CSPはobject-src/base-uri/frame-src等の制限による多層防御として設定している。
+     （main.js側で対応済み。外部APIから受け取った書誌情報も同様にエスケープしてから描画する）に置き、
+     CSPはobject-src/base-uri/frame-src等の制限による多層防御として設定している。
 -->
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
@@ -20,7 +25,7 @@
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   img-src 'self' data: https:;
   font-src 'self' data: https://fonts.gstatic.com;
-  connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://*.twitter.com https://*.x.com https://*.twimg.com;
+  connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://*.twitter.com https://*.x.com https://*.twimg.com https://www.googleapis.com https://itunes.apple.com;
   frame-src https://platform.twitter.com https://syndication.twitter.com https://twitter.com https://x.com https://*.twimg.com;
   base-uri 'self';
   form-action 'self';

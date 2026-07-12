@@ -148,7 +148,7 @@ const MESSAGES = {
     goToShelfBtn: "『{shelf}』の棚を見てみる",
     dataAboutTitle: "この書店とデータについて",
     dataAboutOpenLabel: "データはどこに保存されるの？",
-    dataAboutBody: "「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す簡単な仕組みです（特定のAIモデルと会話しているわけではありません）。<br>「物語を綴る」「製本する」で書いた内容は、どこにも公開されず、この端末のブラウザ内（IndexedDB/localStorage）だけに保存されます。外部サーバーへは送信されません。アカウント登録もなく、他の人があなたの記録を見ることはできません。<br>「気持ちを手放す」は、この端末だけに残る「手放しの記録」に静かに移すことで、本棚の一覧からは見えなくなる機能です（完全な削除ではなく、専用の記録欄に移されます）。<br>「みんなの本棚」の「みんな」は他ユーザーとの共有ではなく、あなた自身の本棚が育っていく様子を指す名前です。<br>ブラウザのデータを消去するとこの記録も失われるため、「🔑 バックアップ保存」から定期的にファイルへ書き出すことをおすすめします。サービスとして終了する場合も、事前にバックアップを取っていただければお手元にデータが残ります。",
+    dataAboutBody: "「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す簡単な仕組みです（特定のAIモデルと会話しているわけではありません）。<br>「物語を綴る」「製本する」で書いた内容は、どこにも公開されず、この端末のブラウザ内（IndexedDB/localStorage）だけに保存されます。外部サーバーへは送信されません。アカウント登録もなく、他の人があなたの記録を見ることはできません。<br>「気持ちを手放す」は、この端末だけに残る「手放しの記録」に静かに移すことで、本棚の一覧からは見えなくなる機能です（完全な削除ではなく、専用の記録欄に移されます）。<br>「みんなの本棚」の「みんな」は他ユーザーとの共有ではなく、あなた自身の本棚が育っていく様子を指す名前です。<br>「今月の寄り道」および棚のおすすめ本・音楽の一部は、季節の言葉と棚の名前だけを検索語として外部の書籍・音楽検索サービスに問い合わせて表示しています。この時も、あなたが綴った文章が送信されることはありません。<br>ブラウザのデータを消去するとこの記録も失われるため、「🔑 バックアップ保存」から定期的にファイルへ書き出すことをおすすめします。サービスとして終了する場合も、事前にバックアップを取っていただければお手元にデータが残ります。",
     keeperNotAiHint: "※AIチャットボットではなく、あらかじめ用意した言葉を返す簡単な仕組みです。会話はモデルに送信されません。",
     submitStoryHint: "※外部には公開されず、この端末のブラウザ内にのみ保存されます。"
   },
@@ -277,7 +277,7 @@ const MESSAGES = {
     goToShelfBtn: "View the \"{shelf}\" shelf",
     dataAboutTitle: "About this bookstore & your data",
     dataAboutOpenLabel: "Where is my data stored?",
-    dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it's a simple system that returns pre-written lines based on context (you're not talking to any particular AI model).<br>Anything you write in \"Write your story\" or have \"bound\" is never published anywhere. It's stored only inside this device's browser (IndexedDB/localStorage) and never sent to an external server. There's no account, so no one else can see your records.<br>\"Let go of a feeling\" quietly moves that entry into a device-only \"release log\" so it no longer appears on your bookshelf — it isn't permanently deleted, just moved to its own log.<br>\"Everyone's Bookshelf\" doesn't mean sharing with other users — \"everyone\" here just names the idea of your own bookshelf growing over time.<br>Clearing your browser data will also erase these records, so we recommend periodically exporting a backup file via \"🔑 Back up your data.\" Even if this service were ever discontinued, your data would remain safe on your device as long as you've backed it up beforehand.",
+    dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it's a simple system that returns pre-written lines based on context (you're not talking to any particular AI model).<br>Anything you write in \"Write your story\" or have \"bound\" is never published anywhere. It's stored only inside this device's browser (IndexedDB/localStorage) and never sent to an external server. There's no account, so no one else can see your records.<br>\"Let go of a feeling\" quietly moves that entry into a device-only \"release log\" so it no longer appears on your bookshelf — it isn't permanently deleted, just moved to its own log.<br>\"Everyone's Bookshelf\" doesn't mean sharing with other users — \"everyone\" here just names the idea of your own bookshelf growing over time.<br>\"This month's detour\" and some of the shelf's book/music picks are fetched from external book and music search services, using only a season word and the shelf's emotion label as the search terms. Your written entries are never sent in these requests either.<br>Clearing your browser data will also erase these records, so we recommend periodically exporting a backup file via \"🔑 Back up your data.\" Even if this service were ever discontinued, your data would remain safe on your device as long as you've backed it up beforehand.",
     keeperNotAiHint: "※ Not an AI chatbot — a simple system that replies with pre-written lines. Nothing is sent to a model.",
     submitStoryHint: "※ Never published anywhere — stored only inside this device's browser."
   }
@@ -720,6 +720,111 @@ const DataRepository = {
 async function loadJSON(key, fallback){ return DataRepository.get(key, fallback); }
 async function saveJSON(key, value){ return DataRepository.set(key, value); }
 async function deleteKey(key){ return DataRepository.remove(key); }
+
+/* ==========================================================================
+ * 外部API連携（季節連動の新刊・新譜取得）
+ * ---------------------------------------------------------------------
+ * ・利用者が編纂机やチャットで綴った文章は、この処理を含め main.js のどこからも
+ *   一切サーバー／外部APIへ送信しない。ここで外部に渡すのは「季節の言葉」と
+ *   「棚（感情）のラベル」だけの検索キーワードのみ。
+ * ・呼び出す先はどちらも公開・無料・APIキー不要のエンドポイント：
+ *     - Google Books API（書籍）
+ *     - iTunes Search API（音楽）
+ * ・取得結果はその日1日ぶんだけ端末内（IndexedDB/localStorage）にキャッシュし、
+ *   通信回数を抑える。取得に失敗した場合（オフライン・API側の障害等）は、
+ *   既存の厳選済み静的データへ静かにフォールバックし、表示が壊れないようにする。
+ * ========================================================================== */
+
+const SEASON_QUERY_BY_MONTH = {
+  1:  '冬 新春 雪',
+  2:  '冬 梅 立春',
+  3:  '春 桜 卒業',
+  4:  '春 新生活 桜',
+  5:  '新緑 五月晴れ',
+  6:  '梅雨 紫陽花',
+  7:  '夏 七夕 梅雨明け',
+  8:  '夏 花火 夏休み',
+  9:  '初秋 実り 夜長',
+  10: '秋 紅葉 読書の秋',
+  11: '晩秋 紅葉 冬支度',
+  12: '冬 年末 クリスマス'
+};
+
+function currentSeasonWord(){
+  const month = new Date().getMonth() + 1;
+  return SEASON_QUERY_BY_MONTH[month] || '';
+}
+
+function todayStamp(){
+  const d = new Date();
+  return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+}
+
+// Google Books API から、季節＋棚のラベルに合う本を数冊取得する。
+// 失敗時は null を返す（呼び出し側でフォールバック判定に使う）。
+async function fetchSeasonalBooks(catLabel, extraWord){
+  try{
+    const seasonWord = currentSeasonWord();
+    const cacheKey = 'emotion-bookstore-bookapi-' + (new Date().getMonth()+1) + '-' + catLabel + '-' + (extraWord||'');
+    const cached = await loadJSON(cacheKey, null);
+    const today = todayStamp();
+    if(cached && cached.date === today && Array.isArray(cached.items)) return cached.items;
+
+    const q = encodeURIComponent([seasonWord, catLabel, extraWord||''].filter(Boolean).join(' '));
+    const url = 'https://www.googleapis.com/books/v1/volumes?q=' + q + '&maxResults=8&langRestrict=ja&country=JP';
+    const res = await fetch(url, { method:'GET' });
+    if(!res.ok) throw new Error('Google Books API response not ok: ' + res.status);
+    const json = await res.json();
+    const items = (json.items || [])
+      .filter(it=>it.volumeInfo && it.volumeInfo.title)
+      .slice(0, 4)
+      .map(it=>{
+        const vi = it.volumeInfo;
+        return {
+          title: vi.title || '',
+          by: (vi.authors && vi.authors.length) ? vi.authors.join('、') : '著者不明',
+          hook: (vi.description || '').slice(0, 70),
+          infoLink: vi.infoLink || ''
+        };
+      });
+    await saveJSON(cacheKey, { date: today, items });
+    return items;
+  }catch(e){
+    console.warn('fetchSeasonalBooks: falling back to static data', e);
+    return null;
+  }
+}
+
+// iTunes Search API から、季節＋棚のラベルに合う楽曲を数曲取得する。
+// 失敗時は null を返す（呼び出し側でフォールバック判定に使う）。
+async function fetchSeasonalMusic(catLabel){
+  try{
+    const seasonWord = currentSeasonWord();
+    const cacheKey = 'emotion-bookstore-musicapi-' + (new Date().getMonth()+1) + '-' + catLabel;
+    const cached = await loadJSON(cacheKey, null);
+    const today = todayStamp();
+    if(cached && cached.date === today && Array.isArray(cached.items)) return cached.items;
+
+    const term = encodeURIComponent(seasonWord + ' ' + catLabel + ' 邦楽');
+    const url = 'https://itunes.apple.com/search?term=' + term + '&country=jp&media=music&entity=song&limit=8&lang=ja_jp';
+    const res = await fetch(url, { method:'GET' });
+    if(!res.ok) throw new Error('iTunes Search API response not ok: ' + res.status);
+    const json = await res.json();
+    const items = (json.results || [])
+      .filter(r=>r.trackName && r.artistName)
+      .slice(0, 3)
+      .map(r=>({
+        title: r.trackName,
+        artist: r.artistName,
+        comment: r.collectionName || ''
+      }));
+    await saveJSON(cacheKey, { date: today, items });
+    return items;
+  }catch(e){
+    console.warn('fetchSeasonalMusic: falling back to static data', e);
+    return null;
+  }
+}
 
 const PURIFY_LOG_KEY = 'emotion-bookstore-purify-log';
 
@@ -1272,9 +1377,7 @@ function renderShelfTabs(){
   }catch(e){ console.error('renderShelfTabs failed', e); }
 }
 
-function renderDetourSection(catId){
-  const box = document.getElementById('detourSection');
-  if(!box) return;
+function renderDetourFallback(box, catId){
   const items = DETOUR_POOL[catId];
   if(!items || !items.length){
     box.innerHTML = '';
@@ -1287,8 +1390,8 @@ function renderDetourSection(catId){
     return `
       <div class="detour-card detour-tier-${featured.tier}">
         <span class="detour-tier-badge">${tierLabel[featured.tier] || featured.tier}</span>
-        <p class="detour-name">${featured.name}</p>
-        <p class="detour-desc">${featured.description}</p>
+        <p class="detour-name">${escapeHtml(featured.name)}</p>
+        <p class="detour-desc">${escapeHtml(featured.description)}</p>
         <a class="detour-link" href="${url}" target="_blank" rel="noopener sponsored">見てみる →</a>
       </div>`;
   }).join('');
@@ -1296,6 +1399,88 @@ function renderDetourSection(catId){
     <p class="detour-heading">今月の寄り道<span class="detour-pr">［PR・広告リンクを含みます］</span></p>
     <div class="detour-cards">${cardsHtml}</div>
     <p class="detour-note">寄り道の品揃えは、棚を巡るたびに入れ替わります。</p>`;
+}
+
+// ★「今月の寄り道」を、実際の現在月から導いた季節の言葉 × 棚の感情ラベルで
+//   Google Books API に問い合わせ、季節に合う一冊を都度取得するように変更。
+//   通信に失敗した場合や結果が空の場合は、従来の厳選リスト（DETOUR_POOL）へ
+//   そのままフォールバックし、表示が空白にならないようにしている。
+async function renderDetourSection(catId){
+  const box = document.getElementById('detourSection');
+  if(!box) return;
+  const cat = CATEGORIES.find(c=>c.id===catId);
+  const catLabel = cat ? cat.label : '';
+  const requestedCategory = catId;
+
+  box.innerHTML = `<p class="detour-heading">今月の寄り道</p><p class="detour-loading">……季節に合う一冊を探しています</p>`;
+
+  const liveItems = await fetchSeasonalBooks(catLabel, '寄り道');
+
+  // 取得中に棚が切り替わっていたら、古い結果は描画しない
+  if(activeCategory !== requestedCategory) return;
+
+  if(liveItems && liveItems.length){
+    const cardsHtml = liveItems.slice(0, 3).map(b=>{
+      const url = b.infoLink || amazonSearchUrl(b.title + ' ' + b.by);
+      return `
+        <div class="detour-card detour-live">
+          <span class="detour-tier-badge">🌐 今月の一冊</span>
+          <p class="detour-name">${escapeHtml(b.title)}</p>
+          <p class="detour-desc">${escapeHtml(b.by)}${b.hook ? ' — ' + escapeHtml(b.hook) : ''}</p>
+          <a class="detour-link" href="${url}" target="_blank" rel="noopener">見てみる →</a>
+        </div>`;
+    }).join('');
+    box.innerHTML = `
+      <p class="detour-heading">今月の寄り道<span class="detour-pr">［外部の書籍情報サービスから取得］</span></p>
+      <div class="detour-cards">${cardsHtml}</div>
+      <p class="detour-note">季節と今の棚の気分に合わせて、外部サービスから毎月自動で選ばれています。</p>`;
+    return;
+  }
+
+  renderDetourFallback(box, catId);
+}
+
+// ★棚の「店主が選んだ本」「プレイリスト」は従来どおり厳選済みの静的データを主とし、
+//   そこに加えて、季節の言葉×棚のラベルでGoogle Books API／iTunes Search APIから
+//   実際に見つかった新しめの一冊・一曲を1件ずつ添える。取得できなければ何も表示しない
+//   （厳選データの表示自体は止めない＝壊れない設計）。
+async function renderLiveNewReleases(cat){
+  const wrap = document.getElementById('livePickWrap');
+  if(!wrap || !cat) return;
+  const requestedCategory = cat.id;
+  const [books, songs] = await Promise.all([
+    fetchSeasonalBooks(cat.label, '新刊'),
+    fetchSeasonalMusic(cat.label)
+  ]);
+  if(activeCategory !== requestedCategory) return;
+  const wrapEl = document.getElementById('livePickWrap');
+  if(!wrapEl) return;
+
+  let html = '';
+  if(books && books.length){
+    const b = books[0];
+    const url = b.infoLink || amazonSearchUrl(b.title + ' ' + b.by);
+    html += `<div class="live-pick-card">
+      <span class="live-pick-badge">🌐 今、見つかった一冊</span>
+      <p class="live-pick-name">${escapeHtml(b.title)}</p>
+      <p class="live-pick-desc">${escapeHtml(b.by)}${b.hook ? ' — ' + escapeHtml(b.hook) : ''}</p>
+      <a class="live-pick-link" href="${url}" target="_blank" rel="noopener">見てみる →</a>
+    </div>`;
+  }
+  if(songs && songs.length){
+    const s = songs[0];
+    const q4 = s.title + ' ' + s.artist;
+    const spUrl = 'https://open.spotify.com/search/' + encodeURIComponent(q4);
+    html += `<div class="live-pick-card">
+      <span class="live-pick-badge">🌐 今、見つかった一曲</span>
+      <p class="live-pick-name">『${escapeHtml(s.title)}』${escapeHtml(s.artist)}</p>
+      ${s.comment ? `<p class="live-pick-desc">${escapeHtml(s.comment)}</p>` : ''}
+      <a class="live-pick-link" href="${spUrl}" target="_blank" rel="noopener">聴いてみる →</a>
+    </div>`;
+  }
+  wrapEl.innerHTML = html
+    ? `<p class="live-pick-heading">🌐 今、季節に合わせて見つかったもの</p><div class="live-pick-row">${html}</div>`
+    : '';
 }
 
 function renderShelfDisplay(){
@@ -1411,6 +1596,7 @@ function renderShelfDisplay(){
       ${purifyHtml}
       ${recommendHtml}
       ${musicHtml}
+      <div class="live-pick-wrap" id="livePickWrap"></div>
     `;
     el.querySelectorAll('.episode-card.mine').forEach(card=>{
       card.onclick = ()=>{
@@ -1429,6 +1615,7 @@ function renderShelfDisplay(){
       });
     }
     renderDetourSection(cat.id);
+    renderLiveNewReleases(cat);
     if(prefs.motion){
       requestAnimationFrame(()=>{ el.style.opacity = '1'; });
     }

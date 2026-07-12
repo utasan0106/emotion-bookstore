@@ -2088,6 +2088,71 @@ body:not(.no-motion) .record-disc{ animation:recordSpin 9s linear infinite; }
 .detour-link:hover{ opacity:.8; }
 body.night .detour-card{ background:#332E26; }
 body.night .detour-link{ color:#E8C97A; }
+.detour-loading{
+  font-size:12px;
+  color:var(--ink-soft);
+  opacity:.75;
+  margin-top:8px;
+}
+.detour-tier-live{ border-left:4px solid #4FA3D1; }
+.detour-live .detour-tier-badge{ background:#2F6B90; }
+
+/* ---------- 棚の本・音楽おすすめに添える、外部APIから取得したライブな新刊・新譜 ---------- */
+.live-pick-wrap:empty{ display:none; }
+.live-pick-heading{
+  font-family:var(--font-display);
+  font-size:13px;
+  color:#2F6B90;
+  margin:18px 0 8px;
+}
+.live-pick-row{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+  gap:12px;
+}
+.live-pick-card{
+  background:#f4f9fc;
+  border:1px solid #cfe2ec;
+  border-radius:6px;
+  padding:12px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.live-pick-badge{
+  display:inline-block;
+  align-self:flex-start;
+  font-size:10px;
+  letter-spacing:.03em;
+  padding:2px 9px;
+  border-radius:12px;
+  background:#2F6B90;
+  color:#F0F8FC;
+}
+.live-pick-name{
+  font-family:var(--font-display);
+  font-size:13.5px;
+  color:var(--ink);
+  margin:2px 0 0;
+  font-weight:700;
+}
+.live-pick-desc{
+  font-size:11.5px;
+  color:var(--ink-soft);
+  line-height:1.6;
+  margin:0;
+}
+.live-pick-link{
+  align-self:flex-start;
+  font-size:11.5px;
+  font-weight:700;
+  color:#2F6B90;
+  text-decoration:underline;
+  margin-top:2px;
+}
+.live-pick-link:hover{ opacity:.8; }
+body.night .live-pick-card{ background:#26313A; border-color:#3A4A56; }
+body.night .live-pick-link{ color:#8FC6E8; }
 
 /* ============================================================
    item 6: 手放した気持ちの履歴モーダル（オーバーホール版）
