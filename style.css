@@ -860,6 +860,10 @@ body.night .recommend-why{ color:var(--gold); }
   flex-wrap:wrap;
   gap:10px;
 }
+.apple-music-note{
+  margin:8px 2px 0 !important;
+  opacity:.7;
+}
 .playlist-services a{
   font-size:10.5px;
   color:var(--wine);

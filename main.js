@@ -124,6 +124,7 @@ const MESSAGES = {
     restoreFail: "復元に失敗しました。ファイルの内容をご確認ください。",
     mitateYesBtn: "聞いてみる", mitateNoBtn: "今はいい",
     loopShelfReferralBtn: "こちらの『{shelf}』の棚が、合うかもしれません。行ってみてください",
+    appleMusicNote: "※Apple Musicはアプリが開くだけのことがあります。開いたら曲名で検索し直してください。",
     deskLeadFromCounter: "——ここまでを踏まえて。番台や棚で出会った気持ちを、今度はあなた自身の言葉で綴ってみましょう。",
     writeAtDeskBtn: "この気持ちを書き留める",
     chooseAgainBtn: "また選び直す",
@@ -250,6 +251,7 @@ const MESSAGES = {
     restoreFail: "Restore failed. Please check the contents of the file.",
     mitateYesBtn: "Yes, tell me", mitateNoBtn: "Not right now",
     loopShelfReferralBtn: "The \"{shelf}\" shelf might suit you — please take a look",
+    appleMusicNote: "※ Apple Music links sometimes just open the app. If so, please search the song title again there.",
     deskLeadFromCounter: "——Building on that. Try writing the feeling you shared at the counter or on the shelves, now in your own words.",
     writeAtDeskBtn: "Write this feeling down",
     chooseAgainBtn: "Choose again",
@@ -1328,12 +1330,12 @@ function renderShelfDisplay(){
           </span>
         </div>`;
       }).join('');
-      musicHtml = `<div class="music-row"><p class="playlist-label">🎵 「${cat.label}」なプレイリスト — 店主の選曲</p><div class="playlist-tracks">${items}</div></div>`;
+      musicHtml = `<div class="music-row"><p class="playlist-label">🎵 「${cat.label}」なプレイリスト — 店主の選曲</p><div class="playlist-tracks">${items}</div><p class="field-hint apple-music-note">${escapeHtml(t('appleMusicNote'))}</p></div>`;
     }else{
       const fallbackQuery = cat.label + ' 邦楽 プレイリスト';
       const musicUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(fallbackQuery);
       const musicUrlAmc = 'https://music.apple.com/jp/search?term=' + encodeURIComponent(fallbackQuery);
-      musicHtml = `<div class="music-row"><a class="music-link" href="${musicUrl}" target="_blank" rel="noopener">🎵 YouTubeでBGMを探す</a> <a class="music-link" href="${musicUrlAmc}" target="_blank" rel="noopener">Apple Musicで探す</a></div>`;
+      musicHtml = `<div class="music-row"><a class="music-link" href="${musicUrl}" target="_blank" rel="noopener">🎵 YouTubeでBGMを探す</a> <a class="music-link" href="${musicUrlAmc}" target="_blank" rel="noopener">Apple Musicで探す</a><p class="field-hint apple-music-note">${escapeHtml(t('appleMusicNote'))}</p></div>`;
     }
     const myEntries = libraryCache.filter(e=>e.category===cat.id);
     // ★修正（XSS対策）：ユーザーが編纂机で入力したタイトル・本文をinnerHTMLへ差し込む前に
@@ -2809,6 +2811,7 @@ function renderRecordCorner(){
         <a href="${amcUrl}" target="_blank" rel="noopener">Apple Music</a>
         <a href="${ytUrl}" target="_blank" rel="noopener">YouTube</a>
       </p>
+      <p class="field-hint apple-music-note">${escapeHtml(t('appleMusicNote'))}</p>
     </div>`;
   box.classList.remove('hidden');
 }
