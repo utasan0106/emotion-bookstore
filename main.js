@@ -529,14 +529,14 @@ const TEXTURE_GROUPS = [
     id:'wave',
     label:'心がざわざわして落ち着かない、焦りや不安がある（動的な葛藤）',
     keeper:'感情が波立っているのですね。こちらの棚に並ぶ言葉が、ヒントになるかもしれません。',
-    shelves:['aseri','kuyashii','shitto','akogare'],
+    shelves:['aseri','kuyashii','shitto','akogare','ikari'],
     tone:'heavy'
   },
   {
     id:'light',
     label:'心が穏やか、または前向きでワクワクしている（ポジティブ）',
     keeper:'素敵な心の状態ですね。今の明るい気分にぴったりの棚を覗いてみませんか。',
-    shelves:['wakuwaku','ando','kansha','itooshii','hokorashii'],
+    shelves:['wakuwaku','ando','kansha','itooshii','hokorashii','ureshii'],
     tone:'neutral'
   },
   {
@@ -821,7 +821,7 @@ async function exportDiaryCsv(){
   setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
 }
 
-const NEGATIVE_SHELVES = ['moyamoya','ushirometai','kuyashii','kodoku','aseri','shitto','hazukashii','gakkari'];
+const NEGATIVE_SHELVES = ['moyamoya','ushirometai','kuyashii','kodoku','aseri','shitto','hazukashii','gakkari','ikari'];
 
 function openPurify(shelfId){
   const overlay = document.getElementById('purifyOverlay');
