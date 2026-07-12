@@ -115,6 +115,7 @@ const MESSAGES = {
     tweetLinkInvalid: "Xの投稿リンクの形式が正しくないようです（例：https://x.com/ユーザー名/status/12345）。",
     exportingBtn: "書き出しています…", exportedBtn: "書き出しました ✓", exportFailBtn: "書き出しに失敗しました",
     exportDefaultBtn: "📥 これまでの記録をテキストでダウンロード",
+    csvExportDefaultBtn: "📊 これまでの記録をCSVでダウンロード（Excel等で開けます）",
     deskLeadFromCounter: "——ここまでを踏まえて。番台や棚で出会った気持ちを、今度はあなた自身の言葉で綴ってみましょう。",
     writeAtDeskBtn: "この気持ちを書き留める",
     chooseAgainBtn: "また選び直す",
@@ -232,6 +233,7 @@ const MESSAGES = {
     tweetLinkInvalid: "That doesn't look like a valid link to a post on X (e.g. https://x.com/username/status/12345).",
     exportingBtn: "Exporting…", exportedBtn: "Exported ✓", exportFailBtn: "Export failed",
     exportDefaultBtn: "📥 Download your records as text",
+    csvExportDefaultBtn: "📊 Download your records as CSV (opens in Excel, etc.)",
     deskLeadFromCounter: "——Building on that. Try writing the feeling you shared at the counter or on the shelves, now in your own words.",
     writeAtDeskBtn: "Write this feeling down",
     chooseAgainBtn: "Choose again",
@@ -738,6 +740,59 @@ async function exportDiaryText(){
   a.href = URL.createObjectURL(blob);
   const d = new Date();
   a.download = `感情書店の記録_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+}
+
+// ★追加：表計算ソフト（Excel／Googleスプレッドシート等）で開けるCSV形式の書き出し。
+// 「DBをCSVとかで吐き出せるのか」というフィードバックへの直接対応。
+function csvEscape(value){
+  const s = (value === null || value === undefined) ? '' : String(value);
+  if(/[",\n\r]/.test(s)){
+    return '"' + s.replace(/"/g, '""') + '"';
+  }
+  return s;
+}
+async function exportDiaryCsv(){
+  const lib = await loadJSON('emotion-bookstore-library', []);
+  const purifyLog = await loadJSON(PURIFY_LOG_KEY, []);
+  const rows = [];
+  rows.push(['種別','通し番号','タイトル','棚','日付','振り返り','本文','店主のことば']);
+  lib.forEach((e, i)=>{
+    const cat = CATEGORIES.find(c=>c.id===e.category);
+    rows.push([
+      '本棚の物語',
+      i + 1,
+      e.title || '',
+      cat ? cat.label : (e.category || ''),
+      e.date ? new Date(e.date).toLocaleDateString('ja-JP') : '',
+      e.sealed ? 'はい' : '',
+      e.story || '',
+      e.note || ''
+    ]);
+  });
+  purifyLog.forEach((p, i)=>{
+    const cat = CATEGORIES.find(c=>c.id===p.category);
+    rows.push([
+      '手放した気持ち',
+      i + 1,
+      '',
+      cat ? cat.label : (p.category || ''),
+      p.date ? new Date(p.date).toLocaleDateString('ja-JP') : '',
+      '',
+      p.text || '',
+      ''
+    ]);
+  });
+  const csvBody = rows.map(row => row.map(csvEscape).join(',')).join('\r\n');
+  // Excelでの文字化け防止のためUTF-8 BOMを付与
+  const blob = new Blob(['﻿' + csvBody], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const d = new Date();
+  a.download = `感情書店の記録_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.csv`;
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -1891,6 +1946,21 @@ if(btnExport) {
   };
 }
 
+const btnExportCsv = document.getElementById('exportDiaryCsv');
+if(btnExportCsv) {
+  btnExportCsv.onclick = async ()=>{
+    const btn = document.getElementById('exportDiaryCsv');
+    btn.textContent = t('exportingBtn');
+    try{
+      await exportDiaryCsv();
+      btn.textContent = t('exportedBtn');
+    }catch(e){
+      btn.textContent = t('exportFailBtn');
+    }
+    setTimeout(()=>{ btn.textContent = t('csvExportDefaultBtn'); }, 2500);
+  };
+}
+
 const btnReset = document.getElementById('resetShelf');
 if(btnReset) {
   btnReset.onclick = async ()=>{
@@ -3005,6 +3075,8 @@ function warnInAppBrowserIfNeeded(){
   if(backupBtn) backupBtn.innerHTML = t('backupDefaultBtn');
   const exportBtn = document.getElementById('exportDiary');
   if(exportBtn) exportBtn.innerHTML = t('exportDefaultBtn');
+  const exportCsvBtn = document.getElementById('exportDiaryCsv');
+  if(exportCsvBtn) exportCsvBtn.innerHTML = t('csvExportDefaultBtn');
 
   const shelfControls = document.querySelector('.shelf-controls');
   if(shelfControls && !document.getElementById('viewPurifyLogBtn')){

@@ -1919,11 +1919,15 @@ body:not(.no-motion) .record-disc{ animation:recordSpin 9s linear infinite; }
 /* ---- 本棚の鍵（手動バックアップ） ---- */
 .backup-link{ color:var(--wine); font-weight:600; }
 .backup-hint{
-  font-size:10.5px;
-  color:var(--ink-soft);
-  text-align:right;
-  margin:6px 2px 0;
-  line-height:1.6;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:8px;
+  margin:14px 2px 0;
+}
+.backup-hint .share-btn{
+  font-size:12px;
+  padding:7px 14px;
 }
 
 /* ---- フッター：SEO世界観テキスト・アフィリエイト規約 ---- */
