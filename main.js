@@ -1694,7 +1694,7 @@ async function handleChartChoice(label, nextKey){
   const cw = document.getElementById('chatWindow');
   if(cw){
     cw.appendChild(loadingBubble);
-    cw.scrollTop = cw.scrollHeight;
+    scrollPageToLatestBubble(loadingBubble);
   }
 
   await wait(prefs.motion ? (500 + Math.random()*400) : 40);
@@ -1774,7 +1774,9 @@ function appendBubble(role, text){
     div.textContent = safeText;
   }
   cw.appendChild(div);
-  cw.scrollTop = cw.scrollHeight;
+  // ★修正：ここで即座に scrollTop を最下部へ飛ばしてしまうと、直後の
+  // scrollIntoView(smooth) より先に中身だけ「瞬間移動」して見えてしまうため、
+  // 内側・外側どちらのスクロールも scrollPageToLatestBubble 側にまとめて任せる
   scrollPageToLatestBubble(div);
   return div;
 }
@@ -1805,16 +1807,17 @@ async function sendToShopkeeper(){
 
   const guideWrapper = document.getElementById('nextActionGuideWrapper');
   if(guideWrapper) guideWrapper.classList.add('hidden');
+  const earlyHint = document.getElementById('earlyFreeformHint');
+  if(earlyHint) earlyHint.classList.add('hidden');
 
-  const scrollToBottom = () => { if(cw) cw.scrollTop = cw.scrollHeight; };
-  scrollToBottom();
-
+  // ★修正：appendBubble('user', text) 側で既にスッとスクロールしているため、
+  // ここで即座に scrollTop を動かすと「瞬間移動」の原因になる。二重の即時スクロールは行わない。
   const loadingBubble = document.createElement('div');
   loadingBubble.className = 'bubble loading';
   loadingBubble.textContent = LOADING_LINES[Math.floor(Math.random()*LOADING_LINES.length)];
   if(cw){
     cw.appendChild(loadingBubble);
-    cw.scrollTop = cw.scrollHeight;
+    scrollPageToLatestBubble(loadingBubble);
   }
 
   await wait(prefs.motion ? (700 + Math.random()*600) : 60);
@@ -1828,8 +1831,6 @@ async function sendToShopkeeper(){
   loadingBubble.remove();
   appendBubble('shopkeeper', reply);
   chatHistory.push({ role:'assistant', content:reply });
-
-  scrollToBottom();
 
   if(suggestedShelf){
     renderSuggestionActions(suggestedShelf);
@@ -1943,6 +1944,9 @@ async function chooseTexture(group, btnEl){
   if(guideWrapper) {
     setTimeout(() => { guideWrapper.classList.remove('hidden'); }, prefs.motion ? 400 : 0);
   }
+  // ちゃんとしたガイドに切り替わるので、最初だけの控えめな一文は隠す
+  const earlyHint = document.getElementById('earlyFreeformHint');
+  if(earlyHint) earlyHint.classList.add('hidden');
 }
 
 function renderEmotionChips(group){

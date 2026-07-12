@@ -487,6 +487,11 @@ section:last-of-type{border-bottom:none;}
   color:var(--ink-soft);
   margin:0;
 }
+/* ★追加：最初の画面から出しておく控えめな一言（目立たせすぎない） */
+.early-freeform-hint{
+  margin:2px 2px 6px;
+  opacity:.8;
+}
 .chat-input-row textarea{
   flex:1;
   resize:none;
