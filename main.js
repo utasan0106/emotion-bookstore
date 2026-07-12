@@ -1533,6 +1533,10 @@ if(btnReset) {
   };
 }
 
+// ★追加：25文字以上の複雑な長文には、単なる相槌ではなく
+// カウンセリング的な「深掘り」の質問を返す（DEEP_DIVE_REPLIES／data.js）
+const DEEP_DIVE_MIN_CHARS = 25;
+
 function matchShopkeeperReply(text, fallbackShelfId){
   for(const entry of KEYWORD_BANK){
     if(entry.patterns.some(p=>text.includes(p))){
@@ -1542,6 +1546,9 @@ function matchShopkeeperReply(text, fallbackShelfId){
   {
     const flavor = counselingFlavorReply(text, fallbackShelfId);
     if(flavor && Math.random() < 0.6) return flavor;
+  }
+  if(typeof DEEP_DIVE_REPLIES !== 'undefined' && DEEP_DIVE_REPLIES.length && countChars(text) >= DEEP_DIVE_MIN_CHARS){
+    return DEEP_DIVE_REPLIES[Math.floor(Math.random()*DEEP_DIVE_REPLIES.length)];
   }
   if(text.includes('？') || text.includes('?') || /(か|の)$/.test(text.trim())){
     return GENERIC_QUESTION_REPLIES[Math.floor(Math.random()*GENERIC_QUESTION_REPLIES.length)];
@@ -1735,6 +1742,25 @@ function typeIntoNode(node, text, speed){
   step();
 }
 
+// ★追加：チャットの最新の吹き出しが画面外にある場合、ページ自体を
+// その吹き出しの位置までスッとスクロールする（番台でのやりとり確認のストレス軽減）
+function scrollPageToLatestBubble(){
+  const cw = document.getElementById('chatWindow');
+  if(!cw) return;
+  requestAnimationFrame(()=>{
+    const rect = cw.getBoundingClientRect();
+    const margin = 16;
+    // 吹き出しの下端がビューポートの下にはみ出している時だけ、その分を追いスクロール
+    const overflowBottom = rect.bottom - window.innerHeight + margin;
+    if(overflowBottom > 0){
+      window.scrollTo({
+        top: window.scrollY + overflowBottom,
+        behavior: prefs.motion ? 'smooth' : 'auto'
+      });
+    }
+  });
+}
+
 function appendBubble(role, text){
   const cw = document.getElementById('chatWindow');
   if(!cw) return null;
@@ -1754,6 +1780,7 @@ function appendBubble(role, text){
   }
   cw.appendChild(div);
   cw.scrollTop = cw.scrollHeight;
+  scrollPageToLatestBubble();
   return div;
 }
 
@@ -1817,7 +1844,7 @@ async function sendToShopkeeper(){
   }
 
   freeTextTurns++;
-  if(freeTextTurns === 3 && !isCrisis){
+  if(freeTextTurns === 5 && !isCrisis){
     appendBubble('shopkeeper',
       '……私は決まった言葉しか持たない、しがない店番です。もしもっと深く話を聞いてほしい夜は、' +
       '言葉の達者な相談相手（AI）を訪ねてみるのも一つの手です。ここの棚は、いつでも開けておきますから。');

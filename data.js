@@ -2323,6 +2323,17 @@ const GENERIC_QUESTION_REPLIES = [
   '……難しい問いですね。ただ、問いを言葉にできた時点で、半分は進んでいると思いますよ。'
 ];
 
+/* ---------- 追加：長文・複雑な感情への「深掘り」質問（25文字以上の自由入力向け） ---------- */
+const DEEP_DIVE_REPLIES = [
+  '……いろんな気持ちが、複雑に絡み合っているようですね。その中で、一番強く感じるのはどれですか。',
+  '……たくさんのことを、一度に感じておられるのですね。その奥に、隠れている願いはありませんか。',
+  '……お話の中に、いくつもの感情が重なっているように聞こえます。いちばん奥にあるのは、どんな気持ちでしょう。',
+  '……ひとことでは言い表せない気持ち、伝わってきます。もし一つだけ名前をつけるなら、どの言葉が近いですか。',
+  '……その出来事について、まだ言葉になっていない部分がありそうです。いちばん引っかかっているのは、どこですか。',
+  '……いろんな感情が同時に押し寄せているのですね。その中で、誰かに一番わかってほしいのはどの気持ちですか。',
+  '……複雑な状況の中にいらっしゃるのですね。その中で、あなたが本当はどうしたいと思っているのか、少し聞かせてもらえますか。'
+];
+
 const LOADING_LINES = [
   '……頁をめくっています',
   '……少し、考えさせてください',
@@ -2439,6 +2450,7 @@ if (typeof module !== 'undefined' && module.exports) {
     CATEGORY_KEYWORDS, SHOPKEEPER_NOTES, SHIORI_TEMPLATES,
     PURIFY_LEADS, PURIFY_CLOSING, MILESTONE_MESSAGES, INVITES,
     CHAT_TREE, KEYWORD_BANK, GENERIC_REPLIES, GENERIC_QUESTION_REPLIES,
+    DEEP_DIVE_REPLIES,
     LOADING_LINES, TIME_GREETINGS, DAILY_MESSAGE_PARTS
   };
 }
