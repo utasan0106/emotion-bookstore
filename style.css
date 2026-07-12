@@ -870,10 +870,20 @@ body.night .recommend-why{ color:var(--gold); }
   padding-top:12px;
 }
 .desk-extra summary{
-  font-size:12px;
-  color:var(--ink-soft);
+  /* 任意ラベリング機能の存在に気づけるよう、チップ状に強調（12px→14px） */
+  display:inline-block;
+  font-size:14px;
+  font-weight:600;
+  color:var(--wine);
+  background:rgba(255,251,240,0.75);
+  border:1px dashed var(--gold);
+  border-radius:10px;
+  padding:10px 16px;
   cursor:pointer;
   list-style:none;
+}
+body.night .desk-extra summary{
+  background:#332E26;
 }
 .desk-extra summary::-webkit-details-marker{ display:none; }
 .desk-extra summary::before{ content:"▸ "; color:var(--gold); }

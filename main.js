@@ -559,7 +559,10 @@ const PERSONA_TRIGGERS = [
   { persona:'romance',      patterns:['彼氏','彼女','恋人','失恋','片思い','浮気','デート','LINEの返信'] },
   { persona:'creater',      patterns:['創作','絵師','小説','同人','締め切り','イラスト','原稿'] },
   { persona:'resting',      patterns:['無職','休職','退職','ニート','療養中','休養中'] },
-  { persona:'sensitive',    patterns:['繊細','HSP','敏感','眠れない','深夜','夜中'] }
+  { persona:'sensitive',    patterns:['繊細','HSP','敏感','眠れない','深夜','夜中'] },
+  { persona:'freelance',    patterns:['フリーランス','自営業','個人事業','クライアント','納品','案件','受注'] },
+  { persona:'caregiver',    patterns:['介護','看病','付き添い','通院','ケアマネ','老人ホーム','入院'] },
+  { persona:'second_life',  patterns:['定年','老後','年金','孫が','セカンドライフ','シニア'] }
 ];
 
 function detectCounselingPersona(text){
@@ -2388,6 +2391,9 @@ const PERSONA_CHOICES = [
   { id:'creater',       label:'クリエイター・表現者' },
   { id:'resting',       label:'人生の転換期・お休み中' },
   { id:'sensitive',     label:'夜型・繊細な気質' },
+  { id:'freelance',     label:'フリーランス・自営業' },
+  { id:'caregiver',     label:'介護・看病の日々' },
+  { id:'second_life',   label:'セカンドライフ・シニア' },
   { id:'',              label:'ひみつ（設定しない）' }
 ];
 
