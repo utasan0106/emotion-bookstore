@@ -94,7 +94,7 @@
     <p class="sub-tagline">感情の書店で、自分だけの一冊を見つけよう。</p>
 
     <div class="intro-explainer in-header">
-      <p class="intro-kicker">この書店でできること — 好きな場所から、自由に巡れます</p>
+      <p class="intro-kicker">この書店でできること<br>—好きな場所から、自由に巡れます</p>
       <div class="intro-steps">
         <button type="button" class="intro-step" onclick="goToPage('counter')">
           <span class="intro-num">①</span>
@@ -170,9 +170,12 @@
       </div>
       <div class="texture-step" id="textureStep" aria-label="心の質感を選ぶ"></div>
       <div class="chart-options" id="chartOptions"></div>
-      <div class="next-action-guide">
-        <p class="guide-lead">👇 さらに近い気持ちを選ぶか、下の枠に言葉を書いて「話す」を押してください</p>
-        <p class="freeform-hint">※書いた言葉は、そのまま編纂机の原稿用紙に写しておきます。</p>
+      <!-- main.js の制御に合わせてガイドを隠すための wrapper を追加 -->
+      <div id="nextActionGuideWrapper" class="hidden">
+        <div class="next-action-guide">
+          <p class="guide-lead">👇 さらに近い気持ちを選ぶか、下の枠に言葉を書いて「話す」を押してください</p>
+          <p class="freeform-hint">※書いた言葉は、そのまま編纂机の原稿用紙に写しておきます。</p>
+        </div>
       </div>
       <div class="chat-input-row">
         <textarea id="userInput" placeholder="例：うまく言えないけど、朝からずっとモヤモヤしている…" rows="2"></textarea>
