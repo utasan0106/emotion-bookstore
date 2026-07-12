@@ -2541,12 +2541,20 @@ body.night .pwa-popup{ background:#2E2922; }
 }
 .profile-keeper-style{ display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 4px; }
 .keeper-style-chip{
-  font-size:12.5px; padding:8px 13px;
-  border-radius:20px;
+  font-size:13px; padding:9px 15px;
+  line-height:1.5;
+  border-radius:14px;
   border:1px solid var(--paper-shadow);
   background:#fff; color:var(--ink);
   cursor:pointer;
+  text-align:center;
   transition:all .12s ease;
+}
+.keeper-style-chip .keeper-style-sub{
+  display:block;
+  font-size:10.5px;
+  opacity:.7;
+  letter-spacing:.03em;
 }
 .keeper-style-chip.selected{
   background:var(--wine); border-color:var(--wine); color:#FFF6E8;

@@ -327,6 +327,9 @@ function applyLanguage(){
   // 演出トグル・文字数カウンターなど、JS側で直接書き換えているUI文言も追従させる
   if(typeof applyPrefs === 'function') applyPrefs();
   if(typeof updateStoryCount === 'function') updateStoryCount();
+  // ★店主の名前（巡／綴）は選んだ性格によって変わるため、data-i18n の一律上書きの後に
+  // あらためて正しい名前入りの文章へ差し替える
+  if(typeof updateKeeperBioText === 'function') updateKeeperBioText();
   const langBtn = document.getElementById('langToggle');
   if(langBtn) langBtn.textContent = appLang === 'ja' ? '🌐 JP / EN' : '🌐 EN / JP';
   const titleEl = document.querySelector('title');
@@ -1286,10 +1289,20 @@ const CRISIS_STORY_PATTERNS = ['死にたい','消えたい','自分を傷つけ
 function detectShelfFromText(text, minScore){
   let bestId = null, bestScore = 0;
   for(const id in CATEGORY_KEYWORDS){
+    // ★修正：「モヤモヤ」棚は“まだ分解できていない気持ち”の受け皿であって、
+    // 積極的に言い当てにいく先ではない。ここで最有力候補として拾ってしまうと、
+    // ユーザーが本当に伝えたい具体的な感情（怒り・不安 等）より先に「もやもや」判定が
+    // 勝ってしまい、「結局いつもモヤモヤ棚に飛ばされる」という体験になっていた。
+    // 具体的な感情棚の判定を優先し、moyamoyaはどれにも当てはまらなかった時の
+    // 最終フォールバックとしてのみ機能させる。
+    if(id === 'moyamoya') continue;
     const score = CATEGORY_KEYWORDS[id].reduce((n,w)=>n + (text.includes(w) ? 1 : 0), 0);
     if(score > bestScore){ bestScore = score; bestId = id; }
   }
-  return bestScore >= (minScore || 1) ? bestId : null;
+  if(bestScore >= (minScore || 1)) return bestId;
+  // 具体的な感情棚が一つも当たらなかった場合にだけ、モヤモヤ自体への言及を確認する
+  const moyaScore = CATEGORY_KEYWORDS.moyamoya.reduce((n,w)=>n + (text.includes(w) ? 1 : 0), 0);
+  return moyaScore >= (minScore || 1) ? 'moyamoya' : null;
 }
 
 function localCurate(title, story, chosenId){
@@ -1306,12 +1319,22 @@ function localCurate(title, story, chosenId){
   if(ATTACK_WORDS.some(w=>combined.includes(w))){
     return { approved:false, category:null, note:'', reason:'誰かを深く傷つける言葉が含まれているようです。ご自身の気持ちの部分だけ、綴り直してみてください。' };
   }
-  let bestId = chosenId, bestScore = 0;
+  // ★修正：「本棚エントリの棚おすすめが、大体モヤモヤ棚に飛ばされる」という指摘への対応。
+  // 原因は二つ複合していた。
+  //  ① 何もしなければ chosenId（初期値は最初の棚＝モヤモヤ）のまま据え置かれる設計なので、
+  //     ユーザーが棚を選ばずに執筆すると出発点からしてモヤモヤ寄りだった。
+  //  ② 具体的な感情棚へ乗り換えるには「キーワード2つ一致」が必要という基準が厳しすぎて、
+  //     日記の自由文には1語しか強い手がかりがないことが多く、乗り換えが起きにくかった。
+  // ここでは、モヤモヤ棚自体は「積極的におすすめする先」から外し（そこは"分解できなかった"
+  // ときの受け皿に徹してもらう）、具体的な感情棚は1語の一致でも乗り換え候補にすることで、
+  // 「モヤモヤをちゃんと分解したい」というユーザー本来の目的に応える。
+  let bestId = null, bestScore = 0;
   for(const id in CATEGORY_KEYWORDS){
+    if(id === 'moyamoya') continue;
     const score = CATEGORY_KEYWORDS[id].reduce((n,w)=>n + (combined.includes(w) ? 1 : 0), 0);
     if(score > bestScore){ bestScore = score; bestId = id; }
   }
-  const suggested = (bestScore >= 2 && bestId !== chosenId) ? bestId : chosenId;
+  const suggested = (bestScore >= 1 && bestId && bestId !== chosenId) ? bestId : chosenId;
   return {
     approved:true,
     category:suggested,
@@ -1333,6 +1356,30 @@ function isTsundere(){ return prefs.keeperStyle === 'tsundere'; }
 function pickByStyle(gentleArr, tsundereArr){
   const pool = (isTsundere() && Array.isArray(tsundereArr) && tsundereArr.length) ? tsundereArr : gentleArr;
   return pool[Math.floor(Math.random()*pool.length)];
+}
+
+// ★追加：性格ごとの店主の名前。優しい店主＝巡（めぐる）、ツンデレ店主＝綴（つづる）。
+function currentKeeperName(){ return isTsundere() ? '綴' : '巡'; }
+
+// 店主の自己紹介文（「店主について」の折りたたみ）。名前・口調が性格によって変わるため、
+// data-i18n による静的差し替えとは別に、ここだけは動的に描画する。
+const KEEPER_BIO_TEXT = {
+  ja: {
+    gentle: 'この書店の店主。名前は「巡（めぐる）」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、巡が長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。',
+    tsundere: 'この書店の店主。名前は「綴（つづる）」と名乗っています。年齢や性別は明かしていません。……別に自己紹介したかったわけじゃないですけど。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、綴が長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。'
+  },
+  en: {
+    gentle: 'The keeper of this bookstore goes by "Meguru." Their age and gender remain unrevealed. They usually read quietly at the back of the counter, and their job is to listen to what customers have to say. The shelves are lined with quotes old and new, sourced and collected by Meguru over many years in a notebook.',
+    tsundere: 'The keeper of this bookstore goes by "Tsuzuru." Their age and gender remain unrevealed — not that they’re dying to tell you. They usually read quietly at the back of the counter, and their job is to listen to what customers have to say. The shelves are lined with quotes old and new, sourced and collected by Tsuzuru over many years in a notebook.'
+  }
+};
+function updateKeeperBioText(){
+  const p = document.querySelector('[data-i18n="keeperBioText"]');
+  if(!p) return;
+  const lang = (appLang === 'en') ? 'en' : 'ja';
+  const style = isTsundere() ? 'tsundere' : 'gentle';
+  const src = KEEPER_BIO_TEXT[lang] && KEEPER_BIO_TEXT[lang][style];
+  if(src) p.textContent = src;
 }
 const reduceQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
 
@@ -2518,26 +2565,32 @@ function renderAiReferralLinks(userText){
 }
 
 function matchShopkeeperReply(text, fallbackShelfId){
+  let result = null;
   for(const entry of KEYWORD_BANK){
     // ★修正：replies が空配列のエントリに当たると undefined が返り「無反応」になっていたバグを防止
     if(entry.replies && entry.replies.length && entry.patterns.some(p=>text.includes(p))){
-      return entry.replies[Math.floor(Math.random()*entry.replies.length)];
+      result = entry.replies[Math.floor(Math.random()*entry.replies.length)];
+      break;
     }
   }
-  if(AI_MISMATCH_PATTERNS.some(p=>text.includes(p))){
-    return AI_MISMATCH_REPLIES[Math.floor(Math.random()*AI_MISMATCH_REPLIES.length)];
+  if(result === null && AI_MISMATCH_PATTERNS.some(p=>text.includes(p))){
+    result = AI_MISMATCH_REPLIES[Math.floor(Math.random()*AI_MISMATCH_REPLIES.length)];
   }
-  {
+  if(result === null){
     const flavor = counselingFlavorReply(text, fallbackShelfId);
-    if(flavor && Math.random() < 0.6) return flavor;
+    if(flavor && Math.random() < 0.6) result = flavor;
   }
-  if(typeof DEEP_DIVE_REPLIES !== 'undefined' && DEEP_DIVE_REPLIES.length && countChars(text) >= DEEP_DIVE_MIN_CHARS){
-    return DEEP_DIVE_REPLIES[Math.floor(Math.random()*DEEP_DIVE_REPLIES.length)];
+  if(result === null && typeof DEEP_DIVE_REPLIES !== 'undefined' && DEEP_DIVE_REPLIES.length && countChars(text) >= DEEP_DIVE_MIN_CHARS){
+    result = DEEP_DIVE_REPLIES[Math.floor(Math.random()*DEEP_DIVE_REPLIES.length)];
   }
-  if(text.includes('？') || text.includes('?') || /(か|の)$/.test(text.trim())){
-    return pickByStyle(GENERIC_QUESTION_REPLIES, GENERIC_QUESTION_REPLIES_TSUNDERE);
+  if(result === null){
+    result = (text.includes('？') || text.includes('?') || /(か|の)$/.test(text.trim()))
+      ? pickByStyle(GENERIC_QUESTION_REPLIES, GENERIC_QUESTION_REPLIES_TSUNDERE)
+      : pickByStyle(GENERIC_REPLIES, GENERIC_REPLIES_TSUNDERE);
   }
-  return pickByStyle(GENERIC_REPLIES, GENERIC_REPLIES_TSUNDERE);
+  // ★店主の名前（巡／綴）はKEYWORD_BANK側で{name}プレースホルダとして書かれているため、
+  // 実際に返す直前に選択中の性格の名前へ差し込む
+  return (typeof result === 'string') ? result.replace(/\{name\}/g, currentKeeperName()) : result;
 }
 
 function shelfLabelOf(id){
@@ -3638,11 +3691,11 @@ function buildProfileOverlay(){
       <input id="profileName" maxlength="12" placeholder="例：ゆう" autocomplete="off">
       <p class="profile-label">いまのあなたに近いのは</p>
       <div class="profile-personas" id="profilePersonas"></div>
-      <p class="profile-label">店主の口調は</p>
-      <p class="profile-note" style="margin-top:-4px;">どちらを選んでも、基本的にあなたの味方であることは変わりません。言葉遣いが少し変わるだけです。</p>
+      <p class="profile-label">店主を選ぶ</p>
+      <p class="profile-note" style="margin-top:-4px;">どちらを選んでも、基本的にあなたの味方であることは変わりません。言葉遣いが少し変わるだけです。あとから「🪪 来店カード」でいつでも変更できます。</p>
       <div class="profile-keeper-style" id="profileKeeperStyle">
-        <button type="button" class="keeper-style-chip" data-style="gentle">🌸 やさしい店主</button>
-        <button type="button" class="keeper-style-chip" data-style="tsundere">😼 ツンデレな店主</button>
+        <button type="button" class="keeper-style-chip" data-style="gentle">🌸 巡（めぐる）<br><span class="keeper-style-sub">やさしい店主</span></button>
+        <button type="button" class="keeper-style-chip" data-style="tsundere">😼 綴（つづる）<br><span class="keeper-style-sub">ツンデレな店主</span></button>
       </div>
       <button type="button" class="profile-save" id="profileSave">この内容で来店する</button>
     </div>`;
@@ -3725,6 +3778,7 @@ function showProfileCard(){
     await saveJSON(PROFILE_KEY, userProfile);
     prefs.keeperStyle = chosenStyle;
     saveJSON('emotion-bookstore-prefs', prefs);
+    if(typeof updateKeeperBioText === 'function') updateKeeperBioText();
     ov.classList.add('hidden');
     let welcome = userProfile.name
       ? ('……' + userProfile.name + 'さん、ですね。お名前、覚えました。')
@@ -3764,6 +3818,12 @@ function warnInAppBrowserIfNeeded(){
   restoreDraftIfAny();
   ensureBackToTopButton();
   setupShelfSwipe();
+  // ★修正：以前はここより後（initPrefs()呼び出しより前）でisTsundere()を参照する挨拶文を
+  // 組み立てていたため、保存済みの店主の性格設定（優しい／ツンデレ）が読み込まれる前に
+  // 判定してしまい、再訪問時も常に既定値（優しい）の挨拶になってしまう不具合があった。
+  // prefsの読み込みを先に済ませてから、以降の判定に進むよう順序を修正。
+  await initPrefs();
+  if(typeof updateKeeperBioText === 'function') updateKeeperBioText();
   const savedProfile = await loadJSON(PROFILE_KEY, null);
   if(savedProfile && typeof savedProfile === 'object'){
     userProfile = Object.assign(userProfile, savedProfile);
@@ -3800,7 +3860,6 @@ function warnInAppBrowserIfNeeded(){
   }
   const profileBtn = document.getElementById('profileBtn');
   if(profileBtn) profileBtn.onclick = ()=>showProfileCard();
-  await initPrefs();
   renderFair();
   renderCategorySelect();
   libraryCache = await loadJSON('emotion-bookstore-library', []);
