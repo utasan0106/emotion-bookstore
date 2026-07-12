@@ -865,6 +865,22 @@ body.night .recommend-why{ color:var(--gold); }
   opacity:.7;
 }
 
+/* ---- 追加：店主への差し入れ（投げ銭）リンク ---- */
+.support-row{ margin-top:16px; }
+.support-link{
+  display:inline-block;
+  font-family:var(--font-display);
+  font-size:13px;
+  color:var(--wine);
+  background:#fdf6e6;
+  border:1px solid var(--gold);
+  padding:8px 18px;
+  border-radius:20px;
+  text-decoration:none;
+}
+.support-link:hover{ background:var(--paper-2); }
+.support-hint{ text-align:center; margin-top:6px; }
+
 /* ---- 追加：番台での対話が進むほど、店主が「見えてきている」ことを示す気配メーター
    （Akinatorのテーマ選択・確信度演出を参考に、答えを断定するのではなく
    「少しずつ寄り添っている」ニュアンスに寄せている） ---- */
