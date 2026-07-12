@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>みんなの感情書店</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            background-color: #fdfbf7;
+            color: #4a3e3d;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 0.1em;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* アコーディオン部分のスタイル */
+        .about-section {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 40px;
+            border-top: 1px dashed #d1c8c1;
+            border-bottom: 1px dashed #d1c8c1;
+            padding: 10px 0;
+        }
+
+        .about-summary {
+            font-size: 0.95rem;
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .accordion-button {
+            background: none;
+            border: none;
+            color: #8b7d7b;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 5px;
+            outline: none;
+            transition: color 0.3s;
+        }
+        
+        .accordion-button:hover {
+            color: #4a3e3d;
+        }
+
+        .accordion-icon {
+            margin-right: 5px;
+            font-size: 0.8rem;
+            transition: transform 0.3s;
+        }
+
+        .accordion-button.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease-out;
+            opacity: 0;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            background-color: #f5f0ea;
+            border-radius: 8px;
+            margin-top: 0;
+        }
+
+        .accordion-content.open {
+            max-height: 500px; /* 十分な高さを確保 */
+            opacity: 1;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .section-title::before, .section-title::after {
+            content: "";
+            display: inline-block;
+            width: 30px;
+            height: 1px;
+            background-color: #4a3e3d;
+            vertical-align: middle;
+            margin: 0 10px;
+        }
+
+        /* 既存のグリッドスタイル（モックアップ用） */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 600px;
+            width: 100%;
+            background-color: #7b6855;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .grid-item {
+            background-color: #fdfbf7;
+            border-radius: 4px;
+            padding: 15px 5px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+        }
+
+        .item-number {
+            font-size: 0.7rem;
+            font-weight: bold;
+            align-self: flex-start;
+            margin-bottom: 5px;
+            background-color: #4a3e3d;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-text {
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-top: auto;
+        }
+        
+        .placeholder-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #eaddd3;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="title">みんなの感情書店</div>
+        <div class="subtitle">
+            名もなき気持ちに、名前をあげる。<br>
+            感情の書店で、自分だけの一冊を見つけよう。
+        </div>
+    </div>
+
+    <!-- 追加したアコーディオンセクション -->
+    <div class="about-section">
+        <div class="about-summary">
+            言語化できない今の「心の質感」を選ぶだけ。<br>
+            店主のナビゲートで、自分だけの本棚が育っていく日記アプリです。
+        </div>
+        <button class="accordion-button" onclick="toggleAccordion()">
+            <span class="accordion-icon">▼</span> どんな体験ができるの？
+        </button>
+        <div class="accordion-content" id="aboutContent">
+            <b>みんなの感情書店とは</b><br><br>
+            言語化できない「今の心の質感」を直感的に選ぶだけで、店主が優しくナビゲートしてくれます。<br>
+            そして、あなたの感情にそっと寄り添う「本」や「音楽」との思いがけない出会いをご提案します。<br><br>
+            モヤモヤした気持ちや言葉にならない本音は、美しい背表紙の一冊の本に。<br>
+            誰の目も気にしなくていいこの場所で、あなただけの本棚を少しずつ育ててみませんか？<br>
+            他人の視線に疲れた心が、スッと軽くなる体験をお届けします。
+        </div>
+    </div>
+    <!-- /追加したアコーディオンセクション -->
+
+    <div class="section-title">この書店でできること</div>
+
+    <div class="grid-container">
+        <div class="grid-item">
+            <div class="item-number">1</div>
+            <div class="placeholder-icon"></div>
+            <div class="item-text">店主と対話</div>
+        </div>
+        <div class="grid-item">
+            <div class="item-number">2</div>
+            <div class="placeholder-icon"></div>
+            <div class="item-text">感情を選ぶ</div>
+        </div>
+        <div class="grid-item">
+            <div class="item-number">3</div>
+            <div class="placeholder-icon"></div>
+            <div class="item-text">棚を巡る</div>
+        </div>
+        <div class="grid-item">
+            <div class="item-number">4</div>
+            <div class="placeholder-icon"></div>
+            <div class="item-text">物語を綴る</div>
+        </div>
+        <div class="grid-item">
+            <div class="item-number">5</div>
+            <div class="placeholder-icon"></div>
+            <div class="item-text">製本する</div>
+        </div>
+        <div class="grid-item">
+            <div class="item-number">6</div>
+            <div class="placeholder-icon"></div>
+            <div class="item-text">本棚に納める</div>
+        </div>
+    </div>
+
+    <script>
+        function toggleAccordion() {
+            var content = document.getElementById("aboutContent");
+            var button = document.querySelector(".accordion-button");
+            
+            content.classList.toggle("open");
+            button.classList.toggle("active");
+            
+            if (content.classList.contains("open")) {
+                button.innerHTML = '<span class="accordion-icon">▲</span> 閉じる';
+            } else {
+                button.innerHTML = '<span class="accordion-icon">▼</span> どんな体験ができるの？';
+            }
+        }
+    </script>
+</body>
+</html>
