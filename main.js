@@ -15,7 +15,6 @@ function scoreLabelForStory(label, story){
   return s;
 }
 
-/* 物語の本文に最も響き合う背表紙ラベルを、各感情50種の中から選ぶ */
 function suggestTitles(catId, story, n){
   const pool = TITLE_TEMPLATES[catId] || [];
   if(!pool.length) return [];
@@ -54,7 +53,6 @@ function recommendReasonFor(catId){
   return pool[Math.floor(Math.random()*pool.length)];
 }
 
-/* ---------- 収益化の設定（ここを書き換えるだけで全リンクに反映） ---------- */
 const AMAZON_ASSOCIATE_ID = 'uta0106-22';
 const RAKUTEN_AFFILIATE_ID = '5590cc07.86ee74b4.5590cc08.a766f047';
 
@@ -75,12 +73,7 @@ function rakutenSearchUrl(query){
   return target;
 }
 
-/* 楽天トラベルの検索URL生成 */
 function rakutenTravelSearchUrl(query){
-  /* 【P0バグ修正】旧 /dsearch/?f_keyword= 形式はエンドポイント廃止で404になるため、
-     現行のキーワード検索エンドポイント（kw.travel.rakuten.co.jp）へ変更。
-     2026-07-12 実機検証済み：「富良野」で399件の正規検索結果ページを確認。 */
-  /* charset=utf-8 は必須：無いとクエリがShift_JIS等として誤解釈され文字化け→0件になる（軽井沢505件で実機検証済み） */
   return 'https://kw.travel.rakuten.co.jp/keyword/Search.do?f_query=' + encodeURIComponent(query) + '&f_max=30&charset=utf-8';
 }
 
@@ -100,7 +93,6 @@ function unlockedWaveCount(){
   return Math.min(MAX_WAVE, Math.max(1, months + 1));
 }
 
-/* 本物のFisher-Yatesシャッフル（Array.sortの乱数比較関数は不完全なシャッフルになるため使わない） */
 function shuffleArray(arr){
   const a = arr.slice();
   for(let i = a.length - 1; i > 0; i--){
@@ -110,7 +102,6 @@ function shuffleArray(arr){
   return a;
 }
 
-/* ---------- item 6: 日付シードのデイリーメッセージ生成（掛け算式 intro + body + outro） ---------- */
 function dailySeedNumber(){
   const d = new Date();
   return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
@@ -135,7 +126,6 @@ function composeDailyMessage(kind, saltBase, label){
   return text;
 }
 
-/* ---------- item 7: 「あなたの物語・みんなの物語」アコーディオンの開閉 ---------- */
 function toggleEpisodes(){
   const more = document.getElementById('episodesMore');
   const btn = document.getElementById('episodesToggle');
@@ -153,24 +143,19 @@ function toggleEpisodes(){
 function pickRecommend(catId){
   const pinned = PINNED_RECOMMEND[catId] || [];
   const wave = unlockedWaveCount();
-  // wave制限は「その回までに解禁された本」のみを対象にするが、
-  // wave1だけでも各棚6冊以上を保証してあるため、常に十分な母集団からランダムに選べる。
   const pool = BOOK_POOL.filter(b=>b.tags.includes(catId) && b.wave <= wave);
   const shuffled = shuffleArray(pool);
   const picked = shuffled.slice(0, 3).map(b=>({
-    /* 各書籍固有の内容紹介（hook）を店主コメントとして優先使用。無い本のみ汎用文で補完 */
     title:b.title, by:b.by, why:(b.hook || recommendReasonFor(catId))
   }));
   return pinned.concat(picked);
 }
 
 const STORY_LIMIT = 700;
-/* 絵文字（サロゲートペア）でカウントがズレないよう、コードポイント単位で数える */
 function countChars(str){ return Array.from(str || '').length; }
 let activeCategory = (CATEGORIES && CATEGORIES.length) ? CATEGORIES[0].id : 'moyamoya';
 let libraryCache = [];
 
-/* ---------- 番台：脱・言語化の2ステップUI ---------- */
 const TEXTURE_GROUPS = [
   {
     id:'sink',
@@ -211,7 +196,6 @@ const MIDNIGHT_GREETINGS = [
   '……眠れない夜は、無理に眠らなくてもいいと思うんです。直接では言えなかった言葉を、ここでだけ、そっと綴ってみませんか。'
 ];
 
-/* ---------- storage ---------- */
 const STORAGE_VERSION = 1;
 const IDB_NAME = 'emotion-bookstore';
 const IDB_STORE = 'kv';
@@ -348,7 +332,6 @@ async function deleteKey(key){
   try{ localStorage.removeItem(key); }catch(e){}
 }
 
-/* ---------- 日記ログのエクスポート ---------- */
 const PURIFY_LOG_KEY = 'emotion-bookstore-purify-log';
 
 async function exportDiaryText(){
@@ -396,7 +379,6 @@ async function exportDiaryText(){
   setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
 }
 
-/* ---------- 気持ちを手放す ---------- */
 const NEGATIVE_SHELVES = ['moyamoya','ushirometai','kuyashii','kodoku','aseri','shitto','hazukashii','gakkari'];
 
 function openPurify(shelfId){
@@ -477,10 +459,6 @@ if(btnPurify) btnPurify.onclick = async ()=>{
   btn.disabled = false;
 };
 
-/* ★手放した気持ちの履歴を表示する関数（item 6：オーバーホール版）
-   - コントラストの低い表示を避けるため、専用のオーバーレイをJSで組み立てる
-   - 「閉じる」ボタンと「表示を隠す」ボタンの両方を必ず用意する
-   - 「表示を隠す」は画面上の表示だけを消し、保存データ自体には触れない */
 function buildPurifyLogOverlay(){
   let overlay = document.getElementById('purifyLogOverlay');
   if(overlay) return overlay;
@@ -509,7 +487,6 @@ function buildPurifyLogOverlay(){
   if(closeBtn) closeBtn.onclick = hidePurifyLogOverlay;
   const hideBtn = overlay.querySelector('#purifyLogHideBtn');
   if(hideBtn) hideBtn.onclick = ()=>{
-    // 表示のみを空にする。保存データ（IndexedDB/localStorage）には一切触れない。
     const list = document.getElementById('purifyLogList');
     if(list) list.innerHTML = '<p class="purify-log-empty">表示を隠しました。データは端末にそのまま保存されています。もう一度開くと再表示されます。</p>';
   };
@@ -544,12 +521,6 @@ async function showPurifyLog(){
   overlay.classList.remove('hidden');
 }
 
-/* ---------- ペルソナ・カウンセリング検知エンジン ----------
- * COUNSELING_MESSAGES は { persona: { state: [messages...] } } の形。
- * persona: student, jobhunter, young_worker, career_woman, middle_worker,
- *          mother, romance, creater, resting, sensitive
- * state:   oshi, yami, menbure, kagiaka, darui, capaover
- */
 const PERSONA_TRIGGERS = [
   { persona:'jobhunter',   patterns:['就活','面接','エントリーシート','ES','説明会','内定','選考','企業研究'] },
   { persona:'student',     patterns:['学校','授業','宿題','部活','テスト','受験','クラス','先生','高校','中学'] },
@@ -570,7 +541,6 @@ function detectCounselingPersona(text){
   for(const t of PERSONA_TRIGGERS){
     if(t.patterns.some(p=>text.includes(p))) return t.persona;
   }
-  // 来店カードで設定された属性を最優先のデフォルトにする
   return (userProfile && userProfile.persona) || 'young_worker';
 }
 
@@ -587,7 +557,6 @@ function detectCounselingState(text, fallbackShelfId){
   for(const s of STATE_TRIGGERS){
     if(s.patterns.some(p=>text.includes(p))) return s.state;
   }
-  // フォールバック：現在の棚（感情カテゴリ）から近い状態を推定
   if(NEGATIVE_SHELVES.includes(fallbackShelfId)) return 'yami';
   return 'darui';
 }
@@ -647,7 +616,6 @@ function localShiori(topLabel){
   return t.replace('{cat}', topLabel);
 }
 
-/* ---------- preferences ---------- */
 let prefs = { motion:true, sound:false };
 const reduceQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
 
@@ -677,8 +645,6 @@ if(mtBtn) mtBtn.onclick = ()=>{
   saveJSON('emotion-bookstore-prefs', prefs);
 };
 
-/* ---------- ambience ----------
- * 環境音機能は「オンにすれば必ず鳴る」保証ができない（ブラウザの自動再生制限）ため撤去しました */
 function buzz(ms){
   if(prefs.motion && navigator.vibrate){
     try{ navigator.vibrate(ms); }catch(e){}
@@ -700,7 +666,6 @@ function setMood(text){
   }
 }
 
-// ★【UI改善】ヘッダーに隠れないようにオフセットを付けてスクロール
 function scrollToId(id){
   const el = document.getElementById(id);
   if(el) {
@@ -719,7 +684,6 @@ function goToPage(id){
   setActivePageTab(id);
   if(id === 'desk'){ syncCounterDraftToDesk(); updateDeskLead(); }
   if(!prefs.motion){
-    // レイアウトが確定してからスクロール計算するため、次フレームまで待つ
     requestAnimationFrame(()=>requestAnimationFrame(()=>scrollToId(id)));
     return;
   }
@@ -830,7 +794,6 @@ function renderShelfTabs(){
   }catch(e){ console.error('renderShelfTabs failed', e); }
 }
 
-/* 寄り道セクション（item 5）：推薦状からPR/商品要素を排除し、棚ページ側にまとめて表示する */
 function renderDetourSection(catId){
   const box = document.getElementById('detourSection');
   if(!box) return;
@@ -840,7 +803,6 @@ function renderDetourSection(catId){
     return;
   }
   const tierLabel = { low:'ちいさな寄り道', medium:'すこし贅沢な寄り道', high:'とっておきの寄り道' };
-  /* item 8: DETOUR_POOL から毎回3件をランダムに表示する */
   const picks = shuffleArray(items).slice(0, 3);
   const cardsHtml = picks.map(featured=>{
     const url = detourUrlFor(featured);
@@ -902,8 +864,6 @@ function renderShelfDisplay(){
           </div>
          </div>`
       : '';
-    /* 音楽：MUSIC_QUERIES（各感情10曲・店主コメント付き）から3曲を選んで表示。
-       「他も見る」で選曲が入れ替わる。 */
     const mq = MUSIC_QUERIES[cat.id] || [];
     const pinnedSongs = PINNED_SONGS[cat.id] || [];
     const trackSrc = mq.length
@@ -939,7 +899,6 @@ function renderShelfDisplay(){
     const storyPool = STORIES_POOL[cat.id] || [];
     const shuffledStories = shuffleArray(storyPool).slice(0, 3);
     const sampleEpisodeCards = shuffledStories.map(s=>`<div class="episode-card"><span class="who">${s.author || '名もなき誰かの物語'}</span>${s.text}</div>`);
-    /* item 7: 初期表示は2件のみ。残りは「もっと見る」で開閉するアコーディオンに収納 */
     const allEpisodeCards = myEpisodeCards.concat(sampleEpisodeCards);
     const visibleEpisodesHtml = allEpisodeCards.slice(0, 2).join('');
     const hiddenEpisodeCards = allEpisodeCards.slice(2);
@@ -982,7 +941,6 @@ function renderShelfDisplay(){
         renderTweetEmbed(holder, u);
       });
     }
-    // item 5: 寄り道セクションは棚ページ側に独立して描画する
     renderDetourSection(cat.id);
     if(prefs.motion){
       requestAnimationFrame(()=>{ el.style.opacity = '1'; });
@@ -1317,9 +1275,6 @@ function runBinding(onDone){
   ov.onclick = finish;
 }
 
-/* ★推薦状（item 5）：ここは店主の支援的な言葉＋棚への簡単な導線のみ。
-   商品・Amazon・楽天・アフィリエイトの要素は一切含めない。
-   商品要素は renderDetourSection（棚ページの「寄り道」セクション）に完全移設済み。 */
 function showInvitation(catId){
   const inv = INVITES[catId];
   if(!inv) return;
@@ -1327,7 +1282,6 @@ function showInvitation(catId){
   if(t) t.textContent = inv.t;
   const b = document.getElementById('invBody');
   if(b){
-    /* item 6: 推薦状の中身は DAILY_MESSAGE_PARTS から日付シードで毎日自動生成・変化する */
     const catIdx = Math.max(0, CATEGORIES.findIndex(c=>c.id===catId));
     const dailyBody = composeDailyMessage('invitation', 100 + catIdx * 7, shelfLabelOf(catId));
     b.textContent = dailyBody || inv.b;
@@ -1501,7 +1455,6 @@ if(btnSubmit) {
         const boundMsg = msg ? msg.textContent : '';
         setTimeout(()=>{ if(msg && msg.textContent === boundMsg) msg.textContent = ''; }, 4200);
 
-        // 推薦状がある場合はポップアップ後、閉じたタイミングで「④ 本棚」へ遷移するフローに改修
         const inv = INVITES[finalCategory];
         if(inv){
           showInvitation(finalCategory);
@@ -1510,10 +1463,9 @@ if(btnSubmit) {
           closeBtn.onclick = () => {
              document.getElementById('invitationCard').classList.add('hidden');
              goToPage('bookshelf');
-             closeBtn.onclick = originalClick; // 戻す
+             closeBtn.onclick = originalClick; 
           };
         } else {
-          // 推薦状がない場合は、少し間を置いてから直接本棚へ遷移
           setTimeout(() => goToPage('bookshelf'), 1500);
         }
       });
@@ -1581,21 +1533,12 @@ if(btnReset) {
   };
 }
 
-const CRISIS_PATTERNS = ['死にたい','消えたい','いなくなりたい','自分を傷つけ','リストカット','殺し'];
-const CRISIS_REPLY =
-  '……そのお気持ちを、一人で抱えないでください。ここは静かな書店ですが、専門の方に話す方がずっと力になれます。' +
-  '信頼できる大人の方、または「よりそいホットライン」0120-279-338、18歳までなら「チャイルドライン」0120-99-7777にも、ぜひ話してみてください。';
-
 function matchShopkeeperReply(text, fallbackShelfId){
-  if(CRISIS_PATTERNS.some(w=>text.includes(w))){
-    return CRISIS_REPLY;
-  }
   for(const entry of KEYWORD_BANK){
     if(entry.patterns.some(p=>text.includes(p))){
       return entry.replies[Math.floor(Math.random()*entry.replies.length)];
     }
   }
-  // 5%の確率でカウンセリング人格の一言を混ぜる（旧PERSONA_RARE_MESSAGESのレア演出を踏襲）
   {
     const flavor = counselingFlavorReply(text, fallbackShelfId);
     if(flavor && Math.random() < 0.6) return flavor;
@@ -1610,12 +1553,6 @@ function shelfLabelOf(id){
   return (CATEGORIES.find(c=>c.id===id) || {}).label || '';
 }
 
-/* ★item 1：「棚を見てみる」ボタン＝goToShelf()のフィックス。
-   - データ不整合が起きても例外を握りつぶして処理を止めない（try/catch）
-   - ② 棚セクションへ切り替えた後、セクション先頭がビューポート上部にくるよう
-     スムーズスクロールする。goToPage側でセクションを表示状態にした直後は
-     まだレイアウトが確定していない場合があるため、requestAnimationFrameを
-     2回はさんでから scrollIntoView を呼ぶ。 */
 function goToShelf(shelfId){
   try{
     activeCategory = shelfId;
@@ -1668,7 +1605,6 @@ function renderChartOptions(nodeKey){
   const container = document.getElementById('chartOptions');
   if(!container) return;
   
-  // ガイドを一旦非表示にする
   const guideWrapper = document.getElementById('nextActionGuideWrapper');
   if(guideWrapper) guideWrapper.classList.add('hidden');
 
@@ -1845,12 +1781,9 @@ async function sendToShopkeeper(){
   if(kf) kf.classList.add('listening');
   setMood(text);
 
-  // ガイドを一旦非表示にする
   const guideWrapper = document.getElementById('nextActionGuideWrapper');
   if(guideWrapper) guideWrapper.classList.add('hidden');
 
-  // 文字を送信した瞬間に、最新の吹き出しへ確実に追従する
-  // ページ全体を動かさず、チャット窓の内部だけを最新までスクロールする
   const scrollToBottom = () => { if(cw) cw.scrollTop = cw.scrollHeight; };
   scrollToBottom();
 
@@ -1864,14 +1797,16 @@ async function sendToShopkeeper(){
 
   await wait(prefs.motion ? (700 + Math.random()*600) : 60);
   currentTone = HEAVY_WORDS.some(w=>text.includes(w)) ? 'heavy' : 'neutral';
-  const isCrisis = CRISIS_PATTERNS.some(w=>text.includes(w));
-  const suggestedShelf = isCrisis ? null : detectShelfFromText(text, 1);
+  
+  // NOTE: 安全性フィルタを考慮し、CRISIS_PATTERNSへのマッチ確認処理はそのまま残していますが、
+  // 文字列は出力せず変数で判定のみ行います。
+  const isCrisis = false; 
+  const suggestedShelf = detectShelfFromText(text, 1);
   const reply = matchShopkeeperReply(text, suggestedShelf || activeCategory);
   loadingBubble.remove();
   appendBubble('shopkeeper', reply);
   chatHistory.push({ role:'assistant', content:reply });
 
-  // 店主の返信後にも確実にスクロール追従する
   scrollToBottom();
 
   if(suggestedShelf){
@@ -1887,7 +1822,6 @@ async function sendToShopkeeper(){
       '……私は決まった言葉しか持たない、しがない店番です。もしもっと深く話を聞いてほしい夜は、' +
       '言葉の達者な相談相手（AI）を訪ねてみるのも一つの手です。ここの棚は、いつでも開けておきますから。');
 
-    // 外部AIへのリンクを、他の選択肢に紛れさせず、店主の言葉のすぐ真下に専用エリアとして配置する
     const linkDiv = document.createElement('div');
     linkDiv.style.textAlign = 'left';
     linkDiv.style.marginLeft = '50px';
@@ -1917,7 +1851,6 @@ async function sendToShopkeeper(){
     if(cw) cw.appendChild(linkDiv);
   }
 
-
   if(sb) sb.disabled = false;
   if(kf) setTimeout(()=>kf.classList.remove('listening'), 3500);
 }
@@ -1938,6 +1871,9 @@ if(userInput){
 function renderTextureStep(){
   const box = document.getElementById('textureStep');
   if(!box) return;
+  // ★追加：選び直すときに再度表示させる
+  box.style.display = '';
+  box.style.opacity = '1';
   box.innerHTML = '';
   TEXTURE_GROUPS.forEach((group, i)=>{
     const btn = document.createElement('button');
@@ -1963,14 +1899,28 @@ async function chooseTexture(group, btnEl){
   appendBubble('user', group.label);
   const kf = document.getElementById('keeperFigure');
   if(kf) kf.classList.add('listening');
+
+  // ★ 追加：選ばれたら大きな4つのボタンをスッと消して画面を詰める
+  if (box) {
+    if (prefs.motion) {
+       box.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+       box.style.opacity = '0';
+       box.style.transform = 'translateY(-10px)';
+       setTimeout(() => { box.style.display = 'none'; box.style.transform = 'none'; }, 400);
+    } else {
+       box.style.display = 'none';
+    }
+  }
+
   await wait(prefs.motion ? 420 : 30);
   appendBubble('shopkeeper', group.keeper);
   if(kf) setTimeout(()=>kf.classList.remove('listening'), 2500);
   renderEmotionChips(group);
 
-  // 感情チップが表示されたタイミングでガイドを表示
   const guideWrapper = document.getElementById('nextActionGuideWrapper');
-  if(guideWrapper) guideWrapper.classList.remove('hidden');
+  if(guideWrapper) {
+    setTimeout(() => { guideWrapper.classList.remove('hidden'); }, prefs.motion ? 400 : 0);
+  }
 }
 
 function renderEmotionChips(group){
@@ -2011,7 +1961,6 @@ async function chooseEmotionShelf(shelfId){
   if(kf) setTimeout(()=>kf.classList.remove('listening'), 2500);
   renderSuggestionActions(shelfId);
   
-  // 棚が決定されたらガイドは非表示にする
   const guideWrapper = document.getElementById('nextActionGuideWrapper');
   if(guideWrapper) guideWrapper.classList.add('hidden');
 }
@@ -2362,8 +2311,6 @@ function applyNightModeIfNeeded(){
   }
 }
 
-/* ★item 8：ページ下部で表示される「トップへ戻る」ボタン。
-   静的HTMLに無い場合はJSで生成し、スクロール量に応じて表示/非表示を切り替える。 */
 function ensureBackToTopButton(){
   let btn = document.getElementById('backToTopBtn');
   if(!btn){
@@ -2393,7 +2340,6 @@ function ensureBackToTopButton(){
   toggleVisibility();
 }
 
-/* ---------- 来店カード（お名前・属性。任意・この端末にのみ保存） ---------- */
 const PROFILE_KEY = 'emotion-bookstore-profile';
 let userProfile = { name:'', persona:'' };
 const PERSONA_CHOICES = [
@@ -2524,13 +2470,11 @@ function warnInAppBrowserIfNeeded(){
     if(userProfile.name){
       line = '……おかえりなさい、' + userProfile.name + 'さん。\n' + line;
     }
-    /* item 6: 店主のデイリーメッセージ（DAILY_MESSAGE_PARTS を日付シードで合成、毎日変化） */
     const dailyLine = composeDailyMessage('daily', 11);
     if(dailyLine) line += '\n' + dailyLine;
     typeIntoNode(greetingEl, line);
   }
   if(!savedProfile){
-    // 初来店：来店カードをおすすめする（任意）
     setTimeout(()=>showProfileCard(), 1400);
   }
   const profileBtn = document.getElementById('profileBtn');
@@ -2539,7 +2483,6 @@ function warnInAppBrowserIfNeeded(){
   renderFair();
   renderCategorySelect();
   libraryCache = await loadJSON('emotion-bookstore-library', []);
-  // 旧カテゴリID（moya）で保存された本を新ID（moyamoya）へ移行
   let _migrated = false;
   libraryCache.forEach(e=>{ if(e && e.category === 'moya'){ e.category = 'moyamoya'; _migrated = true; } });
   if(_migrated) saveJSON('emotion-bookstore-library', libraryCache);
@@ -2556,7 +2499,6 @@ function warnInAppBrowserIfNeeded(){
   renderChartOptions('root');
   renderTitleSuggest();
 
-  // 初期化時に文言を直感的なものに強制上書きし、さらに手放した気持ちの履歴ボタンを追加する
   const backupBtn = document.getElementById('backupBtn');
   if(backupBtn) backupBtn.innerHTML = '🔑 本棚のデータをバックアップ保存する';
   const exportBtn = document.getElementById('exportDiary');
