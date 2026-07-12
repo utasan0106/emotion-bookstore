@@ -84,6 +84,34 @@ function detourUrlFor(item){
   return amazonSearchUrl(item.search_query);
 }
 
+// ★追加：棚の名言の出典（source）から書籍・作品名（『…』）を抜き出し、
+// その作品に飛べるリンクを作るためのユーティリティ
+function parseQuoteSource(source){
+  if(!source) return { author:'', title:null };
+  const m = source.match(/『([^』]+)』/);
+  if(!m) return { author:source, title:null };
+  const title = m[1];
+  let author = source.slice(0, m.index) + source.slice(m.index + m[0].length);
+  author = author
+    .replace(/[（(]\s*(小説|漫画|映画|アニメ|歌詞|楽曲)?\s*[）)]/g, '')
+    .replace(/(小説|漫画|映画|アニメ|歌詞|楽曲)\s*$/,'')
+    .trim();
+  return { author, title };
+}
+
+function escapeHtml(str){
+  return String(str == null ? '' : str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function quoteSourceHtml(source){
+  const { author, title } = parseQuoteSource(source);
+  if(!title) return escapeHtml(source);
+  const url = amazonSearchUrl((author ? author + ' ' : '') + title);
+  const authorHtml = author ? escapeHtml(author) + ' ' : '';
+  return `${authorHtml}<a class="quote-source-link" href="${url}" target="_blank" rel="noopener sponsored">『${escapeHtml(title)}』</a>`;
+}
+
 const SHOP_OPEN_DATE = new Date('2026-07-01T00:00:00+09:00');
 const MAX_WAVE = 6;
 
@@ -912,7 +940,7 @@ function renderShelfDisplay(){
     el.innerHTML = `
       <p class="definition"><b>${cat.label}</b> — ${cat.def}</p>
       <p class="quote-card">${q.text}</p>
-      <p class="quote-source">— ${q.source}</p>
+      <p class="quote-source">— ${quoteSourceHtml(q.source)}</p>
       <p class="episodes-heading">あなたの物語・みんなの物語</p>
       <div class="episodes">
         ${visibleEpisodesHtml}
@@ -1724,16 +1752,17 @@ function pickReply(reply){
 
 const chatHistory = [];
 
-function typeIntoNode(node, text, speed){
+function typeIntoNode(node, text, speed, onDone){
   if(!prefs.motion || text.length > 260){
     node.textContent = text;
+    if(onDone) onDone();
     return;
   }
   node.textContent = '';
   let i = 0;
   const cw = document.getElementById('chatWindow');
   const step = ()=>{
-    if(i >= text.length) return;
+    if(i >= text.length){ if(onDone) onDone(); return; }
     node.textContent += text[i++];
     if(node.closest && node.closest('.chat-window') && cw){
       cw.scrollTop = cw.scrollHeight;
@@ -1769,14 +1798,16 @@ function appendBubble(role, text){
     div.appendChild(name);
     const body = document.createElement('span');
     div.appendChild(body);
-    typeIntoNode(body, safeText);
-  } else {
-    div.textContent = safeText;
+    cw.appendChild(div);
+    // ★修正：吹き出しがまだ空のうちに一度だけ軽く位置合わせをしてから文字を綴り始め、
+    // 綴り終わったタイミングでもう一度、優しく最終位置へ合わせ直す。
+    // （文字が増えて箱の高さが変わっている最中にスクロールを続けると「瞬間移動」に見えてしまうため）
+    scrollPageToLatestBubble(div);
+    typeIntoNode(body, safeText, undefined, ()=>scrollPageToLatestBubble(div));
+    return div;
   }
+  div.textContent = safeText;
   cw.appendChild(div);
-  // ★修正：ここで即座に scrollTop を最下部へ飛ばしてしまうと、直後の
-  // scrollIntoView(smooth) より先に中身だけ「瞬間移動」して見えてしまうため、
-  // 内側・外側どちらのスクロールも scrollPageToLatestBubble 側にまとめて任せる
   scrollPageToLatestBubble(div);
   return div;
 }

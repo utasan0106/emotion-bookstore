@@ -46,6 +46,7 @@ body.no-motion *, body.no-motion *::before, body.no-motion *::after{
 .reveal{opacity:0; transform:translateY(14px); transition:opacity .7s ease, transform .7s ease;}
 .reveal.visible{opacity:1; transform:none;}
 body.no-motion .reveal{opacity:1; transform:none;}
+body.no-motion .chat-window{ scroll-behavior:auto; }
 
 /* ---- mood lighting layer (照明・色温度) ---- */
 #moodLayer{
@@ -391,6 +392,9 @@ section:last-of-type{border-bottom:none;}
 .chat-window{
   max-height:360px;
   overflow-y:auto;
+  /* ★追加：吹き出しが増えて内側スクロールが発生した際、店主の返信が
+     カクッと瞬間移動せず、優しく追従するように */
+  scroll-behavior:smooth;
   padding:6px 4px 10px;
   display:flex;
   flex-direction:column;
@@ -634,6 +638,17 @@ body:not(.no-motion) .shelf-tab.glow{
   color:var(--ink-soft);
   margin:-14px 0 22px;
   text-align:right;
+}
+/* ★追加：名言の出典が書籍・作品名の場合、その作品に飛べるリンク（控えめな下線のみ） */
+.quote-source-link{
+  color:inherit;
+  text-decoration:underline;
+  text-decoration-color:var(--paper-shadow);
+  text-underline-offset:2px;
+}
+.quote-source-link:hover{
+  color:var(--wine);
+  text-decoration-color:var(--wine);
 }
 .recommend-section{
   margin-top:20px;
