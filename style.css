@@ -236,6 +236,11 @@ body.no-motion #moodLayer{display:none;}
   font-family:var(--font-body);
   cursor:pointer;
   transition:transform .15s ease, background .15s ease, border-color .15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  box-sizing: border-box;
 }
 .intro-step:hover{
   transform:translateY(-2px);
@@ -265,6 +270,8 @@ body.no-motion #moodLayer{display:none;}
   color:var(--ink-soft);
   margin:0;
   line-height:1.6;
+  flex: 1;
+  word-break: auto-phrase;
 }
 @media (max-width:640px){
   .intro-steps{ grid-template-columns:repeat(2, 1fr); }
@@ -439,24 +446,46 @@ section:last-of-type{border-bottom:none;}
 }
 .chart-btn{
   font-family:var(--font-body);
-  font-size:13px;
-  padding:8px 16px;
-  border:1px solid var(--gold);
+  font-size:14.5px;
+  font-weight:700;
+  padding:10px 18px;
+  border:1.5px solid var(--gold);
   background:#fff9ec;
-  color:var(--ink-soft);
-  border-radius:20px;
+  color:var(--wine);
+  border-radius:24px;
   cursor:pointer;
+  box-shadow: 0 3px 6px rgba(168,130,60,0.15);
+  transition:all .2s ease;
 }
-.chart-btn:hover{background:var(--paper-2);}
+.chart-btn:hover{
+  background:var(--paper-2);
+  transform:translateY(-2px);
+  box-shadow: 0 5px 10px rgba(168,130,60,0.2);
+}
 .chart-btn.primary{
   background:var(--wine);
   color:var(--paper);
   border-color:var(--wine);
 }
+.next-action-guide {
+  background: rgba(255,255,255,0.6);
+  border-radius: 6px;
+  padding: 14px;
+  margin: 12px 0 16px;
+  border-left: 4px solid var(--wine);
+  animation: dropIn .5s ease;
+}
+.guide-lead {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--wine);
+  margin: 0 0 6px;
+}
 .freeform-hint{
   font-size:11px;
   color:var(--ink-soft);
-  margin:0 0 4px;
+  margin:0;
 }
 .chat-input-row textarea{
   flex:1;
