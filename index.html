@@ -94,7 +94,8 @@
     <p class="sub-tagline">感情の書店で、自分だけの一冊を見つけよう。</p>
 
     <div class="intro-explainer in-header">
-      <p class="intro-kicker">この書店でできること<br>—好きな場所から、自由に巡れます</p>
+      <!-- 修正ポイント1: 改行を入れて段落を分ける -->
+      <p class="intro-kicker">この書店でできること<br>— 好きな場所から、自由に巡れます</p>
       <div class="intro-steps">
         <button type="button" class="intro-step" onclick="goToPage('counter')">
           <span class="intro-num">①</span>
@@ -169,14 +170,17 @@
         <div class="bubble shopkeeper" id="firstGreeting"><span class="name">店主</span><span id="firstGreetingText">……いらっしゃいませ。ちょうど頁を閉じたところです。今はどんな気分に近いですか。近いものを選んでも、下に自由に書いてもらっても構いません。</span></div>
       </div>
       <div class="texture-step" id="textureStep" aria-label="心の質感を選ぶ"></div>
-      <div class="chart-options" id="chartOptions"></div>
-      <!-- main.js の制御に合わせてガイドを隠すための wrapper を追加 -->
+      
+      <!-- ★修正：ガイド文（👇さらに近い気持ちを選ぶか...）のHTML位置を「感情チップ」の上に移動 -->
       <div id="nextActionGuideWrapper" class="hidden">
         <div class="next-action-guide">
           <p class="guide-lead">👇 さらに近い気持ちを選ぶか、下の枠に言葉を書いて「話す」を押してください</p>
           <p class="freeform-hint">※書いた言葉は、そのまま編纂机の原稿用紙に写しておきます。</p>
         </div>
       </div>
+
+      <div class="chart-options" id="chartOptions"></div>
+
       <div class="chat-input-row">
         <textarea id="userInput" placeholder="例：うまく言えないけど、朝からずっとモヤモヤしている…" rows="2"></textarea>
         <button class="send-btn" id="sendBtn">話す</button>
