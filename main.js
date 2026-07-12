@@ -564,40 +564,68 @@ function lsSet(key, wrapped){
   }catch(e){ return false; }
 }
 
-async function loadJSON(key, fallback){
-  let wrapped = await idbGet(key);
-  if(wrapped === undefined){
-    wrapped = lsGet(key);
-    if(wrapped !== undefined){
-      idbSet(key, wrapped);
+/* ============================================================
+ * ★追加：データアクセス層（Repository）の抽象化
+ * ------------------------------------------------------------
+ * 【ベンダーロックイン回避のための設計方針】
+ * アプリの他の部分（UIロジック・各機能）は、IndexedDBやlocalStorageを
+ * 直接呼び出さず、必ずこの DataRepository（と、その薄いラッパーである
+ * loadJSON / saveJSON / deleteKey）を経由してデータの読み書きを行います。
+ *
+ * これにより、将来バックエンドAPI（例：AWS API Gateway + DynamoDB）へ
+ * 移行する場合も、書き換えが必要なのはこの DataRepository の内部実装
+ * （get/set/remove の中身）だけで済みます。UIやビジネスロジック側の
+ * コードには一切手を入れる必要がありません。
+ *
+ * 移行イメージ（将来、以下のようにこのオブジェクトの中身だけ差し替える）：
+ *   async get(key, fallback){
+ *     const res = await fetch(`${API_BASE_URL}/items/${encodeURIComponent(key)}`);
+ *     if(!res.ok) return fallback;
+ *     const { data } = await res.json();
+ *     return data ?? fallback;
+ *   }
+ * ============================================================ */
+const DataRepository = {
+  async get(key, fallback){
+    let wrapped = await idbGet(key);
+    if(wrapped === undefined){
+      wrapped = lsGet(key);
+      if(wrapped !== undefined){
+        idbSet(key, wrapped);
+      }
     }
-  }
-  if(wrapped === undefined || wrapped === null) return fallback;
-  try{
-    if(typeof wrapped === 'object' && 'v' in wrapped && 'data' in wrapped){
-      return wrapped.data;
+    if(wrapped === undefined || wrapped === null) return fallback;
+    try{
+      if(typeof wrapped === 'object' && 'v' in wrapped && 'data' in wrapped){
+        return wrapped.data;
+      }
+      return wrapped;
+    }catch(e){
+      return fallback;
     }
-    return wrapped;
-  }catch(e){
-    return fallback;
-  }
-}
+  },
 
-async function saveJSON(key, value){
-  const wrapped = { v: STORAGE_VERSION, data: value };
-  const okIdb = await idbSet(key, wrapped);
-  const okLs = lsSet(key, wrapped);
-  if(!okIdb && !okLs){
-    warnStorageOnce('この端末では保存ができないようです（プライベートブラウズ中や、保存容量の設定をご確認ください）。');
-    return false;
-  }
-  return true;
-}
+  async set(key, value){
+    const wrapped = { v: STORAGE_VERSION, data: value };
+    const okIdb = await idbSet(key, wrapped);
+    const okLs = lsSet(key, wrapped);
+    if(!okIdb && !okLs){
+      warnStorageOnce('この端末では保存ができないようです（プライベートブラウズ中や、保存容量の設定をご確認ください）。');
+      return false;
+    }
+    return true;
+  },
 
-async function deleteKey(key){
-  await idbDelete(key);
-  try{ localStorage.removeItem(key); }catch(e){}
-}
+  async remove(key){
+    await idbDelete(key);
+    try{ localStorage.removeItem(key); }catch(e){}
+  }
+};
+
+// 既存コードとの互換用の薄いラッパー（呼び出し側は今までどおりでOK）
+async function loadJSON(key, fallback){ return DataRepository.get(key, fallback); }
+async function saveJSON(key, value){ return DataRepository.set(key, value); }
+async function deleteKey(key){ return DataRepository.remove(key); }
 
 const PURIFY_LOG_KEY = 'emotion-bookstore-purify-log';
 
@@ -1808,12 +1836,32 @@ if(btnReset) {
 // カウンセリング的な「深掘り」の質問を返す（DEEP_DIVE_REPLIES／data.js）
 const DEEP_DIVE_MIN_CHARS = 25;
 
+// ★追加：「何でも答えてくれるAI」だと勘違いして、専門的な質問・議論・作業依頼を
+// ふっかけられた際に、店主の世界観を保ったまま「AIではない」ことをやんわり伝える返答
+const AI_MISMATCH_PATTERNS = [
+  '教えて', 'とは何', 'とは？', 'って何', '解説して', '解説を', '解説お願い', '説明して', '説明お願い',
+  'について教えて', '意見を聞かせて', 'どう思いますか', 'どう思う？', 'あなたの意見',
+  '議論しよう', '討論', 'ディベート', '計算して', 'コードを', 'コーディング', 'プログラム',
+  '翻訳して', '要約して', 'レポートを書いて', '作文して', '添削して', '論文', '定理', '証明して',
+  '公式を', 'アルゴリズム', 'メリットとデメリット', '違いは何', '違いを教えて', 'まとめて',
+  '所有論', '弁証法', '認識論', '存在論'
+];
+const AI_MISMATCH_REPLIES = [
+  '……申し訳ありません。私は本と感情の整理をお手伝いするだけの店番ですので、難しいお話には気の利いた返しができません。ですが、そのお気持ちをお預かりすることならできますよ。',
+  '……専門的なことになると、私はとんと不勉強なもので……お力になれず申し訳ないです。ただ、そのことについて考えているときのご自分の気持ちになら、耳を傾けられます。',
+  '……そのご質問には、私よりもっと物知りな方が向いているかもしれません。私にできるのは、いま揺れているあなたの心に、そっと寄り添うことくらいです。',
+  '……むずかしいお話ですね。明快な答えは持ち合わせていませんが、それに触れて浮かんだ気持ちになら、近い棚があるかもしれません。'
+];
+
 function matchShopkeeperReply(text, fallbackShelfId){
   for(const entry of KEYWORD_BANK){
     // ★修正：replies が空配列のエントリに当たると undefined が返り「無反応」になっていたバグを防止
     if(entry.replies && entry.replies.length && entry.patterns.some(p=>text.includes(p))){
       return entry.replies[Math.floor(Math.random()*entry.replies.length)];
     }
+  }
+  if(AI_MISMATCH_PATTERNS.some(p=>text.includes(p))){
+    return AI_MISMATCH_REPLIES[Math.floor(Math.random()*AI_MISMATCH_REPLIES.length)];
   }
   {
     const flavor = counselingFlavorReply(text, fallbackShelfId);
@@ -2111,50 +2159,81 @@ async function sendToShopkeeper(){
   appendBubble('shopkeeper', reply);
   chatHistory.push({ role:'assistant', content:reply });
 
-  if(suggestedShelf){
+  freeTextTurns++;
+  // ★修正：3回目の自由入力で会話をきれいに区切り、ループさせずに
+  // 「棚へ行く／机で綴る／話し直す」の3択で次のアクションへ誘導する
+  const isLoopEnd = freeTextTurns >= 3 && !isCrisis;
+
+  if(isLoopEnd){
+    await wait(prefs.motion ? 500 : 20);
+    const closingLine = '……なるほど。私のようなしがない店番が言葉を返すより、今のあなたにはご自身の気持ちを静かに見つめる時間のほうが合っているかもしれません。よろしければ、今の気持ちをそのまま一冊の本として綴ってみませんか？ または、静かに棚を巡るのも良いでしょう。';
+    appendBubble('shopkeeper', closingLine);
+    chatHistory.push({ role:'assistant', content:closingLine });
+    renderLoopEndActions(suggestedShelf || activeCategory);
+    lockFreeInput(true);
+  }else if(suggestedShelf){
     renderSuggestionActions(suggestedShelf);
   }else{
     renderChartOptions('root');
-  renderTitleSuggest();
+    renderTitleSuggest();
   }
 
-  freeTextTurns++;
-  if(freeTextTurns === 5 && !isCrisis){
-    appendBubble('shopkeeper',
-      '……私は決まった言葉しか持たない、しがない店番です。もしもっと深く話を聞いてほしい夜は、' +
-      '言葉の達者な相談相手（AI）を訪ねてみるのも一つの手です。ここの棚は、いつでも開けておきますから。');
-
-    const linkDiv = document.createElement('div');
-    linkDiv.style.textAlign = 'left';
-    linkDiv.style.marginLeft = '50px';
-    linkDiv.style.marginTop = '8px';
-    linkDiv.style.marginBottom = '16px';
-
-    const gptLink = document.createElement('a');
-    gptLink.className = 'chart-btn';
-    gptLink.href = 'https://chatgpt.com/';
-    gptLink.target = '_blank';
-    gptLink.rel = 'noopener';
-    gptLink.textContent = 'ChatGPTと話してみる';
-    gptLink.style.display = 'inline-block';
-    gptLink.style.marginRight = '8px';
-
-    const gemLink = document.createElement('a');
-    gemLink.className = 'chart-btn';
-    gemLink.href = 'https://gemini.google.com/';
-    gemLink.target = '_blank';
-    gemLink.rel = 'noopener';
-    gemLink.textContent = 'Geminiと話してみる';
-    gemLink.style.display = 'inline-block';
-
-    linkDiv.appendChild(gptLink);
-    linkDiv.appendChild(gemLink);
-
-    if(cw) cw.appendChild(linkDiv);
-  }
-
-  if(sb) sb.disabled = false;
+  if(sb) sb.disabled = isLoopEnd ? true : false;
   if(kf) setTimeout(()=>kf.classList.remove('listening'), 3500);
+}
+
+// ★追加：3回目のやりとりで表示する、次のアクションへの3択ボタン
+function renderLoopEndActions(shelfId){
+  const container = document.getElementById('chartOptions');
+  if(!container) return;
+  container.innerHTML = '';
+  const label = shelfLabelOf(shelfId);
+
+  const goBtn = document.createElement('button');
+  goBtn.type = 'button';
+  goBtn.className = 'chart-btn primary';
+  goBtn.textContent = `『${label}』の棚を見てみる`;
+  goBtn.onclick = ()=>goToShelf(shelfId);
+
+  const writeBtn = document.createElement('button');
+  writeBtn.type = 'button';
+  writeBtn.className = 'chart-btn';
+  writeBtn.textContent = 'この気持ちを机で書き留める';
+  writeBtn.onclick = ()=>goToDeskWithCategory(shelfId);
+
+  const restartBtn = document.createElement('button');
+  restartBtn.type = 'button';
+  restartBtn.className = 'chart-btn ghost';
+  restartBtn.textContent = '最初から話し直す';
+  restartBtn.onclick = ()=>restartCounterChat();
+
+  container.appendChild(goBtn);
+  container.appendChild(writeBtn);
+  container.appendChild(restartBtn);
+}
+
+// ★追加：自由入力欄（テキストエリア・送信ボタン）の表示/非表示を切り替える
+function lockFreeInput(locked){
+  const row = document.querySelector('.chat-input-row');
+  const ui = document.getElementById('userInput');
+  const sb = document.getElementById('sendBtn');
+  const earlyHint = document.getElementById('earlyFreeformHint');
+  if(row) row.classList.toggle('hidden', locked);
+  if(ui) ui.disabled = locked;
+  if(sb) sb.disabled = locked;
+  if(earlyHint) earlyHint.classList.toggle('hidden', locked);
+}
+
+// ★追加：「最初から話し直す」— ターン数をリセットし、自由入力を再開する
+function restartCounterChat(){
+  freeTextTurns = 0;
+  lockFreeInput(false);
+  renderChartOptions('root');
+  renderTitleSuggest();
+  appendBubble('shopkeeper', '……はい、あらためてお聞かせください。今はどんな気分に近いですか。');
+  buzz(6);
+  const ui = document.getElementById('userInput');
+  if(ui) setTimeout(()=>ui.focus(), prefs.motion ? 400 : 0);
 }
 
 const sendBtn = document.getElementById('sendBtn');
@@ -2163,6 +2242,9 @@ if(sendBtn) sendBtn.onclick = sendToShopkeeper;
 const userInput = document.getElementById('userInput');
 if(userInput){
   userInput.addEventListener('keydown', (e)=>{
+    // ★修正：日本語入力（IME）で変換確定のためにEnterを押した際、
+    // そのまま送信されてしまう誤送信を防止する
+    if(e.isComposing || e.keyCode === 229) return;
     if(e.key === 'Enter' && !e.shiftKey){
       e.preventDefault();
       sendToShopkeeper();
