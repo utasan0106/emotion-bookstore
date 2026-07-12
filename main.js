@@ -1539,7 +1539,8 @@ const DEEP_DIVE_MIN_CHARS = 25;
 
 function matchShopkeeperReply(text, fallbackShelfId){
   for(const entry of KEYWORD_BANK){
-    if(entry.patterns.some(p=>text.includes(p))){
+    // ★修正：replies が空配列のエントリに当たると undefined が返り「無反応」になっていたバグを防止
+    if(entry.replies && entry.replies.length && entry.patterns.some(p=>text.includes(p))){
       return entry.replies[Math.floor(Math.random()*entry.replies.length)];
     }
   }
@@ -1742,28 +1743,22 @@ function typeIntoNode(node, text, speed){
   step();
 }
 
-// ★追加：チャットの最新の吹き出しが画面外にある場合、ページ自体を
-// その吹き出しの位置までスッとスクロールする（番台でのやりとり確認のストレス軽減）
-function scrollPageToLatestBubble(){
+// ★修正：最新の吹き出し（店主の回答／自分の発言）が画面のどちら側に
+// あってもスッと見える位置までページをスクロールする（番台でのやりとり確認のストレス軽減）
+function scrollPageToLatestBubble(bubbleEl){
   const cw = document.getElementById('chatWindow');
-  if(!cw) return;
+  const target = bubbleEl || cw;
+  if(!target) return;
   requestAnimationFrame(()=>{
-    const rect = cw.getBoundingClientRect();
-    const margin = 16;
-    // 吹き出しの下端がビューポートの下にはみ出している時だけ、その分を追いスクロール
-    const overflowBottom = rect.bottom - window.innerHeight + margin;
-    if(overflowBottom > 0){
-      window.scrollTo({
-        top: window.scrollY + overflowBottom,
-        behavior: prefs.motion ? 'smooth' : 'auto'
-      });
-    }
+    // block:'end' で、対象の下端が画面下端に来るように必要な分だけ上下どちらにもスクロールする
+    target.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block: 'end', inline: 'nearest' });
   });
 }
 
 function appendBubble(role, text){
   const cw = document.getElementById('chatWindow');
   if(!cw) return null;
+  const safeText = (text === undefined || text === null || text === '') ? '……（ここでは言葉が見つかりませんでした。よければ、もう少しだけ違う言い方で聞かせてください。）' : text;
   const div = document.createElement('div');
   div.className = 'bubble ' + (role === 'user' ? 'you' : 'shopkeeper');
   if(role !== 'user'){
@@ -1774,13 +1769,13 @@ function appendBubble(role, text){
     div.appendChild(name);
     const body = document.createElement('span');
     div.appendChild(body);
-    typeIntoNode(body, text);
+    typeIntoNode(body, safeText);
   } else {
-    div.textContent = text;
+    div.textContent = safeText;
   }
   cw.appendChild(div);
   cw.scrollTop = cw.scrollHeight;
-  scrollPageToLatestBubble();
+  scrollPageToLatestBubble(div);
   return div;
 }
 
