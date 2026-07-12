@@ -80,7 +80,8 @@ function rakutenTravelSearchUrl(query){
   /* 【P0バグ修正】旧 /dsearch/?f_keyword= 形式はエンドポイント廃止で404になるため、
      現行のキーワード検索エンドポイント（kw.travel.rakuten.co.jp）へ変更。
      2026-07-12 実機検証済み：「富良野」で399件の正規検索結果ページを確認。 */
-  return 'https://kw.travel.rakuten.co.jp/keyword/Search.do?f_query=' + encodeURIComponent(query) + '&f_max=30';
+  /* charset=utf-8 は必須：無いとクエリがShift_JIS等として誤解釈され文字化け→0件になる（軽井沢505件で実機検証済み） */
+  return 'https://kw.travel.rakuten.co.jp/keyword/Search.do?f_query=' + encodeURIComponent(query) + '&f_max=30&charset=utf-8';
 }
 
 function detourUrlFor(item){
