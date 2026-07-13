@@ -1917,6 +1917,24 @@ function spineColorFor(catId){
   return SPINE_COLORS[idx % SPINE_COLORS.length];
 }
 
+// ★追加：本棚の「有機的な成長」演出。カテゴリの基調色から、本ごとに
+// ごくわずかに明暗をずらした縦グラデーションを生成する（毎回ランダムではなく、
+// タイトル文字数とインデックスから決定的に算出するので、再描画しても同じ本は同じ表情のまま）。
+function shadeHex(hex, percent){
+  const c = (hex || '#000000').replace('#','');
+  const r = parseInt(c.substr(0,2),16), g = parseInt(c.substr(2,2),16), b = parseInt(c.substr(4,2),16);
+  const adj = (v)=> Math.max(0, Math.min(255, Math.round(v + (percent < 0 ? v : 255 - v) * percent)));
+  const toHex = (v)=> v.toString(16).padStart(2,'0');
+  return '#' + toHex(adj(r)) + toHex(adj(g)) + toHex(adj(b));
+}
+function spineGradientFor(catId, seed){
+  const base = spineColorFor(catId);
+  const wobble = ((seed % 7) - 3) / 100; // -0.03〜+0.03程度の穏やかな揺らぎ
+  const top = shadeHex(base, 0.16 + wobble);
+  const bottom = shadeHex(base, -0.12 - wobble);
+  return `linear-gradient(180deg, ${top} 0%, ${base} 45%, ${bottom} 100%)`;
+}
+
 function renderShelf(markNewest){
   const shelf = document.getElementById('myShelf');
   if(!shelf) return;
@@ -1938,7 +1956,7 @@ function renderShelf(markNewest){
     const cat = CATEGORIES.find(c=>c.id===entry.category);
     const spine = document.createElement('div');
     spine.className = 'spine';
-    spine.style.background = spineColorFor(entry.category);
+    spine.style.background = spineGradientFor(entry.category, entry.title.length + i);
     spine.style.color = textColorFor(spineColorFor(entry.category));
     spine.style.height = (140 + (entry.title.length % 4) * 12) + 'px';
     const tilt = ((entry.title.length * 7 + i * 13) % 5) - 2;
