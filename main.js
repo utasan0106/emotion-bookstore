@@ -24,7 +24,7 @@ function currentLang(){ return appLang; }
 
 const MESSAGES = {
   ja: {
-    tagline: "モヤモヤを言語化して整理する、<br>あなただけの感情日記。",
+    tagline: "モヤモヤを言語化して整理する、<br>自分だけの感情日記。",
     subTagline: "感情の書店で、自分だけの一冊を見つけよう。",
     accordionSummary: "言語化できない今の「心の質感」を選ぶだけ。<br>店主のみちびきで、自分だけの本棚が育つ日記アプリ。",
     accordionOpenLabel: "どんな体験ができるの？",
@@ -330,6 +330,7 @@ function applyLanguage(){
   // ★店主の名前（巡／綴）は選んだ性格によって変わるため、data-i18n の一律上書きの後に
   // あらためて正しい名前入りの文章へ差し替える
   if(typeof updateKeeperBioText === 'function') updateKeeperBioText();
+  if(typeof applyUserNameDisplay === 'function') applyUserNameDisplay();
   const langBtn = document.getElementById('langToggle');
   if(langBtn) langBtn.textContent = appLang === 'ja' ? '🌐 JP / EN' : '🌐 EN / JP';
   const titleEl = document.querySelector('title');
@@ -3756,6 +3757,27 @@ function ensureBackToTopButton(){
 
 const PROFILE_KEY = 'emotion-bookstore-profile';
 let userProfile = { name:'', persona:'' };
+
+// ★追加：来店カードで呼び名を登録した場合、「あなたの本棚」等の「あなた」表記の代わりに
+// その名前で表示する。未登録時は従来通りの既定文言（t()経由）のまま。
+function applyUserNameDisplay(){
+  const name = (userProfile && userProfile.name) ? userProfile.name.trim() : '';
+  const shelfHead = document.querySelector('[data-i18n="sectionHead4"]');
+  if(shelfHead){
+    shelfHead.textContent = name
+      ? (appLang === 'ja' ? `${name}の本棚` : `${name}'s Bookshelf`)
+      : t('sectionHead4');
+  }
+  const taglineEl = document.querySelector('[data-i18n-html="tagline"]');
+  if(taglineEl){
+    const safeName = typeof escapeHtml === 'function' ? escapeHtml(name) : name;
+    taglineEl.innerHTML = name
+      ? (appLang === 'ja'
+          ? `モヤモヤを言語化して整理する、<br>${safeName}さんだけの感情日記。`
+          : `Put your feelings into words,<br>${safeName}'s diary, just for you.`)
+      : t('tagline');
+  }
+}
 const PERSONA_CHOICES = [
   { id:'student',       label:'学生・10代' },
   { id:'jobhunter',     label:'就活生・受験生' },
@@ -3889,6 +3911,7 @@ function showProfileCard(){
     prefs.keeperStyle = chosenStyle;
     saveJSON('emotion-bookstore-prefs', prefs);
     if(typeof updateKeeperBioText === 'function') updateKeeperBioText();
+    if(typeof applyUserNameDisplay === 'function') applyUserNameDisplay();
     ov.classList.add('hidden');
     let welcome = userProfile.name
       ? ('……' + userProfile.name + 'さん、ですね。お名前、覚えました。')
@@ -3939,6 +3962,7 @@ function warnInAppBrowserIfNeeded(){
   if(savedProfile && typeof savedProfile === 'object'){
     userProfile = Object.assign(userProfile, savedProfile);
   }
+  if(typeof applyUserNameDisplay === 'function') applyUserNameDisplay();
   const greetingEl = document.getElementById('firstGreetingText');
   // ★注：この時間帯別・ペルソナ別の挨拶ライブラリ（TIME_GREETINGS等）は日本語のみのため、
   // English表示中はapplyLanguage()が設定した既定の英語挨拶（firstGreeting）をそのまま使う
