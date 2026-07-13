@@ -566,28 +566,28 @@ function monthLabelOf(key){
 const TEXTURE_GROUPS = [
   {
     id:'sink',
-    label:'心が重く沈んでいる、気分が落ち込んでいる（静かな憂鬱）',
+    label:'雨降りのように、心が重く沈んでいる',
     keeper:'少しお疲れのようですね。このあたりの棚に、今の心に寄り添う本があるかもしれません。',
     shelves:['moyamoya','kodoku','gakkari','hazukashii','ushirometai','kanashii'],
     tone:'heavy'
   },
   {
     id:'wave',
-    label:'心がざわざわして落ち着かない、焦りや不安がある（動的な葛藤）',
+    label:'風が吹くように、心がざわざわしている',
     keeper:'感情が波立っているのですね。こちらの棚に並ぶ言葉が、ヒントになるかもしれません。',
     shelves:['aseri','kuyashii','shitto','akogare','ikari','fuan','keno','odoroki'],
     tone:'heavy'
   },
   {
     id:'light',
-    label:'心が穏やか、または前向きでワクワクしている（ポジティブ）',
+    label:'晴れやかに、前を向いている',
     keeper:'素敵な心の状態ですね。今の明るい気分にぴったりの棚を覗いてみませんか。',
     shelves:['wakuwaku','ando','kansha','itooshii','hokorashii','ureshii'],
     tone:'neutral'
   },
   {
     id:'sepia',
-    label:'過去の出来事や、懐かしい記憶を振り返っている（追憶）',
+    label:'夕暮れ時のように、懐かしんでいる',
     keeper:'過去の頁をめくっているのですね。思い出に浸れるこちらの棚がおすすめです。',
     shelves:['natsukashii','ushirometai','kansha'],
     tone:'neutral'
