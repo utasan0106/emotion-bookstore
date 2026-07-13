@@ -1959,6 +1959,21 @@ function renderShelf(markNewest){
   renderRecordCorner();
 }
 
+// ★追加：汎用トースト通知。milestone-toastの見た目・挙動パターンを流用し、
+// 「本棚に収めました」等の控えめな操作フィードバックを画面下部に一定時間だけ表示する。
+function showToast(message, opts){
+  const icon = (opts && opts.icon) || '📖';
+  const toast = document.createElement('div');
+  toast.className = 'milestone-toast gentle-toast';
+  toast.textContent = icon + ' ' + message;
+  document.body.appendChild(toast);
+  requestAnimationFrame(()=>toast.classList.add('show'));
+  setTimeout(()=>{
+    toast.classList.remove('show');
+    setTimeout(()=>toast.remove(), 500);
+  }, prefs.motion ? 2600 : 1600);
+}
+
 const MILESTONES = [1,3,5,10,20,30,50,100];
 async function celebrateMilestoneIfNeeded(count){
   if(!MILESTONES.includes(count)) return;
@@ -2408,6 +2423,8 @@ if(btnSubmit) {
         if(msg) msg.textContent = priorCount > 0
           ? `製本して、本棚に納品しました。「${label}」の棚に綴るのは、これで${priorCount + 1}冊目です。`
           : '製本して、本棚に納品しました。';
+        // ★追加：画面下部にも控えめなトースト通知を出し、保存できたことを分かりやすく伝える
+        showToast('本棚に収めました', { icon:'📚' });
 
         await saveJSON('emotion-bookstore-library', libraryCache);
         await celebrateMilestoneIfNeeded(libraryCache.length);
