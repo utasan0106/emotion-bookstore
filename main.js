@@ -34,7 +34,7 @@ const MESSAGES = {
     accordionP2: "モヤモヤした気持ちや言葉にならない本音は、美しい背表紙の一冊の本に。<br>誰の目も気にしなくていいこの場所で、あなただけの本棚を少しずつ育ててみませんか？<br>他人の視線に疲れた心が、スッと軽くなる体験をお届けします。",
     introKicker: "この書店でできること<br>— 好きな場所から、自由に巡れます",
     introTitle1: "店主に話す", introText1: "今の気持ちを、選択肢か自由な言葉で伝えます。",
-    introTitle2: "棚を巡る", introText2: "15種類の感情の棚から、名言や本、曲に出会います。",
+    introTitle2: "棚を巡る", introText2: "21種類の感情の棚から、名言や本、曲に出会います。",
     introTitle3: "物語を綴る", introText3: "自分の体験を書き、製本して棚に納めます。",
     introTitle4: "本棚が育つ", introText4: "綴った物語が積み重なり、自分だけの本棚に。",
     enterBtn: "扉をひらく →",
@@ -168,7 +168,7 @@ const MESSAGES = {
     accordionP2: "That murky feeling, that honest voice you can't quite say out loud — let it become a single book with a beautiful spine.<br>In a place where no one else's eyes matter, why not slowly grow a bookshelf that's entirely your own?<br>A heart tired of being watched can finally feel a little lighter.",
     introKicker: "What this bookstore offers<br>— wander freely, starting wherever you like",
     introTitle1: "Talk to the shopkeeper", introText1: "Share how you feel now — pick an option, or write freely.",
-    introTitle2: "Browse the shelves", introText2: "Discover quotes, books and songs across 15 emotion shelves.",
+    introTitle2: "Browse the shelves", introText2: "Discover quotes, books and songs across 21 emotion shelves.",
     introTitle3: "Write your story", introText3: "Write your experience, and have it bound onto the shelf.",
     introTitle4: "Watch your shelf grow", introText4: "Every story you write adds up to a bookshelf all your own.",
     enterBtn: "Open the door →",
@@ -561,7 +561,7 @@ const TEXTURE_GROUPS = [
     id:'wave',
     label:'心がざわざわして落ち着かない、焦りや不安がある（動的な葛藤）',
     keeper:'感情が波立っているのですね。こちらの棚に並ぶ言葉が、ヒントになるかもしれません。',
-    shelves:['aseri','kuyashii','shitto','akogare','ikari','fuan'],
+    shelves:['aseri','kuyashii','shitto','akogare','ikari','fuan','keno','odoroki'],
     tone:'heavy'
   },
   {
