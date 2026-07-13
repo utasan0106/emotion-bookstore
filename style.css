@@ -2371,6 +2371,31 @@ body.night .fav-btn.is-fav{
   z-index:60;
   transition:opacity .2s ease, transform .2s ease, bottom .2s ease;
 }
+/* ★追加：「今の気持ちを綴る」フローティングアクションボタン。右下の「↑」ボタンと
+   衝突しないよう左下に配置。編纂机までワンタップで移動できるシグニファイア。 */
+.write-fab{
+  position:fixed;
+  left:20px;
+  bottom:24px;
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background:var(--wine);
+  color:#f6e8c9;
+  border:none;
+  font-size:22px;
+  line-height:1;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(0,0,0,0.3);
+  z-index:60;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.write-fab:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(0,0,0,0.35); }
+.write-fab:active{ transform:translateY(0); }
+body.night .write-fab{ background:var(--gold-soft); color:#2E241A; }
+@media (max-width:600px){
+  .write-fab{ left:14px; bottom:18px; width:50px; height:50px; font-size:19px; }
+}
 .back-to-top.hidden{
   opacity:0;
   pointer-events:none;

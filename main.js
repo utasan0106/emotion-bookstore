@@ -3632,6 +3632,30 @@ function applyNightModeIfNeeded(){
   }
 }
 
+// ★追加：右下の「↑」ボタンと衝突しないよう左下に配置する、書く導線のフローティングアクションボタン（FAB）。
+// 押すと編纂机（③ 編纂机）まで自動でスクロールし、入力欄にフォーカスする。
+function ensureWriteFab(){
+  let btn = document.getElementById('writeFab');
+  if(!btn){
+    btn = document.createElement('button');
+    btn.id = 'writeFab';
+    btn.type = 'button';
+    btn.className = 'write-fab';
+    btn.setAttribute('aria-label', '今の気持ちを綴る');
+    btn.title = '今の気持ちを綴る';
+    btn.textContent = '🖋️';
+    document.body.appendChild(btn);
+  }
+  btn.onclick = ()=>{
+    goToPage('desk');
+    buzz(8);
+    setTimeout(()=>{
+      const ta = document.getElementById('storyInput');
+      if(ta) ta.focus({ preventScroll:true });
+    }, prefs.motion ? 700 : 150);
+  };
+}
+
 function ensureBackToTopButton(){
   let btn = document.getElementById('backToTopBtn');
   if(!btn){
@@ -3834,6 +3858,7 @@ function warnInAppBrowserIfNeeded(){
   warnInAppBrowserIfNeeded();
   restoreDraftIfAny();
   ensureBackToTopButton();
+  ensureWriteFab();
   setupShelfSwipe();
   // ★修正：以前はここより後（initPrefs()呼び出しより前）でisTsundere()を参照する挨拶文を
   // 組み立てていたため、保存済みの店主の性格設定（優しい／ツンデレ）が読み込まれる前に
