@@ -1,133 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap');
 
-/* ==========================================
-   前半：基本コンポーネント UI スタイル
-   ========================================== */
-body {
-  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-  background-color: #faf9f5;
-  color: #333;
-  margin: 0;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-}
-
-#app {
-  max-width: 480px;
-  width: 100%;
-  text-align: center;
-}
-
-h2, h3 {
-  color: #2c3e2e;
-}
-
-p {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 24px;
-}
-
-/* 入り口の大きな分岐ボタン */
-.door-btn {
-  display: block;
-  width: 100%;
-  background: #ffffff;
-  border: 2px solid #e0dcd3;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 16px;
-  cursor: pointer;
-  text-align: left;
-  transition: 0.2s;
-}
-
-.door-btn:hover {
-  border-color: #4a6b58;
-  background: #f4f7f5;
-}
-
-.door-btn strong {
-  display: block;
-  font-size: 18px;
-  color: #4a6b58;
-  margin-bottom: 8px;
-}
-
-/* トグルボタン（気分を選ぶボタン） */
-.emotion-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 24px;
-}
-
-.toggle-btn {
-  background: #ffffff;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  padding: 10px 16px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-/* 選ばれた状態（ON）のスタイル */
-.toggle-btn.active {
-  background: #4a6b58;
-  color: #ffffff;
-  border-color: #4a6b58;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
-}
-
-/* 本の装丁見せ（ジャケ買いUI） */
-.book-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  margin-top: 20px;
-}
-
-.book-card img {
-  width: 200px;
-  border-radius: 4px;
-  box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-}
-
-.hook-text {
-  font-size: 16px;
-  font-weight: bold;
-  color: #d9534f;
-  margin: 16px 0;
-}
-
-/* 汎用ボタン（戻る、決定など） */
-.action-btn {
-  background: #333;
-  color: #fff;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 24px;
-  cursor: pointer;
-  font-size: 14px;
-  margin-top: 10px;
-}
-
-.back-btn {
-  background: transparent;
-  color: #888;
-  text-decoration: underline;
-  border: none;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-/* ==========================================
-   後半：世界観演出・詳細コンポーネント UI スタイル
-   ========================================== */
 :root{
   --paper:#EAD9B8;
   --paper-2:#E1CBA0;
@@ -1075,7 +947,9 @@ body.night .recommend-why{ color:var(--gold); }
 .support-link:hover{ background:var(--paper-2); }
 .support-hint{ text-align:center; margin-top:6px; }
 
-/* ---- 追加：番台での対話が進むほど、店主が「見えてきている」ことを示す気配メーター ---- */
+/* ---- 追加：番台での対話が進むほど、店主が「見えてきている」ことを示す気配メーター
+   （Akinatorのテーマ選択・確信度演出を参考に、答えを断定するのではなく
+   「少しずつ寄り添っている」ニュアンスに寄せている） ---- */
 .mitate-meter{
   margin:6px 2px 2px;
   display:flex;
@@ -1179,6 +1053,7 @@ body.no-motion .mitate-meter-fill{ transition:none; }
   padding-top:12px;
 }
 .desk-extra summary{
+  /* 任意ラベリング機能の存在に気づけるよう、チップ状に強調（12px→14px） */
   display:inline-block;
   font-size:14px;
   font-weight:600;
@@ -1903,6 +1778,9 @@ body.night textarea, body.night input, body.night select{ background:#262219; co
 
 /* ============================================================
    追加実装（弾薬3・弾薬8-10統合）
+   番台2ステップUI／タイピング演出／感情レタースペース／
+   フォーカス暗転／光の粒子／写真添付／箱庭進化／空の背表紙／
+   吸い込みアニメ／レコード枠／バックアップ／SEOフッター／PWA案内
    ============================================================ */
 
 /* ---- 番台：心の質感4択（脱・言語化UI） ---- */
@@ -1934,6 +1812,7 @@ body.no-motion .texture-btn{ opacity:1; animation:none; }
 body.night .texture-btn{ background:#332E26; }
 @media (max-width:480px){ .texture-step{ grid-template-columns:1fr; } }
 
+/* 感情の棚（具体的な15のローマ字キーの棚）が、栞をめくるようにフェード出現する */
 .chart-btn.fade-in{
   opacity:0;
   animation:chipFadeIn .45s ease forwards;
@@ -1950,14 +1829,14 @@ body.no-motion .chart-btn.fade-in{ opacity:1; animation:none; }
 a.ai-referral-link{ text-decoration:none; font-size:13px; padding:7px 14px; display:inline-block; }
 .chart-btn.shelf-chip{ font-family:var(--font-display); }
 
-/* ---- 感情レターススペース ---- */
+/* ---- 感情レタースペース（重いトーンの時、静寂と余白が広がる） ---- */
 .bubble.shopkeeper.tone-heavy{
   letter-spacing:.16em;
   line-height:2.5;
   padding:18px 20px;
 }
 
-/* ---- 対話への完全フォーカス ---- */
+/* ---- 対話への完全フォーカス（入力中は周囲が静かに暗転する引き算の演出） ---- */
 .entrance, .page-nav, #particleLayer, .keeper-vignette, .keeper-bio,
 .section-head, .section-sub, .freeform-hint{
   transition:opacity .6s ease;
@@ -2008,7 +1887,7 @@ body.focus-dim .chat-input-row{ position:relative; z-index:2; }
 }
 body.no-motion #particleLayer{ display:none; }
 
-/* ---- 写真の添付 ---- */
+/* ---- 写真の添付（カメラ風カスタムラベル＋ふわっとプレビュー） ---- */
 .photo-row{
   display:flex;
   align-items:center;
@@ -2030,9 +1909,9 @@ body.no-motion #particleLayer{ display:none; }
 .photo-hint{ font-size:10.5px; color:var(--ink-soft); flex-basis:100%; line-height:1.6; }
 .photo-preview{
   position:relative;
-  width:92px; height:92px;
+  width:92px; height:92px;   /* 1:1固定枠。どんな画角でも中央トリミングで崩れない */
   border:4px solid #fffdf6;
-  border-bottom-width:14px;
+  border-bottom-width:14px;  /* ポラロイド風の白い余白 */
   box-shadow:0 3px 10px rgba(60,40,20,.25);
   transform:rotate(-2deg);
   opacity:0;
@@ -2045,7 +1924,7 @@ body.no-motion .photo-preview{ opacity:1; }
 }
 .photo-preview img{
   width:100%; height:100%;
-  object-fit:cover;
+  object-fit:cover;          /* 中央トリミング */
   display:block;
 }
 .photo-remove{
@@ -2062,7 +1941,7 @@ body.no-motion .photo-preview{ opacity:1; }
   box-shadow:0 2px 6px rgba(0,0,0,.3);
 }
 
-/* ---- 本の頁に挟まれた写真 ---- */
+/* ---- 本の頁に挟まれた写真（モーダル・1:1中央トリミングでレイアウト不崩壊） ---- */
 .modal-photo{
   width:min(300px, 80%);
   aspect-ratio:1/1;
@@ -2075,7 +1954,7 @@ body.no-motion .photo-preview{ opacity:1; }
 }
 .modal-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-/* ---- 本棚の箱庭進化 ---- */
+/* ---- 本棚の箱庭進化（冊数マイルストーンで装飾が豪華に育つ） ---- */
 .wood-shelf{ transition:box-shadow .8s ease, border-color .8s ease, background .8s ease; }
 .shelf-ornaments{
   position:absolute;
@@ -2105,7 +1984,7 @@ body.no-motion .photo-preview{ opacity:1; }
   background:linear-gradient(180deg, #8A6240, #4A3220);
 }
 
-/* ---- 右端の空の背表紙 ---- */
+/* ---- 右端に常に置かれる「まだ中身が書かれていない空の背表紙」 ---- */
 .spine.empty-spine{
   background:transparent !important;
   border:1.5px dashed rgba(242,230,200,.55);
@@ -2119,7 +1998,7 @@ body.no-motion .photo-preview{ opacity:1; }
   color:#f2e6c8;
 }
 
-/* ---- 製本時の吸い込みアニメーション ---- */
+/* ---- 製本時の吸い込みアニメーション（本が本棚へスッと収まる） ---- */
 .fly-book{
   position:fixed;
   left:50%; top:50%;
@@ -2136,7 +2015,7 @@ body.no-motion .photo-preview{ opacity:1; }
   opacity:0;
 }
 
-/* ---- 店主のレコード棚 ---- */
+/* ---- 店主のレコード棚（時間帯で変わるアフィリエイト・レコード枠） ---- */
 .record-corner{
   margin-top:18px;
   display:flex;
@@ -2188,7 +2067,7 @@ body:not(.no-motion) .record-disc{ animation:recordSpin 9s linear infinite; }
   .record-links{ justify-content:center; }
 }
 
-/* ---- 本棚の鍵 ---- */
+/* ---- 本棚の鍵（手動バックアップ） ---- */
 .backup-link{ color:var(--wine); font-weight:600; }
 .backup-hint{
   display:flex;
@@ -2202,7 +2081,7 @@ body:not(.no-motion) .record-disc{ animation:recordSpin 9s linear infinite; }
   padding:7px 14px;
 }
 
-/* ---- フッター注記 ---- */
+/* ---- フッター：SEO世界観テキスト・アフィリエイト規約 ---- */
 .affiliate-note{
   font-size:10.5px;
   color:var(--ink-soft);
@@ -2210,7 +2089,7 @@ body:not(.no-motion) .record-disc{ animation:recordSpin 9s linear infinite; }
 }
 
 /* ============================================================
-   item 5: 寄り道セクション（棚ページ）
+   item 5: 寄り道セクション（棚ページ。DETOUR_POOLの low/medium/high）
    ============================================================ */
 .detour-section{
   margin-top:28px;
@@ -2296,7 +2175,7 @@ body.night .detour-link{ color:#E8C97A; }
 .detour-tier-live{ border-left:4px solid #4FA3D1; }
 .detour-live .detour-tier-badge{ background:#2F6B90; }
 
-/* ---- ライブな新刊・新譜 ---- */
+/* ---------- 棚の本・音楽おすすめに添える、外部APIから取得したライブな新刊・新譜 ---------- */
 .live-pick-wrap:empty{ display:none; }
 .live-pick-heading{
   font-family:var(--font-display);
@@ -2354,7 +2233,8 @@ body.night .live-pick-card{ background:#26313A; border-color:#3A4A56; }
 body.night .live-pick-link{ color:#8FC6E8; }
 
 /* ============================================================
-   item 6: 手放した気持ちの履歴モーダル
+   item 6: 手放した気持ちの履歴モーダル（オーバーホール版）
+   main.jsのbuildPurifyLogOverlay()が動的に生成する要素に対応するスタイル
    ============================================================ */
 .purify-log-overlay{
   position:fixed;
@@ -2421,6 +2301,7 @@ body.night .purify-log-entry{ background:#332E26; }
 }
 .purify-log-text{
   font-size:13.5px;
+  /* item 3/6: 過去ログ本文は必ず高コントラストな地色文字で表示する */
   color:var(--ink);
   white-space:pre-wrap;
   line-height:1.8;
@@ -2433,7 +2314,7 @@ body.night .purify-log-entry{ background:#332E26; }
   padding:20px 0;
 }
 
-/* ---- 「気になる」ボタン ---- */
+/* ---- 「気になる」ボタン／気になるリスト ---- */
 .fav-btn{
   display:inline-flex;
   align-items:center;
@@ -2516,7 +2397,8 @@ body.night .fav-btn.is-fav{
   z-index:60;
   transition:opacity .2s ease, transform .2s ease, bottom .2s ease;
 }
-/* ★フローティングアクションボタン（綴る） */
+/* ★追加：「今の気持ちを綴る」フローティングアクションボタン。右下の「↑」ボタンと
+   衝突しないよう左下に配置。編纂机までワンタップで移動できるシグニファイア。 */
 .write-fab{
   position:fixed;
   left:20px;
@@ -2553,7 +2435,7 @@ body.night .write-fab{ background:var(--gold-soft); color:#2E241A; }
 }
 
 /* ============================================================
-   推薦状に「棚を見てみる」ボタンを追加
+   推薦状（invitation）に「棚を見てみる」ボタンを追加（item 5）
    ============================================================ */
 .inv-goshelf{
   font-size:12px;
@@ -2567,7 +2449,7 @@ body.night .write-fab{ background:var(--gold-soft); color:#2E241A; }
 }
 .inv-goshelf:hover{ opacity:.9; }
 
-/* ---- PWAポップアップ案内 ---- */
+/* ---- PWA：ホーム画面へのピン留め案内ポップアップ ---- */
 .pwa-popup{
   position:fixed;
   left:50%; bottom:24px;
@@ -2593,7 +2475,10 @@ body.night .pwa-popup{ background:#2E2922; }
 .pwa-steps{ font-size:12px; color:var(--ink-soft); margin:0 0 8px; line-height:1.9; }
 .pwa-note{ font-size:11px; color:var(--ink-soft); margin:0 0 12px; }
 
-/* ============ 最終仕上げ追加スタイル ============ */
+
+/* ============ 最終仕上げの追加スタイル ============ */
+
+/* 棚に並ぶ言葉（名言）を目立たせる：店主が案内する主役コンテンツ */
 .quote-card{
   font-size:19px;
   line-height:2.1;
@@ -2608,11 +2493,15 @@ body.night .pwa-popup{ background:#2E2922; }
   font-size:12.5px;
   margin:6px 0 22px;
 }
+
+/* 寄り道（月替わり特集）の注記 */
 .detour-note{
   font-size:11px;
   color:var(--ink-soft);
   margin:10px 0 0;
 }
+
+/* 編纂机のリード（ここまでを踏まえて） */
 .desk-lead{
   font-family:var(--font-display);
   font-size:15px;
@@ -2624,6 +2513,8 @@ body.night .pwa-popup{ background:#2E2922; }
   margin:0 0 10px;
 }
 .desk-lead.hidden{ display:none; }
+
+/* 背表紙タイトルの提案チップ */
 .title-suggest{ margin-top:10px; }
 .title-suggest:empty{ display:none; }
 .title-suggest-label{
@@ -2645,6 +2536,8 @@ body.night .pwa-popup{ background:#2E2922; }
   transition:transform .12s ease, background .12s ease;
 }
 .title-chip:hover{ transform:translateY(-2px); background:#fff; }
+
+/* 感情の地図：期間タブ・グリフ */
 .trend-period-tabs{ display:flex; gap:6px; margin:10px 0 12px; }
 .trend-period-btn{
   font-size:11.5px;
@@ -2762,6 +2655,7 @@ body.night .profile-card{ background:#2A2119; }
 body.night .profile-lead{ color:#E8DcC8; }
 body.night #profileName, body.night .persona-chip{ background:#3A2E22; color:#E8DCC8; }
 
+/* プレイリストの店主コメント */
 .playlist-track-comment{
   display:block;
   font-size:11px;
@@ -2770,9 +2664,10 @@ body.night #profileName, body.night .persona-chip{ background:#3A2E22; color:#E8
   margin:2px 0 4px;
 }
 
+
 /* ============ Priority 3 追加スタイル ============ */
 
-/* 夜の書店モードのコントラスト改善 */
+/* item 1: 夜の書店モードのコントラスト改善 — 明るい下地のカードが夜の文字色と衝突していた問題を解消 */
 body.night .quote-card{
   background:#332E26;
   box-shadow:0 2px 10px rgba(0,0,0,0.3);
@@ -2791,7 +2686,7 @@ body.night .legal-row a{
   color:#BFB194;
 }
 
-/* アコーディオン設定 */
+/* item 7: 「あなたの物語・みんなの物語」アコーディオン */
 .episodes-heading{
   font-family:var(--font-display);
   font-size:14.5px;
@@ -2816,7 +2711,7 @@ body.night .legal-row a{
 }
 body.night .episodes-toggle{ color:#BFB194; }
 
-/* 各セクション下部の「番台へ戻る」ボタン */
+/* item 10: 各セクション下部の「番台へ戻る」ボタン */
 .section-return{
   text-align:center;
   margin-top:28px;
