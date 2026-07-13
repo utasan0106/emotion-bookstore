@@ -1,0 +1,20 @@
+{
+  "name": "みんなの感情書店",
+  "short_name": "感情書店",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fcfbfa",
+  "theme_color": "#121820",
+  "icons": [
+    {
+      "src": "ogp.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "ogp.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

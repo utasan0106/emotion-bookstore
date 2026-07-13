@@ -1,24 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<!-- ===== 追加：Content Security Policy（CSP） =====
-     静的ホスティング（Vercel等）で完結させるため<meta>タグ方式で設定。
-     head内の最上部に置くことで、以降にパースされる要素（GA4・Xの埋め込み・インラインscript等）すべてに適用される。
-     許可した外部通信先：
-       - GA4（googletagmanager.com / google-analytics.com）
-       - Xの投稿埋め込み（platform.twitter.com / twimg.com / syndication.twitter.com）
-       - Googleフォント（style.css内@importで読み込んでいるfonts.googleapis.com / fonts.gstatic.com）
-       - Amazon／楽天／YouTube／Spotifyへのリンク（<a>タグでの遷移のみ。fetch等での送信はconnect-srcで制限）
-       - Google Books API（www.googleapis.com）／iTunes Search API（itunes.apple.com）：
-         「今月の寄り道」および棚の本・音楽おすすめで、季節や気分のキーワードから最新の作品を
-         取得するためにブラウザから直接呼び出す。送信されるのは検索キーワードのみで、
-         利用者が編纂机で綴った文章やその他の個人情報は一切含まれない（main.js側で徹底）。
-     'unsafe-inline'（script-src）について：本ページは複数箇所にインラインscript（GA4初期化・アコーディオン開閉など）を
-     ビルド工程なしの静的ファイルとして直接記述しているため、nonce/hashを使わない<meta>方式のCSPでは
-     'unsafe-inline'を外すとそれらが機能しなくなる。XSS対策の主眼は「ユーザー入力を描画前にエスケープすること」
-     （main.js側で対応済み。外部APIから受け取った書誌情報も同様にエスケープしてから描画する）に置き、
-     CSPはobject-src/base-uri/frame-src等の制限による多層防御として設定している。
--->
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
   script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://platform.twitter.com https://*.twimg.com;
@@ -31,7 +13,6 @@
   form-action 'self';
   object-src 'none';
 ">
-<!-- ===== Google Analytics 4（GA4）計測タグ — head内最上部に設置 ===== -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -39,184 +20,33 @@
   gtag('js', new Date());
   gtag('config', 'G-TGLD3KW523');
 </script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "みんなの感情書店は無料ですか？登録は必要ですか？",
-      "acceptedAnswer": { "@type": "Answer", "text": "完全無料で、会員登録も不要です。ブラウザで開いてすぐに使えます。" }
-    },
-    {
-      "@type": "Question",
-      "name": "書いた日記や感情の記録は誰かに見られますか？",
-      "acceptedAnswer": { "@type": "Answer", "text": "綴った言葉はサーバーには送信されず、お使いの端末の中にのみ保存されます。AIの学習にも使われません。" }
-    },
-    {
-      "@type": "Question",
-      "name": "どんなことができるアプリですか？",
-      "acceptedAnswer": { "@type": "Answer", "text": "21種類の感情の棚から名言・本・音楽に出会い、店主との対話で気持ちを整理し、自分の体験を綴って自分だけの本棚を育てられる感情日記アプリです。自己分析やジャーナリング、メンタルケアに活用できます。" }
-    },
-    {
-      "@type": "Question",
-      "name": "スマホのホーム画面から使えますか？",
-      "acceptedAnswer": { "@type": "Answer", "text": "SafariやChromeの「ホーム画面に追加」で、アプリのように1タップで開けるようになります。" }
-    }
-  ]
-}
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<!-- ===== SEO用 Meta Tags ===== -->
 <meta name="description" content="名もなき気持ちに、名前をあげる。「みんなの感情書店」は登録不要・完全無料の感情日記アプリ。書いた言葉はサーバーには送信されません。誰にも見られない、あなただけの絶対に安全な本棚です。">
-<meta name="keywords" content="感情日記,日記アプリ,自己分析,感情の言語化,ジャーナリング,メンタルケア,就活 自己分析,登録不要,無料,感情書店">
-<meta name="robots" content="index,follow">
-<meta name="author" content="みんなの感情書店">
-<link rel="canonical" href="https://emotion-bookstore.vercel.app/">
-<!-- ホーム画面に追加した時にアプリのような全画面表示になる（PWA風） -->
+<title>みんなの感情書店 — 感情日記・自己分析アプリ｜登録不要・無料</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="感情書店">
 <meta name="theme-color" content="#EFE6CD">
-<!-- OGP：XやLINEでシェアされた時にプレビューカードを出すための設定 -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="みんなの感情書店 — 登録不要の感情日記・自己分析">
 <meta property="og:description" content="名もなき気持ちに名前をあげる、登録不要の感情日記。感情の棚を巡り、今の気分に寄り添う本や曲に出会ったり、自分の物語をそっと本棚に綴る場所です。データはサーバーに送信されず、端末内だけに安全に保存されます。">
 <meta property="og:url" content="https://emotion-bookstore.vercel.app/">
 <meta property="og:image" content="https://emotion-bookstore.vercel.app/ogp.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="みんなの感情書店 — 登録不要の感情日記・自己分析">
-<meta name="twitter:description" content="名もなき気持ちに名前をあげる、登録不要の感情日記。感情の棚を巡り、今の気分に寄り添う本や曲に出会ったり、自分の物語をそっと本棚に綴る場所です。データはサーバーに送信されず、端末内だけに安全に保存されます。">
-<meta name="twitter:image" content="https://emotion-bookstore.vercel.app/ogp.png">
-<!-- アイコン：外部ファイル不要のSVGデータURI（本の絵文字風）。公開時に180x180のPNGに差し替えるとより綺麗 -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%236E2A34'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E">
-<title>みんなの感情書店 — 感情日記・自己分析アプリ｜登録不要・無料</title>
-<!-- ===== 構造化データ（JSON-LD）：Google検索でのリッチリザルト用 ===== -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "みんなの感情書店",
-  "alternateName": "感情書店",
-  "url": "https://emotion-bookstore.vercel.app/",
-  "description": "名もなき気持ちに、名前をあげる。登録不要・完全無料の感情日記アプリ。21の感情の棚、店主との対話、あなただけの本棚。書いた言葉はサーバーには送信されません。",
-  "applicationCategory": "LifestyleApplication",
-  "operatingSystem": "Web",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
-  "inLanguage": "ja",
-  "keywords": "感情日記,日記アプリ,自己分析,感情の言語化,ジャーナリング,メンタルケア"
-}
-</script>
 <link rel="stylesheet" href="style.css">
-<style>
-/* --- 追加：トップページのアコーディオン用スタイル --- */
-.about-accordion-wrap {
-  max-width: 600px;
-  margin: 32px auto 24px;
-  border-top: 1px dashed var(--paper-shadow);
-  border-bottom: 1px dashed var(--paper-shadow);
-  padding: 16px 0;
-  text-align: center;
-}
-.about-accordion-summary {
-  font-size: 13.5px;
-  color: var(--ink);
-  line-height: 1.6;
-  margin-bottom: 12px;
-}
-.about-accordion-btn {
-  background: none;
-  border: none;
-  color: var(--ink-soft);
-  font-size: 12px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  transition: color 0.2s ease;
-}
-.about-accordion-btn:hover {
-  color: var(--wine);
-}
-.about-accordion-content {
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: max-height 0.4s ease, opacity 0.4s ease, margin 0.4s ease, padding 0.4s ease;
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 6px;
-  text-align: left;
-  font-size: 13px;
-  line-height: 1.7;
-  color: var(--ink);
-}
-.about-accordion-content.open {
-  max-height: 400px;
-  opacity: 1;
-  padding: 16px;
-  margin-top: 12px;
-  border: 1px solid var(--paper-shadow);
-}
-.about-accordion-content b {
-  display: block;
-  font-family: var(--font-display);
-  color: var(--wine);
-  margin-bottom: 8px;
-  font-size: 14.5px;
-  text-align: center;
-}
-body.night .about-accordion-content {
-  background: #332E26;
-  border-color: var(--paper-shadow);
-}
-/* --- 追加：データの保存場所・バックアップ説明アコーディオン --- */
-.about-data-accordion{
-  max-width: 600px;
-  margin: 0 auto 24px;
-  text-align: left;
-}
-.about-data-accordion summary{
-  cursor: pointer;
-  text-align: center;
-  list-style: none;
-  font-size: 12px;
-  color: var(--ink-soft);
-  padding: 4px 8px;
-  transition: color 0.2s ease;
-}
-.about-data-accordion summary::-webkit-details-marker{ display:none; }
-.about-data-accordion summary:before{ content: "📦 "; }
-.about-data-accordion summary:hover{ color: var(--wine); }
-.about-data-accordion[open] summary{ color: var(--wine); }
-.about-data-content{
-  margin-top: 10px;
-  padding: 14px 16px;
-  background: rgba(255,255,255,0.4);
-  border: 1px solid var(--paper-shadow);
-  border-radius: 6px;
-  font-size: 13px;
-  line-height: 1.75;
-  color: var(--ink);
-}
-.about-data-content b{
-  display: block;
-  font-family: var(--font-display);
-  color: var(--wine);
-  margin-bottom: 8px;
-  font-size: 14.5px;
-  text-align: center;
-}
-body.night .about-data-content{
-  background: #332E26;
-  border-color: var(--paper-shadow);
-}
-</style>
+<!-- PWA設定 -->
+<link rel="manifest" href="manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(err => {
+        console.log('SW registration failed: ', err);
+      });
+    });
+  }
+</script>
 </head>
 <body>
 
@@ -224,112 +54,31 @@ body.night .about-data-content{
   <header class="entrance">
     <p class="eyebrow">EMOTIONAL BINDERY &amp; BOOKSHOP</p>
     <h1>みんなの感情書店</h1>
-    <p class="tagline" data-i18n-html="tagline">モヤモヤを言語化して整理する、<br>あなただけの感情日記。</p>
-    <p class="sub-tagline" data-i18n="subTagline">感情の書店で、自分だけの一冊を見つけよう。</p>
-
-    <!-- ===== 追加：サービス説明のアコーディオン ===== -->
-    <div class="about-accordion-wrap">
-      <div class="about-accordion-summary" data-i18n-html="accordionSummary">
-        言語化できない今の「心の質感」を選ぶだけ。<br>
-        店主のみちびきで、自分だけの本棚が育つ日記アプリ。
-      </div>
-      <button class="about-accordion-btn" id="aboutAccordionBtn" onclick="toggleAboutAccordion()">
-        <span id="aboutAccordionIcon">▼</span> <span id="aboutAccordionBtnLabel" data-i18n="accordionOpenLabel">どんな体験ができるの？</span>
-      </button>
-      <div class="about-accordion-content" id="aboutAccordionContent">
-        <b data-i18n="accordionTitle">みんなの感情書店とは</b>
-        <p data-i18n-html="accordionP1">言語化できない「今の心の質感」を直感的に選ぶだけで、店主が優しくナビゲートしてくれます。<br>
-        そして、あなたの感情にそっと寄り添う「本」や「音楽」との思いがけない出会いをご提案します。</p>
-        <p style="margin-top:8px;" data-i18n-html="accordionP2">モヤモヤした気持ちや言葉にならない本音は、美しい背表紙の一冊の本に。<br>
-        誰の目も気にしなくていいこの場所で、あなただけの本棚を少しずつ育ててみませんか？<br>
-        他人の視線に疲れた心が、スッと軽くなる体験をお届けします。</p>
-      </div>
-    </div>
-
-    <script>
-      function toggleAboutAccordion() {
-        const content = document.getElementById('aboutAccordionContent');
-        const btn = document.getElementById('aboutAccordionBtn');
-        const icon = document.getElementById('aboutAccordionIcon');
-        const labelEl = document.getElementById('aboutAccordionBtnLabel');
-        const lang = (typeof currentLang === 'function') ? currentLang() : 'ja';
-        const closeLabel = (typeof MESSAGES !== 'undefined') ? MESSAGES[lang].accordionCloseLabel : '閉じる';
-        const openLabel = (typeof MESSAGES !== 'undefined') ? MESSAGES[lang].accordionOpenLabel : 'どんな体験ができるの？';
-
-        content.classList.toggle('open');
-        if (content.classList.contains('open')) {
-          icon.textContent = '▲';
-          if (labelEl) labelEl.textContent = closeLabel;
-        } else {
-          icon.textContent = '▼';
-          if (labelEl) labelEl.textContent = openLabel;
-        }
-      }
-    </script>
-    <!-- ===== /追加：サービス説明のアコーディオン ===== -->
-
-    <!-- ===== 追加：データの保存場所・バックアップの説明 ===== -->
-    <details class="about-data-accordion">
-      <summary data-i18n="dataAboutOpenLabel">データはどこに保存されるの？</summary>
-      <div class="about-data-content">
-        <b data-i18n="dataAboutTitle">この書店とデータについて</b>
-        <p data-i18n-html="dataAboutBody">「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す簡単な仕組みです（特定のAIモデルと会話しているわけではありません）。<br>「物語を綴る」「製本する」で書いた内容は、どこにも公開されず、この端末のブラウザ内（IndexedDB/localStorage）だけに保存されます。外部サーバーへは送信されません。アカウント登録もなく、他の人があなたの記録を見ることはできません。<br>「気持ちを手放す」は、この端末だけに残る「手放しの記録」に静かに移すことで、本棚の一覧からは見えなくなる機能です（完全な削除ではなく、専用の記録欄に移されます）。<br>「みんなの本棚」の「みんな」は他ユーザーとの共有ではなく、あなた自身の本棚が育っていく様子を指す名前です。<br>ブラウザのデータを消去するとこの記録も失われるため、「🔑 バックアップ保存」から定期的にファイルへ書き出すことをおすすめします。サービスとして終了する場合も、事前にバックアップを取っていただければお手元にデータが残ります。</p>
-      </div>
-    </details>
-    <!-- ===== /追加：データの保存場所・バックアップの説明 ===== -->
-
-    <div class="intro-explainer in-header">
-      <p class="intro-kicker" data-i18n-html="introKicker">この書店でできること<br>— 好きな場所から、自由に巡れます</p>
-      <div class="intro-steps">
-        <button type="button" class="intro-step" onclick="goToPage('counter')">
-          <span class="intro-num">①</span>
-          <p class="intro-title" data-i18n="introTitle1">店主に話す</p>
-          <p class="intro-text" data-i18n="introText1">今の気持ちを、選択肢か自由な言葉で伝えます。</p>
-        </button>
-        <button type="button" class="intro-step" onclick="goToPage('shelves')">
-          <span class="intro-num">②</span>
-          <p class="intro-title" data-i18n="introTitle2">棚を巡る</p>
-          <p class="intro-text" data-i18n="introText2">15種類の感情の棚から、名言や本、曲に出会います。</p>
-        </button>
-        <button type="button" class="intro-step" onclick="goToPage('desk')">
-          <span class="intro-num">③</span>
-          <p class="intro-title" data-i18n="introTitle3">物語を綴る</p>
-          <p class="intro-text" data-i18n="introText3">自分の体験を書き、製本して棚に納めます。</p>
-        </button>
-        <button type="button" class="intro-step" onclick="goToPage('bookshelf')">
-          <span class="intro-num">④</span>
-          <p class="intro-title" data-i18n="introTitle4">本棚が育つ</p>
-          <p class="intro-text" data-i18n="introText4">綴った物語が積み重なり、自分だけの本棚に。</p>
-        </button>
-      </div>
-    </div>
-
-    <button class="enter-btn" onclick="goToPage('counter')" data-i18n="enterBtn">扉をひらく →</button>
+    <p class="tagline">モヤモヤを言語化して整理する、<br>あなただけの感情日記。</p>
+    
+    <button class="enter-btn" onclick="goToPage('counter')">扉をひらく →</button>
     <div class="pref-row">
-      <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切" data-i18n-title="motionToggleTitle">演出：入</button>
-      <button class="pref-toggle" id="profileBtn" title="お名前と属性の設定（任意・この端末にのみ保存）" data-i18n="profileBtn" data-i18n-title="profileBtnTitle">🪪 来店カード</button>
-      <button class="pref-toggle" id="langToggle" title="言語切り替え / Language">🌐 JP / EN</button>
+      <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切">演出：入</button>
+      <button class="pref-toggle" id="profileBtn" title="来店カード">🪪 来店カード</button>
     </div>
     <div class="trust-row">
-      <span class="trust-badge" data-i18n="trustBadge1">登録不要</span>
-      <span class="trust-badge" data-i18n="trustBadge2">この端末にのみ保存</span>
-      <span class="trust-badge" data-i18n="trustBadge3">AIの学習には使われません</span>
+      <span class="trust-badge">登録不要</span>
+      <span class="trust-badge">この端末にのみ保存</span>
     </div>
   </header>
 
-  <nav class="page-nav" id="pageNav" aria-label="ページを選ぶ" data-i18n-aria="pageNavAria">
-    <button class="page-tab" data-page="counter" onclick="goToPage('counter')" data-i18n="pageTab1">① 番台</button>
-    <button class="page-tab" data-page="shelves" onclick="goToPage('shelves')" data-i18n="pageTab2">② 棚</button>
-    <button class="page-tab" data-page="desk" onclick="goToPage('desk')" data-i18n="pageTab3">③ 編纂机</button>
-    <button class="page-tab" data-page="bookshelf" onclick="goToPage('bookshelf')" data-i18n="pageTab4">④ 本棚</button>
+  <nav class="page-nav" id="pageNav" aria-label="ページを選ぶ">
+    <button class="page-tab" data-page="counter" onclick="goToPage('counter')">① 番台</button>
+    <button class="page-tab" data-page="shelves" onclick="goToPage('shelves')">② 棚</button>
+    <button class="page-tab" data-page="desk" onclick="goToPage('desk')">③ 編纂机</button>
+    <button class="page-tab" data-page="bookshelf" onclick="goToPage('bookshelf')">④ 本棚</button>
   </nav>
 
   <div class="page-turn-overlay" id="pageTurnOverlay" aria-hidden="true"></div>
 
   <section id="counter" class="reveal">
-    <div class="section-head"><span class="section-num">1</span><h2 data-i18n="sectionHead1">番台 — 店主に相談する</h2></div>
-    <p class="section-sub" data-i18n="sectionSub1">今のモヤモヤを、そのまま話してください。</p>
-    <p class="field-hint" style="margin:-4px 0 10px;" data-i18n="keeperNotAiHint">※AIチャットボットではなく、あらかじめ用意した言葉を返す簡単な仕組みです。会話はモデルに送信されません。</p>
+    <div class="section-head"><span class="section-num">1</span><h2>番台 — 店主に相談する</h2></div>
+    <p class="section-sub">今の気持ちを、そのまま話してください。</p>
     <div class="counter-wrap">
       <div class="keeper-vignette" aria-hidden="true">
         <svg viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg">
@@ -348,189 +97,164 @@ body.night .about-data-content{
           <rect x="10" y="96" width="300" height="6" fill="var(--wood)" rx="2"/>
         </svg>
       </div>
-      <details class="keeper-bio">
-        <summary data-i18n="keeperBioSummary">店主について</summary>
-        <p data-i18n="keeperBioText">この書店の店主。名前は「巡（めぐる）」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、巡が長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。</p>
-      </details>
       <div class="chat-window" id="chatWindow">
-        <div class="bubble shopkeeper" id="firstGreeting"><span class="name" data-i18n="keeperNameLabel">店主</span><span id="firstGreetingText" data-i18n="firstGreeting">……いらっしゃいませ。ちょうど頁を閉じたところです。今はどんな気分に近いですか。近いものを選んでも、下に自由に書いてもらっても構いません。</span></div>
+        <div class="bubble shopkeeper" id="firstGreeting"><span class="name">店主</span><span id="firstGreetingText">……いらっしゃいませ。ちょうど頁を閉じたところです。今はどんな気分に近いですか。近いものを選んでも、下に自由に書いてもらっても構いません。</span></div>
       </div>
       <div class="mitate-meter hidden" id="mitateMeter" aria-hidden="true">
         <span class="mitate-meter-label" id="mitateMeterLabel"></span>
         <div class="mitate-meter-bar"><div class="mitate-meter-fill" id="mitateMeterFill"></div></div>
       </div>
-      <div class="texture-step" id="textureStep" aria-label="心の質感を選ぶ" data-i18n-aria="textureStepAria"></div>
+      <div class="texture-step" id="textureStep" aria-label="心の質感を選ぶ"></div>
 
       <div class="chart-options" id="chartOptions"></div>
 
       <div id="nextActionGuideWrapper" class="hidden">
         <div class="next-action-guide">
-          <p class="guide-lead" data-i18n="guideLead">👇 当てはまるものがない場合は、下の枠に言葉を書いて「話す」を押してください</p>
-          <p class="freeform-hint" data-i18n="freeformHintDesk">※書いた言葉は、そのまま編纂机の原稿用紙に写しておきます。</p>
+          <p class="guide-lead">👇 当てはまるものがない場合は、下の枠に言葉を書いて「話す」を押してください</p>
         </div>
       </div>
-
-      <!-- ===== 追加：最初から表示する控えめな一言（何を入力する場所か分かりにくい対策） ===== -->
-      <p class="freeform-hint early-freeform-hint" id="earlyFreeformHint" data-i18n="earlyFreeformHint">当てはまるものがない場合は、この枠に気持ちを書いて「話す」を押してください。</p>
+      <p class="freeform-hint early-freeform-hint" id="earlyFreeformHint">当てはまるものがない場合は、この枠に気持ちを書いて「話す」を押してください。</p>
 
       <div class="chat-input-row">
-        <textarea id="userInput" placeholder="例：うまく言えないけど、朝からずっとモヤモヤしている…" rows="2" data-i18n-ph="userInputPlaceholder"></textarea>
-        <button class="send-btn" id="sendBtn" data-i18n="sendBtn">話す</button>
+        <textarea id="userInput" placeholder="例：うまく言えないけど、朝からずっとモヤモヤしている…" rows="2"></textarea>
+        <button class="send-btn" id="sendBtn">話す</button>
       </div>
     </div>
   </section>
 
   <section id="shelves" class="reveal">
-    <div class="section-head"><span class="section-num">2</span><h2 data-i18n="sectionHead2">感情の棚</h2></div>
-    <p class="section-sub" data-i18n="sectionSub2">棚を選んでも、あてもなく巡っても。</p>
+    <div class="section-head"><span class="section-num">2</span><h2>感情の棚</h2></div>
     <div class="fair" id="fairBox"></div>
     <div class="shelf-tabs" id="shelfTabs"></div>
     <div class="shelf-display" id="shelfDisplay"></div>
     <div class="detour-section" id="detourSection"></div>
-    <p class="swipe-hint" data-i18n="swipeHint">← 左右にスワイプでも棚を移動できます →</p>
-    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')" data-i18n="backToBandai">⤴ 番台へ戻る</button></div>
+    <p class="swipe-hint">← 左右にスワイプでも棚を移動できます →</p>
+    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')">⤴ 番台へ戻る</button></div>
   </section>
 
   <section id="desk" class="reveal">
-    <div class="section-head"><span class="section-num">3</span><h2 data-i18n="sectionHead3">編纂机 — 物語を綴る</h2></div>
+    <div class="section-head"><span class="section-num">3</span><h2>編纂机 — 物語を綴る</h2></div>
     <p class="desk-lead hidden" id="deskLead"></p>
-    <p class="section-sub" data-i18n-html="sectionSub3">今の棚は「<span id="deskCategoryLabel"></span>」です。書き終えたら、タイトルは店主が考えます（自分でつけても構いません）。今の気持ちだけでなく、以前のことを振り返って綴ることもできます。</p>
     <div class="desk-form">
-      <div class="field">
-        <textarea id="storyInput" placeholder="いつ、どこで、何があって、どう感じたか。短くても、拙くても構いません。" rows="6" data-i18n-ph="storyInputPlaceholder"></textarea>
+      <div class="field desk-split-inputs">
+        <div class="split-field">
+          <label for="storyEventInput" class="split-label">出来事（思い浮かばない時はスキップ）</label>
+          <textarea id="storyEventInput" placeholder="いつ、どこで、何があったか。" rows="2"></textarea>
+        </div>
+        <div class="split-field">
+          <label for="storyEmotionInput" class="split-label">感情と考え</label>
+          <textarea id="storyEmotionInput" placeholder="そのとき、胸の中はどう感じたか。短くても、拙くても構いません。" rows="4"></textarea>
+        </div>
         <div class="count-row">
-          <button type="button" class="assist-link" id="assistBtn" data-i18n="assistBtn">書き出しに迷ったら、店主の助け舟</button>
+          <button type="button" class="assist-link" id="assistBtn">書き出しに迷ったら、店主の助け舟</button>
           <span class="story-count" id="storyCount">0 / 700字</span>
         </div>
       </div>
       <div class="photo-row">
-        <label class="photo-label" for="photoInput" data-i18n="photoLabel">📷 今日の一枚を、頁に挟む（任意）</label>
+        <label class="photo-label" for="photoInput">📷 今日の一枚を、頁に挟む（任意）</label>
         <input type="file" id="photoInput" accept="image/*" class="hidden-file">
         <div class="photo-preview hidden" id="photoPreview">
-          <img id="photoPreviewImg" alt="添付写真のプレビュー" data-i18n-alt="photoPreviewAlt">
-          <button type="button" class="photo-remove" id="photoRemove" aria-label="写真を外す" data-i18n-aria="photoRemoveAria">×</button>
+          <img id="photoPreviewImg" alt="添付写真のプレビュー">
+          <button type="button" class="photo-remove" id="photoRemove" aria-label="写真を外す">×</button>
         </div>
-        <span class="photo-hint" data-i18n="photoHint">写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。</span>
       </div>
       <details class="desk-extra">
-        <summary data-i18n="deskExtraSummary">✍️ 棚・タイトル・いつの気持ちかを、自分で決める（任意）</summary>
+        <summary>✍️ 棚・タイトル・いつの気持ちかを、自分で決める（任意）</summary>
         <div class="field-row" style="margin-top:12px;">
           <div class="field">
-            <label for="categorySelect" data-i18n="fieldLabelShelf">棚</label>
+            <label for="categorySelect">棚</label>
             <select id="categorySelect"></select>
           </div>
           <div class="field">
-            <label for="titleInput" data-i18n="fieldLabelTitle">背表紙のタイトル</label>
-            <input id="titleInput" maxlength="16" placeholder="空欄なら店主が考えます" data-i18n-ph="titleInputPlaceholder">
+            <label for="titleInput">背表紙のタイトル</label>
+            <input id="titleInput" maxlength="16" placeholder="空欄なら店主が考えます">
           </div>
         </div>
         <div class="title-suggest" id="titleSuggest"></div>
         <div class="field-row" style="margin-top:12px;">
           <div class="field">
-            <label for="whenSelect" data-i18n="fieldLabelWhen">いつの気持ちですか</label>
+            <label for="whenSelect">いつの気持ちですか</label>
             <select id="whenSelect">
-              <option value="now" data-i18n="whenOptionNow">今の気持ち</option>
-              <option value="past" data-i18n="whenOptionPast">以前のことを振り返って</option>
+              <option value="now">今の気持ち</option>
+              <option value="past">以前のことを振り返って</option>
             </select>
           </div>
-          <div class="field">
-            <label for="tweetInput" data-i18n="fieldLabelTweet">関連するXの投稿があれば</label>
-            <input id="tweetInput" type="url" placeholder="例：https://x.com/username/status/1234567890" data-i18n-ph="tweetInputPlaceholder">
-          </div>
         </div>
-        <span class="field-hint" data-i18n="fieldHint">「以前のことを振り返って」を選ぶと、あの時の気持ちをそのまま本棚に閉じ込めておけます。困った時に開き直すと、前にも同じ気持ちを乗り越えてきたことがわかります。Xの投稿へのリンクを貼ると、本を開いたときに公式の埋め込みで表示されます。本文や画像を直接お預かりすることはありません。</span>
       </details>
       <div class="curate-box hidden" id="curateBox">
         <p class="curate-msg" id="curateMsg"></p>
         <div class="curate-actions" id="curateActions"></div>
       </div>
       <div class="desk-actions">
-        <button class="bind-btn" id="submitStory" data-i18n="submitStory">店主に預けて製本する</button>
+        <button class="bind-btn" id="submitStory">店主に預けて製本する</button>
         <span class="desk-msg" id="deskMsg"></span>
-        <p class="field-hint" style="margin-top:4px;" data-i18n="submitStoryHint">※外部には公開されず、この端末のブラウザ内にのみ保存されます。</p>
+        <p class="field-hint" style="margin-top:4px;">※外部には公開されず、この端末のブラウザ内にのみ保存されます。</p>
       </div>
     </div>
     <div class="invitation hidden" id="invitationCard">
-      <div class="inv-seal" data-i18n="invSeal">封</div>
-      <p class="inv-kicker" data-i18n="invKicker">推薦状</p>
+      <div class="inv-seal">封</div>
+      <p class="inv-kicker">推薦状</p>
       <p class="inv-title" id="invTitle"></p>
       <p class="inv-body" id="invBody"></p>
-      <button class="inv-goshelf" id="invGoShelf" data-i18n="invGoShelf">棚を見てみる</button>
-      <button class="inv-close" id="invClose" data-i18n="invClose">しおりに挟む</button>
+      <button class="inv-goshelf" id="invGoShelf">棚を見てみる</button>
+      <button class="inv-close" id="invClose">しおりに挟む</button>
     </div>
-    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')" data-i18n="backToBandai">⤴ 番台へ戻る</button></div>
+    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')">⤴ 番台へ戻る</button></div>
   </section>
 
   <section id="bookshelf" class="reveal">
-    <div class="section-head"><span class="section-num">4</span><h2 data-i18n="sectionHead4">あなたの本棚</h2><span class="shelf-count" id="shelfCount"></span></div>
-    <p class="section-sub" data-i18n="sectionSub4">納品した物語が背表紙になって並びます。クリックすると読めます。困った時にここを開くと、前にも同じ気持ちを乗り越えてきたことがわかります。</p>
+    <div class="section-head"><span class="section-num">4</span><h2>あなたの本棚</h2><span class="shelf-count" id="shelfCount"></span></div>
     <div class="shelf-month-tabs hidden" id="shelfMonthTabs"></div>
     <div class="wood-shelf">
       <div class="shelf-row" id="myShelf">
-        <div class="shelf-empty" id="shelfEmptyMsg" data-i18n="shelfEmptyMsg">まだ本がありません。編纂机で最初の一冊を綴ってみましょう。</div>
+        <div class="shelf-empty" id="shelfEmptyMsg">まだ本がありません。編纂机で最初の一冊を綴ってみましょう。</div>
       </div>
     </div>
-    <div class="record-corner hidden" id="recordCorner" aria-label="店主のレコード棚" data-i18n-aria="recordCornerAria"></div>
+    <div class="record-corner hidden" id="recordCorner" aria-label="店主のレコード棚"></div>
     <div class="shelf-controls">
-      <button class="reset-link" id="resetShelf" data-i18n="resetShelf">本棚をリセットする</button>
+      <button class="reset-link" id="resetShelf">本棚をリセットする</button>
     </div>
     <div class="backup-hint">
       <button type="button" class="share-btn" id="backupBtn">🔑 本棚のデータをバックアップ保存する</button>
       <button type="button" class="share-btn" id="exportDiary">📥 これまでの記録をテキストでダウンロード</button>
-      <button type="button" class="share-btn" id="exportDiaryCsv">📊 これまでの記録をCSVでダウンロード（Excel等で開けます）</button>
       <button type="button" class="share-btn" id="restoreBtn">📤 バックアップから復元する</button>
       <input type="file" id="restoreFileInput" accept="application/json,.json" class="hidden" aria-hidden="true">
     </div>
     <p class="field-hint" id="restoreMsg" style="text-align:center;margin-top:4px;"></p>
-    <div class="trend hidden" id="trendBox">
-      <p id="trendSummary" class="trend-summary-main"></p>
-      <details class="trend-detail">
-        <summary data-i18n="trendDetailSummary">感情の地図を詳しく見る</summary>
-        <p class="trend-note" data-i18n="trendNote">※月次「感情取扱説明書」レポートの簡易デモです。この地図はあなたにだけ見えています。</p>
-        <div id="trendBars"></div>
-      </details>
-    </div>
     <div class="trend hidden" id="shioriCard">
-      <h3 data-i18n="shioriCardTitle">今日の栞</h3>
-      <p class="trend-note" data-i18n="shioriCardNote">あなたの本棚を眺めた店主から、一枚。</p>
-      <span class="shiori-slip hidden" id="shioriSlip"><span class="shiori-label" data-i18n="shioriLabel">栞 — 店主より</span><span id="shioriText"></span></span>
-      <button class="curate-btn" id="shioriBtn" data-i18n="shioriBtn">栞を受け取る</button>
+      <h3>今日の栞</h3>
+      <span class="shiori-slip hidden" id="shioriSlip"><span class="shiori-label">栞 — 店主より</span><span id="shioriText"></span></span>
+      <button class="curate-btn" id="shioriBtn">栞を受け取る</button>
     </div>
-    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')" data-i18n="backToBandai">⤴ 番台へ戻る</button></div>
+    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')">⤴ 番台へ戻る</button></div>
   </section>
 
   <footer class="shop-footer">
-    <span data-i18n="footerBrand">『みんなの感情書店』</span><br>
-    <span data-i18n="footerNote">綴った言葉はサーバーには送信されず、この端末にのみ保存されます。</span>
+    <span>『みんなの感情書店』</span><br>
+    <span>綴った言葉はサーバーには送信されず、この端末にのみ保存されます。</span>
     <div class="share-row">
-      <button class="share-btn" id="shareBtn" data-i18n="shareBtn">🔗 この書店をシェアする</button>
-      <button class="share-btn" id="copyUrlBtn" data-i18n="copyUrlBtn">📋 URLをコピー</button>
-      <button class="share-btn" id="pwaPinBtn" data-i18n="pwaPinBtn">📌 ホーム画面にピン留め</button>
+      <button class="share-btn" id="shareBtn">🔗 この書店をシェアする</button>
+      <button class="share-btn" id="pwaPinBtn">📌 ホーム画面にピン留め</button>
     </div>
-    <!-- ===== 追加：店主への差し入れ（投げ銭）— 広告バナーではなく"差し入れ"という体裁で、
-         世界観を壊さずに任意の支援を受け付ける導線。URLは運営者ご自身のBuy Me a Coffee /
-         Ko-fi等のページに差し替えてください（現在はダミーのプレースホルダーです） ===== -->
     <div class="support-row">
-      <a class="support-link" id="supportLink" href="https://buymeacoffee.com/emotionbookstore" target="_blank" rel="noopener" data-i18n="supportLink">☕ 店主に、差し入れを贈る</a>
-      <p class="field-hint support-hint" data-i18n="supportHint">この書店を気に入っていただけたら、店主へそっと差し入れを。任意です。</p>
+      <a class="support-link" id="supportLink" href="https://buymeacoffee.com/emotionbookstore" target="_blank" rel="noopener">☕ 店主に、差し入れを贈る</a>
     </div>
     <div class="legal-row">
-      <a href="./privacy.html" data-i18n="privacyLink">プライバシーポリシー</a>
+      <a href="./privacy.html">プライバシーポリシー</a>
       <span class="legal-sep">・</span>
-      <a href="./terms.html" data-i18n="termsLink">利用規約</a>
+      <a href="./terms.html">利用規約</a>
     </div>
   </footer>
 </div>
 
 <div class="share-menu hidden" id="shareMenu">
-  <p class="share-menu-title" data-i18n="shareMenuTitle">シェアする</p>
-  <a class="share-option" id="shareX" href="#" target="_blank" rel="noopener" data-i18n="shareX">Xでシェア</a>
-  <a class="share-option" id="shareLine" href="#" target="_blank" rel="noopener" data-i18n="shareLine">LINEでシェア</a>
-  <button class="share-option" id="shareNative" data-i18n="shareNative">端末の共有機能を使う</button>
-  <button class="share-option" id="shareCopy" data-i18n="shareCopy">リンクをコピー</button>
+  <p class="share-menu-title">シェアする</p>
+  <a class="share-option" id="shareX" href="#" target="_blank" rel="noopener">Xでシェア</a>
+  <a class="share-option" id="shareLine" href="#" target="_blank" rel="noopener">LINEでシェア</a>
+  <button class="share-option" id="shareNative">端末の共有機能を使う</button>
+  <button class="share-option" id="shareCopy">リンクをコピー</button>
   <input class="share-url-input" id="shareUrlInput" readonly onclick="this.select()">
-  <p class="share-menu-hint" data-i18n="shareMenuHint">コピーできない場合は、上の欄をタップして全選択→コピーしてください。</p>
-  <button class="share-option share-close" id="shareMenuClose" data-i18n="closeBtn">閉じる</button>
+  <button class="share-option share-close" id="shareMenuClose">閉じる</button>
 </div>
 
 <div class="bind-overlay hidden" id="bindOverlay" role="status">
@@ -539,17 +263,17 @@ body.night .about-data-content{
     <div class="bind-pages"></div>
     <div class="bind-cover"></div>
   </div>
-  <p class="bind-text" id="bindText" data-i18n="bindText">糸をかけています…</p>
-  <p class="bind-skip" data-i18n="bindSkip">タップで即座に完了</p>
+  <p class="bind-text" id="bindText">糸をかけています…</p>
+  <p class="bind-skip">タップで即座に完了</p>
 </div>
 
-<div class="purify-overlay hidden" id="purifyOverlay" role="dialog" aria-label="気持ちを手放す" data-i18n-aria="purifyOverlayAria">
+<div class="purify-overlay hidden" id="purifyOverlay" role="dialog" aria-label="気持ちを手放す">
   <div class="purify-card">
     <button class="purify-close" id="purifyClose">×</button>
-    <p class="purify-kicker" data-i18n="purifyKicker">手放す — 誰にも見られません。この端末の「手放しの記録」にだけ、そっと残ります</p>
+    <p class="purify-kicker">手放す — この端末の「手放しの記録」にだけ、そっと残ります</p>
     <p class="purify-lead" id="purifyLead"></p>
-    <textarea id="purifyInput" placeholder="その気持ちを、ここにそのまま書き出してみてください。" rows="4" data-i18n-ph="purifyInputPlaceholder"></textarea>
-    <button class="purify-btn" id="purifyBtn" data-i18n="purifyBtn">🕯 手放す</button>
+    <textarea id="purifyInput" placeholder="その気持ちを、ここにそのまま書き出してみてください。" rows="4"></textarea>
+    <button class="purify-btn" id="purifyBtn">🕯 手放す</button>
     <p class="purify-msg hidden" id="purifyMsg"></p>
   </div>
 </div>
@@ -560,30 +284,27 @@ body.night .about-data-content{
     <p class="modal-cat" id="modalCat"></p>
     <h3 id="modalTitle"></h3>
     <p class="modal-date" id="modalDate"></p>
-    <div class="modal-photo hidden" id="modalPhoto"><img id="modalPhotoImg" alt="この頁に挟まれた写真" data-i18n-alt="modalPhotoAlt"></div>
+    <div class="modal-photo hidden" id="modalPhoto"><img id="modalPhotoImg" alt="この頁に挟まれた写真"></div>
     <div class="modal-story" id="modalStory"></div>
     <div class="modal-tweet hidden" id="modalTweet"></div>
-    <span class="shiori-slip hidden" id="modalNote"><span class="shiori-label" data-i18n="modalNoteLabel">店主のことば</span><span id="modalNoteText"></span></span>
+    <span class="shiori-slip hidden" id="modalNote"><span class="shiori-label">店主のことば</span><span id="modalNoteText"></span></span>
     <div class="modal-actions">
-      <button class="modal-goshelf" id="modalGoShelf" data-i18n="modalGoShelf">この棚をもう一度見る</button>
-      <button class="modal-share" id="modalShare" data-i18n="modalShare">🐦 Xでシェア</button>
-      <button class="modal-del" id="modalDel" data-i18n="modalDel">この本を棚から下げる</button>
+      <button class="modal-goshelf" id="modalGoShelf">この棚をもう一度見る</button>
+      <button class="modal-del" id="modalDel">この本を棚から下げる</button>
     </div>
-    <p class="modal-share-note" data-i18n="modalShareNote">※本文はそのまま送信されません。投稿画面が開くだけで、実際に投稿するかはあなた次第です。</p>
   </div>
 </div>
 
-<div class="pwa-popup hidden" id="pwaPopup" role="dialog" aria-label="ホーム画面に追加する案内" data-i18n-aria="pwaPopupAria">
-  <p class="pwa-title" data-i18n="pwaTitle">📌 この書店をスマホのホーム画面にピン留めする</p>
-  <p class="pwa-steps" data-i18n-html="pwaSteps">iPhone（Safari）：下の「共有」ボタン →「ホーム画面に追加」<br>Android（Chrome）：右上のメニュー（⋮）→「ホーム画面に追加」</p>
-  <p class="pwa-note" data-i18n="pwaNote">アプリのように、いつでも1タップで扉をひらけるようになります。</p>
-  <button class="share-option share-close" id="pwaClose" data-i18n="closeBtn">閉じる</button>
+<div class="pwa-popup hidden" id="pwaPopup" role="dialog" aria-label="ホーム画面に追加する案内">
+  <p class="pwa-title">📌 この書店をスマホのホーム画面にピン留めする</p>
+  <p class="pwa-steps">iPhone（Safari）：下の「共有」ボタン →「ホーム画面に追加」<br>Android（Chrome）：右上のメニュー（⋮）→「ホーム画面に追加」</p>
+  <p class="pwa-note">アプリのように、いつでも1タップで扉をひらけるようになります。</p>
+  <button class="share-option share-close" id="pwaClose">閉じる</button>
 </div>
 
 <div id="particleLayer" aria-hidden="true">
   <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
 </div>
-
 <div id="moodLayer" aria-hidden="true"></div>
 
 <script src="data.js"></script>
