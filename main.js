@@ -548,6 +548,19 @@ const STORY_LIMIT = 700;
 function countChars(str){ return Array.from(str || '').length; }
 let activeCategory = (CATEGORIES && CATEGORIES.length) ? CATEGORIES[0].id : 'moyamoya';
 let libraryCache = [];
+// ★追加：本棚が際限なく伸び続けるのを防ぐための「月別の棚」。
+// 既定は'all'（従来通り全冊表示）で、ユーザーがタブを選んだときだけ絞り込む＝挙動を壊さない追加機能。
+let selectedShelfMonth = 'all';
+function monthKeyOf(dateStr){
+  const d = new Date(dateStr);
+  if(isNaN(d.getTime())) return '不明';
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+function monthLabelOf(key){
+  if(key === '不明') return '日付不明';
+  const [y, m] = key.split('-');
+  return `${y}年${parseInt(m, 10)}月`;
+}
 
 const TEXTURE_GROUPS = [
   {
@@ -1935,14 +1948,51 @@ function spineGradientFor(catId, seed){
   return `linear-gradient(180deg, ${top} 0%, ${base} 45%, ${bottom} 100%)`;
 }
 
+// ★追加：本棚が際限なく伸び続けないよう、月別タブを描画する。
+// 既定は'all'（全冊表示、従来通り）。月が2つ以上に分かれて初めてタブを出す（1ヶ月目はタブ不要なノイズになるため）。
+function renderShelfMonthTabs(){
+  const wrap = document.getElementById('shelfMonthTabs');
+  if(!wrap) return;
+  const counts = {};
+  libraryCache.forEach(e=>{ const k = monthKeyOf(e.date); counts[k] = (counts[k]||0) + 1; });
+  const months = Object.keys(counts).sort().reverse();
+  if(months.length <= 1){
+    wrap.innerHTML = '';
+    wrap.classList.add('hidden');
+    if(selectedShelfMonth !== 'all') selectedShelfMonth = 'all';
+    return;
+  }
+  wrap.classList.remove('hidden');
+  wrap.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.type = 'button';
+  allBtn.className = 'shelf-month-tab' + (selectedShelfMonth === 'all' ? ' active' : '');
+  allBtn.textContent = `すべて (${libraryCache.length})`;
+  allBtn.onclick = ()=>{ selectedShelfMonth = 'all'; buzz(6); renderShelf(false); };
+  wrap.appendChild(allBtn);
+  months.forEach(key=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'shelf-month-tab' + (selectedShelfMonth === key ? ' active' : '');
+    btn.textContent = `${monthLabelOf(key)} (${counts[key]})`;
+    btn.onclick = ()=>{ selectedShelfMonth = key; buzz(6); renderShelf(false); };
+    wrap.appendChild(btn);
+  });
+}
+
 function renderShelf(markNewest){
   const shelf = document.getElementById('myShelf');
   if(!shelf) return;
   const emptyMsg = document.getElementById('shelfEmptyMsg');
   const countBadge = document.getElementById('shelfCount');
+  renderShelfMonthTabs();
+  const visible = selectedShelfMonth === 'all'
+    ? libraryCache
+    : libraryCache.filter(e=>monthKeyOf(e.date) === selectedShelfMonth);
+  const newestId = libraryCache.length ? libraryCache[libraryCache.length - 1].id : null;
   shelf.querySelectorAll('.spine').forEach(n=>n.remove());
   if(countBadge) countBadge.textContent = libraryCache.length ? `蔵書 ${libraryCache.length}冊` : '';
-  if(libraryCache.length === 0){
+  if(visible.length === 0){
     if(emptyMsg) emptyMsg.style.display = 'block';
     appendEmptySpine(shelf);
     applyShelfTier();
@@ -1952,7 +2002,7 @@ function renderShelf(markNewest){
     return;
   }
   if(emptyMsg) emptyMsg.style.display = 'none';
-  libraryCache.forEach((entry, i)=>{
+  visible.forEach((entry, i)=>{
     const cat = CATEGORIES.find(c=>c.id===entry.category);
     const spine = document.createElement('div');
     spine.className = 'spine';
@@ -1964,7 +2014,7 @@ function renderShelf(markNewest){
     spine.textContent = (entry.sealed ? '🔖 ' : '') + (entry.image ? '📷 ' : '') + entry.title;
     spine.title = cat ? cat.label : '';
     spine.onclick = ()=>{ buzz(8); openBook(entry); };
-    if(markNewest && i === libraryCache.length - 1 && prefs.motion){
+    if(markNewest && entry.id === newestId && prefs.motion){
       spine.classList.add('new');
       setTimeout(()=>spine.classList.remove('new'), 600);
     }
@@ -2429,6 +2479,7 @@ if(btnSubmit) {
         libraryCache.push(entry);
         clearAttachedPhoto();
         playSuckAnimation(finalCategory);
+        selectedShelfMonth = 'all'; // 保存直後は必ず新しい一冊が見えるよう、月別フィルタを解除する
         renderShelf(true);
         renderShelfTabs();
         if(tInput) tInput.value = '';

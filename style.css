@@ -637,6 +637,32 @@ body:not(.no-motion) .shelf-tab.glow{
   0%,100%{box-shadow:0 0 4px rgba(201,165,92,0.35);}
   50%{box-shadow:0 0 12px rgba(201,165,92,0.75);}
 }
+/* ★追加：本棚が際限なく伸び続けないための月別タブ。emotion棚の.shelf-tabと統一感を持たせつつ一回り小さく */
+.shelf-month-tabs{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:10px 0 14px;
+}
+.shelf-month-tabs.hidden{ display:none; }
+.shelf-month-tab{
+  font-family:var(--font-body);
+  font-size:12.5px;
+  padding:5px 12px;
+  border:1px solid var(--gold);
+  background:transparent;
+  color:var(--ink-soft);
+  border-radius:16px;
+  cursor:pointer;
+  transition:background .15s ease, color .15s ease;
+}
+.shelf-month-tab.active{
+  background:var(--wine);
+  color:#f6e8c9;
+  border-color:var(--wine);
+}
+body.night .shelf-month-tab{ border-color:rgba(201,165,92,0.4); color:var(--ink-soft); }
+body.night .shelf-month-tab.active{ background:var(--gold); color:#2b1d10; border-color:var(--gold); }
 .wander-btn{
   font-family:var(--font-body);
   font-size:12.5px;
