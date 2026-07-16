@@ -24,18 +24,18 @@ function currentLang(){ return appLang; }
 
 const MESSAGES = {
   ja: {
-    tagline: "モヤモヤを言語化して整理する、<br>自分だけの感情日記。",
-    subTagline: "感情の書店で、自分だけの一冊を見つけよう。",
-    accordionSummary: "言語化できない今の「心の質感」を選ぶだけ。<br>店主のみちびきで、自分だけの本棚が育つ日記アプリ。",
+    tagline: "今夜の気持ちを、一冊の本に。",
+    subTagline: "誰にも話せない夜に、気持ちを静かに書き残せる場所です。",
+    accordionSummary: "気持ちを書き、一冊の本として端末内の本棚へ。<br>登録不要。棚を選ぶかどうかも、あなたが決められます。",
     accordionOpenLabel: "どんな体験ができるの？",
     accordionCloseLabel: "閉じる",
     accordionTitle: "みんなの感情書店とは",
-    accordionP1: "言語化できない「今の心の質感」を直感的に選ぶだけで、店主が優しくナビゲートしてくれます。<br>そして、あなたの感情にそっと寄り添う「本」や「音楽」との思いがけない出会いをご提案します。",
-    accordionP2: "モヤモヤした気持ちや言葉にならない本音は、美しい背表紙の一冊の本に。<br>誰の目も気にしなくていいこの場所で、あなただけの本棚を少しずつ育ててみませんか？<br>他人の視線に疲れた心が、スッと軽くなる体験をお届けします。",
+    accordionP1: "誰にも話せない夜の気持ちを、静かに書き、一冊の本として残せるデジタル書店です。<br>書いた内容は原則としてこの端末内だけに保存され、本文をAIで分析・診断しません。",
+    accordionP2: "製本したあとは、21種類の感情棚から選んでしまうことも、棚を選ばず本棚へ戻ることもできます。<br>本や音楽は、運営側の固定検索語から生まれる文化的な寄り道です。",
     introKicker: "この書店でできること<br>— 好きな場所から、自由に巡れます",
     introTitle1: "店主に話す", introText1: "今の気持ちを、選択肢か自由な言葉で伝えます。",
     introTitle2: "棚を巡る", introText2: "21種類の感情の棚から、名言や本、曲に出会います。",
-    introTitle3: "物語を綴る", introText3: "自分の体験を書き、製本して棚に納めます。",
+    introTitle3: "物語を綴る", introText3: "自分の体験を書き、一冊の本として製本します。棚を選ぶのは、そのあとです。",
     introTitle4: "本棚が育つ", introText4: "綴った物語が積み重なり、自分だけの本棚に。",
     enterBtn: "扉をひらく →",
     motionToggleOn: "演出：入", motionToggleOff: "演出：切",
@@ -44,12 +44,12 @@ const MESSAGES = {
     trustBadge1: "登録不要", trustBadge2: "この端末にのみ保存", trustBadge3: "AIの学習には使われません",
     pageNavAria: "ページを選ぶ",
     pageTab1: "① 番台", pageTab2: "② 棚", pageTab3: "③ 編纂机", pageTab4: "④ 本棚",
-    sectionHead1: "番台 — 店主に相談する", sectionSub1: "今のモヤモヤを、そのまま話してください。",
+    sectionHead1: "番台 — 店主に言葉を預ける", sectionSub1: "今の気持ちを、選択肢か自由な言葉で伝えられます。",
     keeperBioSummary: "店主について",
     keeperBioText: "この書店の店主。名前は「まな」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、まなが長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。",
     keeperNameLabel: "店主",
     firstGreeting: "こんばんは。今夜も、静かに開けています。",
-    textureStepAria: "心の質感を選ぶ",
+    textureStepAria: "今の気持ちに近い選択肢を選ぶ",
     guideLead: "👇 当てはまるものがない場合は、下の枠に言葉を書いて「話す」を押してください",
     freeformHintDesk: "※書いた言葉は、そのまま編纂机の原稿用紙に写しておきます。",
     earlyFreeformHint: "当てはまるものがない場合は、この枠に気持ちを書いて「話す」を押してください。",
@@ -59,7 +59,8 @@ const MESSAGES = {
     swipeHint: "← 左右にスワイプでも棚を移動できます →",
     backToBandai: "⤴ 番台へ戻る",
     sectionHead3: "編纂机 — 物語を綴る",
-    sectionSub3: "今の棚は「{shelf}」です。書き終えたら、タイトルは店主が考えます（自分でつけても構いません）。今の気持ちだけでなく、以前のことを振り返って綴ることもできます。",
+    sectionSub3: "題名や写真は任意です。製本したあと、棚にしまうか、棚を選ばず本棚へ戻れます。",
+    shelfAfterBindingNote: "棚は、製本したあとに選べます。",
     storyInputPlaceholder: "書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。",
     assistBtn: "書き出しに迷ったら、店主の助け舟",
     storyCountFormat: "{count} / {max}字",
@@ -67,15 +68,15 @@ const MESSAGES = {
     photoPreviewAlt: "添付写真のプレビュー",
     photoRemoveAria: "写真を外す",
     photoHint: "写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。",
-    deskExtraSummary: "✍️ 棚・タイトル・いつの気持ちかを、自分で決める（任意）",
+    deskExtraSummary: "✍️ タイトル・いつの気持ちかを、自分で決める（任意）",
     fieldLabelShelf: "棚", fieldLabelTitle: "背表紙のタイトル", titleInputPlaceholder: "空欄の場合は『まだ、題名のない本』になります",
     fieldLabelWhen: "いつの気持ちですか", whenOptionNow: "今の気持ち", whenOptionPast: "以前のことを振り返って",
     fieldLabelTweet: "関連するXの投稿があれば", tweetInputPlaceholder: "例：https://x.com/username/status/1234567890",
-    fieldHint: "「以前のことを振り返って」を選ぶと、あの時の気持ちをそのまま本棚に閉じ込めておけます。困った時に開き直すと、前にも同じ気持ちを乗り越えてきたことがわかります。Xの投稿へのリンクを貼ると、本を開いたときに公式の埋め込みで表示されます。本文や画像を直接お預かりすることはありません。",
+    fieldHint: "「以前のことを振り返って」を選ぶと、過去の気持ちとして本棚に残せます。",
     submitStory: "店主に預けて製本する",
     invSeal: "封", invKicker: "推薦状", invGoShelf: "棚を見てみる", invClose: "しおりに挟む",
     sectionHead4: "あなたの本棚",
-    sectionSub4: "納品した物語が背表紙になって並びます。クリックすると読めます。困った時にここを開くと、前にも同じ気持ちを乗り越えてきたことがわかります。",
+    sectionSub4: "製本した物語が背表紙になって並びます。クリックすると、いつでも読み返せます。",
     shelfEmptyMsg: "まだ本がありません。編纂机で最初の一冊を綴ってみましょう。",
     recordCornerAria: "店主のレコード棚",
     resetShelf: "本棚をリセットする",
@@ -112,7 +113,7 @@ const MESSAGES = {
     draftRestored: "前の頁が、机に残っています。続きからでも、そのまま綴じても。",
     storyTooShort: "まずは、そのときの気持ちを書いてみてください。",
     storyLimitWarning: "本文は{max}字までに収めてください。",
-    storyReviewing: "店主が物語に目を通しています…",
+    storyReviewing: "製本の準備をしています…",
     tweetLinkInvalid: "Xの投稿リンクの形式が正しくないようです（例：https://x.com/ユーザー名/status/12345）。",
     exportingBtn: "書き出しています…", exportedBtn: "書き出しました ✓", exportFailBtn: "書き出しに失敗しました",
     exportDefaultBtn: "📥 これまでの記録をテキストでダウンロード",
@@ -160,18 +161,18 @@ const MESSAGES = {
     submitStoryHint: "※外部には公開されず、この端末のブラウザ内にのみ保存されます。"
   },
   en: {
-    tagline: "Put your feelings into words,<br>a diary that's yours alone.",
-    subTagline: "Find the one book that's meant for you.",
-    accordionSummary: "Just pick the \"texture\" of how you feel right now.<br>An app where your own bookshelf grows, guided gently by the shopkeeper.",
+    tagline: "Turn Tonight’s Feelings into a Book.",
+    subTagline: "A quiet place to write what you cannot say aloud.",
+    accordionSummary: "Write what you feel and keep it as a book on your device.<br>No account required. Choosing a shelf is optional.",
     accordionOpenLabel: "What can I do here?",
     accordionCloseLabel: "Close",
     accordionTitle: "About Emotion Bookstore",
-    accordionP1: "Simply choose the \"texture of your heart\" that you can't quite put into words, and the shopkeeper will gently guide you.<br>We'll also introduce you to unexpected encounters with \"books\" and \"music\" that quietly sit with your feelings.",
-    accordionP2: "That murky feeling, that honest voice you can't quite say out loud — let it become a single book with a beautiful spine.<br>In a place where no one else's eyes matter, why not slowly grow a bookshelf that's entirely your own?<br>A heart tired of being watched can finally feel a little lighter.",
+    accordionP1: "Emotion Bookstore is a quiet digital bookstore where you can write what you feel and keep it as a book.<br>Your writing stays on this device and is not analyzed or diagnosed by AI.",
+    accordionP2: "After binding, you may place the book on one of 21 feeling shelves or return it to your bookshelf without choosing one.<br>Books and music are optional cultural detours based only on fixed search terms chosen by the service.",
     introKicker: "What this bookstore offers<br>— wander freely, starting wherever you like",
     introTitle1: "Talk to the shopkeeper", introText1: "Share how you feel now — pick an option, or write freely.",
     introTitle2: "Browse the shelves", introText2: "Discover quotes, books and songs across 21 emotion shelves.",
-    introTitle3: "Write your story", introText3: "Write your experience, and have it bound onto the shelf.",
+    introTitle3: "Write your story", introText3: "Write your experience and bind it as a book. Choosing a shelf comes afterward.",
     introTitle4: "Watch your shelf grow", introText4: "Every story you write adds up to a bookshelf all your own.",
     enterBtn: "Open the door →",
     motionToggleOn: "Motion: On", motionToggleOff: "Motion: Off",
@@ -180,12 +181,12 @@ const MESSAGES = {
     trustBadge1: "No sign-up", trustBadge2: "Stored on this device only", trustBadge3: "Never used to train AI",
     pageNavAria: "Choose a page",
     pageTab1: "① Counter", pageTab2: "② Shelves", pageTab3: "③ Writing desk", pageTab4: "④ Bookshelf",
-    sectionHead1: "The Counter — Talk to the shopkeeper", sectionSub1: "Tell us whatever's on your mind, just as it is.",
+    sectionHead1: "The Counter — Leave a few words with the shopkeeper", sectionSub1: "Share how you feel through an option or in your own words.",
     keeperBioSummary: "About the shopkeeper",
     keeperBioText: "The keeper of this bookstore goes by \"Mana.\" Their age and gender remain unrevealed. They usually read quietly at the back of the counter, and their job is to listen to what customers have to say. The shelves are lined with quotes old and new, sourced and collected by Mana over many years in a notebook.",
     keeperNameLabel: "Shopkeeper",
     firstGreeting: "……Welcome. I just closed a page. What mood are you closest to right now? You can pick something close, or write freely below.",
-    textureStepAria: "Choose the texture of your heart",
+    textureStepAria: "Choose the option closest to how you feel",
     guideLead: "👇 If nothing quite fits, write your own words in the box below and press \"Talk\"",
     freeformHintDesk: "※ What you write here will also be copied onto the manuscript paper at the writing desk.",
     earlyFreeformHint: "If nothing quite fits, write how you feel in this box and press \"Talk.\"",
@@ -195,7 +196,8 @@ const MESSAGES = {
     swipeHint: "← Swipe left or right to move between shelves →",
     backToBandai: "⤴ Back to the counter",
     sectionHead3: "The Writing Desk — Write your story",
-    sectionSub3: "The current shelf is \"{shelf}.\" Once you're done, the shopkeeper will come up with a title (or you can write your own). You can write about how you feel now, or look back on something from before.",
+    sectionSub3: "Title and photo are optional. After binding, you can place your book on a shelf, or return it to your bookshelf without choosing one.",
+    shelfAfterBindingNote: "You can choose a shelf after your book is bound.",
     storyInputPlaceholder: "When, where, what happened, and how it felt. Short and imperfect is fine.",
     assistBtn: "Not sure how to start? Ask the shopkeeper for a hand",
     storyCountFormat: "{count} / {max} chars",
@@ -203,15 +205,15 @@ const MESSAGES = {
     photoPreviewAlt: "Preview of attached photo",
     photoRemoveAria: "Remove photo",
     photoHint: "Photos are resized to a maximum of 800px and kept only on this device. Nothing is sent to a server.",
-    deskExtraSummary: "✍️ Choose the shelf, title, and timing yourself (optional)",
+    deskExtraSummary: "✍️ Choose the title and timing yourself (optional)",
     fieldLabelShelf: "Shelf", fieldLabelTitle: "Spine title", titleInputPlaceholder: "If left blank, it will be saved as “An Untitled Book.”",
     fieldLabelWhen: "When did you feel this?", whenOptionNow: "Right now", whenOptionPast: "Looking back on the past",
     fieldLabelTweet: "Link a related post on X, if any", tweetInputPlaceholder: "e.g. https://x.com/username/status/1234567890",
-    fieldHint: "Choosing \"looking back on the past\" lets you seal that moment's feeling onto the shelf just as it was. Opening it again when you're struggling shows you that you've gotten through this feeling before. A link to a post on X will show up as an official embed when the book is opened — we never store the post's text or images directly.",
+    fieldHint: "Choose “Looking back on the past” to keep it on your bookshelf as a past feeling.",
     submitStory: "Hand it to the shopkeeper for binding",
     invSeal: "Sealed", invKicker: "Letter of Recommendation", invGoShelf: "Take a look at the shelf", invClose: "Tuck it away as a bookmark",
     sectionHead4: "Your Bookshelf",
-    sectionSub4: "Your delivered stories line up as book spines. Click to read them. Opening this when you're struggling shows you that you've gotten through this feeling before.",
+    sectionSub4: "Your bound stories appear as book spines. Select one to read it again at any time.",
     shelfEmptyMsg: "No books yet. Try writing your first one at the writing desk.",
     recordCornerAria: "Shopkeeper's record corner",
     resetShelf: "Reset bookshelf",
@@ -248,7 +250,7 @@ const MESSAGES = {
     draftRestored: "Your draft has been restored. Please continue where you left off.",
     storyTooShort: "First, try writing how you felt at that moment.",
     storyLimitWarning: "Please keep the text within {max} characters.",
-    storyReviewing: "The shopkeeper is reading through your story…",
+    storyReviewing: "Preparing your book for binding…",
     tweetLinkInvalid: "That doesn't look like a valid link to a post on X (e.g. https://x.com/username/status/12345).",
     exportingBtn: "Exporting…", exportedBtn: "Exported ✓", exportFailBtn: "Export failed",
     exportDefaultBtn: "📥 Download your records as text",
@@ -322,11 +324,17 @@ function applyLanguage(){
   document.querySelectorAll('[data-i18n-alt]').forEach(el=>{
     el.alt = t(el.getAttribute('data-i18n-alt'));
   });
-  // 「今の棚は「◯◯」です…」のように、途中に動的な棚名が挟まる文言はテンプレート差し込みで処理
+  // ★公開文面整合：製本前に棚名を表示しない。sectionSub3に{shelf}が含まれる旧形式の場合のみ
+  // 従来のテンプレート差し込みを行い、現行の固定文はそのままテキストとして表示する。
   const sectionSub3 = document.querySelector('#desk .section-sub');
   if(sectionSub3){
-    const [before, after] = t('sectionSub3').split('{shelf}');
-    sectionSub3.innerHTML = `${before}「<span id="deskCategoryLabel">${(typeof shelfLabelOf === 'function' && typeof activeCategory !== 'undefined') ? shelfLabelOf(activeCategory) : ''}</span>」${after}`;
+    const s3 = t('sectionSub3');
+    if(s3.indexOf('{shelf}') >= 0){
+      const [before, after] = s3.split('{shelf}');
+      sectionSub3.innerHTML = `${before}「<span id="deskCategoryLabel">${(typeof shelfLabelOf === 'function' && typeof activeCategory !== 'undefined') ? shelfLabelOf(activeCategory) : ''}</span>」${after}`;
+    }else{
+      sectionSub3.textContent = s3;
+    }
   }
   // 演出トグル・文字数カウンターなど、JS側で直接書き換えているUI文言も追従させる
   if(typeof applyPrefs === 'function') applyPrefs();
@@ -340,8 +348,8 @@ function applyLanguage(){
   const titleEl = document.querySelector('title');
   if(titleEl){
     titleEl.textContent = appLang === 'ja'
-      ? 'みんなの感情書店 — 感情日記・自己分析アプリ｜登録不要・無料'
-      : 'Emotion Bookstore — A journaling app for putting feelings into words';
+      ? 'みんなの感情書店｜今夜の気持ちを、一冊の本に。'
+      : 'Emotion Bookstore | Turn Tonight’s Feelings into a Book.';
   }
 }
 
@@ -543,6 +551,34 @@ function countChars(str){ return Array.from(str || '').length; }
 const UNFILED_CATEGORY_ID = 'unfiled';
 // ★Step4：unfiledの背表紙用の中立色（SPINE_COLORS配列そのものは変更しない）
 const UNFILED_SPINE_COLOR = '#8C8578';
+
+/* ==========================================================================
+ * ★GA4整合：プライバシーファーストの独立計測ラッパー（許可リスト方式）
+ * --------------------------------------------------------------------------
+ * ・本アプリが明示的に送信するカスタムイベントは、下記の5種類のみ。
+ *   （GA4が自動生成する session_start / first_visit 等は、本アプリが追加するものではない）
+ * ・イベントパラメータは一切渡さない。利用者本文・題名・写真名・棚ID・棚名・感情名・
+ *   書名・曲名・作品ID・URL入力値・エラー文字列を引数に受け取らない／送らない。
+ * ・gtag未読込、広告ブロッカー、通信失敗でもアプリ機能を止めない（try/catchで隔離）。
+ * ・dataLayerやgtagをこのラッパー以外の経路で直接呼ばない。
+ * ・consoleへ利用者入力を出力しない。
+ * ========================================================================== */
+const ANALYTICS_ALLOWED_EVENTS = ['view_landing', 'start_writing', 'create_book_success', 'create_book_error', 'view_shelf'];
+function trackAnalyticsEvent(eventName){
+  try{
+    if(ANALYTICS_ALLOWED_EVENTS.indexOf(eventName) === -1) return;
+    if(typeof window === 'undefined' || typeof window.gtag !== 'function') return;
+    window.gtag('event', eventName); // パラメータは付けない
+  }catch(e){
+    // 計測の失敗はアプリ機能へ影響させない（何も出力しない）
+  }
+}
+// 発火ガード（すべてページロード単位のメモリ上ガード。ストレージには保存しない）
+let _gaViewLandingSent = false;      // view_landing：フルページロードごとに1回
+let _gaStartWritingSent = false;     // start_writing：本文欄が空→非空になった初回に1回
+let _gaLastTrackedPage = null;       // view_shelf：同一ページへの重複発火防止
+let _gaLastTrackedShelfId = null;    // view_shelf：同一の個別棚への重複発火防止（棚IDは送信しない）
+let _gaSuppressNextViewShelf = false; // view_shelf：goToShelf側で送信済みの場合、直後のgoToPage('shelves')での二重発火を抑止
 let activeCategory = (CATEGORIES && CATEGORIES.length) ? CATEGORIES[0].id : 'moyamoya';
 let libraryCache = [];
 // ★追加：本棚が際限なく伸び続けるのを防ぐための「月別の棚」。
@@ -1409,6 +1445,14 @@ function setActivePageTab(id){
 }
 
 function goToPage(id){
+  // ★GA4整合：本棚（bookshelf）または感情棚（shelves）へ実際に移動した直後に view_shelf を1回だけ送信。
+  // 同一ページへの連続遷移では重複発火させない。棚ID・棚名・遷移元等のパラメータは送らない。
+  // goToShelf()経由の遷移はgoToShelf側で送信済みのため、抑止フラグで二重発火を防ぐ。
+  if((id === 'bookshelf' || id === 'shelves') && !_gaSuppressNextViewShelf && _gaLastTrackedPage !== id){
+    trackAnalyticsEvent('view_shelf');
+  }
+  _gaSuppressNextViewShelf = false;
+  _gaLastTrackedPage = id;
   setActivePageTab(id);
   if(id === 'desk'){ syncCounterDraftToDesk(); updateDeskLead(); }
   if(!prefs.motion){
@@ -1531,7 +1575,17 @@ function renderShelfTabs(){
           btn.title = 'あなたの本棚と縁の深い棚';
         }
         btn.textContent = cat.label;
-        btn.onclick = ()=>{ activeCategory = cat.id; renderShelfTabs(); renderShelfDisplay(); };
+        btn.onclick = ()=>{
+          // ★GA4修正：棚タブで現在と異なる棚へ切り替える直前に view_shelf を1回だけ送信。
+          // 同じ棚タブの再押下では送らない。棚ID・棚名・感情名は送らない。
+          if(activeCategory !== cat.id){
+            trackAnalyticsEvent('view_shelf');
+            _gaLastTrackedShelfId = cat.id;
+          }
+          activeCategory = cat.id;
+          renderShelfTabs();
+          renderShelfDisplay();
+        };
         row.appendChild(btn);
       });
       groupEl.appendChild(row);
@@ -1547,6 +1601,12 @@ function renderShelfTabs(){
       let pick = activeCategory;
       while(pick === activeCategory && CATEGORIES.length > 1){
         pick = CATEGORIES[Math.floor(Math.random()*CATEGORIES.length)].id;
+      }
+      // ★GA4修正：「棚を気ままに巡る」で異なる棚が確定した後、activeCategory変更の直前に1回だけ送信。
+      // 棚ID・棚名・感情名は送らない。
+      if(pick !== activeCategory){
+        trackAnalyticsEvent('view_shelf');
+        _gaLastTrackedShelfId = pick;
       }
       activeCategory = pick;
       renderShelfTabs();
@@ -1753,7 +1813,7 @@ function renderShelfDisplay(){
       const safeStoryRaw = entry.story.length > 60 ? entry.story.slice(0,60) + '…' : entry.story;
       const safeStory = escapeHtml(safeStoryRaw);
       const safeId = escapeHtml(entry.id);
-      return `<div class="episode-card mine" data-entry-id="${safeId}"><span class="who mine-who">あなたの物語${entry.tweetUrl ? ' 🐦' : ''}</span>『${safeTitle}』${safeStory}</div>`;
+      return `<div class="episode-card mine" data-entry-id="${safeId}"><span class="who mine-who">あなたの物語</span>『${safeTitle}』${safeStory}</div>`;
     });
     const storyPool = STORIES_POOL[cat.id] || [];
     const shuffledStories = shuffleArray(storyPool).slice(0, 3);
@@ -1791,16 +1851,7 @@ function renderShelfDisplay(){
         if(entry){ buzz(8); openBook(entry); }
       };
     });
-    const tweetBox = el.querySelector('#shelfTweets');
-    const urls = PINNED_TWEETS[cat.id];
-    if(tweetBox && urls && urls.length){
-      tweetBox.innerHTML = '<p class="shelf-tweets-label">この棚に寄せられた、実際の声（Xより）</p>';
-      urls.slice(0, 3).forEach(u=>{
-        const holder = document.createElement('div');
-        tweetBox.appendChild(holder);
-        renderTweetEmbed(holder, u);
-      });
-    }
+    // ★公開整合：X公式埋め込み（PINNED_TWEETS）の表示は停止（renderTweetEmbedは呼ばない）。
     renderDetourSection(cat.id);
     renderLiveNewReleases(cat);
     if(prefs.motion){
@@ -1840,6 +1891,12 @@ function navigateShelfBySwipe(direction){
   let idx = ids.indexOf(activeCategory);
   if(idx === -1) idx = 0;
   idx = (idx + direction + ids.length) % ids.length;
+  // ★GA4修正：スワイプでの棚移動も、移動先IDが現在のactiveCategoryと異なる場合だけ、
+  // 変更直前に view_shelf を1回送信する。棚ID・棚名・感情名は送らない。
+  if(ids[idx] !== activeCategory){
+    trackAnalyticsEvent('view_shelf');
+    _gaLastTrackedShelfId = ids[idx];
+  }
   activeCategory = ids[idx];
   renderShelfTabs();
   renderShelfDisplay();
@@ -2151,37 +2208,9 @@ function formatDate(iso){
   }catch(e){ return ''; }
 }
 
-let twitterWidgetsLoading = null;
-function ensureTwitterWidgets(){
-  if(window.twttr && window.twttr.widgets) return Promise.resolve();
-  if(twitterWidgetsLoading) return twitterWidgetsLoading;
-  twitterWidgetsLoading = new Promise((resolve)=>{
-    const existing = document.getElementById('twitter-wjs');
-    if(existing){ existing.addEventListener('load', resolve); return; }
-    const s = document.createElement('script');
-    s.id = 'twitter-wjs';
-    s.src = 'https://platform.twitter.com/widgets.js';
-    s.async = true;
-    s.onload = resolve;
-    s.onerror = resolve;
-    document.body.appendChild(s);
-  });
-  return twitterWidgetsLoading;
-}
-
-async function renderTweetEmbed(container, tweetUrl){
-  // ★修正（XSS対策・多層防御）：呼び出し元で検証済みのURLでも、念のためエスケープしてから
-  // href属性へ差し込む（属性コンテキストからの脱出を防ぐ）
-  const safeTweetUrl = escapeHtml(tweetUrl);
-  container.innerHTML = `<blockquote class="twitter-tweet"><a class="tweet-fallback" href="${safeTweetUrl}" target="_blank" rel="noopener">Xの投稿を見る →</a></blockquote>`;
-  container.classList.remove('hidden');
-  try{
-    await ensureTwitterWidgets();
-    if(window.twttr && window.twttr.widgets){
-      await window.twttr.widgets.load(container);
-    }
-  }catch(e){}
-}
+// ★公開整合：X公式埋め込み機能（ensureTwitterWidgets / renderTweetEmbed）は、
+// 全参照ゼロを確認のうえ削除した。platform.twitter.com（widgets.js）を読み込む経路は存在しない。
+// Xへの手動シェア（twitter.com/intent/tweet）と公式Xアカウントへの通常リンクは維持している。
 
 function openBook(entry){
   const cat = CATEGORIES.find(c=>c.id===entry.category);
@@ -2216,12 +2245,10 @@ function openBook(entry){
 
   const tweetBox = document.getElementById('modalTweet');
   if(tweetBox){
-    if(entry.tweetUrl){
-      renderTweetEmbed(tweetBox, entry.tweetUrl);
-    }else{
-      tweetBox.classList.add('hidden');
-      tweetBox.innerHTML = '';
-    }
+    // ★公開整合：X公式埋め込みは停止。既存データにtweetUrlが残っていても
+    // 外部埋め込み通信（platform.twitter.com等）は行わず、常に非表示・空にする。
+    tweetBox.classList.add('hidden');
+    tweetBox.innerHTML = '';
   }
 
   const bModal = document.getElementById('bookModal');
@@ -2367,6 +2394,18 @@ function updateStoryCount(){
 const inputStory = document.getElementById('storyInput');
 if(inputStory) {
   inputStory.addEventListener('input', updateStoryCount);
+}
+
+// ★GA4整合：start_writing — 本文入力欄が「空の状態から初めて非空になった」ときに1回だけ送信。
+// focusでは発火しない（inputイベントのみ）。文字列・文字数・題名・棚等は送らない。ページロード単位のガード。
+if(inputStory) {
+  inputStory.addEventListener('input', ()=>{
+    if(_gaStartWritingSent) return;
+    if(inputStory.value.trim()){
+      _gaStartWritingSent = true;
+      trackAnalyticsEvent('start_writing');
+    }
+  });
 }
 
 const DRAFT_KEY = 'emotion-bookstore-draft';
@@ -2563,18 +2602,11 @@ if(btnSubmit) {
 
     const chosenLabel = (CATEGORIES.find(c=>c.id===chosenId) || {}).label || '';
     const twInput = document.getElementById('tweetInput');
-    const tweetRaw = twInput ? twInput.value.trim() : '';
-    // ★修正（XSS対策）：末尾アンカー($)が無く、URLの後ろに任意の文字列（<script>等）を
-    // 継ぎ足しても通ってしまっていたバリデーションを、末尾まで厳密に一致させる形に修正
-    const tweetUrl = /^https:\/\/(x\.com|twitter\.com)\/[A-Za-z0-9_]{1,30}\/status\/\d{1,25}\/?$/.test(tweetRaw) ? tweetRaw : '';
+    // ★公開整合：X公式埋め込み機能はリリース時停止。新規に製本するentryのtweetUrlは常に空文字とする
+    // （入力欄も非表示化済み。データ構造互換のためtweetUrlフィールド自体は残す）。
+    const tweetUrl = '';
     const wSel = document.getElementById('whenSelect');
     const isPast = wSel ? (wSel.value === 'past') : false;
-
-    if(tweetRaw && !tweetUrl){
-      if(msg) msg.textContent = t('tweetLinkInvalid');
-      btn.disabled = false;
-      return;
-    }
     await wait(prefs.motion ? 500 : 30);
     const cur = localCurate(title, story, chosenId);
 
@@ -2599,8 +2631,14 @@ if(btnSubmit) {
           libraryCache = libraryCache.filter(e=>e.id !== entry.id);
           if(msg) msg.textContent = 'すみません。保存がうまく完了しませんでした。書いた言葉は消さず、少ししてからもう一度お試しください。';
           btn.disabled = false;
+          // ★GA4整合：create_book_error — 新しい本の初回保存が失敗したときに1回。
+          // 棚収納時のcategory更新失敗では発火しない。エラー内容・本文・題名等は送らない。
+          trackAnalyticsEvent('create_book_error');
           return;
         }
+        // ★GA4整合：create_book_success — 新しい本の初回IndexedDB保存が成功した直後に1回。
+        // unfiled→通常棚へのcategory更新成功では発火しない。本文・題名・category・ID・冊数等は送らない。
+        trackAnalyticsEvent('create_book_success');
 
         clearAttachedPhoto();
         playSuckAnimation(finalCategory);
@@ -2780,6 +2818,17 @@ function shelfLabelOf(id){
 }
 
 function goToShelf(shelfId){
+  // ★GA4修正：個別の感情棚へ実際に移動したときに view_shelf を1回だけ送信。
+  // 「異なる棚IDへの移動」または「別ページから個別棚への移動」の場合のみ発火し、
+  // 同じ個別棚を表示中に同じ棚を再指定した場合は送らない。
+  // 内部で呼ぶ goToPage('shelves') 側は抑止フラグで二重発火させない。棚ID等のパラメータは送らない。
+  const movedFromOtherPage = _gaLastTrackedPage !== 'shelves';
+  const movedToDifferentShelf = _gaLastTrackedShelfId !== shelfId;
+  if(movedFromOtherPage || movedToDifferentShelf){
+    trackAnalyticsEvent('view_shelf');
+  }
+  _gaLastTrackedShelfId = shelfId;
+  _gaSuppressNextViewShelf = true;
   try{
     activeCategory = shelfId;
     renderShelfTabs();
@@ -3789,8 +3838,8 @@ function ensureWriteFab(){
     btn.id = 'writeFab';
     btn.type = 'button';
     btn.className = 'write-fab';
-    btn.setAttribute('aria-label', '今の気持ちを綴る');
-    btn.title = '今の気持ちを綴る';
+    btn.setAttribute('aria-label', '今夜の気持ちを書く');
+    btn.title = '今夜の気持ちを書く';
     btn.textContent = '🖋️';
     document.body.appendChild(btn);
   }
@@ -3851,8 +3900,8 @@ function applyUserNameDisplay(){
     const safeName = typeof escapeHtml === 'function' ? escapeHtml(name) : name;
     taglineEl.innerHTML = name
       ? (appLang === 'ja'
-          ? `モヤモヤを言語化して整理する、<br>${safeName}さんだけの感情日記。`
-          : `Put your feelings into words,<br>${safeName}'s diary, just for you.`)
+          ? `${safeName}さんの今夜の気持ちを、<br>一冊の本に。`
+          : `Turn ${safeName}’s feelings tonight<br>into a book.`)
       : t('tagline');
   }
 }
@@ -4083,6 +4132,14 @@ function warnInAppBrowserIfNeeded(){
   if(exportCsvBtn) exportCsvBtn.innerHTML = t('csvExportDefaultBtn');
   const restoreBtnInit = document.getElementById('restoreBtn');
   if(restoreBtnInit) restoreBtnInit.innerHTML = t('restoreDefaultBtn');
+
+  // ★GA4整合：view_landing — DOM初期化後、トップページが表示可能になった時点で
+  // フルページロードごとに1回だけ送信。二重初期化でも重複しないメモリ上のガード付き。
+  // URL・referrer・言語等の独自パラメータは付けない。
+  if(!_gaViewLandingSent){
+    _gaViewLandingSent = true;
+    trackAnalyticsEvent('view_landing');
+  }
 
   const shelfControls = document.querySelector('.shelf-controls');
   if(shelfControls && !document.getElementById('viewPurifyLogBtn')){

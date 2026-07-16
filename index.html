@@ -6,8 +6,8 @@
      head内の最上部に置くことで、以降にパースされる要素（GA4・Xの埋め込み・インラインscript等）すべてに適用される。
      許可した外部通信先：
        - GA4（googletagmanager.com / google-analytics.com）
-       - Xの投稿埋め込み（platform.twitter.com / twimg.com / syndication.twitter.com）
        - Googleフォント（style.css内@importで読み込んでいるfonts.googleapis.com / fonts.gstatic.com）
+       ※X公式埋め込み（platform.twitter.com等）はリリース時停止のため、CSPからも許可を削除済み。
        - Amazon／楽天／YouTube／Spotifyへのリンク（<a>タグでの遷移のみ。fetch等での送信はconnect-srcで制限）
        - Google Books API（www.googleapis.com）／iTunes Search API（itunes.apple.com）：
          「今月の寄り道」および棚の本・音楽おすすめで、季節や気分のキーワードから最新の作品を
@@ -21,12 +21,12 @@
 -->
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
-  script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://platform.twitter.com https://*.twimg.com;
+  script-src 'self' 'unsafe-inline' https://www.googletagmanager.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   img-src 'self' data: https:;
   font-src 'self' data: https://fonts.gstatic.com;
-  connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://*.twitter.com https://*.x.com https://*.twimg.com https://www.googleapis.com https://itunes.apple.com;
-  frame-src https://platform.twitter.com https://syndication.twitter.com https://twitter.com https://x.com https://*.twimg.com;
+  connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://www.googleapis.com https://itunes.apple.com;
+  frame-src 'none';
   base-uri 'self';
   form-action 'self';
   object-src 'none';
@@ -37,7 +37,8 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-TGLD3KW523');
+  // ★GA4整合：自動page_viewは送信しない（ランディング計測はアプリ側のview_landingへ統一）
+  gtag('config', 'G-TGLD3KW523', { send_page_view: false });
 </script>
 <script type="application/ld+json">
 {
@@ -47,17 +48,17 @@
     {
       "@type": "Question",
       "name": "みんなの感情書店は無料ですか？登録は必要ですか？",
-      "acceptedAnswer": { "@type": "Answer", "text": "完全無料で、会員登録も不要です。ブラウザで開いてすぐに使えます。" }
+      "acceptedAnswer": { "@type": "Answer", "text": "現在、基本機能は無料で利用できます。会員登録・ログインは不要で、ブラウザで開いてすぐに使えます。" }
     },
     {
       "@type": "Question",
       "name": "書いた日記や感情の記録は誰かに見られますか？",
-      "acceptedAnswer": { "@type": "Answer", "text": "綴った言葉はサーバーには送信されず、お使いの端末の中にのみ保存されます。AIの学習にも使われません。" }
+      "acceptedAnswer": { "@type": "Answer", "text": "原則として読まれません。書いた文章や本棚は端末内に保存され、運営者のサーバーには保存されません。本文をAIで分析・診断せず、AIの学習にも使われません。" }
     },
     {
       "@type": "Question",
       "name": "どんなことができるアプリですか？",
-      "acceptedAnswer": { "@type": "Answer", "text": "21種類の感情の棚から名言・本・音楽に出会い、店主との対話で気持ちを整理し、自分の体験を綴って自分だけの本棚を育てられる感情日記アプリです。自己分析やジャーナリング、メンタルケアに活用できます。" }
+      "acceptedAnswer": { "@type": "Answer", "text": "誰にも話せない夜に、気持ちを静かに書き、一冊の本として端末内の本棚へ残せるデジタル書店です。21種類の感情の棚から名言・本・音楽に出会えます。製本したあとに棚へしまうか、棚を選ばず本棚へ戻すかを選べます。本文をAIで分析・診断しません。" }
     },
     {
       "@type": "Question",
@@ -70,8 +71,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <!-- ===== SEO用 Meta Tags ===== -->
-<meta name="description" content="名もなき気持ちに、名前をあげる。「みんなの感情書店」は登録不要・完全無料の感情日記アプリ。書いた言葉はサーバーには送信されません。誰にも見られない、あなただけの絶対に安全な本棚です。">
-<meta name="keywords" content="感情日記,日記アプリ,自己分析,感情の言語化,ジャーナリング,メンタルケア,就活 自己分析,登録不要,無料,感情書店">
+<meta name="description" content="誰にも話せない夜に、気持ちを静かに書き、一冊の本として端末内の本棚へ残せるデジタル書店。登録不要。本文をAIで分析・診断しません。">
+<meta name="keywords" content="感情日記, デジタル書店, 気持ちを書く, 本棚, 登録不要, 端末内保存">
 <meta name="robots" content="index,follow">
 <meta name="author" content="みんなの感情書店">
 <link rel="canonical" href="https://emotion-bookstore.vercel.app/">
@@ -83,19 +84,19 @@
 <meta name="theme-color" content="#EFE6CD">
 <!-- OGP：XやLINEでシェアされた時にプレビューカードを出すための設定 -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="みんなの感情書店 — 登録不要の感情日記・自己分析">
-<meta property="og:description" content="名もなき気持ちに名前をあげる、登録不要の感情日記。感情の棚を巡り、今の気分に寄り添う本や曲に出会ったり、自分の物語をそっと本棚に綴る場所です。データはサーバーに送信されず、端末内だけに安全に保存されます。">
+<meta property="og:title" content="みんなの感情書店｜今夜の気持ちを、一冊の本に。">
+<meta property="og:description" content="誰にも話せない夜に、気持ちを静かに書き、一冊の本として端末内の本棚へ残せるデジタル書店。登録不要。本文をAIで分析・診断しません。">
 <meta property="og:url" content="https://emotion-bookstore.vercel.app/">
 <meta property="og:image" content="https://emotion-bookstore.vercel.app/ogp.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="みんなの感情書店 — 登録不要の感情日記・自己分析">
-<meta name="twitter:description" content="名もなき気持ちに名前をあげる、登録不要の感情日記。感情の棚を巡り、今の気分に寄り添う本や曲に出会ったり、自分の物語をそっと本棚に綴る場所です。データはサーバーに送信されず、端末内だけに安全に保存されます。">
+<meta name="twitter:title" content="みんなの感情書店｜今夜の気持ちを、一冊の本に。">
+<meta name="twitter:description" content="誰にも話せない夜に、気持ちを静かに書き、一冊の本として端末内の本棚へ残せるデジタル書店。登録不要。本文をAIで分析・診断しません。">
 <meta name="twitter:image" content="https://emotion-bookstore.vercel.app/ogp.png">
 <!-- アイコン：外部ファイル不要のSVGデータURI（本の絵文字風）。公開時に180x180のPNGに差し替えるとより綺麗 -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%236E2A34'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E">
-<title>みんなの感情書店 — 感情日記・自己分析アプリ｜登録不要・無料</title>
+<title>みんなの感情書店｜今夜の気持ちを、一冊の本に。</title>
 <!-- ===== 構造化データ（JSON-LD）：Google検索でのリッチリザルト用 ===== -->
 <script type="application/ld+json">
 {
@@ -104,12 +105,12 @@
   "name": "みんなの感情書店",
   "alternateName": "感情書店",
   "url": "https://emotion-bookstore.vercel.app/",
-  "description": "名もなき気持ちに、名前をあげる。登録不要・完全無料の感情日記アプリ。21の感情の棚、店主との対話、あなただけの本棚。書いた言葉はサーバーには送信されません。",
+  "description": "誰にも話せない夜に、気持ちを静かに書き、一冊の本として端末内の本棚へ残せるデジタル書店です。登録は不要で、本文をAIで分析・診断しません。",
   "applicationCategory": "LifestyleApplication",
   "operatingSystem": "Web",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
   "inLanguage": "ja",
-  "keywords": "感情日記,日記アプリ,自己分析,感情の言語化,ジャーナリング,メンタルケア"
+  "keywords": "感情日記, デジタル書店, 気持ちを書く, 本棚, 登録不要, 端末内保存"
 }
 </script>
 <link rel="stylesheet" href="style.css">
@@ -224,25 +225,24 @@ body.night .about-data-content{
   <header class="entrance">
     <p class="eyebrow">EMOTIONAL BINDERY &amp; BOOKSHOP</p>
     <h1>みんなの感情書店</h1>
-    <p class="tagline" data-i18n-html="tagline">モヤモヤを言語化して整理する、<br>あなただけの感情日記。</p>
-    <p class="sub-tagline" data-i18n="subTagline">感情の書店で、自分だけの一冊を見つけよう。</p>
+    <p class="tagline" data-i18n-html="tagline">今夜の気持ちを、一冊の本に。</p>
+    <p class="sub-tagline" data-i18n="subTagline">誰にも話せない夜に、気持ちを静かに書き残せる場所です。</p>
 
     <!-- ===== 追加：サービス説明のアコーディオン ===== -->
     <div class="about-accordion-wrap">
       <div class="about-accordion-summary" data-i18n-html="accordionSummary">
-        言語化できない今の「心の質感」を選ぶだけ。<br>
-        店主のみちびきで、自分だけの本棚が育つ日記アプリ。
+        気持ちを書き、一冊の本として端末内の本棚へ。<br>
+        登録不要。棚を選ぶかどうかも、あなたが決められます。
       </div>
       <button class="about-accordion-btn" id="aboutAccordionBtn" onclick="toggleAboutAccordion()">
         <span id="aboutAccordionIcon">▼</span> <span id="aboutAccordionBtnLabel" data-i18n="accordionOpenLabel">どんな体験ができるの？</span>
       </button>
       <div class="about-accordion-content" id="aboutAccordionContent">
         <b data-i18n="accordionTitle">みんなの感情書店とは</b>
-        <p data-i18n-html="accordionP1">言語化できない「今の心の質感」を直感的に選ぶだけで、店主が優しくナビゲートしてくれます。<br>
-        そして、あなたの感情にそっと寄り添う「本」や「音楽」との思いがけない出会いをご提案します。</p>
-        <p style="margin-top:8px;" data-i18n-html="accordionP2">モヤモヤした気持ちや言葉にならない本音は、美しい背表紙の一冊の本に。<br>
-        誰の目も気にしなくていいこの場所で、あなただけの本棚を少しずつ育ててみませんか？<br>
-        他人の視線に疲れた心が、スッと軽くなる体験をお届けします。</p>
+        <p data-i18n-html="accordionP1">誰にも話せない夜の気持ちを、静かに書き、一冊の本として残せるデジタル書店です。<br>
+        書いた内容は原則としてこの端末内だけに保存され、本文をAIで分析・診断しません。</p>
+        <p style="margin-top:8px;" data-i18n-html="accordionP2">製本したあとは、21種類の感情棚から選んでしまうことも、棚を選ばず本棚へ戻ることもできます。<br>
+        本や音楽は、運営側の固定検索語から生まれる文化的な寄り道です。</p>
       </div>
     </div>
 
@@ -289,12 +289,12 @@ body.night .about-data-content{
         <button type="button" class="intro-step" onclick="goToPage('shelves')">
           <span class="intro-num">②</span>
           <p class="intro-title" data-i18n="introTitle2">棚を巡る</p>
-          <p class="intro-text" data-i18n="introText2">15種類の感情の棚から、名言や本、曲に出会います。</p>
+          <p class="intro-text" data-i18n="introText2">21種類の感情の棚から、名言や本、曲に出会います。</p>
         </button>
         <button type="button" class="intro-step" onclick="goToPage('desk')">
           <span class="intro-num">③</span>
           <p class="intro-title" data-i18n="introTitle3">物語を綴る</p>
-          <p class="intro-text" data-i18n="introText3">自分の体験を書き、製本して棚に納めます。</p>
+          <p class="intro-text" data-i18n="introText3">自分の体験を書き、一冊の本として製本します。棚を選ぶのは、そのあとです。</p>
         </button>
         <button type="button" class="intro-step" onclick="goToPage('bookshelf')">
           <span class="intro-num">④</span>
@@ -327,8 +327,8 @@ body.night .about-data-content{
   <div class="page-turn-overlay" id="pageTurnOverlay" aria-hidden="true"></div>
 
   <section id="counter" class="reveal">
-    <div class="section-head"><span class="section-num">1</span><h2 data-i18n="sectionHead1">番台 — 店主に相談する</h2></div>
-    <p class="section-sub" data-i18n="sectionSub1">今のモヤモヤを、そのまま話してください。</p>
+    <div class="section-head"><span class="section-num">1</span><h2 data-i18n="sectionHead1">番台 — 店主に言葉を預ける</h2></div>
+    <p class="section-sub" data-i18n="sectionSub1">今の気持ちを、選択肢か自由な言葉で伝えられます。</p>
     <p class="field-hint" style="margin:-4px 0 10px;" data-i18n="keeperNotAiHint">※AIチャットボットではなく、あらかじめ用意した言葉を返す簡単な仕組みです。会話はモデルに送信されません。</p>
     <div class="counter-wrap">
       <div class="keeper-vignette" aria-hidden="true">
@@ -359,7 +359,7 @@ body.night .about-data-content{
         <span class="mitate-meter-label" id="mitateMeterLabel"></span>
         <div class="mitate-meter-bar"><div class="mitate-meter-fill" id="mitateMeterFill"></div></div>
       </div>
-      <div class="texture-step" id="textureStep" aria-label="心の質感を選ぶ" data-i18n-aria="textureStepAria"></div>
+      <div class="texture-step" id="textureStep" aria-label="今の気持ちに近い選択肢を選ぶ" data-i18n-aria="textureStepAria"></div>
 
       <div class="chart-options" id="chartOptions"></div>
 
@@ -394,7 +394,7 @@ body.night .about-data-content{
   <section id="desk" class="reveal">
     <div class="section-head"><span class="section-num">3</span><h2 data-i18n="sectionHead3">編纂机 — 物語を綴る</h2></div>
     <p class="desk-lead hidden" id="deskLead"></p>
-    <p class="section-sub" data-i18n-html="sectionSub3">今の棚は「<span id="deskCategoryLabel"></span>」です。書き終えたら、タイトルは店主が考えます（自分でつけても構いません）。今の気持ちだけでなく、以前のことを振り返って綴ることもできます。</p>
+    <p class="section-sub" data-i18n-html="sectionSub3">題名や写真は任意です。製本したあと、棚にしまうか、棚を選ばず本棚へ戻れます。</p>
     <div class="desk-form">
       <div class="field">
         <textarea id="storyInput" placeholder="書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。" rows="6" data-i18n-ph="storyInputPlaceholder"></textarea>
@@ -413,7 +413,8 @@ body.night .about-data-content{
         <span class="photo-hint" data-i18n="photoHint">写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。</span>
       </div>
       <details class="desk-extra">
-        <summary data-i18n="deskExtraSummary">✍️ 棚・タイトル・いつの気持ちかを、自分で決める（任意）</summary>
+        <summary data-i18n="deskExtraSummary">✍️ タイトル・いつの気持ちかを、自分で決める（任意）</summary>
+        <span class="field-hint" data-i18n="shelfAfterBindingNote">棚は、製本したあとに選べます。</span>
         <div class="field-row" style="margin-top:12px;">
           <div class="field">
             <label for="categorySelect" data-i18n="fieldLabelShelf">棚</label>
@@ -433,12 +434,13 @@ body.night .about-data-content{
               <option value="past" data-i18n="whenOptionPast">以前のことを振り返って</option>
             </select>
           </div>
-          <div class="field">
+          <!-- ★公開整合：X公式埋め込み機能はリリース時停止。DOM・idは互換のため残し、hiddenで非表示 -->
+          <div class="field" hidden>
             <label for="tweetInput" data-i18n="fieldLabelTweet">関連するXの投稿があれば</label>
             <input id="tweetInput" type="url" placeholder="例：https://x.com/username/status/1234567890" data-i18n-ph="tweetInputPlaceholder">
           </div>
         </div>
-        <span class="field-hint" data-i18n="fieldHint">「以前のことを振り返って」を選ぶと、あの時の気持ちをそのまま本棚に閉じ込めておけます。困った時に開き直すと、前にも同じ気持ちを乗り越えてきたことがわかります。Xの投稿へのリンクを貼ると、本を開いたときに公式の埋め込みで表示されます。本文や画像を直接お預かりすることはありません。</span>
+        <span class="field-hint" data-i18n="fieldHint">「以前のことを振り返って」を選ぶと、過去の気持ちとして本棚に残せます。</span>
       </details>
       <div class="curate-box hidden" id="curateBox">
         <p class="curate-msg" id="curateMsg"></p>
@@ -463,7 +465,7 @@ body.night .about-data-content{
 
   <section id="bookshelf" class="reveal">
     <div class="section-head"><span class="section-num">4</span><h2 data-i18n="sectionHead4">あなたの本棚</h2><span class="shelf-count" id="shelfCount"></span></div>
-    <p class="section-sub" data-i18n="sectionSub4">納品した物語が背表紙になって並びます。クリックすると読めます。困った時にここを開くと、前にも同じ気持ちを乗り越えてきたことがわかります。</p>
+    <p class="section-sub" data-i18n="sectionSub4">製本した物語が背表紙になって並びます。クリックすると、いつでも読み返せます。</p>
     <div class="shelf-month-tabs hidden" id="shelfMonthTabs"></div>
     <div class="wood-shelf">
       <div class="shelf-row" id="myShelf">
