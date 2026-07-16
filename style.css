@@ -2968,3 +2968,234 @@ body.night .unfiled-shelf-picker select{
 /* ============================================================
    /FINAL UI LAYER
    ============================================================ */
+
+/* FINAL UI LAYER v2 */
+/* ============================================================
+   v1検収フィードバック対応：ファーストビューの視覚差分を明確化。
+   ・上のFINAL UI LAYER（v1）は削除・改名せず、ここでさらに上書きする。
+   ・DOM構造／id／class／data-*／aria-*／hrefは一切変更していない
+     （style.cssのみでの上書き。id指定のセレクタも「参照」のみで、
+     JS側の付与内容そのものは変更していない）。
+   ・!importantは新規追加していない。display/hidden/disabled等の
+     機能制御は一切触れていない。
+   ============================================================ */
+
+/* ---------------------------------------------------------
+   A. ファーストビュー：店名→主コピー→説明→CTAの階層を明確化し、
+      上部の余白を圧縮。棚板を思わせる控えめな奥行きを足す。
+   --------------------------------------------------------- */
+.entrance{
+  padding:40px 24px 34px;
+  background:
+    radial-gradient(ellipse at 18% -12%, rgba(62,42,28,.14), transparent 55%),
+    linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+  position:relative;
+  overflow:hidden;
+}
+.entrance::before{
+  margin-bottom:24px;
+}
+/* 棚板を思わせる、ごく控えめな奥行きの帯（発光・ネオン・グラスは使わない） */
+.entrance::after{
+  content:"";
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:12px;
+  background:repeating-linear-gradient(90deg,
+    rgba(62,42,28,.36) 0 16px,
+    rgba(110,42,52,.30) 16px 28px,
+    rgba(92,107,79,.26) 28px 38px,
+    rgba(168,130,60,.28) 38px 52px,
+    rgba(58,42,30,.30) 52px 66px);
+  opacity:.55;
+  pointer-events:none;
+}
+body.night .entrance::after{ opacity:.38; }
+
+.eyebrow{ margin-bottom:10px; }
+.entrance h1{ margin-bottom:8px; }
+
+/* 主コピー：店名(h1)の直下で二番目に強い階層として、はっきり大きく・太く */
+.tagline{
+  font-size:clamp(20px, 3.6vw, 27px);
+  font-weight:700;
+  color:var(--wine);
+  line-height:1.5;
+  margin:0 0 12px;
+}
+body.night .tagline{ color:var(--wine); }
+
+/* 説明文：主コピーより明確に控えめな三番目の階層 */
+.sub-tagline{
+  font-size:13.5px;
+  line-height:1.8;
+  margin:0 0 16px;
+  opacity:.9;
+}
+
+/* サービス説明・データ保存アコーディオンは、CTAまでの縦の余白を取り過ぎない
+   よう、折り畳み時の占有スペースを圧縮する（開閉ロジック・文言は無変更） */
+.about-accordion-wrap{
+  margin:16px auto 12px;
+  padding:8px 0;
+}
+.about-accordion-summary{
+  font-size:12.5px;
+  margin-bottom:8px;
+  opacity:.9;
+}
+.about-data-accordion{
+  margin:0 auto 10px;
+}
+
+/* ---------------------------------------------------------
+   B.「この書店でできること」：4枚の均等カードではなく、
+      店内の案内札・見取り図のような、軽く一体感のある表示へ。
+      DOMの追加・削除・並べ替えは行っていない（CSSのみ）。
+   --------------------------------------------------------- */
+.intro-explainer.in-header{
+  padding:16px 0 2px;
+}
+.intro-kicker{
+  font-size:12px;
+  margin-bottom:12px;
+  opacity:.85;
+}
+.intro-steps{
+  gap:0;
+  border-top:1px solid var(--paper-shadow);
+  border-bottom:1px solid var(--paper-shadow);
+}
+.intro-step{
+  background:transparent;
+  border:none;
+  border-radius:0;
+  padding:14px 12px;
+}
+.intro-step + .intro-step{
+  border-left:1px dashed var(--paper-shadow);
+}
+.intro-step:hover{
+  background:rgba(255,255,255,.25);
+  border-color:transparent;
+  transform:none;
+}
+.intro-num{
+  width:20px;
+  height:20px;
+  background:transparent;
+  border:1px solid var(--gold);
+  color:var(--gold);
+  font-size:10.5px;
+}
+.intro-title{
+  font-size:13.5px;
+  margin:0 0 4px;
+}
+.intro-text{
+  font-size:11px;
+  opacity:.85;
+}
+/* スマートフォンでは自然な縦一列に（横2列グリッドをやめる） */
+@media (max-width:640px){
+  .intro-steps{ grid-template-columns:1fr; }
+  .intro-step + .intro-step{
+    border-left:none;
+    border-top:1px dashed var(--paper-shadow);
+  }
+}
+
+/* ---------------------------------------------------------
+   C.「扉をひらく」を唯一の主CTAとして明確化（新規CTAは追加していない）
+   --------------------------------------------------------- */
+.enter-btn{
+  font-size:17px;
+  padding:17px 48px;
+  letter-spacing:.14em;
+  margin-top:6px;
+  box-shadow:0 4px 0 var(--wood), 0 12px 26px rgba(20,14,8,.22);
+}
+@media (max-width:480px){
+  .enter-btn{ padding:16px 20px; }
+}
+.pref-row{ margin-top:20px; }
+
+/* ---------------------------------------------------------
+   D. 編纂机の主CTA（製本する）も、扉をひらくと同じ強さの言語で
+      少しだけ明確に（新規CTAではなく既存ボタンの強調のみ）
+   --------------------------------------------------------- */
+.bind-btn{
+  font-size:15px;
+  padding:14px 30px;
+}
+
+/* ---------------------------------------------------------
+   E. 製本後の棚選択：
+      1.本を預かったこと 2.棚選択は任意 3.棚を選ぶ操作 4.棚を選ばず戻る操作
+      の優先順位を、既存DOM・文言のまま視覚的に明確化する。
+   --------------------------------------------------------- */
+/* 1. 「今夜の一冊、お預かりしました。」等のdeskMsgを、はっきりした確認の
+      帯として見せる（成功時・注意時のいずれの文言も同じ枠で扱う） */
+#deskMsg:not(:empty){
+  display:block;
+  margin-top:8px;
+  padding:10px 14px;
+  background:rgba(255,251,240,0.7);
+  border-left:3px solid var(--wine);
+  border-radius:0 6px 6px 0;
+  font-size:13.5px;
+  font-weight:600;
+  color:var(--wine);
+  line-height:1.7;
+}
+body.night #deskMsg:not(:empty){ background:#332E26; }
+
+/* 1つながりの帯として、棚未選択UI自体にも同系の左アクセントを */
+.unfiled-shelf-picker{
+  border-left:3px solid var(--gold);
+}
+/* 2. 「棚を選ぶ（任意）」ラベルを、はっきり読める中位の階層に */
+.unfiled-shelf-picker label{
+  font-size:13px;
+  font-weight:600;
+  color:var(--ink-soft);
+  opacity:1;
+}
+/* 3. 棚を選ぶ操作（select・確定ボタン）を主アクションとして維持 */
+.unfiled-shelf-picker select{
+  font-weight:600;
+}
+.unfiled-shelf-picker button#unfiledShelfConfirm{
+  font-size:14.5px;
+  padding:12px 26px;
+}
+/* 4. 棚を選ばず戻る操作は、あえて控えめなテキストリンク相当に下げる
+      （disabled状態・onclickは無変更。見た目のみ） */
+.unfiled-shelf-picker button#unfiledShelfSkip{
+  background:none;
+  border:none;
+  box-shadow:none;
+  text-decoration:underline;
+  color:var(--ink-soft);
+  font-size:12.5px;
+  padding:8px 4px;
+}
+.unfiled-shelf-picker button#unfiledShelfSkip:hover{
+  color:var(--wine);
+}
+
+/* ---------------------------------------------------------
+   F. 店内ページ（本棚・モーダル・フッター）の階層をもう一段明確に
+   --------------------------------------------------------- */
+.modal-card h3{ font-size:22px; }
+.shelf-count{ font-weight:700; }
+.wood-shelf{ box-shadow:0 8px 20px rgba(0,0,0,.25); }
+footer.shop-footer{
+  border-top:1px solid var(--paper-shadow);
+  margin-top:10px;
+}
+body.night footer.shop-footer{ border-color:rgba(201,165,92,0.25); }
+
+/* ============================================================
+   /FINAL UI LAYER v2
+   ============================================================ */

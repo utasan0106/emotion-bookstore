@@ -24,7 +24,7 @@ function currentLang(){ return appLang; }
 
 const MESSAGES = {
   ja: {
-    tagline: "今夜の気持ちを、一冊の本に。",
+    tagline: "今の気持ちを、一冊の本に。",
     subTagline: "誰にも話せない夜に、気持ちを静かに書き残せる場所です。",
     accordionSummary: "気持ちを書き、一冊の本として端末内の本棚へ。<br>登録不要。棚を選ぶかどうかも、あなたが決められます。",
     accordionOpenLabel: "どんな体験ができるの？",
@@ -48,7 +48,7 @@ const MESSAGES = {
     keeperBioSummary: "店主について",
     keeperBioText: "この書店の店主。名前は「まな」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、まなが長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。",
     keeperNameLabel: "店主",
-    firstGreeting: "こんばんは。今夜も、静かに開けています。",
+    firstGreeting: "いらっしゃいませ。ここは、静かに開いています。",
     textureStepAria: "今の気持ちに近い選択肢を選ぶ",
     guideLead: "👇 当てはまるものがない場合は、下の枠に言葉を書いて「話す」を押してください",
     freeformHintDesk: "※書いた言葉は、そのまま編纂机の原稿用紙に写しておきます。",
@@ -161,7 +161,7 @@ const MESSAGES = {
     submitStoryHint: "※外部には公開されず、この端末のブラウザ内にのみ保存されます。"
   },
   en: {
-    tagline: "Turn Tonight’s Feelings into a Book.",
+    tagline: "Turn What You Feel into a Book.",
     subTagline: "A quiet place to write what you cannot say aloud.",
     accordionSummary: "Write what you feel and keep it as a book on your device.<br>No account required. Choosing a shelf is optional.",
     accordionOpenLabel: "What can I do here?",
@@ -348,8 +348,8 @@ function applyLanguage(){
   const titleEl = document.querySelector('title');
   if(titleEl){
     titleEl.textContent = appLang === 'ja'
-      ? 'みんなの感情書店｜今夜の気持ちを、一冊の本に。'
-      : 'Emotion Bookstore | Turn Tonight’s Feelings into a Book.';
+      ? 'みんなの感情書店｜今の気持ちを、一冊の本に。'
+      : 'Emotion Bookstore | Turn What You Feel into a Book.';
   }
 }
 
@@ -2652,7 +2652,7 @@ if(btnSubmit) {
         if(wSel) wSel.value = 'now';
         updateStoryCount();
         // ★Step2：製本成功時のメッセージは固定の一文のみ（1操作1メッセージ。トースト併発は廃止）
-        if(msg) msg.textContent = '今夜の一冊、お預かりしました。';
+        if(msg) msg.textContent = '一冊、お預かりしました。';
         btn.disabled = false;
         const boundMsg = msg ? msg.textContent : '';
         setTimeout(()=>{ if(msg && msg.textContent === boundMsg) msg.textContent = ''; }, 4200);
@@ -3838,8 +3838,8 @@ function ensureWriteFab(){
     btn.id = 'writeFab';
     btn.type = 'button';
     btn.className = 'write-fab';
-    btn.setAttribute('aria-label', '今夜の気持ちを書く');
-    btn.title = '今夜の気持ちを書く';
+    btn.setAttribute('aria-label', '今の気持ちを書く');
+    btn.title = '今の気持ちを書く';
     btn.textContent = '🖋️';
     document.body.appendChild(btn);
   }
@@ -3900,8 +3900,8 @@ function applyUserNameDisplay(){
     const safeName = typeof escapeHtml === 'function' ? escapeHtml(name) : name;
     taglineEl.innerHTML = name
       ? (appLang === 'ja'
-          ? `${safeName}さんの今夜の気持ちを、<br>一冊の本に。`
-          : `Turn ${safeName}’s feelings tonight<br>into a book.`)
+          ? `${safeName}さんの今の気持ちを、<br>一冊の本に。`
+          : `Turn ${safeName}’s feelings<br>into a book.`)
       : t('tagline');
   }
 }
@@ -4095,8 +4095,8 @@ function warnInAppBrowserIfNeeded(){
   //   English表示中はapplyLanguage()が設定した既定の英語挨拶（firstGreeting）をそのまま使う
   if(greetingEl && appLang === 'ja'){
     const line = (libraryCache.length === 0)
-      ? 'こんばんは。今夜も、静かに開けています。'
-      : 'こんばんは。棚は、そのままです。';
+      ? 'いらっしゃいませ。ここは、静かに開いています。'
+      : 'おかえりなさい。棚は、そのままです。';
     typeIntoNode(greetingEl, line);
   }
   if(!savedProfile){
