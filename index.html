@@ -350,10 +350,10 @@ body.night .about-data-content{
       </div>
       <details class="keeper-bio">
         <summary data-i18n="keeperBioSummary">店主について</summary>
-        <p data-i18n="keeperBioText">この書店の店主。名前は「巡（めぐる）」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、巡が長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。</p>
+        <p data-i18n="keeperBioText">この書店の店主。名前は「まな」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、まなが長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。</p>
       </details>
       <div class="chat-window" id="chatWindow">
-        <div class="bubble shopkeeper" id="firstGreeting"><span class="name" data-i18n="keeperNameLabel">店主</span><span id="firstGreetingText" data-i18n="firstGreeting">……いらっしゃいませ。ちょうど頁を閉じたところです。今はどんな気分に近いですか。近いものを選んでも、下に自由に書いてもらっても構いません。</span></div>
+        <div class="bubble shopkeeper" id="firstGreeting"><span class="name" data-i18n="keeperNameLabel">店主</span><span id="firstGreetingText" data-i18n="firstGreeting">こんばんは。今夜も、静かに開けています。</span></div>
       </div>
       <div class="mitate-meter hidden" id="mitateMeter" aria-hidden="true">
         <span class="mitate-meter-label" id="mitateMeterLabel"></span>
@@ -397,7 +397,7 @@ body.night .about-data-content{
     <p class="section-sub" data-i18n-html="sectionSub3">今の棚は「<span id="deskCategoryLabel"></span>」です。書き終えたら、タイトルは店主が考えます（自分でつけても構いません）。今の気持ちだけでなく、以前のことを振り返って綴ることもできます。</p>
     <div class="desk-form">
       <div class="field">
-        <textarea id="storyInput" placeholder="いつ、どこで、何があって、どう感じたか。短くても、拙くても構いません。" rows="6" data-i18n-ph="storyInputPlaceholder"></textarea>
+        <textarea id="storyInput" placeholder="書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。" rows="6" data-i18n-ph="storyInputPlaceholder"></textarea>
         <div class="count-row">
           <button type="button" class="assist-link" id="assistBtn" data-i18n="assistBtn">書き出しに迷ったら、店主の助け舟</button>
           <span class="story-count" id="storyCount">0 / 700字</span>
@@ -421,7 +421,7 @@ body.night .about-data-content{
           </div>
           <div class="field">
             <label for="titleInput" data-i18n="fieldLabelTitle">背表紙のタイトル</label>
-            <input id="titleInput" maxlength="16" placeholder="空欄なら店主が考えます" data-i18n-ph="titleInputPlaceholder">
+            <input id="titleInput" maxlength="16" placeholder="空欄の場合は『まだ、題名のない本』になります" data-i18n-ph="titleInputPlaceholder">
           </div>
         </div>
         <div class="title-suggest" id="titleSuggest"></div>
@@ -518,6 +518,9 @@ body.night .about-data-content{
       <a href="./privacy.html" data-i18n="privacyLink">プライバシーポリシー</a>
       <span class="legal-sep">・</span>
       <a href="./terms.html" data-i18n="termsLink">利用規約</a>
+      <span class="legal-sep">・</span>
+      <!-- ★Step3：専門の相談窓口への常設導線（詳細・電話番号はguide.html側にのみ掲載し、本ページには重複掲載しない） -->
+      <a href="./guide.html#support">専門の相談窓口</a>
     </div>
   </footer>
 </div>

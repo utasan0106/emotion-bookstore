@@ -46,9 +46,9 @@ const MESSAGES = {
     pageTab1: "① 番台", pageTab2: "② 棚", pageTab3: "③ 編纂机", pageTab4: "④ 本棚",
     sectionHead1: "番台 — 店主に相談する", sectionSub1: "今のモヤモヤを、そのまま話してください。",
     keeperBioSummary: "店主について",
-    keeperBioText: "この書店の店主。名前は「巡（めぐる）」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、巡が長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。",
+    keeperBioText: "この書店の店主。名前は「まな」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、まなが長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。",
     keeperNameLabel: "店主",
-    firstGreeting: "……いらっしゃいませ。ちょうど頁を閉じたところです。今はどんな気分に近いですか。近いものを選んでも、下に自由に書いてもらっても構いません。",
+    firstGreeting: "こんばんは。今夜も、静かに開けています。",
     textureStepAria: "心の質感を選ぶ",
     guideLead: "👇 当てはまるものがない場合は、下の枠に言葉を書いて「話す」を押してください",
     freeformHintDesk: "※書いた言葉は、そのまま編纂机の原稿用紙に写しておきます。",
@@ -60,7 +60,7 @@ const MESSAGES = {
     backToBandai: "⤴ 番台へ戻る",
     sectionHead3: "編纂机 — 物語を綴る",
     sectionSub3: "今の棚は「{shelf}」です。書き終えたら、タイトルは店主が考えます（自分でつけても構いません）。今の気持ちだけでなく、以前のことを振り返って綴ることもできます。",
-    storyInputPlaceholder: "いつ、どこで、何があって、どう感じたか。短くても、拙くても構いません。",
+    storyInputPlaceholder: "書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。",
     assistBtn: "書き出しに迷ったら、店主の助け舟",
     storyCountFormat: "{count} / {max}字",
     photoLabel: "📷 今日の一枚を、頁に挟む（任意）",
@@ -68,7 +68,7 @@ const MESSAGES = {
     photoRemoveAria: "写真を外す",
     photoHint: "写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。",
     deskExtraSummary: "✍️ 棚・タイトル・いつの気持ちかを、自分で決める（任意）",
-    fieldLabelShelf: "棚", fieldLabelTitle: "背表紙のタイトル", titleInputPlaceholder: "空欄なら店主が考えます",
+    fieldLabelShelf: "棚", fieldLabelTitle: "背表紙のタイトル", titleInputPlaceholder: "空欄の場合は『まだ、題名のない本』になります",
     fieldLabelWhen: "いつの気持ちですか", whenOptionNow: "今の気持ち", whenOptionPast: "以前のことを振り返って",
     fieldLabelTweet: "関連するXの投稿があれば", tweetInputPlaceholder: "例：https://x.com/username/status/1234567890",
     fieldHint: "「以前のことを振り返って」を選ぶと、あの時の気持ちをそのまま本棚に閉じ込めておけます。困った時に開き直すと、前にも同じ気持ちを乗り越えてきたことがわかります。Xの投稿へのリンクを貼ると、本を開いたときに公式の埋め込みで表示されます。本文や画像を直接お預かりすることはありません。",
@@ -109,7 +109,7 @@ const MESSAGES = {
     wanderBtn: "⚘ 気の向くままに巡る",
     shioriChoosingWords: "店主が言葉を選んでいます…",
     bindTextStep2: "表紙を綴じています…",
-    draftRestored: "書きかけの下書きを復元しました。続きからどうぞ。",
+    draftRestored: "前の頁が、机に残っています。続きからでも、そのまま綴じても。",
     storyTooShort: "まずは、そのときの気持ちを書いてみてください。",
     storyLimitWarning: "本文は{max}字までに収めてください。",
     storyReviewing: "店主が物語に目を通しています…",
@@ -134,6 +134,8 @@ const MESSAGES = {
     chooseFromOptionsBtn: "選択肢からも選べます",
     writeAtDeskBtn2: "この気持ちを机で書き留める",
     restartChatBtn: "最初から話し直す",
+    loopBrowseShelvesBtn: "感情の棚を眺める",
+    loopWriteBookBtn: "机で一冊にする",
     backToTextureBtn: "質感から選び直す",
     syncedToDeskMsg: "番台でお聞きしたお話を、原稿用紙に書き留めておきました。続きをどうぞ、あなたのペースで綴ってください",
     photoLoadFail: "写真を読み込めませんでした。別の写真でお試しください。",
@@ -180,7 +182,7 @@ const MESSAGES = {
     pageTab1: "① Counter", pageTab2: "② Shelves", pageTab3: "③ Writing desk", pageTab4: "④ Bookshelf",
     sectionHead1: "The Counter — Talk to the shopkeeper", sectionSub1: "Tell us whatever's on your mind, just as it is.",
     keeperBioSummary: "About the shopkeeper",
-    keeperBioText: "The keeper of this bookstore goes by \"Meguru.\" Their age and gender remain unrevealed. They usually read quietly at the back of the counter, and their job is to listen to what customers have to say. The shelves are lined with quotes old and new, sourced and collected by Meguru over many years in a notebook.",
+    keeperBioText: "The keeper of this bookstore goes by \"Mana.\" Their age and gender remain unrevealed. They usually read quietly at the back of the counter, and their job is to listen to what customers have to say. The shelves are lined with quotes old and new, sourced and collected by Mana over many years in a notebook.",
     keeperNameLabel: "Shopkeeper",
     firstGreeting: "……Welcome. I just closed a page. What mood are you closest to right now? You can pick something close, or write freely below.",
     textureStepAria: "Choose the texture of your heart",
@@ -202,7 +204,7 @@ const MESSAGES = {
     photoRemoveAria: "Remove photo",
     photoHint: "Photos are resized to a maximum of 800px and kept only on this device. Nothing is sent to a server.",
     deskExtraSummary: "✍️ Choose the shelf, title, and timing yourself (optional)",
-    fieldLabelShelf: "Shelf", fieldLabelTitle: "Spine title", titleInputPlaceholder: "Leave blank and the shopkeeper will decide",
+    fieldLabelShelf: "Shelf", fieldLabelTitle: "Spine title", titleInputPlaceholder: "If left blank, it will be saved as “An Untitled Book.”",
     fieldLabelWhen: "When did you feel this?", whenOptionNow: "Right now", whenOptionPast: "Looking back on the past",
     fieldLabelTweet: "Link a related post on X, if any", tweetInputPlaceholder: "e.g. https://x.com/username/status/1234567890",
     fieldHint: "Choosing \"looking back on the past\" lets you seal that moment's feeling onto the shelf just as it was. Opening it again when you're struggling shows you that you've gotten through this feeling before. A link to a post on X will show up as an official embed when the book is opened — we never store the post's text or images directly.",
@@ -268,6 +270,8 @@ const MESSAGES = {
     chooseFromOptionsBtn: "You can also pick from the options",
     writeAtDeskBtn2: "Write this feeling down at the desk",
     restartChatBtn: "Start the conversation over",
+    loopBrowseShelvesBtn: "Browse the emotion shelves",
+    loopWriteBookBtn: "Make it a book at the desk",
     backToTextureBtn: "Choose the texture again",
     syncedToDeskMsg: "I've jotted down what you told me at the counter onto the manuscript paper. Please continue at your own pace.",
     photoLoadFail: "Couldn't load that photo. Please try a different one.",
@@ -327,7 +331,7 @@ function applyLanguage(){
   // 演出トグル・文字数カウンターなど、JS側で直接書き換えているUI文言も追従させる
   if(typeof applyPrefs === 'function') applyPrefs();
   if(typeof updateStoryCount === 'function') updateStoryCount();
-  // ★店主の名前（巡／綴）は選んだ性格によって変わるため、data-i18n の一律上書きの後に
+  // ★店主の名前（まな／綴）は選んだ性格によって変わるため、data-i18n の一律上書きの後に
   // あらためて正しい名前入りの文章へ差し替える
   if(typeof updateKeeperBioText === 'function') updateKeeperBioText();
   if(typeof applyUserNameDisplay === 'function') applyUserNameDisplay();
@@ -354,39 +358,19 @@ function toggleLanguage(){
   buzz(6);
 }
 
-function scoreLabelForStory(label, story){
-  if(!story) return 0;
-  const chars = Array.from(new Set(label.replace(/[のをにがはでへと日頁記録一]/g,'').split('')));
-  let s = 0;
-  chars.forEach(ch=>{ if(story.includes(ch)) s++; });
-  return s;
-}
+// ★Step3：本文の文字を読み取って題名候補を採点する scoreLabelForStory は、
+// 全参照ゼロを確認のうえ削除した（suggestTitlesは本文を読まない固定動作へ変更）。
 
 function suggestTitles(catId, story, n){
-  const pool = TITLE_TEMPLATES[catId] || [];
-  if(!pool.length) return [];
-  const scored = shuffleArray(pool).map(l=>({ l, s: scoreLabelForStory(l, story) })).sort((a,b)=>b.s-a.s);
-  return scored.slice(0, n || 4).map(x=>x.l);
+  // ★Step3：本文（story）による題名提案を停止。引数は読まず、常に空配列を返す（関数契約は維持）。
+  return [];
 }
 
 function renderTitleSuggest(){
+  // ★Step3：本文を読み取る題名候補の提案（suggestTitles）を停止。
+  // 候補欄を空にして終了し、題名候補ボタンは表示しない。利用者の手入力題名はそのまま維持される。
   const box = document.getElementById('titleSuggest');
-  const sel = document.getElementById('categorySelect');
-  if(!box || !sel) return;
-  const ta = document.getElementById('storyInput');
-  const tInput = document.getElementById('titleInput');
-  const story = ta ? ta.value.trim() : '';
-  const picks = suggestTitles(sel.value || activeCategory, story, 4);
-  if(!picks.length){ box.innerHTML = ''; return; }
-  box.innerHTML = '<span class="title-suggest-label">店主の見立て（タップで採用・自分で書き換えても）：</span>';
-  picks.forEach(l=>{
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'title-chip';
-    b.textContent = l;
-    b.onclick = ()=>{ if(tInput){ tInput.value = l; buzz(5); } };
-    box.appendChild(b);
-  });
+  if(box) box.innerHTML = '';
 }
 
 function generateTitle(categoryId){
@@ -750,7 +734,7 @@ const DataRepository = {
     const okIdb = await idbSet(key, wrapped);
     const okLs = lsSet(key, wrapped);
     if(!okIdb && !okLs){
-      warnStorageOnce('この端末では保存ができないようです（プライベートブラウズ中や、保存容量の設定をご確認ください）。');
+      warnStorageOnce('すみません。保存がうまく完了しませんでした。書いた言葉は消さず、少ししてからもう一度お試しください。');
       return false;
     }
     return true;
@@ -1264,9 +1248,8 @@ const PERSONA_TRIGGERS = [
 ];
 
 function detectCounselingPersona(text){
-  for(const t of PERSONA_TRIGGERS){
-    if(t.patterns.some(p=>text.includes(p))) return t.persona;
-  }
+  // ★Step3：利用者本文からの人物像推測を停止（本文は読まない）。
+  // 関数契約は維持し、来店カードで利用者が明示的に選んだ立場か、既定値のみを返す。
   return (userProfile && userProfile.persona) || 'young_worker';
 }
 
@@ -1280,20 +1263,13 @@ const STATE_TRIGGERS = [
 ];
 
 function detectCounselingState(text, fallbackShelfId){
-  for(const s of STATE_TRIGGERS){
-    if(s.patterns.some(p=>text.includes(p))) return s.state;
-  }
-  if(NEGATIVE_SHELVES.includes(fallbackShelfId)) return 'yami';
+  // ★Step3：利用者本文からの状態推測を停止（本文・棚は読まない）。関数契約は固定値で維持。
   return 'darui';
 }
 
 function counselingFlavorReply(text, fallbackShelfId){
-  const persona = detectCounselingPersona(text);
-  const state = detectCounselingState(text, fallbackShelfId);
-  const personaPool = COUNSELING_MESSAGES[persona] || COUNSELING_MESSAGES.young_worker;
-  const pool = personaPool[state] || personaPool.darui || [];
-  if(!pool.length) return null;
-  return pool[Math.floor(Math.random()*pool.length)];
+  // ★Step3：本文に応じたカウンセリング風応答を停止。常にnull（＝使用しない）を返す。
+  return null;
 }
 
 const PERSONAL_INFO_PATTERNS = [/\d{2,4}-\d{3,4}-\d{3,4}/, /[\w.+-]+@[\w-]+\.[\w.-]+/, /(本名|住所|電話番号|LINE\s*ID)[:：]/];
@@ -1301,60 +1277,16 @@ const ATTACK_WORDS = ['死ね','殺す','消えろ','ぶっ殺'];
 const CRISIS_STORY_PATTERNS = ['死にたい','消えたい','自分を傷つけ','リストカット'];
 
 function detectShelfFromText(text, minScore){
-  let bestId = null, bestScore = 0;
-  for(const id in CATEGORY_KEYWORDS){
-    // ★修正：「モヤモヤ」棚は“まだ分解できていない気持ち”の受け皿であって、
-    // 積極的に言い当てにいく先ではない。ここで最有力候補として拾ってしまうと、
-    // ユーザーが本当に伝えたい具体的な感情（怒り・不安 等）より先に「もやもや」判定が
-    // 勝ってしまい、「結局いつもモヤモヤ棚に飛ばされる」という体験になっていた。
-    // 具体的な感情棚の判定を優先し、moyamoyaはどれにも当てはまらなかった時の
-    // 最終フォールバックとしてのみ機能させる。
-    if(id === 'moyamoya') continue;
-    const score = CATEGORY_KEYWORDS[id].reduce((n,w)=>n + (text.includes(w) ? 1 : 0), 0);
-    if(score > bestScore){ bestScore = score; bestId = id; }
-  }
-  if(bestScore >= (minScore || 1)) return bestId;
-  // 具体的な感情棚が一つも当たらなかった場合にだけ、モヤモヤ自体への言及を確認する
-  const moyaScore = CATEGORY_KEYWORDS.moyamoya.reduce((n,w)=>n + (text.includes(w) ? 1 : 0), 0);
-  return moyaScore >= (minScore || 1) ? 'moyamoya' : null;
+  // ★Step3：利用者本文からの棚（感情）推測を停止。本文は読まず、常にnullを返す（関数契約は維持）。
+  return null;
 }
 
 function localCurate(title, story, chosenId){
-  const combined = title + '\n' + story;
-  if(CRISIS_STORY_PATTERNS.some(w=>combined.includes(w))){
-    return {
-      approved:false, category:null, note:'',
-      reason:'その気持ちは、ここに書き留めるだけでなく、信頼できる大人の方や「よりそいホットライン」0120-279-338にも、ぜひ話してみてください。'
-    };
-  }
-  if(PERSONAL_INFO_PATTERNS.some(p=>p.test(combined))){
-    return { approved:false, category:null, note:'', reason:'連絡先や個人が特定できる情報が含まれているようです。そこだけ伏せて、もう一度お持ちください。' };
-  }
-  if(ATTACK_WORDS.some(w=>combined.includes(w))){
-    return { approved:false, category:null, note:'', reason:'誰かを深く傷つける言葉が含まれているようです。ご自身の気持ちの部分だけ、綴り直してみてください。' };
-  }
-  // ★修正：「本棚エントリの棚おすすめが、大体モヤモヤ棚に飛ばされる」という指摘への対応。
-  // 原因は二つ複合していた。
-  //  ① 何もしなければ chosenId（初期値は最初の棚＝モヤモヤ）のまま据え置かれる設計なので、
-  //     ユーザーが棚を選ばずに執筆すると出発点からしてモヤモヤ寄りだった。
-  //  ② 具体的な感情棚へ乗り換えるには「キーワード2つ一致」が必要という基準が厳しすぎて、
-  //     日記の自由文には1語しか強い手がかりがないことが多く、乗り換えが起きにくかった。
-  // ここでは、モヤモヤ棚自体は「積極的におすすめする先」から外し（そこは"分解できなかった"
-  // ときの受け皿に徹してもらう）、具体的な感情棚は1語の一致でも乗り換え候補にすることで、
-  // 「モヤモヤをちゃんと分解したい」というユーザー本来の目的に応える。
-  let bestId = null, bestScore = 0;
-  for(const id in CATEGORY_KEYWORDS){
-    if(id === 'moyamoya') continue;
-    const score = CATEGORY_KEYWORDS[id].reduce((n,w)=>n + (combined.includes(w) ? 1 : 0), 0);
-    if(score > bestScore){ bestScore = score; bestId = id; }
-  }
-  const suggested = (bestScore >= 1 && bestId && bestId !== chosenId) ? bestId : chosenId;
-  return {
-    approved:true,
-    category:suggested,
-    note: SHOPKEEPER_NOTES[Math.floor(Math.random()*SHOPKEEPER_NOTES.length)],
-    reason:''
-  };
+  // ★Step3：ブランド憲法に基づき、本文・題名の内容判定（危機ワード・キーワード一致による
+  // 棚提案・ランダムな店主メモを含む）をすべて停止。本文・題名は一切読まない。
+  // 関数契約（引数・返り値の形）は維持し、常に固定結果を返す。
+  // 専門の相談窓口の案内は、guide.html#support への常設導線として提供する。
+  return { approved:true, category:chosenId, note:'', reason:'' };
 }
 
 function localShiori(topLabel){
@@ -1364,26 +1296,27 @@ function localShiori(topLabel){
 
 let prefs = { motion:true, sound:false, keeperStyle:'gentle' };
 
-// ★追加：店主の性格（優しい／ツンデレ）で、口調だけを切り替える薄いヘルパー。
-// どちらを選んでも中身の温かさ・味方であることは変わらず、言い回しだけがツンデレ寄りになる。
-function isTsundere(){ return prefs.keeperStyle === 'tsundere'; }
+// ★Step3：店主は「まな」に一本化。ツンデレ店主（綴）の選択・表示は停止。
+// 既存の保存値が 'tsundere' でもエラーなく gentle として扱う（保存データは削除しない）。
+// ツンデレ用の文言配列等は未使用のまま残置（スキーマ・データ非破壊）。
+function isTsundere(){ return false; }
 function pickByStyle(gentleArr, tsundereArr){
   const pool = (isTsundere() && Array.isArray(tsundereArr) && tsundereArr.length) ? tsundereArr : gentleArr;
   return pool[Math.floor(Math.random()*pool.length)];
 }
 
-// ★追加：性格ごとの店主の名前。優しい店主＝巡（めぐる）、ツンデレ店主＝綴（つづる）。
-function currentKeeperName(){ return isTsundere() ? '綴' : '巡'; }
+// ★Step3：店主名は常に「まな」。（旧名「巡（めぐる）」→「まな」統一済み。内部変数名・保存キーは変更しない）
+function currentKeeperName(){ return 'まな'; }
 
 // 店主の自己紹介文（「店主について」の折りたたみ）。名前・口調が性格によって変わるため、
 // data-i18n による静的差し替えとは別に、ここだけは動的に描画する。
 const KEEPER_BIO_TEXT = {
   ja: {
-    gentle: 'この書店の店主。名前は「巡（めぐる）」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、巡が長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。',
+    gentle: 'この書店の店主。名前は「まな」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、まなが長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。',
     tsundere: 'この書店の店主。名前は「綴（つづる）」と名乗っています。年齢や性別は明かしていません。……別に自己紹介したかったわけじゃないですけど。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、綴が長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。'
   },
   en: {
-    gentle: 'The keeper of this bookstore goes by "Meguru." Their age and gender remain unrevealed. They usually read quietly at the back of the counter, and their job is to listen to what customers have to say. The shelves are lined with quotes old and new, sourced and collected by Meguru over many years in a notebook.',
+    gentle: 'The keeper of this bookstore goes by "Mana." Their age and gender remain unrevealed. They usually read quietly at the back of the counter, and their job is to listen to what customers have to say. The shelves are lined with quotes old and new, sourced and collected by Mana over many years in a notebook.',
     tsundere: 'The keeper of this bookstore goes by "Tsuzuru." Their age and gender remain unrevealed — not that they’re dying to tell you. They usually read quietly at the back of the counter, and their job is to listen to what customers have to say. The shelves are lined with quotes old and new, sourced and collected by Tsuzuru over many years in a notebook.'
   }
 };
@@ -1413,6 +1346,9 @@ async function initPrefs(){
   }else if(reduceQuery && reduceQuery.matches){
     prefs.motion = false;
   }
+  // ★Step3：既存の保存値が 'tsundere' の場合も、読み込み時は gentle として扱う。
+  // 保存データそのものは書き換えない（メモリ上の正規化のみ。スキーマ・キーは不変）。
+  if(prefs.keeperStyle === 'tsundere') prefs.keeperStyle = 'gentle';
   applyPrefs();
 }
 
@@ -1436,16 +1372,12 @@ function buzz(ms){
 const HEAVY_WORDS = ['つら','しんど','悲し','泣','苦し','不安','怖','孤独','疲れ','嫌','消え'];
 const BRIGHT_WORDS = ['嬉し','楽し','わくわく','ワクワク','好き','幸','誇ら','最高'];
 function setMood(text){
+  // ★Step3：文章の語句（HEAVY_WORDS / BRIGHT_WORDS）による背景演出を停止。
+  // 関数契約は維持し、常に中立（透明）の固定値を設定する。引数は読まない。
   if(!prefs.motion) return;
   const layer = document.getElementById('moodLayer');
   if(!layer) return;
-  if(HEAVY_WORDS.some(w=>text.includes(w))){
-    layer.style.background = 'rgba(45,60,110,0.07)';
-  }else if(BRIGHT_WORDS.some(w=>text.includes(w))){
-    layer.style.background = 'rgba(255,150,60,0.06)';
-  }else{
-    layer.style.background = 'rgba(0,0,0,0)';
-  }
+  layer.style.background = 'rgba(0,0,0,0)';
 }
 
 function scrollToId(id){
@@ -2414,6 +2346,14 @@ if(inputStory) {
 async function restoreDraftIfAny(){
   const draft = await loadJSON(DRAFT_KEY, null);
   if(!draft || !draft.text) return;
+  // ★Step2：下書きは保存日時（draft.date）から7日以内のみ復元。
+  // 7日経過、または日時が欠落・不正な場合は破棄（クリア）する。
+  const DRAFT_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+  const savedAt = draft.date ? new Date(draft.date).getTime() : NaN;
+  if(!isFinite(savedAt) || (Date.now() - savedAt) > DRAFT_MAX_AGE_MS){
+    deleteKey(DRAFT_KEY);
+    return;
+  }
   const ta = document.getElementById('storyInput');
   if(!ta) return;
   if(ta.value.trim()) return;
@@ -2439,7 +2379,9 @@ if(btnSubmit) {
       return;
     }
     const tInput = document.getElementById('titleInput');
-    const title = (tInput ? tInput.value.trim() : '') || (suggestTitles(chosenId, story, 1)[0]) || generateTitle(chosenId);
+    // ★Step3：本文からの題名提案（suggestTitles）・ランダム題名（generateTitle）を停止。
+    // 手入力題名はそのまま維持し、空欄時のみ固定の題名を用いる。
+    const title = (tInput ? tInput.value.trim() : '') || 'まだ、題名のない本';
     if(countChars(story) > STORY_LIMIT){
       if(msg) msg.textContent = t('storyLimitWarning').replace('{max}', STORY_LIMIT);
       return;
@@ -2466,7 +2408,6 @@ if(btnSubmit) {
 
     const bind = (finalCategory, note)=>{
       runBinding(async ()=>{
-        const priorCount = libraryCache.filter(e=>e.category===finalCategory).length;
         const entry = {
           id: Date.now().toString(),
           category: finalCategory,
@@ -2478,6 +2419,17 @@ if(btnSubmit) {
           date: new Date().toISOString()
         };
         libraryCache.push(entry);
+
+        // ★Step2：製本（IndexedDBへのput）を先に確定させる。
+        // 失敗時は本棚へ並べず巻き戻し、入力欄・下書きはそのまま残す（保存エラーは最優先メッセージ）。
+        const savedOk = await saveJSON('emotion-bookstore-library', libraryCache);
+        if(!savedOk){
+          libraryCache = libraryCache.filter(e=>e.id !== entry.id);
+          if(msg) msg.textContent = 'すみません。保存がうまく完了しませんでした。書いた言葉は消さず、少ししてからもう一度お試しください。';
+          btn.disabled = false;
+          return;
+        }
+
         clearAttachedPhoto();
         playSuckAnimation(finalCategory);
         selectedShelfMonth = 'all'; // 保存直後は必ず新しい一冊が見えるよう、月別フィルタを解除する
@@ -2485,35 +2437,49 @@ if(btnSubmit) {
         renderShelfTabs();
         if(tInput) tInput.value = '';
         if(ta) ta.value = '';
-        deleteKey(DRAFT_KEY);
+        await deleteKey(DRAFT_KEY); // ★Step2：下書きのクリアは「保存成功の直後」にのみ行い、完了を待ってから後続処理へ進む
         if(twInput) twInput.value = '';
         if(wSel) wSel.value = 'now';
         updateStoryCount();
-        const label = shelfLabelOf(finalCategory);
-        if(msg) msg.textContent = priorCount > 0
-          ? `製本して、本棚に納品しました。「${label}」の棚に綴るのは、これで${priorCount + 1}冊目です。`
-          : '製本して、本棚に納品しました。';
-        // ★追加：画面下部にも控えめなトースト通知を出し、保存できたことを分かりやすく伝える
-        showToast('本棚に収めました', { icon:'📚' });
-
-        await saveJSON('emotion-bookstore-library', libraryCache);
-        await celebrateMilestoneIfNeeded(libraryCache.length);
+        // ★Step2：製本成功時のメッセージは固定の一文のみ（1操作1メッセージ。トースト併発は廃止）
+        if(msg) msg.textContent = '今夜の一冊、お預かりしました。';
         btn.disabled = false;
         const boundMsg = msg ? msg.textContent : '';
         setTimeout(()=>{ if(msg && msg.textContent === boundMsg) msg.textContent = ''; }, 4200);
 
+        // ★Step2修正：節目メッセージ（最初の一冊 等）は、実際に本棚へ遷移した直後にのみ発火する。
+        // 招待カードの表示中には出さない（固定時間のsetTimeoutによる独立発火は廃止）。
+        // 1回限りの記録ロジックはcelebrateMilestoneIfNeeded側の既存実装のまま。
+        const goToBookshelfThenMilestone = ()=>{
+          goToPage('bookshelf');
+          celebrateMilestoneIfNeeded(libraryCache.length);
+        };
+
         const inv = INVITES[finalCategory];
         if(inv){
           showInvitation(finalCategory);
+          // ★Step2修正：招待カードの両方の終了経路（しおりに挟む＝invClose／棚を見てみる＝invGoShelf）とも、
+          // カードを閉じて遷移した「直後」に節目処理を1回だけ実行する。
+          // 連打や両ボタンの連続操作による遷移・節目処理の重複は、bind内の一度限りガード(invHandled)で防ぐ。
+          // 節目の判定・1回限りの記録はcelebrateMilestoneIfNeeded側の既存実装のまま。
+          let invHandled = false;
           const closeBtn = document.getElementById('invClose');
-          const originalClick = closeBtn.onclick;
-          closeBtn.onclick = () => {
-             document.getElementById('invitationCard').classList.add('hidden');
-             goToPage('bookshelf');
-             closeBtn.onclick = originalClick; 
+          const goShelfBtn = document.getElementById('invGoShelf');
+          const originalCloseClick = closeBtn ? closeBtn.onclick : null;
+          const finishInvitation = (navigate)=>{
+            if(invHandled) return; // 一度限りガード
+            invHandled = true;
+            const card = document.getElementById('invitationCard');
+            if(card) card.classList.add('hidden');
+            navigate();
+            celebrateMilestoneIfNeeded(libraryCache.length);
+            if(closeBtn) closeBtn.onclick = originalCloseClick;
+            // invGoShelfのonclickは、次回showInvitation()が毎回再設定するため復元不要
           };
+          if(closeBtn) closeBtn.onclick = ()=>finishInvitation(()=>goToPage('bookshelf'));
+          if(goShelfBtn) goShelfBtn.onclick = ()=>finishInvitation(()=>goToShelf(finalCategory));
         } else {
-          setTimeout(() => goToPage('bookshelf'), 1500);
+          setTimeout(() => goToBookshelfThenMilestone(), 1500);
         }
       });
     };
@@ -2616,68 +2582,15 @@ const AI_MISMATCH_REPLIES = [
   '……むずかしいお話ですね。明快な答えは持ち合わせていませんが、それに触れて浮かんだ気持ちになら、近い棚があるかもしれません。'
 ];
 
-// ★追加：AI_MISMATCH_PATTERNSに該当する「店主では力になれない難しい話題」のとき、
-// ChatGPT／Geminiへそっと案内するリンクを会話の下に表示する
-function isAiMismatchTopic(text){
-  return AI_MISMATCH_PATTERNS.some(p=>text.includes(p));
-}
-function renderAiReferralLinks(userText){
-  const cw = document.getElementById('chatWindow');
-  if(!cw) return;
-  const wrap = document.createElement('div');
-  wrap.className = 'ai-referral-wrap';
-  const lead = document.createElement('p');
-  lead.className = 'ai-referral-lead';
-  lead.textContent = t('aiReferralLead');
-  wrap.appendChild(lead);
-  const row = document.createElement('div');
-  row.className = 'ai-referral-links';
-  const gpt = document.createElement('a');
-  gpt.href = 'https://chatgpt.com/?q=' + encodeURIComponent(userText || '');
-  gpt.target = '_blank';
-  gpt.rel = 'noopener';
-  gpt.className = 'chart-btn ghost ai-referral-link';
-  gpt.textContent = t('aiReferralGpt');
-  const gem = document.createElement('a');
-  gem.href = 'https://gemini.google.com/app';
-  gem.target = '_blank';
-  gem.rel = 'noopener';
-  gem.className = 'chart-btn ghost ai-referral-link';
-  gem.textContent = t('aiReferralGemini');
-  row.appendChild(gpt);
-  row.appendChild(gem);
-  wrap.appendChild(row);
-  cw.appendChild(wrap);
-  scrollPageToLatestBubble(wrap);
-}
+// ★Step3：外部AI（ChatGPT／Gemini）への案内リンク機能は完全停止のため削除した。
+// （isAiMismatchTopic / renderAiReferralLinks は全参照ゼロを確認のうえ削除。
+//   利用者本文をURLクエリへ含める encodeURIComponent(userText) を伴う導線は存在しない）
 
 function matchShopkeeperReply(text, fallbackShelfId){
-  let result = null;
-  for(const entry of KEYWORD_BANK){
-    // ★修正：replies が空配列のエントリに当たると undefined が返り「無反応」になっていたバグを防止
-    if(entry.replies && entry.replies.length && entry.patterns.some(p=>text.includes(p))){
-      result = entry.replies[Math.floor(Math.random()*entry.replies.length)];
-      break;
-    }
-  }
-  if(result === null && AI_MISMATCH_PATTERNS.some(p=>text.includes(p))){
-    result = AI_MISMATCH_REPLIES[Math.floor(Math.random()*AI_MISMATCH_REPLIES.length)];
-  }
-  if(result === null){
-    const flavor = counselingFlavorReply(text, fallbackShelfId);
-    if(flavor && Math.random() < 0.6) result = flavor;
-  }
-  if(result === null && typeof DEEP_DIVE_REPLIES !== 'undefined' && DEEP_DIVE_REPLIES.length && countChars(text) >= DEEP_DIVE_MIN_CHARS){
-    result = DEEP_DIVE_REPLIES[Math.floor(Math.random()*DEEP_DIVE_REPLIES.length)];
-  }
-  if(result === null){
-    result = (text.includes('？') || text.includes('?') || /(か|の)$/.test(text.trim()))
-      ? pickByStyle(GENERIC_QUESTION_REPLIES, GENERIC_QUESTION_REPLIES_TSUNDERE)
-      : pickByStyle(GENERIC_REPLIES, GENERIC_REPLIES_TSUNDERE);
-  }
-  // ★店主の名前（巡／綴）はKEYWORD_BANK側で{name}プレースホルダとして書かれているため、
-  // 実際に返す直前に選択中の性格の名前へ差し込む
-  return (typeof result === 'string') ? result.replace(/\{name\}/g, currentKeeperName()) : result;
+  // ★Step3：キーワード一致・質問判定・カウンセリング風応答・ランダム応答をすべて停止。
+  // 入力内容・棚は一切参照せず、固定の一文のみを返す（関数契約は維持）。
+  // 会話回数による進行の切り替えは呼び出し元（sendToShopkeeper）が行う。
+  return 'お話しくださって、ありがとうございます。続けても、ここで一度閉じても大丈夫です。';
 }
 
 function shelfLabelOf(id){
@@ -2934,7 +2847,7 @@ async function sendToShopkeeper(){
   ui.value = '';
   if(sb) sb.disabled = true;
   if(kf) kf.classList.add('listening');
-  setMood(text);
+  // ★Step3：setMood(text)による本文連動の背景演出は停止（setMood自体も固定化済み）
 
   const guideWrapper = document.getElementById('nextActionGuideWrapper');
   if(guideWrapper) guideWrapper.classList.add('hidden');
@@ -2945,61 +2858,40 @@ async function sendToShopkeeper(){
   // ここで即座に scrollTop を動かすと「瞬間移動」の原因になる。二重の即時スクロールは行わない。
   const loadingBubble = document.createElement('div');
   loadingBubble.className = 'bubble loading';
-  loadingBubble.textContent = pickByStyle(LOADING_LINES, LOADING_LINES_TSUNDERE);
+  loadingBubble.textContent = '……';
   if(cw){
     cw.appendChild(loadingBubble);
     scrollPageToLatestBubble(loadingBubble);
   }
 
   await wait(prefs.motion ? (700 + Math.random()*600) : 60);
-  currentTone = HEAVY_WORDS.some(w=>text.includes(w)) ? 'heavy' : 'neutral';
-  
-  // NOTE: 安全性フィルタを考慮し、CRISIS_PATTERNSへのマッチ確認処理はそのまま残していますが、
-  // 文字列は出力せず変数で判定のみ行います。
-  const isCrisis = false; 
-  const suggestedShelf = detectShelfFromText(text, 1);
-  const reply = matchShopkeeperReply(text, suggestedShelf || activeCategory);
+  // ★Step3：本文語句（HEAVY_WORDS）によるトーン判定を停止。常に中立の固定値。
+  currentTone = 'neutral';
+
+  // ★Step3：入力内容は一切参照せず、会話回数だけで固定の応答を返す。
+  // 感情棚の推測（detectShelfFromText）、キーワード一致・質問判定・ランダム応答
+  // （matchShopkeeperReply内の各処理）、人物像推測、外部AIリンク案内はすべて停止。
+  const turnNumber = freeTextTurns + 1;
+  const reply = (turnNumber >= 3)
+    ? 'ここまでの言葉は、机で一冊にすることも、このまま閉じることもできます。'
+    : 'お話しくださって、ありがとうございます。続けても、ここで一度閉じても大丈夫です。';
   loadingBubble.remove();
   appendBubble('shopkeeper', reply);
   chatHistory.push({ role:'assistant', content:reply });
 
-  // ★追加：店主では答えにくい難しい話題のときは、ChatGPT/Geminiへの案内リンクを添える
-  if(isAiMismatchTopic(text)){
-    renderAiReferralLinks(text);
-  }
-
   freeTextTurns++;
-  updateMitateMeter(freeTextTurns);
-  // ★修正：3回目の自由入力で会話をきれいに区切り、ループさせずに
-  // 「棚へ行く／机で綴る／話し直す」の3択で次のアクションへ誘導する
-  const isLoopEnd = freeTextTurns >= 3 && !isCrisis;
+  // ★Step3修正：見立てメーター（「輪郭が見えてきました」等）は、店主が内面を読み取っている
+  // ように見えるため、自由入力中は表示しない（updateMitateMeterの呼び出しを停止し、常にhiddenのまま）。
+  // 本文内容に応じた代替演出は追加しない。関数・HTML・文言データは未使用のまま残置。
+  // 3回目の自由入力で会話を区切り、中立の次行動ボタンへ誘導する
+  const isLoopEnd = freeTextTurns >= 3;
 
   if(isLoopEnd){
     await wait(prefs.motion ? 500 : 20);
-    // ★カウンセリング技法「要約」の応用：ここまでの対話で見えてきた気持ちの傾向を、
-    // 検出済みの棚名を用いて一言でまとめ返してから、次の行動へつなぐ。
-    const closeShelfLabel = shelfLabelOf(suggestedShelf || activeCategory);
-    const summaryOpeners = [
-      '……今日は「' + closeShelfLabel + '」に近いお気持ちを、いくつかの言葉でお話しくださいましたね。',
-      '……お話をうかがっていると、「' + closeShelfLabel + '」という気持ちが、繰り返し顔をのぞかせていたように感じました。',
-      '……今夜綴ってくださった言葉の奥には、「' + closeShelfLabel + '」という気持ちが流れているように、私には聞こえました。'
-    ];
-    const summaryOpenersTsundere = [
-      '……今日は「' + closeShelfLabel + '」に近いお気持ちを、いくつも聞かせてもらいましたね。……別に全部覚えてる、とかじゃないですけど。',
-      '……話を聞いてると、「' + closeShelfLabel + '」って気持ちが何度も顔を出してた気がします。……気のせいかもしれませんけどね。',
-      '……今夜綴ってくれた言葉の奥に、「' + closeShelfLabel + '」って気持ちが流れてる気がしました。……ふん、勘ですよ、勘。'
-    ];
-    const closingTail = isTsundere()
-      ? ' 私みたいな店番があれこれ言うより、今のあなたには自分の気持ちを静かに見つめる時間のほうが合ってると思いますよ。……素直に応援してる、とかじゃないですからね。よかったら、今の気持ちをそのまま一冊の本として綴ってみませんか？ 静かに棚を巡るのも、まあ、悪くないと思いますけど。'
-      : ' 私のようなしがない店番が言葉を返すより、今のあなたにはご自身の気持ちを静かに見つめる時間のほうが合っているかもしれません。よろしければ、今の気持ちをそのまま一冊の本として綴ってみませんか？ または、静かに棚を巡るのも良いでしょう。';
-    const closingLine = pickByStyle(summaryOpeners, summaryOpenersTsundere) + closingTail;
-    appendBubble('shopkeeper', closingLine);
-    chatHistory.push({ role:'assistant', content:closingLine });
-    await wait(prefs.motion ? 650 : 30);
-    renderMitateOffer(suggestedShelf || activeCategory);
+    // ★Step3：感情棚名による「要約」と店主の「見立て」演出（renderMitateOffer）は停止。
+    // ★Step3修正：中立の固定3択ボタンを直接表示する（特定の感情棚は渡さない・提示しない）。
+    renderLoopEndActions();
     lockFreeInput(true);
-  }else if(suggestedShelf){
-    renderSuggestionActions(suggestedShelf);
   }else{
     renderChartOptions('root');
     renderTitleSuggest();
@@ -3056,27 +2948,31 @@ function renderMitateOffer(shelfId){
   container.appendChild(noBtn);
 }
 
-// ★追加：3回目のやりとりで表示する、次のアクションへの3択ボタン
+// ★Step3修正：3回目のやりとりで表示する、次のアクションへの中立の固定3択ボタン。
+// 特定の感情棚は提示しない（shelfLabelOf・goToShelf・goToDeskWithCategoryは使用せず、
+// ボタン文面に感情棚名を含めない。activeCategoryも更新しない）。
+// 引数shelfIdは互換のため残すが、参照しない。
 function renderLoopEndActions(shelfId){
   const container = document.getElementById('chartOptions');
   if(!container) return;
   container.innerHTML = '';
-  const label = shelfLabelOf(shelfId);
 
-  // ★修正：店主はあくまで"コンシェルジュ"として、答えを出すのではなく
-  // 合いそうな棚へそっと案内するに留める、という位置づけの文言に変更
+  // 1.「感情の棚を眺める」：棚の入口ページへ移動するだけで、特定の棚は選択しない
   const goBtn = document.createElement('button');
   goBtn.type = 'button';
   goBtn.className = 'chart-btn primary';
-  goBtn.textContent = t('loopShelfReferralBtn').replace('{shelf}', label);
-  goBtn.onclick = ()=>goToShelf(shelfId);
+  goBtn.textContent = t('loopBrowseShelvesBtn');
+  goBtn.onclick = ()=>goToPage('shelves');
 
+  // 2.「机で一冊にする」：話した内容は既存のsyncCounterDraftToDesk()（goToPage('desk')内で実行）で
+  // 原稿へ引き継ぐ。categorySelectの値は変更せず、特定棚の自動選択も行わない。
   const writeBtn = document.createElement('button');
   writeBtn.type = 'button';
   writeBtn.className = 'chart-btn';
-  writeBtn.textContent = t('writeAtDeskBtn2');
-  writeBtn.onclick = ()=>goToDeskWithCategory(shelfId);
+  writeBtn.textContent = t('loopWriteBookBtn');
+  writeBtn.onclick = ()=>{ deskFlowFlag = true; goToPage('desk'); };
 
+  // 3.「最初から話し直す」：既存のrestartCounterChat()を維持
   const restartBtn = document.createElement('button');
   restartBtn.type = 'button';
   restartBtn.className = 'chart-btn ghost';
@@ -3823,12 +3719,9 @@ function buildProfileOverlay(){
       <input id="profileName" maxlength="12" placeholder="例：ゆう" autocomplete="off">
       <p class="profile-label">いまのあなたに近いのは</p>
       <div class="profile-personas" id="profilePersonas"></div>
-      <p class="profile-label">店主を選ぶ</p>
-      <p class="profile-note" style="margin-top:-4px;">どちらを選んでも、基本的にあなたの味方であることは変わりません。言葉遣いが少し変わるだけです。あとから「🪪 来店カード」でいつでも変更できます。</p>
-      <div class="profile-keeper-style" id="profileKeeperStyle">
-        <button type="button" class="keeper-style-chip" data-style="gentle">🌸 巡（めぐる）<br><span class="keeper-style-sub">やさしい店主</span></button>
-        <button type="button" class="keeper-style-chip" data-style="tsundere">😼 綴（つづる）<br><span class="keeper-style-sub">ツンデレな店主</span></button>
-      </div>
+      <!-- ★Step3：店主の選択（まな／綴）は停止し、店主は「まな」に一本化。
+           選択UI（#profileKeeperStyle と keeper-style-chip）は表示しない。
+           showProfileCard側のstyleBox参照は if(styleBox) ガード済みのため、非表示でもエラーにならない。 -->
       <button type="button" class="profile-save" id="profileSave">この内容で来店する</button>
     </div>`;
   document.body.appendChild(ov);
@@ -3963,31 +3856,16 @@ function warnInAppBrowserIfNeeded(){
     userProfile = Object.assign(userProfile, savedProfile);
   }
   if(typeof applyUserNameDisplay === 'function') applyUserNameDisplay();
+  // ★Step2：来店時の挨拶を判定するため、本棚データを挨拶より先に読み込む（読み込み箇所の移動のみ・二重読み込みなし）
+  libraryCache = await loadJSON('emotion-bookstore-library', []);
   const greetingEl = document.getElementById('firstGreetingText');
-  // ★注：この時間帯別・ペルソナ別の挨拶ライブラリ（TIME_GREETINGS等）は日本語のみのため、
-  // English表示中はapplyLanguage()が設定した既定の英語挨拶（firstGreeting）をそのまま使う
+  // ★Step2：来店時の店主メッセージは固定文に統一（各状態1つのみ）。
+  //   本棚0冊＝初回来店の挨拶／1冊以上＝再訪の挨拶。発火条件（初期化時に一度だけ表示）は従来のまま。
+  //   English表示中はapplyLanguage()が設定した既定の英語挨拶（firstGreeting）をそのまま使う
   if(greetingEl && appLang === 'ja'){
-    const hour = new Date().getHours();
-    let line;
-    if(hour >= 22 || hour < 5){
-      const nightPool = (userProfile.persona && typeof MIDNIGHT_MESSAGES !== 'undefined' && MIDNIGHT_MESSAGES[userProfile.persona])
-        ? MIDNIGHT_MESSAGES[userProfile.persona]
-        : MIDNIGHT_GREETINGS;
-      line = nightPool[Math.floor(Math.random()*nightPool.length)];
-    }else{
-      const greetSrc = isTsundere() ? TIME_GREETINGS_TSUNDERE : TIME_GREETINGS;
-      let bucket;
-      if(hour >= 5 && hour < 11) bucket = greetSrc.morning;
-      else if(hour >= 11 && hour < 17) bucket = greetSrc.day;
-      else bucket = greetSrc.evening;
-      if(!bucket || !bucket.length) bucket = greetSrc.day;
-      line = bucket[Math.floor(Math.random()*bucket.length)] + '近いものを選んでも、下に自由に書いてもらっても構いません。';
-    }
-    if(userProfile.name){
-      line = '……おかえりなさい、' + userProfile.name + 'さん。\n' + line;
-    }
-    const dailyLine = composeDailyMessage('daily', 11);
-    if(dailyLine) line += '\n' + dailyLine;
+    const line = (libraryCache.length === 0)
+      ? 'こんばんは。今夜も、静かに開けています。'
+      : 'こんばんは。棚は、そのままです。';
     typeIntoNode(greetingEl, line);
   }
   if(!savedProfile){
@@ -3997,7 +3875,7 @@ function warnInAppBrowserIfNeeded(){
   if(profileBtn) profileBtn.onclick = ()=>showProfileCard();
   renderFair();
   renderCategorySelect();
-  libraryCache = await loadJSON('emotion-bookstore-library', []);
+  // ★Step2：libraryCacheの読み込みは挨拶判定のため上（greeting直前）へ移動済み
   favoritesCache = await loadJSON(FAVORITES_KEY, []);
   let _migrated = false;
   libraryCache.forEach(e=>{ if(e && e.category === 'moya'){ e.category = 'moyamoya'; _migrated = true; } });
