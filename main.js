@@ -414,9 +414,13 @@ function rakutenTravelSearchUrl(query){
 // 「投稿するか」を自分で判断する。intent URLを新しいタブで開くだけなので、当店のサーバー（＝存在しない）
 // への送信は一切発生しない。
 function buildShareText(entry){
+  const title = entry.title || '';
+  // ★Step4：棚未選択（unfiled）の場合は、棚に関する一文・棚名を完全に省略する
+  if(entry.category === UNFILED_CATEGORY_ID){
+    return `「${title}」を、みんなの感情書店に綴りました。`;
+  }
   const cat = CATEGORIES.find(c=>c.id===entry.category);
   const shelfLabel = cat ? cat.label : '';
-  const title = entry.title || '';
   return `「${title}」を、みんなの感情書店の「${shelfLabel}の棚」に綴りました。`;
 }
 
@@ -531,6 +535,14 @@ function pickRecommend(catId){
 
 const STORY_LIMIT = 700;
 function countChars(str){ return Array.from(str || '').length; }
+
+// ★Step4：棚未選択を表す中立の内部ID。
+// ・CATEGORIES（既存21棚）には追加しない
+// ・null／空文字／undefinedは未選択として使用しない
+// ・利用者へ生の文字列 'unfiled' は表示しない（表示箇所は各所でフォールバック）
+const UNFILED_CATEGORY_ID = 'unfiled';
+// ★Step4：unfiledの背表紙用の中立色（SPINE_COLORS配列そのものは変更しない）
+const UNFILED_SPINE_COLOR = '#8C8578';
 let activeCategory = (CATEGORIES && CATEGORIES.length) ? CATEGORIES[0].id : 'moyamoya';
 let libraryCache = [];
 // ★追加：本棚が際限なく伸び続けるのを防ぐための「月別の棚」。
@@ -1004,7 +1016,8 @@ async function exportDiaryText(){
     const cat = CATEGORIES.find(c=>c.id===e.category);
     lines.push('--- ' + (i+1) + '冊目 ---');
     lines.push('タイトル：' + e.title);
-    lines.push('棚：' + (cat ? cat.label : e.category));
+    // ★Step4：unfiledは「棚：未選択」と出力する（生の'unfiled'や「棚：棚：未選択」にしない）
+    lines.push('棚：' + ((e.category === UNFILED_CATEGORY_ID) ? '未選択' : (cat ? cat.label : (e.category || ''))));
     lines.push('日付：' + (e.date ? new Date(e.date).toLocaleDateString('ja-JP') : '不明'));
     if(e.sealed) lines.push('（以前を振り返って綴った一冊）');
     lines.push(e.story);
@@ -1054,7 +1067,8 @@ async function exportDiaryCsv(){
       '本棚の物語',
       i + 1,
       e.title || '',
-      cat ? cat.label : (e.category || ''),
+      // ★Step4：unfiledはCSVのカテゴリ列に「未選択」と出力する（生の'unfiled'を出さない）
+      (e.category === UNFILED_CATEGORY_ID) ? '未選択' : (cat ? cat.label : (e.category || '')),
       e.date ? new Date(e.date).toLocaleDateString('ja-JP') : '',
       e.sealed ? 'はい' : '',
       e.story || '',
@@ -1465,7 +1479,11 @@ function renderFair(){
 function topCategoryId(){
   if(libraryCache.length === 0) return null;
   const counts = {};
-  libraryCache.forEach(e=>{ counts[e.category] = (counts[e.category]||0) + 1; });
+  // ★Step4：棚未選択（unfiled）は最多棚判定から明示的に除外する
+  libraryCache.forEach(e=>{
+    if(e && e.category === UNFILED_CATEGORY_ID) return;
+    counts[e.category] = (counts[e.category]||0) + 1;
+  });
   const withCounts = CATEGORIES.filter(c=>counts[c.id]);
   if(!withCounts.length) return null;
   return withCounts.sort((a,b)=>counts[b.id]-counts[a.id])[0].id;
@@ -1802,6 +1820,12 @@ function renderCategorySelect(){
     if(deskLabel) deskLabel.textContent = shelfLabelOf(sel.value);
     renderTitleSuggest();
   });
+  // ★Step4：製本前の棚選択UIは利用者から見えない状態にする。
+  // DOM・id・classは削除・変更せず、囲みの.fieldごと非表示にするだけ（保存には使用しない）。
+  // 棚は製本成功後の任意収納UI（showUnfiledShelfPicker）でのみ選択できる。
+  const fieldWrap = sel.closest('.field');
+  if(fieldWrap){ fieldWrap.style.display = 'none'; }
+  else { sel.style.display = 'none'; }
 }
 
 // ★修正：「左右にスワイプでも棚を移動できます」という案内文があったが、
@@ -1859,7 +1883,10 @@ function textColorFor(hex){
 }
 
 function spineColorFor(catId){
+  // ★Step4：unfiled（棚未選択）およびCATEGORIESに無いIDは中立色へフォールバック。
+  // SPINE_COLORS配列そのものは変更しない。
   const idx = CATEGORIES.findIndex(c=>c.id===catId);
+  if(idx < 0) return UNFILED_SPINE_COLOR;
   return SPINE_COLORS[idx % SPINE_COLORS.length];
 }
 
@@ -2039,13 +2066,19 @@ function renderTrend(){
   });
   const entries = trendEntries();
   const counts = {};
-  entries.forEach(e=>{ counts[e.category] = (counts[e.category]||0) + 1; });
-  if(!entries.length){
+  // ★Step4：棚未選択（unfiled）は感情別冊数・分母・最大値・バー幅の計算すべてから除外する。
+  // （月別本棚の表示や総冊数からは除外しない）
+  entries.forEach(e=>{
+    if(e && e.category === UNFILED_CATEGORY_ID) return;
+    counts[e.category] = (counts[e.category]||0) + 1;
+  });
+  const countedValues = Object.values(counts);
+  if(!entries.length || !countedValues.length){
     bars.innerHTML = '<p class="trend-empty">この期間に綴られた頁は、まだありません。</p>';
     sum.textContent = t('trendEmptyOwn');
     return;
   }
-  const max = Math.max(...Object.values(counts));
+  const max = Math.max(...countedValues);
   bars.innerHTML = CATEGORIES.filter(c=>counts[c.id]).map(c=>{
     const n = counts[c.id];
     const w = Math.max(8, Math.round(n / max * 100));
@@ -2195,10 +2228,20 @@ function openBook(entry){
   if(bModal) bModal.classList.remove('hidden');
 
   const goShelf = document.getElementById('modalGoShelf');
-  if(goShelf) goShelf.onclick = ()=>{
-    if(bModal) bModal.classList.add('hidden');
-    goToShelf(entry.category);
-  };
+  if(goShelf){
+    if(entry.category === UNFILED_CATEGORY_ID){
+      // ★Step4：未収納（unfiled）の本では「棚へ行く」を非表示にする
+      goShelf.style.display = 'none';
+      goShelf.onclick = null;
+    }else{
+      // 通常棚へ収納された後は通常どおり再表示する
+      goShelf.style.display = '';
+      goShelf.onclick = ()=>{
+        if(bModal) bModal.classList.add('hidden');
+        goToShelf(entry.category);
+      };
+    }
+  }
 
   const mShare = document.getElementById('modalShare');
   if(mShare) mShare.onclick = ()=>{
@@ -2363,12 +2406,141 @@ async function restoreDraftIfAny(){
   if(msg) msg.textContent = t('draftRestored');
 }
 
+// ★Step4：unfiled保存成功後の「任意の棚収納UI」。
+// ・既存21棚の選択肢はCATEGORIESから動的生成（ハードコードしない）
+// ・棚を選ぶと、製本済みの同じentryのcategoryだけを更新して再保存（新規本は追加しない）
+// ・スキップ時はunfiledのまま再保存せず本棚へ戻る
+// ・確定／スキップは一度限りガード（handled）で二重保存・二重遷移を防止
+// ・視覚デザインは後続のSonnetが担当するため、ここでは機能する最低限のDOMのみ
+function hideUnfiledShelfPicker(){
+  const box = document.getElementById('unfiledShelfPicker');
+  if(box){ box.innerHTML = ''; box.classList.add('hidden'); }
+}
+
+function showUnfiledShelfPicker(entry){
+  let box = document.getElementById('unfiledShelfPicker');
+  if(!box){
+    box = document.createElement('div');
+    box.id = 'unfiledShelfPicker';
+    box.className = 'unfiled-shelf-picker';
+    const anchor = document.getElementById('deskMsg');
+    if(anchor && anchor.parentNode){
+      anchor.parentNode.insertBefore(box, anchor.nextSibling);
+    }else{
+      document.body.appendChild(box);
+    }
+  }
+  box.classList.remove('hidden');
+  box.innerHTML = '';
+
+  let handled = false; // 一度限りガード（連打・両ボタン連続操作の防止）
+
+  // ★修正：棚を明示的に選ぶまで先頭棚が暗黙選択されないよう、
+  // ラベルとプレースホルダー（value=''・selected・disabled）を先頭に置く。
+  // プレースホルダーはCATEGORIESに追加せず、保存カテゴリとしても使用しない。
+  const label = document.createElement('label');
+  label.setAttribute('for', 'unfiledShelfSelect');
+  label.textContent = '棚を選ぶ（任意）';
+
+  const select = document.createElement('select');
+  select.id = 'unfiledShelfSelect';
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = '棚を選んでください';
+  placeholder.selected = true;
+  placeholder.disabled = true;
+  select.appendChild(placeholder);
+  CATEGORIES.forEach(c=>{
+    const o = document.createElement('option');
+    o.value = c.id;
+    o.textContent = c.label;
+    select.appendChild(o);
+  });
+
+  const confirmBtn = document.createElement('button');
+  confirmBtn.type = 'button';
+  confirmBtn.id = 'unfiledShelfConfirm';
+  confirmBtn.className = 'chart-btn primary';
+  confirmBtn.textContent = 'この棚にしまう';
+  confirmBtn.disabled = true; // ★修正：初期状態は無効（正規の棚を選ぶまで確定できない）
+
+  const skipBtn = document.createElement('button');
+  skipBtn.type = 'button';
+  skipBtn.id = 'unfiledShelfSkip';
+  skipBtn.className = 'chart-btn ghost';
+  skipBtn.textContent = '棚を選ばず、本棚へ戻る';
+
+  // 選択値がCATEGORIESに存在する正規IDの場合だけ確定ボタンを有効化する
+  const isValidShelfSelected = ()=>CATEGORIES.some(c=>c.id === select.value);
+  const updateConfirmState = ()=>{ confirmBtn.disabled = !isValidShelfSelected(); };
+  select.addEventListener('change', updateConfirmState);
+
+  const setBusy = (busy)=>{
+    select.disabled = busy;
+    skipBtn.disabled = busy;
+    if(busy){
+      confirmBtn.disabled = true;
+    }else{
+      // ★修正：再有効化の際も、正規の棚が選択されている場合だけ確定ボタンを有効にする
+      updateConfirmState();
+    }
+  };
+
+  confirmBtn.onclick = async ()=>{
+    if(handled) return;
+    handled = true;
+    setBusy(true);
+    const selectedId = select.value;
+    // 選択値がCATEGORIESに存在する正規のIDであることを確認する
+    if(!CATEGORIES.some(c=>c.id === selectedId)){
+      handled = false;
+      setBusy(false);
+      return;
+    }
+    // 製本済みの同じentryのcategoryだけを更新（新規本は追加しない）
+    const prevCategory = entry.category; // 更新前の 'unfiled' を保持
+    entry.category = selectedId;
+    const savedOk = await saveJSON('emotion-bookstore-library', libraryCache);
+    if(!savedOk){
+      // 保存失敗：unfiledへ巻き戻し、UIは閉じず再試行可能な状態を維持。感情棚へは遷移しない。
+      entry.category = prevCategory;
+      const msg = document.getElementById('deskMsg');
+      if(msg) msg.textContent = 'すみません。保存がうまく完了しませんでした。書いた言葉は消さず、少ししてからもう一度お試しください。';
+      handled = false;
+      setBusy(false);
+      return;
+    }
+    // 保存成功時のみ：再描画・集計更新・選択棚へ遷移（activeCategoryはgoToShelf内で選択棚へ更新）
+    renderShelf();
+    renderShelfTabs();
+    hideUnfiledShelfPicker();
+    goToShelf(selectedId);
+    // 遷移直後に節目処理を1回だけ実行（節目判定・1回限りの記録は既存実装のまま）
+    celebrateMilestoneIfNeeded(libraryCache.length);
+  };
+
+  skipBtn.onclick = ()=>{
+    if(handled) return;
+    handled = true;
+    // categoryはunfiledのまま変更せず、再保存も行わない。招待カードも表示しない。
+    hideUnfiledShelfPicker(); // UIを閉じ、同じ操作が再発火しないようにする
+    goToPage('bookshelf');
+    // 遷移直後に節目処理を1回だけ実行
+    celebrateMilestoneIfNeeded(libraryCache.length);
+  };
+
+  box.appendChild(label);
+  box.appendChild(select);
+  box.appendChild(confirmBtn);
+  box.appendChild(skipBtn);
+}
+
 const btnSubmit = document.getElementById('submitStory');
 if(btnSubmit) {
   btnSubmit.onclick = async ()=>{
-    const sel = document.getElementById('categorySelect');
-    if(!sel) return;
-    const chosenId = sel.value;
+    // ★Step4：categorySelectの値は初回保存カテゴリとして使用しない。
+    // 初回製本は必ず中立ID 'unfiled' で保存し、棚は保存成功後の任意収納UIでのみ選ぶ。
+    const chosenId = UNFILED_CATEGORY_ID;
     const ta = document.getElementById('storyInput');
     const story = ta ? ta.value.trim() : '';
     const msg = document.getElementById('deskMsg');
@@ -2447,9 +2619,19 @@ if(btnSubmit) {
         const boundMsg = msg ? msg.textContent : '';
         setTimeout(()=>{ if(msg && msg.textContent === boundMsg) msg.textContent = ''; }, 4200);
 
+        // ★Step4：中立ID（unfiled）で保存した場合は、通常カテゴリ保存後の処理
+        // （招待カード・1.5秒後の本棚自動遷移・特定棚への遷移）へは進まない。
+        // 代わりに、任意の棚収納UI（既存21棚から選ぶ／今は棚を決めず本棚へ戻る）を表示する。
+        // 節目処理は、収納UIでの遷移直後に1回だけ実行される（showUnfiledShelfPicker内）。
+        if(finalCategory === UNFILED_CATEGORY_ID){
+          showUnfiledShelfPicker(entry);
+          return;
+        }
+
         // ★Step2修正：節目メッセージ（最初の一冊 等）は、実際に本棚へ遷移した直後にのみ発火する。
         // 招待カードの表示中には出さない（固定時間のsetTimeoutによる独立発火は廃止）。
         // 1回限りの記録ロジックはcelebrateMilestoneIfNeeded側の既存実装のまま。
+        // （以下は通常カテゴリでbindが呼ばれた場合の互換として維持。現行フローの初回保存は常にunfiled）
         const goToBookshelfThenMilestone = ()=>{
           goToPage('bookshelf');
           celebrateMilestoneIfNeeded(libraryCache.length);
