@@ -2730,3 +2730,241 @@ body.night .episodes-toggle{ color:#BFB194; }
 .back-to-bandai:hover{
   background:rgba(110,42,52,0.08);
 }
+
+/* FINAL UI LAYER */
+/* ============================================================
+   最終UI・空間設計・レスポンシブ仕上げ（Sonnet）
+   ・既存セレクタ／既存宣言／既存メディアクエリは削除・改名しない。
+   ・ここから下は「後勝ち」の上書き専用ルールのみを追加する。
+   ・main.js/data.jsのロジック、display/visibility/opacity/pointer-events/
+     hidden属性/disabled状態/active系class/モーダル開閉/ページ切替用class/
+     製本後の棚選択UIの「表示条件そのもの」は一切変更しない。
+     （＝non-displayをここで再表示するルールは書かない）
+   ============================================================ */
+
+/* ---------------------------------------------------------
+   1. 視覚的な優先順位：主役は「利用者が書いた一冊」。
+      本・音楽の紹介（recommend/detour/live-pick/record/playlist）は
+      文字サイズとコントラストを抑え、棚の片隅の文化的な寄り道として後退させる。
+      利用者本文（modal-story）と背表紙（spine）は可読性を優先してわずかに強調する。
+   --------------------------------------------------------- */
+.recommend-heading,
+.detour-heading{
+  font-size:13.5px;
+  color:var(--ink-soft);
+  opacity:.86;
+}
+.playlist-label{
+  font-size:12px;
+  color:var(--ink-soft);
+  opacity:.86;
+}
+.live-pick-heading{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  opacity:.86;
+}
+.recommend-subtext,
+.detour-pr,
+.record-pr{
+  opacity:.8;
+}
+.recommend-chip,
+.detour-card,
+.live-pick-card{
+  box-shadow:none;
+}
+.record-corner{
+  padding:14px 16px;
+}
+.record-title{
+  font-size:13.5px;
+}
+.record-label{
+  font-size:12px;
+}
+/* 本・音楽の「寄り道」であることが伝わるよう、行間の余白の外側にわずかに小さな
+   注記スタイルを添える（文言・DOM構造は変更しない。装飾のみ） */
+.recommend-section,
+.detour-section,
+.record-corner{
+  font-size:.98em;
+}
+
+/* 主役＝利用者の物語。読みやすさをわずかに底上げする */
+.modal-story{
+  font-size:15px;
+  line-height:2;
+}
+.spine{
+  font-weight:600;
+}
+.invitation{
+  max-width:560px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* ---------------------------------------------------------
+   2. 「癒やしアプリ・占い・ゲーム」に寄り過ぎないための引き算。
+      発光・パルスの強さを弱め、静かな個人書店の質感に寄せる。
+      アニメーション自体を止めるものではなく、prefers-reduced-motion /
+      body.no-motion の既存挙動はそのまま維持される（*, *::before,
+      *::after への既存ルールが引き続き最優先で適用されるため）。
+   --------------------------------------------------------- */
+.shelf-tab.glow{
+  box-shadow:0 0 0 1px rgba(201,165,92,0.35);
+}
+body:not(.no-motion) .shelf-tab.glow{
+  animation:none;
+}
+.wood-shelf.tier1{
+  box-shadow:0 4px 14px rgba(0,0,0,.22);
+}
+.wood-shelf.tier2{
+  box-shadow:0 5px 16px rgba(0,0,0,.26);
+  background:linear-gradient(180deg, #5E4029, var(--wood));
+}
+.wood-shelf.tier3{
+  box-shadow:0 6px 18px rgba(0,0,0,.28);
+  background:linear-gradient(180deg, #664524, var(--wood));
+}
+.wood-shelf.tier4{
+  box-shadow:0 6px 20px rgba(0,0,0,.3);
+  background:linear-gradient(180deg, #6E4A28, var(--wood));
+}
+#particleLayer span{
+  opacity:.32;
+}
+
+/* ---------------------------------------------------------
+   3. 可読性（コントラスト）の底上げ。
+      小さな文字に --gold をそのまま使うと明るい紙面上で判読しにくいため、
+      同ファイル内の既存の対処（.recommend-buy 等）と同じ考え方で、
+      日中トーンだけ濃い目のgold系に差し替える。夜モードで背景が暗転する
+      要素は、夜だけ元のvar(--gold)に戻し、既存の可読性を維持する。
+   --------------------------------------------------------- */
+.shelf-count,
+.inv-kicker,
+.shiori-label,
+.recommend-label,
+.purify-kicker{
+  color:#8A5A12;
+}
+body.night .purify-kicker,
+body.night .recommend-label{
+  color:var(--gold);
+}
+.fair-go{
+  color:var(--ink);
+}
+
+/* ---------------------------------------------------------
+   4. 未対応だった動的DOM（main.js側コメントで「後続のSonnetが担当」と
+      明記されている棚未選択UI／製本直後の画面）の最小限の見た目付与。
+      構造・id・onclick・disabled制御はmain.js側のまま、一切変更しない。
+   --------------------------------------------------------- */
+.unfiled-shelf-picker{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:10px 14px;
+  margin-top:16px;
+  padding:18px 20px;
+  background:rgba(255,255,255,0.4);
+  border:1px solid var(--paper-shadow);
+  border-radius:6px;
+}
+.unfiled-shelf-picker label{
+  flex:1 1 100%;
+  font-size:12px;
+  color:var(--ink-soft);
+  letter-spacing:.05em;
+}
+.unfiled-shelf-picker select{
+  flex:1 1 200px;
+  font-family:var(--font-body);
+  font-size:16px;
+  padding:10px 12px;
+  border:1px solid var(--paper-shadow);
+  border-radius:3px;
+  background:#fff9ec;
+  color:var(--ink);
+}
+.unfiled-shelf-picker button{
+  flex:0 0 auto;
+}
+.unfiled-shelf-picker select:disabled{
+  opacity:.6;
+}
+body.night .unfiled-shelf-picker{
+  background:#332E26;
+}
+body.night .unfiled-shelf-picker select{
+  background:#262219;
+  color:var(--ink);
+}
+.chart-btn:disabled{
+  opacity:.5;
+  cursor:default;
+}
+
+/* ---------------------------------------------------------
+   5. 長文タイトル・英語表示・URL貼り付け等でも横崩れしないための保険。
+      文言・属性は変更せず、折り返し方法だけを指定する。
+   --------------------------------------------------------- */
+.modal-card h3,
+.inv-title,
+.record-title,
+.detour-name,
+.live-pick-name,
+.spine,
+.page-tab,
+.intro-title,
+.intro-text,
+.chart-btn,
+.pref-toggle,
+.trust-badge,
+.share-btn,
+.persona-chip,
+.keeper-style-chip,
+.title-chip{
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+
+/* 法務・ガイドへの導線のタップ領域をわずかに広げる（文言・href・rel等は変更しない） */
+.legal-row a{
+  display:inline-block;
+  padding:4px 3px;
+}
+
+/* ---------------------------------------------------------
+   6. 390px・430px前後の狭幅スマートフォン向けの追加調整
+      （既存の @media (max-width:480px) はそのまま維持し、その内側で
+      さらに狭い端末だけをこのブロックで補正する）
+   --------------------------------------------------------- */
+@media (max-width:430px){
+  .entrance{ padding:36px 14px 28px; }
+  .entrance h1{ font-size:24px; }
+  .unfiled-shelf-picker{ padding:14px 16px; gap:8px 10px; }
+  .backup-hint .share-btn{ width:100%; }
+  .share-row .share-btn{ width:100%; margin-top:6px; }
+  .desk-form{ padding:14px; }
+  .record-corner{ padding:12px; }
+}
+
+/* ---------------------------------------------------------
+   7. record-corner内のテキスト列（record-body）は元スタイルが無かったため、
+      レコード盤アイコンと並んだ時に幅が詰まって崩れないよう最小限を付与。
+   --------------------------------------------------------- */
+.record-body{
+  flex:1 1 auto;
+  min-width:0;
+}
+@media (max-width:480px){
+  .record-body{ width:100%; }
+}
+/* ============================================================
+   /FINAL UI LAYER
+   ============================================================ */
