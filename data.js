@@ -2502,9 +2502,10 @@ const CHAT_TREE = (function(){
         { label:'焦っている', next:'cat_aseri' },
         { label:'悔しい', next:'cat_kuyashii' },
         { label:'嫉妬している', next:'cat_shitto' },
-        { label:'憧れている', next:'cat_akogare' },
         { label:'怒っている', next:'cat_ikari' },
-        { label:'不安がある', next:'cat_fuan' }
+        { label:'不安がある', next:'cat_fuan' },
+        { label:'嫌悪感がある', next:'cat_keno' },
+        { label:'驚いている', next:'cat_odoroki' }
       ]
     },
     light:{
@@ -2512,7 +2513,6 @@ const CHAT_TREE = (function(){
         { label:'わくわくしている', next:'cat_wakuwaku' },
         { label:'安堵している', next:'cat_ando' },
         { label:'感謝している', next:'cat_kansha' },
-        { label:'愛おしい', next:'cat_itooshii' },
         { label:'誇らしい', next:'cat_hokorashii' },
         { label:'嬉しい', next:'cat_ureshii' }
       ]
@@ -2520,8 +2520,8 @@ const CHAT_TREE = (function(){
     sepia:{
       options:[
         { label:'懐かしい', next:'cat_natsukashii' },
-        { label:'後ろめたい', next:'cat_ushirometai' },
-        { label:'感謝している', next:'cat_kansha' }
+        { label:'憧れている', next:'cat_akogare' },
+        { label:'愛おしい', next:'cat_itooshii' }
       ]
     }
   };

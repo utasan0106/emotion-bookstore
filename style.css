@@ -3708,3 +3708,345 @@ body.night .record-corner{ background:linear-gradient(180deg, rgba(0,0,0,0.12), 
 @media (min-width:1100px){
   section, .shop-guide{ max-width:920px; }
 }
+
+/* ============================================================================
+ * v1.3 最終統合：一場面ずつの体験（表紙→書く→製本→まなが預かる→本棚）
+ * --------------------------------------------------------------------------
+ * 方針：既存のPhase A〜B-2 CSSは一切削除・上書きしない。ここでは
+ *   body.experience-ready / body.experience-open / .experience-page.is-active
+ * という新しい状態クラスの出し分けと、新設した体験バー・メニュー・
+ * 「まなが預かる」場面カードのスタイルだけを追加する。
+ * JS初期化前（experience-readyが付く前）は本ブロックの大半が無効なため、
+ * 既存の全機能縦スクロール表示のまま壊れない（仕様書4-2）。
+ * .shop・祖先要素へtransform/perspective等は使用しない。
+ * ============================================================================ */
+
+/* ---- 4-2：JS初期化後・表紙状態。店内セクション・4タブナビ・土間・店内案内を主画面から外す ---- */
+body.experience-ready #pageNav,
+body.experience-ready .doma,
+body.experience-ready .shop-guide{
+  display:none;
+}
+body.experience-ready .experience-page{
+  display:none;
+}
+
+/* ---- 4-2：店内（体験モード）。is-activeの頁だけを表示し、表紙・通常footerは隠す ---- */
+body.experience-open .entrance.hero{
+  display:none;
+}
+body.experience-open .shop-footer{
+  display:none;
+}
+body.experience-open .experience-page{
+  display:none;
+}
+body.experience-open .experience-page.is-active{
+  display:block;
+}
+
+/* ---- 4-5：頁ごとの最大幅・中央寄せ・必要な場合だけ縦スクロール ---- */
+body.experience-open .experience-page.is-active{
+  max-width:880px;
+  margin:0 auto;
+  min-height:calc(100dvh - 52px);
+  box-sizing:border-box;
+  scroll-margin-top:0;
+}
+@media (max-width:600px){
+  body.experience-open .experience-page.is-active{
+    max-width:100%;
+    padding-left:16px;
+    padding-right:16px;
+  }
+}
+
+/* ---- 体験バー：体験モード中だけ見える小さな常設ヘッダー（ブランド名＋メニューボタン） ---- */
+.experience-bar{
+  display:none;
+  position:sticky;
+  top:0;
+  z-index:45;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 18px;
+  background:linear-gradient(180deg, rgba(234,217,184,0.97), rgba(234,217,184,0.9));
+  border-bottom:1px solid var(--paper-shadow);
+}
+body.night .experience-bar{
+  background:linear-gradient(180deg, rgba(37,30,23,0.97), rgba(37,30,23,0.9));
+}
+body.experience-open .experience-bar{
+  display:flex;
+}
+.experience-bar-brand{
+  font-family:var(--font-display);
+  font-size:13.5px;
+  letter-spacing:.06em;
+  color:var(--ink);
+  opacity:.85;
+}
+
+/* ---- メニューボタン（表紙用・体験バー用で共通） ---- */
+.menu-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  border:1px solid var(--paper-shadow);
+  background:rgba(255,255,255,0.12);
+  color:var(--ink);
+  font-size:18px;
+  line-height:1;
+  cursor:pointer;
+  transition:background .15s ease, transform .15s ease;
+}
+.menu-btn:hover{ transform:translateY(-1px); }
+.cover-menu-btn{
+  position:absolute;
+  top:18px;
+  right:18px;
+  z-index:2;
+  border-color:rgba(239,230,211,0.35);
+  background:rgba(16,24,36,0.35);
+  color:var(--paper);
+}
+.experience-bar .menu-btn{
+  border-color:var(--paper-shadow);
+  background:rgba(255,255,255,0.35);
+  color:var(--ink);
+}
+body.night .experience-bar .menu-btn{
+  background:rgba(0,0,0,0.2);
+}
+
+/* ---- Hero写真：既存の夜青グラデーションの上に敷く完成画像（読み込み失敗時は自動でフォールバック） ---- */
+.entrance.hero{ overflow:hidden; }
+.hero-photo{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+}
+.hero-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.hero-photo::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(11,18,28,0.58) 0%, rgba(11,18,28,0.72) 55%, rgba(16,24,36,0.88) 100%);
+}
+.entrance.hero > *:not(.hero-photo){
+  position:relative;
+  z-index:1;
+}
+
+/* ============================================================================
+ * 店内メニュー（4タブ主ナビの代替。仕様書2-1）
+ * ============================================================================ */
+.experience-menu{
+  position:fixed;
+  inset:0;
+  z-index:210;
+  display:flex;
+  justify-content:flex-end;
+  background:rgba(11,18,28,0.55);
+}
+.experience-menu.hidden{ display:none; }
+.experience-menu-card{
+  width:min(360px, 88vw);
+  height:100%;
+  overflow-y:auto;
+  background:var(--paper);
+  color:var(--ink);
+  border-left:1px solid var(--paper-shadow);
+  padding:20px 20px 32px;
+  box-sizing:border-box;
+}
+.experience-menu-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:16px;
+}
+.experience-menu-title{
+  font-family:var(--font-display);
+  font-size:16px;
+  letter-spacing:.06em;
+}
+.experience-menu-close{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  border:1px solid var(--paper-shadow);
+  background:transparent;
+  color:var(--ink);
+  font-size:18px;
+  cursor:pointer;
+}
+.experience-menu-nav{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-bottom:20px;
+}
+.menu-item{
+  font-family:var(--font-body);
+  font-size:14.5px;
+  text-align:left;
+  padding:12px 14px;
+  border:1px solid var(--paper-shadow);
+  border-radius:6px;
+  background:rgba(255,255,255,0.3);
+  color:var(--ink);
+  cursor:pointer;
+  transition:background .15s ease, border-color .15s ease;
+}
+body.night .menu-item{ background:rgba(255,255,255,0.05); }
+.menu-item:hover{ border-color:var(--gold); }
+.menu-item.active{
+  background:var(--wine);
+  border-color:var(--wine);
+  color:#f6e8c9;
+}
+.experience-menu-section{
+  font-family:var(--font-display);
+  font-size:11.5px;
+  letter-spacing:.08em;
+  color:var(--ink-soft);
+  margin:18px 0 8px;
+  padding-top:12px;
+  border-top:1px dashed var(--paper-shadow);
+}
+.experience-menu-nav .experience-menu-section{
+  margin:10px 0 4px;
+  padding-top:8px;
+}
+.experience-menu-settings{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.experience-menu-settings .pref-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.experience-menu-settings .share-row,
+.experience-menu-settings .legal-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 12px;
+}
+.experience-menu-settings .about-accordion-wrap{ max-width:none; }
+
+/* ============================================================================
+ * 第三頁：店主まなが預かる（旧showUnfiledShelfPicker再構成。仕様書1-3）
+ * ============================================================================ */
+.mana-receive-overlay{
+  position:fixed;
+  inset:0;
+  z-index:150;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  box-sizing:border-box;
+  background:rgba(11,18,28,0.72);
+}
+.mana-receive-overlay.hidden{ display:none; }
+.mana-receive-card{
+  width:min(420px, 100%);
+  max-height:calc(100dvh - 48px);
+  overflow-y:auto;
+  background:var(--paper);
+  color:var(--ink);
+  border:1px solid var(--paper-shadow);
+  border-radius:4px;
+  padding:28px 24px 24px;
+  box-sizing:border-box;
+  text-align:center;
+  box-shadow:0 18px 46px rgba(0,0,0,0.35);
+}
+.mana-receive-figure{
+  width:132px;
+  height:165px;
+  margin:0 auto 16px;
+  border-radius:3px;
+  overflow:hidden;
+  background:linear-gradient(180deg, var(--wood-2), var(--wood));
+}
+.mana-receive-figure img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.mana-receive-figure.img-failed{
+  background:linear-gradient(180deg, var(--wood-2), var(--wood));
+}
+.mana-receive-book{
+  display:inline-block;
+  margin:0 auto 14px;
+  padding:10px 16px;
+  min-width:140px;
+  background:linear-gradient(180deg, var(--wine), var(--wine-2));
+  color:#f6e8c9;
+  border-radius:2px;
+  box-shadow:0 3px 0 rgba(0,0,0,0.25);
+}
+.mana-receive-book-title{
+  font-family:var(--font-display);
+  font-size:13.5px;
+  letter-spacing:.04em;
+}
+.mana-receive-line{
+  font-size:15px;
+  line-height:1.85;
+  color:var(--ink);
+  margin:0 0 18px;
+}
+.mana-receive-card label{
+  display:block;
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin-bottom:6px;
+  text-align:left;
+}
+.mana-receive-card select{
+  width:100%;
+  margin-bottom:16px;
+  padding:10px 12px;
+  border-radius:4px;
+  border:1px solid var(--paper-shadow);
+  background:rgba(255,255,255,0.5);
+  color:var(--ink);
+  font-size:14px;
+}
+body.night .mana-receive-card select{ background:rgba(0,0,0,0.25); }
+.mana-receive-actions{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.mana-receive-error{
+  margin-top:12px;
+  font-size:12.5px;
+  color:var(--wine-2);
+}
+.mana-receive-error.hidden{ display:none; }
+
+/* ---- 本文サイズをPhase B-2よりわずかに引き上げ（仕様書7：約5〜8%） ---- */
+body.experience-open .experience-page.is-active .section-sub,
+body.experience-open .experience-page.is-active textarea,
+body.experience-open .experience-page.is-active input,
+body.experience-open .experience-page.is-active .bubble{
+  font-size:calc(1em * 1.06);
+}

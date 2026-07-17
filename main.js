@@ -161,14 +161,41 @@ const MESSAGES = {
     submitStoryHint: "※外部には公開されず、この端末のブラウザ内にのみ保存されます。",
     // ★2025-07-17追記（v1.2フィードバック反映）：renderShelfDisplay()内にハードコードしていた
     // 棚見出し・注記・架空author固定ラベル、および製本成功文をMESSAGESへ移設し、t()経由で言語切替に対応させた。
-    shelfEpisodesHeading: "あなたの本・店内の蔵書",
-    shelfEpisodesNote: "ここに並ぶのは、この書店のために綴られた架空の物語です。来店した方の文章が表示されることはありません。",
-    shelfFictionalLabel: "架空の一冊",
-    bindSuccessMsg: "一冊、お預かりしました。",
+    // ★v1.3最終統合：「架空」は偽物・作り物という印象を与えるため、公開文言から「掌編」へ変更（キー名は互換のため維持）。
+    shelfEpisodesHeading: "あなたの本・店内の掌編",
+    shelfEpisodesNote: "ここに並ぶのは、この書店のために書かれた短い物語です。来店した方の文章ではありません。",
+    shelfFictionalLabel: "掌編",
+    // ★v1.3最終統合：製本直後の文言と、次の「まなが預かる」場面の文言が連続して同じ文にならないよう区別。
+    bindSuccessMsg: "一冊になりました。",
     // ★v1.3追加（決裁済み文言）：Hero主CTA・本棚管理折りたたみ・店内案内見出し。既存キーの値は変更しない。
     heroCta: "今の気持ちを書く",
     shelfAdminSummary: "本棚の管理",
-    shopGuideHeading: "店内案内"
+    shopGuideHeading: "店内案内",
+    // ★v1.3最終統合追加：番台の自由入力返答を会話回数だけで3段階に分ける（本文は解析しない）。
+    counterFreeReply1: "お話しくださって、ありがとうございます。ここに、いったん置いておきますね。",
+    counterFreeReply2: "続きがあれば、そのままどうぞ。ここで閉じても大丈夫です。",
+    counterFreeReply3: "ここまでの言葉は、机で一冊にすることも、このまま閉じることもできます。",
+    // ★v1.3最終統合追加：「まなが預かる」受け取り場面の文言。
+    manaReceiveAriaLabel: "店主まなが、本をお預かりします",
+    manaReceiveLine: "お預かりしました。こちらの棚へ納めておきますか。",
+    manaReceiveBookFallback: "まだ、題名のない本",
+    manaReceiveShelfLabel: "棚を選ぶ（任意）",
+    manaReceivePlaceholder: "棚を選んでください",
+    manaReceiveConfirm: "この棚にしまう",
+    manaReceiveSkip: "今は棚を決めず、本棚へ",
+    manaReceiveSaveError: "すみません。保存がうまく完了しませんでした。書いた言葉は消さず、少ししてからもう一度お試しください。",
+    manaImageAlt: "",
+    // ★v1.3最終統合追加：店内メニュー（4タブの代替導線）の文言。
+    menuOpenAria: "メニューを開く",
+    menuCloseAria: "メニューを閉じる",
+    menuTitle: "メニュー",
+    menuItemDesk: "今の気持ちを書く",
+    menuItemBookshelf: "自分の本棚",
+    menuItemCounter: "店主に話す",
+    menuItemShelves: "感情の棚を巡る",
+    menuItemCover: "表紙へ戻る",
+    menuSectionOptional: "任意の場所へ",
+    menuSectionSettings: "設定・このお店について"
   },
   en: {
     tagline: "Turn What You Feel Now into a Book.",
@@ -306,14 +333,36 @@ const MESSAGES = {
     dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it's a simple system that returns pre-written lines based on context (you're not talking to any particular AI model).<br>Anything you write in \"Write your story\" or have \"bound\" is never published anywhere. It's stored only inside this device's browser (IndexedDB/localStorage) and never sent to an external server. There's no account, so no one else can see your records.<br>\"Let go of a feeling\" quietly moves that entry into a device-only \"release log\" so it no longer appears on your bookshelf — it isn't permanently deleted, just moved to its own log.<br>\"Everyone's Bookshelf\" doesn't mean sharing with other users — \"everyone\" here just names the idea of your own bookshelf growing over time.<br>\"This month's detour\" and some of the shelf's book/music picks are fetched from external book and music search services, using only a season word and the shelf's emotion label as the search terms. Your written entries are never sent in these requests either.<br>Clearing your browser data will also erase these records, so we recommend periodically exporting a backup file via \"Back up your data.\" Even if this service were ever discontinued, your data would remain safe on your device as long as you've backed it up beforehand.",
     keeperNotAiHint: "※ Not an AI chatbot — a simple system that replies with pre-written lines. Nothing is sent to a model.",
     submitStoryHint: "※ Never published anywhere — stored only inside this device's browser.",
-    shelfEpisodesHeading: "Your Books · The Shop's Collection",
-    shelfEpisodesNote: "These are fictional stories written for this bookstore. No visitor's own writing is ever shown here.",
-    shelfFictionalLabel: "A Fictional Volume",
-    bindSuccessMsg: "Your book has been safely received.",
+    shelfEpisodesHeading: "Your Books · Short Pieces from the Shop",
+    shelfEpisodesNote: "These short pieces were written for this bookstore. Nothing written by visitors is shown here.",
+    shelfFictionalLabel: "Short Piece",
+    bindSuccessMsg: "Your words are now a book.",
     // ★v1.3 added (approved copy): Hero primary CTA / bookshelf admin fold / shop-guide heading.
     heroCta: "Write What You Feel Now",
     shelfAdminSummary: "Manage Your Bookshelf",
-    shopGuideHeading: "Inside the Bookstore"
+    shopGuideHeading: "Inside the Bookstore",
+    counterFreeReply1: "Thank you for sharing that. I\u2019ll keep it here for now.",
+    counterFreeReply2: "You can continue if there is more. It is also fine to close the page here.",
+    counterFreeReply3: "You can turn these words into a book at the desk, or close the page as it is.",
+    manaReceiveAriaLabel: "Mana, the shopkeeper, receives your book",
+    manaReceiveLine: "I\u2019ll keep it safe. Would you like to place it on a shelf?",
+    manaReceiveBookFallback: "An Untitled Book",
+    manaReceiveShelfLabel: "Choose a shelf (optional)",
+    manaReceivePlaceholder: "Select a shelf",
+    manaReceiveConfirm: "Place it on this shelf",
+    manaReceiveSkip: "Not now \u2014 go to my bookshelf",
+    manaReceiveSaveError: "Sorry, saving didn\u2019t complete. Your words are still here \u2014 please try again in a moment.",
+    manaImageAlt: "",
+    menuOpenAria: "Open menu",
+    menuCloseAria: "Close menu",
+    menuTitle: "Menu",
+    menuItemDesk: "Write what you feel now",
+    menuItemBookshelf: "Your bookshelf",
+    menuItemCounter: "Talk to the shopkeeper",
+    menuItemShelves: "Browse the emotion shelves",
+    menuItemCover: "Back to the cover",
+    menuSectionOptional: "Optional detours",
+    menuSectionSettings: "Settings & about this shop"
   }
 };
 
@@ -1448,6 +1497,116 @@ function setMood(text){
   layer.style.background = 'rgba(0,0,0,0)';
 }
 
+// ★v1.3最終統合：4タブ主ナビの代わりとなる小さなアクセシブルメニュー。
+// aria-expanded/aria-controls・フォーカストラップ・Esc・背景クリックで閉じる・
+// 閉時はinertでフォーカス/スクリーンリーダーから隠す（仕様書2-1メニューの要件）。
+let _experienceMenuLastFocused = null;
+
+function experienceMenuFocusables(){
+  const menu = document.getElementById('experienceMenu');
+  if(!menu) return [];
+  return Array.from(menu.querySelectorAll('button, a[href], input, select, textarea, [tabindex]'))
+    .filter(el => !el.disabled && el.tabIndex !== -1 && el.offsetParent !== null);
+}
+
+function experienceMenuToggleButtons(){
+  return [document.getElementById('menuBtnCover'), document.getElementById('menuBtnBar')].filter(Boolean);
+}
+
+function isExperienceMenuOpen(){
+  const menu = document.getElementById('experienceMenu');
+  return !!(menu && !menu.classList.contains('hidden'));
+}
+
+function handleExperienceMenuKeydown(e){
+  if(!isExperienceMenuOpen()) return;
+  if(e.key === 'Escape'){
+    e.preventDefault();
+    closeExperienceMenu();
+    return;
+  }
+  if(e.key === 'Tab'){
+    const focusables = experienceMenuFocusables();
+    if(!focusables.length) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if(e.shiftKey && document.activeElement === first){
+      e.preventDefault();
+      last.focus();
+    }else if(!e.shiftKey && document.activeElement === last){
+      e.preventDefault();
+      first.focus();
+    }
+  }
+}
+
+function handleExperienceMenuOutsideClick(e){
+  if(!isExperienceMenuOpen()) return;
+  const menu = document.getElementById('experienceMenu');
+  const card = menu ? menu.querySelector('.experience-menu-card') : null;
+  if(!card) return;
+  if(card.contains(e.target) || experienceMenuToggleButtons().includes(e.target)) return;
+  closeExperienceMenu();
+}
+
+function openExperienceMenu(){
+  const menu = document.getElementById('experienceMenu');
+  if(!menu || isExperienceMenuOpen()) return;
+  _experienceMenuLastFocused = document.activeElement;
+  menu.classList.remove('hidden');
+  menu.removeAttribute('inert');
+  document.body.classList.add('experience-menu-open');
+  experienceMenuToggleButtons().forEach(btn=>btn.setAttribute('aria-expanded', 'true'));
+  document.addEventListener('keydown', handleExperienceMenuKeydown, true);
+  document.addEventListener('mousedown', handleExperienceMenuOutsideClick, true);
+  const focusables = experienceMenuFocusables();
+  const closeBtn = document.getElementById('menuCloseBtn');
+  if(closeBtn && closeBtn.focus) closeBtn.focus();
+  else if(focusables.length) focusables[0].focus();
+}
+
+function closeExperienceMenu(){
+  const menu = document.getElementById('experienceMenu');
+  if(!menu || !isExperienceMenuOpen()) return;
+  menu.classList.add('hidden');
+  menu.setAttribute('inert', '');
+  document.body.classList.remove('experience-menu-open');
+  experienceMenuToggleButtons().forEach(btn=>btn.setAttribute('aria-expanded', 'false'));
+  document.removeEventListener('keydown', handleExperienceMenuKeydown, true);
+  document.removeEventListener('mousedown', handleExperienceMenuOutsideClick, true);
+  if(_experienceMenuLastFocused && _experienceMenuLastFocused.focus){
+    _experienceMenuLastFocused.focus();
+  }
+  _experienceMenuLastFocused = null;
+}
+
+// メニュー内の「今の気持ちを書く／自分の本棚／店主に話す／感情の棚を巡る」の現在地表示を同期する。
+function syncExperienceMenuActive(id){
+  document.querySelectorAll('.experience-menu .menu-item[data-menu-page]').forEach(btn=>{
+    btn.classList.toggle('active', btn.getAttribute('data-menu-page') === id);
+  });
+}
+
+// メニュー・体験バー・Heroのボタン配線。DOM位置に依存せずgetElementByIdで行うため、
+// index.html側でこれらのブロックがどこに置かれても動作する（Phase Aと同じ方針）。
+function initExperienceMenuControls(){
+  document.querySelectorAll('.experience-page').forEach(sec=>{
+    sec.setAttribute('inert', '');
+    sec.setAttribute('aria-hidden', 'true');
+  });
+  experienceMenuToggleButtons().forEach(btn=>{ btn.onclick = ()=>openExperienceMenu(); });
+  const closeBtn = document.getElementById('menuCloseBtn');
+  if(closeBtn) closeBtn.onclick = ()=>closeExperienceMenu();
+  const returnBtn = document.getElementById('menuReturnCover');
+  if(returnBtn) returnBtn.onclick = ()=>returnToCover();
+  document.querySelectorAll('.experience-menu .menu-item[data-menu-page]').forEach(btn=>{
+    btn.onclick = ()=>goToPage(btn.getAttribute('data-menu-page'));
+  });
+  // ★仕様書4-2：JS初期化後に表紙状態を明示するマーカー（CSSはこのクラスの有無で
+  // 店内セクション・4タブナビ・店内案内を出し分ける。JS初期化前の見た目は壊さない）。
+  document.body.classList.add('experience-ready');
+}
+
 function scrollToId(id){
   const el = document.getElementById(id);
   if(el) {
@@ -1462,6 +1621,57 @@ function setActivePageTab(id){
   });
 }
 
+// ★v1.3最終統合：長い全機能縦スクロールから「表紙→書く→製本→まなが預かる→本棚」の
+// 一場面ずつの体験へ再編集するための状態管理。goToPage(id)の関数名・引数・グローバル公開・
+// 既存GA4処理（許可リスト・ガード）は維持したうえで、内部だけ以下のヘルパーで拡張する
+// （仕様書4-1で追加可能とされた内部関数例：enterBookExperience/activateExperiencePage/
+// openExperienceMenu/closeExperienceMenu/returnToCover）。
+
+// 体験対象の4セクション（#counter/#shelves/#desk/#bookshelf）。DOM順は不問。
+function experiencePageEls(){
+  return document.querySelectorAll('.experience-page');
+}
+
+// 体験モード（body.experience-open）へ入る。何度呼んでも安全な冪等処理。
+function enterBookExperience(){
+  document.body.classList.add('experience-open');
+}
+
+// 表紙（body.experience-openを外す）へ戻る。GA4は追加送信しない（表紙のview_landingは初回のみ）。
+function returnToCover(){
+  document.body.classList.remove('experience-open');
+  closeExperienceMenu();
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      const hero = document.querySelector('.entrance.hero');
+      if(hero && hero.scrollIntoView){
+        hero.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block: 'start' });
+      }else{
+        window.scrollTo(0, 0);
+      }
+    });
+  });
+}
+
+// 対象頁だけを表示状態にする（非対象は display:none 相当のCSS + inert/aria-hidden）。
+// 自然スクロールで別sectionへ到達する設計は廃止したため、IntersectionObserverによる
+// スクロール連動のactiveタブ切替（下部の(function(){...})()）はここでは呼ばない・依存しない。
+function activateExperiencePage(id){
+  experiencePageEls().forEach(sec=>{
+    const isActive = sec.id === id;
+    sec.classList.toggle('is-active', isActive);
+    if(isActive){
+      sec.removeAttribute('inert');
+      sec.removeAttribute('aria-hidden');
+    }else{
+      sec.setAttribute('inert', '');
+      sec.setAttribute('aria-hidden', 'true');
+    }
+  });
+  setActivePageTab(id);
+  syncExperienceMenuActive(id);
+}
+
 function goToPage(id){
   // ★GA4整合：本棚（bookshelf）または感情棚（shelves）へ実際に移動した直後に view_shelf を1回だけ送信。
   // 同一ページへの連続遷移では重複発火させない。棚ID・棚名・遷移元等のパラメータは送らない。
@@ -1473,12 +1683,18 @@ function goToPage(id){
   _gaLastTrackedPage = id;
   setActivePageTab(id);
   if(id === 'desk'){ syncCounterDraftToDesk(); updateDeskLead(); }
+
+  enterBookExperience();
+  closeExperienceMenu();
+
   if(!prefs.motion){
+    activateExperiencePage(id);
     requestAnimationFrame(()=>requestAnimationFrame(()=>scrollToId(id)));
     return;
   }
   const overlay = document.getElementById('pageTurnOverlay');
   if(!overlay){
+    activateExperiencePage(id);
     requestAnimationFrame(()=>requestAnimationFrame(()=>scrollToId(id)));
     return;
   }
@@ -1486,7 +1702,10 @@ function goToPage(id){
   void overlay.offsetWidth;
   overlay.classList.add('active');
   buzz(10);
-  setTimeout(()=>scrollToId(id), 260);
+  setTimeout(()=>{
+    activateExperiencePage(id);
+    scrollToId(id);
+  }, 260);
   setTimeout(()=>overlay.classList.remove('active'), 650);
 }
 
@@ -2482,35 +2701,69 @@ function hideUnfiledShelfPicker(){
 }
 
 function showUnfiledShelfPicker(entry){
+  // ★v1.3最終統合：単なる「任意の棚収納UI」から、店主まなが本を預かる場面（受け取り頁）へ
+  // 再構成する。新しい別保存処理や別entryは作らない（現行の同じentryを使う）。
+  // 表示するもの：まなのオリジナルイラスト／製本された本の表紙プレビュー／店主の短い言葉／
+  // 棚選択（任意）／「この棚にしまう」／「今は棚を決めず、本棚へ」（仕様書1-3）。
   let box = document.getElementById('unfiledShelfPicker');
   if(!box){
     box = document.createElement('div');
     box.id = 'unfiledShelfPicker';
-    box.className = 'unfiled-shelf-picker';
-    const anchor = document.getElementById('deskMsg');
-    if(anchor && anchor.parentNode){
-      anchor.parentNode.insertBefore(box, anchor.nextSibling);
-    }else{
-      document.body.appendChild(box);
-    }
+    box.className = 'unfiled-shelf-picker mana-receive-overlay';
+    document.body.appendChild(box);
   }
   box.classList.remove('hidden');
+  box.setAttribute('role', 'dialog');
+  box.setAttribute('aria-modal', 'true');
+  box.setAttribute('aria-label', t('manaReceiveAriaLabel'));
   box.innerHTML = '';
 
   let handled = false; // 一度限りガード（連打・両ボタン連続操作の防止）
+
+  const card = document.createElement('div');
+  card.className = 'mana-receive-card';
+
+  // 店主まなのオリジナルイラスト。周辺のmanaReceiveLineと内容が重複するため装飾画像として
+  // alt=""を付与（読み込み失敗時もカード自体はそのまま機能する＝画像なしフォールバック）。
+  const figure = document.createElement('div');
+  figure.className = 'mana-receive-figure';
+  const figureImg = document.createElement('img');
+  figureImg.src = 'assets/mana-counter.webp';
+  figureImg.alt = t('manaImageAlt');
+  figureImg.width = 1120;
+  figureImg.height = 1400;
+  figureImg.loading = 'lazy';
+  figureImg.onerror = function(){ figure.classList.add('img-failed'); this.remove(); };
+  figure.appendChild(figureImg);
+  card.appendChild(figure);
+
+  // 製本された本の表紙プレビュー（新規保存はしない。既存entryの題名をそのまま表示するだけ）
+  const bookPreview = document.createElement('div');
+  bookPreview.className = 'mana-receive-book';
+  const bookPreviewTitle = document.createElement('span');
+  bookPreviewTitle.className = 'mana-receive-book-title';
+  bookPreviewTitle.textContent = entry.title || t('manaReceiveBookFallback');
+  bookPreview.appendChild(bookPreviewTitle);
+  card.appendChild(bookPreview);
+
+  // 店主の確定文（同一文の連続表示・本文の理解や助言・感情棚の推測はしない）
+  const line = document.createElement('p');
+  line.className = 'mana-receive-line';
+  line.textContent = t('manaReceiveLine');
+  card.appendChild(line);
 
   // ★修正：棚を明示的に選ぶまで先頭棚が暗黙選択されないよう、
   // ラベルとプレースホルダー（value=''・selected・disabled）を先頭に置く。
   // プレースホルダーはCATEGORIESに追加せず、保存カテゴリとしても使用しない。
   const label = document.createElement('label');
   label.setAttribute('for', 'unfiledShelfSelect');
-  label.textContent = '棚を選ぶ（任意）';
+  label.textContent = t('manaReceiveShelfLabel');
 
   const select = document.createElement('select');
   select.id = 'unfiledShelfSelect';
   const placeholder = document.createElement('option');
   placeholder.value = '';
-  placeholder.textContent = '棚を選んでください';
+  placeholder.textContent = t('manaReceivePlaceholder');
   placeholder.selected = true;
   placeholder.disabled = true;
   select.appendChild(placeholder);
@@ -2525,14 +2778,14 @@ function showUnfiledShelfPicker(entry){
   confirmBtn.type = 'button';
   confirmBtn.id = 'unfiledShelfConfirm';
   confirmBtn.className = 'chart-btn primary';
-  confirmBtn.textContent = 'この棚にしまう';
+  confirmBtn.textContent = t('manaReceiveConfirm');
   confirmBtn.disabled = true; // ★修正：初期状態は無効（正規の棚を選ぶまで確定できない）
 
   const skipBtn = document.createElement('button');
   skipBtn.type = 'button';
   skipBtn.id = 'unfiledShelfSkip';
   skipBtn.className = 'chart-btn ghost';
-  skipBtn.textContent = '棚を選ばず、本棚へ戻る';
+  skipBtn.textContent = t('manaReceiveSkip');
 
   // 選択値がCATEGORIESに存在する正規IDの場合だけ確定ボタンを有効化する
   const isValidShelfSelected = ()=>CATEGORIES.some(c=>c.id === select.value);
@@ -2549,6 +2802,10 @@ function showUnfiledShelfPicker(entry){
       updateConfirmState();
     }
   };
+
+  const errorMsg = document.createElement('p');
+  errorMsg.className = 'mana-receive-error hidden';
+  errorMsg.setAttribute('role', 'status');
 
   confirmBtn.onclick = async ()=>{
     if(handled) return;
@@ -2568,17 +2825,21 @@ function showUnfiledShelfPicker(entry){
     if(!savedOk){
       // 保存失敗：unfiledへ巻き戻し、UIは閉じず再試行可能な状態を維持。感情棚へは遷移しない。
       entry.category = prevCategory;
-      const msg = document.getElementById('deskMsg');
-      if(msg) msg.textContent = 'すみません。保存がうまく完了しませんでした。書いた言葉は消さず、少ししてからもう一度お試しください。';
+      errorMsg.textContent = t('manaReceiveSaveError');
+      errorMsg.classList.remove('hidden');
       handled = false;
       setBusy(false);
       return;
     }
-    // 保存成功時のみ：再描画・集計更新・選択棚へ遷移（activeCategoryはgoToShelf内で選択棚へ更新）
+    // ★v1.3最終統合：棚選択後も感情棚へは自動遷移せず、本棚へ移動する（仕様書1-3）。
+    // category更新・再保存は現行どおり。activeCategoryは感情棚を任意で開いたときのために
+    // 更新するのみで、表示・保存には影響しない（renderShelfDisplay()はここでは呼ばない）。
+    activeCategory = selectedId;
     renderShelf();
     renderShelfTabs();
     hideUnfiledShelfPicker();
-    goToShelf(selectedId);
+    // view_shelfは本棚への移動として、goToPage('bookshelf')内の既存GA4処理で1回だけ発火する。
+    goToPage('bookshelf');
     // 遷移直後に節目処理を1回だけ実行（節目判定・1回限りの記録は既存実装のまま）
     celebrateMilestoneIfNeeded(libraryCache.length);
   };
@@ -2593,10 +2854,18 @@ function showUnfiledShelfPicker(entry){
     celebrateMilestoneIfNeeded(libraryCache.length);
   };
 
-  box.appendChild(label);
-  box.appendChild(select);
-  box.appendChild(confirmBtn);
-  box.appendChild(skipBtn);
+  card.appendChild(label);
+  card.appendChild(select);
+  const actions = document.createElement('div');
+  actions.className = 'mana-receive-actions';
+  actions.appendChild(confirmBtn);
+  actions.appendChild(skipBtn);
+  card.appendChild(actions);
+  card.appendChild(errorMsg);
+
+  box.appendChild(card);
+  const focusTarget = document.getElementById('unfiledShelfSelect');
+  if(focusTarget) focusTarget.focus();
 }
 
 const btnSubmit = document.getElementById('submitStory');
@@ -3115,10 +3384,12 @@ async function sendToShopkeeper(){
   // ★Step3：入力内容は一切参照せず、会話回数だけで固定の応答を返す。
   // 感情棚の推測（detectShelfFromText）、キーワード一致・質問判定・ランダム応答
   // （matchShopkeeperReply内の各処理）、人物像推測、外部AIリンク案内はすべて停止。
+  // ★v1.3最終統合修正：1回目と2回目が同文になっていた不具合を修正。会話回数（1/2/3回目以降）
+  // だけで3段階のMESSAGESキー（counterFreeReply1〜3）を使い分ける。本文は解析しない。
   const turnNumber = freeTextTurns + 1;
   const reply = (turnNumber >= 3)
-    ? 'ここまでの言葉は、机で一冊にすることも、このまま閉じることもできます。'
-    : 'お話しくださって、ありがとうございます。続けても、ここで一度閉じても大丈夫です。';
+    ? t('counterFreeReply3')
+    : (turnNumber === 2 ? t('counterFreeReply2') : t('counterFreeReply1'));
   loadingBubble.remove();
   appendBubble('shopkeeper', reply);
   chatHistory.push({ role:'assistant', content:reply });
@@ -4084,6 +4355,10 @@ function warnInAppBrowserIfNeeded(){
 }
 
 (async function init(){
+  // ★v1.3最終統合：体験モードのメニュー配線・experience-readyマーカーは、
+  // 他の非同期初期化（言語・prefs等）より先に行い、JS初期化直後から
+  // 表紙のみが見える状態へできるだけ早く切り替える。
+  initExperienceMenuControls();
   await initLanguage();
   applySeasonalAccent();
   applyNightModeIfNeeded();
