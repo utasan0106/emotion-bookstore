@@ -164,7 +164,11 @@ const MESSAGES = {
     shelfEpisodesHeading: "あなたの本・店内の蔵書",
     shelfEpisodesNote: "ここに並ぶのは、この書店のために綴られた架空の物語です。来店した方の文章が表示されることはありません。",
     shelfFictionalLabel: "架空の一冊",
-    bindSuccessMsg: "一冊、お預かりしました。"
+    bindSuccessMsg: "一冊、お預かりしました。",
+    // ★v1.3追加（決裁済み文言）：Hero主CTA・本棚管理折りたたみ・店内案内見出し。既存キーの値は変更しない。
+    heroCta: "今の気持ちを書く",
+    shelfAdminSummary: "本棚の管理",
+    shopGuideHeading: "店内案内"
   },
   en: {
     tagline: "Turn What You Feel Now into a Book.",
@@ -305,7 +309,11 @@ const MESSAGES = {
     shelfEpisodesHeading: "Your Books · The Shop's Collection",
     shelfEpisodesNote: "These are fictional stories written for this bookstore. No visitor's own writing is ever shown here.",
     shelfFictionalLabel: "A Fictional Volume",
-    bindSuccessMsg: "Your book has been safely received."
+    bindSuccessMsg: "Your book has been safely received.",
+    // ★v1.3 added (approved copy): Hero primary CTA / bookshelf admin fold / shop-guide heading.
+    heroCta: "Write What You Feel Now",
+    shelfAdminSummary: "Manage Your Bookshelf",
+    shopGuideHeading: "Inside the Bookstore"
   }
 };
 
@@ -2329,8 +2337,10 @@ function runBinding(onDone){
   ov.classList.remove('hidden');
   ov.classList.add('animating');
   txt.textContent = t('bindText');
-  t1 = setTimeout(()=>{ txt.textContent = t('bindTextStep2'); }, 850);
-  t2 = setTimeout(finish, 1800);
+  // ★v1.3 Phase C-2：製本演出を0.8〜1.5秒レンジへ短縮（決裁済み：850→500、1800→1200）。
+  // 2段階文言（bindText/bindTextStep2）は維持。スキップ・no-motion経路・保存順序は無変更。
+  t1 = setTimeout(()=>{ txt.textContent = t('bindTextStep2'); }, 500);
+  t2 = setTimeout(finish, 1200);
   ov.onclick = finish;
 }
 
@@ -3010,26 +3020,13 @@ const chatHistory = [];
 // ★1文字あたりの表示間隔（30〜40ms の範囲で調整可能。既定は34ms）
 const TYPE_SPEED_MS = 30;
 
+// ★v1.3 Phase C-1：タイピングアニメーションを廃止し、即時表示へ（監査書5章-2）。
+// 関数のシグネチャ（引数・onDone呼出）は維持。呼出側2箇所（appendBubble内／初回挨拶）は無変更。
+// 短いフェードはCSS側（.bubble等のアニメーション。body:not(.no-motion)スコープ）で表現する。
+// TYPE_SPEED_MS定数は未参照になるが、他所からの参照可能性を残すため削除しない。
 function typeIntoNode(node, text, speed, onDone){
-  // 演出設定がオフ、または長文（260字超）の場合は、従来どおり一瞬で全文を表示する
-  if(!prefs.motion || text.length > 260){
-    node.textContent = text;
-    if(onDone) onDone();
-    return;
-  }
-  node.textContent = '';
-  let i = 0;
-  const cw = document.getElementById('chatWindow');
-  const step = ()=>{
-    if(i >= text.length){ if(onDone) onDone(); return; }
-    node.textContent += text[i++];
-    // 1文字出力するたびに、チャットウィンドウを最下部までスクロールして追従させる
-    if(cw && node.closest && node.closest('.chat-window')){
-      cw.scrollTop = cw.scrollHeight;
-    }
-    setTimeout(step, speed || TYPE_SPEED_MS);
-  };
-  step();
+  node.textContent = text;
+  if(onDone) onDone();
 }
 
 // ★修正：最新の吹き出し（店主の回答／自分の発言）が画面のどちら側に
@@ -4118,9 +4115,8 @@ function warnInAppBrowserIfNeeded(){
       : 'こんばんは。棚は、そのままです。';
     typeIntoNode(greetingEl, line);
   }
-  if(!savedProfile){
-    setTimeout(()=>showProfileCard(), 1400);
-  }
+  // ★v1.3 Phase A-3：来店カードの1.4秒自動表示を停止（監査書5章-1）。
+  // showProfileCard()本体・保存キー・MIDNIGHT_MESSAGES歓迎文は無変更。手動導線（直下のprofileBtn）のみ残す。
   const profileBtn = document.getElementById('profileBtn');
   if(profileBtn) profileBtn.onclick = ()=>showProfileCard();
   renderFair();

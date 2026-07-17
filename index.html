@@ -81,7 +81,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="感情書店">
-<meta name="theme-color" content="#EFE6CD">
+<meta name="theme-color" content="#101824">
 <!-- OGP：XやLINEでシェアされた時にプレビューカードを出すための設定 -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="みんなの感情書店｜今の気持ちを、一冊の本に。">
@@ -219,15 +219,30 @@ body.night .about-data-content{
 }
 </style>
 </head>
-<body>
+<body class="night">
 
 <div class="shop">
-  <header class="entrance">
+  <header class="entrance hero">
+    <!-- ★v1.3 Phase D：Hero画像は別途提供後にここへ<picture>（AVIF/WebP/JPEGフォールバック、
+         alt=""・aria-hidden="true"・width/height指定・loading="eager"・fetchpriority="high"）を追加する。
+         現状は画像未提供のため、.entrance.heroのCSS背景（夜青のグラデーション）のみで
+         主コピー・CTAが成立するフォールバック状態（監査書6章・受入11-4）。 -->
     <p class="eyebrow">EMOTIONAL BINDERY &amp; BOOKSHOP</p>
     <h1>みんなの感情書店</h1>
     <p class="tagline" data-i18n-html="tagline">今の気持ちを、一冊の本に。</p>
     <p class="sub-tagline" data-i18n="subTagline">誰にも話せない気持ちを、静かに書き残せる場所です。</p>
 
+    <!-- ★v1.3 Phase A：主CTAを一本化。遷移先を#counterから#deskへ、文言を新キーheroCtaへ（決裁済み）。
+         MESSAGESのenterBtnキー自体の値は他所での再利用可能性のため変更しない。 -->
+    <button class="enter-btn" onclick="goToPage('desk')" data-i18n="heroCta">今の気持ちを書く</button>
+    <div class="trust-row">
+      <span class="trust-badge" data-i18n="trustBadge1">登録不要</span>
+      <span class="trust-badge" data-i18n="trustBadge2">この端末にのみ保存</span>
+      <span class="trust-badge" data-i18n="trustBadge3">AIの学習には使われません</span>
+    </div>
+
+    <!-- ★v1.3 Phase A：「はじめての方へ」「データ保存について」は主CTAより弱い補助導線として
+         主CTA・安心表示の下へ後退（削除はしない）。 -->
     <!-- ===== 追加：サービス説明のアコーディオン ===== -->
     <div class="about-accordion-wrap">
       <div class="about-accordion-summary" data-i18n-html="accordionSummary">
@@ -277,45 +292,10 @@ body.night .about-data-content{
       </div>
     </details>
     <!-- ===== /追加：データの保存場所・バックアップの説明 ===== -->
-
-    <div class="intro-explainer in-header">
-      <p class="intro-kicker" data-i18n-html="introKicker">この書店でできること<br>— 好きな場所から、自由に巡れます</p>
-      <div class="intro-steps">
-        <button type="button" class="intro-step" onclick="goToPage('counter')">
-          <span class="intro-num">①</span>
-          <p class="intro-title" data-i18n="introTitle1">店主に話す</p>
-          <p class="intro-text" data-i18n="introText1">今の気持ちを、選択肢か自由な言葉で伝えます。</p>
-        </button>
-        <button type="button" class="intro-step" onclick="goToPage('shelves')">
-          <span class="intro-num">②</span>
-          <p class="intro-title" data-i18n="introTitle2">棚を巡る</p>
-          <p class="intro-text" data-i18n="introText2">21種類の感情の棚から、名言や本、曲に出会います。</p>
-        </button>
-        <button type="button" class="intro-step" onclick="goToPage('desk')">
-          <span class="intro-num">③</span>
-          <p class="intro-title" data-i18n="introTitle3">物語を綴る</p>
-          <p class="intro-text" data-i18n="introText3">自分の体験を書き、一冊の本として製本します。棚を選ぶのは、そのあとです。</p>
-        </button>
-        <button type="button" class="intro-step" onclick="goToPage('bookshelf')">
-          <span class="intro-num">④</span>
-          <p class="intro-title" data-i18n="introTitle4">本棚が育つ</p>
-          <p class="intro-text" data-i18n="introText4">綴った物語が積み重なり、自分だけの本棚に。</p>
-        </button>
-      </div>
-    </div>
-
-    <button class="enter-btn" onclick="goToPage('counter')" data-i18n="enterBtn">扉をひらく →</button>
-    <div class="pref-row">
-      <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切" data-i18n-title="motionToggleTitle">演出：入</button>
-      <button class="pref-toggle" id="profileBtn" title="お名前と属性の設定（任意・この端末にのみ保存）" data-i18n="profileBtn" data-i18n-title="profileBtnTitle">来店カード</button>
-      <button class="pref-toggle" id="langToggle" title="言語切り替え / Language">JP / EN</button>
-    </div>
-    <div class="trust-row">
-      <span class="trust-badge" data-i18n="trustBadge1">登録不要</span>
-      <span class="trust-badge" data-i18n="trustBadge2">この端末にのみ保存</span>
-      <span class="trust-badge" data-i18n="trustBadge3">AIの学習には使われません</span>
-    </div>
   </header>
+
+  <!-- ★v1.3 Phase A：土間（第一場面Heroと編纂机の間の一呼吸）。装飾専用・ID無し・.reveal付与禁止。 -->
+  <div class="doma" aria-hidden="true"></div>
 
   <nav class="page-nav" id="pageNav" aria-label="ページを選ぶ" data-i18n-aria="pageNavAria">
     <button class="page-tab" data-page="counter" onclick="goToPage('counter')" data-i18n="pageTab1">① 番台</button>
@@ -473,17 +453,24 @@ body.night .about-data-content{
       </div>
     </div>
     <div class="record-corner hidden" id="recordCorner" aria-label="店主のレコード棚" data-i18n-aria="recordCornerAria"></div>
-    <div class="shelf-controls">
-      <button class="reset-link" id="resetShelf" data-i18n="resetShelf">本棚をリセットする</button>
-    </div>
-    <div class="backup-hint">
-      <button type="button" class="share-btn" id="backupBtn">本棚のデータをバックアップ保存する</button>
-      <button type="button" class="share-btn" id="exportDiary">これまでの記録をテキストでダウンロード</button>
-      <button type="button" class="share-btn" id="exportDiaryCsv">これまでの記録をCSVでダウンロード（Excel等で開けます）</button>
-      <button type="button" class="share-btn" id="restoreBtn">バックアップから復元する</button>
-      <input type="file" id="restoreFileInput" accept="application/json,.json" class="hidden" aria-hidden="true">
-    </div>
-    <p class="field-hint" id="restoreMsg" style="text-align:center;margin-top:4px;"></p>
+    <!-- ★v1.3 Phase A：本棚の管理ボタン群を折りたたみへ収納。
+         .shelf-controls／.backup-hint／#restoreMsg／#restoreFileInputの内部構造・ID・class・
+         相対順序は変更しない（監査書2-5の親子関係契約）。JSはprependやinnerHTML再設定を
+         文書内位置に依存しないgetElementById/querySelectorで行っており、detailsで包んでも無傷。 -->
+    <details class="shelf-admin">
+      <summary data-i18n="shelfAdminSummary">本棚の管理</summary>
+      <div class="shelf-controls">
+        <button class="reset-link" id="resetShelf" data-i18n="resetShelf">本棚をリセットする</button>
+      </div>
+      <div class="backup-hint">
+        <button type="button" class="share-btn" id="backupBtn">本棚のデータをバックアップ保存する</button>
+        <button type="button" class="share-btn" id="exportDiary">これまでの記録をテキストでダウンロード</button>
+        <button type="button" class="share-btn" id="exportDiaryCsv">これまでの記録をCSVでダウンロード（Excel等で開けます）</button>
+        <button type="button" class="share-btn" id="restoreBtn">バックアップから復元する</button>
+        <input type="file" id="restoreFileInput" accept="application/json,.json" class="hidden" aria-hidden="true">
+      </div>
+      <p class="field-hint" id="restoreMsg" style="text-align:center;margin-top:4px;"></p>
+    </details>
     <div class="trend hidden" id="trendBox">
       <p id="trendSummary" class="trend-summary-main"></p>
       <details class="trend-detail">
@@ -500,6 +487,44 @@ body.night .about-data-content{
     </div>
     <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')" data-i18n="backToBandai">⤴ 番台へ戻る</button></div>
   </section>
+
+  <!-- ★v1.3 Phase A：intro-explainer（機能一覧）とpref-row（演出・来店カード・言語）を
+       Heroから撤去し、店内案内領域として本棚の下・フッター手前へ後退。
+       ブロックごと移動のみ（削除禁止）。onclick="goToPage(...)"はグローバル関数呼び出しのため、
+       getElementById参照の#motionToggle/#profileBtn/#langToggleも含め文書内の位置に依存せず動作する。 -->
+  <div class="shop-guide" id="shopGuide">
+    <h2 class="shop-guide-heading" data-i18n="shopGuideHeading">店内案内</h2>
+    <div class="intro-explainer in-header">
+      <p class="intro-kicker" data-i18n-html="introKicker">この書店でできること<br>— 好きな場所から、自由に巡れます</p>
+      <div class="intro-steps">
+        <button type="button" class="intro-step" onclick="goToPage('counter')">
+          <span class="intro-num">①</span>
+          <p class="intro-title" data-i18n="introTitle1">店主に話す</p>
+          <p class="intro-text" data-i18n="introText1">今の気持ちを、選択肢か自由な言葉で伝えます。</p>
+        </button>
+        <button type="button" class="intro-step" onclick="goToPage('shelves')">
+          <span class="intro-num">②</span>
+          <p class="intro-title" data-i18n="introTitle2">棚を巡る</p>
+          <p class="intro-text" data-i18n="introText2">21種類の感情の棚から、名言や本、曲に出会います。</p>
+        </button>
+        <button type="button" class="intro-step" onclick="goToPage('desk')">
+          <span class="intro-num">③</span>
+          <p class="intro-title" data-i18n="introTitle3">物語を綴る</p>
+          <p class="intro-text" data-i18n="introText3">自分の体験を書き、一冊の本として製本します。棚を選ぶのは、そのあとです。</p>
+        </button>
+        <button type="button" class="intro-step" onclick="goToPage('bookshelf')">
+          <span class="intro-num">④</span>
+          <p class="intro-title" data-i18n="introTitle4">本棚が育つ</p>
+          <p class="intro-text" data-i18n="introText4">綴った物語が積み重なり、自分だけの本棚に。</p>
+        </button>
+      </div>
+    </div>
+    <div class="pref-row">
+      <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切" data-i18n-title="motionToggleTitle">演出：入</button>
+      <button class="pref-toggle" id="profileBtn" title="お名前と属性の設定（任意・この端末にのみ保存）" data-i18n="profileBtn" data-i18n-title="profileBtnTitle">来店カード</button>
+      <button class="pref-toggle" id="langToggle" title="言語切り替え / Language">JP / EN</button>
+    </div>
+  </div>
 
   <footer class="shop-footer">
     <span data-i18n="footerBrand">『みんなの感情書店』</span><br>

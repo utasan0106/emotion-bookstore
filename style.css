@@ -20,6 +20,11 @@
 *{box-sizing:border-box;}
 .hidden{display:none !important;}
 
+/* ★v1.3 Phase A：感情の地図（#trendBox）をUI非表示。DOM・JS（renderTrend等）・保存処理は温存。
+   将来「棚の記録」として再設計する際はこの1行を削除するだけで復帰できる。
+   ID指定のみとし、#shioriCardと共用する.trendクラス全体は対象にしない。 */
+#trendBox{ display:none !important; }
+
 /* ★追加：セラピューティックUIの一環。プレースホルダーを淡く上品な色・やや小さめの
    サイズにし、入力前の圧迫感を減らす（世界観の色 --ink-soft をベースに透明度で調整）。 */
 input::placeholder, textarea::placeholder{
@@ -1171,8 +1176,9 @@ body.night .desk-extra summary{
   transform:rotateY(-150deg);
   box-shadow:2px 3px 12px rgba(0,0,0,0.35);
 }
+/* ★v1.3 Phase C-2：製本演出のCSS側時間を1.7s→1.15sへ（main.jsのt2=1200msより僅かに短く終える） */
 .bind-overlay.animating .bind-cover{
-  animation:closeCover 1.7s ease forwards;
+  animation:closeCover 1.15s ease forwards;
 }
 @keyframes closeCover{
   0%{transform:rotateY(-150deg);}
@@ -1690,18 +1696,22 @@ body.night .gentle-toast{
 
 /* ---- 携帯（スマホ）向けの包括的な調整 ---- */
 /* ---- 夜の書店モード（22時〜5時に自動適用：セピアを帯びた深い夜の読書室） ---- */
+/* ★v1.3 Phase B：恒常夜化の色温度設計（決裁済み：夜青#101824／煤茶#1C1611／生成り#EFE6D3／
+   灯橙#E8A55C／墨#2A231Bの世界観設計書v1.1パレットへ整合）。カスタムプロパティの値のみを
+   再定義し、参照元セレクタ・DOM・JSには一切触れない。:root側の昼変数はフォールバックとして残す。 */
 body.night{
-  --paper:#2A2620;
-  --paper-2:#221E19;
-  --paper-shadow:#4A4236;
-  --ink:#D8CCB4;
-  --ink-soft:#BFB194;
-  --wine:#B77884;
+  --paper:#251E17;
+  --paper-2:#1C1611;
+  --paper-shadow:#4A3D2C;
+  --ink:#EFE6D3;
+  --ink-soft:#C7B99A;
+  --wine:#B7707C;
   --wine-2:#C98A96;
-  --gold:#C9A860;
+  --gold:#E8A55C;
+  --gold-soft:#F0C48A;
   --sage:#8FA382;
-  --wood:#1C1610;
-  --wood-2:#141008;
+  --wood:#1C1611;
+  --wood-2:#120D08;
 }
 body.night .episode-card,
 body.night .recommend-chip,
@@ -2837,3 +2847,172 @@ body.night .episodes-toggle{ color:#BFB194; }
 .live-pick-card{
   box-shadow:none;
 }
+
+/* ============================================================================
+ * ★v1.3 Phase B／C 追加分（体験・画面改修仕様書 4章・8章）
+ * 既存セレクタの構造・DOM・JSフックは変更せず、新規クラス／新規セレクタの追記と、
+ * 一部プロパティ（border-radius・box-shadow・background・color・font-family等）の
+ * 上書きのみで構成する。.shop・.entrance・新設ラッパー（.hero／.doma／.shop-guide／
+ * .shelf-admin）へのtransform/filter/backdrop-filter/perspective/contain:paintは
+ * 一切使用しない。無限アニメーションの新設もしない。
+ * ============================================================================ */
+
+/* ---- 4-1 色：Hero専用の「外気」パレット（新規追加のみ・既存カスタムプロパティは変更しない） ---- */
+:root{
+  --street-blue-1:#0B121C;
+  --street-blue-2:#101824;
+  --lamp-glow:#E8A55C;
+}
+
+/* ---- 第一場面 Hero：外は夜青、CTA直近だけ暖色の気配 ---- */
+.entrance.hero{
+  background:linear-gradient(180deg, var(--street-blue-1) 0%, var(--street-blue-2) 68%, var(--wood) 100%);
+  border-bottom-color:rgba(232,165,92,0.25);
+}
+.entrance.hero::before{
+  background:repeating-linear-gradient(90deg, var(--lamp-glow) 0 22px, transparent 22px 30px);
+  opacity:.35;
+}
+.entrance.hero::after{
+  content:"";
+  position:absolute;
+  left:50%; bottom:-8%;
+  transform:translateX(-50%);
+  width:min(70%,520px);
+  height:200px;
+  background:radial-gradient(ellipse at center, rgba(232,165,92,0.24), transparent 72%);
+  pointer-events:none;
+  z-index:-1;
+}
+.entrance.hero .eyebrow{ color:var(--lamp-glow); opacity:.85; }
+.entrance.hero .enter-btn{
+  background:linear-gradient(180deg, var(--lamp-glow), #C9803D);
+  color:#241608;
+  box-shadow:0 3px 0 #7A4A1E, 0 10px 26px rgba(232,165,92,0.28);
+}
+.entrance.hero .enter-btn:hover{ transform:translateY(-2px); }
+.entrance.hero .trust-row .trust-badge{
+  border-color:rgba(239,230,211,0.3);
+  background:rgba(16,24,36,0.35);
+  color:var(--ink);
+}
+
+/* ---- 第二場面 土間：Heroの夜青から店内の暖色へ、一呼吸で色温度を移す ---- */
+.doma{
+  height:30px;
+  background:linear-gradient(180deg, var(--wood) 0%, var(--paper-2) 100%);
+  border-bottom:1px solid var(--paper-shadow);
+}
+@media (max-width:600px){ .doma{ height:20px; } }
+
+/* ---- 店内案内（旧intro-explainer + pref-row の後退先）：フッター手前の控えめな領域 ---- */
+.shop-guide{
+  max-width:920px;
+  margin:0 auto;
+  padding:8px 24px 4px;
+  border-top:1px solid var(--paper-shadow);
+}
+.shop-guide-heading{
+  font-family:var(--font-display);
+  font-size:14px;
+  color:var(--ink-soft);
+  letter-spacing:.14em;
+  text-align:center;
+  margin:22px 0 18px;
+  opacity:.85;
+}
+.shop-guide .intro-explainer.in-header{
+  padding:0 0 18px;
+  opacity:.92;
+}
+.shop-guide .intro-kicker{ font-size:12px; }
+.shop-guide .intro-steps{ gap:10px; }
+.shop-guide .intro-step{
+  padding:12px 8px;
+  background:transparent;
+  box-shadow:none;
+}
+.shop-guide .pref-row{ margin-top:6px; }
+
+/* ---- 本棚の管理（details.shelf-admin）：desk-extraと同系の控えめな折りたたみ意匠 ---- */
+.shelf-admin{
+  margin-top:18px;
+  border-top:1px dashed var(--paper-shadow);
+  padding-top:14px;
+}
+.shelf-admin summary{
+  display:inline-block;
+  font-family:var(--font-display);
+  font-size:13.5px;
+  font-weight:600;
+  color:var(--wine);
+  background:rgba(255,251,240,0.06);
+  border:1px dashed var(--gold);
+  border-radius:10px;
+  padding:9px 18px;
+  cursor:pointer;
+  list-style:none;
+}
+.shelf-admin summary::-webkit-details-marker{ display:none; }
+.shelf-admin summary::before{ content:"▸ "; color:var(--gold); }
+.shelf-admin[open] summary::before{ content:"▾ "; }
+.shelf-admin .shelf-controls{ margin-top:14px; }
+.shelf-admin .backup-hint{ margin-top:10px; }
+
+/* ---- ナビ：アプリのタブバーではなく棚の見出し札として、主張を弱める（軽微な上書きのみ） ---- */
+.page-tab.active{
+  box-shadow:0 2px 4px rgba(0,0,0,0.12);
+}
+
+/* ---- 番台：チャットUIから「帳場に置かれた紙」へ ---- */
+.chat-window{
+  background:linear-gradient(180deg, rgba(0,0,0,0.06), transparent 40%);
+  border:1px solid var(--paper-shadow);
+  border-radius:2px;
+  padding-left:10px;
+  padding-right:10px;
+}
+.bubble{
+  border-radius:2px;
+  box-shadow:none;
+  border:1px solid var(--paper-shadow);
+}
+.bubble.shopkeeper{
+  border-top-left-radius:2px;
+  border-left:3px solid var(--gold);
+}
+.bubble.you{
+  border-top-right-radius:2px;
+  border-right:3px solid var(--paper);
+}
+
+/* ---- v1.3 Phase C：吹き出しの短いフェード（タイピングアニメーション廃止の代替演出） ---- */
+@keyframes bubbleFadeIn{
+  from{ opacity:0; transform:translateY(4px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+body:not(.no-motion) .bubble{
+  animation:bubbleFadeIn .32s ease;
+}
+
+/* ---- 編纂机：#storyInputを原稿用紙・便箋に近づける ---- */
+#storyInput{
+  font-family:var(--font-display);
+  line-height:2;
+  background:
+    repeating-linear-gradient(180deg, transparent 0, transparent 1.95em, rgba(74,61,44,0.12) 1.95em, rgba(74,61,44,0.12) calc(1.95em + 1px)),
+    #fff9ec;
+}
+body.night #storyInput{
+  background:
+    repeating-linear-gradient(180deg, transparent 0, transparent 1.95em, rgba(239,230,211,0.08) 1.95em, rgba(239,230,211,0.08) calc(1.95em + 1px)),
+    #262219;
+}
+
+/* ---- 本棚：来店体験の終着点。最も明るい部屋にする（淡い灯りの気配のみ・アニメーションなし） ---- */
+#bookshelf{
+  background:radial-gradient(ellipse at top, rgba(232,165,92,0.10), transparent 62%);
+}
+
+/* ---- 4-2 書体：主要ボタン・見出し・背表紙は明朝（既存の.enter-btn/.send-btn/.bind-btn/.share-btn/
+   .page-tab/.spine等は既にvar(--font-display)。ここでは原稿用紙化した本文欄のみ追加指定） ---- */
