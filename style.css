@@ -3016,3 +3016,695 @@ body.night #storyInput{
 
 /* ---- 4-2 書体：主要ボタン・見出し・背表紙は明朝（既存の.enter-btn/.send-btn/.bind-btn/.share-btn/
    .page-tab/.spine等は既にvar(--font-display)。ここでは原稿用紙化した本文欄のみ追加指定） ---- */
+
+/* ============================================================================
+ * v1.3 Phase B-2 店内装丁
+ * ----------------------------------------------------------------------------
+ * 目的：Phase A〜Cで整えた導線・夜配色・保存・計測を変更せず、店内画面に残る
+ * 「Webアプリ／カード一覧／チャットUI」の見え方だけを、棚・紙・木・帳場の意匠へ
+ * 置き換える。既存セレクタ・DOM・JSフックには一切触れず、後勝ちのプロパティ
+ * 上書き（border-radius・box-shadow・background・color・font-family・padding等）
+ * のみで構成する。.shop・.entrance・section・新設ラッパーへの
+ * transform/filter/backdrop-filter/perspective/contain:paintは追加しない。
+ * 無限アニメーションの新設もしない。style.css本体の削除・整理は行わない。
+ * ============================================================================ */
+
+/* ----------------------------------------------------------------------------
+ * 4-1 上部ナビ：タブバーから「棚の見出し札」へ
+ * ---------------------------------------------------------------------------- */
+.page-nav{
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  background:linear-gradient(180deg, var(--wood) 0%, var(--wood-2) 100%);
+  border-top:1px solid rgba(232,165,92,0.14);
+  border-bottom:1px solid rgba(0,0,0,0.4);
+  box-shadow:0 3px 10px rgba(0,0,0,0.28);
+  gap:0;
+  padding:0 6px;
+}
+body.night .page-nav{
+  background:linear-gradient(180deg, var(--wood) 0%, var(--wood-2) 100%);
+}
+.page-tab{
+  border:none;
+  border-right:1px solid rgba(232,165,92,0.10);
+  border-radius:0;
+  background:transparent;
+  color:var(--ink-soft);
+  padding:12px 16px 11px;
+  top:0;
+  transition:color .15s ease, background .15s ease, box-shadow .15s ease;
+}
+.page-tab:last-child{ border-right:none; }
+.page-tab:hover{
+  top:0;
+  color:var(--ink);
+  background:rgba(255,255,255,0.04);
+}
+.page-tab.active{
+  background:rgba(232,165,92,0.09);
+  color:var(--ink);
+  border-color:transparent;
+  top:0;
+  font-weight:700;
+  box-shadow:inset 0 -2px 0 var(--gold), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+body.night .page-tab{ background:transparent; }
+body.night .page-tab.active{ background:rgba(232,165,92,0.12); }
+@media (max-width:480px){
+  .page-nav{ padding:0 2px; }
+  .page-tab{ padding:10px 4px 9px; letter-spacing:.02em; border-right-color:rgba(232,165,92,0.08); }
+}
+
+/* ----------------------------------------------------------------------------
+ * 4-2 番台：大きなチャットカードから「帳場と紙」へ
+ * ---------------------------------------------------------------------------- */
+.counter-wrap{
+  background:transparent;
+  border:none;
+  border-top:1px solid var(--paper-shadow);
+  border-bottom:1px solid var(--paper-shadow);
+  border-radius:0;
+  padding:20px 4px;
+}
+.chat-window{
+  background:none;
+  border:none;
+  border-top:1px solid rgba(232,165,92,0.16);
+  padding:14px 2px 10px;
+  border-radius:0;
+}
+.bubble{
+  max-width:82%;
+  padding:11px 14px;
+  border-radius:1px;
+  box-shadow:none;
+  border:none;
+  background:transparent;
+  font-size:14.5px;
+}
+.bubble.shopkeeper{
+  align-self:flex-start;
+  width:min(85%,560px);
+  max-width:85%;
+  background:linear-gradient(180deg, rgba(232,165,92,0.05), transparent 60%), var(--paper-2);
+  border:1px solid var(--paper-shadow);
+  border-left:3px solid var(--gold);
+  border-radius:0 1px 1px 0;
+}
+.bubble.shopkeeper .name{
+  display:inline-block;
+  font-family:var(--font-display);
+  font-size:10px;
+  color:var(--gold);
+  background:transparent;
+  border:1px solid rgba(232,165,92,0.4);
+  padding:1px 6px;
+  margin:0 0 6px;
+  letter-spacing:.12em;
+}
+.bubble.you{
+  align-self:flex-end;
+  width:min(78%,460px);
+  max-width:100%;
+  background:rgba(0,0,0,0.14);
+  color:var(--ink);
+  border:1px solid var(--paper-shadow);
+  border-right:3px solid var(--wine);
+  border-radius:1px 0 0 1px;
+}
+body.night .bubble.shopkeeper{ background:linear-gradient(180deg, rgba(232,165,92,0.06), transparent 60%), #241C15; }
+body.night .bubble.you{ background:rgba(0,0,0,0.22); }
+@media (max-width:480px){
+  .bubble.shopkeeper, .bubble.you{ width:100%; max-width:100%; }
+}
+
+/* 質感4択・棚チップ等（.chart-btn共通）：丸チップから木の棚札・紙片へ */
+.chart-options{ gap:8px; }
+.chart-btn{
+  font-family:var(--font-display);
+  font-weight:400;
+  font-size:13.5px;
+  padding:10px 16px;
+  border:1px solid var(--paper-shadow);
+  border-left:2px solid var(--gold);
+  background:var(--paper-2);
+  color:var(--ink-soft);
+  border-radius:0 1px 1px 0;
+  box-shadow:none;
+  transition:background .15s ease, color .15s ease, border-color .15s ease;
+}
+.chart-btn:hover{
+  background:rgba(232,165,92,0.08);
+  color:var(--ink);
+  transform:none;
+  box-shadow:none;
+}
+.chart-btn.primary{
+  background:rgba(232,165,92,0.14);
+  color:var(--ink);
+  border-color:var(--gold);
+}
+.chart-btn.ghost{
+  border-style:solid;
+  border-left-style:dashed;
+  background:transparent;
+}
+.chart-btn.shelf-chip{ border-left-color:var(--wine); }
+
+.next-action-guide{
+  background:transparent;
+  border-radius:0;
+  padding:10px 0 10px 14px;
+  margin:10px 0 14px;
+  border-left:2px dashed var(--paper-shadow);
+  animation:none;
+}
+.guide-lead{ color:var(--ink-soft); font-weight:600; }
+
+.chat-input-row{
+  border-top:1px solid var(--paper-shadow);
+  padding-top:14px;
+}
+.chat-input-row textarea{
+  border:none;
+  border-bottom:1px solid var(--paper-shadow);
+  border-radius:0;
+  background:rgba(255,255,255,0.03);
+  padding:10px 8px;
+}
+body.night .chat-input-row textarea{ background:rgba(0,0,0,0.18); color:var(--ink); }
+.send-btn{
+  font-family:var(--font-display);
+  background:var(--gold);
+  color:#241608;
+  border-radius:1px;
+  padding:0 20px;
+  font-weight:700;
+  letter-spacing:.06em;
+}
+.send-btn:hover{ background:var(--gold-soft); }
+
+/* ----------------------------------------------------------------------------
+ * 4-3 感情の棚：丸チップから縦長の「背表紙」へ
+ * ---------------------------------------------------------------------------- */
+.shelf-tabs{
+  gap:0;
+  margin-bottom:22px;
+  background:linear-gradient(180deg, rgba(0,0,0,0.10), transparent 30%);
+  border-bottom:10px solid var(--wood-2);
+  padding:10px 6px 0;
+}
+.shelf-group{
+  gap:4px;
+  padding-bottom:14px;
+}
+.shelf-group-label{
+  font-family:var(--font-display);
+  font-size:10.5px;
+  color:var(--gold);
+  opacity:.8;
+  letter-spacing:.1em;
+  padding-left:2px;
+}
+.shelf-group-row{
+  align-items:flex-end;
+  gap:5px;
+}
+.shelf-tab{
+  font-family:var(--font-display);
+  writing-mode:vertical-rl;
+  text-orientation:mixed;
+  width:34px;
+  min-height:76px;
+  max-height:110px;
+  font-size:12.5px;
+  letter-spacing:.14em;
+  padding:10px 5px;
+  border:1px solid rgba(0,0,0,0.3);
+  border-top:1px solid rgba(255,255,255,0.06);
+  background:linear-gradient(180deg, var(--wood-2), var(--wood));
+  color:#EFE1C4;
+  border-radius:1px 1px 0 0;
+  box-shadow:inset -2px 0 0 rgba(0,0,0,0.18), inset 2px 0 0 rgba(255,255,255,0.05);
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.shelf-group-row .shelf-tab:nth-child(3n+2){
+  background:linear-gradient(180deg, #5A3D28, #3E2A1C);
+}
+.shelf-group-row .shelf-tab:nth-child(3n+3){
+  background:linear-gradient(180deg, #4A3220, #2E1F14);
+  min-height:88px;
+}
+.shelf-group-row .shelf-tab:nth-child(4n){
+  min-height:70px;
+}
+.shelf-tab:hover{
+  transform:translateY(-3px);
+}
+.shelf-tab.active{
+  transform:translateY(-4px);
+  color:#FFF3D6;
+  box-shadow:inset -2px 0 0 rgba(0,0,0,0.18), inset 2px 0 0 rgba(255,255,255,0.05), inset 0 3px 0 var(--gold);
+  background:linear-gradient(180deg, #6B4A30, #3E2A1C);
+}
+.shelf-tab.glow{
+  box-shadow:inset -2px 0 0 rgba(0,0,0,0.18), inset 2px 0 0 rgba(255,255,255,0.05), 0 0 7px rgba(232,165,92,0.45);
+}
+.shelf-wander-row{
+  margin-top:8px;
+}
+.wander-btn{
+  font-family:var(--font-display);
+  border:none;
+  border-bottom:1px dashed var(--wine);
+  border-radius:0;
+  background:transparent;
+  padding:4px 2px;
+}
+.wander-btn:hover{ color:var(--wine-2); }
+@media (max-width:480px){
+  .shelf-tab{ width:30px; min-height:64px; font-size:11.5px; }
+  .shelf-group-row .shelf-tab:nth-child(3n+3){ min-height:74px; }
+}
+
+/* ----------------------------------------------------------------------------
+ * 4-4 棚の内容：推薦カードから「選書札・蔵書票・帳面」へ
+ * ---------------------------------------------------------------------------- */
+.shelf-display{
+  background:linear-gradient(180deg, rgba(0,0,0,0.08), transparent 12%, transparent 88%, rgba(0,0,0,0.12));
+  border:none;
+  border-top:6px solid var(--wood-2);
+  border-bottom:6px solid var(--wood-2);
+  border-radius:0;
+  padding:22px 6px;
+}
+.definition{
+  display:inline-block;
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin:0 0 18px;
+  padding:4px 10px 4px 0;
+  border-bottom:1px dashed var(--paper-shadow);
+}
+.definition b{
+  font-size:14px;
+  border-right:1px solid var(--paper-shadow);
+  padding-right:8px;
+  margin-right:6px;
+}
+/* 「最終仕上げ」ブロック（後方L2554付近）のカード化を後勝ちで打ち消す */
+.quote-card{
+  font-family:var(--font-display);
+  font-size:17px;
+  line-height:2;
+  background:transparent;
+  border-left:2px solid var(--gold);
+  border-radius:0;
+  box-shadow:none;
+  padding:2px 0 2px 16px;
+  margin:4px 0 6px;
+}
+.quote-source{
+  font-size:11.5px;
+  margin:0 0 20px 16px;
+}
+.episodes-heading{
+  font-family:var(--font-display);
+  font-size:13px;
+  color:var(--gold);
+  letter-spacing:.06em;
+  border-top:1px solid rgba(232,165,92,0.25);
+  padding-top:14px;
+  margin-top:8px;
+}
+.episodes-note{ opacity:.7; }
+.episodes{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:0;
+}
+.episode-card{
+  background:transparent;
+  border:none;
+  border-top:1px solid var(--paper-shadow);
+  border-left:2px solid var(--sage);
+  border-radius:0;
+  padding:14px 14px 16px;
+}
+.episode-card.mine{
+  border-left:2px solid var(--wine);
+  background:rgba(183,112,124,0.06);
+}
+.episode-card.mine:hover{ background:rgba(183,112,124,0.12); }
+.episode-card .who{
+  font-family:var(--font-display);
+  letter-spacing:.1em;
+}
+.episode-shuffle, .recommend-shuffle{
+  border:none;
+  border-bottom:1px dashed var(--paper-shadow);
+  border-radius:0;
+  background:transparent;
+  padding:4px 2px;
+}
+
+.recommend-section{ border-top:1px dashed var(--paper-shadow); }
+.recommend-heading{ letter-spacing:.04em; }
+.recommend-row{ gap:0; }
+.recommend-chip{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:4px;
+  width:100%;
+  max-width:100%;
+  background:transparent;
+  border:none;
+  border-top:1px solid var(--paper-shadow);
+  border-radius:0;
+  padding:12px 4px;
+}
+.recommend-row .recommend-chip:first-of-type{ border-top:none; }
+.recommend-hook{
+  border-radius:0;
+  background:transparent;
+  color:var(--wine);
+  border:1px solid var(--wine);
+  padding:1px 7px;
+}
+body.night .recommend-hook{ color:#E8A0A8; border-color:#8A5560; }
+.recommend-more{ border-radius:0; }
+
+.music-row{ border-top:1px dashed var(--paper-shadow); padding-top:12px; margin-top:16px; }
+.playlist-tracks{ gap:0; }
+.playlist-track-row{
+  border-top:1px solid var(--paper-shadow);
+  padding:8px 2px;
+  gap:6px 10px;
+}
+.playlist-tracks .playlist-track-row:first-child{ border-top:none; }
+
+.detour-cards{ gap:0; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); }
+.detour-card{
+  background:transparent;
+  border:none;
+  border-left:2px solid var(--sage);
+  border-radius:0;
+  padding:12px 14px;
+}
+.detour-tier-low{ border-left-color:var(--sage); }
+.detour-tier-medium{ border-left-color:var(--gold); }
+.detour-tier-high{ border-left-color:var(--wine); }
+.detour-tier-badge{
+  border-radius:0;
+  background:transparent !important;
+  color:var(--ink-soft);
+  padding:0;
+  font-size:10px;
+  letter-spacing:.08em;
+  border-bottom:1px solid currentColor;
+}
+.detour-tier-low .detour-tier-badge{ color:var(--sage); }
+.detour-tier-medium .detour-tier-badge{ color:#C99248; }
+.detour-tier-high .detour-tier-badge{ color:#C17E8A; }
+.detour-cards .detour-card:nth-child(2){ margin-top:10px; }
+.detour-cards .detour-card:nth-child(3){ margin-top:20px; }
+
+.live-pick-row{ gap:0; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); }
+.live-pick-card{
+  background:transparent;
+  border:none;
+  border-left:2px solid #4FA3D1;
+  border-radius:0;
+  padding:10px 14px;
+}
+.live-pick-badge{
+  border-radius:0;
+  background:transparent;
+  color:#4FA3D1;
+  padding:0;
+  border-bottom:1px solid #4FA3D1;
+}
+body.night .live-pick-badge{ color:#7FC0E4; border-color:#7FC0E4; }
+@media (max-width:768px){
+  .detour-cards, .live-pick-row{ grid-template-columns:1fr 1fr; }
+}
+@media (max-width:480px){
+  .detour-cards, .live-pick-row{ grid-template-columns:1fr; }
+  .detour-cards .detour-card:nth-child(2), .detour-cards .detour-card:nth-child(3){ margin-top:0; }
+}
+
+/* ----------------------------------------------------------------------------
+ * 4-5 編纂机：フォームカードから「机面と一枚の紙」へ
+ * ---------------------------------------------------------------------------- */
+.desk-form{
+  background:linear-gradient(180deg, rgba(0,0,0,0.06), transparent 8%), var(--wood-2);
+  border:none;
+  border-top:4px solid var(--wood);
+  border-bottom:4px solid var(--wood);
+  border-radius:0;
+  padding:22px 18px;
+  gap:16px;
+}
+body.night .desk-form{ background:linear-gradient(180deg, rgba(0,0,0,0.12), transparent 8%), #1C1611; }
+#storyInput{
+  border:none;
+  border-radius:1px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(0,0,0,0.05);
+  padding:16px 18px;
+}
+.field select, .field input{
+  border:none;
+  border-bottom:1px solid var(--paper-shadow);
+  border-radius:0;
+  background:transparent;
+  padding:8px 4px;
+}
+body.night .field select, body.night .field input{ color:var(--ink); }
+.field label{
+  font-family:var(--font-display);
+  font-size:11px;
+  letter-spacing:.08em;
+  opacity:.85;
+}
+.count-row{ margin-top:2px; }
+.story-count{
+  font-family:var(--font-display);
+  font-style:italic;
+  opacity:.75;
+}
+.desk-extra{
+  border-top:none;
+  border-left:2px solid var(--paper-shadow);
+  padding:10px 0 4px 14px;
+  margin-top:4px;
+}
+.desk-extra summary{
+  background:transparent;
+  border:none;
+  border-bottom:1px dashed var(--gold);
+  border-radius:0;
+  padding:2px 4px 4px 0;
+  font-weight:600;
+}
+body.night .desk-extra summary{ background:transparent; }
+.desk-actions{ margin-top:4px; }
+.bind-btn{
+  font-family:var(--font-display);
+  background:linear-gradient(180deg, var(--gold), #B47F35);
+  color:#241608;
+  border:1px solid #7A4A1E;
+  border-radius:1px;
+  padding:13px 30px;
+  font-weight:700;
+  letter-spacing:.1em;
+  box-shadow:0 2px 0 #5C3714, 0 6px 14px rgba(0,0,0,0.3);
+  transition:background .15s ease, box-shadow .15s ease, transform .1s ease;
+}
+.bind-btn:hover{
+  background:linear-gradient(180deg, var(--gold-soft), var(--gold));
+}
+.bind-btn:active{
+  transform:translateY(1px);
+  box-shadow:0 1px 0 #5C3714, 0 3px 8px rgba(0,0,0,0.3);
+}
+.curate-box{
+  background:transparent;
+  border:none;
+  border-left:2px solid var(--wine);
+  border-radius:0;
+  padding:10px 0 10px 14px;
+}
+@media (max-width:480px){
+  .desk-form{ padding:16px 12px; }
+  #storyInput{ padding:12px 14px; }
+}
+
+/* ----------------------------------------------------------------------------
+ * 4-6 あなたの本棚：「黒い空箱」から木の棚へ
+ * ---------------------------------------------------------------------------- */
+.wood-shelf{
+  position:relative;
+  background:linear-gradient(180deg, var(--wood-2), var(--wood));
+  border-radius:1px;
+  padding:26px 26px 0;
+  box-shadow:inset 0 0 40px rgba(0,0,0,0.35);
+}
+.wood-shelf::before,
+.wood-shelf::after{
+  content:"";
+  position:absolute;
+  top:0; bottom:0;
+  width:14px;
+  background:linear-gradient(90deg, rgba(0,0,0,0.4), rgba(255,255,255,0.04) 40%, rgba(0,0,0,0.25));
+  pointer-events:none;
+}
+.wood-shelf::before{ left:0; }
+.wood-shelf::after{
+  right:0;
+  left:auto;
+  background:linear-gradient(90deg, rgba(0,0,0,0.25), rgba(255,255,255,0.04) 60%, rgba(0,0,0,0.4));
+}
+.shelf-row{
+  position:relative;
+  padding-bottom:20px;
+  border-bottom:none;
+  box-shadow:none;
+}
+.shelf-row::after{
+  content:"";
+  position:absolute;
+  left:-26px; right:-26px; bottom:0;
+  height:16px;
+  background:linear-gradient(180deg, var(--wood-2) 0%, var(--wood-2) 55%, #0C0805 100%);
+  box-shadow:0 8px 14px rgba(0,0,0,0.4);
+}
+.shelf-empty{
+  position:relative;
+  color:rgba(239,230,211,0.55);
+  font-family:var(--font-display);
+  font-size:12.5px;
+  padding:34px 18px 46px;
+  letter-spacing:.04em;
+}
+.spine.empty-spine{
+  background:linear-gradient(180deg, rgba(239,230,211,0.05), transparent) !important;
+}
+#bookshelf .section-head h2{
+  position:relative;
+}
+.shelf-month-tabs{ gap:0; }
+.shelf-month-tab{
+  border:none;
+  border-bottom:2px solid transparent;
+  border-radius:0;
+  background:transparent;
+  padding:5px 10px;
+}
+.shelf-month-tab.active{
+  background:transparent;
+  color:var(--gold);
+  border-bottom-color:var(--gold);
+}
+body.night .shelf-month-tab.active{ background:transparent; color:var(--gold); }
+.record-corner{
+  background:linear-gradient(180deg, rgba(0,0,0,0.08), transparent);
+  border:none;
+  border-top:1px dashed var(--paper-shadow);
+  border-radius:0;
+  padding:16px 4px 4px;
+}
+body.night .record-corner{ background:linear-gradient(180deg, rgba(0,0,0,0.12), transparent); }
+
+/* ----------------------------------------------------------------------------
+ * 4-7 店内案内：同寸4カードから「案内板」へ
+ * ---------------------------------------------------------------------------- */
+.shop-guide{
+  background:linear-gradient(180deg, rgba(0,0,0,0.10), transparent 10%), var(--paper-2);
+  border:none;
+  border-top:1px solid var(--paper-shadow);
+  border-bottom:1px solid var(--paper-shadow);
+  padding:6px 24px 18px;
+}
+.shop-guide-heading{
+  border-bottom:1px solid rgba(232,165,92,0.2);
+  padding-bottom:14px;
+  margin-bottom:14px;
+}
+.shop-guide .intro-steps{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:0;
+}
+.shop-guide .intro-step{
+  padding:6px 14px;
+  background:transparent;
+  border:none;
+  border-left:1px solid var(--paper-shadow);
+  border-radius:0;
+  align-items:flex-start;
+  text-align:left;
+  transition:background .15s ease;
+}
+.shop-guide .intro-steps .intro-step:first-child{ border-left:none; padding-left:2px; }
+.shop-guide .intro-step:hover{
+  transform:none;
+  background:rgba(232,165,92,0.05);
+  border-color:var(--paper-shadow);
+}
+.shop-guide .intro-num{
+  width:auto;
+  height:auto;
+  border-radius:0;
+  background:transparent;
+  color:var(--gold);
+  font-size:11px;
+  letter-spacing:.06em;
+  margin-bottom:6px;
+  border:1px solid rgba(232,165,92,0.35);
+  padding:1px 6px;
+}
+.shop-guide .intro-title{ font-size:13.5px; }
+.shop-guide .intro-text{ font-size:11.5px; text-align:left; }
+.shop-guide .pref-row{
+  justify-content:flex-start;
+  border-top:1px dashed var(--paper-shadow);
+  padding-top:12px;
+}
+.shop-guide .pref-toggle{ opacity:.75; }
+@media (max-width:768px){
+  .shop-guide .intro-steps{ grid-template-columns:1fr 1fr; }
+  .shop-guide .intro-steps .intro-step:nth-child(2n+1){ border-left:none; }
+  .shop-guide .intro-steps .intro-step:nth-child(1),
+  .shop-guide .intro-steps .intro-step:nth-child(2){
+    border-bottom:1px solid var(--paper-shadow);
+    padding-bottom:12px;
+  }
+}
+@media (max-width:480px){
+  .shop-guide .intro-steps{ grid-template-columns:1fr; }
+  .shop-guide .intro-steps .intro-step{
+    border-left:none;
+    border-top:1px solid var(--paper-shadow);
+    padding:12px 2px;
+  }
+  .shop-guide .intro-steps .intro-step:first-child{ border-top:none; }
+}
+
+/* ----------------------------------------------------------------------------
+ * 4-8 共通：情報密度・余白・書体の底上げ
+ * ---------------------------------------------------------------------------- */
+.recommend-buy, .music-link, .playlist-services a{
+  opacity:.85;
+}
+.fav-btn{
+  border-radius:1px;
+}
+
+/* ----------------------------------------------------------------------------
+ * レスポンシブ：PCで管理画面のように全幅へ広がらないための余白確認
+ * ---------------------------------------------------------------------------- */
+@media (min-width:1100px){
+  section, .shop-guide{ max-width:920px; }
+}
