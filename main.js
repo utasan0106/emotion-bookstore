@@ -44,7 +44,18 @@ const MESSAGES = {
     trustBadge1: "登録不要", trustBadge2: "この端末にのみ保存", trustBadge3: "AIの学習には使われません",
     pageNavAria: "ページを選ぶ",
     pageTab1: "① 番台", pageTab2: "② 棚", pageTab3: "③ 編纂机", pageTab4: "④ 本棚",
-    sectionHead1: "番台 — 店主に言葉を預ける", sectionSub1: "今の気持ちを、選択肢か自由な言葉で伝えられます。",
+    sectionHead1: "番台 — 店主に言葉を預ける", sectionSub1: "気持ちに近い棚を、一緒に探します。",
+    // ★v1.3公開前最終修正：番台を「棚の案内」として整理（仕様書3章）。初回・再訪とも同じ文。
+    counterGreetingUnified: "こんばんは。まだ名前のつかない気持ちも、そのままで大丈夫です。今は、どんな手触りですか。",
+    counterGroupSink: "重く沈む",
+    counterGroupWave: "波立つ",
+    counterGroupLight: "光が灯る",
+    counterGroupSepia: "遠いものを見つめる",
+    counterGroupOther: "それ以外",
+    counterBackBtn: "戻る",
+    counterShelfGuideNote: "「{shelf}」の棚をご案内します。",
+    counterViewShelfBtn: "棚を見る",
+    counterWriteWithoutChoosing: "まだ決めずに書く",
     keeperBioSummary: "店主について",
     keeperBioText: "この書店の店主。名前は「まな」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、まなが長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。",
     keeperNameLabel: "店主",
@@ -58,8 +69,24 @@ const MESSAGES = {
     sectionHead2: "感情の棚", sectionSub2: "棚を選んでも、あてもなく巡っても。",
     swipeHint: "← 左右にスワイプでも棚を移動できます →",
     backToBandai: "⤴ 番台へ戻る",
-    sectionHead3: "編纂机 — 物語を綴る",
-    sectionSub3: "題名や写真は任意です。製本したあと、棚にしまうか、棚を選ばず本棚へ戻れます。",
+    // ★v1.3公開前最終修正：主動線（編纂机→製本→まな受け取り→本棚）だけに頁番号を振り直す。
+    // 番台・感情の棚は任意頁のため番号を付けない（仕様書1章）。
+    pageLabelDesk: "第一頁　",
+    pageLabelBookshelf: "第四頁　",
+    bindPageHeading: "第二頁　製本",
+    manaPageHeading: "第三頁　店主まながお預かり",
+    // ★v1.3公開前最終修正：棚連動の本・音楽推薦（仕様書2章）
+    shelfPickHeading: "この棚を選んだあなたへ",
+    shelfPickNote: "「{shelf}」の棚から、店主が一冊と一曲を選びました。",
+    shelfPickBookLabel: "本",
+    shelfPickMusicLabel: "音楽",
+    shelfPickMoreLink: "この棚をもう少し見る",
+    // ★v1.3公開前最終修正：本棚到着後の次行動（仕様書6章）
+    bookshelfArrivalHeading: "本を棚に置きました。",
+    bookshelfArrivalMakeAnother: "もう一冊つくる",
+    bookshelfArrivalBackToCover: "表紙へ戻る",
+    sectionHead3: "編纂机",
+    sectionSub3: "今の気持ちを、一枚の紙に綴ります。",
     shelfAfterBindingNote: "棚は、製本したあとに選べます。",
     storyInputPlaceholder: "書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。",
     assistBtn: "書き出しに迷ったら、店主の助け舟",
@@ -161,10 +188,11 @@ const MESSAGES = {
     submitStoryHint: "※外部には公開されず、この端末のブラウザ内にのみ保存されます。",
     // ★2025-07-17追記（v1.2フィードバック反映）：renderShelfDisplay()内にハードコードしていた
     // 棚見出し・注記・架空author固定ラベル、および製本成功文をMESSAGESへ移設し、t()経由で言語切替に対応させた。
-    // ★v1.3最終統合：「架空」は偽物・作り物という印象を与えるため、公開文言から「掌編」へ変更（キー名は互換のため維持）。
-    shelfEpisodesHeading: "あなたの本・店内の掌編",
-    shelfEpisodesNote: "ここに並ぶのは、この書店のために書かれた短い物語です。来店した方の文章ではありません。",
-    shelfFictionalLabel: "掌編",
+    // ★v1.3公開前最終修正：「掌編」は意味が伝わりにくいため、公開文言を「この書店の短い物語」
+    // 「短い物語」へ変更（キー名shelfFictionalLabel等は互換のため維持。仕様書4章）。
+    shelfEpisodesHeading: "あなたの本・この書店の短い物語",
+    shelfEpisodesNote: "この書店のために書かれた短い物語です。来店された方の文章ではありません。",
+    shelfFictionalLabel: "短い物語",
     // ★v1.3最終統合：製本直後の文言と、次の「まなが預かる」場面の文言が連続して同じ文にならないよう区別。
     bindSuccessMsg: "一冊になりました。",
     // ★v1.3追加（決裁済み文言）：Hero主CTA・本棚管理折りたたみ・店内案内見出し。既存キーの値は変更しない。
@@ -186,9 +214,12 @@ const MESSAGES = {
     manaReceiveSaveError: "すみません。保存がうまく完了しませんでした。書いた言葉は消さず、少ししてからもう一度お試しください。",
     manaImageAlt: "",
     // ★v1.3最終統合追加：店内メニュー（4タブの代替導線）の文言。
-    menuOpenAria: "メニューを開く",
-    menuCloseAria: "メニューを閉じる",
-    menuTitle: "メニュー",
+    // ★v1.3公開前最終修正：三本線だけでは初見で見落とすため、文字でも明示する（仕様書5章）。
+    menuOpenAria: "店内メニューを開く",
+    menuCloseAria: "店内メニューを閉じる",
+    menuTitle: "店内メニュー",
+    menuBtnLabelFull: "店内メニュー",
+    menuBtnLabelShort: "メニュー",
     menuItemDesk: "今の気持ちを書く",
     menuItemBookshelf: "自分の本棚",
     menuItemCounter: "店主に話す",
@@ -218,7 +249,17 @@ const MESSAGES = {
     trustBadge1: "No sign-up", trustBadge2: "Stored on this device only", trustBadge3: "Never used to train AI",
     pageNavAria: "Choose a page",
     pageTab1: "① Counter", pageTab2: "② Shelves", pageTab3: "③ Writing desk", pageTab4: "④ Bookshelf",
-    sectionHead1: "The Counter — Leave a few words with the shopkeeper", sectionSub1: "Share how you feel through an option or in your own words.",
+    sectionHead1: "The Counter — Leave a few words with the shopkeeper", sectionSub1: "Let\u2019s find the shelf closest to how you feel.",
+    counterGreetingUnified: "Good evening. Feelings that don\u2019t have a name yet are fine just as they are. What does it feel like right now?",
+    counterGroupSink: "Heavy and Sinking",
+    counterGroupWave: "Rippling",
+    counterGroupLight: "A Light Comes On",
+    counterGroupSepia: "Gazing at Something Far Away",
+    counterGroupOther: "Something Else",
+    counterBackBtn: "Back",
+    counterShelfGuideNote: "Here is the \u201c{shelf}\u201d shelf.",
+    counterViewShelfBtn: "View This Shelf",
+    counterWriteWithoutChoosing: "Write Without Choosing Yet",
     keeperBioSummary: "About the shopkeeper",
     keeperBioText: "The keeper of this bookstore goes by \"Mana.\" Their age and gender remain unrevealed. They usually read quietly at the back of the counter, and their job is to listen to what customers have to say. The shelves are lined with quotes old and new, sourced and collected by Mana over many years in a notebook.",
     keeperNameLabel: "Shopkeeper",
@@ -232,8 +273,20 @@ const MESSAGES = {
     sectionHead2: "The Emotion Shelves", sectionSub2: "Pick a shelf, or just wander without a destination.",
     swipeHint: "← Swipe left or right to move between shelves →",
     backToBandai: "⤴ Back to the counter",
-    sectionHead3: "The Writing Desk — Write your story",
-    sectionSub3: "Title and photo are optional. After binding, you can place your book on a shelf, or return it to your bookshelf without choosing one.",
+    pageLabelDesk: "Page One \u00b7 ",
+    pageLabelBookshelf: "Page Four \u00b7 ",
+    bindPageHeading: "Page Two \u00b7 Binding",
+    manaPageHeading: "Page Three \u00b7 Mana Keeps Your Book",
+    shelfPickHeading: "For You, from This Shelf",
+    shelfPickNote: "From the \u201c{shelf}\u201d shelf, the shopkeeper chose one book and one song.",
+    shelfPickBookLabel: "Book",
+    shelfPickMusicLabel: "Song",
+    shelfPickMoreLink: "Browse More from This Shelf",
+    bookshelfArrivalHeading: "Your book is on the shelf.",
+    bookshelfArrivalMakeAnother: "Make Another Book",
+    bookshelfArrivalBackToCover: "Back to the Cover",
+    sectionHead3: "The Writing Desk",
+    sectionSub3: "Write what you feel now onto a single page.",
     shelfAfterBindingNote: "You can choose a shelf after your book is bound.",
     storyInputPlaceholder: "When, where, what happened, and how it felt. Short and imperfect is fine.",
     assistBtn: "Not sure how to start? Ask the shopkeeper for a hand",
@@ -333,9 +386,9 @@ const MESSAGES = {
     dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it's a simple system that returns pre-written lines based on context (you're not talking to any particular AI model).<br>Anything you write in \"Write your story\" or have \"bound\" is never published anywhere. It's stored only inside this device's browser (IndexedDB/localStorage) and never sent to an external server. There's no account, so no one else can see your records.<br>\"Let go of a feeling\" quietly moves that entry into a device-only \"release log\" so it no longer appears on your bookshelf — it isn't permanently deleted, just moved to its own log.<br>\"Everyone's Bookshelf\" doesn't mean sharing with other users — \"everyone\" here just names the idea of your own bookshelf growing over time.<br>\"This month's detour\" and some of the shelf's book/music picks are fetched from external book and music search services, using only a season word and the shelf's emotion label as the search terms. Your written entries are never sent in these requests either.<br>Clearing your browser data will also erase these records, so we recommend periodically exporting a backup file via \"Back up your data.\" Even if this service were ever discontinued, your data would remain safe on your device as long as you've backed it up beforehand.",
     keeperNotAiHint: "※ Not an AI chatbot — a simple system that replies with pre-written lines. Nothing is sent to a model.",
     submitStoryHint: "※ Never published anywhere — stored only inside this device's browser.",
-    shelfEpisodesHeading: "Your Books · Short Pieces from the Shop",
-    shelfEpisodesNote: "These short pieces were written for this bookstore. Nothing written by visitors is shown here.",
-    shelfFictionalLabel: "Short Piece",
+    shelfEpisodesHeading: "Your Books \u00b7 Short Stories from This Bookstore",
+    shelfEpisodesNote: "These short stories were written for this bookstore. Nothing written by visitors is shown here.",
+    shelfFictionalLabel: "Short Story",
     bindSuccessMsg: "Your words are now a book.",
     // ★v1.3 added (approved copy): Hero primary CTA / bookshelf admin fold / shop-guide heading.
     heroCta: "Write What You Feel Now",
@@ -353,9 +406,11 @@ const MESSAGES = {
     manaReceiveSkip: "Not now \u2014 go to my bookshelf",
     manaReceiveSaveError: "Sorry, saving didn\u2019t complete. Your words are still here \u2014 please try again in a moment.",
     manaImageAlt: "",
-    menuOpenAria: "Open menu",
-    menuCloseAria: "Close menu",
-    menuTitle: "Menu",
+    menuOpenAria: "Open the in-store menu",
+    menuCloseAria: "Close the in-store menu",
+    menuTitle: "In-Store Menu",
+    menuBtnLabelFull: "In-Store Menu",
+    menuBtnLabelShort: "Menu",
     menuItemDesk: "Write what you feel now",
     menuItemBookshelf: "Your bookshelf",
     menuItemCounter: "Talk to the shopkeeper",
@@ -410,6 +465,9 @@ function applyLanguage(){
   // あらためて正しい名前入りの文章へ差し替える
   if(typeof updateKeeperBioText === 'function') updateKeeperBioText();
   if(typeof applyUserNameDisplay === 'function') applyUserNameDisplay();
+  // ★v1.3公開前最終修正：番台の棚案内UIはdata-i18n走査ではなくt()で直接組み立てているため、
+  // 言語切替のたびに（現在の途中状態に関わらず）先頭の4択＋それ以外へ再描画して翻訳漏れを防ぐ。
+  if(typeof renderCounterShelfGuideRoot === 'function') renderCounterShelfGuideRoot();
   const langBtn = document.getElementById('langToggle');
   if(langBtn) langBtn.textContent = appLang === 'ja' ? 'JP / EN' : 'EN / JP';
   const titleEl = document.querySelector('title');
@@ -662,6 +720,9 @@ function monthLabelOf(key){
   return `${y}年${parseInt(m, 10)}月`;
 }
 
+// ★v1.3公開前最終修正：wave/light/sepiaのshelvesに重複（ushirometai/kansha）と
+// 誤所属（akogare/itooshiiがwave/lightに混入）があり、21棚が一度ずつにならない不整合を発見。
+// CATEGORIESは無変更のまま、このグループ分けだけを前回CHAT_TREE修正と同じ正準グループへ揃える。
 const TEXTURE_GROUPS = [
   {
     id:'sink',
@@ -674,21 +735,21 @@ const TEXTURE_GROUPS = [
     id:'wave',
     label:'風が吹くように、心がざわざわしている',
     keeper:'感情が波立っているのですね。こちらの棚に並ぶ言葉が、ヒントになるかもしれません。',
-    shelves:['aseri','kuyashii','shitto','akogare','ikari','fuan','keno','odoroki'],
+    shelves:['aseri','kuyashii','shitto','ikari','fuan','keno','odoroki'],
     tone:'heavy'
   },
   {
     id:'light',
     label:'晴れやかに、前を向いている',
     keeper:'素敵な心の状態ですね。今の明るい気分にぴったりの棚を覗いてみませんか。',
-    shelves:['wakuwaku','ando','kansha','itooshii','hokorashii','ureshii'],
+    shelves:['wakuwaku','ando','kansha','hokorashii','ureshii'],
     tone:'neutral'
   },
   {
     id:'sepia',
     label:'夕暮れ時のように、懐かしんでいる',
     keeper:'過去の頁をめくっているのですね。思い出に浸れるこちらの棚がおすすめです。',
-    shelves:['natsukashii','ushirometai','kansha'],
+    shelves:['natsukashii','akogare','itooshii'],
     tone:'neutral'
   }
 ];
@@ -2257,7 +2318,8 @@ function renderShelf(markNewest){
     applyShelfTier();
     renderTrend();
     renderShioriCard();
-    renderRecordCorner();
+    renderShelfPickRecommend();
+    renderBookshelfArrival();
     return;
   }
   if(emptyMsg) emptyMsg.style.display = 'none';
@@ -2286,7 +2348,8 @@ function renderShelf(markNewest){
   applyShelfTier();
   renderTrend();
   renderShioriCard();
-  renderRecordCorner();
+  renderShelfPickRecommend();
+  renderBookshelfArrival();
 }
 
 // ★追加：汎用トースト通知。milestone-toastの見た目・挙動パターンを流用し、
@@ -2723,12 +2786,18 @@ function showUnfiledShelfPicker(entry){
   const card = document.createElement('div');
   card.className = 'mana-receive-card';
 
+  // ★v1.3公開前最終修正：主動線の頁番号（仕様書1章）。第三頁のみ、このカード内に見出しとして追加。
+  const pageLabel = document.createElement('p');
+  pageLabel.className = 'page-label mana-page-label';
+  pageLabel.textContent = t('manaPageHeading');
+  card.appendChild(pageLabel);
+
   // 店主まなのオリジナルイラスト。周辺のmanaReceiveLineと内容が重複するため装飾画像として
   // alt=""を付与（読み込み失敗時もカード自体はそのまま機能する＝画像なしフォールバック）。
   const figure = document.createElement('div');
   figure.className = 'mana-receive-figure';
   const figureImg = document.createElement('img');
-  figureImg.src = 'assets/mana-counter.webp';
+  figureImg.src = '/assets/mana-counter.webp';
   figureImg.alt = t('manaImageAlt');
   figureImg.width = 1120;
   figureImg.height = 1400;
@@ -3564,6 +3633,110 @@ if(userInput){
   });
 }
 
+// ★v1.3公開前最終修正：番台の公開UI（棚の案内）。既存の会話ベースUI
+// （chooseTexture/renderEmotionChips/chooseEmotionShelf/handleChartChoice等）は
+// 削除せずそのまま残すが、公開画面からは呼び出さない（hiddenのDOMを対象にするだけ）。
+// このUIは本文の解析・固定3段階返信・タイピング演出を一切使わない、静的な選択導線。
+function counterShelfGroupBackBtn(onClick){
+  const back = document.createElement('button');
+  back.type = 'button';
+  back.className = 'chart-btn ghost counter-shelf-back';
+  back.textContent = t('counterBackBtn');
+  back.onclick = onClick;
+  return back;
+}
+
+function renderCounterShelfGuideRoot(){
+  const box = document.getElementById('counterShelfGroups');
+  if(!box) return;
+  box.innerHTML = '';
+  const groupKeys = { sink:'counterGroupSink', wave:'counterGroupWave', light:'counterGroupLight', sepia:'counterGroupSepia' };
+  TEXTURE_GROUPS.forEach(group=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chart-btn';
+    btn.textContent = t(groupKeys[group.id] || group.id);
+    btn.onclick = ()=>renderCounterShelfGuideGroup(group);
+    box.appendChild(btn);
+  });
+  const otherBtn = document.createElement('button');
+  otherBtn.type = 'button';
+  otherBtn.className = 'chart-btn ghost';
+  otherBtn.textContent = t('counterGroupOther');
+  otherBtn.onclick = ()=>renderCounterShelfGuideAll();
+  box.appendChild(otherBtn);
+}
+
+function counterShelfPillList(shelfIds){
+  const list = document.createElement('div');
+  list.className = 'counter-shelf-group-list';
+  shelfIds.filter(id=>CATEGORIES.some(c=>c.id === id)).forEach(id=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'counter-shelf-pill';
+    btn.textContent = shelfLabelOf(id);
+    btn.onclick = ()=>renderCounterShelfGuideConfirm(id);
+    list.appendChild(btn);
+  });
+  return list;
+}
+
+function renderCounterShelfGuideGroup(group){
+  const box = document.getElementById('counterShelfGroups');
+  if(!box) return;
+  box.innerHTML = '';
+  box.appendChild(counterShelfPillList(group.shelves));
+  box.appendChild(counterShelfGroupBackBtn(renderCounterShelfGuideRoot));
+}
+
+// 「それ以外」：21棚を4群（重く沈む/波立つ/光が灯る/遠いものを見つめる）に分けて一覧表示する。
+// 一覧から選んだ棚を直接開ける（受入条件・仕様書3章）。
+function renderCounterShelfGuideAll(){
+  const box = document.getElementById('counterShelfGroups');
+  if(!box) return;
+  box.innerHTML = '';
+  box.className = 'counter-shelf-groups counter-shelf-guide-all';
+  const groupKeys = { sink:'counterGroupSink', wave:'counterGroupWave', light:'counterGroupLight', sepia:'counterGroupSepia' };
+  TEXTURE_GROUPS.forEach(group=>{
+    const wrap = document.createElement('div');
+    wrap.className = 'counter-shelf-group';
+    const heading = document.createElement('p');
+    heading.className = 'counter-shelf-group-heading';
+    heading.textContent = t(groupKeys[group.id] || group.id);
+    wrap.appendChild(heading);
+    wrap.appendChild(counterShelfPillList(group.shelves));
+    box.appendChild(wrap);
+  });
+  box.appendChild(counterShelfGroupBackBtn(renderCounterShelfGuideRoot));
+  box.className = 'counter-shelf-groups';
+}
+
+// 棚選択時：自由会話の固定返信を挟まず、短文1つ＋「棚を見る」ボタン1つに統一する
+// （「そのまま開く」か「ボタンを一度表示」のどちらか一つに統一、という仕様書3章の指示に対し、
+// ここではボタン表示を採用。本文解析・感情の推測・同一文の連続表示は行わない）。
+function renderCounterShelfGuideConfirm(shelfId){
+  const box = document.getElementById('counterShelfGroups');
+  if(!box) return;
+  box.innerHTML = '';
+  const note = document.createElement('p');
+  note.className = 'counter-shelf-confirm-note';
+  note.textContent = t('counterShelfGuideNote').replace('{shelf}', shelfLabelOf(shelfId));
+  box.appendChild(note);
+  const viewBtn = document.createElement('button');
+  viewBtn.type = 'button';
+  viewBtn.className = 'chart-btn primary';
+  viewBtn.textContent = t('counterViewShelfBtn');
+  viewBtn.onclick = ()=>goToShelf(shelfId);
+  box.appendChild(viewBtn);
+  box.appendChild(counterShelfGroupBackBtn(renderCounterShelfGuideRoot));
+}
+
+function initCounterShelfGuide(){
+  renderCounterShelfGuideRoot();
+  const writeBtn = document.getElementById('counterWriteWithoutChoosing');
+  if(writeBtn) writeBtn.onclick = ()=>goToPage('desk');
+}
+
 function renderTextureStep(){
   const box = document.getElementById('textureStep');
   if(!box) return;
@@ -3857,6 +4030,111 @@ function currentRecordSlot(){
 // ★時間帯（朝/昼/夕/夜）ごとのプールから、日付（Date.now()を86400000で割った日数）を
 //   インデックスにして選ぶことで、日をまたぐたびに必ず違う一枚になる仕組み。
 //   プールを7曲ずつに増やし、1週間は同じ曲が続かないようにした。
+// ★v1.3公開前最終修正：棚選択と本・音楽推薦の連動（仕様書2章）。
+// 直近保存entryのcategoryだけを使用し、利用者本文は参照しない。新しいAPIやAI分析は使わない。
+// 日付＋entry IDから決定的にインデックスを算出し、再描画のたびに内容が激しく変わらないようにする。
+// unfiledの場合は非表示。書名・曲名はGA4へ送らない（trackAnalyticsEvent呼び出しなし）。
+function shelfPickSeed(str){
+  let seed = 0;
+  for(let i = 0; i < str.length; i++){
+    seed = (seed * 31 + str.charCodeAt(i)) >>> 0;
+  }
+  return seed;
+}
+
+function pickShelfLinkedRecommendation(entry){
+  if(!entry || !entry.category || entry.category === UNFILED_CATEGORY_ID) return null;
+  const cat = (typeof CATEGORIES !== 'undefined') ? CATEGORIES.find(c=>c.id === entry.category) : null;
+  if(!cat) return null;
+
+  const day = Math.floor(Date.now() / 86400000);
+  const baseSeed = shelfPickSeed(String(entry.id || '') + '_' + day);
+
+  const wave = (typeof unlockedWaveCount === 'function') ? unlockedWaveCount() : 1;
+  const bookPool = (typeof BOOK_POOL !== 'undefined')
+    ? BOOK_POOL.filter(b=>b.tags.includes(cat.id) && b.wave <= wave)
+    : [];
+  const book = bookPool.length ? bookPool[baseSeed % bookPool.length] : null;
+
+  const mq = (typeof MUSIC_QUERIES !== 'undefined' && MUSIC_QUERIES[cat.id]) ? MUSIC_QUERIES[cat.id] : [];
+  const pinnedSongs = (typeof PINNED_SONGS !== 'undefined' && PINNED_SONGS[cat.id]) ? PINNED_SONGS[cat.id] : [];
+  const songPool = mq.length ? mq : pinnedSongs;
+  const song = songPool.length ? songPool[(baseSeed + 7) % songPool.length] : null;
+
+  if(!book && !song) return null;
+  return { cat, book, song };
+}
+
+function renderShelfPickRecommend(){
+  const box = document.getElementById('shelfPickRecommend');
+  if(!box) return;
+  const latest = libraryCache.length ? libraryCache[libraryCache.length - 1] : null;
+  const picked = latest ? pickShelfLinkedRecommendation(latest) : null;
+  if(!picked){
+    box.innerHTML = '';
+    box.classList.add('hidden');
+    return;
+  }
+  const { cat, book, song } = picked;
+  const noteText = t('shelfPickNote').replace('{shelf}', cat.label);
+
+  let bookHtml = '';
+  if(book){
+    const q = book.title + ' ' + book.by;
+    const amazonUrl = amazonSearchUrl(q);
+    const rakutenUrl = (typeof rakutenSearchUrl === 'function') ? rakutenSearchUrl(q) : amazonUrl;
+    bookHtml = `<div class="shelf-pick-book">
+      <p class="shelf-pick-kicker">${escapeHtml(t('shelfPickBookLabel'))}</p>
+      <p class="shelf-pick-title">『${escapeHtml(book.title)}』${escapeHtml(book.by)}</p>
+      ${book.hook ? `<p class="shelf-pick-meta">${escapeHtml(book.hook)}</p>` : ''}
+      <a class="shelf-pick-link" href="${amazonUrl}" target="_blank" rel="noopener sponsored">Amazon</a>
+      <a class="shelf-pick-link" href="${rakutenUrl}" target="_blank" rel="noopener sponsored">楽天</a>
+    </div>`;
+  }
+
+  let musicHtml = '';
+  if(song){
+    const q2 = song.title + ' ' + song.artist;
+    const spUrl = 'https://open.spotify.com/search/' + encodeURIComponent(q2);
+    const ytUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q2);
+    musicHtml = `<div class="shelf-pick-music">
+      <p class="shelf-pick-kicker">${escapeHtml(t('shelfPickMusicLabel'))}</p>
+      <p class="shelf-pick-title">『${escapeHtml(song.title)}』${escapeHtml(song.artist)}</p>
+      ${song.comment ? `<p class="shelf-pick-meta">${escapeHtml(song.comment)}</p>` : ''}
+      <a class="shelf-pick-link" href="${spUrl}" target="_blank" rel="noopener">Spotify</a>
+      <a class="shelf-pick-link" href="${ytUrl}" target="_blank" rel="noopener">YouTube</a>
+    </div>`;
+  }
+
+  box.innerHTML = `
+    <p class="shelf-pick-recommend-heading">${escapeHtml(t('shelfPickHeading'))}</p>
+    <p class="shelf-pick-recommend-note">${escapeHtml(noteText)}</p>
+    <div class="shelf-pick-recommend-grid">${bookHtml}${musicHtml}</div>
+    <a class="shelf-pick-more" href="javascript:void(0)" data-cat="${escapeHtml(cat.id)}">${escapeHtml(t('shelfPickMoreLink'))}</a>
+  `;
+  const moreLink = box.querySelector('.shelf-pick-more');
+  if(moreLink){
+    moreLink.onclick = ()=>goToShelf(cat.id);
+  }
+  box.classList.remove('hidden');
+}
+
+// ★v1.3公開前最終修正：本棚到着後の次行動（仕様書6章）。ボタンは「もう一冊つくる」
+// 「表紙へ戻る」の2つだけ。三つ目のボタンは追加しない。
+function renderBookshelfArrival(){
+  const box = document.getElementById('bookshelfArrival');
+  if(!box) return;
+  if(!libraryCache.length){
+    box.classList.add('hidden');
+    return;
+  }
+  box.classList.remove('hidden');
+  const makeAnotherBtn = document.getElementById('bookshelfArrivalMakeAnother');
+  if(makeAnotherBtn) makeAnotherBtn.onclick = ()=>goToPage('desk');
+  const backToCoverBtn = document.getElementById('bookshelfArrivalBackToCover');
+  if(backToCoverBtn) backToCoverBtn.onclick = ()=>returnToCover();
+}
+
 function renderRecordCorner(){
   const box = document.getElementById('recordCorner');
   if(!box) return;
@@ -4360,6 +4638,8 @@ function warnInAppBrowserIfNeeded(){
   // 表紙のみが見える状態へできるだけ早く切り替える。
   initExperienceMenuControls();
   await initLanguage();
+  // ★v1.3公開前最終修正：番台の棚案内UI（4択＋それ以外）を初期表示する。
+  initCounterShelfGuide();
   applySeasonalAccent();
   applyNightModeIfNeeded();
   warnInAppBrowserIfNeeded();

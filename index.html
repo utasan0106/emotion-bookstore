@@ -227,15 +227,17 @@ body.night .about-data-content{
          .entrance.heroの既存CSS背景（夜青のグラデーション）だけで主コピー・CTAが成立する
          フォールバックへ自然に戻る（画像なしでも成立する既存契約を維持）。 -->
     <picture class="hero-photo" aria-hidden="true">
-      <source media="(max-width: 640px)" srcset="assets/hero-bookstore-mobile.webp">
-      <img src="assets/hero-bookstore-desktop.webp" alt="" width="1600" height="900"
+      <source media="(max-width: 640px)" srcset="/assets/hero-bookstore-mobile.webp">
+      <img src="/assets/hero-bookstore-desktop.webp" alt="" width="1600" height="900"
            loading="eager" fetchpriority="high"
            onerror="this.closest('.hero-photo') &amp;&amp; (this.closest('.hero-photo').style.display='none')">
     </picture>
     <button type="button" class="menu-btn cover-menu-btn" id="menuBtnCover"
             aria-haspopup="true" aria-expanded="false" aria-controls="experienceMenu"
-            data-i18n-aria="menuOpenAria" aria-label="メニューを開く">
+            data-i18n-aria="menuOpenAria" aria-label="店内メニューを開く">
       <span aria-hidden="true">&#9776;</span>
+      <span class="menu-btn-label menu-btn-label-full" data-i18n="menuBtnLabelFull">店内メニュー</span>
+      <span class="menu-btn-label menu-btn-label-short" data-i18n="menuBtnLabelShort">メニュー</span>
     </button>
     <p class="eyebrow">EMOTIONAL BINDERY &amp; BOOKSHOP</p>
     <h1>みんなの感情書店</h1>
@@ -272,15 +274,17 @@ body.night .about-data-content{
     <span class="experience-bar-brand">みんなの感情書店</span>
     <button type="button" class="menu-btn" id="menuBtnBar"
             aria-haspopup="true" aria-expanded="false" aria-controls="experienceMenu"
-            data-i18n-aria="menuOpenAria" aria-label="メニューを開く">
+            data-i18n-aria="menuOpenAria" aria-label="店内メニューを開く">
       <span aria-hidden="true">&#9776;</span>
+      <span class="menu-btn-label menu-btn-label-full" data-i18n="menuBtnLabelFull">店内メニュー</span>
+      <span class="menu-btn-label menu-btn-label-short" data-i18n="menuBtnLabelShort">メニュー</span>
     </button>
   </div>
 
   <section id="counter" class="reveal experience-page">
-    <div class="section-head"><span class="section-num">1</span><h2 data-i18n="sectionHead1">番台 — 店主に言葉を預ける</h2></div>
-    <p class="section-sub" data-i18n="sectionSub1">今の気持ちを、選択肢か自由な言葉で伝えられます。</p>
-    <p class="field-hint" style="margin:-4px 0 10px;" data-i18n="keeperNotAiHint">※AIチャットボットではなく、あらかじめ用意した言葉を返す簡単な仕組みです。会話はモデルに送信されません。</p>
+    <div class="section-head"><h2 data-i18n="sectionHead1">番台 — 店主に言葉を預ける</h2></div>
+    <p class="section-sub" data-i18n="sectionSub1">気持ちに近い棚を、一緒に探します。</p>
+    <p class="field-hint" style="margin:-4px 0 10px;" data-i18n="keeperNotAiHint" hidden>※AIチャットボットではなく、あらかじめ用意した言葉を返す簡単な仕組みです。会話はモデルに送信されません。</p>
     <div class="counter-wrap">
       <div class="keeper-vignette" aria-hidden="true">
         <svg viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg">
@@ -303,16 +307,25 @@ body.night .about-data-content{
         <summary data-i18n="keeperBioSummary">店主について</summary>
         <p data-i18n="keeperBioText">この書店の店主。名前は「まな」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、まなが長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。</p>
       </details>
-      <div class="chat-window" id="chatWindow">
+
+      <!-- ★v1.3公開前最終修正：番台を「会話」から「棚の案内」へ整理（仕様書3章）。
+           公開画面では自由入力をなくし、初回・再訪とも同じ店主の言葉＋4択＋それ以外で
+           棚へ案内する。既存のチャットUI（#chatWindow以下）はDOM・関数とも削除せず、
+           hiddenで公開画面から外す（互換性維持・保存/転記処理は無傷）。 -->
+      <p class="counter-greeting" id="counterGreeting" data-i18n="counterGreetingUnified">こんばんは。まだ名前のつかない気持ちも、そのままで大丈夫です。今は、どんな手触りですか。</p>
+      <div class="counter-shelf-groups" id="counterShelfGroups"></div>
+      <button type="button" class="chart-btn ghost counter-write-btn" id="counterWriteWithoutChoosing" data-i18n="counterWriteWithoutChoosing">まだ決めずに書く</button>
+
+      <div class="chat-window" id="chatWindow" hidden>
         <div class="bubble shopkeeper" id="firstGreeting"><span class="name" data-i18n="keeperNameLabel">店主</span><span id="firstGreetingText" data-i18n="firstGreeting">こんばんは。静かに開けています。</span></div>
       </div>
       <div class="mitate-meter hidden" id="mitateMeter" aria-hidden="true">
         <span class="mitate-meter-label" id="mitateMeterLabel"></span>
         <div class="mitate-meter-bar"><div class="mitate-meter-fill" id="mitateMeterFill"></div></div>
       </div>
-      <div class="texture-step" id="textureStep" aria-label="今の気持ちに近い選択肢を選ぶ" data-i18n-aria="textureStepAria"></div>
+      <div class="texture-step" id="textureStep" aria-label="今の気持ちに近い選択肢を選ぶ" data-i18n-aria="textureStepAria" hidden></div>
 
-      <div class="chart-options" id="chartOptions"></div>
+      <div class="chart-options" id="chartOptions" hidden></div>
 
       <div id="nextActionGuideWrapper" class="hidden">
         <div class="next-action-guide">
@@ -322,9 +335,9 @@ body.night .about-data-content{
       </div>
 
       <!-- ===== 追加：最初から表示する控えめな一言（何を入力する場所か分かりにくい対策） ===== -->
-      <p class="freeform-hint early-freeform-hint" id="earlyFreeformHint" data-i18n="earlyFreeformHint">当てはまるものがない場合は、この枠に気持ちを書いて「話す」を押してください。</p>
+      <p class="freeform-hint early-freeform-hint" id="earlyFreeformHint" data-i18n="earlyFreeformHint" hidden>当てはまるものがない場合は、この枠に気持ちを書いて「話す」を押してください。</p>
 
-      <div class="chat-input-row">
+      <div class="chat-input-row" hidden>
         <textarea id="userInput" placeholder="例：うまく言えないけど、朝からずっとモヤモヤしている…" rows="2" data-i18n-ph="userInputPlaceholder"></textarea>
         <button class="send-btn" id="sendBtn" data-i18n="sendBtn">話す</button>
       </div>
@@ -332,7 +345,7 @@ body.night .about-data-content{
   </section>
 
   <section id="shelves" class="reveal experience-page">
-    <div class="section-head"><span class="section-num">2</span><h2 data-i18n="sectionHead2">感情の棚</h2></div>
+    <div class="section-head"><h2 data-i18n="sectionHead2">感情の棚</h2></div>
     <p class="section-sub" data-i18n="sectionSub2">棚を選んでも、あてもなく巡っても。</p>
     <div class="fair" id="fairBox"></div>
     <div class="shelf-tabs" id="shelfTabs"></div>
@@ -343,7 +356,7 @@ body.night .about-data-content{
   </section>
 
   <section id="desk" class="reveal experience-page">
-    <div class="section-head"><span class="section-num">3</span><h2 data-i18n="sectionHead3">編纂机 — 物語を綴る</h2></div>
+    <div class="section-head"><span class="page-label" data-i18n="pageLabelDesk">第一頁　</span><h2 data-i18n="sectionHead3">編纂机</h2></div>
     <p class="desk-lead hidden" id="deskLead"></p>
     <p class="section-sub" data-i18n-html="sectionSub3">題名や写真は任意です。製本したあと、棚にしまうか、棚を選ばず本棚へ戻れます。</p>
     <div class="desk-form">
@@ -415,7 +428,7 @@ body.night .about-data-content{
   </section>
 
   <section id="bookshelf" class="reveal experience-page">
-    <div class="section-head"><span class="section-num">4</span><h2 data-i18n="sectionHead4">あなたの本棚</h2><span class="shelf-count" id="shelfCount"></span></div>
+    <div class="section-head"><span class="page-label" data-i18n="pageLabelBookshelf">第四頁　</span><h2 data-i18n="sectionHead4">あなたの本棚</h2><span class="shelf-count" id="shelfCount"></span></div>
     <p class="section-sub" data-i18n="sectionSub4">製本した物語が背表紙になって並びます。クリックすると、いつでも読み返せます。</p>
     <div class="shelf-month-tabs hidden" id="shelfMonthTabs"></div>
     <div class="wood-shelf">
@@ -423,7 +436,19 @@ body.night .about-data-content{
         <div class="shelf-empty" id="shelfEmptyMsg" data-i18n="shelfEmptyMsg">まだ本がありません。編纂机で最初の一冊を綴ってみましょう。</div>
       </div>
     </div>
+    <!-- ★v1.3公開前最終修正：棚選択と本・音楽推薦の連動（仕様書2章）。木の本棚の直後に設置。
+         時間帯だけの#recordCorner（今夜のレコード）はDOM・関数とも温存するが、renderShelf()からは
+         呼び出さないため主表示には出ない（仕様書「主表示から外す」）。 -->
+    <div class="shelf-pick-recommend hidden" id="shelfPickRecommend"></div>
     <div class="record-corner hidden" id="recordCorner" aria-label="店主のレコード棚" data-i18n-aria="recordCornerAria"></div>
+    <!-- ★v1.3公開前最終修正：本棚到着後の次行動（仕様書6章）。ボタンは2つだけ。 -->
+    <div class="bookshelf-arrival hidden" id="bookshelfArrival">
+      <p class="bookshelf-arrival-heading" data-i18n="bookshelfArrivalHeading">本を棚に置きました。</p>
+      <div class="bookshelf-arrival-actions">
+        <button type="button" class="chart-btn primary" id="bookshelfArrivalMakeAnother" data-i18n="bookshelfArrivalMakeAnother">もう一冊つくる</button>
+        <button type="button" class="chart-btn ghost" id="bookshelfArrivalBackToCover" data-i18n="bookshelfArrivalBackToCover">表紙へ戻る</button>
+      </div>
+    </div>
     <!-- ★v1.3 Phase A：本棚の管理ボタン群を折りたたみへ収納。
          .shelf-controls／.backup-hint／#restoreMsg／#restoreFileInputの内部構造・ID・class・
          相対順序は変更しない（監査書2-5の親子関係契約）。JSはprependやinnerHTML再設定を
@@ -517,6 +542,7 @@ body.night .about-data-content{
 </div>
 
 <div class="bind-overlay hidden" id="bindOverlay" role="status">
+  <p class="page-label bind-page-label" data-i18n="bindPageHeading">第二頁　製本</p>
   <div class="bind-book">
     <div class="bind-spine-strip"></div>
     <div class="bind-pages"></div>
@@ -575,11 +601,11 @@ body.night .about-data-content{
      開閉・フォーカストラップ・Esc・背景クリックはmain.jsのopenExperienceMenu/closeExperienceMenuが担当。
      新規保存キーは追加しない。閉時はinert属性でフォーカス・スクリーンリーダーからも隠す。 -->
 <div class="experience-menu hidden" id="experienceMenu" inert>
-  <div class="experience-menu-card" role="dialog" aria-modal="true" aria-label="メニュー" data-i18n-aria="menuTitle">
+  <div class="experience-menu-card" role="dialog" aria-modal="true" aria-label="店内メニュー" data-i18n-aria="menuTitle">
     <div class="experience-menu-head">
-      <span class="experience-menu-title" data-i18n="menuTitle">メニュー</span>
+      <span class="experience-menu-title" data-i18n="menuTitle">店内メニュー</span>
       <button type="button" class="experience-menu-close" id="menuCloseBtn"
-              aria-label="メニューを閉じる" data-i18n-aria="menuCloseAria">&times;</button>
+              aria-label="店内メニューを閉じる" data-i18n-aria="menuCloseAria">&times;</button>
     </div>
     <nav class="experience-menu-nav" aria-label="メニュー">
       <button type="button" class="menu-item" data-menu-page="desk" data-i18n="menuItemDesk">今の気持ちを書く</button>

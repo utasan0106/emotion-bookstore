@@ -3841,11 +3841,27 @@ body.night .experience-bar .menu-btn{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg, rgba(11,18,28,0.58) 0%, rgba(11,18,28,0.72) 55%, rgba(16,24,36,0.88) 100%);
+  /* ★v1.3公開前最終修正：暗すぎる／黒い矩形化の指摘を受け、overlayの濃度を大幅に下げる。
+     主コピー・CTAの可読性は下の.trust-badge等の背景で個別に確保しているため、
+     ここは店舗の扉・窓・灯りが見える程度の薄い濃度に留める（仕様書8章）。 */
+  background:linear-gradient(180deg, rgba(11,18,28,0.22) 0%, rgba(11,18,28,0.32) 55%, rgba(16,24,36,0.48) 100%);
+  opacity:1;
+  z-index:0;
+}
+.hero-photo img{
+  opacity:1;
 }
 .entrance.hero > *:not(.hero-photo){
   position:relative;
   z-index:1;
+}
+/* ★v1.3公開前最終修正：overlayを薄くした分、写真の明るい部分でも文字が読めるよう
+   控えめなtext-shadowで輪郭を補強する（黒い帯や箱は追加しない）。 */
+.entrance.hero .eyebrow,
+.entrance.hero h1,
+.entrance.hero .tagline,
+.entrance.hero .sub-tagline{
+  text-shadow:0 1px 3px rgba(0,0,0,0.55), 0 0 18px rgba(0,0,0,0.35);
 }
 
 /* ============================================================================
@@ -3981,16 +3997,19 @@ body.night .menu-item{ background:rgba(255,255,255,0.05); }
   margin:0 auto 16px;
   border-radius:3px;
   overflow:hidden;
-  background:linear-gradient(180deg, var(--wood-2), var(--wood));
+  /* ★v1.3公開前最終修正：画像成功時に黒い背景板が透けて見えないよう、既定は透明にする。
+     暗い背景（wood系）は画像読み込み失敗時（.img-failedが付いた時）だけ表示する。 */
+  background:transparent;
 }
 .mana-receive-figure img{
   width:100%;
   height:100%;
   object-fit:cover;
   display:block;
+  opacity:1;
 }
 .mana-receive-figure.img-failed{
-  background:linear-gradient(180deg, var(--wood-2), var(--wood));
+  background:linear-gradient(180deg, var(--gold-soft), var(--gold));
 }
 .mana-receive-book{
   display:inline-block;
@@ -4049,4 +4068,188 @@ body.experience-open .experience-page.is-active textarea,
 body.experience-open .experience-page.is-active input,
 body.experience-open .experience-page.is-active .bubble{
   font-size:calc(1em * 1.06);
+}
+
+/* ============================================================================
+ * v1.3 公開前最終修正
+ * ============================================================================ */
+
+/* ---- 1. 主動線だけの頁番号（「Step 1」のようなアプリ的な丸バッジにはしない。地の文として表示） ---- */
+.page-label{
+  font-family:var(--font-display);
+  font-size:12.5px;
+  letter-spacing:.08em;
+  color:var(--wine);
+  white-space:nowrap;
+  flex-shrink:0;
+}
+body.night .section-head .page-label{ color:var(--gold); }
+.bind-page-label{
+  color:var(--gold-soft);
+  font-size:13px;
+  margin:0 0 4px;
+  text-align:center;
+}
+.mana-page-label{
+  color:var(--wine);
+  font-size:12.5px;
+  margin:0 0 10px;
+}
+
+/* ---- 5. 店内メニューボタンの文字表示 ---- */
+.menu-btn-label{
+  font-family:var(--font-body);
+  font-size:13px;
+  letter-spacing:.02em;
+  margin-left:6px;
+}
+.menu-btn-label-short{ display:none; }
+@media (max-width:480px){
+  .menu-btn-label-full{ display:none; }
+  .menu-btn-label-short{ display:inline; }
+}
+.menu-btn{
+  width:auto;
+  padding:0 16px 0 14px;
+  border-radius:20px;
+  gap:2px;
+}
+@media (max-width:480px){
+  .menu-btn{ padding:0 12px 0 12px; }
+  .menu-btn-label{ font-size:12px; margin-left:4px; }
+}
+
+/* ---- 2. 棚連動の本・音楽推薦（この棚を選んだあなたへ） ---- */
+.shelf-pick-recommend{
+  margin:24px 0 0;
+  padding:20px;
+  border:1px solid var(--paper-shadow);
+  border-radius:4px;
+  background:rgba(255,255,255,0.04);
+}
+.shelf-pick-recommend-heading{
+  font-family:var(--font-display);
+  font-size:15px;
+  color:var(--wine);
+  margin:0 0 6px;
+}
+body.night .shelf-pick-recommend-heading{ color:var(--gold); }
+.shelf-pick-recommend-note{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin:0 0 16px;
+}
+.shelf-pick-recommend-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+@media (max-width:640px){
+  .shelf-pick-recommend-grid{ grid-template-columns:1fr; }
+}
+.shelf-pick-book,
+.shelf-pick-music{
+  padding:12px 14px;
+  border:1px solid var(--paper-shadow);
+  border-radius:4px;
+  background:rgba(255,255,255,0.03);
+}
+.shelf-pick-kicker{
+  font-size:11px;
+  letter-spacing:.08em;
+  color:var(--ink-soft);
+  margin:0 0 4px;
+}
+.shelf-pick-title{
+  font-family:var(--font-display);
+  font-size:14px;
+  margin:0 0 4px;
+  color:var(--ink);
+}
+.shelf-pick-meta{
+  font-size:12px;
+  color:var(--ink-soft);
+  margin:0 0 8px;
+}
+.shelf-pick-link{
+  font-size:12.5px;
+  color:var(--gold);
+}
+.shelf-pick-more{
+  display:inline-block;
+  margin-top:16px;
+  font-size:12.5px;
+  color:var(--gold);
+  cursor:pointer;
+}
+
+/* ---- 3. 番台：4択＋それ以外／21棚一覧 ---- */
+.counter-shelf-groups{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  margin-top:14px;
+}
+.counter-shelf-group-heading{
+  font-family:var(--font-display);
+  font-size:13px;
+  color:var(--wine);
+  margin:0 0 6px;
+}
+body.night .counter-shelf-group-heading{ color:var(--gold); }
+.counter-shelf-group-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.counter-shelf-pill{
+  font-size:12.5px;
+  padding:7px 12px;
+  border:1px solid var(--paper-shadow);
+  border-radius:16px;
+  background:rgba(255,255,255,0.04);
+  color:var(--ink);
+  cursor:pointer;
+}
+.counter-shelf-pill:hover{ border-color:var(--gold); }
+.counter-write-btn{
+  margin-top:18px;
+}
+
+/* ---- 6. 本棚到着後の次行動 ---- */
+.bookshelf-arrival{
+  margin:24px 0 0;
+  padding:20px;
+  border:1px solid var(--paper-shadow);
+  border-radius:4px;
+  background:rgba(255,255,255,0.04);
+  text-align:center;
+}
+.bookshelf-arrival-heading{
+  font-family:var(--font-display);
+  font-size:15px;
+  color:var(--ink);
+  margin:0 0 14px;
+}
+.bookshelf-arrival-actions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+}
+
+/* ---- 3. 番台：棚の案内（統一挨拶文・確認メモ） ---- */
+.counter-greeting{
+  font-size:15px;
+  line-height:1.85;
+  color:var(--ink);
+  margin:0 0 18px;
+}
+.counter-shelf-confirm-note{
+  font-size:14.5px;
+  color:var(--ink);
+  margin:0 0 14px;
+}
+.counter-shelf-back{
+  margin-top:4px;
 }
