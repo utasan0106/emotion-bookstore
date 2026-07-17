@@ -24,13 +24,13 @@ function currentLang(){ return appLang; }
 
 const MESSAGES = {
   ja: {
-    tagline: "今夜の気持ちを、一冊の本に。",
-    subTagline: "誰にも話せない夜に、気持ちを静かに書き残せる場所です。",
+    tagline: "今の気持ちを、一冊の本に。",
+    subTagline: "誰にも話せない気持ちを、静かに書き残せる場所です。",
     accordionSummary: "気持ちを書き、一冊の本として端末内の本棚へ。<br>登録不要。棚を選ぶかどうかも、あなたが決められます。",
     accordionOpenLabel: "どんな体験ができるの？",
     accordionCloseLabel: "閉じる",
     accordionTitle: "みんなの感情書店とは",
-    accordionP1: "誰にも話せない夜の気持ちを、静かに書き、一冊の本として残せるデジタル書店です。<br>書いた内容は原則としてこの端末内だけに保存され、本文をAIで分析・診断しません。",
+    accordionP1: "誰にも話せない気持ちを、静かに書き、一冊の本として残せるデジタル書店です。<br>書いた内容は原則としてこの端末内だけに保存され、本文をAIで分析・診断しません。",
     accordionP2: "製本したあとは、21種類の感情棚から選んでしまうことも、棚を選ばず本棚へ戻ることもできます。<br>本や音楽は、運営側の固定検索語から生まれる文化的な寄り道です。",
     introKicker: "この書店でできること<br>— 好きな場所から、自由に巡れます",
     introTitle1: "店主に話す", introText1: "今の気持ちを、選択肢か自由な言葉で伝えます。",
@@ -40,7 +40,7 @@ const MESSAGES = {
     enterBtn: "扉をひらく →",
     motionToggleOn: "演出：入", motionToggleOff: "演出：切",
     motionToggleTitle: "演出アニメーションの入/切",
-    profileBtn: "🪪 来店カード", profileBtnTitle: "お名前と属性の設定（任意・この端末にのみ保存）",
+    profileBtn: "来店カード", profileBtnTitle: "お名前と属性の設定（任意・この端末にのみ保存）",
     trustBadge1: "登録不要", trustBadge2: "この端末にのみ保存", trustBadge3: "AIの学習には使われません",
     pageNavAria: "ページを選ぶ",
     pageTab1: "① 番台", pageTab2: "② 棚", pageTab3: "③ 編纂机", pageTab4: "④ 本棚",
@@ -48,9 +48,9 @@ const MESSAGES = {
     keeperBioSummary: "店主について",
     keeperBioText: "この書店の店主。名前は「まな」と名乗っています。年齢や性別は明かしていません。普段はカウンターの奥で静かに本を読んでおり、お客さんの言葉に耳を傾けるのが仕事です。棚には、まなが長年かけて手帳に書き集めてきた、古今の名言が出典つきで並んでいます。",
     keeperNameLabel: "店主",
-    firstGreeting: "こんばんは。今夜も、静かに開けています。",
+    firstGreeting: "こんばんは。静かに開けています。",
     textureStepAria: "今の気持ちに近い選択肢を選ぶ",
-    guideLead: "👇 当てはまるものがない場合は、下の枠に言葉を書いて「話す」を押してください",
+    guideLead: "当てはまるものがない場合は、下の枠に言葉を書いて「話す」を押してください",
     freeformHintDesk: "※書いた言葉は、そのまま編纂机の原稿用紙に写しておきます。",
     earlyFreeformHint: "当てはまるものがない場合は、この枠に気持ちを書いて「話す」を押してください。",
     userInputPlaceholder: "例：うまく言えないけど、朝からずっとモヤモヤしている…",
@@ -64,11 +64,11 @@ const MESSAGES = {
     storyInputPlaceholder: "書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。",
     assistBtn: "書き出しに迷ったら、店主の助け舟",
     storyCountFormat: "{count} / {max}字",
-    photoLabel: "📷 今日の一枚を、頁に挟む（任意）",
+    photoLabel: "今日の一枚を、頁に挟む（任意）",
     photoPreviewAlt: "添付写真のプレビュー",
     photoRemoveAria: "写真を外す",
     photoHint: "写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。",
-    deskExtraSummary: "✍️ タイトル・いつの気持ちかを、自分で決める（任意）",
+    deskExtraSummary: "タイトル・いつの気持ちかを、自分で決める（任意）",
     fieldLabelShelf: "棚", fieldLabelTitle: "背表紙のタイトル", titleInputPlaceholder: "空欄の場合は『まだ、題名のない本』になります",
     fieldLabelWhen: "いつの気持ちですか", whenOptionNow: "今の気持ち", whenOptionPast: "以前のことを振り返って",
     fieldLabelTweet: "関連するXの投稿があれば", tweetInputPlaceholder: "例：https://x.com/username/status/1234567890",
@@ -86,7 +86,7 @@ const MESSAGES = {
     shioriLabel: "栞 — 店主より", shioriBtn: "栞を受け取る",
     footerBrand: "『みんなの感情書店』",
     footerNote: "綴った言葉はサーバーには送信されず、この端末にのみ保存されます。",
-    shareBtn: "🔗 この書店をシェアする", copyUrlBtn: "📋 URLをコピー", pwaPinBtn: "📌 ホーム画面にピン留め",
+    shareBtn: "この書店をシェアする", copyUrlBtn: "URLをコピー", pwaPinBtn: "ホーム画面にピン留め",
     privacyLink: "プライバシーポリシー", termsLink: "利用規約",
     shareMenuTitle: "シェアする", shareX: "Xでシェア", shareLine: "LINEでシェア",
     shareNative: "端末の共有機能を使う", shareCopy: "リンクをコピー",
@@ -96,18 +96,18 @@ const MESSAGES = {
     purifyOverlayAria: "気持ちを手放す",
     purifyKicker: "手放す — 誰にも見られません。この端末の「手放しの記録」にだけ、そっと残ります",
     purifyInputPlaceholder: "その気持ちを、ここにそのまま書き出してみてください。",
-    purifyBtn: "🕯 手放す",
+    purifyBtn: "手放す",
     modalPhotoAlt: "この頁に挟まれた写真", modalNoteLabel: "店主のことば",
     modalGoShelf: "この棚をもう一度見る", modalDel: "この本を棚から下げる",
-    modalShare: "🐦 Xでシェア", modalShareNote: "※本文はそのまま送信されません。投稿画面が開くだけで、実際に投稿するかはあなた次第です。",
+    modalShare: "Xでシェア", modalShareNote: "※本文はそのまま送信されません。投稿画面が開くだけで、実際に投稿するかはあなた次第です。",
     pwaPopupAria: "ホーム画面に追加する案内",
-    pwaTitle: "📌 この書店をスマホのホーム画面にピン留めする",
+    pwaTitle: "この書店をスマホのホーム画面にピン留めする",
     pwaSteps: "iPhone（Safari）：下の「共有」ボタン →「ホーム画面に追加」<br>Android（Chrome）：右上のメニュー（⋮）→「ホーム画面に追加」",
     pwaNote: "アプリのように、いつでも1タップで扉をひらけるようになります。",
     inAppBrowserWarning: "アプリ内ブラウザで開いています。この環境では<b>記録が保存されない場合があります</b>。Safari や Chrome で開き直すことをおすすめします。",
     langScopeNote: "※ 会話の内容や名言・おすすめは、現在この端末では日本語のままです。",
     fairGoBtn: "棚へ",
-    wanderBtn: "⚘ 気の向くままに巡る",
+    wanderBtn: "気の向くままに巡る",
     shioriChoosingWords: "店主が言葉を選んでいます…",
     bindTextStep2: "表紙を綴じています…",
     draftRestored: "前の頁が、机に残っています。続きからでも、そのまま綴じても。",
@@ -116,9 +116,9 @@ const MESSAGES = {
     storyReviewing: "製本の準備をしています…",
     tweetLinkInvalid: "Xの投稿リンクの形式が正しくないようです（例：https://x.com/ユーザー名/status/12345）。",
     exportingBtn: "書き出しています…", exportedBtn: "書き出しました ✓", exportFailBtn: "書き出しに失敗しました",
-    exportDefaultBtn: "📥 これまでの記録をテキストでダウンロード",
-    csvExportDefaultBtn: "📊 これまでの記録をCSVでダウンロード（Excel等で開けます）",
-    restoreDefaultBtn: "📤 バックアップから復元する",
+    exportDefaultBtn: "これまでの記録をテキストでダウンロード",
+    csvExportDefaultBtn: "これまでの記録をCSVでダウンロード（Excel等で開けます）",
+    restoreDefaultBtn: "バックアップから復元する",
     restoreLoadingBtn: "復元しています…", restoreDoneBtn: "復元しました ✓", restoreFailBtn: "復元に失敗しました",
     restoreConfirm: "選択したファイルには{count}冊分の記録が含まれています。\nこの端末の現在のデータを上書きして復元します。\nこの操作は取り消せません。よろしいですか？",
     restoreInvalidFile: "このファイルは『みんなの感情書店』のバックアップ形式ではないようです。別のファイルをお試しください。",
@@ -127,7 +127,7 @@ const MESSAGES = {
     mitateYesBtn: "聞いてみる", mitateNoBtn: "今はいい",
     loopShelfReferralBtn: "こちらの『{shelf}』の棚が、合うかもしれません。行ってみてください",
     appleMusicNote: "※Apple Musicはアプリが開くだけのことがあります。開いたら曲名で検索し直してください。",
-    supportLink: "☕ 店主に、差し入れを贈る",
+    supportLink: "店主に、差し入れを贈る",
     supportHint: "この書店を気に入っていただけたら、店主へそっと差し入れを。任意です。",
     deskLeadFromCounter: "——ここまでを踏まえて。番台や棚で出会った気持ちを、今度はあなた自身の言葉で綴ってみましょう。",
     writeAtDeskBtn: "この気持ちを書き留める",
@@ -142,10 +142,10 @@ const MESSAGES = {
     photoLoadFail: "写真を読み込めませんでした。別の写真でお試しください。",
     ghostNextBook: "＋ 次の一冊",
     backupCreatingBtn: "鍵を作っています…", backupDoneBtn: "鍵を更新しました ✓", backupFailBtn: "鍵の更新に失敗しました",
-    backupDefaultBtn: "🔑 本棚のデータをバックアップ保存する",
+    backupDefaultBtn: "本棚のデータをバックアップ保存する",
     copyDoneBtn: "コピーしました ✓", copyLinkDefaultBtn: "リンクをコピー", copyManualBtn: "↓の欄からコピーしてください",
-    copyUrlDoneBtn: "コピーしました ✓", copyUrlDefaultBtn: "📋 URLをコピー",
-    purifyLogBtn: "🕯 手放した気持ちの記録を見る",
+    copyUrlDoneBtn: "コピーしました ✓", copyUrlDefaultBtn: "URLをコピー",
+    purifyLogBtn: "手放した気持ちの記録を見る",
     favListBtn: "☆ 気になるリストを見る",
     favEmpty: "まだ「気になる」に入れた本・曲はありません。棚のおすすめにある☆ボタンから追加できます。",
     favRemoveBtn: "リストから外す",
@@ -156,12 +156,18 @@ const MESSAGES = {
     goToShelfBtn: "『{shelf}』の棚を見てみる",
     dataAboutTitle: "この書店とデータについて",
     dataAboutOpenLabel: "データはどこに保存されるの？",
-    dataAboutBody: "「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す簡単な仕組みです（特定のAIモデルと会話しているわけではありません）。<br>「物語を綴る」「製本する」で書いた内容は、どこにも公開されず、この端末のブラウザ内（IndexedDB/localStorage）だけに保存されます。外部サーバーへは送信されません。アカウント登録もなく、他の人があなたの記録を見ることはできません。<br>「気持ちを手放す」は、この端末だけに残る「手放しの記録」に静かに移すことで、本棚の一覧からは見えなくなる機能です（完全な削除ではなく、専用の記録欄に移されます）。<br>「みんなの本棚」の「みんな」は他ユーザーとの共有ではなく、あなた自身の本棚が育っていく様子を指す名前です。<br>「今月の寄り道」および棚のおすすめ本・音楽の一部は、季節の言葉と棚の名前だけを検索語として外部の書籍・音楽検索サービスに問い合わせて表示しています。この時も、あなたが綴った文章が送信されることはありません。<br>ブラウザのデータを消去するとこの記録も失われるため、「🔑 バックアップ保存」から定期的にファイルへ書き出すことをおすすめします。サービスとして終了する場合も、事前にバックアップを取っていただければお手元にデータが残ります。",
+    dataAboutBody: "「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す簡単な仕組みです（特定のAIモデルと会話しているわけではありません）。<br>「物語を綴る」「製本する」で書いた内容は、どこにも公開されず、この端末のブラウザ内（IndexedDB/localStorage）だけに保存されます。外部サーバーへは送信されません。アカウント登録もなく、他の人があなたの記録を見ることはできません。<br>「気持ちを手放す」は、この端末だけに残る「手放しの記録」に静かに移すことで、本棚の一覧からは見えなくなる機能です（完全な削除ではなく、専用の記録欄に移されます）。<br>「みんなの本棚」の「みんな」は他ユーザーとの共有ではなく、あなた自身の本棚が育っていく様子を指す名前です。<br>「今月の寄り道」および棚のおすすめ本・音楽の一部は、季節の言葉と棚の名前だけを検索語として外部の書籍・音楽検索サービスに問い合わせて表示しています。この時も、あなたが綴った文章が送信されることはありません。<br>ブラウザのデータを消去するとこの記録も失われるため、「バックアップ保存」から定期的にファイルへ書き出すことをおすすめします。サービスとして終了する場合も、事前にバックアップを取っていただければお手元にデータが残ります。",
     keeperNotAiHint: "※AIチャットボットではなく、あらかじめ用意した言葉を返す簡単な仕組みです。会話はモデルに送信されません。",
-    submitStoryHint: "※外部には公開されず、この端末のブラウザ内にのみ保存されます。"
+    submitStoryHint: "※外部には公開されず、この端末のブラウザ内にのみ保存されます。",
+    // ★2025-07-17追記（v1.2フィードバック反映）：renderShelfDisplay()内にハードコードしていた
+    // 棚見出し・注記・架空author固定ラベル、および製本成功文をMESSAGESへ移設し、t()経由で言語切替に対応させた。
+    shelfEpisodesHeading: "あなたの本・店内の蔵書",
+    shelfEpisodesNote: "ここに並ぶのは、この書店のために綴られた架空の物語です。来店した方の文章が表示されることはありません。",
+    shelfFictionalLabel: "架空の一冊",
+    bindSuccessMsg: "一冊、お預かりしました。"
   },
   en: {
-    tagline: "Turn Tonight’s Feelings into a Book.",
+    tagline: "Turn What You Feel Now into a Book.",
     subTagline: "A quiet place to write what you cannot say aloud.",
     accordionSummary: "Write what you feel and keep it as a book on your device.<br>No account required. Choosing a shelf is optional.",
     accordionOpenLabel: "What can I do here?",
@@ -177,7 +183,7 @@ const MESSAGES = {
     enterBtn: "Open the door →",
     motionToggleOn: "Motion: On", motionToggleOff: "Motion: Off",
     motionToggleTitle: "Toggle animation effects on/off",
-    profileBtn: "🪪 Visitor card", profileBtnTitle: "Set your name and details (optional, stored on this device only)",
+    profileBtn: "Visitor card", profileBtnTitle: "Set your name and details (optional, stored on this device only)",
     trustBadge1: "No sign-up", trustBadge2: "Stored on this device only", trustBadge3: "Never used to train AI",
     pageNavAria: "Choose a page",
     pageTab1: "① Counter", pageTab2: "② Shelves", pageTab3: "③ Writing desk", pageTab4: "④ Bookshelf",
@@ -185,9 +191,9 @@ const MESSAGES = {
     keeperBioSummary: "About the shopkeeper",
     keeperBioText: "The keeper of this bookstore goes by \"Mana.\" Their age and gender remain unrevealed. They usually read quietly at the back of the counter, and their job is to listen to what customers have to say. The shelves are lined with quotes old and new, sourced and collected by Mana over many years in a notebook.",
     keeperNameLabel: "Shopkeeper",
-    firstGreeting: "……Welcome. I just closed a page. What mood are you closest to right now? You can pick something close, or write freely below.",
+    firstGreeting: "Good evening. The shop is quietly open.",
     textureStepAria: "Choose the option closest to how you feel",
-    guideLead: "👇 If nothing quite fits, write your own words in the box below and press \"Talk\"",
+    guideLead: "If nothing quite fits, write your own words in the box below and press \"Talk\"",
     freeformHintDesk: "※ What you write here will also be copied onto the manuscript paper at the writing desk.",
     earlyFreeformHint: "If nothing quite fits, write how you feel in this box and press \"Talk.\"",
     userInputPlaceholder: "e.g. I can't quite explain it, but I've felt unsettled all morning…",
@@ -201,11 +207,11 @@ const MESSAGES = {
     storyInputPlaceholder: "When, where, what happened, and how it felt. Short and imperfect is fine.",
     assistBtn: "Not sure how to start? Ask the shopkeeper for a hand",
     storyCountFormat: "{count} / {max} chars",
-    photoLabel: "📷 Slip in today's photo (optional)",
+    photoLabel: "Slip in today's photo (optional)",
     photoPreviewAlt: "Preview of attached photo",
     photoRemoveAria: "Remove photo",
     photoHint: "Photos are resized to a maximum of 800px and kept only on this device. Nothing is sent to a server.",
-    deskExtraSummary: "✍️ Choose the title and timing yourself (optional)",
+    deskExtraSummary: "Choose the title and timing yourself (optional)",
     fieldLabelShelf: "Shelf", fieldLabelTitle: "Spine title", titleInputPlaceholder: "If left blank, it will be saved as “An Untitled Book.”",
     fieldLabelWhen: "When did you feel this?", whenOptionNow: "Right now", whenOptionPast: "Looking back on the past",
     fieldLabelTweet: "Link a related post on X, if any", tweetInputPlaceholder: "e.g. https://x.com/username/status/1234567890",
@@ -223,7 +229,7 @@ const MESSAGES = {
     shioriLabel: "Bookmark — from the shopkeeper", shioriBtn: "Receive today's bookmark",
     footerBrand: "\"Emotion Bookstore\"",
     footerNote: "What you write is never sent to a server — it's stored only on this device.",
-    shareBtn: "🔗 Share this bookstore", copyUrlBtn: "📋 Copy URL", pwaPinBtn: "📌 Pin to home screen",
+    shareBtn: "Share this bookstore", copyUrlBtn: "Copy URL", pwaPinBtn: "Pin to home screen",
     privacyLink: "Privacy Policy", termsLink: "Terms of Service",
     shareMenuTitle: "Share", shareX: "Share on X", shareLine: "Share on LINE",
     shareNative: "Use device share menu", shareCopy: "Copy link",
@@ -233,18 +239,18 @@ const MESSAGES = {
     purifyOverlayAria: "Let go of a feeling",
     purifyKicker: "Let go — no one will see this. It's kept quietly only in this device's \"release log.\"",
     purifyInputPlaceholder: "Write that feeling out here, just as it is.",
-    purifyBtn: "🕯 Let it go",
+    purifyBtn: "Let it go",
     modalPhotoAlt: "Photo attached to this page", modalNoteLabel: "A word from the shopkeeper",
     modalGoShelf: "See this shelf again", modalDel: "Remove this book from the shelf",
-    modalShare: "🐦 Share on X", modalShareNote: "Nothing is sent anywhere on its own — this only opens the post composer, and whether you actually post is entirely up to you.",
+    modalShare: "Share on X", modalShareNote: "Nothing is sent anywhere on its own — this only opens the post composer, and whether you actually post is entirely up to you.",
     pwaPopupAria: "Instructions for adding to home screen",
-    pwaTitle: "📌 Pin this bookstore to your phone's home screen",
+    pwaTitle: "Pin this bookstore to your phone's home screen",
     pwaSteps: "iPhone (Safari): tap the \"Share\" button below → \"Add to Home Screen\"<br>Android (Chrome): tap the menu (⋮) top right → \"Add to Home Screen\"",
     pwaNote: "Just like an app, you'll be able to open the door with a single tap anytime.",
     inAppBrowserWarning: "You're viewing this inside an in-app browser. <b>Your records may not be saved</b> in this environment. We recommend reopening in Safari or Chrome.",
     langScopeNote: "※ Conversation content, quotes, and recommendations are currently shown in Japanese only.",
     fairGoBtn: "Go",
-    wanderBtn: "⚘ Wander wherever it leads",
+    wanderBtn: "Wander wherever it leads",
     shioriChoosingWords: "The shopkeeper is choosing their words…",
     bindTextStep2: "Binding the cover…",
     draftRestored: "Your draft has been restored. Please continue where you left off.",
@@ -253,9 +259,9 @@ const MESSAGES = {
     storyReviewing: "Preparing your book for binding…",
     tweetLinkInvalid: "That doesn't look like a valid link to a post on X (e.g. https://x.com/username/status/12345).",
     exportingBtn: "Exporting…", exportedBtn: "Exported ✓", exportFailBtn: "Export failed",
-    exportDefaultBtn: "📥 Download your records as text",
-    csvExportDefaultBtn: "📊 Download your records as CSV (opens in Excel, etc.)",
-    restoreDefaultBtn: "📤 Restore from a backup file",
+    exportDefaultBtn: "Download your records as text",
+    csvExportDefaultBtn: "Download your records as CSV (opens in Excel, etc.)",
+    restoreDefaultBtn: "Restore from a backup file",
     restoreLoadingBtn: "Restoring…", restoreDoneBtn: "Restored ✓", restoreFailBtn: "Restore failed",
     restoreConfirm: "The selected file contains {count} book(s).\nThis will overwrite the current data on this device.\nThis cannot be undone. Continue?",
     restoreInvalidFile: "This file doesn't look like an Emotion Bookstore backup. Please try a different file.",
@@ -264,7 +270,7 @@ const MESSAGES = {
     mitateYesBtn: "Yes, tell me", mitateNoBtn: "Not right now",
     loopShelfReferralBtn: "The \"{shelf}\" shelf might suit you — please take a look",
     appleMusicNote: "※ Apple Music links sometimes just open the app. If so, please search the song title again there.",
-    supportLink: "☕ Leave a small tip for the shopkeeper",
+    supportLink: "Leave a small tip for the shopkeeper",
     supportHint: "If you've enjoyed this bookstore, a small tip for the shopkeeper is always welcome — entirely optional.",
     deskLeadFromCounter: "——Building on that. Try writing the feeling you shared at the counter or on the shelves, now in your own words.",
     writeAtDeskBtn: "Write this feeling down",
@@ -279,10 +285,10 @@ const MESSAGES = {
     photoLoadFail: "Couldn't load that photo. Please try a different one.",
     ghostNextBook: "+ Next book",
     backupCreatingBtn: "Creating a key…", backupDoneBtn: "Key updated ✓", backupFailBtn: "Key update failed",
-    backupDefaultBtn: "🔑 Back up your bookshelf data",
+    backupDefaultBtn: "Back up your bookshelf data",
     copyDoneBtn: "Copied ✓", copyLinkDefaultBtn: "Copy link", copyManualBtn: "Please copy from the field below",
-    copyUrlDoneBtn: "Copied ✓", copyUrlDefaultBtn: "📋 Copy URL",
-    purifyLogBtn: "🕯 View your release log",
+    copyUrlDoneBtn: "Copied ✓", copyUrlDefaultBtn: "Copy URL",
+    purifyLogBtn: "View your release log",
     favListBtn: "☆ View your \"curious about\" list",
     favEmpty: "You haven't saved any books or music yet. Tap the ☆ button on a shelf's picks to add one.",
     favRemoveBtn: "Remove from list",
@@ -293,9 +299,13 @@ const MESSAGES = {
     goToShelfBtn: "View the \"{shelf}\" shelf",
     dataAboutTitle: "About this bookstore & your data",
     dataAboutOpenLabel: "Where is my data stored?",
-    dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it's a simple system that returns pre-written lines based on context (you're not talking to any particular AI model).<br>Anything you write in \"Write your story\" or have \"bound\" is never published anywhere. It's stored only inside this device's browser (IndexedDB/localStorage) and never sent to an external server. There's no account, so no one else can see your records.<br>\"Let go of a feeling\" quietly moves that entry into a device-only \"release log\" so it no longer appears on your bookshelf — it isn't permanently deleted, just moved to its own log.<br>\"Everyone's Bookshelf\" doesn't mean sharing with other users — \"everyone\" here just names the idea of your own bookshelf growing over time.<br>\"This month's detour\" and some of the shelf's book/music picks are fetched from external book and music search services, using only a season word and the shelf's emotion label as the search terms. Your written entries are never sent in these requests either.<br>Clearing your browser data will also erase these records, so we recommend periodically exporting a backup file via \"🔑 Back up your data.\" Even if this service were ever discontinued, your data would remain safe on your device as long as you've backed it up beforehand.",
+    dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it's a simple system that returns pre-written lines based on context (you're not talking to any particular AI model).<br>Anything you write in \"Write your story\" or have \"bound\" is never published anywhere. It's stored only inside this device's browser (IndexedDB/localStorage) and never sent to an external server. There's no account, so no one else can see your records.<br>\"Let go of a feeling\" quietly moves that entry into a device-only \"release log\" so it no longer appears on your bookshelf — it isn't permanently deleted, just moved to its own log.<br>\"Everyone's Bookshelf\" doesn't mean sharing with other users — \"everyone\" here just names the idea of your own bookshelf growing over time.<br>\"This month's detour\" and some of the shelf's book/music picks are fetched from external book and music search services, using only a season word and the shelf's emotion label as the search terms. Your written entries are never sent in these requests either.<br>Clearing your browser data will also erase these records, so we recommend periodically exporting a backup file via \"Back up your data.\" Even if this service were ever discontinued, your data would remain safe on your device as long as you've backed it up beforehand.",
     keeperNotAiHint: "※ Not an AI chatbot — a simple system that replies with pre-written lines. Nothing is sent to a model.",
-    submitStoryHint: "※ Never published anywhere — stored only inside this device's browser."
+    submitStoryHint: "※ Never published anywhere — stored only inside this device's browser.",
+    shelfEpisodesHeading: "Your Books · The Shop's Collection",
+    shelfEpisodesNote: "These are fictional stories written for this bookstore. No visitor's own writing is ever shown here.",
+    shelfFictionalLabel: "A Fictional Volume",
+    bindSuccessMsg: "Your book has been safely received."
   }
 };
 
@@ -344,12 +354,12 @@ function applyLanguage(){
   if(typeof updateKeeperBioText === 'function') updateKeeperBioText();
   if(typeof applyUserNameDisplay === 'function') applyUserNameDisplay();
   const langBtn = document.getElementById('langToggle');
-  if(langBtn) langBtn.textContent = appLang === 'ja' ? '🌐 JP / EN' : '🌐 EN / JP';
+  if(langBtn) langBtn.textContent = appLang === 'ja' ? 'JP / EN' : 'EN / JP';
   const titleEl = document.querySelector('title');
   if(titleEl){
     titleEl.textContent = appLang === 'ja'
-      ? 'みんなの感情書店｜今夜の気持ちを、一冊の本に。'
-      : 'Emotion Bookstore | Turn Tonight’s Feelings into a Book.';
+      ? 'みんなの感情書店｜今の気持ちを、一冊の本に。'
+      : 'Emotion Bookstore | Turn What You Feel Now into a Book.';
   }
 }
 
@@ -1026,7 +1036,7 @@ async function showFavorites(){
           ? `<a href="https://open.spotify.com/search/${encodeURIComponent(q5)}" target="_blank" rel="noopener">Spotify</a> <a href="https://music.apple.com/jp/search?term=${encodeURIComponent(q5)}" target="_blank" rel="noopener">Apple Music</a> <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(q5)}" target="_blank" rel="noopener">YouTube</a>`
           : `<a href="${amazonSearchUrl(q5)}" target="_blank" rel="noopener">Amazon</a> <a href="${rakutenSearchUrl(q5)}" target="_blank" rel="noopener">楽天</a>`;
         return `<div class="purify-log-entry">
-          <p class="purify-log-meta">${isMusic ? '🎵' : '📖'} ${escapeHtml(label)}</p>
+          <p class="purify-log-meta"><span class="meta-type-tag ${isMusic ? 'is-music' : 'is-book'}">${isMusic ? '曲' : '本'}</span> ${escapeHtml(label)}</p>
           <p class="purify-log-text">${escapeHtml(f.title)}${f.by ? ' — ' + escapeHtml(f.by) : ''}</p>
           <p class="field-hint">${links}</p>
           <button type="button" class="fav-btn is-fav" data-fav-type="${escapeHtml(f.type)}" data-fav-title="${escapeHtml(f.title)}" data-fav-by="${escapeHtml(f.by || '')}" data-fav-category="${escapeHtml(f.category || '')}" data-fav-extra="">★ ${escapeHtml(t('favRemoveBtn'))}</button>
@@ -1666,7 +1676,7 @@ async function renderDetourSection(catId){
       const url = b.infoLink || amazonSearchUrl(b.title + ' ' + b.by);
       return `
         <div class="detour-card detour-live">
-          <span class="detour-tier-badge">🌐 今月の一冊</span>
+          <span class="detour-tier-badge">今月の一冊</span>
           <p class="detour-name">${escapeHtml(b.title)}</p>
           <p class="detour-desc">${escapeHtml(b.by)}${b.hook ? ' — ' + escapeHtml(b.hook) : ''}</p>
           <a class="detour-link" href="${url}" target="_blank" rel="noopener">見てみる →</a>
@@ -1704,7 +1714,7 @@ async function renderLiveNewReleases(cat){
     const b = books[0];
     const url = b.infoLink || amazonSearchUrl(b.title + ' ' + b.by);
     html += `<div class="live-pick-card">
-      <span class="live-pick-badge">🌐 今、見つかった一冊</span>
+      <span class="live-pick-badge">今、見つかった一冊</span>
       <p class="live-pick-name">${escapeHtml(b.title)}</p>
       <p class="live-pick-desc">${escapeHtml(b.by)}${b.hook ? ' — ' + escapeHtml(b.hook) : ''}</p>
       <a class="live-pick-link" href="${url}" target="_blank" rel="noopener">見てみる →</a>
@@ -1716,7 +1726,7 @@ async function renderLiveNewReleases(cat){
     const q4 = s.title + ' ' + s.artist;
     const spUrl = 'https://open.spotify.com/search/' + encodeURIComponent(q4);
     html += `<div class="live-pick-card">
-      <span class="live-pick-badge">🌐 今、見つかった一曲</span>
+      <span class="live-pick-badge">今、見つかった一曲</span>
       <p class="live-pick-name">『${escapeHtml(s.title)}』${escapeHtml(s.artist)}</p>
       ${s.comment ? `<p class="live-pick-desc">${escapeHtml(s.comment)}</p>` : ''}
       <a class="live-pick-link" href="${spUrl}" target="_blank" rel="noopener">聴いてみる →</a>
@@ -1724,7 +1734,7 @@ async function renderLiveNewReleases(cat){
     </div>`;
   }
   wrapEl.innerHTML = html
-    ? `<p class="live-pick-heading">🌐 今、季節に合わせて見つかったもの</p><div class="live-pick-row">${html}</div>`
+    ? `<p class="live-pick-heading">今、季節に合わせて見つかったもの</p><div class="live-pick-row">${html}</div>`
     : '';
 }
 
@@ -1768,8 +1778,8 @@ function renderShelfDisplay(){
               ${r.source ? `<a class="recommend-source" href="${r.sourceUrl}" target="_blank" rel="noopener">出典：${r.source}</a>` : ''}
             </span>`;
           }).join('')}
-          <button type="button" class="recommend-shuffle" onclick="renderShelfDisplay()" title="他のおすすめを見る">🔀 他も見る</button>
-          <a class="recommend-more" href="${moodSearchUrl}" target="_blank" rel="noopener">🔎 「${cat.label}」な気分の本を、いろんな人のおすすめから探す →</a>
+          <button type="button" class="recommend-shuffle" onclick="renderShelfDisplay()" title="他のおすすめを見る">他も見る</button>
+          <a class="recommend-more" href="${moodSearchUrl}" target="_blank" rel="noopener">「${cat.label}」な気分の本を、いろんな人のおすすめから探す →</a>
           </div>
          </div>`
       : '';
@@ -1798,12 +1808,12 @@ function renderShelfDisplay(){
           ${favBtnHtml('music', song.title, song.artist, cat.id, song.comment || '')}
         </div>`;
       }).join('');
-      musicHtml = `<div class="music-row"><p class="playlist-label">🎵 「${cat.label}」なプレイリスト — 店主の選曲</p><div class="playlist-tracks">${items}</div><p class="field-hint apple-music-note">${escapeHtml(t('appleMusicNote'))}</p></div>`;
+      musicHtml = `<div class="music-row"><p class="playlist-label">「${cat.label}」なプレイリスト — 店主の選曲</p><div class="playlist-tracks">${items}</div><p class="field-hint apple-music-note">${escapeHtml(t('appleMusicNote'))}</p></div>`;
     }else{
       const fallbackQuery = cat.label + ' 邦楽 プレイリスト';
       const musicUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(fallbackQuery);
       const musicUrlAmc = 'https://music.apple.com/jp/search?term=' + encodeURIComponent(fallbackQuery);
-      musicHtml = `<div class="music-row"><a class="music-link" href="${musicUrl}" target="_blank" rel="noopener">🎵 YouTubeでBGMを探す</a> <a class="music-link" href="${musicUrlAmc}" target="_blank" rel="noopener">Apple Musicで探す</a><p class="field-hint apple-music-note">${escapeHtml(t('appleMusicNote'))}</p></div>`;
+      musicHtml = `<div class="music-row"><a class="music-link" href="${musicUrl}" target="_blank" rel="noopener">YouTubeでBGMを探す</a> <a class="music-link" href="${musicUrlAmc}" target="_blank" rel="noopener">Apple Musicで探す</a><p class="field-hint apple-music-note">${escapeHtml(t('appleMusicNote'))}</p></div>`;
     }
     const myEntries = libraryCache.filter(e=>e.category===cat.id);
     // ★修正（XSS対策）：ユーザーが編纂机で入力したタイトル・本文をinnerHTMLへ差し込む前に
@@ -1817,7 +1827,11 @@ function renderShelfDisplay(){
     });
     const storyPool = STORIES_POOL[cat.id] || [];
     const shuffledStories = shuffleArray(storyPool).slice(0, 3);
-    const sampleEpisodeCards = shuffledStories.map(s=>`<div class="episode-card"><span class="who">${s.author || '名もなき誰かの物語'}</span>${s.text}</div>`);
+    // ★決裁済み変更仕様v1.2 3-2：実在投稿者プロフィールに見えるauthor表示（s.author）は使用せず、
+    // 架空の蔵書であることを示す固定ラベルのみを表示する（MESSAGES.shelfFictionalLabel経由）。
+    // ★2025-07-17再追記：data-i18n="shelfFictionalLabel"を付与し、applyLanguage()による
+    // 言語切替直後の即時更新に対応（renderShelfDisplay()の再呼び出しは行わない）。
+    const sampleEpisodeCards = shuffledStories.map(s=>`<div class="episode-card"><span class="who" data-i18n="shelfFictionalLabel">${escapeHtml(t('shelfFictionalLabel'))}</span>${s.text}</div>`);
     const allEpisodeCards = myEpisodeCards.concat(sampleEpisodeCards);
     const visibleEpisodesHtml = allEpisodeCards.slice(0, 2).join('');
     const hiddenEpisodeCards = allEpisodeCards.slice(2);
@@ -1826,20 +1840,21 @@ function renderShelfDisplay(){
       : '';
     const episodesNote = '';
     const purifyHtml = NEGATIVE_SHELVES.includes(cat.id)
-      ? `<button type="button" class="purify-trigger" onclick="openPurify('${cat.id}')">🕯 この気持ちを手放す</button>`
+      ? `<button type="button" class="purify-trigger" onclick="openPurify('${cat.id}')">この気持ちを手放す</button>`
       : '';
     el.innerHTML = `
       <p class="definition"><b>${cat.label}</b> — ${cat.def}</p>
       <p class="quote-card">${q.text}</p>
       <p class="quote-source">— ${quoteSourceHtml(q.source)}</p>
-      <p class="episodes-heading">あなたの物語・みんなの物語</p>
+      <p class="episodes-heading" data-i18n="shelfEpisodesHeading">${escapeHtml(t('shelfEpisodesHeading'))}</p>
+      <p class="episodes-note" data-i18n="shelfEpisodesNote">${escapeHtml(t('shelfEpisodesNote'))}</p>
       <div class="episodes">
         ${visibleEpisodesHtml}
         ${hiddenEpisodesHtml}
       </div>
       ${episodesNote}
       <div class="shelf-tweets" id="shelfTweets"></div>
-      <button type="button" class="episode-shuffle" onclick="renderShelfDisplay()">🔀 エピソードも見る</button>
+      <button type="button" class="episode-shuffle" onclick="renderShelfDisplay()">エピソードも見る</button>
       ${purifyHtml}
       ${recommendHtml}
       ${musicHtml}
@@ -2028,7 +2043,10 @@ function renderShelf(markNewest){
     spine.style.height = (140 + (entry.title.length % 4) * 12) + 'px';
     const tilt = ((entry.title.length * 7 + i * 13) % 5) - 2;
     spine.style.setProperty('--tilt', tilt + 'deg');
-    spine.textContent = (entry.sealed ? '🔖 ' : '') + (entry.image ? '📷 ' : '') + entry.title;
+    // ★決裁済み変更仕様v1.2 4-2/4-3：絵文字（🔖📷）ではなく、CSS側の刻印・紙帯（.is-sealed/.has-photo）で状態を示す。
+    spine.textContent = entry.title;
+    if(entry.sealed) spine.classList.add('is-sealed');
+    if(entry.image) spine.classList.add('has-photo');
     spine.title = cat ? cat.label : '';
     spine.onclick = ()=>{ buzz(8); openBook(entry); };
     if(markNewest && entry.id === newestId && prefs.motion){
@@ -2047,10 +2065,11 @@ function renderShelf(markNewest){
 // ★追加：汎用トースト通知。milestone-toastの見た目・挙動パターンを流用し、
 // 「本棚に収めました」等の控えめな操作フィードバックを画面下部に一定時間だけ表示する。
 function showToast(message, opts){
-  const icon = (opts && opts.icon) || '📖';
+  // ★決裁済み変更仕様v1.2 4-1：既定アイコンの絵文字（📖）は廃止。opts.iconが明示された場合のみ付与する。
+  const icon = (opts && opts.icon) || '';
   const toast = document.createElement('div');
   toast.className = 'milestone-toast gentle-toast';
-  toast.textContent = icon + ' ' + message;
+  toast.textContent = icon ? (icon + ' ' + message) : message;
   document.body.appendChild(toast);
   requestAnimationFrame(()=>toast.classList.add('show'));
   setTimeout(()=>{
@@ -2069,7 +2088,7 @@ async function celebrateMilestoneIfNeeded(count){
 
   const toast = document.createElement('div');
   toast.className = 'milestone-toast';
-  toast.textContent = '🏮 ' + (MILESTONE_MESSAGES[count] || `${count}冊目です。`);
+  toast.textContent = MILESTONE_MESSAGES[count] || `${count}冊目です。`;
   document.body.appendChild(toast);
   buzz(15);
   requestAnimationFrame(()=>toast.classList.add('show'));
@@ -2080,11 +2099,7 @@ async function celebrateMilestoneIfNeeded(count){
 }
 
 let trendPeriod = 'all';
-const EMOTION_GLYPHS = {
-  moyamoya:'🌫', kodoku:'🌙', gakkari:'🌧', hazukashii:'🫥', ushirometai:'🥀',
-  aseri:'⏳', kuyashii:'⚡', shitto:'🌵', akogare:'🌠', wakuwaku:'✨',
-  ando:'☕', kansha:'🌷', itooshii:'💐', hokorashii:'🏅', natsukashii:'📜'
-};
+// ★決裁済み変更仕様v1.2 4-2：感情の地図は絵文字ではなく棚色の点で表す（EMOTION_GLYPHSは廃止）。
 function trendEntries(){
   const now = new Date();
   return libraryCache.filter(e=>{
@@ -2139,8 +2154,8 @@ function renderTrend(){
   bars.innerHTML = CATEGORIES.filter(c=>counts[c.id]).map(c=>{
     const n = counts[c.id];
     const w = Math.max(8, Math.round(n / max * 100));
-    const glyph = EMOTION_GLYPHS[c.id] || '';
-    return `<div class="trend-row" data-cat="${c.id}" style="cursor:pointer" title="『${c.label}』の棚を見る"><span class="trend-label"><span class="trend-glyph">${glyph}</span>${c.label}</span><div class="trend-bar" style="width:${w}%;background:${spineColorFor(c.id)}"></div><span class="trend-count">${n}冊</span></div>`;
+    const dotColor = spineColorFor(c.id);
+    return `<div class="trend-row" data-cat="${c.id}" style="cursor:pointer" title="『${c.label}』の棚を見る"><span class="trend-label"><span class="trend-glyph" style="background:${dotColor}"></span>${c.label}</span><div class="trend-bar" style="width:${w}%;background:${spineColorFor(c.id)}"></div><span class="trend-count">${n}冊</span></div>`;
   }).join('');
   bars.querySelectorAll('.trend-row').forEach(row=>{
     row.onclick = ()=>goToShelf(row.dataset.cat);
@@ -2219,7 +2234,7 @@ function openBook(entry){
   const mTitle = document.getElementById('modalTitle');
   if(mTitle) mTitle.textContent = entry.title;
   const mDate = document.getElementById('modalDate');
-  if(mDate) mDate.textContent = (entry.date ? formatDate(entry.date) : '') + (entry.sealed ? ' 🔖 以前を振り返って綴った一冊' : '');
+  if(mDate) mDate.textContent = (entry.date ? formatDate(entry.date) : '') + (entry.sealed ? '｜以前を振り返って綴った一冊' : '');
 
   const photoBox = document.getElementById('modalPhoto');
   if(photoBox){
@@ -2652,7 +2667,8 @@ if(btnSubmit) {
         if(wSel) wSel.value = 'now';
         updateStoryCount();
         // ★Step2：製本成功時のメッセージは固定の一文のみ（1操作1メッセージ。トースト併発は廃止）
-        if(msg) msg.textContent = '今夜の一冊、お預かりしました。';
+        // ★2025-07-17追記：MESSAGES.bindSuccessMsg経由に変更し、言語切替に対応（発火条件・位置は無変更）
+        if(msg) msg.textContent = t('bindSuccessMsg');
         btn.disabled = false;
         const boundMsg = msg ? msg.textContent : '';
         setTimeout(()=>{ if(msg && msg.textContent === boundMsg) msg.textContent = ''; }, 4200);
@@ -3473,7 +3489,9 @@ function shelfTier(count){
   return 0;
 }
 
-const SHELF_TIER_ORNAMENTS = ['', '🕯', '🕯 🪴', '🏮 🕯 🪴', '🏮 🕯 🪴 🐈‍⬛'];
+// ★決裁済み変更仕様v1.2 4-2：棚の成長装飾は絵文字ではなくCSS（.wood-shelf.tier1〜4 配下の #shelfOrnaments）の
+// 灯りの濃淡・木口表現で行う。textContentは空のまま、tierクラスと#shelfOrnaments.titleでのみ状態を伝える。
+const SHELF_TIER_ORNAMENTS = ['', '', '', '', ''];
 const SHELF_TIER_NAMES = ['', '10冊：蜜蝋の燭台が置かれました', '30冊：小さな鉢植えが増えました', '50冊：守り提灯が灯りました', '100冊：書店猫が住みつきました'];
 
 function applyShelfTier(){
@@ -3586,7 +3604,7 @@ function renderRecordCorner(){
   box.innerHTML = `
     <div class="record-disc" aria-hidden="true"></div>
     <div class="record-body">
-      <p class="record-label">🎼 ${slot.label} <span class="record-pr">［PR・広告リンクを含みます］</span></p>
+      <p class="record-label">${slot.label} <span class="record-pr">［PR・広告リンクを含みます］</span></p>
       <p class="record-title">『${song.title}』 ${song.artist}</p>
       <p class="record-line">${slot.line}</p>
       <p class="record-links">
@@ -3838,9 +3856,10 @@ function ensureWriteFab(){
     btn.id = 'writeFab';
     btn.type = 'button';
     btn.className = 'write-fab';
-    btn.setAttribute('aria-label', '今夜の気持ちを書く');
-    btn.title = '今夜の気持ちを書く';
-    btn.textContent = '🖋️';
+    btn.setAttribute('aria-label', '今の気持ちを書く');
+    btn.title = '今の気持ちを書く';
+    // ★決裁済み変更仕様v1.2 4-1：絵文字（🖋️）を撤去し、文字ラベルへ置換。
+    btn.textContent = '書く';
     document.body.appendChild(btn);
   }
   btn.onclick = ()=>{
@@ -3900,8 +3919,8 @@ function applyUserNameDisplay(){
     const safeName = typeof escapeHtml === 'function' ? escapeHtml(name) : name;
     taglineEl.innerHTML = name
       ? (appLang === 'ja'
-          ? `${safeName}さんの今夜の気持ちを、<br>一冊の本に。`
-          : `Turn ${safeName}’s feelings tonight<br>into a book.`)
+          ? `${safeName}さんの今の気持ちを、<br>一冊の本に。`
+          : `Turn what ${safeName} feels now<br>into a book.`)
       : t('tagline');
   }
 }
@@ -3943,9 +3962,9 @@ function buildProfileOverlay(){
   ov.innerHTML = `
     <div class="profile-card">
       <button type="button" class="profile-close" id="profileClose" aria-label="閉じる">×</button>
-      <p class="profile-kicker">🪪 来店カード</p>
+      <p class="profile-kicker">来店カード</p>
       <p class="profile-lead">よろしければ、呼び名と「いまのあなた」に近い立場を教えてください。店主の言葉が、あなたに向けた一言に変わります。</p>
-      <p class="profile-note">どちらも任意です。この端末にのみ保存され、サーバーには送信されません。あとから「🪪 来店カード」でいつでも変更できます。</p>
+      <p class="profile-note">どちらも任意です。この端末にのみ保存され、サーバーには送信されません。あとから「来店カード」でいつでも変更できます。</p>
       <label class="profile-label" for="profileName">呼び名</label>
       <input id="profileName" maxlength="12" placeholder="例：ゆう" autocomplete="off">
       <p class="profile-label">いまのあなたに近いのは</p>
@@ -4095,7 +4114,7 @@ function warnInAppBrowserIfNeeded(){
   //   English表示中はapplyLanguage()が設定した既定の英語挨拶（firstGreeting）をそのまま使う
   if(greetingEl && appLang === 'ja'){
     const line = (libraryCache.length === 0)
-      ? 'こんばんは。今夜も、静かに開けています。'
+      ? 'こんばんは。静かに開けています。'
       : 'こんばんは。棚は、そのままです。';
     typeIntoNode(greetingEl, line);
   }

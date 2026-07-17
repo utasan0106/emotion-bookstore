@@ -630,13 +630,8 @@ section:last-of-type{border-bottom:none;}
   border-color:var(--gold);
   box-shadow:0 0 8px rgba(201,165,92,0.6);
 }
-body:not(.no-motion) .shelf-tab.glow{
-  animation:glowPulse 2.8s ease-in-out infinite;
-}
-@keyframes glowPulse{
-  0%,100%{box-shadow:0 0 4px rgba(201,165,92,0.35);}
-  50%{box-shadow:0 0 12px rgba(201,165,92,0.75);}
-}
+/* ★決裁済み変更仕様v1.2 5-フェーズ2-5：棚タブglowの無限パルスを停止。
+   .shelf-tab.glow自体（静的なbox-shadow強調）は残し、JS側のクラス付与契約は変更しない。 */
 /* ★追加：本棚が際限なく伸び続けないための月別タブ。emotion棚の.shelf-tabと統一感を持たせつつ一回り小さく */
 .shelf-month-tabs{
   display:flex;
@@ -1341,6 +1336,7 @@ body.night .desk-extra summary{
   flex-wrap:wrap;
 }
 .spine{
+  position:relative;
   writing-mode:vertical-rl;
   text-orientation:mixed;
   font-family:var(--font-display);
@@ -1358,6 +1354,26 @@ body.night .desk-extra summary{
 .spine:hover{transform:translateY(-6px) rotate(var(--tilt, 0deg));}
 .spine:active{transform:translateY(-4px) rotate(var(--tilt, 0deg));}
 .spine.new{animation:dropIn .5s ease;}
+/* ★決裁済み変更仕様v1.2 4-2/4-3：以前を振り返った本＝栞印、写真付き＝小さな額縁の線画に置換（絵文字は使わない） */
+.spine.is-sealed::before{
+  content:"";
+  position:absolute;
+  top:0; left:50%;
+  transform:translateX(-50%);
+  width:9px; height:13px;
+  background:rgba(255,253,246,.85);
+  clip-path:polygon(0 0, 100% 0, 100% 100%, 50% 76%, 0 100%);
+  pointer-events:none;
+}
+.spine.has-photo::after{
+  content:"";
+  position:absolute;
+  bottom:10px; left:50%;
+  transform:translateX(-50%);
+  width:13px; height:10px;
+  border:1px solid rgba(255,253,246,.85);
+  pointer-events:none;
+}
 @keyframes dropIn{
   from{transform:translateY(-20px) rotate(var(--tilt, 0deg)); opacity:0;}
   to{transform:rotate(var(--tilt, 0deg)); opacity:1;}
@@ -1854,8 +1870,11 @@ body.focus-dim .freeform-hint{
 body.focus-dim .chat-window,
 body.focus-dim .chat-input-row{ position:relative; z-index:2; }
 
-/* ---- 空気中の光の粒子（パーティクル背景） ---- */
+/* ---- 空気中の光の粒子（パーティクル背景） ----
+   ★決裁済み変更仕様v1.2 5-フェーズ2-5：無限演出の抑制のため非表示化。
+   DOM（#particleLayer・span×8）・JS側の生成処理には触れず、CSSのみで停止する。 */
 #particleLayer{
+  display:none;
   position:fixed;
   inset:0;
   pointer-events:none;
@@ -1954,15 +1973,38 @@ body.no-motion .photo-preview{ opacity:1; }
 }
 .modal-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-/* ---- 本棚の箱庭進化（冊数マイルストーンで装飾が豪華に育つ） ---- */
+/* ---- 本棚の箱庭進化（冊数マイルストーンで装飾が豪華に育つ） ----
+   ★決裁済み変更仕様v1.2 4-2：棚の成長装飾（旧🕯🪴🏮🐈‍⬛）は絵文字を撤去し、
+   「灯りの濃淡」を模したCSSのみの表現へ置換。main.js側は#shelfOrnamentsのtextContentを
+   空にし、tierクラス（.wood-shelf.tier1〜4）とtitle属性（達成名の文字ラベル）のみを付与する。 */
 .wood-shelf{ transition:box-shadow .8s ease, border-color .8s ease, background .8s ease; }
 .shelf-ornaments{
   position:absolute;
-  top:4px; right:14px;
-  font-size:17px;
-  letter-spacing:.4em;
-  opacity:.9;
+  top:6px; right:14px;
+  width:74px;
+  height:14px;
   pointer-events:none;
+}
+.wood-shelf.tier1 .shelf-ornaments{
+  background:radial-gradient(circle at 88% 50%, rgba(255,214,140,.9) 0 3px, transparent 4px);
+}
+.wood-shelf.tier2 .shelf-ornaments{
+  background:
+    radial-gradient(circle at 88% 50%, rgba(255,214,140,.95) 0 3px, transparent 4px),
+    radial-gradient(circle at 66% 50%, rgba(255,214,140,.7) 0 2.5px, transparent 3.5px);
+}
+.wood-shelf.tier3 .shelf-ornaments{
+  background:
+    radial-gradient(circle at 90% 50%, rgba(255,225,160,1) 0 3.5px, transparent 4.5px),
+    radial-gradient(circle at 70% 50%, rgba(255,214,140,.85) 0 3px, transparent 4px),
+    radial-gradient(circle at 50% 50%, rgba(255,200,120,.6) 0 2.5px, transparent 3.5px);
+}
+.wood-shelf.tier4 .shelf-ornaments{
+  background:
+    radial-gradient(circle at 92% 50%, rgba(255,230,170,1) 0 4px, transparent 5px),
+    radial-gradient(circle at 74% 50%, rgba(255,220,150,.9) 0 3.5px, transparent 4.5px),
+    radial-gradient(circle at 56% 50%, rgba(255,210,130,.75) 0 3px, transparent 4px),
+    radial-gradient(circle at 38% 50%, rgba(255,195,110,.55) 0 2.5px, transparent 3.5px);
 }
 .wood-shelf.tier1{
   border:2px solid var(--gold-soft);
@@ -2034,8 +2076,7 @@ body.night .record-corner{ background:#332E26; }
   background:radial-gradient(circle at 50% 50%, var(--gold) 0 9px, #1c1610 10px 21px, #2b2118 22px 23px, #1c1610 24px 100%);
   box-shadow:0 3px 8px rgba(0,0,0,.35);
 }
-body:not(.no-motion) .record-disc{ animation:recordSpin 9s linear infinite; }
-@keyframes recordSpin{ to{ transform:rotate(360deg); } }
+/* ★決裁済み変更仕様v1.2 5-フェーズ2-5：レコードの無限回転を停止（静止した円盤の意匠として残す）。 */
 .record-label{
   font-family:var(--font-display);
   font-size:12.5px;
@@ -2299,6 +2340,20 @@ body.night .purify-log-entry{ background:#332E26; }
   font-weight:700;
   margin:0 0 8px;
 }
+/* ★決裁済み変更仕様v1.2 4-2：気になるリストの種別（曲／本）は絵文字ではなく単色の文字タグで示す */
+.meta-type-tag{
+  display:inline-block;
+  font-size:9.5px;
+  font-weight:700;
+  line-height:1;
+  padding:3px 5px;
+  border:1px solid var(--wine);
+  border-radius:2px;
+  margin-right:2px;
+  letter-spacing:.05em;
+}
+.meta-type-tag.is-music{ color:var(--sage); border-color:var(--sage); }
+.meta-type-tag.is-book{ color:var(--wine); border-color:var(--wine); }
 .purify-log-text{
   font-size:13.5px;
   /* item 3/6: 過去ログ本文は必ず高コントラストな地色文字で表示する */
@@ -2409,8 +2464,15 @@ body.night .fav-btn.is-fav{
   background:var(--wine);
   color:#f6e8c9;
   border:none;
-  font-size:22px;
+  /* ★決裁済み変更仕様v1.2 4-1：絵文字（🖋️）から文字ラベル「書く」へ置換したため、
+     1文字アイコン用のfont-size:22pxから、2文字が円内に収まるサイズ・配置へ調整 */
+  font-family:var(--font-display);
+  font-size:14px;
+  letter-spacing:.02em;
   line-height:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   cursor:pointer;
   box-shadow:0 8px 20px rgba(0,0,0,0.3);
   z-index:60;
@@ -2420,7 +2482,7 @@ body.night .fav-btn.is-fav{
 .write-fab:active{ transform:translateY(0); }
 body.night .write-fab{ background:var(--gold-soft); color:#2E241A; }
 @media (max-width:600px){
-  .write-fab{ left:14px; bottom:18px; width:50px; height:50px; font-size:19px; }
+  .write-fab{ left:14px; bottom:18px; width:50px; height:50px; font-size:12.5px; }
 }
 .back-to-top.hidden{
   opacity:0;
@@ -2553,7 +2615,14 @@ body.night .pwa-popup{ background:#2E2922; }
   border-color:var(--wine);
   color:#FFF6E8;
 }
-.trend-glyph{ margin-right:4px; }
+/* ★決裁済み変更仕様v1.2 4-2：感情の地図は絵文字ではなく棚色の点で表す */
+.trend-glyph{
+  display:inline-block;
+  width:8px; height:8px;
+  border-radius:50%;
+  margin-right:6px;
+  vertical-align:middle;
+}
 .trend-empty{ font-size:12px; color:var(--ink-soft); padding:8px 0; }
 
 /* 来店カード */
@@ -2694,6 +2763,13 @@ body.night .legal-row a{
   margin:18px 0 8px;
   letter-spacing:.04em;
 }
+/* ★決裁済み変更仕様v1.2 3-2：「店内の蔵書」が架空の物語であることを常時示す注記。小さくても隠さない */
+.episodes-note{
+  font-size:11px;
+  color:var(--ink-soft);
+  line-height:1.6;
+  margin:0 0 12px;
+}
 .episodes-more{ display:contents; }
 .episodes-toggle{
   font-size:12.5px;
@@ -2729,4 +2805,35 @@ body.night .episodes-toggle{ color:#BFB194; }
 }
 .back-to-bandai:hover{
   background:rgba(110,42,52,0.08);
+}
+
+/* ==========================================================================
+ * ★決裁済み変更仕様v1.2 5-フェーズ2-4：カード感の抑制
+ * --------------------------------------------------------------------------
+ * アプリ的な角丸チップ・カードの丸み／影を弱め、紙片・棚札・木口に近い直線的な
+ * 意匠へ寄せる上書き。既存セレクタ・DOM構造・JSフックには一切触れず、
+ * border-radius / box-shadow のみをこのブロックで再定義する（後勝ちの意図的な上書き）。
+ * 対象外：.page-tab（本のインデックス見出しを模した意匠として維持）、
+ *         .curate-box / .invitation（既に非対称な角丸・便箋的な意匠のため対象外）。
+ * ========================================================================== */
+.trust-badge,
+.intro-step,
+.recommend-chip,
+.recommend-hook,
+.recommend-shuffle,
+.episode-shuffle,
+.detour-card,
+.detour-tier-badge,
+.live-pick-card,
+.live-pick-badge,
+.purify-log-entry,
+.shelf-tab,
+.shelf-month-tab,
+.episode-card{
+  border-radius:2px;
+}
+.recommend-chip,
+.detour-card,
+.live-pick-card{
+  box-shadow:none;
 }
