@@ -588,6 +588,12 @@ section:last-of-type{border-bottom:none;}
 }
 
 /* --- shelves --- */
+/* ★微調整：棚タブ＋棚内容を含むスワイプ検出専用ラッパー。
+   pan-yで縦スクロールは妨げず、横方向のブラウザ既定ジェスチャー処理だけをJS側の
+   スワイプ判定に譲る。 */
+.shelf-swipe-zone{
+  touch-action:pan-y;
+}
 .shelf-tabs{
   display:flex;
   flex-direction:column;

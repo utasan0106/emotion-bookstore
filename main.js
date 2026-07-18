@@ -2359,30 +2359,86 @@ function navigateShelfBySwipe(direction){
   if(navigator.vibrate) try{ navigator.vibrate(10); }catch(e){}
 }
 
+// ★微調整：以前は#shelfDisplay単体・touchstart/touchendのみだったため、
+// 反応範囲が棚内容の領域に限られ、棚タブ付近から始めたジェスチャーや、
+// Pointer Eventsベースの実機（特にAndroid Chrome系）で反応しないことがあった。
+// 検出範囲を#shelfSwipeZone（棚タブ＋棚内容）へ広げ、Pointer Eventsを優先しつつ
+// 非対応環境だけ既存のtouchイベントへフォールバックする。
+const SWIPE_INTERACTIVE_SELECTOR = 'a,button,input,textarea,select,summary,label';
+
 function setupShelfSwipe(){
-  const el = document.getElementById('shelfDisplay');
-  if(!el || el.dataset.swipeBound) return;
-  el.dataset.swipeBound = '1';
-  const SWIPE_THRESHOLD = 45;
-  let startX = 0, startY = 0, tracking = false;
-  el.addEventListener('touchstart', (e)=>{
-    if(!e.touches || e.touches.length !== 1){ tracking = false; return; }
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-    tracking = true;
-  }, {passive:true});
-  el.addEventListener('touchend', (e)=>{
-    if(!tracking) return;
+  const zone = document.getElementById('shelfSwipeZone');
+  if(!zone || zone.dataset.swipeBound) return;
+  zone.dataset.swipeBound = '1';
+  const SWIPE_THRESHOLD = 45; // 40〜50px方針の中間値
+  let startX = 0, startY = 0, tracking = false, activePointerId = null, lastSwipeAt = 0;
+
+  const startsOnInteractive = (target)=> !!(target && target.closest && target.closest(SWIPE_INTERACTIVE_SELECTOR));
+
+  const beginTrack = (x, y, target)=>{
+    if(startsOnInteractive(target)){ tracking = false; return false; }
+    startX = x; startY = y; tracking = true;
+    return true;
+  };
+
+  // スワイプが成立した場合、直後に発生しがちな「ゴーストクリック」を抑止するため、
+  // 発生時刻を記録し、キャプチャ段階のclickで一定時間だけ握りつぶす。
+  const finishTrack = (x, y)=>{
+    if(!tracking) return false;
     tracking = false;
-    const touch = e.changedTouches && e.changedTouches[0];
-    if(!touch) return;
-    const dx = touch.clientX - startX;
-    const dy = touch.clientY - startY;
-    if(Math.abs(dx) < SWIPE_THRESHOLD) return;
-    if(Math.abs(dx) < Math.abs(dy) * 1.2) return; // 縦スクロールとの誤検出防止
+    const dx = x - startX;
+    const dy = y - startY;
+    if(Math.abs(dx) < SWIPE_THRESHOLD) return false;
+    if(Math.abs(dx) < Math.abs(dy) * 1.2) return false; // 縦スクロールとの誤検出防止
     navigateShelfBySwipe(dx < 0 ? 1 : -1);
-  }, {passive:true});
-  el.addEventListener('touchcancel', ()=>{ tracking = false; }, {passive:true});
+    lastSwipeAt = Date.now();
+    return true;
+  };
+
+  zone.addEventListener('click', (e)=>{
+    if(Date.now() - lastSwipeAt < 400){
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
+
+  if(window.PointerEvent){
+    // ★iOS Safari／Android Chrome双方で共通のPointer Eventsを優先する。
+    // タッチ操作のみを対象とし（マウスドラッグは対象外＝従来どおりデスクトップは案内非表示のまま）、
+    // pointermoveは監視せず、開始・終了位置の差分だけで判定することでネイティブスクロールと競合しない。
+    zone.addEventListener('pointerdown', (e)=>{
+      if(e.pointerType === 'mouse') return;
+      if(activePointerId !== null) return;
+      if(!beginTrack(e.clientX, e.clientY, e.target)) return;
+      activePointerId = e.pointerId;
+    });
+    zone.addEventListener('pointerup', (e)=>{
+      if(e.pointerId !== activePointerId) return;
+      activePointerId = null;
+      if(finishTrack(e.clientX, e.clientY)){
+        try{ e.preventDefault(); }catch(err){}
+      }
+    });
+    zone.addEventListener('pointercancel', (e)=>{
+      if(e.pointerId !== activePointerId) return;
+      activePointerId = null;
+      tracking = false;
+    });
+  }else{
+    // Pointer Events非対応環境向けの既存touchイベントへのフォールバック。
+    zone.addEventListener('touchstart', (e)=>{
+      if(!e.touches || e.touches.length !== 1){ tracking = false; return; }
+      beginTrack(e.touches[0].clientX, e.touches[0].clientY, e.target);
+    }, {passive:true});
+    zone.addEventListener('touchend', (e)=>{
+      const touch = e.changedTouches && e.changedTouches[0];
+      if(!touch) return;
+      if(finishTrack(touch.clientX, touch.clientY)){
+        try{ e.preventDefault(); }catch(err){}
+      }
+    });
+    zone.addEventListener('touchcancel', ()=>{ tracking = false; }, {passive:true});
+  }
 }
 
 function textColorFor(hex){
