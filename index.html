@@ -259,7 +259,7 @@ body.night .about-data-content{
          新規SVG／ワードマークは作らない。装飾画像のためalt=""。店名文字はHero内に既にあるため重ねない。
          画像未配置の間はJSのonerrorで自然に非表示へフォールバックする（既存Hero画像と同じ方針）。 -->
     <div class="hero-seal" aria-hidden="true">
-      <img src="/assets/shop-seal.png" alt="" loading="lazy"
+      <img src="assets/shop-seal.png" alt="" width="512" height="512" loading="eager" decoding="async"
            onerror="this.closest('.hero-seal') && (this.closest('.hero-seal').style.display='none')">
     </div>
   </header>
