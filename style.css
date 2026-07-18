@@ -4493,7 +4493,10 @@ body.night .desk-current-date{ color:var(--paper); opacity:.6; }
 .detour-note{
   position:relative;
   z-index:2;
-  color:var(--paper);
+  /* ★微調整：var(--paper)はbody.nightで#251E17（ほぼ黒）へ反転するため、
+     常に暗い夜色背景の上に乗るこの見出しには使えない。固定のクリーム色で確実に読める状態にする。 */
+  color:#F5EAD2;
+  opacity:1;
 }
 .detour-pr{
   position:relative;
@@ -4529,12 +4532,13 @@ body.night .desk-current-date{ color:var(--paper); opacity:.6; }
   max-width:280px;
   margin:0 0 22px;
   padding:12px 14px;
-  background:rgba(37,30,23,0.84);
+  /* ★微調整：背後の窓明かり演出が文字へ透けないよう、ほぼ不透明な煤色に強化 */
+  background:rgba(30,24,18,0.95);
   border:1px solid rgba(232,201,122,0.26);
   border-left:none !important;
   border-radius:3px;
   box-shadow:0 6px 16px rgba(0,0,0,0.35), 0 0 20px rgba(232,165,92,0.1);
-  color:var(--paper);
+  color:#F5EAD2;
 }
 /* 窓から漏れる灯り */
 .detour-card::before{
@@ -4567,10 +4571,18 @@ body.night .desk-current-date{ color:var(--paper); opacity:.6; }
   border:1px solid rgba(232,201,122,0.4);
   border-bottom:1px solid rgba(232,201,122,0.4) !important;
 }
-.detour-name{ color:var(--paper); }
-.detour-desc{ color:rgba(239,230,211,0.78); }
-.detour-link{ color:var(--lamp-glow) !important; }
-body.night .detour-card{ background:rgba(20,16,12,0.88); }
+/* ★微調整：.detour-name もvar(--paper)依存をやめ、固定のクリーム色・opacity:1で
+   夜色カード背景の上でも常に読める状態にする（body.night反転の影響を受けない）。 */
+.detour-name{ color:#F5EAD2 !important; opacity:1; }
+.detour-desc{ color:rgba(239,230,211,0.82); opacity:1; }
+.detour-link,
+.detour-link:link{ color:var(--lamp-glow) !important; opacity:1; }
+.detour-link:visited{ color:var(--lamp-glow) !important; }
+.detour-link:hover,
+.detour-link:focus-visible{ color:var(--lamp-glow) !important; opacity:.85; }
+body.night .detour-card{ background:rgba(24,19,14,0.96); }
+body.night .detour-heading,
+body.night .detour-name{ color:#F5EAD2 !important; }
 
 @media (max-width:480px){
   .detour-card{ width:74%; max-width:none; }
@@ -4654,21 +4666,26 @@ body.night .detour-card{ background:rgba(20,16,12,0.88); }
   justify-content:center;
   gap:10px;
 }
+/* ★微調整：以前は薄い枠線＋opacity:.85で「操作できないボタン」に見えていたため、
+   常時操作可能な副ボタンとして、生成り色の文字＋濃い地色＋薄いクリーム枠で
+   はっきりと視認できる状態に改める（day/nightで色が反転する var(--ink)/var(--paper)
+   には依存せず、固定値でコントラストを担保する）。 */
 .exit-shop-btn{
   font-family:var(--font-body);
   font-size:12.5px;
-  color:var(--ink-soft);
-  background:transparent;
-  border:1px solid var(--paper-shadow);
+  color:#F5EAD2;
+  background:rgba(43,33,24,0.82);
+  border:1px solid rgba(245,234,210,0.55);
   border-radius:20px;
   padding:8px 20px;
   cursor:pointer;
   letter-spacing:.04em;
-  opacity:.85;
+  opacity:1;
+  box-shadow:0 1px 4px rgba(0,0,0,0.18);
 }
 .exit-shop-btn:hover{
-  opacity:1;
-  background:rgba(0,0,0,0.04);
+  background:rgba(43,33,24,0.94);
+  border-color:rgba(245,234,210,0.8);
 }
 .exit-shop-btn:focus-visible,
 .back-to-bandai:focus-visible{
@@ -4676,8 +4693,12 @@ body.night .detour-card{ background:rgba(20,16,12,0.88); }
   outline-offset:2px;
 }
 body.night .exit-shop-btn{
-  border-color:rgba(239,230,211,0.3);
-  color:var(--paper);
+  background:rgba(245,234,210,0.10);
+  border-color:rgba(245,234,210,0.55);
+  color:#F5EAD2;
+}
+body.night .exit-shop-btn:hover{
+  background:rgba(245,234,210,0.18);
 }
 
 /* ============================================================================
