@@ -322,19 +322,20 @@ body.night .about-data-content{
            棚へ案内する。既存のチャットUI（#chatWindow以下）はDOM・関数とも削除せず、
            hiddenで公開画面から外す（互換性維持・保存/転記処理は無傷）。 -->
       <p class="counter-greeting" id="counterGreeting" data-i18n="counterGreetingUnified">こんばんは。まだ名前のつかない気持ちも、そのままで大丈夫です。今は、どんな手触りですか。</p>
+      <p class="counter-shelf-return-note hidden" id="counterReturnNote" data-i18n="counterReturnNote"></p>
       <div class="counter-shelf-groups" id="counterShelfGroups"></div>
       <button type="button" class="chart-btn ghost counter-write-btn" id="counterWriteWithoutChoosing" data-i18n="counterWriteWithoutChoosing">まだ決めずに書く</button>
 
-      <div class="chat-window" id="chatWindow" hidden>
+      <div class="chat-window hidden" id="chatWindow" hidden>
         <div class="bubble shopkeeper" id="firstGreeting"><span class="name" data-i18n="keeperNameLabel">店主</span><span id="firstGreetingText" data-i18n="firstGreeting">こんばんは。静かに開けています。</span></div>
       </div>
       <div class="mitate-meter hidden" id="mitateMeter" aria-hidden="true">
         <span class="mitate-meter-label" id="mitateMeterLabel"></span>
         <div class="mitate-meter-bar"><div class="mitate-meter-fill" id="mitateMeterFill"></div></div>
       </div>
-      <div class="texture-step" id="textureStep" aria-label="今の気持ちに近い選択肢を選ぶ" data-i18n-aria="textureStepAria" hidden></div>
+      <div class="texture-step hidden" id="textureStep" aria-label="今の気持ちに近い選択肢を選ぶ" data-i18n-aria="textureStepAria" hidden></div>
 
-      <div class="chart-options" id="chartOptions" hidden></div>
+      <div class="chart-options hidden" id="chartOptions" hidden></div>
 
       <div id="nextActionGuideWrapper" class="hidden">
         <div class="next-action-guide">
@@ -456,7 +457,6 @@ body.night .about-data-content{
       <p class="bookshelf-arrival-heading" data-i18n="bookshelfArrivalHeading">本を棚に置きました。</p>
       <div class="bookshelf-arrival-actions">
         <button type="button" class="chart-btn primary" id="bookshelfArrivalMakeAnother" data-i18n="bookshelfArrivalMakeAnother">もう一冊つくる</button>
-        <button type="button" class="chart-btn ghost" id="bookshelfArrivalBackToCover" data-i18n="bookshelfArrivalBackToCover">表紙へ戻る</button>
       </div>
     </div>
     <!-- ★v1.3 Phase A：本棚の管理ボタン群を折りたたみへ収納。

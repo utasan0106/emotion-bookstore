@@ -46,6 +46,7 @@ const MESSAGES = {
     pageNavAria: "ページを選ぶ",
     pageTab1: "① 番台", pageTab2: "② 棚", pageTab3: "③ 編纂机", pageTab4: "④ 本棚",
     sectionHead1: "店主と棚を探す", sectionSub1: "気持ちに近い棚を、一緒に探します。",
+    counterReturnNote: "前に選んだ棚は、そのまま残しています。今の気持ちから、探し直すこともできます。",
     // ★v1.3公開前最終修正：番台を「棚の案内」として整理（仕様書3章）。初回・再訪とも同じ文。
     counterGreetingUnified: "こんばんは。まだ名前のつかない気持ちも、そのままで大丈夫です。今は、どんな手触りですか。",
     counterGroupSink: "重く沈む",
@@ -291,6 +292,7 @@ const MESSAGES = {
     pageNavAria: "Choose a page",
     pageTab1: "① Counter", pageTab2: "② Shelves", pageTab3: "③ Writing desk", pageTab4: "④ Bookshelf",
     sectionHead1: "Find a Shelf with the Shopkeeper", sectionSub1: "Let\u2019s find the shelf closest to how you feel.",
+    counterReturnNote: "The shelf you chose before is still there. You\u2019re welcome to look again, starting from how you feel right now.",
     counterGreetingUnified: "Good evening. Feelings that don\u2019t have a name yet are fine just as they are. What does it feel like right now?",
     counterGroupSink: "Heavy and Sinking",
     counterGroupWave: "Rippling",
@@ -563,6 +565,10 @@ function applyLanguage(){
   if(typeof renderCurrentShopDate === 'function') renderCurrentShopDate();
   // ★英語モード監査：書くFABのaria-label/title/文字ラベルも言語切替のたびに更新する。
   if(typeof ensureWriteFab === 'function') ensureWriteFab();
+  // ★英語モード監査：月間フェア（#fairBox）は起動時に一度だけ描画されるため、
+  // 言語切替時も再描画して見出し・ボタン文言を現在の言語へ追従させる
+  // （fair.line自体はdata.js由来の季節文のため、日本語のまま残る＝許容範囲）。
+  if(typeof renderFair === 'function') renderFair();
   const langBtn = document.getElementById('langToggle');
   if(langBtn) langBtn.textContent = appLang === 'ja' ? 'JP / EN' : 'EN / JP';
   const titleEl = document.querySelector('title');
@@ -1873,6 +1879,11 @@ function goToPage(id){
   _gaLastTrackedPage = id;
   setActivePageTab(id);
   if(id === 'desk'){ syncCounterDraftToDesk(); updateDeskLead(); }
+  // ★微調整：番台へ戻るたびに会話ステップを第一段階（5択＋まだ決めずに書く）へ
+  // 必ずリセットする。棚選択ロジック・保存データは変更しない、UI表示状態のみの初期化。
+  if(id === 'counter' && typeof renderCounterShelfGuideRoot === 'function'){
+    renderCounterShelfGuideRoot();
+  }
 
   enterBookExperience();
   closeExperienceMenu();
@@ -2380,6 +2391,17 @@ function textColorFor(hex){
   return (0.299*r + 0.587*g + 0.114*b) > 150 ? '#3A2A14' : '#F6ECD4';
 }
 
+// ★微調整：本棚の背表紙タイトルに、textColorFor()と同じ明暗判定に沿った控えめな
+// text-shadowを添える。明るい文字（暗い背表紙）には暗い縁取り、濃い文字（明るい背表紙）
+// には明るい縁取りを薄く重ね、背表紙のグラデーションに文字が沈まないようにする。
+function textShadowFor(hex){
+  const c = (hex || '#000000').replace('#','');
+  const r = parseInt(c.substr(0,2),16), g = parseInt(c.substr(2,2),16), b = parseInt(c.substr(4,2),16);
+  return (0.299*r + 0.587*g + 0.114*b) > 150
+    ? '0 1px 1px rgba(255,255,255,0.5)'
+    : '0 1px 2px rgba(0,0,0,0.55)';
+}
+
 function spineColorFor(catId){
   // ★Step4：unfiled（棚未選択）およびCATEGORIESに無いIDは中立色へフォールバック。
   // SPINE_COLORS配列そのものは変更しない。
@@ -2467,6 +2489,7 @@ function renderShelf(markNewest){
     spine.className = 'spine';
     spine.style.background = spineGradientFor(entry.category, entry.title.length + i);
     spine.style.color = textColorFor(spineColorFor(entry.category));
+    spine.style.textShadow = textShadowFor(spineColorFor(entry.category));
     spine.style.height = (140 + (entry.title.length % 4) * 12) + 'px';
     const tilt = ((entry.title.length * 7 + i * 13) % 5) - 2;
     spine.style.setProperty('--tilt', tilt + 'deg');
@@ -3820,6 +3843,16 @@ function counterShelfGroupBackBtn(onClick){
 function renderCounterShelfGuideRoot(){
   const box = document.getElementById('counterShelfGroups');
   if(!box) return;
+  // ★微調整：既に棚を選んだ履歴がある利用者にだけ、番台へ戻った際の補足を表示する。
+  // 棚選択ロジック・保存データには一切手を加えず、libraryCacheの参照のみで判定する。
+  const returnNote = document.getElementById('counterReturnNote');
+  if(returnNote){
+    const hasChosenShelfBefore = Array.isArray(libraryCache) && libraryCache.some(
+      e => e && e.category && e.category !== UNFILED_CATEGORY_ID
+    );
+    returnNote.textContent = t('counterReturnNote');
+    returnNote.classList.toggle('hidden', !hasChosenShelfBefore);
+  }
   box.innerHTML = '';
   const groupKeys = { sink:'counterGroupSink', wave:'counterGroupWave', light:'counterGroupLight', sepia:'counterGroupSepia' };
   TEXTURE_GROUPS.forEach(group=>{
@@ -4410,8 +4443,8 @@ function renderBookshelfArrival(){
   box.classList.remove('hidden');
   const makeAnotherBtn = document.getElementById('bookshelfArrivalMakeAnother');
   if(makeAnotherBtn) makeAnotherBtn.onclick = ()=>goToPage('desk');
-  const backToCoverBtn = document.getElementById('bookshelfArrivalBackToCover');
-  if(backToCoverBtn) backToCoverBtn.onclick = ()=>returnToCover();
+  // ★微調整：到着パネルの「表紙へ戻る」は、画面下部の「お店を出る」と機能が重複していたため削除。
+  // 画面下部の「店主と棚を探す／お店を出る」、および店内メニュー内の「表紙へ戻る」は現状のまま維持する。
 }
 
 function renderRecordCorner(){
@@ -4973,16 +5006,9 @@ function warnInAppBrowserIfNeeded(){
   if(typeof applyUserNameDisplay === 'function') applyUserNameDisplay();
   // ★Step2：来店時の挨拶を判定するため、本棚データを挨拶より先に読み込む（読み込み箇所の移動のみ・二重読み込みなし）
   libraryCache = await loadJSON('emotion-bookstore-library', []);
-  const greetingEl = document.getElementById('firstGreetingText');
-  // ★Step2：来店時の店主メッセージは固定文に統一（各状態1つのみ）。
-  //   本棚0冊＝初回来店の挨拶／1冊以上＝再訪の挨拶。発火条件（初期化時に一度だけ表示）は従来のまま。
-  //   English表示中はapplyLanguage()が設定した既定の英語挨拶（firstGreeting）をそのまま使う
-  if(greetingEl && appLang === 'ja'){
-    const line = (libraryCache.length === 0)
-      ? 'こんばんは。静かに開けています。'
-      : 'こんばんは。棚は、そのままです。';
-    typeIntoNode(greetingEl, line);
-  }
+  // ★微調整：#firstGreetingText（旧チャットUI＝#chatWindow内）は現行の公開画面では
+  // 常時非表示のため、意味の通らない「こんばんは。棚は、そのままです。」という再訪文の
+  // 描画自体を廃止した（#chatWindow・#firstGreeting自体はDOM・関数とも削除せず、互換性維持のため残す）。
   // ★v1.3 Phase A-3：来店カードの1.4秒自動表示を停止（監査書5章-1）。
   // showProfileCard()本体・保存キー・MIDNIGHT_MESSAGES歓迎文は無変更。手動導線（直下のprofileBtn）のみ残す。
   const profileBtn = document.getElementById('profileBtn');
@@ -5004,7 +5030,10 @@ function warnInAppBrowserIfNeeded(){
   renderShelfDisplay();
   renderShelf();
   updateStoryCount();
-  renderChartOptions('root');
+  // ★微調整：起動時に旧チャットUI（#chartOptions/#textureStep）へ内容を描画していたため、
+  // 表示制御（.hiddenクラス）が効いていない状況下で「第二段階の候補」が初期状態から
+  // 見えてしまう不具合の一因になっていた。現行の公開導線はrenderCounterShelfGuideRoot()
+  // （5択＋それ以外）に一本化されているため、この呼び出しは行わない。
   renderTitleSuggest();
 
   const backupBtn = document.getElementById('backupBtn');
