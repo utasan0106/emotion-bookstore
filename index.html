@@ -358,8 +358,12 @@ body.night .about-data-content{
     <div class="section-head"><h2 data-i18n="sectionHead2">感情の棚</h2></div>
     <p class="section-sub" data-i18n="sectionSub2">棚を選んでも、あてもなく巡っても。</p>
     <div class="fair" id="fairBox"></div>
-    <div class="shelf-tabs" id="shelfTabs"></div>
-    <div class="shelf-display" id="shelfDisplay"></div>
+    <!-- ★微調整：スワイプ検出範囲を#shelfDisplay単独から、棚タブ＋棚内容を含む
+         専用ラッパー（#shelfSwipeZone）へ拡張する（棚データ・棚タブ/表示のDOM構造自体は変更しない）。 -->
+    <div class="shelf-swipe-zone" id="shelfSwipeZone">
+      <div class="shelf-tabs" id="shelfTabs"></div>
+      <div class="shelf-display" id="shelfDisplay"></div>
+    </div>
     <div class="detour-section" id="detourSection"></div>
     <p class="swipe-hint" data-i18n="swipeHint">← 左右にスワイプでも棚を移動できます →</p>
     <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')" data-i18n="backToBandai">⤴ 番台へ戻る</button><button type="button" class="exit-shop-btn" onclick="returnToCover()" data-i18n="exitShopBtn">お店を出る</button></div>
