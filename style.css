@@ -20,6 +20,11 @@
 *{box-sizing:border-box;}
 .hidden{display:none !important;}
 
+/* ★v1.3 Phase A：感情の地図（#trendBox）をUI非表示。DOM・JS（renderTrend等）・保存処理は温存。
+   将来「棚の記録」として再設計する際はこの1行を削除するだけで復帰できる。
+   ID指定のみとし、#shioriCardと共用する.trendクラス全体は対象にしない。 */
+#trendBox{ display:none !important; }
+
 /* ★追加：セラピューティックUIの一環。プレースホルダーを淡く上品な色・やや小さめの
    サイズにし、入力前の圧迫感を減らす（世界観の色 --ink-soft をベースに透明度で調整）。 */
 input::placeholder, textarea::placeholder{
@@ -1171,8 +1176,9 @@ body.night .desk-extra summary{
   transform:rotateY(-150deg);
   box-shadow:2px 3px 12px rgba(0,0,0,0.35);
 }
+/* ★v1.3 Phase C-2：製本演出のCSS側時間を1.7s→1.15sへ（main.jsのt2=1200msより僅かに短く終える） */
 .bind-overlay.animating .bind-cover{
-  animation:closeCover 1.7s ease forwards;
+  animation:closeCover 1.15s ease forwards;
 }
 @keyframes closeCover{
   0%{transform:rotateY(-150deg);}
@@ -1690,18 +1696,22 @@ body.night .gentle-toast{
 
 /* ---- 携帯（スマホ）向けの包括的な調整 ---- */
 /* ---- 夜の書店モード（22時〜5時に自動適用：セピアを帯びた深い夜の読書室） ---- */
+/* ★v1.3 Phase B：恒常夜化の色温度設計（決裁済み：夜青#101824／煤茶#1C1611／生成り#EFE6D3／
+   灯橙#E8A55C／墨#2A231Bの世界観設計書v1.1パレットへ整合）。カスタムプロパティの値のみを
+   再定義し、参照元セレクタ・DOM・JSには一切触れない。:root側の昼変数はフォールバックとして残す。 */
 body.night{
-  --paper:#2A2620;
-  --paper-2:#221E19;
-  --paper-shadow:#4A4236;
-  --ink:#D8CCB4;
-  --ink-soft:#BFB194;
-  --wine:#B77884;
+  --paper:#251E17;
+  --paper-2:#1C1611;
+  --paper-shadow:#4A3D2C;
+  --ink:#EFE6D3;
+  --ink-soft:#C7B99A;
+  --wine:#B7707C;
   --wine-2:#C98A96;
-  --gold:#C9A860;
+  --gold:#E8A55C;
+  --gold-soft:#F0C48A;
   --sage:#8FA382;
-  --wood:#1C1610;
-  --wood-2:#141008;
+  --wood:#1C1611;
+  --wood-2:#120D08;
 }
 body.night .episode-card,
 body.night .recommend-chip,
@@ -1915,6 +1925,7 @@ body.no-motion #particleLayer{ display:none; }
 }
 .hidden-file{ display:none; }
 .photo-label{
+  font-family:inherit;
   font-size:12.5px;
   color:var(--ink-soft);
   border:1px dashed var(--gold);
@@ -1925,10 +1936,30 @@ body.no-motion #particleLayer{ display:none; }
   transition:background .15s ease;
 }
 .photo-label:hover{ background:var(--paper-2); }
+/* ★v1.3 RC2b 項目5：#photoInputは display:none だと一部のスマートフォン・iOS・
+   アプリ内ブラウザでlabel[for]経由のクリックが開かないことがあるため、
+   display:noneではなく「視覚的にのみ隠す」方式へ変更する。
+   フォーカス・プログラムからのclick()は引き続き機能する。 */
+.visually-hidden-file{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  clip-path:inset(50%);
+  white-space:nowrap;
+  border:0;
+  opacity:.01;
+}
 .photo-hint{ font-size:10.5px; color:var(--ink-soft); flex-basis:100%; line-height:1.6; }
 .photo-preview{
   position:relative;
-  width:92px; height:92px;   /* 1:1固定枠。どんな画角でも中央トリミングで崩れない */
+  display:inline-block;
+  width:auto;
+  max-width:180px;
+  line-height:0;              /* ★v1.3 RC2：img下のインライン隙間を消す */
   border:4px solid #fffdf6;
   border-bottom-width:14px;  /* ポラロイド風の白い余白 */
   box-shadow:0 3px 10px rgba(60,40,20,.25);
@@ -1941,10 +1972,17 @@ body.no-motion .photo-preview{ opacity:1; }
   from{ opacity:0; transform:rotate(-6deg) scale(.85) translateY(8px); }
   to{ opacity:1; transform:rotate(-2deg) scale(1) translateY(0); }
 }
+/* ★v1.3 RC2：1:1固定＋object-fit:coverの中央トリミングをやめ、
+   縦横比を保ったまま最大幅・最大高さの枠内に全体表示する（object-fit:contain）。
+   img自体は自然な比率のまま縮小されるため、枠(.photo-preview)もdisplay:inline-blockで
+   その実寸に追従し、縦写真は縦長・横写真は横長のまま表示される。 */
 .photo-preview img{
-  width:100%; height:100%;
-  object-fit:cover;          /* 中央トリミング */
   display:block;
+  width:auto;
+  height:auto;
+  max-width:172px;
+  max-height:172px;
+  object-fit:contain;
 }
 .photo-remove{
   position:absolute;
@@ -1960,18 +1998,30 @@ body.no-motion .photo-preview{ opacity:1; }
   box-shadow:0 2px 6px rgba(0,0,0,.3);
 }
 
-/* ---- 本の頁に挟まれた写真（モーダル・1:1中央トリミングでレイアウト不崩壊） ---- */
+/* ---- 本の頁に挟まれた写真（モーダル）----
+   ★v1.3 RC2：1:1固定＋object-fit:coverの中央トリミングをやめ、縦横比を保ったまま
+   最大サイズの枠内に全体表示する（object-fit:contain）。width:fit-contentで実際の
+   描画サイズに枠を追従させつつ、margin:0 autoでの中央寄せは維持する。 */
 .modal-photo{
-  width:min(300px, 80%);
-  aspect-ratio:1/1;
+  display:block;
+  width:fit-content;
+  max-width:min(340px, 90%);
   margin:0 auto 16px;
   border:5px solid #fffdf6;
   border-bottom-width:18px;
   box-shadow:0 4px 14px rgba(60,40,20,.25);
   transform:rotate(-1.5deg);
   overflow:hidden;
+  line-height:0;
 }
-.modal-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+.modal-photo img{
+  display:block;
+  width:auto;
+  height:auto;
+  max-width:100%;
+  max-height:60vh;
+  object-fit:contain;
+}
 
 /* ---- 本棚の箱庭進化（冊数マイルストーンで装飾が豪華に育つ） ----
    ★決裁済み変更仕様v1.2 4-2：棚の成長装飾（旧🕯🪴🏮🐈‍⬛）は絵文字を撤去し、
@@ -2836,4 +2886,1903 @@ body.night .episodes-toggle{ color:#BFB194; }
 .detour-card,
 .live-pick-card{
   box-shadow:none;
+}
+
+/* ============================================================================
+ * ★v1.3 Phase B／C 追加分（体験・画面改修仕様書 4章・8章）
+ * 既存セレクタの構造・DOM・JSフックは変更せず、新規クラス／新規セレクタの追記と、
+ * 一部プロパティ（border-radius・box-shadow・background・color・font-family等）の
+ * 上書きのみで構成する。.shop・.entrance・新設ラッパー（.hero／.doma／.shop-guide／
+ * .shelf-admin）へのtransform/filter/backdrop-filter/perspective/contain:paintは
+ * 一切使用しない。無限アニメーションの新設もしない。
+ * ============================================================================ */
+
+/* ---- 4-1 色：Hero専用の「外気」パレット（新規追加のみ・既存カスタムプロパティは変更しない） ---- */
+:root{
+  --street-blue-1:#0B121C;
+  --street-blue-2:#101824;
+  --lamp-glow:#E8A55C;
+}
+
+/* ---- 第一場面 Hero：外は夜青、CTA直近だけ暖色の気配 ---- */
+.entrance.hero{
+  background:linear-gradient(180deg, var(--street-blue-1) 0%, var(--street-blue-2) 68%, var(--wood) 100%);
+  border-bottom-color:rgba(232,165,92,0.25);
+}
+.entrance.hero::before{
+  background:repeating-linear-gradient(90deg, var(--lamp-glow) 0 22px, transparent 22px 30px);
+  opacity:.35;
+}
+.entrance.hero::after{
+  content:"";
+  position:absolute;
+  left:50%; bottom:-8%;
+  transform:translateX(-50%);
+  width:min(70%,520px);
+  height:200px;
+  background:radial-gradient(ellipse at center, rgba(232,165,92,0.24), transparent 72%);
+  pointer-events:none;
+  z-index:-1;
+}
+.entrance.hero .eyebrow{ color:var(--lamp-glow); opacity:.85; }
+.entrance.hero .enter-btn{
+  background:linear-gradient(180deg, var(--lamp-glow), #C9803D);
+  color:#241608;
+  box-shadow:0 3px 0 #7A4A1E, 0 10px 26px rgba(232,165,92,0.28);
+}
+.entrance.hero .enter-btn:hover{ transform:translateY(-2px); }
+.entrance.hero .trust-row .trust-badge{
+  border-color:rgba(239,230,211,0.3);
+  background:rgba(16,24,36,0.35);
+  color:var(--ink);
+}
+
+/* ---- 第二場面 土間：Heroの夜青から店内の暖色へ、一呼吸で色温度を移す ---- */
+.doma{
+  height:30px;
+  background:linear-gradient(180deg, var(--wood) 0%, var(--paper-2) 100%);
+  border-bottom:1px solid var(--paper-shadow);
+}
+@media (max-width:600px){ .doma{ height:20px; } }
+
+/* ---- 店内案内（旧intro-explainer + pref-row の後退先）：フッター手前の控えめな領域 ---- */
+.shop-guide{
+  max-width:920px;
+  margin:0 auto;
+  padding:8px 24px 4px;
+  border-top:1px solid var(--paper-shadow);
+}
+.shop-guide-heading{
+  font-family:var(--font-display);
+  font-size:14px;
+  color:var(--ink-soft);
+  letter-spacing:.14em;
+  text-align:center;
+  margin:22px 0 18px;
+  opacity:.85;
+}
+.shop-guide .intro-explainer.in-header{
+  padding:0 0 18px;
+  opacity:.92;
+}
+.shop-guide .intro-kicker{ font-size:12px; }
+.shop-guide .intro-steps{ gap:10px; }
+.shop-guide .intro-step{
+  padding:12px 8px;
+  background:transparent;
+  box-shadow:none;
+}
+.shop-guide .pref-row{ margin-top:6px; }
+
+/* ---- 本棚の管理（details.shelf-admin）：desk-extraと同系の控えめな折りたたみ意匠 ---- */
+.shelf-admin{
+  margin-top:18px;
+  border-top:1px dashed var(--paper-shadow);
+  padding-top:14px;
+}
+.shelf-admin summary{
+  display:inline-block;
+  font-family:var(--font-display);
+  font-size:13.5px;
+  font-weight:600;
+  color:var(--wine);
+  background:rgba(255,251,240,0.06);
+  border:1px dashed var(--gold);
+  border-radius:10px;
+  padding:9px 18px;
+  cursor:pointer;
+  list-style:none;
+}
+.shelf-admin summary::-webkit-details-marker{ display:none; }
+.shelf-admin summary::before{ content:"▸ "; color:var(--gold); }
+.shelf-admin[open] summary::before{ content:"▾ "; }
+.shelf-admin .shelf-controls{ margin-top:14px; }
+.shelf-admin .backup-hint{ margin-top:10px; }
+
+/* ---- ナビ：アプリのタブバーではなく棚の見出し札として、主張を弱める（軽微な上書きのみ） ---- */
+.page-tab.active{
+  box-shadow:0 2px 4px rgba(0,0,0,0.12);
+}
+
+/* ---- 番台：チャットUIから「帳場に置かれた紙」へ ---- */
+.chat-window{
+  background:linear-gradient(180deg, rgba(0,0,0,0.06), transparent 40%);
+  border:1px solid var(--paper-shadow);
+  border-radius:2px;
+  padding-left:10px;
+  padding-right:10px;
+}
+.bubble{
+  border-radius:2px;
+  box-shadow:none;
+  border:1px solid var(--paper-shadow);
+}
+.bubble.shopkeeper{
+  border-top-left-radius:2px;
+  border-left:3px solid var(--gold);
+}
+.bubble.you{
+  border-top-right-radius:2px;
+  border-right:3px solid var(--paper);
+}
+
+/* ---- v1.3 Phase C：吹き出しの短いフェード（タイピングアニメーション廃止の代替演出） ---- */
+@keyframes bubbleFadeIn{
+  from{ opacity:0; transform:translateY(4px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+body:not(.no-motion) .bubble{
+  animation:bubbleFadeIn .32s ease;
+}
+
+/* ---- 編纂机：#storyInputを原稿用紙・便箋に近づける ---- */
+#storyInput{
+  font-family:var(--font-display);
+  line-height:2;
+  background:
+    repeating-linear-gradient(180deg, transparent 0, transparent 1.95em, rgba(74,61,44,0.12) 1.95em, rgba(74,61,44,0.12) calc(1.95em + 1px)),
+    #fff9ec;
+}
+body.night #storyInput{
+  background:
+    repeating-linear-gradient(180deg, transparent 0, transparent 1.95em, rgba(239,230,211,0.08) 1.95em, rgba(239,230,211,0.08) calc(1.95em + 1px)),
+    #262219;
+}
+
+/* ---- 本棚：来店体験の終着点。最も明るい部屋にする（淡い灯りの気配のみ・アニメーションなし） ---- */
+#bookshelf{
+  background:radial-gradient(ellipse at top, rgba(232,165,92,0.10), transparent 62%);
+}
+
+/* ---- 4-2 書体：主要ボタン・見出し・背表紙は明朝（既存の.enter-btn/.send-btn/.bind-btn/.share-btn/
+   .page-tab/.spine等は既にvar(--font-display)。ここでは原稿用紙化した本文欄のみ追加指定） ---- */
+
+/* ============================================================================
+ * v1.3 Phase B-2 店内装丁
+ * ----------------------------------------------------------------------------
+ * 目的：Phase A〜Cで整えた導線・夜配色・保存・計測を変更せず、店内画面に残る
+ * 「Webアプリ／カード一覧／チャットUI」の見え方だけを、棚・紙・木・帳場の意匠へ
+ * 置き換える。既存セレクタ・DOM・JSフックには一切触れず、後勝ちのプロパティ
+ * 上書き（border-radius・box-shadow・background・color・font-family・padding等）
+ * のみで構成する。.shop・.entrance・section・新設ラッパーへの
+ * transform/filter/backdrop-filter/perspective/contain:paintは追加しない。
+ * 無限アニメーションの新設もしない。style.css本体の削除・整理は行わない。
+ * ============================================================================ */
+
+/* ----------------------------------------------------------------------------
+ * 4-1 上部ナビ：タブバーから「棚の見出し札」へ
+ * ---------------------------------------------------------------------------- */
+.page-nav{
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  background:linear-gradient(180deg, var(--wood) 0%, var(--wood-2) 100%);
+  border-top:1px solid rgba(232,165,92,0.14);
+  border-bottom:1px solid rgba(0,0,0,0.4);
+  box-shadow:0 3px 10px rgba(0,0,0,0.28);
+  gap:0;
+  padding:0 6px;
+}
+body.night .page-nav{
+  background:linear-gradient(180deg, var(--wood) 0%, var(--wood-2) 100%);
+}
+.page-tab{
+  border:none;
+  border-right:1px solid rgba(232,165,92,0.10);
+  border-radius:0;
+  background:transparent;
+  color:var(--ink-soft);
+  padding:12px 16px 11px;
+  top:0;
+  transition:color .15s ease, background .15s ease, box-shadow .15s ease;
+}
+.page-tab:last-child{ border-right:none; }
+.page-tab:hover{
+  top:0;
+  color:var(--ink);
+  background:rgba(255,255,255,0.04);
+}
+.page-tab.active{
+  background:rgba(232,165,92,0.09);
+  color:var(--ink);
+  border-color:transparent;
+  top:0;
+  font-weight:700;
+  box-shadow:inset 0 -2px 0 var(--gold), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+body.night .page-tab{ background:transparent; }
+body.night .page-tab.active{ background:rgba(232,165,92,0.12); }
+@media (max-width:480px){
+  .page-nav{ padding:0 2px; }
+  .page-tab{ padding:10px 4px 9px; letter-spacing:.02em; border-right-color:rgba(232,165,92,0.08); }
+}
+
+/* ----------------------------------------------------------------------------
+ * 4-2 番台：大きなチャットカードから「帳場と紙」へ
+ * ---------------------------------------------------------------------------- */
+.counter-wrap{
+  background:transparent;
+  border:none;
+  border-top:1px solid var(--paper-shadow);
+  border-bottom:1px solid var(--paper-shadow);
+  border-radius:0;
+  padding:20px 4px;
+}
+.chat-window{
+  background:none;
+  border:none;
+  border-top:1px solid rgba(232,165,92,0.16);
+  padding:14px 2px 10px;
+  border-radius:0;
+}
+.bubble{
+  max-width:82%;
+  padding:11px 14px;
+  border-radius:1px;
+  box-shadow:none;
+  border:none;
+  background:transparent;
+  font-size:14.5px;
+}
+.bubble.shopkeeper{
+  align-self:flex-start;
+  width:min(85%,560px);
+  max-width:85%;
+  background:linear-gradient(180deg, rgba(232,165,92,0.05), transparent 60%), var(--paper-2);
+  border:1px solid var(--paper-shadow);
+  border-left:3px solid var(--gold);
+  border-radius:0 1px 1px 0;
+}
+.bubble.shopkeeper .name{
+  display:inline-block;
+  font-family:var(--font-display);
+  font-size:10px;
+  color:var(--gold);
+  background:transparent;
+  border:1px solid rgba(232,165,92,0.4);
+  padding:1px 6px;
+  margin:0 0 6px;
+  letter-spacing:.12em;
+}
+.bubble.you{
+  align-self:flex-end;
+  width:min(78%,460px);
+  max-width:100%;
+  background:rgba(0,0,0,0.14);
+  color:var(--ink);
+  border:1px solid var(--paper-shadow);
+  border-right:3px solid var(--wine);
+  border-radius:1px 0 0 1px;
+}
+body.night .bubble.shopkeeper{ background:linear-gradient(180deg, rgba(232,165,92,0.06), transparent 60%), #241C15; }
+body.night .bubble.you{ background:rgba(0,0,0,0.22); }
+@media (max-width:480px){
+  .bubble.shopkeeper, .bubble.you{ width:100%; max-width:100%; }
+}
+
+/* 質感4択・棚チップ等（.chart-btn共通）：丸チップから木の棚札・紙片へ */
+.chart-options{ gap:8px; }
+.chart-btn{
+  font-family:var(--font-display);
+  font-weight:400;
+  font-size:13.5px;
+  padding:10px 16px;
+  border:1px solid var(--paper-shadow);
+  border-left:2px solid var(--gold);
+  background:var(--paper-2);
+  color:var(--ink-soft);
+  border-radius:0 1px 1px 0;
+  box-shadow:none;
+  transition:background .15s ease, color .15s ease, border-color .15s ease;
+}
+.chart-btn:hover{
+  background:rgba(232,165,92,0.08);
+  color:var(--ink);
+  transform:none;
+  box-shadow:none;
+}
+.chart-btn.primary{
+  background:rgba(232,165,92,0.14);
+  color:var(--ink);
+  border-color:var(--gold);
+}
+.chart-btn.ghost{
+  border-style:solid;
+  border-left-style:dashed;
+  background:transparent;
+}
+.chart-btn.shelf-chip{ border-left-color:var(--wine); }
+
+.next-action-guide{
+  background:transparent;
+  border-radius:0;
+  padding:10px 0 10px 14px;
+  margin:10px 0 14px;
+  border-left:2px dashed var(--paper-shadow);
+  animation:none;
+}
+.guide-lead{ color:var(--ink-soft); font-weight:600; }
+
+.chat-input-row{
+  border-top:1px solid var(--paper-shadow);
+  padding-top:14px;
+}
+.chat-input-row textarea{
+  border:none;
+  border-bottom:1px solid var(--paper-shadow);
+  border-radius:0;
+  background:rgba(255,255,255,0.03);
+  padding:10px 8px;
+}
+body.night .chat-input-row textarea{ background:rgba(0,0,0,0.18); color:var(--ink); }
+.send-btn{
+  font-family:var(--font-display);
+  background:var(--gold);
+  color:#241608;
+  border-radius:1px;
+  padding:0 20px;
+  font-weight:700;
+  letter-spacing:.06em;
+}
+.send-btn:hover{ background:var(--gold-soft); }
+
+/* ----------------------------------------------------------------------------
+ * 4-3 感情の棚：丸チップから縦長の「背表紙」へ
+ * ---------------------------------------------------------------------------- */
+.shelf-tabs{
+  gap:0;
+  margin-bottom:22px;
+  background:linear-gradient(180deg, rgba(0,0,0,0.10), transparent 30%);
+  border-bottom:10px solid var(--wood-2);
+  padding:10px 6px 0;
+}
+.shelf-group{
+  gap:4px;
+  padding-bottom:14px;
+}
+.shelf-group-label{
+  font-family:var(--font-display);
+  font-size:10.5px;
+  color:var(--gold);
+  opacity:.8;
+  letter-spacing:.1em;
+  padding-left:2px;
+}
+.shelf-group-row{
+  align-items:flex-end;
+  gap:5px;
+}
+.shelf-tab{
+  font-family:var(--font-display);
+  writing-mode:vertical-rl;
+  text-orientation:mixed;
+  width:34px;
+  min-height:76px;
+  max-height:110px;
+  font-size:12.5px;
+  letter-spacing:.14em;
+  padding:10px 5px;
+  border:1px solid rgba(0,0,0,0.3);
+  border-top:1px solid rgba(255,255,255,0.06);
+  background:linear-gradient(180deg, var(--wood-2), var(--wood));
+  color:#EFE1C4;
+  border-radius:1px 1px 0 0;
+  box-shadow:inset -2px 0 0 rgba(0,0,0,0.18), inset 2px 0 0 rgba(255,255,255,0.05);
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.shelf-group-row .shelf-tab:nth-child(3n+2){
+  background:linear-gradient(180deg, #5A3D28, #3E2A1C);
+}
+.shelf-group-row .shelf-tab:nth-child(3n+3){
+  background:linear-gradient(180deg, #4A3220, #2E1F14);
+  min-height:88px;
+}
+.shelf-group-row .shelf-tab:nth-child(4n){
+  min-height:70px;
+}
+.shelf-tab:hover{
+  transform:translateY(-3px);
+}
+.shelf-tab.active{
+  transform:translateY(-4px);
+  color:#FFF3D6;
+  box-shadow:inset -2px 0 0 rgba(0,0,0,0.18), inset 2px 0 0 rgba(255,255,255,0.05), inset 0 3px 0 var(--gold);
+  background:linear-gradient(180deg, #6B4A30, #3E2A1C);
+}
+.shelf-tab.glow{
+  box-shadow:inset -2px 0 0 rgba(0,0,0,0.18), inset 2px 0 0 rgba(255,255,255,0.05), 0 0 7px rgba(232,165,92,0.45);
+}
+.shelf-wander-row{
+  margin-top:8px;
+}
+.wander-btn{
+  font-family:var(--font-display);
+  border:none;
+  border-bottom:1px dashed var(--wine);
+  border-radius:0;
+  background:transparent;
+  padding:4px 2px;
+}
+.wander-btn:hover{ color:var(--wine-2); }
+@media (max-width:480px){
+  .shelf-tab{ width:30px; min-height:64px; font-size:11.5px; }
+  .shelf-group-row .shelf-tab:nth-child(3n+3){ min-height:74px; }
+}
+
+/* ----------------------------------------------------------------------------
+ * 4-4 棚の内容：推薦カードから「選書札・蔵書票・帳面」へ
+ * ---------------------------------------------------------------------------- */
+.shelf-display{
+  background:linear-gradient(180deg, rgba(0,0,0,0.08), transparent 12%, transparent 88%, rgba(0,0,0,0.12));
+  border:none;
+  border-top:6px solid var(--wood-2);
+  border-bottom:6px solid var(--wood-2);
+  border-radius:0;
+  padding:22px 6px;
+}
+.definition{
+  display:inline-block;
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin:0 0 18px;
+  padding:4px 10px 4px 0;
+  border-bottom:1px dashed var(--paper-shadow);
+}
+.definition b{
+  font-size:14px;
+  border-right:1px solid var(--paper-shadow);
+  padding-right:8px;
+  margin-right:6px;
+}
+/* 「最終仕上げ」ブロック（後方L2554付近）のカード化を後勝ちで打ち消す */
+.quote-card{
+  font-family:var(--font-display);
+  font-size:17px;
+  line-height:2;
+  background:transparent;
+  border-left:2px solid var(--gold);
+  border-radius:0;
+  box-shadow:none;
+  padding:2px 0 2px 16px;
+  margin:4px 0 6px;
+}
+.quote-source{
+  font-size:11.5px;
+  margin:0 0 20px 16px;
+}
+.episodes-heading{
+  font-family:var(--font-display);
+  font-size:13px;
+  color:var(--gold);
+  letter-spacing:.06em;
+  border-top:1px solid rgba(232,165,92,0.25);
+  padding-top:14px;
+  margin-top:8px;
+}
+.episodes-note{ opacity:.7; }
+.episodes{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:0;
+}
+.episode-card{
+  background:transparent;
+  border:none;
+  border-top:1px solid var(--paper-shadow);
+  border-left:2px solid var(--sage);
+  border-radius:0;
+  padding:14px 14px 16px;
+}
+.episode-card.mine{
+  border-left:2px solid var(--wine);
+  background:rgba(183,112,124,0.06);
+}
+.episode-card.mine:hover{ background:rgba(183,112,124,0.12); }
+.episode-card .who{
+  font-family:var(--font-display);
+  letter-spacing:.1em;
+}
+.episode-shuffle, .recommend-shuffle{
+  border:none;
+  border-bottom:1px dashed var(--paper-shadow);
+  border-radius:0;
+  background:transparent;
+  padding:4px 2px;
+}
+
+.recommend-section{ border-top:1px dashed var(--paper-shadow); }
+.recommend-heading{ letter-spacing:.04em; }
+.recommend-row{ gap:0; }
+.recommend-chip{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:4px;
+  width:100%;
+  max-width:100%;
+  background:transparent;
+  border:none;
+  border-top:1px solid var(--paper-shadow);
+  border-radius:0;
+  padding:12px 4px;
+}
+.recommend-row .recommend-chip:first-of-type{ border-top:none; }
+.recommend-hook{
+  border-radius:0;
+  background:transparent;
+  color:var(--wine);
+  border:1px solid var(--wine);
+  padding:1px 7px;
+}
+body.night .recommend-hook{ color:#E8A0A8; border-color:#8A5560; }
+.recommend-more{ border-radius:0; }
+
+.music-row{ border-top:1px dashed var(--paper-shadow); padding-top:12px; margin-top:16px; }
+.playlist-tracks{ gap:0; }
+.playlist-track-row{
+  border-top:1px solid var(--paper-shadow);
+  padding:8px 2px;
+  gap:6px 10px;
+}
+.playlist-tracks .playlist-track-row:first-child{ border-top:none; }
+
+.detour-cards{ gap:0; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); }
+.detour-card{
+  background:transparent;
+  border:none;
+  border-left:2px solid var(--sage);
+  border-radius:0;
+  padding:12px 14px;
+}
+.detour-tier-low{ border-left-color:var(--sage); }
+.detour-tier-medium{ border-left-color:var(--gold); }
+.detour-tier-high{ border-left-color:var(--wine); }
+.detour-tier-badge{
+  border-radius:0;
+  background:transparent !important;
+  color:var(--ink-soft);
+  padding:0;
+  font-size:10px;
+  letter-spacing:.08em;
+  border-bottom:1px solid currentColor;
+}
+.detour-tier-low .detour-tier-badge{ color:var(--sage); }
+.detour-tier-medium .detour-tier-badge{ color:#C99248; }
+.detour-tier-high .detour-tier-badge{ color:#C17E8A; }
+.detour-cards .detour-card:nth-child(2){ margin-top:10px; }
+.detour-cards .detour-card:nth-child(3){ margin-top:20px; }
+
+.live-pick-row{ gap:0; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); }
+.live-pick-card{
+  background:transparent;
+  border:none;
+  border-left:2px solid #4FA3D1;
+  border-radius:0;
+  padding:10px 14px;
+}
+.live-pick-badge{
+  border-radius:0;
+  background:transparent;
+  color:#4FA3D1;
+  padding:0;
+  border-bottom:1px solid #4FA3D1;
+}
+body.night .live-pick-badge{ color:#7FC0E4; border-color:#7FC0E4; }
+@media (max-width:768px){
+  .detour-cards, .live-pick-row{ grid-template-columns:1fr 1fr; }
+}
+@media (max-width:480px){
+  .detour-cards, .live-pick-row{ grid-template-columns:1fr; }
+  .detour-cards .detour-card:nth-child(2), .detour-cards .detour-card:nth-child(3){ margin-top:0; }
+}
+
+/* ----------------------------------------------------------------------------
+ * 4-5 編纂机：フォームカードから「机面と一枚の紙」へ
+ * ---------------------------------------------------------------------------- */
+.desk-form{
+  background:linear-gradient(180deg, rgba(0,0,0,0.06), transparent 8%), var(--wood-2);
+  border:none;
+  border-top:4px solid var(--wood);
+  border-bottom:4px solid var(--wood);
+  border-radius:0;
+  padding:22px 18px;
+  gap:16px;
+}
+body.night .desk-form{ background:linear-gradient(180deg, rgba(0,0,0,0.12), transparent 8%), #1C1611; }
+#storyInput{
+  border:none;
+  border-radius:1px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(0,0,0,0.05);
+  padding:16px 18px;
+}
+.field select, .field input{
+  border:none;
+  border-bottom:1px solid var(--paper-shadow);
+  border-radius:0;
+  background:transparent;
+  padding:8px 4px;
+}
+body.night .field select, body.night .field input{ color:var(--ink); }
+.field label{
+  font-family:var(--font-display);
+  font-size:11px;
+  letter-spacing:.08em;
+  opacity:.85;
+}
+.count-row{ margin-top:2px; }
+.story-count{
+  font-family:var(--font-display);
+  font-style:italic;
+  opacity:.75;
+}
+.desk-extra{
+  border-top:none;
+  border-left:2px solid var(--paper-shadow);
+  padding:10px 0 4px 14px;
+  margin-top:4px;
+}
+.desk-extra summary{
+  background:transparent;
+  border:none;
+  border-bottom:1px dashed var(--gold);
+  border-radius:0;
+  padding:2px 4px 4px 0;
+  font-weight:600;
+}
+body.night .desk-extra summary{ background:transparent; }
+.desk-actions{ margin-top:4px; }
+.bind-btn{
+  font-family:var(--font-display);
+  background:linear-gradient(180deg, var(--gold), #B47F35);
+  color:#241608;
+  border:1px solid #7A4A1E;
+  border-radius:1px;
+  padding:13px 30px;
+  font-weight:700;
+  letter-spacing:.1em;
+  box-shadow:0 2px 0 #5C3714, 0 6px 14px rgba(0,0,0,0.3);
+  transition:background .15s ease, box-shadow .15s ease, transform .1s ease;
+}
+.bind-btn:hover{
+  background:linear-gradient(180deg, var(--gold-soft), var(--gold));
+}
+.bind-btn:active{
+  transform:translateY(1px);
+  box-shadow:0 1px 0 #5C3714, 0 3px 8px rgba(0,0,0,0.3);
+}
+.curate-box{
+  background:transparent;
+  border:none;
+  border-left:2px solid var(--wine);
+  border-radius:0;
+  padding:10px 0 10px 14px;
+}
+@media (max-width:480px){
+  .desk-form{ padding:16px 12px; }
+  #storyInput{ padding:12px 14px; }
+}
+
+/* ----------------------------------------------------------------------------
+ * 4-6 あなたの本棚：「黒い空箱」から木の棚へ
+ * ---------------------------------------------------------------------------- */
+.wood-shelf{
+  position:relative;
+  background:linear-gradient(180deg, var(--wood-2), var(--wood));
+  border-radius:1px;
+  padding:26px 26px 0;
+  box-shadow:inset 0 0 40px rgba(0,0,0,0.35);
+}
+.wood-shelf::before,
+.wood-shelf::after{
+  content:"";
+  position:absolute;
+  top:0; bottom:0;
+  width:14px;
+  background:linear-gradient(90deg, rgba(0,0,0,0.4), rgba(255,255,255,0.04) 40%, rgba(0,0,0,0.25));
+  pointer-events:none;
+}
+.wood-shelf::before{ left:0; }
+.wood-shelf::after{
+  right:0;
+  left:auto;
+  background:linear-gradient(90deg, rgba(0,0,0,0.25), rgba(255,255,255,0.04) 60%, rgba(0,0,0,0.4));
+}
+.shelf-row{
+  position:relative;
+  padding-bottom:20px;
+  border-bottom:none;
+  box-shadow:none;
+}
+.shelf-row::after{
+  content:"";
+  position:absolute;
+  left:-26px; right:-26px; bottom:0;
+  height:16px;
+  background:linear-gradient(180deg, var(--wood-2) 0%, var(--wood-2) 55%, #0C0805 100%);
+  box-shadow:0 8px 14px rgba(0,0,0,0.4);
+}
+.shelf-empty{
+  position:relative;
+  color:rgba(239,230,211,0.55);
+  font-family:var(--font-display);
+  font-size:12.5px;
+  padding:34px 18px 46px;
+  letter-spacing:.04em;
+}
+.spine.empty-spine{
+  background:linear-gradient(180deg, rgba(239,230,211,0.05), transparent) !important;
+}
+#bookshelf .section-head h2{
+  position:relative;
+}
+.shelf-month-tabs{ gap:0; }
+.shelf-month-tab{
+  border:none;
+  border-bottom:2px solid transparent;
+  border-radius:0;
+  background:transparent;
+  padding:5px 10px;
+}
+.shelf-month-tab.active{
+  background:transparent;
+  color:var(--gold);
+  border-bottom-color:var(--gold);
+}
+body.night .shelf-month-tab.active{ background:transparent; color:var(--gold); }
+.record-corner{
+  background:linear-gradient(180deg, rgba(0,0,0,0.08), transparent);
+  border:none;
+  border-top:1px dashed var(--paper-shadow);
+  border-radius:0;
+  padding:16px 4px 4px;
+}
+body.night .record-corner{ background:linear-gradient(180deg, rgba(0,0,0,0.12), transparent); }
+
+/* ----------------------------------------------------------------------------
+ * 4-7 店内案内：同寸4カードから「案内板」へ
+ * ---------------------------------------------------------------------------- */
+.shop-guide{
+  background:linear-gradient(180deg, rgba(0,0,0,0.10), transparent 10%), var(--paper-2);
+  border:none;
+  border-top:1px solid var(--paper-shadow);
+  border-bottom:1px solid var(--paper-shadow);
+  padding:6px 24px 18px;
+}
+.shop-guide-heading{
+  border-bottom:1px solid rgba(232,165,92,0.2);
+  padding-bottom:14px;
+  margin-bottom:14px;
+}
+.shop-guide .intro-steps{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:0;
+}
+.shop-guide .intro-step{
+  padding:6px 14px;
+  background:transparent;
+  border:none;
+  border-left:1px solid var(--paper-shadow);
+  border-radius:0;
+  align-items:flex-start;
+  text-align:left;
+  transition:background .15s ease;
+}
+.shop-guide .intro-steps .intro-step:first-child{ border-left:none; padding-left:2px; }
+.shop-guide .intro-step:hover{
+  transform:none;
+  background:rgba(232,165,92,0.05);
+  border-color:var(--paper-shadow);
+}
+.shop-guide .intro-num{
+  width:auto;
+  height:auto;
+  border-radius:0;
+  background:transparent;
+  color:var(--gold);
+  font-size:11px;
+  letter-spacing:.06em;
+  margin-bottom:6px;
+  border:1px solid rgba(232,165,92,0.35);
+  padding:1px 6px;
+}
+.shop-guide .intro-title{ font-size:13.5px; }
+.shop-guide .intro-text{ font-size:11.5px; text-align:left; }
+.shop-guide .pref-row{
+  justify-content:flex-start;
+  border-top:1px dashed var(--paper-shadow);
+  padding-top:12px;
+}
+.shop-guide .pref-toggle{ opacity:.75; }
+@media (max-width:768px){
+  .shop-guide .intro-steps{ grid-template-columns:1fr 1fr; }
+  .shop-guide .intro-steps .intro-step:nth-child(2n+1){ border-left:none; }
+  .shop-guide .intro-steps .intro-step:nth-child(1),
+  .shop-guide .intro-steps .intro-step:nth-child(2){
+    border-bottom:1px solid var(--paper-shadow);
+    padding-bottom:12px;
+  }
+}
+@media (max-width:480px){
+  .shop-guide .intro-steps{ grid-template-columns:1fr; }
+  .shop-guide .intro-steps .intro-step{
+    border-left:none;
+    border-top:1px solid var(--paper-shadow);
+    padding:12px 2px;
+  }
+  .shop-guide .intro-steps .intro-step:first-child{ border-top:none; }
+}
+
+/* ----------------------------------------------------------------------------
+ * 4-8 共通：情報密度・余白・書体の底上げ
+ * ---------------------------------------------------------------------------- */
+.recommend-buy, .music-link, .playlist-services a{
+  opacity:.85;
+}
+.fav-btn{
+  border-radius:1px;
+}
+
+/* ----------------------------------------------------------------------------
+ * レスポンシブ：PCで管理画面のように全幅へ広がらないための余白確認
+ * ---------------------------------------------------------------------------- */
+@media (min-width:1100px){
+  section, .shop-guide{ max-width:920px; }
+}
+
+/* ============================================================================
+ * v1.3 最終統合：一場面ずつの体験（表紙→書く→製本→まなが預かる→本棚）
+ * --------------------------------------------------------------------------
+ * 方針：既存のPhase A〜B-2 CSSは一切削除・上書きしない。ここでは
+ *   body.experience-ready / body.experience-open / .experience-page.is-active
+ * という新しい状態クラスの出し分けと、新設した体験バー・メニュー・
+ * 「まなが預かる」場面カードのスタイルだけを追加する。
+ * JS初期化前（experience-readyが付く前）は本ブロックの大半が無効なため、
+ * 既存の全機能縦スクロール表示のまま壊れない（仕様書4-2）。
+ * .shop・祖先要素へtransform/perspective等は使用しない。
+ * ============================================================================ */
+
+/* ---- 4-2：JS初期化後・表紙状態。店内セクション・4タブナビ・土間・店内案内を主画面から外す ---- */
+body.experience-ready #pageNav,
+body.experience-ready .doma,
+body.experience-ready .shop-guide{
+  display:none;
+}
+body.experience-ready .experience-page{
+  display:none;
+}
+
+/* ---- 4-2：店内（体験モード）。is-activeの頁だけを表示し、表紙・通常footerは隠す ---- */
+body.experience-open .entrance.hero{
+  display:none;
+}
+body.experience-open .shop-footer{
+  display:none;
+}
+body.experience-open .experience-page{
+  display:none;
+}
+body.experience-open .experience-page.is-active{
+  display:block;
+}
+
+/* ---- 4-5：頁ごとの最大幅・中央寄せ・必要な場合だけ縦スクロール ---- */
+body.experience-open .experience-page.is-active{
+  max-width:880px;
+  margin:0 auto;
+  min-height:calc(100dvh - 52px);
+  box-sizing:border-box;
+  scroll-margin-top:0;
+}
+@media (max-width:600px){
+  body.experience-open .experience-page.is-active{
+    max-width:100%;
+    padding-left:16px;
+    padding-right:16px;
+  }
+}
+
+/* ---- 体験バー：体験モード中だけ見える小さな常設ヘッダー（ブランド名＋メニューボタン） ---- */
+.experience-bar{
+  display:none;
+  position:sticky;
+  top:0;
+  z-index:45;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 18px;
+  background:linear-gradient(180deg, rgba(234,217,184,0.97), rgba(234,217,184,0.9));
+  border-bottom:1px solid var(--paper-shadow);
+}
+body.night .experience-bar{
+  background:linear-gradient(180deg, rgba(37,30,23,0.97), rgba(37,30,23,0.9));
+}
+body.experience-open .experience-bar{
+  display:flex;
+}
+.experience-bar-brand{
+  font-family:var(--font-display);
+  font-size:13.5px;
+  letter-spacing:.06em;
+  color:var(--ink);
+  opacity:.85;
+}
+
+/* ---- メニューボタン（表紙用・体験バー用で共通） ---- */
+.menu-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  border:1px solid var(--paper-shadow);
+  background:rgba(255,255,255,0.12);
+  color:var(--ink);
+  font-size:18px;
+  line-height:1;
+  cursor:pointer;
+  transition:background .15s ease, transform .15s ease;
+}
+.menu-btn:hover{ transform:translateY(-1px); }
+.cover-menu-btn{
+  position:absolute;
+  top:18px;
+  right:18px;
+  z-index:2;
+  border-color:rgba(239,230,211,0.35);
+  background:rgba(16,24,36,0.35);
+  color:var(--paper);
+}
+.experience-bar .menu-btn{
+  border-color:var(--paper-shadow);
+  background:rgba(255,255,255,0.35);
+  color:var(--ink);
+}
+body.night .experience-bar .menu-btn{
+  background:rgba(0,0,0,0.2);
+}
+
+/* ---- Hero写真：既存の夜青グラデーションの上に敷く完成画像（読み込み失敗時は自動でフォールバック） ---- */
+.entrance.hero{ overflow:hidden; }
+.hero-photo{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+}
+.hero-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.hero-photo::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  /* ★v1.3公開前最終修正：暗すぎる／黒い矩形化の指摘を受け、overlayの濃度を大幅に下げる。
+     主コピー・CTAの可読性は下の.trust-badge等の背景で個別に確保しているため、
+     ここは店舗の扉・窓・灯りが見える程度の薄い濃度に留める（仕様書8章）。 */
+  background:linear-gradient(180deg, rgba(11,18,28,0.22) 0%, rgba(11,18,28,0.32) 55%, rgba(16,24,36,0.48) 100%);
+  opacity:1;
+  z-index:0;
+}
+.hero-photo img{
+  opacity:1;
+}
+.entrance.hero > *:not(.hero-photo){
+  position:relative;
+  z-index:1;
+}
+/* ★v1.3公開前最終修正：overlayを薄くした分、写真の明るい部分でも文字が読めるよう
+   控えめなtext-shadowで輪郭を補強する（黒い帯や箱は追加しない）。 */
+.entrance.hero .eyebrow,
+.entrance.hero h1,
+.entrance.hero .tagline,
+.entrance.hero .sub-tagline{
+  text-shadow:0 1px 3px rgba(0,0,0,0.55), 0 0 18px rgba(0,0,0,0.35);
+}
+
+/* ============================================================================
+ * 店内メニュー（4タブ主ナビの代替。仕様書2-1）
+ * ============================================================================ */
+.experience-menu{
+  position:fixed;
+  inset:0;
+  z-index:210;
+  display:flex;
+  justify-content:flex-end;
+  background:rgba(11,18,28,0.55);
+}
+.experience-menu.hidden{ display:none; }
+.experience-menu-card{
+  width:min(360px, 88vw);
+  height:100%;
+  overflow-y:auto;
+  background:var(--paper);
+  color:var(--ink);
+  border-left:1px solid var(--paper-shadow);
+  padding:20px 20px 32px;
+  box-sizing:border-box;
+}
+.experience-menu-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:16px;
+}
+.experience-menu-title{
+  font-family:var(--font-display);
+  font-size:16px;
+  letter-spacing:.06em;
+}
+.experience-menu-close{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  border:1px solid var(--paper-shadow);
+  background:transparent;
+  color:var(--ink);
+  font-size:18px;
+  cursor:pointer;
+}
+.experience-menu-nav{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-bottom:20px;
+}
+.menu-item{
+  font-family:var(--font-body);
+  font-size:14.5px;
+  text-align:left;
+  padding:12px 14px;
+  border:1px solid var(--paper-shadow);
+  border-radius:6px;
+  background:rgba(255,255,255,0.3);
+  color:var(--ink);
+  cursor:pointer;
+  transition:background .15s ease, border-color .15s ease;
+}
+body.night .menu-item{ background:rgba(255,255,255,0.05); }
+.menu-item:hover{ border-color:var(--gold); }
+.menu-item.active{
+  background:var(--wine);
+  border-color:var(--wine);
+  color:#f6e8c9;
+}
+.experience-menu-section{
+  font-family:var(--font-display);
+  font-size:11.5px;
+  letter-spacing:.08em;
+  color:var(--ink-soft);
+  margin:18px 0 8px;
+  padding-top:12px;
+  border-top:1px dashed var(--paper-shadow);
+}
+.experience-menu-nav .experience-menu-section{
+  margin:10px 0 4px;
+  padding-top:8px;
+}
+.experience-menu-settings{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.experience-menu-settings .pref-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.experience-menu-settings .share-row,
+.experience-menu-settings .legal-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 12px;
+}
+.experience-menu-settings .about-accordion-wrap{ max-width:none; }
+
+/* ============================================================================
+ * 第三頁：店主まなが預かる（旧showUnfiledShelfPicker再構成。仕様書1-3）
+ * ============================================================================ */
+.mana-receive-overlay{
+  position:fixed;
+  inset:0;
+  z-index:150;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  box-sizing:border-box;
+  background:rgba(11,18,28,0.72);
+}
+.mana-receive-overlay.hidden{ display:none; }
+.mana-receive-card{
+  width:min(420px, 100%);
+  max-height:calc(100dvh - 48px);
+  overflow-y:auto;
+  background:var(--paper);
+  color:var(--ink);
+  border:1px solid var(--paper-shadow);
+  border-radius:4px;
+  padding:28px 24px 24px;
+  box-sizing:border-box;
+  text-align:center;
+  box-shadow:0 18px 46px rgba(0,0,0,0.35);
+}
+.mana-receive-figure{
+  width:132px;
+  height:165px;
+  margin:0 auto 16px;
+  border-radius:3px;
+  overflow:hidden;
+  /* ★v1.3公開前最終修正：画像成功時に黒い背景板が透けて見えないよう、既定は透明にする。
+     暗い背景（wood系）は画像読み込み失敗時（.img-failedが付いた時）だけ表示する。 */
+  background:transparent;
+}
+.mana-receive-figure img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  opacity:1;
+}
+.mana-receive-figure.img-failed{
+  background:linear-gradient(180deg, var(--gold-soft), var(--gold));
+}
+.mana-receive-book{
+  display:inline-block;
+  margin:0 auto 14px;
+  padding:10px 16px;
+  min-width:140px;
+  background:linear-gradient(180deg, var(--wine), var(--wine-2));
+  color:#f6e8c9;
+  border-radius:2px;
+  box-shadow:0 3px 0 rgba(0,0,0,0.25);
+}
+.mana-receive-book-title{
+  font-family:var(--font-display);
+  font-size:13.5px;
+  letter-spacing:.04em;
+}
+.mana-receive-line{
+  font-size:15px;
+  line-height:1.85;
+  color:var(--ink);
+  margin:0 0 18px;
+}
+.mana-receive-card label{
+  display:block;
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin-bottom:6px;
+  text-align:left;
+}
+.mana-receive-card select{
+  width:100%;
+  margin-bottom:16px;
+  padding:10px 12px;
+  border-radius:4px;
+  border:1px solid var(--paper-shadow);
+  background:rgba(255,255,255,0.5);
+  color:var(--ink);
+  font-size:14px;
+}
+body.night .mana-receive-card select{ background:rgba(0,0,0,0.25); }
+.mana-receive-actions{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.mana-receive-error{
+  margin-top:12px;
+  font-size:12.5px;
+  color:var(--wine-2);
+}
+.mana-receive-error.hidden{ display:none; }
+
+/* ---- 本文サイズをPhase B-2よりわずかに引き上げ（仕様書7：約5〜8%） ---- */
+body.experience-open .experience-page.is-active .section-sub,
+body.experience-open .experience-page.is-active textarea,
+body.experience-open .experience-page.is-active input,
+body.experience-open .experience-page.is-active .bubble{
+  font-size:calc(1em * 1.06);
+}
+
+/* ============================================================================
+ * v1.3 公開前最終修正
+ * ============================================================================ */
+
+/* ---- 1. 主動線だけの頁番号（「Step 1」のようなアプリ的な丸バッジにはしない。地の文として表示） ---- */
+.page-label{
+  font-family:var(--font-display);
+  font-size:12.5px;
+  letter-spacing:.08em;
+  color:var(--wine);
+  white-space:nowrap;
+  flex-shrink:0;
+}
+body.night .section-head .page-label{ color:var(--gold); }
+.bind-page-label{
+  color:var(--gold-soft);
+  font-size:13px;
+  margin:0 0 4px;
+  text-align:center;
+}
+.mana-page-label{
+  color:var(--wine);
+  font-size:12.5px;
+  margin:0 0 10px;
+}
+
+/* ---- 5. 店内メニューボタンの文字表示 ---- */
+.menu-btn-label{
+  font-family:var(--font-body);
+  font-size:13px;
+  letter-spacing:.02em;
+  margin-left:6px;
+}
+.menu-btn-label-short{ display:none; }
+@media (max-width:480px){
+  .menu-btn-label-full{ display:none; }
+  .menu-btn-label-short{ display:inline; }
+}
+.menu-btn{
+  width:auto;
+  padding:0 16px 0 14px;
+  border-radius:20px;
+  gap:2px;
+}
+@media (max-width:480px){
+  .menu-btn{ padding:0 12px 0 12px; }
+  .menu-btn-label{ font-size:12px; margin-left:4px; }
+}
+
+/* ---- 2. 棚連動の本・音楽推薦（この棚を選んだあなたへ） ---- */
+.shelf-pick-recommend{
+  margin:24px 0 0;
+  padding:20px;
+  border:1px solid var(--paper-shadow);
+  border-radius:4px;
+  background:rgba(255,255,255,0.04);
+}
+.shelf-pick-recommend-heading{
+  font-family:var(--font-display);
+  font-size:15px;
+  color:var(--wine);
+  margin:0 0 6px;
+}
+body.night .shelf-pick-recommend-heading{ color:var(--gold); }
+.shelf-pick-recommend-note{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin:0 0 16px;
+}
+.shelf-pick-recommend-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+@media (max-width:640px){
+  .shelf-pick-recommend-grid{ grid-template-columns:1fr; }
+}
+.shelf-pick-book,
+.shelf-pick-music{
+  padding:12px 14px;
+  border:1px solid var(--paper-shadow);
+  border-radius:4px;
+  background:rgba(255,255,255,0.03);
+}
+.shelf-pick-kicker{
+  font-size:11px;
+  letter-spacing:.08em;
+  color:var(--ink-soft);
+  margin:0 0 4px;
+}
+.shelf-pick-title{
+  font-family:var(--font-display);
+  font-size:14px;
+  margin:0 0 4px;
+  color:var(--ink);
+}
+.shelf-pick-meta{
+  font-size:12px;
+  color:var(--ink-soft);
+  margin:0 0 8px;
+}
+.shelf-pick-link{
+  font-size:12.5px;
+  color:var(--gold);
+}
+.shelf-pick-more{
+  display:inline-block;
+  margin-top:16px;
+  font-size:12.5px;
+  color:var(--gold);
+  cursor:pointer;
+}
+
+/* ---- 3. 番台：4択＋それ以外／21棚一覧 ---- */
+.counter-shelf-groups{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  margin-top:14px;
+}
+.counter-shelf-group-heading{
+  font-family:var(--font-display);
+  font-size:13px;
+  color:var(--wine);
+  margin:0 0 6px;
+}
+body.night .counter-shelf-group-heading{ color:var(--gold); }
+.counter-shelf-group-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.counter-shelf-pill{
+  font-size:12.5px;
+  padding:7px 12px;
+  border:1px solid var(--paper-shadow);
+  border-radius:16px;
+  background:rgba(255,255,255,0.04);
+  color:var(--ink);
+  cursor:pointer;
+}
+.counter-shelf-pill:hover{ border-color:var(--gold); }
+.counter-write-btn{
+  margin-top:18px;
+}
+
+/* ---- 6. 本棚到着後の次行動 ---- */
+.bookshelf-arrival{
+  margin:24px 0 0;
+  padding:20px;
+  border:1px solid var(--paper-shadow);
+  border-radius:4px;
+  background:rgba(255,255,255,0.04);
+  text-align:center;
+}
+.bookshelf-arrival-heading{
+  font-family:var(--font-display);
+  font-size:15px;
+  color:var(--ink);
+  margin:0 0 14px;
+}
+.bookshelf-arrival-actions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+}
+
+/* ---- 3. 番台：棚の案内（統一挨拶文・確認メモ） ---- */
+.counter-greeting{
+  font-size:15px;
+  line-height:1.85;
+  color:var(--ink);
+  margin:0 0 18px;
+}
+.counter-shelf-confirm-note{
+  font-size:14.5px;
+  color:var(--ink);
+  margin:0 0 14px;
+}
+.counter-shelf-back{
+  margin-top:4px;
+}
+
+/* ============================================================================
+ * v1.3 RC2 最終微調整（表紙メニューの重なり解消／今日の日付／装丁カード／
+ * 「今月の寄り道」の路地デザイン／棚〜本音楽紹介の背景変化）
+ * ============================================================================ */
+
+/* ---- 1. 表紙メニューの位置とコントラスト ----
+   .entrance.hero > *:not(.hero-photo){position:relative} に上書きされていた
+   .cover-menu-btn の position:absolute を、同等詳細度＋記述順の優先度で確実に復元する。 */
+.entrance.hero > .cover-menu-btn{
+  position:absolute;
+  top:max(14px, env(safe-area-inset-top));
+  right:max(14px, env(safe-area-inset-right));
+  left:auto;
+  z-index:5;
+  background:rgba(16,24,36,0.86);
+  border:1px solid rgba(239,230,211,0.55);
+  color:var(--paper);
+  box-shadow:0 2px 10px rgba(0,0,0,0.35);
+}
+.entrance.hero > .cover-menu-btn:hover{
+  background:rgba(16,24,36,0.94);
+}
+
+/* 店内上部（.experience-bar）のメニューボタンも背景とのコントラストを補強する */
+.experience-bar .menu-btn{
+  border-color:rgba(16,24,36,0.32);
+  box-shadow:0 1px 4px rgba(0,0,0,0.1);
+}
+body.night .experience-bar .menu-btn{
+  border-color:rgba(239,230,211,0.4);
+  background:rgba(0,0,0,0.32);
+}
+
+/* 390px幅でもHero見出し・CTAとメニューが重ならないよう上余白を確保する。
+   （.entrance{padding:44px 16px 32px} という既存の480px以下上書きに対し、
+   詳細度の高い.entrance.heroで必要な分だけ上パディングを戻す） */
+@media (max-width:480px){
+  .entrance.hero{ padding-top:64px; }
+}
+
+/* ---- RC2b：Hero下部の円形ロゴ（蔵書印）のための余白確保。既存.entrance{padding-bottom:48px}
+   に対し、.entrance.hero（詳細度が高い）だけ下パディングを広げ、主コピー・CTA・trust-rowと
+   重ならないようにする。 ---- */
+.entrance.hero{ padding-bottom:150px; }
+@media (max-width:480px){
+  .entrance.hero{ padding-bottom:112px; }
+}
+.entrance.hero > .hero-seal{
+  position:absolute;
+  left:50%;
+  bottom:max(28px, env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  z-index:2;
+  width:112px;
+  height:112px;
+  border-radius:50%;
+  overflow:hidden;
+  box-shadow:0 3px 10px rgba(0,0,0,0.35);
+  pointer-events:none;
+}
+.hero-seal img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+@media (max-width:480px){
+  .entrance.hero > .hero-seal{
+    width:80px;
+    height:80px;
+    bottom:max(24px, env(safe-area-inset-bottom));
+  }
+}
+
+/* ---- 2. 今日の日付 ---- */
+.shop-current-date{
+  font-family:var(--font-body);
+  font-size:12px;
+  color:var(--ink);
+  opacity:.7;
+  letter-spacing:.02em;
+  white-space:nowrap;
+  margin-left:auto;
+  margin-right:12px;
+}
+body.night .shop-current-date{ color:var(--paper); opacity:.75; }
+@media (max-width:480px){
+  .shop-current-date{ font-size:11px; margin-right:8px; }
+}
+
+#desk{ position:relative; }
+.desk-current-date{
+  position:absolute;
+  top:16px;
+  right:20px;
+  font-family:var(--font-body);
+  font-size:12px;
+  color:var(--ink);
+  opacity:.55;
+  letter-spacing:.03em;
+  white-space:nowrap;
+}
+body.night .desk-current-date{ color:var(--paper); opacity:.6; }
+@media (max-width:480px){
+  .desk-current-date{ top:10px; right:16px; font-size:10.5px; }
+}
+
+/* ---- 3. 本・音楽の装丁カード ---- */
+.shelf-pick-book,
+.shelf-pick-music{
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+}
+.shelf-pick-jacket{
+  flex:0 0 auto;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(0,0,0,0.15);
+  box-shadow:0 2px 6px rgba(0,0,0,0.2);
+  display:flex;
+  align-items:flex-end;
+}
+.shelf-pick-book .shelf-pick-jacket{
+  width:60px;
+  height:90px; /* 縦長 概ね2:3 */
+  border-radius:2px 5px 5px 2px;
+}
+.shelf-pick-music .shelf-pick-jacket{
+  width:80px;
+  height:80px; /* 正方形 */
+  border-radius:3px;
+}
+.shelf-pick-jacket-tag{
+  position:relative;
+  z-index:2;
+  display:block;
+  width:100%;
+  padding:3px 6px;
+  font-size:9px;
+  letter-spacing:.05em;
+  background:rgba(0,0,0,0.34);
+  color:#fff;
+  text-align:center;
+}
+.shelf-pick-jacket img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:1;
+}
+.shelf-pick-jacket-spine{
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width:7px;
+  background:rgba(0,0,0,0.2);
+  z-index:1;
+}
+.shelf-pick-jacket-grain{
+  position:absolute;
+  inset:0;
+  opacity:.16;
+  background-image:repeating-linear-gradient(115deg, rgba(255,255,255,0.55) 0 1px, transparent 1px 6px);
+  pointer-events:none;
+  z-index:1;
+}
+.shelf-pick-book-body,
+.shelf-pick-music-body{
+  flex:1 1 auto;
+  min-width:0;
+}
+@media (max-width:480px){
+  .shelf-pick-book, .shelf-pick-music{ gap:10px; }
+  .shelf-pick-book .shelf-pick-jacket{ width:50px; height:75px; }
+  .shelf-pick-music .shelf-pick-jacket{ width:62px; height:62px; }
+}
+
+/* ============================================================================
+ * 「今月の寄り道」路地デザイン（内容・リンク・件数・機能は不変更。装飾のみ）
+ * ============================================================================ */
+.detour-section{
+  position:relative;
+  /* ★v1.3 RC2b：色の旅がmusic-row（試聴室・灯橙）の直後に来ることを踏まえ、
+     ここで夜青へ戻さず、木の茶から灯橙寄りの暖色で続きとして終える
+     （「気の向くままに」〜本・音楽紹介の最後を灯橙で締めくくる：仕様書4章）。 */
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(232,165,92,0.16), transparent 62%),
+    linear-gradient(180deg, #241A12 0%, #3B2814 55%, #4A3018 100%);
+  border-top:none;
+  border-radius:6px;
+  padding:22px 16px 20px;
+  overflow:hidden;
+}
+.detour-heading,
+.detour-note{
+  position:relative;
+  z-index:2;
+  /* ★微調整：var(--paper)はbody.nightで#251E17（ほぼ黒）へ反転するため、
+     常に暗い夜色背景の上に乗るこの見出しには使えない。固定のクリーム色で確実に読める状態にする。 */
+  color:#F5EAD2;
+  opacity:1;
+}
+.detour-pr{
+  position:relative;
+  z-index:2;
+  color:rgba(239,230,211,0.6);
+}
+.detour-note{ color:rgba(239,230,211,0.55); margin-top:18px; }
+
+.detour-cards{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  margin-top:18px;
+}
+/* 石畳を思わせる路地中央の縦線 */
+.detour-cards::before{
+  content:"";
+  position:absolute;
+  top:4px;
+  bottom:4px;
+  left:50%;
+  width:2px;
+  transform:translateX(-50%);
+  background:repeating-linear-gradient(180deg, rgba(232,201,122,0.32) 0 6px, transparent 6px 14px);
+  z-index:0;
+  pointer-events:none;
+}
+.detour-card{
+  position:relative;
+  z-index:1;
+  width:60%;
+  max-width:280px;
+  margin:0 0 22px;
+  padding:12px 14px;
+  /* ★微調整：背後の窓明かり演出が文字へ透けないよう、ほぼ不透明な煤色に強化 */
+  background:rgba(30,24,18,0.95);
+  border:1px solid rgba(232,201,122,0.26);
+  border-left:none !important;
+  border-radius:3px;
+  box-shadow:0 6px 16px rgba(0,0,0,0.35), 0 0 20px rgba(232,165,92,0.1);
+  color:#F5EAD2;
+}
+/* 窓から漏れる灯り */
+.detour-card::before{
+  content:"";
+  position:absolute;
+  top:-3px;
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(232,165,92,0.9), rgba(232,165,92,0) 70%);
+  box-shadow:0 0 10px 3px rgba(232,165,92,0.45);
+  pointer-events:none;
+}
+.detour-cards .detour-card:nth-child(odd){
+  align-self:flex-start;
+  margin-left:6%;
+}
+.detour-cards .detour-card:nth-child(odd)::before{ right:-4px; }
+.detour-cards .detour-card:nth-child(even){
+  align-self:flex-end;
+  margin-right:6%;
+}
+.detour-cards .detour-card:nth-child(even)::before{ left:-4px; }
+.detour-cards .detour-card:nth-child(3n){ width:52%; }
+.detour-cards .detour-card:nth-child(3n+2){ width:66%; }
+
+.detour-tier-badge{
+  background:rgba(232,201,122,0.16) !important;
+  color:var(--lamp-glow) !important;
+  border:1px solid rgba(232,201,122,0.4);
+  border-bottom:1px solid rgba(232,201,122,0.4) !important;
+}
+/* ★微調整：.detour-name もvar(--paper)依存をやめ、固定のクリーム色・opacity:1で
+   夜色カード背景の上でも常に読める状態にする（body.night反転の影響を受けない）。 */
+.detour-name{ color:#F5EAD2 !important; opacity:1; }
+.detour-desc{ color:rgba(239,230,211,0.82); opacity:1; }
+.detour-link,
+.detour-link:link{ color:var(--lamp-glow) !important; opacity:1; }
+.detour-link:visited{ color:var(--lamp-glow) !important; }
+.detour-link:hover,
+.detour-link:focus-visible{ color:var(--lamp-glow) !important; opacity:.85; }
+body.night .detour-card{ background:rgba(24,19,14,0.96); }
+body.night .detour-heading,
+body.night .detour-name{ color:#F5EAD2 !important; }
+
+@media (max-width:480px){
+  .detour-card{ width:74%; max-width:none; }
+  .detour-cards .detour-card:nth-child(odd){ margin-left:2%; }
+  .detour-cards .detour-card:nth-child(even){ margin-right:2%; }
+  .detour-cards .detour-card:nth-child(3n){ width:66%; }
+  .detour-cards .detour-card:nth-child(3n+2){ width:78%; }
+}
+
+/* ============================================================================
+ * 「気の向くままに」〜本・音楽紹介の区間に、路地→選書棚→試聴室への
+ * ゆるやかな視覚変化を加える（内容・リンク・件数は不変更。背景と疑似要素のみ）。
+ * 既存の紙面トーンの上に薄い色調オーバーレイを重ねるだけなので、
+ * 既存の文字色（--ink系）はそのまま可読性を保つ。
+ * transformは装飾用の疑似要素にのみ使用し、祖先要素へは使用しない。
+ * アニメーション・自動スクロール・parallaxは一切追加しない。
+ * ============================================================================ */
+
+/* Zone A：棚タブ〜「気の向くままに巡る」＝路地の入口（夜青の気配） */
+.shelf-tabs{
+  position:relative;
+  padding:14px 16px 12px;
+  margin:0 -16px 20px;
+  border-radius:6px;
+  background:
+    radial-gradient(circle at 10% 15%, rgba(232,165,92,0.07), transparent 42%),
+    radial-gradient(circle at 92% 78%, rgba(232,165,92,0.05), transparent 46%),
+    linear-gradient(180deg, rgba(11,18,28,0.06) 0%, rgba(16,24,36,0.03) 100%);
+}
+.shelf-tabs::after{
+  content:"";
+  position:absolute;
+  left:8%;
+  right:8%;
+  bottom:0;
+  height:1px;
+  background:repeating-linear-gradient(90deg, rgba(139,110,74,0.35) 0 5px, transparent 5px 11px);
+  pointer-events:none;
+}
+
+/* Zone B：店主が選んだ本＝奥の選書棚（煤色〜木の茶、棚板の影） */
+.recommend-section{
+  position:relative;
+  padding:20px 6% 20px 4%;
+  margin:0 -16px 0;
+  background:
+    repeating-linear-gradient(90deg, rgba(62,42,28,0.05) 0 2px, transparent 2px 64px),
+    linear-gradient(180deg, rgba(30,24,18,0.05) 0%, rgba(62,42,28,0.07) 100%);
+}
+.recommend-row{ position:relative; z-index:1; }
+.recommend-row .recommend-chip:nth-child(3n+1){ margin-top:0; }
+.recommend-row .recommend-chip:nth-child(3n+2){ margin-top:10px; }
+.recommend-row .recommend-chip:nth-child(3n+3){ margin-top:4px; }
+
+/* Zone C：プレイリスト＝暖かな試聴室（灯橙のやわらかい気配） */
+.music-row{
+  position:relative;
+  padding:18px 4% 18px 8%;
+  margin:0 -16px 0;
+  background:
+    radial-gradient(ellipse at 85% 100%, rgba(232,165,92,0.14), transparent 60%),
+    linear-gradient(180deg, rgba(62,42,28,0.06) 0%, rgba(90,61,40,0.08) 100%);
+}
+.playlist-track-row:nth-child(odd){ padding-left:0; }
+.playlist-track-row:nth-child(even){ padding-left:3%; }
+
+@media (max-width:600px){
+  .shelf-tabs,
+  .recommend-section,
+  .music-row{ margin-left:-16px; margin-right:-16px; padding-left:12px; padding-right:12px; }
+  .playlist-track-row:nth-child(even){ padding-left:0; }
+}
+
+/* ============================================================================
+ * v1.3 RC2b：項目7「番台へ戻る」の横に「お店を出る」を追加
+ * ============================================================================ */
+.section-return{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+/* ★微調整：以前は薄い枠線＋opacity:.85で「操作できないボタン」に見えていたため、
+   常時操作可能な副ボタンとして、生成り色の文字＋濃い地色＋薄いクリーム枠で
+   はっきりと視認できる状態に改める（day/nightで色が反転する var(--ink)/var(--paper)
+   には依存せず、固定値でコントラストを担保する）。 */
+.exit-shop-btn{
+  font-family:var(--font-body);
+  font-size:12.5px;
+  color:#F5EAD2;
+  background:rgba(43,33,24,0.82);
+  border:1px solid rgba(245,234,210,0.55);
+  border-radius:20px;
+  padding:8px 20px;
+  cursor:pointer;
+  letter-spacing:.04em;
+  opacity:1;
+  box-shadow:0 1px 4px rgba(0,0,0,0.18);
+}
+.exit-shop-btn:hover{
+  background:rgba(43,33,24,0.94);
+  border-color:rgba(245,234,210,0.8);
+}
+.exit-shop-btn:focus-visible,
+.back-to-bandai:focus-visible{
+  outline:2px solid var(--gold);
+  outline-offset:2px;
+}
+body.night .exit-shop-btn{
+  background:rgba(245,234,210,0.10);
+  border-color:rgba(245,234,210,0.55);
+  color:#F5EAD2;
+}
+body.night .exit-shop-btn:hover{
+  background:rgba(245,234,210,0.18);
+}
+
+/* ============================================================================
+ * v1.3 RC2b：項目6「感謝」等の未選択棚が常時発光する問題の是正は
+ * main.js側（renderShelfTabs）でJSのクラス付与自体を止める。
+ * .shelf-tab.glow のCSS定義自体は互換性のため温存する（本ブロックでは変更しない）。
+ * ============================================================================ */
+
+
+/* ============================================================================
+ * v1.3 RC2b FINAL3：表紙メニューと正式ロゴの表示保証
+ * 位置・機能・遷移は変更しない。
+ * ============================================================================ */
+
+/* Hero写真の明暗やday/night変数に影響されない、固定配色のメニューボタン */
+body .entrance.hero > .cover-menu-btn,
+body.night .entrance.hero > .cover-menu-btn{
+  position:absolute;
+  top:max(14px, env(safe-area-inset-top));
+  right:max(14px, env(safe-area-inset-right));
+  left:auto;
+  z-index:8;
+  background:rgba(11,18,28,.97);
+  border:1px solid rgba(245,234,210,.72);
+  color:#F5EAD2;
+  opacity:1;
+  box-shadow:0 4px 14px rgba(0,0,0,.52);
+  text-shadow:0 1px 2px rgba(0,0,0,.85);
+  mix-blend-mode:normal;
+  isolation:isolate;
+  -webkit-text-fill-color:#F5EAD2;
+}
+
+body .entrance.hero > .cover-menu-btn > span,
+body .entrance.hero > .cover-menu-btn .menu-btn-label,
+body .entrance.hero > .cover-menu-btn .menu-btn-label-full,
+body .entrance.hero > .cover-menu-btn .menu-btn-label-short,
+body.night .entrance.hero > .cover-menu-btn > span,
+body.night .entrance.hero > .cover-menu-btn .menu-btn-label{
+  color:#F5EAD2;
+  opacity:1;
+  -webkit-text-fill-color:#F5EAD2;
+}
+
+body .entrance.hero > .cover-menu-btn:hover,
+body.night .entrance.hero > .cover-menu-btn:hover{
+  background:#101824;
+  border-color:rgba(245,234,210,.9);
+}
+
+/* 正式ロゴ。画像が存在する場合はHero写真より前面へ、背景から明確に分離する */
+body .entrance.hero > .hero-seal{
+  display:block;
+  position:absolute;
+  left:50%;
+  bottom:max(28px, env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  z-index:7;
+  width:112px;
+  height:112px;
+  border-radius:50%;
+  overflow:hidden;
+  opacity:1;
+  background:#17120D;
+  border:1px solid rgba(232,165,92,.58);
+  box-shadow:0 5px 18px rgba(0,0,0,.58);
+  pointer-events:none;
+  mix-blend-mode:normal;
+}
+
+body .entrance.hero > .hero-seal img{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:none;
+  opacity:1;
+  object-fit:cover;
+  mix-blend-mode:normal;
+}
+
+@media (max-width:480px){
+  body .entrance.hero > .hero-seal{
+    width:80px;
+    height:80px;
+    bottom:max(24px, env(safe-area-inset-bottom));
+  }
 }
