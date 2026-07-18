@@ -4022,14 +4022,16 @@ body.night .menu-item{ background:rgba(255,255,255,0.05); }
   width:min(420px, 100%);
   max-height:calc(100dvh - 48px);
   overflow-y:auto;
-  background:var(--paper);
-  color:var(--ink);
-  border:1px solid var(--paper-shadow);
+  /* ★微調整：day/nightで反転するvar(--paper)/var(--ink)には可読性を依存させず、
+     固定のほぼ不透明な煤色背景＋固定の生成り文字で常に読める状態にする。 */
+  background:rgba(30,24,18,0.95);
+  color:#F5EAD2;
+  border:1px solid rgba(232,201,122,0.28);
   border-radius:4px;
   padding:28px 24px 24px;
   box-sizing:border-box;
   text-align:center;
-  box-shadow:0 18px 46px rgba(0,0,0,0.35);
+  box-shadow:0 18px 46px rgba(0,0,0,0.45);
 }
 .mana-receive-figure{
   width:132px;
@@ -4069,13 +4071,14 @@ body.night .menu-item{ background:rgba(255,255,255,0.05); }
 .mana-receive-line{
   font-size:15px;
   line-height:1.85;
-  color:var(--ink);
+  color:#F5EAD2;
+  opacity:1;
   margin:0 0 18px;
 }
 .mana-receive-card label{
   display:block;
   font-size:12.5px;
-  color:var(--ink-soft);
+  color:rgba(245,234,210,0.8);
   margin-bottom:6px;
   text-align:left;
 }
@@ -4131,9 +4134,14 @@ body.night .section-head .page-label{ color:var(--gold); }
   text-align:center;
 }
 .mana-page-label{
-  color:var(--wine);
+  /* ★微調整：暗い煤色カードの上でも常に灯橙で視認できるよう、固定のlamp-glowを使う */
+  color:var(--lamp-glow);
   font-size:12.5px;
   margin:0 0 10px;
+}
+/* ★微調整：第四頁（本棚）の頁番号も、day/nightにかかわらず灯橙で維持する */
+#bookshelf .section-head .page-label{
+  color:var(--lamp-glow);
 }
 
 /* ---- 5. 店内メニューボタンの文字表示 ---- */
@@ -4260,15 +4268,18 @@ body.night .counter-shelf-group-heading{ color:var(--gold); }
 .bookshelf-arrival{
   margin:24px 0 0;
   padding:20px;
-  border:1px solid var(--paper-shadow);
+  border:1px solid rgba(232,201,122,0.28);
   border-radius:4px;
-  background:rgba(255,255,255,0.04);
+  /* ★微調整：従来は背景がほぼ透明（4%白）で、背後の本棚演出に文字が沈んでいた。
+     ほぼ不透明な煤色にして、常に一定のコントラストを確保する。 */
+  background:rgba(30,24,18,0.95);
   text-align:center;
 }
 .bookshelf-arrival-heading{
   font-family:var(--font-display);
   font-size:15px;
-  color:var(--ink);
+  color:#F5EAD2;
+  opacity:1;
   margin:0 0 14px;
 }
 .bookshelf-arrival-actions{
@@ -4284,6 +4295,13 @@ body.night .counter-shelf-group-heading{ color:var(--gold); }
   line-height:1.85;
   color:var(--ink);
   margin:0 0 18px;
+}
+/* ★微調整：既に棚を選んだ利用者が番台へ戻った時だけ表示する、小さな補足文 */
+.counter-shelf-return-note{
+  font-size:12.5px;
+  line-height:1.6;
+  color:var(--ink-soft);
+  margin:-10px 0 16px;
 }
 .counter-shelf-confirm-note{
   font-size:14.5px;
