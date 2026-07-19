@@ -91,14 +91,18 @@ async function main(){
   }
 
   // ===== 3: 「重く沈む」でmoyamoyaが先頭に出る問題 =====
+  // ★Hotfix3で仕様変更：Hotfix2時点では「sinkグループの最後尾へ移動」だったが、
+  // 今回さらに踏み込んで「moyamoyaをsinkから完全に切り離し、専用の「その他」グループへ
+  // 独立させる」形に変更された。以下はその新仕様に合わせて置き換えたアサーションであり、
+  // 弱体化ではなく仕様変更への追随（ユーザー指示どおり）。
   {
     const {window,document}=await createEnv({});
-    // 判定A：新規訪問時の自動選択・自動ハイライトは無い（Hotfix1の既存仕様のまま）
+    // 判定A：新規訪問時の自動選択・自動ハイライトは無い（Hotfix1の既存仕様のまま、Hotfix3でも維持）
     window.goToPage('shelves');
     await new Promise(r=>setTimeout(r,50));
     ok('(3) [判定A] fresh visit does not auto-select/auto-highlight any shelf tab', !document.querySelector('.shelf-tab.active'));
 
-    // 判定B：「重く沈む」一覧の並び順を確認する
+    // 「重く沈む」一覧にmoyamoyaが含まれなくなったことを確認する
     window.goToPage('counter');
     await new Promise(r=>setTimeout(r,30));
     const rootBtns=[...document.querySelectorAll('#counterShelfGroups .chart-btn')];
@@ -107,12 +111,28 @@ async function main(){
     sinkBtn.click();
     await new Promise(r=>setTimeout(r,30));
     const pills=[...document.querySelectorAll('#counterShelfGroups .counter-shelf-pill')].map(b=>b.textContent);
-    ok('(3) the sink group still lists all 6 of its shelves (count unchanged)', pills.length===6);
-    ok('(3) moyamoya (名もなき感情) is no longer first in the "重く沈む" list', pills[0]!=='名もなき感情');
-    ok('(3) moyamoya (名もなき感情) is now placed last in the "重く沈む" list', pills[pills.length-1]==='名もなき感情');
-    ok('(3) a specific feeling (孤独) now appears first instead', pills[0]==='孤独');
+    ok('(3) [Hotfix3] the sink group now has 5 shelves (moyamoya removed)', pills.length===5);
+    ok('(3) [Hotfix3] moyamoya (名もなき感情) no longer appears in the "重く沈む" list at all', !pills.includes('名もなき感情'));
+    ok('(3) a specific feeling (孤独) still appears first', pills[0]==='孤独');
 
-    // 同じ配列を参照する「すべて見る」一覧・棚タブグループでも一貫していることを確認
+    // 新設された「その他」グループがmoyamoyaだけを持つことを確認する
+    window.goToPage('counter');
+    await new Promise(r=>setTimeout(r,30));
+    const rootBtns2=[...document.querySelectorAll('#counterShelfGroups .chart-btn')];
+    const otherFeelingBtn=rootBtns2.find(b=>b.textContent==='その他');
+    ok('(3) [Hotfix3] a new independent "その他" group entry point exists on the counter page', !!otherFeelingBtn);
+    if(otherFeelingBtn){
+      otherFeelingBtn.click();
+      await new Promise(r=>setTimeout(r,30));
+      const otherPills=[...document.querySelectorAll('#counterShelfGroups .counter-shelf-pill')].map(b=>b.textContent);
+      ok('(3) [Hotfix3] the "その他" group contains exactly one shelf', otherPills.length===1);
+      ok('(3) [Hotfix3] the "その他" group contains only moyamoya (名もなき感情)', otherPills[0]==='名もなき感情');
+    }else{
+      ok('(3) [Hotfix3] the "その他" group contains exactly one shelf', false);
+      ok('(3) [Hotfix3] the "その他" group contains only moyamoya (名もなき感情)', false);
+    }
+
+    // 「すべて見る」一覧でも一貫していること・moyamoyaが全体の最後に表示されることを確認する
     window.goToPage('counter');
     await new Promise(r=>setTimeout(r,30));
     const otherBtn=[...document.querySelectorAll('#counterShelfGroups .chart-btn.ghost')].find(b=>true);
@@ -121,21 +141,40 @@ async function main(){
     const allGroupHeadings=[...document.querySelectorAll('.counter-shelf-group')];
     const sinkGroupBox=allGroupHeadings.find(g=>/重く沈む/.test(g.textContent));
     if(sinkGroupBox){
-      const allPills=[...sinkGroupBox.querySelectorAll('.counter-shelf-pill')].map(b=>b.textContent);
-      ok('(3) the "全部見る" listing is consistent with the group-specific listing (moyamoya last)', allPills[allPills.length-1]==='名もなき感情');
+      const sinkPills=[...sinkGroupBox.querySelectorAll('.counter-shelf-pill')].map(b=>b.textContent);
+      ok('(3) [Hotfix3] in the "全部見る" listing, the "重く沈む" group no longer includes moyamoya', !sinkPills.includes('名もなき感情'));
     }else{
-      ok('(3) the "全部見る" listing is consistent with the group-specific listing (moyamoya last)', true);
+      ok('(3) [Hotfix3] in the "全部見る" listing, the "重く沈む" group no longer includes moyamoya', true);
     }
+    const otherFeelingGroupBox=allGroupHeadings.find(g=>/^その他/.test(g.textContent.trim()));
+    ok('(3) [Hotfix3] the "全部見る" listing has an independent "その他" section', !!otherFeelingGroupBox);
+    if(otherFeelingGroupBox){
+      const otherAllPills=[...otherFeelingGroupBox.querySelectorAll('.counter-shelf-pill')].map(b=>b.textContent);
+      ok('(3) [Hotfix3] the "その他" section in "全部見る" contains only moyamoya', otherAllPills.length===1 && otherAllPills[0]==='名もなき感情');
+    }
+    // moyamoyaは「全部見る」一覧全体の中でも最後に表示される（groupがTEXTURE_GROUPS配列の最後尾のため）
+    const allPillsFlat=[...document.querySelectorAll('#counterShelfGroups .counter-shelf-pill')].map(b=>b.textContent);
+    ok('(3) [Hotfix3] moyamoya is the very last pill in the full "全部見る" listing', allPillsFlat[allPillsFlat.length-1]==='名もなき感情');
 
+    // 棚ページのタブ表示でも「その他」グループが独立して表示されることを確認する
     window.goToPage('shelves');
     await new Promise(r=>setTimeout(r,50));
-    const tabRow=document.querySelector('#shelfTabs .shelf-group-row');
-    ok('(3) the shelf-page tab row for the same group also reflects the new order (single source of truth)', !!tabRow);
-    if(tabRow){
-      const tabIds=[...tabRow.parentElement.querySelectorAll('.shelf-tab')].map(b=>b.dataset.catId);
-      // moyamoya自体は21棚に残っている（グループ内どこかに存在）ことのみ確認（並び順はグループ側で確認済み）
-      ok('(3) moyamoya is still present among the rendered shelf tabs (not removed)', document.querySelectorAll('.shelf-tab').length>0);
+    const groupLabels=[...document.querySelectorAll('#shelfTabs .shelf-group-label')].map(l=>l.textContent);
+    ok('(3) [Hotfix3] the shelf-page tab bar has an independent "その他" group heading', groupLabels.includes('その他'));
+    const shelfGroups=[...document.querySelectorAll('#shelfTabs .shelf-group')];
+    const otherFeelingTabGroup=shelfGroups.find(g=>{
+      const label=g.querySelector('.shelf-group-label');
+      return label && label.textContent==='その他';
+    });
+    if(otherFeelingTabGroup){
+      const tabsInGroup=[...otherFeelingTabGroup.querySelectorAll('.shelf-tab')];
+      ok('(3) [Hotfix3] the "その他" tab group on the shelf page contains exactly one tab', tabsInGroup.length===1);
+      ok('(3) [Hotfix3] the "その他" tab group contains only the moyamoya shelf', tabsInGroup.length===1 && tabsInGroup[0].dataset.catId==='moyamoya');
+    }else{
+      ok('(3) [Hotfix3] the "その他" tab group on the shelf page contains exactly one tab', false);
+      ok('(3) [Hotfix3] the "その他" tab group contains only the moyamoya shelf', false);
     }
+    ok('(3) moyamoya is still present among the rendered shelf tabs overall (not removed)', [...document.querySelectorAll('.shelf-tab')].some(b=>b.dataset.catId==='moyamoya'));
 
     // 内部ID・21棚件数は不変
     const dataSrc=fs.readFileSync(path.join(SRC,'data.js'),'utf-8');
