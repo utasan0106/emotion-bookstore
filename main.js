@@ -146,6 +146,9 @@ const MESSAGES = {
     shelfAfterBindingNote: "棚は、製本したあとに選べます。",
     storyInputPlaceholder: "書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。",
     assistBtn: "書き出しに迷ったら、店主の助け舟",
+    // ★Hotfix2-2：assistBtn押下時に本文欄へ挿入する定型の書き出しテンプレート。
+    // 本文解析・外部AI送信は行わない固定文言。appLangに応じてJA/ENを出し分ける。
+    assistTemplate: "いつ：\nどこで：\nなにがあった：\nそのとき、胸の中は：\n",
     // ★2026-07-18追加：旧チャットの代わりに編纂机へ表示する、静的な「言葉にするための助け舟」。
     // 本文解析や外部AI送信は行わず、選んだ棚（感情）に応じた固定の問いを提示するだけ。
     writingBoatHeading: "言葉にするための助け舟",
@@ -460,6 +463,8 @@ const MESSAGES = {
     shelfAfterBindingNote: "You can choose a shelf after your book is bound.",
     storyInputPlaceholder: "When, where, what happened, and how it felt. Short and imperfect is fine.",
     assistBtn: "Not sure how to start? Ask the shopkeeper for a hand",
+    // ★Hotfix2-2：assistTemplateの英語版。JAと同じ4行構成・末尾改行あり。
+    assistTemplate: "When:\nWhere:\nWhat happened:\nWhat I felt inside:\n",
     storyCountFormat: "{count} / {max} chars",
     photoLabel: "Slip in today's photo (optional)",
     photoPreviewAlt: "Preview of attached photo",
@@ -1271,7 +1276,12 @@ const TEXTURE_GROUPS = [
     id:'sink',
     label:'雨降りのように、心が重く沈んでいる',
     keeper:'少しお疲れのようですね。このあたりの棚に、今の心に寄り添う本があるかもしれません。',
-    shelves:['moyamoya','kodoku','gakkari','hazukashii','ushirometai','kanashii'],
+    // ★Hotfix2-3：判定の結果、自動選択・自動ハイライトはしていない（Bのケース）。
+    // ただし一覧の並び順そのものにmoyamoyaが先頭にあり、具体的な感情棚より先に
+    // 「名もなき感情」が目に入っていたため、このグループの最後尾へ移動した。
+    // 内部ID・21棚の件数・他グループの並びは変更しない。この配列はrenderShelfTabs()の
+    // 「静かに沈む気持ち」グループ内タブ順とも共通のため、両画面で一貫して反映される。
+    shelves:['kodoku','gakkari','hazukashii','ushirometai','kanashii','moyamoya'],
     tone:'heavy'
   },
   {
@@ -4044,7 +4054,9 @@ if(btnAssist) {
     const ta = document.getElementById('storyInput');
     if(!ta) return;
     if(ta.value.trim() === ''){
-      ta.value = 'いつ：\nどこで：\nなにがあった：\nそのとき、胸の中は：\n';
+      // ★Hotfix2-2：現在のappLangに応じたテンプレートを挿入する（日本語ハードコードを解消）。
+      // 既存の入力内容がある場合は上書きしない挙動は変更しない（空欄チェックはそのまま）。
+      ta.value = t('assistTemplate');
       updateStoryCount();
     }
     ta.focus();

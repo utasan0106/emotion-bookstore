@@ -5494,20 +5494,28 @@ body.night .menu-back-to-top{ color:var(--paper); }
 .fair-signboard .fair-go:focus-visible{ outline:2px solid #F5EAD2; outline-offset:2px; }
 
 /* E: 題名相談 */
+/* ★Hotfix2-1：実ブラウザで背景と同化して気づけないという指摘への最小修正。
+   .shelf-month-tab等と同じ「border:var(--gold)＋透明背景＋var(--ink-soft)文字」の
+   静かなセカンダリボタン表現に統一し、day/nightはCSS変数の反転にまかせる
+   （個別のbody.night上書きは不要になったため削除。旧ルールはcolor:var(--paper)が
+   nightモードで暗色に反転し、暗い背景に暗い文字が乗って視認できなくなるバグだった）。
+   主CTA（.bind-btn／塗りつぶし＋太字）より明確に弱いトーンを維持しつつ、
+   border＋hover＋focus-visibleでクリック可能なボタンだと分かる状態にする。 */
 .title-consult-btn{
   display:inline-block;
   margin:6px 0 0;
   padding:6px 14px;
   font-size:12px; letter-spacing:.04em;
-  color:var(--ink);
-  background:rgba(255,255,255,0.3);
-  border:1px solid var(--paper-shadow);
+  color:var(--ink-soft);
+  background:transparent;
+  border:1px solid var(--gold);
   border-radius:14px;
   cursor:pointer;
-  opacity:.9;
+  transition:background .15s ease, color .15s ease;
 }
-.title-consult-btn[aria-expanded="true"]{ background:rgba(232,201,122,0.2); }
-body.night .title-consult-btn{ color:var(--paper); background:rgba(0,0,0,0.2); }
+.title-consult-btn:hover{ background:rgba(168,130,60,0.15); color:var(--ink); }
+.title-consult-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+.title-consult-btn[aria-expanded="true"]{ background:rgba(232,201,122,0.25); border-color:var(--gold); color:var(--ink); }
 .title-consult{
   margin:10px 0 0;
   padding:12px 14px;

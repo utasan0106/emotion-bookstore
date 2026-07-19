@@ -1,13 +1,14 @@
 ===================================================================
-みんなの感情書店 v1.3 QuietEN1_Hotfix1 — Sonnet独立監査後 最終回帰テストログ（最終実行・全件PASS）
+みんなの感情書店 v1.3 QuietEN1_Hotfix1_SonnetAudited_Final → Sonnet Hotfix2
+最終回帰テストログ（最終実行・全件PASS）
 実行日時: 2026-07-19 UTC / Node v22.22.3 / jsdom 29.1.1 / 成果物内tests/（相対パス、Sonnet自身が実行）
-追加修正2（goToDeskWithCategory→setActiveShelf統一、goToPage('shelves')でのタブ再描画）を含む最終版
+今回の3件修正（題名相談ボタン視認性／英語版助け舟の言語別テンプレート／重く沈むのmoyamoya順序）を含む
 ===================================================================
 main.js: OK
 data.js: OK
 sw.js: OK
 
---- [1/10] smoke_test_quiet_hotfix.js（Hotfix1既存36件）---
+--- [1/11] smoke_test_quiet_hotfix.js（36件）---
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 PASS: (1) no book/music explanation on the cover
@@ -60,8 +61,7 @@ PASS: (5) starting in EN mode with a legacy bookmark shows English, not the JA t
 
 === SUMMARY ===
 PASS: 36  FAIL: 0
-
---- [2/10] smoke_test_sonnet_audit.js（Sonnet独立監査 新規33件）---
+--- [2/11] smoke_test_sonnet_audit.js（33件）---
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 PASS: (A) #shopGuide exists and is reachable before writing anything
@@ -118,8 +118,57 @@ PASS: (C3) a language round-trip keeps the same top book/track
 
 === SUMMARY ===
 PASS: 33  FAIL: 0
+--- [3/11] smoke_test_sonnet_hotfix2.js（新規38件）---
+PASS: (1) .title-consult-btn base rule exists in style.css
+PASS: (1) base rule has a visible border color (not the low-contrast --paper-shadow)
+PASS: (1) base rule keeps a quiet/transparent fill (weaker than the filled primary CTA)
+PASS: (1) a :hover style exists for the button
+PASS: (1) a :focus-visible style exists for the button
+PASS: (1) the old night-mode rule with dark-on-dark text (color:var(--paper)) is gone
+PASS: (1) an explicit aria-expanded="true" state style still exists
+PASS: (1) the primary CTA (.bind-btn) still uses a filled background (stays visually stronger)
+Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
+Could not load link: "https://example.com/style.css"
+PASS: (1) the button exists in the DOM with the expected id/class (day mode)
+PASS: (1) the same button/id/class still exists after switching to night mode
+Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
+Could not load link: "https://example.com/style.css"
+PASS: (2) JA mode inserts the original Japanese template unchanged
+PASS: (2) EN mode template contains zero Japanese characters
+PASS: (2) EN template matches the specified English prompt exactly
+PASS: (2) existing non-empty input is still not overwritten (unchanged behavior)
+PASS: (2) same non-overwrite behavior holds in EN mode too
+PASS: (2) switching back to JA reflects the current language again
+Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
+Could not load link: "https://example.com/style.css"
+PASS: (3) [判定A] fresh visit does not auto-select/auto-highlight any shelf tab
+PASS: (3) the "重く沈む" group entry point exists on the counter page
+PASS: (3) the sink group still lists all 6 of its shelves (count unchanged)
+PASS: (3) moyamoya (名もなき感情) is no longer first in the "重く沈む" list
+PASS: (3) moyamoya (名もなき感情) is now placed last in the "重く沈む" list
+PASS: (3) a specific feeling (孤独) now appears first instead
+PASS: (3) the "全部見る" listing is consistent with the group-specific listing (moyamoya last)
+PASS: (3) the shelf-page tab row for the same group also reflects the new order (single source of truth)
+PASS: (3) moyamoya is still present among the rendered shelf tabs (not removed)
+PASS: (3) CATEGORIES still has exactly 21 shelves
+PASS: (3) internal id "moyamoya" is unchanged and still present
+Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
+Could not load link: "https://example.com/style.css"
+PASS: (4) an existing saved entry with category moyamoya still loads onto the shelf
+PASS: (4) the entry photo field (entry.image) is still respected (has-photo class)
+PASS: (5) WEATHER_FEATURE_ENABLED is declared exactly once
+PASS: (5) WEATHER_FEATURE_ENABLED remains false
+PASS: (5) ANALYTICS_ALLOWED_EVENTS is still declared
+PASS: (5) GA4 allow-list is exactly the same existing 5 events (no more, no fewer)
+PASS: (5) the library storage key string is unchanged
+PASS: (5) the shiori storage key string is unchanged
+PASS: (5) backup download function still present
+PASS: (5) backup restore function still present
+PASS: (5) backup payload validation function still present
 
---- [3/10] smoke_test_quiet_en.js（QuietEN1 63件）---
+=== SUMMARY ===
+PASS: 38  FAIL: 0
+--- [4/11] smoke_test_quiet_en.js（63件）---
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 PASS: (A) the cover shows only the single-line assurance
@@ -206,7 +255,7 @@ PASS: (J) the cover CTA exists exactly once
 
 === SUMMARY ===
 PASS: 63  FAIL: 0
---- [4/10] smoke_test_weather_flag.js（天気フラグ21件）---
+--- [5/11] smoke_test_weather_flag.js（21件）---
 PASS: (0) main.js ships with `const WEATHER_FEATURE_ENABLED = false;`
 PASS: (0) the flag is declared exactly once
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
@@ -239,7 +288,7 @@ PASS: (4) with the flag true, the badge is shown
 
 === SUMMARY ===
 PASS: 21  FAIL: 0
---- [5/10] smoke_test_first_visit.js（FirstVisit1 43件）---
+--- [6/11] smoke_test_first_visit.js（43件）---
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 PASS: (1) the sample-peek button exists (inside the first-visit accordion)
@@ -302,7 +351,7 @@ PASS: (10) the main CTA (heroCta) still navigates to the desk
 
 === SUMMARY ===
 PASS: 43  FAIL: 0
---- [6/10] smoke_test_weather.js（天気内部77件）---
+--- [7/11] smoke_test_weather.js（77件）---
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 PASS: (1) weatherToggle button reads "Weather sync: Off" by default
@@ -351,22 +400,22 @@ Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523
 Could not load link: "https://example.com/style.css"
 fetchWeatherState: falling back to the regular view Error: network offline
     at window.fetch (/sessions/optimistic-youthful-hypatia/mnt/outputs/work/emotion-bookstore-main/tests/smoke_test_weather.js:110:43)
-    at fetchWeatherState (https://example.com/:1738:23)
-    at refreshWeatherIfNeeded (https://example.com/:1806:23)
+    at fetchWeatherState (https://example.com/:1748:23)
+    at refreshWeatherIfNeeded (https://example.com/:1816:23)
     at async main (/sessions/optimistic-youthful-hypatia/mnt/outputs/work/emotion-bookstore-main/tests/smoke_test_weather.js:296:7)
 PASS: (10a) a rejected fetch (offline) falls back to the regular view (no data-weather)
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 fetchWeatherState: falling back to the regular view Error: Open-Meteo forecast response not ok: 500
-    at fetchWeatherState (https://example.com/:1740:23)
-    at async refreshWeatherIfNeeded (https://example.com/:1806:17)
+    at fetchWeatherState (https://example.com/:1750:23)
+    at async refreshWeatherIfNeeded (https://example.com/:1816:17)
     at async main (/sessions/optimistic-youthful-hypatia/mnt/outputs/work/emotion-bookstore-main/tests/smoke_test_weather.js:305:7)
 PASS: (10b) a non-ok API response falls back to the regular view (no data-weather)
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 fetchWeatherState: falling back to the regular view Error: Open-Meteo response is missing "current"
-    at fetchWeatherState (https://example.com/:1749:13)
-    at async refreshWeatherIfNeeded (https://example.com/:1806:17)
+    at fetchWeatherState (https://example.com/:1759:13)
+    at async refreshWeatherIfNeeded (https://example.com/:1816:17)
     at async main (/sessions/optimistic-youthful-hypatia/mnt/outputs/work/emotion-bookstore-main/tests/smoke_test_weather.js:315:12)
 PASS: (10c) a malformed API response does not throw
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
@@ -407,43 +456,43 @@ PASS: (14) no GA4 event outside the existing 5 was sent while exercising the wea
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 fetchWeatherState: falling back to the regular view Error: Open-Meteo response is missing "current"
-    at fetchWeatherState (https://example.com/:1749:13)
-    at async refreshWeatherIfNeeded (https://example.com/:1806:17)
+    at fetchWeatherState (https://example.com/:1759:13)
+    at async refreshWeatherIfNeeded (https://example.com/:1816:17)
     at async main (/sessions/optimistic-youthful-hypatia/mnt/outputs/work/emotion-bookstore-main/tests/smoke_test_weather.js:434:7)
 PASS: (15) an empty object {} is NOT treated as clear — body has no data-weather
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 fetchWeatherState: falling back to the regular view Error: Open-Meteo response is not an object
-    at fetchWeatherState (https://example.com/:1746:13)
-    at async refreshWeatherIfNeeded (https://example.com/:1806:17)
+    at fetchWeatherState (https://example.com/:1756:13)
+    at async refreshWeatherIfNeeded (https://example.com/:1816:17)
     at async main (/sessions/optimistic-youthful-hypatia/mnt/outputs/work/emotion-bookstore-main/tests/smoke_test_weather.js:434:7)
 PASS: (15) an empty array [] is NOT treated as clear — body has no data-weather
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 fetchWeatherState: falling back to the regular view Error: Open-Meteo response is missing "current"
-    at fetchWeatherState (https://example.com/:1749:13)
-    at async refreshWeatherIfNeeded (https://example.com/:1806:17)
+    at fetchWeatherState (https://example.com/:1759:13)
+    at async refreshWeatherIfNeeded (https://example.com/:1816:17)
     at async main (/sessions/optimistic-youthful-hypatia/mnt/outputs/work/emotion-bookstore-main/tests/smoke_test_weather.js:434:7)
 PASS: (15) a response missing "current" is NOT treated as clear — body has no data-weather
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 fetchWeatherState: falling back to the regular view Error: Open-Meteo response "current.weather_code" is not a number
-    at fetchWeatherState (https://example.com/:1752:13)
-    at async refreshWeatherIfNeeded (https://example.com/:1806:17)
+    at fetchWeatherState (https://example.com/:1762:13)
+    at async refreshWeatherIfNeeded (https://example.com/:1816:17)
     at async main (/sessions/optimistic-youthful-hypatia/mnt/outputs/work/emotion-bookstore-main/tests/smoke_test_weather.js:434:7)
 PASS: (15) a "current" missing weather_code is NOT treated as clear — body has no data-weather
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 fetchWeatherState: falling back to the regular view Error: Open-Meteo response "current.weather_code" is not a number
-    at fetchWeatherState (https://example.com/:1752:13)
-    at async refreshWeatherIfNeeded (https://example.com/:1806:17)
+    at fetchWeatherState (https://example.com/:1762:13)
+    at async refreshWeatherIfNeeded (https://example.com/:1816:17)
     at async main (/sessions/optimistic-youthful-hypatia/mnt/outputs/work/emotion-bookstore-main/tests/smoke_test_weather.js:434:7)
 PASS: (15) a non-numeric weather_code (string) is NOT treated as clear — body has no data-weather
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 fetchWeatherState: falling back to the regular view Error: Open-Meteo response "current.weather_code" is not a number
-    at fetchWeatherState (https://example.com/:1752:13)
-    at async refreshWeatherIfNeeded (https://example.com/:1806:17)
+    at fetchWeatherState (https://example.com/:1762:13)
+    at async refreshWeatherIfNeeded (https://example.com/:1816:17)
     at async main (/sessions/optimistic-youthful-hypatia/mnt/outputs/work/emotion-bookstore-main/tests/smoke_test_weather.js:434:7)
 PASS: (15) a NaN weather_code is NOT treated as clear — body has no data-weather
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
@@ -451,8 +500,8 @@ Could not load link: "https://example.com/style.css"
 PASS: (16) precondition: cached rain is applied before the failure
 fetchWeatherState: falling back to the regular view Error: network offline
     at window.fetch (/sessions/optimistic-youthful-hypatia/mnt/outputs/work/emotion-bookstore-main/tests/smoke_test_weather.js:110:43)
-    at fetchWeatherState (https://example.com/:1738:23)
-    at refreshWeatherIfNeeded (https://example.com/:1806:23)
+    at fetchWeatherState (https://example.com/:1748:23)
+    at refreshWeatherIfNeeded (https://example.com/:1816:23)
     at async main (/sessions/optimistic-youthful-hypatia/mnt/outputs/work/emotion-bookstore-main/tests/smoke_test_weather.js:452:5)
 PASS: (16) after a failed forced refetch, data-weather is cleared
 PASS: (16) after a failed forced refetch, the weather cache key is deleted from localStorage
@@ -486,7 +535,7 @@ PASS: (19) a click inside the popover does not close it
 
 === SUMMARY ===
 PASS: 77  FAIL: 0
---- [7/10] smoke_test_rc2.js（既存回帰44件）---
+--- [8/11] smoke_test_rc2.js（44件）---
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 PASS: .cover-menu-btn exists on cover
@@ -536,7 +585,7 @@ PASS: style.css defines .entrance.hero > .hero-seal with border-radius:50%
 
 === SUMMARY ===
 PASS: 44  FAIL: 0
---- [8/10] smoke_test_rc2b_batch2.js（既存回帰46件）---
+--- [9/11] smoke_test_rc2b_batch2.js（46件）---
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 PASS: renderShelf() inserts .shelf-month-heading elements
@@ -588,7 +637,7 @@ PASS: after goToDeskWithCategory("kanashii"), the boat shows category-specific p
 
 === SUMMARY ===
 PASS: 46  FAIL: 0
---- [9/10] smoke_test_shelf_swipe.js（既存回帰14件）---
+--- [10/11] smoke_test_shelf_swipe.js（14件）---
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 PASS: #shelfSwipeZone exists and wraps #shelfTabs + #shelfDisplay
@@ -608,7 +657,7 @@ PASS: a click dispatched immediately after a successful swipe is suppressed
 
 === SUMMARY ===
 PASS: 14  FAIL: 0
---- [10/10] smoke_test_en_dates.js（既存回帰15件）---
+--- [11/11] smoke_test_en_dates.js（15件）---
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 PASS: (JA) formatDate keeps the original "YYYY年M月D日 納品" style
@@ -633,9 +682,9 @@ PASS: 15  FAIL: 0
 Could not load script: "https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"
 Could not load link: "https://example.com/style.css"
 fetchWeatherState: falling back to the regular view Error: Open-Meteo response is not an object
-    at fetchWeatherState (https://example.com/:1746:13)
-    at async refreshWeatherIfNeeded (https://example.com/:1806:17)
-    at async onWeatherRegionSelectChange (https://example.com/:2018:3)
+    at fetchWeatherState (https://example.com/:1756:13)
+    at async refreshWeatherIfNeeded (https://example.com/:1816:17)
+    at async onWeatherRegionSelectChange (https://example.com/:2028:3)
     at async main (/sessions/optimistic-youthful-hypatia/mnt/outputs/work/emotion-bookstore-main/tests/en_dom_japanese_scan.js:164:70)
 === Japanese characters found in visible EN-mode DOM: 5 ===
 [SPAN.legal-sep] ・
@@ -647,6 +696,7 @@ Unique hits: 4
 
 
 === 全体集計 ===
-合計: PASS 392  FAIL 0
-（内訳: Hotfix1既存36 + Sonnet新規33 + QuietEN1 63 + 天気フラグ21 + FirstVisit1 43 + 天気内部77 + 既存回帰44 + 既存回帰46 + 既存回帰14 + 既存回帰15）
-拡張英語DOMスキャン: 5件中ユニーク4件（Hotfix1からの既知課題、対象外として残置。詳細は監査報告書参照）
+合計: PASS 430  FAIL 0
+（内訳: Hotfix1既存36 + Sonnet監査33 + Sonnet Hotfix2新規38 + QuietEN1 63 + 天気フラグ21 +
+ FirstVisit1 43 + 天気内部77 + 既存回帰44 + 既存回帰46 + 既存回帰14 + 既存回帰15）
+拡張英語DOMスキャン: 5件中ユニーク4件（従来からの既知課題、今回のスコープ外として残置）
