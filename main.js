@@ -725,7 +725,8 @@ function applyLanguage(){
   if(typeof renderTrend === 'function') renderTrend();
   // ★2026-07-19 hotfix：天気バッジ（地域名・状態名・区切り文字）と、開いている場合の
   // 詳細ポップオーバーを、言語切替のたびに再取得なしで即時再描画する。
-  if(typeof refreshWeatherLanguageViews === 'function') refreshWeatherLanguageViews();
+  // （★公開用リリースフラグ：WEATHER_FEATURE_ENABLEDがfalseの間は呼ばない）
+  if(typeof WEATHER_FEATURE_ENABLED !== 'undefined' && WEATHER_FEATURE_ENABLED && typeof refreshWeatherLanguageViews === 'function') refreshWeatherLanguageViews();
   // ★2026-07-19 feature/first-visit-experience：閲覧専用サンプル本を開いたまま言語を
   // 切り替えた場合、見本の本文・栞・バッジも現在の言語で再描画する。
   if(typeof refreshSampleBookIfOpen === 'function') refreshSampleBookIfOpen();
@@ -1349,6 +1350,14 @@ async function fetchSeasonalMusic(catLabel){
  * ・天気状態は body[data-weather] を通じて見た目（CSS）だけに反映し、感情棚の選択・
  *   助け舟・推薦・本の内容・店主の返答など機能面には一切影響させない。GA4の新規送信もない。
  * ========================================================================== */
+
+// ★2026-07-19 公開用リリースフラグ：天気連動機能の入口制御。
+// 実ブラウザでのCSP・実API通信確認と、Open-Meteoの商用利用方針の決定が完了するまで false のまま公開する。
+// false の間は：店内メニューの天気設定（#weatherSettings）を表示しない／#weatherBadgeを表示しない／
+// 天気設定を読み込まない／天気APIへ通信しない／navigator.geolocationを呼ばない／
+// 保存済みの天気設定がONでも通常表示を維持する。
+// true へ変更すると、下の実装済み天気機能がそのまま復帰する（内部ロジックはこのフラグで変更されない）。
+const WEATHER_FEATURE_ENABLED = false;
 
 const WEATHER_SETTINGS_KEY = 'emotion-bookstore-weather-settings'; // 本棚・entryとは別の専用キー
 const WEATHER_CACHE_KEY = 'emotion-bookstore-weather-cache';
@@ -2260,7 +2269,7 @@ function applyPrefs(){
   }
   // ★2026-07-19追加：天気連動トグル・地域選択・状態文の表示も、初期化・言語切替のたびに追従させる
   // （weatherSettingsはprefsとは別の専用キーで管理しているため、ここではUI更新のみ行う）。
-  if(typeof updateWeatherUI === 'function') updateWeatherUI();
+  if(typeof WEATHER_FEATURE_ENABLED !== 'undefined' && WEATHER_FEATURE_ENABLED && typeof updateWeatherUI === 'function') updateWeatherUI();
 }
 
 async function initPrefs(){
@@ -6005,20 +6014,33 @@ function warnInAppBrowserIfNeeded(){
   // ★2026-07-19追加：任意設定の天気連動機能。ボタン・プルダウンの配線と表示更新のみここで行い、
   // navigator.geolocationの呼び出しはuseCurrentLocationForWeather()（クリック時のみ）に限定する。
   // weatherSettingsは本棚・prefsとは別の専用キーから読み込む。
-  await loadWeatherSettings();
-  const weatherToggleBtn = document.getElementById('weatherToggle');
-  if(weatherToggleBtn) weatherToggleBtn.onclick = toggleWeatherEnabled;
-  const weatherRegionSelect = document.getElementById('weatherRegionSelect');
-  if(weatherRegionSelect) weatherRegionSelect.onchange = (ev)=>onWeatherRegionSelectChange(ev.target.value);
-  const weatherUseLocationBtn = document.getElementById('weatherUseLocationBtn');
-  if(weatherUseLocationBtn) weatherUseLocationBtn.onclick = useCurrentLocationForWeather;
-  const weatherBadgeBtn = document.getElementById('weatherBadge');
-  if(weatherBadgeBtn) weatherBadgeBtn.onclick = toggleWeatherDetail;
-  // ★2026-07-19 hotfix：Escapeキー・外側クリックでポップオーバーを閉じるリスナーを1回だけ登録する。
-  if(typeof setupWeatherDetailDismissHandlers === 'function') setupWeatherDetailDismissHandlers();
-  updateWeatherUI();
-  // 既にONかつ地域設定済みの場合だけ、保存済みの座標で取得を試みる（位置情報の許可は要求しない）。
-  if(weatherSettings.enabled) refreshWeatherIfNeeded(false);
+  // ★2026-07-19 公開用リリースフラグ：WEATHER_FEATURE_ENABLEDがfalseの間は、天気機能の
+  // 入口（設定UI・バッジ・設定読み込み・起動時取得）を一切開かない。内部ロジックは無変更。
+  if(WEATHER_FEATURE_ENABLED){
+    await loadWeatherSettings();
+    const weatherToggleBtn = document.getElementById('weatherToggle');
+    if(weatherToggleBtn) weatherToggleBtn.onclick = toggleWeatherEnabled;
+    const weatherRegionSelect = document.getElementById('weatherRegionSelect');
+    if(weatherRegionSelect) weatherRegionSelect.onchange = (ev)=>onWeatherRegionSelectChange(ev.target.value);
+    const weatherUseLocationBtn = document.getElementById('weatherUseLocationBtn');
+    if(weatherUseLocationBtn) weatherUseLocationBtn.onclick = useCurrentLocationForWeather;
+    const weatherBadgeBtn = document.getElementById('weatherBadge');
+    if(weatherBadgeBtn) weatherBadgeBtn.onclick = toggleWeatherDetail;
+    // ★2026-07-19 hotfix：Escapeキー・外側クリックでポップオーバーを閉じるリスナーを1回だけ登録する。
+    if(typeof setupWeatherDetailDismissHandlers === 'function') setupWeatherDetailDismissHandlers();
+    updateWeatherUI();
+    // 既にONかつ地域設定済みの場合だけ、保存済みの座標で取得を試みる（位置情報の許可は要求しない）。
+    if(weatherSettings.enabled) refreshWeatherIfNeeded(false);
+  }else{
+    // 保存済みの天気設定がONでも読み込まず（weatherSettingsは既定のOFFのまま）、
+    // 設定UI・バッジを非表示にして通常表示を維持する。通信・位置情報要求は発生しない。
+    const weatherSettingsBox = document.getElementById('weatherSettings');
+    if(weatherSettingsBox){ weatherSettingsBox.classList.add('hidden'); weatherSettingsBox.hidden = true; }
+    const weatherBadgeBtn = document.getElementById('weatherBadge');
+    if(weatherBadgeBtn){ weatherBadgeBtn.classList.add('hidden'); weatherBadgeBtn.hidden = true; }
+    const weatherPop = document.getElementById('weatherDetailPopover');
+    if(weatherPop){ weatherPop.classList.add('hidden'); weatherPop.hidden = true; }
+  }
 
   // ★2026-07-19 feature/first-visit-experience：表紙の「この書店の一冊を、のぞいてみる」ボタン。
   // 閲覧専用のサンプル本を開くだけで、保存・GA4送信・画面遷移は行わない。

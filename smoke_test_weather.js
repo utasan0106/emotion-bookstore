@@ -127,7 +127,12 @@ async function createEnv(opts){
   };
 
   const dataSrc = fs.readFileSync(path.join(SRC, 'data.js'), 'utf-8');
-  const mainSrc = fs.readFileSync(path.join(SRC, 'main.js'), 'utf-8');
+  // ★2026-07-19 公開用リリースフラグ対応：本スイートは「実装済みの天気機能そのもの」を検証する
+  // ため、読み込み時にWEATHER_FEATURE_ENABLEDをtrueへ差し替えて実行する（trueへ変更した場合に
+  // 天気機能がそのまま復帰する構造であることの検証を兼ねる）。既定値falseでの入口封鎖は
+  // 専用のsmoke_test_weather_flag.jsが検証する。
+  const mainSrc = fs.readFileSync(path.join(SRC, 'main.js'), 'utf-8')
+    .replace('const WEATHER_FEATURE_ENABLED = false;', 'const WEATHER_FEATURE_ENABLED = true;');
   const s1 = document.createElement('script'); s1.textContent = dataSrc; document.body.appendChild(s1);
   const s2 = document.createElement('script'); s2.textContent = mainSrc; document.body.appendChild(s2);
   await new Promise(r => setTimeout(r, 300));

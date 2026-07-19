@@ -1,73 +1,51 @@
 ===================================================================
-みんなの感情書店 v1.3 feature/first-visit-experience — 全テスト実行ログ
-実行日時: 2026-07-19 00:29 UTC
+みんなの感情書店 v1.3 公開用リリースフラグ（WEATHER_FEATURE_ENABLED）— 全テスト実行ログ
+実行日時: 2026-07-19 01:19 UTC
 実行環境: Node v22.22.3 / jsdom 29.1.1
-実行場所: 成果物内 tests/ ディレクトリ（SRC=path.resolve(__dirname,'..') の相対パス）
+実行場所: 成果物内 tests/ ディレクトリ（相対パス）
 ===================================================================
 
 --- [1/6] node --check ---
 ../main.js: OK
 ../data.js: OK
 ../sw.js: OK
-smoke_test_first_visit.js: OK
-smoke_test_weather.js: OK
+smoke_test_weather_flag.js: OK
 
---- [2/6] CSS構文検証 ---
-style.css parse errors: 0
-
---- [3/6] GA4整合 ---
+--- [2/6] GA4整合 ---
 ANALYTICS_ALLOWED_EVENTS = ['view_landing', 'start_writing', 'create_book_success', 'create_book_error', 'view_shelf']
-trackAnalyticsEvent 行数: 10
 
---- [4/6] smoke_test_first_visit.js（初回体験 専用スイート）---
-PASS: (1) the sample-peek button exists on the cover
-PASS: (1) opening the sample shows the book modal
-PASS: (1) the sample has a title
-PASS: (1) the sample has a short story body
-PASS: (1) the sample shows an emotion-shelf label
-PASS: (1) the sample shows a binding date
-PASS: (1) the sample shows the shopkeeper's bookmark note
-PASS: (1) the sample badge explains it is a sample
-PASS: (2) opening+closing the sample never writes the library key to localStorage
-PASS: (2) the bookshelf remains empty after viewing the sample (no spine added)
-PASS: (3) the edit/delete/share action row is hidden for the sample
-PASS: (3) the share note is hidden for the sample
-PASS: (3) the edit-mode action row is hidden for the sample
-PASS: (4) closing the sample hides the modal
-PASS: (4) after closing, the page is still the cover (not experience mode)
-PASS: (4) the main CTA (make a book) is still present and wired
-PASS: (4) closing restores the action row for regular books
-PASS: (4) closing hides the sample badge again
-PASS: (4) the sample-mode class is removed on close
-PASS: (5) JA first-visit line 1 says the user, not AI, writes the book
-PASS: (5) JA first-visit line 2 mentions no external sending / no analysis
-PASS: (5) JA recommendation line frames picks as a quiet detour
-PASS: (5) EN first-visit line 1 matches the specified copy
-PASS: (5) EN first-visit line 2 matches the specified copy
-PASS: (5) the open sample story switches to English without reopening
-PASS: (5) the sample badge switches to English
-PASS: (5) switching back to Japanese restores the JA sample story
-PASS: (6) viewing the sample book makes no network request at all
-PASS: (6) openSampleBook/closeSampleBook contain no fetch() call (fixed data only)
-PASS: (7) the arrival panel is visible when the shelf has a book
-PASS: (7) the afterglow has exactly 2 lines
-PASS: (7) JA line 1 matches the specified copy
-PASS: (7) JA line 2 matches the specified copy
-PASS: (7) the afterglow sits below the arrival heading
-PASS: (7) EN line 1 matches the specified copy
-PASS: (7) EN line 2 matches the specified copy
-PASS: (8) the "make another book" button is present and visible
-PASS: (8) "make another book" still navigates to the writing desk
-PASS: (8) the arrival-scene recommendation shows at most 1 book
-PASS: (8) the arrival-scene recommendation shows at most 1 song
-PASS: (9) no GA4 event outside the existing 5 was sent while using the first-visit features
-PASS: (10) the main cover copy 「今の気持ちを、一冊の本に。」 is unchanged in the page source
-PASS: (10) the main CTA (heroCta) still navigates to the desk
+--- [3/6] smoke_test_weather_flag.js（新規・リリースフラグ専用）---
+PASS: (0) main.js ships with `const WEATHER_FEATURE_ENABLED = false;`
+PASS: (0) the flag is declared exactly once
+PASS: (1) #weatherSettings is hidden (class)
+PASS: (1) #weatherSettings is hidden (hidden attribute)
+PASS: (1) #weatherBadge is hidden
+PASS: (1) the weather detail popover is hidden
+PASS: (1) zero fetches to the weather API on startup
+PASS: (1) zero navigator.geolocation calls
+PASS: (1) body has no data-weather (regular display)
+PASS: (2) a saved enabled weather setting triggers no weather API fetch
+PASS: (2) a saved enabled weather setting triggers no geolocation call
+PASS: (2) body[data-weather] stays unset even with a saved rain cache (regular display)
+PASS: (2) the badge stays hidden even with saved settings + cache
+PASS: (2) the saved settings in localStorage are left untouched (not deleted, not rewritten)
+PASS: (3) language toggle and the sample book work with the flag off (no exception)
+PASS: (3) the cover CTA is still present
+PASS: (3) no GA4 event outside the existing 5
+PASS: (4) with the flag true, #weatherSettings is visible again
+PASS: (4) with the flag true, a saved enabled region fetches weather on startup
+PASS: (4) with the flag true, body[data-weather] is applied
+PASS: (4) with the flag true, the badge is shown
+
+=== SUMMARY ===
+PASS: 21  FAIL: 0
+
+--- [4/6] FirstVisit1 43件 ---
 
 === SUMMARY ===
 PASS: 43  FAIL: 0
 
---- [5/6] 既存回帰（天気77＋44＋14＋46＋15）---
+--- [5/6] 天気77件（フラグをtrueへ差し替えて内部機能を検証）＋既存119件 ---
 [smoke_test_weather.js]
 
 === SUMMARY ===
@@ -89,12 +67,12 @@ PASS: 46  FAIL: 0
 === SUMMARY ===
 PASS: 15  FAIL: 0
 
---- [6/6] 英語モードDOM日本語スキャン（サンプル本を開いた状態を含む）---
+--- [6/6] 英語モードDOM日本語スキャン（フラグtrue差し替えで天気UIも走査継続）---
 fetchWeatherState: falling back to the regular view Error: Open-Meteo response is not an object
-    at fetchWeatherState (https://example.com/:1481:13)
-    at async refreshWeatherIfNeeded (https://example.com/:1541:17)
-    at async onWeatherRegionSelectChange (https://example.com/:1753:3)
-    at async main (/tmp/scratch6/pkg/emotion-bookstore-main/tests/en_dom_japanese_scan.js:114:70)
+    at fetchWeatherState (https://example.com/:1490:13)
+    at async refreshWeatherIfNeeded (https://example.com/:1550:17)
+    at async onWeatherRegionSelectChange (https://example.com/:1762:3)
+    at async main (/tmp/scratch6/pkg/emotion-bookstore-main/tests/en_dom_japanese_scan.js:118:70)
 === Japanese characters found in visible EN-mode DOM: 5 ===
 [SPAN.legal-sep] ・
 [A] 専門の相談窓口
@@ -103,6 +81,5 @@ fetchWeatherState: falling back to the regular view Error: Open-Meteo response i
 
 Unique hits: 4
 
---- 実ブラウザで確認できなかった項目（未実施）---
-・サンプル本モーダル・表紙説明文・余韻2行の実ブラウザでの見た目（配色・行間・重なり）：未実施
-・天気機能の本番有効化に関わる実ブラウザCSP確認・Open-Meteo商用利用方針：本機能とは別件として引き続き保留（解決済みではない）
+--- 備考 ---
+・天気機能の実ブラウザ確認・Open-Meteo商用利用方針は引き続き未完了（本フラグはそのための入口封鎖であり、両件は解決済みではない）

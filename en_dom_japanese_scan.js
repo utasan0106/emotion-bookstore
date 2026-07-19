@@ -55,7 +55,11 @@ async function main(){
   window.HTMLCanvasElement.prototype.toDataURL = () => 'data:image/webp;base64,AAAA';
 
   const dataSrc = fs.readFileSync(path.join(SRC,'data.js'),'utf-8');
-  const mainSrc = fs.readFileSync(path.join(SRC,'main.js'),'utf-8');
+  // ★2026-07-19 公開用リリースフラグ対応：天気設定UI・バッジ・ポップオーバーの英語文言も
+  // 引き続き走査対象に含めるため、スキャン時はWEATHER_FEATURE_ENABLEDをtrueへ差し替えて実行する
+  // （既定値falseの公開状態では該当UIは非表示＝利用者の目に触れない）。
+  const mainSrc = fs.readFileSync(path.join(SRC,'main.js'),'utf-8')
+    .replace('const WEATHER_FEATURE_ENABLED = false;', 'const WEATHER_FEATURE_ENABLED = true;');
   const s1 = document.createElement('script'); s1.textContent = dataSrc; document.body.appendChild(s1);
   const s2 = document.createElement('script'); s2.textContent = mainSrc; document.body.appendChild(s2);
   await new Promise(r=>setTimeout(r,300));
