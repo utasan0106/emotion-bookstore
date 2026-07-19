@@ -75,6 +75,8 @@ const MESSAGES = {
     counterGroupLight: "光が灯る",
     counterGroupSepia: "遠いものを見つめる",
     counterGroupOther: "それ以外",
+    // ★Hotfix3新設：moyamoya専用の独立グループ「その他」（「それ以外」＝全部見る導線とは別物）
+    counterGroupOtherFeeling: "その他",
     counterBackBtn: "戻る",
     counterShelfGuideNote: "「{shelf}」の棚をご案内します。",
     counterViewShelfBtn: "棚を見る",
@@ -404,6 +406,7 @@ const MESSAGES = {
     counterGroupLight: "A Light Comes On",
     counterGroupSepia: "Gazing at Something Far Away",
     counterGroupOther: "Something Else",
+    counterGroupOtherFeeling: "Other",
     counterBackBtn: "Back",
     counterShelfGuideNote: "Here is the \u201c{shelf}\u201d shelf.",
     counterViewShelfBtn: "View This Shelf",
@@ -1276,12 +1279,12 @@ const TEXTURE_GROUPS = [
     id:'sink',
     label:'雨降りのように、心が重く沈んでいる',
     keeper:'少しお疲れのようですね。このあたりの棚に、今の心に寄り添う本があるかもしれません。',
-    // ★Hotfix2-3：判定の結果、自動選択・自動ハイライトはしていない（Bのケース）。
-    // ただし一覧の並び順そのものにmoyamoyaが先頭にあり、具体的な感情棚より先に
-    // 「名もなき感情」が目に入っていたため、このグループの最後尾へ移動した。
-    // 内部ID・21棚の件数・他グループの並びは変更しない。この配列はrenderShelfTabs()の
+    // ★Hotfix3：moyamoya（名もなき感情）は「重く沈む」の中身ではなく、どの感情にも
+    // まだ当てはまらない状態を表すため、下の独立グループ'other'へ切り出した
+    // （Hotfix2時点では暫定的にこのグループの最後尾へ移動していたが、今回さらに分離した）。
+    // 内部ID・21棚の総数・他グループの並びは変更しない。この配列はrenderShelfTabs()の
     // 「静かに沈む気持ち」グループ内タブ順とも共通のため、両画面で一貫して反映される。
-    shelves:['kodoku','gakkari','hazukashii','ushirometai','kanashii','moyamoya'],
+    shelves:['kodoku','gakkari','hazukashii','ushirometai','kanashii'],
     tone:'heavy'
   },
   {
@@ -1304,6 +1307,18 @@ const TEXTURE_GROUPS = [
     keeper:'過去の頁をめくっているのですね。思い出に浸れるこちらの棚がおすすめです。',
     shelves:['natsukashii','akogare','itooshii'],
     tone:'neutral'
+  },
+  {
+    // ★Hotfix3新設：moyamoya（名もなき感情）専用の独立グループ。「重く沈む」の一部ではなく、
+    // まだどの感情にも当てはまらない状態のための別枠。番台の感情選択・全部見る一覧・
+    // 自由対話の感情チップ・棚ページのタブ表示の4画面すべてがこのTEXTURE_GROUPS配列を
+    // 共通参照しているため、ここに追加するだけで4画面に一貫して反映される。
+    // 配列の最後尾に置くことで、「全部見る」一覧でも名もなき感情が最後に表示される。
+    id:'other',
+    label:'まだ、名前のつけられない気持ちがある',
+    keeper:'……名前がなくても、大丈夫です。ここにだけ、そっと置いていける棚があります。',
+    shelves:['moyamoya'],
+    tone:'heavy'
   }
 ];
 
@@ -2935,7 +2950,9 @@ const SHELF_GROUP_LABELS = {
   sink:  { ja:'静かに沈む気持ち', en:'Quiet & heavy' },
   wave:  { ja:'ざわつく気持ち',   en:'Restless & turbulent' },
   light: { ja:'明るい気持ち',     en:'Bright & warm' },
-  sepia: { ja:'懐かしい気持ち',   en:'Nostalgic' }
+  sepia: { ja:'懐かしい気持ち',   en:'Nostalgic' },
+  // ★Hotfix3新設：moyamoya専用の独立グループ見出し
+  other: { ja:'その他',           en:'Other' }
 };
 
 function renderShelfTabs(){
@@ -5142,7 +5159,7 @@ function renderCounterShelfGuideRoot(){
     returnNote.classList.toggle('hidden', !hasChosenShelfBefore);
   }
   box.innerHTML = '';
-  const groupKeys = { sink:'counterGroupSink', wave:'counterGroupWave', light:'counterGroupLight', sepia:'counterGroupSepia' };
+  const groupKeys = { sink:'counterGroupSink', wave:'counterGroupWave', light:'counterGroupLight', sepia:'counterGroupSepia', other:'counterGroupOtherFeeling' };
   TEXTURE_GROUPS.forEach(group=>{
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -5188,7 +5205,7 @@ function renderCounterShelfGuideAll(){
   if(!box) return;
   box.innerHTML = '';
   box.className = 'counter-shelf-groups counter-shelf-guide-all';
-  const groupKeys = { sink:'counterGroupSink', wave:'counterGroupWave', light:'counterGroupLight', sepia:'counterGroupSepia' };
+  const groupKeys = { sink:'counterGroupSink', wave:'counterGroupWave', light:'counterGroupLight', sepia:'counterGroupSepia', other:'counterGroupOtherFeeling' };
   TEXTURE_GROUPS.forEach(group=>{
     const wrap = document.createElement('div');
     wrap.className = 'counter-shelf-group';

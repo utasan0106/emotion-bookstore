@@ -5425,20 +5425,26 @@ body.night .about-accordion-btn[aria-expanded="true"]{ background:rgba(232,201,1
 }
 body.no-motion .about-accordion-content{ transition:none !important; }
 
-/* C: メニュー最下部の「上へ戻る」（控えめ） */
+/* C: メニュー最下部の「上へ戻る」（控えめ）
+   ★Hotfix3：body.night個別上書き（color:var(--paper)）が夜モードでは暗色に反転する
+   --paperを文字色に使っていたため、暗い背景に暗い文字が乗り判読不能だった。
+   Hotfix2の.title-consult-btnと同じ考え方で、CSS変数の日/夜自動反転（--gold/--ink-soft）に
+   まかせる方式へ統一し、body.night個別上書きを削除した。 */
 .menu-back-to-top{
   display:block;
   margin:14px auto 4px;
   padding:6px 16px;
   font-size:11.5px; letter-spacing:.04em;
-  color:var(--ink); opacity:.7;
-  background:none;
-  border:1px solid var(--paper-shadow);
+  color:var(--ink-soft);
+  opacity:1;
+  background:transparent;
+  border:1px solid var(--gold);
   border-radius:14px;
   cursor:pointer;
+  transition:background .15s ease, color .15s ease;
 }
-.menu-back-to-top:hover{ opacity:1; }
-body.night .menu-back-to-top{ color:var(--paper); }
+.menu-back-to-top:hover{ color:var(--ink); background:rgba(168,130,60,0.15); }
+.menu-back-to-top:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
 
 /* D: 今月のおすすめ棚＝店内に置かれた小さな木の看板 */
 .fair-signboard{
