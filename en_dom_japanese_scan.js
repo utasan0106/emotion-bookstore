@@ -11,24 +11,23 @@ const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
 
-const SRC = path.resolve(__dirname, '..'); // ★成果物内で再実行可能な相対パス（tests/の親＝ソース直下）
+const SRC = path.resolve(__dirname, '..');
 const JP_RE = /[぀-ヿ一-鿿]/;
 
 // 許可リスト：これらのセレクタにマッチする要素（またはその子孫）はスキャン対象から除外する。
 // 主にdata.js由来の書名・アーティスト名・引用文・DETOUR_POOL商品名など「正式名称・原文プロセ」。
 const ALLOW_SELECTORS = [
-  '.recommend-chip',       // 本の推薦チップ（タイトル・著者・hook・whyはdata.js由来）
-  '.playlist-track-row',   // 楽曲タイトル・アーティスト名・コメント（data.js由来）
-  '.shelf-pick-book',      // 装丁カードの本タイトル・著者
-  '.shelf-pick-music',     // 装丁カードの曲タイトル・アーティスト
-  '.quote-card',           // data.js CATEGORIES.quotes の引用文
-  '.quote-source',         // 引用の出典
-  '.detour-card',          // DETOUR_POOL商品名・説明文
-  '.episode-card',         // 短い物語本文（STORIES_POOL、data.js）＋利用者本文
-  '.definition',           // cat.defの説明文（data.js、ラベル部分のみ英訳済み）
-  '.fair-line',            // 月間フェアの季節文（MONTH_FAIR、data.js由来）
-  '.hero-lang-toggle',     // ★2026-07-18追加：表紙の言語切替。「日本語」「English」は言語名自身のため翻訳しない
-  'script', 'style'        // 非表示のソースコード
+  // ★2026-07-19：作品紹介領域全体の広い除外を廃止。日本語を許可するのは、
+  // 英語公式表記が未確認の「作品名・著者名・アーティスト名」を出す専用要素と、
+  // 利用者自身の入力（テストでシードした本文）だけに限定する。
+  // 説明文・店主コメントを含むコンテナ（.recommend-chip全体・.detour-card全体・
+  // .quote-card・.episode-card全体・.definition・.fair-line等）は除外しない＝走査対象。
+  '.work-title',          // 推薦チップ・気になるリスト内の『作品名』著者（原題維持）
+  '.shelf-pick-title',    // 到着推薦カードの『作品名』著者・『曲名』アーティスト（原題維持）
+  '.playlist-track-name', // プレイリストの『曲名』アーティスト（原題維持）
+  '.episode-card.mine',   // 利用者自身が綴った本文（翻訳対象外）
+  '.hero-lang-toggle',    // 言語名「日本語」自身
+  'script', 'style'
 ];
 
 async function main(){
@@ -65,10 +64,57 @@ async function main(){
   await new Promise(r=>setTimeout(r,300));
   await new Promise(r=>setTimeout(r,300));
 
-  // 英語へ切り替える
+  // ★Hotfix1-6：実際の利用順を再現する。まず日本語モードのまま各画面を操作して表示し、
+  // その後は個別の再描画関数を呼ばず、言語切替ボタン（#langToggle）だけでEnglishへ切り替えて走査する。
   const langBtn = document.getElementById('langToggle');
-  if(langBtn) langBtn.dispatchEvent(new window.Event('click', {bubbles:true}));
-  await new Promise(r=>setTimeout(r,50));
+  function toggleLangByButton(){ if(langBtn) langBtn.dispatchEvent(new window.Event('click', {bubbles:true})); }
+
+  // walk visible text nodes（複数画面を跨いで集計できるよう関数化）
+  const skipTags = new Set(['SCRIPT','STYLE','NOSCRIPT']);
+  function isAllowed(el){
+    while(el){
+      for(const sel of ALLOW_SELECTORS){
+        try{ if(el.matches && el.matches(sel)) return true; }catch(e){}
+      }
+      el = el.parentElement;
+    }
+    return false;
+  }
+  function isHidden(el){
+    while(el){
+      if(el.hidden) return true;
+      if(el.classList && (el.classList.contains('hidden'))) return true;
+      if(el.getAttribute && el.getAttribute('aria-hidden') === 'true') return true;
+      el = el.parentElement;
+    }
+    return false;
+  }
+  const hits = [];
+  function collectHits(){
+    const walker = document.createTreeWalker(document.body, window.NodeFilter.SHOW_TEXT);
+    let node;
+    while(node = walker.nextNode()){
+      const text = node.textContent;
+      if(!JP_RE.test(text)) continue;
+      const parent = node.parentElement;
+      if(!parent) continue;
+      if(skipTags.has(parent.tagName)) continue;
+      if(isHidden(parent)) continue;
+      if(isAllowed(parent)) continue;
+      hits.push({ text: text.trim().slice(0, 80), tag: parent.tagName, cls: parent.className || '', id: parent.id || '' });
+    }
+    const attrsToCheck = ['title','aria-label','placeholder'];
+    document.querySelectorAll('*').forEach(el=>{
+      if(isHidden(el)) return;
+      if(isAllowed(el)) return;
+      attrsToCheck.forEach(attr=>{
+        const v = el.getAttribute(attr);
+        if(v && JP_RE.test(v)){
+          hits.push({ text:`[${attr}] ${v.slice(0,80)}`, tag:el.tagName, cls:el.className||'', id:el.id||'' });
+        }
+      });
+    });
+  }
 
   // 主要な画面を一通り開き、動的に生成される文言も含めて広く走査する
   // ★2026-07-18修正：libraryCacheはlet宣言のトップレベル変数でwindow経由では触れないため、
@@ -123,59 +169,49 @@ async function main(){
   // （表紙の説明文・余韻2行はdata-i18n走査で既にカバーされるため、動的に組み立てるサンプル本のみ明示的に開く）。
   if(typeof window.openSampleBook === 'function'){ try{ window.openSampleBook(); }catch(e){} }
   await new Promise(r=>setTimeout(r,50));
-
-  // walk visible text nodes
-  const skipTags = new Set(['SCRIPT','STYLE','NOSCRIPT']);
-  function isAllowed(el){
-    while(el){
-      for(const sel of ALLOW_SELECTORS){
-        try{ if(el.matches && el.matches(sel)) return true; }catch(e){}
-      }
-      el = el.parentElement;
-    }
-    return false;
-  }
-  function isHidden(el){
-    while(el){
-      if(el.hidden) return true;
-      if(el.classList && (el.classList.contains('hidden'))) return true;
-      if(el.getAttribute && el.getAttribute('aria-hidden') === 'true') return true;
-      el = el.parentElement;
-    }
-    return false;
-  }
-
-  const hits = [];
-  const walker = document.createTreeWalker(document.body, window.NodeFilter.SHOW_TEXT);
-  let node;
-  while(node = walker.nextNode()){
-    const text = node.textContent;
-    if(!JP_RE.test(text)) continue;
-    const parent = node.parentElement;
-    if(!parent) continue;
-    if(skipTags.has(parent.tagName)) continue;
-    if(isHidden(parent)) continue;
-    if(isAllowed(parent)) continue;
-    hits.push({
-      text: text.trim().slice(0, 80),
-      tag: parent.tagName,
-      cls: parent.className || '',
-      id: parent.id || ''
-    });
+  // ★2026-07-19拡張：はじめての方へ（アコーディオン）を開いた状態も走査する
+  const accBtn = document.getElementById('aboutAccordionBtn');
+  if(accBtn){ try{ accBtn.dispatchEvent(new window.Event('click', {bubbles:true})); }catch(e){} }
+  const accContent = document.getElementById('aboutAccordionContent');
+  if(accContent) accContent.classList.add('open');
+  const dataAcc = document.querySelector('.about-data-accordion');
+  if(dataAcc) dataAcc.setAttribute('open','');
+  // 題名相談パネル（編纂机）
+  if(typeof window.goToPage === 'function') window.goToPage('desk');
+  if(typeof window.toggleTitleConsult === 'function'){ try{ window.toggleTitleConsult(); }catch(e){} }
+  await new Promise(r=>setTimeout(r,50));
+  // 今日の栞（生成して表示）
+  if(typeof window.goToPage === 'function') window.goToPage('bookshelf');
+  const shioriBtn = document.getElementById('shioriBtn');
+  if(shioriBtn && shioriBtn.onclick){ try{ await shioriBtn.onclick(); }catch(e){} }
+  await new Promise(r=>setTimeout(r,80));
+  // 今月のおすすめ棚（看板）
+  if(typeof window.renderFair === 'function'){ try{ window.renderFair(); }catch(e){} }
+  // 全感情棚を順に開き、棚説明・引用・短編・本・音楽・寄り道を走査対象に載せる
+  if(typeof window.goToShelf === 'function' && typeof window.CATEGORIES !== 'undefined'){}
+  const catIds = ['moyamoya','kodoku','gakkari','hazukashii','ushirometai','aseri','kuyashii','shitto','akogare','wakuwaku','ando','kansha','itooshii','hokorashii','natsukashii','ureshii','ikari','kanashii','fuan','keno','odoroki'];
+  for(const cid of catIds){
+    // 1) 日本語モードで棚を開いて名言・エピソード・本・曲・寄り道を表示する
+    if(typeof window.goToShelf === 'function'){ try{ window.goToShelf(cid); }catch(e){} }
+    await new Promise(r=>setTimeout(r,30));
+    // 2) 言語切替ボタンだけでEnglishへ（再描画関数の直接呼び出しはしない）
+    toggleLangByButton();
+    await new Promise(r=>setTimeout(r,30));
+    collectHits();
+    // 3) 次の棚のために日本語へ戻す（これもボタン操作のみ）
+    toggleLangByButton();
+    await new Promise(r=>setTimeout(r,20));
   }
 
-  // also scan attributes commonly surfaced to users: title, aria-label, placeholder
-  const attrsToCheck = ['title','aria-label','placeholder'];
-  document.querySelectorAll('*').forEach(el=>{
-    if(isHidden(el)) return;
-    if(isAllowed(el)) return;
-    attrsToCheck.forEach(attr=>{
-      const v = el.getAttribute(attr);
-      if(v && JP_RE.test(v)){
-        hits.push({ text:`[${attr}] ${v.slice(0,80)}`, tag:el.tagName, cls:el.className||'', id:el.id||'' });
-      }
-    });
-  });
+
+  // ★最終走査の前に店内メニューを開き直す（goToPage系のナビゲーションでメニューは閉じられるため。
+  // メニュー内の法務リンク行・はじめての方へ・設定・上へ戻るボタン等を可視状態で走査する）。
+  if(typeof window.openExperienceMenu === 'function'){ try{ window.openExperienceMenu(); }catch(e){} }
+  await new Promise(r=>setTimeout(r,80));
+  // 最終確認もボタン操作のみで英語へ切り替えてから走査する
+  toggleLangByButton();
+  await new Promise(r=>setTimeout(r,80));
+  collectHits();
 
   console.log(`=== Japanese characters found in visible EN-mode DOM: ${hits.length} ===`);
   const seen = new Set();

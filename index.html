@@ -265,12 +265,10 @@ body.night .about-data-content{
          書くこと・外部送信なし・推薦は寄り道であること）と、閲覧専用サンプル本への控えめな導線。
          主要コピー「今の気持ちを、一冊の本に。」と主CTA（heroCta）は変更しない。
          大きな警告表示にはせず、生成り色の短文として配置する。 -->
-    <div class="first-visit-note" id="firstVisitNote">
-      <p data-i18n="firstVisitAiLine1">本をつくるのは、AIではなくあなた自身です。自分の言葉で一冊にして、棚へ置く書店です。</p>
-      <p data-i18n="firstVisitAiLine2">文章や写真は外部へ送信されません。診断や感情分析も行いません。</p>
-      <p data-i18n="firstVisitRecLine">本や音楽のおすすめは、書き終えた夜に店主がそっと差し出す寄り道です。主役はいつも、あなたの一冊です。</p>
-      <button type="button" class="sample-peek-btn" id="samplePeekBtn" data-i18n="samplePeekBtn">この書店の一冊を、のぞいてみる</button>
-    </div>
+    <!-- ★2026-07-19 A：表紙は静けさを主役に戻す。詳しい説明とサンプル本への導線は削除せず、
+         店内メニューの「はじめての方へ」（about-accordion）の展開領域へ移動した。
+         表紙に残す安心表示はこの一文だけ。 -->
+    <p class="first-visit-note first-visit-one-line" id="firstVisitNote" data-i18n="firstVisitOneLine">書いた言葉は、この端末にだけ残ります。</p>
 
     <!-- ★v1.3最終統合：「はじめての方へ」「データ保存について」はメニュー内へ移動（本ブロックはメニュー内で再利用、削除はしない） -->
 
@@ -442,6 +440,10 @@ body.night .about-data-content{
           </div>
         </div>
         <div class="title-suggest" id="titleSuggest"></div>
+        <!-- ★2026-07-19 E：店主に題名を相談する（AI・外部通信・本文解析なし。固定候補プールのみ） -->
+        <button type="button" class="title-consult-btn" id="titleConsultBtn"
+                aria-expanded="false" aria-controls="titleConsult" data-i18n="titleConsultBtn">店主に題名を相談する</button>
+        <div class="title-consult hidden" id="titleConsult"></div>
         <div class="field-row" style="margin-top:12px;">
           <div class="field">
             <label for="whenSelect" data-i18n="fieldLabelWhen">いつの気持ちですか</label>
@@ -559,7 +561,7 @@ body.night .about-data-content{
         <button type="button" class="intro-step" onclick="goToPage('shelves')">
           <span class="intro-num">②</span>
           <p class="intro-title" data-i18n="introTitle2">棚を巡る</p>
-          <p class="intro-text" data-i18n="introText2">21種類の感情の棚から、名言や本、曲に出会います。</p>
+          <p class="intro-text" data-i18n="introText2">21種類の感情の棚を、自由に巡ります。</p>
         </button>
         <button type="button" class="intro-step" onclick="goToPage('desk')">
           <span class="intro-num">③</span>
@@ -671,7 +673,7 @@ body.night .about-data-content{
      開閉・フォーカストラップ・Esc・背景クリックはmain.jsのopenExperienceMenu/closeExperienceMenuが担当。
      新規保存キーは追加しない。閉時はinert属性でフォーカス・スクリーンリーダーからも隠す。 -->
 <div class="experience-menu hidden" id="experienceMenu" inert>
-  <div class="experience-menu-card" role="dialog" aria-modal="true" aria-label="店内メニュー" data-i18n-aria="menuTitle">
+  <div class="experience-menu-card" id="experienceMenuCard" role="dialog" aria-modal="true" aria-label="店内メニュー" data-i18n-aria="menuTitle">
     <div class="experience-menu-head">
       <span class="experience-menu-title" data-i18n="menuTitle">店内メニュー</span>
       <button type="button" class="experience-menu-close" id="menuCloseBtn"
@@ -721,15 +723,20 @@ body.night .about-data-content{
         気持ちを書き、一冊の本として端末内の本棚へ。<br>
         登録不要。棚を選ぶかどうかも、あなたが決められます。
       </div>
-      <button class="about-accordion-btn" id="aboutAccordionBtn" onclick="toggleAboutAccordion()">
-        <span id="aboutAccordionIcon">▼</span> <span id="aboutAccordionBtnLabel" data-i18n="accordionOpenLabel">どんな体験ができるの？</span>
+      <button class="about-accordion-btn" id="aboutAccordionBtn" onclick="toggleAboutAccordion()"
+              aria-expanded="false" aria-controls="aboutAccordionContent">
+        <span id="aboutAccordionBtnLabel" data-i18n="accordionOpenLabel">はじめての方へ</span>
+        <span class="accordion-arrow" id="aboutAccordionIcon" aria-hidden="true">▼</span>
       </button>
       <div class="about-accordion-content" id="aboutAccordionContent">
         <b data-i18n="accordionTitle">みんなの感情書店とは</b>
         <p data-i18n-html="accordionP1">誰にも話せない気持ちを、静かに書き、一冊の本として残せるデジタル書店です。<br>
         書いた内容は原則としてこの端末内だけに保存され、本文をAIで分析・診断しません。</p>
-        <p style="margin-top:8px;" data-i18n-html="accordionP2">製本したあとは、21種類の感情棚から選んでしまうことも、棚を選ばず本棚へ戻ることもできます。<br>
-        本や音楽は、運営側の固定検索語から生まれる文化的な寄り道です。</p>
+        <p style="margin-top:8px;" data-i18n-html="accordionP2">製本したあとは、21種類の感情棚から選んでしまうことも、棚を選ばず本棚へ戻ることもできます。</p>
+        <!-- ★2026-07-19 A：表紙から移設した初回説明とサンプル本への導線（初期状態は親アコーディオンごと閉） -->
+        <p style="margin-top:8px;" data-i18n="firstVisitAiLine1">本をつくるのは、AIではなくあなた自身です。自分の言葉で一冊にして、棚へ置く書店です。</p>
+        <p data-i18n="firstVisitAiLine2">文章や写真は外部へ送信されません。診断や感情分析も行いません。</p>
+        <button type="button" class="sample-peek-btn" id="samplePeekBtn" data-i18n="samplePeekBtn">この書店の一冊を、のぞいてみる</button>
       </div>
     </div>
 
@@ -744,7 +751,9 @@ body.night .about-data-content{
         const openLabel = (typeof MESSAGES !== 'undefined') ? MESSAGES[lang].accordionOpenLabel : 'どんな体験ができるの？';
 
         content.classList.toggle('open');
-        if (content.classList.contains('open')) {
+        const isOpen = content.classList.contains('open');
+        if (btn) btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        if (isOpen) {
           icon.textContent = '▲';
           if (labelEl) labelEl.textContent = closeLabel;
         } else {
@@ -778,6 +787,8 @@ body.night .about-data-content{
       <!-- ★Step3：専門の相談窓口への常設導線（詳細・電話番号はguide.html側にのみ掲載し、本ページには重複掲載しない） -->
       <a href="./guide.html#support">専門の相談窓口</a>
       </div>
+      <!-- ★2026-07-19 C：店内メニューのスクロール領域だけを先頭へ戻す控えめなボタン -->
+      <button type="button" class="menu-back-to-top" id="menuBackToTop" data-i18n="menuBackToTop">↑ メニューの上へ戻る</button>
     </div>
   </div>
 </div>

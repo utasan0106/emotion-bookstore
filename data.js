@@ -651,7 +651,7 @@ const HONNE_MITATE_GENERIC = [
 ];
 
 const CATEGORIES = [
-  { id: "moyamoya", label: "モヤモヤ", def: "理由がはっきりしない、もやがかかったような気持ち。", quotes: QUOTE_POOL.moyamoya },
+  { id: "moyamoya", label: "名もなき感情", def: "まだ、どの棚の名前もしっくりこない気持ち。形や温度が決まっていなくても、そのまま置いておけます。", quotes: QUOTE_POOL.moyamoya }, /* ★2026-07-19：内部IDは互換性のため不変。表示名・説明文のみ変更 */
   { id: "kodoku", label: "孤独", def: "ひとりだと感じる、静かな寂しさ。", quotes: QUOTE_POOL.kodoku },
   { id: "gakkari", label: "がっかり", def: "期待していたものが叶わなかったときの落胆。", quotes: QUOTE_POOL.gakkari },
   { id: "hazukashii", label: "恥ずかしい", def: "消えてしまいたくなるような、きまり悪さ。", quotes: QUOTE_POOL.hazukashii },
@@ -3078,3 +3078,282 @@ if (typeof module !== 'undefined' && module.exports) {
   };
 }
 
+
+/* ==========================================================================
+ * ★2026-07-19 feature/quiet-experience-and-en-completion：英語版データ（EN overlay）
+ * 既存のID・URL・保存データとの対応関係は一切変更しない。既存の日本語データも上書きせず、
+ * IDまたは「タイトル｜著者」等の安定キーで対応する英語データを別プールとして追加する。
+ * 英語モードでは、main.js側のヘルパーがこれらのプールだけから選ぶ（日本語文を表示しない）。
+ * 引用（QUOTE_POOL）は著作物の翻訳を避け、英語版用のオリジナル短文（店主の帳面）へ差し替える。
+ * ========================================================================== */
+
+/* ---- 感情棚の英語説明文（idキー、21棚） ---- */
+const CATEGORY_DEF_EN = {
+  moyamoya: "A feeling that does not yet fit the name of any shelf. It can stay here even before its shape or temperature becomes clear.",
+  kodoku: "A quiet loneliness — the sense of being on your own.",
+  gakkari: "The sinking feeling when something you hoped for did not come true.",
+  hazukashii: "The awkward heat of wanting to disappear for a moment.",
+  ushirometai: "A small guilt toward someone, carried quietly.",
+  aseri: "The rushed, left-behind feeling of being hurried along.",
+  kuyashii: "The sting of falling short, of effort unrewarded.",
+  shitto: "The gritty feeling of envying someone else's light.",
+  akogare: "A straight-hearted longing for something out of reach.",
+  wakuwaku: "The bright lift of anticipation — a heart beating faster.",
+  ando: "Deep relief, like shoulders finally letting go.",
+  kansha: "Being quietly filled by someone's kindness.",
+  itooshii: "Deep tenderness for something irreplaceable.",
+  hokorashii: "Quiet pride in your own effort.",
+  natsukashii: "A distant day's memory, surfacing softly.",
+  ureshii: "A joy that makes the heart bounce.",
+  ikari: "A heat burning deep in the chest, hard to hold down.",
+  kanashii: "A deep loss or ache that brings tears close.",
+  fuan: "The unsettled worry of not knowing what comes next.",
+  keno: "The visceral \"I can't\" that makes you wince.",
+  odoroki: "The moment your heart can't catch up with what just happened."
+};
+
+/* ---- 英語版オリジナル引用（店主の帳面から／実在引用の翻訳ではない） ---- */
+const QUOTE_POOL_EN_SOURCE = "from the shopkeeper's notebook";
+const QUOTE_POOL_EN = {
+  moyamoya: ["A feeling without a name is still a feeling worth shelving.","Fog is not emptiness. It is weather, passing through.","You don't have to explain it to keep it."],
+  kodoku: ["Being alone is a room. Lonely is only one way to furnish it.","Some books can only be read in an empty house.","Solitude is where your own voice stops whispering."],
+  gakkari: ["A hope that fell short still proves you hoped.","Disappointment is the receipt for having expected something good.","Closed doors make quiet libraries."],
+  hazukashii: ["Everyone's shelf has one page they'd rather glue shut.","Embarrassment is proof you showed up.","Tomorrow, this will be a story. Tonight, it can just be a page."],
+  ushirometai: ["Guilt is love wearing a heavier coat.","What you regret, you cared about.","A small apology, written down, weighs less."],
+  aseri: ["Your pace is not a race someone else is timing.","Even express trains stop at stations.","Hurry is a borrowed clock. Return it at the door."],
+  kuyashii: ["Frustration is effort with nowhere to sit down yet.","What stings tonight is the shape of how much you tried.","Unrewarded is not the same as wasted."],
+  shitto: ["Envy is a compass. It points at what you want.","Someone else's light doesn't switch yours off.","You compared one page of yourself to their whole cover."],
+  akogare: ["Longing is the first draft of becoming.","Keep the stars far. That's what makes them stars.","What you admire is quietly describing you."],
+  wakuwaku: ["Anticipation is the cover art of tomorrow.","A heart that flutters is a heart wide awake.","Save this feeling. It is the ink of good beginnings."],
+  ando: ["Relief is the sound of a door you no longer guard.","Let the shoulders speak: it's over now.","A deep breath is the shortest book on this shelf."],
+  kansha: ["Gratitude is memory with the lights on.","Someone's kindness fit you perfectly. Keep the receipt.","Thank-you is a small word with a long shelf life."],
+  itooshii: ["Tenderness is attention that stayed.","What is dear to you is never small.","Some things we love simply for continuing to exist."],
+  hokorashii: ["Quiet pride needs no audience, only a bookmark.","You kept going. Write that down.","Small steps, bound together, make a spine."],
+  natsukashii: ["Nostalgia is proof the days were truly lived.","Old light still warms, at the right angle.","Memory is a bookstore that never closes."],
+  ureshii: ["Joy looks good in ink.","Happiness doubles when it is written down once.","Keep today somewhere you can reopen it."],
+  ikari: ["Anger is a fire. Paper can hold it better than hands.","What made you angry marks what you protect.","Write it hot, shelve it cool."],
+  kanashii: ["Sadness is love with nowhere to go — so give it a page.","Tears are punctuation, not the end of the sentence.","Grief kept gently is grief carried well."],
+  fuan: ["Worry is imagination asking for a plot.","The unknown page is still blank, not dark.","Name the fear, and it takes a seat."],
+  keno: ["Your \"no\" is information, not a flaw.","Disgust is a boundary speaking plainly.","You are allowed to close some books."],
+  odoroki: ["Surprise is the heart turning a page too fast.","What startled you also woke you.","Give astonishment a night to settle into words."]
+};
+
+/* ---- 厳選本の英語紹介文（「タイトル」キー。英語モードはこの表にある本だけから選書） ---- */
+const BOOK_HOOK_EN = {
+  "夜と霧": "A psychologist who survived the camps writes that even in despair, life keeps asking us for meaning. (Viktor E. Frankl, 'Man's Search for Meaning')",
+  "方丈記": "An 800-year-old Japanese essay that watches the world flow and vanish like a river — a prescription for foggy days. (Hōjōki)",
+  "人間失格": "\"Mine has been a life of much shame.\" Dazai's confession keeps company on lonely nights. (No Longer Human)",
+  "夜のピクニック": "One night, one long walk with classmates — and the small braveries that finally get spoken. (Night Picnic)",
+  "失われた時を求めて": "Proust's madeleine: how an entire lost world can return in a single taste. (In Search of Lost Time)",
+  "ノルウェイの森": "Murakami's quiet novel of love, loss, and the long walk back to life. (Norwegian Wood)",
+  "蹴りたい背中": "The prickly closeness of two high-school outsiders, told with wincing honesty. (The Back You Want to Kick)",
+  "こころ": "Sōseki's classic of a guarded heart and the guilt it carries to the end. (Kokoro)",
+  "嫌われる勇気": "Adlerian psychology in dialogue: all worries are interpersonal worries — and courage can untangle them. (The Courage to Be Disliked)",
+  "モモ": "Michael Ende's fable about the grey men who steal time, and the girl who listens it back. (Momo)",
+  "罪と罰": "Dostoevsky on pride, poverty, and the long road from transgression to grace. (Crime and Punishment)",
+  "火花": "Two comedians chasing an art that may never pay them back. (Spark)",
+  "嫉妬論": "A philosopher takes envy seriously — what it is, why it burns, what it can teach. (On Jealousy)",
+  "黒革の手帖": "Matsumoto's noir of ambition and a black notebook full of leverage. (The Black Leather Notebook)",
+  "海辺のカフカ": "A fifteen-year-old runs away toward a library at the edge of the world. (Kafka on the Shore)",
+  "グレート・ギャツビー": "The green light across the bay: longing itself, bound in a short American classic. (The Great Gatsby)",
+  "ハリー・ポッターと賢者の石": "The letter arrives, the wall opens — the classic doorway to wonder. (Harry Potter and the Philosopher's Stone)",
+  "旅する力": "Sawaki on why we travel: the muscle of setting out, kept warm. (The Power of Travel)",
+  "流浪の月": "A story about being misread by the whole world and still finding a place to rest. (Wandering Moon)",
+  "コーヒーが冷めないうちに": "In a small café you can revisit the past — but only before the coffee cools. (Before the Coffee Gets Cold)",
+  "伊集院静の「贈る言葉」": "Short letters of encouragement for the days that need a steady voice. (Words to Send You Off)",
+  "枕草子": "A thousand-year-old list of moments that moved one court writer's heart: \"In spring, the dawn.\" (The Pillow Book)",
+  "風立ちぬ": "\"The wind has risen; we must try to live.\" A fragile, luminous love story. (The Wind Has Risen)",
+  "走ることについて語るときに僕の語ること": "Murakami on running, writing, and the quiet pride of continuing. (What I Talk About When I Talk About Running)",
+  "一瞬の風になれ": "Sprinting, friendship, and the second when effort becomes wind. (Run with the Wind of a Moment)",
+  "ビリギャル": "The true story of a written-off student who ran, with help, toward an impossible goal. (Biri Gyaru)",
+  "夢をかなえるゾウ": "A comic, kind-hearted god of small habits shows how ordinary steps change a life. (The Dream-Granting Elephant)",
+  "告白": "A teacher's calm confession sets a chilling machinery of anger in motion. (Confessions)",
+  "コンビニ人間": "What is \"normal,\" and who decides? A convenience-store worker answers in her own key. (Convenience Store Woman)",
+  "噂": "A rumor spreads through the city like weather — Ogiwara's unsettling page-turner. (The Rumor)",
+  "砂の女": "A man trapped in a sand pit discovers how strange an ordinary life can become. (The Woman in the Dunes)",
+  "アルジャーノンに花束を": "Charlie's journal, as intelligence blooms and fades — one of fiction's great astonishments. (Flowers for Algernon)",
+  "モヤモヤの正体": "Hints for taking an unnamed unease apart and giving it words of your own. (What That Fog Really Is)",
+  "思考の整理学": "Let ideas ferment overnight — a classic Japanese essay on airing out a tangled mind. (The Art of Organizing Thought)",
+  "TUGUMI": "A last summer in a seaside town with a sharp-tongued, fragile cousin. (Goodbye Tsugumi)"
+};
+
+/* ---- 厳選曲の英語コメント（「アーティスト｜曲名」キー。英語モードはこの表にある曲だけから選曲） ---- */
+const MUSIC_COMMENT_EN = {
+  "羊文学|1999": "Fuzzed guitars that accept a clouded mind exactly as it is.",
+  "STUTS & 松たか子 with 3exes|Presence I": "A lo-fi groove for nights when no answer needs forcing.",
+  "君島大空|遠視のコントラルト": "A far-sighted contralto floating just above loneliness.",
+  "Nujabes|Aruarian Dance": "Warm loops that make solitude feel like a window seat — quietly classic.",
+  "never young beach|お別れの歌": "A breezy farewell song that lets disappointment stretch its legs.",
+  "maco marets|plain": "Plain, soft rap for deflated evenings.",
+  "柴田聡子|後悔": "A wry, gentle voice for the memory you keep replaying.",
+  "BIM|Bonita": "Loose and kind — embarrassment cooled to room temperature.",
+  "藤井風|罪の香り": "Guilt with a groove: forgiving yourself in mid-tempo.",
+  "きのこ帝国|クロノスタシス": "City lights at 2 a.m., and the small sins we carry home.",
+  "サカナクション|ネイティブダンサー": "A racing pulse given somewhere beautiful to run.",
+  "崎山蒼志|Samidare": "Early-summer rain for a hurried heart.",
+  "toe|グッドバイ": "Instrumental catharsis — frustration resolved without a single word.",
+  "ZORN|My Life": "A life rapped plainly: the sting of trying, worn with pride.",
+  "女王蜂|火炎": "Flame-bright vocals that let envy admit its own heat.",
+  "ミツメ|煙突": "Cool, detached guitars for watching someone else's smoke rise.",
+  "Yogee New Waves|Climax Night": "A night drive toward the person you want to become.",
+  "LUCKY TAPES|22": "City-pop longing, pressed neat.",
+  "SIRUP|LOOP": "A bright loop that keeps anticipation spinning.",
+  "カネコアヤノ|ロマンス宣言": "A declaration that ordinary days deserve excitement.",
+  "ハナレグミ|深呼吸": "A song shaped exactly like a deep breath.",
+  "rei harakami|owari no kisetsu": "Warm electronics for the moment tension finally leaves.",
+  "Ovall|Stoked": "Gratitude in groove form — thanks you can nod to.",
+  "星野源|日常": "The everyday, sung like it deserves a toast.",
+  "鈴木真海子|Contact": "Tenderness at whisper volume.",
+  "ハンバート ハンバート|ぼくのお日さま": "A folk duet that holds what is dear, gently.",
+  "中村佳穂|きっとね！": "A voice that celebrates your effort like a friend would.",
+  "坂本龍一|Aqua": "A clear piano for quiet, earned pride.",
+  "くるり|琥珀色の街、上海蟹の朝": "Amber-colored streets — nostalgia you can walk through.",
+  "cero|Summer Soul": "A summer that already feels like memory, in the best way.",
+  "DA PUMP|U.S.A.": "Pure, ridiculous joy. Dance first, explain later.",
+  "Mrs. GREEN APPLE|ダンスホール": "A chorus that insists the good mood is allowed.",
+  "THE BLUE HEARTS|リンダリンダ": "Punk that turns anger into a shout you can share.",
+  "ONE OK ROCK|The Beginning": "Fury forged into forward motion.",
+  "中島みゆき|糸": "Threads meeting threads — a Japanese standard for tears that mean love.",
+  "aiko|カブトムシ": "Fragile, precise heartache, sung close to the ear.",
+  "米津玄師|感電": "Nervous electricity turned into a run through the night.",
+  "優里|ドライフラワー": "Dried flowers for a worry that won't quite wilt.",
+  "ずっと真夜中でいいのに。|秒針を噛む": "Biting the second hand — revulsion given a razor-sharp melody.",
+  "凛として時雨|abnormalize": "Jagged and loud: for feelings the polite words refuse.",
+  "米津玄師|Flamingo": "A sly, strange strut for when the world surprises you.",
+  "Official髭男dism|Pretender": "The gasp of a plot twist you didn't order."
+};
+
+/* ---- 英語版オリジナル短編（1棚1編・この書店のための書き下ろし） ---- */
+const STORIES_POOL_EN = {
+  moyamoya: [{ text: "On the train home I tried to name the feeling and missed every time. At my station I gave up, and the giving up felt strangely kind.", author: "Office worker, 26" }],
+  kodoku: [{ text: "I cooked properly for one tonight — two pans, real plates. Halfway through dinner the room stopped feeling empty and started feeling mine.", author: "Graduate student, 24" }],
+  gakkari: [{ text: "The results mail came at 9:02. I closed my laptop, walked to the bakery, and bought the bread I always skip. Some days the consolation prize has to be immediate.", author: "Job seeker, 22" }],
+  hazukashii: [{ text: "I waved at someone waving behind me. I've replayed it forty times; the stranger surely replayed it zero. I'm learning the mathematics of embarrassment.", author: "University student, 19" }],
+  ushirometai: [{ text: "I said 'sounds fun, next time!' and I already knew there'd be no next time. The lie was small, and still it sat with me at dinner.", author: "Nurse, 29" }],
+  aseri: [{ text: "Everyone on the timeline seems to be arriving somewhere. I closed the app and watered one plant slowly, just to disagree.", author: "Designer, 27" }],
+  kuyashii: [{ text: "Second place again. On the way home I bought a notebook and wrote the score down, so at least the trying would be on record.", author: "Club athlete, 17" }],
+  shitto: [{ text: "My friend's good news was truly good, and I was truly glad, and one small room inside me was not. I opened a window in that room.", author: "Office worker, 31" }],
+  akogare: [{ text: "I watched her present like it was nothing and copied one small thing: the pause before the first word. Longing, I decided, can be homework.", author: "New employee, 23" }],
+  wakuwaku: [{ text: "The tickets arrived by mail like it's the old century. I put them on the fridge, and now the kitchen hums a little.", author: "Part-timer, 21" }],
+  ando: [{ text: "The call I feared lasted four minutes and ended with 'no problem at all.' I made tea afterward and just listened to the kettle.", author: "Freelancer, 34" }],
+  kansha: [{ text: "My umbrella broke in the crosswalk and a stranger simply tilted hers over me until the light changed. We never spoke. I still think about it.", author: "High school student, 16" }],
+  itooshii: [{ text: "The dog is old now and sleeps through most of my day. I have started narrating errands to him anyway. He flicks one ear. It is enough.", author: "Retiree, 63" }],
+  hokorashii: [{ text: "Nobody noticed the report was two days early, and I decided that was fine: I noticed. I bought the good coffee beans on the way home.", author: "Office worker, 28" }],
+  natsukashii: [{ text: "The convenience store replaced its chime. Standing by the ice cream, I mourned a five-note melody I hadn't known I loved.", author: "Writer, 40" }],
+  ureshii: [{ text: "The message said only 'passed!!' with two exclamation marks, and I read it maybe thirty times on a completely ordinary platform.", author: "Sibling of an examinee, 25" }],
+  ikari: [{ text: "I wrote the whole furious email, aimed it, and saved it to drafts. In the morning the draft looked like a person I had protected.", author: "Team lead, 35" }],
+  kanashii: [{ text: "I finally sorted her recipe cards. Her handwriting slants uphill on the word 'simmer.' I cooked one dish badly and it tasted like company.", author: "Bereaved daughter, 45" }],
+  fuan: [{ text: "The night before the results, I cleaned the entire bathroom. Worry, it turns out, is also a kind of fuel. The tiles have never looked better.", author: "Examinee, 18" }],
+  keno: [{ text: "I laughed along at the joke that wasn't kind, then quietly logged which part of me went along. Next time, I told that part, we leave earlier.", author: "Office worker, 30" }],
+  odoroki: [{ text: "The typhoon rerouted my flight to a town I'd never heard of, where I ate the best soba of my life. Surprise keeps its own guidebook.", author: "Traveler, 33" }]
+};
+
+/* ---- 寄り道の英語表記（既存nameキー・URL/検索クエリは不変） ---- */
+const DETOUR_EN = {
+  "心を鎮める詩集": { name: "A poetry collection to quiet the mind", desc: "When feelings won't take shape, a beautiful line breaks the fog for you." },
+  "江戸風鈴": { name: "Edo wind chime", desc: "One clear note by the window, and the room's air loosens." },
+  "軽井沢・高原の避暑リトリート": { name: "Karuizawa highland retreat", desc: "Cool air, tall trees, and a schedule with nothing in it." },
+  "世界の絶景写真集": { name: "Photo book of the world's great views", desc: "Turn a page, borrow a horizon." },
+  "おうちかき氷器": { name: "Home shaved-ice maker", desc: "A small machine that makes summer arrive on demand." },
+  "沖縄・海辺のリゾート": { name: "Okinawa seaside resort", desc: "Blue past the balcony, and days measured in tides." },
+  "歴史に残る偉人の伝記": { name: "Biographies of the greats", desc: "Borrowed courage from lives that kept going." },
+  "ご褒美の江戸切子グラス": { name: "Edo-kiriko cut glass", desc: "A reward that turns water into an occasion." },
+  "土用の丑・国産うなぎ": { name: "Premium unagi for midsummer", desc: "The traditional stamina meal, done properly." },
+  "許しをテーマにした短編集": { name: "Short stories on forgiveness", desc: "Small fictions that loosen a heavy pocket." },
+  "天然塩のバスソルト": { name: "Natural bath salts", desc: "Let the day dissolve at 40 degrees." },
+  "京都・静寂の寺町へ": { name: "Quiet temple streets of Kyoto", desc: "Gravel, moss, and the permission to walk slowly." },
+  "ノスタルジックな写真集": { name: "A nostalgic photo book", desc: "Other people's summers that somehow include yours." },
+  "手持ち花火セット": { name: "Handheld fireworks set", desc: "Five minutes of sparks, thirty years of memory." },
+  "熱海・レトロ温泉街の旅": { name: "Retro hot-spring town of Atami", desc: "Steam, neon, and a sea that remembers the Shōwa era." },
+  "不屈の精神を描くノンフィクション": { name: "Nonfiction of unbreakable spirit", desc: "True accounts for nights when trying feels unpaid." },
+  "上質なランニングシューズ": { name: "Quality running shoes", desc: "Put the frustration somewhere it can run." },
+  "努力を数値にするスポーツウォッチ": { name: "Sports watch that counts your effort", desc: "Proof, in numbers, that today happened." },
+  "孤独と向き合う哲学の入門書": { name: "An introduction to the philosophy of solitude", desc: "Thinkers who kept themselves good company." },
+  "作家ものの陶器マグカップ": { name: "Artisan ceramic mug", desc: "One good cup makes one person a table." },
+  "信州・高原の星空ステイ": { name: "Starry highland stay in Shinshū", desc: "A sky crowded enough to make solitude feel chosen." },
+  "心温まる大人の絵本": { name: "A picture book for grown-ups", desc: "Ten minutes, large type, deep breath." },
+  "風の通る甚平・部屋着": { name: "Breezy jinbei loungewear", desc: "Clothing shaped like the word 'off-duty'." },
+  "草津・名湯でほどける旅": { name: "Kusatsu hot-spring unwinding", desc: "Legendary waters for shoulders that finally dropped." },
+  "マインドフルネスの入門書": { name: "A first book on mindfulness", desc: "Instructions for returning to the current minute." },
+  "砂時計": { name: "An hourglass", desc: "Watch three minutes actually pass. It helps." },
+  "日光・杉並木と静けさの旅": { name: "Cedar avenues of Nikkō", desc: "Four hundred years of trees, zero notifications." },
+  "愛と日常を綴ったエッセイ": { name: "Essays on love and the everyday", desc: "Proof that ordinary days are the love story." },
+  "思い出を飾るフォトフレーム": { name: "A photo frame for keepsakes", desc: "Give one moment a permanent address." },
+  "ふたりのペアグラス": { name: "A pair of glasses for two", desc: "Matching vessels for unmatched evenings." },
+  "自己肯定感を育む心理学の本": { name: "Psychology of self-acceptance", desc: "Tools for closing the comparison tab." },
+  "上質なボディオイル": { name: "Fine body oil", desc: "Care for the person you keep forgetting to envy: you." },
+  "夏の主役になる上質な日傘": { name: "An elegant parasol", desc: "Shade that doubles as quiet confidence." },
+  "クスッと笑える失敗談エッセイ": { name: "Essays of laughable failures", desc: "Company for your most replayed moments." },
+  "ひんやり冷感枕パッド": { name: "Cooling pillow pad", desc: "For faces that overheat at midnight replays." },
+  "家で満天の星・ホームプラネタリウム": { name: "Home planetarium", desc: "A ceiling of stars for hiding in plain sight." },
+  "美しい手紙の言葉の本": { name: "A book of beautiful letter phrases", desc: "Words worthy of the people you're grateful to." },
+  "ガラスペンと便箋": { name: "Glass pen and letter paper", desc: "Ink that makes thank-you feel like ceremony." },
+  "感謝を贈る夏の涼麺ギフト": { name: "Summer noodle gift set", desc: "Cool noodles that say what texts can't." },
+  "視点が変わるユーモア小説": { name: "A humor novel that shifts the view", desc: "Disappointment, rotated ninety degrees, is often funny." },
+  "ご褒美アイスの詰め合わせ": { name: "Assorted reward ice cream", desc: "First aid, frozen." },
+  "選び直せるカタログギフト": { name: "A choose-again catalog gift", desc: "Sometimes the cure for a letdown is a second choice." },
+  "一流のプロフェッショナルの思考法": { name: "How first-rate professionals think", desc: "Field notes from the far side of longing." },
+  "本革の手帳カバー": { name: "Leather planner cover", desc: "Dress the year you intend to have." },
+  "富良野・ラベンダー畑の夏": { name: "Lavender fields of Furano", desc: "A purple horizon worth aspiring to." }
+};
+
+/* ---- 今月のおすすめ棚：店主の一言（月キー、英語） ---- */
+const MONTH_FAIR_EN = {
+  1: "For the year's beginning — a shelf for setting this year's compass.",
+  2: "For the coldest season — a shelf where time alone becomes an ally.",
+  3: "For the season of partings — a shelf for binding memories before they scatter.",
+  4: "For new beginnings — a shelf that records the heart's first excitement.",
+  5: "For the tired days after the holidays — a shelf that holds nameless fatigue.",
+  6: "For the rainy season — a shelf of deep breaths between the showers.",
+  7: "For midsummer nights — a shelf that keeps the sparks.",
+  8: "For late summer — a shelf where memories ripen slowly.",
+  9: "For the changing light — a shelf for what autumn stirs.",
+  10: "For long evenings — a shelf that likes a reading lamp.",
+  11: "For the deepening cold — a shelf of quiet gratitude.",
+  12: "For the year's end — a shelf for gently closing the year."
+};
+
+/* ---- 今日の栞：英語テンプレート ---- */
+const SHIORI_TEMPLATES_EN = [
+  "Your bookshelf's \"{cat}\" pages run thick. It means you live with that much depth of feeling.",
+  "Lately, \"{cat}\" seems to visit your shelf often. The shopkeeper keeps that lamp lit for you.",
+  "Today's bookmark rests on \"{cat}.\" Whatever the shelf, a bound feeling is a feeling honored.",
+  "\"{cat}\" has become one of your shelf's quiet signatures. That is nothing to fix — only to notice.",
+  "The spine that stands out today says \"{cat}.\" Thank you for keeping such honest books."
+];
+
+/* ---- 題名候補（E：店主に題名を相談する）。日本語は既存TITLE_TEMPLATESを再利用し、英語はこの表を使う ---- */
+const TITLE_SUGGEST_EN_GENERIC = [
+  "After the Rain","Words Unsaid","On My Way Home","A Quiet Distance","Still Becoming",
+  "The Open Page","Small Hours","What I Carried","Tonight, Softly","An Honest Page"
+];
+/* ★Hotfix1-2：全21棚×10件・すべて16文字以内（空白含む）・棚名の直訳に偏らない短い題名 */
+const TITLE_SUGGEST_EN = {
+  moyamoya: ["Not Yet Named","Soft Fog","Almost a Word","Grey Weather","Between Moods","Unlabeled Hours","A Loose Thread","Half a Feeling","Quiet Static","No Name Yet"],
+  kodoku: ["Table for One","One Light On","My Own Company","A Quiet Room","Solo Evening","Alone, Gently","The Empty Chair","Night Custodian","Just Me Tonight","A Single Key"],
+  gakkari: ["The Closed Door","Almost, Again","Small Letdown","Not This Time","The Short Straw","A Missed Train","Rain Check","What Fell Short","The Quiet No","Plan B Evening"],
+  hazukashii: ["The Wrong Wave","Replay at 2 AM","Pink Cheeks","Oh No, Again","A Small Scene","The Long Minute","Face, Burning","My Loud Mistake","Exit, Quickly","Tomorrow's Joke"],
+  ushirometai: ["The Small Lie","Unsent Sorry","A Heavy Pocket","What I Owe","Quiet Debt","The Left Unsaid","My Turn Skipped","A Guilty Tea","Borrowed Time","The Soft Wrong"],
+  aseri: ["Borrowed Clock","Not a Race","Late, Somehow","The Rush Hour","Catching Breath","One Plant First","Slow on Purpose","My Own Pace","The Long Queue","Still Loading"],
+  kuyashii: ["Second Place","So Close","The Sting","On Record","Not Wasted","Try Again Soon","The Near Miss","Unpaid Effort","Next Time, Mine","A Sharp Lesson"],
+  shitto: ["The Green Room","Their Good News","One Page of Me","A Small Window","The Other Lawn","Borrowed Light","My Quiet Want","The Compare Tab","Side Glance","What It Points"],
+  akogare: ["Far Stars","The First Step","A Draft of Me","Someday's Door","The Long Ladder","Homework","Toward the Light","My North","The Slow Climb","What I'd Become"],
+  wakuwaku: ["Before the Trip","The Good Ticket","A Bright Maybe","Countdown","New Shoes","The Fridge Note","Eve of Fun","Heart, Awake","The Yes Day","Soon, Soon"],
+  ando: ["Deep Breath","After the Call","Shoulders Down","The Kettle Song","All Clear","Safe Harbor","The Soft Landing","It's Over Now","A Long Exhale","Home, Finally"],
+  kansha: ["The Umbrella","A Kept Receipt","Thanks, Quietly","Small Kindness","The Warm Hand","Someone's Care","A Good Stranger","The Shared Roof","Noted, Fondly","Grace, Small"],
+  itooshii: ["One Ear Flicked","Dear and Near","The Old Dog","Small Treasure","Still Here","What Stays","A Soft Weight","My Favorite Hour","The Kept Photo","Tender Things"],
+  hokorashii: ["I Noticed","Two Days Early","A Private Medal","Kept Going","The Good Beans","Quiet Pride","My Small Summit","Done, Properly","The Long Habit","Well Earned"],
+  natsukashii: ["The Old Chime","Five Notes","Amber Streets","A Summer Ago","The Corner Shop","Old Light","Sepia Hour","The First Bike","That One Song","Long Ago, Near"],
+  ureshii: ["Passed!!","The Good News","Joy, in Ink","A Small Parade","Today Sparkled","The Happy Coin","Grinning Home","A Light Step","The Best Text","Sweet Ordinary"],
+  ikari: ["Saved to Drafts","The Unsent Mail","Write It Hot","A Fair Fire","What I Protect","The Line Crossed","Cooling Embers","My Loud Heart","Not Okay","The Next Morning"],
+  kanashii: ["Recipe Cards","Uphill Writing","One Dish, Badly","Tears as Commas","The Quiet Ache","After Goodbye","A Kept Absence","Soft Grief","The Empty Seat","Still Loving"],
+  fuan: ["The Night Before","Clean Tiles","Naming the Fear","A Blank Page","What If, Gently","The Unknown Turn","Worry's Fuel","Before Results","A Held Breath","Maybe Tomorrow"],
+  keno: ["My Quiet No","The Closed Book","A Plain Boundary","Not for Me","The Early Leave","Logged, Filed","The Wince","Enough of That","A Drawn Line","No, Thank You"],
+  odoroki: ["Rerouted","The Wrong Town","Best Soba Ever","A Fast Page","Plot Twist","The Sudden Turn","Eyes Wide","Unplanned Gift","The Gasp","What Just Was"]
+};
+
+/* ---- 推薦理由の英語フォールバック（hookEn未定義時の保険） ---- */
+const RECOMMEND_REASON_EN = [
+  "A book that sits quietly beside this feeling.",
+  "A gentle companion the shopkeeper trusts for nights like this."
+];

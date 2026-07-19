@@ -28,14 +28,14 @@ const MESSAGES = {
     tagline: "今の気持ちを、一冊の本に。",
     subTagline: "誰にも話せない気持ちを、静かに書き残せる場所です。",
     accordionSummary: "気持ちを書き、一冊の本として端末内の本棚へ。<br>登録不要。棚を選ぶかどうかも、あなたが決められます。",
-    accordionOpenLabel: "どんな体験ができるの？",
+    accordionOpenLabel: "はじめての方へ",
     accordionCloseLabel: "閉じる",
     accordionTitle: "みんなの感情書店とは",
     accordionP1: "誰にも話せない気持ちを、静かに書き、一冊の本として残せるデジタル書店です。<br>書いた内容は原則としてこの端末内だけに保存され、本文をAIで分析・診断しません。",
-    accordionP2: "製本したあとは、21種類の感情棚から選んでしまうことも、棚を選ばず本棚へ戻ることもできます。<br>本や音楽は、運営側の固定検索語から生まれる文化的な寄り道です。",
+    accordionP2: "製本したあとは、21種類の感情棚から選んでしまうことも、棚を選ばず本棚へ戻ることもできます。", // ★Hotfix1：本・音楽の説明は製本後のサプライズとして執筆前から削除
     introKicker: "この書店でできること<br>— 好きな場所から、自由に巡れます",
     introTitle1: "店主に話す", introText1: "今の気持ちを、選択肢か自由な言葉で伝えます。",
-    introTitle2: "棚を巡る", introText2: "21種類の感情の棚から、名言や本、曲に出会います。",
+    introTitle2: "棚を巡る", introText2: "21種類の感情の棚を、自由に巡ります。", // ★Hotfix1-1追加修正：本・音楽の予告を#shopGuideからも削除（サプライズ維持）
     introTitle3: "物語を綴る", introText3: "自分の体験を書き、一冊の本として製本します。棚を選ぶのは、そのあとです。",
     introTitle4: "本棚が育つ", introText4: "綴った物語が積み重なり、自分だけの本棚に。",
     enterBtn: "扉をひらく →",
@@ -87,7 +87,7 @@ const MESSAGES = {
     guideLead: "当てはまるものがない場合は、下の枠に言葉を書いて「話す」を押してください",
     freeformHintDesk: "※書いた言葉は、そのまま編纂机の原稿用紙に写しておきます。",
     earlyFreeformHint: "当てはまるものがない場合は、この枠に気持ちを書いて「話す」を押してください。",
-    userInputPlaceholder: "例：うまく言えないけど、朝からずっとモヤモヤしている…",
+    userInputPlaceholder: "例：うまく言えないけど、朝から気持ちが落ち着かない…",
     sendBtn: "話す",
     sectionHead2: "感情の棚", sectionSub2: "棚を選んでも、あてもなく巡っても。",
     swipeHint: "← 左右にスワイプでも棚を移動できます →",
@@ -124,9 +124,18 @@ const MESSAGES = {
     arrivalAfterglow1: "今夜の気持ちは、ここに置いていけます。",
     arrivalAfterglow2: "必要になったとき、また開きに来てください。",
     // ★2026-07-19 feature/first-visit-experience：表紙の初回説明とサンプル本
+    firstVisitOneLine: "書いた言葉は、この端末にだけ残ります。",
+    menuBackToTop: "↑ メニューの上へ戻る",
+    fairKicker: "今月のおすすめ棚",
+    fairHalfNote: "",
+    titleConsultBtn: "店主に題名を相談する",
+    titleConsultHeading: "店主の題名帖から",
+    titleConsultMore: "別の題名を見る",
+    titleConsultHint: "気に入った題名を押すと、そのまま書き直せます。",
+    detourHalfFirst: "今月前半",
+    detourHalfSecond: "今月後半",
     firstVisitAiLine1: "本をつくるのは、AIではなくあなた自身です。自分の言葉で一冊にして、棚へ置く書店です。",
     firstVisitAiLine2: "文章や写真は外部へ送信されません。診断や感情分析も行いません。",
-    firstVisitRecLine: "本や音楽のおすすめは、書き終えた夜に店主がそっと差し出す寄り道です。主役はいつも、あなたの一冊です。",
     samplePeekBtn: "この書店の一冊を、のぞいてみる",
     sampleBookBadge: "これは見本の一冊です。あなたの本棚には追加されません。",
     sampleBookTitle: "雨上がりの帰り道",
@@ -137,6 +146,9 @@ const MESSAGES = {
     shelfAfterBindingNote: "棚は、製本したあとに選べます。",
     storyInputPlaceholder: "書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。",
     assistBtn: "書き出しに迷ったら、店主の助け舟",
+    // ★Hotfix2-2：assistBtn押下時に本文欄へ挿入する定型の書き出しテンプレート。
+    // 本文解析・外部AI送信は行わない固定文言。appLangに応じてJA/ENを出し分ける。
+    assistTemplate: "いつ：\nどこで：\nなにがあった：\nそのとき、胸の中は：\n",
     // ★2026-07-18追加：旧チャットの代わりに編纂机へ表示する、静的な「言葉にするための助け舟」。
     // 本文解析や外部AI送信は行わず、選んだ棚（感情）に応じた固定の問いを提示するだけ。
     writingBoatHeading: "言葉にするための助け舟",
@@ -265,7 +277,7 @@ const MESSAGES = {
     goToShelfBtn: "『{shelf}』の棚を見てみる",
     dataAboutTitle: "この書店とデータについて",
     dataAboutOpenLabel: "データはどこに保存されるの？",
-    dataAboutBody: "「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す簡単な仕組みです（特定のAIモデルと会話しているわけではありません）。<br>「物語を綴る」「製本する」で書いた内容は、どこにも公開されず、この端末のブラウザ内（IndexedDB/localStorage）だけに保存されます。外部サーバーへは送信されません。アカウント登録もなく、他の人があなたの記録を見ることはできません。<br>「気持ちを手放す」は、この端末だけに残る「手放しの記録」に静かに移すことで、本棚の一覧からは見えなくなる機能です（完全な削除ではなく、専用の記録欄に移されます）。<br>「みんなの本棚」の「みんな」は他ユーザーとの共有ではなく、あなた自身の本棚が育っていく様子を指す名前です。<br>「今月の寄り道」および棚のおすすめ本・音楽の一部は、季節の言葉と棚の名前だけを検索語として外部の書籍・音楽検索サービスに問い合わせて表示しています。この時も、あなたが綴った文章が送信されることはありません。<br>ブラウザのデータを消去するとこの記録も失われるため、「バックアップ保存」から定期的にファイルへ書き出すことをおすすめします。サービスとして終了する場合も、事前にバックアップを取っていただければお手元にデータが残ります。",
+    dataAboutBody: "「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す簡単な仕組みです（特定のAIモデルと会話しているわけではありません）。<br>「物語を綴る」「製本する」で書いた内容は、どこにも公開されず、この端末のブラウザ内（IndexedDB/localStorage）だけに保存されます。外部サーバーへは送信されません。アカウント登録もなく、他の人があなたの記録を見ることはできません。<br>「気持ちを手放す」は、この端末だけに残る「手放しの記録」に静かに移すことで、本棚の一覧からは見えなくなる機能です（完全な削除ではなく、専用の記録欄に移されます）。<br>「みんなの本棚」の「みんな」は他ユーザーとの共有ではなく、あなた自身の本棚が育っていく様子を指す名前です。<br>棚の一部の表示は、季節の言葉と棚の名前だけを検索語として外部の検索サービスに問い合わせて表示しています。この時も、あなたが綴った文章が送信されることはありません。<br>ブラウザのデータを消去するとこの記録も失われるため、「バックアップ保存」から定期的にファイルへ書き出すことをおすすめします。サービスとして終了する場合も、事前にバックアップを取っていただければお手元にデータが残ります。", // ★Hotfix1-1追加修正：本・音楽の予告をデータ保存説明からも削除（外部通信の開示自体は維持）
     keeperNotAiHint: "※AIチャットボットではなく、あらかじめ用意した言葉を返す簡単な仕組みです。会話はモデルに送信されません。",
     submitStoryHint: "※外部には公開されず、この端末のブラウザ内にのみ保存されます。",
     // ★2025-07-17追記（v1.2フィードバック反映）：renderShelfDisplay()内にハードコードしていた
@@ -347,14 +359,14 @@ const MESSAGES = {
     tagline: "Turn What You Feel Now into a Book.",
     subTagline: "A quiet place to write what you cannot say aloud.",
     accordionSummary: "Write what you feel and keep it as a book on your device.<br>No account required. Choosing a shelf is optional.",
-    accordionOpenLabel: "What can I do here?",
+    accordionOpenLabel: "First time here?",
     accordionCloseLabel: "Close",
     accordionTitle: "About The Bookstore of Feelings",
     accordionP1: "The Bookstore of Feelings is a quiet digital bookstore where you can write what you feel and keep it as a book.<br>Your writing stays on this device and is not analyzed or diagnosed by AI.",
-    accordionP2: "After binding, you may place the book on one of 21 feeling shelves or return it to your bookshelf without choosing one.<br>Books and music are optional cultural detours based only on fixed search terms chosen by the service.",
+    accordionP2: "After binding, you may place the book on one of 21 feeling shelves or return it to your bookshelf without choosing one.",
     introKicker: "What this bookstore offers<br>— wander freely, starting wherever you like",
     introTitle1: "Talk to the shopkeeper", introText1: "Share how you feel now — pick an option, or write freely.",
-    introTitle2: "Browse the shelves", introText2: "Discover quotes, books and songs across 21 emotion shelves.",
+    introTitle2: "Browse the shelves", introText2: "Wander through 21 shelves of feelings.", // ★Hotfix1-1追加修正：本・音楽の予告を#shopGuideからも削除（サプライズ維持）
     introTitle3: "Write your story", introText3: "Write your experience and bind it as a book. Choosing a shelf comes afterward.",
     introTitle4: "Watch your shelf grow", introText4: "Every story you write adds up to a bookshelf all your own.",
     enterBtn: "Open the door →",
@@ -429,9 +441,18 @@ const MESSAGES = {
     arrivalAfterglow1: "You can leave tonight’s feelings here.",
     arrivalAfterglow2: "Come back and open this book whenever you need it.",
     // ★2026-07-19 feature/first-visit-experience：表紙の初回説明とサンプル本
+    firstVisitOneLine: "Your words stay on this device.",
+    menuBackToTop: "↑ Back to the top",
+    fairKicker: "This Month's Shelf",
+    fairHalfNote: "",
+    titleConsultBtn: "Ask the shopkeeper for a title",
+    titleConsultHeading: "From the shopkeeper's title book",
+    titleConsultMore: "See other titles",
+    titleConsultHint: "Tap a title you like — you can still edit it freely.",
+    detourHalfFirst: "First half of the month",
+    detourHalfSecond: "Second half of the month",
     firstVisitAiLine1: "You—not AI—write the book. This is a place to turn your own words into a book and place it on a shelf.",
     firstVisitAiLine2: "Your writing and photos are not sent outside your device. No diagnosis or emotion analysis is performed.",
-    firstVisitRecLine: "Book and music picks are a quiet detour the shopkeeper offers on the night you finish writing. Your book is always the main event.",
     samplePeekBtn: "Peek inside one of this shop’s books",
     sampleBookBadge: "This is a sample book. It is never added to your bookshelf.",
     sampleBookTitle: "The Walk Home After the Rain",
@@ -442,6 +463,8 @@ const MESSAGES = {
     shelfAfterBindingNote: "You can choose a shelf after your book is bound.",
     storyInputPlaceholder: "When, where, what happened, and how it felt. Short and imperfect is fine.",
     assistBtn: "Not sure how to start? Ask the shopkeeper for a hand",
+    // ★Hotfix2-2：assistTemplateの英語版。JAと同じ4行構成・末尾改行あり。
+    assistTemplate: "When:\nWhere:\nWhat happened:\nWhat I felt inside:\n",
     storyCountFormat: "{count} / {max} chars",
     photoLabel: "Slip in today's photo (optional)",
     photoPreviewAlt: "Preview of attached photo",
@@ -558,7 +581,7 @@ const MESSAGES = {
     goToShelfBtn: "View the \"{shelf}\" shelf",
     dataAboutTitle: "About this bookstore & your data",
     dataAboutOpenLabel: "Where is my data stored?",
-    dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it's a simple system that returns pre-written lines based on context (you're not talking to any particular AI model).<br>Anything you write in \"Write your story\" or have \"bound\" is never published anywhere. It's stored only inside this device's browser (IndexedDB/localStorage) and never sent to an external server. There's no account, so no one else can see your records.<br>\"Let go of a feeling\" quietly moves that entry into a device-only \"release log\" so it no longer appears on your bookshelf — it isn't permanently deleted, just moved to its own log.<br>\"Everyone's Bookshelf\" doesn't mean sharing with other users — \"everyone\" here just names the idea of your own bookshelf growing over time.<br>\"This month's detour\" and some of the shelf's book/music picks are fetched from external book and music search services, using only a season word and the shelf's emotion label as the search terms. Your written entries are never sent in these requests either.<br>Clearing your browser data will also erase these records, so we recommend periodically exporting a backup file via \"Back up your data.\" Even if this service were ever discontinued, your data would remain safe on your device as long as you've backed it up beforehand.",
+    dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it's a simple system that returns pre-written lines based on context (you're not talking to any particular AI model).<br>Anything you write in \"Write your story\" or have \"bound\" is never published anywhere. It's stored only inside this device's browser (IndexedDB/localStorage) and never sent to an external server. There's no account, so no one else can see your records.<br>\"Let go of a feeling\" quietly moves that entry into a device-only \"release log\" so it no longer appears on your bookshelf — it isn't permanently deleted, just moved to its own log.<br>\"Everyone's Bookshelf\" doesn't mean sharing with other users — \"everyone\" here just names the idea of your own bookshelf growing over time.<br>Some parts of the shelves are fetched from an external search service, using only a season word and the shelf's emotion label as the search terms. Your written entries are never sent in these requests either.<br>Clearing your browser data will also erase these records, so we recommend periodically exporting a backup file via \"Back up your data.\" Even if this service were ever discontinued, your data would remain safe on your device as long as you've backed it up beforehand.", // ★Hotfix1-1追加修正：本・音楽の予告をデータ保存説明からも削除（外部通信の開示自体は維持）
     keeperNotAiHint: "※ Not an AI chatbot — a simple system that replies with pre-written lines. Nothing is sent to a model.",
     submitStoryHint: "※ Never published anywhere — stored only inside this device's browser.",
     shelfEpisodesHeading: "Your Books \u00b7 Short Stories from This Bookstore",
@@ -730,6 +753,11 @@ function applyLanguage(){
   // ★2026-07-19 feature/first-visit-experience：閲覧専用サンプル本を開いたまま言語を
   // 切り替えた場合、見本の本文・栞・バッジも現在の言語で再描画する。
   if(typeof refreshSampleBookIfOpen === 'function') refreshSampleBookIfOpen();
+  // ★2026-07-19 E：題名相談パネルを開いたまま言語を切り替えた場合も現在の言語で再描画する。
+  if(typeof renderTitleConsult === 'function') renderTitleConsult();
+  // ★Hotfix1-3：現在表示中の動的領域（棚の名言・エピソード・本・曲・寄り道・栞・到着推薦・本詳細）を
+  // 現在の言語で再描画する。選ばれている作品・項目のIDは出会いシードのメモ化により変わらない。
+  if(typeof refreshLocalizedDynamicViews === 'function') refreshLocalizedDynamicViews();
   const langBtn = document.getElementById('langToggle');
   if(langBtn) langBtn.textContent = appLang === 'ja' ? 'JP / EN' : 'EN / JP';
   const titleEl = document.querySelector('title');
@@ -768,9 +796,182 @@ function renderTitleSuggest(){
   if(box) box.innerHTML = '';
 }
 
+// ★2026-07-19：棚説明文の言語対応ヘルパー（英語モードはdata.jsのCATEGORY_DEF_ENを使う）。
+function categoryDefFor(cat){
+  if(!cat) return '';
+  if(appLang === 'en' && typeof CATEGORY_DEF_EN !== 'undefined' && CATEGORY_DEF_EN[cat.id]) return CATEGORY_DEF_EN[cat.id];
+  return cat.def || '';
+}
+
+// ★2026-07-19：本・曲の紹介文の言語対応ヘルパー。英語モードでは英語紹介文を持つ候補だけが
+// 選ばれる前提（pickRecommend/pickShelfLinkedRecommendation側でフィルタ）。
+function bookHookFor(book){
+  if(!book) return '';
+  if(appLang === 'en'){
+    if(typeof BOOK_HOOK_EN !== 'undefined' && BOOK_HOOK_EN[book.title]) return BOOK_HOOK_EN[book.title];
+    return (typeof RECOMMEND_REASON_EN !== 'undefined') ? RECOMMEND_REASON_EN[0] : '';
+  }
+  return book.hook || '';
+}
+function songCommentFor(song){
+  if(!song) return '';
+  if(appLang === 'en'){
+    const key = song.artist + '|' + song.title;
+    if(typeof MUSIC_COMMENT_EN !== 'undefined' && MUSIC_COMMENT_EN[key]) return MUSIC_COMMENT_EN[key];
+    return '';
+  }
+  return song.comment || '';
+}
+// 英語対応済み候補だけへ絞る（日本語モードでも同じ母集団を使うことで、言語切替時に候補IDが変わらない）。
+function enReadyBooks(pool){
+  if(typeof BOOK_HOOK_EN === 'undefined') return pool;
+  const filtered = pool.filter(b=>BOOK_HOOK_EN[b.title]);
+  return filtered.length ? filtered : pool;
+}
+function enReadySongs(pool){
+  if(typeof MUSIC_COMMENT_EN === 'undefined') return pool;
+  const filtered = pool.filter(sg=>MUSIC_COMMENT_EN[sg.artist + '|' + sg.title]);
+  return filtered.length ? filtered : pool;
+}
+
 function generateTitle(categoryId){
   const pool = TITLE_TEMPLATES[categoryId] || ['名前のない一冊'];
   return pool[Math.floor(Math.random()*pool.length)];
+}
+
+/* ==========================================================================
+ * ★2026-07-19 E：店主に題名を相談する（編纂机）。
+ * ・AI・外部サービス・本文解析は一切使わない。選択中の感情棚に対応する固定の題名候補
+ *   プール（日本語=TITLE_TEMPLATES／英語=TITLE_SUGGEST_EN）から決定的に5件を提示する。
+ * ・棚が未選択の場合は汎用候補（下のJA配列／TITLE_SUGGEST_EN_GENERIC）を使う。
+ * ・候補パネルを開いている間はオフセットを固定し、「別の題名を見る」でだけ入れ替える。
+ * ・候補を押すとタイトル欄へ入り、その後も自由に編集できる。maxlength(16)超の候補は出さない。
+ * ・題名を付けずに製本する既存仕様には手を加えない。
+ * ========================================================================== */
+const TITLE_SUGGEST_JA_GENERIC = [
+  '帰り道に残ったこと','まだ言えなかった言葉','あの日の続きを少しだけ','ひらいたままの頁',
+  '小さな字の今夜','気持ちの置き場所','下線を引いた平日','胸の中の天気'
+];
+let titleConsultState = { open:false, offset:0 };
+
+function titleConsultPool(){
+  const catId = (typeof activeCategory !== 'undefined') ? activeCategory : null;
+  const hasShelf = (typeof shelfWasChosen === 'undefined' || shelfWasChosen) && catId && CATEGORIES.some(c=>c.id === catId);
+  const limit = 16; // #titleInputのmaxlengthと同じ
+  let pool;
+  if(appLang === 'en'){
+    pool = (hasShelf && typeof TITLE_SUGGEST_EN !== 'undefined' && TITLE_SUGGEST_EN[catId])
+      ? TITLE_SUGGEST_EN[catId]
+      : (typeof TITLE_SUGGEST_EN_GENERIC !== 'undefined' ? TITLE_SUGGEST_EN_GENERIC : []);
+  }else{
+    pool = (hasShelf && TITLE_TEMPLATES[catId]) ? TITLE_TEMPLATES[catId] : TITLE_SUGGEST_JA_GENERIC;
+  }
+  return pool.filter(x=>String(x).length <= limit);
+}
+
+function renderTitleConsult(){
+  const box = document.getElementById('titleConsult');
+  if(!box) return;
+  if(!titleConsultState.open){ box.innerHTML = ''; box.classList.add('hidden'); return; }
+  const pool = titleConsultPool();
+  if(!pool.length){ box.innerHTML = ''; box.classList.add('hidden'); return; }
+  const count = 5;
+  const start = (titleConsultState.offset * count) % pool.length;
+  const picks = [];
+  for(let i = 0; i < Math.min(count, pool.length); i++){
+    picks.push(pool[(start + i) % pool.length]);
+  }
+  box.innerHTML = '';
+  const head = document.createElement('p');
+  head.className = 'title-consult-heading';
+  head.textContent = t('titleConsultHeading');
+  box.appendChild(head);
+  const list = document.createElement('div');
+  list.className = 'title-consult-list';
+  picks.forEach(candidate=>{
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'title-consult-item';
+    b.textContent = candidate;
+    b.onclick = ()=>{
+      const input = document.getElementById('titleInput');
+      if(input){ input.value = candidate; input.focus(); }
+      buzz(6);
+    };
+    list.appendChild(b);
+  });
+  box.appendChild(list);
+  const hint = document.createElement('p');
+  hint.className = 'title-consult-hint';
+  hint.textContent = t('titleConsultHint');
+  box.appendChild(hint);
+  const more = document.createElement('button');
+  more.type = 'button';
+  more.className = 'title-consult-more';
+  more.textContent = t('titleConsultMore');
+  more.onclick = ()=>{ titleConsultState.offset++; renderTitleConsult(); };
+  box.appendChild(more);
+  const close = document.createElement('button');
+  close.type = 'button';
+  close.className = 'title-consult-close';
+  close.textContent = t('closeBtn');
+  close.onclick = ()=>toggleTitleConsult();
+  box.appendChild(close);
+  box.classList.remove('hidden');
+  const btn = document.getElementById('titleConsultBtn');
+  if(btn) btn.setAttribute('aria-expanded', 'true');
+}
+
+// ★Hotfix1-3：言語切替時に、描画済みの動的コンテンツを（IDを変えずに）現在の言語で再描画する。
+let lastOpenedBookEntry = null;
+function refreshLocalizedDynamicViews(){
+  try{
+    // 棚タブ（棚名・グループ見出し）は描画済みのままでは言語が残るため、常に再描画する
+    if(typeof renderShelfTabs === 'function'){ try{ renderShelfTabs(); }catch(e){} }
+    // 開いたままのオーバーレイ（気になるリスト・手放した記録・来店カード・共有メニュー）も
+    // 現在の言語で再描画する（各show関数は呼ぶたびに内容を組み直す実装）
+    // これらのオーバーレイは初回生成時の言語で見出し・閉じるボタンが固定されるため、
+    // 一度破棄してから（開いていた場合のみ）現在の言語で作り直す。
+    const favOv = document.getElementById('favoritesOverlay');
+    if(favOv){
+      const favWasOpen = !favOv.classList.contains('hidden');
+      favOv.remove();
+      if(favWasOpen && typeof showFavorites === 'function'){ try{ showFavorites(); }catch(e){} }
+    }
+    const puOv = document.getElementById('purifyLogOverlay');
+    if(puOv){
+      const puWasOpen = !puOv.classList.contains('hidden');
+      puOv.remove();
+      if(puWasOpen && typeof showPurifyLog === 'function'){ try{ showPurifyLog(); }catch(e){} }
+    }
+    const prOv = document.getElementById('profileOverlay');
+    if(prOv && !prOv.classList.contains('hidden') && typeof showProfileCard === 'function'){ try{ showProfileCard(); }catch(e){} }
+    // 現在開いている感情棚（棚名・説明・名言・エピソード・本・曲・寄り道）
+    const shelvesPage = document.getElementById('shelves');
+    if(shelvesPage && typeof renderShelfDisplay === 'function' &&
+       document.body.classList.contains('experience-open') && typeof activeCategory !== 'undefined' && activeCategory){
+      const disp = document.getElementById('shelfDisplay');
+      if(disp && disp.innerHTML !== '') renderShelfDisplay();
+    }
+    // 今日の栞・到着推薦（描画済みなら）
+    if(typeof renderShioriCard === 'function') renderShioriCard();
+    if(typeof renderShelfPickRecommend === 'function') renderShelfPickRecommend();
+    // 開いている通常の本詳細（サンプル本はrefreshSampleBookIfOpenが担当）
+    const bm = document.getElementById('bookModal');
+    if(bm && !bm.classList.contains('hidden') && !bm.classList.contains('sample-book-mode') &&
+       lastOpenedBookEntry && typeof openBook === 'function'){
+      openBook(lastOpenedBookEntry);
+    }
+  }catch(e){}
+}
+
+function toggleTitleConsult(){
+  titleConsultState.open = !titleConsultState.open;
+  if(!titleConsultState.open){
+    const btn = document.getElementById('titleConsultBtn');
+    if(btn) btn.setAttribute('aria-expanded', 'false');
+  }
+  renderTitleConsult();
 }
 
 function recommendReasonFor(catId){
@@ -875,6 +1076,51 @@ function unlockedWaveCount(){
   return Math.min(MAX_WAVE, Math.max(1, months + 1));
 }
 
+// ★Hotfix1-4：出会い（セッション/製本）単位の決定的シャッフル。描画のたびに再抽選しない。
+function seededShuffle(arr, seed){
+  const a = arr.slice();
+  let s = seed >>> 0;
+  for(let i = a.length - 1; i > 0; i--){
+    s = (s * 1103515245 + 12345) >>> 0;
+    const j = s % (i + 1);
+    const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+function shelfEncounterSeed(catId, slot){
+  return shelfPickSeed(String(recoEncounterSeed()) + '_' + catId + '_' + slot);
+}
+
+// ★Hotfix1-3追加修正：感情棚側（製本後推薦とは別）にも直前回避を適用する。
+// 同じ出会い（＝同じseed）の間はメモ化した順序をそのまま返し、再描画・言語切替・モーダル開閉で
+// 変わらないという既存の一期一会の固定は維持する。seedが変わった＝新しい出会いのときだけ、
+// 先頭候補が直前の出会いの先頭候補と一致する場合に限って先頭を後ろへ送り、連続を避ける。
+// 候補が1件以下の場合は何もしない（同一候補を許容）。製本後推薦用の既存キー（eb-reco-prev-*）とは
+// 別の棚ID単位のキーを使うため混同しない。
+function applyShelfPrevAvoidance(catId, kind, seed, arr, stableKeyFn){
+  if(!arr || arr.length < 2) return arr;
+  try{
+    const memoKey = 'eb-shelf-' + kind + '-memo-' + catId + '-' + seed;
+    const prevKey = 'eb-shelf-prev-' + kind + '-' + catId;
+    let memoOrder = null;
+    try{ memoOrder = JSON.parse(sessionStorage.getItem(memoKey) || 'null'); }catch(e){}
+    if(memoOrder && Array.isArray(memoOrder) && memoOrder.length === arr.length){
+      const byKey = {};
+      arr.forEach(item=>{ byKey[stableKeyFn(item)] = item; });
+      const restored = memoOrder.map(k=>byKey[k]).filter(Boolean);
+      if(restored.length === arr.length) return restored;
+    }
+    let result = arr.slice();
+    const prev = sessionStorage.getItem(prevKey);
+    if(prev && stableKeyFn(result[0]) === prev){
+      result.push(result.shift()); // 先頭を末尾へ送り、直前の出会いと同じ先頭候補を避ける
+    }
+    sessionStorage.setItem(prevKey, stableKeyFn(result[0]));
+    sessionStorage.setItem(memoKey, JSON.stringify(result.map(stableKeyFn)));
+    return result;
+  }catch(e){ return arr; }
+}
+
 function shuffleArray(arr){
   const a = arr.slice();
   for(let i = a.length - 1; i > 0; i--){
@@ -925,10 +1171,12 @@ function toggleEpisodes(){
 function pickRecommend(catId){
   const pinned = PINNED_RECOMMEND[catId] || [];
   const wave = unlockedWaveCount();
-  const pool = BOOK_POOL.filter(b=>b.tags.includes(catId) && b.wave <= wave);
-  const shuffled = shuffleArray(pool);
+  const pool = enReadyBooks(BOOK_POOL.filter(b=>b.tags.includes(catId) && b.wave <= wave));
+  const chipsSeed = shelfEncounterSeed(catId, 'chips');
+  const shuffled = applyShelfPrevAvoidance(catId, 'book', chipsSeed,
+    seededShuffle(pool, chipsSeed), b=>(b.title + '|' + b.by)); // ★Hotfix1-3追加修正：直前の出会いと同じ先頭候補を避ける
   const picked = shuffled.slice(0, 3).map(b=>({
-    title:b.title, by:b.by, why:(b.hook || recommendReasonFor(catId))
+    title:b.title, by:b.by, why:(bookHookFor(b) || (appLang === 'en' ? RECOMMEND_REASON_EN[0] : recommendReasonFor(catId)))
   }));
   return pinned.concat(picked);
 }
@@ -972,6 +1220,19 @@ let _gaLastTrackedPage = null;       // view_shelf：同一ページへの重複
 let _gaLastTrackedShelfId = null;    // view_shelf：同一の個別棚への重複発火防止（棚IDは送信しない）
 let _gaSuppressNextViewShelf = false; // view_shelf：goToShelf側で送信済みの場合、直後のgoToPage('shelves')での二重発火を抑止
 let activeCategory = (CATEGORIES && CATEGORIES.length) ? CATEGORIES[0].id : 'moyamoya';
+// ★Hotfix1-F：利用者が実際に棚を選んだかどうか。falseの間は棚タブのハイライトを付けず、
+// 題名相談も汎用候補を使う（「名もなき感情」を自動的な既定値に見せないため）。
+let shelfWasChosen = false;
+// ★Hotfix1-2追加修正：activeCategoryを書き換える経路を一元化する共通ヘルパー。
+// 棚タブ直接クリック・「気ままに巡る」・スワイプ／左右移動・本棚での棚確定など、
+// 利用者が明示的に棚（感情カテゴリ）を選んだと言える操作は、必ずこの関数を経由させ、
+// shelfWasChosenの更新漏れを防ぐ。chosenをfalseで呼ぶ場合は内部処理専用（利用者操作ではない）。
+function setActiveShelf(id, opts){
+  opts = opts || {};
+  const chosen = opts.chosen !== false; // 既定はtrue＝利用者操作扱い
+  activeCategory = id;
+  if(chosen) shelfWasChosen = true;
+}
 let libraryCache = [];
 // ★追加：本棚が際限なく伸び続けるのを防ぐための「月別の棚」。
 // 既定は'all'（従来通り全冊表示）で、ユーザーがタブを選んだときだけ絞り込む＝挙動を壊さない追加機能。
@@ -1015,7 +1276,12 @@ const TEXTURE_GROUPS = [
     id:'sink',
     label:'雨降りのように、心が重く沈んでいる',
     keeper:'少しお疲れのようですね。このあたりの棚に、今の心に寄り添う本があるかもしれません。',
-    shelves:['moyamoya','kodoku','gakkari','hazukashii','ushirometai','kanashii'],
+    // ★Hotfix2-3：判定の結果、自動選択・自動ハイライトはしていない（Bのケース）。
+    // ただし一覧の並び順そのものにmoyamoyaが先頭にあり、具体的な感情棚より先に
+    // 「名もなき感情」が目に入っていたため、このグループの最後尾へ移動した。
+    // 内部ID・21棚の件数・他グループの並びは変更しない。この配列はrenderShelfTabs()の
+    // 「静かに沈む気持ち」グループ内タブ順とも共通のため、両画面で一貫して反映される。
+    shelves:['kodoku','gakkari','hazukashii','ushirometai','kanashii','moyamoya'],
     tone:'heavy'
   },
   {
@@ -1902,10 +2168,10 @@ async function showFavorites(){
         const isMusic = f.type === 'music';
         const links = isMusic
           ? `<a href="https://open.spotify.com/search/${encodeURIComponent(q5)}" target="_blank" rel="noopener">Spotify</a> <a href="https://music.apple.com/jp/search?term=${encodeURIComponent(q5)}" target="_blank" rel="noopener">Apple Music</a> <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(q5)}" target="_blank" rel="noopener">YouTube</a>`
-          : `<a href="${amazonSearchUrl(q5)}" target="_blank" rel="noopener">Amazon</a> <a href="${rakutenSearchUrl(q5)}" target="_blank" rel="noopener">楽天</a>`;
+          : `<a href="${amazonSearchUrl(q5)}" target="_blank" rel="noopener">Amazon</a> <a href="${rakutenSearchUrl(q5)}" target="_blank" rel="noopener">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>`;
         return `<div class="purify-log-entry">
-          <p class="purify-log-meta"><span class="meta-type-tag ${isMusic ? 'is-music' : 'is-book'}">${isMusic ? '曲' : '本'}</span> ${escapeHtml(label)}</p>
-          <p class="purify-log-text">${escapeHtml(f.title)}${f.by ? ' — ' + escapeHtml(f.by) : ''}</p>
+          <p class="purify-log-meta"><span class="meta-type-tag ${isMusic ? 'is-music' : 'is-book'}">${isMusic ? (appLang === 'en' ? 'Song' : '曲') : (appLang === 'en' ? 'Book' : '本')}</span> ${escapeHtml(label)}</p>
+          <p class="purify-log-text"><span class="work-title">${escapeHtml(f.title)}${f.by ? ' — ' + escapeHtml(f.by) : ''}</span></p>
           <p class="field-hint">${links}</p>
           <button type="button" class="fav-btn is-fav" data-fav-type="${escapeHtml(f.type)}" data-fav-title="${escapeHtml(f.title)}" data-fav-by="${escapeHtml(f.by || '')}" data-fav-category="${escapeHtml(f.category || '')}" data-fav-extra="">★ ${escapeHtml(t('favRemoveBtn'))}</button>
         </div>`;
@@ -2217,6 +2483,15 @@ function localCurate(title, story, chosenId){
   return { approved:true, category:chosenId, note:'', reason:'' };
 }
 
+// ★2026-07-19 I：栞テンプレートを添字で選び、表示言語に合わせて日英を組み立てる。
+// 保存形式は従来の{date, text}へ{tplIdx, catId}を追加するだけで、既存保存データもそのまま読める。
+function shioriTextFor(tplIdx, catId){
+  const cat = CATEGORIES.find(c=>c.id === catId);
+  const label = cat ? categoryLabelFor(cat) : (appLang === 'en' ? 'you' : 'あなた');
+  const pool = (appLang === 'en' && typeof SHIORI_TEMPLATES_EN !== 'undefined') ? SHIORI_TEMPLATES_EN : SHIORI_TEMPLATES;
+  const tpl = pool[tplIdx % pool.length];
+  return tpl.replace('{cat}', label);
+}
 function localShiori(topLabel){
   const t = SHIORI_TEMPLATES[Math.floor(Math.random()*SHIORI_TEMPLATES.length)];
   return t.replace('{cat}', topLabel);
@@ -2547,6 +2822,14 @@ function goToPage(id){
   _gaLastTrackedPage = id;
   setActivePageTab(id);
   if(id === 'desk'){ syncCounterDraftToDesk(); updateDeskLead(); if(typeof renderWritingBoat === 'function') renderWritingBoat(); }
+  // ★Hotfix1-2追加修正3：棚ページへ入るたびに、現在のactiveCategory/shelfWasChosenをタブ・棚表示へ
+  // 反映する。goToShelf()以外の経路（例：goToDeskWithCategory()で棚を選んだ後、ページ内ナビの
+  // 「②棚」タブで戻る場合）でactiveCategoryが更新されていても、goToPage('shelves')はこれまで
+  // 再描画していなかったため、タブのハイライトが古いままになる不整合があった。
+  if(id === 'shelves'){
+    if(typeof renderShelfTabs === 'function') renderShelfTabs();
+    if(typeof renderShelfDisplay === 'function') renderShelfDisplay();
+  }
   // ★微調整：番台へ戻るたびに会話ステップを第一段階（5択＋まだ決めずに書く）へ
   // 必ずリセットする。棚選択ロジック・保存データは変更しない、UI表示状態のみの初期化。
   if(id === 'counter' && typeof renderCounterShelfGuideRoot === 'function'){
@@ -2612,19 +2895,26 @@ function renderFair(){
     if(!fair) return;
     const cat = CATEGORIES.find(c=>c.id===fair.id);
     if(!cat) return;
+    // ★2026-07-19 D：カード/バナーではなく、店内に置かれた小さな木の看板として表示する。
+    // 内容は「今月のおすすめ棚」「棚名」「店主の一言」「棚へ進む導線」の4点のみ。
     box.innerHTML = '';
+    box.classList.add('fair-signboard');
+    const kicker = document.createElement('p');
+    kicker.className = 'fair-kicker';
+    kicker.textContent = (appLang === 'en') ? t('fairKicker') : (m + '月・' + t('fairKicker'));
     const title = document.createElement('b');
-    title.textContent = (appLang === 'en')
-      ? t('fairTitleTpl').replace('{month}', m).replace('{shelf}', categoryLabelFor(cat))
-      : (m + '月の店主のおすすめ棚 — 『' + cat.label + '』');
+    title.className = 'fair-shelf-name';
+    title.textContent = '『' + categoryLabelFor(cat) + '』';
     const line = document.createElement('span');
     line.className = 'fair-line';
-    line.textContent = fair.line;
+    line.textContent = (appLang === 'en' && typeof MONTH_FAIR_EN !== 'undefined' && MONTH_FAIR_EN[m]) ? MONTH_FAIR_EN[m] : fair.line;
     const go = document.createElement('button');
+    go.type = 'button';
     go.className = 'fair-go';
     go.textContent = t('fairGoBtn');
+    go.setAttribute('aria-label', t('fairGoBtn'));
     go.onclick = ()=>goToShelf(fair.id);
-    box.appendChild(title); box.appendChild(line); box.appendChild(go);
+    box.appendChild(kicker); box.appendChild(title); box.appendChild(line); box.appendChild(go);
   }catch(e){ console.error('renderFair failed', e); }
 }
 
@@ -2676,7 +2966,7 @@ function renderShelfTabs(){
       row.className = 'shelf-group-row';
       shelvesInGroup.forEach(cat=>{
         const btn = document.createElement('button');
-        btn.className = 'shelf-tab' + (cat.id===activeCategory ? ' active' : '');
+        btn.className = 'shelf-tab' + (shelfWasChosen && cat.id===activeCategory ? ' active' : '');
         btn.dataset.catId = cat.id;
         // ★v1.3 RC2b 項目6：未選択の棚（例：「感謝」）がtopCategoryId()と一致するだけで
         // 常時発光して見えるのを廃止。選択状態と区別できないというバグ報告のため、
@@ -2690,7 +2980,7 @@ function renderShelfTabs(){
             trackAnalyticsEvent('view_shelf');
             _gaLastTrackedShelfId = cat.id;
           }
-          activeCategory = cat.id;
+          setActiveShelf(cat.id); // ★Hotfix1-2追加修正：棚タブ直接クリックでもshelfWasChosenを更新
           renderShelfTabs();
           renderShelfDisplay();
         };
@@ -2716,7 +3006,7 @@ function renderShelfTabs(){
         trackAnalyticsEvent('view_shelf');
         _gaLastTrackedShelfId = pick;
       }
-      activeCategory = pick;
+      setActiveShelf(pick); // ★Hotfix1-2追加修正：「気ままに巡る」でもshelfWasChosenを更新
       renderShelfTabs();
       renderShelfDisplay();
     };
@@ -2734,19 +3024,34 @@ function renderDetourFallback(box, catId){
   const tierLabel = (appLang === 'en')
     ? { low:'A little detour', medium:'A cozy little indulgence', high:'A special detour' }
     : { low:'ちいさな寄り道', medium:'すこし贅沢な寄り道', high:'とっておきの寄り道' };
-  const picks = shuffleArray(items).slice(0, 3);
+  // ★2026-07-19 H：毎日・毎描画で変わる広告的な見え方を避け、「年・月・前半(1-15日)／後半(16日-)」を
+  // キーに端末側で決定的に選ぶ。同じ半月の間は内容も順番も固定され、再読み込み・言語切替では変わらない。
+  const now = new Date();
+  const half = now.getDate() <= 15 ? 1 : 2;
+  const halfKey = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + half + '-' + catId;
+  const halfSeed = shelfPickSeed(halfKey);
+  const ordered = items.slice();
+  for(let i = ordered.length - 1; i > 0; i--){
+    const j = (halfSeed + i * 31) % (i + 1);
+    const tmp = ordered[i]; ordered[i] = ordered[j]; ordered[j] = tmp;
+  }
+  const picks = ordered.slice(0, 3);
+  const halfLabel = t(half === 1 ? 'detourHalfFirst' : 'detourHalfSecond');
   const cardsHtml = picks.map(featured=>{
     const url = detourUrlFor(featured);
+    const enOverlay = (appLang === 'en' && typeof DETOUR_EN !== 'undefined') ? DETOUR_EN[featured.name] : null;
+    const dispName = enOverlay ? enOverlay.name : featured.name;
+    const dispDesc = enOverlay ? enOverlay.desc : featured.description;
     return `
       <div class="detour-card detour-tier-${featured.tier}">
         <span class="detour-tier-badge">${tierLabel[featured.tier] || featured.tier}</span>
-        <p class="detour-name">${escapeHtml(featured.name)}</p>
-        <p class="detour-desc">${escapeHtml(featured.description)}</p>
+        <p class="detour-name">${escapeHtml(dispName)}</p>
+        <p class="detour-desc">${escapeHtml(dispDesc)}</p>
         <a class="detour-link" href="${url}" target="_blank" rel="noopener sponsored">${escapeHtml(t('detourViewLink'))}</a>
       </div>`;
   }).join('');
   box.innerHTML = `
-    <p class="detour-heading">${escapeHtml(t('detourHeading'))}<span class="detour-pr">${escapeHtml(t('detourPrNote'))}</span></p>
+    <p class="detour-heading">${escapeHtml(t('detourHeading'))}<span class="detour-half-note">（${escapeHtml(halfLabel)}）</span><span class="detour-pr">${escapeHtml(t('detourPrNote'))}</span></p>
     <div class="detour-cards">${cardsHtml}</div>
     <p class="detour-note">${escapeHtml(t('detourNote'))}</p>`;
 }
@@ -2762,34 +3067,9 @@ async function renderDetourSection(catId){
   const catLabel = cat ? cat.label : '';
   const requestedCategory = catId;
 
-  box.innerHTML = `<p class="detour-heading">${escapeHtml(t('detourHeading'))}</p><p class="detour-loading">${escapeHtml(t('detourLoadingNote'))}</p>`;
-
-  // 同じ感情の棚でも3種類ほどランダムに、かつ月が変わるまでは同じ顔ぶれになるように
-  // {granularity:'month', count:3} を指定して取得する。
-  const liveItems = await fetchSeasonalBooks(catLabel, '寄り道', { granularity:'month', count:3 });
-
-  // 取得中に棚が切り替わっていたら、古い結果は描画しない
-  if(activeCategory !== requestedCategory) return;
-
-  if(liveItems && liveItems.length){
-    const cardsHtml = liveItems.slice(0, 3).map(b=>{
-      const url = b.infoLink || amazonSearchUrl(b.title + ' ' + b.by);
-      return `
-        <div class="detour-card detour-live">
-          <span class="detour-tier-badge">${escapeHtml(t('detourLiveBadge'))}</span>
-          <p class="detour-name">${escapeHtml(b.title)}</p>
-          <p class="detour-desc">${escapeHtml(b.by)}${b.hook ? ' — ' + escapeHtml(b.hook) : ''}</p>
-          <a class="detour-link" href="${url}" target="_blank" rel="noopener">${escapeHtml(t('detourViewLink'))}</a>
-          ${favBtnHtml('book', b.title, b.by, catId, b.hook || '')}
-        </div>`;
-    }).join('');
-    box.innerHTML = `
-      <p class="detour-heading">${escapeHtml(t('detourHeading'))}<span class="detour-pr">${escapeHtml(t('detourLiveSourceNote'))}</span></p>
-      <div class="detour-cards">${cardsHtml}</div>
-      <p class="detour-note">${escapeHtml(t('detourLiveNote'))}</p>`;
-    return;
-  }
-
+  // ★2026-07-19 H：外部API（Google Books）による都度取得の寄り道表示を停止し、
+  // 常に厳選リスト（DETOUR_POOL）から半月単位の決定的な組で表示する
+  // （日替わりの広告的な見え方を避けるため。fetchSeasonalBooks自体は他機能で引き続き使用）。
   renderDetourFallback(box, catId);
 }
 
@@ -2798,6 +3078,8 @@ async function renderDetourSection(catId){
 //   実際に見つかった新しめの一冊・一曲を1件ずつ添える。取得できなければ何も表示しない
 //   （厳選データの表示自体は止めない＝壊れない設計）。
 async function renderLiveNewReleases(cat){
+  // ★2026-07-19：外部API（日本語クエリ）由来の紹介文は英語化できないため、英語モードでは表示しない。
+  if(appLang === 'en') return;
   const wrap = document.getElementById('livePickWrap');
   if(!wrap || !cat) return;
   const requestedCategory = cat.id;
@@ -2848,8 +3130,11 @@ function renderShelfDisplay(){
       el.style.transition = 'opacity .16s ease';
       el.style.opacity = '0';
     }
-    const quotes = cat.quotes || [];
-    const q = quotes.length ? quotes[Math.floor(Math.random()*quotes.length)] : { text:'', source:'' };
+    // ★2026-07-19：英語モードでは、著作物引用の翻訳を避け、英語版オリジナル短文（QUOTE_POOL_EN）から選ぶ。
+    const quotes = (appLang === 'en' && typeof QUOTE_POOL_EN !== 'undefined' && QUOTE_POOL_EN[cat.id])
+      ? QUOTE_POOL_EN[cat.id].map(text=>({ text, source: (typeof QUOTE_POOL_EN_SOURCE !== 'undefined' ? QUOTE_POOL_EN_SOURCE : '') }))
+      : (cat.quotes || []);
+    const q = quotes.length ? quotes[shelfEncounterSeed(cat.id, 'quote') % quotes.length] : { text:'', source:'' };
     const recs = pickRecommend(cat.id);
     const shelfLabelDisp = categoryLabelFor(cat);
     // ★英語モード完全性監査：Google検索クエリ自体は非表示のURLパラメータのため日本語のままでも
@@ -2870,13 +3155,13 @@ function renderShelfDisplay(){
             const rakutenUrl = rakutenSearchUrl(q2);
             return `<span class="recommend-chip" title="${r.why || ''}">
               ${r.hook ? `<span class="recommend-hook">${r.hook}</span>` : ''}
-              『${r.title}』${r.by}
+              <span class="work-title">『${escapeHtml(r.title)}』${escapeHtml(r.by)}</span>
               <span class="recommend-why">${r.why || ''}</span>
               <span class="recommend-shop-links">
                 <a class="recommend-buy" href="${amazonUrl}" target="_blank" rel="noopener">Amazon</a>
                 <a class="recommend-buy kindle" href="${kindleUrl}" target="_blank" rel="noopener">Kindle</a>
                 <a class="recommend-buy audible" href="${audibleUrl}" target="_blank" rel="noopener">Audible</a>
-                <a class="recommend-buy rakuten" href="${rakutenUrl}" target="_blank" rel="noopener">楽天</a>
+                <a class="recommend-buy rakuten" href="${rakutenUrl}" target="_blank" rel="noopener">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>
               </span>
               ${favBtnHtml('book', r.title, r.by, cat.id, r.hook || r.why || '')}
               ${r.source ? `<a class="recommend-source" href="${r.sourceUrl}" target="_blank" rel="noopener">出典：${r.source}</a>` : ''}
@@ -2889,9 +3174,11 @@ function renderShelfDisplay(){
       : '';
     const mq = MUSIC_QUERIES[cat.id] || [];
     const pinnedSongs = PINNED_SONGS[cat.id] || [];
-    const trackSrc = mq.length
-      ? shuffleArray(mq).slice(0, 3).map(t=>({ title:t.title, artist:t.artist, comment:t.comment || '' }))
-      : pinnedSongs.map(t=>({ title:t.title, artist:t.artist, comment:'' }));
+    const trackPool = enReadySongs(mq.length ? mq : pinnedSongs);
+    const tracksSeed = shelfEncounterSeed(cat.id, 'tracks');
+    const shuffledTracks = applyShelfPrevAvoidance(cat.id, 'track', tracksSeed,
+      seededShuffle(trackPool, tracksSeed), tr=>(tr.artist + '|' + tr.title)); // ★Hotfix1-3追加修正：直前の出会いと同じ先頭候補を避ける
+    const trackSrc = shuffledTracks.slice(0, 3).map(tr=>({ title:tr.title, artist:tr.artist, comment: songCommentFor(tr) }));
     let musicHtml;
     if(trackSrc.length){
       const items = trackSrc.map(song=>{
@@ -2929,8 +3216,11 @@ function renderShelfDisplay(){
       const safeId = escapeHtml(entry.id);
       return `<div class="episode-card mine" data-entry-id="${safeId}"><span class="who mine-who">${escapeHtml(t('myStoryLabel'))}</span>『${safeTitle}』${safeStory}</div>`;
     });
-    const storyPool = STORIES_POOL[cat.id] || [];
-    const shuffledStories = shuffleArray(storyPool).slice(0, 3);
+    // ★2026-07-19：英語モードでは英語版オリジナル短編（STORIES_POOL_EN）から選ぶ。
+    const storyPool = (appLang === 'en' && typeof STORIES_POOL_EN !== 'undefined' && STORIES_POOL_EN[cat.id])
+      ? STORIES_POOL_EN[cat.id]
+      : (STORIES_POOL[cat.id] || []);
+    const shuffledStories = seededShuffle(storyPool, shelfEncounterSeed(cat.id, 'stories')).slice(0, 3);
     // ★決裁済み変更仕様v1.2 3-2：実在投稿者プロフィールに見えるauthor表示（s.author）は使用せず、
     // 架空の蔵書であることを示す固定ラベルのみを表示する（MESSAGES.shelfFictionalLabel経由）。
     // ★2025-07-17再追記：data-i18n="shelfFictionalLabel"を付与し、applyLanguage()による
@@ -2948,7 +3238,7 @@ function renderShelfDisplay(){
       ? `<button type="button" class="purify-trigger" onclick="openPurify('${cat.id}')">${escapeHtml(t('purifyTriggerBtn'))}</button>`
       : '';
     el.innerHTML = `
-      <p class="definition"><b>${escapeHtml(shelfLabelDisp)}</b> — ${cat.def}</p>
+      <p class="definition"><b>${escapeHtml(shelfLabelDisp)}</b> — ${escapeHtml(categoryDefFor(cat))}</p>
       <p class="quote-card">${q.text}</p>
       <p class="quote-source">— ${quoteSourceHtml(q.source)}</p>
       <p class="episodes-heading" data-i18n="shelfEpisodesHeading">${escapeHtml(t('shelfEpisodesHeading'))}</p>
@@ -3017,7 +3307,7 @@ function navigateShelfBySwipe(direction){
     trackAnalyticsEvent('view_shelf');
     _gaLastTrackedShelfId = ids[idx];
   }
-  activeCategory = ids[idx];
+  setActiveShelf(ids[idx]); // ★Hotfix1-2追加修正：スワイプ／左右移動でもshelfWasChosenを更新
   renderShelfTabs();
   renderShelfDisplay();
   const activeTab = document.querySelector('#shelfTabs .shelf-tab.active');
@@ -3376,9 +3666,26 @@ async function renderShioriCard(){
   }
   card.classList.remove('hidden');
   const cached = await loadJSON('emotion-bookstore-shiori', null);
-  if(cached && cached.date === todayStr() && cached.text){
+  if(cached && cached.date === todayStr() && (cached.text || cached.tplIdx != null)){
     const stext = document.getElementById('shioriText');
-    if(stext) stext.textContent = cached.text;
+    // ★2026-07-19 I：tplIdxが保存されていれば現在の言語で再生成（英語モードで日本語栞を出さない）。
+    // ★Hotfix1-5：旧形式（{date,text}のみ）は、日付＋保存文字列から決定的にtplIdxを割り当てて
+    // 移行する（同じ日に何度読み込んでも同じテンプレート）。日本語モードでは既存のtextを尊重して
+    // そのまま表示し、英語モードでは移行したtplIdxから英語テンプレートを再生成して表示する
+    // （旧形式の日本語textを英語モードで表示しない）。移行内容は同じ保存キーへ追記保存する。
+    if(cached.tplIdx == null){
+      const migratedIdx = shelfPickSeed(String(cached.date || '') + '|' + String(cached.text || '')) % SHIORI_TEMPLATES.length;
+      const migratedCat = topCategoryId();
+      cached.tplIdx = migratedIdx;
+      cached.catId = migratedCat;
+      cached.legacyText = cached.text; // 日本語モード用に原文を保持
+      saveJSON('emotion-bookstore-shiori', cached);
+    }
+    if(stext){
+      stext.textContent = (appLang !== 'en' && cached.legacyText)
+        ? cached.legacyText
+        : shioriTextFor(cached.tplIdx, cached.catId);
+    }
     slip.classList.remove('hidden');
     btn.classList.add('hidden');
   }else{
@@ -3397,8 +3704,8 @@ if(btnShiori){
     btn.textContent = t('shioriChoosingWords');
     await wait(prefs.motion ? 600 : 50);
     const topId = topCategoryId();
-    const topLabel = (CATEGORIES.find(c=>c.id===topId) || {}).label || 'あなた';
-    const text = localShiori(topLabel);
+    const tplIdx = Math.floor(Math.random() * SHIORI_TEMPLATES.length);
+    const text = shioriTextFor(tplIdx, topId);
 
     const sText = document.getElementById('shioriText');
     if(sText) sText.textContent = text;
@@ -3407,7 +3714,7 @@ if(btnShiori){
     if(slip) slip.classList.remove('hidden');
     btn.classList.add('hidden');
 
-    saveJSON('emotion-bookstore-shiori', { date: todayStr(), text });
+    saveJSON('emotion-bookstore-shiori', { date: todayStr(), text, tplIdx, catId: topId });
   };
 }
 
@@ -3429,6 +3736,7 @@ function formatDate(iso){
 // Xへの手動シェア（twitter.com/intent/tweet）と公式Xアカウントへの通常リンクは維持している。
 
 function openBook(entry){
+  lastOpenedBookEntry = entry; // ★Hotfix1-3：言語切替時の再描画用に保持（保存はしない）
   const cat = CATEGORIES.find(c=>c.id===entry.category);
   const mCat = document.getElementById('modalCat');
   if(mCat) mCat.textContent = cat ? categoryLabelFor(cat) + t('definitionLabelSep') : '';
@@ -3746,7 +4054,9 @@ if(btnAssist) {
     const ta = document.getElementById('storyInput');
     if(!ta) return;
     if(ta.value.trim() === ''){
-      ta.value = 'いつ：\nどこで：\nなにがあった：\nそのとき、胸の中は：\n';
+      // ★Hotfix2-2：現在のappLangに応じたテンプレートを挿入する（日本語ハードコードを解消）。
+      // 既存の入力内容がある場合は上書きしない挙動は変更しない（空欄チェックはそのまま）。
+      ta.value = t('assistTemplate');
       updateStoryCount();
     }
     ta.focus();
@@ -3967,7 +4277,8 @@ function showUnfiledShelfPicker(entry){
     // ★v1.3最終統合：棚選択後も感情棚へは自動遷移せず、本棚へ移動する（仕様書1-3）。
     // category更新・再保存は現行どおり。activeCategoryは感情棚を任意で開いたときのために
     // 更新するのみで、表示・保存には影響しない（renderShelfDisplay()はここでは呼ばない）。
-    activeCategory = selectedId;
+    // ★Hotfix1-2追加修正：本棚での未分類本の棚確定も利用者の明示的な棚選択のため、shelfWasChosenを更新する。
+    setActiveShelf(selectedId);
     renderShelf();
     renderShelfTabs();
     hideUnfiledShelfPicker();
@@ -4066,6 +4377,8 @@ if(btnSubmit) {
         // ★GA4整合：create_book_success — 新しい本の初回IndexedDB保存が成功した直後に1回。
         // unfiled→通常棚へのcategory更新成功では発火しない。本文・題名・category・ID・冊数等は送らない。
         trackAnalyticsEvent('create_book_success');
+        // ★2026-07-19 G：製本完了ごとに、おすすめの「出会い」を新しく引き直す。
+        if(typeof rotateRecoEncounter === 'function') rotateRecoEncounter();
 
         clearAttachedPhoto();
         playSuckAnimation(finalCategory);
@@ -4246,7 +4559,7 @@ function matchShopkeeperReply(text, fallbackShelfId){
 // data.js自体には手を入れず、main.js側だけで21棚ぶんの英語表記テーブルを別途持つ。
 // 英語モード時はこちらを優先して使い、日本語モードでは従来どおりcat.labelをそのまま使う。
 const CATEGORY_LABEL_EN = {
-  moyamoya: 'Foggy',
+  moyamoya: 'Unnamed Feeling', // ★2026-07-19：表示名変更（内部IDは不変）
   kodoku: 'Lonely',
   gakkari: 'Disappointed',
   hazukashii: 'Embarrassed',
@@ -4283,7 +4596,7 @@ function shelfLabelOf(id){
 // 「言葉にするための助け舟」。本文解析・外部AI送信は一切行わず、選んだ棚（感情）id ごとの
 // 固定の問いを2つだけ提示する（data.jsは変更しない。CATEGORIESのidだけを参照する）。
 const WRITING_PROMPTS = {
-  moyamoya:    { ja:['何が、いちばんもやもやしていますか。', 'そのもやは、いつ頃から胸にありますか。'],
+  moyamoya:    { ja:['まだ名前のつかないその気持ちは、どのあたりにありますか。', 'その気持ちは、いつ頃から胸にありますか。'],
                  en:['What feels the murkiest right now?', 'How long has this haze been sitting with you?'] },
   kodoku:      { ja:['ひとりだと感じたのは、どんな瞬間でしたか。', '本当は、誰にそばにいてほしかったですか。'],
                  en:['What moment made you feel most alone?', 'Who did you wish had been there with you?'] },
@@ -4346,6 +4659,7 @@ function renderWritingBoat(){
 }
 
 function goToShelf(shelfId){
+  // ★Hotfix1-2追加修正：shelfWasChosenの更新はsetActiveShelf()経由に統一（利用者の明示的な棚選択）。
   // ★GA4修正：個別の感情棚へ実際に移動したときに view_shelf を1回だけ送信。
   // 「異なる棚IDへの移動」または「別ページから個別棚への移動」の場合のみ発火し、
   // 同じ個別棚を表示中に同じ棚を再指定した場合は送らない。
@@ -4358,7 +4672,7 @@ function goToShelf(shelfId){
   _gaLastTrackedShelfId = shelfId;
   _gaSuppressNextViewShelf = true;
   try{
-    activeCategory = shelfId;
+    setActiveShelf(shelfId);
     renderShelfTabs();
     renderShelfDisplay();
   }catch(e){
@@ -4393,6 +4707,10 @@ function updateDeskLead(){
 }
 
 function goToDeskWithCategory(shelfId){
+  // ★Hotfix1-2追加修正2：shelfWasChosen=trueだけでなくactiveCategoryもshelfIdへ揃える。
+  // これが揃っていないと、店主との相談から編纂机へ直接進んだ場合に、題名相談が
+  // 以前のactiveCategory（別の棚）の候補を出してしまう不整合が起きる。
+  setActiveShelf(shelfId);
   const sel = document.getElementById('categorySelect');
   if(sel) sel.value = shelfId;
   deskFlowFlag = true;
@@ -5292,24 +5610,67 @@ function shelfPickSeed(str){
   return seed;
 }
 
+// ★2026-07-19 G：おすすめの「一期一会」。出会いは製本完了ごと・来店（セッション）ごとに
+// 1回だけ決定し、同じ表示中・言語切替・再描画では変えない。直前の候補はsessionStorageへ
+// 保持し、同じ候補が連続しにくくする。本棚entryスキーマ・外部通信は変更しない。
+function recoEncounterSeed(){
+  try{
+    let v = sessionStorage.getItem('eb-reco-seed');
+    if(!v){ v = String(Math.floor(Math.random()*1e9)); sessionStorage.setItem('eb-reco-seed', v); }
+    return parseInt(v, 10) || 0;
+  }catch(e){ return 0; }
+}
+function rotateRecoEncounter(){
+  try{ sessionStorage.setItem('eb-reco-seed', String(Math.floor(Math.random()*1e9))); }catch(e){}
+}
+
 function pickShelfLinkedRecommendation(entry){
   if(!entry || !entry.category || entry.category === UNFILED_CATEGORY_ID) return null;
   const cat = (typeof CATEGORIES !== 'undefined') ? CATEGORIES.find(c=>c.id === entry.category) : null;
   if(!cat) return null;
 
-  const day = Math.floor(Date.now() / 86400000);
-  const baseSeed = shelfPickSeed(String(entry.id || '') + '_' + day);
+  // ★2026-07-19 G：日替わりではなく「出会い（セッション／製本）単位」の安定シードを使う。
+  // 言語切替で候補IDが変わらないよう、母集団は日英とも英語対応済みサブセット（enReady*）に統一する。
+  const baseSeed = shelfPickSeed(String(entry.id || '') + '_' + recoEncounterSeed());
 
   const wave = (typeof unlockedWaveCount === 'function') ? unlockedWaveCount() : 1;
-  const bookPool = (typeof BOOK_POOL !== 'undefined')
+  const bookPool = enReadyBooks((typeof BOOK_POOL !== 'undefined')
     ? BOOK_POOL.filter(b=>b.tags.includes(cat.id) && b.wave <= wave)
-    : [];
-  const book = bookPool.length ? bookPool[baseSeed % bookPool.length] : null;
-
+    : []);
   const mq = (typeof MUSIC_QUERIES !== 'undefined' && MUSIC_QUERIES[cat.id]) ? MUSIC_QUERIES[cat.id] : [];
   const pinnedSongs = (typeof PINNED_SONGS !== 'undefined' && PINNED_SONGS[cat.id]) ? PINNED_SONGS[cat.id] : [];
-  const songPool = mq.length ? mq : pinnedSongs;
-  const song = songPool.length ? songPool[(baseSeed + 7) % songPool.length] : null;
+  const songPool = enReadySongs(mq.length ? mq : pinnedSongs);
+  // この出会い（シード×棚）での決定は一度だけ行い、sessionStorageへメモ化する。
+  // 再描画・言語切替・モーダル開閉ではメモから同じ候補を返す。「直前の候補を避ける」判定は
+  // 最初の決定時にのみ適用する（毎回適用すると再描画のたびに候補がずれてしまうため）。
+  const memoKey = 'eb-reco-memo-' + baseSeed + '-' + cat.id;
+  let memo = null;
+  try{ memo = JSON.parse(sessionStorage.getItem(memoKey) || 'null'); }catch(e){}
+  let book = null, song = null;
+  if(memo){
+    book = bookPool.find(b=>b.title === memo.b) || (bookPool.length ? bookPool[0] : null);
+    song = songPool.find(sg=>(sg.artist + '|' + sg.title) === memo.s) || (songPool.length ? songPool[0] : null);
+  }else{
+    let bookIdx = bookPool.length ? (baseSeed % bookPool.length) : 0;
+    let songIdx = songPool.length ? ((baseSeed + 7) % songPool.length) : 0;
+    try{
+      const prevBook = sessionStorage.getItem('eb-reco-prev-book');
+      if(bookPool.length > 1 && prevBook && bookPool[bookIdx] && bookPool[bookIdx].title === prevBook){
+        bookIdx = (bookIdx + 1) % bookPool.length;
+      }
+      const prevSong = sessionStorage.getItem('eb-reco-prev-song');
+      if(songPool.length > 1 && prevSong && songPool[songIdx] && (songPool[songIdx].artist + '|' + songPool[songIdx].title) === prevSong){
+        songIdx = (songIdx + 1) % songPool.length;
+      }
+    }catch(e){}
+    book = bookPool.length ? bookPool[bookIdx] : null;
+    song = songPool.length ? songPool[songIdx] : null;
+    try{
+      sessionStorage.setItem(memoKey, JSON.stringify({ b: book ? book.title : null, s: song ? (song.artist + '|' + song.title) : null }));
+      if(book) sessionStorage.setItem('eb-reco-prev-book', book.title);
+      if(song) sessionStorage.setItem('eb-reco-prev-song', song.artist + '|' + song.title);
+    }catch(e){}
+  }
 
   if(!book && !song) return null;
   return { cat, book, song };
@@ -5364,9 +5725,9 @@ function renderShelfPickRecommend(){
       <div class="shelf-pick-book-body">
         <p class="shelf-pick-kicker">${escapeHtml(t('shelfPickBookLabel'))}</p>
         <p class="shelf-pick-title">『${escapeHtml(book.title)}』${escapeHtml(book.by)}</p>
-        ${book.hook ? `<p class="shelf-pick-meta">${escapeHtml(book.hook)}</p>` : ''}
+        ${bookHookFor(book) ? `<p class="shelf-pick-meta">${escapeHtml(bookHookFor(book))}</p>` : ''}
         <a class="shelf-pick-link" href="${amazonUrl}" target="_blank" rel="noopener sponsored">Amazon</a>
-        <a class="shelf-pick-link" href="${rakutenUrl}" target="_blank" rel="noopener sponsored">楽天</a>
+        <a class="shelf-pick-link" href="${rakutenUrl}" target="_blank" rel="noopener sponsored">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>
       </div>
     </div>`;
   }
@@ -5382,7 +5743,7 @@ function renderShelfPickRecommend(){
       <div class="shelf-pick-music-body">
         <p class="shelf-pick-kicker">${escapeHtml(t('shelfPickMusicLabel'))}</p>
         <p class="shelf-pick-title">『${escapeHtml(song.title)}』${escapeHtml(song.artist)}</p>
-        ${song.comment ? `<p class="shelf-pick-meta">${escapeHtml(song.comment)}</p>` : ''}
+        ${songCommentFor(song) ? `<p class="shelf-pick-meta">${escapeHtml(songCommentFor(song))}</p>` : ''}
         <a class="shelf-pick-link" href="${spUrl}" target="_blank" rel="noopener">Spotify</a>
         <a class="shelf-pick-link" href="${ytUrl}" target="_blank" rel="noopener">YouTube</a>
       </div>
@@ -6046,6 +6407,27 @@ function warnInAppBrowserIfNeeded(){
   // 閲覧専用のサンプル本を開くだけで、保存・GA4送信・画面遷移は行わない。
   const samplePeekBtn = document.getElementById('samplePeekBtn');
   if(samplePeekBtn) samplePeekBtn.onclick = openSampleBook;
+
+  // ★2026-07-19 E：編纂机「店主に題名を相談する」。
+  const titleConsultBtn = document.getElementById('titleConsultBtn');
+  if(titleConsultBtn) titleConsultBtn.onclick = toggleTitleConsult;
+
+  // ★2026-07-19 C：店内メニュー最下部の「↑ メニューの上へ戻る」。ページ本体ではなく
+  // メニューのスクロール領域だけを先頭へ戻す。スムーズスクロールは演出ONかつ
+  // prefers-reduced-motionでない場合のみ。
+  const menuBackToTopBtn = document.getElementById('menuBackToTop');
+  if(menuBackToTopBtn) menuBackToTopBtn.onclick = ()=>{
+    const card = document.getElementById('experienceMenuCard');
+    if(!card) return;
+    let reduced = false;
+    try{ reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+    const smooth = prefs.motion && !reduced;
+    if(typeof card.scrollTo === 'function'){
+      card.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
+    }else{
+      card.scrollTop = 0;
+    }
+  };
 
   // ★GA4整合：view_landing — DOM初期化後、トップページが表示可能になった時点で
   // フルページロードごとに1回だけ送信。二重初期化でも重複しないメモリ上のガード付き。

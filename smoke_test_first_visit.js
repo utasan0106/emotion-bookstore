@@ -49,7 +49,8 @@ async function main(){
   // ============================================================
   {
     const { window, document } = await createEnv({});
-    ok('(1) the sample-peek button exists on the cover', !!document.getElementById('samplePeekBtn'));
+    // ★2026-07-19更新（仕様A）：サンプル本ボタンは表紙から「はじめての方へ」内へ移動
+    ok('(1) the sample-peek button exists (inside the first-visit accordion)', !!document.getElementById('samplePeekBtn'));
     window.openSampleBook();
     const modal = document.getElementById('bookModal');
     ok('(1) opening the sample shows the book modal', !modal.classList.contains('hidden'));
@@ -101,20 +102,27 @@ async function main(){
   }
 
   // ============================================================
-  // (5) 日本語・英語の説明が正しく切り替わる（表紙の説明文・サンプル本・余韻）
+  // (5) 日本語・英語の説明が正しく切り替わる（表紙の説明文・サンプル本）
+  // ★2026-07-19更新（feature/quiet-experience-and-en-completion 仕様A）：
+  // 詳しい説明3行は表紙常時表示から「はじめての方へ」アコーディオン内へ移動し、
+  // 推薦機能の説明は執筆前には表示しない仕様へ変更されたため、本テストも新配置へ追従した。
   // ============================================================
   {
     const { window, document } = await createEnv({});
-    const line1Ja = document.querySelector('#firstVisitNote p').textContent;
+    // アコーディオンを開いて説明を表示する
+    document.getElementById('aboutAccordionBtn').dispatchEvent(new window.Event('click',{bubbles:true}));
+    const line1Ja = document.querySelector('[data-i18n="firstVisitAiLine1"]').textContent;
     ok('(5) JA first-visit line 1 says the user, not AI, writes the book', line1Ja.includes('AIではなくあなた自身'));
-    ok('(5) JA first-visit line 2 mentions no external sending / no analysis', document.querySelectorAll('#firstVisitNote p')[1].textContent.includes('外部へ送信されません'));
-    ok('(5) JA recommendation line frames picks as a quiet detour', document.querySelectorAll('#firstVisitNote p')[2].textContent.includes('寄り道'));
+    ok('(5) JA first-visit line 2 mentions no external sending / no analysis', document.querySelector('[data-i18n="firstVisitAiLine2"]').textContent.includes('外部へ送信されません'));
+    // ★仕様A：本・音楽のおすすめの説明は、表紙・執筆前には表示しない（製本後のサプライズ扱い）
+    const hero = document.querySelector('.entrance.hero');
+    ok('(5) the recommendation explanation is NOT shown on the cover (post-binding surprise per spec A)', !hero.textContent.includes('寄り道'));
     // サンプルを開いたまま英語へ切替
     window.openSampleBook();
     window.toggleLanguage();
-    const line1En = document.querySelector('#firstVisitNote p').textContent;
+    const line1En = document.querySelector('[data-i18n="firstVisitAiLine1"]').textContent;
     ok('(5) EN first-visit line 1 matches the specified copy', line1En.includes('You—not AI—write the book'));
-    ok('(5) EN first-visit line 2 matches the specified copy', document.querySelectorAll('#firstVisitNote p')[1].textContent.includes('not sent outside your device'));
+    ok('(5) EN first-visit line 2 matches the specified copy', document.querySelector('[data-i18n="firstVisitAiLine2"]').textContent.includes('not sent outside your device'));
     ok('(5) the open sample story switches to English without reopening', /[a-zA-Z]/.test(document.getElementById('modalStory').textContent) && !/[぀-ヿ一-鿿]/.test(document.getElementById('modalStory').textContent));
     ok('(5) the sample badge switches to English', document.getElementById('sampleBookBadge').textContent.includes('sample book'));
     window.toggleLanguage();

@@ -5369,3 +5369,215 @@ body.night .weather-attribution{ color:var(--paper); opacity:.6; }
   text-align:center;
 }
 .bookshelf-arrival-afterglow + .bookshelf-arrival-actions{ margin-top:12px; }
+
+/* ============================================================================
+ * ★2026-07-19 feature/quiet-experience-and-en-completion
+ * A) 表紙の一文安心表示 B) アコーディオンの操作感 C) メニュー上へ戻る
+ * D) 月のおすすめ棚＝看板 E) 題名相談パネル I-3) 製本後ボタンのコントラスト
+ * ============================================================================ */
+
+/* A: 表紙は一文だけの安心表示（静けさを主役に戻す） */
+.first-visit-one-line{
+  position:relative; z-index:1;
+  margin:14px auto 0; padding:0 16px;
+  text-align:center;
+  font-size:12.5px; letter-spacing:.05em; line-height:1.8;
+  color:#F5EAD2; opacity:.8;
+  text-shadow:0 1px 3px rgba(10,14,22,0.55);
+}
+
+/* B: 開閉できることが分かる見出し行（行全体クリック可・矢印・展開時の変化） */
+.about-accordion-btn{
+  width:100%;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  padding:9px 12px;
+  border:1px solid var(--paper-shadow);
+  border-radius:8px;
+  background:rgba(255,255,255,0.25);
+}
+.about-accordion-btn .accordion-arrow{
+  display:inline-block;
+  font-size:10px; opacity:.7;
+  transition:transform .25s ease;
+}
+.about-accordion-btn[aria-expanded="true"]{
+  background:rgba(232,201,122,0.18);
+  border-color:rgba(148,118,62,0.55);
+}
+.about-accordion-btn[aria-expanded="true"] .accordion-arrow{ transform:rotate(180deg); }
+body.night .about-accordion-btn{ background:rgba(0,0,0,0.22); }
+body.night .about-accordion-btn[aria-expanded="true"]{ background:rgba(232,201,122,0.12); }
+.about-data-accordion summary{
+  border:1px solid var(--paper-shadow);
+  border-radius:8px;
+  padding:9px 12px;
+}
+.about-data-accordion summary::after{
+  content:"▼"; font-size:10px; opacity:.7; margin-left:8px;
+  display:inline-block; transition:transform .25s ease;
+}
+.about-data-accordion[open] summary{ background:rgba(232,201,122,0.18); }
+.about-data-accordion[open] summary::after{ transform:rotate(180deg); }
+@media (prefers-reduced-motion: reduce){
+  .about-accordion-content{ transition:none !important; }
+  .about-accordion-btn .accordion-arrow,
+  .about-data-accordion summary::after{ transition:none !important; }
+}
+body.no-motion .about-accordion-content{ transition:none !important; }
+
+/* C: メニュー最下部の「上へ戻る」（控えめ） */
+.menu-back-to-top{
+  display:block;
+  margin:14px auto 4px;
+  padding:6px 16px;
+  font-size:11.5px; letter-spacing:.04em;
+  color:var(--ink); opacity:.7;
+  background:none;
+  border:1px solid var(--paper-shadow);
+  border-radius:14px;
+  cursor:pointer;
+}
+.menu-back-to-top:hover{ opacity:1; }
+body.night .menu-back-to-top{ color:var(--paper); }
+
+/* D: 今月のおすすめ棚＝店内に置かれた小さな木の看板 */
+.fair-signboard{
+  max-width:340px;
+  margin:26px auto;
+  padding:18px 20px 16px;
+  text-align:center;
+  background:
+    linear-gradient(180deg, rgba(46,36,26,0.96), rgba(38,29,21,0.97)),
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.12) 0 2px, transparent 2px 9px);
+  border:2px solid rgba(148,118,62,0.55);
+  border-radius:6px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.35), inset 0 0 0 4px rgba(20,15,10,0.5);
+  position:relative;
+}
+.fair-signboard::before{
+  content:"";
+  position:absolute; top:-10px; left:50%; transform:translateX(-50%);
+  width:52px; height:10px;
+  background:rgba(148,118,62,0.65);
+  border-radius:3px 3px 0 0;
+}
+.fair-signboard .fair-kicker{
+  margin:0 0 6px;
+  font-size:11px; letter-spacing:.14em;
+  color:rgba(245,234,210,0.72);
+}
+.fair-signboard .fair-shelf-name{
+  display:block;
+  margin:0 0 8px;
+  font-family:var(--font-display);
+  font-size:19px; letter-spacing:.06em;
+  color:#F0DFBC;
+  font-style:italic; /* 店主の手書き風の控えめな傾き */
+  text-shadow:0 1px 0 rgba(0,0,0,0.4);
+}
+.fair-signboard .fair-line{
+  display:block;
+  margin:0 0 12px;
+  font-size:12px; line-height:1.9;
+  color:rgba(245,234,210,0.85);
+}
+.fair-signboard .fair-go{
+  display:inline-block;
+  padding:7px 18px;
+  font-size:12.5px; letter-spacing:.05em;
+  color:#2A2118;
+  background:#E8C97A;
+  border:none; border-radius:16px;
+  cursor:pointer;
+}
+.fair-signboard .fair-go:hover{ filter:brightness(1.06); }
+.fair-signboard .fair-go:focus-visible{ outline:2px solid #F5EAD2; outline-offset:2px; }
+
+/* E: 題名相談 */
+/* ★Hotfix2-1：実ブラウザで背景と同化して気づけないという指摘への最小修正。
+   .shelf-month-tab等と同じ「border:var(--gold)＋透明背景＋var(--ink-soft)文字」の
+   静かなセカンダリボタン表現に統一し、day/nightはCSS変数の反転にまかせる
+   （個別のbody.night上書きは不要になったため削除。旧ルールはcolor:var(--paper)が
+   nightモードで暗色に反転し、暗い背景に暗い文字が乗って視認できなくなるバグだった）。
+   主CTA（.bind-btn／塗りつぶし＋太字）より明確に弱いトーンを維持しつつ、
+   border＋hover＋focus-visibleでクリック可能なボタンだと分かる状態にする。 */
+.title-consult-btn{
+  display:inline-block;
+  margin:6px 0 0;
+  padding:6px 14px;
+  font-size:12px; letter-spacing:.04em;
+  color:var(--ink-soft);
+  background:transparent;
+  border:1px solid var(--gold);
+  border-radius:14px;
+  cursor:pointer;
+  transition:background .15s ease, color .15s ease;
+}
+.title-consult-btn:hover{ background:rgba(168,130,60,0.15); color:var(--ink); }
+.title-consult-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+.title-consult-btn[aria-expanded="true"]{ background:rgba(232,201,122,0.25); border-color:var(--gold); color:var(--ink); }
+.title-consult{
+  margin:10px 0 0;
+  padding:12px 14px;
+  background:rgba(30,24,18,0.95);
+  border:1px solid rgba(232,201,122,0.3);
+  border-radius:8px;
+}
+.title-consult.hidden{ display:none; }
+.title-consult-heading{
+  margin:0 0 8px;
+  font-size:11.5px; letter-spacing:.1em;
+  color:rgba(245,234,210,0.7);
+}
+.title-consult-list{ display:flex; flex-wrap:wrap; gap:8px; }
+.title-consult-item{
+  padding:6px 12px;
+  font-size:12.5px;
+  color:#F5EAD2;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(245,234,210,0.35);
+  border-radius:14px;
+  cursor:pointer;
+}
+.title-consult-item:hover{ background:rgba(232,201,122,0.22); }
+.title-consult-hint{
+  margin:8px 0 6px;
+  font-size:11px; color:rgba(245,234,210,0.6);
+}
+.title-consult-more, .title-consult-close{
+  margin:2px 8px 0 0;
+  padding:5px 12px;
+  font-size:11.5px;
+  color:#F5EAD2;
+  background:none;
+  border:1px solid rgba(245,234,210,0.3);
+  border-radius:12px;
+  cursor:pointer;
+  opacity:.85;
+}
+.title-consult-more:hover, .title-consult-close:hover{ opacity:1; }
+
+/* I-3: 製本後の次行動ボタンの可読性（day/night反転変数へ主要文字色を依存させない） */
+.section-return .back-to-bandai{
+  color:#F5EAD2 !important;
+  background:rgba(30,24,18,0.82) !important;
+  border:1px solid rgba(245,234,210,0.45) !important;
+  opacity:1 !important;
+  text-shadow:none;
+}
+.section-return .back-to-bandai:hover{ background:rgba(30,24,18,0.95) !important; }
+.bookshelf-arrival .chart-btn.primary{
+  color:#2A2118 !important;
+  background:#E8C97A !important;
+  border:1px solid rgba(148,118,62,0.6) !important;
+  opacity:1 !important;
+}
+.bookshelf-arrival .chart-btn.ghost{
+  color:#F5EAD2 !important;
+  background:rgba(30,24,18,0.8) !important;
+  border:1px solid rgba(245,234,210,0.4) !important;
+}
+/* 寄り道見出しの半月補足 */
+.detour-half-note{
+  font-size:10.5px; letter-spacing:.06em; opacity:.75; margin-left:6px;
+}
