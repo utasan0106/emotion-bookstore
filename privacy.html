@@ -75,23 +75,38 @@
   <p>3. APIから取得した情報の保存期間・キャッシュ方法・表示方法は、各APIの利用条件に従います。音源プレビュー等、保存・キャッシュが制限される素材は保存しません。</p>
   <p>4. 推薦結果は自動検索によるもので、利用者の心理状態を診断した結果ではありません。</p>
 
-  <h2>第7条（Cookie・ブラウザ保存領域）</h2>
+  <h2>第7条（天気連動機能について／About the optional weather sync feature）</h2>
+  <p>1. 本サービスには、店内の見た目（写真・灯り・路地・窓の演出）へ店外の天気をゆるやかに反映する、任意設定の「天気連動」機能があります。既定（初期状態）はオフで、利用者が店内メニューから明示的にオンにした場合のみ動作します。</p>
+  <p>2. 天気連動をオンにした場合、利用者が選択した主要地域（プリセットの都市）、または「現在地から設定」を選んだ場合に現在地から概算した緯度・経度（小数第1位に丸めた、おおよその位置情報）のいずれかを、天気情報の取得のためだけに外部の天気情報サービス「Open-Meteo」（https://open-meteo.com/）へ送信します。本サービスが取得リクエストへ意図的に含める情報は、この地域名・緯度・経度と天気取得に必要なパラメータのみです。ただし、インターネット上の外部サービスへの通信では、その性質上、IPアドレス、User-Agent（ブラウザの種類等）その他の通信にともなう技術的な情報が送信先へ伝わる場合があります。これらの技術情報の取り扱いは、送信先であるOpen-Meteoのプライバシーポリシーに従います。</p>
+  <p>3. 天気連動をオフにしている場合、またはオンにしていても地域を設定していない場合、天気情報の外部送信は発生しません。「現在地から設定」を選んだ場合のみ、その操作をした時点でブラウザの位置情報許可を利用者に確認します。ページの表示時や入店時に自動で位置情報の許可を求めることはありません。位置情報の利用を拒否した場合、取得に失敗した場合、または応答がない場合も、本サービスの通常の表示・機能は変わらずご利用いただけます。</p>
+  <p>4. 利用者が書いた文章、タイトル、写真、感情棚のデータ、本棚データ、栞、来店カードの内容は、天気情報の取得リクエストに一切含まれません。取得した天気の結果は、見た目（背景の色調・光・反射等の演出）にのみ反映され、感情棚のおすすめ、書き出しの助け舟、本・音楽の推薦内容、店主の返答内容を変更するために利用されることはありません。</p>
+  <p>5. 取得した天気情報は、端末内（IndexedDB／LocalStorage）に60分間だけ一時的に保存（キャッシュ）し、60分を超えて再度画面を開いた場合、または設定した地域を変更した場合に再取得します。天気情報の取得に失敗した場合（通信断・応答なし・想定外の応答等を含みます。）は、天気の演出を行わない通常の表示へ自動的に戻ります。</p>
+  <p>6. 天気連動の設定（オン・オフ、選択した地域）は、他の利用者コンテンツ（本棚データ等）とは別の保存領域に、端末内にのみ保存されます。運営者のサーバーへは送信・保存されません。</p>
+  <p style="margin-top:10px;font-size:12.5px;color:#6b5d49;">
+    [English] This service includes an optional "weather sync" feature that gently reflects the weather outside the shop in the in-store visuals (photo, lights, alley, and window effects). It is off by default and only runs once a visitor turns it on from the in-store menu.<br>
+    When turned on, only the visitor's selected preset region, or coordinates approximated from their current location (rounded to one decimal place) when they choose "Set from current location," is intentionally included in the request sent to the external weather service Open-Meteo (https://open-meteo.com/) — solely to fetch the weather. Note, however, that as with any communication with an external service over the internet, technical information that accompanies a network request — such as your IP address and User-Agent (browser type) — may be visible to the receiving service. The handling of such technical information is governed by Open-Meteo's privacy policy.<br>
+    Browser location permission is requested only when the visitor taps "Set from current location," never automatically on page load or on entering the shop. If location access is denied, fails, or times out, the shop's regular display and all features continue to work as usual.<br>
+    Written stories, titles, photos, emotion-shelf data, bookshelf data, bookmarks, and visitor-card content are never included in the weather request, and the weather result only affects visual styling — it never changes shelf recommendations, writing prompts, book/music suggestions, or the shopkeeper's replies.<br>
+    Weather results are cached on-device for 60 minutes and refetched after expiry or when the region changes; if fetching fails for any reason, the display falls back to the regular, weather-free view automatically. Weather sync settings are stored on-device only, separately from other visitor content, and are never sent to or stored on our servers.
+  </p>
+
+  <h2>第8条（Cookie・ブラウザ保存領域）</h2>
   <p>本サービスは、機能提供、端末内記録およびアクセス解析のため、Cookie、IndexedDB、LocalStorageその他のブラウザ保存領域を利用します。利用者はブラウザ設定からこれらを削除・制限できますが、制限により本棚、バックアップ、表示設定等の機能が利用できなくなる場合があります。</p>
 
-  <h2>第8条（保存期間・削除・手放し機能）</h2>
+  <h2>第9条（保存期間・削除・手放し機能）</h2>
   <p>1. 製本・保存された利用者コンテンツは、利用者が削除するまで、当該端末のブラウザ保存領域に残ります。運営者はその保存期間を管理しません。</p>
   <p>2. 未製本の下書きは、入力内容の消失を防ぐため、端末のブラウザ保存領域へ一時保存される場合があります。下書きは最後の保存から7日を経過した場合、または製本・保存が正常に完了した場合に削除されます。製本・保存に失敗した場合は、下書きを保持します。</p>
   <p>3. 「気持ちを手放す」機能は、本棚の一覧から「手放しの記録」へ移動する機能であり、完全削除ではありません。完全に削除する場合は、ブラウザのサイトデータ削除を利用してください。本サービス内に個別削除機能が表示されている場合は、当該機能も利用できます。</p>
   <p>4. ブラウザデータの削除、端末変更、ブラウザ・OSの仕様変更、容量制限、故障等によりデータが消失する場合があります。運営者側には復元用データがないため、必要に応じてバックアップ機能を利用してください。</p>
   <p>5. 問い合わせ情報および運営者が保有する技術ログは、対応、セキュリティ、法令遵守に必要な期間に限り保持し、その後削除または匿名化するよう努めます。外部事業者の保存期間は各事業者の方針に従います。</p>
 
-  <h2>第9条（利用者が作成した文章等の権利）</h2>
+  <h2>第10条（利用者が作成した文章等の権利）</h2>
   <p>利用者コンテンツについて著作権その他の権利が成立する場合、それらの権利は、原則として利用者または正当な権利者に帰属し、運営者へ移転しません。運営者は、利用者の許可なく、利用者コンテンツを公開、販売、広告利用、AI学習または第三者提供しません。</p>
 
-  <h2>第10条（AI技術の利用）</h2>
+  <h2>第11条（AI技術の利用）</h2>
   <p>本サービスの企画、文章、デザインおよびプログラムの制作過程でAI支援ツールを利用する場合があります。ただし、サービス利用中の「店主」はAIチャットではなく、利用者コンテンツを外部AIモデルへ送信しません。本サービスでは、利用者コンテンツを外部AIモデルへ送信して、分析、評価、診断、自動分類、棚名生成または個別回答を行う機能を導入しません。</p>
 
-  <h2>第11条（安全管理）</h2>
+  <h2>第12条（安全管理）</h2>
   <ul>
     <li>HTTPS通信の利用、必要最小限の外部送信、利用者コンテンツを運営者サーバーへ保存しない設計</li>
     <li>アクセス解析へ本文等を送信しないイベント設計、APIキー等の適切な管理</li>
@@ -99,21 +114,21 @@
     <li>問い合わせ情報へのアクセス制限および不要となった情報の削除</li>
   </ul>
 
-  <h2>第12条（第三者提供・委託）</h2>
+  <h2>第13条（第三者提供・委託）</h2>
   <p>運営者は、法令に基づく場合を除き、運営者が保有する個人情報を本人の同意なく第三者へ提供しません。サイト配信、アクセス解析、問い合わせ対応等を外部事業者へ委託する場合は、必要な範囲で情報が取り扱われることがあり、運営者は合理的な範囲で委託先を選定・管理します。</p>
 
-  <h2>第13条（未成年者の利用）</h2>
+  <h2>第14条（未成年者の利用）</h2>
   <p>本サービスは年齢を限定していません。未成年者は、必要に応じて保護者と相談のうえ利用してください。深刻な苦痛、自傷・他害のおそれ、生命・身体の危険がある場合、本サービスは緊急対応や専門支援を提供できないため、身近な信頼できる人、医療機関、行政・専門相談窓口等へ連絡してください。</p>
 
-  <h2>第14条（利用者からの請求・お問い合わせ）</h2>
+  <h2>第15条（利用者からの請求・お問い合わせ）</h2>
   <p>利用者コンテンツは運営者が保有していないため、運営者が閲覧、訂正、削除または復元することはできません。運営者が問い合わせ対応等により保有する利用者情報について、開示、訂正、利用停止、削除等を希望する場合、または権利侵害・API表示内容の削除を申し立てる場合は、次条の窓口へご連絡ください。本人確認その他法令上必要な手続を行う場合があります。</p>
 
-  <h2>第15条（運営者・お問い合わせ）</h2>
+  <h2>第16条（運営者・お問い合わせ）</h2>
   <p>運営者：『みんなの感情書店』運営者<br>
   お問い合わせ・権利侵害等の連絡先：公式Xアカウント @emotion_books<br>
   専用メールアドレスまたは問い合わせフォームを設置した場合は、本サービス上に連絡先を表示します。</p>
 
-  <h2>第16条（改定）</h2>
+  <h2>第17条（改定）</h2>
   <p>運営者は、法令、外部サービス、機能または情報取扱いの変更に応じて本ポリシーを改定します。重要な変更がある場合は、本サービス上で分かりやすく告知します。改定後の内容は、別途定める場合を除き、本サービス上に掲載した時点から適用されます。</p>
 
   <h2>別表（外部送信の一覧）</h2>
@@ -122,6 +137,7 @@
     <tr><td>Vercel</td><td>IPアドレス、推定地域、日時、URL、端末・ブラウザ等</td><td>サイト配信、セキュリティ、障害対応。サイト利用時</td></tr>
     <tr><td>Google Books API</td><td>季節語、棚・カテゴリー等の検索語、通信上の技術情報</td><td>書籍情報の検索・表示。推薦機能の利用時</td></tr>
     <tr><td>Apple iTunes Search API</td><td>季節語、棚・カテゴリー等の検索語、通信上の技術情報</td><td>音楽情報の検索・表示。推薦機能の利用時</td></tr>
+    <tr><td>Open-Meteo（天気情報API）</td><td>選択した主要地域、または現在地から概算化した緯度・経度（小数第1位）、通信上の技術情報</td><td>天気連動機能（任意設定・既定オフ）による店内演出の表示。天気連動をオンにし、地域を設定した場合のみ</td></tr>
     <tr><td>Google Analytics 4等（導入時）</td><td>閲覧・操作イベント、概算地域、端末・ブラウザ、Cookie等</td><td>利用状況・不具合把握。本文・写真・具体的感情は送信しない</td></tr>
     <tr><td>X公式埋め込み（現在は未使用。将来実装・表示時）</td><td>閲覧ページ、IPアドレス、Cookieその他Xが定める情報</td><td>利用者がX投稿を含む画面を表示した場合</td></tr>
     <tr><td>Amazon、楽天、YouTube、Spotify、Amazon Music、LINE、Buy Me a Coffee等（導入時）</td><td>リンク先URL、参照元、IPアドレス等</td><td>利用者がリンク・共有・支援機能を選択した場合</td></tr>

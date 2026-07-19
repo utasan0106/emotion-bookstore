@@ -1347,6 +1347,25 @@ body.night .desk-extra summary{
   box-shadow:0 6px 10px rgba(0,0,0,0.35);
   flex-wrap:wrap;
 }
+/* ★2026-07-18追加：本棚の年月グループ見出し（例：「2026年7月の棚」）。
+   .shelf-rowはflex-wrapのため、flex-basis:100%で強制的に改行させ、
+   背表紙の並び自体（writing-mode等）には手を加えない。 */
+.shelf-month-heading{
+  flex-basis:100%;
+  width:100%;
+  font-family:var(--font-display);
+  font-size:12.5px;
+  letter-spacing:.08em;
+  color:var(--lamp-glow);
+  margin:16px 0 6px;
+  padding-top:12px;
+  border-top:1px dashed rgba(232,165,92,0.35);
+}
+.shelf-month-heading:first-child{
+  margin-top:0;
+  padding-top:0;
+  border-top:none;
+}
 .spine{
   position:relative;
   writing-mode:vertical-rl;
@@ -1457,29 +1476,34 @@ body.night .desk-extra summary{
 .trend-detail[open] summary::before{ content:"▾ "; }
 .trend-detail .trend-note{ margin-top:10px; }
 #trendBars{ margin-top:10px; }
+/* ★2026-07-18変更：「店主より」の栞コメント（#modalNote／#shioriSlip共通）は、日/夜で
+   反転するvar(--ink-soft)に可読性を依存させず、固定の煤色背景・生成り色文字にする。 */
 .shiori-slip{
   display:block;
   margin-top:14px;
-  background:#fff9ec;
-  border:1px dashed var(--gold);
+  background:rgba(30,24,18,0.95);
+  border:1px dashed var(--lamp-glow);
   padding:12px 16px;
   font-family:var(--font-display);
   font-size:13.5px;
   transform:rotate(-1.2deg);
-  color:var(--ink-soft);
+  color:#F5EAD2;
+  opacity:1;
   line-height:2;
 }
 .shiori-label{
   display:block;
   font-size:10.5px;
   letter-spacing:.25em;
-  color:var(--gold);
+  color:var(--lamp-glow);
   margin-bottom:4px;
   font-family:var(--font-body);
 }
 #shioriBtn{margin-top:14px;}
 
-/* --- modal --- */
+/* --- modal ---
+   ★2026-07-18変更：本棚の背表紙を押した後の詳細画面（#bookModal）を、固定の煤色背景・
+   生成り色文字にする。day/nightで反転するvar(--paper)/var(--ink)には依存しない。 */
 .modal{
   position:fixed; inset:0;
   background:rgba(20,14,8,0.55);
@@ -1489,7 +1513,8 @@ body.night .desk-extra summary{
 }
 .modal.hidden{display:none;}
 .modal-card{
-  background:#fdf6e6;
+  background:rgba(30,24,18,0.96);
+  border:1px solid rgba(232,201,122,0.28);
   max-width:520px;
   width:100%;
   max-height:80vh;
@@ -1497,31 +1522,33 @@ body.night .desk-extra summary{
   border-radius:4px;
   padding:28px;
   position:relative;
-  box-shadow:0 20px 60px rgba(0,0,0,0.4);
+  box-shadow:0 20px 60px rgba(0,0,0,0.45);
 }
 .modal-close{
   position:absolute; top:14px; right:16px;
-  background:none; border:none; font-size:20px; cursor:pointer; color:var(--ink-soft);
+  background:none; border:none; font-size:20px; cursor:pointer; color:rgba(245,234,210,0.8);
 }
 .modal-card h3{
   font-family:var(--font-display);
   font-size:20px;
   margin:0 0 4px;
+  color:#F5EAD2;
 }
 .modal-cat{
   font-size:12px;
-  color:var(--wine);
+  color:var(--lamp-glow);
   margin:0 0 2px;
 }
 .modal-date{
   font-size:11px;
-  color:var(--ink-soft);
+  color:rgba(245,234,210,0.75);
   margin:0 0 16px;
 }
 .modal-story{
   font-size:14.5px;
   white-space:pre-wrap;
   line-height:1.9;
+  color:#F5EAD2;
 }
 .modal-tweet{
   margin-top:16px;
@@ -1530,16 +1557,16 @@ body.night .desk-extra summary{
 }
 .modal-tweet a.tweet-fallback{
   font-size:12px;
-  color:var(--wine);
+  color:var(--lamp-glow);
   text-decoration:none;
-  border-bottom:1px dashed var(--wine);
+  border-bottom:1px dashed var(--lamp-glow);
 }
 .modal-del{
   margin-top:20px;
   font-size:12px;
-  color:var(--wine);
+  color:#F0A5AC;
   background:none;
-  border:1px solid var(--wine);
+  border:1px solid #F0A5AC;
   padding:6px 14px;
   border-radius:20px;
   cursor:pointer;
@@ -1551,32 +1578,79 @@ body.night .desk-extra summary{
   margin-top:20px;
 }
 .modal-actions .modal-del{ margin-top:0; }
+/* ★2026-07-18追加：製本後の本の詳細画面から、タイトル・本文を書き直す機能。 */
+.modal-edit{
+  font-size:12px;
+  color:#F5EAD2;
+  background:none;
+  border:1px solid var(--lamp-glow);
+  padding:6px 14px;
+  border-radius:20px;
+  cursor:pointer;
+}
+.modal-edit-title-input{
+  display:block;
+  width:100%;
+  box-sizing:border-box;
+  font-family:var(--font-display);
+  font-size:19px;
+  margin:0 0 4px;
+  padding:6px 8px;
+  border:1px solid var(--lamp-glow);
+  border-radius:4px;
+  background:rgba(255,255,255,0.06);
+  color:#F5EAD2;
+}
+.modal-edit-story-input{
+  display:block;
+  width:100%;
+  box-sizing:border-box;
+  min-height:160px;
+  font-size:14.5px;
+  line-height:1.9;
+  font-family:inherit;
+  padding:10px 12px;
+  border:1px solid var(--lamp-glow);
+  border-radius:4px;
+  background:rgba(255,255,255,0.06);
+  color:#F5EAD2;
+  resize:vertical;
+}
+.modal-edit-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+.modal-edit-msg{
+  font-size:12px;
+  color:#F0A5AC;
+  margin-top:8px;
+}
 .modal-goshelf{
   font-size:12px;
-  color:var(--ink-soft);
+  color:#F5EAD2;
   background:none;
-  border:1px solid var(--gold);
+  border:1px solid var(--lamp-glow);
   padding:6px 14px;
   border-radius:20px;
   cursor:pointer;
 }
 .modal-share{
   font-size:12px;
-  color:#1d9bf0;
+  color:#6cc2f7;
   background:none;
-  border:1px solid #1d9bf0;
+  border:1px solid #6cc2f7;
   padding:6px 14px;
   border-radius:20px;
   cursor:pointer;
 }
 .modal-share-note{
   font-size:11px;
-  color:var(--ink-soft);
-  opacity:0.75;
+  color:rgba(245,234,210,0.7);
+  opacity:1;
   margin-top:6px;
 }
-body.night .modal-share{ color:#6cc2f7; border-color:#6cc2f7; }
-body.night .modal-share-note{ color:#cbd0dc; }
 
 footer.shop-footer{
   text-align:center;
@@ -2631,6 +2705,38 @@ body.night .pwa-popup{ background:#2E2922; }
   margin:0 0 10px;
 }
 .desk-lead.hidden{ display:none; }
+
+/* ★2026-07-18追加：編纂机の「言葉にするための助け舟」（旧チャットの代替）。 */
+.writing-boat{
+  background:rgba(168,130,60,0.08);
+  border:1px solid var(--paper-shadow);
+  border-radius:6px;
+  padding:14px 18px;
+  margin:0 0 20px;
+}
+.writing-boat-heading{
+  font-family:var(--font-display);
+  font-size:13.5px;
+  color:var(--ink);
+  margin:0 0 8px;
+}
+.writing-boat-list{
+  margin:0 0 8px;
+  padding-left:1.3em;
+  list-style:'— ';
+}
+.writing-boat-list li{
+  font-size:13px;
+  line-height:1.8;
+  color:var(--ink-soft);
+  margin:0 0 4px;
+}
+.writing-boat-note{
+  font-size:11px;
+  color:var(--ink-soft);
+  opacity:.75;
+  margin:0;
+}
 
 /* 背表紙タイトルの提案チップ */
 .title-suggest{ margin-top:10px; }
@@ -4010,6 +4116,47 @@ body.night .menu-item{ background:rgba(255,255,255,0.05); }
 .experience-menu-settings .about-accordion-wrap{ max-width:none; }
 
 /* ============================================================================
+ * ★2026-07-18追加：任意設定の天気連動機能（店内メニュー内の設定行）
+ * ============================================================================ */
+.weather-settings{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.weather-region-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+}
+.weather-region-row.hidden{ display:none; }
+.weather-region-select{
+  flex:1 1 140px;
+  min-width:120px;
+  font-family:var(--font-body);
+  font-size:12px;
+  padding:6px 10px;
+  border:1.5px solid var(--paper-shadow);
+  border-radius:14px;
+  background:rgba(255,255,255,0.25);
+  color:var(--ink);
+}
+body.night .weather-region-select{ background:#262219; color:var(--ink); }
+.weather-status{
+  font-size:11.5px;
+  color:var(--ink-soft);
+  opacity:.85;
+  margin:0;
+}
+.weather-privacy-note{
+  font-size:10.5px;
+  line-height:1.5;
+  color:var(--ink-soft);
+  opacity:.7;
+  margin:0;
+}
+
+/* ============================================================================
  * 第三頁：店主まなが預かる（旧showUnfiledShelfPicker再構成。仕様書1-3）
  * ============================================================================ */
 .mana-receive-overlay{
@@ -4341,6 +4488,49 @@ body.night .counter-shelf-group-heading{ color:var(--gold); }
   background:rgba(16,24,36,0.94);
 }
 
+/* ★2026-07-18追加：表紙の常時表示言語切替（日本語｜English）。
+   .cover-menu-btnと反対側（左上）に置き、常に見える位置に固定する。
+   日本語／Englishという言語名自体は、翻訳対象にしない（自分自身を指す固有名のため）。 */
+.entrance.hero > .hero-lang-toggle{
+  position:absolute;
+  top:max(14px, env(safe-area-inset-top));
+  left:max(14px, env(safe-area-inset-left));
+  right:auto;
+  z-index:5;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  background:rgba(16,24,36,0.86);
+  border:1px solid rgba(239,230,211,0.55);
+  border-radius:20px;
+  padding:7px 13px;
+  font-family:var(--font-body);
+  font-size:11.5px;
+  letter-spacing:.02em;
+  color:rgba(245,234,210,0.62);
+  cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,0.35);
+}
+.entrance.hero > .hero-lang-toggle:hover{
+  background:rgba(16,24,36,0.94);
+  border-color:rgba(245,234,210,0.8);
+}
+.hero-lang-toggle .hero-lang-sep{ opacity:.5; }
+.hero-lang-toggle .hero-lang-ja,
+.hero-lang-toggle .hero-lang-en{ transition:color .15s ease, font-weight .15s ease; }
+.hero-lang-toggle.lang-is-ja .hero-lang-ja{ color:#F5EAD2; font-weight:700; }
+.hero-lang-toggle.lang-is-en .hero-lang-en{ color:#F5EAD2; font-weight:700; }
+body.night .entrance.hero > .hero-lang-toggle{
+  background:rgba(11,18,28,.97);
+  border:1px solid rgba(245,234,210,.72);
+}
+@media (max-width:480px){
+  .entrance.hero > .hero-lang-toggle{
+    padding:6px 10px;
+    font-size:10.5px;
+  }
+}
+
 /* 店内上部（.experience-bar）のメニューボタンも背景とのコントラストを補強する */
 .experience-bar .menu-btn{
   border-color:rgba(16,24,36,0.32);
@@ -4407,6 +4597,60 @@ body.night .shop-current-date{ color:var(--paper); opacity:.75; }
 @media (max-width:480px){
   .shop-current-date{ font-size:11px; margin-right:8px; }
 }
+
+/* ============================================================================
+ * ★2026-07-19追加：天気連動のバッジ（例：「東京・雨の夜」）と、押した時だけ開く詳細ポップオーバー。
+ * 天気連動がOFF、または天気状態が取得できていない間は.hiddenのまま非表示。
+ * ============================================================================ */
+.weather-badge{
+  position:relative;
+  font-family:var(--font-body);
+  font-size:11.5px;
+  letter-spacing:.03em;
+  padding:4px 12px;
+  margin-right:8px;
+  border:1px solid var(--paper-shadow);
+  border-radius:14px;
+  background:rgba(255,255,255,0.3);
+  color:var(--ink);
+  opacity:.9;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.weather-badge.hidden{ display:none; }
+body.night .weather-badge{
+  background:rgba(0,0,0,0.24);
+  color:var(--paper);
+  border-color:rgba(239,230,211,0.3);
+}
+@media (max-width:480px){
+  .weather-badge{ font-size:10.5px; padding:3px 9px; margin-right:6px; }
+}
+
+.weather-detail-popover{
+  position:absolute;
+  top:100%;
+  right:18px;
+  margin-top:6px;
+  z-index:46;
+  min-width:160px;
+  padding:10px 14px;
+  border-radius:8px;
+  background:rgba(30,24,18,0.95);
+  border:1px solid rgba(232,201,122,0.3);
+  box-shadow:0 6px 16px rgba(0,0,0,0.3);
+}
+.weather-detail-popover.hidden{ display:none; }
+.weather-detail-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  font-size:11.5px;
+  padding:3px 0;
+  color:#F5EAD2;
+}
+.weather-detail-label{ opacity:.7; }
+.weather-detail-value{ font-weight:600; }
 
 #desk{ position:relative; }
 .desk-current-date{
@@ -4608,12 +4852,38 @@ body.night .detour-card{ background:rgba(24,19,14,0.96); }
 body.night .detour-heading,
 body.night .detour-name{ color:#F5EAD2 !important; }
 
+/* ★2026-07-18変更：スマートフォンでは「今月の寄り道」を横スワイプ＋scroll-snapへ変更する。
+   デスクトップの路地配置（縦積み・中央線・左右交互）は上のルールのまま一切変更しない。
+   内容・リンク・件数は不変更。ここは配置（装飾）だけを上書きする。 */
 @media (max-width:480px){
-  .detour-card{ width:74%; max-width:none; }
-  .detour-cards .detour-card:nth-child(odd){ margin-left:2%; }
-  .detour-cards .detour-card:nth-child(even){ margin-right:2%; }
-  .detour-cards .detour-card:nth-child(3n){ width:66%; }
-  .detour-cards .detour-card:nth-child(3n+2){ width:78%; }
+  .detour-cards{
+    display:flex;
+    flex-direction:row;
+    flex-wrap:nowrap;
+    gap:12px;
+    overflow-x:auto;
+    overflow-y:visible;
+    scroll-snap-type:x proximity;
+    scroll-padding-left:4%;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:14px;
+  }
+  .detour-cards::-webkit-scrollbar{ display:none; }
+  /* 路地の中央線・窓明かりの左右振り分けは、横スクロールでは意味を持たないため非表示にする */
+  .detour-cards::before{ display:none; }
+  .detour-card::before{ display:none; }
+  .detour-card,
+  .detour-cards .detour-card:nth-child(odd),
+  .detour-cards .detour-card:nth-child(even),
+  .detour-cards .detour-card:nth-child(3n),
+  .detour-cards .detour-card:nth-child(3n+2){
+    flex:0 0 78%;
+    width:78%;
+    max-width:none;
+    margin:0;
+    align-self:auto;
+    scroll-snap-align:center;
+  }
 }
 
 /* ============================================================================
@@ -4689,6 +4959,28 @@ body.night .detour-name{ color:#F5EAD2 !important; }
   align-items:center;
   justify-content:center;
   gap:10px;
+}
+/* ★2026-07-18追加：番台への導線（#shelves・#desk）の直前に表示する、小さな呼びかけ。
+   .section-returnはflex-wrapのため、flex-basis:100%で単独行にし、下のボタン行と分ける。 */
+.section-return-prompt{
+  flex-basis:100%;
+  text-align:center;
+  margin-bottom:2px;
+}
+.section-return-prompt strong{
+  display:block;
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:13px;
+  color:var(--ink-soft);
+  letter-spacing:.05em;
+}
+.section-return-prompt span{
+  display:block;
+  font-size:11.5px;
+  color:var(--ink-soft);
+  opacity:.8;
+  margin-top:2px;
 }
 /* ★微調整：以前は薄い枠線＋opacity:.85で「操作できないボタン」に見えていたため、
    常時操作可能な副ボタンとして、生成り色の文字＋濃い地色＋薄いクリーム枠で
@@ -4810,3 +5102,270 @@ body .entrance.hero > .hero-seal img{
     bottom:max(24px, env(safe-area-inset-bottom));
   }
 }
+
+/* ============================================================================
+ * ★2026-07-18追加：任意設定の天気連動機能 — 演出のみ（CSS）
+ * ------------------------------------------------------------------------
+ * ・body[data-weather="clear|cloudy|rain|snow|fog|storm"] が設定されている場合だけ発火する。
+ *   天気連動がOFF、または取得できなかった場合はdata-weather属性自体が付与されないため、
+ *   ここから下のルールは一切適用されず、既存の見た目（写真・灯り・路地・窓）に変化はない。
+ * ・対象は既存の書店写真（.entrance.hero）・路地（.detour-cards）・窓明かり
+ *   （.detour-card、既存の::beforeの隣に::afterで追加）のみ。感情の棚・助け舟・推薦・
+ *   本の内容など機能面には一切影響しない（見た目のCSSのみ）。
+ * ・stormは点滅を使わず、雨（.detour-card::after共用）と外気の暗さ（オーバーレイの濃度）だけを強める。
+ * ============================================================================ */
+
+/* ---- 書店写真（Hero）：clear=星と澄んだ外気／cloudy=青灰色の拡散光／rain・storm=路面反射 ---- */
+.entrance.hero > .hero-weather-fx{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 1.1s ease;
+}
+body[data-weather] .entrance.hero > .hero-weather-fx{ opacity:1; }
+
+body[data-weather="clear"] .entrance.hero > .hero-weather-fx{
+  background-image:
+    radial-gradient(1.4px 1.4px at 12% 16%, rgba(255,255,255,.85), transparent 60%),
+    radial-gradient(1px 1px at 24% 9%, rgba(255,255,255,.6), transparent 60%),
+    radial-gradient(1.4px 1.4px at 37% 20%, rgba(255,255,255,.8), transparent 60%),
+    radial-gradient(1px 1px at 51% 7%, rgba(255,255,255,.55), transparent 60%),
+    radial-gradient(1.4px 1.4px at 64% 15%, rgba(255,255,255,.85), transparent 60%),
+    radial-gradient(1px 1px at 77% 11%, rgba(255,255,255,.6), transparent 60%),
+    radial-gradient(1.4px 1.4px at 89% 19%, rgba(255,255,255,.8), transparent 60%);
+  animation:weatherTwinkle 5s ease-in-out infinite;
+}
+
+body[data-weather="cloudy"] .entrance.hero > .hero-weather-fx{
+  background:linear-gradient(180deg, rgba(140,150,168,.22) 0%, rgba(120,130,150,.12) 55%, transparent 100%);
+}
+
+body[data-weather="rain"] .entrance.hero > .hero-weather-fx{
+  background-image:
+    linear-gradient(0deg, rgba(140,175,205,.22) 0%, transparent 26%),
+    repeating-linear-gradient(112deg, rgba(210,225,238,.10) 0 1px, transparent 1px 16px);
+  background-position:0 0, 0 0;
+  animation:weatherRainDriftHero 1s linear infinite;
+}
+
+/* storm：雨の路面反射を流用しつつ、点滅なしで外気の暗さだけを強める */
+body[data-weather="storm"] .entrance.hero > .hero-weather-fx{
+  background-image:
+    linear-gradient(180deg, rgba(6,10,18,.30) 0%, rgba(6,10,18,.16) 45%, transparent 100%),
+    linear-gradient(0deg, rgba(120,150,180,.26) 0%, transparent 30%),
+    repeating-linear-gradient(112deg, rgba(200,215,230,.14) 0 1px, transparent 1px 14px);
+  background-position:0 0, 0 0, 0 0;
+  animation:weatherRainDriftStorm .8s linear infinite;
+}
+
+@keyframes weatherTwinkle{
+  0%, 100%{ opacity:1; }
+  50%{ opacity:.72; }
+}
+@keyframes weatherRainDriftHero{
+  0%{ background-position:0 0, 0 0; }
+  100%{ background-position:0 0, -30px 44px; }
+}
+@keyframes weatherRainDriftStorm{
+  0%{ background-position:0 0, 0 0, 0 0; }
+  100%{ background-position:0 0, 0 0, -26px 38px; }
+}
+
+/* ---- 路地（.detour-cards）：fog=路地奥の霞 ---- */
+.detour-cards::after{
+  content:"";
+  position:absolute;
+  top:0; left:0; right:0;
+  height:40%;
+  background:linear-gradient(180deg, rgba(205,205,205,.4), transparent 100%);
+  opacity:0;
+  transition:opacity 1.1s ease;
+  pointer-events:none;
+  z-index:2;
+}
+body[data-weather="fog"] .detour-cards::after{ opacity:1; }
+
+/* ---- 窓（.detour-card、既存の窓明かり::beforeの隣）：rain・storm=雨粒／snow=窓外の小さな雪 ---- */
+.detour-card::after{
+  content:"";
+  position:absolute;
+  top:-3px;
+  width:5px;
+  height:14px;
+  border-radius:2px;
+  pointer-events:none;
+  opacity:0;
+}
+.detour-cards .detour-card:nth-child(odd)::after{ right:-2px; }
+.detour-cards .detour-card:nth-child(even)::after{ left:-2px; }
+
+body[data-weather="rain"] .detour-card::after,
+body[data-weather="storm"] .detour-card::after{
+  opacity:1;
+  background:linear-gradient(180deg, rgba(200,220,235,.75), rgba(200,220,235,.15));
+  animation:weatherWindowDrip 1.1s linear infinite;
+}
+@keyframes weatherWindowDrip{
+  0%{ transform:translateY(-2px); opacity:.9; }
+  100%{ transform:translateY(9px); opacity:0; }
+}
+
+body[data-weather="snow"] .detour-card::after{
+  opacity:1;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(255,255,255,.9), rgba(255,255,255,0) 70%);
+  animation:weatherWindowSnow 3.4s linear infinite;
+}
+@keyframes weatherWindowSnow{
+  0%{ transform:translate(0,-4px); opacity:.9; }
+  100%{ transform:translate(3px,16px); opacity:0; }
+}
+
+/* 演出OFF設定（prefs.motion=false／.no-motion）では、天気の揺らぎ・降下アニメーションも静止させる。
+   既存の演出トグルの契約（アニメーション全般を止める）を踏襲し、天気状態の表示自体は残す。 */
+body.no-motion .hero-weather-fx,
+body.no-motion .detour-cards::after,
+body.no-motion .detour-card::after{
+  animation:none !important;
+}
+/* ★2026-07-19追加：OS側のprefers-reduced-motionも独立して尊重する（.no-motionの有無に関わらず）。
+   保存済みprefs.motion=trueの状態でOSの「視差効果を減らす」がONの場合も、雨・雪等は静止表示にする。 */
+@media (prefers-reduced-motion: reduce){
+  .hero-weather-fx,
+  .detour-cards::after,
+  .detour-card::after{
+    animation:none !important;
+  }
+}
+
+/* ============================================================================
+ * ★2026-07-19 hotfix（天気機能の差し戻し対応）
+ * 1) 帰属表示（天気データ：Open-Meteo（CC BY 4.0））のスタイル
+ * 2) 390px幅の上部バー：店名・日付・天気バッジ・メニューボタンが重ならず、
+ *    長い英語表示でも横スクロール・画面外へのはみ出しが起きないようにする
+ * ============================================================================ */
+.weather-attribution{
+  margin:4px 0 0;
+  font-size:10.5px;
+  line-height:1.6;
+  color:var(--ink);
+  opacity:.62;
+}
+.weather-attribution a{
+  color:inherit;
+  text-decoration:underline;
+}
+body.night .weather-attribution{ color:var(--paper); opacity:.6; }
+
+/* 上部バー：flex子要素が縮められるようmin-width:0を許可し、はみ出しをバー内で吸収する */
+.experience-bar{
+  flex-wrap:nowrap;
+  overflow:hidden;
+}
+.experience-bar-brand{
+  flex:0 1 auto;
+  min-width:0;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.experience-bar .menu-btn{
+  flex-shrink:0;
+}
+.shop-current-date{
+  flex:0 1 auto;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+/* 天気バッジ：長い地域名（例：Near your current location）でも1行内で省略表示する */
+.weather-badge{
+  flex:0 1 auto;
+  min-width:0;
+  max-width:46vw;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+@media (max-width:480px){
+  .experience-bar{ gap:8px; padding:12px 12px; }
+  .weather-badge{ max-width:38vw; }
+  .experience-bar-brand{ font-size:12.5px; }
+}
+@media (max-width:390px){
+  .weather-badge{ max-width:34vw; font-size:10px; padding:3px 7px; }
+  .shop-current-date{ max-width:26vw; }
+}
+
+/* ============================================================================
+ * ★2026-07-19 feature/first-visit-experience：初回利用体験（3点のみ）
+ * 1) 表紙の初回説明＋「この書店の一冊を、のぞいてみる」（閲覧専用サンプル本）
+ * 2) 本詳細モーダルの見本バッジ（通常表示では.hidden）
+ * 3) 本棚到着パネルの余韻2行
+ * 天気連動・製本・本棚・保存形式のスタイルには手を加えない。
+ * ============================================================================ */
+.first-visit-note{
+  position:relative;
+  z-index:1;
+  max-width:34em;
+  margin:18px auto 0;
+  padding:0 16px;
+  text-align:center;
+}
+.first-visit-note p{
+  margin:0 0 6px;
+  font-size:12.5px;
+  line-height:1.9;
+  letter-spacing:.03em;
+  color:#F5EAD2; /* 生成り色。day/night変数の反転に依存させない */
+  opacity:.85;
+  text-shadow:0 1px 3px rgba(10,14,22,0.55);
+}
+.sample-peek-btn{
+  display:inline-block;
+  margin-top:8px;
+  padding:7px 18px;
+  font-family:var(--font-body);
+  font-size:12.5px;
+  letter-spacing:.05em;
+  color:#F5EAD2;
+  background:rgba(16,24,36,0.35);
+  border:1px solid rgba(245,234,210,0.4);
+  border-radius:18px;
+  cursor:pointer;
+  opacity:.92;
+  transition:background .15s ease, opacity .15s ease;
+}
+.sample-peek-btn:hover{ background:rgba(16,24,36,0.55); opacity:1; }
+@media (max-width:480px){
+  .first-visit-note p{ font-size:11.5px; line-height:1.8; }
+  .sample-peek-btn{ font-size:12px; padding:6px 15px; }
+}
+
+.sample-book-badge{
+  margin:0 0 10px;
+  padding:5px 10px;
+  font-size:11.5px;
+  letter-spacing:.04em;
+  text-align:center;
+  color:var(--ink);
+  background:rgba(232,201,122,0.16);
+  border:1px dashed rgba(148,118,62,0.5);
+  border-radius:8px;
+  opacity:.9;
+}
+.sample-book-badge.hidden{ display:none; }
+
+.bookshelf-arrival-afterglow{
+  margin:2px 0;
+  font-size:12.5px;
+  line-height:1.9;
+  letter-spacing:.04em;
+  color:#F5EAD2;
+  opacity:.8;
+  text-align:center;
+}
+.bookshelf-arrival-afterglow + .bookshelf-arrival-actions{ margin-top:12px; }

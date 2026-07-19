@@ -25,7 +25,7 @@
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   img-src 'self' data: https:;
   font-src 'self' data: https://fonts.gstatic.com;
-  connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://www.googleapis.com https://itunes.apple.com;
+  connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://www.googleapis.com https://itunes.apple.com https://api.open-meteo.com;
   frame-src 'none';
   base-uri 'self';
   form-action 'self';
@@ -232,12 +232,20 @@ body.night .about-data-content{
            loading="eager" fetchpriority="high"
            onerror="this.closest('.hero-photo') &amp;&amp; (this.closest('.hero-photo').style.display='none')">
     </picture>
+    <!-- ★2026-07-18追加：任意設定の天気連動機能の演出レイヤー。天気連動がOFF、または
+         data-weather未設定の場合は常に非表示（opacity:0）で、既存の見た目に一切変化を与えない。 -->
+    <div class="hero-weather-fx" aria-hidden="true"></div>
     <button type="button" class="menu-btn cover-menu-btn" id="menuBtnCover"
             aria-haspopup="true" aria-expanded="false" aria-controls="experienceMenu"
             data-i18n-aria="menuOpenAria" aria-label="店内メニューを開く">
       <span aria-hidden="true">&#9776;</span>
       <span class="menu-btn-label menu-btn-label-full" data-i18n="menuBtnLabelFull">店内メニュー</span>
       <span class="menu-btn-label menu-btn-label-short" data-i18n="menuBtnLabelShort">メニュー</span>
+    </button>
+    <!-- ★2026-07-18追加：表紙の常時表示言語切替。メニュー内#langToggleとは別に、
+         表紙を開いた瞬間から常に見える位置へ設置する（言語名自体は翻訳しない）。 -->
+    <button type="button" class="hero-lang-toggle" id="heroLangToggle" aria-label="言語を切り替える" data-i18n-aria="langToggleAria">
+      <span class="hero-lang-ja" data-lang-name="ja">日本語</span><span class="hero-lang-sep" aria-hidden="true">｜</span><span class="hero-lang-en" data-lang-name="en">English</span>
     </button>
     <p class="eyebrow">EMOTIONAL BINDERY &amp; BOOKSHOP</p>
     <h1 data-i18n="shopName">みんなの感情書店</h1>
@@ -251,6 +259,17 @@ body.night .about-data-content{
       <span class="trust-badge" data-i18n="trustBadge1">登録不要</span>
       <span class="trust-badge" data-i18n="trustBadge2">この端末にのみ保存</span>
       <span class="trust-badge" data-i18n="trustBadge3">AIの学習には使われません</span>
+    </div>
+
+    <!-- ★2026-07-19 feature/first-visit-experience：初回利用者向けの短い説明（AIではなく利用者自身が
+         書くこと・外部送信なし・推薦は寄り道であること）と、閲覧専用サンプル本への控えめな導線。
+         主要コピー「今の気持ちを、一冊の本に。」と主CTA（heroCta）は変更しない。
+         大きな警告表示にはせず、生成り色の短文として配置する。 -->
+    <div class="first-visit-note" id="firstVisitNote">
+      <p data-i18n="firstVisitAiLine1">本をつくるのは、AIではなくあなた自身です。自分の言葉で一冊にして、棚へ置く書店です。</p>
+      <p data-i18n="firstVisitAiLine2">文章や写真は外部へ送信されません。診断や感情分析も行いません。</p>
+      <p data-i18n="firstVisitRecLine">本や音楽のおすすめは、書き終えた夜に店主がそっと差し出す寄り道です。主役はいつも、あなたの一冊です。</p>
+      <button type="button" class="sample-peek-btn" id="samplePeekBtn" data-i18n="samplePeekBtn">この書店の一冊を、のぞいてみる</button>
     </div>
 
     <!-- ★v1.3最終統合：「はじめての方へ」「データ保存について」はメニュー内へ移動（本ブロックはメニュー内で再利用、削除はしない） -->
@@ -281,6 +300,11 @@ body.night .about-data-content{
   <div class="experience-bar" id="experienceBar" aria-hidden="true">
     <span class="experience-bar-brand" data-i18n="shopName">みんなの感情書店</span>
     <time class="shop-current-date" id="shopCurrentDate"></time>
+    <!-- ★2026-07-19追加：任意設定の天気連動機能のバッジ。天気連動がOFF、または天気状態が
+         取得できていない場合は.hiddenのまま表示されない（例：「東京・雨の夜」）。
+         週間予報や数値は並べず、押すと地域・天気・最終更新時刻の3行だけを表示する。 -->
+    <button type="button" class="weather-badge hidden" id="weatherBadge" aria-haspopup="true" aria-expanded="false" aria-controls="weatherDetailPopover"></button>
+    <div class="weather-detail-popover hidden" id="weatherDetailPopover" role="status"></div>
     <button type="button" class="menu-btn" id="menuBtnBar"
             aria-haspopup="true" aria-expanded="false" aria-controls="experienceMenu"
             data-i18n-aria="menuOpenAria" aria-label="店内メニューを開く">
@@ -345,9 +369,12 @@ body.night .about-data-content{
       </div>
 
       <!-- ===== 追加：最初から表示する控えめな一言（何を入力する場所か分かりにくい対策） ===== -->
-      <p class="freeform-hint early-freeform-hint" id="earlyFreeformHint" data-i18n="earlyFreeformHint" hidden>当てはまるものがない場合は、この枠に気持ちを書いて「話す」を押してください。</p>
+      <p class="freeform-hint early-freeform-hint hidden" id="earlyFreeformHint" data-i18n="earlyFreeformHint" hidden>当てはまるものがない場合は、この枠に気持ちを書いて「話す」を押してください。</p>
 
-      <div class="chat-input-row" hidden>
+      <!-- ★2026-07-18修正：.chat-input-row{display:flex}が[hidden]属性より優先され、
+           旧チャット入力欄・「話す」ボタンが公開画面に表示されたままになっていた不具合を修正。
+           .hiddenクラス（!important）を付与し、確実に非表示化する（DOM・関数は削除しない）。 -->
+      <div class="chat-input-row hidden" hidden>
         <textarea id="userInput" placeholder="例：うまく言えないけど、朝からずっとモヤモヤしている…" rows="2" data-i18n-ph="userInputPlaceholder"></textarea>
         <button class="send-btn" id="sendBtn" data-i18n="sendBtn">話す</button>
       </div>
@@ -366,7 +393,10 @@ body.night .about-data-content{
     </div>
     <div class="detour-section" id="detourSection"></div>
     <p class="swipe-hint" data-i18n="swipeHint">← 左右にスワイプでも棚を移動できます →</p>
-    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')" data-i18n="backToBandai">⤴ 番台へ戻る</button><button type="button" class="exit-shop-btn" onclick="returnToCover()" data-i18n="exitShopBtn">お店を出る</button></div>
+    <div class="section-return">
+      <div class="section-return-prompt"><strong data-i18n="preBandaiPromptHeading">まだ言葉にならない方へ</strong><span data-i18n="preBandaiPromptDesc">店主と、しまう棚を相談する</span></div>
+      <button type="button" class="back-to-bandai" onclick="goToPage('counter')" data-i18n="backToBandai">⤴ 番台へ戻る</button><button type="button" class="exit-shop-btn" onclick="exitShopWithFarewell()" data-i18n="exitShopBtn">お店を出る</button>
+    </div>
   </section>
 
   <section id="desk" class="reveal experience-page">
@@ -374,6 +404,13 @@ body.night .about-data-content{
     <div class="section-head"><span class="page-label" data-i18n="pageLabelDesk">第一頁　</span><h2 data-i18n="sectionHead3">編纂机</h2></div>
     <p class="desk-lead hidden" id="deskLead"></p>
     <p class="section-sub" data-i18n-html="sectionSub3">題名や写真は任意です。製本したあと、棚にしまうか、棚を選ばず本棚へ戻れます。</p>
+    <!-- ★2026-07-18追加：旧チャットに代わる、静的な「言葉にするための助け舟」。
+         本文解析・外部AI送信は行わず、固定の問いを提示するだけ（renderWritingBoat()）。 -->
+    <div class="writing-boat" id="writingBoat">
+      <p class="writing-boat-heading" data-i18n="writingBoatHeading">言葉にするための助け舟</p>
+      <ul class="writing-boat-list" id="writingBoatList"></ul>
+      <p class="writing-boat-note" data-i18n="writingBoatNote">答えなくても大丈夫です。書き出す手がかりに、どうぞ。</p>
+    </div>
     <div class="desk-form">
       <div class="field">
         <textarea id="storyInput" placeholder="書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。" rows="6" data-i18n-ph="storyInputPlaceholder"></textarea>
@@ -439,7 +476,10 @@ body.night .about-data-content{
       <button class="inv-goshelf" id="invGoShelf" data-i18n="invGoShelf">棚を見てみる</button>
       <button class="inv-close" id="invClose" data-i18n="invClose">しおりに挟む</button>
     </div>
-    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')" data-i18n="backToBandai">⤴ 番台へ戻る</button><button type="button" class="exit-shop-btn" onclick="returnToCover()" data-i18n="exitShopBtn">お店を出る</button></div>
+    <div class="section-return">
+      <div class="section-return-prompt"><strong data-i18n="preBandaiPromptHeading">まだ言葉にならない方へ</strong><span data-i18n="preBandaiPromptDesc">店主と、しまう棚を相談する</span></div>
+      <button type="button" class="back-to-bandai" onclick="goToPage('counter')" data-i18n="backToBandai">⤴ 番台へ戻る</button><button type="button" class="exit-shop-btn" onclick="exitShopWithFarewell()" data-i18n="exitShopBtn">お店を出る</button>
+    </div>
   </section>
 
   <section id="bookshelf" class="reveal experience-page">
@@ -459,6 +499,9 @@ body.night .about-data-content{
     <!-- ★v1.3公開前最終修正：本棚到着後の次行動（仕様書6章）。ボタンは2つだけ。 -->
     <div class="bookshelf-arrival hidden" id="bookshelfArrival">
       <p class="bookshelf-arrival-heading" data-i18n="bookshelfArrivalHeading">本を棚に置きました。</p>
+      <!-- ★2026-07-19 feature/first-visit-experience：製本後の余韻（2行）。既存の次行動ボタンは変更しない。 -->
+      <p class="bookshelf-arrival-afterglow" data-i18n="arrivalAfterglow1">今夜の気持ちは、ここに置いていけます。</p>
+      <p class="bookshelf-arrival-afterglow" data-i18n="arrivalAfterglow2">必要になったとき、また開きに来てください。</p>
       <div class="bookshelf-arrival-actions">
         <button type="button" class="chart-btn primary" id="bookshelfArrivalMakeAnother" data-i18n="bookshelfArrivalMakeAnother">もう一冊つくる</button>
       </div>
@@ -495,7 +538,8 @@ body.night .about-data-content{
       <span class="shiori-slip hidden" id="shioriSlip"><span class="shiori-label" data-i18n="shioriLabel">栞 — 店主より</span><span id="shioriText"></span></span>
       <button class="curate-btn" id="shioriBtn" data-i18n="shioriBtn">栞を受け取る</button>
     </div>
-    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('counter')" data-i18n="backToBandai">⤴ 番台へ戻る</button><button type="button" class="exit-shop-btn" onclick="returnToCover()" data-i18n="exitShopBtn">お店を出る</button></div>
+    <!-- ★2026-07-18変更：製本後（本棚）は番台へ戻らず、感情の棚を巡る導線に変更する。 -->
+    <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('shelves')" data-i18n="bookshelfExploreShelves">いろいろな棚を巡る</button><button type="button" class="exit-shop-btn" onclick="exitShopWithFarewell()" data-i18n="exitShopBtn">お店を出る</button></div>
   </section>
 
   <!-- ★v1.3 Phase A：intro-explainer（機能一覧）とpref-row（演出・来店カード・言語）を
@@ -580,14 +624,26 @@ body.night .about-data-content{
 <div class="modal hidden" id="bookModal">
   <div class="modal-card">
     <button class="modal-close" id="modalClose">×</button>
+    <!-- ★2026-07-19 feature/first-visit-experience：閲覧専用サンプル本の見本バッジ。
+         通常の本詳細では.hiddenのまま表示されない。 -->
+    <p class="sample-book-badge hidden" id="sampleBookBadge" data-i18n="sampleBookBadge">これは見本の一冊です。あなたの本棚には追加されません。</p>
     <p class="modal-cat" id="modalCat"></p>
     <h3 id="modalTitle"></h3>
+    <input type="text" id="modalEditTitleInput" class="modal-edit-title-input hidden" maxlength="16" data-i18n-ph="titleInputPlaceholder">
     <p class="modal-date" id="modalDate"></p>
     <div class="modal-photo hidden" id="modalPhoto"><img id="modalPhotoImg" alt="この頁に挟まれた写真" data-i18n-alt="modalPhotoAlt"></div>
     <div class="modal-story" id="modalStory"></div>
+    <textarea id="modalEditStoryInput" class="modal-edit-story-input hidden" rows="8"></textarea>
+    <p class="modal-edit-msg hidden" id="modalEditMsg" role="status"></p>
     <div class="modal-tweet hidden" id="modalTweet"></div>
     <span class="shiori-slip hidden" id="modalNote"><span class="shiori-label" data-i18n="modalNoteLabel">店主のことば</span><span id="modalNoteText"></span></span>
-    <div class="modal-actions">
+    <!-- ★2026-07-18追加：製本後にタイトル・本文を書き直すための操作群 -->
+    <div class="modal-edit-actions hidden" id="modalEditActions">
+      <button type="button" class="chart-btn primary" id="modalEditSave" data-i18n="modalEditSave">書き直しを保存する</button>
+      <button type="button" class="chart-btn ghost" id="modalEditCancel" data-i18n="modalEditCancel">やめる</button>
+    </div>
+    <div class="modal-actions" id="modalActions">
+      <button class="modal-edit" id="modalEdit" data-i18n="modalEditBtn">タイトル・本文を書き直す</button>
       <button class="modal-goshelf" id="modalGoShelf" data-i18n="modalGoShelf">この棚をもう一度見る</button>
       <button class="modal-share" id="modalShare" data-i18n="modalShare">Xでシェア</button>
       <button class="modal-del" id="modalDel" data-i18n="modalDel">この本を棚から下げる</button>
@@ -635,6 +691,26 @@ body.night .about-data-content{
       <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切" data-i18n-title="motionToggleTitle">演出：入</button>
       <button class="pref-toggle" id="profileBtn" title="お名前と属性の設定（任意・この端末にのみ保存）" data-i18n="profileBtn" data-i18n-title="profileBtnTitle">来店カード</button>
       <button class="pref-toggle" id="langToggle" title="言語切り替え / Language">JP / EN</button>
+    </div>
+
+    <!-- ★2026-07-18追加：任意設定の天気連動機能。初期状態はOFFで、位置情報の許可は
+         「現在地から設定」ボタンを押した場合だけ要求される（ページ表示時には要求しない）。 -->
+    <div class="weather-settings" id="weatherSettings">
+      <div class="pref-row">
+        <button class="pref-toggle" id="weatherToggle" title="店外の天気を反映する"
+                data-i18n="weatherToggleOff" data-i18n-title="weatherToggleTitle">天気連動：切</button>
+      </div>
+      <!-- ★2026-07-19変更：初期版では自由入力の都市検索を追加せず、「主要地域から選ぶ」
+           （プリセット10都市）と「現在地から設定」の2方式に限定する。 -->
+      <div class="weather-region-row hidden" id="weatherRegionRow">
+        <select class="weather-region-select" id="weatherRegionSelect" aria-label="主要地域から選ぶ" data-i18n-aria="weatherRegionLabel">
+          <option value="" data-i18n="weatherRegionSelectPlaceholder">主要地域から選ぶ</option>
+        </select>
+        <button type="button" class="pref-toggle" id="weatherUseLocationBtn" data-i18n="weatherUseLocationBtn">現在地から設定</button>
+      </div>
+      <p class="weather-status" id="weatherStatus" data-i18n="weatherStatusOff">天気連動は現在オフです。</p>
+      <p class="weather-privacy-note" data-i18n="weatherPrivacyNote">※天気連動をオンにすると、設定した地域名または現在地から概算した緯度・経度が、天気情報の取得のためだけに外部の天気サービスへ送信されます。書いた文章や本棚のデータが送信されることはありません。</p>
+      <p class="weather-attribution" data-i18n-html="weatherAttribution">天気データ：<a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>（<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>）</p>
     </div>
 
     <!-- ★v1.3 Phase A：「はじめての方へ」「データ保存について」は主CTAより弱い補助導線として

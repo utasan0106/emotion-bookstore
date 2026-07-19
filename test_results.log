@@ -1,0 +1,85 @@
+===================================================================
+みんなの感情書店 v1.3 公開用リリースフラグ（WEATHER_FEATURE_ENABLED）— 全テスト実行ログ
+実行日時: 2026-07-19 01:19 UTC
+実行環境: Node v22.22.3 / jsdom 29.1.1
+実行場所: 成果物内 tests/ ディレクトリ（相対パス）
+===================================================================
+
+--- [1/6] node --check ---
+../main.js: OK
+../data.js: OK
+../sw.js: OK
+smoke_test_weather_flag.js: OK
+
+--- [2/6] GA4整合 ---
+ANALYTICS_ALLOWED_EVENTS = ['view_landing', 'start_writing', 'create_book_success', 'create_book_error', 'view_shelf']
+
+--- [3/6] smoke_test_weather_flag.js（新規・リリースフラグ専用）---
+PASS: (0) main.js ships with `const WEATHER_FEATURE_ENABLED = false;`
+PASS: (0) the flag is declared exactly once
+PASS: (1) #weatherSettings is hidden (class)
+PASS: (1) #weatherSettings is hidden (hidden attribute)
+PASS: (1) #weatherBadge is hidden
+PASS: (1) the weather detail popover is hidden
+PASS: (1) zero fetches to the weather API on startup
+PASS: (1) zero navigator.geolocation calls
+PASS: (1) body has no data-weather (regular display)
+PASS: (2) a saved enabled weather setting triggers no weather API fetch
+PASS: (2) a saved enabled weather setting triggers no geolocation call
+PASS: (2) body[data-weather] stays unset even with a saved rain cache (regular display)
+PASS: (2) the badge stays hidden even with saved settings + cache
+PASS: (2) the saved settings in localStorage are left untouched (not deleted, not rewritten)
+PASS: (3) language toggle and the sample book work with the flag off (no exception)
+PASS: (3) the cover CTA is still present
+PASS: (3) no GA4 event outside the existing 5
+PASS: (4) with the flag true, #weatherSettings is visible again
+PASS: (4) with the flag true, a saved enabled region fetches weather on startup
+PASS: (4) with the flag true, body[data-weather] is applied
+PASS: (4) with the flag true, the badge is shown
+
+=== SUMMARY ===
+PASS: 21  FAIL: 0
+
+--- [4/6] FirstVisit1 43件 ---
+
+=== SUMMARY ===
+PASS: 43  FAIL: 0
+
+--- [5/6] 天気77件（フラグをtrueへ差し替えて内部機能を検証）＋既存119件 ---
+[smoke_test_weather.js]
+
+=== SUMMARY ===
+PASS: 77  FAIL: 0
+[smoke_test_rc2.js]
+
+=== SUMMARY ===
+PASS: 44  FAIL: 0
+[smoke_test_shelf_swipe.js]
+
+=== SUMMARY ===
+PASS: 14  FAIL: 0
+[smoke_test_rc2b_batch2.js]
+
+=== SUMMARY ===
+PASS: 46  FAIL: 0
+[smoke_test_en_dates.js]
+
+=== SUMMARY ===
+PASS: 15  FAIL: 0
+
+--- [6/6] 英語モードDOM日本語スキャン（フラグtrue差し替えで天気UIも走査継続）---
+fetchWeatherState: falling back to the regular view Error: Open-Meteo response is not an object
+    at fetchWeatherState (https://example.com/:1490:13)
+    at async refreshWeatherIfNeeded (https://example.com/:1550:17)
+    at async onWeatherRegionSelectChange (https://example.com/:1762:3)
+    at async main (/tmp/scratch6/pkg/emotion-bookstore-main/tests/en_dom_japanese_scan.js:118:70)
+=== Japanese characters found in visible EN-mode DOM: 5 ===
+[SPAN.legal-sep] ・
+[A] 専門の相談窓口
+[NAV.experience-menu-nav] [aria-label] メニュー
+[BUTTON#langToggle.pref-toggle] [title] 言語切り替え / Language
+
+Unique hits: 4
+
+--- 備考 ---
+・天気機能の実ブラウザ確認・Open-Meteo商用利用方針は引き続き未完了（本フラグはそのための入口封鎖であり、両件は解決済みではない）

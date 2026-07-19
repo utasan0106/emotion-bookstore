@@ -41,12 +41,33 @@ const MESSAGES = {
     enterBtn: "扉をひらく →",
     motionToggleOn: "演出：入", motionToggleOff: "演出：切",
     motionToggleTitle: "演出アニメーションの入/切",
+    // ★2026-07-18追加：任意設定の天気連動機能（店内メニュー）。
+    weatherToggleTitle: "店外の天気を反映する",
+    weatherToggleOn: "天気連動：入", weatherToggleOff: "天気連動：切",
+    weatherRegionLabel: "地域の設定",
+    weatherRegionSelectPlaceholder: "主要地域から選ぶ",
+    weatherUseLocationBtn: "現在地から設定",
+    weatherNearCurrentLocation: "現在地周辺",
+    weatherStatusOff: "天気連動は現在オフです。",
+    weatherStatusNoRegion: "地域を設定すると、店外の天気が反映されます。",
+    weatherStatusUsingRegion: "反映中：{label}",
+    weatherStatusLocating: "現在地を取得しています…",
+    weatherStatusLocationFail: "現在地を取得できませんでした。書店は通常どおりご利用いただけます。主要地域から選ぶこともできます。",
+    weatherStatusFetchFail: "天気情報を取得できませんでした。通常の表示に戻します。",
+    weatherPrivacyNote: "※天気連動をオンにすると、選択した地域、または現在地から概算した緯度・経度だけが、天気情報の取得のためだけにOpen-Meteo（外部の天気情報サービス）へ送信されます。書いた文章・タイトル・写真・本棚のデータが送信されることはありません。なお、外部サービスへの通信時には、IPアドレスなど通信にともなう技術的な情報が送信先へ伝わる場合があります。",
+    weatherAttribution: "天気データ：<a href=\"https://open-meteo.com/\" target=\"_blank\" rel=\"noopener noreferrer\">Open-Meteo</a>（<a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\" rel=\"noopener noreferrer\">CC BY 4.0</a>）",
+    weatherDetailRegion: "地域",
+    weatherDetailState: "天気",
+    weatherDetailUpdated: "最終更新",
     profileBtn: "来店カード", profileBtnTitle: "お名前と属性の設定（任意・この端末にのみ保存）",
     trustBadge1: "登録不要", trustBadge2: "この端末にのみ保存", trustBadge3: "AIの学習には使われません",
     pageNavAria: "ページを選ぶ",
     pageTab1: "① 番台", pageTab2: "② 棚", pageTab3: "③ 編纂机", pageTab4: "④ 本棚",
-    sectionHead1: "店主と棚を探す", sectionSub1: "気持ちに近い棚を、一緒に探します。",
+    sectionHead1: "店主と棚を相談する", sectionSub1: "気持ちに近い棚を、一緒に探します。",
     counterReturnNote: "前に選んだ棚は、そのまま残しています。今の気持ちから、探し直すこともできます。",
+    // ★2026-07-18追加：番台への導線（#shelves・#desk）の直前に表示する、小さな呼びかけ。
+    preBandaiPromptHeading: "まだ言葉にならない方へ",
+    preBandaiPromptDesc: "店主と、しまう棚を相談する",
     // ★v1.3公開前最終修正：番台を「棚の案内」として整理（仕様書3章）。初回・再訪とも同じ文。
     counterGreetingUnified: "こんばんは。まだ名前のつかない気持ちも、そのままで大丈夫です。今は、どんな手触りですか。",
     counterGroupSink: "重く沈む",
@@ -70,8 +91,15 @@ const MESSAGES = {
     sendBtn: "話す",
     sectionHead2: "感情の棚", sectionSub2: "棚を選んでも、あてもなく巡っても。",
     swipeHint: "← 左右にスワイプでも棚を移動できます →",
-    backToBandai: "⤴ 店主と棚を探す",
+    backToBandai: "⤴ 店主と棚を相談する",
     exitShopBtn: "お店を出る",
+    // ★2026-07-18追加：製本後（本棚）だけは番台へ戻らず、感情の棚を巡る導線に変更する。
+    bookshelfExploreShelves: "いろいろな棚を巡る",
+    // ★2026-07-18追加：表紙の常時表示言語切替（日本語｜English）。言語名そのものなので翻訳しない。
+    langLabelJa: "日本語", langLabelEn: "English",
+    langToggleAria: "言語を切り替える（日本語／English）",
+    // ★2026-07-18追加：「お店を出る」を押したときに一瞬だけ表示するお礼のことば。
+    exitFarewellMsg: "ご来店ありがとうございました。また、言葉を置きたくなった夜に。",
     // ★v1.3公開前最終修正：主動線（編纂机→製本→まな受け取り→本棚）だけに頁番号を振り直す。
     // 番台・感情の棚は任意頁のため番号を付けない（仕様書1章）。
     pageLabelCounter: "番台　",
@@ -92,11 +120,27 @@ const MESSAGES = {
     bookshelfArrivalHeading: "本を棚に置きました。",
     bookshelfArrivalMakeAnother: "もう一冊つくる",
     bookshelfArrivalBackToCover: "表紙へ戻る",
+    // ★2026-07-19 feature/first-visit-experience：製本後の余韻（到着パネルの2行）
+    arrivalAfterglow1: "今夜の気持ちは、ここに置いていけます。",
+    arrivalAfterglow2: "必要になったとき、また開きに来てください。",
+    // ★2026-07-19 feature/first-visit-experience：表紙の初回説明とサンプル本
+    firstVisitAiLine1: "本をつくるのは、AIではなくあなた自身です。自分の言葉で一冊にして、棚へ置く書店です。",
+    firstVisitAiLine2: "文章や写真は外部へ送信されません。診断や感情分析も行いません。",
+    firstVisitRecLine: "本や音楽のおすすめは、書き終えた夜に店主がそっと差し出す寄り道です。主役はいつも、あなたの一冊です。",
+    samplePeekBtn: "この書店の一冊を、のぞいてみる",
+    sampleBookBadge: "これは見本の一冊です。あなたの本棚には追加されません。",
+    sampleBookTitle: "雨上がりの帰り道",
+    sampleBookStory: "傘を閉じたら、路面の匂いが少しだけ夏に戻っていた。今日うまく言えなかったことを、帰り道の水たまりにひとつずつ落としていく。急がなくていい、と自分に言えたのは久しぶりだった。玄関の灯りが見えたとき、明日はもう少しだけ素直に話してみようと思った。",
+    sampleBookNote: "うまく言えなかった日ほど、言葉は静かに育っています。この棚で、ゆっくりどうぞ。",
     sectionHead3: "編纂机",
     sectionSub3: "今の気持ちを、一枚の紙に綴ります。",
     shelfAfterBindingNote: "棚は、製本したあとに選べます。",
     storyInputPlaceholder: "書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。",
     assistBtn: "書き出しに迷ったら、店主の助け舟",
+    // ★2026-07-18追加：旧チャットの代わりに編纂机へ表示する、静的な「言葉にするための助け舟」。
+    // 本文解析や外部AI送信は行わず、選んだ棚（感情）に応じた固定の問いを提示するだけ。
+    writingBoatHeading: "言葉にするための助け舟",
+    writingBoatNote: "答えなくても大丈夫です。書き出す手がかりに、どうぞ。",
     storyCountFormat: "{count} / {max}字",
     photoLabel: "今日の一枚を、頁に挟む（任意）",
     photoPreviewAlt: "添付写真のプレビュー",
@@ -108,12 +152,36 @@ const MESSAGES = {
     fieldLabelTweet: "関連するXの投稿があれば", tweetInputPlaceholder: "例：https://x.com/username/status/1234567890",
     fieldHint: "「以前のことを振り返って」を選ぶと、過去の気持ちとして本棚に残せます。",
     submitStory: "店主に預けて製本する",
+    // ★2026-07-18追加：製本前の確認ダイアログ（棚のご提案）に、原稿へ戻る選択肢を追加。
+    curateBackToDraft: "原稿に戻る",
     invSeal: "封", invKicker: "推薦状", invGoShelf: "棚を見てみる", invClose: "しおりに挟む",
     sectionHead4: "あなたの本棚",
     sectionSub4: "製本した物語が背表紙になって並びます。クリックすると、いつでも読み返せます。",
     shelfEmptyMsg: "まだ本がありません。編纂机で最初の一冊を綴ってみましょう。",
+    // ★2026-07-18追加：本棚の年月グループ見出し（例：「2026年7月の棚」）。
+    shelfMonthUnknown: "日付不明の棚",
+    // ★2026-07-18追加：月別タブの「すべて」／「日付不明」（見出しとは別の短い表記）、蔵書冊数表示。
+    shelfMonthAllTab: "すべて",
+    shelfMonthUnknownShort: "日付不明",
+    shelfCountFormat: "蔵書 {count}冊",
+    // ★2026-07-18追加：本の詳細画面の日付表示（formatDate）と、振り返り本の注記を英語対応させる。
+    modalDeliveredSuffix: "納品",
+    modalSealedNote: "｜以前を振り返って綴った一冊",
     recordCornerAria: "店主のレコード棚",
     resetShelf: "本棚をリセットする",
+    // ★2026-07-18追加：感情の地図（renderTrend）の期間タブ・要約文・行ツールチップ・冊数表示を
+    // 言語対応させる（従来はハードコードされ、英語モードでも日本語のまま表示されていた）。
+    trendPeriodMonth: "今月",
+    trendPeriodYear: "今年",
+    trendPeriodAll: "すべて",
+    trendSummaryPeriodMonth: "今月の",
+    trendSummaryPeriodYear: "今年の",
+    trendSummaryPeriodAll: "いまの",
+    trendSummaryTemplate: "{period}あなたの本棚は、「{shelf}」の棚がいちばん厚いようです。",
+    trendRowTooltip: "『{shelf}』の棚を見る",
+    trendCountUnit: "{n}冊",
+    // ★2026-07-18追加：空の背表紙（本棚の「＋次の一冊」）のツールチップ。
+    emptySpineTooltip: "まだ中身が書かれていない、空の背表紙。タップすると編纂机へ。",
     trendDetailSummary: "感情の地図を詳しく見る",
     trendNote: "※月次「感情取扱説明書」レポートの簡易デモです。この地図はあなたにだけ見えています。",
     shioriCardTitle: "今日の栞", shioriCardNote: "あなたの本棚を眺めた店主から、一枚。",
@@ -134,6 +202,11 @@ const MESSAGES = {
     modalPhotoAlt: "この頁に挟まれた写真", modalNoteLabel: "店主のことば",
     modalGoShelf: "この棚をもう一度見る", modalDel: "この本を棚から下げる",
     modalShare: "Xでシェア", modalShareNote: "※本文はそのまま送信されません。投稿画面が開くだけで、実際に投稿するかはあなた次第です。",
+    // ★2026-07-18追加：製本後の本の詳細画面から、タイトル・本文を書き直す機能。
+    modalEditBtn: "タイトル・本文を書き直す",
+    modalEditSave: "書き直しを保存する",
+    modalEditCancel: "やめる",
+    modalEditStoryEmpty: "本文が空のままでは保存できません。",
     pwaPopupAria: "ホーム画面に追加する案内",
     pwaTitle: "この書店をスマホのホーム画面にピン留めする",
     pwaSteps: "iPhone（Safari）：下の「共有」ボタン →「ホーム画面に追加」<br>Android（Chrome）：右上のメニュー（⋮）→「ホーム画面に追加」",
@@ -287,12 +360,32 @@ const MESSAGES = {
     enterBtn: "Open the door →",
     motionToggleOn: "Motion: On", motionToggleOff: "Motion: Off",
     motionToggleTitle: "Toggle animation effects on/off",
+    // ★2026-07-18追加：任意設定の天気連動機能（店内メニュー）。
+    weatherToggleTitle: "Reflect the weather outside the shop",
+    weatherToggleOn: "Weather sync: On", weatherToggleOff: "Weather sync: Off",
+    weatherRegionLabel: "Region setting",
+    weatherRegionSelectPlaceholder: "Choose a major region",
+    weatherUseLocationBtn: "Set from current location",
+    weatherNearCurrentLocation: "Near your current location",
+    weatherStatusOff: "Weather sync is currently off.",
+    weatherStatusNoRegion: "Set a region to reflect the weather outside the shop.",
+    weatherStatusUsingRegion: "Using: {label}",
+    weatherStatusLocating: "Getting your location…",
+    weatherStatusLocationFail: "Couldn't get your location. The shop works as usual — you can also choose a major region instead.",
+    weatherStatusFetchFail: "Couldn't fetch the weather. Showing the regular view instead.",
+    weatherPrivacyNote: "※ Turning on weather sync sends only your selected region, or coordinates approximated from your current location, to Open-Meteo (an external weather service) — solely to fetch the weather. Your written stories, titles, photos, and bookshelf data are never sent. Note that when communicating with an external service, technical information that accompanies any network request — such as your IP address — may be visible to the receiving service.",
+    weatherAttribution: "Weather data by <a href=\"https://open-meteo.com/\" target=\"_blank\" rel=\"noopener noreferrer\">Open-Meteo</a> (<a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\" rel=\"noopener noreferrer\">CC BY 4.0</a>)",
+    weatherDetailRegion: "Region",
+    weatherDetailState: "Weather",
+    weatherDetailUpdated: "Last updated",
     profileBtn: "Visitor card", profileBtnTitle: "Set your name and details (optional, stored on this device only)",
     trustBadge1: "No sign-up", trustBadge2: "Stored on this device only", trustBadge3: "Never used to train AI",
     pageNavAria: "Choose a page",
     pageTab1: "① Counter", pageTab2: "② Shelves", pageTab3: "③ Writing desk", pageTab4: "④ Bookshelf",
-    sectionHead1: "Find a Shelf with the Shopkeeper", sectionSub1: "Let\u2019s find the shelf closest to how you feel.",
+    sectionHead1: "Talk to the Shopkeeper About a Shelf", sectionSub1: "Let\u2019s find the shelf closest to how you feel.",
     counterReturnNote: "The shelf you chose before is still there. You\u2019re welcome to look again, starting from how you feel right now.",
+    preBandaiPromptHeading: "For When the Words Won\u2019t Come Yet",
+    preBandaiPromptDesc: "Talk with the shopkeeper about which shelf to use.",
     counterGreetingUnified: "Good evening. Feelings that don\u2019t have a name yet are fine just as they are. What does it feel like right now?",
     counterGroupSink: "Heavy and Sinking",
     counterGroupWave: "Rippling",
@@ -332,6 +425,18 @@ const MESSAGES = {
     bookshelfArrivalHeading: "Your book is on the shelf.",
     bookshelfArrivalMakeAnother: "Make Another Book",
     bookshelfArrivalBackToCover: "Back to the Cover",
+    // ★2026-07-19 feature/first-visit-experience：製本後の余韻（到着パネルの2行）
+    arrivalAfterglow1: "You can leave tonight’s feelings here.",
+    arrivalAfterglow2: "Come back and open this book whenever you need it.",
+    // ★2026-07-19 feature/first-visit-experience：表紙の初回説明とサンプル本
+    firstVisitAiLine1: "You—not AI—write the book. This is a place to turn your own words into a book and place it on a shelf.",
+    firstVisitAiLine2: "Your writing and photos are not sent outside your device. No diagnosis or emotion analysis is performed.",
+    firstVisitRecLine: "Book and music picks are a quiet detour the shopkeeper offers on the night you finish writing. Your book is always the main event.",
+    samplePeekBtn: "Peek inside one of this shop’s books",
+    sampleBookBadge: "This is a sample book. It is never added to your bookshelf.",
+    sampleBookTitle: "The Walk Home After the Rain",
+    sampleBookStory: "When I closed my umbrella, the smell of the wet street felt almost like summer again. One by one, I let the things I couldn’t say today fall into the puddles along the way home. For the first time in a while, I told myself it was okay not to hurry. When I saw the light at my front door, I thought: tomorrow, I’ll try speaking a little more honestly.",
+    sampleBookNote: "On the days words wouldn’t come out right, they were quietly growing. Take your time on this shelf.",
     sectionHead3: "The Writing Desk",
     sectionSub3: "Write what you feel now onto a single page.",
     shelfAfterBindingNote: "You can choose a shelf after your book is bound.",
@@ -352,8 +457,29 @@ const MESSAGES = {
     sectionHead4: "Your Bookshelf",
     sectionSub4: "Your bound stories appear as book spines. Select one to read it again at any time.",
     shelfEmptyMsg: "No books yet. Try writing your first one at the writing desk.",
+    // ★2026-07-18変更：「Shelf: Date Unknown」→「Undated Shelf」へ、より自然な英語表現に調整。
+    shelfMonthUnknown: "Undated Shelf",
+    shelfMonthAllTab: "All",
+    shelfMonthUnknownShort: "Date Unknown",
+    shelfCountFormat: "{count} books",
+    modalDeliveredSuffix: "Delivered",
+    // ★2026-07-18変更：先頭の区切りを全角｜から中黒·へ変更し、より自然な英語表現に調整。
+    // formatDate()の末尾（"...Delivered"）に直接連結されるため、視認性のため先頭に半角スペースを1つ入れている。
+    modalSealedNote: " · A book written looking back on the past",
     recordCornerAria: "Shopkeeper's record corner",
     resetShelf: "Reset bookshelf",
+    // ★2026-07-18追加：感情の地図（renderTrend）の期間タブ・要約文・行ツールチップ・冊数表示。
+    trendPeriodMonth: "This Month",
+    trendPeriodYear: "This Year",
+    trendPeriodAll: "All",
+    trendSummaryPeriodMonth: "This month, ",
+    trendSummaryPeriodYear: "This year, ",
+    trendSummaryPeriodAll: "Right now, ",
+    trendSummaryTemplate: "{period}your “{shelf}” shelf seems to be the fullest.",
+    trendRowTooltip: "View the “{shelf}” shelf",
+    trendCountUnit: "{n} books",
+    // ★2026-07-18追加：空の背表紙のツールチップ。
+    emptySpineTooltip: "An empty spine with nothing written yet. Tap it to go to the writing desk.",
     trendDetailSummary: "See your emotion map in detail",
     trendNote: "※ A simple demo of the monthly \"Emotion Handbook\" report. This map is visible only to you.",
     shioriCardTitle: "Today's Bookmark", shioriCardNote: "A note from the shopkeeper, after looking over your bookshelf.",
@@ -519,6 +645,23 @@ function t(key){
   return MESSAGES.ja[key] || '';
 }
 
+// ★2026-07-18追加：気になるリスト／手放した気持ちの記録／バックアップ・エクスポート・復元の
+// 各ボタン文言を、初期化時だけでなく言語切替のたびにも追従させる（従来は初期化時のみ設定され、
+// 言語切替後もボタン文言が切替前の言語のまま残っていた）。
+function refreshUtilityButtonLabels(){
+  const backupBtn = document.getElementById('backupBtn');
+  if(backupBtn) backupBtn.innerHTML = t('backupDefaultBtn');
+  const exportBtn = document.getElementById('exportDiary');
+  if(exportBtn) exportBtn.innerHTML = t('exportDefaultBtn');
+  const exportCsvBtn = document.getElementById('exportDiaryCsv');
+  if(exportCsvBtn) exportCsvBtn.innerHTML = t('csvExportDefaultBtn');
+  const restoreBtnEl = document.getElementById('restoreBtn');
+  if(restoreBtnEl) restoreBtnEl.innerHTML = t('restoreDefaultBtn');
+  const purifyBtn = document.getElementById('viewPurifyLogBtn');
+  if(purifyBtn) purifyBtn.textContent = t('purifyLogBtn');
+  if(typeof updateFavoritesBtnLabel === 'function') updateFavoritesBtnLabel();
+}
+
 function applyLanguage(){
   document.documentElement.lang = appLang;
   document.querySelectorAll('[data-i18n]').forEach(el=>{
@@ -569,6 +712,24 @@ function applyLanguage(){
   // 言語切替時も再描画して見出し・ボタン文言を現在の言語へ追従させる
   // （fair.line自体はdata.js由来の季節文のため、日本語のまま残る＝許容範囲）。
   if(typeof renderFair === 'function') renderFair();
+  // ★2026-07-18追加：本棚の年月見出し（.shelf-month-heading）を言語切替のたびに再描画する。
+  if(typeof renderShelf === 'function' && typeof libraryCache !== 'undefined' && libraryCache.length) renderShelf(false);
+  // ★2026-07-18追加：編纂机の「言葉にするための助け舟」を言語切替のたびに再描画する。
+  if(typeof renderWritingBoat === 'function') renderWritingBoat();
+  // ★2026-07-18追加：表紙の常時表示言語切替（日本語｜English）の現在言語表示を更新する。
+  if(typeof updateHeroLangToggle === 'function') updateHeroLangToggle();
+  // ★2026-07-18追加：気になるリスト・手放した記録・バックアップ／エクスポート／復元ボタンの
+  // 文言を言語切替のたびに追従させる。
+  if(typeof refreshUtilityButtonLabels === 'function') refreshUtilityButtonLabels();
+  // ★2026-07-18追加：感情の地図（期間タブ・要約文・行ツールチップ・冊数）を言語切替のたびに再描画する。
+  if(typeof renderTrend === 'function') renderTrend();
+  // ★2026-07-19 hotfix：天気バッジ（地域名・状態名・区切り文字）と、開いている場合の
+  // 詳細ポップオーバーを、言語切替のたびに再取得なしで即時再描画する。
+  // （★公開用リリースフラグ：WEATHER_FEATURE_ENABLEDがfalseの間は呼ばない）
+  if(typeof WEATHER_FEATURE_ENABLED !== 'undefined' && WEATHER_FEATURE_ENABLED && typeof refreshWeatherLanguageViews === 'function') refreshWeatherLanguageViews();
+  // ★2026-07-19 feature/first-visit-experience：閲覧専用サンプル本を開いたまま言語を
+  // 切り替えた場合、見本の本文・栞・バッジも現在の言語で再描画する。
+  if(typeof refreshSampleBookIfOpen === 'function') refreshSampleBookIfOpen();
   const langBtn = document.getElementById('langToggle');
   if(langBtn) langBtn.textContent = appLang === 'ja' ? 'JP / EN' : 'EN / JP';
   const titleEl = document.querySelector('title');
@@ -820,10 +981,30 @@ function monthKeyOf(dateStr){
   if(isNaN(d.getTime())) return '不明';
   return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
 }
+// ★2026-07-18変更：月別タブ（renderShelfMonthTabs）向けの年月表示をappLangに対応させる。
+// 見出し用のmonthHeadingLabel（「2026年7月の棚」）とは別に、タブでは「の棚」を付けない短い形。
 function monthLabelOf(key){
-  if(key === '不明') return '日付不明';
-  const [y, m] = key.split('-');
-  return `${y}年${parseInt(m, 10)}月`;
+  if(key === '不明') return t('shelfMonthUnknownShort');
+  const [y, m] = key.split('-').map(Number);
+  if(appLang === 'en'){
+    try{
+      const d = new Date(y, m - 1, 1);
+      return new Intl.DateTimeFormat('en-US', { month:'long', year:'numeric' }).format(d);
+    }catch(e){ return `${y}-${String(m).padStart(2,'0')}`; }
+  }
+  return `${y}年${m}月`;
+}
+// ★2026-07-18追加：本棚を年月単位でグループ化する際の見出し文言（例：「2026年7月の棚」）。
+function monthHeadingLabel(key){
+  if(key === '不明') return t('shelfMonthUnknown');
+  const [y, m] = key.split('-').map(Number);
+  if(appLang === 'en'){
+    try{
+      const d = new Date(y, m - 1, 1);
+      return new Intl.DateTimeFormat('en-US', { month:'long', year:'numeric' }).format(d) + ' Shelf';
+    }catch(e){ return `${y}-${String(m).padStart(2,'0')} Shelf`; }
+  }
+  return `${y}年${m}月の棚`;
 }
 
 // ★v1.3公開前最終修正：wave/light/sepiaのshelvesに重複（ushirometai/kansha）と
@@ -1142,6 +1323,468 @@ async function fetchSeasonalMusic(catLabel){
     console.warn('fetchSeasonalMusic: falling back to static data', e);
     return null;
   }
+}
+
+/* ==========================================================================
+ * ★2026-07-19追加：任意設定の天気連動機能（既定OFF）。独立機能として追加しており、
+ * 製本・本棚・編集・感情棚・助け舟・推薦・英語対応済み箇所・GA4の5イベントには
+ * 一切変更を加えていない。
+ * ---------------------------------------------------------------------
+ * ・保存先は本棚（emotion-bookstore-library）やentryとは完全に分離した専用キー
+ *   （WEATHER_SETTINGS_KEY／WEATHER_CACHE_KEY）。prefs（演出・言語等）にも混在させない。
+ * ・地域設定は「主要地域から選ぶ」（プリセット10都市、WEATHER_REGIONS）と
+ *   「現在地から設定」の2方式のみ。自由入力の都市検索・ジオコーディングAPIは使わない。
+ * ・店内メニューでONにし、地域を設定した場合だけ動作する。ページ表示時・入店時に位置情報の
+ *   許可を自動要求することは一切なく、navigator.geolocation の呼び出しは
+ *   useCurrentLocationForWeather()（「現在地から設定」ボタンのクリックハンドラ）の中だけ。
+ *   拒否・取得失敗・タイムアウトの場合も、書店の通常表示・全機能はそのまま維持される。
+ * ・呼び出す先はAPIキー不要の公開エンドポイント（Open-Meteo, https://open-meteo.com/）。
+ *   送るのは選択地域のプリセット座標、または現在地から概算化した緯度・経度だけ。
+ *   本文・タイトル・写真・感情棚・本棚データ・栞・来店カードは一切含めない。正確な現在地座標は
+ *   概算化した値に置き換えるのみで、恒久保存もしない。
+ * ・取得結果は端末内（IndexedDB/localStorage）に60分だけキャッシュし、地域が変わった場合は
+ *   キャッシュを無効化して再取得する。取得できない場合（タイムアウト・オフライン・不正
+ *   レスポンス・APIエラー）は data-weather 属性を外し、通常表示へフォールバックする。
+ *   Service Worker（sw.js）はfetchのレスポンスを一切cachesへ書き込まないため、天気APIの
+ *   応答が恒久キャッシュされることもない。
+ * ・天気状態は body[data-weather] を通じて見た目（CSS）だけに反映し、感情棚の選択・
+ *   助け舟・推薦・本の内容・店主の返答など機能面には一切影響させない。GA4の新規送信もない。
+ * ========================================================================== */
+
+// ★2026-07-19 公開用リリースフラグ：天気連動機能の入口制御。
+// 実ブラウザでのCSP・実API通信確認と、Open-Meteoの商用利用方針の決定が完了するまで false のまま公開する。
+// false の間は：店内メニューの天気設定（#weatherSettings）を表示しない／#weatherBadgeを表示しない／
+// 天気設定を読み込まない／天気APIへ通信しない／navigator.geolocationを呼ばない／
+// 保存済みの天気設定がONでも通常表示を維持する。
+// true へ変更すると、下の実装済み天気機能がそのまま復帰する（内部ロジックはこのフラグで変更されない）。
+const WEATHER_FEATURE_ENABLED = false;
+
+const WEATHER_SETTINGS_KEY = 'emotion-bookstore-weather-settings'; // 本棚・entryとは別の専用キー
+const WEATHER_CACHE_KEY = 'emotion-bookstore-weather-cache';
+const WEATHER_CACHE_MS = 60 * 60 * 1000; // 60分
+const WEATHER_STATES = ['clear','cloudy','rain','snow','fog','storm'];
+
+// ★2026-07-19 hotfix：APIベースURLを定数へ分離。現在はOpen-Meteoの無料エンドポイント
+// （非商用利用向け）を直接呼んでいるが、将来サーバー側プロキシ（自前ドメインの中継先）へ
+// 切り替える場合は、この定数を差し替えるだけで済む構成にしている。商用APIキーは
+// フロントエンドへ直書きしない（この定数にもキーを含めない）。
+const WEATHER_API_BASE = 'https://api.open-meteo.com/v1/forecast';
+
+// 主要地域プリセット（初期版では自由入力の都市検索は追加しない）。座標は都市中心のおおよその
+// 位置で、いずれも個人の正確な位置情報ではない。
+const WEATHER_REGIONS = [
+  { id:'sapporo',   lat:43.06, lon:141.35, label:{ ja:'札幌', en:'Sapporo' } },
+  { id:'sendai',    lat:38.27, lon:140.87, label:{ ja:'仙台', en:'Sendai' } },
+  { id:'tokyo',     lat:35.68, lon:139.65, label:{ ja:'東京', en:'Tokyo' } },
+  { id:'yokohama',  lat:35.44, lon:139.64, label:{ ja:'横浜', en:'Yokohama' } },
+  { id:'nagoya',    lat:35.18, lon:136.91, label:{ ja:'名古屋', en:'Nagoya' } },
+  { id:'kyoto',     lat:35.01, lon:135.77, label:{ ja:'京都', en:'Kyoto' } },
+  { id:'osaka',     lat:34.69, lon:135.50, label:{ ja:'大阪', en:'Osaka' } },
+  { id:'hiroshima', lat:34.40, lon:132.46, label:{ ja:'広島', en:'Hiroshima' } },
+  { id:'fukuoka',   lat:33.59, lon:130.40, label:{ ja:'福岡', en:'Fukuoka' } },
+  { id:'naha',      lat:26.21, lon:127.68, label:{ ja:'那覇', en:'Naha' } }
+];
+
+// 天気状態の表示名（バッジ用）。夜間（body.night）は一部の状態だけ夜向けの表記に変える
+// （例：「東京・雨の夜」「Tokyo · Rainy night」）。
+const WEATHER_STATE_LABEL = {
+  clear:  { ja:{ day:'晴れ', night:'星空' },   en:{ day:'Clear', night:'Starry night' } },
+  cloudy: { ja:{ day:'曇り', night:'曇り' },   en:{ day:'Cloudy', night:'Cloudy' } },
+  rain:   { ja:{ day:'雨', night:'雨の夜' },   en:{ day:'Rain', night:'Rainy night' } },
+  snow:   { ja:{ day:'雪', night:'雪の夜' },   en:{ day:'Snow', night:'Snowy night' } },
+  fog:    { ja:{ day:'霧', night:'霧' },       en:{ day:'Fog', night:'Fog' } },
+  storm:  { ja:{ day:'嵐', night:'嵐' },       en:{ day:'Storm', night:'Storm' } }
+};
+
+// weatherSettings：本棚・entryとは完全に分離した、天気連動専用の設定オブジェクト。
+// enabled: ON/OFF（既定false）。source: 'region'（プリセット地域） | 'location'（現在地） | null。
+// regionId: sourceが'region'の場合のWEATHER_REGIONS内のid。lat/lon: 取得に使う概算座標（画面には出さない）。
+let weatherSettings = { enabled:false, source:null, regionId:null, lat:null, lon:null };
+
+async function loadWeatherSettings(){
+  const saved = await loadJSON(WEATHER_SETTINGS_KEY, null);
+  if(saved && typeof saved === 'object'){
+    weatherSettings = Object.assign({ enabled:false, source:null, regionId:null, lat:null, lon:null }, saved);
+  }
+}
+async function saveWeatherSettings(){
+  await saveJSON(WEATHER_SETTINGS_KEY, weatherSettings);
+}
+
+// 緯度・経度を概算化する（小数第1位に丸め＝約11km単位）。文章や本棚データとは結び付けない。
+function roundWeatherCoord(v){
+  return Math.round(v * 10) / 10;
+}
+
+// weather_code（WMO表記）を基準の状態へ大まかに分類する。
+function weatherCodeBaseState(code){
+  if(code === 95 || code === 96 || code === 99) return 'storm';
+  if(code === 71 || code === 73 || code === 75 || code === 77 || code === 85 || code === 86) return 'snow';
+  if(code === 45 || code === 48) return 'fog';
+  if([51,53,55,56,57,61,63,65,66,67,80,81,82].includes(code)) return 'rain';
+  if(code === 2 || code === 3) return 'cloudy';
+  if(code === 0 || code === 1) return 'clear';
+  return null;
+}
+
+// weather_code・cloud_cover・precipitation・snowfall・wind_speed_10m（現在＋直近3時間の予報）を
+// clear／cloudy／rain／snow／fog／stormの6状態へ正規化する。
+function normalizeWeatherState(current, upcoming){
+  const points = [current].concat(upcoming || []);
+  const codes = points.map(p=>p.code).filter(c=>c !== undefined && c !== null);
+  const maxPrecip = Math.max(0, ...points.map(p=>Number(p.precip) || 0));
+  const maxSnow = Math.max(0, ...points.map(p=>Number(p.snow) || 0));
+  const maxWind = Math.max(0, ...points.map(p=>Number(p.wind) || 0));
+  const cloudVals = points.map(p=>Number(p.cloud)).filter(c=>!isNaN(c));
+  const avgCloud = cloudVals.length ? (cloudVals.reduce((a,b)=>a+b,0) / cloudVals.length) : 0;
+
+  // 雷（悪天候）を最優先。コードが取れない場合も、強い降水＋強風の組み合わせはstorm相当とみなす。
+  if(codes.some(c=>c===95||c===96||c===99)) return 'storm';
+  if(maxPrecip >= 8 && maxWind >= 40) return 'storm';
+  if(maxSnow > 0 || codes.some(c=>[71,73,75,77,85,86].includes(c))) return 'snow';
+  if(codes.some(c=>c===45||c===48)) return 'fog';
+  if(maxPrecip > 0.1 || codes.some(c=>[51,53,55,56,57,61,63,65,66,67,80,81,82].includes(c))) return 'rain';
+  if(avgCloud >= 55 || codes.some(c=>c===2||c===3)) return 'cloudy';
+  // 上記のいずれにも該当しない場合は、weather_codeの基準分類（0/1=clear等）にフォールバックする。
+  const baseFallback = codes.map(weatherCodeBaseState).find(s=>s);
+  return baseFallback || 'clear';
+}
+
+// Open-Meteo（https://open-meteo.com/ ／APIキー不要・無料の公開天気API）から現在の状況と
+// 直近3時間の予報を取得し、6状態のいずれかへ正規化して返す。リクエストに含めるのは緯度・経度と
+// 天気取得に必要なパラメータのみ。失敗時はnullを返す（呼び出し側でフォールバック判定に使う）。
+async function fetchWeatherState(lat, lon){
+  // タイムアウト対策：AbortControllerが使える環境では8秒で打ち切り、
+  // 応答が返らないまま処理が止まり続けないようにする（未対応環境では従来どおりfetchのみ行う）。
+  let timeoutId = null;
+  let controller = null;
+  try{
+    const fields = 'weather_code,cloud_cover,precipitation,snowfall,wind_speed_10m';
+    const url = WEATHER_API_BASE
+      + '?latitude=' + encodeURIComponent(lat)
+      + '&longitude=' + encodeURIComponent(lon)
+      + '&current=' + fields
+      + '&hourly=' + fields
+      + '&forecast_hours=3&timezone=auto';
+    // プライバシー配慮：Cookie等の資格情報は送らない・リファラーも送らない・
+    // ブラウザのHTTPキャッシュにも残さない（60分キャッシュはアプリ側の専用キーだけで管理する）。
+    const fetchOpts = {
+      method:'GET',
+      credentials:'omit',
+      referrerPolicy:'no-referrer',
+      cache:'no-store'
+    };
+    if(typeof AbortController === 'function'){
+      controller = new AbortController();
+      fetchOpts.signal = controller.signal;
+      timeoutId = setTimeout(()=>{ try{ controller.abort(); }catch(e){} }, 8000);
+    }
+    const res = await fetch(url, fetchOpts);
+    if(timeoutId){ clearTimeout(timeoutId); timeoutId = null; }
+    if(!res.ok) throw new Error('Open-Meteo forecast response not ok: ' + res.status);
+    const json = await res.json();
+    // ★2026-07-19 hotfix：応答形式の検証。currentが存在しない、またはcurrent.weather_codeが
+    // 数値でない場合は不正レスポンスとして取得失敗（null）にする。空オブジェクト・空配列・
+    // 必須項目欠落・JSON解析失敗を「clear（晴れ）」として扱わず、通常表示へフォールバックさせる。
+    if(!json || typeof json !== 'object' || Array.isArray(json)){
+      throw new Error('Open-Meteo response is not an object');
+    }
+    if(!json.current || typeof json.current !== 'object' || Array.isArray(json.current)){
+      throw new Error('Open-Meteo response is missing "current"');
+    }
+    if(typeof json.current.weather_code !== 'number' || !isFinite(json.current.weather_code)){
+      throw new Error('Open-Meteo response "current.weather_code" is not a number');
+    }
+    const cur = json.current;
+    const hourly = json.hourly || {};
+    const times = Array.isArray(hourly.time) ? hourly.time : [];
+    const upcoming = times.slice(0, 3).map((_, i)=>({
+      code: Array.isArray(hourly.weather_code) ? hourly.weather_code[i] : undefined,
+      precip: Array.isArray(hourly.precipitation) ? hourly.precipitation[i] : 0,
+      snow: Array.isArray(hourly.snowfall) ? hourly.snowfall[i] : 0,
+      cloud: Array.isArray(hourly.cloud_cover) ? hourly.cloud_cover[i] : undefined,
+      wind: Array.isArray(hourly.wind_speed_10m) ? hourly.wind_speed_10m[i] : 0
+    }));
+    const current = {
+      code: cur.weather_code,
+      precip: cur.precipitation || 0,
+      snow: cur.snowfall || 0,
+      cloud: cur.cloud_cover,
+      wind: cur.wind_speed_10m || 0
+    };
+    return normalizeWeatherState(current, upcoming);
+  }catch(e){
+    console.warn('fetchWeatherState: falling back to the regular view', e);
+    return null;
+  }finally{
+    if(timeoutId) clearTimeout(timeoutId);
+  }
+}
+
+// 天気状態をbody[data-weather]へ反映し、天気バッジの表示も同時に更新する
+// （未設定・取得失敗時は属性を外し、バッジも隠して通常表示へフォールバックする）。
+function applyWeatherState(state){
+  if(state && WEATHER_STATES.includes(state)){
+    document.body.setAttribute('data-weather', state);
+  }else{
+    document.body.removeAttribute('data-weather');
+  }
+  if(typeof updateWeatherBadge === 'function') updateWeatherBadge(state);
+}
+
+// 天気連動がONで地域（緯度・経度）が設定されている場合だけ、キャッシュを確認したうえで
+// 必要なら取得する。60分以内かつ同じ地域ならキャッシュを使い、地域変更時・force指定時・
+// キャッシュ期限切れ時は再取得する。
+async function refreshWeatherIfNeeded(force){
+  if(!weatherSettings.enabled || weatherSettings.lat == null || weatherSettings.lon == null){
+    applyWeatherState(null);
+    return;
+  }
+  const cached = await loadJSON(WEATHER_CACHE_KEY, null);
+  const now = Date.now();
+  const sameLocation = !!(cached && cached.lat === weatherSettings.lat && cached.lon === weatherSettings.lon);
+  if(!force && sameLocation && cached && (now - cached.fetchedAt) < WEATHER_CACHE_MS){
+    applyWeatherState(cached.state);
+    return;
+  }
+  const state = await fetchWeatherState(weatherSettings.lat, weatherSettings.lon);
+  if(state){
+    await saveJSON(WEATHER_CACHE_KEY, { lat: weatherSettings.lat, lon: weatherSettings.lon, state, fetchedAt: now });
+    applyWeatherState(state);
+  }else{
+    // 取得失敗（オフライン・タイムアウト・不正な形式・APIエラー）時は、古いキャッシュへは
+    // フォールバックせず、data-weatherを解除して通常表示へ戻す（受入条件どおり）。
+    // ★2026-07-19 hotfix：古いキャッシュ自体も削除する。これにより、失敗後にページを
+    // 再読み込みしても古い天気が復活しない。
+    try{ await deleteKey(WEATHER_CACHE_KEY); }catch(e){}
+    const statusEl = document.getElementById('weatherStatus');
+    if(statusEl) statusEl.textContent = t('weatherStatusFetchFail');
+    applyWeatherState(null);
+  }
+}
+
+// 選択中の地域（プリセット名）または「現在地周辺」のラベルだけを返す。緯度・経度は画面へは出さない。
+function weatherLocationDisplayLabel(){
+  const lang = appLang === 'en' ? 'en' : 'ja';
+  if(weatherSettings.source === 'region'){
+    const region = WEATHER_REGIONS.find(r=>r.id === weatherSettings.regionId);
+    if(region) return region.label[lang];
+  }
+  if(weatherSettings.source === 'location') return t('weatherNearCurrentLocation');
+  return '';
+}
+
+// 天気状態の表示名（昼／夜で一部表記を変える）。
+function weatherStateLabel(state){
+  if(!state || !WEATHER_STATE_LABEL[state]) return '';
+  const lang = appLang === 'en' ? 'en' : 'ja';
+  const isNight = document.body.classList.contains('night');
+  return WEATHER_STATE_LABEL[state][lang][isNight ? 'night' : 'day'];
+}
+
+// 店内上部の小さな天気バッジ（例：「東京・雨の夜」「Tokyo · Rainy night」）。
+// 週間予報・数値の一覧は表示しない。地域または天気状態のどちらかが欠けている場合は表示しない。
+function updateWeatherBadge(state){
+  const badge = document.getElementById('weatherBadge');
+  if(!badge) return;
+  if(!weatherSettings.enabled || !state){
+    badge.classList.add('hidden');
+    badge.textContent = '';
+    closeWeatherDetail();
+    return;
+  }
+  const loc = weatherLocationDisplayLabel();
+  const stateLabel = weatherStateLabel(state);
+  if(!loc || !stateLabel){
+    badge.classList.add('hidden');
+    badge.textContent = '';
+    return;
+  }
+  const sep = appLang === 'en' ? ' · ' : '・';
+  badge.textContent = loc + sep + stateLabel;
+  badge.classList.remove('hidden');
+}
+
+function formatWeatherUpdatedTime(ms){
+  try{
+    const locale = appLang === 'en' ? 'en-US' : 'ja-JP';
+    return new Intl.DateTimeFormat(locale, { hour:'2-digit', minute:'2-digit' }).format(new Date(ms));
+  }catch(e){ return ''; }
+}
+
+// バッジを押すと、現在の地域・天気状態・最終更新時刻の3行だけを表示する（予報サイトのような
+// 週間予報・大量の数値は並べない）。
+async function renderWeatherDetailPopover(){
+  const pop = document.getElementById('weatherDetailPopover');
+  if(!pop) return;
+  const cached = await loadJSON(WEATHER_CACHE_KEY, null);
+  const loc = weatherLocationDisplayLabel();
+  const stateLabel = cached ? weatherStateLabel(cached.state) : '';
+  const updatedText = (cached && cached.fetchedAt) ? formatWeatherUpdatedTime(cached.fetchedAt) : '';
+  pop.innerHTML = '';
+  [
+    [t('weatherDetailRegion'), loc || '—'],
+    [t('weatherDetailState'), stateLabel || '—'],
+    [t('weatherDetailUpdated'), updatedText || '—']
+  ].forEach(([label, value])=>{
+    const row = document.createElement('div');
+    row.className = 'weather-detail-row';
+    const labelEl = document.createElement('span');
+    labelEl.className = 'weather-detail-label';
+    labelEl.textContent = label;
+    const valueEl = document.createElement('span');
+    valueEl.className = 'weather-detail-value';
+    valueEl.textContent = value;
+    row.appendChild(labelEl);
+    row.appendChild(valueEl);
+    pop.appendChild(row);
+  });
+}
+
+function closeWeatherDetail(){
+  const pop = document.getElementById('weatherDetailPopover');
+  if(pop) pop.classList.add('hidden');
+  const badge = document.getElementById('weatherBadge');
+  if(badge) badge.setAttribute('aria-expanded', 'false');
+}
+
+function toggleWeatherDetail(){
+  const pop = document.getElementById('weatherDetailPopover');
+  const badge = document.getElementById('weatherBadge');
+  if(!pop) return;
+  const willShow = pop.classList.contains('hidden');
+  if(willShow){
+    renderWeatherDetailPopover();
+    pop.classList.remove('hidden');
+    if(badge) badge.setAttribute('aria-expanded', 'true');
+  }else{
+    pop.classList.add('hidden');
+    if(badge) badge.setAttribute('aria-expanded', 'false');
+  }
+}
+
+// ★2026-07-19 hotfix：ポップオーバーの閉じ方を追加する（アクセシビリティ）。
+// Escapeキー、またはポップオーバー・バッジの外側をクリック／タップした場合に閉じる。
+// リスナーはdocumentへ1回だけ登録し、ポップオーバーが閉じている間は何もしない。
+function setupWeatherDetailDismissHandlers(){
+  document.addEventListener('keydown', (ev)=>{
+    if(ev.key !== 'Escape') return;
+    const pop = document.getElementById('weatherDetailPopover');
+    if(pop && !pop.classList.contains('hidden')) closeWeatherDetail();
+  });
+  document.addEventListener('click', (ev)=>{
+    const pop = document.getElementById('weatherDetailPopover');
+    if(!pop || pop.classList.contains('hidden')) return;
+    const badge = document.getElementById('weatherBadge');
+    const target = ev.target;
+    if(pop.contains(target)) return;
+    if(badge && badge.contains(target)) return; // バッジ自体のクリックはtoggleWeatherDetailに任せる
+    closeWeatherDetail();
+  });
+}
+
+// ★2026-07-19 hotfix：言語切替時に、天気バッジ（地域名・状態名・区切り文字）と、
+// 開いている場合は詳細ポップオーバーも、APIへの再取得なしで即時再描画する。
+// 現在の状態はbody[data-weather]から読み取る（キャッシュ・通信には触れない）。
+function refreshWeatherLanguageViews(){
+  const state = document.body.getAttribute('data-weather');
+  if(typeof updateWeatherBadge === 'function') updateWeatherBadge(state || null);
+  const pop = document.getElementById('weatherDetailPopover');
+  if(pop && !pop.classList.contains('hidden')){
+    renderWeatherDetailPopover();
+  }
+}
+
+// 店内メニューの天気連動トグル・地域選択・状態文の表示を、weatherSettingsの現在値へ合わせて更新する。
+function updateWeatherUI(){
+  const btn = document.getElementById('weatherToggle');
+  if(btn){
+    btn.textContent = t(weatherSettings.enabled ? 'weatherToggleOn' : 'weatherToggleOff');
+    btn.classList.toggle('on', weatherSettings.enabled);
+  }
+  const row = document.getElementById('weatherRegionRow');
+  if(row) row.classList.toggle('hidden', !weatherSettings.enabled);
+  const sel = document.getElementById('weatherRegionSelect');
+  if(sel){
+    const lang = appLang === 'en' ? 'en' : 'ja';
+    sel.innerHTML = '';
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = t('weatherRegionSelectPlaceholder');
+    sel.appendChild(placeholder);
+    WEATHER_REGIONS.forEach(r=>{
+      const opt = document.createElement('option');
+      opt.value = r.id;
+      opt.textContent = r.label[lang];
+      sel.appendChild(opt);
+    });
+    sel.value = (weatherSettings.source === 'region' && weatherSettings.regionId) ? weatherSettings.regionId : '';
+  }
+  updateWeatherStatusText();
+  if(!weatherSettings.enabled) updateWeatherBadge(null);
+}
+
+function updateWeatherStatusText(){
+  const el = document.getElementById('weatherStatus');
+  if(!el) return;
+  if(!weatherSettings.enabled){ el.textContent = t('weatherStatusOff'); return; }
+  if(weatherSettings.lat == null || weatherSettings.lon == null){ el.textContent = t('weatherStatusNoRegion'); return; }
+  const loc = weatherLocationDisplayLabel();
+  el.textContent = loc ? t('weatherStatusUsingRegion').replace('{label}', loc) : t('weatherStatusNoRegion');
+}
+
+// 天気連動トグルのクリックハンドラ。位置情報は一切要求しない（既に設定済みの地域があれば
+// その座標で取得を試み、なければ地域未設定の案内文を表示するだけ）。
+async function toggleWeatherEnabled(){
+  weatherSettings.enabled = !weatherSettings.enabled;
+  await saveWeatherSettings();
+  updateWeatherUI();
+  if(weatherSettings.enabled){
+    await refreshWeatherIfNeeded(false);
+  }else{
+    applyWeatherState(null);
+  }
+}
+
+// 「主要地域から選ぶ」プルダウンのonchangeハンドラ。プリセットの緯度・経度をそのまま使う
+// （ジオコーディングAPIは呼ばない）。
+async function onWeatherRegionSelectChange(regionId){
+  const region = WEATHER_REGIONS.find(r=>r.id === regionId);
+  if(!region) return;
+  weatherSettings.source = 'region';
+  weatherSettings.regionId = region.id;
+  weatherSettings.lat = region.lat;
+  weatherSettings.lon = region.lon;
+  await saveWeatherSettings();
+  const sel = document.getElementById('weatherRegionSelect');
+  if(sel) sel.value = region.id;
+  updateWeatherStatusText();
+  await refreshWeatherIfNeeded(true);
+}
+
+// 「現在地から設定」ボタンのクリックハンドラ。navigator.geolocationを呼ぶのはここだけで、
+// ページ表示時・入店時や他の処理からは一切呼び出さない。取得した緯度・経度はここで概算化してから
+// 保存し、元の詳細な位置情報は保持しない。拒否・取得失敗・タイムアウトでも通常表示を維持する。
+function useCurrentLocationForWeather(){
+  const statusEl = document.getElementById('weatherStatus');
+  if(!navigator.geolocation){
+    if(statusEl) statusEl.textContent = t('weatherStatusLocationFail');
+    return;
+  }
+  if(statusEl) statusEl.textContent = t('weatherStatusLocating');
+  navigator.geolocation.getCurrentPosition(
+    async (pos)=>{
+      weatherSettings.source = 'location';
+      weatherSettings.regionId = null;
+      weatherSettings.lat = roundWeatherCoord(pos.coords.latitude);
+      weatherSettings.lon = roundWeatherCoord(pos.coords.longitude);
+      await saveWeatherSettings();
+      updateWeatherUI();
+      await refreshWeatherIfNeeded(true);
+    },
+    ()=>{ if(statusEl) statusEl.textContent = t('weatherStatusLocationFail'); },
+    { enableHighAccuracy:false, timeout:10000, maximumAge:0 }
+  );
 }
 
 const PURIFY_LOG_KEY = 'emotion-bookstore-purify-log';
@@ -1579,6 +2222,8 @@ function localShiori(topLabel){
   return t.replace('{cat}', topLabel);
 }
 
+// ★2026-07-19変更：天気連動の設定（weatherSettings）は本棚・prefsとは完全に分離した専用の
+// localStorageキー（WEATHER_SETTINGS_KEY）で管理する。prefsへは混在させない。
 let prefs = { motion:true, sound:false, keeperStyle:'gentle' };
 
 // ★Step3：店主は「まな」に一本化。ツンデレ店主（綴）の選択・表示は停止。
@@ -1622,6 +2267,9 @@ function applyPrefs(){
     mt.textContent = t(prefs.motion ? 'motionToggleOn' : 'motionToggleOff');
     mt.classList.toggle('on', prefs.motion);
   }
+  // ★2026-07-19追加：天気連動トグル・地域選択・状態文の表示も、初期化・言語切替のたびに追従させる
+  // （weatherSettingsはprefsとは別の専用キーで管理しているため、ここではUI更新のみ行う）。
+  if(typeof WEATHER_FEATURE_ENABLED !== 'undefined' && WEATHER_FEATURE_ENABLED && typeof updateWeatherUI === 'function') updateWeatherUI();
 }
 
 async function initPrefs(){
@@ -1647,6 +2295,17 @@ if(mtBtn) mtBtn.onclick = ()=>{
 // ★追加：🌐 JP / EN 言語切り替えボタン
 const langBtn = document.getElementById('langToggle');
 if(langBtn) langBtn.onclick = toggleLanguage;
+
+// ★2026-07-18追加：表紙の常時表示言語切替（日本語｜English）。
+const heroLangBtn = document.getElementById('heroLangToggle');
+if(heroLangBtn) heroLangBtn.onclick = toggleLanguage;
+function updateHeroLangToggle(){
+  const btn = document.getElementById('heroLangToggle');
+  if(!btn) return;
+  btn.classList.toggle('lang-is-ja', appLang === 'ja');
+  btn.classList.toggle('lang-is-en', appLang === 'en');
+  btn.setAttribute('aria-pressed', appLang === 'en' ? 'true' : 'false');
+}
 
 function buzz(ms){
   if(prefs.motion && navigator.vibrate){
@@ -1849,6 +2508,15 @@ function returnToCover(){
   });
 }
 
+// ★2026-07-18追加：「お店を出る」を押した直後だけ、お礼のことばを短時間表示してから表紙へ戻す。
+// 店内メニューの「表紙へ戻る」（menuReturnCover）は従来どおりreturnToCover()を直接呼び、
+// このお礼表示は経由しない（保存・遷移先そのものは無変更）。
+function exitShopWithFarewell(){
+  if(typeof showToast === 'function') showToast(t('exitFarewellMsg'));
+  const delay = prefs.motion ? 1300 : 600;
+  setTimeout(()=>{ returnToCover(); }, delay);
+}
+
 // 対象頁だけを表示状態にする（非対象は display:none 相当のCSS + inert/aria-hidden）。
 // 自然スクロールで別sectionへ到達する設計は廃止したため、IntersectionObserverによる
 // スクロール連動のactiveタブ切替（下部の(function(){...})()）はここでは呼ばない・依存しない。
@@ -1878,7 +2546,7 @@ function goToPage(id){
   _gaSuppressNextViewShelf = false;
   _gaLastTrackedPage = id;
   setActivePageTab(id);
-  if(id === 'desk'){ syncCounterDraftToDesk(); updateDeskLead(); }
+  if(id === 'desk'){ syncCounterDraftToDesk(); updateDeskLead(); if(typeof renderWritingBoat === 'function') renderWritingBoat(); }
   // ★微調整：番台へ戻るたびに会話ステップを第一段階（5択＋まだ決めずに書く）へ
   // 必ずリセットする。棚選択ロジック・保存データは変更しない、UI表示状態のみの初期化。
   if(id === 'counter' && typeof renderCounterShelfGuideRoot === 'function'){
@@ -2503,7 +3171,7 @@ function renderShelfMonthTabs(){
   const allBtn = document.createElement('button');
   allBtn.type = 'button';
   allBtn.className = 'shelf-month-tab' + (selectedShelfMonth === 'all' ? ' active' : '');
-  allBtn.textContent = `すべて (${libraryCache.length})`;
+  allBtn.textContent = `${t('shelfMonthAllTab')} (${libraryCache.length})`;
   allBtn.onclick = ()=>{ selectedShelfMonth = 'all'; buzz(6); renderShelf(false); };
   wrap.appendChild(allBtn);
   months.forEach(key=>{
@@ -2526,8 +3194,9 @@ function renderShelf(markNewest){
     ? libraryCache
     : libraryCache.filter(e=>monthKeyOf(e.date) === selectedShelfMonth);
   const newestId = libraryCache.length ? libraryCache[libraryCache.length - 1].id : null;
-  shelf.querySelectorAll('.spine').forEach(n=>n.remove());
-  if(countBadge) countBadge.textContent = libraryCache.length ? `蔵書 ${libraryCache.length}冊` : '';
+  // ★2026-07-18追加：年月の見出し（.shelf-month-heading）も、再描画のたびに一旦取り除く。
+  shelf.querySelectorAll('.spine, .shelf-month-heading').forEach(n=>n.remove());
+  if(countBadge) countBadge.textContent = libraryCache.length ? t('shelfCountFormat').replace('{count}', libraryCache.length) : '';
   if(visible.length === 0){
     if(emptyMsg) emptyMsg.style.display = 'block';
     appendEmptySpine(shelf);
@@ -2539,7 +3208,19 @@ function renderShelf(markNewest){
     return;
   }
   if(emptyMsg) emptyMsg.style.display = 'none';
+  // ★2026-07-18追加：「あなたの本棚」を年月単位でグループ化し、「2026年7月の棚」のような
+  // 見出しを表示する。既存の並び順（libraryCacheのpush順＝時系列）は変更せず、月が変わる
+  // 直前にだけ見出しを1つ挿入する（本の並び替え・保存形式は無変更）。
+  let lastMonthKey = null;
   visible.forEach((entry, i)=>{
+    const mk = monthKeyOf(entry.date);
+    if(mk !== lastMonthKey){
+      const heading = document.createElement('p');
+      heading.className = 'shelf-month-heading';
+      heading.textContent = monthHeadingLabel(mk);
+      shelf.appendChild(heading);
+      lastMonthKey = mk;
+    }
     const cat = CATEGORIES.find(c=>c.id===entry.category);
     const spine = document.createElement('div');
     spine.className = 'spine';
@@ -2635,11 +3316,12 @@ function renderTrend(){
     bars.parentNode.insertBefore(tabs, bars);
   }
   tabs.innerHTML = '';
-  [['month','今月'],['year','今年'],['all','すべて']].forEach(([k,lbl])=>{
+  // ★2026-07-18変更：期間タブの文言をMESSAGESへ移し、英語モードでも追従させる。
+  [['month','trendPeriodMonth'],['year','trendPeriodYear'],['all','trendPeriodAll']].forEach(([k,msgKey])=>{
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'trend-period-btn' + (trendPeriod === k ? ' active' : '');
-    b.textContent = lbl;
+    b.textContent = t(msgKey);
     b.onclick = ()=>{ trendPeriod = k; renderTrend(); };
     tabs.appendChild(b);
   });
@@ -2658,18 +3340,23 @@ function renderTrend(){
     return;
   }
   const max = Math.max(...countedValues);
+  // ★2026-07-18変更：行ツールチップ・カテゴリ名・冊数表示をMESSAGES／categoryLabelFor()へ移す。
   bars.innerHTML = CATEGORIES.filter(c=>counts[c.id]).map(c=>{
     const n = counts[c.id];
     const w = Math.max(8, Math.round(n / max * 100));
     const dotColor = spineColorFor(c.id);
-    return `<div class="trend-row" data-cat="${c.id}" style="cursor:pointer" title="『${c.label}』の棚を見る"><span class="trend-label"><span class="trend-glyph" style="background:${dotColor}"></span>${c.label}</span><div class="trend-bar" style="width:${w}%;background:${spineColorFor(c.id)}"></div><span class="trend-count">${n}冊</span></div>`;
+    const label = categoryLabelFor(c);
+    const tooltip = t('trendRowTooltip').replace('{shelf}', label);
+    const countText = t('trendCountUnit').replace('{n}', n);
+    return `<div class="trend-row" data-cat="${c.id}" style="cursor:pointer" title="${tooltip}"><span class="trend-label"><span class="trend-glyph" style="background:${dotColor}"></span>${label}</span><div class="trend-bar" style="width:${w}%;background:${spineColorFor(c.id)}"></div><span class="trend-count">${countText}</span></div>`;
   }).join('');
   bars.querySelectorAll('.trend-row').forEach(row=>{
     row.onclick = ()=>goToShelf(row.dataset.cat);
   });
-  const periodLabel = trendPeriod === 'month' ? '今月' : (trendPeriod === 'year' ? '今年' : '');
+  // ★2026-07-18変更：要約文の期間表現・棚名をMESSAGES／categoryLabelFor()へ移す。
+  const periodKey = trendPeriod === 'month' ? 'trendSummaryPeriodMonth' : (trendPeriod === 'year' ? 'trendSummaryPeriodYear' : 'trendSummaryPeriodAll');
   const withCounts = CATEGORIES.filter(c=>counts[c.id]).sort((a,b)=>counts[b.id]-counts[a.id]);
-  if(withCounts.length) sum.textContent = `${periodLabel ? periodLabel + 'の' : 'いまの'}あなたの本棚は、「${withCounts[0].label}」の棚がいちばん厚いようです。`;
+  if(withCounts.length) sum.textContent = t('trendSummaryTemplate').replace('{period}', t(periodKey)).replace('{shelf}', categoryLabelFor(withCounts[0]));
 }
 
 function todayStr(){
@@ -2724,9 +3411,16 @@ if(btnShiori){
   };
 }
 
+// ★2026-07-18変更：appLangに対応させ、日本語は従来どおり「2026年7月18日 納品」、
+// 英語は「July 18, 2026 · Delivered」のように表示する。書式・区切り以外の挙動（例外時の
+// 空文字フォールバック）は変更していない。
 function formatDate(iso){
   try{
-    return new Date(iso).toLocaleDateString('ja-JP', {year:'numeric', month:'long', day:'numeric'}) + ' 納品';
+    const d = new Date(iso);
+    const locale = (appLang === 'en') ? 'en-US' : 'ja-JP';
+    const formatted = d.toLocaleDateString(locale, {year:'numeric', month:'long', day:'numeric'});
+    const sep = (appLang === 'en') ? ' · ' : ' ';
+    return formatted + sep + t('modalDeliveredSuffix');
   }catch(e){ return ''; }
 }
 
@@ -2741,7 +3435,8 @@ function openBook(entry){
   const mTitle = document.getElementById('modalTitle');
   if(mTitle) mTitle.textContent = entry.title;
   const mDate = document.getElementById('modalDate');
-  if(mDate) mDate.textContent = (entry.date ? formatDate(entry.date) : '') + (entry.sealed ? '｜以前を振り返って綴った一冊' : '');
+  // ★2026-07-18変更：「以前を振り返って綴った一冊」をMESSAGESへ移し、英語表示に対応させた。
+  if(mDate) mDate.textContent = (entry.date ? formatDate(entry.date) : '') + (entry.sealed ? t('modalSealedNote') : '');
 
   const photoBox = document.getElementById('modalPhoto');
   if(photoBox){
@@ -2810,6 +3505,83 @@ function openBook(entry){
     renderShelfTabs();
     if(bModal) bModal.classList.add('hidden');
   };
+
+  // ★2026-07-18追加：製本後の本の詳細画面から、タイトル・本文を書き直す（「名もなき本」も改題可）。
+  // 本文解析・新規保存は行わず、既存の同じentryのtitle/storyだけを更新して再保存する。
+  exitBookEditMode();
+  const mEdit = document.getElementById('modalEdit');
+  if(mEdit) mEdit.onclick = ()=>enterBookEditMode(entry);
+
+  const mEditSave = document.getElementById('modalEditSave');
+  if(mEditSave) mEditSave.onclick = async ()=>{
+    const titleInput = document.getElementById('modalEditTitleInput');
+    const storyInput = document.getElementById('modalEditStoryInput');
+    const editMsg = document.getElementById('modalEditMsg');
+    const story = storyInput ? storyInput.value.trim() : '';
+    if(!story){
+      if(editMsg){ editMsg.textContent = t('modalEditStoryEmpty'); editMsg.classList.remove('hidden'); }
+      return;
+    }
+    if(countChars(story) > STORY_LIMIT){
+      if(editMsg){ editMsg.textContent = t('storyLimitWarning').replace('{max}', STORY_LIMIT); editMsg.classList.remove('hidden'); }
+      return;
+    }
+    const newTitle = (titleInput ? titleInput.value.trim() : '') || t('manaReceiveBookFallback') || 'まだ、題名のない本';
+    entry.title = newTitle;
+    entry.story = story;
+    const savedOk = await saveJSON('emotion-bookstore-library', libraryCache);
+    if(!savedOk){
+      if(editMsg){ editMsg.textContent = t('manaReceiveSaveError'); editMsg.classList.remove('hidden'); }
+      return;
+    }
+    if(mTitle) mTitle.textContent = entry.title;
+    if(mStory) mStory.textContent = entry.story;
+    renderShelf();
+    renderShelfTabs();
+    exitBookEditMode();
+  };
+
+  const mEditCancel = document.getElementById('modalEditCancel');
+  if(mEditCancel) mEditCancel.onclick = ()=>exitBookEditMode();
+}
+
+// ★2026-07-18追加：本の詳細モーダルの編集モード切替。表示用要素は残したまま、
+// 入力用要素の表示/非表示だけを切り替える（openBook()の再呼び出しに依存しない）。
+function enterBookEditMode(entry){
+  const mTitle = document.getElementById('modalTitle');
+  const mStory = document.getElementById('modalStory');
+  const titleInput = document.getElementById('modalEditTitleInput');
+  const storyInput = document.getElementById('modalEditStoryInput');
+  const actions = document.getElementById('modalEditActions');
+  const normalActions = document.getElementById('modalActions');
+  const editMsg = document.getElementById('modalEditMsg');
+  if(!mTitle || !mStory || !titleInput || !storyInput || !actions) return;
+  titleInput.value = entry.title || '';
+  storyInput.value = entry.story || '';
+  mTitle.classList.add('hidden');
+  mStory.classList.add('hidden');
+  titleInput.classList.remove('hidden');
+  storyInput.classList.remove('hidden');
+  actions.classList.remove('hidden');
+  if(normalActions) normalActions.classList.add('hidden');
+  if(editMsg){ editMsg.textContent = ''; editMsg.classList.add('hidden'); }
+  titleInput.focus();
+}
+function exitBookEditMode(){
+  const mTitle = document.getElementById('modalTitle');
+  const mStory = document.getElementById('modalStory');
+  const titleInput = document.getElementById('modalEditTitleInput');
+  const storyInput = document.getElementById('modalEditStoryInput');
+  const actions = document.getElementById('modalEditActions');
+  const normalActions = document.getElementById('modalActions');
+  const editMsg = document.getElementById('modalEditMsg');
+  if(mTitle) mTitle.classList.remove('hidden');
+  if(mStory) mStory.classList.remove('hidden');
+  if(titleInput) titleInput.classList.add('hidden');
+  if(storyInput) storyInput.classList.add('hidden');
+  if(actions) actions.classList.add('hidden');
+  if(normalActions) normalActions.classList.remove('hidden');
+  if(editMsg){ editMsg.textContent = ''; editMsg.classList.add('hidden'); }
 }
 
 const btnModalClose = document.getElementById('modalClose');
@@ -2817,6 +3589,81 @@ if(btnModalClose) btnModalClose.onclick = ()=>{
   const m = document.getElementById('bookModal');
   if(m) m.classList.add('hidden');
 };
+
+/* ==========================================================================
+ * ★2026-07-19 feature/first-visit-experience：閲覧専用のサンプル本。
+ * ・固定データのみ（下のSAMPLE_BOOK_*）。localStorageへ保存しない・libraryCacheへ
+ *   追加しない・編集/削除/共有の対象にしない。実在利用者の文章は使わず、この書店の
+ *   ために作成した架空の短文（MESSAGES.sampleBookStory）を使用する。
+ * ・既存の本詳細画面（#bookModal）の意匠を再利用するが、openBook()は呼ばず、
+ *   操作ボタン群（modalActions）を隠して見本バッジを表示するだけの閲覧専用表示。
+ * ・閉じると表紙（現在の画面）へそのまま戻る。GA4の送信は行わない。
+ * ========================================================================== */
+const SAMPLE_BOOK_CATEGORY_ID = 'natsukashii'; // 既存の感情棚ID（data.jsは変更しない）
+const SAMPLE_BOOK_DATE = '2026-06-01T19:00:00+09:00'; // 見本の製本日（固定）
+
+function isSampleBookOpen(){
+  const m = document.getElementById('bookModal');
+  return !!(m && !m.classList.contains('hidden') && m.classList.contains('sample-book-mode'));
+}
+
+function openSampleBook(){
+  const m = document.getElementById('bookModal');
+  if(!m) return;
+  const cat = (typeof CATEGORIES !== 'undefined') ? CATEGORIES.find(c=>c.id === SAMPLE_BOOK_CATEGORY_ID) : null;
+  const mCat = document.getElementById('modalCat');
+  if(mCat) mCat.textContent = cat ? categoryLabelFor(cat) + t('definitionLabelSep') : '';
+  const mTitle = document.getElementById('modalTitle');
+  if(mTitle) mTitle.textContent = t('sampleBookTitle');
+  const mDate = document.getElementById('modalDate');
+  if(mDate) mDate.textContent = formatDate(SAMPLE_BOOK_DATE);
+  const photoBox = document.getElementById('modalPhoto');
+  if(photoBox) photoBox.classList.add('hidden');
+  const mStory = document.getElementById('modalStory');
+  if(mStory) mStory.textContent = t('sampleBookStory');
+  const noteSlip = document.getElementById('modalNote');
+  if(noteSlip){
+    const noteText = document.getElementById('modalNoteText');
+    if(noteText) noteText.textContent = t('sampleBookNote');
+    noteSlip.classList.remove('hidden');
+  }
+  const tweetBox = document.getElementById('modalTweet');
+  if(tweetBox){ tweetBox.classList.add('hidden'); tweetBox.innerHTML = ''; }
+  // 閲覧専用：編集・削除・共有・棚移動の操作群は表示しない
+  if(typeof exitBookEditMode === 'function') exitBookEditMode();
+  const actions = document.getElementById('modalActions');
+  if(actions) actions.classList.add('hidden');
+  const shareNote = document.querySelector('#bookModal .modal-share-note');
+  if(shareNote) shareNote.classList.add('hidden');
+  const badge = document.getElementById('sampleBookBadge');
+  if(badge){ badge.textContent = t('sampleBookBadge'); badge.classList.remove('hidden'); }
+  m.classList.add('sample-book-mode');
+  m.classList.remove('hidden');
+  const closeBtn = document.getElementById('modalClose');
+  if(closeBtn) closeBtn.onclick = closeSampleBook;
+}
+
+function closeSampleBook(){
+  const m = document.getElementById('bookModal');
+  if(m){ m.classList.add('hidden'); m.classList.remove('sample-book-mode'); }
+  // 通常の本詳細表示のために、隠した要素と閉じるボタンの挙動を必ず元へ戻す
+  const actions = document.getElementById('modalActions');
+  if(actions) actions.classList.remove('hidden');
+  const shareNote = document.querySelector('#bookModal .modal-share-note');
+  if(shareNote) shareNote.classList.remove('hidden');
+  const badge = document.getElementById('sampleBookBadge');
+  if(badge) badge.classList.add('hidden');
+  const closeBtn = document.getElementById('modalClose');
+  if(closeBtn) closeBtn.onclick = ()=>{
+    const mm = document.getElementById('bookModal');
+    if(mm) mm.classList.add('hidden');
+  };
+}
+
+// 言語切替時：サンプル本を開いたままなら、見本の本文・栞・バッジも現在の言語で再描画する。
+function refreshSampleBookIfOpen(){
+  if(isSampleBookOpen()) openSampleBook();
+}
 
 function runBinding(onDone){
   if(!prefs.motion){ onDone(); return; }
@@ -3310,7 +4157,8 @@ if(btnSubmit) {
         [
           { label:'『' + sLabel + '』の棚に納品', primary:true, onClick:()=>bind(suggested, cur.note) },
           { label:'『' + chosenLabel + '』のまま納品', onClick:()=>bind(chosenId, cur.note) },
-          { label:'やめておく', link:true, onClick:()=>{ btn.disabled = false; } }
+          // ★2026-07-18追加：製本前に原稿へ戻れるよう、単なる取消ではなく本文欄へフォーカスを戻す。
+          { label:t('curateBackToDraft'), link:true, onClick:()=>{ btn.disabled = false; if(ta) ta.focus(); } }
         ]
       );
       return;
@@ -3429,6 +4277,72 @@ function shelfLabelOf(id){
   const cat = CATEGORIES.find(c=>c.id===id);
   if(!cat) return '';
   return categoryLabelFor(cat);
+}
+
+// ★2026-07-18追加：旧チャット（自由入力・CHAT_TREE経由の会話）に代わる、編纂机の
+// 「言葉にするための助け舟」。本文解析・外部AI送信は一切行わず、選んだ棚（感情）id ごとの
+// 固定の問いを2つだけ提示する（data.jsは変更しない。CATEGORIESのidだけを参照する）。
+const WRITING_PROMPTS = {
+  moyamoya:    { ja:['何が、いちばんもやもやしていますか。', 'そのもやは、いつ頃から胸にありますか。'],
+                 en:['What feels the murkiest right now?', 'How long has this haze been sitting with you?'] },
+  kodoku:      { ja:['ひとりだと感じたのは、どんな瞬間でしたか。', '本当は、誰にそばにいてほしかったですか。'],
+                 en:['What moment made you feel most alone?', 'Who did you wish had been there with you?'] },
+  gakkari:     { ja:['何を、どれくらい期待していましたか。', '叶わなかったとわかったのは、いつでしたか。'],
+                 en:['What were you hoping for, and how much?', 'When did you realize it wasn’t going to happen?'] },
+  hazukashii:  { ja:['消えてしまいたくなったのは、どんな場面でしたか。', '誰の前で、そう感じましたか。'],
+                 en:['What scene made you want to disappear?', 'Who were you in front of when you felt it?'] },
+  ushirometai: { ja:['誰に対して、うしろめたさを感じていますか。', '本当は、どうしたかったですか。'],
+                 en:['Who is this guilty feeling about?', 'What did you really wish you’d done instead?'] },
+  aseri:       { ja:['何に、追い立てられている気がしますか。', '誰と比べて、焦りを感じますか。'],
+                 en:['What feels like it’s rushing you?', 'Who are you comparing yourself to?'] },
+  kuyashii:    { ja:['何が、あと一歩で届きませんでしたか。', 'その悔しさは、誰に見せたいですか。'],
+                 en:['What fell just short of reach?', 'Who do you wish could see how hard you tried?'] },
+  shitto:      { ja:['誰の、何を羨んでいますか。', 'その人と自分の、何がいちばん違いますか。'],
+                 en:['Who do you envy, and for what?', 'What feels most different between you and them?'] },
+  akogare:     { ja:['何に、まっすぐ憧れていますか。', 'その憧れは、いつから胸にありますか。'],
+                 en:['What are you drawn to, without reservation?', 'Since when has this admiration lived in you?'] },
+  wakuwaku:    { ja:['何を思うと、胸が高鳴りますか。', 'その先に、何が待っていそうですか。'],
+                 en:['What makes your heart race just thinking about it?', 'What do you imagine waiting on the other side?'] },
+  ando:        { ja:['何が、肩の力を抜かせてくれましたか。', 'その前は、何にずっと緊張していましたか。'],
+                 en:['What let your shoulders finally drop?', 'What had you been bracing for, before that?'] },
+  kansha:      { ja:['誰の、どんな優しさに気づきましたか。', 'それを、どう伝えたいですか。'],
+                 en:['Whose kindness did you notice?', 'How would you like to let them know?'] },
+  itooshii:    { ja:['何を、かけがえないと感じていますか。', 'その愛おしさは、どんな瞬間に強くなりますか。'],
+                 en:['What feels irreplaceable to you?', 'When does that tenderness feel strongest?'] },
+  hokorashii:  { ja:['何を、自分でよくやったと思いますか。', 'その頑張りを、誰に知ってほしいですか。'],
+                 en:['What did you do that you’re proud of?', 'Who do you wish knew how hard you worked?'] },
+  natsukashii: { ja:['ふっと蘇ったのは、いつの記憶ですか。', 'その頃の自分に、何を伝えたいですか。'],
+                 en:['What memory suddenly came back to you?', 'What would you tell yourself from back then?'] },
+  ureshii:     { ja:['何があって、心が弾みましたか。', 'その喜びを、誰かと分かち合いたいですか。'],
+                 en:['What happened that made your heart lift?', 'Is there someone you’d like to share this joy with?'] },
+  ikari:       { ja:['何が、いちばん許せませんでしたか。', 'その怒りの下に、どんな気持ちがありますか。'],
+                 en:['What felt most unforgivable?', 'What feeling might be sitting underneath that anger?'] },
+  kanashii:    { ja:['何を、失ったと感じていますか。', '涙がこぼれそうになるのは、どんなときですか。'],
+                 en:['What do you feel you’ve lost?', 'When do the tears feel closest to the surface?'] },
+  fuan:        { ja:['この先の、何がいちばん気がかりですか。', 'その不安は、何が起きたら少し軽くなりますか。'],
+                 en:['What about what’s ahead worries you most?', 'What would need to happen for that worry to ease, even a little?'] },
+  keno:        { ja:['何に対して、「無理」だと感じましたか。', 'その感覚は、体のどこに残っていますか。'],
+                 en:['What made you feel you just couldn’t stand it?', 'Where in your body does that feeling still linger?'] },
+  odoroki:     { ja:['何が、いちばん思いがけませんでしたか。', 'その驚きのあと、最初に浮かんだ気持ちは何でしたか。'],
+                 en:['What caught you most off guard?', 'What was the first feeling that surfaced right after?'] }
+};
+const WRITING_PROMPTS_DEFAULT = {
+  ja:['いつ、どこで、何がありましたか。', 'そのとき、胸の中では何が起きていましたか。'],
+  en:['When and where did this happen?', 'What was happening inside you, in that moment?']
+};
+// ★2026-07-18追加：番台／感情の棚での選択を経て編纂机に来た場合（deskFlowFlag）だけ、
+// 選んだ棚（categorySelect.value）に応じた問いを表示する。直接編纂机へ来た場合は既定の問い。
+function renderWritingBoat(){
+  const box = document.getElementById('writingBoatList');
+  if(!box) return;
+  let picked = null;
+  if(typeof deskFlowFlag !== 'undefined' && deskFlowFlag){
+    const sel = document.getElementById('categorySelect');
+    if(sel && sel.value) picked = WRITING_PROMPTS[sel.value] || null;
+  }
+  const set = picked || WRITING_PROMPTS_DEFAULT;
+  const lines = (appLang === 'en') ? set.en : set.ja;
+  box.innerHTML = lines.map(line=>`<li>${escapeHtml(line)}</li>`).join('');
 }
 
 function goToShelf(shelfId){
@@ -4293,7 +5207,8 @@ function appendEmptySpine(shelf){
   const ghost = document.createElement('div');
   ghost.className = 'spine empty-spine';
   ghost.textContent = t('ghostNextBook');
-  ghost.title = 'まだ中身が書かれていない、空の背表紙。タップすると編纂机へ。';
+  // ★2026-07-18変更：空の背表紙のツールチップをMESSAGESへ移し、英語対応させた。
+  ghost.title = t('emptySpineTooltip');
   ghost.onclick = ()=>{ buzz(6); goToPage('desk'); };
   shelf.appendChild(ghost);
 }
@@ -5092,14 +6007,45 @@ function warnInAppBrowserIfNeeded(){
   // （5択＋それ以外）に一本化されているため、この呼び出しは行わない。
   renderTitleSuggest();
 
-  const backupBtn = document.getElementById('backupBtn');
-  if(backupBtn) backupBtn.innerHTML = t('backupDefaultBtn');
-  const exportBtn = document.getElementById('exportDiary');
-  if(exportBtn) exportBtn.innerHTML = t('exportDefaultBtn');
-  const exportCsvBtn = document.getElementById('exportDiaryCsv');
-  if(exportCsvBtn) exportCsvBtn.innerHTML = t('csvExportDefaultBtn');
-  const restoreBtnInit = document.getElementById('restoreBtn');
-  if(restoreBtnInit) restoreBtnInit.innerHTML = t('restoreDefaultBtn');
+  // ★2026-07-18変更：backupBtn／exportDiary／exportDiaryCsv／restoreBtnの初期文言設定を
+  // refreshUtilityButtonLabels()（言語切替時にも呼ばれる共通関数）へ統一した。
+  if(typeof refreshUtilityButtonLabels === 'function') refreshUtilityButtonLabels();
+
+  // ★2026-07-19追加：任意設定の天気連動機能。ボタン・プルダウンの配線と表示更新のみここで行い、
+  // navigator.geolocationの呼び出しはuseCurrentLocationForWeather()（クリック時のみ）に限定する。
+  // weatherSettingsは本棚・prefsとは別の専用キーから読み込む。
+  // ★2026-07-19 公開用リリースフラグ：WEATHER_FEATURE_ENABLEDがfalseの間は、天気機能の
+  // 入口（設定UI・バッジ・設定読み込み・起動時取得）を一切開かない。内部ロジックは無変更。
+  if(WEATHER_FEATURE_ENABLED){
+    await loadWeatherSettings();
+    const weatherToggleBtn = document.getElementById('weatherToggle');
+    if(weatherToggleBtn) weatherToggleBtn.onclick = toggleWeatherEnabled;
+    const weatherRegionSelect = document.getElementById('weatherRegionSelect');
+    if(weatherRegionSelect) weatherRegionSelect.onchange = (ev)=>onWeatherRegionSelectChange(ev.target.value);
+    const weatherUseLocationBtn = document.getElementById('weatherUseLocationBtn');
+    if(weatherUseLocationBtn) weatherUseLocationBtn.onclick = useCurrentLocationForWeather;
+    const weatherBadgeBtn = document.getElementById('weatherBadge');
+    if(weatherBadgeBtn) weatherBadgeBtn.onclick = toggleWeatherDetail;
+    // ★2026-07-19 hotfix：Escapeキー・外側クリックでポップオーバーを閉じるリスナーを1回だけ登録する。
+    if(typeof setupWeatherDetailDismissHandlers === 'function') setupWeatherDetailDismissHandlers();
+    updateWeatherUI();
+    // 既にONかつ地域設定済みの場合だけ、保存済みの座標で取得を試みる（位置情報の許可は要求しない）。
+    if(weatherSettings.enabled) refreshWeatherIfNeeded(false);
+  }else{
+    // 保存済みの天気設定がONでも読み込まず（weatherSettingsは既定のOFFのまま）、
+    // 設定UI・バッジを非表示にして通常表示を維持する。通信・位置情報要求は発生しない。
+    const weatherSettingsBox = document.getElementById('weatherSettings');
+    if(weatherSettingsBox){ weatherSettingsBox.classList.add('hidden'); weatherSettingsBox.hidden = true; }
+    const weatherBadgeBtn = document.getElementById('weatherBadge');
+    if(weatherBadgeBtn){ weatherBadgeBtn.classList.add('hidden'); weatherBadgeBtn.hidden = true; }
+    const weatherPop = document.getElementById('weatherDetailPopover');
+    if(weatherPop){ weatherPop.classList.add('hidden'); weatherPop.hidden = true; }
+  }
+
+  // ★2026-07-19 feature/first-visit-experience：表紙の「この書店の一冊を、のぞいてみる」ボタン。
+  // 閲覧専用のサンプル本を開くだけで、保存・GA4送信・画面遷移は行わない。
+  const samplePeekBtn = document.getElementById('samplePeekBtn');
+  if(samplePeekBtn) samplePeekBtn.onclick = openSampleBook;
 
   // ★GA4整合：view_landing — DOM初期化後、トップページが表示可能になった時点で
   // フルページロードごとに1回だけ送信。二重初期化でも重複しないメモリ上のガード付き。
