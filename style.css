@@ -308,26 +308,11 @@ body.no-motion #moodLayer{display:none;}
   .intro-steps{ grid-template-columns:repeat(2, 1fr); }
 }
 
-/* ---- page-turn transition ---- */
-.page-turn-overlay{
-  position:fixed;
-  inset:0;
-  z-index:70;
-  pointer-events:none;
-  background:linear-gradient(100deg, rgba(234,217,184,0) 0%, rgba(253,246,230,0.97) 45%, rgba(234,217,184,0) 92%);
-  transform:translateX(-120%);
-  opacity:0;
-}
-.page-turn-overlay.active{
-  animation:pageTurnSwipe 620ms cubic-bezier(.4,0,.2,1);
-}
-@keyframes pageTurnSwipe{
-  0%{ transform:translateX(-120%) rotateY(0deg) skewX(0deg); opacity:0; }
-  12%{ opacity:1; }
-  50%{ transform:translateX(0%) rotateY(6deg) skewX(-4deg); opacity:1; }
-  88%{ opacity:1; }
-  100%{ transform:translateX(120%) rotateY(0deg) skewX(0deg); opacity:0; }
-}
+/* ---- page-turn transition ----
+   ★Daypart1_RC2：画面切替のたびに白い光の帯が画面全体を横切る演出（利用時に鬱陶しいとの
+   ご指摘）を完全に廃止した。.page-turn-overlay／.page-turn-overlay.active／
+   @keyframes pageTurnSwipe は削除済み。対応するDOM（#pageTurnOverlay）もindex.htmlから
+   削除済み。画面切替はmain.jsのgoToPage()による即時切替のみとなる。 */
 
 section{
   max-width:920px;
@@ -3027,6 +3012,66 @@ body.night .episodes-toggle{ color:#BFB194; }
   background:linear-gradient(180deg, var(--street-blue-1) 0%, var(--street-blue-2) 68%, var(--wood) 100%);
   border-bottom-color:rgba(232,165,92,0.25);
 }
+
+/* ============================================================
+   ★WeatherPrototype1：時間帯による「店外の空」の色
+   ------------------------------------------------------------
+   端末の時計だけで決まる data-daypart（main.js の applyDaypartSky）に応じて、
+   表紙の空の色（--street-blue-1 / --street-blue-2）だけを差し替える。
+   ・位置情報・天気API・外部通信・保存は一切なし
+   ・新しいDOM要素・画像・アニメーションを追加しない（背景色の階調のみ）
+   ・グラデーションの3段目（--wood＝店内へ続く木の色）は全時間帯で共通に保ち、
+     「外が青く、内が暖かい」という対比を崩さない
+   ・昼でも一般的な天気アプリのような明るい空にはせず、
+     「静かな書店へ続く外気」として彩度・明度を抑える
+   ・.entrance.hero の中だけで閉じるため、店内（編纂机・棚・本棚・モーダル）へは波及しない
+
+   差し替える変数は次の2系統：
+   ・--street-blue-* … Hero写真が読み込めなかった場合に見える背景グラデーション
+   ・--sky-veil-*    … Hero写真の上に敷くベールの色相（通常はこちらが見えている）
+     ベールのalpha（濃度）は時間帯によらず固定のため、文字の可読性は従来と同一。
+   ============================================================ */
+
+/* 朝：淡い青灰色。夜が明けきらない、少しだけ白んだ外気 */
+.entrance.hero[data-daypart="morning"]{
+  --street-blue-1:#3B4A5C;
+  --street-blue-2:#465768;
+  --sky-veil-top:96,116,138;
+  --sky-veil-mid:88,106,126;
+  --sky-veil-bottom:68,84,100;
+}
+/* 昼：落ち着いた青。明るくはするが、白く飛ばさない */
+.entrance.hero[data-daypart="day"]{
+  --street-blue-1:#3F5872;
+  --street-blue-2:#4A657F;
+  --sky-veil-top:104,134,166;
+  --sky-veil-mid:94,122,152;
+  --sky-veil-bottom:70,94,120;
+}
+/* 夕方：青紫へ。わずかに暖色を含ませ、店の灯りへ繋ぐ */
+.entrance.hero[data-daypart="evening"]{
+  --street-blue-1:#3A3050;
+  --street-blue-2:#4A3A4E;
+  --sky-veil-top:74,62,104;
+  --sky-veil-mid:88,66,92;
+  --sky-veil-bottom:76,54,64;
+}
+/* 夜：深い青（ブランドの中心。既定値と同一＝従来の見た目を維持） */
+.entrance.hero[data-daypart="night"]{
+  --street-blue-1:#0B121C;
+  --street-blue-2:#101824;
+  --sky-veil-top:11,18,28;
+  --sky-veil-mid:11,18,28;
+  --sky-veil-bottom:16,24,36;
+}
+/* 深夜：より暗い紺。いちばん静かな時間 */
+.entrance.hero[data-daypart="midnight"]{
+  --street-blue-1:#070E18;
+  --street-blue-2:#0A121C;
+  --sky-veil-top:7,14,24;
+  --sky-veil-mid:7,14,24;
+  --sky-veil-bottom:10,18,28;
+}
 .entrance.hero::before{
   background:repeating-linear-gradient(90deg, var(--lamp-glow) 0 22px, transparent 22px 30px);
   opacity:.35;
@@ -4009,7 +4054,12 @@ body.night .experience-bar .menu-btn{
   /* ★v1.3公開前最終修正：暗すぎる／黒い矩形化の指摘を受け、overlayの濃度を大幅に下げる。
      主コピー・CTAの可読性は下の.trust-badge等の背景で個別に確保しているため、
      ここは店舗の扉・窓・灯りが見える程度の薄い濃度に留める（仕様書8章）。 */
-  background:linear-gradient(180deg, rgba(11,18,28,0.22) 0%, rgba(11,18,28,0.32) 55%, rgba(16,24,36,0.48) 100%);
+  /* ★WeatherPrototype1：濃度（alpha）は従来のまま固定し、色相だけを時間帯で差し替える。
+     alphaを変えないため、主コピー・CTAの可読性は従来と完全に同一に保たれる。 */
+  background:linear-gradient(180deg,
+    rgba(var(--sky-veil-top, 11,18,28), 0.22) 0%,
+    rgba(var(--sky-veil-mid, 11,18,28), 0.32) 55%,
+    rgba(var(--sky-veil-bottom, 16,24,36), 0.48) 100%);
   opacity:1;
   z-index:0;
 }
