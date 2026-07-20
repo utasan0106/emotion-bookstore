@@ -308,26 +308,11 @@ body.no-motion #moodLayer{display:none;}
   .intro-steps{ grid-template-columns:repeat(2, 1fr); }
 }
 
-/* ---- page-turn transition ---- */
-.page-turn-overlay{
-  position:fixed;
-  inset:0;
-  z-index:70;
-  pointer-events:none;
-  background:linear-gradient(100deg, rgba(234,217,184,0) 0%, rgba(253,246,230,0.97) 45%, rgba(234,217,184,0) 92%);
-  transform:translateX(-120%);
-  opacity:0;
-}
-.page-turn-overlay.active{
-  animation:pageTurnSwipe 620ms cubic-bezier(.4,0,.2,1);
-}
-@keyframes pageTurnSwipe{
-  0%{ transform:translateX(-120%) rotateY(0deg) skewX(0deg); opacity:0; }
-  12%{ opacity:1; }
-  50%{ transform:translateX(0%) rotateY(6deg) skewX(-4deg); opacity:1; }
-  88%{ opacity:1; }
-  100%{ transform:translateX(120%) rotateY(0deg) skewX(0deg); opacity:0; }
-}
+/* ---- page-turn transition ----
+   ★Daypart1_RC2：画面切替のたびに白い光の帯が画面全体を横切る演出（利用時に鬱陶しいとの
+   ご指摘）を完全に廃止した。.page-turn-overlay／.page-turn-overlay.active／
+   @keyframes pageTurnSwipe は削除済み。対応するDOM（#pageTurnOverlay）もindex.htmlから
+   削除済み。画面切替はmain.jsのgoToPage()による即時切替のみとなる。 */
 
 section{
   max-width:920px;

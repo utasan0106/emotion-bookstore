@@ -2924,26 +2924,13 @@ function goToPage(id){
   enterBookExperience();
   closeExperienceMenu();
 
-  if(!prefs.motion){
-    activateExperiencePage(id);
-    requestAnimationFrame(()=>requestAnimationFrame(()=>scrollToId(id)));
-    return;
-  }
-  const overlay = document.getElementById('pageTurnOverlay');
-  if(!overlay){
-    activateExperiencePage(id);
-    requestAnimationFrame(()=>requestAnimationFrame(()=>scrollToId(id)));
-    return;
-  }
-  overlay.classList.remove('active');
-  void overlay.offsetWidth;
-  overlay.classList.add('active');
-  buzz(10);
-  setTimeout(()=>{
-    activateExperiencePage(id);
-    scrollToId(id);
-  }, 260);
-  setTimeout(()=>overlay.classList.remove('active'), 650);
+  // ★Daypart1_RC2：光のページめくり演出（pageTurnOverlay／pageTurnSwipeキーフレーム／
+  // 260msの表示待ち／buzz(10)）を完全に廃止。prefs.motionの値（ON/OFF）に関わらず、
+  // 画面切替は常にこの即時切替のみとする（光・フラッシュ・白い帯・フェードは一切挟まない）。
+  activateExperiencePage(id);
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>scrollToId(id));
+  });
 }
 
 (function(){
