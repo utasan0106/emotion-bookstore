@@ -6179,6 +6179,24 @@ function applyNightModeIfNeeded(){
   }
 }
 
+// ★WeatherPrototype1（時間帯のみ版）：端末の時計だけを見て、表紙（.entrance.hero）の
+// 「店外の空の色」を静かに変える。位置情報・天気API・外部通信・保存は一切行わない。
+// 判定結果は表紙のdata-daypart属性としてのみ出力し、色の実体はstyle.css側が持つ。
+// 店内（編纂机・棚・本棚・モーダル等）には一切影響しない。
+function currentDaypart(hour){
+  const h = (typeof hour === 'number') ? hour : new Date().getHours();
+  if(h >= 5  && h < 9)  return 'morning';  // 朝：淡い青灰色
+  if(h >= 9  && h < 16) return 'day';      // 昼：落ち着いた青（明るくしすぎない）
+  if(h >= 16 && h < 19) return 'evening';  // 夕方：青紫＋わずかな暖色
+  if(h >= 19 && h < 23) return 'night';    // 夜：深い青（ブランドの中心）
+  return 'midnight';                        // 深夜：より暗い紺
+}
+function applyDaypartSky(){
+  const hero = document.querySelector('.entrance.hero');
+  if(!hero) return;
+  hero.setAttribute('data-daypart', currentDaypart());
+}
+
 // ★追加：右下の「↑」ボタンと衝突しないよう左下に配置する、書く導線のフローティングアクションボタン（FAB）。
 // 押すと編纂机（③ 編纂机）まで自動でスクロールし、入力欄にフォーカスする。
 function ensureWriteFab(){
@@ -6468,6 +6486,8 @@ function warnInAppBrowserIfNeeded(){
   if(typeof renderCurrentShopDate === 'function') renderCurrentShopDate();
   applySeasonalAccent();
   applyNightModeIfNeeded();
+  // ★WeatherPrototype1：端末時刻のみで表紙の空の色を決める（外部通信・位置情報なし）
+  applyDaypartSky();
   warnInAppBrowserIfNeeded();
   restoreDraftIfAny();
   ensureBackToTopButton();
