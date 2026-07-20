@@ -398,11 +398,10 @@ section:last-of-type{border-bottom:none;}
   margin:8px auto 0;
   line-height:1.8;
 }
-.keeper .head, .keeper .book{
-  transition:transform .9s ease;
-}
-.keeper.listening .book{transform:translateY(14px) rotate(-5deg);}
-.keeper.listening .head{transform:translateY(-3px);}
+/* ★RC3 CounterAtmosphere：人物ピクトグラム（.keeper .head/.book）とその「頷き」演出
+   （.keeper.listening）を廃止した。新しい静物（.counter-desk-still／.counter-lamp-still／
+   .counter-ledger-still）にはこの演出を一切引き継がない。#keeperFigureへのJS参照
+   （main.js）はnullセーフなif(kf){...}のままのため、要素が存在しなくても安全。 */
 
 .chat-window{
   max-height:360px;
@@ -4506,11 +4505,28 @@ body.night .counter-shelf-group-heading{ color:var(--gold); }
 }
 
 /* ---- 3. 番台：棚の案内（統一挨拶文・確認メモ） ---- */
+/* ★RC3 CounterAtmosphere：会話アプリの吹き出しに見せず、「番台に置かれた店主のメモ」に
+   見せる。左端の細い琥珀色（--lamp-glow）の罫線＋小さな見出しラベルのみで区切り、
+   角丸・影・背景色はほぼ付けない（カードが浮いて見えないようにするため）。 */
+.counter-note{
+  margin:0 0 18px;
+  padding:2px 0 2px 16px;
+  border-left:2px solid var(--lamp-glow);
+}
+.counter-note-label{
+  display:block;
+  font-family:var(--font-display);
+  font-size:10.5px;
+  letter-spacing:.25em;
+  color:var(--lamp-glow);
+  margin:0 0 6px;
+}
 .counter-greeting{
+  font-family:var(--font-display);
   font-size:15px;
   line-height:1.85;
   color:var(--ink);
-  margin:0 0 18px;
+  margin:0;
 }
 /* ★微調整：既に棚を選んだ利用者が番台へ戻った時だけ表示する、小さな補足文 */
 .counter-shelf-return-note{

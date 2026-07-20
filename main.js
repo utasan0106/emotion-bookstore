@@ -72,6 +72,9 @@ const MESSAGES = {
     preBandaiPromptDesc: "店主と、しまう棚を相談する",
     // ★v1.3公開前最終修正：番台を「棚の案内」として整理（仕様書3章）。初回・再訪とも同じ文。
     counterGreetingUnified: "こんばんは。まだ名前のつかない気持ちも、そのままで大丈夫です。今は、どんな手触りですか。",
+    // ★RC3 CounterAtmosphere：店主の挨拶文（counterGreetingUnified）の直上に添える小さな見出し。
+    // 挨拶文そのもの・ID・i18n属性は変更せず、新規の兄弟要素としてのみ追加する。
+    counterNoteLabel: "店主のことば",
     counterGroupSink: "重く沈む",
     counterGroupWave: "波立つ",
     counterGroupLight: "光が灯る",
@@ -413,6 +416,7 @@ const MESSAGES = {
     preBandaiPromptHeading: "For When the Words Won\u2019t Come Yet",
     preBandaiPromptDesc: "Talk with the shopkeeper about which shelf to use.",
     counterGreetingUnified: "Good evening. Feelings that don\u2019t have a name yet are fine just as they are. What does it feel like right now?",
+    counterNoteLabel: "A Note from the Shopkeeper",
     counterGroupSink: "Heavy and Sinking",
     counterGroupWave: "Rippling",
     counterGroupLight: "A Light Comes On",

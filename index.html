@@ -327,21 +327,52 @@ body.night .about-data-content{
     <p class="section-sub" data-i18n="sectionSub1">気持ちに近い棚を、一緒に探します。</p>
     <p class="field-hint" style="margin:-4px 0 10px;" data-i18n="keeperNotAiHint" hidden>※AIチャットボットではなく、あらかじめ用意した言葉を返す簡単な仕組みです。会話はモデルに送信されません。</p>
     <div class="counter-wrap">
+      <!-- ★RC3 CounterAtmosphere：店主を人物ピクトグラム（丸い頭・四角い本・台形の胴体）で
+           表す旧デザインを廃止。人物の顔・頭・身体は一切描かず、番台の上の静物（木の番台・
+           小さな卓上ランプ・開かれた帳面・栞）だけで「店主がそこにいる気配」を表現する。
+           #keeperFigureというIDは新しいラッパーへ引き継がない（main.js側の参照は
+           if(kf){...}のnullセーフな形のまま維持されるため、旧「頷き」演出
+           （.keeper.listening .book/.head のtransform）は新しい静物には一切適用されない）。 -->
       <div class="keeper-vignette" aria-hidden="true">
-        <svg viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="70" cy="26" rx="22" ry="13" fill="var(--gold-soft)" opacity="0.45"/>
-          <circle cx="70" cy="24" r="7" fill="var(--gold)"/>
-          <line x1="70" y1="31" x2="70" y2="86" stroke="var(--wood)" stroke-width="3"/>
-          <g class="keeper" id="keeperFigure">
-            <path d="M198,88 C200,56 212,44 222,42 C232,44 244,56 246,88 Z" fill="var(--ink)"/>
-            <circle class="head" cx="222" cy="30" r="12" fill="var(--ink)"/>
-            <g class="book">
-              <rect x="204" y="46" width="36" height="22" rx="2" fill="#fdf6e6" stroke="var(--paper-shadow)"/>
-              <line x1="222" y1="46" x2="222" y2="68" stroke="var(--paper-shadow)"/>
-            </g>
+        <svg viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <defs>
+            <radialGradient id="counterGlow" cx="50%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="var(--lamp-glow)" stop-opacity="0.32"/>
+              <stop offset="100%" stop-color="var(--lamp-glow)" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- 灯りのにじみ（静止のみ。明滅・脈動は追加しない） -->
+          <ellipse cx="175" cy="60" rx="95" ry="34" fill="url(#counterGlow)"/>
+
+          <!-- 木の番台：太い一本線ではなく、天板の厚みとわずかな奥行きを持たせる -->
+          <g class="counter-desk-still">
+            <path d="M8,84 L312,80 L312,90 L8,94 Z" fill="var(--wood-2)"/>
+            <path d="M8,94 L312,90 L312,102 L8,106 Z" fill="var(--wood)"/>
+            <path d="M20,88 L300,84.5" stroke="var(--wood-2)" stroke-width="1" opacity="0.5" fill="none"/>
+            <path d="M20,97 L300,93.5" stroke="var(--paper-shadow)" stroke-width="1" opacity="0.3" fill="none"/>
           </g>
-          <rect x="10" y="88" width="300" height="10" fill="var(--wood-2)" rx="2"/>
-          <rect x="10" y="96" width="300" height="6" fill="var(--wood)" rx="2"/>
+
+          <!-- 小さな卓上ランプ：真鍮の支柱と小さな傘。画鋲・信号・きのこに見える丸だけの形は廃止 -->
+          <g class="counter-lamp-still">
+            <ellipse cx="120" cy="88" rx="9" ry="2.6" fill="var(--wood)" opacity="0.5"/>
+            <rect x="118.5" y="40" width="3" height="46" rx="1.5" fill="var(--gold)" opacity="0.85"/>
+            <path d="M110,26 L130,26 L137,40 L103,40 Z" fill="var(--wood)" opacity="0.9"/>
+            <path d="M103,40 L137,40" stroke="var(--gold)" stroke-width="1" opacity="0.55"/>
+            <circle cx="120" cy="24" r="2" fill="var(--lamp-glow)"/>
+            <circle cx="120" cy="52" r="2" fill="var(--lamp-glow)" opacity="0.9"/>
+          </g>
+
+          <!-- 開かれた帳面：人物の代わりとなる主役。真上からの完全なアイコンにはしない -->
+          <g class="counter-ledger-still">
+            <path d="M156,82 L200,78 L200,54 L160,58 Z" fill="#FBF2DC"/>
+            <path d="M200,78 L246,82 L242,58 L200,54 Z" fill="#F5E8C9"/>
+            <path d="M200,54 L200,78" stroke="#C9AF80" stroke-width="1"/>
+            <path d="M168,64 L192,61.6" stroke="#7A6A50" stroke-width="0.8" opacity="0.45"/>
+            <path d="M168,69 L192,66.6" stroke="#7A6A50" stroke-width="0.8" opacity="0.45"/>
+            <path d="M168,74 L188,71.8" stroke="#7A6A50" stroke-width="0.8" opacity="0.35"/>
+            <!-- 栞 -->
+            <path d="M214,56 L220,56 L220,88 L217,84 L214,88 Z" fill="var(--wine)" opacity="0.85"/>
+          </g>
         </svg>
       </div>
       <details class="keeper-bio">
@@ -353,7 +384,14 @@ body.night .about-data-content{
            公開画面では自由入力をなくし、初回・再訪とも同じ店主の言葉＋4択＋それ以外で
            棚へ案内する。既存のチャットUI（#chatWindow以下）はDOM・関数とも削除せず、
            hiddenで公開画面から外す（互換性維持・保存/転記処理は無傷）。 -->
-      <p class="counter-greeting" id="counterGreeting" data-i18n="counterGreetingUnified">こんばんは。まだ名前のつかない気持ちも、そのままで大丈夫です。今は、どんな手触りですか。</p>
+      <!-- ★RC3 CounterAtmosphere：店主の挨拶（#counterGreeting）を、会話アプリの吹き出しでは
+           なく「番台に置かれた店主のメモ」として見せる。ID・data-i18n属性・文章そのものは
+           変更していない（新しい兄弟要素counter-note-labelを追加し、外側をcounter-noteで
+           包んだだけ）。 -->
+      <div class="counter-note">
+        <p class="counter-note-label" data-i18n="counterNoteLabel">店主のことば</p>
+        <p class="counter-greeting" id="counterGreeting" data-i18n="counterGreetingUnified">こんばんは。まだ名前のつかない気持ちも、そのままで大丈夫です。今は、どんな手触りですか。</p>
+      </div>
       <p class="counter-shelf-return-note hidden" id="counterReturnNote" data-i18n="counterReturnNote"></p>
       <div class="counter-shelf-groups" id="counterShelfGroups"></div>
       <button type="button" class="chart-btn ghost counter-write-btn" id="counterWriteWithoutChoosing" data-i18n="counterWriteWithoutChoosing">まだ決めずに書く</button>
