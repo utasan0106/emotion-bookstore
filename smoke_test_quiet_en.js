@@ -55,7 +55,8 @@ async function main(){
     // 開くと詳細説明とサンプル本が現れる
     document.getElementById('aboutAccordionBtn').dispatchEvent(new window.Event('click',{bubbles:true}));
     ok('(A) opening the accordion reveals the detailed explanation', document.getElementById('aboutAccordionContent').classList.contains('open'));
-    ok('(A) the sample book still opens from inside the accordion', (window.openSampleBook(), !document.getElementById('bookModal').classList.contains('hidden')));
+    // ★Hotfix4更新：見本はモーダルではなく#sampleBookInline（インライン要素）に表示される。
+    ok('(A) the sample book still opens from inside the accordion', (window.openSampleBook(), !document.getElementById('sampleBookInline').classList.contains('hidden')));
   }
 
   // ===== 店内メニュー（B・C） =====
@@ -163,14 +164,20 @@ async function main(){
     await new Promise(r=>setTimeout(r,50));
     const titleOf = ()=> (document.querySelector('#shelfPickRecommend .shelf-pick-book .shelf-pick-title')||{}).textContent || '';
     const songOf = ()=> (document.querySelector('#shelfPickRecommend .shelf-pick-music .shelf-pick-title')||{}).textContent || '';
+    // ★Hotfix4-6更新：表示文字列は英語モードで英訳表記に変わる（本来の狙い）ため、
+    // 「同じ候補が選ばれ続けているか」の判定は表示文字列ではなく、Amazon/Spotifyリンクの
+    // href（常に元の日本語のtitle/by・title/artistから生成され、言語に関係なく変わらない）で行う。
+    const bookIdOf = ()=>{ const a=document.querySelector('#shelfPickRecommend .shelf-pick-book .shelf-pick-link'); return a ? a.getAttribute('href') : ''; };
+    const songIdOf = ()=>{ const a=document.querySelector('#shelfPickRecommend .shelf-pick-music .shelf-pick-link'); return a ? a.getAttribute('href') : ''; };
     const t1 = titleOf(), s1 = songOf();
+    const bookId1 = bookIdOf(), songId1 = songIdOf();
     ok('(G) a book and a song are picked (1 + 1 max)', document.querySelectorAll('#shelfPickRecommend .shelf-pick-book').length <= 1 && document.querySelectorAll('#shelfPickRecommend .shelf-pick-music').length <= 1);
     window.renderShelfPickRecommend();
-    ok('(G) re-render keeps the same book', titleOf() === t1);
+    ok('(G) re-render keeps the same book', bookIdOf() === bookId1);
     window.toggleLanguage();
     window.renderShelfPickRecommend();
-    ok('(G) language switch keeps the same book (candidate ID stable)', titleOf() === t1);
-    ok('(G) language switch keeps the same song', songOf() === s1);
+    ok('(G) language switch keeps the same book (candidate ID stable)', bookIdOf() === bookId1);
+    ok('(G) language switch keeps the same song', songIdOf() === songId1);
     const meta = document.querySelector('#shelfPickRecommend .shelf-pick-book .shelf-pick-meta');
     ok('(G) the EN hook text is English (no Japanese)', !meta || !JP_RE.test(meta.textContent));
     // 出会いの更新（製本相当）で別候補が選ばれ得る＋直前候補を避ける
@@ -179,7 +186,9 @@ async function main(){
     for(let i=0;i<6;i++){
       window.rotateRecoEncounter();
       window.renderShelfPickRecommend();
-      if(titleOf() !== t1){ changed = true; break; }
+      // ★Hotfix4-6更新：この時点でtoggleLanguage済み（EN表示）のため、表示文字列は言語差だけでも
+      // t1（JA時点の文字列）と異なってしまう。候補が実際に変わったかはbookIdOfで判定する。
+      if(bookIdOf() !== bookId1){ changed = true; break; }
     }
     ok('(G) a new encounter can pick a different book', changed);
     // sessionStorageに直前候補が保持されている
@@ -250,7 +259,7 @@ async function main(){
     const { window, document } = await createEnv({});
     ok('(J) WEATHER_FEATURE_ENABLED remains false in the shipped source', fs.readFileSync(path.join(SRC,'main.js'),'utf-8').includes('const WEATHER_FEATURE_ENABLED = false;'));
     ok('(J) the weather settings stay hidden', document.getElementById('weatherSettings').classList.contains('hidden'));
-    ok('(J) the sample book still works', (window.openSampleBook(), !document.getElementById('bookModal').classList.contains('hidden')));
+    ok('(J) the sample book still works', (window.openSampleBook(), !document.getElementById('sampleBookInline').classList.contains('hidden')));
     window.closeSampleBook();
     ok('(J) the afterglow lines still exist in the arrival panel', document.querySelectorAll('.bookshelf-arrival-afterglow').length === 2);
     ok('(J) the desk date display still exists (single instance)', document.querySelectorAll('#deskCurrentDate').length === 1);

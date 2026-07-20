@@ -195,6 +195,31 @@ async function main(){
     }
   }
 
+  // ===== B13: 新設「その他」経路を実際にクリック操作し、GA4が許可5件の範囲内であることを実行時に確認 =====
+  {
+    const {window,document,gaCalls}=await createEnv({});
+    window.goToPage('counter');
+    await new Promise(r=>setTimeout(r,30));
+    const otherFeelingBtn=[...document.querySelectorAll('#counterShelfGroups .chart-btn')].find(b=>b.textContent==='その他');
+    ok('(B13) the "その他" entry point exists for the click-through GA4 check', !!otherFeelingBtn);
+    if(otherFeelingBtn){
+      otherFeelingBtn.click();
+      await new Promise(r=>setTimeout(r,30));
+      const pill=document.querySelector('#counterShelfGroups .counter-shelf-pill');
+      ok('(B13) the moyamoya pill is clickable from the "その他" group', !!pill);
+      if(pill){
+        pill.click();
+        await new Promise(r=>setTimeout(r,30));
+        const viewBtn=document.querySelector('#counterShelfGroups .chart-btn.primary');
+        if(viewBtn){ viewBtn.click(); await new Promise(r=>setTimeout(r,50)); }
+        const ALLOWED = ['view_landing','start_writing','create_book_success','create_book_error','view_shelf'];
+        const eventNames = gaCalls.filter(c=>c[0]==='event').map(c=>c[1]);
+        ok('(B13) clicking through counter -> その他 -> moyamoya -> 棚を見る fires only allowed GA4 events (no new event types)',
+          eventNames.every(n=>ALLOWED.includes(n)));
+      }
+    }
+  }
+
   // ===== B10/B11: 既存moyamoya保存データの互換性・自動選択なしの再確認（回帰の安全網） =====
   {
     const entry={id:'m2',title:'古い一冊２',story:'本文',category:'moyamoya',date:new Date().toISOString(),image:'data:image/png;base64,AAAA'};

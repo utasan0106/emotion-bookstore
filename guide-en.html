@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Getting Started &amp; Support Resources | The Bookstore of Feelings</title>
+<meta name="description" content="A guide to The Bookstore of Feelings: how it works, frequently asked questions, and specialist support resources.">
+<!-- ★Hotfix4追加：guide.html（専門の相談窓口を含む案内ページ）の英語版。
+     guide.html本体は変更していない。電話番号・受付時間・団体名などの事実情報は
+     日本語版と完全に一致させ、文章のみ英訳した。JS言語切替の対象外の独立静的ページのため、
+     index.htmlのフッターリンク（#guideSupportLink）がappLangに応じてこちらへ振り分ける。 -->
+<style>
+  /* guide.html専用の最小限のスタイル（既存ページのデザインには手を入れない） */
+  :root{
+    --bg:#1E1712; --panel:#2A2019; --text:#F6ECD4; --sub:#D8C9A8; --accent:#C9A05A; --line:#4A3B2C;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; padding:24px 16px 48px;
+    background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Georgia,serif;
+    line-height:1.9; font-size:16px;
+  }
+  main{ max-width:720px; margin:0 auto; }
+  h1{ font-size:1.5em; border-bottom:1px solid var(--line); padding-bottom:.4em; margin-top:2em; }
+  h2{ font-size:1.15em; color:var(--accent); margin-top:2em; }
+  h3{ font-size:1.02em; margin-top:1.6em; }
+  a{ color:var(--accent); }
+  ul{ padding-left:1.4em; }
+  li{ margin:.4em 0; }
+  hr{ border:none; border-top:1px solid var(--line); margin:2.5em 0; }
+  .back-link{ display:inline-block; margin-bottom:16px; text-decoration:none; }
+  section#support{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:20px 22px; margin-top:3em;
+  }
+  footer{ max-width:720px; margin:40px auto 0; color:var(--sub); font-size:.85em; text-align:center; }
+</style>
+</head>
+<body>
+<main>
+  <a class="back-link" href="./index.html">← Back to the top page</a>
+
+  <h1>Getting Started</h1>
+
+  <h2>Turn what you feel now into a book.</h2>
+
+  <p>The Bookstore of Feelings is a quiet, nighttime digital bookstore where you can turn words you'd never show anyone else into a book of your own, kept on your own bookshelf.</p>
+
+  <p>No sign-up is required. What you write is, in principle, stored in your device's browser storage.</p>
+
+  <h2>How it works</h2>
+
+  <h3>1. Write</h3>
+  <p>Write about what happened today, or how it made you feel. It doesn't need to be polished.</p>
+
+  <h3>2. Bind it into a book</h3>
+  <p>Your words are bound into a book of their own.</p>
+
+  <h3>3. It returns to your bookshelf</h3>
+  <p>The finished book is placed on your own bookshelf, seen by no one else.</p>
+
+  <h2>To help you feel at ease</h2>
+
+  <ul>
+    <li><strong>No sign-up or login is required.</strong></li>
+    <li><strong>Your text, titles, photos, and bookshelf are, in principle, stored only on your device.</strong></li>
+    <li><strong>What you write is never sent to an outside AI.</strong> The shopkeeper, Mana, is not an AI chatbot.</li>
+    <li><strong>Your bookshelf is never shown to other users,</strong> unless you choose to share it externally yourself.</li>
+  </ul>
+
+  <h2>A few things worth knowing</h2>
+
+  <ul>
+    <li>Placing a finished book on an emotion shelf is entirely optional. Right after binding, you can choose to place it on a shelf, or send it straight back to your bookshelf without choosing one.</li>
+    <li>If you clear your browser history or site data, or switch devices or browsers, your bookshelf may be lost. Please back it up if you'd like to keep it safe.</li>
+    <li>"Letting go of a feeling" doesn't delete it completely — it moves the entry to a separate "record of things let go."</li>
+    <li>Book and music suggestions are chosen using preset words such as the season or the shelf/category — never the text you write. Your writing is never sent to any search service.</li>
+    <li>This service is not a substitute for medical care, psychological diagnosis, counseling, or emergency support.</li>
+  </ul>
+
+  <hr>
+
+  <h1>Frequently asked questions</h1>
+
+  <h2>Is it free to use?</h2>
+  <p>The core features are currently free to use. If you choose to make a purchase or support the shopkeeper through an external link, that external service's own terms and pricing apply.</p>
+
+  <h2>Do I need to create an account?</h2>
+  <p>No. You can use the service without registering a name, email address, or password.</p>
+
+  <h2>Can anyone else read what I write?</h2>
+  <p>In principle, no. Your text and bookshelf are stored on your device and are not stored on the operator's servers. Nothing is shown to other users unless you choose to share it externally yourself.</p>
+
+  <h2>Is the shopkeeper, Mana, an AI?</h2>
+  <p>No, Mana is not an AI chatbot. The shopkeeper's words are shown based on pre-written text and simple program logic, not by reading and individually responding to what you type.</p>
+
+  <h2>Does an AI analyze what I write?</h2>
+  <p>No. What you write is never sent to an external AI model, and the service does not diagnose, evaluate, score, or generate individual responses to it.</p>
+
+  <h2>Where is my data stored?</h2>
+  <p>It's stored in your device's browser storage (such as IndexedDB or LocalStorage). The operator does not hold a copy of your bookshelf data.</p>
+
+  <h2>Can I see my bookshelf on a new phone or a different browser?</h2>
+  <p>It doesn't carry over automatically. Please use the backup/export feature as needed, and restore it in the new environment.</p>
+
+  <h2>Is a story I'm still writing saved automatically?</h2>
+  <p>Text you're in the middle of writing is temporarily saved as a draft on your device. A draft that hasn't been saved again in 7 days is automatically deleted. Once binding completes successfully, the draft is cleared; if binding fails, the draft remains.</p>
+
+  <h2>Is "letting go" the same as deleting?</h2>
+  <p>No. "Letting go" moves an entry from your bookshelf into a separate "record of things let go." If you'd like to delete something completely, please use the delete feature, or clear your browser's site data.</p>
+
+  <h2>How are books and music chosen?</h2>
+  <p>They're looked up from an external service using preset words, such as the season or the shelf/category — never the text you write. Nothing you type is sent to any search API.</p>
+
+  <h2>Can this lighten my feelings, or tell me the right answer?</h2>
+  <p>That's not something this service promises. It's a place to keep a feeling as a book and view it with a little distance. It does not offer diagnosis or advice.</p>
+
+  <h2>Do you measure how the site is used?</h2>
+  <p>To improve the service and catch problems, some technical information — such as page views and whether a feature succeeded or failed — may be measured. Your written text, photos, titles, specific feelings, and even the general book/song titles or item IDs shown to you are never sent to analytics.</p>
+
+  <h2>How can I get in touch?</h2>
+  <p>Please contact the official X account, @emotion_books. Requests related to rights infringement or removing content are also handled through the same channel.</p>
+
+  <section id="support" aria-labelledby="support-title">
+    <h2 id="support-title">About specialist support resources</h2>
+
+    <p>
+      This service is a digital bookstore for quietly writing down your feelings.
+      It does not provide psychological counseling, medical care, or emergency response.
+      If you feel like talking to someone, the following specialist resources are also available.
+    </p>
+
+    <p style="opacity:.85; font-size:.92em;">
+      These are Japan-based helplines. Phone numbers, hours, and organization names are kept
+      exactly as published in Japanese, since dialing them requires a Japanese phone line.
+      If you are outside Japan or need support in another language, please look up a local
+      crisis line for your country or region.
+    </p>
+
+    <ul>
+      <li>
+        <strong>Yorisoi Hotline (よりそいホットライン):</strong>
+        <a href="tel:0120279338">0120-279-338</a>
+        (24 hours a day, toll-free)
+      </li>
+      <li>
+        <strong>Kokoro no Kenko Sodan Toitsu Dial — Mental Health Consultation Line (こころの健康相談統一ダイヤル):</strong>
+        <a href="tel:0570064556">0570-064-556</a>
+        (Hours vary by prefecture/city; call charges apply)
+      </li>
+      <li>
+        <strong>Childline (チャイルドライン, ages 18 and under):</strong>
+        <a href="tel:0120997777">0120-99-7777</a>
+        (Daily, 4pm–9pm JST, toll-free; closed Dec 29–Jan 3)
+      </li>
+    </ul>
+
+    <p>
+      For other phone and SNS support lines, you can check
+      <a href="https://www.mhlw.go.jp/mamorouyokokoro/"
+         target="_blank"
+         rel="noopener noreferrer">"Mamorou yo Kokoro"</a>
+      from Japan's Ministry of Health, Labour and Welfare.
+      If you are in immediate danger, please call 110 (police) or 119 (fire/ambulance).
+    </p>
+  </section>
+
+  <hr>
+
+  <h2>Quietly, open</h2>
+  <p><a href="https://emotion-bookstore.vercel.app/">https://emotion-bookstore.vercel.app/</a></p>
+  <p>Contact: X <code>@emotion_books</code></p>
+
+  <p><a href="./index.html">← Back to the top page</a></p>
+</main>
+<footer>"The Bookstore of Feelings"</footer>
+</body>
+</html>
