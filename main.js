@@ -41,6 +41,8 @@ const MESSAGES = {
     enterBtn: "扉をひらく →",
     motionToggleOn: "演出：入", motionToggleOff: "演出：切",
     motionToggleTitle: "演出アニメーションの入/切",
+    // ★Hotfix4追加：英語モードでも日本語のまま残っていた4箇所（既知課題）の翻訳キー。
+    langToggleTitle: "言語切り替え / Language",
     // ★2026-07-18追加：任意設定の天気連動機能（店内メニュー）。
     weatherToggleTitle: "店外の天気を反映する",
     weatherToggleOn: "天気連動：入", weatherToggleOff: "天気連動：切",
@@ -198,12 +200,18 @@ const MESSAGES = {
     emptySpineTooltip: "まだ中身が書かれていない、空の背表紙。タップすると編纂机へ。",
     trendDetailSummary: "感情の地図を詳しく見る",
     trendNote: "※月次「感情取扱説明書」レポートの簡易デモです。この地図はあなたにだけ見えています。",
-    shioriCardTitle: "今日の栞", shioriCardNote: "あなたの本棚を眺めた店主から、一枚。",
+    // ★Hotfix4.1：栞が「その日に書いた棚」ではなく「本棚全体でいちばん冊数の多い棚」を
+    // 見て綴られることを明示する。悲しみの棚に書いた日に「わくわく」の栞が出る等の違和感を防ぐ。
+    shioriCardTitle: "今日の栞", shioriCardNote: "本棚ぜんたいを眺めた店主から、一枚。今日綴った一冊ではなく、いちばん多く並んでいる棚のお話です。",
     shioriLabel: "栞 — 店主より", shioriBtn: "栞を受け取る",
     footerBrand: "『みんなの感情書店』",
     footerNote: "綴った言葉はサーバーには送信されず、この端末にのみ保存されます。",
+    // ★Hotfix4追加：フッター注記を指定どおり2行に改行表示するための版（data-i18n-html用）。
+    footerNoteHtml: "綴った言葉はサーバーには送信されず、<br>この端末にのみ保存されます。",
     shareBtn: "この書店をシェアする", copyUrlBtn: "URLをコピー", pwaPinBtn: "ホーム画面にピン留め",
     privacyLink: "プライバシーポリシー", termsLink: "利用規約",
+    // ★Hotfix4追加：フッター法務行の区切り文字・「専門の相談窓口」リンクの翻訳キー。
+    legalSep: "・", supportLinkFooter: "専門の相談窓口",
     shareMenuTitle: "シェアする", shareX: "Xでシェア", shareLine: "LINEでシェア",
     shareNative: "端末の共有機能を使う", shareCopy: "リンクをコピー",
     shareMenuHint: "コピーできない場合は、上の欄をタップして全選択→コピーしてください。",
@@ -235,6 +243,8 @@ const MESSAGES = {
     storyLimitWarning: "本文は{max}字までに収めてください。",
     storyReviewing: "製本の準備をしています…",
     tweetLinkInvalid: "Xの投稿リンクの形式が正しくないようです（例：https://x.com/ユーザー名/status/12345）。",
+    // ★Hotfix4-8追加：本の詳細画面に表示する、関連するXの投稿へのリンク文言。
+    modalTweetLinkLabel: "関連するXの投稿を見る",
     exportingBtn: "書き出しています…", exportedBtn: "書き出しました ✓", exportFailBtn: "書き出しに失敗しました",
     exportDefaultBtn: "これまでの記録をテキストでダウンロード",
     csvExportDefaultBtn: "これまでの記録をCSVでダウンロード（Excel等で開けます）",
@@ -345,6 +355,7 @@ const MESSAGES = {
     // ★v1.3公開前最終修正：三本線だけでは初見で見落とすため、文字でも明示する（仕様書5章）。
     menuOpenAria: "店内メニューを開く",
     menuCloseAria: "店内メニューを閉じる",
+    menuNavAria: "メニュー",
     menuTitle: "店内メニュー",
     menuBtnLabelFull: "店内メニュー",
     menuBtnLabelShort: "メニュー",
@@ -374,6 +385,7 @@ const MESSAGES = {
     enterBtn: "Open the door →",
     motionToggleOn: "Motion: On", motionToggleOff: "Motion: Off",
     motionToggleTitle: "Toggle animation effects on/off",
+    langToggleTitle: "Switch language / 言語切り替え",
     // ★2026-07-18追加：任意設定の天気連動機能（店内メニュー）。
     weatherToggleTitle: "Reflect the weather outside the shop",
     weatherToggleOn: "Weather sync: On", weatherToggleOff: "Weather sync: Off",
@@ -425,6 +437,10 @@ const MESSAGES = {
     swipeHint: "← Swipe left or right to move between shelves →",
     backToBandai: "⤴ Find a Shelf with the Shopkeeper",
     exitShopBtn: "Leave the Bookstore",
+    // ★Hotfix4-3追加：英語モードで空文字になり、ボタン文字が消えていた欠落キーを補完。
+    bookshelfExploreShelves: "Browse the other shelves",
+    langToggleAria: "Switch language (Japanese / English)",
+    exitFarewellMsg: "Thank you for stopping by. Come back whenever you feel like leaving some words here.",
     pageLabelCounter: "Counter \u00b7 ",
     pageLabelDesk: "Page One \u00b7 ",
     pageLabelBookshelf: "Page Four \u00b7 ",
@@ -468,6 +484,9 @@ const MESSAGES = {
     assistBtn: "Not sure how to start? Ask the shopkeeper for a hand",
     // ★Hotfix2-2：assistTemplateの英語版。JAと同じ4行構成・末尾改行あり。
     assistTemplate: "When:\nWhere:\nWhat happened:\nWhat I felt inside:\n",
+    // ★Hotfix4-3追加：英語モードで空文字になり、見出し・注記が消えていた欠落キーを補完。
+    writingBoatHeading: "A little help putting it into words",
+    writingBoatNote: "You don't have to answer these — just a starting point, if you'd like one.",
     storyCountFormat: "{count} / {max} chars",
     photoLabel: "Slip in today's photo (optional)",
     photoPreviewAlt: "Preview of attached photo",
@@ -479,6 +498,8 @@ const MESSAGES = {
     fieldLabelTweet: "Link a related post on X, if any", tweetInputPlaceholder: "e.g. https://x.com/username/status/1234567890",
     fieldHint: "Choose “Looking back on the past” to keep it on your bookshelf as a past feeling.",
     submitStory: "Hand it to the shopkeeper for binding",
+    // ★Hotfix4-3追加：英語モードで空文字になり、リンク文字が消えていた欠落キーを補完。
+    curateBackToDraft: "Back to the draft",
     invSeal: "Sealed", invKicker: "Letter of Recommendation", invGoShelf: "Take a look at the shelf", invClose: "Tuck it away as a bookmark",
     sectionHead4: "Your Bookshelf",
     sectionSub4: "Your bound stories appear as book spines. Select one to read it again at any time.",
@@ -508,12 +529,14 @@ const MESSAGES = {
     emptySpineTooltip: "An empty spine with nothing written yet. Tap it to go to the writing desk.",
     trendDetailSummary: "See your emotion map in detail",
     trendNote: "※ A simple demo of the monthly \"Emotion Handbook\" report. This map is visible only to you.",
-    shioriCardTitle: "Today's Bookmark", shioriCardNote: "A note from the shopkeeper, after looking over your bookshelf.",
+    shioriCardTitle: "Today's Bookmark", shioriCardNote: "A note from the shopkeeper, after looking over your whole bookshelf — about the shelf that holds the most books, not the one you wrote in today.",
     shioriLabel: "Bookmark — from the shopkeeper", shioriBtn: "Receive today's bookmark",
     footerBrand: "\"The Bookstore of Feelings\"",
     footerNote: "What you write is never sent to a server — it's stored only on this device.",
+    footerNoteHtml: "What you write is never sent to a server —<br>it's stored only on this device.",
     shareBtn: "Share this bookstore", copyUrlBtn: "Copy URL", pwaPinBtn: "Pin to home screen",
     privacyLink: "Privacy Policy", termsLink: "Terms of Service",
+    legalSep: " · ", supportLinkFooter: "Support & Helplines",
     shareMenuTitle: "Share", shareX: "Share on X", shareLine: "Share on LINE",
     shareNative: "Use device share menu", shareCopy: "Copy link",
     shareMenuHint: "If copying doesn't work, tap the field above to select all, then copy.",
@@ -526,6 +549,11 @@ const MESSAGES = {
     modalPhotoAlt: "Photo attached to this page", modalNoteLabel: "A word from the shopkeeper",
     modalGoShelf: "See this shelf again", modalDel: "Remove this book from the shelf",
     modalShare: "Share on X", modalShareNote: "Nothing is sent anywhere on its own — this only opens the post composer, and whether you actually post is entirely up to you.",
+    // ★Hotfix4-3追加：英語モードで空文字になり、ボタン文字が消えていた欠落キーを補完。
+    modalEditBtn: "Edit the title and story",
+    modalEditSave: "Save the changes",
+    modalEditCancel: "Cancel",
+    modalEditStoryEmpty: "The story can't be saved while it's empty.",
     pwaPopupAria: "Instructions for adding to home screen",
     pwaTitle: "Pin this bookstore to your phone's home screen",
     pwaSteps: "iPhone (Safari): tap the \"Share\" button below → \"Add to Home Screen\"<br>Android (Chrome): tap the menu (⋮) top right → \"Add to Home Screen\"",
@@ -540,6 +568,7 @@ const MESSAGES = {
     storyLimitWarning: "Please keep the text within {max} characters.",
     storyReviewing: "Preparing your book for binding…",
     tweetLinkInvalid: "That doesn't look like a valid link to a post on X (e.g. https://x.com/username/status/12345).",
+    modalTweetLinkLabel: "View the related post on X",
     exportingBtn: "Exporting…", exportedBtn: "Exported ✓", exportFailBtn: "Export failed",
     exportDefaultBtn: "Download your records as text",
     csvExportDefaultBtn: "Download your records as CSV (opens in Excel, etc.)",
@@ -649,6 +678,7 @@ const MESSAGES = {
     manaImageAlt: "",
     menuOpenAria: "Open the in-store menu",
     menuCloseAria: "Close the in-store menu",
+    menuNavAria: "Menu",
     menuTitle: "In-Store Menu",
     menuBtnLabelFull: "In-Store Menu",
     menuBtnLabelShort: "Menu",
@@ -734,6 +764,9 @@ function applyLanguage(){
   if(typeof renderCurrentShopDate === 'function') renderCurrentShopDate();
   // ★英語モード監査：書くFABのaria-label/title/文字ラベルも言語切替のたびに更新する。
   if(typeof ensureWriteFab === 'function') ensureWriteFab();
+  // ★Hotfix4.1：受け取り頁（棚選択select）を開いたまま言語切替した場合も、
+  // option の表示名を再読み込みなしで現在の言語へ追従させる（選択中のIDは維持）。
+  if(typeof refreshUnfiledShelfPickerLabels === 'function') refreshUnfiledShelfPickerLabels();
   // ★英語モード監査：月間フェア（#fairBox）は起動時に一度だけ描画されるため、
   // 言語切替時も再描画して見出し・ボタン文言を現在の言語へ追従させる
   // （fair.line自体はdata.js由来の季節文のため、日本語のまま残る＝許容範囲）。
@@ -761,6 +794,10 @@ function applyLanguage(){
   // ★Hotfix1-3：現在表示中の動的領域（棚の名言・エピソード・本・曲・寄り道・栞・到着推薦・本詳細）を
   // 現在の言語で再描画する。選ばれている作品・項目のIDは出会いシードのメモ化により変わらない。
   if(typeof refreshLocalizedDynamicViews === 'function') refreshLocalizedDynamicViews();
+  // ★Hotfix4追加：フッターの「専門の相談窓口」リンク先を、現在の言語に応じてguide.html／
+  // guide-en.htmlへ切り替える（リンク文言自体はdata-i18n="supportLinkFooter"で翻訳済み）。
+  const guideSupportLink = document.getElementById('guideSupportLink');
+  if(guideSupportLink) guideSupportLink.href = (appLang === 'en') ? './guide-en.html#support' : './guide.html#support';
   const langBtn = document.getElementById('langToggle');
   if(langBtn) langBtn.textContent = appLang === 'ja' ? 'JP / EN' : 'EN / JP';
   const titleEl = document.querySelector('title');
@@ -824,6 +861,34 @@ function songCommentFor(song){
     return '';
   }
   return song.comment || '';
+}
+// ★Hotfix4-6追加：英語モードで本・曲の「タイトル／著者名・アーティスト名」表示を英語表記にする
+// ヘルパー。bookHookFor/songCommentForと同じ方針（対応表にあれば英語表記、なければ元の
+// 日本語表記のままフォールバック＝表示が空にならない）。enReadyBooks/enReadySongsにより
+// 英語モードの候補はもともとBOOK_TITLE_EN等のキーを持つ本・曲だけに絞られているため、
+// 実運用ではフォールバックに落ちることは通常ない。
+function bookTitleFor(book){
+  if(!book) return '';
+  if(appLang === 'en' && typeof BOOK_TITLE_EN !== 'undefined' && BOOK_TITLE_EN[book.title]) return BOOK_TITLE_EN[book.title];
+  return book.title || '';
+}
+function bookAuthorFor(book){
+  if(!book) return '';
+  if(appLang === 'en' && typeof BOOK_AUTHOR_EN !== 'undefined' && BOOK_AUTHOR_EN[book.title]) return BOOK_AUTHOR_EN[book.title];
+  return book.by || '';
+}
+function songArtistFor(song){
+  if(!song) return '';
+  if(appLang === 'en' && typeof SONG_ARTIST_EN !== 'undefined' && SONG_ARTIST_EN[song.artist]) return SONG_ARTIST_EN[song.artist];
+  return song.artist || '';
+}
+function songTitleFor(song){
+  if(!song) return '';
+  if(appLang === 'en'){
+    const key = song.artist + '|' + song.title;
+    if(typeof SONG_TITLE_EN !== 'undefined' && SONG_TITLE_EN[key]) return SONG_TITLE_EN[key];
+  }
+  return song.title || '';
 }
 // 英語対応済み候補だけへ絞る（日本語モードでも同じ母集団を使うことで、言語切替時に候補IDが変わらない）。
 function enReadyBooks(pool){
@@ -2217,6 +2282,8 @@ async function exportDiaryText(){
     if(e.sealed) lines.push('（以前を振り返って綴った一冊）');
     lines.push(e.story);
     if(e.note) lines.push('店主のことば：' + e.note);
+    // ★Hotfix4-8追加：関連するXの投稿URLをテキスト書き出しにも含める。
+    if(e.tweetUrl) lines.push('関連するXの投稿：' + e.tweetUrl);
     lines.push('');
   });
   lines.push('【手放した気持ちの記録】 ' + purifyLog.length + '件');
@@ -2255,7 +2322,8 @@ async function exportDiaryCsv(){
   const lib = await loadJSON('emotion-bookstore-library', []);
   const purifyLog = await loadJSON(PURIFY_LOG_KEY, []);
   const rows = [];
-  rows.push(['種別','通し番号','タイトル','棚','日付','振り返り','本文','店主のことば']);
+  // ★Hotfix4-8追加：関連するXの投稿URL列をCSV書き出しにも含める。
+  rows.push(['種別','通し番号','タイトル','棚','日付','振り返り','本文','店主のことば','関連するXの投稿']);
   lib.forEach((e, i)=>{
     const cat = CATEGORIES.find(c=>c.id===e.category);
     rows.push([
@@ -2267,7 +2335,8 @@ async function exportDiaryCsv(){
       e.date ? new Date(e.date).toLocaleDateString('ja-JP') : '',
       e.sealed ? 'はい' : '',
       e.story || '',
-      e.note || ''
+      e.note || '',
+      e.tweetUrl || ''
     ]);
   });
   purifyLog.forEach((p, i)=>{
@@ -2280,6 +2349,7 @@ async function exportDiaryCsv(){
       p.date ? new Date(p.date).toLocaleDateString('ja-JP') : '',
       '',
       p.text || '',
+      '',
       ''
     ]);
   });
@@ -3172,7 +3242,7 @@ function renderShelfDisplay(){
             const rakutenUrl = rakutenSearchUrl(q2);
             return `<span class="recommend-chip" title="${r.why || ''}">
               ${r.hook ? `<span class="recommend-hook">${r.hook}</span>` : ''}
-              <span class="work-title">『${escapeHtml(r.title)}』${escapeHtml(r.by)}</span>
+              <span class="work-title">『${escapeHtml(bookTitleFor(r))}』${escapeHtml(bookAuthorFor(r))}</span>
               <span class="recommend-why">${r.why || ''}</span>
               <span class="recommend-shop-links">
                 <a class="recommend-buy" href="${amazonUrl}" target="_blank" rel="noopener">Amazon</a>
@@ -3205,7 +3275,7 @@ function renderShelfDisplay(){
         const spUrl = 'https://open.spotify.com/search/' + encodeURIComponent(q3);
         const amcUrl = 'https://music.apple.com/jp/search?term=' + encodeURIComponent(q3);
         return `<div class="playlist-track-row">
-          <span class="playlist-track-name">『${song.title}』${song.artist}</span>
+          <span class="playlist-track-name">『${escapeHtml(songTitleFor(song))}』${escapeHtml(songArtistFor(song))}</span>
           ${song.comment ? `<span class="playlist-track-comment">${song.comment}</span>` : ''}
           <span class="playlist-services">
             <a href="${spUrl}" target="_blank" rel="noopener">Spotify</a>
@@ -3671,6 +3741,31 @@ function todayStr(){
   return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
 }
 
+// ★Hotfix4-7追加：「今日の栞」専用のトップ棚判定。従来のtopCategoryId()は同点時の順序が
+// CATEGORIES配列の並び任せで、かつ栞側は一度キャッシュしたcatIdを一日中使い回していたため、
+// その日のうちに製本が進んで本棚の構成（＝どの棚が一番厚いか）が変わっても栞の文面が古いままに
+// なる不具合があった。この関数は呼ぶたびに最新のlibraryCacheから再計算し、冊数が同数の場合は
+// その日に最後に製本された棚を優先する。topCategoryId()自体は他機能（トレンド要約等）でも
+// 使われているため、挙動を変えないようここでは新規の別関数として定義する。
+function topCategoryIdForShiori(){
+  if(libraryCache.length === 0) return null;
+  const counts = {};
+  const lastDateByCat = {};
+  libraryCache.forEach(e=>{
+    if(!e || e.category === UNFILED_CATEGORY_ID) return;
+    counts[e.category] = (counts[e.category] || 0) + 1;
+    const d = e.date || '';
+    if(!lastDateByCat[e.category] || d > lastDateByCat[e.category]) lastDateByCat[e.category] = d;
+  });
+  const withCounts = CATEGORIES.filter(c=>counts[c.id]);
+  if(!withCounts.length) return null;
+  withCounts.sort((a,b)=>{
+    if(counts[b.id] !== counts[a.id]) return counts[b.id] - counts[a.id];
+    return (lastDateByCat[b.id] || '') > (lastDateByCat[a.id] || '') ? 1 : -1;
+  });
+  return withCounts[0].id;
+}
+
 async function renderShioriCard(){
   const card = document.getElementById('shioriCard');
   const slip = document.getElementById('shioriSlip');
@@ -3692,16 +3787,21 @@ async function renderShioriCard(){
     // （旧形式の日本語textを英語モードで表示しない）。移行内容は同じ保存キーへ追記保存する。
     if(cached.tplIdx == null){
       const migratedIdx = shelfPickSeed(String(cached.date || '') + '|' + String(cached.text || '')) % SHIORI_TEMPLATES.length;
-      const migratedCat = topCategoryId();
       cached.tplIdx = migratedIdx;
-      cached.catId = migratedCat;
+      // ★Hotfix4-7：catIdはもう表示時に使わない（常に最新のトップ棚を再計算するため）が、
+      // 互換のため保存自体は残す。
+      cached.catId = topCategoryIdForShiori();
       cached.legacyText = cached.text; // 日本語モード用に原文を保持
       saveJSON('emotion-bookstore-shiori', cached);
     }
+    // ★Hotfix4-7：文面（テンプレ文＝tplIdx）はその日のまま固定するが、言及する棚名は
+    // キャッシュ済みcatIdではなく、呼ばれるたびに現在の本棚構成から再計算する
+    // （同日中に製本が進んでトップ棚が変わった場合に、栞の文面が古い棚名のまま
+    // 残ってしまう不具合の修正）。
     if(stext){
       stext.textContent = (appLang !== 'en' && cached.legacyText)
         ? cached.legacyText
-        : shioriTextFor(cached.tplIdx, cached.catId);
+        : shioriTextFor(cached.tplIdx, topCategoryIdForShiori());
     }
     slip.classList.remove('hidden');
     btn.classList.add('hidden');
@@ -3720,7 +3820,7 @@ if(btnShiori){
     btn.disabled = true;
     btn.textContent = t('shioriChoosingWords');
     await wait(prefs.motion ? 600 : 50);
-    const topId = topCategoryId();
+    const topId = topCategoryIdForShiori();
     const tplIdx = Math.floor(Math.random() * SHIORI_TEMPLATES.length);
     const text = shioriTextFor(tplIdx, topId);
 
@@ -3787,10 +3887,15 @@ function openBook(entry){
 
   const tweetBox = document.getElementById('modalTweet');
   if(tweetBox){
-    // ★公開整合：X公式埋め込みは停止。既存データにtweetUrlが残っていても
-    // 外部埋め込み通信（platform.twitter.com等）は行わず、常に非表示・空にする。
-    tweetBox.classList.add('hidden');
-    tweetBox.innerHTML = '';
+    // ★Hotfix4-8：X公式埋め込み（platform.twitter.com等への外部通信）は引き続き行わない。
+    // entry.tweetUrlがあれば、外部通信を伴わない単純なリンク（<a href>のみ）として表示する。
+    if(entry.tweetUrl){
+      tweetBox.innerHTML = `<a class="tweet-fallback" href="${escapeHtml(entry.tweetUrl)}" target="_blank" rel="noopener">${escapeHtml(t('modalTweetLinkLabel'))}</a>`;
+      tweetBox.classList.remove('hidden');
+    }else{
+      tweetBox.classList.add('hidden');
+      tweetBox.innerHTML = '';
+    }
   }
 
   const bModal = document.getElementById('bookModal');
@@ -3920,69 +4025,48 @@ if(btnModalClose) btnModalClose.onclick = ()=>{
  * ・固定データのみ（下のSAMPLE_BOOK_*）。localStorageへ保存しない・libraryCacheへ
  *   追加しない・編集/削除/共有の対象にしない。実在利用者の文章は使わず、この書店の
  *   ために作成した架空の短文（MESSAGES.sampleBookStory）を使用する。
- * ・既存の本詳細画面（#bookModal）の意匠を再利用するが、openBook()は呼ばず、
- *   操作ボタン群（modalActions）を隠して見本バッジを表示するだけの閲覧専用表示。
  * ・閉じると表紙（現在の画面）へそのまま戻る。GA4の送信は行わない。
+ * ★Hotfix4-1：以前は既存の本詳細画面（#bookModal、position:fixedの全画面オーバーレイ）を
+ *   流用していたが、iPhone Safari幅で背景の文章と重なる／親の.about-accordion-contentが
+ *   max-height:400px+overflow:hiddenで下部が切れる、という報告を受け、#bookModalは
+ *   一切使わず、「はじめての方へ」パネル内の#sampleBookInline（通常のドキュメントフロー
+ *   要素）へ表示する方式へ変更した。#bookModal側（実在の本の詳細表示）の挙動・DOM・
+ *   スタイルは変更していない。
  * ========================================================================== */
 const SAMPLE_BOOK_CATEGORY_ID = 'natsukashii'; // 既存の感情棚ID（data.jsは変更しない）
 const SAMPLE_BOOK_DATE = '2026-06-01T19:00:00+09:00'; // 見本の製本日（固定）
 
 function isSampleBookOpen(){
-  const m = document.getElementById('bookModal');
-  return !!(m && !m.classList.contains('hidden') && m.classList.contains('sample-book-mode'));
+  const box = document.getElementById('sampleBookInline');
+  return !!(box && !box.classList.contains('hidden'));
 }
 
 function openSampleBook(){
-  const m = document.getElementById('bookModal');
-  if(!m) return;
+  const box = document.getElementById('sampleBookInline');
+  if(!box) return;
   const cat = (typeof CATEGORIES !== 'undefined') ? CATEGORIES.find(c=>c.id === SAMPLE_BOOK_CATEGORY_ID) : null;
-  const mCat = document.getElementById('modalCat');
-  if(mCat) mCat.textContent = cat ? categoryLabelFor(cat) + t('definitionLabelSep') : '';
-  const mTitle = document.getElementById('modalTitle');
-  if(mTitle) mTitle.textContent = t('sampleBookTitle');
-  const mDate = document.getElementById('modalDate');
-  if(mDate) mDate.textContent = formatDate(SAMPLE_BOOK_DATE);
-  const photoBox = document.getElementById('modalPhoto');
-  if(photoBox) photoBox.classList.add('hidden');
-  const mStory = document.getElementById('modalStory');
-  if(mStory) mStory.textContent = t('sampleBookStory');
-  const noteSlip = document.getElementById('modalNote');
-  if(noteSlip){
-    const noteText = document.getElementById('modalNoteText');
-    if(noteText) noteText.textContent = t('sampleBookNote');
-    noteSlip.classList.remove('hidden');
-  }
-  const tweetBox = document.getElementById('modalTweet');
-  if(tweetBox){ tweetBox.classList.add('hidden'); tweetBox.innerHTML = ''; }
-  // 閲覧専用：編集・削除・共有・棚移動の操作群は表示しない
-  if(typeof exitBookEditMode === 'function') exitBookEditMode();
-  const actions = document.getElementById('modalActions');
-  if(actions) actions.classList.add('hidden');
-  const shareNote = document.querySelector('#bookModal .modal-share-note');
-  if(shareNote) shareNote.classList.add('hidden');
-  const badge = document.getElementById('sampleBookBadge');
-  if(badge){ badge.textContent = t('sampleBookBadge'); badge.classList.remove('hidden'); }
-  m.classList.add('sample-book-mode');
-  m.classList.remove('hidden');
-  const closeBtn = document.getElementById('modalClose');
-  if(closeBtn) closeBtn.onclick = closeSampleBook;
+  const catEl = document.getElementById('sampleInlineCat');
+  if(catEl) catEl.textContent = cat ? categoryLabelFor(cat) + t('definitionLabelSep') : '';
+  const titleEl = document.getElementById('sampleInlineTitle');
+  if(titleEl) titleEl.textContent = t('sampleBookTitle');
+  const dateEl = document.getElementById('sampleInlineDate');
+  if(dateEl) dateEl.textContent = formatDate(SAMPLE_BOOK_DATE);
+  const storyEl = document.getElementById('sampleInlineStory');
+  if(storyEl) storyEl.textContent = t('sampleBookStory');
+  const noteTextEl = document.getElementById('sampleInlineNoteText');
+  if(noteTextEl) noteTextEl.textContent = t('sampleBookNote');
+  const badgeEl = box.querySelector('.sample-book-badge');
+  if(badgeEl) badgeEl.textContent = t('sampleBookBadge');
+  box.classList.remove('hidden');
+  const btn = document.getElementById('samplePeekBtn');
+  if(btn){ btn.textContent = t('closeBtn'); btn.setAttribute('aria-expanded','true'); }
 }
 
 function closeSampleBook(){
-  const m = document.getElementById('bookModal');
-  if(m){ m.classList.add('hidden'); m.classList.remove('sample-book-mode'); }
-  // 通常の本詳細表示のために、隠した要素と閉じるボタンの挙動を必ず元へ戻す
-  const actions = document.getElementById('modalActions');
-  if(actions) actions.classList.remove('hidden');
-  const shareNote = document.querySelector('#bookModal .modal-share-note');
-  if(shareNote) shareNote.classList.remove('hidden');
-  const badge = document.getElementById('sampleBookBadge');
-  if(badge) badge.classList.add('hidden');
-  const closeBtn = document.getElementById('modalClose');
-  if(closeBtn) closeBtn.onclick = ()=>{
-    const mm = document.getElementById('bookModal');
-    if(mm) mm.classList.add('hidden');
-  };
+  const box = document.getElementById('sampleBookInline');
+  if(box) box.classList.add('hidden');
+  const btn = document.getElementById('samplePeekBtn');
+  if(btn){ btn.textContent = t('samplePeekBtn'); btn.setAttribute('aria-expanded','false'); }
 }
 
 // 言語切替時：サンプル本を開いたままなら、見本の本文・栞・バッジも現在の言語で再描画する。
@@ -4154,6 +4238,38 @@ function hideUnfiledShelfPicker(){
   if(box){ box.innerHTML = ''; box.classList.add('hidden'); }
 }
 
+// ★Hotfix4.1追加：受け取り頁（棚選択）を開いたまま言語を切り替えた場合に、
+// 再読み込みなしで option の表示名だけを現在の言語へ更新する。
+// 選択中の value（内部カテゴリID）は保持し、未選択（プレースホルダー）の場合は未選択のまま維持する。
+// 並び順・選択肢の数・value は一切変更しない（表示ラベルのみの更新）。
+function refreshUnfiledShelfPickerLabels(){
+  const box = document.getElementById('unfiledShelfPicker');
+  if(!box || box.classList.contains('hidden')) return;
+  const select = document.getElementById('unfiledShelfSelect');
+  if(!select) return;
+  const keepValue = select.value; // 内部IDを保持
+  Array.from(select.options).forEach(o=>{
+    if(o.value === ''){
+      o.textContent = t('manaReceivePlaceholder');
+      return;
+    }
+    const cat = CATEGORIES.find(c=>c.id === o.value);
+    if(cat) o.textContent = categoryLabelFor(cat);
+  });
+  select.value = keepValue; // 切替前後で選択状態を維持
+  const label = box.querySelector('label[for="unfiledShelfSelect"]');
+  if(label) label.textContent = t('manaReceiveShelfLabel');
+  const confirmBtn = document.getElementById('unfiledShelfConfirm');
+  if(confirmBtn) confirmBtn.textContent = t('manaReceiveConfirm');
+  const skipBtn = document.getElementById('unfiledShelfSkip');
+  if(skipBtn) skipBtn.textContent = t('manaReceiveSkip');
+  const pageLabel = box.querySelector('.mana-page-label');
+  if(pageLabel) pageLabel.textContent = t('manaPageHeading');
+  const line = box.querySelector('.mana-receive-line');
+  if(line) line.textContent = t('manaReceiveLine');
+  box.setAttribute('aria-label', t('manaReceiveAriaLabel'));
+}
+
 function showUnfiledShelfPicker(entry){
   // ★v1.3最終統合：単なる「任意の棚収納UI」から、店主まなが本を預かる場面（受け取り頁）へ
   // 再構成する。新しい別保存処理や別entryは作らない（現行の同じentryを使う）。
@@ -4227,10 +4343,13 @@ function showUnfiledShelfPicker(entry){
   placeholder.selected = true;
   placeholder.disabled = true;
   select.appendChild(placeholder);
+  // ★Hotfix4.1：英語モードでも option の表示名が生の日本語（cat.label）のままだった不具合を修正。
+  // 棚タブ・棚見出しなど他のUIと同じ categoryLabelFor() を通し、既存のCATEGORY_LABEL_EN（21棚）を
+  // そのまま再利用する（新しい英訳は作らない）。option.value は内部IDのまま一切変更しない。
   CATEGORIES.forEach(c=>{
     const o = document.createElement('option');
     o.value = c.id;
-    o.textContent = c.label;
+    o.textContent = categoryLabelFor(c);
     select.appendChild(o);
   });
 
@@ -4357,9 +4476,16 @@ if(btnSubmit) {
 
     const chosenLabel = (CATEGORIES.find(c=>c.id===chosenId) || {}).label || '';
     const twInput = document.getElementById('tweetInput');
-    // ★公開整合：X公式埋め込み機能はリリース時停止。新規に製本するentryのtweetUrlは常に空文字とする
-    // （入力欄も非表示化済み。データ構造互換のためtweetUrlフィールド自体は残す）。
-    const tweetUrl = '';
+    // ★Hotfix4-8：入力しても製本後の本に反映されない不具合の修正。X公式埋め込み
+    // （platform.twitter.com等への外部通信）は行わないという方針はそのまま維持し、
+    // ここでは単純な入力値の保存のみを行う（外部通信なし）。空欄は任意項目のため許可する。
+    const tweetUrlRaw = twInput ? twInput.value.trim() : '';
+    if(tweetUrlRaw && !/^https?:\/\/\S+$/i.test(tweetUrlRaw)){
+      if(msg) msg.textContent = t('tweetLinkInvalid');
+      btn.disabled = false;
+      return;
+    }
+    const tweetUrl = tweetUrlRaw;
     const wSel = document.getElementById('whenSelect');
     const isPast = wSel ? (wSel.value === 'past') : false;
     await wait(prefs.motion ? 500 : 30);
@@ -5741,7 +5867,7 @@ function renderShelfPickRecommend(){
       ${jacket}
       <div class="shelf-pick-book-body">
         <p class="shelf-pick-kicker">${escapeHtml(t('shelfPickBookLabel'))}</p>
-        <p class="shelf-pick-title">『${escapeHtml(book.title)}』${escapeHtml(book.by)}</p>
+        <p class="shelf-pick-title">『${escapeHtml(bookTitleFor(book))}』${escapeHtml(bookAuthorFor(book))}</p>
         ${bookHookFor(book) ? `<p class="shelf-pick-meta">${escapeHtml(bookHookFor(book))}</p>` : ''}
         <a class="shelf-pick-link" href="${amazonUrl}" target="_blank" rel="noopener sponsored">Amazon</a>
         <a class="shelf-pick-link" href="${rakutenUrl}" target="_blank" rel="noopener sponsored">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>
@@ -5759,7 +5885,7 @@ function renderShelfPickRecommend(){
       ${jacket2}
       <div class="shelf-pick-music-body">
         <p class="shelf-pick-kicker">${escapeHtml(t('shelfPickMusicLabel'))}</p>
-        <p class="shelf-pick-title">『${escapeHtml(song.title)}』${escapeHtml(song.artist)}</p>
+        <p class="shelf-pick-title">『${escapeHtml(songTitleFor(song))}』${escapeHtml(songArtistFor(song))}</p>
         ${songCommentFor(song) ? `<p class="shelf-pick-meta">${escapeHtml(songCommentFor(song))}</p>` : ''}
         <a class="shelf-pick-link" href="${spUrl}" target="_blank" rel="noopener">Spotify</a>
         <a class="shelf-pick-link" href="${ytUrl}" target="_blank" rel="noopener">YouTube</a>
@@ -6067,7 +6193,12 @@ function ensureWriteFab(){
   // 言語切替のたびに再実行されても常に現在の言語のラベルへ更新する
   btn.setAttribute('aria-label', t('heroCta'));
   btn.title = t('heroCta');
-  // ★決裁済み変更仕様v1.2 4-1：絵文字（🖋️）を撤去し、文字ラベルへ置換。
+  // ★Hotfix4ロールバック：ロゴ画像（assets/shop-seal.png）を円ボタンいっぱいに表示する試みは、
+  // 本番環境で画像読み込みに失敗し「壊れた画像」アイコン（左下の“ハテナ”表示）として見えてしまう
+  // 不具合が確認されたため撤回。他9件の修正・保存互換性には影響しないよう、この関数のみを
+  // Hotfix4以前の「書く」文字ラベル表示へ戻す。
+  const existingIcon = btn.querySelector('img.write-fab-icon');
+  if(existingIcon) existingIcon.remove();
   btn.textContent = t('writeFabLabel');
   btn.onclick = ()=>{
     goToPage('desk');
@@ -6422,8 +6553,11 @@ function warnInAppBrowserIfNeeded(){
 
   // ★2026-07-19 feature/first-visit-experience：表紙の「この書店の一冊を、のぞいてみる」ボタン。
   // 閲覧専用のサンプル本を開くだけで、保存・GA4送信・画面遷移は行わない。
+  // ★Hotfix4-1：同じボタンで開閉をトグルする（開いている間はラベルが「閉じる」に変わる）。
   const samplePeekBtn = document.getElementById('samplePeekBtn');
-  if(samplePeekBtn) samplePeekBtn.onclick = openSampleBook;
+  if(samplePeekBtn) samplePeekBtn.onclick = ()=>{
+    if(isSampleBookOpen()) closeSampleBook(); else openSampleBook();
+  };
 
   // ★2026-07-19 E：編纂机「店主に題名を相談する」。
   const titleConsultBtn = document.getElementById('titleConsultBtn');

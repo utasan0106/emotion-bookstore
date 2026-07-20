@@ -95,8 +95,11 @@ async function main(){
     const grab=()=>({
       quote: (document.querySelector('.quote-card')||{}).textContent||'',
       story: (document.querySelector('.episode-card:not(.mine)')||{}).textContent||'',
-      chips: [...document.querySelectorAll('.recommend-chip .work-title')].map(x=>x.textContent),
-      tracks: [...document.querySelectorAll('.playlist-track-name')].map(x=>x.textContent),
+      // ★Hotfix4-6更新：work-title/playlist-track-nameの表示文字列は英語モードで英訳表記に
+      // 変わるようになったため（本来の狙い）、再描画・言語切替で「同じ候補が選ばれ続けているか」の
+      // 判定は表示文字列ではなく、常に元の日本語識別子を保持するfav-btnのdata属性で行う。
+      chips: [...document.querySelectorAll('.recommend-chip .fav-btn')].map(x=>x.getAttribute('data-fav-title')+'|'+x.getAttribute('data-fav-by')),
+      tracks: [...document.querySelectorAll('.playlist-track-row .fav-btn')].map(x=>x.getAttribute('data-fav-title')+'|'+x.getAttribute('data-fav-by')),
       detours: [...document.querySelectorAll('.detour-name')].map(x=>x.textContent),
       def: (document.querySelector('.definition')||{}).textContent||''
     });

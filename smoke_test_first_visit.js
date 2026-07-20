@@ -52,14 +52,16 @@ async function main(){
     // ★2026-07-19更新（仕様A）：サンプル本ボタンは表紙から「はじめての方へ」内へ移動
     ok('(1) the sample-peek button exists (inside the first-visit accordion)', !!document.getElementById('samplePeekBtn'));
     window.openSampleBook();
-    const modal = document.getElementById('bookModal');
-    ok('(1) opening the sample shows the book modal', !modal.classList.contains('hidden'));
-    ok('(1) the sample has a title', document.getElementById('modalTitle').textContent.length > 0);
-    ok('(1) the sample has a short story body', document.getElementById('modalStory').textContent.length > 20);
-    ok('(1) the sample shows an emotion-shelf label', document.getElementById('modalCat').textContent.length > 0);
-    ok('(1) the sample shows a binding date', document.getElementById('modalDate').textContent.length > 0);
-    ok('(1) the sample shows the shopkeeper\'s bookmark note', !document.getElementById('modalNote').classList.contains('hidden') && document.getElementById('modalNoteText').textContent.length > 0);
-    ok('(1) the sample badge explains it is a sample', !document.getElementById('sampleBookBadge').classList.contains('hidden'));
+    // ★Hotfix4更新：見本はモーダル(#bookModal)ではなく、説明パネル内のインライン要素(#sampleBookInline)に表示される。
+    const inlineBox = document.getElementById('sampleBookInline');
+    ok('(1) opening the sample shows the inline sample block (not the modal)', !inlineBox.classList.contains('hidden'));
+    ok('(1) the sample has a title', document.getElementById('sampleInlineTitle').textContent.length > 0);
+    ok('(1) the sample has a short story body', document.getElementById('sampleInlineStory').textContent.length > 20);
+    ok('(1) the sample shows an emotion-shelf label', document.getElementById('sampleInlineCat').textContent.length > 0);
+    ok('(1) the sample shows a binding date', document.getElementById('sampleInlineDate').textContent.length > 0);
+    ok('(1) the sample shows the shopkeeper\'s bookmark note', document.getElementById('sampleInlineNoteText').textContent.length > 0);
+    ok('(1) the sample badge explains it is a sample', inlineBox.querySelector('.sample-book-badge').textContent.length > 0);
+    ok('(1) opening the sample does NOT open the real book modal', document.getElementById('bookModal').classList.contains('hidden'));
   }
 
   // ============================================================
@@ -87,18 +89,19 @@ async function main(){
   {
     const { window, document } = await createEnv({});
     window.openSampleBook();
-    ok('(3) the edit/delete/share action row is hidden for the sample', document.getElementById('modalActions').classList.contains('hidden'));
-    ok('(3) the share note is hidden for the sample', document.querySelector('#bookModal .modal-share-note').classList.contains('hidden'));
-    ok('(3) the edit-mode action row is hidden for the sample', document.getElementById('modalEditActions').classList.contains('hidden'));
-    // 閉じる
-    document.getElementById('modalClose').onclick();
-    const modal = document.getElementById('bookModal');
-    ok('(4) closing the sample hides the modal', modal.classList.contains('hidden'));
+    // ★Hotfix4更新：見本はインライン要素として表示され、そもそも編集・削除・共有の操作行を含まない
+    // （#bookModalの編集/共有UIには触れないため、実本用のそれらの状態は変化しない）。
+    const inlineBox3 = document.getElementById('sampleBookInline');
+    ok('(3) the inline sample block has no edit/delete action row', !inlineBox3.querySelector('.modal-actions'));
+    ok('(3) the inline sample block has no share note', !inlineBox3.querySelector('.modal-share-note'));
+    ok('(3) the inline sample block has no edit-mode action row', !inlineBox3.querySelector('.modal-edit-actions'));
+    // 閉じる（見本のトグルボタンを押す＝isSampleBookOpen()を介したトグル）
+    document.getElementById('samplePeekBtn').onclick();
+    ok('(4) closing the sample hides the inline block', inlineBox3.classList.contains('hidden'));
     ok('(4) after closing, the page is still the cover (not experience mode)', !document.body.classList.contains('experience-open'));
     ok('(4) the main CTA (make a book) is still present and wired', !!document.querySelector('.enter-btn'));
-    ok('(4) closing restores the action row for regular books', !document.getElementById('modalActions').classList.contains('hidden'));
-    ok('(4) closing hides the sample badge again', document.getElementById('sampleBookBadge').classList.contains('hidden'));
-    ok('(4) the sample-mode class is removed on close', !modal.classList.contains('sample-book-mode'));
+    ok('(4) the real book modal action row is untouched (not forced hidden) by the sample flow', !document.getElementById('modalActions').classList.contains('hidden'));
+    ok('(4) closing does not leave the real book modal open', document.getElementById('bookModal').classList.contains('hidden'));
   }
 
   // ============================================================
@@ -123,10 +126,10 @@ async function main(){
     const line1En = document.querySelector('[data-i18n="firstVisitAiLine1"]').textContent;
     ok('(5) EN first-visit line 1 matches the specified copy', line1En.includes('You—not AI—write the book'));
     ok('(5) EN first-visit line 2 matches the specified copy', document.querySelector('[data-i18n="firstVisitAiLine2"]').textContent.includes('not sent outside your device'));
-    ok('(5) the open sample story switches to English without reopening', /[a-zA-Z]/.test(document.getElementById('modalStory').textContent) && !/[぀-ヿ一-鿿]/.test(document.getElementById('modalStory').textContent));
-    ok('(5) the sample badge switches to English', document.getElementById('sampleBookBadge').textContent.includes('sample book'));
+    ok('(5) the open sample story switches to English without reopening', /[a-zA-Z]/.test(document.getElementById('sampleInlineStory').textContent) && !/[぀-ヿ一-鿿]/.test(document.getElementById('sampleInlineStory').textContent));
+    ok('(5) the sample badge switches to English', document.getElementById('sampleBookInline').querySelector('.sample-book-badge').textContent.includes('sample book'));
     window.toggleLanguage();
-    ok('(5) switching back to Japanese restores the JA sample story', /[぀-ヿ一-鿿]/.test(document.getElementById('modalStory').textContent));
+    ok('(5) switching back to Japanese restores the JA sample story', /[぀-ヿ一-鿿]/.test(document.getElementById('sampleInlineStory').textContent));
     window.closeSampleBook();
   }
 
