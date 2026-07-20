@@ -2594,12 +2594,8 @@ body.night .fav-btn.is-fav{
   background:var(--wine);
   color:#f6e8c9;
   border:none;
-  /* ★決裁済み変更仕様v1.2 4-1：絵文字（🖋️）から文字ラベル「書く」へ置換したため、
-     1文字アイコン用のfont-size:22pxから、2文字が円内に収まるサイズ・配置へ調整 */
-  font-family:var(--font-display);
-  font-size:14px;
-  letter-spacing:.02em;
-  line-height:1;
+  padding:0;
+  overflow:hidden;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -2608,11 +2604,21 @@ body.night .fav-btn.is-fav{
   z-index:60;
   transition:transform .15s ease, box-shadow .15s ease;
 }
+/* ★Hotfix4追加：「書く」の文字ラベルに代わり、Hero下部の蔵書印（.hero-seal）と同じ正式ロゴを
+   円いっぱいに表示する。ロゴ画像自体が独自の暗色背景・金の輪郭を持つため、ボタンの
+   background（var(--wine)/夜のvar(--gold-soft)）は画像の縁がわずかに透けた場合の保険として残す。 */
+.write-fab-icon{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:50%;
+}
 .write-fab:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(0,0,0,0.35); }
 .write-fab:active{ transform:translateY(0); }
 body.night .write-fab{ background:var(--gold-soft); color:#2E241A; }
 @media (max-width:600px){
-  .write-fab{ left:14px; bottom:18px; width:50px; height:50px; font-size:12.5px; }
+  .write-fab{ left:14px; bottom:18px; width:50px; height:50px; }
 }
 .back-to-top.hidden{
   opacity:0;
@@ -3387,7 +3393,14 @@ body.night .chat-input-row textarea{ background:rgba(0,0,0,0.18); color:var(--in
   font-family:var(--font-display);
   writing-mode:vertical-rl;
   text-orientation:mixed;
-  width:34px;
+  /* ★Hotfix4-追加：以前はwidth:34pxで固定していたため、英語の長いラベル（例：
+     "Unnamed Feeling"）が縦書きボックスの高さ(max-height)に収まらない場合、新しい行
+     （縦書きでは左側へ追加される列）が固定幅の外へはみ出し、文字が重なって読めなくなって
+     いた。width指定をmin-widthへ変更し、overflow-wrapを追加することで、収まらない
+     ラベルは列（幅）が自然に増えて箱の中に収まるようにする。短い日本語ラベルは
+     従来どおりmin-width（34px）1列で収まるため、見た目の変化はない。 */
+  min-width:34px;
+  overflow-wrap:anywhere;
   min-height:76px;
   max-height:110px;
   font-size:12.5px;
@@ -3436,7 +3449,7 @@ body.night .chat-input-row textarea{ background:rgba(0,0,0,0.18); color:var(--in
 }
 .wander-btn:hover{ color:var(--wine-2); }
 @media (max-width:480px){
-  .shelf-tab{ width:30px; min-height:64px; font-size:11.5px; }
+  .shelf-tab{ min-width:30px; min-height:64px; font-size:11.5px; }
   .shelf-group-row .shelf-tab:nth-child(3n+3){ min-height:74px; }
 }
 
@@ -5358,6 +5371,67 @@ body.night .weather-attribution{ color:var(--paper); opacity:.6; }
   opacity:.9;
 }
 .sample-book-badge.hidden{ display:none; }
+
+/* ★Hotfix4-1：サンプル本を「はじめての方へ」パネル内の通常のドキュメントフロー要素として
+   表示するための新規スタイル。position:fixed/absoluteは使わず、開いている間は通常の
+   ブロック要素として下の要素（ボタン・その下のFAQ/シェア等）を押し下げる。高さは常に
+   auto（コンテンツに応じて自然に伸びる）で、固定のmax-heightやoverflow:hiddenは使わない。
+   親の.about-accordion-content（index.html側の<style>）と同じ、日/夜で自動反転する
+   CSS変数（var(--ink)等）を使い、既存の.modal-card系（#bookModal用・常時暗色固定）とは
+   独立させている。 */
+.sample-book-inline{
+  margin:10px 0 14px;
+  padding:14px 16px;
+  background:rgba(255,255,255,0.4);
+  border:1px solid var(--paper-shadow);
+  border-radius:6px;
+  text-align:left;
+}
+.sample-book-inline.hidden{ display:none; }
+body.night .sample-book-inline{
+  background:#332E26;
+  border-color:var(--paper-shadow);
+}
+.sample-inline-cat{
+  font-size:12px;
+  color:var(--ink-soft);
+  margin:0 0 2px;
+}
+.sample-inline-title{
+  font-family:var(--font-display);
+  font-size:16px;
+  margin:0 0 4px;
+  color:var(--wine);
+}
+.sample-inline-date{
+  font-size:11px;
+  color:var(--ink-soft);
+  margin:0 0 10px;
+}
+.sample-inline-story{
+  font-size:13.5px;
+  white-space:pre-wrap;
+  line-height:1.85;
+  color:var(--ink);
+}
+.sample-inline-note{
+  display:block;
+  margin-top:12px;
+  padding:10px 14px;
+  border:1px dashed var(--gold);
+  border-radius:4px;
+  font-size:12.5px;
+  line-height:1.8;
+  color:var(--ink);
+}
+.sample-inline-note-label{
+  display:block;
+  font-size:10px;
+  letter-spacing:.2em;
+  color:var(--ink-soft);
+  margin-bottom:4px;
+  font-family:var(--font-body);
+}
 
 .bookshelf-arrival-afterglow{
   margin:2px 0;

@@ -17,14 +17,13 @@ const JP_RE = /[぀-ヿ一-鿿]/;
 // 許可リスト：これらのセレクタにマッチする要素（またはその子孫）はスキャン対象から除外する。
 // 主にdata.js由来の書名・アーティスト名・引用文・DETOUR_POOL商品名など「正式名称・原文プロセ」。
 const ALLOW_SELECTORS = [
-  // ★2026-07-19：作品紹介領域全体の広い除外を廃止。日本語を許可するのは、
-  // 英語公式表記が未確認の「作品名・著者名・アーティスト名」を出す専用要素と、
-  // 利用者自身の入力（テストでシードした本文）だけに限定する。
+  // ★Hotfix4-6更新：BOOK_TITLE_EN/BOOK_AUTHOR_EN/SONG_ARTIST_EN/SONG_TITLE_EN
+  // （英語モード候補の35冊・42曲を対象とする英語表記対応表）を追加したことで、
+  // .work-title/.shelf-pick-title/.playlist-track-nameは英語モードで常に英語（またはローマ字＋
+  // 英語の意味補足）表記になるはずなので、許可リストから外して実際に走査対象に含める
+  // （回帰時にここへ日本語が戻ってしまったら検出できるようにする）。
   // 説明文・店主コメントを含むコンテナ（.recommend-chip全体・.detour-card全体・
   // .quote-card・.episode-card全体・.definition・.fair-line等）は除外しない＝走査対象。
-  '.work-title',          // 推薦チップ・気になるリスト内の『作品名』著者（原題維持）
-  '.shelf-pick-title',    // 到着推薦カードの『作品名』著者・『曲名』アーティスト（原題維持）
-  '.playlist-track-name', // プレイリストの『曲名』アーティスト（原題維持）
   '.episode-card.mine',   // 利用者自身が綴った本文（翻訳対象外）
   '.hero-lang-toggle',    // 言語名「日本語」自身
   'script', 'style'

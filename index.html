@@ -87,13 +87,17 @@
 <meta property="og:title" content="みんなの感情書店｜今の気持ちを、一冊の本に。">
 <meta property="og:description" content="誰にも話せない気持ちを、静かに書き、一冊の本として端末内の本棚へ残せるデジタル書店。登録不要。本文をAIで分析・診断しません。">
 <meta property="og:url" content="https://emotion-bookstore.vercel.app/">
-<meta property="og:image" content="https://emotion-bookstore.vercel.app/ogp.png">
+<!-- ★Hotfix4-2：シェア時のサムネイルが古いままキャッシュされる問題への対応で、
+     既存のogp.pngは残したまま、新しいファイル名（ogp-emotion-bookstore-20260720.jpg）に
+     差し替えてSNS側のキャッシュを回避する。画像の内容も現在のタイトル・コピー
+     （og:title/og:descriptionと同じ「今の気持ちを、一冊の本に。」）に合わせて作り直した。 -->
+<meta property="og:image" content="https://emotion-bookstore.vercel.app/ogp-emotion-bookstore-20260720.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="みんなの感情書店｜今の気持ちを、一冊の本に。">
 <meta name="twitter:description" content="誰にも話せない気持ちを、静かに書き、一冊の本として端末内の本棚へ残せるデジタル書店。登録不要。本文をAIで分析・診断しません。">
-<meta name="twitter:image" content="https://emotion-bookstore.vercel.app/ogp.png">
+<meta name="twitter:image" content="https://emotion-bookstore.vercel.app/ogp-emotion-bookstore-20260720.jpg">
 <!-- アイコン：外部ファイル不要のSVGデータURI（本の絵文字風）。公開時に180x180のPNGに差し替えるとより綺麗 -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%236E2A34'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E">
 <title>みんなの感情書店｜今の気持ちを、一冊の本に。</title>
@@ -158,7 +162,12 @@
   color: var(--ink);
 }
 .about-accordion-content.open {
-  max-height: 400px;
+  /* ★Hotfix4-1：固定400pxではサンプル本（見本の一冊）を開いたときや、英語版の長い文章で
+     パネル下部（ボタン・その下のFAQ/シェア等）が切れることがあったため、実運用で
+     現実的にありうる最大コンテンツ量でも収まる十分に大きな値へ緩和した。0→この値への
+     transitionアニメーション自体は変わらないが、実コンテンツの高さがこれを超えないため
+     実質的に「auto相当」として機能する。 */
+  max-height: 3000px;
   opacity: 1;
   padding: 16px;
   margin-top: 12px;
@@ -452,8 +461,10 @@ body.night .about-data-content{
               <option value="past" data-i18n="whenOptionPast">以前のことを振り返って</option>
             </select>
           </div>
-          <!-- ★公開整合：X公式埋め込み機能はリリース時停止。DOM・idは互換のため残し、hiddenで非表示 -->
-          <div class="field" hidden>
+          <!-- ★Hotfix4-8：X公式埋め込み（platform.twitter.com等への外部通信、CSPのframe-src 'none'に抵触）は
+               従来どおり行わない。ただし、この欄自体（外部通信を伴わない単純なURL保存・リンク表示）は
+               入力しても製本後の本に反映されない不具合として報告されたため再表示し、保存・表示を実装する。 -->
+          <div class="field">
             <label for="tweetInput" data-i18n="fieldLabelTweet">関連するXの投稿があれば</label>
             <input id="tweetInput" type="url" placeholder="例：https://x.com/username/status/1234567890" data-i18n-ph="tweetInputPlaceholder">
           </div>
@@ -579,7 +590,7 @@ body.night .about-data-content{
 
   <footer class="shop-footer">
     <span data-i18n="footerBrand">『みんなの感情書店』</span><br>
-    <span data-i18n="footerNote">綴った言葉はサーバーには送信されず、この端末にのみ保存されます。</span>
+    <span data-i18n-html="footerNoteHtml">綴った言葉はサーバーには送信されず、<br>この端末にのみ保存されます。</span>
     <!-- ===== 追加：店主への差し入れ（投げ銭）— 広告バナーではなく"差し入れ"という体裁で、
          世界観を壊さずに任意の支援を受け付ける導線。URLは運営者ご自身のBuy Me a Coffee /
          Ko-fi等のページに差し替えてください（現在はダミーのプレースホルダーです） ===== -->
@@ -679,7 +690,7 @@ body.night .about-data-content{
       <button type="button" class="experience-menu-close" id="menuCloseBtn"
               aria-label="店内メニューを閉じる" data-i18n-aria="menuCloseAria">&times;</button>
     </div>
-    <nav class="experience-menu-nav" aria-label="メニュー">
+    <nav class="experience-menu-nav" aria-label="メニュー" data-i18n-aria="menuNavAria">
       <button type="button" class="menu-item" data-menu-page="desk" data-i18n="menuItemDesk">今の気持ちを書く</button>
       <button type="button" class="menu-item" data-menu-page="bookshelf" data-i18n="menuItemBookshelf">自分の本棚</button>
       <p class="experience-menu-section" data-i18n="menuSectionOptional">任意の場所へ</p>
@@ -692,7 +703,7 @@ body.night .about-data-content{
     <div class="pref-row">
       <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切" data-i18n-title="motionToggleTitle">演出：入</button>
       <button class="pref-toggle" id="profileBtn" title="お名前と属性の設定（任意・この端末にのみ保存）" data-i18n="profileBtn" data-i18n-title="profileBtnTitle">来店カード</button>
-      <button class="pref-toggle" id="langToggle" title="言語切り替え / Language">JP / EN</button>
+      <button class="pref-toggle" id="langToggle" title="言語切り替え / Language" data-i18n-title="langToggleTitle">JP / EN</button>
     </div>
 
     <!-- ★2026-07-18追加：任意設定の天気連動機能。初期状態はOFFで、位置情報の許可は
@@ -736,7 +747,24 @@ body.night .about-data-content{
         <!-- ★2026-07-19 A：表紙から移設した初回説明とサンプル本への導線（初期状態は親アコーディオンごと閉） -->
         <p style="margin-top:8px;" data-i18n="firstVisitAiLine1">本をつくるのは、AIではなくあなた自身です。自分の言葉で一冊にして、棚へ置く書店です。</p>
         <p data-i18n="firstVisitAiLine2">文章や写真は外部へ送信されません。診断や感情分析も行いません。</p>
-        <button type="button" class="sample-peek-btn" id="samplePeekBtn" data-i18n="samplePeekBtn">この書店の一冊を、のぞいてみる</button>
+        <!-- ★Hotfix4-1：サンプルはこのパネル内の通常のドキュメントフロー要素として、ボタンの直前
+             （表示順：説明文 → サンプル → ボタン → 下のFAQ/シェア）に表示する。以前は#bookModal
+             （position:fixedの全画面オーバーレイ）を流用しており、iPhone Safari幅で背景の文章と
+             重なる／親の.about-accordion-contentがmax-height:400px+overflow:hiddenで下部が
+             切れる、という報告があった。position:fixed/absoluteは使わず、開閉はhiddenクラスの
+             付け外しのみで行う（高さは常にauto、ページ全体が自然に縦スクロールする）。 -->
+        <div class="sample-book-inline hidden" id="sampleBookInline">
+          <p class="sample-book-badge" data-i18n="sampleBookBadge">これは見本の一冊です。あなたの本棚には追加されません。</p>
+          <p class="sample-inline-cat" id="sampleInlineCat"></p>
+          <h4 class="sample-inline-title" id="sampleInlineTitle"></h4>
+          <p class="sample-inline-date" id="sampleInlineDate"></p>
+          <div class="sample-inline-story" id="sampleInlineStory"></div>
+          <p class="sample-inline-note" id="sampleInlineNote">
+            <span class="sample-inline-note-label" data-i18n="modalNoteLabel">店主のことば</span>
+            <span id="sampleInlineNoteText"></span>
+          </p>
+        </div>
+        <button type="button" class="sample-peek-btn" id="samplePeekBtn" data-i18n="samplePeekBtn" aria-expanded="false" aria-controls="sampleBookInline">この書店の一冊を、のぞいてみる</button>
       </div>
     </div>
 
@@ -781,11 +809,13 @@ body.night .about-data-content{
       </div>
       <div class="legal-row">
       <a href="./privacy.html" data-i18n="privacyLink">プライバシーポリシー</a>
-      <span class="legal-sep">・</span>
+      <span class="legal-sep" data-i18n="legalSep">・</span>
       <a href="./terms.html" data-i18n="termsLink">利用規約</a>
-      <span class="legal-sep">・</span>
-      <!-- ★Step3：専門の相談窓口への常設導線（詳細・電話番号はguide.html側にのみ掲載し、本ページには重複掲載しない） -->
-      <a href="./guide.html#support">専門の相談窓口</a>
+      <span class="legal-sep" data-i18n="legalSep">・</span>
+      <!-- ★Step3：専門の相談窓口への常設導線（詳細・電話番号はguide.html側にのみ掲載し、本ページには重複掲載しない）
+           ★Hotfix4追加：英語モードではguide-en.html#supportへ切り替える（applyLanguage()側でhrefを書き換える）。
+           リンク文言自体もdata-i18nで翻訳する。 -->
+      <a href="./guide.html#support" id="guideSupportLink" data-i18n="supportLinkFooter">専門の相談窓口</a>
       </div>
       <!-- ★2026-07-19 C：店内メニューのスクロール領域だけを先頭へ戻す控えめなボタン -->
       <button type="button" class="menu-back-to-top" id="menuBackToTop" data-i18n="menuBackToTop">↑ メニューの上へ戻る</button>
