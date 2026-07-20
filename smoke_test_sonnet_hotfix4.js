@@ -5,9 +5,10 @@
 // 4) Other/Unnamed Feelingタブの縦書きはみ出し修正（.shelf-tab min-width化）
 // 5) guide.html専門相談窓口の英語版整備（guide-en.html新設・リンク振り分け）
 // 6) フッター注記の2行改行
-// 7) 書くFAB（floating write button）のロゴアイコン化
+// 7) 書くFAB（floating write button）：文字ラベル表示（ロゴ画像化は本番不具合により撤回・ロールバック済み）
 // 8) 英語版での書籍・音楽タイトルの英語表記化（EN-ready 35冊/42曲）
 // 9) 今日の栞が本棚構成の変化に追従しない不具合の修正
+// 10) 関連するXの投稿URLが製本後の本に反映されない不具合の修正
 // 既存487件（Hotfix1〜3系）のアサーションは弱体化していない。本ファイルは追加専用。
 const fs = require('fs'); const path = require('path'); const { JSDOM } = require('jsdom');
 const SRC = path.resolve(__dirname, '..');
@@ -147,16 +148,24 @@ async function main(){
     ok('(6) the rendered footer note still contains a <br> element in EN', document.querySelector('[data-i18n-html="footerNoteHtml"]').querySelectorAll('br').length === 1);
   }
 
-  // ===== 7: 書くFAB（floating write button）のロゴアイコン化 =====
+  // ===== 7: 書くFAB（floating write button） =====
+  // ★Hotfix4ロールバック（本番報告により再修正）：ロゴ画像表示は本番環境で画像読み込みに
+  // 失敗し「壊れた画像（左下のハテナ）」として見えてしまう不具合が確認されたため撤回し、
+  // Hotfix4以前の文字ラベル表示（t('writeFabLabel')）へ戻した。ここではロゴ画像を一切
+  // 使用しないこと（＝壊れた画像アイコンが再発し得ないこと）を確認する。
   {
-    const cssSrc = fs.readFileSync(path.join(SRC,'style.css'),'utf-8');
     const { window, document } = await createEnv({});
     if(typeof window.ensureWriteFab === 'function') window.ensureWriteFab();
     const fab = document.querySelector('.write-fab');
     ok('(7) the write-fab button exists', !!fab);
     const icon = fab ? fab.querySelector('img.write-fab-icon') : null;
-    ok('(7) the write-fab shows the existing shop-seal logo image, not a text label', !!icon && /shop-seal\.png/.test(icon.getAttribute('src')));
-    ok('(7) the write-fab has no leftover visible "書く" text node', !Array.from(fab.childNodes).some(n => n.nodeType === 3 && n.textContent.includes('書く')));
+    ok('(7) the write-fab no longer renders any <img> (so a broken-image glyph cannot appear)', !icon && fab.querySelectorAll('img').length === 0);
+    ok('(7) the write-fab shows the plain "書く" text label (JA)', fab.textContent.trim() === '書く');
+    window.toggleLanguage();
+    if(typeof window.ensureWriteFab === 'function') window.ensureWriteFab();
+    const fabEn = document.querySelector('.write-fab');
+    ok('(7) the write-fab shows the plain "Write" text label (EN)', fabEn.textContent.trim() === 'Write');
+    ok('(7) the write-fab still has no <img> after a language toggle', fabEn.querySelectorAll('img').length === 0);
   }
 
   // ===== 8: 英語版での書籍・音楽タイトルの英語表記化 =====

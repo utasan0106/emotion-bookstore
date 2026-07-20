@@ -6153,22 +6153,13 @@ function ensureWriteFab(){
   // 言語切替のたびに再実行されても常に現在の言語のラベルへ更新する
   btn.setAttribute('aria-label', t('heroCta'));
   btn.title = t('heroCta');
-  // ★Hotfix4追加：「書く」の文字ラベルを撤去し、店の正式ロゴ（favicon-logo /
-  // assets/shop-seal.png、Hero下部の蔵書印と同じ画像）を表示する無地の円ボタンへ変更。
-  // アクセシブルな名前はaria-label/titleのt('heroCta')のまま維持し、画像はalt=""の装飾扱いにする。
-  let icon = btn.querySelector('img.write-fab-icon');
-  if(!icon){
-    btn.textContent = '';
-    icon = document.createElement('img');
-    icon.className = 'write-fab-icon';
-    icon.src = 'assets/shop-seal.png';
-    icon.alt = '';
-    icon.width = 112;
-    icon.height = 112;
-    icon.loading = 'lazy';
-    icon.decoding = 'async';
-    btn.appendChild(icon);
-  }
+  // ★Hotfix4ロールバック：ロゴ画像（assets/shop-seal.png）を円ボタンいっぱいに表示する試みは、
+  // 本番環境で画像読み込みに失敗し「壊れた画像」アイコン（左下の“ハテナ”表示）として見えてしまう
+  // 不具合が確認されたため撤回。他9件の修正・保存互換性には影響しないよう、この関数のみを
+  // Hotfix4以前の「書く」文字ラベル表示へ戻す。
+  const existingIcon = btn.querySelector('img.write-fab-icon');
+  if(existingIcon) existingIcon.remove();
+  btn.textContent = t('writeFabLabel');
   btn.onclick = ()=>{
     goToPage('desk');
     buzz(8);
