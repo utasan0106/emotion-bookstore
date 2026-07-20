@@ -200,7 +200,9 @@ const MESSAGES = {
     emptySpineTooltip: "まだ中身が書かれていない、空の背表紙。タップすると編纂机へ。",
     trendDetailSummary: "感情の地図を詳しく見る",
     trendNote: "※月次「感情取扱説明書」レポートの簡易デモです。この地図はあなたにだけ見えています。",
-    shioriCardTitle: "今日の栞", shioriCardNote: "あなたの本棚を眺めた店主から、一枚。",
+    // ★Hotfix4.1：栞が「その日に書いた棚」ではなく「本棚全体でいちばん冊数の多い棚」を
+    // 見て綴られることを明示する。悲しみの棚に書いた日に「わくわく」の栞が出る等の違和感を防ぐ。
+    shioriCardTitle: "今日の栞", shioriCardNote: "本棚ぜんたいを眺めた店主から、一枚。今日綴った一冊ではなく、いちばん多く並んでいる棚のお話です。",
     shioriLabel: "栞 — 店主より", shioriBtn: "栞を受け取る",
     footerBrand: "『みんなの感情書店』",
     footerNote: "綴った言葉はサーバーには送信されず、この端末にのみ保存されます。",
@@ -527,7 +529,7 @@ const MESSAGES = {
     emptySpineTooltip: "An empty spine with nothing written yet. Tap it to go to the writing desk.",
     trendDetailSummary: "See your emotion map in detail",
     trendNote: "※ A simple demo of the monthly \"Emotion Handbook\" report. This map is visible only to you.",
-    shioriCardTitle: "Today's Bookmark", shioriCardNote: "A note from the shopkeeper, after looking over your bookshelf.",
+    shioriCardTitle: "Today's Bookmark", shioriCardNote: "A note from the shopkeeper, after looking over your whole bookshelf — about the shelf that holds the most books, not the one you wrote in today.",
     shioriLabel: "Bookmark — from the shopkeeper", shioriBtn: "Receive today's bookmark",
     footerBrand: "\"The Bookstore of Feelings\"",
     footerNote: "What you write is never sent to a server — it's stored only on this device.",
@@ -762,6 +764,9 @@ function applyLanguage(){
   if(typeof renderCurrentShopDate === 'function') renderCurrentShopDate();
   // ★英語モード監査：書くFABのaria-label/title/文字ラベルも言語切替のたびに更新する。
   if(typeof ensureWriteFab === 'function') ensureWriteFab();
+  // ★Hotfix4.1：受け取り頁（棚選択select）を開いたまま言語切替した場合も、
+  // option の表示名を再読み込みなしで現在の言語へ追従させる（選択中のIDは維持）。
+  if(typeof refreshUnfiledShelfPickerLabels === 'function') refreshUnfiledShelfPickerLabels();
   // ★英語モード監査：月間フェア（#fairBox）は起動時に一度だけ描画されるため、
   // 言語切替時も再描画して見出し・ボタン文言を現在の言語へ追従させる
   // （fair.line自体はdata.js由来の季節文のため、日本語のまま残る＝許容範囲）。
@@ -4233,6 +4238,38 @@ function hideUnfiledShelfPicker(){
   if(box){ box.innerHTML = ''; box.classList.add('hidden'); }
 }
 
+// ★Hotfix4.1追加：受け取り頁（棚選択）を開いたまま言語を切り替えた場合に、
+// 再読み込みなしで option の表示名だけを現在の言語へ更新する。
+// 選択中の value（内部カテゴリID）は保持し、未選択（プレースホルダー）の場合は未選択のまま維持する。
+// 並び順・選択肢の数・value は一切変更しない（表示ラベルのみの更新）。
+function refreshUnfiledShelfPickerLabels(){
+  const box = document.getElementById('unfiledShelfPicker');
+  if(!box || box.classList.contains('hidden')) return;
+  const select = document.getElementById('unfiledShelfSelect');
+  if(!select) return;
+  const keepValue = select.value; // 内部IDを保持
+  Array.from(select.options).forEach(o=>{
+    if(o.value === ''){
+      o.textContent = t('manaReceivePlaceholder');
+      return;
+    }
+    const cat = CATEGORIES.find(c=>c.id === o.value);
+    if(cat) o.textContent = categoryLabelFor(cat);
+  });
+  select.value = keepValue; // 切替前後で選択状態を維持
+  const label = box.querySelector('label[for="unfiledShelfSelect"]');
+  if(label) label.textContent = t('manaReceiveShelfLabel');
+  const confirmBtn = document.getElementById('unfiledShelfConfirm');
+  if(confirmBtn) confirmBtn.textContent = t('manaReceiveConfirm');
+  const skipBtn = document.getElementById('unfiledShelfSkip');
+  if(skipBtn) skipBtn.textContent = t('manaReceiveSkip');
+  const pageLabel = box.querySelector('.mana-page-label');
+  if(pageLabel) pageLabel.textContent = t('manaPageHeading');
+  const line = box.querySelector('.mana-receive-line');
+  if(line) line.textContent = t('manaReceiveLine');
+  box.setAttribute('aria-label', t('manaReceiveAriaLabel'));
+}
+
 function showUnfiledShelfPicker(entry){
   // ★v1.3最終統合：単なる「任意の棚収納UI」から、店主まなが本を預かる場面（受け取り頁）へ
   // 再構成する。新しい別保存処理や別entryは作らない（現行の同じentryを使う）。
@@ -4306,10 +4343,13 @@ function showUnfiledShelfPicker(entry){
   placeholder.selected = true;
   placeholder.disabled = true;
   select.appendChild(placeholder);
+  // ★Hotfix4.1：英語モードでも option の表示名が生の日本語（cat.label）のままだった不具合を修正。
+  // 棚タブ・棚見出しなど他のUIと同じ categoryLabelFor() を通し、既存のCATEGORY_LABEL_EN（21棚）を
+  // そのまま再利用する（新しい英訳は作らない）。option.value は内部IDのまま一切変更しない。
   CATEGORIES.forEach(c=>{
     const o = document.createElement('option');
     o.value = c.id;
-    o.textContent = c.label;
+    o.textContent = categoryLabelFor(c);
     select.appendChild(o);
   });
 
