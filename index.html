@@ -337,45 +337,72 @@ body.night .about-data-content{
            #keeperFigureというIDは新しいラッパーへ引き継がない（main.js側の参照は
            if(kf){...}のnullセーフな形のまま維持されるため、旧「頷き」演出
            （.keeper.listening .book/.head のtransform）は新しい静物には一切適用されない）。 -->
+      <!-- ★VisualPolishFix1（P2）：旧版のフラットな静物を、Visual Redesignの木・紙・真鍮・
+           小さな灯りのトークンで再構成する。新規画像・外部画像・画像生成APIは使用せず、
+           インラインSVGの範囲だけで作り直している。
+           維持しているもの：.counter-desk-still / .counter-lamp-still / .counter-ledger-still の
+           3グループ構成、aria-hidden="true"、focusable="false"、<details>が直後に続く配置。
+           やめたもの：夜モードでピンクになる var(--wine) の栞、明るすぎる var(--gold) の支柱、
+           灯りに見えない小さな円、天板を横切る単調な2本線。
+           追加していないもの：人物、アニメーション、@keyframes、粒子、発光の輪、外部参照。 -->
       <div class="keeper-vignette" aria-hidden="true">
-        <svg viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <svg viewBox="0 0 360 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
           <defs>
-            <radialGradient id="counterGlow" cx="50%" cy="35%" r="65%">
-              <stop offset="0%" stop-color="var(--lamp-glow)" stop-opacity="0.32"/>
-              <stop offset="100%" stop-color="var(--lamp-glow)" stop-opacity="0"/>
+            <!-- 灯りの落ちる範囲。静止のみ（明滅・脈動・アニメーションは追加しない）。
+                 stop-colorはCSS変数に依存させず実色で指定する（古いSafariでvar()が
+                 解決されず灯りが消える事故を避けるため）。 -->
+            <radialGradient id="counterGlow" cx="30%" cy="44%" r="56%">
+              <stop offset="0%"   stop-color="#E0A659" stop-opacity="0.18"/>
+              <stop offset="60%"  stop-color="#E0A659" stop-opacity="0.05"/>
+              <stop offset="100%" stop-color="#E0A659" stop-opacity="0"/>
             </radialGradient>
           </defs>
-          <!-- 灯りのにじみ（静止のみ。明滅・脈動は追加しない） -->
-          <ellipse cx="175" cy="60" rx="95" ry="34" fill="url(#counterGlow)"/>
 
-          <!-- 木の番台：太い一本線ではなく、天板の厚みとわずかな奥行きを持たせる -->
+          <!-- 灯りが落ちている範囲。輪郭を持たせず、背景の暗がりへそのまま溶かす -->
+          <ellipse cx="110" cy="84" rx="128" ry="50" fill="url(#counterGlow)"/>
+
+          <!-- 長く使われた木の天板。灯りの当たる奥の面／手前の面／厚みのある前小口。
+               色はVisual Redesignトークンを使い、解決できない環境向けに実色を併記する。 -->
           <g class="counter-desk-still">
-            <path d="M8,84 L312,80 L312,90 L8,94 Z" fill="var(--wood-2)"/>
-            <path d="M8,94 L312,90 L312,102 L8,106 Z" fill="var(--wood)"/>
-            <path d="M20,88 L300,84.5" stroke="var(--wood-2)" stroke-width="1" opacity="0.5" fill="none"/>
-            <path d="M20,97 L300,93.5" stroke="var(--paper-shadow)" stroke-width="1" opacity="0.3" fill="none"/>
+            <path d="M6,96 L354,86 L354,102 L6,110 Z"  fill="var(--vr-wood-lit, #4E3A26)"/>
+            <path d="M6,110 L354,102 L354,116 L6,126 Z" fill="var(--vr-wood, #3A2C1E)"/>
+            <path d="M6,126 L354,116 L354,128 L6,140 Z" fill="var(--vr-wood-dark, #241A12)"/>
+            <path d="M6,96 L354,86"   stroke="var(--vr-brass, #8A6B37)"     stroke-width="0.8" opacity="0.30" fill="none"/>
+            <path d="M30,104 L336,94" stroke="var(--vr-wood-dark, #241A12)" stroke-width="0.7" opacity="0.40" fill="none"/>
+            <path d="M24,120 L328,111" stroke="var(--vr-wood-dark, #241A12)" stroke-width="0.7" opacity="0.28" fill="none"/>
           </g>
 
-          <!-- 小さな卓上ランプ：真鍮の支柱と小さな傘。画鋲・信号・きのこに見える丸だけの形は廃止 -->
+          <!-- 小さな卓上ランプ。くすんだ真鍮の支柱と、傾いた小さな傘 -->
           <g class="counter-lamp-still">
-            <ellipse cx="120" cy="88" rx="9" ry="2.6" fill="var(--wood)" opacity="0.5"/>
-            <rect x="118.5" y="40" width="3" height="46" rx="1.5" fill="var(--gold)" opacity="0.85"/>
-            <path d="M110,26 L130,26 L137,40 L103,40 Z" fill="var(--wood)" opacity="0.9"/>
-            <path d="M103,40 L137,40" stroke="var(--gold)" stroke-width="1" opacity="0.55"/>
-            <circle cx="120" cy="24" r="2" fill="var(--lamp-glow)"/>
-            <circle cx="120" cy="52" r="2" fill="var(--lamp-glow)" opacity="0.9"/>
+            <ellipse cx="66" cy="99" rx="15" ry="4" fill="var(--vr-wood-dark, #241A12)"/>
+            <ellipse cx="66" cy="97.6" rx="10.5" ry="2.8" fill="var(--vr-brass, #8A6B37)" opacity="0.75"/>
+            <rect x="64.7" y="46" width="2.6" height="52" fill="var(--vr-brass, #8A6B37)"/>
+            <path d="M65.6,52 L66.4,52 L66.4,96 L65.6,96 Z" fill="var(--vr-brass-lit, #B08A4E)" opacity="0.6"/>
+            <path d="M48,44 L84,38 L94,58 L40,58 Z" fill="var(--vr-wood, #3A2C1E)"/>
+            <path d="M48,44 L84,38 L86,42 L50,48 Z" fill="var(--vr-wood-lit, #4E3A26)"/>
+            <path d="M40,58 L94,58 L92,61 L42,61 Z" fill="var(--vr-lamp, #E0A659)" opacity="0.30"/>
+            <path d="M48,44 L84,38" stroke="var(--vr-brass-lit, #B08A4E)" stroke-width="0.9" opacity="0.5" fill="none"/>
           </g>
 
-          <!-- 開かれた帳面：人物の代わりとなる主役。真上からの完全なアイコンにはしない -->
+          <!-- 開かれた帳面。真上からのアイコンにはせず、綴じ目と紙の反りを残す -->
           <g class="counter-ledger-still">
-            <path d="M156,82 L200,78 L200,54 L160,58 Z" fill="#FBF2DC"/>
-            <path d="M200,78 L246,82 L242,58 L200,54 Z" fill="#F5E8C9"/>
-            <path d="M200,54 L200,78" stroke="#C9AF80" stroke-width="1"/>
-            <path d="M168,64 L192,61.6" stroke="#7A6A50" stroke-width="0.8" opacity="0.45"/>
-            <path d="M168,69 L192,66.6" stroke="#7A6A50" stroke-width="0.8" opacity="0.45"/>
-            <path d="M168,74 L188,71.8" stroke="#7A6A50" stroke-width="0.8" opacity="0.35"/>
-            <!-- 栞 -->
-            <path d="M214,56 L220,56 L220,88 L217,84 L214,88 Z" fill="var(--wine)" opacity="0.85"/>
+            <path d="M168,98 L228,91 L228,60 L172,67 Z" fill="var(--vr-paper, #E7DBC1)"/>
+            <path d="M228,91 L290,96 L284,66 L228,60 Z" fill="var(--vr-paper-2, #D6C5A4)"/>
+            <path d="M228,60 L228,91"  stroke="#9C8558" stroke-width="1"   opacity="0.8"  fill="none"/>
+            <path d="M168,98 L172,67"  stroke="#9C8558" stroke-width="0.7" opacity="0.35" fill="none"/>
+            <path d="M181,75 L219,70.6" stroke="#6B5B41" stroke-width="0.8" opacity="0.45" fill="none"/>
+            <path d="M181,81 L219,76.6" stroke="#6B5B41" stroke-width="0.8" opacity="0.45" fill="none"/>
+            <path d="M181,87 L213,83.4" stroke="#6B5B41" stroke-width="0.8" opacity="0.32" fill="none"/>
+            <path d="M239,70 L274,73.2" stroke="#6B5B41" stroke-width="0.8" opacity="0.36" fill="none"/>
+            <path d="M239,76 L270,78.8" stroke="#6B5B41" stroke-width="0.8" opacity="0.26" fill="none"/>
+            <!-- 栞。夜モードでピンクへ転ぶ var(--wine) をやめ、くすんだ臙脂に固定する -->
+            <path d="M247,58 L254,58.7 L254,97 L250.5,93 L247,97.5 Z" fill="#5E2A30"/>
+            <!-- 鉛筆。置きっぱなしの筆記具として、人の痕跡をひとつ残す -->
+            <path d="M298,93 L334,89 L334,91.8 L298,95.8 Z" fill="var(--vr-brass, #8A6B37)" opacity="0.6"/>
+            <path d="M294,93.4 L298,93 L298,95.8 L294.6,96.2 Z" fill="var(--vr-paper-2, #D6C5A4)" opacity="0.85"/>
+            <!-- 書きかけの紙片。帳面の手前に一枚だけ -->
+            <path d="M112,112 L162,106 L164,118 L114,124 Z" fill="var(--vr-paper-2, #D6C5A4)" opacity="0.45"/>
+            <path d="M122,115 L152,111.5" stroke="#6B5B41" stroke-width="0.7" opacity="0.32" fill="none"/>
           </g>
         </svg>
       </div>
