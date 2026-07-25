@@ -14,8 +14,17 @@ const CSS  = fs.readFileSync(path.join(SRC, 'style.css'), 'utf-8');
 const HTML = fs.readFileSync(path.join(SRC, 'index.html'), 'utf-8');
 const JS   = fs.readFileSync(path.join(SRC, 'main.js'), 'utf-8');
 // VR1で追加したブロックだけを切り出す（既存CSSへの混入がないことも併せて確認する）
-const VR_MARK = '■ Visual Redesign RC1（VR1）';
-const VR_CSS  = CSS.slice(CSS.indexOf(VR_MARK));
+const VR_MARK   = '■ Visual Redesign RC1（VR1）';
+const VR12_MARK = '■ Visual Redesign RC1.2';
+// VR1ブロック（RC1.2ブロックの手前まで）と、RC1.2ブロックをそれぞれ切り出す
+// 目印は解説コメントの内側にあるため、それを囲むコメントブロックの先頭から切り出す
+const blockStart = mark => CSS.lastIndexOf('/*', CSS.indexOf(mark));
+const VR_CSS   = CSS.slice(blockStart(VR_MARK), blockStart(VR12_MARK));
+const VR12_CSS = CSS.slice(blockStart(VR12_MARK));
+// コメントを除いた実CSSだけを見るための版（説明文中の語をパターン検出しないため）
+const strip     = t => t.replace(/\/\*[\s\S]*?\*\//g, '');
+const VR_DECL   = strip(VR_CSS);
+const VR12_DECL = strip(VR12_CSS);
 
 async function createEnv(opts){
   opts = opts || {};
@@ -57,7 +66,7 @@ async function main(){
     ok('(1) IndexedDBストア kv が不変', /const IDB_STORE\s*=\s*'kv'/.test(JS));
     ok('(1) BACKUP_KEYS の構成が不変', /BACKUP_KEYS\s*=\s*\[[\s\S]{0,400}?'emotion-bookstore-library'[\s\S]{0,400}?DRAFT_KEY/.test(JS));
     ok('(1) VR1のCSSブロックは localStorage / indexedDB を一切参照しない',
-       !/localStorage|indexedDB/i.test(VR_CSS));
+       !/localStorage|indexedDB/i.test(VR_DECL));
   }
 
   // ===== 2) 正規の画面遷移と主要イベント処理が不変であること =====
@@ -271,7 +280,9 @@ async function main(){
 
   // ===== 12) VR1の変更が既存CSSの上書き・削除でないこと =====
   {
-    ok('(12) VR1ブロックは style.css の末尾に追加されている', CSS.trimEnd().endsWith('/* 自動再生動画・常時動く光は使用しない（新規追加なし） */'));
+    ok('(12) VR1ブロックの直後にRC1.2ブロックが続き、既存CSSへ割り込んでいない',
+       CSS.indexOf(VR_MARK) < CSS.indexOf(VR12_MARK) &&
+       VR_CSS.trimEnd().endsWith('/* 自動再生動画・常時動く光は使用しない（新規追加なし） */'));
     ok('(12) 既存の :root トークンを削除していない',
        /--paper:#EAD9B8/.test(CSS) && /--wood:#3E2A1C/.test(CSS) && /--gold:#A8823C/.test(CSS));
     ok('(12) 既存の体験モード切替ルールを削除していない',
@@ -339,6 +350,130 @@ async function main(){
     const keys = ['vrStageManaLabel','vrStageManaLead','vrStageBindLabel','vrStageBindLead','vrGentleNote'];
     keys.forEach(k => ok(`(13) i18nキー ${k} が日英2箇所に定義されている`,
        (JS.match(new RegExp(`\\b${k}\\s*:`, 'g')) || []).length === 2));
+  }
+
+  // ===== 15) RC1.2：実ブラウザPreviewで判明した視覚修正 =====
+  {
+    const files = fs.readdirSync(path.join(SRC, 'assets'));
+
+    // --- P1-1：表紙の既存Hero写真の復旧 ---
+    ok('(15/P1-1) Hero写真のimgパスが相対パスになっている',
+       /<img src="assets\/hero-bookstore-desktop\.webp"/.test(HTML));
+    ok('(15/P1-1) モバイル用sourceのsrcsetも相対パスになっている',
+       /srcset="assets\/hero-bookstore-mobile\.webp"/.test(HTML));
+    ok('(15/P1-1) Hero写真にルート絶対パス(/assets/)が残っていない',
+       !/hero-bookstore-(desktop|mobile)\.webp/.test(HTML.split('/assets/').slice(1).join('/assets/').slice(0,0) || '') &&
+       !/["']\/assets\/hero-bookstore/.test(HTML));
+    ok('(15/P1-1) CSSでもデスクトップ用の既存Hero写真を敷いている',
+       /\.entrance\.hero\{[^}]*url\(['"]assets\/hero-bookstore-desktop\.webp['"]\)/.test(CSS));
+    ok('(15/P1-1) モバイル幅では既存のモバイル用アセットへ切り替わる',
+       /@media \(max-width:640px\)\{[\s\S]{0,400}url\(['"]assets\/hero-bookstore-mobile\.webp['"]\)/.test(CSS));
+    ok('(15/P1-1) 使用しているHero画像は同梱ローカルアセットとして実在する',
+       files.includes('hero-bookstore-desktop.webp') && files.includes('hero-bookstore-mobile.webp'));
+    ok('(15/P1-1) 表紙に新しい外部URL・生成画像を追加していない',
+       !/https?:\/\/[^)"']*\.(webp|png|jpe?g)/i.test(VR_CSS + VR12_CSS));
+    ok('(15/P1-1) 写真を単色背景で置き換えていない（<picture>とimgが残っている）',
+       /<picture class="hero-photo"/.test(HTML) && /<img src="assets\/hero-bookstore-desktop\.webp"/.test(HTML));
+    ok('(15/P1-1) 写真の上に暗いオーバーレイと下部グラデーションが重なっている',
+       /\.entrance\.hero \.hero-photo::after\{[\s\S]{0,700}linear-gradient\(0deg/.test(VR_CSS));
+    ok('(15/P1-1) オーバーレイを写真が見えなくなるほど暗くしていない（最大不透明度0.9未満）',
+       Array.from(VR_CSS.matchAll(/\.entrance\.hero \.hero-photo::after\{([\s\S]*?)\}/g))
+         .flatMap(m => Array.from(m[1].matchAll(/rgba\(10,8,6,([0-9.]+)\)/g)).map(x => parseFloat(x[1])))
+         .every(a => a < 0.9));
+
+    // --- P1-2：固定の丸い「書く」を非表示 ---
+    ok('(15/P1-2) Visual Redesign状態で .write-fab を display:none にしている',
+       /body\.experience-ready \.write-fab,\s*\n?body\.experience-open\s+\.write-fab\{[^}]*display\s*:\s*none/.test(VR12_CSS));
+    ok('(15/P1-2) JS（ensureWriteFab）を変更していない',
+       /function ensureWriteFab\(\)\{/.test(JS) && /btn\.className = 'write-fab';/.test(JS));
+    ok('(15/P1-2) writeFab のクリック処理（goToPage(\'desk\')）が不変',
+       /btn\.onclick\s*=\s*\(\)=>\{\s*\n\s*goToPage\('desk'\);/.test(JS));
+    {
+      const { document } = await createEnv({});
+      ok('(15/P1-2) 表紙の「今の気持ちを書く」が残っている',
+         !!document.querySelector('.entrance.hero .enter-btn'));
+      ok('(15/P1-2) 番台から書く導線（まだ決めずに書く）が残っている',
+         !!document.getElementById('counterWriteWithoutChoosing'));
+      ok('(15/P1-2) 編纂机の入力と製本が残っている',
+         !!document.getElementById('storyInput') && !!document.getElementById('submitStory'));
+      ok('(15/P1-2) 本棚の「もう一冊つくる」が残っている',
+         !!document.getElementById('bookshelfArrivalMakeAnother'));
+      ok('(15/P1-2) 店内メニューからの移動が残っている',
+         !!document.querySelector('[data-menu-page="desk"]'));
+    }
+
+    // --- P1-3：補助文字のコントラスト ---
+    const hex = c => [parseInt(c.slice(1,3),16), parseInt(c.slice(3,5),16), parseInt(c.slice(5,7),16)];
+    const lin = v => { v/=255; return v<=0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); };
+    const lum = c => { const [r,g,b]=hex(c); return 0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b); };
+    const ratio = (a,b) => { const l1=lum(a), l2=lum(b); const [hi,lo]=l1>l2?[l1,l2]:[l2,l1]; return (hi+0.05)/(lo+0.05); };
+    const tok = n => (CSS.match(new RegExp('--vr-' + n + ':(#[0-9A-Fa-f]{6})')) || [])[1];
+    const BG = '#14100B'; // --vr-night-1（店内の基準色）
+    const muted = tok('text-muted'), faint = tok('text-faint');
+    const body_ = tok('text-body'), head = tok('text');
+    ok('(15/P1-3) --vr-text-muted のコントラストが4.5:1以上', ratio(muted, BG) >= 4.5);
+    ok('(15/P1-3) --vr-text-faint のコントラストが4.5:1以上', ratio(faint, BG) >= 4.5);
+    ok('(15/P1-3) 白（#FFFFFF）にはしていない',
+       [muted, faint, body_, head].every(c => c.toUpperCase() !== '#FFFFFF'));
+    ok('(15/P1-3) 階層が維持されている（見出し > 本文 > 補助 > いちばん静か）',
+       lum(head) > lum(body_) && lum(body_) > lum(muted) && lum(muted) > lum(faint));
+    ok('(15/P1-3) 夜の書店の色相（暖色寄り）を保っている（R>G>B）',
+       [muted, faint].every(c => { const [r,g,b]=hex(c); return r>g && g>b; }));
+    ok('(15/P1-3) 表紙の安心表示・保存説明の色を明示的に引き上げている',
+       /\.entrance\.hero \.trust-row \.trust-badge\{[^}]*color\s*:\s*var\(--vr-text-body\)/.test(VR12_CSS) &&
+       /\.entrance\.hero \.first-visit-note\{[^}]*color\s*:\s*var\(--vr-text-muted\)/.test(VR12_CSS));
+    ok('(15/P1-3) ヘッダーの日付を引き上げている',
+       /\.shop-current-date\{[^}]*color\s*:\s*var\(--vr-text-muted\)/.test(VR12_CSS));
+    ok('(15/P1-3) section-sub / field-hint / photo-hint / 本棚の空状態を引き上げている',
+       /\.section-sub\{[^}]*color\s*:\s*var\(--vr-text-body\)/.test(VR12_CSS) &&
+       /\.field-hint,/.test(VR12_CSS) && /\.photo-hint,/.test(VR12_CSS) &&
+       /\.shelf-empty\{[^}]*color\s*:\s*var\(--vr-text-body\)/.test(VR12_CSS));
+
+    // --- P2-1：感情の棚のデスクトップ中央配置 ---
+    ok('(15/P2-1) デスクトップ幅でのみ中央寄せしている（min-width:1100px）',
+       /@media \(min-width:1100px\)\{[\s\S]{0,900}#shelves \.shelf-group-row\{[^}]*justify-content\s*:\s*center/.test(VR12_CSS));
+    ok('(15/P2-1) 棚グループの見出しも中央基準になっている',
+       /#shelves \.shelf-group-label\{[^}]*text-align\s*:\s*center/.test(VR12_CSS));
+    ok('(15/P2-1) 番台の選択肢群も同じ基準で中央へ揃えている',
+       /#counter \.counter-shelf-groups\{[^}]*justify-content\s*:\s*center/.test(VR12_CSS));
+    ok('(15/P2-1) モバイルの横スクロール・スワイプ挙動へ触れていない',
+       !/overflow-x|scroll-snap|touch-action/.test(VR12_CSS));
+    ok('(15/P2-1) スワイプ検出領域 #shelfSwipeZone の指定を変更していない',
+       !/shelfSwipeZone|shelf-swipe-zone/.test(VR12_CSS));
+    ok('(15/P2-1) 縦書き（writing-mode）へ触れていない', !/writing-mode/.test(VR12_CSS));
+
+    // --- P2-2：製本後通知の配色 ---
+    ok('(15/P2-2) 通知の背景から var(--wine)（ピンク寄りの赤）を外している',
+       /\.milestone-toast\{[^}]*background\s*:\s*linear-gradient\(180deg, var\(--vr-wood\)/.test(VR12_CSS));
+    ok('(15/P2-2) 文字色を紙色にしている',
+       /\.milestone-toast\{[^}]*color\s*:\s*var\(--vr-paper\)/.test(VR12_CSS));
+    ok('(15/P2-2) 強い角丸を使っていない（border-radius <= 2px）',
+       Array.from(VR12_CSS.matchAll(/border-radius\s*:\s*([^;]+);/g))
+            .every(m => /^(0|1px|2px)$/.test(m[1].trim())));
+    ok('(15/P2-2) 発光（box-shadow の光の輪）を追加していない',
+       !/box-shadow\s*:\s*0 0 /.test(VR12_CSS));
+    ok('(15/P2-2) 鮮やかな色（彩度の高い原色）を使っていない（HSL彩度 < 0.62）',
+       Array.from(VR12_DECL.matchAll(/#([0-9A-Fa-f]{6})/g)).map(m=>m[1]).every(h=>{
+         const r=parseInt(h.slice(0,2),16)/255, g=parseInt(h.slice(2,4),16)/255, b=parseInt(h.slice(4,6),16)/255;
+         const mx=Math.max(r,g,b), mn=Math.min(r,g,b), l=(mx+mn)/2;
+         const sat = (mx===mn) ? 0 : (mx-mn)/(1-Math.abs(2*l-1));
+         return sat < 0.62;
+       }));
+    ok('(15/P2-2) 通知の文言・表示時間・動作（JS側）を変更していない',
+       /toast\.className = 'milestone-toast';/.test(JS) &&
+       /toast\.className = 'milestone-toast gentle-toast';/.test(JS) &&
+       /requestAnimationFrame\(\(\)=>toast\.classList\.add\('show'\)\)/.test(JS));
+
+    // --- RC1.2で壊していないこと ---
+    ok('(15) 店主まなの人物画像の非表示が維持されている',
+       /body\.experience-open \.mana-receive-figure\{[^}]*display\s*:\s*none/.test(VR_CSS));
+    ok('(15) 保存キー・保存形式・IndexedDBを変更していない',
+       /const STORAGE_VERSION\s*=\s*1\s*;/.test(JS) && /const IDB_NAME\s*=\s*'emotion-bookstore'/.test(JS));
+    ok('(15) RC1.2ブロックは localStorage / indexedDB を参照しない',
+       !/localStorage|indexedDB/i.test(VR12_DECL));
+    ok('(15) RC1.2で新しい @keyframes を追加していない', !/@keyframes/.test(VR12_CSS));
+    ok('(15) RC1.2ブロックは style.css の末尾にある',
+       CSS.trimEnd().endsWith('}'));
   }
 
   console.log('\n=== SUMMARY ===');

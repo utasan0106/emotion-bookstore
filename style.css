@@ -5759,10 +5759,15 @@ body.no-motion .about-accordion-content{ transition:none !important; }
   /* 紙と文字 */
   --vr-paper:#E7DBC1;          /* 栞・原稿の紙 */
   --vr-paper-2:#D6C5A4;        /* 紙の陰 */
-  --vr-text:#E9DFCC;           /* 見出し */
-  --vr-text-body:#CDBFA6;      /* 本文 */
-  --vr-text-muted:#9C8F79;     /* 補助文 */
-  --vr-text-faint:#7C7161;     /* いちばん静かな文字 */
+  --vr-text:#F0E7D6;           /* 見出し */
+  --vr-text-body:#DCD0B9;      /* 本文 */
+  /* ★RC1.2（P1-3）：実画面で補助文字が背景へ沈む指摘を受け、muted / faint の明度を上げる。
+     夜の書店の色相（暖色寄りのグレージュ）は維持し、白（#FFF）へは寄せない。
+     階層は 見出し > 本文 > 補助 > いちばん静か の順で従来どおり保つ。
+       muted : #9C8F79 → #BCAF98
+       faint : #7C7161 → #A2957E                                             */
+  --vr-text-muted:#BCAF98;     /* 補助文 */
+  --vr-text-faint:#A2957E;     /* いちばん静かな文字 */
 
   /* 罫線（細く抑制された線だけを使う） */
   --vr-rule:rgba(200,170,120,0.20);
@@ -6042,6 +6047,29 @@ body.experience-open select:focus-visible{
 .entrance.hero{
   --vr-cover-slot:var(--vr-bg-cover, none);
 }
+/* ★RC1.2（P1-1）：既存Hero写真の復旧。<picture>のimgが何らかの理由で読めなかった場合でも
+   （既存のonerrorが .hero-photo を display:none にするため）表紙が単色・グラデーションだけに
+   ならないよう、同じ既存ローカルアセットをCSS背景としても敷く。
+   これは写真の「置き換え」ではなく、同一写真の二重化である。新規画像・外部URL・
+   画像生成は使用していない。imgが正常に読めた場合は同じ位置に同じ写真が重なるだけで、
+   見た目は変わらない。 */
+.entrance.hero{
+  background-image:
+    linear-gradient(180deg, rgba(11,18,28,0.22) 0%, rgba(11,18,28,0.30) 55%, rgba(11,18,28,0.46) 100%),
+    url('assets/hero-bookstore-desktop.webp');
+  background-size:cover, cover;
+  background-position:50% 42%, 50% 42%;
+  background-repeat:no-repeat, no-repeat;
+}
+/* モバイルでは既存のモバイル用アセットへ切り替える（<source media="(max-width:640px)"> と同条件） */
+@media (max-width:640px){
+  .entrance.hero{
+    background-image:
+      linear-gradient(180deg, rgba(11,18,28,0.22) 0%, rgba(11,18,28,0.30) 55%, rgba(11,18,28,0.46) 100%),
+      url('assets/hero-bookstore-mobile.webp');
+    background-position:52% 38%, 52% 38%;
+  }
+}
 /* 既存Hero写真（店の入口・夜の路地）はそのまま主役に使う。差し込み写真に見せず、
    下端を地の暗さへ溶かす。画像読み込み失敗時は既存の夜空グラデーションだけが残る。 */
 .entrance.hero .hero-photo::after{
@@ -6049,10 +6077,13 @@ body.experience-open select:focus-visible{
   position:absolute;
   inset:0;
   pointer-events:none;
+  /* ★RC1.2（P1-1）：写真が見えなくなるほど暗くしないよう濃度を下げる。
+     文字の可読性は、下部グラデーションと各要素側の背景で確保する。
+       下部 0.96→0.88 / 途中 0.74→0.62 / 上部 0.42→0.32 / 周辺 0.50→0.38 */
   background:
-    linear-gradient(0deg,  rgba(10,8,6,0.96) 0%, rgba(10,8,6,0.74) 16%, rgba(10,8,6,0.12) 46%, rgba(10,8,6,0) 64%),
-    linear-gradient(180deg, rgba(10,8,6,0.42) 0%, rgba(10,8,6,0) 28%),
-    radial-gradient(120% 92% at 62% 40%, rgba(10,8,6,0) 34%, rgba(10,8,6,0.5) 100%);
+    linear-gradient(0deg,  rgba(10,8,6,0.88) 0%, rgba(10,8,6,0.62) 18%, rgba(10,8,6,0.10) 48%, rgba(10,8,6,0) 66%),
+    linear-gradient(180deg, rgba(10,8,6,0.32) 0%, rgba(10,8,6,0) 28%),
+    radial-gradient(120% 92% at 62% 40%, rgba(10,8,6,0) 38%, rgba(10,8,6,0.38) 100%);
 }
 .entrance.hero .eyebrow{
   letter-spacing:.30em;
@@ -6769,3 +6800,154 @@ body.experience-open .trend-note{
   }
 }
 /* 自動再生動画・常時動く光は使用しない（新規追加なし） */
+
+/* ============================================================================
+ * ■ Visual Redesign RC1.2 — 実ブラウザPreviewで判明した視覚修正（P1×3 / P2×2）
+ * ----------------------------------------------------------------------------
+ * 適用範囲はCSSのみ。保存キー・保存形式・IndexedDB・バックアップ・主要画面遷移・
+ * 推薦／音楽／短い物語・店主まなの人物画像非表示は一切変更していない。
+ * 新規画像・新規外部通信・新機能・リファクタリングも行っていない。
+ * ========================================================================= */
+
+/* ---- P1-2：固定表示の丸い「書く」（#writeFab / .write-fab）を非表示にする ----
+ *  実ブラウザで表紙・番台・感情の棚・編纂机・本棚のすべてに常時表示され、主CTAや
+ *  各画面の既存導線と重複し、チャット／サポートボタンのように見えるため。
+ *  JS（ensureWriteFab）・保存・遷移処理は変更していない。要素はDOMに残るが、
+ *  Visual Redesign状態（JS初期化後＝body.experience-ready / body.experience-open）
+ *  では描画もフォーカスもされない。JS初期化前の縦スクロール表示では従来どおり残る。
+ *  残す導線：表紙「今の気持ちを書く」／番台から書く導線／編纂机の入力と製本／
+ *            本棚「もう一冊つくる」／店内メニューからの移動。
+ * ------------------------------------------------------------------------- */
+body.experience-ready .write-fab,
+body.experience-open  .write-fab{
+  display:none;
+}
+
+/* ---- P1-3：小さい補助文字のコントラスト（トークンは VR1-1 で引き上げ済み） ----
+ *  トークンを経由していなかった箇所を、ここで明示的に引き上げる。
+ *  白へは寄せず、主要見出し（--vr-text）より弱い階層は維持する。
+ * ------------------------------------------------------------------------- */
+/* 表紙：安心表示・保存説明 */
+.entrance.hero .trust-row .trust-badge{
+  color:var(--vr-text-body);
+  border-color:var(--vr-rule);
+  background:rgba(16,12,9,0.62);
+}
+.entrance.hero .first-visit-note{
+  color:var(--vr-text-muted);
+}
+.entrance.hero .sub-tagline{
+  color:var(--vr-text-body);
+}
+.entrance.hero .eyebrow{
+  color:#C79A5C;
+  opacity:1;
+}
+/* ヘッダーの日付 */
+body.experience-open .shop-current-date{
+  color:var(--vr-text-muted);
+}
+/* section-sub / field-hint / photo-hint / 棚周辺の補助文 */
+body.experience-open .section-sub{
+  color:var(--vr-text-body);
+}
+body.experience-open .field-hint,
+body.experience-open .photo-hint,
+body.experience-open .swipe-hint,
+body.experience-open .trend-note,
+body.experience-open .writing-boat-note,
+body.experience-open .vr-gentle-note,
+body.experience-open .story-count,
+body.experience-open .detour-half-note{
+  color:var(--vr-text-muted);
+}
+/* 本棚の空状態 */
+body.experience-open .shelf-empty{
+  color:var(--vr-text-body);
+}
+/* 棚周辺の小見出し */
+body.experience-open .shelf-month-heading,
+body.experience-open .shelf-group-label,
+body.experience-open .counter-note-label,
+body.experience-open .writing-boat-heading,
+body.experience-open .section-head .page-label{
+  color:#C79A5C;
+  opacity:1;
+}
+/* 折りたたみの見出し（本棚の管理・店主について・題名の任意設定） */
+body.experience-open .shelf-admin summary,
+body.experience-open .keeper-bio summary,
+body.experience-open .desk-extra summary,
+body.experience-open .trend-detail summary{
+  color:var(--vr-text-body);
+}
+/* 「（選択中）」の併記も沈ませない */
+body.experience-open .chart-btn[aria-pressed="true"]::after,
+body.experience-open .shelf-tab.active::after,
+body.experience-open .shelf-tab[aria-selected="true"]::after{
+  color:var(--vr-text-body);
+}
+/* 外部リンクの事前明示 */
+body.experience-open .detour-section a[target="_blank"]::after{
+  color:var(--vr-text-muted);
+}
+
+/* ---- P2-1：感情の棚のデスクトップ配置を中央基準へ整える --------------------
+ *  実画面でカテゴリ群が左へ寄り、右に大きな空白が出ていた。棚タブの実体は
+ *  .shelf-tabs > .shelf-group > (.shelf-group-label + .shelf-group-row > .shelf-tab)
+ *  であり、VR1では外側の .shelf-tabs だけを中央寄せしていたため、内側の行が
+ *  左詰めのままだった。デスクトップ幅でのみ、内側も中央基準にする。
+ *  モバイルの縦書き棚・横スクロール・スワイプ挙動には触れない。
+ * ------------------------------------------------------------------------- */
+@media (min-width:1100px){
+  body.experience-open #shelves .shelf-tabs{
+    align-items:center;
+  }
+  body.experience-open #shelves .shelf-group{
+    width:100%;
+    align-items:center;
+  }
+  body.experience-open #shelves .shelf-group-label{
+    text-align:center;
+    width:100%;
+  }
+  body.experience-open #shelves .shelf-group-row{
+    justify-content:center;
+    width:100%;
+  }
+  /* 番台の選択肢群も同じ基準で中央へ揃える */
+  body.experience-open #counter .counter-shelf-groups{
+    justify-content:center;
+  }
+}
+/* タブレット幅でも右側だけが大きく空かないようにする */
+@media (min-width:601px) and (max-width:1099px){
+  body.experience-open #shelves .shelf-group-row{
+    justify-content:center;
+  }
+}
+
+/* ---- P2-2：製本後の通知を書店の配色へ合わせる ------------------------------
+ *  .milestone-toast の背景が var(--wine)（#6E2A34）で、実画面ではピンク色に見え、
+ *  木・紙・真鍮の配色から浮いていた。文言・表示時間・動作（.show の付け外し、
+ *  transition、z-index、位置）は一切変更せず、色と角丸だけを差し替える。
+ *  採用案：暗い木色の背景＋紙色文字。
+ * ------------------------------------------------------------------------- */
+body.experience-ready .milestone-toast,
+body.experience-open  .milestone-toast{
+  background:linear-gradient(180deg, var(--vr-wood) 0%, var(--vr-wood-dark) 100%);
+  color:var(--vr-paper);
+  border:1px solid var(--vr-rule);
+  border-radius:2px;
+  box-shadow:0 10px 26px rgba(0,0,0,0.55);
+}
+/* 穏やかな完了通知（.gentle-toast）も同じ棚の色に揃える（くすんだ紙色＋濃い茶） */
+body.experience-ready .milestone-toast.gentle-toast,
+body.experience-open  .milestone-toast.gentle-toast,
+body.night.experience-open .milestone-toast.gentle-toast{
+  background:linear-gradient(180deg, #D9C9A6 0%, #C3B291 100%);
+  color:#2B2118;
+  border:1px solid rgba(120,96,60,0.55);
+  border-radius:2px;
+  box-shadow:0 10px 26px rgba(0,0,0,0.5);
+}

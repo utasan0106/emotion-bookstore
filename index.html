@@ -235,9 +235,13 @@ body.night .about-data-content{
     <!-- ★v1.3最終統合：完成Hero画像を同梱assets/から読み込む。読み込み失敗時はimgをJSで隠し、
          .entrance.heroの既存CSS背景（夜青のグラデーション）だけで主コピー・CTAが成立する
          フォールバックへ自然に戻る（画像なしでも成立する既存契約を維持）。 -->
+    <!-- ★VisualRedesign RC1.2（P1-1）：実ブラウザで表紙写真が表示されず夜空グラデーションだけに
+         なる不具合の修正。既存 .hero-seal（assets/shop-seal.png）は相対パスで表示できている一方、
+         ここだけがルート絶対パス（/assets/...）だったため、相対パスへ揃える。
+         使用する画像は既存の同梱ローカルアセットのみ。新規画像・外部URL・生成画像は使わない。 -->
     <picture class="hero-photo" aria-hidden="true">
-      <source media="(max-width: 640px)" srcset="/assets/hero-bookstore-mobile.webp">
-      <img src="/assets/hero-bookstore-desktop.webp" alt="" width="1600" height="900"
+      <source media="(max-width: 640px)" srcset="assets/hero-bookstore-mobile.webp">
+      <img src="assets/hero-bookstore-desktop.webp" alt="" width="1600" height="900"
            loading="eager" fetchpriority="high"
            onerror="this.closest('.hero-photo') &amp;&amp; (this.closest('.hero-photo').style.display='none')">
     </picture>
