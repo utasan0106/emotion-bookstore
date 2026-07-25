@@ -6951,3 +6951,283 @@ body.night.experience-open .milestone-toast.gentle-toast{
   border-radius:2px;
   box-shadow:0 10px 26px rgba(0,0,0,0.5);
 }
+
+/* ============================================================================
+ * ■ Visual Polish Fix 1 — 実機（iPhone Safari）で判明した2点の修正
+ * ----------------------------------------------------------------------------
+ * 保存キー・保存形式・IndexedDB・バックアップ・利用者本文・題名・写真・画面遷移・
+ * 正規URL・表紙写真・店主まなの人物画像非表示・本棚／感情の棚／編纂机の構造・
+ * 推薦／本／音楽・短い物語・今日の栞・今月の寄り道・GA4イベント・外部通信は
+ * 一切変更していない。selectの選択肢・値・保存処理にも触れていない。
+ * ========================================================================= */
+
+/* ---- P1：「いつの気持ちですか」等のselect／inputの文字が読めない問題 --------
+ *  原因：body.night は --ink を #EFE6D3（薄いクリーム）へ再定義しており、
+ *        既存の
+ *            body.night .field select, body.night .field input{ color:var(--ink); }
+ *        （詳細度 0,2,2）が、Visual Redesignの
+ *            body.experience-open select{ color:#2B2118; }
+ *        （詳細度 0,1,2）より強い。結果として、Visual Redesignで紙色にした背景の上へ
+ *        薄いクリーム文字が乗り、実機でほぼ読めない状態になっていた。
+ *        対象は #whenSelect・#categorySelect と、同じ .field 配下の
+ *        #titleInput・#tweetInput（同一ルールによる同一原因）。
+ *  方針：詳細度で確実に上回る形で、紙面用の濃いインク色を指定し直す。
+ *        iOS Safari は select / input の文字色を -webkit-text-fill-color で
+ *        上書きすることがあるため、color と併記する。
+ *        背景・角丸・枠線など既存の紙色の意匠は変更しない。
+ * ------------------------------------------------------------------------- */
+body.experience-open .field select,
+body.experience-open .field input,
+body.night.experience-open .field select,
+body.night.experience-open .field input{
+  /* 紙面用インク（既存 :root の --ink と同値。night で反転しない固定値にする） */
+  color:#2B2118;
+  -webkit-text-fill-color:#2B2118;
+  opacity:1;
+  font-size:16px; /* iOSのフォーカス時自動ズーム対策（既存方針を踏襲） */
+  /* ★-webkit-appearance:none はあえて使わない。外観を消すと開閉の標（ネイティブの矢印）
+     まで消え、選択欄として認識しにくくなる実機の指摘を悪化させるため。
+     iOS Safariで問題になるのは文字色であり、-webkit-text-fill-color の併記で足りる。 */
+}
+/* 選択後の値・未選択時の表示値・プルダウン内の選択肢を、いずれも同じ濃さで描く */
+body.experience-open .field select option,
+body.night.experience-open .field select option,
+body.experience-open .field select ~ option,
+body.experience-open #whenSelect option,
+body.experience-open #categorySelect option{
+  color:#2B2118;
+  -webkit-text-fill-color:#2B2118;
+  background-color:#EFE5CE;
+  opacity:1;
+}
+/* disabled／placeholder相当（棚選択の「棚を選んでください」など）も薄くしすぎない */
+body.experience-open .field select option[disabled],
+body.experience-open .field select option[value=""],
+body.experience-open .field select:disabled,
+body.experience-open .field input:disabled{
+  color:#5A4B36;
+  -webkit-text-fill-color:#5A4B36;
+  opacity:1;
+}
+/* 選択欄であることが分かるよう、下辺の罫線を他の入力欄より一段はっきりさせる。
+   ネイティブの開閉標（矢印）はそのまま残しているため、独自の矢印は描き足さない。 */
+body.experience-open .field select{
+  border-bottom:1px solid rgba(107,91,65,0.85);
+  padding-right:8px;
+}
+/* フォーカスは色だけでなく輪郭でも分かるようにする（既存の focus-visible を明示） */
+body.experience-open .field select:focus,
+body.experience-open .field select:focus-visible,
+body.experience-open .field input:focus,
+body.experience-open .field input:focus-visible{
+  outline:2px solid var(--vr-brass-lit);
+  outline-offset:2px;
+  color:#2B2118;
+  -webkit-text-fill-color:#2B2118;
+}
+/* 見出しラベル（「いつの気持ちですか」）も、選択欄の見出しとして読める濃さにする */
+body.experience-open .field label{
+  color:var(--vr-text-body);
+}
+
+/* ---- P2：番台の静物（.keeper-vignette のインラインSVG）の見え方 ------------
+ *  SVG本体は index.html 側で再構成した。ここでは配置と主張の強さだけを整える。
+ *  見出しより主張させず、背景から浮かせず、モバイルで横幅からはみ出さない。
+ * ------------------------------------------------------------------------- */
+body.experience-open #counter .keeper-vignette{
+  max-width:360px;
+  margin:0 auto var(--vr-gap-m);
+}
+body.experience-open #counter .keeper-vignette svg{
+  width:100%;
+  max-width:100%;
+  height:auto;
+  display:block;
+  opacity:.88; /* 見出しより前へ出さない */
+}
+@media (max-width:600px){
+  body.experience-open #counter .keeper-vignette{
+    max-width:300px;
+  }
+  body.experience-open #counter .keeper-vignette svg{
+    width:100%;
+    opacity:.84;
+  }
+}
+
+/* ---- P1追加：製本後の「棚を選ぶ（任意）」select の可読性 ---------------------
+ *  対象：製本完了直後に表示される棚選択モーダル
+ *        #unfiledShelfPicker（.unfiled-shelf-picker.mana-receive-overlay）内の
+ *        .mana-receive-card > select#unfiledShelfSelect
+ *        （感情の棚ページの棚ボタン、編纂机の #whenSelect / #categorySelect とは別物）
+ *  未選択時の表示文言：t('manaReceivePlaceholder')＝「棚を選んでください」
+ *        （option value="" / selected / disabled）
+ *  選択済みの値：CATEGORIES の c.id（21棚）
+ *
+ *  原因：カード自体が暗色（rgba(20,16,11,0.96)）である一方、
+ *        既存の  body.night .mana-receive-card select{ background:rgba(0,0,0,0.25); }
+ *        で背景がさらに暗くなり、そこへ紙面用の濃いインク色が乗っていたため、
+ *        暗背景＋暗文字となって実機でほぼ読めなかった。
+ *
+ *  方針：優先案「暗い木色の背景＋紙色の文字＋真鍮色の罫線」で統一する。
+ *        紙色背景＋白文字、暗背景＋暗文字のいずれにもしない。
+ *        矢印はネイティブのまま残し、color-scheme:dark で暗背景向きに描かせる。
+ *        選択肢・値・順序・製本処理・保存先・保存形式・モーダルの開閉と
+ *        フォーカス制御・aria属性には一切触れない。
+ * ------------------------------------------------------------------------- */
+body.experience-open .mana-receive-card select,
+body.night.experience-open .mana-receive-card select,
+body.experience-open #unfiledShelfSelect,
+body.night.experience-open #unfiledShelfSelect{
+  background:linear-gradient(180deg, var(--vr-wood, #3A2C1E) 0%, var(--vr-wood-dark, #241A12) 100%);
+  background-color:#2E2318;                 /* グラデーション非対応時の下地 */
+  color:var(--vr-paper, #E7DBC1);
+  -webkit-text-fill-color:#E7DBC1;          /* iOS Safariが黒や透明へ戻すのを防ぐ */
+  opacity:1;
+  border:1px solid var(--vr-brass, #8A6B37);
+  border-radius:0;
+  /* 暗い面であることをブラウザへ伝え、ネイティブの矢印とoption一覧を明色で描かせる */
+  color-scheme:dark;
+  font-size:16px;                           /* 極端に小さくしない／iOSの自動ズーム対策 */
+  line-height:1.6;
+  min-height:48px;                          /* 高さとタップ領域を縮めない */
+  padding:12px 12px;
+  width:100%;
+  box-sizing:border-box;
+}
+/* 未選択（プレースホルダー）も、選択済みの棚名も、同じ紙色で読めるようにする。
+   21棚すべてに同一の指定が当たる（個別の棚IDには一切依存しない）。 */
+body.experience-open .mana-receive-card select option,
+body.night.experience-open .mana-receive-card select option,
+body.experience-open #unfiledShelfSelect option,
+body.night.experience-open #unfiledShelfSelect option{
+  background-color:#2E2318;
+  color:#E7DBC1;
+  -webkit-text-fill-color:#E7DBC1;
+  opacity:1;
+}
+/* disabled のプレースホルダー（「棚を選んでください」）を消さず、薄くしすぎない */
+body.experience-open .mana-receive-card select option[disabled],
+body.experience-open .mana-receive-card select option[value=""],
+body.experience-open #unfiledShelfSelect option[disabled],
+body.experience-open #unfiledShelfSelect option[value=""]{
+  color:#CBBFA6;
+  -webkit-text-fill-color:#CBBFA6;
+  opacity:1;
+}
+/* 選択欄の見出し（「棚を選ぶ（任意）」）も暗い面の上で読める濃さにする */
+body.experience-open .mana-receive-card label{
+  color:var(--vr-text-body, #DCD0B9);
+}
+/* フォーカスは色だけでなく輪郭でも分かるようにする */
+body.experience-open .mana-receive-card select:focus,
+body.experience-open .mana-receive-card select:focus-visible,
+body.experience-open #unfiledShelfSelect:focus,
+body.experience-open #unfiledShelfSelect:focus-visible{
+  outline:2px solid var(--vr-brass-lit, #B08A4E);
+  outline-offset:2px;
+  border-color:var(--vr-brass-lit, #B08A4E);
+  color:var(--vr-paper, #E7DBC1);
+  -webkit-text-fill-color:#E7DBC1;
+}
+
+/* ---- P1追加：原稿用紙textareaの文字と横罫線の位置を揃える -------------------
+ *  対象：利用者本文の入力欄 #storyInput（.desk-form > .field 直下）だけ。
+ *        題名欄（#titleInput）、select、モーダル内本文、サンプル本には適用しない。
+ *
+ *  監査で判明した原因（行送りと罫線周期が3系統ばらばらだった）：
+ *    (a) 既存 #storyInput：line-height:2 に対し、罫線の周期が 1.95em（0.05em ぶん短い）
+ *    (b) Visual Redesign：font-size:15.5px × line-height:2.0 ＝ 行box 31px に対し、
+ *        罫線の周期は 32px（1行あたり 1px ずつ累積してずれる）
+ *    (c) さらに background-position:0 30px と padding-top:20px が一致しておらず、
+ *        1行目から既に罫線へ乗っていなかった
+ *    (d) @media (max-width:480px) が padding だけを 12px へ変えるため、
+ *        モバイルでは罫線の位相がさらに動いていた
+ *
+ *  方針：行送りと罫線の周期を単一のカスタムプロパティ --vr-manuscript-line から
+ *        参照する構造へ整理する。罫線は「1行ぶんの高さのタイルの最下部に1本」を
+ *        繰り返す形にし、background-origin:content-box で内容領域の先頭から
+ *        タイルを開始させる。これにより padding を変えても位相が動かず、
+ *        行数が増えてもズレが累積しない。
+ *
+ *  採用値：--vr-manuscript-line:32px ／ font-size:16px ／ line-height:32px ／
+ *          padding-top:16px ／ background-position-y:0（content-box基準）
+ *          モバイルでも同じ値を使い、周期を変えない。
+ *
+ *  JavaScriptでの罫線生成・本文の複製・contenteditable化・canvas・外部ライブラリは
+ *  使用していない。入力値・保存・IME・選択・コピーの挙動、700文字上限、文字数表示、
+ *  下書き保存、タップ領域と高さには一切触れていない。
+ *  IMEの変換下線（青い線）はOS側の描画であり、消す指定も入れていない。
+ * ------------------------------------------------------------------------- */
+body.experience-open #storyInput{
+  /* 行送りと罫線周期の唯一の基準。以降はこの変数だけを参照する */
+  --vr-manuscript-line:32px;
+
+  font-family:var(--font-display);
+  /* iOSのフォーカス時自動ズーム対策も兼ねて16px。32px ÷ 16px ＝ ちょうど2行分の余白 */
+  font-size:16px;
+  line-height:var(--vr-manuscript-line);
+
+  /* 上下の余白は行送りの半分。文字が上下で切れず、日本語本文の余白も残る */
+  padding:16px 18px;
+  box-sizing:border-box;
+  /* 6行ぶん＋上下padding（＝行送り1つぶん）。従来の210pxより小さくしない */
+  min-height:calc(var(--vr-manuscript-line) * 7);
+
+  /* 罫線：1行ぶんの高さのタイルの最下部に1本。紙：全面に1枚。 */
+  background-image:
+    linear-gradient(to bottom,
+      rgba(120,96,60,0)    0,
+      rgba(120,96,60,0)    calc(var(--vr-manuscript-line) - 1px),
+      rgba(120,96,60,0.16) calc(var(--vr-manuscript-line) - 1px),
+      rgba(120,96,60,0.16) var(--vr-manuscript-line)),
+    linear-gradient(180deg, #EFE5CE 0%, #E4D7BB 100%);
+  background-size:100% var(--vr-manuscript-line), 100% 100%;
+  background-repeat:repeat-y, no-repeat;
+  /* content-box基準にすることで、paddingを変えても罫線の位相が動かない */
+  background-origin:content-box, padding-box;
+  background-clip:padding-box, padding-box;
+  background-position:0 0, 0 0;
+  background-attachment:local, local; /* スクロールしても文字と罫線が一緒に動く */
+}
+/* モバイルでも周期は変えない。左右の余白だけを詰め、上下と罫線の関係は維持する。
+   （既存の @media (max-width:480px){ #storyInput{ padding:12px 14px; } } が
+     上下paddingを変えても、background-origin:content-box のため位相は動かないが、
+     文字の切れを防ぐため上下は16pxのまま明示しておく。） */
+@media (max-width:600px){
+  body.experience-open #storyInput{
+    padding:16px 14px;
+    min-height:calc(var(--vr-manuscript-line) * 7);
+  }
+}
+
+/* ---- P2追加：表紙の丸い書店ロゴ（蔵書印）を非表示にする ---------------------
+ *  対象：<div class="hero-seal" aria-hidden="true"> 内の assets/shop-seal.png
+ *        （index.html 291行付近。表紙 .entrance.hero の最下部・中央に絶対配置）
+ *        言語切替（.hero-lang-toggle）、店内メニュー（.cover-menu-btn）、店名（h1）、
+ *        主CTA（.enter-btn）、安心表示（.trust-row / .first-visit-note）とは別要素。
+ *  既存CSS：body .entrance.hero > .hero-seal（5148行）で width/height 112px・
+ *        bottom 28px の円形。480px以下では80px。
+ *        その分の場所を .entrance.hero{ padding-bottom:150px }（480px以下は112px）が
+ *        確保しているため、ロゴだけ消すと下部へ大きな空白が残る。
+ *  方針：Visual Redesign状態（JS初期化後 ＝ body.experience-ready）の表紙でのみ非表示にし、
+ *        同時に確保していた下部余白を詰める。DOMと assets/shop-seal.png は削除しない。
+ *        再表示は本ブロックの display 宣言を外すだけでよい。
+ *        他画面での同アセットの利用、OGP、manifest、アプリアイコンには触れていない。
+ * ------------------------------------------------------------------------- */
+body.experience-ready .entrance.hero > .hero-seal{
+  display:none;
+}
+/* ロゴのために確保していた下部余白を詰める。ただしCTA周辺を上へ詰めすぎず、
+   「書いた言葉は、この端末にだけ残ります。」から下部の書店説明へ自然につなぐ。 */
+body.experience-ready .entrance.hero{
+  padding-bottom:76px;
+}
+body.experience-ready .entrance.hero .first-visit-note{
+  margin-bottom:0;
+}
+@media (max-width:480px){
+  body.experience-ready .entrance.hero{
+    padding-bottom:58px;
+  }
+}
