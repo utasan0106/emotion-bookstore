@@ -1258,17 +1258,71 @@ function toggleEpisodes(){
   if(typeof buzz === 'function') buzz(6);
 }
 
-function pickRecommend(catId){
-  const pinned = PINNED_RECOMMEND[catId] || [];
+// ★Recommendation Repeat Fix 1：pickRecommend()とボタン表示判定（renderShelfDisplay側）が
+// 同じ実効候補プールを使うよう一元化したヘルパー。BOOK_POOL・棚タグ・unlockedWaveCount()・
+// enReadyBooks()による絞り込み条件は一切変更せず、既存のseededShuffle／applyShelfPrevAvoidance
+// による「同一encounter内は決定的な並び」もそのまま維持する。
+function getShelfBookOrder(catId){
   const wave = unlockedWaveCount();
   const pool = enReadyBooks(BOOK_POOL.filter(b=>b.tags.includes(catId) && b.wave <= wave));
   const chipsSeed = shelfEncounterSeed(catId, 'chips');
-  const shuffled = applyShelfPrevAvoidance(catId, 'book', chipsSeed,
+  return applyShelfPrevAvoidance(catId, 'book', chipsSeed,
     seededShuffle(pool, chipsSeed), b=>(b.title + '|' + b.by)); // ★Hotfix1-3追加修正：直前の出会いと同じ先頭候補を避ける
-  const picked = shuffled.slice(0, 3).map(b=>({
+}
+
+// ★Recommendation Repeat Fix 1：棚IDと現在のrecoEncounterSeed()を照合し、一致する場合だけ
+// sessionStorageに保存済みのstepを返す。seedが異なる／JSONが壊れている／値が不正な場合は
+// 常に0を返す（＝新しいencounterではstepが0へ戻る）。読み取り失敗時も例外を外へ出さない。
+function getShelfBookRerollStep(catId, seed){
+  try{
+    const raw = sessionStorage.getItem('eb-shelf-book-reroll-' + catId);
+    if(!raw) return 0;
+    const parsed = JSON.parse(raw);
+    if(parsed && parsed.seed === seed && Number.isInteger(parsed.step) && parsed.step >= 0){
+      return parsed.step;
+    }
+    return 0;
+  }catch(e){ return 0; }
+}
+
+function pickRecommend(catId, precomputedOrder){
+  const pinned = PINNED_RECOMMEND[catId] || [];
+  const shuffled = precomputedOrder || getShelfBookOrder(catId);
+  const len = shuffled.length;
+  const seed = recoEncounterSeed();
+  const step = getShelfBookRerollStep(catId, seed);
+  // ★Recommendation Repeat Fix 1：決定的な並び（shuffled）はそのまま維持し、その並びから
+  // stepに応じた開始位置で3冊を循環取得する。start = (step * 3) % pool.length。
+  const start = len ? (step * 3) % len : 0;
+  const count = Math.min(3, len);
+  const picked = [];
+  for(let i = 0; i < count; i++){
+    picked.push(shuffled[(start + i) % len]);
+  }
+  const mapped = picked.map(b=>({
     title:b.title, by:b.by, why:(bookHookFor(b) || (appLang === 'en' ? RECOMMEND_REASON_EN[0] : recommendReasonFor(catId)))
   }));
-  return pinned.concat(picked);
+  return pinned.concat(mapped);
+}
+
+// ★Recommendation Repeat Fix 1：「他も見る／Show more」ボタン専用のクリックハンドラ。
+// activeCategoryだけを対象にし、eb-reco-seed（出会いのシード）は変更しない。
+// rotateRecoEncounter()も呼ばない（＝名言・音楽・製本直後推薦などは一切変わらない）。
+// 実効候補が4件未満の棚ではボタン自体を生成しないため通常呼ばれないが、防御的に
+// 4件未満なら何もしない。棚ごとに1つのsessionStorageキーだけを更新する。
+function showMoreShelfBooks(){
+  try{
+    const catId = (typeof activeCategory !== 'undefined') ? activeCategory : null;
+    if(!catId) return;
+    const effectiveCount = getShelfBookOrder(catId).length;
+    if(effectiveCount < 4) return;
+    const seed = recoEncounterSeed();
+    const key = 'eb-shelf-book-reroll-' + catId;
+    const currentStep = getShelfBookRerollStep(catId, seed);
+    const nextStep = currentStep + 1;
+    try{ sessionStorage.setItem(key, JSON.stringify({ seed: seed, step: nextStep })); }catch(e){}
+  }catch(e){}
+  if(typeof renderShelfDisplay === 'function') renderShelfDisplay();
 }
 
 const STORY_LIMIT = 700;
@@ -3245,7 +3299,11 @@ function renderShelfDisplay(){
       ? QUOTE_POOL_EN[cat.id].map(text=>({ text, source: (typeof QUOTE_POOL_EN_SOURCE !== 'undefined' ? QUOTE_POOL_EN_SOURCE : '') }))
       : (cat.quotes || []);
     const q = quotes.length ? quotes[shelfEncounterSeed(cat.id, 'quote') % quotes.length] : { text:'', source:'' };
-    const recs = pickRecommend(cat.id);
+    // ★Recommendation Repeat Fix 1：ボタン表示判定とpickRecommend()が同じ実効候補プール
+    // （getShelfBookOrder）を参照するよう、ここで一度だけ計算して両方へ渡す。
+    const shelfBookOrder = getShelfBookOrder(cat.id);
+    const effectiveBookCount = shelfBookOrder.length;
+    const recs = pickRecommend(cat.id, shelfBookOrder);
     const shelfLabelDisp = categoryLabelFor(cat);
     // ★英語モード完全性監査：Google検索クエリ自体は非表示のURLパラメータのため日本語のままでも
     // 可視UIには影響しないが、日本語モードとの一貫性のため従来どおりcat.labelを使う
@@ -3277,7 +3335,7 @@ function renderShelfDisplay(){
               ${r.source ? `<a class="recommend-source" href="${r.sourceUrl}" target="_blank" rel="noopener">出典：${r.source}</a>` : ''}
             </span>`;
           }).join('')}
-          <button type="button" class="recommend-shuffle" onclick="renderShelfDisplay()" title="${escapeHtml(t('recommendShuffleTitle'))}">${escapeHtml(t('recommendShuffleBtn'))}</button>
+          ${effectiveBookCount >= 4 ? `<button type="button" class="recommend-shuffle" onclick="showMoreShelfBooks()" title="${escapeHtml(t('recommendShuffleTitle'))}">${escapeHtml(t('recommendShuffleBtn'))}</button>` : ''}
           <a class="recommend-more" href="${moodSearchUrl}" target="_blank" rel="noopener">${escapeHtml(t('recommendMoreLinkTpl').replace('{shelf}', shelfLabelDisp))}</a>
           </div>
          </div>`
