@@ -149,6 +149,14 @@ const MESSAGES = {
     sampleBookStory: "傘を閉じたら、路面の匂いが少しだけ夏に戻っていた。今日うまく言えなかったことを、帰り道の水たまりにひとつずつ落としていく。急がなくていい、と自分に言えたのは久しぶりだった。玄関の灯りが見えたとき、明日はもう少しだけ素直に話してみようと思った。",
     sampleBookNote: "うまく言えなかった日ほど、言葉は静かに育っています。この棚で、ゆっくりどうぞ。",
     sectionHead3: "編纂机",
+    // ★VisualRedesignRC1：編纂机(#desk)内の2つの段階を、利用者から見て
+    //   ひとつの場所として成立する視覚状態へ整理するための区画見出し。
+    //   新しいURL・保存キー・データ構造・画面遷移は追加していない（表示のみ）。
+    vrStageManaLabel: "店主まなが預かる",
+    vrStageManaLead: "あなたの言葉を、静かに受け取ります。",
+    vrStageBindLabel: "編纂室",
+    vrStageBindLead: "あなたの言葉を、一冊に編みます。",
+    vrGentleNote: "一行だけでも大丈夫です。まだ言葉になっていなくても、そのまま置いてください。",
     sectionSub3: "今の気持ちを、一枚の紙に綴ります。",
     shelfAfterBindingNote: "棚は、製本したあとに選べます。",
     storyInputPlaceholder: "書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。",
@@ -482,6 +490,11 @@ const MESSAGES = {
     sampleBookStory: "When I closed my umbrella, the smell of the wet street felt almost like summer again. One by one, I let the things I couldn’t say today fall into the puddles along the way home. For the first time in a while, I told myself it was okay not to hurry. When I saw the light at my front door, I thought: tomorrow, I’ll try speaking a little more honestly.",
     sampleBookNote: "On the days words wouldn’t come out right, they were quietly growing. Take your time on this shelf.",
     sectionHead3: "The Writing Desk",
+    vrStageManaLabel: "Mana receives your words",
+    vrStageManaLead: "Your words are received quietly.",
+    vrStageBindLabel: "The Bindery",
+    vrStageBindLead: "Your words are bound into a single book.",
+    vrGentleNote: "A single line is enough. If it is not words yet, leave it as it is.",
     sectionSub3: "Write what you feel now onto a single page.",
     shelfAfterBindingNote: "You can choose a shelf after your book is bound.",
     storyInputPlaceholder: "When, where, what happened, and how it felt. Short and imperfect is fine.",
