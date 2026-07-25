@@ -6074,7 +6074,16 @@ async function handleRestoreFile(file){
   };
 })();
 
+// ★UIFix1：店内メニューを開いたまま「この書店をシェアする」／URLコピー失敗時の
+// フォールバックからシェア画面を開くと、シェア画面（z-index:90）が店内メニュー
+// （z-index:210）の背後に隠れる不具合を修正。z-indexだけを上げるのではなく、
+// 店内メニュー自体を閉じてから表示することで、フォーカストラップ・Escキー処理・
+// 背景クリック処理が同時に残ったまま前面表示される事態を避ける。openShareMenu()の
+// 呼び出し元（shareBtn／copyUrlBtn失敗時フォールバック／将来の呼び出し元すべて）に
+// 一括で適用されるよう、この関数の冒頭一箇所にのみ追加する。
 function openShareMenu(url){
+  closeExperienceMenu();
+
   const menu = document.getElementById('shareMenu');
   if(!menu) return;
   const shareText = t('shareText');
@@ -6142,7 +6151,12 @@ function openShareMenu(url){
 (function(){
   const pwaPinBtn = document.getElementById('pwaPinBtn');
   if(!pwaPinBtn) return;
+  // ★UIFix1：シェア画面と同様、店内メニューを開いたまま「ホーム画面にピン留め」を
+  // 押すと#pwaPopup（z-index:92）が店内メニュー（z-index:210）の背後に隠れる不具合を
+  // 修正。#pwaPopupを表示する前に店内メニューを閉じる。
   pwaPinBtn.onclick = ()=>{
+    closeExperienceMenu();
+
     const p = document.getElementById('pwaPopup');
     if(p) p.classList.remove('hidden');
   };
