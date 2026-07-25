@@ -307,7 +307,10 @@ const MESSAGES = {
     // 棚見出し・注記・架空author固定ラベル、および製本成功文をMESSAGESへ移設し、t()経由で言語切替に対応させた。
     // ★v1.3公開前最終修正：「掌編」は意味が伝わりにくいため、公開文言を「この書店の短い物語」
     // 「短い物語」へ変更（キー名shelfFictionalLabel等は互換のため維持。仕様書4章）。
-    shelfEpisodesHeading: "あなたの本・この書店の短い物語",
+    // ★2026-07-25 Content Trust Fix 1：仮短編の非表示に伴い、見出しを「あなたの本」のみへ変更
+    // （FICTIONAL_SHELF_STORIES_ENABLEDをtrueへ戻す場合は、このテキストも元の複合見出しへ
+    // 戻すことを検討。キー名自体は互換のため維持）。
+    shelfEpisodesHeading: "あなたの本",
     recommendHeadingTpl: "「{shelf}」な今のあなたに、店主が選んだ本",
     recommendSubtext: "読むための本というより、この気持ちのお守りになる一冊です",
     recommendShuffleBtn: "他も見る",
@@ -633,7 +636,9 @@ const MESSAGES = {
     dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it's a simple system that returns pre-written lines based on context (you're not talking to any particular AI model).<br>Anything you write in \"Write your story\" or have \"bound\" is never published anywhere. It's stored only inside this device's browser (IndexedDB/localStorage) and never sent to an external server. There's no account, so no one else can see your records.<br>\"Let go of a feeling\" quietly moves that entry into a device-only \"release log\" so it no longer appears on your bookshelf — it isn't permanently deleted, just moved to its own log.<br>\"Everyone's Bookshelf\" doesn't mean sharing with other users — \"everyone\" here just names the idea of your own bookshelf growing over time.<br>Some parts of the shelves are fetched from an external search service, using only a season word and the shelf's emotion label as the search terms. Your written entries are never sent in these requests either.<br>Clearing your browser data will also erase these records, so we recommend periodically exporting a backup file via \"Back up your data.\" Even if this service were ever discontinued, your data would remain safe on your device as long as you've backed it up beforehand.", // ★Hotfix1-1追加修正：本・音楽の予告をデータ保存説明からも削除（外部通信の開示自体は維持）
     keeperNotAiHint: "※ Not an AI chatbot — a simple system that replies with pre-written lines. Nothing is sent to a model.",
     submitStoryHint: "※ Never published anywhere — stored only inside this device's browser.",
-    shelfEpisodesHeading: "Your Books \u00b7 Short Stories from This Bookstore",
+    // \u26052026-07-25 Content Trust Fix 1: heading simplified to "Your Books" while the fictional
+    // shorts are hidden (key name kept for compatibility).
+    shelfEpisodesHeading: "Your Books",
     recommendHeadingTpl: "Books the keeper chose for your {shelf} feeling",
     recommendSubtext: "Less something to finish reading, more a small charm for this feeling.",
     recommendShuffleBtn: "Show more",
@@ -3211,6 +3216,20 @@ async function renderLiveNewReleases(cat){
     : '';
 }
 
+// ★2026-07-25 Content Trust Fix 1 公開フラグ：感情の棚に表示していた仮の創作短編
+// （STORIES_POOL／STORIES_POOL_EN由来）の表示を制御する。これらは正式な投稿募集・
+// 掲載許諾・本人確認を経た「実在する利用者の体験談」ではなく、実話・創作・AI生成・
+// 編集文の違いを利用者が判別しにくい状態のため、当面 false のまま非表示にする。
+// ・利用者設定にはしない／localStorage・IndexedDB・Cookieへは保存しない／
+//   URLパラメータでは変更できない／外部通信も増減しない（既定値は必ずfalse）。
+// ・false の間：仮短編カード・短編専用の説明文（shelfEpisodesNote）・短編専用の
+//   「もっと見る」（#episodesMore／#episodesToggle）・「エピソードも見る」
+//   （.episode-shuffle）は生成しない。利用者自身の本がある棚は見出し「あなたの本」
+//   とその本だけを表示し、利用者自身の本がない棚は短編領域自体を生成しない。
+// ・STORIES_POOL／STORIES_POOL_EN・各短編本文・toggleEpisodes()・関連i18nキーは
+//   削除していない。true に戻すと、下の実装済み短編描画がそのまま復帰する。
+const FICTIONAL_SHELF_STORIES_ENABLED = false;
+
 function renderShelfDisplay(){
   try{
     const el = document.getElementById('shelfDisplay');
@@ -3308,6 +3327,9 @@ function renderShelfDisplay(){
       return `<div class="episode-card mine" data-entry-id="${safeId}"><span class="who mine-who">${escapeHtml(t('myStoryLabel'))}</span>『${safeTitle}』${safeStory}</div>`;
     });
     // ★2026-07-19：英語モードでは英語版オリジナル短編（STORIES_POOL_EN）から選ぶ。
+    // ★Content Trust Fix 1：このプール取得・シャッフル自体はSTORIES_POOL／STORIES_POOL_EN
+    // を削除せず維持するため、フラグの値に関わらず従来どおり計算する（DOMへ挿入するかどうかだけを
+    // 下のsampleEpisodeCardsで制御する。他の棚要素のシード計算・出現順への影響を避けるため）。
     const storyPool = (appLang === 'en' && typeof STORIES_POOL_EN !== 'undefined' && STORIES_POOL_EN[cat.id])
       ? STORIES_POOL_EN[cat.id]
       : (STORIES_POOL[cat.id] || []);
@@ -3316,22 +3338,35 @@ function renderShelfDisplay(){
     // 架空の蔵書であることを示す固定ラベルのみを表示する（MESSAGES.shelfFictionalLabel経由）。
     // ★2025-07-17再追記：data-i18n="shelfFictionalLabel"を付与し、applyLanguage()による
     // 言語切替直後の即時更新に対応（renderShelfDisplay()の再呼び出しは行わない）。
-    const sampleEpisodeCards = shuffledStories.map(s=>`<div class="episode-card"><span class="who" data-i18n="shelfFictionalLabel">${escapeHtml(t('shelfFictionalLabel'))}</span>${s.text}</div>`);
+    // ★Content Trust Fix 1：FICTIONAL_SHELF_STORIES_ENABLEDがfalseの間は、仮短編本文を
+    // 利用者向けDOMへ一切挿入しない（STORIES_POOL／STORIES_POOL_EN・本文データ自体は削除しない）。
+    const sampleEpisodeCards = FICTIONAL_SHELF_STORIES_ENABLED
+      ? shuffledStories.map(s=>`<div class="episode-card"><span class="who" data-i18n="shelfFictionalLabel">${escapeHtml(t('shelfFictionalLabel'))}</span>${s.text}</div>`)
+      : [];
     const allEpisodeCards = myEpisodeCards.concat(sampleEpisodeCards);
     const visibleEpisodesHtml = allEpisodeCards.slice(0, 2).join('');
     const hiddenEpisodeCards = allEpisodeCards.slice(2);
     const moreLabelText = t('episodesMoreLabelTpl').replace('{n}', hiddenEpisodeCards.length);
-    const hiddenEpisodesHtml = hiddenEpisodeCards.length
+    // ★Content Trust Fix 1：短編専用の「もっと見る」（#episodesMore／#episodesToggle）は
+    // 短編非表示の間は生成しない（toggleEpisodes()自体は削除せず維持）。
+    const hiddenEpisodesHtml = (FICTIONAL_SHELF_STORIES_ENABLED && hiddenEpisodeCards.length)
       ? `<div class="episodes-more hidden" id="episodesMore">${hiddenEpisodeCards.join('')}</div><button type="button" class="episodes-toggle" id="episodesToggle" data-more-label="${escapeHtml(moreLabelText)}" onclick="toggleEpisodes()">${escapeHtml(moreLabelText)}</button>`
       : '';
     const episodesNote = '';
     const purifyHtml = NEGATIVE_SHELVES.includes(cat.id)
       ? `<button type="button" class="purify-trigger" onclick="openPurify('${cat.id}')">${escapeHtml(t('purifyTriggerBtn'))}</button>`
       : '';
-    el.innerHTML = `
-      <p class="definition"><b>${escapeHtml(shelfLabelDisp)}</b> — ${escapeHtml(categoryDefFor(cat))}</p>
-      <p class="quote-card">${q.text}</p>
-      <p class="quote-source">— ${quoteSourceHtml(q.source)}</p>
+    // ★Content Trust Fix 1：短編専用の見出し・説明・カード・もっと見る・「エピソードも見る」
+    // ボタンは、フラグと「利用者自身の本の有無」に応じてこの変数単位で丸ごと出し分ける。
+    // ・フラグtrue：従来どおり（仮短編＋利用者自身の本を合成表示。短編専用の説明・操作を含む）。
+    // ・フラグfalse かつ 利用者自身の本あり：見出しのみ（i18nキーの値を「あなたの本」／
+    //   「Your Books」に変更済み）。利用者自身の本だけを表示し、短編専用の説明・操作・
+    //   空白は一切生成しない。
+    // ・フラグfalse かつ 利用者自身の本なし：見出し含め領域全体を生成しない
+    //   （空のフォーカス可能要素・スクリーンリーダーが到達する空領域を残さない）。
+    let episodesSectionHtml;
+    if(FICTIONAL_SHELF_STORIES_ENABLED){
+      episodesSectionHtml = `
       <p class="episodes-heading" data-i18n="shelfEpisodesHeading">${escapeHtml(t('shelfEpisodesHeading'))}</p>
       <p class="episodes-note" data-i18n="shelfEpisodesNote">${escapeHtml(t('shelfEpisodesNote'))}</p>
       <div class="episodes">
@@ -3339,8 +3374,22 @@ function renderShelfDisplay(){
         ${hiddenEpisodesHtml}
       </div>
       ${episodesNote}
+      <button type="button" class="episode-shuffle" onclick="renderShelfDisplay()">${escapeHtml(t('episodeShuffleBtn'))}</button>`;
+    }else if(myEpisodeCards.length){
+      episodesSectionHtml = `
+      <p class="episodes-heading" data-i18n="shelfEpisodesHeading">${escapeHtml(t('shelfEpisodesHeading'))}</p>
+      <div class="episodes">
+        ${myEpisodeCards.join('')}
+      </div>`;
+    }else{
+      episodesSectionHtml = '';
+    }
+    el.innerHTML = `
+      <p class="definition"><b>${escapeHtml(shelfLabelDisp)}</b> — ${escapeHtml(categoryDefFor(cat))}</p>
+      <p class="quote-card">${q.text}</p>
+      <p class="quote-source">— ${quoteSourceHtml(q.source)}</p>
+      ${episodesSectionHtml}
       <div class="shelf-tweets" id="shelfTweets"></div>
-      <button type="button" class="episode-shuffle" onclick="renderShelfDisplay()">${escapeHtml(t('episodeShuffleBtn'))}</button>
       ${purifyHtml}
       ${recommendHtml}
       ${musicHtml}
