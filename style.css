@@ -5727,3 +5727,1045 @@ body.no-motion .about-accordion-content{ transition:none !important; }
 .detour-half-note{
   font-size:10.5px; letter-spacing:.06em; opacity:.75; margin-left:6px;
 }
+
+/* ============================================================================
+ * ■ Visual Redesign RC1（VR1） — 夜の小さな本屋としての視覚再設計
+ * ----------------------------------------------------------------------------
+ * 方針
+ *  - 既存CSSは1行も削除・書き換えしない。本ブロックを末尾へ追加するだけとする。
+ *  - 保存キー・保存形式・データ構造・主要イベント処理・正規の画面遷移は不変。
+ *    本ブロックはCSSのみであり、JS・保存・遷移へ影響しない。
+ *  - 適用範囲は既存の状態クラス（body.experience-open / .entrance.hero）に限定し、
+ *    JS初期化前の縦スクロール表示（既存フォールバック契約）は壊さない。
+ *  - 角丸は原則0。カード乱用・発光・ガラス質・粒子・パララックスは使わない。
+ *  - 8項目固定ナビは実装しない（モックアップ下部ナビは方向性の参考に留める）。
+ * ========================================================================= */
+
+/* ---- VR1-1：夜の店内トークン（既存 --paper 系は上書きしない。新しい名前空間） ---- */
+:root{
+  /* 夜の店内・素材 */
+  --vr-night-0:#0C0907;        /* いちばん奥の暗がり */
+  --vr-night-1:#14100B;        /* 店内の基準色 */
+  --vr-night-2:#1E1711;        /* 手前の面 */
+  --vr-night-3:#2A2018;        /* 灯りが届く面 */
+  --vr-wood-dark:#241A12;      /* 棚板の影 */
+  --vr-wood:#3A2C1E;           /* 長く使われた木 */
+  --vr-wood-lit:#4E3A26;       /* 灯りの当たった木 */
+  --vr-brass:#8A6B37;          /* くすんだ真鍮 */
+  --vr-brass-lit:#B08A4E;      /* 灯りの当たった真鍮 */
+  --vr-lamp:#E0A659;           /* 小さな照明の色温度（発光させない） */
+  --vr-outside:#1B2432;        /* 窓の外の夜 */
+
+  /* 紙と文字 */
+  --vr-paper:#E7DBC1;          /* 栞・原稿の紙 */
+  --vr-paper-2:#D6C5A4;        /* 紙の陰 */
+  --vr-text:#E9DFCC;           /* 見出し */
+  --vr-text-body:#CDBFA6;      /* 本文 */
+  --vr-text-muted:#9C8F79;     /* 補助文 */
+  --vr-text-faint:#7C7161;     /* いちばん静かな文字 */
+
+  /* 罫線（細く抑制された線だけを使う） */
+  --vr-rule:rgba(200,170,120,0.20);
+  --vr-rule-strong:rgba(200,170,120,0.34);
+  --vr-rule-faint:rgba(200,170,120,0.11);
+
+  /* 余白の基準（画面間で連続させる） */
+  --vr-gap-xs:6px;
+  --vr-gap-s:12px;
+  --vr-gap-m:22px;
+  --vr-gap-l:38px;
+  --vr-gap-xl:60px;
+
+  /* 背景画像スロット（既定は none ＝ 画像なしでも成立するCSSフォールバック）。
+     画像を追加する場合のみ、下の各 --vr-bg-* を実在するローカル画像の指定へ差し替える。
+     存在しないパスを既定値に置かないため、404は発生しない。 */
+  --vr-bg-cover:none;
+  --vr-bg-counter:none;
+  --vr-bg-mana-desk:none;
+  --vr-bg-editing-room:none;
+  --vr-bg-bookshelf:none;
+  --vr-bg-daily-bookmark:none;
+  --vr-bg-monthly-detour:none;
+  --vr-bg-emotion-shelves:none;
+
+  /* 既存Hero（同梱ローカルアセット）からトリミングして作った店内の奥行き素材。
+     人物・UI文字・擬似日本語を含まない。生成・描き足しは行っていない。 */
+  --vr-bg-interior:url('assets/bg-shop-interior.webp');
+}
+
+/* ---- VR1-2：店内（体験モード）の地。手前から奥へ暗くなる一続きの空間 ---- */
+body.experience-open .shop,
+body.night.experience-open .shop{
+  background:
+    radial-gradient(120% 70% at 50% -10%, rgba(224,166,89,0.055) 0%, rgba(224,166,89,0) 62%),
+    linear-gradient(180deg, var(--vr-night-2) 0%, var(--vr-night-1) 46%, var(--vr-night-0) 100%);
+  background-attachment:fixed;
+  color:var(--vr-text-body);
+}
+
+/* 頁そのものは透明にし、地と背景層だけで奥行きを作る */
+body.experience-open .experience-page.is-active{
+  position:relative;
+  background:transparent;
+  padding-top:var(--vr-gap-l);
+  padding-bottom:calc(var(--vr-gap-xl) + 8px);
+  max-width:760px;
+}
+
+/* ---- VR1-3：背景の層構造 ----------------------------------------------------
+ *  1) ページ背景          … 上の .shop
+ *  2) 背景画像            … .is-active::before（--vr-bg-* が none のときは描画されない）
+ *  3) 明暗オーバーレイ    … ::before の box-shadow inset ＋ ::after の上半分
+ *  4) 本文へつなぐ勾配    … ::after の下半分
+ *  5) 見出し・本文・操作  … 通常のHTML要素（画像へ焼き込まない）
+ * ------------------------------------------------------------------------- */
+body.experience-open .experience-page.is-active::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  background-image:var(--vr-page-bg, none);
+  background-size:cover;
+  background-position:var(--vr-page-bg-pos, 50% 42%);
+  background-repeat:no-repeat;
+  opacity:var(--vr-page-bg-opacity, 0.30);
+  pointer-events:none;
+}
+body.experience-open .experience-page.is-active::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    /* 上：見出しの背後をわずかに沈める */
+    linear-gradient(180deg, rgba(12,9,7,0.62) 0%, rgba(12,9,7,0.18) 26%, rgba(12,9,7,0.00) 44%),
+    /* 下：画像から本文・操作領域へ静かにつなぐ */
+    linear-gradient(0deg,  rgba(12,9,7,0.92) 0%, rgba(12,9,7,0.72) 22%, rgba(12,9,7,0.10) 58%, rgba(12,9,7,0) 76%),
+    /* 左右：店の奥の暗がりを残す（均一な黒板にはしない） */
+    radial-gradient(130% 96% at 50% 40%, rgba(12,9,7,0) 40%, rgba(12,9,7,0.55) 100%);
+}
+
+/* 画面ごとの背景スロットと主役位置。画像未設定なら 1〜3 の層だけが効く。 */
+body.experience-open #counter.is-active{
+  --vr-page-bg:var(--vr-bg-counter, none);
+  --vr-page-bg-pos:50% 38%;
+  --vr-page-bg-opacity:0.34;
+}
+body.experience-open #desk.is-active{
+  --vr-page-bg:var(--vr-bg-mana-desk, none);
+  --vr-page-bg-pos:50% 42%;
+  --vr-page-bg-opacity:0.28;
+}
+body.experience-open #desk.is-active.vr-editing{
+  --vr-page-bg:var(--vr-bg-editing-room, none);
+}
+body.experience-open #bookshelf.is-active{
+  --vr-page-bg:var(--vr-bg-bookshelf, var(--vr-bg-interior));
+  --vr-page-bg-pos:50% 30%;
+  --vr-page-bg-opacity:0.24;
+}
+body.experience-open #shelves.is-active{
+  --vr-page-bg:var(--vr-bg-emotion-shelves, var(--vr-bg-interior));
+  --vr-page-bg-pos:50% 46%;
+  --vr-page-bg-opacity:0.20;
+}
+
+/* ---- VR1-4：文字組み。明朝の見出し／読みやすい本文／広げすぎない字間 ---- */
+body.experience-open .section-head{
+  display:block;
+  text-align:center;
+  margin:0 0 var(--vr-gap-s);
+}
+body.experience-open .section-head h2{
+  font-family:var(--font-display);
+  font-size:26px;
+  font-weight:500;
+  letter-spacing:.10em;
+  line-height:1.5;
+  color:var(--vr-text);
+  margin:0;
+  text-shadow:0 1px 10px rgba(12,9,7,0.75);
+}
+body.experience-open .section-head .page-label{
+  display:block;
+  font-family:var(--font-display);
+  font-size:11px;
+  letter-spacing:.26em;
+  color:var(--vr-brass-lit);
+  margin:0 0 var(--vr-gap-xs);
+  opacity:.9;
+}
+body.experience-open .section-sub{
+  margin:0 auto var(--vr-gap-l);
+  max-width:34em;
+  text-align:center;
+  font-size:13.5px;
+  line-height:1.95;
+  letter-spacing:.03em;
+  color:var(--vr-text-muted);
+  text-shadow:0 1px 8px rgba(12,9,7,0.7);
+}
+body.experience-open .shelf-count{
+  display:inline-block;
+  margin:var(--vr-gap-xs) auto 0;
+  background:transparent;
+  border:1px solid var(--vr-rule);
+  border-radius:0;
+  color:var(--vr-text-muted);
+  font-size:11px;
+  letter-spacing:.08em;
+  padding:2px 10px;
+}
+body.experience-open p,
+body.experience-open li,
+body.experience-open label,
+body.experience-open summary{
+  color:var(--vr-text-body);
+}
+body.experience-open .field-hint,
+body.experience-open .swipe-hint,
+body.experience-open .photo-hint,
+body.experience-open .trend-note,
+body.experience-open .writing-boat-note{
+  color:var(--vr-text-faint);
+  font-size:12px;
+  line-height:1.85;
+}
+
+/* ---- VR1-5：操作要素。細い罫線の静かなボタン。発光・浮き上がりを使わない ---- */
+body.experience-open .chart-btn,
+body.experience-open .bind-btn,
+body.experience-open .curate-btn,
+body.experience-open .share-btn,
+body.experience-open .back-to-bandai,
+body.experience-open .exit-shop-btn,
+body.experience-open .title-consult-btn,
+body.experience-open .assist-link,
+body.experience-open .photo-label,
+body.experience-open .reset-link{
+  border-radius:0;
+  box-shadow:none;
+  background:rgba(36,26,18,0.52);
+  border:1px solid var(--vr-rule);
+  color:var(--vr-text);
+  font-weight:400;
+  letter-spacing:.06em;
+  transition:border-color .18s ease, background-color .18s ease, color .18s ease;
+  min-height:44px;
+}
+body.experience-open .chart-btn:hover,
+body.experience-open .bind-btn:hover,
+body.experience-open .curate-btn:hover,
+body.experience-open .share-btn:hover,
+body.experience-open .back-to-bandai:hover,
+body.experience-open .exit-shop-btn:hover,
+body.experience-open .title-consult-btn:hover{
+  /* 浮き上がり・発光は使わず、罫線と地の濃さだけを変える */
+  transform:none;
+  box-shadow:none;
+  background:rgba(58,44,30,0.62);
+  border-color:var(--vr-rule-strong);
+  color:var(--vr-text);
+}
+/* 主操作：琥珀の枠を過剰反復させないため、主操作だけ紙色の面を持たせる */
+body.experience-open .chart-btn.primary,
+body.experience-open .bind-btn{
+  background:linear-gradient(180deg, rgba(213,190,150,0.95), rgba(190,164,124,0.95));
+  border-color:rgba(120,96,60,0.9);
+  color:#241A12;
+  font-weight:500;
+}
+body.experience-open .chart-btn.primary:hover,
+body.experience-open .bind-btn:hover{
+  background:linear-gradient(180deg, rgba(224,203,166,0.98), rgba(200,175,135,0.98));
+  color:#1B140E;
+}
+/* 選択状態を色だけに頼らない（左の細い標＋文字濃度＋罫線） */
+body.experience-open .chart-btn[aria-pressed="true"],
+body.experience-open .chart-btn.selected,
+body.experience-open .shelf-tab.active,
+body.experience-open .shelf-tab[aria-selected="true"]{
+  border-color:var(--vr-brass-lit);
+  color:var(--vr-text);
+  background:rgba(58,44,30,0.72);
+  box-shadow:inset 3px 0 0 0 var(--vr-brass-lit);
+}
+body.experience-open .chart-btn[aria-pressed="true"]::after,
+body.experience-open .shelf-tab.active::after,
+body.experience-open .shelf-tab[aria-selected="true"]::after{
+  content:"（選択中）";
+  font-size:10.5px;
+  letter-spacing:.06em;
+  color:var(--vr-text-muted);
+  margin-left:.5em;
+}
+html[lang="en"] body.experience-open .chart-btn[aria-pressed="true"]::after,
+html[lang="en"] body.experience-open .shelf-tab.active::after,
+html[lang="en"] body.experience-open .shelf-tab[aria-selected="true"]::after{
+  content:" (selected)";
+}
+/* フォーカスは常に明確に。hoverだけで情報を伝えない */
+body.experience-open :focus-visible{
+  outline:2px solid var(--vr-brass-lit);
+  outline-offset:2px;
+}
+
+/* ---- VR1-6：入力。チャット送信欄ではなく「一枚の紙」に近づける ---- */
+body.experience-open textarea,
+body.experience-open input[type="text"],
+body.experience-open input[type="url"],
+body.experience-open input:not([type]),
+body.experience-open select{
+  background:linear-gradient(180deg, #EFE5CE 0%, #E2D4B6 100%);
+  color:#2B2118;
+  border:1px solid rgba(120,96,60,0.55);
+  border-radius:0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.5), 0 10px 26px rgba(0,0,0,0.42);
+  font-family:var(--font-body);
+  line-height:2.0;
+  caret-color:#6E2A34;
+}
+body.experience-open textarea::placeholder,
+body.experience-open input::placeholder{
+  color:rgba(70,58,42,0.62);
+}
+body.experience-open textarea:focus-visible,
+body.experience-open input:focus-visible,
+body.experience-open select:focus-visible{
+  outline:2px solid var(--vr-brass-lit);
+  outline-offset:2px;
+  border-color:rgba(120,96,60,0.85);
+}
+
+/* ---- VR1-7：表紙（トップページ）。夜の入口。境界を越える一つの決断だけを置く ---- */
+.entrance.hero{
+  --vr-cover-slot:var(--vr-bg-cover, none);
+}
+/* 既存Hero写真（店の入口・夜の路地）はそのまま主役に使う。差し込み写真に見せず、
+   下端を地の暗さへ溶かす。画像読み込み失敗時は既存の夜空グラデーションだけが残る。 */
+.entrance.hero .hero-photo::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(0deg,  rgba(10,8,6,0.96) 0%, rgba(10,8,6,0.74) 16%, rgba(10,8,6,0.12) 46%, rgba(10,8,6,0) 64%),
+    linear-gradient(180deg, rgba(10,8,6,0.42) 0%, rgba(10,8,6,0) 28%),
+    radial-gradient(120% 92% at 62% 40%, rgba(10,8,6,0) 34%, rgba(10,8,6,0.5) 100%);
+}
+.entrance.hero .eyebrow{
+  letter-spacing:.30em;
+  font-size:10.5px;
+  color:var(--vr-brass-lit);
+  opacity:.88;
+}
+.entrance.hero h1{
+  font-family:var(--font-display);
+  font-weight:500;
+  letter-spacing:.12em;
+  color:var(--vr-text);
+  text-shadow:0 2px 18px rgba(8,6,4,0.9), 0 0 2px rgba(8,6,4,0.8);
+}
+.entrance.hero .tagline,
+.entrance.hero .sub-tagline{
+  color:var(--vr-text-body);
+  letter-spacing:.04em;
+  text-shadow:0 1px 12px rgba(8,6,4,0.9);
+}
+.entrance.hero .sub-tagline{
+  color:var(--vr-text-muted);
+}
+/* 主操作：押せば何が起きるかが分かる一つの操作だけを、静かな面として置く */
+.entrance.hero .enter-btn{
+  border-radius:0;
+  background:linear-gradient(180deg, rgba(214,191,151,0.96), rgba(186,159,118,0.96));
+  color:#211812;
+  border:1px solid rgba(120,96,60,0.85);
+  box-shadow:0 14px 34px rgba(0,0,0,0.5);
+  letter-spacing:.14em;
+  font-weight:500;
+  min-height:52px;
+  transition:background-color .18s ease, border-color .18s ease;
+}
+.entrance.hero .enter-btn:hover{
+  transform:none;
+  background:linear-gradient(180deg, rgba(228,207,170,0.99), rgba(200,174,133,0.99));
+}
+/* 安心表示は小さく、しかし入力前に必ず読める位置に残す */
+.entrance.hero .trust-row .trust-badge{
+  border-radius:0;
+  background:rgba(20,16,11,0.55);
+  border:1px solid var(--vr-rule-faint);
+  color:var(--vr-text-muted);
+  font-size:11px;
+  letter-spacing:.05em;
+}
+.entrance.hero .first-visit-note{
+  color:var(--vr-text-muted);
+  font-size:12.5px;
+  letter-spacing:.04em;
+}
+.entrance.hero .hero-seal{ opacity:.5; }
+.entrance.hero .hero-lang-toggle,
+.entrance.hero .cover-menu-btn{
+  border-radius:0;
+  background:rgba(16,12,9,0.62);
+  border:1px solid var(--vr-rule-faint);
+  color:var(--vr-text-body);
+  box-shadow:none;
+}
+
+/* ---- VR1-8：番台。入口を入った直後。物の配置だけで店主の気配を出す ---- */
+body.experience-open #counter .counter-wrap{
+  background:transparent;
+  border:0;
+  border-radius:0;
+  padding:0;
+}
+body.experience-open #counter .keeper-vignette{
+  margin:0 auto var(--vr-gap-m);
+  max-width:420px;
+  opacity:.92;
+}
+/* 店主のことば：会話の吹き出しではなく、番台に置かれた一枚のメモ */
+body.experience-open .counter-note{
+  background:transparent;
+  border:0;
+  border-top:1px solid var(--vr-rule-faint);
+  border-bottom:1px solid var(--vr-rule-faint);
+  border-radius:0;
+  padding:var(--vr-gap-m) var(--vr-gap-s);
+  margin:0 auto var(--vr-gap-l);
+  max-width:36em;
+  text-align:center;
+  box-shadow:none;
+}
+body.experience-open .counter-note-label{
+  font-family:var(--font-display);
+  font-size:10.5px;
+  letter-spacing:.24em;
+  color:var(--vr-brass-lit);
+  margin:0 0 var(--vr-gap-xs);
+  opacity:.85;
+}
+body.experience-open .counter-greeting{
+  font-family:var(--font-display);
+  font-size:15.5px;
+  line-height:2.1;
+  letter-spacing:.05em;
+  color:var(--vr-text);
+  margin:0;
+}
+/* 感情の選択肢：細い罫線の静かなボタン。強く塗りつぶさない */
+body.experience-open .counter-shelf-groups{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+  max-width:640px;
+  margin:0 auto var(--vr-gap-m);
+}
+body.experience-open .counter-shelf-groups .chart-btn{
+  flex:0 1 auto;
+  min-width:150px;
+  justify-content:center;
+  text-align:center;
+  font-size:14px;
+  padding:12px 20px;
+}
+body.experience-open .counter-write-btn{
+  display:block;
+  margin:0 auto;
+  min-width:210px;
+  background:transparent;
+  border-color:var(--vr-rule-faint);
+  color:var(--vr-text-muted);
+}
+body.experience-open .keeper-bio{
+  max-width:36em;
+  margin:var(--vr-gap-m) auto 0;
+  text-align:center;
+}
+body.experience-open .keeper-bio summary{
+  color:var(--vr-text-faint);
+  font-size:12px;
+  letter-spacing:.08em;
+}
+
+/* ---- VR1-9：編纂机（#desk）＝「店主まなが預かる」区画 ＋「編纂室」区画 ------------
+ *  8画面のうちモックアップ3・4に対応する2つの視覚状態を、既存の #desk コンテナ内の
+ *  明確な区画として実装する。新しいURL・保存キー・データ構造・遷移は追加しない。
+ * ------------------------------------------------------------------------- */
+body.experience-open .desk-form{
+  background:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  padding:0;
+  max-width:640px;
+  margin:0 auto;
+}
+body.night.experience-open .desk-form{ background:transparent; }
+
+/* 区画見出し（利用者から見て一つの場所として成立させるための静かな標） */
+body.experience-open .vr-stage-label{
+  font-family:var(--font-display);
+  font-size:19px;
+  font-weight:500;
+  letter-spacing:.16em;
+  color:var(--vr-text);
+  text-align:center;
+  margin:0 0 var(--vr-gap-xs);
+  padding-top:var(--vr-gap-s);
+  border-top:1px solid var(--vr-rule-faint);
+}
+body.experience-open .vr-stage-label.vr-stage-bind{
+  margin-top:var(--vr-gap-xl);
+}
+body.experience-open .vr-stage-lead{
+  text-align:center;
+  font-size:12.5px;
+  letter-spacing:.05em;
+  color:var(--vr-text-muted);
+  margin:0 0 var(--vr-gap-m);
+}
+/* 「一行だけでも大丈夫」— 励ましを増やさず、一つだけ静かに置く */
+body.experience-open .vr-gentle-note{
+  font-size:12px;
+  line-height:1.9;
+  color:var(--vr-text-faint);
+  letter-spacing:.03em;
+  margin:var(--vr-gap-xs) 0 0;
+  text-align:left;
+}
+/* 一枚の紙に書く行為へ近づける（送信欄には見せない） */
+body.experience-open #storyInput{
+  min-height:210px;
+  padding:20px 18px;
+  font-size:15.5px;
+  background:
+    repeating-linear-gradient(180deg, rgba(120,96,60,0.11) 0px, rgba(120,96,60,0.11) 1px, transparent 1px, transparent 32px),
+    linear-gradient(180deg, #EFE5CE 0%, #E4D7BB 100%);
+  background-position:0 30px, 0 0;
+}
+body.experience-open .count-row{
+  border-top:1px solid var(--vr-rule-faint);
+  margin-top:var(--vr-gap-xs);
+  padding-top:var(--vr-gap-xs);
+}
+body.experience-open .story-count{
+  color:var(--vr-text-faint);
+  font-size:11.5px;
+  letter-spacing:.05em;
+}
+body.experience-open .assist-link{
+  background:transparent;
+  border:0;
+  border-bottom:1px solid var(--vr-rule);
+  min-height:auto;
+  padding:2px 0;
+  color:var(--vr-text-muted);
+  font-size:12px;
+}
+body.experience-open .writing-boat{
+  background:transparent;
+  border:1px solid var(--vr-rule-faint);
+  border-radius:0;
+  box-shadow:none;
+  max-width:640px;
+  margin:0 auto var(--vr-gap-m);
+  padding:var(--vr-gap-s) var(--vr-gap-m);
+}
+body.experience-open .writing-boat-heading{
+  font-family:var(--font-display);
+  font-size:12px;
+  letter-spacing:.18em;
+  color:var(--vr-brass-lit);
+}
+/* 編纂室：題名相談・AI補助を主役のCTAにしない */
+body.experience-open .desk-extra{
+  background:transparent;
+  border:0;
+  border-radius:0;
+  padding:0;
+}
+body.experience-open .desk-extra summary{
+  background:transparent;
+  border:0;
+  border-bottom:1px solid var(--vr-rule-faint);
+  border-radius:0;
+  color:var(--vr-text-body);
+  font-size:13px;
+  letter-spacing:.06em;
+  padding:10px 0;
+}
+body.experience-open .desk-extra summary::before{ color:var(--vr-brass); }
+body.experience-open .title-consult-btn{
+  background:transparent;
+  border:1px solid var(--vr-rule-faint);
+  color:var(--vr-text-muted);
+  font-size:12.5px;
+}
+body.experience-open .desk-actions{
+  flex-direction:column;
+  align-items:stretch;
+  gap:var(--vr-gap-xs);
+  margin-top:var(--vr-gap-m);
+}
+body.experience-open .bind-btn{
+  width:100%;
+  min-height:52px;
+  letter-spacing:.12em;
+}
+body.experience-open .photo-row{
+  border-top:1px solid var(--vr-rule-faint);
+  padding-top:var(--vr-gap-s);
+  margin-top:var(--vr-gap-s);
+}
+body.experience-open .photo-label{
+  background:transparent;
+  border:1px solid var(--vr-rule-faint);
+  color:var(--vr-text-muted);
+  font-size:12.5px;
+}
+/* 進行表示：完了・現在・未完了を色だけに頼らず区別する（丸・罫線・文字濃度） */
+body.experience-open .mitate-meter{
+  background:transparent;
+  border:0;
+}
+body.experience-open .mitate-meter-bar{
+  background:rgba(200,170,120,0.12);
+  border-radius:0;
+  height:2px;
+}
+body.experience-open .mitate-meter-fill{
+  background:var(--vr-brass-lit);
+  border-radius:0;
+}
+
+/* ---- VR1-10：本棚。長く使われた木の棚。商品一覧・カードグリッドにしない ---- */
+body.experience-open .wood-shelf{
+  background:
+    linear-gradient(180deg, rgba(12,9,7,0.45) 0%, rgba(12,9,7,0) 18%),
+    linear-gradient(180deg, var(--vr-wood-lit) 0%, var(--vr-wood) 58%, var(--vr-wood-dark) 100%);
+  border-radius:0;
+  box-shadow:inset 0 1px 0 rgba(200,170,120,0.10), 0 22px 46px rgba(0,0,0,0.55);
+  padding:34px 20px 0;
+}
+/* 棚の一部だけを照らす小さなランプ（点滅・脈動はしない静止光） */
+body.experience-open .wood-shelf::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:radial-gradient(64% 46% at 24% 6%, rgba(224,166,89,0.20) 0%, rgba(224,166,89,0) 72%);
+}
+body.experience-open .shelf-row{
+  border-bottom:12px solid var(--vr-wood-dark);
+  box-shadow:0 6px 14px rgba(0,0,0,0.55);
+  align-items:flex-end;
+  gap:5px;
+}
+/* 本は均等に並べすぎない：交互にごくわずかな高さ差をつける（移動アニメーションではない）。
+   背表紙の実体は既存の .spine（JSが生成）であり、class名・生成処理は変更していない。 */
+body.experience-open .shelf-row > .spine:nth-of-type(3n+1){ transform:translateY(-2px); }
+body.experience-open .shelf-row > .spine:nth-of-type(4n+3){ transform:translateY(1px); }
+/* 最新・選択中の本：発光・バッジではなく、数pxの移動と罫線と文字濃度で示す */
+body.experience-open .shelf-row > .spine.new,
+body.experience-open .shelf-row > .spine[aria-current]{
+  transform:translateY(-5px);
+  box-shadow:0 6px 14px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(200,170,120,0.5);
+  filter:none;
+}
+/* 空の棚に置かれる幽霊の背表紙は、これから本が来る余白として静かに残す */
+body.experience-open .shelf-row > .spine.empty-spine{
+  opacity:.34;
+  transform:none;
+  box-shadow:none;
+}
+body.experience-open .shelf-month-heading{
+  color:var(--vr-text-muted);
+  font-size:11.5px;
+  letter-spacing:.16em;
+  border-bottom:1px solid var(--vr-rule-faint);
+  padding-bottom:4px;
+}
+/* 空状態はエラーではなく、これから本が置かれる棚の余白として見せる */
+body.experience-open .shelf-empty{
+  color:var(--vr-text-faint);
+  font-size:13px;
+  line-height:2.1;
+  letter-spacing:.05em;
+  background:transparent;
+  border:0;
+  padding:52px 16px 60px;
+  text-align:center;
+}
+/* 製本完了の合図：この体験で唯一の、短く抑制された一度限りの状態変化 */
+body.experience-open .bookshelf-arrival{
+  background:transparent;
+  border:0;
+  border-top:1px solid var(--vr-rule);
+  border-radius:0;
+  box-shadow:none;
+  text-align:center;
+  padding:var(--vr-gap-m) 0 0;
+  margin-top:var(--vr-gap-m);
+  animation:vrSettle 620ms ease-out both;
+}
+@keyframes vrSettle{
+  from{ opacity:0; transform:translateY(6px); }
+  to  { opacity:1; transform:none; }
+}
+body.experience-open .bookshelf-arrival-heading{
+  font-family:var(--font-display);
+  font-size:16px;
+  letter-spacing:.12em;
+  color:var(--vr-text);
+  margin:0 0 var(--vr-gap-xs);
+}
+body.experience-open .bookshelf-arrival-afterglow{
+  font-size:12.5px;
+  color:var(--vr-text-muted);
+  line-height:2;
+  margin:0;
+}
+body.experience-open .shelf-admin{
+  margin-top:var(--vr-gap-l);
+  border-top:1px solid var(--vr-rule-faint);
+  padding-top:var(--vr-gap-s);
+}
+body.experience-open .shelf-admin summary{
+  color:var(--vr-text-faint);
+  font-size:12px;
+  letter-spacing:.10em;
+}
+body.experience-open .shelf-admin .share-btn,
+body.experience-open .shelf-admin .reset-link{
+  font-size:12.5px;
+  background:transparent;
+  color:var(--vr-text-muted);
+}
+
+/* ---- VR1-11：感情の棚（#shelves）。店のさらに奥へ続く細い通路 ---- */
+body.experience-open #shelves .shelf-tabs{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:8px;
+  border:0;
+  background:transparent;
+  padding:0 0 var(--vr-gap-m);
+}
+body.experience-open #shelves .shelf-tab{
+  border-radius:0;
+  background:rgba(36,26,18,0.5);
+  border:1px solid var(--vr-rule-faint);
+  color:var(--vr-text-body);
+  box-shadow:none;
+  font-size:13px;
+  letter-spacing:.05em;
+  padding:11px 16px;
+  min-height:44px;
+  /* アイコンは使わず文字だけで意味が伝わる。派手な色分け・顔・絵文字は用いない */
+}
+body.experience-open #shelves .shelf-display{
+  background:transparent;
+  border:0;
+  border-top:1px solid var(--vr-rule-faint);
+  border-radius:0;
+  padding-top:var(--vr-gap-m);
+}
+body.experience-open #shelves .swipe-hint{
+  text-align:center;
+  letter-spacing:.08em;
+}
+
+/* ---- VR1-12：今月の寄り道（#detourSection）。展示台に主役が一つだけ ---- */
+body.experience-open .detour-section{
+  background:transparent;
+  border:0;
+  border-top:1px solid var(--vr-rule-faint);
+  border-radius:0;
+  box-shadow:none;
+  margin-top:var(--vr-gap-xl);
+  padding:var(--vr-gap-l) 0 0;
+  text-align:center;
+  max-width:36em;
+  margin-left:auto;
+  margin-right:auto;
+}
+body.experience-open .detour-section h3,
+body.experience-open .detour-section .detour-heading{
+  font-family:var(--font-display);
+  font-size:17px;
+  font-weight:500;
+  letter-spacing:.14em;
+  color:var(--vr-text);
+  margin:0 0 var(--vr-gap-xs);
+}
+body.experience-open .detour-half-note{
+  color:var(--vr-text-faint);
+  letter-spacing:.10em;
+}
+/* 外部リンクは、移動前に外部サイトであることが分かるようにする */
+body.experience-open .detour-section a[target="_blank"]::after{
+  content:"（外部サイトへ移動します）";
+  display:block;
+  font-size:10.5px;
+  letter-spacing:.04em;
+  color:var(--vr-text-faint);
+  margin-top:2px;
+}
+html[lang="en"] body.experience-open .detour-section a[target="_blank"]::after{
+  content:"(opens an external site)";
+}
+body.experience-open .detour-section a{
+  color:var(--vr-text);
+  text-decoration:none;
+  border-bottom:1px solid var(--vr-rule);
+  padding-bottom:2px;
+}
+/* コンテンツ未設定でも崩れないよう、空の展示台には最低限の余白だけを残す */
+body.experience-open .detour-section:empty{
+  border-top:0;
+  padding:0;
+  margin-top:0;
+}
+body.experience-open .fair{
+  background:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+}
+
+/* ---- VR1-13：今日の栞（#shioriCard）。中央に一枚、周囲は暗く余白を十分に ---- */
+body.experience-open #shioriCard{
+  background:transparent;
+  border:0;
+  border-top:1px solid var(--vr-rule-faint);
+  border-radius:0;
+  box-shadow:none;
+  text-align:center;
+  max-width:34em;
+  margin:var(--vr-gap-xl) auto 0;
+  padding:var(--vr-gap-l) 0 0;
+}
+body.experience-open #shioriCard h3{
+  font-family:var(--font-display);
+  font-size:17px;
+  font-weight:500;
+  letter-spacing:.16em;
+  color:var(--vr-text);
+  margin:0 0 var(--vr-gap-xs);
+}
+/* 栞そのもの：縦長の一枚の紙。文章は画像へ焼き込まずHTMLで表示する */
+body.experience-open .shiori-slip{
+  display:block;
+  position:relative;
+  width:min(268px, 78%);
+  margin:var(--vr-gap-m) auto;
+  padding:38px 22px 30px;
+  background:linear-gradient(180deg, var(--vr-paper) 0%, var(--vr-paper-2) 100%);
+  color:#2B2118;
+  border:0;
+  border-radius:0;
+  box-shadow:0 20px 40px rgba(0,0,0,0.6);
+  font-family:var(--font-display);
+  font-size:14px;
+  line-height:2.3;
+  letter-spacing:.05em;
+  text-align:center;
+}
+/* 上部の小さな留め具（真鍮のくすみ。発光させない） */
+body.experience-open .shiori-slip::before{
+  content:"";
+  position:absolute;
+  top:14px; left:50%;
+  width:9px; height:9px;
+  margin-left:-4.5px;
+  border:1px solid var(--vr-brass);
+  background:var(--vr-wood-dark);
+  border-radius:50%;
+}
+body.experience-open .shiori-label{
+  display:block;
+  font-size:10px;
+  letter-spacing:.22em;
+  color:#7A6A50;
+  margin-bottom:var(--vr-gap-s);
+}
+body.experience-open #shioriCard .curate-btn{
+  min-width:220px;
+}
+
+/* ---- VR1-14：店主まなが預かるカード（既存 .mana-receive-card）の静音化 ---- */
+body.experience-open .mana-receive-card{
+  border-radius:0;
+  border:1px solid var(--vr-rule);
+  background:rgba(20,16,11,0.96);
+  color:var(--vr-text);
+}
+/* ★VisualRedesign RC1.1（P1修正）：C-03「人物や大きなキャラクター画像は使わない」に従い、
+   店主まなの人物画像をVisual Redesign状態では表示しない。縮小・減光では要件を満たさない
+   ため、非表示まで行う。
+   既存の assets/mana-counter.webp は削除しない。main.js の画像生成処理・HTML・保存処理・
+   画面遷移・コピー・他の意匠には一切変更を加えていない（本CSS1宣言のみ）。
+   本の表紙プレビュー・店主の短い言葉・棚の選択・本棚へ戻る操作・フォーカス制御は
+   すべてそのまま残る（.mana-receive-figure は装飾画像のみを含み、alt="" の img 1枚だけを
+   子に持つため、非表示にしても支援技術から失われる情報はない）。 */
+body.experience-open .mana-receive-figure{
+  display:none;
+}
+body.experience-open .mana-receive-book{
+  border-radius:0;
+  background:linear-gradient(180deg, var(--vr-wood-lit), var(--vr-wood));
+  color:var(--vr-paper);
+  box-shadow:none;
+  border:1px solid var(--vr-rule-faint);
+}
+body.experience-open .mana-receive-line{
+  font-size:14px;
+  color:var(--vr-text-body);
+}
+
+/* ---- VR1-15：ナビゲーション。8項目固定表示は実装しない -----------------------
+ *  既存の体験バー（ブランド名＋店内メニュー）と、各頁末尾の .section-return を
+ *  主導線とする。今日の栞・今月の寄り道・感情の棚は主導線と同じ強さで出さない。
+ * ------------------------------------------------------------------------- */
+body.experience-open .experience-bar{
+  background:linear-gradient(180deg, rgba(12,9,7,0.97), rgba(12,9,7,0.86));
+  border-bottom:1px solid var(--vr-rule-faint);
+  backdrop-filter:none;
+  padding:11px 16px;
+}
+body.night.experience-open .experience-bar{
+  background:linear-gradient(180deg, rgba(12,9,7,0.97), rgba(12,9,7,0.86));
+}
+body.experience-open .experience-bar-brand{
+  font-family:var(--font-display);
+  font-size:13px;
+  letter-spacing:.14em;
+  color:var(--vr-text-body);
+}
+body.experience-open .shop-current-date{
+  color:var(--vr-text-faint);
+  font-size:11px;
+  letter-spacing:.06em;
+}
+body.experience-open .experience-bar .menu-btn{
+  border-radius:0;
+  background:transparent;
+  border:1px solid var(--vr-rule-faint);
+  color:var(--vr-text-body);
+  box-shadow:none;
+  min-height:40px;
+}
+/* 戻る導線はメニューの奥へ隠さず、各頁の末尾に文字で常に置く */
+body.experience-open .section-return{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+  border-top:1px solid var(--vr-rule-faint);
+  margin-top:var(--vr-gap-xl);
+  padding-top:var(--vr-gap-m);
+  background:transparent;
+}
+body.experience-open .section-return-prompt{
+  flex-basis:100%;
+  text-align:center;
+  color:var(--vr-text-faint);
+  font-size:12px;
+  line-height:1.9;
+}
+body.experience-open .section-return-prompt strong{
+  display:block;
+  color:var(--vr-text-muted);
+  font-weight:400;
+  letter-spacing:.08em;
+}
+body.experience-open .back-to-bandai,
+body.experience-open .exit-shop-btn{
+  min-width:170px;
+  font-size:13px;
+  background:transparent;
+  color:var(--vr-text-muted);
+  border-color:var(--vr-rule-faint);
+}
+
+/* ---- VR1-16：レスポンシブ。8画面を一枚のコラージュに縮小せず、各頁を縦画面で ---- */
+/* モバイル（390×844 / 430×932） */
+@media (max-width:600px){
+  body.experience-open .experience-page.is-active{
+    padding-left:20px;
+    padding-right:20px;
+    padding-top:var(--vr-gap-m);
+    padding-bottom:var(--vr-gap-xl);
+  }
+  body.experience-open .section-head h2{ font-size:22px; letter-spacing:.08em; }
+  body.experience-open .section-sub{ font-size:12.5px; margin-bottom:var(--vr-gap-m); }
+  body.experience-open .vr-stage-label{ font-size:17px; }
+  /* 主役が切れないよう、頁ごとに背景の主役位置をモバイル用へ寄せる */
+  body.experience-open #counter.is-active{ --vr-page-bg-pos:52% 30%; }
+  body.experience-open #desk.is-active{ --vr-page-bg-pos:50% 34%; }
+  body.experience-open #bookshelf.is-active{ --vr-page-bg-pos:44% 24%; }
+  body.experience-open #shelves.is-active{ --vr-page-bg-pos:50% 40%; }
+  body.experience-open .counter-shelf-groups .chart-btn{ min-width:0; width:100%; }
+  body.experience-open .shiori-slip{ width:min(240px, 84%); }
+  body.experience-open .wood-shelf{ padding:26px 12px 0; }
+  body.experience-open .back-to-bandai,
+  body.experience-open .exit-shop-btn{ min-width:0; flex:1 1 45%; }
+  /* 表紙：扉・灯り・サービス名・主操作が一画面内で理解できる高さに収める */
+  .entrance.hero h1{ font-size:clamp(30px, 9vw, 40px); }
+  .entrance.hero .enter-btn{ width:min(320px, 86%); }
+}
+/* タブレット（768×1024） */
+@media (min-width:601px) and (max-width:900px){
+  body.experience-open .experience-page.is-active{
+    max-width:600px;
+    padding-left:28px;
+    padding-right:28px;
+  }
+  body.experience-open #bookshelf.is-active{ --vr-page-bg-pos:50% 28%; }
+}
+/* デスクトップ（1440×1000）。空間に余裕がある場合だけ横並びを許す */
+@media (min-width:1100px){
+  body.experience-open .experience-page.is-active{
+    max-width:820px;
+    padding-top:var(--vr-gap-xl);
+  }
+  body.experience-open .section-head h2{ font-size:29px; }
+  body.experience-open .counter-shelf-groups{ max-width:720px; }
+  body.experience-open #shelves .shelf-tabs{ max-width:760px; margin:0 auto; }
+}
+
+/* ---- VR1-17：アクセシビリティと動きの抑制 ---- */
+/* 装飾背景は支援技術から除外する（::before/::after のため元から読まれないが、
+   既存の装飾要素にも明示しておく） */
+body.experience-open .keeper-vignette,
+body.experience-open .hero-weather-fx{
+  pointer-events:none;
+}
+/* 淡い文字色でも必要なコントラストを確保するための下限 */
+body.experience-open .field-hint,
+body.experience-open .trend-note{
+  color:var(--vr-text-faint);
+}
+@media (prefers-reduced-motion: reduce){
+  body.experience-open .bookshelf-arrival{
+    animation:none;
+  }
+  body.experience-open .shelf-row > .spine:nth-of-type(3n+1),
+  body.experience-open .shelf-row > .spine:nth-of-type(4n+3),
+  body.experience-open .shelf-row > .spine.new,
+  body.experience-open .shelf-row > .spine[aria-current]{
+    transform:none;
+  }
+  body.experience-open *,
+  .entrance.hero *{
+    transition-duration:.001ms !important;
+  }
+}
+/* 自動再生動画・常時動く光は使用しない（新規追加なし） */

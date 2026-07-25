@@ -458,12 +458,20 @@ body.night .about-data-content{
       <p class="writing-boat-note" data-i18n="writingBoatNote">答えなくても大丈夫です。書き出す手がかりに、どうぞ。</p>
     </div>
     <div class="desk-form">
+      <!-- ★VisualRedesignRC1：モックアップ3「店主まなが預かるページ」に対応する区画。
+           新しいURL・保存キー・データ構造・画面遷移は追加していない。既存要素の親子関係も
+           変更せず、.desk-form直下へ兄弟要素として区画見出しを差し込むだけに留める。 -->
+      <p class="vr-stage-label" data-i18n="vrStageManaLabel">店主まなが預かる</p>
+      <p class="vr-stage-lead" data-i18n="vrStageManaLead">あなたの言葉を、静かに受け取ります。</p>
       <div class="field">
         <textarea id="storyInput" placeholder="書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。" rows="6" data-i18n-ph="storyInputPlaceholder"></textarea>
         <div class="count-row">
           <button type="button" class="assist-link" id="assistBtn" data-i18n="assistBtn">書き出しに迷ったら、店主の助け舟</button>
           <span class="story-count" id="storyCount">0 / 700字</span>
         </div>
+        <!-- ★VisualRedesignRC1：書くことへの心理的負担を下げる短い補助文を一つだけ置く。
+             励ましの文章は増やさず、店主の説明も長文化しない。 -->
+        <p class="vr-gentle-note" data-i18n="vrGentleNote">一行だけでも大丈夫です。まだ言葉になっていなくても、そのまま置いてください。</p>
       </div>
       <div class="photo-row">
         <button type="button" class="photo-label" id="photoChooseBtn" data-i18n="photoLabel">今日の一枚を、頁に挟む（任意）</button>
@@ -474,6 +482,11 @@ body.night .about-data-content{
         </div>
         <span class="photo-hint" data-i18n="photoHint">写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。</span>
       </div>
+      <!-- ★VisualRedesignRC1：モックアップ4「編纂室」に対応する区画。題名・棚・写真・製本の
+           段階をここから下として視覚的に分ける。既存の details.desk-extra 以下の構造・ID・
+           class・相対順序は一切変更していない。 -->
+      <p class="vr-stage-label vr-stage-bind" data-i18n="vrStageBindLabel">編纂室</p>
+      <p class="vr-stage-lead" data-i18n="vrStageBindLead">あなたの言葉を、一冊に編みます。</p>
       <details class="desk-extra">
         <summary data-i18n="deskExtraSummary">タイトル・いつの気持ちかを、自分で決める（任意）</summary>
         <span class="field-hint" data-i18n="shelfAfterBindingNote">棚は、製本したあとに選べます。</span>
