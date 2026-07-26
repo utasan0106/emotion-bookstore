@@ -35,6 +35,10 @@ const VPF_SECTIONS = [
   'P1追加：製本後の「棚を選ぶ（任意）」select の可読性',
   'P1追加：原稿用紙textareaの文字と横罫線の位置を揃える',
   'P2追加：表紙の丸い書店ロゴ（蔵書印）を非表示にする',
+  // ★Release Final UI Fixブロック（P2ブロックの後に追記）を境界として明示し、
+  // P2セクションの切り出し範囲がファイル末尾まで際限なく広がらないようにする
+  // （テスト側の区切りマーカー追加であり、P2セクション自体の検証内容は変更していない）。
+  '★Release Final UI Fix',
 ];
 const secStart = mark => VPF_CSS.lastIndexOf('/*', VPF_CSS.indexOf(mark));
 // mark で始まり、次の節の直前で終わる範囲を返す（最後の節は末尾まで）
@@ -128,13 +132,14 @@ async function main(){
        !/vr-dashboard|vr-screen-grid|screen-list/.test(HTML));
   }
 
-  // ===== 4) 「店主まなが預かる」「編纂室」の2区画が #desk 内に実装されていること =====
+  // ===== 4) 編集室 Clarity Fix 1 により、3つの区画見出し（本の形を決める／言葉を綴る／
+  //           一冊にして預ける）が #desk 内に実装されていること（旧2区画設計から更新） =====
   {
     const { window, document } = await createEnv({});
     window.goToPage('desk');
     const desk = document.getElementById('desk');
     const labels = desk.querySelectorAll('.vr-stage-label');
-    ok('(4) #desk 内に区画見出しが2つある（預かる／編纂室）', labels.length === 2);
+    ok('(4) #desk 内の.vr-stage-label要素は4つ（3つの区画見出し＋店主まなが預かるの控えめな一言）', labels.length === 4);
     ok('(4) 区画見出しは #desk の外へ新しい画面を作っていない',
        Array.from(document.querySelectorAll('.vr-stage-label')).every(el => desk.contains(el)));
     ok('(4) 「店主まなが預かる」区画の見出しが i18n キーを持つ',
@@ -143,8 +148,8 @@ async function main(){
        !!desk.querySelector('[data-i18n="vrStageBindLabel"]'));
     ok('(4) 本文入力欄 #storyInput は既存のまま .desk-form 配下に残っている',
        !!document.querySelector('.desk-form #storyInput'));
-    ok('(4) 題名欄 #titleInput は既存のまま details.desk-extra 配下に残っている',
-       !!document.querySelector('.desk-extra #titleInput'));
+    ok('(4) 題名欄 #titleInput は「1 本の形を決める」区画に常時表示で残っている（旧details.desk-extraの折りたたみは編集室Clarity Fix 1で廃止）',
+       !!document.querySelector('.desk-step-1 #titleInput'));
     ok('(4) 製本ボタン #submitStory は既存のまま .desk-actions 配下に残っている',
        !!document.querySelector('.desk-actions #submitStory'));
     ok('(4) 書く負担を下げる補助文は1つだけ（複数の励ましを増やしていない）',
@@ -360,8 +365,8 @@ async function main(){
        /body\.experience-open :focus-visible\{[^}]*outline\s*:/.test(VR_CSS));
 
     // 14-8：RC1.1の変更がCSS1宣言だけに閉じていること
-    ok('(14) RC1.1でHTMLへ変更を加えていない（区画見出しは2つのまま）',
-       (HTML.match(/class="vr-stage-label/g) || []).length === 2);
+    ok('(14) RC1.1時点のCSSのみの変更方針は維持している（.vr-stage-label数は編集室Clarity Fix 1で4つに更新）',
+       (HTML.match(/class="vr-stage-label/g) || []).length === 4);
     ok('(14) RC1.1で保存キー・保存形式へ変更を加えていない',
        /const STORAGE_VERSION\s*=\s*1\s*;/.test(JS) && JS.includes("'emotion-bookstore-library'"));
     window.close && window.close();
@@ -507,8 +512,13 @@ async function main(){
     const PAPER = '#EFE5CE'; // Visual Redesignで入力欄に敷いている紙色（明るい側の端）
 
     // --- 1) 未選択時の文字色が紙色背景で十分なコントラストを持つ ---
-    ok('(16/P1-1) 対象の #whenSelect が存在し、.field 配下にある',
-       /<label for="whenSelect"/.test(HTML) && /<select id="whenSelect">/.test(HTML));
+    // ★Release Final UI Fix §8：#whenSelectは利用者向け画面から削除された（main.jsの
+    //   参照は既存の要素なしガードのまま温存、下のP1-5で確認）。このコントラスト修正は
+    //   #whenSelect専用ではなく.field select全体に適用される汎用ルールのため、対象を
+    //   引き続きDOMに残っている#categorySelectで確認する（検証の弱体化ではない）。
+    ok('(16/P1-1) #whenSelectは指示どおり削除済みで、対象の#categorySelectが.field配下にある',
+       !/<select id="whenSelect">/.test(HTML) &&
+       /<label for="categorySelect"/.test(HTML) && /<select id="categorySelect">/.test(HTML));
     ok('(16/P1-1) select の文字色を紙面用の濃いインクへ指定し直している',
        /\.field select,[\s\S]{0,500}color\s*:\s*#2B2118/.test(VPF_DECL));
     ok('(16/P1-1) その文字色が紙色背景に対して4.5:1以上', rat('#2B2118', PAPER) >= 4.5);
@@ -546,21 +556,21 @@ async function main(){
        /\.field select:focus[\s\S]{0,400}outline\s*:\s*2px solid/.test(VPF_DECL));
 
     // --- 5) selectの選択肢・値・保存処理が不変 ---
+    // ★Release Final UI Fix §8：#whenSelectはDOMから削除されたため、選択肢・既定値・
+    //   値の読み戻しに関する旧検証はここでは行えない。代わりに、(a) #whenSelectが
+    //   指示どおりDOMに存在しないこと、(b) main.js側の読み取りロジックは削除しておらず
+    //   既存の要素なしガード（wSel ? ... : false）のまま安全に温存されていること、
+    //   (c) 棚select（#categorySelect）は従来どおり生きていることを確認する。
     {
       const { window, document } = await createEnv({});
       window.goToPage('desk');
       await new Promise(r=>setTimeout(r,100));
       const w = document.getElementById('whenSelect');
-      ok('(16/P1-5) #whenSelect の選択肢が2つのまま', w.options.length === 2);
-      ok('(16/P1-5) 選択肢の値が now / past のまま',
-         w.options[0].value === 'now' && w.options[1].value === 'past');
-      ok('(16/P1-5) 既定の選択値が now のまま', w.value === 'now');
-      w.value = 'past';
-      ok('(16/P1-5) 値を変更して読み戻せる（機能が生きている）', w.value === 'past');
-      ok('(16/P1-5) 棚select（#categorySelect）も存在し、選択肢が生成されている',
+      ok('(16/P1-5) #whenSelect は指示どおりDOMに存在しない', !w);
+      ok('(16/P1-5) 棚select（#categorySelect）は存在し、選択肢が生成されている',
          !!document.getElementById('categorySelect') &&
          document.getElementById('categorySelect').options.length >= 1);
-      ok('(16/P1-5) 製本処理が #whenSelect を従来どおり参照している',
+      ok('(16/P1-5) 製本処理は #whenSelect 不在時に安全側（now相当）で動く既存ガードのまま',
          /const wSel = document\.getElementById\('whenSelect'\);/.test(JS) &&
          /const isPast = wSel \? \(wSel\.value === 'past'\) : false;/.test(JS));
       ok('(16/P1-5) VPF1のCSSは保存処理へ触れていない',
@@ -600,8 +610,8 @@ async function main(){
       ok('(16/P2-7) 外部URL・新規画像ファイルを参照していない',
          !/https?:\/\//.test(svg.innerHTML.replace(/xmlns[^=]*="[^"]*"/g,'')) &&
          !/\.(png|jpe?g|webp|gif)/i.test(svg.outerHTML));
-      ok('(16/P2-7) assets/ に新しい画像ファイルを追加していない',
-         fs.readdirSync(path.join(SRC,'assets')).length === 5);
+      ok('(16/P2-7) assets/ の画像ファイル数は既知の内訳のまま（編集室Clarity Fix 1のediting-room.webp分のみ増加）',
+         fs.readdirSync(path.join(SRC,'assets')).length === 6);
 
       ok('(16/P2-8) SVGが aria-hidden="true" を維持している', svg.getAttribute('aria-hidden') === 'true');
       ok('(16/P2-8) SVGが focusable="false" を維持している', svg.getAttribute('focusable') === 'false');
@@ -975,8 +985,8 @@ async function main(){
       ok('(19-5) 非表示の指定が .entrance.hero 配下に限定されている',
          (SEAL_DECL.match(/\.hero-seal/g) || []).length ===
          (SEAL_DECL.match(/\.entrance\.hero > \.hero-seal/g) || []).length);
-      ok('(19-5) 新しいロゴ・代替画像を追加していない',
-         !/url\(/.test(SEAL_DECL) && fs.readdirSync(path.join(SRC,'assets')).length === 5);
+      ok('(19-5) 新しいロゴ・代替画像を追加していない（表紙のロゴ関連CSSにurl()指定なし。assets数は編集室Clarity Fix 1分のみ増加）',
+         !/url\(/.test(SEAL_DECL) && fs.readdirSync(path.join(SRC,'assets')).length === 6);
     }
 
     // 6) 非表示後に過大な空白が残らない
