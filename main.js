@@ -64,7 +64,7 @@ const MESSAGES = {
     profileBtn: "来店カード", profileBtnTitle: "お名前と属性の設定（任意・この端末にのみ保存）",
     trustBadge1: "登録不要", trustBadge2: "この端末にのみ保存", trustBadge3: "AIの学習には使われません",
     pageNavAria: "ページを選ぶ",
-    pageTab1: "① 番台", pageTab2: "② 棚", pageTab3: "③ 編纂机", pageTab4: "④ 本棚",
+    pageTab1: "① 番台", pageTab2: "② 棚", pageTab3: "③ 編集室", pageTab4: "④ 本棚",
     sectionHead1: "店主と棚を相談する", sectionSub1: "気持ちに近い棚を、一緒に探します。",
     counterReturnNote: "前に選んだ棚は、そのまま残しています。今の気持ちから、探し直すこともできます。",
     // ★2026-07-18追加：番台への導線（#shelves・#desk）の直前に表示する、小さな呼びかけ。
@@ -92,7 +92,7 @@ const MESSAGES = {
     firstGreeting: "こんばんは。静かに開けています。",
     textureStepAria: "今の気持ちに近い選択肢を選ぶ",
     guideLead: "当てはまるものがない場合は、下の枠に言葉を書いて「話す」を押してください",
-    freeformHintDesk: "※書いた言葉は、そのまま編纂机の原稿用紙に写しておきます。",
+    freeformHintDesk: "※書いた言葉は、そのまま編集室の原稿用紙に写しておきます。",
     earlyFreeformHint: "当てはまるものがない場合は、この枠に気持ちを書いて「話す」を押してください。",
     userInputPlaceholder: "例：うまく言えないけど、朝から気持ちが落ち着かない…",
     sendBtn: "話す",
@@ -148,16 +148,20 @@ const MESSAGES = {
     sampleBookTitle: "雨上がりの帰り道",
     sampleBookStory: "傘を閉じたら、路面の匂いが少しだけ夏に戻っていた。今日うまく言えなかったことを、帰り道の水たまりにひとつずつ落としていく。急がなくていい、と自分に言えたのは久しぶりだった。玄関の灯りが見えたとき、明日はもう少しだけ素直に話してみようと思った。",
     sampleBookNote: "うまく言えなかった日ほど、言葉は静かに育っています。この棚で、ゆっくりどうぞ。",
-    sectionHead3: "編纂机",
+    sectionHead3: "編集室",
     // ★VisualRedesignRC1：編纂机(#desk)内の2つの段階を、利用者から見て
     //   ひとつの場所として成立する視覚状態へ整理するための区画見出し。
     //   新しいURL・保存キー・データ構造・画面遷移は追加していない（表示のみ）。
     vrStageManaLabel: "店主まなが預かる",
     vrStageManaLead: "あなたの言葉を、静かに受け取ります。",
-    vrStageBindLabel: "編纂室",
-    vrStageBindLead: "あなたの言葉を、一冊に編みます。",
+    vrStageBindLabel: "1　本の形を決める",
+    vrStageBindLead: "タイトル・棚・時期は、決めなくても一冊にできます。",
+    // ★編集室 Clarity Fix 1（2026-07-26）：静的な3工程の道しるべ（見出し画像直下の一覧と、
+    //   各入力エリアの見出しの両方で、同じ文言をdata-i18n経由で再利用する）。
+    deskStep2Heading: "2　言葉を綴る",
+    deskStep3Heading: "3　一冊にして預ける",
     vrGentleNote: "一行だけでも大丈夫です。まだ言葉になっていなくても、そのまま置いてください。",
-    sectionSub3: "今の気持ちを、一枚の紙に綴ります。",
+    sectionSub3: "あなたの言葉を、一冊に編む場所です。",
     shelfAfterBindingNote: "棚は、製本したあとに選べます。",
     storyInputPlaceholder: "書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。",
     assistBtn: "書き出しに迷ったら、店主の助け舟",
@@ -168,6 +172,10 @@ const MESSAGES = {
     // 本文解析や外部AI送信は行わず、選んだ棚（感情）に応じた固定の問いを提示するだけ。
     writingBoatHeading: "言葉にするための助け舟",
     writingBoatNote: "答えなくても大丈夫です。書き出す手がかりに、どうぞ。",
+    // ★編集室 Clarity Fix 1（2026-07-26）：助け舟2つ（ヒント／説明）のネイティブdetails見出しと説明文。
+    boatHintSummary: "書き出しのヒントを見る",
+    boatAboutSummary: "店主の助け舟とは",
+    boatAboutBody: "書き始めるきっかけになる短い問いです。本文を読んだり、気持ちを分析したりはしません。使わずに、そのまま書き始めても大丈夫です。",
     storyCountFormat: "{count} / {max}字",
     photoLabel: "今日の一枚を、頁に挟む（任意）",
     photoPreviewAlt: "添付写真のプレビュー",
@@ -176,7 +184,8 @@ const MESSAGES = {
     deskExtraSummary: "タイトル・いつの気持ちかを、自分で決める（任意）",
     fieldLabelShelf: "棚", fieldLabelTitle: "背表紙のタイトル", titleInputPlaceholder: "空欄の場合は『まだ、題名のない本』になります",
     fieldLabelWhen: "いつの気持ちですか", whenOptionNow: "今の気持ち", whenOptionPast: "以前のことを振り返って",
-    fieldLabelTweet: "関連するXの投稿があれば", tweetInputPlaceholder: "例：https://x.com/username/status/1234567890",
+    fieldLabelTweet: "関連するXの投稿を添える（任意）", tweetInputPlaceholder: "例：https://x.com/username/status/1234567890",
+    tweetHint: "URLを保存するだけで、自動投稿はしません。",
     fieldHint: "「以前のことを振り返って」を選ぶと、過去の気持ちとして本棚に残せます。",
     submitStory: "店主に預けて製本する",
     // ★2026-07-18追加：製本前の確認ダイアログ（棚のご提案）に、原稿へ戻る選択肢を追加。
@@ -184,7 +193,7 @@ const MESSAGES = {
     invSeal: "封", invKicker: "推薦状", invGoShelf: "棚を見てみる", invClose: "しおりに挟む",
     sectionHead4: "あなたの本棚",
     sectionSub4: "製本した物語が背表紙になって並びます。クリックすると、いつでも読み返せます。",
-    shelfEmptyMsg: "まだ本がありません。編纂机で最初の一冊を綴ってみましょう。",
+    shelfEmptyMsg: "まだ本がありません。編集室で最初の一冊を綴ってみましょう。",
     // ★2026-07-18追加：本棚の年月グループ見出し（例：「2026年7月の棚」）。
     shelfMonthUnknown: "日付不明の棚",
     // ★2026-07-18追加：月別タブの「すべて」／「日付不明」（見出しとは別の短い表記）、蔵書冊数表示。
@@ -208,7 +217,7 @@ const MESSAGES = {
     trendRowTooltip: "『{shelf}』の棚を見る",
     trendCountUnit: "{n}冊",
     // ★2026-07-18追加：空の背表紙（本棚の「＋次の一冊」）のツールチップ。
-    emptySpineTooltip: "まだ中身が書かれていない、空の背表紙。タップすると編纂机へ。",
+    emptySpineTooltip: "まだ中身が書かれていない、空の背表紙。タップすると編集室へ。",
     trendDetailSummary: "感情の地図を詳しく見る",
     trendNote: "※月次「感情取扱説明書」レポートの簡易デモです。この地図はあなたにだけ見えています。",
     // ★Hotfix4.1：栞が「その日に書いた棚」ではなく「本棚全体でいちばん冊数の多い棚」を
@@ -421,7 +430,7 @@ const MESSAGES = {
     profileBtn: "Visitor card", profileBtnTitle: "Set your name and details (optional, stored on this device only)",
     trustBadge1: "No sign-up", trustBadge2: "Stored on this device only", trustBadge3: "Never used to train AI",
     pageNavAria: "Choose a page",
-    pageTab1: "① Counter", pageTab2: "② Shelves", pageTab3: "③ Writing desk", pageTab4: "④ Bookshelf",
+    pageTab1: "① Counter", pageTab2: "② Shelves", pageTab3: "③ Editing Room", pageTab4: "④ Bookshelf",
     sectionHead1: "Talk to the Shopkeeper About a Shelf", sectionSub1: "Let\u2019s find the shelf closest to how you feel.",
     counterReturnNote: "The shelf you chose before is still there. You\u2019re welcome to look again, starting from how you feel right now.",
     preBandaiPromptHeading: "For When the Words Won\u2019t Come Yet",
@@ -444,7 +453,7 @@ const MESSAGES = {
     firstGreeting: "Good evening. The shop is quietly open.",
     textureStepAria: "Choose the option closest to how you feel",
     guideLead: "If nothing quite fits, write your own words in the box below and press \"Talk\"",
-    freeformHintDesk: "※ What you write here will also be copied onto the manuscript paper at the writing desk.",
+    freeformHintDesk: "※ What you write here will also be copied onto the manuscript paper in the Editing Room.",
     earlyFreeformHint: "If nothing quite fits, write how you feel in this box and press \"Talk.\"",
     userInputPlaceholder: "e.g. I can't quite explain it, but I've felt unsettled all morning…",
     sendBtn: "Talk",
@@ -492,13 +501,15 @@ const MESSAGES = {
     sampleBookTitle: "The Walk Home After the Rain",
     sampleBookStory: "When I closed my umbrella, the smell of the wet street felt almost like summer again. One by one, I let the things I couldn’t say today fall into the puddles along the way home. For the first time in a while, I told myself it was okay not to hurry. When I saw the light at my front door, I thought: tomorrow, I’ll try speaking a little more honestly.",
     sampleBookNote: "On the days words wouldn’t come out right, they were quietly growing. Take your time on this shelf.",
-    sectionHead3: "The Writing Desk",
+    sectionHead3: "Editing Room",
     vrStageManaLabel: "Mana receives your words",
     vrStageManaLead: "Your words are received quietly.",
-    vrStageBindLabel: "The Bindery",
-    vrStageBindLead: "Your words are bound into a single book.",
+    vrStageBindLabel: "1  Shape your book",
+    vrStageBindLead: "You don't have to decide the title, shelf, or timing to make it into a book.",
+    deskStep2Heading: "2  Write your words",
+    deskStep3Heading: "3  Bind it and hand it over",
     vrGentleNote: "A single line is enough. If it is not words yet, leave it as it is.",
-    sectionSub3: "Write what you feel now onto a single page.",
+    sectionSub3: "A place to turn your words into a book.",
     shelfAfterBindingNote: "You can choose a shelf after your book is bound.",
     storyInputPlaceholder: "When, where, what happened, and how it felt. Short and imperfect is fine.",
     assistBtn: "Not sure how to start? Ask the shopkeeper for a hand",
@@ -507,6 +518,9 @@ const MESSAGES = {
     // ★Hotfix4-3追加：英語モードで空文字になり、見出し・注記が消えていた欠落キーを補完。
     writingBoatHeading: "A little help putting it into words",
     writingBoatNote: "You don't have to answer these — just a starting point, if you'd like one.",
+    boatHintSummary: "See a few starting hints",
+    boatAboutSummary: "About the shopkeeper's little help",
+    boatAboutBody: "These are short prompts to help you get started. They don't read what you've written or analyze your feelings. You can skip them and start writing right away.",
     storyCountFormat: "{count} / {max} chars",
     photoLabel: "Slip in today's photo (optional)",
     photoPreviewAlt: "Preview of attached photo",
@@ -515,7 +529,8 @@ const MESSAGES = {
     deskExtraSummary: "Choose the title and timing yourself (optional)",
     fieldLabelShelf: "Shelf", fieldLabelTitle: "Spine title", titleInputPlaceholder: "If left blank, it will be saved as “An Untitled Book.”",
     fieldLabelWhen: "When did you feel this?", whenOptionNow: "Right now", whenOptionPast: "Looking back on the past",
-    fieldLabelTweet: "Link a related post on X, if any", tweetInputPlaceholder: "e.g. https://x.com/username/status/1234567890",
+    fieldLabelTweet: "Add a related post on X (optional)", tweetInputPlaceholder: "e.g. https://x.com/username/status/1234567890",
+    tweetHint: "This only saves the URL — nothing is posted automatically.",
     fieldHint: "Choose “Looking back on the past” to keep it on your bookshelf as a past feeling.",
     submitStory: "Hand it to the shopkeeper for binding",
     // ★Hotfix4-3追加：英語モードで空文字になり、リンク文字が消えていた欠落キーを補完。
@@ -523,7 +538,7 @@ const MESSAGES = {
     invSeal: "Sealed", invKicker: "Letter of Recommendation", invGoShelf: "Take a look at the shelf", invClose: "Tuck it away as a bookmark",
     sectionHead4: "Your Bookshelf",
     sectionSub4: "Your bound stories appear as book spines. Select one to read it again at any time.",
-    shelfEmptyMsg: "No books yet. Try writing your first one at the writing desk.",
+    shelfEmptyMsg: "No books yet. Try writing your first one in the Editing Room.",
     // ★2026-07-18変更：「Shelf: Date Unknown」→「Undated Shelf」へ、より自然な英語表現に調整。
     shelfMonthUnknown: "Undated Shelf",
     shelfMonthAllTab: "All",
@@ -546,7 +561,7 @@ const MESSAGES = {
     trendRowTooltip: "View the “{shelf}” shelf",
     trendCountUnit: "{n} books",
     // ★2026-07-18追加：空の背表紙のツールチップ。
-    emptySpineTooltip: "An empty spine with nothing written yet. Tap it to go to the writing desk.",
+    emptySpineTooltip: "An empty spine with nothing written yet. Tap it to go to the Editing Room.",
     trendDetailSummary: "See your emotion map in detail",
     trendNote: "※ A simple demo of the monthly \"Emotion Handbook\" report. This map is visible only to you.",
     shioriCardTitle: "Today's Bookmark", shioriCardNote: "A note from the shopkeeper, after looking over your whole bookshelf — about the shelf that holds the most books, not the one you wrote in today.",

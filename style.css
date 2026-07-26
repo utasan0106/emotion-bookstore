@@ -6254,6 +6254,13 @@ body.experience-open .vr-stage-label{
 body.experience-open .vr-stage-label.vr-stage-bind{
   margin-top:var(--vr-gap-xl);
 }
+/* ★Desk Flow Fix 1（2026-07-26）：「店主まなが預かる」直上の横線だけを撤去し、線の代わりに
+   上余白を広げる。編纂室見出し（.vr-stage-bind）側の横線・余白は対象外のため変更しない。 */
+body.experience-open .vr-stage-label:not(.vr-stage-bind){
+  border-top:none;
+  padding-top:0;
+  margin-top:var(--vr-gap-s);
+}
 body.experience-open .vr-stage-lead{
   text-align:center;
   font-size:12.5px;
@@ -6280,9 +6287,11 @@ body.experience-open #storyInput{
     linear-gradient(180deg, #EFE5CE 0%, #E4D7BB 100%);
   background-position:0 30px, 0 0;
 }
+/* ★Desk Flow Fix 1（2026-07-26）：本文用紙（#storyInput）直下の横線を撤去し、
+   線の代わりに上余白を広げて区切る。 */
 body.experience-open .count-row{
-  border-top:1px solid var(--vr-rule-faint);
-  margin-top:var(--vr-gap-xs);
+  border-top:none;
+  margin-top:var(--vr-gap-s);
   padding-top:var(--vr-gap-xs);
 }
 body.experience-open .story-count{
@@ -6950,6 +6959,170 @@ body.night.experience-open .milestone-toast.gentle-toast{
   border:1px solid rgba(120,96,60,0.55);
   border-radius:2px;
   box-shadow:0 10px 26px rgba(0,0,0,0.5);
+}
+
+/* ============================================================================
+ * ★編集室 Clarity Fix 1（2026-07-26）
+ * 目的：編集室（#desk）ページで、(1) 何をする場所か迷わない (2) タイトル・本文を
+ *       スルーしない (3) 項目が多く面倒そうに見えない、の3点を解消する。
+ * 新しい外部通信・保存キー・データ構造・アニメーション・スクロール連動・進捗判定・
+ * 新規アイコンライブラリ・Webフォントは追加していない。既存の色・余白・フォント変数のみ使用する。
+ * ============================================================================ */
+
+/* ---- 1. 見出し画像（机・原稿・灯り）。1枚のみ。object-fit:coverで横長比率を維持する。 ---- */
+.desk-hero-image{
+  position:relative;
+  width:100%;
+  max-width:640px;
+  margin:var(--vr-gap-m) auto var(--vr-gap-s);
+  aspect-ratio:960/420;
+  overflow:hidden;
+  border-radius:2px;
+  background:var(--vr-night-1);
+}
+.desk-hero-image img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+/* 既存の暗い背景になじむ薄いグラデーションをCSSで重ねる（新規画像・JSは使わない） */
+.desk-hero-image::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(12,9,7,0) 55%, var(--vr-night-1) 100%);
+  pointer-events:none;
+}
+body.night .desk-hero-image{ background:var(--vr-night-0); }
+
+/* ---- 2. 静的な3工程の道しるべ。進捗率・完了判定・スクロール追従・自動切替は実装しない。
+ *        金色の細い線（border）だけで区切りを表現する（新規アイコン・SVGは使わない）。 ---- */
+.desk-steps-overview{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  list-style:none;
+  max-width:640px;
+  margin:0 auto var(--vr-gap-l);
+  padding:0;
+}
+.desk-steps-overview li{
+  flex:1;
+  text-align:center;
+  font-family:var(--font-display);
+  font-size:11.5px;
+  letter-spacing:.05em;
+  color:var(--vr-text-muted);
+  padding:0 6px var(--vr-gap-xs);
+  border-bottom:1px solid var(--vr-rule);
+}
+.desk-steps-overview li + li{
+  border-left:1px solid var(--vr-rule-faint);
+}
+
+/* ---- 3. 各工程（本の形を決める／言葉を綴る／一冊にして預ける）の間隔。
+ *        区切りは線ではなく余白で表現する（Desk Flow Fix 1と同じ方針を踏襲）。 ---- */
+.desk-step-section + .desk-step-section{
+  margin-top:var(--vr-gap-xl);
+}
+/* 3つの見出し（1/2/3）は、既存の「.vr-stage-label:not(.vr-stage-bind)」上書き
+   （Desk Flow Fix 1）により、いずれも上罫線なし・上余白のみで統一される。 */
+
+/* ---- 4. 1 本の形を決める：タイトルを最も目立たせ、いつの気持ちかは控えめにする ---- */
+.field-title-primary label{
+  font-size:15px;
+  font-weight:600;
+  color:var(--vr-brass-lit);
+  letter-spacing:.08em;
+}
+.field-title-primary input{
+  font-size:17px;
+  padding:12px 14px;
+}
+.field-subtle{
+  opacity:.82;
+}
+.field-subtle label{
+  font-size:11px;
+}
+.field-subtle select,
+.field-subtle input{
+  font-size:14px;
+  padding:8px 10px;
+}
+
+/* ---- 5. 2 言葉を綴る：助け舟2つ（ヒント／説明）はネイティブdetails/summaryで初期状態は閉じる。
+ *        既存の本文下#assistBtnはHTML側で削除済み。文字数表示（#storyCount）は残す。 ---- */
+.boat-intro-heading{
+  text-align:center;
+  font-size:12.5px;
+  letter-spacing:.05em;
+  color:var(--vr-text-muted);
+  margin:0 0 var(--vr-gap-xs);
+}
+.writing-boat details{
+  border-top:1px solid var(--vr-rule-faint);
+  padding-top:var(--vr-gap-xs);
+  margin-top:var(--vr-gap-xs);
+}
+.writing-boat details:first-child{
+  border-top:0;
+  padding-top:0;
+  margin-top:0;
+}
+.writing-boat summary{
+  cursor:pointer;
+  font-size:13px;
+  letter-spacing:.03em;
+  color:var(--vr-text-body);
+  list-style:none;
+}
+.writing-boat summary::-webkit-details-marker{ display:none; }
+.writing-boat summary::before{ content:"▸ "; color:var(--vr-brass); }
+.writing-boat details[open] summary::before{ content:"▾ "; }
+.writing-boat .boat-about summary{
+  color:var(--vr-text-faint);
+  font-size:12px;
+}
+.writing-boat .writing-boat-heading{ margin-top:var(--vr-gap-xs); }
+.boat-about-body{
+  font-size:12px;
+  line-height:1.8;
+  color:var(--vr-text-faint);
+  margin:var(--vr-gap-xs) 0 0;
+}
+/* 「店主まなが預かる」：もはや区画見出しではなく、本文入力の直前に添える控えめな一言 */
+.vr-stage-mana-inline{
+  font-size:13px;
+  letter-spacing:.05em;
+  margin:var(--vr-gap-m) 0 2px;
+}
+.vr-stage-mana-inline-lead{
+  font-size:11.5px;
+  color:var(--vr-text-faint);
+  margin:0 0 var(--vr-gap-xs);
+}
+
+/* ---- 6. 3 一冊にして預ける：Xの投稿欄は写真欄の直下、控えめな扱い。CTAの動作は変更していない。 ---- */
+.desk-step-3 .field-subtle{
+  margin-top:var(--vr-gap-s);
+}
+
+/* ---- モバイル：見出し画像で入力欄を過度に下へ押さない。横長比率は維持する。横スクロールは発生しない
+ *        （幅は常に100%・max-width:640pxで、はみ出す固定pxを指定していない）。 ---- */
+@media (max-width:480px){
+  .desk-hero-image{
+    margin:var(--vr-gap-s) auto var(--vr-gap-xs);
+    border-radius:0;
+  }
+  .desk-steps-overview{
+    margin-bottom:var(--vr-gap-m);
+  }
+  .desk-steps-overview li{
+    font-size:10.5px;
+    padding-bottom:6px;
+  }
 }
 
 /* ============================================================================
