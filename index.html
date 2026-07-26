@@ -300,7 +300,7 @@ body.night .about-data-content{
   <nav class="page-nav" id="pageNav" aria-label="ページを選ぶ" data-i18n-aria="pageNavAria">
     <button class="page-tab" data-page="counter" onclick="goToPage('counter')" data-i18n="pageTab1">① 番台</button>
     <button class="page-tab" data-page="shelves" onclick="goToPage('shelves')" data-i18n="pageTab2">② 棚</button>
-    <button class="page-tab" data-page="desk" onclick="goToPage('desk')" data-i18n="pageTab3">③ 編纂机</button>
+    <button class="page-tab" data-page="desk" onclick="goToPage('desk')" data-i18n="pageTab3">③ 編集室</button>
     <button class="page-tab" data-page="bookshelf" onclick="goToPage('bookshelf')" data-i18n="pageTab4">④ 本棚</button>
   </nav>
 
@@ -441,7 +441,7 @@ body.night .about-data-content{
       <div id="nextActionGuideWrapper" class="hidden">
         <div class="next-action-guide">
           <p class="guide-lead" data-i18n="guideLead">当てはまるものがない場合は、下の枠に言葉を書いて「話す」を押してください</p>
-          <p class="freeform-hint" data-i18n="freeformHintDesk">※書いた言葉は、そのまま編纂机の原稿用紙に写しておきます。</p>
+          <p class="freeform-hint" data-i18n="freeformHintDesk">※書いた言葉は、そのまま編集室の原稿用紙に写しておきます。</p>
         </div>
       </div>
 
@@ -478,29 +478,32 @@ body.night .about-data-content{
 
   <section id="desk" class="reveal experience-page">
     <time class="desk-current-date" id="deskCurrentDate"></time>
-    <div class="section-head"><span class="page-label" data-i18n="pageLabelDesk">第一頁　</span><h2 data-i18n="sectionHead3">編纂机</h2></div>
+    <div class="section-head"><span class="page-label" data-i18n="pageLabelDesk">第一頁　</span><h2 data-i18n="sectionHead3">編集室</h2></div>
     <p class="desk-lead hidden" id="deskLead"></p>
-    <p class="section-sub" data-i18n-html="sectionSub3">題名や写真は任意です。製本したあと、棚にしまうか、棚を選ばず本棚へ戻れます。</p>
+    <p class="section-sub" data-i18n-html="sectionSub3">あなたの言葉を、一冊に編む場所です。</p>
+
+    <!-- ★編集室 Clarity Fix 1（2026-07-26）：机・原稿・灯りの雰囲気を伝える1枚のWebPと、
+         静的な3工程の道しるべ。進捗率・完了判定・スクロール追従・現在位置の自動切替は実装しない。
+         JavaScriptによる進行管理は追加していない（純粋なHTML/CSSの静的表示）。 -->
+    <div class="desk-hero-image">
+      <img src="assets/editing-room.webp" alt="" width="960" height="420" loading="lazy" decoding="async"
+           onerror="this.closest('.desk-hero-image') &amp;&amp; (this.closest('.desk-hero-image').style.display='none')">
+    </div>
+    <ol class="desk-steps-overview" aria-hidden="true">
+      <li data-i18n="vrStageBindLabel">1　本の形を決める</li>
+      <li data-i18n="deskStep2Heading">2　言葉を綴る</li>
+      <li data-i18n="deskStep3Heading">3　一冊にして預ける</li>
+    </ol>
+
     <div class="desk-form">
-      <!-- ★Desk Flow Fix 1（2026-07-26）：実利用フィードバックに基づき、編纂室（タイトル・棚等）と
-           助け舟を本文入力より前へ移動。要素のid・class・構造・ロジックは変更していない。 -->
-      <!-- ★VisualRedesignRC1：モックアップ4「編纂室」に対応する区画。題名・棚・写真・製本の
-           段階をここから下として視覚的に分ける。既存の details.desk-extra 以下の構造・ID・
-           class・相対順序は一切変更していない。 -->
-      <p class="vr-stage-label vr-stage-bind" data-i18n="vrStageBindLabel">編纂室</p>
-      <p class="vr-stage-lead" data-i18n="vrStageBindLead">あなたの言葉を、一冊に編みます。</p>
-      <details class="desk-extra" open>
-        <summary data-i18n="deskExtraSummary">タイトル・いつの気持ちかを、自分で決める（任意）</summary>
-        <span class="field-hint" data-i18n="shelfAfterBindingNote">棚は、製本したあとに選べます。</span>
-        <div class="field-row" style="margin-top:12px;">
-          <div class="field">
-            <label for="categorySelect" data-i18n="fieldLabelShelf">棚</label>
-            <select id="categorySelect"></select>
-          </div>
-          <div class="field">
-            <label for="titleInput" data-i18n="fieldLabelTitle">背表紙のタイトル</label>
-            <input id="titleInput" maxlength="16" placeholder="空欄の場合は『まだ、題名のない本』になります" data-i18n-ph="titleInputPlaceholder">
-          </div>
+      <!-- ===== 1 本の形を決める：旧 details.desk-extra の折りたたみを廃止し、常時表示の区画にする。
+           DOM順：タイトル→棚→いつの気持ちか。既定値・保存値・製本ロジックは変更していない。 ===== -->
+      <div class="desk-step-section desk-step-1">
+        <p class="vr-stage-label desk-step-heading" data-i18n="vrStageBindLabel">1　本の形を決める</p>
+        <p class="vr-stage-lead" data-i18n="vrStageBindLead">タイトル・棚・時期は、決めなくても一冊にできます。</p>
+        <div class="field field-title-primary">
+          <label for="titleInput" data-i18n="fieldLabelTitle">背表紙のタイトル</label>
+          <input id="titleInput" maxlength="16" placeholder="空欄の場合は『まだ、題名のない本』になります" data-i18n-ph="titleInputPlaceholder">
         </div>
         <div class="title-suggest" id="titleSuggest"></div>
         <!-- ★2026-07-19 E：店主に題名を相談する（AI・外部通信・本文解析なし。固定候補プールのみ） -->
@@ -509,61 +512,80 @@ body.night .about-data-content{
         <div class="title-consult hidden" id="titleConsult"></div>
         <div class="field-row" style="margin-top:12px;">
           <div class="field">
+            <label for="categorySelect" data-i18n="fieldLabelShelf">棚</label>
+            <select id="categorySelect"></select>
+            <span class="field-hint" data-i18n="shelfAfterBindingNote">棚は、製本したあとに選べます。</span>
+          </div>
+          <div class="field field-subtle">
             <label for="whenSelect" data-i18n="fieldLabelWhen">いつの気持ちですか</label>
             <select id="whenSelect">
               <option value="now" data-i18n="whenOptionNow">今の気持ち</option>
               <option value="past" data-i18n="whenOptionPast">以前のことを振り返って</option>
             </select>
-          </div>
-          <!-- ★Hotfix4-8：X公式埋め込み（platform.twitter.com等への外部通信、CSPのframe-src 'none'に抵触）は
-               従来どおり行わない。ただし、この欄自体（外部通信を伴わない単純なURL保存・リンク表示）は
-               入力しても製本後の本に反映されない不具合として報告されたため再表示し、保存・表示を実装する。 -->
-          <div class="field">
-            <label for="tweetInput" data-i18n="fieldLabelTweet">関連するXの投稿があれば</label>
-            <input id="tweetInput" type="url" placeholder="例：https://x.com/username/status/1234567890" data-i18n-ph="tweetInputPlaceholder">
+            <span class="field-hint" data-i18n="fieldHint">「以前のことを振り返って」を選ぶと、過去の気持ちとして本棚に残せます。</span>
           </div>
         </div>
-        <span class="field-hint" data-i18n="fieldHint">「以前のことを振り返って」を選ぶと、過去の気持ちとして本棚に残せます。</span>
-      </details>
-      <!-- ★2026-07-18追加：旧チャットに代わる、静的な「言葉にするための助け舟」。
-           本文解析・外部AI送信は行わず、固定の問いを提示するだけ（renderWritingBoat()）。 -->
-      <div class="writing-boat" id="writingBoat">
-        <p class="writing-boat-heading" data-i18n="writingBoatHeading">言葉にするための助け舟</p>
-        <ul class="writing-boat-list" id="writingBoatList"></ul>
-        <p class="writing-boat-note" data-i18n="writingBoatNote">答えなくても大丈夫です。書き出す手がかりに、どうぞ。</p>
       </div>
-      <!-- ★VisualRedesignRC1：モックアップ3「店主まなが預かるページ」に対応する区画。
-           新しいURL・保存キー・データ構造・画面遷移は追加していない。既存要素の親子関係も
-           変更せず、.desk-form直下へ兄弟要素として区画見出しを差し込むだけに留める。 -->
-      <p class="vr-stage-label" data-i18n="vrStageManaLabel">店主まなが預かる</p>
-      <p class="vr-stage-lead" data-i18n="vrStageManaLead">あなたの言葉を、静かに受け取ります。</p>
-      <div class="field">
-        <textarea id="storyInput" placeholder="書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。" rows="6" data-i18n-ph="storyInputPlaceholder"></textarea>
-        <div class="count-row">
-          <button type="button" class="assist-link" id="assistBtn" data-i18n="assistBtn">書き出しに迷ったら、店主の助け舟</button>
-          <span class="story-count" id="storyCount">0 / 700字</span>
+
+      <!-- ===== 2 言葉を綴る：助け舟は2つとも初期状態は閉じたネイティブdetails/summary。
+           既存の本文下#assistBtnは画面から削除（対応するJSは要素なしガードのまま）。文字数表示は残す。 ===== -->
+      <div class="desk-step-section desk-step-2">
+        <p class="vr-stage-label desk-step-heading" data-i18n="deskStep2Heading">2　言葉を綴る</p>
+        <p class="boat-intro-heading" data-i18n="assistBtn">書き出しに迷ったら、店主の助け舟</p>
+        <div class="writing-boat" id="writingBoat">
+          <details class="boat-hint">
+            <summary data-i18n="boatHintSummary">書き出しのヒントを見る</summary>
+            <p class="writing-boat-heading" data-i18n="writingBoatHeading">言葉にするための助け舟</p>
+            <ul class="writing-boat-list" id="writingBoatList"></ul>
+            <p class="writing-boat-note" data-i18n="writingBoatNote">答えなくても大丈夫です。書き出す手がかりに、どうぞ。</p>
+          </details>
+          <details class="boat-about">
+            <summary data-i18n="boatAboutSummary">店主の助け舟とは</summary>
+            <p class="boat-about-body" data-i18n="boatAboutBody">書き始めるきっかけになる短い問いです。本文を読んだり、気持ちを分析したりはしません。使わずに、そのまま書き始めても大丈夫です。</p>
+          </details>
         </div>
-        <!-- ★VisualRedesignRC1：書くことへの心理的負担を下げる短い補助文を一つだけ置く。
-             励ましの文章は増やさず、店主の説明も長文化しない。 -->
-        <p class="vr-gentle-note" data-i18n="vrGentleNote">一行だけでも大丈夫です。まだ言葉になっていなくても、そのまま置いてください。</p>
-      </div>
-      <div class="photo-row">
-        <button type="button" class="photo-label" id="photoChooseBtn" data-i18n="photoLabel">今日の一枚を、頁に挟む（任意）</button>
-        <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" class="visually-hidden-file">
-        <div class="photo-preview hidden" id="photoPreview">
-          <img id="photoPreviewImg" alt="添付写真のプレビュー" data-i18n-alt="photoPreviewAlt">
-          <button type="button" class="photo-remove" id="photoRemove" aria-label="写真を外す" data-i18n-aria="photoRemoveAria">×</button>
+        <p class="vr-stage-label vr-stage-mana-inline" data-i18n="vrStageManaLabel">店主まなが預かる</p>
+        <p class="vr-stage-lead vr-stage-mana-inline-lead" data-i18n="vrStageManaLead">あなたの言葉を、静かに受け取ります。</p>
+        <div class="field">
+          <textarea id="storyInput" placeholder="書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。" rows="6" data-i18n-ph="storyInputPlaceholder"></textarea>
+          <div class="count-row">
+            <span class="story-count" id="storyCount">0 / 700字</span>
+          </div>
+          <!-- ★VisualRedesignRC1：書くことへの心理的負担を下げる短い補助文を一つだけ置く。
+               励ましの文章は増やさず、店主の説明も長文化しない。 -->
+          <p class="vr-gentle-note" data-i18n="vrGentleNote">一行だけでも大丈夫です。まだ言葉になっていなくても、そのまま置いてください。</p>
         </div>
-        <span class="photo-hint" data-i18n="photoHint">写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。</span>
       </div>
-      <div class="curate-box hidden" id="curateBox">
-        <p class="curate-msg" id="curateMsg"></p>
-        <div class="curate-actions" id="curateActions"></div>
-      </div>
-      <div class="desk-actions">
-        <button class="bind-btn" id="submitStory" data-i18n="submitStory">店主に預けて製本する</button>
-        <span class="desk-msg" id="deskMsg"></span>
-        <p class="field-hint" style="margin-top:4px;" data-i18n="submitStoryHint">※外部には公開されず、この端末のブラウザ内にのみ保存されます。</p>
+
+      <!-- ===== 3 一冊にして預ける：既存#tweetInputを、いつの気持ちかの横から写真欄の直下へ移動。
+           保存形式・URL検証・製本後の表示・共有機能・CTAの既存動作は変更していない。 ===== -->
+      <div class="desk-step-section desk-step-3">
+        <p class="vr-stage-label desk-step-heading" data-i18n="deskStep3Heading">3　一冊にして預ける</p>
+        <div class="photo-row">
+          <button type="button" class="photo-label" id="photoChooseBtn" data-i18n="photoLabel">今日の一枚を、頁に挟む（任意）</button>
+          <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" class="visually-hidden-file">
+          <div class="photo-preview hidden" id="photoPreview">
+            <img id="photoPreviewImg" alt="添付写真のプレビュー" data-i18n-alt="photoPreviewAlt">
+            <button type="button" class="photo-remove" id="photoRemove" aria-label="写真を外す" data-i18n-aria="photoRemoveAria">×</button>
+          </div>
+          <span class="photo-hint" data-i18n="photoHint">写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。</span>
+        </div>
+        <!-- ★Hotfix4-8：X公式埋め込み（platform.twitter.com等への外部通信、CSPのframe-src 'none'に抵触）は
+             従来どおり行わない。この欄自体（外部通信を伴わない単純なURL保存・リンク表示）のみ提供する。 -->
+        <div class="field field-subtle">
+          <label for="tweetInput" data-i18n="fieldLabelTweet">関連するXの投稿を添える（任意）</label>
+          <input id="tweetInput" type="url" placeholder="例：https://x.com/username/status/1234567890" data-i18n-ph="tweetInputPlaceholder">
+          <span class="field-hint" data-i18n="tweetHint">URLを保存するだけで、自動投稿はしません。</span>
+        </div>
+        <div class="curate-box hidden" id="curateBox">
+          <p class="curate-msg" id="curateMsg"></p>
+          <div class="curate-actions" id="curateActions"></div>
+        </div>
+        <div class="desk-actions">
+          <button class="bind-btn" id="submitStory" data-i18n="submitStory">店主に預けて製本する</button>
+          <span class="desk-msg" id="deskMsg"></span>
+          <p class="field-hint" style="margin-top:4px;" data-i18n="submitStoryHint">※外部には公開されず、この端末のブラウザ内にのみ保存されます。</p>
+        </div>
       </div>
     </div>
     <div class="invitation hidden" id="invitationCard">
@@ -586,7 +608,7 @@ body.night .about-data-content{
     <div class="shelf-month-tabs hidden" id="shelfMonthTabs"></div>
     <div class="wood-shelf">
       <div class="shelf-row" id="myShelf">
-        <div class="shelf-empty" id="shelfEmptyMsg" data-i18n="shelfEmptyMsg">まだ本がありません。編纂机で最初の一冊を綴ってみましょう。</div>
+        <div class="shelf-empty" id="shelfEmptyMsg" data-i18n="shelfEmptyMsg">まだ本がありません。編集室で最初の一冊を綴ってみましょう。</div>
       </div>
     </div>
     <!-- ★v1.3公開前最終修正：棚選択と本・音楽推薦の連動（仕様書2章）。木の本棚の直後に設置。

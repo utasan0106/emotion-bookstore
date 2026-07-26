@@ -60,34 +60,23 @@ async function main(){
   }
 
   // ===== 2: 英語版「店主の助け舟」の言語別テンプレート =====
+  // ★編集室 Clarity Fix 1 により #assistBtn は画面から意図的に削除された
+  //   （指示書§4「既存の本文下の#assistBtnは画面から削除する」）。
+  //   対応するJavaScript側の挿入ロジックは「要素が存在しない場合は何もしない」
+  //   既存ガードにより無害化されており、削除は仕様どおりの意図的変更である。
+  //   ボタンがDOMに存在しないため、クリックを起点とするテンプレート挿入の
+  //   挙動そのものをUI経由で再現することはできない。名称・DOM順の変更に
+  //   起因する期待値のみを最小更新する方針に従い、このセクションは
+  //   「ボタンがDOM上に存在しないこと（＝削除が正しく行われたこと）」を
+  //   確認する内容へ置き換える。JS側のガード自体（削除済み要素に対して
+  //   何もしない）は変更していない。
   {
-    const {window,document,toggleByButton}=await createEnv({});
+    const {window,document}=await createEnv({});
     window.goToPage('desk');
-    const ta=document.getElementById('storyInput');
     const assistBtn=document.getElementById('assistBtn');
-    ta.value='';
-    assistBtn.click();
-    ok('(2) JA mode inserts the original Japanese template unchanged', ta.value==='いつ：\nどこで：\nなにがあった：\nそのとき、胸の中は：\n');
-
-    ta.value='';
-    toggleByButton();
-    assistBtn.click();
-    ok('(2) EN mode template contains zero Japanese characters', ta.value.length>0 && !JP_RE.test(ta.value));
-    ok('(2) EN template matches the specified English prompt exactly', ta.value==='When:\nWhere:\nWhat happened:\nWhat I felt inside:\n');
-
-    // 既存入力を不用意に上書きしない挙動は不変
-    ta.value='すでに書いた内容はそのまま';
-    assistBtn.click();
-    ok('(2) existing non-empty input is still not overwritten (unchanged behavior)', ta.value==='すでに書いた内容はそのまま');
-    ta.value='Already written content';
-    assistBtn.click();
-    ok('(2) same non-overwrite behavior holds in EN mode too', ta.value==='Already written content');
-
-    // 言語切替後は現在の言語が反映される
-    toggleByButton(); // -> JA
-    ta.value='';
-    assistBtn.click();
-    ok('(2) switching back to JA reflects the current language again', ta.value==='いつ：\nどこで：\nなにがあった：\nそのとき、胸の中は：\n');
+    ok('(2) [Clarity Fix1] #assistBtn は編集室Clarity Fix 1の指示どおり画面から削除されている', !assistBtn);
+    const introHeading=document.querySelector('.boat-intro-heading[data-i18n="assistBtn"]');
+    ok('(2) [Clarity Fix1] 代わりに非対話的な見出し(.boat-intro-heading)が同じ文言キーで表示されている', !!introHeading);
   }
 
   // ===== 3: 「重く沈む」でmoyamoyaが先頭に出る問題 =====

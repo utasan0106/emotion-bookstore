@@ -77,8 +77,16 @@ async function main(){
     const { window, document } = await createEnv({});
     window.goToPage('desk');
     const desk = document.getElementById('desk');
-    const bindLabel = desk.querySelector('.vr-stage-label.vr-stage-bind'); // 編纂室
-    const manaLabel = desk.querySelector('.vr-stage-label:not(.vr-stage-bind)'); // 店主まなが預かる
+    // ★編集室Clarity Fix 1でDOM構造が変わったため更新：
+    //   旧.vr-stage-bindクラスはHTMLから削除され、3つの工程見出しはすべて共通の
+    //   .vr-stage-label.desk-step-headingとして統一された（指示書§5「中程度：3工程の見出し」）。
+    //   bindLabelは「1 本の形を決める」見出し（旧「編纂室」に相当する最初の区画見出し）を
+    //   .desk-step-1内の.vr-stage-labelとして取得する。
+    //   manaLabelは「.vr-stage-label:not(.vr-stage-bind)」だと.vr-stage-bindが存在しない今、
+    //   4見出しすべて（1/2/3工程見出し＋店主まなが預かる）にマッチしquerySelectorが先頭を
+    //   拾ってしまうため、「店主まなが預かる」専用クラス(.vr-stage-mana-inline)へ限定する。
+    const bindLabel = desk.querySelector('.desk-step-1 .vr-stage-label'); // 「1 本の形を決める」見出し
+    const manaLabel = desk.querySelector('.vr-stage-mana-inline'); // 店主まなが預かる
     const titleInput = document.getElementById('titleInput');
     const categorySelect = document.getElementById('categorySelect');
     const storyInput = document.getElementById('storyInput');
@@ -137,7 +145,14 @@ async function main(){
   {
     const { window, document } = await createEnv({});
     window.goToPage('desk');
-    const details = document.querySelector('details.desk-extra');
+    // ★編集室Clarity Fix 1（指示書§4）により、旧<details class="desk-extra">の折りたたみは
+    //   廃止され、常時表示の<div class="desk-step-section desk-step-1">へ置き換わった。
+    //   このセクションのB8/B9aは「アコーディオンが初期状態で開いている」という旧仕様の検証
+    //   だったが、そもそもアコーディオンではなくなったため、「常時表示になっている」ことを
+    //   確認する内容へ最小更新する（名称・DOM構造の変更に伴う期待値の更新であり、
+    //   検証の弱体化ではない）。
+    const deskExtra = document.querySelector('details.desk-extra');
+    const step1Section = document.querySelector('.desk-step-1');
     const titleInput = document.getElementById('titleInput');
     const categorySelect = document.getElementById('categorySelect');
     const whenSelect = document.getElementById('whenSelect');
@@ -148,14 +163,16 @@ async function main(){
     ok('(B7) タイトル入力欄が hidden クラスを持たない', !titleInput.classList.contains('hidden'));
     ok('(B7) タイトル入力欄の祖先に非表示(.hidden)要素がない', !titleInput.closest('.hidden'));
 
-    // 8. アコーディオンを残す場合は初期状態が開いている
-    ok('(B8) タイトル・棚を含む<details class="desk-extra">が初期状態でopenである', details.hasAttribute('open'));
+    // 8. [Clarity Fix1] 旧<details class="desk-extra">は廃止され、常時表示の区画になっている
+    ok('(B8) [Clarity Fix1] 旧<details class="desk-extra">は指示どおりDOMに存在しない（折りたたみ廃止）', !deskExtra);
+    ok('(B8) [Clarity Fix1] 代わりに常時表示の区画(.desk-step-1)が存在し、hiddenクラスを持たない', !!step1Section && !step1Section.classList.contains('hidden'));
+    ok('(B8) [Clarity Fix1] タイトル・棚・いつの気持ちかの3項目すべてが .desk-step-1 内にあり、開閉操作なしで到達できる',
+       !!step1Section && step1Section.contains(titleInput) && step1Section.contains(categorySelect) && step1Section.contains(whenSelect));
 
     // 9. aria-expandedが実表示と一致する
-    //    a) 主要アコーディオン（desk-extra）はネイティブ<details>なので、独自にaria-expandedを
-    //       付けている場合のみ、その値がopen状態と一致していることを確認する。
-    const detailsAriaExpanded = details.getAttribute('aria-expanded');
-    ok('(B9a) desk-extraに独自aria-expandedを付けていないか、付けている場合はopenと一致', detailsAriaExpanded === null || detailsAriaExpanded === 'true');
+    //    a) [Clarity Fix1] desk-extraアコーディオン自体が廃止されたため、この項目は「該当なし」
+    //       として扱う（要素が存在しないこと自体はB8で確認済み）。
+    ok('(B9a) [Clarity Fix1] desk-extraアコーディオンは廃止済みのため、aria-expanded不整合の懸念自体が存在しない', !deskExtra);
     //    b) 区画内の「店主に題名を相談する」アコーディオン（titleConsultBtn/titleConsult）は
     //       初期状態=閉（aria-expanded="false" かつ titleConsultが非表示）で一致している。
     ok('(B9b) 「店主に題名を相談する」ボタンの初期aria-expandedはfalse', consultBtn.getAttribute('aria-expanded') === 'false');
@@ -197,9 +214,13 @@ async function main(){
     if(categorySelect.options.length){ categorySelect.value = categorySelect.options[1] ? categorySelect.options[1].value : categorySelect.options[0].value; }
     whenSelect.value = 'past';
 
-    // 助け舟ボタン（店主の助け舟）を操作
-    document.getElementById('assistBtn').click();
-    ok('(B11a) 「店主の助け舟」操作後もタイトルが残る', document.getElementById('titleInput').value === '消えないはずのタイトル');
+    // ★編集室Clarity Fix 1（指示書§4）により #assistBtn は画面から削除された。
+    //   ボタンがDOMに存在しないため、クリック操作そのものを再現できない。
+    //   「操作してもタイトルが消えない」という検証対象の操作自体が無くなったため、
+    //   ボタンが指示どおり削除されていることの確認に置き換える（名称・DOM構造の
+    //   変更に伴う最小更新であり、検証の弱体化ではない。削除された機能そのものの
+    //   受け入れ確認は tests/smoke_test_sonnet_hotfix2.js 側で行っている）。
+    ok('(B11a) [Clarity Fix1] #assistBtn は指示どおり削除されており、誤操作でタイトルを消すリスクの経路自体が無い', !document.getElementById('assistBtn'));
 
     // 言語切替（ja→en→ja）※appLangは<script>注入によるクラシックスクリプトのlet宣言のため
     // window.appLangへの直接代入では変化しない。既存テスト同様、実際のUI操作である
@@ -258,7 +279,7 @@ async function main(){
     ok('(C15d) 線の代わりに余白(margin-top/padding-top)が設けられている', !!countRowBlock && /(margin-top|padding-top)\s*:\s*var\(--vr-gap-/.test(countRowBlock[1]));
 
     // 16. 指定外の主要区切り線を削除していない（代表的な既存の罫線が残っていることを確認）
-    ok('(C16a) 「編纂室」見出し(.vr-stage-bind)自体の上罫線ロジックは変更していない（共通.vr-stage-labelのborder-topが残る）',
+    ok('(C16a) [Clarity Fix1で.vr-stage-bindクラス自体は廃止されたが] 共通.vr-stage-labelの上罫線ロジックは変更していない',
        /body\.experience-open \.vr-stage-label\{[^}]*border-top\s*:\s*1px solid var\(--vr-rule-faint\)/.test(rawCss));
     ok('(C16b) 「編纂室」内アコーディオン(.desk-extra)の既存の上罫線(dashed)は変更していない',
        /(?<!body\.experience-open )\.desk-extra\{[^}]*border-top\s*:\s*1px dashed var\(--paper-shadow\)/.test(rawCss) || /^\.desk-extra\{[\s\S]*?border-top:1px dashed var\(--paper-shadow\);/m.test(rawCss));
@@ -320,13 +341,18 @@ async function main(){
     await new Promise(r=>setTimeout(r,200));
     ok('(D23b) 製本後に本棚へ反映される', document.querySelectorAll('#myShelf .spine:not(.empty-spine)').length >= 1);
 
-    // 25. 日本語・英語切替が正常（編纂机の主要見出しが追従する）
+    // 25. 日本語・英語切替が正常（編集室の主要見出しが追従する）
+    // ★編集室Clarity Fix 1で.vr-stage-bind見出しの文言が「編纂室」から「1　本の形を決める」へ
+    //   変更されたため、固定の日本語文字列と比較するのではなく、実際のJA表示を基準値として
+    //   取得し、EN切替で変化し、JAへ戻すと元どおりになることを確認する（DOM順・挙動の検証
+    //   自体は変更していない）。
+    const bindLabelJaBefore = document.querySelector('.desk-step-1 .vr-stage-label').textContent;
     window.toggleLanguage();
-    const bindLabelEn = document.querySelector('.vr-stage-label.vr-stage-bind').textContent;
-    ok('(D25a) 英語切替で「編纂室」見出しが英語化される', bindLabelEn !== '編纂室' && bindLabelEn.length > 0);
+    const bindLabelEn = document.querySelector('.desk-step-1 .vr-stage-label').textContent;
+    ok('(D25a) 英語切替で「本の形を決める」見出しが英語化される', bindLabelEn !== bindLabelJaBefore && bindLabelEn.length > 0);
     window.toggleLanguage();
-    const bindLabelJa = document.querySelector('.vr-stage-label.vr-stage-bind').textContent;
-    ok('(D25b) 日本語へ戻すと「編纂室」表記に戻る', bindLabelJa === '編纂室');
+    const bindLabelJa = document.querySelector('.desk-step-1 .vr-stage-label').textContent;
+    ok('(D25b) 日本語へ戻すと元の表記に戻る', bindLabelJa === bindLabelJaBefore);
 
     // 28. main.js・data.js・sw.js の構文チェックがPASS
     const { execFileSync } = require('child_process');
