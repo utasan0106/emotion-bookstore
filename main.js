@@ -96,7 +96,7 @@ const MESSAGES = {
     earlyFreeformHint: "当てはまるものがない場合は、この枠に気持ちを書いて「話す」を押してください。",
     userInputPlaceholder: "例：うまく言えないけど、朝から気持ちが落ち着かない…",
     sendBtn: "話す",
-    sectionHead2: "感情の棚", sectionSub2: "棚を選んでも、あてもなく巡っても。",
+    sectionHead2: "感情の棚", sectionSub2: "気になる棚から、そっとのぞいてみてください。",
     swipeHint: "← 左右にスワイプでも棚を移動できます →",
     backToBandai: "⤴ 店主と棚を相談する",
     exitShopBtn: "お店を出る",
@@ -148,6 +148,10 @@ const MESSAGES = {
     sampleBookTitle: "雨上がりの帰り道",
     sampleBookStory: "傘を閉じたら、路面の匂いが少しだけ夏に戻っていた。今日うまく言えなかったことを、帰り道の水たまりにひとつずつ落としていく。急がなくていい、と自分に言えたのは久しぶりだった。玄関の灯りが見えたとき、明日はもう少しだけ素直に話してみようと思った。",
     sampleBookNote: "うまく言えなかった日ほど、言葉は静かに育っています。この棚で、ゆっくりどうぞ。",
+    deskSampleIntro: "一冊になると、こうなります。",
+    deskSampleSummary: "できあがりの見本を見る",
+    deskSampleShelfLabel: "棚：懐かしい",
+    deskSampleDate: "2026年6月1日 納品",
     sectionHead3: "編集室",
     // ★VisualRedesignRC1：編纂机(#desk)内の2つの段階を、利用者から見て
     //   ひとつの場所として成立する視覚状態へ整理するための区画見出し。
@@ -157,7 +161,7 @@ const MESSAGES = {
     // ★編集室 Final Clarity Fix（2026-07-26）：正式な区画見出し（本文入力エリアの直前に置く、
     //   番号なしの見出し）。上部の短い工程案内（deskOverviewStep1-3）とは別の文言・別のキー。
     vrStageBindLabel: "本の輪郭を決める",
-    vrStageBindLead: "タイトルと、いつの気持ちかは、決めなくても一冊にできます。",
+    vrStageBindLead: "タイトルは空欄でも、一冊にできます。",
     deskStep2Heading: "言葉を綴る",
     deskStep3Heading: "一冊にして預ける",
     // ★編集室 Final Clarity Fix（2026-07-26）：見出し画像直下に置く、数字を持たない短い
@@ -170,18 +174,17 @@ const MESSAGES = {
     sectionSub3: "あなたの言葉を、一冊に編む場所です。",
     shelfAfterBindingNote: "棚は、製本したあとに選べます。",
     storyInputPlaceholder: "書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。",
-    assistBtn: "書き出しに迷ったら、店主の助け舟",
+    assistBtn: "書き出しに迷ったら",
     // ★Hotfix2-2：assistBtn押下時に本文欄へ挿入する定型の書き出しテンプレート。
     // 本文解析・外部AI送信は行わない固定文言。appLangに応じてJA/ENを出し分ける。
     assistTemplate: "いつ：\nどこで：\nなにがあった：\nそのとき、胸の中は：\n",
     // ★2026-07-18追加：旧チャットの代わりに編纂机へ表示する、静的な「言葉にするための助け舟」。
     // 本文解析や外部AI送信は行わず、選んだ棚（感情）に応じた固定の問いを提示するだけ。
     writingBoatHeading: "言葉にするための助け舟",
-    writingBoatNote: "答えなくても大丈夫です。書き出す手がかりに、どうぞ。",
+    writingBoatNote: "使わずに、そのまま書き始めても大丈夫です。",
     // ★編集室 Clarity Fix 1（2026-07-26）：助け舟2つ（ヒント／説明）のネイティブdetails見出しと説明文。
-    boatHintSummary: "書き出しのヒントを見る",
-    boatAboutSummary: "店主の助け舟とは",
-    boatAboutBody: "書き始めるきっかけになる短い問いです。本文を読んだり、気持ちを分析したりはしません。使わずに、そのまま書き始めても大丈夫です。",
+    boatHintSummary: "店主の助け舟を開く",
+    boatAboutBody: "書き始めるきっかけになる、短い問いです。本文を読んだり、気持ちを分析したりはしません。",
     storyCountFormat: "{count} / {max}字",
     photoLabel: "今日の一枚を、頁に挟む（任意）",
     photoPreviewAlt: "添付写真のプレビュー",
@@ -261,7 +264,7 @@ const MESSAGES = {
     pwaNote: "アプリのように、いつでも1タップで扉をひらけるようになります。",
     inAppBrowserWarning: "アプリ内ブラウザで開いています。この環境では<b>記録が保存されない場合があります</b>。Safari や Chrome で開き直すことをおすすめします。",
     fairGoBtn: "棚へ",
-    wanderBtn: "気の向くままに巡る",
+    wanderBtn: "店主に一棚選んでもらう",
     shioriChoosingWords: "店主が言葉を選んでいます…",
     bindTextStep2: "表紙を綴じています…",
     draftRestored: "前の頁が、机に残っています。続きからでも、そのまま綴じても。",
@@ -463,7 +466,7 @@ const MESSAGES = {
     earlyFreeformHint: "If nothing quite fits, write how you feel in this box and press \"Talk.\"",
     userInputPlaceholder: "e.g. I can't quite explain it, but I've felt unsettled all morning…",
     sendBtn: "Talk",
-    sectionHead2: "The Emotion Shelves", sectionSub2: "Pick a shelf, or just wander without a destination.",
+    sectionHead2: "The Emotion Shelves", sectionSub2: "Peek into whichever shelf catches your eye.",
     swipeHint: "← Swipe left or right to move between shelves →",
     backToBandai: "⤴ Find a Shelf with the Shopkeeper",
     exitShopBtn: "Leave the Bookstore",
@@ -507,11 +510,15 @@ const MESSAGES = {
     sampleBookTitle: "The Walk Home After the Rain",
     sampleBookStory: "When I closed my umbrella, the smell of the wet street felt almost like summer again. One by one, I let the things I couldn’t say today fall into the puddles along the way home. For the first time in a while, I told myself it was okay not to hurry. When I saw the light at my front door, I thought: tomorrow, I’ll try speaking a little more honestly.",
     sampleBookNote: "On the days words wouldn’t come out right, they were quietly growing. Take your time on this shelf.",
+    deskSampleIntro: "This is what a finished book looks like.",
+    deskSampleSummary: "See a sample of the finished book",
+    deskSampleShelfLabel: "Shelf: Nostalgic",
+    deskSampleDate: "June 1, 2026 · Delivered",
     sectionHead3: "Editing Room",
     vrStageManaLabel: "Mana receives your words",
     vrStageManaLead: "Your words are received quietly.",
     vrStageBindLabel: "Shape the Book",
-    vrStageBindLead: "You can make a book without choosing a title or when the feeling is from.",
+    vrStageBindLead: "You can make a book without choosing a title.",
     deskStep2Heading: "Write Your Words",
     deskStep3Heading: "Bind and Leave It Here",
     deskOverviewStep1: "Book Shape",
@@ -521,15 +528,14 @@ const MESSAGES = {
     sectionSub3: "A place to turn your words into a book.",
     shelfAfterBindingNote: "You can choose a shelf after your book is bound.",
     storyInputPlaceholder: "When, where, what happened, and how it felt. Short and imperfect is fine.",
-    assistBtn: "Not sure how to start? Ask the shopkeeper for a hand",
+    assistBtn: "Not sure how to start?",
     // ★Hotfix2-2：assistTemplateの英語版。JAと同じ4行構成・末尾改行あり。
     assistTemplate: "When:\nWhere:\nWhat happened:\nWhat I felt inside:\n",
     // ★Hotfix4-3追加：英語モードで空文字になり、見出し・注記が消えていた欠落キーを補完。
     writingBoatHeading: "A little help putting it into words",
-    writingBoatNote: "You don't have to answer these — just a starting point, if you'd like one.",
-    boatHintSummary: "See a few starting hints",
-    boatAboutSummary: "About the shopkeeper's little help",
-    boatAboutBody: "These are short prompts to help you get started. They don't read what you've written or analyze your feelings. You can skip them and start writing right away.",
+    writingBoatNote: "You can skip these and start writing right away.",
+    boatHintSummary: "Open the shopkeeper's little help",
+    boatAboutBody: "These are short prompts to help you get started. They don't read what you've written or analyze your feelings.",
     storyCountFormat: "{count} / {max} chars",
     photoLabel: "Slip in today's photo (optional)",
     photoPreviewAlt: "Preview of attached photo",
@@ -604,7 +610,7 @@ const MESSAGES = {
     pwaNote: "Just like an app, you'll be able to open the door with a single tap anytime.",
     inAppBrowserWarning: "You're viewing this inside an in-app browser. <b>Your records may not be saved</b> in this environment. We recommend reopening in Safari or Chrome.",
     fairGoBtn: "Go",
-    wanderBtn: "Wander wherever it leads",
+    wanderBtn: "Let the shopkeeper choose a shelf",
     shioriChoosingWords: "The shopkeeper is choosing their words…",
     bindTextStep2: "Binding the cover…",
     draftRestored: "Your draft has been restored. Please continue where you left off.",
@@ -3112,6 +3118,16 @@ const SHELF_GROUP_LABELS = {
   other: { ja:'その他',           en:'Other' }
 };
 
+// ★Release Final UI Fix：感情の棚で棚を選択したら、選択結果（棚詳細）へすぐスクロールする。
+// prefs.motion（動きを減らす設定）を尊重し、初期表示・自動選択では呼ばない
+// （棚タブクリック／「店主に一棚選んでもらう」／スワイプの3箇所からのみ呼ぶ）。
+function scrollToShelfDetail(){
+  const el = document.getElementById('shelfDisplay');
+  if(el && el.scrollIntoView){
+    try{ el.scrollIntoView({behavior: prefs.motion ? 'smooth' : 'auto', block:'start'}); }catch(e){}
+  }
+}
+
 function renderShelfTabs(){
   try{
     const wrap = document.getElementById('shelfTabs');
@@ -3157,6 +3173,7 @@ function renderShelfTabs(){
           setActiveShelf(cat.id); // ★Hotfix1-2追加修正：棚タブ直接クリックでもshelfWasChosenを更新
           renderShelfTabs();
           renderShelfDisplay();
+          scrollToShelfDetail();
         };
         row.appendChild(btn);
       });
@@ -3183,6 +3200,7 @@ function renderShelfTabs(){
       setActiveShelf(pick); // ★Hotfix1-2追加修正：「気ままに巡る」でもshelfWasChosenを更新
       renderShelfTabs();
       renderShelfDisplay();
+      scrollToShelfDetail();
     };
     wanderRow.appendChild(wander);
     wrap.appendChild(wanderRow);
@@ -3225,7 +3243,8 @@ function renderDetourFallback(box, catId){
       </div>`;
   }).join('');
   box.innerHTML = `
-    <p class="detour-heading">${escapeHtml(t('detourHeading'))}<span class="detour-half-note">（${escapeHtml(halfLabel)}）</span><span class="detour-pr">${escapeHtml(t('detourPrNote'))}</span></p>
+    <p class="detour-heading">${escapeHtml(t('detourHeading'))}<span class="detour-half-note">（${escapeHtml(halfLabel)}）</span></p>
+    <p class="detour-pr">${escapeHtml(t('detourPrNote'))}</p>
     <div class="detour-cards">${cardsHtml}</div>
     <p class="detour-note">${escapeHtml(t('detourNote'))}</p>`;
 }
@@ -3536,6 +3555,7 @@ function navigateShelfBySwipe(direction){
   if(activeTab && activeTab.scrollIntoView){
     try{ activeTab.scrollIntoView({behavior: prefs.motion ? 'smooth' : 'auto', inline:'center', block:'nearest'}); }catch(e){}
   }
+  scrollToShelfDetail();
   if(navigator.vibrate) try{ navigator.vibrate(10); }catch(e){}
 }
 

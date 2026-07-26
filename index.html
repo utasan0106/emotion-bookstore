@@ -460,7 +460,7 @@ body.night .about-data-content{
 
   <section id="shelves" class="reveal experience-page">
     <div class="section-head"><h2 data-i18n="sectionHead2">感情の棚</h2></div>
-    <p class="section-sub" data-i18n="sectionSub2">棚を選んでも、あてもなく巡っても。</p>
+    <p class="section-sub" data-i18n="sectionSub2">気になる棚から、そっとのぞいてみてください。</p>
     <div class="fair" id="fairBox"></div>
     <!-- ★微調整：スワイプ検出範囲を#shelfDisplay単独から、棚タブ＋棚内容を含む
          専用ラッパー（#shelfSwipeZone）へ拡張する（棚データ・棚タブ/表示のDOM構造自体は変更しない）。 -->
@@ -492,19 +492,32 @@ body.night .about-data-content{
       <img src="assets/editing-room.webp" width="960" height="420" alt="" aria-hidden="true"
            loading="eager" fetchpriority="high" decoding="async">
     </div>
-    <ol class="desk-steps-overview" aria-hidden="true">
-      <li data-i18n="deskOverviewStep1">本の輪郭</li>
-      <li data-i18n="deskOverviewStep2">言葉を綴る</li>
-      <li data-i18n="deskOverviewStep3">本を預ける</li>
+    <ol class="desk-steps-overview">
+      <li><a href="#book-outline" data-i18n="deskOverviewStep1">本の輪郭</a></li>
+      <li><a href="#write-words" data-i18n="deskOverviewStep2">言葉を綴る</a></li>
+      <li><a href="#leave-book" data-i18n="deskOverviewStep3">本を預ける</a></li>
     </ol>
+
+    <!-- ★Release Final UI Fix：完成した本の見本（閲覧専用・固定データのみ・保存/編集/共有なし）。
+         既定は閉じた状態。開いても#sampleBookInline（表紙側）とはID・状態を共有しない別要素。 -->
+    <p class="desk-sample-intro" data-i18n="deskSampleIntro">一冊になると、こうなります。</p>
+    <details class="desk-sample-details" id="deskSampleDetails">
+      <summary data-i18n="deskSampleSummary">できあがりの見本を見る</summary>
+      <div class="desk-sample-book">
+        <p class="desk-sample-cat" data-i18n="deskSampleShelfLabel">棚：懐かしい</p>
+        <p class="desk-sample-title" data-i18n="sampleBookTitle">雨上がりの帰り道</p>
+        <p class="desk-sample-date" data-i18n="deskSampleDate">2026年6月1日 納品</p>
+        <p class="desk-sample-story" data-i18n="sampleBookStory">傘を閉じたら、路面の匂いが少しだけ夏に戻っていた。</p>
+      </div>
+    </details>
 
     <div class="desk-form">
       <!-- ===== 1 本の輪郭を決める：旧 details.desk-extra の折りたたみを廃止し、常時表示の区画にする。
            DOM順：タイトル→棚→いつの気持ちか。既定値・保存値・製本ロジックは変更していない。
            ★Final Clarity Fix：見出しから数字を外し「本の輪郭を決める」に統一。 ===== -->
-      <div class="desk-step-section desk-step-1">
+      <div class="desk-step-section desk-step-1" id="book-outline">
         <p class="vr-stage-label desk-step-heading" data-i18n="vrStageBindLabel">本の輪郭を決める</p>
-        <p class="vr-stage-lead" data-i18n="vrStageBindLead">タイトルと、いつの気持ちかは、決めなくても一冊にできます。</p>
+        <p class="vr-stage-lead" data-i18n="vrStageBindLead">タイトルは空欄でも、一冊にできます。</p>
         <div class="field field-title-primary">
           <label for="titleInput" data-i18n="fieldLabelTitle">背表紙のタイトル</label>
           <input id="titleInput" maxlength="16" placeholder="空欄の場合は『まだ、題名のない本』になります" data-i18n-ph="titleInputPlaceholder">
@@ -520,32 +533,20 @@ body.night .about-data-content{
             <select id="categorySelect"></select>
             <span class="field-hint" data-i18n="shelfAfterBindingNote">棚は、製本したあとに選べます。</span>
           </div>
-          <div class="field field-subtle">
-            <label for="whenSelect" data-i18n="fieldLabelWhen">いつの気持ちですか</label>
-            <select id="whenSelect">
-              <option value="now" data-i18n="whenOptionNow">今の気持ち</option>
-              <option value="past" data-i18n="whenOptionPast">以前のことを振り返って</option>
-            </select>
-            <span class="field-hint" data-i18n="fieldHint">「以前のことを振り返って」を選ぶと、過去の気持ちとして本棚に残せます。</span>
-          </div>
         </div>
       </div>
 
       <!-- ===== 2 言葉を綴る：助け舟は2つとも初期状態は閉じたネイティブdetails/summary。
            既存の本文下#assistBtnは画面から削除（対応するJSは要素なしガードのまま）。文字数表示は残す。 ===== -->
-      <div class="desk-step-section desk-step-2">
+      <div class="desk-step-section desk-step-2" id="write-words">
         <p class="vr-stage-label desk-step-heading" data-i18n="deskStep2Heading">言葉を綴る</p>
-        <p class="boat-intro-heading" data-i18n="assistBtn">書き出しに迷ったら、店主の助け舟</p>
+        <p class="boat-intro-heading" data-i18n="assistBtn">書き出しに迷ったら</p>
         <div class="writing-boat" id="writingBoat">
           <details class="boat-hint">
-            <summary data-i18n="boatHintSummary">書き出しのヒントを見る</summary>
-            <p class="writing-boat-heading" data-i18n="writingBoatHeading">言葉にするための助け舟</p>
+            <summary data-i18n="boatHintSummary">店主の助け舟を開く</summary>
+            <p class="boat-about-body" data-i18n="boatAboutBody">書き始めるきっかけになる、短い問いです。本文を読んだり、気持ちを分析したりはしません。</p>
             <ul class="writing-boat-list" id="writingBoatList"></ul>
-            <p class="writing-boat-note" data-i18n="writingBoatNote">答えなくても大丈夫です。書き出す手がかりに、どうぞ。</p>
-          </details>
-          <details class="boat-about">
-            <summary data-i18n="boatAboutSummary">店主の助け舟とは</summary>
-            <p class="boat-about-body" data-i18n="boatAboutBody">書き始めるきっかけになる短い問いです。本文を読んだり、気持ちを分析したりはしません。使わずに、そのまま書き始めても大丈夫です。</p>
+            <p class="writing-boat-note" data-i18n="writingBoatNote">使わずに、そのまま書き始めても大丈夫です。</p>
           </details>
         </div>
         <p class="vr-stage-label vr-stage-mana-inline" data-i18n="vrStageManaLabel">店主まなが預かる</p>
@@ -563,7 +564,7 @@ body.night .about-data-content{
 
       <!-- ===== 3 一冊にして預ける：既存#tweetInputを、いつの気持ちかの横から写真欄の直下へ移動。
            保存形式・URL検証・製本後の表示・共有機能・CTAの既存動作は変更していない。 ===== -->
-      <div class="desk-step-section desk-step-3">
+      <div class="desk-step-section desk-step-3" id="leave-book">
         <p class="vr-stage-label desk-step-heading" data-i18n="deskStep3Heading">一冊にして預ける</p>
         <div class="photo-row">
           <button type="button" class="photo-label" id="photoChooseBtn" data-i18n="photoLabel">今日の一枚を、頁に挟む（任意）</button>

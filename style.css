@@ -7414,3 +7414,129 @@ body.experience-ready .entrance.hero .first-visit-note{
     padding-bottom:58px;
   }
 }
+
+/* ============================================================================
+ * ★Release Final UI Fix（2026-07-26）
+ * 目的：
+ *  (1) 感情の棚「この気持ちを手放す」ボタンの直後に残っていた波線（旧
+ *      .recommend-sectionのborder-top。Zone B刷新（後発ルール）がborder-topを
+ *      上書きしていなかったため、実運用のbody.experience-open配下でも表示され、
+ *      ボタンと重なって見えていた）を消し、ボタンとの間隔を空ける。
+ *  (2) 「今月の寄り道」見出し・半月ラベルを中央寄せし、PR/広告リンク表記を
+ *      見出しの下に独立した行として配置する（文言・リンク先・rel属性・
+ *      デシル抽選ロジックは変更していない）。
+ *  (3) 編集室：見出し画像・3工程道しるべの最大幅を.desk-form（640px）に揃え、
+ *      3工程を実際に押せるリンクにしたことに伴うタップ領域・フォーカス表示、
+ *      および完成した本の見本（details、閲覧専用）の静的スタイルを追加する。
+ * 新しい外部通信・保存キー・データ構造・アニメーション・JSロジックの追加は
+ * 行っていない（本ブロックはCSSのみ）。
+ * ============================================================================ */
+
+/* ---- (1) 「この気持ちを手放す」直後の波線を消し、間隔を空ける ---- */
+body.experience-open .purify-trigger{
+  margin-bottom:18px;
+}
+body.experience-open .recommend-section{
+  border-top:none;
+}
+
+/* ---- (2) 今月の寄り道：見出し・半月ラベルを中央寄せ、PR表記を独立した行にする ---- */
+body.experience-open .detour-section .detour-heading{
+  text-align:center;
+}
+body.experience-open .detour-half-note{
+  display:inline-block;
+  text-align:center;
+}
+body.experience-open .detour-pr{
+  display:block;
+  text-align:center;
+  margin:4px 0 0;
+}
+
+/* ---- (3-a) 編集室：見出し画像・3工程の最大幅を.desk-form（640px）に揃える ---- */
+.desk-hero-image,
+.desk-steps-overview{
+  max-width:640px;
+}
+
+/* ---- (3-b) 3工程の道しるべを実際のリンクにしたことに伴うタップ領域・フォーカス表示 ---- */
+.desk-steps-overview li{
+  padding:0;
+}
+.desk-steps-overview li a{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:44px;
+  padding:0 6px var(--vr-gap-xs, 8px);
+  color:inherit;
+  text-decoration:none;
+}
+.desk-steps-overview li a:focus-visible{
+  outline:2px solid var(--vr-brass);
+  outline-offset:2px;
+  border-radius:2px;
+}
+.desk-step-section{
+  scroll-margin-top:16px;
+}
+
+/* ---- (3-c) 完成した本の見本（details、既定は閉じている・閲覧専用） ---- */
+.desk-sample-intro{
+  text-align:center;
+  font-size:12.5px;
+  letter-spacing:.05em;
+  color:var(--vr-text-muted);
+  margin:0 0 var(--vr-gap-xs, 6px);
+}
+.desk-sample-details{
+  max-width:640px;
+  margin:0 auto var(--vr-gap-l, 20px);
+  border:1px solid var(--vr-rule-faint);
+  border-radius:2px;
+  padding:2px 14px;
+}
+.desk-sample-details summary{
+  cursor:pointer;
+  list-style:none;
+  font-size:13px;
+  letter-spacing:.03em;
+  color:var(--vr-text-body);
+  padding:10px 0;
+  text-align:center;
+}
+.desk-sample-details summary::-webkit-details-marker{ display:none; }
+.desk-sample-details summary::before{ content:"▸ "; color:var(--vr-brass); }
+.desk-sample-details[open] summary::before{ content:"▾ "; }
+.desk-sample-book{
+  padding:2px 0 14px;
+  border-top:1px solid var(--vr-rule-faint);
+  margin-top:2px;
+}
+.desk-sample-cat{
+  font-size:11.5px;
+  color:var(--vr-text-faint);
+  margin:10px 0 2px;
+}
+.desk-sample-title{
+  font-family:var(--font-display);
+  font-size:15.5px;
+  color:var(--vr-brass-lit, var(--vr-text));
+  margin:0 0 2px;
+}
+.desk-sample-date{
+  font-size:11px;
+  color:var(--vr-text-faint);
+  margin:0 0 10px;
+}
+.desk-sample-story{
+  font-size:13px;
+  line-height:1.85;
+  color:var(--vr-text-body);
+  margin:0;
+}
+@media (max-width:480px){
+  .desk-sample-details{ padding:2px 10px; }
+}
