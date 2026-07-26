@@ -482,25 +482,29 @@ body.night .about-data-content{
     <p class="desk-lead hidden" id="deskLead"></p>
     <p class="section-sub" data-i18n-html="sectionSub3">あなたの言葉を、一冊に編む場所です。</p>
 
-    <!-- ★編集室 Clarity Fix 1（2026-07-26）：机・原稿・灯りの雰囲気を伝える1枚のWebPと、
-         静的な3工程の道しるべ。進捗率・完了判定・スクロール追従・現在位置の自動切替は実装しない。
-         JavaScriptによる進行管理は追加していない（純粋なHTML/CSSの静的表示）。 -->
+    <!-- ★編集室 Final Clarity Fix（2026-07-26）：机・原稿・灯りの雰囲気を伝える1枚のWebP
+         （assets/editing-room.webp、Clarity Fix 1と同一バイト）を確実に表示させる
+         （loading="eager"／fetchpriority="high"、失敗時に自身を隠すJSは持たない）。
+         直下に、数字を持たない短い3工程の道しるべ（本の輪郭／言葉を綴る／本を預ける）を置く。
+         進捗率・完了判定・スクロール追従・現在位置の自動切替・JavaScriptによる進行管理は
+         追加していない（純粋なHTML/CSSの静的表示）。 -->
     <div class="desk-hero-image">
-      <img src="assets/editing-room.webp" alt="" width="960" height="420" loading="lazy" decoding="async"
-           onerror="this.closest('.desk-hero-image') &amp;&amp; (this.closest('.desk-hero-image').style.display='none')">
+      <img src="assets/editing-room.webp" width="960" height="420" alt="" aria-hidden="true"
+           loading="eager" fetchpriority="high" decoding="async">
     </div>
     <ol class="desk-steps-overview" aria-hidden="true">
-      <li data-i18n="vrStageBindLabel">1　本の形を決める</li>
-      <li data-i18n="deskStep2Heading">2　言葉を綴る</li>
-      <li data-i18n="deskStep3Heading">3　一冊にして預ける</li>
+      <li data-i18n="deskOverviewStep1">本の輪郭</li>
+      <li data-i18n="deskOverviewStep2">言葉を綴る</li>
+      <li data-i18n="deskOverviewStep3">本を預ける</li>
     </ol>
 
     <div class="desk-form">
-      <!-- ===== 1 本の形を決める：旧 details.desk-extra の折りたたみを廃止し、常時表示の区画にする。
-           DOM順：タイトル→棚→いつの気持ちか。既定値・保存値・製本ロジックは変更していない。 ===== -->
+      <!-- ===== 1 本の輪郭を決める：旧 details.desk-extra の折りたたみを廃止し、常時表示の区画にする。
+           DOM順：タイトル→棚→いつの気持ちか。既定値・保存値・製本ロジックは変更していない。
+           ★Final Clarity Fix：見出しから数字を外し「本の輪郭を決める」に統一。 ===== -->
       <div class="desk-step-section desk-step-1">
-        <p class="vr-stage-label desk-step-heading" data-i18n="vrStageBindLabel">1　本の形を決める</p>
-        <p class="vr-stage-lead" data-i18n="vrStageBindLead">タイトル・棚・時期は、決めなくても一冊にできます。</p>
+        <p class="vr-stage-label desk-step-heading" data-i18n="vrStageBindLabel">本の輪郭を決める</p>
+        <p class="vr-stage-lead" data-i18n="vrStageBindLead">タイトルと、いつの気持ちかは、決めなくても一冊にできます。</p>
         <div class="field field-title-primary">
           <label for="titleInput" data-i18n="fieldLabelTitle">背表紙のタイトル</label>
           <input id="titleInput" maxlength="16" placeholder="空欄の場合は『まだ、題名のない本』になります" data-i18n-ph="titleInputPlaceholder">
@@ -530,7 +534,7 @@ body.night .about-data-content{
       <!-- ===== 2 言葉を綴る：助け舟は2つとも初期状態は閉じたネイティブdetails/summary。
            既存の本文下#assistBtnは画面から削除（対応するJSは要素なしガードのまま）。文字数表示は残す。 ===== -->
       <div class="desk-step-section desk-step-2">
-        <p class="vr-stage-label desk-step-heading" data-i18n="deskStep2Heading">2　言葉を綴る</p>
+        <p class="vr-stage-label desk-step-heading" data-i18n="deskStep2Heading">言葉を綴る</p>
         <p class="boat-intro-heading" data-i18n="assistBtn">書き出しに迷ったら、店主の助け舟</p>
         <div class="writing-boat" id="writingBoat">
           <details class="boat-hint">
@@ -560,7 +564,7 @@ body.night .about-data-content{
       <!-- ===== 3 一冊にして預ける：既存#tweetInputを、いつの気持ちかの横から写真欄の直下へ移動。
            保存形式・URL検証・製本後の表示・共有機能・CTAの既存動作は変更していない。 ===== -->
       <div class="desk-step-section desk-step-3">
-        <p class="vr-stage-label desk-step-heading" data-i18n="deskStep3Heading">3　一冊にして預ける</p>
+        <p class="vr-stage-label desk-step-heading" data-i18n="deskStep3Heading">一冊にして預ける</p>
         <div class="photo-row">
           <button type="button" class="photo-label" id="photoChooseBtn" data-i18n="photoLabel">今日の一枚を、頁に挟む（任意）</button>
           <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" class="visually-hidden-file">
