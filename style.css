@@ -6969,13 +6969,14 @@ body.night.experience-open .milestone-toast.gentle-toast{
  * 新規アイコンライブラリ・Webフォントは追加していない。既存の色・余白・フォント変数のみ使用する。
  * ============================================================================ */
 
-/* ---- 1. 見出し画像（机・原稿・灯り）。1枚のみ。object-fit:coverで横長比率を維持する。 ---- */
+/* ---- 1. 見出し画像（机・原稿・灯り）。1枚のみ。object-fit:coverで横長比率を維持する。
+ *        ★Final Clarity Fix：確実に表示させるため、aspect-ratio/object-fitはimg自体に
+ *        指定する（960:420は16:7と同一比率）。display:none等の非表示状態は持たない。 ---- */
 .desk-hero-image{
   position:relative;
   width:100%;
-  max-width:640px;
+  max-width:600px;
   margin:var(--vr-gap-m) auto var(--vr-gap-s);
-  aspect-ratio:960/420;
   overflow:hidden;
   border-radius:2px;
   background:var(--vr-night-1);
@@ -6983,7 +6984,8 @@ body.night.experience-open .milestone-toast.gentle-toast{
 .desk-hero-image img{
   display:block;
   width:100%;
-  height:100%;
+  height:auto;
+  aspect-ratio:16/7;
   object-fit:cover;
 }
 /* 既存の暗い背景になじむ薄いグラデーションをCSSで重ねる（新規画像・JSは使わない） */
@@ -6997,21 +6999,27 @@ body.night.experience-open .milestone-toast.gentle-toast{
 body.night .desk-hero-image{ background:var(--vr-night-0); }
 
 /* ---- 2. 静的な3工程の道しるべ。進捗率・完了判定・スクロール追従・自動切替は実装しない。
- *        金色の細い線（border）だけで区切りを表現する（新規アイコン・SVGは使わない）。 ---- */
+ *        金色の細い線（border）だけで区切りを表現する（新規アイコン・SVGは使わない）。
+ *        ★Final Clarity Fix：flexからgridへ変更し、3列を同じ幅・同じ高さに揃える
+ *        （align-items:stretchで各列の罫線位置を統一。数字は表示しない）。 ---- */
 .desk-steps-overview{
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  align-items:stretch;
   list-style:none;
-  max-width:640px;
+  max-width:600px;
   margin:0 auto var(--vr-gap-l);
   padding:0;
 }
 .desk-steps-overview li{
-  flex:1;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   text-align:center;
+  word-break:keep-all;
   font-family:var(--font-display);
-  font-size:11.5px;
+  font-size:13px;
   letter-spacing:.05em;
   color:var(--vr-text-muted);
   padding:0 6px var(--vr-gap-xs);
@@ -7021,7 +7029,7 @@ body.night .desk-hero-image{ background:var(--vr-night-0); }
   border-left:1px solid var(--vr-rule-faint);
 }
 
-/* ---- 3. 各工程（本の形を決める／言葉を綴る／一冊にして預ける）の間隔。
+/* ---- 3. 各工程（本の輪郭を決める／言葉を綴る／一冊にして預ける）の間隔。
  *        区切りは線ではなく余白で表現する（Desk Flow Fix 1と同じ方針を踏襲）。 ---- */
 .desk-step-section + .desk-step-section{
   margin-top:var(--vr-gap-xl);
@@ -7029,7 +7037,7 @@ body.night .desk-hero-image{ background:var(--vr-night-0); }
 /* 3つの見出し（1/2/3）は、既存の「.vr-stage-label:not(.vr-stage-bind)」上書き
    （Desk Flow Fix 1）により、いずれも上罫線なし・上余白のみで統一される。 */
 
-/* ---- 4. 1 本の形を決める：タイトルを最も目立たせ、いつの気持ちかは控えめにする ---- */
+/* ---- 4. 本の輪郭を決める：タイトルを最も目立たせ、いつの気持ちかは控えめにする ---- */
 .field-title-primary label{
   font-size:15px;
   font-weight:600;
@@ -7110,7 +7118,9 @@ body.night .desk-hero-image{ background:var(--vr-night-0); }
 }
 
 /* ---- モバイル：見出し画像で入力欄を過度に下へ押さない。横長比率は維持する。横スクロールは発生しない
- *        （幅は常に100%・max-width:640pxで、はみ出す固定pxを指定していない）。 ---- */
+ *        （幅は常に100%・max-width:600pxで、はみ出す固定pxを指定していない）。
+ *        ★Final Clarity Fix：390/430pxで3列目が折り返さないよう、文字サイズは12px以上を維持する
+ *        （指示書の目安12〜14pxに合わせる。旧10.5pxは下限を割っていたため引き上げ）。 ---- */
 @media (max-width:480px){
   .desk-hero-image{
     margin:var(--vr-gap-s) auto var(--vr-gap-xs);
@@ -7120,7 +7130,7 @@ body.night .desk-hero-image{ background:var(--vr-night-0); }
     margin-bottom:var(--vr-gap-m);
   }
   .desk-steps-overview li{
-    font-size:10.5px;
+    font-size:12px;
     padding-bottom:6px;
   }
 }

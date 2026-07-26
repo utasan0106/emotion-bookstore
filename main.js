@@ -154,12 +154,18 @@ const MESSAGES = {
     //   新しいURL・保存キー・データ構造・画面遷移は追加していない（表示のみ）。
     vrStageManaLabel: "店主まなが預かる",
     vrStageManaLead: "あなたの言葉を、静かに受け取ります。",
-    vrStageBindLabel: "1　本の形を決める",
-    vrStageBindLead: "タイトル・棚・時期は、決めなくても一冊にできます。",
-    // ★編集室 Clarity Fix 1（2026-07-26）：静的な3工程の道しるべ（見出し画像直下の一覧と、
-    //   各入力エリアの見出しの両方で、同じ文言をdata-i18n経由で再利用する）。
-    deskStep2Heading: "2　言葉を綴る",
-    deskStep3Heading: "3　一冊にして預ける",
+    // ★編集室 Final Clarity Fix（2026-07-26）：正式な区画見出し（本文入力エリアの直前に置く、
+    //   番号なしの見出し）。上部の短い工程案内（deskOverviewStep1-3）とは別の文言・別のキー。
+    vrStageBindLabel: "本の輪郭を決める",
+    vrStageBindLead: "タイトルと、いつの気持ちかは、決めなくても一冊にできます。",
+    deskStep2Heading: "言葉を綴る",
+    deskStep3Heading: "一冊にして預ける",
+    // ★編集室 Final Clarity Fix（2026-07-26）：見出し画像直下に置く、数字を持たない短い
+    //   3工程の道しるべ（正式見出しdeskStep2Heading等とは別文言。例：「言葉を綴る」はJAでは
+    //   同じ表記だが、ENでは"Write"対"Write Your Words"のように異なるため別キーにしている）。
+    deskOverviewStep1: "本の輪郭",
+    deskOverviewStep2: "言葉を綴る",
+    deskOverviewStep3: "本を預ける",
     vrGentleNote: "一行だけでも大丈夫です。まだ言葉になっていなくても、そのまま置いてください。",
     sectionSub3: "あなたの言葉を、一冊に編む場所です。",
     shelfAfterBindingNote: "棚は、製本したあとに選べます。",
@@ -504,10 +510,13 @@ const MESSAGES = {
     sectionHead3: "Editing Room",
     vrStageManaLabel: "Mana receives your words",
     vrStageManaLead: "Your words are received quietly.",
-    vrStageBindLabel: "1  Shape your book",
-    vrStageBindLead: "You don't have to decide the title, shelf, or timing to make it into a book.",
-    deskStep2Heading: "2  Write your words",
-    deskStep3Heading: "3  Bind it and hand it over",
+    vrStageBindLabel: "Shape the Book",
+    vrStageBindLead: "You can make a book without choosing a title or when the feeling is from.",
+    deskStep2Heading: "Write Your Words",
+    deskStep3Heading: "Bind and Leave It Here",
+    deskOverviewStep1: "Book Shape",
+    deskOverviewStep2: "Write",
+    deskOverviewStep3: "Leave the Book",
     vrGentleNote: "A single line is enough. If it is not words yet, leave it as it is.",
     sectionSub3: "A place to turn your words into a book.",
     shelfAfterBindingNote: "You can choose a shelf after your book is bound.",
