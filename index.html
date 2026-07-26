@@ -481,44 +481,15 @@ body.night .about-data-content{
     <div class="section-head"><span class="page-label" data-i18n="pageLabelDesk">第一頁　</span><h2 data-i18n="sectionHead3">編纂机</h2></div>
     <p class="desk-lead hidden" id="deskLead"></p>
     <p class="section-sub" data-i18n-html="sectionSub3">題名や写真は任意です。製本したあと、棚にしまうか、棚を選ばず本棚へ戻れます。</p>
-    <!-- ★2026-07-18追加：旧チャットに代わる、静的な「言葉にするための助け舟」。
-         本文解析・外部AI送信は行わず、固定の問いを提示するだけ（renderWritingBoat()）。 -->
-    <div class="writing-boat" id="writingBoat">
-      <p class="writing-boat-heading" data-i18n="writingBoatHeading">言葉にするための助け舟</p>
-      <ul class="writing-boat-list" id="writingBoatList"></ul>
-      <p class="writing-boat-note" data-i18n="writingBoatNote">答えなくても大丈夫です。書き出す手がかりに、どうぞ。</p>
-    </div>
     <div class="desk-form">
-      <!-- ★VisualRedesignRC1：モックアップ3「店主まなが預かるページ」に対応する区画。
-           新しいURL・保存キー・データ構造・画面遷移は追加していない。既存要素の親子関係も
-           変更せず、.desk-form直下へ兄弟要素として区画見出しを差し込むだけに留める。 -->
-      <p class="vr-stage-label" data-i18n="vrStageManaLabel">店主まなが預かる</p>
-      <p class="vr-stage-lead" data-i18n="vrStageManaLead">あなたの言葉を、静かに受け取ります。</p>
-      <div class="field">
-        <textarea id="storyInput" placeholder="書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。" rows="6" data-i18n-ph="storyInputPlaceholder"></textarea>
-        <div class="count-row">
-          <button type="button" class="assist-link" id="assistBtn" data-i18n="assistBtn">書き出しに迷ったら、店主の助け舟</button>
-          <span class="story-count" id="storyCount">0 / 700字</span>
-        </div>
-        <!-- ★VisualRedesignRC1：書くことへの心理的負担を下げる短い補助文を一つだけ置く。
-             励ましの文章は増やさず、店主の説明も長文化しない。 -->
-        <p class="vr-gentle-note" data-i18n="vrGentleNote">一行だけでも大丈夫です。まだ言葉になっていなくても、そのまま置いてください。</p>
-      </div>
-      <div class="photo-row">
-        <button type="button" class="photo-label" id="photoChooseBtn" data-i18n="photoLabel">今日の一枚を、頁に挟む（任意）</button>
-        <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" class="visually-hidden-file">
-        <div class="photo-preview hidden" id="photoPreview">
-          <img id="photoPreviewImg" alt="添付写真のプレビュー" data-i18n-alt="photoPreviewAlt">
-          <button type="button" class="photo-remove" id="photoRemove" aria-label="写真を外す" data-i18n-aria="photoRemoveAria">×</button>
-        </div>
-        <span class="photo-hint" data-i18n="photoHint">写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。</span>
-      </div>
+      <!-- ★Desk Flow Fix 1（2026-07-26）：実利用フィードバックに基づき、編纂室（タイトル・棚等）と
+           助け舟を本文入力より前へ移動。要素のid・class・構造・ロジックは変更していない。 -->
       <!-- ★VisualRedesignRC1：モックアップ4「編纂室」に対応する区画。題名・棚・写真・製本の
            段階をここから下として視覚的に分ける。既存の details.desk-extra 以下の構造・ID・
            class・相対順序は一切変更していない。 -->
       <p class="vr-stage-label vr-stage-bind" data-i18n="vrStageBindLabel">編纂室</p>
       <p class="vr-stage-lead" data-i18n="vrStageBindLead">あなたの言葉を、一冊に編みます。</p>
-      <details class="desk-extra">
+      <details class="desk-extra" open>
         <summary data-i18n="deskExtraSummary">タイトル・いつの気持ちかを、自分で決める（任意）</summary>
         <span class="field-hint" data-i18n="shelfAfterBindingNote">棚は、製本したあとに選べます。</span>
         <div class="field-row" style="margin-top:12px;">
@@ -554,6 +525,37 @@ body.night .about-data-content{
         </div>
         <span class="field-hint" data-i18n="fieldHint">「以前のことを振り返って」を選ぶと、過去の気持ちとして本棚に残せます。</span>
       </details>
+      <!-- ★2026-07-18追加：旧チャットに代わる、静的な「言葉にするための助け舟」。
+           本文解析・外部AI送信は行わず、固定の問いを提示するだけ（renderWritingBoat()）。 -->
+      <div class="writing-boat" id="writingBoat">
+        <p class="writing-boat-heading" data-i18n="writingBoatHeading">言葉にするための助け舟</p>
+        <ul class="writing-boat-list" id="writingBoatList"></ul>
+        <p class="writing-boat-note" data-i18n="writingBoatNote">答えなくても大丈夫です。書き出す手がかりに、どうぞ。</p>
+      </div>
+      <!-- ★VisualRedesignRC1：モックアップ3「店主まなが預かるページ」に対応する区画。
+           新しいURL・保存キー・データ構造・画面遷移は追加していない。既存要素の親子関係も
+           変更せず、.desk-form直下へ兄弟要素として区画見出しを差し込むだけに留める。 -->
+      <p class="vr-stage-label" data-i18n="vrStageManaLabel">店主まなが預かる</p>
+      <p class="vr-stage-lead" data-i18n="vrStageManaLead">あなたの言葉を、静かに受け取ります。</p>
+      <div class="field">
+        <textarea id="storyInput" placeholder="書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。" rows="6" data-i18n-ph="storyInputPlaceholder"></textarea>
+        <div class="count-row">
+          <button type="button" class="assist-link" id="assistBtn" data-i18n="assistBtn">書き出しに迷ったら、店主の助け舟</button>
+          <span class="story-count" id="storyCount">0 / 700字</span>
+        </div>
+        <!-- ★VisualRedesignRC1：書くことへの心理的負担を下げる短い補助文を一つだけ置く。
+             励ましの文章は増やさず、店主の説明も長文化しない。 -->
+        <p class="vr-gentle-note" data-i18n="vrGentleNote">一行だけでも大丈夫です。まだ言葉になっていなくても、そのまま置いてください。</p>
+      </div>
+      <div class="photo-row">
+        <button type="button" class="photo-label" id="photoChooseBtn" data-i18n="photoLabel">今日の一枚を、頁に挟む（任意）</button>
+        <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" class="visually-hidden-file">
+        <div class="photo-preview hidden" id="photoPreview">
+          <img id="photoPreviewImg" alt="添付写真のプレビュー" data-i18n-alt="photoPreviewAlt">
+          <button type="button" class="photo-remove" id="photoRemove" aria-label="写真を外す" data-i18n-aria="photoRemoveAria">×</button>
+        </div>
+        <span class="photo-hint" data-i18n="photoHint">写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。</span>
+      </div>
       <div class="curate-box hidden" id="curateBox">
         <p class="curate-msg" id="curateMsg"></p>
         <div class="curate-actions" id="curateActions"></div>

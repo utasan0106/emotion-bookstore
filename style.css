@@ -6254,6 +6254,13 @@ body.experience-open .vr-stage-label{
 body.experience-open .vr-stage-label.vr-stage-bind{
   margin-top:var(--vr-gap-xl);
 }
+/* ★Desk Flow Fix 1（2026-07-26）：「店主まなが預かる」直上の横線だけを撤去し、線の代わりに
+   上余白を広げる。編纂室見出し（.vr-stage-bind）側の横線・余白は対象外のため変更しない。 */
+body.experience-open .vr-stage-label:not(.vr-stage-bind){
+  border-top:none;
+  padding-top:0;
+  margin-top:var(--vr-gap-s);
+}
 body.experience-open .vr-stage-lead{
   text-align:center;
   font-size:12.5px;
@@ -6280,9 +6287,11 @@ body.experience-open #storyInput{
     linear-gradient(180deg, #EFE5CE 0%, #E4D7BB 100%);
   background-position:0 30px, 0 0;
 }
+/* ★Desk Flow Fix 1（2026-07-26）：本文用紙（#storyInput）直下の横線を撤去し、
+   線の代わりに上余白を広げて区切る。 */
 body.experience-open .count-row{
-  border-top:1px solid var(--vr-rule-faint);
-  margin-top:var(--vr-gap-xs);
+  border-top:none;
+  margin-top:var(--vr-gap-s);
   padding-top:var(--vr-gap-xs);
 }
 body.experience-open .story-count{
