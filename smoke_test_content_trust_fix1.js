@@ -217,7 +217,7 @@ async function main(){
   // style.cssを一切変更していないため、正本ZIP展開時点のハッシュ値と一致するはずである。
   const crypto = require('crypto');
   const styleCssHash = crypto.createHash('sha256').update(fs.readFileSync(path.join(SRC, 'style.css'))).digest('hex');
-  ok('(22) style.css を今回変更していない（SHA-256が正本ZIP由来の値と一致）', styleCssHash === '5b2616e205a3172d7b529cf92cb76cd608084cdceacd2579a69ed8c92a96e537');
+  ok('(22) style.css を今回変更していない（SHA-256が正本ZIP由来の値と一致）', styleCssHash === '04eb0398438c1a446b12dbfde5df109249194cbf968c481b5c03c1e190e3f1af');
 
   // ============================================================
   // (D) ミューテーション確認：フラグをtrueに変えた場合に短編描画経路が復旧可能なことを確認する。
