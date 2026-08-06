@@ -93,8 +93,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <!-- ===== SEO用 Meta Tags ===== -->
-<meta name="description" content="誰にも話せない気持ちを、静かに書き、一冊の本として端末内の本棚へ残せるデジタル書店。登録不要。本文をAIで分析・診断しません。">
-<meta name="keywords" content="感情日記, デジタル書店, 気持ちを書く, 本棚, 登録不要, 端末内保存">
+<meta name="description" content="自分の中に残った言葉や気持ちを、誰にも見せない一冊にして、自分だけの本棚へ置ける無料のWebサービス。本文は公開されず、AIにも送信されません。登録不要・端末内保存です。">
 <meta name="robots" content="index,follow">
 <meta name="author" content="みんなの感情書店">
 <link rel="canonical" href="https://emotion-bookstore.vercel.app/">
@@ -106,23 +105,20 @@
 <meta name="theme-color" content="#101824">
 <!-- OGP：XやLINEでシェアされた時にプレビューカードを出すための設定 -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="みんなの感情書店｜今の気持ちを、一冊の本に。">
-<meta property="og:description" content="誰にも話せない気持ちを、静かに書き、一冊の本として端末内の本棚へ残せるデジタル書店。登録不要。本文をAIで分析・診断しません。">
+<meta property="og:title" content="みんなの感情書店｜自分の中に残ったものを、誰にも見せない一冊に">
+<meta property="og:description" content="自分の中に残った言葉や気持ちを、誰にも見せない一冊にして、自分だけの本棚へ置ける無料のWebサービス。本文は公開されず、AIにも送信されません。登録不要・端末内保存です。">
 <meta property="og:url" content="https://emotion-bookstore.vercel.app/">
-<!-- ★Hotfix4-2：シェア時のサムネイルが古いままキャッシュされる問題への対応で、
-     既存のogp.pngは残したまま、新しいファイル名（ogp-emotion-bookstore-20260720.jpg）に
-     差し替えてSNS側のキャッシュを回避する。画像の内容も現在のタイトル・コピー
-     （og:title/og:descriptionと同じ「今の気持ちを、一冊の本に。」）に合わせて作り直した。 -->
-<meta property="og:image" content="https://emotion-bookstore.vercel.app/ogp-emotion-bookstore-20260720.jpg">
+<!-- OGP画像は ogp-v2.jpg を使用。旧画像は互換性とロールバックのため保持。 -->
+<meta property="og:image" content="https://emotion-bookstore.vercel.app/ogp-v2.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="みんなの感情書店｜今の気持ちを、一冊の本に。">
-<meta name="twitter:description" content="誰にも話せない気持ちを、静かに書き、一冊の本として端末内の本棚へ残せるデジタル書店。登録不要。本文をAIで分析・診断しません。">
-<meta name="twitter:image" content="https://emotion-bookstore.vercel.app/ogp-emotion-bookstore-20260720.jpg">
+<meta name="twitter:title" content="みんなの感情書店｜自分の中に残ったものを、誰にも見せない一冊に">
+<meta name="twitter:description" content="自分の中に残った言葉や気持ちを、誰にも見せない一冊にして、自分だけの本棚へ置ける無料のWebサービス。本文は公開されず、AIにも送信されません。登録不要・端末内保存です。">
+<meta name="twitter:image" content="https://emotion-bookstore.vercel.app/ogp-v2.jpg">
 <!-- アイコン：外部ファイル不要のSVGデータURI（本の絵文字風）。公開時に180x180のPNGに差し替えるとより綺麗 -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%236E2A34'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E">
-<title>みんなの感情書店｜今の気持ちを、一冊の本に。</title>
+<title>みんなの感情書店｜自分の中に残ったものを、誰にも見せない一冊に</title>
 <!-- ===== 構造化データ（JSON-LD）：Google検索でのリッチリザルト用 ===== -->
 <script type="application/ld+json">
 {
@@ -131,12 +127,11 @@
   "name": "みんなの感情書店",
   "alternateName": "感情書店",
   "url": "https://emotion-bookstore.vercel.app/",
-  "description": "誰にも話せない気持ちを、静かに書き、一冊の本として端末内の本棚へ残せるデジタル書店です。登録は不要で、本文をAIで分析・診断しません。",
+  "description": "自分の中に残った言葉や気持ちを、誰にも見せない一冊にして、自分だけの本棚へ置けるWebサービスです。登録は不要で、本文は公開されず、AIにも送信されません。",
   "applicationCategory": "LifestyleApplication",
   "operatingSystem": "Web",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
-  "inLanguage": "ja",
-  "keywords": "感情日記, デジタル書店, 気持ちを書く, 本棚, 登録不要, 端末内保存"
+  "inLanguage": "ja"
 }
 </script>
 <link rel="stylesheet" href="style.css">
@@ -284,8 +279,8 @@ body.night .about-data-content{
     </button>
     <p class="eyebrow">EMOTIONAL BINDERY &amp; BOOKSHOP</p>
     <h1 data-i18n="shopName">みんなの感情書店</h1>
-    <p class="tagline" data-i18n-html="tagline">今の気持ちを、一冊の本に。</p>
-    <p class="sub-tagline" data-i18n="subTagline">誰にも話せない気持ちを、静かに書き残せる場所です。</p>
+    <p class="tagline" data-i18n-html="tagline">自分の中に残ったものを、一冊に。</p>
+    <p class="sub-tagline" data-i18n="subTagline">ひとことから、書いた言葉を自分だけの本棚へ。</p>
 
     <!-- ★v1.3 Phase A：主CTAを一本化。遷移先を#counterから#deskへ、文言を新キーheroCtaへ（決裁済み）。
          MESSAGESのenterBtnキー自体の値は他所での再利用可能性のため変更しない。 -->
@@ -298,12 +293,13 @@ body.night .about-data-content{
 
     <!-- ★2026-07-19 feature/first-visit-experience：初回利用者向けの短い説明（AIではなく利用者自身が
          書くこと・外部送信なし・推薦は寄り道であること）と、閲覧専用サンプル本への控えめな導線。
-         主要コピー「今の気持ちを、一冊の本に。」と主CTA（heroCta）は変更しない。
+         主CTA（heroCta）は変更しない。主要コピーはfix/external-copy-ogp-v2で
+         「自分の中に残ったものを、一冊に。」へ更新済み。
          大きな警告表示にはせず、生成り色の短文として配置する。 -->
     <!-- ★2026-07-19 A：表紙は静けさを主役に戻す。詳しい説明とサンプル本への導線は削除せず、
          店内メニューの「はじめての方へ」（about-accordion）の展開領域へ移動した。
          表紙に残す安心表示はこの一文だけ。 -->
-    <p class="first-visit-note first-visit-one-line" id="firstVisitNote" data-i18n="firstVisitOneLine">書いた言葉は、この端末にだけ残ります。</p>
+    <p class="first-visit-note first-visit-one-line" id="firstVisitNote" data-i18n="firstVisitOneLine">内容は公開されず、AIにも送信されません。</p>
 
     <!-- ★v1.3最終統合：「はじめての方へ」「データ保存について」はメニュー内へ移動（本ブロックはメニュー内で再利用、削除はしない） -->
 
