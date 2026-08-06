@@ -7579,3 +7579,41 @@ body.experience-open .experience-bar .menu-btn{
   min-height:44px;
   min-width:44px;
 }
+
+/* ==========================================================================
+ * ★iOS safe area 対応・第2弾（2026-08-06）：
+ *   メニューオーバーレイ内のヘッダー（タイトル「店内メニュー」＋閉じる×）が
+ *   iPhoneのステータスバーと重なる不具合の修正。
+ * --------------------------------------------------------------------------
+ * 原因（第1弾＝店内上部バーとは別箇所。巻き戻しではない）：
+ * ・.experience-menu は position:fixed; inset:0 で画面全体を覆う。
+ * ・その中の .experience-menu-card は height:100% かつ上端揃え（右寄せパネル）で、
+ *   padding:20px 20px 32px のみ。safe area を考慮していなかった。
+ * ・結果、standalone（ホーム画面起動）では webview がステータスバー下まで
+ *   広がるため、カード上端＝画面上端となり、ヘッダーが時刻・電池と重なる。
+ * ・他のオーバーレイ（.modal / .purify-overlay / .purify-log-overlay /
+ *   .profile-overlay / .mana-receive-overlay）は align-items:center かつ
+ *   カードが max-height:80vh の中央配置のため、上端には到達しない（対象外）。
+ *
+ * 方針（第1弾と同じ思想）：
+ * ・ヘッダーの子要素を個別に動かさず、容器である .experience-menu-card の
+ *   padding へ inset を加算する。タイトルと×ボタンが一体で下がるため、
+ *   「片方を直すともう片方が重なる」が起きない。
+ * ・パネルは右寄せ（justify-content:flex-end）のため right の inset を加算する。
+ * ・下端はホームインジケータとの重なりを防ぐため bottom も加算する
+ *   （メニュー末尾の項目が隠れる事象の予防。ヘッダー修正の副作用ではない）。
+ * ・第2引数 0px により、safe area 非対応環境・ノッチなし端末・Android・PC・
+ *   Safari通常タブでは従来と同じ 20px / 20px / 32px のままになる。
+ * ・DOM構造・配色・文言・レイアウトは変更しない。
+ * ========================================================================== */
+.experience-menu-card{
+  padding-top:calc(20px + env(safe-area-inset-top, 0px));
+  padding-right:calc(20px + env(safe-area-inset-right, 0px));
+  padding-bottom:calc(32px + env(safe-area-inset-bottom, 0px));
+}
+/* 閉じる×ボタンのタップ領域を44px以上確保する（従来36px）。
+   第1弾の店内バーのメニューボタンと同じ扱いに揃えている。 */
+.experience-menu-close{
+  min-width:44px;
+  min-height:44px;
+}
