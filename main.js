@@ -1367,32 +1367,91 @@ const UNFILED_CATEGORY_ID = 'unfiled';
 const UNFILED_SPINE_COLOR = '#8C8578';
 
 /* ==========================================================================
- * ★GA4整合：プライバシーファーストの独立計測ラッパー（許可リスト方式）
+ * ★GA4計測健全化（2026-08-06 経営戦略室指示）：プライバシーファースト計測ラッパー
  * --------------------------------------------------------------------------
- * ・本アプリが明示的に送信するカスタムイベントは、下記の5種類のみ。
+ * ・本アプリが明示的に送信するカスタムイベントは、下記の許可リストのみ。
  *   （GA4が自動生成する session_start / first_visit 等は、本アプリが追加するものではない）
- * ・イベントパラメータは一切渡さない。利用者本文・題名・写真名・棚ID・棚名・感情名・
- *   書名・曲名・作品ID・URL入力値・エラー文字列を引数に受け取らない／送らない。
+ * ・イベントパラメータは、create_book_error / create_book_validation_error の
+ *   reason（固定許可値のみ）を除き、一切渡さない。利用者本文・題名・写真名・棚ID・棚名・
+ *   感情名・書名・曲名・作品ID・URL入力値・エラー文字列・入力文字数・記録IDは
+ *   引数に受け取らない／送らない。
  * ・gtag未読込、広告ブロッカー、通信失敗でもアプリ機能を止めない（try/catchで隔離）。
  * ・dataLayerやgtagをこのラッパー以外の経路で直接呼ばない。
  * ・consoleへ利用者入力を出力しない。
+ * ・環境分離：本番ホスト（index.html側で定義するwindow.__ANALYTICS_PRODUCTION_HOSTNAME__、
+ *   現在値 emotion-bookstore.vercel.app）以外では、index.html側でgtag.js自体を
+ *   読み込まないため、このラッパーからのイベントも実際には送信先を持たない。
+ *   本関数側でも同じホスト判定を二重に行う（多層防御。片方の実装ミスに備える）。
  * ========================================================================== */
-const ANALYTICS_ALLOWED_EVENTS = ['view_landing', 'start_writing', 'create_book_success', 'create_book_error', 'view_shelf'];
-function trackAnalyticsEvent(eventName){
+const ANALYTICS_ALLOWED_EVENTS = [
+  'page_view',
+  'view_landing',
+  'start_writing',
+  'create_book_success',
+  'create_book_error',
+  'create_book_validation_error',
+  'view_shelf'
+];
+// create_book_error / create_book_validation_error のreasonに使える固定許可値のみ。
+// これ以外の値・自由記述・例外メッセージ・入力値は、たとえ渡されても送信しない。
+const ANALYTICS_ALLOWED_PARAMS = {
+  create_book_error: {
+    reason: ['save_failed', 'readback_failed', 'shelf_render_failed', 'unhandled_exception']
+  },
+  create_book_validation_error: {
+    reason: ['empty_story', 'story_too_long', 'invalid_tweet_url']
+  }
+};
+// 本番ホスト判定。index.html側の window.__IS_ANALYTICS_PRODUCTION_HOST__ を最優先で参照し、
+// 未定義の場合のみ、同じホスト名でこの関数内で再判定する（多層防御のフォールバック）。
+const ANALYTICS_PRODUCTION_HOSTNAME = 'emotion-bookstore.vercel.app';
+function isProductionAnalyticsHost(){
+  try{
+    if(typeof window === 'undefined') return false;
+    if(typeof window.__IS_ANALYTICS_PRODUCTION_HOST__ === 'boolean'){
+      return window.__IS_ANALYTICS_PRODUCTION_HOST__;
+    }
+    return !!(window.location && window.location.hostname === ANALYTICS_PRODUCTION_HOSTNAME);
+  }catch(e){ return false; }
+}
+function trackAnalyticsEvent(eventName, params){
   try{
     if(ANALYTICS_ALLOWED_EVENTS.indexOf(eventName) === -1) return;
+    if(!isProductionAnalyticsHost()) return; // localhost・Vercel Previewからは送信しない
     if(typeof window === 'undefined' || typeof window.gtag !== 'function') return;
-    window.gtag('event', eventName); // パラメータは付けない
+    const allowedForEvent = ANALYTICS_ALLOWED_PARAMS[eventName];
+    let sendParams = null;
+    if(allowedForEvent && params && typeof params === 'object'){
+      sendParams = {};
+      Object.keys(allowedForEvent).forEach(function(key){
+        const allowedValues = allowedForEvent[key];
+        const v = params[key];
+        if(allowedValues.indexOf(v) !== -1) sendParams[key] = v;
+      });
+      if(Object.keys(sendParams).length === 0) sendParams = null;
+    }
+    if(sendParams) window.gtag('event', eventName, sendParams);
+    else window.gtag('event', eventName); // パラメータは付けない
   }catch(e){
     // 計測の失敗はアプリ機能へ影響させない（何も出力しない）
   }
 }
 // 発火ガード（すべてページロード単位のメモリ上ガード。ストレージには保存しない）
-let _gaViewLandingSent = false;      // view_landing：フルページロードごとに1回
-let _gaStartWritingSent = false;     // start_writing：本文欄が空→非空になった初回に1回
+let _gaPageViewSent = false;         // page_view：フルページロードごとに1回
+let _gaViewLandingSent = false;      // view_landing：フルページロードごとに1回（＝アプリ初期化完了ごとに1回。「来店」ではない）
+let _gaStartWritingSent = false;     // start_writing：番台／編纂机いずれかで利用者本人の最初の非空入力があった時に1回（共有ガード）
 let _gaLastTrackedPage = null;       // view_shelf：同一ページへの重複発火防止
 let _gaLastTrackedShelfId = null;    // view_shelf：同一の個別棚への重複発火防止（棚IDは送信しない）
 let _gaSuppressNextViewShelf = false; // view_shelf：goToShelf側で送信済みの場合、直後のgoToPage('shelves')での二重発火を抑止
+
+// ★GA4計測健全化：page_view — 本番ホストでのフルページロードごとに1回だけ手動送信する。
+// index.html側でGA4の自動page_viewは明示的に無効化されているため、自動・手動の二重計測は発生しない。
+// view_landingとは役割を分離する：page_view＝「ページが読み込まれ、このスクリプトが実行されたこと」、
+// view_landing＝「アプリの非同期初期化（init()）が最後まで成功したこと」。
+if(!_gaPageViewSent){
+  _gaPageViewSent = true;
+  trackAnalyticsEvent('page_view');
+}
 let activeCategory = (CATEGORIES && CATEGORIES.length) ? CATEGORIES[0].id : 'moyamoya';
 // ★Hotfix1-F：利用者が実際に棚を選んだかどうか。falseの間は棚タブのハイライトを付けず、
 // 題名相談も汎用候補を使う（「名もなき感情」を自動的な既定値に見せないため）。
@@ -4333,16 +4392,28 @@ if(inputStory) {
   inputStory.addEventListener('input', updateStoryCount);
 }
 
-// ★GA4整合：start_writing — 本文入力欄が「空の状態から初めて非空になった」ときに1回だけ送信。
-// focusでは発火しない（inputイベントのみ）。文字列・文字数・題名・棚等は送らない。ページロード単位のガード。
+// ★GA4計測健全化：start_writing — 番台の自由入力欄（#userInput）と編纂机の本文欄（#storyInput）の
+// いずれかで、利用者本人による最初の非空入力があった時に1回だけ送信する（先着1件のみ、両欄で共有のガード）。
+// 「利用者本人による入力」の判定には、ブラウザがネイティブに付与するEvent.isTrustedを用いる。
+// isTrustedはページ側のJavaScriptから真に書き換えることができない読み取り専用プロパティであり、
+// 日本語IME変換確定・貼り付け・フリック入力・音声入力による'input'イベントはtrueのまま届く一方、
+// プログラムによる value 代入や dispatchEvent(new Event('input')) は false になる。
+// これにより、下書き復元（restoreDraftIfAny）・書き出し補助のテンプレート挿入（assistBtn）・
+// 番台から編纂机への下書き同期（syncCounterDraftToDesk、dispatchEventによる合成input）では発火しない。
+// 利用者本人の入力かどうかを判定できない場合（isTrustedがtrueでない場合）は、勝手にイベントを増やさず送信しない。
+// 文字列・文字数・題名・棚等のパラメータは一切送らない。
+function handleGenuineStartWritingInput(ev){
+  if(_gaStartWritingSent) return;
+  if(!ev || ev.isTrusted !== true) return;
+  const el = ev.target;
+  if(!el || typeof el.value !== 'string') return;
+  if(el.value.trim()){
+    _gaStartWritingSent = true;
+    trackAnalyticsEvent('start_writing');
+  }
+}
 if(inputStory) {
-  inputStory.addEventListener('input', ()=>{
-    if(_gaStartWritingSent) return;
-    if(inputStory.value.trim()){
-      _gaStartWritingSent = true;
-      trackAnalyticsEvent('start_writing');
-    }
-  });
+  inputStory.addEventListener('input', handleGenuineStartWritingInput);
 }
 
 const DRAFT_KEY = 'emotion-bookstore-draft';
@@ -4616,6 +4687,9 @@ if(btnSubmit) {
     hideCurateBox();
     if(!story){
       if(msg) msg.textContent = t('storyTooShort');
+      // ★GA4計測健全化：create_book_validation_error（reason:empty_story） — 入力検証停止を計測。
+      // 本文・題名等は送らない。
+      trackAnalyticsEvent('create_book_validation_error', { reason: 'empty_story' });
       return;
     }
     const tInput = document.getElementById('titleInput');
@@ -4624,6 +4698,8 @@ if(btnSubmit) {
     const title = (tInput ? tInput.value.trim() : '') || 'まだ、題名のない本';
     if(countChars(story) > STORY_LIMIT){
       if(msg) msg.textContent = t('storyLimitWarning').replace('{max}', STORY_LIMIT);
+      // ★GA4計測健全化：create_book_validation_error（reason:story_too_long） — 入力検証停止を計測。
+      trackAnalyticsEvent('create_book_validation_error', { reason: 'story_too_long' });
       return;
     }
     btn.disabled = true;
@@ -4638,6 +4714,9 @@ if(btnSubmit) {
     if(tweetUrlRaw && !/^https?:\/\/\S+$/i.test(tweetUrlRaw)){
       if(msg) msg.textContent = t('tweetLinkInvalid');
       btn.disabled = false;
+      // ★GA4計測健全化：create_book_validation_error（reason:invalid_tweet_url） — 入力検証停止を計測。
+      // URL入力値そのものは送らない。
+      trackAnalyticsEvent('create_book_validation_error', { reason: 'invalid_tweet_url' });
       return;
     }
     const tweetUrl = tweetUrlRaw;
@@ -4647,98 +4726,173 @@ if(btnSubmit) {
     const cur = localCurate(title, story, chosenId);
 
     const bind = (finalCategory, note)=>{
+      // ★GA4計測健全化：この製本試行で成功／失敗いずれかのイベントを送信済みかどうかの一度限りガード。
+      // 想定済みのチェックポイント（保存失敗／読み戻し失敗／描画失敗／成功）のいずれかで必ずtrueにする。
+      let analyticsSettled = false;
       runBinding(async ()=>{
-        const entry = {
-          id: Date.now().toString(),
-          category: finalCategory,
-          title, story,
-          note: note || '',
-          image: attachedPhoto || '',
-          tweetUrl: tweetUrl || '',
-          sealed: isPast,
-          date: new Date().toISOString()
-        };
-        libraryCache.push(entry);
-
-        // ★Step2：製本（IndexedDBへのput）を先に確定させる。
-        // 失敗時は本棚へ並べず巻き戻し、入力欄・下書きはそのまま残す（保存エラーは最優先メッセージ）。
-        const savedOk = await saveJSON('emotion-bookstore-library', libraryCache);
-        if(!savedOk){
-          libraryCache = libraryCache.filter(e=>e.id !== entry.id);
-          if(msg) msg.textContent = 'すみません。保存がうまく完了しませんでした。書いた言葉は消さず、少ししてからもう一度お試しください。';
-          btn.disabled = false;
-          // ★GA4整合：create_book_error — 新しい本の初回保存が失敗したときに1回。
-          // 棚収納時のcategory更新失敗では発火しない。エラー内容・本文・題名等は送らない。
-          trackAnalyticsEvent('create_book_error');
-          return;
-        }
-        // ★GA4整合：create_book_success — 新しい本の初回IndexedDB保存が成功した直後に1回。
-        // unfiled→通常棚へのcategory更新成功では発火しない。本文・題名・category・ID・冊数等は送らない。
-        trackAnalyticsEvent('create_book_success');
-        // ★2026-07-19 G：製本完了ごとに、おすすめの「出会い」を新しく引き直す。
-        if(typeof rotateRecoEncounter === 'function') rotateRecoEncounter();
-
-        clearAttachedPhoto();
-        playSuckAnimation(finalCategory);
-        selectedShelfMonth = 'all'; // 保存直後は必ず新しい一冊が見えるよう、月別フィルタを解除する
-        renderShelf(true);
-        renderShelfTabs();
-        if(tInput) tInput.value = '';
-        if(ta) ta.value = '';
-        await deleteKey(DRAFT_KEY); // ★Step2：下書きのクリアは「保存成功の直後」にのみ行い、完了を待ってから後続処理へ進む
-        if(twInput) twInput.value = '';
-        if(wSel) wSel.value = 'now';
-        updateStoryCount();
-        // ★Step2：製本成功時のメッセージは固定の一文のみ（1操作1メッセージ。トースト併発は廃止）
-        // ★2025-07-17追記：MESSAGES.bindSuccessMsg経由に変更し、言語切替に対応（発火条件・位置は無変更）
-        if(msg) msg.textContent = t('bindSuccessMsg');
-        btn.disabled = false;
-        const boundMsg = msg ? msg.textContent : '';
-        setTimeout(()=>{ if(msg && msg.textContent === boundMsg) msg.textContent = ''; }, 4200);
-
-        // ★Step4：中立ID（unfiled）で保存した場合は、通常カテゴリ保存後の処理
-        // （招待カード・1.5秒後の本棚自動遷移・特定棚への遷移）へは進まない。
-        // 代わりに、任意の棚収納UI（既存21棚から選ぶ／今は棚を決めず本棚へ戻る）を表示する。
-        // 節目処理は、収納UIでの遷移直後に1回だけ実行される（showUnfiledShelfPicker内）。
-        if(finalCategory === UNFILED_CATEGORY_ID){
-          showUnfiledShelfPicker(entry);
-          return;
-        }
-
-        // ★Step2修正：節目メッセージ（最初の一冊 等）は、実際に本棚へ遷移した直後にのみ発火する。
-        // 招待カードの表示中には出さない（固定時間のsetTimeoutによる独立発火は廃止）。
-        // 1回限りの記録ロジックはcelebrateMilestoneIfNeeded側の既存実装のまま。
-        // （以下は通常カテゴリでbindが呼ばれた場合の互換として維持。現行フローの初回保存は常にunfiled）
-        const goToBookshelfThenMilestone = ()=>{
-          goToPage('bookshelf');
-          celebrateMilestoneIfNeeded(libraryCache.length);
-        };
-
-        const inv = INVITES[finalCategory];
-        if(inv){
-          showInvitation(finalCategory);
-          // ★Step2修正：招待カードの両方の終了経路（しおりに挟む＝invClose／棚を見てみる＝invGoShelf）とも、
-          // カードを閉じて遷移した「直後」に節目処理を1回だけ実行する。
-          // 連打や両ボタンの連続操作による遷移・節目処理の重複は、bind内の一度限りガード(invHandled)で防ぐ。
-          // 節目の判定・1回限りの記録はcelebrateMilestoneIfNeeded側の既存実装のまま。
-          let invHandled = false;
-          const closeBtn = document.getElementById('invClose');
-          const goShelfBtn = document.getElementById('invGoShelf');
-          const originalCloseClick = closeBtn ? closeBtn.onclick : null;
-          const finishInvitation = (navigate)=>{
-            if(invHandled) return; // 一度限りガード
-            invHandled = true;
-            const card = document.getElementById('invitationCard');
-            if(card) card.classList.add('hidden');
-            navigate();
-            celebrateMilestoneIfNeeded(libraryCache.length);
-            if(closeBtn) closeBtn.onclick = originalCloseClick;
-            // invGoShelfのonclickは、次回showInvitation()が毎回再設定するため復元不要
+        try{
+          const entry = {
+            id: Date.now().toString(),
+            category: finalCategory,
+            title, story,
+            note: note || '',
+            image: attachedPhoto || '',
+            tweetUrl: tweetUrl || '',
+            sealed: isPast,
+            date: new Date().toISOString()
           };
-          if(closeBtn) closeBtn.onclick = ()=>finishInvitation(()=>goToPage('bookshelf'));
-          if(goShelfBtn) goShelfBtn.onclick = ()=>finishInvitation(()=>goToShelf(finalCategory));
-        } else {
-          setTimeout(() => goToBookshelfThenMilestone(), 1500);
+          libraryCache.push(entry);
+
+          // ★Step2：製本（IndexedDBへのput）を先に確定させる。
+          // 失敗時は本棚へ並べず巻き戻し、入力欄・下書きはそのまま残す（保存エラーは最優先メッセージ）。
+          const savedOk = await saveJSON('emotion-bookstore-library', libraryCache);
+          if(!savedOk){
+            libraryCache = libraryCache.filter(e=>e.id !== entry.id);
+            if(msg) msg.textContent = 'すみません。保存がうまく完了しませんでした。書いた言葉は消さず、少ししてからもう一度お試しください。';
+            btn.disabled = false;
+            // ★GA4計測健全化：create_book_error（reason:save_failed） — 保存関数がfalseを
+            // 返した場合。棚収納時のcategory更新失敗では発火しない。エラー内容・本文・題名等は送らない。
+            analyticsSettled = true;
+            trackAnalyticsEvent('create_book_error', { reason: 'save_failed' });
+            return;
+          }
+
+          // ★GA4計測健全化：create_book_success は「保存関数がtrueを返したこと」だけでは送信しない。
+          // 追加で、保存した記録IDをリポジトリから読み戻せること（persistedEntryFound）、
+          // 本棚状態（libraryCache）に当該記録が存在すること（inMemoryEntryFound）を確認する。
+          // IndexedDB／localStorageのどちらが実際に成功したか（正規フォールバック）は問わないが、
+          // 読み戻し成功は必須とする。
+          const readBackLibrary = await loadJSON('emotion-bookstore-library', []);
+          const persistedEntryFound = Array.isArray(readBackLibrary) && readBackLibrary.some(function(e){ return e && e.id === entry.id; });
+          const inMemoryEntryFound = libraryCache.some(function(e){ return e && e.id === entry.id; });
+          if(!persistedEntryFound || !inMemoryEntryFound){
+            libraryCache = libraryCache.filter(e=>e.id !== entry.id);
+            if(msg) msg.textContent = 'すみません。保存がうまく完了しませんでした。書いた言葉は消さず、少ししてからもう一度お試しください。';
+            btn.disabled = false;
+            // ★GA4計測健全化：create_book_error（reason:readback_failed） — 保存直後の読み戻し確認に失敗した場合。
+            analyticsSettled = true;
+            trackAnalyticsEvent('create_book_error', { reason: 'readback_failed' });
+            return;
+          }
+
+          // ★2026-07-19 G：製本完了ごとに、おすすめの「出会い」を新しく引き直す。
+          if(typeof rotateRecoEncounter === 'function') rotateRecoEncounter();
+
+          clearAttachedPhoto();
+          playSuckAnimation(finalCategory);
+          selectedShelfMonth = 'all'; // 保存直後は必ず新しい一冊が見えるよう、月別フィルタを解除する
+
+          // ★GA4計測健全化：本棚描画処理（renderShelf／renderShelfTabs）が例外なく完了したことを
+          // 確認してから create_book_success を送信する。renderShelfTabs内部は既存のtry/catchで
+          // 例外を握りつぶす実装のため（本関数の内部実装は変更しない）、この呼び出し位置で確実に
+          // 検知できるのはrenderShelf側の例外に限られる（納品物の実装メモに明記）。
+          try{
+            renderShelf(true);
+            renderShelfTabs();
+          }catch(renderErr){
+            // ★GA4計測健全化 修正（2026-08-06 経営戦略室指示・状態整合修正）：
+            // 保存・読み戻しにはすでに成功しており、記録は実際に保存済みである。ここで
+            // ロールバックはせず、通常の製本完了時と同様に入力欄・下書きを確定させる。
+            // これにより、同じ内容のまま製本ボタンを再度押しても本文欄が空欄となるため
+            // create_book_validation_error（reason:empty_story）の経路に入り、
+            // 同一内容の重複製本を誘発しない。
+            // 「保存がうまく完了しませんでした」という保存失敗を示す文言は、実際には
+            // 保存済みであるため使用せず、依頼書で指定された固定文言に置き換える。
+            // 添付写真の確定（clearAttachedPhoto）は、この分岐へ来る前（本try/catchより前）に
+            // 既に実行済みのため、ここで重ねて呼ぶ必要はない。
+            analyticsSettled = true;
+            trackAnalyticsEvent('create_book_error', { reason: 'shelf_render_failed' });
+
+            if(tInput) tInput.value = '';
+            if(ta) ta.value = '';
+            await deleteKey(DRAFT_KEY); // ★保存成功時と同じく、確定のタイミングで下書きを削除する
+            if(twInput) twInput.value = '';
+            if(wSel) wSel.value = 'now';
+            updateStoryCount();
+            if(msg) msg.textContent = '一冊は保存されましたが、本棚の表示に失敗しました。ページを再読み込みしてください。';
+            btn.disabled = false;
+            return;
+          }
+
+          // ★GA4計測健全化：create_book_success — 保存成功・読み戻し確認・本棚描画完了の
+          // すべてを確認した直後に1回。unfiled→通常棚へのcategory更新成功では発火しない。
+          // 本文・題名・category・ID・冊数等は送らない。
+          analyticsSettled = true;
+          trackAnalyticsEvent('create_book_success');
+
+          if(tInput) tInput.value = '';
+          if(ta) ta.value = '';
+          await deleteKey(DRAFT_KEY); // ★Step2：下書きのクリアは「保存成功の直後」にのみ行い、完了を待ってから後続処理へ進む
+          if(twInput) twInput.value = '';
+          if(wSel) wSel.value = 'now';
+          updateStoryCount();
+          // ★Step2：製本成功時のメッセージは固定の一文のみ（1操作1メッセージ。トースト併発は廃止）
+          // ★2025-07-17追記：MESSAGES.bindSuccessMsg経由に変更し、言語切替に対応（発火条件・位置は無変更）
+          if(msg) msg.textContent = t('bindSuccessMsg');
+          btn.disabled = false;
+          const boundMsg = msg ? msg.textContent : '';
+          setTimeout(()=>{ if(msg && msg.textContent === boundMsg) msg.textContent = ''; }, 4200);
+
+          // ★Step4：中立ID（unfiled）で保存した場合は、通常カテゴリ保存後の処理
+          // （招待カード・1.5秒後の本棚自動遷移・特定棚への遷移）へは進まない。
+          // 代わりに、任意の棚収納UI（既存21棚から選ぶ／今は棚を決めず本棚へ戻る）を表示する。
+          // 節目処理は、収納UIでの遷移直後に1回だけ実行される（showUnfiledShelfPicker内）。
+          if(finalCategory === UNFILED_CATEGORY_ID){
+            showUnfiledShelfPicker(entry);
+            return;
+          }
+
+          // ★Step2修正：節目メッセージ（最初の一冊 等）は、実際に本棚へ遷移した直後にのみ発火する。
+          // 招待カードの表示中には出さない（固定時間のsetTimeoutによる独立発火は廃止）。
+          // 1回限りの記録ロジックはcelebrateMilestoneIfNeeded側の既存実装のまま。
+          // （以下は通常カテゴリでbindが呼ばれた場合の互換として維持。現行フローの初回保存は常にunfiled）
+          const goToBookshelfThenMilestone = ()=>{
+            goToPage('bookshelf');
+            celebrateMilestoneIfNeeded(libraryCache.length);
+          };
+
+          const inv = INVITES[finalCategory];
+          if(inv){
+            showInvitation(finalCategory);
+            // ★Step2修正：招待カードの両方の終了経路（しおりに挟む＝invClose／棚を見てみる＝invGoShelf）とも、
+            // カードを閉じて遷移した「直後」に節目処理を1回だけ実行する。
+            // 連打や両ボタンの連続操作による遷移・節目処理の重複は、bind内の一度限りガード(invHandled)で防ぐ。
+            // 節目の判定・1回限りの記録はcelebrateMilestoneIfNeeded側の既存実装のまま。
+            let invHandled = false;
+            const closeBtn = document.getElementById('invClose');
+            const goShelfBtn = document.getElementById('invGoShelf');
+            const originalCloseClick = closeBtn ? closeBtn.onclick : null;
+            const finishInvitation = (navigate)=>{
+              if(invHandled) return; // 一度限りガード
+              invHandled = true;
+              const card = document.getElementById('invitationCard');
+              if(card) card.classList.add('hidden');
+              navigate();
+              celebrateMilestoneIfNeeded(libraryCache.length);
+              if(closeBtn) closeBtn.onclick = originalCloseClick;
+              // invGoShelfのonclickは、次回showInvitation()が毎回再設定するため復元不要
+            };
+            if(closeBtn) closeBtn.onclick = ()=>finishInvitation(()=>goToPage('bookshelf'));
+            if(goShelfBtn) goShelfBtn.onclick = ()=>finishInvitation(()=>goToShelf(finalCategory));
+          } else {
+            setTimeout(() => goToBookshelfThenMilestone(), 1500);
+          }
+        }catch(unexpectedErr){
+          // ★GA4計測健全化：create_book_error（reason:unhandled_exception） — 上記のいずれの
+          // チェックポイントにも到達しなかった、未想定の例外を捕捉した場合の保険的な処理。
+          // 例外オブジェクトの内容（メッセージ・スタック等）は送信・出力しない。
+          // 修正前は本コールバックにtry/catchが無く、runBinding側もawait／.catchを付けずに
+          // 呼び出していたため、この経路の例外は「未処理のPromise拒否」として無音で失われ、
+          // create_book_error・create_book_successのいずれも送信されないまま、ボタンが
+          // disabledのまま固まる可能性があった（監査報告6章参照）。この保険的な復帰処理は、
+          // 依頼書6章「未処理例外をcreate_book_errorで計測する」を実装するために必要な
+          // 最小限の付随対応であり、新しい仕様・UI改善ではない。
+          if(!analyticsSettled){
+            analyticsSettled = true;
+            trackAnalyticsEvent('create_book_error', { reason: 'unhandled_exception' });
+            if(msg) msg.textContent = 'すみません。保存がうまく完了しませんでした。書いた言葉は消さず、少ししてからもう一度お試しください。';
+            btn.disabled = false;
+          }
         }
       });
     };
@@ -5411,6 +5565,9 @@ if(userInput){
       sendToShopkeeper();
     }
   });
+  // ★GA4計測健全化：start_writing — 番台側の入力検知。判定関数(handleGenuineStartWritingInput)
+  // の定義・条件は編纂机側（#storyInput）と共通（本ファイル内の定義を参照）。
+  userInput.addEventListener('input', handleGenuineStartWritingInput);
 }
 
 // ★v1.3公開前最終修正：番台の公開UI（棚の案内）。既存の会話ベースUI
@@ -6769,8 +6926,14 @@ function warnInAppBrowserIfNeeded(){
     }
   };
 
-  // ★GA4整合：view_landing — DOM初期化後、トップページが表示可能になった時点で
+  // ★GA4計測健全化（定義明確化。発火条件・イベント名は変更しない）：
+  // view_landing は「利用者の来店」を意味するイベントではない。「アプリの非同期初期化
+  // （init()）が最後まで成功し、トップページが表示可能になったこと」を意味するイベントである。
+  // page_viewとは役割が異なる：page_viewはmain.js冒頭でページロードごとに送信され、
+  // init()の成否に関わらず送信される。view_landingはinit()完走後のこの位置でのみ送信される。
   // フルページロードごとに1回だけ送信。二重初期化でも重複しないメモリ上のガード付き。
+  // init()の途中で例外・Promise拒否が起きた場合は、この行に到達せず送信されない
+  // （＝現行仕様のまま維持。初期化失敗を「来店あり」として計上しないための意図的な挙動）。
   // URL・referrer・言語等の独自パラメータは付けない。
   if(!_gaViewLandingSent){
     _gaViewLandingSent = true;
