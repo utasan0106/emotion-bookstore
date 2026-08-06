@@ -1124,6 +1124,14 @@ function rakutenTravelSearchUrl(query){
   return 'https://kw.travel.rakuten.co.jp/keyword/Search.do?f_query=' + encodeURIComponent(query) + '&f_max=30&charset=utf-8';
 }
 
+/* ★P0整合（2026-08-06）：アフィリエイトIDが付くリンクを含むブロックの共通PR表記。
+ * 文言は既存の「今月の寄り道」「レコード」と同じ detourPrNote（日英）を再利用し、
+ * 表記のばらつきをなくす。アフィリエイトIDが付かないリンク（Spotify／Apple Music／
+ * YouTube／Google Books の infoLink 等）だけで構成されるブロックには付けない。 */
+function prNoteHtml(){
+  return `<p class="detour-pr">${escapeHtml(t('detourPrNote'))}</p>`;
+}
+
 // ★本棚エントリのXシェア機能
 // 設計方針：日記本文はそのまま自動送信しない。棚名＋店主がつけたタイトルの短い定型文だけを
 // 事前入力し、あとはX（twitter.com/intent/tweet）自身のcompose画面でユーザーが確認・編集した上で
@@ -1182,9 +1190,12 @@ function escapeHtml(str){
 function quoteSourceHtml(source){
   const { author, title } = parseQuoteSource(source);
   if(!title) return escapeHtml(source);
-  const url = amazonSearchUrl((author ? author + ' ' : '') + title);
+  // ★P0整合（2026-08-06）：引用の出典表示は「出典の明示」であって購買導線ではないため、
+  // アフィリエイトIDを付けない通常の検索リンクにする（＝この1本を広告から外す）。
+  // これによりPR表記なしでも表示整合が取れる。rel の sponsored も外す。
+  const url = 'https://www.amazon.co.jp/s?k=' + encodeURIComponent((author ? author + ' ' : '') + title);
   const authorHtml = author ? escapeHtml(author) + ' ' : '';
-  return `${authorHtml}<a class="quote-source-link" href="${url}" target="_blank" rel="noopener sponsored">『${escapeHtml(title)}』</a>`;
+  return `${authorHtml}<a class="quote-source-link" href="${url}" target="_blank" rel="noopener">『${escapeHtml(title)}』</a>`;
 }
 
 const SHOP_OPEN_DATE = new Date('2026-07-01T00:00:00+09:00');
@@ -2411,9 +2422,11 @@ async function showFavorites(){
         const label = cat ? categoryLabelFor(cat) : '';
         const q5 = f.title + ' ' + (f.by || '');
         const isMusic = f.type === 'music';
+        // ★P0整合（2026-08-06）：本のAmazon／楽天はアフィリエイトIDが付くため rel に sponsored を追加。
+        // 曲側（Spotify／Apple Music／YouTube）はアフィリエイトではないため変更しない。
         const links = isMusic
           ? `<a href="https://open.spotify.com/search/${encodeURIComponent(q5)}" target="_blank" rel="noopener">Spotify</a> <a href="https://music.apple.com/jp/search?term=${encodeURIComponent(q5)}" target="_blank" rel="noopener">Apple Music</a> <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(q5)}" target="_blank" rel="noopener">YouTube</a>`
-          : `<a href="${amazonSearchUrl(q5)}" target="_blank" rel="noopener">Amazon</a> <a href="${rakutenSearchUrl(q5)}" target="_blank" rel="noopener">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>`;
+          : `<a href="${amazonSearchUrl(q5)}" target="_blank" rel="noopener sponsored">Amazon</a> <a href="${rakutenSearchUrl(q5)}" target="_blank" rel="noopener sponsored">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>`;
         return `<div class="purify-log-entry">
           <p class="purify-log-meta"><span class="meta-type-tag ${isMusic ? 'is-music' : 'is-book'}">${isMusic ? (appLang === 'en' ? 'Song' : '曲') : (appLang === 'en' ? 'Book' : '本')}</span> ${escapeHtml(label)}</p>
           <p class="purify-log-text"><span class="work-title">${escapeHtml(f.title)}${f.by ? ' — ' + escapeHtml(f.by) : ''}</span></p>
@@ -2421,6 +2434,11 @@ async function showFavorites(){
           <button type="button" class="fav-btn is-fav" data-fav-type="${escapeHtml(f.type)}" data-fav-title="${escapeHtml(f.title)}" data-fav-by="${escapeHtml(f.by || '')}" data-fav-category="${escapeHtml(f.category || '')}" data-fav-extra="">★ ${escapeHtml(t('favRemoveBtn'))}</button>
         </div>`;
       }).join('');
+      // ★P0整合（2026-08-06）：本のAmazon／楽天リンクはアフィリエイトのため、一覧の先頭にPR表記を置く。
+      // 曲だけの一覧（アフィリエイトIDが付かない）には付けない。
+      if(favoritesCache.some(f=>f.type !== 'music')){
+        list.insertAdjacentHTML('afterbegin', prNoteHtml());
+      }
     }
   }
   overlay.classList.remove('hidden');
@@ -3346,12 +3364,17 @@ async function renderLiveNewReleases(cat){
   let html = '';
   if(books && books.length){
     const b = books[0];
+    // ★P0整合（2026-08-06）：Google Books の infoLink はアフィリエイトではないが、
+    // それが無い場合のフォールバックはアフィリエイトIDが付くAmazon検索になる。
+    // フォールバック時だけ rel に sponsored を付け、PR表記を出す。
+    const isAffiliateLink = !b.infoLink;
     const url = b.infoLink || amazonSearchUrl(b.title + ' ' + b.by);
     html += `<div class="live-pick-card">
       <span class="live-pick-badge">今、見つかった一冊</span>
       <p class="live-pick-name">${escapeHtml(b.title)}</p>
       <p class="live-pick-desc">${escapeHtml(b.by)}${b.hook ? ' — ' + escapeHtml(b.hook) : ''}</p>
-      <a class="live-pick-link" href="${url}" target="_blank" rel="noopener">見てみる →</a>
+      ${isAffiliateLink ? prNoteHtml() : ''}
+      <a class="live-pick-link" href="${url}" target="_blank" rel="noopener${isAffiliateLink ? ' sponsored' : ''}">見てみる →</a>
       ${favBtnHtml('book', b.title, b.by, cat.id, b.hook || '')}
     </div>`;
   }
@@ -3397,10 +3420,18 @@ function renderShelfDisplay(){
       el.style.opacity = '0';
     }
     // ★2026-07-19：英語モードでは、著作物引用の翻訳を避け、英語版オリジナル短文（QUOTE_POOL_EN）から選ぶ。
-    const quotes = (appLang === 'en' && typeof QUOTE_POOL_EN !== 'undefined' && QUOTE_POOL_EN[cat.id])
+    const quotesRaw = (appLang === 'en' && typeof QUOTE_POOL_EN !== 'undefined' && QUOTE_POOL_EN[cat.id])
       ? QUOTE_POOL_EN[cat.id].map(text=>({ text, source: (typeof QUOTE_POOL_EN_SOURCE !== 'undefined' ? QUOTE_POOL_EN_SOURCE : '') }))
       : (cat.quotes || []);
-    const q = quotes.length ? quotes[shelfEncounterSeed(cat.id, 'quote') % quotes.length] : { text:'', source:'' };
+    // ★P0整合（2026-08-06）：原文・出典に明確な問題がある引用を、利用者向け表示からのみ除外する。
+    // data.js の QUOTE_POOL は変更していない（表示の一時停止であり、削除ではない）。
+    // ★P0整合 追補（2026-08-06）：フォールバックは行わない。
+    // 除外の結果が0件になった棚では、停止した引用を再表示せず、引用領域そのものを出さない。
+    // 代替文・自作文の生成も行わない（quoteBlockHtml が空文字になる）。
+    const quotes = (typeof QUOTE_DISPLAY_HOLD !== 'undefined' && Array.isArray(QUOTE_DISPLAY_HOLD))
+      ? quotesRaw.filter(qq=>QUOTE_DISPLAY_HOLD.indexOf(qq.text) === -1)
+      : quotesRaw;
+    const q = quotes.length ? quotes[shelfEncounterSeed(cat.id, 'quote') % quotes.length] : null;
     // ★Recommendation Repeat Fix 1：ボタン表示判定とpickRecommend()が同じ実効候補プール
     // （getShelfBookOrder）を参照するよう、ここで一度だけ計算して両方へ渡す。
     const shelfBookOrder = getShelfBookOrder(cat.id);
@@ -3416,6 +3447,7 @@ function renderShelfDisplay(){
       ? `<div class="recommend-section">
           <p class="recommend-heading">${escapeHtml(t('recommendHeadingTpl').replace('{shelf}', shelfLabelDisp))}</p>
           <p class="recommend-subtext">${escapeHtml(t('recommendSubtext'))}</p>
+          ${prNoteHtml()}
           <div class="recommend-row">
           ${recs.map(r=>{
             const q2 = r.title + ' ' + r.by;
@@ -3428,10 +3460,10 @@ function renderShelfDisplay(){
               <span class="work-title">『${escapeHtml(bookTitleFor(r))}』${escapeHtml(bookAuthorFor(r))}</span>
               <span class="recommend-why">${r.why || ''}</span>
               <span class="recommend-shop-links">
-                <a class="recommend-buy" href="${amazonUrl}" target="_blank" rel="noopener">Amazon</a>
-                <a class="recommend-buy kindle" href="${kindleUrl}" target="_blank" rel="noopener">Kindle</a>
-                <a class="recommend-buy audible" href="${audibleUrl}" target="_blank" rel="noopener">Audible</a>
-                <a class="recommend-buy rakuten" href="${rakutenUrl}" target="_blank" rel="noopener">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>
+                <a class="recommend-buy" href="${amazonUrl}" target="_blank" rel="noopener sponsored">Amazon</a>
+                <a class="recommend-buy kindle" href="${kindleUrl}" target="_blank" rel="noopener sponsored">Kindle</a>
+                <a class="recommend-buy audible" href="${audibleUrl}" target="_blank" rel="noopener sponsored">Audible</a>
+                <a class="recommend-buy rakuten" href="${rakutenUrl}" target="_blank" rel="noopener sponsored">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>
               </span>
               ${favBtnHtml('book', r.title, r.by, cat.id, r.hook || r.why || '')}
               ${r.source ? `<a class="recommend-source" href="${r.sourceUrl}" target="_blank" rel="noopener">出典：${r.source}</a>` : ''}
@@ -3463,13 +3495,14 @@ function renderShelfDisplay(){
           <span class="playlist-services">
             <a href="${spUrl}" target="_blank" rel="noopener">Spotify</a>
             <a href="${amcUrl}" target="_blank" rel="noopener">Apple Music</a>
-            <a href="${amUrl}" target="_blank" rel="noopener">Amazon Music</a>
+            <a href="${amUrl}" target="_blank" rel="noopener sponsored">Amazon Music</a>
             <a href="${ytUrl}" target="_blank" rel="noopener">YouTube</a>
           </span>
           ${favBtnHtml('music', song.title, song.artist, cat.id, song.comment || '')}
         </div>`;
       }).join('');
-      musicHtml = `<div class="music-row"><p class="playlist-label">${escapeHtml(t('playlistLabelTpl').replace('{shelf}', shelfLabelDisp))}</p><div class="playlist-tracks">${items}</div><p class="field-hint apple-music-note">${escapeHtml(t('appleMusicNote'))}</p></div>`;
+      // ★P0整合（2026-08-06）：Amazon Music のみアフィリエイトIDが付くため、この一覧にPR表記を置く。
+      musicHtml = `<div class="music-row"><p class="playlist-label">${escapeHtml(t('playlistLabelTpl').replace('{shelf}', shelfLabelDisp))}</p>${prNoteHtml()}<div class="playlist-tracks">${items}</div><p class="field-hint apple-music-note">${escapeHtml(t('appleMusicNote'))}</p></div>`;
     }else{
       const fallbackQuery = cat.label + ' 邦楽 プレイリスト';
       const musicUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(fallbackQuery);
@@ -3544,10 +3577,15 @@ function renderShelfDisplay(){
     }else{
       episodesSectionHtml = '';
     }
+    // ★P0整合 追補（2026-08-06）：表示できる引用が無い棚では、引用カードと出典行を丸ごと出さない。
+    // 空の<p>も残さないため、余白や区切り線だけが浮くことはない。
+    const quoteBlockHtml = q
+      ? `<p class="quote-card">${q.text}</p>
+      <p class="quote-source">— ${quoteSourceHtml(q.source)}</p>`
+      : '';
     el.innerHTML = `
       <p class="definition"><b>${escapeHtml(shelfLabelDisp)}</b> — ${escapeHtml(categoryDefFor(cat))}</p>
-      <p class="quote-card">${q.text}</p>
-      <p class="quote-source">— ${quoteSourceHtml(q.source)}</p>
+      ${quoteBlockHtml}
       ${episodesSectionHtml}
       <div class="shelf-tweets" id="shelfTweets"></div>
       ${purifyHtml}
@@ -6181,6 +6219,7 @@ function renderShelfPickRecommend(){
         <p class="shelf-pick-kicker">${escapeHtml(t('shelfPickBookLabel'))}</p>
         <p class="shelf-pick-title">『${escapeHtml(bookTitleFor(book))}』${escapeHtml(bookAuthorFor(book))}</p>
         ${bookHookFor(book) ? `<p class="shelf-pick-meta">${escapeHtml(bookHookFor(book))}</p>` : ''}
+        ${prNoteHtml()}
         <a class="shelf-pick-link" href="${amazonUrl}" target="_blank" rel="noopener sponsored">Amazon</a>
         <a class="shelf-pick-link" href="${rakutenUrl}" target="_blank" rel="noopener sponsored">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>
       </div>
