@@ -25,8 +25,8 @@ function currentLang(){ return appLang; }
 const MESSAGES = {
   ja: {
     shopName: "みんなの感情書店",
-    tagline: "今の気持ちを、一冊の本に。",
-    subTagline: "誰にも話せない気持ちを、静かに書き残せる場所です。",
+    tagline: "自分の中に残ったものを、一冊に。",
+    subTagline: "ひとことから、書いた言葉を自分だけの本棚へ。",
     accordionSummary: "気持ちを書き、一冊の本として端末内の本棚へ。<br>登録不要。棚を選ぶかどうかも、あなたが決められます。",
     accordionOpenLabel: "はじめての方へ",
     accordionCloseLabel: "閉じる",
@@ -131,7 +131,7 @@ const MESSAGES = {
     arrivalAfterglow1: "今夜の気持ちは、ここに置いていけます。",
     arrivalAfterglow2: "必要になったとき、また開きに来てください。",
     // ★2026-07-19 feature/first-visit-experience：表紙の初回説明とサンプル本
-    firstVisitOneLine: "書いた言葉は、この端末にだけ残ります。",
+    firstVisitOneLine: "内容は公開されず、AIにも送信されません。",
     menuBackToTop: "↑ メニューの上へ戻る",
     fairKicker: "今月のおすすめ棚",
     fairHalfNote: "",
@@ -401,8 +401,8 @@ const MESSAGES = {
   },
   en: {
     shopName: "The Bookstore of Feelings",
-    tagline: "Turn What You Feel Now into a Book.",
-    subTagline: "A quiet place to write what you cannot say aloud.",
+    tagline: "What stays with you, bound into a book.",
+    subTagline: "Start with a single line and place your words on a shelf only you can see.",
     accordionSummary: "Write what you feel and keep it as a book on your device.<br>No account required. Choosing a shelf is optional.",
     accordionOpenLabel: "First time here?",
     accordionCloseLabel: "Close",
@@ -493,7 +493,7 @@ const MESSAGES = {
     arrivalAfterglow1: "You can leave tonight’s feelings here.",
     arrivalAfterglow2: "Come back and open this book whenever you need it.",
     // ★2026-07-19 feature/first-visit-experience：表紙の初回説明とサンプル本
-    firstVisitOneLine: "Your words stay on this device.",
+    firstVisitOneLine: "Your writing is not published or sent to AI.",
     menuBackToTop: "↑ Back to the top",
     fairKicker: "This Month's Shelf",
     fairHalfNote: "",
@@ -855,8 +855,8 @@ function applyLanguage(){
   const titleEl = document.querySelector('title');
   if(titleEl){
     titleEl.textContent = appLang === 'ja'
-      ? 'みんなの感情書店｜今の気持ちを、一冊の本に。'
-      : 'The Bookstore of Feelings | Turn What You Feel Now into a Book.';
+      ? 'みんなの感情書店｜自分の中に残ったものを、誰にも見せない一冊に'
+      : 'The Bookstore of Feelings | What stays with you, bound into a private book';
   }
 }
 
@@ -6640,8 +6640,8 @@ function applyUserNameDisplay(){
     const safeName = typeof escapeHtml === 'function' ? escapeHtml(name) : name;
     taglineEl.innerHTML = name
       ? (appLang === 'ja'
-          ? `${safeName}さんの今の気持ちを、<br>一冊の本に。`
-          : `Turn what ${safeName} feels now<br>into a book.`)
+          ? `${safeName}さんの中に残ったものを、<br>一冊に。`
+          : `What stays with ${safeName},<br>bound into a book.`)
       : t('tagline');
   }
 }
