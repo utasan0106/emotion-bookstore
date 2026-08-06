@@ -31,14 +31,36 @@
   form-action 'self';
   object-src 'none';
 ">
-<!-- ===== Google Analytics 4（GA4）計測タグ — head内最上部に設置 ===== -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523"></script>
+<!-- ===== Google Analytics 4（GA4）計測タグ — head内最上部に設置 =====
+     ★GA4計測健全化（2026-08-06 経営戦略室指示）：環境分離
+     本番ホスト（emotion-bookstore.vercel.app）以外では、GA4タグ自体を読み込まない。
+     これにより、localhost・Vercel Preview環境からは、GA4が自動収集する
+     session_start / first_visit 等を含め、いかなるヒットも本番GA4プロパティへ送信されない。
+     本アプリはビルド工程・環境変数を持たない静的配信のため、判定は実行時の
+     location.hostname 完全一致のみで行う（推測せず、一致しない場合は一律で送信しない）。
+     測定ID・許可イベント・パラメータの詳細はmain.js側のANALYTICSブロックのコメントを参照。
+-->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  // ★GA4整合：自動page_viewは送信しない（ランディング計測はアプリ側のview_landingへ統一）
-  gtag('config', 'G-TGLD3KW523', { send_page_view: false });
+  window.__ANALYTICS_PRODUCTION_HOSTNAME__ = 'emotion-bookstore.vercel.app';
+  window.__IS_ANALYTICS_PRODUCTION_HOST__ = (function(){
+    try{
+      return !!(window.location && window.location.hostname === window.__ANALYTICS_PRODUCTION_HOSTNAME__);
+    }catch(e){
+      return false;
+    }
+  })();
+  if(window.__IS_ANALYTICS_PRODUCTION_HOST__){
+    var gtagScriptEl = document.createElement('script');
+    gtagScriptEl.async = true;
+    gtagScriptEl.src = 'https://www.googletagmanager.com/gtag/js?id=G-TGLD3KW523';
+    document.head.appendChild(gtagScriptEl);
+    gtag('js', new Date());
+    // ★GA4整合：自動page_viewは送信しない（page_viewはmain.js側で手動送信し、
+    // ランディング計測は引き続きview_landingで行う。詳細はmain.js側のコメントを参照）
+    gtag('config', 'G-TGLD3KW523', { send_page_view: false });
+  }
 </script>
 <script type="application/ld+json">
 {
