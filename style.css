@@ -7540,3 +7540,42 @@ body.experience-open .detour-pr{
 @media (max-width:480px){
   .desk-sample-details{ padding:2px 10px; }
 }
+
+/* ==========================================================================
+ * ★iOS safe area 対応（2026-08-06）：店内上部バー（.experience-bar）が
+ *   iPhoneのステータスバー（時刻・電池・通信表示）と重なる不具合の修正。
+ * --------------------------------------------------------------------------
+ * 原因：
+ * ・index.html は viewport-fit=cover ＋ apple-mobile-web-app-status-bar-style:
+ *   black-translucent を指定しているため、ホーム画面から起動した場合（standalone）
+ *   webview がステータスバーの下まで広がる。
+ * ・.experience-bar は position:sticky; top:0 で、safe area を考慮していなかった。
+ *   （表紙の .cover-menu-btn / .hero-lang-toggle は既に env(safe-area-inset-top)
+ *     対応済みで、店内バーだけが未対応だった）
+ *
+ * 方針：
+ * ・固定pxを増やさず env(safe-area-inset-*) を加算する。第2引数 0px により、
+ *   safe area 非対応環境・ノッチなし端末・Android・PCでは従来と同じ余白になる。
+ * ・背景はバー自体が持つため、ステータスバー領域は塗られたまま文字だけが下がる。
+ * ・横画面のノッチ側は left/right の inset で回避する。
+ * ・レイアウト・配色・文言・DOM構造は変更しない。
+ * ・詳細度は body.experience-open .experience-bar（既存の padding 指定と同じ）に
+ *   合わせ、記述順が後になることで確実に適用される。
+ * ========================================================================== */
+body.experience-open .experience-bar{
+  padding-top:calc(11px + env(safe-area-inset-top, 0px));
+  padding-left:calc(16px + env(safe-area-inset-left, 0px));
+  padding-right:calc(16px + env(safe-area-inset-right, 0px));
+}
+@media (max-width:480px){
+  body.experience-open .experience-bar{
+    padding-left:calc(12px + env(safe-area-inset-left, 0px));
+    padding-right:calc(12px + env(safe-area-inset-right, 0px));
+  }
+}
+/* メニューボタンのタップ領域を44px以上確保する（従来40px）。
+   丸み・配色・アイコンは変更していない。 */
+body.experience-open .experience-bar .menu-btn{
+  min-height:44px;
+  min-width:44px;
+}
