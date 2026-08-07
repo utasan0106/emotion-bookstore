@@ -15,6 +15,12 @@
 // 目視確認（E区分の一部）は、本テスト（jsdom）だけでは代替できない。この点は
 // 指示書§10の規定に従い、修正報告書側に「未実施」として明記し、本テストの
 // 静的CSS検査を代替証拠として提出する。
+//
+// ★UX Fix 01 v1.1 追記（2026-08-07）：「UX Fix 01｜本文ファーストの編集室」の正式仕様
+// 変更により、A区分の一部アサーション（旧：タイトル／「編纂室」見出しが本文より前）が
+// 新しい正式契約（本文#storyInputが最初の主要入力欄になる）と矛盾するようになったため、
+// 該当アサーションを新しい順序を積極的に検証する内容へ更新した（削除・skipではない）。
+// 詳細は各アサーションの [UX Fix 01] 注記を参照。
 // ============================================================================
 const fs = require('fs');
 const path = require('path');
@@ -77,15 +83,19 @@ async function main(){
     const { window, document } = await createEnv({});
     window.goToPage('desk');
     const desk = document.getElementById('desk');
-    // ★編集室Clarity Fix 1でDOM構造が変わったため更新：
-    //   旧.vr-stage-bindクラスはHTMLから削除され、3つの工程見出しはすべて共通の
-    //   .vr-stage-label.desk-step-headingとして統一された（指示書§5「中程度：3工程の見出し」）。
-    //   bindLabelは「1 本の形を決める」見出し（旧「編纂室」に相当する最初の区画見出し）を
-    //   .desk-step-1内の.vr-stage-labelとして取得する。
-    //   manaLabelは「.vr-stage-label:not(.vr-stage-bind)」だと.vr-stage-bindが存在しない今、
-    //   4見出しすべて（1/2/3工程見出し＋店主まなが預かる）にマッチしquerySelectorが先頭を
-    //   拾ってしまうため、「店主まなが預かる」専用クラス(.vr-stage-mana-inline)へ限定する。
-    const bindLabel = desk.querySelector('.desk-step-1 .vr-stage-label'); // 「1 本の形を決める」見出し
+    // ★UX Fix 01 v1.1（2026-08-07）：編集室（#desk）を「本文ファースト」の順序へ変更する
+    //   正式仕様変更に伴い、本セクションのアサーションを更新した。旧「Desk Flow Fix 1」契約
+    //   （タイトル／「編纂室」見出しが本文より前）は、UX Fix 01で意図的に逆転されたため、
+    //   本ファイルを削除・skipするのではなく、新しい正しい順序を積極的に検証する
+    //   アサーションへ書き換える（変更履歴として本コメントに残す）。
+    //   bindLabel    = 「本の輪郭を決める」見出し（desk-step-1。旧「編纂室」に相当）
+    //   step2Heading = 「言葉を綴る」見出し（desk-step-2。UX Fix 01で最初の区画になった）
+    //   manaLabel    = 「店主まなが預かる」の一言（desk-step-2内、本文欄の直前に位置する）
+    //   新しい正式なDOM順：
+    //   ページ見出し → step2Heading → manaLabel → #storyInput → #writingBoat（助け舟）→
+    //   bindLabel → #titleInput → #categorySelect → 写真 → #submitStory
+    const bindLabel = desk.querySelector('.desk-step-1 .vr-stage-label'); // 「本の輪郭を決める」見出し
+    const step2Heading = desk.querySelector('.desk-step-2 .vr-stage-label.desk-step-heading'); // 「言葉を綴る」見出し
     const manaLabel = desk.querySelector('.vr-stage-mana-inline'); // 店主まなが預かる
     const titleInput = document.getElementById('titleInput');
     const categorySelect = document.getElementById('categorySelect');
@@ -97,27 +107,32 @@ async function main(){
     const sectionHead = desk.querySelector('.section-head');
 
     ok('(A0) 編纂机ページ見出し(.section-head)が存在する', !!sectionHead);
-    ok('(A0) 「編纂室」区画見出しが存在する', !!bindLabel);
+    ok('(A0) 「本の輪郭を決める」区画見出しが存在する', !!bindLabel);
+    ok('(A0) 「言葉を綴る」区画見出しが存在する', !!step2Heading);
     ok('(A0) 「店主まなが預かる」区画見出しが存在する', !!manaLabel);
 
-    // 1. 「編纂室」が本文入力より前に存在する
-    ok('(A1) 「編纂室」見出しが本文入力(#storyInput)より前に存在する', isBefore(bindLabel, storyInput));
+    // 1. [UX Fix 01] 本文入力(#storyInput)が「本の輪郭を決める」見出しより前に存在する
+    //    （タイトル関連の区画全体より本文を先に書ける＝本文ファーストの編集室）
+    ok('(A1) [UX Fix 01] #storyInput が「本の輪郭を決める」見出しより前に存在する', isBefore(storyInput, bindLabel));
 
-    // 2. タイトル入力欄が本文入力より前に存在する
-    ok('(A2) タイトル入力欄(#titleInput)が本文入力(#storyInput)より前に存在する', isBefore(titleInput, storyInput));
+    // 2. [UX Fix 01] 本文入力(#storyInput)がタイトル入力欄(#titleInput)より前に存在する
+    ok('(A2) [UX Fix 01] #storyInput が #titleInput より前に存在する', isBefore(storyInput, titleInput));
 
-    // 3. 本文入力が写真エリアより前に存在する
+    // 3. 本文入力が写真エリアより前に存在する（desk-step-2がdesk-step-3より前という契約は不変）
     ok('(A3) 本文入力(#storyInput)が写真エリア(.photo-row)より前に存在する', isBefore(storyInput, photoRow));
 
-    // 4. 写真エリアが製本CTAより前に存在する
+    // 4. 写真エリアが製本CTAより前に存在する（desk-step-3内部の順序は不変）
     ok('(A4) 写真エリア(.photo-row)が製本CTA(#submitStory)より前に存在する', isBefore(photoRow, submitBtn));
 
-    // ページ見出し→編纂室→タイトル等→助け舟→店主まなが預かる→本文→写真→CTA の全体順も確認
-    ok('(A0b) ページ見出しが「編纂室」より前に存在する', isBefore(sectionHead, bindLabel));
-    ok('(A0c) 「編纂室」がタイトル欄より前に存在する', isBefore(bindLabel, titleInput));
-    ok('(A0d) 「編纂室」が助け舟(#writingBoat)より前に存在する', isBefore(bindLabel, writingBoat));
-    ok('(A0e) 助け舟が「店主まなが預かる」より前に存在する', isBefore(writingBoat, manaLabel));
+    // [UX Fix 01] 新しい全体順の確認：
+    // ページ見出し→「言葉を綴る」見出し→「店主まなが預かる」→本文→助け舟→
+    // 「本の輪郭を決める」見出し→タイトル→写真→CTA
+    ok('(A0b) ページ見出しが「言葉を綴る」見出しより前に存在する', isBefore(sectionHead, step2Heading));
+    ok('(A0c) [UX Fix 01] 「言葉を綴る」見出しが「店主まなが預かる」より前に存在する', isBefore(step2Heading, manaLabel));
     ok('(A0f) 「店主まなが預かる」が本文入力より前に存在する', isBefore(manaLabel, storyInput));
+    ok('(A0d) [UX Fix 01] 本文入力(#storyInput)が助け舟(#writingBoat)より前に存在する（助け舟を開かずに本文へ到達できる）', isBefore(storyInput, writingBoat));
+    ok('(A0e) [UX Fix 01] 助け舟(#writingBoat)が「本の輪郭を決める」見出しより前に存在する', isBefore(writingBoat, bindLabel));
+    ok('(A0g) 「本の輪郭を決める」見出しがタイトル入力欄より前に存在する', isBefore(bindLabel, titleInput));
 
     // 5. CSSのorderだけではなくDOM順が正しい（style.cssの該当セレクタにorderプロパティが
     //    使われていないことを静的に確認し、見た目の並べ替えがDOM順の変更によるものであることを担保する）
@@ -349,7 +364,7 @@ async function main(){
     const bindLabelJaBefore = document.querySelector('.desk-step-1 .vr-stage-label').textContent;
     window.toggleLanguage();
     const bindLabelEn = document.querySelector('.desk-step-1 .vr-stage-label').textContent;
-    ok('(D25a) 英語切替で「本の形を決める」見出しが英語化される', bindLabelEn !== bindLabelJaBefore && bindLabelEn.length > 0);
+    ok('(D25a) 英語切替で「本の輪郭を決める」見出しが英語化される', bindLabelEn !== bindLabelJaBefore && bindLabelEn.length > 0);
     window.toggleLanguage();
     const bindLabelJa = document.querySelector('.desk-step-1 .vr-stage-label').textContent;
     ok('(D25b) 日本語へ戻すと元の表記に戻る', bindLabelJa === bindLabelJaBefore);
