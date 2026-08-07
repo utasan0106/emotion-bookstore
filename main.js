@@ -268,6 +268,8 @@ const MESSAGES = {
     purifyBtn: "手放す",
     modalPhotoAlt: "この頁に挟まれた写真", modalNoteLabel: "店主のことば",
     modalGoShelf: "この棚をもう一度見る", modalDel: "この本を棚から下げる",
+    // ★PoC Task 001：個別本削除の誤タップ防止用の確認文言（本棚全リセットの文言・フローとは別物）。
+    modalDelConfirm: "この1冊を棚から下げます。元に戻せません。よろしいですか？",
     modalShare: "Xでシェア", modalShareNote: "※本文はそのまま送信されません。投稿画面が開くだけで、実際に投稿するかはあなた次第です。",
     // ★2026-07-18追加：製本後の本の詳細画面から、タイトル・本文を書き直す機能。
     modalEditBtn: "タイトル・本文を書き直す",
@@ -629,6 +631,8 @@ const MESSAGES = {
     purifyBtn: "Let it go",
     modalPhotoAlt: "Photo attached to this page", modalNoteLabel: "A word from the shopkeeper",
     modalGoShelf: "See this shelf again", modalDel: "Remove this book from the shelf",
+    // ★PoC Task 001: confirmation text for single-book removal (separate from the full bookshelf reset copy/flow).
+    modalDelConfirm: "Remove this one book from the shelf? This cannot be undone.",
     modalShare: "Share on X", modalShareNote: "Nothing is sent anywhere on its own — this only opens the post composer, and whether you actually post is entirely up to you.",
     // ★Hotfix4-3追加：英語モードで空文字になり、ボタン文字が消えていた欠落キーを補完。
     modalEditBtn: "Edit the title and story",
@@ -4211,7 +4215,10 @@ function openBook(entry){
   };
 
   const mDel = document.getElementById('modalDel');
+  // ★PoC Task 001：誤タップによる即時削除を防ぐため、実際の削除処理の前に軽量な確認を挟む。
+  // 本棚全リセット（resetShelfOverlay）とは別物の、この1冊専用の確認（native confirm）。
   if(mDel) mDel.onclick = async ()=>{
+    if(!window.confirm(t('modalDelConfirm'))) return;
     libraryCache = libraryCache.filter(e=>e.id !== entry.id);
     await saveJSON('emotion-bookstore-library', libraryCache);
     renderShelf();
