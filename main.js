@@ -214,6 +214,22 @@ const MESSAGES = {
     modalSealedNote: "｜以前を振り返って綴った一冊",
     recordCornerAria: "店主のレコード棚",
     resetShelf: "本棚をリセットする",
+    // ★Data Safety Patch：本棚リセットの案内・最終確認をi18n化（従来は日本語ハードコードのconfirm）
+    resetDialogAria: "本棚のリセット",
+    resetIntroTitle: "本棚をリセットする前に",
+    resetIntroBody: "本棚のすべての本を下げます。題名・本文・写真・棚の記録がこの端末から消え、元には戻せません。\n先に「本棚の鍵」（バックアップ）を作っておくと、あとから復元できます。",
+    resetBackupBtn: "バックアップを作る",
+    resetNoBackupBtn: "バックアップせずにリセットする",
+    resetCancelBtn: "やめる",
+    resetBackupCreatingNote: "鍵を作っています…",
+    resetBackupDoneNote: "鍵の書き出しを実行しました。端末に保存されたかどうかは、ダウンロード先のファイルをご確認ください。",
+    resetBackupFailNote: "鍵の書き出しに失敗しました。本棚はまだ消していません。",
+    resetFinalTitle: "本当に本棚を空にしますか",
+    resetFinalBody: "この端末に保存された本（題名・本文・写真・棚）をすべて削除します。この操作は取り消せません。\n気になるリスト・手放した気持ちの記録・利用者名は残ります。",
+    resetFinalConfirmBtn: "すべての本を下げる",
+    resetFinalCancelBtn: "やめる",
+    resetDoneNote: "本棚を空にしました。",
+    resetFailNote: "リセットに失敗しました。本棚は変更していません。",
     // ★2026-07-18追加：感情の地図（renderTrend）の期間タブ・要約文・行ツールチップ・冊数表示を
     // 言語対応させる（従来はハードコードされ、英語モードでも日本語のまま表示されていた）。
     trendPeriodMonth: "今月",
@@ -565,6 +581,21 @@ const MESSAGES = {
     modalSealedNote: " · A book written looking back on the past",
     recordCornerAria: "Shopkeeper's record corner",
     resetShelf: "Reset bookshelf",
+    resetDialogAria: "Reset bookshelf",
+    resetIntroTitle: "Before you reset your bookshelf",
+    resetIntroBody: "This takes every book off your shelf. Titles, text, photos and shelf records will be erased from this device and cannot be recovered.\nCreating a key (a backup file) first lets you restore them later.",
+    resetBackupBtn: "Create a backup",
+    resetNoBackupBtn: "Reset without a backup",
+    resetCancelBtn: "Cancel",
+    resetBackupCreatingNote: "Creating a key\u2026",
+    resetBackupDoneNote: "The key file has been written out. Please check your downloads to confirm it was saved on this device.",
+    resetBackupFailNote: "The key could not be written out. Your bookshelf has not been erased.",
+    resetFinalTitle: "Empty your bookshelf?",
+    resetFinalBody: "This deletes every book stored on this device (title, text, photo and shelf). This cannot be undone.\nYour \"curious about\" list, your log of feelings you\u2019ve let go of, and your reader name will remain.",
+    resetFinalConfirmBtn: "Take every book off the shelf",
+    resetFinalCancelBtn: "Cancel",
+    resetDoneNote: "Your bookshelf is now empty.",
+    resetFailNote: "The reset failed. Your bookshelf has not been changed.",
     // ★2026-07-18追加：感情の地図（renderTrend）の期間タブ・要約文・行ツールチップ・冊数表示。
     trendPeriodMonth: "This Month",
     trendPeriodYear: "This Year",
@@ -5002,15 +5033,172 @@ if(btnExportCsv) {
   };
 }
 
-const btnReset = document.getElementById('resetShelf');
-if(btnReset) {
-  btnReset.onclick = async ()=>{
-    if(!confirm('本棚のすべての本を下げます。よろしいですか？')) return;
+// ★Data Safety Patch：本棚リセットの前に、バックアップ作成を案内する2段階の確認を挟む。
+// 実際の削除は performShelfReset() 一箇所だけで行い、最終確認を承認した場合にのみ呼ぶ。
+// 表示文言はすべて既存のi18n（MESSAGES / t()）を通す。既存のオーバーレイ様式を再利用し、
+// 新しいデザインシステムやCSSは追加しない。
+function buildResetOverlay(){
+  let overlay = document.getElementById('resetShelfOverlay');
+  if(overlay) return overlay;
+  overlay = document.createElement('div');
+  overlay.id = 'resetShelfOverlay';
+  overlay.className = 'purify-log-overlay hidden';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.innerHTML = `
+    <div class="purify-log-card">
+      <button type="button" class="purify-log-close" id="resetShelfClose">×</button>
+      <p class="purify-log-kicker" id="resetShelfTitle"></p>
+      <div class="purify-log-list" id="resetShelfBody"></div>
+      <p class="purify-log-empty hidden" id="resetShelfNote" role="status"></p>
+      <div class="purify-log-actions" id="resetShelfActions"></div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', (e)=>{
+    if(e.target.id === 'resetShelfOverlay') closeResetOverlay();
+  });
+  return overlay;
+}
+
+function closeResetOverlay(){
+  const overlay = document.getElementById('resetShelfOverlay');
+  if(overlay) overlay.classList.add('hidden');
+}
+
+// 案内本文は改行を含むため、エスケープしたうえで<br>へ置き換える
+function resetBodyHtml(key){
+  return escapeHtml(t(key)).replace(/\n/g, '<br>');
+}
+
+function setResetNote(key){
+  const note = document.getElementById('resetShelfNote');
+  if(!note) return;
+  if(!key){ note.textContent = ''; note.classList.add('hidden'); return; }
+  note.textContent = t(key);
+  note.classList.remove('hidden');
+}
+
+// 削除の実体。呼び出しはここ一箇所のみ。保存に失敗した場合は元の状態へ戻し、
+// 中途半端なリセット状態を残さない。
+// ★Data Safety Patch Ver.1.2：saveJSON()（DataRepository.set()）は保存に失敗しても
+// 例外を投げず、戻り値でtrue/falseを返す契約になっている（idbSet/lsSetはともに内部で
+// try/catchし、失敗時はfalseを返す。例外はDataRepository.setの外へは伝播しない）。
+// そのため、戻り値を確認せずに例外の有無だけで成否を判定すると、falseが返っただけの
+// 保存失敗（永続化されていない）を成功として扱ってしまう。ここでは戻り値を明示的に
+// 確認し、saved === trueの場合だけ成功処理へ進む。
+async function performShelfReset(){
+  const prev = libraryCache;
+  try{
+    const saved = await saveJSON('emotion-bookstore-library', []);
+    if(saved !== true){
+      // saveJSON()がfalseを返した場合（例外は発生していないが永続化に失敗）。
+      // libraryCacheはまだ変更していないため、元の内容のまま維持する。
+      libraryCache = prev;
+      return false;
+    }
     libraryCache = [];
-    await saveJSON('emotion-bookstore-library', libraryCache);
     renderShelf();
     renderShelfTabs();
+    return true;
+  }catch(e){
+    libraryCache = prev;
+    return false;
+  }
+}
+
+function renderResetStage(stage){
+  const overlay = buildResetOverlay();
+  overlay.setAttribute('aria-label', t('resetDialogAria'));
+  const closeX = overlay.querySelector('#resetShelfClose');
+  if(closeX){
+    closeX.setAttribute('aria-label', t('closeBtn'));
+    closeX.onclick = closeResetOverlay;
+  }
+  const titleEl = overlay.querySelector('#resetShelfTitle');
+  const bodyEl = overlay.querySelector('#resetShelfBody');
+  const actions = overlay.querySelector('#resetShelfActions');
+  if(!titleEl || !bodyEl || !actions) return;
+
+  if(stage === 'final'){
+    titleEl.textContent = t('resetFinalTitle');
+    bodyEl.innerHTML = `<p class="purify-log-empty">${resetBodyHtml('resetFinalBody')}</p>`;
+    actions.innerHTML = `
+      <button type="button" class="purify-log-hide" id="resetShelfFinalCancel"></button>
+      <button type="button" class="purify-log-close-btn" id="resetShelfFinalOk"></button>`;
+    const cancel = actions.querySelector('#resetShelfFinalCancel');
+    const ok = actions.querySelector('#resetShelfFinalOk');
+    cancel.textContent = t('resetFinalCancelBtn');
+    ok.textContent = t('resetFinalConfirmBtn');
+    // 「やめる」：storageへは一切書き込まない
+    cancel.onclick = closeResetOverlay;
+    // ★Data Safety Patch Ver.1.1：performShelfReset()の成否で明確に分岐する。
+    // 操作ボタンを消す処理（actions.innerHTML = ''）は成功時だけに限定し、
+    // 失敗時はボタンをDOMに残したまま再有効化する（新規に生成し直さない）。
+    // そのため、onclickハンドラの再登録は発生せず、二重実行や重複リスナーも起きない。
+    ok.onclick = async ()=>{
+      ok.disabled = true;
+      cancel.disabled = true;
+      const done = await performShelfReset();
+      if(done){
+        // 成功時のみ：完了メッセージを表示し、操作ボタンを消し、少し待ってから閉じる
+        setResetNote('resetDoneNote');
+        actions.innerHTML = '';
+        setTimeout(closeResetOverlay, 1400);
+      }else{
+        // 失敗時：本棚・libraryCacheはperformShelfReset()内で元に戻っている。
+        // エラーを表示し、操作ボタンは消さず再有効化する。
+        // 「やめる」で閉じられ、再度「すべての本を下げる」を押して再試行できる。
+        // 自動的にダイアログは閉じない。
+        setResetNote('resetFailNote');
+        ok.disabled = false;
+        cancel.disabled = false;
+      }
+    };
+    overlay.classList.remove('hidden');
+    return;
+  }
+
+  titleEl.textContent = t('resetIntroTitle');
+  bodyEl.innerHTML = `<p class="purify-log-empty">${resetBodyHtml('resetIntroBody')}</p>`;
+  actions.innerHTML = `
+    <button type="button" class="purify-log-hide" id="resetShelfCancel"></button>
+    <button type="button" class="purify-log-hide" id="resetShelfNoBackup"></button>
+    <button type="button" class="purify-log-close-btn" id="resetShelfBackup"></button>`;
+  const cancelBtn = actions.querySelector('#resetShelfCancel');
+  const noBackupBtn = actions.querySelector('#resetShelfNoBackup');
+  const backupBtn = actions.querySelector('#resetShelfBackup');
+  cancelBtn.textContent = t('resetCancelBtn');
+  noBackupBtn.textContent = t('resetNoBackupBtn');
+  backupBtn.textContent = t('resetBackupBtn');
+
+  // 「やめる」：storageへは一切書き込まない
+  cancelBtn.onclick = closeResetOverlay;
+  // 「バックアップせずにリセットする」：強制せず、最終確認へ進むだけ
+  noBackupBtn.onclick = ()=>{ setResetNote(null); renderResetStage('final'); };
+  // 「バックアップを作る」：既存の書き出し処理を呼ぶだけで、自動ではリセットしない
+  backupBtn.onclick = async ()=>{
+    backupBtn.disabled = true;
+    noBackupBtn.disabled = true;
+    setResetNote('resetBackupCreatingNote');
+    try{
+      await downloadBackup();
+      renderResetStage('final');
+      // 書き出しは実行できても、ブラウザ側の保存完了までは技術的に確認できない。
+      // 「保存に成功した」とは断定せず、確認を促す注記を最終確認画面に残す
+      setResetNote('resetBackupDoneNote');
+    }catch(e){
+      setResetNote('resetBackupFailNote');
+      backupBtn.disabled = false;
+      noBackupBtn.disabled = false;
+    }
   };
+  setResetNote(null);
+  overlay.classList.remove('hidden');
+}
+
+const btnReset = document.getElementById('resetShelf');
+if(btnReset) {
+  btnReset.onclick = ()=>{ renderResetStage('intro'); };
 }
 
 // ★追加：25文字以上の複雑な長文には、単なる相槌ではなく
@@ -6311,7 +6499,9 @@ const BACKUP_KEYS = [
   'emotion-bookstore-prefs',
   'emotion-bookstore-milestones',
   'emotion-bookstore-profile',
-  DRAFT_KEY
+  DRAFT_KEY,
+  // ★Data Safety Patch：気になるリストがバックアップから漏れていたため追加した
+  FAVORITES_KEY
 ];
 
 async function downloadBackup(){
@@ -6349,16 +6539,22 @@ function isValidBackupPayload(payload){
   if(lib !== undefined && lib !== null && !Array.isArray(lib)) return false;
   const purify = payload.stores[PURIFY_LOG_KEY];
   if(purify !== undefined && purify !== null && !Array.isArray(purify)) return false;
+  const favs = payload.stores[FAVORITES_KEY];
+  if(favs !== undefined && favs !== null && !Array.isArray(favs)) return false;
   return true;
 }
 
 async function restoreBackupFromPayload(payload){
   for(const key of BACKUP_KEYS){
-    if(Object.prototype.hasOwnProperty.call(payload.stores, key)){
-      const value = payload.stores[key];
-      if(value === null || value === undefined) continue;
-      await saveJSON(key, value);
-    }
+    // ★Data Safety Patch Ver.1.1：FAVORITES_KEYが旧形式バックアップに存在しない場合、
+    // 「利用者が空のお気に入りを選んだ」わけではなく、旧実装がお気に入りをバックアップ対象に
+    // 含めていなかっただけである。したがって、キーが存在しない場合は現在のお気に入りを
+    // 変更せず、そのまま維持する（空配列で上書きしない／架空の値を補わない）。
+    // 判定はhasOwnPropertyでキーの存在そのものを見る（値のtruthy/falsyでは判定しない）。
+    if(!Object.prototype.hasOwnProperty.call(payload.stores, key)) continue;
+    const value = payload.stores[key];
+    if(value === null || value === undefined) continue;
+    await saveJSON(key, value);
   }
 }
 
