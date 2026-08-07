@@ -14,6 +14,11 @@
 // smoke_test_visual_rc1.js / smoke_test_content_trust_fix1.js 側は、DOM構造変更に
 // 追随する最小限の期待値更新のみ行い（旧仕様の検証を弱めていない）、Release Final
 // UI Fixで新規に増えた要件はこの専用ファイルにまとめる。
+//
+// ★UX Fix 01 v1.1 追記（2026-08-07）：編集室を本文ファーストへ並べ替える正式仕様変更に
+// 伴い、S5c/S5d（3工程の1つ目・2つ目のリンク先）とS6k（完成本の見本の位置）を新しい
+// 正式契約へ更新した。あわせて本文ファースト契約（#storyInputが#titleInputより前）の
+// 独立確認としてS6lを追加した（削除・skipではなく、新しい順序を積極的に検証する）。
 // ============================================================================
 const fs = require('fs');
 const path = require('path');
@@ -63,8 +68,12 @@ async function main(){
        ol && !ol.hasAttribute('aria-hidden'));
     const links = Array.from(document.querySelectorAll('.desk-steps-overview li a'));
     ok('(S5b) 3つの<a>リンクが存在する', links.length === 3);
-    ok('(S5c) 1つ目のリンク先が #book-outline', links[0] && links[0].getAttribute('href') === '#book-outline');
-    ok('(S5d) 2つ目のリンク先が #write-words', links[1] && links[1].getAttribute('href') === '#write-words');
+    // ★UX Fix 01 v1.1（2026-08-07）：3工程の表示順が新しい体験順（言葉を綴る→本の輪郭→
+    //   本を預ける）へ変更されたため、1つ目・2つ目のリンク先を新しい正式契約へ更新する。
+    //   3つのリンク先自体（#write-words/#book-outline/#leave-book）・各リンクが対応する
+    //   区画そのもの（S5i/S5j/S5k）は変更していない。
+    ok('(S5c) [UX Fix 01] 1つ目のリンク先が #write-words', links[0] && links[0].getAttribute('href') === '#write-words');
+    ok('(S5d) [UX Fix 01] 2つ目のリンク先が #book-outline', links[1] && links[1].getAttribute('href') === '#book-outline');
     ok('(S5e) 3つ目のリンク先が #leave-book', links[2] && links[2].getAttribute('href') === '#leave-book');
     ok('(S5f) #book-outline を持つ要素が実在する', !!document.getElementById('book-outline'));
     ok('(S5g) #write-words を持つ要素が実在する', !!document.getElementById('write-words'));
@@ -112,15 +121,26 @@ async function main(){
     details.removeAttribute('open');
     const after = JSON.stringify(window.localStorage);
     ok('(S6j) 見本の開閉でlocalStorageの内容が変化しない（保存されない・閲覧専用）', before === after);
-    ok('(S6k) 見本ブロックはタイトル入力欄より前、3工程案内の直後にある',
+    // ★UX Fix 01 v1.1（2026-08-07）：編集室の主要入力フロー（.desk-form）を本文ファーストへ
+    //   並べ替えたことに伴い、見出し画像・3工程案内・完成本の見本は .desk-form の「後ろ」へ
+    //   移動した（指示書§3）。したがって見本ブロックは、もはや「タイトル入力欄より前」では
+    //   なく「タイトル入力欄より後」にあるのが正しい新しい契約である。3工程案内の直後にある
+    //   という位置関係（stepsOl → details）自体は変更していないため、そちらは維持したまま
+    //   検証する。
+    ok('(S6k) [UX Fix 01] 見本ブロックはタイトル入力欄より後、3工程案内の直後にある',
        (() => {
          const stepsOl = document.querySelector('.desk-steps-overview');
          const titleField = document.querySelector('.field-title-primary');
          if(!stepsOl || !details || !titleField) return false;
          const pos1 = stepsOl.compareDocumentPosition(details);
-         const pos2 = details.compareDocumentPosition(titleField);
+         const pos2 = titleField.compareDocumentPosition(details);
          return !!(pos1 & window.Node.DOCUMENT_POSITION_FOLLOWING) && !!(pos2 & window.Node.DOCUMENT_POSITION_FOLLOWING);
        })());
+    // ★UX Fix 01 v1.1：この専用ファイルの観点からも、本文ファーストの新しい正式契約
+    // （#storyInput が #titleInput より前に存在する）を独立して検証する
+    // （smoke_test_desk_flow_fix1.jsの(A2)と同一観点の重複確認。冗長化により検証を強める）。
+    ok('(S6l) [UX Fix 01] #storyInput が #titleInput より前に存在する',
+       !!(document.getElementById('storyInput').compareDocumentPosition(document.getElementById('titleInput')) & window.Node.DOCUMENT_POSITION_FOLLOWING));
   }
 
   // ============================================================

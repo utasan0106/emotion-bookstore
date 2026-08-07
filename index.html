@@ -500,39 +500,43 @@ body.night .about-data-content{
     <p class="desk-lead hidden" id="deskLead"></p>
     <p class="section-sub" data-i18n-html="sectionSub3">あなたの言葉を、一冊に編む場所です。</p>
 
-    <!-- ★編集室 Final Clarity Fix（2026-07-26）：机・原稿・灯りの雰囲気を伝える1枚のWebP
-         （assets/editing-room.webp、Clarity Fix 1と同一バイト）を確実に表示させる
-         （loading="eager"／fetchpriority="high"、失敗時に自身を隠すJSは持たない）。
-         直下に、数字を持たない短い3工程の道しるべ（本の輪郭／言葉を綴る／本を預ける）を置く。
-         進捗率・完了判定・スクロール追従・現在位置の自動切替・JavaScriptによる進行管理は
-         追加していない（純粋なHTML/CSSの静的表示）。 -->
-    <div class="desk-hero-image">
-      <img src="assets/editing-room.webp" width="960" height="420" alt="" aria-hidden="true"
-           loading="eager" fetchpriority="high" decoding="async">
-    </div>
-    <ol class="desk-steps-overview">
-      <li><a href="#book-outline" data-i18n="deskOverviewStep1">本の輪郭</a></li>
-      <li><a href="#write-words" data-i18n="deskOverviewStep2">言葉を綴る</a></li>
-      <li><a href="#leave-book" data-i18n="deskOverviewStep3">本を預ける</a></li>
-    </ol>
-
-    <!-- ★Release Final UI Fix：完成した本の見本（閲覧専用・固定データのみ・保存/編集/共有なし）。
-         既定は閉じた状態。開いても#sampleBookInline（表紙側）とはID・状態を共有しない別要素。 -->
-    <p class="desk-sample-intro" data-i18n="deskSampleIntro">一冊になると、こうなります。</p>
-    <details class="desk-sample-details" id="deskSampleDetails">
-      <summary data-i18n="deskSampleSummary">できあがりの見本を見る</summary>
-      <div class="desk-sample-book">
-        <p class="desk-sample-cat" data-i18n="deskSampleShelfLabel">棚：懐かしい</p>
-        <p class="desk-sample-title" data-i18n="sampleBookTitle">雨上がりの帰り道</p>
-        <p class="desk-sample-date" data-i18n="deskSampleDate">2026年6月1日 納品</p>
-        <p class="desk-sample-story" data-i18n="sampleBookStory">傘を閉じたら、路面の匂いが少しだけ夏に戻っていた。</p>
-      </div>
-    </details>
-
+    <!-- ★UX Fix 01（本文ファーストの編集室・2026-08-07）：
+         編集室へ来たら最初の行為が「本文を書く」になるよう、.desk-form内の並びを
+         言葉を綴る（desk-step-2）→本の輪郭を決める（desk-step-1）→一冊にして預ける（desk-step-3）
+         の順へ変更する。id・class・data-i18nキー・保存/製本ロジック・#categorySelectの
+         内部用途（renderCategorySelect()による非表示・棚別問いの取得元）はすべて維持する。
+         見出し画像・3工程の道しるべ・完成本の見本は削除せず、.desk-formの後ろへ移動する。 -->
     <div class="desk-form">
-      <!-- ===== 1 本の輪郭を決める：旧 details.desk-extra の折りたたみを廃止し、常時表示の区画にする。
-           DOM順：タイトル→棚→いつの気持ちか。既定値・保存値・製本ロジックは変更していない。
-           ★Final Clarity Fix：見出しから数字を外し「本の輪郭を決める」に統一。 ===== -->
+      <!-- ===== 2 言葉を綴る：#storyInputを編集室で最初に出会う主要入力欄にする。
+           助け舟（details）は本文欄の後ろへ移し、開かなくても本文へ到達できる状態を維持する。
+           既存の本文下#assistBtnは画面から削除（対応するJSは要素なしガードのまま）。文字数表示は残す。 ===== -->
+      <div class="desk-step-section desk-step-2" id="write-words">
+        <p class="vr-stage-label desk-step-heading" data-i18n="deskStep2Heading">言葉を綴る</p>
+        <p class="vr-stage-label vr-stage-mana-inline" data-i18n="vrStageManaLabel">店主まなが預かる</p>
+        <p class="vr-stage-lead vr-stage-mana-inline-lead" data-i18n="vrStageManaLead">あなたの言葉を、静かに受け取ります。</p>
+        <div class="field">
+          <textarea id="storyInput" placeholder="書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。" rows="6" data-i18n-ph="storyInputPlaceholder"></textarea>
+          <div class="count-row">
+            <span class="story-count" id="storyCount">0 / 700字</span>
+          </div>
+          <!-- ★VisualRedesignRC1：書くことへの心理的負担を下げる短い補助文を一つだけ置く。
+               励ましの文章は増やさず、店主の説明も長文化しない。 -->
+          <p class="vr-gentle-note" data-i18n="vrGentleNote">一行だけでも大丈夫です。まだ言葉になっていなくても、そのまま置いてください。</p>
+        </div>
+        <p class="boat-intro-heading" data-i18n="assistBtn">書き出しに迷ったら</p>
+        <div class="writing-boat" id="writingBoat">
+          <details class="boat-hint">
+            <summary data-i18n="boatHintSummary">店主の助け舟を開く</summary>
+            <p class="boat-about-body" data-i18n="boatAboutBody">書き始めるきっかけになる、短い問いです。本文を読んだり、気持ちを分析したりはしません。</p>
+            <ul class="writing-boat-list" id="writingBoatList"></ul>
+            <p class="writing-boat-note" data-i18n="writingBoatNote">使わずに、そのまま書き始めても大丈夫です。</p>
+          </details>
+        </div>
+      </div>
+
+      <!-- ===== 1 本の輪郭を決める：タイトルは本文を書いたあとに見える位置へ。
+           #categorySelectを含むfieldはDOM・非表示契約（renderCategorySelect()）とも変更せず、
+           このまま維持する（保存カテゴリとしては使用しない＝製本後の受け取り頁でのみ選択）。 ===== -->
       <div class="desk-step-section desk-step-1" id="book-outline">
         <p class="vr-stage-label desk-step-heading" data-i18n="vrStageBindLabel">本の輪郭を決める</p>
         <p class="vr-stage-lead" data-i18n="vrStageBindLead">タイトルは空欄でも、一冊にできます。</p>
@@ -551,32 +555,6 @@ body.night .about-data-content{
             <select id="categorySelect"></select>
             <span class="field-hint" data-i18n="shelfAfterBindingNote">棚は、製本したあとに選べます。</span>
           </div>
-        </div>
-      </div>
-
-      <!-- ===== 2 言葉を綴る：助け舟は2つとも初期状態は閉じたネイティブdetails/summary。
-           既存の本文下#assistBtnは画面から削除（対応するJSは要素なしガードのまま）。文字数表示は残す。 ===== -->
-      <div class="desk-step-section desk-step-2" id="write-words">
-        <p class="vr-stage-label desk-step-heading" data-i18n="deskStep2Heading">言葉を綴る</p>
-        <p class="boat-intro-heading" data-i18n="assistBtn">書き出しに迷ったら</p>
-        <div class="writing-boat" id="writingBoat">
-          <details class="boat-hint">
-            <summary data-i18n="boatHintSummary">店主の助け舟を開く</summary>
-            <p class="boat-about-body" data-i18n="boatAboutBody">書き始めるきっかけになる、短い問いです。本文を読んだり、気持ちを分析したりはしません。</p>
-            <ul class="writing-boat-list" id="writingBoatList"></ul>
-            <p class="writing-boat-note" data-i18n="writingBoatNote">使わずに、そのまま書き始めても大丈夫です。</p>
-          </details>
-        </div>
-        <p class="vr-stage-label vr-stage-mana-inline" data-i18n="vrStageManaLabel">店主まなが預かる</p>
-        <p class="vr-stage-lead vr-stage-mana-inline-lead" data-i18n="vrStageManaLead">あなたの言葉を、静かに受け取ります。</p>
-        <div class="field">
-          <textarea id="storyInput" placeholder="書けるところから、どうぞ。きれいな文章にしなくても、一冊にはできます。" rows="6" data-i18n-ph="storyInputPlaceholder"></textarea>
-          <div class="count-row">
-            <span class="story-count" id="storyCount">0 / 700字</span>
-          </div>
-          <!-- ★VisualRedesignRC1：書くことへの心理的負担を下げる短い補助文を一つだけ置く。
-               励ましの文章は増やさず、店主の説明も長文化しない。 -->
-          <p class="vr-gentle-note" data-i18n="vrGentleNote">一行だけでも大丈夫です。まだ言葉になっていなくても、そのまま置いてください。</p>
         </div>
       </div>
 
@@ -611,6 +589,36 @@ body.night .about-data-content{
         </div>
       </div>
     </div>
+
+    <!-- ★UX Fix 01：編集室画像・3工程の道しるべ・完成本の見本は削除せず、
+         主要入力フロー（.desk-form）の後ろへ移動した。3工程の表示順も新しい体験順
+         （言葉を綴る→本の輪郭→本を預ける）に合わせる。既存のdata-i18nキー
+         （deskOverviewStep1/2/3）はそのまま再利用し、新しい翻訳キーは追加していない。
+         進捗率・完了判定・スクロール追従・現在位置の自動切替・JavaScriptによる進行管理は
+         引き続き追加していない（純粋なHTML/CSSの静的表示）。 -->
+    <div class="desk-hero-image">
+      <img src="assets/editing-room.webp" width="960" height="420" alt="" aria-hidden="true"
+           loading="eager" fetchpriority="high" decoding="async">
+    </div>
+    <ol class="desk-steps-overview">
+      <li><a href="#write-words" data-i18n="deskOverviewStep2">言葉を綴る</a></li>
+      <li><a href="#book-outline" data-i18n="deskOverviewStep1">本の輪郭</a></li>
+      <li><a href="#leave-book" data-i18n="deskOverviewStep3">本を預ける</a></li>
+    </ol>
+
+    <!-- ★Release Final UI Fix：完成した本の見本（閲覧専用・固定データのみ・保存/編集/共有なし）。
+         既定は閉じた状態。開いても#sampleBookInline（表紙側）とはID・状態を共有しない別要素。 -->
+    <p class="desk-sample-intro" data-i18n="deskSampleIntro">一冊になると、こうなります。</p>
+    <details class="desk-sample-details" id="deskSampleDetails">
+      <summary data-i18n="deskSampleSummary">できあがりの見本を見る</summary>
+      <div class="desk-sample-book">
+        <p class="desk-sample-cat" data-i18n="deskSampleShelfLabel">棚：懐かしい</p>
+        <p class="desk-sample-title" data-i18n="sampleBookTitle">雨上がりの帰り道</p>
+        <p class="desk-sample-date" data-i18n="deskSampleDate">2026年6月1日 納品</p>
+        <p class="desk-sample-story" data-i18n="sampleBookStory">傘を閉じたら、路面の匂いが少しだけ夏に戻っていた。</p>
+      </div>
+    </details>
+
     <div class="invitation hidden" id="invitationCard">
       <div class="inv-seal" data-i18n="invSeal">封</div>
       <p class="inv-kicker" data-i18n="invKicker">推薦状</p>
