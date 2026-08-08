@@ -636,6 +636,12 @@ body.night .about-data-content{
   <section id="bookshelf" class="reveal experience-page">
     <div class="section-head"><span class="page-label" data-i18n="pageLabelBookshelf">第四頁　</span><h2 data-i18n="sectionHead4">あなたの本棚</h2><span class="shelf-count" id="shelfCount"></span></div>
     <p class="section-sub" data-i18n="sectionSub4">製本した物語が背表紙になって並びます。クリックすると、いつでも読み返せます。</p>
+    <!-- ★Digital-first Preview V0：店の手前に置く「最近の一枚」区画。最近のentryを最大3件だけ、
+         clean な紙片（横書き本文＋日付＋任意の写真）として並べる。中身はrenderRecentLeaves()が
+         生成する（0件時は専用のエンプティ状態＋CTAを描画）。既存の背表紙本棚（.wood-shelf）はそのまま。 -->
+    <div class="recent-leaves" id="recentLeaves"></div>
+    <!-- ★Digital-first Preview V0：保存成功をモーションOFFでも1回だけ伝える視覚外ライブ領域。 -->
+    <p class="leaf-sr-only" id="leafLive" role="status" aria-live="polite"></p>
     <div class="shelf-month-tabs hidden" id="shelfMonthTabs"></div>
     <div class="wood-shelf">
       <div class="shelf-row" id="myShelf">

@@ -203,6 +203,15 @@ const MESSAGES = {
     sectionHead4: "あなたの本棚",
     sectionSub4: "製本した物語が背表紙になって並びます。クリックすると、いつでも読み返せます。",
     shelfEmptyMsg: "まだ本がありません。編集室で最初の一冊を綴ってみましょう。",
+    // ★Digital-first Preview V0：本棚の手前に置く「最近の一枚」区画＋0件エンプティ状態＋保存通知の文言。
+    // 保存形式・保存キー・GA4は一切変更しない（表示専用の文言追加）。
+    recentLeavesHeading: "最近の一枚",
+    recentLeavesHint: "タップすると、その一枚を読み返せます。",
+    leafCardOpenAria: "この一枚を開いて読み返す",
+    leafEmptyTitle: "最初の一枚を、綴ってみませんか。",
+    leafEmptyBody: "書いた物語は、この端末の中だけに残ります。",
+    leafEmptyCta: "編集室で綴る",
+    leafSavedAnnounce: "一枚を保存し、本棚に加えました。",
     // ★2026-07-18追加：本棚の年月グループ見出し（例：「2026年7月の棚」）。
     shelfMonthUnknown: "日付不明の棚",
     // ★2026-07-18追加：月別タブの「すべて」／「日付不明」（見出しとは別の短い表記）、蔵書冊数表示。
@@ -578,6 +587,15 @@ const MESSAGES = {
     sectionHead4: "Your Bookshelf",
     sectionSub4: "Your bound stories appear as book spines. Select one to read it again at any time.",
     shelfEmptyMsg: "No books yet. Try writing your first one in the Editing Room.",
+    // ★Digital-first Preview V0：EN completeness — every new JA key must have an EN counterpart,
+    // otherwise t() returns an empty string in English mode.
+    recentLeavesHeading: "Recent leaves",
+    recentLeavesHint: "Tap one to read that leaf again.",
+    leafCardOpenAria: "Open this leaf to read it again",
+    leafEmptyTitle: "Shall we write your very first leaf?",
+    leafEmptyBody: "Whatever you write stays only on this device.",
+    leafEmptyCta: "Write in the Editing Room",
+    leafSavedAnnounce: "Your leaf has been saved to your bookshelf.",
     // ★2026-07-18変更：「Shelf: Date Unknown」→「Undated Shelf」へ、より自然な英語表現に調整。
     shelfMonthUnknown: "Undated Shelf",
     shelfMonthAllTab: "All",
@@ -872,6 +890,9 @@ function applyLanguage(){
   if(typeof renderFair === 'function') renderFair();
   // ★2026-07-18追加：本棚の年月見出し（.shelf-month-heading）を言語切替のたびに再描画する。
   if(typeof renderShelf === 'function' && typeof libraryCache !== 'undefined' && libraryCache.length) renderShelf(false);
+  // ★Digital-first Preview V0：本が0冊のときは renderShelf(空) を回さないため、「最近の一枚」
+  // （＝エンプティ状態）だけは言語切替へ追従させて再描画する（英語モードで和文が残らないように）。
+  else if(typeof renderRecentLeaves === 'function') renderRecentLeaves();
   // ★2026-07-18追加：編纂机の「言葉にするための助け舟」を言語切替のたびに再描画する。
   if(typeof renderWritingBoat === 'function') renderWritingBoat();
   // ★2026-07-18追加：表紙の常時表示言語切替（日本語｜English）の現在言語表示を更新する。
@@ -3905,6 +3926,9 @@ function renderShelf(markNewest){
   const emptyMsg = document.getElementById('shelfEmptyMsg');
   const countBadge = document.getElementById('shelfCount');
   renderShelfMonthTabs();
+  // ★Digital-first Preview V0：本棚の手前の「最近の一枚」区画も、本棚の再描画に合わせて更新する。
+  // （0件時のエンプティ状態／最近3件の紙片。既存の背表紙描画ロジックには一切影響しない。）
+  renderRecentLeaves();
   const visible = visibleShelfEntries();
   const newestId = libraryCache.length ? libraryCache[libraryCache.length - 1].id : null;
   // ★2026-07-18追加：年月の見出し（.shelf-month-heading）も、再描画のたびに一旦取り除く。
@@ -3964,6 +3988,145 @@ function renderShelf(markNewest){
   renderShioriCard();
   renderShelfPickRecommend();
   renderBookshelfArrival();
+}
+
+// ★Digital-first Preview V0：本棚の手前に置く「最近の一枚」区画を描画する。
+// ・最近のentryを最大3件だけ、clean な紙片（横書き本文＋日付＋任意の写真）として並べる。
+//   通常のメモ一覧・無限フィードには見せない（見出し＋最大3件＋短い手引きのみ）。
+// ・0件時は「何ができる場所か／最初の一歩／CTA1つ」の専用エンプティ状態を描画する。
+// ・一枚全体を<button>にして、既存openBook（安全な詳細表示）でそのまま開けるようにする。
+// ・保存形式・保存キー・BACKUP_KEYS・GA4・データモデルには一切触れない
+//   （libraryCacheをメモリから読むだけ／新規保存キー文字列も新規trackAnalyticsEventも増やさない）。
+// ・V0では一枚と本をデータ上で区別しない（全entryが対象。推測による種別判定は追加しない）。
+function renderRecentLeaves(){
+  const box = document.getElementById('recentLeaves');
+  if(!box) return;
+  box.innerHTML = '';
+
+  // 0件：世界観だけの長文説明は出さず、短い案内＋主役のCTA1つだけのエンプティ状態にする。
+  if(!libraryCache.length){
+    box.classList.add('is-empty');
+    const empty = document.createElement('div');
+    empty.className = 'leaf-empty';
+    const et = document.createElement('p');
+    et.className = 'leaf-empty-title';
+    et.textContent = t('leafEmptyTitle');
+    const eb = document.createElement('p');
+    eb.className = 'leaf-empty-body';
+    eb.textContent = t('leafEmptyBody');
+    const cta = document.createElement('button');
+    cta.type = 'button';
+    cta.className = 'leaf-empty-cta';
+    cta.textContent = t('leafEmptyCta');
+    cta.onclick = ()=>{ buzz(6); goToPage('desk'); };
+    empty.appendChild(et);
+    empty.appendChild(eb);
+    empty.appendChild(cta);
+    box.appendChild(empty);
+    return;
+  }
+
+  box.classList.remove('is-empty');
+  // 見出し＋短い手引き（「何を押せるか分かる」ように）。
+  const head = document.createElement('div');
+  head.className = 'recent-leaves-head';
+  const h = document.createElement('h3');
+  h.className = 'recent-leaves-heading';
+  h.textContent = t('recentLeavesHeading');
+  const hint = document.createElement('p');
+  hint.className = 'recent-leaves-hint';
+  hint.textContent = t('recentLeavesHint');
+  head.appendChild(h);
+  head.appendChild(hint);
+  box.appendChild(head);
+
+  const list = document.createElement('div');
+  list.className = 'recent-leaves-list';
+  // libraryCacheはpush順（時系列＝古い順）。最近3件を新しい順に取り出す。
+  const recent = libraryCache.slice(-3).reverse();
+  recent.forEach(entry=>{
+    const leaf = document.createElement('button');
+    leaf.type = 'button';
+    leaf.className = 'leaf';
+    // 本棚上の実物と同様、保存はしないDOM専用属性（到着時の演出対象を突き合わせるため）。
+    leaf.dataset.entryId = entry.id;
+    leaf.setAttribute('aria-label', t('leafCardOpenAria'));
+    // 任意の写真：ある場合のみ自然に配置し、無くても完成して見えるようにする（本文が主）。
+    if(entry.image){
+      const ph = document.createElement('div');
+      ph.className = 'leaf-photo';
+      const img = document.createElement('img');
+      img.src = entry.image;
+      img.alt = '';
+      img.loading = 'lazy';
+      img.onerror = function(){ ph.remove(); };
+      ph.appendChild(img);
+      leaf.appendChild(ph);
+    }
+    // 本文（横書き）。長文はCSSの行数クランプで省略する。題名・感情棚は主役にしない。
+    const body = document.createElement('p');
+    body.className = 'leaf-body';
+    body.textContent = entry.story;
+    leaf.appendChild(body);
+    // 日付（保存された一枚の手がかり）。既存formatDate（言語連動）を流用する。
+    const date = document.createElement('time');
+    date.className = 'leaf-date';
+    if(entry.date){
+      date.setAttribute('datetime', entry.date);
+      date.textContent = formatDate(entry.date);
+    }
+    leaf.appendChild(date);
+    leaf.onclick = ()=>{ buzz(8); openBook(entry); };
+    list.appendChild(leaf);
+  });
+  box.appendChild(list);
+}
+
+// ★Digital-first Preview V0：保存直後の短い儀式の「登場側」。
+// ・呼ばれるのは、保存＋読み戻し成功を経た製本フローの到着地点（highlightNewestSpineと同じ位置）
+//   だけ。保存失敗経路からは呼ばれないため、成功演出が誤って始まることはない。
+// ・最近の一枚に並んだ当該の紙片が、ごく短く（最大移動距離約14px・総時間1.5秒以内）静かに収まる。
+//   画面横断アニメーション・closeCoverは使わない。写真がある場合のみ既存photoPopを流用する。
+// ・モーションOFF（prefs.motion=false / body.no-motion / reduced-motion）では動かさない。
+//   ただし「保存された」という状態変化自体は、aria-liveで1回だけ必ず伝える（紙片は既に見えている）。
+// ・タップ（開く操作）が入ったら演出は即完了する。
+function revealNewestLeaf(entryId, attemptsLeft){
+  if(attemptsLeft === undefined) attemptsLeft = 6;
+  const page = document.getElementById('bookshelf');
+  // #bookshelfがまだ.is-activeでない場合（goToPage()の同期性が将来変わった場合の保険）は、
+  // 数フレームだけ待って再試行し、それでも見つからなければ静かに諦める（highlightNewestSpineと同型）。
+  if(!page || !page.classList.contains('is-active')){
+    if(attemptsLeft > 0){
+      requestAnimationFrame(()=>revealNewestLeaf(entryId, attemptsLeft - 1));
+    }
+    return;
+  }
+  // 状態変化（保存された）の通知は、モーションの有無に関わらず必ず1回行う。
+  announceLeafSaved();
+  if(!prefs.motion) return; // モーションOFF：紙片は既に描画済み。動きは付けない。
+  const idStr = String(entryId);
+  let leaf = null;
+  document.querySelectorAll('#recentLeaves .leaf').forEach(el=>{
+    if(el.dataset.entryId === idStr) leaf = el;
+  });
+  if(!leaf) return;
+  leaf.classList.add('leaf-arriving');
+  const photo = leaf.querySelector('.leaf-photo');
+  if(photo) photo.classList.add('pop');
+  const clear = ()=>{ leaf.classList.remove('leaf-arriving'); if(photo) photo.classList.remove('pop'); };
+  const timer = setTimeout(clear, 900);
+  // タップで即完了（開く操作が入ったら演出を止める）。
+  leaf.addEventListener('click', ()=>{ clearTimeout(timer); clear(); }, { once:true });
+}
+
+// ★Digital-first Preview V0：保存成功の状態変化を、視覚外のaria-live（#leafLive）で1回だけ通知する。
+// これはGA4イベントでも外部送信でもない（計測イベント数・保存キーは不変）。画面内の生存通知のみ。
+function announceLeafSaved(){
+  const live = document.getElementById('leafLive');
+  if(!live) return;
+  // 連続保存でも同一文言が確実に読み上げられるよう、一旦クリアしてから次フレームで設定する。
+  live.textContent = '';
+  requestAnimationFrame(()=>{ live.textContent = t('leafSavedAnnounce'); });
 }
 
 // ★UX Fix 02（Real Spine Continuity）：受け取り頁から本棚へ遷移した直後、その一冊の実物の
@@ -5016,6 +5179,8 @@ function showUnfiledShelfPicker(entry){
     goToPage('bookshelf');
     // ★UX Fix 02：遷移直後、本棚に並んだ実物の背表紙だけを静かにハイライトする（保存・GA4は無関係）。
     highlightNewestSpine(entry.id);
+    // ★Digital-first Preview V0：同じ到着地点で、最近の一枚の当該紙片も静かに収まる（保存成功時のみ）。
+    revealNewestLeaf(entry.id);
     // 遷移直後に節目処理を1回だけ実行（節目判定・1回限りの記録は既存実装のまま）
     celebrateMilestoneIfNeeded(libraryCache.length);
   };
@@ -5028,6 +5193,8 @@ function showUnfiledShelfPicker(entry){
     goToPage('bookshelf');
     // ★UX Fix 02：skip後もcategoryはunfiledのまま、本棚上の実物の背表紙だけをハイライトする。
     highlightNewestSpine(entry.id);
+    // ★Digital-first Preview V0：同じ到着地点で、最近の一枚の当該紙片も静かに収まる（保存成功時のみ）。
+    revealNewestLeaf(entry.id);
     // 遷移直後に節目処理を1回だけ実行
     celebrateMilestoneIfNeeded(libraryCache.length);
   };

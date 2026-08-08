@@ -1414,6 +1414,236 @@ body.night .spine.is-newest-spine{
   text-align:center;
   width:100%;
 }
+
+/* ============================================================================
+   ★Digital-first Preview V0：本棚の手前に置く「最近の一枚」区画。
+   ・世界観（紙・木・ワイン・金）は尊重しつつ、余白・タイポグラフィ・整列・状態設計を優先する。
+   ・紙片色は既存 --paper 系から派生（.recent-leaves にスコープしたトークン）。
+   ・角丸は小さく／影は1層だけ／過度な加工・粒子・人工光沢は使わない。
+   ・本アプリは明るい紙テーマ単一（ダークテーマ非対応）のため配色は1系統。
+   ============================================================================ */
+.recent-leaves{
+  /* --paper(#EAD9B8) から派生した、より清潔で明るい紙片色と、その控えめな縁。 */
+  --leaf-paper:#F4E9D2;
+  --leaf-edge:#DCC7A1;
+  margin:6px auto 26px;
+  width:100%;
+}
+.recent-leaves-head{
+  text-align:center;
+  margin:0 0 14px;
+}
+.recent-leaves-heading{
+  margin:0;
+  font-family:var(--font-body);
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:.06em;
+  color:var(--ink-soft);
+}
+.recent-leaves-hint{
+  margin:4px 0 0;
+  font-size:12px;
+  color:var(--ink-soft);
+  opacity:.72;
+}
+.recent-leaves-list{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:stretch;
+  gap:14px;
+}
+
+/* 一枚（clean な紙片）。全体が1つの<button>。 */
+.leaf{
+  /* ボタン既定値のリセット。 */
+  -webkit-appearance:none;
+  appearance:none;
+  font:inherit;
+  text-align:left;
+  cursor:pointer;
+  /* 一枚の体裁：十分な余白・小さめの角丸・1層だけの影。 */
+  display:flex;
+  flex-direction:column;
+  width:min(92vw, 360px);
+  box-sizing:border-box;
+  padding:20px 20px 16px;
+  background:var(--leaf-paper);
+  border:1px solid var(--leaf-edge);
+  border-radius:6px;
+  box-shadow:0 1px 3px rgba(60,40,20,.16);
+  color:var(--ink);
+  transition:transform .16s ease, box-shadow .16s ease;
+}
+/* 状態設計：default / hover / focus-visible / pressed。 */
+@media (hover:hover){
+  .leaf:hover{
+    transform:translateY(-1px);
+    box-shadow:0 3px 8px rgba(60,40,20,.2);
+  }
+}
+.leaf:focus-visible{
+  outline:2px solid var(--wine);
+  outline-offset:2px;
+}
+.leaf:active{
+  transform:translateY(1px);
+  box-shadow:0 1px 2px rgba(60,40,20,.18);
+}
+.leaf[disabled]{
+  opacity:.55;
+  cursor:default;
+  box-shadow:none;
+}
+
+/* 任意の写真：ある場合のみ、本文の上に自然に置く（無くても完成して見える）。 */
+.leaf-photo{
+  margin:0 0 12px;
+  border-radius:4px;
+  overflow:hidden;
+  line-height:0;
+  box-shadow:0 1px 3px rgba(60,40,20,.18);
+}
+.leaf-photo img{
+  display:block;
+  width:100%;
+  max-height:170px;
+  object-fit:cover;
+}
+
+/* 本文（横書き）。短文でも長文でも崩れない。長文は行数クランプで省略する。 */
+.leaf-body{
+  margin:0;
+  font-size:14.5px;
+  line-height:1.75;
+  color:var(--ink);
+  overflow-wrap:break-word;
+  word-break:break-word;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:5;
+  overflow:hidden;
+}
+/* 日付（保存された一枚の手がかり）。主役にしない控えめな添え物。 */
+.leaf-date{
+  display:block;
+  margin:12px 0 0;
+  font-size:11.5px;
+  letter-spacing:.04em;
+  color:var(--ink-soft);
+  opacity:.78;
+}
+
+/* 保存直後の短い儀式の「登場側」：ごく短く静かに収まる（最大移動距離14px<18px）。
+   画面横断アニメーションはしない。写真がある場合のみ既存 photoPop を流用する。 */
+.leaf-arriving{
+  animation:leafArrive .6s ease;
+}
+@keyframes leafArrive{
+  from{ transform:translateY(-14px); opacity:.3; }
+  to{ transform:translateY(0); opacity:1; }
+}
+.leaf-photo.pop{
+  /* 既存 photoPop キーフレームを流用（forwards は付けず、紙片本来の正位置へ収める）。 */
+  animation:photoPop .5s ease;
+}
+/* モーションOFF（設定／reduced-motion）では動かさない。保存はaria-liveで別途通知する。 */
+body.no-motion .leaf{ transition:none; }
+body.no-motion .leaf-arriving,
+body.no-motion .leaf-photo.pop{ animation:none; }
+@media (prefers-reduced-motion: reduce){
+  .leaf{ transition:none; }
+  .leaf-arriving,
+  .leaf-photo.pop{ animation:none; }
+}
+
+/* 0件エンプティ状態：空白にせず、「何ができる場所か・最初の一歩」を短く伝え、CTAは1つだけ主役に。 */
+.recent-leaves.is-empty{
+  margin-top:2px;
+}
+.leaf-empty{
+  max-width:min(92vw, 420px);
+  margin:0 auto;
+  padding:26px 22px 24px;
+  text-align:center;
+  background:var(--leaf-paper);
+  border:1px solid var(--leaf-edge);
+  border-radius:8px;
+  box-shadow:0 1px 3px rgba(60,40,20,.14);
+}
+.leaf-empty-title{
+  margin:0;
+  font-size:16px;
+  font-weight:700;
+  line-height:1.6;
+  color:var(--ink);
+}
+.leaf-empty-body{
+  margin:8px 0 0;
+  font-size:13px;
+  line-height:1.7;
+  color:var(--ink-soft);
+}
+.leaf-empty-cta{
+  -webkit-appearance:none;
+  appearance:none;
+  margin:18px auto 0;
+  min-height:44px;
+  padding:11px 24px;
+  font:inherit;
+  font-size:14.5px;
+  font-weight:700;
+  color:var(--paper);
+  background:var(--wine);
+  border:1.5px solid var(--wine);
+  border-radius:24px;
+  cursor:pointer;
+  box-shadow:0 3px 0 var(--wood);
+  transition:transform .16s ease, box-shadow .16s ease, background .16s ease;
+}
+@media (hover:hover){
+  .leaf-empty-cta:hover{
+    background:var(--wine-2);
+    transform:translateY(-1px);
+  }
+}
+.leaf-empty-cta:focus-visible{
+  outline:2px solid var(--gold);
+  outline-offset:3px;
+}
+.leaf-empty-cta:active{
+  transform:translateY(2px);
+  box-shadow:0 1px 0 var(--wood);
+}
+.leaf-empty-cta[disabled]{
+  opacity:.55;
+  cursor:default;
+  box-shadow:none;
+}
+body.no-motion .leaf-empty-cta{ transition:none; }
+@media (prefers-reduced-motion: reduce){
+  .leaf-empty-cta{ transition:none; }
+}
+
+/* 視覚外のaria-liveライブ領域（保存成功を1回だけ読み上げる）。 */
+.leaf-sr-only{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0 0 0 0);
+  white-space:nowrap;
+  border:0;
+}
+
+/* 狭幅（iPhone 320〜430px）：横スクロールを出さず、1枚ずつ縦に積む。 */
+@media (max-width:520px){
+  .recent-leaves-list{ gap:12px; }
+  .leaf{ width:min(92vw, 360px); }
+}
 .shelf-controls{
   display:flex;
   flex-wrap:wrap;
