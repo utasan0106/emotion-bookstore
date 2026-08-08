@@ -90,12 +90,22 @@ function normStyle(document, prop, value){
   return scratch.style[prop];
 }
 
+// ★Preview-NG追加修正：height式は「有機的な揺らぎ(140+len%4*12)」と「長い題名が確実に
+// 収まる最小高さ(28 + len*18)」のうち大きい方、へ変更された（main.jsのspineHeightForTitle()）。
+// このテストはmain.jsのspineHeightForTitle()を呼ばず、独立に同じ定数から再構成することで、
+// computeSpineVisual()との乖離（式のドリフト）を検出する（このテストの存在意義そのもの）。
+function expectedSpineHeightPx(titleLength){
+  const organic = 140 + (titleLength % 4) * 12;
+  const fitMinimum = 28 + titleLength * 18;
+  return Math.max(organic, fitMinimum);
+}
+
 function expectedVisual(window, entry, index){
   return {
     background: window.spineGradientFor(entry.category, entry.title.length + index),
     color: window.textColorFor(window.spineColorFor(entry.category)),
     textShadow: window.textShadowFor(window.spineColorFor(entry.category)),
-    height: (140 + (entry.title.length % 4) * 12) + 'px',
+    height: expectedSpineHeightPx(entry.title.length) + 'px',
     tiltDeg: (((entry.title.length * 7 + index * 13) % 5) - 2) + 'deg'
   };
 }

@@ -401,6 +401,12 @@ const MESSAGES = {
     manaReceiveSkip: "今は棚を決めず、本棚へ",
     manaReceiveSaveError: "すみません。保存がうまく完了しませんでした。書いた言葉は消さず、少ししてからもう一度お試しください。",
     manaImageAlt: "",
+    // ★PR-A追加：第三頁でのインライン改題（頁1/2へは戻さない）。
+    manaTitleAddLabel: "題名をつける",
+    manaTitleEditLabel: "題名を直す",
+    manaTitleConfirm: "これにする",
+    manaTitleCancel: "やめる",
+    manaTitleInputAriaLabel: "背表紙の題名",
     // ★v1.3最終統合追加：店内メニュー（4タブの代替導線）の文言。
     // ★v1.3公開前最終修正：三本線だけでは初見で見落とすため、文字でも明示する（仕様書5章）。
     menuOpenAria: "店内メニューを開く",
@@ -763,6 +769,12 @@ const MESSAGES = {
     manaReceiveSkip: "Not now \u2014 go to my bookshelf",
     manaReceiveSaveError: "Sorry, saving didn\u2019t complete. Your words are still here \u2014 please try again in a moment.",
     manaImageAlt: "",
+    // \u2605PR-A addition: inline title editing on page 3 (never navigates back to page 1/2).
+    manaTitleAddLabel: "Add a title",
+    manaTitleEditLabel: "Edit title",
+    manaTitleConfirm: "Use this title",
+    manaTitleCancel: "Cancel",
+    manaTitleInputAriaLabel: "Book title",
     menuOpenAria: "Open the in-store menu",
     menuCloseAria: "Close the in-store menu",
     menuNavAria: "Menu",
@@ -3816,6 +3828,20 @@ function spineGradientFor(catId, seed){
   return `linear-gradient(180deg, ${top} 0%, ${base} 45%, ${bottom} 100%)`;
 }
 
+// ★Preview-NG追加修正（長い題名での背表紙オーバーフロー防止）：.spine の実測CSS定数
+// （font-size:14px + letter-spacing:.12em ≈ 15.68px/文字、padding-top+padding-bottom
+// = 14px×2 = 28px）から、指定文字数の題名が縦書きで確実に収まる最小高さを算出する。
+// 既存の「有機的な高さの揺らぎ」(140〜176px, 従来の modulo 式) が既にこの最小値を
+// 満たす場合はそちらを使う（短い題名の見た目を変えない）。16文字（title入力のmaxlength）
+// までは必ずこの最小値で収まるよう、文字送り量に安全マージンを足した18pxを採用する。
+const SPINE_TEXT_VERTICAL_PADDING_PX = 28; // .spine の padding-top + padding-bottom
+const SPINE_CHAR_ADVANCE_PX = 18; // font-size(14px) + letter-spacing(.12em≈1.68px) + 安全マージン
+function spineHeightForTitle(titleLength){
+  const organic = 140 + (titleLength % 4) * 12;
+  const fitMinimum = SPINE_TEXT_VERTICAL_PADDING_PX + titleLength * SPINE_CHAR_ADVANCE_PX;
+  return Math.max(organic, fitMinimum);
+}
+
 // ★UX Fix 02（Real Spine Continuity）：renderShelf()の1冊分の見た目計算式を、DOM読み書きを
 // 一切行わない純粋関数として抽出する。既存本の描画に使う数式は一切変更しない（同じ式を
 // そのままここへ移しただけ）。受け取り頁のプレビュー（showUnfiledShelfPicker）も、この
@@ -3825,7 +3851,7 @@ function computeSpineVisual(entry, index){
     background: spineGradientFor(entry.category, entry.title.length + index),
     color: textColorFor(spineColorFor(entry.category)),
     textShadow: textShadowFor(spineColorFor(entry.category)),
-    height: (140 + (entry.title.length % 4) * 12) + 'px',
+    height: spineHeightForTitle(entry.title.length) + 'px',
     tiltDeg: (((entry.title.length * 7 + index * 13) % 5) - 2) + 'deg',
     title: entry.title
   };
@@ -4584,6 +4610,73 @@ async function restoreDraftIfAny(){
   if(msg) msg.textContent = t('draftRestored');
 }
 
+// ★PR-A：第三頁（#unfiledShelfPicker）が開いている間、Tabキーで背後の頁
+// （desk等の.experience-page.is-active）へフォーカスが漏れてしまう不具合の修正。
+// #experienceMenuの開閉パターン（openExperienceMenu/closeExperienceMenu/
+// handleExperienceMenuKeydown、上のほうにある実装）と全く同じ方式（inert＋
+// フォーカストラップ）をそのまま流用する。新しい閉じる手段（Esc・背景クリック）は
+// 追加しない。既存の確定／スキップ経路だけがこのダイアログを閉じる。
+let _page3InertedPages = null; // このモジュールがinertを付与した頁だけを正確に記録する
+let _page3ActiveEntry = null; // 言語切替時のラベル再計算（refreshUnfiledShelfPickerLabels）用
+
+function unfiledShelfPickerFocusables(){
+  const box = document.getElementById('unfiledShelfPicker');
+  if(!box) return [];
+  return Array.from(box.querySelectorAll('button, a[href], input, select, textarea, [tabindex]'))
+    .filter(el => !el.disabled && el.tabIndex !== -1 && el.offsetParent !== null);
+}
+
+function isUnfiledShelfPickerOpen(){
+  const box = document.getElementById('unfiledShelfPicker');
+  return !!(box && document.body.contains(box) && !box.classList.contains('hidden'));
+}
+
+function handleUnfiledShelfPickerKeydown(e){
+  if(!isUnfiledShelfPickerOpen()) return;
+  if(e.key !== 'Tab') return;
+  const focusables = unfiledShelfPickerFocusables();
+  if(!focusables.length) return;
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+  if(e.shiftKey && document.activeElement === first){
+    e.preventDefault();
+    last.focus();
+  }else if(!e.shiftKey && document.activeElement === last){
+    e.preventDefault();
+    first.focus();
+  }
+}
+
+function trapPage3Focus(){
+  if(_page3InertedPages) return; // 二重設定防止（既にトラップ中なら何もしない）
+  const toInert = Array.from(experiencePageEls()).filter(sec=>sec.classList.contains('is-active') && !sec.hasAttribute('inert'));
+  toInert.forEach(sec=>sec.setAttribute('inert', ''));
+  _page3InertedPages = toInert;
+  document.addEventListener('keydown', handleUnfiledShelfPickerKeydown, true);
+}
+
+function releasePage3Focus(){
+  document.removeEventListener('keydown', handleUnfiledShelfPickerKeydown, true);
+  if(_page3InertedPages){
+    _page3InertedPages.forEach(sec=>sec.removeAttribute('inert'));
+    _page3InertedPages = null;
+  }
+}
+
+// ★PR-A：「まだ実質的な題名がない」状態の判定（第三頁の「題名をつける」／「題名を直す」の
+// 出し分けに使う）。初回製本の未入力時は言語非依存の固定フォールバック文言（現行コード
+// そのまま、下のsubmitStoryハンドラと同じ文字列）が入り、改題モーダル（enterBookEditMode
+// 経由の保存）では t('manaReceiveBookFallback') が入るため、その両方と空文字を「未題名」
+// として扱う。新しいフォールバック文言は作らない。
+function isUntitledBookTitle(title){
+  const v = (title || '').trim();
+  if(!v) return true;
+  if(v === 'まだ、題名のない本') return true;
+  const fallback = t('manaReceiveBookFallback');
+  if(fallback && v === fallback) return true;
+  return false;
+}
+
 // ★Step4：unfiled保存成功後の「任意の棚収納UI」。
 // ・既存21棚の選択肢はCATEGORIESから動的生成（ハードコードしない）
 // ・棚を選ぶと、製本済みの同じentryのcategoryだけを更新して再保存（新規本は追加しない）
@@ -4593,6 +4686,11 @@ async function restoreDraftIfAny(){
 function hideUnfiledShelfPicker(){
   const box = document.getElementById('unfiledShelfPicker');
   if(box){ box.innerHTML = ''; box.classList.add('hidden'); }
+  // ★PR-A：ダイアログを閉じる3経路（確定成功／スキップ）すべてがここを通るため、
+  // フォーカストラップの解除・背後頁のinert解除もここに一本化する。
+  // 保存失敗時はこの関数を呼ばない（従来どおりダイアログは閉じない）。
+  releasePage3Focus();
+  _page3ActiveEntry = null;
 }
 
 // ★Hotfix4.1追加：受け取り頁（棚選択）を開いたまま言語を切り替えた場合に、
@@ -4625,6 +4723,19 @@ function refreshUnfiledShelfPickerLabels(){
   const line = box.querySelector('.mana-receive-line');
   if(line) line.textContent = t('manaReceiveLine');
   box.setAttribute('aria-label', t('manaReceiveAriaLabel'));
+  // ★PR-A：開いたまま言語切替した場合、インライン改題UIの文言も追従させる
+  // （開閉状態・入力中の文字はそのまま維持する）。
+  const titleTrigger = document.getElementById('unfiledTitleEditTrigger');
+  if(titleTrigger){
+    const untitled = isUntitledBookTitle(_page3ActiveEntry ? _page3ActiveEntry.title : '');
+    titleTrigger.textContent = untitled ? t('manaTitleAddLabel') : t('manaTitleEditLabel');
+  }
+  const titleInputEl = document.getElementById('unfiledTitleInput');
+  if(titleInputEl) titleInputEl.setAttribute('aria-label', t('manaTitleInputAriaLabel'));
+  const titleConfirmEl = document.getElementById('unfiledTitleConfirm');
+  if(titleConfirmEl) titleConfirmEl.textContent = t('manaTitleConfirm');
+  const titleCancelEl = document.getElementById('unfiledTitleCancel');
+  if(titleCancelEl) titleCancelEl.textContent = t('manaTitleCancel');
 }
 
 function showUnfiledShelfPicker(entry){
@@ -4632,6 +4743,7 @@ function showUnfiledShelfPicker(entry){
   // 再構成する。新しい別保存処理や別entryは作らない（現行の同じentryを使う）。
   // 表示するもの：まなのオリジナルイラスト／製本された本の表紙プレビュー／店主の短い言葉／
   // 棚選択（任意）／「この棚にしまう」／「今は棚を決めず、本棚へ」（仕様書1-3）。
+  _page3ActiveEntry = entry; // ★PR-A：言語切替時のラベル再計算用
   let box = document.getElementById('unfiledShelfPicker');
   if(!box){
     box = document.createElement('div');
@@ -4699,6 +4811,105 @@ function showUnfiledShelfPicker(entry){
   };
   bookPreview.appendChild(previewSpine);
   card.appendChild(bookPreview);
+
+  // ★PR-A：第三頁のインライン改題。頁1/2（desk/storyInput）へは絶対に戻さない。
+  // 既定は非表示（低強調のテキストボタンのみ）。このUIはconfirm/skipどちらの動線にも
+  // 割り込まない＝「今は棚を決めず、本棚へ」のクリック回数は従来のまま変わらない。
+  const titleEditor = document.createElement('div');
+  titleEditor.className = 'mana-title-editor';
+
+  const titleTrigger = document.createElement('button');
+  titleTrigger.type = 'button';
+  titleTrigger.id = 'unfiledTitleEditTrigger';
+  titleTrigger.className = 'mana-title-trigger';
+  titleTrigger.textContent = isUntitledBookTitle(entry.title) ? t('manaTitleAddLabel') : t('manaTitleEditLabel');
+
+  const titleForm = document.createElement('div');
+  titleForm.className = 'mana-title-form hidden';
+
+  const titleInputEl = document.createElement('input');
+  titleInputEl.type = 'text';
+  titleInputEl.id = 'unfiledTitleInput';
+  titleInputEl.maxLength = 16;
+  titleInputEl.className = 'mana-title-input';
+  titleInputEl.setAttribute('aria-label', t('manaTitleInputAriaLabel'));
+
+  const titleFormActions = document.createElement('div');
+  titleFormActions.className = 'mana-title-form-actions';
+
+  const titleConfirmBtn = document.createElement('button');
+  titleConfirmBtn.type = 'button';
+  titleConfirmBtn.id = 'unfiledTitleConfirm';
+  titleConfirmBtn.className = 'chart-btn ghost';
+  titleConfirmBtn.textContent = t('manaTitleConfirm');
+
+  const titleCancelBtn = document.createElement('button');
+  titleCancelBtn.type = 'button';
+  titleCancelBtn.id = 'unfiledTitleCancel';
+  titleCancelBtn.className = 'chart-btn ghost';
+  titleCancelBtn.textContent = t('manaTitleCancel');
+
+  titleFormActions.appendChild(titleConfirmBtn);
+  titleFormActions.appendChild(titleCancelBtn);
+  titleForm.appendChild(titleInputEl);
+  titleForm.appendChild(titleFormActions);
+
+  const openTitleEditor = ()=>{
+    titleInputEl.value = isUntitledBookTitle(entry.title) ? '' : entry.title;
+    titleTrigger.classList.add('hidden');
+    titleForm.classList.remove('hidden');
+    titleInputEl.focus();
+  };
+  const closeTitleEditor = ()=>{
+    titleForm.classList.add('hidden');
+    titleTrigger.classList.remove('hidden');
+    titleTrigger.textContent = isUntitledBookTitle(entry.title) ? t('manaTitleAddLabel') : t('manaTitleEditLabel');
+  };
+  titleTrigger.onclick = openTitleEditor;
+  // ★やめる：入力内容を破棄して低強調ボタンへ戻るだけ。entry.titleには一切触れない。
+  titleCancelBtn.onclick = closeTitleEditor;
+
+  titleConfirmBtn.onclick = async ()=>{
+    const prevTitle = entry.title; // 保存失敗時のロールバック用
+    const trimmed = titleInputEl.value.trim();
+    // ★空欄なら、他の題名フォールバック経路（modalEditSave等）と同じ既存フォールバックへ。
+    // 新しいフォールバック文言は作らない。
+    const nextTitle = trimmed || t('manaReceiveBookFallback') || 'まだ、題名のない本';
+    entry.title = nextTitle; // 変更するのはtitleのみ（story/category/date/id/image/tweetUrl/sealedは触らない）
+    const savedOk = await saveJSON('emotion-bookstore-library', libraryCache);
+    if(!savedOk){
+      // ★保存失敗：メモリを保存前の値へ正確に巻き戻す（storageとの乖離を防ぐ）。
+      // ダイアログは閉じず、既存のページ3エラー領域に表示する（新しい別UIは作らない）。
+      entry.title = prevTitle;
+      errorMsg.textContent = t('manaReceiveSaveError');
+      errorMsg.classList.remove('hidden');
+      return;
+    }
+    errorMsg.textContent = '';
+    errorMsg.classList.add('hidden');
+    // ★computeSpineVisual()をフルに通し、background/color/textShadow/height/--tilt/題名の
+    // 全部を作り直す（題名の文字数がheight/tiltの式にも影響するため、文字だけの差し替えでは
+    // 本棚実物とプレビューがずれる）。棚を選択中ならその棚色を、未選択ならunfiledの中立色を
+    // そのまま維持する（applyPreviewColorと同じ合成方法）。
+    const catOverride = isValidShelfSelected() ? select.value : entry.category;
+    const visual = computeSpineVisual(Object.assign({}, entry, { category: catOverride }), previewIndex);
+    previewSpine.style.background = visual.background;
+    previewSpine.style.color = visual.color;
+    previewSpine.style.textShadow = visual.textShadow;
+    previewSpine.style.height = visual.height;
+    previewSpine.style.setProperty('--tilt', visual.tiltDeg);
+    previewSpine.textContent = visual.title;
+    // ★本棚の実物は、この受け取り頁が開く直前に一度だけ描画済み（renderShelf(true)）のため、
+    // ここで改題しただけでは古い題名のまま取り残される（スキップ経路はconfirmBtnと違い
+    // renderShelf()を呼び直さない）。entry.titleは既にlibraryCache上のentryを直接書き換えて
+    // いるので、renderShelf()を再実行するだけで足りる（新規保存・新規entryは発生しない）。
+    renderShelf();
+    closeTitleEditor();
+  };
+
+  titleEditor.appendChild(titleTrigger);
+  titleEditor.appendChild(titleForm);
+  card.appendChild(titleEditor);
 
   // 店主の確定文（同一文の連続表示・本文の理解や助言・感情棚の推測はしない）
   const line = document.createElement('p');
@@ -4833,6 +5044,9 @@ function showUnfiledShelfPicker(entry){
   box.appendChild(card);
   const focusTarget = document.getElementById('unfiledShelfSelect');
   if(focusTarget) focusTarget.focus();
+  // ★PR-A：ダイアログの中身を組み立て終えたところで、背後頁のinert付与とTabトラップの
+  // 登録を行う（#experienceMenuと同じ開閉パターン）。
+  trapPage3Focus();
 }
 
 const btnSubmit = document.getElementById('submitStory');

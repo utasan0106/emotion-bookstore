@@ -1363,7 +1363,11 @@ body.night .desk-extra summary{
   cursor:pointer;
   box-shadow:inset -3px 0 0 rgba(0,0,0,0.15), inset 3px 0 0 rgba(255,255,255,0.08);
   transition:transform .15s ease;
-  max-height:220px;
+  /* Preview-NG追加修正：maxlength=16文字までの題名がcomputeSpineVisual()の
+     spineHeightForTitle()で計算した高さ(最大316px、length=16時)で確実に収まるよう、
+     余裕を持たせて340pxへ引き上げる（従来220pxのままだとJS側の高さが正しくても
+     CSSのキャップで再び切れてしまうため）。 */
+  max-height:340px;
   transform:rotate(var(--tilt, 0deg));
 }
 .spine:hover{transform:translateY(-6px) rotate(var(--tilt, 0deg));}
@@ -4321,6 +4325,56 @@ body.night .weather-region-select{ background:#262219; color:var(--ink); }
 .mana-receive-book .spine:hover,
 .mana-receive-book .spine:active{
   transform:rotate(var(--tilt, 0deg));
+}
+/* ---- PR-A：第三頁のインライン改題（題名をつける／題名を直す） ---- */
+.mana-title-editor{
+  margin:0 0 14px;
+  text-align:center;
+}
+.mana-title-trigger{
+  display:inline-block;
+  max-width:100%;
+  background:none;
+  border:none;
+  padding:6px 4px;
+  min-height:32px;
+  font-size:12.5px;
+  color:rgba(245,234,210,0.82);
+  text-decoration:underline;
+  text-decoration-color:rgba(245,234,210,0.4);
+  text-underline-offset:2px;
+  cursor:pointer;
+}
+.mana-title-trigger:hover{ color:#F5EAD2; text-decoration-color:#F5EAD2; }
+.mana-title-trigger.hidden{ display:none; }
+.mana-title-form{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin:0 0 4px;
+  text-align:left;
+}
+.mana-title-form.hidden{ display:none; }
+.mana-title-input{
+  width:100%;
+  box-sizing:border-box;
+  padding:9px 11px;
+  border-radius:4px;
+  border:1px solid var(--paper-shadow);
+  background:rgba(255,255,255,0.5);
+  color:var(--ink);
+  font-size:14px;
+}
+body.night .mana-title-input{ background:rgba(0,0,0,0.25); }
+.mana-title-form-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:center;
+}
+.mana-title-form-actions .chart-btn{
+  flex:1 1 auto;
+  min-width:0;
 }
 .mana-receive-line{
   font-size:15px;
@@ -7303,7 +7357,9 @@ body.experience-open #counter .keeper-vignette svg{
 body.experience-open .mana-receive-card select,
 body.night.experience-open .mana-receive-card select,
 body.experience-open #unfiledShelfSelect,
-body.night.experience-open #unfiledShelfSelect{
+body.night.experience-open #unfiledShelfSelect,
+body.experience-open .mana-title-input,
+body.night.experience-open .mana-title-input{
   background:linear-gradient(180deg, var(--vr-wood, #3A2C1E) 0%, var(--vr-wood-dark, #241A12) 100%);
   background-color:#2E2318;                 /* グラデーション非対応時の下地 */
   color:var(--vr-paper, #E7DBC1);
@@ -7348,7 +7404,9 @@ body.experience-open .mana-receive-card label{
 body.experience-open .mana-receive-card select:focus,
 body.experience-open .mana-receive-card select:focus-visible,
 body.experience-open #unfiledShelfSelect:focus,
-body.experience-open #unfiledShelfSelect:focus-visible{
+body.experience-open #unfiledShelfSelect:focus-visible,
+body.experience-open .mana-title-input:focus,
+body.experience-open .mana-title-input:focus-visible{
   outline:2px solid var(--vr-brass-lit, #B08A4E);
   outline-offset:2px;
   border-color:var(--vr-brass-lit, #B08A4E);
