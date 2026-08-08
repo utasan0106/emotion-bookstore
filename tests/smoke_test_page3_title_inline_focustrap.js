@@ -382,6 +382,72 @@ async function main(){
   }
 
   // ==========================================================================
+  // J. Preview-NG追加修正：16文字までの長い題名でも背表紙からテキストがはみ出さないこと
+  //    (spineHeightForTitle() の保証: height >= 28 + titleLength*18 (fit-minimum) を、
+  //    独立に再構成した定数で検証する。1/9/15/16文字の4ケースを、CEO指定どおり検証する。
+  //    9文字は未題本フォールバック「まだ、題名のない本」そのもの。)
+  // ==========================================================================
+  {
+    const SPINE_TEXT_VERTICAL_PADDING_PX = 28;
+    const SPINE_CHAR_ADVANCE_PX = 18;
+    function fitMinimumFor(titleLength){
+      return SPINE_TEXT_VERTICAL_PADDING_PX + titleLength * SPINE_CHAR_ADVANCE_PX;
+    }
+
+    ok('(J) sanity: the untitled fallback string is exactly 9 characters (as hardcoded below)',
+      'まだ、題名のない本'.length === 9);
+
+    const lengthCases = [
+      { length: 1, title: 'あ' },
+      { length: 9, title: '' }, // '' -> binds to the untitled fallback "まだ、題名のない本" (9 chars, see sanity check above)
+      { length: 15, title: 'あ'.repeat(15) },
+      { length: 16, title: 'あ'.repeat(16) } // 16 = maxlength on the title inputs; the worst case this fix must guarantee
+    ];
+
+    for(const { length, title } of lengthCases){
+      const { window, document } = await createEnv({});
+      const entry = await bindUnfiledBook(window, document, `overflow確認用本文 length=${length}`, title);
+      ok(`(J) length=${length}: bound entry.title has the expected character count`, entry.title.length === length);
+
+      const previewSpine = document.querySelector('#unfiledShelfPicker .mana-receive-book .spine');
+      ok(`(J) length=${length}: page-3 preview spine exists`, !!previewSpine);
+      const previewHeightPx = previewSpine ? parseFloat(previewSpine.style.height) : NaN;
+      ok(`(J) length=${length}: preview spine height (${previewSpine && previewSpine.style.height}) is >= the guaranteed fit-minimum (${fitMinimumFor(length)}px), so the title is guaranteed to fit`,
+        previewHeightPx >= fitMinimumFor(length));
+
+      if(length === 1){
+        // 短い題名(length=1)はfitMinimum(46px)が有機的な揺らぎ(152px)を上回らないため、
+        // 修正前と完全に同じ高さのはず（短い題名の見た目を変えない、という要件の回帰確認）。
+        ok('(J) length=1: preview spine height is byte-identical to the untouched pre-fix organic formula (140+(1%4)*12=152px)',
+          previewSpine.style.height === (140 + (1 % 4) * 12) + 'px');
+      }
+
+      const previewHeightValue = previewSpine.style.height;
+      document.getElementById('unfiledShelfSkip').click();
+      await new Promise(r=>setTimeout(r,150));
+      const realSpine = document.querySelector('#myShelf .spine[data-entry-id="'+entry.id+'"]');
+      ok(`(J) length=${length}: real shelf spine exists after reaching the bookshelf`, !!realSpine);
+      if(realSpine){
+        ok(`(J) length=${length}: real shelf spine height is identical to what page 3 previewed (preview/shelf visual parity)`,
+          realSpine.style.height === previewHeightValue);
+      }
+    }
+
+    // ========================================================================
+    // K. CSS側の .spine max-height が length=16 の fit-minimum を下回らないこと。
+    //    JS側の高さ計算が正しくても、CSSの上限キャップで再び切られては意味がない。
+    // ========================================================================
+    const spineBlockMatch = /\.spine\{([^}]*)\}/.exec(rawCss);
+    ok('(K) the base .spine{...} rule (with max-height) is found in style.css', !!spineBlockMatch);
+    const maxHeightMatch = spineBlockMatch && /max-height:\s*(\d+)px/.exec(spineBlockMatch[1]);
+    ok('(K) .spine has a numeric max-height declared', !!maxHeightMatch);
+    const maxHeightPx = maxHeightMatch ? parseInt(maxHeightMatch[1], 10) : NaN;
+    const fitMinimumFor16 = fitMinimumFor(16); // 28 + 16*18 = 316
+    ok(`(K) .spine max-height (${maxHeightPx}px) is >= the length=16 fit-minimum (${fitMinimumFor16}px), so the CSS cap never re-clips the JS-computed height`,
+      maxHeightPx >= fitMinimumFor16);
+  }
+
+  // ==========================================================================
   // 静的検査：i18nキー・focus-trap関数・375px幅での折り返し用CSSが存在すること
   // ==========================================================================
   ok('(static) MESSAGES.ja has all new PR-A keys', /manaTitleAddLabel:\s*"題名をつける"/.test(rawMain)
@@ -400,8 +466,12 @@ async function main(){
     const block = rawMain.slice(blockStart, blockEnd);
     return !/trackAnalyticsEvent/.test(block);
   })());
-  ok('(static) computeSpineVisual() itself was not modified (still derives all 5 fields from entry/index)',
-    /function computeSpineVisual\(entry, index\)\{\s*\n\s*return \{\s*\n\s*background: spineGradientFor\(entry\.category, entry\.title\.length \+ index\),\s*\n\s*color: textColorFor\(spineColorFor\(entry\.category\)\),\s*\n\s*textShadow: textShadowFor\(spineColorFor\(entry\.category\)\),\s*\n\s*height: \(140 \+ \(entry\.title\.length % 4\) \* 12\) \+ 'px',\s*\n\s*tiltDeg: \(\(\(entry\.title\.length \* 7 \+ index \* 13\) % 5\) - 2\) \+ 'deg',\s*\n\s*title: entry\.title\s*\n\s*\};\s*\n\}/.test(rawMain));
+  // ★Preview-NG追加修正：computeSpineVisual()のheight算出は、長い題名の背表紙オーバーフロー
+  // 修正のためspineHeightForTitle()経由に変更された（このPRの正当な変更対象そのもの）。
+  // background/color/textShadow/tiltDeg/titleの5フィールド構成・他の式は今回も無変更であることを
+  // 引き続き白箱で検証する（heightだけ新しいヘルパー呼び出しに変わったことも含めて検証する）。
+  ok('(static) computeSpineVisual() still derives all 5 fields from entry/index, with height now routed through spineHeightForTitle() (Preview-NG overflow fix)',
+    /function computeSpineVisual\(entry, index\)\{\s*\n\s*return \{\s*\n\s*background: spineGradientFor\(entry\.category, entry\.title\.length \+ index\),\s*\n\s*color: textColorFor\(spineColorFor\(entry\.category\)\),\s*\n\s*textShadow: textShadowFor\(spineColorFor\(entry\.category\)\),\s*\n\s*height: spineHeightForTitle\(entry\.title\.length\) \+ 'px',\s*\n\s*tiltDeg: \(\(\(entry\.title\.length \* 7 \+ index \* 13\) % 5\) - 2\) \+ 'deg',\s*\n\s*title: entry\.title\s*\n\s*\};\s*\n\}/.test(rawMain));
   ok('(static) .mana-title-editor / .mana-title-trigger / .mana-title-form / .mana-title-input CSS classes exist',
     /\.mana-title-editor\{/.test(rawCss) && /\.mana-title-trigger\{/.test(rawCss) && /\.mana-title-form\{/.test(rawCss) && /\.mana-title-input\{/.test(rawCss));
   ok('(static) the title-edit action row wraps instead of overflowing at narrow widths (flex-wrap on .mana-title-form-actions)',

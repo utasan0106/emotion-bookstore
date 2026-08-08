@@ -1363,7 +1363,11 @@ body.night .desk-extra summary{
   cursor:pointer;
   box-shadow:inset -3px 0 0 rgba(0,0,0,0.15), inset 3px 0 0 rgba(255,255,255,0.08);
   transition:transform .15s ease;
-  max-height:220px;
+  /* Preview-NG追加修正：maxlength=16文字までの題名がcomputeSpineVisual()の
+     spineHeightForTitle()で計算した高さ(最大316px、length=16時)で確実に収まるよう、
+     余裕を持たせて340pxへ引き上げる（従来220pxのままだとJS側の高さが正しくても
+     CSSのキャップで再び切れてしまうため）。 */
+  max-height:340px;
   transform:rotate(var(--tilt, 0deg));
 }
 .spine:hover{transform:translateY(-6px) rotate(var(--tilt, 0deg));}

@@ -3828,6 +3828,20 @@ function spineGradientFor(catId, seed){
   return `linear-gradient(180deg, ${top} 0%, ${base} 45%, ${bottom} 100%)`;
 }
 
+// ★Preview-NG追加修正（長い題名での背表紙オーバーフロー防止）：.spine の実測CSS定数
+// （font-size:14px + letter-spacing:.12em ≈ 15.68px/文字、padding-top+padding-bottom
+// = 14px×2 = 28px）から、指定文字数の題名が縦書きで確実に収まる最小高さを算出する。
+// 既存の「有機的な高さの揺らぎ」(140〜176px, 従来の modulo 式) が既にこの最小値を
+// 満たす場合はそちらを使う（短い題名の見た目を変えない）。16文字（title入力のmaxlength）
+// までは必ずこの最小値で収まるよう、文字送り量に安全マージンを足した18pxを採用する。
+const SPINE_TEXT_VERTICAL_PADDING_PX = 28; // .spine の padding-top + padding-bottom
+const SPINE_CHAR_ADVANCE_PX = 18; // font-size(14px) + letter-spacing(.12em≈1.68px) + 安全マージン
+function spineHeightForTitle(titleLength){
+  const organic = 140 + (titleLength % 4) * 12;
+  const fitMinimum = SPINE_TEXT_VERTICAL_PADDING_PX + titleLength * SPINE_CHAR_ADVANCE_PX;
+  return Math.max(organic, fitMinimum);
+}
+
 // ★UX Fix 02（Real Spine Continuity）：renderShelf()の1冊分の見た目計算式を、DOM読み書きを
 // 一切行わない純粋関数として抽出する。既存本の描画に使う数式は一切変更しない（同じ式を
 // そのままここへ移しただけ）。受け取り頁のプレビュー（showUnfiledShelfPicker）も、この
@@ -3837,7 +3851,7 @@ function computeSpineVisual(entry, index){
     background: spineGradientFor(entry.category, entry.title.length + index),
     color: textColorFor(spineColorFor(entry.category)),
     textShadow: textShadowFor(spineColorFor(entry.category)),
-    height: (140 + (entry.title.length % 4) * 12) + 'px',
+    height: spineHeightForTitle(entry.title.length) + 'px',
     tiltDeg: (((entry.title.length * 7 + index * 13) % 5) - 2) + 'deg',
     title: entry.title
   };
