@@ -3816,6 +3816,31 @@ function spineGradientFor(catId, seed){
   return `linear-gradient(180deg, ${top} 0%, ${base} 45%, ${bottom} 100%)`;
 }
 
+// ★UX Fix 02（Real Spine Continuity）：renderShelf()の1冊分の見た目計算式を、DOM読み書きを
+// 一切行わない純粋関数として抽出する。既存本の描画に使う数式は一切変更しない（同じ式を
+// そのままここへ移しただけ）。受け取り頁のプレビュー（showUnfiledShelfPicker）も、この
+// 関数を呼ぶことで「本棚に並んだ時と全く同じ見た目」を保証する（見た目の計算元を1つにする）。
+function computeSpineVisual(entry, index){
+  return {
+    background: spineGradientFor(entry.category, entry.title.length + index),
+    color: textColorFor(spineColorFor(entry.category)),
+    textShadow: textShadowFor(spineColorFor(entry.category)),
+    height: (140 + (entry.title.length % 4) * 12) + 'px',
+    tiltDeg: (((entry.title.length * 7 + index * 13) % 5) - 2) + 'deg',
+    title: entry.title
+  };
+}
+
+// ★UX Fix 02：renderShelf()が実際に描画する「表示対象の一覧」を、DOM描画から切り離して
+// 取得できるようにする純粋関数。renderShelf()内のvisible算出ロジックと完全に同じ式。
+// showUnfiledShelfPicker()が「このentryは今の一覧の何番目に描かれるか」を、
+// libraryCache.length-1のような決め打ちをせず同じ規則で求めるために使う。
+function visibleShelfEntries(){
+  return selectedShelfMonth === 'all'
+    ? libraryCache
+    : libraryCache.filter(e=>monthKeyOf(e.date) === selectedShelfMonth);
+}
+
 // ★追加：本棚が際限なく伸び続けないよう、月別タブを描画する。
 // 既定は'all'（全冊表示、従来通り）。月が2つ以上に分かれて初めてタブを出す（1ヶ月目はタブ不要なノイズになるため）。
 function renderShelfMonthTabs(){
@@ -3854,9 +3879,7 @@ function renderShelf(markNewest){
   const emptyMsg = document.getElementById('shelfEmptyMsg');
   const countBadge = document.getElementById('shelfCount');
   renderShelfMonthTabs();
-  const visible = selectedShelfMonth === 'all'
-    ? libraryCache
-    : libraryCache.filter(e=>monthKeyOf(e.date) === selectedShelfMonth);
+  const visible = visibleShelfEntries();
   const newestId = libraryCache.length ? libraryCache[libraryCache.length - 1].id : null;
   // ★2026-07-18追加：年月の見出し（.shelf-month-heading）も、再描画のたびに一旦取り除く。
   shelf.querySelectorAll('.spine, .shelf-month-heading').forEach(n=>n.remove());
@@ -3888,14 +3911,17 @@ function renderShelf(markNewest){
     const cat = CATEGORIES.find(c=>c.id===entry.category);
     const spine = document.createElement('div');
     spine.className = 'spine';
-    spine.style.background = spineGradientFor(entry.category, entry.title.length + i);
-    spine.style.color = textColorFor(spineColorFor(entry.category));
-    spine.style.textShadow = textShadowFor(spineColorFor(entry.category));
-    spine.style.height = (140 + (entry.title.length % 4) * 12) + 'px';
-    const tilt = ((entry.title.length * 7 + i * 13) % 5) - 2;
-    spine.style.setProperty('--tilt', tilt + 'deg');
+    const visual = computeSpineVisual(entry, i);
+    spine.style.background = visual.background;
+    spine.style.color = visual.color;
+    spine.style.textShadow = visual.textShadow;
+    spine.style.height = visual.height;
+    spine.style.setProperty('--tilt', visual.tiltDeg);
     // ★決裁済み変更仕様v1.2 4-2/4-3：絵文字（🔖📷）ではなく、CSS側の刻印・紙帯（.is-sealed/.has-photo）で状態を示す。
-    spine.textContent = entry.title;
+    spine.textContent = visual.title;
+    // ★UX Fix 02：本棚上の実物と、受け取り頁プレビューを同一entryとして突き合わせるための
+    // DOM専用属性（保存はしない。renderShelf()の再描画のたびに他の.spineと同様作り直される）。
+    spine.dataset.entryId = entry.id;
     if(entry.sealed) spine.classList.add('is-sealed');
     if(entry.image) spine.classList.add('has-photo');
     spine.title = cat ? categoryLabelFor(cat) : '';
@@ -3912,6 +3938,35 @@ function renderShelf(markNewest){
   renderShioriCard();
   renderShelfPickRecommend();
   renderBookshelfArrival();
+}
+
+// ★UX Fix 02（Real Spine Continuity）：受け取り頁から本棚へ遷移した直後、その一冊の実物の
+// 背表紙を静かにハイライトする（点滅・拡大・グロー・他の本の減光は一切しない、静止した1px枠のみ）。
+// 保存・GA4・永続状態は一切変更しないメモリ内・DOM限定の演出。
+// #bookshelfがまだ.is-activeでない場合（goToPage()の同期性が将来変わった場合の保険）は、
+// 数フレームだけ待って再試行し、それでも見つからなければ静かに諦める。
+function highlightNewestSpine(entryId, attemptsLeft){
+  if(attemptsLeft === undefined) attemptsLeft = 6;
+  const bookshelfPage = document.getElementById('bookshelf');
+  if(!bookshelfPage || !bookshelfPage.classList.contains('is-active')){
+    if(attemptsLeft > 0){
+      requestAnimationFrame(()=>highlightNewestSpine(entryId, attemptsLeft - 1));
+    }
+    return;
+  }
+  const idStr = String(entryId);
+  let target = null;
+  document.querySelectorAll('#myShelf .spine').forEach(sp=>{
+    if(sp.dataset.entryId === idStr) target = sp;
+  });
+  if(!target) return;
+  target.classList.add('is-newest-spine');
+  if(target.scrollIntoView){
+    target.scrollIntoView({ behavior: prefs.motion ? 'smooth' : 'auto', block: 'nearest', inline: 'center' });
+  }
+  const clearHighlight = ()=>{ target.classList.remove('is-newest-spine'); };
+  const timer = setTimeout(clearHighlight, 6000);
+  target.addEventListener('click', ()=>{ clearTimeout(timer); clearHighlight(); }, { once:true });
 }
 
 // ★追加：汎用トースト通知。milestone-toastの見た目・挙動パターンを流用し、
@@ -4615,13 +4670,34 @@ function showUnfiledShelfPicker(entry){
   figure.appendChild(figureImg);
   card.appendChild(figure);
 
-  // 製本された本の表紙プレビュー（新規保存はしない。既存entryの題名をそのまま表示するだけ）
+  // 製本された本の表紙プレビュー（新規保存はしない。既存entryの題名をそのまま表示するだけ）。
+  // ★UX Fix 02（Real Spine Continuity）：固定のワイン色プレースホルダーではなく、
+  // 本棚の背表紙と全く同じ計算式（computeSpineVisual）で描く。新規保存・新規entryは作らない。
   const bookPreview = document.createElement('div');
   bookPreview.className = 'mana-receive-book';
-  const bookPreviewTitle = document.createElement('span');
-  bookPreviewTitle.className = 'mana-receive-book-title';
-  bookPreviewTitle.textContent = entry.title || t('manaReceiveBookFallback');
-  bookPreview.appendChild(bookPreviewTitle);
+  // ★renderShelf()と同じ規則（visibleShelfEntries()）でこのentryの「今の一覧内の番号」を
+  // 求める。libraryCache.length-1のような決め打ちはしない。
+  const previewIndex = visibleShelfEntries().findIndex(e=>e.id===entry.id);
+  const previewSpine = document.createElement('div');
+  previewSpine.className = 'spine';
+  previewSpine.dataset.entryId = entry.id;
+  const initialVisual = computeSpineVisual(entry, previewIndex);
+  previewSpine.style.background = initialVisual.background;
+  previewSpine.style.color = initialVisual.color;
+  previewSpine.style.textShadow = initialVisual.textShadow;
+  previewSpine.style.height = initialVisual.height;
+  previewSpine.style.setProperty('--tilt', initialVisual.tiltDeg);
+  previewSpine.textContent = initialVisual.title;
+  // 棚を選び直すたびに、色関連（background/color/textShadow）だけを差し替える。
+  // height/tilt/titleはカテゴリに依存しない式のため、ここでは触らない。
+  // entry.category・libraryCacheはここでは一切書き換えない（確定前のプレビューのみ）。
+  const applyPreviewColor = (catId)=>{
+    const visual = computeSpineVisual(Object.assign({}, entry, { category: catId }), previewIndex);
+    previewSpine.style.background = visual.background;
+    previewSpine.style.color = visual.color;
+    previewSpine.style.textShadow = visual.textShadow;
+  };
+  bookPreview.appendChild(previewSpine);
   card.appendChild(bookPreview);
 
   // 店主の確定文（同一文の連続表示・本文の理解や助言・感情棚の推測はしない）
@@ -4671,7 +4747,12 @@ function showUnfiledShelfPicker(entry){
   // 選択値がCATEGORIESに存在する正規IDの場合だけ確定ボタンを有効化する
   const isValidShelfSelected = ()=>CATEGORIES.some(c=>c.id === select.value);
   const updateConfirmState = ()=>{ confirmBtn.disabled = !isValidShelfSelected(); };
-  select.addEventListener('change', updateConfirmState);
+  select.addEventListener('change', ()=>{
+    updateConfirmState();
+    // ★UX Fix 02：プレースホルダー（value===''）のままなら中立色のまま据え置く。
+    // 正規の棚を選んだ時だけ、選んだ棚の色でプレビューの背表紙を塗り直す。
+    if(isValidShelfSelected()) applyPreviewColor(select.value);
+  });
 
   const setBusy = (busy)=>{
     select.disabled = busy;
@@ -4722,6 +4803,8 @@ function showUnfiledShelfPicker(entry){
     hideUnfiledShelfPicker();
     // view_shelfは本棚への移動として、goToPage('bookshelf')内の既存GA4処理で1回だけ発火する。
     goToPage('bookshelf');
+    // ★UX Fix 02：遷移直後、本棚に並んだ実物の背表紙だけを静かにハイライトする（保存・GA4は無関係）。
+    highlightNewestSpine(entry.id);
     // 遷移直後に節目処理を1回だけ実行（節目判定・1回限りの記録は既存実装のまま）
     celebrateMilestoneIfNeeded(libraryCache.length);
   };
@@ -4732,6 +4815,8 @@ function showUnfiledShelfPicker(entry){
     // categoryはunfiledのまま変更せず、再保存も行わない。招待カードも表示しない。
     hideUnfiledShelfPicker(); // UIを閉じ、同じ操作が再発火しないようにする
     goToPage('bookshelf');
+    // ★UX Fix 02：skip後もcategoryはunfiledのまま、本棚上の実物の背表紙だけをハイライトする。
+    highlightNewestSpine(entry.id);
     // 遷移直後に節目処理を1回だけ実行
     celebrateMilestoneIfNeeded(libraryCache.length);
   };
@@ -4855,7 +4940,9 @@ if(btnSubmit) {
           if(typeof rotateRecoEncounter === 'function') rotateRecoEncounter();
 
           clearAttachedPhoto();
-          playSuckAnimation(finalCategory);
+          // ★UX Fix 02（Real Spine Continuity）：受け取り頁の見た目が本棚の実物と同一の背表紙に
+          // なったため、旧・吸い込みアニメーション（playSuckAnimation）はもう呼ばない。
+          // 関数本体・.fly-book CSSはそのまま残す（削除するのはこの呼び出しのみ）。
           selectedShelfMonth = 'all'; // 保存直後は必ず新しい一冊が見えるよう、月別フィルタを解除する
 
           // ★GA4計測健全化：本棚描画処理（renderShelf／renderShelfTabs）が例外なく完了したことを
