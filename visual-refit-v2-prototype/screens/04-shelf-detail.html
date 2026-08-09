@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja" data-v2-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Visual Refit V2 — 04 大棚の中｜ざわつく（Structural Skeleton）</title>
+
+<!--
+  Visual Refit V2 / Phase 1 Structural Skeleton
+  Visual North Star: 2026-08-09 承認の新 concept board（04 DAY / 04 NIGHT）。
+  旧 FORMAL_COMPS の 04 は North Star として使用禁止（失効扱い）。
+
+  04 は感情の辞書ページではない。
+  一つの大棚の前で、その感情の周りを歩く場所。
+
+  - 表示する感情語は現行21感情に存在する語だけ（不安・焦り・驚き）。
+    「恐れ」「心配」「緊張」「そわそわ」「落ち着かない」等の新規感情語を追加しない
+  - 4領域タブは同格。Phase 1 は「ことば」のみ active、他3つは静的・非活性
+  - route / API / 状態管理を作らない
+  - 感情診断 / AI感情推定 / AI推薦 / 本文分析 を持たない
+  - 保存 / IndexedDB / localStorage / GA4 / 外部通信を一切行わない
+  - デスクランプ禁止（明確な照明器具を見せてよいのは 05 編集室だけ）。
+    本棚・壁・植物・棚からの間接光で奥行きを作る
+  - DAY と NIGHT は同一DOM。data-v2-theme だけで切り替える
+
+  将来の各タブの意味（今回は実装しない。構造上の意味だけ保持する）:
+    いま  … 店の外で今流れている言葉を見る窓。将来 Bluesky 等を検討。
+            無限フィード／いいね／コメント／人気順ではない。
+    作品  … 本・映画・音楽を同じ感情文脈で編集配架。
+            「あなたへのおすすめ」ではなく、なぜこの棚へ置いたかを書店側が説明する。
+    自分の本 … 完全な私的領域。本文をAIで読んで自動分類しない。
+-->
+
+<!--
+  Visual QA 専用の最小処理（01・02・03・05 と同一方式を再利用）。
+  URLパラメータ theme=day|night を読み、data-v2-theme を差し替えるだけ。
+  保存しない / localStorage を使わない / GA4 を呼ばない / 外部通信しない / 時刻判定しない。
+-->
+<script>
+  (function () {
+    var t = new URLSearchParams(location.search).get('theme');
+    if (t === 'day' || t === 'night') {
+      document.documentElement.dataset.v2Theme = t;
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/screens/04.css">
+</head>
+
+<body class="v2-page v2-page--shelf-detail">
+<div class="v2-stage v2-detail">
+
+  <!-- 情景レイヤ：本棚・壁・植物・棚からの間接光のみ。
+       デスクランプ／ペンダント等の照明器具は置かない。 -->
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-detail__wall"></div>
+    <div class="v2-detail__shelfscape"></div>
+    <div class="v2-detail__plant v2-placeholder"></div>
+    <div class="v2-detail__shelflight"></div>
+    <div class="v2-detail__vignette"></div>
+  </div>
+
+  <!-- 内容レイヤ -->
+  <div class="v2-content">
+
+    <p class="v2-detail__back">＜　棚へ戻る</p>
+
+    <!-- 感情の造形枠：感情アイコンはまだ制作しない -->
+    <p class="v2-detail__glyph v2-placeholder" aria-hidden="true"></p>
+    <h1 class="v2-detail__title">ざわつく</h1>
+    <p class="v2-detail__lead">先が読めないときや、気持ちが落ち着かず<br>動きつづけるあたり。</p>
+
+    <!-- 4領域タブ：同格。Phase 1 は「ことば」のみ active、他3つは静的・非活性 -->
+    <nav class="v2-detail__tabs" aria-label="領域（外観確認用・未接続）">
+      <span class="v2-detail__tab" aria-current="true">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>ことば</span>
+      <span class="v2-detail__tab">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>いま</span>
+      <span class="v2-detail__tab">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>作品</span>
+      <span class="v2-detail__tab">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>自分の本</span>
+    </nav>
+
+    <!-- ことば：現行21感情に存在する3語のみ。新しい感情語は追加しない -->
+    <section class="v2-detail__panel" aria-label="この棚のことばたち">
+      <h2 class="v2-detail__panel-title">この棚のことばたち</h2>
+      <p class="v2-detail__panel-note">タップすると選択され、ほかのタブでもこの文脈で探せます</p>
+
+      <div class="v2-detail__words">
+        <article class="v2-word-card">
+          <h3 class="v2-word-card__name">不安</h3>
+          <span class="v2-word-card__slot v2-placeholder" aria-hidden="true"></span>
+          <p class="v2-word-card__desc">先がどうなるのか心配で<br>落ち着かない感じ</p>
+        </article>
+        <article class="v2-word-card">
+          <h3 class="v2-word-card__name">焦り</h3>
+          <span class="v2-word-card__slot v2-placeholder" aria-hidden="true"></span>
+          <p class="v2-word-card__desc">間に合うかどうかに気持ちが<br>引っぱられてしまう感じ</p>
+        </article>
+        <article class="v2-word-card">
+          <h3 class="v2-word-card__name">驚き</h3>
+          <span class="v2-word-card__slot v2-placeholder" aria-hidden="true"></span>
+          <p class="v2-word-card__desc">予想していなかったことで<br>心が揺れる感じ</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 下部ナビ：Phase 1 は視覚要素のみ。href / onclick / route を持たない -->
+    <div class="v2-detail__navbar">
+      <nav class="v2-navbar v2-navbar--4 v2-detail__nav" aria-label="ナビゲーション（外観確認用・未接続）">
+        <span class="v2-navbar__item v2-navbar__item--current">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">棚を見る</span>
+        </span>
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">書く</span>
+        </span>
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">本棚</span>
+        </span>
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">わたしの本</span>
+        </span>
+      </nav>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

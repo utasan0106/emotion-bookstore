@@ -1,0 +1,369 @@
+/* =============================================================================
+ * Visual Refit V2 — 04 大棚の中（例：ざわつく）
+ * -----------------------------------------------------------------------------
+ * Visual North Star: 2026-08-09 承認の新 concept board（04 DAY / 04 NIGHT）。
+ * 旧 FORMAL_COMPS/DAY/04.png・NIGHT/04.png は North Star として使用禁止（失効扱い）。
+ *
+ * 【01・02・05への非干渉】
+ * tokens.css / base.css / components.css / screens/01・02・05 の各ファイルは
+ * 1バイトも変更していない。04 固有の差分はすべて .v2-page--shelf-detail スコープで
+ * このファイルに閉じている。
+ *
+ * 04 は感情の辞書ページではない。
+ * 一つの大棚の前で、その感情の周りを歩く場所。
+ *
+ * 【04 ではデスクランプ禁止】
+ * 明確なデスクランプを見せてよいのは 05 編集室だけ。
+ * 04 は 本棚・壁・植物・棚からの間接光 で奥行きを作る。
+ * ペンダント／デスクランプ等を主役として追加しない。
+ *
+ * レイアウト契約（1024x1536）
+ *   棚へ戻る        y   40-62   / 左端 3.51%
+ *   感情の造形枠     y  108-218  / x 39-149（d=110）
+ *   ざわつく（見出し） y  118-170  / 左 17.48%
+ *   説明2行         y  190-256  / 左 17.48%
+ *   4領域タブ        y  330-366  / x 39-984（4等分・第1項目「ことば」が選択）
+ *   ことばカード群    y  410-1180 / x 39-984
+ *     見出し        y  445-480
+ *     補助文        y  492-512
+ *     感情語カード3   y  552-872 / x 68-955（3等分・間隔 23）
+ *   下部ナビバー      y 1443-1524 / x 39-984
+ * ========================================================================== */
+
+.v2-page--shelf-detail .v2-stage {
+  --v2-px: calc(100cqw / 1024);
+}
+
+:root[data-v2-theme='day'] .v2-page--shelf-detail {
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 88%, #FFFFFF 12%);
+  --v2-card-edge: rgb(51 36 12 / 0.14);
+  --v2-field-face: color-mix(in srgb, var(--v2-wall) 74%, #FFFFFF 26%);
+  --v2-field-edge: rgb(51 36 12 / 0.16);
+}
+
+:root[data-v2-theme='night'] .v2-page--shelf-detail {
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 92%, #CDA97C 8%);
+  --v2-card-edge: rgb(84 66 46 / 0.95);
+  --v2-field-face: color-mix(in srgb, var(--v2-wall) 88%, #CDA97C 12%);
+  --v2-field-edge: rgb(94 76 56 / 0.95);
+}
+
+/* -----------------------------------------------------------------------------
+ * 情景レイヤ
+ * 本棚・壁・植物・棚からの間接光だけで奥行きを作る。照明器具は置かない。
+ * 大きな情景面には輪郭を引かない（偽のUI境界を作らないため）。
+ * 占有: 棚の奥行き x 62-100% / y 0-34%、植物 x 65-77% / y 13-24%
+ * -------------------------------------------------------------------------- */
+.v2-detail__wall {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--v2-wall) 0%,
+    var(--v2-wall) 70%,
+    var(--v2-wall-deep) 100%
+  );
+}
+
+.v2-detail__shelfscape {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 38%;
+  height: 34%;
+  border-bottom-left-radius: 34% 46%;
+  background: var(--v2-scene-arch);
+  opacity: 0.85;
+}
+
+.v2-detail__plant {
+  position: absolute;
+  top: 6%;
+  left: 66%;
+  width: 10%;
+  height: 8%;
+}
+
+/* 棚からの間接光。器具は描かず、光の面と方向だけを持つ */
+.v2-detail__shelflight {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 52%;
+  height: 40%;
+  background: radial-gradient(
+    54% 52% at 84% 24%,
+    rgb(var(--v2-glow-color) / var(--v2-glow-strength)) 0%,
+    rgb(var(--v2-glow-color) / 0) 100%
+  );
+}
+
+/* ことばパネル以下の下半分は静かな背景面のまま保持する。
+   素材未確定の段階で棚板だけを描くと空のUI・未完成レイアウトに見えるため、
+   横方向の棚板線は置かない。本・什器・植物・装飾も追加しない。
+   本物の棚・壁・本の気配は Visual Asset 工程で追加する。 */
+
+.v2-detail__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    110% 62% at 46% 40%,
+    rgb(0 0 0 / 0) 42%,
+    rgb(0 0 0 / var(--v2-vignette)) 100%
+  );
+}
+
+/* -----------------------------------------------------------------------------
+ * ヘッダ
+ * -------------------------------------------------------------------------- */
+.v2-detail__back {
+  position: absolute;
+  top: 2.60%;
+  left: 3.51%;
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(20 * var(--v2-px));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-mid);
+}
+
+/* 感情の造形枠。感情アイコンはまだ制作しない。concept board の絵柄もトレースしない */
+.v2-detail__glyph {
+  position: absolute;
+  top: 7.03%;
+  left: 3.81%;
+  width: 10.74%;
+  height: 7.16%;
+  border-radius: 50%;
+}
+
+.v2-detail__title {
+  position: absolute;
+  top: 7.68%;
+  left: 17.48%;
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(46 * var(--v2-px));
+  line-height: 1;
+  letter-spacing: 0.10em;
+  color: var(--v2-ink-strong);
+}
+
+.v2-detail__lead {
+  position: absolute;
+  top: 12.11%;
+  left: 17.48%;
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-px));
+  line-height: calc(34 * var(--v2-px));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-mid);
+}
+
+/* -----------------------------------------------------------------------------
+ * 4領域タブ
+ * 同格に置く。Phase 1 は「ことば」のみ active、他3つは静的・非活性。
+ * route / API / 状態管理は作らない。
+ * -------------------------------------------------------------------------- */
+.v2-detail__tabs {
+  position: absolute;
+  top: 21.48%;
+  left: 3.81%;
+  width: 92.29%;
+  height: 2.34%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.v2-detail__tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(14 * var(--v2-px));
+  font-family: var(--v2-font-body);
+  font-size: calc(21 * var(--v2-px));
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-mid);
+}
+
+.v2-detail__tab-icon {
+  display: block;
+  width: calc(26 * var(--v2-px));
+  height: calc(26 * var(--v2-px));
+  border-radius: calc(4 * var(--v2-px));
+}
+
+.v2-detail__tab + .v2-detail__tab::before {
+  content: '';
+  position: absolute;
+  top: calc(2 * var(--v2-px));
+  bottom: calc(2 * var(--v2-px));
+  left: 0;
+  width: calc(1 * var(--v2-px));
+  background: var(--v2-rule);
+  opacity: 0.45;
+}
+
+/* 選択状態は accent-self（DAY は低彩度の青、NIGHT は金〜琥珀） */
+.v2-detail__tab[aria-current='true'] {
+  color: var(--v2-accent-self);
+}
+
+.v2-detail__tab[aria-current='true']::after {
+  content: '';
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: calc(-16 * var(--v2-px));
+  height: calc(3 * var(--v2-px));
+  background: var(--v2-accent-self);
+}
+
+/* -----------------------------------------------------------------------------
+ * ことば（この棚のことばたち）
+ * 表示する感情語は現行21感情に存在する語だけ。新しい感情語は追加しない。
+ * 3語だけでも余白を恐れずに成立させる。
+ * -------------------------------------------------------------------------- */
+.v2-detail__panel {
+  position: absolute;
+  top: 26.69%;
+  left: 3.81%;
+  width: 92.29%;
+  height: 25.39%;
+  border-radius: calc(28 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+.v2-detail__panel-title {
+  position: absolute;
+  top: calc(35 * var(--v2-px));
+  left: calc(29 * var(--v2-px));
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(26 * var(--v2-px));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-strong);
+}
+
+.v2-detail__panel-note {
+  position: absolute;
+  top: calc(82 * var(--v2-px));
+  left: calc(29 * var(--v2-px));
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(16 * var(--v2-px));
+  line-height: 1;
+  color: var(--v2-ink-soft);
+}
+
+.v2-detail__words {
+  position: absolute;
+  top: calc(142 * var(--v2-px));
+  left: calc(29 * var(--v2-px));
+  width: calc(887 * var(--v2-px));
+  height: calc(180 * var(--v2-px));
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: calc(23 * var(--v2-px));
+}
+
+.v2-word-card {
+  position: relative;
+  padding: calc(26 * var(--v2-px));
+  border-radius: calc(14 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-field-edge);
+  background: var(--v2-field-face);
+}
+
+.v2-word-card__name {
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(28 * var(--v2-px));
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--v2-ink-strong);
+}
+
+/* 将来の保存／選択用スペース。Phase 1 は非活性で、絵柄も入れない */
+.v2-word-card__slot {
+  position: absolute;
+  top: calc(26 * var(--v2-px));
+  right: calc(26 * var(--v2-px));
+  width: calc(22 * var(--v2-px));
+  height: calc(28 * var(--v2-px));
+}
+
+.v2-word-card__desc {
+  margin: calc(26 * var(--v2-px)) 0 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(16 * var(--v2-px));
+  line-height: calc(28 * var(--v2-px));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-mid);
+}
+
+/* -----------------------------------------------------------------------------
+ * 下部ナビ
+ * 共通部品 .v2-navbar を再利用し、04 の寸法だけをこのスコープで上書きする。
+ * components.css の既存値は変更していないため 01・02・05 に影響しない。
+ * -------------------------------------------------------------------------- */
+.v2-detail__navbar {
+  position: absolute;
+  top: 93.95%;
+  left: 3.81%;
+  width: 92.29%;
+  height: 5.27%;
+  border-radius: calc(20 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+.v2-detail__nav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(25 * var(--v2-px));
+  width: calc(873 * var(--v2-px));
+}
+
+.v2-page--shelf-detail .v2-navbar__item {
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: calc(14 * var(--v2-px));
+}
+
+.v2-page--shelf-detail .v2-navbar__icon {
+  width: calc(28 * var(--v2-px));
+  height: calc(28 * var(--v2-px));
+}
+
+.v2-page--shelf-detail .v2-navbar__label {
+  font-size: calc(20 * var(--v2-px));
+}
+
+.v2-page--shelf-detail .v2-navbar__item + .v2-navbar__item::before {
+  content: '';
+  position: absolute;
+  top: calc(18 * var(--v2-px));
+  bottom: calc(18 * var(--v2-px));
+  left: 0;
+  width: calc(1 * var(--v2-px));
+  background: var(--v2-rule);
+  opacity: 0.45;
+}
+
+.v2-page--shelf-detail .v2-navbar__item--current .v2-navbar__label {
+  color: var(--v2-accent-self);
+}
