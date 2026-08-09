@@ -1,0 +1,166 @@
+/* =============================================================================
+ * Visual Refit V2 — 01 表紙
+ * -----------------------------------------------------------------------------
+ * Visual North Star: FORMAL_COMPS/DAY/01.png ・ FORMAL_COMPS/NIGHT/01.png のみ。
+ * 現行サイト・旧UI・旧VR1 は視覚の参照にしていない。
+ *
+ * 01 は固定構図の表紙のため、カンプ原寸 853x1844 に対する実測比率で配置する。
+ * 下記の % はすべてカンプからの実測値（Phase 0 で計測、単位はステージ比）。
+ *
+ *   壁面／アーチ境界   x 62.8%（y>=35%は垂直）、上部はアーチ頭で右へ抜ける
+ *   ロゴ               y 16.05-26.15% / x 13.8-34.6%
+ *   題字 1行目         y 28.0%  «みんなの»
+ *   題字 2行目         y 32.6-36.7% «感情書店»
+ *   罫                 y 40.1%  / x 10.2-17.0%
+ *   リード             y 42.9-47.1% / x 10.2%
+ *   棚板・本の物体     y 54.7-74.5% / x 0-58.6%
+ *   主CTA              y 79.7-86.8% / x 15.0-84.6%
+ *   下部4ナビ          y 91.0-96.0% / 4等分の中心 15.8 / 38.3 / 60.8 / 83.3%
+ * ========================================================================== */
+
+/* -----------------------------------------------------------------------------
+ * 情景レイヤ
+ * 画像素材が未確定のため、面と輪郭だけを置く。絵柄は描かない。
+ * 光は 03_LIGHTING_EXACT に従い「入口・店内から漏れる灯り」として扱い、
+ * 照明器具は置かない。DAY/NIGHT で配置ロジックは変えず、
+ * 強さ（--v2-glow-strength）・色温度（--v2-glow-color）・周辺暗度（--v2-vignette）だけを変える。
+ * -------------------------------------------------------------------------- */
+.v2-cover__wall {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--v2-wall) 0%,
+    var(--v2-wall) 62%,
+    var(--v2-wall-deep) 100%
+  );
+}
+
+.v2-cover__arch {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 62.8%;
+  right: 0;
+  /* アーチ頭：水平半径 51.6%（要素幅比）／垂直半径 35%（要素高比） */
+  border-top-left-radius: 51.6% 35%;
+  background: var(--v2-scene-arch);
+}
+
+/* 店内から漏れる灯り。器具は描かず、光の面だけを置く */
+.v2-cover__arch::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-top-left-radius: inherit;
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--v2-glow-color) / calc(var(--v2-glow-strength) * 0.30)) 0%,
+    rgb(var(--v2-glow-color) / var(--v2-glow-strength)) 34%,
+    rgb(var(--v2-glow-color) / calc(var(--v2-glow-strength) * 0.22)) 100%
+  );
+}
+
+.v2-cover__foliage {
+  position: absolute;
+  top: 0;
+  left: 23%;
+  right: 0;
+  height: 18%;
+  border-bottom-left-radius: 40% 100%;
+  background: var(--v2-scene-foliage);
+  opacity: 0.55;
+}
+
+.v2-cover__ledge {
+  position: absolute;
+  top: 54.7%;
+  left: 0;
+  width: 58.6%;
+  height: 19.8%;
+  background: var(--v2-scene-ledge);
+}
+
+/* 周辺の落ち込み。NIGHT で強く効く */
+.v2-cover__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    120% 70% at 30% 45%,
+    rgb(0 0 0 / 0) 45%,
+    rgb(0 0 0 / var(--v2-vignette)) 100%
+  );
+}
+
+/* -----------------------------------------------------------------------------
+ * 内容レイヤ
+ * -------------------------------------------------------------------------- */
+.v2-cover__logo {
+  position: absolute;
+  top: 16.3%;
+  left: 13.8%;
+  width: 20.75%;
+  height: 9.6%;
+  border-radius: 50%;
+}
+
+.v2-cover__title {
+  position: absolute;
+  top: 28.2%;
+  left: 9.85%;
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  color: var(--v2-ink-strong);
+}
+
+.v2-cover__title-sub {
+  display: block;
+  font-size: calc(58 * var(--v2-px));
+  line-height: 1;
+  letter-spacing: 0.12em;
+  margin-bottom: calc(19 * var(--v2-px));
+}
+
+.v2-cover__title-main {
+  display: block;
+  font-size: calc(81 * var(--v2-px));
+  line-height: 1.17;
+  letter-spacing: 0.19em;
+}
+
+.v2-cover__rule {
+  position: absolute;
+  top: 40.05%;
+  left: 10.2%;
+  width: 6.7%;
+}
+
+.v2-cover__lead {
+  position: absolute;
+  top: 42.2%;
+  left: 10.2%;
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-weight: 400;
+  font-size: calc(27 * var(--v2-px));
+  line-height: calc(54 * var(--v2-px));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-mid);
+}
+
+.v2-cover__cta {
+  position: absolute;
+  top: 79.7%;
+  left: 15.0%;
+  width: 69.6%;
+  height: 7.05%;
+}
+
+.v2-cover__nav {
+  position: absolute;
+  top: 91.0%;
+  left: 4.55%;
+  width: 90.0%;
+  height: 5.0%;
+}

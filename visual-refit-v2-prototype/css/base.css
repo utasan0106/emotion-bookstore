@@ -1,0 +1,93 @@
+/* =============================================================================
+ * Visual Refit V2 — base.css
+ * -----------------------------------------------------------------------------
+ * リセット、書体、ステージ（画面）の原型。
+ * 旧 style.css を import しない。旧セレクタを継承しない。
+ * ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+h1,
+h2,
+h3,
+p,
+figure,
+blockquote {
+  margin: 0;
+}
+
+body.v2-page {
+  background: var(--v2-wall);
+  color: var(--v2-ink-strong);
+  font-family: var(--v2-font-body);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+
+  /* 子孫が cqw を使えるようにする（--v2-px の基準） */
+  container-type: inline-size;
+}
+
+/* -----------------------------------------------------------------------------
+ * ステージ
+ * 01 は固定構図の表紙のため、正式カンプ 853x1844 を基準にした比例配置を行う。
+ * --v2-px = カンプ 1px 相当の長さ。タイポと線幅はこの単位で指定する。
+ * -------------------------------------------------------------------------- */
+.v2-stage {
+  --v2-px: calc(100cqw / 853);
+
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* 情景レイヤ（純装飾。読み上げ対象外） */
+.v2-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* 内容レイヤ */
+.v2-content {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* -----------------------------------------------------------------------------
+ * 素材未確定のプレースホルダー
+ * 無地面＋輪郭のみ。絵柄を推測しない。カンプ切り抜き・トレース・生成画像は使わない。
+ * Structural Skeleton QA 専用であり、Visual QA の合格根拠にはしない。
+ * -------------------------------------------------------------------------- */
+.v2-placeholder {
+  border: calc(1 * var(--v2-px)) dashed var(--v2-placeholder-line);
+  background: transparent;
+}
+
+.v2-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

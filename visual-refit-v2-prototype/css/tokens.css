@@ -1,0 +1,92 @@
+/* =============================================================================
+ * Visual Refit V2 — tokens.css
+ * -----------------------------------------------------------------------------
+ * V2専用のデザイントークン。旧 style.css とは完全に独立しており、
+ * 旧トークン・旧セレクタ・旧クラス名を一切継承しない。
+ *
+ * テーマ切替は :root[data-v2-theme="day"|"night"] のみで行う。
+ * 既存本番の body.night / data-daypart には触れない（保護領域）。
+ *
+ * 色はすべて正式カンプ FORMAL_COMPS/DAY/01.png・NIGHT/01.png から実測した値。
+ * 現行サイト・旧UIの配色は参照していない。
+ * ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap');
+
+:root {
+  /* --- 書体 ------------------------------------------------------------- */
+  --v2-font-display: 'Shippori Mincho', serif;
+  --v2-font-body: 'Zen Kaku Gothic New', sans-serif;
+
+  /* --- 正式カンプ 01 の原寸（比率の基準） -------------------------------- */
+  --v2-comp01-w: 853;
+  --v2-comp01-h: 1844;
+
+  /* --- アクセントの役割分担（CEO決定 2026-08-09） ------------------------
+   * accent-place : 書店側・棚を見る・環境的な現在地
+   * accent-self  : 自分の記録・主要操作・選択状態・読書操作
+   * 01 表紙の「入店する」は書店側の体験への入場のため accent-place を使う。
+   * ------------------------------------------------------------------- */
+}
+
+/* =============================================================================
+ * DAY
+ * ========================================================================== */
+:root[data-v2-theme='day'] {
+  --v2-wall: #EFE4D6;
+  --v2-wall-deep: #E7DAC9;
+
+  --v2-ink-strong: #33240C;
+  --v2-ink-mid: #5B4A33;
+  --v2-ink-soft: #8B7B65;
+  --v2-rule: #9E8C72;
+
+  --v2-accent-place: #B17E32;
+  --v2-accent-place-edge: #D4AE73;
+  --v2-accent-place-on: #FFFDF8;
+
+  --v2-accent-self: #2F5B8C;
+  --v2-accent-self-on: #FFFFFF;
+
+  /* 情景（プレースホルダー面の明暗のみ。絵柄は持たない） */
+  --v2-scene-arch: #E3D5C1;
+  --v2-scene-ledge: #E9DCC9;
+  --v2-scene-foliage: #E9E1D3;
+
+  /* 光：配置ロジックは DAY/NIGHT で変えず、強さ・色温度・周辺暗度だけ変える */
+  --v2-glow-color: 255 244 220;
+  --v2-glow-strength: 0.34;
+  --v2-vignette: 0.05;
+
+  --v2-placeholder-line: rgba(51, 36, 12, 0.30);
+}
+
+/* =============================================================================
+ * NIGHT
+ * ========================================================================== */
+:root[data-v2-theme='night'] {
+  --v2-wall: #0A1016;
+  --v2-wall-deep: #04090D;
+
+  --v2-ink-strong: #CDA97C;
+  --v2-ink-mid: #D0AD80;
+  --v2-ink-soft: #9A8465;
+  --v2-rule: #826B51;
+
+  --v2-accent-place: #442F1C;
+  --v2-accent-place-edge: #8A6C42;
+  --v2-accent-place-on: #ECCFA5;
+
+  --v2-accent-self: #7FA3C8;
+  --v2-accent-self-on: #0A1016;
+
+  --v2-scene-arch: #17110A;
+  --v2-scene-ledge: #100C08;
+  --v2-scene-foliage: #0B1015;
+
+  --v2-glow-color: 255 206 130;
+  --v2-glow-strength: 0.46;
+  --v2-vignette: 0.30;
+
+  --v2-placeholder-line: rgba(205, 169, 124, 0.28);
+}
