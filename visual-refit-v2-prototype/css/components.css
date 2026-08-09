@@ -160,3 +160,30 @@
 .v2-navbar__item--current .v2-navbar__icon {
   border-color: var(--v2-accent-self);
 }
+
+/* -----------------------------------------------------------------------------
+ * ネイティブ button 化した操作要素の UA style reset（Phase 3 Step 1.1）
+ * 対象は明示列挙し、prototype 内の他の button へ波及させない。
+ * 各画面CSSはこの後に読み込まれるため、必要な値（背景・余白・文字）は
+ * 画面側の指定がそのまま勝つ。ここでは UA 既定値だけを打ち消す。
+ * role="button" / tabindex / 独自 keydown は使わない（button 本来の挙動を使う）。
+ * -------------------------------------------------------------------------- */
+.v2-shelves__home,
+.v2-detail__back,
+.v2-shelf__back,
+.v2-empty__back {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  text-indent: 0;
+  text-transform: none;
+  text-shadow: none;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  appearance: none;
+}

@@ -70,10 +70,10 @@
     <p class="v2-cover__sublead">心に残ったものは、自分のことばで一冊に。<br>いつか、本棚でまた会えます。</p>
 
     <!-- 主CTA：金茶（--v2-accent-place）。右矢印なし。
-         Phase 1 は非活性（disabled + aria-disabled）だが、外観はカンプの通常状態を再現する。 -->
+         Phase 3 Step 1.1：disabled は click / focus / キーボード操作を阻害するため解除した
+         （実ブラウザで阻害を確認したうえでの削除）。外観はカンプの通常状態のまま。 -->
     <div class="v2-cover__cta">
-      <button type="button" class="v2-btn v2-btn--place" disabled aria-disabled="true"
-              data-v2-go="02">入店する</button>
+      <button type="button" class="v2-btn v2-btn--place" data-v2-go="02">入店する</button>
     </div>
 
     <!-- Phase 2 正式仕様：01 表紙は bottom navigation を持たない。

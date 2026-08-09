@@ -37,6 +37,11 @@
 (function (global) {
   'use strict';
 
+  // 同じ script が誤って2回評価された場合の保護。
+  // 既に定義済みなら何もしない（listener の二重登録・API の作り直しを防ぐ）。
+  // singleton framework は導入せず、この早期 return だけで足りる。
+  if (global.V2NavigationAdapter) return;
+
   var doc = global.document;
 
   /* ---------------------------------------------------------------------------
@@ -124,6 +129,10 @@
       var el = items[i];
       var isCurrent = !!navKey && el.getAttribute('data-v2-nav') === navKey;
       el.classList.toggle('v2-navbar__item--current', isCurrent);
+      // 現在地は視覚（class）と支援技術（aria-current）を必ず一致させる。
+      // 非現在項目は属性自体を削除する（aria-current="false" を残さない）。
+      if (isCurrent) el.setAttribute('aria-current', 'page');
+      else el.removeAttribute('aria-current');
     }
     return navKey;
   }

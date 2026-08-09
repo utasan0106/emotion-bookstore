@@ -60,27 +60,16 @@
 
   <div class="v2-content">
 
-    <p class="v2-empty__back">＜　戻る</p>
+    <button type="button" class="v2-empty__back" data-v2-go="02">＜　戻る</button>
 
-    <!-- Phase 2：未承認の「検索」を削除した -->
-    <div class="v2-empty__tools">
-      <button type="button" class="v2-empty__tool v2-empty__tool--round" disabled aria-disabled="true"
-              aria-label="メニュー（外観確認用・未接続）">
-        <span class="v2-empty__mark v2-placeholder" aria-hidden="true"></span>
-      </button>
-    </div>
+    <!-- Phase 3 Step 2：対応する機能が存在しない丸メニューも削除した -->
 
     <p class="v2-empty__badge v2-placeholder" aria-hidden="true"></p>
     <h1 class="v2-empty__title">自分の本棚</h1>
     <p class="v2-empty__lead">ここには、残すと決めた一冊が並びます。<br>あとから、好きなときに取り出せます。</p>
 
-    <!-- 状態タブ：第3項目「下書き」が選択。静的・非活性。
-         Phase 2：未承認の「アーカイブ」を削除した -->
-    <nav class="v2-empty__tabs" aria-label="状態（外観確認用・未接続）">
-      <span class="v2-empty__tab">すべて</span>
-      <span class="v2-empty__tab">完成した本</span>
-      <span class="v2-empty__tab" aria-current="true">下書き</span>
-    </nav>
+    <!-- Phase 3 Step 2：現行データに「完成した本／下書き／アーカイブ」の区分は存在しないため
+         状態タブは削除した。 -->
 
     <!-- 空状態カード：06 の「本が並ぶ状態」との差が一目で分かる構成 -->
     <section class="v2-empty__card" aria-label="まだ本がない状態">
@@ -110,10 +99,10 @@
       </div>
 
       <div class="v2-empty__ctas">
-        <button type="button" class="v2-empty__cta" disabled aria-disabled="true">
+        <button type="button" class="v2-empty__cta" data-v2-go="03">
           <span class="v2-empty__cta-mark v2-placeholder" aria-hidden="true"></span>感情の棚を見る
         </button>
-        <button type="button" class="v2-empty__cta" disabled aria-disabled="true">
+        <button type="button" class="v2-empty__cta" data-v2-go="05">
           <span class="v2-empty__cta-mark v2-placeholder" aria-hidden="true"></span>ことばを残す
         </button>
       </div>
@@ -131,7 +120,7 @@
 
     <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
     <div class="v2-empty__navbar">
-      <nav class="v2-navbar v2-empty__nav" aria-label="ナビゲーション（外観確認用・未接続）">
+      <nav class="v2-navbar v2-empty__nav" aria-label="ナビゲーション">
         <button type="button" class="v2-navbar__item" data-v2-nav="shelves">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">棚を見る</span>
@@ -140,7 +129,7 @@
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">書く</span>
         </button>
-        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="bookshelf">
+        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="bookshelf" aria-current="page">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">本棚</span>
         </button>

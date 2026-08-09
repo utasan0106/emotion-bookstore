@@ -64,7 +64,8 @@
     <hr class="v2-menu__deco">
 
     <!-- 3カード：同じ幅・同じ高さ・同じ内部余白・同じ情報階層。
-         Phase 1 は静的・非活性。href / onclick / route を持たない。 -->
+         Phase 3 Step 1.1：disabled は click / focus / キーボード操作を阻害するため解除した。
+         href / onclick / route は持たず、遷移は Adapter 経由で既存 goToPage() へ委ねる。 -->
     <div class="v2-menu__cards">
 
       <article class="v2-menu-card">
@@ -74,9 +75,9 @@
         </div>
         <span class="v2-menu-card__rule" aria-hidden="true"></span>
         <p class="v2-menu-card__desc">今の気持ちに近い言葉や、<br>物語・作品に出会う</p>
-        <button type="button" class="v2-menu-card__action" disabled aria-disabled="true"
+        <button type="button" class="v2-menu-card__action"
                 data-v2-go="03"
-                aria-label="感情の棚を見る（外観確認用・未接続）"></button>
+                aria-label="感情の棚を見る"></button>
       </article>
 
       <article class="v2-menu-card">
@@ -86,9 +87,9 @@
         </div>
         <span class="v2-menu-card__rule" aria-hidden="true"></span>
         <p class="v2-menu-card__desc">今残しておきたいことを、<br>自分の言葉で書く</p>
-        <button type="button" class="v2-menu-card__action" disabled aria-disabled="true"
+        <button type="button" class="v2-menu-card__action"
                 data-v2-go="05"
-                aria-label="気持ちや出来事を書く（外観確認用・未接続）"></button>
+                aria-label="気持ちや出来事を書く"></button>
       </article>
 
       <article class="v2-menu-card">
@@ -98,9 +99,9 @@
         </div>
         <span class="v2-menu-card__rule" aria-hidden="true"></span>
         <p class="v2-menu-card__desc">自分で残した一冊を、<br>あとから見返す</p>
-        <button type="button" class="v2-menu-card__action" disabled aria-disabled="true"
+        <button type="button" class="v2-menu-card__action"
                 data-v2-go="bookshelf"
-                aria-label="自分の本棚を見る（外観確認用・未接続）"></button>
+                aria-label="自分の本棚を見る"></button>
       </article>
 
     </div>

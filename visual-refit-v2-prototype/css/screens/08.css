@@ -127,45 +127,7 @@
   color: var(--v2-ink-mid);
 }
 
-.v2-empty__tools {
-  position: absolute;
-  top: 2.85%;
-  right: 3.57%;
-  display: flex;
-  align-items: center;
-  gap: calc(12 * var(--v2-px));
-  height: 3.71%;
-}
-
-.v2-empty__tool {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: calc(10 * var(--v2-px));
-  height: 100%;
-  padding: 0 calc(22 * var(--v2-px));
-  border: 0;
-  border-radius: calc(26 * var(--v2-px));
-  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
-  background: var(--v2-card-face);
-  font-family: var(--v2-font-body);
-  font-size: calc(18 * var(--v2-px));
-  line-height: 1;
-  color: var(--v2-ink-mid);
-  appearance: none;
-}
-
-.v2-empty__tool:disabled,
-.v2-empty__tool[aria-disabled='true'] { opacity: 1; cursor: default; }
-
-.v2-empty__tool--round { width: calc(52 * var(--v2-px)); padding: 0; }
-
-.v2-empty__mark {
-  display: block;
-  width: calc(22 * var(--v2-px));
-  height: calc(22 * var(--v2-px));
-  border-radius: calc(3 * var(--v2-px));
-}
+/* Phase 3 Step 2：対応する機能が存在しない丸メニュー（.v2-empty__tools / __tool / __mark）は削除した */
 
 .v2-empty__badge {
   position: absolute;
@@ -201,40 +163,7 @@
   color: var(--v2-ink-mid);
 }
 
-/* -----------------------------------------------------------------------------
- * 状態タブ（第3項目「下書き」が選択）
- * -------------------------------------------------------------------------- */
-.v2-empty__tabs {
-  position: absolute;
-  top: 24.61%;
-  left: 6.06%;
-  display: flex;
-  align-items: center;
-  gap: calc(74 * var(--v2-px));
-}
-
-.v2-empty__tab {
-  position: relative;
-  font-family: var(--v2-font-body);
-  font-size: calc(20 * var(--v2-px));
-  line-height: 1;
-  letter-spacing: 0.02em;
-  color: var(--v2-ink-mid);
-}
-
-.v2-empty__tab[aria-current='true'] {
-  color: var(--v2-accent-self);
-}
-
-.v2-empty__tab[aria-current='true']::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: calc(-14 * var(--v2-px));
-  height: calc(3 * var(--v2-px));
-  background: var(--v2-accent-self);
-}
+/* Phase 3 Step 2：現行データに区分が無いため状態タブ（.v2-empty__tabs / __tab）は削除した */
 
 /* -----------------------------------------------------------------------------
  * 空状態カード（この画面の主役）
@@ -388,9 +317,6 @@
   color: var(--v2-accent-self);
   appearance: none;
 }
-
-.v2-empty__cta:disabled,
-.v2-empty__cta[aria-disabled='true'] { opacity: 1; cursor: default; }
 
 .v2-empty__cta-mark {
   display: block;

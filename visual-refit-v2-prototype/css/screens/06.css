@@ -121,53 +121,6 @@
   color: var(--v2-ink-mid);
 }
 
-/* メニュー：静的・非活性の見た目のみ。Phase 2 で未承認の「検索」を削除した */
-.v2-shelf__tools {
-  position: absolute;
-  top: 2.60%;
-  right: 3.71%;
-  display: flex;
-  align-items: center;
-  gap: calc(12 * var(--v2-px));
-  height: 3.39%;
-}
-
-.v2-shelf__tool {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: calc(10 * var(--v2-px));
-  height: 100%;
-  padding: 0 calc(22 * var(--v2-px));
-  border: 0;
-  border-radius: calc(26 * var(--v2-px));
-  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
-  background: var(--v2-card-face);
-  font-family: var(--v2-font-body);
-  font-size: calc(18 * var(--v2-px));
-  line-height: 1;
-  color: var(--v2-ink-mid);
-  appearance: none;
-}
-
-.v2-shelf__tool:disabled,
-.v2-shelf__tool[aria-disabled='true'] {
-  opacity: 1;
-  cursor: default;
-}
-
-.v2-shelf__tool--round {
-  width: calc(52 * var(--v2-px));
-  padding: 0;
-}
-
-.v2-shelf__tool-mark {
-  display: block;
-  width: calc(22 * var(--v2-px));
-  height: calc(22 * var(--v2-px));
-  border-radius: calc(3 * var(--v2-px));
-}
-
 .v2-shelf__mark {
   position: absolute;
   top: 7.68%;
@@ -203,41 +156,6 @@
 }
 
 /* -----------------------------------------------------------------------------
- * 状態タブ（静的・非活性。route を持たない）
- * -------------------------------------------------------------------------- */
-.v2-shelf__tabs {
-  position: absolute;
-  top: 22.46%;
-  left: 6.74%;
-  display: flex;
-  align-items: center;
-  gap: calc(72 * var(--v2-px));
-}
-
-.v2-shelf__tab {
-  position: relative;
-  font-family: var(--v2-font-body);
-  font-size: calc(20 * var(--v2-px));
-  line-height: 1;
-  letter-spacing: 0.02em;
-  color: var(--v2-ink-mid);
-}
-
-.v2-shelf__tab[aria-current='true'] {
-  color: var(--v2-accent-self);
-}
-
-.v2-shelf__tab[aria-current='true']::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: calc(-14 * var(--v2-px));
-  height: calc(3 * var(--v2-px));
-  background: var(--v2-accent-self);
-}
-
-/* -----------------------------------------------------------------------------
  * 本棚パネル（この画面の主役）
  * カード一覧にせず、棚板の上に背表紙が立っている状態を作る。
  * -------------------------------------------------------------------------- */
@@ -246,7 +164,7 @@
   top: 26.95%;
   left: 3.81%;
   width: 92.29%;
-  height: 32.03%;
+  height: 48.83%;
   border-radius: calc(24 * var(--v2-px));
   box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
   background: var(--v2-card-face);
@@ -268,49 +186,76 @@
   color: var(--v2-ink-strong);
 }
 
-/* 冊数は利用者の実データ。数字を置かず、幅だけを中立プレースホルダーで確保する */
-.v2-shelf__count-slot {
+/* 冊数は中立表示のみ（「3冊」）。達成・目標・残り冊数の表現は作らない。
+   本文・題名は出さない。adapter が textContent で書き込む。 */
+.v2-shelf__count {
   display: inline-block;
-  width: calc(64 * var(--v2-px));
-  height: calc(22 * var(--v2-px));
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-px));
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-soft);
 }
 
 /* Phase 2：未承認の並び替えUI・Grid/List切替（.v2-shelf__panel-tools 一式）は削除した */
 
 /* 棚板と背表紙 */
+/* 棚。冊数が増えても壊れないよう段で折り返す。棚板は背景で1段ごとに引く。
+   横スクロールは作らない（縦だけ）。並び順は library の順をそのまま保つ。 */
 .v2-shelf__rack {
   position: absolute;
   top: calc(86 * var(--v2-px));
   left: calc(28 * var(--v2-px));
   right: calc(28 * var(--v2-px));
-  height: calc(310 * var(--v2-px));
-  display: flex;
-  align-items: flex-end;
-  gap: calc(49 * var(--v2-px));
-  border-bottom: calc(4 * var(--v2-px)) solid var(--v2-plank);
+  bottom: calc(24 * var(--v2-px));
+  display: grid;
+  grid-template-columns: repeat(auto-fill, calc(78 * var(--v2-px)));
+  grid-auto-rows: calc(320 * var(--v2-px));
+  justify-content: space-between;
+  align-items: end;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(316 * var(--v2-px)),
+    var(--v2-plank) calc(316 * var(--v2-px)),
+    var(--v2-plank) calc(320 * var(--v2-px))
+  );
+  scrollbar-width: none;
 }
 
-/* 背表紙は利用者の本。題名も日付も置かず、占有位置だけを作る */
+.v2-shelf__rack::-webkit-scrollbar { width: 0; height: 0; }
+
+/* 背表紙は利用者の本。高さは entry から決定的に導いた値を adapter が inline style で与える
+   （Math.random を使わない／entry へ書き戻さない／再描画で見た目が変わらない）。
+   本を開く導線は Step 4 の責務のため、ここでは操作要素にしない（button にしない）。 */
 .v2-shelf__spine {
+  display: block;
   width: calc(78 * var(--v2-px));
   height: calc(286 * var(--v2-px));
   border-radius: calc(3 * var(--v2-px)) calc(3 * var(--v2-px)) 0 0;
   background: var(--v2-spine);
   box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  overflow: hidden;
 }
 
-.v2-shelf__spine:nth-child(2) { height: calc(272 * var(--v2-px)); }
-.v2-shelf__spine:nth-child(3) { height: calc(292 * var(--v2-px)); }
-.v2-shelf__spine:nth-child(4) { height: calc(266 * var(--v2-px)); }
-.v2-shelf__spine:nth-child(5) { height: calc(280 * var(--v2-px)); }
-.v2-shelf__spine:nth-child(6) { height: calc(290 * var(--v2-px)); }
-
-/* 背表紙の題名が入る位置。文字は置かず縦方向の枠だけを示す */
-.v2-shelf__spine-slot {
+/* 背表紙の題名。縦組みで、はみ出しは静かに切る。装飾・強調はしない */
+.v2-shelf__spine-title {
   display: block;
-  width: calc(22 * var(--v2-px));
-  height: calc(190 * var(--v2-px));
-  margin: calc(28 * var(--v2-px)) auto 0;
+  width: calc(78 * var(--v2-px));
+  height: calc(230 * var(--v2-px));
+  margin: calc(26 * var(--v2-px)) 0 0;
+  padding: 0 calc(4 * var(--v2-px));
+  writing-mode: vertical-rl;
+  font-family: var(--v2-font-body);
+  font-size: calc(17 * var(--v2-px));
+  line-height: calc(26 * var(--v2-px));
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-mid);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
 }
 
 /* 新しい本をつくる枠。UI 側の要素なので文言を持つ */
@@ -320,7 +265,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: calc(140 * var(--v2-px));
+  /* 棚は 78px 幅の列で組むため、入口スロットは2列ぶんを占める
+     （列幅からはみ出して横方向のあふれを起こさないようにする） */
+  grid-column: span 2;
+  width: auto;
   height: calc(286 * var(--v2-px));
   padding: 0;
   border: calc(1 * var(--v2-px)) dashed var(--v2-slot-edge);
@@ -336,123 +284,10 @@
   appearance: none;
 }
 
-.v2-shelf__add:disabled,
-.v2-shelf__add[aria-disabled='true'] {
-  opacity: 1;
-  cursor: default;
-}
-
-/* 棚板の下の日付帯。日付も実データなので枠だけを置く */
-.v2-shelf__dates {
-  position: absolute;
-  top: calc(406 * var(--v2-px));
-  left: calc(28 * var(--v2-px));
-  right: calc(28 * var(--v2-px));
-  display: flex;
-  align-items: center;
-  gap: calc(49 * var(--v2-px));
-}
-
-.v2-shelf__date-slot {
-  width: calc(78 * var(--v2-px));
-  height: calc(18 * var(--v2-px));
-}
-
-/* -----------------------------------------------------------------------------
- * 下部リスト（最近開いた本 / 下書き）
- * 見出しと注記は UI 側の文言。本の題名・日付・説明は実データなので枠だけを置く。
- * -------------------------------------------------------------------------- */
-.v2-shelf__list {
-  position: absolute;
-  top: 61.33%;
-  left: 3.81%;
-  width: 92.29%;
-  height: 31.38%;
-  border-radius: calc(24 * var(--v2-px));
-  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
-  background: var(--v2-card-face);
-}
-
-.v2-shelf__section {
-  position: absolute;
-  left: calc(28 * var(--v2-px));
-  right: calc(28 * var(--v2-px));
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: var(--v2-font-display);
-  font-weight: 500;
-  font-size: calc(22 * var(--v2-px));
-  line-height: 1;
-  letter-spacing: 0.04em;
-  color: var(--v2-ink-strong);
-}
-
-.v2-shelf__section--recent { top: calc(30 * var(--v2-px)); }
-.v2-shelf__section--drafts { top: calc(291 * var(--v2-px)); }
-
-.v2-shelf__section-more {
-  font-family: var(--v2-font-body);
-  font-size: calc(18 * var(--v2-px));
-  color: var(--v2-ink-mid);
-}
-
-.v2-shelf__row {
-  position: absolute;
-  left: calc(28 * var(--v2-px));
-  right: calc(28 * var(--v2-px));
-  display: flex;
-  align-items: center;
-  gap: calc(26 * var(--v2-px));
-  height: calc(88 * var(--v2-px));
-}
-
-.v2-shelf__row--1 { top: calc(70 * var(--v2-px)); }
-.v2-shelf__row--2 { top: calc(165 * var(--v2-px)); }
-.v2-shelf__row--3 { top: calc(331 * var(--v2-px)); }
-
-.v2-shelf__row-thumb {
-  flex: none;
-  width: calc(76 * var(--v2-px));
-  height: calc(88 * var(--v2-px));
-  border-radius: calc(4 * var(--v2-px));
-}
-
-.v2-shelf__row-main {
-  flex: none;
-  width: calc(300 * var(--v2-px));
-}
-
-.v2-shelf__row-slot {
-  display: block;
-  height: calc(22 * var(--v2-px));
-}
-
-.v2-shelf__row-slot--sub {
-  height: calc(16 * var(--v2-px));
-  margin-top: calc(14 * var(--v2-px));
-  width: 74%;
-}
-
-.v2-shelf__row-desc {
-  flex: 1;
-}
-
-.v2-shelf__row-desc .v2-shelf__row-slot + .v2-shelf__row-slot {
-  margin-top: calc(12 * var(--v2-px));
-  width: 66%;
-}
-
-.v2-shelf__row-go {
-  flex: none;
-  width: calc(20 * var(--v2-px));
-  height: calc(20 * var(--v2-px));
-}
-
 .v2-shelf__note {
   position: absolute;
-  left: calc(28 * var(--v2-px));
-  bottom: calc(24 * var(--v2-px));
+  left: 3.81%;
+  top: 77.60%;
   display: flex;
   align-items: center;
   gap: calc(12 * var(--v2-px));
