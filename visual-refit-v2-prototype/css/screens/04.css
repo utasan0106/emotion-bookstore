@@ -228,13 +228,15 @@
  * ことば（この棚のことばたち）
  * 表示する感情語は現行21感情に存在する語だけ。新しい感情語は追加しない。
  * 3語だけでも余白を恐れずに成立させる。
+ * Phase 2：未実装の挙動を断定する説明文（タップすると選択され…）を削除し、
+ * 空いた1行ぶんだけパネル高さを詰めた。機能そのものを追加していない。
  * -------------------------------------------------------------------------- */
 .v2-detail__panel {
   position: absolute;
   top: 26.69%;
   left: 3.81%;
   width: 92.29%;
-  height: 25.39%;
+  height: 23.31%;
   border-radius: calc(28 * var(--v2-px));
   box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
   background: var(--v2-card-face);
@@ -253,20 +255,9 @@
   color: var(--v2-ink-strong);
 }
 
-.v2-detail__panel-note {
-  position: absolute;
-  top: calc(82 * var(--v2-px));
-  left: calc(29 * var(--v2-px));
-  margin: 0;
-  font-family: var(--v2-font-body);
-  font-size: calc(16 * var(--v2-px));
-  line-height: 1;
-  color: var(--v2-ink-soft);
-}
-
 .v2-detail__words {
   position: absolute;
-  top: calc(142 * var(--v2-px));
+  top: calc(110 * var(--v2-px));
   left: calc(29 * var(--v2-px));
   width: calc(887 * var(--v2-px));
   height: calc(180 * var(--v2-px));
@@ -312,9 +303,11 @@
 }
 
 /* -----------------------------------------------------------------------------
- * 下部ナビ
- * 共通部品 .v2-navbar を再利用し、04 の寸法だけをこのスコープで上書きする。
- * components.css の既存値は変更していないため 01・02・05 に影響しない。
+ * Global Navigation（3項目）
+ * 部品の見た目は components.css に一元化した。ここでは位置と外枠だけを持つ。
+ * 02〜07 は同一原寸カンプ（1024x1536）なので外枠の寸法も全画面で揃える。
+ * 現在地は accent 色の文字／アイコンのみ。下線は付けない。
+ * Phase 2 も視覚要素のみで route / href / event を持たない。
  * -------------------------------------------------------------------------- */
 .v2-detail__navbar {
   position: absolute;
@@ -333,37 +326,4 @@
   bottom: 0;
   left: calc(25 * var(--v2-px));
   width: calc(873 * var(--v2-px));
-}
-
-.v2-page--shelf-detail .v2-navbar__item {
-  position: relative;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  gap: calc(14 * var(--v2-px));
-}
-
-.v2-page--shelf-detail .v2-navbar__icon {
-  width: calc(28 * var(--v2-px));
-  height: calc(28 * var(--v2-px));
-}
-
-.v2-page--shelf-detail .v2-navbar__label {
-  font-size: calc(20 * var(--v2-px));
-}
-
-.v2-page--shelf-detail .v2-navbar__item + .v2-navbar__item::before {
-  content: '';
-  position: absolute;
-  top: calc(18 * var(--v2-px));
-  bottom: calc(18 * var(--v2-px));
-  left: 0;
-  width: calc(1 * var(--v2-px));
-  background: var(--v2-rule);
-  opacity: 0.45;
-}
-
-.v2-page--shelf-detail .v2-navbar__item--current .v2-navbar__label {
-  color: var(--v2-accent-self);
 }

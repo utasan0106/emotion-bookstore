@@ -20,7 +20,7 @@
   - ラベル（しおり／メモ・線を引いた箇所／目次／共有 等）は UI 側の文言なのでそのまま置く
   - しおり／メモ／目次／共有／文字サイズ／明るさ／ページ送りは現行に無い機能のため静的・非活性
   - 保存 / IndexedDB / localStorage / GA4 / 外部通信を一切行わない
-  - 下部ナビは5項目。既存4-route契約は Phase 3 まで変更しない
+  - 下部ナビは Phase 2 正式仕様の3項目。route は Phase 3 で決める
   - DAY と NIGHT は同一DOM。data-v2-theme だけで切り替える
 -->
 
@@ -75,27 +75,12 @@
 
       <div class="v2-reader__rule" aria-hidden="true"></div>
 
+      <!-- Phase 2：未承認の「共有（URLをコピー）」と、しおり／メモ・線引き等の
+           編集機能を削除した。本文を外へ出す導線は置かない -->
       <div class="v2-reader__menu">
         <div class="v2-reader__menu-item">
           <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-reader__menu-label">しおり</span>
-          <span class="v2-reader__menu-slot v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
-        </div>
-        <div class="v2-reader__menu-item">
-          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-reader__menu-label">メモ・線を引いた箇所</span>
-          <span class="v2-reader__menu-slot v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
-        </div>
-        <div class="v2-reader__menu-item">
-          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
           <span class="v2-reader__menu-label">目次</span>
-          <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
-        </div>
-        <div class="v2-reader__menu-item">
-          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-reader__menu-label">共有（URLをコピー）</span>
           <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
         </div>
       </div>
@@ -120,11 +105,6 @@
         </div>
         <div class="v2-reader__meta-item">
           <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-reader__meta-label">公開設定</span>
-          <span class="v2-reader__meta-slot v2-placeholder" aria-hidden="true"></span>
-        </div>
-        <div class="v2-reader__meta-item">
-          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
           <span class="v2-reader__meta-label">編集する</span>
           <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
         </div>
@@ -132,7 +112,7 @@
 
       <div class="v2-reader__assurance">
         <span class="v2-reader__assurance-mark v2-placeholder" aria-hidden="true"></span>
-        <p class="v2-reader__assurance-text">この本は、あなただけのためにある本です。<br>公開されることはありません。</p>
+        <p class="v2-reader__assurance-text">本文はこの端末に保存されます。<br>本文は公開されません。</p>
       </div>
     </div>
 
@@ -169,25 +149,12 @@
       </div>
     </section>
 
-    <!-- 操作バー：現行に無い機能のため静的・非活性の見た目のみ -->
-    <div class="v2-reader__actions">
-      <button type="button" class="v2-reader__action" disabled aria-disabled="true">
-        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>しおりを追加</button>
-      <button type="button" class="v2-reader__action" disabled aria-disabled="true">
-        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>メモを書く</button>
-      <button type="button" class="v2-reader__action" disabled aria-disabled="true">
-        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>線を引く</button>
-      <button type="button" class="v2-reader__action" disabled aria-disabled="true">
-        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>このページを共有</button>
-    </div>
+    <!-- Phase 2：未承認の操作バー（しおりを追加／メモを書く／線を引く／このページを共有）は
+         画面から削除した。読む面の下は余白のまま置く -->
 
-    <!-- 下部ナビ：5項目。Phase 1 は視覚要素のみ -->
+    <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
     <div class="v2-reader__navbar">
-      <nav class="v2-navbar v2-navbar--5 v2-reader__nav" aria-label="ナビゲーション（外観確認用・未接続）">
-        <span class="v2-navbar__item">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">お店へ</span>
-        </span>
+      <nav class="v2-navbar v2-reader__nav" aria-label="ナビゲーション（外観確認用・未接続）">
         <span class="v2-navbar__item">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">棚を見る</span>
@@ -199,10 +166,6 @@
         <span class="v2-navbar__item v2-navbar__item--current">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">本棚</span>
-        </span>
-        <span class="v2-navbar__item">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">わたし</span>
         </span>
       </nav>
     </div>

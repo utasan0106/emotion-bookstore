@@ -63,7 +63,7 @@
   <div class="v2-content">
 
     <p class="v2-shelves__home">
-      <span class="v2-shelves__home-mark v2-placeholder" aria-hidden="true"></span>入店後メニューへ
+      <span class="v2-shelves__home-mark v2-placeholder" aria-hidden="true"></span>メニューへ
     </p>
 
     <h1 class="v2-shelves__title">感情の棚</h1>
@@ -195,9 +195,9 @@
     <button type="button" class="v2-shelves__all" disabled aria-disabled="true">すべての感情語を見る　→</button>
     <p class="v2-shelves__all-note">21の感情語を一覧で探せます</p>
 
-    <!-- 下部ナビ：Phase 1 は視覚要素のみ。href / onclick / route を持たない -->
+    <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
     <div class="v2-shelves__navbar">
-      <nav class="v2-navbar v2-navbar--4 v2-shelves__nav" aria-label="ナビゲーション（外観確認用・未接続）">
+      <nav class="v2-navbar v2-shelves__nav" aria-label="ナビゲーション（外観確認用・未接続）">
         <span class="v2-navbar__item v2-navbar__item--current">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">棚を見る</span>
@@ -209,10 +209,6 @@
         <span class="v2-navbar__item">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">本棚</span>
-        </span>
-        <span class="v2-navbar__item">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">わたしの本</span>
         </span>
       </nav>
     </div>

@@ -15,7 +15,11 @@
  *   リード             y 42.9-47.1% / x 10.2%
  *   棚板・本の物体     y 54.7-74.5% / x 0-58.6%
  *   主CTA              y 79.7-86.8% / x 15.0-84.6%
- *   下部4ナビ          y 91.0-96.0% / 4等分の中心 15.8 / 38.3 / 60.8 / 83.3%
+ *   下部4ナビ          Phase 2 で廃止（01 は bottom navigation を持たない）
+ *
+ * 【Phase 2】
+ * カンプはレイアウト・空気感・余白・タイポ・奥行きの North Star として使い続けるが、
+ * Core Ver.2 コピーと Global Navigation 正式仕様が旧カンプより優先する。
  * ========================================================================== */
 
 /* -----------------------------------------------------------------------------
@@ -136,6 +140,9 @@
   width: 6.7%;
 }
 
+/* Core Ver.2 コピー。主文は「出会う」、副文で「残す」「再会する」を並べる。
+   旧カンプの「誰にも見せない気持ちを、一冊にして残す書店。」は
+   Core Ver.2 で失効したため、カンプの文字を機械的に再現しない。 */
 .v2-cover__lead {
   position: absolute;
   top: 42.2%;
@@ -149,6 +156,19 @@
   color: var(--v2-ink-mid);
 }
 
+.v2-cover__sublead {
+  position: absolute;
+  top: 46.3%;
+  left: 10.2%;
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-weight: 400;
+  font-size: calc(23 * var(--v2-px));
+  line-height: calc(44 * var(--v2-px));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-soft);
+}
+
 .v2-cover__cta {
   position: absolute;
   top: 79.7%;
@@ -157,10 +177,5 @@
   height: 7.05%;
 }
 
-.v2-cover__nav {
-  position: absolute;
-  top: 91.0%;
-  left: 4.55%;
-  width: 90.0%;
-  height: 5.0%;
-}
+/* Phase 2 正式仕様：01 は bottom navigation を持たない。
+   旧カンプの下部4ナビ（y 91.0-96.0%）は再現しない。 */

@@ -63,24 +63,15 @@
 
     <p class="v2-editor__back">＜　戻る</p>
 
-    <p class="v2-editor__privacy">公開されません</p>
+    <p class="v2-editor__privacy">本文は公開されません</p>
 
     <p class="v2-editor__mark v2-placeholder" aria-hidden="true"></p>
     <p class="v2-editor__ruby">へんさんしつ</p>
     <h1 class="v2-editor__title">編纂室</h1>
-    <p class="v2-editor__lead">あなたのことばを、静かに編んでいく場所です。<br>書いたものは、あなただけに保存されます。</p>
+    <p class="v2-editor__lead">あなたのことばを、静かに編んでいく場所です。<br>本文はこの端末に保存されます。</p>
 
-    <!-- 領域タブ：Phase 1 は静的・非活性。route を持たない -->
-    <nav class="v2-editor__tabs" aria-label="領域（外観確認用・未接続）">
-      <span class="v2-editor__tab">
-        <span class="v2-editor__tab-icon v2-placeholder" aria-hidden="true"></span>ことば・世界</span>
-      <span class="v2-editor__tab">
-        <span class="v2-editor__tab-icon v2-placeholder" aria-hidden="true"></span>物語・作品</span>
-      <span class="v2-editor__tab">
-        <span class="v2-editor__tab-icon v2-placeholder" aria-hidden="true"></span>みんなの一篇</span>
-      <span class="v2-editor__tab" aria-current="true">
-        <span class="v2-editor__tab-icon v2-placeholder" aria-hidden="true"></span>自分の本</span>
-    </nav>
+    <!-- 領域タブ行（ことば・世界／物語・作品／みんなの一篇／自分の本）は
+         Visual Review により削除した。代替UIは置かない。 -->
 
     <!-- 編集カード：この画面の主役 -->
     <section class="v2-editor__card" aria-label="新しい本を書く">
@@ -89,7 +80,7 @@
         <span class="v2-editor__card-mark v2-placeholder" aria-hidden="true"></span>
         <h2 class="v2-editor__card-title">新しい本を書く</h2>
       </div>
-      <p class="v2-editor__card-sub">あなたの一篇が、誰かの支えになるかもしれません。</p>
+      <p class="v2-editor__card-sub">残しておきたいことを、あなたのことばで。<br>うまくまとめなくても、題名をつけなくても大丈夫です。</p>
 
       <!-- 下書き一覧：現行に無い機能のため静的・非活性の見た目のみ -->
       <button type="button" class="v2-editor__drafts" disabled aria-disabled="true">
@@ -104,26 +95,20 @@
              placeholder="本の題名をつけてください（あとから変えられます）">
 
       <!-- 本文：ここに書くことが最も明確な領域。Phase 1 は静的・非保存 -->
+      <!-- Phase 2：未承認の rich-text 系ツール帯を削除し、書く面だけを残した -->
       <div class="v2-editor__body">
         <textarea class="v2-editor__body-input" disabled aria-disabled="true"
                   placeholder="ここに、あなたのことばを書いてください。"></textarea>
-        <!-- ツール帯：現行に無い機能のため静的・非活性の見た目のみ -->
-        <div class="v2-editor__tools" aria-hidden="true">
-          <span class="v2-editor__tool v2-placeholder"></span>
-          <span class="v2-editor__tool v2-placeholder"></span>
-          <span class="v2-editor__tool v2-placeholder"></span>
-          <span class="v2-editor__tool v2-placeholder"></span>
-          <span class="v2-editor__tool v2-placeholder"></span>
-          <span class="v2-editor__tool v2-editor__tool--last v2-placeholder"></span>
-        </div>
       </div>
 
-      <!-- 安心情報：カンプの文言をそのまま置く。新しい長文説明は作らない -->
+      <!-- 保存に関する情報：対象を本文に限定した正確な表現にする。
+           包括的・絶対的な表現（あなただけ／〜ことはありません／〜にのみ）を使わない。
+           新しい説明機能・設定UIは追加しない。 -->
       <div class="v2-editor__assurance">
         <span class="v2-editor__assurance-mark v2-placeholder" aria-hidden="true"></span>
         <div>
-          <p class="v2-editor__assurance-title">この端末に保存されます</p>
-          <p class="v2-editor__assurance-text">書いた内容は、あなたの端末にのみ保存され、<br>他の人に公開されることはありません。</p>
+          <p class="v2-editor__assurance-title">本文はこの端末に保存されます</p>
+          <p class="v2-editor__assurance-text">本文は公開されません。</p>
         </div>
       </div>
 
@@ -159,9 +144,9 @@
       </div>
     </section>
 
-    <!-- 下部ナビ：Phase 1 は視覚要素のみ。href / onclick / route を持たない -->
+    <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
     <div class="v2-editor__navbar">
-      <nav class="v2-navbar v2-navbar--4 v2-editor__nav" aria-label="ナビゲーション（外観確認用・未接続）">
+      <nav class="v2-navbar v2-editor__nav" aria-label="ナビゲーション（外観確認用・未接続）">
         <span class="v2-navbar__item">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">棚を見る</span>
@@ -173,10 +158,6 @@
         <span class="v2-navbar__item">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">本棚</span>
-        </span>
-        <span class="v2-navbar__item">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">わたしの本</span>
         </span>
       </nav>
     </div>

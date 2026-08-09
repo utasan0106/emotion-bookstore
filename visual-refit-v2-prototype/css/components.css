@@ -1,9 +1,9 @@
 /* =============================================================================
  * Visual Refit V2 — components.css
  * -----------------------------------------------------------------------------
- * 01 で必要な部品のみ。02 以降の部品はまだ作らない。
+ * 全画面で共有する部品。
  *   - .v2-btn        主CTA
- *   - .v2-navbar     下部ナビ（Phase 1 は視覚要素のみ。route へ接続しない）
+ *   - .v2-navbar     Global Navigation（02〜08 共通の3項目。route へ接続しない）
  *   - .v2-rule       短い罫
  * ========================================================================== */
 
@@ -66,42 +66,75 @@
 }
 
 /* -----------------------------------------------------------------------------
- * 下部ナビ
- * Phase 1 は視覚要素のみ。href / onclick / route を持たない。
- * 項目数は 01〜05 が 4 項目（--4）、06〜08 が 5 項目（--5、02 以降で使用）。
+ * Global Navigation（Phase 2 正式仕様）
+ *
+ *   01 表紙          … bottom navigation を持たない
+ *   02〜08           … 棚を見る｜書く｜本棚 の3項目で統一
+ *
+ * - 横並び（アイコン左・ラベル右）
+ * - 順序固定。画面ごとに項目を足したり減らしたりしない
+ * - 現在地は accent 色の文字／アイコンのみ。下線・面・バッジを付けない
+ * - 「お店へ」「わたし」「わたしの本」は廃止した
+ * - Phase 2 では設定アイコンを追加しない（設定画面は将来候補）
+ * - route / href / event はまだ接続しない
+ *
+ * 寸法は 1024 幅カンプ基準の実測値をこの1か所に集約する。
+ * カンプ原寸が異なる画面（08 = 1122 幅）だけが、同じ見え方になるよう
+ * 自分のスコープで --v2-px 換算値を上書きする。
  * アイコン素材は未確定のため、輪郭のみのプレースホルダー枠で面積と位置だけ確認する。
  * -------------------------------------------------------------------------- */
 .v2-navbar {
   display: grid;
-  align-items: start;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
   height: 100%;
 }
 
-.v2-navbar--4 {
-  grid-template-columns: repeat(4, 1fr);
+.v2-navbar__item {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: calc(14 * var(--v2-px));
 }
 
-.v2-navbar__item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: calc(24 * var(--v2-px));
+/* 項目間の細い区切り線 */
+.v2-navbar__item + .v2-navbar__item::before {
+  content: '';
+  position: absolute;
+  top: calc(18 * var(--v2-px));
+  bottom: calc(18 * var(--v2-px));
+  left: 0;
+  width: calc(1 * var(--v2-px));
+  background: var(--v2-rule);
+  opacity: 0.45;
 }
 
 .v2-navbar__icon {
   display: block;
-  width: calc(44 * var(--v2-px));
-  height: calc(44 * var(--v2-px));
+  flex: none;
+  width: calc(28 * var(--v2-px));
+  height: calc(28 * var(--v2-px));
   border-radius: calc(4 * var(--v2-px));
 }
 
 .v2-navbar__label {
   display: block;
   font-family: var(--v2-font-body);
-  font-size: calc(25 * var(--v2-px));
+  font-size: calc(20 * var(--v2-px));
   line-height: 1;
   letter-spacing: 0.02em;
   color: var(--v2-ink-mid);
   white-space: nowrap;
+}
+
+/* 現在地：accent 色の文字／アイコンのみ。下線は付けない */
+.v2-navbar__item--current .v2-navbar__label {
+  color: var(--v2-accent-self);
+}
+
+.v2-navbar__item--current .v2-navbar__icon {
+  border-color: var(--v2-accent-self);
 }

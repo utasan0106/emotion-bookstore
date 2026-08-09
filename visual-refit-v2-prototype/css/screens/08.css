@@ -27,7 +27,7 @@
  *   戻る            y   40-62   / 左 3.57%
  *   検索／…          y   40-92   / 右端
  *   本のアイコン枠     y  132-220  / x  66-154
- *   わたしの本棚       y  145-200  / x 175
+ *   自分の本棚         y  145-200  / x 175（Phase 2 で呼称を確定）
  *   説明2行          y  225-285  / x 175
  *   状態タブ4         y  345-372  / x  68 から左揃え（第3項目「下書き」が選択）
  *   空状態カード       y  418-1134 / x  40-1082
@@ -449,7 +449,10 @@
 }
 
 /* -----------------------------------------------------------------------------
- * 下部ナビ（5項目）
+ * Global Navigation（3項目）
+ * 部品の見た目は components.css に一元化した。ここでは位置と外枠だけを持つ。
+ * 現在地は accent 色の文字／アイコンのみ。下線は付けない。
+ * Phase 2 も視覚要素のみで route / href / event を持たない。
  * -------------------------------------------------------------------------- */
 .v2-empty__navbar {
   position: absolute;
@@ -470,35 +473,18 @@
   width: calc(986 * var(--v2-px));
 }
 
-.v2-page--empty .v2-navbar--5 { grid-template-columns: repeat(5, 1fr); }
-
-.v2-page--empty .v2-navbar__item {
-  position: relative;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  gap: calc(12 * var(--v2-px));
-}
+/* 08 だけ原寸カンプが 1122 幅なので、02〜07 と同じ見え方になるよう
+   components.css の 1024 幅基準値をこのスコープで換算する（比率は同じ）。 */
+.v2-page--empty .v2-navbar__item { gap: calc(15 * var(--v2-px)); }
 
 .v2-page--empty .v2-navbar__icon {
-  width: calc(26 * var(--v2-px));
-  height: calc(26 * var(--v2-px));
+  width: calc(31 * var(--v2-px));
+  height: calc(31 * var(--v2-px));
 }
 
-.v2-page--empty .v2-navbar__label { font-size: calc(19 * var(--v2-px)); }
+.v2-page--empty .v2-navbar__label { font-size: calc(22 * var(--v2-px)); }
 
 .v2-page--empty .v2-navbar__item + .v2-navbar__item::before {
-  content: '';
-  position: absolute;
-  top: calc(18 * var(--v2-px));
-  bottom: calc(18 * var(--v2-px));
-  left: 0;
-  width: calc(1 * var(--v2-px));
-  background: var(--v2-rule);
-  opacity: 0.45;
-}
-
-.v2-page--empty .v2-navbar__item--current .v2-navbar__label {
-  color: var(--v2-accent-self);
+  top: calc(20 * var(--v2-px));
+  bottom: calc(20 * var(--v2-px));
 }

@@ -75,7 +75,9 @@
     <h1 class="v2-detail__title">ざわつく</h1>
     <p class="v2-detail__lead">先が読めないときや、気持ちが落ち着かず<br>動きつづけるあたり。</p>
 
-    <!-- 4領域タブ：同格。Phase 1 は「ことば」のみ active、他3つは静的・非活性 -->
+    <!-- 4領域タブ：Core Ver.2 の IA として維持する（ことば／いま／作品／自分の本）。
+         同格。「ことば」のみ active、他3つは静的・非活性。
+         未実装の挙動を断定する説明文は Phase 2 で削除した。 -->
     <nav class="v2-detail__tabs" aria-label="領域（外観確認用・未接続）">
       <span class="v2-detail__tab" aria-current="true">
         <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>ことば</span>
@@ -90,7 +92,6 @@
     <!-- ことば：現行21感情に存在する3語のみ。新しい感情語は追加しない -->
     <section class="v2-detail__panel" aria-label="この棚のことばたち">
       <h2 class="v2-detail__panel-title">この棚のことばたち</h2>
-      <p class="v2-detail__panel-note">タップすると選択され、ほかのタブでもこの文脈で探せます</p>
 
       <div class="v2-detail__words">
         <article class="v2-word-card">
@@ -111,9 +112,9 @@
       </div>
     </section>
 
-    <!-- 下部ナビ：Phase 1 は視覚要素のみ。href / onclick / route を持たない -->
+    <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
     <div class="v2-detail__navbar">
-      <nav class="v2-navbar v2-navbar--4 v2-detail__nav" aria-label="ナビゲーション（外観確認用・未接続）">
+      <nav class="v2-navbar v2-detail__nav" aria-label="ナビゲーション（外観確認用・未接続）">
         <span class="v2-navbar__item v2-navbar__item--current">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">棚を見る</span>
@@ -125,10 +126,6 @@
         <span class="v2-navbar__item">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">本棚</span>
-        </span>
-        <span class="v2-navbar__item">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">わたしの本</span>
         </span>
       </nav>
     </div>

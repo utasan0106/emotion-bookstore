@@ -25,10 +25,10 @@
   1024x1536 へ矯正せず、08 独自の比率のまま扱う（撮影 561x701 CSS px / DPR2）。
 
   - 保存データを読まない。fake production data を作らない
-  - 検索／並び替え／状態タブは現行に無い機能のため静的・非活性
+  - 状態タブは静的・非活性。未承認の検索・アーカイブは Phase 2 で削除
   - 保存 / IndexedDB / localStorage / GA4 / 外部通信を一切行わない
   - 08 の照明は本棚周辺のごく弱い環境光。カンプ上部の吊り下げ灯は主役として再現しない
-  - 下部ナビは5項目。既存4-route契約は Phase 3 まで変更しない
+  - 下部ナビは Phase 2 正式仕様の3項目（棚を見る｜書く｜本棚）。route は Phase 3 で決める
   - DAY と NIGHT は同一DOM。data-v2-theme だけで切り替える
     （DAY カンプには「戻る」が無く NIGHT カンプにはあるが、同一DOM の決定に従い両方に置く）
 -->
@@ -62,10 +62,8 @@
 
     <p class="v2-empty__back">＜　戻る</p>
 
+    <!-- Phase 2：未承認の「検索」を削除した -->
     <div class="v2-empty__tools">
-      <button type="button" class="v2-empty__tool" disabled aria-disabled="true">
-        <span class="v2-empty__mark v2-placeholder" aria-hidden="true"></span>検索
-      </button>
       <button type="button" class="v2-empty__tool v2-empty__tool--round" disabled aria-disabled="true"
               aria-label="メニュー（外観確認用・未接続）">
         <span class="v2-empty__mark v2-placeholder" aria-hidden="true"></span>
@@ -73,23 +71,23 @@
     </div>
 
     <p class="v2-empty__badge v2-placeholder" aria-hidden="true"></p>
-    <h1 class="v2-empty__title">わたしの本棚</h1>
-    <p class="v2-empty__lead">書きためた一篇の記録です。<br>あなたのことばが、あなたの本になります。</p>
+    <h1 class="v2-empty__title">自分の本棚</h1>
+    <p class="v2-empty__lead">ここには、残すと決めた一冊が並びます。<br>あとから、好きなときに取り出せます。</p>
 
-    <!-- 状態タブ：第3項目「下書き」が選択。Phase 1 は静的・非活性 -->
+    <!-- 状態タブ：第3項目「下書き」が選択。静的・非活性。
+         Phase 2：未承認の「アーカイブ」を削除した -->
     <nav class="v2-empty__tabs" aria-label="状態（外観確認用・未接続）">
       <span class="v2-empty__tab">すべて</span>
       <span class="v2-empty__tab">完成した本</span>
       <span class="v2-empty__tab" aria-current="true">下書き</span>
-      <span class="v2-empty__tab">アーカイブ</span>
     </nav>
 
     <!-- 空状態カード：06 の「本が並ぶ状態」との差が一目で分かる構成 -->
     <section class="v2-empty__card" aria-label="まだ本がない状態">
       <span class="v2-empty__figure v2-placeholder" aria-hidden="true"></span>
 
-      <h2 class="v2-empty__headline">まだ、あなたの本は棚に並んでいません。</h2>
-      <p class="v2-empty__subline">ここから、気になる棚を覗くことも、今残っていることを書き留めることもできます。</p>
+      <h2 class="v2-empty__headline">まだ、本は並んでいません。</h2>
+      <p class="v2-empty__subline">棚を眺めることからでも、ことばを残すことからでも始められます。</p>
 
       <hr class="v2-empty__steps-rule" aria-hidden="true">
 
@@ -121,22 +119,19 @@
       </div>
     </section>
 
+    <!-- 保存に関する情報：対象を本文に限定した正確な表現にする -->
     <section class="v2-empty__assurance" aria-label="保存について">
       <span class="v2-empty__assurance-mark v2-placeholder" aria-hidden="true"></span>
       <div class="v2-empty__assurance-body">
-        <p class="v2-empty__assurance-title">この端末にのみ保存されています</p>
-        <p class="v2-empty__assurance-text">書いた内容は、あなたの端末にだけ保存されます。公開されることはありません。</p>
+        <p class="v2-empty__assurance-title">本文はこの端末に保存されます</p>
+        <p class="v2-empty__assurance-text">本文は公開されません。</p>
       </div>
       <span class="v2-empty__assurance-figure v2-placeholder" aria-hidden="true"></span>
     </section>
 
-    <!-- 下部ナビ：5項目。Phase 1 は視覚要素のみ -->
+    <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
     <div class="v2-empty__navbar">
-      <nav class="v2-navbar v2-navbar--5 v2-empty__nav" aria-label="ナビゲーション（外観確認用・未接続）">
-        <span class="v2-navbar__item">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">お店へ</span>
-        </span>
+      <nav class="v2-navbar v2-empty__nav" aria-label="ナビゲーション（外観確認用・未接続）">
         <span class="v2-navbar__item">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">棚を見る</span>
@@ -148,10 +143,6 @@
         <span class="v2-navbar__item v2-navbar__item--current">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">本棚</span>
-        </span>
-        <span class="v2-navbar__item">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">わたし</span>
         </span>
       </nav>
     </div>

@@ -65,7 +65,9 @@
 
     <hr class="v2-rule v2-cover__rule">
 
-    <p class="v2-cover__lead">誰にも見せない気持ちを、<br>一冊にして残す書店。</p>
+    <!-- Core Ver.2 コピー。出会う／残す／再会する の3つを、順序ではなく並列に置く -->
+    <p class="v2-cover__lead">感情から、ことばやカルチャーに出会う書店。</p>
+    <p class="v2-cover__sublead">心に残ったものは、自分のことばで一冊に。<br>いつか、本棚でまた会えます。</p>
 
     <!-- 主CTA：金茶（--v2-accent-place）。右矢印なし。
          Phase 1 は非活性（disabled + aria-disabled）だが、外観はカンプの通常状態を再現する。 -->
@@ -73,26 +75,8 @@
       <button type="button" class="v2-btn v2-btn--place" disabled aria-disabled="true">入店する</button>
     </div>
 
-    <!-- 下部ナビ：Phase 1 は視覚要素のみ。href / onclick / route を持たない。
-         アイコン素材が未確定のため、輪郭のみの枠で面積と位置だけ確認する。 -->
-    <nav class="v2-navbar v2-navbar--4 v2-cover__nav" aria-label="ナビゲーション（外観確認用・未接続）">
-      <span class="v2-navbar__item">
-        <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-        <span class="v2-navbar__label">棚を見る</span>
-      </span>
-      <span class="v2-navbar__item">
-        <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-        <span class="v2-navbar__label">書く</span>
-      </span>
-      <span class="v2-navbar__item">
-        <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-        <span class="v2-navbar__label">本棚</span>
-      </span>
-      <span class="v2-navbar__item">
-        <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-        <span class="v2-navbar__label">わたしの本</span>
-      </span>
-    </nav>
+    <!-- Phase 2 正式仕様：01 表紙は bottom navigation を持たない。
+         店の外から中へ入る画面なので、店内の行き先はまだ並べない。 -->
 
   </div>
 </div>

@@ -15,7 +15,13 @@
  * edit / delete / rename / focus trap / inert / aria-hidden 等の既存契約に一切触れない。
  * 題名・日付・文字数・しおり件数・ページ数・本文は利用者の実データなので
  * 文字を置かず、占有位置と余白だけを中立プレースホルダーで作る。
- * ラベル（しおり／メモ・線を引いた箇所／目次／共有 等）は UI 側の文言なのでそのまま置く。
+ * ラベルは UI 側の文言なのでそのまま置く。
+ *
+ * 【Phase 2】未承認機能を画面から削除した。
+ *   削除：共有（URLをコピー）／このページを共有／公開設定／
+ *         しおり／しおりを追加／メモ・線を引いた箇所／メモを書く／線を引く／操作バー一式
+ *   残す：目次／文字サイズ・明るさ／ページ送り／編集する
+ * 本文を外へ出す導線は画面上に存在しない。
  *
  * レイアウト契約（1024x1536・正式カンプ実測）
  *   戻る            y   40-62   / 左 3.1%
@@ -23,12 +29,12 @@
  *   左サイドバー       x   32-300  （3.1-29.3%）
  *     書影          y  122-384
  *     題名・日付・説明  y  410-560
- *     操作4項目       y  614-830
- *     メタ5項目       y  890-1136
- *     安心情報カード    y 1167-1320
- *   右紙面           x  331-975  / y 154-1316（32.3-95.2% / 10.0-85.7%）
- *   操作バー          y 1352-1414
- *   下部5ナビバー      y 1443-1524 / 項目中心 11.3 / 30.7 / 48.6 / 67.0 / 86.2%
+ *     操作4項目       Phase 2 で「目次」1項目へ縮小
+ *     メタ5項目       Phase 2 で「公開設定」を外し4項目へ
+ *     安心情報カード    左カラム下端へ寄せ、右紙面と下端を揃える
+ *   右紙面           x  331-975 / y 154-1316 → Phase 2 で操作バー削除ぶん下へ伸ばす
+ *   操作バー          Phase 2 で削除
+ *   下部ナビバー      y 1443-1524 / 3項目（棚を見る｜書く｜本棚）
  * ========================================================================== */
 
 .v2-page--reader .v2-stage {
@@ -174,11 +180,16 @@
 /* -----------------------------------------------------------------------------
  * 左サイドバー（本の情報・小さな操作領域）
  * -------------------------------------------------------------------------- */
+/* 左カラム。Phase 2 で未承認項目を削除したぶん中央に余白が生まれるため、
+   安心情報を下端へ寄せ、右紙面と下端を揃える（新しい要素は足さない） */
 .v2-reader__side {
   position: absolute;
   top: 7.94%;
   left: 3.13%;
   width: 26.17%;
+  height: 81.84%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 書影は利用者の本。絵柄も題名も置かず占有位置だけを作る */
@@ -268,7 +279,7 @@
   display: flex;
   align-items: flex-start;
   gap: calc(14 * var(--v2-px));
-  margin-top: calc(26 * var(--v2-px));
+  margin-top: auto;
   padding: calc(22 * var(--v2-px));
   border-radius: calc(14 * var(--v2-px));
   box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
@@ -297,7 +308,7 @@
   top: 10.03%;
   left: 32.32%;
   width: 62.89%;
-  height: 75.65%;
+  height: 79.75%;
   border-radius: calc(10 * var(--v2-px));
   box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-page-edge);
   background: var(--v2-page-face);
@@ -422,60 +433,20 @@
   height: calc(18 * var(--v2-px));
 }
 
-/* -----------------------------------------------------------------------------
- * 操作バー（Phase 1 は静的・非活性）
- * -------------------------------------------------------------------------- */
-.v2-reader__actions {
-  position: absolute;
-  top: 88.02%;
-  left: 3.13%;
-  width: 93.75%;
-  height: 4.04%;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border-radius: calc(16 * var(--v2-px));
-  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
-  background: var(--v2-card-face);
-}
-
-.v2-reader__action {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: calc(14 * var(--v2-px));
-  padding: 0;
-  border: 0;
-  background: transparent;
-  font-family: var(--v2-font-body);
-  font-size: calc(18 * var(--v2-px));
-  line-height: 1;
-  color: var(--v2-ink-mid);
-  appearance: none;
-}
-
-.v2-reader__action:disabled,
-.v2-reader__action[aria-disabled='true'] { opacity: 1; cursor: default; }
-
-.v2-reader__action + .v2-reader__action::before {
-  content: '';
-  position: absolute;
-  top: calc(14 * var(--v2-px));
-  bottom: calc(14 * var(--v2-px));
-  left: 0;
-  width: calc(1 * var(--v2-px));
-  background: var(--v2-rule);
-  opacity: 0.45;
-}
+/* Phase 2：未承認の操作バー（.v2-reader__actions / .v2-reader__action）は削除した */
 
 /* -----------------------------------------------------------------------------
- * 下部ナビ（5項目）
+ * Global Navigation（3項目）
+ * 部品の見た目は components.css に一元化した。ここでは位置と外枠だけを持つ。
+ * 02〜07 は同一原寸カンプ（1024x1536）なので外枠の寸法も全画面で揃える。
+ * 現在地は accent 色の文字／アイコンのみ。下線は付けない。
+ * Phase 2 も視覚要素のみで route / href / event を持たない。
  * -------------------------------------------------------------------------- */
 .v2-reader__navbar {
   position: absolute;
   top: 93.95%;
-  left: 3.13%;
-  width: 93.75%;
+  left: 3.81%;
+  width: 92.29%;
   height: 5.27%;
   border-radius: calc(20 * var(--v2-px));
   box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
@@ -484,38 +455,8 @@
 
 .v2-reader__nav {
   position: absolute;
-  inset: 0;
-}
-
-.v2-page--reader .v2-navbar--5 { grid-template-columns: repeat(5, 1fr); }
-
-.v2-page--reader .v2-navbar__item {
-  position: relative;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  gap: calc(12 * var(--v2-px));
-}
-
-.v2-page--reader .v2-navbar__icon {
-  width: calc(26 * var(--v2-px));
-  height: calc(26 * var(--v2-px));
-}
-
-.v2-page--reader .v2-navbar__label { font-size: calc(19 * var(--v2-px)); }
-
-.v2-page--reader .v2-navbar__item + .v2-navbar__item::before {
-  content: '';
-  position: absolute;
-  top: calc(18 * var(--v2-px));
-  bottom: calc(18 * var(--v2-px));
-  left: 0;
-  width: calc(1 * var(--v2-px));
-  background: var(--v2-rule);
-  opacity: 0.45;
-}
-
-.v2-page--reader .v2-navbar__item--current .v2-navbar__label {
-  color: var(--v2-accent-self);
+  top: 0;
+  bottom: 0;
+  left: calc(25 * var(--v2-px));
+  width: calc(873 * var(--v2-px));
 }

@@ -215,52 +215,6 @@
 }
 
 /* -----------------------------------------------------------------------------
- * 領域タブ（静的・非活性。route を持たない）
- * -------------------------------------------------------------------------- */
-.v2-editor__tabs {
-  position: absolute;
-  top: 21.68%;
-  left: 6.93%;
-  display: flex;
-  align-items: center;
-  gap: calc(83 * var(--v2-px));
-}
-
-.v2-editor__tab {
-  display: flex;
-  align-items: center;
-  gap: calc(12 * var(--v2-px));
-  font-family: var(--v2-font-body);
-  font-size: calc(20 * var(--v2-px));
-  line-height: 1;
-  letter-spacing: 0.02em;
-  color: var(--v2-ink-mid);
-}
-
-.v2-editor__tab-icon {
-  display: block;
-  width: calc(26 * var(--v2-px));
-  height: calc(26 * var(--v2-px));
-  border-radius: calc(4 * var(--v2-px));
-}
-
-/* 現在地の表示。自分の記録側の操作なので accent-self を使う */
-.v2-editor__tab[aria-current='true'] {
-  position: relative;
-  color: var(--v2-accent-self);
-}
-
-.v2-editor__tab[aria-current='true']::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: calc(-14 * var(--v2-px));
-  height: calc(3 * var(--v2-px));
-  background: var(--v2-accent-self);
-}
-
-/* -----------------------------------------------------------------------------
  * 編集カード（この画面の主役）
  * -------------------------------------------------------------------------- */
 .v2-editor__card {
@@ -299,14 +253,17 @@
   color: var(--v2-ink-strong);
 }
 
+/* Core Ver.2 コピー。題名を必須に見せないための2行。
+   「あなたの一篇が、誰かの支えになるかもしれません。」は Phase 2 で削除した
+   （05 は公開されない編集机であり、他者到達を示唆しない）。 */
 .v2-editor__card-sub {
   position: absolute;
-  top: calc(86 * var(--v2-px));
+  top: calc(82 * var(--v2-px));
   left: calc(97 * var(--v2-px));
   margin: 0;
   font-family: var(--v2-font-body);
   font-size: calc(17 * var(--v2-px));
-  line-height: 1;
+  line-height: calc(30 * var(--v2-px));
   letter-spacing: 0.01em;
   color: var(--v2-ink-mid);
 }
@@ -390,10 +347,10 @@
 .v2-editor__body-input {
   display: block;
   width: 100%;
-  height: calc(279 * var(--v2-px));
+  height: 100%;
   padding: calc(22 * var(--v2-px)) calc(26 * var(--v2-px));
   border: 0;
-  border-radius: calc(12 * var(--v2-px)) calc(12 * var(--v2-px)) 0 0;
+  border-radius: calc(12 * var(--v2-px));
   background: transparent;
   font-family: var(--v2-font-body);
   font-size: calc(18 * var(--v2-px));
@@ -403,26 +360,13 @@
   appearance: none;
 }
 
-/* ツール帯：現行に無い機能のため静的・非活性の見た目のみ */
-.v2-editor__tools {
-  display: flex;
-  align-items: center;
-  gap: calc(28 * var(--v2-px));
-  height: calc(71 * var(--v2-px));
-  padding: 0 calc(26 * var(--v2-px));
-  border-top: calc(1 * var(--v2-px)) solid var(--v2-field-edge);
-}
-
+/* Phase 2：未承認の rich-text 系ツール帯（.v2-editor__tools / --last）は削除した。
+   .v2-editor__tool は「下書き一覧」ボタン内の小さな記号としてのみ残す。 */
 .v2-editor__tool {
   display: block;
   width: calc(26 * var(--v2-px));
   height: calc(26 * var(--v2-px));
   border-radius: calc(4 * var(--v2-px));
-}
-
-.v2-editor__tool--last {
-  margin-left: auto;
-  width: calc(96 * var(--v2-px));
 }
 
 /* 保存に関する安心情報。カンプの文言をそのまま置き、新しい長文説明は作らない */
@@ -605,10 +549,11 @@
 }
 
 /* -----------------------------------------------------------------------------
- * 下部ナビ
- * 05 はアイコンとラベルが横並びで、丸いバーの中に入る（01・02 とは別の形）。
- * 共通部品 .v2-navbar を再利用し、05 の寸法だけをこのスコープで上書きする。
- * Phase 1 は視覚要素のみ。href / onclick / route を持たない。
+ * Global Navigation（3項目）
+ * 部品の見た目は components.css に一元化した。ここでは位置と外枠だけを持つ。
+ * 02〜07 は同一原寸カンプ（1024x1536）なので外枠の寸法も全画面で揃える。
+ * 現在地は accent 色の文字／アイコンのみ。下線は付けない。
+ * Phase 2 も視覚要素のみで route / href / event を持たない。
  * -------------------------------------------------------------------------- */
 .v2-editor__navbar {
   position: absolute;
@@ -627,38 +572,4 @@
   bottom: 0;
   left: calc(25 * var(--v2-px));
   width: calc(873 * var(--v2-px));
-}
-
-.v2-page--editor .v2-navbar__item {
-  position: relative;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  gap: calc(14 * var(--v2-px));
-}
-
-.v2-page--editor .v2-navbar__icon {
-  width: calc(28 * var(--v2-px));
-  height: calc(28 * var(--v2-px));
-}
-
-.v2-page--editor .v2-navbar__label {
-  font-size: calc(20 * var(--v2-px));
-}
-
-.v2-page--editor .v2-navbar__item + .v2-navbar__item::before {
-  content: '';
-  position: absolute;
-  top: calc(18 * var(--v2-px));
-  bottom: calc(18 * var(--v2-px));
-  left: 0;
-  width: calc(1 * var(--v2-px));
-  background: var(--v2-rule);
-  opacity: 0.45;
-}
-
-/* 現在地は「書く」 */
-.v2-page--editor .v2-navbar__item--current .v2-navbar__label {
-  color: var(--v2-accent-self);
 }

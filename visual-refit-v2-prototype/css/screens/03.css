@@ -386,10 +386,11 @@
 }
 
 /* -----------------------------------------------------------------------------
- * 下部ナビ
- * 共通部品 .v2-navbar を再利用し、03 の寸法だけをこのスコープで上書きする。
- * components.css の既存値は変更していないため 01・02・05 に影響しない。
- * Phase 1 は視覚要素のみ。href / onclick / route を持たない。
+ * Global Navigation（3項目）
+ * 部品の見た目は components.css に一元化した。ここでは位置と外枠だけを持つ。
+ * 02〜07 は同一原寸カンプ（1024x1536）なので外枠の寸法も全画面で揃える。
+ * 現在地は accent 色の文字／アイコンのみ。下線は付けない。
+ * Phase 2 も視覚要素のみで route / href / event を持たない。
  * -------------------------------------------------------------------------- */
 .v2-shelves__navbar {
   position: absolute;
@@ -408,39 +409,4 @@
   bottom: 0;
   left: calc(25 * var(--v2-px));
   width: calc(873 * var(--v2-px));
-}
-
-.v2-page--shelves .v2-navbar__item {
-  position: relative;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  gap: calc(14 * var(--v2-px));
-}
-
-.v2-page--shelves .v2-navbar__icon {
-  width: calc(28 * var(--v2-px));
-  height: calc(28 * var(--v2-px));
-}
-
-.v2-page--shelves .v2-navbar__label {
-  font-size: calc(20 * var(--v2-px));
-}
-
-.v2-page--shelves .v2-navbar__item + .v2-navbar__item::before {
-  content: '';
-  position: absolute;
-  top: calc(18 * var(--v2-px));
-  bottom: calc(18 * var(--v2-px));
-  left: 0;
-  width: calc(1 * var(--v2-px));
-  background: var(--v2-rule);
-  opacity: 0.45;
-}
-
-/* 現在地は「棚を見る」。Phase 1 では 01・02・05 との一貫性を優先し、
-   active 状態は accent 色の文字／アイコンだけで示す。下線は置かない。 */
-.v2-page--shelves .v2-navbar__item--current .v2-navbar__label {
-  color: var(--v2-accent-self);
 }
