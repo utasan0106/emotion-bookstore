@@ -77,8 +77,10 @@
   --v2-accent-place-edge: #8A6C42;
   --v2-accent-place-on: #ECCFA5;
 
-  --v2-accent-self: #7FA3C8;
-  --v2-accent-self-on: #0A1016;
+  /* NIGHT では self / 主要操作 / 選択状態も金〜琥珀系を基本とする（CEO決定 2026-08-09）。
+     値は正式カンプ NIGHT/05 の実測。 */
+  --v2-accent-self: #89591C;
+  --v2-accent-self-on: #F2DEBE;
 
   --v2-scene-arch: #17110A;
   --v2-scene-ledge: #100C08;

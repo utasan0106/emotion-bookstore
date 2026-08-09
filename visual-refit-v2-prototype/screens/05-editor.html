@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja" data-v2-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Visual Refit V2 — 05 編集室（Structural Skeleton）</title>
+
+<!--
+  Visual Refit V2 / Phase 1 Structural Skeleton
+  Visual North Star: FORMAL_COMPS/DAY/05.png ・ FORMAL_COMPS/NIGHT/05.png のみ。
+
+  この画面は本番UIから物理的に隔離された静的シェルである。
+  - 旧 index.html / main.js / data.js / style.css へ接続しない
+  - 旧CSSを import しない。旧DOM・旧セレクタを再利用しない
+  - 保存 / 製本 / IndexedDB / localStorage / GA4 / 外部通信を一切行わない
+  - 入力内容を JavaScript で読むコードを作らない
+  - DAY と NIGHT は同一DOM。data-v2-theme だけで切り替える
+
+  05 は「自分の言葉を書くための静かな編集机」であり、
+  診断・相談・AIとの会話・感情分析の画面ではない。
+-->
+
+<!--
+  Visual QA 専用の最小処理（01・02 と同一方式を再利用）。
+  URLパラメータ theme=day|night を読み、data-v2-theme を差し替えるだけ。
+  保存しない / localStorage を使わない / GA4 を呼ばない / 外部通信しない /
+  時刻判定しない / 本番の applyNightModeIfNeeded()・currentDaypart() に触れない。
+  新しい本番用時刻判定・manual toggle は追加していない。
+-->
+<script>
+  (function () {
+    var t = new URLSearchParams(location.search).get('theme');
+    if (t === 'day' || t === 'night') {
+      document.documentElement.dataset.v2Theme = t;
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/screens/05.css">
+</head>
+
+<body class="v2-page v2-page--editor">
+<div class="v2-stage v2-editor">
+
+  <!-- 情景レイヤ：素材未確定。無地面＋輪郭のみのプレースホルダー。
+       05 は唯一デスクランプを器具として見せてよい画面だが、
+       完成イラストは生成せず、占有領域・光の方向・光量関係だけを置く。 -->
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-editor__wall"></div>
+    <div class="v2-editor__desk v2-placeholder"></div>
+    <div class="v2-editor__lamp v2-placeholder"></div>
+    <div class="v2-editor__lamplight"></div>
+    <div class="v2-editor__writinglight"></div>
+    <div class="v2-editor__vignette"></div>
+  </div>
+
+  <!-- 内容レイヤ -->
+  <div class="v2-content">
+
+    <p class="v2-editor__back">＜　戻る</p>
+
+    <p class="v2-editor__privacy">公開されません</p>
+
+    <p class="v2-editor__mark v2-placeholder" aria-hidden="true"></p>
+    <p class="v2-editor__ruby">へんさんしつ</p>
+    <h1 class="v2-editor__title">編纂室</h1>
+    <p class="v2-editor__lead">あなたのことばを、静かに編んでいく場所です。<br>書いたものは、あなただけに保存されます。</p>
+
+    <!-- 領域タブ：Phase 1 は静的・非活性。route を持たない -->
+    <nav class="v2-editor__tabs" aria-label="領域（外観確認用・未接続）">
+      <span class="v2-editor__tab">
+        <span class="v2-editor__tab-icon v2-placeholder" aria-hidden="true"></span>ことば・世界</span>
+      <span class="v2-editor__tab">
+        <span class="v2-editor__tab-icon v2-placeholder" aria-hidden="true"></span>物語・作品</span>
+      <span class="v2-editor__tab">
+        <span class="v2-editor__tab-icon v2-placeholder" aria-hidden="true"></span>みんなの一篇</span>
+      <span class="v2-editor__tab" aria-current="true">
+        <span class="v2-editor__tab-icon v2-placeholder" aria-hidden="true"></span>自分の本</span>
+    </nav>
+
+    <!-- 編集カード：この画面の主役 -->
+    <section class="v2-editor__card" aria-label="新しい本を書く">
+
+      <div class="v2-editor__card-head">
+        <span class="v2-editor__card-mark v2-placeholder" aria-hidden="true"></span>
+        <h2 class="v2-editor__card-title">新しい本を書く</h2>
+      </div>
+      <p class="v2-editor__card-sub">あなたの一篇が、誰かの支えになるかもしれません。</p>
+
+      <!-- 下書き一覧：現行に無い機能のため静的・非活性の見た目のみ -->
+      <button type="button" class="v2-editor__drafts" disabled aria-disabled="true">
+        <span class="v2-editor__tool v2-placeholder" aria-hidden="true"></span>下書き一覧
+      </button>
+
+      <p class="v2-editor__field-label">題（あらだし）</p>
+      <!-- 文字数上限は現行の maxlength=16 を正とする。カンプの 0 / 30 は採用しない -->
+      <p class="v2-editor__counter">0 / 16</p>
+
+      <input class="v2-editor__title-field" type="text" maxlength="16" disabled aria-disabled="true"
+             placeholder="本の題名をつけてください（あとから変えられます）">
+
+      <!-- 本文：ここに書くことが最も明確な領域。Phase 1 は静的・非保存 -->
+      <div class="v2-editor__body">
+        <textarea class="v2-editor__body-input" disabled aria-disabled="true"
+                  placeholder="ここに、あなたのことばを書いてください。"></textarea>
+        <!-- ツール帯：現行に無い機能のため静的・非活性の見た目のみ -->
+        <div class="v2-editor__tools" aria-hidden="true">
+          <span class="v2-editor__tool v2-placeholder"></span>
+          <span class="v2-editor__tool v2-placeholder"></span>
+          <span class="v2-editor__tool v2-placeholder"></span>
+          <span class="v2-editor__tool v2-placeholder"></span>
+          <span class="v2-editor__tool v2-placeholder"></span>
+          <span class="v2-editor__tool v2-editor__tool--last v2-placeholder"></span>
+        </div>
+      </div>
+
+      <!-- 安心情報：カンプの文言をそのまま置く。新しい長文説明は作らない -->
+      <div class="v2-editor__assurance">
+        <span class="v2-editor__assurance-mark v2-placeholder" aria-hidden="true"></span>
+        <div>
+          <p class="v2-editor__assurance-title">この端末に保存されます</p>
+          <p class="v2-editor__assurance-text">書いた内容は、あなたの端末にのみ保存され、<br>他の人に公開されることはありません。</p>
+        </div>
+      </div>
+
+      <!-- 操作：Phase 1 は非活性。保存 / 製本 / route / modal / GA4 のいずれも起こさない -->
+      <div class="v2-editor__actions">
+        <button type="button" class="v2-editor__action v2-editor__action--secondary" disabled aria-disabled="true">
+          <span class="v2-editor__action-main">下書き保存</span>
+          <span class="v2-editor__action-note">いつでも続きから書けます</span>
+        </button>
+        <button type="button" class="v2-editor__action v2-editor__action--primary" disabled aria-disabled="true">
+          <span class="v2-editor__action-main">本にする</span>
+          <span class="v2-editor__action-note">あなたの本として棚に並びます</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- 書くきっかけ：静的・非活性 -->
+    <section class="v2-editor__prompts" aria-label="書くきっかけに">
+      <div class="v2-editor__prompts-head">
+        <span class="v2-editor__prompts-mark v2-placeholder" aria-hidden="true"></span>
+        <div>
+          <h2 class="v2-editor__prompts-title">書くきっかけに</h2>
+          <p class="v2-editor__prompts-sub">心が少し動いたことから、書きはじめてみませんか。</p>
+        </div>
+      </div>
+      <p class="v2-editor__prompts-more">すべて見る　＞</p>
+      <div class="v2-editor__chips">
+        <span class="v2-editor__chip">今の気持ちを<br>そのまま書いてみる</span>
+        <span class="v2-editor__chip">忘れたくない<br>出来事について</span>
+        <span class="v2-editor__chip">誰かに伝えたい<br>ことばについて</span>
+        <span class="v2-editor__chip">未来の自分へ<br>手紙を書く</span>
+      </div>
+    </section>
+
+    <!-- 下部ナビ：Phase 1 は視覚要素のみ。href / onclick / route を持たない -->
+    <div class="v2-editor__navbar">
+      <nav class="v2-navbar v2-navbar--4 v2-editor__nav" aria-label="ナビゲーション（外観確認用・未接続）">
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">棚を見る</span>
+        </span>
+        <span class="v2-navbar__item v2-navbar__item--current">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">書く</span>
+        </span>
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">本棚</span>
+        </span>
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">わたしの本</span>
+        </span>
+      </nav>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
