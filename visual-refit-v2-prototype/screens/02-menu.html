@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja" data-v2-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Visual Refit V2 — 02 入店後メニュー（Structural Skeleton）</title>
+
+<!--
+  Visual Refit V2 / Phase 1 Structural Skeleton
+  Visual North Star: FORMAL_COMPS/DAY/02.png ・ FORMAL_COMPS/NIGHT/02.png のみ。
+
+  この画面は本番UIから物理的に隔離された静的シェルである。
+  - 旧 index.html / main.js / data.js / style.css へ接続しない
+  - 旧CSSを import しない。旧DOM・旧セレクタを再利用しない
+  - 保存 / IndexedDB / localStorage / GA4 / 外部通信を一切行わない
+  - DAY と NIGHT は同一DOM。data-v2-theme だけで切り替える
+  - 3枚のカードは同格。1枚だけを主CTA化しない
+-->
+
+<!--
+  Visual QA 専用の最小処理（01 と同一方式を再利用）。
+  URLパラメータ theme=day|night を読み、data-v2-theme を差し替えるだけ。
+  保存しない / localStorage を使わない / GA4 を呼ばない / 外部通信しない /
+  時刻判定しない / 本番の applyNightModeIfNeeded()・currentDaypart() に触れない。
+  新しい時刻判定・manual theme toggle は追加していない。
+-->
+<script>
+  (function () {
+    var t = new URLSearchParams(location.search).get('theme');
+    if (t === 'day' || t === 'night') {
+      document.documentElement.dataset.v2Theme = t;
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/screens/02.css">
+</head>
+
+<body class="v2-page v2-page--menu">
+<div class="v2-stage v2-menu">
+
+  <!-- 情景レイヤ：素材未確定。無地面＋輪郭のみのプレースホルダー。
+       照明器具は置かない（ペンダント・天井灯なし）。
+       右側の店内奥行き＋窓明かり＋棚の間接光だけで空間を表す。 -->
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-menu__wall"></div>
+    <div class="v2-menu__depth v2-placeholder"></div>
+    <div class="v2-menu__vignette"></div>
+  </div>
+
+  <!-- 内容レイヤ -->
+  <div class="v2-content">
+
+    <!-- ロゴ：正式素材が未用意のため円形の中立プレースホルダー。
+         assets/shop-seal.png の加工・透過化による代用はしない。 -->
+    <p class="v2-menu__logo v2-placeholder" aria-hidden="true"></p>
+
+    <h1 class="v2-menu__question">ようこそ。<br>今日は、<br>どこへ行きますか？</h1>
+
+    <hr class="v2-menu__deco">
+
+    <!-- 3カード：同じ幅・同じ高さ・同じ内部余白・同じ情報階層。
+         Phase 1 は静的・非活性。href / onclick / route を持たない。 -->
+    <div class="v2-menu__cards">
+
+      <article class="v2-menu-card">
+        <span class="v2-menu-card__figure v2-placeholder" aria-hidden="true"></span>
+        <div class="v2-menu-card__headzone">
+          <h2 class="v2-menu-card__heading">感情の棚を見る</h2>
+        </div>
+        <span class="v2-menu-card__rule" aria-hidden="true"></span>
+        <p class="v2-menu-card__desc">今の気持ちに近い言葉や、<br>物語・作品に出会う</p>
+        <button type="button" class="v2-menu-card__action" disabled aria-disabled="true"
+                aria-label="感情の棚を見る（外観確認用・未接続）"></button>
+      </article>
+
+      <article class="v2-menu-card">
+        <span class="v2-menu-card__figure v2-placeholder" aria-hidden="true"></span>
+        <div class="v2-menu-card__headzone">
+          <h2 class="v2-menu-card__heading">気持ちや<br>出来事を書く</h2>
+        </div>
+        <span class="v2-menu-card__rule" aria-hidden="true"></span>
+        <p class="v2-menu-card__desc">今残しておきたいことを、<br>自分の言葉で書く</p>
+        <button type="button" class="v2-menu-card__action" disabled aria-disabled="true"
+                aria-label="気持ちや出来事を書く（外観確認用・未接続）"></button>
+      </article>
+
+      <article class="v2-menu-card">
+        <span class="v2-menu-card__figure v2-placeholder" aria-hidden="true"></span>
+        <div class="v2-menu-card__headzone">
+          <h2 class="v2-menu-card__heading">自分の<br>本棚を見る</h2>
+        </div>
+        <span class="v2-menu-card__rule" aria-hidden="true"></span>
+        <p class="v2-menu-card__desc">自分で残した一冊を、<br>あとから見返す</p>
+        <button type="button" class="v2-menu-card__action" disabled aria-disabled="true"
+                aria-label="自分の本棚を見る（外観確認用・未接続）"></button>
+      </article>
+
+    </div>
+
+    <!-- 下部4ナビ：Phase 1 は視覚要素のみ。href / onclick / route を持たない。
+         アイコン素材が未確定のため、輪郭のみの枠で面積と位置だけ確認する。 -->
+    <nav class="v2-navbar v2-navbar--4 v2-menu__nav" aria-label="ナビゲーション（外観確認用・未接続）">
+      <span class="v2-navbar__item">
+        <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+        <span class="v2-navbar__label">棚を見る</span>
+      </span>
+      <span class="v2-navbar__item">
+        <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+        <span class="v2-navbar__label">書く</span>
+      </span>
+      <span class="v2-navbar__item">
+        <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+        <span class="v2-navbar__label">本棚</span>
+      </span>
+      <span class="v2-navbar__item">
+        <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+        <span class="v2-navbar__label">わたしの本</span>
+      </span>
+    </nav>
+
+  </div>
+</div>
+</body>
+</html>
