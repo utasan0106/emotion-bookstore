@@ -39,7 +39,7 @@
 <link rel="stylesheet" href="../css/screens/07.css">
 </head>
 
-<body class="v2-page v2-page--reader">
+<body class="v2-page v2-page--reader" data-v2-screen="07">
 <div class="v2-stage v2-reader">
 
   <div class="v2-scene" aria-hidden="true">
@@ -155,18 +155,18 @@
     <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
     <div class="v2-reader__navbar">
       <nav class="v2-navbar v2-reader__nav" aria-label="ナビゲーション（外観確認用・未接続）">
-        <span class="v2-navbar__item">
+        <button type="button" class="v2-navbar__item" data-v2-nav="shelves">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">棚を見る</span>
-        </span>
-        <span class="v2-navbar__item">
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">書く</span>
-        </span>
-        <span class="v2-navbar__item v2-navbar__item--current">
+        </button>
+        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="bookshelf">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">本棚</span>
-        </span>
+        </button>
       </nav>
     </div>
 

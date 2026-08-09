@@ -90,6 +90,11 @@
   height: 100%;
 }
 
+/* 項目は button。Enter / Space は button 本来のキーボード挙動をそのまま使う
+   （role="button" / tabindex / 独自 keydown による代替実装はしない）。
+   UA スタイルは prototype 内でここだけで完全に打ち消し、
+   span だった Phase 2 checkpoint と同一の見え方を維持する。
+   focus リングは既定のまま残す（見た目はフォーカス時のみ現れる）。 */
 .v2-navbar__item {
   position: relative;
   display: flex;
@@ -98,6 +103,23 @@
   justify-content: center;
   height: 100%;
   gap: calc(14 * var(--v2-px));
+
+  /* --- UA style reset --- */
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  text-indent: 0;
+  text-transform: none;
+  text-shadow: none;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  appearance: none;
 }
 
 /* 項目間の細い区切り線 */

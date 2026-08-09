@@ -52,7 +52,7 @@
 <link rel="stylesheet" href="../css/screens/04.css">
 </head>
 
-<body class="v2-page v2-page--shelf-detail">
+<body class="v2-page v2-page--shelf-detail" data-v2-screen="04">
 <div class="v2-stage v2-detail">
 
   <!-- 情景レイヤ：本棚・壁・植物・棚からの間接光のみ。
@@ -68,7 +68,7 @@
   <!-- 内容レイヤ -->
   <div class="v2-content">
 
-    <p class="v2-detail__back">＜　棚へ戻る</p>
+    <p class="v2-detail__back" data-v2-go="03">＜　棚へ戻る</p>
 
     <!-- 感情の造形枠：感情アイコンはまだ制作しない -->
     <p class="v2-detail__glyph v2-placeholder" aria-hidden="true"></p>
@@ -115,18 +115,18 @@
     <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
     <div class="v2-detail__navbar">
       <nav class="v2-navbar v2-detail__nav" aria-label="ナビゲーション（外観確認用・未接続）">
-        <span class="v2-navbar__item v2-navbar__item--current">
+        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="shelves">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">棚を見る</span>
-        </span>
-        <span class="v2-navbar__item">
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">書く</span>
-        </span>
-        <span class="v2-navbar__item">
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="bookshelf">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">本棚</span>
-        </span>
+        </button>
       </nav>
     </div>
 

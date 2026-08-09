@@ -44,7 +44,7 @@
 <link rel="stylesheet" href="../css/screens/03.css">
 </head>
 
-<body class="v2-page v2-page--shelves">
+<body class="v2-page v2-page--shelves" data-v2-screen="03">
 <div class="v2-stage v2-shelves">
 
   <!-- 情景レイヤ：素材未確定。無地面＋輪郭のみのプレースホルダー。
@@ -62,7 +62,7 @@
   <!-- 内容レイヤ -->
   <div class="v2-content">
 
-    <p class="v2-shelves__home">
+    <p class="v2-shelves__home" data-v2-go="02">
       <span class="v2-shelves__home-mark v2-placeholder" aria-hidden="true"></span>メニューへ
     </p>
 
@@ -71,11 +71,13 @@
     <p class="v2-shelves__lead">気になる棚から、ことばや作品を覗いてみてください。<br>今の気持ちにぴったりでなくても構いません。</p>
 
     <!-- 大棚グリッド：2列×4段。7大棚＋横断入口1。
+         data-v2-go="04" は Phase 3 Step 1 の接続口。棚IDは持たせない
+         （7大棚→21感情の変換は Step 3 の emotion-shelf-adapter の責務）。
          Phase 1 は静的・非活性。href / onclick / route を持たない。
          感情アイコンは未制作。将来の感情造形用スペースを中立プレースホルダーで確保する。 -->
     <div class="v2-shelves__grid">
 
-      <article class="v2-shelf-card">
+      <article class="v2-shelf-card" data-v2-go="04">
         <h2 class="v2-shelf-card__name">心が弾む</h2>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
         <p class="v2-shelf-card__words">嬉しい・わくわく・誇らしい</p>
@@ -90,7 +92,7 @@
         </span>
       </article>
 
-      <article class="v2-shelf-card">
+      <article class="v2-shelf-card" data-v2-go="04">
         <h2 class="v2-shelf-card__name">心があたたまる</h2>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
         <p class="v2-shelf-card__words">安堵・感謝・愛おしい</p>
@@ -105,7 +107,7 @@
         </span>
       </article>
 
-      <article class="v2-shelf-card">
+      <article class="v2-shelf-card" data-v2-go="04">
         <h2 class="v2-shelf-card__name">惹かれる</h2>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
         <p class="v2-shelf-card__words">憧れ・嫉妬・懐かしい</p>
@@ -120,7 +122,7 @@
         </span>
       </article>
 
-      <article class="v2-shelf-card">
+      <article class="v2-shelf-card" data-v2-go="04">
         <h2 class="v2-shelf-card__name">沈む</h2>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
         <p class="v2-shelf-card__words">悲しい・孤独・がっかり</p>
@@ -135,7 +137,7 @@
         </span>
       </article>
 
-      <article class="v2-shelf-card">
+      <article class="v2-shelf-card" data-v2-go="04">
         <h2 class="v2-shelf-card__name">ざわつく</h2>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
         <p class="v2-shelf-card__words">不安・焦り・驚き</p>
@@ -150,7 +152,7 @@
         </span>
       </article>
 
-      <article class="v2-shelf-card">
+      <article class="v2-shelf-card" data-v2-go="04">
         <h2 class="v2-shelf-card__name">ぶつかる</h2>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
         <p class="v2-shelf-card__words">怒り・悔しい・嫉妬</p>
@@ -165,7 +167,7 @@
         </span>
       </article>
 
-      <article class="v2-shelf-card">
+      <article class="v2-shelf-card" data-v2-go="04">
         <h2 class="v2-shelf-card__name">身を引く</h2>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
         <p class="v2-shelf-card__words">恥ずかしい・後ろめたい・嫌悪感</p>
@@ -182,7 +184,7 @@
 
       <!-- 横断入口：8番目の大棚ではない。7大棚とは役割が違うことを
            境界・余白・見せ方の差で示す。派手に強調しない。 -->
-      <article class="v2-shelf-card v2-shelf-card--crossway">
+      <article class="v2-shelf-card v2-shelf-card--crossway" data-v2-go="04">
         <h2 class="v2-shelf-card__name">まだ名前がない</h2>
         <p class="v2-shelf-card__note">まだ、どのことばにも<br>決めたくないときに。</p>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
@@ -198,18 +200,18 @@
     <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
     <div class="v2-shelves__navbar">
       <nav class="v2-navbar v2-shelves__nav" aria-label="ナビゲーション（外観確認用・未接続）">
-        <span class="v2-navbar__item v2-navbar__item--current">
+        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="shelves">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">棚を見る</span>
-        </span>
-        <span class="v2-navbar__item">
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">書く</span>
-        </span>
-        <span class="v2-navbar__item">
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="bookshelf">
           <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
           <span class="v2-navbar__label">本棚</span>
-        </span>
+        </button>
       </nav>
     </div>
 

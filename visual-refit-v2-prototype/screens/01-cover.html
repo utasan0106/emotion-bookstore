@@ -39,7 +39,7 @@
 <link rel="stylesheet" href="../css/screens/01.css">
 </head>
 
-<body class="v2-page v2-page--cover">
+<body class="v2-page v2-page--cover" data-v2-screen="01">
 <div class="v2-stage v2-cover">
 
   <!-- 情景レイヤ：素材未確定。無地面＋輪郭のみのプレースホルダー -->
@@ -72,7 +72,8 @@
     <!-- 主CTA：金茶（--v2-accent-place）。右矢印なし。
          Phase 1 は非活性（disabled + aria-disabled）だが、外観はカンプの通常状態を再現する。 -->
     <div class="v2-cover__cta">
-      <button type="button" class="v2-btn v2-btn--place" disabled aria-disabled="true">入店する</button>
+      <button type="button" class="v2-btn v2-btn--place" disabled aria-disabled="true"
+              data-v2-go="02">入店する</button>
     </div>
 
     <!-- Phase 2 正式仕様：01 表紙は bottom navigation を持たない。

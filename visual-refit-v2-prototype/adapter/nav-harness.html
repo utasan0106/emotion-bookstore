@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Visual Refit V2 — navigation-adapter QAハーネス（Phase 3 Step 1）</title>
+
+<!--
+  navigation-adapter の検証専用ページ。本番にも prototype 画面にも含めない。
+
+  - 本番 index.html / main.js / data.js / style.css へ接続しない
+  - 既存関数（enterBookExperience / returnToCover / goToPage / goToShelf）は
+    ここでは「呼ばれたことを記録するだけのスタブ」に差し替える。
+    実物の main.js との突き合わせは、本番 index.html を読み込んだうえで
+    このAdapterを注入する別のQA手順で行う。
+  - 保存 / IndexedDB / localStorage / GA4 / 外部通信は一切行わない
+-->
+
+<style>
+  body { margin:0; padding:24px; font-family: system-ui, sans-serif; background:#F4EFE7; color:#33240C; }
+  h1 { font-size:16px; margin:0 0 12px; }
+  .page-nav { display:flex; gap:8px; margin:12px 0; }
+  .page-tab { padding:4px 10px; }
+  .page-tab.active { outline:2px solid #2F5B8C; }
+  .v2-navbar__item--current { outline:2px solid #2F5B8C; }
+  pre { background:#fff; padding:12px; font-size:12px; max-height:40vh; overflow:auto; }
+  .row { margin:8px 0; }
+</style>
+</head>
+<body class="v2-page">
+
+<h1>navigation-adapter QAハーネス</h1>
+
+<!-- 既存本番の .page-tab を模した最小DOM（setActivePageTab の結果を読むためだけ） -->
+<nav class="page-nav" id="pageNav">
+  <button class="page-tab" data-page="counter">counter</button>
+  <button class="page-tab" data-page="shelves">shelves</button>
+  <button class="page-tab" data-page="desk">desk</button>
+  <button class="page-tab" data-page="bookshelf">bookshelf</button>
+</nav>
+
+<!-- V2 側の接続口 -->
+<div class="row">
+  <button type="button" id="goCover" data-v2-go="01">01へ</button>
+  <button type="button" id="enterShop" data-v2-go="02">01「入店する」→02</button>
+  <button type="button" data-v2-go="03">02「棚を見る」→03</button>
+  <button type="button" data-v2-go="05">02「書く」→05</button>
+  <button type="button" data-v2-go="bookshelf">02「本棚」→06/08</button>
+  <button type="button" data-v2-go="04">03→04（棚ID無し）</button>
+  <button type="button" id="go04WithShelf" data-v2-go="04" data-v2-shelf-id="fuan">03→04（棚ID付き）</button>
+  <button type="button" data-v2-go="02">03「メニューへ」→02</button>
+</div>
+
+<!-- Global Navigation（3項目） -->
+<nav class="v2-navbar">
+  <span class="v2-navbar__item" data-v2-nav="shelves">棚を見る</span>
+  <span class="v2-navbar__item" data-v2-nav="desk">書く</span>
+  <span class="v2-navbar__item" data-v2-nav="bookshelf">本棚</span>
+</nav>
+
+<pre id="log"></pre>
+
+<script>
+/* 既存関数のスタブ。実装は本番と同じ「呼ばれる順序」だけを再現し、
+   setActivePageTab 相当の .page-tab.active 更新のみ行う。
+   GA4・inert・aria-hidden・保存はここでは扱わない（Adapterが触っていないことの確認が目的）。 */
+window.__calls = [];
+function __rec(name, arg){ window.__calls.push(arg === undefined ? name : (name + ':' + arg)); }
+
+function setActivePageTab(id){
+  document.querySelectorAll('.page-tab').forEach(function(b){
+    b.classList.toggle('active', b.dataset.page === id);
+  });
+}
+function enterBookExperience(){ __rec('enterBookExperience'); document.body.classList.add('experience-open'); }
+function returnToCover(){ __rec('returnToCover'); document.body.classList.remove('experience-open'); setActivePageTab(null); }
+function goToPage(id){ __rec('goToPage', id); setActivePageTab(id); }
+function goToShelf(shelfId){ __rec('goToShelf', shelfId); goToPage('shelves'); }
+
+/* Adapterが呼んではいけないもの。呼ばれたら記録して検出できるようにする。 */
+function trackAnalyticsEvent(name){ __rec('!!trackAnalyticsEvent', name); }
+function activateExperiencePage(id){ __rec('!!activateExperiencePage', id); }
+</script>
+
+<script src="./navigation-adapter.js"></script>
+<script>
+  V2NavigationAdapter.mount();
+  V2NavigationAdapter.startThemeBridge();
+  var logEl = document.getElementById('log');
+  function dump(){
+    logEl.textContent =
+      'calls: ' + JSON.stringify(window.__calls) + '\n' +
+      'state: ' + JSON.stringify(V2NavigationAdapter.getState()) + '\n' +
+      'activePage: ' + V2NavigationAdapter.currentPageId() + '\n' +
+      'theme: ' + document.documentElement.getAttribute('data-v2-theme') + '\n' +
+      'subview: ' + document.documentElement.getAttribute('data-v2-subview');
+  }
+  document.addEventListener('click', function(){ setTimeout(dump, 0); });
+  dump();
+</script>
+</body>
+</html>
