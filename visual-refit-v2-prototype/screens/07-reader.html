@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja" data-v2-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Visual Refit V2 — 07 本詳細／読む（Structural Skeleton）</title>
+
+<!--
+  Visual Refit V2 / Phase 1 Structural Skeleton
+  Visual North Star: FORMAL_COMPS/DAY/07.png ・ FORMAL_COMPS/NIGHT/07.png のみ。
+
+  07 は一冊を取り出して読む場所。正式カンプの明確な2カラム構造を守る。
+  左：本の情報・小さな操作領域 ／ 右：大きな本文・読む面。
+
+  - Phase 1 は静的。bookModal を変更・接続しない。新 route を作らない
+  - edit / delete / rename / focus trap / inert / aria-hidden 等の既存契約に一切触れない
+  - 題名・日付・文字数・しおり件数・ページ数・本文は利用者の実データなので
+    文字を置かず、占有位置と余白だけを中立プレースホルダーで作る
+  - ラベル（しおり／メモ・線を引いた箇所／目次／共有 等）は UI 側の文言なのでそのまま置く
+  - しおり／メモ／目次／共有／文字サイズ／明るさ／ページ送りは現行に無い機能のため静的・非活性
+  - 保存 / IndexedDB / localStorage / GA4 / 外部通信を一切行わない
+  - 下部ナビは5項目。既存4-route契約は Phase 3 まで変更しない
+  - DAY と NIGHT は同一DOM。data-v2-theme だけで切り替える
+-->
+
+<script>
+  (function () {
+    var t = new URLSearchParams(location.search).get('theme');
+    if (t === 'day' || t === 'night') {
+      document.documentElement.dataset.v2Theme = t;
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/screens/07.css">
+</head>
+
+<body class="v2-page v2-page--reader">
+<div class="v2-stage v2-reader">
+
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-reader__wall"></div>
+    <div class="v2-reader__scape"></div>
+    <div class="v2-reader__readinglight"></div>
+    <div class="v2-reader__vignette"></div>
+  </div>
+
+  <div class="v2-content">
+
+    <p class="v2-reader__back">＜　戻る</p>
+
+    <div class="v2-reader__tools">
+      <button type="button" class="v2-reader__tool" disabled aria-disabled="true">
+        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>文字サイズ
+        <span class="v2-reader__tool-sep" aria-hidden="true"></span>
+        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>明るさ
+      </button>
+      <button type="button" class="v2-reader__tool v2-reader__tool--round" disabled aria-disabled="true"
+              aria-label="メニュー（外観確認用・未接続）">
+        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <!-- 左カラム：本の情報・小さな操作領域 -->
+    <div class="v2-reader__side">
+      <span class="v2-reader__cover v2-placeholder" aria-hidden="true"></span>
+      <span class="v2-reader__slot v2-placeholder" aria-hidden="true"></span>
+      <span class="v2-reader__slot v2-reader__slot--sub v2-placeholder" aria-hidden="true"></span>
+      <span class="v2-reader__slot v2-reader__slot--line v2-placeholder" aria-hidden="true"></span>
+      <span class="v2-reader__slot v2-reader__slot--line v2-reader__slot--short v2-placeholder" aria-hidden="true"></span>
+
+      <div class="v2-reader__rule" aria-hidden="true"></div>
+
+      <div class="v2-reader__menu">
+        <div class="v2-reader__menu-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__menu-label">しおり</span>
+          <span class="v2-reader__menu-slot v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
+        </div>
+        <div class="v2-reader__menu-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__menu-label">メモ・線を引いた箇所</span>
+          <span class="v2-reader__menu-slot v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
+        </div>
+        <div class="v2-reader__menu-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__menu-label">目次</span>
+          <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
+        </div>
+        <div class="v2-reader__menu-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__menu-label">共有（URLをコピー）</span>
+          <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
+        </div>
+      </div>
+
+      <div class="v2-reader__rule" aria-hidden="true"></div>
+
+      <div class="v2-reader__menu">
+        <div class="v2-reader__meta-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__meta-label">本にした日</span>
+          <span class="v2-reader__meta-slot v2-placeholder" aria-hidden="true"></span>
+        </div>
+        <div class="v2-reader__meta-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__meta-label">文字数</span>
+          <span class="v2-reader__meta-slot v2-placeholder" aria-hidden="true"></span>
+        </div>
+        <div class="v2-reader__meta-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__meta-label">保存先</span>
+          <span class="v2-reader__meta-slot v2-placeholder" aria-hidden="true"></span>
+        </div>
+        <div class="v2-reader__meta-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__meta-label">公開設定</span>
+          <span class="v2-reader__meta-slot v2-placeholder" aria-hidden="true"></span>
+        </div>
+        <div class="v2-reader__meta-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__meta-label">編集する</span>
+          <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
+        </div>
+      </div>
+
+      <div class="v2-reader__assurance">
+        <span class="v2-reader__assurance-mark v2-placeholder" aria-hidden="true"></span>
+        <p class="v2-reader__assurance-text">この本は、あなただけのためにある本です。<br>公開されることはありません。</p>
+      </div>
+    </div>
+
+    <!-- 右カラム：大きな本文・読む面（この画面の主役） -->
+    <section class="v2-reader__page" aria-label="読む面">
+      <span class="v2-reader__ribbon" aria-hidden="true"></span>
+
+      <div class="v2-reader__chapter" aria-hidden="true">
+        <span class="v2-reader__chapter-no v2-placeholder"></span>
+        <span class="v2-reader__chapter-title v2-placeholder"></span>
+        <span class="v2-reader__chapter-rule"></span>
+      </div>
+
+      <div class="v2-reader__body" aria-hidden="true">
+        <span class="v2-reader__body-line v2-placeholder"></span>
+        <span class="v2-reader__body-line v2-reader__body-line--short v2-reader__body-line--gap v2-placeholder"></span>
+        <span class="v2-reader__body-line v2-placeholder"></span>
+        <span class="v2-reader__body-line v2-reader__body-line--short v2-reader__body-line--gap v2-placeholder"></span>
+        <span class="v2-reader__body-line v2-placeholder"></span>
+        <span class="v2-reader__body-line v2-reader__body-line--short v2-reader__body-line--gap v2-placeholder"></span>
+        <span class="v2-reader__body-line v2-placeholder"></span>
+        <span class="v2-reader__body-line v2-reader__body-line--short v2-placeholder"></span>
+      </div>
+
+      <button type="button" class="v2-reader__turn v2-reader__turn--prev" disabled aria-disabled="true"
+              aria-label="前のページ（外観確認用・未接続）"></button>
+      <button type="button" class="v2-reader__turn v2-reader__turn--next" disabled aria-disabled="true"
+              aria-label="次のページ（外観確認用・未接続）"></button>
+
+      <div class="v2-reader__foot" aria-hidden="true">
+        <span class="v2-reader__foot-mark v2-placeholder"></span>
+        <span class="v2-reader__foot-rule"></span>
+        <span class="v2-reader__foot-slot v2-placeholder"></span>
+      </div>
+    </section>
+
+    <!-- 操作バー：現行に無い機能のため静的・非活性の見た目のみ -->
+    <div class="v2-reader__actions">
+      <button type="button" class="v2-reader__action" disabled aria-disabled="true">
+        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>しおりを追加</button>
+      <button type="button" class="v2-reader__action" disabled aria-disabled="true">
+        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>メモを書く</button>
+      <button type="button" class="v2-reader__action" disabled aria-disabled="true">
+        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>線を引く</button>
+      <button type="button" class="v2-reader__action" disabled aria-disabled="true">
+        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>このページを共有</button>
+    </div>
+
+    <!-- 下部ナビ：5項目。Phase 1 は視覚要素のみ -->
+    <div class="v2-reader__navbar">
+      <nav class="v2-navbar v2-navbar--5 v2-reader__nav" aria-label="ナビゲーション（外観確認用・未接続）">
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">お店へ</span>
+        </span>
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">棚を見る</span>
+        </span>
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">書く</span>
+        </span>
+        <span class="v2-navbar__item v2-navbar__item--current">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">本棚</span>
+        </span>
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">わたし</span>
+        </span>
+      </nav>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

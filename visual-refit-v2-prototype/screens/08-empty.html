@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja" data-v2-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Visual Refit V2 — 08 空状態・下書き（Structural Skeleton）</title>
+
+<!--
+  Visual Refit V2 / Phase 1 Structural Skeleton
+  Visual North Star: FORMAL_COMPS/DAY/08.png ・ FORMAL_COMPS/NIGHT/08.png のみ。
+
+  08 は「まだ本になっていないもの／空の状態にも意味がある」画面。
+  「何もないからエラー」に見せない。毎日書くよう強制しない。
+  streak・達成率・空き枠・製本数の強調を追加しない。
+
+  【Core Ver.2 整合】
+  「まず書く → 本にする」は唯一の正規ルートではない。
+  出会う／残す／再会する の3つは順序ではなく、サービスの3つの過ごし方として
+  並列に置く。番号・矢印・ステップ表現を付けない。
+  次の行動も「感情の棚を見る」と「ことばを残す」の2入口を同格に置き、
+  どちらが正しい入口かという視覚的な強い優劣を作らない。
+
+  正式カンプは 1122x1402（DAY）/ 1123x1401（NIGHT）で 06・07 と縦横比が異なる。
+  1024x1536 へ矯正せず、08 独自の比率のまま扱う（撮影 561x701 CSS px / DPR2）。
+
+  - 保存データを読まない。fake production data を作らない
+  - 検索／並び替え／状態タブは現行に無い機能のため静的・非活性
+  - 保存 / IndexedDB / localStorage / GA4 / 外部通信を一切行わない
+  - 08 の照明は本棚周辺のごく弱い環境光。カンプ上部の吊り下げ灯は主役として再現しない
+  - 下部ナビは5項目。既存4-route契約は Phase 3 まで変更しない
+  - DAY と NIGHT は同一DOM。data-v2-theme だけで切り替える
+    （DAY カンプには「戻る」が無く NIGHT カンプにはあるが、同一DOM の決定に従い両方に置く）
+-->
+
+<script>
+  (function () {
+    var t = new URLSearchParams(location.search).get('theme');
+    if (t === 'day' || t === 'night') {
+      document.documentElement.dataset.v2Theme = t;
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/screens/08.css">
+</head>
+
+<body class="v2-page v2-page--empty">
+<div class="v2-stage v2-empty">
+
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-empty__wall"></div>
+    <div class="v2-empty__scape"></div>
+    <div class="v2-empty__ambient"></div>
+    <div class="v2-empty__vignette"></div>
+  </div>
+
+  <div class="v2-content">
+
+    <p class="v2-empty__back">＜　戻る</p>
+
+    <div class="v2-empty__tools">
+      <button type="button" class="v2-empty__tool" disabled aria-disabled="true">
+        <span class="v2-empty__mark v2-placeholder" aria-hidden="true"></span>検索
+      </button>
+      <button type="button" class="v2-empty__tool v2-empty__tool--round" disabled aria-disabled="true"
+              aria-label="メニュー（外観確認用・未接続）">
+        <span class="v2-empty__mark v2-placeholder" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <p class="v2-empty__badge v2-placeholder" aria-hidden="true"></p>
+    <h1 class="v2-empty__title">わたしの本棚</h1>
+    <p class="v2-empty__lead">書きためた一篇の記録です。<br>あなたのことばが、あなたの本になります。</p>
+
+    <!-- 状態タブ：第3項目「下書き」が選択。Phase 1 は静的・非活性 -->
+    <nav class="v2-empty__tabs" aria-label="状態（外観確認用・未接続）">
+      <span class="v2-empty__tab">すべて</span>
+      <span class="v2-empty__tab">完成した本</span>
+      <span class="v2-empty__tab" aria-current="true">下書き</span>
+      <span class="v2-empty__tab">アーカイブ</span>
+    </nav>
+
+    <!-- 空状態カード：06 の「本が並ぶ状態」との差が一目で分かる構成 -->
+    <section class="v2-empty__card" aria-label="まだ本がない状態">
+      <span class="v2-empty__figure v2-placeholder" aria-hidden="true"></span>
+
+      <h2 class="v2-empty__headline">まだ、あなたの本は棚に並んでいません。</h2>
+      <p class="v2-empty__subline">ここから、気になる棚を覗くことも、今残っていることを書き留めることもできます。</p>
+
+      <hr class="v2-empty__steps-rule" aria-hidden="true">
+
+      <div class="v2-empty__steps">
+        <div class="v2-empty__step">
+          <span class="v2-empty__step-mark v2-placeholder" aria-hidden="true"></span>
+          <h3 class="v2-empty__step-title">出会う</h3>
+          <p class="v2-empty__step-text">感情の棚から、<br>ことばや作品を覗く</p>
+        </div>
+        <div class="v2-empty__step">
+          <span class="v2-empty__step-mark v2-placeholder" aria-hidden="true"></span>
+          <h3 class="v2-empty__step-title">残す</h3>
+          <p class="v2-empty__step-text">自分の中に残ったことを、<br>ことばにする</p>
+        </div>
+        <div class="v2-empty__step">
+          <span class="v2-empty__step-mark v2-placeholder" aria-hidden="true"></span>
+          <h3 class="v2-empty__step-title">再会する</h3>
+          <p class="v2-empty__step-text">一冊にしたことばは、<br>自分の本棚へ</p>
+        </div>
+      </div>
+
+      <div class="v2-empty__ctas">
+        <button type="button" class="v2-empty__cta" disabled aria-disabled="true">
+          <span class="v2-empty__cta-mark v2-placeholder" aria-hidden="true"></span>感情の棚を見る
+        </button>
+        <button type="button" class="v2-empty__cta" disabled aria-disabled="true">
+          <span class="v2-empty__cta-mark v2-placeholder" aria-hidden="true"></span>ことばを残す
+        </button>
+      </div>
+    </section>
+
+    <section class="v2-empty__assurance" aria-label="保存について">
+      <span class="v2-empty__assurance-mark v2-placeholder" aria-hidden="true"></span>
+      <div class="v2-empty__assurance-body">
+        <p class="v2-empty__assurance-title">この端末にのみ保存されています</p>
+        <p class="v2-empty__assurance-text">書いた内容は、あなたの端末にだけ保存されます。公開されることはありません。</p>
+      </div>
+      <span class="v2-empty__assurance-figure v2-placeholder" aria-hidden="true"></span>
+    </section>
+
+    <!-- 下部ナビ：5項目。Phase 1 は視覚要素のみ -->
+    <div class="v2-empty__navbar">
+      <nav class="v2-navbar v2-navbar--5 v2-empty__nav" aria-label="ナビゲーション（外観確認用・未接続）">
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">お店へ</span>
+        </span>
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">棚を見る</span>
+        </span>
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">書く</span>
+        </span>
+        <span class="v2-navbar__item v2-navbar__item--current">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">本棚</span>
+        </span>
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">わたし</span>
+        </span>
+      </nav>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

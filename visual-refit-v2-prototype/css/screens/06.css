@@ -1,0 +1,567 @@
+/* =============================================================================
+ * Visual Refit V2 — 06 自分の本棚
+ * -----------------------------------------------------------------------------
+ * Visual North Star: FORMAL_COMPS/DAY/06.png ・ FORMAL_COMPS/NIGHT/06.png のみ。
+ * （03・04 の旧カンプだけが失効しており、06〜08 は失効していない）
+ *
+ * 【01〜05への非干渉】
+ * tokens.css / base.css / components.css / screens/01〜05 の各ファイルは
+ * 1バイトも変更していない。06 固有の差分はすべて .v2-page--bookshelf スコープで
+ * このファイルに閉じている。
+ *
+ * 06 は本人が残した本が「蔵書として存在する」場所。
+ * カード一覧ではなく、背表紙・本・棚として存在する感覚を最優先する。
+ * Structural Skeleton では実装済みデータへ接続しない。保存データを読まない。
+ * 本の題名・日付・冊数は利用者の実データなので、絵柄も文字も置かず
+ * 占有位置・棚・余白だけを中立プレースホルダーで作る。
+ *
+ * レイアウト契約（1024x1536・正式カンプ実測）
+ *   戻る            y   40-62   / 左 3.9%
+ *   検索／…          y   40-92   / 右端
+ *   本のアイコン枠     y  118-218  / x  78-178（d=100）
+ *   わたしの本棚       y  148-194  / x 198-456
+ *   説明2行          y  227-283  / x 198
+ *   状態タブ4         y  345-375  / x  69 から左揃え
+ *   本棚パネル        y  414-906  / x  39-984
+ *     見出し・並び替え  y  452-478
+ *     背表紙列        y  500-810  / ピッチ 127・幅 78・7枠（6冊＋追加枠）
+ *     棚板           y  810
+ *     日付帯         y  823-844
+ *   下部リストカード    y  942-1424 / x  39-984
+ *   下部5ナビバー      y 1443-1524 / 項目中心 14.7 / 33.8 / 49.8 / 66.3 / 82.8%
+ * ========================================================================== */
+
+.v2-page--bookshelf .v2-stage {
+  --v2-px: calc(100cqw / 1024);
+}
+
+:root[data-v2-theme='day'] .v2-page--bookshelf {
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 90%, #FFFFFF 10%);
+  --v2-card-edge: rgb(51 36 12 / 0.14);
+  --v2-field-face: color-mix(in srgb, var(--v2-wall) 74%, #FFFFFF 26%);
+  --v2-field-edge: rgb(51 36 12 / 0.16);
+  --v2-plank: rgb(51 36 12 / 0.30);
+  --v2-spine: rgb(51 36 12 / 0.13);
+  --v2-slot-edge: rgb(51 36 12 / 0.26);
+}
+
+:root[data-v2-theme='night'] .v2-page--bookshelf {
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 93%, #CDA97C 7%);
+  --v2-card-edge: rgb(84 66 46 / 0.95);
+  --v2-field-face: color-mix(in srgb, var(--v2-wall) 88%, #CDA97C 12%);
+  --v2-field-edge: rgb(94 76 56 / 0.95);
+  --v2-plank: rgb(205 169 124 / 0.34);
+  --v2-spine: rgb(205 169 124 / 0.15);
+  --v2-slot-edge: rgb(205 169 124 / 0.40);
+}
+
+/* -----------------------------------------------------------------------------
+ * 情景レイヤ
+ * 06 の照明は「棚板の間接照明」。吊り下げライトは置かない。
+ * 大きな情景面には輪郭を引かない（偽のUI境界を作らないため）。
+ * 占有: 右上の棚景 x 72-100% / y 0-26%
+ * -------------------------------------------------------------------------- */
+.v2-shelf__wall {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--v2-wall) 0%,
+    var(--v2-wall) 70%,
+    var(--v2-wall-deep) 100%
+  );
+}
+
+.v2-shelf__scape {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 28%;
+  height: 26%;
+  border-bottom-left-radius: 34% 50%;
+  background: var(--v2-scene-arch);
+  opacity: 0.85;
+}
+
+.v2-shelf__scapelight {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 44%;
+  height: 32%;
+  background: radial-gradient(
+    52% 54% at 86% 22%,
+    rgb(var(--v2-glow-color) / var(--v2-glow-strength)) 0%,
+    rgb(var(--v2-glow-color) / 0) 100%
+  );
+}
+
+.v2-shelf__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    110% 62% at 48% 40%,
+    rgb(0 0 0 / 0) 44%,
+    rgb(0 0 0 / var(--v2-vignette)) 100%
+  );
+}
+
+/* -----------------------------------------------------------------------------
+ * ヘッダ
+ * -------------------------------------------------------------------------- */
+.v2-shelf__back {
+  position: absolute;
+  top: 2.60%;
+  left: 3.91%;
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(20 * var(--v2-px));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-mid);
+}
+
+/* 検索・メニュー：現行に無い機能のため静的・非活性の見た目のみ */
+.v2-shelf__tools {
+  position: absolute;
+  top: 2.60%;
+  right: 3.71%;
+  display: flex;
+  align-items: center;
+  gap: calc(12 * var(--v2-px));
+  height: 3.39%;
+}
+
+.v2-shelf__tool {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(10 * var(--v2-px));
+  height: 100%;
+  padding: 0 calc(22 * var(--v2-px));
+  border: 0;
+  border-radius: calc(26 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-px));
+  line-height: 1;
+  color: var(--v2-ink-mid);
+  appearance: none;
+}
+
+.v2-shelf__tool:disabled,
+.v2-shelf__tool[aria-disabled='true'] {
+  opacity: 1;
+  cursor: default;
+}
+
+.v2-shelf__tool--round {
+  width: calc(52 * var(--v2-px));
+  padding: 0;
+}
+
+.v2-shelf__tool-mark {
+  display: block;
+  width: calc(22 * var(--v2-px));
+  height: calc(22 * var(--v2-px));
+  border-radius: calc(3 * var(--v2-px));
+}
+
+.v2-shelf__mark {
+  position: absolute;
+  top: 7.68%;
+  left: 7.62%;
+  width: 9.77%;
+  height: 6.51%;
+  border-radius: 50%;
+}
+
+.v2-shelf__title {
+  position: absolute;
+  top: 9.31%;
+  left: 19.34%;
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(44 * var(--v2-px));
+  line-height: 1;
+  letter-spacing: 0.08em;
+  color: var(--v2-ink-strong);
+}
+
+.v2-shelf__lead {
+  position: absolute;
+  top: 14.13%;
+  left: 19.34%;
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-px));
+  line-height: calc(39 * var(--v2-px));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-mid);
+}
+
+/* -----------------------------------------------------------------------------
+ * 状態タブ（静的・非活性。route を持たない）
+ * -------------------------------------------------------------------------- */
+.v2-shelf__tabs {
+  position: absolute;
+  top: 22.46%;
+  left: 6.74%;
+  display: flex;
+  align-items: center;
+  gap: calc(72 * var(--v2-px));
+}
+
+.v2-shelf__tab {
+  position: relative;
+  font-family: var(--v2-font-body);
+  font-size: calc(20 * var(--v2-px));
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-mid);
+}
+
+.v2-shelf__tab[aria-current='true'] {
+  color: var(--v2-accent-self);
+}
+
+.v2-shelf__tab[aria-current='true']::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(-14 * var(--v2-px));
+  height: calc(3 * var(--v2-px));
+  background: var(--v2-accent-self);
+}
+
+/* -----------------------------------------------------------------------------
+ * 本棚パネル（この画面の主役）
+ * カード一覧にせず、棚板の上に背表紙が立っている状態を作る。
+ * -------------------------------------------------------------------------- */
+.v2-shelf__panel {
+  position: absolute;
+  top: 26.95%;
+  left: 3.81%;
+  width: 92.29%;
+  height: 32.03%;
+  border-radius: calc(24 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+.v2-shelf__panel-title {
+  position: absolute;
+  top: calc(38 * var(--v2-px));
+  left: calc(28 * var(--v2-px));
+  display: flex;
+  align-items: baseline;
+  gap: calc(10 * var(--v2-px));
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(28 * var(--v2-px));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-strong);
+}
+
+/* 冊数は利用者の実データ。数字を置かず、幅だけを中立プレースホルダーで確保する */
+.v2-shelf__count-slot {
+  display: inline-block;
+  width: calc(64 * var(--v2-px));
+  height: calc(22 * var(--v2-px));
+}
+
+/* 並び替え・Grid/List：現行に無い機能のため静的・非活性の見た目のみ */
+.v2-shelf__panel-tools {
+  position: absolute;
+  top: calc(28 * var(--v2-px));
+  right: calc(28 * var(--v2-px));
+  display: flex;
+  align-items: center;
+  gap: calc(14 * var(--v2-px));
+}
+
+.v2-shelf__panel-tool {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(10 * var(--v2-px));
+  height: calc(48 * var(--v2-px));
+  padding: 0 calc(20 * var(--v2-px));
+  border: 0;
+  border-radius: calc(24 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-field-edge);
+  background: var(--v2-field-face);
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-px));
+  line-height: 1;
+  color: var(--v2-ink-mid);
+  appearance: none;
+}
+
+.v2-shelf__panel-tool:disabled,
+.v2-shelf__panel-tool[aria-disabled='true'] {
+  opacity: 1;
+  cursor: default;
+}
+
+.v2-shelf__panel-tool--pair {
+  width: calc(112 * var(--v2-px));
+  padding: 0;
+  border-radius: calc(12 * var(--v2-px));
+}
+
+/* 棚板と背表紙 */
+.v2-shelf__rack {
+  position: absolute;
+  top: calc(86 * var(--v2-px));
+  left: calc(28 * var(--v2-px));
+  right: calc(28 * var(--v2-px));
+  height: calc(310 * var(--v2-px));
+  display: flex;
+  align-items: flex-end;
+  gap: calc(49 * var(--v2-px));
+  border-bottom: calc(4 * var(--v2-px)) solid var(--v2-plank);
+}
+
+/* 背表紙は利用者の本。題名も日付も置かず、占有位置だけを作る */
+.v2-shelf__spine {
+  width: calc(78 * var(--v2-px));
+  height: calc(286 * var(--v2-px));
+  border-radius: calc(3 * var(--v2-px)) calc(3 * var(--v2-px)) 0 0;
+  background: var(--v2-spine);
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+}
+
+.v2-shelf__spine:nth-child(2) { height: calc(272 * var(--v2-px)); }
+.v2-shelf__spine:nth-child(3) { height: calc(292 * var(--v2-px)); }
+.v2-shelf__spine:nth-child(4) { height: calc(266 * var(--v2-px)); }
+.v2-shelf__spine:nth-child(5) { height: calc(280 * var(--v2-px)); }
+.v2-shelf__spine:nth-child(6) { height: calc(290 * var(--v2-px)); }
+
+/* 背表紙の題名が入る位置。文字は置かず縦方向の枠だけを示す */
+.v2-shelf__spine-slot {
+  display: block;
+  width: calc(22 * var(--v2-px));
+  height: calc(190 * var(--v2-px));
+  margin: calc(28 * var(--v2-px)) auto 0;
+}
+
+/* 新しい本をつくる枠。UI 側の要素なので文言を持つ */
+.v2-shelf__add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(10 * var(--v2-px));
+  width: calc(140 * var(--v2-px));
+  height: calc(286 * var(--v2-px));
+  padding: 0;
+  border: calc(1 * var(--v2-px)) dashed var(--v2-slot-edge);
+  border-radius: calc(6 * var(--v2-px));
+  background: transparent;
+  font-family: var(--v2-font-body);
+  font-size: calc(17 * var(--v2-px));
+  line-height: calc(26 * var(--v2-px));
+  text-align: center;
+  color: var(--v2-ink-mid);
+  appearance: none;
+}
+
+.v2-shelf__add:disabled,
+.v2-shelf__add[aria-disabled='true'] {
+  opacity: 1;
+  cursor: default;
+}
+
+/* 棚板の下の日付帯。日付も実データなので枠だけを置く */
+.v2-shelf__dates {
+  position: absolute;
+  top: calc(406 * var(--v2-px));
+  left: calc(28 * var(--v2-px));
+  right: calc(28 * var(--v2-px));
+  display: flex;
+  align-items: center;
+  gap: calc(49 * var(--v2-px));
+}
+
+.v2-shelf__date-slot {
+  width: calc(78 * var(--v2-px));
+  height: calc(18 * var(--v2-px));
+}
+
+/* -----------------------------------------------------------------------------
+ * 下部リスト（最近開いた本 / 下書き）
+ * 見出しと注記は UI 側の文言。本の題名・日付・説明は実データなので枠だけを置く。
+ * -------------------------------------------------------------------------- */
+.v2-shelf__list {
+  position: absolute;
+  top: 61.33%;
+  left: 3.81%;
+  width: 92.29%;
+  height: 31.38%;
+  border-radius: calc(24 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+.v2-shelf__section {
+  position: absolute;
+  left: calc(28 * var(--v2-px));
+  right: calc(28 * var(--v2-px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(22 * var(--v2-px));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-strong);
+}
+
+.v2-shelf__section--recent { top: calc(30 * var(--v2-px)); }
+.v2-shelf__section--drafts { top: calc(291 * var(--v2-px)); }
+
+.v2-shelf__section-more {
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-px));
+  color: var(--v2-ink-mid);
+}
+
+.v2-shelf__row {
+  position: absolute;
+  left: calc(28 * var(--v2-px));
+  right: calc(28 * var(--v2-px));
+  display: flex;
+  align-items: center;
+  gap: calc(26 * var(--v2-px));
+  height: calc(88 * var(--v2-px));
+}
+
+.v2-shelf__row--1 { top: calc(70 * var(--v2-px)); }
+.v2-shelf__row--2 { top: calc(165 * var(--v2-px)); }
+.v2-shelf__row--3 { top: calc(331 * var(--v2-px)); }
+
+.v2-shelf__row-thumb {
+  flex: none;
+  width: calc(76 * var(--v2-px));
+  height: calc(88 * var(--v2-px));
+  border-radius: calc(4 * var(--v2-px));
+}
+
+.v2-shelf__row-main {
+  flex: none;
+  width: calc(300 * var(--v2-px));
+}
+
+.v2-shelf__row-slot {
+  display: block;
+  height: calc(22 * var(--v2-px));
+}
+
+.v2-shelf__row-slot--sub {
+  height: calc(16 * var(--v2-px));
+  margin-top: calc(14 * var(--v2-px));
+  width: 74%;
+}
+
+.v2-shelf__row-desc {
+  flex: 1;
+}
+
+.v2-shelf__row-desc .v2-shelf__row-slot + .v2-shelf__row-slot {
+  margin-top: calc(12 * var(--v2-px));
+  width: 66%;
+}
+
+.v2-shelf__row-go {
+  flex: none;
+  width: calc(20 * var(--v2-px));
+  height: calc(20 * var(--v2-px));
+}
+
+.v2-shelf__note {
+  position: absolute;
+  left: calc(28 * var(--v2-px));
+  bottom: calc(24 * var(--v2-px));
+  display: flex;
+  align-items: center;
+  gap: calc(12 * var(--v2-px));
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(17 * var(--v2-px));
+  line-height: 1;
+  color: var(--v2-ink-soft);
+}
+
+.v2-shelf__note-mark {
+  display: block;
+  width: calc(20 * var(--v2-px));
+  height: calc(22 * var(--v2-px));
+}
+
+/* -----------------------------------------------------------------------------
+ * 下部ナビ（06〜08 は正式仕様どおり5項目）
+ * 共通部品 .v2-navbar を再利用し、06 の寸法だけをこのスコープで上書きする。
+ * 既存4-route契約は Phase 3 まで変更しない。Phase 1 は視覚要素のみ。
+ * -------------------------------------------------------------------------- */
+.v2-shelf__navbar {
+  position: absolute;
+  top: 93.95%;
+  left: 3.81%;
+  width: 92.29%;
+  height: 5.27%;
+  border-radius: calc(20 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+.v2-shelf__nav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(27 * var(--v2-px));
+  width: calc(867 * var(--v2-px));
+}
+
+.v2-page--bookshelf .v2-navbar--5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.v2-page--bookshelf .v2-navbar__item {
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: calc(12 * var(--v2-px));
+}
+
+.v2-page--bookshelf .v2-navbar__icon {
+  width: calc(26 * var(--v2-px));
+  height: calc(26 * var(--v2-px));
+}
+
+.v2-page--bookshelf .v2-navbar__label {
+  font-size: calc(19 * var(--v2-px));
+}
+
+.v2-page--bookshelf .v2-navbar__item + .v2-navbar__item::before {
+  content: '';
+  position: absolute;
+  top: calc(18 * var(--v2-px));
+  bottom: calc(18 * var(--v2-px));
+  left: 0;
+  width: calc(1 * var(--v2-px));
+  background: var(--v2-rule);
+  opacity: 0.45;
+}
+
+.v2-page--bookshelf .v2-navbar__item--current .v2-navbar__label {
+  color: var(--v2-accent-self);
+}

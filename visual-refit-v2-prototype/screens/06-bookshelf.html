@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja" data-v2-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Visual Refit V2 — 06 自分の本棚（Structural Skeleton）</title>
+
+<!--
+  Visual Refit V2 / Phase 1 Structural Skeleton
+  Visual North Star: FORMAL_COMPS/DAY/06.png ・ FORMAL_COMPS/NIGHT/06.png のみ。
+
+  06 は本人が残した本が「蔵書として存在する」場所。
+  カード一覧ではなく、背表紙・本・棚として存在する感覚を最優先する。
+
+  - 実装済みデータへ接続しない。保存データを読まない
+  - fake book data を本番ロジックへ追加しない
+  - 本の題名・日付・冊数は利用者の実データなので文字を置かず、
+    静的プレースホルダーで占有位置・棚・余白だけを作る
+  - 検索／並び替え／Grid・List 切替は現行に無い機能のため静的・非活性
+  - 下部ナビは正式仕様どおり5項目。既存4-route契約は Phase 3 まで変更しない
+  - 保存 / IndexedDB / localStorage / GA4 / 外部通信を一切行わない
+  - 06 の照明は棚板の間接照明。吊り下げライトは置かない
+  - DAY と NIGHT は同一DOM。data-v2-theme だけで切り替える
+-->
+
+<script>
+  (function () {
+    var t = new URLSearchParams(location.search).get('theme');
+    if (t === 'day' || t === 'night') {
+      document.documentElement.dataset.v2Theme = t;
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/screens/06.css">
+</head>
+
+<body class="v2-page v2-page--bookshelf">
+<div class="v2-stage v2-shelf">
+
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-shelf__wall"></div>
+    <div class="v2-shelf__scape"></div>
+    <div class="v2-shelf__scapelight"></div>
+    <div class="v2-shelf__vignette"></div>
+  </div>
+
+  <div class="v2-content">
+
+    <p class="v2-shelf__back">＜　戻る</p>
+
+    <div class="v2-shelf__tools">
+      <button type="button" class="v2-shelf__tool" disabled aria-disabled="true">
+        <span class="v2-shelf__tool-mark v2-placeholder" aria-hidden="true"></span>検索
+      </button>
+      <button type="button" class="v2-shelf__tool v2-shelf__tool--round" disabled aria-disabled="true"
+              aria-label="メニュー（外観確認用・未接続）">
+        <span class="v2-shelf__tool-mark v2-placeholder" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <p class="v2-shelf__mark v2-placeholder" aria-hidden="true"></p>
+    <h1 class="v2-shelf__title">わたしの本棚</h1>
+    <p class="v2-shelf__lead">書きためた一篇の記録です。<br>あなたのことばが、あなたの本になります。</p>
+
+    <!-- 状態タブ：Phase 1 は静的・非活性。route を持たない -->
+    <nav class="v2-shelf__tabs" aria-label="状態（外観確認用・未接続）">
+      <span class="v2-shelf__tab" aria-current="true">すべて</span>
+      <span class="v2-shelf__tab">完成した本</span>
+      <span class="v2-shelf__tab">下書き</span>
+      <span class="v2-shelf__tab">アーカイブ</span>
+    </nav>
+
+    <!-- 本棚パネル：棚板の上に背表紙が立つ。カード一覧にしない -->
+    <section class="v2-shelf__panel" aria-label="本棚">
+      <h2 class="v2-shelf__panel-title">
+        本棚<span class="v2-shelf__count-slot v2-placeholder" aria-hidden="true"></span>
+      </h2>
+
+      <div class="v2-shelf__panel-tools">
+        <button type="button" class="v2-shelf__panel-tool" disabled aria-disabled="true">
+          <span class="v2-shelf__tool-mark v2-placeholder" aria-hidden="true"></span>新しい順
+        </button>
+        <button type="button" class="v2-shelf__panel-tool v2-shelf__panel-tool--pair" disabled aria-disabled="true"
+                aria-label="表示切替（外観確認用・未接続）">
+          <span class="v2-shelf__tool-mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-shelf__tool-mark v2-placeholder" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <!-- 背表紙列：利用者の本。題名も日付も置かず、占有位置だけを作る -->
+      <div class="v2-shelf__rack">
+        <span class="v2-shelf__spine"><span class="v2-shelf__spine-slot v2-placeholder"></span></span>
+        <span class="v2-shelf__spine"><span class="v2-shelf__spine-slot v2-placeholder"></span></span>
+        <span class="v2-shelf__spine"><span class="v2-shelf__spine-slot v2-placeholder"></span></span>
+        <span class="v2-shelf__spine"><span class="v2-shelf__spine-slot v2-placeholder"></span></span>
+        <span class="v2-shelf__spine"><span class="v2-shelf__spine-slot v2-placeholder"></span></span>
+        <span class="v2-shelf__spine"><span class="v2-shelf__spine-slot v2-placeholder"></span></span>
+        <button type="button" class="v2-shelf__add" disabled aria-disabled="true">＋<br>新しい本を<br>つくる</button>
+      </div>
+
+      <div class="v2-shelf__dates" aria-hidden="true">
+        <span class="v2-shelf__date-slot v2-placeholder"></span>
+        <span class="v2-shelf__date-slot v2-placeholder"></span>
+        <span class="v2-shelf__date-slot v2-placeholder"></span>
+        <span class="v2-shelf__date-slot v2-placeholder"></span>
+        <span class="v2-shelf__date-slot v2-placeholder"></span>
+        <span class="v2-shelf__date-slot v2-placeholder"></span>
+      </div>
+    </section>
+
+    <!-- 下部リスト：見出しと注記は UI 側の文言。本の情報は枠だけ -->
+    <section class="v2-shelf__list" aria-label="最近開いた本と下書き">
+
+      <h2 class="v2-shelf__section v2-shelf__section--recent">
+        最近開いた本<span class="v2-shelf__section-more">すべて見る　＞</span>
+      </h2>
+
+      <div class="v2-shelf__row v2-shelf__row--1">
+        <span class="v2-shelf__row-thumb v2-placeholder" aria-hidden="true"></span>
+        <span class="v2-shelf__row-main" aria-hidden="true">
+          <span class="v2-shelf__row-slot v2-placeholder"></span>
+          <span class="v2-shelf__row-slot v2-shelf__row-slot--sub v2-placeholder"></span>
+        </span>
+        <span class="v2-shelf__row-desc" aria-hidden="true">
+          <span class="v2-shelf__row-slot v2-placeholder"></span>
+          <span class="v2-shelf__row-slot v2-placeholder"></span>
+        </span>
+        <span class="v2-shelf__row-go v2-placeholder" aria-hidden="true"></span>
+      </div>
+
+      <div class="v2-shelf__row v2-shelf__row--2">
+        <span class="v2-shelf__row-thumb v2-placeholder" aria-hidden="true"></span>
+        <span class="v2-shelf__row-main" aria-hidden="true">
+          <span class="v2-shelf__row-slot v2-placeholder"></span>
+          <span class="v2-shelf__row-slot v2-shelf__row-slot--sub v2-placeholder"></span>
+        </span>
+        <span class="v2-shelf__row-desc" aria-hidden="true">
+          <span class="v2-shelf__row-slot v2-placeholder"></span>
+          <span class="v2-shelf__row-slot v2-placeholder"></span>
+        </span>
+        <span class="v2-shelf__row-go v2-placeholder" aria-hidden="true"></span>
+      </div>
+
+      <h2 class="v2-shelf__section v2-shelf__section--drafts">
+        下書き<span class="v2-shelf__section-more">すべて見る　＞</span>
+      </h2>
+
+      <div class="v2-shelf__row v2-shelf__row--3">
+        <span class="v2-shelf__row-thumb v2-placeholder" aria-hidden="true"></span>
+        <span class="v2-shelf__row-main" aria-hidden="true">
+          <span class="v2-shelf__row-slot v2-placeholder"></span>
+          <span class="v2-shelf__row-slot v2-shelf__row-slot--sub v2-placeholder"></span>
+        </span>
+        <span class="v2-shelf__row-desc" aria-hidden="true">
+          <span class="v2-shelf__row-slot v2-placeholder"></span>
+          <span class="v2-shelf__row-slot v2-placeholder"></span>
+        </span>
+        <span class="v2-shelf__row-go v2-placeholder" aria-hidden="true"></span>
+      </div>
+
+      <p class="v2-shelf__note">
+        <span class="v2-shelf__note-mark v2-placeholder" aria-hidden="true"></span>この端末にのみ保存されています。公開されることはありません。
+      </p>
+    </section>
+
+    <!-- 下部ナビ：正式仕様どおり5項目。Phase 1 は視覚要素のみ -->
+    <div class="v2-shelf__navbar">
+      <nav class="v2-navbar v2-navbar--5 v2-shelf__nav" aria-label="ナビゲーション（外観確認用・未接続）">
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">お店へ</span>
+        </span>
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">棚を見る</span>
+        </span>
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">書く</span>
+        </span>
+        <span class="v2-navbar__item v2-navbar__item--current">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">本棚</span>
+        </span>
+        <span class="v2-navbar__item">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">わたし</span>
+        </span>
+      </nav>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
