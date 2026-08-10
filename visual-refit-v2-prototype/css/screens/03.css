@@ -152,7 +152,7 @@
   box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
   background: var(--v2-card-face);
   font-family: var(--v2-font-body);
-  font-size: calc(18 * var(--v2-px));
+  font-size: calc(18 * var(--v2-tpx));
   line-height: 1;
   color: var(--v2-ink-mid);
 }
@@ -172,7 +172,7 @@
   margin: 0;
   font-family: var(--v2-font-display);
   font-weight: 500;
-  font-size: calc(46 * var(--v2-px));
+  font-size: calc(46 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.14em;
   text-indent: 0.14em;
@@ -199,8 +199,8 @@
   transform: translateX(-50%);
   margin: 0;
   font-family: var(--v2-font-body);
-  font-size: calc(18 * var(--v2-px));
-  line-height: calc(34 * var(--v2-px));
+  font-size: calc(18 * var(--v2-tpx));
+  line-height: calc(34 * var(--v2-tpx));
   letter-spacing: 0.01em;
   text-align: center;
   color: var(--v2-ink-mid);
@@ -257,8 +257,8 @@
   margin: 0;
   font-family: var(--v2-font-display);
   font-weight: 500;
-  font-size: calc(28 * var(--v2-px));
-  line-height: calc(36 * var(--v2-px));
+  font-size: calc(28 * var(--v2-tpx));
+  line-height: calc(36 * var(--v2-tpx));
   letter-spacing: 0.06em;
   text-indent: 0.06em;
   text-align: center;
@@ -278,7 +278,7 @@
   display: block;
   margin: calc(12 * var(--v2-px)) 0 0;
   font-family: var(--v2-font-body);
-  font-size: calc(17 * var(--v2-px));
+  font-size: calc(17 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.01em;
   text-align: center;
@@ -334,15 +334,15 @@
 }
 
 .v2-shelf-card--crossway .v2-shelf-card__name {
-  font-size: calc(26 * var(--v2-px));
+  font-size: calc(26 * var(--v2-tpx));
 }
 
 .v2-shelf-card__note {
   display: block;
   margin: calc(10 * var(--v2-px)) 0 0;
   font-family: var(--v2-font-body);
-  font-size: calc(16 * var(--v2-px));
-  line-height: calc(26 * var(--v2-px));
+  font-size: calc(16 * var(--v2-tpx));
+  line-height: calc(26 * var(--v2-tpx));
   text-align: center;
   color: var(--v2-ink-mid);
 }
@@ -357,7 +357,7 @@
   display: block;
   margin: calc(10 * var(--v2-px)) 0 0;
   font-family: var(--v2-font-body);
-  font-size: calc(17 * var(--v2-px));
+  font-size: calc(17 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.02em;
   text-align: center;
@@ -380,7 +380,7 @@
   background: transparent;
   font-family: var(--v2-font-display);
   font-weight: 500;
-  font-size: calc(26 * var(--v2-px));
+  font-size: calc(26 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.06em;
   color: var(--v2-ink-strong);
@@ -400,7 +400,7 @@
   transform: translateX(-50%);
   margin: 0;
   font-family: var(--v2-font-body);
-  font-size: calc(17 * var(--v2-px));
+  font-size: calc(17 * var(--v2-tpx));
   line-height: 1;
   text-align: center;
   color: var(--v2-ink-soft);

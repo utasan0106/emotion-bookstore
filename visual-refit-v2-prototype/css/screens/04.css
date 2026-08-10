@@ -122,7 +122,7 @@
   left: 3.51%;
   margin: 0;
   font-family: var(--v2-font-body);
-  font-size: calc(20 * var(--v2-px));
+  font-size: calc(20 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.04em;
   color: var(--v2-ink-mid);
@@ -145,7 +145,7 @@
   margin: 0;
   font-family: var(--v2-font-display);
   font-weight: 500;
-  font-size: calc(46 * var(--v2-px));
+  font-size: calc(46 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.10em;
   color: var(--v2-ink-strong);
@@ -157,8 +157,8 @@
   left: 17.48%;
   margin: 0;
   font-family: var(--v2-font-body);
-  font-size: calc(18 * var(--v2-px));
-  line-height: calc(34 * var(--v2-px));
+  font-size: calc(18 * var(--v2-tpx));
+  line-height: calc(34 * var(--v2-tpx));
   letter-spacing: 0.01em;
   color: var(--v2-ink-mid);
 }
@@ -209,7 +209,7 @@
   appearance: none;
 
   font-family: var(--v2-font-body);
-  font-size: calc(21 * var(--v2-px));
+  font-size: calc(21 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.02em;
   color: var(--v2-ink-mid);
@@ -284,7 +284,7 @@
   margin: 0 0 calc(49 * var(--v2-px));
   font-family: var(--v2-font-display);
   font-weight: 500;
-  font-size: calc(26 * var(--v2-px));
+  font-size: calc(26 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.04em;
   color: var(--v2-ink-strong);
@@ -342,7 +342,7 @@
   margin: 0;
   font-family: var(--v2-font-display);
   font-weight: 500;
-  font-size: calc(28 * var(--v2-px));
+  font-size: calc(28 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.06em;
   color: var(--v2-ink-strong);
@@ -361,8 +361,8 @@
   display: block;
   margin: calc(26 * var(--v2-px)) 0 0;
   font-family: var(--v2-font-body);
-  font-size: calc(16 * var(--v2-px));
-  line-height: calc(28 * var(--v2-px));
+  font-size: calc(16 * var(--v2-tpx));
+  line-height: calc(28 * var(--v2-tpx));
   letter-spacing: 0.01em;
   color: var(--v2-ink-mid);
 }
@@ -380,8 +380,8 @@
 .v2-detail__empty-title {
   margin: 0;
   font-family: var(--v2-font-body);
-  font-size: calc(19 * var(--v2-px));
-  line-height: calc(32 * var(--v2-px));
+  font-size: calc(19 * var(--v2-tpx));
+  line-height: calc(32 * var(--v2-tpx));
   letter-spacing: 0.02em;
   color: var(--v2-ink-strong);
 }
@@ -389,8 +389,8 @@
 .v2-detail__empty-note {
   margin: calc(16 * var(--v2-px)) 0 0;
   font-family: var(--v2-font-body);
-  font-size: calc(16 * var(--v2-px));
-  line-height: calc(28 * var(--v2-px));
+  font-size: calc(16 * var(--v2-tpx));
+  line-height: calc(28 * var(--v2-tpx));
   letter-spacing: 0.01em;
   color: var(--v2-ink-mid);
 }
@@ -447,8 +447,8 @@
   display: block;
   font-family: var(--v2-font-display);
   font-weight: 500;
-  font-size: calc(24 * var(--v2-px));
-  line-height: calc(34 * var(--v2-px));
+  font-size: calc(24 * var(--v2-tpx));
+  line-height: calc(34 * var(--v2-tpx));
   letter-spacing: 0.04em;
   color: var(--v2-ink-strong);
   overflow-wrap: anywhere;
@@ -458,7 +458,7 @@
   display: block;
   margin: calc(14 * var(--v2-px)) 0 0;
   font-family: var(--v2-font-body);
-  font-size: calc(15 * var(--v2-px));
+  font-size: calc(15 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.02em;
   color: var(--v2-ink-mid);
@@ -475,7 +475,7 @@
   border-radius: 0;
   background: transparent;
   font-family: var(--v2-font-body);
-  font-size: calc(17 * var(--v2-px));
+  font-size: calc(17 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.02em;
   color: var(--v2-ink-mid);

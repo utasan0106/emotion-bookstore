@@ -48,6 +48,14 @@ body.v2-page {
 .v2-stage {
   --v2-px: calc(100cqw / 853);
 
+  /* --v2-tpx = タイポグラフィ専用スケール（Pre-Mount Visual Accessibility Hotfix）
+     レイアウト寸法は従来どおり --v2-px（カンプ幅への完全比例）のまま。
+     文字だけは狭い画面で縮みすぎないよう下限を設ける。
+     max() なのでカンプ原寸（--v2-px >= 下限）では 1px 相当のまま変わらず、
+     ブレークポイントも作らないため見え方が不連続に飛ばない。
+     font-size / line-height 以外には使わない。 */
+  --v2-tpx: max(0.86px, var(--v2-px));
+
   position: relative;
   width: 100%;
   height: 100svh;

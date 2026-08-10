@@ -42,7 +42,7 @@
   background: var(--v2-accent-place);
   border: calc(1 * var(--v2-px)) solid var(--v2-accent-place-edge);
   color: var(--v2-accent-place-on);
-  font-size: calc(44 * var(--v2-px));
+  font-size: calc(44 * var(--v2-tpx));
   letter-spacing: 0.30em;
   text-indent: 0.30em; /* letter-spacing による右寄りを打ち消して光学的に中央へ */
 }
@@ -145,7 +145,7 @@
 .v2-navbar__label {
   display: block;
   font-family: var(--v2-font-body);
-  font-size: calc(20 * var(--v2-px));
+  font-size: calc(20 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.02em;
   color: var(--v2-ink-mid);

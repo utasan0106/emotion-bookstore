@@ -120,7 +120,7 @@
 
 .v2-cover__title-sub {
   display: block;
-  font-size: calc(58 * var(--v2-px));
+  font-size: calc(58 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.12em;
   margin-bottom: calc(19 * var(--v2-px));
@@ -128,7 +128,7 @@
 
 .v2-cover__title-main {
   display: block;
-  font-size: calc(81 * var(--v2-px));
+  font-size: calc(81 * var(--v2-tpx));
   line-height: 1.17;
   letter-spacing: 0.19em;
 }
@@ -150,8 +150,8 @@
   margin: 0;
   font-family: var(--v2-font-body);
   font-weight: 400;
-  font-size: calc(27 * var(--v2-px));
-  line-height: calc(54 * var(--v2-px));
+  font-size: calc(27 * var(--v2-tpx));
+  line-height: calc(54 * var(--v2-tpx));
   letter-spacing: 0.01em;
   color: var(--v2-ink-mid);
 }
@@ -163,8 +163,8 @@
   margin: 0;
   font-family: var(--v2-font-body);
   font-weight: 400;
-  font-size: calc(23 * var(--v2-px));
-  line-height: calc(44 * var(--v2-px));
+  font-size: calc(23 * var(--v2-tpx));
+  line-height: calc(44 * var(--v2-tpx));
   letter-spacing: 0.01em;
   color: var(--v2-ink-soft);
 }

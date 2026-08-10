@@ -115,7 +115,7 @@
   left: 3.91%;
   margin: 0;
   font-family: var(--v2-font-body);
-  font-size: calc(20 * var(--v2-px));
+  font-size: calc(20 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.04em;
   color: var(--v2-ink-mid);
@@ -137,7 +137,7 @@
   margin: 0;
   font-family: var(--v2-font-display);
   font-weight: 500;
-  font-size: calc(44 * var(--v2-px));
+  font-size: calc(44 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.08em;
   color: var(--v2-ink-strong);
@@ -149,8 +149,8 @@
   left: 19.34%;
   margin: 0;
   font-family: var(--v2-font-body);
-  font-size: calc(18 * var(--v2-px));
-  line-height: calc(39 * var(--v2-px));
+  font-size: calc(18 * var(--v2-tpx));
+  line-height: calc(39 * var(--v2-tpx));
   letter-spacing: 0.01em;
   color: var(--v2-ink-mid);
 }
@@ -180,7 +180,7 @@
   margin: 0;
   font-family: var(--v2-font-display);
   font-weight: 500;
-  font-size: calc(28 * var(--v2-px));
+  font-size: calc(28 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.04em;
   color: var(--v2-ink-strong);
@@ -191,7 +191,7 @@
 .v2-shelf__count {
   display: inline-block;
   font-family: var(--v2-font-body);
-  font-size: calc(18 * var(--v2-px));
+  font-size: calc(18 * var(--v2-tpx));
   line-height: 1;
   letter-spacing: 0.02em;
   color: var(--v2-ink-soft);
@@ -267,8 +267,8 @@
   padding: 0 calc(4 * var(--v2-px));
   writing-mode: vertical-rl;
   font-family: var(--v2-font-body);
-  font-size: calc(17 * var(--v2-px));
-  line-height: calc(26 * var(--v2-px));
+  font-size: calc(17 * var(--v2-tpx));
+  line-height: calc(26 * var(--v2-tpx));
   letter-spacing: 0.04em;
   color: var(--v2-ink-mid);
   overflow: hidden;
@@ -293,8 +293,8 @@
   border-radius: calc(6 * var(--v2-px));
   background: transparent;
   font-family: var(--v2-font-body);
-  font-size: calc(17 * var(--v2-px));
-  line-height: calc(26 * var(--v2-px));
+  font-size: calc(17 * var(--v2-tpx));
+  line-height: calc(26 * var(--v2-tpx));
   letter-spacing: 0.18em;
   text-align: center;
   writing-mode: vertical-rl;
@@ -311,7 +311,7 @@
   gap: calc(12 * var(--v2-px));
   margin: 0;
   font-family: var(--v2-font-body);
-  font-size: calc(17 * var(--v2-px));
+  font-size: calc(17 * var(--v2-tpx));
   line-height: 1;
   color: var(--v2-ink-soft);
 }
