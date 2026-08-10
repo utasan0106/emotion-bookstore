@@ -270,7 +270,7 @@ const MESSAGES = {
     modalGoShelf: "この棚をもう一度見る", modalDel: "この本を棚から下げる",
     // ★PoC Task 001：個別本削除の誤タップ防止用の確認文言（本棚全リセットの文言・フローとは別物）。
     modalDelConfirm: "この1冊を棚から下げます。元に戻せません。よろしいですか？",
-    modalShare: "Xでシェア", modalShareNote: "※本文はそのまま送信されません。投稿画面が開くだけで、実際に投稿するかはあなた次第です。",
+    modalShare: "Xでシェア", modalShareNote: "※本文・題名・棚の名前は送信されません。書店の紹介文とURLだけを載せた投稿画面が開き、実際に投稿するかはあなた次第です。",
     // ★2026-07-18追加：製本後の本の詳細画面から、タイトル・本文を書き直す機能。
     modalEditBtn: "タイトル・本文を書き直す",
     modalEditSave: "書き直しを保存する",
@@ -642,7 +642,7 @@ const MESSAGES = {
     modalGoShelf: "See this shelf again", modalDel: "Remove this book from the shelf",
     // ★PoC Task 001: confirmation text for single-book removal (separate from the full bookshelf reset copy/flow).
     modalDelConfirm: "Remove this one book from the shelf? This cannot be undone.",
-    modalShare: "Share on X", modalShareNote: "Nothing is sent anywhere on its own — this only opens the post composer, and whether you actually post is entirely up to you.",
+    modalShare: "Share on X", modalShareNote: "Your entry, its title, and its shelf are never sent. This only opens the post composer with a short description of the bookstore and its URL — whether you actually post is entirely up to you.",
     // ★Hotfix4-3追加：英語モードで空文字になり、ボタン文字が消えていた欠落キーを補完。
     modalEditBtn: "Edit the title and story",
     modalEditSave: "Save the changes",
@@ -1151,8 +1151,24 @@ function recommendReasonFor(catId){
   return pool[Math.floor(Math.random()*pool.length)];
 }
 
-const AMAZON_ASSOCIATE_ID = 'uta0106-22';
-const RAKUTEN_AFFILIATE_ID = '5590cc07.86ee74b4.5590cc08.a766f047';
+// ★Public Beta（CEO決定 2026-08-10）：Amazon／楽天のアフィリエイト収益化を行わない。
+// 空文字にすると amazonSearchUrl() / rakutenSearchUrl() は既存の分岐によって
+// タグ無しの通常検索URLを返す（送客先は変わらない）。IDを書き戻すだけで元へ戻せる。
+// これに伴い、PR表記と rel="sponsored" も affiliateEnabled() で連動させ、
+// 実態と表示が食い違わないようにする。
+const AMAZON_ASSOCIATE_ID = '';
+const RAKUTEN_AFFILIATE_ID = '';
+
+// アフィリエイトIDが1つでも設定されているときだけ true。
+// 広告表示義務（景表法のステマ規制・rel="sponsored"）はこの結果に従う。
+function affiliateEnabled(){
+  return !!(AMAZON_ASSOCIATE_ID || RAKUTEN_AFFILIATE_ID);
+}
+
+// rel 属性の共通生成。アフィリエイトが無効なときは sponsored を付けない。
+function relForCommerceLink(){
+  return affiliateEnabled() ? 'noopener sponsored' : 'noopener';
+}
 
 function amazonSearchUrl(query, indexParam){
   let url = 'https://www.amazon.co.jp/s?k=' + encodeURIComponent(query);
@@ -1180,6 +1196,8 @@ function rakutenTravelSearchUrl(query){
  * 表記のばらつきをなくす。アフィリエイトIDが付かないリンク（Spotify／Apple Music／
  * YouTube／Google Books の infoLink 等）だけで構成されるブロックには付けない。 */
 function prNoteHtml(){
+  // アフィリエイトが無効なら広告ではないため、PR表記は出さない（出すと不正確になる）
+  if(!affiliateEnabled()) return '';
   return `<p class="detour-pr">${escapeHtml(t('detourPrNote'))}</p>`;
 }
 
@@ -1188,20 +1206,14 @@ function prNoteHtml(){
 // 事前入力し、あとはX（twitter.com/intent/tweet）自身のcompose画面でユーザーが確認・編集した上で
 // 「投稿するか」を自分で判断する。intent URLを新しいタブで開くだけなので、当店のサーバー（＝存在しない）
 // への送信は一切発生しない。
+// ★Public Beta（CEO決定 2026-08-10）：X の投稿画面へ利用者由来の情報を一切渡さない。
+// 以前は題名と棚名（＝具体的な感情）を投稿本文に載せていたため、投稿するかどうかに
+// かかわらず、投稿画面を開いた時点でそれらが X へ渡っていた。
+// ここでは既存の書店紹介文（shareText）だけを使う。新しい文言は作らない。
+// 引数 entry は呼び出し側の互換のために残すが、一切読まない。
+// 送信され得るのは「固定の紹介文＋サービスURL＋固定ハッシュタグ」のみ。
 function buildShareText(entry){
-  const title = entry.title || '';
-  const shopName = t('shopName');
-  // ★Step4：棚未選択（unfiled）の場合は、棚に関する一文・棚名を完全に省略する
-  if(entry.category === UNFILED_CATEGORY_ID){
-    return (appLang === 'en')
-      ? `I wrote "${title}" at ${shopName}.`
-      : `「${title}」を、${shopName}に綴りました。`;
-  }
-  const cat = CATEGORIES.find(c=>c.id===entry.category);
-  const shelfLabel = categoryLabelFor(cat);
-  return (appLang === 'en')
-    ? `I wrote "${title}" and placed it on the ${shelfLabel} shelf at ${shopName}.`
-    : `「${title}」を、${shopName}の「${shelfLabel}の棚」に綴りました。`;
+  return t('shareText');
 }
 
 function twitterIntentUrl(text, url){
@@ -2477,7 +2489,7 @@ async function showFavorites(){
         // 曲側（Spotify／Apple Music／YouTube）はアフィリエイトではないため変更しない。
         const links = isMusic
           ? `<a href="https://open.spotify.com/search/${encodeURIComponent(q5)}" target="_blank" rel="noopener">Spotify</a> <a href="https://music.apple.com/jp/search?term=${encodeURIComponent(q5)}" target="_blank" rel="noopener">Apple Music</a> <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(q5)}" target="_blank" rel="noopener">YouTube</a>`
-          : `<a href="${amazonSearchUrl(q5)}" target="_blank" rel="noopener sponsored">Amazon</a> <a href="${rakutenSearchUrl(q5)}" target="_blank" rel="noopener sponsored">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>`;
+          : `<a href="${amazonSearchUrl(q5)}" target="_blank" rel="${relForCommerceLink()}">Amazon</a> <a href="${rakutenSearchUrl(q5)}" target="_blank" rel="${relForCommerceLink()}">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>`;
         return `<div class="purify-log-entry">
           <p class="purify-log-meta"><span class="meta-type-tag ${isMusic ? 'is-music' : 'is-book'}">${isMusic ? (appLang === 'en' ? 'Song' : '曲') : (appLang === 'en' ? 'Book' : '本')}</span> ${escapeHtml(label)}</p>
           <p class="purify-log-text"><span class="work-title">${escapeHtml(f.title)}${f.by ? ' — ' + escapeHtml(f.by) : ''}</span></p>
@@ -3367,12 +3379,12 @@ function renderDetourFallback(box, catId){
         <span class="detour-tier-badge">${tierLabel[featured.tier] || featured.tier}</span>
         <p class="detour-name">${escapeHtml(dispName)}</p>
         <p class="detour-desc">${escapeHtml(dispDesc)}</p>
-        <a class="detour-link" href="${url}" target="_blank" rel="noopener sponsored">${escapeHtml(t('detourViewLink'))}</a>
+        <a class="detour-link" href="${url}" target="_blank" rel="${relForCommerceLink()}">${escapeHtml(t('detourViewLink'))}</a>
       </div>`;
   }).join('');
   box.innerHTML = `
     <p class="detour-heading">${escapeHtml(t('detourHeading'))}<span class="detour-half-note">（${escapeHtml(halfLabel)}）</span></p>
-    <p class="detour-pr">${escapeHtml(t('detourPrNote'))}</p>
+    ${prNoteHtml()}
     <div class="detour-cards">${cardsHtml}</div>
     <p class="detour-note">${escapeHtml(t('detourNote'))}</p>`;
 }
@@ -3425,7 +3437,7 @@ async function renderLiveNewReleases(cat){
       <p class="live-pick-name">${escapeHtml(b.title)}</p>
       <p class="live-pick-desc">${escapeHtml(b.by)}${b.hook ? ' — ' + escapeHtml(b.hook) : ''}</p>
       ${isAffiliateLink ? prNoteHtml() : ''}
-      <a class="live-pick-link" href="${url}" target="_blank" rel="noopener${isAffiliateLink ? ' sponsored' : ''}">見てみる →</a>
+      <a class="live-pick-link" href="${url}" target="_blank" rel="${isAffiliateLink ? relForCommerceLink() : 'noopener'}">見てみる →</a>
       ${favBtnHtml('book', b.title, b.by, cat.id, b.hook || '')}
     </div>`;
   }
@@ -3511,10 +3523,10 @@ function renderShelfDisplay(){
               <span class="work-title">『${escapeHtml(bookTitleFor(r))}』${escapeHtml(bookAuthorFor(r))}</span>
               <span class="recommend-why">${r.why || ''}</span>
               <span class="recommend-shop-links">
-                <a class="recommend-buy" href="${amazonUrl}" target="_blank" rel="noopener sponsored">Amazon</a>
-                <a class="recommend-buy kindle" href="${kindleUrl}" target="_blank" rel="noopener sponsored">Kindle</a>
-                <a class="recommend-buy audible" href="${audibleUrl}" target="_blank" rel="noopener sponsored">Audible</a>
-                <a class="recommend-buy rakuten" href="${rakutenUrl}" target="_blank" rel="noopener sponsored">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>
+                <a class="recommend-buy" href="${amazonUrl}" target="_blank" rel="${relForCommerceLink()}">Amazon</a>
+                <a class="recommend-buy kindle" href="${kindleUrl}" target="_blank" rel="${relForCommerceLink()}">Kindle</a>
+                <a class="recommend-buy audible" href="${audibleUrl}" target="_blank" rel="${relForCommerceLink()}">Audible</a>
+                <a class="recommend-buy rakuten" href="${rakutenUrl}" target="_blank" rel="${relForCommerceLink()}">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>
               </span>
               ${favBtnHtml('book', r.title, r.by, cat.id, r.hook || r.why || '')}
               ${r.source ? `<a class="recommend-source" href="${r.sourceUrl}" target="_blank" rel="noopener">出典：${r.source}</a>` : ''}
@@ -3546,7 +3558,7 @@ function renderShelfDisplay(){
           <span class="playlist-services">
             <a href="${spUrl}" target="_blank" rel="noopener">Spotify</a>
             <a href="${amcUrl}" target="_blank" rel="noopener">Apple Music</a>
-            <a href="${amUrl}" target="_blank" rel="noopener sponsored">Amazon Music</a>
+            <a href="${amUrl}" target="_blank" rel="${relForCommerceLink()}">Amazon Music</a>
             <a href="${ytUrl}" target="_blank" rel="noopener">YouTube</a>
           </span>
           ${favBtnHtml('music', song.title, song.artist, cat.id, song.comment || '')}
@@ -6733,8 +6745,8 @@ function renderShelfPickRecommend(){
         <p class="shelf-pick-title">『${escapeHtml(bookTitleFor(book))}』${escapeHtml(bookAuthorFor(book))}</p>
         ${bookHookFor(book) ? `<p class="shelf-pick-meta">${escapeHtml(bookHookFor(book))}</p>` : ''}
         ${prNoteHtml()}
-        <a class="shelf-pick-link" href="${amazonUrl}" target="_blank" rel="noopener sponsored">Amazon</a>
-        <a class="shelf-pick-link" href="${rakutenUrl}" target="_blank" rel="noopener sponsored">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>
+        <a class="shelf-pick-link" href="${amazonUrl}" target="_blank" rel="${relForCommerceLink()}">Amazon</a>
+        <a class="shelf-pick-link" href="${rakutenUrl}" target="_blank" rel="${relForCommerceLink()}">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>
       </div>
     </div>`;
   }
@@ -6805,8 +6817,8 @@ function renderRecordCorner(){
       <p class="record-title">『${song.title}』 ${song.artist}</p>
       <p class="record-line">${slot.line}</p>
       <p class="record-links">
-        <a href="${amUrl}" target="_blank" rel="noopener sponsored">Amazon Music</a>
-        <a href="${cdUrl}" target="_blank" rel="noopener sponsored">CD・レコードを探す</a>
+        <a href="${amUrl}" target="_blank" rel="${relForCommerceLink()}">Amazon Music</a>
+        <a href="${cdUrl}" target="_blank" rel="${relForCommerceLink()}">CD・レコードを探す</a>
         <a href="${spUrl}" target="_blank" rel="noopener">Spotify</a>
         <a href="${amcUrl}" target="_blank" rel="noopener">Apple Music</a>
         <a href="${ytUrl}" target="_blank" rel="noopener">YouTube</a>
