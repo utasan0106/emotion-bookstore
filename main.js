@@ -301,6 +301,9 @@ const MESSAGES = {
     restoreInvalidFile: "このファイルは『みんなの感情書店』のバックアップ形式ではないようです。別のファイルをお試しください。",
     restoreSuccess: "復元しました。画面を更新します…",
     restoreFail: "復元に失敗しました。ファイルの内容をご確認ください。",
+    // ★Data Safety Patch Ver.1.3：ファイルは正しいが端末側へ書き込めなかった場合。
+    // 原因が違うので restoreFail（ファイルを確認してください）とは分ける。
+    restoreSaveFail: "この端末に書き込めなかったため、復元できませんでした。本棚は元のままです。ブラウザの空き容量やプライベートモードをご確認のうえ、もう一度お試しください。",
     mitateYesBtn: "聞いてみる", mitateNoBtn: "今はいい",
     loopShelfReferralBtn: "こちらの『{shelf}』の棚が、合うかもしれません。行ってみてください",
     appleMusicNote: "※Apple Musicはアプリが開くだけのことがあります。開いたら曲名で検索し直してください。",
@@ -669,6 +672,7 @@ const MESSAGES = {
     restoreInvalidFile: "This file doesn't look like a Bookstore of Feelings backup. Please try a different file.",
     restoreSuccess: "Restored. Reloading…",
     restoreFail: "Restore failed. Please check the contents of the file.",
+    restoreSaveFail: "Couldn't restore, because this device wouldn't accept the write. Your bookshelf is unchanged. Please check your browser's free space or private-browsing mode, then try again.",
     mitateYesBtn: "Yes, tell me", mitateNoBtn: "Not right now",
     loopShelfReferralBtn: "The \"{shelf}\" shelf might suit you — please take a look",
     appleMusicNote: "※ Apple Music links sometimes just open the app. If so, please search the song title again there.",
@@ -4298,10 +4302,23 @@ function openBook(entry){
   const mDel = document.getElementById('modalDel');
   // ★PoC Task 001：誤タップによる即時削除を防ぐため、実際の削除処理の前に軽量な確認を挟む。
   // 本棚全リセット（resetShelfOverlay）とは別物の、この1冊専用の確認（native confirm）。
+  // ★Data Safety Patch Ver.1.3：saveJSON()（DataRepository.set()）は永続化に失敗しても
+  // 例外を投げず false を返す契約のため、戻り値を見ずに進めると「保存できていないのに
+  // 削除できた見た目」（本棚から消え、モーダルも閉じる）になる。しかもここでは先に
+  // libraryCache を書き換えていたため、失敗しても楽観的な削除がメモリに残り、
+  // 以降の別の保存が成功した時点で、利用者が知らないまま本が失われる恐れがあった。
+  // 対策：先に新しい配列を作って保存を試み、成功したときだけ libraryCache へ反映する。
+  // 失敗時は元の状態のまま、モーダルも閉じずに理由を表示する（performShelfReset と同じ方針）。
   if(mDel) mDel.onclick = async ()=>{
     if(!window.confirm(t('modalDelConfirm'))) return;
-    libraryCache = libraryCache.filter(e=>e.id !== entry.id);
-    await saveJSON('emotion-bookstore-library', libraryCache);
+    const next = libraryCache.filter(e=>e.id !== entry.id);
+    const savedOk = await saveJSON('emotion-bookstore-library', next);
+    if(savedOk !== true){
+      const delMsg = document.getElementById('modalEditMsg');
+      if(delMsg){ delMsg.textContent = t('manaReceiveSaveError'); delMsg.classList.remove('hidden'); }
+      return;
+    }
+    libraryCache = next;
     renderShelf();
     renderShelfTabs();
     if(bModal) bModal.classList.add('hidden');
@@ -6852,7 +6869,13 @@ function isValidBackupPayload(payload){
   return true;
 }
 
+// ★Data Safety Patch Ver.1.3：戻り値で失敗したキーを返す。
+// saveJSON() は永続化に失敗しても例外を投げず false を返すため、戻り値を見ないと
+// 1件も書けていなくても「復元しました」と表示して reload してしまい、
+// 利用者は復元できたと誤認したまま、実際には元の状態のままになる。
+// ここでは書き込み結果を集約するだけで、保存形式・キー・スキーマは変更していない。
 async function restoreBackupFromPayload(payload){
+  const failedKeys = [];
   for(const key of BACKUP_KEYS){
     // ★Data Safety Patch Ver.1.1：FAVORITES_KEYが旧形式バックアップに存在しない場合、
     // 「利用者が空のお気に入りを選んだ」わけではなく、旧実装がお気に入りをバックアップ対象に
@@ -6862,8 +6885,10 @@ async function restoreBackupFromPayload(payload){
     if(!Object.prototype.hasOwnProperty.call(payload.stores, key)) continue;
     const value = payload.stores[key];
     if(value === null || value === undefined) continue;
-    await saveJSON(key, value);
+    const savedOk = await saveJSON(key, value);
+    if(savedOk !== true) failedKeys.push(key);
   }
+  return failedKeys;
 }
 
 function readFileAsText(file){
@@ -6899,7 +6924,16 @@ async function handleRestoreFile(file){
     if(!confirm(confirmMsg)) return;
 
     if(btn) btn.textContent = t('restoreLoadingBtn');
-    await restoreBackupFromPayload(payload);
+    // ★Data Safety Patch Ver.1.3：1件でも書き込みに失敗したら、成功表示も reload もしない。
+    // reload してしまうと、失敗した事実が画面から消え、利用者は復元できたと誤認する。
+    // 再読込しないことで、復元前の画面と本棚がそのまま残り、やり直せる状態を保つ。
+    const failedKeys = await restoreBackupFromPayload(payload);
+    if(failedKeys.length){
+      if(msg) msg.textContent = t('restoreSaveFail');
+      if(btn) btn.textContent = t('restoreFailBtn');
+      setTimeout(()=>{ if(btn) btn.textContent = t('restoreDefaultBtn'); }, 2500);
+      return;
+    }
     if(msg) msg.textContent = t('restoreSuccess');
     if(btn) btn.textContent = t('restoreDoneBtn');
     setTimeout(()=>{ location.reload(); }, 900);
