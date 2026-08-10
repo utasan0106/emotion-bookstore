@@ -497,3 +497,107 @@ Phase 2 checkpoint 化の前に、以下3点のみを追加修正した。
 
 新しい説明機能・設定UIは追加していない。実際の保存範囲・privacy 仕様との最終照合は
 Phase 3 Adapter 接続時に現行実装と突き合わせて行う。
+
+---
+
+## Phase 3 Step 3B.1 — 04 の4領域を操作可能にする（2026-08-10 CEO決裁）
+
+04 の4領域（**ことば／いま／作品／自分の本**）を Core Ver.2 の IA として維持したまま、
+領域切替を操作可能にした。切替は **04 内部の DOM 切替だけ**で、`goToPage` /
+`goToShelf` / NavigationAdapter の `subviewOnly` を呼ばない。GA4 発火・保存・外部通信も発生しない。
+初期表示は「ことば」。
+
+### 各領域の現況
+
+| 領域 | 状態 | 接続先 |
+|---|---|---|
+| ことば | 接続済 | Step 3A.1 の感情語カード（既存 `CATEGORIES` の READ-ONLY 参照）をそのまま正式採用 |
+| いま | 意図的な空状態 | なし |
+| 作品 | 意図的な空状態（HOLD） | なし |
+| 自分の本 | 接続済 | 既存 library を READ-ONLY で文脈絞り込み |
+
+**空状態は失敗ではない。**「4タブあるから4つ埋める」ことはしない。
+
+### ことば
+
+Step 3A.1 の word card panel をそのまま「ことば」領域として使う。
+`QUOTE_POOL` / `QUOTE_POOL_EN` は**接続しない**。引用は1件も増やさない。外部取得も作品推薦も追加しない。
+
+### いま
+
+`STORIES_POOL` は使わない。`FICTIONAL_SHELF_STORIES_ENABLED` は `false` のまま
+（Adapter からも読まない・書き換えない）。SNS投稿が自動で入る／利用者投稿が入る／
+毎日更新される等を示唆する語は置かない。
+
+- 見出し：いま、この棚に置かれているものはありません。
+- 補足：また新しいことばが入ったときに、ここに並びます。
+
+### 作品
+
+Step 3B.1 では完全に HOLD。`BOOK_POOL` / `MUSIC_QUERIES` / `RECOMMEND_TEMPLATES` /
+`DETOUR_POOL` / Google Books / iTunes / Amazon / 楽天 / Spotify / Apple Music / YouTube の
+いずれにも接続しない。「おすすめ」「あなた向け」「癒やす」「整える」「解決する」「人気」
+「ランキング」は書かない。
+
+- 見出し：この棚の作品は、ただいま仕入れ中です。
+- 補足：棚に置く理由を確かめながら、少しずつ選んでいます。
+
+### 自分の本（文脈絞り込み・READ-ONLY）
+
+04 は「いま見ている大棚／感情語の文脈で自分の本と**再会**する場所」。
+06「自分の本棚」＝全蔵書を探す・取り出す場所。**04 で全蔵書一覧を再現しない。**
+
+| 文脈 | 表示対象 |
+|---|---|
+| A. 感情語を選択中 | `entry.category === activeEmotionId`（完全一致） |
+| B. 大棚のみ（感情語 null） | その大棚の `emotions` に含まれる `category` |
+| C. すべての感情語（`all`） | 既存21感情のいずれかに属する `category` |
+| D. まだ名前がない | `category === 'moyamoya'` のみ |
+| E. `category === 'unfiled'` | **04 では表示しない**（06 で引き続きアクセスできる。保存値は変更しない） |
+
+- `shitto`（嫉妬）は「惹かれる」「ぶつかる」の**両方の文脈に表示する**（正式仕様。重複バグではない）。
+  ただし同一パネル内は `entry.id` で dedupe する。
+- **大棚横断の合算冊数は表示しない。** 7大棚の冊数合計と総蔵書数を比較するUIは作らない。
+- 表示量：まず**最大3冊**。0冊は空状態。4冊以上は先頭3冊のみ表示し、
+  「本棚ですべて見る」を **disabled placeholder** として置く（06 への接続は Step 3C 以降。
+  `subviewOnly` を 06 へ転用しない）。
+- カードに出すのは **題名・棚名・日付**だけ。本文 `story`・写真 `image`・`tweetUrl` は出さない。
+  題名が無い本は既存 fallback（まだ、題名のない本）を使う。`entry` は書き換えない。
+- library の読み口は `bookshelf-adapter.readLibrary()` に一本化する。
+  読めない場合（unknown）は「0冊」と断定せず、空状態コピーも出さない。
+
+自分の本 0件のコピー
+
+- 見出し：この棚には、まだ自分の本はありません。
+- 補足：書くことからでも、棚を眺めることからでも始められます。
+
+「書く」CTA は新規 navigation へ接続していない。
+
+### Accessibility
+
+4領域はネイティブ `<button type="button">`。**WAI-ARIA tab pattern（`role="tablist"` /
+`role="tab"` / roving tabindex / 矢印キー / `role="tabpanel"`）は採用していない** —
+部分実装をしないため。代わりに `button + aria-pressed + hidden panel` の単純構造を使う。
+
+- 視覚上の選択状態と programmatic な状態は、どちらも `aria-pressed` だけで駆動する（ずれない）
+- `role="button"` / `tabindex` ハック / 独自 keydown は使わない
+- Enter / Space / Tab / Shift+Tab は button 本来の挙動。focus ring は既定のまま
+
+### 外部コンテンツの状態（Step 3B 監査より継続・本 Step では是正しない）
+
+**Google Books — V2 接続 BLOCKED**
+
+現行 runtime（`main.js:1829 fetchSeasonalBooks`）には次の未解決点がある。
+
+- API 返却順を `shuffleArray()` で並べ替えている
+- repository 内に Google Books の帰属表示（"Powered by Google" 等）が存在しない
+- Google Books への prominent link が不足している可能性
+- `infoLink` が無い場合、Amazon アフィリエイト検索 URL へフォールバックする
+
+**iTunes / Apple — V2 接続 BLOCKED**
+
+現行 runtime（`main.js:1868 fetchSeasonalMusic`）は、Apple 由来の楽曲メタデータから
+**Spotify 検索 URL** を生成している。Apple 系の帰属表示も存在しない。
+
+いずれも規約適合を推測で「OK」としない。**V2 へは接続しない。** 本 Step では現行コードを是正しない。
+法的断定は行わず、UNRESOLVED / NEEDS REVIEW として CEO 判断へ残す。

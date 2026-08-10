@@ -165,8 +165,12 @@
 
 /* -----------------------------------------------------------------------------
  * 4領域タブ
- * 同格に置く。Phase 1 は「ことば」のみ active、他3つは静的・非活性。
- * route / API / 状態管理は作らない。
+ * 同格に置く。初期表示は「ことば」。
+ * Phase 3 Step 3B.1：04 内部の DOM 切替だけを持つ。
+ * route / API / 状態管理・GA4・保存・外部通信は作らない。
+ * WAI-ARIA tab pattern（roving tabindex・矢印キー・role=tabpanel）は
+ * 部分実装になるため採用しない。button + aria-pressed + hidden panel の
+ * 単純構造を使い、Enter / Space・Tab / Shift+Tab は button 本来の挙動に委ねる。
  * -------------------------------------------------------------------------- */
 .v2-detail__tabs {
   position: absolute;
@@ -178,12 +182,32 @@
   grid-template-columns: repeat(4, 1fr);
 }
 
+/* 領域はネイティブ button。UA スタイルはここで完全に打ち消し、
+   span だった Step 3A.1 checkpoint と同一の見え方を維持する。
+   選択下線（::after）はボックス外に出るため overflow を切らない。 */
 .v2-detail__tab {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: calc(14 * var(--v2-px));
+
+  /* --- UA style reset --- */
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font: inherit;
+  text-indent: 0;
+  text-transform: none;
+  text-shadow: none;
+  word-spacing: inherit;
+  overflow: visible;
+  appearance: none;
+
   font-family: var(--v2-font-body);
   font-size: calc(21 * var(--v2-px));
   line-height: 1;
@@ -209,12 +233,14 @@
   opacity: 0.45;
 }
 
-/* 選択状態は accent-self（DAY は低彩度の青、NIGHT は金〜琥珀） */
-.v2-detail__tab[aria-current='true'] {
+/* 選択状態は accent-self（DAY は低彩度の青、NIGHT は金〜琥珀）。
+   視覚的な選択状態と programmatic な状態（aria-pressed）を同一の属性で駆動し、
+   両者がずれない構造にする。 */
+.v2-detail__tab[aria-pressed='true'] {
   color: var(--v2-accent-self);
 }
 
-.v2-detail__tab[aria-current='true']::after {
+.v2-detail__tab[aria-pressed='true']::after {
   content: '';
   position: absolute;
   left: 18%;
@@ -244,6 +270,13 @@
   border-radius: calc(28 * var(--v2-px));
   box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
   background: var(--v2-card-face);
+}
+
+/* 4領域のパネルは同じ位置に重ねて置き、選択中の1枚だけを見せる。
+   非選択パネルは hidden 属性で DOM からも支援技術からも外す
+   （display:none 相当。独自の aria-hidden 実装はしない）。 */
+.v2-detail__panel[hidden] {
+  display: none;
 }
 
 .v2-detail__panel-title {
@@ -332,6 +365,108 @@
   line-height: calc(28 * var(--v2-px));
   letter-spacing: 0.01em;
   color: var(--v2-ink-mid);
+}
+
+/* -----------------------------------------------------------------------------
+ * 空状態（いま／作品／自分の本 0件）
+ * 失敗表示にしない。小さく静かに置き、面積で不足を強調しない。
+ * 進捗・達成・催促・次回予告の表現は持たない。
+ * -------------------------------------------------------------------------- */
+.v2-detail__empty {
+  margin: 0;
+  max-width: calc(660 * var(--v2-px));
+}
+
+.v2-detail__empty-title {
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(19 * var(--v2-px));
+  line-height: calc(32 * var(--v2-px));
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-strong);
+}
+
+.v2-detail__empty-note {
+  margin: calc(16 * var(--v2-px)) 0 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(16 * var(--v2-px));
+  line-height: calc(28 * var(--v2-px));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-mid);
+}
+
+/* -----------------------------------------------------------------------------
+ * 自分の本（04 文脈での再会）
+ * 04 は 06「自分の本棚」の縮小コピーではない。全蔵書一覧を再現しないため、
+ * 縦1列・最大3冊の静かな並びにする。
+ * カードは button にしない（本を開く導線＝07 は本Stepの範囲外）。
+ * 本文 story・写真・tweetUrl は表示しない。
+ * -------------------------------------------------------------------------- */
+.v2-detail__books {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: calc(23 * var(--v2-px));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.v2-book-card {
+  position: relative;
+  display: block;
+  padding: calc(26 * var(--v2-px));
+  border-radius: calc(14 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-field-edge);
+  background: var(--v2-field-face);
+}
+
+.v2-book-card__title {
+  display: block;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(24 * var(--v2-px));
+  line-height: calc(34 * var(--v2-px));
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-strong);
+  overflow-wrap: anywhere;
+}
+
+.v2-book-card__meta {
+  display: block;
+  margin: calc(14 * var(--v2-px)) 0 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(15 * var(--v2-px));
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-mid);
+}
+
+/* 06「自分の本棚」への導線候補。Step 3B.1 では接続しないため disabled のまま置く
+   （押せる見た目にして実際には動かない、という偽の操作を作らない）。
+   NavigationAdapter への接続・subviewOnly の 06 転用は Step 3C 以降。 */
+.v2-detail__more {
+  display: block;
+  margin: calc(28 * var(--v2-px)) 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--v2-font-body);
+  font-size: calc(17 * var(--v2-px));
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-mid);
+  text-align: left;
+  text-indent: 0;
+  text-transform: none;
+  text-shadow: none;
+  appearance: none;
+}
+
+.v2-detail__more:disabled {
+  /* 色はここで触らない（Step 1 で色指定が label 色を上書きした事故の再発防止） */
+  opacity: 0.55;
+  cursor: default;
 }
 
 /* -----------------------------------------------------------------------------

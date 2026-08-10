@@ -16,7 +16,7 @@
 
   - 表示する感情語は現行21感情に存在する語だけ（不安・焦り・驚き）。
     「恐れ」「心配」「緊張」「そわそわ」「落ち着かない」等の新規感情語を追加しない
-  - 4領域タブは同格。Phase 1 は「ことば」のみ active、他3つは静的・非活性
+  - 4領域タブは同格。初期表示は「ことば」
   - route / API / 状態管理を作らない
   - 感情診断 / AI感情推定 / AI推薦 / 本文分析 を持たない
   - 保存 / IndexedDB / localStorage / GA4 / 外部通信を一切行わない
@@ -24,12 +24,22 @@
     本棚・壁・植物・棚からの間接光で奥行きを作る
   - DAY と NIGHT は同一DOM。data-v2-theme だけで切り替える
 
-  将来の各タブの意味（今回は実装しない。構造上の意味だけ保持する）:
-    いま  … 店の外で今流れている言葉を見る窓。将来 Bluesky 等を検討。
-            無限フィード／いいね／コメント／人気順ではない。
-    作品  … 本・映画・音楽を同じ感情文脈で編集配架。
-            「あなたへのおすすめ」ではなく、なぜこの棚へ置いたかを書店側が説明する。
-    自分の本 … 完全な私的領域。本文をAIで読んで自動分類しない。
+  このファイルは Visual QA 用の静的シェル。Adapter は読み込まない
+  （感情語カード・自分の本カードは emotion-shelf-adapter が描画する。
+   挙動の QA は adapter/emotion-shelf-harness.html で行う）。
+
+  4領域の現況（Phase 3 Step 3B.1・CEO決裁）:
+    ことば   … Step 3A.1 の感情語カードをそのまま正式採用。
+               QUOTE_POOL は接続しない（引用は1件も増やさない）。
+    いま     … 意図的な空状態。STORIES_POOL は使わない。
+               将来 Bluesky 等を検討するが、本Stepでは何も接続しない。
+               無限フィード／いいね／コメント／人気順にはしない。
+    作品     … 意図的な空状態（HOLD）。BOOK_POOL / MUSIC_QUERIES /
+               Google Books / iTunes いずれも接続しない。
+               「あなたへのおすすめ」ではなく、なぜこの棚へ置いたかを
+               書店側が説明できるようになってから置く。
+    自分の本 … 完全な私的領域。既存 library を READ-ONLY で文脈絞り込みするだけ。
+               本文をAIで読んで自動分類しない。保存処理を呼ばない。
 -->
 
 <!--
@@ -78,27 +88,70 @@
     <p class="v2-detail__lead" data-v2-emotion="lead">先が読めないときや、気持ちが落ち着かず<br>動きつづけるあたり。</p>
 
     <!-- 4領域タブ：Core Ver.2 の IA として維持する（ことば／いま／作品／自分の本）。
-         同格。「ことば」のみ active、他3つは静的・非活性。
-         未実装の挙動を断定する説明文は Phase 2 で削除した。 -->
-    <nav class="v2-detail__tabs" aria-label="領域（外観確認用・未接続）">
-      <span class="v2-detail__tab" aria-current="true">
-        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>ことば</span>
-      <span class="v2-detail__tab">
-        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>いま</span>
-      <span class="v2-detail__tab">
-        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>作品</span>
-      <span class="v2-detail__tab">
-        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>自分の本</span>
+         同格。初期表示は「ことば」。
+         Phase 3 Step 3B.1 で操作可能にした。切替は 04 内部の DOM 切替だけで、
+         goToPage / goToShelf / subviewOnly を呼ばず、GA4・保存・外部通信も発生しない。
+         role="tab" / role="tablist" は採用しない（WAI-ARIA tab pattern を
+         部分実装しないため）。button + aria-pressed + hidden panel の単純構造にする。 -->
+    <nav class="v2-detail__tabs" aria-label="領域" data-v2-regions>
+      <button type="button" class="v2-detail__tab" data-v2-region="kotoba"
+              aria-pressed="true" aria-controls="v2-region-kotoba">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>ことば</button>
+      <button type="button" class="v2-detail__tab" data-v2-region="ima"
+              aria-pressed="false" aria-controls="v2-region-ima">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>いま</button>
+      <button type="button" class="v2-detail__tab" data-v2-region="sakuhin"
+              aria-pressed="false" aria-controls="v2-region-sakuhin">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>作品</button>
+      <button type="button" class="v2-detail__tab" data-v2-region="jibun"
+              aria-pressed="false" aria-controls="v2-region-jibun">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>自分の本</button>
     </nav>
 
-    <!-- ことば：現行21感情に存在する3語のみ。新しい感情語は追加しない -->
-    <section class="v2-detail__panel" aria-label="この棚のことばたち">
+    <!-- ことば：Step 3A.1 の感情語カードパネルをそのまま正式な「ことば」領域として使う。
+         QUOTE_POOL / QUOTE_POOL_EN は接続しない。引用は1件も増やさない。 -->
+    <section class="v2-detail__panel" id="v2-region-kotoba"
+             data-v2-region-panel="kotoba" aria-label="この棚のことばたち">
       <h2 class="v2-detail__panel-title">この棚のことばたち</h2>
 
       <!-- 感情語カードは emotion-shelf-adapter が既存 CATEGORIES から READ-ONLY で描画する。
            表示順は 7大棚 mapping の決裁順のまま。重複配架された感情も消さない。
            静的 markup に感情データは持たせない。 -->
       <div class="v2-detail__words" data-v2-emotion="words"></div>
+    </section>
+
+    <!-- いま：意図的な空状態。STORIES_POOL は使わない
+         （FICTIONAL_SHELF_STORIES_ENABLED は false のまま。Adapter からも触らない）。
+         SNS投稿・利用者投稿・毎日更新を示唆する語は置かない。 -->
+    <section class="v2-detail__panel" id="v2-region-ima"
+             data-v2-region-panel="ima" aria-label="いま" hidden>
+      <h2 class="v2-detail__panel-title">いま</h2>
+      <div class="v2-detail__empty">
+        <p class="v2-detail__empty-title">いま、この棚に置かれているものはありません。</p>
+        <p class="v2-detail__empty-note">また新しいことばが入ったときに、ここに並びます。</p>
+      </div>
+    </section>
+
+    <!-- 作品：Step 3B.1 では完全に HOLD。
+         BOOK_POOL / MUSIC_QUERIES / RECOMMEND_TEMPLATES / DETOUR_POOL /
+         Google Books / iTunes / Amazon / 楽天 / Spotify / Apple Music / YouTube の
+         いずれにも接続しない。「おすすめ」「あなた向け」「人気」「ランキング」等は書かない。 -->
+    <section class="v2-detail__panel" id="v2-region-sakuhin"
+             data-v2-region-panel="sakuhin" aria-label="作品" hidden>
+      <h2 class="v2-detail__panel-title">作品</h2>
+      <div class="v2-detail__empty">
+        <p class="v2-detail__empty-title">この棚の作品は、ただいま仕入れ中です。</p>
+        <p class="v2-detail__empty-note">棚に置く理由を確かめながら、少しずつ選んでいます。</p>
+      </div>
+    </section>
+
+    <!-- 自分の本：既存 library を READ-ONLY で、いま見ている大棚／感情語の文脈に絞って表示する。
+         04 は「その文脈で自分の本と再会する場所」。全蔵書一覧（＝06）を再現しない。
+         カードは emotion-shelf-adapter が描画する。静的 markup に本のデータは持たせない。 -->
+    <section class="v2-detail__panel" id="v2-region-jibun"
+             data-v2-region-panel="jibun" aria-label="自分の本" hidden>
+      <h2 class="v2-detail__panel-title">自分の本</h2>
+      <div data-v2-mybooks="body"></div>
     </section>
 
     <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->

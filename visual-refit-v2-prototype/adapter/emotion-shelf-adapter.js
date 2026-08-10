@@ -1,17 +1,20 @@
 /* =============================================================================
- * Visual Refit V2 — emotion-shelf-adapter（Phase 3 Step 3A）
+ * Visual Refit V2 — emotion-shelf-adapter（Phase 3 Step 3A / 3A.1 / 3B.1）
  * -----------------------------------------------------------------------------
- * 役割は「既存21感情データの VIEW ADAPTER」のみ。データを所有しない。
+ * 役割は「既存21感情データ＋既存 library の VIEW ADAPTER」のみ。データを所有しない。
  *
  *   1. 7大棚＋特別入口「まだ名前がない」の READ-ONLY mapping を持つ
  *   2. 大棚ID → 既存感情ID配列 の解決（CATEGORIES は読むだけ）
  *   3. 03 → 04 の入口文脈（originMajorShelfId）をメモリ上だけで保持する
  *   4. 04 の READ-ONLY 描画（大棚名・説明・その大棚の感情語）
  *   5. 03 → 04 遷移は既存 goToShelf() / V2NavigationAdapter 経由のみ
- *   6. QA 用の synthetic fixture 注入
+ *   6. 04 の4領域（ことば／いま／作品／自分の本）の DOM 切替（Step 3B.1）
+ *   7. 「自分の本」の READ-ONLY 文脈絞り込み描画（Step 3B.1）
+ *   8. QA 用の synthetic fixture 注入
  *
  * これ以外の責務を持たない。特に以下は絶対にしない。
  *   - CATEGORIES / TEXTURE_GROUPS の変更・複製保存・並べ替え・重複除去
+ *   - library / entry の変更（push/pop/splice/sort/reverse/delete/代入）
  *   - localStorage / IndexedDB / DataRepository への読み書き
  *   - fetch / XHR / sendBeacon / WebSocket / EventSource
  *   - GA4（trackAnalyticsEvent / gtag / dataLayer）
@@ -19,8 +22,28 @@
  *   - setInterval / polling / observer による監視
  *   - inert / aria-hidden / focus trap の自前実装
  *   - 作品API・Bluesky・「いま」データ取得・自動仕入れ
+ *   - QUOTE_POOL / QUOTE_POOL_EN / STORIES_POOL / BOOK_POOL / MUSIC_QUERIES /
+ *     RECOMMEND_TEMPLATES / DETOUR_POOL の参照
+ *   - FICTIONAL_SHELF_STORIES_ENABLED の読み替え・上書き
  *   - activeCategory から「どの大棚だったか」を逆引きすること
  *     （shitto が複数配架のため逆引きは原理的に一意にならない）
+ *
+ * 【4領域（Step 3B.1・CEO決裁）】
+ *   領域切替は 04 内部の DOM 切替だけ。goToPage / goToShelf /
+ *   NavigationAdapter の subviewOnly は呼ばない。
+ *   GA4 発火なし・storage write なし・network なし。初期表示は「ことば」。
+ *   ARIA は WAI-ARIA tab pattern を部分実装せず、
+ *   button + aria-pressed + hidden panel の単純構造を使う。
+ *
+ * 【「自分の本」の文脈絞り込み（Step 3B.1・CEO決裁）】
+ *   A. activeEmotionId あり      → entry.category === activeEmotionId（完全一致）
+ *   B. activeEmotionId なし＋大棚 → その大棚の emotions に含まれる category
+ *   C. origin = all              → 既存21感情のいずれかに属する category
+ *   D. origin = まだ名前がない    → category === 'moyamoya' のみ
+ *   E. category === 'unfiled'    → 04 では表示しない（06 で引き続きアクセス可能）
+ *   shitto は「惹かれる」「ぶつかる」の両文脈に出る（正式仕様・重複バグではない）。
+ *   ただし同一パネル内は entry.id で dedupe する。
+ *   大棚横断の合算冊数・総蔵書数との比較UIは作らない。
  *
  * 【7大棚 mapping（CEO 決裁 2026-08-09・正本）】
  *   大棚は固定所属 taxonomy ではなく、感情へ入る「編集上の入口」である。
@@ -72,12 +95,29 @@
   /* 複数配架の canonical priority。入口文脈が無いときだけ使う */
   var CANONICAL_PRIMARY = { shitto: 'hikareru' };
 
+  /* 04 の4領域。順序は Core Ver.2 の IA のまま。増やさない・減らさない */
+  var REGIONS = ['kotoba', 'ima', 'sakuhin', 'jibun'];
+  var DEFAULT_REGION = 'kotoba';
+
+  /* 既存 main.js の UNFILED_CATEGORY_ID と同じ値。04 では常に除外する。
+     既存定数を import できない環境でも判定が壊れないようリテラルで持つが、
+     この値で既存データを書き換えることは一切しない（読み取り比較のみ）。 */
+  var UNFILED_ID = 'unfiled';
+
+  /* 04 は 06「自分の本棚」の縮小コピーにしない。まず3冊まで */
+  var MY_BOOKS_LIMIT = 3;
+
+  /* 題名が無い本の表示名。bookshelf-adapter と同じ文言を使う
+     （bookshelf-adapter があればそちらの実装を優先して呼ぶ） */
+  var TITLE_FALLBACK = 'まだ、題名のない本';
+
   /* ---------------------------------------------------------------------------
    * 一時状態（メモリのみ。永続化しない）
    * ------------------------------------------------------------------------ */
   var state = {
     originMajorShelfId: null,  // 03 から通った入口。'all' も入りうる
     activeEmotionId: null,     // 04 で選択中の感情ID
+    activeRegion: DEFAULT_REGION, // 04 の選択中の領域（ことば／いま／作品／自分の本）
     lastOriginTriggerId: null, // 04→03 で focus を戻す先（DOM の識別子のみ）
     mounted: false,
     lastError: null
@@ -178,6 +218,9 @@
     // 「大棚を覗く」と「感情語を選ぶ」は別の行為。入口では感情語を自動選択しない。
     // 1語しかない「まだ名前がない」でも同じ扱いにする。
     state.activeEmotionId = null;
+    // 大棚に入り直したら領域も初期状態（ことば）へ戻す。
+    // 前の棚で「自分の本」を見ていた状態を、別の棚へ持ち越さない。
+    state.activeRegion = DEFAULT_REGION;
     state.lastOriginTriggerId = opts.triggerId || null;
 
     var nav = global.V2NavigationAdapter;
@@ -282,6 +325,10 @@
       wordsEl.appendChild(frag);
       wordsEl.setAttribute('data-v2-emotion-count', String(ids.length));
     }
+
+    // 文脈（大棚／感情語）が変わったら「自分の本」の絞り込み結果も必ず追随させる。
+    // 領域の選択状態そのものはここでは変えない。
+    renderRegions(scope);
     return { ok: true, shelfId: shelfId, rendered: made };
   }
 
@@ -313,6 +360,225 @@
     desc.textContent = cat && typeof cat.def === 'string' ? cat.def : '';
     card.appendChild(desc);
     return card;
+  }
+
+  /* ---------------------------------------------------------------------------
+   * 04 の4領域（Step 3B.1）
+   * 04 内部の DOM 切替だけ。既存遷移関数・GA4・storage・network に触れない。
+   * ------------------------------------------------------------------------ */
+  function isRegion(id) { return REGIONS.indexOf(id) !== -1; }
+
+  function selectRegion(regionId, scope) {
+    if (!isRegion(regionId)) {
+      state.lastError = 'unknown_region';
+      return false;
+    }
+    state.activeRegion = regionId;
+    state.lastError = null;
+    renderRegions(scope);
+    return true;
+  }
+
+  /* 選択状態（見た目）と aria-pressed（プログラム上の状態）を同じ1か所で書く。
+     両者がずれる余地を構造的に作らない。 */
+  function renderRegions(scope) {
+    if (!doc) return { ok: false, reason: 'no_document' };
+    var root = scope || doc;
+    var tabs = root.querySelectorAll('[data-v2-region]');
+    var panels = root.querySelectorAll('[data-v2-region-panel]');
+    if (!tabs.length && !panels.length) return { ok: false, reason: 'no_target' };
+
+    var i;
+    for (i = 0; i < tabs.length; i++) {
+      var rid = tabs[i].getAttribute('data-v2-region');
+      tabs[i].setAttribute('aria-pressed', rid === state.activeRegion ? 'true' : 'false');
+    }
+    for (i = 0; i < panels.length; i++) {
+      var pid = panels[i].getAttribute('data-v2-region-panel');
+      if (pid === state.activeRegion) panels[i].removeAttribute('hidden');
+      else panels[i].setAttribute('hidden', '');
+    }
+    var my = renderMyBooks(scope);
+    return { ok: true, region: state.activeRegion, myBooks: my };
+  }
+
+  /* ---------------------------------------------------------------------------
+   * 「自分の本」（Step 3B.1）
+   * 既存 library を READ-ONLY で読む。読み口は bookshelf-adapter に一本化し、
+   * ここで libraryCache / storage / DataRepository を直接触らない。
+   * ------------------------------------------------------------------------ */
+  function readLibraryEntries() {
+    var bs = global.V2BookshelfAdapter;
+    if (!bs || typeof bs.readLibrary !== 'function') {
+      // 読み口が無い環境では「0冊」と断定しない
+      return { status: 'unknown', entries: [] };
+    }
+    var r;
+    try { r = bs.readLibrary(); } catch (e) { return { status: 'unknown', entries: [] }; }
+    if (!r || r.status !== 'ok' || !Array.isArray(r.entries)) {
+      return { status: 'unknown', entries: [] };
+    }
+    return { status: 'ok', entries: r.entries };
+  }
+
+  /* いま見ている 04 の文脈で「自分の本」に出してよい感情IDの集合。
+     A/B/C/D は emotionIdsOf() の既存解決をそのまま使う（別ロジックを作らない）。
+     E（unfiled）はどの集合にも入らないが、念のため明示的にも除外する。 */
+  function myBookContextIds() {
+    if (state.activeEmotionId) return [state.activeEmotionId];
+    var shelfId = effectiveShelfId();
+    if (!shelfId) return [];
+    return emotionIdsOf(shelfId);
+  }
+
+  /* 文脈に合う本だけを、libraryCache の順序のまま返す。
+     並べ替え・修復・書き戻しはしない。entry は読むだけ。
+     同一パネル内は entry.id で dedupe する（shitto の二重配架は文脈側の仕様であり、
+     同じ本が同じパネルに2回出ることとは別）。 */
+  function filterMyBooks(entries, allowIds) {
+    var allow = {}, i;
+    for (i = 0; i < allowIds.length; i++) {
+      var a = allowIds[i];
+      if (typeof a === 'string' && a && a !== UNFILED_ID) allow[a] = true;
+    }
+    var out = [], seen = {};
+    for (i = 0; i < entries.length; i++) {
+      var e = entries[i];
+      if (!e || typeof e !== 'object') continue;
+      var c = e.category;
+      if (typeof c !== 'string' || c === UNFILED_ID) continue;
+      if (allow[c] !== true) continue;
+      // id が無い壊れた entry も落とさない。位置で一意化するだけ
+      var key = (e.id === null || e.id === undefined) ? ('@' + i) : ('#' + String(e.id));
+      if (seen[key]) continue;
+      seen[key] = true;
+      out.push(e);
+    }
+    return out;
+  }
+
+  function bookTitle(entry) {
+    var bs = global.V2BookshelfAdapter;
+    if (bs && typeof bs.viewTitle === 'function') {
+      try { return bs.viewTitle(entry); } catch (e) { /* 下の fallback へ */ }
+    }
+    if (!entry || typeof entry !== 'object') return TITLE_FALLBACK;
+    var t = entry.title;
+    if (typeof t !== 'string' || t === '') return TITLE_FALLBACK;
+    return t;
+  }
+
+  /* 表示用の棚名。既存 CATEGORIES の label を読むだけ。 */
+  function bookShelfLabel(entry) {
+    var cat = entry ? findCategory(entry.category) : null;
+    return (cat && typeof cat.label === 'string') ? cat.label : '';
+  }
+
+  /* 表示用の日付。既存 entry.date（ISO文字列）を読むだけ。
+     不正値は静かに空文字にする（entry は書き換えない）。 */
+  function bookDate(entry) {
+    if (!entry || typeof entry.date !== 'string' || !entry.date) return '';
+    var d = new Date(entry.date);
+    if (isNaN(d.getTime())) return '';
+    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+  }
+
+  /* 本カードは button にしない（本を開く導線＝07 は本Stepの範囲外）。
+     本文 story・写真 image・tweetUrl は出さない。文字はすべて textContent。 */
+  function buildBookCard(entry, index) {
+    var li = doc.createElement('li');
+    li.className = 'v2-book-card';
+    li.setAttribute('data-v2-mybook', String(index));
+
+    var title = doc.createElement('span');
+    title.className = 'v2-book-card__title';
+    title.textContent = bookTitle(entry);
+    li.appendChild(title);
+
+    var parts = [];
+    var label = bookShelfLabel(entry);
+    var date = bookDate(entry);
+    if (label) parts.push(label);
+    if (date) parts.push(date);
+    if (parts.length) {
+      var meta = doc.createElement('span');
+      meta.className = 'v2-book-card__meta';
+      meta.textContent = parts.join('　');
+      li.appendChild(meta);
+    }
+    return li;
+  }
+
+  function buildEmpty(titleText, noteText) {
+    var box = doc.createElement('div');
+    box.className = 'v2-detail__empty';
+    var t = doc.createElement('p');
+    t.className = 'v2-detail__empty-title';
+    t.textContent = titleText;
+    box.appendChild(t);
+    var n = doc.createElement('p');
+    n.className = 'v2-detail__empty-note';
+    n.textContent = noteText;
+    box.appendChild(n);
+    return box;
+  }
+
+  function clearChildren(el) {
+    while (el.firstChild) el.removeChild(el.firstChild);
+  }
+
+  function renderMyBooks(scope) {
+    if (!doc) return { ok: false, reason: 'no_document' };
+    var body = q('[data-v2-mybooks="body"]', scope);
+    if (!body) return { ok: false, reason: 'no_target' };
+
+    // 選択されていない間は私的データを hidden な DOM に残さない
+    clearChildren(body);
+    body.removeAttribute('data-v2-mybooks-count');
+    if (state.activeRegion !== 'jibun') {
+      return { ok: true, region: state.activeRegion, rendered: 0, shown: 0 };
+    }
+
+    var lib = readLibraryEntries();
+    if (lib.status !== 'ok') {
+      // unknown は「0冊」ではない。空状態コピーを出さず、何も断定しない
+      state.lastError = 'library_unknown';
+      return { ok: true, status: 'unknown', rendered: 0, shown: 0 };
+    }
+
+    var books = filterMyBooks(lib.entries, myBookContextIds());
+    if (books.length === 0) {
+      body.appendChild(buildEmpty(
+        'この棚には、まだ自分の本はありません。',
+        '書くことからでも、棚を眺めることからでも始められます。'
+      ));
+      body.setAttribute('data-v2-mybooks-count', '0');
+      return { ok: true, status: 'ok', rendered: 0, shown: 0, matched: 0 };
+    }
+
+    var list = doc.createElement('ul');
+    list.className = 'v2-detail__books';
+    var shown = Math.min(books.length, MY_BOOKS_LIMIT);
+    for (var i = 0; i < shown; i++) {
+      try { list.appendChild(buildBookCard(books[i], i)); }
+      catch (e) { state.lastError = 'render_book_failed@' + i; }
+    }
+    body.appendChild(list);
+
+    if (books.length > MY_BOOKS_LIMIT) {
+      // 06 への接続は Step 3C 以降。ここでは押せない placeholder のまま置く。
+      // 合算冊数・総蔵書数との比較は表示しない。
+      var more = doc.createElement('button');
+      more.type = 'button';
+      more.className = 'v2-detail__more';
+      more.disabled = true;
+      more.textContent = '本棚ですべて見る';
+      body.appendChild(more);
+    }
+
+    // 現在パネル内の unique 件数のみ。大棚横断の合算ではない
+    body.setAttribute('data-v2-mybooks-count', String(books.length));
+    return { ok: true, status: 'ok', rendered: shown, shown: shown, matched: books.length };
   }
 
   /* ---------------------------------------------------------------------------
@@ -353,6 +619,11 @@
       words.removeEventListener('click', delegateWord);
       words.addEventListener('click', delegateWord);
     }
+    var regions = q('[data-v2-regions]', root);
+    if (regions) {
+      regions.removeEventListener('click', delegateRegion);
+      regions.addEventListener('click', delegateRegion);
+    }
     state.mounted = true;
     render(scope);
     return true;
@@ -371,6 +642,20 @@
     }
   }
 
+  /* 領域タブも同じ方針でコンテナ側に1つだけ購読する。
+     タブは4つ固定だが、per-button listener を作らないことで
+     mount を何度呼んでも多重登録が構造的に起きない状態を保つ。 */
+  function delegateRegion(ev) {
+    var t = ev.target;
+    while (t && t !== ev.currentTarget) {
+      if (t.getAttribute && t.getAttribute('data-v2-region')) {
+        selectRegion(t.getAttribute('data-v2-region'));
+        return;
+      }
+      t = t.parentNode;
+    }
+  }
+
   function unmount(scope) {
     if (!doc) return false;
     var root = scope || doc;
@@ -380,6 +665,14 @@
     for (var j = 0; j < backs.length; j++) backs[j].removeEventListener('click', onLeave);
     var words = q('[data-v2-emotion="words"]', root);
     if (words) words.removeEventListener('click', delegateWord);
+    var regions = q('[data-v2-regions]', root);
+    if (regions) regions.removeEventListener('click', delegateRegion);
+    // 私的データを DOM に残さない
+    var body = q('[data-v2-mybooks="body"]', root);
+    if (body) {
+      clearChildren(body);
+      body.removeAttribute('data-v2-mybooks-count');
+    }
     state.mounted = false;
     return true;
   }
@@ -393,11 +686,21 @@
     emotionIdsOf: emotionIdsOf,
     canonicalShelfOf: canonicalShelfOf,
     effectiveShelfId: effectiveShelfId,
+    REGIONS: function () { return REGIONS.slice(); },
+    DEFAULT_REGION: DEFAULT_REGION,
+    MY_BOOKS_LIMIT: MY_BOOKS_LIMIT,
+    UNFILED_ID: UNFILED_ID,
+    TITLE_FALLBACK: TITLE_FALLBACK,
     enterShelf: enterShelf,
     selectEmotion: selectEmotion,
+    selectRegion: selectRegion,
+    myBookContextIds: myBookContextIds,
+    filterMyBooks: filterMyBooks,
     leaveToIndex: leaveToIndex,
     restoreFocus: restoreFocus,
     render: render,
+    renderRegions: renderRegions,
+    renderMyBooks: renderMyBooks,
     mount: mount,
     unmount: unmount,
     setCategoriesFixture: function (cats) { fixtureCategories = (cats === undefined) ? null : cats; },
@@ -406,6 +709,7 @@
       return {
         originMajorShelfId: state.originMajorShelfId,
         activeEmotionId: state.activeEmotionId,
+        activeRegion: state.activeRegion,
         effectiveShelfId: effectiveShelfId(),
         lastOriginTriggerId: state.lastOriginTriggerId,
         mounted: state.mounted,

@@ -4,13 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Visual Refit V2 — emotion-shelf-adapter QAハーネス（Phase 3 Step 3A）</title>
+<title>Visual Refit V2 — emotion-shelf-adapter QAハーネス（Phase 3 Step 3A / 3B.1）</title>
 
 <!--
   emotion-shelf-adapter の検証専用ページ。
   production にも通常の prototype 画面にも読み込ませない。
 
   - 既存 CATEGORIES は approved fixture（実データと同じ21件の id/label/def）で代替する
+  - library は synthetic fixture（実在しない合成データ）で代替する。
+    利用者の本文・題名・写真・バックアップは一切含まない
   - 既存関数（goToPage / goToShelf 等）はスタブ。本番統合の PASS とは区別する
   - 保存 / IndexedDB / localStorage / GA4 / 外部通信は一切行わない
 -->
@@ -38,20 +40,49 @@
     <h1 class="v2-detail__title" data-v2-emotion="title"></h1>
     <p class="v2-detail__lead" data-v2-emotion="lead"></p>
 
-    <nav class="v2-detail__tabs" aria-label="領域（外観確認用・未接続）">
-      <span class="v2-detail__tab" aria-current="true">
-        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>ことば</span>
-      <span class="v2-detail__tab">
-        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>いま</span>
-      <span class="v2-detail__tab">
-        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>作品</span>
-      <span class="v2-detail__tab">
-        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>自分の本</span>
+    <nav class="v2-detail__tabs" aria-label="領域" data-v2-regions>
+      <button type="button" class="v2-detail__tab" data-v2-region="kotoba"
+              aria-pressed="true" aria-controls="v2-region-kotoba">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>ことば</button>
+      <button type="button" class="v2-detail__tab" data-v2-region="ima"
+              aria-pressed="false" aria-controls="v2-region-ima">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>いま</button>
+      <button type="button" class="v2-detail__tab" data-v2-region="sakuhin"
+              aria-pressed="false" aria-controls="v2-region-sakuhin">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>作品</button>
+      <button type="button" class="v2-detail__tab" data-v2-region="jibun"
+              aria-pressed="false" aria-controls="v2-region-jibun">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>自分の本</button>
     </nav>
 
-    <section class="v2-detail__panel" aria-label="この棚のことばたち">
+    <section class="v2-detail__panel" id="v2-region-kotoba"
+             data-v2-region-panel="kotoba" aria-label="この棚のことばたち">
       <h2 class="v2-detail__panel-title">この棚のことばたち</h2>
       <div class="v2-detail__words" data-v2-emotion="words"></div>
+    </section>
+
+    <section class="v2-detail__panel" id="v2-region-ima"
+             data-v2-region-panel="ima" aria-label="いま" hidden>
+      <h2 class="v2-detail__panel-title">いま</h2>
+      <div class="v2-detail__empty">
+        <p class="v2-detail__empty-title">いま、この棚に置かれているものはありません。</p>
+        <p class="v2-detail__empty-note">また新しいことばが入ったときに、ここに並びます。</p>
+      </div>
+    </section>
+
+    <section class="v2-detail__panel" id="v2-region-sakuhin"
+             data-v2-region-panel="sakuhin" aria-label="作品" hidden>
+      <h2 class="v2-detail__panel-title">作品</h2>
+      <div class="v2-detail__empty">
+        <p class="v2-detail__empty-title">この棚の作品は、ただいま仕入れ中です。</p>
+        <p class="v2-detail__empty-note">棚に置く理由を確かめながら、少しずつ選んでいます。</p>
+      </div>
+    </section>
+
+    <section class="v2-detail__panel" id="v2-region-jibun"
+             data-v2-region-panel="jibun" aria-label="自分の本" hidden>
+      <h2 class="v2-detail__panel-title">自分の本</h2>
+      <div data-v2-mybooks="body"></div>
     </section>
 
     <div class="v2-detail__navbar">
@@ -107,12 +138,31 @@ window.CATEGORIES_FIXTURE = [
  {id:"keno",label:"嫌悪感",def:"顔をしかめてしまうような、生理的な「無理」という感覚。"},
  {id:"odoroki",label:"驚き",def:"思いがけない出来事に、心がついていかない感覚。"}
 ];
+
+/* synthetic library fixture（Step 3B.1 QA 用）。
+   実在の利用者データではない。本文 story は表示されないことの確認用に入れてあるだけで、
+   04 のどのパネルにも描画されない。写真・tweetUrl も表示対象外。
+   ・unfiled が 04 に出ないこと
+   ・shitto が「惹かれる」「ぶつかる」の両方に出ること
+   ・4冊以上で「本棚ですべて見る」placeholder が出ること
+   を1つの fixture で確認できる構成にしている。 */
+window.LIBRARY_FIXTURE = [
+ {id:"s1", category:"fuan",     title:"合成データ1", story:"（表示されないこと）", note:"", image:"", tweetUrl:"", sealed:false, date:"2026-01-05T00:00:00.000Z"},
+ {id:"s2", category:"aseri",    title:"合成データ2", story:"（表示されないこと）", note:"", image:"", tweetUrl:"", sealed:false, date:"2026-02-11T00:00:00.000Z"},
+ {id:"s3", category:"odoroki",  title:"",            story:"（題名なし fallback）", note:"", image:"", tweetUrl:"", sealed:false, date:"2026-03-20T00:00:00.000Z"},
+ {id:"s4", category:"fuan",     title:"合成データ4", story:"（4冊目）",            note:"", image:"", tweetUrl:"", sealed:false, date:"2026-04-02T00:00:00.000Z"},
+ {id:"s5", category:"shitto",   title:"合成データ5", story:"（二重配架の確認）",    note:"", image:"", tweetUrl:"", sealed:false, date:"2026-05-09T00:00:00.000Z"},
+ {id:"s6", category:"moyamoya", title:"合成データ6", story:"（まだ名前がない）",    note:"", image:"", tweetUrl:"", sealed:false, date:"2026-06-18T00:00:00.000Z"},
+ {id:"s7", category:"unfiled",  title:"合成データ7", story:"（04には出ないこと）",  note:"", image:"", tweetUrl:"", sealed:false, date:"2026-07-01T00:00:00.000Z"}
+];
 </script>
 
 <script src="./navigation-adapter.js"></script>
+<script src="./bookshelf-adapter.js"></script>
 <script src="./emotion-shelf-adapter.js"></script>
 <script>
   V2EmotionShelfAdapter.setCategoriesFixture(window.CATEGORIES_FIXTURE);
+  V2BookshelfAdapter.setFixture(window.LIBRARY_FIXTURE);
   V2NavigationAdapter.mount();
   V2NavigationAdapter.startThemeBridge();
   V2EmotionShelfAdapter.mount();
