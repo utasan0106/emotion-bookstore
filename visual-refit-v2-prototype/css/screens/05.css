@@ -360,6 +360,40 @@
   appearance: none;
 }
 
+/* Step 3D：既存 #storyCount（0 / 700字）をそのまま写す欄。V2 で数え直さない。
+   上限超過の表現も既存 .over の有無を写すだけ。 */
+.v2-editor__body-counter {
+  position: absolute;
+  top: calc(638 * var(--v2-px));
+  right: calc(29 * var(--v2-px));
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(16 * var(--v2-px));
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-soft);
+}
+
+.v2-editor__body-counter.is-over { color: var(--v2-accent-self); }
+
+/* Step 3D：既存 #deskMsg（検証結果・保存結果）をそのまま写す欄。
+   V2 で文言を作らない。値が無いときは欄ごと畳む。 */
+.v2-editor__msg {
+  position: absolute;
+  top: calc(634 * var(--v2-px));
+  left: calc(29 * var(--v2-px));
+  width: calc(600 * var(--v2-px));
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(16 * var(--v2-px));
+  line-height: calc(22 * var(--v2-px));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-strong);
+  overflow-wrap: anywhere;
+}
+
+.v2-page--editor .is-v2-empty { display: none; }
+
 /* Phase 2：未承認の rich-text 系ツール帯（.v2-editor__tools / --last）は削除した。
    .v2-editor__tool は「下書き一覧」ボタン内の小さな記号としてのみ残す。 */
 .v2-editor__tool {

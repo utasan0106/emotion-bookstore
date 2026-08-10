@@ -17,10 +17,14 @@
  * 文字を置かず、占有位置と余白だけを中立プレースホルダーで作る。
  * ラベルは UI 側の文言なのでそのまま置く。
  *
+ * 【Phase 3 Step 3D】現時点で実機能が存在しない操作を画面から外した。
+ *   削除：文字サイズ／明るさ／右上メニュー／目次／編集する／左右ページ送り
+ *   disabled のまま残さず、「近日対応」等も出さない。新機能も作らない。
+ *   残る操作は「戻る」と下部ナビだけ。しおりリボン・小口の罫は非interactive な装飾。
+ *
  * 【Phase 2】未承認機能を画面から削除した。
  *   削除：共有（URLをコピー）／このページを共有／公開設定／
  *         しおり／しおりを追加／メモ・線を引いた箇所／メモを書く／線を引く／操作バー一式
- *   残す：目次／文字サイズ・明るさ／ページ送り／編集する
  * 本文を外へ出す導線は画面上に存在しない。
  *
  * レイアウト契約（1024x1536・正式カンプ実測）
@@ -123,53 +127,8 @@
   color: var(--v2-ink-mid);
 }
 
-.v2-reader__tools {
-  position: absolute;
-  top: 2.60%;
-  right: 3.13%;
-  display: flex;
-  align-items: center;
-  gap: calc(12 * var(--v2-px));
-  height: 3.39%;
-}
 
-/* 文字サイズ・明るさ：現行に無い機能のため静的・非活性の見た目のみ */
-.v2-reader__tool {
-  display: flex;
-  align-items: center;
-  gap: calc(12 * var(--v2-px));
-  height: 100%;
-  padding: 0 calc(22 * var(--v2-px));
-  border: 0;
-  border-radius: calc(26 * var(--v2-px));
-  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
-  background: var(--v2-card-face);
-  font-family: var(--v2-font-body);
-  font-size: calc(18 * var(--v2-px));
-  line-height: 1;
-  color: var(--v2-ink-mid);
-  appearance: none;
-}
-
-.v2-reader__tool:disabled,
-.v2-reader__tool[aria-disabled='true'] {
-  opacity: 1;
-  cursor: default;
-}
-
-.v2-reader__tool--round {
-  width: calc(52 * var(--v2-px));
-  padding: 0;
-  justify-content: center;
-}
-
-.v2-reader__tool-sep {
-  width: calc(1 * var(--v2-px));
-  height: calc(24 * var(--v2-px));
-  background: var(--v2-rule);
-  opacity: 0.5;
-}
-
+/* メタ項目の小さな記号。素材未確定のためプレースホルダー枠のみ */
 .v2-reader__mark {
   display: block;
   width: calc(22 * var(--v2-px));
@@ -253,31 +212,6 @@
   margin-top: calc(24 * var(--v2-px));
 }
 
-.v2-reader__menu-item {
-  display: flex;
-  align-items: center;
-  gap: calc(16 * var(--v2-px));
-  height: calc(54 * var(--v2-px));
-  font-family: var(--v2-font-body);
-  font-size: calc(16 * var(--v2-px));
-  line-height: 1;
-  color: var(--v2-ink-mid);
-}
-
-.v2-reader__menu-label {
-  flex: 1;
-}
-
-/* 件数は実データが無いので数字を置かず幅だけを確保する */
-.v2-reader__menu-slot {
-  width: calc(26 * var(--v2-px));
-  height: calc(16 * var(--v2-px));
-}
-
-.v2-reader__menu-go {
-  width: calc(14 * var(--v2-px));
-  height: calc(14 * var(--v2-px));
-}
 
 .v2-reader__meta-item {
   display: flex;
@@ -428,8 +362,8 @@
 /* 覚え書き。既存 openBook が「あれば表示」する仕様のため踏襲する。
    本文と混ざらないよう、細い罫の下に小さく置く */
 .v2-reader__note {
-  margin: calc(48 * var(--v2-px)) 0 0;
-  padding: calc(26 * var(--v2-px)) 0 0;
+  margin: calc(104 * var(--v2-px)) 0 0;
+  padding: calc(44 * var(--v2-px)) 0 0;
   border-top: calc(1 * var(--v2-px)) solid var(--v2-rule);
 }
 
@@ -454,38 +388,13 @@
 }
 
 /* ページ移動。Phase 1 は非活性 */
-.v2-reader__turn {
-  position: absolute;
-  top: calc(566 * var(--v2-px));
-  width: calc(60 * var(--v2-px));
-  height: calc(60 * var(--v2-px));
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-page-edge);
-  background: var(--v2-card-face);
-  appearance: none;
-}
 
-.v2-reader__turn:disabled,
-.v2-reader__turn[aria-disabled='true'] { opacity: 1; cursor: default; }
 
-.v2-reader__turn--prev { left: calc(34 * var(--v2-px)); }
-.v2-reader__turn--next { right: calc(34 * var(--v2-px)); }
 
-.v2-reader__turn::before {
-  content: '';
-  display: block;
-  width: calc(12 * var(--v2-px));
-  height: calc(12 * var(--v2-px));
-  margin: 0 auto;
-  border-top: calc(2 * var(--v2-px)) solid var(--v2-ink-mid);
-  border-right: calc(2 * var(--v2-px)) solid var(--v2-ink-mid);
-}
 
-.v2-reader__turn--next::before { transform: translateX(-25%) rotate(45deg); }
-.v2-reader__turn--prev::before { transform: translateX(25%) rotate(-135deg); }
 
+/* 小口の装飾。ページ位置という実データは存在しないため、
+   数字待ちに見える枠は置かず、静かな罫だけを残す（非interactive）。 */
 .v2-reader__foot {
   position: absolute;
   bottom: calc(48 * var(--v2-px));
@@ -494,13 +403,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: calc(24 * var(--v2-px));
 }
 
-.v2-reader__foot-mark {
-  width: calc(38 * var(--v2-px));
-  height: calc(38 * var(--v2-px));
-}
 
 .v2-reader__foot-rule {
   width: calc(200 * var(--v2-px));
@@ -509,11 +413,6 @@
   opacity: 0.4;
 }
 
-/* ページ位置は実データが無いので数字を置かず幅だけを確保する */
-.v2-reader__foot-slot {
-  width: calc(80 * var(--v2-px));
-  height: calc(18 * var(--v2-px));
-}
 
 /* Phase 2：未承認の操作バー（.v2-reader__actions / .v2-reader__action）は削除した */
 

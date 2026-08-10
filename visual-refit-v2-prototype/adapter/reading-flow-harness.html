@@ -177,32 +177,16 @@
   <div class="v2-content">
     <button type="button" class="v2-reader__back" data-v2-reader-back>＜　戻る</button>
 
-    <div class="v2-reader__tools">
-      <button type="button" class="v2-reader__tool" disabled aria-disabled="true">
-        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>文字サイズ
-        <span class="v2-reader__tool-sep" aria-hidden="true"></span>
-        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>明るさ
-      </button>
-      <button type="button" class="v2-reader__tool v2-reader__tool--round" disabled aria-disabled="true"
-              aria-label="メニュー（外観確認用・未接続）">
-        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
-      </button>
-    </div>
+    <!-- Phase 3 Step 3D：現時点で実機能が存在しない操作
+         （文字サイズ／明るさ／メニュー／目次／編集する／ページ送り）を画面から外した。
+         disabled のまま残さず、「近日対応」等も出さない。新機能も作らない。
+         残る操作は「戻る」と下部ナビだけ。しおりリボン・小口の罫は非interactive な装飾。 -->
 
     <div class="v2-reader__side">
       <span class="v2-reader__cover v2-placeholder" data-v2-reader="cover"></span>
       <span class="v2-reader__slot v2-placeholder" data-v2-reader="shelf"></span>
       <span class="v2-reader__slot v2-reader__slot--sub v2-placeholder" data-v2-reader="sealed"></span>
 
-      <div class="v2-reader__rule" aria-hidden="true"></div>
-
-      <div class="v2-reader__menu">
-        <div class="v2-reader__menu-item">
-          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-reader__menu-label">目次</span>
-          <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
-        </div>
-      </div>
 
       <div class="v2-reader__rule" aria-hidden="true"></div>
 
@@ -221,11 +205,6 @@
           <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
           <span class="v2-reader__meta-label">保存先</span>
           <span class="v2-reader__meta-slot v2-placeholder" data-v2-reader="store"></span>
-        </div>
-        <div class="v2-reader__meta-item">
-          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-reader__meta-label">編集する</span>
-          <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
         </div>
       </div>
 
@@ -251,15 +230,9 @@
         </div>
       </div>
 
-      <button type="button" class="v2-reader__turn v2-reader__turn--prev" disabled aria-disabled="true"
-              aria-label="前のページ（外観確認用・未接続）"></button>
-      <button type="button" class="v2-reader__turn v2-reader__turn--next" disabled aria-disabled="true"
-              aria-label="次のページ（外観確認用・未接続）"></button>
 
       <div class="v2-reader__foot" aria-hidden="true">
-        <span class="v2-reader__foot-mark v2-placeholder"></span>
         <span class="v2-reader__foot-rule"></span>
-        <span class="v2-reader__foot-slot v2-placeholder"></span>
       </div>
     </section>
 

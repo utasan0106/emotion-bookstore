@@ -679,3 +679,116 @@ focus ring は既定のまま残す。
 ### Google Books / iTunes
 
 Step 3B の判定を継続。**V2 へは接続しない。** 本 Step でも現行コードを是正していない。
+
+---
+
+## Phase 3 Step 3D — 書く → 本にする → 自分の本棚 → 一冊を読む（2026-08-10 CEO決裁）
+
+05「書く」を既存の保存・製本ロジックへ接続し、中核経路を完成させた。
+同時に 07 の「押せそうなのに動かない」操作を整理した。
+
+**保存・製本・下書き・検証・GA4 のロジックは V2 側に一切持たない（再実装しない）。**
+
+### 既存の書く／製本の呼び出し経路（監査結果）
+
+| 既存要素 | 役割 |
+|---|---|
+| `#storyInput` | 本文。input listener が下書き保存（500ms デバウンス）・文字数・題名提案を担う |
+| `#titleInput` | 題名（任意）。空欄時の fallback「まだ、題名のない本」も既存側 |
+| `#submitStory` の onclick | **製本の唯一の入口**。検証 → `runBinding` → `saveJSON` → 読み戻し確認 → `renderShelf` → GA4 |
+| `#deskMsg` / `#storyCount` | 既存の結果表示・文字数表示 |
+| `#unfiledShelfSkip` | 製本成功後「今は棚を決めず、本棚へ」。既存の離脱経路 |
+| `handleGenuineStartWritingInput` | `Event.isTrusted` で利用者本人の入力を判定し `start_writing` を1回だけ送る |
+
+初回製本の category は既存実装が**常に `UNFILED_CATEGORY_ID`** を使う
+（`#categorySelect` の値は初回保存に使わない）。V2 もこれを変えない。
+
+### form-adapter がすること
+
+1. V2 の本文欄・題名欄の値を既存 `#storyInput` / `#titleInput` へ写し、合成 `input` イベントで
+   既存の下書き保存・文字数・題名提案を動かす
+2. 「本にする」で既存 `#submitStory` を押す
+3. 既存 `#deskMsg` / `#storyCount` / `#submitStory.disabled` を V2 へ写す
+4. 成功したら既存 `#unfiledShelfSkip` を通り、V2 は 06 を表示する
+
+`start_writing` は既存関数 `handleGenuineStartWritingInput` **そのもの**を V2 本文欄にも
+listener として付けて発火させる（利用者の実入力だけが `isTrusted=true`）。
+V2 から既存欄へ写す合成イベントでは発火しない＝既存の判定条件をそのまま維持する。
+
+### 検証・GA4・保存の同一性（実測）
+
+本番 `index.html` 上で「既存欄へ直接入力して既存ボタンを押す経路」と
+「V2 Adapter 経路」を同一ケースで比較した。
+
+| 比較項目 | 結果 |
+|---|---|
+| GA4 イベント列 | `["start_writing","create_book_success","view_shelf"]` で**完全一致** |
+| `DataRepository` 呼び出し列 | `set:draft → set:library → get:library → get:shiori → remove:draft → get:milestones → set:milestones` で**完全一致** |
+| 使用 storage key | `draft / library / milestones / shiori` の4つで**完全一致**（新規キー 0） |
+| 保存結果 | 本文・category（`unfiled`）とも一致 |
+
+**V2 由来の新イベント 0 / 二重発火 0 / 新 storage key 0 / 製本経路の外部通信 0。**
+
+### 下書き
+
+既存 `DRAFT_KEY`（`emotion-bookstore-draft`）だけを使う。V2 の新 draft key は作らない。
+入力 → 既存デバウンス保存、`restoreDraftIfAny()` → V2 へ引き取り、
+製本成功 → 既存 `deleteKey` で削除、**製本失敗 → 保持**（実測で確認）。
+V2 Adapter は draft を独自に削除しない。
+
+### 検証（validation）
+
+既存 validation をそのまま使い、独自検証は足さない。
+本文空欄 → `create_book_validation_error:empty_story`、
+`STORY_LIMIT`（700）超過 → `story_too_long`。
+文言は既存 `#deskMsg` の内容をそのまま V2 へ写す。
+
+### 製本成功後
+
+`libraryCache` 最新化 → **06「自分の本棚」**へ。07 へは自動で開かない。
+新規作成本に new badge / recent flag / 新 storage field は付けない。
+並び順も既存のまま（末尾に追加）。
+
+### category / unfiled
+
+04 で見ていた感情（例：不安）を製本 category へ**暗黙適用しない**。
+利用者が 05 で明示選択していない限り既存仕様どおり `unfiled`。意味づけは利用者主権。
+実測：04 で `selectEmotion('fuan')` した直後に製本しても `category === 'unfiled'`。
+
+### 題名
+
+空欄でも製本できる。必須へ戻していない。空欄時は既存 fallback「まだ、題名のない本」。
+
+### 画像
+
+このStepでは画像UIを 05 へ接続していない（HOLD）。保存契約に触れるより HOLD を選ぶ。
+07 側は既存保存済みの `data:` URI のみ表示する（Step 3C のまま。新規 network 0）。
+
+### 07 Dead-Affordance Cleanup
+
+現時点で実機能が存在しない操作を**画面から外した**（disabled のまま残さない・「近日対応」等も出さない）。
+
+| 対象 | 判定 |
+|---|---|
+| 文字サイズ／明るさ／右上メニュー | 実機能なし → 非表示 |
+| 目次 | 実機能なし → 非表示 |
+| 左右ページ送り | 実機能なし → 非表示 |
+| 編集する | 既存 `enterBookEditMode` は `#bookModal` の編集UIに強く結びついており、V2 へ安全に接続できない → 非表示 |
+| 小口のページ番号枠 | 実データが存在しない枠 → 非表示（静かな罫だけ残す） |
+
+07 に残る操作は**「戻る」と下部ナビだけ**。しおりリボンと小口の罫は非interactive な装飾。
+対応する CSS も削除した（新機能は作っていない）。
+
+### 07 spacing（§15）
+
+短文＋覚え書きのとき、本文終了から区切り罫までの呼吸を CSS だけで広げた
+（`margin-top` 48→104、`padding-top` 26→44）。長文の縦スクロールは変えていない。
+
+### 残る blocker
+
+**「棚に収納する」画面が V2 に存在しない。** 既存本番は製本成功後に受け取り頁
+（`#unfiledShelfPicker`）を出し、そこで 21 棚へ収納するか「今は棚を決めず、本棚へ」を選ぶ。
+V2 は後者（既存の `#unfiledShelfSkip`）を通って 06 へ進む。
+そのため **V2 だけを使うと、本を感情棚へ収納する手段が無い**（本は `unfiled` のまま）。
+`unfiled` の本は 06 では見えるが 04 には出ない（Step 3B.1 決裁）。
+V2 に受け取り頁を用意するかどうかは CEO 判断が必要。

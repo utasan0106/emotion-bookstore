@@ -61,7 +61,7 @@
   <!-- 内容レイヤ -->
   <div class="v2-content">
 
-    <p class="v2-editor__back">＜　戻る</p>
+    <button type="button" class="v2-editor__back" data-v2-go="02">＜　戻る</button>
 
     <p class="v2-editor__privacy">本文は公開されません</p>
 
@@ -87,19 +87,27 @@
         <span class="v2-editor__tool v2-placeholder" aria-hidden="true"></span>下書き一覧
       </button>
 
-      <p class="v2-editor__field-label">題（あらだし）</p>
+      <!-- 題名は任意。空欄でも製本できる（空欄時の題名は既存側が決める）。
+           Step 3D でも必須へ戻さない。 -->
+      <p class="v2-editor__field-label" id="v2-write-title-label">題（あらだし）</p>
       <!-- 文字数上限は現行の maxlength=16 を正とする。カンプの 0 / 30 は採用しない -->
-      <p class="v2-editor__counter">0 / 16</p>
+      <p class="v2-editor__counter" data-v2-write="title-count">0 / 16</p>
 
-      <input class="v2-editor__title-field" type="text" maxlength="16" disabled aria-disabled="true"
+      <input class="v2-editor__title-field" type="text" maxlength="16"
+             data-v2-write="title" aria-labelledby="v2-write-title-label"
              placeholder="本の題名をつけてください（あとから変えられます）">
 
-      <!-- 本文：ここに書くことが最も明確な領域。Phase 1 は静的・非保存 -->
-      <!-- Phase 2：未承認の rich-text 系ツール帯を削除し、書く面だけを残した -->
+      <!-- 本文：ここに書くことが最も明確な領域。
+           Step 3D で既存 #storyInput（＝下書き保存・文字数・製本の正式な入口）へ接続した。
+           保存・製本・検証・GA4 のロジックは V2 側に持たない。 -->
       <div class="v2-editor__body">
-        <textarea class="v2-editor__body-input" disabled aria-disabled="true"
+        <textarea class="v2-editor__body-input" data-v2-write="story"
+                  aria-label="本文"
                   placeholder="ここに、あなたのことばを書いてください。"></textarea>
       </div>
+
+      <!-- 既存 #storyCount（0 / 700字・上限超過表示）をそのまま写す。V2 で数え直さない -->
+      <p class="v2-editor__body-counter" data-v2-write="count">0 / 700字</p>
 
       <!-- 保存に関する情報：対象を本文に限定した正確な表現にする。
            包括的・絶対的な表現（あなただけ／〜ことはありません／〜にのみ）を使わない。
@@ -112,17 +120,23 @@
         </div>
       </div>
 
-      <!-- 操作：Phase 1 は非活性。保存 / 製本 / route / modal / GA4 のいずれも起こさない -->
+      <!-- 操作：「本にする」は既存 #submitStory を押すだけ。
+           検証・保存・読み戻し確認・GA4・二重防止はすべて既存実装が持つ。
+           「下書き保存」は既存側が入力のたびに自動保存するため非活性のまま
+           （このStepでは 05 の整理を範囲外とし、Phase 2 承認どおりの見え方を保つ）。 -->
       <div class="v2-editor__actions">
         <button type="button" class="v2-editor__action v2-editor__action--secondary" disabled aria-disabled="true">
           <span class="v2-editor__action-main">下書き保存</span>
           <span class="v2-editor__action-note">いつでも続きから書けます</span>
         </button>
-        <button type="button" class="v2-editor__action v2-editor__action--primary" disabled aria-disabled="true">
+        <button type="button" class="v2-editor__action v2-editor__action--primary" data-v2-write="bind">
           <span class="v2-editor__action-main">本にする</span>
           <span class="v2-editor__action-note">あなたの本として棚に並びます</span>
         </button>
       </div>
+
+      <!-- 既存 #deskMsg（検証結果・保存結果）をそのまま写す。V2 で文言を作らない -->
+      <p class="v2-editor__msg is-v2-empty" data-v2-write="msg" role="status" aria-live="polite"></p>
 
     </section>
 

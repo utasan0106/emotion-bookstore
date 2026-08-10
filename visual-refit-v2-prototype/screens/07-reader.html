@@ -17,8 +17,8 @@
   - edit / delete / rename / focus trap / inert / aria-hidden 等の既存契約に一切触れない
   - 題名・日付・文字数・しおり件数・ページ数・本文は利用者の実データなので
     文字を置かず、占有位置と余白だけを中立プレースホルダーで作る
-  - ラベル（しおり／メモ・線を引いた箇所／目次／共有 等）は UI 側の文言なのでそのまま置く
-  - しおり／メモ／目次／共有／文字サイズ／明るさ／ページ送りは現行に無い機能のため静的・非活性
+  - Phase 3 Step 3D：現行に実機能が無い操作（目次／文字サイズ／明るさ／メニュー／
+    編集する／ページ送り）は画面から外した。disabled のまま残さない
   - 保存 / IndexedDB / localStorage / GA4 / 外部通信を一切行わない
   - 下部ナビは Phase 2 正式仕様の3項目。route は Phase 3 で決める
   - DAY と NIGHT は同一DOM。data-v2-theme だけで切り替える
@@ -55,17 +55,11 @@
          library が 0 冊なら bookshelf-adapter の既存判定に従って 08 へ戻る。 -->
     <button type="button" class="v2-reader__back" data-v2-reader-back>＜　戻る</button>
 
-    <div class="v2-reader__tools">
-      <button type="button" class="v2-reader__tool" disabled aria-disabled="true">
-        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>文字サイズ
-        <span class="v2-reader__tool-sep" aria-hidden="true"></span>
-        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>明るさ
-      </button>
-      <button type="button" class="v2-reader__tool v2-reader__tool--round" disabled aria-disabled="true"
-              aria-label="メニュー（外観確認用・未接続）">
-        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
-      </button>
-    </div>
+      <!-- Phase 3 Step 3D：現時点で実機能が存在しない操作
+           （文字サイズ／明るさ／メニュー／目次／編集する／ページ送り）を画面から外した。
+           disabled のまま残さず、「近日対応」等も出さない。新機能も作らない。
+           残る操作は「戻る」と下部ナビだけ。しおりリボン・小口の罫は非interactive な装飾。 -->
+
 
     <!-- 左カラム：本の情報・小さな操作領域 -->
     <div class="v2-reader__side">
@@ -77,18 +71,9 @@
       <!-- sealed の注記。既存 openBook と同じく「日付の隣の注記」であり、閲覧制御ではない -->
       <span class="v2-reader__slot v2-reader__slot--sub v2-placeholder" data-v2-reader="sealed"></span>
 
-      <div class="v2-reader__rule" aria-hidden="true"></div>
-
       <!-- Phase 2：未承認の「共有（URLをコピー）」と、しおり／メモ・線引き等の
-           編集機能を削除した。本文を外へ出す導線は置かない -->
-      <div class="v2-reader__menu">
-        <div class="v2-reader__menu-item">
-          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-reader__menu-label">目次</span>
-          <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
-        </div>
-      </div>
-
+           編集機能を削除した。本文を外へ出す導線は置かない。
+           Phase 3 Step 3D：実機能の無い「目次」も外した。 -->
       <div class="v2-reader__rule" aria-hidden="true"></div>
 
       <div class="v2-reader__menu">
@@ -106,11 +91,6 @@
           <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
           <span class="v2-reader__meta-label">保存先</span>
           <span class="v2-reader__meta-slot v2-placeholder" data-v2-reader="store"></span>
-        </div>
-        <div class="v2-reader__meta-item">
-          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-reader__meta-label">編集する</span>
-          <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
         </div>
       </div>
 
@@ -143,15 +123,9 @@
         </div>
       </div>
 
-      <button type="button" class="v2-reader__turn v2-reader__turn--prev" disabled aria-disabled="true"
-              aria-label="前のページ（外観確認用・未接続）"></button>
-      <button type="button" class="v2-reader__turn v2-reader__turn--next" disabled aria-disabled="true"
-              aria-label="次のページ（外観確認用・未接続）"></button>
 
       <div class="v2-reader__foot" aria-hidden="true">
-        <span class="v2-reader__foot-mark v2-placeholder"></span>
         <span class="v2-reader__foot-rule"></span>
-        <span class="v2-reader__foot-slot v2-placeholder"></span>
       </div>
     </section>
 
