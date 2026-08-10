@@ -624,6 +624,28 @@
     transform: none;
   }
 
+  /* 下部ナビは流し込みの最後に置き、スクロールしても下端へ留める。
+     この扱いは流し込みレイアウトと一体で、帯（≤900px）全体に必要。
+     360px 以下だけに限定していたときは、361〜900px で
+     カンプ由来の height:%（81/1536）を持ったまま flex item になり、
+     内容がはみ出す幅（例 390px）では flex-shrink で高さ0へ潰れ、
+     内容が収まる幅（例 853/900px）ではカンプ基準の高さのまま
+     きっかけの上へ載っていた。 */
+  .v2-page--editor .v2-editor__navbar {
+    position: sticky;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    flex: none;
+    margin-top: auto;
+    padding: calc(6 * var(--v2-tpx)) 0;
+  }
+  .v2-page--editor .v2-editor__nav {
+    position: static;
+    width: auto;
+  }
+  .v2-page--editor .v2-navbar__item { height: calc(46 * var(--v2-tpx)); }
+
   /* 素材未確定の装飾プレースホルダーは、狭い幅では場所を取るだけなので隠す */
   .v2-page--editor .v2-editor__mark { display: none; }
 
@@ -726,19 +748,4 @@
 /* 320px 級の最狭幅では、きっかけの2列でも1文字ずつ折れるため1列にする */
 @container (max-width: 360px) {
   .v2-page--editor .v2-editor__chips { grid-template-columns: 1fr; }
-
-  /* 下部ナビは流し込みの最後に置き、スクロールしても下端へ留める */
-  .v2-page--editor .v2-editor__navbar {
-    position: sticky;
-    bottom: 0;
-    width: auto;
-    height: auto;
-    margin-top: auto;
-    padding: calc(6 * var(--v2-tpx)) 0;
-  }
-  .v2-page--editor .v2-editor__nav {
-    position: static;
-    width: auto;
-  }
-  .v2-page--editor .v2-navbar__item { height: calc(46 * var(--v2-tpx)); }
 }

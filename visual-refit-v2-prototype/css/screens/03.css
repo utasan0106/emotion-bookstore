@@ -431,3 +431,45 @@
   left: calc(25 * var(--v2-px));
   width: calc(873 * var(--v2-px));
 }
+
+/* -----------------------------------------------------------------------------
+ * モバイル幅の局所修正（Pre-Mount Visual A11y Hotfix / Additional LIMITED FIX）
+ * 崩れは「見出し×リード」「リード×棚カード」「すべての感情語を見る×注記」だけ。
+ * リードは left:50% + translateX(-50%) のため使える幅が半分になり3行へ折れていた。
+ * 位置の考え方は変えず、幅の取り方と文字寸法だけを直す。
+ * コンテナ幅 900px 以上（カンプ原寸 1024 を含む）には適用されない。
+ * -------------------------------------------------------------------------- */
+@container (max-width: 900px) {
+  .v2-page--shelves .v2-shelves__title { font-size: calc(34 * var(--v2-tpx)); }
+  .v2-page--shelves .v2-shelves__lead {
+    left: 0;
+    right: 0;
+    transform: none;
+    padding: 0 calc(40 * var(--v2-px));
+    font-size: calc(14 * var(--v2-tpx));
+    line-height: calc(20 * var(--v2-tpx));
+    text-wrap: balance;
+  }
+  /* 前半の文が1行に収まらず「い。」だけが2行目に落ちるため、
+     モバイル幅では強制改行を無効化して段落全体で行を均等に割る
+     （Chromium は強制改行を含む段落を balance しない）。文言は変更していない。 */
+  .v2-page--shelves .v2-shelves__lead br { display: none; }
+
+  .v2-page--shelves .v2-shelves__all {
+    font-size: calc(20 * var(--v2-tpx));
+    white-space: nowrap;
+  }
+  .v2-page--shelves .v2-shelves__all-note { font-size: calc(15 * var(--v2-tpx)); }
+
+  /* 棚カードの中身が拡大して枠から溢れ、下の導線と重なるため、
+     カード内の文字だけ一段小さくする（いずれも 12px 以上） */
+  .v2-page--shelves .v2-shelf-card__name { font-size: calc(18 * var(--v2-tpx)); }
+  .v2-page--shelves .v2-shelf-card__words,
+  .v2-page--shelves .v2-shelf-card__note,
+  .v2-page--shelves .v2-shelf-card__alias { font-size: calc(14 * var(--v2-tpx)); }
+
+  /* 行末に1〜2文字だけ落ちないよう、複数行になる文は行を均等に割る */
+  .v2-page--shelves .v2-shelf-card__words,
+  .v2-page--shelves .v2-shelf-card__note,
+  .v2-page--shelves .v2-shelves__all-note { text-wrap: balance; }
+}

@@ -252,3 +252,48 @@
  * 正式仕様（Visual Review 反映）：01・02 は bottom navigation を持たない。
  * 3項目ナビは 03〜08 のみ。旧カンプの下部4ナビも再現しない。
  * -------------------------------------------------------------------------- */
+
+/* -----------------------------------------------------------------------------
+ * モバイル幅の局所修正（Pre-Mount Visual A11y Hotfix / Additional LIMITED FIX）
+ * 崩れは「問いかけ×3カード」と「カード内の見出し×説明」だけ。
+ *   - 問いかけは 54/85 のままだと3行になり、カード帯へ食い込む
+ *   - カードは高さ固定＋3列のため、内容が縦に潰れて見出しと説明が重なり、
+ *     見出しが1〜2文字ずつ折れていた
+ * 3カード帯だけを1列・内容駆動にする（画面全体の再構築はしない）。
+ * コンテナ幅 900px 以上（カンプ原寸 1024 を含む）には適用されない。
+ * -------------------------------------------------------------------------- */
+@container (max-width: 900px) {
+  .v2-page--menu .v2-content { overflow-y: auto; }
+
+  .v2-page--menu .v2-menu__question {
+    width: 92%;
+    font-size: calc(30 * var(--v2-tpx));
+    line-height: calc(42 * var(--v2-tpx));
+  }
+
+  .v2-page--menu .v2-menu__cards {
+    grid-template-columns: 1fr;
+    height: auto;
+    row-gap: calc(12 * var(--v2-tpx));
+  }
+  .v2-page--menu .v2-menu-card {
+    height: auto;
+    padding: calc(16 * var(--v2-tpx)) calc(16 * var(--v2-tpx));
+  }
+  /* 見出し枠が高さ固定のため、拡大した見出しが溢れて説明と重なっていた */
+  .v2-page--menu .v2-menu-card__headzone {
+    height: auto;
+    min-height: 0;
+  }
+  .v2-page--menu .v2-menu-card__heading {
+    font-size: calc(22 * var(--v2-tpx));
+    line-height: calc(30 * var(--v2-tpx));
+    white-space: nowrap;
+  }
+  .v2-page--menu .v2-menu-card__desc {
+    margin-top: calc(8 * var(--v2-tpx));
+    font-size: calc(15 * var(--v2-tpx));
+    line-height: calc(24 * var(--v2-tpx));
+    text-wrap: balance;
+  }
+}

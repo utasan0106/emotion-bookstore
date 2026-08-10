@@ -347,3 +347,34 @@
   left: calc(25 * var(--v2-px));
   width: calc(873 * var(--v2-px));
 }
+
+/* -----------------------------------------------------------------------------
+ * モバイル幅の局所修正（Pre-Mount Visual A11y Hotfix / Additional LIMITED FIX）
+ * 重なりは無いが、狭い幅で行末に1〜2文字だけ落ちる行が出るため、
+ * 該当の文だけ行を均等に割る。位置・寸法・IA は変更しない。
+ * コンテナ幅 900px 以上（カンプ原寸 1024 を含む）には適用されない。
+ * -------------------------------------------------------------------------- */
+@container (max-width: 900px) {
+  .v2-page--bookshelf .v2-shelf__lead,
+  .v2-page--bookshelf .v2-shelf__note { text-wrap: balance; }
+
+  /* カンプ幅では <br> が意図どおり2行に割るが、狭い幅では各行がさらに折り返して
+     行末に1〜2文字だけ落ちる。Chromium は強制改行を含む段落を balance しないため、
+     モバイル幅に限り強制改行を無効化して、段落全体で行を均等に割る。
+     文言・DOM は変更していない（表示上の改行位置のみ）。 */
+  .v2-page--bookshelf .v2-shelf__lead br { display: none; }
+
+  /* 見出しと本文は縦位置を % （= --v2-px 比例）で置いているのに対し、
+     字だけ --v2-tpx の下限で大きく残るため、狭い幅で
+     「自分の本棚」の下端がリードの1行目に、リードの下端が本棚パネルに掛かる。
+     見出しの級数と行間だけを詰めて、占有位置・IA は変えずに解消する。 */
+  .v2-page--bookshelf .v2-shelf__title { font-size: calc(34 * var(--v2-tpx)); }
+  .v2-page--bookshelf .v2-shelf__lead { line-height: calc(24 * var(--v2-tpx)); }
+
+  /* 入口スロットは縦書き。狭い幅では字送り（0.18em）のぶんだけ
+     6文字が1列に収まらず2列へ割れるため、モバイル幅だけ字送りを詰める。 */
+  .v2-page--bookshelf .v2-shelf__add {
+    font-size: calc(15 * var(--v2-tpx));
+    letter-spacing: 0.04em;
+  }
+}

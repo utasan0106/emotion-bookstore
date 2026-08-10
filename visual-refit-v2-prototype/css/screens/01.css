@@ -179,3 +179,25 @@
 
 /* Phase 2 正式仕様：01 は bottom navigation を持たない。
    旧カンプの下部4ナビ（y 91.0-96.0%）は再現しない。 */
+
+/* -----------------------------------------------------------------------------
+ * モバイル幅の局所修正（Pre-Mount Visual A11y Hotfix / Additional LIMITED FIX）
+ * 崩れは「大見出し×リード」「リード×サブリード」だけ。
+ * 縦位置は % 指定のまま、文字の寸法だけを狭い幅で詰めて衝突を解く。
+ * 01 のカンプ幅は 853px なので、閾値は 852px（＝カンプ原寸を含めない最大値）。
+ * 他画面（02〜07=1024 / 08=1122）と違い 900px ではカンプ原寸に掛かってしまう。
+ * -------------------------------------------------------------------------- */
+@container (max-width: 852px) {
+  .v2-page--cover .v2-cover__title-main { font-size: calc(38 * var(--v2-tpx)); }
+  .v2-page--cover .v2-cover__lead {
+    text-wrap: balance;
+    font-size: calc(16 * var(--v2-tpx));
+    line-height: calc(24 * var(--v2-tpx));
+  }
+  .v2-page--cover .v2-cover__sublead {
+    /* リードが2行になるぶんだけ、狭い幅では位置を下げる */
+    top: 49%;
+    font-size: calc(15 * var(--v2-tpx));
+    line-height: calc(22 * var(--v2-tpx));
+  }
+}

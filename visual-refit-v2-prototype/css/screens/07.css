@@ -441,3 +441,37 @@
   left: calc(25 * var(--v2-px));
   width: calc(873 * var(--v2-px));
 }
+
+/* -----------------------------------------------------------------------------
+ * モバイル幅の局所修正（Pre-Mount Visual A11y Hotfix / Additional LIMITED FIX）
+ * 崩れは「メタ3行だけ」。行の高さが --v2-px 固定（390px で 19px）なのに
+ * 文字が --v2-tpx（13.8px）で2行に折れるため、3行が互いに重なっていた。
+ * ページ全体の flow 化はせず、この3行の高さと折返しだけを直す。
+ * コンテナ幅 900px 以上（カンプ原寸 1024 を含む）には適用されない。
+ * -------------------------------------------------------------------------- */
+@container (max-width: 900px) {
+  .v2-page--reader .v2-reader__meta-item {
+    height: auto;
+    min-height: calc(50 * var(--v2-px));
+    padding: calc(4 * var(--v2-tpx)) 0;
+  }
+  .v2-page--reader .v2-reader__meta-label { white-space: nowrap; }
+  .v2-page--reader .v2-reader__meta-slot { min-width: 0; }
+}
+
+@container (max-width: 900px) {
+  /* 左カラムが狭いため、この注記だけ1行あたり4文字前後になり
+     行末に1〜2文字だけ落ちる。装飾マークが本文の幅をさらに削っているので、
+     モバイル幅ではマークを外して本文へ幅を渡し、字送りを詰める。
+     文言・DOM・情報量は変更していない（装飾のみ非表示）。 */
+  .v2-page--reader .v2-reader__assurance-mark { display: none; }
+  .v2-page--reader .v2-reader__assurance-text {
+    font-size: calc(14 * var(--v2-tpx));
+    line-height: calc(20 * var(--v2-tpx));
+    text-wrap: balance;
+  }
+  /* Chromium は強制改行を含む段落を balance しないため、
+     マークを外して幅が足りたモバイル幅に限り改行を無効化し、
+     段落全体で行を均等に割る（文言は変更していない）。 */
+  .v2-page--reader .v2-reader__assurance-text br { display: none; }
+}

@@ -517,3 +517,25 @@
   left: calc(25 * var(--v2-px));
   width: calc(873 * var(--v2-px));
 }
+
+/* -----------------------------------------------------------------------------
+ * モバイル幅の局所修正（Pre-Mount Visual A11y Hotfix / Additional LIMITED FIX）
+ * 崩れは「見出し×リード」「リード×4領域タブ」「タブ文字の折返し」だけ。
+ * 縦位置は % 指定（画面高に比例）なのに文字が --v2-tpx で拡大するため、
+ * 割り当てられた縦の間隔を超えていた。位置は動かさず、文字寸法だけ詰める。
+ * コンテナ幅 900px 以上（カンプ原寸 1024 を含む）には適用されない。
+ * -------------------------------------------------------------------------- */
+@container (max-width: 900px) {
+  .v2-page--shelf-detail .v2-detail__title { font-size: calc(34 * var(--v2-tpx)); }
+  /* 左が 17.48% 始まりで使える幅が狭く、18 のままだと3行になり
+     4領域タブへ食い込むため、狭い幅でだけ1段小さくする（13.8px＝12px以上） */
+  .v2-page--shelf-detail .v2-detail__lead {
+    font-size: calc(15 * var(--v2-tpx));
+    line-height: calc(24 * var(--v2-tpx));
+  }
+  .v2-page--shelf-detail .v2-detail__tab {
+    font-size: calc(16 * var(--v2-tpx));
+    gap: calc(8 * var(--v2-px));
+    white-space: nowrap;
+  }
+}
