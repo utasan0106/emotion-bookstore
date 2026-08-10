@@ -421,3 +421,132 @@
   top: calc(20 * var(--v2-px));
   bottom: calc(20 * var(--v2-px));
 }
+
+/* =============================================================================
+ * モバイル幅の局所レイアウト（Pre-Mount Visual Accessibility Hotfix / LIMITED FIX）
+ * -----------------------------------------------------------------------------
+ * 08 も縦位置が --v2-px の絶対配置のため、文字下限を入れると
+ * 見出しと説明、3カラムの見出しと説明、CTA の文字が重なる／不自然に折れる。
+ * 狭い幅のときだけ DOM 順の縦流し込みへ切り替え、3カラムは1カラムにする。
+ *
+ * コンテナ幅 900px 以上（＝カンプ原寸 1122 を含む帯）では一切適用されないため、
+ * Formal Comp 原寸の見え方は 1px も変わらない。CSS のみで DOM・挙動は無変更。
+ * ========================================================================== */
+@container (max-width: 900px) {
+  .v2-page--empty .v2-content {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: calc(16 * var(--v2-tpx));
+    padding: calc(20 * var(--v2-tpx)) calc(18 * var(--v2-tpx)) 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .v2-page--empty .v2-content > *,
+  .v2-page--empty .v2-empty__card > * {
+    position: static;
+    inset: auto;
+    transform: none;
+  }
+
+  .v2-page--empty .v2-empty__badge,
+  .v2-page--empty .v2-empty__figure { display: none; }
+
+  .v2-page--empty .v2-empty__back { align-self: flex-start; }
+  .v2-page--empty .v2-empty__lead { line-height: calc(28 * var(--v2-tpx)); }
+
+  .v2-page--empty .v2-empty__card {
+    display: flex;
+    flex-direction: column;
+    gap: calc(14 * var(--v2-tpx));
+    width: auto;
+    height: auto;
+    padding: calc(22 * var(--v2-tpx));
+  }
+  .v2-page--empty .v2-empty__headline {
+    padding: 0;
+    line-height: calc(38 * var(--v2-tpx));
+  }
+  .v2-page--empty .v2-empty__subline {
+    padding: 0;
+    line-height: calc(26 * var(--v2-tpx));
+  }
+  .v2-page--empty .v2-empty__steps-rule { width: auto; margin: 0; }
+
+  /* 3カラムは狭い幅で見出しと説明が衝突するため1カラムにする */
+  .v2-page--empty .v2-empty__steps {
+    grid-template-columns: 1fr;
+    width: auto;
+    height: auto;
+    row-gap: calc(16 * var(--v2-tpx));
+  }
+  .v2-page--empty .v2-empty__step {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(6 * var(--v2-tpx));
+    height: auto;
+  }
+  .v2-page--empty .v2-empty__step-title,
+  .v2-page--empty .v2-empty__step-text {
+    position: static;
+    width: auto;
+    text-align: left;
+    line-height: calc(22 * var(--v2-tpx));
+  }
+  .v2-page--empty .v2-empty__step-mark { position: static; }
+  /* 1列にすると3カラム用の縦区切り線が宙に浮くので消す */
+  .v2-page--empty .v2-empty__step + .v2-empty__step::before { display: none; }
+
+  /* 見出しは 34 のままだと末尾1〜2文字だけが次行へ落ちる。
+     狭い幅でだけ1行に収まる大きさにし、収まらない幅では
+     text-wrap: balance で行を均等に割って孤立行を作らない。 */
+  .v2-page--empty .v2-empty__headline {
+    font-size: calc(26 * var(--v2-tpx));
+    text-wrap: balance;
+  }
+  .v2-page--empty .v2-empty__subline,
+  .v2-page--empty .v2-empty__lead,
+  .v2-page--empty .v2-empty__step-text,
+  .v2-page--empty .v2-empty__assurance-title,
+  .v2-page--empty .v2-empty__assurance-text { text-wrap: balance; }
+
+  /* CTA：横2列だとラベルが不自然に折れるため縦積み＋全幅にする */
+  /* 基底は grid（2列固定）なので、列テンプレート自体を1列へ変える */
+  .v2-page--empty .v2-empty__ctas {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+    width: auto;
+    height: auto;
+    row-gap: calc(10 * var(--v2-tpx));
+    column-gap: 0;
+  }
+  .v2-page--empty .v2-empty__cta {
+    width: auto;
+    height: auto;
+    min-height: calc(50 * var(--v2-tpx));
+    padding: calc(10 * var(--v2-tpx)) calc(14 * var(--v2-tpx));
+    white-space: normal;
+  }
+
+  .v2-page--empty .v2-empty__assurance {
+    width: auto;
+    height: auto;
+    padding: calc(18 * var(--v2-tpx));
+  }
+  .v2-page--empty .v2-empty__assurance-figure { display: none; }
+  .v2-page--empty .v2-empty__assurance-title,
+  .v2-page--empty .v2-empty__assurance-text { line-height: calc(22 * var(--v2-tpx)); }
+
+  .v2-page--empty .v2-empty__navbar {
+    position: sticky;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    margin-top: auto;
+    padding: calc(6 * var(--v2-tpx)) 0;
+  }
+  .v2-page--empty .v2-empty__nav { position: static; width: auto; }
+  .v2-page--empty .v2-navbar__item { height: calc(46 * var(--v2-tpx)); }
+}

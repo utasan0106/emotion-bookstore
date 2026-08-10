@@ -589,3 +589,156 @@
   left: calc(25 * var(--v2-px));
   width: calc(873 * var(--v2-px));
 }
+
+/* =============================================================================
+ * モバイル幅の局所レイアウト（Pre-Mount Visual Accessibility Hotfix / LIMITED FIX）
+ * -----------------------------------------------------------------------------
+ * 05 のカンプ内部は「縦位置＝--v2-px（レイアウト比例）」で絶対配置しているため、
+ * 文字だけに下限（--v2-tpx）を与えると各ブロックの実高さが割り当て枠を超え、
+ * 見出し・説明・題名・保存説明・きっかけが重なる。
+ *
+ * そこで狭い幅のときだけ、同じ DOM 順のまま縦の流し込みへ切り替える。
+ * 重なりは構造的に起こらなくなり、折返しも語単位で自然になる。
+ *
+ * - コンテナ幅 900px 以上（＝カンプ原寸 1024 を含む帯）では一切適用されないため、
+ *   Formal Comp 原寸の見え方は 1px も変わらない
+ * - DOM・IA・CTA・route・挙動・保存・GA4 には触れていない（CSS のみ）
+ * ========================================================================== */
+@container (max-width: 900px) {
+  .v2-page--editor .v2-content {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: calc(16 * var(--v2-tpx));
+    padding: calc(20 * var(--v2-tpx)) calc(18 * var(--v2-tpx)) 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  /* 絶対配置をすべて解除して、DOM 順の縦並びにする */
+  .v2-page--editor .v2-content > *,
+  .v2-page--editor .v2-editor__card > *,
+  .v2-page--editor .v2-editor__prompts > * {
+    position: static;
+    inset: auto;
+    transform: none;
+  }
+
+  /* 素材未確定の装飾プレースホルダーは、狭い幅では場所を取るだけなので隠す */
+  .v2-page--editor .v2-editor__mark { display: none; }
+
+  .v2-page--editor .v2-editor__back { align-self: flex-start; }
+  .v2-page--editor .v2-editor__privacy {
+    align-self: flex-end;
+    height: auto;
+    padding: calc(8 * var(--v2-tpx)) calc(16 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__ruby { margin-bottom: calc(-8 * var(--v2-tpx)); }
+  .v2-page--editor .v2-editor__lead { line-height: calc(28 * var(--v2-tpx)); }
+
+  /* 編集カード：高さは内容で決まるようにする */
+  .v2-page--editor .v2-editor__card {
+    display: flex;
+    flex-direction: column;
+    gap: calc(12 * var(--v2-tpx));
+    width: auto;
+    height: auto;
+    padding: calc(20 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__card-sub { line-height: calc(24 * var(--v2-tpx)); }
+  .v2-page--editor .v2-editor__counter,
+  .v2-page--editor .v2-editor__body-counter { align-self: flex-end; }
+  .v2-page--editor .v2-editor__field-label { margin-bottom: calc(-6 * var(--v2-tpx)); }
+
+  .v2-page--editor .v2-editor__title-field {
+    width: 100%;
+    height: auto;
+    min-height: calc(44 * var(--v2-tpx));
+    padding: calc(10 * var(--v2-tpx)) calc(14 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__body {
+    width: 100%;
+    height: calc(190 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__body-input {
+    padding: calc(12 * var(--v2-tpx)) calc(14 * var(--v2-tpx));
+    line-height: calc(26 * var(--v2-tpx));
+  }
+
+  .v2-page--editor .v2-editor__assurance { width: auto; }
+  .v2-page--editor .v2-editor__assurance-title,
+  .v2-page--editor .v2-editor__assurance-text { line-height: calc(22 * var(--v2-tpx)); }
+
+  /* 操作：補助文が細い柱で縦折れしないよう、縦積み＋全幅にする */
+  .v2-page--editor .v2-editor__actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: calc(10 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__autosave {
+    width: auto;
+    min-height: 0;
+    line-height: calc(20 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__action {
+    width: auto;
+    min-height: calc(52 * var(--v2-tpx));
+    padding: calc(10 * var(--v2-tpx)) calc(14 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__action-note { line-height: calc(20 * var(--v2-tpx)); }
+
+  /* 書くきっかけ：4列は狭すぎて1〜2文字ずつ折れるため2列にする */
+  .v2-page--editor .v2-editor__prompts {
+    width: auto;
+    height: auto;
+    padding: calc(20 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__prompts-head { margin-bottom: calc(14 * var(--v2-tpx)); }
+  .v2-page--editor .v2-editor__prompts-sub { line-height: calc(22 * var(--v2-tpx)); }
+  .v2-page--editor .v2-editor__chips {
+    grid-template-columns: repeat(2, 1fr);
+    width: auto;
+    height: auto;
+    row-gap: calc(12 * var(--v2-tpx));
+    column-gap: calc(16 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__chip {
+    justify-content: flex-start;
+    text-align: left;
+    line-height: calc(22 * var(--v2-tpx));
+  }
+
+  /* 行末に1〜2文字だけ落ちる孤立行を作らないよう、複数行になる文は行を均等に割る */
+  .v2-page--editor .v2-editor__lead,
+  .v2-page--editor .v2-editor__card-sub,
+  .v2-page--editor .v2-editor__prompts-sub,
+  .v2-page--editor .v2-editor__assurance-title,
+  .v2-page--editor .v2-editor__assurance-text,
+  .v2-page--editor .v2-editor__action-note,
+  .v2-page--editor .v2-editor__autosave,
+  .v2-page--editor .v2-editor__chip { text-wrap: balance; }
+  /* 強制改行（<br>）を含む文は balance が効かないため、
+     最終行が短くなりにくい pretty を使う */
+  .v2-page--editor .v2-editor__card-sub,
+  .v2-page--editor .v2-editor__lead { text-wrap: pretty; }
+}
+
+/* 320px 級の最狭幅では、きっかけの2列でも1文字ずつ折れるため1列にする */
+@container (max-width: 360px) {
+  .v2-page--editor .v2-editor__chips { grid-template-columns: 1fr; }
+
+  /* 下部ナビは流し込みの最後に置き、スクロールしても下端へ留める */
+  .v2-page--editor .v2-editor__navbar {
+    position: sticky;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    margin-top: auto;
+    padding: calc(6 * var(--v2-tpx)) 0;
+  }
+  .v2-page--editor .v2-editor__nav {
+    position: static;
+    width: auto;
+  }
+  .v2-page--editor .v2-navbar__item { height: calc(46 * var(--v2-tpx)); }
+}
