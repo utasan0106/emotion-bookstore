@@ -40,23 +40,24 @@
   /* ---------------------------------------------------------------------------
    * 7大棚 mapping（正本）
    * emotions の順序は決裁順のまま保持する。alphabetical sort 等は行わない。
-   * lead は Phase 3 Step 3A で新規に書いた UI コピー（ざわつくのみ Phase 2 承認済み文）。
+   * lead は Phase 3 Step 3A.1 で CEO 決裁された正式コピー
+   *（ざわつく・まだ名前がない は Phase 2 からの承認済み文をそのまま維持）。
    * ------------------------------------------------------------------------ */
   var MAJOR_SHELVES = [
     { id: 'hazumu',   name: '心が弾む',      emotions: ['ureshii', 'wakuwaku', 'hokorashii'],
-      lead: '心が軽く上を向いて、\n弾んでいるあたり。' },
+      lead: 'うれしさや期待が、\n内側で弾んでいるあたり。' },
     { id: 'atatamaru', name: '心があたたまる', emotions: ['ando', 'kansha', 'itooshii'],
-      lead: '張っていたものがほどけて、\nあたたかくなるあたり。' },
+      lead: 'ほっとしたり、大切に思ったり、\n内側がやわらぐあたり。' },
     { id: 'hikareru', name: '惹かれる',      emotions: ['akogare', 'shitto', 'natsukashii'],
-      lead: '遠くにあるものへ、\n心が引かれていくあたり。' },
+      lead: '自分の外にあるものへ、\n心が向いていくあたり。' },
     { id: 'shizumu',  name: '沈む',          emotions: ['kanashii', 'kodoku', 'gakkari'],
-      lead: '静かに重くなって、\n下へ沈んでいくあたり。' },
+      lead: '気持ちの重さが、\n静かに残っているあたり。' },
     { id: 'zawatsuku', name: 'ざわつく',     emotions: ['fuan', 'aseri', 'odoroki'],
       lead: '先が読めないときや、気持ちが落ち着かず\n動きつづけるあたり。' },
     { id: 'butsukaru', name: 'ぶつかる',     emotions: ['ikari', 'kuyashii', 'shitto'],
-      lead: '内側で熱がぶつかって、\n収まりきらないあたり。' },
+      lead: '収まりきらない気持ちが、\n内側でぶつかるあたり。' },
     { id: 'miwohiku',  name: '身を引く',     emotions: ['hazukashii', 'ushirometai', 'keno'],
-      lead: 'そっと身を引いて、\n距離を取りたくなるあたり。' }
+      lead: '少し離れたい、隠れたい。\nそんな距離が生まれるあたり。' }
   ];
 
   /* 特別入口。8番目の大棚ではない */
@@ -174,20 +175,28 @@
     opts = opts || {};
     var ids = emotionIdsOf(shelfId);
     state.originMajorShelfId = shelfId || null;
-    state.activeEmotionId = ids.length ? ids[0] : null;
+    // 「大棚を覗く」と「感情語を選ぶ」は別の行為。入口では感情語を自動選択しない。
+    // 1語しかない「まだ名前がない」でも同じ扱いにする。
+    state.activeEmotionId = null;
     state.lastOriginTriggerId = opts.triggerId || null;
 
     var nav = global.V2NavigationAdapter;
     if (nav && typeof nav.go === 'function') {
-      // 既存 goToShelf() は感情IDを受け取る。感情が解決できない場合は
-      // 棚IDを渡さず 04 の subview 遷移だけを行う（既存関数を騙さない）。
-      nav.go('04', state.activeEmotionId ? { shelfId: state.activeEmotionId } : null);
+      // 入口では shelfId を渡さない＝既存 goToShelf() を呼ばない。
+      // さらに 03 と 04 は同じ既存ページ（#shelves）の subview なので、
+      // 既に #shelves にいる場合は goToPage() も呼ばず subview だけを切り替える。
+      // これにより「大棚を覗くだけ」で view_shelf・既存 category 再描画・
+      // その派生の storage / 外部通信が一切起きない。
+      nav.go('04', { subviewOnly: true });
     }
     render();
     return { shelfId: state.originMajorShelfId, emotions: ids, active: state.activeEmotionId };
   }
 
-  /* 04 内で感情語を選ぶ。大棚文脈は変えない（入口文脈を保持したまま） */
+  /* 04 内で感情語を選ぶ。大棚文脈は変えない（入口文脈を保持したまま）。
+     利用者が明示的に感情語 button を押したときだけ既存 goToShelf() が走り、
+     既存の view_shelf / storage / 外部通信が既存どおりに発生する。
+     Adapter からは新イベント・新 storage・新通信を一切追加しない。 */
   function selectEmotion(emotionId) {
     var ids = emotionIdsOf(effectiveShelfId());
     if (ids.indexOf(emotionId) === -1 && emotionId !== null) {
@@ -211,7 +220,8 @@
     state.originMajorShelfId = null;
     state.activeEmotionId = null;
     var nav = global.V2NavigationAdapter;
-    if (nav && typeof nav.go === 'function') nav.go('03');
+    // 04 → 03 も同じ既存ページ内の subview 移動。既存関数は呼ばない。
+    if (nav && typeof nav.go === 'function') nav.go('03', { subviewOnly: true });
     restoreFocus(triggerId);
     state.lastOriginTriggerId = null;
     return triggerId;

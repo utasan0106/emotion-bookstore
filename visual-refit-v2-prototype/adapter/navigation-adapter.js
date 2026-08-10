@@ -162,6 +162,8 @@
   /* ---------------------------------------------------------------------------
    * 遷移
    * 既存 goToPage() / goToShelf() を唯一の入口として維持する。
+   * 同じ既存ページ内の subview 移動だけを行いたい場合は opts.subviewOnly を使う
+   * （既存関数を呼ばないため、既存の再描画・GA4・その派生処理も起きない）。
    * opts.shelfId が与えられた 04 への遷移のみ goToShelf() を使う
    * （7大棚 → 感情ID の変換は Step 3 の emotion-shelf-adapter が行う。ここでは受け取るだけ）。
    * ------------------------------------------------------------------------ */
@@ -171,6 +173,19 @@
     if (!screen) return false;
 
     var def = SCREENS[screen];
+
+    /* opts.subviewOnly（追加オプション。既定は false で従来どおり）
+       同じ既存ページ内での subview 移動（03⇄04 / 06⇄07⇄08）に使う。
+       既に目的の既存ページにいる場合だけ goToPage() を呼ばずに subview だけ切り替える。
+       目的のページにいない場合は従来どおり既存関数で遷移する。
+       既存の呼び出し（opts なし）の挙動は一切変わらない。 */
+    if (opts.subviewOnly && def.page !== null && currentPageId() === def.page) {
+      state.screen = screen;
+      applySubview(def.subview);
+      syncNavCurrent();
+      return true;
+    }
+
     state.screen = screen;
 
     if (def.page === null) {
