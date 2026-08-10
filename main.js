@@ -252,7 +252,7 @@ const MESSAGES = {
     footerBrand: "『みんなの感情書店』",
     footerNote: "綴った言葉はサーバーには送信されず、この端末にのみ保存されます。",
     // ★Hotfix4追加：フッター注記を指定どおり2行に改行表示するための版（data-i18n-html用）。
-    footerNoteHtml: "綴った言葉はサーバーには送信されず、<br>この端末にのみ保存されます。",
+    footerNoteHtml: "綴った言葉は運営者のサーバーへ送信されず、<br>この端末にのみ保存されます。",
     shareBtn: "この書店をシェアする", copyUrlBtn: "URLをコピー", pwaPinBtn: "ホーム画面にピン留め",
     privacyLink: "プライバシーポリシー", termsLink: "利用規約",
     // ★Hotfix4追加：フッター法務行の区切り文字・「専門の相談窓口」リンクの翻訳キー。
@@ -339,7 +339,7 @@ const MESSAGES = {
     goToShelfBtn: "『{shelf}』の棚を見てみる",
     dataAboutTitle: "この書店とデータについて",
     dataAboutOpenLabel: "データはどこに保存されるの？",
-    dataAboutBody: "「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す簡単な仕組みです（特定のAIモデルと会話しているわけではありません）。<br>「物語を綴る」「製本する」で書いた内容は、どこにも公開されず、この端末のブラウザ内（IndexedDB/localStorage）だけに保存されます。外部サーバーへは送信されません。アカウント登録もなく、他の人があなたの記録を見ることはできません。<br>「気持ちを手放す」は、この端末だけに残る「手放しの記録」に静かに移すことで、本棚の一覧からは見えなくなる機能です（完全な削除ではなく、専用の記録欄に移されます）。<br>「みんなの本棚」の「みんな」は他ユーザーとの共有ではなく、あなた自身の本棚が育っていく様子を指す名前です。<br>棚の一部の表示は、季節の言葉と棚の名前だけを検索語として外部の検索サービスに問い合わせて表示しています。この時も、あなたが綴った文章が送信されることはありません。<br>ブラウザのデータを消去するとこの記録も失われるため、「バックアップ保存」から定期的にファイルへ書き出すことをおすすめします。サービスとして終了する場合も、事前にバックアップを取っていただければお手元にデータが残ります。", // ★Hotfix1-1追加修正：本・音楽の予告をデータ保存説明からも削除（外部通信の開示自体は維持）
+    dataAboutBody: "「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す簡単な仕組みです（特定のAIモデルと会話しているわけではありません）。<br>「物語を綴る」「製本する」で書いた内容は、どこにも公開されず、この端末のブラウザ内（IndexedDB/localStorage）だけに保存されます。運営者のサーバーへは送信されません。アカウント登録もなく、運営者があなたの記録を読むことはできません（同じ端末・同じブラウザを使う人には表示されます）。<br>「気持ちを手放す」は、この端末だけに残る「手放しの記録」に静かに移すことで、本棚の一覧からは見えなくなる機能です（完全な削除ではなく、専用の記録欄に移されます）。<br>「みんなの本棚」の「みんな」は他ユーザーとの共有ではなく、あなた自身の本棚が育っていく様子を指す名前です。<br>棚の一部の表示は、季節の言葉と棚の名前だけを検索語として外部の検索サービスに問い合わせて表示しています。この時も、あなたが綴った文章が送信されることはありません。<br>ブラウザのデータを消去するとこの記録も失われるため、「バックアップ保存」から定期的にファイルへ書き出すことをおすすめします。サービスとして終了する場合も、事前にバックアップを取っていただければお手元にデータが残ります。", // ★Hotfix1-1追加修正：本・音楽の予告をデータ保存説明からも削除（外部通信の開示自体は維持）
     keeperNotAiHint: "※AIチャットボットではなく、あらかじめ用意した言葉を返す簡単な仕組みです。会話はモデルに送信されません。",
     submitStoryHint: "※外部には公開されず、この端末のブラウザ内にのみ保存されます。",
     // ★2025-07-17追記（v1.2フィードバック反映）：renderShelfDisplay()内にハードコードしていた
@@ -625,7 +625,7 @@ const MESSAGES = {
     shioriLabel: "Bookmark — from the shopkeeper", shioriBtn: "Receive today's bookmark",
     footerBrand: "\"The Bookstore of Feelings\"",
     footerNote: "What you write is never sent to a server — it's stored only on this device.",
-    footerNoteHtml: "What you write is never sent to a server —<br>it's stored only on this device.",
+    footerNoteHtml: "What you write is never sent to our servers —<br>it's stored only on this device.",
     shareBtn: "Share this bookstore", copyUrlBtn: "Copy URL", pwaPinBtn: "Pin to home screen",
     privacyLink: "Privacy Policy", termsLink: "Terms of Service",
     legalSep: " · ", supportLinkFooter: "Support & Helplines",
@@ -708,7 +708,7 @@ const MESSAGES = {
     goToShelfBtn: "View the \"{shelf}\" shelf",
     dataAboutTitle: "About this bookstore & your data",
     dataAboutOpenLabel: "Where is my data stored?",
-    dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it's a simple system that returns pre-written lines based on context (you're not talking to any particular AI model).<br>Anything you write in \"Write your story\" or have \"bound\" is never published anywhere. It's stored only inside this device's browser (IndexedDB/localStorage) and never sent to an external server. There's no account, so no one else can see your records.<br>\"Let go of a feeling\" quietly moves that entry into a device-only \"release log\" so it no longer appears on your bookshelf — it isn't permanently deleted, just moved to its own log.<br>\"Everyone's Bookshelf\" doesn't mean sharing with other users — \"everyone\" here just names the idea of your own bookshelf growing over time.<br>Some parts of the shelves are fetched from an external search service, using only a season word and the shelf's emotion label as the search terms. Your written entries are never sent in these requests either.<br>Clearing your browser data will also erase these records, so we recommend periodically exporting a backup file via \"Back up your data.\" Even if this service were ever discontinued, your data would remain safe on your device as long as you've backed it up beforehand.", // ★Hotfix1-1追加修正：本・音楽の予告をデータ保存説明からも削除（外部通信の開示自体は維持）
+    dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it's a simple system that returns pre-written lines based on context (you're not talking to any particular AI model).<br>Anything you write in \"Write your story\" or have \"bound\" is never published anywhere. It's stored only inside this device's browser (IndexedDB/localStorage) and never sent to our servers. There's no account, and we can't read your records (though anyone using this same device and browser will see them).<br>\"Let go of a feeling\" quietly moves that entry into a device-only \"release log\" so it no longer appears on your bookshelf — it isn't permanently deleted, just moved to its own log.<br>\"Everyone's Bookshelf\" doesn't mean sharing with other users — \"everyone\" here just names the idea of your own bookshelf growing over time.<br>Some parts of the shelves are fetched from an external search service, using only a season word and the shelf's emotion label as the search terms. Your written entries are never sent in these requests either.<br>Clearing your browser data will also erase these records, so we recommend periodically exporting a backup file via \"Back up your data.\" Even if this service were ever discontinued, your data would remain safe on your device as long as you've backed it up beforehand.", // ★Hotfix1-1追加修正：本・音楽の予告をデータ保存説明からも削除（外部通信の開示自体は維持）
     keeperNotAiHint: "※ Not an AI chatbot — a simple system that replies with pre-written lines. Nothing is sent to a model.",
     submitStoryHint: "※ Never published anywhere — stored only inside this device's browser.",
     // \u26052026-07-25 Content Trust Fix 1: heading simplified to "Your Books" while the fictional
