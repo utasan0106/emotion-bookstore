@@ -51,7 +51,9 @@
 
   <div class="v2-content">
 
-    <p class="v2-reader__back">＜　戻る</p>
+    <!-- 07 → 06 は固定（browser history に依存しない）。
+         library が 0 冊なら bookshelf-adapter の既存判定に従って 08 へ戻る。 -->
+    <button type="button" class="v2-reader__back" data-v2-reader-back>＜　戻る</button>
 
     <div class="v2-reader__tools">
       <button type="button" class="v2-reader__tool" disabled aria-disabled="true">
@@ -67,11 +69,13 @@
 
     <!-- 左カラム：本の情報・小さな操作領域 -->
     <div class="v2-reader__side">
-      <span class="v2-reader__cover v2-placeholder" aria-hidden="true"></span>
-      <span class="v2-reader__slot v2-placeholder" aria-hidden="true"></span>
-      <span class="v2-reader__slot v2-reader__slot--sub v2-placeholder" aria-hidden="true"></span>
-      <span class="v2-reader__slot v2-reader__slot--line v2-placeholder" aria-hidden="true"></span>
-      <span class="v2-reader__slot v2-reader__slot--line v2-reader__slot--short v2-placeholder" aria-hidden="true"></span>
+      <!-- 書影：既存 entry.image（保存済みの data: URI）があるときだけ写真を入れる。
+           外部URLは新規 network を発生させうるため描かない。 -->
+      <span class="v2-reader__cover v2-placeholder" data-v2-reader="cover"></span>
+      <!-- 棚名（既存 CATEGORIES の label）。未収納・不明IDのときは空のまま -->
+      <span class="v2-reader__slot v2-placeholder" data-v2-reader="shelf"></span>
+      <!-- sealed の注記。既存 openBook と同じく「日付の隣の注記」であり、閲覧制御ではない -->
+      <span class="v2-reader__slot v2-reader__slot--sub v2-placeholder" data-v2-reader="sealed"></span>
 
       <div class="v2-reader__rule" aria-hidden="true"></div>
 
@@ -91,17 +95,17 @@
         <div class="v2-reader__meta-item">
           <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
           <span class="v2-reader__meta-label">本にした日</span>
-          <span class="v2-reader__meta-slot v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__meta-slot v2-placeholder" data-v2-reader="date"></span>
         </div>
         <div class="v2-reader__meta-item">
           <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
           <span class="v2-reader__meta-label">文字数</span>
-          <span class="v2-reader__meta-slot v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__meta-slot v2-placeholder" data-v2-reader="chars"></span>
         </div>
         <div class="v2-reader__meta-item">
           <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
           <span class="v2-reader__meta-label">保存先</span>
-          <span class="v2-reader__meta-slot v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__meta-slot v2-placeholder" data-v2-reader="store"></span>
         </div>
         <div class="v2-reader__meta-item">
           <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
@@ -120,21 +124,23 @@
     <section class="v2-reader__page" aria-label="読む面">
       <span class="v2-reader__ribbon" aria-hidden="true"></span>
 
-      <div class="v2-reader__chapter" aria-hidden="true">
-        <span class="v2-reader__chapter-no v2-placeholder"></span>
-        <span class="v2-reader__chapter-title v2-placeholder"></span>
-        <span class="v2-reader__chapter-rule"></span>
+      <!-- 現行データに章の概念は無いため、章番号は置かず、題名だけを読む面の見出しにする -->
+      <div class="v2-reader__chapter">
+        <h1 class="v2-reader__chapter-title v2-placeholder" data-v2-reader="title"></h1>
+        <span class="v2-reader__chapter-rule" aria-hidden="true"></span>
       </div>
 
-      <div class="v2-reader__body" aria-hidden="true">
-        <span class="v2-reader__body-line v2-placeholder"></span>
-        <span class="v2-reader__body-line v2-reader__body-line--short v2-reader__body-line--gap v2-placeholder"></span>
-        <span class="v2-reader__body-line v2-placeholder"></span>
-        <span class="v2-reader__body-line v2-reader__body-line--short v2-reader__body-line--gap v2-placeholder"></span>
-        <span class="v2-reader__body-line v2-placeholder"></span>
-        <span class="v2-reader__body-line v2-reader__body-line--short v2-reader__body-line--gap v2-placeholder"></span>
-        <span class="v2-reader__body-line v2-placeholder"></span>
-        <span class="v2-reader__body-line v2-reader__body-line--short v2-placeholder"></span>
+      <!-- 読む面の中身。長文はこの中だけで縦スクロールする（横スクロールは作らない） -->
+      <div class="v2-reader__scroll">
+        <!-- 本文。利用者の本文をそのまま静かに置く。カード群にしない。
+             既存 openBook と同じく sealed でも隠さない（sealed は閲覧制御ではない）。 -->
+        <p class="v2-reader__body v2-placeholder" data-v2-reader="body"></p>
+
+        <!-- 覚え書き。既存 openBook が「あれば表示」する仕様のため踏襲する -->
+        <div class="v2-reader__note" data-v2-reader="note-box" hidden>
+          <p class="v2-reader__note-label">覚え書き</p>
+          <p class="v2-reader__note-text" data-v2-reader="note"></p>
+        </div>
       </div>
 
       <button type="button" class="v2-reader__turn v2-reader__turn--prev" disabled aria-disabled="true"

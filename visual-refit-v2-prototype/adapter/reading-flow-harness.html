@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ja" data-v2-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Visual Refit V2 — 04→06→07→06 再会導線 QAハーネス（Phase 3 Step 3C）</title>
+
+<!--
+  04「自分の本」→ 06「自分の本棚」→ 07「一冊を読む」→ 06 の導線検証専用ページ。
+  production にも通常の prototype 画面にも読み込ませない。
+
+  - 04 / 06 / 07 を1つの文書に置き、NavigationAdapter の subview 切替で出し分ける
+    （本番 V2 で同一既存ページ内の subview として並ぶ形を再現する）
+  - 実 library は使わない。synthetic fixture のみ（利用者データを扱わない）
+  - 既存関数（goToPage / goToShelf 等）はスタブ。本番統合の PASS とは区別する
+  - 保存 / IndexedDB / localStorage / GA4 / 外部通信は一切行わない
+-->
+
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/screens/04.css">
+<link rel="stylesheet" href="../css/screens/06.css">
+<link rel="stylesheet" href="../css/screens/07.css">
+<style>
+  /* ハーネス専用。prototype の CSS には入れない。
+     選択中の subview だけを見せる（本番の出し分けは既存 activateExperiencePage の責務）。 */
+  [data-v2-subview-of] { display: none; }
+  [data-v2-subview-of].is-v2-current-subview { display: block; }
+</style>
+</head>
+
+<body class="v2-page">
+
+<!-- ============ 04 大棚の中（自分の本） ============ -->
+<div class="v2-page--shelf-detail" data-v2-subview-of="shelf-detail" data-v2-screen="04">
+<div class="v2-stage v2-detail">
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-detail__wall"></div>
+    <div class="v2-detail__shelfscape"></div>
+    <div class="v2-detail__plant v2-placeholder"></div>
+    <div class="v2-detail__shelflight"></div>
+    <div class="v2-detail__vignette"></div>
+  </div>
+
+  <div class="v2-content">
+    <button type="button" class="v2-detail__back" data-v2-go="03" data-v2-shelf-back>＜　棚へ戻る</button>
+    <p class="v2-detail__glyph v2-placeholder" aria-hidden="true"></p>
+    <h1 class="v2-detail__title" data-v2-emotion="title"></h1>
+    <p class="v2-detail__lead" data-v2-emotion="lead"></p>
+
+    <nav class="v2-detail__tabs" aria-label="領域" data-v2-regions>
+      <button type="button" class="v2-detail__tab" data-v2-region="kotoba"
+              aria-pressed="true" aria-controls="v2-region-kotoba">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>ことば</button>
+      <button type="button" class="v2-detail__tab" data-v2-region="ima"
+              aria-pressed="false" aria-controls="v2-region-ima">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>いま</button>
+      <button type="button" class="v2-detail__tab" data-v2-region="sakuhin"
+              aria-pressed="false" aria-controls="v2-region-sakuhin">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>作品</button>
+      <button type="button" class="v2-detail__tab" data-v2-region="jibun"
+              aria-pressed="false" aria-controls="v2-region-jibun">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>自分の本</button>
+    </nav>
+
+    <section class="v2-detail__panel" id="v2-region-kotoba"
+             data-v2-region-panel="kotoba" aria-label="この棚のことばたち">
+      <h2 class="v2-detail__panel-title">この棚のことばたち</h2>
+      <div class="v2-detail__words" data-v2-emotion="words"></div>
+    </section>
+
+    <section class="v2-detail__panel" id="v2-region-ima"
+             data-v2-region-panel="ima" aria-label="いま" hidden>
+      <h2 class="v2-detail__panel-title">いま</h2>
+      <div class="v2-detail__empty">
+        <p class="v2-detail__empty-title">いま、この棚に置かれているものはありません。</p>
+        <p class="v2-detail__empty-note">また新しいことばが入ったときに、ここに並びます。</p>
+      </div>
+    </section>
+
+    <section class="v2-detail__panel" id="v2-region-sakuhin"
+             data-v2-region-panel="sakuhin" aria-label="作品" hidden>
+      <h2 class="v2-detail__panel-title">作品</h2>
+      <div class="v2-detail__empty">
+        <p class="v2-detail__empty-title">この棚の作品は、ただいま仕入れ中です。</p>
+        <p class="v2-detail__empty-note">棚に置く理由を確かめながら、少しずつ選んでいます。</p>
+      </div>
+    </section>
+
+    <section class="v2-detail__panel" id="v2-region-jibun"
+             data-v2-region-panel="jibun" aria-label="自分の本" hidden>
+      <h2 class="v2-detail__panel-title">自分の本</h2>
+      <div data-v2-mybooks="body"></div>
+    </section>
+
+    <div class="v2-detail__navbar">
+      <nav class="v2-navbar v2-detail__nav" aria-label="ナビゲーション">
+        <button type="button" class="v2-navbar__item" data-v2-nav="shelves">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">棚を見る</span>
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">書く</span>
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="bookshelf">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">本棚</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============ 06 自分の本棚 ============ -->
+<div class="v2-page--bookshelf" data-v2-subview-of="bookshelf-list" data-v2-screen="06">
+<div class="v2-stage v2-shelf">
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-shelf__wall"></div>
+    <div class="v2-shelf__scape"></div>
+    <div class="v2-shelf__scapelight"></div>
+    <div class="v2-shelf__vignette"></div>
+  </div>
+
+  <div class="v2-content">
+    <button type="button" class="v2-shelf__back" data-v2-go="02">＜　戻る</button>
+    <p class="v2-shelf__mark v2-placeholder" aria-hidden="true"></p>
+    <h1 class="v2-shelf__title">自分の本棚</h1>
+    <p class="v2-shelf__lead">ここには、残すと決めた一冊が並びます。<br>あとから、好きなときに取り出せます。</p>
+
+    <section class="v2-shelf__panel" aria-label="本棚">
+      <h2 class="v2-shelf__panel-title">
+        本棚<span class="v2-shelf__count" data-v2-bookshelf="count"></span>
+      </h2>
+      <div class="v2-shelf__rack" data-v2-bookshelf="rack">
+        <button type="button" class="v2-shelf__add" data-v2-go="05">ことばを残す</button>
+      </div>
+    </section>
+
+    <p class="v2-shelf__note">
+      <span class="v2-shelf__note-mark v2-placeholder" aria-hidden="true"></span>本文はこの端末に保存されます。本文は公開されません。
+    </p>
+
+    <div class="v2-shelf__navbar">
+      <nav class="v2-navbar v2-shelf__nav" aria-label="ナビゲーション">
+        <button type="button" class="v2-navbar__item" data-v2-nav="shelves">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">棚を見る</span>
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">書く</span>
+        </button>
+        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="bookshelf" aria-current="page">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">本棚</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============ 07 一冊を読む ============ -->
+<div class="v2-page--reader" data-v2-subview-of="bookshelf-reader" data-v2-screen="07">
+<div class="v2-stage v2-reader">
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-reader__wall"></div>
+    <div class="v2-reader__scape"></div>
+    <div class="v2-reader__readinglight"></div>
+    <div class="v2-reader__vignette"></div>
+  </div>
+
+  <div class="v2-content">
+    <button type="button" class="v2-reader__back" data-v2-reader-back>＜　戻る</button>
+
+    <div class="v2-reader__tools">
+      <button type="button" class="v2-reader__tool" disabled aria-disabled="true">
+        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>文字サイズ
+        <span class="v2-reader__tool-sep" aria-hidden="true"></span>
+        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>明るさ
+      </button>
+      <button type="button" class="v2-reader__tool v2-reader__tool--round" disabled aria-disabled="true"
+              aria-label="メニュー（外観確認用・未接続）">
+        <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <div class="v2-reader__side">
+      <span class="v2-reader__cover v2-placeholder" data-v2-reader="cover"></span>
+      <span class="v2-reader__slot v2-placeholder" data-v2-reader="shelf"></span>
+      <span class="v2-reader__slot v2-reader__slot--sub v2-placeholder" data-v2-reader="sealed"></span>
+
+      <div class="v2-reader__rule" aria-hidden="true"></div>
+
+      <div class="v2-reader__menu">
+        <div class="v2-reader__menu-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__menu-label">目次</span>
+          <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
+        </div>
+      </div>
+
+      <div class="v2-reader__rule" aria-hidden="true"></div>
+
+      <div class="v2-reader__menu">
+        <div class="v2-reader__meta-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__meta-label">本にした日</span>
+          <span class="v2-reader__meta-slot v2-placeholder" data-v2-reader="date"></span>
+        </div>
+        <div class="v2-reader__meta-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__meta-label">文字数</span>
+          <span class="v2-reader__meta-slot v2-placeholder" data-v2-reader="chars"></span>
+        </div>
+        <div class="v2-reader__meta-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__meta-label">保存先</span>
+          <span class="v2-reader__meta-slot v2-placeholder" data-v2-reader="store"></span>
+        </div>
+        <div class="v2-reader__meta-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__meta-label">編集する</span>
+          <span class="v2-reader__menu-go v2-placeholder" aria-hidden="true"></span>
+        </div>
+      </div>
+
+      <div class="v2-reader__assurance">
+        <span class="v2-reader__assurance-mark v2-placeholder" aria-hidden="true"></span>
+        <p class="v2-reader__assurance-text">本文はこの端末に保存されます。<br>本文は公開されません。</p>
+      </div>
+    </div>
+
+    <section class="v2-reader__page" aria-label="読む面">
+      <span class="v2-reader__ribbon" aria-hidden="true"></span>
+
+      <div class="v2-reader__chapter">
+        <h1 class="v2-reader__chapter-title v2-placeholder" data-v2-reader="title"></h1>
+        <span class="v2-reader__chapter-rule" aria-hidden="true"></span>
+      </div>
+
+      <div class="v2-reader__scroll">
+        <p class="v2-reader__body v2-placeholder" data-v2-reader="body"></p>
+        <div class="v2-reader__note" data-v2-reader="note-box" hidden>
+          <p class="v2-reader__note-label">覚え書き</p>
+          <p class="v2-reader__note-text" data-v2-reader="note"></p>
+        </div>
+      </div>
+
+      <button type="button" class="v2-reader__turn v2-reader__turn--prev" disabled aria-disabled="true"
+              aria-label="前のページ（外観確認用・未接続）"></button>
+      <button type="button" class="v2-reader__turn v2-reader__turn--next" disabled aria-disabled="true"
+              aria-label="次のページ（外観確認用・未接続）"></button>
+
+      <div class="v2-reader__foot" aria-hidden="true">
+        <span class="v2-reader__foot-mark v2-placeholder"></span>
+        <span class="v2-reader__foot-rule"></span>
+        <span class="v2-reader__foot-slot v2-placeholder"></span>
+      </div>
+    </section>
+
+    <div class="v2-reader__navbar">
+      <nav class="v2-navbar v2-reader__nav" aria-label="ナビゲーション">
+        <button type="button" class="v2-navbar__item" data-v2-nav="shelves">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">棚を見る</span>
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">書く</span>
+        </button>
+        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="bookshelf" aria-current="page">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">本棚</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============ 08 空状態（library 0 のときの戻り先） ============ -->
+<div data-v2-subview-of="bookshelf-empty" data-v2-screen="08">
+  <p id="v2-empty-marker">（空状態）</p>
+</div>
+
+<script>
+/* 既存関数のスタブ（呼ばれた記録のみ）。本番の実装は再現しない。 */
+window.__calls = [];
+function setActivePageTab(id){}
+function enterBookExperience(){ window.__calls.push('enterBookExperience'); }
+function returnToCover(){ window.__calls.push('returnToCover'); }
+function goToPage(id){ window.__calls.push('goToPage:'+id); }
+function goToShelf(id){ window.__calls.push('goToShelf:'+id); }
+
+/* approved fixture：既存 data.js の CATEGORIES と同じ21件の id / label。
+   実利用者データではない。 */
+window.CATEGORIES_FIXTURE = [
+ {id:"moyamoya",label:"名もなき感情",def:"まだ、どの棚の名前もしっくりこない気持ち。"},
+ {id:"kodoku",label:"孤独",def:"ひとりだと感じる、静かな寂しさ。"},
+ {id:"gakkari",label:"がっかり",def:"期待していたものが叶わなかったときの落胆。"},
+ {id:"hazukashii",label:"恥ずかしい",def:"消えてしまいたくなるような、きまり悪さ。"},
+ {id:"ushirometai",label:"後ろめたい",def:"誰かに対する、小さな罪悪感やうしろめたさ。"},
+ {id:"aseri",label:"焦り",def:"置いていかれるような、急かされるような気持ち。"},
+ {id:"kuyashii",label:"悔しい",def:"届かなかった、報われなかったことへの悔しさ。"},
+ {id:"shitto",label:"嫉妬",def:"誰かを羨む、ざらついた気持ち。"},
+ {id:"akogare",label:"憧れ",def:"手の届かない何かへの、まっすぐな憧れ。"},
+ {id:"wakuwaku",label:"わくわく",def:"胸が高鳴る、前向きな期待や高揚。"},
+ {id:"ando",label:"安堵",def:"肩の力が抜けるような、深い安心感。"},
+ {id:"kansha",label:"感謝",def:"誰かの優しさに、静かに満たされる気持ち。"},
+ {id:"itooshii",label:"愛おしい",def:"かけがえのないものへの、深い愛おしさ。"},
+ {id:"hokorashii",label:"誇らしい",def:"自分の頑張りを、静かに誇れる気持ち。"},
+ {id:"natsukashii",label:"懐かしい",def:"遠い日の記憶が、ふっと蘇る気持ち。"},
+ {id:"ureshii",label:"嬉しい",def:"心が弾むような、まっすぐな喜び。"},
+ {id:"ikari",label:"怒り",def:"胸の奥で熱く燃える、抑えきれない気持ち。"},
+ {id:"kanashii",label:"悲しい",def:"涙がこぼれるような、深い喪失や切なさ。"},
+ {id:"fuan",label:"不安",def:"この先どうなるか分からない、落ち着かない気がかり。"},
+ {id:"keno",label:"嫌悪感",def:"顔をしかめてしまうような、生理的な「無理」という感覚。"},
+ {id:"odoroki",label:"驚き",def:"思いがけない出来事に、心がついていかない感覚。"}
+];
+
+/* synthetic library fixture。実在の利用者データではない。 */
+window.LIBRARY_FIXTURE = [
+ {id:"b1", category:"fuan", title:"合成データ1", story:"合成された本文です。\n段落の改行がそのまま残ることを確認します。",
+  note:"", image:"", tweetUrl:"", sealed:false, date:"2026-01-05T00:00:00.000Z"},
+ {id:"b2", category:"aseri", title:"合成データ2", story:"短い合成本文。",
+  note:"合成された覚え書き。", image:"", tweetUrl:"https://example.invalid/x", sealed:true, date:"2026-02-11T00:00:00.000Z"},
+ {id:"b3", category:"odoroki", title:"", story:"題名のない合成データ。",
+  note:"", image:"", tweetUrl:"", sealed:false, date:"2026-03-20T00:00:00.000Z"},
+ {id:"b4", category:"fuan", title:"合成データ4", story:"4冊目の合成本文。",
+  note:"", image:"", tweetUrl:"", sealed:false, date:"2026-04-02T00:00:00.000Z"},
+ {id:"b5", category:"shitto", title:"合成データ5", story:"二重配架の確認用。",
+  note:"", image:"", tweetUrl:"", sealed:false, date:"2026-05-09T00:00:00.000Z"},
+ {id:"b6", category:"unfiled", title:"合成データ6", story:"未収納の合成本文。",
+  note:"", image:"", tweetUrl:"", sealed:false, date:"2026-06-18T00:00:00.000Z"}
+];
+</script>
+
+<script src="./navigation-adapter.js"></script>
+<script src="./bookshelf-adapter.js"></script>
+<script src="./emotion-shelf-adapter.js"></script>
+<script>
+  V2EmotionShelfAdapter.setCategoriesFixture(window.CATEGORIES_FIXTURE);
+  V2BookshelfAdapter.setFixture(window.LIBRARY_FIXTURE);
+  V2NavigationAdapter.mount();
+  V2NavigationAdapter.startThemeBridge();
+  V2BookshelfAdapter.connectNavigation();
+  V2BookshelfAdapter.mount();
+  V2EmotionShelfAdapter.mount();
+  V2EmotionShelfAdapter.enterShelf('zawatsuku', { triggerId: 'zawatsuku' });
+  V2EmotionShelfAdapter.selectRegion('jibun');
+</script>
+</body>
+</html>

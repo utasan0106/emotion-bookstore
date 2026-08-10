@@ -411,13 +411,36 @@
   list-style: none;
 }
 
+.v2-book-card-item {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+/* Step 3C：カード全体が「その本を開く」1つの操作要素。ネイティブ button を使い、
+   入れ子の操作要素は作らない。UA スタイルはここで完全に打ち消し、
+   Step 3B.1 checkpoint と同一の見え方を維持する。focus リングは既定のまま。 */
 .v2-book-card {
   position: relative;
   display: block;
+  width: 100%;
   padding: calc(26 * var(--v2-px));
   border-radius: calc(14 * var(--v2-px));
   box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-field-edge);
   background: var(--v2-field-face);
+
+  /* --- UA style reset --- */
+  margin: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  text-indent: 0;
+  text-transform: none;
+  text-shadow: none;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  appearance: none;
 }
 
 .v2-book-card__title {

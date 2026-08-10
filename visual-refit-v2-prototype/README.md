@@ -601,3 +601,81 @@ Step 3B.1 では完全に HOLD。`BOOK_POOL` / `MUSIC_QUERIES` / `RECOMMEND_TEMP
 
 いずれも規約適合を推測で「OK」としない。**V2 へは接続しない。** 本 Step では現行コードを是正しない。
 法的断定は行わず、UNRESOLVED / NEEDS REVIEW として CEO 判断へ残す。
+
+---
+
+## Phase 3 Step 3C — 04「自分の本」→ 06 →07 → 06 の再会導線（2026-08-10 CEO決裁）
+
+既にある 04 contextual private books / 06 全蔵書 / 07 本詳細を、既存データと既存
+NavigationAdapter の範囲でつないだ。**新機能追加ではない。**
+保存形式 / DataRepository / GA4 / privacy / bookbinding / data model は変更していない。
+
+### 導線
+
+| 経路 | 実装 |
+|---|---|
+| 04「本棚ですべて見る」→ 06 | contextual books が4冊以上のときだけ表示。`nav.go('bookshelf')` で 06 / 08 に解決。**04 の絞り込みは 06 へ持ち込まない**（06 は全蔵書）。`originMajorShelfId` / `activeEmotionId` は書き換えず、06 から戻ったときの復元も要求しない |
+| 04 本カード → 07 | カード全体が1つの `<button>`。押した本だけを `selectedBookId` にして 07 へ |
+| 06 背表紙 → 07 | 背表紙を `<button>` 化。同上 |
+| 07 戻る → 06 | `<button>`。browser history に依存しない。library 0 冊なら既存 `resolveScreen()` の判断で 08 へ |
+
+### 06⇄07 に `subviewOnly` を使う判断（実測にもとづく）
+
+本番 `index.html` 上で両経路を実測した。
+
+| 経路 | GA4 | storage | network | `activateExperiencePage` |
+|---|---|---|---|---|
+| 既存 route 06→07 | 0 | 0 | 0 | **1** |
+| 既存 route 07→06 | 0 | 0 | 0 | **1** |
+| `subviewOnly` 06→07 | 0 | 0 | 0 | **0** |
+| `subviewOnly` 07→06 | 0 | 0 | 0 | **0** |
+| 04→06（既存 route） | `view_shelf` ×1（**既存挙動**。棚ページから本棚へ移動したときに元々発火する） | 0 | 0 | 1 |
+
+06⇄07 は同じ既存ページ（`#bookshelf`）内の subview 移動であり、既存 route では毎回
+`activateExperiencePage()`（`setActivePageTab` / `syncExperienceMenuActive` / inert・aria-hidden の再適用）
+が走る。`subviewOnly` は副作用が厳密に少なく、GA4 / storage / network はどちらも 0 だった。
+`opts.subviewOnly` は navigation-adapter に既存の汎用オプションであり、**06⇄07 のために
+コードを1行も追加していない**（`currentPageId() === def.page` の一般則がそのまま効く）。
+04（`#shelves`）から 07 へ入る場合は既存ページが一致しないため、従来どおり
+既存 `goToPage('bookshelf')` を通る。
+
+### selectedBookId
+
+ページ内メモリのみ。**localStorage / IndexedDB / sessionStorage / URL query / history state へ
+新規保存しない。** source of truth は常に既存 library で、表示のたびに id から引き直す
+（entry の clone を保持・書き戻ししない）。07 を離れると破棄する。
+id はあるが library に無い場合は、偽の本を描かず既存 `resolveScreen()` の判断で 06 / 08 へ戻す。
+
+### 07 の field mapping（既存 `openBook` の挙動を再現する）
+
+| field | 07 での扱い |
+|---|---|
+| `title` | 読む面の見出し。既存 fallback（まだ、題名のない本）を再利用。空白のみの題名は正規化しない |
+| `story` | 本文。改行を保持（`pre-wrap`）。長文はこの面の中だけで縦スクロール |
+| `sealed` | **閲覧制御ではない。** 既存 `openBook` は sealed でも本文を無条件に表示し、日付の隣に「以前を振り返って綴った一冊」を添えるだけ。07 も同じ結果にし、解除UIは作らない |
+| `note` | 既存 `openBook` が「あれば表示」する仕様のため踏襲（本文の下に小さく） |
+| `image` | 既存保存済みの `data:` URI のときだけ書影に表示。外部URLは新規 network を発生させうるため描かない（既存データは書き換えない） |
+| `date` | 「本にした日」 |
+| `category` | 既存 `CATEGORIES` の label を棚名として表示 |
+| 文字数 | `story` の文字数（サロゲートペアは1文字として数える） |
+| 保存先 | 「この端末」 |
+| `tweetUrl` | **表示しない**（CEO決裁） |
+
+現行データに章の概念が無いため章番号は置かない。ページ送り・目次・文字サイズ・明るさ・
+編集するは、現行に無い機能なので Phase 1 と同じく非活性のまま。
+
+接続済みの欄に値が無いときは、中立プレースホルダー枠を残さず欄ごと畳む
+（空の枠が「取得に失敗した」ように見えるのを避ける）。書影だけは本の顔の場所なので、
+写真が無くても中立枠を残す。静的シェル（`screens/07-reader.html` 単体）は Adapter を
+読み込まないため Phase 1 と同じ表示のまま。
+
+### Accessibility
+
+04 本カード / 06 背表紙 / 07 戻る はいずれもネイティブ `<button type="button">`。
+`role="button"` / `tabindex` ハック / 独自 keydown は使わない。入れ子の操作要素も作らない。
+`aria-label` は「〈題名〉を開く」までに留め、本文・棚名・日付を読み上げ名に混ぜない。
+focus ring は既定のまま残す。
+
+### Google Books / iTunes
+
+Step 3B の判定を継続。**V2 へは接続しない。** 本 Step でも現行コードを是正していない。

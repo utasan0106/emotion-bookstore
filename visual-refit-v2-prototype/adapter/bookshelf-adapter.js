@@ -1,5 +1,5 @@
 /* =============================================================================
- * Visual Refit V2 — bookshelf-adapter（Phase 3 Step 2）
+ * Visual Refit V2 — bookshelf-adapter（Phase 3 Step 2 / Step 3C）
  * -----------------------------------------------------------------------------
  * 役割は「既存 library の VIEW ADAPTER」のみ。データを所有しない。
  *
@@ -9,6 +9,22 @@
  *   4. 06 の READ-ONLY 描画（背表紙・総冊数）
  *   5. refresh / mount / unmount lifecycle
  *   6. QA 用の synthetic fixture 注入
+ *   7. selectedBookId の保持と 07 の READ-ONLY 描画（Step 3C）
+ *
+ * 【selectedBookId（Step 3C・CEO決裁）】
+ *   ページ内メモリのみ。localStorage / IndexedDB / sessionStorage / URL query /
+ *   history state へ新規保存しない。source of truth は常に既存 library で、
+ *   表示のたびに id から引き直す（entry の clone を保持・書き戻ししない）。
+ *   本が見つからない場合は偽の本を描かず、既存 resolveScreen() の判断で 06 / 08 へ戻す。
+ *
+ * 【07 の field mapping（既存 openBook の挙動を再現する。迂回しない）】
+ *   title  … 既存 fallback（まだ、題名のない本）を再利用
+ *   story  … 本文。既存 openBook は sealed でも無条件に表示するため、ここでも隠さない
+ *   sealed … 既存と同じく「日付の隣の注記」としてのみ扱う。閲覧制御ではない
+ *   note   … 既存 openBook が「あれば表示」する仕様のため踏襲
+ *   image  … 既存保存済みの data: URI のときだけ表示（新規 network を発生させない）
+ *   date / category … 既存 formatDate / CATEGORIES label 相当の読み取りのみ
+ *   tweetUrl … 表示しない（CEO決裁）
  *
  * これ以外の責務を持たない。特に以下は絶対にしない。
  *   - entries / entry の変更（push/pop/shift/unshift/splice/sort/reverse/delete/代入）
@@ -47,6 +63,7 @@
     status: STATUS.UNKNOWN,   // 'ok' | 'unknown'
     count: null,              // number | null（unknown のとき null）
     rendered: 0,              // 直近の描画で作った背表紙の数
+    selectedBookId: null,     // 07 で開いている本のID。メモリのみ・永続化しない
     mounted: false,
     lastError: null           // エラーの「種類」だけ。entry 内容は入れない
   };
@@ -184,16 +201,24 @@
     }
   }
 
+  /* 背表紙はネイティブ button（Step 3C）。Enter / Space は button 本来の挙動に委ねる。
+     role="button" / tabindex / 独自 keydown は使わない。入れ子の操作要素も作らない。
+     aria-label は題名までに留める（本文・棚名・日付は読み上げ名に混ぜない）。 */
   function buildSpine(entry, index) {
-    var spine = doc.createElement('span');
+    var spine = doc.createElement('button');
+    spine.type = 'button';
     spine.className = 'v2-shelf__spine';
     spine.setAttribute('data-v2-book', String(index));
+    var id = (entry && typeof entry === 'object' && entry.id !== null && entry.id !== undefined)
+      ? String(entry.id) : '';
+    if (id) spine.setAttribute('data-v2-book-id', id);
     spine.style.height = 'calc(' + viewSpineHeight(entry, index) + ' * var(--v2-px))';
 
     var title = doc.createElement('span');
     title.className = 'v2-shelf__spine-title';
     title.textContent = viewTitle(entry);   // textContent のみ。HTML として解釈させない
     spine.appendChild(title);
+    spine.setAttribute('aria-label', viewTitle(entry) + 'を開く');
     return spine;
   }
 
@@ -237,6 +262,208 @@
     return { ok: true, status: r.status, rendered: made };
   }
 
+  /* ===========================================================================
+   * Step 3C — selectedBookId と 07（一冊を読む）
+   * ======================================================================== */
+
+  /* source of truth は常に既存 library。id から毎回引き直し、clone を保持しない。 */
+  function getSelectedEntry() {
+    if (state.selectedBookId === null) return null;
+    var r = readLibrary();
+    if (r.status !== STATUS.OK) return null;
+    for (var i = 0; i < r.entries.length; i++) {
+      var e = r.entries[i];
+      if (!e || typeof e !== 'object') continue;
+      if (e.id === null || e.id === undefined) continue;
+      if (String(e.id) === state.selectedBookId) return e;
+    }
+    return null;
+  }
+
+  /* 本を選んで 07 へ。06⇄07 は同じ既存ページ（#bookshelf）内の subview 移動なので
+     subviewOnly を使う（実測：既存 route では activateExperiencePage が毎回走るが、
+     subviewOnly では 0。GA4 / storage / network はどちらも 0）。
+     04（#shelves）から呼ばれた場合は currentPageId が一致しないため、
+     navigation-adapter が従来どおり既存 goToPage('bookshelf') で遷移する。 */
+  function selectBook(bookId, scope) {
+    if (bookId === null || bookId === undefined || bookId === '') {
+      state.lastError = 'select_missing_id';
+      return false;
+    }
+    state.selectedBookId = String(bookId);
+    var nav = global.V2NavigationAdapter;
+    if (nav && typeof nav.go === 'function') nav.go('07', { subviewOnly: true });
+    renderReader(scope);
+    return true;
+  }
+
+  function clearSelectedBook(scope) {
+    state.selectedBookId = null;
+    renderReader(scope);
+    return true;
+  }
+
+  /* 07 → 06。library が 0 冊なら既存 resolveScreen() の判断に従って 08 へ。
+     新しい empty ロジックは作らない。browser history には依存しない。 */
+  function leaveReader(scope) {
+    state.selectedBookId = null;
+    var target = resolveScreen();          // '06' or '08'（unknown は '06'）
+    var nav = global.V2NavigationAdapter;
+    if (nav && typeof nav.go === 'function') nav.go(target, { subviewOnly: true });
+    renderReader(scope);
+    render(scope);
+    return target;
+  }
+
+  /* ---------------------------------------------------------------------------
+   * 07 の READ-ONLY 描画
+   * 文字はすべて textContent。既存 openBook の扱いを再現し、迂回しない。
+   * ------------------------------------------------------------------------ */
+  var STORE_LABEL = 'この端末';
+
+  function readerEl(key, scope) {
+    return (scope || doc).querySelector('[data-v2-reader="' + key + '"]');
+  }
+
+  /* 棚名。既存 CATEGORIES の label を読むだけ。未収納（unfiled）や不明IDは空にする。 */
+  function shelfLabelOf(entry) {
+    if (!entry || typeof entry.category !== 'string') return '';
+    var cats;
+    try {
+      /* eslint-disable-next-line no-undef */
+      cats = (typeof CATEGORIES !== 'undefined' && Array.isArray(CATEGORIES)) ? CATEGORIES : null;
+    } catch (e) { cats = null; }
+    if (!cats && global.V2EmotionShelfAdapter &&
+        typeof global.V2EmotionShelfAdapter.readCategories === 'function') {
+      cats = global.V2EmotionShelfAdapter.readCategories();
+    }
+    if (!cats) return '';
+    for (var i = 0; i < cats.length; i++) {
+      if (cats[i] && cats[i].id === entry.category && typeof cats[i].label === 'string') {
+        return cats[i].label;
+      }
+    }
+    return '';
+  }
+
+  function viewDate(entry) {
+    if (!entry || typeof entry.date !== 'string' || !entry.date) return '';
+    var d = new Date(entry.date);
+    if (isNaN(d.getTime())) return '';
+    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+  }
+
+  /* 既存 openBook と同じ意味づけ。sealed は「日付の隣の注記」であり閲覧制御ではない。
+     したがって sealed でも本文を隠さないし、解除UIも作らない。 */
+  var SEALED_NOTE = '以前を振り返って綴った一冊';
+
+  function viewStory(entry) {
+    if (!entry || typeof entry.story !== 'string') return '';
+    return entry.story;
+  }
+
+  /* 既存保存済みの data: URI のときだけ表示する。http(s) 等は新規 network を
+     発生させうるため描かない（既存データは書き換えない。表示を控えるだけ）。 */
+  function safeImage(entry) {
+    if (!entry || typeof entry.image !== 'string' || !entry.image) return '';
+    return /^data:image\//i.test(entry.image) ? entry.image : '';
+  }
+
+  function charCount(str) {
+    if (typeof str !== 'string' || !str) return 0;
+    // 絵文字・サロゲートペアを1文字として数える
+    return Array.from(str).length;
+  }
+
+  /* 接続済みの欄なので、値が無いときは「中立プレースホルダー枠」を残さない。
+     枠だけが残ると、値が無いのではなく取得に失敗したように見えるため、欄ごと畳む。
+     静的シェル（screens/07-reader.html を単体で開いた場合）は Adapter を読み込まないので
+     Phase 1 と同じプレースホルダー表示のまま変わらない。 */
+  function setText(el, text) {
+    if (!el) return;
+    while (el.firstChild) el.removeChild(el.firstChild);
+    if (text) el.appendChild(doc.createTextNode(text));
+    el.classList.remove('v2-placeholder');
+    el.classList.toggle('is-v2-empty', !text);
+  }
+
+  function renderReader(scope) {
+    if (!doc) return { ok: false, reason: 'no_document' };
+    var titleEl = readerEl('title', scope);
+    var bodyEl = readerEl('body', scope);
+    if (!titleEl && !bodyEl) return { ok: false, reason: 'no_target' };
+
+    var entry = getSelectedEntry();
+
+    // 選択されていない／本が見つからない：偽の本を描かず、私的データも DOM に残さない
+    if (!entry) {
+      setText(titleEl, '');
+      setText(bodyEl, '');
+      setText(readerEl('shelf', scope), '');
+      setText(readerEl('sealed', scope), '');
+      setText(readerEl('date', scope), '');
+      setText(readerEl('chars', scope), '');
+      setText(readerEl('store', scope), '');
+      setText(readerEl('note', scope), '');
+      hideCover(scope);
+      var noteBox = readerEl('note-box', scope);
+      if (noteBox) noteBox.setAttribute('hidden', '');
+      return { ok: true, found: false, selectedBookId: state.selectedBookId };
+    }
+
+    var story = viewStory(entry);
+    setText(titleEl, viewTitle(entry));
+    setText(bodyEl, story);
+    setText(readerEl('shelf', scope), shelfLabelOf(entry));
+    setText(readerEl('sealed', scope), entry.sealed ? SEALED_NOTE : '');
+    setText(readerEl('date', scope), viewDate(entry));
+    setText(readerEl('chars', scope), String(charCount(story)) + '字');
+    setText(readerEl('store', scope), STORE_LABEL);
+
+    var noteText = (typeof entry.note === 'string') ? entry.note : '';
+    var box = readerEl('note-box', scope);
+    setText(readerEl('note', scope), noteText);
+    if (box) {
+      if (noteText) box.removeAttribute('hidden');
+      else box.setAttribute('hidden', '');
+    }
+
+    applyCover(safeImage(entry), viewTitle(entry), scope);
+    // 長文でも読み位置を先頭から始める（既存の保存・状態には触れない）
+    if (bodyEl && typeof bodyEl.scrollTop === 'number') bodyEl.scrollTop = 0;
+
+    return { ok: true, found: true, selectedBookId: state.selectedBookId,
+             chars: charCount(story), hasNote: !!noteText, hasImage: !!safeImage(entry),
+             sealed: !!entry.sealed };
+  }
+
+  function hideCover(scope) {
+    var cover = readerEl('cover', scope);
+    if (!cover) return;
+    var img = cover.querySelector('img');
+    if (img && img.parentNode) img.parentNode.removeChild(img);
+    cover.classList.add('v2-placeholder');
+  }
+
+  function applyCover(src, alt, scope) {
+    var cover = readerEl('cover', scope);
+    if (!cover) return;
+    var img = cover.querySelector('img');
+    if (!src) {
+      if (img && img.parentNode) img.parentNode.removeChild(img);
+      cover.classList.add('v2-placeholder');
+      return;
+    }
+    if (!img) {
+      img = doc.createElement('img');
+      img.className = 'v2-reader__cover-img';
+      cover.appendChild(img);
+    }
+    img.alt = alt ? (alt + 'の写真') : '';
+    if (img.getAttribute('src') !== src) img.setAttribute('src', src);
+    cover.classList.remove('v2-placeholder');
+  }
+
   /* ---------------------------------------------------------------------------
    * refresh
    * reader 再取得 → 判定更新 → 06 再描画 のみ。
@@ -244,8 +471,10 @@
    * ------------------------------------------------------------------------ */
   function refresh(scope) {
     var r = render(scope);
+    var rd = renderReader(scope);
     syncNavigationResolver();
-    return { status: state.status, count: state.count, rendered: state.rendered, render: r };
+    return { status: state.status, count: state.count, rendered: state.rendered,
+             render: r, reader: rd };
   }
 
   /* ---------------------------------------------------------------------------
@@ -264,10 +493,39 @@
    * mount / unmount は何度呼ばれても安全。listener を持たないため二重登録もしない
    * （06 の操作要素は navigation-adapter が一元管理する）。
    * ------------------------------------------------------------------------ */
+  /* 背表紙は再描画で作り直されるため、棚コンテナ側で1つだけ購読する
+     （背表紙ごとに listener を付けない＝多重登録が構造的に起きない）。
+     入口スロット「ことばを残す」は data-v2-go を持つので navigation-adapter が担当する。 */
+  function delegateSpine(ev) {
+    var t = ev.target;
+    while (t && t !== ev.currentTarget) {
+      if (t.getAttribute && t.getAttribute('data-v2-book-id')) {
+        selectBook(t.getAttribute('data-v2-book-id'));
+        return;
+      }
+      t = t.parentNode;
+    }
+  }
+
+  function onReaderBack() { leaveReader(); }
+
   function mount(scope) {
     state.mounted = true;
     syncNavigationResolver();
+    if (doc) {
+      var rack = findRack(scope);
+      if (rack) {
+        rack.removeEventListener('click', delegateSpine);
+        rack.addEventListener('click', delegateSpine);
+      }
+      var backs = (scope || doc).querySelectorAll('[data-v2-reader-back]');
+      for (var i = 0; i < backs.length; i++) {
+        backs[i].removeEventListener('click', onReaderBack);
+        backs[i].addEventListener('click', onReaderBack);
+      }
+    }
     render(scope);
+    renderReader(scope);
     return true;
   }
 
@@ -275,9 +533,17 @@
     state.mounted = false;
     if (doc) {
       var rack = findRack(scope);
-      if (rack) clearSpines(rack);
+      if (rack) {
+        rack.removeEventListener('click', delegateSpine);
+        clearSpines(rack);
+      }
+      var backs = (scope || doc).querySelectorAll('[data-v2-reader-back]');
+      for (var i = 0; i < backs.length; i++) backs[i].removeEventListener('click', onReaderBack);
       var countEl = findCount(scope);
       if (countEl) countEl.textContent = '';
+      // 私的データを DOM に残さない
+      state.selectedBookId = null;
+      renderReader(scope);
     }
     state.rendered = 0;
     return true;
@@ -307,11 +573,19 @@
     setFixture: setFixture,
     clearFixture: clearFixture,
     viewTitle: viewTitle,
+    SEALED_NOTE: SEALED_NOTE,
+    STORE_LABEL: STORE_LABEL,
+    selectBook: selectBook,
+    clearSelectedBook: clearSelectedBook,
+    leaveReader: leaveReader,
+    getSelectedEntry: getSelectedEntry,
+    renderReader: renderReader,
     getState: function () {
       return {
         status: state.status,
         count: state.count,
         rendered: state.rendered,
+        selectedBookId: state.selectedBookId,
         mounted: state.mounted,
         lastError: state.lastError,
         usingFixture: fixture !== null,

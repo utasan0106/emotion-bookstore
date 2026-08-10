@@ -230,6 +230,10 @@
 /* 背表紙は利用者の本。高さは entry から決定的に導いた値を adapter が inline style で与える
    （Math.random を使わない／entry へ書き戻さない／再描画で見た目が変わらない）。
    本を開く導線は Step 4 の責務のため、ここでは操作要素にしない（button にしない）。 */
+/* 背表紙はネイティブ button（Phase 3 Step 3C）。Enter / Space は button 本来の挙動。
+   UA スタイルはここで完全に打ち消し、span だった Step 3B.1 checkpoint と
+   同一の見え方を維持する。role="button" / tabindex / 独自 keydown は使わない。
+   focus リングは既定のまま残す。 */
 .v2-shelf__spine {
   display: block;
   width: calc(78 * var(--v2-px));
@@ -238,6 +242,20 @@
   background: var(--v2-spine);
   box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
   overflow: hidden;
+
+  /* --- UA style reset --- */
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  text-indent: 0;
+  text-transform: none;
+  text-shadow: none;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  appearance: none;
 }
 
 /* 背表紙の題名。縦組みで、はみ出しは静かに切る。装飾・強調はしない */

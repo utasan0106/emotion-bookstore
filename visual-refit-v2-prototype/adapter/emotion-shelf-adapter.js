@@ -483,17 +483,26 @@
     return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
   }
 
-  /* 本カードは button にしない（本を開く導線＝07 は本Stepの範囲外）。
-     本文 story・写真 image・tweetUrl は出さない。文字はすべて textContent。 */
+  /* 本カードはネイティブ button（Step 3C）。カード全体が1つの操作要素で、
+     入れ子の操作要素は作らない（nested interactive 禁止）。
+     一覧では本文 story・写真 image・tweetUrl を出さない。文字はすべて textContent。 */
   function buildBookCard(entry, index) {
     var li = doc.createElement('li');
-    li.className = 'v2-book-card';
-    li.setAttribute('data-v2-mybook', String(index));
+    li.className = 'v2-book-card-item';
 
+    var card = doc.createElement('button');
+    card.type = 'button';
+    card.className = 'v2-book-card';
+    card.setAttribute('data-v2-mybook', String(index));
+    var id = (entry && typeof entry === 'object' && entry.id !== null && entry.id !== undefined)
+      ? String(entry.id) : '';
+    if (id) card.setAttribute('data-v2-book-id', id);
+
+    var titleText = bookTitle(entry);
     var title = doc.createElement('span');
     title.className = 'v2-book-card__title';
-    title.textContent = bookTitle(entry);
-    li.appendChild(title);
+    title.textContent = titleText;
+    card.appendChild(title);
 
     var parts = [];
     var label = bookShelfLabel(entry);
@@ -504,8 +513,11 @@
       var meta = doc.createElement('span');
       meta.className = 'v2-book-card__meta';
       meta.textContent = parts.join('　');
-      li.appendChild(meta);
+      card.appendChild(meta);
     }
+    // 読み上げ名は題名までに留める（棚名・日付・本文は名前に混ぜない）
+    card.setAttribute('aria-label', titleText + 'を開く');
+    li.appendChild(card);
     return li;
   }
 
@@ -525,6 +537,42 @@
 
   function clearChildren(el) {
     while (el.firstChild) el.removeChild(el.firstChild);
+  }
+
+  /* ---------------------------------------------------------------------------
+   * 04 →（06 / 07）
+   * 遷移そのものは持たない。既存 V2NavigationAdapter / V2BookshelfAdapter に委ねる。
+   * ------------------------------------------------------------------------ */
+
+  /* 「本棚ですべて見る」→ 06（蔵書0冊なら bookshelf-adapter の既存判定で 08）。
+     04 の originMajorShelfId / activeEmotionId は書き換えない（復元も要求しない）。 */
+  function openBookshelf() {
+    var nav = global.V2NavigationAdapter;
+    if (!nav || typeof nav.go !== 'function') return false;
+    // 'bookshelf' は navigation-adapter 側で resolveBookshelfScreen() を通り 06 / 08 に解決される
+    return nav.go('bookshelf');
+  }
+
+  /* 04 の本カード → 07。選んだ本だけを memory-only の selectedBookId にする。 */
+  function openBook(bookId) {
+    var bs = global.V2BookshelfAdapter;
+    if (!bs || typeof bs.selectBook !== 'function') {
+      state.lastError = 'bookshelf_adapter_missing';
+      return false;
+    }
+    return bs.selectBook(bookId);
+  }
+
+  function delegateMyBooks(ev) {
+    var t = ev.target;
+    while (t && t !== ev.currentTarget) {
+      if (t.getAttribute) {
+        if (t.hasAttribute('data-v2-mybooks-all')) { openBookshelf(); return; }
+        var id = t.getAttribute('data-v2-book-id');
+        if (id) { openBook(id); return; }
+      }
+      t = t.parentNode;
+    }
   }
 
   function renderMyBooks(scope) {
@@ -566,12 +614,12 @@
     body.appendChild(list);
 
     if (books.length > MY_BOOKS_LIMIT) {
-      // 06 への接続は Step 3C 以降。ここでは押せない placeholder のまま置く。
-      // 合算冊数・総蔵書数との比較は表示しない。
+      // Step 3C：06「自分の本棚」へ接続した。04 の絞り込み状態は 06 へ持ち込まない
+      // （06 は全蔵書）。合算冊数・総蔵書数との比較は表示しない。
       var more = doc.createElement('button');
       more.type = 'button';
       more.className = 'v2-detail__more';
-      more.disabled = true;
+      more.setAttribute('data-v2-mybooks-all', '');
       more.textContent = '本棚ですべて見る';
       body.appendChild(more);
     }
@@ -624,6 +672,13 @@
       regions.removeEventListener('click', delegateRegion);
       regions.addEventListener('click', delegateRegion);
     }
+    // 本カード・「本棚ですべて見る」は再描画で作り直されるため、
+    // ここでもコンテナ側で1つだけ購読する
+    var myBooks = q('[data-v2-mybooks="body"]', root);
+    if (myBooks) {
+      myBooks.removeEventListener('click', delegateMyBooks);
+      myBooks.addEventListener('click', delegateMyBooks);
+    }
     state.mounted = true;
     render(scope);
     return true;
@@ -669,6 +724,7 @@
     if (regions) regions.removeEventListener('click', delegateRegion);
     // 私的データを DOM に残さない
     var body = q('[data-v2-mybooks="body"]', root);
+    if (body) body.removeEventListener('click', delegateMyBooks);
     if (body) {
       clearChildren(body);
       body.removeAttribute('data-v2-mybooks-count');
@@ -694,6 +750,8 @@
     enterShelf: enterShelf,
     selectEmotion: selectEmotion,
     selectRegion: selectRegion,
+    openBookshelf: openBookshelf,
+    openBook: openBook,
     myBookContextIds: myBookContextIds,
     filterMyBooks: filterMyBooks,
     leaveToIndex: leaveToIndex,
