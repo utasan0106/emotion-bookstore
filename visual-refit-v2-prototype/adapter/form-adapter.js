@@ -193,13 +193,40 @@
     }
   }
 
-  /* 成功：既存の離脱経路（今は棚を決めず、本棚へ）をそのまま使い、V2 は 06 を表示する。
+  /* 成功：既存の受け取り頁（棚収納）が出ていれば、そのまま利用者に委ねる。
+     Step 3E：V2 が「今は棚を決めず、本棚へ」を代わりに押してしまうと、
+     製本後に感情棚へ収納するという既存機能が V2 から失われるため、自動で閉じない。
+     利用者が既存の「この棚にしまう」／「今は棚を決めず、本棚へ」を選んで
+     ダイアログが閉じたら、V2 の画面状態だけを 06 へ同期する。
+
+     受け取り頁は body 直下の固定オーバーレイで、既存 trapPage3Focus() が
+     背後の頁だけを inert にする。V2 はその DOM も focus 管理も一切触らない。
+
      新しい永続 flag（new badge / recent flag / 新 storage field）は付けない。
      並び順も既存 library の順のまま触らない。 */
   function onBindSuccess(scope) {
-    var skip = byId(EXISTING.unfiledSkip);
-    if (skip && pickerVisible()) skip.click();   // 既存 goToPage('bookshelf') 等はこの中
+    if (pickerVisible()) { watchPickerClose(scope); return; }
+    finishToBookshelf(scope);
+  }
 
+  /* 既存の受け取り頁が閉じるのを待つ。閉じる経路（確定成功／スキップ）はどちらも
+     既存 hideUnfiledShelfPicker() を通り、.hidden が付く。保存失敗時は閉じない。 */
+  var pickerObserver = null;
+
+  function watchPickerClose(scope) {
+    var box = byId(EXISTING.unfiledPicker);
+    if (!box || typeof global.MutationObserver !== 'function') { finishToBookshelf(scope); return; }
+    if (pickerObserver) { try { pickerObserver.disconnect(); } catch (e) { /* ignore */ } }
+    pickerObserver = new global.MutationObserver(function () {
+      if (pickerVisible()) return;
+      try { pickerObserver.disconnect(); } catch (e) { /* ignore */ }
+      pickerObserver = null;
+      finishToBookshelf(scope);
+    });
+    pickerObserver.observe(box, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  function finishToBookshelf(scope) {
     var bs = global.V2BookshelfAdapter;
     if (bs && typeof bs.refresh === 'function') bs.refresh();
 
@@ -314,6 +341,7 @@
     if (t) t.removeEventListener('input', onTitleInput);
     if (btn) btn.removeEventListener('click', onBindClick);
     stopObservers();
+    if (pickerObserver) { try { pickerObserver.disconnect(); } catch (e) { /* ignore */ } pickerObserver = null; }
     pending = null;
     state.submitting = false;
     state.mounted = false;
@@ -329,10 +357,12 @@
     pull: pull,
     sync: syncMirrors,
     settle: settleIfDecided,
+    pickerVisible: pickerVisible,
     getState: function () {
       return {
         mounted: state.mounted,
         submitting: state.submitting,
+        awaitingShelfPicker: pickerObserver !== null,
         lastOutcome: state.lastOutcome,
         lastError: state.lastError,
         pending: pending ? { settled: pending.settled, countBefore: pending.countBefore } : null

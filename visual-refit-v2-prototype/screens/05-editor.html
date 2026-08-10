@@ -82,10 +82,8 @@
       </div>
       <p class="v2-editor__card-sub">残しておきたいことを、あなたのことばで。<br>うまくまとめなくても、題名をつけなくても大丈夫です。</p>
 
-      <!-- 下書き一覧：現行に無い機能のため静的・非活性の見た目のみ -->
-      <button type="button" class="v2-editor__drafts" disabled aria-disabled="true">
-        <span class="v2-editor__tool v2-placeholder" aria-hidden="true"></span>下書き一覧
-      </button>
+      <!-- Phase 3 Step 3E：「下書き一覧」は対応する既存機能が存在しないため削除した。
+           disabled のまま残さず、代替の新機能も作らない。 -->
 
       <!-- 題名は任意。空欄でも製本できる（空欄時の題名は既存側が決める）。
            Step 3D でも必須へ戻さない。 -->
@@ -122,13 +120,11 @@
 
       <!-- 操作：「本にする」は既存 #submitStory を押すだけ。
            検証・保存・読み戻し確認・GA4・二重防止はすべて既存実装が持つ。
-           「下書き保存」は既存側が入力のたびに自動保存するため非活性のまま
-           （このStepでは 05 の整理を範囲外とし、Phase 2 承認どおりの見え方を保つ）。 -->
+           Phase 3 Step 3E：「下書き保存」ボタンは削除した。既存側は入力のたびに
+           自動で下書きを保存しており、手動保存という機能は存在しないため。
+           自動保存そのものは既存機能として維持し、事実だけを非操作のテキストで伝える。 -->
       <div class="v2-editor__actions">
-        <button type="button" class="v2-editor__action v2-editor__action--secondary" disabled aria-disabled="true">
-          <span class="v2-editor__action-main">下書き保存</span>
-          <span class="v2-editor__action-note">いつでも続きから書けます</span>
-        </button>
+        <p class="v2-editor__autosave">下書きは自動で保存されます</p>
         <button type="button" class="v2-editor__action v2-editor__action--primary" data-v2-write="bind">
           <span class="v2-editor__action-main">本にする</span>
           <span class="v2-editor__action-note">あなたの本として棚に並びます</span>
@@ -140,7 +136,9 @@
 
     </section>
 
-    <!-- 書くきっかけ：静的・非活性 -->
+    <!-- 書くきっかけ：読むための問いかけであり、操作ではない。
+         Phase 3 Step 3E：押せる見た目（枠・面）と「すべて見る　＞」を外し、
+         非操作のテキストとして整理した。挿入・絞り込み等の新機能は作らない。 -->
     <section class="v2-editor__prompts" aria-label="書くきっかけに">
       <div class="v2-editor__prompts-head">
         <span class="v2-editor__prompts-mark v2-placeholder" aria-hidden="true"></span>
@@ -149,13 +147,12 @@
           <p class="v2-editor__prompts-sub">心が少し動いたことから、書きはじめてみませんか。</p>
         </div>
       </div>
-      <p class="v2-editor__prompts-more">すべて見る　＞</p>
-      <div class="v2-editor__chips">
-        <span class="v2-editor__chip">今の気持ちを<br>そのまま書いてみる</span>
-        <span class="v2-editor__chip">忘れたくない<br>出来事について</span>
-        <span class="v2-editor__chip">誰かに伝えたい<br>ことばについて</span>
-        <span class="v2-editor__chip">未来の自分へ<br>手紙を書く</span>
-      </div>
+      <ul class="v2-editor__chips">
+        <li class="v2-editor__chip">今の気持ちを<br>そのまま書いてみる</li>
+        <li class="v2-editor__chip">忘れたくない<br>出来事について</li>
+        <li class="v2-editor__chip">誰かに伝えたい<br>ことばについて</li>
+        <li class="v2-editor__chip">未来の自分へ<br>手紙を書く</li>
+      </ul>
     </section>
 
     <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->

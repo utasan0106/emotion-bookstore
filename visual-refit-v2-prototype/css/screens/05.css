@@ -269,26 +269,6 @@
 }
 
 /* 下書き一覧：現行に無い機能のため静的・非活性の見た目のみ */
-.v2-editor__drafts {
-  position: absolute;
-  top: calc(52 * var(--v2-px));
-  left: calc(756 * var(--v2-px));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: calc(12 * var(--v2-px));
-  width: calc(160 * var(--v2-px));
-  height: calc(50 * var(--v2-px));
-  padding: 0;
-  border: calc(1 * var(--v2-px)) solid var(--v2-card-edge);
-  border-radius: calc(25 * var(--v2-px));
-  background: transparent;
-  font-family: var(--v2-font-body);
-  font-size: calc(18 * var(--v2-px));
-  line-height: 1;
-  color: var(--v2-ink-mid);
-  appearance: none;
-}
 
 .v2-editor__field-label {
   position: absolute;
@@ -395,13 +375,7 @@
 .v2-page--editor .is-v2-empty { display: none; }
 
 /* Phase 2：未承認の rich-text 系ツール帯（.v2-editor__tools / --last）は削除した。
-   .v2-editor__tool は「下書き一覧」ボタン内の小さな記号としてのみ残す。 */
-.v2-editor__tool {
-  display: block;
-  width: calc(26 * var(--v2-px));
-  height: calc(26 * var(--v2-px));
-  border-radius: calc(4 * var(--v2-px));
-}
+   Phase 3 Step 3E：対応する既存機能が無い「下書き一覧」も削除した。 */
 
 /* 保存に関する安心情報。カンプの文言をそのまま置き、新しい長文説明は作らない */
 .v2-editor__assurance {
@@ -484,11 +458,20 @@
 }
 
 /* 下書き保存：副次操作 */
-.v2-editor__action--secondary {
+/* Phase 3 Step 3E：手動の「下書き保存」という機能は既存に存在しないためボタンを削除し、
+   既存の自動保存という事実だけを非操作のテキストで置く。新機能は作らない。 */
+.v2-editor__autosave {
+  display: flex;
+  align-items: center;
   width: calc(183 * var(--v2-px));
-  border: calc(1 * var(--v2-px)) solid var(--v2-field-edge);
-  background: var(--v2-field-face);
-  color: var(--v2-ink-mid);
+  height: calc(93 * var(--v2-px));
+  margin: 0;
+  padding-right: calc(18 * var(--v2-px));
+  font-family: var(--v2-font-body);
+  font-size: calc(15 * var(--v2-px));
+  line-height: calc(24 * var(--v2-px));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-soft);
 }
 
 /* 本にする：自分の記録の主要操作なので accent-self を使う */
@@ -500,7 +483,7 @@
 }
 
 /* -----------------------------------------------------------------------------
- * 書くきっかけ（静的・非活性）
+ * 書くきっかけ（読むための問いかけ。操作ではない）
  * -------------------------------------------------------------------------- */
 .v2-editor__prompts {
   position: absolute;
@@ -547,15 +530,6 @@
   color: var(--v2-ink-mid);
 }
 
-.v2-editor__prompts-more {
-  position: absolute;
-  top: calc(26 * var(--v2-px));
-  right: calc(29 * var(--v2-px));
-  font-family: var(--v2-font-body);
-  font-size: calc(18 * var(--v2-px));
-  line-height: 1;
-  color: var(--v2-ink-mid);
-}
 
 .v2-editor__chips {
   position: absolute;
@@ -566,20 +540,22 @@
   column-gap: calc(21 * var(--v2-px));
   width: calc(887 * var(--v2-px));
   height: calc(76 * var(--v2-px));
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
+/* Phase 3 Step 3E：枠・面を外し、押せない問いかけの文として置く
+   （挿入・絞り込み等の実機能は存在しないため、操作に見せない）。 */
 .v2-editor__chip {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: calc(1 * var(--v2-px)) solid var(--v2-field-edge);
-  border-radius: calc(10 * var(--v2-px));
-  background: var(--v2-field-face);
   font-family: var(--v2-font-body);
   font-size: calc(16 * var(--v2-px));
   line-height: calc(26 * var(--v2-px));
   text-align: center;
-  color: var(--v2-ink-mid);
+  color: var(--v2-ink-soft);
 }
 
 /* -----------------------------------------------------------------------------
