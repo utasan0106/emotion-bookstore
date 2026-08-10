@@ -223,8 +223,25 @@
   gap: calc(23 * var(--v2-px));
 }
 
+/* Phase 3 Step 3A：入口はネイティブ button。UA スタイルをここで打ち消し、
+   Phase 2 の見え方（span/article だったとき）と同一に保つ。
+   role="button" / tabindex / 独自 keydown は使わない。 */
 .v2-shelf-card {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-indent: 0;
+  text-transform: none;
+  text-shadow: none;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  appearance: none;
+
   position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -236,6 +253,7 @@
 }
 
 .v2-shelf-card__name {
+  display: block;
   margin: 0;
   font-family: var(--v2-font-display);
   font-weight: 500;
@@ -257,6 +275,7 @@
 }
 
 .v2-shelf-card__words {
+  display: block;
   margin: calc(12 * var(--v2-px)) 0 0;
   font-family: var(--v2-font-body);
   font-size: calc(17 * var(--v2-px));
@@ -319,6 +338,7 @@
 }
 
 .v2-shelf-card__note {
+  display: block;
   margin: calc(10 * var(--v2-px)) 0 0;
   font-family: var(--v2-font-body);
   font-size: calc(16 * var(--v2-px));
@@ -334,6 +354,7 @@
 }
 
 .v2-shelf-card__alias {
+  display: block;
   margin: calc(10 * var(--v2-px)) 0 0;
   font-family: var(--v2-font-body);
   font-size: calc(17 * var(--v2-px));

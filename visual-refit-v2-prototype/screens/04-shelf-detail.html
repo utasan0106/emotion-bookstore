@@ -68,12 +68,14 @@
   <!-- 内容レイヤ -->
   <div class="v2-content">
 
-    <button type="button" class="v2-detail__back" data-v2-go="03">＜　棚へ戻る</button>
+    <!-- 04 → 03 は固定（history 依存にしない）。emotion-shelf-adapter が
+         03 の入口へ focus を戻す（新しい永続状態は作らない）。 -->
+    <button type="button" class="v2-detail__back" data-v2-go="03" data-v2-shelf-back>＜　棚へ戻る</button>
 
     <!-- 感情の造形枠：感情アイコンはまだ制作しない -->
     <p class="v2-detail__glyph v2-placeholder" aria-hidden="true"></p>
-    <h1 class="v2-detail__title">ざわつく</h1>
-    <p class="v2-detail__lead">先が読めないときや、気持ちが落ち着かず<br>動きつづけるあたり。</p>
+    <h1 class="v2-detail__title" data-v2-emotion="title">ざわつく</h1>
+    <p class="v2-detail__lead" data-v2-emotion="lead">先が読めないときや、気持ちが落ち着かず<br>動きつづけるあたり。</p>
 
     <!-- 4領域タブ：Core Ver.2 の IA として維持する（ことば／いま／作品／自分の本）。
          同格。「ことば」のみ active、他3つは静的・非活性。
@@ -93,23 +95,10 @@
     <section class="v2-detail__panel" aria-label="この棚のことばたち">
       <h2 class="v2-detail__panel-title">この棚のことばたち</h2>
 
-      <div class="v2-detail__words">
-        <article class="v2-word-card">
-          <h3 class="v2-word-card__name">不安</h3>
-          <span class="v2-word-card__slot v2-placeholder" aria-hidden="true"></span>
-          <p class="v2-word-card__desc">先がどうなるのか心配で<br>落ち着かない感じ</p>
-        </article>
-        <article class="v2-word-card">
-          <h3 class="v2-word-card__name">焦り</h3>
-          <span class="v2-word-card__slot v2-placeholder" aria-hidden="true"></span>
-          <p class="v2-word-card__desc">間に合うかどうかに気持ちが<br>引っぱられてしまう感じ</p>
-        </article>
-        <article class="v2-word-card">
-          <h3 class="v2-word-card__name">驚き</h3>
-          <span class="v2-word-card__slot v2-placeholder" aria-hidden="true"></span>
-          <p class="v2-word-card__desc">予想していなかったことで<br>心が揺れる感じ</p>
-        </article>
-      </div>
+      <!-- 感情語カードは emotion-shelf-adapter が既存 CATEGORIES から READ-ONLY で描画する。
+           表示順は 7大棚 mapping の決裁順のまま。重複配架された感情も消さない。
+           静的 markup に感情データは持たせない。 -->
+      <div class="v2-detail__words" data-v2-emotion="words"></div>
     </section>
 
     <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->

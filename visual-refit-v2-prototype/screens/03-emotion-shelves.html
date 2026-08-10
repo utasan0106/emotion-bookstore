@@ -71,16 +71,18 @@
     <p class="v2-shelves__lead">気になる棚から、ことばや作品を覗いてみてください。<br>今の気持ちにぴったりでなくても構いません。</p>
 
     <!-- 大棚グリッド：2列×4段。7大棚＋横断入口1。
-         data-v2-go="04" は Phase 3 Step 1 の接続口。棚IDは持たせない
-         （7大棚→21感情の変換は Step 3 の emotion-shelf-adapter の責務）。
+         Phase 3 Step 3A：入口はネイティブ button（data-v2-shelf が大棚ID）。
+         7大棚→21感情の mapping は emotion-shelf-adapter が READ-ONLY で解決する。
+         button の内容モデルに合わせ、見出し・段落は span へ整えた。
          Phase 1 は静的・非活性。href / onclick / route を持たない。
          感情アイコンは未制作。将来の感情造形用スペースを中立プレースホルダーで確保する。 -->
     <div class="v2-shelves__grid">
 
-      <article class="v2-shelf-card" data-v2-go="04">
-        <h2 class="v2-shelf-card__name">心が弾む</h2>
+      <button type="button" class="v2-shelf-card"
+              data-v2-shelf="hazumu" data-v2-shelf-trigger="hazumu">
+        <span class="v2-shelf-card__name">心が弾む</span>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <p class="v2-shelf-card__words">嬉しい・わくわく・誇らしい</p>
+        <span class="v2-shelf-card__words">嬉しい・わくわく・誇らしい</span>
         <span class="v2-shelf-card__shelf" aria-hidden="true">
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
@@ -90,12 +92,13 @@
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
         </span>
-      </article>
+      </button>
 
-      <article class="v2-shelf-card" data-v2-go="04">
-        <h2 class="v2-shelf-card__name">心があたたまる</h2>
+      <button type="button" class="v2-shelf-card"
+              data-v2-shelf="atatamaru" data-v2-shelf-trigger="atatamaru">
+        <span class="v2-shelf-card__name">心があたたまる</span>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <p class="v2-shelf-card__words">安堵・感謝・愛おしい</p>
+        <span class="v2-shelf-card__words">安堵・感謝・愛おしい</span>
         <span class="v2-shelf-card__shelf" aria-hidden="true">
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
@@ -105,12 +108,13 @@
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
         </span>
-      </article>
+      </button>
 
-      <article class="v2-shelf-card" data-v2-go="04">
-        <h2 class="v2-shelf-card__name">惹かれる</h2>
+      <button type="button" class="v2-shelf-card"
+              data-v2-shelf="hikareru" data-v2-shelf-trigger="hikareru">
+        <span class="v2-shelf-card__name">惹かれる</span>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <p class="v2-shelf-card__words">憧れ・嫉妬・懐かしい</p>
+        <span class="v2-shelf-card__words">憧れ・嫉妬・懐かしい</span>
         <span class="v2-shelf-card__shelf" aria-hidden="true">
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
@@ -120,12 +124,13 @@
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
         </span>
-      </article>
+      </button>
 
-      <article class="v2-shelf-card" data-v2-go="04">
-        <h2 class="v2-shelf-card__name">沈む</h2>
+      <button type="button" class="v2-shelf-card"
+              data-v2-shelf="shizumu" data-v2-shelf-trigger="shizumu">
+        <span class="v2-shelf-card__name">沈む</span>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <p class="v2-shelf-card__words">悲しい・孤独・がっかり</p>
+        <span class="v2-shelf-card__words">悲しい・孤独・がっかり</span>
         <span class="v2-shelf-card__shelf" aria-hidden="true">
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
@@ -135,12 +140,13 @@
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
         </span>
-      </article>
+      </button>
 
-      <article class="v2-shelf-card" data-v2-go="04">
-        <h2 class="v2-shelf-card__name">ざわつく</h2>
+      <button type="button" class="v2-shelf-card"
+              data-v2-shelf="zawatsuku" data-v2-shelf-trigger="zawatsuku">
+        <span class="v2-shelf-card__name">ざわつく</span>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <p class="v2-shelf-card__words">不安・焦り・驚き</p>
+        <span class="v2-shelf-card__words">不安・焦り・驚き</span>
         <span class="v2-shelf-card__shelf" aria-hidden="true">
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
@@ -150,12 +156,13 @@
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
         </span>
-      </article>
+      </button>
 
-      <article class="v2-shelf-card" data-v2-go="04">
-        <h2 class="v2-shelf-card__name">ぶつかる</h2>
+      <button type="button" class="v2-shelf-card"
+              data-v2-shelf="butsukaru" data-v2-shelf-trigger="butsukaru">
+        <span class="v2-shelf-card__name">ぶつかる</span>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <p class="v2-shelf-card__words">怒り・悔しい・嫉妬</p>
+        <span class="v2-shelf-card__words">怒り・悔しい・嫉妬</span>
         <span class="v2-shelf-card__shelf" aria-hidden="true">
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
@@ -165,12 +172,13 @@
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
         </span>
-      </article>
+      </button>
 
-      <article class="v2-shelf-card" data-v2-go="04">
-        <h2 class="v2-shelf-card__name">身を引く</h2>
+      <button type="button" class="v2-shelf-card"
+              data-v2-shelf="miwohiku" data-v2-shelf-trigger="miwohiku">
+        <span class="v2-shelf-card__name">身を引く</span>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <p class="v2-shelf-card__words">恥ずかしい・後ろめたい・嫌悪感</p>
+        <span class="v2-shelf-card__words">恥ずかしい・後ろめたい・嫌悪感</span>
         <span class="v2-shelf-card__shelf" aria-hidden="true">
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
@@ -180,21 +188,23 @@
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
           <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
         </span>
-      </article>
+      </button>
 
       <!-- 横断入口：8番目の大棚ではない。7大棚とは役割が違うことを
            境界・余白・見せ方の差で示す。派手に強調しない。 -->
-      <article class="v2-shelf-card v2-shelf-card--crossway" data-v2-go="04">
-        <h2 class="v2-shelf-card__name">まだ名前がない</h2>
-        <p class="v2-shelf-card__note">まだ、どのことばにも<br>決めたくないときに。</p>
+      <button type="button" class="v2-shelf-card v2-shelf-card--crossway"
+              data-v2-shelf="namae-ga-nai" data-v2-shelf-trigger="namae-ga-nai">
+        <span class="v2-shelf-card__name">まだ名前がない</span>
+        <span class="v2-shelf-card__note">まだ、どのことばにも<br>決めたくないときに。</span>
         <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <p class="v2-shelf-card__alias">名もなき感情</p>
-      </article>
+        <span class="v2-shelf-card__alias">名もなき感情</span>
+      </button>
 
     </div>
 
     <!-- すべての感情語を見る：Phase 1 は非活性。21語 sheet/subview は作らない -->
-    <button type="button" class="v2-shelves__all" disabled aria-disabled="true">すべての感情語を見る　→</button>
+    <button type="button" class="v2-shelves__all"
+            data-v2-shelf="all" data-v2-shelf-trigger="all">すべての感情語を見る　→</button>
     <p class="v2-shelves__all-note">21の感情語を一覧で探せます</p>
 
     <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
