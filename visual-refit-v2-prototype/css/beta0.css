@@ -1470,10 +1470,11 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
 .v2c01__wall {
   position: absolute; inset: 0;
   background: url("../../assets/v2b0/01/01_wall_ambience_day.webp") center top / cover no-repeat;
+  filter: saturate(0.92) contrast(0.97);
 }
 [data-theme="night"] .v2c01__wall {
   background-image: url("../../assets/v2b0/01/01_wall_ambience_night.webp");
-  filter: brightness(0.72);
+  filter: brightness(0.72) saturate(0.92);
 }
 /* P0-2: foliage は左上隅に留め、logo/題字まわりへ静かな壁面を返す
    （asset は変更せず、壁色の veil で視覚重量だけ下げる） */
@@ -1482,11 +1483,11 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   position: absolute; inset: 0 0 auto 0; height: 46%;
   background:
     radial-gradient(125% 150% at 0% 0%,
-      transparent 0 20%,
-      rgb(242 234 219 / 0.55) 38%,
-      rgb(242 234 219 / 0.74) 56%,
-      rgb(242 234 219 / 0.42) 78%,
-      transparent 97%);
+      transparent 0 17%,
+      rgb(242 234 219 / 0.62) 36%,
+      rgb(242 234 219 / 0.80) 55%,
+      rgb(242 234 219 / 0.50) 78%,
+      transparent 98%);
 }
 [data-theme="night"] .v2c01__wall::before {
   background:
@@ -1502,7 +1503,7 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   content: "";
   position: absolute; left: 0; bottom: 2%; width: 30%; height: 40%;
   background: radial-gradient(105% 105% at 0% 100%,
-      transparent 0 18%, rgb(242 234 219 / 0.48) 46%, rgb(242 234 219 / 0.55) 66%, transparent 92%);
+      transparent 0 22%, rgb(242 234 219 / 0.34) 48%, rgb(242 234 219 / 0.40) 68%, transparent 92%);
 }
 [data-theme="night"] .v2c01__wall::after {
   background: radial-gradient(105% 105% at 0% 100%,
@@ -1522,15 +1523,14 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
 .v2c01__arch {
   position: absolute;
   top: 0;
-  left: 37.0%;
-  width: 100.35%;
-  height: 84.6%;
+  left: 38.3%;
+  width: 94.9%;
+  height: 80%;
   background: url("../../assets/v2b0/01/01_interior_arch_day.webp") left top / 100% 100% no-repeat;
-  /* 幅方向を軽く圧縮して、棚だけでなく 窓・机・床・灯 が同時に読める
-     Reference の subject balance へ寄せる（asset は変更しない） */
-  transform: scaleX(0.92);
-  transform-origin: 198px 0;
-  filter: brightness(0.97) saturate(0.96);
+  /* 引いた視点：全体を一段縮小し、幅圧縮も強めて 棚/窓/机/床/灯 を均衡させる */
+  transform: scaleX(0.88);
+  transform-origin: 188px 0;
+  filter: brightness(0.96) saturate(0.88) contrast(0.97);
   /* 下端は壁へ静かに溶かす */
   -webkit-mask-image: linear-gradient(to bottom, #000 90%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 90%, transparent 100%);
@@ -1557,14 +1557,17 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   position: absolute;
   left: 22.5%; top: 15.5%;
   width: 19%; aspect-ratio: 1;
-  color: #6d6146;
+  /* CEO提供の正式ロゴ。mask は file:// QA 環境で CORS 不成立のため、
+     指示書の許容に従い theme 別 PNG（webp化・原本形状/比率維持）を使用 */
+  background: url("../../assets/v2b0/01/logo_day.webp") center / contain no-repeat;
 }
-[data-theme="night"] .v2c01__logo { color: #7a614b; }
-.v2c01__logo svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 0.9; stroke-linecap: round; stroke-linejoin: round; }
+[data-theme="night"] .v2c01__logo {
+  background-image: url("../../assets/v2b0/01/logo_night.webp");
+}
 
 .v2c01__brand {
   position: absolute;
-  left: 3%; top: 26.6%;
+  left: 3%; top: 27.2%;
   width: 57%;
   margin: 0;
   text-align: center;
@@ -1573,8 +1576,8 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   text-shadow: none;
 }
 [data-theme="night"] .v2c01__brand { color: #b3906b !important; }
-.v2c01__brand-sub { display: block; font-size: 6.02cqw; letter-spacing: 0.35em; text-indent: 0.35em; }
-.v2c01__brand-main { display: block; margin-top: 1.6cqw; font-size: 9.03cqw; letter-spacing: 0.22em; text-indent: 0.22em; }
+.v2c01__brand-sub { display: block; font-size: 5.75cqw; letter-spacing: 0.35em; text-indent: 0.35em; }
+.v2c01__brand-main { display: block; margin-top: 2.3cqw; font-size: 8.55cqw; letter-spacing: 0.22em; text-indent: 0.22em; }
 
 .v2c01__rule {
   position: absolute;
@@ -1633,8 +1636,8 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
    stage x0.05–0.60 / y0.665–0.815 に一致させる） */
 .v2c01__books {
   position: absolute;
-  left: -2.6%; top: 62.0%;
-  width: 70%;
+  left: -2.0%; top: 62.2%;
+  width: 66.5%;
   aspect-ratio: 3 / 2;
   background: url("../../assets/v2b0/01/01_books_shelf_day.webp") center / contain no-repeat;
   /* 棚板の左右を Reference の余白比まで詰める（本には触れない） */
@@ -1651,7 +1654,9 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   width: 71%; height: 9.0%;
   border: 0;
   border-radius: 2.3cqw;
-  background: url("../../assets/v2b0/01/cta_suede_texture_day.webp") center / 118% 218% no-repeat;
+  overflow: hidden;
+  isolation: isolate;
+  background: none;
   box-shadow: 0 1.2cqw 3cqw rgb(60 38 14 / 0.35), inset 0 0 0 1px rgb(255 240 210 / 0.35);
   font-family: var(--font-display);
   font-size: 5.09cqw;
@@ -1660,11 +1665,21 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   color: #f7ede0 !important;
   cursor: pointer;
 }
+.v2c01__cta::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1;
+  background: url("../../assets/v2b0/01/cta_suede_texture_day.webp") center / 118% 218% no-repeat;
+  /* §7/§8: asset 層のみ Reference の彩度・明度へ寄せる（文字には触れない） */
+  filter: saturate(0.82) brightness(1.07);
+}
 [data-theme="night"] .v2c01__cta {
-  background-image: url("../../assets/v2b0/01/cta_suede_texture_night.webp");
-  background-size: 118% 218%;
   color: #e3cda1 !important;
   box-shadow: 0 1.2cqw 3.4cqw rgb(0 0 0 / 0.55), inset 0 0 0 1px rgb(255 214 150 / 0.30);
+}
+[data-theme="night"] .v2c01__cta::before {
+  background-image: url("../../assets/v2b0/01/cta_suede_texture_night.webp");
+  filter: saturate(0.9) brightness(0.98);
 }
 .v2c01__cta:hover { filter: brightness(1.05); }
 .v2c01__cta:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(114,135,75,.34), 0 1.2cqw 3cqw rgb(60 38 14 / 0.35); }
