@@ -1,0 +1,88 @@
+/* ============================================================
+ * Visual Refit V2 — Production Mount 用の最小スタイル
+ * ------------------------------------------------------------
+ * 旧UIは DOM から削除しない（main.js が getElementById で依存しているため）。
+ * ここでは「V2 が担当する画面の旧UIだけ」を視覚的に隠す。
+ * 保存・製本・削除などのロジックは一切変更しない。
+ * ============================================================ */
+
+/* V2 が mount されたときだけ効かせる。未 mount 時は従来どおり旧UIが出る。 */
+html[data-v2-mounted="true"] .entrance.hero > *:not(.v2-page),
+html[data-v2-mounted="true"] #counter > *:not(.v2-page),
+html[data-v2-mounted="true"] #shelves > *:not(.v2-page),
+html[data-v2-mounted="true"] #desk > *:not(.v2-page),
+html[data-v2-mounted="true"] #bookshelf > *:not(.v2-page){
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%);
+  white-space: nowrap; border: 0;
+  pointer-events: none;
+}
+
+/* V2 画面は既存ページの中で全面を占める */
+html[data-v2-mounted="true"] .v2-page{
+  display: block;
+  width: 100%;
+  container-type: inline-size;
+}
+
+/* 同じ既存ページに複数の V2 画面がある場合（03/04・06/07/08）は
+   navigation-adapter の subview 状態で1つだけ出す。 */
+html[data-v2-mounted="true"] [data-v2-subview-of]{ display: none; }
+html[data-v2-mounted="true"] [data-v2-subview-of].is-v2-current-subview{ display: block; }
+
+/* 表紙（01）は入店前だけ出す */
+html[data-v2-mounted="true"] [data-v2-screen="01"]{ display: none; }
+html[data-v2-mounted="true"] [data-v2-screen="01"].is-v2-current{ display: block; }
+
+/* 旧UIの背景は要素自体（.entrance.hero / 各 .experience-page）に付いているため、
+   子要素を隠すだけでは残る。V2 が担当する面では背景も中立化する。
+   style.css は変更しない（mount 時だけ上書きする）。 */
+html[data-v2-mounted="true"] .entrance.hero,
+html[data-v2-mounted="true"] #counter,
+html[data-v2-mounted="true"] #shelves,
+html[data-v2-mounted="true"] #desk,
+html[data-v2-mounted="true"] #bookshelf{
+  background: none !important;
+  background-image: none !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* 旧UIの装飾疑似要素（暖簾・庇・光など）も V2 の面では出さない */
+html[data-v2-mounted="true"] .entrance.hero::before,
+html[data-v2-mounted="true"] .entrance.hero::after,
+html[data-v2-mounted="true"] #counter::before,
+html[data-v2-mounted="true"] #counter::after,
+html[data-v2-mounted="true"] #shelves::before,
+html[data-v2-mounted="true"] #shelves::after,
+html[data-v2-mounted="true"] #desk::before,
+html[data-v2-mounted="true"] #desk::after,
+html[data-v2-mounted="true"] #bookshelf::before,
+html[data-v2-mounted="true"] #bookshelf::after{
+  content: none !important;
+}
+
+/* ページ外の旧シェル（ヘッダ帯・フッタ等）も V2 の世界観に混ぜない。
+   ただし DOM は残す（main.js が参照するため）。 */
+html[data-v2-mounted="true"] body{ background:#000; }
+
+/* ------------------------------------------------------------
+ * 旧グローバルUI（V2 が独自のナビ・見出しを持つ面）
+ * DOM は残す。main.js が参照し、SECONDARY UTILITY 領域として
+ * 後の工程で正式に再配置するため。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .experience-bar,
+html[data-v2-mounted="true"] .page-nav,
+html[data-v2-mounted="true"] .doma,
+html[data-v2-mounted="true"] .shop-footer{
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%);
+  white-space: nowrap; border: 0;
+  pointer-events: none;
+}
