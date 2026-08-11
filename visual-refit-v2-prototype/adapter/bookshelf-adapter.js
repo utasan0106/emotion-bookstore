@@ -216,6 +216,13 @@
       ? String(entry.id) : '';
     if (id) spine.setAttribute('data-v2-book-id', id);
 
+    /* 表紙の色相は本人が選んだ気持ち（entry.category）に静かに従える。
+       読み取りのみ・CSS 側の対応表で着色。unfiled/不明は中立の紙色のまま。 */
+    if (entry && typeof entry.category === 'string' && entry.category &&
+        entry.category !== 'unfiled') {
+      spine.setAttribute('data-v2-book-emotion', entry.category);
+    }
+
     /* 表紙面。写真素材は使わない（無地。ASSET REQUIRED は報告済み） */
     var cover = doc.createElement('span');
     cover.className = 'v2-shelf__cover';
