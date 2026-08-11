@@ -475,3 +475,131 @@
      段落全体で行を均等に割る（文言は変更していない）。 */
   .v2-page--reader .v2-reader__assurance-text br { display: none; }
 }
+
+/* =============================================================================
+ * 07 モバイル：「一冊を読む場所」として成立させる（V2 Production Mount / PHASE D）
+ * -----------------------------------------------------------------------------
+ * カンプは横長の見開き（左に書影・書誌、右に紙面）を前提にしている。
+ * 縦長のモバイルへそのまま置くと、左カラムの書誌が紙面に隠れ、
+ * 紙面の幅も1行9文字程度になって「読む場所」として成立しない。
+ *
+ * 狭い幅では同じ DOM のまま縦へ流し込み、紙面に十分な幅を渡す。
+ * 情報の順序・文言・DOM・操作は変更しない。
+ * コンテナ幅 900px 以上（カンプ原寸 1024 を含む）には一切適用されない。
+ * ========================================================================== */
+@container (max-width: 900px) {
+  .v2-page--reader .v2-content {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: calc(14 * var(--v2-tpx));
+    padding: calc(16 * var(--v2-tpx)) calc(16 * var(--v2-px)) 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  /* 絶対配置を解いて DOM 順の縦並びにする。
+     カンプ座標は「子」だけでなく「孫」にも入っているため
+     （.v2-reader__scroll / .v2-reader__chapter / .v2-reader__foot）、
+     読む面の中身まで含めて解く。ここを解かないと本文が
+     .v2-content（position:absolute の親）を基準に浮き、書誌へ重なる。 */
+  .v2-page--reader .v2-content > *,
+  .v2-page--reader .v2-reader__chapter,
+  .v2-page--reader .v2-reader__scroll,
+  .v2-page--reader .v2-reader__foot {
+    position: static;
+    inset: auto;
+    width: auto;
+    height: auto;
+    transform: none;
+  }
+
+  /* 左カラムの箱だけを外し、中の書誌・安心情報を .v2-content の直接の並びに載せる。
+     こうしないと安心情報が左カラムに閉じたまま紙面より前に出てしまう。
+     DOM は変更していない（箱を display:contents で透過させているだけ）。 */
+  .v2-page--reader .v2-reader__side { display: contents; }
+  .v2-page--reader .v2-reader__slot,
+  .v2-page--reader .v2-reader__rule,
+  .v2-page--reader .v2-reader__menu { order: 1; }
+  .v2-page--reader .v2-reader__slot { margin-top: 0; }
+  .v2-page--reader .v2-reader__rule { margin-top: calc(2 * var(--v2-tpx)); }
+  /* 書影は素材が無い間は場所を取らせない（偽の枠を見せない） */
+  .v2-page--reader .v2-reader__cover.v2-placeholder { display: none; }
+  /* 「本にした日／文字数／保存先」は縦に3段積むと書誌が紙面を押し下げるので、
+     ラベルと値を積んだ小さな3列にして1段に収める（文言・DOM は変更しない）。 */
+  .v2-page--reader .v2-reader__menu {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: calc(6 * var(--v2-tpx));
+    margin-top: calc(12 * var(--v2-tpx));
+  }
+  .v2-page--reader .v2-reader__meta-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(2 * var(--v2-tpx));
+    min-height: 0;
+    padding: 0;
+    font-size: calc(13 * var(--v2-tpx));
+    line-height: calc(18 * var(--v2-tpx));
+  }
+  .v2-page--reader .v2-reader__mark { display: none; }
+  .v2-page--reader .v2-reader__meta-label { flex: none; }
+  .v2-page--reader .v2-reader__meta-slot {
+    text-align: left;
+    white-space: nowrap;
+    color: var(--v2-ink-strong);
+  }
+
+  /* 紙面が主役。画面幅いっぱいに近い読みやすさを確保する。
+     しおりリボンなど紙面内の装飾は紙面を基準に置き直す。 */
+  .v2-page--reader .v2-reader__page {
+    order: 2;
+    position: relative;
+    width: auto;
+    /* 短い一冊でも紙面が画面の余りを引き受ける。読む面が主役であることを保つ */
+    flex: 1 0 auto;
+    min-height: calc(560 * var(--v2-px));
+    padding: calc(26 * var(--v2-tpx)) calc(20 * var(--v2-tpx)) calc(22 * var(--v2-tpx));
+    display: flex;
+    flex-direction: column;
+  }
+  /* 本文は伸びたぶんを受け取り、小口の罫はカンプどおり紙面の下端へ残る。
+     長文でも紙面ごと伸びるので、入れ子スクロールは作らない。 */
+  .v2-page--reader .v2-reader__scroll { flex: 1 0 auto; overflow: visible; }
+  .v2-page--reader .v2-reader__ribbon { right: calc(20 * var(--v2-tpx)); }
+  .v2-page--reader .v2-reader__chapter {
+    margin: 0 0 calc(18 * var(--v2-tpx));
+    gap: calc(12 * var(--v2-tpx));
+  }
+  .v2-page--reader .v2-reader__body {
+    font-size: calc(16 * var(--v2-tpx));
+    line-height: calc(30 * var(--v2-tpx));
+  }
+  .v2-page--reader .v2-reader__chapter-title {
+    font-size: calc(24 * var(--v2-tpx));
+    line-height: calc(34 * var(--v2-tpx));
+  }
+  /* 覚え書きと小口の罫は、カンプの大きな余白のままだと縦長で間延びする */
+  .v2-page--reader .v2-reader__note {
+    margin-top: calc(28 * var(--v2-tpx));
+    padding-top: calc(16 * var(--v2-tpx));
+  }
+  .v2-page--reader .v2-reader__foot {
+    margin: calc(24 * var(--v2-tpx)) auto 0;
+    width: fit-content;
+  }
+
+  /* 端末内保存の注記は読み終わりの後ろへ */
+  .v2-page--reader .v2-reader__assurance { order: 3; margin-top: 0; }
+
+  /* 下部ナビは流し込みの最後に置き、スクロールしても下端へ留める */
+  .v2-page--reader .v2-reader__navbar {
+    order: 4;
+    position: sticky;
+    bottom: 0;
+    margin-top: auto;
+    padding: calc(6 * var(--v2-tpx)) 0;
+  }
+  .v2-page--reader .v2-reader__nav { position: static; width: auto; }
+  .v2-page--reader .v2-navbar__item { height: calc(46 * var(--v2-tpx)); }
+}
