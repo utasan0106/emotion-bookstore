@@ -62,7 +62,7 @@
  * V2 の見出しへ届くため、mount 時のみ高特異度で無効化する。
  * ---------------------------------------------------------------------- */
 html[data-v2-mounted="true"] .v2-page :is(h1, h2, h3) {
-  color: inherit !important;
+  color: inherit;
   text-shadow: none;
   font-weight: 500;
   margin: 0;
@@ -1473,6 +1473,40 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
 }
 [data-theme="night"] .v2c01__wall {
   background-image: url("../../assets/v2b0/01/01_wall_ambience_night.webp");
+  filter: brightness(0.72);
+}
+/* P0-2: foliage は左上隅に留め、logo/題字まわりへ静かな壁面を返す
+   （asset は変更せず、壁色の veil で視覚重量だけ下げる） */
+.v2c01__wall::before {
+  content: "";
+  position: absolute; inset: 0 0 auto 0; height: 46%;
+  background:
+    radial-gradient(125% 150% at 0% 0%,
+      transparent 0 20%,
+      rgb(242 234 219 / 0.55) 38%,
+      rgb(242 234 219 / 0.74) 56%,
+      rgb(242 234 219 / 0.42) 78%,
+      transparent 97%);
+}
+[data-theme="night"] .v2c01__wall::before {
+  background:
+    radial-gradient(120% 150% at 0% 0%,
+      transparent 0 22%,
+      rgb(10 18 30 / 0.50) 40%,
+      rgb(10 18 30 / 0.66) 58%,
+      rgb(10 18 30 / 0.34) 78%,
+      transparent 96%);
+}
+/* P0-8: 左下 plant の visual weight を Reference まで下げる */
+.v2c01__wall::after {
+  content: "";
+  position: absolute; left: 0; bottom: 2%; width: 30%; height: 40%;
+  background: radial-gradient(105% 105% at 0% 100%,
+      transparent 0 18%, rgb(242 234 219 / 0.48) 46%, rgb(242 234 219 / 0.55) 66%, transparent 92%);
+}
+[data-theme="night"] .v2c01__wall::after {
+  background: radial-gradient(105% 105% at 0% 100%,
+      transparent 0 18%, rgb(10 18 30 / 0.52) 46%, rgb(10 18 30 / 0.60) 66%, transparent 92%);
 }
 .v2c01__grain {
   position: absolute; inset: 0;
@@ -1481,20 +1515,41 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   mix-blend-mode: multiply;
   opacity: 0.05;
 }
-[data-theme="night"] .v2c01__grain { opacity: 0.08; mix-blend-mode: screen; }
+[data-theme="night"] .v2c01__grain { opacity: 0.04; mix-blend-mode: screen; }
 
 /* アーチ店内景。asset の不透明域 x0.229–0.769 を stage x0.60→右端へ合わせる
    （image W = H×(1024/1536) = 118.5cqw、left = 60cqw − 0.229×118.5cqw ≒ 32.86cqw） */
 .v2c01__arch {
   position: absolute;
   top: 0;
-  left: 32.86%;
-  width: 118.52%;
-  height: 100%;
+  left: 37.0%;
+  width: 100.35%;
+  height: 84.6%;
   background: url("../../assets/v2b0/01/01_interior_arch_day.webp") left top / 100% 100% no-repeat;
+  /* 幅方向を軽く圧縮して、棚だけでなく 窓・机・床・灯 が同時に読める
+     Reference の subject balance へ寄せる（asset は変更しない） */
+  transform: scaleX(0.92);
+  transform-origin: 198px 0;
+  filter: brightness(0.97) saturate(0.96);
+  /* 下端は壁へ静かに溶かす */
+  -webkit-mask-image: linear-gradient(to bottom, #000 90%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 90%, transparent 100%);
 }
 [data-theme="night"] .v2c01__arch {
   background-image: url("../../assets/v2b0/01/01_interior_arch_night.webp");
+  /* P0-4: 夜は暗部が主体。棚の暖色光は間接光に留める */
+  filter: brightness(0.72) saturate(0.82);
+}
+/* P0-4: ランプだけは相対的に明るく（同 asset を円形 mask で重ねる。装飾追加ではない） */
+[data-theme="night"] .v2c01__arch::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: inherit;
+  background-image: url("../../assets/v2b0/01/01_interior_arch_night.webp");
+  background-size: 100% 100%;
+  -webkit-mask-image: radial-gradient(circle at 50% 8%, #000 0 5%, transparent 11%);
+  mask-image: radial-gradient(circle at 50% 8%, #000 0 5%, transparent 11%);
+  filter: brightness(1.32) saturate(1.1);
 }
 
 /* ---- コンテンツ（すべて HTML/SVG。geometry は Reference 実測値） ---- */
@@ -1504,7 +1559,7 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   width: 19%; aspect-ratio: 1;
   color: #6d6146;
 }
-[data-theme="night"] .v2c01__logo { color: #cfa96a; }
+[data-theme="night"] .v2c01__logo { color: #7a614b; }
 .v2c01__logo svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 0.9; stroke-linecap: round; stroke-linejoin: round; }
 
 .v2c01__brand {
@@ -1517,7 +1572,7 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   font-weight: 500;
   text-shadow: none;
 }
-[data-theme="night"] .v2c01__brand { color: #ead7ae !important; }
+[data-theme="night"] .v2c01__brand { color: #b3906b !important; }
 .v2c01__brand-sub { display: block; font-size: 6.02cqw; letter-spacing: 0.35em; text-indent: 0.35em; }
 .v2c01__brand-main { display: block; margin-top: 1.6cqw; font-size: 9.03cqw; letter-spacing: 0.22em; text-indent: 0.22em; }
 
@@ -1528,20 +1583,20 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   border: 0; margin: 0;
   background: #8a7a5c;
 }
-[data-theme="night"] .v2c01__rule { background: #a98f5e; }
+[data-theme="night"] .v2c01__rule { background: #7a614b; }
 
 .v2c01__copy {
   position: absolute;
-  left: 0.5%; top: 43.2%;
-  width: 62%;
+  left: 0%; top: 43.0%;
+  width: 64%;
   margin: 0;
   text-align: center;
-  font-size: 2.55cqw;      /* Reference 実測: 20字が幅0.51へ収まる字送り */
-  line-height: 2.05;
-  letter-spacing: 0.03em;
+  font-size: 3.0cqw;       /* manifest 定義 ≈26px（864px 基準） */
+  line-height: 2.0;
+  letter-spacing: 0.01em;
   color: #4a3f2e !important;
 }
-[data-theme="night"] .v2c01__copy { color: #e2d3b2 !important; }
+[data-theme="night"] .v2c01__copy { color: #8d7a64 !important; }
 
 .v2c01__steps {
   position: absolute;
@@ -1556,12 +1611,12 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.6cqw;
+  gap: 2.0cqw;
   font-size: 2.78cqw;
   letter-spacing: 0.1em;
   color: #5c4f38 !important;
 }
-[data-theme="night"] .v2c01__steps li { color: #d9c69a !important; }
+[data-theme="night"] .v2c01__steps li { color: #96805f !important; }
 .v2c01__steps li + li::before {
   content: "›";
   position: absolute;
@@ -1570,18 +1625,20 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   font-size: 2.6cqw;
 }
 .v2c01__steps li { position: relative; }
-.v2c01__step-icon { display: block; width: 4.6cqw; height: 4.6cqw; color: #8a744c; }
-[data-theme="night"] .v2c01__step-icon { color: #c9a86a; }
+.v2c01__step-icon { display: block; width: 5.3cqw; height: 5.3cqw; color: #8a744c; }
+[data-theme="night"] .v2c01__step-icon { color: #96804f; }
 .v2c01__step-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 
 /* 布装本＋棚板（D asset。opaque x0.053–0.943 / y0.17–0.854 を
    stage x0.05–0.60 / y0.665–0.815 に一致させる） */
 .v2c01__books {
   position: absolute;
-  left: 1.5%; top: 62.2%;
-  width: 66%;
+  left: -2.6%; top: 62.0%;
+  width: 70%;
   aspect-ratio: 3 / 2;
   background: url("../../assets/v2b0/01/01_books_shelf_day.webp") center / contain no-repeat;
+  /* 棚板の左右を Reference の余白比まで詰める（本には触れない） */
+  clip-path: inset(0 14% 0 8%);
 }
 [data-theme="night"] .v2c01__books {
   background-image: url("../../assets/v2b0/01/01_books_shelf_night.webp");
@@ -1594,7 +1651,7 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   width: 71%; height: 9.0%;
   border: 0;
   border-radius: 2.3cqw;
-  background: url("../../assets/v2b0/01/cta_suede_texture_day.webp") center / cover no-repeat;
+  background: url("../../assets/v2b0/01/cta_suede_texture_day.webp") center / 118% 218% no-repeat;
   box-shadow: 0 1.2cqw 3cqw rgb(60 38 14 / 0.35), inset 0 0 0 1px rgb(255 240 210 / 0.35);
   font-family: var(--font-display);
   font-size: 5.09cqw;
@@ -1605,8 +1662,29 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
 }
 [data-theme="night"] .v2c01__cta {
   background-image: url("../../assets/v2b0/01/cta_suede_texture_night.webp");
-  color: #f4e4c4 !important;
+  background-size: 118% 218%;
+  color: #e3cda1 !important;
   box-shadow: 0 1.2cqw 3.4cqw rgb(0 0 0 / 0.55), inset 0 0 0 1px rgb(255 214 150 / 0.30);
 }
 .v2c01__cta:hover { filter: brightness(1.05); }
 .v2c01__cta:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(114,135,75,.34), 0 1.2cqw 3cqw rgb(60 38 14 / 0.35); }
+
+
+/* -----------------------------------------------------------------------
+ * MASTER_TOKENS 再主張
+ * legacy style.css は body.night スコープで --ink 等を再定義するため、
+ * body 継承では legacy 値が master token に勝ってしまう。
+ * mount 時は body 層で master の day/night 対応を明示的に張り直す。
+ * ---------------------------------------------------------------------- */
+html[data-v2-mounted="true"][data-theme="day"] body {
+  --bg: var(--day-bg); --surface: var(--day-surface); --surface-soft: var(--day-surface-soft);
+  --ink: var(--day-ink); --ink-muted: var(--day-ink-muted); --line: var(--day-line);
+  --accent: var(--day-accent); --accent-strong: var(--day-accent-strong);
+  --warm-metal: var(--day-gold); --wood: var(--day-wood); --elevation: var(--day-shadow);
+}
+html[data-v2-mounted="true"][data-theme="night"] body {
+  --bg: var(--night-bg); --surface: var(--night-surface); --surface-soft: var(--night-surface-soft);
+  --ink: var(--night-ink); --ink-muted: var(--night-ink-muted); --line: var(--night-line);
+  --accent: var(--night-accent); --accent-strong: var(--night-accent-strong);
+  --warm-metal: var(--night-bronze); --wood: var(--night-wood); --elevation: var(--night-shadow);
+}
