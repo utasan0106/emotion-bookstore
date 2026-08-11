@@ -201,9 +201,12 @@
     }
   }
 
-  /* 背表紙はネイティブ button（Step 3C）。Enter / Space は button 本来の挙動に委ねる。
+  /* 一冊はネイティブ button（Step 3C）。Enter / Space は button 本来の挙動に委ねる。
      role="button" / tabindex / 独自 keydown は使わない。入れ子の操作要素も作らない。
-     aria-label は題名までに留める（本文・棚名・日付は読み上げ名に混ぜない）。 */
+     aria-label は題名までに留める（本文・棚名・日付は読み上げ名に混ぜない）。
+     Beta0（MASTER HANDOFF v0.9）：06 は背表紙の帯ではなく「私的蔵書の一冊」
+     カードとして描く。題名に加え、補助情報として日付と気持ちラベルを添える
+     （どちらも既存 entry の読み取りのみ。stats / 件数比較は作らない）。 */
   function buildSpine(entry, index) {
     var spine = doc.createElement('button');
     spine.type = 'button';
@@ -212,12 +215,34 @@
     var id = (entry && typeof entry === 'object' && entry.id !== null && entry.id !== undefined)
       ? String(entry.id) : '';
     if (id) spine.setAttribute('data-v2-book-id', id);
-    spine.style.height = 'calc(' + viewSpineHeight(entry, index) + ' * var(--v2-px))';
+
+    /* 表紙面。写真素材は使わない（無地。ASSET REQUIRED は報告済み） */
+    var cover = doc.createElement('span');
+    cover.className = 'v2-shelf__cover';
+    cover.setAttribute('aria-hidden', 'true');
+    spine.appendChild(cover);
 
     var title = doc.createElement('span');
     title.className = 'v2-shelf__spine-title';
     title.textContent = viewTitle(entry);   // textContent のみ。HTML として解釈させない
     spine.appendChild(title);
+
+    var dateText = viewDate(entry);
+    if (dateText) {
+      var date = doc.createElement('span');
+      date.className = 'v2-shelf__spine-date';
+      date.textContent = dateText;
+      spine.appendChild(date);
+    }
+
+    var emotionText = shelfLabelOf(entry);
+    if (emotionText) {
+      var emotion = doc.createElement('span');
+      emotion.className = 'v2-shelf__spine-emotion';
+      emotion.textContent = emotionText;
+      spine.appendChild(emotion);
+    }
+
     spine.setAttribute('aria-label', viewTitle(entry) + 'を開く');
     return spine;
   }

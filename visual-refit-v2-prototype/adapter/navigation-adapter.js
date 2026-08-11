@@ -237,6 +237,9 @@
     if (!doc || !doc.body) return null;
     var theme = doc.body.classList.contains('night') ? 'night' : 'day';
     doc.documentElement.setAttribute('data-v2-theme', theme);
+    /* Beta0: MASTER_TOKENS.css は [data-theme] で DAY/NIGHT を切り替える。
+       値の出どころは同じ（既存 body.night のみ）。 */
+    doc.documentElement.setAttribute('data-theme', theme);
     return theme;
   }
 

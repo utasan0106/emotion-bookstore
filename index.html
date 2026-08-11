@@ -136,17 +136,8 @@
 </script>
 <link rel="stylesheet" href="style.css">
 <!-- ===== Visual Refit V2（Production Mount） ===== -->
-<link rel="stylesheet" href="visual-refit-v2-prototype/css/tokens.css">
-<link rel="stylesheet" href="visual-refit-v2-prototype/css/base.css">
-<link rel="stylesheet" href="visual-refit-v2-prototype/css/components.css">
-<link rel="stylesheet" href="visual-refit-v2-prototype/css/screens/01.css">
-<link rel="stylesheet" href="visual-refit-v2-prototype/css/screens/02.css">
-<link rel="stylesheet" href="visual-refit-v2-prototype/css/screens/03.css">
-<link rel="stylesheet" href="visual-refit-v2-prototype/css/screens/04.css">
-<link rel="stylesheet" href="visual-refit-v2-prototype/css/screens/05.css">
-<link rel="stylesheet" href="visual-refit-v2-prototype/css/screens/06.css">
-<link rel="stylesheet" href="visual-refit-v2-prototype/css/screens/07.css">
-<link rel="stylesheet" href="visual-refit-v2-prototype/css/screens/08.css">
+<link rel="stylesheet" href="visual-refit-v2-prototype/css/master-tokens.css">
+<link rel="stylesheet" href="visual-refit-v2-prototype/css/beta0.css">
 <link rel="stylesheet" href="v2-mount.css">
 <style>
 /* --- 追加：トップページのアコーディオン用スタイル --- */
@@ -325,48 +316,21 @@ body.night .about-data-content{
     </div>
 
 <!-- V2 01 表紙 -->
-<div class="v2-page v2-page--cover" data-v2-screen="01">
-<div class="v2-stage v2-cover">
-
-  <!-- 情景レイヤ：素材未確定。無地面＋輪郭のみのプレースホルダー -->
-  <div class="v2-scene" aria-hidden="true">
-    <div class="v2-cover__wall"></div>
-    <div class="v2-cover__arch v2-placeholder"></div>
-    <div class="v2-cover__foliage v2-placeholder"></div>
-    <div class="v2-cover__ledge v2-placeholder"></div>
-    <div class="v2-cover__vignette"></div>
-  </div>
-
-  <!-- 内容レイヤ -->
-  <div class="v2-content">
-
-    <!-- ロゴ：正式素材が未用意のため、円形の中立プレースホルダーで位置とサイズのみ確認する。
-         assets/shop-seal.png の加工・透過化による代用は行わない。 -->
-    <p class="v2-cover__logo v2-placeholder" aria-hidden="true"></p>
-
-    <h1 class="v2-cover__title">
-      <span class="v2-cover__title-sub">みんなの</span>
-      <span class="v2-cover__title-main">感情書店</span>
-    </h1>
-
-    <hr class="v2-rule v2-cover__rule">
-
-    <!-- Core Ver.2 コピー。出会う／残す／再会する の3つを、順序ではなく並列に置く -->
-    <p class="v2-cover__lead">感情から、ことばやカルチャーに出会う書店。</p>
-    <p class="v2-cover__sublead">心に残ったものは、自分のことばで一冊に。<br>いつか、本棚でまた会えます。</p>
-
-    <!-- 主CTA：金茶（--v2-accent-place）。右矢印なし。
-         Phase 3 Step 1.1：disabled は click / focus / キーボード操作を阻害するため解除した
-         （実ブラウザで阻害を確認したうえでの削除）。外観はカンプの通常状態のまま。 -->
-    <div class="v2-cover__cta">
-      <button type="button" class="v2-btn v2-btn--place" data-v2-go="02">入店する</button>
-    </div>
-
-    <!-- Phase 2 正式仕様：01 表紙は bottom navigation を持たない。
-         店の外から中へ入る画面なので、店内の行き先はまだ並べない。 -->
-
-  </div>
-</div>
+<div class="v2-page v2b v2b-01" data-v2-screen="01" data-screen="01">
+  <main class="v2b-01__card">
+    <span class="v2b-01__logo" aria-hidden="true"><svg viewBox="0 0 48 48" role="img" aria-hidden="true"><circle cx="24" cy="24" r="21"/><path d="M12 30c4-2 8-2 12 0 4-2 8-2 12 0"/><path d="M12 30v-3c4-2 8-2 12 0 4-2 8-2 12 0v3"/><path d="M24 27v-9"/><path d="M24 18c0-3 2-5 5-6-1 3-2 5-5 6z"/><path d="M24 21c0-3-2-5-5-6 1 3 2 5 5 6z"/></svg></span>
+    <h1 class="v2b-01__name"><span class="is-sub">みんなの</span><span>感情書店</span></h1>
+    <hr class="v2b-rule">
+    <p class="v2b-01__copy">気持ちを入口に、出会う。<br>そこで残ったものも、日々の小さなことも。<br>一冊にして、あなたの本棚へ。</p>
+    <ul class="v2b-01__system" aria-label="この書店の過ごし方">
+      <li><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span>知る</li>
+      <li><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="8.5" cy="9" r="2.5"/><circle cx="15.5" cy="9" r="2.5"/><path d="M4 19c.5-3 2.5-4.5 4.5-4.5S12.5 16 13 19M11 19c.5-3 2.5-4.5 4.5-4.5S19.5 16 20 19"/></svg></span>出会う</li>
+      <li><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span>残す</li>
+      <li><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2-4.9"/><path d="M17 3v4h4"/></svg></span>巡る</li>
+    </ul>
+    <span class="v2b-01__shelfart" aria-hidden="true"><svg viewBox="0 0 240 60"><path d="M8 46h224M14 46v6M226 46v6"/><path d="M30 18h12v28H30zM46 14h11v32H46zM61 20h12v26H61zM77 16h11v30H77z"/><path d="M120 46c0-8 5-13 11-15-2 6-5 11-11 15z"/><circle cx="120" cy="30" r="1"/><path d="M112 46v-8c0-3 3-5 8-5s8 2 8 5v8"/><path d="M150 20h13v26h-13zM166 24l10-3 7 25-10 3z"/></svg></span>
+    <button type="button" class="v2b-btn v2b-btn--primary v2b-01__cta" data-v2-go="02">入店する</button>
+  </main>
 </div>
 </header>
 
@@ -534,78 +498,40 @@ body.night .about-data-content{
     </div>
 
 <!-- V2 02 入店 -->
-<div class="v2-page v2-page--menu" data-v2-screen="02">
-<div class="v2-stage v2-menu">
-
-  <!-- 情景レイヤ：素材未確定。無地面＋輪郭のみのプレースホルダー。
-       照明器具は置かない（ペンダント・天井灯なし）。
-       右側の店内奥行き＋窓明かり＋棚の間接光だけで空間を表す。 -->
-  <div class="v2-scene" aria-hidden="true">
-    <div class="v2-menu__wall"></div>
-    <div class="v2-menu__depth v2-placeholder"></div>
-    <div class="v2-menu__vignette"></div>
-  </div>
-
-  <!-- 内容レイヤ -->
-  <div class="v2-content">
-
-    <!-- ロゴ：正式素材が未用意のため円形の中立プレースホルダー。
-         assets/shop-seal.png の加工・透過化による代用はしない。 -->
-    <p class="v2-menu__logo v2-placeholder" aria-hidden="true"></p>
-
-    <h1 class="v2-menu__question">ようこそ。<br>今日は、<br>どこへ行きますか？</h1>
-
-    <hr class="v2-menu__deco">
-
-    <!-- 3カード：同じ幅・同じ高さ・同じ内部余白・同じ情報階層。
-         Phase 3 Step 1.1：disabled は click / focus / キーボード操作を阻害するため解除した。
-         href / onclick / route は持たず、遷移は Adapter 経由で既存 goToPage() へ委ねる。 -->
-    <div class="v2-menu__cards">
-
-      <article class="v2-menu-card">
-        <span class="v2-menu-card__figure v2-placeholder" aria-hidden="true"></span>
-        <div class="v2-menu-card__headzone">
-          <h2 class="v2-menu-card__heading">感情の棚を見る</h2>
-        </div>
-        <span class="v2-menu-card__rule" aria-hidden="true"></span>
-        <p class="v2-menu-card__desc">今の気持ちに近い言葉や、<br>物語・作品に出会う</p>
-        <button type="button" class="v2-menu-card__action"
-                data-v2-go="03"
-                aria-label="感情の棚を見る"></button>
-      </article>
-
-      <article class="v2-menu-card">
-        <span class="v2-menu-card__figure v2-placeholder" aria-hidden="true"></span>
-        <div class="v2-menu-card__headzone">
-          <h2 class="v2-menu-card__heading">気持ちや<br>出来事を書く</h2>
-        </div>
-        <span class="v2-menu-card__rule" aria-hidden="true"></span>
-        <p class="v2-menu-card__desc">今残しておきたいことを、<br>自分の言葉で書く</p>
-        <button type="button" class="v2-menu-card__action"
-                data-v2-go="05"
-                aria-label="気持ちや出来事を書く"></button>
-      </article>
-
-      <article class="v2-menu-card">
-        <span class="v2-menu-card__figure v2-placeholder" aria-hidden="true"></span>
-        <div class="v2-menu-card__headzone">
-          <h2 class="v2-menu-card__heading">自分の<br>本棚を見る</h2>
-        </div>
-        <span class="v2-menu-card__rule" aria-hidden="true"></span>
-        <p class="v2-menu-card__desc">自分で残した一冊を、<br>あとから見返す</p>
-        <button type="button" class="v2-menu-card__action"
-                data-v2-go="bookshelf"
-                aria-label="自分の本棚を見る"></button>
-      </article>
-
+<div class="v2-page v2b v2b-02" data-v2-screen="02" data-screen="02">
+  <div class="v2b-inner">
+    <div class="v2b-topbar"><span class="v2b-brand"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span>みんなの感情書店</span><span></span></div>
+    <header class="v2b-02__head">
+      <h1 class="v2b-02__title">今日は、<br>どこからはじめますか。</h1>
+      <p class="v2b-02__lead">気持ちから棚を歩くことも、残ったことを書くことも、<br>自分の本棚を開くこともできます。</p>
+    </header>
+    <div class="v2b-02__cards">
+      <button type="button" class="v2b-card v2b-02__card" data-v2-go="03">
+        <span class="v2b-02__art" aria-hidden="true"><svg viewBox="0 0 56 48"><path d="M6 40h44M6 40V16a8 8 0 0 1 44 0v24"/><path d="M12 24h8v12h-8zM24 22h8v14h-8zM36 26h8v10h-8z"/></svg></span>
+        <span class="v2b-02__body">
+          <span class="v2b-02__cardtitle">感情の棚を見る</span>
+          <span class="v2b-02__carddesc">気持ちごとに並ぶ棚から、<br>ことばや作品に出会う。</span>
+        </span>
+        <span class="v2b-chevron" aria-hidden="true">›</span>
+      </button>
+      <button type="button" class="v2b-card v2b-02__card" data-v2-go="05">
+        <span class="v2b-02__art" aria-hidden="true"><svg viewBox="0 0 56 48"><path d="M6 38h44"/><path d="M12 30c6-2 10-2 14 0v8M40 24l4 2-9 12-5 1 1-5z"/><path d="M12 30v8h14"/></svg></span>
+        <span class="v2b-02__body">
+          <span class="v2b-02__cardtitle">残ったことを書く</span>
+          <span class="v2b-02__carddesc">作品の余韻も、日々の小さなことも、<br>一冊にして残す。</span>
+        </span>
+        <span class="v2b-chevron" aria-hidden="true">›</span>
+      </button>
+      <button type="button" class="v2b-card v2b-02__card" data-v2-go="06">
+        <span class="v2b-02__art" aria-hidden="true"><svg viewBox="0 0 56 48"><path d="M8 42h40M8 42V10M48 42V10M8 10h40"/><path d="M14 20h6v14h-6zM22 18h6v16h-6zM34 22l6-2 4 14-6 2z"/></svg></span>
+        <span class="v2b-02__body">
+          <span class="v2b-02__cardtitle">自分の本棚を見る</span>
+          <span class="v2b-02__carddesc">あなたが一冊にした言葉を、<br>あとから静かに巡る。</span>
+        </span>
+        <span class="v2b-chevron" aria-hidden="true">›</span>
+      </button>
     </div>
-
-    <!-- Global Navigation 正式仕様（Visual Review 反映）：
-         01 表紙・02 入店後メニューは bottom navigation を持たない。
-         3項目ナビは 03〜08 のみに置く。 -->
-
   </div>
-</div>
 </div>
 </section>
 
@@ -627,302 +553,101 @@ body.night .about-data-content{
     </div>
 
 <!-- V2 03/04 感情棚 -->
-<div class="v2-page v2-page--shelves" data-v2-screen="03" data-v2-subview-of="shelves-index">
-<div class="v2-stage v2-shelves">
-
-  <!-- 情景レイヤ：素材未確定。無地面＋輪郭のみのプレースホルダー。
-       照明器具は置かない。棚・店内側から感じる小さな灯りのみ。 -->
-  <div class="v2-scene" aria-hidden="true">
-    <div class="v2-shelves__wall"></div>
-    <div class="v2-shelves__window"></div>
-    <div class="v2-shelves__plant v2-placeholder"></div>
-    <div class="v2-shelves__depth"></div>
-    <div class="v2-shelves__windowlight"></div>
-    <div class="v2-shelves__shelflight"></div>
-    <div class="v2-shelves__vignette"></div>
-  </div>
-
-  <!-- 内容レイヤ -->
-  <div class="v2-content">
-
-    <button type="button" class="v2-shelves__home" data-v2-go="02">
-      <span class="v2-shelves__home-mark v2-placeholder" aria-hidden="true"></span>メニューへ
-    </button>
-
-    <h1 class="v2-shelves__title">感情の棚</h1>
-    <hr class="v2-shelves__deco">
-    <p class="v2-shelves__lead">気になる棚から、ことばや作品を覗いてみてください。<br>今の気持ちにぴったりでなくても構いません。</p>
-
-    <!-- 大棚グリッド：2列×4段。7大棚＋横断入口1。
-         Phase 3 Step 3A：入口はネイティブ button（data-v2-shelf が大棚ID）。
-         7大棚→21感情の mapping は emotion-shelf-adapter が READ-ONLY で解決する。
-         button の内容モデルに合わせ、見出し・段落は span へ整えた。
-         Phase 1 は静的・非活性。href / onclick / route を持たない。
-         感情アイコンは未制作。将来の感情造形用スペースを中立プレースホルダーで確保する。 -->
-    <div class="v2-shelves__grid">
-
-      <button type="button" class="v2-shelf-card"
-              data-v2-shelf="hazumu" data-v2-shelf-trigger="hazumu">
-        <span class="v2-shelf-card__name">心が弾む</span>
-        <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <span class="v2-shelf-card__words">嬉しい・わくわく・誇らしい</span>
-        <span class="v2-shelf-card__shelf" aria-hidden="true">
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__gap"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-        </span>
+<div class="v2-page v2b v2b-03" data-v2-screen="03" data-v2-subview-of="shelves-index" data-screen="03">
+  <div class="v2b-inner">
+    <div class="v2b-topbar"><span class="v2b-brand"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span>みんなの感情書店</span><button type="button" class="v2b-menubtn" data-v2-open-menu aria-label="店内メニューを開く"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span></button></div>
+    <header class="v2b-03__head">
+      <h1 class="v2b-03__title">感情の棚</h1>
+      <p class="v2b-03__lead">いまの気持ちに近い棚から、<br>ことばや作品、自分の本に出会えます。</p>
+      <span class="v2b-03__deco v2b-sprig" aria-hidden="true"><span class="v2b-icon"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span></span>
+    </header>
+    <div class="v2b-03__grid">
+      <button type="button" class="v2b-shelfcard v2b-shelfcard--hazumu" data-v2-shelf="hazumu" data-v2-shelf-trigger="hazumu">
+        <span class="v2b-shelfcard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2M6.5 6.5l1.4 1.4M16.1 16.1l1.4 1.4M17.5 6.5l-1.4 1.4M7.9 16.1l-1.4 1.4"/><path d="M18.5 4.5l.4 1 .9.4-.9.4-.4 1-.4-1-.9-.4.9-.4z"/></svg></span>
+        <span class="v2b-shelfcard__name">心が弾む</span>
       </button>
-
-      <button type="button" class="v2-shelf-card"
-              data-v2-shelf="atatamaru" data-v2-shelf-trigger="atatamaru">
-        <span class="v2-shelf-card__name">心があたたまる</span>
-        <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <span class="v2-shelf-card__words">安堵・感謝・愛おしい</span>
-        <span class="v2-shelf-card__shelf" aria-hidden="true">
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__gap"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-        </span>
+      <button type="button" class="v2b-shelfcard v2b-shelfcard--atatamaru" data-v2-shelf="atatamaru" data-v2-shelf-trigger="atatamaru">
+        <span class="v2b-shelfcard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19s-6.5-4.2-8-8A4.4 4.4 0 0 1 12 8.4 4.4 4.4 0 0 1 20 11c-1.5 3.8-8 8-8 8z"/></svg></span>
+        <span class="v2b-shelfcard__name">心があたたまる</span>
       </button>
-
-      <button type="button" class="v2-shelf-card"
-              data-v2-shelf="hikareru" data-v2-shelf-trigger="hikareru">
-        <span class="v2-shelf-card__name">惹かれる</span>
-        <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <span class="v2-shelf-card__words">憧れ・嫉妬・懐かしい</span>
-        <span class="v2-shelf-card__shelf" aria-hidden="true">
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__gap"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-        </span>
+      <button type="button" class="v2b-shelfcard v2b-shelfcard--hikareru" data-v2-shelf="hikareru" data-v2-shelf-trigger="hikareru">
+        <span class="v2b-shelfcard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 11l1.2-3.2L17.5 7l-3.3-.8L13 3l-1.2 3.2L8.5 7l3.3.8z"/><path d="M17 9c-4 3-8 6-12 11"/></svg></span>
+        <span class="v2b-shelfcard__name">惹かれる</span>
       </button>
-
-      <button type="button" class="v2-shelf-card"
-              data-v2-shelf="shizumu" data-v2-shelf-trigger="shizumu">
-        <span class="v2-shelf-card__name">沈む</span>
-        <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <span class="v2-shelf-card__words">悲しい・孤独・がっかり</span>
-        <span class="v2-shelf-card__shelf" aria-hidden="true">
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__gap"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-        </span>
+      <button type="button" class="v2b-shelfcard v2b-shelfcard--shizumu" data-v2-shelf="shizumu" data-v2-shelf-trigger="shizumu">
+        <span class="v2b-shelfcard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 15a4 4 0 1 1 .6-8A5 5 0 0 1 17 8.5 3.4 3.4 0 0 1 17 15z"/><path d="M12 18l-.7 1.6a.9.9 0 1 0 1.4 0z"/></svg></span>
+        <span class="v2b-shelfcard__name">沈む</span>
       </button>
-
-      <button type="button" class="v2-shelf-card"
-              data-v2-shelf="zawatsuku" data-v2-shelf-trigger="zawatsuku">
-        <span class="v2-shelf-card__name">ざわつく</span>
-        <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <span class="v2-shelf-card__words">不安・焦り・驚き</span>
-        <span class="v2-shelf-card__shelf" aria-hidden="true">
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__gap"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-        </span>
+      <button type="button" class="v2b-shelfcard v2b-shelfcard--zawatsuku" data-v2-shelf="zawatsuku" data-v2-shelf-trigger="zawatsuku">
+        <span class="v2b-shelfcard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 9c2-1.6 4-1.6 6 0s4 1.6 6 0M4 13c2-1.6 4-1.6 6 0s4 1.6 6 0M4 17c2-1.6 4-1.6 6 0s4 1.6 6 0"/></svg></span>
+        <span class="v2b-shelfcard__name">ざわつく</span>
       </button>
-
-      <button type="button" class="v2-shelf-card"
-              data-v2-shelf="butsukaru" data-v2-shelf-trigger="butsukaru">
-        <span class="v2-shelf-card__name">ぶつかる</span>
-        <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <span class="v2-shelf-card__words">怒り・悔しい・嫉妬</span>
-        <span class="v2-shelf-card__shelf" aria-hidden="true">
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__gap"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-        </span>
+      <button type="button" class="v2b-shelfcard v2b-shelfcard--butsukaru" data-v2-shelf="butsukaru" data-v2-shelf-trigger="butsukaru">
+        <span class="v2b-shelfcard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 4L6 18M19 8l-7 11"/></svg></span>
+        <span class="v2b-shelfcard__name">ぶつかる</span>
       </button>
-
-      <button type="button" class="v2-shelf-card"
-              data-v2-shelf="miwohiku" data-v2-shelf-trigger="miwohiku">
-        <span class="v2-shelf-card__name">身を引く</span>
-        <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <span class="v2-shelf-card__words">恥ずかしい・後ろめたい・嫌悪感</span>
-        <span class="v2-shelf-card__shelf" aria-hidden="true">
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__gap"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-          <span class="v2-shelf-card__spine"></span><span class="v2-shelf-card__spine"></span>
-        </span>
+      <button type="button" class="v2b-shelfcard v2b-shelfcard--miwohiku" data-v2-shelf="miwohiku" data-v2-shelf-trigger="miwohiku">
+        <span class="v2b-shelfcard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 20C9 13 13 9 19 5"/><path d="M12 11c-.4-2.8.8-5 3.6-6.6.4 2.8-.8 5-3.6 6.6zM9.5 14.5c-2.8.4-5-.8-6.6-3.6 2.8-.4 5 .8 6.6 3.6z"/></svg></span>
+        <span class="v2b-shelfcard__name">身を引く</span>
       </button>
-
-      <!-- 横断入口：8番目の大棚ではない。7大棚とは役割が違うことを
-           境界・余白・見せ方の差で示す。派手に強調しない。 -->
-      <button type="button" class="v2-shelf-card v2-shelf-card--crossway"
-              data-v2-shelf="namae-ga-nai" data-v2-shelf-trigger="namae-ga-nai">
-        <span class="v2-shelf-card__name">まだ名前がない</span>
-        <span class="v2-shelf-card__note">まだ、どのことばにも<br>決めたくないときに。</span>
-        <span class="v2-shelf-card__glyph v2-placeholder" aria-hidden="true"></span>
-        <span class="v2-shelf-card__alias">名もなき感情</span>
+      <button type="button" class="v2b-shelfcard v2b-shelfcard--namae" data-v2-shelf="namae-ga-nai" data-v2-shelf-trigger="namae-ga-nai">
+        <span class="v2b-shelfcard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><g stroke-dasharray="0.1 3.4"><circle cx="12" cy="12" r="7.5"/></g></svg></span>
+        <span class="v2b-shelfcard__name">まだ名前がない</span><span class="v2b-shelfcard__note">まだ、どのことばにも<br>決めたくないときに。</span>
       </button>
-
     </div>
+    <p class="v2b-03__foot"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span>どの棚からでも、書くことからでも。<br>あなたのペースで、自由に巡れます。</p>
+  </div>
 
-    <!-- すべての感情語を見る：Phase 1 は非活性。21語 sheet/subview は作らない -->
-    <button type="button" class="v2-shelves__all"
-            data-v2-shelf="all" data-v2-shelf-trigger="all">すべての感情語を見る　→</button>
-    <p class="v2-shelves__all-note">21の感情語を一覧で探せます</p>
-
-    <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
-    <div class="v2-shelves__navbar">
-      <nav class="v2-navbar v2-shelves__nav" aria-label="ナビゲーション">
-        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="shelves" aria-current="page">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">棚を見る</span>
-        </button>
-        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">書く</span>
-        </button>
-        <button type="button" class="v2-navbar__item" data-v2-nav="bookshelf">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">本棚</span>
-        </button>
-      </nav>
+<nav class="v2b-nav" aria-label="主要な移動">
+  <button type="button" class="v2b-nav__item" data-v2-nav="shelves" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span>感情棚</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span>書く</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span>本棚</span></button>
+</nav>
+</div>
+<div class="v2-page v2b v2b-04" data-v2-screen="04" data-v2-subview-of="shelf-detail" data-screen="04">
+  <div class="v2b-inner">
+    <div class="v2b-topbar" style="justify-content:flex-start">
+      <button type="button" class="v2b-back" data-v2-go="03" data-v2-shelf-back>← 棚へ戻る</button>
     </div>
+    <header class="v2b-04__head">
+      <span class="v2b-04__halo" aria-hidden="true"></span>
+      <h1 class="v2b-04__title" data-v2-emotion="title"></h1>
+      <p class="v2b-04__lead" data-v2-emotion="lead"></p>
+    </header>
 
-  </div>
-</div>
-</div>
-<div class="v2-page v2-page--shelf-detail" data-v2-screen="04" data-v2-subview-of="shelf-detail">
-<div class="v2-stage v2-detail">
-
-  <!-- 情景レイヤ：本棚・壁・植物・棚からの間接光のみ。
-       デスクランプ／ペンダント等の照明器具は置かない。 -->
-  <div class="v2-scene" aria-hidden="true">
-    <div class="v2-detail__wall"></div>
-    <div class="v2-detail__shelfscape"></div>
-    <div class="v2-detail__plant v2-placeholder"></div>
-    <div class="v2-detail__shelflight"></div>
-    <div class="v2-detail__vignette"></div>
-  </div>
-
-  <!-- 内容レイヤ -->
-  <div class="v2-content">
-
-    <!-- 04 → 03 は固定（history 依存にしない）。emotion-shelf-adapter が
-         03 の入口へ focus を戻す（新しい永続状態は作らない）。 -->
-    <button type="button" class="v2-detail__back" data-v2-go="03" data-v2-shelf-back>＜　棚へ戻る</button>
-
-    <!-- 感情の造形枠：感情アイコンはまだ制作しない -->
-    <p class="v2-detail__glyph v2-placeholder" aria-hidden="true"></p>
-    <h1 class="v2-detail__title" data-v2-emotion="title">ざわつく</h1>
-    <p class="v2-detail__lead" data-v2-emotion="lead">先が読めないときや、気持ちが落ち着かず<br>動きつづけるあたり。</p>
-
-    <!-- 4領域タブ：Core Ver.2 の IA として維持する（ことば／いま／作品／自分の本）。
-         同格。初期表示は「ことば」。
-         Phase 3 Step 3B.1 で操作可能にした。切替は 04 内部の DOM 切替だけで、
-         goToPage / goToShelf / subviewOnly を呼ばず、GA4・保存・外部通信も発生しない。
-         role="tab" / role="tablist" は採用しない（WAI-ARIA tab pattern を
-         部分実装しないため）。button + aria-pressed + hidden panel の単純構造にする。 -->
-    <nav class="v2-detail__tabs" aria-label="領域" data-v2-regions>
-      <button type="button" class="v2-detail__tab" data-v2-region="kotoba"
-              aria-pressed="true" aria-controls="v2-region-kotoba">
-        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>ことば</button>
-      <button type="button" class="v2-detail__tab" data-v2-region="ima"
-              aria-pressed="false" aria-controls="v2-region-ima">
-        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>いま</button>
-      <button type="button" class="v2-detail__tab" data-v2-region="sakuhin"
-              aria-pressed="false" aria-controls="v2-region-sakuhin">
-        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>作品</button>
-      <button type="button" class="v2-detail__tab" data-v2-region="jibun"
-              aria-pressed="false" aria-controls="v2-region-jibun">
-        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>自分の本</button>
-    </nav>
-
-    <!-- ことば：Step 3A.1 の感情語カードパネルをそのまま正式な「ことば」領域として使う。
-         QUOTE_POOL / QUOTE_POOL_EN は接続しない。引用は1件も増やさない。 -->
-    <section class="v2-detail__panel" id="v2-region-kotoba"
-             data-v2-region-panel="kotoba" aria-label="この棚のことばたち">
-      <h2 class="v2-detail__panel-title">この棚のことばたち</h2>
-
-      <!-- 感情語カードは emotion-shelf-adapter が既存 CATEGORIES から READ-ONLY で描画する。
-           表示順は 7大棚 mapping の決裁順のまま。重複配架された感情も消さない。
-           静的 markup に感情データは持たせない。 -->
-      <div class="v2-detail__words" data-v2-emotion="words"></div>
+    <section class="v2b-04__sec" data-v2-region-panel="kotoba" aria-label="ことば">
+      <p class="v2b-04__num">01</p>
+      <h2 class="v2b-04__h">ことば</h2>
+      <div class="v2b-04__words" data-v2-emotion="words"></div>
     </section>
 
-    <!-- いま：意図的な空状態。STORIES_POOL は使わない
-         （FICTIONAL_SHELF_STORIES_ENABLED は false のまま。Adapter からも触らない）。
-         SNS投稿・利用者投稿・毎日更新を示唆する語は置かない。 -->
-    <section class="v2-detail__panel" id="v2-region-ima"
-             data-v2-region-panel="ima" aria-label="いま" hidden>
-      <h2 class="v2-detail__panel-title">いま</h2>
-      <div class="v2-detail__empty">
-        <p class="v2-detail__empty-title">いま、この棚に置かれているものはありません。</p>
-        <p class="v2-detail__empty-note">また新しいことばが入ったときに、ここに並びます。</p>
+    <section class="v2b-04__sec" data-v2-region-panel="sakuhin" aria-label="作品">
+      <p class="v2b-04__num">02</p>
+      <h2 class="v2b-04__h">作品</h2>
+      <p class="v2b-04__intro">この気持ちにそっと寄り添う、本や映画、音楽の棚です。</p>
+      <div class="v2b-04__works-empty">
+        <p class="v2b-04__works-empty-title">この棚の作品は、ただいま仕入れ中です。</p>
+        <p class="v2b-04__works-empty-note">また立ち寄ったときに、静かに並んでいるはずです。</p>
       </div>
     </section>
 
-    <!-- 作品：Step 3B.1 では完全に HOLD。
-         BOOK_POOL / MUSIC_QUERIES / RECOMMEND_TEMPLATES / DETOUR_POOL /
-         Google Books / iTunes / Amazon / 楽天 / Spotify / Apple Music / YouTube の
-         いずれにも接続しない。「おすすめ」「あなた向け」「人気」「ランキング」等は書かない。 -->
-    <section class="v2-detail__panel" id="v2-region-sakuhin"
-             data-v2-region-panel="sakuhin" aria-label="作品" hidden>
-      <h2 class="v2-detail__panel-title">作品</h2>
-      <div class="v2-detail__empty">
-        <p class="v2-detail__empty-title">この棚の作品は、ただいま仕入れ中です。</p>
-        <p class="v2-detail__empty-note">棚に置く理由を確かめながら、少しずつ選んでいます。</p>
-      </div>
-    </section>
-
-    <!-- 自分の本：既存 library を READ-ONLY で、いま見ている大棚／感情語の文脈に絞って表示する。
-         04 は「その文脈で自分の本と再会する場所」。全蔵書一覧（＝06）を再現しない。
-         カードは emotion-shelf-adapter が描画する。静的 markup に本のデータは持たせない。 -->
-    <section class="v2-detail__panel" id="v2-region-jibun"
-             data-v2-region-panel="jibun" aria-label="自分の本" hidden>
-      <h2 class="v2-detail__panel-title">自分の本</h2>
+    <section class="v2b-04__sec" data-v2-region-panel="jibun" aria-label="自分の本">
+      <p class="v2b-04__num">03</p>
+      <h2 class="v2b-04__h">自分の本</h2>
+      <p class="v2b-04__intro">あなたがこの気持ちで残した本です。</p>
       <div data-v2-mybooks="body"></div>
+      <div class="v2b-04__write">
+        <button type="button" class="v2b-btn v2b-btn--quiet" data-v2-go="05">残ったことを書く</button>
+        <p class="v2b-04__write-note">今の気持ちを、自分の言葉で残してみる</p>
+      </div>
     </section>
-
-    <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
-    <div class="v2-detail__navbar">
-      <nav class="v2-navbar v2-detail__nav" aria-label="ナビゲーション">
-        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="shelves" aria-current="page">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">棚を見る</span>
-        </button>
-        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">書く</span>
-        </button>
-        <button type="button" class="v2-navbar__item" data-v2-nav="bookshelf">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">本棚</span>
-        </button>
-      </nav>
-    </div>
-
   </div>
-</div>
+
+<nav class="v2b-nav" aria-label="主要な移動">
+  <button type="button" class="v2b-nav__item" data-v2-nav="shelves" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span>感情棚</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span>書く</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span>本棚</span></button>
+</nav>
 </div>
 </section>
 
@@ -1065,138 +790,43 @@ body.night .about-data-content{
     </div>
 
 <!-- V2 05 編纂室 -->
-<div class="v2-page v2-page--editor" data-v2-screen="05">
-<div class="v2-stage v2-editor">
-
-  <!-- 情景レイヤ：素材未確定。無地面＋輪郭のみのプレースホルダー。
-       05 は唯一デスクランプを器具として見せてよい画面だが、
-       完成イラストは生成せず、占有領域・光の方向・光量関係だけを置く。 -->
-  <div class="v2-scene" aria-hidden="true">
-    <div class="v2-editor__wall"></div>
-    <div class="v2-editor__desk v2-placeholder"></div>
-    <div class="v2-editor__lamp v2-placeholder"></div>
-    <div class="v2-editor__lamplight"></div>
-    <div class="v2-editor__writinglight"></div>
-    <div class="v2-editor__vignette"></div>
-  </div>
-
-  <!-- 内容レイヤ -->
-  <div class="v2-content">
-
-    <button type="button" class="v2-editor__back" data-v2-go="02">＜　戻る</button>
-
-    <p class="v2-editor__privacy">本文は公開されません</p>
-
-    <p class="v2-editor__mark v2-placeholder" aria-hidden="true"></p>
-    <p class="v2-editor__ruby">へんさんしつ</p>
-    <h1 class="v2-editor__title">編纂室</h1>
-    <p class="v2-editor__lead">あなたのことばを、静かに編んでいく場所です。<br>本文はこの端末に保存されます。</p>
-
-    <!-- 領域タブ行（ことば・世界／物語・作品／みんなの一篇／自分の本）は
-         Visual Review により削除した。代替UIは置かない。 -->
-
-    <!-- 編集カード：この画面の主役 -->
-    <section class="v2-editor__card" aria-label="新しい本を書く">
-
-      <div class="v2-editor__card-head">
-        <span class="v2-editor__card-mark v2-placeholder" aria-hidden="true"></span>
-        <h2 class="v2-editor__card-title">新しい本を書く</h2>
+<div class="v2-page v2b v2b-05" data-v2-screen="05" data-screen="05">
+  <div class="v2b-inner">
+    <div class="v2b-05__bar">
+      <button type="button" class="v2b-back" data-v2-go="02" aria-label="広間へ戻る">←</button>
+      <div class="v2b-05__headmid">
+        <h1 class="v2b-05__title">編纂室</h1>
+        <p class="v2b-05__sub">残ったことを、自分の言葉で一冊にする場所</p>
       </div>
-      <p class="v2-editor__card-sub">残しておきたいことを、あなたのことばで。<br>うまくまとめなくても、題名をつけなくても大丈夫です。</p>
-
-      <!-- Phase 3 Step 3E：「下書き一覧」は対応する既存機能が存在しないため削除した。
-           disabled のまま残さず、代替の新機能も作らない。 -->
-
-      <!-- 題名は任意。空欄でも製本できる（空欄時の題名は既存側が決める）。
-           Step 3D でも必須へ戻さない。 -->
-      <p class="v2-editor__field-label" id="v2-write-title-label">題（あらだし）</p>
-      <!-- 文字数上限は現行の maxlength=16 を正とする。カンプの 0 / 30 は採用しない -->
-      <p class="v2-editor__counter" data-v2-write="title-count">0 / 16</p>
-
-      <input class="v2-editor__title-field" type="text" maxlength="16"
-             data-v2-write="title" aria-labelledby="v2-write-title-label"
-             placeholder="本の題名をつけてください（あとから変えられます）">
-
-      <!-- 本文：ここに書くことが最も明確な領域。
-           Step 3D で既存 #storyInput（＝下書き保存・文字数・製本の正式な入口）へ接続した。
-           保存・製本・検証・GA4 のロジックは V2 側に持たない。 -->
-      <div class="v2-editor__body">
-        <textarea class="v2-editor__body-input" data-v2-write="story"
-                  aria-label="本文"
-                  placeholder="ここに、あなたのことばを書いてください。"></textarea>
-      </div>
-
-      <!-- 既存 #storyCount（0 / 700字・上限超過表示）をそのまま写す。V2 で数え直さない -->
-      <p class="v2-editor__body-counter" data-v2-write="count">0 / 700字</p>
-
-      <!-- 保存に関する情報：対象を本文に限定した正確な表現にする。
-           包括的・絶対的な表現（あなただけ／〜ことはありません／〜にのみ）を使わない。
-           新しい説明機能・設定UIは追加しない。 -->
-      <div class="v2-editor__assurance">
-        <span class="v2-editor__assurance-mark v2-placeholder" aria-hidden="true"></span>
-        <div>
-          <p class="v2-editor__assurance-title">本文はこの端末に保存されます</p>
-          <p class="v2-editor__assurance-text">本文は公開されません。</p>
-        </div>
-      </div>
-
-      <!-- 操作：「本にする」は既存 #submitStory を押すだけ。
-           検証・保存・読み戻し確認・GA4・二重防止はすべて既存実装が持つ。
-           Phase 3 Step 3E：「下書き保存」ボタンは削除した。既存側は入力のたびに
-           自動で下書きを保存しており、手動保存という機能は存在しないため。
-           自動保存そのものは既存機能として維持し、事実だけを非操作のテキストで伝える。 -->
-      <div class="v2-editor__actions">
-        <p class="v2-editor__autosave">下書きは自動で保存されます</p>
-        <button type="button" class="v2-editor__action v2-editor__action--primary" data-v2-write="bind">
-          <span class="v2-editor__action-main">本にする</span>
-          <span class="v2-editor__action-note">あなたの本として棚に並びます</span>
-        </button>
-      </div>
-
-      <!-- 既存 #deskMsg（検証結果・保存結果）をそのまま写す。V2 で文言を作らない -->
-      <p class="v2-editor__msg is-v2-empty" data-v2-write="msg" role="status" aria-live="polite"></p>
-
-    </section>
-
-    <!-- 書くきっかけ：読むための問いかけであり、操作ではない。
-         Phase 3 Step 3E：押せる見た目（枠・面）と「すべて見る　＞」を外し、
-         非操作のテキストとして整理した。挿入・絞り込み等の新機能は作らない。 -->
-    <section class="v2-editor__prompts" aria-label="書くきっかけに">
-      <div class="v2-editor__prompts-head">
-        <span class="v2-editor__prompts-mark v2-placeholder" aria-hidden="true"></span>
-        <div>
-          <h2 class="v2-editor__prompts-title">書くきっかけに</h2>
-          <p class="v2-editor__prompts-sub">心が少し動いたことから、書きはじめてみませんか。</p>
-        </div>
-      </div>
-      <ul class="v2-editor__chips">
-        <li class="v2-editor__chip">今の気持ちを<br>そのまま書いてみる</li>
-        <li class="v2-editor__chip">忘れたくない<br>出来事について</li>
-        <li class="v2-editor__chip">誰かに伝えたい<br>ことばについて</li>
-        <li class="v2-editor__chip">未来の自分へ<br>手紙を書く</li>
-      </ul>
-    </section>
-
-    <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
-    <div class="v2-editor__navbar">
-      <nav class="v2-navbar v2-editor__nav" aria-label="ナビゲーション">
-        <button type="button" class="v2-navbar__item" data-v2-nav="shelves">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">棚を見る</span>
-        </button>
-        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="desk" aria-current="page">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">書く</span>
-        </button>
-        <button type="button" class="v2-navbar__item" data-v2-nav="bookshelf">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">本棚</span>
-        </button>
-      </nav>
+      <button type="button" class="v2b-05__tobooks" data-v2-go="06"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span>本棚へ</button>
     </div>
 
+    <div class="v2b-05__desk" aria-hidden="true"></div>
+    <p class="v2b-05__autosave"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17a4 4 0 1 1 .6-8A5 5 0 0 1 17 10a3.5 3.5 0 0 1 0 7z"/><path d="M9 20l1.5-1.5L12 20l1.5-1.5L15 20"/></svg></span>書きかけは自動で保存されます</p>
+
+    <div class="v2b-05__field">
+      <label class="v2b-05__label" for="v2bTitleInput">題名 <span class="is-optional">（任意）</span></label>
+      <input class="v2b-05__input" id="v2bTitleInput" type="text" maxlength="16"
+             data-v2-write="title" autocomplete="off"
+             placeholder="題名をつけると、あとから見つけやすくなります">
+    </div>
+
+    <div class="v2b-05__field">
+      <label class="v2b-05__label" for="v2bStoryInput">本文</label>
+      <textarea class="v2b-05__textarea" id="v2bStoryInput" data-v2-write="story"
+                placeholder="いま、心の中に残っていることを、そのまま書いてみてください。
+うまく書こうとしなくて大丈夫。
+一言からでも、本になります。"></textarea>
+      <p class="v2b-05__count" data-v2-write="count">0 / 700字</p>
+    </div>
+
+    <p class="v2b-05__assure">本文はこの端末に保存されます。本文は公開されません。</p>
+
+    <button type="button" class="v2b-btn v2b-btn--primary v2b-05__bind" data-v2-write="bind"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span>本にする</button>
+    <p class="v2b-05__bindnote">本文を保存し、本にします。そのあとで「この一冊に近い気持ち」を選べます（任意）。</p>
+
+    <p class="v2b-05__msg is-v2-empty" data-v2-write="msg" role="status" aria-live="polite"></p>
   </div>
-</div>
 </div>
 </section>
 
@@ -1260,274 +890,86 @@ body.night .about-data-content{
     <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('shelves')" data-i18n="bookshelfExploreShelves">いろいろな棚を巡る</button><button type="button" class="exit-shop-btn" onclick="exitShopWithFarewell()" data-i18n="exitShopBtn">お店を出る</button></div>
 
 <!-- V2 06/07/08 本棚 -->
-<div class="v2-page v2-page--bookshelf" data-v2-screen="06" data-v2-subview-of="bookshelf-list">
-<div class="v2-stage v2-shelf">
+<div class="v2-page v2b v2b-06" data-v2-screen="06" data-v2-subview-of="bookshelf-list" data-screen="06">
+  <div class="v2b-inner">
+    <div class="v2b-topbar"><span class="v2b-brand"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span>みんなの感情書店</span><button type="button" class="v2b-menubtn" data-v2-open-menu aria-label="店内メニューを開く"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span></button></div>
+    <header class="v2b-06__hero">
+      <h1 class="v2b-06__title">自分の本棚</h1>
+      <p class="v2b-06__lead">あなたの言葉が、<br>あなたの本になっています。</p>
+    </header>
 
-  <div class="v2-scene" aria-hidden="true">
-    <div class="v2-shelf__wall"></div>
-    <div class="v2-shelf__scape"></div>
-    <div class="v2-shelf__scapelight"></div>
-    <div class="v2-shelf__vignette"></div>
-  </div>
-
-  <div class="v2-content">
-
-    <button type="button" class="v2-shelf__back" data-v2-go="02">＜　戻る</button>
-
-    <!-- Phase 3 Step 2：対応する機能が存在しない丸メニューも削除した -->
-
-    <p class="v2-shelf__mark v2-placeholder" aria-hidden="true"></p>
-    <h1 class="v2-shelf__title">自分の本棚</h1>
-    <p class="v2-shelf__lead">ここには、残すと決めた一冊が並びます。<br>あとから、好きなときに取り出せます。</p>
-
-    <!-- Phase 3 Step 2：現行データに「完成した本／下書き／アーカイブ」の区分は存在しないため
-         状態タブは削除した。存在しないものを存在するように見せない。 -->
-
-    <!-- 本棚パネル：棚板の上に背表紙が立つ。カード一覧にしない。
-         背表紙は bookshelf-adapter が既存 library から READ-ONLY で描画する。
-         V2 側に複製 library・shadow DB・派生永続状態は作らない。 -->
-    <section class="v2-shelf__panel" aria-label="本棚">
-      <h2 class="v2-shelf__panel-title">
-        本棚<span class="v2-shelf__count" data-v2-bookshelf="count"></span>
-      </h2>
-
-      <div class="v2-shelf__rack" data-v2-bookshelf="rack">
-        <!-- ここへ背表紙が入る（adapter が生成。静的 markup には本のデータを持たない） -->
-        <button type="button" class="v2-shelf__add" data-v2-go="05">ことばを残す</button>
-      </div>
-    </section>
-
-    <!-- Phase 3 Step 2：「最近開いた本」「下書き」「すべて見る」は現行ロジックに
-         対応概念が無いため削除した。保存に関する注記だけを残す。 -->
-    <p class="v2-shelf__note">
-      <span class="v2-shelf__note-mark v2-placeholder" aria-hidden="true"></span>本文はこの端末に保存されます。本文は公開されません。
-    </p>
-
-    <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
-    <div class="v2-shelf__navbar">
-      <nav class="v2-navbar v2-shelf__nav" aria-label="ナビゲーション">
-        <button type="button" class="v2-navbar__item" data-v2-nav="shelves">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">棚を見る</span>
-        </button>
-        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">書く</span>
-        </button>
-        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="bookshelf" aria-current="page">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">本棚</span>
-        </button>
-      </nav>
+    <div class="v2b-06__toolbar">
+      <p class="v2b-06__count"><span data-v2-bookshelf="count"></span>の本</p>
+      <button type="button" class="v2b-06__new" data-v2-go="05">新しく書く<span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span></button>
     </div>
 
-  </div>
-</div>
-</div>
-<div class="v2-page v2-page--reader" data-v2-screen="07" data-v2-subview-of="bookshelf-reader">
-<div class="v2-stage v2-reader">
-
-  <div class="v2-scene" aria-hidden="true">
-    <div class="v2-reader__wall"></div>
-    <div class="v2-reader__scape"></div>
-    <div class="v2-reader__readinglight"></div>
-    <div class="v2-reader__vignette"></div>
+    <div class="v2b-06__grid" data-v2-bookshelf="rack">
+      <button type="button" class="v2-shelf__add" data-v2-go="05">
+        <span><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span>　新しく書く</span>
+        <span class="v2-shelf__add-note">残ったことを、一冊にしてみる</span>
+      </button>
+    </div>
   </div>
 
-  <div class="v2-content">
-
-    <!-- 07 → 06 は固定（browser history に依存しない）。
-         library が 0 冊なら bookshelf-adapter の既存判定に従って 08 へ戻る。 -->
-    <button type="button" class="v2-reader__back" data-v2-reader-back>＜　戻る</button>
-
-      <!-- Phase 3 Step 3D：現時点で実機能が存在しない操作
-           （文字サイズ／明るさ／メニュー／目次／編集する／ページ送り）を画面から外した。
-           disabled のまま残さず、「近日対応」等も出さない。新機能も作らない。
-           残る操作は「戻る」と下部ナビだけ。しおりリボン・小口の罫は非interactive な装飾。 -->
-
-
-    <!-- 左カラム：本の情報・小さな操作領域 -->
-    <div class="v2-reader__side">
-      <!-- 書影：既存 entry.image（保存済みの data: URI）があるときだけ写真を入れる。
-           外部URLは新規 network を発生させうるため描かない。 -->
-      <span class="v2-reader__cover v2-placeholder" data-v2-reader="cover"></span>
-      <!-- 棚名（既存 CATEGORIES の label）。未収納・不明IDのときは空のまま -->
-      <span class="v2-reader__slot v2-placeholder" data-v2-reader="shelf"></span>
-      <!-- sealed の注記。既存 openBook と同じく「日付の隣の注記」であり、閲覧制御ではない -->
-      <span class="v2-reader__slot v2-reader__slot--sub v2-placeholder" data-v2-reader="sealed"></span>
-
-      <!-- Phase 2：未承認の「共有（URLをコピー）」と、しおり／メモ・線引き等の
-           編集機能を削除した。本文を外へ出す導線は置かない。
-           Phase 3 Step 3D：実機能の無い「目次」も外した。 -->
-      <div class="v2-reader__rule" aria-hidden="true"></div>
-
-      <div class="v2-reader__menu">
-        <div class="v2-reader__meta-item">
-          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-reader__meta-label">本にした日</span>
-          <span class="v2-reader__meta-slot v2-placeholder" data-v2-reader="date"></span>
-        </div>
-        <div class="v2-reader__meta-item">
-          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-reader__meta-label">文字数</span>
-          <span class="v2-reader__meta-slot v2-placeholder" data-v2-reader="chars"></span>
-        </div>
-        <div class="v2-reader__meta-item">
-          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-reader__meta-label">保存先</span>
-          <span class="v2-reader__meta-slot v2-placeholder" data-v2-reader="store"></span>
-        </div>
-      </div>
-
-      <div class="v2-reader__assurance">
-        <span class="v2-reader__assurance-mark v2-placeholder" aria-hidden="true"></span>
-        <p class="v2-reader__assurance-text">本文はこの端末に保存されます。<br>本文は公開されません。</p>
-      </div>
+<nav class="v2b-nav" aria-label="主要な移動">
+  <button type="button" class="v2b-nav__item" data-v2-nav="shelves"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span>感情棚</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span>書く</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span>本棚</span></button>
+</nav>
+</div>
+<div class="v2-page v2b v2b-07" data-v2-screen="07" data-v2-subview-of="bookshelf-reader" data-screen="07">
+  <div class="v2b-inner">
+    <div class="v2b-07__bar">
+      <button type="button" class="v2b-back" data-v2-reader-back>← 本棚へ戻る</button>
     </div>
 
-    <!-- 右カラム：大きな本文・読む面（この画面の主役） -->
-    <section class="v2-reader__page" aria-label="読む面">
-      <span class="v2-reader__ribbon" aria-hidden="true"></span>
-
-      <!-- 現行データに章の概念は無いため、章番号は置かず、題名だけを読む面の見出しにする -->
-      <div class="v2-reader__chapter">
-        <h1 class="v2-reader__chapter-title v2-placeholder" data-v2-reader="title"></h1>
-        <span class="v2-reader__chapter-rule" aria-hidden="true"></span>
+    <article class="v2b-07__book">
+      <h1 class="v2b-07__title" data-v2-reader="title"></h1>
+      <hr class="v2b-rule">
+      <div class="v2b-07__meta">
+        <p class="v2b-07__date"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg></span><span data-v2-reader="date"></span>　に本にしました</p>
+        <p class="v2b-07__chip" data-v2-reader="shelf"></p>
+        <p class="v2b-07__sealed" data-v2-reader="sealed"></p>
       </div>
-
-      <!-- 読む面の中身。長文はこの中だけで縦スクロールする（横スクロールは作らない） -->
-      <div class="v2-reader__scroll">
-        <!-- 本文。利用者の本文をそのまま静かに置く。カード群にしない。
-             既存 openBook と同じく sealed でも隠さない（sealed は閲覧制御ではない）。 -->
-        <p class="v2-reader__body v2-placeholder" data-v2-reader="body"></p>
-
-        <!-- 覚え書き。既存 openBook が「あれば表示」する仕様のため踏襲する -->
-        <div class="v2-reader__note" data-v2-reader="note-box" hidden>
-          <p class="v2-reader__note-label">覚え書き</p>
-          <p class="v2-reader__note-text" data-v2-reader="note"></p>
-        </div>
+      <figure class="v2b-07__photo v2-placeholder" data-v2-reader="cover"></figure>
+      <div class="v2b-07__body" data-v2-reader="body"></div>
+      <div class="v2b-07__notebox" data-v2-reader="note-box" hidden>
+        <p class="v2b-07__notelabel">覚え書き</p>
+        <p class="v2b-07__notetext" data-v2-reader="note"></p>
       </div>
+    </article>
 
-
-      <div class="v2-reader__foot" aria-hidden="true">
-        <span class="v2-reader__foot-rule"></span>
-      </div>
-    </section>
-
-    <!-- Phase 2：未承認の操作バー（しおりを追加／メモを書く／線を引く／このページを共有）は
-         画面から削除した。読む面の下は余白のまま置く -->
-
-    <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
-    <div class="v2-reader__navbar">
-      <nav class="v2-navbar v2-reader__nav" aria-label="ナビゲーション">
-        <button type="button" class="v2-navbar__item" data-v2-nav="shelves">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">棚を見る</span>
-        </button>
-        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">書く</span>
-        </button>
-        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="bookshelf" aria-current="page">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">本棚</span>
-        </button>
-      </nav>
+    <div class="v2b-07__secondary">
+      <button type="button" class="v2b-07__secbtn" data-v2-reader-edit><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span>編集</button>
+      <span class="sep" aria-hidden="true"></span>
+      <button type="button" class="v2b-07__secbtn" data-v2-reader-delete><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13"/><path d="M10 11v6M14 11v6"/></svg></span>この一冊を削除</button>
     </div>
-
   </div>
 </div>
-</div>
-<div class="v2-page v2-page--empty" data-v2-screen="08" data-v2-subview-of="bookshelf-empty">
-<div class="v2-stage v2-empty">
-
-  <div class="v2-scene" aria-hidden="true">
-    <div class="v2-empty__wall"></div>
-    <div class="v2-empty__scape"></div>
-    <div class="v2-empty__ambient"></div>
-    <div class="v2-empty__vignette"></div>
-  </div>
-
-  <div class="v2-content">
-
-    <button type="button" class="v2-empty__back" data-v2-go="02">＜　戻る</button>
-
-    <!-- Phase 3 Step 2：対応する機能が存在しない丸メニューも削除した -->
-
-    <p class="v2-empty__badge v2-placeholder" aria-hidden="true"></p>
-    <h1 class="v2-empty__title">自分の本棚</h1>
-    <p class="v2-empty__lead">ここには、残すと決めた一冊が並びます。<br>あとから、好きなときに取り出せます。</p>
-
-    <!-- Phase 3 Step 2：現行データに「完成した本／下書き／アーカイブ」の区分は存在しないため
-         状態タブは削除した。 -->
-
-    <!-- 空状態カード：06 の「本が並ぶ状態」との差が一目で分かる構成 -->
-    <section class="v2-empty__card" aria-label="まだ本がない状態">
-      <span class="v2-empty__figure v2-placeholder" aria-hidden="true"></span>
-
-      <h2 class="v2-empty__headline">まだ、本は並んでいません。</h2>
-      <p class="v2-empty__subline">棚を眺めることからでも、ことばを残すことからでも始められます。</p>
-
-      <hr class="v2-empty__steps-rule" aria-hidden="true">
-
-      <div class="v2-empty__steps">
-        <div class="v2-empty__step">
-          <span class="v2-empty__step-mark v2-placeholder" aria-hidden="true"></span>
-          <h3 class="v2-empty__step-title">出会う</h3>
-          <p class="v2-empty__step-text">感情の棚から、<br>ことばや作品を覗く</p>
-        </div>
-        <div class="v2-empty__step">
-          <span class="v2-empty__step-mark v2-placeholder" aria-hidden="true"></span>
-          <h3 class="v2-empty__step-title">残す</h3>
-          <p class="v2-empty__step-text">自分の中に残ったことを、<br>ことばにする</p>
-        </div>
-        <div class="v2-empty__step">
-          <span class="v2-empty__step-mark v2-placeholder" aria-hidden="true"></span>
-          <h3 class="v2-empty__step-title">再会する</h3>
-          <p class="v2-empty__step-text">一冊にしたことばは、<br>自分の本棚へ</p>
-        </div>
+<div class="v2-page v2b v2b-08" data-v2-screen="08" data-v2-subview-of="bookshelf-empty" data-screen="08">
+  <div class="v2b-inner">
+    <div class="v2b-topbar"><span class="v2b-brand"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span>みんなの感情書店</span><button type="button" class="v2b-menubtn" data-v2-open-menu aria-label="店内メニューを開く"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span></button></div>
+    <div class="v2b-08__wrap">
+      <span class="v2b-08__art" aria-hidden="true"><svg viewBox="0 0 320 120"><path d="M16 96h288M24 96v10M296 96v10"/><path d="M40 48h14v48H40zM58 44h13v52H58zM75 52h14v44H75zM93 46h12v50H93zM109 56l12-4 12 44-12 4z"/><path d="M156 96v-14c0-4 4-7 10-7s10 3 10 7v14"/><path d="M166 74c0-7 4-11 9-13-1 5-4 10-9 13z"/></svg></span>
+      <p class="v2b-08__sign">あなたの言葉が<br>一冊の本になります</p>
+      <h2 class="v2b-08__headline">一言から始められます</h2>
+      <span class="v2b-sprig" aria-hidden="true"><span class="v2b-icon"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span></span>
+      <p class="v2b-08__copy">まだ本がありません。<br>心に残ったことを、自分の言葉で書いてみませんか。<br>短い一言でも、大切な一冊になります。</p>
+      <button type="button" class="v2b-btn v2b-btn--primary v2b-08__cta" data-v2-go="05"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span>残ったことを書く</button>
+      <p class="v2b-08__tail">書きたい気持ちになったときで大丈夫です。<br>この書店は、あなたのペースを大切にします。</p>
+      <div class="v2b-08__util">
+        <button type="button" data-v2-open-menu><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 4v2.5M12 17.5V20M4 12h2.5M17.5 12H20M6.3 6.3l1.8 1.8M15.9 15.9l1.8 1.8M17.7 6.3l-1.8 1.8M8.1 15.9l-1.8 1.8"/></svg></span>設定・データ</button>
+        <button type="button" data-v2-open-menu><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></svg></span>このお店について</button>
+        <button type="button" data-v2-open-menu><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M4 8l8 6 8-6"/></svg></span>お問い合わせ</button>
       </div>
-
-      <div class="v2-empty__ctas">
-        <button type="button" class="v2-empty__cta" data-v2-go="03">
-          <span class="v2-empty__cta-mark v2-placeholder" aria-hidden="true"></span>感情の棚を見る
-        </button>
-        <button type="button" class="v2-empty__cta" data-v2-go="05">
-          <span class="v2-empty__cta-mark v2-placeholder" aria-hidden="true"></span>ことばを残す
-        </button>
-      </div>
-    </section>
-
-    <!-- 保存に関する情報：対象を本文に限定した正確な表現にする -->
-    <section class="v2-empty__assurance" aria-label="保存について">
-      <span class="v2-empty__assurance-mark v2-placeholder" aria-hidden="true"></span>
-      <div class="v2-empty__assurance-body">
-        <p class="v2-empty__assurance-title">本文はこの端末に保存されます</p>
-        <p class="v2-empty__assurance-text">本文は公開されません。</p>
-      </div>
-      <span class="v2-empty__assurance-figure v2-placeholder" aria-hidden="true"></span>
-    </section>
-
-    <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
-    <div class="v2-empty__navbar">
-      <nav class="v2-navbar v2-empty__nav" aria-label="ナビゲーション">
-        <button type="button" class="v2-navbar__item" data-v2-nav="shelves">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">棚を見る</span>
-        </button>
-        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">書く</span>
-        </button>
-        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="bookshelf" aria-current="page">
-          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
-          <span class="v2-navbar__label">本棚</span>
-        </button>
-      </nav>
     </div>
-
   </div>
-</div>
+
+<nav class="v2b-nav" aria-label="主要な移動">
+  <button type="button" class="v2b-nav__item" data-v2-nav="shelves"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span>感情棚</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span>書く</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span>本棚</span></button>
+</nav>
 </div>
 </section>
 
@@ -1799,6 +1241,9 @@ body.night .about-data-content{
   </div>
 </div>
 
+<!-- v2-mount.js は __V2_MOUNTED__ フラグを parse 時に立てるため、
+     main.js の parse 時初期化より先に読み込む（boot 自体は DOMContentLoaded 後）。 -->
+<script src="v2-mount.js"></script>
 <script src="data.js"></script>
 <script src="main.js"></script>
 <!-- ===== Visual Refit V2 Adapters ===== -->
@@ -1806,6 +1251,5 @@ body.night .about-data-content{
 <script src="visual-refit-v2-prototype/adapter/bookshelf-adapter.js"></script>
 <script src="visual-refit-v2-prototype/adapter/emotion-shelf-adapter.js"></script>
 <script src="visual-refit-v2-prototype/adapter/form-adapter.js"></script>
-<script src="v2-mount.js"></script>
 </body>
 </html>

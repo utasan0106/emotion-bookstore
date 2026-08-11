@@ -1,0 +1,121 @@
+/*
+ * みんなの感情書店 V2 Beta0 — MASTER_TOKENS.css
+ * Handoff visual baseline derived from the approved 01–08 comps.
+ * This is the visual SSOT INSIDE THIS HANDOFF PACKAGE.
+ *
+ * IMPORTANT:
+ * - If the target repository already contains a newer, explicitly approved
+ *   MASTER_TOKENS.css, STOP and diff it. Do not overwrite blindly.
+ * - DAY/NIGHT must share DOM / IA / behavior / data / feature availability.
+ * - Screen files may override only screen-local variables.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  --font-display: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif JP", serif;
+  --font-body: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif JP", serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", Meiryo, sans-serif;
+
+  --fs-xs: clamp(.75rem, .72rem + .12vw, .8125rem);
+  --fs-sm: clamp(.875rem, .83rem + .16vw, .9375rem);
+  --fs-md: clamp(1rem, .96rem + .18vw, 1.0625rem);
+  --fs-lg: clamp(1.25rem, 1.15rem + .42vw, 1.5rem);
+  --fs-xl: clamp(1.75rem, 1.5rem + .9vw, 2.25rem);
+  --fs-display: clamp(2.15rem, 1.75rem + 1.5vw, 3.25rem);
+
+  --lh-tight: 1.35;
+  --lh-body: 1.9;
+  --lh-reader: 2.05;
+
+  --sp-1: .25rem;
+  --sp-2: .5rem;
+  --sp-3: .75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --sp-8: 4rem;
+
+  --radius-sm: .5rem;
+  --radius-md: .875rem;
+  --radius-lg: 1.375rem;
+  --radius-pill: 999px;
+  --touch-min: 44px;
+  --content-max: 760px;
+  --reader-max: 680px;
+
+  --day-bg: #f6f0e6;
+  --day-surface: #fffaf2;
+  --day-surface-soft: #eee4d5;
+  --day-ink: #34291f;
+  --day-ink-muted: #746452;
+  --day-line: #d5c5aa;
+  --day-accent: #687744;
+  --day-accent-strong: #536438;
+  --day-gold: #b88536;
+  --day-wood: #a97949;
+  --day-shadow: 0 10px 28px rgba(77, 55, 29, .10);
+
+  --night-bg: #071625;
+  --night-surface: #0d1e2b;
+  --night-surface-soft: #132838;
+  --night-ink: #f0d8b1;
+  --night-ink-muted: #c6aa82;
+  --night-line: rgba(202, 158, 96, .35);
+  --night-accent: #d0a05a;
+  --night-accent-strong: #b77c3e;
+  --night-bronze: #a9733d;
+  --night-wood: #4d331f;
+  --night-shadow: 0 14px 34px rgba(0, 0, 0, .30);
+
+  --focus-ring: 0 0 0 3px rgba(114, 135, 75, .34);
+}
+
+[data-theme="day"] {
+  --bg: var(--day-bg);
+  --surface: var(--day-surface);
+  --surface-soft: var(--day-surface-soft);
+  --ink: var(--day-ink);
+  --ink-muted: var(--day-ink-muted);
+  --line: var(--day-line);
+  --accent: var(--day-accent);
+  --accent-strong: var(--day-accent-strong);
+  --warm-metal: var(--day-gold);
+  --wood: var(--day-wood);
+  --elevation: var(--day-shadow);
+}
+
+[data-theme="night"] {
+  --bg: var(--night-bg);
+  --surface: var(--night-surface);
+  --surface-soft: var(--night-surface-soft);
+  --ink: var(--night-ink);
+  --ink-muted: var(--night-ink-muted);
+  --line: var(--night-line);
+  --accent: var(--night-accent);
+  --accent-strong: var(--night-accent-strong);
+  --warm-metal: var(--night-bronze);
+  --wood: var(--night-wood);
+  --elevation: var(--night-shadow);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-md);
+  line-height: var(--lh-body);
+}
+button, a, input, textarea, select { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}

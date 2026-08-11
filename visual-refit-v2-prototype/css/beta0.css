@@ -1,0 +1,862 @@
+/* =============================================================================
+ * みんなの感情書店 V2 Beta0 — 画面スタイル
+ * -----------------------------------------------------------------------------
+ * 正本: EmotionBookstore_V2_MASTER_HANDOFF_v0_9
+ *   - Design token は master-tokens.css（SSOT）のみ。ここでは再定義しない。
+ *   - DAY / NIGHT は同一 DOM。[data-theme] の token 切替だけで変える。
+ *   - Reference PNG は完成見本。UI は HTML / CSS / SVG で再構築する
+ *     （スクリーンショットの切り抜きを asset にしない）。
+ *   - 水彩の情景アートは rights 確認済み asset が無いため、CSS の静かな
+ *     置き換えに留める（ASSET REQUIRED として報告済み）。
+ * -------------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------------
+ * 各 Screen の SCREEN_OVERRIDES.css（package 逐語。値の変更なし）
+ * ------------------------------------------------------------------------ */
+:where([data-screen="01"]) { --screen-content-max: 680px; }
+:where([data-screen="02"]) { --lobby-card-gap: var(--sp-4); }
+:where([data-screen="03"]) { --shelf-grid-min: 142px; --shelf-gap: var(--sp-4); }
+:where([data-screen="04"]) { --section-gap: var(--sp-7); --work-card-min: 150px; }
+:where([data-screen="05"]) { --editor-max: 720px; --editor-min-block: 16rem; }
+:where([data-screen="06"]) { --book-grid-min: 150px; --book-gap: var(--sp-4); }
+:where([data-screen="07"]) { --reader-width: var(--reader-max); --reader-line-height: var(--lh-reader); }
+:where([data-screen="08"]) { --empty-max: 640px; --empty-art-max: 520px; }
+
+/* ---------------------------------------------------------------------------
+ * 共通シェル
+ * ------------------------------------------------------------------------ */
+.v2b {
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--ink) !important;
+  font-family: var(--font-body);
+  line-height: var(--lh-body);
+}
+
+/* adapter が状態表現に使う既存クラスとの橋渡し。
+   v2-placeholder は「素材未確定の枠」だったが、Beta0 では枠を見せない。
+   （07 の写真 figure は img が無い間 v2-placeholder が付く＝非表示になる） */
+.v2b .v2-placeholder { display: none; }
+.v2b .is-v2-empty { display: none; }
+
+.v2b-inner {
+  max-width: var(--screen-content-max, var(--content-max));
+  margin-inline: auto;
+  padding-inline: var(--sp-5);
+}
+
+.v2b h1, .v2b h2, .v2b h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: var(--lh-tight);
+  margin: 0;
+}
+.v2b p { margin: 0; }
+/* :where() で特異度を (0,1,0) に抑え、後続の variant クラスが必ず勝てるようにする */
+.v2b :where(button) { color: inherit !important; background: none; border: 0; padding: 0; cursor: pointer; text-align: inherit; }
+
+/* -----------------------------------------------------------------------
+ * legacy 遮断
+ * V2 画面は既存ページ（.entrance.hero / #counter 等）の内側に mount される。
+ * 祖先スコープの legacy 見出し装飾（.entrance h1 の色・影・太字など）が
+ * V2 の見出しへ届くため、mount 時のみ高特異度で無効化する。
+ * ---------------------------------------------------------------------- */
+html[data-v2-mounted="true"] .v2-page :is(h1, h2, h3) {
+  color: inherit !important;
+  text-shadow: none;
+  font-weight: 500;
+  margin: 0;
+}
+
+.v2b-rule {
+  width: 3.5rem;
+  height: 1px;
+  border: 0;
+  margin: var(--sp-4) auto;
+  background: var(--line);
+}
+
+/* 小さな葉の区切り（SVG line art） */
+.v2b-sprig { display: inline-flex; align-items: center; gap: var(--sp-2); color: var(--accent) !important; }
+.v2b-sprig::before, .v2b-sprig::after { content: ""; width: 2.25rem; height: 1px; background: var(--line); }
+
+.v2b-icon { display: inline-block; width: 1.25em; height: 1.25em; vertical-align: -0.22em; }
+.v2b-icon svg { display: block; width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------------------------------------------------------------------------
+ * ボタン
+ * ------------------------------------------------------------------------ */
+.v2b-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: var(--touch-min);
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+}
+
+.v2b-btn--primary {
+  width: 100%;
+  max-width: 26rem;
+  padding: var(--sp-4) var(--sp-6);
+  font-size: var(--fs-lg);
+  color: var(--day-surface) !important;
+  background: var(--accent-strong);
+  box-shadow: var(--elevation);
+}
+[data-theme="night"] .v2b-btn--primary { color: var(--night-bg) !important; background: var(--accent); }
+.v2b-btn--primary:hover { filter: brightness(1.06); }
+
+.v2b-btn--quiet {
+  padding: var(--sp-3) var(--sp-5);
+  font-size: var(--fs-md);
+  color: var(--accent-strong) !important;
+  box-shadow: inset 0 0 0 1px var(--line);
+  background: var(--surface);
+  border-radius: var(--radius-pill);
+}
+[data-theme="night"] .v2b-btn--quiet { color: var(--accent) !important; }
+
+.v2b-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--touch-min);
+  font-size: var(--fs-sm);
+  letter-spacing: 0.05em;
+  color: var(--ink-muted) !important;
+}
+.v2b-back:hover { color: var(--ink) !important; }
+
+/* ---------------------------------------------------------------------------
+ * Global Navigation（03 / 04 / 06 / 08 のみ。05 / 07 は抑制）
+ * ------------------------------------------------------------------------ */
+.v2b-nav {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-6);
+  padding: var(--sp-2) var(--sp-3) max(var(--sp-2), env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border-top: 1px solid var(--line);
+  backdrop-filter: blur(6px);
+}
+
+.v2b-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 0 1 7.5rem;
+  min-height: var(--touch-min);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  color: var(--ink-muted) !important;
+}
+.v2b-nav__item .v2b-icon { width: 1.4em; height: 1.4em; }
+.v2b-nav__item[aria-current="page"] {
+  color: var(--accent-strong) !important;
+  border-bottom: 2px solid var(--accent-strong);
+  border-radius: 0;
+}
+[data-theme="night"] .v2b-nav__item[aria-current="page"] { color: var(--accent) !important; border-bottom-color: var(--accent); }
+
+/* ---------------------------------------------------------------------------
+ * ヘッダ（ブランド行）
+ * ------------------------------------------------------------------------ */
+.v2b-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  letter-spacing: 0.14em;
+  color: var(--ink) !important;
+}
+.v2b-brand .v2b-icon { color: var(--accent-strong) !important; }
+[data-theme="night"] .v2b-brand .v2b-icon { color: var(--accent) !important; }
+
+.v2b-menubtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border-radius: var(--radius-sm);
+  color: var(--ink-muted) !important;
+}
+.v2b-menubtn:hover { color: var(--ink) !important; }
+
+.v2b-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding-top: var(--sp-4);
+}
+
+/* ===========================================================================
+ * 01 — Entrance / 表紙
+ * ======================================================================== */
+.v2b-01 {
+  display: grid;
+  place-items: center;
+  padding: var(--sp-7) var(--sp-5);
+  background:
+    radial-gradient(120% 60% at 85% 8%, color-mix(in srgb, var(--warm-metal) 14%, transparent), transparent 60%),
+    linear-gradient(to bottom, var(--bg), color-mix(in srgb, var(--bg) 86%, var(--wood) 14%));
+}
+
+.v2b-01__card {
+  width: 100%;
+  max-width: var(--screen-content-max, 680px);
+  text-align: center;
+}
+
+.v2b-01__logo { display: block; width: 5.5rem; height: 5.5rem; margin: 0 auto var(--sp-5); color: var(--accent-strong) !important; }
+[data-theme="night"] .v2b-01__logo { color: var(--accent) !important; }
+.v2b-01__logo svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+
+.v2b .v2b-01__name { font-size: var(--fs-display); letter-spacing: 0.22em; }
+.v2b .v2b-01__name span { display: block; }
+.v2b .v2b-01__name .is-sub { font-size: var(--fs-xl); letter-spacing: 0.3em; margin-bottom: var(--sp-2); }
+
+.v2b .v2b-01__copy {
+  margin-top: var(--sp-5);
+  font-size: var(--fs-md);
+  line-height: var(--lh-body);
+  letter-spacing: 0.06em;
+}
+
+/* 知る → 出会う → 残す → 巡る */
+.v2b-01__system {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  list-style: none;
+  margin: var(--sp-6) 0 0;
+  padding: 0;
+}
+.v2b-01__system li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 3.6rem;
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  letter-spacing: 0.1em;
+  color: var(--ink-muted) !important;
+}
+.v2b-01__system li .v2b-icon { width: 1.9em; height: 1.9em; color: var(--warm-metal) !important; }
+.v2b-01__system li + li::before {
+  content: "›";
+  position: absolute;
+  transform: translate(-1.55rem, 0.35rem);
+  color: var(--line) !important;
+}
+.v2b-01__system li { position: relative; }
+
+.v2b-01__shelfart { margin: var(--sp-6) auto 0; width: min(100%, 21rem); color: var(--wood) !important; opacity: 0.9; }
+.v2b-01__shelfart svg { display: block; width: 100%; height: auto;
+  fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+.v2b-01__cta { margin-top: var(--sp-6); }
+
+/* ===========================================================================
+ * 02 — Lobby / 最初の広間
+ * ======================================================================== */
+.v2b-02 { padding-bottom: var(--sp-7); }
+.v2b-02 .v2b-topbar { justify-content: center; }
+
+.v2b-02__head { text-align: center; margin-top: var(--sp-6); }
+.v2b .v2b-02__title { font-size: var(--fs-xl); letter-spacing: 0.12em; }
+.v2b-02__lead { margin-top: var(--sp-4); color: var(--ink-muted) !important; font-size: var(--fs-sm); }
+
+.v2b-02__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lobby-card-gap, var(--sp-4));
+  margin-top: var(--sp-6);
+}
+
+.v2b-card {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  width: 100%;
+  padding: var(--sp-4);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--elevation), inset 0 0 0 1px var(--line);
+}
+.v2b-card:hover { box-shadow: var(--elevation), inset 0 0 0 1px var(--accent); }
+
+.v2b-02__art {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 5.75rem;
+  height: 4.75rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  color: var(--wood) !important;
+}
+.v2b-02__art svg { width: 3.4rem; height: 3rem; stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+
+.v2b-02__body { flex: 1; min-width: 0; }
+.v2b-02__cardtitle { display: block; font-family: var(--font-display); font-size: var(--fs-lg); letter-spacing: 0.06em; }
+.v2b-02__cardtitle::after { content: ""; display: block; width: 2.5rem; height: 1px; margin: var(--sp-2) 0; background: var(--line); }
+.v2b-02__carddesc { display: block; font-size: var(--fs-sm); color: var(--ink-muted) !important; }
+
+.v2b-chevron { flex: none; color: var(--ink-muted) !important; font-size: var(--fs-lg); }
+
+/* ===========================================================================
+ * 03 — Emotion Shelves / 感情の棚
+ * ======================================================================== */
+.v2b-03 { padding-bottom: 0; }
+.v2b-03__head { text-align: center; margin-top: var(--sp-6); }
+.v2b .v2b-03__title { font-size: var(--fs-xl); letter-spacing: 0.2em; }
+.v2b-03__lead { margin-top: var(--sp-3); font-size: var(--fs-sm); color: var(--ink-muted) !important; }
+.v2b-03__deco { display: flex; justify-content: center; margin-top: var(--sp-4); }
+
+.v2b-03__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--shelf-grid-min, 142px), 1fr));
+  gap: var(--shelf-gap, var(--sp-4));
+  margin-top: var(--sp-5);
+}
+
+/* 本の表紙のような入口カード。左に背の色、中央に紋 */
+.v2b-shelfcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-5) var(--sp-3) var(--sp-4);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--elevation), inset 0 0 0 1px var(--line);
+  overflow: hidden;
+}
+.v2b-shelfcard::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.55rem;
+  background: var(--spine, var(--line));
+}
+.v2b-shelfcard:hover { box-shadow: var(--elevation), inset 0 0 0 1px var(--accent); }
+
+.v2b-shelfcard__glyph {
+  display: grid;
+  place-items: center;
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--spine, var(--line)) 55%, transparent);
+  color: color-mix(in srgb, var(--spine, var(--ink)) 72%, var(--ink) 28%) !important;
+}
+.v2b-shelfcard__glyph svg { width: 2.2rem; height: 2.2rem; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+.v2b-shelfcard__name { font-family: var(--font-display); font-size: var(--fs-md); letter-spacing: 0.1em; }
+.v2b-shelfcard__note { font-size: var(--fs-xs); color: var(--ink-muted) !important; text-align: center; }
+
+/* 棚ごとの背の色（DAY / NIGHT で少しだけ深さを変える） */
+.v2b-shelfcard--hazumu     { --spine: #d9b25a; }
+.v2b-shelfcard--atatamaru  { --spine: #cf8a7a; }
+.v2b-shelfcard--hikareru   { --spine: #7ba9a0; }
+.v2b-shelfcard--shizumu    { --spine: #7d97b5; }
+.v2b-shelfcard--zawatsuku  { --spine: #a08cb8; }
+.v2b-shelfcard--butsukaru  { --spine: #bf7a5f; }
+.v2b-shelfcard--miwohiku   { --spine: #8fa383; }
+.v2b-shelfcard--namae      { --spine: #9aa0a6; }
+[data-theme="night"] .v2b-shelfcard { background: var(--surface); }
+[data-theme="night"] .v2b-shelfcard__glyph { color: color-mix(in srgb, var(--spine, var(--ink)) 60%, var(--ink) 40%) !important; }
+
+.v2b-03__foot {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+  padding: var(--sp-4);
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  color: var(--ink-muted) !important;
+  font-size: var(--fs-sm);
+}
+.v2b-03__foot .v2b-icon { flex: none; color: var(--accent-strong) !important; }
+[data-theme="night"] .v2b-03__foot .v2b-icon { color: var(--accent) !important; }
+
+/* ===========================================================================
+ * 04 — Emotion Detail / 一つの感情を歩く
+ * ======================================================================== */
+.v2b-04 { padding-bottom: 0; }
+.v2b-04 .v2b-topbar { justify-content: flex-start; }
+
+.v2b-04__head { text-align: center; margin-top: var(--sp-5); position: relative; }
+.v2b-04__halo {
+  position: absolute;
+  inset: -2.5rem 0 auto;
+  margin: 0 auto;
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--warm-metal) 22%, transparent), transparent);
+  pointer-events: none;
+}
+.v2b .v2b-04__title { position: relative; font-size: var(--fs-xl); letter-spacing: 0.18em; }
+.v2b-04__lead { position: relative; margin-top: var(--sp-3); color: var(--ink-muted) !important; font-size: var(--fs-sm); }
+
+.v2b-04__sec { margin-top: var(--section-gap, var(--sp-7)); }
+.v2b-04__num { font-family: var(--font-ui); font-size: var(--fs-xs); letter-spacing: 0.3em; color: var(--warm-metal) !important; }
+.v2b-04__h {
+  font-size: var(--fs-lg);
+  letter-spacing: 0.24em;
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--line);
+}
+.v2b-04__intro { margin-top: var(--sp-4); font-size: var(--fs-sm); color: var(--ink-muted) !important; }
+
+/* ことば：感情語カード（adapter 生成の .v2-word-card を新装丁で受ける） */
+.v2b-04 .v2-word-card {
+  display: block;
+  width: 100%;
+  padding: var(--sp-4) 0;
+  border-bottom: 1px dashed var(--line);
+  background: none;
+  border-radius: 0;
+}
+.v2b-04 .v2-word-card:last-child { border-bottom: 0; }
+.v2b-04 .v2-word-card__name {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  letter-spacing: 0.12em;
+  padding: var(--sp-1) var(--sp-4);
+  border-radius: var(--radius-pill);
+  box-shadow: inset 0 0 0 1px var(--line);
+  background: var(--surface);
+}
+.v2b-04 .v2-word-card__desc {
+  display: block;
+  margin-top: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--ink-muted) !important;
+}
+.v2b-04 .v2-word-card--current .v2-word-card__name { box-shadow: inset 0 0 0 1px var(--accent); }
+
+/* 作品：在庫が無い間の静かな空状態 */
+.v2b-04 .v2-detail__empty,
+.v2b-04__works-empty {
+  margin-top: var(--sp-4);
+  padding: var(--sp-5);
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  text-align: center;
+}
+.v2b-04 .v2-detail__empty-title, .v2b-04__works-empty-title { font-family: var(--font-display); letter-spacing: 0.06em; }
+.v2b-04 .v2-detail__empty-note, .v2b-04__works-empty-note { margin-top: var(--sp-2); font-size: var(--fs-sm); color: var(--ink-muted) !important; }
+
+/* 自分の本（adapter 生成の .v2-detail__books / .v2-book-card を受ける） */
+.v2b-04 .v2-detail__books {
+  list-style: none;
+  margin: var(--sp-4) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--work-card-min, 150px), 1fr));
+  gap: var(--sp-4);
+}
+.v2b-04 .v2-book-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  width: 100%;
+  height: 100%;
+  padding: var(--sp-4);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--elevation), inset 0 0 0 1px var(--line);
+}
+.v2b-04 .v2-book-card:hover { box-shadow: var(--elevation), inset 0 0 0 1px var(--accent); }
+.v2b-04 .v2-book-card__title { font-family: var(--font-display); font-size: var(--fs-md); letter-spacing: 0.04em; overflow-wrap: anywhere; }
+.v2b-04 .v2-book-card__meta { font-size: var(--fs-xs); color: var(--ink-muted) !important; }
+.v2b-04 .v2-detail__more {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  margin-top: var(--sp-4);
+  color: var(--accent-strong) !important;
+  font-size: var(--fs-sm);
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid currentColor;
+}
+[data-theme="night"] .v2b-04 .v2-detail__more { color: var(--accent) !important; }
+
+.v2b-04__write {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  margin-top: var(--sp-6);
+  padding: var(--sp-4);
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px var(--line);
+  background: var(--surface);
+}
+.v2b-04__write-note { font-size: var(--fs-xs); color: var(--ink-muted) !important; }
+
+/* ===========================================================================
+ * 05 — Editor / 編纂室（Global Nav 抑制）
+ * ======================================================================== */
+.v2b-05 { padding-bottom: var(--sp-7); }
+.v2b-05 .v2b-inner { max-width: var(--editor-max, 720px); }
+
+.v2b-05__bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--sp-3);
+  padding-top: var(--sp-4);
+}
+.v2b-05__headmid { text-align: center; }
+.v2b .v2b-05__title { font-size: var(--fs-lg); letter-spacing: 0.3em; }
+.v2b-05__sub { margin-top: var(--sp-1); font-size: var(--fs-xs); color: var(--ink-muted) !important; }
+.v2b-05__tobooks {
+  justify-self: end;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-height: var(--touch-min);
+  font-size: var(--fs-xs);
+  color: var(--ink-muted) !important;
+}
+.v2b-05__tobooks:hover { color: var(--ink) !important; }
+
+/* 机の情景（CSS のみの静かな置き換え。水彩 asset は ASSET REQUIRED） */
+.v2b-05__desk {
+  height: 5.5rem;
+  margin-top: var(--sp-4);
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(65% 120% at 78% 0%, color-mix(in srgb, var(--warm-metal) 30%, transparent), transparent 70%),
+    linear-gradient(to bottom, color-mix(in srgb, var(--surface) 65%, var(--warm-metal) 8%), var(--surface) 55%, var(--wood));
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.v2b-05__autosave {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+  font-size: var(--fs-xs);
+  color: var(--ink-muted) !important;
+}
+
+.v2b-05__field { margin-top: var(--sp-5); }
+.v2b-05__label { display: block; font-family: var(--font-display); font-size: var(--fs-md); letter-spacing: 0.1em; }
+.v2b-05__label .is-optional { font-size: var(--fs-xs); color: var(--ink-muted) !important; letter-spacing: 0.05em; }
+
+.v2b-05__input, .v2b-05__textarea {
+  width: 100%;
+  margin-top: var(--sp-3);
+  padding: var(--sp-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink) !important;
+  font-family: var(--font-body);
+  font-size: var(--fs-md);
+  line-height: var(--lh-body);
+}
+.v2b-05__input::placeholder, .v2b-05__textarea::placeholder { color: color-mix(in srgb, var(--ink-muted) 72%, transparent) !important; }
+.v2b-05__textarea { min-height: var(--editor-min-block, 16rem); resize: vertical; }
+
+.v2b-05__count { margin-top: var(--sp-2); text-align: right; font-family: var(--font-ui); font-size: var(--fs-xs); color: var(--ink-muted) !important; }
+
+.v2b-05__assure {
+  margin-top: var(--sp-4);
+  font-size: var(--fs-xs);
+  color: var(--ink-muted) !important;
+}
+
+.v2b-05__bind { margin: var(--sp-5) auto 0; display: flex; }
+.v2b-05__bindnote { margin-top: var(--sp-3); text-align: center; font-size: var(--fs-xs); color: var(--ink-muted) !important; }
+
+.v2b-05__msg {
+  display: block;
+  margin-top: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius-sm);
+  background: var(--surface-soft);
+  font-size: var(--fs-sm);
+  text-align: center;
+}
+.v2b-05__msg:empty, .v2b-05__msg.is-v2-empty { display: none; }
+
+/* ===========================================================================
+ * 06 — Bookshelf / 自分の本棚
+ * ======================================================================== */
+.v2b-06 { padding-bottom: 0; }
+
+.v2b-06__hero {
+  margin-top: var(--sp-4);
+  padding: var(--sp-6) var(--sp-5);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(90% 130% at 85% 20%, color-mix(in srgb, var(--wood) 26%, transparent), transparent 62%),
+    linear-gradient(to bottom, var(--surface), var(--surface-soft));
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.v2b .v2b-06__title { font-size: var(--fs-xl); letter-spacing: 0.14em; }
+.v2b-06__lead { margin-top: var(--sp-3); color: var(--ink-muted) !important; font-size: var(--fs-sm); }
+
+.v2b-06__toolbar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-top: var(--sp-5);
+}
+.v2b-06__count { font-family: var(--font-display); font-size: var(--fs-lg); letter-spacing: 0.08em; }
+.v2b-06__count .is-v2-empty { display: inline; }
+.v2b-06__new {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--touch-min);
+  color: var(--accent-strong) !important;
+  font-size: var(--fs-sm);
+  letter-spacing: 0.06em;
+}
+[data-theme="night"] .v2b-06__new { color: var(--accent) !important; }
+
+.v2b-06__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--book-grid-min, 150px), 1fr));
+  gap: var(--book-gap, var(--sp-4));
+  margin-top: var(--sp-4);
+}
+
+/* adapter 生成の背表紙 button（.v2-shelf__spine）を「一冊のカード」として受ける */
+.v2b-06 .v2-shelf__spine {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  height: auto !important; /* 旧 --v2-px 由来の inline height を無効化 */
+  padding: var(--sp-3);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--elevation), inset 0 0 0 1px var(--line);
+  text-align: left;
+}
+.v2b-06 .v2-shelf__spine:hover { box-shadow: var(--elevation), inset 0 0 0 1px var(--accent); }
+
+/* 表紙アート未提供のため、静かな無地の表紙面を置く（ASSET REQUIRED） */
+.v2b-06 .v2-shelf__cover {
+  display: block;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-sm);
+  background:
+    linear-gradient(to right, color-mix(in srgb, var(--wood) 30%, transparent), transparent 14%),
+    linear-gradient(160deg, var(--surface-soft), color-mix(in srgb, var(--surface-soft) 70%, var(--wood) 12%));
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.v2b-06 .v2-shelf__spine-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+}
+.v2b-06 .v2-shelf__spine-date { font-family: var(--font-ui); font-size: var(--fs-xs); color: var(--ink-muted) !important; }
+.v2b-06 .v2-shelf__spine-emotion {
+  align-self: flex-start;
+  padding: 2px var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-soft);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: var(--fs-xs);
+  color: var(--ink-muted) !important;
+}
+.v2b-06 .v2-shelf__spine-emotion:empty { display: none; }
+
+/* 「＋ 新しく書く」カード（adapter はこの .v2-shelf__add の前へ本を差し込む） */
+.v2b-06 .v2-shelf__add {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-5);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--line);
+  background: var(--surface);
+  color: var(--ink) !important;
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+}
+.v2b-06 .v2-shelf__add:hover { border-color: var(--accent); }
+.v2b-06 .v2-shelf__add-note { font-size: var(--fs-xs); color: var(--ink-muted) !important; font-family: var(--font-body); }
+
+/* ===========================================================================
+ * 07 — Reader / 一冊を読む場所（Global Nav 抑制）
+ * ======================================================================== */
+.v2b-07 { padding-bottom: var(--sp-7); }
+.v2b-07 .v2b-inner { max-width: var(--reader-width, var(--reader-max)); }
+
+.v2b-07__bar { padding-top: var(--sp-4); }
+
+.v2b-07__book { margin-top: var(--sp-5); text-align: center; }
+.v2b .v2b-07__title { font-size: var(--fs-xl); letter-spacing: 0.1em; overflow-wrap: anywhere; }
+.v2b .v2b-07__title.is-v2-empty { display: none; }
+
+.v2b-07__meta { margin-top: var(--sp-4); display: flex; flex-direction: column; align-items: center; gap: var(--sp-3); }
+.v2b-07__date { display: inline-flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-sm); color: var(--ink-muted) !important; }
+.v2b-07__date:has(.is-v2-empty) { display: none; }
+.v2b-07__chip {
+  display: inline-block;
+  padding: var(--sp-1) var(--sp-4);
+  border-radius: var(--radius-pill);
+  background: var(--surface-soft);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: var(--fs-sm);
+  letter-spacing: 0.1em;
+}
+.v2b-07__sealed { font-size: var(--fs-xs); color: var(--ink-muted) !important; }
+
+.v2b-07__photo { margin: var(--sp-5) 0 0; }
+.v2b-07__photo img { display: block; width: 100%; border-radius: var(--radius-md); box-shadow: var(--elevation); }
+.v2b-07__photo:not(:has(img)) { display: none; }
+
+.v2b-07__body {
+  margin-top: var(--sp-6);
+  text-align: left;
+  font-size: var(--fs-md);
+  line-height: var(--reader-line-height, var(--lh-reader));
+  letter-spacing: 0.03em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.v2b-07__body.is-v2-empty { display: none; }
+
+.v2b-07__notebox { margin-top: var(--sp-6); padding-top: var(--sp-4); border-top: 1px solid var(--line); text-align: left; }
+.v2b-07__notelabel { font-size: var(--fs-xs); letter-spacing: 0.14em; color: var(--ink-muted) !important; }
+.v2b-07__notetext { margin-top: var(--sp-2); font-size: var(--fs-sm); color: var(--ink-muted) !important; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* Secondary：編集 / この一冊を削除 */
+.v2b-07__secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-4);
+  margin-top: var(--sp-7);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line);
+}
+.v2b-07__secondary .sep { width: 1px; height: 1.4rem; background: var(--line); }
+.v2b-07__secbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--touch-min);
+  padding: 0 var(--sp-4);
+  font-size: var(--fs-sm);
+  color: var(--ink-muted) !important;
+  letter-spacing: 0.06em;
+}
+.v2b-07__secbtn:hover { color: var(--ink) !important; }
+
+/* ===========================================================================
+ * 08 — Empty State
+ * ======================================================================== */
+.v2b-08 { padding-bottom: 0; }
+.v2b-08__wrap { max-width: var(--empty-max, 640px); margin-inline: auto; text-align: center; }
+
+/* 棚と本の line art（SVG）。写真素材ではない */
+.v2b-08__art { margin: var(--sp-6) auto 0; width: min(100%, var(--empty-art-max, 520px)); color: var(--wood) !important; }
+.v2b-08__art svg { display: block; width: 100%; height: auto;
+  fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.v2b-08__sign {
+  margin: calc(-1 * var(--sp-6)) auto 0;
+  width: fit-content;
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--elevation), inset 0 0 0 1px var(--line);
+  font-size: var(--fs-xs);
+  color: var(--ink-muted) !important;
+  position: relative;
+}
+
+.v2b .v2b-08__headline { margin-top: var(--sp-6); font-size: var(--fs-xl); letter-spacing: 0.16em; }
+.v2b-08__copy { margin-top: var(--sp-4); font-size: var(--fs-sm); color: var(--ink-muted) !important; }
+.v2b-08__cta { margin: var(--sp-6) auto 0; }
+.v2b-08__tail { margin-top: var(--sp-5); font-size: var(--fs-xs); color: var(--ink-muted) !important; }
+
+.v2b-08__util {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-5);
+  margin-top: var(--sp-7);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line);
+}
+.v2b-08__util button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--touch-min);
+  font-size: var(--fs-xs);
+  color: var(--ink-muted) !important;
+}
+.v2b-08__util button:hover { color: var(--ink) !important; }
+
+/* ---------------------------------------------------------------------------
+ * アクセシビリティ / 応答
+ * ------------------------------------------------------------------------ */
+@media (max-width: 419px) {
+  .v2b-inner { padding-inline: var(--sp-4); }
+  .v2b .v2b-01__copy { font-size: var(--fs-sm); }
+  .v2b-02__art { width: 4.5rem; height: 4rem; }
+  .v2b-01__system { flex-wrap: wrap; }
+}
+
+
+/* ---------------------------------------------------------------------------
+ * legacy 遮断（第2層）
+ * body.experience-open が p / li / label / summary / textarea / input / select を
+ * 夜の旧店内色で直接塗るため、V2 面では master token へ引き戻す。
+ * v2b の各クラス色は上の color:…!important が受け持つ。
+ * ------------------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2-page :where(p, li, label, summary) {
+  color: inherit;
+}
+html[data-v2-mounted="true"] .v2-page :is(textarea, input, select) {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: none;
+  line-height: var(--lh-body);
+  caret-color: var(--accent-strong);
+  font-family: var(--font-body);
+}
+html[data-v2-mounted="true"] .v2-page :is(textarea, input)::placeholder {
+  color: color-mix(in srgb, var(--ink-muted) 72%, transparent);
+}
+html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select):focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}

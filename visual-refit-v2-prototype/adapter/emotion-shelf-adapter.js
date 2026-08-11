@@ -388,6 +388,13 @@
     var panels = root.querySelectorAll('[data-v2-region-panel]');
     if (!tabs.length && !panels.length) return { ok: false, reason: 'no_target' };
 
+    /* Beta0（MASTER HANDOFF v0.9）：04 は tab 切替ではなく
+       「ことば → 作品 → 自分の本」を縦に歩く一枚ページになった。
+       tab（[data-v2-region]）が DOM に無い場合は walk モードとして
+       全 panel を常時表示し、「自分の本」も常に描画する。
+       tab がある環境（旧 harness）では従来の切替をそのまま維持する。 */
+    state.walkMode = tabs.length === 0;
+
     var i;
     for (i = 0; i < tabs.length; i++) {
       var rid = tabs[i].getAttribute('data-v2-region');
@@ -395,7 +402,7 @@
     }
     for (i = 0; i < panels.length; i++) {
       var pid = panels[i].getAttribute('data-v2-region-panel');
-      if (pid === state.activeRegion) panels[i].removeAttribute('hidden');
+      if (state.walkMode || pid === state.activeRegion) panels[i].removeAttribute('hidden');
       else panels[i].setAttribute('hidden', '');
     }
     var my = renderMyBooks(scope);
@@ -581,9 +588,10 @@
     if (!body) return { ok: false, reason: 'no_target' };
 
     // 選択されていない間は私的データを hidden な DOM に残さない
+    // （walk モードでは「自分の本」節が常に見えているため常に描画する）
     clearChildren(body);
     body.removeAttribute('data-v2-mybooks-count');
-    if (state.activeRegion !== 'jibun') {
+    if (!state.walkMode && state.activeRegion !== 'jibun') {
       return { ok: true, region: state.activeRegion, rendered: 0, shown: 0 };
     }
 
@@ -596,8 +604,9 @@
 
     var books = filterMyBooks(lib.entries, myBookContextIds());
     if (books.length === 0) {
+      /* 空状態コピーは MASTER_SPEC §4.4 の正本文言 */
       body.appendChild(buildEmpty(
-        'この棚には、まだ自分の本はありません。',
+        'この気持ちで残した本は、まだありません。',
         '書くことからでも、棚を眺めることからでも始められます。'
       ));
       body.setAttribute('data-v2-mybooks-count', '0');

@@ -67,8 +67,9 @@ html[data-v2-mounted="true"] #bookshelf::after{
 }
 
 /* ページ外の旧シェル（ヘッダ帯・フッタ等）も V2 の世界観に混ぜない。
-   ただし DOM は残す（main.js が参照するため）。 */
-html[data-v2-mounted="true"] body{ background:#000; }
+   ただし DOM は残す（main.js が参照するため）。
+   Beta0：背景は MASTER_TOKENS の --bg（DAY/NIGHT token）に委ねる。 */
+html[data-v2-mounted="true"] body{ background: var(--bg, #000); }
 
 /* ------------------------------------------------------------
  * 旧グローバルUI（V2 が独自のナビ・見出しを持つ面）

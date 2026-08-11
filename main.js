@@ -3411,6 +3411,13 @@ async function renderDetourSection(catId){
 //   実際に見つかった新しめの一冊・一曲を1件ずつ添える。取得できなければ何も表示しない
 //   （厳選データの表示自体は止めない＝壊れない設計）。
 async function renderLiveNewReleases(cat){
+  // ★V2 Beta0：V2 mount 中は旧棚UIが不可視のため、見えない面のために
+  // 外部API（Google Books / iTunes Search）への runtime 取得を発生させない。
+  // 宛先・表示ロジックは変更しない（mount していない環境では従来どおり）。
+  // __V2_MOUNTED__ は v2-mount.js の評価時（DOMContentLoaded 前）に立つため、
+  // 初期化順に依存しない。
+  if(window.__V2_MOUNTED__ === true ||
+     document.documentElement.getAttribute('data-v2-mounted') === 'true') return;
   // ★2026-07-19：外部API（日本語クエリ）由来の紹介文は英語化できないため、英語モードでは表示しない。
   if(appLang === 'en') return;
   const wrap = document.getElementById('livePickWrap');
