@@ -549,8 +549,9 @@ html[data-v2-mounted="true"] .v2-page :is(h1, h2, h3) {
   margin-top: var(--sp-4);
   border-radius: var(--radius-md);
   background:
-    radial-gradient(65% 120% at 78% 0%, color-mix(in srgb, var(--warm-metal) 30%, transparent), transparent 70%),
-    linear-gradient(to bottom, color-mix(in srgb, var(--surface) 65%, var(--warm-metal) 8%), var(--surface) 55%, var(--wood));
+    radial-gradient(46% 90% at 80% 12%, color-mix(in srgb, var(--warm-metal) 16%, transparent), transparent 75%),
+    linear-gradient(to bottom, var(--surface-soft) 0%, var(--surface-soft) 62%,
+      color-mix(in srgb, var(--surface-soft) 55%, var(--wood) 45%) 100%);
   box-shadow: inset 0 0 0 1px var(--line);
 }
 
@@ -788,7 +789,7 @@ html[data-v2-mounted="true"] .v2-page :is(h1, h2, h3) {
 .v2b-08__art svg { display: block; width: 100%; height: auto;
   fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 .v2b-08__sign {
-  margin: calc(-1 * var(--sp-6)) auto 0;
+  margin: var(--sp-2) auto 0;
   width: fit-content;
   padding: var(--sp-3) var(--sp-5);
   border-radius: var(--radius-sm);
