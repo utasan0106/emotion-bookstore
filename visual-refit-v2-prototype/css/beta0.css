@@ -1438,3 +1438,175 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
 /* 06 hero: 文字を飾り棚より前面に */
 .v2b-06__hero > * { position: relative; z-index: 1; }
 .v2b-06__hero::after { z-index: 0; width: 7.5rem; height: 2.8rem; opacity: 0.75; right: 3%; }
+
+
+/* =============================================================================
+ * 01 Entrance — Golden Reference Reconstruction（CEO承認 asset 使用）
+ * Reference native 864×1536。stage は同 aspect の固定キャンバスとして
+ * viewport 内へ letterbox し、全ブロックを実測 normalized geometry で配置する。
+ * DAY/NIGHT は同一 DOM・[data-theme] による asset/色の切替のみ。
+ * -------------------------------------------------------------------------- */
+.v2c01 {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  background: #efe7d8; /* letterbox は壁の紙色（DAY） */
+}
+[data-theme="night"] .v2c01 { background: #0c1524; }
+.v2c01::before { content: none; } /* 旧 noise overlay は使わない（G asset に置換） */
+
+.v2c01__stage {
+  position: relative;
+  width: min(100vw, calc(100dvh * 0.5625));
+  aspect-ratio: 864 / 1536;
+  overflow: hidden;
+  container-type: inline-size;
+  /* Reference の字面（Shippori Mincho）。index.html が既に読み込む既存 webfont で
+     新規 network 宛先は増えない。未取得環境は token の明朝 stack へ fallback */
+  font-family: "Shippori Mincho", var(--font-display);
+}
+
+/* ---- 環境レイヤ ---- */
+.v2c01__wall {
+  position: absolute; inset: 0;
+  background: url("../../assets/v2b0/01/01_wall_ambience_day.webp") center top / cover no-repeat;
+}
+[data-theme="night"] .v2c01__wall {
+  background-image: url("../../assets/v2b0/01/01_wall_ambience_night.webp");
+}
+.v2c01__grain {
+  position: absolute; inset: 0;
+  background: url("../../assets/v2b0/01/paper_grain_tile.webp") repeat;
+  background-size: 36%;
+  mix-blend-mode: multiply;
+  opacity: 0.05;
+}
+[data-theme="night"] .v2c01__grain { opacity: 0.08; mix-blend-mode: screen; }
+
+/* アーチ店内景。asset の不透明域 x0.229–0.769 を stage x0.60→右端へ合わせる
+   （image W = H×(1024/1536) = 118.5cqw、left = 60cqw − 0.229×118.5cqw ≒ 32.86cqw） */
+.v2c01__arch {
+  position: absolute;
+  top: 0;
+  left: 32.86%;
+  width: 118.52%;
+  height: 100%;
+  background: url("../../assets/v2b0/01/01_interior_arch_day.webp") left top / 100% 100% no-repeat;
+}
+[data-theme="night"] .v2c01__arch {
+  background-image: url("../../assets/v2b0/01/01_interior_arch_night.webp");
+}
+
+/* ---- コンテンツ（すべて HTML/SVG。geometry は Reference 実測値） ---- */
+.v2c01__logo {
+  position: absolute;
+  left: 22.5%; top: 15.5%;
+  width: 19%; aspect-ratio: 1;
+  color: #6d6146;
+}
+[data-theme="night"] .v2c01__logo { color: #cfa96a; }
+.v2c01__logo svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 0.9; stroke-linecap: round; stroke-linejoin: round; }
+
+.v2c01__brand {
+  position: absolute;
+  left: 3%; top: 26.6%;
+  width: 57%;
+  margin: 0;
+  text-align: center;
+  color: #4a3f2e !important;
+  font-weight: 500;
+  text-shadow: none;
+}
+[data-theme="night"] .v2c01__brand { color: #ead7ae !important; }
+.v2c01__brand-sub { display: block; font-size: 6.02cqw; letter-spacing: 0.35em; text-indent: 0.35em; }
+.v2c01__brand-main { display: block; margin-top: 1.6cqw; font-size: 9.03cqw; letter-spacing: 0.22em; text-indent: 0.22em; }
+
+.v2c01__rule {
+  position: absolute;
+  left: 27%; top: 40.8%;
+  width: 7.5%; height: 1px;
+  border: 0; margin: 0;
+  background: #8a7a5c;
+}
+[data-theme="night"] .v2c01__rule { background: #a98f5e; }
+
+.v2c01__copy {
+  position: absolute;
+  left: 0.5%; top: 43.2%;
+  width: 62%;
+  margin: 0;
+  text-align: center;
+  font-size: 2.55cqw;      /* Reference 実測: 20字が幅0.51へ収まる字送り */
+  line-height: 2.05;
+  letter-spacing: 0.03em;
+  color: #4a3f2e !important;
+}
+[data-theme="night"] .v2c01__copy { color: #e2d3b2 !important; }
+
+.v2c01__steps {
+  position: absolute;
+  left: 5.5%; top: 55.5%;
+  width: 52%;
+  margin: 0; padding: 0;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+}
+.v2c01__steps li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6cqw;
+  font-size: 2.78cqw;
+  letter-spacing: 0.1em;
+  color: #5c4f38 !important;
+}
+[data-theme="night"] .v2c01__steps li { color: #d9c69a !important; }
+.v2c01__steps li + li::before {
+  content: "›";
+  position: absolute;
+  transform: translate(-3.1cqw, 1.2cqw);
+  color: #a08c66;
+  font-size: 2.6cqw;
+}
+.v2c01__steps li { position: relative; }
+.v2c01__step-icon { display: block; width: 4.6cqw; height: 4.6cqw; color: #8a744c; }
+[data-theme="night"] .v2c01__step-icon { color: #c9a86a; }
+.v2c01__step-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* 布装本＋棚板（D asset。opaque x0.053–0.943 / y0.17–0.854 を
+   stage x0.05–0.60 / y0.665–0.815 に一致させる） */
+.v2c01__books {
+  position: absolute;
+  left: 1.5%; top: 62.2%;
+  width: 66%;
+  aspect-ratio: 3 / 2;
+  background: url("../../assets/v2b0/01/01_books_shelf_day.webp") center / contain no-repeat;
+}
+[data-theme="night"] .v2c01__books {
+  background-image: url("../../assets/v2b0/01/01_books_shelf_night.webp");
+}
+
+/* CTA（HTML button。texture は背景のみ・文字は焼き込まない） */
+.v2c01__cta {
+  position: absolute;
+  left: 14.5%; top: 87.5%;
+  width: 71%; height: 9.0%;
+  border: 0;
+  border-radius: 2.3cqw;
+  background: url("../../assets/v2b0/01/cta_suede_texture_day.webp") center / cover no-repeat;
+  box-shadow: 0 1.2cqw 3cqw rgb(60 38 14 / 0.35), inset 0 0 0 1px rgb(255 240 210 / 0.35);
+  font-family: var(--font-display);
+  font-size: 5.09cqw;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: #f7ede0 !important;
+  cursor: pointer;
+}
+[data-theme="night"] .v2c01__cta {
+  background-image: url("../../assets/v2b0/01/cta_suede_texture_night.webp");
+  color: #f4e4c4 !important;
+  box-shadow: 0 1.2cqw 3.4cqw rgb(0 0 0 / 0.55), inset 0 0 0 1px rgb(255 214 150 / 0.30);
+}
+.v2c01__cta:hover { filter: brightness(1.05); }
+.v2c01__cta:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(114,135,75,.34), 0 1.2cqw 3cqw rgb(60 38 14 / 0.35); }
