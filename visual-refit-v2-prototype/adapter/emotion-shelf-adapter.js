@@ -281,6 +281,77 @@
   }
 
   /* ---------------------------------------------------------------------------
+   * 04「ことば」READ-ONLY 描画（個別感情の 意味 / ニュアンス / 近い言葉）
+   * - 意味は既存 CATEGORIES.def（canonical）を読むだけ
+   * - ニュアンス / 近い言葉は canonical 供給点 V2_EMOTION_WORDS からのみ表示。
+   *   存在しない field は生成・推定せず非表示（CONTENT_REQUIRED として報告）
+   * - 大棚文脈（感情語未選択）では表示しない（選択カードが表示される）
+   * ------------------------------------------------------------------------ */
+  function buildWordBlock(head, node) {
+    var wrap = doc.createElement('div');
+    wrap.className = 'v2c04__wd';
+    var h = doc.createElement('h3');
+    h.className = 'v2c04__wd-h';
+    h.textContent = head;
+    wrap.appendChild(h);
+    wrap.appendChild(node);
+    return wrap;
+  }
+
+  function renderWordDetail(scope) {
+    if (!doc) return { ok: false, reason: 'no_document' };
+    var body = q('[data-v2-worddetail="body"]', scope);
+    if (!body) return { ok: false, reason: 'no_target' };
+    clearChildren(body);
+    body.removeAttribute('data-v2-worddetail-state');
+    if (!state.activeEmotionId) {
+      body.setAttribute('hidden', '');
+      return { ok: true, status: 'shelf_context' };
+    }
+    body.removeAttribute('hidden');
+    var cat = findCategory(state.activeEmotionId);
+    var words = (global.V2_EMOTION_WORDS || {})[state.activeEmotionId] || {};
+    var missing = [], made = 0;
+
+    var imi = (typeof words.imi === 'string' && words.imi)
+      ? words.imi
+      : (cat && typeof cat.def === 'string' ? cat.def : '');
+    if (imi) {
+      var pI = doc.createElement('p');
+      pI.className = 'v2c04__wd-body';
+      pI.textContent = imi;
+      body.appendChild(buildWordBlock('意味', pI));
+      made++;
+    } else { missing.push('imi'); }
+
+    if (typeof words.nuance === 'string' && words.nuance) {
+      var pN = doc.createElement('p');
+      pN.className = 'v2c04__wd-body';
+      pN.textContent = words.nuance;
+      body.appendChild(buildWordBlock('ニュアンス', pN));
+      made++;
+    } else { missing.push('nuance'); }
+
+    if (Array.isArray(words.near_words) && words.near_words.length) {
+      var row = doc.createElement('div');
+      row.className = 'v2c04__wd-chips';
+      for (var i = 0; i < words.near_words.length; i++) {
+        var chip = doc.createElement('span');   // 非interactive（tag管理UIにしない）
+        chip.className = 'v2c04__wd-chip';
+        chip.textContent = String(words.near_words[i]);
+        row.appendChild(chip);
+      }
+      body.appendChild(buildWordBlock('近い言葉', row));
+      made++;
+    } else { missing.push('near_words'); }
+
+    var st = missing.length === 0 ? 'ready'
+      : (made > 0 ? 'partial:' + missing.join('+') : 'emotion_definition_missing');
+    body.setAttribute('data-v2-worddetail-state', st);
+    return { ok: true, status: st, made: made, missing: missing };
+  }
+
+  /* ---------------------------------------------------------------------------
    * 04「作品」READ-ONLY 描画（Beta0 static Editorial Snapshot のみ）
    * - approved snapshot（V2_EDITORIAL_SNAPSHOTS）以外から作品を生成しない
    * - runtime 外部API・cover 画像・外部遷移・affiliate なし
@@ -405,15 +476,24 @@
       for (var i = 0; i < oldCards.length; i++) {
         if (oldCards[i].parentNode) oldCards[i].parentNode.removeChild(oldCards[i]);
       }
-      var ids = emotionIdsOf(shelfId);
-      var frag = doc.createDocumentFragment();
-      for (var k = 0; k < ids.length; k++) {
-        try { frag.appendChild(buildWordCard(ids[k], k)); made++; }
-        catch (e) { state.lastError = 'render_word_failed@' + k; }
+      if (activeCat) {
+        /* 個別感情表示中: 同棚感情カードを「ことば」内容として出さない（R2契約）。
+           選択カードは大棚文脈（未選択時）だけに出す。 */
+        wordsEl.setAttribute('hidden', '');
+        wordsEl.setAttribute('data-v2-emotion-count', '0');
+      } else {
+        wordsEl.removeAttribute('hidden');
+        var ids = emotionIdsOf(shelfId);
+        var frag = doc.createDocumentFragment();
+        for (var k = 0; k < ids.length; k++) {
+          try { frag.appendChild(buildWordCard(ids[k], k)); made++; }
+          catch (e) { state.lastError = 'render_word_failed@' + k; }
+        }
+        wordsEl.appendChild(frag);
+        wordsEl.setAttribute('data-v2-emotion-count', String(ids.length));
       }
-      wordsEl.appendChild(frag);
-      wordsEl.setAttribute('data-v2-emotion-count', String(ids.length));
     }
+    renderWordDetail(scope);
 
     renderWorks(scope);
 
