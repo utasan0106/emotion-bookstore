@@ -1960,8 +1960,9 @@ html[data-v2-mounted="true"] .v2-page h1.v2c02__hero {
   font-weight: 300;
   color: #46351d !important;
 }
-[data-theme="night"] .v2-page h1.v2c02__hero,
-html[data-v2-mounted="true"] [data-theme="night"] .v2-page h1.v2c02__hero { color: #b98d60 !important; }
+/* R2 LIMITED FIX: NIGHT Hero headline のみ。Reference ink 実測 rgb(171,135,104)。
+   day 規則 (0,3,2) に勝つ特異度で 02 NIGHT Hero に限定。 */
+html[data-v2-mounted="true"][data-theme="night"] .v2-page h1.v2c02__hero { color: #ab8768 !important; }
 .v2c02__lead {
   margin: 2.4cqw 0 0; padding: 0;
   text-align: center;
