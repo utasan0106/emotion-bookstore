@@ -1720,3 +1720,143 @@ html[data-v2-mounted="true"] .v2-page h1.v2c01__brand {
 .v2b .v2c01__copy { font-weight: 300; }
 .v2c01__steps li { font-weight: 400; }
 .v2c01__cta { font-weight: 300; }
+
+
+/* =============================================================================
+ * 01 Round 5 — 3層（店外→敷居→店内）+ R5 Golden Reference 幾何
+ * ambience は R5 参照の UI 非含有領域のみを抽出した層。1枚貼りはしない。
+ * -------------------------------------------------------------------------- */
+/* 層順 */
+.v2c01__wall { z-index: 0; }
+.v2c01__floor {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 15%;
+  background: url("../../assets/v2b0/01/r5_floor_day.webp") center / cover no-repeat;
+  z-index: 1;
+}
+[data-theme="night"] .v2c01__floor { background-image: url("../../assets/v2b0/01/r5_floor_night.webp"); }
+.v2c01__grain { z-index: 2; }
+.v2c01__arch {
+  left: 60% !important;
+  width: 40% !important;
+  height: 87.2% !important;
+  background-image: url("../../assets/v2b0/01/r5_interior_day.webp") !important;
+  background-size: 100% 100% !important;
+  transform: none !important;
+  filter: none !important;
+  z-index: 3;
+  /* 左縁を壁へ溶かす（層の継ぎ目を見せない） */
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 5%) !important;
+  mask-image: linear-gradient(to right, transparent 0, #000 5%) !important;
+}
+[data-theme="night"] .v2c01__arch {
+  background-image: url("../../assets/v2b0/01/r5_interior_night.webp") !important;
+  filter: none !important;
+}
+[data-theme="night"] .v2c01__arch::after { content: none; }
+.v2c01__plantfg {
+  position: absolute;
+  left: 0; top: 52.5%;
+  width: 13.5%;
+  aspect-ratio: 127 / 368;
+  background: url("../../assets/v2b0/01/r5_plant_day.webp") center / cover no-repeat;
+  -webkit-mask-image: linear-gradient(to right, #000 0 72%, transparent 97%),
+                      linear-gradient(to bottom, #000 0 94%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, #000 0 72%, transparent 97%),
+              linear-gradient(to bottom, #000 0 94%, transparent 100%);
+  mask-composite: intersect;
+  z-index: 4;
+}
+[data-theme="night"] .v2c01__plantfg { background-image: url("../../assets/v2b0/01/r5_plant_night.webp"); }
+
+/* v1 壁 asset の下部には鉢植え＋葉影が焼き込まれているが、R5 Reference の
+   下部壁面は無地。veil で焼き込みを隠し、植物は r5_plant の 1 つだけにする（R5 P0-④） */
+.v2c01__wall::after {
+  left: 0 !important; bottom: 12% !important;
+  width: 66% !important; height: 24% !important;
+  background: rgb(208 192 176 / 0.95) !important;
+  -webkit-mask-image: radial-gradient(100% 110% at 12% 80%, #000 0 66%, transparent 95%);
+  mask-image: radial-gradient(100% 110% at 12% 80%, #000 0 66%, transparent 95%);
+}
+[data-theme="night"] .v2c01__wall::after {
+  background: rgb(9 12 16 / 0.94) !important;
+}
+/* wall::before（上部 ambient 光）は box 下端 y46% で切れて帯状の段差になるため、
+   下端へ向けてフェードさせる */
+.v2c01__wall::before {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0 68%, transparent 97%);
+  mask-image: linear-gradient(to bottom, #000 0 68%, transparent 97%);
+}
+
+/* ---- R5 幾何へ再配置 ---- */
+.v2c01__logo { left: 24% !important; top: 13.5% !important; width: 17.5% !important; z-index: 5; }
+.v2c01__brand { top: 23.9% !important; z-index: 5; }
+.v2b .v2c01__brand-sub { font-size: 5.2cqw; }
+.v2b .v2c01__brand-main { font-size: 7.4cqw; margin-top: 2.4cqw; }
+.v2c01__rule { top: 35.5% !important; left: 30.75% !important; width: 3.5% !important; z-index: 5; }
+/* R5 実測: 本文は左揃え・左端 x≈12.9%・行送り ≈1.95 */
+.v2c01__copy {
+  top: 37.6% !important; left: 12.9% !important; width: 57% !important;
+  text-align: left !important;
+  font-size: 2.2cqw !important; line-height: 1.95 !important;
+  z-index: 5;
+}
+.v2c01__steps { top: 48.0% !important; left: 12.8% !important; width: 41.9% !important; z-index: 5; }
+.v2c01__step-icon { width: 6.3cqw !important; height: 6.3cqw !important; }
+.v2c01__steps li { font-size: 2.4cqw !important; gap: 1.6cqw !important; }
+.v2c01__steps li + li::before { transform: translate(-3.3cqw, 2.0cqw); font-size: 2.6cqw; }
+.v2c01__books {
+  left: 4.4% !important; top: 54.1% !important; width: 61.7% !important;
+  clip-path: none !important;
+  z-index: 5;
+}
+/* R5 NIGHT: Reference の本・棚板は間接光のみでより暗い（asset 層のみ補正） */
+[data-theme="night"] .v2c01__books { filter: brightness(0.88) saturate(0.92); }
+
+/* ---- CTA：店先の革張りプレート（R5 実測色: DAY 中心 rgb(136 79 33)・縁暗・上縁明） ---- */
+.v2c01__cta {
+  left: 16.3% !important; top: 87.2% !important;
+  width: 67.4% !important; height: 9.0% !important;
+  border-radius: 1.6cqw !important;
+  background: linear-gradient(180deg, #b08159, #7a4a20 45%, #5f3410) !important;
+  box-shadow: 0 1.4cqw 3cqw rgb(50 32 12 / 0.42) !important;
+  padding: 0.55cqw !important;
+  z-index: 10;
+}
+.v2c01__cta::before {
+  inset: 0.55cqw !important;
+  border-radius: 1.25cqw !important;
+  background:
+    radial-gradient(150% 240% at 50% 0%,
+      rgb(232 230 228) 0 6%, rgb(214 213 214) 35%, rgb(200 198 196) 72%, rgb(188 186 184) 100%),
+    url("../../assets/v2b0/01/cta_suede_texture_day.webp") center / 118% 218% no-repeat !important;
+  background-blend-mode: multiply !important;
+  filter: none !important;
+  box-shadow: inset 0 0 0 1px rgb(230 195 150 / 0.5), inset 0 -0.6cqw 1.4cqw rgb(40 22 6 / 0.30);
+}
+[data-theme="night"] .v2c01__cta {
+  background: linear-gradient(180deg, #a46e36, #5c3512 50%, #3d2008) !important;
+}
+[data-theme="night"] .v2c01__cta::before {
+  background:
+    radial-gradient(150% 240% at 50% 0%,
+      rgb(212 214 218) 0 6%, rgb(184 186 192) 38%, rgb(168 170 176) 72%, rgb(152 154 160) 100%),
+    url("../../assets/v2b0/01/cta_suede_texture_night.webp") center / 118% 218% no-repeat !important;
+  background-blend-mode: multiply !important;
+  filter: none !important;
+  box-shadow: inset 0 0 0 1px rgb(210 160 95 / 0.45), inset 0 -0.6cqw 1.4cqw rgb(10 5 0 / 0.4);
+}
+.v2c01__cta-fl {
+  position: absolute;
+  top: 50%;
+  width: 5.2cqw; height: 5.2cqw;
+  transform: translateY(-50%);
+  color: rgb(244 220 180 / 0.62);
+}
+.v2c01__cta-fl--l { left: 8.5%; }
+.v2c01__cta-fl--r { right: 8.5%; transform: translateY(-50%) scaleX(-1); }
+.v2c01__cta-fl svg { width: 100%; height: 100%; }
+.v2c01__cta-fl svg .st { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; }
+.v2c01__cta-fl svg .lf { fill: currentColor; stroke: none; }
+[data-theme="night"] .v2c01__cta-fl { color: rgb(226 186 132 / 0.58); }
