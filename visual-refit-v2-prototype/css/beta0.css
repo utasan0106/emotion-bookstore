@@ -1860,3 +1860,52 @@ html[data-v2-mounted="true"] .v2-page h1.v2c01__brand {
 .v2c01__cta-fl svg .st { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; }
 .v2c01__cta-fl svg .lf { fill: currentColor; stroke: none; }
 [data-theme="night"] .v2c01__cta-fl { color: rgb(226 186 132 / 0.58); }
+
+/* =======================================================================
+ * 01 Round 6 — CEO LIMITED FIX (3 items only)
+ * 1) 左上 foliage の視覚重量を下げる（logo/「みんなの」周辺の侵入を減らし、
+ *    左上外縁の気配のみ残す。asset は変更しない。壁 veil のみ）
+ * 2) NIGHT 本文のみ warm bronze/cream へ 1 段明るく（他要素は不変）
+ * 3) 4-step アイコン・separator の線を Reference の細い line-art へ
+ * ======================================================================= */
+
+/* --- R6-1: foliage veil（logo 周辺 + 「みんなの」左肩。外縁は残す） --- */
+.v2c01__wall::before {
+  background:
+    radial-gradient(46% 38% at 30% 17%,
+      rgb(216 205 192 / 0.78) 0 46%, rgb(216 205 192 / 0.42) 72%, transparent 96%),
+    radial-gradient(20% 15% at 13% 27%,
+      rgb(214 203 190 / 0.68) 0 50%, transparent 95%),
+    radial-gradient(125% 150% at 0% 0%,
+      transparent 0 17%,
+      rgb(242 234 219 / 0.62) 36%,
+      rgb(242 234 219 / 0.80) 55%,
+      rgb(242 234 219 / 0.50) 78%,
+      transparent 98%) !important;
+}
+[data-theme="night"] .v2c01__wall::before {
+  background:
+    radial-gradient(46% 38% at 30% 17%,
+      rgb(10 14 18 / 0.86) 0 48%, rgb(10 14 18 / 0.48) 74%, transparent 96%),
+    radial-gradient(20% 15% at 13% 27%,
+      rgb(10 14 18 / 0.76) 0 52%, transparent 95%),
+    radial-gradient(120% 150% at 0% 0%,
+      transparent 0 22%,
+      rgb(10 18 30 / 0.50) 40%,
+      rgb(10 18 30 / 0.66) 58%,
+      rgb(10 18 30 / 0.34) 78%,
+      transparent 96%) !important;
+}
+
+/* --- R6-2: NIGHT body copy のみ可読性を 1 段上げる（REF ink rgb(178,126,68) 以上） --- */
+[data-theme="night"] .v2c01__copy { color: #c8a878 !important; }
+
+/* --- R6-3: 4-step の線を細く（位置・サイズ・label は不変） --- */
+.v2c01__step-icon svg { stroke-width: 0.85 !important; }
+.v2c01__steps li + li::before {
+  content: "" !important;
+  width: 1.1cqw; height: 1.1cqw;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  transform: translate(-3.6cqw, 2.4cqw) rotate(45deg);
+}
