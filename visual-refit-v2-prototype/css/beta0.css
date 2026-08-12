@@ -1869,33 +1869,19 @@ html[data-v2-mounted="true"] .v2-page h1.v2c01__brand {
  * 3) 4-step アイコン・separator の線を Reference の細い line-art へ
  * ======================================================================= */
 
-/* --- R6-1: foliage veil（logo 周辺 + 「みんなの」左肩。外縁は残す） --- */
-.v2c01__wall::before {
-  background:
-    radial-gradient(46% 38% at 30% 17%,
-      rgb(216 205 192 / 0.78) 0 46%, rgb(216 205 192 / 0.42) 72%, transparent 96%),
-    radial-gradient(20% 15% at 13% 27%,
-      rgb(214 203 190 / 0.68) 0 50%, transparent 95%),
-    radial-gradient(125% 150% at 0% 0%,
-      transparent 0 17%,
-      rgb(242 234 219 / 0.62) 36%,
-      rgb(242 234 219 / 0.80) 55%,
-      rgb(242 234 219 / 0.50) 78%,
-      transparent 98%) !important;
+/* --- R7: foliage は veil でぼかさず、可視領域そのものを Reference へ合わせた
+   r7 壁 asset（葉の占有域を左上外縁へ縮小、清浄壁は同 asset 内から再構成）を使う。
+   R6-1 の foliage veil ellipse は撤去（CEO R7 指示） --- */
+.v2c01__wall {
+  background-image: url("../../assets/v2b0/01/r7_wall_day.webp") !important;
 }
-[data-theme="night"] .v2c01__wall::before {
-  background:
-    radial-gradient(46% 38% at 30% 17%,
-      rgb(10 14 18 / 0.86) 0 48%, rgb(10 14 18 / 0.48) 74%, transparent 96%),
-    radial-gradient(20% 15% at 13% 27%,
-      rgb(10 14 18 / 0.76) 0 52%, transparent 95%),
-    radial-gradient(120% 150% at 0% 0%,
-      transparent 0 22%,
-      rgb(10 18 30 / 0.50) 40%,
-      rgb(10 18 30 / 0.66) 58%,
-      rgb(10 18 30 / 0.34) 78%,
-      transparent 96%) !important;
+[data-theme="night"] .v2c01__wall {
+  background-image: url("../../assets/v2b0/01/r7_wall_night.webp") !important;
 }
+/* P0-2 の corner veil は foliage を白く洗うため R7 で撤去
+   （葉の占有域は asset 側で Reference に一致済み） */
+.v2c01__wall::before { background: none !important; }
+[data-theme="night"] .v2c01__wall::before { background: none !important; }
 
 /* --- R6-2: NIGHT body copy のみ可読性を 1 段上げる（REF ink rgb(178,126,68) 以上） --- */
 [data-theme="night"] .v2c01__copy { color: #c8a878 !important; }
