@@ -574,76 +574,52 @@ body.night .about-data-content{
     </div>
 
 <!-- V2 03/04 感情棚 -->
-<div class="v2-page v2b v2b-03" data-v2-screen="03" data-v2-subview-of="shelves-index" data-screen="03">
-  <div class="v2b-scene" aria-hidden="true">
-    <span class="v2b-scene__lampwrap v2b-scene__lampwrap--right"><svg class="v2b-lamp" viewBox="0 0 80 120" aria-hidden="true">
-  <line x1="40" y1="0" x2="40" y2="46" class="lamp-cord"/>
-  <rect x="36" y="44" width="8" height="7" rx="2" class="lamp-cap"/>
-  <path d="M20 84 Q20 52 40 52 Q60 52 60 84 Z" class="lamp-shade"/>
-  <circle cx="40" cy="80" r="7" class="lamp-bulb"/>
-  <circle cx="40" cy="82" r="30" class="lamp-glow"/>
-</svg></span>
-    <svg class="v2b-leafshadow" viewBox="0 0 220 160" aria-hidden="true">
-  <g class="leafshade">
-    <path d="M10 8 C50 24 70 20 96 44 M30 2 C56 18 66 34 84 60 M4 40 C36 48 58 52 78 76"/>
-    <ellipse cx="46" cy="22" rx="15" ry="6" transform="rotate(28 46 22)"/>
-    <ellipse cx="72" cy="40" rx="13" ry="5" transform="rotate(40 72 40)"/>
-    <ellipse cx="94" cy="60" rx="12" ry="5" transform="rotate(24 94 60)"/>
-    <ellipse cx="26" cy="12" rx="12" ry="5" transform="rotate(14 26 12)"/>
-    <ellipse cx="58" cy="54" rx="11" ry="4.5" transform="rotate(52 58 54)"/>
-  </g>
-</svg>
-  </div>
-  <div class="v2b-inner">
-    <div class="v2b-topbar"><span class="v2b-brand"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span>みんなの感情書店</span><button type="button" class="v2b-menubtn" data-v2-open-menu aria-label="店内メニューを開く"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span></button></div>
-    <header class="v2b-03__head">
-      <h1 class="v2b-03__title">感情の棚</h1>
-      <p class="v2b-03__lead">いまの気持ちに近い棚から、<br>ことばや作品、自分の本に出会えます。</p>
-      <span class="v2b-03__deco v2b-sprig" aria-hidden="true"><span class="v2b-icon"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span></span>
+<div class="v2-page v2b v2c03" data-v2-screen="03" data-v2-subview-of="shelves-index" data-screen="03">
+  <div class="v2c03__stage">
+    <div class="v2c03__amb" aria-hidden="true"></div>
+    <header class="v2c03__brandrow">
+      <span class="v2c03__logo" aria-hidden="true"></span>
+      <span class="v2c03__brandname">みんなの感情書店</span>
+      <button type="button" class="v2c03__menubtn" data-v2-open-menu aria-label="店内メニューを開く"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </header>
-    <div class="v2b-03__grid">
-      <button type="button" class="v2b-shelfbook v2b-shelfbook--hazumu" data-v2-shelf="hazumu" data-v2-shelf-trigger="hazumu">
-        <span class="v2b-shelfbook__cover" aria-hidden="true"><span class="v2b-shelfbook__glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2M6.5 6.5l1.4 1.4M16.1 16.1l1.4 1.4M17.5 6.5l-1.4 1.4M7.9 16.1l-1.4 1.4"/><path d="M18.5 4.5l.4 1 .9.4-.9.4-.4 1-.4-1-.9-.4.9-.4z"/></svg></span></span>
-        <span class="v2b-shelfbook__board" aria-hidden="true"></span>
-        <span class="v2b-shelfbook__name">心が弾む</span>
+    <h1 class="v2c03__title">感情の棚</h1>
+    <p class="v2c03__lead">いまの気持ちに近い棚から、<br>ことばや作品、自分の本に出会えます。</p>
+    <div class="v2c03__divider" aria-hidden="true"><span class="v2c03__divline"></span><span class="v2c03__sprig"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span><span class="v2c03__divline"></span></div>
+    <div class="v2c03__grid">
+      <button type="button" class="v2c03__book v2c03__book--hazumu" data-v2-shelf="hazumu" data-v2-shelf-trigger="hazumu">
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2M6.5 6.5l1.4 1.4M16.1 16.1l1.4 1.4M17.5 6.5l-1.4 1.4M7.9 16.1l-1.4 1.4"/><path d="M18.5 4.5l.4 1 .9.4-.9.4-.4 1-.4-1-.9-.4.9-.4z"/></svg></span>
+        <span class="v2c03__name">心が弾む</span>
       </button>
-      <button type="button" class="v2b-shelfbook v2b-shelfbook--atatamaru" data-v2-shelf="atatamaru" data-v2-shelf-trigger="atatamaru">
-        <span class="v2b-shelfbook__cover" aria-hidden="true"><span class="v2b-shelfbook__glyph"><svg viewBox="0 0 24 24"><path d="M12 19s-6.5-4.2-8-8A4.4 4.4 0 0 1 12 8.4 4.4 4.4 0 0 1 20 11c-1.5 3.8-8 8-8 8z"/></svg></span></span>
-        <span class="v2b-shelfbook__board" aria-hidden="true"></span>
-        <span class="v2b-shelfbook__name">心があたたまる</span>
+      <button type="button" class="v2c03__book v2c03__book--atatamaru" data-v2-shelf="atatamaru" data-v2-shelf-trigger="atatamaru">
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19s-6.5-4.2-8-8A4.4 4.4 0 0 1 12 8.4 4.4 4.4 0 0 1 20 11c-1.5 3.8-8 8-8 8z"/></svg></span>
+        <span class="v2c03__name">心があたたまる</span>
       </button>
-      <button type="button" class="v2b-shelfbook v2b-shelfbook--hikareru" data-v2-shelf="hikareru" data-v2-shelf-trigger="hikareru">
-        <span class="v2b-shelfbook__cover" aria-hidden="true"><span class="v2b-shelfbook__glyph"><svg viewBox="0 0 24 24"><path d="M13 11l1.2-3.2L17.5 7l-3.3-.8L13 3l-1.2 3.2L8.5 7l3.3.8z"/><path d="M17 9c-4 3-8 6-12 11"/></svg></span></span>
-        <span class="v2b-shelfbook__board" aria-hidden="true"></span>
-        <span class="v2b-shelfbook__name">惹かれる</span>
+      <button type="button" class="v2c03__book v2c03__book--hikareru" data-v2-shelf="hikareru" data-v2-shelf-trigger="hikareru">
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 11l1.2-3.2L17.5 7l-3.3-.8L13 3l-1.2 3.2L8.5 7l3.3.8z"/><path d="M17 9c-4 3-8 6-12 11"/></svg></span>
+        <span class="v2c03__name">惹かれる</span>
       </button>
-      <button type="button" class="v2b-shelfbook v2b-shelfbook--shizumu" data-v2-shelf="shizumu" data-v2-shelf-trigger="shizumu">
-        <span class="v2b-shelfbook__cover" aria-hidden="true"><span class="v2b-shelfbook__glyph"><svg viewBox="0 0 24 24"><path d="M12 4c3 3.5 5 6.5 5 9a5 5 0 1 1-10 0c0-2.5 2-5.5 5-9z"/><path d="M9.5 14c.2 1.6 1 2.6 2.5 3"/></svg></span></span>
-        <span class="v2b-shelfbook__board" aria-hidden="true"></span>
-        <span class="v2b-shelfbook__name">沈む</span>
+      <button type="button" class="v2c03__book v2c03__book--shizumu" data-v2-shelf="shizumu" data-v2-shelf-trigger="shizumu">
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 15.5a3.6 3.6 0 0 1 .4-7.2A4.8 4.8 0 0 1 16.7 9a3.3 3.3 0 0 1-.5 6.5z"/><path d="M12 18c.8 1 .8 1.9 0 2.7-.8-.8-.8-1.7 0-2.7z"/></svg></span>
+        <span class="v2c03__name">沈む</span>
       </button>
-      <button type="button" class="v2b-shelfbook v2b-shelfbook--zawatsuku" data-v2-shelf="zawatsuku" data-v2-shelf-trigger="zawatsuku">
-        <span class="v2b-shelfbook__cover" aria-hidden="true"><span class="v2b-shelfbook__glyph"><svg viewBox="0 0 24 24"><path d="M4 9c2-1.6 4-1.6 6 0s4 1.6 6 0M4 13c2-1.6 4-1.6 6 0s4 1.6 6 0M4 17c2-1.6 4-1.6 6 0s4 1.6 6 0"/></svg></span></span>
-        <span class="v2b-shelfbook__board" aria-hidden="true"></span>
-        <span class="v2b-shelfbook__name">ざわつく</span>
+      <button type="button" class="v2c03__book v2c03__book--zawatsuku" data-v2-shelf="zawatsuku" data-v2-shelf-trigger="zawatsuku">
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9.5c1.7-1.4 3.3-1.4 5 0s3.3 1.4 5 0M5 14.5c1.7-1.4 3.3-1.4 5 0s3.3 1.4 5 0"/></svg></span>
+        <span class="v2c03__name">ざわつく</span>
       </button>
-      <button type="button" class="v2b-shelfbook v2b-shelfbook--butsukaru" data-v2-shelf="butsukaru" data-v2-shelf-trigger="butsukaru">
-        <span class="v2b-shelfbook__cover" aria-hidden="true"><span class="v2b-shelfbook__glyph"><svg viewBox="0 0 24 24"><path d="M15 4L6 18M19 8l-7 11"/></svg></span></span>
-        <span class="v2b-shelfbook__board" aria-hidden="true"></span>
-        <span class="v2b-shelfbook__name">ぶつかる</span>
+      <button type="button" class="v2c03__book v2c03__book--butsukaru" data-v2-shelf="butsukaru" data-v2-shelf-trigger="butsukaru">
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 4L6 18M19 8l-7 11"/></svg></span>
+        <span class="v2c03__name">ぶつかる</span>
       </button>
-      <button type="button" class="v2b-shelfbook v2b-shelfbook--miwohiku" data-v2-shelf="miwohiku" data-v2-shelf-trigger="miwohiku">
-        <span class="v2b-shelfbook__cover" aria-hidden="true"><span class="v2b-shelfbook__glyph"><svg viewBox="0 0 24 24"><path d="M5 20C9 13 13 9 19 5"/><path d="M12 11c-.4-2.8.8-5 3.6-6.6.4 2.8-.8 5-3.6 6.6zM9.5 14.5c-2.8.4-5-.8-6.6-3.6 2.8-.4 5 .8 6.6 3.6z"/></svg></span></span>
-        <span class="v2b-shelfbook__board" aria-hidden="true"></span>
-        <span class="v2b-shelfbook__name">身を引く</span>
+      <button type="button" class="v2c03__book v2c03__book--miwohiku" data-v2-shelf="miwohiku" data-v2-shelf-trigger="miwohiku">
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 20C9 13 13 9 19 5"/><path d="M12 11c-.4-2.8.8-5 3.6-6.6.4 2.8-.8 5-3.6 6.6zM9.5 14.5c-2.8.4-5-.8-6.6-3.6 2.8-.4 5 .8 6.6 3.6z"/></svg></span>
+        <span class="v2c03__name">身を引く</span>
       </button>
-      <button type="button" class="v2b-shelfbook v2b-shelfbook--namae" data-v2-shelf="namae-ga-nai" data-v2-shelf-trigger="namae-ga-nai">
-        <span class="v2b-shelfbook__cover" aria-hidden="true"><span class="v2b-shelfbook__glyph"><svg viewBox="0 0 24 24"><g stroke-dasharray="0.1 3.4"><circle cx="12" cy="12" r="7.5"/></g></svg></span></span>
-        <span class="v2b-shelfbook__board" aria-hidden="true"></span>
-        <span class="v2b-shelfbook__name">まだ名前がない</span><span class="v2b-shelfbook__note">まだ、どのことばにも<br>決めたくないときに。</span>
+      <button type="button" class="v2c03__book v2c03__book--namae" data-v2-shelf="namae-ga-nai" data-v2-shelf-trigger="namae-ga-nai">
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><g stroke-dasharray="0.1 3.4"><circle cx="12" cy="12" r="7.5"/></g></svg></span>
+        <span class="v2c03__name">まだ名前がない</span>
       </button>
     </div>
-    <p class="v2b-03__foot"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span>どの棚からでも、書くことからでも。<br>あなたのペースで、自由に巡れます。</p>
+    <p class="v2c03__guide"><span class="v2c03__guidesprig" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span><span class="v2c03__guidetext">どの棚からでも、書くことからでも。<br>あなたのペースで、自由に巡れます。</span></p>
   </div>
 
 <nav class="v2b-nav" aria-label="主要な移動">

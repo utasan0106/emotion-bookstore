@@ -2064,3 +2064,203 @@ html[data-v2-mounted="true"][data-theme="night"] .v2-page .v2c02__card:focus-vis
   .v2c02__card { grid-template-columns: 40% 1fr; }
   .v2c02__body { padding: 0 6.5cqw 0 4cqw; }
 }
+
+/* =======================================================================
+ * 03 Emotion Shelves — v2c03（One-pass / DAY Reference 711×1536 = Geometry 正本）
+ * 2列×4段固定・NIGHT は同一 geometry の theme 差のみ。
+ * layout = cqw（stage 711 基準）/ typography = clamp 分離。
+ * ======================================================================= */
+.v2c03 {
+  padding: 0 !important;
+  background: #f3ece1;
+  min-height: 100dvh;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+[data-theme="night"] .v2c03 { background: #10141d; }
+.v2c03__stage {
+  position: relative;
+  width: min(100vw, 711px);
+  margin: 0 auto;
+  aspect-ratio: 711 / 1536;
+  height: auto;
+  container-type: inline-size;
+  font-family: "Shippori Mincho", var(--font-display);
+  display: flow-root;
+}
+.v2c03__amb {
+  position: absolute; inset: 0;
+  background: url("../../assets/v2b0/03/03_shelves_ambience_day.webp") center top / cover no-repeat;
+  z-index: 0;
+}
+[data-theme="night"] .v2c03__amb { background-image: url("../../assets/v2b0/03/03_shelves_ambience_night.webp"); }
+.v2c03__brandrow, .v2c03__title, .v2c03__lead, .v2c03__divider, .v2c03__grid, .v2c03__guide { position: relative; z-index: 1; }
+
+.v2c03__brandrow {
+  display: flex; align-items: center;
+  gap: 2.8cqw;
+  padding: 6.4cqw 4cqw 0 8.2cqw;
+}
+.v2c03__logo {
+  display: block; width: 13cqw; height: 13cqw;
+  background: url("../../assets/v2b0/01/logo_day.webp") center / contain no-repeat;
+}
+[data-theme="night"] .v2c03__logo { background-image: url("../../assets/v2b0/01/logo_night.webp"); }
+.v2c03__brandname {
+  font-size: clamp(13px, 3.66cqw, 26px);
+  letter-spacing: 0.12em;
+  font-weight: 400;
+  color: #493b2c !important;
+}
+[data-theme="night"] .v2c03__brandname { color: #e9c191 !important; }
+.v2c03__menubtn {
+  margin-left: auto;
+  min-width: 44px; min-height: 44px;
+  display: grid; place-items: center;
+  border: 0; background: none; cursor: pointer;
+  color: #8a7350;
+}
+.v2c03__menubtn svg { width: 3.4cqw; min-width: 18px; height: auto; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; }
+[data-theme="night"] .v2c03__menubtn { color: #b08a5e; }
+
+html[data-v2-mounted="true"] .v2-page h1.v2c03__title {
+  margin: 5.8cqw 0 0; padding: 0;
+  text-align: center;
+  font-family: "Shippori Mincho", var(--font-display);
+  font-size: clamp(19px, 6.75cqw, 48px);
+  letter-spacing: 0.16em; text-indent: 0.16em;
+  font-weight: 300;
+  line-height: 1.3;
+  color: #4b3b2c !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2-page h1.v2c03__title { color: #e0c2a0 !important; }
+.v2c03__lead {
+  margin: 2.0cqw 0 0; padding: 0;
+  text-align: center;
+  font-size: clamp(12px, 3.1cqw, 22px);
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  font-weight: 300;
+  color: #5c5246 !important;
+}
+[data-theme="night"] .v2c03__lead { color: #ddb88d !important; }
+.v2c03__divider {
+  display: flex; align-items: center; justify-content: center;
+  gap: 2.2cqw;
+  width: 42%;
+  margin: 4.4cqw auto 0;
+  color: #8a7350;
+}
+[data-theme="night"] .v2c03__divider { color: #b08a5e; }
+.v2c03__divline { flex: 1; height: 1px; background: rgb(150 130 105 / 0.45); }
+[data-theme="night"] .v2c03__divline { background: rgb(170 135 95 / 0.4); }
+.v2c03__sprig { display: block; width: 4cqw; min-width: 16px; }
+.v2c03__sprig svg { width: 100%; height: auto; stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+
+.v2c03__grid {
+  width: 79.9%;
+  margin: 5.3cqw auto 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.8cqw 4.1cqw;
+}
+.v2c03__book {
+  --spine: #cfc4b2;
+  --tint: #8a7350;
+  position: relative;
+  min-height: 30.4cqw;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 2.2cqw;
+  padding: 2.4cqw 2cqw 2.4cqw calc(2.95cqw + 2cqw);
+  border: 1px solid rgb(190 178 160 / 0.55);
+  border-radius: 1.4cqw;
+  background: #f7f1e7;
+  box-shadow: 0 0.8cqw 2cqw rgb(120 95 60 / 0.16);
+  cursor: pointer;
+  font-family: inherit;
+}
+[data-theme="night"] .v2c03__book {
+  background: #e5c5a1;
+  border-color: rgb(90 70 50 / 0.6);
+  box-shadow: 0 0.9cqw 2.2cqw rgb(0 0 0 / 0.5);
+}
+.v2c03__book::before {
+  content: "";
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 2.95cqw;
+  border-radius: 1.4cqw 0 0 1.4cqw;
+  background: linear-gradient(to right, rgb(0 0 0 / 0.08), rgb(0 0 0 / 0) 65%), var(--spine);
+}
+.v2c03__book:hover { filter: brightness(1.03); }
+.v2c03__ring {
+  display: grid; place-items: center;
+  width: 15.75cqw; height: 15.75cqw;
+  border: 1.5px solid var(--tint);
+  border-radius: 50%;
+  color: var(--tint);
+}
+.v2c03__ring svg { width: 8cqw; height: 8cqw; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.v2c03__name {
+  font-size: clamp(12px, 3.8cqw, 27px);
+  letter-spacing: 0.04em;
+  font-weight: 300;
+  color: #544a3d !important;
+}
+[data-theme="night"] .v2c03__name { color: #241a13 !important; }
+
+/* DAY spines / tints（Reference 実測） */
+.v2c03__book--hazumu    { --spine: #e9c689; --tint: #a8823e; }
+.v2c03__book--atatamaru { --spine: #e6b29b; --tint: #b5735e; }
+.v2c03__book--hikareru  { --spine: #99ada4; --tint: #56766a; }
+.v2c03__book--shizumu   { --spine: #96a6b5; --tint: #587085; }
+.v2c03__book--zawatsuku { --spine: #b7a8b4; --tint: #8a7590; }
+.v2c03__book--butsukaru { --spine: #d59c85; --tint: #b06b4d; }
+.v2c03__book--miwohiku  { --spine: #acae92; --tint: #6d7350; }
+.v2c03__book--namae     { --spine: #b4ada5; --tint: #8f887e; }
+/* NIGHT spines / tints（Reference 実測） */
+[data-theme="night"] .v2c03__book--hazumu    { --spine: #ba7924; --tint: #8a5a1e; }
+[data-theme="night"] .v2c03__book--atatamaru { --spine: #b06346; --tint: #8d4e37; }
+[data-theme="night"] .v2c03__book--hikareru  { --spine: #455448; --tint: #3d4f42; }
+[data-theme="night"] .v2c03__book--shizumu   { --spine: #415264; --tint: #3a4c60; }
+[data-theme="night"] .v2c03__book--zawatsuku { --spine: #624c5a; --tint: #574351; }
+[data-theme="night"] .v2c03__book--butsukaru { --spine: #985033; --tint: #7d4229; }
+[data-theme="night"] .v2c03__book--miwohiku  { --spine: #625831; --tint: #514a29; }
+[data-theme="night"] .v2c03__book--namae     { --spine: #685847; --tint: #57493a; }
+
+.v2c03__guide {
+  width: 81.7%;
+  margin: 3.4cqw auto 0;
+  display: flex; align-items: center;
+  gap: 3cqw;
+  padding: 2.6cqw 3.6cqw;
+  background: rgb(245 237 226 / 0.94);
+  border: 1px solid rgb(190 178 160 / 0.5);
+  border-radius: 1.7cqw;
+}
+[data-theme="night"] .v2c03__guide {
+  background: rgb(24 25 29 / 0.94);
+  border-color: rgb(120 90 55 / 0.4);
+}
+.v2c03__guidesprig { display: block; width: 6cqw; min-width: 22px; color: #7a8f5e; }
+[data-theme="night"] .v2c03__guidesprig { color: #97a86b; }
+.v2c03__guidesprig svg { width: 100%; height: auto; stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.v2c03__guidetext {
+  font-size: clamp(12px, 3.1cqw, 22px);
+  line-height: 1.62;
+  font-weight: 300;
+  color: #6b6154 !important;
+}
+[data-theme="night"] .v2c03__guidetext { color: #d1aa7b !important; }
+/* 床帯ぶんの下余白（Reference y1470→1536）。Global Nav は sticky で後続 */
+.v2c03__stage { padding-bottom: 6cqw; }
+/* 03 のみ: full-bleed コンテナ内で sticky が効かないため fixed で下端固定
+   （DOM・項目・挙動は既存 Global Nav のまま） */
+.v2c03 .v2b-nav {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  width: 100%;
+  z-index: 30;
+  margin-top: 0;
+}
