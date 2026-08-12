@@ -2264,3 +2264,318 @@ html[data-v2-mounted="true"][data-theme="night"] .v2-page h1.v2c03__title { colo
   z-index: 30;
   margin-top: 0;
 }
+
+/* =======================================================================
+ * 04 Emotion Detail — v2c04（One-pass / DAY Reference 355×1536 = Geometry 正本）
+ * 一枚のページを下へ歩く: hero → ことば → 作品 → 自分の本 → 書く。
+ * DAY/NIGHT 同一 DOM/geometry。UI/文字は HTML/CSS/SVG のみ。
+ * ======================================================================= */
+.v2c04 { padding: 0 !important; background: #faf2e7; min-height: 100dvh; }
+[data-theme="night"] .v2c04 { background: #141d2c; }
+.v2c04__stage {
+  width: 100%;
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 6.3cqw, 30px) 2.5rem;
+  container-type: inline-size;
+  font-family: "Shippori Mincho", var(--font-display);
+  color: #3f3427 !important;
+}
+[data-theme="night"] .v2c04__stage { color: #cfc4b2 !important; }
+.v2c04__utility { padding-top: clamp(12px, 4.5cqw, 20px); }
+.v2c04__back {
+  display: inline-flex; align-items: center; gap: 0.5em;
+  min-height: 44px;
+  border: 0; background: none; cursor: pointer;
+  font-family: inherit;
+  font-size: clamp(12px, 3.7cqw, 14px);
+  letter-spacing: 0.06em;
+  color: #6a5a45 !important;
+}
+[data-theme="night"] .v2c04__back { color: #b19a76 !important; }
+.v2c04__back-arrow {
+  display: inline-block; width: 0.62em; height: 0.62em;
+  border-left: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.v2c04__hero {
+  position: relative;
+  text-align: center;
+  padding: clamp(28px, 13cqw, 56px) 0 clamp(26px, 12cqw, 48px);
+}
+.v2c04__halo {
+  position: absolute; left: 50%; top: 46%;
+  width: clamp(180px, 66cqw, 270px); aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side at 42% 38%, rgb(248 216 190 / 0.9), rgb(246 210 182 / 0.62) 55%, rgb(246 212 186 / 0.28) 76%, transparent 96%),
+    radial-gradient(closest-side at 62% 66%, rgb(240 196 168 / 0.35), transparent 82%);
+  z-index: 0;
+}
+[data-theme="night"] .v2c04__halo {
+  background:
+    radial-gradient(closest-side at 42% 38%, rgb(52 74 108 / 0.95), rgb(37 55 86 / 0.8) 55%, rgb(28 42 68 / 0.4) 78%, transparent 96%),
+    radial-gradient(closest-side at 64% 70%, rgb(24 36 60 / 0.55), transparent 80%);
+}
+.v2c04__stars { display: none; position: absolute; left: 50%; top: 46%; width: clamp(200px, 74cqw, 300px); aspect-ratio: 1; transform: translate(-50%, -50%); z-index: 0; }
+[data-theme="night"] .v2c04__stars { display: block; }
+.v2c04__stars svg { width: 100%; height: 100%; fill: rgb(226 214 184 / 0.7); }
+.v2c04__sprig {
+  position: absolute; right: 17%; bottom: clamp(4px, 2.5cqw, 14px);
+  width: clamp(26px, 10cqw, 42px);
+  color: #93a06b; z-index: 1;
+}
+[data-theme="night"] .v2c04__sprig { color: #7d8a5c; }
+.v2c04__sprig svg { width: 100%; height: auto; stroke: currentColor; fill: none; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+html[data-v2-mounted="true"] .v2-page h1.v2c04__title {
+  position: relative; z-index: 1;
+  margin: 0; padding: 0;
+  font-family: "Shippori Mincho", var(--font-display);
+  font-size: clamp(24px, 9.6cqw, 40px);
+  letter-spacing: 0.12em; text-indent: 0.12em;
+  font-weight: 300;
+  line-height: 1.4;
+  color: #3a2e20 !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2-page h1.v2c04__title { color: #ede2cc !important; }
+.v2c04__lead {
+  position: relative; z-index: 1;
+  margin: clamp(8px, 3cqw, 14px) 0 0; padding: 0;
+  font-size: clamp(12px, 3.7cqw, 15px);
+  line-height: 1.8;
+  letter-spacing: 0.04em;
+  font-weight: 300;
+  color: #6a5a45 !important;
+}
+[data-theme="night"] .v2c04__lead { color: #a89f90 !important; }
+
+.v2c04__sec { margin-top: clamp(26px, 11cqw, 44px); }
+.v2c04__num {
+  margin: 0; padding: 0;
+  font-size: clamp(10px, 3.1cqw, 12px);
+  letter-spacing: 0.28em;
+  color: #8a7350 !important;
+}
+[data-theme="night"] .v2c04__num { color: #ab8f63 !important; }
+html[data-v2-mounted="true"] .v2-page h2.v2c04__h {
+  margin: 0.2em 0 0; padding: 0 0 0.55em;
+  border-bottom: 1px solid rgb(150 130 105 / 0.4);
+  font-family: "Shippori Mincho", var(--font-display);
+  font-size: clamp(17px, 5.6cqw, 22px);
+  letter-spacing: 0.2em;
+  font-weight: 300;
+  color: #46392a !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2-page h2.v2c04__h {
+  border-bottom-color: rgb(150 120 80 / 0.35);
+  color: #ddd0b8 !important;
+}
+.v2c04__intro {
+  margin: 0.9em 0 0; padding: 0;
+  font-size: clamp(12px, 3.5cqw, 14px);
+  line-height: 1.8;
+  font-weight: 300;
+  color: #6a5a45 !important;
+}
+[data-theme="night"] .v2c04__intro { color: #a89f90 !important; }
+
+/* ことば: 感情語カード（既存 selection 契約の見た目のみ更新） */
+.v2c04__words { margin-top: 1em; display: grid; gap: clamp(8px, 2.6cqw, 12px); }
+.v2c04__words .v2-word-card {
+  display: block; width: 100%;
+  text-align: left;
+  padding: clamp(10px, 3.4cqw, 16px) clamp(12px, 4cqw, 18px);
+  border: 1px solid rgb(170 150 120 / 0.45);
+  border-radius: 12px;
+  background: rgb(252 248 240 / 0.8);
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+}
+[data-theme="night"] .v2c04__words .v2-word-card {
+  border-color: rgb(150 120 80 / 0.35);
+  background: rgb(28 39 58 / 0.82);
+}
+.v2c04__words .v2-word-card--current {
+  border-color: rgb(140 110 70 / 0.85);
+  background: rgb(250 242 228 / 0.95);
+  box-shadow: inset 0 0 0 1px rgb(140 110 70 / 0.35);
+}
+[data-theme="night"] .v2c04__words .v2-word-card--current {
+  border-color: rgb(190 150 95 / 0.8);
+  background: rgb(36 50 74 / 0.95);
+  box-shadow: inset 0 0 0 1px rgb(190 150 95 / 0.3);
+}
+.v2c04__words .v2-word-card__name {
+  display: block;
+  font-size: clamp(14px, 4.2cqw, 17px);
+  letter-spacing: 0.08em;
+  color: #3d3123 !important;
+}
+[data-theme="night"] .v2c04__words .v2-word-card__name { color: #e2d5bc !important; }
+.v2c04__words .v2-word-card__desc {
+  display: block; margin-top: 0.35em;
+  font-size: clamp(12px, 3.3cqw, 13px);
+  line-height: 1.65;
+  font-weight: 300;
+  color: #6a5a45 !important;
+}
+[data-theme="night"] .v2c04__words .v2-word-card__desc { color: #a09685 !important; }
+.v2c04__words .v2-word-card__slot { display: none; }
+
+/* 作品: approved snapshot の typographic editorial card（cover なしで成立させる） */
+.v2c04__works { margin-top: 1.1em; }
+.v2c04__worklist {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: clamp(8px, 2.8cqw, 14px);
+}
+@container (max-width: 310px) {
+  .v2c04__worklist { grid-template-columns: 1fr; }
+}
+.v2c04__work {
+  display: flex; flex-direction: column;
+  padding: clamp(10px, 3.4cqw, 16px) clamp(10px, 3.2cqw, 15px);
+  border: 1px solid rgb(170 150 120 / 0.5);
+  border-radius: 10px;
+  background: rgb(252 248 240 / 0.85);
+}
+[data-theme="night"] .v2c04__work {
+  border-color: rgb(150 120 80 / 0.38);
+  background: rgb(28 39 58 / 0.85);
+}
+.v2c04__work-type {
+  font-size: clamp(10px, 2.9cqw, 11.5px);
+  letter-spacing: 0.22em;
+  color: #8a7350 !important;
+  padding-bottom: 0.55em;
+  margin-bottom: 0.7em;
+  border-bottom: 1px solid rgb(170 150 120 / 0.35);
+}
+[data-theme="night"] .v2c04__work-type { color: #ab8f63 !important; border-bottom-color: rgb(150 120 80 / 0.3); }
+.v2c04__work-title {
+  font-size: clamp(13px, 3.8cqw, 15px);
+  line-height: 1.45;
+  letter-spacing: 0.03em;
+  color: #3d3123 !important;
+}
+[data-theme="night"] .v2c04__work-title { color: #e2d5bc !important; }
+.v2c04__work-creator {
+  margin-top: 0.3em;
+  font-size: clamp(11px, 3.1cqw, 12px);
+  font-weight: 300;
+  color: #86775f !important;
+}
+[data-theme="night"] .v2c04__work-creator { color: #94897a !important; }
+.v2c04__work-reason {
+  margin-top: 0.75em;
+  font-size: clamp(12px, 3.3cqw, 13px);
+  line-height: 1.65;
+  font-weight: 300;
+  color: #5d4f3e !important;
+}
+[data-theme="night"] .v2c04__work-reason { color: #a89f90 !important; }
+.v2c04__works-hold {
+  margin-top: 0.2em;
+  padding: clamp(14px, 4.6cqw, 20px);
+  border: 1px dashed rgb(170 150 120 / 0.5);
+  border-radius: 10px;
+}
+[data-theme="night"] .v2c04__works-hold { border-color: rgb(150 120 80 / 0.35); }
+.v2c04__works-hold-title { margin: 0; font-size: clamp(12px, 3.5cqw, 14px); color: #5d4f3e !important; }
+.v2c04__works-hold-note { margin: 0.4em 0 0; font-size: clamp(11px, 3.1cqw, 12.5px); font-weight: 300; color: #86775f !important; }
+[data-theme="night"] .v2c04__works-hold-title { color: #cabfa8 !important; }
+[data-theme="night"] .v2c04__works-hold-note { color: #94897a !important; }
+
+/* 自分の本: adapter 生成カード（private・静か・データ数駆動） */
+.v2c04 .v2-detail__books {
+  list-style: none; margin: 1.1em 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: clamp(8px, 2.8cqw, 14px);
+}
+@container (max-width: 310px) {
+  .v2c04 .v2-detail__books { grid-template-columns: 1fr; }
+}
+.v2c04 .v2-book-card-item { display: block; }
+.v2c04 .v2-book-card {
+  display: flex; flex-direction: column; gap: 0.4em;
+  width: 100%; height: 100%;
+  text-align: left;
+  padding: clamp(10px, 3.4cqw, 16px) clamp(10px, 3.2cqw, 15px);
+  border: 1px solid rgb(170 150 120 / 0.5);
+  border-radius: 10px;
+  background: rgb(252 248 240 / 0.85);
+  cursor: pointer;
+  font-family: inherit;
+}
+[data-theme="night"] .v2c04 .v2-book-card {
+  border-color: rgb(150 120 80 / 0.38);
+  background: rgb(28 39 58 / 0.85);
+}
+.v2c04 .v2-book-card__title {
+  font-size: clamp(13px, 3.8cqw, 15px);
+  line-height: 1.45;
+  color: #3d3123 !important;
+}
+[data-theme="night"] .v2c04 .v2-book-card__title { color: #e2d5bc !important; }
+.v2c04 .v2-book-card__meta {
+  font-size: clamp(11px, 3.1cqw, 12px);
+  font-weight: 300;
+  color: #86775f !important;
+}
+[data-theme="night"] .v2c04 .v2-book-card__meta { color: #94897a !important; }
+.v2c04 .v2-detail__empty {
+  margin-top: 1.1em;
+  padding: clamp(14px, 4.6cqw, 22px);
+  border: 1px solid rgb(170 150 120 / 0.5);
+  border-radius: 10px;
+  background: rgb(252 248 240 / 0.6);
+}
+[data-theme="night"] .v2c04 .v2-detail__empty { border-color: rgb(150 120 80 / 0.35); background: rgb(28 39 58 / 0.6); }
+.v2c04 .v2-detail__empty-title { margin: 0; font-size: clamp(12px, 3.6cqw, 14px); line-height: 1.7; color: #4a3d2c !important; }
+[data-theme="night"] .v2c04 .v2-detail__empty-title { color: #d5c9b1 !important; }
+.v2c04 .v2-detail__empty-note { margin: 0.5em 0 0; font-size: clamp(11px, 3.2cqw, 12.5px); font-weight: 300; line-height: 1.7; color: #86775f !important; }
+[data-theme="night"] .v2c04 .v2-detail__empty-note { color: #94897a !important; }
+.v2c04 .v2-detail__more {
+  margin-top: 0.9em;
+  border: 0; background: none; cursor: pointer;
+  font-family: inherit;
+  font-size: clamp(12px, 3.4cqw, 13.5px);
+  letter-spacing: 0.04em;
+  color: #6a5a45 !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  min-height: 44px;
+}
+[data-theme="night"] .v2c04 .v2-detail__more { color: #b19a76 !important; }
+
+/* 書く */
+.v2c04__write {
+  margin-top: clamp(20px, 8cqw, 34px);
+  padding: clamp(12px, 4.2cqw, 18px) clamp(14px, 4.6cqw, 20px);
+  border: 1px solid rgb(170 150 120 / 0.5);
+  border-radius: 12px;
+  background: rgb(252 248 240 / 0.85);
+}
+[data-theme="night"] .v2c04__write { border-color: rgb(150 120 80 / 0.4); background: rgb(28 39 58 / 0.85); }
+.v2c04__writebtn {
+  display: inline-flex; align-items: center; gap: 0.6em;
+  border: 0; background: none; cursor: pointer;
+  padding: 0; min-height: 44px;
+  font-family: inherit;
+  font-size: clamp(14px, 4.3cqw, 17px);
+  letter-spacing: 0.08em;
+  color: #3d3123 !important;
+}
+[data-theme="night"] .v2c04__writebtn { color: #e2d5bc !important; }
+.v2c04__pen { display: inline-grid; place-items: center; width: 1.9em; height: 1.9em; border: 1px solid rgb(140 115 80 / 0.55); border-radius: 50%; }
+.v2c04__pen svg { width: 1.05em; height: 1.05em; stroke: currentColor; fill: none; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+.v2c04__writenote {
+  margin: 0.35em 0 0 2.8em; padding: 0;
+  font-size: clamp(11px, 3.2cqw, 12.5px);
+  font-weight: 300;
+  color: #86775f !important;
+}
+[data-theme="night"] .v2c04__writenote { color: #94897a !important; }

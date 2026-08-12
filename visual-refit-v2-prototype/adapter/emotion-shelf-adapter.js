@@ -281,6 +281,85 @@
   }
 
   /* ---------------------------------------------------------------------------
+   * 04「作品」READ-ONLY 描画（Beta0 static Editorial Snapshot のみ）
+   * - approved snapshot（V2_EDITORIAL_SNAPSHOTS）以外から作品を生成しない
+   * - runtime 外部API・cover 画像・外部遷移・affiliate なし
+   * - 追加2作品が approved でない限り「もう2つ見る」を作らない
+   * - snapshot 不足時は既存の安全な HOLD 表示（仕入れ中）を維持する
+   * ------------------------------------------------------------------------ */
+  var WORK_TYPE_LABELS = { book: '本', film: '映画', music: '音楽' };
+
+  function buildWorkCard(item) {
+    var li = doc.createElement('li');
+    li.className = 'v2c04__work';
+    li.setAttribute('data-v2-work-id', String(item.item_id || ''));
+
+    var type = doc.createElement('span');
+    type.className = 'v2c04__work-type';
+    type.textContent = WORK_TYPE_LABELS[item.type] || String(item.type || '');
+    li.appendChild(type);
+
+    var title = doc.createElement('span');
+    title.className = 'v2c04__work-title';
+    title.textContent = String(item.title || '');
+    li.appendChild(title);
+
+    var creator = doc.createElement('span');
+    creator.className = 'v2c04__work-creator';
+    creator.textContent = String(item.creator || '');
+    li.appendChild(creator);
+
+    var reason = doc.createElement('span');
+    reason.className = 'v2c04__work-reason';
+    reason.textContent = String(item.editorial_reason || '');
+    li.appendChild(reason);
+    return li;
+  }
+
+  function buildWorksHold() {
+    var box = doc.createElement('div');
+    box.className = 'v2c04__works-hold';
+    var t = doc.createElement('p');
+    t.className = 'v2c04__works-hold-title';
+    t.textContent = 'この棚の作品は、ただいま仕入れ中です。';
+    box.appendChild(t);
+    var n = doc.createElement('p');
+    n.className = 'v2c04__works-hold-note';
+    n.textContent = 'また立ち寄ったときに、静かに並んでいるはずです。';
+    box.appendChild(n);
+    return box;
+  }
+
+  function renderWorks(scope) {
+    if (!doc) return { ok: false, reason: 'no_document' };
+    var body = q('[data-v2-works="body"]', scope);
+    if (!body) return { ok: false, reason: 'no_target' };
+    clearChildren(body);
+    body.removeAttribute('data-v2-works-count');
+
+    var snaps = global.V2_EDITORIAL_SNAPSHOTS || {};
+    var snap = state.activeEmotionId ? snaps[state.activeEmotionId] : null;
+    var items = snap && Array.isArray(snap.items) ? snap.items : [];
+    var ok = items.length >= 3 && items.slice(0, 3).every(function (it) {
+      return it && it.title && it.creator && it.editorial_reason && it.type;
+    });
+    if (!ok) {
+      // works_0_or_unapproved / 大棚文脈: 安全な HOLD。作品を生成しない。
+      body.appendChild(buildWorksHold());
+      body.setAttribute('data-v2-works-count', '0');
+      return { ok: true, status: 'hold', rendered: 0 };
+    }
+    var list = doc.createElement('ul');
+    list.className = 'v2c04__worklist';
+    for (var i = 0; i < 3; i++) list.appendChild(buildWorkCard(items[i]));
+    body.appendChild(list);
+    // 追加2作品は additional_approved === true かつ approved item がある場合のみ。
+    // 現 Beta0 snapshot は未承認のため「もう2つ見る」を生成しない。
+    body.setAttribute('data-v2-works-count', '3');
+    return { ok: true, status: 'ok', rendered: 3 };
+  }
+
+  /* ---------------------------------------------------------------------------
    * 04 の READ-ONLY 描画
    * 文字はすべて textContent。既存 CATEGORIES の label / def を読むだけ。
    * ------------------------------------------------------------------------ */
@@ -298,10 +377,20 @@
       ? { id: ALL_CONTEXT_ID, name: 'すべての感情語', lead: '21のことばを、まとめて見わたせます。' }
       : getShelfDef(shelfId);
 
-    if (titleEl) titleEl.textContent = def ? def.name : '';
+    /* 04 hero contract: 感情語が選択されている間は個別感情の label / def を
+       表示する（大棚名を 04 の identity として固定しない）。未選択（大棚文脈）は
+       従来どおり大棚 name / lead。データは既存 CATEGORIES を読むだけ。 */
+    var activeCat = state.activeEmotionId ? findCategory(state.activeEmotionId) : null;
+    if (titleEl) {
+      titleEl.textContent = (activeCat && typeof activeCat.label === 'string')
+        ? activeCat.label
+        : (def ? def.name : '');
+    }
     if (leadEl) {
       leadEl.textContent = '';
-      if (def && def.lead) {
+      if (activeCat && typeof activeCat.def === 'string') {
+        leadEl.appendChild(doc.createTextNode(activeCat.def));
+      } else if (def && def.lead) {
         var lines = def.lead.split('\n');
         for (var li = 0; li < lines.length; li++) {
           if (li > 0) leadEl.appendChild(doc.createElement('br'));
@@ -325,6 +414,8 @@
       wordsEl.appendChild(frag);
       wordsEl.setAttribute('data-v2-emotion-count', String(ids.length));
     }
+
+    renderWorks(scope);
 
     // 文脈（大棚／感情語）が変わったら「自分の本」の絞り込み結果も必ず追随させる。
     // 領域の選択状態そのものはここでは変えない。

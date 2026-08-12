@@ -628,41 +628,45 @@ body.night .about-data-content{
   <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span>本棚</span></button>
 </nav>
 </div>
-<div class="v2-page v2b v2b-04" data-v2-screen="04" data-v2-subview-of="shelf-detail" data-screen="04">
-  <div class="v2b-inner">
-    <div class="v2b-topbar" style="justify-content:flex-start">
-      <button type="button" class="v2b-back" data-v2-go="03" data-v2-shelf-back>← 棚へ戻る</button>
+<div class="v2-page v2b v2c04" data-v2-screen="04" data-v2-subview-of="shelf-detail" data-screen="04">
+  <div class="v2c04__stage">
+    <div class="v2c04__utility">
+      <button type="button" class="v2c04__back" data-v2-go="03" data-v2-shelf-back><span class="v2c04__back-arrow" aria-hidden="true"></span>棚へ戻る</button>
     </div>
-    <header class="v2b-04__head">
-      <span class="v2b-04__halo" aria-hidden="true"></span><span class="v2b-04__sprig" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span>
-      <h1 class="v2b-04__title" data-v2-emotion="title"></h1>
-      <p class="v2b-04__lead" data-v2-emotion="lead"></p>
+    <header class="v2c04__hero">
+      <span class="v2c04__halo" aria-hidden="true"></span>
+      <span class="v2c04__stars" aria-hidden="true"><svg viewBox="0 0 240 240"><circle cx="38" cy="52" r="1.4"/><circle cx="196" cy="40" r="1.1"/><circle cx="214" cy="120" r="1.4"/><circle cx="26" cy="140" r="1.1"/><circle cx="120" cy="18" r="1.2"/><circle cx="176" cy="196" r="1.2"/></svg></span>
+      <span class="v2c04__sprig" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span>
+      <h1 class="v2c04__title" data-v2-emotion="title"></h1>
+      <p class="v2c04__lead" data-v2-emotion="lead"></p>
     </header>
 
-    <section class="v2b-04__sec" data-v2-region-panel="kotoba" aria-label="ことば">
-      <p class="v2b-04__num">01</p>
-      <h2 class="v2b-04__h">ことば</h2>
-      <div class="v2b-04__words" data-v2-emotion="words"></div>
+    <section class="v2c04__sec" data-v2-region-panel="kotoba" aria-label="ことば">
+      <p class="v2c04__num" aria-hidden="true">01</p>
+      <h2 class="v2c04__h">ことば</h2>
+      <div class="v2c04__words" data-v2-emotion="words"></div>
     </section>
 
-    <section class="v2b-04__sec" data-v2-region-panel="sakuhin" aria-label="作品">
-      <p class="v2b-04__num">02</p>
-      <h2 class="v2b-04__h">作品</h2>
-      <p class="v2b-04__intro">この気持ちにそっと寄り添う、本や映画、音楽の棚です。</p>
-      <div class="v2b-04__works-empty">
-        <p class="v2b-04__works-empty-title">この棚の作品は、ただいま仕入れ中です。</p>
-        <p class="v2b-04__works-empty-note">また立ち寄ったときに、静かに並んでいるはずです。</p>
+    <section class="v2c04__sec" data-v2-region-panel="sakuhin" aria-label="作品">
+      <p class="v2c04__num" aria-hidden="true">02</p>
+      <h2 class="v2c04__h">作品</h2>
+      <p class="v2c04__intro">この気持ちにそっと寄り添う、本や映画、音楽の棚です。</p>
+      <div class="v2c04__works" data-v2-works="body">
+        <div class="v2c04__works-hold">
+          <p class="v2c04__works-hold-title">この棚の作品は、ただいま仕入れ中です。</p>
+          <p class="v2c04__works-hold-note">また立ち寄ったときに、静かに並んでいるはずです。</p>
+        </div>
       </div>
     </section>
 
-    <section class="v2b-04__sec" data-v2-region-panel="jibun" aria-label="自分の本">
-      <p class="v2b-04__num">03</p>
-      <h2 class="v2b-04__h">自分の本</h2>
-      <p class="v2b-04__intro">あなたがこの気持ちで残した本です。</p>
+    <section class="v2c04__sec" data-v2-region-panel="jibun" aria-label="自分の本">
+      <p class="v2c04__num" aria-hidden="true">03</p>
+      <h2 class="v2c04__h">自分の本</h2>
+      <p class="v2c04__intro">あなたがこの気持ちで残した本です。</p>
       <div data-v2-mybooks="body"></div>
-      <div class="v2b-04__write">
-        <button type="button" class="v2b-btn v2b-btn--quiet" data-v2-go="05">残ったことを書く</button>
-        <p class="v2b-04__write-note">今の気持ちを、自分の言葉で残してみる</p>
+      <div class="v2c04__write">
+        <button type="button" class="v2c04__writebtn" data-v2-go="05"><span class="v2c04__pen" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span>残ったことを書く</button>
+        <p class="v2c04__writenote">今の気持ちを、自分の言葉で残してみる</p>
       </div>
     </section>
   </div>
@@ -1319,6 +1323,7 @@ body.night .about-data-content{
 <!-- ===== Visual Refit V2 Adapters ===== -->
 <script src="visual-refit-v2-prototype/adapter/navigation-adapter.js"></script>
 <script src="visual-refit-v2-prototype/adapter/bookshelf-adapter.js"></script>
+<script src="visual-refit-v2-prototype/data/editorial-snapshot-beta0.js"></script>
 <script src="visual-refit-v2-prototype/adapter/emotion-shelf-adapter.js"></script>
 <script src="visual-refit-v2-prototype/adapter/form-adapter.js"></script>
 </body>
