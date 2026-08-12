@@ -514,68 +514,44 @@ body.night .about-data-content{
     </div>
 
 <!-- V2 02 入店 -->
-<div class="v2-page v2b v2b-02" data-v2-screen="02" data-screen="02">
-  <div class="v2b-scene" aria-hidden="true">
-    <span class="v2b-scene__window v2b-scene__window--left"></span>
-    <span class="v2b-scene__lampwrap"><svg class="v2b-lamp" viewBox="0 0 80 120" aria-hidden="true">
-  <line x1="40" y1="0" x2="40" y2="46" class="lamp-cord"/>
-  <rect x="36" y="44" width="8" height="7" rx="2" class="lamp-cap"/>
-  <path d="M20 84 Q20 52 40 52 Q60 52 60 84 Z" class="lamp-shade"/>
-  <circle cx="40" cy="80" r="7" class="lamp-bulb"/>
-  <circle cx="40" cy="82" r="30" class="lamp-glow"/>
-</svg></span>
-    <span class="v2b-scene__floor"></span>
-  </div>
-  <div class="v2b-inner">
-    <div class="v2b-topbar"><span class="v2b-brand"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span>みんなの感情書店</span><span></span></div>
-    <header class="v2b-02__head">
-      <h1 class="v2b-02__title">今日は、<br>どこからはじめますか。</h1>
-      <p class="v2b-02__lead">気持ちから棚を歩くことも、残ったことを書くことも、<br>自分の本棚を開くこともできます。</p>
+<div class="v2-page v2b v2c02" data-v2-screen="02" data-screen="02">
+  <div class="v2c02__stage">
+    <div class="v2c02__amb" aria-hidden="true"></div>
+    <header class="v2c02__brandrow">
+      <span class="v2c02__logo" aria-hidden="true"></span>
+      <span class="v2c02__brandname">みんなの感情書店</span>
     </header>
-    <div class="v2b-02__cards">
-      <button type="button" class="v2b-card v2b-02__card" data-v2-go="03">
-        <span class="v2b-02__art" aria-hidden="true"><svg viewBox="0 0 120 96" aria-hidden="true" class="niche-art">
-  <path d="M8 92 V40 Q8 12 60 12 Q112 12 112 40 V92 Z" class="niche-bg"/>
-  <g class="niche-wood"><rect x="16" y="50" width="88" height="4" rx="1"/><rect x="16" y="82" width="88" height="4" rx="1"/></g>
-  <g class="niche-cards"><rect x="20" y="26" width="14" height="20" rx="1.5" class="nc nc1"/><rect x="38" y="26" width="14" height="20" rx="1.5" class="nc nc2"/><rect x="56" y="26" width="14" height="20" rx="1.5" class="nc nc3"/><rect x="74" y="26" width="14" height="20" rx="1.5" class="nc nc4"/><rect x="92" y="26" width="12" height="20" rx="1.5" class="nc nc5"/></g>
-  <g class="niche-books"><rect x="18" y="58" width="8.6" height="24" rx="1" class="nb nb0"/><rect x="29" y="58" width="8.6" height="24" rx="1" class="nb nb1"/><rect x="39" y="58" width="8.6" height="24" rx="1" class="nb nb2"/><rect x="50" y="58" width="8.6" height="24" rx="1" class="nb nb3"/><rect x="60" y="58" width="8.6" height="24" rx="1" class="nb nb4"/><rect x="71" y="58" width="8.6" height="24" rx="1" class="nb nb5"/><rect x="82" y="58" width="8.6" height="24" rx="1" class="nb nb0"/><rect x="92" y="58" width="8.6" height="24" rx="1" class="nb nb1"/></g>
-</svg></span>
-        <span class="v2b-02__body">
-          <span class="v2b-02__cardtitle">感情の棚を見る</span>
-          <span class="v2b-02__carddesc">気持ちごとに並ぶ棚から、<br>ことばや作品に出会う。</span>
+    <h1 class="v2c02__hero">今日は、<br>どこからはじめますか。</h1>
+    <p class="v2c02__lead">気持ちから棚を歩くことも、残ったことを書くことも、<br>自分の本棚を開くこともできます。</p>
+    <nav class="v2c02__cards" aria-label="はじめる場所">
+      <button type="button" class="v2c02__card" data-v2-go="03">
+        <span class="v2c02__pane v2c02__pane--emotion" aria-hidden="true"></span>
+        <span class="v2c02__body">
+          <span class="v2c02__cardtitle">感情の棚を見る</span>
+          <span class="v2c02__rule" aria-hidden="true"></span>
+          <span class="v2c02__carddesc">気持ちごとに並ぶ棚から、<br>ことばや作品に出会う。</span>
         </span>
-        <span class="v2b-chevron" aria-hidden="true">›</span>
+        <span class="v2c02__chev" aria-hidden="true"></span>
       </button>
-      <button type="button" class="v2b-card v2b-02__card" data-v2-go="05">
-        <span class="v2b-02__art" aria-hidden="true"><svg viewBox="0 0 120 96" aria-hidden="true" class="niche-art">
-  <path d="M8 92 V40 Q8 12 60 12 Q112 12 112 40 V92 Z" class="niche-bg"/>
-  <rect x="14" y="74" width="92" height="5" rx="1.5" class="niche-wood-strong"/>
-  <g class="niche-open"><path d="M28 72 c8-4 14-4 20 0 v-22 c-6-4-12-4-20 0 z"/><path d="M48 72 c6-4 12-4 20 0 v-22 c-8-4-14-4-20 0 z"/><path d="M30 58 h14 M30 63 h14 M52 58 h13 M52 63 h13" class="niche-lines"/></g>
-  <g class="niche-closedbook"><rect x="78" y="42" width="22" height="30" rx="2"/><path d="M86 52 c2-3 4-4 7-4 M86 56 c2-3 4-4 7-4" class="niche-lines"/></g>
-  <path d="M36 78 l16 4 M52 82 l4-2" class="niche-pen"/>
-</svg></span>
-        <span class="v2b-02__body">
-          <span class="v2b-02__cardtitle">残ったことを書く</span>
-          <span class="v2b-02__carddesc">作品の余韻も、<br>日々の小さなことも、<br>一冊にして残す。</span>
+      <button type="button" class="v2c02__card" data-v2-go="05">
+        <span class="v2c02__pane v2c02__pane--write" aria-hidden="true"></span>
+        <span class="v2c02__body">
+          <span class="v2c02__cardtitle">残ったことを書く</span>
+          <span class="v2c02__rule" aria-hidden="true"></span>
+          <span class="v2c02__carddesc">作品の余韻も、<br>日々の小さなことも、<br>一冊にして残す。</span>
         </span>
-        <span class="v2b-chevron" aria-hidden="true">›</span>
+        <span class="v2c02__chev" aria-hidden="true"></span>
       </button>
-      <button type="button" class="v2b-card v2b-02__card" data-v2-go="06">
-        <span class="v2b-02__art" aria-hidden="true"><svg viewBox="0 0 120 96" aria-hidden="true" class="niche-art">
-  <path d="M8 92 V40 Q8 12 60 12 Q112 12 112 40 V92 Z" class="niche-bg"/>
-  <g class="niche-wood"><rect x="16" y="48" width="88" height="4" rx="1"/><rect x="16" y="82" width="88" height="4" rx="1"/></g>
-  <g class="niche-books"><rect x="20" y="26" width="9" height="22" rx="1" class="nb nb2"/><rect x="31" y="26" width="9" height="22" rx="1" class="nb nb3"/><rect x="42" y="26" width="9" height="22" rx="1" class="nb nb4"/><rect x="53" y="26" width="9" height="22" rx="1" class="nb nb5"/><rect x="64" y="26" width="9" height="22" rx="1" class="nb nb0"/><rect x="75" y="26" width="9" height="22" rx="1" class="nb nb1"/>
-    <rect x="88" y="30" width="14" height="18" rx="1" class="niche-frame"/><rect x="22" y="60" width="9" height="22" rx="1" class="nb nb4"/><rect x="33" y="60" width="9" height="22" rx="1" class="nb nb5"/><rect x="44" y="60" width="9" height="22" rx="1" class="nb nb0"/><rect x="55" y="60" width="9" height="22" rx="1" class="nb nb1"/><rect x="66" y="60" width="9" height="22" rx="1" class="nb nb2"/>
-    <path d="M84 76 c2-8 6-11 12-13 -1 7-4 10-12 13z" class="niche-leaf"/>
-  </g>
-</svg></span>
-        <span class="v2b-02__body">
-          <span class="v2b-02__cardtitle">自分の本棚を見る</span>
-          <span class="v2b-02__carddesc">あなたが一冊にした言葉を、<br>あとから静かに巡る。</span>
+      <button type="button" class="v2c02__card" data-v2-go="bookshelf">
+        <span class="v2c02__pane v2c02__pane--library" aria-hidden="true"></span>
+        <span class="v2c02__body">
+          <span class="v2c02__cardtitle">自分の本棚を見る</span>
+          <span class="v2c02__rule" aria-hidden="true"></span>
+          <span class="v2c02__carddesc">あなたが一冊にした言葉を、<br>あとから静かに巡る。</span>
         </span>
-        <span class="v2b-chevron" aria-hidden="true">›</span>
+        <span class="v2c02__chev" aria-hidden="true"></span>
       </button>
-    </div>
+    </nav>
   </div>
 </div>
 </section>
