@@ -1576,8 +1576,8 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   text-shadow: none;
 }
 [data-theme="night"] .v2c01__brand { color: #b3906b !important; }
-.v2c01__brand-sub { display: block; font-size: 5.75cqw; letter-spacing: 0.35em; text-indent: 0.35em; }
-.v2c01__brand-main { display: block; margin-top: 2.3cqw; font-size: 8.55cqw; letter-spacing: 0.22em; text-indent: 0.22em; }
+.v2c01__brand-sub { display: block; font-size: 5.55cqw; letter-spacing: 0.35em; text-indent: 0.35em; }
+.v2c01__brand-main { display: block; margin-top: 2.3cqw; font-size: 8.2cqw; letter-spacing: 0.22em; text-indent: 0.22em; }
 
 .v2c01__rule {
   position: absolute;
@@ -1594,7 +1594,7 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   width: 64%;
   margin: 0;
   text-align: center;
-  font-size: 3.0cqw;       /* manifest 定義 ≈26px（864px 基準） */
+  font-size: 2.5cqw;       /* R4: Reference の apparent size（実測 ≈21.5px/864） */
   line-height: 2.0;
   letter-spacing: 0.01em;
   color: #4a3f2e !important;
@@ -1628,7 +1628,7 @@ html[data-v2-mounted="true"] .v2-page :where(button, a, input, textarea, select)
   font-size: 2.6cqw;
 }
 .v2c01__steps li { position: relative; }
-.v2c01__step-icon { display: block; width: 5.3cqw; height: 5.3cqw; color: #8a744c; }
+.v2c01__step-icon { display: block; width: 5.7cqw; height: 5.7cqw; color: #8a744c; }
 [data-theme="night"] .v2c01__step-icon { color: #96804f; }
 .v2c01__step-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 
@@ -1703,3 +1703,20 @@ html[data-v2-mounted="true"][data-theme="night"] body {
   --accent: var(--night-accent); --accent-strong: var(--night-accent-strong);
   --warm-metal: var(--night-bronze); --wood: var(--night-wood); --elevation: var(--night-shadow);
 }
+
+
+/* -----------------------------------------------------------------------
+ * 01 Round 4 — Typography 選定の適用（FONT COMPARISON SHEET に基づく）
+ * 選定: 題字2種・body = Shippori Mincho 300（Reference の装丁的な細さ）
+ *       steps・CTA = 400（小サイズ／白抜きで消えない最小の重量）
+ * 遮断層の h1 font-weight:500 より強い特異度で 01 だけ上書きする。
+ * ---------------------------------------------------------------------- */
+html[data-v2-mounted="true"] .v2-page h1.v2c01__brand {
+  font-family: "Shippori Mincho", var(--font-display);
+  font-weight: 300;
+}
+.v2b .v2c01__brand-sub { font-weight: 300; }
+.v2b .v2c01__brand-main { font-weight: 300; }
+.v2b .v2c01__copy { font-weight: 300; }
+.v2c01__steps li { font-weight: 400; }
+.v2c01__cta { font-weight: 300; }
