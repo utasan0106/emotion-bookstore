@@ -819,69 +819,54 @@ body.night .about-data-content{
     </div>
 
 <!-- V2 05 編纂室 -->
-<div class="v2-page v2b v2b-05" data-v2-screen="05" data-screen="05">
-  <div class="v2b-inner">
-    <div class="v2b-05__bar">
-      <button type="button" class="v2b-back" data-v2-go="02" aria-label="広間へ戻る">←</button>
-      <div class="v2b-05__headmid">
-        <h1 class="v2b-05__title">編纂室</h1>
-        <p class="v2b-05__sub">残ったことを、自分の言葉で一冊にする場所</p>
-      </div>
-      <button type="button" class="v2b-05__tobooks" data-v2-go="06"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span>本棚へ</button>
-    </div>
+<div class="v2-page v2b v2c05" data-v2-screen="05" data-screen="05">
+  <div class="v2c05__stage">
+    <div class="v2c05__card">
+      <header class="v2c05__bar">
+        <button type="button" class="v2c05__back" data-v2-go="02" aria-label="広間へ戻る"><span class="v2c05__back-arrow" aria-hidden="true"></span></button>
+        <div class="v2c05__headmid">
+          <h1 class="v2c05__title">編纂室</h1>
+          <p class="v2c05__sub">残ったことを、自分の言葉で一冊にする場所</p>
+        </div>
+        <button type="button" class="v2c05__tobooks" data-v2-go="06"><span class="v2c05__tobooks-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span class="v2c05__tobooks-t">本棚へ</span></button>
+      </header>
 
-    <div class="v2b-05__desk" aria-hidden="true">
-      <svg viewBox="0 0 360 150" preserveAspectRatio="xMidYMax meet" class="v2b-05__deskart">
-        <defs>
-          <radialGradient id="b0desklampglow" cx="0.5" cy="0.45" r="0.65">
-            <stop offset="0" class="glow-c"/><stop offset="1" class="glow-e"/>
-          </radialGradient>
-        </defs>
-        <g class="desk-window"><rect x="16" y="14" width="104" height="102" rx="4" class="win-frame"/>
-          <rect x="21" y="19" width="94" height="92" class="win-glass"/>
-          <path d="M68 19 v92 M21 64 h94" class="win-bar"/>
-          <path d="M25 19 q7 46 0 92 M36 19 q6 46 0 92" class="desk-curtain"/></g>
-        <rect x="0" y="116" width="360" height="34" class="desk-top"/>
-        <g class="desk-books"><rect x="138" y="96" width="52" height="8" rx="2"/><rect x="144" y="87" width="42" height="8" rx="2"/><rect x="150" y="78" width="32" height="8" rx="2"/></g>
-        <g class="desk-ink"><rect x="204" y="98" width="15" height="18" rx="2"/><rect x="208" y="92" width="7" height="6" rx="1"/></g>
-        <path d="M226 112 l34 -7 M260 105 l6 -1 -2.6 4.4 z" class="desk-pen"/>
-        <g class="desk-vase"><path d="M282 116 q-4 -15 5 -22 q9 7 5 22 z"/><path d="M287 94 C287 82 292 74 302 68 M287 94 C284 84 279 79 272 74" class="plant-line"/>
-          <ellipse cx="302" cy="66" rx="7" ry="3.2" transform="rotate(35 302 66)" class="plant-leafline"/>
-          <ellipse cx="271" cy="72" rx="6" ry="2.8" transform="rotate(-35 271 72)" class="plant-leafline"/></g>
-        <g class="desk-lamp">
-          <rect x="306" y="110" width="44" height="7" rx="3.5" class="lampbase"/>
-          <path d="M328 110 V64" class="lampstand"/>
-          <path d="M328 64 Q328 42 290 40" class="lamparm"/>
-          <path d="M270 32 Q270 12 290 12 Q310 12 310 32 L307 42 Q290 48 273 42 Z" transform="rotate(-12 290 30)" class="lamp-shade"/>
-          <circle cx="284" cy="44" r="6.5" class="lamp-bulb"/>
-          <circle cx="280" cy="58" r="46" fill="url(#b0desklampglow)"/>
-        </g>
-      </svg>
-    </div>
-    <p class="v2b-05__autosave"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17a4 4 0 1 1 .6-8A5 5 0 0 1 17 10a3.5 3.5 0 0 1 0 7z"/><path d="M9 20l1.5-1.5L12 20l1.5-1.5L15 20"/></svg></span>書きかけは自動で保存されます</p>
+      <div class="v2c05__desk" aria-hidden="true"></div>
 
-    <div class="v2b-05__field">
-      <label class="v2b-05__label" for="v2bTitleInput">題名 <span class="is-optional">（任意）</span></label>
-      <input class="v2b-05__input" id="v2bTitleInput" type="text" maxlength="16"
-             data-v2-write="title" autocomplete="off"
-             placeholder="題名をつけると、あとから見つけやすくなります">
-    </div>
+      <p class="v2c05__autosave"><span class="v2c05__cloud" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17a4 4 0 1 1 .6-8A5 5 0 0 1 17 10a3.5 3.5 0 0 1 0 7z"/><path d="M9 20l1.5-1.5L12 20l1.5-1.5L15 20"/></svg></span>書きかけは自動で保存されます</p>
 
-    <div class="v2b-05__field">
-      <label class="v2b-05__label" for="v2bStoryInput">本文</label>
-      <textarea class="v2b-05__textarea" id="v2bStoryInput" data-v2-write="story"
-                placeholder="いま、心の中に残っていることを、そのまま書いてみてください。
+      <div class="v2c05__body">
+        <div class="v2c05__field">
+          <label class="v2c05__label" for="v2bTitleInput">題名 <span class="v2c05__opt">（任意）</span></label>
+          <input class="v2c05__input" id="v2bTitleInput" type="text" maxlength="16"
+                 data-v2-write="title" autocomplete="off"
+                 placeholder="題名をつけると、あとから見つけやすくなります">
+        </div>
+
+        <div class="v2c05__field">
+          <label class="v2c05__label" for="v2bStoryInput">本文</label>
+          <div class="v2c05__tawrap">
+            <textarea class="v2c05__textarea" id="v2bStoryInput" data-v2-write="story"
+                      placeholder="いま、心の中に残っていることを、そのまま書いてみてください。
 うまく書こうとしなくて大丈夫。
 一言からでも、本になります。"></textarea>
-      <p class="v2b-05__count" data-v2-write="count">0 / 700字</p>
+            <p class="v2c05__count" data-v2-write="count">0 / 700字</p>
+          </div>
+        </div>
+
+        <p class="v2c05__assure">本文はこの端末に保存されます。本文は公開されません。</p>
+
+        <button type="button" class="v2c05__bind" data-v2-write="bind"><span class="v2c05__bind-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span>本にする</button>
+        <p class="v2c05__bindnote">本文を保存し、本にします。そのあとで「この一冊に近い気持ち」を選べます（任意）。</p>
+
+        <div class="v2c05__resume" data-v2-write="resume" hidden>
+          <span class="v2c05__resume-sprig" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span>
+          <span class="v2c05__resume-box"><span class="v2c05__resume-t">書きかけがあります</span><span class="v2c05__resume-n">続きを書くときは、そのまま編集を続けられます。</span></span>
+        </div>
+
+        <p class="v2c05__msg is-v2-empty" data-v2-write="msg" role="status" aria-live="polite"></p>
+      </div>
     </div>
-
-    <p class="v2b-05__assure">本文はこの端末に保存されます。本文は公開されません。</p>
-
-    <button type="button" class="v2b-btn v2b-btn--primary v2b-05__bind" data-v2-write="bind"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span>本にする</button>
-    <p class="v2b-05__bindnote">本文を保存し、本にします。そのあとで「この一冊に近い気持ち」を選べます（任意）。</p>
-
-    <p class="v2b-05__msg is-v2-empty" data-v2-write="msg" role="status" aria-live="polite"></p>
   </div>
 </div>
 </section>

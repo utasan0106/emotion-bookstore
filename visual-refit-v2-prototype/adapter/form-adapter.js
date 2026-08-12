@@ -281,7 +281,13 @@
   /* ---------------------------------------------------------------------------
    * 配線
    * ------------------------------------------------------------------------ */
+  function hideResumeBanner() {
+    var resume = q('[data-v2-write="resume"]');
+    if (resume) resume.setAttribute('hidden', '');
+  }
+
   function onStoryInput(ev) {
+    hideResumeBanner();
     var el = ev.currentTarget;
     pushField(EXISTING.story, el.value);
     syncMirrors();
@@ -324,7 +330,20 @@
 
     stopObservers();
     startObservers(scope);
+
     pull(scope);          // 既存側に下書きが復元済みなら引き取る
+
+    /* draft_resume_available の view-only 表示。
+       既存 mirror（pull）で写された本文の有無を映すだけ（storage へは触れない）。
+       利用者が入力を始めたら通常の編集状態として非表示に戻す。 */
+    var resume = q('[data-v2-write="resume"]', scope);
+    if (resume) {
+      if (s && typeof s.value === 'string' && s.value.trim() !== '') {
+        resume.removeAttribute('hidden');
+      } else {
+        resume.setAttribute('hidden', '');
+      }
+    }
     state.mounted = true;
     return true;
   }
