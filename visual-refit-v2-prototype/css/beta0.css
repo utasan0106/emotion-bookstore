@@ -2201,7 +2201,7 @@ html[data-v2-mounted="true"][data-theme="night"] .v2-page h1.v2c03__title { colo
   border-radius: 50%;
   color: var(--tint);
 }
-.v2c03__ring svg { width: 8cqw; height: 8cqw; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.v2c03__ring svg { width: 9cqw; height: 9cqw; stroke: currentColor; fill: none; stroke-width: 0.9; stroke-linecap: round; stroke-linejoin: round; }
 .v2c03__name {
   font-size: clamp(12px, 3.8cqw, 27px);
   letter-spacing: 0.04em;
