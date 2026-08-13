@@ -54,6 +54,13 @@
      subview を選び直す。subviewOnly は既存関数を呼ばないので、
      再描画・GA4・storage・外部通信のいずれも発生しない。 */
   function syncScreens() {
+    /* HARDEN-02：既存遷移のたびに掛け直す。旧UIの中身は既存側が
+       innerHTML ごと差し替えることがあるが、inert は差し替えの外側
+       （CSS が隠しているのと同じ要素）に付くため維持される。
+       属性は inert のみで、class は触らないので下の MutationObserver
+       （attributeFilter:['class']）を再帰的に起こすことはない。 */
+    applyLegacyInert();
+
     var cover = doc.querySelector('[data-v2-screen="01"]');
     if (cover) cover.classList.toggle('is-v2-current', isCover());
 
@@ -87,6 +94,47 @@
 
     lastPageId = pageId;
     if (target) nav.go(target, { subviewOnly: true });
+  }
+
+  /* --------------------------------------------------------------------
+   * HARDEN-02：視覚的に隠している旧UIを、Tab順序とアクセシビリティツリー
+   * からも退場させる。
+   *
+   * 対象は v2-mount.css が視覚的に隠している集合と完全に同一。それ以外の
+   * 旧UI（#bookModal / #experienceMenu / #unfiledShelfPicker 等の body 直下
+   * オーバーレイ）は V2 からも実際に使うため、ここでは一切触れない。
+   *
+   * inert を選んだ理由（依存監査の結果）：
+   *   - element.value の読み書き、合成 input/change イベント、
+   *     element.click()、getElementById はいずれも inert 下でも動作する。
+   *     したがって form-adapter の srcBtn.click()／pushField() など、
+   *     既存の製本フローと adapter の呼び出し規約はそのまま保たれる。
+   *   - disabled は使わない（form の値送出契約を壊すため）。
+   *   - 旧 DOM は削除しない。既存ロジックは V2 側へ移植し直さない。
+   *
+   * inert 下で唯一変わるのは element.focus() が通らなくなること。対象は
+   * いずれも「V2 では画面外に clip 済みの要素へ focus を移す」既存経路で、
+   * mount 中は元から不可視要素へ focus が飛ぶ状態だったため、
+   * 静かな no-op になることで悪化はしない（focus は現在位置に留まる）。
+   * ------------------------------------------------------------------ */
+  var LEGACY_HIDDEN_SEL = [
+    '.entrance.hero > *:not(.v2-page)',
+    '#counter > *:not(.v2-page)',
+    '#shelves > *:not(.v2-page)',
+    '#desk > *:not(.v2-page)',
+    '#bookshelf > *:not(.v2-page)',
+    '.experience-bar',
+    '.page-nav',
+    '.doma',
+    '.shop-footer'
+  ].join(',');
+
+  function applyLegacyInert() {
+    if (!doc || typeof doc.querySelectorAll !== 'function') return;
+    var els = doc.querySelectorAll(LEGACY_HIDDEN_SEL);
+    for (var i = 0; i < els.length; i++) {
+      if (!els[i].hasAttribute('inert')) els[i].setAttribute('inert', '');
+    }
   }
 
   /* --------------------------------------------------------------------
@@ -202,6 +250,7 @@
     wireReaderSecondary();
 
     doc.documentElement.setAttribute('data-v2-mounted', 'true');
+    applyLegacyInert();   /* HARDEN-02：CSS で隠すのと同じ時点で Tab / AT からも外す */
     syncScreens();
     resolveReturningUser();
 
