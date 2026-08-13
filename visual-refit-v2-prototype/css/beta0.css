@@ -3401,6 +3401,8 @@ html[data-v2-mounted="true"][data-theme="night"] .v2-page h1.v2c08__headline { c
   color: #5d4f3e !important;
 }
 [data-theme="night"] .v2c08__copy { color: #9c8f79 !important; }
+/* 320px幅で「書いてみませんか。」が語の途中で改行され孤立行になるのを防ぐ（文言・文字サイズは不変） */
+.v2c08__nobreak { white-space: nowrap; }
 .v2c08__cta {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.6em;
   min-height: 52px;
