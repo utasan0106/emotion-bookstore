@@ -173,6 +173,13 @@
     return t;
   }
 
+  /* 07 専用。保存された題名だけを返し、無ければ空（＝領域を出さない）。
+     06 / 04 の一覧表示は従来どおり viewTitle() の fallback を使う。 */
+  function readerTitle(entry) {
+    if (!entry || typeof entry !== 'object') return '';
+    return (typeof entry.title === 'string') ? entry.title : '';
+  }
+
   function viewSpineHeight(entry, index) {
     var seed = stableHash(
       (entry && typeof entry === 'object' ? (entry.id || '') : '') + '/' +
@@ -254,6 +261,36 @@
     return spine;
   }
 
+  /* 読み込み失敗の掲示。storage へは触れず、既存の read-only 読み口を
+     もう一度呼ぶだけの retry を添える（新しい保存経路・新 key は作らない）。 */
+  function buildReadFailure() {
+    var box = doc.createElement('div');
+    box.className = 'v2c06__readfail';
+    box.setAttribute('data-v2-bookshelf-readfail', '');
+    var t = doc.createElement('p');
+    t.className = 'v2c06__readfail-t';
+    t.textContent = '本棚をいま読み込めませんでした。';
+    box.appendChild(t);
+    var n = doc.createElement('p');
+    n.className = 'v2c06__readfail-n';
+    n.textContent = '本が無くなったわけではありません。少し時間をおいて、もう一度お試しください。';
+    box.appendChild(n);
+    var btn = doc.createElement('button');
+    btn.type = 'button';
+    btn.className = 'v2c06__readfail-btn';
+    btn.setAttribute('data-v2-bookshelf-retry', '');
+    btn.textContent = 'もう一度読み込む';
+    box.appendChild(btn);
+    return box;
+  }
+
+  function clearReadFailure(rack) {
+    var old = rack.querySelectorAll('[data-v2-bookshelf-readfail]');
+    for (var i = 0; i < old.length; i++) {
+      if (old[i].parentNode) old[i].parentNode.removeChild(old[i]);
+    }
+  }
+
   function render(scope) {
     if (!doc) return { ok: false, reason: 'no_document' };
     var rack = findRack(scope);
@@ -273,7 +310,15 @@
     }
 
     clearSpines(rack);
+    clearReadFailure(rack);
     var made = 0;
+    if (r.status !== STATUS.OK) {
+      /* 06 SCREEN_SPEC: local library read failure は 08 へ送らず、
+         「0冊」とも同一表示にしない。読み直しは同じ read-only 経路のみ。 */
+      rack.appendChild(buildReadFailure());
+      state.rendered = 0;
+      return { ok: true, status: r.status, rendered: 0, readFailure: true };
+    }
     if (r.status === STATUS.OK) {
       var frag = doc.createDocumentFragment();
       for (var i = 0; i < r.entries.length; i++) {
@@ -444,7 +489,9 @@
     }
 
     var story = viewStory(entry);
-    setText(titleEl, viewTitle(entry));
+    /* 07 READER_CONTENT_CONTRACT §3: 題名が空なら題名領域ごと非表示にする。
+       Reader 側で fallback 題名を生成しない（06 の一覧表示は viewTitle のまま）。 */
+    setText(titleEl, readerTitle(entry));
     setText(bodyEl, story);
     setText(readerEl('shelf', scope), shelfLabelOf(entry));
     setText(readerEl('sealed', scope), entry.sealed ? SEALED_NOTE : '');
@@ -533,6 +580,12 @@
     while (t && t !== ev.currentTarget) {
       if (t.getAttribute && t.getAttribute('data-v2-book-id')) {
         selectBook(t.getAttribute('data-v2-book-id'));
+        return;
+      }
+      /* 読み込み失敗時の再読込。mount/refresh 契約は変えず、
+         既存 render()（read-only）を同じ棚コンテナの listener から呼ぶだけ。 */
+      if (t.hasAttribute && t.hasAttribute('data-v2-bookshelf-retry')) {
+        render();
         return;
       }
       t = t.parentNode;

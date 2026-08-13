@@ -18,7 +18,15 @@
 :where([data-screen="03"]) { --shelf-grid-min: 142px; --shelf-gap: var(--sp-4); }
 :where([data-screen="04"]) { --section-gap: var(--sp-7); --work-card-min: 150px; }
 :where([data-screen="05"]) { --editor-max: 720px; --editor-min-block: 16rem; }
-:where([data-screen="06"]) { --book-grid-min: 150px; --book-gap: var(--sp-4); }
+:where([data-screen="06"]) {
+  --bookshelf-content-max: 30rem; /* 480px visual canonical at 16px root */
+  --bookshelf-columns: 3;
+  --book-gap: var(--sp-3);
+}
+/* Approved accessibility adaptation: do not shrink a 3-col reference into unreadable cards. */
+@media (max-width: 359px) {
+  :where([data-screen="06"]) { --bookshelf-columns: 2; }
+}
 :where([data-screen="07"]) { --reader-width: var(--reader-max); --reader-line-height: var(--lh-reader); }
 :where([data-screen="08"]) { --empty-max: 640px; --empty-art-max: 520px; }
 
@@ -2871,3 +2879,578 @@ html[data-v2-mounted="true"][data-theme="night"] .v2-page h1.v2c05__title { colo
 }
 [data-theme="night"] .v2c05__msg { color: #c0b299 !important; }
 .v2c05__msg.is-v2-empty { display: none; }
+
+/* =======================================================================
+ * 06 / 07 / 08 Completion Round — v2c06 / v2c07 / v2c08
+ * DAY Reference が Geometry 正本（06: 480×1055 / 07: 367×915）。
+ * NIGHT は同一 DOM/IA/geometry の theme variation。
+ * adapter の再描画契約・contract selector（data-v2-bookshelf / data-v2-reader）
+ * には触れない。cover は rights-clear な local CSS 装丁で成立させる。
+ * ======================================================================= */
+
+/* ---------- 06 Bookshelf ---------- */
+.v2c06 {
+  padding: 0 !important;
+  background: #f8f1e5;
+  min-height: 100dvh;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+[data-theme="night"] .v2c06 { background: #131820; }
+.v2c06__stage {
+  width: 100%;
+  max-width: var(--bookshelf-content-max, 30rem);
+  margin: 0 auto;
+  padding: 0 clamp(12px, 3.8cqw, 18px) calc(clamp(20px, 6cqw, 34px) + 4.5rem);
+  container-type: inline-size;
+  font-family: "Shippori Mincho", var(--font-display);
+}
+.v2c06__brandrow {
+  display: flex; align-items: center; gap: 2.2cqw;
+  padding: clamp(10px, 3.2cqw, 16px) 0 clamp(6px, 2cqw, 10px);
+}
+.v2c06__logo {
+  display: block; width: clamp(22px, 6.2cqw, 30px); aspect-ratio: 1;
+  background: url("../../assets/v2b0/01/logo_day.webp") center / contain no-repeat;
+}
+[data-theme="night"] .v2c06__logo { background-image: url("../../assets/v2b0/01/logo_night.webp"); }
+.v2c06__brandname {
+  font-size: clamp(13px, 3.5cqw, 16px);
+  letter-spacing: 0.1em;
+  color: #4a3a28 !important;
+}
+[data-theme="night"] .v2c06__brandname { color: #d9c19a !important; }
+.v2c06__menubtn {
+  margin-left: auto; min-width: 44px; min-height: 44px;
+  display: grid; place-items: center;
+  border: 0; background: none; cursor: pointer; color: #8a7350;
+}
+[data-theme="night"] .v2c06__menubtn { color: #b08a5e; }
+.v2c06__menubtn-ic { display: block; width: clamp(18px, 4.6cqw, 22px); }
+.v2c06__menubtn-ic svg { width: 100%; height: auto; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; }
+
+.v2c06__hero {
+  position: relative;
+  display: grid; grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 2cqw;
+  padding: clamp(4px, 1.4cqw, 8px) 0 clamp(10px, 3.2cqw, 16px);
+  border-bottom: 1px solid rgb(180 160 130 / 0.4);
+}
+[data-theme="night"] .v2c06__hero { border-bottom-color: rgb(150 120 80 / 0.3); }
+.v2c06__herotext { min-width: 0; align-self: center; }
+html[data-v2-mounted="true"] .v2-page h1.v2c06__title {
+  margin: 0; padding: 0;
+  font-family: "Shippori Mincho", var(--font-display);
+  font-size: clamp(23px, 7.2cqw, 34px);
+  letter-spacing: 0.08em;
+  font-weight: 300; line-height: 1.35;
+  color: #3d3123 !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2-page h1.v2c06__title { color: #eddfc4 !important; }
+.v2c06__lead {
+  margin: clamp(6px, 2.2cqw, 12px) 0 0; padding: 0;
+  font-size: clamp(12px, 3.3cqw, 15px);
+  line-height: 1.75; font-weight: 300;
+  color: #6a5a45 !important;
+}
+[data-theme="night"] .v2c06__lead { color: #b0a189 !important; }
+.v2c06__heroamb {
+  display: block;
+  width: clamp(120px, 43cqw, 210px);
+  aspect-ratio: 214 / 190;
+  border-radius: 6px;
+  background: url("../../assets/v2b0/06/06_hero_day.webp") right bottom / cover no-repeat;
+}
+[data-theme="night"] .v2c06__heroamb { background-image: url("../../assets/v2b0/06/06_hero_night.webp"); }
+
+.v2c06__collhead {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 3cqw;
+  padding: clamp(9px, 2.3cqw, 11px) 0 clamp(5px, 1.4cqw, 7px);
+}
+.v2c06__count {
+  margin: 0; padding: 0;
+  font-size: clamp(14px, 4.2cqw, 19px);
+  letter-spacing: 0.05em; font-weight: 300;
+  color: #4a3d2c !important;
+}
+[data-theme="night"] .v2c06__count { color: #ddd0b8 !important; }
+.v2c06__count [data-v2-bookshelf="count"]:empty::before { content: "…"; opacity: 0.45; }
+.v2c06__newlink {
+  display: inline-flex; align-items: center; gap: 0.45em;
+  min-height: 44px; border: 0; background: none; cursor: pointer;
+  font-family: inherit;
+  font-size: clamp(12px, 3.3cqw, 14px);
+  letter-spacing: 0.04em;
+  color: #6a5a45 !important;
+}
+[data-theme="night"] .v2c06__newlink { color: #b19a76 !important; }
+.v2c06__newlink-ic { display: block; width: 1.05em; }
+.v2c06__newlink-ic svg { width: 100%; height: auto; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+.v2c06__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--bookshelf-columns, 3), minmax(0, 1fr));
+  gap: clamp(7px, 1.85cqw, 11px);
+}
+/* adapter 生成の一冊（.v2-shelf__spine）を「私的蔵書の一冊」として受ける */
+.v2c06 .v2-shelf__spine {
+  display: flex; flex-direction: column;
+  gap: clamp(4px, 1.15cqw, 6px);
+  padding: clamp(6px, 1.75cqw, 9px) clamp(6px, 1.75cqw, 9px) clamp(5px, 1.35cqw, 7px);
+  border: 1px solid rgb(180 160 130 / 0.45);
+  border-radius: 8px;
+  background: #fdf7ec;
+  box-shadow: 0 2px 6px rgb(120 95 60 / 0.1);
+  cursor: pointer; text-align: left;
+  font-family: inherit;
+}
+[data-theme="night"] .v2c06 .v2-shelf__spine {
+  border-color: rgb(140 110 70 / 0.35);
+  background: #1b222e;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.45);
+}
+.v2c06 .v2-shelf__spine:hover { filter: brightness(1.02); }
+/* 装丁面：紙／布の local CSS 表現。利用者データからの意味推定は一切しない。
+   nth-child による静かな visual variant のみ（storage metadata は増やさない） */
+.v2c06 .v2-shelf__cover {
+  --jacket: #cabca2;
+  --jacket2: #b8a98c;
+  position: relative;
+  display: block; width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 2px 4px 4px 2px;
+  /* 布装（cloth weave）＋小口の陰＋のど（背）側の段差。すべて local CSS。
+     利用者データからの意味推定・生成は一切していない純粋な presentation。 */
+  background:
+    linear-gradient(90deg,
+      rgb(60 45 28 / 0.30) 0 2.5%,
+      rgb(255 250 238 / 0.22) 2.5% 4.2%,
+      rgb(60 45 28 / 0.10) 4.2% 6.5%,
+      rgb(0 0 0 / 0) 10%),
+    linear-gradient(270deg, rgb(255 252 244 / 0.24) 0 1.6%, rgb(0 0 0 / 0) 5%),
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 0.045) 0 1px, rgb(60 45 28 / 0.035) 1px 2px),
+    repeating-linear-gradient(0deg, rgb(255 255 255 / 0.035) 0 1px, rgb(60 45 28 / 0.03) 1px 2px),
+    radial-gradient(120% 85% at 28% 18%, rgb(255 252 244 / 0.3), rgb(0 0 0 / 0) 62%),
+    linear-gradient(158deg, var(--jacket), var(--jacket2));
+  box-shadow:
+    inset 0 0 0 1px rgb(70 54 34 / 0.24),
+    inset 0 -6% 12% rgb(60 45 28 / 0.14),
+    0 1px 3px rgb(90 70 45 / 0.22);
+}
+/* 表紙の空押し枠と題箋の罫（文字は入れない＝装丁の意匠のみ） */
+.v2c06 .v2-shelf__cover::before {
+  content: "";
+  position: absolute; inset: 9% 8% 9% 12%;
+  border: 1px solid rgb(70 54 34 / 0.16);
+  border-radius: 1px;
+}
+.v2c06 .v2-shelf__cover::after {
+  content: "";
+  position: absolute; left: 50%; bottom: 22%;
+  width: 30%; height: 1px;
+  transform: translateX(-45%);
+  background: rgb(70 54 34 / 0.28);
+}
+[data-theme="night"] .v2c06 .v2-shelf__cover {
+  box-shadow: inset 0 0 0 1px rgb(20 14 8 / 0.5), 0 1px 4px rgb(0 0 0 / 0.5);
+  filter: brightness(0.82) saturate(0.9);
+}
+/* 気持ちが保存されている一冊だけ、装丁の色を静かに変える（読み取りのみ） */
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="hazumu"] .v2-shelf__cover,
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="ureshii"] .v2-shelf__cover,
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="wakuwaku"] .v2-shelf__cover,
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="hokorashii"] .v2-shelf__cover { --jacket: #d9c091; --jacket2: #c4a873; }
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="ando"] .v2-shelf__cover,
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="kansha"] .v2-shelf__cover,
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="itooshii"] .v2-shelf__cover { --jacket: #d5b3a1; --jacket2: #bf9a87; }
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="akogare"] .v2-shelf__cover,
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="shitto"] .v2-shelf__cover,
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="natsukashii"] .v2-shelf__cover { --jacket: #a7b5aa; --jacket2: #8d9c90; }
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="kanashii"] .v2-shelf__cover,
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="kodoku"] .v2-shelf__cover,
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="gakkari"] .v2-shelf__cover { --jacket: #9fadbc; --jacket2: #8595a6; }
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="fuan"] .v2-shelf__cover,
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="aseri"] .v2-shelf__cover,
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="odoroki"] .v2-shelf__cover { --jacket: #b8adbe; --jacket2: #9d93a4; }
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="ikari"] .v2-shelf__cover,
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="kuyashii"] .v2-shelf__cover { --jacket: #cb9c85; --jacket2: #b3826c; }
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="hazukashii"] .v2-shelf__cover,
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="ushirometai"] .v2-shelf__cover,
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="keno"] .v2-shelf__cover { --jacket: #b2b39a; --jacket2: #979881; }
+.v2c06 .v2-shelf__spine[data-v2-book-emotion="moyamoya"] .v2-shelf__cover { --jacket: #c1bab1; --jacket2: #a7a099; }
+.v2c06 .v2-shelf__spine-title {
+  display: block;
+  font-size: clamp(12px, 3.05cqw, 13.5px);
+  line-height: 1.45; letter-spacing: 0.01em;
+  color: #3d3123 !important;
+}
+[data-theme="night"] .v2c06 .v2-shelf__spine-title { color: #e2d5bc !important; }
+.v2c06 .v2-shelf__spine-date {
+  display: block;
+  font-family: inherit;
+  font-size: clamp(12px, 2.75cqw, 12.5px);
+  line-height: 1.3;
+  font-weight: 300;
+  color: #91826a !important;
+}
+[data-theme="night"] .v2c06 .v2-shelf__spine-date { color: #8e8371 !important; }
+.v2c06 .v2-shelf__spine-emotion {
+  align-self: flex-start;
+  padding: 0.2em 0.8em;
+  border: 1px solid rgb(150 128 98 / 0.5);
+  border-radius: 999px;
+  line-height: 1.35;
+  font-size: clamp(12px, 2.75cqw, 12.5px);
+  font-weight: 300;
+  color: #6a5a45 !important;
+}
+[data-theme="night"] .v2c06 .v2-shelf__spine-emotion { border-color: rgb(160 125 80 / 0.4); color: #b6a68b !important; }
+.v2c06 .v2-shelf__spine-emotion:empty { display: none; }
+
+.v2c06__invite {
+  display: flex; align-items: center; gap: clamp(10px, 3.4cqw, 16px);
+  width: 100%;
+  margin-top: clamp(7px, 1.9cqw, 10px);
+  padding: clamp(7px, 2cqw, 10px) clamp(14px, 4.2cqw, 20px);
+  border: 1px solid rgb(180 160 130 / 0.5);
+  border-radius: 10px;
+  background: rgb(253 247 236 / 0.7);
+  cursor: pointer; text-align: left;
+  font-family: inherit;
+}
+[data-theme="night"] .v2c06__invite { border-color: rgb(140 110 70 / 0.35); background: rgb(27 34 46 / 0.7); }
+.v2c06__invite-ic { display: block; width: clamp(24px, 6.6cqw, 30px); color: #8a7350; flex: 0 0 auto; }
+[data-theme="night"] .v2c06__invite-ic { color: #b08a5e; }
+.v2c06__invite-ic svg { width: 100%; height: auto; stroke: currentColor; fill: none; stroke-width: 1.3; stroke-linecap: round; }
+.v2c06__invite-text { display: block; }
+.v2c06__invite-h {
+  display: block;
+  font-size: clamp(14px, 4cqw, 17px);
+  letter-spacing: 0.06em;
+  color: #3d3123 !important;
+}
+[data-theme="night"] .v2c06__invite-h { color: #e2d5bc !important; }
+.v2c06__invite-n {
+  display: block; margin-top: 0.3em;
+  font-size: clamp(12px, 3.1cqw, 13px);
+  font-weight: 300;
+  color: #86775f !important;
+}
+[data-theme="night"] .v2c06__invite-n { color: #94897a !important; }
+
+/* storage read failure（0冊と同一表示にしない。08 へも送らない） */
+.v2c06__readfail {
+  grid-column: 1 / -1;
+  padding: clamp(14px, 4.4cqw, 22px);
+  border: 1px solid rgb(180 160 130 / 0.55);
+  border-radius: 10px;
+  background: rgb(253 247 236 / 0.75);
+  text-align: left;
+}
+[data-theme="night"] .v2c06__readfail { border-color: rgb(140 110 70 / 0.4); background: rgb(27 34 46 / 0.75); }
+.v2c06__readfail-t { margin: 0; font-size: clamp(13px, 3.5cqw, 15px); color: #4a3d2c !important; }
+[data-theme="night"] .v2c06__readfail-t { color: #d5c9b1 !important; }
+.v2c06__readfail-n { margin: 0.5em 0 0; font-size: clamp(12px, 3.1cqw, 13px); font-weight: 300; line-height: 1.7; color: #86775f !important; }
+[data-theme="night"] .v2c06__readfail-n { color: #94897a !important; }
+.v2c06__readfail-btn {
+  margin-top: 0.9em; min-height: 44px;
+  padding: 0.5em 1.4em;
+  border: 1px solid rgb(150 128 98 / 0.6);
+  border-radius: 999px;
+  background: none; cursor: pointer;
+  font-family: inherit;
+  font-size: clamp(12px, 3.2cqw, 13.5px);
+  color: #5d4f3e !important;
+}
+[data-theme="night"] .v2c06__readfail-btn { border-color: rgb(160 125 80 / 0.5); color: #c0b299 !important; }
+
+/* 06 の Global Nav は full-bleed 内で sticky が効かないため下端固定 */
+.v2c06 .v2b-nav, .v2c08 .v2b-nav {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  width: 100%; z-index: 30; margin-top: 0;
+}
+
+/* ---------- 07 Reader ---------- */
+.v2c07 { padding: 0 !important; background: #faf3e8; min-height: 100dvh; }
+[data-theme="night"] .v2c07 { background: #121821; }
+.v2c07__stage {
+  width: 100%;
+  max-width: var(--reader-width, var(--reader-max, 34rem));
+  margin: 0 auto;
+  padding: 0 clamp(16px, 6cqw, 28px) 3rem;
+  container-type: inline-size;
+  font-family: "Shippori Mincho", var(--font-display);
+}
+.v2c07__bar { padding: clamp(12px, 4cqw, 20px) 0 clamp(8px, 2.6cqw, 14px); }
+.v2c07__back {
+  display: inline-flex; align-items: center; gap: 0.55em;
+  min-height: 44px; border: 0; background: none; cursor: pointer;
+  font-family: inherit;
+  font-size: clamp(13px, 3.8cqw, 15px);
+  letter-spacing: 0.05em;
+  color: #55483a !important;
+}
+[data-theme="night"] .v2c07__back { color: #c0aa8a !important; }
+.v2c07__back-arrow {
+  display: block; width: 0.6em; height: 0.6em;
+  border-left: 1.8px solid currentColor; border-bottom: 1.8px solid currentColor;
+  transform: rotate(45deg);
+}
+.v2c07__book { text-align: center; }
+html[data-v2-mounted="true"] .v2-page h1.v2c07__title {
+  margin: clamp(14px, 5cqw, 26px) 0 0; padding: 0;
+  font-family: "Shippori Mincho", var(--font-display);
+  font-size: clamp(19px, 5.9cqw, 26px);
+  letter-spacing: 0.06em;
+  line-height: 1.55; font-weight: 300;
+  color: #3a2e20 !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2-page h1.v2c07__title { color: #ecdfc6 !important; }
+.v2c07__title.is-v2-empty { display: none; }
+.v2c07__sep {
+  display: block; width: 2.2em; height: 1px;
+  margin: clamp(10px, 3.2cqw, 16px) auto 0;
+  background: rgb(150 128 98 / 0.55);
+}
+[data-theme="night"] .v2c07__sep { background: rgb(160 125 80 / 0.45); }
+.v2c07__meta { margin-top: clamp(10px, 3.2cqw, 16px); }
+.v2c07__date {
+  display: flex; align-items: center; justify-content: center; gap: 0.4em;
+  margin: 0; padding: 0;
+  font-size: clamp(12px, 3.4cqw, 14px);
+  font-weight: 300;
+  color: #6a5a45 !important;
+}
+[data-theme="night"] .v2c07__date { color: #a89882 !important; }
+.v2c07__date.is-v2-empty, .v2c07__date:has([data-v2-reader="date"].is-v2-empty) { display: none; }
+.v2c07__date-ic { display: block; width: 1.05em; }
+.v2c07__date-ic svg { width: 100%; height: auto; stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; }
+.v2c07__chip {
+  display: inline-block;
+  margin: clamp(8px, 2.6cqw, 12px) auto 0;
+  padding: 0.3em 1.1em;
+  border: 1px solid rgb(150 128 98 / 0.5);
+  border-radius: 999px;
+  font-size: clamp(12px, 3.2cqw, 13.5px);
+  font-weight: 300;
+  color: #5d4f3e !important;
+}
+[data-theme="night"] .v2c07__chip { border-color: rgb(160 125 80 / 0.42); color: #bfae92 !important; }
+.v2c07__chip.is-v2-empty { display: none; }
+.v2c07__sealed {
+  margin: clamp(6px, 2cqw, 10px) 0 0;
+  font-size: clamp(12px, 3cqw, 13px);
+  font-weight: 300;
+  color: #91826a !important;
+}
+[data-theme="night"] .v2c07__sealed { color: #8e8371 !important; }
+.v2c07__sealed.is-v2-empty { display: none; }
+.v2c07__photo {
+  margin: clamp(16px, 5.4cqw, 28px) 0 0;
+  padding: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  line-height: 0;
+}
+.v2c07__photo img, .v2c07 .v2-reader__cover-img { display: block; width: 100%; height: auto; }
+.v2c07__body {
+  margin-top: clamp(18px, 6cqw, 32px);
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: clamp(14px, 4cqw, 16px);
+  line-height: var(--reader-line-height, 2.05);
+  letter-spacing: 0.02em;
+  font-weight: 300;
+  color: #40352a !important;
+}
+[data-theme="night"] .v2c07__body { color: #cdbfa6 !important; }
+.v2c07__body.is-v2-empty { display: none; }
+.v2c07__notebox {
+  margin-top: clamp(16px, 5cqw, 26px);
+  padding: clamp(12px, 3.8cqw, 18px);
+  border: 1px solid rgb(180 160 130 / 0.45);
+  border-radius: 10px;
+  text-align: left;
+}
+[data-theme="night"] .v2c07__notebox { border-color: rgb(140 110 70 / 0.32); }
+.v2c07__notebox[hidden] { display: none; }
+.v2c07__notelabel { margin: 0; font-size: clamp(12px, 3.1cqw, 13px); letter-spacing: 0.12em; color: #8a7350 !important; }
+[data-theme="night"] .v2c07__notelabel { color: #ab8f63 !important; }
+.v2c07__notetext { margin: 0.5em 0 0; font-size: clamp(12px, 3.4cqw, 14px); line-height: 1.9; font-weight: 300; white-space: pre-wrap; color: #55483a !important; }
+[data-theme="night"] .v2c07__notetext { color: #b3a892 !important; }
+.v2c07__closing { margin: clamp(18px, 5.6cqw, 28px) 0 0; text-align: center; }
+.v2c07__closing-sprig { display: inline-block; width: clamp(20px, 5cqw, 26px); color: #a8996f; }
+[data-theme="night"] .v2c07__closing-sprig { color: #8b7d55; }
+.v2c07__closing-sprig svg { width: 100%; height: auto; stroke: currentColor; fill: none; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+.v2c07__actions {
+  display: flex; align-items: center; justify-content: center; gap: clamp(10px, 3.4cqw, 18px);
+  margin-top: clamp(16px, 5cqw, 26px);
+  padding-top: clamp(14px, 4.4cqw, 22px);
+  border-top: 1px solid rgb(180 160 130 / 0.45);
+}
+[data-theme="night"] .v2c07__actions { border-top-color: rgb(140 110 70 / 0.3); }
+.v2c07__act {
+  display: inline-flex; align-items: center; gap: 0.45em;
+  min-height: 44px; padding: 0 0.6em;
+  border: 0; background: none; cursor: pointer;
+  font-family: inherit;
+  font-size: clamp(12px, 3.4cqw, 14px);
+  color: #6a5a45 !important;
+}
+[data-theme="night"] .v2c07__act { color: #a89882 !important; }
+.v2c07__act--danger { color: #8c5a48 !important; }
+[data-theme="night"] .v2c07__act--danger { color: #b2806a !important; }
+.v2c07__act-ic { display: block; width: 1.1em; }
+.v2c07__act-ic svg { width: 100%; height: auto; stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.v2c07__actsep { display: block; width: 1px; height: 1.4em; background: rgb(180 160 130 / 0.55); }
+[data-theme="night"] .v2c07__actsep { background: rgb(140 110 70 / 0.4); }
+
+/* ---------- 08 Empty State ---------- */
+.v2c08 {
+  padding: 0 !important;
+  background: #f8f1e5;
+  min-height: 100dvh;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+[data-theme="night"] .v2c08 { background: #131820; }
+.v2c08__stage {
+  width: 100%;
+  max-width: var(--empty-max, 640px);
+  margin: 0 auto;
+  padding: 0 clamp(12px, 3.8cqw, 20px) calc(clamp(20px, 6cqw, 34px) + 4.5rem);
+  container-type: inline-size;
+  font-family: "Shippori Mincho", var(--font-display);
+}
+.v2c08__brandrow { display: flex; align-items: center; gap: 2.2cqw; padding: clamp(10px, 3.2cqw, 16px) 0; }
+.v2c08__logo {
+  display: block; width: clamp(22px, 5.6cqw, 30px); aspect-ratio: 1;
+  background: url("../../assets/v2b0/01/logo_day.webp") center / contain no-repeat;
+}
+[data-theme="night"] .v2c08__logo { background-image: url("../../assets/v2b0/01/logo_night.webp"); }
+.v2c08__brandname { font-size: clamp(13px, 3.2cqw, 16px); letter-spacing: 0.1em; color: #4a3a28 !important; }
+[data-theme="night"] .v2c08__brandname { color: #d9c19a !important; }
+.v2c08__menubtn { margin-left: auto; min-width: 44px; min-height: 44px; display: grid; place-items: center; border: 0; background: none; cursor: pointer; color: #8a7350; }
+[data-theme="night"] .v2c08__menubtn { color: #b08a5e; }
+.v2c08__menubtn-ic { display: block; width: clamp(18px, 4.2cqw, 22px); }
+.v2c08__menubtn-ic svg { width: 100%; height: auto; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; }
+.v2c08__card {
+  padding: clamp(18px, 5cqw, 34px) clamp(14px, 4.2cqw, 28px) clamp(22px, 6cqw, 38px);
+  border: 1px solid rgb(180 160 130 / 0.45);
+  border-radius: clamp(12px, 3cqw, 20px);
+  background: #fdf8ee;
+  text-align: center;
+}
+[data-theme="night"] .v2c08__card { border-color: rgb(140 110 70 / 0.32); background: #19202b; }
+
+.v2c08__scene { position: relative; display: block; height: clamp(150px, 40cqw, 230px); margin-bottom: clamp(14px, 4cqw, 24px); }
+.v2c08__scene-shadow {
+  position: absolute; right: 4%; top: 2%;
+  width: 58%; height: 62%;
+  background: radial-gradient(60% 55% at 60% 40%, rgb(150 130 100 / 0.16), transparent 72%);
+  filter: blur(6px);
+}
+[data-theme="night"] .v2c08__scene-shadow { background: radial-gradient(60% 55% at 60% 40%, rgb(255 214 150 / 0.1), transparent 72%); }
+.v2c08__books { position: absolute; left: 8%; bottom: 15%; display: flex; align-items: flex-end; gap: 2px; height: 46%; }
+.v2c08__bk { display: block; width: clamp(9px, 2.6cqw, 14px); border-radius: 1px 1px 0 0; box-shadow: inset -1px 0 0 rgb(0 0 0 / 0.14), inset 1px 0 0 rgb(255 255 255 / 0.14); }
+.v2c08__bk--1 { height: 88%; background: linear-gradient(180deg, #cbbfa4, #b7aa8c); }
+.v2c08__bk--2 { height: 100%; background: linear-gradient(180deg, #8a9678, #75815f); }
+.v2c08__bk--3 { height: 92%; background: linear-gradient(180deg, #b8836a, #a06e55); }
+.v2c08__bk--4 { height: 97%; background: linear-gradient(180deg, #d8cdb6, #c3b79c); }
+.v2c08__bk--5 { height: 84%; background: linear-gradient(180deg, #a8b0bd, #8e97a6); }
+.v2c08__bk--6 { height: 78%; background: linear-gradient(180deg, #c9a97e, #b39064); }
+.v2c08__bk.is-lean { transform: rotate(9deg); transform-origin: bottom left; }
+[data-theme="night"] .v2c08__bk { filter: brightness(0.62) saturate(0.85); }
+.v2c08__vase { position: absolute; left: 40%; bottom: 15%; width: clamp(46px, 13cqw, 72px); }
+.v2c08__vase svg { width: 100%; height: auto; }
+.v2c08-glass { fill: rgb(210 220 214 / 0.5); stroke: rgb(140 150 140 / 0.6); stroke-width: 1.2; }
+.v2c08-stem { fill: none; stroke: #7d9163; stroke-width: 1.5; stroke-linecap: round; }
+.v2c08-leaf { fill: #8fa571; }
+[data-theme="night"] .v2c08-glass { fill: rgb(60 78 88 / 0.5); stroke: rgb(120 140 150 / 0.5); }
+[data-theme="night"] .v2c08-stem { stroke: #5f7048; }
+[data-theme="night"] .v2c08-leaf { fill: #6c7f52; }
+.v2c08__sign {
+  position: absolute; right: 4%; bottom: 15%;
+  width: 42%;
+  padding: clamp(10px, 3cqw, 16px) clamp(8px, 2.4cqw, 12px);
+  border: 1px solid rgb(150 128 98 / 0.5);
+  border-radius: 3px;
+  background: linear-gradient(160deg, #f6efe0, #eae0cd);
+  box-shadow: 0 2px 5px rgb(120 95 60 / 0.18);
+  transform: rotate(-1.2deg);
+}
+[data-theme="night"] .v2c08__sign { border-color: rgb(150 120 80 / 0.45); background: linear-gradient(160deg, #e8dcc2, #d3c5a6); }
+.v2c08__sign-text { display: block; font-size: clamp(11px, 2.9cqw, 13px); line-height: 1.75; font-weight: 300; color: #4a3d2c !important; }
+.v2c08__sign-ic { display: block; width: clamp(20px, 5cqw, 26px); margin: 0.5em auto 0; color: #8a7350; }
+.v2c08__sign-ic svg { width: 100%; height: auto; stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.v2c08__board {
+  position: absolute; left: 4%; right: 4%; bottom: 8%;
+  height: clamp(10px, 2.8cqw, 16px);
+  border-radius: 2px;
+  background: linear-gradient(180deg, #b9905f, #a07a4b 45%, #8a663c);
+  box-shadow: 0 3px 6px rgb(90 65 35 / 0.28);
+}
+[data-theme="night"] .v2c08__board { background: linear-gradient(180deg, #7c5c38, #67492a 45%, #543a20); }
+
+html[data-v2-mounted="true"] .v2-page h1.v2c08__headline {
+  margin: 0; padding: 0;
+  font-family: "Shippori Mincho", var(--font-display);
+  font-size: clamp(21px, 6.6cqw, 32px);
+  letter-spacing: 0.12em; text-indent: 0.12em;
+  font-weight: 300; line-height: 1.4;
+  color: #3d3123 !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2-page h1.v2c08__headline { color: #eddfc4 !important; }
+.v2c08__divider { display: flex; align-items: center; justify-content: center; gap: 2cqw; width: 52%; margin: clamp(10px, 3cqw, 16px) auto 0; color: #7a8f5e; }
+[data-theme="night"] .v2c08__divider { color: #8b9c66; }
+.v2c08__divline { flex: 1; height: 1px; background: rgb(150 130 105 / 0.42); }
+[data-theme="night"] .v2c08__divline { background: rgb(160 130 90 / 0.35); }
+.v2c08__divsprig { display: block; width: clamp(16px, 4cqw, 22px); }
+.v2c08__divsprig svg { width: 100%; height: auto; stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.v2c08__copy {
+  margin: clamp(12px, 3.6cqw, 20px) 0 0; padding: 0;
+  font-size: clamp(12px, 3.4cqw, 15px);
+  line-height: 1.95; font-weight: 300;
+  color: #5d4f3e !important;
+}
+[data-theme="night"] .v2c08__copy { color: #b0a189 !important; }
+.v2c08__cta {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.6em;
+  min-height: 52px;
+  margin-top: clamp(16px, 4.6cqw, 26px);
+  padding: clamp(12px, 3.2cqw, 17px) clamp(24px, 7cqw, 44px);
+  border: 0; border-radius: 10px;
+  background:
+    linear-gradient(160deg, rgb(255 255 255 / 0.13), rgb(0 0 0 / 0.1) 70%),
+    linear-gradient(180deg, #4f6136, #43542c 55%, #3a4a24);
+  box-shadow: 0 3px 10px rgb(50 62 26 / 0.3), inset 0 0 0 1px rgb(255 250 230 / 0.2);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: clamp(15px, 4.4cqw, 20px);
+  letter-spacing: 0.14em; text-indent: 0.07em;
+  font-weight: 300;
+  color: #f4efe0 !important;
+}
+[data-theme="night"] .v2c08__cta {
+  background:
+    linear-gradient(160deg, rgb(255 255 255 / 0.09), rgb(0 0 0 / 0.2) 70%),
+    linear-gradient(180deg, #435331, #384726 55%, #2f3d1f);
+  color: #eae4d1 !important;
+}
+.v2c08__cta:hover { filter: brightness(1.06); }
+.v2c08__cta-ic { display: block; width: 1.15em; }
+.v2c08__cta-ic svg { width: 100%; height: auto; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.v2c08__tailsprig { display: block; width: clamp(24px, 6cqw, 34px); margin: clamp(18px, 5cqw, 28px) auto clamp(8px, 2.4cqw, 12px); color: #a8996f; }
+[data-theme="night"] .v2c08__tailsprig { color: #8b7d55; }
+.v2c08__tailsprig svg { width: 100%; height: auto; stroke: currentColor; fill: none; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+.v2c08__tail {
+  margin: 0; padding: 0;
+  font-size: clamp(12px, 3.1cqw, 13.5px);
+  line-height: 1.9; font-weight: 300;
+  color: #86775f !important;
+}
+[data-theme="night"] .v2c08__tail { color: #94897a !important; }
