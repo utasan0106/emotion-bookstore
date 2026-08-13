@@ -490,11 +490,28 @@ html[data-v2-mounted="true"][data-theme="night"] .v2c04__hero::after{
       color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 20%, transparent) 55%,
       transparent 82%);
 }
-/* 見出し・sprig は haze の上に置く（Reference の前後関係を保つ） */
+/* ------------------------------------------------------------
+ * HOTFIX-01：装飾レイヤの重ね順だけを与え、position は canonical のまま残す。
+ *
+ * R2-02 で .v2c04__sprig / .v2c04__stars にも position: relative を当てたのが原因。
+ * beta0.css はこの 2 つを position: absolute で置いており、relative に落ちると
+ *   - sprig（span）が display:inline へ戻り width 指定が効かなくなる
+ *     → 中の svg の width:100% が hero 幅（約 280px）に対して解決され巨大化
+ *   - 両者が通常フローに入って hero の高さを押し広げる
+ *   - NIGHT では stars が display:block になるため影響がさらに大きい
+ * 結果として title / lead が約1画面ぶん下へ押し出されていた。
+ *
+ * 直し方：position は一切上書きしない。z-index だけを与える。
+ * 装飾（halo / haze / stars）は背面、本文（title / lead / sprig）は前面。
+ * ------------------------------------------------------------ */
 html[data-v2-mounted="true"] .v2c04__title,
-html[data-v2-mounted="true"] .v2c04__lead,
-html[data-v2-mounted="true"] .v2c04__sprig,
-html[data-v2-mounted="true"] .v2c04__stars{ position: relative; z-index: 1; }
+html[data-v2-mounted="true"] .v2c04__lead{ position: relative; z-index: 2; }
+/* sprig / stars は beta0.css の position:absolute のまま。重ね順のみ指定する。 */
+html[data-v2-mounted="true"] .v2c04__sprig{ z-index: 2; }
+html[data-v2-mounted="true"] .v2c04__stars{ z-index: 1; }
+/* 装飾レイヤは常に背面かつ非フロー。操作も奪わない。 */
+html[data-v2-mounted="true"] .v2c04__halo{ z-index: 0; pointer-events: none; }
+html[data-v2-mounted="true"] .v2c04__hero::after{ z-index: 0; }
 
 /* ============================================================
  * R2-07：English Entrance Typography（01）
@@ -541,3 +558,44 @@ html[data-v2-mounted="true"][lang="en"] .v2c01__brand-main{
      語中改行や1語だけ落ちる孤立行を避ける */
   text-wrap: balance;
 }
+
+/* ============================================================
+ * HOTFIX-02：English Entrance CTA の装飾と文字の衝突
+ * ------------------------------------------------------------
+ * 実測した原因
+ *   .v2c01__cta-fl（左右の枝葉オーナメント）は left/right 8.5% ・幅 5.2cqw で、
+ *   短い JA「入店する」を前提に置かれている。
+ *   EN "Enter the store" は字間 0.3em のまま横幅が大きく、
+ *   実測で左右とも 9〜18px 食い込んでいた（320/390/430・DAY/NIGHT すべて）。
+ *
+ * 対応（html[lang="en"] のみ。JA は 1 バイトも変えない）
+ *   オーナメントを外側へ寄せて少し小さくし、文字側は字間だけを詰める。
+ *   革の看板・オーナメント 2 つ・中央揃えは維持。文字の画像化はしない。
+ * ============================================================ */
+html[data-v2-mounted="true"][lang="en"] .v2c01__cta{
+  font-size: 4.7cqw;
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
+}
+html[data-v2-mounted="true"][lang="en"] .v2c01__cta-fl{
+  width: 4.2cqw;
+  height: 4.2cqw;
+}
+html[data-v2-mounted="true"][lang="en"] .v2c01__cta-fl--l{ left: 3.6%; }
+html[data-v2-mounted="true"][lang="en"] .v2c01__cta-fl--r{ right: 3.6%; }
+
+/* ============================================================
+ * HOTFIX ADDENDUM：03 案内カードの中身が左へ寄って見える
+ * ------------------------------------------------------------
+ * 枠自体は width 81.7% / margin auto で中央にあるが、
+ * 中身が flex の既定（flex-start）で左詰めのため、
+ * icon が左端に孤立し文言だけ左に偏って見えていた。
+ * 枠の位置・幅・bottom clearance・R2-01 の 8棚 first view は変えない。
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2c03__guide{
+  justify-content: center;
+  text-align: center;
+  padding-inline: 3.6cqw;   /* 左右対称にする */
+}
+html[data-v2-mounted="true"] .v2c03__guidesprig{ flex: 0 0 auto; }
+html[data-v2-mounted="true"] .v2c03__guidetext{ flex: 0 1 auto; }
