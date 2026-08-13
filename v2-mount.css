@@ -6,6 +6,12 @@
  * 保存・製本・削除などのロジックは一切変更しない。
  * ============================================================ */
 
+/* Global Nav の実高。03（fixed）と 06/08（sticky）で共通の bottom clearance に使う。
+   実測 69px に対し余裕を持たせた値。1 箇所で持ち、各画面はこれを参照する。 */
+html[data-v2-mounted="true"]{
+  --v2-nav-h: 4.4rem;
+}
+
 /* V2 が mount されたときだけ効かせる。未 mount 時は従来どおり旧UIが出る。 */
 html[data-v2-mounted="true"] .entrance.hero > *:not(.v2-page),
 html[data-v2-mounted="true"] #counter > *:not(.v2-page),
@@ -99,7 +105,96 @@ html[data-v2-mounted="true"] .v2c01__stage{ margin-inline: auto; }
    なっている（beta0.css）。その分の逃げ場が stage 側に無く、最下段の棚が隠れていた。
    nav 実高ぶんの bottom clearance を safe-area 込みで確保する。DOM も nav 自体も変えない。 */
 html[data-v2-mounted="true"] .v2c03__stage{
-  padding-bottom: calc(6cqw + 4.75rem + env(safe-area-inset-bottom, 0px));
+  /* nav は containment のため viewport ではなく .v2-page の下端に貼り付く。
+     stage をちょうど 100svh にして、nav がその最下部＝first view の下端へ来るようにする。 */
+  padding-bottom: calc(var(--v2-nav-h) + env(safe-area-inset-bottom, 0px));
+}
+
+/* ------------------------------------------------------------
+ * R2-01：03 Emotion Shelves を「8棚ある」と初見で分かる構図にする
+ *
+ * 実測した原因（390px 幅 / iOS Safari の可視高 745px 相当で再現）
+ *   .v2c03__stage は aspect-ratio: 711/1536 の固定キャンバスで、高さが幅からしか
+ *   決まらない（390 幅 → 906px）。内側の縦リズムもすべて cqw（幅基準）のため、
+ *   実際に使える高さが幅から算出された高さより低いと、下段2棚が viewport の外へ出る。
+ *   実測：390x745 で 6/8、375x553 で 4/8 しか first view に入っていなかった。
+ *
+ * 対応
+ *   縦は「幅から決まる本来値」と「使える高さから決まる上限」の小さい方を採る。
+ *   グリッドは残りの高さを 4 行で分け合う（2列×4段の棚感はそのまま）。
+ *   Reference の構図・カード比率・icon・文字サイズの下限は保つ。
+ *   6棚＋もっと見る / carousel / 横スクロール化はしない。
+ *
+ * svh（small viewport height）を基準にするのは、iOS Safari のアドレスバー等が
+ * 出ている「最初に見える高さ」がこの値だから。dvh だと chrome が隠れた状態を
+ * 基準にしてしまい、first view の判定にならない。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2c03__stage{
+  aspect-ratio: auto;
+  /* min だけだと flex 子が縮まない（auto 高さは内容ぶん伸びる）。
+     確定高を与えることで grid が余りを受け取り、足りなければ縮む。 */
+  min-height: 100svh;
+  max-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+html[data-v2-mounted="true"] .v2c03__brandrow{
+  flex: 0 0 auto;
+  padding-top: min(6.4cqw, 2.4svh);
+}
+html[data-v2-mounted="true"] .v2c03__logo{
+  width: min(13cqw, 4.4svh);
+  height: min(13cqw, 4.4svh);
+}
+html[data-v2-mounted="true"] .v2-page h1.v2c03__title{
+  flex: 0 0 auto;
+  margin-top: min(5.8cqw, 2.2svh);
+}
+html[data-v2-mounted="true"] .v2c03__lead{
+  flex: 0 0 auto;
+  margin-top: min(2.0cqw, 0.8svh);
+}
+html[data-v2-mounted="true"] .v2c03__divider{
+  flex: 0 0 auto;
+  margin-top: min(4.4cqw, 1.5svh);
+}
+html[data-v2-mounted="true"] .v2c03__sprig{ width: min(4cqw, 2.4svh); min-width: 14px; }
+
+/* 棚グリッドが残りの高さを受け取り、4段で等分する */
+html[data-v2-mounted="true"] .v2c03__grid{
+  flex: 1 1 auto;
+  margin-top: min(5.3cqw, 1.5svh);
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  gap: min(2.8cqw, 0.8svh) 4.1cqw;
+  /* 余った高さは受け取るが、Reference のカード比率より大きくはしない */
+  max-height: calc(4 * 30.4cqw + 3 * 2.8cqw);
+}
+
+/* 行が高さに応じて縮められるよう、min-height は「読める下限」だけにする。
+   余白と icon も詰まるが、文字サイズ（clamp の下限 12px）は beta0.css のまま触らない。 */
+html[data-v2-mounted="true"] .v2c03__book{
+  min-height: 52px;
+  padding-top: min(2.4cqw, 0.6svh);
+  padding-bottom: min(2.4cqw, 0.6svh);
+  gap: min(2.2cqw, 0.6svh);
+}
+html[data-v2-mounted="true"] .v2c03__ring{
+  width: min(15.75cqw, 6.2svh);
+  height: min(15.75cqw, 6.2svh);
+}
+html[data-v2-mounted="true"] .v2c03__ring svg{
+  width: min(9cqw, 3.5svh);
+  height: min(9cqw, 3.5svh);
+}
+
+/* 案内文は補助情報。8棚の視認を優先し、短い画面では詰める（消しはしない）。 */
+html[data-v2-mounted="true"] .v2c03__guide{
+  flex: 0 1 auto;
+  margin-top: min(3.4cqw, 0.8svh);
+  padding-top: min(2.6cqw, 0.6svh);
+  padding-bottom: min(2.6cqw, 0.6svh);
+  line-height: 1.45;
 }
 
 /* ------------------------------------------------------------
@@ -318,4 +413,131 @@ html[data-v2-mounted="true"] .shop-footer{
   overflow: hidden; clip-path: inset(50%);
   white-space: nowrap; border: 0;
   pointer-events: none;
+}
+
+/* ============================================================
+ * R2-02 / Addendum B：04 の棚コンテキスト（空気の差）
+ * ------------------------------------------------------------
+ * 03 の大棚 icon は 04 の common sprig へ置き換えない（Formal Reference MATCH）。
+ * 代わりに「どの棚から入ったか」を halo / haze の空気差として出す。
+ *
+ * 使う色は既存 8 大棚の --tint のみ。新しい palette は作らない。
+ * bright=positive / dark=negative のような心理的意味づけはしない
+ * （同じ強度・同じ形で、色相だけが棚ごとに違う）。
+ *
+ * 値の出どころは emotion-shelf-adapter が <html> に置く
+ * data-v2-shelf-context（既存の大棚 id）だけ。
+ * ============================================================ */
+html[data-v2-shelf-context="hazumu"]    { --v2-shelf-tint: #a8823e; }
+html[data-v2-shelf-context="atatamaru"] { --v2-shelf-tint: #b5735e; }
+html[data-v2-shelf-context="hikareru"]  { --v2-shelf-tint: #56766a; }
+html[data-v2-shelf-context="shizumu"]   { --v2-shelf-tint: #587085; }
+html[data-v2-shelf-context="zawatsuku"] { --v2-shelf-tint: #8a7590; }
+html[data-v2-shelf-context="butsukaru"] { --v2-shelf-tint: #b06b4d; }
+html[data-v2-shelf-context="miwohiku"]  { --v2-shelf-tint: #6d7350; }
+html[data-v2-shelf-context="namae-ga-nai"] { --v2-shelf-tint: #8f887e; }
+
+html[data-theme="night"][data-v2-shelf-context="hazumu"]    { --v2-shelf-tint: #8a5a1e; }
+html[data-theme="night"][data-v2-shelf-context="atatamaru"] { --v2-shelf-tint: #8d4e37; }
+html[data-theme="night"][data-v2-shelf-context="hikareru"]  { --v2-shelf-tint: #3d4f42; }
+html[data-theme="night"][data-v2-shelf-context="shizumu"]   { --v2-shelf-tint: #3a4c60; }
+html[data-theme="night"][data-v2-shelf-context="zawatsuku"] { --v2-shelf-tint: #574351; }
+html[data-theme="night"][data-v2-shelf-context="butsukaru"] { --v2-shelf-tint: #7d4229; }
+html[data-theme="night"][data-v2-shelf-context="miwohiku"]  { --v2-shelf-tint: #514a29; }
+html[data-theme="night"][data-v2-shelf-context="namae-ga-nai"] { --v2-shelf-tint: #57493a; }
+
+/* DAY：暖色の光の芯は保ちつつ、外周へ向かって棚の色が乗る */
+html[data-v2-mounted="true"] .v2c04__halo{
+  background:
+    radial-gradient(closest-side at 42% 38%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 12%, rgb(247 210 180)) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 26%, rgb(246 206 176)) 55%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 40%, rgb(246 210 184 / 0.34)) 78%,
+      transparent 97%),
+    radial-gradient(closest-side at 62% 66%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 45%, rgb(238 190 158 / 0.5)) 0%,
+      transparent 84%);
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__halo{
+  background:
+    radial-gradient(closest-side at 42% 38%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 30%, rgb(58 82 120)) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 48%, rgb(40 60 94)) 55%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 62%, rgb(30 46 74 / 0.45)) 80%,
+      transparent 97%),
+    radial-gradient(closest-side at 64% 70%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 55%, rgb(26 40 66 / 0.6)) 0%,
+      transparent 82%);
+}
+
+/* secondary haze：hero 全体の空気。halo より広く薄く、棚色だけが違う */
+html[data-v2-mounted="true"] .v2c04__hero{ position: relative; }
+html[data-v2-mounted="true"] .v2c04__hero::after{
+  content: "";
+  position: absolute; inset: -6% -10% -14%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(60% 46% at 50% 44%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 34%, transparent) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 12%, transparent) 55%,
+      transparent 82%);
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__hero::after{
+  background:
+    radial-gradient(60% 46% at 50% 44%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 50%, transparent) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 20%, transparent) 55%,
+      transparent 82%);
+}
+/* 見出し・sprig は haze の上に置く（Reference の前後関係を保つ） */
+html[data-v2-mounted="true"] .v2c04__title,
+html[data-v2-mounted="true"] .v2c04__lead,
+html[data-v2-mounted="true"] .v2c04__sprig,
+html[data-v2-mounted="true"] .v2c04__stars{ position: relative; z-index: 1; }
+
+/* ============================================================
+ * R2-07：English Entrance Typography（01）
+ * ------------------------------------------------------------
+ * 実測した原因
+ *   01 は固定アスペクトのキャンバス上に % 座標で絶対配置される。
+ *   .v2c01__brand は top 23.9% / width 57%、.v2c01__rule は top 35.5% で、
+ *   その間に確保されている高さは 390px 幅で約 80px しかない。
+ *   JA「みんなの／感情書店」は 76px で収まるが、
+ *   EN "The / Bookstore of Feelings" は 0.22em の字間のまま折り返して
+ *   115px となり、罫線へ重なっていた（実測 320/390/430 すべてで overlap）。
+ *
+ * 対応
+ *   locale 固有の typography token として EN だけを調整する。
+ *   applyLanguage() が <html lang> を設定するため、その属性でスコープする。
+ *   JA 側の値・DAY/NIGHT の情景・DOM・English wording はいずれも変更しない。
+ *   文字を画像化しない。極端な縮小もしない（EN main は約 22px を確保）。
+ * ============================================================ */
+html[data-v2-mounted="true"][lang="en"] .v2c01__brand{
+  /* 左右位置と幅は JA の Reference 幾何（left 3% / width 57%・中心 31.5%）のまま。
+     幅を広げると 1 行に伸びて左端からはみ出すため、幅は変えず 2 行で組む。 */
+  top: 22.2% !important;
+}
+html[data-v2-mounted="true"][lang="en"] .v2b .v2c01__brand-sub,
+html[data-v2-mounted="true"][lang="en"] .v2c01__brand-sub{
+  font-size: 3.7cqw;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  line-height: 1.2;
+}
+html[data-v2-mounted="true"][lang="en"] .v2b .v2c01__brand-main,
+html[data-v2-mounted="true"][lang="en"] .v2c01__brand-main{
+  margin-top: 1.5cqw;
+  font-size: 5.2cqw;
+  letter-spacing: 0.08em;
+  text-indent: 0.08em;
+  line-height: 1.16;
+  /* JA の 2 行ブロック（みんなの／感情書店）と同じ塊感にする。
+     1 行に伸ばすと左端の情景へ寄りすぎるため、幅を絞って
+     "Bookstore of / Feelings" で改行させる。 */
+  max-width: 74%;
+  margin-inline: auto;
+  /* 「Bookstore of / Feelings」で自然に2行になるようにし、
+     語中改行や1語だけ落ちる孤立行を避ける */
+  text-wrap: balance;
 }

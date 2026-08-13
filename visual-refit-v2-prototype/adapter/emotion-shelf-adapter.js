@@ -500,6 +500,12 @@
     if (!titleEl && !leadEl && !wordsEl) return { ok: false, reason: 'no_target' };
 
     var shelfId = effectiveShelfId();
+    /* R2-02：04 に「どの大棚から入ったか」を渡す。値は既存の大棚 id のみ。
+       CSS 側がこの文脈で既存 --tint を halo / haze へ反映する。
+       storage・GA4・外部通信には一切関与しない表示専用の属性。 */
+    if (doc && doc.documentElement) {
+      doc.documentElement.setAttribute('data-v2-shelf-context', shelfId || '');
+    }
     var def = (shelfId === ALL_CONTEXT_ID)
       ? { id: ALL_CONTEXT_ID,
           name: T('v2ShelfAllName', 'すべての感情語'),
