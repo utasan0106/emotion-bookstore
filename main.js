@@ -147,7 +147,6 @@ const MESSAGES = {
     sampleBookBadge: "これは見本の一冊です。あなたの本棚には追加されません。",
     sampleBookTitle: "雨上がりの帰り道",
     sampleBookStory: "傘を閉じたら、路面の匂いが少しだけ夏に戻っていた。今日うまく言えなかったことを、帰り道の水たまりにひとつずつ落としていく。急がなくていい、と自分に言えたのは久しぶりだった。玄関の灯りが見えたとき、明日はもう少しだけ素直に話してみようと思った。",
-    sampleBookNote: "うまく言えなかった日ほど、言葉は静かに育っています。この棚で、ゆっくりどうぞ。",
     deskSampleIntro: "一冊になると、こうなります。",
     deskSampleSummary: "できあがりの見本を見る",
     deskSampleShelfLabel: "棚：懐かしい",
@@ -339,7 +338,13 @@ const MESSAGES = {
     goToShelfBtn: "『{shelf}』の棚を見てみる",
     dataAboutTitle: "この書店とデータについて",
     dataAboutOpenLabel: "データはどこに保存されるの？",
-    dataAboutBody: "「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す簡単な仕組みです（特定のAIモデルと会話しているわけではありません）。<br>「物語を綴る」「製本する」で書いた内容は、どこにも公開されず、この端末のブラウザ内（IndexedDB/localStorage）だけに保存されます。運営者のサーバーへは送信されません。アカウント登録もなく、運営者があなたの記録を読むことはできません（同じ端末・同じブラウザを使う人には表示されます）。<br>「気持ちを手放す」は、この端末だけに残る「手放しの記録」に静かに移すことで、本棚の一覧からは見えなくなる機能です（完全な削除ではなく、専用の記録欄に移されます）。<br>「みんなの本棚」の「みんな」は他ユーザーとの共有ではなく、あなた自身の本棚が育っていく様子を指す名前です。<br>棚の一部の表示は、季節の言葉と棚の名前だけを検索語として外部の検索サービスに問い合わせて表示しています。この時も、あなたが綴った文章が送信されることはありません。<br>ブラウザのデータを消去するとこの記録も失われるため、「バックアップ保存」から定期的にファイルへ書き出すことをおすすめします。サービスとして終了する場合も、事前にバックアップを取っていただければお手元にデータが残ります。", // ★Hotfix1-1追加修正：本・音楽の予告をデータ保存説明からも削除（外部通信の開示自体は維持）
+    // ★FIX-09（Round 2.1）：現在の実装事実へ同期。実測の根拠は tests/qa_r21_network_audit.js。
+    //   V2 mount 済みの一周で発生した外部ホストは Web フォント配信のみ／fetch・XHR・sendBeacon は 0 件／
+    //   本文・題名はどのリクエストにも含まれない／Google Books・iTunes Search は呼ばれない
+    //   （renderLiveNewReleases が V2 mount 中は早期 return する）／天気連動は既定オフ／
+    //   GA4 は本番ホスト判定でのみ読み込まれる／アカウント UI は存在しない。
+    //   Privacy Ver.1.2（第2・6・7・9条）とも矛盾しない範囲に揃えている。
+    dataAboutBody: "「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す仕組みです。本文や題名をAIが読み取って、分析・診断・自動分類することはありません。<br>書いたものは、この端末のブラウザ保存領域に保存されます（技術的な内訳としては、本はIndexedDB、書きかけの下書きはlocalStorageを使っています）。アカウント登録はなく、本文・題名・写真が運営者のサーバーへ保存されることはありません。<br>クラウド同期はないため、別の端末や別のブラウザへ自動で引き継がれることはありません。反対に、同じ端末の同じブラウザを使う人には表示されます。共有の端末では、この点にご注意ください。<br>保存は永久ではありません。ブラウザのサイトデータ削除、ブラウザやOSの保存ポリシー、保存容量の上限、端末の故障や機種変更などによって失われることがあります。運営者側に復元用のデータはないため、「本棚のデータをバックアップ保存する」から、ときどきファイルへ書き出しておくことをおすすめします。<br>あなたが書いた本文・題名・写真は、外部のAIにも外部サービスにも送信しません。写真も、端末の中で縮小して端末の中に保管します。いっぽうで、サイトを表示すること自体には通常の通信が伴います。配信基盤への接続とWebフォントの読み込みが発生し、公開環境ではアクセス解析（GA4）も動きます。これらに本文・題名・写真が含まれることはありません。外部リンクから移動した先は、それぞれのサービスの方針に従います。<br>本や音楽を外部の検索サービスから取得して表示する機能と、天気連動の機能は、現在のBeta0では動作していません。<br>本棚はあなただけの「自分の本棚」で、ほかの利用者と共有される場所ではありません。",
     keeperNotAiHint: "※AIチャットボットではなく、あらかじめ用意した言葉を返す簡単な仕組みです。会話はモデルに送信されません。",
     submitStoryHint: "※外部には公開されず、この端末のブラウザ内にのみ保存されます。",
     // ★2025-07-17追記（v1.2フィードバック反映）：renderShelfDisplay()内にハードコードしていた
@@ -444,11 +449,11 @@ const MESSAGES = {
     v2c02Lead: "気持ちから棚を歩くことも、残ったことを書くことも、<br>自分の本棚を開くこともできます。",
     v2c02CardsAria: "はじめる場所",
     v2c02Card1Title: "感情の棚を見る",
-    v2c02Card1Desc: "気持ちごとに並ぶ棚から、<br>ことばや作品に出会う。",
+    v2c02Card1Desc: "<span class='v2c02__descline'>気持ちごとに並ぶ棚から、</span><span class='v2c02__descline'>ことばや作品に出会う。</span>",
     v2c02Card2Title: "残ったことを書く",
-    v2c02Card2Desc: "作品の余韻も、<br>日々の小さなことも、<br>一冊にして残す。",
+    v2c02Card2Desc: "<span class='v2c02__descline'>作品の余韻も、</span><span class='v2c02__descline'>日々の小さなことも、</span><span class='v2c02__descline'>一冊にして残す。</span>",
     v2c02Card3Title: "自分の本棚を見る",
-    v2c02Card3Desc: "あなたが一冊にした言葉を、<br>あとから静かに巡る。",
+    v2c02Card3Desc: "<span class='v2c02__descline'>あなたが一冊にした言葉を、</span><span class='v2c02__descline'>あとから静かに巡る。</span>",
 
     v2c03Title: "感情の棚",
     v2c03Lead: "いまの気持ちに近い棚から、<br>ことばや作品、自分の本に出会えます。",
@@ -653,7 +658,6 @@ const MESSAGES = {
     sampleBookBadge: "This is a sample book. It is never added to your bookshelf.",
     sampleBookTitle: "The Walk Home After the Rain",
     sampleBookStory: "When I closed my umbrella, the smell of the wet street felt almost like summer again. One by one, I let the things I couldn’t say today fall into the puddles along the way home. For the first time in a while, I told myself it was okay not to hurry. When I saw the light at my front door, I thought: tomorrow, I’ll try speaking a little more honestly.",
-    sampleBookNote: "On the days words wouldn’t come out right, they were quietly growing. Take your time on this shelf.",
     deskSampleIntro: "This is what a finished book looks like.",
     deskSampleSummary: "See a sample of the finished book",
     deskSampleShelfLabel: "Shelf: Nostalgic",
@@ -825,7 +829,7 @@ const MESSAGES = {
     goToShelfBtn: "View the \"{shelf}\" shelf",
     dataAboutTitle: "About this bookstore & your data",
     dataAboutOpenLabel: "Where is my data stored?",
-    dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it's a simple system that returns pre-written lines based on context (you're not talking to any particular AI model).<br>Anything you write in \"Write your story\" or have \"bound\" is never published anywhere. It's stored only inside this device's browser (IndexedDB/localStorage) and never sent to our servers. There's no account, and we can't read your records (though anyone using this same device and browser will see them).<br>\"Let go of a feeling\" quietly moves that entry into a device-only \"release log\" so it no longer appears on your bookshelf — it isn't permanently deleted, just moved to its own log.<br>\"Everyone's Bookshelf\" doesn't mean sharing with other users — \"everyone\" here just names the idea of your own bookshelf growing over time.<br>Some parts of the shelves are fetched from an external search service, using only a season word and the shelf's emotion label as the search terms. Your written entries are never sent in these requests either.<br>Clearing your browser data will also erase these records, so we recommend periodically exporting a backup file via \"Back up your data.\" Even if this service were ever discontinued, your data would remain safe on your device as long as you've backed it up beforehand.", // ★Hotfix1-1追加修正：本・音楽の予告をデータ保存説明からも削除（外部通信の開示自体は維持）
+    dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it returns pre-written lines based on context. Nothing you write is read by an AI to be analysed, diagnosed or auto-categorised.<br>What you write is kept in this device's browser storage (technically: books in IndexedDB, unfinished drafts in localStorage). There is no account, and your text, titles and photos are never stored on our servers.<br>There is no cloud sync, so nothing carries over automatically to another device or another browser. Conversely, anyone using this same device and browser will see it — please keep that in mind on shared devices.<br>Storage is not permanent. Clearing site data, your browser's or OS's storage policy, storage limits, device failure and switching devices can all cause it to be lost. We hold no copy to restore from, so we recommend exporting a file now and then via \"Back up your data.\"<br>The text, titles and photos you write are never sent to any external AI or external service; photos are resized on-device and kept on-device. Displaying the site itself, however, does involve ordinary network traffic: a connection to the hosting platform and a web-font request, plus analytics (GA4) in the public build. None of those carry your text, titles or photos. Anywhere you go via an external link is governed by that service's own policy.<br>Fetching books and music from external search services, and the weather-sync feature, are both inactive in the current Beta0 release.<br>Your bookshelf is your own — it is never shared with other visitors.",
     keeperNotAiHint: "※ Not an AI chatbot — a simple system that replies with pre-written lines. Nothing is sent to a model.",
     submitStoryHint: "※ Never published anywhere — stored only inside this device's browser.",
     // \u26052026-07-25 Content Trust Fix 1: heading simplified to "Your Books" while the fictional
@@ -928,11 +932,11 @@ const MESSAGES = {
     v2c02Lead: "You can walk the shelves by feeling, write what stayed with you,<br>or open your own bookshelf.",
     v2c02CardsAria: "Where to begin",
     v2c02Card1Title: "Browse the emotion shelves",
-    v2c02Card1Desc: "Find words and works<br>on shelves arranged by feeling.",
+    v2c02Card1Desc: "<span class='v2c02__descline'>Find words and works</span><span class='v2c02__descline'>on shelves arranged by feeling.</span>",
     v2c02Card2Title: "Write what stayed with you",
-    v2c02Card2Desc: "The afterglow of a work,<br>or a small moment of the day,<br>kept as one book.",
+    v2c02Card2Desc: "<span class='v2c02__descline'>The afterglow of a work,</span><span class='v2c02__descline'>or a small moment of the day,</span><span class='v2c02__descline'>kept as one book.</span>",
     v2c02Card3Title: "Open your bookshelf",
-    v2c02Card3Desc: "Revisit the words you bound,<br>quietly, whenever you like.",
+    v2c02Card3Desc: "<span class='v2c02__descline'>Revisit the words you bound,</span><span class='v2c02__descline'>quietly, whenever you like.</span>",
 
     v2c03Title: "Emotion Shelves",
     v2c03Lead: "Start from the shelf closest to how you feel,<br>and find words, works, and your own books.",
@@ -3334,7 +3338,10 @@ function renderCurrentShopDate(){
     String(now.getMonth()+1).padStart(2,'0'),
     String(now.getDate()).padStart(2,'0')
   ].join('-');
-  ['shopCurrentDate','deskCurrentDate'].forEach(id=>{
+  // ★FIX-06（Round 2.1）：V2 05 編纂室にも今日の日付を出す。既存の描画契約
+  // （端末ローカル日付・appLang 追従・<time datetime> の書式）をそのまま共有するだけで、
+  // タイムゾーン固定・保存キー・schema・本文への自動挿入はいずれも追加しない。
+  ['shopCurrentDate','deskCurrentDate','v2c05CurrentDate'].forEach(id=>{
     const el = document.getElementById(id);
     if(el){
       el.textContent = text;
@@ -4700,20 +4707,37 @@ function isSampleBookOpen(){
   return !!(box && !box.classList.contains('hidden'));
 }
 
+// ★FIX-08（Round 2.1）：見本の日付を、現在の V2 Reader（07）と同じ書き方にする。
+// Reader（bookshelf-adapter の viewDate）は JA が「2026年6月1日」、EN が
+// 「Bound on June 1, 2026」で、JA だけ後ろに v2c07DateSuffix「に本にしました」が付く。
+// 旧 formatDate() の「納品 / Delivered」は現在の製本体験では使われていないため使わない。
+// 日付そのもの（SAMPLE_BOOK_DATE）と保存挙動は変更しない。
+function sampleBookDateText(){
+  try{
+    const d = new Date(SAMPLE_BOOK_DATE);
+    if(isNaN(d.getTime())) return '';
+    if(appLang === 'en'){
+      const MN = ['January','February','March','April','May','June','July','August',
+                  'September','October','November','December'];
+      return 'Bound on ' + MN[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    }
+    return d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日' + t('v2c07DateSuffix');
+  }catch(e){ return ''; }
+}
+
 function openSampleBook(){
   const box = document.getElementById('sampleBookInline');
   if(!box) return;
   const cat = (typeof CATEGORIES !== 'undefined') ? CATEGORIES.find(c=>c.id === SAMPLE_BOOK_CATEGORY_ID) : null;
   const catEl = document.getElementById('sampleInlineCat');
-  if(catEl) catEl.textContent = cat ? categoryLabelFor(cat) + t('definitionLabelSep') : '';
+  // Reader の棚チップは棚名だけを出す（「〜の棚」は付けない）。表記をそれに合わせる。
+  if(catEl) catEl.textContent = cat ? categoryLabelFor(cat) : '';
   const titleEl = document.getElementById('sampleInlineTitle');
   if(titleEl) titleEl.textContent = t('sampleBookTitle');
   const dateEl = document.getElementById('sampleInlineDate');
-  if(dateEl) dateEl.textContent = formatDate(SAMPLE_BOOK_DATE);
+  if(dateEl) dateEl.textContent = sampleBookDateText();
   const storyEl = document.getElementById('sampleInlineStory');
   if(storyEl) storyEl.textContent = t('sampleBookStory');
-  const noteTextEl = document.getElementById('sampleInlineNoteText');
-  if(noteTextEl) noteTextEl.textContent = t('sampleBookNote');
   const badgeEl = box.querySelector('.sample-book-badge');
   if(badgeEl) badgeEl.textContent = t('sampleBookBadge');
   box.classList.remove('hidden');

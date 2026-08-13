@@ -59,7 +59,16 @@ async function main(){
     ok('(1) the sample has a short story body', document.getElementById('sampleInlineStory').textContent.length > 20);
     ok('(1) the sample shows an emotion-shelf label', document.getElementById('sampleInlineCat').textContent.length > 0);
     ok('(1) the sample shows a binding date', document.getElementById('sampleInlineDate').textContent.length > 0);
-    ok('(1) the sample shows the shopkeeper\'s bookmark note', document.getElementById('sampleInlineNoteText').textContent.length > 0);
+    /* ★FIX-08（Round 2.1）で契約が変わった箇所。
+       localCurate() は常に note:'' を返すため、現在の実装で製本される本に
+       「店主のことば」は存在せず、Reader（07）の覚え書き欄も常に hidden になる。
+       見本だけが実物に無い欄を持たないことを、新しい正式契約として検証する。 */
+    ok('(1) the sample no longer shows a shopkeeper note (current books have none)',
+      !document.getElementById('sampleInlineNoteText') && !document.getElementById('sampleInlineNote'));
+    ok('(1) the sample date uses the current Reader wording, not the retired "納品"',
+      !/納品|Delivered/.test(document.getElementById('sampleInlineDate').textContent));
+    ok('(1) the sample shelf chip shows the shelf name only (no "の棚" suffix), like the Reader',
+      !/の棚|\sshelf$/.test(document.getElementById('sampleInlineCat').textContent));
     ok('(1) the sample badge explains it is a sample', inlineBox.querySelector('.sample-book-badge').textContent.length > 0);
     ok('(1) opening the sample does NOT open the real book modal', document.getElementById('bookModal').classList.contains('hidden'));
   }

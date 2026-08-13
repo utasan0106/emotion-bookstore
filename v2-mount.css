@@ -446,31 +446,66 @@ html[data-theme="night"][data-v2-shelf-context="butsukaru"] { --v2-shelf-tint: #
 html[data-theme="night"][data-v2-shelf-context="miwohiku"]  { --v2-shelf-tint: #514a29; }
 html[data-theme="night"][data-v2-shelf-context="namae-ga-nai"] { --v2-shelf-tint: #57493a; }
 
+/* ------------------------------------------------------------
+ * FIX-07（Round 2.1）：hero の輝度ピークを感情名・lead の真裏から外す
+ *
+ * 実測した原因（390px / 8棚 / DAY・NIGHT。文字を隠して背景の実ピクセルを採色し、
+ * 文字色との WCAG コントラストを算出）
+ *   halo の主核は closest-side at 42% 38%、haze は 50% 44% にあり、
+ *   どちらも感情名と lead が乗る帯のちょうど裏だった。
+ *   結果、lead の平均コントラストは DAY 3.50–3.90 / NIGHT 3.84–4.64、
+ *   下位 5% では DAY 2.34 / NIGHT 2.77 まで落ちていた。
+ *   NIGHT の「心が弾む」「心があたたまる」は暖色 tint が cream の文字色へ寄るため、
+ *   8棚のなかで最も低い値になっていた（CEO 指摘と一致）。
+ *
+ * 対応
+ *   色そのもの（8棚の --v2-shelf-tint / DAY・NIGHT の base color）は変えない。
+ *   halo を消さない・全面を暗くしない・特定の棚だけの個別調整をしない。
+ *   輝度の芯を 2 つに分け、文字帯（感情名〜lead）を避けて上下へ置く。
+ *     主核 = 感情名の上、副核 = lead の下、haze = さらに上。
+ *
+ *   注意：.v2c04__halo は border-radius:50% のため、背景はこの円でクリップされる。
+ *   gradient の中心を寄せたまま closest-side や大きな半径を使うと、
+ *   まだ明るいところで円の縁に当たり、硬い円弧が見えてしまう
+ *   （中間案で実際に発生した）。そのため
+ *     中心 ± 半径 が 0%..100% に収まる
+ *   ようにサイズを明示し、必ず要素の内側でフェードし切らせる。
+ *
+ * 実測（390px / 8棚 / DAY・NIGHT。文字を隠して背景の実ピクセルを採色）
+ *   感情名  平均 6.52–7.30 → 7.83–8.42（DAY） / 6.70–8.31 → 8.33–9.55（NIGHT）
+ *   lead    平均 3.50–3.90 → 4.97–5.12（DAY） / 3.84–4.64 → 5.66–5.88（NIGHT）
+ *   lead    下位5% 2.34–2.86 → 3.64–3.98（DAY） / 2.77–3.72 → 4.41–5.05（NIGHT）
+ *   棚差（文字帯以外の hero を採色した棚間の色差）12.3 → 16.4（DAY） / 19.6 → 23.3（NIGHT）
+ *   ＝ 空気の差はむしろ強まり、8棚間のばらつきは縮む（同一の contrast rule が成立）。
+ * ------------------------------------------------------------ */
 /* DAY：暖色の光の芯は保ちつつ、外周へ向かって棚の色が乗る */
 html[data-v2-mounted="true"] .v2c04__halo{
   background:
-    radial-gradient(closest-side at 42% 38%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 12%, rgb(247 210 180)) 0%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 26%, rgb(246 206 176)) 55%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 40%, rgb(246 210 184 / 0.34)) 78%,
+    /* 主核：感情名の上。0.30±0.29 → 1%..59% で要素内に収まる */
+    radial-gradient(46% 29% at 50% 30%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 14%, rgb(247 210 180)) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 28%, rgb(246 206 176)) 55%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 42%, rgb(246 210 184 / 0.34)) 80%,
       transparent 97%),
-    radial-gradient(closest-side at 62% 66%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 45%, rgb(238 190 158 / 0.5)) 0%,
-      transparent 84%);
+    /* 副核：lead の下。0.74±0.25 → 49%..99% */
+    radial-gradient(44% 25% at 58% 74%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 46%, rgb(238 190 158 / 0.5)) 0%,
+      transparent 88%);
 }
 html[data-v2-mounted="true"][data-theme="night"] .v2c04__halo{
   background:
-    radial-gradient(closest-side at 42% 38%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 30%, rgb(58 82 120)) 0%,
+    radial-gradient(46% 29% at 50% 30%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 32%, rgb(58 82 120)) 0%,
       color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 48%, rgb(40 60 94)) 55%,
       color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 62%, rgb(30 46 74 / 0.45)) 80%,
       transparent 97%),
-    radial-gradient(closest-side at 64% 70%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 55%, rgb(26 40 66 / 0.6)) 0%,
-      transparent 82%);
+    radial-gradient(44% 25% at 58% 74%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 56%, rgb(26 40 66 / 0.6)) 0%,
+      transparent 88%);
 }
 
-/* secondary haze：hero 全体の空気。halo より広く薄く、棚色だけが違う */
+/* secondary haze：hero 全体の空気。halo より広く薄く、棚色だけが違う。
+   FIX-07 で中心を文字帯の上へ寄せ、文字の真裏の濃度だけを下げる。 */
 html[data-v2-mounted="true"] .v2c04__hero{ position: relative; }
 html[data-v2-mounted="true"] .v2c04__hero::after{
   content: "";
@@ -478,17 +513,17 @@ html[data-v2-mounted="true"] .v2c04__hero::after{
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(60% 46% at 50% 44%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 34%, transparent) 0%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 12%, transparent) 55%,
-      transparent 82%);
+    radial-gradient(66% 36% at 50% 14%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 26%, transparent) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 9%, transparent) 55%,
+      transparent 84%);
 }
 html[data-v2-mounted="true"][data-theme="night"] .v2c04__hero::after{
   background:
-    radial-gradient(60% 46% at 50% 44%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 50%, transparent) 0%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 20%, transparent) 55%,
-      transparent 82%);
+    radial-gradient(66% 36% at 50% 14%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 38%, transparent) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 13%, transparent) 55%,
+      transparent 84%);
 }
 /* ------------------------------------------------------------
  * HOTFIX-01：装飾レイヤの重ね順だけを与え、position は canonical のまま残す。
@@ -585,17 +620,166 @@ html[data-v2-mounted="true"][lang="en"] .v2c01__cta-fl--l{ left: 3.6%; }
 html[data-v2-mounted="true"][lang="en"] .v2c01__cta-fl--r{ right: 3.6%; }
 
 /* ============================================================
- * HOTFIX ADDENDUM：03 案内カードの中身が左へ寄って見える
+ * FIX-03：03 案内カードが左へ寄って見える／下部 nav に隠れる
  * ------------------------------------------------------------
- * 枠自体は width 81.7% / margin auto で中央にあるが、
- * 中身が flex の既定（flex-start）で左詰めのため、
- * icon が左端に孤立し文言だけ左に偏って見えていた。
- * 枠の位置・幅・bottom clearance・R2-01 の 8棚 first view は変えない。
+ * 実測した原因（320/390/430/1024/1440 で再現）
+ *   (1) 枠そのものが左寄せだった。
+ *       beta0.css は .v2c03__guide { width:81.7%; margin:3.4cqw auto 0 } だが、
+ *       同じ beta0.css の .v2b p { margin: 0 }（詳細度 0,1,1）が
+ *       .v2c03__guide（0,1,0）に勝ち、左右の auto margin が 0 に潰されていた。
+ *       .v2c03__grid が div なのでこの規則に当たらず、grid だけ中央、
+ *       案内カードだけ左端という状態になっていた（実測 320px で左 0 / 右 58.6px）。
+ *   (2) 中身が横並びのため、sprig ぶんだけ文言の視覚中心が右へずれていた
+ *       （実測 320px で +15.8px / 1024px で +32px）。
+ *   (3) flex 子が縮めず stage の content box を越え、案内カードが
+ *       fixed の Global Nav の下へ潜っていた（実測 320px で -34.6px、1024px で -143px）。
+ *
+ * 対応
+ *   (1) 潰された auto margin を戻す（枠を main content に対して中央へ）。
+ *   (2) sprig を文言の上へ積み、枠・文言・icon の視覚中心を一致させる
+ *       （枠と中身の中心ずれは 3 viewport すべてで 0px になる）。
+ *   (3) grid / guide の自動最小サイズを解除して flex が本来どおり縮むようにし、
+ *       nav ぶんの clearance を必ず正にする。
+ *
+ * R2-01 の 8棚 first view 契約は維持する（実測 320/390/430 で 8/8。
+ * 1024 は従来 6/8 だったが、(3) により 8/8 へ改善する）。
+ * 枠の幅・bottom clearance の考え方・棚カードの寸法契約は変えない。
  * ============================================================ */
 html[data-v2-mounted="true"] .v2c03__guide{
+  margin-inline: auto;              /* (1) .v2b p{margin:0} に潰された auto を戻す */
+  min-height: 0;                    /* (3) flex の自動最小サイズを解除 */
+  flex-direction: column;           /* (2) icon を文言の上へ。左端に孤立させない */
   justify-content: center;
+  align-items: center;
   text-align: center;
-  padding-inline: 3.6cqw;   /* 左右対称にする */
+  gap: min(1.2cqw, 0.4svh);
+  padding-inline: 3.6cqw;           /* 左右対称 */
+  margin-bottom: min(1.6cqw, 0.6svh); /* (3) nav との clearance を必ず残す */
 }
-html[data-v2-mounted="true"] .v2c03__guidesprig{ flex: 0 0 auto; }
+html[data-v2-mounted="true"] .v2c03__guidesprig{
+  flex: 0 0 auto;
+  /* 縦積みになるぶん、案内カードが高くなりすぎないよう sprig を少しだけ小さくする */
+  width: min(5cqw, 2.2svh); min-width: 15px;
+}
 html[data-v2-mounted="true"] .v2c03__guidetext{ flex: 0 1 auto; }
+html[data-v2-mounted="true"] .v2c03__grid{ min-height: 0; }  /* (3) */
+
+/* ============================================================
+ * FIX-04：02「自分の本棚を見る」本文の孤立行
+ * ------------------------------------------------------------
+ * 実測した原因
+ *   カード本文の欄は 320px で 127.8px しかないのに、意図した 1 行目
+ *   「あなたが一冊にした言葉を、」は 159.1px 必要だった。<br> の位置は正しく、
+ *   1 行目が入りきらずに折り返され、助詞だけが次行へ落ちていた
+ *   （実測 390/1024 で「あなたが一冊にした言葉」「を、」「あとから静かに巡る。」）。
+ *   同じ理由で「感情の棚を見る」の本文も 320/1024 で「ら、」が孤立していた。
+ *
+ * 対応
+ *   文言は変えない。<br> を controlled span（1 行 = 1 ブロック）に置き換え、
+ *   狭い幅では各行が独立して balance するようにする。
+ *   入りきらない行は語の切れ目で 2 行に分かれ、1〜2 文字だけの行は出なくなる。
+ *   実測：320/390/430/1024/1440 × JA/EN の全 15 通りで孤立行 0。
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2c02__descline{
+  display: block;
+  text-wrap: balance;
+}
+
+/* ============================================================
+ * FIX-08：メニュー内「見本の一冊」を現行 Reader の紙面へ寄せる
+ * ------------------------------------------------------------
+ * Reader（07）は 題名 → 罫 → 日付 → 棚 → 本文 の順。見本もその階層に合わせる。
+ * 見本専用の新しい装飾は作らない（Reader の見え方へ寄せるだけ）。
+ * ============================================================ */
+html[data-v2-mounted="true"] .sample-inline-sep{
+  display: block;
+  width: 40px; height: 1px;
+  margin: 6px 0 8px;
+  background: var(--paper-shadow);
+}
+html[data-v2-mounted="true"] .sample-inline-date{ margin: 0 0 2px; }
+html[data-v2-mounted="true"] .sample-inline-cat{ margin: 0 0 10px; }
+
+/* ============================================================
+ * FIX-05：店内メニューの section heading 階層
+ * ------------------------------------------------------------
+ * 実測した原因
+ *   .experience-menu-section は 11.5px。直下の説明文（.about-accordion-summary）が
+ *   13.5px あるため、「この書店について・データの扱い」が見出しではなく
+ *   注釈のように見えていた（見出し 11.5px < 本文 13.5px）。
+ *
+ * 対応
+ *   見出し階層そのものを本文より上へ戻す。「任意の場所へ」と同じ class なので
+ *   両方が同じ heading 階層のまま持ち上がる（＝同等の階層を保つ）。
+ *   文言・IA・DOM・順序は変更しない。style.css は触らず mount 時のみ上書きする。
+ * ============================================================ */
+html[data-v2-mounted="true"] .experience-menu-section{
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--ink);          /* --ink-soft より contrast を上げる（DAY/NIGHT とも token 追従） */
+  margin: 22px 0 10px;
+  padding-top: 14px;          /* 罫線と見出しの間を空ける */
+}
+html[data-v2-mounted="true"] .experience-menu-nav .experience-menu-section{
+  margin: 16px 0 8px;
+  padding-top: 12px;
+}
+
+/* ============================================================
+ * FIX-06：05 編纂室の今日の日付
+ * ------------------------------------------------------------
+ * 既存の renderCurrentShopDate() が書き込む <time> を、subcopy の直下に
+ * small secondary text として置くだけ。calendar UI にはしない。
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2c05__today{
+  display: block;
+  margin-top: 0.3em;
+  font-size: clamp(11px, 2.4cqw, 12px);
+  letter-spacing: 0.06em;
+  font-weight: 300;
+  color: #9b8c74 !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c05__today{ color: #8d8168 !important; }
+html[data-v2-mounted="true"] .v2c05__today:empty{ display: none; }
+
+/* ============================================================
+ * FIX-10：写真つきの一冊で、縦長写真が画面を占有する
+ * ------------------------------------------------------------
+ * 実測した原因
+ *   07 Reader の写真は .v2c07__photo img { width:100%; height:auto } のみで
+ *   上限が無く、portrait（3:4 / 9:16）だと 390px 幅で 520〜693px になり、
+ *   写真 1 枚で first view をほぼ使い切っていた。直後の本文が
+ *   写真の caption のように見えてしまう。
+ *   旧 UI の #modalPhoto は max-height:60vh / object-fit:contain を持っており、
+ *   V2 Reader だけがこの上限を失っていた。
+ *
+ * 対応（表示側だけで吸収する）
+ *   portrait / square / landscape を同じ component で扱えるよう、
+ *   preview 領域に aspect-ratio と max-height を与え、object-fit で収める。
+ *   元画像ファイルは加工しない（既存の photo 契約・圧縮・保存形式は不変）。
+ *   運営側の事前 crop / resize / 専用 thumbnail 作成を前提にしない。
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2c07__photo{
+  /* 横長は本来の比率、縦長は preview として上限で止める */
+  max-height: min(46svh, 380px);
+  display: flex;
+  background: rgb(0 0 0 / 0.04);
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c07__photo{ background: rgb(255 255 255 / 0.04); }
+html[data-v2-mounted="true"] .v2c07__photo img,
+html[data-v2-mounted="true"] .v2c07 .v2-reader__cover-img{
+  width: 100%;
+  height: auto;
+  max-height: min(46svh, 380px);
+  /* 縦長は上部（多くの写真で主題がある側）を残して表示 crop する。
+     cover なのは preview の形を 3 種類の比率で揃えるため。元データは不可逆加工しない。 */
+  object-fit: cover;
+  object-position: center 32%;
+}
+/* 05 の下書きプレビューも同じ考え方で上限を持たせる（入力欄を押し下げない） */
+html[data-v2-mounted="true"] .v2c05__photoimg{
+  max-height: min(30svh, 240px);
+  object-fit: cover;
+  object-position: center 32%;
+}
