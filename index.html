@@ -134,6 +134,25 @@
   "inLanguage": "ja"
 }
 </script>
+<!-- ★PKT-1：V2 global theme を pre-paint 段階で確定させる。
+     契約：05:00〜20:59 DAY / 21:00〜04:59 NIGHT（境界 04:59 NIGHT・05:00 DAY・20:59 DAY・21:00 NIGHT）。
+     01 表紙の五段階 daypart（main.js currentDaypart）とは別契約であり、そちらには一切触れない。
+     stylesheet より前に <html> の theme 属性を確定させることで、DAY 時間帯に NIGHT で
+     一瞬描画されてから切り替わる flash を避ける。外部通信・保存は一切行わない。 -->
+<script>
+(function(){
+  function isNightHour(hour){
+    var h = (typeof hour === 'number') ? hour : new Date().getHours();
+    return h >= 21 || h < 5;
+  }
+  window.isNightHour = isNightHour;
+  var night = isNightHour();
+  var el = document.documentElement;
+  el.setAttribute('data-theme', night ? 'night' : 'day');
+  el.setAttribute('data-v2-theme', night ? 'night' : 'day');
+  el.setAttribute('data-v2-prepaint-theme', night ? 'night' : 'day');
+})();
+</script>
 <link rel="stylesheet" href="style.css">
 <!-- ===== Visual Refit V2（Production Mount） ===== -->
 <link rel="stylesheet" href="visual-refit-v2-prototype/css/master-tokens.css">
@@ -249,7 +268,12 @@ body.night .about-data-content{
 }
 </style>
 </head>
-<body class="night">
+<body>
+<!-- ★PKT-1：body.night は静的固定をやめ、pre-paint で確定した theme に合わせる。
+     body 開始直後の同期実行なので、以降の描画は最初から正しい DAY/NIGHT になる。
+     legacy CSS（body.night）と navigation-adapter の theme bridge は、
+     どちらも従来どおり body.night を唯一の出どころとして読み続ける。 -->
+<script>document.body.classList.toggle('night', document.documentElement.getAttribute('data-v2-prepaint-theme') === 'night');</script>
 
 <div class="shop">
   <header class="entrance hero">
@@ -328,24 +352,24 @@ body.night .about-data-content{
     <span class="v2c01__logo" aria-hidden="true"></span>
 
     <h1 class="v2c01__brand">
-      <span class="v2c01__brand-sub">みんなの</span>
-      <span class="v2c01__brand-main">感情書店</span>
+      <span class="v2c01__brand-sub" data-i18n="v2c01BrandSub">みんなの</span>
+      <span class="v2c01__brand-main" data-i18n="v2c01BrandMain">感情書店</span>
     </h1>
 
     <hr class="v2c01__rule">
 
-    <p class="v2c01__copy">気持ちを入口に、出会う。<br>そこで残ったものも、日々の小さなことも。<br>一冊にして、あなたの本棚へ。</p>
+    <p class="v2c01__copy" data-i18n-html="v2c01Copy">気持ちを入口に、出会う。<br>そこで残ったものも、日々の小さなことも。<br>一冊にして、あなたの本棚へ。</p>
 
-    <ul class="v2c01__steps" aria-label="この書店の過ごし方">
-      <li><span class="v2c01__step-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span>知る</li>
-      <li><span class="v2c01__step-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="8.5" cy="9" r="2.5"/><circle cx="15.5" cy="9" r="2.5"/><path d="M4 19c.5-3 2.5-4.5 4.5-4.5S12.5 16 13 19M11 19c.5-3 2.5-4.5 4.5-4.5S19.5 16 20 19"/><path d="M8 4l.3.8.8.3-.8.3-.3.8-.3-.8-.8-.3.8-.3zM16 3l.3.8.8.3-.8.3-.3.8-.3-.8-.8-.3.8-.3z"/></svg></span>出会う</li>
-      <li><span class="v2c01__step-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span>残す</li>
-      <li><span class="v2c01__step-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2-4.9"/><path d="M17 3v4h4"/></svg></span>巡る</li>
+    <ul class="v2c01__steps" aria-label="この書店の過ごし方" data-i18n-aria="v2c01StepsAria">
+      <li><span class="v2c01__step-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2c01Step1">知る</span></li>
+      <li><span class="v2c01__step-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="8.5" cy="9" r="2.5"/><circle cx="15.5" cy="9" r="2.5"/><path d="M4 19c.5-3 2.5-4.5 4.5-4.5S12.5 16 13 19M11 19c.5-3 2.5-4.5 4.5-4.5S19.5 16 20 19"/><path d="M8 4l.3.8.8.3-.8.3-.3.8-.3-.8-.8-.3.8-.3zM16 3l.3.8.8.3-.8.3-.3.8-.3-.8-.8-.3.8-.3z"/></svg></span><span data-i18n="v2c01Step2">出会う</span></li>
+      <li><span class="v2c01__step-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2c01Step3">残す</span></li>
+      <li><span class="v2c01__step-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2-4.9"/><path d="M17 3v4h4"/></svg></span><span data-i18n="v2c01Step4">巡る</span></li>
     </ul>
 
     <div class="v2c01__books" aria-hidden="true"></div>
 
-    <button type="button" class="v2c01__cta" data-v2-go="02"><span class="v2c01__cta-fl v2c01__cta-fl--l" aria-hidden="true"><svg viewBox="0 0 44 44"><path class="st" d="M7 37C15 33 23 24 27 9"/><path class="lf" d="M25 15c-4-3-8-3-12-1 3 3 8 4 12 1z"/><path class="lf" d="M27 10c0-5 3-8 8-9-1 5-4 8-8 9z"/><path class="lf" d="M21 24c-4-3-8-3-11 0 3 3 7 3 11 0z"/><path class="lf" d="M15 31c-4-2-7-2-10 1 3 2 7 2 10-1z"/></svg></span>入店する<span class="v2c01__cta-fl v2c01__cta-fl--r" aria-hidden="true"><svg viewBox="0 0 44 44"><path class="st" d="M7 37C15 33 23 24 27 9"/><path class="lf" d="M25 15c-4-3-8-3-12-1 3 3 8 4 12 1z"/><path class="lf" d="M27 10c0-5 3-8 8-9-1 5-4 8-8 9z"/><path class="lf" d="M21 24c-4-3-8-3-11 0 3 3 7 3 11 0z"/><path class="lf" d="M15 31c-4-2-7-2-10 1 3 2 7 2 10-1z"/></svg></span></button>
+    <button type="button" class="v2c01__cta" data-v2-go="02"><span class="v2c01__cta-fl v2c01__cta-fl--l" aria-hidden="true"><svg viewBox="0 0 44 44"><path class="st" d="M7 37C15 33 23 24 27 9"/><path class="lf" d="M25 15c-4-3-8-3-12-1 3 3 8 4 12 1z"/><path class="lf" d="M27 10c0-5 3-8 8-9-1 5-4 8-8 9z"/><path class="lf" d="M21 24c-4-3-8-3-11 0 3 3 7 3 11 0z"/><path class="lf" d="M15 31c-4-2-7-2-10 1 3 2 7 2 10-1z"/></svg></span><span data-i18n="v2c01Cta">入店する</span><span class="v2c01__cta-fl v2c01__cta-fl--r" aria-hidden="true"><svg viewBox="0 0 44 44"><path class="st" d="M7 37C15 33 23 24 27 9"/><path class="lf" d="M25 15c-4-3-8-3-12-1 3 3 8 4 12 1z"/><path class="lf" d="M27 10c0-5 3-8 8-9-1 5-4 8-8 9z"/><path class="lf" d="M21 24c-4-3-8-3-11 0 3 3 7 3 11 0z"/><path class="lf" d="M15 31c-4-2-7-2-10 1 3 2 7 2 10-1z"/></svg></span></button>
   </div>
 </div>
 </header>
@@ -519,35 +543,36 @@ body.night .about-data-content{
     <div class="v2c02__amb" aria-hidden="true"></div>
     <header class="v2c02__brandrow">
       <span class="v2c02__logo" aria-hidden="true"></span>
-      <span class="v2c02__brandname">みんなの感情書店</span>
+      <span class="v2c02__brandname" data-i18n="shopName">みんなの感情書店</span>
+      <button type="button" class="v2b-menutrigger" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </header>
-    <h1 class="v2c02__hero">今日は、<br>どこからはじめますか。</h1>
-    <p class="v2c02__lead">気持ちから棚を歩くことも、残ったことを書くことも、<br>自分の本棚を開くこともできます。</p>
-    <nav class="v2c02__cards" aria-label="はじめる場所">
+    <h1 class="v2c02__hero" data-i18n-html="v2c02Hero">今日は、<br>どこからはじめますか。</h1>
+    <p class="v2c02__lead" data-i18n-html="v2c02Lead">気持ちから棚を歩くことも、残ったことを書くことも、<br>自分の本棚を開くこともできます。</p>
+    <nav class="v2c02__cards" aria-label="はじめる場所" data-i18n-aria="v2c02CardsAria">
       <button type="button" class="v2c02__card" data-v2-go="03">
         <span class="v2c02__pane v2c02__pane--emotion" aria-hidden="true"></span>
         <span class="v2c02__body">
-          <span class="v2c02__cardtitle">感情の棚を見る</span>
+          <span class="v2c02__cardtitle" data-i18n="v2c02Card1Title">感情の棚を見る</span>
           <span class="v2c02__rule" aria-hidden="true"></span>
-          <span class="v2c02__carddesc">気持ちごとに並ぶ棚から、<br>ことばや作品に出会う。</span>
+          <span class="v2c02__carddesc" data-i18n-html="v2c02Card1Desc">気持ちごとに並ぶ棚から、<br>ことばや作品に出会う。</span>
         </span>
         <span class="v2c02__chev" aria-hidden="true"></span>
       </button>
       <button type="button" class="v2c02__card" data-v2-go="05">
         <span class="v2c02__pane v2c02__pane--write" aria-hidden="true"></span>
         <span class="v2c02__body">
-          <span class="v2c02__cardtitle">残ったことを書く</span>
+          <span class="v2c02__cardtitle" data-i18n="v2c02Card2Title">残ったことを書く</span>
           <span class="v2c02__rule" aria-hidden="true"></span>
-          <span class="v2c02__carddesc">作品の余韻も、<br>日々の小さなことも、<br>一冊にして残す。</span>
+          <span class="v2c02__carddesc" data-i18n-html="v2c02Card2Desc">作品の余韻も、<br>日々の小さなことも、<br>一冊にして残す。</span>
         </span>
         <span class="v2c02__chev" aria-hidden="true"></span>
       </button>
       <button type="button" class="v2c02__card" data-v2-go="bookshelf">
         <span class="v2c02__pane v2c02__pane--library" aria-hidden="true"></span>
         <span class="v2c02__body">
-          <span class="v2c02__cardtitle">自分の本棚を見る</span>
+          <span class="v2c02__cardtitle" data-i18n="v2c02Card3Title">自分の本棚を見る</span>
           <span class="v2c02__rule" aria-hidden="true"></span>
-          <span class="v2c02__carddesc">あなたが一冊にした言葉を、<br>あとから静かに巡る。</span>
+          <span class="v2c02__carddesc" data-i18n-html="v2c02Card3Desc">あなたが一冊にした言葉を、<br>あとから静かに巡る。</span>
         </span>
         <span class="v2c02__chev" aria-hidden="true"></span>
       </button>
@@ -579,59 +604,60 @@ body.night .about-data-content{
     <div class="v2c03__amb" aria-hidden="true"></div>
     <header class="v2c03__brandrow">
       <span class="v2c03__logo" aria-hidden="true"></span>
-      <span class="v2c03__brandname">みんなの感情書店</span>
-      <button type="button" class="v2c03__menubtn" data-v2-open-menu aria-label="店内メニューを開く"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <span class="v2c03__brandname" data-i18n="shopName">みんなの感情書店</span>
+      <button type="button" class="v2c03__menubtn" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </header>
-    <h1 class="v2c03__title">感情の棚</h1>
-    <p class="v2c03__lead">いまの気持ちに近い棚から、<br>ことばや作品、自分の本に出会えます。</p>
+    <h1 class="v2c03__title" data-i18n="v2c03Title">感情の棚</h1>
+    <p class="v2c03__lead" data-i18n-html="v2c03Lead">いまの気持ちに近い棚から、<br>ことばや作品、自分の本に出会えます。</p>
     <div class="v2c03__divider" aria-hidden="true"><span class="v2c03__divline"></span><span class="v2c03__sprig"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span><span class="v2c03__divline"></span></div>
     <div class="v2c03__grid">
       <button type="button" class="v2c03__book v2c03__book--hazumu" data-v2-shelf="hazumu" data-v2-shelf-trigger="hazumu">
         <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2M6.5 6.5l1.4 1.4M16.1 16.1l1.4 1.4M17.5 6.5l-1.4 1.4M7.9 16.1l-1.4 1.4"/><path d="M18.5 4.5l.4 1 .9.4-.9.4-.4 1-.4-1-.9-.4.9-.4z"/></svg></span>
-        <span class="v2c03__name">心が弾む</span>
+        <span class="v2c03__name" data-i18n="v2Shelfhazumu">心が弾む</span>
       </button>
       <button type="button" class="v2c03__book v2c03__book--atatamaru" data-v2-shelf="atatamaru" data-v2-shelf-trigger="atatamaru">
         <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19s-6.5-4.2-8-8A4.4 4.4 0 0 1 12 8.4 4.4 4.4 0 0 1 20 11c-1.5 3.8-8 8-8 8z"/></svg></span>
-        <span class="v2c03__name">心があたたまる</span>
+        <span class="v2c03__name" data-i18n="v2Shelfatatamaru">心があたたまる</span>
       </button>
       <button type="button" class="v2c03__book v2c03__book--hikareru" data-v2-shelf="hikareru" data-v2-shelf-trigger="hikareru">
         <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8.20 10.00 L9.55 13.34 L13.15 13.59 L10.39 15.91 L11.26 19.41 L8.20 17.50 L5.14 19.41 L6.01 15.91 L3.25 13.59 L6.85 13.34 Z"/><path d="M12.8 11.6C15.8 9.2 18.4 7.8 21.6 7"/><path d="M10.6 7.4C12.4 5.9 14.3 4.9 16.4 4.3"/></svg></span>
-        <span class="v2c03__name">惹かれる</span>
+        <span class="v2c03__name" data-i18n="v2Shelfhikareru">惹かれる</span>
       </button>
       <button type="button" class="v2c03__book v2c03__book--shizumu" data-v2-shelf="shizumu" data-v2-shelf-trigger="shizumu">
         <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 15.5a3.6 3.6 0 0 1 .4-7.2A4.8 4.8 0 0 1 16.7 9a3.3 3.3 0 0 1-.5 6.5z"/><path d="M12 18c.8 1 .8 1.9 0 2.7-.8-.8-.8-1.7 0-2.7z"/></svg></span>
-        <span class="v2c03__name">沈む</span>
+        <span class="v2c03__name" data-i18n="v2Shelfshizumu">沈む</span>
       </button>
       <button type="button" class="v2c03__book v2c03__book--zawatsuku" data-v2-shelf="zawatsuku" data-v2-shelf-trigger="zawatsuku">
         <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9.5c1.7-1.4 3.3-1.4 5 0s3.3 1.4 5 0M5 14.5c1.7-1.4 3.3-1.4 5 0s3.3 1.4 5 0"/></svg></span>
-        <span class="v2c03__name">ざわつく</span>
+        <span class="v2c03__name" data-i18n="v2Shelfzawatsuku">ざわつく</span>
       </button>
       <button type="button" class="v2c03__book v2c03__book--butsukaru" data-v2-shelf="butsukaru" data-v2-shelf-trigger="butsukaru">
         <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 4L6 18M19 8l-7 11"/></svg></span>
-        <span class="v2c03__name">ぶつかる</span>
+        <span class="v2c03__name" data-i18n="v2Shelfbutsukaru">ぶつかる</span>
       </button>
       <button type="button" class="v2c03__book v2c03__book--miwohiku" data-v2-shelf="miwohiku" data-v2-shelf-trigger="miwohiku">
         <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 20C9 13 13 9 19 5"/><path d="M12 11c-.4-2.8.8-5 3.6-6.6.4 2.8-.8 5-3.6 6.6zM9.5 14.5c-2.8.4-5-.8-6.6-3.6 2.8-.4 5 .8 6.6 3.6z"/></svg></span>
-        <span class="v2c03__name">身を引く</span>
+        <span class="v2c03__name" data-i18n="v2Shelfmiwohiku">身を引く</span>
       </button>
       <button type="button" class="v2c03__book v2c03__book--namae" data-v2-shelf="namae-ga-nai" data-v2-shelf-trigger="namae-ga-nai">
         <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><g stroke-dasharray="0.1 3.4"><circle cx="12" cy="12" r="7.5"/></g></svg></span>
-        <span class="v2c03__name">まだ名前がない</span>
+        <span class="v2c03__name" data-i18n="v2Shelfnamaeganai">まだ名前がない</span>
       </button>
     </div>
-    <p class="v2c03__guide"><span class="v2c03__guidesprig" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span><span class="v2c03__guidetext">どの棚からでも、書くことからでも。<br>あなたのペースで、自由に巡れます。</span></p>
+    <p class="v2c03__guide"><span class="v2c03__guidesprig" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span><span class="v2c03__guidetext" data-i18n-html="v2c03Guide">どの棚からでも、書くことからでも。<br>あなたのペースで、自由に巡れます。</span></p>
   </div>
 
-<nav class="v2b-nav" aria-label="主要な移動">
-  <button type="button" class="v2b-nav__item" data-v2-nav="shelves" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span>感情棚</span></button>
-  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span>書く</span></button>
-  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span>本棚</span></button>
+<nav class="v2b-nav" aria-label="主要な移動" data-i18n-aria="v2NavAria">
+  <button type="button" class="v2b-nav__item" data-v2-nav="shelves" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span data-i18n="v2NavShelves">感情棚</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2NavDesk">書く</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2NavBookshelf">本棚</span></button>
 </nav>
 </div>
 <div class="v2-page v2b v2c04" data-v2-screen="04" data-v2-subview-of="shelf-detail" data-screen="04">
   <div class="v2c04__stage">
     <div class="v2c04__utility">
-      <button type="button" class="v2c04__back" data-v2-go="03" data-v2-shelf-back><span class="v2c04__back-arrow" aria-hidden="true"></span>棚へ戻る</button>
+      <button type="button" class="v2c04__back" data-v2-go="03" data-v2-shelf-back><span class="v2c04__back-arrow" aria-hidden="true"></span><span data-i18n="v2BackToShelves">棚へ戻る</span></button>
+      <button type="button" class="v2b-menutrigger" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </div>
     <header class="v2c04__hero">
       <span class="v2c04__halo" aria-hidden="true"></span>
@@ -641,41 +667,41 @@ body.night .about-data-content{
       <p class="v2c04__lead" data-v2-emotion="lead"></p>
     </header>
 
-    <section class="v2c04__sec" data-v2-region-panel="kotoba" aria-label="ことば">
+    <section class="v2c04__sec" data-v2-region-panel="kotoba" aria-label="ことば" data-i18n-aria="v2c04SecKotoba">
       <p class="v2c04__num" aria-hidden="true">01</p>
-      <h2 class="v2c04__h">ことば</h2>
+      <h2 class="v2c04__h" data-i18n="v2c04SecKotoba">ことば</h2>
       <div class="v2c04__worddef" data-v2-worddetail="body" hidden></div>
       <div class="v2c04__words" data-v2-emotion="words"></div>
     </section>
 
-    <section class="v2c04__sec" data-v2-region-panel="sakuhin" aria-label="作品">
+    <section class="v2c04__sec" data-v2-region-panel="sakuhin" aria-label="作品" data-i18n-aria="v2c04SecSakuhin">
       <p class="v2c04__num" aria-hidden="true">02</p>
-      <h2 class="v2c04__h">作品</h2>
-      <p class="v2c04__intro">この気持ちにそっと寄り添う、本や映画、音楽の棚です。</p>
+      <h2 class="v2c04__h" data-i18n="v2c04SecSakuhin">作品</h2>
+      <p class="v2c04__intro" data-i18n="v2c04WorksIntro">この気持ちにそっと寄り添う、本や映画、音楽の棚です。</p>
       <div class="v2c04__works" data-v2-works="body">
         <div class="v2c04__works-hold">
-          <p class="v2c04__works-hold-title">この棚の作品は、ただいま仕入れ中です。</p>
-          <p class="v2c04__works-hold-note">また立ち寄ったときに、静かに並んでいるはずです。</p>
+          <p class="v2c04__works-hold-title" data-i18n="v2c04WorksHoldTitle">この棚の作品は、ただいま仕入れ中です。</p>
+          <p class="v2c04__works-hold-note" data-i18n="v2c04WorksHoldNote">また立ち寄ったときに、静かに並んでいるはずです。</p>
         </div>
       </div>
     </section>
 
-    <section class="v2c04__sec" data-v2-region-panel="jibun" aria-label="自分の本">
+    <section class="v2c04__sec" data-v2-region-panel="jibun" aria-label="自分の本" data-i18n-aria="v2c04SecJibun">
       <p class="v2c04__num" aria-hidden="true">03</p>
-      <h2 class="v2c04__h">自分の本</h2>
-      <p class="v2c04__intro">あなたがこの気持ちで残した本です。</p>
+      <h2 class="v2c04__h" data-i18n="v2c04SecJibun">自分の本</h2>
+      <p class="v2c04__intro" data-i18n="v2c04MyBooksIntro">あなたがこの気持ちで残した本です。</p>
       <div data-v2-mybooks="body"></div>
       <div class="v2c04__write">
-        <button type="button" class="v2c04__writebtn" data-v2-go="05"><span class="v2c04__pen" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span>残ったことを書く</button>
-        <p class="v2c04__writenote">今の気持ちを、自分の言葉で残してみる</p>
+        <button type="button" class="v2c04__writebtn" data-v2-go="05"><span class="v2c04__pen" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2c04WriteBtn">残ったことを書く</span></button>
+        <p class="v2c04__writenote" data-i18n="v2c04WriteNote">今の気持ちを、自分の言葉で残してみる</p>
       </div>
     </section>
   </div>
 
-<nav class="v2b-nav" aria-label="主要な移動">
-  <button type="button" class="v2b-nav__item" data-v2-nav="shelves" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span>感情棚</span></button>
-  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span>書く</span></button>
-  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span>本棚</span></button>
+<nav class="v2b-nav" aria-label="主要な移動" data-i18n-aria="v2NavAria">
+  <button type="button" class="v2b-nav__item" data-v2-nav="shelves" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span data-i18n="v2NavShelves">感情棚</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2NavDesk">書く</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2NavBookshelf">本棚</span></button>
 </nav>
 </div>
 </section>
@@ -823,30 +849,31 @@ body.night .about-data-content{
   <div class="v2c05__stage">
     <div class="v2c05__card">
       <header class="v2c05__bar">
-        <button type="button" class="v2c05__back" data-v2-go="02" aria-label="広間へ戻る"><span class="v2c05__back-arrow" aria-hidden="true"></span></button>
+        <button type="button" class="v2c05__back" data-v2-go="02" aria-label="広間へ戻る" data-i18n-aria="v2c05BackAria"><span class="v2c05__back-arrow" aria-hidden="true"></span></button>
         <div class="v2c05__headmid">
-          <h1 class="v2c05__title">編纂室</h1>
-          <p class="v2c05__sub">残ったことを、自分の言葉で一冊にする場所</p>
+          <h1 class="v2c05__title" data-i18n="v2c05Title">編纂室</h1>
+          <p class="v2c05__sub" data-i18n="v2c05Sub">残ったことを、自分の言葉で一冊にする場所</p>
         </div>
-        <button type="button" class="v2c05__tobooks" data-v2-go="06"><span class="v2c05__tobooks-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span class="v2c05__tobooks-t">本棚へ</span></button>
+        <button type="button" class="v2c05__tobooks" data-v2-go="06"><span class="v2c05__tobooks-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span class="v2c05__tobooks-t" data-i18n="v2ToBookshelf">本棚へ</span></button>
+        <button type="button" class="v2b-menutrigger" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
       </header>
 
       <div class="v2c05__desk" aria-hidden="true"></div>
 
-      <p class="v2c05__autosave"><span class="v2c05__cloud" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17a4 4 0 1 1 .6-8A5 5 0 0 1 17 10a3.5 3.5 0 0 1 0 7z"/><path d="M9 20l1.5-1.5L12 20l1.5-1.5L15 20"/></svg></span>書きかけは自動で保存されます</p>
+      <p class="v2c05__autosave"><span class="v2c05__cloud" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17a4 4 0 1 1 .6-8A5 5 0 0 1 17 10a3.5 3.5 0 0 1 0 7z"/><path d="M9 20l1.5-1.5L12 20l1.5-1.5L15 20"/></svg></span><span data-i18n="v2c05Autosave">書きかけは自動で保存されます</span></p>
 
       <div class="v2c05__body">
         <div class="v2c05__field">
-          <label class="v2c05__label" for="v2bTitleInput">題名 <span class="v2c05__opt">（任意）</span></label>
+          <label class="v2c05__label" for="v2bTitleInput"><span data-i18n="v2c05TitleLabel">題名</span> <span class="v2c05__opt" data-i18n="v2c05TitleOpt">（任意）</span></label>
           <input class="v2c05__input" id="v2bTitleInput" type="text" maxlength="16"
                  data-v2-write="title" autocomplete="off"
-                 placeholder="題名をつけると、あとから見つけやすくなります">
+                 placeholder="題名をつけると、あとから見つけやすくなります" data-i18n-ph="v2c05TitlePh">
         </div>
 
         <div class="v2c05__field">
-          <label class="v2c05__label" for="v2bStoryInput">本文</label>
+          <label class="v2c05__label" for="v2bStoryInput" data-i18n="v2c05StoryLabel">本文</label>
           <div class="v2c05__tawrap">
-            <textarea class="v2c05__textarea" id="v2bStoryInput" data-v2-write="story"
+            <textarea class="v2c05__textarea" id="v2bStoryInput" data-v2-write="story" data-i18n-ph="v2c05StoryPh"
                       placeholder="いま、心の中に残っていることを、そのまま書いてみてください。
 うまく書こうとしなくて大丈夫。
 一言からでも、本になります。"></textarea>
@@ -854,14 +881,28 @@ body.night .about-data-content{
           </div>
         </div>
 
-        <p class="v2c05__assure">本文はこの端末に保存されます。本文は公開されません。</p>
+        <!-- ★ADDENDUM / Photo：既存の写真契約（#photoChooseBtn / #photoInput /
+             #photoPreview / #photoRemove / attachedPhoto / entry.image）を V2 へ再露出する。
+             新機能ではないため、選択・圧縮・保存はすべて既存実装のまま。ここは入口と
+             表示の橋渡しだけで、backend upload・external upload・fetch/XHR・schema 変更・
+             圧縮契約の変更は一切行わない。 -->
+        <div class="v2c05__field v2c05__photo">
+          <button type="button" class="v2c05__photobtn" data-v2-photo="choose" data-i18n="photoLabel">今日の一枚を、頁に挟む（任意）</button>
+          <div class="v2c05__photoprev" data-v2-photo="preview" hidden>
+            <img class="v2c05__photoimg" data-v2-photo="image" alt="添付写真のプレビュー" data-i18n-alt="photoPreviewAlt">
+            <button type="button" class="v2c05__photoremove" data-v2-photo="remove" aria-label="写真を外す" data-i18n-aria="photoRemoveAria">&times;</button>
+          </div>
+          <p class="v2c05__photohint" data-i18n="photoHint">写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。</p>
+        </div>
 
-        <button type="button" class="v2c05__bind" data-v2-write="bind"><span class="v2c05__bind-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span>本にする</button>
-        <p class="v2c05__bindnote">本文を保存し、本にします。そのあとで「この一冊に近い気持ち」を選べます（任意）。</p>
+        <p class="v2c05__assure" data-i18n="v2c05Assure">本文はこの端末に保存されます。本文は公開されません。</p>
+
+        <button type="button" class="v2c05__bind" data-v2-write="bind"><span class="v2c05__bind-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2c05Bind">本にする</span></button>
+        <p class="v2c05__bindnote" data-i18n="v2c05BindNote">本文を保存し、本にします。そのあとで「この一冊に近い気持ち」を選べます（任意）。</p>
 
         <div class="v2c05__resume" data-v2-write="resume" hidden>
           <span class="v2c05__resume-sprig" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span>
-          <span class="v2c05__resume-box"><span class="v2c05__resume-t">書きかけがあります</span><span class="v2c05__resume-n">続きを書くときは、そのまま編集を続けられます。</span></span>
+          <span class="v2c05__resume-box"><span class="v2c05__resume-t" data-i18n="v2c05ResumeT">書きかけがあります</span><span class="v2c05__resume-n" data-i18n="v2c05ResumeN">続きを書くときは、そのまま編集を続けられます。</span></span>
         </div>
 
         <p class="v2c05__msg is-v2-empty" data-v2-write="msg" role="status" aria-live="polite"></p>
@@ -935,21 +976,21 @@ body.night .about-data-content{
   <div class="v2c06__stage">
     <header class="v2c06__brandrow">
       <span class="v2c06__logo" aria-hidden="true"></span>
-      <span class="v2c06__brandname">みんなの感情書店</span>
-      <button type="button" class="v2c06__menubtn" data-v2-open-menu aria-label="店内メニューを開く"><span class="v2c06__menubtn-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span></button>
+      <span class="v2c06__brandname" data-i18n="shopName">みんなの感情書店</span>
+      <button type="button" class="v2c06__menubtn" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><span class="v2c06__menubtn-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span></button>
     </header>
 
     <div class="v2c06__hero">
       <div class="v2c06__herotext">
-        <h1 class="v2c06__title">自分の本棚</h1>
-        <p class="v2c06__lead">あなたの言葉が、<br>あなたの本になっています。</p>
+        <h1 class="v2c06__title" data-i18n="v2c06Title">自分の本棚</h1>
+        <p class="v2c06__lead" data-i18n-html="v2c06Lead">あなたの言葉が、<br>あなたの本になっています。</p>
       </div>
       <span class="v2c06__heroamb" aria-hidden="true"></span>
     </div>
 
     <div class="v2c06__collhead">
-      <p class="v2c06__count"><span data-v2-bookshelf="count"></span>の本</p>
-      <button type="button" class="v2c06__newlink" data-v2-go="05">新しく書く<span class="v2c06__newlink-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span></button>
+      <p class="v2c06__count"><span data-v2-bookshelf="count"></span></p>
+      <button type="button" class="v2c06__newlink" data-v2-go="05"><span data-i18n="v2c06NewLink">新しく書く</span><span class="v2c06__newlink-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span></button>
     </div>
 
     <div class="v2c06__grid" data-v2-bookshelf="rack"></div>
@@ -957,45 +998,46 @@ body.night .about-data-content{
     <button type="button" class="v2c06__invite" data-v2-go="05">
       <span class="v2c06__invite-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span>
       <span class="v2c06__invite-text">
-        <span class="v2c06__invite-h">新しく書く</span>
-        <span class="v2c06__invite-n">残ったことを、一冊にしてみる</span>
+        <span class="v2c06__invite-h" data-i18n="v2c06NewLink">新しく書く</span>
+        <span class="v2c06__invite-n" data-i18n="v2c06InviteN">残ったことを、一冊にしてみる</span>
       </span>
     </button>
   </div>
 
-<nav class="v2b-nav" aria-label="主要な移動">
-  <button type="button" class="v2b-nav__item" data-v2-nav="shelves"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span>感情棚</span></button>
-  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span>書く</span></button>
-  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span>本棚</span></button>
+<nav class="v2b-nav" aria-label="主要な移動" data-i18n-aria="v2NavAria">
+  <button type="button" class="v2b-nav__item" data-v2-nav="shelves"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span data-i18n="v2NavShelves">感情棚</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2NavDesk">書く</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2NavBookshelf">本棚</span></button>
 </nav>
 </div>
 <div class="v2-page v2b v2c07" data-v2-screen="07" data-v2-subview-of="bookshelf-reader" data-screen="07">
   <div class="v2c07__stage">
     <div class="v2c07__bar">
-      <button type="button" class="v2c07__back" data-v2-reader-back><span class="v2c07__back-arrow" aria-hidden="true"></span>本棚へ戻る</button>
+      <button type="button" class="v2c07__back" data-v2-reader-back><span class="v2c07__back-arrow" aria-hidden="true"></span><span data-i18n="v2BackToBookshelf">本棚へ戻る</span></button>
+      <button type="button" class="v2b-menutrigger" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </div>
 
     <article class="v2c07__book">
       <h1 class="v2c07__title" data-v2-reader="title"></h1>
       <span class="v2c07__sep" aria-hidden="true"></span>
       <div class="v2c07__meta">
-        <p class="v2c07__date"><span class="v2c07__date-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg></span><span data-v2-reader="date"></span><span class="v2c07__date-suffix">に本にしました</span></p>
+        <p class="v2c07__date"><span class="v2c07__date-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg></span><span data-v2-reader="date"></span><span class="v2c07__date-suffix" data-i18n="v2c07DateSuffix">に本にしました</span></p>
         <p class="v2c07__chip" data-v2-reader="shelf"></p>
         <p class="v2c07__sealed" data-v2-reader="sealed"></p>
       </div>
       <figure class="v2c07__photo v2-placeholder" data-v2-reader="cover"></figure>
       <div class="v2c07__body" data-v2-reader="body"></div>
       <div class="v2c07__notebox" data-v2-reader="note-box" hidden>
-        <p class="v2c07__notelabel">覚え書き</p>
+        <p class="v2c07__notelabel" data-i18n="v2c07NoteLabel">覚え書き</p>
         <p class="v2c07__notetext" data-v2-reader="note"></p>
       </div>
       <p class="v2c07__closing" aria-hidden="true"><span class="v2c07__closing-sprig"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span></p>
     </article>
 
     <div class="v2c07__actions">
-      <button type="button" class="v2c07__act" data-v2-reader-edit><span class="v2c07__act-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span>編集</button>
+      <button type="button" class="v2c07__act" data-v2-reader-edit><span class="v2c07__act-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2c07Edit">編集</span></button>
       <span class="v2c07__actsep" aria-hidden="true"></span>
-      <button type="button" class="v2c07__act v2c07__act--danger" data-v2-reader-delete><span class="v2c07__act-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13"/><path d="M10 11v6M14 11v6"/></svg></span>この一冊を削除</button>
+      <button type="button" class="v2c07__act v2c07__act--danger" data-v2-reader-delete><span class="v2c07__act-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13"/><path d="M10 11v6M14 11v6"/></svg></span><span data-i18n="v2c07Delete">この一冊を削除</span></button>
     </div>
   </div>
 </div>
@@ -1003,28 +1045,28 @@ body.night .about-data-content{
   <div class="v2c08__stage">
     <header class="v2c08__brandrow">
       <span class="v2c08__logo" aria-hidden="true"></span>
-      <span class="v2c08__brandname">みんなの感情書店</span>
-      <button type="button" class="v2c08__menubtn" data-v2-open-menu aria-label="店内メニューを開く"><span class="v2c08__menubtn-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span></button>
+      <span class="v2c08__brandname" data-i18n="shopName">みんなの感情書店</span>
+      <button type="button" class="v2c08__menubtn" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><span class="v2c08__menubtn-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span></button>
     </header>
 
     <div class="v2c08__card">
       <div class="v2c08__scene" aria-hidden="true"></div>
 
-      <h1 class="v2c08__headline">一言から始められます</h1>
+      <h1 class="v2c08__headline" data-i18n="v2c08Headline">一言から始められます</h1>
       <div class="v2c08__divider" aria-hidden="true"><span class="v2c08__divline"></span><span class="v2c08__divsprig"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span><span class="v2c08__divline"></span></div>
-      <p class="v2c08__copy">まだ本がありません。<br>心に残ったことを、自分の言葉で<span class="v2c08__nobreak">書いてみませんか。</span><br>短い一言でも、大切な一冊になります。</p>
+      <p class="v2c08__copy" data-i18n-html="v2c08Copy">まだ本がありません。<br>心に残ったことを、自分の言葉で<span class="v2c08__nobreak">書いてみませんか。</span><br>短い一言でも、大切な一冊になります。</p>
 
-      <button type="button" class="v2c08__cta" data-v2-go="05"><span class="v2c08__cta-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span>残ったことを書く</button>
+      <button type="button" class="v2c08__cta" data-v2-go="05"><span class="v2c08__cta-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2c08Cta">残ったことを書く</span></button>
 
       <span class="v2c08__tailsprig" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span>
-      <p class="v2c08__tail">書きたい気持ちになったときで大丈夫です。<br>この書店は、あなたのペースを大切にします。</p>
+      <p class="v2c08__tail" data-i18n-html="v2c08Tail">書きたい気持ちになったときで大丈夫です。<br>この書店は、あなたのペースを大切にします。</p>
     </div>
   </div>
 
-<nav class="v2b-nav" aria-label="主要な移動">
-  <button type="button" class="v2b-nav__item" data-v2-nav="shelves"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span>感情棚</span></button>
-  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span>書く</span></button>
-  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span>本棚</span></button>
+<nav class="v2b-nav" aria-label="主要な移動" data-i18n-aria="v2NavAria">
+  <button type="button" class="v2b-nav__item" data-v2-nav="shelves"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span data-i18n="v2NavShelves">感情棚</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2NavDesk">書く</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2NavBookshelf">本棚</span></button>
 </nav>
 </div>
 </section>
@@ -1173,33 +1215,9 @@ body.night .about-data-content{
       <button type="button" class="menu-item" id="menuReturnCover" data-i18n="menuItemCover">表紙へ戻る</button>
     </nav>
     <div class="experience-menu-settings">
-      <p class="experience-menu-section" data-i18n="menuSectionSettings">設定・このお店について</p>
-    <div class="pref-row">
-      <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切" data-i18n-title="motionToggleTitle">演出：入</button>
-      <button class="pref-toggle" id="profileBtn" title="お名前と属性の設定（任意・この端末にのみ保存）" data-i18n="profileBtn" data-i18n-title="profileBtnTitle">来店カード</button>
-      <button class="pref-toggle" id="langToggle" title="言語切り替え / Language" data-i18n-title="langToggleTitle">JP / EN</button>
-    </div>
-
-    <!-- ★2026-07-18追加：任意設定の天気連動機能。初期状態はOFFで、位置情報の許可は
-         「現在地から設定」ボタンを押した場合だけ要求される（ページ表示時には要求しない）。 -->
-    <div class="weather-settings" id="weatherSettings">
-      <div class="pref-row">
-        <button class="pref-toggle" id="weatherToggle" title="店外の天気を反映する"
-                data-i18n="weatherToggleOff" data-i18n-title="weatherToggleTitle">天気連動：切</button>
-      </div>
-      <!-- ★2026-07-19変更：初期版では自由入力の都市検索を追加せず、「主要地域から選ぶ」
-           （プリセット10都市）と「現在地から設定」の2方式に限定する。 -->
-      <div class="weather-region-row hidden" id="weatherRegionRow">
-        <select class="weather-region-select" id="weatherRegionSelect" aria-label="主要地域から選ぶ" data-i18n-aria="weatherRegionLabel">
-          <option value="" data-i18n="weatherRegionSelectPlaceholder">主要地域から選ぶ</option>
-        </select>
-        <button type="button" class="pref-toggle" id="weatherUseLocationBtn" data-i18n="weatherUseLocationBtn">現在地から設定</button>
-      </div>
-      <p class="weather-status" id="weatherStatus" data-i18n="weatherStatusOff">天気連動は現在オフです。</p>
-      <p class="weather-privacy-note" data-i18n="weatherPrivacyNote">※天気連動をオンにすると、設定した地域名または現在地から概算した緯度・経度が、天気情報の取得のためだけに外部の天気サービスへ送信されます。書いた文章や本棚のデータが送信されることはありません。</p>
-      <p class="weather-attribution" data-i18n-html="weatherAttribution">天気データ：<a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>（<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>）</p>
-    </div>
-
+      <!-- ★PKT-3：Trust（この書店について・データの扱い）を設定より前へ。
+           内容・DOM・法務文書の意味は一切変更していない。順序だけを入れ替えている。 -->
+      <p class="experience-menu-section" data-i18n="v2MenuTrustSection">この書店について・データの扱い</p>
     <!-- ★v1.3 Phase A：「はじめての方へ」「データ保存について」は主CTAより弱い補助導線として
          主CTA・安心表示の下へ後退（削除はしない）。 -->
     <!-- ===== 追加：サービス説明のアコーディオン ===== -->
@@ -1275,6 +1293,46 @@ body.night .about-data-content{
       </div>
     </details>
     <!-- ===== /追加：データの保存場所・バックアップの説明 ===== -->
+
+      <!-- ★PKT-3：Data / Backup への到達口。
+           既存のバックアップ／書き出し／復元ボタンは #bookshelf の中にあり、V2 では
+           視覚的に隠され inert になっているため、店内メニューから到達できなかった。
+           ここでは既存ボタンを同期的に click するだけで、保存形式・復元処理・
+           バックアップ形式・GA4・外部通信のいずれにも触れない。 -->
+      <p class="experience-menu-section" data-i18n="v2MenuDataSection">データ・バックアップ</p>
+      <div class="share-row">
+        <button type="button" class="share-btn" data-v2-legacy-click="backupBtn" data-i18n="backupDefaultBtn">本棚のデータをバックアップ保存する</button>
+        <button type="button" class="share-btn" data-v2-legacy-click="exportDiary" data-i18n="exportDefaultBtn">これまでの記録をテキストでダウンロード</button>
+        <button type="button" class="share-btn" data-v2-legacy-click="restoreBtn" data-i18n="restoreDefaultBtn">バックアップから復元する</button>
+      </div>
+
+      <p class="experience-menu-section" data-i18n="menuSectionSettings">設定・このお店について</p>
+    <div class="pref-row">
+      <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切" data-i18n-title="motionToggleTitle">演出：入</button>
+      <button class="pref-toggle" id="profileBtn" title="お名前と属性の設定（任意・この端末にのみ保存）" data-i18n="profileBtn" data-i18n-title="profileBtnTitle">来店カード</button>
+      <button class="pref-toggle" id="langToggle" title="言語切り替え / Language" data-i18n-title="langToggleTitle">JP / EN</button>
+    </div>
+
+    <!-- ★2026-07-18追加：任意設定の天気連動機能。初期状態はOFFで、位置情報の許可は
+         「現在地から設定」ボタンを押した場合だけ要求される（ページ表示時には要求しない）。 -->
+    <div class="weather-settings" id="weatherSettings">
+      <div class="pref-row">
+        <button class="pref-toggle" id="weatherToggle" title="店外の天気を反映する"
+                data-i18n="weatherToggleOff" data-i18n-title="weatherToggleTitle">天気連動：切</button>
+      </div>
+      <!-- ★2026-07-19変更：初期版では自由入力の都市検索を追加せず、「主要地域から選ぶ」
+           （プリセット10都市）と「現在地から設定」の2方式に限定する。 -->
+      <div class="weather-region-row hidden" id="weatherRegionRow">
+        <select class="weather-region-select" id="weatherRegionSelect" aria-label="主要地域から選ぶ" data-i18n-aria="weatherRegionLabel">
+          <option value="" data-i18n="weatherRegionSelectPlaceholder">主要地域から選ぶ</option>
+        </select>
+        <button type="button" class="pref-toggle" id="weatherUseLocationBtn" data-i18n="weatherUseLocationBtn">現在地から設定</button>
+      </div>
+      <p class="weather-status" id="weatherStatus" data-i18n="weatherStatusOff">天気連動は現在オフです。</p>
+      <p class="weather-privacy-note" data-i18n="weatherPrivacyNote">※天気連動をオンにすると、設定した地域名または現在地から概算した緯度・経度が、天気情報の取得のためだけに外部の天気サービスへ送信されます。書いた文章や本棚のデータが送信されることはありません。</p>
+      <p class="weather-attribution" data-i18n-html="weatherAttribution">天気データ：<a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>（<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>）</p>
+    </div>
+
 
       <div class="share-row">
       <button class="share-btn" id="shareBtn" data-i18n="shareBtn">この書店をシェアする</button>

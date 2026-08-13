@@ -39,8 +39,8 @@ const MESSAGES = {
     introTitle3: "物語を綴る", introText3: "自分の体験を書き、一冊の本として製本します。棚を選ぶのは、そのあとです。",
     introTitle4: "本棚が育つ", introText4: "綴った物語が積み重なり、自分だけの本棚に。",
     enterBtn: "扉をひらく →",
-    motionToggleOn: "演出：入", motionToggleOff: "演出：切",
-    motionToggleTitle: "演出アニメーションの入/切",
+    motionToggleOn: "画面の動き：入", motionToggleOff: "画面の動き：切",
+    motionToggleTitle: "画面の動きの入/切",
     // ★Hotfix4追加：英語モードでも日本語のまま残っていた4箇所（既知課題）の翻訳キー。
     langToggleTitle: "言語切り替え / Language",
     // ★2026-07-18追加：任意設定の天気連動機能（店内メニュー）。
@@ -424,7 +424,124 @@ const MESSAGES = {
     menuItemShelves: "感情の棚を巡る",
     menuItemCover: "表紙へ戻る",
     menuSectionOptional: "任意の場所へ",
-    menuSectionSettings: "設定・このお店について"
+    menuSectionSettings: "設定・このお店について",
+
+    /* ===== Visual Refit V2（01〜08）の system copy =====
+       JA は V2 実装時の文言をそのまま転記したもので、表示は現行と 1 文字も変わらない。
+       第二の i18n を作らず、既存 applyLanguage() / t() の契約へ V2 を接続するために
+       同じ MESSAGES 辞書へ載せる。利用者本文・題名・写真・実在作品の原題は対象外。 */
+    v2c01BrandSub: "みんなの",
+    v2c01BrandMain: "感情書店",
+    v2c01Copy: "気持ちを入口に、出会う。<br>そこで残ったものも、日々の小さなことも。<br>一冊にして、あなたの本棚へ。",
+    v2c01StepsAria: "この書店の過ごし方",
+    v2c01Step1: "知る",
+    v2c01Step2: "出会う",
+    v2c01Step3: "残す",
+    v2c01Step4: "巡る",
+    v2c01Cta: "入店する",
+
+    v2c02Hero: "今日は、<br>どこからはじめますか。",
+    v2c02Lead: "気持ちから棚を歩くことも、残ったことを書くことも、<br>自分の本棚を開くこともできます。",
+    v2c02CardsAria: "はじめる場所",
+    v2c02Card1Title: "感情の棚を見る",
+    v2c02Card1Desc: "気持ちごとに並ぶ棚から、<br>ことばや作品に出会う。",
+    v2c02Card2Title: "残ったことを書く",
+    v2c02Card2Desc: "作品の余韻も、<br>日々の小さなことも、<br>一冊にして残す。",
+    v2c02Card3Title: "自分の本棚を見る",
+    v2c02Card3Desc: "あなたが一冊にした言葉を、<br>あとから静かに巡る。",
+
+    v2c03Title: "感情の棚",
+    v2c03Lead: "いまの気持ちに近い棚から、<br>ことばや作品、自分の本に出会えます。",
+    v2c03Guide: "どの棚からでも、書くことからでも。<br>あなたのペースで、自由に巡れます。",
+    v2Shelfhazumu: "心が弾む",
+    v2Shelfatatamaru: "心があたたまる",
+    v2Shelfhikareru: "惹かれる",
+    v2Shelfshizumu: "沈む",
+    v2Shelfzawatsuku: "ざわつく",
+    v2Shelfbutsukaru: "ぶつかる",
+    v2Shelfmiwohiku: "身を引く",
+    v2Shelfnamaeganai: "まだ名前がない",
+    v2ShelfLeadhazumu: "うれしさや期待が、\n内側で弾んでいるあたり。",
+    v2ShelfLeadatatamaru: "ほっとしたり、大切に思ったり、\n内側がやわらぐあたり。",
+    v2ShelfLeadhikareru: "自分の外にあるものへ、\n心が向いていくあたり。",
+    v2ShelfLeadshizumu: "気持ちの重さが、\n静かに残っているあたり。",
+    v2ShelfLeadzawatsuku: "先が読めないときや、気持ちが落ち着かず\n動きつづけるあたり。",
+    v2ShelfLeadbutsukaru: "収まりきらない気持ちが、\n内側でぶつかるあたり。",
+    v2ShelfLeadmiwohiku: "少し離れたい、隠れたい。\nそんな距離が生まれるあたり。",
+    v2ShelfLeadnamaeganai: "まだ、どのことばにも\n決めたくないときに。",
+    v2ShelfAllName: "すべての感情語",
+    v2ShelfAllLead: "21のことばを、まとめて見わたせます。",
+
+    v2NavAria: "主要な移動",
+    v2NavShelves: "感情棚",
+    v2NavDesk: "書く",
+    v2NavBookshelf: "本棚",
+
+    v2BackToShelves: "棚へ戻る",
+    v2c04SecKotoba: "ことば",
+    v2c04SecSakuhin: "作品",
+    v2c04SecJibun: "自分の本",
+    v2c04WorksIntro: "この気持ちにそっと寄り添う、本や映画、音楽の棚です。",
+    v2c04WorksHoldTitle: "この棚の作品は、ただいま仕入れ中です。",
+    v2c04WorksHoldNote: "また立ち寄ったときに、静かに並んでいるはずです。",
+    v2c04MyBooksIntro: "あなたがこの気持ちで残した本です。",
+    v2c04WriteBtn: "残ったことを書く",
+    v2c04WriteNote: "今の気持ちを、自分の言葉で残してみる",
+    v2WordMeaning: "意味",
+    v2WordNuance: "ニュアンス",
+    v2WordNear: "近い言葉",
+    v2WorkTypeBook: "本",
+    v2WorkTypeFilm: "映画",
+    v2WorkTypeMusic: "音楽",
+    v2MyBooksEmptyTitle: "この気持ちで残した本は、まだありません。",
+    v2MyBooksEmptyNote: "書くことからでも、棚を眺めることからでも始められます。",
+    v2MyBooksSeeAll: "本棚ですべて見る",
+
+    v2c05BackAria: "広間へ戻る",
+    v2c05Title: "編纂室",
+    v2c05Sub: "残ったことを、自分の言葉で一冊にする場所",
+    v2ToBookshelf: "本棚へ",
+    v2BackToBookshelf: "本棚へ戻る",
+    v2c05Autosave: "書きかけは自動で保存されます",
+    v2c05TitleLabel: "題名",
+    v2c05TitleOpt: "（任意）",
+    v2c05TitlePh: "題名をつけると、あとから見つけやすくなります",
+    v2c05StoryLabel: "本文",
+    v2c05StoryPh: "いま、心の中に残っていることを、そのまま書いてみてください。\nうまく書こうとしなくて大丈夫。\n一言からでも、本になります。",
+    v2c05Assure: "本文はこの端末に保存されます。本文は公開されません。",
+    v2c05Bind: "本にする",
+    v2c05BindNote: "本文を保存し、本にします。そのあとで「この一冊に近い気持ち」を選べます（任意）。",
+    v2c05ResumeT: "書きかけがあります",
+    v2c05ResumeN: "続きを書くときは、そのまま編集を続けられます。",
+    v2c05PhotoReplace: "写真を選び直す",
+
+    v2c06Title: "自分の本棚",
+    v2c06Lead: "あなたの言葉が、<br>あなたの本になっています。",
+    v2c06NewLink: "新しく書く",
+    v2c06InviteN: "残ったことを、一冊にしてみる",
+
+    v2c07DateSuffix: "に本にしました",
+    v2c07NoteLabel: "覚え書き",
+    v2c07Edit: "編集",
+    v2c07Delete: "この一冊を削除",
+
+    v2c08Headline: "一言から始められます",
+    v2c08Copy: "まだ本がありません。<br>心に残ったことを、自分の言葉で<span class=\"v2c08__nobreak\">書いてみませんか。</span><br>短い一言でも、大切な一冊になります。",
+    v2c08Cta: "残ったことを書く",
+    v2c08Tail: "書きたい気持ちになったときで大丈夫です。<br>この書店は、あなたのペースを大切にします。",
+
+    v2MenuTrustSection: "この書店について・データの扱い",
+    v2MenuDataSection: "データ・バックアップ",
+    v2BookTitleFallback: "まだ、題名のない本",
+    v2BookOpenAria: "{title}を開く",
+    v2BookshelfLoadFailTitle: "本棚をいま読み込めませんでした。",
+    v2BookshelfLoadFailNote: "本が無くなったわけではありません。少し時間をおいて、もう一度お試しください。",
+    v2BookshelfRetry: "もう一度読み込む",
+    v2BookCountLabel: "{n}冊の本",
+    v2CharCount: "{n}字",
+    v2StoreLabel: "この端末",
+    v2SealedNote: "以前を振り返って綴った一冊",
+    v2PhotoOfAlt: "{title}の写真"
   },
   en: {
     shopName: "The Bookstore of Feelings",
@@ -791,7 +908,126 @@ const MESSAGES = {
     menuItemShelves: "Browse the emotion shelves",
     menuItemCover: "Back to the cover",
     menuSectionOptional: "Optional detours",
-    menuSectionSettings: "Settings & about this shop"
+    menuSectionSettings: "Settings & about this shop",
+
+    /* ===== Visual Refit V2（01〜08）の system copy / English =====
+       既存 canonical EN（shopName / menuOpenAria / photoLabel など）がある箇所は
+       そちらを再利用し、ここでは V2 で新たに必要になった分だけを足している。
+       短く普通の英語にとどめ、日本語版にない意味・診断的な語は加えない。 */
+    v2c01BrandSub: "The",
+    v2c01BrandMain: "Bookstore of Feelings",
+    v2c01Copy: "Start from a feeling, and find something.<br>What stays with you, and the small things of each day.<br>Bound into a book, for your own shelf.",
+    v2c01StepsAria: "How to spend time in this bookstore",
+    v2c01Step1: "Know",
+    v2c01Step2: "Meet",
+    v2c01Step3: "Keep",
+    v2c01Step4: "Revisit",
+    v2c01Cta: "Enter the store",
+
+    v2c02Hero: "Where would you like<br>to begin today?",
+    v2c02Lead: "You can walk the shelves by feeling, write what stayed with you,<br>or open your own bookshelf.",
+    v2c02CardsAria: "Where to begin",
+    v2c02Card1Title: "Browse the emotion shelves",
+    v2c02Card1Desc: "Find words and works<br>on shelves arranged by feeling.",
+    v2c02Card2Title: "Write what stayed with you",
+    v2c02Card2Desc: "The afterglow of a work,<br>or a small moment of the day,<br>kept as one book.",
+    v2c02Card3Title: "Open your bookshelf",
+    v2c02Card3Desc: "Revisit the words you bound,<br>quietly, whenever you like.",
+
+    v2c03Title: "Emotion Shelves",
+    v2c03Lead: "Start from the shelf closest to how you feel,<br>and find words, works, and your own books.",
+    v2c03Guide: "Begin at any shelf, or begin by writing.<br>Wander freely, at your own pace.",
+    v2Shelfhazumu: "Lifting",
+    v2Shelfatatamaru: "Warming",
+    v2Shelfhikareru: "Drawn to",
+    v2Shelfshizumu: "Sinking",
+    v2Shelfzawatsuku: "Unsettled",
+    v2Shelfbutsukaru: "Clashing",
+    v2Shelfmiwohiku: "Pulling back",
+    v2Shelfnamaeganai: "Not yet named",
+    v2ShelfLeadhazumu: "Where gladness and anticipation\nare still bouncing inside you.",
+    v2ShelfLeadatatamaru: "Where relief, or care for someone,\nsoftens things inside you.",
+    v2ShelfLeadhikareru: "Where your heart turns\ntoward something outside yourself.",
+    v2ShelfLeadshizumu: "Where the weight of a feeling\nquietly stays with you.",
+    v2ShelfLeadzawatsuku: "Where things are hard to read, and feelings\nkeep moving without settling.",
+    v2ShelfLeadbutsukaru: "Where feelings too large to hold\ncollide inside you.",
+    v2ShelfLeadmiwohiku: "Wanting a little distance, wanting to hide.\nWhere that space opens up.",
+    v2ShelfLeadnamaeganai: "For when you would rather not\nsettle on any word yet.",
+    v2ShelfAllName: "All feelings",
+    v2ShelfAllLead: "See all 21 words together.",
+
+    v2NavAria: "Main navigation",
+    v2NavShelves: "Shelves",
+    v2NavDesk: "Write",
+    v2NavBookshelf: "Bookshelf",
+
+    v2BackToShelves: "Back to shelves",
+    v2c04SecKotoba: "Words",
+    v2c04SecSakuhin: "Works",
+    v2c04SecJibun: "Your books",
+    v2c04WorksIntro: "Books, films, and music that sit quietly alongside this feeling.",
+    v2c04WorksHoldTitle: "Works for this shelf are still being gathered.",
+    v2c04WorksHoldNote: "They should be waiting quietly the next time you stop by.",
+    v2c04MyBooksIntro: "Books you kept with this feeling.",
+    v2c04WriteBtn: "Write what stayed with you",
+    v2c04WriteNote: "Keep how you feel now, in your own words",
+    v2WordMeaning: "Meaning",
+    v2WordNuance: "Nuance",
+    v2WordNear: "Near words",
+    v2WorkTypeBook: "Book",
+    v2WorkTypeFilm: "Film",
+    v2WorkTypeMusic: "Music",
+    v2MyBooksEmptyTitle: "You have not kept a book with this feeling yet.",
+    v2MyBooksEmptyNote: "You can begin by writing, or just by looking at the shelves.",
+    v2MyBooksSeeAll: "See all in your bookshelf",
+
+    v2c05BackAria: "Back to the lobby",
+    v2c05Title: "Editorial Room",
+    v2c05Sub: "Where what stayed with you becomes a book in your own words",
+    v2ToBookshelf: "Bookshelf",
+    v2BackToBookshelf: "Back to bookshelf",
+    v2c05Autosave: "Drafts are saved automatically",
+    v2c05TitleLabel: "Title",
+    v2c05TitleOpt: "(optional)",
+    v2c05TitlePh: "A title makes it easier to find later",
+    v2c05StoryLabel: "Your writing",
+    v2c05StoryPh: "Write what is still on your mind, just as it is.\nIt does not have to be well written.\nEven a single line can become a book.",
+    v2c05Assure: "Your writing is saved on this device. It is not published.",
+    v2c05Bind: "Make it a book",
+    v2c05BindNote: "Saves your writing and makes it a book. You can then choose a feeling close to it (optional).",
+    v2c05ResumeT: "You have a draft",
+    v2c05ResumeN: "You can carry on editing where you left off.",
+    v2c05PhotoReplace: "Choose a different photo",
+
+    v2c06Title: "Your Bookshelf",
+    v2c06Lead: "Your words have become<br>your own books.",
+    v2c06NewLink: "Write a new one",
+    v2c06InviteN: "Turn what stayed with you into a book",
+
+    /* EN は日付が先頭に来る一文（"Bound on 13 August 2026"）になるため、
+       接尾辞は空にして adapter 側で完成した一文を書き込む。 */
+    v2c07DateSuffix: "",
+    v2c07NoteLabel: "Note",
+    v2c07Edit: "Edit",
+    v2c07Delete: "Delete this book",
+
+    v2c08Headline: "A single line is enough to begin",
+    v2c08Copy: "You do not have any books yet.<br>Would you like to write what stayed with you, <span class=\"v2c08__nobreak\">in your own words?</span><br>Even a short line makes a book worth keeping.",
+    v2c08Cta: "Write what stayed with you",
+    v2c08Tail: "Whenever you feel like writing is fine.<br>This bookstore moves at your pace.",
+
+    v2MenuTrustSection: "About this shop & your data",
+    v2MenuDataSection: "Data & backup",
+    v2BookTitleFallback: "A book without a title yet",
+    v2BookOpenAria: "Open {title}",
+    v2BookshelfLoadFailTitle: "We could not load your bookshelf just now.",
+    v2BookshelfLoadFailNote: "Your books have not been lost. Please wait a moment and try again.",
+    v2BookshelfRetry: "Try again",
+    v2BookCountLabel: "{n} books",
+    v2CharCount: "{n} characters",
+    v2StoreLabel: "This device",
+    v2SealedNote: "Written looking back on an earlier time",
+    v2PhotoOfAlt: "Photo from {title}"
   }
 };
 
@@ -901,6 +1137,22 @@ function applyLanguage(){
   // guide-en.htmlへ切り替える（リンク文言自体はdata-i18n="supportLinkFooter"で翻訳済み）。
   const guideSupportLink = document.getElementById('guideSupportLink');
   if(guideSupportLink) guideSupportLink.href = (appLang === 'en') ? './guide-en.html#support' : './guide.html#support';
+  // ★Localization：V2（01〜08）のうち、静的コピーは上の data-i18n 走査で追従済み。
+  // Adapter が実行時に組み立てる領域（03 の棚名・04 のことば/作品/自分の本・
+  // 06 の冊数と背表紙・07 の読書面）は走査対象の外にあるため、ここで現在の言語へ
+  // 描き直す。既存関数を呼ぶだけで、storage・GA4・外部通信・選択状態は変えない。
+  if(window.V2EmotionShelfAdapter && typeof window.V2EmotionShelfAdapter.refreshLocale === 'function'){
+    window.V2EmotionShelfAdapter.refreshLocale();
+  }
+  if(window.V2BookshelfAdapter && typeof window.V2BookshelfAdapter.refreshLocale === 'function'){
+    window.V2BookshelfAdapter.refreshLocale();
+  }
+  // 05 は既存 #storyCount / #deskMsg を写しているため、既存側の更新後に写し直す。
+  if(window.V2FormAdapter && typeof window.V2FormAdapter.sync === 'function'){
+    window.V2FormAdapter.sync();
+  }
+  if(typeof refreshV2PhotoLabels === 'function') refreshV2PhotoLabels();
+
   const langBtn = document.getElementById('langToggle');
   if(langBtn) langBtn.textContent = appLang === 'ja' ? 'JP / EN' : 'EN / JP';
   const titleEl = document.querySelector('title');
@@ -7094,11 +7346,21 @@ function applySeasonalAccent(){
   document.documentElement.style.setProperty('--season-accent', color);
 }
 
+// ★PKT-1：V2 global theme の DAY/NIGHT 境界。
+// 05:00〜20:59 DAY / 21:00〜04:59 NIGHT。index.html の pre-paint スクリプトが
+// 同じ関数を先に定義しているため、通常はそちらが唯一の実体になる（同値）。
+// 表紙の五段階 daypart（currentDaypart）は別契約であり、この関数は関与しない。
+if(typeof window.isNightHour !== 'function'){
+  window.isNightHour = function(hour){
+    const h = (typeof hour === 'number') ? hour : new Date().getHours();
+    return h >= 21 || h < 5;
+  };
+}
+
 function applyNightModeIfNeeded(){
-  const hour = new Date().getHours();
-  if(hour >= 22 || hour < 5){
-    document.body.classList.add('night');
-  }
+  // 旧実装は add のみで remove しなかったため、静的な body class="night" と併さって
+  // 時刻に関係なく NIGHT へ固定されていた。toggle にして両方向へ効かせる。
+  document.body.classList.toggle('night', window.isNightHour());
 }
 
 // ★WeatherPrototype1（時間帯のみ版）：端末の時計だけを見て、表紙（.entrance.hero）の
@@ -7379,11 +7641,19 @@ function showProfileCard(){
   ov.classList.remove('hidden');
 }
 
+// ★PKT-5：アプリ内ブラウザ警告の「このセッションでは閉じ済み」フラグ。
+// sessionStorage 専用（タブを閉じれば消える）。永続保存キーではない。
+const IN_APP_NOTE_DISMISSED_KEY = 'eb-inapp-note-dismissed';
+
 function warnInAppBrowserIfNeeded(){
   try{
     const ua = navigator.userAgent || '';
     const inApp = /Line\//i.test(ua) || /FBAV|FB_IAB|Instagram|TikTok|Twitter for/i.test(ua);
     if(!inApp || document.getElementById('inAppBrowserNote')) return;
+    // ★PKT-5：1 browsing session につき1回だけ。閉じたら同じセッション中は再表示しない。
+    // sessionStorage はタブを閉じれば消えるため、永続 storage 契約（IndexedDB /
+    // localStorage の保存キー・バックアップ形式）には一切混ぜない。
+    if(sessionStorage.getItem(IN_APP_NOTE_DISMISSED_KEY) === '1') return;
     const bar = document.createElement('div');
     bar.id = 'inAppBrowserNote';
     bar.setAttribute('role', 'status');
@@ -7391,7 +7661,11 @@ function warnInAppBrowserIfNeeded(){
     const closeLabel = (typeof t === 'function') ? t('closeBtn') : '閉じる';
     const warnText = (typeof t === 'function') ? t('inAppBrowserWarning') : 'アプリ内ブラウザで開いています。この環境では<b>記録が保存されない場合があります</b>。Safari や Chrome で開き直すことをおすすめします。';
     bar.innerHTML = warnText + `<button type="button" aria-label="${closeLabel}" style="position:absolute;right:8px;top:8px;background:none;border:none;color:#F6ECD4;font-size:16px;cursor:pointer;">×</button>`;
-    bar.querySelector('button').onclick = ()=>bar.remove();
+    bar.querySelector('button').onclick = ()=>{
+      bar.remove();
+      // 閉じた事実だけを、このブラウジングセッション内に限って覚えておく。
+      try{ sessionStorage.setItem(IN_APP_NOTE_DISMISSED_KEY, '1'); }catch(e){}
+    };
     document.body.insertBefore(bar, document.body.firstChild);
   }catch(e){}
 }

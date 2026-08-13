@@ -55,6 +55,34 @@
   var doc = global.document;
 
   /* ---------------------------------------------------------------------------
+   * Localization bridge
+   * 既存 main.js の t() / categoryLabelFor() / categoryDefFor() / currentLang() を
+   * 唯一の翻訳源として使う。V2 専用の第二 i18n 辞書は作らない。
+   * main.js を読み込まない prototype harness では JA フォールバックがそのまま出る
+   * （従来の表示と同一）ため、harness の挙動は変わらない。
+   * ------------------------------------------------------------------------ */
+  function T(key, ja) {
+    if (typeof global.t === 'function') {
+      var v = global.t(key);
+      if (typeof v === 'string' && v !== key) return v;
+    }
+    return ja;
+  }
+  function TF(key, ja, vars) {
+    var s = T(key, ja);
+    for (var k in vars) {
+      if (Object.prototype.hasOwnProperty.call(vars, k)) {
+        s = s.split('{' + k + '}').join(vars[k]);
+      }
+    }
+    return s;
+  }
+  function isEN() {
+    return (typeof global.currentLang === 'function') && global.currentLang() === 'en';
+  }
+
+
+  /* ---------------------------------------------------------------------------
    * 状態（すべて一時 ViewModel。永続化しない）
    * ------------------------------------------------------------------------ */
   var STATUS = { OK: 'ok', UNKNOWN: 'unknown' };
@@ -151,7 +179,7 @@
    * 同じデータからは常に同じ DOM が生成される。
    * ------------------------------------------------------------------------ */
   var SPINE_MIN = 262, SPINE_MAX = 296;   // Phase 2 の背表紙高さレンジに合わせる
-  var TITLE_FALLBACK = 'まだ、題名のない本';
+  function titleFallback() { return T('v2BookTitleFallback', 'まだ、題名のない本'); }
 
   function stableHash(str) {
     var h = 5381, s = String(str == null ? '' : str);
@@ -165,11 +193,11 @@
      空文字・null・undefined のみ fallback。空白のみの題名は既存仕様に無い
      正規化を勝手に足さないため、そのまま表示する（消えて見える場合がある）。 */
   function viewTitle(entry) {
-    if (!entry || typeof entry !== 'object') return TITLE_FALLBACK;
+    if (!entry || typeof entry !== 'object') return titleFallback();
     var t = entry.title;
-    if (t === null || t === undefined) return TITLE_FALLBACK;
-    if (typeof t !== 'string') return TITLE_FALLBACK;
-    if (t === '') return TITLE_FALLBACK;
+    if (t === null || t === undefined) return titleFallback();
+    if (typeof t !== 'string') return titleFallback();
+    if (t === '') return titleFallback();
     return t;
   }
 
@@ -257,7 +285,7 @@
       spine.appendChild(emotion);
     }
 
-    spine.setAttribute('aria-label', viewTitle(entry) + 'を開く');
+    spine.setAttribute('aria-label', TF('v2BookOpenAria', '{title}を開く', { title: viewTitle(entry) }));
     return spine;
   }
 
@@ -269,17 +297,17 @@
     box.setAttribute('data-v2-bookshelf-readfail', '');
     var t = doc.createElement('p');
     t.className = 'v2c06__readfail-t';
-    t.textContent = '本棚をいま読み込めませんでした。';
+    t.textContent = T('v2BookshelfLoadFailTitle', '本棚をいま読み込めませんでした。');
     box.appendChild(t);
     var n = doc.createElement('p');
     n.className = 'v2c06__readfail-n';
-    n.textContent = '本が無くなったわけではありません。少し時間をおいて、もう一度お試しください。';
+    n.textContent = T('v2BookshelfLoadFailNote', '本が無くなったわけではありません。少し時間をおいて、もう一度お試しください。');
     box.appendChild(n);
     var btn = doc.createElement('button');
     btn.type = 'button';
     btn.className = 'v2c06__readfail-btn';
     btn.setAttribute('data-v2-bookshelf-retry', '');
-    btn.textContent = 'もう一度読み込む';
+    btn.textContent = T('v2BookshelfRetry', 'もう一度読み込む');
     box.appendChild(btn);
     return box;
   }
@@ -301,7 +329,9 @@
 
     if (countEl) {
       // 中立表示のみ。達成・目標・残り冊数の表現は作らない
-      countEl.textContent = (r.status === STATUS.OK) ? (r.entries.length + '冊') : '';
+      countEl.textContent = (r.status === STATUS.OK)
+        ? TF('v2BookCountLabel', '{n}冊の本', { n: r.entries.length })
+        : '';
     }
 
     if (!rack) {
@@ -396,7 +426,7 @@
    * 07 の READ-ONLY 描画
    * 文字はすべて textContent。既存 openBook の扱いを再現し、迂回しない。
    * ------------------------------------------------------------------------ */
-  var STORE_LABEL = 'この端末';
+  function storeLabel() { return T('v2StoreLabel', 'この端末'); }
 
   function readerEl(key, scope) {
     return (scope || doc).querySelector('[data-v2-reader="' + key + '"]');
@@ -427,12 +457,16 @@
     if (!entry || typeof entry.date !== 'string' || !entry.date) return '';
     var d = new Date(entry.date);
     if (isNaN(d.getTime())) return '';
+    if (isEN()) {
+      var MN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      return 'Bound on ' + MN[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    }
     return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
   }
 
   /* 既存 openBook と同じ意味づけ。sealed は「日付の隣の注記」であり閲覧制御ではない。
      したがって sealed でも本文を隠さないし、解除UIも作らない。 */
-  var SEALED_NOTE = '以前を振り返って綴った一冊';
+  function sealedNote() { return T('v2SealedNote', '以前を振り返って綴った一冊'); }
 
   function viewStory(entry) {
     if (!entry || typeof entry.story !== 'string') return '';
@@ -494,10 +528,10 @@
     setText(titleEl, readerTitle(entry));
     setText(bodyEl, story);
     setText(readerEl('shelf', scope), shelfLabelOf(entry));
-    setText(readerEl('sealed', scope), entry.sealed ? SEALED_NOTE : '');
+    setText(readerEl('sealed', scope), entry.sealed ? sealedNote() : '');
     setText(readerEl('date', scope), viewDate(entry));
-    setText(readerEl('chars', scope), String(charCount(story)) + '字');
-    setText(readerEl('store', scope), STORE_LABEL);
+    setText(readerEl('chars', scope), TF('v2CharCount', '{n}字', { n: charCount(story) }));
+    setText(readerEl('store', scope), storeLabel());
 
     var noteText = (typeof entry.note === 'string') ? entry.note : '';
     var box = readerEl('note-box', scope);
@@ -538,7 +572,7 @@
       img.className = 'v2-reader__cover-img';
       cover.appendChild(img);
     }
-    img.alt = alt ? (alt + 'の写真') : '';
+    img.alt = alt ? TF('v2PhotoOfAlt', '{title}の写真', { title: alt }) : '';
     if (img.getAttribute('src') !== src) img.setAttribute('src', src);
     cover.classList.remove('v2-placeholder');
   }
@@ -646,10 +680,17 @@
 
   global.V2BookshelfAdapter = {
     STATUS: STATUS,
-    TITLE_FALLBACK: TITLE_FALLBACK,
+    get TITLE_FALLBACK() { return titleFallback(); },
     setLibraryReader: setLibraryReader,
     readLibrary: readLibrary,
     resolveScreen: resolveScreen,
+    /* ★Localization：applyLanguage() から呼ばれ、06/07 の描画済み表示を現在の言語へ。
+       利用者の本文・題名は entry の値をそのまま出すため翻訳されない。 */
+    refreshLocale: function () {
+      try { render(); } catch (e) { /* ignore */ }
+      try { if (getSelectedEntry()) renderReader(); } catch (e) { /* ignore */ }
+      return true;
+    },
     render: render,
     refresh: refresh,
     mount: mount,
@@ -658,8 +699,8 @@
     setFixture: setFixture,
     clearFixture: clearFixture,
     viewTitle: viewTitle,
-    SEALED_NOTE: SEALED_NOTE,
-    STORE_LABEL: STORE_LABEL,
+    get SEALED_NOTE() { return sealedNote(); },
+    get STORE_LABEL() { return storeLabel(); },
     selectBook: selectBook,
     clearSelectedBook: clearSelectedBook,
     leaveReader: leaveReader,

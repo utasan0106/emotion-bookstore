@@ -61,6 +61,44 @@
   var doc = global.document;
 
   /* ---------------------------------------------------------------------------
+   * Localization bridge
+   * 既存 main.js の t() / categoryLabelFor() / categoryDefFor() / currentLang() を
+   * 唯一の翻訳源として使う。V2 専用の第二 i18n 辞書は作らない。
+   * main.js を読み込まない prototype harness では JA フォールバックがそのまま出る
+   * （従来の表示と同一）ため、harness の挙動は変わらない。
+   * ------------------------------------------------------------------------ */
+  function T(key, ja) {
+    if (typeof global.t === 'function') {
+      var v = global.t(key);
+      if (typeof v === 'string' && v !== key) return v;
+    }
+    return ja;
+  }
+  function TF(key, ja, vars) {
+    var s = T(key, ja);
+    for (var k in vars) {
+      if (Object.prototype.hasOwnProperty.call(vars, k)) {
+        s = s.split('{' + k + '}').join(vars[k]);
+      }
+    }
+    return s;
+  }
+  function isEN() {
+    return (typeof global.currentLang === 'function') && global.currentLang() === 'en';
+  }
+  function catLabel(cat) {
+    if (!cat) return '';
+    if (typeof global.categoryLabelFor === 'function') return global.categoryLabelFor(cat);
+    return cat.label || '';
+  }
+  function catDef(cat) {
+    if (!cat) return '';
+    if (typeof global.categoryDefFor === 'function') return global.categoryDefFor(cat);
+    return cat.def || '';
+  }
+
+
+  /* ---------------------------------------------------------------------------
    * 7大棚 mapping（正本）
    * emotions の順序は決裁順のまま保持する。alphabetical sort 等は行わない。
    * lead は Phase 3 Step 3A.1 で CEO 決裁された正式コピー
@@ -82,6 +120,18 @@
     { id: 'miwohiku',  name: '身を引く',     emotions: ['hazukashii', 'ushirometai', 'keno'],
       lead: '少し離れたい、隠れたい。\nそんな距離が生まれるあたり。' }
   ];
+
+  /* 大棚の表示名 / lead は既存 MESSAGES の V2 キーから引く。
+     辞書が無い環境（harness）では定義そのままの JA が出る。 */
+  function shelfKeyOf(id) { return String(id).split('-').join(''); }
+  function shelfName(def) {
+    if (!def) return '';
+    return T('v2Shelf' + shelfKeyOf(def.id), def.name);
+  }
+  function shelfLead(def) {
+    if (!def) return '';
+    return T('v2ShelfLead' + shelfKeyOf(def.id), def.lead);
+  }
 
   /* 特別入口。8番目の大棚ではない */
   var CROSSWAY = {
@@ -109,7 +159,7 @@
 
   /* 題名が無い本の表示名。bookshelf-adapter と同じ文言を使う
      （bookshelf-adapter があればそちらの実装を優先して呼ぶ） */
-  var TITLE_FALLBACK = 'まだ、題名のない本';
+  function titleFallback() { return T('v2BookTitleFallback', 'まだ、題名のない本'); }
 
   /* ---------------------------------------------------------------------------
    * 一時状態（メモリのみ。永続化しない）
@@ -156,7 +206,7 @@
    * ------------------------------------------------------------------------ */
   function getMajorShelves() {
     return MAJOR_SHELVES.map(function (s) {
-      return { id: s.id, name: s.name, lead: s.lead, emotions: s.emotions.slice() };
+      return { id: s.id, name: shelfName(s), lead: shelfLead(s), emotions: s.emotions.slice() };
     });
   }
 
@@ -315,12 +365,12 @@
 
     var imi = (typeof words.imi === 'string' && words.imi)
       ? words.imi
-      : (cat && typeof cat.def === 'string' ? cat.def : '');
+      : (cat && typeof cat.def === 'string' ? catDef(cat) : '');
     if (imi) {
       var pI = doc.createElement('p');
       pI.className = 'v2c04__wd-body';
       pI.textContent = imi;
-      body.appendChild(buildWordBlock('意味', pI));
+      body.appendChild(buildWordBlock(T('v2WordMeaning', '意味'), pI));
       made++;
     } else { missing.push('imi'); }
 
@@ -328,7 +378,7 @@
       var pN = doc.createElement('p');
       pN.className = 'v2c04__wd-body';
       pN.textContent = words.nuance;
-      body.appendChild(buildWordBlock('ニュアンス', pN));
+      body.appendChild(buildWordBlock(T('v2WordNuance', 'ニュアンス'), pN));
       made++;
     } else { missing.push('nuance'); }
 
@@ -341,7 +391,7 @@
         chip.textContent = String(words.near_words[i]);
         row.appendChild(chip);
       }
-      body.appendChild(buildWordBlock('近い言葉', row));
+      body.appendChild(buildWordBlock(T('v2WordNear', '近い言葉'), row));
       made++;
     } else { missing.push('near_words'); }
 
@@ -358,7 +408,13 @@
    * - 追加2作品が approved でない限り「もう2つ見る」を作らない
    * - snapshot 不足時は既存の安全な HOLD 表示（仕入れ中）を維持する
    * ------------------------------------------------------------------------ */
-  var WORK_TYPE_LABELS = { book: '本', film: '映画', music: '音楽' };
+  function workTypeLabels() {
+    return {
+      book: T('v2WorkTypeBook', '本'),
+      film: T('v2WorkTypeFilm', '映画'),
+      music: T('v2WorkTypeMusic', '音楽')
+    };
+  }
 
   function buildWorkCard(item) {
     var li = doc.createElement('li');
@@ -367,7 +423,7 @@
 
     var type = doc.createElement('span');
     type.className = 'v2c04__work-type';
-    type.textContent = WORK_TYPE_LABELS[item.type] || String(item.type || '');
+    type.textContent = workTypeLabels()[item.type] || String(item.type || '');
     li.appendChild(type);
 
     var title = doc.createElement('span');
@@ -392,11 +448,11 @@
     box.className = 'v2c04__works-hold';
     var t = doc.createElement('p');
     t.className = 'v2c04__works-hold-title';
-    t.textContent = 'この棚の作品は、ただいま仕入れ中です。';
+    t.textContent = T('v2c04WorksHoldTitle', 'この棚の作品は、ただいま仕入れ中です。');
     box.appendChild(t);
     var n = doc.createElement('p');
     n.className = 'v2c04__works-hold-note';
-    n.textContent = 'また立ち寄ったときに、静かに並んでいるはずです。';
+    n.textContent = T('v2c04WorksHoldNote', 'また立ち寄ったときに、静かに並んでいるはずです。');
     box.appendChild(n);
     return box;
   }
@@ -445,7 +501,9 @@
 
     var shelfId = effectiveShelfId();
     var def = (shelfId === ALL_CONTEXT_ID)
-      ? { id: ALL_CONTEXT_ID, name: 'すべての感情語', lead: '21のことばを、まとめて見わたせます。' }
+      ? { id: ALL_CONTEXT_ID,
+          name: T('v2ShelfAllName', 'すべての感情語'),
+          lead: T('v2ShelfAllLead', '21のことばを、まとめて見わたせます。') }
       : getShelfDef(shelfId);
 
     /* 04 hero contract: 感情語が選択されている間は個別感情の label / def を
@@ -454,15 +512,15 @@
     var activeCat = state.activeEmotionId ? findCategory(state.activeEmotionId) : null;
     if (titleEl) {
       titleEl.textContent = (activeCat && typeof activeCat.label === 'string')
-        ? activeCat.label
-        : (def ? def.name : '');
+        ? catLabel(activeCat)
+        : (def ? shelfName(def) : '');
     }
     if (leadEl) {
       leadEl.textContent = '';
       if (activeCat && typeof activeCat.def === 'string') {
-        leadEl.appendChild(doc.createTextNode(activeCat.def));
+        leadEl.appendChild(doc.createTextNode(catDef(activeCat)));
       } else if (def && def.lead) {
-        var lines = def.lead.split('\n');
+        var lines = shelfLead(def).split('\n');
         for (var li = 0; li < lines.length; li++) {
           if (li > 0) leadEl.appendChild(doc.createElement('br'));
           leadEl.appendChild(doc.createTextNode(lines[li]));
@@ -518,7 +576,7 @@
 
     var name = doc.createElement('span');
     name.className = 'v2-word-card__name';
-    name.textContent = cat && typeof cat.label === 'string' ? cat.label : emotionId;
+    name.textContent = cat && typeof cat.label === 'string' ? catLabel(cat) : emotionId;
     card.appendChild(name);
 
     var slot = doc.createElement('span');
@@ -528,7 +586,7 @@
 
     var desc = doc.createElement('span');
     desc.className = 'v2-word-card__desc';
-    desc.textContent = cat && typeof cat.def === 'string' ? cat.def : '';
+    desc.textContent = cat && typeof cat.def === 'string' ? catDef(cat) : '';
     card.appendChild(desc);
     return card;
   }
@@ -640,16 +698,16 @@
     if (bs && typeof bs.viewTitle === 'function') {
       try { return bs.viewTitle(entry); } catch (e) { /* 下の fallback へ */ }
     }
-    if (!entry || typeof entry !== 'object') return TITLE_FALLBACK;
+    if (!entry || typeof entry !== 'object') return titleFallback();
     var t = entry.title;
-    if (typeof t !== 'string' || t === '') return TITLE_FALLBACK;
+    if (typeof t !== 'string' || t === '') return titleFallback();
     return t;
   }
 
   /* 表示用の棚名。既存 CATEGORIES の label を読むだけ。 */
   function bookShelfLabel(entry) {
     var cat = entry ? findCategory(entry.category) : null;
-    return (cat && typeof cat.label === 'string') ? cat.label : '';
+    return (cat && typeof cat.label === 'string') ? catLabel(cat) : '';
   }
 
   /* 表示用の日付。既存 entry.date（ISO文字列）を読むだけ。
@@ -658,6 +716,10 @@
     if (!entry || typeof entry.date !== 'string' || !entry.date) return '';
     var d = new Date(entry.date);
     if (isNaN(d.getTime())) return '';
+    if (isEN()) {
+      var MN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      return MN[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    }
     return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
   }
 
@@ -690,11 +752,11 @@
     if (parts.length) {
       var meta = doc.createElement('span');
       meta.className = 'v2-book-card__meta';
-      meta.textContent = parts.join('　');
+      meta.textContent = parts.join(isEN() ? ' \u00b7 ' : '\u3000');
       card.appendChild(meta);
     }
     // 読み上げ名は題名までに留める（棚名・日付・本文は名前に混ぜない）
-    card.setAttribute('aria-label', titleText + 'を開く');
+    card.setAttribute('aria-label', TF('v2BookOpenAria', '{title}を開く', { title: titleText }));
     li.appendChild(card);
     return li;
   }
@@ -777,8 +839,8 @@
     if (books.length === 0) {
       /* 空状態コピーは MASTER_SPEC §4.4 の正本文言 */
       body.appendChild(buildEmpty(
-        'この気持ちで残した本は、まだありません。',
-        '書くことからでも、棚を眺めることからでも始められます。'
+        T('v2MyBooksEmptyTitle', 'この気持ちで残した本は、まだありません。'),
+        T('v2MyBooksEmptyNote', '書くことからでも、棚を眺めることからでも始められます。')
       ));
       body.setAttribute('data-v2-mybooks-count', '0');
       return { ok: true, status: 'ok', rendered: 0, shown: 0, matched: 0 };
@@ -800,7 +862,7 @@
       more.type = 'button';
       more.className = 'v2-detail__more';
       more.setAttribute('data-v2-mybooks-all', '');
-      more.textContent = '本棚ですべて見る';
+      more.textContent = T('v2MyBooksSeeAll', '本棚ですべて見る');
       body.appendChild(more);
     }
 
@@ -926,7 +988,7 @@
     DEFAULT_REGION: DEFAULT_REGION,
     MY_BOOKS_LIMIT: MY_BOOKS_LIMIT,
     UNFILED_ID: UNFILED_ID,
-    TITLE_FALLBACK: TITLE_FALLBACK,
+    get TITLE_FALLBACK() { return titleFallback(); },
     enterShelf: enterShelf,
     selectEmotion: selectEmotion,
     selectRegion: selectRegion,
@@ -936,6 +998,15 @@
     filterMyBooks: filterMyBooks,
     leaveToIndex: leaveToIndex,
     restoreFocus: restoreFocus,
+    /* ★Localization：applyLanguage() から呼ばれ、描画済みの 04 を現在の言語で描き直す。
+       storage / GA4 / 外部通信には触れず、選択中の感情・領域・入口文脈も変えない。 */
+    refreshLocale: function () {
+      if (!state.mounted) return false;
+      try { render(); } catch (e) { /* ignore */ }
+      try { renderRegions(); } catch (e) { /* ignore */ }
+      try { renderMyBooks(); } catch (e) { /* ignore */ }
+      return true;
+    },
     render: render,
     renderRegions: renderRegions,
     renderMyBooks: renderMyBooks,

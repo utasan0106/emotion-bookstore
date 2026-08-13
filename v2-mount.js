@@ -149,6 +149,114 @@
         if (typeof global.openExperienceMenu === 'function') global.openExperienceMenu();
       });
     }
+
+    /* PKT-3 Data / Backup：既存ボタンをそのまま同期 click するだけの入口。
+       バックアップ形式・復元処理・保存キー・GA4・外部通信には一切触れない。
+       復元はファイル選択を伴うため、写真と同じく同期呼び出しを守る。 */
+    var bridges = doc.querySelectorAll('[data-v2-legacy-click]');
+    for (var b = 0; b < bridges.length; b++) {
+      bridges[b].addEventListener('click', function (ev) {
+        var id = ev.currentTarget.getAttribute('data-v2-legacy-click');
+        var target = id ? doc.getElementById(id) : null;
+        if (target) target.click();
+      });
+    }
+  }
+
+  /* --------------------------------------------------------------------
+   * ADDENDUM / Photo：05 の写真欄を V2 へ再露出する
+   *
+   * 既存契約（変更しない）
+   *   #photoChooseBtn … 選択ダイアログを開く既存の唯一の入口
+   *   #photoInput     … <input type="file">。change で既存の圧縮・保存が走る
+   *   #photoPreview   … 既存プレビュー（.hidden の有無が唯一の状態）
+   *   #photoPreviewImg… 既存プレビュー画像（src が dataURL）
+   *   #photoRemove    … 既存の取り外し
+   *   attachedPhoto / entry.image … 製本時の保存経路（そのまま）
+   *
+   * ここでやること
+   *   V2 のボタン → 既存ボタンを同期的に click する（iOS で file chooser が
+   *   確実に開くよう、利用者の click ハンドラ内で同期呼び出しにする。既存
+   *   実装が守っている前提をそのまま踏襲し、setTimeout / Promise を挟まない）。
+   *   既存プレビューの状態を V2 側へ写す（MutationObserver。polling しない）。
+   *
+   * やらないこと
+   *   backend upload / external upload / fetch / XHR / sendBeacon
+   *   storage schema・photo compression contract・GA4 への関与
+   * ------------------------------------------------------------------ */
+  var PHOTO = {
+    choose: 'photoChooseBtn',
+    input: 'photoInput',
+    preview: 'photoPreview',
+    image: 'photoPreviewImg',
+    remove: 'photoRemove'
+  };
+
+  function v2Photo(key) { return doc.querySelector('[data-v2-photo="' + key + '"]'); }
+
+  function legacyPhotoAttached() {
+    var prev = doc.getElementById(PHOTO.preview);
+    return !!(prev && !prev.classList.contains('hidden'));
+  }
+
+  /* V2 側のプレビュー表示・選択ボタン文言を、既存側の状態へ追随させる。
+     写真そのもの（dataURL）は既存 img の src を読むだけで、複製も保存もしない。 */
+  function syncPhotoView() {
+    var attached = legacyPhotoAttached();
+    var box = v2Photo('preview');
+    var img = v2Photo('image');
+    var srcImg = doc.getElementById(PHOTO.image);
+    if (img && srcImg && img.src !== srcImg.src) img.src = srcImg.src || '';
+    if (box) {
+      if (attached) box.removeAttribute('hidden');
+      else box.setAttribute('hidden', '');
+    }
+    refreshV2PhotoLabels();
+  }
+
+  /* 選択ボタンの文言は「まだ無い＝挟む／既にある＝選び直す」で入れ替える。
+     文言は既存 MESSAGES（photoLabel / v2c05PhotoReplace）から引く。 */
+  function refreshV2PhotoLabels() {
+    var btn = v2Photo('choose');
+    if (!btn || typeof global.t !== 'function') return;
+    var key = legacyPhotoAttached() ? 'v2c05PhotoReplace' : 'photoLabel';
+    btn.setAttribute('data-i18n', key);
+    var label = global.t(key);
+    if (typeof label === 'string' && label !== key) btn.textContent = label;
+  }
+  global.refreshV2PhotoLabels = refreshV2PhotoLabels;
+
+  function wirePhotoBridge() {
+    var chooseV2 = v2Photo('choose');
+    var removeV2 = v2Photo('remove');
+    var srcChoose = doc.getElementById(PHOTO.choose);
+    var srcRemove = doc.getElementById(PHOTO.remove);
+
+    if (chooseV2 && srcChoose) {
+      chooseV2.addEventListener('click', function () {
+        /* 同期呼び出し。既存ボタンは inert 下でも click() が通る（focus のみ不可）。 */
+        srcChoose.click();
+      });
+    }
+    if (removeV2 && srcRemove) {
+      removeV2.addEventListener('click', function () {
+        srcRemove.click();
+        syncPhotoView();
+      });
+    }
+
+    /* 既存プレビューの表示状態と画像の差し替えを写す。 */
+    var prev = doc.getElementById(PHOTO.preview);
+    if (prev && global.MutationObserver) {
+      var mo = new global.MutationObserver(function () { syncPhotoView(); });
+      mo.observe(prev, { attributes: true, attributeFilter: ['class'] });
+      var srcImg = doc.getElementById(PHOTO.image);
+      if (srcImg) {
+        var moImg = new global.MutationObserver(function () { syncPhotoView(); });
+        moImg.observe(srcImg, { attributes: true, attributeFilter: ['src'] });
+      }
+    }
+    syncPhotoView();
   }
 
   /* --------------------------------------------------------------------
@@ -248,6 +356,7 @@
 
     wireUtilityMenu();
     wireReaderSecondary();
+    wirePhotoBridge();
 
     doc.documentElement.setAttribute('data-v2-mounted', 'true');
     applyLegacyInert();   /* HARDEN-02：CSS で隠すのと同じ時点で Tab / AT からも外す */

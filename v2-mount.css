@@ -72,6 +72,238 @@ html[data-v2-mounted="true"] #bookshelf::after{
 html[data-v2-mounted="true"] body{ background: var(--bg, #000); }
 
 /* ------------------------------------------------------------
+ * PKT-2 Responsive Shell
+ * ------------------------------------------------------------
+ * (1) 右側巨大空白 / 左寄せ
+ *     style.css の「@media (min-width:1100px){ section, .shop-guide{ max-width:920px } }」は
+ *     auto margin を伴わないため、<section id="counter|shelves|desk|bookshelf"> が
+ *     desktop で左へ寄り、右に巨大な余白が残っていた。V2 の面だけ解除して中央に戻す。
+ *     style.css 自体は変更しない（mount 時のみ上書き）。
+ * (2) 01 mobile 右端 strip
+ *     .v2c01__stage は 02/03 と違い margin-inline:auto を持たないため、
+ *     stage 幅 < viewport 幅のときに左寄せになり、右端に .shop の地色が帯として出ていた。
+ *     Reference の構図（stage 自体の寸法・比率）は変更せず、中央寄せだけを与える。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .experience-page,
+html[data-v2-mounted="true"] .entrance.hero{
+  max-width: none !important;
+  width: 100% !important;
+  margin-inline: auto !important;
+}
+
+html[data-v2-mounted="true"] .v2-page{ margin-inline: auto; }
+html[data-v2-mounted="true"] .v2c01__stage{ margin-inline: auto; }
+
+/* (3) 03 Global Nav が下部の棚を隠す
+   03 の Global Nav は full-bleed container 内で sticky が効かないため position:fixed に
+   なっている（beta0.css）。その分の逃げ場が stage 側に無く、最下段の棚が隠れていた。
+   nav 実高ぶんの bottom clearance を safe-area 込みで確保する。DOM も nav 自体も変えない。 */
+html[data-v2-mounted="true"] .v2c03__stage{
+  padding-bottom: calc(6cqw + 4.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* ------------------------------------------------------------
+ * PKT-3：02 / 04 / 05 / 07 の共通メニュートリガー
+ * 03 / 06 / 08 は各画面固有の menubtn を既に持つため触らない。
+ * 01（表紙）は没入感維持のため trigger を置かない。
+ * 見た目は既存 .v2c03__menubtn に合わせ、新しい視覚言語は作らない。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2b-menutrigger{
+  flex: 0 0 auto;
+  min-width: 44px; min-height: 44px;
+  display: grid; place-items: center;
+  padding: 0; border: 0; background: none; cursor: pointer;
+  color: #8a7350;
+}
+html[data-v2-mounted="true"] .v2b-menutrigger svg{
+  width: 22px; height: 22px;
+  stroke: currentColor; fill: none;
+  stroke-width: 1.6; stroke-linecap: round;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2b-menutrigger{ color: #b08a5e; }
+
+/* 02：brandrow は Reference で中央寄せの構図。行の対称性を崩さないよう絶対配置で右上へ置く */
+html[data-v2-mounted="true"] .v2c02__brandrow .v2b-menutrigger{
+  position: absolute; top: 4.2cqw; right: 3.4cqw;
+}
+
+/* 04 / 07：既存の1要素だけの行を両端揃えにして右端へ同居させる */
+html[data-v2-mounted="true"] .v2c04__utility,
+html[data-v2-mounted="true"] .v2c07__bar{
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+
+/* ------------------------------------------------------------
+ * PKT-3：「来店カード」は V2 Beta0 の user-facing から退場させる。
+ * 保存キー・プロフィール契約・既存処理はそのまま残す（DOM も削除しない）。
+ * 視覚的に隠すだけでなく Tab / AT からも外す。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] #profileBtn{
+  display: none !important;
+}
+
+/* ------------------------------------------------------------
+ * ADDENDUM / Photo：05 の写真欄
+ * 既存 #photoPreview の状態を写すだけの表示面。周囲の 05 の質感に合わせる。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2c05__photo{ margin-top: clamp(14px, 3.4cqw, 20px); }
+
+html[data-v2-mounted="true"] .v2c05__photobtn{
+  display: inline-flex; align-items: center;
+  min-height: 44px;
+  padding: 0.55em 1.2em;
+  border: 1px solid rgb(170 150 120 / 0.55);
+  border-radius: 10px;
+  background: #fdfaf5;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: clamp(12px, 2.9cqw, 14px);
+  font-weight: 300;
+  line-height: 1.5;
+  text-align: left;
+  color: #55483a !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c05__photobtn{
+  border-color: rgb(150 120 80 / 0.4); background: #1c2534; color: #c0aa8a !important;
+}
+
+html[data-v2-mounted="true"] .v2c05__photoprev{
+  position: relative;
+  margin-top: 0.7em;
+  max-width: 260px;
+}
+html[data-v2-mounted="true"] .v2c05__photoprev[hidden]{ display: none; }
+html[data-v2-mounted="true"] .v2c05__photoimg{
+  display: block; width: 100%; height: auto;
+  border-radius: 8px;
+}
+html[data-v2-mounted="true"] .v2c05__photoremove{
+  position: absolute; top: -10px; right: -10px;
+  min-width: 32px; min-height: 32px;
+  display: grid; place-items: center;
+  border: 1px solid rgb(170 150 120 / 0.55);
+  border-radius: 999px;
+  background: #fdfaf5;
+  cursor: pointer;
+  font-size: 16px; line-height: 1;
+  color: #55483a !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c05__photoremove{
+  border-color: rgb(150 120 80 / 0.4); background: #1c2534; color: #c0aa8a !important;
+}
+html[data-v2-mounted="true"] .v2c05__photohint{
+  margin: 0.6em 0 0; padding: 0;
+  font-size: clamp(11px, 2.6cqw, 12.5px);
+  line-height: 1.7;
+  font-weight: 300;
+  color: #86775f !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c05__photohint{ color: #9d9077 !important; }
+
+/* ------------------------------------------------------------
+ * PKT-4 Screen-local Visual / UX
+ * ------------------------------------------------------------ */
+
+/* 02：カード本文が極端に狭い一行あたり文字数になっていたのを解消する。
+   左の pane 逃げ幅を詰め、右側の余白も本文が使えるようにする。
+   カード寸法・pane 自体・Reference の3カード構図は変えない。 */
+html[data-v2-mounted="true"] .v2c02__body{
+  padding-left: 3.4cqw;
+  padding-right: 2.2cqw;
+}
+
+/* 04：「近い言葉」の false affordance を下げる。
+   Beta0 では非 interactive な <span> だが、丸ピル＋実線枠が押せる要素に見えていた。
+   display-only であることが見た目でも分かる静かな並びへ戻す。
+   interaction は追加しない（Near-word Navigation は今回の scope 外）。 */
+html[data-v2-mounted="true"] .v2c04__wd-chip{
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: #6a5a45 !important;
+}
+html[data-v2-mounted="true"] .v2c04__wd-chip + .v2c04__wd-chip::before{
+  content: "・";
+  margin: 0 0.15em 0 0;
+  color: rgb(150 128 98 / 0.75);
+}
+html[data-v2-mounted="true"] .v2c04__wd-chips{ gap: 0 0.2em; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__wd-chip{ color: #b3a488 !important; }
+
+/* 05：textarea の二重枠を解消する（枠は .v2c05__tawrap 側の1本だけにする）。
+   legacy style.css の textarea 基底 border / box-shadow が残っていた。 */
+html[data-v2-mounted="true"] .v2c05__textarea{
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none;
+}
+
+/* 05：header subcopy と helper の不自然な孤立改行（1語だけ次行へ落ちる）を抑える。
+   文言そのものは変えない。英訳で行長が伸びても収まるようにする。 */
+html[data-v2-mounted="true"] .v2c05__sub,
+html[data-v2-mounted="true"] .v2c05__bindnote,
+html[data-v2-mounted="true"] .v2c05__assure,
+html[data-v2-mounted="true"] .v2c08__copy,
+html[data-v2-mounted="true"] .v2c08__tail{
+  text-wrap: pretty;
+}
+html[data-v2-mounted="true"] .v2c05__headmid{ min-width: 0; }
+
+/* ------------------------------------------------------------
+ * PKT-6 製本後（受け取り頁 / 棚選択）の presentation
+ * 機能契約（confirm / skip / unfiled / 題名修正）は一切変更しない。DOM も作り変えない。
+ * V1 の見た目（茶黒い大 modal・灰色の面・旧 select・ベージュ矩形ボタン・
+ * 「第三頁」という頁番号表示）が V2 の中へそのまま出てこないようにする。
+ * 製本という儀式性（まなの図・本のプレビュー・確認の間）は残す。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .mana-receive-overlay{
+  background: color-mix(in srgb, var(--bg, #14110F) 78%, transparent) !important;
+  backdrop-filter: blur(6px);
+}
+html[data-v2-mounted="true"] .mana-receive-card{
+  background: var(--surface, #f3ece1) !important;
+  color: var(--ink, #3b3128) !important;
+  border: 1px solid var(--line, rgb(150 128 98 / 0.4)) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 18px 48px rgb(0 0 0 / 0.28) !important;
+  font-family: "Shippori Mincho", var(--font-display) !important;
+}
+/* V1 の頁番号（「第三頁」）は V2 の IA に無い呼称なので出さない。
+   DOM は残す（既存 applyLanguage / t() の対象のまま）。 */
+html[data-v2-mounted="true"] .mana-receive-card .mana-page-label{
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%);
+  white-space: nowrap; border: 0;
+}
+/* 棚選択・確定・スキップ・題名修正のボタン群を V2 のボタン言語へ合わせる */
+html[data-v2-mounted="true"] .mana-receive-card select{
+  min-height: 44px;
+  padding: 0.5em 2.2em 0.5em 0.9em;
+  border: 1px solid var(--line, rgb(150 128 98 / 0.5)) !important;
+  border-radius: 10px !important;
+  background-color: var(--surface, #fdfaf5) !important;
+  color: inherit !important;
+  font-family: inherit;
+  font-size: 15px;
+}
+html[data-v2-mounted="true"] .mana-receive-card button{
+  min-height: 44px;
+  border-radius: 10px !important;
+  font-family: inherit;
+  letter-spacing: 0.04em;
+}
+html[data-v2-mounted="true"] .mana-receive-card .mana-title-input{
+  min-height: 44px;
+  border: 1px solid var(--line, rgb(150 128 98 / 0.5)) !important;
+  border-radius: 10px !important;
+  background: var(--surface, #fdfaf5) !important;
+  color: inherit !important;
+  font-family: inherit;
+}
+
+/* ------------------------------------------------------------
  * 旧グローバルUI（V2 が独自のナビ・見出しを持つ面）
  * DOM は残す。main.js が参照し、SECONDARY UTILITY 領域として
  * 後の工程で正式に再配置するため。
