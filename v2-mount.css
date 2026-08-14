@@ -1241,3 +1241,176 @@ html[data-v2-mounted="true"][data-theme="night"] .v2-page h3.v2c04__wd-h{
   color: #e2d7c1 !important;
 }
 html[data-v2-mounted="true"] .v2c04__wd:first-child h3.v2c04__wd-h{ margin-top: 0.4em; }
+
+/* ------------------------------------------------------------
+ * FIX-L：03 感情棚カードの丸アイコンと感情名の重心・識別性
+ *
+ * 実測（390 / 1440、8 カード）
+ *   丸の中心位置は 8 カードとも完全に一致していた（ばらつき 0.0px）。
+ *   離れて見えていた原因は感情名の行ボックスで、
+ *     390  … font 14.82px に対して line-height 28.16px（1.90）
+ *     1440 … font 27px    に対して line-height 51.3px（1.90）
+ *   字面の下に 390 で約 6.6px、1440 で約 12px の空きが残り、
+ *   丸＋名前の塊の見かけの重心が上にずれていた。
+ *
+ *   アイコンは stroke-width 0.9（実効 約1.18px）で、
+ *   沈む・まだ名前がないのように線数の少ないモチーフが特に弱く見えていた。
+ *
+ * 対応
+ *   ・感情名の行ボックスを字面に寄せる（結果として丸が少し下がり、名前が少し上がる）
+ *   ・丸と名前の間隔を 8 カード共通の 1 つの値にする
+ *   ・線をわずかに太く、モチーフを丸の中で少し大きく、丸はごく僅かに小さく
+ *   ・線と縁の色は色相を保ったまま、濃度だけ 1 段上げる
+ *   2列×4段・カード寸法・角丸・色帯・各感情の色系統・コピーは変更しない。
+ * ------------------------------------------------------------ */
+/* R2-01 の「8棚を first view に収める」ための min(cqw, svh) の形は必ず保つ。
+   片側だけ cqw に戻すと、背の低い画面や desktop で丸が一気に大きくなる
+   （実測：1440 で 55.8px → 108.1px まで膨らんだ）。両項を同じ比率で動かす。 */
+html[data-v2-mounted="true"] .v2c03__book{
+  gap: min(2.6cqw, 0.7svh);
+}
+html[data-v2-mounted="true"] .v2c03__name{
+  line-height: 1.25;
+  margin-block: 0;
+}
+/* モチーフを丸の中で少し大きく、丸はごく僅かに小さく（比率 0.571 → 0.638） */
+html[data-v2-mounted="true"] .v2c03__ring{
+  width: min(15.2cqw, 5.98svh);
+  height: min(15.2cqw, 5.98svh);
+  border-width: 1.6px;
+  border-color: color-mix(in srgb, var(--tint) 88%, #3a2f22);
+  color: color-mix(in srgb, var(--tint) 88%, #3a2f22);
+}
+html[data-v2-mounted="true"] .v2c03__ring svg{
+  width: min(9.7cqw, 3.77svh);
+  height: min(9.7cqw, 3.77svh);
+  stroke-width: 1.1;
+}
+/* 破線で描かれたモチーフ（沈む の落下線、惹かれる の軌道、まだ名前がない の
+   dotted circle など 7 箇所）は、同じ stroke-width でも実線より薄く見える。
+   モチーフの形はそのままに、線の重さだけ揃える。 */
+html[data-v2-mounted="true"] .v2c03__ring svg [stroke-dasharray]{
+  stroke-width: 1.35;
+}
+
+/* ============================================================
+ * FIX-J：「見本の一冊」を現行 07 Reader の Visual Language へ揃える
+ * ------------------------------------------------------------
+ * 現状の見本は V1 の展示カードのままで、
+ *   ・面   rgba(255,255,255,.4) + 1px の枠 + 角丸 6px
+ *   ・題名 var(--wine) の 16px（赤茶の強い見出し）
+ *   ・棚   12px の素の一行
+ *   ・日付 11px
+ * となっており、07 Reader（中央揃えの明朝・細い横罫・pill の棚チップ・
+ * 行間 2.05 の本文）とは別バージョンのデザインに見えていた。
+ *
+ * 07 Reader 本体（.v2c07*）には一切触れず、見本側の CSS だけで
+ * 同じ紙色・同じ文字色・同じ階層・同じ余白に寄せる。
+ * 「見本である」ことは badge で必ず残す（本文より控えめ・しかし見落とさない）。
+ * ============================================================ */
+html[data-v2-mounted="true"] #sampleBookInline{
+  margin: 14px 0 16px;
+  padding: clamp(14px, 4.4cqw, 22px) clamp(12px, 4cqw, 20px) clamp(16px, 5cqw, 24px);
+  /* 展示パネルのような枠・黄味の面をやめ、Reader と同じ紙にする */
+  background: var(--surface, #fdfaf5);
+  border: 1px solid var(--line, rgb(150 128 98 / 0.28));
+  border-radius: 10px;
+  box-shadow: none;
+  text-align: center;
+  font-family: "Shippori Mincho", var(--font-display);
+  color: var(--ink, #3b3128);
+}
+/* 見本であることの注記。本文より弱いが、最初に必ず目に入る位置に置く */
+html[data-v2-mounted="true"] #sampleBookInline .sample-book-badge{
+  display: block;
+  margin: 0 0 clamp(10px, 3.2cqw, 16px);
+  padding: 0 0 clamp(8px, 2.6cqw, 12px);
+  /* V1 の破線の囲みはやめ、注記と本文を分ける 1 本の罫だけにする */
+  background: none;
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px dashed rgb(150 128 98 / 0.35);
+  font-size: clamp(11px, 3cqw, 12.5px);
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  font-weight: 400;
+  color: #6a5a45 !important;
+  text-align: center;
+}
+html[data-v2-mounted="true"][data-theme="night"] #sampleBookInline .sample-book-badge{
+  border-bottom-color: rgb(160 125 80 / 0.3);
+  color: #a89882 !important;
+}
+/* 題名：07 の h1.v2c07__title と同じ階層（赤茶をやめ、明朝の細身へ） */
+html[data-v2-mounted="true"] #sampleBookInline .sample-inline-title{
+  margin: 0; padding: 0;
+  font-family: "Shippori Mincho", var(--font-display);
+  font-size: clamp(19px, 5.9cqw, 26px);
+  letter-spacing: 0.06em;
+  line-height: 1.55;
+  font-weight: 300;
+  color: #3a2e20 !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] #sampleBookInline .sample-inline-title{
+  color: #ecdfc6 !important;
+}
+/* 題名下の細い横罫（07 の .v2c07__sep と同寸） */
+html[data-v2-mounted="true"] #sampleBookInline .sample-inline-sep{
+  display: block; width: 2.2em; height: 1px;
+  margin: clamp(10px, 3.2cqw, 16px) auto 0;
+  background: rgb(150 128 98 / 0.55);
+  border: 0;
+}
+html[data-v2-mounted="true"][data-theme="night"] #sampleBookInline .sample-inline-sep{
+  background: rgb(160 125 80 / 0.45);
+}
+/* 日付：07 の .v2c07__date と同じ扱い */
+html[data-v2-mounted="true"] #sampleBookInline .sample-inline-date{
+  margin: clamp(10px, 3.2cqw, 16px) 0 0;
+  font-size: clamp(12px, 3.4cqw, 14px);
+  font-weight: 300;
+  color: #6a5a45 !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] #sampleBookInline .sample-inline-date{
+  color: #a89882 !important;
+}
+/* 感情ラベル：07 の .v2c07__chip と同じ pill */
+html[data-v2-mounted="true"] #sampleBookInline .sample-inline-cat{
+  display: inline-block;
+  margin: clamp(8px, 2.6cqw, 12px) auto 0;
+  padding: 0.3em 1.1em;
+  border: 1px solid rgb(150 128 98 / 0.5);
+  border-radius: 999px;
+  font-size: clamp(12px, 3.2cqw, 13.5px);
+  font-weight: 300;
+  color: #5d4f3e !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] #sampleBookInline .sample-inline-cat{
+  border-color: rgb(160 125 80 / 0.42);
+  color: #bfae92 !important;
+}
+/* 本文：07 の .v2c07__body と同じ文字組み */
+html[data-v2-mounted="true"] #sampleBookInline .sample-inline-story{
+  margin-top: clamp(18px, 6cqw, 32px);
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: clamp(14px, 4cqw, 16px);
+  line-height: var(--reader-line-height, 2.05);
+  letter-spacing: 0.02em;
+  font-weight: 300;
+  color: #40352a !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] #sampleBookInline .sample-inline-story{
+  color: #cdbfa6 !important;
+}
+
+/* ------------------------------------------------------------
+ * FIX-H：04「ことば」詳細の本文で、最終行に 1〜2 文字だけ残さない
+ * 実測（390）「…感じられる気持 / ち。」
+ * コピーは変えず、最終行の短さを避ける折り返しに任せる。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2c04__wd-body,
+html[data-v2-mounted="true"] .v2c04__wd-chip{
+  text-wrap: pretty;
+}
