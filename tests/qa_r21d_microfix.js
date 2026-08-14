@@ -132,9 +132,12 @@ const JA_ORPHAN = /^[。、・！？\)）」』]*$|^.{1,2}$/;
                    overflowX: document.documentElement.scrollWidth > innerWidth + 1 };
         })()`);
         if (data) {
-          const wantJa = 'この端末のブラウザ保存領域に保存されます。保存にはIndexedDBとlocalStorageを併用しています。';
+          /* Legal / Trust Alignment Fix 01（M-06）以後の正式契約。
+             利用者データの保存先（IndexedDB / localStorage）と、
+             一時記憶にのみ使う sessionStorage を書き分けている。 */
+          const wantJa = 'この端末のブラウザ保存領域に保存されます。保存にはIndexedDBとlocalStorageを併用し、表示状態などの一時的な記憶にだけsessionStorageを使います。';
           /* FIX-03（Trust / A11y Limited Fix）で EN の重複表現を解消した後の正式契約 */
-          const wantEn = "stored in this device\u2019s browser storage. The service uses both IndexedDB and localStorage.";
+          const wantEn = "stored in this device\u2019s browser storage. The service uses both IndexedDB and localStorage for that, and sessionStorage only for temporary display state.";
           check(`[${tag}] MICRO-04 技術内訳が実装事実（併用）になっている`,
             data.text.includes(lang === 'ja' ? wantJa : wantEn), data.text.slice(0, 120));
           check(`[${tag}] MICRO-04 旧い分離説明が残っていない`,

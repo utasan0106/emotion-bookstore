@@ -191,11 +191,11 @@ const MEASURE = `async ({ dataUrl, items }) => {
         })()`);
         if (lang === 'en') {
           check(`[${tag}] FIX-03 EN の重複表現が解消している`,
-            dataTxt.includes('What you write is stored in this device’s browser storage. The service uses both IndexedDB and localStorage.')
+            dataTxt.includes('What you write is stored in this device’s browser storage. The service uses both IndexedDB and localStorage for that, and sessionStorage only for temporary display state.')
             && !/for local storage/.test(dataTxt), dataTxt.slice(0, 150));
         } else {
-          check(`[${tag}] FIX-03 JA は現行維持`,
-            dataTxt.includes('書いたものは、この端末のブラウザ保存領域に保存されます。保存にはIndexedDBとlocalStorageを併用しています。'),
+          check(`[${tag}] FIX-03 JA は現行維持（M-06 で sessionStorage の役割を追記）`,
+            dataTxt.includes('書いたものは、この端末のブラウザ保存領域に保存されます。保存にはIndexedDBとlocalStorageを併用し、表示状態などの一時的な記憶にだけsessionStorageを使います。'),
             dataTxt.slice(0, 90));
         }
         await L.closeMenu(page);
