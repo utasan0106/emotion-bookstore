@@ -979,7 +979,7 @@ const MESSAGES = {
     v2c04WriteNote: "Keep how you feel now, in your own words",
     v2WordMeaning: "Meaning",
     v2WordNuance: "Nuance",
-    v2WordNear: "Near words",
+    v2WordNear: "Related words",
     v2WorkTypeBook: "Book",
     v2WorkTypeFilm: "Film",
     v2WorkTypeMusic: "Music",

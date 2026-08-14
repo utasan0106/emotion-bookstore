@@ -338,6 +338,21 @@
    *   存在しない field は生成・推定せず非表示（CONTENT_REQUIRED として報告）
    * - 大棚文脈（感情語未選択）では表示しない（選択カードが表示される）
    * ------------------------------------------------------------------------ */
+  /* 04「ことば」詳細の表示データ。
+     EN のときは EN 表示層を優先し、無い ID / field は JA canonical へ落ちる。
+     canonical（V2_EMOTION_WORDS）は読むだけで、書き換えも上書きもしない。 */
+  function wordsFor(emotionId) {
+    var ja = (global.V2_EMOTION_WORDS || {})[emotionId] || {};
+    if (!isEN()) return ja;
+    var en = (global.V2_EMOTION_WORDS_EN || {})[emotionId];
+    if (!en) return ja;
+    return {
+      imi: (typeof en.imi === 'string' && en.imi) ? en.imi : ja.imi,
+      nuance: (typeof en.nuance === 'string' && en.nuance) ? en.nuance : ja.nuance,
+      near_words: (Array.isArray(en.near_words) && en.near_words.length) ? en.near_words : ja.near_words
+    };
+  }
+
   function buildWordBlock(head, node) {
     var wrap = doc.createElement('div');
     wrap.className = 'v2c04__wd';
@@ -361,7 +376,7 @@
     }
     body.removeAttribute('hidden');
     var cat = findCategory(state.activeEmotionId);
-    var words = (global.V2_EMOTION_WORDS || {})[state.activeEmotionId] || {};
+    var words = wordsFor(state.activeEmotionId);
     var missing = [], made = 0;
 
     var imi = (typeof words.imi === 'string' && words.imi)
