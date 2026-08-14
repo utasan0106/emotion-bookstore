@@ -429,7 +429,7 @@ const MESSAGES = {
     menuItemShelves: "感情の棚を巡る",
     menuItemCover: "表紙へ戻る",
     menuSectionOptional: "任意の場所へ",
-    menuSectionSettings: "設定・このお店について",
+    menuSectionSettings: "設定・ご案内",
 
     /* ===== Visual Refit V2（01〜08）の system copy =====
        JA は V2 実装時の文言をそのまま転記したもので、表示は現行と 1 文字も変わらない。
@@ -513,7 +513,7 @@ const MESSAGES = {
     v2c05TitlePh: "空欄でも、一冊にできます",
     v2c05StoryLabel: "本文",
     v2c05StoryPh: "いま、心の中に残っていることを、そのまま書いてみてください。\nうまく書こうとしなくて大丈夫。\n一言からでも、本になります。",
-    v2c05Assure: "本文は、この端末のブラウザ保存領域に保存されます。公開されません。",
+    v2c05Assure: "本文は、この端末のブラウザ保存領域に保存されます。",
     v2c05Bind: "本にする",
     v2c05BindNote: "本文を保存し、本にします。そのあとで「この一冊に近い気持ち」を選べます（任意）。",
     v2c05ResumeT: "書きかけがあります",
@@ -914,7 +914,7 @@ const MESSAGES = {
     menuItemShelves: "Browse the emotion shelves",
     menuItemCover: "Back to the cover",
     menuSectionOptional: "Optional detours",
-    menuSectionSettings: "Settings & about this shop",
+    menuSectionSettings: "Settings & links",
 
     /* ===== Visual Refit V2（01〜08）の system copy / English =====
        既存 canonical EN（shopName / menuOpenAria / photoLabel など）がある箇所は
@@ -998,7 +998,7 @@ const MESSAGES = {
     v2c05TitlePh: "You can leave this blank.",
     v2c05StoryLabel: "Your writing",
     v2c05StoryPh: "Write what is still on your mind, just as it is.\nIt does not have to be well written.\nEven a single line can become a book.",
-    v2c05Assure: "Your text is stored in this device’s browser storage. It is not published.",
+    v2c05Assure: "Your text is stored in this device’s browser storage.",
     v2c05Bind: "Make it a book",
     v2c05BindNote: "Saves your writing and makes it a book. You can then choose a feeling close to it (optional).",
     v2c05ResumeT: "You have a draft",

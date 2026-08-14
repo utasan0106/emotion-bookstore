@@ -169,6 +169,7 @@
     activeEmotionId: null,     // 04 で選択中の感情ID
     activeRegion: DEFAULT_REGION, // 04 の選択中の領域（ことば／いま／作品／自分の本）
     lastOriginTriggerId: null, // 04→03 で focus を戻す先（DOM の識別子のみ）
+    returnToScreen: null,      // 04 に入る直前に見えていた V2 画面（戻り先）
     mounted: false,
     lastError: null
   };
@@ -886,7 +887,22 @@
     var el = ev.currentTarget;
     var shelfId = el.getAttribute('data-v2-shelf');
     if (!shelfId) return;
+    state.returnToScreen = visibleScreenId();
     enterShelf(shelfId, { triggerId: el.getAttribute('data-v2-shelf-trigger') || shelfId });
+  }
+
+  /* いま見えている V2 画面の番号。history には触れない。 */
+  function visibleScreenId() {
+    if (!doc) return null;
+    var pages = doc.querySelectorAll('.v2-page[data-v2-screen]');
+    for (var i = 0; i < pages.length; i++) {
+      var p = pages[i];
+      var cs = global.getComputedStyle ? global.getComputedStyle(p) : null;
+      if (cs && (cs.display === 'none' || cs.visibility === 'hidden')) continue;
+      if (p.getClientRects && p.getClientRects().length === 0) continue;
+      return p.getAttribute('data-v2-screen');
+    }
+    return null;
   }
 
   function onWordSelect(ev) {
@@ -895,7 +911,30 @@
     if (id) selectEmotion(id);
   }
 
-  function onLeave() { leaveToIndex(); }
+  /* 「棚へ戻る」は直前にいた画面へ戻す。
+     この build は adapter の非目標として history / pushState を持たないため、
+     history.back() を使うとサイトの外へ出てしまう。そこで 04 に入る直前の
+     V2 画面を覚えておき、そこへ戻す。分からない場合だけ従来どおり 03 へ。
+     04 自身へは戻さない（ループを作らない）。 */
+  function onLeave() {
+    var back = state.returnToScreen;
+    state.returnToScreen = null;
+    if (back && back !== '04') {
+      var nav = global.V2NavigationAdapter;
+      if (nav && typeof nav.go === 'function') {
+        var triggerId = state.lastOriginTriggerId;
+        state.originMajorShelfId = null;
+        state.activeEmotionId = null;
+        try {
+          nav.go(back, { subviewOnly: back === '03' });
+          restoreFocus(triggerId);
+          state.lastOriginTriggerId = null;
+          return triggerId;
+        } catch (err) { /* 失敗したら下の既定経路へ落とす */ }
+      }
+    }
+    return leaveToIndex();
+  }
 
   function mount(scope) {
     if (!doc) return false;

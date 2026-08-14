@@ -968,7 +968,7 @@ body.night .about-data-content{
           <p class="v2c05__photohint" data-i18n="photoHint">写真は、この端末のブラウザ保存領域に保存されます。長辺800pxに縮小し、運営者のサーバーへは送信しません。</p>
         </div>
 
-        <p class="v2c05__assure" data-i18n="v2c05Assure">本文は、この端末のブラウザ保存領域に保存されます。公開されません。</p>
+        <p class="v2c05__assure" data-i18n="v2c05Assure">本文は、この端末のブラウザ保存領域に保存されます。</p>
 
         <button type="button" class="v2c05__bind" data-v2-write="bind"><span class="v2c05__bind-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2c05Bind">本にする</span></button>
         <p class="v2c05__bindnote" data-i18n="v2c05BindNote">本文を保存し、本にします。そのあとで「この一冊に近い気持ち」を選べます（任意）。</p>
@@ -1063,7 +1063,8 @@ body.night .about-data-content{
 
     <div class="v2c06__collhead">
       <p class="v2c06__count"><span data-v2-bookshelf="count"></span></p>
-      <button type="button" class="v2c06__newlink" data-v2-go="05"><span data-i18n="v2c06NewLink">新しく書く</span><span class="v2c06__newlink-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span></button>
+      <!-- 右上の「新しく書く」は下部の大きなカードと導線が重複していたため削除。
+           書く導線は .v2c06__invite（下部カード）へ一本化している。 -->
     </div>
 
     <div class="v2c06__grid" data-v2-bookshelf="rack"></div>
@@ -1384,7 +1385,7 @@ body.night .about-data-content{
         <button type="button" class="share-btn" data-v2-legacy-click="restoreBtn" data-i18n="restoreDefaultBtn">バックアップから復元する</button>
       </div>
 
-      <p class="experience-menu-section" data-i18n="menuSectionSettings">設定・このお店について</p>
+      <p class="experience-menu-section" data-i18n="menuSectionSettings">設定・ご案内</p>
     <div class="pref-row">
       <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切" data-i18n-title="motionToggleTitle">演出：入</button>
       <button class="pref-toggle" id="profileBtn" title="お名前と属性の設定（任意・この端末にのみ保存）" data-i18n="profileBtn" data-i18n-title="profileBtnTitle">来店カード</button>

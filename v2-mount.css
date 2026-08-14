@@ -505,24 +505,24 @@ html[data-v2-mounted="true"] .v2c04__halo{
   background:
     /* 主核：感情名の上。0.30±0.29 → 1%..59% で要素内に収まる */
     radial-gradient(50% 34% at 50% 34%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 13%, rgb(247 210 180)) 0%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 22%, rgb(246 206 176)) 46%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 34%, rgb(246 210 184 / 0.28)) 74%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 10%, rgb(252 226 202)) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 17%, rgb(251 223 199)) 46%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 27%, rgb(251 226 206 / 0.24)) 74%,
       transparent 99%),
     /* 副核：lead の下。0.74±0.24 → 50%..98% */
     radial-gradient(46% 24% at 57% 74%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 38%, rgb(238 190 158 / 0.42)) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 30%, rgb(246 209 184 / 0.36)) 0%,
       transparent 92%);
 }
 html[data-v2-mounted="true"][data-theme="night"] .v2c04__halo{
   background:
     radial-gradient(50% 34% at 50% 34%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 30%, rgb(58 82 120)) 0%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 42%, rgb(40 60 94)) 46%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 54%, rgb(30 46 74 / 0.38)) 74%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 24%, rgb(66 94 136)) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 34%, rgb(48 71 110)) 46%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 44%, rgb(36 55 88 / 0.34)) 74%,
       transparent 99%),
     radial-gradient(46% 24% at 57% 74%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 48%, rgb(26 40 66 / 0.5)) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 38%, rgb(32 49 80 / 0.44)) 0%,
       transparent 92%);
 }
 
@@ -547,15 +547,15 @@ html[data-v2-mounted="true"] .v2c04__hero::after{
   z-index: 0;
   background:
     radial-gradient(52% 20% at 50% 20%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 22%, transparent) 0%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 8%, transparent) 52%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 17%, transparent) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 6%, transparent) 52%,
       transparent 92%);
 }
 html[data-v2-mounted="true"][data-theme="night"] .v2c04__hero::after{
   background:
     radial-gradient(52% 20% at 50% 20%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 32%, transparent) 0%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 11%, transparent) 52%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 25%, transparent) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 9%, transparent) 52%,
       transparent 92%);
 }
 /* ------------------------------------------------------------
@@ -1124,3 +1124,120 @@ html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .pref-toggle.on
 html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .pref-toggle:not(.on){
   color: #e8dcc4 !important;
 }
+
+/* ============================================================
+ * 店内メニューを「1 枚の編集された紙面」に揃える
+ * ------------------------------------------------------------
+ * 実測（390px）
+ *   セクション見出し 3 本は L=67.8 / W=302.2 で既に揃っている。
+ *   ずれていたのは中身のほう。
+ *     .about-data-accordion   L=117 / W=203.9（左に 49px 寄り、98px 狭い）
+ *     .share-btn の幅         276.3 / 302.2 / 207.4、179.8 / 125.5 / 179.8
+ *     .legal-row              「・」区切りの横並びで、3 つ目だけ次行へ落ちる
+ *   縦の余白も 10 / 14 / 18 / 22 / 24 / 26px が混在していた。
+ *
+ * 対応（レイアウトと字組みだけ。動作・runtime・contract は触らない）
+ *   同じ意味の余白を 3 つの token に集約し、主要ブロックの左端と幅をそろえる。
+ *   グループ内のボタンは同じ幅の縦積み、下部リンクは縦並びにする。
+ * ============================================================ */
+html[data-v2-mounted="true"] #experienceMenu .experience-menu-settings{
+  --menu-gap-head: 10px;   /* 見出し → 内容 */
+  --menu-gap-item: 8px;    /* 同一グループ内 */
+  --menu-gap-sec: 26px;    /* セクション → 次セクション */
+}
+/* 3 本のセクション見出しは同じ規則（字面は FIX-05 の値のまま） */
+html[data-v2-mounted="true"] #experienceMenu .experience-menu-section{
+  margin: var(--menu-gap-sec) 0 var(--menu-gap-head);
+  padding-top: 14px;
+}
+/* 主要ブロックはすべて同じ左端・同じ幅に載せる */
+html[data-v2-mounted="true"] #experienceMenu .about-accordion-wrap,
+html[data-v2-mounted="true"] #experienceMenu .about-data-accordion,
+html[data-v2-mounted="true"] #experienceMenu .share-row,
+html[data-v2-mounted="true"] #experienceMenu .pref-row,
+html[data-v2-mounted="true"] #experienceMenu .weather-settings,
+html[data-v2-mounted="true"] #experienceMenu .legal-row{
+  display: block;
+  width: auto;
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+html[data-v2-mounted="true"] #experienceMenu .about-accordion-wrap{
+  margin-block: 0 var(--menu-gap-sec);
+  padding-bottom: 0;
+}
+html[data-v2-mounted="true"] #experienceMenu .about-data-accordion{
+  margin-block: 0 var(--menu-gap-sec);
+}
+/* accordion の見出し帯も本文と同じ幅にそろえる */
+html[data-v2-mounted="true"] #experienceMenu .about-data-accordion > summary{
+  display: block;
+  width: auto;
+  text-align: left;
+}
+/* FIX-B：グループ内の 3 ボタンは同じ幅・同じ左端の縦積み */
+html[data-v2-mounted="true"] #experienceMenu .share-row{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--menu-gap-item);
+  margin-block: 0 var(--menu-gap-sec);
+}
+html[data-v2-mounted="true"] #experienceMenu .share-row .share-btn{
+  width: 100%;
+  margin: 0;
+}
+/* 設定トグルは横並びのままでよいが、間隔だけ同じ token にする */
+html[data-v2-mounted="true"] #experienceMenu .pref-row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--menu-gap-item);
+  margin-block: 0 var(--menu-gap-item);
+}
+/* FIX-C：下部リンクは縦並び。区切りの「・」は出さない */
+html[data-v2-mounted="true"] #experienceMenu .legal-row{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--menu-gap-item);
+  margin-block: var(--menu-gap-sec) 0;
+  text-align: left;
+}
+html[data-v2-mounted="true"] #experienceMenu .legal-row .legal-sep{ display: none; }
+
+/* ------------------------------------------------------------
+ * FIX-D：04「自分の本」空状態の補助文を 1 行に収める
+ *
+ * 実測（390 / JA）
+ *   本文 27 字の実幅 297px に対して、カード内寸は 275.5px。
+ *   21.5px 足りず「…始められま／す。」と 2 文字だけ落ちていた。
+ * 対応
+ *   文字サイズは下げない。カードの左右 padding だけを詰め、
+ *   併せてごく僅かに字間を締めて 1 行に収める（上下の余白は保つ）。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2c04 .v2-detail__empty{
+  padding-inline: clamp(7px, 2.4cqw, 14px);
+}
+html[data-v2-mounted="true"] .v2c04 .v2-detail__empty-note{
+  letter-spacing: -0.025em;
+  text-wrap: pretty;
+}
+
+/* ------------------------------------------------------------
+ * FIX-F：04「ことば」の小見出しに、本文との静かな階層差をつける
+ *
+ * 現状は 見出し fw400 / #4a3d2c、本文 fw300 / #55483a で差が僅かだった。
+ * 太字にも派手色にもせず、ウェイトと濃度をひと段だけ上げ、
+ * 見出しと本文の距離を締めて「見出し＋本文」を 1 つの塊として読ませる。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2-page h3.v2c04__wd-h{
+  font-weight: 500;
+  color: #3e3225 !important;
+  margin-top: 1.6em;
+  margin-bottom: 0.15em;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2-page h3.v2c04__wd-h{
+  color: #e2d7c1 !important;
+}
+html[data-v2-mounted="true"] .v2c04__wd:first-child h3.v2c04__wd-h{ margin-top: 0.4em; }

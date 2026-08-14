@@ -168,9 +168,10 @@ const MEASURE = `async ({ dataUrl, items }) => {
         })()`);
         note(`[${tag}] 05 本文: ${hints.assure}`);
         note(`[${tag}] 05 写真: ${hints.photo}`);
+        /* FIX-A（Preview Final 追加修正）で一文に短縮した後の正式契約 */
         const wantAssure = lang === 'ja'
-          ? '本文は、この端末のブラウザ保存領域に保存されます。公開されません。'
-          : 'Your text is stored in this device’s browser storage. It is not published.';
+          ? '本文は、この端末のブラウザ保存領域に保存されます。'
+          : 'Your text is stored in this device’s browser storage.';
         const wantPhoto = lang === 'ja'
           ? '写真は、この端末のブラウザ保存領域に保存されます。長辺800pxに縮小し、運営者のサーバーへは送信しません。'
           : 'Photos are stored in this device’s browser storage. They are resized to a maximum long edge of 800px and are not sent to the operator’s server.';
