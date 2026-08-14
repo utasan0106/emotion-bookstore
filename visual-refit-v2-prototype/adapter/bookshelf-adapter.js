@@ -329,8 +329,11 @@
 
     if (countEl) {
       // 中立表示のみ。達成・目標・残り冊数の表現は作らない
+      // 冊数の計算には触れない。EN の単複だけを表示側で選ぶ（日本語は単複同形）
       countEl.textContent = (r.status === STATUS.OK)
-        ? TF('v2BookCountLabel', '{n}冊の本', { n: r.entries.length })
+        ? (r.entries.length === 1
+            ? TF('v2BookCountLabelOne', '{n}冊の本', { n: r.entries.length })
+            : TF('v2BookCountLabel', '{n}冊の本', { n: r.entries.length }))
         : '';
     }
 

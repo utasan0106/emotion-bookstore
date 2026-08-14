@@ -1071,3 +1071,56 @@ html[data-v2-mounted="true"] .mana-receive-card .mana-title-trigger:hover{
 html[data-v2-mounted="true"]:not([data-theme="night"]) .mana-receive-card .chart-btn.ghost{
   color: #241a12 !important;
 }
+
+/* ------------------------------------------------------------
+ * 店内メニュー drawer / データパネルのコントラスト
+ *
+ * 実測した原因（FIX-04 と同じ系統）
+ *   drawer の面は V2 の token（DAY は明るい紙）だが、style.css の子孫ルールが
+ *   V1 の暗い店内前提の色を直接持ったままだった。
+ *     .about-accordion-content p / .about-data-content p  color:#DCD0B9 系
+ *     #samplePeekBtn                                      color:#F5EAD2
+ *     .share-btn                                          color:#F0E7D6
+ *   DAY の実測は本文 1.02–1.25:1、見本ボタン 1.88:1、share ボタン 3.58:1。
+ *
+ *   逆に NIGHT では、葡萄色の見出し・summary（暗い面に暗い葡萄）と、
+ *   明るい葡萄の pill に白文字が乗る motion トグルが 2.88–3.86:1 で落ちる。
+ *   言語トグルは opacity:0.7 が原因で DAY 3.80 / NIGHT 3.44。
+ *
+ * 対応（実測で FAIL した文字だけ／文字色と opacity のみ）
+ *   drawer の背景色・幅・padding・レイアウト・字送り・font-family・border・
+ *   accordion 構造・navigation・blur / overlay・説明本文はいずれも変更しない。
+ * ------------------------------------------------------------ */
+/* 本文・補助文は drawer の ink を継承する（テーマ両対応。色を新設しない） */
+html[data-v2-mounted="true"] #experienceMenu .about-accordion-content p,
+html[data-v2-mounted="true"] #experienceMenu .about-accordion-content li,
+html[data-v2-mounted="true"] #experienceMenu .about-data-content p,
+html[data-v2-mounted="true"] #experienceMenu .about-data-content li,
+html[data-v2-mounted="true"] #experienceMenu #samplePeekBtn{
+  color: inherit !important;
+}
+/* 言語トグルは opacity 0.7 が原因なので不透明に戻す（色は変えない） */
+html[data-v2-mounted="true"] #experienceMenu .pref-toggle{ opacity: 1 !important; }
+
+/* DAY のみ：share ボタンは V1 の暗い店内前提の地 rgba(36,26,18,.52) が
+   明るい紙に重なって中間トーン rgb(128,115,94) になる面。
+   文字色だけでは足りない（純黒でも実測 4.44–4.49 で AA に届かない）ため、
+   地の alpha だけを深くして、既存の生成り文字のまま AA を取る。
+   色相・角丸・寸法・余白・border は変えていない。 */
+html[data-v2-mounted="true"]:not([data-theme="night"]) #experienceMenu .share-btn{
+  background-color: rgba(36, 26, 18, 0.72) !important;
+}
+/* NIGHT のみ：暗い面に対して葡萄色が沈むので、同じ色相のまま明度だけ上げる */
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .about-accordion-content > b,
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .about-data-content > b,
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .about-data-accordion > summary{
+  color: #e0a3ad !important;
+}
+/* NIGHT のみ：明るい葡萄の pill に白文字は届かないので濃い墨にする */
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .pref-toggle.on{
+  color: #000000 !important;
+}
+/* NIGHT の言語トグルは地が暗いので、逆に文字を明るい生成りへ寄せる */
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .pref-toggle:not(.on){
+  color: #e8dcc4 !important;
+}

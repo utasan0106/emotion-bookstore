@@ -543,6 +543,8 @@ const MESSAGES = {
     v2BookshelfLoadFailNote: "本が無くなったわけではありません。少し時間をおいて、もう一度お試しください。",
     v2BookshelfRetry: "もう一度読み込む",
     v2BookCountLabel: "{n}冊の本",
+    /* 日本語は単複同形。EN と同じ分岐で引けるよう、同じ文字列を単数キーにも置く */
+    v2BookCountLabelOne: "{n}冊の本",
     v2CharCount: "{n}字",
     v2StoreLabel: "この端末",
     v2SealedNote: "以前を振り返って綴った一冊",
@@ -1028,6 +1030,7 @@ const MESSAGES = {
     v2BookshelfLoadFailNote: "Your books have not been lost. Please wait a moment and try again.",
     v2BookshelfRetry: "Try again",
     v2BookCountLabel: "{n} books",
+    v2BookCountLabelOne: "{n} book",
     v2CharCount: "{n} characters",
     v2StoreLabel: "This device",
     v2SealedNote: "Written looking back on an earlier time",
