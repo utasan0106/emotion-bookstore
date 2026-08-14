@@ -359,6 +359,11 @@
     wirePhotoBridge();
 
     doc.documentElement.setAttribute('data-v2-mounted', 'true');
+    /* FIX-11：boot 状態はここで解除する。data-v2-mounted が付いた＝
+       v2-mount.css が効き始めた瞬間なので、旧UIが見える隙間ができない。
+       index.html 側の fail-safe は、ここへ到達しなかった場合だけ働く。 */
+    if (typeof global.__v2ClearBooting === 'function') global.__v2ClearBooting();
+    else doc.documentElement.removeAttribute('data-v2-booting');
     applyLegacyInert();   /* HARDEN-02：CSS で隠すのと同じ時点で Tab / AT からも外す */
     syncScreens();
     resolveReturningUser();

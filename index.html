@@ -158,6 +158,65 @@
 <link rel="stylesheet" href="visual-refit-v2-prototype/css/master-tokens.css">
 <link rel="stylesheet" href="visual-refit-v2-prototype/css/beta0.css">
 <link rel="stylesheet" href="v2-mount.css">
+<!-- ★FIX-11（Round 2.1）：V2 が mount するまで旧UIを描かせない boot 状態。
+     実測した原因
+       v2-mount.css は html[data-v2-mounted="true"] にしか効かず、その属性は
+       v2-mount.js の boot()（DOMContentLoaded + setTimeout 0）で初めて付く。
+       そのため first paint は必ず mount より前に起き、その時点では旧表紙が
+       通常どおり描画対象になっていた。
+       実測（about:blank からの直アクセス。遷移前ページを持たないので snapshot ではない）
+         1440px: first paint 12820ms / mount 13384ms（差 564ms）
+         390px : first paint 13284ms / mount 13699ms（差 415ms）
+         first paint 時点で hero-photo・旧 h1・tagline・enter-btn・trust-row・
+         旧メニュー・旧言語トグル・first-visit-note がいずれも可視だった。
+
+     対応
+       stylesheet より後・本文より前のこの位置で <html> に data-v2-booting を立て、
+       V2 が担当する面（旧UIと、まだ整っていない V2 面の両方）を paint させない。
+       出すのは V2 の基本背景 var(--bg)（DAY/NIGHT は上の pre-paint theme で確定済み）だけ。
+       解除は v2-mount.js が data-v2-mounted を付ける瞬間に行う。
+
+     fail-safe（JS 失敗時に blank のまま残さない）
+       ・JS 無効：属性自体が付かないので従来どおり旧UIが出る。
+       ・v2-mount.js が読めない／boot が落ちた：load 後の猶予で必ず解除し、
+         既存の旧UI fallback へ戻す。
+       ・load が来ない環境：絶対上限のタイマーでも解除する。
+       いずれも V2 の起動を待たせるものではない（boot 手順は一切変えていない）。 -->
+<style>
+html[data-v2-booting] body{ background: var(--bg, #f6f0e6) !important; }
+html[data-v2-booting] .entrance.hero > *:not(.v2-page),
+html[data-v2-booting] #counter > *:not(.v2-page),
+html[data-v2-booting] #shelves > *:not(.v2-page),
+html[data-v2-booting] #desk > *:not(.v2-page),
+html[data-v2-booting] #bookshelf > *:not(.v2-page),
+html[data-v2-booting] .experience-bar,
+html[data-v2-booting] .page-nav,
+html[data-v2-booting] .doma,
+html[data-v2-booting] .shop-footer{ visibility: hidden !important; }
+/* mount 前は V2 の各面も重なって出るため、同じく描かせない（背景だけの neutral な状態にする）。
+   display ではなく visibility なので、mount 前に走る既存コードの寸法測定は変わらない。 */
+html[data-v2-booting] .v2-page{ visibility: hidden !important; }
+</style>
+<script>
+(function(){
+  var el = document.documentElement;
+  if (!el) return;
+  el.setAttribute('data-v2-booting', '');
+  var cleared = false;
+  function clearBooting(){
+    if (cleared) return;
+    cleared = true;
+    el.removeAttribute('data-v2-booting');
+  }
+  /* v2-mount.js は mount 完了時にこれを呼ぶ。存在しなければ下の fail-safe が働く。 */
+  window.__v2ClearBooting = clearBooting;
+  /* fail-safe 1：ページが読み終わっても V2 が mount しなかった場合。
+     boot() は DOMContentLoaded 直後に走るため、正常時はここへ来る前に解除済み。 */
+  window.addEventListener('load', function(){ window.setTimeout(clearBooting, 1500); });
+  /* fail-safe 2：load すら来ない場合の絶対上限。 */
+  window.setTimeout(clearBooting, 20000);
+})();
+</script>
 <style>
 /* --- 追加：トップページのアコーディオン用スタイル --- */
 .about-accordion-wrap {
@@ -572,7 +631,7 @@ body.night .about-data-content{
         <span class="v2c02__body">
           <span class="v2c02__cardtitle" data-i18n="v2c02Card3Title">自分の本棚を見る</span>
           <span class="v2c02__rule" aria-hidden="true"></span>
-          <span class="v2c02__carddesc" data-i18n-html="v2c02Card3Desc"><span class="v2c02__descline">あなたが一冊にした言葉を、</span><span class="v2c02__descline">あとから静かに巡る。</span></span>
+          <span class="v2c02__carddesc" data-i18n-html="v2c02Card3Desc"><span class="v2c02__descline">一冊にした言葉を、</span><span class="v2c02__descline">あとから静かに巡る。</span></span>
         </span>
         <span class="v2c02__chev" aria-hidden="true"></span>
       </button>
@@ -686,7 +745,7 @@ body.night .about-data-content{
     <section class="v2c04__sec" data-v2-region-panel="sakuhin" aria-label="作品" data-i18n-aria="v2c04SecSakuhin">
       <p class="v2c04__num" aria-hidden="true">02</p>
       <h2 class="v2c04__h" data-i18n="v2c04SecSakuhin">作品</h2>
-      <p class="v2c04__intro" data-i18n="v2c04WorksIntro">この気持ちにそっと寄り添う、本や映画、音楽の棚です。</p>
+      <p class="v2c04__intro" data-i18n="v2c04WorksIntro">この気持ちに寄り添う、本・映画・音楽。</p>
       <div class="v2c04__works" data-v2-works="body">
         <div class="v2c04__works-hold">
           <p class="v2c04__works-hold-title" data-i18n="v2c04WorksHoldTitle">この棚の作品は、ただいま仕入れ中です。</p>
@@ -768,7 +827,7 @@ body.night .about-data-content{
         <div class="title-suggest" id="titleSuggest"></div>
         <!-- ★2026-07-19 E：店主に題名を相談する（AI・外部通信・本文解析なし。固定候補プールのみ） -->
         <button type="button" class="title-consult-btn" id="titleConsultBtn"
-                aria-expanded="false" aria-controls="titleConsult" data-i18n="titleConsultBtn">店主に題名を相談する</button>
+                aria-expanded="false" aria-controls="titleConsult" data-i18n="titleConsultBtn">題名のヒントを見る</button>
         <div class="title-consult hidden" id="titleConsult"></div>
         <div class="field-row" style="margin-top:12px;">
           <div class="field">
@@ -1224,7 +1283,7 @@ body.night .about-data-content{
       <button type="button" class="menu-item" data-menu-page="desk" data-i18n="menuItemDesk">今の気持ちを書く</button>
       <button type="button" class="menu-item" data-menu-page="bookshelf" data-i18n="menuItemBookshelf">自分の本棚</button>
       <p class="experience-menu-section" data-i18n="menuSectionOptional">任意の場所へ</p>
-      <button type="button" class="menu-item" data-menu-page="counter" data-i18n="menuItemCounter">店主に話す</button>
+      <button type="button" class="menu-item" data-menu-page="counter" data-i18n="menuItemCounter">はじめの広間へ</button>
       <button type="button" class="menu-item" data-menu-page="shelves" data-i18n="menuItemShelves">感情の棚を巡る</button>
       <button type="button" class="menu-item" id="menuReturnCover" data-i18n="menuItemCover">表紙へ戻る</button>
     </nav>

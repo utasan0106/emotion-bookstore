@@ -227,7 +227,7 @@ const DESKTOP = [
 const SHELVES = ['hazumu', 'atatamaru', 'hikareru', 'shizumu', 'zawatsuku', 'butsukaru', 'miwohiku', 'namae-ga-nai'];
 
 module.exports = {
-  ROOT, serve, openPage, boot, ensureLang, currentLang, activeScreen, go,
+  ROOT, serve, openPage, boot, ensureLang, clockInit, currentLang, activeScreen, go,
   enterStore, openShelf, openMenu, closeMenu, rect, textRect, lines, overlapX,
   MOBILE, DESKTOP, SHELVES
 };

@@ -478,34 +478,67 @@ html[data-theme="night"][data-v2-shelf-context="namae-ga-nai"] { --v2-shelf-tint
  *   棚差（文字帯以外の hero を採色した棚間の色差）12.3 → 16.4（DAY） / 19.6 → 23.3（NIGHT）
  *   ＝ 空気の差はむしろ強まり、8棚間のばらつきは縮む（同一の contrast rule が成立）。
  * ------------------------------------------------------------ */
+/* ------------------------------------------------------------
+ * ACTIVE-FIX-02：halo が「タイトル上の赤い丸／楕円」に見える
+ *
+ * FIX-07 で可読性は確保できたが、輝度の芯を文字帯の外へ寄せた結果、
+ * 芯の輪郭が円／楕円として認識されるようになっていた（実機指摘）。
+ *
+ * 対応（色は変えない。形だけを消す）
+ *   ・要素側に blur を掛け、gradient の等高線と border-radius:50% の
+ *     クリップ縁をまとめて溶かす。これで「丸」の輪郭が消える。
+ *   ・その分ぼやけて薄くなるので、芯をわずかに文字側へ戻し、
+ *     広がりを大きくして「空気」として面で乗るようにする。
+ *   ・8棚共通の 1 ルール。棚ごとの個別調整はしない。
+ *   ・halo 自体は消さない。全面を暗くしない。tint も文字色も変えない。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2c04__halo{
+  /* 形を感じさせない。blur は装飾レイヤのみに掛かる（文字は z-index で上） */
+  filter: blur(18px);
+  will-change: filter;
+}
+@media (min-width: 700px){
+  html[data-v2-mounted="true"] .v2c04__halo{ filter: blur(26px); }
+}
 /* DAY：暖色の光の芯は保ちつつ、外周へ向かって棚の色が乗る */
 html[data-v2-mounted="true"] .v2c04__halo{
   background:
     /* 主核：感情名の上。0.30±0.29 → 1%..59% で要素内に収まる */
-    radial-gradient(46% 29% at 50% 30%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 14%, rgb(247 210 180)) 0%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 28%, rgb(246 206 176)) 55%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 42%, rgb(246 210 184 / 0.34)) 80%,
-      transparent 97%),
-    /* 副核：lead の下。0.74±0.25 → 49%..99% */
-    radial-gradient(44% 25% at 58% 74%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 46%, rgb(238 190 158 / 0.5)) 0%,
-      transparent 88%);
+    radial-gradient(50% 34% at 50% 34%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 13%, rgb(247 210 180)) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 22%, rgb(246 206 176)) 46%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 34%, rgb(246 210 184 / 0.28)) 74%,
+      transparent 99%),
+    /* 副核：lead の下。0.74±0.24 → 50%..98% */
+    radial-gradient(46% 24% at 57% 74%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 38%, rgb(238 190 158 / 0.42)) 0%,
+      transparent 92%);
 }
 html[data-v2-mounted="true"][data-theme="night"] .v2c04__halo{
   background:
-    radial-gradient(46% 29% at 50% 30%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 32%, rgb(58 82 120)) 0%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 48%, rgb(40 60 94)) 55%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 62%, rgb(30 46 74 / 0.45)) 80%,
-      transparent 97%),
-    radial-gradient(44% 25% at 58% 74%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 56%, rgb(26 40 66 / 0.6)) 0%,
-      transparent 88%);
+    radial-gradient(50% 34% at 50% 34%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 30%, rgb(58 82 120)) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 42%, rgb(40 60 94)) 46%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 54%, rgb(30 46 74 / 0.38)) 74%,
+      transparent 99%),
+    radial-gradient(46% 24% at 57% 74%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 48%, rgb(26 40 66 / 0.5)) 0%,
+      transparent 92%);
 }
 
 /* secondary haze：hero 全体の空気。halo より広く薄く、棚色だけが違う。
-   FIX-07 で中心を文字帯の上へ寄せ、文字の真裏の濃度だけを下げる。 */
+   FIX-07 で中心を文字帯の上へ寄せ、文字の真裏の濃度だけを下げる。
+
+   ACTIVE-FIX-02 追補（desktop 実測で判明）
+     旧値 radial-gradient(78% 46% at 50% 16%) は 中心 16% に対して縦半径 46% が
+     大きく、要素の上辺に「まだ明るいところ」で当たっていた。
+     mobile では hero が縦に詰まっていて気付きにくいが、1024 / 1440 では
+     hero が横長になるため、上辺・左右辺が直線として見え、
+     題名の後ろに「角のある薄桃色の長方形」が出ていた（1440 実測 811x138px）。
+     halo で禁じたのと同じ失敗（クリップ縁が見える）なので、同じ規律を適用する。
+       中心 ± 半径 が 0%..100% に収まる → 必ず要素の内側でフェードし切る。
+     縦は 20% ± 20%（= 0%..40%）、横は 50% ± 52%（辺で 96% > 92% stop = 透明）。
+     芯は従来どおり文字帯の上に置いたままなので、FIX-07 の可読性は保つ。 */
 html[data-v2-mounted="true"] .v2c04__hero{ position: relative; }
 html[data-v2-mounted="true"] .v2c04__hero::after{
   content: "";
@@ -513,17 +546,17 @@ html[data-v2-mounted="true"] .v2c04__hero::after{
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(66% 36% at 50% 14%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 26%, transparent) 0%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 9%, transparent) 55%,
-      transparent 84%);
+    radial-gradient(52% 20% at 50% 20%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 22%, transparent) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 8%, transparent) 52%,
+      transparent 92%);
 }
 html[data-v2-mounted="true"][data-theme="night"] .v2c04__hero::after{
   background:
-    radial-gradient(66% 36% at 50% 14%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 38%, transparent) 0%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 13%, transparent) 55%,
-      transparent 84%);
+    radial-gradient(52% 20% at 50% 20%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 32%, transparent) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 11%, transparent) 52%,
+      transparent 92%);
 }
 /* ------------------------------------------------------------
  * HOTFIX-01：装飾レイヤの重ね順だけを与え、position は canonical のまま残す。
@@ -726,6 +759,35 @@ html[data-v2-mounted="true"] .experience-menu-nav .experience-menu-section{
   padding-top: 12px;
 }
 
+/* ------------------------------------------------------------
+ * ACTIVE-FIX-04：section heading が「押せば開く要素」に見える
+ *
+ * 実機指摘の理由（構造）
+ *   「この書店について・データの扱い」は .experience-menu-section の
+ *   border-top（破線）を持ち、その直後に来る .about-accordion-wrap も
+ *   border-top（破線）を持つ。結果として見出しが上下を破線で囲まれ、
+ *   1 行ぶんの「押せる帯」に見えていた。
+ *   実際に開くのは、その下にある「データはどこに保存されるの？」の details。
+ *
+ * 対応（文言・IA・順番は変えない）
+ *   見出しの直下に来る破線を外し、見出しを非 interactive として明示する。
+ *   矢印・背景・囲み枠は元から無いので追加しない。
+ *   本物の accordion（summary）側は触らないので、両者の差が明確になる。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .experience-menu-section{
+  cursor: default;
+  background: none;
+  border-inline: 0;
+  border-bottom: 0;
+}
+html[data-v2-mounted="true"] .experience-menu-section + .about-accordion-wrap{
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+/* 本物の accordion であることが分かるよう、開閉要素側だけ余白で切り離す */
+html[data-v2-mounted="true"] .about-data-accordion{ margin-top: 18px; }
+
 /* ============================================================
  * FIX-06：05 編纂室の今日の日付
  * ------------------------------------------------------------
@@ -744,42 +806,212 @@ html[data-v2-mounted="true"][data-theme="night"] .v2c05__today{ color: #8d8168 !
 html[data-v2-mounted="true"] .v2c05__today:empty{ display: none; }
 
 /* ============================================================
- * FIX-10：写真つきの一冊で、縦長写真が画面を占有する
+ * ACTIVE-FIX-12：写真は「大きな画像」ではなく「頁に挟まれた一枚の写真」
  * ------------------------------------------------------------
- * 実測した原因
- *   07 Reader の写真は .v2c07__photo img { width:100%; height:auto } のみで
- *   上限が無く、portrait（3:4 / 9:16）だと 390px 幅で 520〜693px になり、
- *   写真 1 枚で first view をほぼ使い切っていた。直後の本文が
- *   写真の caption のように見えてしまう。
- *   旧 UI の #modalPhoto は max-height:60vh / object-fit:contain を持っており、
- *   V2 Reader だけがこの上限を失っていた。
+ * 経緯
+ *   Round 2.1 の FIX-10 では、縦長写真が first view を使い切る問題を
+ *   max-height + object-fit:cover（表示 crop）で抑えた。
+ *   その後の CEO 実機判断で、写真は「本文の主役画像」ではなく
+ *   「本や頁にそっと残された一枚の写真」として見せる方針が確定し、
+ *   crop 0・写真全体を見せることが原則になった。
  *
- * 対応（表示側だけで吸収する）
- *   portrait / square / landscape を同じ component で扱えるよう、
- *   preview 領域に aspect-ratio と max-height を与え、object-fit で収める。
- *   元画像ファイルは加工しない（既存の photo 契約・圧縮・保存形式は不変）。
- *   運営側の事前 crop / resize / 専用 thumbnail 作成を前提にしない。
+ * 対応
+ *   cover をやめ、旧 UI の #modalPhoto と同じ「一枚のプリント」の見せ方へ寄せる。
+ *     ・width/height は auto。max-width / max-height の枠内へ収める
+ *       → 縦長・正方形・横長のいずれも全体が見え、crop も歪みも起きない
+ *     ・白い紙のふち（下だけ厚い＝チェキ／プリントの余白）と控えめな影
+ *     ・わずかに傾ける（過剰な scrapbook 化はしない）
+ *   05 / 07 / 本詳細 modal で同じ思想に揃える。
+ *   元画像ファイルは加工しない（photo 契約・圧縮・保存形式は不変）。
+ *   運営側の事前 crop / resize / 専用 thumbnail 作成は前提にしない。
  * ============================================================ */
-html[data-v2-mounted="true"] .v2c07__photo{
-  /* 横長は本来の比率、縦長は preview として上限で止める */
-  max-height: min(46svh, 380px);
-  display: flex;
-  background: rgb(0 0 0 / 0.04);
+/* --- 共通：一枚のプリントとしての紙 --- */
+html[data-v2-mounted="true"] .v2c07__photo,
+html[data-v2-mounted="true"] .v2c05__photoprev{
+  display: block;
+  width: fit-content;
+  margin-inline: auto;
+  padding: 6px 6px 18px;
+  border-radius: 2px;
+  background: #fffdf6;
+  box-shadow: 0 3px 12px rgb(60 40 20 / 0.22);
+  overflow: visible;
+  line-height: 0;
 }
-html[data-v2-mounted="true"][data-theme="night"] .v2c07__photo{ background: rgb(255 255 255 / 0.04); }
+/* 写真のない一冊では figure ごと出さない。
+   beta0.css の「.v2b .v2-placeholder{ display:none }」より上の詳細度で
+   display:block を与えてしまうため、空の紙だけが小さな白い切片として
+   残っていた（1440 実測 12.5x24.2px）。placeholder のときは必ず消す。 */
+html[data-v2-mounted="true"] .v2c07__photo.v2-placeholder,
+html[data-v2-mounted="true"] .v2c05__photoprev[hidden]{
+  display: none;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c07__photo,
+html[data-v2-mounted="true"][data-theme="night"] .v2c05__photoprev{
+  background: #efe6d4;
+  box-shadow: 0 3px 14px rgb(0 0 0 / 0.5);
+}
+
+/* --- 07 Reader：本の中に挟まれた一枚 --- */
+html[data-v2-mounted="true"] .v2c07__photo{
+  margin-block: clamp(18px, 6cqw, 30px);
+  transform: rotate(-1.1deg);
+}
 html[data-v2-mounted="true"] .v2c07__photo img,
 html[data-v2-mounted="true"] .v2c07 .v2-reader__cover-img{
-  width: 100%;
-  height: auto;
-  max-height: min(46svh, 380px);
-  /* 縦長は上部（多くの写真で主題がある側）を残して表示 crop する。
-     cover なのは preview の形を 3 種類の比率で揃えるため。元データは不可逆加工しない。 */
-  object-fit: cover;
-  object-position: center 32%;
+  display: block;
+  width: auto; height: auto;
+  max-width: min(100%, 300px);
+  max-height: min(38svh, 320px);
+  object-fit: contain;   /* 収めるだけ。crop しない */
 }
-/* 05 の下書きプレビューも同じ考え方で上限を持たせる（入力欄を押し下げない） */
+
+/* --- 05 編纂室：今日の一枚を頁に挟む --- */
+html[data-v2-mounted="true"] .v2c05__photoprev{
+  max-width: none;       /* 紙の幅は写真から決まる */
+  margin-top: 0.9em;
+  transform: rotate(-1.4deg);
+}
 html[data-v2-mounted="true"] .v2c05__photoimg{
-  max-height: min(30svh, 240px);
-  object-fit: cover;
-  object-position: center 32%;
+  display: block;
+  width: auto; height: auto;
+  max-width: min(100%, 190px);
+  max-height: min(26svh, 220px);
+  object-fit: contain;
+  border-radius: 0;
+}
+/* 取り外しボタンは紙の角に置く（傾きの影響を受けないよう打ち消す） */
+html[data-v2-mounted="true"] .v2c05__photoremove{
+  top: -12px; right: -12px;
+  transform: rotate(1.4deg);
+}
+
+/* --- 本詳細 modal：画像ビューアではなく、頁から取り出した一枚 --- */
+html[data-v2-mounted="true"] #modalPhoto{
+  max-width: min(72%, 280px);
+  margin: 0 auto 18px;
+  border-width: 6px;
+  border-bottom-width: 18px;
+}
+html[data-v2-mounted="true"] #modalPhoto img{
+  max-height: min(38svh, 300px);
+}
+
+/* ============================================================
+ * ACTIVE-FIX-08：Desktop Responsive Completion（1024 / 1440）
+ * ------------------------------------------------------------
+ * 実測（Chromium 1440x900 / 1024x768、DAY・NIGHT・JP・EN）
+ *   01 / 02  stage 幅 = min(100vw, 100dvh * 0.5625) → 506px / 432px。
+ *            左右に flat な地色が片側 467px / 296px 残り、
+ *            「mobile をそのまま中央に置いただけ」に見えていた。
+ *   03       stage 幅 = min(100vw, 711px) → 1440 で片側 365px。
+ *   06       本棚 grid が --bookshelf-content-max: 30rem（480px）・3 列固定で、
+ *            1440 でも mobile と同じ密度のまま。
+ *   04 / 07 / 08  読み物側は 736 / 544 / 640px。
+ *
+ * 方針
+ *   01 / 02 / 03 の縦長キャンバスは Reference の構図そのものなので、
+ *   引き伸ばして絵を歪めることはしない。代わりに
+ *   「余白を、同じ部屋の続きにする」。
+ *   その画面が既に読み込んでいる ambience（.v2c01__wall / .v2c02__amb /
+ *   .v2c03__amb と同一ファイル）を page 面へも敷き、背面だけを強くぼかして
+ *   光と色だけを残す。新しい asset も新しい通信先も増えない。
+ *   キャンバスの縁は soft shadow で受け、「部屋の中の明るい一面」として読ませる。
+ *
+ *   04 / 06 / 07 / 08 は文字組と grid なので、desktop では素直に幅を使う。
+ *   ただし 05（編纂室）と 07（読書）は一段組の本文なので、
+ *   読みやすい行長（measure）を優先し、無制限には広げない。
+ *   幅は token（--bookshelf-content-max 等）だけを上書きし、
+ *   レイアウト規則そのものは beta0.css のまま使う。
+ *
+ *   mobile（〜899px）には一切適用しない。
+ * ------------------------------------------------------------ */
+@media (min-width: 900px){
+
+  /* --- 01 / 02 / 03：余白を「同じ部屋の続き」で満たす --- */
+  html[data-v2-mounted="true"] .v2c01,
+  html[data-v2-mounted="true"] .v2c02,
+  html[data-v2-mounted="true"] .v2c03{
+    position: relative;
+    background-position: center center;
+    /* cover のままだと、ぼかしても「植木・棚」といった輪郭が低周波として残り、
+       同じ絵の縮尺違いが 2 枚あるように見えた（1440 実測）。
+       大きく拡大して低周波だけにしてから、下の backdrop-filter で溶かす。 */
+    background-size: 300% auto;
+    background-repeat: no-repeat;
+  }
+  html[data-v2-mounted="true"] .v2c01{ background-image: url("assets/v2b0/01/01_wall_ambience_day.webp"); }
+  html[data-v2-mounted="true"] .v2c02{ background-image: url("assets/v2b0/02/02_lobby_ambience_day.webp"); }
+  html[data-v2-mounted="true"] .v2c03{ background-image: url("assets/v2b0/03/03_shelves_ambience_day.webp"); }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c01{ background-image: url("assets/v2b0/01/01_wall_ambience_night.webp"); }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c02{ background-image: url("assets/v2b0/02/02_lobby_ambience_night.webp"); }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c03{ background-image: url("assets/v2b0/03/03_shelves_ambience_night.webp"); }
+
+  /* 背面だけをぼかす。要素側 filter だと自分の縁が羽根状に抜けてしまうので、
+     backdrop-filter で「後ろにあるものをぼかす」側に倒す（縁は clamp される）。
+     backdrop-filter 非対応環境では下の wash だけが残り、
+     flat な地色よりは静かな面になる（機能は何も落ちない）。 */
+  html[data-v2-mounted="true"] .v2c01::before,
+  html[data-v2-mounted="true"] .v2c02::before,
+  html[data-v2-mounted="true"] .v2c03::before{
+    content: "";
+    position: absolute; inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    /* cover で引き伸ばした絵は特徴が大きくなるので、blur も 3 桁必要。
+       弱いと「同じ絵の縮尺違いが 2 枚ある」ように見えてしまう（実測）。 */
+    -webkit-backdrop-filter: blur(150px) saturate(0.5);
+    backdrop-filter: blur(150px) saturate(0.5);
+    /* 中央へ視線を戻すための静かな vignette。地色に寄せるだけで、色は足さない。 */
+    background:
+      radial-gradient(130% 86% at 50% 42%,
+        color-mix(in srgb, var(--bg, #efe7d9) 56%, transparent) 0%,
+        color-mix(in srgb, var(--bg, #efe7d9) 78%, transparent) 55%,
+        color-mix(in srgb, #4a3a24 30%, transparent) 100%);
+  }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c01::before,
+  html[data-v2-mounted="true"][data-theme="night"] .v2c02::before,
+  html[data-v2-mounted="true"][data-theme="night"] .v2c03::before{
+    background:
+      radial-gradient(130% 86% at 50% 42%,
+        color-mix(in srgb, var(--bg, #12161d) 54%, transparent) 0%,
+        color-mix(in srgb, var(--bg, #12161d) 80%, transparent) 55%,
+        color-mix(in srgb, #000000 48%, transparent) 100%);
+  }
+
+  /* キャンバスは「部屋の中で明かりが差している一面」として受ける。
+     stage は beta0.css で position: relative なので、DOM 順で ::before の上に載る。 */
+  html[data-v2-mounted="true"] .v2c01__stage,
+  html[data-v2-mounted="true"] .v2c02__stage,
+  html[data-v2-mounted="true"] .v2c03__stage{
+    box-shadow:
+      0 0 0 1px rgb(120 96 62 / 0.12),
+      0 30px 96px rgb(64 46 24 / 0.34);
+  }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c01__stage,
+  html[data-v2-mounted="true"][data-theme="night"] .v2c02__stage,
+  html[data-v2-mounted="true"][data-theme="night"] .v2c03__stage{
+    box-shadow:
+      0 0 0 1px rgb(214 196 158 / 0.10),
+      0 30px 96px rgb(0 0 0 / 0.58);
+  }
+
+  /* --- 04 / 06 / 07 / 08：desktop では幅を使う（token だけを上書き） --- */
+  html[data-v2-mounted="true"] .v2c04__stage{ max-width: 50rem; }
+  html[data-v2-mounted="true"] [data-screen="06"]{
+    --bookshelf-content-max: 44rem;
+    --bookshelf-columns: 4;
+  }
+  html[data-v2-mounted="true"] [data-screen="07"]{ --reader-width: 40rem; }
+  html[data-v2-mounted="true"] [data-screen="08"]{ --empty-max: 44rem; }
+}
+
+@media (min-width: 1200px){
+  html[data-v2-mounted="true"] .v2c04__stage{ max-width: 54rem; }
+  html[data-v2-mounted="true"] [data-screen="06"]{
+    --bookshelf-content-max: 56rem;
+    --bookshelf-columns: 5;
+  }
+  /* 07 は本文なので 40rem（16px で約 40 字 / 行）のまま据え置く。これ以上は行長が伸びすぎる。 */
+  html[data-v2-mounted="true"] [data-screen="08"]{ --empty-max: 46rem; }
 }
