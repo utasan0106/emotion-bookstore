@@ -493,36 +493,38 @@ html[data-theme="night"][data-v2-shelf-context="namae-ga-nai"] { --v2-shelf-tint
  *   ・halo 自体は消さない。全面を暗くしない。tint も文字色も変えない。
  * ------------------------------------------------------------ */
 html[data-v2-mounted="true"] .v2c04__halo{
-  /* 形を感じさせない。blur は装飾レイヤのみに掛かる（文字は z-index で上） */
-  filter: blur(18px);
+  /* 形を感じさせない。blur は装飾レイヤのみに掛かる（文字は z-index で上）。
+     saturate は「灰色の煙」を「淡い色の気配」へ寄せるためのひと段だけ。
+     色相は動かさない。blur の位置・強さは従来のまま。 */
+  filter: blur(18px) saturate(1.35);
   will-change: filter;
 }
 @media (min-width: 700px){
-  html[data-v2-mounted="true"] .v2c04__halo{ filter: blur(26px); }
+  html[data-v2-mounted="true"] .v2c04__halo{ filter: blur(26px) saturate(1.35); }
 }
 /* DAY：暖色の光の芯は保ちつつ、外周へ向かって棚の色が乗る */
 html[data-v2-mounted="true"] .v2c04__halo{
   background:
     /* 主核：感情名の上。0.30±0.29 → 1%..59% で要素内に収まる */
     radial-gradient(50% 34% at 50% 34%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 10%, rgb(252 226 202)) 0%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 17%, rgb(251 223 199)) 46%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 27%, rgb(251 226 206 / 0.24)) 74%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 28%, rgb(255 253 250 / 0.95)) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 36%, rgb(255 253 250 / 0.78)) 46%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 42%, rgb(255 253 250 / 0.34)) 74%,
       transparent 99%),
     /* 副核：lead の下。0.74±0.24 → 50%..98% */
     radial-gradient(46% 24% at 57% 74%,
-      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 30%, rgb(246 209 184 / 0.36)) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 44%, rgb(255 252 248 / 0.36)) 0%,
       transparent 92%);
 }
 html[data-v2-mounted="true"][data-theme="night"] .v2c04__halo{
   background:
     radial-gradient(50% 34% at 50% 34%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 24%, rgb(66 94 136)) 0%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 34%, rgb(48 71 110)) 46%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 44%, rgb(36 55 88 / 0.34)) 74%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 38%, rgb(26 30 36 / 0.92)) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 46%, rgb(26 30 36 / 0.74)) 46%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 52%, rgb(26 30 36 / 0.34)) 74%,
       transparent 99%),
     radial-gradient(46% 24% at 57% 74%,
-      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 38%, rgb(32 49 80 / 0.44)) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 54%, rgb(24 28 34 / 0.42)) 0%,
       transparent 92%);
 }
 
