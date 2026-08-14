@@ -1027,3 +1027,47 @@ html[data-v2-mounted="true"] #modalPhoto img{
  * その内側では折り返さないようにする。行数や文字サイズは変えない。
  * ============================================================ */
 html[data-v2-mounted="true"] .v2-wrapunit{ white-space: nowrap; }
+
+/* ------------------------------------------------------------
+ * FIX-04：受け取り頁（棚選択）の helper text コントラスト
+ *
+ * 実測した原因
+ *   PKT-6 で .mana-receive-card の背景と基準 color は V2 の面（DAY は
+ *   var(--surface) = 明るい紙）へ差し替えたが、style.css の子孫ルールが
+ *   V1 の暗い modal 前提の生成り色を直接持ったままだった。
+ *     .mana-title-trigger        color: rgba(245,234,210,0.82)
+ *     .mana-receive-line         color: #F5EAD2
+ *     .mana-receive-card label   color: rgba(245,234,210,0.8)
+ *   NIGHT では面が暗いので読めるが、DAY では明るい紙に生成り文字が乗り、
+ *   実ピクセル計測で 1.12–1.47:1 まで落ちていた（WCAG AA 4.5:1 未満）。
+ *
+ *   .chart-btn.ghost は背景が rgba(36,26,18,0.52) の半透明で、
+ *   DAY の紙に重なると rgb(142,135,126) の中間グレーになる。
+ *   その上に生成り文字が乗るため 2.88:1。
+ *   この面では白系の文字は理論上どうやっても 3.5:1 までしか届かないので、
+ *   文字色だけを既存の primary と同じ濃い墨へ寄せる（4.7:1 台）。
+ *
+ * 対応（実測で FAIL した箇所だけ／文字色のみ）
+ *   ・helper text は card の ink を継承させる（テーマ両対応。色を新設しない）
+ *   ・ghost ボタンの文字色は DAY のときだけ濃い墨にする
+ *     （NIGHT は面が暗く 13.7:1 で通っているので触らない）
+ *   背景・レイアウト・font-size・spacing・modal 構造・ボタンの地色・
+ *   棚 UI・背表紙・blur 背景はいずれも変更しない。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .mana-receive-card .mana-title-trigger,
+html[data-v2-mounted="true"] .mana-receive-card .mana-receive-line,
+html[data-v2-mounted="true"] .mana-receive-card label{
+  color: inherit !important;
+}
+/* 下線は装飾なので、文字色に追従させるだけにする（太さ・位置は変えない） */
+html[data-v2-mounted="true"] .mana-receive-card .mana-title-trigger{
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent) !important;
+}
+html[data-v2-mounted="true"] .mana-receive-card .mana-title-trigger:hover{
+  color: inherit !important;
+  text-decoration-color: currentColor !important;
+}
+/* DAY のみ：半透明 ghost が中間グレーになる面では、濃い墨でしか AA に届かない */
+html[data-v2-mounted="true"]:not([data-theme="night"]) .mana-receive-card .chart-btn.ghost{
+  color: #241a12 !important;
+}

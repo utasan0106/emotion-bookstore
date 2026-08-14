@@ -133,7 +133,8 @@ const JA_ORPHAN = /^[。、・！？\)）」』]*$|^.{1,2}$/;
         })()`);
         if (data) {
           const wantJa = 'この端末のブラウザ保存領域に保存されます。保存にはIndexedDBとlocalStorageを併用しています。';
-          const wantEn = "kept in this device's browser storage. The service uses both IndexedDB and localStorage for local storage.";
+          /* FIX-03（Trust / A11y Limited Fix）で EN の重複表現を解消した後の正式契約 */
+          const wantEn = "stored in this device\u2019s browser storage. The service uses both IndexedDB and localStorage.";
           check(`[${tag}] MICRO-04 技術内訳が実装事実（併用）になっている`,
             data.text.includes(lang === 'ja' ? wantJa : wantEn), data.text.slice(0, 120));
           check(`[${tag}] MICRO-04 旧い分離説明が残っていない`,
