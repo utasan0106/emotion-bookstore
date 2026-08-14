@@ -27,7 +27,7 @@ const MESSAGES = {
     shopName: "みんなの感情書店",
     tagline: "自分の中に残ったものを、一冊に。",
     subTagline: "ひとことから、書いた言葉を自分だけの本棚へ。",
-    accordionSummary: "気持ちを書き、一冊の本として端末内の本棚へ。<br>登録不要。棚を選ぶかどうかも、あなたが決められます。",
+    accordionSummary: "<span class='v2-wrapunit'>残ったことを、</span><span class='v2-wrapunit'>一冊にして</span><span class='v2-wrapunit'>自分の本棚へ。</span><br><span class='v2-wrapunit'>登録不要。</span><span class='v2-wrapunit'>棚を選ぶかどうかも、</span><span class='v2-wrapunit'>あなたが決められます。</span>",
     accordionOpenLabel: "はじめての方へ",
     accordionCloseLabel: "閉じる",
     accordionTitle: "みんなの感情書店とは",
@@ -344,7 +344,7 @@ const MESSAGES = {
     //   （renderLiveNewReleases が V2 mount 中は早期 return する）／天気連動は既定オフ／
     //   GA4 は本番ホスト判定でのみ読み込まれる／アカウント UI は存在しない。
     //   Privacy Ver.1.2（第2・6・7・9条）とも矛盾しない範囲に揃えている。
-    dataAboutBody: "「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す仕組みです。本文や題名をAIが読み取って、分析・診断・自動分類することはありません。<br>書いたものは、この端末のブラウザ保存領域に保存されます（技術的な内訳としては、本はIndexedDB、書きかけの下書きはlocalStorageを使っています）。アカウント登録はなく、本文・題名・写真が運営者のサーバーへ保存されることはありません。<br>クラウド同期はないため、別の端末や別のブラウザへ自動で引き継がれることはありません。反対に、同じ端末の同じブラウザを使う人には表示されます。共有の端末では、この点にご注意ください。<br>保存は永久ではありません。ブラウザのサイトデータ削除、ブラウザやOSの保存ポリシー、保存容量の上限、端末の故障や機種変更などによって失われることがあります。運営者側に復元用のデータはないため、「本棚のデータをバックアップ保存する」から、ときどきファイルへ書き出しておくことをおすすめします。<br>あなたが書いた本文・題名・写真は、外部のAIにも外部サービスにも送信しません。写真も、端末の中で縮小して端末の中に保管します。いっぽうで、サイトを表示すること自体には通常の通信が伴います。配信基盤への接続とWebフォントの読み込みが発生し、公開環境ではアクセス解析（GA4）も動きます。これらに本文・題名・写真が含まれることはありません。外部リンクから移動した先は、それぞれのサービスの方針に従います。<br>本や音楽を外部の検索サービスから取得して表示する機能と、天気連動の機能は、現在のBeta0では動作していません。<br>本棚はあなただけの「自分の本棚」で、ほかの利用者と共有される場所ではありません。",
+    dataAboutBody: "「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す仕組みです。本文や題名をAIが読み取って、分析・診断・自動分類することはありません。<br>書いたものは、この端末のブラウザ保存領域に保存されます。保存にはIndexedDBとlocalStorageを併用しています。アカウント登録はなく、本文・題名・写真が運営者のサーバーへ保存されることはありません。<br>クラウド同期はないため、別の端末や別のブラウザへ自動で引き継がれることはありません。反対に、同じ端末の同じブラウザを使う人には表示されます。共有の端末では、この点にご注意ください。<br>保存は永久ではありません。ブラウザのサイトデータ削除、ブラウザやOSの保存ポリシー、保存容量の上限、端末の故障や機種変更などによって失われることがあります。運営者側に復元用のデータはないため、「本棚のデータをバックアップ保存する」から、ときどきファイルへ書き出しておくことをおすすめします。<br>あなたが書いた本文・題名・写真は、外部のAIにも外部サービスにも送信しません。写真も、端末の中で縮小して端末の中に保管します。いっぽうで、サイトを表示すること自体には通常の通信が伴います。配信基盤への接続とWebフォントの読み込みが発生し、公開環境ではアクセス解析（GA4）も動きます。これらに本文・題名・写真が含まれることはありません。外部リンクから移動した先は、それぞれのサービスの方針に従います。<br>本や音楽を外部の検索サービスから取得して表示する機能と、天気連動の機能は、現在のBeta0では動作していません。<br>本棚はあなただけの「自分の本棚」で、ほかの利用者と共有される場所ではありません。",
     keeperNotAiHint: "※AIチャットボットではなく、あらかじめ用意した言葉を返す簡単な仕組みです。会話はモデルに送信されません。",
     submitStoryHint: "※外部には公開されず、この端末のブラウザ内にのみ保存されます。",
     // ★2025-07-17追記（v1.2フィードバック反映）：renderShelfDisplay()内にハードコードしていた
@@ -504,13 +504,13 @@ const MESSAGES = {
 
     v2c05BackAria: "広間へ戻る",
     v2c05Title: "編纂室",
-    v2c05Sub: "残ったことを、自分の言葉で一冊にする場所",
+    v2c05Sub: "<span class='v2-wrapunit'>残ったことを、</span><span class='v2-wrapunit'>自分の言葉で一冊に。</span>",
     v2ToBookshelf: "本棚へ",
     v2BackToBookshelf: "本棚へ戻る",
     v2c05Autosave: "書きかけは自動で保存されます",
     v2c05TitleLabel: "題名",
     v2c05TitleOpt: "（任意）",
-    v2c05TitlePh: "題名をつけると、あとから見つけやすくなります",
+    v2c05TitlePh: "空欄でも、一冊にできます",
     v2c05StoryLabel: "本文",
     v2c05StoryPh: "いま、心の中に残っていることを、そのまま書いてみてください。\nうまく書こうとしなくて大丈夫。\n一言からでも、本になります。",
     v2c05Assure: "本文はこの端末に保存されます。本文は公開されません。",
@@ -829,7 +829,7 @@ const MESSAGES = {
     goToShelfBtn: "View the \"{shelf}\" shelf",
     dataAboutTitle: "About this bookstore & your data",
     dataAboutOpenLabel: "Where is my data stored?",
-    dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it returns pre-written lines based on context. Nothing you write is read by an AI to be analysed, diagnosed or auto-categorised.<br>What you write is kept in this device's browser storage (technically: books in IndexedDB, unfinished drafts in localStorage). There is no account, and your text, titles and photos are never stored on our servers.<br>There is no cloud sync, so nothing carries over automatically to another device or another browser. Conversely, anyone using this same device and browser will see it — please keep that in mind on shared devices.<br>Storage is not permanent. Clearing site data, your browser's or OS's storage policy, storage limits, device failure and switching devices can all cause it to be lost. We hold no copy to restore from, so we recommend exporting a file now and then via \"Back up your data.\"<br>The text, titles and photos you write are never sent to any external AI or external service; photos are resized on-device and kept on-device. Displaying the site itself, however, does involve ordinary network traffic: a connection to the hosting platform and a web-font request, plus analytics (GA4) in the public build. None of those carry your text, titles or photos. Anywhere you go via an external link is governed by that service's own policy.<br>Fetching books and music from external search services, and the weather-sync feature, are both inactive in the current Beta0 release.<br>Your bookshelf is your own — it is never shared with other visitors.",
+    dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it returns pre-written lines based on context. Nothing you write is read by an AI to be analysed, diagnosed or auto-categorised.<br>What you write is kept in this device's browser storage. The service uses both IndexedDB and localStorage for local storage. There is no account, and your text, titles and photos are never stored on our servers.<br>There is no cloud sync, so nothing carries over automatically to another device or another browser. Conversely, anyone using this same device and browser will see it — please keep that in mind on shared devices.<br>Storage is not permanent. Clearing site data, your browser's or OS's storage policy, storage limits, device failure and switching devices can all cause it to be lost. We hold no copy to restore from, so we recommend exporting a file now and then via \"Back up your data.\"<br>The text, titles and photos you write are never sent to any external AI or external service; photos are resized on-device and kept on-device. Displaying the site itself, however, does involve ordinary network traffic: a connection to the hosting platform and a web-font request, plus analytics (GA4) in the public build. None of those carry your text, titles or photos. Anywhere you go via an external link is governed by that service's own policy.<br>Fetching books and music from external search services, and the weather-sync feature, are both inactive in the current Beta0 release.<br>Your bookshelf is your own — it is never shared with other visitors.",
     keeperNotAiHint: "※ Not an AI chatbot — a simple system that replies with pre-written lines. Nothing is sent to a model.",
     submitStoryHint: "※ Never published anywhere — stored only inside this device's browser.",
     // \u26052026-07-25 Content Trust Fix 1: heading simplified to "Your Books" while the fictional
@@ -993,7 +993,7 @@ const MESSAGES = {
     v2c05Autosave: "Drafts are saved automatically",
     v2c05TitleLabel: "Title",
     v2c05TitleOpt: "(optional)",
-    v2c05TitlePh: "A title makes it easier to find later",
+    v2c05TitlePh: "You can leave this blank.",
     v2c05StoryLabel: "Your writing",
     v2c05StoryPh: "Write what is still on your mind, just as it is.\nIt does not have to be well written.\nEven a single line can become a book.",
     v2c05Assure: "Your writing is saved on this device. It is not published.",

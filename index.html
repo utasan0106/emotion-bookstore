@@ -920,7 +920,7 @@ body.night .about-data-content{
         <button type="button" class="v2c05__back" data-v2-go="02" aria-label="広間へ戻る" data-i18n-aria="v2c05BackAria"><span class="v2c05__back-arrow" aria-hidden="true"></span></button>
         <div class="v2c05__headmid">
           <h1 class="v2c05__title" data-i18n="v2c05Title">編纂室</h1>
-          <p class="v2c05__sub" data-i18n="v2c05Sub">残ったことを、自分の言葉で一冊にする場所</p>
+          <p class="v2c05__sub" data-i18n-html="v2c05Sub"><span class="v2-wrapunit">残ったことを、</span><span class="v2-wrapunit">自分の言葉で一冊に。</span></p>
           <!-- FIX-06：今日の日付。既存の renderCurrentShopDate()（端末のローカル日付を
                Intl.DateTimeFormat で JP/EN 表示にするだけの描画関数）へ id を1つ足して
                追従させる。新しい保存キー・book schema・本文への自動挿入・Asia/Tokyo 固定は
@@ -940,7 +940,7 @@ body.night .about-data-content{
           <label class="v2c05__label" for="v2bTitleInput"><span data-i18n="v2c05TitleLabel">題名</span> <span class="v2c05__opt" data-i18n="v2c05TitleOpt">（任意）</span></label>
           <input class="v2c05__input" id="v2bTitleInput" type="text" maxlength="16"
                  data-v2-write="title" autocomplete="off"
-                 placeholder="題名をつけると、あとから見つけやすくなります" data-i18n-ph="v2c05TitlePh">
+                 placeholder="空欄でも、一冊にできます" data-i18n-ph="v2c05TitlePh">
         </div>
 
         <div class="v2c05__field">
@@ -1296,8 +1296,8 @@ body.night .about-data-content{
     <!-- ===== 追加：サービス説明のアコーディオン ===== -->
     <div class="about-accordion-wrap">
       <div class="about-accordion-summary" data-i18n-html="accordionSummary">
-        気持ちを書き、一冊の本として端末内の本棚へ。<br>
-        登録不要。棚を選ぶかどうかも、あなたが決められます。
+        <span class="v2-wrapunit">残ったことを、</span><span class="v2-wrapunit">一冊にして</span><span class="v2-wrapunit">自分の本棚へ。</span><br>
+        <span class="v2-wrapunit">登録不要。</span><span class="v2-wrapunit">棚を選ぶかどうかも、</span><span class="v2-wrapunit">あなたが決められます。</span>
       </div>
       <button class="about-accordion-btn" id="aboutAccordionBtn" onclick="toggleAboutAccordion()"
               aria-expanded="false" aria-controls="aboutAccordionContent">
@@ -1367,7 +1367,7 @@ body.night .about-data-content{
       <summary data-i18n="dataAboutOpenLabel">データはどこに保存されるの？</summary>
       <div class="about-data-content">
         <b data-i18n="dataAboutTitle">この書店とデータについて</b>
-        <p data-i18n-html="dataAboutBody">「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す仕組みです。本文や題名をAIが読み取って、分析・診断・自動分類することはありません。<br>書いたものは、この端末のブラウザ保存領域に保存されます（技術的な内訳としては、本はIndexedDB、書きかけの下書きはlocalStorageを使っています）。アカウント登録はなく、本文・題名・写真が運営者のサーバーへ保存されることはありません。<br>クラウド同期はないため、別の端末や別のブラウザへ自動で引き継がれることはありません。反対に、同じ端末の同じブラウザを使う人には表示されます。共有の端末では、この点にご注意ください。<br>保存は永久ではありません。ブラウザのサイトデータ削除、ブラウザやOSの保存ポリシー、保存容量の上限、端末の故障や機種変更などによって失われることがあります。運営者側に復元用のデータはないため、「本棚のデータをバックアップ保存する」から、ときどきファイルへ書き出しておくことをおすすめします。<br>あなたが書いた本文・題名・写真は、外部のAIにも外部サービスにも送信しません。写真も、端末の中で縮小して端末の中に保管します。いっぽうで、サイトを表示すること自体には通常の通信が伴います。配信基盤への接続とWebフォントの読み込みが発生し、公開環境ではアクセス解析（GA4）も動きます。これらに本文・題名・写真が含まれることはありません。外部リンクから移動した先は、それぞれのサービスの方針に従います。<br>本や音楽を外部の検索サービスから取得して表示する機能と、天気連動の機能は、現在のBeta0では動作していません。<br>本棚はあなただけの「自分の本棚」で、ほかの利用者と共有される場所ではありません。</p>
+        <p data-i18n-html="dataAboutBody">「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す仕組みです。本文や題名をAIが読み取って、分析・診断・自動分類することはありません。<br>書いたものは、この端末のブラウザ保存領域に保存されます。保存にはIndexedDBとlocalStorageを併用しています。アカウント登録はなく、本文・題名・写真が運営者のサーバーへ保存されることはありません。<br>クラウド同期はないため、別の端末や別のブラウザへ自動で引き継がれることはありません。反対に、同じ端末の同じブラウザを使う人には表示されます。共有の端末では、この点にご注意ください。<br>保存は永久ではありません。ブラウザのサイトデータ削除、ブラウザやOSの保存ポリシー、保存容量の上限、端末の故障や機種変更などによって失われることがあります。運営者側に復元用のデータはないため、「本棚のデータをバックアップ保存する」から、ときどきファイルへ書き出しておくことをおすすめします。<br>あなたが書いた本文・題名・写真は、外部のAIにも外部サービスにも送信しません。写真も、端末の中で縮小して端末の中に保管します。いっぽうで、サイトを表示すること自体には通常の通信が伴います。配信基盤への接続とWebフォントの読み込みが発生し、公開環境ではアクセス解析（GA4）も動きます。これらに本文・題名・写真が含まれることはありません。外部リンクから移動した先は、それぞれのサービスの方針に従います。<br>本や音楽を外部の検索サービスから取得して表示する機能と、天気連動の機能は、現在のBeta0では動作していません。<br>本棚はあなただけの「自分の本棚」で、ほかの利用者と共有される場所ではありません。</p>
       </div>
     </details>
     <!-- ===== /追加：データの保存場所・バックアップの説明 ===== -->
