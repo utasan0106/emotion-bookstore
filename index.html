@@ -196,6 +196,49 @@ html[data-v2-booting] .shop-footer{ visibility: hidden !important; }
 /* mount 前は V2 の各面も重なって出るため、同じく描かせない（背景だけの neutral な状態にする）。
    display ではなく visibility なので、mount 前に走る既存コードの寸法測定は変わらない。 */
 html[data-v2-booting] .v2-page{ visibility: hidden !important; }
+
+/* ★PC Legacy UI Flash 対応：boot 中も旧UIの「面そのもの」を出さない。
+   実測した原因
+     上の visibility は子要素にしか効かないため、.entrance.hero 自身の背景
+     （夜青のグラデーション）と .shop の地色、および装飾疑似要素が
+     first paint 〜 mount の間だけ描画されていた。
+     1440 DAY / cold cache の screencast 実測
+       228ms .shop の紙地 → 277〜313ms 夜青が全面 → 599ms V2 表紙
+       CPU 6x では 1199〜1425ms のあいだ夜青が出続ける
+     .entrance.hero は boot 中 1440x1461px あり、desktop では画面全面を覆う。
+
+   対応
+     v2-mount.css が mount 後に行っている legacy 面の中和
+     （background / padding / min-height / border / box-shadow と ::before / ::after）を、
+     同じ内容のまま boot 中にも適用する。新しい規則や色は作らない。
+     .shop だけは mount 後は V2 の面が覆うため v2-mount.css に規則が無い。
+     boot 中は V2 も隠しているので、ここで地色を外して body の var(--bg) を見せる。
+     結果、boot 中に出るのは上の body 規則が塗る V2 の基本背景だけになる。 */
+html[data-v2-booting] .shop,
+html[data-v2-booting] .entrance.hero,
+html[data-v2-booting] #counter,
+html[data-v2-booting] #shelves,
+html[data-v2-booting] #desk,
+html[data-v2-booting] #bookshelf{
+  background: none !important;
+  background-image: none !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html[data-v2-booting] .entrance.hero::before,
+html[data-v2-booting] .entrance.hero::after,
+html[data-v2-booting] #counter::before,
+html[data-v2-booting] #counter::after,
+html[data-v2-booting] #shelves::before,
+html[data-v2-booting] #shelves::after,
+html[data-v2-booting] #desk::before,
+html[data-v2-booting] #desk::after,
+html[data-v2-booting] #bookshelf::before,
+html[data-v2-booting] #bookshelf::after{
+  content: none !important;
+}
 </style>
 <script>
 (function(){
