@@ -419,23 +419,20 @@
 
   /* ---------------------------------------------------------------------------
    * 04「作品」READ-ONLY 描画
-   * 出典は 2 つだけ。どちらも静的な承認済み編集データで、runtime では読むだけ。
-   *   1) V2_PUBLIC_INVENTORY … 8 大棚 x 10 作品の公開在庫（大棚単位）
-   *   2) V2_EDITORIAL_SNAPSHOTS … 既存の感情語単位 Beta0 snapshot（fallback）
-   * - この 2 つ以外から作品を生成しない。runtime 外部API・補充・affiliate なし
+   * 出典は V2_PUBLIC_INVENTORY（8 大棚 x 10 作品の公開在庫）ただ 1 つ。
+   * これが V2 Beta0 の 04「作品」における唯一の公開在庫正本である。
+   * - 在庫以外から作品を生成しない。runtime 外部API・補充・affiliate なし
+   * - 並び順は在庫の displayRank がそのまま正本。runtime で並べ替え・抽選をしない
    * - cover / still / jacket / thumbnail など画像は一切参照しない
    * - 本文・歌詞・台詞は引用しない。表示するのは在庫の editorialReason のみ
    * - 外部遷移は officialSourceUrl の値そのもの。URL を runtime で組み立てない
    * - 利用者の本文 / 題名 / 写真 / 本棚 / 感情推定は選定に一切使わない
-   * - どちらの出典でも作品を組み立てられない場合は既存の HOLD 表示を維持する
+   * - 在庫が引けない文脈では作品を出さず、既存の HOLD 表示を維持する
+   *
+   * 旧 V2_EDITORIAL_SNAPSHOTS（感情語単位の Beta0 snapshot）は
+   * data/editorial-snapshot-beta0.js に残しているが、
+   * user-facing の作品表示では選択しない。fallback にもしない。
    * ------------------------------------------------------------------------ */
-  function workTypeLabels() {
-    return {
-      book: T('v2WorkTypeBook', '本'),
-      film: T('v2WorkTypeFilm', '映画'),
-      music: T('v2WorkTypeMusic', '音楽')
-    };
-  }
 
   /* 在庫の mediaType 表記（JA 正本）と i18n キーの対応。
      在庫側の表記を書き換えないため、表記ゆれ 1 つにつきキーを 1 つ持つ。
@@ -476,9 +473,7 @@
 
     var type = doc.createElement('span');
     type.className = 'v2c04__work-type';
-    type.textContent = item.media
-      ? workMediaLabel(item.media)
-      : (workTypeLabels()[item.type] || String(item.type || ''));
+    type.textContent = workMediaLabel(item.media);
     li.appendChild(type);
 
     var title = doc.createElement('span');
@@ -525,15 +520,11 @@
     return box;
   }
 
-  /* 1 回に並べる作品数。Visual North Star（04 の縦密度）を変えないため 3 のまま。 */
+  /* 1 回に並べる作品数。Visual North Star（04 の縦密度）を変えないため 3 のまま。
+     どの 3 件を出すかは在庫の displayRank 順の先頭 3 件で決まる。
+     recommendation algorithm・抽選・組合せ探索は持たない（deterministic）。
+     V2 に既存の承認済み rotation hook は無いため、新しく作らない。 */
   var WORKS_PER_VIEW = 3;
-
-  /* Rotation の起点。セッション中だけメモリに持つ。
-     - localStorage / sessionStorage / IndexedDB / URL には一切書かない
-     - 利用者の本文・題名・写真・本棚・感情推定は seed に使わない
-     - セッション内では同じ棚に同じ 3 件が出る（領域切替や再描画でちらつかせない）。
-       別セッションでは起点が変わるので、10 件が回っていく。 */
-  var rotationSeed = Math.floor(Math.random() * 997);
 
   function inventoryShelf(shelfId) {
     var inv = global.V2_PUBLIC_INVENTORY;
@@ -564,62 +555,31 @@
       row.editorialReason && row.mediaType);
   }
 
-  /* Hard constraints（1 画面 3 件に対して）
-       - 同一 familyId は最大 1
-       - 同一 creator は最大 1
-       - DISCOVERY を最低 1
-       - ANCHOR は最大 2
-       - mediaType は 2 種以上
-     rotation 順に組み合わせを見て、最初に全部満たしたものを採用する。 */
-  function satisfiesHardConstraints(triple) {
-    var fams = {}, creators = {}, medias = {}, mediaCount = 0, discovery = 0, anchor = 0;
-    for (var i = 0; i < triple.length; i++) {
-      var r = triple[i];
-      var fam = String(r.familyId || r.publicId);
-      var cre = String(r.creator || '');
-      if (fams[fam]) return false;
-      fams[fam] = true;
-      if (creators[cre]) return false;
-      creators[cre] = true;
-      var med = String(r.mediaType || '');
-      if (!medias[med]) { medias[med] = true; mediaCount++; }
-      if (r.discoveryTier === 'DISCOVERY') discovery++;
-      if (r.discoveryTier === 'ANCHOR') anchor++;
-    }
-    return mediaCount >= 2 && discovery >= 1 && anchor <= 2;
-  }
-
-  /* rotation 起点から並べ替えた 10 件。在庫の順序（displayRank）自体は変えない。 */
-  function rotatedRows(rows, shelfId) {
-    var n = rows.length;
-    var offset = 0;
-    for (var c = 0; c < String(shelfId).length; c++) {
-      offset = (offset + String(shelfId).charCodeAt(c)) % n;
-    }
-    offset = (offset + rotationSeed) % n;
-    var out = [];
-    for (var i = 0; i < n; i++) out.push(rows[(offset + i) % n]);
-    return out;
-  }
-
+  /* 在庫の displayRank 昇順で先頭 3 件。抽選も組合せ探索もしない。
+     在庫配列そのものは並べ替えず、複製した配列の上でだけ整列する。 */
   function selectWorks(shelfId) {
     var shelf = inventoryShelf(shelfId);
     if (!shelf) return null;
-    var rows = shelf.items.filter(validWorkRow);
+    var rows = shelf.items.filter(validWorkRow).slice();
+    rows.sort(function (a, b) { return (a.displayRank || 0) - (b.displayRank || 0); });
     if (rows.length < WORKS_PER_VIEW) return null;
+    return rows.slice(0, WORKS_PER_VIEW);
+  }
 
-    var pool = rotatedRows(rows, shelfId);
-    var n = pool.length;
-    for (var a = 0; a < n - 2; a++) {
-      for (var b = a + 1; b < n - 1; b++) {
-        for (var c = b + 1; c < n; c++) {
-          var triple = [pool[a], pool[b], pool[c]];
-          if (satisfiesHardConstraints(triple)) return triple;
-        }
-      }
-    }
-    /* 全 120 通りで満たせない棚は、作品を無理に出さず HOLD へ落とす。
-       制約を緩めて出すより、出さないほうが編集方針に合う。 */
+  /* 04「作品」が使う大棚文脈。
+     既存の入口文脈（originMajorShelfId）を最優先する点は effectiveShelfId と同じ。
+       - 大棚から入った   → その大棚
+       - 感情語を選んだ後 → 入口の大棚のまま（child emotion は親棚の在庫を見る）
+       - shitto           → 惹かれる経由なら惹かれる／ぶつかる経由ならぶつかる
+                            （入口不明のときだけ既存 CANONICAL_PRIMARY へ）
+       - direct entry     → 既存 21 感情 → 大棚 mapping（canonicalShelfOf）で解決
+       - 「すべての感情語を見る」は大棚ではないので、感情語が選ばれていれば
+         その感情の canonical 大棚へ落とす。選ばれていなければ在庫を引かない。
+     ここで新しい mapping は作らない。既存の承認済み contract をそのまま使う。 */
+  function worksShelfId() {
+    var id = effectiveShelfId();
+    if (id && id !== ALL_CONTEXT_ID) return id;
+    if (state.activeEmotionId) return canonicalShelfOf(state.activeEmotionId);
     return null;
   }
 
@@ -632,43 +592,26 @@
     body.removeAttribute('data-v2-works-source');
     body.removeAttribute('data-v2-works-shelf');
 
-    var list = doc.createElement('ul');
-    list.className = 'v2c04__worklist';
-    var i;
-
-    /* 1) 公開在庫（大棚単位）。感情語を選んでいても入口の大棚文脈で引く。 */
-    var shelfId = effectiveShelfId();
+    var shelfId = worksShelfId();
     var picked = selectWorks(shelfId);
-    if (picked) {
-      for (i = 0; i < picked.length; i++) list.appendChild(buildWorkCard(toWorkCardItem(picked[i])));
-      body.appendChild(list);
-      body.setAttribute('data-v2-works-count', String(picked.length));
-      body.setAttribute('data-v2-works-source', 'inventory');
-      body.setAttribute('data-v2-works-shelf', String(shelfId));
-      return { ok: true, status: 'ok', rendered: picked.length, source: 'inventory', shelfId: shelfId };
-    }
-
-    /* 2) 在庫が引けない文脈（'all' 入口など）では既存の感情語 snapshot を使う。 */
-    var snaps = global.V2_EDITORIAL_SNAPSHOTS || {};
-    var snap = state.activeEmotionId ? snaps[state.activeEmotionId] : null;
-    var items = snap && Array.isArray(snap.items) ? snap.items : [];
-    var ok = items.length >= WORKS_PER_VIEW && items.slice(0, WORKS_PER_VIEW).every(function (it) {
-      return it && it.title && it.creator && it.editorial_reason && it.type;
-    });
-    if (!ok) {
-      // works_0_or_unapproved: 安全な HOLD。作品を生成しない。
+    if (!picked) {
+      /* 在庫が引けない文脈では、旧 snapshot を持ち出さずに HOLD を出す。 */
       body.appendChild(buildWorksHold());
       body.setAttribute('data-v2-works-count', '0');
       body.setAttribute('data-v2-works-source', 'hold');
       return { ok: true, status: 'hold', rendered: 0, source: 'hold' };
     }
-    for (i = 0; i < WORKS_PER_VIEW; i++) list.appendChild(buildWorkCard(items[i]));
+
+    var list = doc.createElement('ul');
+    list.className = 'v2c04__worklist';
+    for (var i = 0; i < picked.length; i++) {
+      list.appendChild(buildWorkCard(toWorkCardItem(picked[i])));
+    }
     body.appendChild(list);
-    // 追加2作品は additional_approved === true かつ approved item がある場合のみ。
-    // 現 Beta0 snapshot は未承認のため「もう2つ見る」を生成しない。
-    body.setAttribute('data-v2-works-count', String(WORKS_PER_VIEW));
-    body.setAttribute('data-v2-works-source', 'snapshot');
-    return { ok: true, status: 'ok', rendered: WORKS_PER_VIEW, source: 'snapshot' };
+    body.setAttribute('data-v2-works-count', String(picked.length));
+    body.setAttribute('data-v2-works-source', 'inventory');
+    body.setAttribute('data-v2-works-shelf', String(shelfId));
+    return { ok: true, status: 'ok', rendered: picked.length, source: 'inventory', shelfId: shelfId };
   }
 
   /* ---------------------------------------------------------------------------
