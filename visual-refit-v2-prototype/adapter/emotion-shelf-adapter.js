@@ -932,6 +932,36 @@
      V2 画面を覚えておき、そこへ戻す。分からない場合だけ従来どおり 03 へ。
      04 自身へは戻さない（ループを作らない）。 */
   function onLeave() {
+    /* 感情語を選んだあとの「戻る」は、まず直前の大棚へ戻す。
+       selectEmotion() は 04 の中で activeEmotionId を差し替えるだけで、
+       戻り先を1段も積まないため、そのままだと大棚を飛び越して
+       returnToScreen（多くは 03）へ出てしまっていた。
+       ここでは activeEmotionId だけを外して 04 を描き直す。これは
+       enterShelf() 直後とまったく同じ状態なので、大棚の見え方は変わらない。
+
+       04 へ戻し直しているのは、この戻るボタンが
+       data-v2-go="03" と data-v2-shelf-back の両方を持っており、
+       navigation-adapter の onActivate が先に走って 03 へ移ってしまうため。
+       その後にここで 04 の subview へ戻す（既存 FIX-G の onLeave も
+       同じ「あとから上書きする」形で動いている）。
+       ・使うのは enterShelf() と同じ nav.go('04', { subviewOnly: true })。
+         03 と 04 は同じ既存ページ（#shelves）の subview なので goToPage() は走らない。
+       ・shelfId 付きの nav.go() は goToShelf() 経由で view_shelf を発火させるため、
+         ここでは絶対に使わない（GA4 / storage / 外部通信を増やさない）
+       ・activeRegion は触らない（領域の選択は利用者の文脈として保つ）
+       大棚から入っていない場合（originMajorShelfId なし）は戻る先の大棚が
+       存在しないので、従来どおり 04 の外へ出る。 */
+    if (state.activeEmotionId && state.originMajorShelfId) {
+      state.activeEmotionId = null;
+      state.lastError = null;
+      var navBack = global.V2NavigationAdapter;
+      if (navBack && typeof navBack.go === 'function') {
+        navBack.go('04', { subviewOnly: true });
+      }
+      render();
+      return state.lastOriginTriggerId;
+    }
+
     var back = state.returnToScreen;
     state.returnToScreen = null;
     if (back && back !== '04') {
