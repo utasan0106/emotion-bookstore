@@ -2482,6 +2482,26 @@ html[data-v2-mounted="true"][data-theme="night"] .v2-page h2.v2c04__h {
   color: #5d4f3e !important;
 }
 [data-theme="night"] .v2c04__work-reason { color: #a89f90 !important; }
+/* 出典（公式ページ）への外部リンク。既存の外部リンクと同じ静かな扱いにする。
+   tap target を確保するため、行内リンクではなくカード末尾のブロックに置く。 */
+.v2c04__work-source {
+  align-self: flex-start;
+  margin-top: 0.9em;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: clamp(11px, 3.2cqw, 13px);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  color: #7a6134 !important;
+}
+.v2c04__work-source:hover { color: #5d4a26 !important; }
+.v2c04__work-source:focus-visible { outline: 2px solid #7a6134; outline-offset: 3px; border-radius: 4px; }
+[data-theme="night"] .v2c04__work-source { color: #c6a771 !important; }
+[data-theme="night"] .v2c04__work-source:hover { color: #dcc08a !important; }
+[data-theme="night"] .v2c04__work-source:focus-visible { outline-color: #c6a771; }
 .v2c04__works-hold {
   margin-top: 0.2em;
   padding: clamp(14px, 4.6cqw, 20px);

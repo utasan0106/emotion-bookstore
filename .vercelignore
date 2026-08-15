@@ -85,4 +85,5 @@ docs/
 
 # 元データ JSON（runtime が読むのは同ディレクトリの *.js 版）
 /visual-refit-v2-prototype/data/04_Beta0_EditorialSnapshot_kanashii_v0_1.json
+/visual-refit-v2-prototype/data/04_Beta0_PublicInventory_v0_1.json
 /visual-refit-v2-prototype/data/V2_EMOTION_WORDS_BETA0_v0.1_PRODUCTION_APPROVED.json

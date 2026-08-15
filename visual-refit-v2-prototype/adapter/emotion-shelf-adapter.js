@@ -418,11 +418,16 @@
   }
 
   /* ---------------------------------------------------------------------------
-   * 04「作品」READ-ONLY 描画（Beta0 static Editorial Snapshot のみ）
-   * - approved snapshot（V2_EDITORIAL_SNAPSHOTS）以外から作品を生成しない
-   * - runtime 外部API・cover 画像・外部遷移・affiliate なし
-   * - 追加2作品が approved でない限り「もう2つ見る」を作らない
-   * - snapshot 不足時は既存の安全な HOLD 表示（仕入れ中）を維持する
+   * 04「作品」READ-ONLY 描画
+   * 出典は 2 つだけ。どちらも静的な承認済み編集データで、runtime では読むだけ。
+   *   1) V2_PUBLIC_INVENTORY … 8 大棚 x 10 作品の公開在庫（大棚単位）
+   *   2) V2_EDITORIAL_SNAPSHOTS … 既存の感情語単位 Beta0 snapshot（fallback）
+   * - この 2 つ以外から作品を生成しない。runtime 外部API・補充・affiliate なし
+   * - cover / still / jacket / thumbnail など画像は一切参照しない
+   * - 本文・歌詞・台詞は引用しない。表示するのは在庫の editorialReason のみ
+   * - 外部遷移は officialSourceUrl の値そのもの。URL を runtime で組み立てない
+   * - 利用者の本文 / 題名 / 写真 / 本棚 / 感情推定は選定に一切使わない
+   * - どちらの出典でも作品を組み立てられない場合は既存の HOLD 表示を維持する
    * ------------------------------------------------------------------------ */
   function workTypeLabels() {
     return {
@@ -432,14 +437,48 @@
     };
   }
 
+  /* 在庫の mediaType 表記（JA 正本）と i18n キーの対応。
+     在庫側の表記を書き換えないため、表記ゆれ 1 つにつきキーを 1 つ持つ。
+     未知の表記が来たら在庫の表記をそのまま出す（勝手に言い換えない）。 */
+  var WORK_MEDIA_KEYS = {
+    '本': 'v2WorkTypeBook',
+    '映画': 'v2WorkTypeFilm',
+    '音楽': 'v2WorkTypeMusic',
+    '漫画': 'v2WorkTypeManga',
+    'TVアニメ': 'v2WorkTypeAnimeTv',
+    'アニメ映画': 'v2WorkTypeAnimeFilm',
+    '映画（アニメ）': 'v2WorkTypeAnimeFilmParen',
+    '劇場アニメ': 'v2WorkTypeAnimeTheatrical'
+  };
+
+  function workMediaLabel(mediaType) {
+    var raw = String(mediaType || '');
+    var key = WORK_MEDIA_KEYS[raw];
+    return key ? T(key, raw) : raw;
+  }
+
+  /* 出典 URL は在庫の値をそのまま使う。https の絶対 URL 以外は採用しない。
+     query / hash も在庫が持っている値のまま。runtime で付け足さない。 */
+  function safeSourceUrl(url) {
+    var s = String(url || '');
+    return s.indexOf('https://') === 0 ? s : '';
+  }
+
   function buildWorkCard(item) {
     var li = doc.createElement('li');
     li.className = 'v2c04__work';
     li.setAttribute('data-v2-work-id', String(item.item_id || ''));
+    if (item.media) li.setAttribute('data-v2-work-media', String(item.media));
+    if (item.tier) li.setAttribute('data-v2-work-tier', String(item.tier));
+    if (item.family) li.setAttribute('data-v2-work-family', String(item.family));
+    if (item.region) li.setAttribute('data-v2-work-region', String(item.region));
+    if (item.era) li.setAttribute('data-v2-work-era', String(item.era));
 
     var type = doc.createElement('span');
     type.className = 'v2c04__work-type';
-    type.textContent = workTypeLabels()[item.type] || String(item.type || '');
+    type.textContent = item.media
+      ? workMediaLabel(item.media)
+      : (workTypeLabels()[item.type] || String(item.type || ''));
     li.appendChild(type);
 
     var title = doc.createElement('span');
@@ -456,6 +495,19 @@
     reason.className = 'v2c04__work-reason';
     reason.textContent = String(item.editorial_reason || '');
     li.appendChild(reason);
+
+    var href = safeSourceUrl(item.source_url);
+    if (href) {
+      var link = doc.createElement('a');
+      link.className = 'v2c04__work-source';
+      link.setAttribute('href', href);
+      link.setAttribute('target', '_blank');
+      link.setAttribute('rel', 'noopener noreferrer');
+      link.textContent = T('v2WorkSourceLink', '公式ページを見る');
+      link.setAttribute('aria-label', T('v2WorkSourceAria', '『{title}』の公式ページを見る（新しいタブで開きます）')
+        .split('{title}').join(String(item.title || '')));
+      li.appendChild(link);
+    }
     return li;
   }
 
@@ -473,33 +525,150 @@
     return box;
   }
 
+  /* 1 回に並べる作品数。Visual North Star（04 の縦密度）を変えないため 3 のまま。 */
+  var WORKS_PER_VIEW = 3;
+
+  /* Rotation の起点。セッション中だけメモリに持つ。
+     - localStorage / sessionStorage / IndexedDB / URL には一切書かない
+     - 利用者の本文・題名・写真・本棚・感情推定は seed に使わない
+     - セッション内では同じ棚に同じ 3 件が出る（領域切替や再描画でちらつかせない）。
+       別セッションでは起点が変わるので、10 件が回っていく。 */
+  var rotationSeed = Math.floor(Math.random() * 997);
+
+  function inventoryShelf(shelfId) {
+    var inv = global.V2_PUBLIC_INVENTORY;
+    if (!inv || !inv.shelves || !shelfId) return null;
+    var shelf = inv.shelves[shelfId];
+    if (!shelf || !Array.isArray(shelf.items) || !shelf.items.length) return null;
+    return shelf;
+  }
+
+  /* 在庫 1 件 → カード描画用の形。表示に使う項目だけを写す。 */
+  function toWorkCardItem(row) {
+    return {
+      item_id: String(row.publicId || ''),
+      media: String(row.mediaType || ''),
+      title: String(row.title || ''),
+      creator: String(row.creator || ''),
+      editorial_reason: String(row.editorialReason || ''),
+      source_url: safeSourceUrl(row.officialSourceUrl),
+      tier: String(row.discoveryTier || ''),
+      family: String(row.familyId || ''),
+      region: String(row.region || ''),
+      era: String(row.eraBand || '')
+    };
+  }
+
+  function validWorkRow(row) {
+    return !!(row && row.publicId && row.title && row.creator &&
+      row.editorialReason && row.mediaType);
+  }
+
+  /* Hard constraints（1 画面 3 件に対して）
+       - 同一 familyId は最大 1
+       - 同一 creator は最大 1
+       - DISCOVERY を最低 1
+       - ANCHOR は最大 2
+       - mediaType は 2 種以上
+     rotation 順に組み合わせを見て、最初に全部満たしたものを採用する。 */
+  function satisfiesHardConstraints(triple) {
+    var fams = {}, creators = {}, medias = {}, mediaCount = 0, discovery = 0, anchor = 0;
+    for (var i = 0; i < triple.length; i++) {
+      var r = triple[i];
+      var fam = String(r.familyId || r.publicId);
+      var cre = String(r.creator || '');
+      if (fams[fam]) return false;
+      fams[fam] = true;
+      if (creators[cre]) return false;
+      creators[cre] = true;
+      var med = String(r.mediaType || '');
+      if (!medias[med]) { medias[med] = true; mediaCount++; }
+      if (r.discoveryTier === 'DISCOVERY') discovery++;
+      if (r.discoveryTier === 'ANCHOR') anchor++;
+    }
+    return mediaCount >= 2 && discovery >= 1 && anchor <= 2;
+  }
+
+  /* rotation 起点から並べ替えた 10 件。在庫の順序（displayRank）自体は変えない。 */
+  function rotatedRows(rows, shelfId) {
+    var n = rows.length;
+    var offset = 0;
+    for (var c = 0; c < String(shelfId).length; c++) {
+      offset = (offset + String(shelfId).charCodeAt(c)) % n;
+    }
+    offset = (offset + rotationSeed) % n;
+    var out = [];
+    for (var i = 0; i < n; i++) out.push(rows[(offset + i) % n]);
+    return out;
+  }
+
+  function selectWorks(shelfId) {
+    var shelf = inventoryShelf(shelfId);
+    if (!shelf) return null;
+    var rows = shelf.items.filter(validWorkRow);
+    if (rows.length < WORKS_PER_VIEW) return null;
+
+    var pool = rotatedRows(rows, shelfId);
+    var n = pool.length;
+    for (var a = 0; a < n - 2; a++) {
+      for (var b = a + 1; b < n - 1; b++) {
+        for (var c = b + 1; c < n; c++) {
+          var triple = [pool[a], pool[b], pool[c]];
+          if (satisfiesHardConstraints(triple)) return triple;
+        }
+      }
+    }
+    /* 全 120 通りで満たせない棚は、作品を無理に出さず HOLD へ落とす。
+       制約を緩めて出すより、出さないほうが編集方針に合う。 */
+    return null;
+  }
+
   function renderWorks(scope) {
     if (!doc) return { ok: false, reason: 'no_document' };
     var body = q('[data-v2-works="body"]', scope);
     if (!body) return { ok: false, reason: 'no_target' };
     clearChildren(body);
     body.removeAttribute('data-v2-works-count');
+    body.removeAttribute('data-v2-works-source');
+    body.removeAttribute('data-v2-works-shelf');
 
+    var list = doc.createElement('ul');
+    list.className = 'v2c04__worklist';
+    var i;
+
+    /* 1) 公開在庫（大棚単位）。感情語を選んでいても入口の大棚文脈で引く。 */
+    var shelfId = effectiveShelfId();
+    var picked = selectWorks(shelfId);
+    if (picked) {
+      for (i = 0; i < picked.length; i++) list.appendChild(buildWorkCard(toWorkCardItem(picked[i])));
+      body.appendChild(list);
+      body.setAttribute('data-v2-works-count', String(picked.length));
+      body.setAttribute('data-v2-works-source', 'inventory');
+      body.setAttribute('data-v2-works-shelf', String(shelfId));
+      return { ok: true, status: 'ok', rendered: picked.length, source: 'inventory', shelfId: shelfId };
+    }
+
+    /* 2) 在庫が引けない文脈（'all' 入口など）では既存の感情語 snapshot を使う。 */
     var snaps = global.V2_EDITORIAL_SNAPSHOTS || {};
     var snap = state.activeEmotionId ? snaps[state.activeEmotionId] : null;
     var items = snap && Array.isArray(snap.items) ? snap.items : [];
-    var ok = items.length >= 3 && items.slice(0, 3).every(function (it) {
+    var ok = items.length >= WORKS_PER_VIEW && items.slice(0, WORKS_PER_VIEW).every(function (it) {
       return it && it.title && it.creator && it.editorial_reason && it.type;
     });
     if (!ok) {
-      // works_0_or_unapproved / 大棚文脈: 安全な HOLD。作品を生成しない。
+      // works_0_or_unapproved: 安全な HOLD。作品を生成しない。
       body.appendChild(buildWorksHold());
       body.setAttribute('data-v2-works-count', '0');
-      return { ok: true, status: 'hold', rendered: 0 };
+      body.setAttribute('data-v2-works-source', 'hold');
+      return { ok: true, status: 'hold', rendered: 0, source: 'hold' };
     }
-    var list = doc.createElement('ul');
-    list.className = 'v2c04__worklist';
-    for (var i = 0; i < 3; i++) list.appendChild(buildWorkCard(items[i]));
+    for (i = 0; i < WORKS_PER_VIEW; i++) list.appendChild(buildWorkCard(items[i]));
     body.appendChild(list);
     // 追加2作品は additional_approved === true かつ approved item がある場合のみ。
     // 現 Beta0 snapshot は未承認のため「もう2つ見る」を生成しない。
-    body.setAttribute('data-v2-works-count', '3');
-    return { ok: true, status: 'ok', rendered: 3 };
+    body.setAttribute('data-v2-works-count', String(WORKS_PER_VIEW));
+    body.setAttribute('data-v2-works-source', 'snapshot');
+    return { ok: true, status: 'ok', rendered: WORKS_PER_VIEW, source: 'snapshot' };
   }
 
   /* ---------------------------------------------------------------------------
