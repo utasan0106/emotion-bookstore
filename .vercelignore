@@ -1,0 +1,88 @@
+# =============================================================================
+# Vercel delivery surface — 公開不要な内部ファイルの除外
+# -----------------------------------------------------------------------------
+# 本ファイルは「配信（upload）対象から外す」だけで、リポジトリからは削除しない。
+# ローカルでのテスト実行・開発には一切影響しない。
+#
+# 対象は V2 M-08 Public Delivery Surface Audit で SAFE NOW と確定したものだけ。
+# 判定根拠：index.html を起点にした静的到達解析（BFS）と、
+#           DAY/NIGHT x 390/1440 x JA/EN の実ブラウザ全周回で記録した
+#           same-origin request の両方で「参照 0」であること。
+#
+# ★ visual-refit-v2-prototype/ をディレクトリごと除外してはならない。
+#   この配下には V2 本体 CSS と 4 つの adapter、3 つの data がある。
+#   そのため negation（!）で戻す方式は採らず、
+#   不要と確定したものだけを個別に列挙している。
+#   本番必須 9 件には、以下のどのパターンも一致しない。
+#     css/beta0.css / css/master-tokens.css
+#     adapter/navigation-adapter.js / bookshelf-adapter.js
+#     adapter/emotion-shelf-adapter.js / form-adapter.js
+#     data/editorial-snapshot-beta0.js / emotion-words-beta0.js
+#     data/emotion-words-en-beta0.js
+#
+# ★ vercel.json は除外しないこと。
+#   CSP / HSTS / X-Frame-Options 等のヘッダはこのファイルが供給しており、
+#   upload されないとセキュリティヘッダがすべて失われる。
+#
+# 除外しないもの（別 Gate で扱う）：
+#   root の重複画像 6 件 / manifest.json / sw.js /
+#   ogp*.jpg・ogp.png / sitemap.xml / guide-en.html
+# =============================================================================
+
+# ---- 内部 QA / テスト ----------------------------------------------------
+tests/
+/smoke_test_content_trust_fix1.js
+/smoke_test_daypart1_rc2_pageturn.js
+/smoke_test_desk_flow_fix1.js
+/smoke_test_en_dates.js
+/smoke_test_first_visit.js
+/smoke_test_quiet_en.js
+/smoke_test_quiet_hotfix.js
+/smoke_test_rc2.js
+/smoke_test_rc2b_batch2.js
+/smoke_test_rc3_counter_atmosphere.js
+/smoke_test_recommendation_repeat_fix1.js
+/smoke_test_shelf_swipe.js
+/smoke_test_sonnet_audit.js
+/smoke_test_sonnet_hotfix2.js
+/smoke_test_sonnet_hotfix3.js
+/smoke_test_sonnet_hotfix4.js
+/smoke_test_sonnet_hotfix4_1.js
+/smoke_test_uifix1_share_pin_overlap.js
+/smoke_test_visual_rc1.js
+/smoke_test_weather.js
+/smoke_test_weather_flag.js
+/smoke_test_weather_prototype1.js
+/en_dom_japanese_scan.js
+/test_results.log
+/manual_browser_check.md
+
+# ---- 社内ドキュメント / 運用設定 ------------------------------------------
+/CLAUDE.md
+/README.md
+docs/
+.claude/
+
+# ---- visual-refit-v2-prototype の非本番部分のみ ---------------------------
+# レビュー用のギャラリーと設計文書
+/visual-refit-v2-prototype/index.html
+/visual-refit-v2-prototype/README.md
+
+# 静的カンプ（01〜08）とその専用 CSS
+/visual-refit-v2-prototype/screens/
+/visual-refit-v2-prototype/css/screens/
+
+# prototype 単体表示用の CSS（本番は beta0.css / master-tokens.css のみを読む）
+/visual-refit-v2-prototype/css/tokens.css
+/visual-refit-v2-prototype/css/base.css
+/visual-refit-v2-prototype/css/components.css
+
+# adapter 検証用の harness ページ（adapter 本体 *.js は除外しない）
+/visual-refit-v2-prototype/adapter/nav-harness.html
+/visual-refit-v2-prototype/adapter/bookshelf-harness.html
+/visual-refit-v2-prototype/adapter/emotion-shelf-harness.html
+/visual-refit-v2-prototype/adapter/reading-flow-harness.html
+
+# 元データ JSON（runtime が読むのは同ディレクトリの *.js 版）
+/visual-refit-v2-prototype/data/04_Beta0_EditorialSnapshot_kanashii_v0_1.json
+/visual-refit-v2-prototype/data/V2_EMOTION_WORDS_BETA0_v0.1_PRODUCTION_APPROVED.json
