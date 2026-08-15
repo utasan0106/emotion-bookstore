@@ -466,8 +466,6 @@
     li.className = 'v2c04__work';
     li.setAttribute('data-v2-work-id', String(item.item_id || ''));
     if (item.media) li.setAttribute('data-v2-work-media', String(item.media));
-    if (item.tier) li.setAttribute('data-v2-work-tier', String(item.tier));
-    if (item.family) li.setAttribute('data-v2-work-family', String(item.family));
     if (item.region) li.setAttribute('data-v2-work-region', String(item.region));
     if (item.era) li.setAttribute('data-v2-work-era', String(item.era));
 
@@ -534,7 +532,9 @@
     return shelf;
   }
 
-  /* 在庫 1 件 → カード描画用の形。表示に使う項目だけを写す。 */
+  /* 在庫 1 件 → カード描画用の形。表示に使う項目だけを写す。
+     discoveryTier / familyId は Human Editorial・在庫管理用の内部 metadata で、
+     user-facing へは出さない契約。runtime payload にも持たせていない。 */
   function toWorkCardItem(row) {
     return {
       item_id: String(row.publicId || ''),
@@ -543,8 +543,6 @@
       creator: String(row.creator || ''),
       editorial_reason: String(row.editorialReason || ''),
       source_url: safeSourceUrl(row.officialSourceUrl),
-      tier: String(row.discoveryTier || ''),
-      family: String(row.familyId || ''),
       region: String(row.region || ''),
       era: String(row.eraBand || '')
     };
