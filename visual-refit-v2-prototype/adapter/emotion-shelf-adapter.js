@@ -474,19 +474,36 @@
     type.textContent = workMediaLabel(item.media);
     li.appendChild(type);
 
+    /* R5.1：題名・著者も locale で出し分ける。
+       English locale では EN 表記だけを出し、EN が無いときに JA 表記へ
+       落とす（silent fallback）ことはしない。EN 在庫の絞り込みは
+       validWorkRow 側で済んでいるため、ここへ到達する EN 文脈の作品は
+       title / creator / editorial の EN を必ず 3 つとも持つ。
+       表記は R2 で承認された文字列をそのまま出すだけで、runtime での
+       翻訳・ローマ字化・表記の言い換えは一切しない。 */
+    var enWork = isEN();
+    var titleText = enWork ? String(item.title_en || '') : String(item.title || '');
+
     var title = doc.createElement('span');
     title.className = 'v2c04__work-title';
-    title.textContent = String(item.title || '');
+    title.textContent = titleText;
     li.appendChild(title);
 
     var creator = doc.createElement('span');
     creator.className = 'v2c04__work-creator';
-    creator.textContent = String(item.creator || '');
+    creator.textContent = enWork ? String(item.creator_en || '') : String(item.creator || '');
     li.appendChild(creator);
 
+    /* R5：編集理由の locale 出し分け。
+       English locale では EN editorial だけを出す。EN が無い作品へ JA editorial を
+       代わりに出す（silent fallback）ことはしない。EN 在庫の絞り込みは
+       validWorkRow 側で済んでいるため、ここへ到達する EN 文脈の作品は
+       必ず EN を持つ。ここでの判定は二重の安全弁である。 */
     var reason = doc.createElement('span');
     reason.className = 'v2c04__work-reason';
-    reason.textContent = String(item.editorial_reason || '');
+    reason.textContent = enWork
+      ? String(item.editorial_reason_en || '')
+      : String(item.editorial_reason || '');
     li.appendChild(reason);
 
     var href = safeSourceUrl(item.source_url);
@@ -497,8 +514,9 @@
       link.setAttribute('target', '_blank');
       link.setAttribute('rel', 'noopener noreferrer');
       link.textContent = T('v2WorkSourceLink', '公式ページを見る');
+      /* R5.1：aria-label の題名も表示中の locale の表記に揃える */
       link.setAttribute('aria-label', T('v2WorkSourceAria', '『{title}』の公式ページを見る（新しいタブで開きます）')
-        .split('{title}').join(String(item.title || '')));
+        .split('{title}').join(titleText));
       li.appendChild(link);
     }
     return li;
@@ -542,15 +560,35 @@
       title: String(row.title || ''),
       creator: String(row.creator || ''),
       editorial_reason: String(row.editorialReason || ''),
+      /* R5 / R5.1：EN 表記は在庫が持っているときだけ payload へ載せる。
+         runtime 翻訳・ローマ字化・生成はしない（在庫の文字列をそのまま写すだけ）。 */
+      editorial_reason_en: String(row.editorialReasonEn || ''),
+      title_en: String(row.titleEn || ''),
+      creator_en: String(row.creatorEn || ''),
       source_url: safeSourceUrl(row.officialSourceUrl),
       region: String(row.region || ''),
       era: String(row.eraBand || '')
     };
   }
 
+  /* R5 / R5.1：English locale では「EN 表記が 3 つとも揃っている作品」
+     （titleEn / creatorEn / editorialReasonEn）だけを有効在庫とする。
+     どれか 1 つでも欠けた作品は選定対象へ入らないため、英語画面に
+     JA の題名・著者・編集理由が混ざることも、代替表示されることもない。
+     JA locale の有効条件は従来のまま（EN の有無は一切見ない）。
+     並び順（displayRank）・表示件数（WORKS_PER_VIEW）・抽選なしの
+     deterministic 契約は変更していない。EN 在庫が足りない文脈では
+     既存の HOLD 表示へ倒れる（fail-closed）。 */
   function validWorkRow(row) {
-    return !!(row && row.publicId && row.title && row.creator &&
+    var base = !!(row && row.publicId && row.title && row.creator &&
       row.editorialReason && row.mediaType);
+    if (!base) return false;
+    if (isEN()) {
+      return !!(String(row.titleEn || '').trim() &&
+        String(row.creatorEn || '').trim() &&
+        String(row.editorialReasonEn || '').trim());
+    }
+    return true;
   }
 
   /* 在庫の displayRank 昇順で先頭 3 件。抽選も組合せ探索もしない。

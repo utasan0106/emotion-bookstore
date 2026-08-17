@@ -1416,3 +1416,328 @@ html[data-v2-mounted="true"] .v2c04__wd-body,
 html[data-v2-mounted="true"] .v2c04__wd-chip{
   text-wrap: pretty;
 }
+
+/* ============================================================================
+ * RF：Reading Field Grammar / 8大棚 Shelf Field（2026-08-16）
+ * ----------------------------------------------------------------------------
+ * ねらい
+ *   ひとつの同じ書店の中に、8種類の「読む空間」がある状態にする。
+ *   8棚で構造・機能・可読性・操作方法は変えず、
+ *   Light / Aperture / Gravity / Boundary / Rhythm / Space だけを変える。
+ *
+ * 触っていないもの（Protected / Store Layer）
+ *   ・taxonomy と routing：MAJOR_SHELVES / CROSSWAY / CANONICAL_PRIMARY /
+ *     嫉妬の二重配架 / effectiveShelfId — adapter は1行も変更していない。
+ *   ・storage / GA4 / network / privacy / 作品 data model / Book Lifecycle。
+ *   ・body font・文字サイズ・line-height・文字色・最小コントラスト・
+ *     tap target・focus state・DOM構造・セクションの順序と機能。
+ *   ・04 の .v2c04__halo と .v2c04__hero::after（実測でコントラストを詰めた層）。
+ *     Field の光はそこへ足さず、周縁（peripheral area）にだけ置く。
+ *
+ * 差の付け方
+ *   既存の per-shelf フック html[data-v2-shelf-context="<大棚id>"] に、
+ *   幾何のトークンだけを載せる。色（--v2-shelf-tint）は既存のまま使い、
+ *   identity の主役にはしない（無彩色にしても差が残ることを QA で確認する）。
+ *   DAY / NIGHT で幾何は一切変えない。変わるのは照明条件だけ。
+ * ========================================================================== */
+
+/* ---- RF-0：Field トークンの既定値（＝どの棚にも当てはまる「店の基準」） ---- */
+html[data-v2-mounted="true"]{
+  --rf-aperture:46rem;        /* Aperture / Space：読み筋の幅 */
+  --rf-gravity:0.50;          /* Gravity：hero 内の重心（0=上 / 1=下） */
+  --rf-offset:0%;             /* Vector：中心軸のずれ（＋で右） */
+  --rf-gap:1;                 /* Rhythm：section 間隔の倍率 */
+  --rf-card-gap:1;            /* Rhythm：カード間隔の倍率 */
+  --rf-bound:0.45;            /* Boundary：境界線の濃度 */
+  --rf-bound-radius:12px;     /* Boundary：境界の閉じ方 */
+  /* Light：周縁に置く光の核（最大3つ）。位置・広がり・強さだけを変える */
+  --rf-l1-x:50%; --rf-l1-y:16%; --rf-l1-w:64%; --rf-l1-h:34%; --rf-l1-a:0.16;
+  --rf-l2-x:50%; --rf-l2-y:88%; --rf-l2-w:60%; --rf-l2-h:26%; --rf-l2-a:0.07;
+  --rf-l3-a:0;   --rf-l3-x:50%; --rf-l3-y:50%; --rf-l3-w:40%; --rf-l3-h:26%;
+}
+
+/* ---- RF-1：8大棚の Field DNA（幾何のみ。DAY/NIGHT 共通） ----------------- */
+
+/* 1 心が弾む：内側に生まれた力が次へ続く。重心はやや上、広く開き、境界は閉じない */
+html[data-v2-shelf-context="hazumu"]{
+  --rf-aperture:48rem; --rf-gravity:0.38; --rf-offset:0%;
+  --rf-gap:1.06; --rf-card-gap:1.10;
+  --rf-bound:0.42; --rf-bound-radius:12px;
+  --rf-l1-x:50%; --rf-l1-y:12%; --rf-l1-w:82%; --rf-l1-h:38%; --rf-l1-a:0.18;  /* 広い自然光 */
+  --rf-l2-x:50%; --rf-l2-y:96%; --rf-l2-w:76%; --rf-l2-h:24%; --rf-l2-a:0.09;  /* 次の頁へ続く */
+}
+/* 2 心があたたまる：外から入ってきて内側に残る。包む。近い距離の反射光 */
+html[data-v2-shelf-context="atatamaru"]{
+  --rf-aperture:39rem; --rf-gravity:0.56; --rf-offset:0%;
+  --rf-gap:0.92; --rf-card-gap:0.82;                                            /* コンテンツ同士が少し近い */
+  --rf-bound:0.34; --rf-bound-radius:18px;                                      /* soft / continuous */
+  --rf-l1-x:50%; --rf-l1-y:42%; --rf-l1-w:52%; --rf-l1-h:34%; --rf-l1-a:0.17;  /* 近距離の反射光 */
+  --rf-l2-a:0;
+}
+/* 3 惹かれる：自分と対象のあいだに方向が生まれる。片側だけ開き、下ほど密になる */
+html[data-v2-shelf-context="hikareru"]{
+  --rf-aperture:43rem; --rf-gravity:0.46; --rf-offset:2.6%;                     /* わずかに非対称 */
+  --rf-gap:1.0; --rf-card-gap:0.9;
+  --rf-bound:0.52; --rf-bound-radius:10px;
+  --rf-l1-x:78%; --rf-l1-y:20%; --rf-l1-w:38%; --rf-l1-h:26%; --rf-l1-a:0.19;  /* 少し離れた一点 */
+  --rf-l2-a:0;
+}
+/* 4 沈む：外への運動が弱まり、内へ留まり、時間が少し遅くなる。重心は低め */
+html[data-v2-shelf-context="shizumu"]{
+  --rf-aperture:37rem; --rf-gravity:0.66; --rf-offset:0%;
+  --rf-gap:1.28; --rf-card-gap:1.16;                                            /* section gap を長めに */
+  --rf-bound:0.38; --rf-bound-radius:13px;                                      /* soft but stable */
+  --rf-l1-x:50%; --rf-l1-y:8%;  --rf-l1-w:88%; --rf-l1-h:30%; --rf-l1-a:0.13;  /* 少し遠い光 */
+  --rf-l2-x:50%; --rf-l2-y:100%; --rf-l2-w:70%; --rf-l2-h:22%; --rf-l2-a:0.10; /* 下側へ静かに落ち着く */
+}
+/* 5 ざわつく：小さな信号が複数。基本グリッドは必ず整っていること */
+html[data-v2-shelf-context="zawatsuku"]{
+  --rf-aperture:42rem; --rf-gravity:0.48; --rf-offset:0%;
+  --rf-gap:1.0; --rf-card-gap:1.0;
+  --rf-bound:0.46; --rf-bound-radius:11px;
+  --rf-l1-x:32%; --rf-l1-y:14%; --rf-l1-w:44%; --rf-l1-h:26%; --rf-l1-a:0.13;  /* 複数の弱い反射 */
+  --rf-l2-x:76%; --rf-l2-y:34%; --rf-l2-w:38%; --rf-l2-h:24%; --rf-l2-a:0.11;
+  --rf-l3-x:56%; --rf-l3-y:82%; --rf-l3-w:40%; --rf-l3-h:22%; --rf-l3-a:0.08;
+}
+/* 6 ぶつかる：二つ以上の力が同じ場所を譲らない。二極・中央で圧縮・firm */
+html[data-v2-shelf-context="butsukaru"]{
+  --rf-aperture:40rem; --rf-gravity:0.50; --rf-offset:0%;
+  --rf-gap:1.0; --rf-card-gap:0.94;
+  --rf-bound:0.62; --rf-bound-radius:6px;                                       /* 他棚より firm */
+  --rf-l1-x:16%; --rf-l1-y:18%; --rf-l1-w:40%; --rf-l1-h:28%; --rf-l1-a:0.15;  /* 2方向の弱い差 */
+  --rf-l2-x:84%; --rf-l2-y:18%; --rf-l2-w:40%; --rf-l2-h:28%; --rf-l2-a:0.15;
+}
+/* 7 身を引く：対象との間に距離。端／後方へ。下へ行くことは本質ではない */
+html[data-v2-shelf-context="miwohiku"]{
+  --rf-aperture:36rem; --rf-gravity:0.44; --rf-offset:-3.4%;                    /* 対象から離れる */
+  --rf-gap:1.0; --rf-card-gap:0.96;
+  --rf-bound:0.50; --rf-bound-radius:9px;
+  --rf-l1-x:14%; --rf-l1-y:16%; --rf-l1-w:46%; --rf-l1-h:30%; --rf-l1-a:0.15;  /* 少し距離のある光 */
+  --rf-l2-a:0;
+}
+/* 8 まだ名前がない：複数の完成した要素が、まだ一つへ閉じていない */
+html[data-v2-shelf-context="namae-ga-nai"]{
+  --rf-aperture:44rem; --rf-gravity:0.50; --rf-offset:0%;
+  --rf-gap:1.0; --rf-card-gap:1.0;
+  --rf-bound:0.44; --rf-bound-radius:12px;
+  --rf-l1-x:28%; --rf-l1-y:18%; --rf-l1-w:42%; --rf-l1-h:26%; --rf-l1-a:0.12;  /* 2〜3個の弱い中心 */
+  --rf-l2-x:70%; --rf-l2-y:26%; --rf-l2-w:40%; --rf-l2-h:24%; --rf-l2-a:0.12;
+  --rf-l3-x:50%; --rf-l3-y:78%; --rf-l3-w:44%; --rf-l3-h:24%; --rf-l3-a:0.10;
+}
+
+/* ---- RF-2：Field の光。本文の真後ろではなく、頁の周縁にだけ置く --------- */
+html[data-v2-mounted="true"] [data-screen="04"] .v2c04__stage{
+  position: relative;
+  isolation: isolate;
+}
+/* mask 非対応環境では Field の光そのものを出さない。
+   mask が効かないまま background だけが残ると、hero の文字帯へ光が回り込み、
+   実測で詰めたコントラスト（FIX-07 / qa_r21c_hero_contrast）を下回るため。
+   光が無くても、幅・重心・間隔・境界による8棚の差は残る
+   （＝機能も可読性も落ちない。差が一段おとなしくなるだけ）。 */
+@supports (mask-image: linear-gradient(#000, #000)) or (-webkit-mask-image: linear-gradient(#000, #000)){
+  html[data-v2-mounted="true"] [data-screen="04"] .v2c04__stage::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+    /* hero（感情名・lead）の帯には一切かからないようにする。
+       §14「Semantic Effect は margin / empty field / section boundary /
+       peripheral area へ置く。本文の真後ろで強く演出しない」に従い、
+       hero を過ぎたところから光り始める。hero の可読性は既存 halo /
+       hero::after の実測値のまま保たれる（qa_r21c_hero_contrast で担保）。 */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent 300px, #000 470px);
+    mask-image: linear-gradient(to bottom, transparent 0, transparent 300px, #000 470px);
+    background:
+      radial-gradient(var(--rf-l1-w) var(--rf-l1-h) at var(--rf-l1-x) var(--rf-l1-y),
+        color-mix(in srgb, var(--v2-shelf-tint, #a8823e) calc(var(--rf-l1-a) * 100%), transparent) 0%,
+        transparent 88%),
+      radial-gradient(var(--rf-l2-w) var(--rf-l2-h) at var(--rf-l2-x) var(--rf-l2-y),
+        color-mix(in srgb, var(--v2-shelf-tint, #a8823e) calc(var(--rf-l2-a) * 100%), transparent) 0%,
+        transparent 90%),
+      radial-gradient(var(--rf-l3-w) var(--rf-l3-h) at var(--rf-l3-x) var(--rf-l3-y),
+        color-mix(in srgb, var(--v2-shelf-tint, #a8823e) calc(var(--rf-l3-a) * 100%), transparent) 0%,
+        transparent 90%);
+  }
+}
+
+/* NIGHT は同じ幾何のまま、照明条件だけを変える（反射光として弱く、発光させない）。
+   黒背景の Dark Mode にはしない＝地色は既存トークンのまま。 */
+html[data-v2-mounted="true"][data-theme="night"] [data-screen="04"] .v2c04__stage::before{
+  opacity:0.72;
+}
+
+/* ---- RF-3：Aperture / Space。読み筋の幅と、中心軸のずれ（Vector） ------- */
+@media (min-width: 900px){
+  html[data-v2-mounted="true"] .v2c04__stage{
+    max-width: var(--rf-aperture);
+    /* Vector：中心軸をわずかにずらす。0% の棚は従来どおり中央のまま。
+       transform ではなく margin で行う（transform は position:fixed の
+       包含ブロックを作ってしまい、将来オーバーレイを内側へ置いたときに壊れるため）。 */
+    margin-left: calc(50% - var(--rf-aperture) / 2 + var(--rf-offset));
+    margin-right: auto;
+  }
+}
+@media (min-width: 1200px){
+  html[data-v2-mounted="true"] .v2c04__stage{
+    max-width: calc(var(--rf-aperture) + 4rem);
+    margin-left: calc(50% - (var(--rf-aperture) + 4rem) / 2 + var(--rf-offset));
+  }
+}
+
+/* ---- RF-4：Gravity。重心は hero の「あと」の空きで作る -------------------
+ *  hero の内側 padding は変えない。.v2c04__halo は hero に対する % で
+ *  位置決めされているため、padding を動かすと題名・lead と光の芯の関係が
+ *  ずれ、実測で詰めたコントラスト（FIX-07）が崩れる。
+ *  そこで重心は「hero と最初の section のあいだの空き」として表現する。
+ *  重心が低い棚ほど、本文が下へ落ち着いて始まる。 */
+html[data-v2-mounted="true"] .v2c04__hero{
+  margin-bottom: calc(clamp(0px, 6cqw, 34px) * var(--rf-gravity) * 2);
+}
+
+/* ---- RF-5：Rhythm。静止したまま感じる時間性を section gap で作る -------- */
+html[data-v2-mounted="true"] .v2c04__sec{
+  margin-top: calc(clamp(26px, 11cqw, 44px) * var(--rf-gap));
+}
+html[data-v2-mounted="true"] .v2c04__words{
+  gap: calc(clamp(8px, 2.6cqw, 12px) * var(--rf-card-gap));
+}
+/* 惹かれる：対象へ向かうほど少し密になる（下の section ほど詰まる） */
+html[data-v2-shelf-context="hikareru"] .v2c04__sec:nth-of-type(3){ margin-top: calc(clamp(26px, 11cqw, 44px) * 0.86); }
+html[data-v2-shelf-context="hikareru"] .v2c04__sec:nth-of-type(4){ margin-top: calc(clamp(26px, 11cqw, 44px) * 0.72); }
+/* ぶつかる：進む→止まる→再開。中央付近だけ圧縮する */
+html[data-v2-shelf-context="butsukaru"] .v2c04__sec:nth-of-type(3){ margin-top: calc(clamp(26px, 11cqw, 44px) * 0.58); }
+html[data-v2-shelf-context="butsukaru"] .v2c04__sec:nth-of-type(4){ margin-top: calc(clamp(26px, 11cqw, 44px) * 1.24); }
+/* 身を引く：一箇所にだけ大きめの空席をつくる */
+html[data-v2-shelf-context="miwohiku"] .v2c04__sec:nth-of-type(3){ margin-top: calc(clamp(26px, 11cqw, 44px) * 1.62); }
+/* ざわつく：少数箇所のみ変化。基本グリッドは整えたまま、2〜3px だけずらす */
+html[data-v2-shelf-context="zawatsuku"] .v2c04__words .v2-word-card:nth-child(2){ transform: translateX(3px); }
+html[data-v2-shelf-context="zawatsuku"] .v2c04__sec:nth-of-type(3){ margin-top: calc(clamp(26px, 11cqw, 44px) * 1.08); }
+/* まだ名前がない：複数の弱い周期。閉じ切らない */
+html[data-v2-shelf-context="namae-ga-nai"] .v2c04__sec:nth-of-type(3){ margin-top: calc(clamp(26px, 11cqw, 44px) * 1.14); }
+html[data-v2-shelf-context="namae-ga-nai"] .v2c04__sec:nth-of-type(4){ margin-top: calc(clamp(26px, 11cqw, 44px) * 0.90); }
+
+/* ---- RF-6：Boundary。罫線・カード間隔・面の接続で境界の性質を変える ----
+ *  背景色・文字色・コントラストは触らない。border の濃度と閉じ方だけを扱う。 */
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card{
+  border-color: rgb(170 150 120 / var(--rf-bound));
+  border-radius: var(--rf-bound-radius);
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__words .v2-word-card{
+  border-color: rgb(150 120 80 / calc(var(--rf-bound) * 0.8));
+}
+/* 心が弾む：明瞭だが閉じない（下辺だけ開ける） */
+html[data-v2-shelf-context="hazumu"] .v2c04__words .v2-word-card{
+  border-bottom-color: transparent;
+  border-bottom-left-radius:0; border-bottom-right-radius:0;
+}
+/* 身を引く：自分側（左）は明瞭に、向こう側（右）は薄く */
+html[data-v2-shelf-context="miwohiku"] .v2c04__words .v2-word-card{
+  border-left-color: rgb(170 150 120 / 0.82);
+  border-right-color: rgb(170 150 120 / 0.18);
+}
+html[data-theme="night"][data-v2-shelf-context="miwohiku"] .v2c04__words .v2-word-card{
+  border-left-color: rgb(150 120 80 / 0.72);
+  border-right-color: rgb(150 120 80 / 0.14);
+}
+/* ざわつく：一部だけ完全には揃わない（1枚だけ境界の濃度が違う） */
+html[data-v2-shelf-context="zawatsuku"] .v2c04__words .v2-word-card:nth-child(2){
+  border-color: rgb(170 150 120 / 0.66);
+}
+/* まだ名前がない：部分的には明瞭、全体としては未統合。
+   ぼかし・霧・skeleton は使わず、閉じている辺の数だけを変える。 */
+html[data-v2-shelf-context="namae-ga-nai"] .v2c04__words .v2-word-card:nth-child(2){
+  border-right-color: transparent;
+}
+html[data-v2-shelf-context="namae-ga-nai"] .v2c04__words .v2-word-card:nth-child(3){
+  border-top-color: transparent;
+}
+/* ぶつかる：2つの整った軸が近づく。見出しは左、カード群はわずかに右の軸へ */
+html[data-v2-shelf-context="butsukaru"] .v2c04__words{
+  margin-left: 3.2%;
+}
+
+/* ---- RF-7：03 感情の棚。固定アイコンと草の装飾を presentation から外す ---
+ *  §8：波線・ジグザグ・矢印・星・点線円を「その感情のマーク」として固定しない。
+ *  SVG asset 自体は DOM に残したまま、表示のみを止める最小変更。
+ *  代わりの新しい感情アイコンは作らない。8棚の差は Field で表す。 */
+html[data-v2-mounted="true"] .v2c03__ring,
+html[data-v2-mounted="true"] .v2c03__sprig,
+html[data-v2-mounted="true"] .v2c03__guidesprig{
+  display:none !important;
+}
+/* 棚札としての体裁を整える。アイコンが抜けたぶん、名前を面の中心に置く。
+   tap target（min-height 44px 以上）と文字サイズは変えない。 */
+html[data-v2-mounted="true"] .v2c03__book{
+  justify-content:center;
+  gap:0;
+  min-height:44px;
+}
+html[data-v2-mounted="true"] .v2c03__grid{
+  max-height:none;
+}
+/* 罫線だけになった divider は、左右の線をそのまま突き合わせる */
+html[data-v2-mounted="true"] .v2c03__divider{
+  gap: min(3.2cqw, 1.2svh);
+}
+html[data-v2-mounted="true"] .v2c03__guide{
+  justify-content:center;
+}
+
+/* ---- RF-8：Responsive。形ではなく関係を保存する ------------------------ */
+/* 320 / 390 / 430：縦のリズムと端の揃えへ変換する。列は増やさない */
+@media (max-width: 430px){
+  html[data-v2-mounted="true"] .v2c04__stage{
+    max-width:none;
+    margin-left:auto; margin-right:auto;  /* 横のオフセットは端の揃えへ移す */
+  }
+  /* Vector は padding の非対称として残す（狭い画面で中心をずらすと窮屈になるため） */
+  html[data-v2-shelf-context="hikareru"] .v2c04__sec{ padding-left:3.5%; }
+  html[data-v2-shelf-context="miwohiku"] .v2c04__sec{ padding-right:5%; }
+  html[data-v2-shelf-context="butsukaru"] .v2c04__words{ margin-left:2.4%; }
+}
+@media (max-width: 360px){
+  /* 320px：Field は保つが、余白の絶対量が読みを圧迫しないよう倍率を丸める */
+  html[data-v2-mounted="true"]{ --rf-gap:1; --rf-card-gap:1; }
+  html[data-v2-shelf-context="shizumu"]{ --rf-gap:1.16; }
+  html[data-v2-shelf-context="atatamaru"]{ --rf-card-gap:0.88; }
+  html[data-v2-shelf-context="miwohiku"] .v2c04__sec:nth-of-type(3){ margin-top: calc(clamp(26px, 11cqw, 44px) * 1.34); }
+}
+/* Desktop：03 を「中央に置いた巨大なスマホ」にしない。
+   横幅を使って 8棚を 4列×2段へ組み直す。情景（.v2c03__amb）は cover のままなので
+   引き伸ばしによる歪みは起きない。DOM・タイル構造・機能は変えない。 */
+@media (min-width: 900px){
+  html[data-v2-mounted="true"] .v2c03__stage{
+    width: min(100vw - 6rem, 60rem);
+    aspect-ratio:auto;
+  }
+  html[data-v2-mounted="true"] .v2c03__grid{
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: min(2.4cqw, 1.6svh) 2.6cqw;
+  }
+  html[data-v2-mounted="true"] .v2c03__book{
+    min-height: min(18cqw, 15svh);
+  }
+}
+@media (min-width: 1280px){
+  html[data-v2-mounted="true"] .v2c03__stage{
+    width: min(100vw - 10rem, 68rem);
+  }
+}
+
+/* ---- RF-9：desktop での 03 棚札の詰め ------------------------------------
+ *  4列へ組み替えた結果、cqw 基準の値が実寸で大きくなりすぎる箇所を戻す。
+ *  ・棚色の帯（::before）は「小さな棚札」に留める（色を identity の主役にしない）。
+ *  ・カード高は名前が読める高さまで。空の面を大きく取らない。 */
+@media (min-width: 900px){
+  html[data-v2-mounted="true"] .v2c03__book::before{
+    width: min(2.95cqw, 10px);
+  }
+  html[data-v2-mounted="true"] .v2c03__book{
+    min-height: min(13cqw, 11svh);
+    padding-left: calc(min(2.95cqw, 10px) + 2.2cqw);
+    border-radius: min(1.4cqw, 10px);
+  }
+}
