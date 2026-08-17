@@ -365,7 +365,8 @@
   /* Final Field Fix 2：近い言葉 → 既存21感情の解決。
      一致判定は「JA canonical label」または「現在 locale の表示名」との完全一致のみ。
      推測・部分一致・正規化はしない（存在しない語を interactive にしないため）。
-     unfiled はことばのページを持たないため対象外。読むだけで何も書き換えない。 */
+     未分類の整理箱（UNFILED_ID）はことばのページを持たないため対象外。
+     読むだけで何も書き換えない。 */
   function nearWordTargetId(text) {
     var cats = readCategories();
     if (!cats) return null;
