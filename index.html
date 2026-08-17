@@ -773,7 +773,8 @@ body.night .about-data-content{
     <header class="v2c04__hero">
       <span class="v2c04__halo" aria-hidden="true"></span>
       <span class="v2c04__stars" aria-hidden="true"><svg viewBox="0 0 240 240"><circle cx="38" cy="52" r="1.4"/><circle cx="196" cy="40" r="1.1"/><circle cx="214" cy="120" r="1.4"/><circle cx="26" cy="140" r="1.1"/><circle cx="120" cy="18" r="1.2"/><circle cx="176" cy="196" r="1.2"/></svg></span>
-      <span class="v2c04__sprig" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span>
+      <!-- Final Field Fix 6：Hero 右下の芽（sprig）は 21感情共通の不要装飾として削除。
+           代替装飾は作らない（halo / stars は承認済みのまま維持）。 -->
       <h1 class="v2c04__title" data-v2-emotion="title"></h1>
       <p class="v2c04__lead" data-v2-emotion="lead"></p>
     </header>
@@ -989,10 +990,10 @@ body.night .about-data-content{
         <div class="v2c05__field">
           <label class="v2c05__label" for="v2bStoryInput" data-i18n="v2c05StoryLabel">本文</label>
           <div class="v2c05__tawrap">
+            <!-- Final Field Fix 4：placeholder の固定改行（\n）を撤去。
+                 320/390/430 のどの幅でも textarea の折返しに任せ、文章は変えない。 -->
             <textarea class="v2c05__textarea" id="v2bStoryInput" data-v2-write="story" data-i18n-ph="v2c05StoryPh"
-                      placeholder="いま、心の中に残っていることを、そのまま書いてみてください。
-うまく書こうとしなくて大丈夫。
-一言からでも、本になります。"></textarea>
+                      placeholder="いま、心の中に残っていることを、そのまま書いてみてください。うまく書こうとしなくて大丈夫。一言からでも、本になります。"></textarea>
             <p class="v2c05__count" data-v2-write="count">0 / 700字</p>
           </div>
         </div>

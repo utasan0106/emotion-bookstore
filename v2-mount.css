@@ -307,10 +307,10 @@ html[data-v2-mounted="true"] .v2c02__body{
   padding-right: 2.2cqw;
 }
 
-/* 04：「近い言葉」の false affordance を下げる。
-   Beta0 では非 interactive な <span> だが、丸ピル＋実線枠が押せる要素に見えていた。
-   display-only であることが見た目でも分かる静かな並びへ戻す。
-   interaction は追加しない（Near-word Navigation は今回の scope 外）。 */
+/* 04：「近い言葉」の丸ピル＋実線枠をやめ、静かな語の並びにする。
+   Final Field Fix 2 で「既存21感情と一致する語」だけ button（--walk）になった。
+   walk chip の押せる見た目は下部の Final Field Fix セクションで足す。
+   一致しない語は従来どおり display-only の <span> のまま。 */
 html[data-v2-mounted="true"] .v2c04__wd-chip{
   padding: 0;
   border: 0;
@@ -1658,25 +1658,19 @@ html[data-v2-shelf-context="butsukaru"] .v2c04__words{
   margin-left: 3.2%;
 }
 
-/* ---- RF-7：03 感情の棚。固定アイコンと草の装飾を presentation から外す ---
- *  §8：波線・ジグザグ・矢印・星・点線円を「その感情のマーク」として固定しない。
- *  SVG asset 自体は DOM に残したまま、表示のみを止める最小変更。
- *  代わりの新しい感情アイコンは作らない。8棚の差は Field で表す。 */
-html[data-v2-mounted="true"] .v2c03__ring,
+/* ---- RF-7（Final Field Fix 1 で縮小）：03 の草の装飾のみ外す -------------
+ *  当初 RF-7 は 8入口の丸アイコン（.v2c03__ring）も隠していたが、
+ *  CEO 承認済みアイコンの非表示 regression だったため復元した
+ *  （アイコンの SVG・寸法・色は FIX-L の承認済み定義がそのまま効く）。
+ *  sprig（芽・草）の退場は Final Field Fix 6 の方針どおり維持する。 */
 html[data-v2-mounted="true"] .v2c03__sprig,
 html[data-v2-mounted="true"] .v2c03__guidesprig{
   display:none !important;
 }
-/* 棚札としての体裁を整える。アイコンが抜けたぶん、名前を面の中心に置く。
-   tap target（min-height 44px 以上）と文字サイズは変えない。 */
-html[data-v2-mounted="true"] .v2c03__book{
-  justify-content:center;
-  gap:0;
-  min-height:44px;
-}
-html[data-v2-mounted="true"] .v2c03__grid{
-  max-height:none;
-}
+/* （Final Field Fix 1）アイコン復元に伴い、RF-7 が入れていた
+   「アイコン無し前提」の棚札レイアウト補正（justify-content:center /
+   gap:0 / min-height:44px / grid max-height:none）は撤去した。
+   R2-01・FIX-L の承認済みレイアウトがそのまま効く。 */
 /* 罫線だけになった divider は、左右の線をそのまま突き合わせる */
 html[data-v2-mounted="true"] .v2c03__divider{
   gap: min(3.2cqw, 1.2svh);
@@ -1739,5 +1733,125 @@ html[data-v2-mounted="true"] .v2c03__guide{
     min-height: min(13cqw, 11svh);
     padding-left: calc(min(2.95cqw, 10px) + 2.2cqw);
     border-radius: min(1.4cqw, 10px);
+  }
+}
+
+/* ============================================================================
+ * Final Field Fix（2026-08-17 深夜便）
+ * ----------------------------------------------------------------------------
+ * FIX 2 / 3 / 5 / 7 / 8 / 9 の presentation をここへまとめる。
+ * storage / GA4 / 外部通信 / 保存契約には一切触れない。
+ * ========================================================================== */
+
+/* ---- FIX 2：近い言葉の walk chip -----------------------------------------
+ * 既存21感情と一致する語だけ button になる。押せることが静かに分かる下線のみ。
+ * 一致しない語（<span>）は従来の見た目のまま差を作る。 */
+html[data-v2-mounted="true"] button.v2c04__wd-chip--walk{
+  appearance: none;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  color: #4f4130 !important;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgb(150 128 98 / 0.6);
+  text-underline-offset: 0.24em;
+}
+html[data-v2-mounted="true"] button.v2c04__wd-chip--walk:hover{
+  text-decoration-color: rgb(110 90 60 / 0.9);
+}
+html[data-v2-mounted="true"][data-theme="night"] button.v2c04__wd-chip--walk{
+  color: #cbbb9c !important;
+  text-decoration-color: rgb(170 140 95 / 0.55);
+}
+
+/* ---- FIX 3：作品カードの複数 destination ---------------------------------
+ * 1 destination のときは従来と同じ1本のリンクに見える。
+ * 複数あるときだけ、確認済みの遷移先が静かに横へ並ぶ。 */
+html[data-v2-mounted="true"] .v2c04__work-links{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35em 1.1em;
+  margin-top: 0.55em;
+}
+html[data-v2-mounted="true"] .v2c04__work-links .v2c04__work-source{
+  margin-top: 0;
+}
+
+/* ---- FIX 5：「本にする」直下の説明 ---------------------------------------
+ * 中央寄せの全幅3行が散らばって見えていた。読みやすい行長へ絞り、
+ * 行を均して1つのまとまりにする。文言は変えない。 */
+html[data-v2-mounted="true"] .v2c05__bindnote{
+  max-width: 23em;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.75;
+  text-wrap: balance;
+}
+
+/* ---- FIX 7：04「ことば」意味・ニュアンスの日本語文字組 -------------------
+ * 禁則を厳密にし、長い画面では行長（measure）を読める幅に留める。
+ * 文章そのものは変えない。 */
+html[data-v2-mounted="true"] .v2c04__wd-body{
+  max-width: 38em;
+  line-break: strict;
+  word-break: normal;
+  overflow-wrap: break-word;
+  hanging-punctuation: allow-end;
+}
+
+/* ---- FIX 8：Hero 説明（lead）の不自然な途中分割 --------------------------
+ * 390 で「誇らしい」等の短い一文が末尾数文字だけ2行目へ落ちていた。
+ * 字間と字サイズをわずかに詰め、入るものは1行へ。入らない長文は
+ * text-wrap: balance で行を均す（極端な縮小はしない：clamp 下限 12px は維持）。 */
+html[data-v2-mounted="true"] .v2c04__lead{
+  font-size: clamp(12px, 3.6cqw, 15.5px);
+  letter-spacing: 0.03em;
+  max-width: 30em;
+  margin-left: auto;
+  margin-right: auto;
+  text-wrap: balance;
+}
+
+/* ---- FIX 9：03 Desktop の左右のモヤを少し弱める --------------------------
+ * 900px 以上の 03 だけ。vignette の縁の濃さと中間の乳白を一段下げ、
+ * 背景そのもの（ambience 画像・blur の仕組み）は作り直さない。 */
+@media (min-width: 900px){
+  html[data-v2-mounted="true"] .v2c03::before{
+    background:
+      radial-gradient(130% 86% at 50% 42%,
+        color-mix(in srgb, var(--bg, #efe7d9) 48%, transparent) 0%,
+        color-mix(in srgb, var(--bg, #efe7d9) 64%, transparent) 58%,
+        color-mix(in srgb, #4a3a24 16%, transparent) 100%);
+  }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c03::before{
+    background:
+      radial-gradient(130% 86% at 50% 42%,
+        color-mix(in srgb, var(--bg, #12161d) 46%, transparent) 0%,
+        color-mix(in srgb, var(--bg, #12161d) 66%, transparent) 58%,
+        color-mix(in srgb, #000000 30%, transparent) 100%);
+  }
+}
+
+/* ---- FIX 10：棚名の不自然な折返し（desktop 4列） -------------------------
+ * 900px 以上では cqw 由来の棚名 27px が 4列カードの内寸に入らず、
+ * 「心があた／たまる」「まだ名前／がない」と途中で折れていた。
+ * 4列カードの内寸（約134px）に 7文字が1行で入る上限へ字サイズと字間を丸める。
+ * 320/390/430 は既存 clamp のままで全棚1行（実測済み）なので触らない。 */
+@media (min-width: 900px){
+  html[data-v2-mounted="true"] .v2c03__name{
+    font-size: clamp(15px, 1.85cqw, 18.5px);
+    letter-spacing: 0.02em;
+  }
+  /* 名前は中央揃えなので、spine ぶんの左逃げは最小限でよい。
+     左右の内 padding を詰めて 7文字棚名の1行ぶんの幅を確保する。 */
+  html[data-v2-mounted="true"] .v2c03__book{
+    padding-left: calc(min(2.95cqw, 10px) + 1.2cqw);
+    padding-right: 1.2cqw;
   }
 }

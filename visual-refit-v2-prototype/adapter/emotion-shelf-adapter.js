@@ -290,13 +290,22 @@
   /* 04 内で感情語を選ぶ。大棚文脈は変えない（入口文脈を保持したまま）。
      利用者が明示的に感情語 button を押したときだけ既存 goToShelf() が走り、
      既存の view_shelf / storage / 外部通信が既存どおりに発生する。
-     Adapter からは新イベント・新 storage・新通信を一切追加しない。 */
-  function selectEmotion(emotionId) {
+     Adapter からは新イベント・新 storage・新通信を一切追加しない。
+
+     Final Field Fix 2（Near-word Walk）：opts.near = true のときだけ、
+     入口棚の文脈外にある既存21感情への移動を許す。
+     - 対象は既存 CATEGORIES に実在する感情のみ（無い語へは歩けない）
+     - originMajorShelfId（起点棚）は書き換えない＝「棚へ戻る」で起点棚へ戻れる
+     - 同じ 04 の Emotion Node を再利用するだけで、新しい階層・history は作らない */
+  function selectEmotion(emotionId, opts) {
+    opts = opts || {};
     var ids = emotionIdsOf(effectiveShelfId());
     if (ids.indexOf(emotionId) === -1 && emotionId !== null) {
-      // 文脈外の感情は選択しない（勝手に文脈を作り替えない）
-      state.lastError = 'emotion_not_in_context';
-      return false;
+      if (!(opts.near === true && findCategory(emotionId))) {
+        // 文脈外の感情は選択しない（勝手に文脈を作り替えない）
+        state.lastError = 'emotion_not_in_context';
+        return false;
+      }
     }
     state.activeEmotionId = emotionId;
     state.lastError = null;
@@ -353,6 +362,24 @@
     };
   }
 
+  /* Final Field Fix 2：近い言葉 → 既存21感情の解決。
+     一致判定は「JA canonical label」または「現在 locale の表示名」との完全一致のみ。
+     推測・部分一致・正規化はしない（存在しない語を interactive にしないため）。
+     unfiled はことばのページを持たないため対象外。読むだけで何も書き換えない。 */
+  function nearWordTargetId(text) {
+    var cats = readCategories();
+    if (!cats) return null;
+    var s = String(text || '').trim();
+    if (!s) return null;
+    for (var i = 0; i < cats.length; i++) {
+      var c = cats[i];
+      if (!c || typeof c.id !== 'string' || c.id === UNFILED_ID) continue;
+      if (c.label === s) return c.id;
+      if (catLabel(c) === s) return c.id;
+    }
+    return null;
+  }
+
   function buildWordBlock(head, node) {
     var wrap = doc.createElement('div');
     wrap.className = 'v2c04__wd';
@@ -402,9 +429,24 @@
       var row = doc.createElement('div');
       row.className = 'v2c04__wd-chips';
       for (var i = 0; i < words.near_words.length; i++) {
-        var chip = doc.createElement('span');   // 非interactive（tag管理UIにしない）
-        chip.className = 'v2c04__wd-chip';
-        chip.textContent = String(words.near_words[i]);
+        var text = String(words.near_words[i]);
+        /* Final Field Fix 2：既存21感情の表示名と一致する語だけ interactive にする。
+           一致しない語（辞書に無い語）は従来どおり非interactive の <span>。
+           無限階層の辞書にしない：押した先も同じ 04 Emotion Node の再利用。 */
+        var targetId = nearWordTargetId(text);
+        var chip;
+        if (targetId && targetId !== state.activeEmotionId) {
+          chip = doc.createElement('button');
+          chip.type = 'button';
+          chip.className = 'v2c04__wd-chip v2c04__wd-chip--walk';
+          chip.setAttribute('data-v2-near-id', targetId);
+          chip.setAttribute('aria-label',
+            TF('v2NearWordAria', '「{word}」のことばのページへ', { word: text }));
+        } else {
+          chip = doc.createElement('span');   // 非interactive（tag管理UIにしない）
+          chip.className = 'v2c04__wd-chip';
+        }
+        chip.textContent = text;
         row.appendChild(chip);
       }
       body.appendChild(buildWordBlock(T('v2WordNear', '近い言葉'), row));
@@ -506,20 +548,65 @@
       : String(item.editorial_reason || '');
     li.appendChild(reason);
 
-    var href = safeSourceUrl(item.source_url);
-    if (href) {
-      var link = doc.createElement('a');
-      link.className = 'v2c04__work-source';
-      link.setAttribute('href', href);
-      link.setAttribute('target', '_blank');
-      link.setAttribute('rel', 'noopener noreferrer');
-      link.textContent = T('v2WorkSourceLink', '公式ページを見る');
-      /* R5.1：aria-label の題名も表示中の locale の表記に揃える */
-      link.setAttribute('aria-label', T('v2WorkSourceAria', '『{title}』の公式ページを見る（新しいタブで開きます）')
-        .split('{title}').join(titleText));
-      li.appendChild(link);
+    /* Final Field Fix 3：外部導線を複数 destination へ対応させる。
+       - destination は在庫が確認済みで持っている URL のみ（safeSourceUrl 通過分）。
+         runtime で URL を組み立てない・推測しない・availability を推測しない。
+       - 公式（officialSourceUrl）は従来の文言・aria のまま先頭に出す。
+       - destination が 1 つでも従来と同じ見え方で正常表示になる。 */
+    var dests = Array.isArray(item.destinations) ? item.destinations : [];
+    if (dests.length) {
+      var linksWrap = doc.createElement('span');
+      linksWrap.className = 'v2c04__work-links';
+      for (var d = 0; d < dests.length; d++) {
+        var dest = dests[d];
+        var link = doc.createElement('a');
+        link.className = 'v2c04__work-source';
+        link.setAttribute('href', dest.url);
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer');
+        link.textContent = dest.label;
+        if (dest.kind === 'official') {
+          /* R5.1：aria-label の題名も表示中の locale の表記に揃える */
+          link.setAttribute('aria-label', T('v2WorkSourceAria', '『{title}』の公式ページを見る（新しいタブで開きます）')
+            .split('{title}').join(titleText));
+        } else {
+          link.setAttribute('aria-label',
+            TF('v2WorkDestAria', '『{title}』を{dest}で見る（新しいタブで開きます）',
+              { title: titleText, dest: dest.label }));
+        }
+        linksWrap.appendChild(link);
+      }
+      li.appendChild(linksWrap);
     }
     return li;
+  }
+
+  /* Final Field Fix 3：在庫 1 件の外部 destination 一覧を作る。
+     公式（officialSourceUrl）が先頭。追加 destination は在庫の任意 field
+     `destinations`（[{ kind, label, labelEn, url }]）から読む。
+     - https の絶対 URL 以外・label の無い行は表示しない（fail-closed）
+     - 並びは在庫の記載順のまま。runtime で並べ替え・生成・補完をしない
+     - EN locale では labelEn があるときだけ EN を出し、無ければ label のまま
+       （store 名は固有名詞なので silent fallback にはならない） */
+  function workDestinations(row) {
+    var out = [];
+    var official = safeSourceUrl(row.officialSourceUrl);
+    if (official) {
+      out.push({ kind: 'official', label: T('v2WorkSourceLink', '公式ページを見る'), url: official });
+    }
+    var list = row.destinations;
+    if (Array.isArray(list)) {
+      for (var i = 0; i < list.length; i++) {
+        var d = list[i];
+        if (!d || typeof d !== 'object') continue;
+        var url = safeSourceUrl(d.url);
+        var label = (isEN() && typeof d.labelEn === 'string' && d.labelEn)
+          ? d.labelEn : String(d.label || '');
+        if (!url || !label) continue;
+        out.push({ kind: String(d.kind || 'external'), label: label, url: url });
+      }
+    }
+    return out;
   }
 
   function buildWorksHold() {
@@ -566,6 +653,8 @@
       title_en: String(row.titleEn || ''),
       creator_en: String(row.creatorEn || ''),
       source_url: safeSourceUrl(row.officialSourceUrl),
+      /* Final Field Fix 3：確認済み destination の一覧（公式が先頭）。 */
+      destinations: workDestinations(row),
       region: String(row.region || ''),
       era: String(row.eraBand || '')
     };
@@ -1147,6 +1236,12 @@
       words.removeEventListener('click', delegateWord);
       words.addEventListener('click', delegateWord);
     }
+    // 近い言葉（walk chip）も再描画で作り直されるため、コンテナ側で1つだけ購読する
+    var worddef = q('[data-v2-worddetail="body"]', root);
+    if (worddef) {
+      worddef.removeEventListener('click', delegateNearWord);
+      worddef.addEventListener('click', delegateNearWord);
+    }
     var regions = q('[data-v2-regions]', root);
     if (regions) {
       regions.removeEventListener('click', delegateRegion);
@@ -1177,6 +1272,19 @@
     }
   }
 
+  /* 近い言葉の walk chip。data-v2-near-id を持つ button だけが対象。
+     起点棚（originMajorShelfId）は selectEmotion 側で保持される。 */
+  function delegateNearWord(ev) {
+    var t = ev.target;
+    while (t && t !== ev.currentTarget) {
+      if (t.getAttribute && t.getAttribute('data-v2-near-id')) {
+        selectEmotion(t.getAttribute('data-v2-near-id'), { near: true });
+        return;
+      }
+      t = t.parentNode;
+    }
+  }
+
   /* 領域タブも同じ方針でコンテナ側に1つだけ購読する。
      タブは4つ固定だが、per-button listener を作らないことで
      mount を何度呼んでも多重登録が構造的に起きない状態を保つ。 */
@@ -1200,6 +1308,8 @@
     for (var j = 0; j < backs.length; j++) backs[j].removeEventListener('click', onLeave);
     var words = q('[data-v2-emotion="words"]', root);
     if (words) words.removeEventListener('click', delegateWord);
+    var worddef = q('[data-v2-worddetail="body"]', root);
+    if (worddef) worddef.removeEventListener('click', delegateNearWord);
     var regions = q('[data-v2-regions]', root);
     if (regions) regions.removeEventListener('click', delegateRegion);
     // 私的データを DOM に残さない
