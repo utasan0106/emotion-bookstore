@@ -16,7 +16,10 @@
 const { chromium } = require('playwright');
 const lib = require('./qa_r21_lib');
 
-const EXEC = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+/* CHROMIUM_PATH があればそれを使い、無ければ playwright 同梱の chromium に任せる */
+const EXEC = process.env.CHROMIUM_PATH ||
+  (require('fs').existsSync('/opt/pw-browsers/chromium-1194/chrome-linux/chrome')
+    ? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' : undefined);
 
 /* 感情 → 入口棚（canonical。shitto は primary の惹かれる経由で開く） */
 const ENTRY = {
@@ -33,7 +36,7 @@ const ENTRY = {
 (async () => {
   const srv = await lib.serve();
   const base = `http://127.0.0.1:${srv.address().port}/index.html`;
-  const browser = await chromium.launch({ executablePath: EXEC });
+  const browser = await chromium.launch(EXEC ? { executablePath: EXEC } : {});
   const problems = [];
   let checked = 0;
 
