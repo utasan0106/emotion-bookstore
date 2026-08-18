@@ -168,9 +168,10 @@ const loadsSince = async (p, base) => (await loadCount(p)) > base;
       window.__spy.failKeys = ['emotion-bookstore-library'];
       showUnfiledShelfPicker(entry);
       const box = document.getElementById('unfiledShelfPicker');
-      const select = box.querySelector('select');
-      select.value = 'kodoku';
-      select.dispatchEvent(new Event('change', { bubbles: true }));
+      /* V2 FREEZE canonical（05-2 B）：select は radiogroup（role=radio ボタン）へ置換済み。
+         検証する契約（保存失敗時のロールバック・ダイアログ維持）は従来のまま。 */
+      const radio = box.querySelector('[data-shelf-choice="kodoku"]');
+      radio.click();
       const confirmBtn = document.getElementById('unfiledShelfConfirm');
       await confirmBtn.onclick();
       const err = box.querySelector('.mana-receive-error');
