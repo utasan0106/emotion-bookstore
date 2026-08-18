@@ -230,7 +230,7 @@
   }
 
   function clearSpines(rack) {
-    var old = rack.querySelectorAll('[data-v2-book]');
+    var old = rack.querySelectorAll('[data-v2-book], [data-v2-bookshelf-month]');
     for (var i = 0; i < old.length; i++) {
       if (old[i].parentNode) old[i].parentNode.removeChild(old[i]);
     }
@@ -287,6 +287,42 @@
 
     spine.setAttribute('aria-label', TF('v2BookOpenAria', '{title}を開く', { title: viewTitle(entry) }));
     return spine;
+  }
+
+  /* FREEZE canonical 06（Month-grouped B）：連続する同年月のまとまりに、
+     小さな非操作の月見出しを挿入する。既存順序は変えず、再ソートしない。
+     日付が読めない entry は新しい見出しを作らず直前のまとまりに続ける。 */
+  function monthKeyOf(entry) {
+    if (!entry || typeof entry.date !== 'string' || !entry.date) return null;
+    var d = new Date(entry.date);
+    if (isNaN(d.getTime())) return null;
+    return d.getFullYear() + '-' + d.getMonth();
+  }
+  function monthLabelOf(entry) {
+    var d = new Date(entry.date);
+    if (isEN()) {
+      var MN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      return MN[d.getMonth()] + ' ' + d.getFullYear();
+    }
+    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月';
+  }
+  function buildMonthHeading(entry, count) {
+    var box = doc.createElement('div');
+    box.className = 'v2-shelf__month';
+    box.setAttribute('data-v2-bookshelf-month', '');
+    var label = doc.createElement('span');
+    label.className = 'v2-shelf__month-label';
+    label.textContent = monthLabelOf(entry);
+    box.appendChild(label);
+    if (count > 0) {
+      var badge = doc.createElement('span');
+      badge.className = 'v2-shelf__month-count';
+      badge.textContent = (count === 1)
+        ? TF('v2MonthCountOne', '{n}冊', { n: count })
+        : TF('v2MonthCount', '{n}冊', { n: count });
+      box.appendChild(badge);
+    }
+    return box;
   }
 
   /* 読み込み失敗の掲示。storage へは触れず、既存の read-only 読み口を
@@ -354,8 +390,21 @@
     }
     if (r.status === STATUS.OK) {
       var frag = doc.createDocumentFragment();
+      var prevMonthKey = null;
       for (var i = 0; i < r.entries.length; i++) {
         try {
+          var mk = monthKeyOf(r.entries[i]);
+          if (mk !== null && mk !== prevMonthKey) {
+            // 連続する同年月のまとまりの冊数（このまとまりだけを数える。再ソートなし）
+            var runCount = 0;
+            for (var j = i; j < r.entries.length; j++) {
+              var mkj = monthKeyOf(r.entries[j]);
+              if (mkj === mk || mkj === null) runCount++;
+              else break;
+            }
+            frag.appendChild(buildMonthHeading(r.entries[i], runCount));
+            prevMonthKey = mk;
+          }
           frag.appendChild(buildSpine(r.entries[i], i));
           made++;
         } catch (e) {

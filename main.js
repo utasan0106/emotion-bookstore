@@ -530,6 +530,8 @@ const MESSAGES = {
     v2s2Choose: "置きたい棚をひとつ選べます",
     v2s2Confirm: "この棚にしよう",
     v2s2Note: "棚はあとから決めてもかまいません",
+    v2MonthCount: "{n}冊",
+    v2MonthCountOne: "{n}冊",
     // R2-3：data-i18n-html で描画。文言は不変で、括弧句だけ折返し禁止の span を持つ
     v2c05BindNote: "本文を保存し、本にします。そのあとで<span class=\"v2c05__nbr\">「この一冊に近い気持ち」</span>を選べます（任意）。",
     v2c05ResumeT: "書きかけがあります",
@@ -1031,6 +1033,8 @@ const MESSAGES = {
     v2s2Choose: "You can choose one shelf",
     v2s2Confirm: "Place it on this shelf",
     v2s2Note: "You can decide on a shelf later",
+    v2MonthCount: "{n} books",
+    v2MonthCountOne: "{n} book",
     v2c05BindNote: "Saves your writing and makes it a book. You can then choose a feeling close to it (optional).",
     v2c05ResumeT: "You have a draft",
     v2c05ResumeN: "You can carry on editing where you left off.",
