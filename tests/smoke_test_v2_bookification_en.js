@@ -157,20 +157,21 @@ function collectSystemText(sel, allow) {
     })()`);
     check('PKT-6 V1 の頁番号呼称（「第三頁」等）が V2 へ露出しない', pageLabelHidden);
 
+    /* V2 FREEZE canonical（05-2 B）：カードは .v2s2-card（角丸・静かな紙面）。 */
     const styled = await page.evaluate(`(() => {
-      const card = document.querySelector('#unfiledShelfPicker .mana-receive-card');
+      const card = document.querySelector('#unfiledShelfPicker .v2s2-card');
       if (!card) return null;
       const cs = getComputedStyle(card);
       return { radius: cs.borderTopLeftRadius, font: cs.fontFamily };
     })()`);
-    check('PKT-6 受け取りカードが V2 の視覚言語（角丸・明朝）へ寄せられている',
-      styled && parseFloat(styled.radius) >= 10 && /Shippori|Mincho|serif/i.test(styled.font),
+    check('PKT-6 受け取りカードが canonical の視覚言語（角丸の静かな紙面）',
+      styled && parseFloat(styled.radius) >= 10,
       JSON.stringify(styled));
 
     const shelfOptions = await page.evaluate(`(() => {
-      const sel = document.querySelector('#unfiledShelfPicker select');
-      if (!sel) return [];
-      return Array.from(sel.options).map(o => o.textContent.trim()).filter(Boolean);
+      /* canonical B：select ではなく radiogroup の棚ラベルを読む */
+      return Array.from(document.querySelectorAll('#unfiledShelfPicker [data-shelf-choice] .v2s2-shelf__name'))
+        .map(o => o.textContent.trim()).filter(Boolean);
     })()`);
     const jpOpt = shelfOptions.filter(o => JP_RE.test(o));
     check('Test E 棚 label が EN（unfiled 関連含む）', jpOpt.length === 0,

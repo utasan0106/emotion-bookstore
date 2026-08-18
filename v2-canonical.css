@@ -375,7 +375,7 @@ html[data-v2-mounted="true"] .v2c05__nbr{ white-space:nowrap; }
     width:auto; margin:0;
     padding:34px 22px 42px;
   }
-  html[data-v2-mounted="true"] .vq05__shell::before{ opacity:.20; inset:-6px -16px -16px; }
+  html[data-v2-mounted="true"] .vq05__shell::before{ opacity:.20; inset:-6px 0 -16px; }
   html[data-v2-mounted="true"] .vq05__shell::after{ display:none; }
   html[data-v2-mounted="true"] .vq05__context{ margin-bottom:28px; font-size:11px; }
   html[data-v2-mounted="true"] .vq05__room{ font-size:12px; }
