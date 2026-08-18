@@ -1747,22 +1747,38 @@ html[data-v2-mounted="true"] .v2c03__guide{
  * A：既存21感情のページへ歩ける語。リンクと分かる下線＋「→」。
  * B：まだ個別ページの無い語。蛇腹と分かる「⌄」で、その場に短い意味が開く。
  * 「同じ見た目なのに一部だけ飛ぶ」を作らないため、2種の表現をはっきり分ける。 */
+/* ADDITIONAL VISUAL FIX（2026-08-18）：リンク語が通常語より太く・大きく見えた
+   regression の修正。原因は font shorthand（font: inherit）が
+   .v2c04__wd-chip class の font-size / font-weight 指定を親継承値で
+   上書きしていたこと。shorthand をやめ、span と同じ class 指定に任せる。
+   button 固有の UA 差分（appearance / font-family / line-height）だけ消す。 */
 html[data-v2-mounted="true"] button.v2c04__wd-chip{
   appearance: none;
+  -webkit-appearance: none;
   background: none;
   border: 0;
   margin: 0;
   padding: 0;
-  font: inherit;
+  font-family: inherit;
+  line-height: inherit;
   letter-spacing: inherit;
+  vertical-align: baseline;
+  color: inherit;
   cursor: pointer;
+  /* font-size / font-weight はここでは書かない：
+     span と共通の .v2c04__wd-chip（beta0.css）が唯一の指定源 */
+}
+/* 「・」区切り（::before）と装飾記号（::after）へ下線を波及させない
+   （inline-block の atomic inline には text-decoration が伝播しない） */
+html[data-v2-mounted="true"] .v2c04__wd-chip + .v2c04__wd-chip::before{
+  display: inline-block;
 }
 html[data-v2-mounted="true"] button.v2c04__wd-chip--walk{
-  color: #4f4130 !important;
+  /* color は通常語と同一（.v2c04__wd-chip の指定のまま）。太字にしない */
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-decoration-color: rgb(150 128 98 / 0.6);
-  text-underline-offset: 0.24em;
+  text-decoration-color: rgb(150 128 98 / 0.55);
+  text-underline-offset: 0.3em;
 }
 html[data-v2-mounted="true"] button.v2c04__wd-chip--walk::after{
   content: "\2192";               /* → ページへ移動する語 */
@@ -1776,14 +1792,10 @@ html[data-v2-mounted="true"] button.v2c04__wd-chip--walk:hover{
   text-decoration-color: rgb(110 90 60 / 0.9);
 }
 html[data-v2-mounted="true"][data-theme="night"] button.v2c04__wd-chip--walk{
-  color: #cbbb9c !important;
-  text-decoration-color: rgb(170 140 95 / 0.55);
+  text-decoration-color: rgb(170 140 95 / 0.5);
 }
 html[data-v2-mounted="true"][data-theme="night"] button.v2c04__wd-chip--walk::after{
   color: rgb(190 160 115 / 0.85);
-}
-html[data-v2-mounted="true"] button.v2c04__wd-chip--gloss{
-  color: #5d4f3e !important;
 }
 html[data-v2-mounted="true"] button.v2c04__wd-chip--gloss::after{
   content: "\2304";               /* ⌄ その場で意味が開く語 */
@@ -1796,9 +1808,6 @@ html[data-v2-mounted="true"] button.v2c04__wd-chip--gloss::after{
 }
 html[data-v2-mounted="true"] button.v2c04__wd-chip--gloss[aria-expanded="true"]::after{
   transform: rotate(180deg) translateY(-0.12em);
-}
-html[data-v2-mounted="true"][data-theme="night"] button.v2c04__wd-chip--gloss{
-  color: #b3a488 !important;
 }
 /* 蛇腹の中身：静かな引用面。1語ぶんの意味だけを置く */
 html[data-v2-mounted="true"] .v2c04__gloss{
