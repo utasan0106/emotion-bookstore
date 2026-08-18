@@ -1562,3 +1562,118 @@ html[data-v2-mounted="true"] .v2-page h1.vq01__copy{ text-align:left; }
   html[data-v2-mounted="true"] .vq01__main{ text-align:center; }
   html[data-v2-mounted="true"] .v2-page h1.vq01__copy{ text-align:center; }
 }
+
+/* ============================================================
+ * 03 Emotion Shelf — Color Softening Refine（FREEZE token 準拠）
+ * 8棚の構造・順序・遷移は既存のまま。タイルを canonical token 色の
+ * 淡い有機形へ。番号 01-08 を付与（canonical 構図）。
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2c03__stage{
+  background:var(--vq-bg) !important;
+  font-family:var(--font-ui);
+}
+html[data-v2-mounted="true"] .v2c03__amb{ display:none !important; }
+html[data-v2-mounted="true"] .v2c03__logo{ display:none !important; }
+html[data-v2-mounted="true"] .v2c03__brandrow{ border-bottom:1px solid var(--vq-rule); }
+html[data-v2-mounted="true"] .v2c03__brandname{
+  font-family:var(--font-display);
+  color:var(--vq-ink) !important;
+}
+html[data-v2-mounted="true"] .v2c03__menubtn{ color:var(--vq-muted) !important; }
+html[data-v2-mounted="true"] .v2c03__title{
+  font-family:var(--font-display) !important;
+  color:var(--vq-ink) !important;
+  text-shadow:none !important;
+}
+html[data-v2-mounted="true"] .v2c03__lead{ color:var(--vq-muted) !important; }
+html[data-v2-mounted="true"] .v2c03__divider{ opacity:.55; }
+html[data-v2-mounted="true"] .v2c03__guide,
+html[data-v2-mounted="true"] .v2c03__guidetext{ color:var(--vq-muted) !important; }
+
+/* canonical DAY / NIGHT 棚色 token */
+html[data-v2-mounted="true"] .v2c03__book--hazumu{ --shelf-tint:#F4EBC7; }
+html[data-v2-mounted="true"] .v2c03__book--atatamaru{ --shelf-tint:#F5D7C9; }
+html[data-v2-mounted="true"] .v2c03__book--hikareru{ --shelf-tint:#DDEBE4; }
+html[data-v2-mounted="true"] .v2c03__book--shizumu{ --shelf-tint:#E2DDF1; }
+html[data-v2-mounted="true"] .v2c03__book--zawatsuku{ --shelf-tint:#D6E7F2; }
+html[data-v2-mounted="true"] .v2c03__book--butsukaru{ --shelf-tint:#F6E1CF; }
+html[data-v2-mounted="true"] .v2c03__book--miwohiku{ --shelf-tint:#DCE7E3; }
+html[data-v2-mounted="true"] .v2c03__book--namae{ --shelf-tint:#E9E5DB; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--hazumu{ --shelf-tint:#CBBE9C; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--atatamaru{ --shelf-tint:#CFA7A0; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--hikareru{ --shelf-tint:#9DB8B0; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--shizumu{ --shelf-tint:#BEB7D6; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--zawatsuku{ --shelf-tint:#9FC3D8; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--butsukaru{ --shelf-tint:#D0A788; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--miwohiku{ --shelf-tint:#9EB3A8; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--namae{ --shelf-tint:#BDB7AA; }
+
+html[data-v2-mounted="true"] .v2c03__book{
+  position:relative;
+  background:var(--shelf-tint, #eee) !important;
+  border:0 !important;
+  box-shadow:none !important;
+  color:#2f302e !important;
+  text-align:left;
+  align-items:flex-start !important;
+  justify-content:flex-end;
+  padding:12px 12px 12px 14px !important;
+  min-height:96px;
+}
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+1){ border-radius:26px 40px 34px 22px !important; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+2){ border-radius:38px 24px 36px 28px !important; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+3){ border-radius:30px 34px 22px 40px !important; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+4){ border-radius:24px 38px 30px 34px !important; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+5){ border-radius:36px 26px 40px 24px !important; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+6){ border-radius:28px 36px 24px 38px !important; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+7){ border-radius:40px 24px 32px 28px !important; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+8){ border-radius:26px 32px 38px 24px !important; }
+html[data-v2-mounted="true"] .v2c03__book::before{
+  content:"";
+  position:static !important;
+  inset:auto !important;
+  width:auto !important;
+  height:auto !important;
+  background:none !important;
+  border-radius:0 !important;
+  font-family:var(--font-display);
+  font-size:13px;
+  letter-spacing:.14em;
+  color:rgba(47,48,46,.62);
+  display:block;
+  margin-bottom:4px;
+}
+html[data-v2-mounted="true"] .v2c03__book--hazumu::before{ content:"01"; }
+html[data-v2-mounted="true"] .v2c03__book--atatamaru::before{ content:"02"; }
+html[data-v2-mounted="true"] .v2c03__book--hikareru::before{ content:"03"; }
+html[data-v2-mounted="true"] .v2c03__book--shizumu::before{ content:"04"; }
+html[data-v2-mounted="true"] .v2c03__book--zawatsuku::before{ content:"05"; }
+html[data-v2-mounted="true"] .v2c03__book--butsukaru::before{ content:"06"; }
+html[data-v2-mounted="true"] .v2c03__book--miwohiku::before{ content:"07"; }
+html[data-v2-mounted="true"] .v2c03__book--namae::before{ content:"08"; }
+html[data-v2-mounted="true"] .v2c03__ring{
+  position:absolute;
+  right:10px; top:10px;
+  width:26px; height:26px;
+  opacity:.5;
+  color:#2f302e !important;
+  background:none !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+html[data-v2-mounted="true"] .v2c03__ring svg{ stroke:currentColor; }
+html[data-v2-mounted="true"] .v2c03__name{
+  color:#2f302e !important;
+  font-family:var(--font-ui);
+  font-weight:600;
+  letter-spacing:.02em;
+  text-shadow:none !important;
+}
+html[data-v2-mounted="true"] .v2c03__book:focus-visible{
+  outline:2px solid var(--vq-accent) !important;
+  outline-offset:3px;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book{ color:#1c2129 !important; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book::before{ color:rgba(28,33,41,.66); }
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__ring,
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__name{ color:#1c2129 !important; }
