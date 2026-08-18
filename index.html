@@ -1122,7 +1122,18 @@ body.night .about-data-content{
   <div class="v2c07__stage">
     <div class="v2c07__bar">
       <button type="button" class="v2c07__back" data-v2-reader-back><span class="v2c07__back-arrow" aria-hidden="true"></span><span data-i18n="v2BackToBookshelf">本棚へ戻る</span></button>
-      <button type="button" class="v2b-menutrigger" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <div class="v2c07__barright">
+        <!-- LIMITED FIX-3：既存の編集/削除操作を右上の⋮（静かな操作メニュー）へ格納。
+             挙動・確認ダイアログ・保存・GA4 は既存 bookModal 経路のまま（presentationのみ）。 -->
+        <details class="v2c07__more">
+          <summary class="v2c07__morebtn" role="button" aria-label="この一冊の操作" data-i18n-aria="v2c07MoreAria"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></summary>
+          <div class="v2c07__moremenu">
+            <button type="button" class="v2c07__act" data-v2-reader-edit><span class="v2c07__act-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2c07Edit">編集</span></button>
+            <button type="button" class="v2c07__act v2c07__act--danger" data-v2-reader-delete><span class="v2c07__act-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13"/><path d="M10 11v6M14 11v6"/></svg></span><span data-i18n="v2c07Delete">この一冊を削除</span></button>
+          </div>
+        </details>
+        <button type="button" class="v2b-menutrigger" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      </div>
     </div>
 
     <article class="v2c07__book">
@@ -1142,11 +1153,6 @@ body.night .about-data-content{
       <p class="v2c07__closing" aria-hidden="true"><span class="v2c07__closing-sprig"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span></p>
     </article>
 
-    <div class="v2c07__actions">
-      <button type="button" class="v2c07__act" data-v2-reader-edit><span class="v2c07__act-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2c07Edit">編集</span></button>
-      <span class="v2c07__actsep" aria-hidden="true"></span>
-      <button type="button" class="v2c07__act v2c07__act--danger" data-v2-reader-delete><span class="v2c07__act-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13"/><path d="M10 11v6M14 11v6"/></svg></span><span data-i18n="v2c07Delete">この一冊を削除</span></button>
-    </div>
   </div>
 
   <nav class="v2b-nav" aria-label="主要な移動" data-i18n-aria="v2NavAria">

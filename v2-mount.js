@@ -289,6 +289,31 @@
       dels[i].addEventListener('click', function () { openLegacyBookAction('modalDel'); });
     }
 
+    /* LIMITED FIX-3（2026-08-19朝）：⋮操作メニュー（details）の閉じ挙動。
+       presentation のみ：操作後・Escape・外側クリックで閉じる。
+       編集/削除の実体は上の openLegacyBookAction（既存 bookModal 経路）のまま。 */
+    var more = doc.querySelector('.v2c07__more');
+    if (more) {
+      var moreSummary = more.querySelector('summary');
+      var closeMore = function () { if (more.open) more.removeAttribute('open'); };
+      more.addEventListener('click', function (ev) {
+        var t = ev.target;
+        while (t && t !== more) {
+          if (t.hasAttribute && (t.hasAttribute('data-v2-reader-edit') || t.hasAttribute('data-v2-reader-delete'))) { closeMore(); break; }
+          t = t.parentNode;
+        }
+      });
+      doc.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Escape' && more.open) {
+          closeMore();
+          if (moreSummary && moreSummary.focus) moreSummary.focus();
+        }
+      });
+      doc.addEventListener('click', function (ev) {
+        if (more.open && !more.contains(ev.target)) closeMore();
+      }, true);
+    }
+
     /* モーダルが閉じたら V2 側の表示を実データへ追随させる。
        削除済みなら読書位置を離れて 06/08 の既存判定へ戻る。 */
     var modal = doc.getElementById('bookModal');

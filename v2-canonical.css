@@ -1677,3 +1677,78 @@ html[data-v2-mounted="true"][data-theme="night"] .v2c03__book{ color:#1c2129 !im
 html[data-v2-mounted="true"][data-theme="night"] .v2c03__book::before{ color:rgba(28,33,41,.66); }
 html[data-v2-mounted="true"][data-theme="night"] .v2c03__ring,
 html[data-v2-mounted="true"][data-theme="night"] .v2c03__name{ color:#1c2129 !important; }
+
+/* ============================================================
+ * LIMITED FIX BEFORE PREVIEW（CEO指示 2026-08-19朝）
+ * ============================================================ */
+
+/* FIX-2 Menu：Round 2 FREEZE 正本に無い「来店カード」「天気連動」Rowを
+   V2 店内メニューの表示から外す（presentationのみ。既存logic・network契約・
+   DOM・idは残す。V1未mount時の挙動は不変）。 */
+html[data-v2-mounted="true"] #experienceMenu #profileBtn,
+html[data-v2-mounted="true"] #experienceMenu .weather-settings{
+  display:none !important;
+}
+
+/* FIX-3 Reader ⋮：既存の編集/削除を右上の静かな操作メニューへ（presentationのみ） */
+html[data-v2-mounted="true"] .v2c07__barright{
+  display:flex; align-items:center; gap:2px;
+}
+html[data-v2-mounted="true"] .v2c07__more{
+  position:relative;
+  margin:0; padding:0; border:0; background:none;
+}
+html[data-v2-mounted="true"] .v2c07__morebtn{
+  list-style:none;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:44px; height:44px;
+  border-radius:8px;
+  color:var(--vq-muted);
+  cursor:pointer;
+}
+html[data-v2-mounted="true"] .v2c07__morebtn::-webkit-details-marker{ display:none; }
+html[data-v2-mounted="true"] .v2c07__morebtn svg{
+  width:20px; height:20px;
+  fill:currentColor; stroke:none;
+}
+html[data-v2-mounted="true"] .v2c07__morebtn:focus-visible{
+  outline:2px solid var(--vq-accent); outline-offset:2px;
+}
+html[data-v2-mounted="true"] .v2c07__more[open] .v2c07__morebtn{
+  color:var(--vq-ink);
+  background:color-mix(in srgb, var(--vq-ink) 6%, transparent);
+}
+html[data-v2-mounted="true"] .v2c07__moremenu{
+  position:absolute;
+  top:calc(100% + 6px);
+  right:0;
+  z-index:40;
+  min-width:190px;
+  background:var(--vq-paper);
+  border:1px solid var(--vq-rule);
+  border-radius:10px;
+  box-shadow:0 10px 30px rgba(0,0,0,.16);
+  padding:6px;
+  display:flex; flex-direction:column; align-items:stretch;
+}
+html[data-v2-mounted="true"] .v2c07__moremenu .v2c07__act{
+  display:flex; align-items:center; gap:8px;
+  width:100%;
+  min-height:44px;
+  padding:8px 12px;
+  border:0; background:none;
+  border-radius:6px;
+  font-family:var(--font-ui);
+  font-size:13px;
+  text-align:left;
+  cursor:pointer;
+  color:var(--vq-ink) !important;
+}
+html[data-v2-mounted="true"] .v2c07__moremenu .v2c07__act:hover{
+  background:color-mix(in srgb, var(--vq-ink) 5%, transparent);
+}
+html[data-v2-mounted="true"] .v2c07__moremenu .v2c07__act:focus-visible{
+  outline:2px solid var(--vq-accent); outline-offset:-2px;
+}
+html[data-v2-mounted="true"] .v2c07__moremenu .v2c07__act--danger{ color:#a2543f !important; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c07__moremenu .v2c07__act--danger{ color:#c98a76 !important; }

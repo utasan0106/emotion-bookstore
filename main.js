@@ -533,6 +533,7 @@ const MESSAGES = {
     v2s2Choose: "置きたい棚をひとつ選べます",
     v2s2Confirm: "この棚にしよう",
     v2s2Note: "棚はあとから決めてもかまいません",
+    v2c07MoreAria: "この一冊の操作",
     v2MonthCount: "{n}冊",
     v2MonthCountOne: "{n}冊",
     // R2-3：data-i18n-html で描画。文言は不変で、括弧句だけ折返し禁止の span を持つ
@@ -1039,6 +1040,7 @@ const MESSAGES = {
     v2s2Choose: "You can choose one shelf",
     v2s2Confirm: "Place it on this shelf",
     v2s2Note: "You can decide on a shelf later",
+    v2c07MoreAria: "Actions for this book",
     v2MonthCount: "{n} books",
     v2MonthCountOne: "{n} book",
     v2c05BindNote: "Saves your writing and makes it a book. You can then choose a feeling close to it (optional).",
