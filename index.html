@@ -158,6 +158,7 @@
 <link rel="stylesheet" href="visual-refit-v2-prototype/css/master-tokens.css">
 <link rel="stylesheet" href="visual-refit-v2-prototype/css/beta0.css">
 <link rel="stylesheet" href="v2-mount.css">
+<link rel="stylesheet" href="v2-canonical.css">
 <!-- ★FIX-11（Round 2.1）：V2 が mount するまで旧UIを描かせない boot 状態。
      実測した原因
        v2-mount.css は html[data-v2-mounted="true"] にしか効かず、その属性は
@@ -958,75 +959,74 @@ body.night .about-data-content{
 
 <!-- V2 05 編纂室 -->
 <div class="v2-page v2b v2c05" data-v2-screen="05" data-screen="05">
-  <div class="v2c05__stage">
-    <div class="v2c05__card">
-      <header class="v2c05__bar">
-        <button type="button" class="v2c05__back" data-v2-go="02" aria-label="広間へ戻る" data-i18n-aria="v2c05BackAria"><span class="v2c05__back-arrow" aria-hidden="true"></span></button>
-        <div class="v2c05__headmid">
-          <h1 class="v2c05__title" data-i18n="v2c05Title">編纂室</h1>
-          <p class="v2c05__sub" data-i18n-html="v2c05Sub"><span class="v2-wrapunit">残ったことを、</span><span class="v2-wrapunit">自分の言葉で一冊に。</span></p>
-          <!-- FIX-06：今日の日付。既存の renderCurrentShopDate()（端末のローカル日付を
-               Intl.DateTimeFormat で JP/EN 表示にするだけの描画関数）へ id を1つ足して
-               追従させる。新しい保存キー・book schema・本文への自動挿入・Asia/Tokyo 固定は
-               いずれも行わない（HARDEN-01 timezone は HOLD のまま）。 -->
-          <time class="v2c05__today" id="v2c05CurrentDate" data-v2-today></time>
-        </div>
-        <button type="button" class="v2c05__tobooks" data-v2-go="06"><span class="v2c05__tobooks-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span class="v2c05__tobooks-t" data-i18n="v2ToBookshelf">本棚へ</span></button>
+  <div class="vq05">
+    <header class="vq05__header">
+      <span class="vq05__brand" data-i18n="shopName">みんなの感情書店</span>
+      <nav class="vq05__nav" aria-label="主要な移動" data-i18n-aria="v2NavAria">
+        <button type="button" class="vq05__navlink" data-v2-go="03" data-i18n="v2NavShelves">感情棚</button>
+        <span class="vq05__navlink is-current" aria-current="page" data-i18n="v2c05Title">編纂室</span>
+        <button type="button" class="vq05__navlink" data-v2-go="06" data-i18n="v2NavBookshelf">本棚</button>
         <button type="button" class="v2b-menutrigger" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-      </header>
+      </nav>
+    </header>
 
-      <div class="v2c05__desk" aria-hidden="true"></div>
-
-      <p class="v2c05__autosave"><span class="v2c05__cloud" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17a4 4 0 1 1 .6-8A5 5 0 0 1 17 10a3.5 3.5 0 0 1 0 7z"/><path d="M9 20l1.5-1.5L12 20l1.5-1.5L15 20"/></svg></span><span data-i18n="v2c05Autosave">書きかけは自動で保存されます</span></p>
-
-      <div class="v2c05__body">
-        <div class="v2c05__field">
-          <label class="v2c05__label" for="v2bTitleInput"><span data-i18n="v2c05TitleLabel">題名</span> <span class="v2c05__opt" data-i18n="v2c05TitleOpt">（任意）</span></label>
-          <input class="v2c05__input" id="v2bTitleInput" type="text" maxlength="16"
-                 data-v2-write="title" autocomplete="off"
-                 placeholder="空欄でも、一冊にできます" data-i18n-ph="v2c05TitlePh">
-        </div>
-
-        <div class="v2c05__field">
-          <label class="v2c05__label" for="v2bStoryInput" data-i18n="v2c05StoryLabel">本文</label>
-          <div class="v2c05__tawrap">
-            <!-- Final Field Fix 4：placeholder の固定改行（\n）を撤去。
-                 320/390/430 のどの幅でも textarea の折返しに任せ、文章は変えない。 -->
-            <textarea class="v2c05__textarea" id="v2bStoryInput" data-v2-write="story" data-i18n-ph="v2c05StoryPh"
-                      placeholder="いま、心の中に残っていることを、そのまま書いてみてください。うまく書こうとしなくて大丈夫。一言からでも、本になります。"></textarea>
-            <p class="v2c05__count" data-v2-write="count">0 / 700字</p>
-          </div>
-        </div>
-
-        <!-- ★ADDENDUM / Photo：既存の写真契約（#photoChooseBtn / #photoInput /
-             #photoPreview / #photoRemove / attachedPhoto / entry.image）を V2 へ再露出する。
-             新機能ではないため、選択・圧縮・保存はすべて既存実装のまま。ここは入口と
-             表示の橋渡しだけで、backend upload・external upload・fetch/XHR・schema 変更・
-             圧縮契約の変更は一切行わない。 -->
-        <div class="v2c05__field v2c05__photo">
-          <button type="button" class="v2c05__photobtn" data-v2-photo="choose" data-i18n="photoLabel">今日の一枚を、頁に挟む（任意）</button>
-          <div class="v2c05__photoprev" data-v2-photo="preview" hidden>
-            <img class="v2c05__photoimg" data-v2-photo="image" alt="添付写真のプレビュー" data-i18n-alt="photoPreviewAlt">
-            <button type="button" class="v2c05__photoremove" data-v2-photo="remove" aria-label="写真を外す" data-i18n-aria="photoRemoveAria">&times;</button>
-          </div>
-          <p class="v2c05__photohint" data-i18n="photoHint">写真は、この端末のブラウザ保存領域に保存されます。長辺800pxに縮小し、運営者のサーバーへは送信しません。</p>
-        </div>
-
-        <p class="v2c05__assure" data-i18n="v2c05Assure">本文は、この端末のブラウザ保存領域に保存されます。</p>
-
-        <button type="button" class="v2c05__bind" data-v2-write="bind"><span class="v2c05__bind-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2c05Bind">本にする</span></button>
-        <!-- R2-3：文言は不変。括弧句「この一冊に近い気持ち」だけ折返し禁止の span で
-             包み、どの幅でも句の途中で割れないようにする（手動 br は使わない）。 -->
-        <p class="v2c05__bindnote" data-i18n-html="v2c05BindNote">本文を保存し、本にします。そのあとで<span class="v2c05__nbr">「この一冊に近い気持ち」</span>を選べます（任意）。</p>
-
-        <div class="v2c05__resume" data-v2-write="resume" hidden>
-          <span class="v2c05__resume-sprig" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span>
-          <span class="v2c05__resume-box"><span class="v2c05__resume-t" data-i18n="v2c05ResumeT">書きかけがあります</span><span class="v2c05__resume-n" data-i18n="v2c05ResumeN">続きを書くときは、そのまま編集を続けられます。</span></span>
-        </div>
-
-        <p class="v2c05__msg is-v2-empty" data-v2-write="msg" role="status" aria-live="polite"></p>
+    <main class="vq05__shell">
+      <div class="vq05__context">
+        <h1 class="vq05__room" data-i18n="v2c05Title">編纂室</h1>
+        <!-- FIX-06：今日の日付。既存の renderCurrentShopDate() へ追従させる（契約不変）。 -->
+        <time class="vq05__today" id="v2c05CurrentDate" data-v2-today></time>
       </div>
-    </div>
+
+      <div class="vq05__titlefield">
+        <label class="v2-visually-hidden" for="v2bTitleInput"><span data-i18n="v2c05TitleLabel">題名</span><span data-i18n="v2c05TitleOpt">（任意）</span></label>
+        <input class="vq05__title" id="v2bTitleInput" type="text" maxlength="16"
+               data-v2-write="title" autocomplete="off"
+               placeholder="題名（任意）" data-i18n-ph="v2c05TitlePh">
+      </div>
+
+      <section class="vq05__paper" aria-label="本文" data-i18n-aria="v2c05StoryLabel">
+        <label class="v2-visually-hidden" for="v2bStoryInput" data-i18n="v2c05StoryLabel">本文</label>
+        <textarea class="vq05__story" id="v2bStoryInput" data-v2-write="story" data-i18n-ph="v2c05StoryPh"
+                  placeholder="いま、心の中に残っていることを、そのまま書いてみてください。うまく書こうとしなくて大丈夫。一言からでも、本になります。"></textarea>
+        <p class="vq05__count" data-v2-write="count">0 / 700字</p>
+      </section>
+
+      <div class="vq05__after">
+        <!-- ★ADDENDUM / Photo：既存の写真契約（#photoChooseBtn / #photoInput /
+             #photoPreview / #photoRemove / attachedPhoto / entry.image）への橋渡しのみ。 -->
+        <div class="vq05__photo">
+          <button type="button" class="vq05__photobtn" data-v2-photo="choose" data-i18n="photoLabel">今日の一枚を、頁に挟む（任意）</button>
+          <div class="vq05__photoprev" data-v2-photo="preview" hidden>
+            <img class="vq05__photoimg" data-v2-photo="image" alt="添付写真のプレビュー" data-i18n-alt="photoPreviewAlt">
+            <button type="button" class="vq05__photoremove" data-v2-photo="remove" aria-label="写真を外す" data-i18n-aria="photoRemoveAria">&times;</button>
+          </div>
+        </div>
+
+        <div class="vq05__status">
+          <p class="vq05__statusline"><span data-i18n="v2c05Autosave">書きかけは自動で保存されます</span></p>
+          <p class="vq05__privacy" data-i18n="v2c05Assure">本文は、この端末のブラウザ保存領域に保存されます。</p>
+          <p class="vq05__privacy" data-i18n="photoHint">写真は、この端末のブラウザ保存領域に保存されます。長辺800pxに縮小し、運営者のサーバーへは送信しません。</p>
+        </div>
+
+        <div class="vq05__resume" data-v2-write="resume" hidden>
+          <span class="vq05__resume-box"><span class="vq05__resume-t" data-i18n="v2c05ResumeT">書きかけがあります</span><span class="vq05__resume-n" data-i18n="v2c05ResumeN">続きを書くときは、そのまま編集を続けられます。</span></span>
+        </div>
+
+        <div class="vq05__ctarow">
+          <button type="button" class="vq05__cta" data-v2-write="bind"><span data-i18n="v2c05Bind">本にする</span><span class="vq05__ctaarrow" aria-hidden="true">→</span></button>
+        </div>
+        <!-- R2-3：文言は不変。括弧句「この一冊に近い気持ち」だけ折返し禁止（手動 br は使わない）。 -->
+        <p class="vq05__bindnote" data-i18n-html="v2c05BindNote">本文を保存し、本にします。そのあとで<span class="v2c05__nbr">「この一冊に近い気持ち」</span>を選べます（任意）。</p>
+
+        <p class="vq05__msg is-v2-empty" data-v2-write="msg" role="status" aria-live="polite"></p>
+      </div>
+    </main>
+
+    <nav class="v2b-nav" aria-label="主要な移動" data-i18n-aria="v2NavAria">
+      <button type="button" class="v2b-nav__item" data-v2-nav="shelves"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span data-i18n="v2NavShelves">感情棚</span></button>
+      <button type="button" class="v2b-nav__item" data-v2-nav="desk" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2NavDesk">書く</span></button>
+      <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2NavBookshelf">本棚</span></button>
+    </nav>
   </div>
 </div>
 </section>

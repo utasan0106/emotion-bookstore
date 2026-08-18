@@ -1,0 +1,420 @@
+/* ============================================================
+ * V2 Beta0 — FINAL VISUAL CANONICAL LAYER (FREEZE 2026-08-19)
+ * ------------------------------------------------------------
+ * このファイルは emotion_bookstore_v2_final_visual_canonical_pack_20260819
+ * の FREEZE 済み Visual を実装する UI レイヤー。
+ * v2-mount.css より後に読み込み、対象画面の見た目だけを canonical へ揃える。
+ *
+ * 触らないもの：保存 / 製本 / 本棚 / GA4 / 外部通信 / focus trap / inert /
+ * reduced motion 契約 / DAY-NIGHT 挙動契約（表示テーマは既存の
+ * html[data-theme] をそのまま参照する）。
+ * ============================================================ */
+
+/* ------------------------------------------------------------
+ * Canonical shared tokens（menu_round2_final / edition_room_final_reference 由来）
+ * ---------------------------------------------------------- */
+html[data-v2-mounted="true"]{
+  --vq-bg:#f1eee7;
+  --vq-paper:#f7f4ed;
+  --vq-ink:#2f302e;
+  --vq-muted:#858077;
+  --vq-faint:#b7b0a5;
+  --vq-rule:rgba(65,61,55,.16);
+  --vq-accent:#6d7f65;
+  --vq-primary-writing:#645e56;
+  --vq-primary-title:#6c645b;
+  --vq-primary-room:#57524b;
+  --vq-focus-guide:rgba(78,72,63,.42);
+  --vq-writing-surface:rgba(255,255,255,.16);
+  --vq-writing-guide:rgba(86,80,70,.13);
+  --vq-caret:#5b554e;
+  --vq-cta:#6f785f;
+  --vq-cta-ink:#f8f5ed;
+  --vq-atmos:rgba(224,190,142,.085);
+  --vq-menu-bg:#f3eee3;
+  --vq-menu-line:rgba(64,69,65,.16);
+}
+html[data-v2-mounted="true"][data-theme="night"]{
+  --vq-bg:#0c121c;
+  --vq-paper:#141b26;
+  --vq-ink:#e7e4dc;
+  --vq-muted:#9ea3aa;
+  --vq-faint:#78808a;
+  --vq-rule:rgba(227,231,236,.14);
+  --vq-accent:#91a384;
+  --vq-primary-writing:#d0d6de;
+  --vq-primary-title:#d8dde4;
+  --vq-primary-room:#ccd2da;
+  --vq-focus-guide:rgba(226,232,240,.44);
+  --vq-writing-surface:rgba(255,255,255,.012);
+  --vq-writing-guide:rgba(220,226,234,.13);
+  --vq-caret:#e2e7ed;
+  --vq-cta:#9ca68d;
+  --vq-cta-ink:#111822;
+  --vq-atmos:rgba(103,120,146,.05);
+  --vq-menu-bg:#111a24;
+  --vq-menu-line:rgba(238,232,220,.14);
+}
+
+html[data-v2-mounted="true"] .v2-visually-hidden{
+  position:absolute !important;
+  width:1px; height:1px;
+  margin:-1px; padding:0;
+  overflow:hidden; clip-path:inset(50%);
+  white-space:nowrap; border:0;
+}
+
+/* ============================================================
+ * 05 編纂室 — Quiet Writing（edition_room_final_reference.html 準拠）
+ * ============================================================ */
+html[data-v2-mounted="true"] .vq05{
+  height:100vh;
+  height:100dvh;
+  overflow-y:auto;
+  overflow-x:hidden;
+  background:var(--vq-bg);
+  color:var(--vq-ink);
+  font-family:var(--font-ui);
+  position:relative;
+  isolation:isolate;
+  display:flex;
+  flex-direction:column;
+}
+html[data-v2-mounted="true"] .vq05__shell{ flex:1 0 auto; }
+/* pale editorial haze：外周の空気のみ（本文面には掛けない） */
+html[data-v2-mounted="true"] .vq05::before{
+  content:"";
+  position:absolute; inset:0;
+  pointer-events:none;
+  z-index:0;
+  background:
+    radial-gradient(ellipse 18% 28% at 0% 12%, var(--vq-atmos), transparent 75%),
+    radial-gradient(ellipse 14% 26% at 100% 76%, var(--vq-atmos), transparent 78%),
+    repeating-radial-gradient(circle at 0 0, rgba(80,72,60,.017) 0 .45px, transparent .65px 4px);
+  opacity:.9;
+}
+html[data-v2-mounted="true"] .vq05 > :not(.v2b-nav){ position:relative; z-index:1; }
+
+html[data-v2-mounted="true"] .vq05__header{
+  height:70px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 28px;
+  border-bottom:1px solid var(--vq-rule);
+}
+html[data-v2-mounted="true"] .vq05__brand{
+  font-family:var(--font-display);
+  font-size:14px; letter-spacing:.11em; font-weight:500;
+  color:var(--vq-ink);
+}
+html[data-v2-mounted="true"] .vq05__nav{
+  display:flex; gap:18px; align-items:center;
+  color:var(--vq-muted); font-size:12px; letter-spacing:.04em;
+}
+html[data-v2-mounted="true"] .vq05__navlink{
+  appearance:none; border:0; background:none; padding:6px 2px; margin:0;
+  color:inherit; font:inherit; cursor:pointer;
+}
+html[data-v2-mounted="true"] .vq05__navlink.is-current{ color:var(--vq-ink); cursor:default; }
+html[data-v2-mounted="true"] .vq05__navlink:focus-visible{
+  outline:2px solid var(--vq-accent); outline-offset:2px; border-radius:2px;
+}
+html[data-v2-mounted="true"] .vq05 .v2b-menutrigger{
+  position:static;
+  width:40px; height:40px;
+  display:inline-flex; align-items:center; justify-content:center;
+  border:0; background:none; color:var(--vq-muted);
+  border-radius:8px;
+  cursor:pointer;
+}
+html[data-v2-mounted="true"] .vq05 .v2b-menutrigger svg{
+  width:20px; height:20px; stroke:currentColor; fill:none;
+  stroke-width:1.6; stroke-linecap:round;
+}
+
+html[data-v2-mounted="true"] .vq05__shell{
+  width:min(720px, calc(100vw - 48px));
+  margin:0 auto;
+  padding:80px 0 56px;
+  position:relative;
+}
+/* editorial paper field（ほぼ平坦） */
+html[data-v2-mounted="true"] .vq05__shell::before{
+  content:"";
+  position:absolute; inset:-22px -72px -32px;
+  background:linear-gradient(90deg,
+    transparent 0,
+    color-mix(in srgb, var(--vq-paper) 14%, transparent) 18%,
+    color-mix(in srgb, var(--vq-paper) 18%, transparent) 50%,
+    color-mix(in srgb, var(--vq-paper) 14%, transparent) 82%,
+    transparent 100%);
+  opacity:.54;
+  z-index:-1;
+  pointer-events:none;
+}
+html[data-v2-mounted="true"][data-theme="night"] .vq05__shell::before{ opacity:.23; }
+/* desktop binding axis */
+html[data-v2-mounted="true"] .vq05__shell::after{
+  content:"";
+  position:absolute; left:-34px; top:82px; bottom:84px; width:1px;
+  background:linear-gradient(to bottom, transparent 0, var(--vq-rule) 12%, var(--vq-rule) 82%, transparent 100%);
+  pointer-events:none;
+}
+
+html[data-v2-mounted="true"] .vq05__context{
+  display:flex; align-items:center; justify-content:space-between; gap:20px;
+  margin-bottom:36px;
+  color:var(--vq-muted); font-size:12px; letter-spacing:.04em;
+}
+html[data-v2-mounted="true"] .vq05__room{
+  font-family:var(--font-display);
+  color:var(--vq-primary-room);
+  font-size:14px; letter-spacing:.13em; font-weight:500;
+  margin:0;
+}
+html[data-v2-mounted="true"] .vq05__today{
+  font-size:10px; letter-spacing:.12em;
+  font-variant-numeric:tabular-nums;
+  color:var(--vq-muted);
+}
+
+html[data-v2-mounted="true"] .vq05__titlefield{
+  margin-bottom:22px;
+  border-bottom:1px solid var(--vq-rule);
+  padding:0 0 13px;
+  position:relative;
+}
+html[data-v2-mounted="true"] .vq05__titlefield::after{
+  content:"";
+  position:absolute; left:0; bottom:-1px; width:18px; height:1px;
+  background:var(--vq-primary-title); opacity:.48;
+}
+html[data-v2-mounted="true"] .vq05__titlefield:focus-within{
+  border-bottom-color:color-mix(in srgb, var(--vq-primary-title) 38%, var(--vq-rule));
+}
+html[data-v2-mounted="true"] .vq05__title{
+  width:100%; appearance:none;
+  border:0 !important; outline:none;
+  background:transparent !important;
+  border-radius:0 !important; box-shadow:none !important;
+  padding:0 !important;
+  color:var(--vq-primary-title);
+  caret-color:var(--vq-caret);
+  font-family:var(--font-display);
+  font-size:22px; line-height:1.6;
+  padding:0; margin:0;
+  border-radius:0; box-shadow:none;
+}
+html[data-v2-mounted="true"] .vq05__title::placeholder{ color:var(--vq-primary-title); opacity:.94; }
+
+html[data-v2-mounted="true"] .vq05__paper{
+  position:relative;
+  min-height:315px;
+  padding:10px 0 0;
+  background:linear-gradient(90deg,
+    color-mix(in srgb, var(--vq-writing-surface) 72%, transparent) 0%,
+    color-mix(in srgb, var(--vq-writing-surface) 38%, transparent) 52%,
+    transparent 100%);
+}
+html[data-v2-mounted="true"] .vq05__paper::before{
+  content:"";
+  position:absolute; left:-14px; top:7px; bottom:18px; width:1px;
+  background:var(--vq-writing-guide);
+  opacity:.72;
+  pointer-events:none;
+}
+html[data-v2-mounted="true"] .vq05__paper:focus-within::before{
+  background:var(--vq-focus-guide); opacity:1;
+}
+html[data-v2-mounted="true"] .vq05__story{
+  display:block; width:100%; min-height:300px; resize:none;
+  border:0 !important; outline:none;
+  background:transparent !important;
+  border-radius:0 !important; box-shadow:none !important;
+  padding:0 !important;
+  color:var(--vq-primary-writing);
+  caret-color:var(--vq-caret);
+  font-family:var(--font-display);
+  font-size:18px; line-height:2.02; letter-spacing:.015em;
+  padding:0; margin:0;
+  border-radius:0; box-shadow:none;
+}
+html[data-v2-mounted="true"] .vq05__story::placeholder{ color:var(--vq-primary-writing); opacity:.92; }
+html[data-v2-mounted="true"] .vq05__count{
+  position:absolute; right:0; bottom:-3px;
+  font-size:11px; color:var(--vq-muted); letter-spacing:.03em;
+  margin:0;
+}
+html[data-v2-mounted="true"] .vq05__count.is-over{ color:#a2543f; }
+
+html[data-v2-mounted="true"] .vq05__after{
+  margin-top:28px;
+  position:relative;
+}
+html[data-v2-mounted="true"] .vq05__after::before{
+  content:"";
+  display:block; width:18px; height:1px;
+  background:color-mix(in srgb, var(--vq-primary-title) 44%, var(--vq-rule));
+  opacity:.62;
+  margin:0 0 16px;
+}
+
+html[data-v2-mounted="true"] .vq05__photobtn{
+  appearance:none; border:0; background:none; margin:0;
+  display:inline-flex; align-items:center; gap:8px;
+  color:var(--vq-muted); font-size:13px; font-family:var(--font-ui);
+  padding:4px 0;
+  border-bottom:1px solid transparent;
+  cursor:pointer;
+  min-height:44px;
+}
+html[data-v2-mounted="true"] .vq05__photobtn::before{
+  content:"＋"; font-size:14px; opacity:.75;
+}
+html[data-v2-mounted="true"] .vq05__photobtn:hover{
+  color:var(--vq-ink); border-bottom-color:var(--vq-rule);
+}
+html[data-v2-mounted="true"] .vq05__photobtn:focus-visible{
+  outline:2px solid var(--vq-accent); outline-offset:2px; border-radius:2px;
+}
+html[data-v2-mounted="true"] .vq05__photoprev{
+  position:relative;
+  margin:14px 0 0;
+  max-width:280px;
+}
+html[data-v2-mounted="true"] .vq05__photoimg{
+  display:block; width:100%; height:auto;
+  border-radius:4px;
+  border:1px solid var(--vq-rule);
+}
+html[data-v2-mounted="true"] .vq05__photoremove{
+  position:absolute; top:-10px; right:-10px;
+  width:28px; height:28px;
+  border-radius:50%;
+  border:1px solid var(--vq-rule);
+  background:var(--vq-paper);
+  color:var(--vq-muted);
+  font-size:16px; line-height:1;
+  cursor:pointer;
+}
+
+html[data-v2-mounted="true"] .vq05__status{
+  margin-top:22px;
+  color:var(--vq-muted);
+  font-size:11.5px; line-height:1.7;
+  letter-spacing:.015em;
+}
+html[data-v2-mounted="true"] .vq05__statusline{
+  display:flex; align-items:center; gap:7px; margin:0;
+}
+html[data-v2-mounted="true"] .vq05__statusline::before{
+  content:"";
+  width:4px; height:4px; border-radius:50%;
+  background:currentColor; opacity:.46;
+  flex:none;
+}
+html[data-v2-mounted="true"] .vq05__privacy{
+  margin:4px 0 0; opacity:.84;
+}
+
+html[data-v2-mounted="true"] .vq05__resume{
+  margin-top:18px;
+  display:flex; align-items:flex-start; gap:8px;
+  color:var(--vq-muted); font-size:12px; line-height:1.7;
+}
+html[data-v2-mounted="true"] .vq05__resume[hidden]{ display:none; }
+html[data-v2-mounted="true"] .vq05__resume-t{ display:block; color:var(--vq-ink); }
+html[data-v2-mounted="true"] .vq05__resume-n{ display:block; }
+
+html[data-v2-mounted="true"] .vq05__ctarow{
+  display:flex; justify-content:flex-start;
+  margin-top:26px;
+}
+html[data-v2-mounted="true"] .vq05__cta{
+  appearance:none; border:0;
+  border-radius:999px;
+  background:var(--vq-cta);
+  color:var(--vq-cta-ink);
+  font-family:var(--font-display);
+  font-size:15px; letter-spacing:.08em;
+  min-height:46px;
+  padding:12px 24px;
+  box-shadow:none;
+  cursor:pointer;
+  display:inline-flex; align-items:center; gap:9px;
+}
+html[data-v2-mounted="true"] .vq05__cta:disabled{ opacity:.5; cursor:default; }
+html[data-v2-mounted="true"] .vq05__cta:focus-visible{
+  outline:2px solid var(--vq-accent); outline-offset:3px;
+}
+html[data-v2-mounted="true"] .vq05__ctaarrow{
+  font-family:var(--font-ui); opacity:.66;
+}
+html[data-v2-mounted="true"] .vq05__bindnote{
+  margin:14px 0 0;
+  color:var(--vq-muted); font-size:11.5px; line-height:1.7;
+}
+html[data-v2-mounted="true"] .vq05__msg{
+  margin:14px 0 0;
+  color:var(--vq-ink); font-size:12.5px; line-height:1.7;
+}
+html[data-v2-mounted="true"] .vq05__msg.is-v2-empty{ margin:0; }
+html[data-v2-mounted="true"] .v2c05__nbr{ white-space:nowrap; }
+
+/* 05 mobile */
+@media (max-width:640px){
+  html[data-v2-mounted="true"] .vq05__header{
+    height:58px; padding:0 18px;
+  }
+  html[data-v2-mounted="true"] .vq05__brand{ font-size:12.5px; letter-spacing:.09em; }
+  html[data-v2-mounted="true"] .vq05__nav{ gap:12px; font-size:10.5px; }
+  html[data-v2-mounted="true"] .vq05__navlink:not(.is-current){
+    position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+    overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;
+  }
+  html[data-v2-mounted="true"] .vq05__shell{
+    width:auto; margin:0;
+    padding:34px 22px 42px;
+  }
+  html[data-v2-mounted="true"] .vq05__shell::before{ opacity:.20; inset:-6px -16px -16px; }
+  html[data-v2-mounted="true"] .vq05__shell::after{ display:none; }
+  html[data-v2-mounted="true"] .vq05__context{ margin-bottom:28px; font-size:11px; }
+  html[data-v2-mounted="true"] .vq05__room{ font-size:12px; }
+  html[data-v2-mounted="true"] .vq05__today{ font-size:9.5px; letter-spacing:.08em; }
+  html[data-v2-mounted="true"] .vq05__titlefield{ margin-bottom:20px; padding-bottom:11px; }
+  html[data-v2-mounted="true"] .vq05__title{ font-size:18px; }
+  html[data-v2-mounted="true"] .vq05__paper{
+    min-height:355px; padding-top:6px;
+    background:linear-gradient(90deg,
+      color-mix(in srgb, var(--vq-writing-surface) 64%, transparent) 0%,
+      color-mix(in srgb, var(--vq-writing-surface) 28%, transparent) 58%,
+      transparent 100%);
+  }
+  html[data-v2-mounted="true"] .vq05__paper::before{ left:-8px; top:5px; bottom:16px; opacity:.58; }
+  html[data-v2-mounted="true"] .vq05__story{ min-height:340px; font-size:16px; line-height:2.02; }
+  html[data-v2-mounted="true"] .vq05__count{ bottom:-4px; font-size:10px; }
+  html[data-v2-mounted="true"] .vq05__after{ margin-top:30px; }
+  html[data-v2-mounted="true"] .vq05__photobtn{ font-size:12px; }
+  html[data-v2-mounted="true"] .vq05__status{ margin-top:24px; font-size:10.5px; }
+  html[data-v2-mounted="true"] .vq05__ctarow{ margin-top:29px; }
+  html[data-v2-mounted="true"] .vq05__cta{ font-size:13px; padding:11px 20px; min-height:44px; }
+}
+@media (max-width:340px){
+  html[data-v2-mounted="true"] .vq05__shell{ padding-left:17px; padding-right:17px; padding-top:28px; }
+  html[data-v2-mounted="true"] .vq05__context{ margin-bottom:24px; }
+  html[data-v2-mounted="true"] .vq05__paper{ min-height:320px; }
+  html[data-v2-mounted="true"] .vq05__story{ min-height:305px; font-size:15px; line-height:1.95; }
+  html[data-v2-mounted="true"] .vq05__after{ margin-top:24px; }
+  html[data-v2-mounted="true"] .vq05__status{ margin-top:20px; }
+  html[data-v2-mounted="true"] .vq05__ctarow{ margin-top:24px; }
+}
+/* 05 desktop：bottom nav は出さない（canonical） */
+@media (min-width:641px){
+  html[data-v2-mounted="true"] .vq05 .v2b-nav{ display:none; }
+}
+/* 05 mobile：bottom nav は既定の sticky（.v2-page の layout containment 下では
+   fixed が viewport に効かないため、beta0 既定の sticky を使う） */
+@media (max-width:640px){
+  html[data-v2-mounted="true"] .vq05 .v2b-nav{
+    position:sticky; bottom:0; z-index:30; margin-top:0;
+  }
+}
