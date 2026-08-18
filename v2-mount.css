@@ -1,0 +1,2102 @@
+/* ============================================================
+ * Visual Refit V2 — Production Mount 用の最小スタイル
+ * ------------------------------------------------------------
+ * 旧UIは DOM から削除しない（main.js が getElementById で依存しているため）。
+ * ここでは「V2 が担当する画面の旧UIだけ」を視覚的に隠す。
+ * 保存・製本・削除などのロジックは一切変更しない。
+ * ============================================================ */
+
+/* Global Nav の実高。03（fixed）と 06/08（sticky）で共通の bottom clearance に使う。
+   実測 69px に対し余裕を持たせた値。1 箇所で持ち、各画面はこれを参照する。 */
+html[data-v2-mounted="true"]{
+  --v2-nav-h: 4.4rem;
+}
+
+/* V2 が mount されたときだけ効かせる。未 mount 時は従来どおり旧UIが出る。 */
+html[data-v2-mounted="true"] .entrance.hero > *:not(.v2-page),
+html[data-v2-mounted="true"] #counter > *:not(.v2-page),
+html[data-v2-mounted="true"] #shelves > *:not(.v2-page),
+html[data-v2-mounted="true"] #desk > *:not(.v2-page),
+html[data-v2-mounted="true"] #bookshelf > *:not(.v2-page){
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%);
+  white-space: nowrap; border: 0;
+  pointer-events: none;
+}
+
+/* V2 画面は既存ページの中で全面を占める */
+html[data-v2-mounted="true"] .v2-page{
+  display: block;
+  width: 100%;
+  container-type: inline-size;
+}
+
+/* 同じ既存ページに複数の V2 画面がある場合（03/04・06/07/08）は
+   navigation-adapter の subview 状態で1つだけ出す。 */
+html[data-v2-mounted="true"] [data-v2-subview-of]{ display: none; }
+html[data-v2-mounted="true"] [data-v2-subview-of].is-v2-current-subview{ display: block; }
+
+/* 表紙（01）は入店前だけ出す */
+html[data-v2-mounted="true"] [data-v2-screen="01"]{ display: none; }
+html[data-v2-mounted="true"] [data-v2-screen="01"].is-v2-current{ display: block; }
+
+/* 旧UIの背景は要素自体（.entrance.hero / 各 .experience-page）に付いているため、
+   子要素を隠すだけでは残る。V2 が担当する面では背景も中立化する。
+   style.css は変更しない（mount 時だけ上書きする）。 */
+html[data-v2-mounted="true"] .entrance.hero,
+html[data-v2-mounted="true"] #counter,
+html[data-v2-mounted="true"] #shelves,
+html[data-v2-mounted="true"] #desk,
+html[data-v2-mounted="true"] #bookshelf{
+  background: none !important;
+  background-image: none !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* 旧UIの装飾疑似要素（暖簾・庇・光など）も V2 の面では出さない */
+html[data-v2-mounted="true"] .entrance.hero::before,
+html[data-v2-mounted="true"] .entrance.hero::after,
+html[data-v2-mounted="true"] #counter::before,
+html[data-v2-mounted="true"] #counter::after,
+html[data-v2-mounted="true"] #shelves::before,
+html[data-v2-mounted="true"] #shelves::after,
+html[data-v2-mounted="true"] #desk::before,
+html[data-v2-mounted="true"] #desk::after,
+html[data-v2-mounted="true"] #bookshelf::before,
+html[data-v2-mounted="true"] #bookshelf::after{
+  content: none !important;
+}
+
+/* ページ外の旧シェル（ヘッダ帯・フッタ等）も V2 の世界観に混ぜない。
+   ただし DOM は残す（main.js が参照するため）。
+   Beta0：背景は MASTER_TOKENS の --bg（DAY/NIGHT token）に委ねる。 */
+html[data-v2-mounted="true"] body{ background: var(--bg, #000); }
+
+/* ------------------------------------------------------------
+ * PKT-2 Responsive Shell
+ * ------------------------------------------------------------
+ * (1) 右側巨大空白 / 左寄せ
+ *     style.css の「@media (min-width:1100px){ section, .shop-guide{ max-width:920px } }」は
+ *     auto margin を伴わないため、<section id="counter|shelves|desk|bookshelf"> が
+ *     desktop で左へ寄り、右に巨大な余白が残っていた。V2 の面だけ解除して中央に戻す。
+ *     style.css 自体は変更しない（mount 時のみ上書き）。
+ * (2) 01 mobile 右端 strip
+ *     .v2c01__stage は 02/03 と違い margin-inline:auto を持たないため、
+ *     stage 幅 < viewport 幅のときに左寄せになり、右端に .shop の地色が帯として出ていた。
+ *     Reference の構図（stage 自体の寸法・比率）は変更せず、中央寄せだけを与える。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .experience-page,
+html[data-v2-mounted="true"] .entrance.hero{
+  max-width: none !important;
+  width: 100% !important;
+  margin-inline: auto !important;
+}
+
+html[data-v2-mounted="true"] .v2-page{ margin-inline: auto; }
+html[data-v2-mounted="true"] .v2c01__stage{ margin-inline: auto; }
+
+/* (3) 03 Global Nav が下部の棚を隠す
+   03 の Global Nav は full-bleed container 内で sticky が効かないため position:fixed に
+   なっている（beta0.css）。その分の逃げ場が stage 側に無く、最下段の棚が隠れていた。
+   nav 実高ぶんの bottom clearance を safe-area 込みで確保する。DOM も nav 自体も変えない。 */
+html[data-v2-mounted="true"] .v2c03__stage{
+  /* nav は containment のため viewport ではなく .v2-page の下端に貼り付く。
+     stage をちょうど 100svh にして、nav がその最下部＝first view の下端へ来るようにする。 */
+  padding-bottom: calc(var(--v2-nav-h) + env(safe-area-inset-bottom, 0px));
+}
+
+/* ------------------------------------------------------------
+ * R2-01：03 Emotion Shelves を「8棚ある」と初見で分かる構図にする
+ *
+ * 実測した原因（390px 幅 / iOS Safari の可視高 745px 相当で再現）
+ *   .v2c03__stage は aspect-ratio: 711/1536 の固定キャンバスで、高さが幅からしか
+ *   決まらない（390 幅 → 906px）。内側の縦リズムもすべて cqw（幅基準）のため、
+ *   実際に使える高さが幅から算出された高さより低いと、下段2棚が viewport の外へ出る。
+ *   実測：390x745 で 6/8、375x553 で 4/8 しか first view に入っていなかった。
+ *
+ * 対応
+ *   縦は「幅から決まる本来値」と「使える高さから決まる上限」の小さい方を採る。
+ *   グリッドは残りの高さを 4 行で分け合う（2列×4段の棚感はそのまま）。
+ *   Reference の構図・カード比率・icon・文字サイズの下限は保つ。
+ *   6棚＋もっと見る / carousel / 横スクロール化はしない。
+ *
+ * svh（small viewport height）を基準にするのは、iOS Safari のアドレスバー等が
+ * 出ている「最初に見える高さ」がこの値だから。dvh だと chrome が隠れた状態を
+ * 基準にしてしまい、first view の判定にならない。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2c03__stage{
+  aspect-ratio: auto;
+  /* min だけだと flex 子が縮まない（auto 高さは内容ぶん伸びる）。
+     確定高を与えることで grid が余りを受け取り、足りなければ縮む。 */
+  min-height: 100svh;
+  max-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+html[data-v2-mounted="true"] .v2c03__brandrow{
+  flex: 0 0 auto;
+  padding-top: min(6.4cqw, 2.4svh);
+}
+html[data-v2-mounted="true"] .v2c03__logo{
+  width: min(13cqw, 4.4svh);
+  height: min(13cqw, 4.4svh);
+}
+html[data-v2-mounted="true"] .v2-page h1.v2c03__title{
+  flex: 0 0 auto;
+  margin-top: min(5.8cqw, 2.2svh);
+}
+html[data-v2-mounted="true"] .v2c03__lead{
+  flex: 0 0 auto;
+  margin-top: min(2.0cqw, 0.8svh);
+}
+html[data-v2-mounted="true"] .v2c03__divider{
+  flex: 0 0 auto;
+  margin-top: min(4.4cqw, 1.5svh);
+}
+html[data-v2-mounted="true"] .v2c03__sprig{ width: min(4cqw, 2.4svh); min-width: 14px; }
+
+/* 棚グリッドが残りの高さを受け取り、4段で等分する */
+html[data-v2-mounted="true"] .v2c03__grid{
+  flex: 1 1 auto;
+  margin-top: min(5.3cqw, 1.5svh);
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  gap: min(2.8cqw, 0.8svh) 4.1cqw;
+  /* 余った高さは受け取るが、Reference のカード比率より大きくはしない */
+  max-height: calc(4 * 30.4cqw + 3 * 2.8cqw);
+}
+
+/* 行が高さに応じて縮められるよう、min-height は「読める下限」だけにする。
+   余白と icon も詰まるが、文字サイズ（clamp の下限 12px）は beta0.css のまま触らない。 */
+html[data-v2-mounted="true"] .v2c03__book{
+  min-height: 52px;
+  padding-top: min(2.4cqw, 0.6svh);
+  padding-bottom: min(2.4cqw, 0.6svh);
+  gap: min(2.2cqw, 0.6svh);
+}
+html[data-v2-mounted="true"] .v2c03__ring{
+  width: min(15.75cqw, 6.2svh);
+  height: min(15.75cqw, 6.2svh);
+}
+html[data-v2-mounted="true"] .v2c03__ring svg{
+  width: min(9cqw, 3.5svh);
+  height: min(9cqw, 3.5svh);
+}
+
+/* 案内文は補助情報。8棚の視認を優先し、短い画面では詰める（消しはしない）。 */
+html[data-v2-mounted="true"] .v2c03__guide{
+  flex: 0 1 auto;
+  margin-top: min(3.4cqw, 0.8svh);
+  padding-top: min(2.6cqw, 0.6svh);
+  padding-bottom: min(2.6cqw, 0.6svh);
+  line-height: 1.45;
+}
+
+/* ------------------------------------------------------------
+ * PKT-3：02 / 04 / 05 / 07 の共通メニュートリガー
+ * 03 / 06 / 08 は各画面固有の menubtn を既に持つため触らない。
+ * 01（表紙）は没入感維持のため trigger を置かない。
+ * 見た目は既存 .v2c03__menubtn に合わせ、新しい視覚言語は作らない。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2b-menutrigger{
+  flex: 0 0 auto;
+  min-width: 44px; min-height: 44px;
+  display: grid; place-items: center;
+  padding: 0; border: 0; background: none; cursor: pointer;
+  color: #8a7350;
+}
+html[data-v2-mounted="true"] .v2b-menutrigger svg{
+  width: 22px; height: 22px;
+  stroke: currentColor; fill: none;
+  stroke-width: 1.6; stroke-linecap: round;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2b-menutrigger{ color: #b08a5e; }
+
+/* 02：brandrow は Reference で中央寄せの構図。行の対称性を崩さないよう絶対配置で右上へ置く */
+html[data-v2-mounted="true"] .v2c02__brandrow .v2b-menutrigger{
+  position: absolute; top: 4.2cqw; right: 3.4cqw;
+}
+
+/* 04 / 07：既存の1要素だけの行を両端揃えにして右端へ同居させる */
+html[data-v2-mounted="true"] .v2c04__utility,
+html[data-v2-mounted="true"] .v2c07__bar{
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+
+/* ------------------------------------------------------------
+ * PKT-3：「来店カード」は V2 Beta0 の user-facing から退場させる。
+ * 保存キー・プロフィール契約・既存処理はそのまま残す（DOM も削除しない）。
+ * 視覚的に隠すだけでなく Tab / AT からも外す。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] #profileBtn{
+  display: none !important;
+}
+
+/* ------------------------------------------------------------
+ * ADDENDUM / Photo：05 の写真欄
+ * 既存 #photoPreview の状態を写すだけの表示面。周囲の 05 の質感に合わせる。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2c05__photo{ margin-top: clamp(14px, 3.4cqw, 20px); }
+
+html[data-v2-mounted="true"] .v2c05__photobtn{
+  display: inline-flex; align-items: center;
+  min-height: 44px;
+  padding: 0.55em 1.2em;
+  border: 1px solid rgb(170 150 120 / 0.55);
+  border-radius: 10px;
+  background: #fdfaf5;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: clamp(12px, 2.9cqw, 14px);
+  font-weight: 300;
+  line-height: 1.5;
+  text-align: left;
+  color: #55483a !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c05__photobtn{
+  border-color: rgb(150 120 80 / 0.4); background: #1c2534; color: #c0aa8a !important;
+}
+
+html[data-v2-mounted="true"] .v2c05__photoprev{
+  position: relative;
+  margin-top: 0.7em;
+  max-width: 260px;
+}
+html[data-v2-mounted="true"] .v2c05__photoprev[hidden]{ display: none; }
+html[data-v2-mounted="true"] .v2c05__photoimg{
+  display: block; width: 100%; height: auto;
+  border-radius: 8px;
+}
+html[data-v2-mounted="true"] .v2c05__photoremove{
+  position: absolute; top: -10px; right: -10px;
+  min-width: 32px; min-height: 32px;
+  display: grid; place-items: center;
+  border: 1px solid rgb(170 150 120 / 0.55);
+  border-radius: 999px;
+  background: #fdfaf5;
+  cursor: pointer;
+  font-size: 16px; line-height: 1;
+  color: #55483a !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c05__photoremove{
+  border-color: rgb(150 120 80 / 0.4); background: #1c2534; color: #c0aa8a !important;
+}
+html[data-v2-mounted="true"] .v2c05__photohint{
+  margin: 0.6em 0 0; padding: 0;
+  font-size: clamp(11px, 2.6cqw, 12.5px);
+  line-height: 1.7;
+  font-weight: 300;
+  color: #86775f !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c05__photohint{ color: #9d9077 !important; }
+
+/* ------------------------------------------------------------
+ * PKT-4 Screen-local Visual / UX
+ * ------------------------------------------------------------ */
+
+/* 02：カード本文が極端に狭い一行あたり文字数になっていたのを解消する。
+   左の pane 逃げ幅を詰め、右側の余白も本文が使えるようにする。
+   カード寸法・pane 自体・Reference の3カード構図は変えない。 */
+html[data-v2-mounted="true"] .v2c02__body{
+  padding-left: 3.4cqw;
+  padding-right: 2.2cqw;
+}
+
+/* 04：「近い言葉」の丸ピル＋実線枠をやめ、静かな語の並びにする。
+   R2-1 Hybrid：A（既存ページあり）は walk chip「→」、B（未作成語）は
+   蛇腹 chip「⌄」。同じ見た目で一部だけ飛ぶ状態を作らない。
+   具体的な chip / 蛇腹の style は下部の Final Field Fix セクション。 */
+html[data-v2-mounted="true"] .v2c04__wd-chip{
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: #6a5a45 !important;
+}
+html[data-v2-mounted="true"] .v2c04__wd-chip + .v2c04__wd-chip::before{
+  content: "・";
+  margin: 0 0.15em 0 0;
+  color: rgb(150 128 98 / 0.75);
+}
+html[data-v2-mounted="true"] .v2c04__wd-chips{ gap: 0 0.2em; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__wd-chip{ color: #b3a488 !important; }
+
+/* 05：textarea の二重枠を解消する（枠は .v2c05__tawrap 側の1本だけにする）。
+   legacy style.css の textarea 基底 border / box-shadow が残っていた。 */
+html[data-v2-mounted="true"] .v2c05__textarea{
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none;
+}
+
+/* 05：header subcopy と helper の不自然な孤立改行（1語だけ次行へ落ちる）を抑える。
+   文言そのものは変えない。英訳で行長が伸びても収まるようにする。 */
+html[data-v2-mounted="true"] .v2c05__sub,
+html[data-v2-mounted="true"] .v2c05__bindnote,
+html[data-v2-mounted="true"] .v2c05__assure,
+html[data-v2-mounted="true"] .v2c08__copy,
+html[data-v2-mounted="true"] .v2c08__tail{
+  text-wrap: pretty;
+}
+html[data-v2-mounted="true"] .v2c05__headmid{ min-width: 0; }
+
+/* ------------------------------------------------------------
+ * PKT-6 製本後（受け取り頁 / 棚選択）の presentation
+ * 機能契約（confirm / skip / unfiled / 題名修正）は一切変更しない。DOM も作り変えない。
+ * V1 の見た目（茶黒い大 modal・灰色の面・旧 select・ベージュ矩形ボタン・
+ * 「第三頁」という頁番号表示）が V2 の中へそのまま出てこないようにする。
+ * 製本という儀式性（まなの図・本のプレビュー・確認の間）は残す。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .mana-receive-overlay{
+  background: color-mix(in srgb, var(--bg, #14110F) 78%, transparent) !important;
+  backdrop-filter: blur(6px);
+}
+html[data-v2-mounted="true"] .mana-receive-card{
+  background: var(--surface, #f3ece1) !important;
+  color: var(--ink, #3b3128) !important;
+  border: 1px solid var(--line, rgb(150 128 98 / 0.4)) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 18px 48px rgb(0 0 0 / 0.28) !important;
+  font-family: "Shippori Mincho", var(--font-display) !important;
+}
+/* V1 の頁番号（「第三頁」）は V2 の IA に無い呼称なので出さない。
+   DOM は残す（既存 applyLanguage / t() の対象のまま）。 */
+html[data-v2-mounted="true"] .mana-receive-card .mana-page-label{
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%);
+  white-space: nowrap; border: 0;
+}
+/* 棚選択・確定・スキップ・題名修正のボタン群を V2 のボタン言語へ合わせる */
+html[data-v2-mounted="true"] .mana-receive-card select{
+  min-height: 44px;
+  padding: 0.5em 2.2em 0.5em 0.9em;
+  border: 1px solid var(--line, rgb(150 128 98 / 0.5)) !important;
+  border-radius: 10px !important;
+  background-color: var(--surface, #fdfaf5) !important;
+  color: inherit !important;
+  font-family: inherit;
+  font-size: 15px;
+}
+html[data-v2-mounted="true"] .mana-receive-card button{
+  min-height: 44px;
+  border-radius: 10px !important;
+  font-family: inherit;
+  letter-spacing: 0.04em;
+}
+html[data-v2-mounted="true"] .mana-receive-card .mana-title-input{
+  min-height: 44px;
+  border: 1px solid var(--line, rgb(150 128 98 / 0.5)) !important;
+  border-radius: 10px !important;
+  background: var(--surface, #fdfaf5) !important;
+  color: inherit !important;
+  font-family: inherit;
+}
+
+/* ------------------------------------------------------------
+ * 旧グローバルUI（V2 が独自のナビ・見出しを持つ面）
+ * DOM は残す。main.js が参照し、SECONDARY UTILITY 領域として
+ * 後の工程で正式に再配置するため。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .experience-bar,
+html[data-v2-mounted="true"] .page-nav,
+html[data-v2-mounted="true"] .doma,
+html[data-v2-mounted="true"] .shop-footer{
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%);
+  white-space: nowrap; border: 0;
+  pointer-events: none;
+}
+
+/* ============================================================
+ * R2-02 / Addendum B：04 の棚コンテキスト（空気の差）
+ * ------------------------------------------------------------
+ * 03 の大棚 icon は 04 の common sprig へ置き換えない（Formal Reference MATCH）。
+ * 代わりに「どの棚から入ったか」を halo / haze の空気差として出す。
+ *
+ * 使う色は既存 8 大棚の --tint のみ。新しい palette は作らない。
+ * bright=positive / dark=negative のような心理的意味づけはしない
+ * （同じ強度・同じ形で、色相だけが棚ごとに違う）。
+ *
+ * 値の出どころは emotion-shelf-adapter が <html> に置く
+ * data-v2-shelf-context（既存の大棚 id）だけ。
+ * ============================================================ */
+html[data-v2-shelf-context="hazumu"]    { --v2-shelf-tint: #a8823e; }
+html[data-v2-shelf-context="atatamaru"] { --v2-shelf-tint: #b5735e; }
+html[data-v2-shelf-context="hikareru"]  { --v2-shelf-tint: #56766a; }
+html[data-v2-shelf-context="shizumu"]   { --v2-shelf-tint: #587085; }
+html[data-v2-shelf-context="zawatsuku"] { --v2-shelf-tint: #8a7590; }
+html[data-v2-shelf-context="butsukaru"] { --v2-shelf-tint: #b06b4d; }
+html[data-v2-shelf-context="miwohiku"]  { --v2-shelf-tint: #6d7350; }
+html[data-v2-shelf-context="namae-ga-nai"] { --v2-shelf-tint: #8f887e; }
+
+html[data-theme="night"][data-v2-shelf-context="hazumu"]    { --v2-shelf-tint: #8a5a1e; }
+html[data-theme="night"][data-v2-shelf-context="atatamaru"] { --v2-shelf-tint: #8d4e37; }
+html[data-theme="night"][data-v2-shelf-context="hikareru"]  { --v2-shelf-tint: #3d4f42; }
+html[data-theme="night"][data-v2-shelf-context="shizumu"]   { --v2-shelf-tint: #3a4c60; }
+html[data-theme="night"][data-v2-shelf-context="zawatsuku"] { --v2-shelf-tint: #574351; }
+html[data-theme="night"][data-v2-shelf-context="butsukaru"] { --v2-shelf-tint: #7d4229; }
+html[data-theme="night"][data-v2-shelf-context="miwohiku"]  { --v2-shelf-tint: #514a29; }
+html[data-theme="night"][data-v2-shelf-context="namae-ga-nai"] { --v2-shelf-tint: #57493a; }
+
+/* ------------------------------------------------------------
+ * FIX-07（Round 2.1）：hero の輝度ピークを感情名・lead の真裏から外す
+ *
+ * 実測した原因（390px / 8棚 / DAY・NIGHT。文字を隠して背景の実ピクセルを採色し、
+ * 文字色との WCAG コントラストを算出）
+ *   halo の主核は closest-side at 42% 38%、haze は 50% 44% にあり、
+ *   どちらも感情名と lead が乗る帯のちょうど裏だった。
+ *   結果、lead の平均コントラストは DAY 3.50–3.90 / NIGHT 3.84–4.64、
+ *   下位 5% では DAY 2.34 / NIGHT 2.77 まで落ちていた。
+ *   NIGHT の「心が弾む」「心があたたまる」は暖色 tint が cream の文字色へ寄るため、
+ *   8棚のなかで最も低い値になっていた（CEO 指摘と一致）。
+ *
+ * 対応
+ *   色そのもの（8棚の --v2-shelf-tint / DAY・NIGHT の base color）は変えない。
+ *   halo を消さない・全面を暗くしない・特定の棚だけの個別調整をしない。
+ *   輝度の芯を 2 つに分け、文字帯（感情名〜lead）を避けて上下へ置く。
+ *     主核 = 感情名の上、副核 = lead の下、haze = さらに上。
+ *
+ *   注意：.v2c04__halo は border-radius:50% のため、背景はこの円でクリップされる。
+ *   gradient の中心を寄せたまま closest-side や大きな半径を使うと、
+ *   まだ明るいところで円の縁に当たり、硬い円弧が見えてしまう
+ *   （中間案で実際に発生した）。そのため
+ *     中心 ± 半径 が 0%..100% に収まる
+ *   ようにサイズを明示し、必ず要素の内側でフェードし切らせる。
+ *
+ * 実測（390px / 8棚 / DAY・NIGHT。文字を隠して背景の実ピクセルを採色）
+ *   感情名  平均 6.52–7.30 → 7.83–8.42（DAY） / 6.70–8.31 → 8.33–9.55（NIGHT）
+ *   lead    平均 3.50–3.90 → 4.97–5.12（DAY） / 3.84–4.64 → 5.66–5.88（NIGHT）
+ *   lead    下位5% 2.34–2.86 → 3.64–3.98（DAY） / 2.77–3.72 → 4.41–5.05（NIGHT）
+ *   棚差（文字帯以外の hero を採色した棚間の色差）12.3 → 16.4（DAY） / 19.6 → 23.3（NIGHT）
+ *   ＝ 空気の差はむしろ強まり、8棚間のばらつきは縮む（同一の contrast rule が成立）。
+ * ------------------------------------------------------------ */
+/* ------------------------------------------------------------
+ * ACTIVE-FIX-02：halo が「タイトル上の赤い丸／楕円」に見える
+ *
+ * FIX-07 で可読性は確保できたが、輝度の芯を文字帯の外へ寄せた結果、
+ * 芯の輪郭が円／楕円として認識されるようになっていた（実機指摘）。
+ *
+ * 対応（色は変えない。形だけを消す）
+ *   ・要素側に blur を掛け、gradient の等高線と border-radius:50% の
+ *     クリップ縁をまとめて溶かす。これで「丸」の輪郭が消える。
+ *   ・その分ぼやけて薄くなるので、芯をわずかに文字側へ戻し、
+ *     広がりを大きくして「空気」として面で乗るようにする。
+ *   ・8棚共通の 1 ルール。棚ごとの個別調整はしない。
+ *   ・halo 自体は消さない。全面を暗くしない。tint も文字色も変えない。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2c04__halo{
+  /* 形を感じさせない。blur は装飾レイヤのみに掛かる（文字は z-index で上）。
+     saturate は「灰色の煙」を「淡い色の気配」へ寄せるためのひと段だけ。
+     色相は動かさない。blur の位置・強さは従来のまま。 */
+  filter: blur(18px) saturate(1.35);
+  will-change: filter;
+}
+@media (min-width: 700px){
+  html[data-v2-mounted="true"] .v2c04__halo{ filter: blur(26px) saturate(1.35); }
+}
+/* DAY：暖色の光の芯は保ちつつ、外周へ向かって棚の色が乗る */
+html[data-v2-mounted="true"] .v2c04__halo{
+  background:
+    /* 主核：感情名の上。0.30±0.29 → 1%..59% で要素内に収まる */
+    radial-gradient(50% 34% at 50% 34%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 28%, rgb(255 253 250 / 0.95)) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 36%, rgb(255 253 250 / 0.78)) 46%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 42%, rgb(255 253 250 / 0.34)) 74%,
+      transparent 99%),
+    /* 副核：lead の下。0.74±0.24 → 50%..98% */
+    radial-gradient(46% 24% at 57% 74%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 44%, rgb(255 252 248 / 0.36)) 0%,
+      transparent 92%);
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__halo{
+  background:
+    radial-gradient(50% 34% at 50% 34%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 38%, rgb(26 30 36 / 0.92)) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 46%, rgb(26 30 36 / 0.74)) 46%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 52%, rgb(26 30 36 / 0.34)) 74%,
+      transparent 99%),
+    radial-gradient(46% 24% at 57% 74%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 54%, rgb(24 28 34 / 0.42)) 0%,
+      transparent 92%);
+}
+
+/* secondary haze：hero 全体の空気。halo より広く薄く、棚色だけが違う。
+   FIX-07 で中心を文字帯の上へ寄せ、文字の真裏の濃度だけを下げる。
+
+   ACTIVE-FIX-02 追補（desktop 実測で判明）
+     旧値 radial-gradient(78% 46% at 50% 16%) は 中心 16% に対して縦半径 46% が
+     大きく、要素の上辺に「まだ明るいところ」で当たっていた。
+     mobile では hero が縦に詰まっていて気付きにくいが、1024 / 1440 では
+     hero が横長になるため、上辺・左右辺が直線として見え、
+     題名の後ろに「角のある薄桃色の長方形」が出ていた（1440 実測 811x138px）。
+     halo で禁じたのと同じ失敗（クリップ縁が見える）なので、同じ規律を適用する。
+       中心 ± 半径 が 0%..100% に収まる → 必ず要素の内側でフェードし切る。
+     縦は 20% ± 20%（= 0%..40%）、横は 50% ± 52%（辺で 96% > 92% stop = 透明）。
+     芯は従来どおり文字帯の上に置いたままなので、FIX-07 の可読性は保つ。 */
+html[data-v2-mounted="true"] .v2c04__hero{ position: relative; }
+html[data-v2-mounted="true"] .v2c04__hero::after{
+  content: "";
+  position: absolute; inset: -6% -10% -14%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(52% 20% at 50% 20%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 17%, transparent) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #a8823e) 6%, transparent) 52%,
+      transparent 92%);
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__hero::after{
+  background:
+    radial-gradient(52% 20% at 50% 20%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 25%, transparent) 0%,
+      color-mix(in srgb, var(--v2-shelf-tint, #3a4c60) 9%, transparent) 52%,
+      transparent 92%);
+}
+/* ------------------------------------------------------------
+ * HOTFIX-01：装飾レイヤの重ね順だけを与え、position は canonical のまま残す。
+ *
+ * R2-02 で .v2c04__sprig / .v2c04__stars にも position: relative を当てたのが原因。
+ * beta0.css はこの 2 つを position: absolute で置いており、relative に落ちると
+ *   - sprig（span）が display:inline へ戻り width 指定が効かなくなる
+ *     → 中の svg の width:100% が hero 幅（約 280px）に対して解決され巨大化
+ *   - 両者が通常フローに入って hero の高さを押し広げる
+ *   - NIGHT では stars が display:block になるため影響がさらに大きい
+ * 結果として title / lead が約1画面ぶん下へ押し出されていた。
+ *
+ * 直し方：position は一切上書きしない。z-index だけを与える。
+ * 装飾（halo / haze / stars）は背面、本文（title / lead / sprig）は前面。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2c04__title,
+html[data-v2-mounted="true"] .v2c04__lead{ position: relative; z-index: 2; }
+/* sprig / stars は beta0.css の position:absolute のまま。重ね順のみ指定する。 */
+html[data-v2-mounted="true"] .v2c04__sprig{ z-index: 2; }
+html[data-v2-mounted="true"] .v2c04__stars{ z-index: 1; }
+/* 装飾レイヤは常に背面かつ非フロー。操作も奪わない。 */
+html[data-v2-mounted="true"] .v2c04__halo{ z-index: 0; pointer-events: none; }
+html[data-v2-mounted="true"] .v2c04__hero::after{ z-index: 0; }
+
+/* ============================================================
+ * R2-07：English Entrance Typography（01）
+ * ------------------------------------------------------------
+ * 実測した原因
+ *   01 は固定アスペクトのキャンバス上に % 座標で絶対配置される。
+ *   .v2c01__brand は top 23.9% / width 57%、.v2c01__rule は top 35.5% で、
+ *   その間に確保されている高さは 390px 幅で約 80px しかない。
+ *   JA「みんなの／感情書店」は 76px で収まるが、
+ *   EN "The / Bookstore of Feelings" は 0.22em の字間のまま折り返して
+ *   115px となり、罫線へ重なっていた（実測 320/390/430 すべてで overlap）。
+ *
+ * 対応
+ *   locale 固有の typography token として EN だけを調整する。
+ *   applyLanguage() が <html lang> を設定するため、その属性でスコープする。
+ *   JA 側の値・DAY/NIGHT の情景・DOM・English wording はいずれも変更しない。
+ *   文字を画像化しない。極端な縮小もしない（EN main は約 22px を確保）。
+ * ============================================================ */
+html[data-v2-mounted="true"][lang="en"] .v2c01__brand{
+  /* 左右位置と幅は JA の Reference 幾何（left 3% / width 57%・中心 31.5%）のまま。
+     幅を広げると 1 行に伸びて左端からはみ出すため、幅は変えず 2 行で組む。 */
+  top: 22.2% !important;
+}
+html[data-v2-mounted="true"][lang="en"] .v2b .v2c01__brand-sub,
+html[data-v2-mounted="true"][lang="en"] .v2c01__brand-sub{
+  font-size: 3.7cqw;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  line-height: 1.2;
+}
+html[data-v2-mounted="true"][lang="en"] .v2b .v2c01__brand-main,
+html[data-v2-mounted="true"][lang="en"] .v2c01__brand-main{
+  margin-top: 1.5cqw;
+  font-size: 5.2cqw;
+  letter-spacing: 0.08em;
+  text-indent: 0.08em;
+  line-height: 1.16;
+  /* JA の 2 行ブロック（みんなの／感情書店）と同じ塊感にする。
+     1 行に伸ばすと左端の情景へ寄りすぎるため、幅を絞って
+     "Bookstore of / Feelings" で改行させる。 */
+  max-width: 74%;
+  margin-inline: auto;
+  /* 「Bookstore of / Feelings」で自然に2行になるようにし、
+     語中改行や1語だけ落ちる孤立行を避ける */
+  text-wrap: balance;
+}
+
+/* ============================================================
+ * HOTFIX-02：English Entrance CTA の装飾と文字の衝突
+ * ------------------------------------------------------------
+ * 実測した原因
+ *   .v2c01__cta-fl（左右の枝葉オーナメント）は left/right 8.5% ・幅 5.2cqw で、
+ *   短い JA「入店する」を前提に置かれている。
+ *   EN "Enter the store" は字間 0.3em のまま横幅が大きく、
+ *   実測で左右とも 9〜18px 食い込んでいた（320/390/430・DAY/NIGHT すべて）。
+ *
+ * 対応（html[lang="en"] のみ。JA は 1 バイトも変えない）
+ *   オーナメントを外側へ寄せて少し小さくし、文字側は字間だけを詰める。
+ *   革の看板・オーナメント 2 つ・中央揃えは維持。文字の画像化はしない。
+ * ============================================================ */
+html[data-v2-mounted="true"][lang="en"] .v2c01__cta{
+  font-size: 4.7cqw;
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
+}
+html[data-v2-mounted="true"][lang="en"] .v2c01__cta-fl{
+  width: 4.2cqw;
+  height: 4.2cqw;
+}
+html[data-v2-mounted="true"][lang="en"] .v2c01__cta-fl--l{ left: 3.6%; }
+html[data-v2-mounted="true"][lang="en"] .v2c01__cta-fl--r{ right: 3.6%; }
+
+/* ============================================================
+ * FIX-03：03 案内カードが左へ寄って見える／下部 nav に隠れる
+ * ------------------------------------------------------------
+ * 実測した原因（320/390/430/1024/1440 で再現）
+ *   (1) 枠そのものが左寄せだった。
+ *       beta0.css は .v2c03__guide { width:81.7%; margin:3.4cqw auto 0 } だが、
+ *       同じ beta0.css の .v2b p { margin: 0 }（詳細度 0,1,1）が
+ *       .v2c03__guide（0,1,0）に勝ち、左右の auto margin が 0 に潰されていた。
+ *       .v2c03__grid が div なのでこの規則に当たらず、grid だけ中央、
+ *       案内カードだけ左端という状態になっていた（実測 320px で左 0 / 右 58.6px）。
+ *   (2) 中身が横並びのため、sprig ぶんだけ文言の視覚中心が右へずれていた
+ *       （実測 320px で +15.8px / 1024px で +32px）。
+ *   (3) flex 子が縮めず stage の content box を越え、案内カードが
+ *       fixed の Global Nav の下へ潜っていた（実測 320px で -34.6px、1024px で -143px）。
+ *
+ * 対応
+ *   (1) 潰された auto margin を戻す（枠を main content に対して中央へ）。
+ *   (2) sprig を文言の上へ積み、枠・文言・icon の視覚中心を一致させる
+ *       （枠と中身の中心ずれは 3 viewport すべてで 0px になる）。
+ *   (3) grid / guide の自動最小サイズを解除して flex が本来どおり縮むようにし、
+ *       nav ぶんの clearance を必ず正にする。
+ *
+ * R2-01 の 8棚 first view 契約は維持する（実測 320/390/430 で 8/8。
+ * 1024 は従来 6/8 だったが、(3) により 8/8 へ改善する）。
+ * 枠の幅・bottom clearance の考え方・棚カードの寸法契約は変えない。
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2c03__guide{
+  margin-inline: auto;              /* (1) .v2b p{margin:0} に潰された auto を戻す */
+  min-height: 0;                    /* (3) flex の自動最小サイズを解除 */
+  flex-direction: column;           /* (2) icon を文言の上へ。左端に孤立させない */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: min(1.2cqw, 0.4svh);
+  padding-inline: 3.6cqw;           /* 左右対称 */
+  margin-bottom: min(1.6cqw, 0.6svh); /* (3) nav との clearance を必ず残す */
+}
+html[data-v2-mounted="true"] .v2c03__guidesprig{
+  flex: 0 0 auto;
+  /* 縦積みになるぶん、案内カードが高くなりすぎないよう sprig を少しだけ小さくする */
+  width: min(5cqw, 2.2svh); min-width: 15px;
+}
+html[data-v2-mounted="true"] .v2c03__guidetext{ flex: 0 1 auto; }
+html[data-v2-mounted="true"] .v2c03__grid{ min-height: 0; }  /* (3) */
+
+/* ============================================================
+ * FIX-04：02「自分の本棚を見る」本文の孤立行
+ * ------------------------------------------------------------
+ * 実測した原因
+ *   カード本文の欄は 320px で 127.8px しかないのに、意図した 1 行目
+ *   「あなたが一冊にした言葉を、」は 159.1px 必要だった。<br> の位置は正しく、
+ *   1 行目が入りきらずに折り返され、助詞だけが次行へ落ちていた
+ *   （実測 390/1024 で「あなたが一冊にした言葉」「を、」「あとから静かに巡る。」）。
+ *   同じ理由で「感情の棚を見る」の本文も 320/1024 で「ら、」が孤立していた。
+ *
+ * 対応
+ *   文言は変えない。<br> を controlled span（1 行 = 1 ブロック）に置き換え、
+ *   狭い幅では各行が独立して balance するようにする。
+ *   入りきらない行は語の切れ目で 2 行に分かれ、1〜2 文字だけの行は出なくなる。
+ *   実測：320/390/430/1024/1440 × JA/EN の全 15 通りで孤立行 0。
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2c02__descline{
+  display: block;
+  text-wrap: balance;
+}
+
+/* ============================================================
+ * FIX-08：メニュー内「見本の一冊」を現行 Reader の紙面へ寄せる
+ * ------------------------------------------------------------
+ * Reader（07）は 題名 → 罫 → 日付 → 棚 → 本文 の順。見本もその階層に合わせる。
+ * 見本専用の新しい装飾は作らない（Reader の見え方へ寄せるだけ）。
+ * ============================================================ */
+html[data-v2-mounted="true"] .sample-inline-sep{
+  display: block;
+  width: 40px; height: 1px;
+  margin: 6px 0 8px;
+  background: var(--paper-shadow);
+}
+html[data-v2-mounted="true"] .sample-inline-date{ margin: 0 0 2px; }
+html[data-v2-mounted="true"] .sample-inline-cat{ margin: 0 0 10px; }
+
+/* ============================================================
+ * FIX-05：店内メニューの section heading 階層
+ * ------------------------------------------------------------
+ * 実測した原因
+ *   .experience-menu-section は 11.5px。直下の説明文（.about-accordion-summary）が
+ *   13.5px あるため、「この書店について・データの扱い」が見出しではなく
+ *   注釈のように見えていた（見出し 11.5px < 本文 13.5px）。
+ *
+ * 対応
+ *   見出し階層そのものを本文より上へ戻す。「任意の場所へ」と同じ class なので
+ *   両方が同じ heading 階層のまま持ち上がる（＝同等の階層を保つ）。
+ *   文言・IA・DOM・順序は変更しない。style.css は触らず mount 時のみ上書きする。
+ * ============================================================ */
+html[data-v2-mounted="true"] .experience-menu-section{
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--ink);          /* --ink-soft より contrast を上げる（DAY/NIGHT とも token 追従） */
+  margin: 22px 0 10px;
+  padding-top: 14px;          /* 罫線と見出しの間を空ける */
+}
+html[data-v2-mounted="true"] .experience-menu-nav .experience-menu-section{
+  margin: 16px 0 8px;
+  padding-top: 12px;
+}
+
+/* ------------------------------------------------------------
+ * ACTIVE-FIX-04：section heading が「押せば開く要素」に見える
+ *
+ * 実機指摘の理由（構造）
+ *   「この書店について・データの扱い」は .experience-menu-section の
+ *   border-top（破線）を持ち、その直後に来る .about-accordion-wrap も
+ *   border-top（破線）を持つ。結果として見出しが上下を破線で囲まれ、
+ *   1 行ぶんの「押せる帯」に見えていた。
+ *   実際に開くのは、その下にある「データはどこに保存されるの？」の details。
+ *
+ * 対応（文言・IA・順番は変えない）
+ *   見出しの直下に来る破線を外し、見出しを非 interactive として明示する。
+ *   矢印・背景・囲み枠は元から無いので追加しない。
+ *   本物の accordion（summary）側は触らないので、両者の差が明確になる。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .experience-menu-section{
+  cursor: default;
+  background: none;
+  border-inline: 0;
+  border-bottom: 0;
+}
+html[data-v2-mounted="true"] .experience-menu-section + .about-accordion-wrap{
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+/* 本物の accordion であることが分かるよう、開閉要素側だけ余白で切り離す */
+html[data-v2-mounted="true"] .about-data-accordion{ margin-top: 18px; }
+
+/* ============================================================
+ * FIX-06：05 編纂室の今日の日付
+ * ------------------------------------------------------------
+ * 既存の renderCurrentShopDate() が書き込む <time> を、subcopy の直下に
+ * small secondary text として置くだけ。calendar UI にはしない。
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2c05__today{
+  display: block;
+  margin-top: 0.3em;
+  font-size: clamp(11px, 2.4cqw, 12px);
+  letter-spacing: 0.06em;
+  font-weight: 300;
+  color: #9b8c74 !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c05__today{ color: #8d8168 !important; }
+html[data-v2-mounted="true"] .v2c05__today:empty{ display: none; }
+
+/* ============================================================
+ * ACTIVE-FIX-12：写真は「大きな画像」ではなく「頁に挟まれた一枚の写真」
+ * ------------------------------------------------------------
+ * 経緯
+ *   Round 2.1 の FIX-10 では、縦長写真が first view を使い切る問題を
+ *   max-height + object-fit:cover（表示 crop）で抑えた。
+ *   その後の CEO 実機判断で、写真は「本文の主役画像」ではなく
+ *   「本や頁にそっと残された一枚の写真」として見せる方針が確定し、
+ *   crop 0・写真全体を見せることが原則になった。
+ *
+ * 対応
+ *   cover をやめ、旧 UI の #modalPhoto と同じ「一枚のプリント」の見せ方へ寄せる。
+ *     ・width/height は auto。max-width / max-height の枠内へ収める
+ *       → 縦長・正方形・横長のいずれも全体が見え、crop も歪みも起きない
+ *     ・白い紙のふち（下だけ厚い＝チェキ／プリントの余白）と控えめな影
+ *     ・わずかに傾ける（過剰な scrapbook 化はしない）
+ *   05 / 07 / 本詳細 modal で同じ思想に揃える。
+ *   元画像ファイルは加工しない（photo 契約・圧縮・保存形式は不変）。
+ *   運営側の事前 crop / resize / 専用 thumbnail 作成は前提にしない。
+ * ============================================================ */
+/* --- 共通：一枚のプリントとしての紙 --- */
+html[data-v2-mounted="true"] .v2c07__photo,
+html[data-v2-mounted="true"] .v2c05__photoprev{
+  display: block;
+  width: fit-content;
+  margin-inline: auto;
+  padding: 6px 6px 18px;
+  border-radius: 2px;
+  background: #fffdf6;
+  box-shadow: 0 3px 12px rgb(60 40 20 / 0.22);
+  overflow: visible;
+  line-height: 0;
+}
+/* 写真のない一冊では figure ごと出さない。
+   beta0.css の「.v2b .v2-placeholder{ display:none }」より上の詳細度で
+   display:block を与えてしまうため、空の紙だけが小さな白い切片として
+   残っていた（1440 実測 12.5x24.2px）。placeholder のときは必ず消す。 */
+html[data-v2-mounted="true"] .v2c07__photo.v2-placeholder,
+html[data-v2-mounted="true"] .v2c05__photoprev[hidden]{
+  display: none;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c07__photo,
+html[data-v2-mounted="true"][data-theme="night"] .v2c05__photoprev{
+  background: #efe6d4;
+  box-shadow: 0 3px 14px rgb(0 0 0 / 0.5);
+}
+
+/* --- 07 Reader：本の中に挟まれた一枚 --- */
+html[data-v2-mounted="true"] .v2c07__photo{
+  margin-block: clamp(18px, 6cqw, 30px);
+  transform: rotate(-1.1deg);
+}
+html[data-v2-mounted="true"] .v2c07__photo img,
+html[data-v2-mounted="true"] .v2c07 .v2-reader__cover-img{
+  display: block;
+  width: auto; height: auto;
+  max-width: min(100%, 300px);
+  max-height: min(38svh, 320px);
+  object-fit: contain;   /* 収めるだけ。crop しない */
+}
+
+/* --- 05 編纂室：今日の一枚を頁に挟む --- */
+html[data-v2-mounted="true"] .v2c05__photoprev{
+  max-width: none;       /* 紙の幅は写真から決まる */
+  margin-top: 0.9em;
+  transform: rotate(-1.4deg);
+}
+html[data-v2-mounted="true"] .v2c05__photoimg{
+  display: block;
+  width: auto; height: auto;
+  max-width: min(100%, 190px);
+  max-height: min(26svh, 220px);
+  object-fit: contain;
+  border-radius: 0;
+}
+/* 取り外しボタンは紙の角に置く（傾きの影響を受けないよう打ち消す） */
+html[data-v2-mounted="true"] .v2c05__photoremove{
+  top: -12px; right: -12px;
+  transform: rotate(1.4deg);
+}
+
+/* --- 本詳細 modal：画像ビューアではなく、頁から取り出した一枚 --- */
+html[data-v2-mounted="true"] #modalPhoto{
+  max-width: min(72%, 280px);
+  margin: 0 auto 18px;
+  border-width: 6px;
+  border-bottom-width: 18px;
+}
+html[data-v2-mounted="true"] #modalPhoto img{
+  max-height: min(38svh, 300px);
+}
+
+/* ============================================================
+ * ACTIVE-FIX-08：Desktop Responsive Completion（1024 / 1440）
+ * ------------------------------------------------------------
+ * 実測（Chromium 1440x900 / 1024x768、DAY・NIGHT・JP・EN）
+ *   01 / 02  stage 幅 = min(100vw, 100dvh * 0.5625) → 506px / 432px。
+ *            左右に flat な地色が片側 467px / 296px 残り、
+ *            「mobile をそのまま中央に置いただけ」に見えていた。
+ *   03       stage 幅 = min(100vw, 711px) → 1440 で片側 365px。
+ *   06       本棚 grid が --bookshelf-content-max: 30rem（480px）・3 列固定で、
+ *            1440 でも mobile と同じ密度のまま。
+ *   04 / 07 / 08  読み物側は 736 / 544 / 640px。
+ *
+ * 方針
+ *   01 / 02 / 03 の縦長キャンバスは Reference の構図そのものなので、
+ *   引き伸ばして絵を歪めることはしない。代わりに
+ *   「余白を、同じ部屋の続きにする」。
+ *   その画面が既に読み込んでいる ambience（.v2c01__wall / .v2c02__amb /
+ *   .v2c03__amb と同一ファイル）を page 面へも敷き、背面だけを強くぼかして
+ *   光と色だけを残す。新しい asset も新しい通信先も増えない。
+ *   キャンバスの縁は soft shadow で受け、「部屋の中の明るい一面」として読ませる。
+ *
+ *   04 / 06 / 07 / 08 は文字組と grid なので、desktop では素直に幅を使う。
+ *   ただし 05（編纂室）と 07（読書）は一段組の本文なので、
+ *   読みやすい行長（measure）を優先し、無制限には広げない。
+ *   幅は token（--bookshelf-content-max 等）だけを上書きし、
+ *   レイアウト規則そのものは beta0.css のまま使う。
+ *
+ *   mobile（〜899px）には一切適用しない。
+ * ------------------------------------------------------------ */
+@media (min-width: 900px){
+
+  /* --- 01 / 02 / 03：余白を「同じ部屋の続き」で満たす --- */
+  html[data-v2-mounted="true"] .v2c01,
+  html[data-v2-mounted="true"] .v2c02,
+  html[data-v2-mounted="true"] .v2c03{
+    position: relative;
+    background-position: center center;
+    /* cover のままだと、ぼかしても「植木・棚」といった輪郭が低周波として残り、
+       同じ絵の縮尺違いが 2 枚あるように見えた（1440 実測）。
+       大きく拡大して低周波だけにしてから、下の backdrop-filter で溶かす。 */
+    background-size: 300% auto;
+    background-repeat: no-repeat;
+  }
+  html[data-v2-mounted="true"] .v2c01{ background-image: url("assets/v2b0/01/01_wall_ambience_day.webp"); }
+  html[data-v2-mounted="true"] .v2c02{ background-image: url("assets/v2b0/02/02_lobby_ambience_day.webp"); }
+  html[data-v2-mounted="true"] .v2c03{ background-image: url("assets/v2b0/03/03_shelves_ambience_day.webp"); }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c01{ background-image: url("assets/v2b0/01/01_wall_ambience_night.webp"); }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c02{ background-image: url("assets/v2b0/02/02_lobby_ambience_night.webp"); }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c03{ background-image: url("assets/v2b0/03/03_shelves_ambience_night.webp"); }
+
+  /* 背面だけをぼかす。要素側 filter だと自分の縁が羽根状に抜けてしまうので、
+     backdrop-filter で「後ろにあるものをぼかす」側に倒す（縁は clamp される）。
+     backdrop-filter 非対応環境では下の wash だけが残り、
+     flat な地色よりは静かな面になる（機能は何も落ちない）。 */
+  html[data-v2-mounted="true"] .v2c01::before,
+  html[data-v2-mounted="true"] .v2c02::before,
+  html[data-v2-mounted="true"] .v2c03::before{
+    content: "";
+    position: absolute; inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    /* cover で引き伸ばした絵は特徴が大きくなるので、blur も 3 桁必要。
+       弱いと「同じ絵の縮尺違いが 2 枚ある」ように見えてしまう（実測）。 */
+    -webkit-backdrop-filter: blur(150px) saturate(0.5);
+    backdrop-filter: blur(150px) saturate(0.5);
+    /* 中央へ視線を戻すための静かな vignette。地色に寄せるだけで、色は足さない。 */
+    background:
+      radial-gradient(130% 86% at 50% 42%,
+        color-mix(in srgb, var(--bg, #efe7d9) 56%, transparent) 0%,
+        color-mix(in srgb, var(--bg, #efe7d9) 78%, transparent) 55%,
+        color-mix(in srgb, #4a3a24 30%, transparent) 100%);
+  }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c01::before,
+  html[data-v2-mounted="true"][data-theme="night"] .v2c02::before,
+  html[data-v2-mounted="true"][data-theme="night"] .v2c03::before{
+    background:
+      radial-gradient(130% 86% at 50% 42%,
+        color-mix(in srgb, var(--bg, #12161d) 54%, transparent) 0%,
+        color-mix(in srgb, var(--bg, #12161d) 80%, transparent) 55%,
+        color-mix(in srgb, #000000 48%, transparent) 100%);
+  }
+
+  /* キャンバスは「部屋の中で明かりが差している一面」として受ける。
+     stage は beta0.css で position: relative なので、DOM 順で ::before の上に載る。 */
+  html[data-v2-mounted="true"] .v2c01__stage,
+  html[data-v2-mounted="true"] .v2c02__stage,
+  html[data-v2-mounted="true"] .v2c03__stage{
+    box-shadow:
+      0 0 0 1px rgb(120 96 62 / 0.12),
+      0 30px 96px rgb(64 46 24 / 0.34);
+  }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c01__stage,
+  html[data-v2-mounted="true"][data-theme="night"] .v2c02__stage,
+  html[data-v2-mounted="true"][data-theme="night"] .v2c03__stage{
+    box-shadow:
+      0 0 0 1px rgb(214 196 158 / 0.10),
+      0 30px 96px rgb(0 0 0 / 0.58);
+  }
+
+  /* --- 04 / 06 / 07 / 08：desktop では幅を使う（token だけを上書き） --- */
+  html[data-v2-mounted="true"] .v2c04__stage{ max-width: 50rem; }
+  html[data-v2-mounted="true"] [data-screen="06"]{
+    --bookshelf-content-max: 44rem;
+    --bookshelf-columns: 4;
+  }
+  html[data-v2-mounted="true"] [data-screen="07"]{ --reader-width: 40rem; }
+  html[data-v2-mounted="true"] [data-screen="08"]{ --empty-max: 44rem; }
+}
+
+@media (min-width: 1200px){
+  html[data-v2-mounted="true"] .v2c04__stage{ max-width: 54rem; }
+  html[data-v2-mounted="true"] [data-screen="06"]{
+    --bookshelf-content-max: 56rem;
+    --bookshelf-columns: 5;
+  }
+  /* 07 は本文なので 40rem（16px で約 40 字 / 行）のまま据え置く。これ以上は行長が伸びすぎる。 */
+  html[data-v2-mounted="true"] [data-screen="08"]{ --empty-max: 46rem; }
+}
+
+/* ============================================================
+ * MICRO-02 / MICRO-03：日本語の折り返しを意味の単位で切る
+ * ------------------------------------------------------------
+ * 日本語は単語間に空白がないので、ブラウザは任意の文字で折り返す。
+ * 実測（Chromium）
+ *   05 サブ見出し   390 で「残ったことを、自分の言葉で一／冊に。」
+ *   メニュー案内文  320 で「…自分の本棚／へ。」「…あな／たが決められます。」
+ * ACTIVE-FIX-01（02 のカード本文）と同じ考え方で、意味の単位を span で包み、
+ * その内側では折り返さないようにする。行数や文字サイズは変えない。
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2-wrapunit{ white-space: nowrap; }
+
+/* ------------------------------------------------------------
+ * FIX-04：受け取り頁（棚選択）の helper text コントラスト
+ *
+ * 実測した原因
+ *   PKT-6 で .mana-receive-card の背景と基準 color は V2 の面（DAY は
+ *   var(--surface) = 明るい紙）へ差し替えたが、style.css の子孫ルールが
+ *   V1 の暗い modal 前提の生成り色を直接持ったままだった。
+ *     .mana-title-trigger        color: rgba(245,234,210,0.82)
+ *     .mana-receive-line         color: #F5EAD2
+ *     .mana-receive-card label   color: rgba(245,234,210,0.8)
+ *   NIGHT では面が暗いので読めるが、DAY では明るい紙に生成り文字が乗り、
+ *   実ピクセル計測で 1.12–1.47:1 まで落ちていた（WCAG AA 4.5:1 未満）。
+ *
+ *   .chart-btn.ghost は背景が rgba(36,26,18,0.52) の半透明で、
+ *   DAY の紙に重なると rgb(142,135,126) の中間グレーになる。
+ *   その上に生成り文字が乗るため 2.88:1。
+ *   この面では白系の文字は理論上どうやっても 3.5:1 までしか届かないので、
+ *   文字色だけを既存の primary と同じ濃い墨へ寄せる（4.7:1 台）。
+ *
+ * 対応（実測で FAIL した箇所だけ／文字色のみ）
+ *   ・helper text は card の ink を継承させる（テーマ両対応。色を新設しない）
+ *   ・ghost ボタンの文字色は DAY のときだけ濃い墨にする
+ *     （NIGHT は面が暗く 13.7:1 で通っているので触らない）
+ *   背景・レイアウト・font-size・spacing・modal 構造・ボタンの地色・
+ *   棚 UI・背表紙・blur 背景はいずれも変更しない。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .mana-receive-card .mana-title-trigger,
+html[data-v2-mounted="true"] .mana-receive-card .mana-receive-line,
+html[data-v2-mounted="true"] .mana-receive-card label{
+  color: inherit !important;
+}
+/* 下線は装飾なので、文字色に追従させるだけにする（太さ・位置は変えない） */
+html[data-v2-mounted="true"] .mana-receive-card .mana-title-trigger{
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent) !important;
+}
+html[data-v2-mounted="true"] .mana-receive-card .mana-title-trigger:hover{
+  color: inherit !important;
+  text-decoration-color: currentColor !important;
+}
+/* DAY のみ：半透明 ghost が中間グレーになる面では、濃い墨でしか AA に届かない */
+html[data-v2-mounted="true"]:not([data-theme="night"]) .mana-receive-card .chart-btn.ghost{
+  color: #241a12 !important;
+}
+
+/* ------------------------------------------------------------
+ * 店内メニュー drawer / データパネルのコントラスト
+ *
+ * 実測した原因（FIX-04 と同じ系統）
+ *   drawer の面は V2 の token（DAY は明るい紙）だが、style.css の子孫ルールが
+ *   V1 の暗い店内前提の色を直接持ったままだった。
+ *     .about-accordion-content p / .about-data-content p  color:#DCD0B9 系
+ *     #samplePeekBtn                                      color:#F5EAD2
+ *     .share-btn                                          color:#F0E7D6
+ *   DAY の実測は本文 1.02–1.25:1、見本ボタン 1.88:1、share ボタン 3.58:1。
+ *
+ *   逆に NIGHT では、葡萄色の見出し・summary（暗い面に暗い葡萄）と、
+ *   明るい葡萄の pill に白文字が乗る motion トグルが 2.88–3.86:1 で落ちる。
+ *   言語トグルは opacity:0.7 が原因で DAY 3.80 / NIGHT 3.44。
+ *
+ * 対応（実測で FAIL した文字だけ／文字色と opacity のみ）
+ *   drawer の背景色・幅・padding・レイアウト・字送り・font-family・border・
+ *   accordion 構造・navigation・blur / overlay・説明本文はいずれも変更しない。
+ * ------------------------------------------------------------ */
+/* 本文・補助文は drawer の ink を継承する（テーマ両対応。色を新設しない） */
+html[data-v2-mounted="true"] #experienceMenu .about-accordion-content p,
+html[data-v2-mounted="true"] #experienceMenu .about-accordion-content li,
+html[data-v2-mounted="true"] #experienceMenu .about-data-content p,
+html[data-v2-mounted="true"] #experienceMenu .about-data-content li,
+html[data-v2-mounted="true"] #experienceMenu #samplePeekBtn{
+  color: inherit !important;
+}
+/* 言語トグルは opacity 0.7 が原因なので不透明に戻す（色は変えない） */
+html[data-v2-mounted="true"] #experienceMenu .pref-toggle{ opacity: 1 !important; }
+
+/* DAY のみ：share ボタンは V1 の暗い店内前提の地 rgba(36,26,18,.52) が
+   明るい紙に重なって中間トーン rgb(128,115,94) になる面。
+   文字色だけでは足りない（純黒でも実測 4.44–4.49 で AA に届かない）ため、
+   地の alpha だけを深くして、既存の生成り文字のまま AA を取る。
+   色相・角丸・寸法・余白・border は変えていない。 */
+html[data-v2-mounted="true"]:not([data-theme="night"]) #experienceMenu .share-btn{
+  background-color: rgba(36, 26, 18, 0.72) !important;
+}
+/* NIGHT のみ：暗い面に対して葡萄色が沈むので、同じ色相のまま明度だけ上げる */
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .about-accordion-content > b,
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .about-data-content > b,
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .about-data-accordion > summary{
+  color: #e0a3ad !important;
+}
+/* NIGHT のみ：明るい葡萄の pill に白文字は届かないので濃い墨にする */
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .pref-toggle.on{
+  color: #000000 !important;
+}
+/* NIGHT の言語トグルは地が暗いので、逆に文字を明るい生成りへ寄せる */
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .pref-toggle:not(.on){
+  color: #e8dcc4 !important;
+}
+
+/* ============================================================
+ * 店内メニューを「1 枚の編集された紙面」に揃える
+ * ------------------------------------------------------------
+ * 実測（390px）
+ *   セクション見出し 3 本は L=67.8 / W=302.2 で既に揃っている。
+ *   ずれていたのは中身のほう。
+ *     .about-data-accordion   L=117 / W=203.9（左に 49px 寄り、98px 狭い）
+ *     .share-btn の幅         276.3 / 302.2 / 207.4、179.8 / 125.5 / 179.8
+ *     .legal-row              「・」区切りの横並びで、3 つ目だけ次行へ落ちる
+ *   縦の余白も 10 / 14 / 18 / 22 / 24 / 26px が混在していた。
+ *
+ * 対応（レイアウトと字組みだけ。動作・runtime・contract は触らない）
+ *   同じ意味の余白を 3 つの token に集約し、主要ブロックの左端と幅をそろえる。
+ *   グループ内のボタンは同じ幅の縦積み、下部リンクは縦並びにする。
+ * ============================================================ */
+html[data-v2-mounted="true"] #experienceMenu .experience-menu-settings{
+  --menu-gap-head: 10px;   /* 見出し → 内容 */
+  --menu-gap-item: 8px;    /* 同一グループ内 */
+  --menu-gap-sec: 26px;    /* セクション → 次セクション */
+}
+/* 3 本のセクション見出しは同じ規則（字面は FIX-05 の値のまま） */
+html[data-v2-mounted="true"] #experienceMenu .experience-menu-section{
+  margin: var(--menu-gap-sec) 0 var(--menu-gap-head);
+  padding-top: 14px;
+}
+/* 主要ブロックはすべて同じ左端・同じ幅に載せる */
+html[data-v2-mounted="true"] #experienceMenu .about-accordion-wrap,
+html[data-v2-mounted="true"] #experienceMenu .about-data-accordion,
+html[data-v2-mounted="true"] #experienceMenu .share-row,
+html[data-v2-mounted="true"] #experienceMenu .pref-row,
+html[data-v2-mounted="true"] #experienceMenu .weather-settings,
+html[data-v2-mounted="true"] #experienceMenu .legal-row{
+  display: block;
+  width: auto;
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+html[data-v2-mounted="true"] #experienceMenu .about-accordion-wrap{
+  margin-block: 0 var(--menu-gap-sec);
+  padding-bottom: 0;
+}
+html[data-v2-mounted="true"] #experienceMenu .about-data-accordion{
+  margin-block: 0 var(--menu-gap-sec);
+}
+/* accordion の見出し帯も本文と同じ幅にそろえる */
+html[data-v2-mounted="true"] #experienceMenu .about-data-accordion > summary{
+  display: block;
+  width: auto;
+  text-align: left;
+}
+/* FIX-B：グループ内の 3 ボタンは同じ幅・同じ左端の縦積み */
+html[data-v2-mounted="true"] #experienceMenu .share-row{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--menu-gap-item);
+  margin-block: 0 var(--menu-gap-sec);
+}
+html[data-v2-mounted="true"] #experienceMenu .share-row .share-btn{
+  width: 100%;
+  margin: 0;
+}
+/* 設定トグルは横並びのままでよいが、間隔だけ同じ token にする */
+html[data-v2-mounted="true"] #experienceMenu .pref-row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--menu-gap-item);
+  margin-block: 0 var(--menu-gap-item);
+}
+/* FIX-C：下部リンクは縦並び。区切りの「・」は出さない */
+html[data-v2-mounted="true"] #experienceMenu .legal-row{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--menu-gap-item);
+  margin-block: var(--menu-gap-sec) 0;
+  text-align: left;
+}
+html[data-v2-mounted="true"] #experienceMenu .legal-row .legal-sep{ display: none; }
+
+/* ------------------------------------------------------------
+ * FIX-D：04「自分の本」空状態の補助文を 1 行に収める
+ *
+ * 実測（390 / JA）
+ *   本文 27 字の実幅 297px に対して、カード内寸は 275.5px。
+ *   21.5px 足りず「…始められま／す。」と 2 文字だけ落ちていた。
+ * 対応
+ *   文字サイズは下げない。カードの左右 padding だけを詰め、
+ *   併せてごく僅かに字間を締めて 1 行に収める（上下の余白は保つ）。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2c04 .v2-detail__empty{
+  padding-inline: clamp(7px, 2.4cqw, 14px);
+}
+html[data-v2-mounted="true"] .v2c04 .v2-detail__empty-note{
+  letter-spacing: -0.025em;
+  text-wrap: pretty;
+}
+
+/* ------------------------------------------------------------
+ * FIX-F：04「ことば」の小見出しに、本文との静かな階層差をつける
+ *
+ * 現状は 見出し fw400 / #4a3d2c、本文 fw300 / #55483a で差が僅かだった。
+ * 太字にも派手色にもせず、ウェイトと濃度をひと段だけ上げ、
+ * 見出しと本文の距離を締めて「見出し＋本文」を 1 つの塊として読ませる。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2-page h3.v2c04__wd-h{
+  font-weight: 500;
+  color: #3e3225 !important;
+  margin-top: 1.6em;
+  margin-bottom: 0.15em;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2-page h3.v2c04__wd-h{
+  color: #e2d7c1 !important;
+}
+html[data-v2-mounted="true"] .v2c04__wd:first-child h3.v2c04__wd-h{ margin-top: 0.4em; }
+
+/* ------------------------------------------------------------
+ * FIX-L：03 感情棚カードの丸アイコンと感情名の重心・識別性
+ *
+ * 実測（390 / 1440、8 カード）
+ *   丸の中心位置は 8 カードとも完全に一致していた（ばらつき 0.0px）。
+ *   離れて見えていた原因は感情名の行ボックスで、
+ *     390  … font 14.82px に対して line-height 28.16px（1.90）
+ *     1440 … font 27px    に対して line-height 51.3px（1.90）
+ *   字面の下に 390 で約 6.6px、1440 で約 12px の空きが残り、
+ *   丸＋名前の塊の見かけの重心が上にずれていた。
+ *
+ *   アイコンは stroke-width 0.9（実効 約1.18px）で、
+ *   沈む・まだ名前がないのように線数の少ないモチーフが特に弱く見えていた。
+ *
+ * 対応
+ *   ・感情名の行ボックスを字面に寄せる（結果として丸が少し下がり、名前が少し上がる）
+ *   ・丸と名前の間隔を 8 カード共通の 1 つの値にする
+ *   ・線をわずかに太く、モチーフを丸の中で少し大きく、丸はごく僅かに小さく
+ *   ・線と縁の色は色相を保ったまま、濃度だけ 1 段上げる
+ *   2列×4段・カード寸法・角丸・色帯・各感情の色系統・コピーは変更しない。
+ * ------------------------------------------------------------ */
+/* R2-01 の「8棚を first view に収める」ための min(cqw, svh) の形は必ず保つ。
+   片側だけ cqw に戻すと、背の低い画面や desktop で丸が一気に大きくなる
+   （実測：1440 で 55.8px → 108.1px まで膨らんだ）。両項を同じ比率で動かす。 */
+html[data-v2-mounted="true"] .v2c03__book{
+  gap: min(2.6cqw, 0.7svh);
+}
+html[data-v2-mounted="true"] .v2c03__name{
+  line-height: 1.25;
+  margin-block: 0;
+}
+/* モチーフを丸の中で少し大きく、丸はごく僅かに小さく（比率 0.571 → 0.638） */
+html[data-v2-mounted="true"] .v2c03__ring{
+  width: min(15.2cqw, 5.98svh);
+  height: min(15.2cqw, 5.98svh);
+  border-width: 1.6px;
+  border-color: color-mix(in srgb, var(--tint) 88%, #3a2f22);
+  color: color-mix(in srgb, var(--tint) 88%, #3a2f22);
+}
+html[data-v2-mounted="true"] .v2c03__ring svg{
+  width: min(9.7cqw, 3.77svh);
+  height: min(9.7cqw, 3.77svh);
+  stroke-width: 1.1;
+}
+/* 破線で描かれたモチーフ（沈む の落下線、惹かれる の軌道、まだ名前がない の
+   dotted circle など 7 箇所）は、同じ stroke-width でも実線より薄く見える。
+   モチーフの形はそのままに、線の重さだけ揃える。 */
+html[data-v2-mounted="true"] .v2c03__ring svg [stroke-dasharray]{
+  stroke-width: 1.35;
+}
+
+/* ============================================================
+ * FIX-J：「見本の一冊」を現行 07 Reader の Visual Language へ揃える
+ * ------------------------------------------------------------
+ * 現状の見本は V1 の展示カードのままで、
+ *   ・面   rgba(255,255,255,.4) + 1px の枠 + 角丸 6px
+ *   ・題名 var(--wine) の 16px（赤茶の強い見出し）
+ *   ・棚   12px の素の一行
+ *   ・日付 11px
+ * となっており、07 Reader（中央揃えの明朝・細い横罫・pill の棚チップ・
+ * 行間 2.05 の本文）とは別バージョンのデザインに見えていた。
+ *
+ * 07 Reader 本体（.v2c07*）には一切触れず、見本側の CSS だけで
+ * 同じ紙色・同じ文字色・同じ階層・同じ余白に寄せる。
+ * 「見本である」ことは badge で必ず残す（本文より控えめ・しかし見落とさない）。
+ * ============================================================ */
+html[data-v2-mounted="true"] #sampleBookInline{
+  margin: 14px 0 16px;
+  padding: clamp(14px, 4.4cqw, 22px) clamp(12px, 4cqw, 20px) clamp(16px, 5cqw, 24px);
+  /* 展示パネルのような枠・黄味の面をやめ、Reader と同じ紙にする */
+  background: var(--surface, #fdfaf5);
+  border: 1px solid var(--line, rgb(150 128 98 / 0.28));
+  border-radius: 10px;
+  box-shadow: none;
+  text-align: center;
+  font-family: "Shippori Mincho", var(--font-display);
+  color: var(--ink, #3b3128);
+}
+/* 見本であることの注記。本文より弱いが、最初に必ず目に入る位置に置く */
+html[data-v2-mounted="true"] #sampleBookInline .sample-book-badge{
+  display: block;
+  margin: 0 0 clamp(10px, 3.2cqw, 16px);
+  padding: 0 0 clamp(8px, 2.6cqw, 12px);
+  /* V1 の破線の囲みはやめ、注記と本文を分ける 1 本の罫だけにする */
+  background: none;
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px dashed rgb(150 128 98 / 0.35);
+  font-size: clamp(11px, 3cqw, 12.5px);
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  font-weight: 400;
+  color: #6a5a45 !important;
+  text-align: center;
+}
+html[data-v2-mounted="true"][data-theme="night"] #sampleBookInline .sample-book-badge{
+  border-bottom-color: rgb(160 125 80 / 0.3);
+  color: #a89882 !important;
+}
+/* 題名：07 の h1.v2c07__title と同じ階層（赤茶をやめ、明朝の細身へ） */
+html[data-v2-mounted="true"] #sampleBookInline .sample-inline-title{
+  margin: 0; padding: 0;
+  font-family: "Shippori Mincho", var(--font-display);
+  font-size: clamp(19px, 5.9cqw, 26px);
+  letter-spacing: 0.06em;
+  line-height: 1.55;
+  font-weight: 300;
+  color: #3a2e20 !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] #sampleBookInline .sample-inline-title{
+  color: #ecdfc6 !important;
+}
+/* 題名下の細い横罫（07 の .v2c07__sep と同寸） */
+html[data-v2-mounted="true"] #sampleBookInline .sample-inline-sep{
+  display: block; width: 2.2em; height: 1px;
+  margin: clamp(10px, 3.2cqw, 16px) auto 0;
+  background: rgb(150 128 98 / 0.55);
+  border: 0;
+}
+html[data-v2-mounted="true"][data-theme="night"] #sampleBookInline .sample-inline-sep{
+  background: rgb(160 125 80 / 0.45);
+}
+/* 日付：07 の .v2c07__date と同じ扱い */
+html[data-v2-mounted="true"] #sampleBookInline .sample-inline-date{
+  margin: clamp(10px, 3.2cqw, 16px) 0 0;
+  font-size: clamp(12px, 3.4cqw, 14px);
+  font-weight: 300;
+  color: #6a5a45 !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] #sampleBookInline .sample-inline-date{
+  color: #a89882 !important;
+}
+/* 感情ラベル：07 の .v2c07__chip と同じ pill */
+html[data-v2-mounted="true"] #sampleBookInline .sample-inline-cat{
+  display: inline-block;
+  margin: clamp(8px, 2.6cqw, 12px) auto 0;
+  padding: 0.3em 1.1em;
+  border: 1px solid rgb(150 128 98 / 0.5);
+  border-radius: 999px;
+  font-size: clamp(12px, 3.2cqw, 13.5px);
+  font-weight: 300;
+  color: #5d4f3e !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] #sampleBookInline .sample-inline-cat{
+  border-color: rgb(160 125 80 / 0.42);
+  color: #bfae92 !important;
+}
+/* 本文：07 の .v2c07__body と同じ文字組み */
+html[data-v2-mounted="true"] #sampleBookInline .sample-inline-story{
+  margin-top: clamp(18px, 6cqw, 32px);
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: clamp(14px, 4cqw, 16px);
+  line-height: var(--reader-line-height, 2.05);
+  letter-spacing: 0.02em;
+  font-weight: 300;
+  color: #40352a !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] #sampleBookInline .sample-inline-story{
+  color: #cdbfa6 !important;
+}
+
+/* ------------------------------------------------------------
+ * FIX-H：04「ことば」詳細の本文で、最終行に 1〜2 文字だけ残さない
+ * 実測（390）「…感じられる気持 / ち。」
+ * コピーは変えず、最終行の短さを避ける折り返しに任せる。
+ * ------------------------------------------------------------ */
+html[data-v2-mounted="true"] .v2c04__wd-body,
+html[data-v2-mounted="true"] .v2c04__wd-chip{
+  text-wrap: pretty;
+}
+
+/* ============================================================================
+ * RF：Reading Field Grammar / 8大棚 Shelf Field（2026-08-16）
+ * ----------------------------------------------------------------------------
+ * ねらい
+ *   ひとつの同じ書店の中に、8種類の「読む空間」がある状態にする。
+ *   8棚で構造・機能・可読性・操作方法は変えず、
+ *   Light / Aperture / Gravity / Boundary / Rhythm / Space だけを変える。
+ *
+ * 触っていないもの（Protected / Store Layer）
+ *   ・taxonomy と routing：MAJOR_SHELVES / CROSSWAY / CANONICAL_PRIMARY /
+ *     嫉妬の二重配架 / effectiveShelfId — adapter は1行も変更していない。
+ *   ・storage / GA4 / network / privacy / 作品 data model / Book Lifecycle。
+ *   ・body font・文字サイズ・line-height・文字色・最小コントラスト・
+ *     tap target・focus state・DOM構造・セクションの順序と機能。
+ *   ・04 の .v2c04__halo と .v2c04__hero::after（実測でコントラストを詰めた層）。
+ *     Field の光はそこへ足さず、周縁（peripheral area）にだけ置く。
+ *
+ * 差の付け方
+ *   既存の per-shelf フック html[data-v2-shelf-context="<大棚id>"] に、
+ *   幾何のトークンだけを載せる。色（--v2-shelf-tint）は既存のまま使い、
+ *   identity の主役にはしない（無彩色にしても差が残ることを QA で確認する）。
+ *   DAY / NIGHT で幾何は一切変えない。変わるのは照明条件だけ。
+ * ========================================================================== */
+
+/* ---- RF-0：Field トークンの既定値（＝どの棚にも当てはまる「店の基準」） ---- */
+html[data-v2-mounted="true"]{
+  --rf-aperture:46rem;        /* Aperture / Space：読み筋の幅 */
+  --rf-gravity:0.50;          /* Gravity：hero 内の重心（0=上 / 1=下） */
+  --rf-offset:0%;             /* Vector：中心軸のずれ（＋で右） */
+  --rf-gap:1;                 /* Rhythm：section 間隔の倍率 */
+  --rf-card-gap:1;            /* Rhythm：カード間隔の倍率 */
+  --rf-bound:0.45;            /* Boundary：境界線の濃度 */
+  --rf-bound-radius:12px;     /* Boundary：境界の閉じ方 */
+  /* Light：周縁に置く光の核（最大3つ）。位置・広がり・強さだけを変える */
+  --rf-l1-x:50%; --rf-l1-y:16%; --rf-l1-w:64%; --rf-l1-h:34%; --rf-l1-a:0.16;
+  --rf-l2-x:50%; --rf-l2-y:88%; --rf-l2-w:60%; --rf-l2-h:26%; --rf-l2-a:0.07;
+  --rf-l3-a:0;   --rf-l3-x:50%; --rf-l3-y:50%; --rf-l3-w:40%; --rf-l3-h:26%;
+}
+
+/* ---- RF-1：8大棚の Field DNA（幾何のみ。DAY/NIGHT 共通） ----------------- */
+
+/* 1 心が弾む：内側に生まれた力が次へ続く。重心はやや上、広く開き、境界は閉じない */
+html[data-v2-shelf-context="hazumu"]{
+  --rf-aperture:48rem; --rf-gravity:0.38; --rf-offset:0%;
+  --rf-gap:1.06; --rf-card-gap:1.10;
+  --rf-bound:0.42; --rf-bound-radius:12px;
+  --rf-l1-x:50%; --rf-l1-y:12%; --rf-l1-w:82%; --rf-l1-h:38%; --rf-l1-a:0.18;  /* 広い自然光 */
+  --rf-l2-x:50%; --rf-l2-y:96%; --rf-l2-w:76%; --rf-l2-h:24%; --rf-l2-a:0.09;  /* 次の頁へ続く */
+}
+/* 2 心があたたまる：外から入ってきて内側に残る。包む。近い距離の反射光 */
+html[data-v2-shelf-context="atatamaru"]{
+  --rf-aperture:39rem; --rf-gravity:0.56; --rf-offset:0%;
+  --rf-gap:0.92; --rf-card-gap:0.82;                                            /* コンテンツ同士が少し近い */
+  --rf-bound:0.34; --rf-bound-radius:18px;                                      /* soft / continuous */
+  --rf-l1-x:50%; --rf-l1-y:42%; --rf-l1-w:52%; --rf-l1-h:34%; --rf-l1-a:0.17;  /* 近距離の反射光 */
+  --rf-l2-a:0;
+}
+/* 3 惹かれる：自分と対象のあいだに方向が生まれる。片側だけ開き、下ほど密になる */
+html[data-v2-shelf-context="hikareru"]{
+  --rf-aperture:43rem; --rf-gravity:0.46; --rf-offset:2.6%;                     /* わずかに非対称 */
+  --rf-gap:1.0; --rf-card-gap:0.9;
+  --rf-bound:0.52; --rf-bound-radius:10px;
+  --rf-l1-x:78%; --rf-l1-y:20%; --rf-l1-w:38%; --rf-l1-h:26%; --rf-l1-a:0.19;  /* 少し離れた一点 */
+  --rf-l2-a:0;
+}
+/* 4 沈む：外への運動が弱まり、内へ留まり、時間が少し遅くなる。重心は低め */
+html[data-v2-shelf-context="shizumu"]{
+  --rf-aperture:37rem; --rf-gravity:0.66; --rf-offset:0%;
+  --rf-gap:1.28; --rf-card-gap:1.16;                                            /* section gap を長めに */
+  --rf-bound:0.38; --rf-bound-radius:13px;                                      /* soft but stable */
+  --rf-l1-x:50%; --rf-l1-y:8%;  --rf-l1-w:88%; --rf-l1-h:30%; --rf-l1-a:0.13;  /* 少し遠い光 */
+  --rf-l2-x:50%; --rf-l2-y:100%; --rf-l2-w:70%; --rf-l2-h:22%; --rf-l2-a:0.10; /* 下側へ静かに落ち着く */
+}
+/* 5 ざわつく：小さな信号が複数。基本グリッドは必ず整っていること */
+html[data-v2-shelf-context="zawatsuku"]{
+  --rf-aperture:42rem; --rf-gravity:0.48; --rf-offset:0%;
+  --rf-gap:1.0; --rf-card-gap:1.0;
+  --rf-bound:0.46; --rf-bound-radius:11px;
+  --rf-l1-x:32%; --rf-l1-y:14%; --rf-l1-w:44%; --rf-l1-h:26%; --rf-l1-a:0.13;  /* 複数の弱い反射 */
+  --rf-l2-x:76%; --rf-l2-y:34%; --rf-l2-w:38%; --rf-l2-h:24%; --rf-l2-a:0.11;
+  --rf-l3-x:56%; --rf-l3-y:82%; --rf-l3-w:40%; --rf-l3-h:22%; --rf-l3-a:0.08;
+}
+/* 6 ぶつかる：二つ以上の力が同じ場所を譲らない。二極・中央で圧縮・firm */
+html[data-v2-shelf-context="butsukaru"]{
+  --rf-aperture:40rem; --rf-gravity:0.50; --rf-offset:0%;
+  --rf-gap:1.0; --rf-card-gap:0.94;
+  --rf-bound:0.62; --rf-bound-radius:6px;                                       /* 他棚より firm */
+  --rf-l1-x:16%; --rf-l1-y:18%; --rf-l1-w:40%; --rf-l1-h:28%; --rf-l1-a:0.15;  /* 2方向の弱い差 */
+  --rf-l2-x:84%; --rf-l2-y:18%; --rf-l2-w:40%; --rf-l2-h:28%; --rf-l2-a:0.15;
+}
+/* 7 身を引く：対象との間に距離。端／後方へ。下へ行くことは本質ではない */
+html[data-v2-shelf-context="miwohiku"]{
+  --rf-aperture:36rem; --rf-gravity:0.44; --rf-offset:-3.4%;                    /* 対象から離れる */
+  --rf-gap:1.0; --rf-card-gap:0.96;
+  --rf-bound:0.50; --rf-bound-radius:9px;
+  --rf-l1-x:14%; --rf-l1-y:16%; --rf-l1-w:46%; --rf-l1-h:30%; --rf-l1-a:0.15;  /* 少し距離のある光 */
+  --rf-l2-a:0;
+}
+/* 8 まだ名前がない：複数の完成した要素が、まだ一つへ閉じていない */
+html[data-v2-shelf-context="namae-ga-nai"]{
+  --rf-aperture:44rem; --rf-gravity:0.50; --rf-offset:0%;
+  --rf-gap:1.0; --rf-card-gap:1.0;
+  --rf-bound:0.44; --rf-bound-radius:12px;
+  --rf-l1-x:28%; --rf-l1-y:18%; --rf-l1-w:42%; --rf-l1-h:26%; --rf-l1-a:0.12;  /* 2〜3個の弱い中心 */
+  --rf-l2-x:70%; --rf-l2-y:26%; --rf-l2-w:40%; --rf-l2-h:24%; --rf-l2-a:0.12;
+  --rf-l3-x:50%; --rf-l3-y:78%; --rf-l3-w:44%; --rf-l3-h:24%; --rf-l3-a:0.10;
+}
+
+/* ---- RF-2：Field の光。本文の真後ろではなく、頁の周縁にだけ置く --------- */
+html[data-v2-mounted="true"] [data-screen="04"] .v2c04__stage{
+  position: relative;
+  isolation: isolate;
+}
+/* mask 非対応環境では Field の光そのものを出さない。
+   mask が効かないまま background だけが残ると、hero の文字帯へ光が回り込み、
+   実測で詰めたコントラスト（FIX-07 / qa_r21c_hero_contrast）を下回るため。
+   光が無くても、幅・重心・間隔・境界による8棚の差は残る
+   （＝機能も可読性も落ちない。差が一段おとなしくなるだけ）。 */
+@supports (mask-image: linear-gradient(#000, #000)) or (-webkit-mask-image: linear-gradient(#000, #000)){
+  html[data-v2-mounted="true"] [data-screen="04"] .v2c04__stage::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+    /* hero（感情名・lead）の帯には一切かからないようにする。
+       §14「Semantic Effect は margin / empty field / section boundary /
+       peripheral area へ置く。本文の真後ろで強く演出しない」に従い、
+       hero を過ぎたところから光り始める。hero の可読性は既存 halo /
+       hero::after の実測値のまま保たれる（qa_r21c_hero_contrast で担保）。 */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent 300px, #000 470px);
+    mask-image: linear-gradient(to bottom, transparent 0, transparent 300px, #000 470px);
+    background:
+      radial-gradient(var(--rf-l1-w) var(--rf-l1-h) at var(--rf-l1-x) var(--rf-l1-y),
+        color-mix(in srgb, var(--v2-shelf-tint, #a8823e) calc(var(--rf-l1-a) * 100%), transparent) 0%,
+        transparent 88%),
+      radial-gradient(var(--rf-l2-w) var(--rf-l2-h) at var(--rf-l2-x) var(--rf-l2-y),
+        color-mix(in srgb, var(--v2-shelf-tint, #a8823e) calc(var(--rf-l2-a) * 100%), transparent) 0%,
+        transparent 90%),
+      radial-gradient(var(--rf-l3-w) var(--rf-l3-h) at var(--rf-l3-x) var(--rf-l3-y),
+        color-mix(in srgb, var(--v2-shelf-tint, #a8823e) calc(var(--rf-l3-a) * 100%), transparent) 0%,
+        transparent 90%);
+  }
+}
+
+/* NIGHT は同じ幾何のまま、照明条件だけを変える（反射光として弱く、発光させない）。
+   黒背景の Dark Mode にはしない＝地色は既存トークンのまま。 */
+html[data-v2-mounted="true"][data-theme="night"] [data-screen="04"] .v2c04__stage::before{
+  opacity:0.72;
+}
+
+/* ---- RF-3：Aperture / Space。読み筋の幅と、中心軸のずれ（Vector） ------- */
+@media (min-width: 900px){
+  html[data-v2-mounted="true"] .v2c04__stage{
+    max-width: var(--rf-aperture);
+    /* Vector：中心軸をわずかにずらす。0% の棚は従来どおり中央のまま。
+       transform ではなく margin で行う（transform は position:fixed の
+       包含ブロックを作ってしまい、将来オーバーレイを内側へ置いたときに壊れるため）。 */
+    margin-left: calc(50% - var(--rf-aperture) / 2 + var(--rf-offset));
+    margin-right: auto;
+  }
+}
+@media (min-width: 1200px){
+  html[data-v2-mounted="true"] .v2c04__stage{
+    max-width: calc(var(--rf-aperture) + 4rem);
+    margin-left: calc(50% - (var(--rf-aperture) + 4rem) / 2 + var(--rf-offset));
+  }
+}
+
+/* ---- RF-4：Gravity。重心は hero の「あと」の空きで作る -------------------
+ *  hero の内側 padding は変えない。.v2c04__halo は hero に対する % で
+ *  位置決めされているため、padding を動かすと題名・lead と光の芯の関係が
+ *  ずれ、実測で詰めたコントラスト（FIX-07）が崩れる。
+ *  そこで重心は「hero と最初の section のあいだの空き」として表現する。
+ *  重心が低い棚ほど、本文が下へ落ち着いて始まる。 */
+html[data-v2-mounted="true"] .v2c04__hero{
+  margin-bottom: calc(clamp(0px, 6cqw, 34px) * var(--rf-gravity) * 2);
+}
+
+/* ---- RF-5：Rhythm。静止したまま感じる時間性を section gap で作る -------- */
+html[data-v2-mounted="true"] .v2c04__sec{
+  margin-top: calc(clamp(26px, 11cqw, 44px) * var(--rf-gap));
+}
+html[data-v2-mounted="true"] .v2c04__words{
+  gap: calc(clamp(8px, 2.6cqw, 12px) * var(--rf-card-gap));
+}
+/* 惹かれる：対象へ向かうほど少し密になる（下の section ほど詰まる） */
+html[data-v2-shelf-context="hikareru"] .v2c04__sec:nth-of-type(3){ margin-top: calc(clamp(26px, 11cqw, 44px) * 0.86); }
+html[data-v2-shelf-context="hikareru"] .v2c04__sec:nth-of-type(4){ margin-top: calc(clamp(26px, 11cqw, 44px) * 0.72); }
+/* ぶつかる：進む→止まる→再開。中央付近だけ圧縮する */
+html[data-v2-shelf-context="butsukaru"] .v2c04__sec:nth-of-type(3){ margin-top: calc(clamp(26px, 11cqw, 44px) * 0.58); }
+html[data-v2-shelf-context="butsukaru"] .v2c04__sec:nth-of-type(4){ margin-top: calc(clamp(26px, 11cqw, 44px) * 1.24); }
+/* 身を引く：一箇所にだけ大きめの空席をつくる */
+html[data-v2-shelf-context="miwohiku"] .v2c04__sec:nth-of-type(3){ margin-top: calc(clamp(26px, 11cqw, 44px) * 1.62); }
+/* ざわつく：少数箇所のみ変化。基本グリッドは整えたまま、2〜3px だけずらす */
+html[data-v2-shelf-context="zawatsuku"] .v2c04__words .v2-word-card:nth-child(2){ transform: translateX(3px); }
+html[data-v2-shelf-context="zawatsuku"] .v2c04__sec:nth-of-type(3){ margin-top: calc(clamp(26px, 11cqw, 44px) * 1.08); }
+/* まだ名前がない：複数の弱い周期。閉じ切らない */
+html[data-v2-shelf-context="namae-ga-nai"] .v2c04__sec:nth-of-type(3){ margin-top: calc(clamp(26px, 11cqw, 44px) * 1.14); }
+html[data-v2-shelf-context="namae-ga-nai"] .v2c04__sec:nth-of-type(4){ margin-top: calc(clamp(26px, 11cqw, 44px) * 0.90); }
+
+/* ---- RF-6：Boundary。罫線・カード間隔・面の接続で境界の性質を変える ----
+ *  背景色・文字色・コントラストは触らない。border の濃度と閉じ方だけを扱う。 */
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card{
+  border-color: rgb(170 150 120 / var(--rf-bound));
+  border-radius: var(--rf-bound-radius);
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__words .v2-word-card{
+  border-color: rgb(150 120 80 / calc(var(--rf-bound) * 0.8));
+}
+/* 心が弾む：明瞭だが閉じない（下辺だけ開ける） */
+html[data-v2-shelf-context="hazumu"] .v2c04__words .v2-word-card{
+  border-bottom-color: transparent;
+  border-bottom-left-radius:0; border-bottom-right-radius:0;
+}
+/* 身を引く：自分側（左）は明瞭に、向こう側（右）は薄く */
+html[data-v2-shelf-context="miwohiku"] .v2c04__words .v2-word-card{
+  border-left-color: rgb(170 150 120 / 0.82);
+  border-right-color: rgb(170 150 120 / 0.18);
+}
+html[data-theme="night"][data-v2-shelf-context="miwohiku"] .v2c04__words .v2-word-card{
+  border-left-color: rgb(150 120 80 / 0.72);
+  border-right-color: rgb(150 120 80 / 0.14);
+}
+/* ざわつく：一部だけ完全には揃わない（1枚だけ境界の濃度が違う） */
+html[data-v2-shelf-context="zawatsuku"] .v2c04__words .v2-word-card:nth-child(2){
+  border-color: rgb(170 150 120 / 0.66);
+}
+/* まだ名前がない：部分的には明瞭、全体としては未統合。
+   ぼかし・霧・skeleton は使わず、閉じている辺の数だけを変える。 */
+html[data-v2-shelf-context="namae-ga-nai"] .v2c04__words .v2-word-card:nth-child(2){
+  border-right-color: transparent;
+}
+html[data-v2-shelf-context="namae-ga-nai"] .v2c04__words .v2-word-card:nth-child(3){
+  border-top-color: transparent;
+}
+/* ぶつかる：2つの整った軸が近づく。見出しは左、カード群はわずかに右の軸へ */
+html[data-v2-shelf-context="butsukaru"] .v2c04__words{
+  margin-left: 3.2%;
+}
+
+/* ---- RF-7（Final Field Fix 1 で縮小）：03 の草の装飾のみ外す -------------
+ *  当初 RF-7 は 8入口の丸アイコン（.v2c03__ring）も隠していたが、
+ *  CEO 承認済みアイコンの非表示 regression だったため復元した
+ *  （アイコンの SVG・寸法・色は FIX-L の承認済み定義がそのまま効く）。
+ *  sprig（芽・草）の退場は Final Field Fix 6 の方針どおり維持する。 */
+html[data-v2-mounted="true"] .v2c03__sprig,
+html[data-v2-mounted="true"] .v2c03__guidesprig{
+  display:none !important;
+}
+/* （Final Field Fix 1）アイコン復元に伴い、RF-7 が入れていた
+   「アイコン無し前提」の棚札レイアウト補正（justify-content:center /
+   gap:0 / min-height:44px / grid max-height:none）は撤去した。
+   R2-01・FIX-L の承認済みレイアウトがそのまま効く。 */
+/* 罫線だけになった divider は、左右の線をそのまま突き合わせる */
+html[data-v2-mounted="true"] .v2c03__divider{
+  gap: min(3.2cqw, 1.2svh);
+}
+html[data-v2-mounted="true"] .v2c03__guide{
+  justify-content:center;
+}
+
+/* ---- RF-8：Responsive。形ではなく関係を保存する ------------------------ */
+/* 320 / 390 / 430：縦のリズムと端の揃えへ変換する。列は増やさない */
+@media (max-width: 430px){
+  html[data-v2-mounted="true"] .v2c04__stage{
+    max-width:none;
+    margin-left:auto; margin-right:auto;  /* 横のオフセットは端の揃えへ移す */
+  }
+  /* Vector は padding の非対称として残す（狭い画面で中心をずらすと窮屈になるため） */
+  html[data-v2-shelf-context="hikareru"] .v2c04__sec{ padding-left:3.5%; }
+  html[data-v2-shelf-context="miwohiku"] .v2c04__sec{ padding-right:5%; }
+  html[data-v2-shelf-context="butsukaru"] .v2c04__words{ margin-left:2.4%; }
+}
+@media (max-width: 360px){
+  /* 320px：Field は保つが、余白の絶対量が読みを圧迫しないよう倍率を丸める */
+  html[data-v2-mounted="true"]{ --rf-gap:1; --rf-card-gap:1; }
+  html[data-v2-shelf-context="shizumu"]{ --rf-gap:1.16; }
+  html[data-v2-shelf-context="atatamaru"]{ --rf-card-gap:0.88; }
+  html[data-v2-shelf-context="miwohiku"] .v2c04__sec:nth-of-type(3){ margin-top: calc(clamp(26px, 11cqw, 44px) * 1.34); }
+}
+/* Desktop：03 を「中央に置いた巨大なスマホ」にしない。
+   横幅を使って 8棚を 4列×2段へ組み直す。情景（.v2c03__amb）は cover のままなので
+   引き伸ばしによる歪みは起きない。DOM・タイル構造・機能は変えない。 */
+@media (min-width: 900px){
+  html[data-v2-mounted="true"] .v2c03__stage{
+    width: min(100vw - 6rem, 60rem);
+    aspect-ratio:auto;
+  }
+  html[data-v2-mounted="true"] .v2c03__grid{
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: min(2.4cqw, 1.6svh) 2.6cqw;
+  }
+  html[data-v2-mounted="true"] .v2c03__book{
+    min-height: min(18cqw, 15svh);
+  }
+}
+@media (min-width: 1280px){
+  html[data-v2-mounted="true"] .v2c03__stage{
+    width: min(100vw - 10rem, 68rem);
+  }
+}
+
+/* ---- RF-9：desktop での 03 棚札の詰め ------------------------------------
+ *  4列へ組み替えた結果、cqw 基準の値が実寸で大きくなりすぎる箇所を戻す。
+ *  ・棚色の帯（::before）は「小さな棚札」に留める（色を identity の主役にしない）。
+ *  ・カード高は名前が読める高さまで。空の面を大きく取らない。 */
+@media (min-width: 900px){
+  html[data-v2-mounted="true"] .v2c03__book::before{
+    width: min(2.95cqw, 10px);
+  }
+  html[data-v2-mounted="true"] .v2c03__book{
+    min-height: min(13cqw, 11svh);
+    padding-left: calc(min(2.95cqw, 10px) + 2.2cqw);
+    border-radius: min(1.4cqw, 10px);
+  }
+}
+
+/* ============================================================================
+ * Final Field Fix（2026-08-17 深夜便）
+ * ----------------------------------------------------------------------------
+ * FIX 2 / 3 / 5 / 7 / 8 / 9 の presentation をここへまとめる。
+ * storage / GA4 / 外部通信 / 保存契約には一切触れない。
+ * ========================================================================== */
+
+/* ---- R2-1 Hybrid：近い言葉（walk / 蛇腹） --------------------------------
+ * A：既存21感情のページへ歩ける語。リンクと分かる下線＋「→」。
+ * B：まだ個別ページの無い語。蛇腹と分かる「⌄」で、その場に短い意味が開く。
+ * 「同じ見た目なのに一部だけ飛ぶ」を作らないため、2種の表現をはっきり分ける。 */
+/* ADDITIONAL VISUAL FIX（2026-08-18）：リンク語が通常語より太く・大きく見えた
+   regression の修正。原因は font shorthand（font: inherit）が
+   .v2c04__wd-chip class の font-size / font-weight 指定を親継承値で
+   上書きしていたこと。shorthand をやめ、span と同じ class 指定に任せる。
+   button 固有の UA 差分（appearance / font-family / line-height）だけ消す。 */
+html[data-v2-mounted="true"] button.v2c04__wd-chip{
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font-family: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  vertical-align: baseline;
+  color: inherit;
+  cursor: pointer;
+  /* font-size / font-weight はここでは書かない：
+     span と共通の .v2c04__wd-chip（beta0.css）が唯一の指定源 */
+}
+/* 「・」区切り（::before）と装飾記号（::after）へ下線を波及させない
+   （inline-block の atomic inline には text-decoration が伝播しない） */
+html[data-v2-mounted="true"] .v2c04__wd-chip + .v2c04__wd-chip::before{
+  display: inline-block;
+}
+html[data-v2-mounted="true"] button.v2c04__wd-chip--walk{
+  /* color は通常語と同一（.v2c04__wd-chip の指定のまま）。太字にしない */
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgb(150 128 98 / 0.55);
+  text-underline-offset: 0.3em;
+}
+html[data-v2-mounted="true"] button.v2c04__wd-chip--walk::after{
+  content: "\2192";               /* → ページへ移動する語 */
+  margin-left: 0.22em;
+  font-size: 0.82em;
+  color: rgb(110 90 60 / 0.85);
+  text-decoration: none;
+  display: inline-block;
+}
+html[data-v2-mounted="true"] button.v2c04__wd-chip--walk:hover{
+  text-decoration-color: rgb(110 90 60 / 0.9);
+}
+html[data-v2-mounted="true"][data-theme="night"] button.v2c04__wd-chip--walk{
+  text-decoration-color: rgb(170 140 95 / 0.5);
+}
+html[data-v2-mounted="true"][data-theme="night"] button.v2c04__wd-chip--walk::after{
+  color: rgb(190 160 115 / 0.85);
+}
+html[data-v2-mounted="true"] button.v2c04__wd-chip--gloss::after{
+  content: "\2304";               /* ⌄ その場で意味が開く語 */
+  margin-left: 0.2em;
+  font-size: 0.9em;
+  line-height: 1;
+  color: rgb(150 128 98 / 0.9);
+  display: inline-block;
+  transition: transform 0.18s;
+}
+html[data-v2-mounted="true"] button.v2c04__wd-chip--gloss[aria-expanded="true"]::after{
+  transform: rotate(180deg) translateY(-0.12em);
+}
+/* 蛇腹の中身：静かな引用面。1語ぶんの意味だけを置く */
+html[data-v2-mounted="true"] .v2c04__gloss{
+  margin: 0.7em 0 0.2em;
+  padding: 0.55em 1em 0.65em;
+  border-left: 2px solid rgb(150 128 98 / 0.45);
+  background: rgb(247 241 231 / 0.6);
+  border-radius: 0 6px 6px 0;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__gloss{
+  border-left-color: rgb(170 140 95 / 0.4);
+  background: rgb(30 30 34 / 0.5);
+}
+html[data-v2-mounted="true"] .v2c04__gloss-word{
+  display: block;
+  font-size: clamp(11px, 3cqw, 12.5px);
+  letter-spacing: 0.16em;
+  color: #86775f !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__gloss-word{ color: #a89273 !important; }
+html[data-v2-mounted="true"] .v2c04__gloss-body{
+  margin: 0.25em 0 0;
+  font-size: clamp(12px, 3.6cqw, 14px);
+  line-height: 1.9;
+  line-break: strict;
+  color: #55483a !important;
+  max-width: 38em;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__gloss-body{ color: #b3a892 !important; }
+
+/* ---- FIX 3：作品カードの複数 destination ---------------------------------
+ * 1 destination のときは従来と同じ1本のリンクに見える。
+ * 複数あるときだけ、確認済みの遷移先が静かに横へ並ぶ。 */
+html[data-v2-mounted="true"] .v2c04__work-links{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35em 1.1em;
+  margin-top: 0.55em;
+}
+html[data-v2-mounted="true"] .v2c04__work-links .v2c04__work-source{
+  margin-top: 0;
+}
+
+/* ---- FIX 5 → R2-3：「本にする」直下の説明 --------------------------------
+ * Round 1 の 23em + balance は、括弧書きの途中（「こ / の一冊…」）で割れる
+ * 不自然な折返しを desktop でも作っていた。R2-3 で以下へ見直す。
+ *   - measure を 40em まで開放：desktop では自然に 1〜2 行に収まる
+ *   - balance をやめ pretty へ：行数を無理に均等化せず、孤立1〜2文字だけ防ぐ
+ *   - line-break: strict：日本語禁則を厳密に
+ * 手動 br なし・文言不変・font は縮めない。 */
+html[data-v2-mounted="true"] .v2c05__bindnote{
+  max-width: 40em;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.75;
+  line-break: strict;
+  overflow-wrap: normal;
+  text-wrap: pretty;
+}
+/* 括弧句「この一冊に近い気持ち」は途中で割らない（R2-3。手動 br なし・文言不変） */
+html[data-v2-mounted="true"] .v2c05__nbr{ white-space: nowrap; }
+/* 同じ画面の保存説明（本文・写真）も同じ禁則と孤立行防止で揃える */
+html[data-v2-mounted="true"] .v2c05__assure,
+html[data-v2-mounted="true"] .v2c05__photohint{
+  line-break: strict;
+  overflow-wrap: normal;
+  text-wrap: pretty;
+}
+
+/* ---- FIX 7：04「ことば」意味・ニュアンスの日本語文字組 -------------------
+ * 禁則を厳密にし、長い画面では行長（measure）を読める幅に留める。
+ * 文章そのものは変えない。 */
+html[data-v2-mounted="true"] .v2c04__wd-body{
+  max-width: 38em;
+  line-break: strict;
+  word-break: normal;
+  overflow-wrap: break-word;
+  hanging-punctuation: allow-end;
+}
+
+/* ---- FIX 8：Hero 説明（lead）の不自然な途中分割 --------------------------
+ * 390 で「誇らしい」等の短い一文が末尾数文字だけ2行目へ落ちていた。
+ * 字間と字サイズをわずかに詰め、入るものは1行へ。入らない長文は
+ * text-wrap: balance で行を均す（極端な縮小はしない：clamp 下限 12px は維持）。 */
+html[data-v2-mounted="true"] .v2c04__lead{
+  font-size: clamp(12px, 3.6cqw, 15.5px);
+  letter-spacing: 0.03em;
+  max-width: 30em;
+  margin-left: auto;
+  margin-right: auto;
+  text-wrap: balance;
+}
+
+/* ---- FIX 9：03 Desktop の左右のモヤを少し弱める --------------------------
+ * 900px 以上の 03 だけ。vignette の縁の濃さと中間の乳白を一段下げ、
+ * 背景そのもの（ambience 画像・blur の仕組み）は作り直さない。 */
+@media (min-width: 900px){
+  html[data-v2-mounted="true"] .v2c03::before{
+    background:
+      radial-gradient(130% 86% at 50% 42%,
+        color-mix(in srgb, var(--bg, #efe7d9) 48%, transparent) 0%,
+        color-mix(in srgb, var(--bg, #efe7d9) 64%, transparent) 58%,
+        color-mix(in srgb, #4a3a24 16%, transparent) 100%);
+  }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c03::before{
+    background:
+      radial-gradient(130% 86% at 50% 42%,
+        color-mix(in srgb, var(--bg, #12161d) 46%, transparent) 0%,
+        color-mix(in srgb, var(--bg, #12161d) 66%, transparent) 58%,
+        color-mix(in srgb, #000000 30%, transparent) 100%);
+  }
+}
+
+/* ---- FIX 10：棚名の不自然な折返し（desktop 4列） -------------------------
+ * 900px 以上では cqw 由来の棚名 27px が 4列カードの内寸に入らず、
+ * 「心があた／たまる」「まだ名前／がない」と途中で折れていた。
+ * 4列カードの内寸（約134px）に 7文字が1行で入る上限へ字サイズと字間を丸める。
+ * 320/390/430 は既存 clamp のままで全棚1行（実測済み）なので触らない。 */
+@media (min-width: 900px){
+  html[data-v2-mounted="true"] .v2c03__name{
+    font-size: clamp(15px, 1.85cqw, 18.5px);
+    letter-spacing: 0.02em;
+  }
+  /* 名前は中央揃えなので、spine ぶんの左逃げは最小限でよい。
+     左右の内 padding を詰めて 7文字棚名の1行ぶんの幅を確保する。 */
+  html[data-v2-mounted="true"] .v2c03__book{
+    padding-left: calc(min(2.95cqw, 10px) + 1.2cqw);
+    padding-right: 1.2cqw;
+  }
+}
+
+/* ============================================================================
+ * R2-4：01 Desktop Entrance（1024px 以上だけの全画面 composition）
+ * ----------------------------------------------------------------------------
+ * portrait 版を中央に置くのをやめ、viewport 全幅を使った店構えにする。
+ *   - 壁 ambience を full-bleed（cover crop。引き伸ばしはしない）
+ *   - 右側に既存 01_interior_arch（1024x1536）を原比率で「店内への入口」として立てる
+ *   - 左 1/3 の軸（30%）へ logo／題字／copy／steps／見本棚／入店CTA を縦に組む
+ *   - 床（r5_floor）を下端の帯として全幅に敷く
+ * 使うのは既存承認済み 01 asset のみ。新規画像・AI生成なし。
+ * mobile / portrait（〜1023px）は一切変更しない。
+ * beta0.css の R5/R7 が position を !important で確定しているため、
+ * この media 内の再配置も同じ強度（cascade 後勝ち）で上書きする。
+ * ========================================================================== */
+@media (min-width: 1024px){
+  /* stage を viewport いっぱいへ。中の cqw は 1vw と等価になるため、
+     文字・部品はすべて px/vh の clamp で desktop 用に再指定する */
+  html[data-v2-mounted="true"] .v2c01__stage{
+    width: 100vw;
+    height: 100dvh;
+    min-height: 620px;
+    aspect-ratio: auto;
+    box-shadow: none;
+  }
+  /* 中央キャンバス時代の背面ぼかし・letterbox は不要 */
+  html[data-v2-mounted="true"] .v2c01::before{ content: none; }
+
+  /* ---- 環境レイヤ ---- */
+  /* 壁：top anchor の cover はそのまま＝上部の枝葉と木漏れ影が横幅に広がる。
+     portrait 用の鉢植え隠し veil（::after）は crop 外になるため消す */
+  html[data-v2-mounted="true"] .v2c01__wall::after{ display: none !important; }
+  /* 題字まわりを静かにする veil は列の位置（30%）を中心へ寄せ直す */
+  html[data-v2-mounted="true"] .v2c01__wall::before{
+    inset: 0 auto auto 0;
+    width: 62%;
+    height: 58%;
+    background: radial-gradient(80% 120% at 30% 34%,
+      rgb(242 234 219 / 0.74) 0 40%,
+      rgb(242 234 219 / 0.46) 64%,
+      transparent 94%);
+  }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c01__wall::before{
+    background: radial-gradient(80% 120% at 30% 34%,
+      rgb(10 18 30 / 0.60) 0 40%,
+      rgb(10 18 30 / 0.38) 64%,
+      transparent 94%);
+  }
+
+  /* 店内アーチ：desktop は大判の 01_interior_arch を原比率（1024/1536）で
+     右側に立てる。portrait の r5 細廊下と縮尺指定は解除する */
+  html[data-v2-mounted="true"] .v2c01__arch{
+    left: auto !important;
+    right: clamp(32px, 7vw, 150px) !important;
+    top: auto !important;
+    bottom: 0 !important;
+    height: 96% !important;
+    aspect-ratio: 1024 / 1536 !important;
+    width: auto !important;
+    background-image: url("assets/v2b0/01/01_interior_arch_day.webp") !important;
+    background-size: cover !important;
+    background-position: center bottom !important;
+    transform: none !important;
+    filter: saturate(0.94) !important;
+    -webkit-mask-image: linear-gradient(to bottom, #000 92%, transparent 100%) !important;
+    mask-image: linear-gradient(to bottom, #000 92%, transparent 100%) !important;
+  }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c01__arch{
+    background-image: url("assets/v2b0/01/01_interior_arch_night.webp") !important;
+    filter: brightness(0.82) saturate(0.9) !important;
+  }
+
+  /* 床：全幅の帯。cover は crop なので板目は歪まない */
+  html[data-v2-mounted="true"] .v2c01__floor{
+    height: clamp(64px, 11vh, 110px) !important;
+  }
+  /* 前景の鉢植え：左端で床に載せる */
+  html[data-v2-mounted="true"] .v2c01__plantfg{
+    top: auto !important;
+    bottom: clamp(40px, 7vh, 72px) !important;
+    width: clamp(96px, 10vw, 148px) !important;
+    /* desktop の壁 crop は portrait と明度が違うため、上端にも fade を足して
+       asset の矩形の継ぎ目を壁へ溶かす */
+    -webkit-mask-image: linear-gradient(to right, #000 0 68%, transparent 96%),
+                        linear-gradient(to bottom, transparent 0, #000 14% 90%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to right, #000 0 68%, transparent 96%),
+                linear-gradient(to bottom, transparent 0, #000 14% 90%, transparent 100%);
+    mask-composite: intersect;
+  }
+
+  /* ---- 左列（identity 軸 = 30%）---- */
+  html[data-v2-mounted="true"] .v2c01__logo{
+    left: 30% !important; top: 8.5% !important;
+    width: clamp(92px, 14vh, 130px) !important;
+    transform: translateX(-50%) !important;
+  }
+  html[data-v2-mounted="true"] .v2c01__brand{
+    left: 30% !important; top: 25% !important;
+    width: 36rem !important;
+    transform: translateX(-50%) !important;
+  }
+  html[data-v2-mounted="true"] .v2b .v2c01__brand-sub,
+  html[data-v2-mounted="true"] .v2c01__brand-sub{
+    font-size: clamp(17px, 2.6vh, 22px) !important;
+  }
+  html[data-v2-mounted="true"] .v2b .v2c01__brand-main,
+  html[data-v2-mounted="true"] .v2c01__brand-main{
+    margin-top: 10px !important;
+    font-size: clamp(30px, 4.8vh, 42px) !important;
+  }
+  html[data-v2-mounted="true"] .v2c01__rule{
+    left: 30% !important; top: 42% !important;
+    width: 56px !important;
+    transform: translateX(-50%) !important;
+  }
+  html[data-v2-mounted="true"] .v2c01__copy{
+    left: 30% !important; top: 45% !important;
+    width: 34rem !important; max-width: 40vw !important;
+    transform: translateX(-50%) !important;
+    text-align: center !important;
+    font-size: clamp(14px, 2vh, 16.5px) !important;
+    line-height: 2.05 !important;
+  }
+  html[data-v2-mounted="true"] .v2c01__steps{
+    left: 30% !important; top: 56.5% !important;
+    width: 21rem !important;
+    transform: translateX(-50%) !important;
+  }
+  html[data-v2-mounted="true"] .v2c01__steps li{
+    gap: 8px !important;
+    font-size: clamp(12px, 1.7vh, 13.5px) !important;
+  }
+  html[data-v2-mounted="true"] .v2c01__steps li + li::before{
+    transform: translate(-16px, 16px) !important;
+    font-size: 14px !important;
+  }
+  html[data-v2-mounted="true"] .v2c01__step-icon{
+    width: 24px !important; height: 24px !important;
+  }
+  /* 見本の四冊：列の中で床の少し上に。原比率（3/2）のまま */
+  html[data-v2-mounted="true"] .v2c01__books{
+    left: 30% !important; top: auto !important; bottom: clamp(108px, 15vh, 138px) !important;
+    width: clamp(240px, 31vh, 288px) !important;
+    transform: translateX(-50%) !important;
+  }
+  /* 入店CTA：列の最下段。R7 の銅枠＋スエードの視覚はそのまま、寸法だけ desktop 値へ */
+  html[data-v2-mounted="true"] .v2c01__cta{
+    left: 30% !important; top: auto !important; bottom: 4.5% !important;
+    width: clamp(300px, 24rem, 30vw) !important;
+    height: clamp(50px, 8vh, 60px) !important;
+    transform: translateX(-50%) !important;
+    border-radius: 12px !important;
+    padding: 5px !important;
+    font-size: clamp(18px, 2.6vh, 21px) !important;
+    box-shadow: 0 8px 22px rgb(50 32 12 / 0.42) !important;
+  }
+  html[data-v2-mounted="true"] .v2c01__cta::before{
+    inset: 5px !important;
+    border-radius: 9px !important;
+  }
+}

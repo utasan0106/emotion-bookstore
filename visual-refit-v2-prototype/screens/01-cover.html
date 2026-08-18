@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja" data-v2-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Visual Refit V2 — 01 表紙（Structural Skeleton）</title>
+
+<!--
+  Visual Refit V2 / Phase 1 Structural Skeleton
+  Visual North Star: FORMAL_COMPS/DAY/01.png ・ FORMAL_COMPS/NIGHT/01.png のみ。
+
+  この画面は本番UIから物理的に隔離された静的シェルである。
+  - 旧 index.html / main.js / data.js / style.css へ接続しない
+  - 旧CSSを import しない。旧DOM・旧セレクタを再利用しない
+  - 保存 / IndexedDB / localStorage / GA4 / 外部通信を一切行わない
+  - DAY と NIGHT は同一DOM。data-v2-theme だけで切り替える
+-->
+
+<!--
+  Visual QA 専用の最小処理（CEO承認済み・Phase 1 限り）。
+  URLパラメータ theme=day|night を読み、data-v2-theme を差し替えるだけ。
+  保存しない / localStorage を使わない / GA4 を呼ばない / 外部通信しない /
+  時刻判定しない / 本番の applyNightModeIfNeeded()・currentDaypart() に触れない。
+  Phase 3 の本番Adapter接続時には、この処理を本番ロジックへ持ち込まない。
+-->
+<script>
+  (function () {
+    var t = new URLSearchParams(location.search).get('theme');
+    if (t === 'day' || t === 'night') {
+      document.documentElement.dataset.v2Theme = t;
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/screens/01.css">
+</head>
+
+<body class="v2-page v2-page--cover" data-v2-screen="01">
+<div class="v2-stage v2-cover">
+
+  <!-- 情景レイヤ：素材未確定。無地面＋輪郭のみのプレースホルダー -->
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-cover__wall"></div>
+    <div class="v2-cover__arch v2-placeholder"></div>
+    <div class="v2-cover__foliage v2-placeholder"></div>
+    <div class="v2-cover__ledge v2-placeholder"></div>
+    <div class="v2-cover__vignette"></div>
+  </div>
+
+  <!-- 内容レイヤ -->
+  <div class="v2-content">
+
+    <!-- ロゴ：正式素材が未用意のため、円形の中立プレースホルダーで位置とサイズのみ確認する。
+         assets/shop-seal.png の加工・透過化による代用は行わない。 -->
+    <p class="v2-cover__logo v2-placeholder" aria-hidden="true"></p>
+
+    <h1 class="v2-cover__title">
+      <span class="v2-cover__title-sub">みんなの</span>
+      <span class="v2-cover__title-main">感情書店</span>
+    </h1>
+
+    <hr class="v2-rule v2-cover__rule">
+
+    <!-- Core Ver.2 コピー。出会う／残す／再会する の3つを、順序ではなく並列に置く -->
+    <p class="v2-cover__lead">感情から、ことばやカルチャーに出会う書店。</p>
+    <p class="v2-cover__sublead">心に残ったものは、自分のことばで一冊に。<br>いつか、本棚でまた会えます。</p>
+
+    <!-- 主CTA：金茶（--v2-accent-place）。右矢印なし。
+         Phase 3 Step 1.1：disabled は click / focus / キーボード操作を阻害するため解除した
+         （実ブラウザで阻害を確認したうえでの削除）。外観はカンプの通常状態のまま。 -->
+    <div class="v2-cover__cta">
+      <button type="button" class="v2-btn v2-btn--place" data-v2-go="02">入店する</button>
+    </div>
+
+    <!-- Phase 2 正式仕様：01 表紙は bottom navigation を持たない。
+         店の外から中へ入る画面なので、店内の行き先はまだ並べない。 -->
+
+  </div>
+</div>
+</body>
+</html>

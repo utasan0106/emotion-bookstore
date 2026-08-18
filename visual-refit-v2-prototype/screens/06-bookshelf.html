@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja" data-v2-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Visual Refit V2 — 06 自分の本棚（Structural Skeleton）</title>
+
+<!--
+  Visual Refit V2 / Phase 1 Structural Skeleton
+  Visual North Star: FORMAL_COMPS/DAY/06.png ・ FORMAL_COMPS/NIGHT/06.png のみ。
+
+  06 は本人が残した本が「蔵書として存在する」場所。
+  カード一覧ではなく、背表紙・本・棚として存在する感覚を最優先する。
+
+  - 実装済みデータへ接続しない。保存データを読まない
+  - fake book data を本番ロジックへ追加しない
+  - 本の題名・日付・冊数は利用者の実データなので文字を置かず、
+    静的プレースホルダーで占有位置・棚・余白だけを作る
+  - 検索／並び替え／Grid・List 切替は現行に無い機能のため静的・非活性
+  - 下部ナビは Phase 2 正式仕様の3項目。既存4-route契約は Phase 3 まで変更しない
+  - 保存 / IndexedDB / localStorage / GA4 / 外部通信を一切行わない
+  - 06 の照明は棚板の間接照明。吊り下げライトは置かない
+  - DAY と NIGHT は同一DOM。data-v2-theme だけで切り替える
+-->
+
+<script>
+  (function () {
+    var t = new URLSearchParams(location.search).get('theme');
+    if (t === 'day' || t === 'night') {
+      document.documentElement.dataset.v2Theme = t;
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/screens/06.css">
+</head>
+
+<body class="v2-page v2-page--bookshelf" data-v2-screen="06">
+<div class="v2-stage v2-shelf">
+
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-shelf__wall"></div>
+    <div class="v2-shelf__scape"></div>
+    <div class="v2-shelf__scapelight"></div>
+    <div class="v2-shelf__vignette"></div>
+  </div>
+
+  <div class="v2-content">
+
+    <button type="button" class="v2-shelf__back" data-v2-go="02">＜　戻る</button>
+
+    <!-- Phase 3 Step 2：対応する機能が存在しない丸メニューも削除した -->
+
+    <p class="v2-shelf__mark v2-placeholder" aria-hidden="true"></p>
+    <h1 class="v2-shelf__title">自分の本棚</h1>
+    <p class="v2-shelf__lead">ここには、残すと決めた一冊が並びます。<br>あとから、好きなときに取り出せます。</p>
+
+    <!-- Phase 3 Step 2：現行データに「完成した本／下書き／アーカイブ」の区分は存在しないため
+         状態タブは削除した。存在しないものを存在するように見せない。 -->
+
+    <!-- 本棚パネル：棚板の上に背表紙が立つ。カード一覧にしない。
+         背表紙は bookshelf-adapter が既存 library から READ-ONLY で描画する。
+         V2 側に複製 library・shadow DB・派生永続状態は作らない。 -->
+    <section class="v2-shelf__panel" aria-label="本棚">
+      <h2 class="v2-shelf__panel-title">
+        本棚<span class="v2-shelf__count" data-v2-bookshelf="count"></span>
+      </h2>
+
+      <div class="v2-shelf__rack" data-v2-bookshelf="rack">
+        <!-- ここへ背表紙が入る（adapter が生成。静的 markup には本のデータを持たない） -->
+        <button type="button" class="v2-shelf__add" data-v2-go="05">ことばを残す</button>
+      </div>
+    </section>
+
+    <!-- Phase 3 Step 2：「最近開いた本」「下書き」「すべて見る」は現行ロジックに
+         対応概念が無いため削除した。保存に関する注記だけを残す。 -->
+    <p class="v2-shelf__note">
+      <span class="v2-shelf__note-mark v2-placeholder" aria-hidden="true"></span>本文はこの端末に保存されます。本文は公開されません。
+    </p>
+
+    <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
+    <div class="v2-shelf__navbar">
+      <nav class="v2-navbar v2-shelf__nav" aria-label="ナビゲーション">
+        <button type="button" class="v2-navbar__item" data-v2-nav="shelves">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">棚を見る</span>
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">書く</span>
+        </button>
+        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="bookshelf" aria-current="page">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">本棚</span>
+        </button>
+      </nav>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

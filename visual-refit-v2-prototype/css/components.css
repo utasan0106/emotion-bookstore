@@ -1,0 +1,191 @@
+/* =============================================================================
+ * Visual Refit V2 — components.css
+ * -----------------------------------------------------------------------------
+ * 全画面で共有する部品。
+ *   - .v2-btn        主CTA
+ *   - .v2-navbar     Global Navigation（02〜08 共通の3項目。route へ接続しない）
+ *   - .v2-rule       短い罫
+ * ========================================================================== */
+
+/* -----------------------------------------------------------------------------
+ * 主CTA
+ * Phase 1 では disabled + aria-disabled="true" を付けるが、
+ * 見た目は正式カンプの通常状態を再現する（視覚的な disabled 表現にしない）。
+ * -------------------------------------------------------------------------- */
+.v2-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: calc(66 * var(--v2-px));
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+  appearance: none;
+}
+
+.v2-btn:disabled,
+.v2-btn[aria-disabled='true'] {
+  /* UA の非活性表現を打ち消し、カンプの外観を維持する
+     （色はバリアント側の指定を尊重するため、ここでは色を触らない） */
+  opacity: 1;
+  cursor: default;
+}
+
+/* 書店側・環境的な現在地のアクセント（CEO決定により 01 の主CTAはこちら） */
+.v2-btn--place {
+  background: var(--v2-accent-place);
+  border: calc(1 * var(--v2-px)) solid var(--v2-accent-place-edge);
+  color: var(--v2-accent-place-on);
+  font-size: calc(44 * var(--v2-tpx));
+  letter-spacing: 0.30em;
+  text-indent: 0.30em; /* letter-spacing による右寄りを打ち消して光学的に中央へ */
+}
+
+:root[data-v2-theme='night'] .v2-btn--place {
+  /* NIGHT は枠線＋ごく淡い暖色面。カンプ NIGHT/01 の見え方に合わせる */
+  background: color-mix(in srgb, var(--v2-accent-place) 72%, transparent);
+  border-color: var(--v2-accent-place-edge);
+}
+
+/* -----------------------------------------------------------------------------
+ * 短い罫
+ * -------------------------------------------------------------------------- */
+.v2-rule {
+  display: block;
+  width: 100%;
+  height: calc(3 * var(--v2-px));
+  margin: 0;
+  border: 0;
+  background: var(--v2-rule);
+}
+
+/* -----------------------------------------------------------------------------
+ * Global Navigation（Phase 2 正式仕様）
+ *
+ *   01 表紙          … bottom navigation を持たない
+ *   02〜08           … 棚を見る｜書く｜本棚 の3項目で統一
+ *
+ * - 横並び（アイコン左・ラベル右）
+ * - 順序固定。画面ごとに項目を足したり減らしたりしない
+ * - 現在地は accent 色の文字／アイコンのみ。下線・面・バッジを付けない
+ * - 「お店へ」「わたし」「わたしの本」は廃止した
+ * - Phase 2 では設定アイコンを追加しない（設定画面は将来候補）
+ * - route / href / event はまだ接続しない
+ *
+ * 寸法は 1024 幅カンプ基準の実測値をこの1か所に集約する。
+ * カンプ原寸が異なる画面（08 = 1122 幅）だけが、同じ見え方になるよう
+ * 自分のスコープで --v2-px 換算値を上書きする。
+ * アイコン素材は未確定のため、輪郭のみのプレースホルダー枠で面積と位置だけ確認する。
+ * -------------------------------------------------------------------------- */
+.v2-navbar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  height: 100%;
+}
+
+/* 項目は button。Enter / Space は button 本来のキーボード挙動をそのまま使う
+   （role="button" / tabindex / 独自 keydown による代替実装はしない）。
+   UA スタイルは prototype 内でここだけで完全に打ち消し、
+   span だった Phase 2 checkpoint と同一の見え方を維持する。
+   focus リングは既定のまま残す（見た目はフォーカス時のみ現れる）。 */
+.v2-navbar__item {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: calc(14 * var(--v2-px));
+
+  /* --- UA style reset --- */
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  text-indent: 0;
+  text-transform: none;
+  text-shadow: none;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  appearance: none;
+}
+
+/* 項目間の細い区切り線 */
+.v2-navbar__item + .v2-navbar__item::before {
+  content: '';
+  position: absolute;
+  top: calc(18 * var(--v2-px));
+  bottom: calc(18 * var(--v2-px));
+  left: 0;
+  width: calc(1 * var(--v2-px));
+  background: var(--v2-rule);
+  opacity: 0.45;
+}
+
+.v2-navbar__icon {
+  display: block;
+  flex: none;
+  width: calc(28 * var(--v2-px));
+  height: calc(28 * var(--v2-px));
+  border-radius: calc(4 * var(--v2-px));
+}
+
+.v2-navbar__label {
+  display: block;
+  font-family: var(--v2-font-body);
+  font-size: calc(20 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-mid);
+  white-space: nowrap;
+}
+
+/* 現在地：accent 色の文字／アイコンのみ。下線は付けない */
+.v2-navbar__item--current .v2-navbar__label {
+  color: var(--v2-accent-self);
+}
+
+.v2-navbar__item--current .v2-navbar__icon {
+  border-color: var(--v2-accent-self);
+}
+
+/* -----------------------------------------------------------------------------
+ * ネイティブ button 化した操作要素の UA style reset（Phase 3 Step 1.1）
+ * 対象は明示列挙し、prototype 内の他の button へ波及させない。
+ * 各画面CSSはこの後に読み込まれるため、必要な値（背景・余白・文字）は
+ * 画面側の指定がそのまま勝つ。ここでは UA 既定値だけを打ち消す。
+ * role="button" / tabindex / 独自 keydown は使わない（button 本来の挙動を使う）。
+ * -------------------------------------------------------------------------- */
+.v2-shelves__home,
+.v2-detail__back,
+.v2-shelf__back,
+.v2-reader__back,
+.v2-editor__back,
+.v2-empty__back {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  text-indent: 0;
+  text-transform: none;
+  text-shadow: none;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  appearance: none;
+}

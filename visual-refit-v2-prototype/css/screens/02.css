@@ -1,0 +1,299 @@
+/* =============================================================================
+ * Visual Refit V2 — 02 入店後メニュー
+ * -----------------------------------------------------------------------------
+ * Visual North Star: FORMAL_COMPS/DAY/02.png ・ FORMAL_COMPS/NIGHT/02.png のみ。
+ * 現行サイト・旧UI・旧VR1・01以外の過去実装は視覚の参照にしていない。
+ *
+ * 【01への非干渉】
+ * tokens.css / base.css / components.css は 1バイトも変更していない。
+ * 02 に必要な差分はすべて .v2-page--menu スコープでこのファイルに閉じている。
+ *
+ * 02 はカンプ原寸 1024x1536（2:3）に対する実測比率で配置する。
+ * 下記の % / px はすべて正式カンプからの実測値。
+ *
+ *   ロゴ           y  139-326 ( 9.05-21.22%) / w 181 / 中心 48.5%
+ *   問いかけ3行     y  374-590 (24.35-38.41%) / 行ピッチ 85 / 中心 48.4%
+ *   装飾罫          y  671-684 (43.68-44.53%) / w 219 / 中心 48.0%
+ *   3カード         y  750-1338 (48.83-87.11%) / x 65-933 (6.35-91.11%)
+ *                  カード幅 274 (26.76%) / ガター 23 (2.25%) / ピッチ 297
+ *   下部ナビ        Phase 2 正式仕様により 02 は bottom navigation を持たない。
+ *                  旧カンプの4項目・縦積みナビは再現しない。
+ * ========================================================================== */
+
+/* カンプ原寸が 01（853幅）と異なるため、02 だけ --v2-px の基準を差し替える。
+   .v2-stage 自体の既存宣言は変更していない（詳細度で上書きするだけ）。 */
+.v2-page--menu .v2-stage {
+  --v2-px: calc(100cqw / 1024);
+}
+
+/* 02 で新たに必要になったカード面の値。tokens.css は変更せず、
+   02 のスコープ内でのみ定義する（01 の既存値には触れない）。
+   値は正式カンプ 02 の実測：
+     DAY   カード面 #F7EFE4 / 壁面 #F7EEE2 → 面はほぼ同色、縁は極細のごく淡い線
+     NIGHT カード面 #0A0D11 / 壁面 #080B10 → 面はわずかに明るく、縁は暖色 #312721 */
+:root[data-v2-theme='day'] .v2-page--menu {
+  /* カンプでは3カードとも背景の情景を覆う不透明面。壁面トークンから導出する */
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 92%, #FFFFFF 8%);
+  --v2-card-edge: rgb(51 36 12 / 0.13);
+}
+
+:root[data-v2-theme='night'] .v2-page--menu {
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 94%, #CDA97C 6%);
+  --v2-card-edge: rgb(73 58 44 / 0.95);
+}
+
+/* -----------------------------------------------------------------------------
+ * 情景レイヤ
+ * 素材未確定のため面と輪郭のみ。絵柄は描かない。
+ * 03_LIGHTING_EXACT の 02 override：照明器具を見せない。
+ * ペンダントライト・天井照明器具は描かず、光源そのものを主役にしない。
+ * 右側の店内奥行き＋窓明かり＋棚の間接光だけで空間を表す。
+ * NIGHT は暗く塗るだけにせず、背景暗度と間接光の差で奥行きを作る。
+ * -------------------------------------------------------------------------- */
+.v2-menu__wall {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--v2-wall) 0%,
+    var(--v2-wall) 66%,
+    var(--v2-wall-deep) 100%
+  );
+}
+
+/* 右側の店内奥行き。器具は置かず、開口の面と間接光の勾配だけを持つ */
+.v2-menu__depth {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 80%;
+  bottom: 15%;
+  border-bottom-left-radius: 40% 22%;
+  background: var(--v2-scene-arch);
+}
+
+/* 窓明かり＋棚の間接光。強さ・色温度・周辺暗度だけが DAY/NIGHT で変わる */
+.v2-menu__depth::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-bottom-left-radius: inherit;
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--v2-glow-color) / calc(var(--v2-glow-strength) * 0.28)) 0%,
+    rgb(var(--v2-glow-color) / var(--v2-glow-strength)) 38%,
+    rgb(var(--v2-glow-color) / calc(var(--v2-glow-strength) * 0.20)) 100%
+  );
+}
+
+.v2-menu__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    115% 65% at 42% 42%,
+    rgb(0 0 0 / 0) 48%,
+    rgb(0 0 0 / var(--v2-vignette)) 100%
+  );
+}
+
+/* -----------------------------------------------------------------------------
+ * ヘッダ（ロゴ／問いかけ／装飾罫）
+ * カンプの中心は 48.0-48.5% で、画面中央よりわずかに左。
+ * 3カード群の中心（48.7%）とも整合するため、カンプ実測どおり左寄りの
+ * コンテンツ中心を採用する。
+ * -------------------------------------------------------------------------- */
+.v2-menu__logo {
+  position: absolute;
+  top: 9.05%;
+  left: 48.5%;
+  transform: translateX(-50%);
+  width: 17.68%;
+  height: 12.17%;
+  border-radius: 50%;
+}
+
+.v2-menu__question {
+  position: absolute;
+  top: 23.6%;
+  left: 48.4%;
+  transform: translateX(-50%);
+  width: 80%;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(54 * var(--v2-tpx));
+  line-height: calc(85 * var(--v2-tpx));
+  letter-spacing: 0.06em;
+  text-align: center;
+  color: var(--v2-ink-strong);
+}
+
+.v2-menu__deco {
+  position: absolute;
+  top: 44.08%;
+  left: 48.0%;
+  transform: translateX(-50%);
+  width: 21.39%;
+  height: calc(1 * var(--v2-px));
+  margin: 0;
+  border: 0;
+  background: var(--v2-rule);
+  opacity: 0.75;
+}
+
+/* -----------------------------------------------------------------------------
+ * 3カード
+ * 同じ幅・同じ高さ・同じ内部余白・同じ情報階層。
+ * 中央や特定カードだけを強くしない（1枚も主CTA化しない）。
+ * -------------------------------------------------------------------------- */
+.v2-menu__cards {
+  position: absolute;
+  top: 48.83%;
+  left: 6.35%;
+  width: 84.76%;
+  height: 38.28%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 2.65%; /* 23px / 868px */
+}
+
+.v2-menu-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding-top: calc(67 * var(--v2-px));
+  border: calc(1 * var(--v2-px)) solid var(--v2-card-edge);
+  border-radius: calc(28 * var(--v2-px));
+  background: var(--v2-card-face);
+}
+
+/* 線画素材は未確定。占有面積・位置・余白だけを中立プレースホルダーで再現する */
+.v2-menu-card__figure {
+  width: calc(175 * var(--v2-px));
+  height: calc(157 * var(--v2-px));
+}
+
+/* 見出しは1行と2行が混在するため、固定高の帯の中で天地中央に置く。
+   これによりカンプどおり、罫・説明・移動要素の位置が3カードで揃う。 */
+.v2-menu-card__headzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: calc(72 * var(--v2-px));
+  margin-top: calc(47 * var(--v2-px));
+}
+
+.v2-menu-card__heading {
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(29 * var(--v2-tpx));
+  line-height: calc(41 * var(--v2-tpx));
+  letter-spacing: 0.01em;
+  text-align: center;
+  color: var(--v2-ink-strong);
+}
+
+.v2-menu-card__rule {
+  width: calc(64 * var(--v2-px));
+  height: calc(1 * var(--v2-px));
+  margin-top: calc(9 * var(--v2-px));
+  background: var(--v2-rule);
+  opacity: 0.7;
+}
+
+.v2-menu-card__desc {
+  margin: 0;
+  margin-top: calc(34 * var(--v2-px));
+  font-family: var(--v2-font-body);
+  font-weight: 400;
+  font-size: calc(18.5 * var(--v2-tpx));
+  line-height: calc(30 * var(--v2-tpx));
+  letter-spacing: 0;
+  text-align: center;
+  color: var(--v2-ink-mid);
+}
+
+/* 小さな移動要素。Phase 1 は非活性（disabled + aria-disabled）だが、
+   外観はカンプの通常状態を再現する（視覚的な disabled 表現にしない）。 */
+.v2-menu-card__action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(56 * var(--v2-px));
+  height: calc(56 * var(--v2-px));
+  margin-top: calc(43 * var(--v2-px));
+  padding: 0;
+  border: calc(1 * var(--v2-px)) solid var(--v2-rule);
+  border-radius: 50%;
+  background: transparent;
+  appearance: none;
+}
+
+.v2-menu-card__action:disabled,
+.v2-menu-card__action[aria-disabled='true'] {
+  opacity: 1;
+  cursor: default;
+}
+
+.v2-menu-card__action::before {
+  content: '';
+  width: calc(11 * var(--v2-px));
+  height: calc(11 * var(--v2-px));
+  margin-left: calc(-4 * var(--v2-px));
+  border-top: calc(2 * var(--v2-px)) solid var(--v2-ink-mid);
+  border-right: calc(2 * var(--v2-px)) solid var(--v2-ink-mid);
+  transform: rotate(45deg);
+}
+
+/* -----------------------------------------------------------------------------
+ * Global Navigation
+ * 正式仕様（Visual Review 反映）：01・02 は bottom navigation を持たない。
+ * 3項目ナビは 03〜08 のみ。旧カンプの下部4ナビも再現しない。
+ * -------------------------------------------------------------------------- */
+
+/* -----------------------------------------------------------------------------
+ * モバイル幅の局所修正（Pre-Mount Visual A11y Hotfix / Additional LIMITED FIX）
+ * 崩れは「問いかけ×3カード」と「カード内の見出し×説明」だけ。
+ *   - 問いかけは 54/85 のままだと3行になり、カード帯へ食い込む
+ *   - カードは高さ固定＋3列のため、内容が縦に潰れて見出しと説明が重なり、
+ *     見出しが1〜2文字ずつ折れていた
+ * 3カード帯だけを1列・内容駆動にする（画面全体の再構築はしない）。
+ * コンテナ幅 900px 以上（カンプ原寸 1024 を含む）には適用されない。
+ * -------------------------------------------------------------------------- */
+@container (max-width: 900px) {
+  .v2-page--menu .v2-content { overflow-y: auto; }
+
+  .v2-page--menu .v2-menu__question {
+    width: 92%;
+    font-size: calc(30 * var(--v2-tpx));
+    line-height: calc(42 * var(--v2-tpx));
+  }
+
+  .v2-page--menu .v2-menu__cards {
+    grid-template-columns: 1fr;
+    height: auto;
+    row-gap: calc(12 * var(--v2-tpx));
+  }
+  .v2-page--menu .v2-menu-card {
+    height: auto;
+    padding: calc(16 * var(--v2-tpx)) calc(16 * var(--v2-tpx));
+  }
+  /* 見出し枠が高さ固定のため、拡大した見出しが溢れて説明と重なっていた */
+  .v2-page--menu .v2-menu-card__headzone {
+    height: auto;
+    min-height: 0;
+  }
+  .v2-page--menu .v2-menu-card__heading {
+    font-size: calc(22 * var(--v2-tpx));
+    line-height: calc(30 * var(--v2-tpx));
+    white-space: nowrap;
+  }
+  .v2-page--menu .v2-menu-card__desc {
+    margin-top: calc(8 * var(--v2-tpx));
+    font-size: calc(15 * var(--v2-tpx));
+    line-height: calc(24 * var(--v2-tpx));
+    text-wrap: balance;
+  }
+}

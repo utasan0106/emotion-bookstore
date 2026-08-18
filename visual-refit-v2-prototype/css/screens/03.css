@@ -1,0 +1,475 @@
+/* =============================================================================
+ * Visual Refit V2 — 03 感情の棚（新情報構造）
+ * -----------------------------------------------------------------------------
+ * Visual North Star: 2026-08-09 承認の新 concept board（03 DAY / 03 NIGHT）。
+ * 旧 FORMAL_COMPS/DAY/03.png・NIGHT/03.png は North Star として使用禁止（失効扱い）。
+ * concept board は4画面をまとめた構図基準であり 1:1 のピクセル座標正本ではないため、
+ * canvas 1024x1536・01/02/05 で確立した V2 の余白／タイポ／カード／ナビのリズムへ展開する。
+ *
+ * 【01・02・05への非干渉】
+ * tokens.css / base.css / components.css / screens/01・02・05 の各ファイルは
+ * 1バイトも変更していない。03 固有の差分はすべて .v2-page--shelves スコープで
+ * このファイルに閉じている。
+ *
+ * 03 は「あなたの感情を分類してください」という画面ではない。
+ * 書店へ入った利用者が、気になる感情のあたりを眺める入口。
+ * 7大棚は科学的分類ではなく、棚を巡るための編集入口として扱う。
+ *
+ * レイアウト契約（1024x1536）
+ *   入店後メニューへ  y   40-92   / 右端 3.71%
+ *   感情の棚（見出し） y  100-160  / 中央
+ *   装飾罫           y  167      / 中央
+ *   説明2行          y  195-263  / 中央
+ *   大棚グリッド      y  300-1289 / x 39-984（2列×4段・カード 461x230・間隔 23）
+ *   すべての感情語を見る y 1330-1362 / 中央
+ *   補助文           y 1372-1394 / 中央
+ *   下部ナビバー      y 1443-1524 / x 39-984
+ * ========================================================================== */
+
+.v2-page--shelves .v2-stage {
+  --v2-px: calc(100cqw / 1024);
+}
+
+:root[data-v2-theme='day'] .v2-page--shelves {
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 88%, #FFFFFF 12%);
+  --v2-card-edge: rgb(51 36 12 / 0.14);
+  --v2-shelf-plank: rgb(51 36 12 / 0.28);
+  --v2-shelf-spine: rgb(51 36 12 / 0.14);
+  --v2-crossway-edge: rgb(51 36 12 / 0.26);
+}
+
+:root[data-v2-theme='night'] .v2-page--shelves {
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 92%, #CDA97C 8%);
+  --v2-card-edge: rgb(84 66 46 / 0.95);
+  --v2-shelf-plank: rgb(205 169 124 / 0.34);
+  --v2-shelf-spine: rgb(205 169 124 / 0.16);
+  --v2-crossway-edge: rgb(205 169 124 / 0.42);
+}
+
+/* -----------------------------------------------------------------------------
+ * 情景レイヤ
+ * 素材未確定のため面と輪郭のみ。絵柄は描かない。
+ * 03 は「棚・店内側から感じる小さな灯り」。照明器具は置かない。
+ * DAY は左手の窓明かりと植物、NIGHT は背後の棚の奥行きと棚板の間接光で空間を作る。
+ * -------------------------------------------------------------------------- */
+.v2-shelves__wall {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--v2-wall) 0%,
+    var(--v2-wall) 68%,
+    var(--v2-wall-deep) 100%
+  );
+}
+
+/* 左手の窓辺（DAY の自然光源／NIGHT の夜窓）
+   大きな情景面は破線の輪郭を持たせない。輪郭を引くと画面内に偽のUI境界が生まれるため、
+   占有領域は面の明暗だけで示す（下記コメントの数値が占有範囲の契約）。
+   占有: x 0-15% / y 0-30% */
+.v2-shelves__window {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 15%;
+  height: 30%;
+  border-bottom-right-radius: 46% 26%;
+  background: var(--v2-scene-arch);
+  opacity: 0.85;
+}
+
+/* 窓辺の植物。占有領域のみ */
+.v2-shelves__plant {
+  position: absolute;
+  top: 15%;
+  left: 1.5%;
+  width: 10%;
+  height: 9%;
+}
+
+/* 背後の棚の奥行き。器具は置かず、面と間接光の勾配だけを持つ。
+   こちらも輪郭は引かない。占有: x 55-100% / y 0-22% */
+.v2-shelves__depth {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 45%;
+  height: 22%;
+  border-bottom-left-radius: 30% 70%;
+  background: var(--v2-scene-arch);
+  opacity: 0.8;
+}
+
+.v2-shelves__windowlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 42%;
+  height: 38%;
+  background: radial-gradient(
+    58% 54% at 10% 16%,
+    rgb(var(--v2-glow-color) / var(--v2-glow-strength)) 0%,
+    rgb(var(--v2-glow-color) / 0) 100%
+  );
+}
+
+.v2-shelves__shelflight {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 48%;
+  height: 30%;
+  background: radial-gradient(
+    56% 56% at 88% 18%,
+    rgb(var(--v2-glow-color) / calc(var(--v2-glow-strength) * 0.85)) 0%,
+    rgb(var(--v2-glow-color) / 0) 100%
+  );
+}
+
+.v2-shelves__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    112% 64% at 50% 42%,
+    rgb(0 0 0 / 0) 44%,
+    rgb(0 0 0 / var(--v2-vignette)) 100%
+  );
+}
+
+/* -----------------------------------------------------------------------------
+ * ヘッダ
+ * -------------------------------------------------------------------------- */
+.v2-shelves__home {
+  position: absolute;
+  top: 2.60%;
+  right: 3.71%;
+  display: flex;
+  align-items: center;
+  gap: calc(12 * var(--v2-px));
+  height: 3.39%;
+  padding: 0 calc(22 * var(--v2-px));
+  border-radius: calc(26 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-tpx));
+  line-height: 1;
+  color: var(--v2-ink-mid);
+}
+
+.v2-shelves__home-mark {
+  display: block;
+  width: calc(22 * var(--v2-px));
+  height: calc(22 * var(--v2-px));
+  border-radius: calc(3 * var(--v2-px));
+}
+
+.v2-shelves__title {
+  position: absolute;
+  top: 6.51%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(46 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
+  color: var(--v2-ink-strong);
+}
+
+.v2-shelves__deco {
+  position: absolute;
+  top: 10.87%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 17%;
+  height: calc(1 * var(--v2-px));
+  margin: 0;
+  border: 0;
+  background: var(--v2-rule);
+  opacity: 0.7;
+}
+
+.v2-shelves__lead {
+  position: absolute;
+  top: 12.30%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-tpx));
+  line-height: calc(34 * var(--v2-tpx));
+  letter-spacing: 0.01em;
+  text-align: center;
+  color: var(--v2-ink-mid);
+}
+
+/* -----------------------------------------------------------------------------
+ * 大棚グリッド
+ * 2列×4段。SaaS ダッシュボードの8カードに見せず、小さな書店の棚札・棚の入口にする。
+ * 感情アイコンはまだ制作しない。concept board の具体的アイコンもトレースしない。
+ * -------------------------------------------------------------------------- */
+.v2-shelves__grid {
+  position: absolute;
+  top: 19.53%;
+  left: 3.81%;
+  width: 92.29%;
+  height: 64.39%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: calc(23 * var(--v2-px));
+}
+
+/* Phase 3 Step 3A：入口はネイティブ button。UA スタイルをここで打ち消し、
+   Phase 2 の見え方（span/article だったとき）と同一に保つ。
+   role="button" / tabindex / 独自 keydown は使わない。 */
+.v2-shelf-card {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-indent: 0;
+  text-transform: none;
+  text-shadow: none;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  appearance: none;
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: calc(24 * var(--v2-px));
+  border-radius: calc(18 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+  overflow: hidden;
+}
+
+.v2-shelf-card__name {
+  display: block;
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(28 * var(--v2-tpx));
+  line-height: calc(36 * var(--v2-tpx));
+  letter-spacing: 0.06em;
+  text-indent: 0.06em;
+  text-align: center;
+  color: var(--v2-ink-strong);
+}
+
+/* 将来の感情造形用スペース。絵柄は入れない */
+.v2-shelf-card__glyph {
+  display: block;
+  width: calc(52 * var(--v2-px));
+  height: calc(52 * var(--v2-px));
+  margin-top: calc(10 * var(--v2-px));
+  border-radius: 50%;
+}
+
+.v2-shelf-card__words {
+  display: block;
+  margin: calc(12 * var(--v2-px)) 0 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(17 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-align: center;
+  color: var(--v2-ink-mid);
+}
+
+/* 棚板と背表紙を感じる低い背景構造。イラストではなく構造だけを置く */
+.v2-shelf-card__shelf {
+  position: absolute;
+  left: calc(26 * var(--v2-px));
+  right: calc(26 * var(--v2-px));
+  bottom: calc(20 * var(--v2-px));
+  height: calc(38 * var(--v2-px));
+  display: flex;
+  align-items: flex-end;
+  gap: calc(4 * var(--v2-px));
+  border-bottom: calc(2 * var(--v2-px)) solid var(--v2-shelf-plank);
+  opacity: 0.58;
+}
+
+.v2-shelf-card__spine {
+  flex: 1;
+  background: var(--v2-shelf-spine);
+}
+
+.v2-shelf-card__spine:nth-child(3n) { height: 62%; }
+.v2-shelf-card__spine:nth-child(3n + 1) { height: 84%; }
+.v2-shelf-card__spine:nth-child(3n + 2) { height: 72%; }
+.v2-shelf-card__spine:nth-child(5n) { height: 92%; }
+.v2-shelf-card__spine:nth-child(7n) { height: 54%; }
+
+/* 幅も一定にしない。等幅・等高だと棒グラフに見えてしまう */
+.v2-shelf-card__spine:nth-child(4n) { flex: 1.35; }
+.v2-shelf-card__spine:nth-child(4n + 1) { flex: 0.8; }
+.v2-shelf-card__spine:nth-child(4n + 2) { flex: 1.1; }
+.v2-shelf-card__spine:nth-child(4n + 3) { flex: 0.9; }
+
+/* 棚札の隙間。中央に余白を作って「棚の入口」に見せる */
+.v2-shelf-card__gap {
+  flex: 1.4;
+}
+
+/* -----------------------------------------------------------------------------
+ * 横断入口「まだ名前がない」
+ * 8番目の大棚ではない。7大棚とは役割が違うことを、境界・余白・見せ方の差で示す。
+ * 派手に強調しない。
+ * -------------------------------------------------------------------------- */
+.v2-shelf-card--crossway {
+  padding-top: calc(26 * var(--v2-px));
+  box-shadow: none;
+  border: calc(1 * var(--v2-px)) dashed var(--v2-crossway-edge);
+  background: transparent;
+}
+
+.v2-shelf-card--crossway .v2-shelf-card__name {
+  font-size: calc(26 * var(--v2-tpx));
+}
+
+.v2-shelf-card__note {
+  display: block;
+  margin: calc(10 * var(--v2-px)) 0 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(16 * var(--v2-tpx));
+  line-height: calc(26 * var(--v2-tpx));
+  text-align: center;
+  color: var(--v2-ink-mid);
+}
+
+.v2-shelf-card--crossway .v2-shelf-card__glyph {
+  width: calc(44 * var(--v2-px));
+  height: calc(44 * var(--v2-px));
+  margin-top: calc(12 * var(--v2-px));
+}
+
+.v2-shelf-card__alias {
+  display: block;
+  margin: calc(10 * var(--v2-px)) 0 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(17 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: var(--v2-ink-soft);
+}
+
+/* -----------------------------------------------------------------------------
+ * すべての感情語を見る（Phase 1 は非活性。21語 sheet/subview は作らない）
+ * -------------------------------------------------------------------------- */
+.v2-shelves__all {
+  position: absolute;
+  top: 86.59%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: calc(18 * var(--v2-px));
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(26 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--v2-ink-strong);
+  appearance: none;
+}
+
+.v2-shelves__all:disabled,
+.v2-shelves__all[aria-disabled='true'] {
+  opacity: 1;
+  cursor: default;
+}
+
+.v2-shelves__all-note {
+  position: absolute;
+  top: 89.32%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(17 * var(--v2-tpx));
+  line-height: 1;
+  text-align: center;
+  color: var(--v2-ink-soft);
+}
+
+/* -----------------------------------------------------------------------------
+ * Global Navigation（3項目）
+ * 部品の見た目は components.css に一元化した。ここでは位置と外枠だけを持つ。
+ * 02〜07 は同一原寸カンプ（1024x1536）なので外枠の寸法も全画面で揃える。
+ * 現在地は accent 色の文字／アイコンのみ。下線は付けない。
+ * Phase 2 も視覚要素のみで route / href / event を持たない。
+ * -------------------------------------------------------------------------- */
+.v2-shelves__navbar {
+  position: absolute;
+  top: 93.95%;
+  left: 3.81%;
+  width: 92.29%;
+  height: 5.27%;
+  border-radius: calc(20 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+.v2-shelves__nav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(25 * var(--v2-px));
+  width: calc(873 * var(--v2-px));
+}
+
+/* -----------------------------------------------------------------------------
+ * モバイル幅の局所修正（Pre-Mount Visual A11y Hotfix / Additional LIMITED FIX）
+ * 崩れは「見出し×リード」「リード×棚カード」「すべての感情語を見る×注記」だけ。
+ * リードは left:50% + translateX(-50%) のため使える幅が半分になり3行へ折れていた。
+ * 位置の考え方は変えず、幅の取り方と文字寸法だけを直す。
+ * コンテナ幅 900px 以上（カンプ原寸 1024 を含む）には適用されない。
+ * -------------------------------------------------------------------------- */
+@container (max-width: 900px) {
+  .v2-page--shelves .v2-shelves__title { font-size: calc(34 * var(--v2-tpx)); }
+  .v2-page--shelves .v2-shelves__lead {
+    left: 0;
+    right: 0;
+    transform: none;
+    padding: 0 calc(40 * var(--v2-px));
+    font-size: calc(14 * var(--v2-tpx));
+    line-height: calc(20 * var(--v2-tpx));
+    text-wrap: balance;
+  }
+  /* 前半の文が1行に収まらず「い。」だけが2行目に落ちるため、
+     モバイル幅では強制改行を無効化して段落全体で行を均等に割る
+     （Chromium は強制改行を含む段落を balance しない）。文言は変更していない。 */
+  .v2-page--shelves .v2-shelves__lead br { display: none; }
+
+  .v2-page--shelves .v2-shelves__all {
+    font-size: calc(20 * var(--v2-tpx));
+    white-space: nowrap;
+  }
+  .v2-page--shelves .v2-shelves__all-note { font-size: calc(15 * var(--v2-tpx)); }
+
+  /* 棚カードの中身が拡大して枠から溢れ、下の導線と重なるため、
+     カード内の文字だけ一段小さくする（いずれも 12px 以上） */
+  .v2-page--shelves .v2-shelf-card__name { font-size: calc(18 * var(--v2-tpx)); }
+  .v2-page--shelves .v2-shelf-card__words,
+  .v2-page--shelves .v2-shelf-card__note,
+  .v2-page--shelves .v2-shelf-card__alias { font-size: calc(14 * var(--v2-tpx)); }
+
+  /* 行末に1〜2文字だけ落ちないよう、複数行になる文は行を均等に割る */
+  .v2-page--shelves .v2-shelf-card__words,
+  .v2-page--shelves .v2-shelf-card__note,
+  .v2-page--shelves .v2-shelves__all-note { text-wrap: balance; }
+}

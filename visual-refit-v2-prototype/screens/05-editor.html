@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja" data-v2-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Visual Refit V2 — 05 編集室（Structural Skeleton）</title>
+
+<!--
+  Visual Refit V2 / Phase 1 Structural Skeleton
+  Visual North Star: FORMAL_COMPS/DAY/05.png ・ FORMAL_COMPS/NIGHT/05.png のみ。
+
+  この画面は本番UIから物理的に隔離された静的シェルである。
+  - 旧 index.html / main.js / data.js / style.css へ接続しない
+  - 旧CSSを import しない。旧DOM・旧セレクタを再利用しない
+  - 保存 / 製本 / IndexedDB / localStorage / GA4 / 外部通信を一切行わない
+  - 入力内容を JavaScript で読むコードを作らない
+  - DAY と NIGHT は同一DOM。data-v2-theme だけで切り替える
+
+  05 は「自分の言葉を書くための静かな編集机」であり、
+  診断・相談・AIとの会話・感情分析の画面ではない。
+-->
+
+<!--
+  Visual QA 専用の最小処理（01・02 と同一方式を再利用）。
+  URLパラメータ theme=day|night を読み、data-v2-theme を差し替えるだけ。
+  保存しない / localStorage を使わない / GA4 を呼ばない / 外部通信しない /
+  時刻判定しない / 本番の applyNightModeIfNeeded()・currentDaypart() に触れない。
+  新しい本番用時刻判定・manual toggle は追加していない。
+-->
+<script>
+  (function () {
+    var t = new URLSearchParams(location.search).get('theme');
+    if (t === 'day' || t === 'night') {
+      document.documentElement.dataset.v2Theme = t;
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/screens/05.css">
+</head>
+
+<body class="v2-page v2-page--editor" data-v2-screen="05">
+<div class="v2-stage v2-editor">
+
+  <!-- 情景レイヤ：素材未確定。無地面＋輪郭のみのプレースホルダー。
+       05 は唯一デスクランプを器具として見せてよい画面だが、
+       完成イラストは生成せず、占有領域・光の方向・光量関係だけを置く。 -->
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-editor__wall"></div>
+    <div class="v2-editor__desk v2-placeholder"></div>
+    <div class="v2-editor__lamp v2-placeholder"></div>
+    <div class="v2-editor__lamplight"></div>
+    <div class="v2-editor__writinglight"></div>
+    <div class="v2-editor__vignette"></div>
+  </div>
+
+  <!-- 内容レイヤ -->
+  <div class="v2-content">
+
+    <button type="button" class="v2-editor__back" data-v2-go="02">＜　戻る</button>
+
+    <p class="v2-editor__privacy">本文は公開されません</p>
+
+    <p class="v2-editor__mark v2-placeholder" aria-hidden="true"></p>
+    <p class="v2-editor__ruby">へんさんしつ</p>
+    <h1 class="v2-editor__title">編纂室</h1>
+    <p class="v2-editor__lead">あなたのことばを、静かに編んでいく場所です。<br>本文はこの端末に保存されます。</p>
+
+    <!-- 領域タブ行（ことば・世界／物語・作品／みんなの一篇／自分の本）は
+         Visual Review により削除した。代替UIは置かない。 -->
+
+    <!-- 編集カード：この画面の主役 -->
+    <section class="v2-editor__card" aria-label="新しい本を書く">
+
+      <div class="v2-editor__card-head">
+        <span class="v2-editor__card-mark v2-placeholder" aria-hidden="true"></span>
+        <h2 class="v2-editor__card-title">新しい本を書く</h2>
+      </div>
+      <p class="v2-editor__card-sub">残しておきたいことを、あなたのことばで。<br>うまくまとめなくても、題名をつけなくても大丈夫です。</p>
+
+      <!-- Phase 3 Step 3E：「下書き一覧」は対応する既存機能が存在しないため削除した。
+           disabled のまま残さず、代替の新機能も作らない。 -->
+
+      <!-- 題名は任意。空欄でも製本できる（空欄時の題名は既存側が決める）。
+           Step 3D でも必須へ戻さない。 -->
+      <p class="v2-editor__field-label" id="v2-write-title-label">題（あらだし）</p>
+      <!-- 文字数上限は現行の maxlength=16 を正とする。カンプの 0 / 30 は採用しない -->
+      <p class="v2-editor__counter" data-v2-write="title-count">0 / 16</p>
+
+      <input class="v2-editor__title-field" type="text" maxlength="16"
+             data-v2-write="title" aria-labelledby="v2-write-title-label"
+             placeholder="本の題名をつけてください（あとから変えられます）">
+
+      <!-- 本文：ここに書くことが最も明確な領域。
+           Step 3D で既存 #storyInput（＝下書き保存・文字数・製本の正式な入口）へ接続した。
+           保存・製本・検証・GA4 のロジックは V2 側に持たない。 -->
+      <div class="v2-editor__body">
+        <textarea class="v2-editor__body-input" data-v2-write="story"
+                  aria-label="本文"
+                  placeholder="ここに、あなたのことばを書いてください。"></textarea>
+      </div>
+
+      <!-- 既存 #storyCount（0 / 700字・上限超過表示）をそのまま写す。V2 で数え直さない -->
+      <p class="v2-editor__body-counter" data-v2-write="count">0 / 700字</p>
+
+      <!-- 保存に関する情報：対象を本文に限定した正確な表現にする。
+           包括的・絶対的な表現（あなただけ／〜ことはありません／〜にのみ）を使わない。
+           新しい説明機能・設定UIは追加しない。 -->
+      <div class="v2-editor__assurance">
+        <span class="v2-editor__assurance-mark v2-placeholder" aria-hidden="true"></span>
+        <div>
+          <p class="v2-editor__assurance-title">本文はこの端末に保存されます</p>
+          <p class="v2-editor__assurance-text">本文は公開されません。</p>
+        </div>
+      </div>
+
+      <!-- 操作：「本にする」は既存 #submitStory を押すだけ。
+           検証・保存・読み戻し確認・GA4・二重防止はすべて既存実装が持つ。
+           Phase 3 Step 3E：「下書き保存」ボタンは削除した。既存側は入力のたびに
+           自動で下書きを保存しており、手動保存という機能は存在しないため。
+           自動保存そのものは既存機能として維持し、事実だけを非操作のテキストで伝える。 -->
+      <div class="v2-editor__actions">
+        <p class="v2-editor__autosave">下書きは自動で保存されます</p>
+        <button type="button" class="v2-editor__action v2-editor__action--primary" data-v2-write="bind">
+          <span class="v2-editor__action-main">本にする</span>
+          <span class="v2-editor__action-note">あなたの本として棚に並びます</span>
+        </button>
+      </div>
+
+      <!-- 既存 #deskMsg（検証結果・保存結果）をそのまま写す。V2 で文言を作らない -->
+      <p class="v2-editor__msg is-v2-empty" data-v2-write="msg" role="status" aria-live="polite"></p>
+
+    </section>
+
+    <!-- 書くきっかけ：読むための問いかけであり、操作ではない。
+         Phase 3 Step 3E：押せる見た目（枠・面）と「すべて見る　＞」を外し、
+         非操作のテキストとして整理した。挿入・絞り込み等の新機能は作らない。 -->
+    <section class="v2-editor__prompts" aria-label="書くきっかけに">
+      <div class="v2-editor__prompts-head">
+        <span class="v2-editor__prompts-mark v2-placeholder" aria-hidden="true"></span>
+        <div>
+          <h2 class="v2-editor__prompts-title">書くきっかけに</h2>
+          <p class="v2-editor__prompts-sub">心が少し動いたことから、書きはじめてみませんか。</p>
+        </div>
+      </div>
+      <ul class="v2-editor__chips">
+        <li class="v2-editor__chip">今の気持ちを<br>そのまま書いてみる</li>
+        <li class="v2-editor__chip">忘れたくない<br>出来事について</li>
+        <li class="v2-editor__chip">誰かに伝えたい<br>ことばについて</li>
+        <li class="v2-editor__chip">未来の自分へ<br>手紙を書く</li>
+      </ul>
+    </section>
+
+    <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
+    <div class="v2-editor__navbar">
+      <nav class="v2-navbar v2-editor__nav" aria-label="ナビゲーション">
+        <button type="button" class="v2-navbar__item" data-v2-nav="shelves">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">棚を見る</span>
+        </button>
+        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="desk" aria-current="page">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">書く</span>
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="bookshelf">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">本棚</span>
+        </button>
+      </nav>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
