@@ -823,3 +823,127 @@ html[data-v2-mounted="true"] .v2c06__invite{
 html[data-v2-mounted="true"] .v2c06__invite .v2c06__invite-h{ color:var(--vq-ink) !important; }
 html[data-v2-mounted="true"] .v2c06__invite .v2c06__invite-n{ color:var(--vq-muted) !important; }
 html[data-v2-mounted="true"] .v2c06__invite .v2c06__invite-ic{ color:var(--vq-accent) !important; }
+
+/* ============================================================
+ * 07 Reader / Book Detail — FREEZE canonical（本文が主役の静的紙面）
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2c07{
+  background:var(--vq-bg) !important;
+}
+html[data-v2-mounted="true"] .v2c07__stage{
+  font-family:var(--font-ui);
+  padding-bottom:clamp(28px, 6cqw, 48px);
+}
+html[data-v2-mounted="true"] .v2c07__bar{
+  display:flex; align-items:center; justify-content:space-between;
+}
+html[data-v2-mounted="true"] .v2c07__back{
+  color:var(--vq-muted) !important;
+  font-size:13px;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c07__back{ color:var(--vq-muted) !important; }
+html[data-v2-mounted="true"] .v2c07 .v2b-menutrigger{ position:static; color:var(--vq-muted); }
+
+/* 本文が主役：題名 → 日付 → 棚 → 本文（左揃えの紙面） */
+html[data-v2-mounted="true"] .v2c07__book{ text-align:left; }
+html[data-v2-mounted="true"] .v2-page h1.v2c07__title{
+  font-family:var(--font-display);
+  color:var(--vq-ink) !important;
+  font-size:clamp(22px, 6cqw, 30px);
+  letter-spacing:.05em;
+  line-height:1.55;
+  font-weight:500;
+  text-align:left;
+  overflow-wrap:anywhere;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2-page h1.v2c07__title{ color:var(--vq-ink) !important; }
+html[data-v2-mounted="true"] .v2c07__sep{ display:none; }
+html[data-v2-mounted="true"] .v2c07__meta{
+  margin-top:clamp(8px, 2.4cqw, 12px);
+  display:flex; flex-direction:column; align-items:flex-start; gap:6px;
+}
+html[data-v2-mounted="true"] .v2c07__date{
+  justify-content:flex-start;
+  color:var(--vq-muted) !important;
+  font-size:12px;
+  letter-spacing:.04em;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c07__date{ color:var(--vq-muted) !important; }
+html[data-v2-mounted="true"] .v2c07__date-ic{ display:none; }
+html[data-v2-mounted="true"] .v2c07__chip{
+  border:0 !important;
+  padding:0 !important;
+  background:none !important;
+  display:inline-flex; align-items:center; gap:6px;
+  color:var(--vq-muted) !important;
+  font-size:12px;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c07__chip{ color:var(--vq-muted) !important; }
+html[data-v2-mounted="true"] .v2c07__chip::before{
+  content:"";
+  width:6px; height:6px; border-radius:50%;
+  background:var(--vq-accent);
+  flex:none;
+}
+html[data-v2-mounted="true"] .v2c07__sealed{ color:var(--vq-faint) !important; font-size:11px; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c07__sealed{ color:var(--vq-faint) !important; }
+
+html[data-v2-mounted="true"] .v2c07__body{
+  margin-top:clamp(20px, 5cqw, 30px);
+  font-family:var(--font-display);
+  color:var(--vq-primary-writing);
+  font-size:clamp(15.5px, 4.2cqw, 17px);
+  line-height:2.05;
+  letter-spacing:.015em;
+  text-align:left;
+  overflow-wrap:anywhere;
+}
+/* 写真はそっと添える：本文の流れを邪魔せず、原則cropしない（natural ratio） */
+html[data-v2-mounted="true"] .v2c07__photo{
+  margin:clamp(18px, 4.6cqw, 28px) 0 0;
+  text-align:left;
+}
+html[data-v2-mounted="true"] .v2c07__photo img{
+  display:block;
+  max-width:100%;
+  width:auto; height:auto;
+  border-radius:4px;
+  border:1px solid var(--vq-rule);
+}
+html[data-v2-mounted="true"] .v2c07__notebox{
+  margin-top:clamp(16px, 4cqw, 24px);
+  border-top:1px solid var(--vq-rule);
+  padding-top:12px;
+}
+html[data-v2-mounted="true"] .v2c07__notelabel{ color:var(--vq-muted) !important; font-size:11px; letter-spacing:.08em; }
+html[data-v2-mounted="true"] .v2c07__notetext{ color:var(--vq-ink) !important; font-size:13px; line-height:1.9; }
+html[data-v2-mounted="true"] .v2c07__closing{ opacity:.5; }
+
+/* 操作は最小限・静かに（既存の編集/削除。挙動は既存 bookModal のまま） */
+html[data-v2-mounted="true"] .v2c07__actions{
+  margin-top:clamp(24px, 6cqw, 36px);
+  border-top:1px solid var(--vq-rule);
+  padding-top:10px;
+  display:flex; align-items:center; justify-content:flex-end; gap:10px;
+}
+html[data-v2-mounted="true"] .v2c07__act{
+  color:var(--vq-muted) !important;
+  font-size:12.5px;
+}
+html[data-v2-mounted="true"] .v2c07__act--danger{ color:#a2543f !important; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c07__act--danger{ color:#c98a76 !important; }
+html[data-v2-mounted="true"] .v2c07__actsep{ display:none; }
+
+/* 07 bottom nav（canonical：Reader でも主要Navigationを保つ。06/08 と同じ fixed） */
+html[data-v2-mounted="true"] .v2c07 .v2b-nav{
+  position:fixed; left:0; right:0; bottom:0;
+  width:100%; z-index:30; margin-top:0;
+}
+html[data-v2-mounted="true"] .v2c07__stage{
+  padding-bottom:calc(var(--v2-nav-h) + 24px);
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c07 .v2b-nav{ display:none; }
+}
+html[data-v2-mounted="true"] .v2c07__chip.is-v2-empty{ display:none !important; }
+html[data-v2-mounted="true"] .v2c07__date.is-v2-empty{ display:none !important; }
