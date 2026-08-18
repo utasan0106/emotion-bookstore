@@ -23,6 +23,15 @@
  *   - 外部遷移は officialSourceUrl の値そのものだけ。runtime で URL を組み立てない。
  *   - 利用者の本文・題名・写真・本棚・感情推定は選定に一切使わない。
  * これは静的な編集データであり、storage / GA4 / network には一切触れない。
+ *
+ * 【Release Fix R2-2（2026-08-18）: destinations】
+ *   Beta0 の表示対象（各棚 displayRank 上位3 = 24作品）のうち 18 作品へ、
+ *   確認済みの追加 destination（[{ kind, label, labelEn, url }]）を投入した。
+ *   - URL は検索インデックスで実在確認できた商品/配信ページを逐語で転記
+ *     （題名・作者・ISBN の一致を確認。推測・組み立て・search query URL なし）
+ *   - availability の推測なし・affiliate 化なし・runtime API 追加なし
+ *   - 確認できなかった 6 作品（劇場映画/アニメ映画の配信先）は公式のみのまま
+ *   - 表示順は renderer 側で「公式 → destinations の記載順」（公式が必ず先頭）
  * ------------------------------------------------------------------------ */
 (function (global) {
   'use strict';
@@ -48,7 +57,13 @@
             editorialReasonEn: "Watching someone move through their days by their own sense of what is interesting, rather than by anyone else's measure, widens the world on this side a little too. Not encouragement: a book that leaves behind the lightness felt before starting something.",
             region: "日本",
             eraBand: "2020s",
-            officialSourceUrl: "https://www.shinchosha.co.jp/book/354951/" },
+            officialSourceUrl: "https://www.shinchosha.co.jp/book/354951/",
+            destinations: [
+              { kind: "amazon", label: "Amazon", labelEn: "Amazon",
+                url: "https://www.amazon.co.jp/%E6%88%90%E7%80%AC%E3%81%AF%E5%A4%A9%E4%B8%8B%E3%82%92%E5%8F%96%E3%82%8A%E3%81%AB%E3%81%84%E3%81%8F-%E5%AE%AE%E5%B3%B6-%E6%9C%AA%E5%A5%88/dp/4103549513" },
+              { kind: "rakuten", label: "楽天ブックス", labelEn: "Rakuten Books",
+                url: "https://books.rakuten.co.jp/rb/17411647/" }
+            ] },
           { publicId: "hazumu-02",
             inventoryId: "W002",
             displayRank: 2,
@@ -61,7 +76,13 @@
             editorialReasonEn: "Simply having walked through the same hours alongside someone takes on a particular outline later. Placed here for the sense of moving a little further forward inside time that is drawing to a close.",
             region: "日本",
             eraBand: "2000s",
-            officialSourceUrl: "https://www.shinchosha.co.jp/book/397105/" },
+            officialSourceUrl: "https://www.shinchosha.co.jp/book/397105/",
+            destinations: [
+              { kind: "amazon", label: "Amazon", labelEn: "Amazon",
+                url: "https://www.amazon.co.jp/%E5%A4%9C%E3%81%AE%E3%83%94%E3%82%AF%E3%83%8B%E3%83%83%E3%82%AF-%E6%96%B0%E6%BD%AE%E6%96%87%E5%BA%AB-%E6%81%A9%E7%94%B0-%E9%99%B8/dp/4101234175" },
+              { kind: "rakuten", label: "楽天ブックス", labelEn: "Rakuten Books",
+                url: "https://books.rakuten.co.jp/rb/4099707/" }
+            ] },
           { publicId: "hazumu-03",
             inventoryId: "W033",
             displayRank: 3,
@@ -163,7 +184,13 @@
             editorialReasonEn: "What stays is not a large answer but the quiet accumulation of living day to day and of deciding things for yourself. Shelved here without assuming anyone is worn down, for when you want to stay somewhere quiet for a while.",
             region: "日本",
             eraBand: "1990s",
-            officialSourceUrl: "https://www.shinchosha.co.jp/book/125332/" },
+            officialSourceUrl: "https://www.shinchosha.co.jp/book/125332/",
+            destinations: [
+              { kind: "amazon", label: "Amazon", labelEn: "Amazon",
+                url: "https://www.amazon.co.jp/%E8%A5%BF%E3%81%AE%E9%AD%94%E5%A5%B3%E3%81%8C%E6%AD%BB%E3%82%93%E3%81%A0-%E6%96%B0%E6%BD%AE%E6%96%87%E5%BA%AB-%E6%A2%A8%E6%9C%A8-%E9%A6%99%E6%AD%A9/dp/4101253323" },
+              { kind: "rakuten", label: "楽天ブックス", labelEn: "Rakuten Books",
+                url: "https://books.rakuten.co.jp/rb/1361931/" }
+            ] },
           { publicId: "atatamaru-02",
             inventoryId: "W007",
             displayRank: 2,
@@ -189,7 +216,13 @@
             editorialReasonEn: "What stays is not a striking event but the sense of hours gathering with someone inside ordinary life. Shelved here without promising reassurance, where the scenery of daily life looks a little softer.",
             region: "日本",
             eraBand: "2010s",
-            officialSourceUrl: "https://www.aimyong.net/feature/single_harunohi" },
+            officialSourceUrl: "https://www.aimyong.net/feature/single_harunohi",
+            destinations: [
+              { kind: "spotify", label: "Spotify", labelEn: "Spotify",
+                url: "https://open.spotify.com/track/1oNeSCt0CMekCyyLo06kFs" },
+              { kind: "apple_music", label: "Apple Music", labelEn: "Apple Music",
+                url: "https://music.apple.com/jp/album/harunohi-single/1455340999" }
+            ] },
           { publicId: "atatamaru-04",
             inventoryId: "W072",
             displayRank: 4,
@@ -278,7 +311,13 @@
             editorialReasonEn: "When supporting someone as a fan runs deep into your daily life and the sense of your own body, what is left when that figure is shaken? Shelved here for a feeling that the single word \"like\" cannot hold.",
             region: "日本",
             eraBand: "2020s",
-            officialSourceUrl: "https://www.kawade.co.jp/np/isbn/9784309029160/" },
+            officialSourceUrl: "https://www.kawade.co.jp/np/isbn/9784309029160/",
+            destinations: [
+              { kind: "amazon", label: "Amazon", labelEn: "Amazon",
+                url: "https://www.amazon.co.jp/%E6%8E%A8%E3%81%97%E3%80%81%E7%87%83%E3%82%86-%E5%AE%87%E4%BD%90%E8%A6%8B%E3%82%8A%E3%82%93/dp/4309029167" },
+              { kind: "rakuten", label: "楽天ブックス", labelEn: "Rakuten Books",
+                url: "https://books.rakuten.co.jp/rb/16417323/" }
+            ] },
           { publicId: "hikareru-02",
             inventoryId: "W011",
             displayRank: 2,
@@ -304,7 +343,13 @@
             editorialReasonEn: "From having looked at a single painting, an obsession and a curiosity rise up that knowledge alone cannot reach. Shelved here not for understanding art, but for the pull of wanting to look longer and know more.",
             region: "日本",
             eraBand: "2010s",
-            officialSourceUrl: "https://www.shinchosha.co.jp/book/125961" },
+            officialSourceUrl: "https://www.shinchosha.co.jp/book/125961",
+            destinations: [
+              { kind: "amazon", label: "Amazon", labelEn: "Amazon",
+                url: "https://www.amazon.co.jp/%E6%A5%BD%E5%9C%92%E3%81%AE%E3%82%AB%E3%83%B3%E3%83%B4%E3%82%A1%E3%82%B9-%E6%96%B0%E6%BD%AE%E6%96%87%E5%BA%AB-%E5%8E%9F%E7%94%B0-%E3%83%9E%E3%83%8F/dp/4101259615" },
+              { kind: "rakuten", label: "楽天ブックス", labelEn: "Rakuten Books",
+                url: "https://books.rakuten.co.jp/rb/12805595/" }
+            ] },
           { publicId: "hikareru-04",
             inventoryId: "W073",
             displayRank: 4,
@@ -393,7 +438,13 @@
             editorialReasonEn: "Not only voices that do not reach and the solitude around them, but also what can change after meeting someone. Edited from the relation of a voice reaching or not reaching, rather than closing on \"lonely\".",
             region: "日本",
             eraBand: "2020s",
-            officialSourceUrl: "https://www.chuko.co.jp/bunko/2023/05/207370.html" },
+            officialSourceUrl: "https://www.chuko.co.jp/bunko/2023/05/207370.html",
+            destinations: [
+              { kind: "amazon", label: "Amazon", labelEn: "Amazon",
+                url: "https://www.amazon.co.jp/52%E3%83%98%E3%83%AB%E3%83%84%E3%81%AE%E3%82%AF%E3%82%B8%E3%83%A9%E3%81%9F%E3%81%A1-%E4%B8%AD%E5%85%AC%E6%96%87%E5%BA%AB-55-1-%E7%94%BA%E7%94%B0-%E3%81%9D%E3%81%AE%E3%81%93/dp/4122073707" },
+              { kind: "rakuten", label: "楽天ブックス", labelEn: "Rakuten Books",
+                url: "https://books.rakuten.co.jp/rb/17477035/" }
+            ] },
           { publicId: "shizumu-02",
             inventoryId: "W014",
             displayRank: 2,
@@ -508,7 +559,13 @@
             editorialReasonEn: "Who is deciding what counts as normal? Placed here as a work that leaves an unease you cannot put into words right after reading. It is not resolved into sympathy or a lesson; what it handles is the wavering of the border between yourself and society.",
             region: "日本",
             eraBand: "2010s",
-            officialSourceUrl: "https://books.bunshun.jp/ud/book/num/9784167911300" },
+            officialSourceUrl: "https://books.bunshun.jp/ud/book/num/9784167911300",
+            destinations: [
+              { kind: "amazon", label: "Amazon", labelEn: "Amazon",
+                url: "https://www.amazon.co.jp/%E3%82%B3%E3%83%B3%E3%83%93%E3%83%8B%E4%BA%BA%E9%96%93-%E6%96%87%E6%98%A5%E6%96%87%E5%BA%AB-%E3%82%80-16-1-%E6%9D%91%E7%94%B0-%E6%B2%99%E8%80%B6%E9%A6%99/dp/4167911302" },
+              { kind: "rakuten", label: "楽天ブックス", labelEn: "Rakuten Books",
+                url: "https://books.rakuten.co.jp/rb/15554819/" }
+            ] },
           { publicId: "zawatsuku-02",
             inventoryId: "W018",
             displayRank: 2,
@@ -534,7 +591,13 @@
             editorialReasonEn: "Money, staying alive, a family-like arrangement, guilt: none of these come apart cleanly from one another. Placed here as a work where \"why did it come to this\" stays with you ahead of \"what would I have done\".",
             region: "日本",
             eraBand: "2020s",
-            officialSourceUrl: "https://www.chuko.co.jp/special/kiiroiie/" },
+            officialSourceUrl: "https://www.chuko.co.jp/special/kiiroiie/",
+            destinations: [
+              { kind: "amazon", label: "Amazon", labelEn: "Amazon",
+                url: "https://www.amazon.co.jp/%E9%BB%84%E8%89%B2%E3%81%84%E5%AE%B6-%E5%8D%98%E8%A1%8C%E6%9C%AC-%E5%B7%9D%E4%B8%8A%E6%9C%AA%E6%98%A0%E5%AD%90/dp/4120056287" },
+              { kind: "rakuten", label: "楽天ブックス", labelEn: "Rakuten Books",
+                url: "https://books.rakuten.co.jp/rb/17392082/" }
+            ] },
           { publicId: "zawatsuku-04",
             inventoryId: "W114",
             displayRank: 4,
@@ -623,7 +686,13 @@
             editorialReasonEn: "It unsettles the idea that a world can be put in order using only the kinds of diversity that happen to be understandable. No answer is handed over; this shelf is treated as where you stand after the range of your own understanding has moved.",
             region: "日本",
             eraBand: "2020s",
-            officialSourceUrl: "https://www.shinchosha.co.jp/book/126933" },
+            officialSourceUrl: "https://www.shinchosha.co.jp/book/126933",
+            destinations: [
+              { kind: "amazon", label: "Amazon", labelEn: "Amazon",
+                url: "https://www.amazon.co.jp/%E6%AD%A3%E6%AC%B2-%E6%96%B0%E6%BD%AE%E6%96%87%E5%BA%AB-78-3-%E6%9C%9D%E4%BA%95-%E3%83%AA%E3%83%A7%E3%82%A6/dp/4101269335" },
+              { kind: "rakuten", label: "楽天ブックス", labelEn: "Rakuten Books",
+                url: "https://books.rakuten.co.jp/rb/17487454/" }
+            ] },
           { publicId: "butsukaru-02",
             inventoryId: "W022",
             displayRank: 2,
@@ -636,7 +705,13 @@
             editorialReasonEn: "It handles the sting and the comparing that remain when the eye you watch others with and the eye you show yourself through drift apart. Placed on this shelf not only as a job-hunting story, but where the image of yourself collides with the image others hold.",
             region: "日本",
             eraBand: "2010s",
-            officialSourceUrl: "https://www.shinchosha.co.jp/book/333061/" },
+            officialSourceUrl: "https://www.shinchosha.co.jp/book/333061/",
+            destinations: [
+              { kind: "amazon", label: "Amazon", labelEn: "Amazon",
+                url: "https://www.amazon.co.jp/%E4%BD%95%E8%80%85-%E6%96%B0%E6%BD%AE%E6%96%87%E5%BA%AB-%E6%9C%9D%E4%BA%95-%E3%83%AA%E3%83%A7%E3%82%A6/dp/4101269319" },
+              { kind: "rakuten", label: "楽天ブックス", labelEn: "Rakuten Books",
+                url: "https://books.rakuten.co.jp/rb/13290900/" }
+            ] },
           { publicId: "butsukaru-03",
             inventoryId: "W023",
             displayRank: 3,
@@ -649,7 +724,11 @@
             editorialReasonEn: "Returning to society and rebuilding a relationship with someone are not the same thing. Placed here from the point where institutions, good intentions and clumsiness cross, without shutting a person inside a single attribute.",
             region: "日本",
             eraBand: "2020s",
-            officialSourceUrl: "https://wwws.warnerbros.co.jp/subarashikisekai/" },
+            officialSourceUrl: "https://wwws.warnerbros.co.jp/subarashikisekai/",
+            destinations: [
+              { kind: "prime_video", label: "Prime Video", labelEn: "Prime Video",
+                url: "https://www.amazon.co.jp/%E3%81%99%E3%81%B0%E3%82%89%E3%81%97%E3%81%8D%E4%B8%96%E7%95%8C-%E8%A5%BF%E5%B7%9D%E7%BE%8E%E5%92%8C/dp/B0CN4W1KSB" }
+            ] },
           { publicId: "butsukaru-04",
             inventoryId: "W024",
             displayRank: 4,
@@ -738,7 +817,13 @@
             editorialReasonEn: "Some things come into view only when you stop asking for meaning straight away and put yourself inside a season and a set of steps. Not a prescription for resting: what is placed here is unhurried time itself.",
             region: "日本",
             eraBand: "2000s",
-            officialSourceUrl: "https://www.shinchosha.co.jp/book/136351/" },
+            officialSourceUrl: "https://www.shinchosha.co.jp/book/136351/",
+            destinations: [
+              { kind: "amazon", label: "Amazon", labelEn: "Amazon",
+                url: "https://www.amazon.co.jp/%E6%97%A5%E6%97%A5%E6%98%AF%E5%A5%BD%E6%97%A5%E2%80%95%E3%80%8C%E3%81%8A%E8%8C%B6%E3%80%8D%E3%81%8C%E6%95%99%E3%81%88%E3%81%A6%E3%81%8F%E3%82%8C%E3%81%9F15%E3%81%AE%E3%81%97%E3%81%82%E3%82%8F%E3%81%9B-%E6%96%B0%E6%BD%AE%E6%96%87%E5%BA%AB-%E6%A3%AE%E4%B8%8B-%E5%85%B8%E5%AD%90/dp/410136351X" },
+              { kind: "rakuten", label: "楽天ブックス", labelEn: "Rakuten Books",
+                url: "https://books.rakuten.co.jp/rb/5888146/" }
+            ] },
           { publicId: "miwohiku-02",
             inventoryId: "W089",
             displayRank: 2,
@@ -751,7 +836,13 @@
             editorialReasonEn: "What is placed here is not an escape to somewhere special but the time of coming back to ordinary life. Edited from the small comedy of living alongside someone, without pressing any picture of what a household should be.",
             region: "日本",
             eraBand: "2020s",
-            officialSourceUrl: "https://www.hoshinogen.com/works/detail/?id=39" },
+            officialSourceUrl: "https://www.hoshinogen.com/works/detail/?id=39",
+            destinations: [
+              { kind: "spotify", label: "Spotify", labelEn: "Spotify",
+                url: "https://open.spotify.com/intl-ja/album/0W9ENhe5arttYknqbp67DB" },
+              { kind: "apple_music", label: "Apple Music", labelEn: "Apple Music",
+                url: "https://music.apple.com/jp/album/comedy-single/1617909668" }
+            ] },
           { publicId: "miwohiku-03",
             inventoryId: "W121",
             displayRank: 3,
@@ -764,7 +855,13 @@
             editorialReasonEn: "As the world slowly changes: opening the shop, looking out at the scenery, waiting for people. Placed on a shelf that does not treat time spent doing nothing as something lacking.",
             region: "日本",
             eraBand: "1990s",
-            officialSourceUrl: "https://afternoon.kodansha.co.jp/c/yokohamakaidashikikou.html" },
+            officialSourceUrl: "https://afternoon.kodansha.co.jp/c/yokohamakaidashikikou.html",
+            destinations: [
+              { kind: "amazon", label: "Amazon", labelEn: "Amazon",
+                url: "https://www.amazon.co.jp/%E3%83%A8%E3%82%B3%E3%83%8F%E3%83%9E%E8%B2%B7%E3%81%84%E5%87%BA%E3%81%97%E7%B4%80%E8%A1%8C-%E6%96%B0%E8%A3%85%E7%89%88-%E3%82%A2%E3%83%95%E3%82%BF%E3%83%8C%E3%83%BC%E3%83%B3KC-%E8%8A%A6%E5%A5%88%E9%87%8E-%E3%81%B2%E3%81%A8%E3%81%97/dp/4063145883" },
+              { kind: "rakuten", label: "楽天ブックス", labelEn: "Rakuten Books",
+                url: "https://books.rakuten.co.jp/rb/6203045/" }
+            ] },
           { publicId: "miwohiku-04",
             inventoryId: "W123",
             displayRank: 4,
@@ -853,7 +950,13 @@
             editorialReasonEn: "Even in a stretch of time when going outside is not possible, there are reasons and scenery only that person can see. Placed here alongside a feeling that cannot be named yet, rather than sorted into \"lonely\" or \"afraid\".",
             region: "日本",
             eraBand: "2010s",
-            officialSourceUrl: "https://www.poplar.co.jp/pr/kagami/" },
+            officialSourceUrl: "https://www.poplar.co.jp/pr/kagami/",
+            destinations: [
+              { kind: "amazon", label: "Amazon", labelEn: "Amazon",
+                url: "https://www.amazon.co.jp/%E3%81%8B%E3%81%8C%E3%81%BF%E3%81%AE%E5%AD%A4%E5%9F%8E-%E8%BE%BB%E6%9D%91-%E6%B7%B1%E6%9C%88/dp/4591153320" },
+              { kind: "rakuten", label: "楽天ブックス", labelEn: "Rakuten Books",
+                url: "https://books.rakuten.co.jp/rb/14612036/" }
+            ] },
           { publicId: "namae-ga-nai-02",
             inventoryId: "W030",
             displayRank: 2,
@@ -866,7 +969,13 @@
             editorialReasonEn: "There is a wide gap between the account applied from outside and a relationship only those involved can understand. Placed on the shelf for what cannot be explained, rather than resolved into easy right and wrong or into a name for the relation.",
             region: "日本",
             eraBand: "2010s",
-            officialSourceUrl: "https://www.tsogen.co.jp/np/isbn/9784488028022" },
+            officialSourceUrl: "https://www.tsogen.co.jp/np/isbn/9784488028022",
+            destinations: [
+              { kind: "amazon", label: "Amazon", labelEn: "Amazon",
+                url: "https://www.amazon.co.jp/%E6%B5%81%E6%B5%AA%E3%81%AE%E6%9C%88-%E5%87%AA%E8%89%AF-%E3%82%86%E3%81%86/dp/4488028020" },
+              { kind: "rakuten", label: "楽天ブックス", labelEn: "Rakuten Books",
+                url: "https://books.rakuten.co.jp/rb/15966111/" }
+            ] },
           { publicId: "namae-ga-nai-03",
             inventoryId: "W032",
             displayRank: 3,
@@ -879,7 +988,11 @@
             editorialReasonEn: "The things you loved, the things you had in common, the things that change little by little. Edited less from the category of romance film than from the afterglow in which time that certainly existed later takes on a different meaning.",
             region: "日本",
             eraBand: "2020s",
-            officialSourceUrl: "https://hana-koi.jp/" },
+            officialSourceUrl: "https://hana-koi.jp/",
+            destinations: [
+              { kind: "prime_video", label: "Prime Video", labelEn: "Prime Video",
+                url: "https://www.amazon.co.jp/%E8%8A%B1%E6%9D%9F%E3%81%BF%E3%81%9F%E3%81%84%E3%81%AA%E6%81%8B%E3%82%92%E3%81%97%E3%81%9F-%E5%9C%9F%E4%BA%95%E8%A3%95%E6%B3%B0/dp/B0FJFHF62B" }
+            ] },
           { publicId: "namae-ga-nai-04",
             inventoryId: "W061",
             displayRank: 4,

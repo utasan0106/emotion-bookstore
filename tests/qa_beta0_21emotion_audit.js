@@ -5,7 +5,8 @@
  *   1. Hero：title 表示・lead（説明）が途中分割で孤立行になっていない
  *      （FIX 8：390px で 26字以下の短文 lead は 1 行、それ以外も 3 行以内）
  *   2. ことば：意味 / ニュアンス / 近い言葉 の欠落なし（canonical どおり）
- *   3. 近い言葉：21語と一致する語だけが walk chip（FIX 2 の全数確認）
+ *   3. 近い言葉（R2-1 Hybrid）：21語一致は walk chip（data-v2-near-id が実在ID）、
+ *      未作成語は蛇腹 chip（aria-expanded/controls）。glossary 欠落の span は 0 件
  *   4. 作品：在庫が引けて 3 件表示・外部リンクは https のみ（FIX 3）
  *   5. 横スクロール（overflow）が 320 / 390 で発生していない
  *   6. Hero に sprig 装飾が残っていない（FIX 6）
@@ -61,10 +62,12 @@ const ENTRY = {
           const leadLines = Math.round(lead.getBoundingClientRect().height / parseFloat(leadCS.lineHeight));
           const wd = q('[data-v2-worddetail="body"]');
           const heads = [...wd.querySelectorAll('.v2c04__wd-h')].map(h => h.textContent);
-          const walk = [...wd.querySelectorAll('button.v2c04__wd-chip--walk')].map(c => c.textContent);
+          const catIds = new Set((typeof CATEGORIES !== 'undefined' ? CATEGORIES : []).map(c => c && c.id));
+          const walk = [...wd.querySelectorAll('button.v2c04__wd-chip--walk')]
+            .map(c => ({ t: c.textContent, id: c.getAttribute('data-v2-near-id'), ok: catIds.has(c.getAttribute('data-v2-near-id')) }));
+          const gloss = [...wd.querySelectorAll('button.v2c04__wd-chip--gloss')]
+            .map(c => ({ t: c.textContent, aria: c.getAttribute('aria-expanded') === 'false' && !!c.getAttribute('aria-controls') && !!document.getElementById(c.getAttribute('aria-controls')) }));
           const spans = [...wd.querySelectorAll('span.v2c04__wd-chip')].map(c => c.textContent);
-          const labels = {};
-          (typeof CATEGORIES !== 'undefined' ? CATEGORIES : []).forEach(c => { if (c && c.id !== 'unfiled') labels[c.label] = c.id; });
           const works = q('[data-v2-works="body"]');
           const links = [...works.querySelectorAll('a')].map(a => a.href);
           return {
@@ -72,9 +75,7 @@ const ENTRY = {
             leadText: lead.textContent,
             leadLines,
             state: wd.getAttribute('data-v2-worddetail-state'),
-            heads, walk, spans,
-            walkAllValid: walk.every(t => labels[t]),
-            spanNoneValid: spans.every(t => !labels[t]),
+            heads, walk, gloss, spans,
             worksCount: works.getAttribute('data-v2-works-count'),
             worksSource: works.getAttribute('data-v2-works-source'),
             linksHttps: links.every(h => h.startsWith('https://')),
@@ -91,8 +92,10 @@ const ENTRY = {
           problems.push(`${id}: 短文leadが${r.leadLines}行「${r.leadText}」`);
         }
         if (r.leadLines > 3) problems.push(`${id}: leadが${r.leadLines}行`);
-        if (!r.walkAllValid) problems.push(`${id}: walk chipに21語外 ${JSON.stringify(r.walk)}`);
-        if (!r.spanNoneValid) problems.push(`${id}: 21語一致がspanのまま ${JSON.stringify(r.spans)}`);
+        if (r.walk.some(w => !w.ok)) problems.push(`${id}: walk chipのIDが不正 ${JSON.stringify(r.walk)}`);
+        if (r.gloss.some(g => !g.aria)) problems.push(`${id}: 蛇腹chipのaria/panel不備 ${JSON.stringify(r.gloss)}`);
+        if (r.spans.length) problems.push(`${id}: glossary欠落のspanが残存 ${JSON.stringify(r.spans)}`);
+        if (r.walk.length + r.gloss.length === 0) problems.push(`${id}: 近い言葉が0件`);
         if (r.worksSource !== 'inventory' || r.worksCount !== '3') {
           problems.push(`${id}: works ${r.worksSource}/${r.worksCount}`);
         }

@@ -292,9 +292,9 @@
      既存の view_shelf / storage / 外部通信が既存どおりに発生する。
      Adapter からは新イベント・新 storage・新通信を一切追加しない。
 
-     Final Field Fix 2（Near-word Walk）：opts.near = true のときだけ、
-     入口棚の文脈外にある既存21感情への移動を許す。
-     - 対象は既存 CATEGORIES に実在する感情のみ（無い語へは歩けない）
+     R2-1 Hybrid（Near-word Walk / CEO決裁 2026-08-18）：
+     opts.near = true のときだけ、入口棚の文脈外にある既存21感情への移動を許す。
+     - 対象は既存 CATEGORIES に実在する感情のみ（21語 label と完全一致で解決）
      - originMajorShelfId（起点棚）は書き換えない＝「棚へ戻る」で起点棚へ戻れる
      - 同じ 04 の Emotion Node を再利用するだけで、新しい階層・history は作らない */
   function selectEmotion(emotionId, opts) {
@@ -362,9 +362,9 @@
     };
   }
 
-  /* Final Field Fix 2：近い言葉 → 既存21感情の解決。
+  /* R2-1 Hybrid：近い言葉 → 既存21感情の解決。
      一致判定は「JA canonical label」または「現在 locale の表示名」との完全一致のみ。
-     推測・部分一致・正規化はしない（存在しない語を interactive にしないため）。
+     推測・部分一致・正規化・別感情への alias はしない。
      未分類の整理箱（UNFILED_ID）はことばのページを持たないため対象外。
      読むだけで何も書き換えない。 */
   function nearWordTargetId(text) {
@@ -379,6 +379,18 @@
       if (catLabel(c) === s) return c.id;
     }
     return null;
+  }
+
+  /* R2-1 Hybrid：まだ個別ページを持たない語の短い「意味」。
+     出典は near-word glossary sidecar（V2_NEAR_WORD_GLOSSARY）のみ。
+     runtime 生成・推測はしない。無い語には何も返さない（fail-closed）。 */
+  function nearWordGloss(text) {
+    var gl = global.V2_NEAR_WORD_GLOSSARY;
+    if (!gl) return '';
+    var map = isEN() ? gl.en : gl.ja;
+    if (!map) return '';
+    var v = map[String(text || '').trim()];
+    return (typeof v === 'string') ? v : '';
   }
 
   function buildWordBlock(head, node) {
@@ -427,13 +439,21 @@
     } else { missing.push('nuance'); }
 
     if (Array.isArray(words.near_words) && words.near_words.length) {
+      /* R2-1 Hybrid（CEO決裁 2026-08-18）：近い言葉は2種類に分かれる。
+         A：既存21感情の label と完全一致する語
+            → walk chip（リンク表現＋「→」）。押すとその感情ページへ移動。
+              起点棚は保持され「棚へ戻る」で戻れる。新しい階層は作らない。
+         B：まだ個別ページを持たない語
+            → 蛇腹 disclosure（「⌄」）。同じ04画面内で glossary sidecar の
+              短い「意味」だけを開く。診断・当てはめ・作品推薦・遷移・
+              storage・GA4・network なし。別感情への alias もしない。
+         挙動の違いは見た目（→ / ⌄）で判別できる。glossary に無い語だけ
+         非interactive の <span>（release では audit で0件を保証する fail-safe）。 */
       var row = doc.createElement('div');
       row.className = 'v2c04__wd-chips';
+      var panels = [];
       for (var i = 0; i < words.near_words.length; i++) {
         var text = String(words.near_words[i]);
-        /* Final Field Fix 2：既存21感情の表示名と一致する語だけ interactive にする。
-           一致しない語（辞書に無い語）は従来どおり非interactive の <span>。
-           無限階層の辞書にしない：押した先も同じ 04 Emotion Node の再利用。 */
         var targetId = nearWordTargetId(text);
         var chip;
         if (targetId && targetId !== state.activeEmotionId) {
@@ -443,14 +463,42 @@
           chip.setAttribute('data-v2-near-id', targetId);
           chip.setAttribute('aria-label',
             TF('v2NearWordAria', '「{word}」のことばのページへ', { word: text }));
+          chip.textContent = text;
         } else {
-          chip = doc.createElement('span');   // 非interactive（tag管理UIにしない）
-          chip.className = 'v2c04__wd-chip';
+          var gloss = nearWordGloss(text);
+          if (gloss) {
+            var pid = 'v2c04-gloss-' + i;
+            chip = doc.createElement('button');
+            chip.type = 'button';
+            chip.className = 'v2c04__wd-chip v2c04__wd-chip--gloss';
+            chip.setAttribute('data-v2-gloss', pid);
+            chip.setAttribute('aria-expanded', 'false');
+            chip.setAttribute('aria-controls', pid);
+            chip.textContent = text;
+            var panel = doc.createElement('div');
+            panel.className = 'v2c04__gloss';
+            panel.id = pid;
+            panel.hidden = true;
+            var gw = doc.createElement('span');
+            gw.className = 'v2c04__gloss-word';
+            gw.textContent = text;
+            panel.appendChild(gw);
+            var gb = doc.createElement('p');
+            gb.className = 'v2c04__gloss-body';
+            gb.textContent = gloss;
+            panel.appendChild(gb);
+            panels.push(panel);
+          } else {
+            chip = doc.createElement('span');   // fail-safe（glossary 欠落時のみ）
+            chip.className = 'v2c04__wd-chip';
+            chip.textContent = text;
+          }
         }
-        chip.textContent = text;
         row.appendChild(chip);
       }
-      body.appendChild(buildWordBlock(T('v2WordNear', '近い言葉'), row));
+      var block = buildWordBlock(T('v2WordNear', '近い言葉'), row);
+      for (var pi = 0; pi < panels.length; pi++) block.appendChild(panels[pi]);
+      body.appendChild(block);
       made++;
     } else { missing.push('near_words'); }
 
@@ -1237,7 +1285,7 @@
       words.removeEventListener('click', delegateWord);
       words.addEventListener('click', delegateWord);
     }
-    // 近い言葉（walk chip）も再描画で作り直されるため、コンテナ側で1つだけ購読する
+    // 近い言葉（walk / 蛇腹）は再描画で作り直されるため、コンテナ側で1つだけ購読する
     var worddef = q('[data-v2-worddetail="body"]', root);
     if (worddef) {
       worddef.removeEventListener('click', delegateNearWord);
@@ -1273,16 +1321,35 @@
     }
   }
 
-  /* 近い言葉の walk chip。data-v2-near-id を持つ button だけが対象。
-     起点棚（originMajorShelfId）は selectEmotion 側で保持される。 */
+  /* R2-1 Hybrid：近い言葉（walk / 蛇腹）はコンテナ側で1つだけ購読する。
+     walk：data-v2-near-id → selectEmotion（起点棚は selectEmotion 側で保持）。
+     蛇腹：data-v2-gloss → 同一画面内の開閉のみ（遷移・storage・GA4・network 0）。 */
   function delegateNearWord(ev) {
     var t = ev.target;
     while (t && t !== ev.currentTarget) {
-      if (t.getAttribute && t.getAttribute('data-v2-near-id')) {
-        selectEmotion(t.getAttribute('data-v2-near-id'), { near: true });
-        return;
+      if (t.getAttribute) {
+        var nid = t.getAttribute('data-v2-near-id');
+        if (nid) { selectEmotion(nid, { near: true }); return; }
+        var gid = t.getAttribute('data-v2-gloss');
+        if (gid) { toggleGloss(t, gid, ev.currentTarget); return; }
       }
       t = t.parentNode;
+    }
+  }
+
+  /* 蛇腹は同時にひとつだけ開く（大量の語を一度に見せない）。
+     aria-expanded と hidden を同じ1か所で書き、状態のずれを作らない。 */
+  function toggleGloss(btn, panelId, scopeEl) {
+    var panel = doc.getElementById(panelId);
+    if (!panel) return;
+    var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+    var btns = scopeEl.querySelectorAll('[data-v2-gloss]');
+    for (var i = 0; i < btns.length; i++) btns[i].setAttribute('aria-expanded', 'false');
+    var open = scopeEl.querySelectorAll('.v2c04__gloss');
+    for (var j = 0; j < open.length; j++) open[j].hidden = true;
+    if (!wasOpen) {
+      btn.setAttribute('aria-expanded', 'true');
+      panel.hidden = false;
     }
   }
 

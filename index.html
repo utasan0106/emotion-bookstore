@@ -1015,7 +1015,9 @@ body.night .about-data-content{
         <p class="v2c05__assure" data-i18n="v2c05Assure">本文は、この端末のブラウザ保存領域に保存されます。</p>
 
         <button type="button" class="v2c05__bind" data-v2-write="bind"><span class="v2c05__bind-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2c05Bind">本にする</span></button>
-        <p class="v2c05__bindnote" data-i18n="v2c05BindNote">本文を保存し、本にします。そのあとで「この一冊に近い気持ち」を選べます（任意）。</p>
+        <!-- R2-3：文言は不変。括弧句「この一冊に近い気持ち」だけ折返し禁止の span で
+             包み、どの幅でも句の途中で割れないようにする（手動 br は使わない）。 -->
+        <p class="v2c05__bindnote" data-i18n-html="v2c05BindNote">本文を保存し、本にします。そのあとで<span class="v2c05__nbr">「この一冊に近い気持ち」</span>を選べます（任意）。</p>
 
         <div class="v2c05__resume" data-v2-write="resume" hidden>
           <span class="v2c05__resume-sprig" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span>
@@ -1492,6 +1494,7 @@ body.night .about-data-content{
 <script src="visual-refit-v2-prototype/data/emotion-words-beta0.js"></script>
 <!-- 04「ことば」詳細の EN 表示層。上の JA canonical は置き換えず、EN のときだけ参照する -->
 <script src="visual-refit-v2-prototype/data/emotion-words-en-beta0.js"></script>
+<script src="visual-refit-v2-prototype/data/near-word-glossary-beta0.js"></script>
 <script src="visual-refit-v2-prototype/adapter/emotion-shelf-adapter.js"></script>
 <script src="visual-refit-v2-prototype/adapter/form-adapter.js"></script>
 </body>
