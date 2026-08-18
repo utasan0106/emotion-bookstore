@@ -425,11 +425,12 @@ const MESSAGES = {
     menuBtnLabelShort: "メニュー",
     menuItemDesk: "今の気持ちを書く",
     menuItemBookshelf: "自分の本棚",
-    menuItemCounter: "はじめの広間へ",
+    menuItemCounter: "店内の入口へ",
     menuItemShelves: "感情の棚を巡る",
     menuItemCover: "表紙へ戻る",
     menuSectionOptional: "任意の場所へ",
-    menuSectionSettings: "設定・ご案内",
+    menuSectionSettings: "設定",
+    v2MenuStoreSection: "店内",
 
     /* ===== Visual Refit V2（01〜08）の system copy =====
        JA は V2 実装時の文言をそのまま転記したもので、表示は現行と 1 文字も変わらない。
@@ -553,8 +554,8 @@ const MESSAGES = {
     v2c08Cta: "残ったことを書く",
     v2c08Tail: "書きたい気持ちになったときで大丈夫です。<br>この書店は、あなたのペースを大切にします。",
 
-    v2MenuTrustSection: "この書店について・データの扱い",
-    v2MenuDataSection: "データ・バックアップ",
+    v2MenuTrustSection: "この書店について",
+    v2MenuDataSection: "データ",
     v2BookTitleFallback: "まだ、題名のない本",
     v2BookOpenAria: "{title}を開く",
     v2BookshelfLoadFailTitle: "本棚をいま読み込めませんでした。",
@@ -928,11 +929,12 @@ const MESSAGES = {
     menuBtnLabelShort: "Menu",
     menuItemDesk: "Write what you feel now",
     menuItemBookshelf: "Your bookshelf",
-    menuItemCounter: "To the lobby",
+    menuItemCounter: "To the entrance hall",
     menuItemShelves: "Browse the emotion shelves",
     menuItemCover: "Back to the cover",
     menuSectionOptional: "Optional detours",
-    menuSectionSettings: "Settings & links",
+    menuSectionSettings: "Settings",
+    v2MenuStoreSection: "In the store",
 
     /* ===== Visual Refit V2（01〜08）の system copy / English =====
        既存 canonical EN（shopName / menuOpenAria / photoLabel など）がある箇所は
@@ -1057,8 +1059,8 @@ const MESSAGES = {
     v2c08Cta: "Write what stayed with you",
     v2c08Tail: "Whenever you feel like writing is fine.<br>This bookstore moves at your pace.",
 
-    v2MenuTrustSection: "About this shop & your data",
-    v2MenuDataSection: "Data & backup",
+    v2MenuTrustSection: "About this bookstore",
+    v2MenuDataSection: "Data",
     v2BookTitleFallback: "A book without a title yet",
     v2BookOpenAria: "Open {title}",
     v2BookshelfLoadFailTitle: "We could not load your bookshelf just now.",
@@ -3310,7 +3312,10 @@ function closeExperienceMenu(){
 // メニュー内の「今の気持ちを書く／自分の本棚／店主に話す／感情の棚を巡る」の現在地表示を同期する。
 function syncExperienceMenuActive(id){
   document.querySelectorAll('.experience-menu .menu-item[data-menu-page]').forEach(btn=>{
-    btn.classList.toggle('active', btn.getAttribute('data-menu-page') === id);
+    const on = btn.getAttribute('data-menu-page') === id;
+    btn.classList.toggle('active', on);
+    if(on) btn.setAttribute('aria-current', 'page');
+    else btn.removeAttribute('aria-current');
   });
 }
 

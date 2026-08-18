@@ -947,3 +947,385 @@ html[data-v2-mounted="true"] .v2c07__stage{
 }
 html[data-v2-mounted="true"] .v2c07__chip.is-v2-empty{ display:none !important; }
 html[data-v2-mounted="true"] .v2c07__date.is-v2-empty{ display:none !important; }
+
+/* ============================================================
+ * 00 店内メニュー — menu_round2_final（FREEZE）
+ * Mobile = Full Screen / Desktop = Right Sheet
+ * 既存の開閉・focus trap・全ボタンの挙動は不変（見た目のみ）。
+ * ============================================================ */
+html[data-v2-mounted="true"] .experience-menu{
+  position:fixed; inset:0; z-index:200;
+  display:block;
+  background:rgba(16,20,20,.34);
+  padding:0;
+}
+html[data-v2-mounted="true"] .experience-menu.hidden{ display:none; }
+html[data-v2-mounted="true"] .experience-menu-card{
+  position:absolute; inset:0;
+  width:auto; max-width:none;
+  height:100%;
+  margin:0;
+  border:0 !important;
+  border-radius:0 !important;
+  background:var(--vq-menu-bg) !important;
+  color:var(--vq-ink) !important;
+  box-shadow:none !important;
+  font-family:var(--font-ui) !important;
+  display:flex; flex-direction:column;
+  padding:0 !important;
+  overflow:hidden;
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .experience-menu-card{
+    left:auto; right:0; top:0; bottom:0;
+    width:min(480px, 36vw);
+    box-shadow:-18px 0 48px rgba(0,0,0,.18) !important;
+  }
+}
+html[data-v2-mounted="true"] .experience-menu-head{
+  flex:none;
+  height:76px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px;
+  border-bottom:1px solid var(--vq-menu-line);
+  margin:0;
+}
+html[data-v2-mounted="true"] .experience-menu-title{
+  font-family:var(--font-display);
+  font-size:21px; letter-spacing:.04em; font-weight:500;
+  color:var(--vq-ink);
+}
+html[data-v2-mounted="true"] .experience-menu-close{
+  appearance:none; border:0; background:none;
+  font-size:26px; font-weight:300; line-height:1;
+  color:var(--vq-ink);
+  width:44px; height:44px;
+  cursor:pointer;
+  border-radius:8px;
+}
+html[data-v2-mounted="true"] .experience-menu-close:focus-visible{
+  outline:2px solid var(--vq-accent); outline-offset:2px;
+}
+html[data-v2-mounted="true"] .experience-menu-nav,
+html[data-v2-mounted="true"] .experience-menu-settings{
+  padding:0 24px;
+}
+html[data-v2-mounted="true"] .experience-menu-nav{
+  flex:none;
+  padding-top:22px;
+}
+html[data-v2-mounted="true"] .experience-menu-settings{
+  flex:1 1 auto;
+  overflow-y:auto;
+  padding-bottom:42px;
+}
+/* Section境界のみ。Rowごとの罫線なし。 */
+html[data-v2-mounted="true"] .experience-menu-section{
+  font-size:12px; letter-spacing:.12em; font-weight:700;
+  color:var(--vq-muted);
+  margin:0 0 10px;
+  padding:28px 0 0;
+  border-top:1px solid var(--vq-menu-line);
+  text-align:left;
+}
+html[data-v2-mounted="true"] .experience-menu-nav .experience-menu-section--store{
+  border-top:0;
+  padding-top:4px;
+  font-family:var(--font-display);
+  font-size:17px; letter-spacing:.08em;
+  color:var(--vq-ink); font-weight:600;
+  margin-bottom:14px;
+}
+html[data-v2-mounted="true"] .experience-menu-settings > .experience-menu-section:first-child{
+  border-top:0;
+  padding-top:24px;
+}
+/* 店内 rows */
+html[data-v2-mounted="true"] .experience-menu .menu-item{
+  appearance:none; border:0 !important; background:none !important;
+  box-shadow:none !important;
+  display:flex; align-items:center; justify-content:space-between;
+  width:100%;
+  min-height:60px;
+  padding:12px 4px !important;
+  margin:0 !important;
+  font-family:var(--font-ui);
+  font-size:17px; letter-spacing:.015em;
+  color:var(--vq-ink) !important;
+  text-align:left;
+  cursor:pointer;
+  border-radius:0 !important;
+  position:relative;
+}
+html[data-v2-mounted="true"] .experience-menu .menu-item--aux{
+  min-height:36px;
+  padding-top:4px !important;
+  font-size:12px;
+  color:var(--vq-muted) !important;
+}
+/* Current state = Accent Line + Typography（「現在地」文字は使わない） */
+html[data-v2-mounted="true"] .experience-menu .menu-item.active{
+  padding-left:15px !important;
+  font-weight:600;
+}
+html[data-v2-mounted="true"] .experience-menu .menu-item.active::before{
+  content:"";
+  position:absolute; left:0; top:13px; bottom:13px; width:3px;
+  border-radius:2px;
+  background:var(--vq-accent);
+}
+html[data-v2-mounted="true"] .experience-menu .menu-item:focus-visible{
+  outline:2px solid var(--vq-accent); outline-offset:2px; border-radius:2px;
+}
+/* Quiet rows（データ / 設定 / About） */
+html[data-v2-mounted="true"] .experience-menu .share-row{
+  display:block; margin:0; padding:0;
+}
+html[data-v2-mounted="true"] .experience-menu .share-btn,
+html[data-v2-mounted="true"] .experience-menu .pref-toggle{
+  appearance:none;
+  display:flex; align-items:center; justify-content:space-between;
+  width:100%;
+  min-height:44px;
+  border:0 !important; background:none !important;
+  box-shadow:none !important;
+  border-radius:2px !important;
+  margin:0 !important;
+  padding:7px 2px !important;
+  font-family:var(--font-ui);
+  font-size:14px;
+  color:var(--vq-ink) !important;
+  text-align:left;
+  cursor:pointer;
+  letter-spacing:.01em;
+}
+html[data-v2-mounted="true"] .experience-menu .share-btn:focus-visible,
+html[data-v2-mounted="true"] .experience-menu .pref-toggle:focus-visible{
+  outline:2px solid var(--vq-accent); outline-offset:2px;
+}
+html[data-v2-mounted="true"] .experience-menu .pref-row{
+  display:block; margin:0; padding:0;
+}
+/* データはどこに保存されるの？（accordion row + 静かな回答面） */
+html[data-v2-mounted="true"] .experience-menu .about-data-accordion{
+  border:0; margin:0; padding:0; background:none;
+}
+html[data-v2-mounted="true"] .experience-menu .about-data-accordion summary{
+  list-style:none;
+  display:flex; align-items:center; justify-content:space-between;
+  min-height:44px;
+  padding:7px 2px;
+  font-size:14px;
+  color:var(--vq-ink);
+  cursor:pointer;
+}
+html[data-v2-mounted="true"] .experience-menu .about-data-accordion summary::-webkit-details-marker{ display:none; }
+html[data-v2-mounted="true"] .experience-menu .about-data-accordion summary::after{
+  content:"⌄"; font-size:18px; color:var(--vq-muted);
+}
+html[data-v2-mounted="true"] .experience-menu .about-data-accordion[open] summary::after{ content:"⌃"; }
+html[data-v2-mounted="true"] .experience-menu .about-data-content{
+  margin:5px 0 8px 14px;
+  padding:8px 0 8px 12px;
+  border-left:2px solid var(--vq-accent);
+  font-size:12px; line-height:1.75;
+  color:var(--vq-muted);
+  background:none;
+}
+html[data-v2-mounted="true"] .experience-menu .about-data-content b{ color:var(--vq-ink); font-weight:600; }
+/* はじめての方へ（accordion） */
+html[data-v2-mounted="true"] .experience-menu .about-accordion-wrap{
+  margin:0; padding:0; border:0; background:none;
+}
+html[data-v2-mounted="true"] .experience-menu .about-accordion-summary{
+  font-size:12px; line-height:1.75;
+  color:var(--vq-muted);
+  padding:2px 2px 6px;
+  text-align:left;
+}
+html[data-v2-mounted="true"] .experience-menu .about-accordion-btn{
+  appearance:none;
+  display:flex; align-items:center; justify-content:space-between;
+  width:100%;
+  min-height:44px;
+  border:0 !important; background:none !important;
+  box-shadow:none !important;
+  margin:0 !important; padding:7px 2px !important;
+  font-size:14px; color:var(--vq-ink) !important;
+  text-align:left; cursor:pointer;
+}
+html[data-v2-mounted="true"] .experience-menu .accordion-arrow{
+  font-size:11px; color:var(--vq-muted);
+}
+html[data-v2-mounted="true"] .experience-menu .about-accordion-content{
+  background:none; border:0;
+  color:var(--vq-muted);
+  font-size:12px; line-height:1.75;
+  margin:5px 0 8px 14px;
+  padding:0 0 0 12px;
+  border-left:2px solid var(--vq-accent);
+}
+html[data-v2-mounted="true"] .experience-menu .about-accordion-content b{ color:var(--vq-ink); }
+/* 法務リンク行 → 静かな縦Row */
+html[data-v2-mounted="true"] .experience-menu .legal-row{
+  display:flex; flex-direction:column; align-items:stretch;
+  gap:0; margin:0; padding:0;
+}
+html[data-v2-mounted="true"] .experience-menu .legal-row a{
+  display:flex; align-items:center; justify-content:space-between;
+  min-height:44px;
+  padding:7px 2px;
+  font-size:14px;
+  color:var(--vq-ink);
+  text-decoration:none;
+}
+html[data-v2-mounted="true"] .experience-menu .legal-row a::after{
+  content:"›"; font-size:18px; color:var(--vq-muted);
+}
+html[data-v2-mounted="true"] .experience-menu .legal-row a:focus-visible{
+  outline:2px solid var(--vq-accent); outline-offset:2px;
+}
+html[data-v2-mounted="true"] .experience-menu .legal-sep{ display:none; }
+/* 天気連動（Beta0では停止中の任意設定）と補助ボタンは一段静かに */
+html[data-v2-mounted="true"] .experience-menu .weather-settings{
+  margin:6px 0 0; padding:0;
+  font-size:12px; color:var(--vq-muted);
+}
+html[data-v2-mounted="true"] .experience-menu .weather-settings .pref-toggle{
+  font-size:13px; color:var(--vq-muted) !important;
+}
+html[data-v2-mounted="true"] .experience-menu .weather-status,
+html[data-v2-mounted="true"] .experience-menu .weather-privacy-note,
+html[data-v2-mounted="true"] .experience-menu .weather-attribution{
+  font-size:11px; line-height:1.7; color:var(--vq-muted);
+  margin:4px 0 0;
+}
+html[data-v2-mounted="true"] .experience-menu .menu-back-to-top{
+  appearance:none; border:0 !important; background:none !important;
+  box-shadow:none !important;
+  margin:22px 0 0 !important; padding:7px 2px !important;
+  font-size:12px; color:var(--vq-muted) !important;
+  cursor:pointer;
+}
+
+/* --- 旧 #experienceMenu 個別指定（v2-mount.css / style.css）の中和 ---
+   ID セレクタで上書きされる箇所だけ、同じ強さで canonical へ揃える。 */
+html[data-v2-mounted="true"] #experienceMenu .share-btn,
+html[data-v2-mounted="true"]:not([data-theme="night"]) #experienceMenu .share-btn,
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .share-btn{
+  background:none !important;
+  background-color:transparent !important;
+  border:0 !important;
+  color:var(--vq-ink) !important;
+  border-radius:2px !important;
+}
+html[data-v2-mounted="true"] #experienceMenu .share-row{
+  gap:0 !important;
+  margin-block:0 !important;
+}
+html[data-v2-mounted="true"] #experienceMenu .experience-menu-section{
+  margin:0 0 10px !important;
+  padding-top:28px !important;
+}
+html[data-v2-mounted="true"] #experienceMenu .experience-menu-settings > .experience-menu-section:first-child{
+  border-top:0 !important;
+  padding-top:24px !important;
+}
+html[data-v2-mounted="true"] #experienceMenu .experience-menu-nav .experience-menu-section--store{
+  border-top:0 !important;
+  padding-top:4px !important;
+  margin-bottom:14px !important;
+}
+html[data-v2-mounted="true"] #experienceMenu .about-data-accordion,
+html[data-v2-mounted="true"] #experienceMenu .about-data-accordion > summary{
+  background:none !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  color:var(--vq-ink) !important;
+  margin-block:0 !important;
+}
+html[data-v2-mounted="true"] #experienceMenu .about-data-accordion > summary{
+  display:flex !important;
+  align-items:center;
+  justify-content:space-between;
+  min-height:44px;
+  padding:7px 2px !important;
+  font-size:14px !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .about-data-accordion > summary{
+  color:var(--vq-ink) !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .about-accordion-content > b,
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .about-data-content > b{
+  color:var(--vq-ink) !important;
+}
+html[data-v2-mounted="true"] #experienceMenu .about-accordion-wrap{
+  margin-block:0 !important;
+}
+html[data-v2-mounted="true"] #experienceMenu .about-accordion-btn,
+html[data-v2-mounted="true"] #experienceMenu #aboutAccordionBtn{
+  background:none !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  color:var(--vq-ink) !important;
+  width:100% !important;
+}
+html[data-v2-mounted="true"] #experienceMenu .about-accordion-content{
+  background:none !important;
+  border-top:0 !important; border-right:0 !important; border-bottom:0 !important;
+  box-shadow:none !important;
+  max-width:none !important;
+}
+html[data-v2-mounted="true"] #experienceMenu .pref-row{
+  display:block !important;
+  gap:0 !important;
+  margin-block:0 !important;
+}
+html[data-v2-mounted="true"] #experienceMenu .pref-toggle{
+  background:none !important;
+  border:0 !important;
+  border-radius:2px !important;
+  box-shadow:none !important;
+  color:var(--vq-ink) !important;
+  width:100% !important;
+  text-align:left !important;
+  justify-content:space-between;
+  display:flex;
+}
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .pref-toggle,
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .pref-toggle.on,
+html[data-v2-mounted="true"][data-theme="night"] #experienceMenu .pref-toggle:not(.on){
+  color:var(--vq-ink) !important;
+}
+html[data-v2-mounted="true"] #experienceMenu .legal-row{
+  gap:0 !important;
+  margin-block:0 !important;
+}
+html[data-v2-mounted="true"] #experienceMenu .legal-row a{
+  width:100%;
+}
+html[data-v2-mounted="true"] #experienceMenu .experience-menu-close,
+html[data-v2-mounted="true"] #experienceMenu #menuCloseBtn{
+  background:none !important;
+  border:0 !important;
+  box-shadow:none !important;
+  color:var(--vq-ink) !important;
+  border-radius:8px !important;
+}
+html[data-v2-mounted="true"] #experienceMenu #samplePeekBtn,
+html[data-v2-mounted="true"] #experienceMenu .sample-peek-btn{
+  background:none !important;
+  border:0 !important;
+  color:var(--vq-muted) !important;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  padding:6px 0 !important;
+  cursor:pointer;
+}
+html[data-v2-mounted="true"] #experienceMenu .about-data-accordion > summary{
+  text-align:left !important;
+  margin:0 !important;
+  width:100% !important;
+}
