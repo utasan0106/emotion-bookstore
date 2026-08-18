@@ -27,7 +27,7 @@ const MESSAGES = {
     shopName: "みんなの感情書店",
     tagline: "自分の中に残ったものを、一冊に。",
     subTagline: "ひとことから、書いた言葉を自分だけの本棚へ。",
-    accordionSummary: "気持ちを書き、一冊の本として端末内の本棚へ。<br>登録不要。棚を選ぶかどうかも、あなたが決められます。",
+    accordionSummary: "<span class='v2-wrapunit'>残ったことを、</span><span class='v2-wrapunit'>一冊にして</span><span class='v2-wrapunit'>自分の本棚へ。</span><br><span class='v2-wrapunit'>登録不要。</span><span class='v2-wrapunit'>棚を選ぶかどうかも、</span><span class='v2-wrapunit'>あなたが決められます。</span>",
     accordionOpenLabel: "はじめての方へ",
     accordionCloseLabel: "閉じる",
     accordionTitle: "みんなの感情書店とは",
@@ -39,8 +39,8 @@ const MESSAGES = {
     introTitle3: "物語を綴る", introText3: "自分の体験を書き、一冊の本として製本します。棚を選ぶのは、そのあとです。",
     introTitle4: "本棚が育つ", introText4: "綴った物語が積み重なり、自分だけの本棚に。",
     enterBtn: "扉をひらく →",
-    motionToggleOn: "演出：入", motionToggleOff: "演出：切",
-    motionToggleTitle: "演出アニメーションの入/切",
+    motionToggleOn: "画面の動き：入", motionToggleOff: "画面の動き：切",
+    motionToggleTitle: "画面の動きの入/切",
     // ★Hotfix4追加：英語モードでも日本語のまま残っていた4箇所（既知課題）の翻訳キー。
     langToggleTitle: "言語切り替え / Language",
     // ★2026-07-18追加：任意設定の天気連動機能（店内メニュー）。
@@ -135,8 +135,8 @@ const MESSAGES = {
     menuBackToTop: "↑ メニューの上へ戻る",
     fairKicker: "今月のおすすめ棚",
     fairHalfNote: "",
-    titleConsultBtn: "店主に題名を相談する",
-    titleConsultHeading: "店主の題名帖から",
+    titleConsultBtn: "題名のヒントを見る",
+    titleConsultHeading: "題名のヒント",
     titleConsultMore: "別の題名を見る",
     titleConsultHint: "気に入った題名を押すと、そのまま書き直せます。",
     detourHalfFirst: "今月前半",
@@ -147,7 +147,6 @@ const MESSAGES = {
     sampleBookBadge: "これは見本の一冊です。あなたの本棚には追加されません。",
     sampleBookTitle: "雨上がりの帰り道",
     sampleBookStory: "傘を閉じたら、路面の匂いが少しだけ夏に戻っていた。今日うまく言えなかったことを、帰り道の水たまりにひとつずつ落としていく。急がなくていい、と自分に言えたのは久しぶりだった。玄関の灯りが見えたとき、明日はもう少しだけ素直に話してみようと思った。",
-    sampleBookNote: "うまく言えなかった日ほど、言葉は静かに育っています。この棚で、ゆっくりどうぞ。",
     deskSampleIntro: "一冊になると、こうなります。",
     deskSampleSummary: "できあがりの見本を見る",
     deskSampleShelfLabel: "棚：懐かしい",
@@ -189,7 +188,7 @@ const MESSAGES = {
     photoLabel: "今日の一枚を、頁に挟む（任意）",
     photoPreviewAlt: "添付写真のプレビュー",
     photoRemoveAria: "写真を外す",
-    photoHint: "写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。",
+    photoHint: "写真は、この端末のブラウザ保存領域に保存されます。長辺800pxに縮小し、運営者のサーバーへは送信しません。",
     deskExtraSummary: "タイトル・いつの気持ちかを、自分で決める（任意）",
     fieldLabelShelf: "棚", fieldLabelTitle: "背表紙のタイトル", titleInputPlaceholder: "空欄の場合は『まだ、題名のない本』になります",
     fieldLabelWhen: "いつの気持ちですか", whenOptionNow: "今の気持ち", whenOptionPast: "以前のことを振り返って",
@@ -225,7 +224,7 @@ const MESSAGES = {
     resetBackupDoneNote: "鍵の書き出しを実行しました。端末に保存されたかどうかは、ダウンロード先のファイルをご確認ください。",
     resetBackupFailNote: "鍵の書き出しに失敗しました。本棚はまだ消していません。",
     resetFinalTitle: "本当に本棚を空にしますか",
-    resetFinalBody: "この端末に保存された本（題名・本文・写真・棚）をすべて削除します。この操作は取り消せません。\n気になるリスト・手放した気持ちの記録・利用者名は残ります。",
+    resetFinalBody: "この端末に保存された本（題名・本文・写真・棚）をすべて削除します。この操作は取り消せません。\n気になるリスト・手放した気持ちの記録・利用者名・書きかけの下書きは残ります。",
     resetFinalConfirmBtn: "すべての本を下げる",
     resetFinalCancelBtn: "やめる",
     resetDoneNote: "本棚を空にしました。",
@@ -252,7 +251,7 @@ const MESSAGES = {
     footerBrand: "『みんなの感情書店』",
     footerNote: "綴った言葉はサーバーには送信されず、この端末にのみ保存されます。",
     // ★Hotfix4追加：フッター注記を指定どおり2行に改行表示するための版（data-i18n-html用）。
-    footerNoteHtml: "綴った言葉はサーバーには送信されず、<br>この端末にのみ保存されます。",
+    footerNoteHtml: "綴った言葉は運営者のサーバーへ送信されず、<br>この端末にのみ保存されます。",
     shareBtn: "この書店をシェアする", copyUrlBtn: "URLをコピー", pwaPinBtn: "ホーム画面にピン留め",
     privacyLink: "プライバシーポリシー", termsLink: "利用規約",
     // ★Hotfix4追加：フッター法務行の区切り文字・「専門の相談窓口」リンクの翻訳キー。
@@ -263,14 +262,14 @@ const MESSAGES = {
     closeBtn: "閉じる",
     bindText: "糸をかけています…", bindSkip: "タップで即座に完了",
     purifyOverlayAria: "気持ちを手放す",
-    purifyKicker: "手放す — 誰にも見られません。この端末の「手放しの記録」にだけ、そっと残ります",
+    purifyKicker: "手放す — 外部には送信されません。この端末の「手放しの記録」にだけ、そっと残ります",
     purifyInputPlaceholder: "その気持ちを、ここにそのまま書き出してみてください。",
     purifyBtn: "手放す",
     modalPhotoAlt: "この頁に挟まれた写真", modalNoteLabel: "店主のことば",
     modalGoShelf: "この棚をもう一度見る", modalDel: "この本を棚から下げる",
     // ★PoC Task 001：個別本削除の誤タップ防止用の確認文言（本棚全リセットの文言・フローとは別物）。
     modalDelConfirm: "この1冊を棚から下げます。元に戻せません。よろしいですか？",
-    modalShare: "Xでシェア", modalShareNote: "※本文はそのまま送信されません。投稿画面が開くだけで、実際に投稿するかはあなた次第です。",
+    modalShare: "Xでシェア", modalShareNote: "※本文・題名・棚の名前は送信されません。書店の紹介文とURLだけを載せた投稿画面が開き、実際に投稿するかはあなた次第です。",
     // ★2026-07-18追加：製本後の本の詳細画面から、タイトル・本文を書き直す機能。
     modalEditBtn: "タイトル・本文を書き直す",
     modalEditSave: "書き直しを保存する",
@@ -301,6 +300,9 @@ const MESSAGES = {
     restoreInvalidFile: "このファイルは『みんなの感情書店』のバックアップ形式ではないようです。別のファイルをお試しください。",
     restoreSuccess: "復元しました。画面を更新します…",
     restoreFail: "復元に失敗しました。ファイルの内容をご確認ください。",
+    // ★Data Safety Patch Ver.1.3：ファイルは正しいが端末側へ書き込めなかった場合。
+    // 原因が違うので restoreFail（ファイルを確認してください）とは分ける。
+    restoreSaveFail: "この端末に書き込めなかったため、復元できませんでした。本棚は元のままです。ブラウザの空き容量やプライベートモードをご確認のうえ、もう一度お試しください。",
     mitateYesBtn: "聞いてみる", mitateNoBtn: "今はいい",
     loopShelfReferralBtn: "こちらの『{shelf}』の棚が、合うかもしれません。行ってみてください",
     appleMusicNote: "※Apple Musicはアプリが開くだけのことがあります。開いたら曲名で検索し直してください。",
@@ -336,7 +338,13 @@ const MESSAGES = {
     goToShelfBtn: "『{shelf}』の棚を見てみる",
     dataAboutTitle: "この書店とデータについて",
     dataAboutOpenLabel: "データはどこに保存されるの？",
-    dataAboutBody: "「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す簡単な仕組みです（特定のAIモデルと会話しているわけではありません）。<br>「物語を綴る」「製本する」で書いた内容は、どこにも公開されず、この端末のブラウザ内（IndexedDB/localStorage）だけに保存されます。外部サーバーへは送信されません。アカウント登録もなく、他の人があなたの記録を見ることはできません。<br>「気持ちを手放す」は、この端末だけに残る「手放しの記録」に静かに移すことで、本棚の一覧からは見えなくなる機能です（完全な削除ではなく、専用の記録欄に移されます）。<br>「みんなの本棚」の「みんな」は他ユーザーとの共有ではなく、あなた自身の本棚が育っていく様子を指す名前です。<br>棚の一部の表示は、季節の言葉と棚の名前だけを検索語として外部の検索サービスに問い合わせて表示しています。この時も、あなたが綴った文章が送信されることはありません。<br>ブラウザのデータを消去するとこの記録も失われるため、「バックアップ保存」から定期的にファイルへ書き出すことをおすすめします。サービスとして終了する場合も、事前にバックアップを取っていただければお手元にデータが残ります。", // ★Hotfix1-1追加修正：本・音楽の予告をデータ保存説明からも削除（外部通信の開示自体は維持）
+    // ★FIX-09（Round 2.1）：現在の実装事実へ同期。実測の根拠は tests/qa_r21_network_audit.js。
+    //   V2 mount 済みの一周で発生した外部ホストは Web フォント配信のみ／fetch・XHR・sendBeacon は 0 件／
+    //   本文・題名はどのリクエストにも含まれない／Google Books・iTunes Search は呼ばれない
+    //   （renderLiveNewReleases が V2 mount 中は早期 return する）／天気連動は既定オフ／
+    //   GA4 は本番ホスト判定でのみ読み込まれる／アカウント UI は存在しない。
+    //   Privacy Ver.1.2（第2・6・7・9条）とも矛盾しない範囲に揃えている。
+    dataAboutBody: "「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す仕組みです。本文や題名をAIが読み取って、分析・診断・自動分類することはありません。<br>書いたものは、この端末のブラウザ保存領域に保存されます。保存にはIndexedDBとlocalStorageを併用し、表示状態などの一時的な記憶にだけsessionStorageを使います。アカウント登録はなく、本文・題名・写真が運営者のサーバーへ保存されることはありません。<br>クラウド同期はないため、別の端末や別のブラウザへ自動で引き継がれることはありません。反対に、同じ端末の同じブラウザを使う人には表示されます。共有の端末では、この点にご注意ください。<br>保存は永久ではありません。ブラウザのサイトデータ削除、ブラウザやOSの保存ポリシー、保存容量の上限、端末の故障や機種変更などによって失われることがあります。運営者側に復元用のデータはないため、「本棚のデータをバックアップ保存する」から、ときどきファイルへ書き出しておくことをおすすめします。<br>あなたが書いた本文・題名・写真は、外部のAIにも外部サービスにも送信しません。写真も、端末の中で縮小して端末の中に保管します。いっぽうで、サイトを表示すること自体には通常の通信が伴います。配信基盤への接続とWebフォントの読み込みが発生し、公開環境ではアクセス解析（GA4）も動きます。これらに本文・題名・写真が含まれることはありません。外部リンクから移動した先は、それぞれのサービスの方針に従います。<br>本や音楽を外部の検索サービスから取得して表示する機能と、天気連動の機能は、現在のBeta0では動作していません。<br>本棚はあなただけの「自分の本棚」で、ほかの利用者と共有される場所ではありません。",
     keeperNotAiHint: "※AIチャットボットではなく、あらかじめ用意した言葉を返す簡単な仕組みです。会話はモデルに送信されません。",
     submitStoryHint: "※外部には公開されず、この端末のブラウザ内にのみ保存されます。",
     // ★2025-07-17追記（v1.2フィードバック反映）：renderShelfDisplay()内にハードコードしていた
@@ -417,11 +425,140 @@ const MESSAGES = {
     menuBtnLabelShort: "メニュー",
     menuItemDesk: "今の気持ちを書く",
     menuItemBookshelf: "自分の本棚",
-    menuItemCounter: "店主に話す",
+    menuItemCounter: "はじめの広間へ",
     menuItemShelves: "感情の棚を巡る",
     menuItemCover: "表紙へ戻る",
     menuSectionOptional: "任意の場所へ",
-    menuSectionSettings: "設定・このお店について"
+    menuSectionSettings: "設定・ご案内",
+
+    /* ===== Visual Refit V2（01〜08）の system copy =====
+       JA は V2 実装時の文言をそのまま転記したもので、表示は現行と 1 文字も変わらない。
+       第二の i18n を作らず、既存 applyLanguage() / t() の契約へ V2 を接続するために
+       同じ MESSAGES 辞書へ載せる。利用者本文・題名・写真・実在作品の原題は対象外。 */
+    v2c01BrandSub: "みんなの",
+    v2c01BrandMain: "感情書店",
+    v2c01Copy: "気持ちを入口に、出会う。<br>そこで残ったものも、日々の小さなことも。<br>一冊にして、あなたの本棚へ。",
+    v2c01StepsAria: "この書店の過ごし方",
+    v2c01Step1: "知る",
+    v2c01Step2: "出会う",
+    v2c01Step3: "残す",
+    v2c01Step4: "巡る",
+    v2c01Cta: "入店する",
+
+    v2c02Hero: "今日は、<br>どこからはじめますか。",
+    v2c02Lead: "気持ちから棚を歩くことも、残ったことを書くことも、<br>自分の本棚を開くこともできます。",
+    v2c02CardsAria: "はじめる場所",
+    v2c02Card1Title: "感情の棚を見る",
+    v2c02Card1Desc: "<span class='v2c02__descline'>気持ちごとに並ぶ棚から、</span><span class='v2c02__descline'>ことばや作品に出会う。</span>",
+    v2c02Card2Title: "残ったことを書く",
+    v2c02Card2Desc: "<span class='v2c02__descline'>作品の余韻も、</span><span class='v2c02__descline'>日々の小さなことも、</span><span class='v2c02__descline'>一冊にして残す。</span>",
+    v2c02Card3Title: "自分の本棚を見る",
+    v2c02Card3Desc: "<span class='v2c02__descline'>一冊にした言葉を、</span><span class='v2c02__descline'>あとから静かに巡る。</span>",
+
+    v2c03Title: "感情の棚",
+    v2c03Lead: "いまの気持ちに近い棚から、<br>ことばや作品、自分の本に出会えます。",
+    v2c03Guide: "どの棚からでも、書くことからでも。<br>あなたのペースで、自由に巡れます。",
+    v2Shelfhazumu: "心が弾む",
+    v2Shelfatatamaru: "心があたたまる",
+    v2Shelfhikareru: "惹かれる",
+    v2Shelfshizumu: "沈む",
+    v2Shelfzawatsuku: "ざわつく",
+    v2Shelfbutsukaru: "ぶつかる",
+    v2Shelfmiwohiku: "身を引く",
+    v2Shelfnamaeganai: "まだ名前がない",
+    v2ShelfLeadhazumu: "うれしさや期待が、\n内側で弾んでいるあたり。",
+    v2ShelfLeadatatamaru: "ほっとしたり、大切に思ったり、\n内側がやわらぐあたり。",
+    v2ShelfLeadhikareru: "自分の外にあるものへ、\n心が向いていくあたり。",
+    v2ShelfLeadshizumu: "気持ちの重さが、\n静かに残っているあたり。",
+    v2ShelfLeadzawatsuku: "先が読めないときや、気持ちが落ち着かず\n動きつづけるあたり。",
+    v2ShelfLeadbutsukaru: "収まりきらない気持ちが、\n内側でぶつかるあたり。",
+    v2ShelfLeadmiwohiku: "少し離れたい、隠れたい。\nそんな距離が生まれるあたり。",
+    v2ShelfLeadnamaeganai: "まだ、どのことばにも\n決めたくないときに。",
+    v2ShelfAllName: "すべての感情語",
+    v2ShelfAllLead: "21のことばを、まとめて見わたせます。",
+
+    v2NavAria: "主要な移動",
+    v2NavShelves: "感情棚",
+    v2NavDesk: "書く",
+    v2NavBookshelf: "本棚",
+
+    v2BackToShelves: "棚へ戻る",
+    v2c04SecKotoba: "ことば",
+    v2c04SecSakuhin: "作品",
+    v2c04SecJibun: "自分の本",
+    v2c04WorksIntro: "この気持ちに寄り添う、本・映画・音楽。",
+    v2c04WorksHoldTitle: "この棚の作品は、ただいま仕入れ中です。",
+    v2c04WorksHoldNote: "また立ち寄ったときに、静かに並んでいるはずです。",
+    v2c04MyBooksIntro: "あなたがこの気持ちで残した本です。",
+    v2c04WriteBtn: "残ったことを書く",
+    v2c04WriteNote: "今の気持ちを、自分の言葉で残してみる",
+    v2WordMeaning: "意味",
+    v2WordNuance: "ニュアンス",
+    v2WordNear: "近い言葉",
+    v2WorkTypeBook: "本",
+    v2WorkTypeFilm: "映画",
+    v2WorkTypeMusic: "音楽",
+    v2WorkTypeManga: "漫画",
+    v2WorkTypeAnimeTv: "TVアニメ",
+    v2WorkTypeAnimeFilm: "アニメ映画",
+    v2WorkTypeAnimeFilmParen: "映画（アニメ）",
+    v2WorkTypeAnimeTheatrical: "劇場アニメ",
+    v2WorkSourceLink: "公式ページを見る",
+    v2WorkSourceAria: "『{title}』の公式ページを見る（新しいタブで開きます）",
+    v2WorkDestAria: "『{title}』を{dest}で見る（新しいタブで開きます）",
+    v2NearWordAria: "「{word}」のことばのページへ",
+    v2MyBooksEmptyTitle: "この気持ちで残した本は、まだありません。",
+    v2MyBooksEmptyNote: "書くことからでも、棚を眺めることからでも始められます。",
+    v2MyBooksSeeAll: "本棚ですべて見る",
+
+    v2c05BackAria: "広間へ戻る",
+    v2c05Title: "編纂室",
+    v2c05Sub: "<span class='v2-wrapunit'>残ったことを、</span><span class='v2-wrapunit'>自分の言葉で一冊に。</span>",
+    v2ToBookshelf: "本棚へ",
+    v2BackToBookshelf: "本棚へ戻る",
+    v2c05Autosave: "書きかけの本文は自動で保存されます",
+    v2c05TitleLabel: "題名",
+    v2c05TitleOpt: "（任意）",
+    v2c05TitlePh: "空欄でも、一冊にできます",
+    v2c05StoryLabel: "本文",
+    v2c05StoryPh: "いま、心の中に残っていることを、そのまま書いてみてください。うまく書こうとしなくて大丈夫。一言からでも、本になります。",
+    v2c05Assure: "本文は、この端末のブラウザ保存領域に保存されます。",
+    v2c05Bind: "本にする",
+    // R2-3：data-i18n-html で描画。文言は不変で、括弧句だけ折返し禁止の span を持つ
+    v2c05BindNote: "本文を保存し、本にします。そのあとで<span class=\"v2c05__nbr\">「この一冊に近い気持ち」</span>を選べます（任意）。",
+    v2c05ResumeT: "書きかけがあります",
+    v2c05ResumeN: "続きを書くときは、そのまま編集を続けられます。",
+    v2c05PhotoReplace: "写真を選び直す",
+
+    v2c06Title: "自分の本棚",
+    v2c06Lead: "あなたの言葉が、<br>あなたの本になっています。",
+    v2c06NewLink: "新しく書く",
+    v2c06InviteN: "残ったことを、一冊にしてみる",
+
+    v2c07DateSuffix: "に本にしました",
+    v2c07NoteLabel: "覚え書き",
+    v2c07Edit: "編集",
+    v2c07Delete: "この一冊を削除",
+
+    v2c08Headline: "一言から始められます",
+    v2c08Copy: "まだ本がありません。<br>心に残ったことを、自分の言葉で<span class=\"v2c08__nobreak\">書いてみませんか。</span><br>短い一言でも、大切な一冊になります。",
+    v2c08Cta: "残ったことを書く",
+    v2c08Tail: "書きたい気持ちになったときで大丈夫です。<br>この書店は、あなたのペースを大切にします。",
+
+    v2MenuTrustSection: "この書店について・データの扱い",
+    v2MenuDataSection: "データ・バックアップ",
+    v2BookTitleFallback: "まだ、題名のない本",
+    v2BookOpenAria: "{title}を開く",
+    v2BookshelfLoadFailTitle: "本棚をいま読み込めませんでした。",
+    v2BookshelfLoadFailNote: "本が無くなったわけではありません。少し時間をおいて、もう一度お試しください。",
+    v2BookshelfRetry: "もう一度読み込む",
+    v2BookCountLabel: "{n}冊の本",
+    /* 日本語は単複同形。EN と同じ分岐で引けるよう、同じ文字列を単数キーにも置く */
+    v2BookCountLabelOne: "{n}冊の本",
+    v2CharCount: "{n}字",
+    v2StoreLabel: "この端末",
+    v2SealedNote: "以前を振り返って綴った一冊",
+    v2PhotoOfAlt: "{title}の写真"
   },
   en: {
     shopName: "The Bookstore of Feelings",
@@ -521,8 +658,8 @@ const MESSAGES = {
     menuBackToTop: "↑ Back to the top",
     fairKicker: "This Month's Shelf",
     fairHalfNote: "",
-    titleConsultBtn: "Ask the shopkeeper for a title",
-    titleConsultHeading: "From the shopkeeper's title book",
+    titleConsultBtn: "See title hints",
+    titleConsultHeading: "Title hints",
     titleConsultMore: "See other titles",
     titleConsultHint: "Tap a title you like — you can still edit it freely.",
     detourHalfFirst: "First half of the month",
@@ -533,7 +670,6 @@ const MESSAGES = {
     sampleBookBadge: "This is a sample book. It is never added to your bookshelf.",
     sampleBookTitle: "The Walk Home After the Rain",
     sampleBookStory: "When I closed my umbrella, the smell of the wet street felt almost like summer again. One by one, I let the things I couldn’t say today fall into the puddles along the way home. For the first time in a while, I told myself it was okay not to hurry. When I saw the light at my front door, I thought: tomorrow, I’ll try speaking a little more honestly.",
-    sampleBookNote: "On the days words wouldn’t come out right, they were quietly growing. Take your time on this shelf.",
     deskSampleIntro: "This is what a finished book looks like.",
     deskSampleSummary: "See a sample of the finished book",
     deskSampleShelfLabel: "Shelf: Nostalgic",
@@ -564,7 +700,7 @@ const MESSAGES = {
     photoLabel: "Slip in today's photo (optional)",
     photoPreviewAlt: "Preview of attached photo",
     photoRemoveAria: "Remove photo",
-    photoHint: "Photos are resized to a maximum of 800px and kept only on this device. Nothing is sent to a server.",
+    photoHint: "Photos are stored in this device’s browser storage. They are resized to a maximum long edge of 800px and are not sent to the operator’s server.",
     deskExtraSummary: "Choose the title and timing yourself (optional)",
     fieldLabelShelf: "Shelf", fieldLabelTitle: "Spine title", titleInputPlaceholder: "If left blank, it will be saved as “An Untitled Book.”",
     fieldLabelWhen: "When did you feel this?", whenOptionNow: "Right now", whenOptionPast: "Looking back on the past",
@@ -599,7 +735,7 @@ const MESSAGES = {
     resetBackupDoneNote: "The key file has been written out. Please check your downloads to confirm it was saved on this device.",
     resetBackupFailNote: "The key could not be written out. Your bookshelf has not been erased.",
     resetFinalTitle: "Empty your bookshelf?",
-    resetFinalBody: "This deletes every book stored on this device (title, text, photo and shelf). This cannot be undone.\nYour \"curious about\" list, your log of feelings you\u2019ve let go of, and your reader name will remain.",
+    resetFinalBody: "This deletes every book stored on this device (title, text, photo and shelf). This cannot be undone.\nYour \"curious about\" list, your log of feelings you\u2019ve let go of, your reader name and any unfinished draft will remain.",
     resetFinalConfirmBtn: "Take every book off the shelf",
     resetFinalCancelBtn: "Cancel",
     resetDoneNote: "Your bookshelf is now empty.",
@@ -622,7 +758,7 @@ const MESSAGES = {
     shioriLabel: "Bookmark — from the shopkeeper", shioriBtn: "Receive today's bookmark",
     footerBrand: "\"The Bookstore of Feelings\"",
     footerNote: "What you write is never sent to a server — it's stored only on this device.",
-    footerNoteHtml: "What you write is never sent to a server —<br>it's stored only on this device.",
+    footerNoteHtml: "What you write is never sent to our servers —<br>it's stored only on this device.",
     shareBtn: "Share this bookstore", copyUrlBtn: "Copy URL", pwaPinBtn: "Pin to home screen",
     privacyLink: "Privacy Policy", termsLink: "Terms of Service",
     legalSep: " · ", supportLinkFooter: "Support & Helplines",
@@ -632,14 +768,14 @@ const MESSAGES = {
     closeBtn: "Close",
     bindText: "Binding the thread…", bindSkip: "Tap to finish instantly",
     purifyOverlayAria: "Let go of a feeling",
-    purifyKicker: "Let go — no one will see this. It's kept quietly only in this device's \"release log.\"",
+    purifyKicker: "Let go — nothing is sent anywhere. It's kept quietly only in this device's \"release log.\"",
     purifyInputPlaceholder: "Write that feeling out here, just as it is.",
     purifyBtn: "Let it go",
     modalPhotoAlt: "Photo attached to this page", modalNoteLabel: "A word from the shopkeeper",
     modalGoShelf: "See this shelf again", modalDel: "Remove this book from the shelf",
     // ★PoC Task 001: confirmation text for single-book removal (separate from the full bookshelf reset copy/flow).
     modalDelConfirm: "Remove this one book from the shelf? This cannot be undone.",
-    modalShare: "Share on X", modalShareNote: "Nothing is sent anywhere on its own — this only opens the post composer, and whether you actually post is entirely up to you.",
+    modalShare: "Share on X", modalShareNote: "Your entry, its title, and its shelf are never sent. This only opens the post composer with a short description of the bookstore and its URL — whether you actually post is entirely up to you.",
     // ★Hotfix4-3追加：英語モードで空文字になり、ボタン文字が消えていた欠落キーを補完。
     modalEditBtn: "Edit the title and story",
     modalEditSave: "Save the changes",
@@ -669,6 +805,7 @@ const MESSAGES = {
     restoreInvalidFile: "This file doesn't look like a Bookstore of Feelings backup. Please try a different file.",
     restoreSuccess: "Restored. Reloading…",
     restoreFail: "Restore failed. Please check the contents of the file.",
+    restoreSaveFail: "Couldn't restore, because this device wouldn't accept the write. Your bookshelf is unchanged. Please check your browser's free space or private-browsing mode, then try again.",
     mitateYesBtn: "Yes, tell me", mitateNoBtn: "Not right now",
     loopShelfReferralBtn: "The \"{shelf}\" shelf might suit you — please take a look",
     appleMusicNote: "※ Apple Music links sometimes just open the app. If so, please search the song title again there.",
@@ -704,7 +841,7 @@ const MESSAGES = {
     goToShelfBtn: "View the \"{shelf}\" shelf",
     dataAboutTitle: "About this bookstore & your data",
     dataAboutOpenLabel: "Where is my data stored?",
-    dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it's a simple system that returns pre-written lines based on context (you're not talking to any particular AI model).<br>Anything you write in \"Write your story\" or have \"bound\" is never published anywhere. It's stored only inside this device's browser (IndexedDB/localStorage) and never sent to an external server. There's no account, so no one else can see your records.<br>\"Let go of a feeling\" quietly moves that entry into a device-only \"release log\" so it no longer appears on your bookshelf — it isn't permanently deleted, just moved to its own log.<br>\"Everyone's Bookshelf\" doesn't mean sharing with other users — \"everyone\" here just names the idea of your own bookshelf growing over time.<br>Some parts of the shelves are fetched from an external search service, using only a season word and the shelf's emotion label as the search terms. Your written entries are never sent in these requests either.<br>Clearing your browser data will also erase these records, so we recommend periodically exporting a backup file via \"Back up your data.\" Even if this service were ever discontinued, your data would remain safe on your device as long as you've backed it up beforehand.", // ★Hotfix1-1追加修正：本・音楽の予告をデータ保存説明からも削除（外部通信の開示自体は維持）
+    dataAboutBody: "The \"shopkeeper\" isn't an AI chatbot — it returns pre-written lines based on context. Nothing you write is read by an AI to be analysed, diagnosed or auto-categorised.<br>What you write is stored in this device’s browser storage. The service uses both IndexedDB and localStorage for that, and sessionStorage only for temporary display state. There is no account, and your text, titles and photos are never stored on our servers.<br>There is no cloud sync, so nothing carries over automatically to another device or another browser. Conversely, anyone using this same device and browser will see it — please keep that in mind on shared devices.<br>Storage is not permanent. Clearing site data, your browser's or OS's storage policy, storage limits, device failure and switching devices can all cause it to be lost. We hold no copy to restore from, so we recommend exporting a file now and then via \"Back up your data.\"<br>The text, titles and photos you write are never sent to any external AI or external service; photos are resized on-device and kept on-device. Displaying the site itself, however, does involve ordinary network traffic: a connection to the hosting platform and a web-font request, plus analytics (GA4) in the public build. None of those carry your text, titles or photos. Anywhere you go via an external link is governed by that service's own policy.<br>Fetching books and music from external search services, and the weather-sync feature, are both inactive in the current Beta0 release.<br>Your bookshelf is your own — it is never shared with other visitors.",
     keeperNotAiHint: "※ Not an AI chatbot — a simple system that replies with pre-written lines. Nothing is sent to a model.",
     submitStoryHint: "※ Never published anywhere — stored only inside this device's browser.",
     // \u26052026-07-25 Content Trust Fix 1: heading simplified to "Your Books" while the fictional
@@ -783,11 +920,140 @@ const MESSAGES = {
     menuBtnLabelShort: "Menu",
     menuItemDesk: "Write what you feel now",
     menuItemBookshelf: "Your bookshelf",
-    menuItemCounter: "Talk to the shopkeeper",
+    menuItemCounter: "To the lobby",
     menuItemShelves: "Browse the emotion shelves",
     menuItemCover: "Back to the cover",
     menuSectionOptional: "Optional detours",
-    menuSectionSettings: "Settings & about this shop"
+    menuSectionSettings: "Settings & links",
+
+    /* ===== Visual Refit V2（01〜08）の system copy / English =====
+       既存 canonical EN（shopName / menuOpenAria / photoLabel など）がある箇所は
+       そちらを再利用し、ここでは V2 で新たに必要になった分だけを足している。
+       短く普通の英語にとどめ、日本語版にない意味・診断的な語は加えない。 */
+    v2c01BrandSub: "The",
+    v2c01BrandMain: "Bookstore of Feelings",
+    v2c01Copy: "Start from a feeling, and find something.<br>What stays with you, and the small things of each day.<br>Bound into a book, for your own shelf.",
+    v2c01StepsAria: "How to spend time in this bookstore",
+    v2c01Step1: "Know",
+    v2c01Step2: "Meet",
+    v2c01Step3: "Keep",
+    v2c01Step4: "Revisit",
+    v2c01Cta: "Enter the store",
+
+    v2c02Hero: "Where would you like<br>to begin today?",
+    v2c02Lead: "You can walk the shelves by feeling, write what stayed with you,<br>or open your own bookshelf.",
+    v2c02CardsAria: "Where to begin",
+    v2c02Card1Title: "Browse the emotion shelves",
+    v2c02Card1Desc: "<span class='v2c02__descline'>Find words and works</span><span class='v2c02__descline'>on shelves arranged by feeling.</span>",
+    v2c02Card2Title: "Write what stayed with you",
+    v2c02Card2Desc: "<span class='v2c02__descline'>The afterglow of a work,</span><span class='v2c02__descline'>or a small moment of the day,</span><span class='v2c02__descline'>kept as one book.</span>",
+    v2c02Card3Title: "Open your bookshelf",
+    v2c02Card3Desc: "<span class='v2c02__descline'>Revisit the words you bound,</span><span class='v2c02__descline'>quietly, whenever you like.</span>",
+
+    v2c03Title: "Emotion Shelves",
+    v2c03Lead: "Start from the shelf closest to how you feel,<br>and find words, works, and your own books.",
+    v2c03Guide: "Begin at any shelf, or begin by writing.<br>Wander freely, at your own pace.",
+    v2Shelfhazumu: "Lifting",
+    v2Shelfatatamaru: "Warming",
+    v2Shelfhikareru: "Drawn to",
+    v2Shelfshizumu: "Sinking",
+    v2Shelfzawatsuku: "Unsettled",
+    v2Shelfbutsukaru: "Clashing",
+    v2Shelfmiwohiku: "Pulling back",
+    v2Shelfnamaeganai: "Not yet named",
+    v2ShelfLeadhazumu: "Where gladness and anticipation\nare still bouncing inside you.",
+    v2ShelfLeadatatamaru: "Where relief, or care for someone,\nsoftens things inside you.",
+    v2ShelfLeadhikareru: "Where your heart turns\ntoward something outside yourself.",
+    v2ShelfLeadshizumu: "Where the weight of a feeling\nquietly stays with you.",
+    v2ShelfLeadzawatsuku: "Where things are hard to read, and feelings\nkeep moving without settling.",
+    v2ShelfLeadbutsukaru: "Where feelings too large to hold\ncollide inside you.",
+    v2ShelfLeadmiwohiku: "Wanting a little distance, wanting to hide.\nWhere that space opens up.",
+    v2ShelfLeadnamaeganai: "For when you would rather not\nsettle on any word yet.",
+    v2ShelfAllName: "All feelings",
+    v2ShelfAllLead: "See all 21 words together.",
+
+    v2NavAria: "Main navigation",
+    v2NavShelves: "Shelves",
+    v2NavDesk: "Write",
+    v2NavBookshelf: "Bookshelf",
+
+    v2BackToShelves: "Back to shelves",
+    v2c04SecKotoba: "Words",
+    v2c04SecSakuhin: "Works",
+    v2c04SecJibun: "Your books",
+    v2c04WorksIntro: "Books, films, and music that sit quietly alongside this feeling.",
+    v2c04WorksHoldTitle: "Works for this shelf are still being gathered.",
+    v2c04WorksHoldNote: "They should be waiting quietly the next time you stop by.",
+    v2c04MyBooksIntro: "Books you kept with this feeling.",
+    v2c04WriteBtn: "Write what stayed with you",
+    v2c04WriteNote: "Keep how you feel now, in your own words",
+    v2WordMeaning: "Meaning",
+    v2WordNuance: "Nuance",
+    v2WordNear: "Related words",
+    v2WorkTypeBook: "Book",
+    v2WorkTypeFilm: "Film",
+    v2WorkTypeMusic: "Music",
+    v2WorkTypeManga: "Manga",
+    v2WorkTypeAnimeTv: "TV anime",
+    v2WorkTypeAnimeFilm: "Anime film",
+    v2WorkTypeAnimeFilmParen: "Anime film",
+    v2WorkTypeAnimeTheatrical: "Anime film",
+    v2WorkSourceLink: "View the official page",
+    v2WorkSourceAria: "View the official page for \"{title}\" (opens in a new tab)",
+    v2WorkDestAria: "View \"{title}\" on {dest} (opens in a new tab)",
+    v2NearWordAria: "Go to the word page for \"{word}\"",
+    v2MyBooksEmptyTitle: "You have not kept a book with this feeling yet.",
+    v2MyBooksEmptyNote: "You can begin by writing, or just by looking at the shelves.",
+    v2MyBooksSeeAll: "See all in your bookshelf",
+
+    v2c05BackAria: "Back to the lobby",
+    v2c05Title: "Editorial Room",
+    v2c05Sub: "Where what stayed with you becomes a book in your own words",
+    v2ToBookshelf: "Bookshelf",
+    v2BackToBookshelf: "Back to bookshelf",
+    v2c05Autosave: "Your draft text is saved automatically",
+    v2c05TitleLabel: "Title",
+    v2c05TitleOpt: "(optional)",
+    v2c05TitlePh: "You can leave this blank.",
+    v2c05StoryLabel: "Your writing",
+    v2c05StoryPh: "Write what is still on your mind, just as it is. It does not have to be well written. Even a single line can become a book.",
+    v2c05Assure: "Your text is stored in this device’s browser storage.",
+    v2c05Bind: "Make it a book",
+    v2c05BindNote: "Saves your writing and makes it a book. You can then choose a feeling close to it (optional).",
+    v2c05ResumeT: "You have a draft",
+    v2c05ResumeN: "You can carry on editing where you left off.",
+    v2c05PhotoReplace: "Choose a different photo",
+
+    v2c06Title: "Your Bookshelf",
+    v2c06Lead: "Your words have become<br>your own books.",
+    v2c06NewLink: "Write a new one",
+    v2c06InviteN: "Turn what stayed with you into a book",
+
+    /* EN は日付が先頭に来る一文（"Bound on 13 August 2026"）になるため、
+       接尾辞は空にして adapter 側で完成した一文を書き込む。 */
+    v2c07DateSuffix: "",
+    v2c07NoteLabel: "Note",
+    v2c07Edit: "Edit",
+    v2c07Delete: "Delete this book",
+
+    v2c08Headline: "A single line is enough to begin",
+    v2c08Copy: "You do not have any books yet.<br>Would you like to write what stayed with you, <span class=\"v2c08__nobreak\">in your own words?</span><br>Even a short line makes a book worth keeping.",
+    v2c08Cta: "Write what stayed with you",
+    v2c08Tail: "Whenever you feel like writing is fine.<br>This bookstore moves at your pace.",
+
+    v2MenuTrustSection: "About this shop & your data",
+    v2MenuDataSection: "Data & backup",
+    v2BookTitleFallback: "A book without a title yet",
+    v2BookOpenAria: "Open {title}",
+    v2BookshelfLoadFailTitle: "We could not load your bookshelf just now.",
+    v2BookshelfLoadFailNote: "Your books have not been lost. Please wait a moment and try again.",
+    v2BookshelfRetry: "Try again",
+    v2BookCountLabel: "{n} books",
+    v2BookCountLabelOne: "{n} book",
+    v2CharCount: "{n} characters",
+    v2StoreLabel: "This device",
+    v2SealedNote: "Written looking back on an earlier time",
+    v2PhotoOfAlt: "Photo from {title}"
   }
 };
 
@@ -897,6 +1163,22 @@ function applyLanguage(){
   // guide-en.htmlへ切り替える（リンク文言自体はdata-i18n="supportLinkFooter"で翻訳済み）。
   const guideSupportLink = document.getElementById('guideSupportLink');
   if(guideSupportLink) guideSupportLink.href = (appLang === 'en') ? './guide-en.html#support' : './guide.html#support';
+  // ★Localization：V2（01〜08）のうち、静的コピーは上の data-i18n 走査で追従済み。
+  // Adapter が実行時に組み立てる領域（03 の棚名・04 のことば/作品/自分の本・
+  // 06 の冊数と背表紙・07 の読書面）は走査対象の外にあるため、ここで現在の言語へ
+  // 描き直す。既存関数を呼ぶだけで、storage・GA4・外部通信・選択状態は変えない。
+  if(window.V2EmotionShelfAdapter && typeof window.V2EmotionShelfAdapter.refreshLocale === 'function'){
+    window.V2EmotionShelfAdapter.refreshLocale();
+  }
+  if(window.V2BookshelfAdapter && typeof window.V2BookshelfAdapter.refreshLocale === 'function'){
+    window.V2BookshelfAdapter.refreshLocale();
+  }
+  // 05 は既存 #storyCount / #deskMsg を写しているため、既存側の更新後に写し直す。
+  if(window.V2FormAdapter && typeof window.V2FormAdapter.sync === 'function'){
+    window.V2FormAdapter.sync();
+  }
+  if(typeof refreshV2PhotoLabels === 'function') refreshV2PhotoLabels();
+
   const langBtn = document.getElementById('langToggle');
   if(langBtn) langBtn.textContent = appLang === 'ja' ? 'JP / EN' : 'EN / JP';
   const titleEl = document.querySelector('title');
@@ -1147,8 +1429,24 @@ function recommendReasonFor(catId){
   return pool[Math.floor(Math.random()*pool.length)];
 }
 
-const AMAZON_ASSOCIATE_ID = 'uta0106-22';
-const RAKUTEN_AFFILIATE_ID = '5590cc07.86ee74b4.5590cc08.a766f047';
+// ★Public Beta（CEO決定 2026-08-10）：Amazon／楽天のアフィリエイト収益化を行わない。
+// 空文字にすると amazonSearchUrl() / rakutenSearchUrl() は既存の分岐によって
+// タグ無しの通常検索URLを返す（送客先は変わらない）。IDを書き戻すだけで元へ戻せる。
+// これに伴い、PR表記と rel="sponsored" も affiliateEnabled() で連動させ、
+// 実態と表示が食い違わないようにする。
+const AMAZON_ASSOCIATE_ID = '';
+const RAKUTEN_AFFILIATE_ID = '';
+
+// アフィリエイトIDが1つでも設定されているときだけ true。
+// 広告表示義務（景表法のステマ規制・rel="sponsored"）はこの結果に従う。
+function affiliateEnabled(){
+  return !!(AMAZON_ASSOCIATE_ID || RAKUTEN_AFFILIATE_ID);
+}
+
+// rel 属性の共通生成。アフィリエイトが無効なときは sponsored を付けない。
+function relForCommerceLink(){
+  return affiliateEnabled() ? 'noopener sponsored' : 'noopener';
+}
 
 function amazonSearchUrl(query, indexParam){
   let url = 'https://www.amazon.co.jp/s?k=' + encodeURIComponent(query);
@@ -1176,6 +1474,8 @@ function rakutenTravelSearchUrl(query){
  * 表記のばらつきをなくす。アフィリエイトIDが付かないリンク（Spotify／Apple Music／
  * YouTube／Google Books の infoLink 等）だけで構成されるブロックには付けない。 */
 function prNoteHtml(){
+  // アフィリエイトが無効なら広告ではないため、PR表記は出さない（出すと不正確になる）
+  if(!affiliateEnabled()) return '';
   return `<p class="detour-pr">${escapeHtml(t('detourPrNote'))}</p>`;
 }
 
@@ -1184,20 +1484,14 @@ function prNoteHtml(){
 // 事前入力し、あとはX（twitter.com/intent/tweet）自身のcompose画面でユーザーが確認・編集した上で
 // 「投稿するか」を自分で判断する。intent URLを新しいタブで開くだけなので、当店のサーバー（＝存在しない）
 // への送信は一切発生しない。
+// ★Public Beta（CEO決定 2026-08-10）：X の投稿画面へ利用者由来の情報を一切渡さない。
+// 以前は題名と棚名（＝具体的な感情）を投稿本文に載せていたため、投稿するかどうかに
+// かかわらず、投稿画面を開いた時点でそれらが X へ渡っていた。
+// ここでは既存の書店紹介文（shareText）だけを使う。新しい文言は作らない。
+// 引数 entry は呼び出し側の互換のために残すが、一切読まない。
+// 送信され得るのは「固定の紹介文＋サービスURL＋固定ハッシュタグ」のみ。
 function buildShareText(entry){
-  const title = entry.title || '';
-  const shopName = t('shopName');
-  // ★Step4：棚未選択（unfiled）の場合は、棚に関する一文・棚名を完全に省略する
-  if(entry.category === UNFILED_CATEGORY_ID){
-    return (appLang === 'en')
-      ? `I wrote "${title}" at ${shopName}.`
-      : `「${title}」を、${shopName}に綴りました。`;
-  }
-  const cat = CATEGORIES.find(c=>c.id===entry.category);
-  const shelfLabel = categoryLabelFor(cat);
-  return (appLang === 'en')
-    ? `I wrote "${title}" and placed it on the ${shelfLabel} shelf at ${shopName}.`
-    : `「${title}」を、${shopName}の「${shelfLabel}の棚」に綴りました。`;
+  return t('shareText');
 }
 
 function twitterIntentUrl(text, url){
@@ -2473,7 +2767,7 @@ async function showFavorites(){
         // 曲側（Spotify／Apple Music／YouTube）はアフィリエイトではないため変更しない。
         const links = isMusic
           ? `<a href="https://open.spotify.com/search/${encodeURIComponent(q5)}" target="_blank" rel="noopener">Spotify</a> <a href="https://music.apple.com/jp/search?term=${encodeURIComponent(q5)}" target="_blank" rel="noopener">Apple Music</a> <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(q5)}" target="_blank" rel="noopener">YouTube</a>`
-          : `<a href="${amazonSearchUrl(q5)}" target="_blank" rel="noopener sponsored">Amazon</a> <a href="${rakutenSearchUrl(q5)}" target="_blank" rel="noopener sponsored">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>`;
+          : `<a href="${amazonSearchUrl(q5)}" target="_blank" rel="${relForCommerceLink()}">Amazon</a> <a href="${rakutenSearchUrl(q5)}" target="_blank" rel="${relForCommerceLink()}">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>`;
         return `<div class="purify-log-entry">
           <p class="purify-log-meta"><span class="meta-type-tag ${isMusic ? 'is-music' : 'is-book'}">${isMusic ? (appLang === 'en' ? 'Song' : '曲') : (appLang === 'en' ? 'Book' : '本')}</span> ${escapeHtml(label)}</p>
           <p class="purify-log-text"><span class="work-title">${escapeHtml(f.title)}${f.by ? ' — ' + escapeHtml(f.by) : ''}</span></p>
@@ -3066,7 +3360,10 @@ function renderCurrentShopDate(){
     String(now.getMonth()+1).padStart(2,'0'),
     String(now.getDate()).padStart(2,'0')
   ].join('-');
-  ['shopCurrentDate','deskCurrentDate'].forEach(id=>{
+  // ★FIX-06（Round 2.1）：V2 05 編纂室にも今日の日付を出す。既存の描画契約
+  // （端末ローカル日付・appLang 追従・<time datetime> の書式）をそのまま共有するだけで、
+  // タイムゾーン固定・保存キー・schema・本文への自動挿入はいずれも追加しない。
+  ['shopCurrentDate','deskCurrentDate','v2c05CurrentDate'].forEach(id=>{
     const el = document.getElementById(id);
     if(el){
       el.textContent = text;
@@ -3363,12 +3660,12 @@ function renderDetourFallback(box, catId){
         <span class="detour-tier-badge">${tierLabel[featured.tier] || featured.tier}</span>
         <p class="detour-name">${escapeHtml(dispName)}</p>
         <p class="detour-desc">${escapeHtml(dispDesc)}</p>
-        <a class="detour-link" href="${url}" target="_blank" rel="noopener sponsored">${escapeHtml(t('detourViewLink'))}</a>
+        <a class="detour-link" href="${url}" target="_blank" rel="${relForCommerceLink()}">${escapeHtml(t('detourViewLink'))}</a>
       </div>`;
   }).join('');
   box.innerHTML = `
     <p class="detour-heading">${escapeHtml(t('detourHeading'))}<span class="detour-half-note">（${escapeHtml(halfLabel)}）</span></p>
-    <p class="detour-pr">${escapeHtml(t('detourPrNote'))}</p>
+    ${prNoteHtml()}
     <div class="detour-cards">${cardsHtml}</div>
     <p class="detour-note">${escapeHtml(t('detourNote'))}</p>`;
 }
@@ -3395,6 +3692,13 @@ async function renderDetourSection(catId){
 //   実際に見つかった新しめの一冊・一曲を1件ずつ添える。取得できなければ何も表示しない
 //   （厳選データの表示自体は止めない＝壊れない設計）。
 async function renderLiveNewReleases(cat){
+  // ★V2 Beta0：V2 mount 中は旧棚UIが不可視のため、見えない面のために
+  // 外部API（Google Books / iTunes Search）への runtime 取得を発生させない。
+  // 宛先・表示ロジックは変更しない（mount していない環境では従来どおり）。
+  // __V2_MOUNTED__ は v2-mount.js の評価時（DOMContentLoaded 前）に立つため、
+  // 初期化順に依存しない。
+  if(window.__V2_MOUNTED__ === true ||
+     document.documentElement.getAttribute('data-v2-mounted') === 'true') return;
   // ★2026-07-19：外部API（日本語クエリ）由来の紹介文は英語化できないため、英語モードでは表示しない。
   if(appLang === 'en') return;
   const wrap = document.getElementById('livePickWrap');
@@ -3421,7 +3725,7 @@ async function renderLiveNewReleases(cat){
       <p class="live-pick-name">${escapeHtml(b.title)}</p>
       <p class="live-pick-desc">${escapeHtml(b.by)}${b.hook ? ' — ' + escapeHtml(b.hook) : ''}</p>
       ${isAffiliateLink ? prNoteHtml() : ''}
-      <a class="live-pick-link" href="${url}" target="_blank" rel="noopener${isAffiliateLink ? ' sponsored' : ''}">見てみる →</a>
+      <a class="live-pick-link" href="${url}" target="_blank" rel="${isAffiliateLink ? relForCommerceLink() : 'noopener'}">見てみる →</a>
       ${favBtnHtml('book', b.title, b.by, cat.id, b.hook || '')}
     </div>`;
   }
@@ -3507,10 +3811,10 @@ function renderShelfDisplay(){
               <span class="work-title">『${escapeHtml(bookTitleFor(r))}』${escapeHtml(bookAuthorFor(r))}</span>
               <span class="recommend-why">${r.why || ''}</span>
               <span class="recommend-shop-links">
-                <a class="recommend-buy" href="${amazonUrl}" target="_blank" rel="noopener sponsored">Amazon</a>
-                <a class="recommend-buy kindle" href="${kindleUrl}" target="_blank" rel="noopener sponsored">Kindle</a>
-                <a class="recommend-buy audible" href="${audibleUrl}" target="_blank" rel="noopener sponsored">Audible</a>
-                <a class="recommend-buy rakuten" href="${rakutenUrl}" target="_blank" rel="noopener sponsored">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>
+                <a class="recommend-buy" href="${amazonUrl}" target="_blank" rel="${relForCommerceLink()}">Amazon</a>
+                <a class="recommend-buy kindle" href="${kindleUrl}" target="_blank" rel="${relForCommerceLink()}">Kindle</a>
+                <a class="recommend-buy audible" href="${audibleUrl}" target="_blank" rel="${relForCommerceLink()}">Audible</a>
+                <a class="recommend-buy rakuten" href="${rakutenUrl}" target="_blank" rel="${relForCommerceLink()}">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>
               </span>
               ${favBtnHtml('book', r.title, r.by, cat.id, r.hook || r.why || '')}
               ${r.source ? `<a class="recommend-source" href="${r.sourceUrl}" target="_blank" rel="noopener">出典：${r.source}</a>` : ''}
@@ -3542,7 +3846,7 @@ function renderShelfDisplay(){
           <span class="playlist-services">
             <a href="${spUrl}" target="_blank" rel="noopener">Spotify</a>
             <a href="${amcUrl}" target="_blank" rel="noopener">Apple Music</a>
-            <a href="${amUrl}" target="_blank" rel="noopener sponsored">Amazon Music</a>
+            <a href="${amUrl}" target="_blank" rel="${relForCommerceLink()}">Amazon Music</a>
             <a href="${ytUrl}" target="_blank" rel="noopener">YouTube</a>
           </span>
           ${favBtnHtml('music', song.title, song.artist, cat.id, song.comment || '')}
@@ -4298,10 +4602,23 @@ function openBook(entry){
   const mDel = document.getElementById('modalDel');
   // ★PoC Task 001：誤タップによる即時削除を防ぐため、実際の削除処理の前に軽量な確認を挟む。
   // 本棚全リセット（resetShelfOverlay）とは別物の、この1冊専用の確認（native confirm）。
+  // ★Data Safety Patch Ver.1.3：saveJSON()（DataRepository.set()）は永続化に失敗しても
+  // 例外を投げず false を返す契約のため、戻り値を見ずに進めると「保存できていないのに
+  // 削除できた見た目」（本棚から消え、モーダルも閉じる）になる。しかもここでは先に
+  // libraryCache を書き換えていたため、失敗しても楽観的な削除がメモリに残り、
+  // 以降の別の保存が成功した時点で、利用者が知らないまま本が失われる恐れがあった。
+  // 対策：先に新しい配列を作って保存を試み、成功したときだけ libraryCache へ反映する。
+  // 失敗時は元の状態のまま、モーダルも閉じずに理由を表示する（performShelfReset と同じ方針）。
   if(mDel) mDel.onclick = async ()=>{
     if(!window.confirm(t('modalDelConfirm'))) return;
-    libraryCache = libraryCache.filter(e=>e.id !== entry.id);
-    await saveJSON('emotion-bookstore-library', libraryCache);
+    const next = libraryCache.filter(e=>e.id !== entry.id);
+    const savedOk = await saveJSON('emotion-bookstore-library', next);
+    if(savedOk !== true){
+      const delMsg = document.getElementById('modalEditMsg');
+      if(delMsg){ delMsg.textContent = t('manaReceiveSaveError'); delMsg.classList.remove('hidden'); }
+      return;
+    }
+    libraryCache = next;
     renderShelf();
     renderShelfTabs();
     if(bModal) bModal.classList.add('hidden');
@@ -4412,20 +4729,37 @@ function isSampleBookOpen(){
   return !!(box && !box.classList.contains('hidden'));
 }
 
+// ★FIX-08（Round 2.1）：見本の日付を、現在の V2 Reader（07）と同じ書き方にする。
+// Reader（bookshelf-adapter の viewDate）は JA が「2026年6月1日」、EN が
+// 「Bound on June 1, 2026」で、JA だけ後ろに v2c07DateSuffix「に本にしました」が付く。
+// 旧 formatDate() の「納品 / Delivered」は現在の製本体験では使われていないため使わない。
+// 日付そのもの（SAMPLE_BOOK_DATE）と保存挙動は変更しない。
+function sampleBookDateText(){
+  try{
+    const d = new Date(SAMPLE_BOOK_DATE);
+    if(isNaN(d.getTime())) return '';
+    if(appLang === 'en'){
+      const MN = ['January','February','March','April','May','June','July','August',
+                  'September','October','November','December'];
+      return 'Bound on ' + MN[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    }
+    return d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日' + t('v2c07DateSuffix');
+  }catch(e){ return ''; }
+}
+
 function openSampleBook(){
   const box = document.getElementById('sampleBookInline');
   if(!box) return;
   const cat = (typeof CATEGORIES !== 'undefined') ? CATEGORIES.find(c=>c.id === SAMPLE_BOOK_CATEGORY_ID) : null;
   const catEl = document.getElementById('sampleInlineCat');
-  if(catEl) catEl.textContent = cat ? categoryLabelFor(cat) + t('definitionLabelSep') : '';
+  // Reader の棚チップは棚名だけを出す（「〜の棚」は付けない）。表記をそれに合わせる。
+  if(catEl) catEl.textContent = cat ? categoryLabelFor(cat) : '';
   const titleEl = document.getElementById('sampleInlineTitle');
   if(titleEl) titleEl.textContent = t('sampleBookTitle');
   const dateEl = document.getElementById('sampleInlineDate');
-  if(dateEl) dateEl.textContent = formatDate(SAMPLE_BOOK_DATE);
+  if(dateEl) dateEl.textContent = sampleBookDateText();
   const storyEl = document.getElementById('sampleInlineStory');
   if(storyEl) storyEl.textContent = t('sampleBookStory');
-  const noteTextEl = document.getElementById('sampleInlineNoteText');
-  if(noteTextEl) noteTextEl.textContent = t('sampleBookNote');
   const badgeEl = box.querySelector('.sample-book-badge');
   if(badgeEl) badgeEl.textContent = t('sampleBookBadge');
   box.classList.remove('hidden');
@@ -6716,8 +7050,8 @@ function renderShelfPickRecommend(){
         <p class="shelf-pick-title">『${escapeHtml(bookTitleFor(book))}』${escapeHtml(bookAuthorFor(book))}</p>
         ${bookHookFor(book) ? `<p class="shelf-pick-meta">${escapeHtml(bookHookFor(book))}</p>` : ''}
         ${prNoteHtml()}
-        <a class="shelf-pick-link" href="${amazonUrl}" target="_blank" rel="noopener sponsored">Amazon</a>
-        <a class="shelf-pick-link" href="${rakutenUrl}" target="_blank" rel="noopener sponsored">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>
+        <a class="shelf-pick-link" href="${amazonUrl}" target="_blank" rel="${relForCommerceLink()}">Amazon</a>
+        <a class="shelf-pick-link" href="${rakutenUrl}" target="_blank" rel="${relForCommerceLink()}">${appLang === 'en' ? 'Rakuten' : '楽天'}</a>
       </div>
     </div>`;
   }
@@ -6788,8 +7122,8 @@ function renderRecordCorner(){
       <p class="record-title">『${song.title}』 ${song.artist}</p>
       <p class="record-line">${slot.line}</p>
       <p class="record-links">
-        <a href="${amUrl}" target="_blank" rel="noopener sponsored">Amazon Music</a>
-        <a href="${cdUrl}" target="_blank" rel="noopener sponsored">CD・レコードを探す</a>
+        <a href="${amUrl}" target="_blank" rel="${relForCommerceLink()}">Amazon Music</a>
+        <a href="${cdUrl}" target="_blank" rel="${relForCommerceLink()}">CD・レコードを探す</a>
         <a href="${spUrl}" target="_blank" rel="noopener">Spotify</a>
         <a href="${amcUrl}" target="_blank" rel="noopener">Apple Music</a>
         <a href="${ytUrl}" target="_blank" rel="noopener">YouTube</a>
@@ -6852,7 +7186,13 @@ function isValidBackupPayload(payload){
   return true;
 }
 
+// ★Data Safety Patch Ver.1.3：戻り値で失敗したキーを返す。
+// saveJSON() は永続化に失敗しても例外を投げず false を返すため、戻り値を見ないと
+// 1件も書けていなくても「復元しました」と表示して reload してしまい、
+// 利用者は復元できたと誤認したまま、実際には元の状態のままになる。
+// ここでは書き込み結果を集約するだけで、保存形式・キー・スキーマは変更していない。
 async function restoreBackupFromPayload(payload){
+  const failedKeys = [];
   for(const key of BACKUP_KEYS){
     // ★Data Safety Patch Ver.1.1：FAVORITES_KEYが旧形式バックアップに存在しない場合、
     // 「利用者が空のお気に入りを選んだ」わけではなく、旧実装がお気に入りをバックアップ対象に
@@ -6862,8 +7202,10 @@ async function restoreBackupFromPayload(payload){
     if(!Object.prototype.hasOwnProperty.call(payload.stores, key)) continue;
     const value = payload.stores[key];
     if(value === null || value === undefined) continue;
-    await saveJSON(key, value);
+    const savedOk = await saveJSON(key, value);
+    if(savedOk !== true) failedKeys.push(key);
   }
+  return failedKeys;
 }
 
 function readFileAsText(file){
@@ -6899,7 +7241,16 @@ async function handleRestoreFile(file){
     if(!confirm(confirmMsg)) return;
 
     if(btn) btn.textContent = t('restoreLoadingBtn');
-    await restoreBackupFromPayload(payload);
+    // ★Data Safety Patch Ver.1.3：1件でも書き込みに失敗したら、成功表示も reload もしない。
+    // reload してしまうと、失敗した事実が画面から消え、利用者は復元できたと誤認する。
+    // 再読込しないことで、復元前の画面と本棚がそのまま残り、やり直せる状態を保つ。
+    const failedKeys = await restoreBackupFromPayload(payload);
+    if(failedKeys.length){
+      if(msg) msg.textContent = t('restoreSaveFail');
+      if(btn) btn.textContent = t('restoreFailBtn');
+      setTimeout(()=>{ if(btn) btn.textContent = t('restoreDefaultBtn'); }, 2500);
+      return;
+    }
     if(msg) msg.textContent = t('restoreSuccess');
     if(btn) btn.textContent = t('restoreDoneBtn');
     setTimeout(()=>{ location.reload(); }, 900);
@@ -7041,11 +7392,21 @@ function applySeasonalAccent(){
   document.documentElement.style.setProperty('--season-accent', color);
 }
 
+// ★PKT-1：V2 global theme の DAY/NIGHT 境界。
+// 05:00〜20:59 DAY / 21:00〜04:59 NIGHT。index.html の pre-paint スクリプトが
+// 同じ関数を先に定義しているため、通常はそちらが唯一の実体になる（同値）。
+// 表紙の五段階 daypart（currentDaypart）は別契約であり、この関数は関与しない。
+if(typeof window.isNightHour !== 'function'){
+  window.isNightHour = function(hour){
+    const h = (typeof hour === 'number') ? hour : new Date().getHours();
+    return h >= 21 || h < 5;
+  };
+}
+
 function applyNightModeIfNeeded(){
-  const hour = new Date().getHours();
-  if(hour >= 22 || hour < 5){
-    document.body.classList.add('night');
-  }
+  // 旧実装は add のみで remove しなかったため、静的な body class="night" と併さって
+  // 時刻に関係なく NIGHT へ固定されていた。toggle にして両方向へ効かせる。
+  document.body.classList.toggle('night', window.isNightHour());
 }
 
 // ★WeatherPrototype1（時間帯のみ版）：端末の時計だけを見て、表紙（.entrance.hero）の
@@ -7326,11 +7687,19 @@ function showProfileCard(){
   ov.classList.remove('hidden');
 }
 
+// ★PKT-5：アプリ内ブラウザ警告の「このセッションでは閉じ済み」フラグ。
+// sessionStorage 専用（タブを閉じれば消える）。永続保存キーではない。
+const IN_APP_NOTE_DISMISSED_KEY = 'eb-inapp-note-dismissed';
+
 function warnInAppBrowserIfNeeded(){
   try{
     const ua = navigator.userAgent || '';
     const inApp = /Line\//i.test(ua) || /FBAV|FB_IAB|Instagram|TikTok|Twitter for/i.test(ua);
     if(!inApp || document.getElementById('inAppBrowserNote')) return;
+    // ★PKT-5：1 browsing session につき1回だけ。閉じたら同じセッション中は再表示しない。
+    // sessionStorage はタブを閉じれば消えるため、永続 storage 契約（IndexedDB /
+    // localStorage の保存キー・バックアップ形式）には一切混ぜない。
+    if(sessionStorage.getItem(IN_APP_NOTE_DISMISSED_KEY) === '1') return;
     const bar = document.createElement('div');
     bar.id = 'inAppBrowserNote';
     bar.setAttribute('role', 'status');
@@ -7338,7 +7707,11 @@ function warnInAppBrowserIfNeeded(){
     const closeLabel = (typeof t === 'function') ? t('closeBtn') : '閉じる';
     const warnText = (typeof t === 'function') ? t('inAppBrowserWarning') : 'アプリ内ブラウザで開いています。この環境では<b>記録が保存されない場合があります</b>。Safari や Chrome で開き直すことをおすすめします。';
     bar.innerHTML = warnText + `<button type="button" aria-label="${closeLabel}" style="position:absolute;right:8px;top:8px;background:none;border:none;color:#F6ECD4;font-size:16px;cursor:pointer;">×</button>`;
-    bar.querySelector('button').onclick = ()=>bar.remove();
+    bar.querySelector('button').onclick = ()=>{
+      bar.remove();
+      // 閉じた事実だけを、このブラウジングセッション内に限って覚えておく。
+      try{ sessionStorage.setItem(IN_APP_NOTE_DISMISSED_KEY, '1'); }catch(e){}
+    };
     document.body.insertBefore(bar, document.body.firstChild);
   }catch(e){}
 }

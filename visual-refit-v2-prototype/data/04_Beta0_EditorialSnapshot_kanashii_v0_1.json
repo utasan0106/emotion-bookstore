@@ -1,0 +1,93 @@
+{
+  "snapshot_id": "eb-beta0-kanashii-20260812-v0.1",
+  "status": "APPROVED_FOR_04_BETA0_QA",
+  "emotion_id": "kanashii",
+  "emotion_label_ja": "悲しい",
+  "checked_at": "2026-08-12T21:27:00+09:00",
+  "publication_policy": {
+    "runtime_external_api": false,
+    "third_party_cover_or_poster_or_jacket": false,
+    "quote_or_excerpt": false,
+    "affiliate": false,
+    "external_destination_in_beta0": false,
+    "display_payload": "title / creator / type / original editorial reason only"
+  },
+  "items": [
+    {
+      "item_id": "eb-beta0-kanashii-book-001",
+      "type": "book",
+      "title": "わたしを離さないで",
+      "creator": "カズオ・イシグロ",
+      "emotion_id": "kanashii",
+      "editorial_reason": "限られた時間を知りながら交わされた友情と愛情が、後から静かに重みを増す。",
+      "source_record": {
+        "provider": "早川書房 公式オンラインストア",
+        "source_url": "https://www.hayakawa-online.co.jp/shop/g/g0000310051/",
+        "source_role": "identity_verification",
+        "checked_at": "2026-08-12T21:27:00+09:00"
+      },
+      "rights_use_status": {
+        "third_party_media_used": false,
+        "cover_used": false,
+        "quote_or_excerpt_used": false,
+        "source_text_reproduced": false,
+        "note": "作品名・著者名のidentity確認に公式ページを使用。Beta0表示には第三者画像・本文・紹介文を転載しない。"
+      },
+      "commercial_relationship": "none",
+      "destination": null
+    },
+    {
+      "item_id": "eb-beta0-kanashii-music-001",
+      "type": "music",
+      "title": "真夏の通り雨",
+      "creator": "宇多田ヒカル",
+      "emotion_id": "kanashii",
+      "editorial_reason": "別れた後に残る景色を、声と余白が時間のように引き延ばす。",
+      "source_record": {
+        "provider": "HIKARU UTADA OFFICIAL WEBSITE",
+        "source_url": "https://www.utadahikaru.jp/music/b90wfz--ol5/",
+        "source_role": "identity_verification",
+        "checked_at": "2026-08-12T21:27:00+09:00"
+      },
+      "rights_use_status": {
+        "third_party_media_used": false,
+        "cover_used": false,
+        "quote_or_excerpt_used": false,
+        "source_text_reproduced": false,
+        "note": "曲名・アーティスト名のidentity確認に公式ページを使用。Beta0表示にはジャケット・歌詞・音源・公式説明文を転載しない。"
+      },
+      "commercial_relationship": "none",
+      "destination": null
+    },
+    {
+      "item_id": "eb-beta0-kanashii-film-001",
+      "type": "film",
+      "title": "ドライブ・マイ・カー",
+      "creator": "濱口竜介",
+      "emotion_id": "kanashii",
+      "editorial_reason": "失った人への言葉にならない感情が、運転と稽古の時間の中で少しずつ姿を変える。",
+      "source_record": {
+        "provider": "映画『ドライブ・マイ・カー』公式サイト / BITTERS END",
+        "source_url": "https://dmc.bitters.co.jp/",
+        "source_role": "identity_verification",
+        "checked_at": "2026-08-12T21:27:00+09:00"
+      },
+      "rights_use_status": {
+        "third_party_media_used": false,
+        "cover_used": false,
+        "quote_or_excerpt_used": false,
+        "source_text_reproduced": false,
+        "note": "作品名・監督名のidentity確認に公式ページを使用。Beta0表示にはポスター・場面写真・公式あらすじ等を転載しない。"
+      },
+      "commercial_relationship": "none",
+      "destination": null
+    }
+  ],
+  "approval_notes": [
+    "04 Round 1のQA/production-safe static snapshotとして使用可能。",
+    "作品表示は3件固定。追加2件は今回未承認のため「もう2つ見る」を表示しない。",
+    "Reference内の作品・cover・外部購入/視聴ボタンをhardcodeしない。",
+    "外部APIによる補充を行わない。",
+    "本snapshotは作品identityと自前editorial_reasonのみを表示対象とし、第三者メディアは含まない。"
+  ]
+}

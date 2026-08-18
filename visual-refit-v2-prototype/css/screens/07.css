@@ -1,0 +1,605 @@
+/* =============================================================================
+ * Visual Refit V2 — 07 本詳細／読む
+ * -----------------------------------------------------------------------------
+ * Visual North Star: FORMAL_COMPS/DAY/07.png ・ FORMAL_COMPS/NIGHT/07.png のみ。
+ *
+ * 【01〜06への非干渉】
+ * tokens.css / base.css / components.css / screens/01〜06 の各ファイルは
+ * 1バイトも変更していない。07 固有の差分はすべて .v2-page--reader スコープで
+ * このファイルに閉じている。
+ *
+ * 07 は一冊を取り出して読む場所。正式カンプの明確な2カラム構造を守る。
+ *   左：本の情報・小さな操作領域 ／ 右：大きな本文・読む面
+ *
+ * Phase 1 は静的。bookModal を変更・接続しない。新 route を作らない。
+ * edit / delete / rename / focus trap / inert / aria-hidden 等の既存契約に一切触れない。
+ * 題名・日付・文字数・しおり件数・ページ数・本文は利用者の実データなので
+ * 文字を置かず、占有位置と余白だけを中立プレースホルダーで作る。
+ * ラベルは UI 側の文言なのでそのまま置く。
+ *
+ * 【Phase 3 Step 3D】現時点で実機能が存在しない操作を画面から外した。
+ *   削除：文字サイズ／明るさ／右上メニュー／目次／編集する／左右ページ送り
+ *   disabled のまま残さず、「近日対応」等も出さない。新機能も作らない。
+ *   残る操作は「戻る」と下部ナビだけ。しおりリボン・小口の罫は非interactive な装飾。
+ *
+ * 【Phase 2】未承認機能を画面から削除した。
+ *   削除：共有（URLをコピー）／このページを共有／公開設定／
+ *         しおり／しおりを追加／メモ・線を引いた箇所／メモを書く／線を引く／操作バー一式
+ * 本文を外へ出す導線は画面上に存在しない。
+ *
+ * レイアウト契約（1024x1536・正式カンプ実測）
+ *   戻る            y   40-62   / 左 3.1%
+ *   右上ツール        y   40-92   / 右端
+ *   左サイドバー       x   32-300  （3.1-29.3%）
+ *     書影          y  122-384
+ *     題名・日付・説明  y  410-560
+ *     操作4項目       Phase 2 で「目次」1項目へ縮小
+ *     メタ5項目       Phase 2 で「公開設定」を外し4項目へ
+ *     安心情報カード    左カラム下端へ寄せ、右紙面と下端を揃える
+ *   右紙面           x  331-975 / y 154-1316 → Phase 2 で操作バー削除ぶん下へ伸ばす
+ *   操作バー          Phase 2 で削除
+ *   下部ナビバー      y 1443-1524 / 3項目（棚を見る｜書く｜本棚）
+ * ========================================================================== */
+
+.v2-page--reader .v2-stage {
+  --v2-px: calc(100cqw / 1024);
+}
+
+:root[data-v2-theme='day'] .v2-page--reader {
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 90%, #FFFFFF 10%);
+  --v2-card-edge: rgb(51 36 12 / 0.14);
+  --v2-page-face: color-mix(in srgb, var(--v2-wall) 62%, #FFFFFF 38%);
+  --v2-page-edge: rgb(51 36 12 / 0.12);
+  --v2-slot: rgb(51 36 12 / 0.10);
+}
+
+:root[data-v2-theme='night'] .v2-page--reader {
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 93%, #CDA97C 7%);
+  --v2-card-edge: rgb(84 66 46 / 0.95);
+  --v2-page-face: color-mix(in srgb, var(--v2-wall) 88%, #CDA97C 12%);
+  --v2-page-edge: rgb(105 84 60 / 0.95);
+  --v2-slot: rgb(205 169 124 / 0.12);
+}
+
+/* -----------------------------------------------------------------------------
+ * 情景レイヤ
+ * 07 の照明は「紙面そのものが読める静かな読書光」。器具は主張させない。
+ * 占有: 右奥の読書室 x 78-100% / y 0-22%
+ * -------------------------------------------------------------------------- */
+.v2-reader__wall {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--v2-wall) 0%,
+    var(--v2-wall) 72%,
+    var(--v2-wall-deep) 100%
+  );
+}
+
+.v2-reader__scape {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 22%;
+  height: 22%;
+  border-bottom-left-radius: 40% 60%;
+  background: var(--v2-scene-arch);
+  opacity: 0.8;
+}
+
+/* 紙面が読める静かな光。器具は描かない */
+.v2-reader__readinglight {
+  position: absolute;
+  top: 6%;
+  left: 28%;
+  width: 70%;
+  height: 60%;
+  background: radial-gradient(
+    58% 54% at 50% 20%,
+    rgb(var(--v2-glow-color) / calc(var(--v2-glow-strength) * 0.62)) 0%,
+    rgb(var(--v2-glow-color) / 0) 100%
+  );
+}
+
+.v2-reader__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    108% 62% at 56% 42%,
+    rgb(0 0 0 / 0) 44%,
+    rgb(0 0 0 / var(--v2-vignette)) 100%
+  );
+}
+
+/* -----------------------------------------------------------------------------
+ * 上部バー
+ * -------------------------------------------------------------------------- */
+.v2-reader__back {
+  position: absolute;
+  top: 2.60%;
+  left: 3.13%;
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(20 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-mid);
+}
+
+
+/* メタ項目の小さな記号。素材未確定のためプレースホルダー枠のみ */
+.v2-reader__mark {
+  display: block;
+  width: calc(22 * var(--v2-px));
+  height: calc(22 * var(--v2-px));
+  border-radius: calc(3 * var(--v2-px));
+}
+
+/* -----------------------------------------------------------------------------
+ * 左サイドバー（本の情報・小さな操作領域）
+ * -------------------------------------------------------------------------- */
+/* 左カラム。Phase 2 で未承認項目を削除したぶん中央に余白が生まれるため、
+   安心情報を下端へ寄せ、右紙面と下端を揃える（新しい要素は足さない） */
+.v2-reader__side {
+  position: absolute;
+  top: 7.94%;
+  left: 3.13%;
+  width: 26.17%;
+  height: 81.84%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Step 3C：接続済みの欄に値が無いときは、枠だけを残さず欄ごと畳む
+   （空の枠が「取得に失敗した」ように見えるのを避ける）。
+   書影だけは本の顔の場所なので、写真が無くても中立枠を残す。 */
+.v2-page--reader .is-v2-empty { display: none; }
+
+/* 書影。既存 entry.image（保存済みの data: URI）があるときだけ写真を入れる。
+   無いときは Phase 1 と同じ中立プレースホルダー枠のまま。 */
+.v2-reader__cover {
+  display: block;
+  width: calc(184 * var(--v2-px));
+  height: calc(262 * var(--v2-px));
+  margin: 0 auto;
+  border-radius: calc(4 * var(--v2-px));
+  overflow: hidden;
+}
+
+.v2-reader__cover-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: calc(4 * var(--v2-px));
+}
+
+/* Step 3C：棚名・sealed 注記は実データを入れるため内容駆動にする。
+   未選択・該当なしのときは v2-placeholder が付き、Phase 1 と同じ占有枠に戻る。 */
+.v2-reader__slot {
+  display: block;
+  min-height: calc(22 * var(--v2-px));
+  margin-top: calc(26 * var(--v2-px));
+  font-family: var(--v2-font-body);
+  font-size: calc(17 * var(--v2-tpx));
+  line-height: calc(26 * var(--v2-tpx));
+  letter-spacing: 0.03em;
+  color: var(--v2-ink-strong);
+  overflow-wrap: anywhere;
+}
+
+.v2-reader__slot.v2-placeholder { height: calc(22 * var(--v2-px)); }
+
+.v2-reader__slot--sub {
+  min-height: calc(16 * var(--v2-px));
+  margin-top: calc(16 * var(--v2-px));
+  font-size: calc(15 * var(--v2-tpx));
+  line-height: calc(24 * var(--v2-tpx));
+  color: var(--v2-ink-mid);
+}
+
+.v2-reader__slot--sub.v2-placeholder { width: 62%; height: calc(16 * var(--v2-px)); }
+
+.v2-reader__rule {
+  height: calc(1 * var(--v2-px));
+  margin: calc(30 * var(--v2-px)) 0 0;
+  background: var(--v2-rule);
+  opacity: 0.4;
+}
+
+.v2-reader__menu {
+  margin-top: calc(24 * var(--v2-px));
+}
+
+
+.v2-reader__meta-item {
+  display: flex;
+  align-items: center;
+  gap: calc(16 * var(--v2-px));
+  height: calc(50 * var(--v2-px));
+  font-family: var(--v2-font-body);
+  font-size: calc(16 * var(--v2-tpx));
+  line-height: 1;
+  color: var(--v2-ink-mid);
+}
+
+.v2-reader__meta-label { flex: 1; }
+
+.v2-reader__meta-slot {
+  min-width: calc(90 * var(--v2-px));
+  text-align: right;
+  color: var(--v2-ink-strong);
+  white-space: nowrap;
+}
+
+.v2-reader__meta-slot.v2-placeholder {
+  width: calc(90 * var(--v2-px));
+  height: calc(16 * var(--v2-px));
+}
+
+.v2-reader__assurance {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(14 * var(--v2-px));
+  margin-top: auto;
+  padding: calc(22 * var(--v2-px));
+  border-radius: calc(14 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+.v2-reader__assurance-mark {
+  flex: none;
+  width: calc(34 * var(--v2-px));
+  height: calc(44 * var(--v2-px));
+}
+
+.v2-reader__assurance-text {
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(15 * var(--v2-tpx));
+  line-height: calc(25 * var(--v2-tpx));
+  color: var(--v2-ink-mid);
+}
+
+/* -----------------------------------------------------------------------------
+ * 右紙面（この画面の主役）
+ * -------------------------------------------------------------------------- */
+.v2-reader__page {
+  position: absolute;
+  top: 10.03%;
+  left: 32.32%;
+  width: 62.89%;
+  height: 79.75%;
+  border-radius: calc(10 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-page-edge);
+  background: var(--v2-page-face);
+}
+
+/* しおりリボン。カンプどおり DAY/NIGHT とも青のまま残す */
+.v2-reader__ribbon {
+  position: absolute;
+  top: 0;
+  right: calc(56 * var(--v2-px));
+  width: calc(34 * var(--v2-px));
+  height: calc(58 * var(--v2-px));
+  background: #2F5B8C;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 76%, 0 100%);
+}
+
+/* Step 3C：現行データに章の概念は無いため章番号は置かず、題名だけを読む面の見出しにする */
+.v2-reader__chapter {
+  position: absolute;
+  top: calc(138 * var(--v2-px));
+  left: calc(118 * var(--v2-px));
+  right: calc(118 * var(--v2-px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(26 * var(--v2-px));
+}
+
+.v2-reader__chapter-title {
+  max-width: calc(500 * var(--v2-px));
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(30 * var(--v2-tpx));
+  line-height: calc(44 * var(--v2-tpx));
+  letter-spacing: 0.06em;
+  color: var(--v2-ink-strong);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.v2-reader__chapter-title.v2-placeholder {
+  width: calc(300 * var(--v2-px));
+  height: calc(38 * var(--v2-px));
+}
+
+.v2-reader__chapter-rule {
+  flex: none;
+  width: calc(58 * var(--v2-px));
+  height: calc(1 * var(--v2-px));
+  background: var(--v2-rule);
+  opacity: 0.5;
+}
+
+/* 読む面の中身。長文はここだけで縦スクロールする。横スクロールは作らない。
+   ページ送り（.v2-reader__turn）は現行に無い機能なので非活性のまま。 */
+.v2-reader__scroll {
+  position: absolute;
+  top: calc(338 * var(--v2-px));
+  left: calc(118 * var(--v2-px));
+  right: calc(118 * var(--v2-px));
+  bottom: calc(190 * var(--v2-px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+}
+
+.v2-reader__scroll::-webkit-scrollbar { width: 0; height: 0; }
+
+/* 本文。改行は書いたとおりに残す。装飾・強調・要約・分割はしない */
+.v2-reader__body {
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(19 * var(--v2-tpx));
+  line-height: calc(38 * var(--v2-tpx));
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-strong);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.v2-reader__body.v2-placeholder {
+  display: block;
+  height: calc(20 * var(--v2-px));
+}
+
+/* 覚え書き。既存 openBook が「あれば表示」する仕様のため踏襲する。
+   本文と混ざらないよう、細い罫の下に小さく置く */
+.v2-reader__note {
+  margin: calc(104 * var(--v2-px)) 0 0;
+  padding: calc(44 * var(--v2-px)) 0 0;
+  border-top: calc(1 * var(--v2-px)) solid var(--v2-rule);
+}
+
+.v2-reader__note-label {
+  margin: 0 0 calc(12 * var(--v2-px));
+  font-family: var(--v2-font-body);
+  font-size: calc(14 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--v2-ink-mid);
+}
+
+.v2-reader__note-text {
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(16 * var(--v2-tpx));
+  line-height: calc(30 * var(--v2-tpx));
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-mid);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ページ移動。Phase 1 は非活性 */
+
+
+
+
+
+/* 小口の装飾。ページ位置という実データは存在しないため、
+   数字待ちに見える枠は置かず、静かな罫だけを残す（非interactive）。 */
+.v2-reader__foot {
+  position: absolute;
+  bottom: calc(48 * var(--v2-px));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.v2-reader__foot-rule {
+  width: calc(200 * var(--v2-px));
+  height: calc(1 * var(--v2-px));
+  background: var(--v2-rule);
+  opacity: 0.4;
+}
+
+
+/* Phase 2：未承認の操作バー（.v2-reader__actions / .v2-reader__action）は削除した */
+
+/* -----------------------------------------------------------------------------
+ * Global Navigation（3項目）
+ * 部品の見た目は components.css に一元化した。ここでは位置と外枠だけを持つ。
+ * 02〜07 は同一原寸カンプ（1024x1536）なので外枠の寸法も全画面で揃える。
+ * 現在地は accent 色の文字／アイコンのみ。下線は付けない。
+ * Phase 2 も視覚要素のみで route / href / event を持たない。
+ * -------------------------------------------------------------------------- */
+.v2-reader__navbar {
+  position: absolute;
+  top: 93.95%;
+  left: 3.81%;
+  width: 92.29%;
+  height: 5.27%;
+  border-radius: calc(20 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+.v2-reader__nav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(25 * var(--v2-px));
+  width: calc(873 * var(--v2-px));
+}
+
+/* -----------------------------------------------------------------------------
+ * モバイル幅の局所修正（Pre-Mount Visual A11y Hotfix / Additional LIMITED FIX）
+ * 崩れは「メタ3行だけ」。行の高さが --v2-px 固定（390px で 19px）なのに
+ * 文字が --v2-tpx（13.8px）で2行に折れるため、3行が互いに重なっていた。
+ * ページ全体の flow 化はせず、この3行の高さと折返しだけを直す。
+ * コンテナ幅 900px 以上（カンプ原寸 1024 を含む）には適用されない。
+ * -------------------------------------------------------------------------- */
+@container (max-width: 900px) {
+  .v2-page--reader .v2-reader__meta-item {
+    height: auto;
+    min-height: calc(50 * var(--v2-px));
+    padding: calc(4 * var(--v2-tpx)) 0;
+  }
+  .v2-page--reader .v2-reader__meta-label { white-space: nowrap; }
+  .v2-page--reader .v2-reader__meta-slot { min-width: 0; }
+}
+
+@container (max-width: 900px) {
+  /* 左カラムが狭いため、この注記だけ1行あたり4文字前後になり
+     行末に1〜2文字だけ落ちる。装飾マークが本文の幅をさらに削っているので、
+     モバイル幅ではマークを外して本文へ幅を渡し、字送りを詰める。
+     文言・DOM・情報量は変更していない（装飾のみ非表示）。 */
+  .v2-page--reader .v2-reader__assurance-mark { display: none; }
+  .v2-page--reader .v2-reader__assurance-text {
+    font-size: calc(14 * var(--v2-tpx));
+    line-height: calc(20 * var(--v2-tpx));
+    text-wrap: balance;
+  }
+  /* Chromium は強制改行を含む段落を balance しないため、
+     マークを外して幅が足りたモバイル幅に限り改行を無効化し、
+     段落全体で行を均等に割る（文言は変更していない）。 */
+  .v2-page--reader .v2-reader__assurance-text br { display: none; }
+}
+
+/* =============================================================================
+ * 07 モバイル：「一冊を読む場所」として成立させる（V2 Production Mount / PHASE D）
+ * -----------------------------------------------------------------------------
+ * カンプは横長の見開き（左に書影・書誌、右に紙面）を前提にしている。
+ * 縦長のモバイルへそのまま置くと、左カラムの書誌が紙面に隠れ、
+ * 紙面の幅も1行9文字程度になって「読む場所」として成立しない。
+ *
+ * 狭い幅では同じ DOM のまま縦へ流し込み、紙面に十分な幅を渡す。
+ * 情報の順序・文言・DOM・操作は変更しない。
+ * コンテナ幅 900px 以上（カンプ原寸 1024 を含む）には一切適用されない。
+ * ========================================================================== */
+@container (max-width: 900px) {
+  .v2-page--reader .v2-content {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: calc(14 * var(--v2-tpx));
+    padding: calc(16 * var(--v2-tpx)) calc(16 * var(--v2-px)) 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  /* 絶対配置を解いて DOM 順の縦並びにする。
+     カンプ座標は「子」だけでなく「孫」にも入っているため
+     （.v2-reader__scroll / .v2-reader__chapter / .v2-reader__foot）、
+     読む面の中身まで含めて解く。ここを解かないと本文が
+     .v2-content（position:absolute の親）を基準に浮き、書誌へ重なる。 */
+  .v2-page--reader .v2-content > *,
+  .v2-page--reader .v2-reader__chapter,
+  .v2-page--reader .v2-reader__scroll,
+  .v2-page--reader .v2-reader__foot {
+    position: static;
+    inset: auto;
+    width: auto;
+    height: auto;
+    transform: none;
+  }
+
+  /* 左カラムの箱だけを外し、中の書誌・安心情報を .v2-content の直接の並びに載せる。
+     こうしないと安心情報が左カラムに閉じたまま紙面より前に出てしまう。
+     DOM は変更していない（箱を display:contents で透過させているだけ）。 */
+  .v2-page--reader .v2-reader__side { display: contents; }
+  .v2-page--reader .v2-reader__slot,
+  .v2-page--reader .v2-reader__rule,
+  .v2-page--reader .v2-reader__menu { order: 1; }
+  .v2-page--reader .v2-reader__slot { margin-top: 0; }
+  .v2-page--reader .v2-reader__rule { margin-top: calc(2 * var(--v2-tpx)); }
+  /* 書影は素材が無い間は場所を取らせない（偽の枠を見せない） */
+  .v2-page--reader .v2-reader__cover.v2-placeholder { display: none; }
+  /* 「本にした日／文字数／保存先」は縦に3段積むと書誌が紙面を押し下げるので、
+     ラベルと値を積んだ小さな3列にして1段に収める（文言・DOM は変更しない）。 */
+  .v2-page--reader .v2-reader__menu {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: calc(6 * var(--v2-tpx));
+    margin-top: calc(12 * var(--v2-tpx));
+  }
+  .v2-page--reader .v2-reader__meta-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(2 * var(--v2-tpx));
+    min-height: 0;
+    padding: 0;
+    font-size: calc(13 * var(--v2-tpx));
+    line-height: calc(18 * var(--v2-tpx));
+  }
+  .v2-page--reader .v2-reader__mark { display: none; }
+  .v2-page--reader .v2-reader__meta-label { flex: none; }
+  .v2-page--reader .v2-reader__meta-slot {
+    text-align: left;
+    white-space: nowrap;
+    color: var(--v2-ink-strong);
+  }
+
+  /* 紙面が主役。画面幅いっぱいに近い読みやすさを確保する。
+     しおりリボンなど紙面内の装飾は紙面を基準に置き直す。 */
+  .v2-page--reader .v2-reader__page {
+    order: 2;
+    position: relative;
+    width: auto;
+    /* 短い一冊でも紙面が画面の余りを引き受ける。読む面が主役であることを保つ */
+    flex: 1 0 auto;
+    min-height: calc(560 * var(--v2-px));
+    padding: calc(26 * var(--v2-tpx)) calc(20 * var(--v2-tpx)) calc(22 * var(--v2-tpx));
+    display: flex;
+    flex-direction: column;
+  }
+  /* 本文は伸びたぶんを受け取り、小口の罫はカンプどおり紙面の下端へ残る。
+     長文でも紙面ごと伸びるので、入れ子スクロールは作らない。 */
+  .v2-page--reader .v2-reader__scroll { flex: 1 0 auto; overflow: visible; }
+  .v2-page--reader .v2-reader__ribbon { right: calc(20 * var(--v2-tpx)); }
+  .v2-page--reader .v2-reader__chapter {
+    margin: 0 0 calc(18 * var(--v2-tpx));
+    gap: calc(12 * var(--v2-tpx));
+  }
+  .v2-page--reader .v2-reader__body {
+    font-size: calc(16 * var(--v2-tpx));
+    line-height: calc(30 * var(--v2-tpx));
+  }
+  .v2-page--reader .v2-reader__chapter-title {
+    font-size: calc(24 * var(--v2-tpx));
+    line-height: calc(34 * var(--v2-tpx));
+  }
+  /* 覚え書きと小口の罫は、カンプの大きな余白のままだと縦長で間延びする */
+  .v2-page--reader .v2-reader__note {
+    margin-top: calc(28 * var(--v2-tpx));
+    padding-top: calc(16 * var(--v2-tpx));
+  }
+  .v2-page--reader .v2-reader__foot {
+    margin: calc(24 * var(--v2-tpx)) auto 0;
+    width: fit-content;
+  }
+
+  /* 端末内保存の注記は読み終わりの後ろへ */
+  .v2-page--reader .v2-reader__assurance { order: 3; margin-top: 0; }
+
+  /* 下部ナビは流し込みの最後に置き、スクロールしても下端へ留める */
+  .v2-page--reader .v2-reader__navbar {
+    order: 4;
+    position: sticky;
+    bottom: 0;
+    margin-top: auto;
+    padding: calc(6 * var(--v2-tpx)) 0;
+  }
+  .v2-page--reader .v2-reader__nav { position: static; width: auto; }
+  .v2-page--reader .v2-navbar__item { height: calc(46 * var(--v2-tpx)); }
+}

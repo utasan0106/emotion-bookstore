@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja" data-v2-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Visual Refit V2 — bookshelf-adapter QAハーネス（Phase 3 Step 2）</title>
+
+<!--
+  bookshelf-adapter の検証専用ページ。
+  production にも通常の prototype 画面にも読み込ませない。
+
+  - 実 library は使わない。synthetic fixture のみ（利用者データを扱わない）
+  - 既存関数（goToPage 等）はスタブ。本番統合の PASS とは区別する
+  - 保存 / IndexedDB / localStorage / GA4 / 外部通信は一切行わない
+-->
+
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/screens/06.css">
+</head>
+
+<body class="v2-page v2-page--bookshelf" data-v2-screen="06">
+<div class="v2-stage v2-shelf">
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-shelf__wall"></div>
+    <div class="v2-shelf__scape"></div>
+    <div class="v2-shelf__scapelight"></div>
+    <div class="v2-shelf__vignette"></div>
+  </div>
+
+  <div class="v2-content">
+    <button type="button" class="v2-shelf__back" data-v2-go="02">＜　戻る</button>
+    <p class="v2-shelf__mark v2-placeholder" aria-hidden="true"></p>
+    <h1 class="v2-shelf__title">自分の本棚</h1>
+    <p class="v2-shelf__lead">ここには、残すと決めた一冊が並びます。<br>あとから、好きなときに取り出せます。</p>
+
+    <section class="v2-shelf__panel" aria-label="本棚">
+      <h2 class="v2-shelf__panel-title">
+        本棚<span class="v2-shelf__count" data-v2-bookshelf="count"></span>
+      </h2>
+      <div class="v2-shelf__rack" data-v2-bookshelf="rack">
+        <button type="button" class="v2-shelf__add" data-v2-go="05">ことばを残す</button>
+      </div>
+    </section>
+
+    <p class="v2-shelf__note">
+      <span class="v2-shelf__note-mark v2-placeholder" aria-hidden="true"></span>本文はこの端末に保存されます。本文は公開されません。
+    </p>
+
+    <div class="v2-shelf__navbar">
+      <nav class="v2-navbar v2-shelf__nav" aria-label="ナビゲーション">
+        <button type="button" class="v2-navbar__item" data-v2-nav="shelves">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">棚を見る</span>
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">書く</span>
+        </button>
+        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="bookshelf" aria-current="page">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">本棚</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>
+/* 既存関数のスタブ（呼ばれた記録のみ）。本番の実装は再現しない。 */
+window.__calls = [];
+function setActivePageTab(id){ document.querySelectorAll('.page-tab').forEach(function(b){ b.classList.toggle('active', b.dataset.page===id); }); }
+function enterBookExperience(){ window.__calls.push('enterBookExperience'); }
+function returnToCover(){ window.__calls.push('returnToCover'); }
+function goToPage(id){ window.__calls.push('goToPage:'+id); }
+function goToShelf(id){ window.__calls.push('goToShelf:'+id); }
+
+/* 決定的な synthetic library generator（seed 固定・再現性あり）。
+   利用者の実データは一切使わない。 */
+window.makeFixture = function (n, opts) {
+  opts = opts || {};
+  var out = [], seed = opts.seed || 12345;
+  function rnd(){ seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+  for (var i = 0; i < n; i++) {
+    out.push({
+      id: 'fx-' + i,
+      title: opts.title ? opts.title(i) : ('見本の本 ' + (i + 1)),
+      story: 'synthetic body ' + i,
+      category: (i % 3 === 0) ? 'unfiled' : (i % 3 === 1 ? 'moyamoya' : 'fuan'),
+      date: new Date(Date.UTC(2026, 0, 1 + (i % 300))).toISOString(),
+      note: '', image: '', tweetUrl: '', sealed: (rnd() > 0.9)
+    });
+  }
+  return out;
+};
+</script>
+
+<script src="./navigation-adapter.js"></script>
+<script src="./bookshelf-adapter.js"></script>
+<script>
+  V2NavigationAdapter.mount();
+  V2NavigationAdapter.startThemeBridge();
+  V2BookshelfAdapter.setFixture(window.makeFixture(6));
+  V2BookshelfAdapter.mount();
+</script>
+</body>
+</html>

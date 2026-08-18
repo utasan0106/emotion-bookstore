@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja" data-v2-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Visual Refit V2 — 08 空状態・下書き（Structural Skeleton）</title>
+
+<!--
+  Visual Refit V2 / Phase 1 Structural Skeleton
+  Visual North Star: FORMAL_COMPS/DAY/08.png ・ FORMAL_COMPS/NIGHT/08.png のみ。
+
+  08 は「まだ本になっていないもの／空の状態にも意味がある」画面。
+  「何もないからエラー」に見せない。毎日書くよう強制しない。
+  streak・達成率・空き枠・製本数の強調を追加しない。
+
+  【Core Ver.2 整合】
+  「まず書く → 本にする」は唯一の正規ルートではない。
+  出会う／残す／再会する の3つは順序ではなく、サービスの3つの過ごし方として
+  並列に置く。番号・矢印・ステップ表現を付けない。
+  次の行動も「感情の棚を見る」と「ことばを残す」の2入口を同格に置き、
+  どちらが正しい入口かという視覚的な強い優劣を作らない。
+
+  正式カンプは 1122x1402（DAY）/ 1123x1401（NIGHT）で 06・07 と縦横比が異なる。
+  1024x1536 へ矯正せず、08 独自の比率のまま扱う（撮影 561x701 CSS px / DPR2）。
+
+  - 保存データを読まない。fake production data を作らない
+  - 状態タブは静的・非活性。未承認の検索・アーカイブは Phase 2 で削除
+  - 保存 / IndexedDB / localStorage / GA4 / 外部通信を一切行わない
+  - 08 の照明は本棚周辺のごく弱い環境光。カンプ上部の吊り下げ灯は主役として再現しない
+  - 下部ナビは Phase 2 正式仕様の3項目（棚を見る｜書く｜本棚）。route は Phase 3 で決める
+  - DAY と NIGHT は同一DOM。data-v2-theme だけで切り替える
+    （DAY カンプには「戻る」が無く NIGHT カンプにはあるが、同一DOM の決定に従い両方に置く）
+-->
+
+<script>
+  (function () {
+    var t = new URLSearchParams(location.search).get('theme');
+    if (t === 'day' || t === 'night') {
+      document.documentElement.dataset.v2Theme = t;
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/screens/08.css">
+</head>
+
+<body class="v2-page v2-page--empty" data-v2-screen="08">
+<div class="v2-stage v2-empty">
+
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-empty__wall"></div>
+    <div class="v2-empty__scape"></div>
+    <div class="v2-empty__ambient"></div>
+    <div class="v2-empty__vignette"></div>
+  </div>
+
+  <div class="v2-content">
+
+    <button type="button" class="v2-empty__back" data-v2-go="02">＜　戻る</button>
+
+    <!-- Phase 3 Step 2：対応する機能が存在しない丸メニューも削除した -->
+
+    <p class="v2-empty__badge v2-placeholder" aria-hidden="true"></p>
+    <h1 class="v2-empty__title">自分の本棚</h1>
+    <p class="v2-empty__lead">ここには、残すと決めた一冊が並びます。<br>あとから、好きなときに取り出せます。</p>
+
+    <!-- Phase 3 Step 2：現行データに「完成した本／下書き／アーカイブ」の区分は存在しないため
+         状態タブは削除した。 -->
+
+    <!-- 空状態カード：06 の「本が並ぶ状態」との差が一目で分かる構成 -->
+    <section class="v2-empty__card" aria-label="まだ本がない状態">
+      <span class="v2-empty__figure v2-placeholder" aria-hidden="true"></span>
+
+      <h2 class="v2-empty__headline">まだ、本は並んでいません。</h2>
+      <p class="v2-empty__subline">棚を眺めることからでも、ことばを残すことからでも始められます。</p>
+
+      <hr class="v2-empty__steps-rule" aria-hidden="true">
+
+      <div class="v2-empty__steps">
+        <div class="v2-empty__step">
+          <span class="v2-empty__step-mark v2-placeholder" aria-hidden="true"></span>
+          <h3 class="v2-empty__step-title">出会う</h3>
+          <p class="v2-empty__step-text">感情の棚から、<br>ことばや作品を覗く</p>
+        </div>
+        <div class="v2-empty__step">
+          <span class="v2-empty__step-mark v2-placeholder" aria-hidden="true"></span>
+          <h3 class="v2-empty__step-title">残す</h3>
+          <p class="v2-empty__step-text">自分の中に残ったことを、<br>ことばにする</p>
+        </div>
+        <div class="v2-empty__step">
+          <span class="v2-empty__step-mark v2-placeholder" aria-hidden="true"></span>
+          <h3 class="v2-empty__step-title">再会する</h3>
+          <p class="v2-empty__step-text">一冊にしたことばは、<br>自分の本棚へ</p>
+        </div>
+      </div>
+
+      <div class="v2-empty__ctas">
+        <button type="button" class="v2-empty__cta" data-v2-go="03">
+          <span class="v2-empty__cta-mark v2-placeholder" aria-hidden="true"></span>感情の棚を見る
+        </button>
+        <button type="button" class="v2-empty__cta" data-v2-go="05">
+          <span class="v2-empty__cta-mark v2-placeholder" aria-hidden="true"></span>ことばを残す
+        </button>
+      </div>
+    </section>
+
+    <!-- 保存に関する情報：対象を本文に限定した正確な表現にする -->
+    <section class="v2-empty__assurance" aria-label="保存について">
+      <span class="v2-empty__assurance-mark v2-placeholder" aria-hidden="true"></span>
+      <div class="v2-empty__assurance-body">
+        <p class="v2-empty__assurance-title">本文はこの端末に保存されます</p>
+        <p class="v2-empty__assurance-text">本文は公開されません。</p>
+      </div>
+      <span class="v2-empty__assurance-figure v2-placeholder" aria-hidden="true"></span>
+    </section>
+
+    <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
+    <div class="v2-empty__navbar">
+      <nav class="v2-navbar v2-empty__nav" aria-label="ナビゲーション">
+        <button type="button" class="v2-navbar__item" data-v2-nav="shelves">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">棚を見る</span>
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">書く</span>
+        </button>
+        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="bookshelf" aria-current="page">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">本棚</span>
+        </button>
+      </nav>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

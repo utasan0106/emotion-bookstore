@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja" data-v2-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Visual Refit V2 — emotion-shelf-adapter QAハーネス（Phase 3 Step 3A / 3B.1）</title>
+
+<!--
+  emotion-shelf-adapter の検証専用ページ。
+  production にも通常の prototype 画面にも読み込ませない。
+
+  - 既存 CATEGORIES は approved fixture（実データと同じ21件の id/label/def）で代替する
+  - library は synthetic fixture（実在しない合成データ）で代替する。
+    利用者の本文・題名・写真・バックアップは一切含まない
+  - 既存関数（goToPage / goToShelf 等）はスタブ。本番統合の PASS とは区別する
+  - 保存 / IndexedDB / localStorage / GA4 / 外部通信は一切行わない
+-->
+
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/screens/04.css">
+</head>
+
+<body class="v2-page v2-page--shelf-detail" data-v2-screen="04">
+<div class="v2-stage v2-detail">
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-detail__wall"></div>
+    <div class="v2-detail__shelfscape"></div>
+    <div class="v2-detail__plant v2-placeholder"></div>
+    <div class="v2-detail__shelflight"></div>
+    <div class="v2-detail__vignette"></div>
+  </div>
+
+  <div class="v2-content">
+    <button type="button" class="v2-detail__back" data-v2-go="03" data-v2-shelf-back>＜　棚へ戻る</button>
+
+    <p class="v2-detail__glyph v2-placeholder" aria-hidden="true"></p>
+    <h1 class="v2-detail__title" data-v2-emotion="title"></h1>
+    <p class="v2-detail__lead" data-v2-emotion="lead"></p>
+
+    <nav class="v2-detail__tabs" aria-label="領域" data-v2-regions>
+      <button type="button" class="v2-detail__tab" data-v2-region="kotoba"
+              aria-pressed="true" aria-controls="v2-region-kotoba">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>ことば</button>
+      <button type="button" class="v2-detail__tab" data-v2-region="ima"
+              aria-pressed="false" aria-controls="v2-region-ima">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>いま</button>
+      <button type="button" class="v2-detail__tab" data-v2-region="sakuhin"
+              aria-pressed="false" aria-controls="v2-region-sakuhin">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>作品</button>
+      <button type="button" class="v2-detail__tab" data-v2-region="jibun"
+              aria-pressed="false" aria-controls="v2-region-jibun">
+        <span class="v2-detail__tab-icon v2-placeholder" aria-hidden="true"></span>自分の本</button>
+    </nav>
+
+    <section class="v2-detail__panel" id="v2-region-kotoba"
+             data-v2-region-panel="kotoba" aria-label="この棚のことばたち">
+      <h2 class="v2-detail__panel-title">この棚のことばたち</h2>
+      <div class="v2-detail__words" data-v2-emotion="words"></div>
+    </section>
+
+    <section class="v2-detail__panel" id="v2-region-ima"
+             data-v2-region-panel="ima" aria-label="いま" hidden>
+      <h2 class="v2-detail__panel-title">いま</h2>
+      <div class="v2-detail__empty">
+        <p class="v2-detail__empty-title">いま、この棚に置かれているものはありません。</p>
+        <p class="v2-detail__empty-note">また新しいことばが入ったときに、ここに並びます。</p>
+      </div>
+    </section>
+
+    <section class="v2-detail__panel" id="v2-region-sakuhin"
+             data-v2-region-panel="sakuhin" aria-label="作品" hidden>
+      <h2 class="v2-detail__panel-title">作品</h2>
+      <div class="v2-detail__empty">
+        <p class="v2-detail__empty-title">この棚の作品は、ただいま仕入れ中です。</p>
+        <p class="v2-detail__empty-note">棚に置く理由を確かめながら、少しずつ選んでいます。</p>
+      </div>
+    </section>
+
+    <section class="v2-detail__panel" id="v2-region-jibun"
+             data-v2-region-panel="jibun" aria-label="自分の本" hidden>
+      <h2 class="v2-detail__panel-title">自分の本</h2>
+      <div data-v2-mybooks="body"></div>
+    </section>
+
+    <div class="v2-detail__navbar">
+      <nav class="v2-navbar v2-detail__nav" aria-label="ナビゲーション">
+        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="shelves" aria-current="page">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">棚を見る</span>
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">書く</span>
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="bookshelf">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">本棚</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>
+/* 既存関数のスタブ（呼ばれた記録のみ） */
+window.__calls = [];
+function setActivePageTab(id){}
+function enterBookExperience(){ window.__calls.push('enterBookExperience'); }
+function returnToCover(){ window.__calls.push('returnToCover'); }
+function goToPage(id){ window.__calls.push('goToPage:'+id); }
+function goToShelf(id){ window.__calls.push('goToShelf:'+id); }
+
+/* approved fixture：既存 data.js の CATEGORIES と同じ 21件の id / label / def。
+   実利用者データではない。quotes は表示に使わないため持たせない。 */
+window.CATEGORIES_FIXTURE = [
+ {id:"moyamoya",label:"名もなき感情",def:"まだ、どの棚の名前もしっくりこない気持ち。形や温度が決まっていなくても、そのまま置いておけます。"},
+ {id:"kodoku",label:"孤独",def:"ひとりだと感じる、静かな寂しさ。"},
+ {id:"gakkari",label:"がっかり",def:"期待していたものが叶わなかったときの落胆。"},
+ {id:"hazukashii",label:"恥ずかしい",def:"消えてしまいたくなるような、きまり悪さ。"},
+ {id:"ushirometai",label:"後ろめたい",def:"誰かに対する、小さな罪悪感やうしろめたさ。"},
+ {id:"aseri",label:"焦り",def:"置いていかれるような、急かされるような気持ち。"},
+ {id:"kuyashii",label:"悔しい",def:"届かなかった、報われなかったことへの悔しさ。"},
+ {id:"shitto",label:"嫉妬",def:"誰かを羨む、ざらついた気持ち。"},
+ {id:"akogare",label:"憧れ",def:"手の届かない何かへの、まっすぐな憧れ。"},
+ {id:"wakuwaku",label:"わくわく",def:"胸が高鳴る、前向きな期待や高揚。"},
+ {id:"ando",label:"安堵",def:"肩の力が抜けるような、深い安心感。"},
+ {id:"kansha",label:"感謝",def:"誰かの優しさに、静かに満たされる気持ち。"},
+ {id:"itooshii",label:"愛おしい",def:"かけがえのないものへの、深い愛おしさ。"},
+ {id:"hokorashii",label:"誇らしい",def:"自分の頑張りを、静かに誇れる気持ち。"},
+ {id:"natsukashii",label:"懐かしい",def:"遠い日の記憶が、ふっと蘇る気持ち。"},
+ {id:"ureshii",label:"嬉しい",def:"心が弾むような、まっすぐな喜び。"},
+ {id:"ikari",label:"怒り",def:"胸の奥で熱く燃える、抑えきれない気持ち。"},
+ {id:"kanashii",label:"悲しい",def:"涙がこぼれるような、深い喪失や切なさ。"},
+ {id:"fuan",label:"不安",def:"この先どうなるか分からない、落ち着かない気がかり。"},
+ {id:"keno",label:"嫌悪感",def:"顔をしかめてしまうような、生理的な「無理」という感覚。"},
+ {id:"odoroki",label:"驚き",def:"思いがけない出来事に、心がついていかない感覚。"}
+];
+
+/* synthetic library fixture（Step 3B.1 QA 用）。
+   実在の利用者データではない。本文 story は表示されないことの確認用に入れてあるだけで、
+   04 のどのパネルにも描画されない。写真・tweetUrl も表示対象外。
+   ・unfiled が 04 に出ないこと
+   ・shitto が「惹かれる」「ぶつかる」の両方に出ること
+   ・4冊以上で「本棚ですべて見る」placeholder が出ること
+   を1つの fixture で確認できる構成にしている。 */
+window.LIBRARY_FIXTURE = [
+ {id:"s1", category:"fuan",     title:"合成データ1", story:"（表示されないこと）", note:"", image:"", tweetUrl:"", sealed:false, date:"2026-01-05T00:00:00.000Z"},
+ {id:"s2", category:"aseri",    title:"合成データ2", story:"（表示されないこと）", note:"", image:"", tweetUrl:"", sealed:false, date:"2026-02-11T00:00:00.000Z"},
+ {id:"s3", category:"odoroki",  title:"",            story:"（題名なし fallback）", note:"", image:"", tweetUrl:"", sealed:false, date:"2026-03-20T00:00:00.000Z"},
+ {id:"s4", category:"fuan",     title:"合成データ4", story:"（4冊目）",            note:"", image:"", tweetUrl:"", sealed:false, date:"2026-04-02T00:00:00.000Z"},
+ {id:"s5", category:"shitto",   title:"合成データ5", story:"（二重配架の確認）",    note:"", image:"", tweetUrl:"", sealed:false, date:"2026-05-09T00:00:00.000Z"},
+ {id:"s6", category:"moyamoya", title:"合成データ6", story:"（まだ名前がない）",    note:"", image:"", tweetUrl:"", sealed:false, date:"2026-06-18T00:00:00.000Z"},
+ {id:"s7", category:"unfiled",  title:"合成データ7", story:"（04には出ないこと）",  note:"", image:"", tweetUrl:"", sealed:false, date:"2026-07-01T00:00:00.000Z"}
+];
+</script>
+
+<script src="./navigation-adapter.js"></script>
+<script src="./bookshelf-adapter.js"></script>
+<script src="./emotion-shelf-adapter.js"></script>
+<script>
+  V2EmotionShelfAdapter.setCategoriesFixture(window.CATEGORIES_FIXTURE);
+  V2BookshelfAdapter.setFixture(window.LIBRARY_FIXTURE);
+  V2NavigationAdapter.mount();
+  V2NavigationAdapter.startThemeBridge();
+  V2EmotionShelfAdapter.mount();
+  V2EmotionShelfAdapter.enterShelf('zawatsuku', { triggerId: 'zawatsuku' });
+</script>
+</body>
+</html>

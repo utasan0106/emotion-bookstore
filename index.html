@@ -134,7 +134,132 @@
   "inLanguage": "ja"
 }
 </script>
+<!-- ★PKT-1：V2 global theme を pre-paint 段階で確定させる。
+     契約：05:00〜20:59 DAY / 21:00〜04:59 NIGHT（境界 04:59 NIGHT・05:00 DAY・20:59 DAY・21:00 NIGHT）。
+     01 表紙の五段階 daypart（main.js currentDaypart）とは別契約であり、そちらには一切触れない。
+     stylesheet より前に <html> の theme 属性を確定させることで、DAY 時間帯に NIGHT で
+     一瞬描画されてから切り替わる flash を避ける。外部通信・保存は一切行わない。 -->
+<script>
+(function(){
+  function isNightHour(hour){
+    var h = (typeof hour === 'number') ? hour : new Date().getHours();
+    return h >= 21 || h < 5;
+  }
+  window.isNightHour = isNightHour;
+  var night = isNightHour();
+  var el = document.documentElement;
+  el.setAttribute('data-theme', night ? 'night' : 'day');
+  el.setAttribute('data-v2-theme', night ? 'night' : 'day');
+  el.setAttribute('data-v2-prepaint-theme', night ? 'night' : 'day');
+})();
+</script>
 <link rel="stylesheet" href="style.css">
+<!-- ===== Visual Refit V2（Production Mount） ===== -->
+<link rel="stylesheet" href="visual-refit-v2-prototype/css/master-tokens.css">
+<link rel="stylesheet" href="visual-refit-v2-prototype/css/beta0.css">
+<link rel="stylesheet" href="v2-mount.css">
+<!-- ★FIX-11（Round 2.1）：V2 が mount するまで旧UIを描かせない boot 状態。
+     実測した原因
+       v2-mount.css は html[data-v2-mounted="true"] にしか効かず、その属性は
+       v2-mount.js の boot()（DOMContentLoaded + setTimeout 0）で初めて付く。
+       そのため first paint は必ず mount より前に起き、その時点では旧表紙が
+       通常どおり描画対象になっていた。
+       実測（about:blank からの直アクセス。遷移前ページを持たないので snapshot ではない）
+         1440px: first paint 12820ms / mount 13384ms（差 564ms）
+         390px : first paint 13284ms / mount 13699ms（差 415ms）
+         first paint 時点で hero-photo・旧 h1・tagline・enter-btn・trust-row・
+         旧メニュー・旧言語トグル・first-visit-note がいずれも可視だった。
+
+     対応
+       stylesheet より後・本文より前のこの位置で <html> に data-v2-booting を立て、
+       V2 が担当する面（旧UIと、まだ整っていない V2 面の両方）を paint させない。
+       出すのは V2 の基本背景 var(--bg)（DAY/NIGHT は上の pre-paint theme で確定済み）だけ。
+       解除は v2-mount.js が data-v2-mounted を付ける瞬間に行う。
+
+     fail-safe（JS 失敗時に blank のまま残さない）
+       ・JS 無効：属性自体が付かないので従来どおり旧UIが出る。
+       ・v2-mount.js が読めない／boot が落ちた：load 後の猶予で必ず解除し、
+         既存の旧UI fallback へ戻す。
+       ・load が来ない環境：絶対上限のタイマーでも解除する。
+       いずれも V2 の起動を待たせるものではない（boot 手順は一切変えていない）。 -->
+<style>
+html[data-v2-booting] body{ background: var(--bg, #f6f0e6) !important; }
+html[data-v2-booting] .entrance.hero > *:not(.v2-page),
+html[data-v2-booting] #counter > *:not(.v2-page),
+html[data-v2-booting] #shelves > *:not(.v2-page),
+html[data-v2-booting] #desk > *:not(.v2-page),
+html[data-v2-booting] #bookshelf > *:not(.v2-page),
+html[data-v2-booting] .experience-bar,
+html[data-v2-booting] .page-nav,
+html[data-v2-booting] .doma,
+html[data-v2-booting] .shop-footer{ visibility: hidden !important; }
+/* mount 前は V2 の各面も重なって出るため、同じく描かせない（背景だけの neutral な状態にする）。
+   display ではなく visibility なので、mount 前に走る既存コードの寸法測定は変わらない。 */
+html[data-v2-booting] .v2-page{ visibility: hidden !important; }
+
+/* ★PC Legacy UI Flash 対応：boot 中も旧UIの「面そのもの」を出さない。
+   実測した原因
+     上の visibility は子要素にしか効かないため、.entrance.hero 自身の背景
+     （夜青のグラデーション）と .shop の地色、および装飾疑似要素が
+     first paint 〜 mount の間だけ描画されていた。
+     1440 DAY / cold cache の screencast 実測
+       228ms .shop の紙地 → 277〜313ms 夜青が全面 → 599ms V2 表紙
+       CPU 6x では 1199〜1425ms のあいだ夜青が出続ける
+     .entrance.hero は boot 中 1440x1461px あり、desktop では画面全面を覆う。
+
+   対応
+     v2-mount.css が mount 後に行っている legacy 面の中和
+     （background / padding / min-height / border / box-shadow と ::before / ::after）を、
+     同じ内容のまま boot 中にも適用する。新しい規則や色は作らない。
+     .shop だけは mount 後は V2 の面が覆うため v2-mount.css に規則が無い。
+     boot 中は V2 も隠しているので、ここで地色を外して body の var(--bg) を見せる。
+     結果、boot 中に出るのは上の body 規則が塗る V2 の基本背景だけになる。 */
+html[data-v2-booting] .shop,
+html[data-v2-booting] .entrance.hero,
+html[data-v2-booting] #counter,
+html[data-v2-booting] #shelves,
+html[data-v2-booting] #desk,
+html[data-v2-booting] #bookshelf{
+  background: none !important;
+  background-image: none !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html[data-v2-booting] .entrance.hero::before,
+html[data-v2-booting] .entrance.hero::after,
+html[data-v2-booting] #counter::before,
+html[data-v2-booting] #counter::after,
+html[data-v2-booting] #shelves::before,
+html[data-v2-booting] #shelves::after,
+html[data-v2-booting] #desk::before,
+html[data-v2-booting] #desk::after,
+html[data-v2-booting] #bookshelf::before,
+html[data-v2-booting] #bookshelf::after{
+  content: none !important;
+}
+</style>
+<script>
+(function(){
+  var el = document.documentElement;
+  if (!el) return;
+  el.setAttribute('data-v2-booting', '');
+  var cleared = false;
+  function clearBooting(){
+    if (cleared) return;
+    cleared = true;
+    el.removeAttribute('data-v2-booting');
+  }
+  /* v2-mount.js は mount 完了時にこれを呼ぶ。存在しなければ下の fail-safe が働く。 */
+  window.__v2ClearBooting = clearBooting;
+  /* fail-safe 1：ページが読み終わっても V2 が mount しなかった場合。
+     boot() は DOMContentLoaded 直後に走るため、正常時はここへ来る前に解除済み。 */
+  window.addEventListener('load', function(){ window.setTimeout(clearBooting, 1500); });
+  /* fail-safe 2：load すら来ない場合の絶対上限。 */
+  window.setTimeout(clearBooting, 20000);
+})();
+</script>
 <style>
 /* --- 追加：トップページのアコーディオン用スタイル --- */
 .about-accordion-wrap {
@@ -245,7 +370,12 @@ body.night .about-data-content{
 }
 </style>
 </head>
-<body class="night">
+<body>
+<!-- ★PKT-1：body.night は静的固定をやめ、pre-paint で確定した theme に合わせる。
+     body 開始直後の同期実行なので、以降の描画は最初から正しい DAY/NIGHT になる。
+     legacy CSS（body.night）と navigation-adapter の theme bridge は、
+     どちらも従来どおり body.night を唯一の出どころとして読み続ける。 -->
+<script>document.body.classList.toggle('night', document.documentElement.getAttribute('data-v2-prepaint-theme') === 'night');</script>
 
 <div class="shop">
   <header class="entrance hero">
@@ -310,7 +440,41 @@ body.night .about-data-content{
       <img src="assets/shop-seal.png" alt="" width="512" height="512" loading="eager" decoding="async"
            onerror="this.closest('.hero-seal') && (this.closest('.hero-seal').style.display='none')">
     </div>
-  </header>
+
+<!-- V2 01 表紙 -->
+<div class="v2-page v2b v2c01" data-v2-screen="01" data-screen="01">
+  <div class="v2c01__stage">
+    <!-- 環境レイヤ（CEO承認済み raster asset。UI文字・CTAは含まない） -->
+    <div class="v2c01__wall" aria-hidden="true"></div>
+    <div class="v2c01__floor" aria-hidden="true"></div>
+    <div class="v2c01__grain" aria-hidden="true"></div>
+    <div class="v2c01__arch" aria-hidden="true"></div>
+    <div class="v2c01__plantfg" aria-hidden="true"></div>
+
+    <span class="v2c01__logo" aria-hidden="true"></span>
+
+    <h1 class="v2c01__brand">
+      <span class="v2c01__brand-sub" data-i18n="v2c01BrandSub">みんなの</span>
+      <span class="v2c01__brand-main" data-i18n="v2c01BrandMain">感情書店</span>
+    </h1>
+
+    <hr class="v2c01__rule">
+
+    <p class="v2c01__copy" data-i18n-html="v2c01Copy">気持ちを入口に、出会う。<br>そこで残ったものも、日々の小さなことも。<br>一冊にして、あなたの本棚へ。</p>
+
+    <ul class="v2c01__steps" aria-label="この書店の過ごし方" data-i18n-aria="v2c01StepsAria">
+      <li><span class="v2c01__step-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2c01Step1">知る</span></li>
+      <li><span class="v2c01__step-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="8.5" cy="9" r="2.5"/><circle cx="15.5" cy="9" r="2.5"/><path d="M4 19c.5-3 2.5-4.5 4.5-4.5S12.5 16 13 19M11 19c.5-3 2.5-4.5 4.5-4.5S19.5 16 20 19"/><path d="M8 4l.3.8.8.3-.8.3-.3.8-.3-.8-.8-.3.8-.3zM16 3l.3.8.8.3-.8.3-.3.8-.3-.8-.8-.3.8-.3z"/></svg></span><span data-i18n="v2c01Step2">出会う</span></li>
+      <li><span class="v2c01__step-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2c01Step3">残す</span></li>
+      <li><span class="v2c01__step-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2-4.9"/><path d="M17 3v4h4"/></svg></span><span data-i18n="v2c01Step4">巡る</span></li>
+    </ul>
+
+    <div class="v2c01__books" aria-hidden="true"></div>
+
+    <button type="button" class="v2c01__cta" data-v2-go="02"><span class="v2c01__cta-fl v2c01__cta-fl--l" aria-hidden="true"><svg viewBox="0 0 44 44"><path class="st" d="M7 37C15 33 23 24 27 9"/><path class="lf" d="M25 15c-4-3-8-3-12-1 3 3 8 4 12 1z"/><path class="lf" d="M27 10c0-5 3-8 8-9-1 5-4 8-8 9z"/><path class="lf" d="M21 24c-4-3-8-3-11 0 3 3 7 3 11 0z"/><path class="lf" d="M15 31c-4-2-7-2-10 1 3 2 7 2 10-1z"/></svg></span><span data-i18n="v2c01Cta">入店する</span><span class="v2c01__cta-fl v2c01__cta-fl--r" aria-hidden="true"><svg viewBox="0 0 44 44"><path class="st" d="M7 37C15 33 23 24 27 9"/><path class="lf" d="M25 15c-4-3-8-3-12-1 3 3 8 4 12 1z"/><path class="lf" d="M27 10c0-5 3-8 8-9-1 5-4 8-8 9z"/><path class="lf" d="M21 24c-4-3-8-3-11 0 3 3 7 3 11 0z"/><path class="lf" d="M15 31c-4-2-7-2-10 1 3 2 7 2 10-1z"/></svg></span></button>
+  </div>
+</div>
+</header>
 
   <!-- ★v1.3 Phase A：土間（第一場面Heroと編纂机の間の一呼吸）。装飾専用・ID無し・.reveal付与禁止。 -->
   <div class="doma" aria-hidden="true"></div>
@@ -474,7 +638,50 @@ body.night .about-data-content{
         <button class="send-btn" id="sendBtn" data-i18n="sendBtn">話す</button>
       </div>
     </div>
-  </section>
+
+<!-- V2 02 入店 -->
+<div class="v2-page v2b v2c02" data-v2-screen="02" data-screen="02">
+  <div class="v2c02__stage">
+    <div class="v2c02__amb" aria-hidden="true"></div>
+    <header class="v2c02__brandrow">
+      <span class="v2c02__logo" aria-hidden="true"></span>
+      <span class="v2c02__brandname" data-i18n="shopName">みんなの感情書店</span>
+      <button type="button" class="v2b-menutrigger" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </header>
+    <h1 class="v2c02__hero" data-i18n-html="v2c02Hero">今日は、<br>どこからはじめますか。</h1>
+    <p class="v2c02__lead" data-i18n-html="v2c02Lead">気持ちから棚を歩くことも、残ったことを書くことも、<br>自分の本棚を開くこともできます。</p>
+    <nav class="v2c02__cards" aria-label="はじめる場所" data-i18n-aria="v2c02CardsAria">
+      <button type="button" class="v2c02__card" data-v2-go="03">
+        <span class="v2c02__pane v2c02__pane--emotion" aria-hidden="true"></span>
+        <span class="v2c02__body">
+          <span class="v2c02__cardtitle" data-i18n="v2c02Card1Title">感情の棚を見る</span>
+          <span class="v2c02__rule" aria-hidden="true"></span>
+          <span class="v2c02__carddesc" data-i18n-html="v2c02Card1Desc"><span class="v2c02__descline">気持ちごとに並ぶ棚から、</span><span class="v2c02__descline">ことばや作品に出会う。</span></span>
+        </span>
+        <span class="v2c02__chev" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="v2c02__card" data-v2-go="05">
+        <span class="v2c02__pane v2c02__pane--write" aria-hidden="true"></span>
+        <span class="v2c02__body">
+          <span class="v2c02__cardtitle" data-i18n="v2c02Card2Title">残ったことを書く</span>
+          <span class="v2c02__rule" aria-hidden="true"></span>
+          <span class="v2c02__carddesc" data-i18n-html="v2c02Card2Desc"><span class="v2c02__descline">作品の余韻も、</span><span class="v2c02__descline">日々の小さなことも、</span><span class="v2c02__descline">一冊にして残す。</span></span>
+        </span>
+        <span class="v2c02__chev" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="v2c02__card" data-v2-go="bookshelf">
+        <span class="v2c02__pane v2c02__pane--library" aria-hidden="true"></span>
+        <span class="v2c02__body">
+          <span class="v2c02__cardtitle" data-i18n="v2c02Card3Title">自分の本棚を見る</span>
+          <span class="v2c02__rule" aria-hidden="true"></span>
+          <span class="v2c02__carddesc" data-i18n-html="v2c02Card3Desc"><span class="v2c02__descline">一冊にした言葉を、</span><span class="v2c02__descline">あとから静かに巡る。</span></span>
+        </span>
+        <span class="v2c02__chev" aria-hidden="true"></span>
+      </button>
+    </nav>
+  </div>
+</div>
+</section>
 
   <section id="shelves" class="reveal experience-page">
     <div class="section-head"><h2 data-i18n="sectionHead2">感情の棚</h2></div>
@@ -492,7 +699,124 @@ body.night .about-data-content{
       <div class="section-return-prompt"><strong data-i18n="preBandaiPromptHeading">まだ言葉にならない方へ</strong><span data-i18n="preBandaiPromptDesc">店主と、しまう棚を相談する</span></div>
       <button type="button" class="back-to-bandai" onclick="goToPage('counter')" data-i18n="backToBandai">⤴ 番台へ戻る</button><button type="button" class="exit-shop-btn" onclick="exitShopWithFarewell()" data-i18n="exitShopBtn">お店を出る</button>
     </div>
-  </section>
+
+<!-- V2 03/04 感情棚 -->
+<div class="v2-page v2b v2c03" data-v2-screen="03" data-v2-subview-of="shelves-index" data-screen="03">
+  <div class="v2c03__stage">
+    <div class="v2c03__amb" aria-hidden="true"></div>
+    <header class="v2c03__brandrow">
+      <span class="v2c03__logo" aria-hidden="true"></span>
+      <span class="v2c03__brandname" data-i18n="shopName">みんなの感情書店</span>
+      <button type="button" class="v2c03__menubtn" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </header>
+    <h1 class="v2c03__title" data-i18n="v2c03Title">感情の棚</h1>
+    <p class="v2c03__lead" data-i18n-html="v2c03Lead">いまの気持ちに近い棚から、<br>ことばや作品、自分の本に出会えます。</p>
+    <div class="v2c03__divider" aria-hidden="true"><span class="v2c03__divline"></span><span class="v2c03__sprig"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span><span class="v2c03__divline"></span></div>
+    <div class="v2c03__grid">
+      <button type="button" class="v2c03__book v2c03__book--hazumu" data-v2-shelf="hazumu" data-v2-shelf-trigger="hazumu">
+        <!-- ICON-SET-01 / 1 心が弾む：FINAL ボード（Direction 2 の 1）＝ baseline から跳ね上がる軌跡＋small spark -->
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.6 20.5h10.6"/><path d="M7.5 12.8c.75 2.2 1.25 3.7 1.95 4.6-1.25.5-1.35 1.85 0 1.85 1.35 0 1.55-1.65.85-2.7 1.55-2.85 3.7-5.2 6.25-6.8"/><circle cx="6.9" cy="11.7" r=".8"/><circle cx="17.2" cy="9" r=".8"/><path d="M18.4 7.1l.7-1.9M20 8.2l1.6-1M15.9 6.5l-.2-1.9"/><path d="M4.3 8.6l-.5-1.5M2.9 10.2l-1.4-.6"/><path d="M20.4 12.4l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5z"/><path d="M3.9 15.9l.45 1.15 1.15.45-1.15.45-.45 1.15-.45-1.15L2.3 17.5l1.15-.45z"/></svg></span>
+        <span class="v2c03__name" data-i18n="v2Shelfhazumu">心が弾む</span>
+      </button>
+      <button type="button" class="v2c03__book v2c03__book--atatamaru" data-v2-shelf="atatamaru" data-v2-shelf-trigger="atatamaru">
+        <!-- ICON-SET-01 / 2 心があたたまる：FINAL ボード（Direction 1）＝両手で heart を包み、柔らかな rays -->
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 14.6c-2.5-2-4-3.4-4-5 0-1.2 1-2.05 2.05-2.05.9 0 1.55.45 1.95 1.15.4-.7 1.05-1.15 1.95-1.15C15 7.55 16 8.4 16 9.6c0 1.6-1.5 3-4 5z"/><path d="M12 5.5V3.6M8.8 6.3 8 4.6M15.2 6.3l.8-1.7"/><path d="M9.9 20.5c-2.1-.9-3.8-2.3-4.9-4.2-.4-.7-.1-1.5.6-1.8.65-.25 1.35.05 1.7.7.35.65.8 1.2 1.35 1.65"/><path d="M8.5 16.6c-.55-.85-1-1.75-1.35-2.7-.25-.7.15-1.4.85-1.55.65-.15 1.3.25 1.45.95.2.85.5 1.6.9 2.3"/><path d="M14.1 20.5c2.1-.9 3.8-2.3 4.9-4.2.4-.7.1-1.5-.6-1.8-.65-.25-1.35.05-1.7.7-.35.65-.8 1.2-1.35 1.65"/><path d="M15.5 16.6c.55-.85 1-1.75 1.35-2.7.25-.7-.15-1.4-.85-1.55-.65-.15-1.3.25-1.45.95-.2.85-.5 1.6-.9 2.3"/></svg></span>
+        <span class="v2c03__name" data-i18n="v2Shelfatatamaru">心があたたまる</span>
+      </button>
+      <button type="button" class="v2c03__book v2c03__book--hikareru" data-v2-shelf="hikareru" data-v2-shelf-trigger="hikareru">
+        <!-- ICON-SET-01 / 3 惹かれる：FINAL ボード（Direction 2 の 3）＝軌道が star へ引かれていく -->
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16.9 5.3l.66 1.86 1.97.05-1.57 1.19.57 1.9-1.63-1.12-1.63 1.12.57-1.9-1.57-1.19 1.97-.05z"/><path d="M16.9 3.1V1.9M20.3 4.3l.9-.9M13.5 4.3l-.9-.9M21 8.2h1.3"/><path d="M4.4 18.9c3.8-.5 7.8-3.4 10.2-7.6"/><path d="M3.4 15.3c3.5-.7 7-3 9.4-6.5" stroke-dasharray="1.4 1.9"/><path d="M6.6 21c3.9-.7 7.8-3.2 10.2-6.9" stroke-dasharray="1.4 1.9"/></svg></span>
+        <span class="v2c03__name" data-i18n="v2Shelfhikareru">惹かれる</span>
+      </button>
+      <button type="button" class="v2c03__book v2c03__book--shizumu" data-v2-shelf="shizumu" data-v2-shelf-trigger="shizumu">
+        <!-- ICON-SET-01 / 4 沈む：FINAL ボード（Direction 1）＝waterline と、その下へ沈む drop -->
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2.6 10c1.55-1.05 3.1-1.05 4.65 0s3.1 1.05 4.65 0 3.1-1.05 4.65 0 3.1 1.05 4.65 0"/><path d="M12 3.4v4.2" stroke-dasharray="1.1 1.7"/><path d="M12 12.6c1.4 1.7 2.1 2.75 2.1 3.7a2.1 2.1 0 0 1-4.2 0c0-.95.7-2 2.1-3.7z"/></svg></span>
+        <span class="v2c03__name" data-i18n="v2Shelfshizumu">沈む</span>
+      </button>
+      <button type="button" class="v2c03__book v2c03__book--zawatsuku" data-v2-shelf="zawatsuku" data-v2-shelf-trigger="zawatsuku">
+        <!-- ICON-SET-01 / 5 ざわつく：FINAL ボード（Direction 1）＝複数の不規則な wave lines と small dots -->
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.6 9.6c1.15-1.5 2.35-1.4 3.6.3 1.3 1.75 2.55 1.8 3.75.15 1.15-1.55 2.35-1.5 3.6.15"/><path d="M3.6 13.2c1.35-1.15 2.7-1 4.05.45 1.35 1.45 2.7 1.6 4.05.45 1.4-1.2 2.8-1.05 4.2.45"/><path d="M6.2 16.9c1.05-1.4 2.15-1.35 3.3.15 1.2 1.55 2.4 1.6 3.6.15 1.05-1.25 2.1-1.2 3.15.15"/><circle cx="3.4" cy="7.4" r=".65"/><circle cx="19.1" cy="9" r=".65"/></svg></span>
+        <span class="v2c03__name" data-i18n="v2Shelfzawatsuku">ざわつく</span>
+      </button>
+      <button type="button" class="v2c03__book v2c03__book--butsukaru" data-v2-shelf="butsukaru" data-v2-shelf-trigger="butsukaru">
+        <!-- ICON-SET-01 / 6 ぶつかる：FINAL ボード（Direction 1）＝左右から来る 2 本の arrow が中央で衝突 -->
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2.8 12.8h7.3M8.5 11 10.3 12.8l-1.8 1.8"/><path d="M21.2 12.8h-7.3M15.5 11 13.7 12.8l1.8 1.8"/><path d="M12 10.3V7.5M9.5 10.9 8.4 8.4M14.5 10.9l1.1-2.5M7.4 11.7 5.6 9.9M16.6 11.7l1.8-1.8"/></svg></span>
+        <span class="v2c03__name" data-i18n="v2Shelfbutsukaru">ぶつかる</span>
+      </button>
+      <button type="button" class="v2c03__book v2c03__book--miwohiku" data-v2-shelf="miwohiku" data-v2-shelf-trigger="miwohiku">
+        <!-- ICON-SET-01 / 7 身を引く：FINAL ボード（再検討ボード Option 5）＝一本の道／軌跡が遠くへ離れていく。
+             人物シルエット・植物の芽へは戻さない。 -->
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.8 21.2C9.8 18 6.4 15.6 9.2 12.4 10.4 11 10.8 9.2 10.9 7.6"/><path d="M16.2 21.2C16.6 17.8 12.4 15.8 13.4 12.6 13.9 11 12.4 9.2 12.3 7.6" stroke-dasharray="0.1 1.7"/><path d="M10.2 7.2 11.6 5.4 13 7.2"/><path d="M4.8 19.8 4.2 18.2M3.5 20.4 2.9 18.9"/><path d="M18.4 19.8 19 18.2M19.8 20.4 20.4 18.9"/></svg></span>
+        <span class="v2c03__name" data-i18n="v2Shelfmiwohiku">身を引く</span>
+      </button>
+      <button type="button" class="v2c03__book v2c03__book--namae" data-v2-shelf="namae-ga-nai" data-v2-shelf-trigger="namae-ga-nai">
+        <!-- ICON-SET-01 / 8 まだ名前がない：FINAL ボード（Direction 1）＝完全には閉じず、点の密度も揃わない dotted circle -->
+        <span class="v2c03__ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.05 9.47A7.4 7.4 0 0 1 18.95 9.47" stroke-dasharray="0.1 2.4"/><path d="M18.95 9.47A7.4 7.4 0 0 1 14.53 18.95" stroke-dasharray="0.1 3.5"/><path d="M8.87 18.71A7.4 7.4 0 0 1 5.05 9.47" stroke-dasharray="0.1 4.7"/></svg></span>
+        <span class="v2c03__name" data-i18n="v2Shelfnamaeganai">まだ名前がない</span>
+      </button>
+    </div>
+    <p class="v2c03__guide"><span class="v2c03__guidesprig" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span><span class="v2c03__guidetext" data-i18n-html="v2c03Guide">どの棚からでも、書くことからでも。<br>あなたのペースで、自由に巡れます。</span></p>
+  </div>
+
+<nav class="v2b-nav" aria-label="主要な移動" data-i18n-aria="v2NavAria">
+  <button type="button" class="v2b-nav__item" data-v2-nav="shelves" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span data-i18n="v2NavShelves">感情棚</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2NavDesk">書く</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2NavBookshelf">本棚</span></button>
+</nav>
+</div>
+<div class="v2-page v2b v2c04" data-v2-screen="04" data-v2-subview-of="shelf-detail" data-screen="04">
+  <div class="v2c04__stage">
+    <div class="v2c04__utility">
+      <button type="button" class="v2c04__back" data-v2-go="03" data-v2-shelf-back><span class="v2c04__back-arrow" aria-hidden="true"></span><span data-i18n="v2BackToShelves">棚へ戻る</span></button>
+      <button type="button" class="v2b-menutrigger" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+    <header class="v2c04__hero">
+      <span class="v2c04__halo" aria-hidden="true"></span>
+      <span class="v2c04__stars" aria-hidden="true"><svg viewBox="0 0 240 240"><circle cx="38" cy="52" r="1.4"/><circle cx="196" cy="40" r="1.1"/><circle cx="214" cy="120" r="1.4"/><circle cx="26" cy="140" r="1.1"/><circle cx="120" cy="18" r="1.2"/><circle cx="176" cy="196" r="1.2"/></svg></span>
+      <!-- Final Field Fix 6：Hero 右下の芽（sprig）は 21感情共通の不要装飾として削除。
+           代替装飾は作らない（halo / stars は承認済みのまま維持）。 -->
+      <h1 class="v2c04__title" data-v2-emotion="title"></h1>
+      <p class="v2c04__lead" data-v2-emotion="lead"></p>
+    </header>
+
+    <section class="v2c04__sec" data-v2-region-panel="kotoba" aria-label="ことば" data-i18n-aria="v2c04SecKotoba">
+      <p class="v2c04__num" aria-hidden="true">01</p>
+      <h2 class="v2c04__h" data-i18n="v2c04SecKotoba">ことば</h2>
+      <div class="v2c04__worddef" data-v2-worddetail="body" hidden></div>
+      <div class="v2c04__words" data-v2-emotion="words"></div>
+    </section>
+
+    <section class="v2c04__sec" data-v2-region-panel="sakuhin" aria-label="作品" data-i18n-aria="v2c04SecSakuhin">
+      <p class="v2c04__num" aria-hidden="true">02</p>
+      <h2 class="v2c04__h" data-i18n="v2c04SecSakuhin">作品</h2>
+      <p class="v2c04__intro" data-i18n="v2c04WorksIntro">この気持ちに寄り添う、本・映画・音楽。</p>
+      <div class="v2c04__works" data-v2-works="body">
+        <div class="v2c04__works-hold">
+          <p class="v2c04__works-hold-title" data-i18n="v2c04WorksHoldTitle">この棚の作品は、ただいま仕入れ中です。</p>
+          <p class="v2c04__works-hold-note" data-i18n="v2c04WorksHoldNote">また立ち寄ったときに、静かに並んでいるはずです。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="v2c04__sec" data-v2-region-panel="jibun" aria-label="自分の本" data-i18n-aria="v2c04SecJibun">
+      <p class="v2c04__num" aria-hidden="true">03</p>
+      <h2 class="v2c04__h" data-i18n="v2c04SecJibun">自分の本</h2>
+      <p class="v2c04__intro" data-i18n="v2c04MyBooksIntro">あなたがこの気持ちで残した本です。</p>
+      <div data-v2-mybooks="body"></div>
+      <div class="v2c04__write">
+        <button type="button" class="v2c04__writebtn" data-v2-go="05"><span class="v2c04__pen" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2c04WriteBtn">残ったことを書く</span></button>
+        <p class="v2c04__writenote" data-i18n="v2c04WriteNote">今の気持ちを、自分の言葉で残してみる</p>
+      </div>
+    </section>
+  </div>
+
+<nav class="v2b-nav" aria-label="主要な移動" data-i18n-aria="v2NavAria">
+  <button type="button" class="v2b-nav__item" data-v2-nav="shelves" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span data-i18n="v2NavShelves">感情棚</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2NavDesk">書く</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2NavBookshelf">本棚</span></button>
+</nav>
+</div>
+</section>
 
   <section id="desk" class="reveal experience-page">
     <time class="desk-current-date" id="deskCurrentDate"></time>
@@ -547,7 +871,7 @@ body.night .about-data-content{
         <div class="title-suggest" id="titleSuggest"></div>
         <!-- ★2026-07-19 E：店主に題名を相談する（AI・外部通信・本文解析なし。固定候補プールのみ） -->
         <button type="button" class="title-consult-btn" id="titleConsultBtn"
-                aria-expanded="false" aria-controls="titleConsult" data-i18n="titleConsultBtn">店主に題名を相談する</button>
+                aria-expanded="false" aria-controls="titleConsult" data-i18n="titleConsultBtn">題名のヒントを見る</button>
         <div class="title-consult hidden" id="titleConsult"></div>
         <div class="field-row" style="margin-top:12px;">
           <div class="field">
@@ -569,7 +893,7 @@ body.night .about-data-content{
             <img id="photoPreviewImg" alt="添付写真のプレビュー" data-i18n-alt="photoPreviewAlt">
             <button type="button" class="photo-remove" id="photoRemove" aria-label="写真を外す" data-i18n-aria="photoRemoveAria">×</button>
           </div>
-          <span class="photo-hint" data-i18n="photoHint">写真はこの端末の中だけで、長辺800pxに折りたたんで保管します。サーバーには送信されません。</span>
+          <span class="photo-hint" data-i18n="photoHint">写真は、この端末のブラウザ保存領域に保存されます。長辺800pxに縮小し、運営者のサーバーへは送信しません。</span>
         </div>
         <!-- ★Hotfix4-8：X公式埋め込み（platform.twitter.com等への外部通信、CSPのframe-src 'none'に抵触）は
              従来どおり行わない。この欄自体（外部通信を伴わない単純なURL保存・リンク表示）のみ提供する。 -->
@@ -631,7 +955,81 @@ body.night .about-data-content{
       <div class="section-return-prompt"><strong data-i18n="preBandaiPromptHeading">まだ言葉にならない方へ</strong><span data-i18n="preBandaiPromptDesc">店主と、しまう棚を相談する</span></div>
       <button type="button" class="back-to-bandai" onclick="goToPage('counter')" data-i18n="backToBandai">⤴ 番台へ戻る</button><button type="button" class="exit-shop-btn" onclick="exitShopWithFarewell()" data-i18n="exitShopBtn">お店を出る</button>
     </div>
-  </section>
+
+<!-- V2 05 編纂室 -->
+<div class="v2-page v2b v2c05" data-v2-screen="05" data-screen="05">
+  <div class="v2c05__stage">
+    <div class="v2c05__card">
+      <header class="v2c05__bar">
+        <button type="button" class="v2c05__back" data-v2-go="02" aria-label="広間へ戻る" data-i18n-aria="v2c05BackAria"><span class="v2c05__back-arrow" aria-hidden="true"></span></button>
+        <div class="v2c05__headmid">
+          <h1 class="v2c05__title" data-i18n="v2c05Title">編纂室</h1>
+          <p class="v2c05__sub" data-i18n-html="v2c05Sub"><span class="v2-wrapunit">残ったことを、</span><span class="v2-wrapunit">自分の言葉で一冊に。</span></p>
+          <!-- FIX-06：今日の日付。既存の renderCurrentShopDate()（端末のローカル日付を
+               Intl.DateTimeFormat で JP/EN 表示にするだけの描画関数）へ id を1つ足して
+               追従させる。新しい保存キー・book schema・本文への自動挿入・Asia/Tokyo 固定は
+               いずれも行わない（HARDEN-01 timezone は HOLD のまま）。 -->
+          <time class="v2c05__today" id="v2c05CurrentDate" data-v2-today></time>
+        </div>
+        <button type="button" class="v2c05__tobooks" data-v2-go="06"><span class="v2c05__tobooks-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span class="v2c05__tobooks-t" data-i18n="v2ToBookshelf">本棚へ</span></button>
+        <button type="button" class="v2b-menutrigger" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      </header>
+
+      <div class="v2c05__desk" aria-hidden="true"></div>
+
+      <p class="v2c05__autosave"><span class="v2c05__cloud" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17a4 4 0 1 1 .6-8A5 5 0 0 1 17 10a3.5 3.5 0 0 1 0 7z"/><path d="M9 20l1.5-1.5L12 20l1.5-1.5L15 20"/></svg></span><span data-i18n="v2c05Autosave">書きかけは自動で保存されます</span></p>
+
+      <div class="v2c05__body">
+        <div class="v2c05__field">
+          <label class="v2c05__label" for="v2bTitleInput"><span data-i18n="v2c05TitleLabel">題名</span> <span class="v2c05__opt" data-i18n="v2c05TitleOpt">（任意）</span></label>
+          <input class="v2c05__input" id="v2bTitleInput" type="text" maxlength="16"
+                 data-v2-write="title" autocomplete="off"
+                 placeholder="空欄でも、一冊にできます" data-i18n-ph="v2c05TitlePh">
+        </div>
+
+        <div class="v2c05__field">
+          <label class="v2c05__label" for="v2bStoryInput" data-i18n="v2c05StoryLabel">本文</label>
+          <div class="v2c05__tawrap">
+            <!-- Final Field Fix 4：placeholder の固定改行（\n）を撤去。
+                 320/390/430 のどの幅でも textarea の折返しに任せ、文章は変えない。 -->
+            <textarea class="v2c05__textarea" id="v2bStoryInput" data-v2-write="story" data-i18n-ph="v2c05StoryPh"
+                      placeholder="いま、心の中に残っていることを、そのまま書いてみてください。うまく書こうとしなくて大丈夫。一言からでも、本になります。"></textarea>
+            <p class="v2c05__count" data-v2-write="count">0 / 700字</p>
+          </div>
+        </div>
+
+        <!-- ★ADDENDUM / Photo：既存の写真契約（#photoChooseBtn / #photoInput /
+             #photoPreview / #photoRemove / attachedPhoto / entry.image）を V2 へ再露出する。
+             新機能ではないため、選択・圧縮・保存はすべて既存実装のまま。ここは入口と
+             表示の橋渡しだけで、backend upload・external upload・fetch/XHR・schema 変更・
+             圧縮契約の変更は一切行わない。 -->
+        <div class="v2c05__field v2c05__photo">
+          <button type="button" class="v2c05__photobtn" data-v2-photo="choose" data-i18n="photoLabel">今日の一枚を、頁に挟む（任意）</button>
+          <div class="v2c05__photoprev" data-v2-photo="preview" hidden>
+            <img class="v2c05__photoimg" data-v2-photo="image" alt="添付写真のプレビュー" data-i18n-alt="photoPreviewAlt">
+            <button type="button" class="v2c05__photoremove" data-v2-photo="remove" aria-label="写真を外す" data-i18n-aria="photoRemoveAria">&times;</button>
+          </div>
+          <p class="v2c05__photohint" data-i18n="photoHint">写真は、この端末のブラウザ保存領域に保存されます。長辺800pxに縮小し、運営者のサーバーへは送信しません。</p>
+        </div>
+
+        <p class="v2c05__assure" data-i18n="v2c05Assure">本文は、この端末のブラウザ保存領域に保存されます。</p>
+
+        <button type="button" class="v2c05__bind" data-v2-write="bind"><span class="v2c05__bind-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2c05Bind">本にする</span></button>
+        <!-- R2-3：文言は不変。括弧句「この一冊に近い気持ち」だけ折返し禁止の span で
+             包み、どの幅でも句の途中で割れないようにする（手動 br は使わない）。 -->
+        <p class="v2c05__bindnote" data-i18n-html="v2c05BindNote">本文を保存し、本にします。そのあとで<span class="v2c05__nbr">「この一冊に近い気持ち」</span>を選べます（任意）。</p>
+
+        <div class="v2c05__resume" data-v2-write="resume" hidden>
+          <span class="v2c05__resume-sprig" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span>
+          <span class="v2c05__resume-box"><span class="v2c05__resume-t" data-i18n="v2c05ResumeT">書きかけがあります</span><span class="v2c05__resume-n" data-i18n="v2c05ResumeN">続きを書くときは、そのまま編集を続けられます。</span></span>
+        </div>
+
+        <p class="v2c05__msg is-v2-empty" data-v2-write="msg" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
 
   <section id="bookshelf" class="reveal experience-page">
     <div class="section-head"><span class="page-label" data-i18n="pageLabelBookshelf">第四頁　</span><h2 data-i18n="sectionHead4">あなたの本棚</h2><span class="shelf-count" id="shelfCount"></span></div>
@@ -691,7 +1089,107 @@ body.night .about-data-content{
     </div>
     <!-- ★2026-07-18変更：製本後（本棚）は番台へ戻らず、感情の棚を巡る導線に変更する。 -->
     <div class="section-return"><button type="button" class="back-to-bandai" onclick="goToPage('shelves')" data-i18n="bookshelfExploreShelves">いろいろな棚を巡る</button><button type="button" class="exit-shop-btn" onclick="exitShopWithFarewell()" data-i18n="exitShopBtn">お店を出る</button></div>
-  </section>
+
+<!-- V2 06/07/08 本棚 -->
+<div class="v2-page v2b v2c06" data-v2-screen="06" data-v2-subview-of="bookshelf-list" data-screen="06">
+  <div class="v2c06__stage">
+    <header class="v2c06__brandrow">
+      <span class="v2c06__logo" aria-hidden="true"></span>
+      <span class="v2c06__brandname" data-i18n="shopName">みんなの感情書店</span>
+      <button type="button" class="v2c06__menubtn" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><span class="v2c06__menubtn-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span></button>
+    </header>
+
+    <div class="v2c06__hero">
+      <div class="v2c06__herotext">
+        <h1 class="v2c06__title" data-i18n="v2c06Title">自分の本棚</h1>
+        <p class="v2c06__lead" data-i18n-html="v2c06Lead">あなたの言葉が、<br>あなたの本になっています。</p>
+      </div>
+      <span class="v2c06__heroamb" aria-hidden="true"></span>
+    </div>
+
+    <div class="v2c06__collhead">
+      <p class="v2c06__count"><span data-v2-bookshelf="count"></span></p>
+      <!-- 右上の「新しく書く」は下部の大きなカードと導線が重複していたため削除。
+           書く導線は .v2c06__invite（下部カード）へ一本化している。 -->
+    </div>
+
+    <div class="v2c06__grid" data-v2-bookshelf="rack"></div>
+
+    <button type="button" class="v2c06__invite" data-v2-go="05">
+      <span class="v2c06__invite-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span>
+      <span class="v2c06__invite-text">
+        <span class="v2c06__invite-h" data-i18n="v2c06NewLink">新しく書く</span>
+        <span class="v2c06__invite-n" data-i18n="v2c06InviteN">残ったことを、一冊にしてみる</span>
+      </span>
+    </button>
+  </div>
+
+<nav class="v2b-nav" aria-label="主要な移動" data-i18n-aria="v2NavAria">
+  <button type="button" class="v2b-nav__item" data-v2-nav="shelves"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span data-i18n="v2NavShelves">感情棚</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2NavDesk">書く</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2NavBookshelf">本棚</span></button>
+</nav>
+</div>
+<div class="v2-page v2b v2c07" data-v2-screen="07" data-v2-subview-of="bookshelf-reader" data-screen="07">
+  <div class="v2c07__stage">
+    <div class="v2c07__bar">
+      <button type="button" class="v2c07__back" data-v2-reader-back><span class="v2c07__back-arrow" aria-hidden="true"></span><span data-i18n="v2BackToBookshelf">本棚へ戻る</span></button>
+      <button type="button" class="v2b-menutrigger" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+
+    <article class="v2c07__book">
+      <h1 class="v2c07__title" data-v2-reader="title"></h1>
+      <span class="v2c07__sep" aria-hidden="true"></span>
+      <div class="v2c07__meta">
+        <p class="v2c07__date"><span class="v2c07__date-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg></span><span data-v2-reader="date"></span><span class="v2c07__date-suffix" data-i18n="v2c07DateSuffix">に本にしました</span></p>
+        <p class="v2c07__chip" data-v2-reader="shelf"></p>
+        <p class="v2c07__sealed" data-v2-reader="sealed"></p>
+      </div>
+      <figure class="v2c07__photo v2-placeholder" data-v2-reader="cover"></figure>
+      <div class="v2c07__body" data-v2-reader="body"></div>
+      <div class="v2c07__notebox" data-v2-reader="note-box" hidden>
+        <p class="v2c07__notelabel" data-i18n="v2c07NoteLabel">覚え書き</p>
+        <p class="v2c07__notetext" data-v2-reader="note"></p>
+      </div>
+      <p class="v2c07__closing" aria-hidden="true"><span class="v2c07__closing-sprig"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span></p>
+    </article>
+
+    <div class="v2c07__actions">
+      <button type="button" class="v2c07__act" data-v2-reader-edit><span class="v2c07__act-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2c07Edit">編集</span></button>
+      <span class="v2c07__actsep" aria-hidden="true"></span>
+      <button type="button" class="v2c07__act v2c07__act--danger" data-v2-reader-delete><span class="v2c07__act-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13"/><path d="M10 11v6M14 11v6"/></svg></span><span data-i18n="v2c07Delete">この一冊を削除</span></button>
+    </div>
+  </div>
+</div>
+<div class="v2-page v2b v2c08" data-v2-screen="08" data-v2-subview-of="bookshelf-empty" data-screen="08">
+  <div class="v2c08__stage">
+    <header class="v2c08__brandrow">
+      <span class="v2c08__logo" aria-hidden="true"></span>
+      <span class="v2c08__brandname" data-i18n="shopName">みんなの感情書店</span>
+      <button type="button" class="v2c08__menubtn" data-v2-open-menu aria-label="店内メニューを開く" data-i18n-aria="menuOpenAria"><span class="v2c08__menubtn-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span></button>
+    </header>
+
+    <div class="v2c08__card">
+      <div class="v2c08__scene" aria-hidden="true"></div>
+
+      <h1 class="v2c08__headline" data-i18n="v2c08Headline">一言から始められます</h1>
+      <div class="v2c08__divider" aria-hidden="true"><span class="v2c08__divline"></span><span class="v2c08__divsprig"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span><span class="v2c08__divline"></span></div>
+      <p class="v2c08__copy" data-i18n-html="v2c08Copy">まだ本がありません。<br>心に残ったことを、自分の言葉で<span class="v2c08__nobreak">書いてみませんか。</span><br>短い一言でも、大切な一冊になります。</p>
+
+      <button type="button" class="v2c08__cta" data-v2-go="05"><span class="v2c08__cta-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2c08Cta">残ったことを書く</span></button>
+
+      <span class="v2c08__tailsprig" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20c4-6 8-9 13-12"/><path d="M11 13c-.5-2.5.5-4.5 3-6 .5 2.5-.5 4.5-3 6zM9 16c-2.5.5-4.5-.5-6-3 2.5-.5 4.5.5 6 3z"/></svg></span>
+      <p class="v2c08__tail" data-i18n-html="v2c08Tail">書きたい気持ちになったときで大丈夫です。<br>この書店は、あなたのペースを大切にします。</p>
+    </div>
+  </div>
+
+<nav class="v2b-nav" aria-label="主要な移動" data-i18n-aria="v2NavAria">
+  <button type="button" class="v2b-nav__item" data-v2-nav="shelves"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 8h16M4 14h16M4 20h16"/><path d="M7 8v6M11 8v6M15 9l2 5"/></svg></span><span data-i18n="v2NavShelves">感情棚</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="desk"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19l1-4L16 5l3 3-10 10-4 1z"/><path d="M14 7l3 3"/></svg></span><span data-i18n="v2NavDesk">書く</span></button>
+  <button type="button" class="v2b-nav__item" data-v2-nav="bookshelf" aria-current="page"><span class="v2b-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5c3-1.5 5-1.5 8 0 3-1.5 5-1.5 8 0v14c-3-1.5-5-1.5-8 0-3-1.5-5-1.5-8 0z"/><path d="M12 5v14"/></svg></span><span data-i18n="v2NavBookshelf">本棚</span></button>
+</nav>
+</div>
+</section>
 
   <!-- ★v1.3 Phase A：intro-explainer（機能一覧）とpref-row（演出・来店カード・言語）を
        Heroから撤去し、店内案内領域として本棚の下・フッター手前へ後退。
@@ -728,7 +1226,7 @@ body.night .about-data-content{
 
   <footer class="shop-footer">
     <span data-i18n="footerBrand">『みんなの感情書店』</span><br>
-    <span data-i18n-html="footerNoteHtml">綴った言葉はサーバーには送信されず、<br>この端末にのみ保存されます。</span>
+    <span data-i18n-html="footerNoteHtml">綴った言葉は運営者のサーバーへ送信されず、<br>この端末にのみ保存されます。</span>
     <!-- ===== 追加：店主への差し入れ（投げ銭）— 広告バナーではなく"差し入れ"という体裁で、
          世界観を壊さずに任意の支援を受け付ける導線。URLは運営者ご自身のBuy Me a Coffee /
          Ko-fi等のページに差し替えてください（現在はダミーのプレースホルダーです） ===== -->
@@ -764,7 +1262,7 @@ body.night .about-data-content{
 <div class="purify-overlay hidden" id="purifyOverlay" role="dialog" aria-label="気持ちを手放す" data-i18n-aria="purifyOverlayAria">
   <div class="purify-card">
     <button class="purify-close" id="purifyClose">×</button>
-    <p class="purify-kicker" data-i18n="purifyKicker">手放す — 誰にも見られません。この端末の「手放しの記録」にだけ、そっと残ります</p>
+    <p class="purify-kicker" data-i18n="purifyKicker">手放す — 外部には送信されません。この端末の「手放しの記録」にだけ、そっと残ります</p>
     <p class="purify-lead" id="purifyLead"></p>
     <textarea id="purifyInput" placeholder="その気持ちを、ここにそのまま書き出してみてください。" rows="4" data-i18n-ph="purifyInputPlaceholder"></textarea>
     <button class="purify-btn" id="purifyBtn" data-i18n="purifyBtn">手放す</button>
@@ -799,7 +1297,7 @@ body.night .about-data-content{
       <button class="modal-share" id="modalShare" data-i18n="modalShare">Xでシェア</button>
       <button class="modal-del" id="modalDel" data-i18n="modalDel">この本を棚から下げる</button>
     </div>
-    <p class="modal-share-note" data-i18n="modalShareNote">※本文はそのまま送信されません。投稿画面が開くだけで、実際に投稿するかはあなた次第です。</p>
+    <p class="modal-share-note" data-i18n="modalShareNote">※本文・題名・棚の名前は送信されません。書店の紹介文とURLだけを載せた投稿画面が開き、実際に投稿するかはあなた次第です。</p>
   </div>
 </div>
 
@@ -832,45 +1330,21 @@ body.night .about-data-content{
       <button type="button" class="menu-item" data-menu-page="desk" data-i18n="menuItemDesk">今の気持ちを書く</button>
       <button type="button" class="menu-item" data-menu-page="bookshelf" data-i18n="menuItemBookshelf">自分の本棚</button>
       <p class="experience-menu-section" data-i18n="menuSectionOptional">任意の場所へ</p>
-      <button type="button" class="menu-item" data-menu-page="counter" data-i18n="menuItemCounter">店主に話す</button>
+      <button type="button" class="menu-item" data-menu-page="counter" data-i18n="menuItemCounter">はじめの広間へ</button>
       <button type="button" class="menu-item" data-menu-page="shelves" data-i18n="menuItemShelves">感情の棚を巡る</button>
       <button type="button" class="menu-item" id="menuReturnCover" data-i18n="menuItemCover">表紙へ戻る</button>
     </nav>
     <div class="experience-menu-settings">
-      <p class="experience-menu-section" data-i18n="menuSectionSettings">設定・このお店について</p>
-    <div class="pref-row">
-      <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切" data-i18n-title="motionToggleTitle">演出：入</button>
-      <button class="pref-toggle" id="profileBtn" title="お名前と属性の設定（任意・この端末にのみ保存）" data-i18n="profileBtn" data-i18n-title="profileBtnTitle">来店カード</button>
-      <button class="pref-toggle" id="langToggle" title="言語切り替え / Language" data-i18n-title="langToggleTitle">JP / EN</button>
-    </div>
-
-    <!-- ★2026-07-18追加：任意設定の天気連動機能。初期状態はOFFで、位置情報の許可は
-         「現在地から設定」ボタンを押した場合だけ要求される（ページ表示時には要求しない）。 -->
-    <div class="weather-settings" id="weatherSettings">
-      <div class="pref-row">
-        <button class="pref-toggle" id="weatherToggle" title="店外の天気を反映する"
-                data-i18n="weatherToggleOff" data-i18n-title="weatherToggleTitle">天気連動：切</button>
-      </div>
-      <!-- ★2026-07-19変更：初期版では自由入力の都市検索を追加せず、「主要地域から選ぶ」
-           （プリセット10都市）と「現在地から設定」の2方式に限定する。 -->
-      <div class="weather-region-row hidden" id="weatherRegionRow">
-        <select class="weather-region-select" id="weatherRegionSelect" aria-label="主要地域から選ぶ" data-i18n-aria="weatherRegionLabel">
-          <option value="" data-i18n="weatherRegionSelectPlaceholder">主要地域から選ぶ</option>
-        </select>
-        <button type="button" class="pref-toggle" id="weatherUseLocationBtn" data-i18n="weatherUseLocationBtn">現在地から設定</button>
-      </div>
-      <p class="weather-status" id="weatherStatus" data-i18n="weatherStatusOff">天気連動は現在オフです。</p>
-      <p class="weather-privacy-note" data-i18n="weatherPrivacyNote">※天気連動をオンにすると、設定した地域名または現在地から概算した緯度・経度が、天気情報の取得のためだけに外部の天気サービスへ送信されます。書いた文章や本棚のデータが送信されることはありません。</p>
-      <p class="weather-attribution" data-i18n-html="weatherAttribution">天気データ：<a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>（<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>）</p>
-    </div>
-
+      <!-- ★PKT-3：Trust（この書店について・データの扱い）を設定より前へ。
+           内容・DOM・法務文書の意味は一切変更していない。順序だけを入れ替えている。 -->
+      <p class="experience-menu-section" data-i18n="v2MenuTrustSection">この書店について・データの扱い</p>
     <!-- ★v1.3 Phase A：「はじめての方へ」「データ保存について」は主CTAより弱い補助導線として
          主CTA・安心表示の下へ後退（削除はしない）。 -->
     <!-- ===== 追加：サービス説明のアコーディオン ===== -->
     <div class="about-accordion-wrap">
       <div class="about-accordion-summary" data-i18n-html="accordionSummary">
-        気持ちを書き、一冊の本として端末内の本棚へ。<br>
-        登録不要。棚を選ぶかどうかも、あなたが決められます。
+        <span class="v2-wrapunit">残ったことを、</span><span class="v2-wrapunit">一冊にして</span><span class="v2-wrapunit">自分の本棚へ。</span><br>
+        <span class="v2-wrapunit">登録不要。</span><span class="v2-wrapunit">棚を選ぶかどうかも、</span><span class="v2-wrapunit">あなたが決められます。</span>
       </div>
       <button class="about-accordion-btn" id="aboutAccordionBtn" onclick="toggleAboutAccordion()"
               aria-expanded="false" aria-controls="aboutAccordionContent">
@@ -891,16 +1365,21 @@ body.night .about-data-content{
              重なる／親の.about-accordion-contentがmax-height:400px+overflow:hiddenで下部が
              切れる、という報告があった。position:fixed/absoluteは使わず、開閉はhiddenクラスの
              付け外しのみで行う（高さは常にauto、ページ全体が自然に縦スクロールする）。 -->
+        <!-- ★FIX-08（Round 2.1）：見本の一冊を、現在の V2 Reader（07）の紙面へ同期する。
+             現行 Reader の並びは 題名 → 罫 → 日付（「…に本にしました」）→ 棚 → 本文。
+             ・旧「納品」表記は現在の製本体験では使われていないため、Reader と同じ
+               「…に本にしました」へ合わせる。
+             ・「店主のことば」欄は削除する。localCurate() が常に note:'' を返すため、
+               現在の実装で製本される本に店主のことばは存在せず、Reader の覚え書き欄も
+               常に hidden になる。実際の完成本に無い UI を見本だけに残さない。
+             見本であること・本棚へ保存されないことは維持する（保存 logic は一切持たない）。 -->
         <div class="sample-book-inline hidden" id="sampleBookInline">
           <p class="sample-book-badge" data-i18n="sampleBookBadge">これは見本の一冊です。あなたの本棚には追加されません。</p>
-          <p class="sample-inline-cat" id="sampleInlineCat"></p>
           <h4 class="sample-inline-title" id="sampleInlineTitle"></h4>
+          <span class="sample-inline-sep" aria-hidden="true"></span>
           <p class="sample-inline-date" id="sampleInlineDate"></p>
+          <p class="sample-inline-cat" id="sampleInlineCat"></p>
           <div class="sample-inline-story" id="sampleInlineStory"></div>
-          <p class="sample-inline-note" id="sampleInlineNote">
-            <span class="sample-inline-note-label" data-i18n="modalNoteLabel">店主のことば</span>
-            <span id="sampleInlineNoteText"></span>
-          </p>
         </div>
         <button type="button" class="sample-peek-btn" id="samplePeekBtn" data-i18n="samplePeekBtn" aria-expanded="false" aria-controls="sampleBookInline">この書店の一冊を、のぞいてみる</button>
       </div>
@@ -935,10 +1414,50 @@ body.night .about-data-content{
       <summary data-i18n="dataAboutOpenLabel">データはどこに保存されるの？</summary>
       <div class="about-data-content">
         <b data-i18n="dataAboutTitle">この書店とデータについて</b>
-        <p data-i18n-html="dataAboutBody">「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す簡単な仕組みです（特定のAIモデルと会話しているわけではありません）。<br>「物語を綴る」「製本する」で書いた内容は、どこにも公開されず、この端末のブラウザ内（IndexedDB/localStorage）だけに保存されます。外部サーバーへは送信されません。アカウント登録もなく、他の人があなたの記録を見ることはできません。<br>「気持ちを手放す」は、この端末だけに残る「手放しの記録」に静かに移すことで、本棚の一覧からは見えなくなる機能です（完全な削除ではなく、専用の記録欄に移されます）。<br>「みんなの本棚」の「みんな」は他ユーザーとの共有ではなく、あなた自身の本棚が育っていく様子を指す名前です。<br>ブラウザのデータを消去するとこの記録も失われるため、「バックアップ保存」から定期的にファイルへ書き出すことをおすすめします。サービスとして終了する場合も、事前にバックアップを取っていただければお手元にデータが残ります。</p>
+        <p data-i18n-html="dataAboutBody">「店主」はAIチャットではなく、あらかじめ用意された言葉を状況に応じて返す仕組みです。本文や題名をAIが読み取って、分析・診断・自動分類することはありません。<br>書いたものは、この端末のブラウザ保存領域に保存されます。保存にはIndexedDBとlocalStorageを併用しています。アカウント登録はなく、本文・題名・写真が運営者のサーバーへ保存されることはありません。<br>クラウド同期はないため、別の端末や別のブラウザへ自動で引き継がれることはありません。反対に、同じ端末の同じブラウザを使う人には表示されます。共有の端末では、この点にご注意ください。<br>保存は永久ではありません。ブラウザのサイトデータ削除、ブラウザやOSの保存ポリシー、保存容量の上限、端末の故障や機種変更などによって失われることがあります。運営者側に復元用のデータはないため、「本棚のデータをバックアップ保存する」から、ときどきファイルへ書き出しておくことをおすすめします。<br>あなたが書いた本文・題名・写真は、外部のAIにも外部サービスにも送信しません。写真も、端末の中で縮小して端末の中に保管します。いっぽうで、サイトを表示すること自体には通常の通信が伴います。配信基盤への接続とWebフォントの読み込みが発生し、公開環境ではアクセス解析（GA4）も動きます。これらに本文・題名・写真が含まれることはありません。外部リンクから移動した先は、それぞれのサービスの方針に従います。<br>本や音楽を外部の検索サービスから取得して表示する機能と、天気連動の機能は、現在のBeta0では動作していません。<br>本棚はあなただけの「自分の本棚」で、ほかの利用者と共有される場所ではありません。</p>
       </div>
     </details>
     <!-- ===== /追加：データの保存場所・バックアップの説明 ===== -->
+
+      <!-- ★PKT-3：Data / Backup への到達口。
+           既存のバックアップ／書き出し／復元ボタンは #bookshelf の中にあり、V2 では
+           視覚的に隠され inert になっているため、店内メニューから到達できなかった。
+           ここでは既存ボタンを同期的に click するだけで、保存形式・復元処理・
+           バックアップ形式・GA4・外部通信のいずれにも触れない。 -->
+      <p class="experience-menu-section" data-i18n="v2MenuDataSection">データ・バックアップ</p>
+      <div class="share-row">
+        <button type="button" class="share-btn" data-v2-legacy-click="backupBtn" data-i18n="backupDefaultBtn">本棚のデータをバックアップ保存する</button>
+        <button type="button" class="share-btn" data-v2-legacy-click="exportDiary" data-i18n="exportDefaultBtn">これまでの記録をテキストでダウンロード</button>
+        <button type="button" class="share-btn" data-v2-legacy-click="restoreBtn" data-i18n="restoreDefaultBtn">バックアップから復元する</button>
+      </div>
+
+      <p class="experience-menu-section" data-i18n="menuSectionSettings">設定・ご案内</p>
+    <div class="pref-row">
+      <button class="pref-toggle" id="motionToggle" title="演出アニメーションの入/切" data-i18n-title="motionToggleTitle">演出：入</button>
+      <button class="pref-toggle" id="profileBtn" title="お名前と属性の設定（任意・この端末にのみ保存）" data-i18n="profileBtn" data-i18n-title="profileBtnTitle">来店カード</button>
+      <button class="pref-toggle" id="langToggle" title="言語切り替え / Language" data-i18n-title="langToggleTitle">JP / EN</button>
+    </div>
+
+    <!-- ★2026-07-18追加：任意設定の天気連動機能。初期状態はOFFで、位置情報の許可は
+         「現在地から設定」ボタンを押した場合だけ要求される（ページ表示時には要求しない）。 -->
+    <div class="weather-settings" id="weatherSettings">
+      <div class="pref-row">
+        <button class="pref-toggle" id="weatherToggle" title="店外の天気を反映する"
+                data-i18n="weatherToggleOff" data-i18n-title="weatherToggleTitle">天気連動：切</button>
+      </div>
+      <!-- ★2026-07-19変更：初期版では自由入力の都市検索を追加せず、「主要地域から選ぶ」
+           （プリセット10都市）と「現在地から設定」の2方式に限定する。 -->
+      <div class="weather-region-row hidden" id="weatherRegionRow">
+        <select class="weather-region-select" id="weatherRegionSelect" aria-label="主要地域から選ぶ" data-i18n-aria="weatherRegionLabel">
+          <option value="" data-i18n="weatherRegionSelectPlaceholder">主要地域から選ぶ</option>
+        </select>
+        <button type="button" class="pref-toggle" id="weatherUseLocationBtn" data-i18n="weatherUseLocationBtn">現在地から設定</button>
+      </div>
+      <p class="weather-status" id="weatherStatus" data-i18n="weatherStatusOff">天気連動は現在オフです。</p>
+      <p class="weather-privacy-note" data-i18n="weatherPrivacyNote">※天気連動をオンにすると、設定した地域名または現在地から概算した緯度・経度が、天気情報の取得のためだけに外部の天気サービスへ送信されます。書いた文章や本棚のデータが送信されることはありません。</p>
+      <p class="weather-attribution" data-i18n-html="weatherAttribution">天気データ：<a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>（<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>）</p>
+    </div>
+
 
       <div class="share-row">
       <button class="share-btn" id="shareBtn" data-i18n="shareBtn">この書店をシェアする</button>
@@ -961,7 +1480,22 @@ body.night .about-data-content{
   </div>
 </div>
 
+<!-- v2-mount.js は __V2_MOUNTED__ フラグを parse 時に立てるため、
+     main.js の parse 時初期化より先に読み込む（boot 自体は DOMContentLoaded 後）。 -->
+<script src="v2-mount.js"></script>
 <script src="data.js"></script>
 <script src="main.js"></script>
+<!-- ===== Visual Refit V2 Adapters ===== -->
+<script src="visual-refit-v2-prototype/adapter/navigation-adapter.js"></script>
+<script src="visual-refit-v2-prototype/adapter/bookshelf-adapter.js"></script>
+<script src="visual-refit-v2-prototype/data/editorial-snapshot-beta0.js"></script>
+<!-- 04「作品」公開在庫 v0.1（8大棚 x 10作品）。静的な編集データのみ。画像・引用・外部APIなし -->
+<script src="visual-refit-v2-prototype/data/public-inventory-beta0.js"></script>
+<script src="visual-refit-v2-prototype/data/emotion-words-beta0.js"></script>
+<!-- 04「ことば」詳細の EN 表示層。上の JA canonical は置き換えず、EN のときだけ参照する -->
+<script src="visual-refit-v2-prototype/data/emotion-words-en-beta0.js"></script>
+<script src="visual-refit-v2-prototype/data/near-word-glossary-beta0.js"></script>
+<script src="visual-refit-v2-prototype/adapter/emotion-shelf-adapter.js"></script>
+<script src="visual-refit-v2-prototype/adapter/form-adapter.js"></script>
 </body>
 </html>

@@ -61,11 +61,15 @@ async function main(){
     ok('(1) opening the sample shows it inline (not hidden) inside the same explanation panel', !box.classList.contains('hidden'));
     ok('(1) the inline sample sits inside .about-accordion-content (same panel as the explanation)', !!document.querySelector('.about-accordion-content #sampleBookInline'));
     ok('(1) the real book modal is never opened by the sample flow', document.getElementById('bookModal').classList.contains('hidden'));
-    ok('(1) title/story/date/cat/note all populate', document.getElementById('sampleInlineTitle').textContent.length > 0
+    /* ★FIX-08（Round 2.1）：見本は現在の Reader（07）の紙面へ同期した。
+       Reader は 題名 → 罫 → 日付 → 棚 → 本文 で、覚え書き欄は note が無い限り hidden。
+       現在の localCurate() は常に note:'' を返すため、見本にも note 欄は持たせない。 */
+    ok('(1) title/story/date/cat all populate', document.getElementById('sampleInlineTitle').textContent.length > 0
       && document.getElementById('sampleInlineStory').textContent.length > 20
       && document.getElementById('sampleInlineDate').textContent.length > 0
-      && document.getElementById('sampleInlineCat').textContent.length > 0
-      && document.getElementById('sampleInlineNoteText').textContent.length > 0);
+      && document.getElementById('sampleInlineCat').textContent.length > 0);
+    ok('(1) the sample has no shopkeeper-note block (matches current completed books)',
+      !document.getElementById('sampleInlineNoteText'));
     window.toggleLanguage();
     ok('(1) EN mode: the sample story is in English, no Japanese leaks through', /[a-zA-Z]/.test(document.getElementById('sampleInlineStory').textContent) && !JP_RE.test(document.getElementById('sampleInlineStory').textContent));
     document.getElementById('samplePeekBtn').onclick();

@@ -1,0 +1,751 @@
+/* =============================================================================
+ * Visual Refit V2 — 05 編集室
+ * -----------------------------------------------------------------------------
+ * Visual North Star: FORMAL_COMPS/DAY/05.png ・ FORMAL_COMPS/NIGHT/05.png のみ。
+ * 現行本番UI・旧編集室・VR1・過去スクリーンショットは視覚の参照にしていない。
+ *
+ * 【01・02への非干渉】
+ * base.css / components.css / screens/01.css / screens/02.css /
+ * screens/01-cover.html / screens/02-menu.html は 1バイトも変更していない。
+ * 05 固有の差分はすべて .v2-page--editor スコープでこのファイルに閉じている。
+ * NIGHT の --v2-accent-self は 05 固有の上書きをやめ、共有 tokens.css へ昇格した。
+ *
+ * 05 はカンプ原寸 1024x1536（2:3）に対する実測比率で配置する。
+ * 下記の px はすべて正式カンプからの実測値。
+ *
+ *   戻る            y   42-62   / x  36-107
+ *   非公開ピル       y   40-92   / x 728-986
+ *   ペン丸／ふりがな   丸 d100 (x 78-178) / ふりがな y 105-118
+ *   編纂室          y  133-173  / x 208-347
+ *   説明2行         y  202-253  / x 209-596
+ *   領域タブ4        y  333-358  / x 71 から約70px間隔で左揃え（第4項目が選択）
+ *   編集カード       y  410-1208 / x  39-984（内側パディング 29）
+ *     見出し        y  450-493
+ *     副文          y  498-514
+ *     下書き一覧     y  462-512  / x 795-955
+ *     題ラベル       y  568-585  ／ カウンタ x 908-950
+ *     題名入力       y  602-665  / x  68-955
+ *     本文ボックス    y  688-1038 / x  68-955（区切り y 967、ツール帯 967-1038）
+ *     保存説明＋操作  y 1086-1179
+ *       下書き保存   x 515-698   ／ 本にする x 704-956
+ *   書くきっかけ      y 1234-1433 / チップ y 1337-1413（4等分）
+ *   下部ナビバー      y 1443-1524 / 項目中心 16.9 / 38.1 / 58.5 / 80.9%
+ * ========================================================================== */
+
+.v2-page--editor .v2-stage {
+  --v2-px: calc(100cqw / 1024);
+}
+
+/* 05 で必要になった面の値。tokens.css は変更せず、05 スコープ内でのみ定義する。 */
+:root[data-v2-theme='day'] .v2-page--editor {
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 92%, #FFFFFF 8%);
+  --v2-card-edge: rgb(51 36 12 / 0.13);
+  --v2-field-face: color-mix(in srgb, var(--v2-wall) 70%, #FFFFFF 30%);
+  --v2-field-edge: rgb(51 36 12 / 0.18);
+}
+
+:root[data-v2-theme='night'] .v2-page--editor {
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 94%, #CDA97C 6%);
+  --v2-card-edge: rgb(73 58 44 / 0.95);
+  --v2-field-face: color-mix(in srgb, var(--v2-wall) 88%, #CDA97C 12%);
+  --v2-field-edge: rgb(94 76 56 / 0.95);
+}
+
+/* -----------------------------------------------------------------------------
+ * 情景レイヤ
+ * 05 は Visual Refit V2 の中で唯一、デスクランプを明確な照明器具として
+ * 見せてよい画面（01・02 の「器具を主役にしない」ルールをここへ適用しない）。
+ * ただしランプをキャラクター化・巨大な装飾物にはしない。役割は「書く場所を照らす」。
+ * 素材未確定のため完成イラストは生成せず、
+ * 占有領域・光の方向・光量関係だけを中立プレースホルダーで表す。
+ *
+ *   DAY   : 自然光 ＋ 机上の穏やかな光
+ *   NIGHT : 周囲を落とし、机・紙・入力領域へ光が集まる
+ *   → 配置ロジックは共通のまま、強さ・色温度・周辺暗度だけをトークンで変える。
+ * -------------------------------------------------------------------------- */
+.v2-editor__wall {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--v2-wall) 0%,
+    var(--v2-wall) 70%,
+    var(--v2-wall-deep) 100%
+  );
+}
+
+/* 机・窓辺のある右上の空間 */
+.v2-editor__desk {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 60%;
+  height: 26%;
+  border-bottom-left-radius: 30% 60%;
+  background: var(--v2-scene-arch);
+}
+
+/* デスクランプ本体の占有領域。器具の絵柄は描かない */
+.v2-editor__lamp {
+  position: absolute;
+  top: 2.2%;
+  right: 1.5%;
+  width: 31%;
+  height: 18.5%;
+}
+
+/* ランプから机・紙・入力領域へ落ちる光。光源位置と方向だけを持つ */
+.v2-editor__lamplight {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 78%;
+  height: 62%;
+  background: radial-gradient(
+    46% 40% at 82% 12%,
+    rgb(var(--v2-glow-color) / var(--v2-glow-strength)) 0%,
+    rgb(var(--v2-glow-color) / calc(var(--v2-glow-strength) * 0.35)) 42%,
+    rgb(var(--v2-glow-color) / 0) 100%
+  );
+}
+
+/* 書く面へ集まる光。NIGHT で強く効き、入力領域が画面内で最も明るくなる */
+.v2-editor__writinglight {
+  position: absolute;
+  top: 24%;
+  left: 3.8%;
+  width: 92.3%;
+  height: 46%;
+  border-radius: calc(28 * var(--v2-px));
+  background: radial-gradient(
+    62% 58% at 62% 22%,
+    rgb(var(--v2-glow-color) / calc(var(--v2-glow-strength) * 0.42)) 0%,
+    rgb(var(--v2-glow-color) / 0) 100%
+  );
+}
+
+.v2-editor__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    108% 62% at 56% 40%,
+    rgb(0 0 0 / 0) 40%,
+    rgb(0 0 0 / calc(var(--v2-vignette) * 1.25)) 100%
+  );
+}
+
+/* -----------------------------------------------------------------------------
+ * ヘッダ
+ * -------------------------------------------------------------------------- */
+.v2-editor__back {
+  position: absolute;
+  top: 2.60%;
+  left: 3.51%;
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(20 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-mid);
+}
+
+/* 非公開であることの表示。カンプにある文言をそのまま置き、新しいコピーは作らない */
+.v2-editor__privacy {
+  position: absolute;
+  top: 2.60%;
+  right: 3.71%;
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--v2-px));
+  height: 3.39%;
+  padding: 0 calc(20 * var(--v2-px));
+  border: calc(1 * var(--v2-px)) solid var(--v2-card-edge);
+  border-radius: calc(26 * var(--v2-px));
+  background: var(--v2-card-face);
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-tpx));
+  line-height: 1;
+  color: var(--v2-ink-mid);
+}
+
+.v2-editor__mark {
+  position: absolute;
+  top: 7.68%;
+  left: 7.62%;
+  width: 9.77%;
+  height: 6.51%;
+  border-radius: 50%;
+}
+
+.v2-editor__ruby {
+  position: absolute;
+  top: 6.84%;
+  left: 20.51%;
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(16 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.10em;
+  color: var(--v2-ink-soft);
+}
+
+.v2-editor__title {
+  position: absolute;
+  top: 8.27%;
+  left: 20.31%;
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(46 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.08em;
+  color: var(--v2-ink-strong);
+}
+
+.v2-editor__lead {
+  position: absolute;
+  top: 12.76%;
+  left: 20.51%;
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-tpx));
+  line-height: calc(34 * var(--v2-tpx));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-mid);
+}
+
+/* -----------------------------------------------------------------------------
+ * 編集カード（この画面の主役）
+ * -------------------------------------------------------------------------- */
+.v2-editor__card {
+  position: absolute;
+  top: 26.69%;
+  left: 3.81%;
+  width: 92.29%;
+  height: 51.95%;
+  border-radius: calc(28 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+.v2-editor__card-head {
+  position: absolute;
+  top: calc(40 * var(--v2-px));
+  left: calc(29 * var(--v2-px));
+  display: flex;
+  align-items: center;
+  gap: calc(20 * var(--v2-px));
+}
+
+.v2-editor__card-mark {
+  display: block;
+  width: calc(34 * var(--v2-px));
+  height: calc(44 * var(--v2-px));
+}
+
+.v2-editor__card-title {
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(30 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-strong);
+}
+
+/* Core Ver.2 コピー。題名を必須に見せないための2行。
+   「あなたの一篇が、誰かの支えになるかもしれません。」は Phase 2 で削除した
+   （05 は公開されない編集机であり、他者到達を示唆しない）。 */
+.v2-editor__card-sub {
+  position: absolute;
+  top: calc(82 * var(--v2-px));
+  left: calc(97 * var(--v2-px));
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(17 * var(--v2-tpx));
+  line-height: calc(30 * var(--v2-tpx));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-mid);
+}
+
+/* 下書き一覧：現行に無い機能のため静的・非活性の見た目のみ */
+
+.v2-editor__field-label {
+  position: absolute;
+  top: calc(158 * var(--v2-px));
+  left: calc(29 * var(--v2-px));
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-mid);
+}
+
+/* 題名の文字数上限は現行の maxlength=16 を正とする（カンプの 0/30 は採用しない） */
+.v2-editor__counter {
+  position: absolute;
+  top: calc(158 * var(--v2-px));
+  right: calc(29 * var(--v2-px));
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(19 * var(--v2-tpx));
+  line-height: 1;
+  color: var(--v2-ink-soft);
+}
+
+/* 題名は本文入力と「本にする」より視覚優先度を下げる。必須に見える表現は作らない */
+.v2-editor__title-field {
+  position: absolute;
+  top: calc(192 * var(--v2-px));
+  left: calc(29 * var(--v2-px));
+  width: calc(887 * var(--v2-px));
+  height: calc(63 * var(--v2-px));
+  padding: 0 calc(26 * var(--v2-px));
+  border: 0;
+  border-radius: calc(12 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-field-edge);
+  background: var(--v2-field-face);
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-tpx));
+  color: var(--v2-ink-mid);
+  appearance: none;
+}
+
+/* 本文：この画面で「ここに書く」ことが最も明確な領域 */
+.v2-editor__body {
+  position: absolute;
+  top: calc(278 * var(--v2-px));
+  left: calc(29 * var(--v2-px));
+  width: calc(887 * var(--v2-px));
+  height: calc(350 * var(--v2-px));
+  border-radius: calc(12 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-field-edge);
+  background: var(--v2-field-face);
+}
+
+.v2-editor__body-input {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: calc(22 * var(--v2-px)) calc(26 * var(--v2-px));
+  border: 0;
+  border-radius: calc(12 * var(--v2-px));
+  background: transparent;
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-tpx));
+  line-height: calc(36 * var(--v2-tpx));
+  color: var(--v2-ink-mid);
+  resize: none;
+  appearance: none;
+}
+
+/* Step 3D：既存 #storyCount（0 / 700字）をそのまま写す欄。V2 で数え直さない。
+   上限超過の表現も既存 .over の有無を写すだけ。 */
+.v2-editor__body-counter {
+  position: absolute;
+  top: calc(638 * var(--v2-px));
+  right: calc(29 * var(--v2-px));
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(16 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-soft);
+}
+
+.v2-editor__body-counter.is-over { color: var(--v2-accent-self); }
+
+/* Step 3D：既存 #deskMsg（検証結果・保存結果）をそのまま写す欄。
+   V2 で文言を作らない。値が無いときは欄ごと畳む。 */
+.v2-editor__msg {
+  position: absolute;
+  top: calc(634 * var(--v2-px));
+  left: calc(29 * var(--v2-px));
+  width: calc(600 * var(--v2-px));
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(16 * var(--v2-tpx));
+  line-height: calc(22 * var(--v2-tpx));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-strong);
+  overflow-wrap: anywhere;
+}
+
+.v2-page--editor .is-v2-empty { display: none; }
+
+/* Phase 2：未承認の rich-text 系ツール帯（.v2-editor__tools / --last）は削除した。
+   Phase 3 Step 3E：対応する既存機能が無い「下書き一覧」も削除した。 */
+
+/* 保存に関する安心情報。カンプの文言をそのまま置き、新しい長文説明は作らない */
+.v2-editor__assurance {
+  position: absolute;
+  top: calc(684 * var(--v2-px));
+  left: calc(29 * var(--v2-px));
+  display: flex;
+  align-items: flex-start;
+  gap: calc(16 * var(--v2-px));
+  width: calc(450 * var(--v2-px));
+}
+
+.v2-editor__assurance-mark {
+  display: block;
+  flex: none;
+  width: calc(33 * var(--v2-px));
+  height: calc(38 * var(--v2-px));
+  margin-top: calc(2 * var(--v2-px));
+}
+
+.v2-editor__assurance-title {
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-strong);
+}
+
+.v2-editor__assurance-text {
+  margin: calc(4 * var(--v2-px)) 0 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(19 * var(--v2-tpx));
+  line-height: calc(30 * var(--v2-tpx));
+  color: var(--v2-ink-mid);
+}
+
+/* -----------------------------------------------------------------------------
+ * 操作
+ * Phase 1 は非活性（disabled + aria-disabled）。
+ * 保存しない / 製本しない / route しない / modal を開かない / GA4 を発火しない。
+ * 見た目のみ正式カンプへ合わせる。
+ * -------------------------------------------------------------------------- */
+.v2-editor__actions {
+  position: absolute;
+  top: calc(676 * var(--v2-px));
+  left: calc(476 * var(--v2-px));
+  display: flex;
+  gap: calc(6 * var(--v2-px));
+}
+
+.v2-editor__action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(8 * var(--v2-px));
+  /* Hotfix：狭い画面では補助文が2行になるため、高さは下限として扱う。
+     カンプ原寸では内容が 93 に収まるため見え方は変わらない。 */
+  min-height: calc(93 * var(--v2-px));
+  padding: 0;
+  border-radius: calc(12 * var(--v2-px));
+  font-family: var(--v2-font-body);
+  line-height: 1;
+  appearance: none;
+}
+
+.v2-editor__action:disabled,
+.v2-editor__action[aria-disabled='true'] {
+  opacity: 1;
+  cursor: default;
+}
+
+.v2-editor__action-main {
+  font-size: calc(24 * var(--v2-tpx));
+  letter-spacing: 0.04em;
+}
+
+/* Hotfix：文字に下限を設けた結果、狭い画面ではボタン幅を超えるため折り返す。
+   カンプ原寸では1行のままで見え方は変わらない。 */
+.v2-editor__action-note {
+  max-width: 100%;
+  padding: 0 calc(8 * var(--v2-px));
+  font-size: calc(15 * var(--v2-tpx));
+  text-align: center;
+}
+
+/* 下書き保存：副次操作 */
+/* Phase 3 Step 3E：手動の「下書き保存」という機能は既存に存在しないためボタンを削除し、
+   既存の自動保存という事実だけを非操作のテキストで置く。新機能は作らない。 */
+.v2-editor__autosave {
+  display: flex;
+  align-items: center;
+  width: calc(183 * var(--v2-px));
+  min-height: calc(93 * var(--v2-px));
+  margin: 0;
+  padding-right: calc(18 * var(--v2-px));
+  font-family: var(--v2-font-body);
+  font-size: calc(15 * var(--v2-tpx));
+  line-height: calc(24 * var(--v2-tpx));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-soft);
+}
+
+/* 本にする：自分の記録の主要操作なので accent-self を使う */
+.v2-editor__action--primary {
+  width: calc(252 * var(--v2-px));
+  border: calc(1 * var(--v2-px)) solid var(--v2-accent-self);
+  background: var(--v2-accent-self);
+  color: var(--v2-accent-self-on);
+}
+
+/* -----------------------------------------------------------------------------
+ * 書くきっかけ（読むための問いかけ。操作ではない）
+ * -------------------------------------------------------------------------- */
+.v2-editor__prompts {
+  position: absolute;
+  top: calc(1234 / 1536 * 100%);
+  left: 3.81%;
+  width: 92.29%;
+  height: calc(199 / 1536 * 100%);
+  border-radius: calc(28 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+.v2-editor__prompts-head {
+  position: absolute;
+  top: calc(20 * var(--v2-px));
+  left: calc(29 * var(--v2-px));
+  display: flex;
+  align-items: flex-start;
+  gap: calc(16 * var(--v2-px));
+}
+
+.v2-editor__prompts-mark {
+  display: block;
+  flex: none;
+  width: calc(28 * var(--v2-px));
+  height: calc(32 * var(--v2-px));
+}
+
+.v2-editor__prompts-title {
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(22 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-strong);
+}
+
+.v2-editor__prompts-sub {
+  margin: calc(14 * var(--v2-px)) 0 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(16 * var(--v2-tpx));
+  line-height: 1;
+  color: var(--v2-ink-mid);
+}
+
+
+.v2-editor__chips {
+  position: absolute;
+  top: calc(96 * var(--v2-px));
+  left: calc(29 * var(--v2-px));
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: calc(21 * var(--v2-px));
+  width: calc(887 * var(--v2-px));
+  height: calc(76 * var(--v2-px));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Phase 3 Step 3E：枠・面を外し、押せない問いかけの文として置く
+   （挿入・絞り込み等の実機能は存在しないため、操作に見せない）。 */
+.v2-editor__chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--v2-font-body);
+  font-size: calc(16 * var(--v2-tpx));
+  line-height: calc(26 * var(--v2-tpx));
+  text-align: center;
+  color: var(--v2-ink-soft);
+}
+
+/* -----------------------------------------------------------------------------
+ * Global Navigation（3項目）
+ * 部品の見た目は components.css に一元化した。ここでは位置と外枠だけを持つ。
+ * 02〜07 は同一原寸カンプ（1024x1536）なので外枠の寸法も全画面で揃える。
+ * 現在地は accent 色の文字／アイコンのみ。下線は付けない。
+ * Phase 2 も視覚要素のみで route / href / event を持たない。
+ * -------------------------------------------------------------------------- */
+.v2-editor__navbar {
+  position: absolute;
+  top: calc(1443 / 1536 * 100%);
+  left: 3.81%;
+  width: 92.29%;
+  height: calc(81 / 1536 * 100%);
+  border-radius: calc(20 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+.v2-editor__nav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(25 * var(--v2-px));
+  width: calc(873 * var(--v2-px));
+}
+
+/* =============================================================================
+ * モバイル幅の局所レイアウト（Pre-Mount Visual Accessibility Hotfix / LIMITED FIX）
+ * -----------------------------------------------------------------------------
+ * 05 のカンプ内部は「縦位置＝--v2-px（レイアウト比例）」で絶対配置しているため、
+ * 文字だけに下限（--v2-tpx）を与えると各ブロックの実高さが割り当て枠を超え、
+ * 見出し・説明・題名・保存説明・きっかけが重なる。
+ *
+ * そこで狭い幅のときだけ、同じ DOM 順のまま縦の流し込みへ切り替える。
+ * 重なりは構造的に起こらなくなり、折返しも語単位で自然になる。
+ *
+ * - コンテナ幅 900px 以上（＝カンプ原寸 1024 を含む帯）では一切適用されないため、
+ *   Formal Comp 原寸の見え方は 1px も変わらない
+ * - DOM・IA・CTA・route・挙動・保存・GA4 には触れていない（CSS のみ）
+ * ========================================================================== */
+@container (max-width: 900px) {
+  .v2-page--editor .v2-content {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: calc(16 * var(--v2-tpx));
+    padding: calc(20 * var(--v2-tpx)) calc(18 * var(--v2-tpx)) 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  /* 絶対配置をすべて解除して、DOM 順の縦並びにする */
+  .v2-page--editor .v2-content > *,
+  .v2-page--editor .v2-editor__card > *,
+  .v2-page--editor .v2-editor__prompts > * {
+    position: static;
+    inset: auto;
+    transform: none;
+  }
+
+  /* 下部ナビは流し込みの最後に置き、スクロールしても下端へ留める。
+     この扱いは流し込みレイアウトと一体で、帯（≤900px）全体に必要。
+     360px 以下だけに限定していたときは、361〜900px で
+     カンプ由来の height:%（81/1536）を持ったまま flex item になり、
+     内容がはみ出す幅（例 390px）では flex-shrink で高さ0へ潰れ、
+     内容が収まる幅（例 853/900px）ではカンプ基準の高さのまま
+     きっかけの上へ載っていた。 */
+  .v2-page--editor .v2-editor__navbar {
+    position: sticky;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    flex: none;
+    margin-top: auto;
+    padding: calc(6 * var(--v2-tpx)) 0;
+  }
+  .v2-page--editor .v2-editor__nav {
+    position: static;
+    width: auto;
+  }
+  .v2-page--editor .v2-navbar__item { height: calc(46 * var(--v2-tpx)); }
+
+  /* 素材未確定の装飾プレースホルダーは、狭い幅では場所を取るだけなので隠す */
+  .v2-page--editor .v2-editor__mark { display: none; }
+
+  .v2-page--editor .v2-editor__back { align-self: flex-start; }
+  .v2-page--editor .v2-editor__privacy {
+    align-self: flex-end;
+    height: auto;
+    padding: calc(8 * var(--v2-tpx)) calc(16 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__ruby { margin-bottom: calc(-8 * var(--v2-tpx)); }
+  .v2-page--editor .v2-editor__lead { line-height: calc(28 * var(--v2-tpx)); }
+
+  /* 編集カード：高さは内容で決まるようにする */
+  .v2-page--editor .v2-editor__card {
+    display: flex;
+    flex-direction: column;
+    gap: calc(12 * var(--v2-tpx));
+    width: auto;
+    height: auto;
+    padding: calc(20 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__card-sub { line-height: calc(24 * var(--v2-tpx)); }
+  .v2-page--editor .v2-editor__counter,
+  .v2-page--editor .v2-editor__body-counter { align-self: flex-end; }
+  .v2-page--editor .v2-editor__field-label { margin-bottom: calc(-6 * var(--v2-tpx)); }
+
+  .v2-page--editor .v2-editor__title-field {
+    width: 100%;
+    height: auto;
+    min-height: calc(44 * var(--v2-tpx));
+    padding: calc(10 * var(--v2-tpx)) calc(14 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__body {
+    width: 100%;
+    height: calc(190 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__body-input {
+    padding: calc(12 * var(--v2-tpx)) calc(14 * var(--v2-tpx));
+    line-height: calc(26 * var(--v2-tpx));
+  }
+
+  .v2-page--editor .v2-editor__assurance { width: auto; }
+  .v2-page--editor .v2-editor__assurance-title,
+  .v2-page--editor .v2-editor__assurance-text { line-height: calc(22 * var(--v2-tpx)); }
+
+  /* 操作：補助文が細い柱で縦折れしないよう、縦積み＋全幅にする */
+  .v2-page--editor .v2-editor__actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: calc(10 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__autosave {
+    width: auto;
+    min-height: 0;
+    line-height: calc(20 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__action {
+    width: auto;
+    min-height: calc(52 * var(--v2-tpx));
+    padding: calc(10 * var(--v2-tpx)) calc(14 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__action-note { line-height: calc(20 * var(--v2-tpx)); }
+
+  /* 書くきっかけ：4列は狭すぎて1〜2文字ずつ折れるため2列にする */
+  .v2-page--editor .v2-editor__prompts {
+    width: auto;
+    height: auto;
+    padding: calc(20 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__prompts-head { margin-bottom: calc(14 * var(--v2-tpx)); }
+  .v2-page--editor .v2-editor__prompts-sub { line-height: calc(22 * var(--v2-tpx)); }
+  .v2-page--editor .v2-editor__chips {
+    grid-template-columns: repeat(2, 1fr);
+    width: auto;
+    height: auto;
+    row-gap: calc(12 * var(--v2-tpx));
+    column-gap: calc(16 * var(--v2-tpx));
+  }
+  .v2-page--editor .v2-editor__chip {
+    justify-content: flex-start;
+    text-align: left;
+    line-height: calc(22 * var(--v2-tpx));
+  }
+
+  /* 行末に1〜2文字だけ落ちる孤立行を作らないよう、複数行になる文は行を均等に割る */
+  .v2-page--editor .v2-editor__lead,
+  .v2-page--editor .v2-editor__card-sub,
+  .v2-page--editor .v2-editor__prompts-sub,
+  .v2-page--editor .v2-editor__assurance-title,
+  .v2-page--editor .v2-editor__assurance-text,
+  .v2-page--editor .v2-editor__action-note,
+  .v2-page--editor .v2-editor__autosave,
+  .v2-page--editor .v2-editor__chip { text-wrap: balance; }
+  /* 強制改行（<br>）を含む文は balance が効かないため、
+     最終行が短くなりにくい pretty を使う */
+  .v2-page--editor .v2-editor__card-sub,
+  .v2-page--editor .v2-editor__lead { text-wrap: pretty; }
+}
+
+/* 320px 級の最狭幅では、きっかけの2列でも1文字ずつ折れるため1列にする */
+@container (max-width: 360px) {
+  .v2-page--editor .v2-editor__chips { grid-template-columns: 1fr; }
+}

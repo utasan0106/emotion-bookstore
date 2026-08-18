@@ -1,0 +1,541 @@
+/* =============================================================================
+ * Visual Refit V2 — 04 大棚の中（例：ざわつく）
+ * -----------------------------------------------------------------------------
+ * Visual North Star: 2026-08-09 承認の新 concept board（04 DAY / 04 NIGHT）。
+ * 旧 FORMAL_COMPS/DAY/04.png・NIGHT/04.png は North Star として使用禁止（失効扱い）。
+ *
+ * 【01・02・05への非干渉】
+ * tokens.css / base.css / components.css / screens/01・02・05 の各ファイルは
+ * 1バイトも変更していない。04 固有の差分はすべて .v2-page--shelf-detail スコープで
+ * このファイルに閉じている。
+ *
+ * 04 は感情の辞書ページではない。
+ * 一つの大棚の前で、その感情の周りを歩く場所。
+ *
+ * 【04 ではデスクランプ禁止】
+ * 明確なデスクランプを見せてよいのは 05 編集室だけ。
+ * 04 は 本棚・壁・植物・棚からの間接光 で奥行きを作る。
+ * ペンダント／デスクランプ等を主役として追加しない。
+ *
+ * レイアウト契約（1024x1536）
+ *   棚へ戻る        y   40-62   / 左端 3.51%
+ *   感情の造形枠     y  108-218  / x 39-149（d=110）
+ *   ざわつく（見出し） y  118-170  / 左 17.48%
+ *   説明2行         y  190-256  / 左 17.48%
+ *   4領域タブ        y  330-366  / x 39-984（4等分・第1項目「ことば」が選択）
+ *   ことばカード群    y  410-1180 / x 39-984
+ *     見出し        y  445-480
+ *     補助文        y  492-512
+ *     感情語カード3   y  552-872 / x 68-955（3等分・間隔 23）
+ *   下部ナビバー      y 1443-1524 / x 39-984
+ * ========================================================================== */
+
+.v2-page--shelf-detail .v2-stage {
+  --v2-px: calc(100cqw / 1024);
+}
+
+:root[data-v2-theme='day'] .v2-page--shelf-detail {
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 88%, #FFFFFF 12%);
+  --v2-card-edge: rgb(51 36 12 / 0.14);
+  --v2-field-face: color-mix(in srgb, var(--v2-wall) 74%, #FFFFFF 26%);
+  --v2-field-edge: rgb(51 36 12 / 0.16);
+}
+
+:root[data-v2-theme='night'] .v2-page--shelf-detail {
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 92%, #CDA97C 8%);
+  --v2-card-edge: rgb(84 66 46 / 0.95);
+  --v2-field-face: color-mix(in srgb, var(--v2-wall) 88%, #CDA97C 12%);
+  --v2-field-edge: rgb(94 76 56 / 0.95);
+}
+
+/* -----------------------------------------------------------------------------
+ * 情景レイヤ
+ * 本棚・壁・植物・棚からの間接光だけで奥行きを作る。照明器具は置かない。
+ * 大きな情景面には輪郭を引かない（偽のUI境界を作らないため）。
+ * 占有: 棚の奥行き x 62-100% / y 0-34%、植物 x 65-77% / y 13-24%
+ * -------------------------------------------------------------------------- */
+.v2-detail__wall {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--v2-wall) 0%,
+    var(--v2-wall) 70%,
+    var(--v2-wall-deep) 100%
+  );
+}
+
+.v2-detail__shelfscape {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 38%;
+  height: 34%;
+  border-bottom-left-radius: 34% 46%;
+  background: var(--v2-scene-arch);
+  opacity: 0.85;
+}
+
+.v2-detail__plant {
+  position: absolute;
+  top: 6%;
+  left: 66%;
+  width: 10%;
+  height: 8%;
+}
+
+/* 棚からの間接光。器具は描かず、光の面と方向だけを持つ */
+.v2-detail__shelflight {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 52%;
+  height: 40%;
+  background: radial-gradient(
+    54% 52% at 84% 24%,
+    rgb(var(--v2-glow-color) / var(--v2-glow-strength)) 0%,
+    rgb(var(--v2-glow-color) / 0) 100%
+  );
+}
+
+/* ことばパネル以下の下半分は静かな背景面のまま保持する。
+   素材未確定の段階で棚板だけを描くと空のUI・未完成レイアウトに見えるため、
+   横方向の棚板線は置かない。本・什器・植物・装飾も追加しない。
+   本物の棚・壁・本の気配は Visual Asset 工程で追加する。 */
+
+.v2-detail__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    110% 62% at 46% 40%,
+    rgb(0 0 0 / 0) 42%,
+    rgb(0 0 0 / var(--v2-vignette)) 100%
+  );
+}
+
+/* -----------------------------------------------------------------------------
+ * ヘッダ
+ * -------------------------------------------------------------------------- */
+.v2-detail__back {
+  position: absolute;
+  top: 2.60%;
+  left: 3.51%;
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(20 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-mid);
+}
+
+/* 感情の造形枠。感情アイコンはまだ制作しない。concept board の絵柄もトレースしない */
+.v2-detail__glyph {
+  position: absolute;
+  top: 7.03%;
+  left: 3.81%;
+  width: 10.74%;
+  height: 7.16%;
+  border-radius: 50%;
+}
+
+.v2-detail__title {
+  position: absolute;
+  top: 7.68%;
+  left: 17.48%;
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(46 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.10em;
+  color: var(--v2-ink-strong);
+}
+
+.v2-detail__lead {
+  position: absolute;
+  top: 12.11%;
+  left: 17.48%;
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-tpx));
+  line-height: calc(34 * var(--v2-tpx));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-mid);
+}
+
+/* -----------------------------------------------------------------------------
+ * 4領域タブ
+ * 同格に置く。初期表示は「ことば」。
+ * Phase 3 Step 3B.1：04 内部の DOM 切替だけを持つ。
+ * route / API / 状態管理・GA4・保存・外部通信は作らない。
+ * WAI-ARIA tab pattern（roving tabindex・矢印キー・role=tabpanel）は
+ * 部分実装になるため採用しない。button + aria-pressed + hidden panel の
+ * 単純構造を使い、Enter / Space・Tab / Shift+Tab は button 本来の挙動に委ねる。
+ * -------------------------------------------------------------------------- */
+.v2-detail__tabs {
+  position: absolute;
+  top: 21.48%;
+  left: 3.81%;
+  width: 92.29%;
+  height: 2.34%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* 領域はネイティブ button。UA スタイルはここで完全に打ち消し、
+   span だった Step 3A.1 checkpoint と同一の見え方を維持する。
+   選択下線（::after）はボックス外に出るため overflow を切らない。 */
+.v2-detail__tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(14 * var(--v2-px));
+
+  /* --- UA style reset --- */
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font: inherit;
+  text-indent: 0;
+  text-transform: none;
+  text-shadow: none;
+  word-spacing: inherit;
+  overflow: visible;
+  appearance: none;
+
+  font-family: var(--v2-font-body);
+  font-size: calc(21 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-mid);
+}
+
+.v2-detail__tab-icon {
+  display: block;
+  width: calc(26 * var(--v2-px));
+  height: calc(26 * var(--v2-px));
+  border-radius: calc(4 * var(--v2-px));
+}
+
+.v2-detail__tab + .v2-detail__tab::before {
+  content: '';
+  position: absolute;
+  top: calc(2 * var(--v2-px));
+  bottom: calc(2 * var(--v2-px));
+  left: 0;
+  width: calc(1 * var(--v2-px));
+  background: var(--v2-rule);
+  opacity: 0.45;
+}
+
+/* 選択状態は accent-self（DAY は低彩度の青、NIGHT は金〜琥珀）。
+   視覚的な選択状態と programmatic な状態（aria-pressed）を同一の属性で駆動し、
+   両者がずれない構造にする。 */
+.v2-detail__tab[aria-pressed='true'] {
+  color: var(--v2-accent-self);
+}
+
+.v2-detail__tab[aria-pressed='true']::after {
+  content: '';
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: calc(-16 * var(--v2-px));
+  height: calc(3 * var(--v2-px));
+  background: var(--v2-accent-self);
+}
+
+/* -----------------------------------------------------------------------------
+ * ことば（この棚のことばたち）
+ * 表示する感情語は現行21感情に存在する語だけ。新しい感情語は追加しない。
+ * 3語だけでも余白を恐れずに成立させる。
+ * Phase 2：未実装の挙動を断定する説明文（タップすると選択され…）を削除し、
+ * 空いた1行ぶんだけパネル高さを詰めた。機能そのものを追加していない。
+ * -------------------------------------------------------------------------- */
+/* Phase 3 Step 3A：語数が 1 / 3 / 21 と変わるため、パネルは内容駆動にする。
+   3語のときの寸法は Phase 2 と同じ（padding 35 / 語 top 110 / 下 68）。
+   21語のときだけ内部が縦スクロールする（横スクロールは作らない）。 */
+.v2-detail__panel {
+  position: absolute;
+  top: 26.69%;
+  left: 3.81%;
+  width: 92.29%;
+  max-height: 62%;
+  padding: calc(35 * var(--v2-px)) calc(29 * var(--v2-px)) calc(68 * var(--v2-px));
+  border-radius: calc(28 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+/* 4領域のパネルは同じ位置に重ねて置き、選択中の1枚だけを見せる。
+   非選択パネルは hidden 属性で DOM からも支援技術からも外す
+   （display:none 相当。独自の aria-hidden 実装はしない）。 */
+.v2-detail__panel[hidden] {
+  display: none;
+}
+
+.v2-detail__panel-title {
+  display: block;
+  margin: 0 0 calc(49 * var(--v2-px));
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(26 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-strong);
+}
+
+.v2-detail__words {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  /* 既存 def の長さは感情ごとに違うため、最低 180 を保ちつつ内容に応じて伸ばす
+     （文字を切り詰めたり、既存 def を書き換えたりしない） */
+  grid-auto-rows: minmax(calc(180 * var(--v2-px)), auto);
+  align-items: stretch;
+  column-gap: calc(23 * var(--v2-px));
+  row-gap: calc(23 * var(--v2-px));
+  max-height: calc(586 * var(--v2-px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.v2-detail__words::-webkit-scrollbar { width: 0; height: 0; }
+
+/* 感情語カードはネイティブ button（Enter / Space は button 本来の挙動）。
+   UA スタイルをここで打ち消し、Phase 2 の見え方を保つ。 */
+.v2-word-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: calc(26 * var(--v2-px));
+  border: 0;
+  border-radius: calc(14 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-field-edge);
+  background: var(--v2-field-face);
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  text-indent: 0;
+  text-transform: none;
+  text-shadow: none;
+  appearance: none;
+}
+
+/* 選択中の感情語。自分の記録側の操作なので accent-self を使う（下線は付けない） */
+.v2-word-card--current {
+  box-shadow: inset 0 0 0 calc(2 * var(--v2-px)) var(--v2-accent-self);
+}
+
+.v2-word-card--current .v2-word-card__name {
+  color: var(--v2-accent-self);
+}
+
+.v2-word-card__name {
+  display: block;
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(28 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--v2-ink-strong);
+}
+
+/* 将来の保存／選択用スペース。Phase 1 は非活性で、絵柄も入れない */
+.v2-word-card__slot {
+  position: absolute;
+  top: calc(26 * var(--v2-px));
+  right: calc(26 * var(--v2-px));
+  width: calc(22 * var(--v2-px));
+  height: calc(28 * var(--v2-px));
+}
+
+.v2-word-card__desc {
+  display: block;
+  margin: calc(26 * var(--v2-px)) 0 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(16 * var(--v2-tpx));
+  line-height: calc(28 * var(--v2-tpx));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-mid);
+}
+
+/* -----------------------------------------------------------------------------
+ * 空状態（いま／作品／自分の本 0件）
+ * 失敗表示にしない。小さく静かに置き、面積で不足を強調しない。
+ * 進捗・達成・催促・次回予告の表現は持たない。
+ * -------------------------------------------------------------------------- */
+.v2-detail__empty {
+  margin: 0;
+  max-width: calc(660 * var(--v2-px));
+}
+
+.v2-detail__empty-title {
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(19 * var(--v2-tpx));
+  line-height: calc(32 * var(--v2-tpx));
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-strong);
+}
+
+.v2-detail__empty-note {
+  margin: calc(16 * var(--v2-px)) 0 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(16 * var(--v2-tpx));
+  line-height: calc(28 * var(--v2-tpx));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-mid);
+}
+
+/* -----------------------------------------------------------------------------
+ * 自分の本（04 文脈での再会）
+ * 04 は 06「自分の本棚」の縮小コピーではない。全蔵書一覧を再現しないため、
+ * 縦1列・最大3冊の静かな並びにする。
+ * カードは button にしない（本を開く導線＝07 は本Stepの範囲外）。
+ * 本文 story・写真・tweetUrl は表示しない。
+ * -------------------------------------------------------------------------- */
+.v2-detail__books {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: calc(23 * var(--v2-px));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.v2-book-card-item {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+/* Step 3C：カード全体が「その本を開く」1つの操作要素。ネイティブ button を使い、
+   入れ子の操作要素は作らない。UA スタイルはここで完全に打ち消し、
+   Step 3B.1 checkpoint と同一の見え方を維持する。focus リングは既定のまま。 */
+.v2-book-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: calc(26 * var(--v2-px));
+  border-radius: calc(14 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-field-edge);
+  background: var(--v2-field-face);
+
+  /* --- UA style reset --- */
+  margin: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  text-indent: 0;
+  text-transform: none;
+  text-shadow: none;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  appearance: none;
+}
+
+.v2-book-card__title {
+  display: block;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(24 * var(--v2-tpx));
+  line-height: calc(34 * var(--v2-tpx));
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-strong);
+  overflow-wrap: anywhere;
+}
+
+.v2-book-card__meta {
+  display: block;
+  margin: calc(14 * var(--v2-px)) 0 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(15 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-mid);
+}
+
+/* 06「自分の本棚」への導線候補。Step 3B.1 では接続しないため disabled のまま置く
+   （押せる見た目にして実際には動かない、という偽の操作を作らない）。
+   NavigationAdapter への接続・subviewOnly の 06 転用は Step 3C 以降。 */
+.v2-detail__more {
+  display: block;
+  margin: calc(28 * var(--v2-px)) 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--v2-font-body);
+  font-size: calc(17 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--v2-ink-mid);
+  text-align: left;
+  text-indent: 0;
+  text-transform: none;
+  text-shadow: none;
+  appearance: none;
+}
+
+.v2-detail__more:disabled {
+  /* 色はここで触らない（Step 1 で色指定が label 色を上書きした事故の再発防止） */
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* -----------------------------------------------------------------------------
+ * Global Navigation（3項目）
+ * 部品の見た目は components.css に一元化した。ここでは位置と外枠だけを持つ。
+ * 02〜07 は同一原寸カンプ（1024x1536）なので外枠の寸法も全画面で揃える。
+ * 現在地は accent 色の文字／アイコンのみ。下線は付けない。
+ * Phase 2 も視覚要素のみで route / href / event を持たない。
+ * -------------------------------------------------------------------------- */
+.v2-detail__navbar {
+  position: absolute;
+  top: 93.95%;
+  left: 3.81%;
+  width: 92.29%;
+  height: 5.27%;
+  border-radius: calc(20 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+.v2-detail__nav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(25 * var(--v2-px));
+  width: calc(873 * var(--v2-px));
+}
+
+/* -----------------------------------------------------------------------------
+ * モバイル幅の局所修正（Pre-Mount Visual A11y Hotfix / Additional LIMITED FIX）
+ * 崩れは「見出し×リード」「リード×4領域タブ」「タブ文字の折返し」だけ。
+ * 縦位置は % 指定（画面高に比例）なのに文字が --v2-tpx で拡大するため、
+ * 割り当てられた縦の間隔を超えていた。位置は動かさず、文字寸法だけ詰める。
+ * コンテナ幅 900px 以上（カンプ原寸 1024 を含む）には適用されない。
+ * -------------------------------------------------------------------------- */
+@container (max-width: 900px) {
+  .v2-page--shelf-detail .v2-detail__title { font-size: calc(34 * var(--v2-tpx)); }
+  /* 左が 17.48% 始まりで使える幅が狭く、18 のままだと3行になり
+     4領域タブへ食い込むため、狭い幅でだけ1段小さくする（13.8px＝12px以上） */
+  .v2-page--shelf-detail .v2-detail__lead {
+    font-size: calc(15 * var(--v2-tpx));
+    line-height: calc(24 * var(--v2-tpx));
+  }
+  .v2-page--shelf-detail .v2-detail__tab {
+    font-size: calc(16 * var(--v2-tpx));
+    gap: calc(8 * var(--v2-px));
+    white-space: nowrap;
+  }
+}

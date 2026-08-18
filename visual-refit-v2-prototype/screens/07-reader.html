@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja" data-v2-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Visual Refit V2 — 07 本詳細／読む（Structural Skeleton）</title>
+
+<!--
+  Visual Refit V2 / Phase 1 Structural Skeleton
+  Visual North Star: FORMAL_COMPS/DAY/07.png ・ FORMAL_COMPS/NIGHT/07.png のみ。
+
+  07 は一冊を取り出して読む場所。正式カンプの明確な2カラム構造を守る。
+  左：本の情報・小さな操作領域 ／ 右：大きな本文・読む面。
+
+  - Phase 1 は静的。bookModal を変更・接続しない。新 route を作らない
+  - edit / delete / rename / focus trap / inert / aria-hidden 等の既存契約に一切触れない
+  - 題名・日付・文字数・しおり件数・ページ数・本文は利用者の実データなので
+    文字を置かず、占有位置と余白だけを中立プレースホルダーで作る
+  - Phase 3 Step 3D：現行に実機能が無い操作（目次／文字サイズ／明るさ／メニュー／
+    編集する／ページ送り）は画面から外した。disabled のまま残さない
+  - 保存 / IndexedDB / localStorage / GA4 / 外部通信を一切行わない
+  - 下部ナビは Phase 2 正式仕様の3項目。route は Phase 3 で決める
+  - DAY と NIGHT は同一DOM。data-v2-theme だけで切り替える
+-->
+
+<script>
+  (function () {
+    var t = new URLSearchParams(location.search).get('theme');
+    if (t === 'day' || t === 'night') {
+      document.documentElement.dataset.v2Theme = t;
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/screens/07.css">
+</head>
+
+<body class="v2-page v2-page--reader" data-v2-screen="07">
+<div class="v2-stage v2-reader">
+
+  <div class="v2-scene" aria-hidden="true">
+    <div class="v2-reader__wall"></div>
+    <div class="v2-reader__scape"></div>
+    <div class="v2-reader__readinglight"></div>
+    <div class="v2-reader__vignette"></div>
+  </div>
+
+  <div class="v2-content">
+
+    <!-- 07 → 06 は固定（browser history に依存しない）。
+         library が 0 冊なら bookshelf-adapter の既存判定に従って 08 へ戻る。 -->
+    <button type="button" class="v2-reader__back" data-v2-reader-back>＜　戻る</button>
+
+      <!-- Phase 3 Step 3D：現時点で実機能が存在しない操作
+           （文字サイズ／明るさ／メニュー／目次／編集する／ページ送り）を画面から外した。
+           disabled のまま残さず、「近日対応」等も出さない。新機能も作らない。
+           残る操作は「戻る」と下部ナビだけ。しおりリボン・小口の罫は非interactive な装飾。 -->
+
+
+    <!-- 左カラム：本の情報・小さな操作領域 -->
+    <div class="v2-reader__side">
+      <!-- 書影：既存 entry.image（保存済みの data: URI）があるときだけ写真を入れる。
+           外部URLは新規 network を発生させうるため描かない。 -->
+      <span class="v2-reader__cover v2-placeholder" data-v2-reader="cover"></span>
+      <!-- 棚名（既存 CATEGORIES の label）。未収納・不明IDのときは空のまま -->
+      <span class="v2-reader__slot v2-placeholder" data-v2-reader="shelf"></span>
+      <!-- sealed の注記。既存 openBook と同じく「日付の隣の注記」であり、閲覧制御ではない -->
+      <span class="v2-reader__slot v2-reader__slot--sub v2-placeholder" data-v2-reader="sealed"></span>
+
+      <!-- Phase 2：未承認の「共有（URLをコピー）」と、しおり／メモ・線引き等の
+           編集機能を削除した。本文を外へ出す導線は置かない。
+           Phase 3 Step 3D：実機能の無い「目次」も外した。 -->
+      <div class="v2-reader__rule" aria-hidden="true"></div>
+
+      <div class="v2-reader__menu">
+        <div class="v2-reader__meta-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__meta-label">本にした日</span>
+          <span class="v2-reader__meta-slot v2-placeholder" data-v2-reader="date"></span>
+        </div>
+        <div class="v2-reader__meta-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__meta-label">文字数</span>
+          <span class="v2-reader__meta-slot v2-placeholder" data-v2-reader="chars"></span>
+        </div>
+        <div class="v2-reader__meta-item">
+          <span class="v2-reader__mark v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-reader__meta-label">保存先</span>
+          <span class="v2-reader__meta-slot v2-placeholder" data-v2-reader="store"></span>
+        </div>
+      </div>
+
+      <div class="v2-reader__assurance">
+        <span class="v2-reader__assurance-mark v2-placeholder" aria-hidden="true"></span>
+        <p class="v2-reader__assurance-text">本文はこの端末に保存されます。<br>本文は公開されません。</p>
+      </div>
+    </div>
+
+    <!-- 右カラム：大きな本文・読む面（この画面の主役） -->
+    <section class="v2-reader__page" aria-label="読む面">
+      <span class="v2-reader__ribbon" aria-hidden="true"></span>
+
+      <!-- 現行データに章の概念は無いため、章番号は置かず、題名だけを読む面の見出しにする -->
+      <div class="v2-reader__chapter">
+        <h1 class="v2-reader__chapter-title v2-placeholder" data-v2-reader="title"></h1>
+        <span class="v2-reader__chapter-rule" aria-hidden="true"></span>
+      </div>
+
+      <!-- 読む面の中身。長文はこの中だけで縦スクロールする（横スクロールは作らない） -->
+      <div class="v2-reader__scroll">
+        <!-- 本文。利用者の本文をそのまま静かに置く。カード群にしない。
+             既存 openBook と同じく sealed でも隠さない（sealed は閲覧制御ではない）。 -->
+        <p class="v2-reader__body v2-placeholder" data-v2-reader="body"></p>
+
+        <!-- 覚え書き。既存 openBook が「あれば表示」する仕様のため踏襲する -->
+        <div class="v2-reader__note" data-v2-reader="note-box" hidden>
+          <p class="v2-reader__note-label">覚え書き</p>
+          <p class="v2-reader__note-text" data-v2-reader="note"></p>
+        </div>
+      </div>
+
+
+      <div class="v2-reader__foot" aria-hidden="true">
+        <span class="v2-reader__foot-rule"></span>
+      </div>
+    </section>
+
+    <!-- Phase 2：未承認の操作バー（しおりを追加／メモを書く／線を引く／このページを共有）は
+         画面から削除した。読む面の下は余白のまま置く -->
+
+    <!-- Global Navigation：02〜08 共通の3項目。Phase 2 も視覚要素のみで route を持たない -->
+    <div class="v2-reader__navbar">
+      <nav class="v2-navbar v2-reader__nav" aria-label="ナビゲーション">
+        <button type="button" class="v2-navbar__item" data-v2-nav="shelves">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">棚を見る</span>
+        </button>
+        <button type="button" class="v2-navbar__item" data-v2-nav="desk">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">書く</span>
+        </button>
+        <button type="button" class="v2-navbar__item v2-navbar__item--current" data-v2-nav="bookshelf" aria-current="page">
+          <span class="v2-navbar__icon v2-placeholder" aria-hidden="true"></span>
+          <span class="v2-navbar__label">本棚</span>
+        </button>
+      </nav>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

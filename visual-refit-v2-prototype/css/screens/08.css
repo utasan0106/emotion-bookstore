@@ -1,0 +1,552 @@
+/* =============================================================================
+ * Visual Refit V2 — 08 空状態・下書き
+ * -----------------------------------------------------------------------------
+ * Visual North Star: FORMAL_COMPS/DAY/08.png ・ FORMAL_COMPS/NIGHT/08.png のみ。
+ *
+ * 【01〜07への非干渉】
+ * tokens.css / base.css / components.css / screens/01〜07 の各ファイルは
+ * 1バイトも変更していない。08 固有の差分はすべて .v2-page--empty スコープで
+ * このファイルに閉じている。
+ *
+ * 08 は「まだ本になっていないもの／空の状態にも意味がある」画面。
+ * 「何もないからエラー」に見せない。毎日書くよう強制しない。
+ * streak・達成率・空き枠・製本数の強調を追加しない。
+ *
+ * 【Core Ver.2 整合】
+ * 「まず書く → 本にする」は唯一の正規ルートではない。
+ * 出会う／残す／再会する は順序ではなくサービスの3つの過ごし方なので、
+ * 3列を等幅・等間隔・同一書式で並列に置き、番号・矢印・ステップ表現を付けない。
+ * 次の行動も「感情の棚を見る」と「ことばを残す」を同寸・同書式の2ボタンにし、
+ * どちらが正しい入口かという視覚的な強い優劣を作らない。
+ *
+ * 【縦横比】正式カンプは 1122x1402（DAY）/ 1123x1401（NIGHT）で 06・07 と異なる。
+ * 1024x1536 へ矯正せず、08 独自の比率のまま扱う。
+ * 撮影 viewport は 561x701 CSS px / DPR2 → 1122x1402。
+ *
+ * レイアウト契約（1122x1402・正式カンプ実測）
+ *   戻る            y   40-62   / 左 3.57%
+ *   検索／…          y   40-92   / 右端
+ *   本のアイコン枠     y  132-220  / x  66-154
+ *   自分の本棚         y  145-200  / x 175（Phase 2 で呼称を確定）
+ *   説明2行          y  225-285  / x 175
+ *   状態タブ4         y  345-372  / x  68 から左揃え（第3項目「下書き」が選択）
+ *   空状態カード       y  418-1134 / x  40-1082
+ *     見開き本の枠     y  452-560
+ *     大見出し        y  604-631
+ *     小見出し        y  661-679
+ *     はじめ方ラベル    y  731-749
+ *     3手順          アイコン y 792-829 ／ 見出し y 867-886 ／ 説明 y 908-954
+ *     主ボタン        y  991-1062 / x 367-754
+ *     副リンク        y 1086-1104
+ *   安心情報カード      y 1150-1278 / x  40-1082
+ *   下部5ナビバー       y 1306-1390 / x  40-1082
+ * ========================================================================== */
+
+.v2-page--empty .v2-stage {
+  --v2-px: calc(100cqw / 1122);
+}
+
+:root[data-v2-theme='day'] .v2-page--empty {
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 90%, #FFFFFF 10%);
+  --v2-card-edge: rgb(51 36 12 / 0.14);
+  --v2-step-edge: rgb(51 36 12 / 0.12);
+}
+
+:root[data-v2-theme='night'] .v2-page--empty {
+  --v2-card-face: color-mix(in srgb, var(--v2-wall) 93%, #CDA97C 7%);
+  --v2-card-edge: rgb(84 66 46 / 0.95);
+  --v2-step-edge: rgb(205 169 124 / 0.18);
+}
+
+/* -----------------------------------------------------------------------------
+ * 情景レイヤ
+ * 08 の照明は「本棚周辺のごく弱い環境光」。
+ * カンプ上部の吊り下げ灯は主役として再現しない（器具を置かない）。
+ * 占有: 右上の棚と花の景 x 74-100% / y 0-26%
+ * -------------------------------------------------------------------------- */
+.v2-empty__wall {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--v2-wall) 0%,
+    var(--v2-wall) 70%,
+    var(--v2-wall-deep) 100%
+  );
+}
+
+.v2-empty__scape {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 26%;
+  height: 26%;
+  border-bottom-left-radius: 36% 52%;
+  background: var(--v2-scene-arch);
+  opacity: 0.8;
+}
+
+/* 棚周辺のごく弱い環境光。器具は描かない */
+.v2-empty__ambient {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 48%;
+  height: 30%;
+  background: radial-gradient(
+    54% 56% at 78% 20%,
+    rgb(var(--v2-glow-color) / calc(var(--v2-glow-strength) * 0.7)) 0%,
+    rgb(var(--v2-glow-color) / 0) 100%
+  );
+}
+
+.v2-empty__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    108% 62% at 50% 42%,
+    rgb(0 0 0 / 0) 46%,
+    rgb(0 0 0 / var(--v2-vignette)) 100%
+  );
+}
+
+/* -----------------------------------------------------------------------------
+ * ヘッダ
+ * DAY カンプには「戻る」が無く NIGHT カンプにはあるが、DAY/NIGHT は同一DOM
+ * とする決定に従い、両方に置く。
+ * -------------------------------------------------------------------------- */
+.v2-empty__back {
+  position: absolute;
+  top: 2.85%;
+  left: 3.57%;
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(20 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-mid);
+}
+
+/* Phase 3 Step 2：対応する機能が存在しない丸メニュー（.v2-empty__tools / __tool / __mark）は削除した */
+
+.v2-empty__badge {
+  position: absolute;
+  top: 9.42%;
+  left: 5.88%;
+  width: 7.84%;
+  height: 6.28%;
+  border-radius: 50%;
+}
+
+.v2-empty__title {
+  position: absolute;
+  top: 10.34%;
+  left: 15.60%;
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(42 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.08em;
+  color: var(--v2-ink-strong);
+}
+
+.v2-empty__lead {
+  position: absolute;
+  top: 15.62%;
+  left: 15.60%;
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(18 * var(--v2-tpx));
+  line-height: calc(35 * var(--v2-tpx));
+  letter-spacing: 0.01em;
+  color: var(--v2-ink-mid);
+}
+
+/* Phase 3 Step 2：現行データに区分が無いため状態タブ（.v2-empty__tabs / __tab）は削除した */
+
+/* -----------------------------------------------------------------------------
+ * 空状態カード（この画面の主役）
+ * 06 の「本が並ぶ状態」との差が一目で分かるよう、要素数を絞り内側余白を広く取る。
+ * -------------------------------------------------------------------------- */
+.v2-empty__card {
+  position: absolute;
+  top: 29.81%;
+  left: 3.57%;
+  width: 92.87%;
+  height: 51.07%;
+  border-radius: calc(26 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+/* 見開き本のイラストは未確定。占有位置と面積だけを置く */
+.v2-empty__figure {
+  position: absolute;
+  top: calc(34 * var(--v2-px));
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(190 * var(--v2-px));
+  height: calc(108 * var(--v2-px));
+}
+
+/* Hotfix：文字に下限を設けた結果、狭い画面では1行に収まらないため折り返す。
+   カンプ原寸では従来どおり1行で、見え方は変わらない。 */
+/* Hotfix：left:50% のままだと利用可能幅が半分になり、折り返しを許した途端
+   カンプ原寸でも改行してしまう。左右いっぱいの帯にして text-align で中央へ置く。
+   視覚的な中心は従来と同じで、原寸の見え方は変わらない。 */
+.v2-empty__headline {
+  position: absolute;
+  top: calc(180 * var(--v2-px));
+  left: 0;
+  right: 0;
+  margin: 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(34 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  padding: 0 calc(45 * var(--v2-px));
+  text-align: center;
+  color: var(--v2-ink-strong);
+}
+
+.v2-empty__subline {
+  position: absolute;
+  top: calc(240 * var(--v2-px));
+  left: 0;
+  right: 0;
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(20 * var(--v2-tpx));
+  line-height: 1;
+  padding: 0 calc(45 * var(--v2-px));
+  text-align: center;
+  color: var(--v2-ink-mid);
+}
+
+/* 3つの過ごし方の上に置く罫。
+   旧「はじめ方」ラベルは手順の枠組みを示してしまうため外し、罫だけを残す。 */
+.v2-empty__steps-rule {
+  position: absolute;
+  top: calc(316 * var(--v2-px));
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(560 * var(--v2-px));
+  height: calc(1 * var(--v2-px));
+  margin: 0;
+  border: 0;
+  background: var(--v2-rule);
+  opacity: 0.4;
+}
+
+/* 3列は等幅・等間隔・同一書式。番号・矢印・順序を示す装飾を持たない */
+.v2-empty__steps {
+  position: absolute;
+  top: calc(366 * var(--v2-px));
+  left: calc(60 * var(--v2-px));
+  right: calc(60 * var(--v2-px));
+  height: calc(190 * var(--v2-px));
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.v2-empty__step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.v2-empty__step + .v2-empty__step::before {
+  content: '';
+  position: absolute;
+  top: calc(10 * var(--v2-px));
+  bottom: calc(10 * var(--v2-px));
+  left: 0;
+  width: calc(1 * var(--v2-px));
+  background: var(--v2-step-edge);
+}
+
+.v2-empty__step-mark {
+  display: block;
+  width: calc(62 * var(--v2-px));
+  height: calc(62 * var(--v2-px));
+  border-radius: 50%;
+}
+
+.v2-empty__step-title {
+  margin: calc(26 * var(--v2-px)) 0 0;
+  font-family: var(--v2-font-display);
+  font-weight: 500;
+  font-size: calc(22 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--v2-ink-strong);
+}
+
+.v2-empty__step-text {
+  margin: calc(22 * var(--v2-px)) 0 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(17 * var(--v2-tpx));
+  line-height: calc(30 * var(--v2-tpx));
+  text-align: center;
+  color: var(--v2-ink-mid);
+}
+
+/* 次の行動は2入口。同寸・同書式・同じ視覚的重さで並べ、優劣を作らない。
+   Phase 1 はどちらも非活性で、route も event も持たない。 */
+.v2-empty__ctas {
+  position: absolute;
+  top: calc(606 * var(--v2-px));
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: repeat(2, calc(348 * var(--v2-px)));
+  column-gap: calc(28 * var(--v2-px));
+}
+
+.v2-empty__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(16 * var(--v2-px));
+  height: calc(76 * var(--v2-px));
+  padding: 0;
+  border: 0;
+  border-radius: calc(10 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(2 * var(--v2-px)) var(--v2-accent-self);
+  background: transparent;
+  font-family: var(--v2-font-body);
+  font-size: calc(23 * var(--v2-tpx));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--v2-accent-self);
+  appearance: none;
+}
+
+.v2-empty__cta-mark {
+  display: block;
+  width: calc(26 * var(--v2-px));
+  height: calc(26 * var(--v2-px));
+}
+
+/* -----------------------------------------------------------------------------
+ * 安心情報カード
+ * -------------------------------------------------------------------------- */
+.v2-empty__assurance {
+  position: absolute;
+  top: 82.03%;
+  left: 3.57%;
+  width: 92.87%;
+  height: 9.13%;
+  display: flex;
+  align-items: center;
+  gap: calc(24 * var(--v2-px));
+  padding: 0 calc(34 * var(--v2-px));
+  border-radius: calc(20 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+.v2-empty__assurance-mark {
+  flex: none;
+  width: calc(58 * var(--v2-px));
+  height: calc(58 * var(--v2-px));
+  border-radius: 50%;
+}
+
+.v2-empty__assurance-body { flex: 1; }
+
+.v2-empty__assurance-title {
+  margin: 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(20 * var(--v2-tpx));
+  line-height: 1;
+  color: var(--v2-ink-strong);
+}
+
+.v2-empty__assurance-text {
+  margin: calc(14 * var(--v2-px)) 0 0;
+  font-family: var(--v2-font-body);
+  font-size: calc(17 * var(--v2-tpx));
+  line-height: calc(30 * var(--v2-tpx));
+  color: var(--v2-ink-mid);
+}
+
+/* マグカップと積み本の小さな情景。素材未確定のため占有領域のみ */
+.v2-empty__assurance-figure {
+  flex: none;
+  width: calc(180 * var(--v2-px));
+  height: calc(72 * var(--v2-px));
+}
+
+/* -----------------------------------------------------------------------------
+ * Global Navigation（3項目）
+ * 部品の見た目は components.css に一元化した。ここでは位置と外枠だけを持つ。
+ * 現在地は accent 色の文字／アイコンのみ。下線は付けない。
+ * Phase 2 も視覚要素のみで route / href / event を持たない。
+ * -------------------------------------------------------------------------- */
+.v2-empty__navbar {
+  position: absolute;
+  top: 93.15%;
+  left: 3.57%;
+  width: 92.87%;
+  height: 5.99%;
+  border-radius: calc(20 * var(--v2-px));
+  box-shadow: inset 0 0 0 calc(1 * var(--v2-px)) var(--v2-card-edge);
+  background: var(--v2-card-face);
+}
+
+.v2-empty__nav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(28 * var(--v2-px));
+  width: calc(986 * var(--v2-px));
+}
+
+/* 08 だけ原寸カンプが 1122 幅なので、02〜07 と同じ見え方になるよう
+   components.css の 1024 幅基準値をこのスコープで換算する（比率は同じ）。 */
+.v2-page--empty .v2-navbar__item { gap: calc(15 * var(--v2-px)); }
+
+.v2-page--empty .v2-navbar__icon {
+  width: calc(31 * var(--v2-px));
+  height: calc(31 * var(--v2-px));
+}
+
+.v2-page--empty .v2-navbar__label { font-size: calc(22 * var(--v2-tpx)); }
+
+.v2-page--empty .v2-navbar__item + .v2-navbar__item::before {
+  top: calc(20 * var(--v2-px));
+  bottom: calc(20 * var(--v2-px));
+}
+
+/* =============================================================================
+ * モバイル幅の局所レイアウト（Pre-Mount Visual Accessibility Hotfix / LIMITED FIX）
+ * -----------------------------------------------------------------------------
+ * 08 も縦位置が --v2-px の絶対配置のため、文字下限を入れると
+ * 見出しと説明、3カラムの見出しと説明、CTA の文字が重なる／不自然に折れる。
+ * 狭い幅のときだけ DOM 順の縦流し込みへ切り替え、3カラムは1カラムにする。
+ *
+ * コンテナ幅 900px 以上（＝カンプ原寸 1122 を含む帯）では一切適用されないため、
+ * Formal Comp 原寸の見え方は 1px も変わらない。CSS のみで DOM・挙動は無変更。
+ * ========================================================================== */
+@container (max-width: 900px) {
+  .v2-page--empty .v2-content {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: calc(16 * var(--v2-tpx));
+    padding: calc(20 * var(--v2-tpx)) calc(18 * var(--v2-tpx)) 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .v2-page--empty .v2-content > *,
+  .v2-page--empty .v2-empty__card > * {
+    position: static;
+    inset: auto;
+    transform: none;
+  }
+
+  .v2-page--empty .v2-empty__badge,
+  .v2-page--empty .v2-empty__figure { display: none; }
+
+  .v2-page--empty .v2-empty__back { align-self: flex-start; }
+  .v2-page--empty .v2-empty__lead { line-height: calc(28 * var(--v2-tpx)); }
+
+  .v2-page--empty .v2-empty__card {
+    display: flex;
+    flex-direction: column;
+    gap: calc(14 * var(--v2-tpx));
+    width: auto;
+    height: auto;
+    padding: calc(22 * var(--v2-tpx));
+  }
+  .v2-page--empty .v2-empty__headline {
+    padding: 0;
+    line-height: calc(38 * var(--v2-tpx));
+  }
+  .v2-page--empty .v2-empty__subline {
+    padding: 0;
+    line-height: calc(26 * var(--v2-tpx));
+  }
+  .v2-page--empty .v2-empty__steps-rule { width: auto; margin: 0; }
+
+  /* 3カラムは狭い幅で見出しと説明が衝突するため1カラムにする */
+  .v2-page--empty .v2-empty__steps {
+    grid-template-columns: 1fr;
+    width: auto;
+    height: auto;
+    row-gap: calc(16 * var(--v2-tpx));
+  }
+  .v2-page--empty .v2-empty__step {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(6 * var(--v2-tpx));
+    height: auto;
+  }
+  .v2-page--empty .v2-empty__step-title,
+  .v2-page--empty .v2-empty__step-text {
+    position: static;
+    width: auto;
+    text-align: left;
+    line-height: calc(22 * var(--v2-tpx));
+  }
+  .v2-page--empty .v2-empty__step-mark { position: static; }
+  /* 1列にすると3カラム用の縦区切り線が宙に浮くので消す */
+  .v2-page--empty .v2-empty__step + .v2-empty__step::before { display: none; }
+
+  /* 見出しは 34 のままだと末尾1〜2文字だけが次行へ落ちる。
+     狭い幅でだけ1行に収まる大きさにし、収まらない幅では
+     text-wrap: balance で行を均等に割って孤立行を作らない。 */
+  .v2-page--empty .v2-empty__headline {
+    font-size: calc(26 * var(--v2-tpx));
+    text-wrap: balance;
+  }
+  .v2-page--empty .v2-empty__subline,
+  .v2-page--empty .v2-empty__lead,
+  .v2-page--empty .v2-empty__step-text,
+  .v2-page--empty .v2-empty__assurance-title,
+  .v2-page--empty .v2-empty__assurance-text { text-wrap: balance; }
+
+  /* CTA：横2列だとラベルが不自然に折れるため縦積み＋全幅にする */
+  /* 基底は grid（2列固定）なので、列テンプレート自体を1列へ変える */
+  .v2-page--empty .v2-empty__ctas {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+    width: auto;
+    height: auto;
+    row-gap: calc(10 * var(--v2-tpx));
+    column-gap: 0;
+  }
+  .v2-page--empty .v2-empty__cta {
+    width: auto;
+    height: auto;
+    min-height: calc(50 * var(--v2-tpx));
+    padding: calc(10 * var(--v2-tpx)) calc(14 * var(--v2-tpx));
+    white-space: normal;
+  }
+
+  .v2-page--empty .v2-empty__assurance {
+    width: auto;
+    height: auto;
+    padding: calc(18 * var(--v2-tpx));
+  }
+  .v2-page--empty .v2-empty__assurance-figure { display: none; }
+  .v2-page--empty .v2-empty__assurance-title,
+  .v2-page--empty .v2-empty__assurance-text { line-height: calc(22 * var(--v2-tpx)); }
+
+  .v2-page--empty .v2-empty__navbar {
+    position: sticky;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    margin-top: auto;
+    padding: calc(6 * var(--v2-tpx)) 0;
+  }
+  .v2-page--empty .v2-empty__nav { position: static; width: auto; }
+  .v2-page--empty .v2-navbar__item { height: calc(46 * var(--v2-tpx)); }
+}
