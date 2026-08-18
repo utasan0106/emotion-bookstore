@@ -1329,3 +1329,236 @@ html[data-v2-mounted="true"] #experienceMenu .about-data-accordion > summary{
   margin:0 !important;
   width:100% !important;
 }
+
+/* ============================================================
+ * 02 Lobby — LOBBY B FINAL POLISH（FREEZE）
+ * 象牙の紙面＋番号付きの3つの有機形カード。DOM/遷移は既存のまま。
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2c02{
+  background:var(--vq-bg);
+}
+html[data-v2-mounted="true"] .v2c02__stage{
+  background:var(--vq-bg) !important;
+  font-family:var(--font-ui);
+  min-height:100dvh;
+}
+html[data-v2-mounted="true"] .v2c02__amb{ display:none !important; }
+html[data-v2-mounted="true"] .v2c02__brandrow{
+  border-bottom:1px solid var(--vq-rule);
+}
+html[data-v2-mounted="true"] .v2c02__logo{ display:none !important; }
+html[data-v2-mounted="true"] .v2c02__brandname{
+  font-family:var(--font-display);
+  color:var(--vq-ink) !important;
+  letter-spacing:.1em;
+}
+html[data-v2-mounted="true"] .v2c02 .v2b-menutrigger{ color:var(--vq-muted); }
+html[data-v2-mounted="true"] .v2c02__hero{
+  font-family:var(--font-display) !important;
+  color:var(--vq-ink) !important;
+  text-shadow:none !important;
+  letter-spacing:.06em;
+}
+html[data-v2-mounted="true"] .v2c02__lead{ display:none !important; }
+
+/* カード：淡い色面の有機形。01/02/03 の番号を付ける。 */
+html[data-v2-mounted="true"] .v2c02__card{
+  background:var(--v2c02-tint, #f3ead6) !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+html[data-v2-mounted="true"] .v2c02__card:nth-of-type(1){ --v2c02-tint:#f6ead0; border-radius:30px 44px 36px 26px !important; }
+html[data-v2-mounted="true"] .v2c02__card:nth-of-type(2){ --v2c02-tint:#f5e0d6; border-radius:42px 28px 40px 30px !important; }
+html[data-v2-mounted="true"] .v2c02__card:nth-of-type(3){ --v2c02-tint:#e2e7dc; border-radius:32px 38px 26px 44px !important; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c02__card:nth-of-type(1){ --v2c02-tint:#3a3423; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c02__card:nth-of-type(2){ --v2c02-tint:#3c2c2a; }
+html[data-v2-mounted="true"][data-theme="night"] .v2c02__card:nth-of-type(3){ --v2c02-tint:#26332b; }
+html[data-v2-mounted="true"] .v2c02__body::before{
+  content:"";
+  display:block;
+  font-family:var(--font-display);
+  font-size:15px; letter-spacing:.14em;
+  color:color-mix(in srgb, var(--vq-ink) 68%, transparent);
+  margin-bottom:4px;
+}
+html[data-v2-mounted="true"] .v2c02__card:nth-of-type(1) .v2c02__body::before{ content:"01"; }
+html[data-v2-mounted="true"] .v2c02__card:nth-of-type(2) .v2c02__body::before{ content:"02"; }
+html[data-v2-mounted="true"] .v2c02__card:nth-of-type(3) .v2c02__body::before{ content:"03"; }
+html[data-v2-mounted="true"] .v2c02__cardtitle{
+  font-family:var(--font-display) !important;
+  color:var(--vq-ink) !important;
+}
+html[data-v2-mounted="true"] .v2c02__rule{ display:none !important; }
+html[data-v2-mounted="true"] .v2c02__carddesc{
+  color:var(--vq-muted) !important;
+}
+html[data-v2-mounted="true"] .v2c02__chev{ display:none !important; }
+html[data-v2-mounted="true"] .v2c02__card:focus-visible{
+  outline:2px solid var(--vq-accent) !important;
+  outline-offset:3px;
+}
+/* 02 bottom nav */
+html[data-v2-mounted="true"] .v2c02 .v2b-nav{
+  position:fixed; left:0; right:0; bottom:0;
+  width:100%; z-index:30; margin-top:0;
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c02 .v2b-nav{ display:none; }
+}
+
+/* ============================================================
+ * 01 Entrance — M1.5-C Final : Subtle Motion Edition（FREEZE）
+ * 光の呼吸のようなごく微細なモーション。Reduced Motion では静止版。
+ * ============================================================ */
+html[data-v2-mounted="true"] .vq01{
+  min-height:100vh;
+  min-height:100dvh;
+  background:var(--vq-bg);
+  color:var(--vq-ink);
+  font-family:var(--font-ui);
+  display:flex; flex-direction:column;
+}
+html[data-v2-mounted="true"] .vq01__header{
+  flex:none;
+  height:58px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 18px 0 22px;
+}
+html[data-v2-mounted="true"] .vq01__brand{
+  font-family:var(--font-display);
+  font-size:13px; letter-spacing:.12em; font-weight:500;
+}
+html[data-v2-mounted="true"] .vq01 .v2b-menutrigger{
+  position:static;
+  width:44px; height:44px;
+  display:inline-flex; align-items:center; justify-content:center;
+  border:0; background:none; color:var(--vq-muted);
+  cursor:pointer; border-radius:8px;
+}
+html[data-v2-mounted="true"] .vq01 .v2b-menutrigger svg{
+  width:20px; height:20px; stroke:currentColor; fill:none;
+  stroke-width:1.6; stroke-linecap:round;
+}
+html[data-v2-mounted="true"] .vq01__main{
+  flex:1 1 auto;
+  display:flex; flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  width:min(430px, 100%);
+  margin:0 auto;
+  padding:12px 30px 64px;
+}
+html[data-v2-mounted="true"] .vq01__orb{
+  width:min(58vw, 230px);
+  aspect-ratio:1;
+  align-self:center;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 38% 36%, rgba(255,255,255,.9) 0 12%, transparent 46%),
+    radial-gradient(circle at 30% 42%, rgba(238,188,120,.55) 0 30%, transparent 62%),
+    radial-gradient(circle at 68% 62%, rgba(150,178,214,.5) 0 34%, transparent 66%),
+    radial-gradient(circle at 50% 50%, rgba(247,244,237,.9), rgba(247,244,237,0) 72%);
+  filter:blur(14px);
+  opacity:.9;
+  margin:2vh 0 4vh;
+  animation:vq01-breath 13s ease-in-out infinite alternate;
+}
+html[data-v2-mounted="true"][data-theme="night"] .vq01__orb{
+  background:
+    radial-gradient(circle at 38% 36%, rgba(255,246,225,.55) 0 10%, transparent 44%),
+    radial-gradient(circle at 30% 42%, rgba(214,164,96,.5) 0 30%, transparent 62%),
+    radial-gradient(circle at 68% 62%, rgba(96,128,170,.55) 0 34%, transparent 66%),
+    radial-gradient(circle at 50% 50%, rgba(20,27,38,.0), rgba(20,27,38,0) 72%);
+  opacity:.85;
+}
+@keyframes vq01-breath{
+  0%{ transform:translate(0,0) scale(1); opacity:.86; }
+  50%{ transform:translate(1.5%, -1%) scale(1.008); opacity:.92; }
+  100%{ transform:translate(-1.5%, 1%) scale(.998); opacity:.88; }
+}
+@media (prefers-reduced-motion: reduce){
+  html[data-v2-mounted="true"] .vq01__orb{ animation:none; }
+}
+html[data-v2-mounted="true"] .vq01__copy{
+  font-family:var(--font-display);
+  font-size:clamp(24px, 6.6vw, 30px);
+  line-height:1.7;
+  letter-spacing:.05em;
+  font-weight:500;
+  color:var(--vq-ink);
+  margin:0;
+}
+html[data-v2-mounted="true"] .vq01__sub{
+  margin:14px 0 0;
+  font-size:13.5px;
+  letter-spacing:.04em;
+  color:var(--vq-muted);
+}
+html[data-v2-mounted="true"] .vq01__cta{
+  appearance:none; border:0;
+  margin:30px 0 0;
+  min-height:48px;
+  min-width:200px;
+  padding:12px 34px;
+  border-radius:6px;
+  background:#4a5d43;
+  color:#f4f1e8;
+  font-family:var(--font-display);
+  font-size:15px; letter-spacing:.14em;
+  cursor:pointer;
+}
+html[data-v2-mounted="true"][data-theme="night"] .vq01__cta{
+  background:#7f9370;
+  color:#10161f;
+}
+html[data-v2-mounted="true"] .vq01__cta:focus-visible{
+  outline:2px solid var(--vq-accent); outline-offset:3px;
+}
+html[data-v2-mounted="true"] .vq01__foot{
+  margin:16px 0 0;
+  font-size:11px;
+  letter-spacing:.04em;
+  color:var(--vq-faint);
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__header{ height:70px; padding:0 28px; }
+  html[data-v2-mounted="true"] .vq01__brand{ font-size:14px; }
+  html[data-v2-mounted="true"] .vq01__main{
+    width:min(560px, 100%);
+    align-items:center;
+    text-align:center;
+  }
+  html[data-v2-mounted="true"] .vq01__orb{ width:260px; }
+}
+/* 旧 .v2c01__cta（suede texture / absolute配置）の中和 */
+html[data-v2-mounted="true"] .vq01__cta::before,
+html[data-v2-mounted="true"] .vq01__cta::after{ display:none !important; content:none !important; }
+html[data-v2-mounted="true"] .vq01__cta{
+  position:static !important;
+  inset:auto !important;
+  transform:none !important;
+  width:auto !important;
+  max-width:none !important;
+  background-image:none !important;
+  background-color:#4a5d43 !important;
+  border:0 !important;
+  box-shadow:none !important;
+  border-radius:6px !important;
+  color:#f4f1e8 !important;
+  text-shadow:none !important;
+  font-family:var(--font-display) !important;
+  font-size:15px !important;
+  letter-spacing:.14em !important;
+  padding:12px 34px !important;
+  min-height:48px;
+}
+html[data-v2-mounted="true"][data-theme="night"] .vq01__cta{
+  background-color:#7f9370 !important;
+  color:#10161f !important;
+}
+html[data-v2-mounted="true"] .vq01__main{ text-align:left; }
+html[data-v2-mounted="true"] .v2-page h1.vq01__copy{ text-align:left; }
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__main{ text-align:center; }
+  html[data-v2-mounted="true"] .v2-page h1.vq01__copy{ text-align:center; }
+}
