@@ -524,6 +524,12 @@ const MESSAGES = {
     v2c05StoryPh: "いま、心の中に残っていることを、そのまま書いてみてください。うまく書こうとしなくて大丈夫。一言からでも、本になります。",
     v2c05Assure: "本文は、この端末のブラウザ保存領域に保存されます。",
     v2c05Bind: "本にする",
+    v2s2Aux: "BOOK MADE",
+    v2s2Heading: "本にしました",
+    v2s2Question: "この本を、どの棚に置きますか？",
+    v2s2Choose: "置きたい棚をひとつ選べます",
+    v2s2Confirm: "この棚にしよう",
+    v2s2Note: "棚はあとから決めてもかまいません",
     // R2-3：data-i18n-html で描画。文言は不変で、括弧句だけ折返し禁止の span を持つ
     v2c05BindNote: "本文を保存し、本にします。そのあとで<span class=\"v2c05__nbr\">「この一冊に近い気持ち」</span>を選べます（任意）。",
     v2c05ResumeT: "書きかけがあります",
@@ -1019,6 +1025,12 @@ const MESSAGES = {
     v2c05StoryPh: "Write what is still on your mind, just as it is. It does not have to be well written. Even a single line can become a book.",
     v2c05Assure: "Your text is stored in this device’s browser storage.",
     v2c05Bind: "Make it a book",
+    v2s2Aux: "BOOK MADE",
+    v2s2Heading: "Your book is made",
+    v2s2Question: "Which shelf would you like to place this book on?",
+    v2s2Choose: "You can choose one shelf",
+    v2s2Confirm: "Place it on this shelf",
+    v2s2Note: "You can decide on a shelf later",
     v2c05BindNote: "Saves your writing and makes it a book. You can then choose a feeling close to it (optional).",
     v2c05ResumeT: "You have a draft",
     v2c05ResumeN: "You can carry on editing where you left off.",
@@ -5034,28 +5046,25 @@ function hideUnfiledShelfPicker(){
 function refreshUnfiledShelfPickerLabels(){
   const box = document.getElementById('unfiledShelfPicker');
   if(!box || box.classList.contains('hidden')) return;
-  const select = document.getElementById('unfiledShelfSelect');
-  if(!select) return;
-  const keepValue = select.value; // 内部IDを保持
-  Array.from(select.options).forEach(o=>{
-    if(o.value === ''){
-      o.textContent = t('manaReceivePlaceholder');
-      return;
-    }
-    const cat = CATEGORIES.find(c=>c.id === o.value);
-    if(cat) o.textContent = categoryLabelFor(cat);
+  // canonical B：radio の表示ラベルのみ現在言語へ更新（data-shelf-choice=内部IDは不変）。
+  // 並び順・選択肢の数・選択状態は一切変更しない（表示ラベルのみの更新）。
+  box.querySelectorAll('[data-shelf-choice]').forEach(btn=>{
+    const cat = CATEGORIES.find(c=>c.id === btn.getAttribute('data-shelf-choice'));
+    const nameEl = btn.querySelector('.v2s2-shelf__name');
+    if(cat && nameEl) nameEl.textContent = categoryLabelFor(cat);
   });
-  select.value = keepValue; // 切替前後で選択状態を維持
-  const label = box.querySelector('label[for="unfiledShelfSelect"]');
-  if(label) label.textContent = t('manaReceiveShelfLabel');
+  const setText=(sel,key)=>{ const el=box.querySelector(sel); if(el) el.textContent = t(key); };
+  setText('.v2s2-aux','v2s2Aux');
+  setText('.v2s2-heading','v2s2Heading');
+  setText('.v2s2-question','v2s2Question');
+  setText('.v2s2-choose','v2s2Choose');
+  setText('.v2s2-note','v2s2Note');
+  const group = box.querySelector('.v2s2-shelves');
+  if(group) group.setAttribute('aria-label', t('v2s2Choose'));
   const confirmBtn = document.getElementById('unfiledShelfConfirm');
-  if(confirmBtn) confirmBtn.textContent = t('manaReceiveConfirm');
+  if(confirmBtn) confirmBtn.textContent = t('v2s2Confirm');
   const skipBtn = document.getElementById('unfiledShelfSkip');
   if(skipBtn) skipBtn.textContent = t('manaReceiveSkip');
-  const pageLabel = box.querySelector('.mana-page-label');
-  if(pageLabel) pageLabel.textContent = t('manaPageHeading');
-  const line = box.querySelector('.mana-receive-line');
-  if(line) line.textContent = t('manaReceiveLine');
   box.setAttribute('aria-label', t('manaReceiveAriaLabel'));
   // ★PR-A：開いたまま言語切替した場合、インライン改題UIの文言も追従させる
   // （開閉状態・入力中の文字はそのまま維持する）。
@@ -5073,10 +5082,12 @@ function refreshUnfiledShelfPickerLabels(){
 }
 
 function showUnfiledShelfPicker(entry){
-  // ★v1.3最終統合：単なる「任意の棚収納UI」から、店主まなが本を預かる場面（受け取り頁）へ
-  // 再構成する。新しい別保存処理や別entryは作らない（現行の同じentryを使う）。
-  // 表示するもの：まなのオリジナルイラスト／製本された本の表紙プレビュー／店主の短い言葉／
-  // 棚選択（任意）／「この棚にしまう」／「今は棚を決めず、本棚へ」（仕様書1-3）。
+  // ★V2 FREEZE canonical（05-2 Shelf Selection B）：受け取り頁を
+  // 「本にしました」＋小さな本のプレビュー＋2列の棚ラベル群（radiogroup）へ再構成する。
+  // 機能契約は従来どおり：初期未選択／未選択時Primary disabled／1棚のみ／
+  // スキップ常時可／確定は同じentryのcategory更新＋saveJSONのみ（新規保存なし）。
+  // 選択肢は既存CATEGORIES（21棚・内部ID不変）から動的生成する。
+  // ※canonical の「8棚」への集約は保存データモデルに関わるため、CEO判断待ち。
   _page3ActiveEntry = entry; // ★PR-A：言語切替時のラベル再計算用
   let box = document.getElementById('unfiledShelfPicker');
   if(!box){
@@ -5092,65 +5103,50 @@ function showUnfiledShelfPicker(entry){
   box.innerHTML = '';
 
   let handled = false; // 一度限りガード（連打・両ボタン連続操作の防止）
+  let selectedId = ''; // 初期未選択（自動選択・推定なし）
 
   const card = document.createElement('div');
-  card.className = 'mana-receive-card';
+  card.className = 'v2s2-card';
 
-  // ★v1.3公開前最終修正：主動線の頁番号（仕様書1章）。第三頁のみ、このカード内に見出しとして追加。
-  const pageLabel = document.createElement('p');
-  pageLabel.className = 'page-label mana-page-label';
-  pageLabel.textContent = t('manaPageHeading');
-  card.appendChild(pageLabel);
+  // 補助ラベル＋見出し＋問いかけ
+  const aux = document.createElement('p');
+  aux.className = 'v2s2-aux';
+  aux.textContent = t('v2s2Aux');
+  card.appendChild(aux);
 
-  // 店主まなのオリジナルイラスト。周辺のmanaReceiveLineと内容が重複するため装飾画像として
-  // alt=""を付与（読み込み失敗時もカード自体はそのまま機能する＝画像なしフォールバック）。
-  const figure = document.createElement('div');
-  figure.className = 'mana-receive-figure';
-  const figureImg = document.createElement('img');
-  figureImg.src = '/assets/mana-counter.webp';
-  figureImg.alt = t('manaImageAlt');
-  figureImg.width = 1120;
-  figureImg.height = 1400;
-  figureImg.loading = 'lazy';
-  figureImg.onerror = function(){ figure.classList.add('img-failed'); this.remove(); };
-  figure.appendChild(figureImg);
-  card.appendChild(figure);
+  const heading = document.createElement('p');
+  heading.className = 'v2s2-heading';
+  heading.textContent = t('v2s2Heading');
+  card.appendChild(heading);
 
-  // 製本された本の表紙プレビュー（新規保存はしない。既存entryの題名をそのまま表示するだけ）。
-  // ★UX Fix 02（Real Spine Continuity）：固定のワイン色プレースホルダーではなく、
-  // 本棚の背表紙と全く同じ計算式（computeSpineVisual）で描く。新規保存・新規entryは作らない。
-  const bookPreview = document.createElement('div');
-  bookPreview.className = 'mana-receive-book';
-  // ★renderShelf()と同じ規則（visibleShelfEntries()）でこのentryの「今の一覧内の番号」を
-  // 求める。libraryCache.length-1のような決め打ちはしない。
-  const previewIndex = visibleShelfEntries().findIndex(e=>e.id===entry.id);
-  const previewSpine = document.createElement('div');
-  previewSpine.className = 'spine';
-  previewSpine.dataset.entryId = entry.id;
-  const initialVisual = computeSpineVisual(entry, previewIndex);
-  previewSpine.style.background = initialVisual.background;
-  previewSpine.style.color = initialVisual.color;
-  previewSpine.style.textShadow = initialVisual.textShadow;
-  previewSpine.style.height = initialVisual.height;
-  previewSpine.style.setProperty('--tilt', initialVisual.tiltDeg);
-  previewSpine.textContent = initialVisual.title;
-  // 棚を選び直すたびに、色関連（background/color/textShadow）だけを差し替える。
-  // height/tilt/titleはカテゴリに依存しない式のため、ここでは触らない。
-  // entry.category・libraryCacheはここでは一切書き換えない（確定前のプレビューのみ）。
-  const applyPreviewColor = (catId)=>{
-    const visual = computeSpineVisual(Object.assign({}, entry, { category: catId }), previewIndex);
-    previewSpine.style.background = visual.background;
-    previewSpine.style.color = visual.color;
-    previewSpine.style.textShadow = visual.textShadow;
-  };
-  bookPreview.appendChild(previewSpine);
-  card.appendChild(bookPreview);
+  const question = document.createElement('p');
+  question.className = 'v2s2-question';
+  question.textContent = t('v2s2Question');
+  card.appendChild(question);
 
-  // ★PR-A：第三頁のインライン改題。頁1/2（desk/storyInput）へは絶対に戻さない。
-  // 既定は非表示（低強調のテキストボタンのみ）。このUIはconfirm/skipどちらの動線にも
-  // 割り込まない＝「今は棚を決めず、本棚へ」のクリック回数は従来のまま変わらない。
+  // 小さな本のプレビュー（Cover → 題名 → 日付）。新規保存はしない。
+  const preview = document.createElement('div');
+  preview.className = 'v2s2-preview';
+  const cover = document.createElement('span');
+  cover.className = 'v2s2-cover';
+  cover.setAttribute('aria-hidden', 'true');
+  preview.appendChild(cover);
+  const previewMeta = document.createElement('div');
+  previewMeta.className = 'v2s2-previewmeta';
+  const previewTitle = document.createElement('p');
+  previewTitle.className = 'v2s2-previewtitle';
+  previewTitle.textContent = entry.title || '';
+  previewMeta.appendChild(previewTitle);
+  const previewDate = document.createElement('p');
+  previewDate.className = 'v2s2-previewdate';
+  const d = new Date(entry.date);
+  previewDate.textContent = isNaN(d.getTime()) ? '' :
+    d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + String(d.getDate()).padStart(2, '0');
+  previewMeta.appendChild(previewDate);
+
+  // ★PR-A：第三頁のインライン改題（既存機能・既存ID維持）。頁1/2へは絶対に戻さない。
   const titleEditor = document.createElement('div');
-  titleEditor.className = 'mana-title-editor';
+  titleEditor.className = 'mana-title-editor v2s2-titleeditor';
 
   const titleTrigger = document.createElement('button');
   titleTrigger.type = 'button';
@@ -5207,13 +5203,10 @@ function showUnfiledShelfPicker(entry){
     const prevTitle = entry.title; // 保存失敗時のロールバック用
     const trimmed = titleInputEl.value.trim();
     // ★空欄なら、他の題名フォールバック経路（modalEditSave等）と同じ既存フォールバックへ。
-    // 新しいフォールバック文言は作らない。
     const nextTitle = trimmed || t('manaReceiveBookFallback') || 'まだ、題名のない本';
-    entry.title = nextTitle; // 変更するのはtitleのみ（story/category/date/id/image/tweetUrl/sealedは触らない）
+    entry.title = nextTitle; // 変更するのはtitleのみ
     const savedOk = await saveJSON('emotion-bookstore-library', libraryCache);
     if(!savedOk){
-      // ★保存失敗：メモリを保存前の値へ正確に巻き戻す（storageとの乖離を防ぐ）。
-      // ダイアログは閉じず、既存のページ3エラー領域に表示する（新しい別UIは作らない）。
       entry.title = prevTitle;
       errorMsg.textContent = t('manaReceiveSaveError');
       errorMsg.classList.remove('hidden');
@@ -5221,104 +5214,127 @@ function showUnfiledShelfPicker(entry){
     }
     errorMsg.textContent = '';
     errorMsg.classList.add('hidden');
-    // ★computeSpineVisual()をフルに通し、background/color/textShadow/height/--tilt/題名の
-    // 全部を作り直す（題名の文字数がheight/tiltの式にも影響するため、文字だけの差し替えでは
-    // 本棚実物とプレビューがずれる）。棚を選択中ならその棚色を、未選択ならunfiledの中立色を
-    // そのまま維持する（applyPreviewColorと同じ合成方法）。
-    const catOverride = isValidShelfSelected() ? select.value : entry.category;
-    const visual = computeSpineVisual(Object.assign({}, entry, { category: catOverride }), previewIndex);
-    previewSpine.style.background = visual.background;
-    previewSpine.style.color = visual.color;
-    previewSpine.style.textShadow = visual.textShadow;
-    previewSpine.style.height = visual.height;
-    previewSpine.style.setProperty('--tilt', visual.tiltDeg);
-    previewSpine.textContent = visual.title;
-    // ★本棚の実物は、この受け取り頁が開く直前に一度だけ描画済み（renderShelf(true)）のため、
-    // ここで改題しただけでは古い題名のまま取り残される（スキップ経路はconfirmBtnと違い
-    // renderShelf()を呼び直さない）。entry.titleは既にlibraryCache上のentryを直接書き換えて
-    // いるので、renderShelf()を再実行するだけで足りる（新規保存・新規entryは発生しない）。
+    previewTitle.textContent = entry.title;
+    // 本棚の実物は受け取り頁が開く直前に描画済みのため、改題を反映して描き直す。
     renderShelf();
     closeTitleEditor();
   };
 
+  previewMeta.appendChild(titleEditor);
   titleEditor.appendChild(titleTrigger);
   titleEditor.appendChild(titleForm);
-  card.appendChild(titleEditor);
+  preview.appendChild(previewMeta);
+  card.appendChild(preview);
 
-  // 店主の確定文（同一文の連続表示・本文の理解や助言・感情棚の推測はしない）
-  const line = document.createElement('p');
-  line.className = 'mana-receive-line';
-  line.textContent = t('manaReceiveLine');
-  card.appendChild(line);
+  // 棚選択（2列の棚ラベル群 / radiogroup）
+  const chooseLabel = document.createElement('p');
+  chooseLabel.className = 'v2s2-choose';
+  chooseLabel.textContent = t('v2s2Choose');
+  card.appendChild(chooseLabel);
 
-  // ★修正：棚を明示的に選ぶまで先頭棚が暗黙選択されないよう、
-  // ラベルとプレースホルダー（value=''・selected・disabled）を先頭に置く。
-  // プレースホルダーはCATEGORIESに追加せず、保存カテゴリとしても使用しない。
-  const label = document.createElement('label');
-  label.setAttribute('for', 'unfiledShelfSelect');
-  label.textContent = t('manaReceiveShelfLabel');
+  const group = document.createElement('div');
+  group.className = 'v2s2-shelves';
+  group.setAttribute('role', 'radiogroup');
+  group.setAttribute('aria-label', t('v2s2Choose'));
 
-  const select = document.createElement('select');
-  select.id = 'unfiledShelfSelect';
-  const placeholder = document.createElement('option');
-  placeholder.value = '';
-  placeholder.textContent = t('manaReceivePlaceholder');
-  placeholder.selected = true;
-  placeholder.disabled = true;
-  select.appendChild(placeholder);
-  // ★Hotfix4.1：英語モードでも option の表示名が生の日本語（cat.label）のままだった不具合を修正。
-  // 棚タブ・棚見出しなど他のUIと同じ categoryLabelFor() を通し、既存のCATEGORY_LABEL_EN（21棚）を
-  // そのまま再利用する（新しい英訳は作らない）。option.value は内部IDのまま一切変更しない。
+  const radios = [];
+  const shelfColorOf = (catId)=>{
+    const idx = CATEGORIES.findIndex(c=>c.id === catId);
+    return (idx >= 0 && SPINE_COLORS[idx]) ? SPINE_COLORS[idx] : UNFILED_SPINE_COLOR;
+  };
+  const setRovingTabindex = ()=>{
+    const activeIdx = Math.max(0, radios.findIndex(r=>r.getAttribute('aria-checked') === 'true'));
+    radios.forEach((r,i)=>{ r.tabIndex = (i === activeIdx) ? 0 : -1; });
+  };
+  const selectShelf = (catId)=>{
+    selectedId = catId;
+    radios.forEach(r=>{
+      const on = r.getAttribute('data-shelf-choice') === catId;
+      r.setAttribute('aria-checked', on ? 'true' : 'false');
+      r.classList.toggle('is-selected', on);
+    });
+    setRovingTabindex();
+    updateConfirmState();
+  };
+
   CATEGORIES.forEach(c=>{
-    const o = document.createElement('option');
-    o.value = c.id;
-    o.textContent = categoryLabelFor(c);
-    select.appendChild(o);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'v2s2-shelf';
+    btn.setAttribute('role', 'radio');
+    btn.setAttribute('aria-checked', 'false');
+    btn.setAttribute('data-shelf-choice', c.id);
+    btn.tabIndex = -1;
+
+    const bar = document.createElement('span');
+    bar.className = 'v2s2-shelf__bar';
+    bar.setAttribute('aria-hidden', 'true');
+    bar.style.background = shelfColorOf(c.id);
+    btn.appendChild(bar);
+
+    const nameEl = document.createElement('span');
+    nameEl.className = 'v2s2-shelf__name';
+    nameEl.textContent = categoryLabelFor(c);
+    btn.appendChild(nameEl);
+
+    const mark = document.createElement('span');
+    mark.className = 'v2s2-shelf__mark';
+    mark.setAttribute('aria-hidden', 'true');
+    btn.appendChild(mark);
+
+    btn.addEventListener('click', ()=>{ if(!btn.disabled) selectShelf(c.id); });
+    radios.push(btn);
+    group.appendChild(btn);
   });
+  // 矢印キーでradio間を移動する（選択はEnter/Space=click）。
+  group.addEventListener('keydown', (e)=>{
+    const keys = ['ArrowDown','ArrowRight','ArrowUp','ArrowLeft'];
+    if(!keys.includes(e.key)) return;
+    const cur = radios.indexOf(document.activeElement);
+    if(cur < 0) return;
+    e.preventDefault();
+    const delta = (e.key === 'ArrowDown' || e.key === 'ArrowRight') ? 1 : -1;
+    const next = (cur + delta + radios.length) % radios.length;
+    radios[next].focus();
+  });
+  if(radios.length) radios[0].tabIndex = 0;
+  card.appendChild(group);
 
   const confirmBtn = document.createElement('button');
   confirmBtn.type = 'button';
   confirmBtn.id = 'unfiledShelfConfirm';
-  confirmBtn.className = 'chart-btn primary';
-  confirmBtn.textContent = t('manaReceiveConfirm');
-  confirmBtn.disabled = true; // ★修正：初期状態は無効（正規の棚を選ぶまで確定できない）
+  confirmBtn.className = 'v2s2-cta';
+  confirmBtn.textContent = t('v2s2Confirm');
+  confirmBtn.disabled = true; // 初期状態は無効（正規の棚を選ぶまで確定できない）
 
   const skipBtn = document.createElement('button');
   skipBtn.type = 'button';
   skipBtn.id = 'unfiledShelfSkip';
-  skipBtn.className = 'chart-btn ghost';
+  skipBtn.className = 'v2s2-skip';
   skipBtn.textContent = t('manaReceiveSkip');
 
   // 選択値がCATEGORIESに存在する正規IDの場合だけ確定ボタンを有効化する
-  const isValidShelfSelected = ()=>CATEGORIES.some(c=>c.id === select.value);
+  const isValidShelfSelected = ()=>CATEGORIES.some(c=>c.id === selectedId);
   const updateConfirmState = ()=>{ confirmBtn.disabled = !isValidShelfSelected(); };
-  select.addEventListener('change', ()=>{
-    updateConfirmState();
-    // ★UX Fix 02：プレースホルダー（value===''）のままなら中立色のまま据え置く。
-    // 正規の棚を選んだ時だけ、選んだ棚の色でプレビューの背表紙を塗り直す。
-    if(isValidShelfSelected()) applyPreviewColor(select.value);
-  });
 
   const setBusy = (busy)=>{
-    select.disabled = busy;
+    radios.forEach(r=>{ r.disabled = busy; });
     skipBtn.disabled = busy;
     if(busy){
       confirmBtn.disabled = true;
     }else{
-      // ★修正：再有効化の際も、正規の棚が選択されている場合だけ確定ボタンを有効にする
       updateConfirmState();
     }
   };
 
   const errorMsg = document.createElement('p');
-  errorMsg.className = 'mana-receive-error hidden';
+  errorMsg.className = 'mana-receive-error v2s2-error hidden';
   errorMsg.setAttribute('role', 'status');
 
   confirmBtn.onclick = async ()=>{
     if(handled) return;
     handled = true;
     setBusy(true);
-    const selectedId = select.value;
     // 選択値がCATEGORIESに存在する正規のIDであることを確認する
     if(!CATEGORIES.some(c=>c.id === selectedId)){
       handled = false;
@@ -5330,7 +5346,7 @@ function showUnfiledShelfPicker(entry){
     entry.category = selectedId;
     const savedOk = await saveJSON('emotion-bookstore-library', libraryCache);
     if(!savedOk){
-      // 保存失敗：unfiledへ巻き戻し、UIは閉じず再試行可能な状態を維持。感情棚へは遷移しない。
+      // 保存失敗：unfiledへ巻き戻し、UIは閉じず再試行可能な状態を維持。
       entry.category = prevCategory;
       errorMsg.textContent = t('manaReceiveSaveError');
       errorMsg.classList.remove('hidden');
@@ -5338,46 +5354,40 @@ function showUnfiledShelfPicker(entry){
       setBusy(false);
       return;
     }
-    // ★v1.3最終統合：棚選択後も感情棚へは自動遷移せず、本棚へ移動する（仕様書1-3）。
-    // category更新・再保存は現行どおり。activeCategoryは感情棚を任意で開いたときのために
-    // 更新するのみで、表示・保存には影響しない（renderShelfDisplay()はここでは呼ばない）。
-    // ★Hotfix1-2追加修正：本棚での未分類本の棚確定も利用者の明示的な棚選択のため、shelfWasChosenを更新する。
+    // 棚選択後も感情棚へは自動遷移せず、本棚へ移動する（既存仕様のまま）。
     setActiveShelf(selectedId);
     renderShelf();
     renderShelfTabs();
     hideUnfiledShelfPicker();
     // view_shelfは本棚への移動として、goToPage('bookshelf')内の既存GA4処理で1回だけ発火する。
     goToPage('bookshelf');
-    // ★UX Fix 02：遷移直後、本棚に並んだ実物の背表紙だけを静かにハイライトする（保存・GA4は無関係）。
     highlightNewestSpine(entry.id);
-    // 遷移直後に節目処理を1回だけ実行（節目判定・1回限りの記録は既存実装のまま）
     celebrateMilestoneIfNeeded(libraryCache.length);
   };
 
   skipBtn.onclick = ()=>{
     if(handled) return;
     handled = true;
-    // categoryはunfiledのまま変更せず、再保存も行わない。招待カードも表示しない。
-    hideUnfiledShelfPicker(); // UIを閉じ、同じ操作が再発火しないようにする
+    // categoryはunfiledのまま変更せず、再保存も行わない。
+    hideUnfiledShelfPicker();
     goToPage('bookshelf');
-    // ★UX Fix 02：skip後もcategoryはunfiledのまま、本棚上の実物の背表紙だけをハイライトする。
     highlightNewestSpine(entry.id);
-    // 遷移直後に節目処理を1回だけ実行
     celebrateMilestoneIfNeeded(libraryCache.length);
   };
 
-  card.appendChild(label);
-  card.appendChild(select);
-  const actions = document.createElement('div');
-  actions.className = 'mana-receive-actions';
-  actions.appendChild(confirmBtn);
-  actions.appendChild(skipBtn);
-  card.appendChild(actions);
+  card.appendChild(confirmBtn);
+  card.appendChild(skipBtn);
+
+  const note = document.createElement('p');
+  note.className = 'v2s2-note';
+  note.textContent = t('v2s2Note');
+  card.appendChild(note);
+
   card.appendChild(errorMsg);
 
   box.appendChild(card);
-  const focusTarget = document.getElementById('unfiledShelfSelect');
-  if(focusTarget) focusTarget.focus();
+  // 初期フォーカスは棚グループの先頭radio（初期未選択のまま）。
+  if(radios.length) radios[0].focus();
   // ★PR-A：ダイアログの中身を組み立て終えたところで、背後頁のinert付与とTabトラップの
   // 登録を行う（#experienceMenuと同じ開閉パターン）。
   trapPage3Focus();
