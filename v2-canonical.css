@@ -2359,3 +2359,64 @@ html[data-v2-mounted="true"] .v2s2-shelf--child{
 }
 html[data-v2-mounted="true"] .v2s2-shelf--child:nth-child(odd){ border-right:1px solid var(--vq-rule); }
 html[data-v2-mounted="true"] .v2s2-shelf--child .v2s2-shelf__bar{ height:18px; width:4px; }
+
+/* ============================================================
+ * VCR: 07 Reader — Reading layout（title→date→shelf→body→photo）
+ * Desktop: 左に Quiet Cover（Book identity）+ 右に reading column。
+ * User photo は body の後・原則 crop なし。
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2c07__identity{ display:none; }
+html[data-v2-mounted="true"] .v2c07__photo.is-v2-empty,
+html[data-v2-mounted="true"] .v2c07__photo:empty{ display:none; }
+
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c07__stage{
+    max-width:66rem !important;
+    width:100%;
+    margin:0 auto;
+    padding-left:40px;
+    padding-right:40px;
+  }
+  html[data-v2-mounted="true"] .v2c07__book{
+    display:grid;
+    grid-template-columns:240px minmax(0, 34rem);
+    column-gap:64px;
+    justify-content:start;
+    margin-top:18px;
+  }
+  html[data-v2-mounted="true"] .v2c07__book > *{ grid-column:2; }
+  html[data-v2-mounted="true"] .v2c07__identity{
+    display:block;
+    grid-column:1;
+    grid-row:1 / span 9;
+    width:240px;
+    height:320px;
+    border-radius:4px 10px 10px 4px;
+    background:
+      linear-gradient(90deg, rgba(0,0,0,.10) 0 2.5%, rgba(255,250,238,.4) 2.5% 4%, rgba(0,0,0,.04) 4% 7%, transparent 11%),
+      radial-gradient(120% 90% at 30% 16%, rgba(255,255,255,.5), transparent 60%),
+      #efe7d6;
+    box-shadow:
+      inset 0 0 0 1px rgba(80,72,60,.18),
+      0 14px 34px rgba(77,55,29,.14);
+    position:relative;
+  }
+  html[data-v2-mounted="true"] .v2c07__identity::before{
+    content:"";
+    position:absolute;
+    left:50%; top:24%;
+    width:38%; height:1px;
+    transform:translateX(-50%);
+    background:rgba(80,72,60,.30);
+  }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c07__identity{
+    background:
+      linear-gradient(90deg, rgba(0,0,0,.30) 0 2.5%, rgba(226,231,237,.16) 2.5% 4%, rgba(0,0,0,.10) 4% 7%, transparent 11%),
+      radial-gradient(120% 90% at 30% 16%, rgba(255,255,255,.10), transparent 60%),
+      #232c3a;
+    box-shadow:inset 0 0 0 1px rgba(226,231,237,.14), 0 14px 34px rgba(0,0,0,.4);
+  }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c07__identity::before{ background:rgba(226,231,237,.26); }
+  /* 写真は reading column 内・body の後。cropせず natural ratio */
+  html[data-v2-mounted="true"] .v2c07__photo img{ max-width:100%; }
+}

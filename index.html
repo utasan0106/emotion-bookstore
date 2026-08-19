@@ -1156,6 +1156,9 @@ body.night .about-data-content{
     </div>
 
     <article class="v2c07__book">
+      <!-- VCR: Desktopでは Quiet Cover Family を Book identity として左に置く
+           （User photoはCoverに使わない。純CSSの静かな装丁面）。 -->
+      <span class="v2c07__identity" aria-hidden="true"></span>
       <h1 class="v2c07__title" data-v2-reader="title"></h1>
       <span class="v2c07__sep" aria-hidden="true"></span>
       <div class="v2c07__meta">
@@ -1163,8 +1166,10 @@ body.night .about-data-content{
         <p class="v2c07__chip" data-v2-reader="shelf"></p>
         <p class="v2c07__sealed" data-v2-reader="sealed"></p>
       </div>
-      <figure class="v2c07__photo v2-placeholder" data-v2-reader="cover"></figure>
+      <!-- VCR: canonical Reading order（title → date → shelf → body → photo）。
+           User photoはCover artworkにせず、bodyの後に原則cropなしで添える。 -->
       <div class="v2c07__body" data-v2-reader="body"></div>
+      <figure class="v2c07__photo v2-placeholder" data-v2-reader="cover"></figure>
       <div class="v2c07__notebox" data-v2-reader="note-box" hidden>
         <p class="v2c07__notelabel" data-i18n="v2c07NoteLabel">覚え書き</p>
         <p class="v2c07__notetext" data-v2-reader="note"></p>
