@@ -1606,8 +1606,8 @@ html[data-v2-mounted="true"] .vq-topnav{ display:none; }
  * Desktop：左に「感情の棚」title+intro、右に8つの有機形（3+3+2、08横長）
  * Mobile 390：01が大きく、その後2列のリズム、08は横長
  * Mobile 320：2列ペア（01/02, 03/04, 05/06, 07/08）
- * 写真asset未支給のため、reserved image area（有機形の面）までを実装し、
- * 個別写真は KNOWN VISUAL GAP — APPROVED 03 SHELF ASSET REQUIRED。
+ * 各棚の正式写真は文末の AIR section（Asset Integration Round FINAL）で
+ * reserved image area（::after）へ family 別に mount する。
  * ============================================================ */
 html[data-v2-mounted="true"] .v2c03__stage{
   background:var(--vq-bg) !important;
@@ -1757,7 +1757,7 @@ html[data-v2-mounted="true"] .v2c03__name{
   z-index:1;
 }
 /* reserved image area：右下の有機形の面。
-   正式写真asset未支給 → KNOWN VISUAL GAP（面と構図のみ canonical へ） */
+   正式写真は AIR section で family 別に mount（下の gradient は fallback） */
 html[data-v2-mounted="true"] .v2c03__book::after{
   content:"";
   position:absolute;
@@ -2091,7 +2091,8 @@ html[data-theme="night"][data-v2-shelf-context="butsukaru"]{ --v2c04-tint:#D0A78
 html[data-theme="night"][data-v2-shelf-context="miwohiku"]{ --v2c04-tint:#9EB3A8; }
 html[data-theme="night"][data-v2-shelf-context="namae-ga-nai"]{ --v2c04-tint:#BDB7AA; }
 
-/* Hero：棚色の柔らかな面。title/lead 左、右は reserved image area（KNOWN GAP） */
+/* Hero：棚色の柔らかな面。title/lead 左、右の reserved image area には
+   AIR section で family 別 DAY/NIGHT Hero 写真を mount する */
 html[data-v2-mounted="true"] .v2c04__hero{
   position:relative;
   overflow:hidden;
@@ -2568,3 +2569,253 @@ html[data-v2-mounted="true"] .v2c06 .v2-shelf__more:focus-visible{
 }
 /* metadata（title以下）は…の分だけ右に余白 */
 html[data-v2-mounted="true"] .v2c06 .v2-shelf__item .v2-shelf__spine-title{ padding-right:26px; }
+
+/* ============================================================
+ * AIR: Asset Integration + Trace Fidelity Round FINAL（2026-08-19）
+ * CEO支給の正式素材（素材.zip / 260819追加素材.zip 由来のWebP derivative）を
+ * 02 Lobby / 03 Emotion Shelf / 04 Emotion Detail へ mount する。
+ * presentation layerのみ：DOM / 遷移 / storage / GA4 / i18n / focus契約 不変。
+ * ============================================================ */
+
+/* ---------- 02 Lobby：3行為の正式写真（DAY/NIGHT） ---------- */
+html[data-v2-mounted="true"] .v2c02__pane{
+  background-size:cover !important;
+  background-repeat:no-repeat !important;
+}
+html[data-v2-mounted="true"] .v2c02__pane--emotion{
+  background-image:url("assets/v2b0/02/lobby-browse-day.webp") !important;
+  background-position:50% 62% !important;
+}
+html[data-v2-mounted="true"] .v2c02__pane--write{
+  background-image:url("assets/v2b0/02/lobby-write-day.webp") !important;
+  background-position:50% 58% !important;
+}
+html[data-v2-mounted="true"] .v2c02__pane--library{
+  background-image:url("assets/v2b0/02/lobby-library-day.webp") !important;
+  background-position:38% 45% !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c02__pane--emotion{
+  background-image:url("assets/v2b0/02/lobby-browse-night.webp") !important;
+  background-position:62% 55% !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c02__pane--write{
+  background-image:url("assets/v2b0/02/lobby-write-night.webp") !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c02__pane--library{
+  background-image:url("assets/v2b0/02/lobby-library-night.webp") !important;
+  background-position:60% 50% !important;
+}
+/* Mobile：写真は行カード右側の有機形（canonical 390/320） */
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .v2c02__card{
+    grid-template-columns:minmax(0,1fr) 41% !important;
+    overflow:hidden;
+    min-height:118px;
+  }
+  html[data-v2-mounted="true"] .v2c02__pane{
+    grid-column:2;
+    grid-row:1;
+    aspect-ratio:auto !important;
+    align-self:stretch;
+    width:auto !important;
+    margin:7px 7px 7px 0;
+    border-radius:46% 42% 44% 40% / 50% 46% 44% 42% !important;
+    min-height:100px;
+  }
+  html[data-v2-mounted="true"] .v2c02__body{
+    grid-column:1;
+    grid-row:1;
+  }
+}
+/* Desktop：下部の写真面をひとまわり大きく（thumbnail化しない） */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c02__pane{
+    left:8%; right:8%; bottom:-6%;
+    height:50% !important;
+  }
+}
+
+/* ---------- 03 Emotion Shelf：8棚の正式写真（DAY/NIGHT） ---------- */
+/* 写真が主役になるため、placeholder line icon は退役 */
+html[data-v2-mounted="true"] .v2c03__ring{ display:none !important; }
+html[data-v2-mounted="true"] .v2c03__book::after{
+  background-size:cover !important;
+  background-repeat:no-repeat !important;
+  background-position:var(--shelf-photo-pos, 50% 50%);
+  filter:none !important;
+}
+html[data-v2-mounted="true"] .v2c03__book--hazumu::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-01-day.webp");
+  --shelf-photo-pos:38% 42%;
+}
+html[data-v2-mounted="true"] .v2c03__book--atatamaru::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-02-day.webp");
+  --shelf-photo-pos:52% 55%;
+}
+html[data-v2-mounted="true"] .v2c03__book--hikareru::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-03-day.webp");
+  --shelf-photo-pos:62% 45%;
+}
+html[data-v2-mounted="true"] .v2c03__book--shizumu::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-04-day.webp");
+  --shelf-photo-pos:50% 62%;
+}
+html[data-v2-mounted="true"] .v2c03__book--zawatsuku::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-05-day.webp");
+  --shelf-photo-pos:50% 45%;
+}
+html[data-v2-mounted="true"] .v2c03__book--butsukaru::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-06-day.webp");
+  --shelf-photo-pos:55% 55%;
+}
+html[data-v2-mounted="true"] .v2c03__book--miwohiku::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-07-day.webp");
+  --shelf-photo-pos:18% 60%;
+}
+html[data-v2-mounted="true"] .v2c03__book--namae::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-08-day.webp");
+  --shelf-photo-pos:50% 40%;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--hazumu::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-01-night.webp");
+  --shelf-photo-pos:55% 45%;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--atatamaru::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-02-night.webp");
+  --shelf-photo-pos:50% 55%;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--hikareru::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-03-night.webp");
+  --shelf-photo-pos:70% 45%;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--shizumu::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-04-night.webp");
+  --shelf-photo-pos:60% 55%;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--zawatsuku::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-05-night.webp");
+  --shelf-photo-pos:40% 50%;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--butsukaru::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-06-night.webp");
+  --shelf-photo-pos:45% 55%;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--miwohiku::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-07-night.webp");
+  --shelf-photo-pos:60% 55%;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--namae::after{
+  background-image:url("assets/v2b0/03/emotion-shelf-08-night.webp");
+  --shelf-photo-pos:50% 45%;
+}
+/* 写真面の構図：右側の有機形を縦にのばし、canonical の image-to-text 比率へ */
+html[data-v2-mounted="true"] .v2c03__book::after{
+  right:-4%;
+  top:16%;
+  bottom:-6%;
+  height:auto;
+  width:54%;
+}
+/* 08（横長・静かな存在感）：canonical では淡く広い写真面 */
+html[data-v2-mounted="true"] .v2c03__book--namae::after{
+  width:62%;
+  top:10%;
+  opacity:.92;
+}
+
+/* ---------- 04 Emotion Detail：family別 Hero 写真（DAY/NIGHT） ---------- */
+html[data-v2-mounted="true"] .v2c04__hero::after{
+  background-size:cover !important;
+  background-repeat:no-repeat !important;
+  background-position:var(--v2c04-heropos, 50% 45%);
+  filter:none !important;
+}
+html[data-v2-mounted="true"][data-v2-shelf-context="hazumu"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-01-day.webp");
+  --v2c04-heropos:72% 45%;
+}
+html[data-v2-mounted="true"][data-v2-shelf-context="atatamaru"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-02-day.webp");
+  --v2c04-heropos:50% 55%;
+}
+html[data-v2-mounted="true"][data-v2-shelf-context="hikareru"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-03-day.webp");
+  --v2c04-heropos:55% 40%;
+}
+html[data-v2-mounted="true"][data-v2-shelf-context="shizumu"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-04-day.webp");
+  --v2c04-heropos:50% 60%;
+}
+html[data-v2-mounted="true"][data-v2-shelf-context="zawatsuku"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-05-day.webp");
+  --v2c04-heropos:50% 45%;
+}
+html[data-v2-mounted="true"][data-v2-shelf-context="butsukaru"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-06-day.webp");
+  --v2c04-heropos:55% 50%;
+}
+html[data-v2-mounted="true"][data-v2-shelf-context="miwohiku"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-07-day.webp");
+  --v2c04-heropos:30% 55%;
+}
+html[data-v2-mounted="true"][data-v2-shelf-context="namae-ga-nai"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-08-day.webp");
+  --v2c04-heropos:60% 40%;
+}
+html[data-v2-mounted="true"][data-theme="night"][data-v2-shelf-context="hazumu"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-01-night.webp");
+  --v2c04-heropos:72% 45%;
+}
+html[data-v2-mounted="true"][data-theme="night"][data-v2-shelf-context="atatamaru"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-02-night.webp");
+  --v2c04-heropos:50% 55%;
+}
+html[data-v2-mounted="true"][data-theme="night"][data-v2-shelf-context="hikareru"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-03-night.webp");
+  --v2c04-heropos:55% 40%;
+}
+html[data-v2-mounted="true"][data-theme="night"][data-v2-shelf-context="shizumu"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-04-night.webp");
+  --v2c04-heropos:50% 55%;
+}
+html[data-v2-mounted="true"][data-theme="night"][data-v2-shelf-context="zawatsuku"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-05-night.webp");
+  --v2c04-heropos:50% 45%;
+}
+html[data-v2-mounted="true"][data-theme="night"][data-v2-shelf-context="butsukaru"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-06-night.webp");
+  --v2c04-heropos:55% 50%;
+}
+html[data-v2-mounted="true"][data-theme="night"][data-v2-shelf-context="miwohiku"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-07-night.webp");
+  --v2c04-heropos:30% 55%;
+}
+html[data-v2-mounted="true"][data-theme="night"][data-v2-shelf-context="namae-ga-nai"] .v2c04__hero::after{
+  background-image:url("assets/v2b0/04/emotion-hero-08-night.webp");
+  --v2c04-heropos:60% 40%;
+}
+/* Hero写真の存在感：Desktopは右側の大きな面、Mobileは右上の有機形 */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c04__hero{
+    min-height:340px;
+  }
+  html[data-v2-mounted="true"] .v2c04__hero::after{
+    right:-4%;
+    top:4%;
+    width:54%;
+    height:104%;
+  }
+}
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .v2c04__hero::after{
+    top:-8% !important;
+    bottom:auto !important;
+    right:-10%;
+    width:58% !important;
+    height:64% !important;
+    opacity:1 !important;
+  }
+  /* 写真の下に title が入るため、hero 上部に写真ぶんの余白 */
+  html[data-v2-mounted="true"] .v2-page h1.v2c04__title{ max-width:52%; }
+  html[data-v2-mounted="true"] .v2c04__lead{ max-width:88%; }
+}
