@@ -2010,3 +2010,275 @@ html[data-v2-mounted="true"][data-theme="night"] .v2c07__moremenu .v2c07__act--d
     text-wrap:balance;
   }
 }
+
+/* ============================================================
+ * VCR: 04 Emotion Detail — canonical mount
+ * Header/GlobalNav → Hero（棚色の面 + 棚へ戻る）→ 01 ことば（editorial横組）
+ * → 02 作品 → 03 自分の本 → 残ったことを書く
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2c04__stage{
+  background:var(--vq-bg) !important;
+  font-family:var(--font-ui);
+  width:100% !important;
+  max-width:none !important;
+  aspect-ratio:auto !important;
+  height:auto !important;
+  padding:0 clamp(16px, 4.6cqw, 24px) calc(var(--v2-nav-h) + 20px) !important;
+  box-sizing:border-box;
+}
+html[data-v2-mounted="true"] .v2c04__brandrow{
+  display:flex; align-items:center;
+  padding:14px 0 10px;
+  border-bottom:1px solid var(--vq-rule);
+}
+html[data-v2-mounted="true"] .v2c04__brandname{
+  font-family:var(--font-display);
+  font-size:clamp(13px, 3.5cqw, 16px);
+  letter-spacing:.1em;
+  color:var(--vq-ink);
+}
+html[data-v2-mounted="true"] .v2c04__brandrow .v2b-menutrigger{
+  position:static;
+  margin-left:auto;
+  color:var(--vq-muted);
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c04__brandrow .v2b-menutrigger{ margin-left:20px; }
+}
+
+/* 棚ごとのhero tint（既存の data-v2-shelf-context を読むだけ） */
+html[data-v2-shelf-context="hazumu"]{ --v2c04-tint:#F4EBC7; }
+html[data-v2-shelf-context="atatamaru"]{ --v2c04-tint:#F5D7C9; }
+html[data-v2-shelf-context="hikareru"]{ --v2c04-tint:#DDEBE4; }
+html[data-v2-shelf-context="shizumu"]{ --v2c04-tint:#E2DDF1; }
+html[data-v2-shelf-context="zawatsuku"]{ --v2c04-tint:#D6E7F2; }
+html[data-v2-shelf-context="butsukaru"]{ --v2c04-tint:#F6E1CF; }
+html[data-v2-shelf-context="miwohiku"]{ --v2c04-tint:#DCE7E3; }
+html[data-v2-shelf-context="namae-ga-nai"]{ --v2c04-tint:#E9E5DB; }
+html[data-theme="night"][data-v2-shelf-context="hazumu"]{ --v2c04-tint:#CBBE9C; }
+html[data-theme="night"][data-v2-shelf-context="atatamaru"]{ --v2c04-tint:#CFA7A0; }
+html[data-theme="night"][data-v2-shelf-context="hikareru"]{ --v2c04-tint:#9DB8B0; }
+html[data-theme="night"][data-v2-shelf-context="shizumu"]{ --v2c04-tint:#BEB7D6; }
+html[data-theme="night"][data-v2-shelf-context="zawatsuku"]{ --v2c04-tint:#9FC3D8; }
+html[data-theme="night"][data-v2-shelf-context="butsukaru"]{ --v2c04-tint:#D0A788; }
+html[data-theme="night"][data-v2-shelf-context="miwohiku"]{ --v2c04-tint:#9EB3A8; }
+html[data-theme="night"][data-v2-shelf-context="namae-ga-nai"]{ --v2c04-tint:#BDB7AA; }
+
+/* Hero：棚色の柔らかな面。title/lead 左、右は reserved image area（KNOWN GAP） */
+html[data-v2-mounted="true"] .v2c04__hero{
+  position:relative;
+  overflow:hidden;
+  margin:clamp(14px, 4cqw, 22px) 0 0;
+  padding:clamp(24px, 7cqw, 40px) clamp(18px, 5.2cqw, 28px) clamp(26px, 7.6cqw, 44px);
+  border-radius:24px 40px 32px 28px;
+  background:
+    radial-gradient(120% 130% at 86% 30%, rgba(255,255,255,.55), rgba(255,255,255,0) 55%),
+    color-mix(in srgb, var(--v2c04-tint, #eee) 72%, var(--vq-bg));
+  min-height:clamp(190px, 52cqw, 250px);
+  text-align:left;
+  display:block;
+}
+html[data-v2-mounted="true"] .v2c04__hero::after{
+  content:"";
+  position:absolute;
+  right:-6%; top:12%;
+  width:44%; height:96%;
+  border-radius:56% 44% 50% 50% / 50% 56% 44% 50%;
+  background:
+    radial-gradient(120% 100% at 32% 22%, rgba(255,255,255,.8), rgba(255,255,255,.28) 62%, rgba(255,255,255,.06)),
+    color-mix(in srgb, var(--v2c04-tint, #eee) 55%, #ffffff);
+  pointer-events:none;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__hero{
+  background:
+    radial-gradient(120% 130% at 86% 30%, rgba(255,255,255,.14), rgba(255,255,255,0) 55%),
+    color-mix(in srgb, var(--v2c04-tint, #333) 40%, var(--vq-bg));
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__hero::after{
+  background:
+    radial-gradient(120% 100% at 32% 22%, rgba(255,255,255,.22), rgba(255,255,255,.06) 62%, rgba(255,255,255,0)),
+    color-mix(in srgb, var(--v2c04-tint, #333) 55%, #10161f);
+}
+html[data-v2-mounted="true"] .v2c04__halo,
+html[data-v2-mounted="true"] .v2c04__stars{ display:none !important; }
+html[data-v2-mounted="true"] .v2-page h1.v2c04__title{
+  position:relative; z-index:1;
+  text-align:left !important;
+  font-family:var(--font-display) !important;
+  font-size:clamp(26px, 8cqw, 40px) !important;
+  letter-spacing:.1em;
+  color:var(--vq-ink) !important;
+  text-shadow:none !important;
+  margin:0 !important;
+  max-width:60%;
+}
+html[data-v2-mounted="true"] .v2c04__lead{
+  position:relative; z-index:1;
+  text-align:left !important;
+  color:color-mix(in srgb, var(--vq-ink) 78%, transparent) !important;
+  font-size:clamp(12px, 3.4cqw, 14px) !important;
+  line-height:1.9 !important;
+  margin:12px 0 0 !important;
+  max-width:58%;
+  text-shadow:none !important;
+}
+html[data-v2-mounted="true"] .v2c04__back{
+  position:relative; z-index:1;
+  appearance:none; border:0; background:none;
+  display:inline-flex; align-items:center; gap:7px;
+  margin:clamp(14px, 4.4cqw, 24px) 0 0;
+  padding:6px 2px;
+  color:color-mix(in srgb, var(--vq-ink) 72%, transparent) !important;
+  font-family:var(--font-ui);
+  font-size:12.5px;
+  cursor:pointer;
+}
+html[data-v2-mounted="true"] .v2c04__back::before{
+  content:"←";
+  font-size:14px;
+}
+html[data-v2-mounted="true"] .v2c04__back .v2c04__back-arrow{ display:none; }
+html[data-v2-mounted="true"] .v2c04__back:focus-visible{
+  outline:2px solid var(--vq-accent); outline-offset:2px; border-radius:2px;
+}
+
+/* Section 見出し：番号とタイトルを inline に */
+html[data-v2-mounted="true"] .v2c04__sec{
+  margin-top:clamp(30px, 9cqw, 52px);
+  text-align:left;
+}
+html[data-v2-mounted="true"] .v2c04__num{
+  display:inline-block;
+  font-family:var(--font-display);
+  font-size:clamp(19px, 5.6cqw, 26px);
+  letter-spacing:.1em;
+  color:color-mix(in srgb, var(--v2c04-tint, var(--vq-accent)) 60%, var(--vq-ink)) !important;
+  border-bottom:2px solid color-mix(in srgb, var(--v2c04-tint, var(--vq-accent)) 70%, transparent);
+  padding-bottom:2px;
+  margin:0 12px 0 0;
+  vertical-align:baseline;
+}
+html[data-v2-mounted="true"] .v2c04__sec .v2c04__h{
+  display:inline-block;
+  font-family:var(--font-display);
+  font-size:clamp(16px, 4.6cqw, 20px);
+  letter-spacing:.14em;
+  color:var(--vq-ink) !important;
+  margin:0;
+}
+html[data-v2-mounted="true"] .v2c04__intro{
+  color:var(--vq-muted) !important;
+  font-size:clamp(11.5px, 3.2cqw, 13px);
+  margin:8px 0 0;
+}
+
+/* 01 ことば：editorial 横組（desktop 3列 / mobile 1列の静かな段） */
+html[data-v2-mounted="true"] .v2c04__words{
+  margin-top:clamp(14px, 4cqw, 22px);
+  display:grid;
+  gap:clamp(10px, 3cqw, 14px);
+}
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card{
+  position:relative;
+  appearance:none;
+  border:0 !important;
+  background:none !important;
+  box-shadow:none !important;
+  border-radius:0 !important;
+  text-align:left;
+  padding:2px 0 10px 16px !important;
+  cursor:pointer;
+}
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card::before{
+  content:"";
+  position:absolute;
+  left:0; top:4px;
+  width:5px; height:22px;
+  border-radius:3px;
+  background:color-mix(in srgb, var(--v2c04-tint, var(--vq-accent)) 85%, var(--vq-ink) 6%);
+}
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card__name{
+  font-family:var(--font-display);
+  font-size:clamp(15.5px, 4.4cqw, 18px) !important;
+  font-weight:600;
+  letter-spacing:.06em;
+  color:var(--vq-ink) !important;
+}
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card__desc{
+  display:block;
+  margin-top:7px;
+  font-size:clamp(11.5px, 3.2cqw, 12.5px) !important;
+  line-height:1.85 !important;
+  color:var(--vq-muted) !important;
+}
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card--current{
+  background:none !important;
+}
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card--current .v2-word-card__name{
+  border-bottom:1px solid color-mix(in srgb, var(--vq-ink) 45%, transparent);
+  padding-bottom:2px;
+}
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card:hover .v2-word-card__name{
+  border-bottom:1px solid color-mix(in srgb, var(--vq-ink) 35%, transparent);
+}
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card:focus-visible{
+  outline:2px solid var(--vq-accent) !important;
+  outline-offset:3px;
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c04__words{
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    column-gap:34px;
+  }
+  html[data-v2-mounted="true"] .v2c04__words .v2-word-card:not(:nth-child(3n+1)){
+    border-left:1px solid var(--vq-rule) !important;
+    padding-left:28px !important;
+    border-radius:0 !important;
+  }
+  html[data-v2-mounted="true"] .v2c04__words .v2-word-card:not(:nth-child(3n+1))::before{ left:12px; }
+}
+
+/* 03 自分の本：静かな green の面 + 書くCTA */
+html[data-v2-mounted="true"] .v2c04__write{
+  margin-top:clamp(18px, 5.4cqw, 28px);
+  padding:clamp(20px, 6cqw, 32px);
+  border-radius:20px 32px 24px 28px;
+  background:color-mix(in srgb, var(--vq-accent) 14%, var(--vq-bg));
+  text-align:left;
+}
+html[data-v2-mounted="true"] .v2c04__writebtn{
+  appearance:none; border:0 !important;
+  background:#4a5d43 !important;
+  color:#f4f1e8 !important;
+  border-radius:999px !important;
+  min-height:44px;
+  padding:11px 26px !important;
+  font-family:var(--font-ui);
+  font-size:13.5px;
+  letter-spacing:.06em;
+  display:inline-flex; align-items:center; gap:8px;
+  cursor:pointer;
+  box-shadow:none !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__writebtn{
+  background:#7f9370 !important;
+  color:#10161f !important;
+}
+html[data-v2-mounted="true"] .v2c04__writenote{
+  color:var(--vq-muted) !important;
+  font-size:11.5px;
+  margin:10px 0 0;
+}
+/* Desktop幅と bottom nav */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c04__stage{
+    max-width:76rem !important;
+    margin:0 auto;
+    padding:0 40px 60px !important;
+  }
+  html[data-v2-mounted="true"] .v2c04 .v2b-nav{ display:none !important; }
+  html[data-v2-mounted="true"] .v2c04__hero{ min-height:300px; padding:52px 48px; }
+  html[data-v2-mounted="true"] .v2-page h1.v2c04__title{ font-size:40px !important; max-width:50%; }
+  html[data-v2-mounted="true"] .v2c04__lead{ max-width:42%; font-size:14px !important; }
+}
+html[data-v2-mounted="true"] .v2c04__hero::before{ display:none !important; }
