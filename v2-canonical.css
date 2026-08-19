@@ -1564,13 +1564,60 @@ html[data-v2-mounted="true"] .v2-page h1.vq01__copy{ text-align:left; }
 }
 
 /* ============================================================
- * 03 Emotion Shelf — Color Softening Refine（FREEZE token 準拠）
- * 8棚の構造・順序・遷移は既存のまま。タイルを canonical token 色の
- * 淡い有機形へ。番号 01-08 を付与（canonical 構図）。
+ * Global Navigation Contract — Desktop topnav（店内画面共通）
+ * 左：ブランド / 右：棚を見る・書く・本棚 / さらに右：低い声量のMenu trigger
+ * Mobileでは非表示（既存のbottom nav / menuを維持）。
+ * ============================================================ */
+html[data-v2-mounted="true"] .vq-topnav{ display:none; }
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq-topnav{
+    display:flex; align-items:center; gap:28px;
+    margin-left:auto;
+    font-family:var(--font-ui);
+    font-size:13px; letter-spacing:.04em;
+    color:var(--vq-muted);
+  }
+  html[data-v2-mounted="true"] .vq-topnav__item{
+    appearance:none; border:0; background:none; margin:0;
+    padding:8px 2px 6px;
+    color:var(--vq-muted) !important;
+    font:inherit; cursor:pointer;
+    border-bottom:1.5px solid transparent;
+  }
+  html[data-v2-mounted="true"] .vq-topnav__item[aria-current="page"]{
+    color:var(--vq-ink) !important;
+    border-bottom-color:var(--vq-ink);
+  }
+  html[data-v2-mounted="true"] .vq-topnav__item:focus-visible{
+    outline:2px solid var(--vq-accent); outline-offset:2px;
+  }
+  /* Desktopでは店内画面のbottom navを使わない（Global Navigation Contract） */
+  html[data-v2-mounted="true"] .v2c03 .v2b-nav,
+  html[data-v2-mounted="true"] .v2c06 .v2b-nav,
+  html[data-v2-mounted="true"] .v2c08 .v2b-nav{ display:none !important; }
+}
+
+/* ============================================================
+ * 03 Emotion Shelf — FREEZE canonical 構造
+ * Desktop：左に「感情の棚」title+intro、右に8つの有機形（3+3+2、08横長）
+ * Mobile 390：01が大きく、その後2列のリズム、08は横長
+ * Mobile 320：2列ペア（01/02, 03/04, 05/06, 07/08）
+ * 写真asset未支給のため、reserved image area（有機形の面）までを実装し、
+ * 個別写真は KNOWN VISUAL GAP — APPROVED 03 SHELF ASSET REQUIRED。
  * ============================================================ */
 html[data-v2-mounted="true"] .v2c03__stage{
   background:var(--vq-bg) !important;
   font-family:var(--font-ui);
+  width:100% !important;
+  max-width:none !important;
+  aspect-ratio:auto !important;
+  height:auto !important;
+  min-height:100dvh;
+  padding:0 clamp(16px, 4.6cqw, 24px) calc(var(--v2-nav-h) + 20px) !important;
+  box-sizing:border-box;
+}
+html[data-v2-mounted="true"] .v2c03__brandrow{
+  padding:14px 0 10px !important;
 }
 html[data-v2-mounted="true"] .v2c03__amb{ display:none !important; }
 html[data-v2-mounted="true"] .v2c03__logo{ display:none !important; }
@@ -1584,11 +1631,20 @@ html[data-v2-mounted="true"] .v2c03__title{
   font-family:var(--font-display) !important;
   color:var(--vq-ink) !important;
   text-shadow:none !important;
+  text-align:left !important;
+  font-size:clamp(26px, 7.4cqw, 40px);
+  letter-spacing:.12em;
+  margin:clamp(18px, 5cqw, 30px) 0 0 !important;
 }
-html[data-v2-mounted="true"] .v2c03__lead{ color:var(--vq-muted) !important; }
-html[data-v2-mounted="true"] .v2c03__divider{ opacity:.55; }
-html[data-v2-mounted="true"] .v2c03__guide,
-html[data-v2-mounted="true"] .v2c03__guidetext{ color:var(--vq-muted) !important; }
+html[data-v2-mounted="true"] .v2c03__lead{
+  color:var(--vq-muted) !important;
+  text-align:left !important;
+  font-size:clamp(12px, 3.3cqw, 13.5px);
+  line-height:1.9;
+  margin:10px 0 0 !important;
+}
+html[data-v2-mounted="true"] .v2c03__divider{ display:none !important; }
+html[data-v2-mounted="true"] .v2c03__guide{ display:none !important; }
 
 /* canonical DAY / NIGHT 棚色 token */
 html[data-v2-mounted="true"] .v2c03__book--hazumu{ --shelf-tint:#F4EBC7; }
@@ -1608,26 +1664,40 @@ html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--butsukaru{ --shel
 html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--miwohiku{ --shelf-tint:#9EB3A8; }
 html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--namae{ --shelf-tint:#BDB7AA; }
 
+/* --- 棚タイル（有機形 + reserved image area） --- */
+html[data-v2-mounted="true"] .v2c03__grid{
+  display:grid !important;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:clamp(12px, 3.4cqw, 16px);
+  margin-top:clamp(16px, 4.6cqw, 24px);
+  max-height:none !important;
+}
 html[data-v2-mounted="true"] .v2c03__book{
   position:relative;
+  overflow:hidden;
+  display:flex !important;
+  flex-direction:column;
+  align-items:flex-start !important;
+  justify-content:flex-start;
   background:var(--shelf-tint, #eee) !important;
   border:0 !important;
   box-shadow:none !important;
   color:#2f302e !important;
   text-align:left;
-  align-items:flex-start !important;
-  justify-content:flex-end;
-  padding:12px 12px 12px 14px !important;
-  min-height:96px;
+  padding:clamp(18px, 5.2cqw, 26px) clamp(14px, 4cqw, 20px) clamp(10px, 3cqw, 16px) clamp(16px, 4.6cqw, 24px) !important;
+  min-height:150px;
+  cursor:pointer;
 }
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+1){ border-radius:26px 40px 34px 22px !important; }
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+2){ border-radius:38px 24px 36px 28px !important; }
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+3){ border-radius:30px 34px 22px 40px !important; }
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+4){ border-radius:24px 38px 30px 34px !important; }
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+5){ border-radius:36px 26px 40px 24px !important; }
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+6){ border-radius:28px 36px 24px 38px !important; }
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+7){ border-radius:40px 24px 32px 28px !important; }
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+8){ border-radius:26px 32px 38px 24px !important; }
+/* organic radii のリズム */
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+1){ border-radius:34% 46% 42% 38% / 40% 38% 44% 40%; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+2){ border-radius:46% 36% 40% 44% / 38% 44% 38% 42%; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+3){ border-radius:40% 42% 36% 46% / 44% 38% 42% 38%; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+4){ border-radius:38% 44% 46% 36% / 40% 42% 38% 44%; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+5){ border-radius:44% 38% 38% 42% / 42% 40% 44% 36%; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+6){ border-radius:36% 46% 42% 40% / 44% 36% 40% 44%; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+7){ border-radius:42% 40% 44% 38% / 38% 46% 36% 42%; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+8){ border-radius:48% 40% 42% 44% / 52% 48% 44% 50%; }
+/* 番号 + 棚名（左上） */
 html[data-v2-mounted="true"] .v2c03__book::before{
   content:"";
   position:static !important;
@@ -1637,11 +1707,11 @@ html[data-v2-mounted="true"] .v2c03__book::before{
   background:none !important;
   border-radius:0 !important;
   font-family:var(--font-display);
-  font-size:13px;
-  letter-spacing:.14em;
-  color:rgba(47,48,46,.62);
+  font-size:clamp(15px, 4.4cqw, 22px);
+  letter-spacing:.1em;
+  color:rgba(47,48,46,.78);
   display:block;
-  margin-bottom:4px;
+  margin:0 0 2px 2px;
 }
 html[data-v2-mounted="true"] .v2c03__book--hazumu::before{ content:"01"; }
 html[data-v2-mounted="true"] .v2c03__book--atatamaru::before{ content:"02"; }
@@ -1651,32 +1721,129 @@ html[data-v2-mounted="true"] .v2c03__book--zawatsuku::before{ content:"05"; }
 html[data-v2-mounted="true"] .v2c03__book--butsukaru::before{ content:"06"; }
 html[data-v2-mounted="true"] .v2c03__book--miwohiku::before{ content:"07"; }
 html[data-v2-mounted="true"] .v2c03__book--namae::before{ content:"08"; }
-html[data-v2-mounted="true"] .v2c03__ring{
-  position:absolute;
-  right:10px; top:10px;
-  width:26px; height:26px;
-  opacity:.5;
-  color:#2f302e !important;
-  background:none !important;
-  border:0 !important;
-  box-shadow:none !important;
-}
-html[data-v2-mounted="true"] .v2c03__ring svg{ stroke:currentColor; }
 html[data-v2-mounted="true"] .v2c03__name{
   color:#2f302e !important;
   font-family:var(--font-ui);
   font-weight:600;
   letter-spacing:.02em;
+  font-size:clamp(13px, 3.7cqw, 15.5px) !important;
   text-shadow:none !important;
+  margin-left:4px;
+  position:relative;
+  z-index:1;
 }
+/* reserved image area：右下の有機形の面。
+   正式写真asset未支給 → KNOWN VISUAL GAP（面と構図のみ canonical へ） */
+html[data-v2-mounted="true"] .v2c03__book::after{
+  content:"";
+  position:absolute;
+  right:-6%;
+  bottom:-8%;
+  width:58%;
+  height:64%;
+  border-radius:58% 42% 52% 48% / 52% 56% 44% 48%;
+  background:
+    radial-gradient(120% 100% at 30% 20%, rgba(255,255,255,.75), rgba(255,255,255,.25) 60%, rgba(255,255,255,.05)),
+    var(--shelf-tint, #eee);
+  filter:saturate(.65) brightness(1.04);
+  pointer-events:none;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book::after{
+  background:
+    radial-gradient(120% 100% at 30% 20%, rgba(255,255,255,.30), rgba(255,255,255,.08) 60%, rgba(255,255,255,.02)),
+    var(--shelf-tint, #333);
+  filter:saturate(.6) brightness(.9);
+}
+/* 承認済みline iconは、写真が入るまでの placeholder として面の中に静かに置く */
+html[data-v2-mounted="true"] .v2c03__ring{
+  position:absolute;
+  right:8%;
+  bottom:10%;
+  width:clamp(22px, 6.4cqw, 30px);
+  height:clamp(22px, 6.4cqw, 30px);
+  opacity:.4;
+  color:#2f302e !important;
+  background:none !important;
+  border:0 !important;
+  box-shadow:none !important;
+  z-index:1;
+}
+html[data-v2-mounted="true"] .v2c03__ring svg{ width:100%; height:100%; stroke:currentColor; }
 html[data-v2-mounted="true"] .v2c03__book:focus-visible{
   outline:2px solid var(--vq-accent) !important;
   outline-offset:3px;
 }
-html[data-v2-mounted="true"][data-theme="night"] .v2c03__book{ color:#1c2129 !important; }
-html[data-v2-mounted="true"][data-theme="night"] .v2c03__book::before{ color:rgba(28,33,41,.66); }
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book,
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book::before,
 html[data-v2-mounted="true"][data-theme="night"] .v2c03__ring,
 html[data-v2-mounted="true"][data-theme="night"] .v2c03__name{ color:#1c2129 !important; }
+
+/* --- Mobile 390+：01を大きく・08を横長に（リズム） --- */
+@media (min-width:360px) and (max-width:899px){
+  html[data-v2-mounted="true"] .v2c03__book--hazumu{
+    grid-column:1 / -1;
+    min-height:180px;
+  }
+  html[data-v2-mounted="true"] .v2c03__book--namae{
+    grid-column:1 / -1;
+    min-height:118px;
+  }
+  html[data-v2-mounted="true"] .v2c03__book--atatamaru{ min-height:168px; }
+  html[data-v2-mounted="true"] .v2c03__book--hikareru{ min-height:150px; }
+  html[data-v2-mounted="true"] .v2c03__book--shizumu{ min-height:160px; }
+  html[data-v2-mounted="true"] .v2c03__book--zawatsuku{ min-height:148px; }
+  html[data-v2-mounted="true"] .v2c03__book--butsukaru{ min-height:164px; }
+  html[data-v2-mounted="true"] .v2c03__book--miwohiku{ min-height:146px; }
+}
+/* --- Mobile 320：2列ペア（均等寄り、有機形は維持） --- */
+@media (max-width:359px){
+  html[data-v2-mounted="true"] .v2c03__book{ min-height:132px; }
+}
+
+/* --- Desktop：左title列 + 右8棚（3+3+2 / 08横長） --- */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c03__stage{
+    display:grid;
+    grid-template-columns:minmax(230px, 300px) minmax(0, 1fr);
+    grid-template-areas:
+      "brand brand"
+      "title shelfgrid"
+      "lead  shelfgrid"
+      ".     shelfgrid";
+    grid-template-rows:auto auto auto 1fr;
+    column-gap:56px;
+    align-content:start;
+    max-width:76rem !important;
+    margin:0 auto;
+    padding:0 40px 48px !important;
+  }
+  html[data-v2-mounted="true"] .v2c03__brandrow{ grid-area:brand; }
+  html[data-v2-mounted="true"] .v2c03__title{
+    grid-area:title;
+    font-size:38px;
+    margin-top:64px !important;
+  }
+  html[data-v2-mounted="true"] .v2c03__lead{
+    grid-area:lead;
+    font-size:13.5px;
+    margin-top:22px !important;
+  }
+  html[data-v2-mounted="true"] .v2c03__grid{
+    grid-area:shelfgrid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:30px 26px;
+    margin-top:40px;
+  }
+  html[data-v2-mounted="true"] .v2c03__book{ min-height:220px; }
+  html[data-v2-mounted="true"] .v2c03__book--namae{
+    grid-column:2 / 4;
+    min-height:150px;
+    align-self:end;
+  }
+  html[data-v2-mounted="true"] .v2c03__book--miwohiku{ min-height:190px; }
+  html[data-v2-mounted="true"] .v2c03__book::before{ font-size:24px; }
+  html[data-v2-mounted="true"] .v2c03__name{ font-size:15.5px !important; }
+}
 
 /* ============================================================
  * LIMITED FIX BEFORE PREVIEW（CEO指示 2026-08-19朝）
@@ -1752,3 +1919,94 @@ html[data-v2-mounted="true"] .v2c07__moremenu .v2c07__act:focus-visible{
 }
 html[data-v2-mounted="true"] .v2c07__moremenu .v2c07__act--danger{ color:#a2543f !important; }
 html[data-v2-mounted="true"][data-theme="night"] .v2c07__moremenu .v2c07__act--danger{ color:#c98a76 !important; }
+
+/* ============================================================
+ * VCR: 02 Lobby — Desktop 3横並び（LOBBY B FINAL POLISH）
+ * Mobileの縦3段はそのまま。Desktop 1024/1440で3行為を同格の
+ * 大きな有機面として横並びにする（Mobile columnの中央置き禁止）。
+ * ============================================================ */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c02__stage{
+    max-width:76rem !important;
+    margin:0 auto;
+    padding:0 40px 60px !important;
+    width:100% !important;
+  }
+  html[data-v2-mounted="true"] .v2c02__brandrow{ padding:14px 0 10px !important; }
+  html[data-v2-mounted="true"] .v2c02__hero{
+    text-align:center;
+    font-size:30px !important;
+    margin:56px 0 8px !important;
+  }
+  html[data-v2-mounted="true"] .v2c02__cards{
+    display:grid !important;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:34px;
+    margin-top:44px !important;
+    max-width:none !important;
+  }
+  html[data-v2-mounted="true"] .v2c02__card{
+    position:relative;
+    overflow:hidden;
+    display:flex !important;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:flex-start;
+    min-height:340px;
+    padding:34px 30px 0 !important;
+    text-align:left;
+  }
+  html[data-v2-mounted="true"] .v2c02__card:nth-of-type(1){ border-radius:44% 40% 46% 38% / 42% 46% 38% 44% !important; }
+  html[data-v2-mounted="true"] .v2c02__card:nth-of-type(2){ border-radius:40% 46% 38% 44% / 46% 40% 44% 38% !important; }
+  html[data-v2-mounted="true"] .v2c02__card:nth-of-type(3){ border-radius:46% 38% 44% 40% / 40% 44% 38% 46% !important; }
+  html[data-v2-mounted="true"] .v2c02__body{
+    order:1;
+    position:relative; z-index:1;
+    display:block;
+  }
+  html[data-v2-mounted="true"] .v2c02__body::before{
+    font-size:20px;
+    margin-bottom:10px;
+  }
+  html[data-v2-mounted="true"] .v2c02__cardtitle{
+    font-size:19px !important;
+    letter-spacing:.06em;
+  }
+  html[data-v2-mounted="true"] .v2c02__carddesc{
+    margin-top:10px;
+    font-size:12.5px !important;
+    line-height:1.9;
+  }
+  /* 画像面：下部の有機形（既存 local asset を維持） */
+  html[data-v2-mounted="true"] .v2c02__pane{
+    order:2;
+    position:absolute !important;
+    left:12%; right:10%; bottom:-4%;
+    top:auto !important;
+    width:auto !important;
+    height:46% !important;
+    border-radius:52% 48% 44% 56% / 58% 52% 48% 42% !important;
+    background-size:cover !important;
+    background-position:center !important;
+    box-shadow:none !important;
+  }
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c02__brandrow,
+  html[data-v2-mounted="true"] .v2c03__brandrow,
+  html[data-v2-mounted="true"] .v2c06__brandrow,
+  html[data-v2-mounted="true"] .v2c08__brandrow{
+    flex-wrap:nowrap !important;
+  }
+  html[data-v2-mounted="true"] .v2c02__brandrow .v2b-menutrigger,
+  html[data-v2-mounted="true"] .v2c03__menubtn,
+  html[data-v2-mounted="true"] .v2c06__menubtn,
+  html[data-v2-mounted="true"] .v2c08__menubtn{
+    margin-left:20px !important;
+    flex:none;
+  }
+  html[data-v2-mounted="true"] .v2c02__cardtitle{
+    font-size:17.5px !important;
+    text-wrap:balance;
+  }
+}

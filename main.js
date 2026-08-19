@@ -459,7 +459,7 @@ const MESSAGES = {
     v2c02Card3Desc: "<span class='v2c02__descline'>あなたが残した本たちと、</span><span class='v2c02__descline'>静かに再会する。</span>",
 
     v2c03Title: "感情の棚",
-    v2c03Lead: "いまの気持ちに近い棚から、<br>ことばや作品、自分の本に出会えます。",
+    v2c03Lead: "いまの気持ちに、そっと合う棚から<br>のぞいてみましょう。<br>心に残る一冊に出会えるかもしれません。",
     v2c03Guide: "どの棚からでも、書くことからでも。<br>あなたのペースで、自由に巡れます。",
     v2Shelfhazumu: "心が弾む",
     v2Shelfatatamaru: "心があたたまる",
@@ -481,7 +481,7 @@ const MESSAGES = {
     v2ShelfAllLead: "21のことばを、まとめて見わたせます。",
 
     v2NavAria: "主要な移動",
-    v2NavShelves: "感情棚",
+    v2NavShelves: "棚を見る",
     v2NavDesk: "書く",
     v2NavBookshelf: "本棚",
 
@@ -966,7 +966,7 @@ const MESSAGES = {
     v2c02Card3Desc: "<span class='v2c02__descline'>Quietly reunite with</span><span class='v2c02__descline'>the books you left behind.</span>",
 
     v2c03Title: "Emotion Shelves",
-    v2c03Lead: "Start from the shelf closest to how you feel,<br>and find words, works, and your own books.",
+    v2c03Lead: "Peek into a shelf that quietly fits how you feel now.<br>You may meet a book that stays with you.",
     v2c03Guide: "Begin at any shelf, or begin by writing.<br>Wander freely, at your own pace.",
     v2Shelfhazumu: "Lifting",
     v2Shelfatatamaru: "Warming",
@@ -988,7 +988,7 @@ const MESSAGES = {
     v2ShelfAllLead: "See all 21 words together.",
 
     v2NavAria: "Main navigation",
-    v2NavShelves: "Shelves",
+    v2NavShelves: "Browse shelves",
     v2NavDesk: "Write",
     v2NavBookshelf: "Bookshelf",
 
