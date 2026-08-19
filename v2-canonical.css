@@ -4374,3 +4374,11 @@ html[data-v2-mounted="true"] .vq01__collage-band{
   html[data-v2-mounted="true"] .vq01__mark::before{ height:76px; }
   html[data-v2-mounted="true"] .vq01__mark::after{ top:76px; height:34px; }
 }
+
+/* 01 Mobile：緑の紙片は Reference と同じく Main Copy 1行目の背後へ */
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .vq01__frag{ top:26px; left:0; width:76px; height:112px; }
+}
+@media (max-width:359px){
+  html[data-v2-mounted="true"] .vq01__frag{ top:22px; width:66px; height:98px; }
+}
