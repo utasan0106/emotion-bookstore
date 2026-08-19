@@ -438,8 +438,9 @@ const MESSAGES = {
        同じ MESSAGES 辞書へ載せる。利用者本文・題名・写真・実在作品の原題は対象外。 */
     v2c01BrandSub: "みんなの",
     v2c01BrandMain: "感情書店",
-    v2c01Copy: "感情から、<br>ことばや作品に<br>出会う書店。",
-    v2c01CopySub: "残ったものを、一冊に。",
+    v2c01Copy: "残ったものを、<br>一冊に。",
+    v2c01CopySub: "あとで、静かに読み返せる。",
+    v2c01Supp: "感情から、ことばやカルチャーに出会う書店。",
     v2c01Foot: "はじめての方も、ここから始められます。",
     v2c01StepsAria: "この書店の過ごし方",
     v2c01Step1: "知る",
@@ -945,8 +946,9 @@ const MESSAGES = {
        短く普通の英語にとどめ、日本語版にない意味・診断的な語は加えない。 */
     v2c01BrandSub: "The",
     v2c01BrandMain: "Bookstore of Feelings",
-    v2c01Copy: "A bookstore where feelings<br>lead you to words<br>and works.",
-    v2c01CopySub: "What stays with you becomes a book.",
+    v2c01Copy: "What stays with you<br>becomes a book.",
+    v2c01CopySub: "",
+    v2c01Supp: "A bookstore where feelings lead you to words and works.",
     v2c01Foot: "First-time visitors can start here, too.",
     v2c01StepsAria: "How to spend time in this bookstore",
     v2c01Step1: "Know",
