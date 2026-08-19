@@ -5068,6 +5068,20 @@ function refreshUnfiledShelfPickerLabels(){
     const nameEl = btn.querySelector('.v2s2-shelf__name');
     if(cat && nameEl) nameEl.textContent = categoryLabelFor(cat);
   });
+  // family（8棚）の表示名も現在言語へ（対応・IDは不変）
+  const esaL = (typeof window !== 'undefined') ? window.V2EmotionShelfAdapter : null;
+  if(esaL && typeof esaL.MAJOR_SHELVES === 'function'){
+    try{
+      const nameMap = {};
+      esaL.MAJOR_SHELVES().forEach(f=>{ nameMap[f.id] = f.name; });
+      nameMap[esaL.CROSSWAY_ID || 'namae-ga-nai'] = t('v2Shelfnamaeganai');
+      box.querySelectorAll('[data-family-id]').forEach(fb=>{
+        const nm = nameMap[fb.getAttribute('data-family-id')];
+        const el = fb.querySelector('.v2s2-shelf__name');
+        if(nm && el) el.textContent = nm;
+      });
+    }catch(e){ /* 表示名の追従のみ。失敗しても選択契約には影響しない */ }
+  }
   const setText=(sel,key)=>{ const el=box.querySelector(sel); if(el) el.textContent = t(key); };
   setText('.v2s2-aux','v2s2Aux');
   setText('.v2s2-heading','v2s2Heading');
@@ -5241,7 +5255,13 @@ function showUnfiledShelfPicker(entry){
   preview.appendChild(previewMeta);
   card.appendChild(preview);
 
-  // 棚選択（2列の棚ラベル群 / radiogroup）
+  // 棚選択（VCR: Beta0 contract bridge）
+  // canonicalどおり最初は8 family（2列×4段）。familyを選ぶと同一modal内で
+  // そのfamilyに属するexisting emotion shelf（21 ID）だけをcompactに開き、
+  // childを本人が明示選択して初めてPrimaryが有効になる。保存値は既存21 IDのみ。
+  // family→emotionの対応は、03が使う既存のauthoritative mapping
+  // （V2EmotionShelfAdapter.MAJOR_SHELVES / CROSSWAY / emotionIdsOf）を再利用する。
+  // auto-select・推定・recommendationは行わない。
   const chooseLabel = document.createElement('p');
   chooseLabel.className = 'v2s2-choose';
   chooseLabel.textContent = t('v2s2Choose');
@@ -5249,17 +5269,13 @@ function showUnfiledShelfPicker(entry){
 
   const group = document.createElement('div');
   group.className = 'v2s2-shelves';
-  group.setAttribute('role', 'radiogroup');
-  group.setAttribute('aria-label', t('v2s2Choose'));
 
-  const radios = [];
+  const radios = [];      // child（既存21 ID）のrole=radio
+  const familyBtns = [];  // family開閉ボタン
+  const childPanels = [];
   const shelfColorOf = (catId)=>{
     const idx = CATEGORIES.findIndex(c=>c.id === catId);
     return (idx >= 0 && SPINE_COLORS[idx]) ? SPINE_COLORS[idx] : UNFILED_SPINE_COLOR;
-  };
-  const setRovingTabindex = ()=>{
-    const activeIdx = Math.max(0, radios.findIndex(r=>r.getAttribute('aria-checked') === 'true'));
-    radios.forEach((r,i)=>{ r.tabIndex = (i === activeIdx) ? 0 : -1; });
   };
   const selectShelf = (catId)=>{
     selectedId = catId;
@@ -5268,51 +5284,143 @@ function showUnfiledShelfPicker(entry){
       r.setAttribute('aria-checked', on ? 'true' : 'false');
       r.classList.toggle('is-selected', on);
     });
-    setRovingTabindex();
+    updateConfirmState();
+  };
+  const clearSelection = ()=>{
+    selectedId = '';
+    radios.forEach(r=>{
+      r.setAttribute('aria-checked', 'false');
+      r.classList.remove('is-selected');
+    });
     updateConfirmState();
   };
 
-  CATEGORIES.forEach(c=>{
+  // authoritative 8 family（7大棚 + まだ名前がない）。adapter未到達時はnull。
+  const esa = (typeof window !== 'undefined') ? window.V2EmotionShelfAdapter : null;
+  let families = null;
+  if(esa && typeof esa.MAJOR_SHELVES === 'function'){
+    try{
+      families = esa.MAJOR_SHELVES().map(f=>({ id: f.id, name: f.name, emotions: f.emotions.slice() }));
+      const crossId = esa.CROSSWAY_ID || 'namae-ga-nai';
+      const crossEmotions = (typeof esa.emotionIdsOf === 'function') ? esa.emotionIdsOf(crossId) : ['moyamoya'];
+      families.push({ id: crossId, name: t('v2Shelfnamaeganai'), emotions: (crossEmotions && crossEmotions.length) ? crossEmotions.slice() : ['moyamoya'] });
+    }catch(e){ families = null; }
+  }
+
+  const buildChildRadio = (catId)=>{
+    const cat = CATEGORIES.find(c=>c.id === catId);
+    if(!cat) return null;
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'v2s2-shelf';
+    btn.className = 'v2s2-shelf v2s2-shelf--child';
     btn.setAttribute('role', 'radio');
-    btn.setAttribute('aria-checked', 'false');
-    btn.setAttribute('data-shelf-choice', c.id);
+    btn.setAttribute('aria-checked', selectedId === catId ? 'true' : 'false');
+    btn.setAttribute('data-shelf-choice', catId);
     btn.tabIndex = -1;
-
     const bar = document.createElement('span');
     bar.className = 'v2s2-shelf__bar';
     bar.setAttribute('aria-hidden', 'true');
-    bar.style.background = shelfColorOf(c.id);
+    bar.style.background = shelfColorOf(catId);
     btn.appendChild(bar);
-
     const nameEl = document.createElement('span');
     nameEl.className = 'v2s2-shelf__name';
-    nameEl.textContent = categoryLabelFor(c);
+    nameEl.textContent = categoryLabelFor(cat);
     btn.appendChild(nameEl);
-
     const mark = document.createElement('span');
     mark.className = 'v2s2-shelf__mark';
     mark.setAttribute('aria-hidden', 'true');
     btn.appendChild(mark);
-
-    btn.addEventListener('click', ()=>{ if(!btn.disabled) selectShelf(c.id); });
+    btn.addEventListener('click', ()=>{ if(!btn.disabled) selectShelf(catId); });
     radios.push(btn);
-    group.appendChild(btn);
-  });
-  // 矢印キーでradio間を移動する（選択はEnter/Space=click）。
-  group.addEventListener('keydown', (e)=>{
-    const keys = ['ArrowDown','ArrowRight','ArrowUp','ArrowLeft'];
-    if(!keys.includes(e.key)) return;
-    const cur = radios.indexOf(document.activeElement);
-    if(cur < 0) return;
-    e.preventDefault();
-    const delta = (e.key === 'ArrowDown' || e.key === 'ArrowRight') ? 1 : -1;
-    const next = (cur + delta + radios.length) % radios.length;
-    radios[next].focus();
-  });
-  if(radios.length) radios[0].tabIndex = 0;
+    return btn;
+  };
+
+  const wireChildKeys = (panel)=>{
+    panel.addEventListener('keydown', (e)=>{
+      const keys = ['ArrowDown','ArrowRight','ArrowUp','ArrowLeft'];
+      if(!keys.includes(e.key)) return;
+      const list = Array.from(panel.querySelectorAll('[role="radio"]'));
+      const cur = list.indexOf(document.activeElement);
+      if(cur < 0) return;
+      e.preventDefault();
+      const delta = (e.key === 'ArrowDown' || e.key === 'ArrowRight') ? 1 : -1;
+      const next = (cur + delta + list.length) % list.length;
+      list[next].focus();
+    });
+  };
+
+  if(families && families.length === 8){
+    // canonical B：8 family 2列×4段 + progressive disclosure（同一modal内）
+    group.classList.add('v2s2-shelves--families');
+    families.forEach((fam, fi)=>{
+      const famBtn = document.createElement('button');
+      famBtn.type = 'button';
+      famBtn.className = 'v2s2-family v2s2-family--' + String(fam.id).split('-').join('');
+      famBtn.setAttribute('aria-expanded', 'false');
+      const panelId = 'v2s2FamilyPanel' + fi;
+      famBtn.setAttribute('aria-controls', panelId);
+      famBtn.setAttribute('data-family-id', fam.id);
+      const bar = document.createElement('span');
+      bar.className = 'v2s2-shelf__bar';
+      bar.setAttribute('aria-hidden', 'true');
+      famBtn.appendChild(bar);
+      const nameEl = document.createElement('span');
+      nameEl.className = 'v2s2-shelf__name';
+      nameEl.textContent = fam.name;
+      famBtn.appendChild(nameEl);
+      const chev = document.createElement('span');
+      chev.className = 'v2s2-family__chev';
+      chev.setAttribute('aria-hidden', 'true');
+      famBtn.appendChild(chev);
+      group.appendChild(famBtn);
+      familyBtns.push(famBtn);
+
+      const panel = document.createElement('div');
+      panel.className = 'v2s2-children';
+      panel.id = panelId;
+      panel.setAttribute('role', 'radiogroup');
+      panel.setAttribute('aria-label', fam.name);
+      panel.hidden = true;
+      fam.emotions.forEach(catId=>{
+        const r = buildChildRadio(catId);
+        if(r) panel.appendChild(r);
+      });
+      wireChildKeys(panel);
+      group.appendChild(panel);
+      childPanels.push(panel);
+
+      famBtn.addEventListener('click', ()=>{
+        if(famBtn.disabled) return;
+        const opening = panel.hidden;
+        // 開くのは1つだけ。切り替え時は未確定選択をクリア（隠れた選択状態を作らない）
+        childPanels.forEach(pn=>{ pn.hidden = true; });
+        familyBtns.forEach(fb=>{ fb.setAttribute('aria-expanded', 'false'); fb.classList.remove('is-open'); });
+        if(opening){
+          panel.hidden = false;
+          famBtn.setAttribute('aria-expanded', 'true');
+          famBtn.classList.add('is-open');
+          const first = panel.querySelector('[role="radio"]');
+          if(first){
+            panel.querySelectorAll('[role="radio"]').forEach((r,i)=>{ r.tabIndex = (i===0)?0:-1; });
+          }
+        }
+        clearSelection();
+      });
+    });
+  }else{
+    // authoritative mappingへ到達できない場合のfallback：既存21棚の直接選択
+    //（保存契約は同一。canonical 8 family表示はadapter復帰時に有効）
+    group.classList.add('v2s2-shelves--flat');
+    group.setAttribute('role', 'radiogroup');
+    group.setAttribute('aria-label', t('v2s2Choose'));
+    CATEGORIES.forEach(c=>{
+      const r = buildChildRadio(c.id);
+      if(r) group.appendChild(r);
+    });
+    wireChildKeys(group);
+    const firstR = group.querySelector('[role="radio"]');
+    if(firstR) firstR.tabIndex = 0;
+  }
   card.appendChild(group);
 
   const confirmBtn = document.createElement('button');
@@ -5334,6 +5442,7 @@ function showUnfiledShelfPicker(entry){
 
   const setBusy = (busy)=>{
     radios.forEach(r=>{ r.disabled = busy; });
+    familyBtns.forEach(fb=>{ fb.disabled = busy; });
     skipBtn.disabled = busy;
     if(busy){
       confirmBtn.disabled = true;
@@ -5401,8 +5510,9 @@ function showUnfiledShelfPicker(entry){
   card.appendChild(errorMsg);
 
   box.appendChild(card);
-  // 初期フォーカスは棚グループの先頭radio（初期未選択のまま）。
-  if(radios.length) radios[0].focus();
+  // 初期フォーカスは選択面の先頭（family先頭。fallback時は先頭radio）。初期未選択のまま。
+  const firstFocusable = familyBtns.length ? familyBtns[0] : (radios.length ? radios[0] : null);
+  if(firstFocusable) firstFocusable.focus();
   // ★PR-A：ダイアログの中身を組み立て終えたところで、背後頁のinert付与とTabトラップの
   // 登録を行う（#experienceMenuと同じ開閉パターン）。
   trapPage3Focus();

@@ -2282,3 +2282,80 @@ html[data-v2-mounted="true"] .v2c04__writenote{
   html[data-v2-mounted="true"] .v2c04__lead{ max-width:42%; font-size:14px !important; }
 }
 html[data-v2-mounted="true"] .v2c04__hero::before{ display:none !important; }
+
+/* ============================================================
+ * VCR: 05-2 — 8 family progressive disclosure（Beta0 contract bridge）
+ * 初期は8 family 2列×4段。family選択で同一modal内にchild（既存21 ID）を
+ * compactに開く。保存値は既存21 IDのみ（data model不変）。
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2s2-family--hazumu{ --fam-tint:#E9D28F; }
+html[data-v2-mounted="true"] .v2s2-family--atatamaru{ --fam-tint:#E8B39E; }
+html[data-v2-mounted="true"] .v2s2-family--hikareru{ --fam-tint:#AFCBBC; }
+html[data-v2-mounted="true"] .v2s2-family--shizumu{ --fam-tint:#B7AED6; }
+html[data-v2-mounted="true"] .v2s2-family--zawatsuku{ --fam-tint:#9FC0DC; }
+html[data-v2-mounted="true"] .v2s2-family--butsukaru{ --fam-tint:#E2A183; }
+html[data-v2-mounted="true"] .v2s2-family--miwohiku{ --fam-tint:#A9C0B4; }
+html[data-v2-mounted="true"] .v2s2-family--namaeganai{ --fam-tint:#C9C2B2; }
+
+html[data-v2-mounted="true"] .v2s2-shelves--families{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+}
+html[data-v2-mounted="true"] .v2s2-family{
+  appearance:none; border:0; margin:0;
+  background:none;
+  display:flex; align-items:center; gap:9px;
+  min-height:48px;
+  padding:8px 12px 8px 10px;
+  font-family:var(--font-ui);
+  font-size:13.5px; letter-spacing:.01em;
+  color:var(--vq-ink);
+  text-align:left;
+  cursor:pointer;
+  border-top:1px solid var(--vq-rule);
+  position:relative;
+}
+html[data-v2-mounted="true"] .v2s2-shelves--families > .v2s2-family:nth-of-type(-n+2){ border-top:0; }
+html[data-v2-mounted="true"] .v2s2-shelves--families > .v2s2-family:nth-of-type(odd){ border-right:1px solid var(--vq-rule); }
+html[data-v2-mounted="true"] .v2s2-family .v2s2-shelf__bar{ background:var(--fam-tint, var(--vq-muted)); }
+html[data-v2-mounted="true"] .v2s2-family__chev{
+  flex:none;
+  width:8px; height:8px;
+  border-right:1.5px solid var(--vq-muted);
+  border-bottom:1.5px solid var(--vq-muted);
+  transform:rotate(45deg);
+  margin-top:-3px;
+  transition:transform .12s ease;
+}
+@media (prefers-reduced-motion: reduce){
+  html[data-v2-mounted="true"] .v2s2-family__chev{ transition:none; }
+}
+html[data-v2-mounted="true"] .v2s2-family.is-open{
+  background:color-mix(in srgb, var(--fam-tint, var(--vq-accent)) 14%, var(--vq-paper));
+  font-weight:600;
+}
+html[data-v2-mounted="true"] .v2s2-family.is-open .v2s2-family__chev{
+  transform:rotate(225deg);
+  margin-top:3px;
+}
+html[data-v2-mounted="true"] .v2s2-family:focus-visible{
+  outline:2px solid var(--vq-accent);
+  outline-offset:-2px;
+  z-index:1;
+}
+/* child panel：グループ全幅に開くcompactな段 */
+html[data-v2-mounted="true"] .v2s2-children{
+  grid-column:1 / -1;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  background:color-mix(in srgb, var(--vq-ink) 3%, var(--vq-paper));
+  border-top:1px solid var(--vq-rule);
+}
+html[data-v2-mounted="true"] .v2s2-children[hidden]{ display:none; }
+html[data-v2-mounted="true"] .v2s2-shelf--child{
+  border-top:0 !important;
+  min-height:44px;
+  font-size:13px;
+}
+html[data-v2-mounted="true"] .v2s2-shelf--child:nth-child(odd){ border-right:1px solid var(--vq-rule); }
+html[data-v2-mounted="true"] .v2s2-shelf--child .v2s2-shelf__bar{ height:18px; width:4px; }
