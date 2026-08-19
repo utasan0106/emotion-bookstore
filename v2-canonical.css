@@ -3577,3 +3577,75 @@ html[data-v2-mounted="true"][data-theme="night"] .v2c04__hero{
     padding-bottom:28px !important;
   }
 }
+
+/* ============================================================
+ * PART A-2: 03 Emotion Shelf — Mobile を「Bottom Nav の上で
+ * 8棚をひとつの棚面として読める」canonical 状態へ。
+ * 調整対象は title/intro の間隔・棚高さ・row gap・08 高さ・
+ * bottom safe area のみ（nav 非表示/移動・棚削除・copy削除・
+ * overflow 隠し・極端な font 縮小は行わない）。
+ * ============================================================ */
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .v2c03__stage{
+    padding-bottom:calc(var(--v2-nav-h) + 10px) !important;
+  }
+  html[data-v2-mounted="true"] .v2c03__title{
+    margin-top:16px !important;
+  }
+  html[data-v2-mounted="true"] .v2c03__lead{
+    line-height:1.68;
+    margin-top:8px !important;
+  }
+  html[data-v2-mounted="true"] .v2c03__grid{
+    margin-top:14px !important;
+    gap:9px 10px;
+  }
+}
+@media (min-width:360px) and (max-width:899px){
+  html[data-v2-mounted="true"] .v2c03__book--hazumu{ min-height:112px; }
+  html[data-v2-mounted="true"] .v2c03__book--atatamaru{ min-height:112px; }
+  html[data-v2-mounted="true"] .v2c03__book--hikareru{ min-height:112px; }
+  html[data-v2-mounted="true"] .v2c03__book--shizumu{ min-height:102px; }
+  html[data-v2-mounted="true"] .v2c03__book--zawatsuku{ min-height:102px; }
+  html[data-v2-mounted="true"] .v2c03__book--butsukaru{ min-height:90px; }
+  html[data-v2-mounted="true"] .v2c03__book--miwohiku{ min-height:90px; }
+  html[data-v2-mounted="true"] .v2c03__book--namae{ min-height:72px; }
+  html[data-v2-mounted="true"] .v2c03__book{
+    padding-top:14px !important;
+    padding-bottom:12px !important;
+  }
+}
+@media (max-width:359px){
+  html[data-v2-mounted="true"] .v2c03__book{
+    min-height:104px;
+    padding-top:12px !important;
+    padding-bottom:10px !important;
+  }
+}
+
+/* 320：viewport 高さ 568px では 8棚 + header + intro を1画面に収めきれないため、
+   スクロールは残しつつ bottom safe area を十分に確保する（08 が nav へ触れない）。 */
+@media (max-width:359px){
+  html[data-v2-mounted="true"] .v2c03__stage{
+    padding-bottom:calc(var(--v2-nav-h) + 26px) !important;
+  }
+}
+
+/* ============================================================
+ * PART A-3 / A-4: Desktop visual mass を canonical へ（最小調整）
+ *  02: beta0 の .v2c02__cards{width:80.2%} が field を 1046px に絞っていた。
+ *      canonical は viewport の約91%。width を解放して stage 幅まで使う。
+ *  03: canonical は shelf field が page 右端まで届く。stage を広げる。
+ * ============================================================ */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c02__cards{
+    width:100% !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+  }
+  html[data-v2-mounted="true"] .v2c03__stage{
+    max-width:84rem !important;
+    padding:0 24px 48px !important;
+    column-gap:48px;
+  }
+}
