@@ -1799,9 +1799,22 @@ html[data-v2-mounted="true"][data-theme="night"] .v2c03__name{ color:#1c2129 !im
   html[data-v2-mounted="true"] .v2c03__book--butsukaru{ min-height:164px; }
   html[data-v2-mounted="true"] .v2c03__book--miwohiku{ min-height:146px; }
 }
-/* --- Mobile 320：2列ペア（均等寄り、有機形は維持） --- */
+/* --- Mobile 320：2列ペア（%有機radiusは小面積で文字を欠くため、固定pxの柔らかい角へ） --- */
 @media (max-width:359px){
-  html[data-v2-mounted="true"] .v2c03__book{ min-height:132px; }
+  html[data-v2-mounted="true"] .v2c03__book{
+    min-height:140px;
+    padding-bottom:18px !important;
+  }
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+1),
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+2),
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+3),
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+4),
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+5),
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+6),
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+7),
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+8){
+    border-radius:26px 34px 30px 28px !important;
+  }
 }
 
 /* --- Desktop：左title列 + 右8棚（3+3+2 / 08横長） --- */
@@ -2503,3 +2516,18 @@ html[data-v2-mounted="true"] .v2c06__invite .v2c06__invite-h{
 }
 html[data-v2-mounted="true"] .v2c06__invite .v2c06__invite-n{ display:none !important; }
 html[data-v2-mounted="true"] .v2c06__invite:hover .v2c06__invite-h{ color:var(--vq-ink) !important; }
+/* VCR 04 mobile: hero lead/titleは全幅（FIX-8 行数契約：26字以下lead=1行/最大3行） */
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .v2c04__hero{ padding-left:16px; padding-right:16px; }
+  html[data-v2-mounted="true"] .v2-page h1.v2c04__title{ max-width:100%; }
+  html[data-v2-mounted="true"] .v2c04__lead{
+    max-width:100%;
+    font-size:11.5px !important;
+    letter-spacing:.01em;
+  }
+  html[data-v2-mounted="true"] .v2c04__hero::after{
+    top:auto; bottom:-14%;
+    width:40%; height:52%;
+    opacity:.6;
+  }
+}
