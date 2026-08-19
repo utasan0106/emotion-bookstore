@@ -4244,3 +4244,627 @@ html[data-v2-mounted="true"] .vq01__symbol{
 html[data-v2-mounted="true"][data-theme="night"] .vq01__symbol{
   background-image:url("assets/brand/emotion-bookstore-symbol-reversed.svg");
 }
+
+/* ============================================================
+ * 01 Entrance — Visual Fidelity Fix（NO-GO 対応 / Overlay 判定）
+ * Final Reference を唯一の North Star として、見た目を一致させる。
+ *   実測 Reference viewport: Desktop 1440x960 / Mobile 390x693
+ * ============================================================ */
+
+/* --- FIX 1: 紙の materiality（フラットな白面にしない） ---
+   Reference の紙は #EFE7D8 / 輝度 sd≈1.0。repo の paper_grain_tile は
+   #EDE5DA / sd≈1.17 とほぼ同一。従来は soft-light 合成で質感が消え、
+   実測 sd=0.00（完全なフラット面）だった。tile を素の重ねに戻し、
+   brand base #FAF8F3 のヴェールで brand color を保ちながら density を出す。 */
+html[data-v2-mounted="true"] .vq01{
+  background-color:var(--e01-paper) !important;
+  background-image:
+    linear-gradient(rgba(250,248,243,.30), rgba(250,248,243,.30)),
+    url("assets/v2b0/01/paper_grain_tile.webp") !important;
+  background-size:auto, 680px 680px !important;
+  background-repeat:no-repeat, repeat !important;
+  background-blend-mode:normal, normal !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .vq01{
+  background-image:
+    linear-gradient(rgba(13,20,32,.93), rgba(13,20,32,.93)),
+    url("assets/v2b0/01/paper_grain_tile.webp") !important;
+}
+
+/* --- FIX 2 + 3: Typography と縦位置を Reference の実測へ --- */
+@media (min-width:900px){
+  /* Reference: symbol h158 / wordmark は symbol の直下（間隙 ~1px） */
+  html[data-v2-mounted="true"] .vq01__main{ padding-top:26px; }
+  html[data-v2-mounted="true"] .vq01__symbol{ width:152px; }
+  html[data-v2-mounted="true"] .vq01__wordmark{
+    margin-top:2px !important;
+    font-size:47px;
+    line-height:1.24;
+    letter-spacing:.12em;
+  }
+  /* Reference: EN label は wordmark とほぼ同幅（424px） */
+  html[data-v2-mounted="true"] .vq01__enlabel{
+    margin-top:6px !important;
+    font-size:14px;
+    letter-spacing:.72em;
+    text-indent:.72em;
+  }
+  /* Reference: Main 1行目 w431 / 行送り 84px（= 58px x 1.45） */
+  html[data-v2-mounted="true"] .vq01__copy{
+    margin-top:56px !important;
+    font-size:58px !important;
+    line-height:1.45 !important;
+    letter-spacing:.06em;
+  }
+  /* Reference: vermilion rule は w34 の短い罫 */
+  html[data-v2-mounted="true"] .vq01__rule{
+    width:34px;
+    margin-top:36px;
+  }
+  /* Reference: Sub w306 (fs≈21) */
+  html[data-v2-mounted="true"] .vq01__sub{
+    margin-top:18px !important;
+    font-size:21px !important;
+    letter-spacing:.08em;
+  }
+  /* Reference: supporting 左中段 2行 / 1行目 w136（fs≈20） */
+  html[data-v2-mounted="true"] .vq01__supp{
+    top:41.5%;
+    left:57px;
+    max-width:340px;
+    font-size:20px !important;
+    line-height:1.85;
+    letter-spacing:.05em;
+    padding-left:30px;
+    border-left-width:2px;
+  }
+  /* Reference: CTA box 266 x 70 */
+  html[data-v2-mounted="true"] .vq01__cta{
+    margin-top:32px !important;
+    min-width:266px;
+    min-height:70px;
+    padding:20px 40px !important;
+    font-size:22px !important;
+    letter-spacing:.16em !important;
+  }
+  /* Reference: microcopy w520 / y859 */
+  html[data-v2-mounted="true"] .vq01__words{
+    margin-top:40px;
+    font-size:15px;
+    letter-spacing:.14em;
+  }
+  html[data-v2-mounted="true"] .vq01__words > span{ padding:0 26px; }
+}
+@media (max-width:899px){
+  /* Reference(390x693): symbol h83 / wordmark w214 / Main w224 pitch54 /
+     rule w34 / Sub w182 / supporting w235 / CTA 167x47 */
+  html[data-v2-mounted="true"] .vq01__main{ padding-top:40px; }
+  html[data-v2-mounted="true"] .vq01__symbol{ width:80px; }
+  html[data-v2-mounted="true"] .vq01__wordmark{
+    margin-top:6px !important;
+    font-size:25px;
+    line-height:1.3;
+  }
+  html[data-v2-mounted="true"] .vq01__enlabel{
+    margin-top:5px !important;
+    font-size:10px;
+    letter-spacing:.5em;
+    text-indent:.5em;
+  }
+  html[data-v2-mounted="true"] .vq01__copy{
+    margin-top:44px !important;
+    font-size:32px !important;
+    line-height:1.6 !important;
+  }
+  html[data-v2-mounted="true"] .vq01__rule{ width:34px; margin-top:26px; }
+  html[data-v2-mounted="true"] .vq01__sub{
+    margin-top:20px !important;
+    font-size:15px !important;
+  }
+  html[data-v2-mounted="true"] .vq01__supp{
+    margin-top:14px !important;
+    font-size:14.5px !important;
+    max-width:100% !important;
+  }
+  html[data-v2-mounted="true"] .vq01__cta{
+    margin-top:30px !important;
+    min-width:167px;
+    min-height:47px;
+    padding:13px 34px !important;
+    font-size:16px !important;
+  }
+}
+
+/* --- Visual Fidelity Fix 2nd pass：Reference の y 位置と字幅へ合わせ込み --- */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__main{ padding-top:47px; }
+  html[data-v2-mounted="true"] .vq01__wordmark{ margin-top:0 !important; }
+  html[data-v2-mounted="true"] .vq01__enlabel{
+    margin-top:2px !important;
+    letter-spacing:1.1em;
+    text-indent:1.1em;
+  }
+  html[data-v2-mounted="true"] .vq01__copy{ margin-top:106px !important; }
+  html[data-v2-mounted="true"] .vq01__rule{ margin-top:22px; }
+  html[data-v2-mounted="true"] .vq01__sub{ margin-top:31px !important; }
+  html[data-v2-mounted="true"] .vq01__cta{ margin-top:32px !important; }
+  html[data-v2-mounted="true"] .vq01__words{ margin-top:35px; }
+  html[data-v2-mounted="true"] .vq01__words > span{ padding:0 34px; }
+}
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .vq01__wordmark{ font-size:23.5px; }
+  html[data-v2-mounted="true"] .vq01__enlabel{
+    letter-spacing:.13em;
+    text-indent:.13em;
+  }
+  html[data-v2-mounted="true"] .vq01__copy{ font-size:30px !important; margin-top:36px !important; }
+  html[data-v2-mounted="true"] .vq01__rule{ margin-top:18px; }
+  html[data-v2-mounted="true"] .vq01__sub{ margin-top:14px !important; font-size:13px !important; }
+  html[data-v2-mounted="true"] .vq01__supp{ margin-top:10px !important; font-size:12.5px !important; }
+  html[data-v2-mounted="true"] .vq01__cta{ margin-top:21px !important; }
+}
+
+/* ============================================================
+ * 01 Entrance — FINAL VISUAL FIDELITY CORRECTION (Desktop 1440 DAY)
+ * Final Reference（02_ENTRANCE_DESKTOP_FINAL_REFERENCE.png / 1536x1024）を
+ * 1440x960 CSS へ正規化し、ink（実描画）を pixel 実測して合わせた値。
+ * ここが 01 Entrance Desktop の最終値であり、以前の pass より後に置く。
+ *
+ * Reference ink 実測（1440x960）
+ *   brand      y  56- 78  x  44- 262 (w219)
+ *   Menu       y  60- 73  x1277-1395 (w119 / 罫 41)
+ *   symbol     y 123- 287 x 640- 798 (w159 h165)
+ *   wordmark   y 312- 356 x 508- 935 (w428)
+ *   EN label   y 383- 393 x 592- 847 (w256)
+ *   supporting 罫 y389-468 / L1 y402-422 w137 / L2 y439-460 w334
+ *   Main L1    y 472- 531 x 502- 932 (w431) / L2 y556-612 (行送り 84)
+ *   rule       y 649- 650 w 53
+ *   Sub        y 689- 708 x 566- 871 (w306)
+ *   CTA        y 750- 820 x 586- 852 (267 x 71) / 文字 ink h24
+ *   microcopy  y 858- 896 x 452- 971 (w520)
+ * ============================================================ */
+
+/* --- 紙面：Reference の Warm Paper（実測 #F0E7D8 / 輝度 sd≈1.8）へ。
+       tile の継ぎ目が出ないよう cover / no-repeat の 1 枚で敷く。
+       brand base #FAF8F3 は background-color として保持する。 --- */
+html[data-v2-mounted="true"] .vq01{
+  background-color:var(--e01-paper) !important;
+  background-image:
+    linear-gradient(rgba(247,238,214,.30), rgba(247,238,214,.30)),
+    url("assets/v2b0/01/paper_grain_tile.webp") !important;
+  background-size:cover, cover !important;
+  background-position:center, center !important;
+  background-repeat:no-repeat, no-repeat !important;
+  background-blend-mode:normal, normal !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .vq01{
+  background-image:
+    linear-gradient(rgba(13,20,32,.93), rgba(13,20,32,.93)),
+    url("assets/v2b0/01/paper_grain_tile.webp") !important;
+}
+
+@media (min-width:900px){
+  /* Header */
+  html[data-v2-mounted="true"] .vq01__header{ padding:45px 46px 0; }
+  html[data-v2-mounted="true"] .vq01__brand{
+    font-size:22px;
+    letter-spacing:.279em;
+  }
+  html[data-v2-mounted="true"] .vq01 .v2b-menutrigger{ gap:28px; }
+  html[data-v2-mounted="true"] .vq01 .v2b-menutrigger::before{
+    font-size:19px;
+    letter-spacing:.14em;
+  }
+  /* Reference の Menu affordance は 2 本の長い罫（挙動は既存のまま） */
+  html[data-v2-mounted="true"] .vq01 .v2b-menutrigger svg{ display:none !important; }
+  html[data-v2-mounted="true"] .vq01 .v2b-menutrigger::after{
+    content:"";
+    display:block;
+    width:41px;
+    height:13px;
+    border-top:2px solid currentColor;
+    border-bottom:2px solid currentColor;
+  }
+
+  /* Main stack */
+  html[data-v2-mounted="true"] .vq01__main{ padding-top:37px; }
+  html[data-v2-mounted="true"] .vq01__symbol{ width:177px; }
+  html[data-v2-mounted="true"] .vq01__wordmark{
+    margin-top:9px !important;
+    font-size:44px;
+    line-height:1.24;
+    letter-spacing:.247em;
+    text-indent:.247em;
+  }
+  html[data-v2-mounted="true"] .vq01__enlabel{
+    margin-top:14px !important;
+    font-size:15px;
+    letter-spacing:.39em;
+    text-indent:.39em;
+  }
+  html[data-v2-mounted="true"] .vq01__copy{
+    margin-top:56px !important;
+    font-size:61px !important;
+    line-height:1.377 !important;
+    letter-spacing:.12em;
+    text-indent:.12em;
+  }
+  html[data-v2-mounted="true"] .vq01__rule{
+    width:53px;
+    height:2px;
+    margin-top:20px;
+  }
+  html[data-v2-mounted="true"] .vq01__sub{
+    margin-top:30px !important;
+    font-size:20px !important;
+    line-height:1.75;
+    letter-spacing:.232em;
+    text-indent:.232em;
+  }
+  html[data-v2-mounted="true"] .vq01__cta{
+    margin-top:34px !important;
+    min-width:267px;
+    min-height:71px;
+    padding:0 40px !important;
+    font-size:25px !important;
+    letter-spacing:.23em !important;
+    text-indent:.23em;
+  }
+  html[data-v2-mounted="true"] .vq01__words{
+    margin-top:37px;
+    font-size:20px;
+    letter-spacing:.15em;
+  }
+  html[data-v2-mounted="true"] .vq01__words > span{
+    padding:0 34px;
+    line-height:1.95;
+  }
+  /* 左中段 supporting（Reference と同じ 2 行） */
+  html[data-v2-mounted="true"] .vq01__supp{
+    left:57px;
+    max-width:none;
+    width:auto;
+    padding:4px 0 4px 27px;
+    font-size:24px !important;
+    line-height:1.55;
+    letter-spacing:.06em;
+    border-left-width:2px;
+  }
+}
+/* Mobile は Reference どおり改行を持たない（Desktop 専用の 2 行） */
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .vq01__supp br{ display:none; }
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__main{ padding-top:24px; }
+  html[data-v2-mounted="true"] .vq01__supp{ top:300px; }
+}
+@media (min-width:900px){
+  /* Reference は約物が詰まった組み（proportional kana/punctuation）。
+     approved stack のまま palt で同じ字面へ寄せる。 */
+  html[data-v2-mounted="true"] .vq01__copy,
+  html[data-v2-mounted="true"] .vq01__sub{
+    font-feature-settings:"palt" 1;
+  }
+  /* Reference の wordmark は本文より太い（stroke 実測 +4〜5px） */
+  html[data-v2-mounted="true"] .vq01__wordmark{ font-weight:600; }
+  html[data-v2-mounted="true"] .vq01__header{ padding:45px 44px 0 43px; }
+  html[data-v2-mounted="true"] .vq01 .v2b-menutrigger{ gap:23px; }
+  html[data-v2-mounted="true"] .vq01__supp{ padding:3px 0 3px 27px; }
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__enlabel{ margin-top:13px !important; }
+  html[data-v2-mounted="true"] .vq01__copy{
+    margin-top:58px !important;
+    line-height:1.328 !important;
+  }
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__copy{ margin-top:59px !important; }
+  html[data-v2-mounted="true"] .vq01__rule{ margin-top:25px; }
+  html[data-v2-mounted="true"] .vq01__sub{ margin-top:31px !important; }
+  html[data-v2-mounted="true"] .vq01__cta{ margin-top:33px !important; }
+}
+@media (min-width:900px){
+  /* Reference の Main は 2 行の光学中心が右寄り。その軸へ合わせる */
+  html[data-v2-mounted="true"] .vq01__copy{ padding-left:10px; }
+  html[data-v2-mounted="true"] .vq01__supp{ top:304px; }
+  html[data-v2-mounted="true"] .vq01__sub{ margin-top:30px !important; }
+  html[data-v2-mounted="true"] .vq01__words > span{ padding:0 35px; }
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__cta{ margin-top:34px !important; }
+}
+@media (min-width:900px){
+  /* Reference の Main 2 行は光学中心が 45px ずれた生成画像。実テキストでは
+     1 本の軸しか持てないため、Reference 2 行の光学中心の平均軸に合わせる。 */
+  html[data-v2-mounted="true"] .vq01__copy{ padding-left:0; }
+  html[data-v2-mounted="true"] .vq01__supp{ top:300px; padding:7px 0 0 27px; }
+}
+/* 紙の粒状感を Reference の密度（輝度 sd≈1.8）へ。平均色 #F0E8D9 は維持する。 */
+html[data-v2-mounted="true"] .vq01{
+  background-image:
+    linear-gradient(rgba(243,235,216,.50), rgba(243,235,216,.50)),
+    url("assets/v2b0/01/paper_grain_tile.webp") !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .vq01{
+  background-image:
+    linear-gradient(rgba(13,20,32,.93), rgba(13,20,32,.93)),
+    url("assets/v2b0/01/paper_grain_tile.webp") !important;
+}
+
+/* ============================================================
+ * 01 Entrance — Product Symbol：正式ロゴ asset へ差し替え
+ * Visual Match Gate により「canonical SVG だから形状差を許容」を撤回。
+ * 正式ロゴ pack（emotion_bookstore_logo_for_claude）の
+ * `emotion_bookstore_primary_lockup_transparent.png` から symbol 領域
+ * （x512-1288 / y72-880）を無加工で切り出した lossless WebP を使用する。
+ * 単体の `emotion_bookstore_symbol_transparent.png` は下端が切れているため
+ * 採用せず、再描画・変形・再生成は一切行っていない（pixel 一致を検証済み）。
+ * ============================================================ */
+html[data-v2-mounted="true"] .vq01__symbol{
+  aspect-ratio:777 / 809;
+  background-image:url("assets/brand/emotion-bookstore-symbol-official.webp");
+  background-size:contain;
+  background-position:center;
+  background-repeat:no-repeat;
+}
+/* NIGHT は今回の STEP 1（Desktop 1440 DAY）対象外のため従来のまま */
+html[data-v2-mounted="true"][data-theme="night"] .vq01__symbol{
+  aspect-ratio:180 / 188;
+  background-image:url("assets/brand/emotion-bookstore-symbol-reversed.svg");
+}
+@media (min-width:900px){
+  /* Reference の symbol ink: w159 h165 / top 123 */
+  html[data-v2-mounted="true"] .vq01__symbol{ width:159px; }
+  html[data-v2-mounted="true"] .vq01__main{ padding-top:34px; }
+}
+
+/* ============================================================
+ * 01 Entrance — Visual Match Gate（Desktop 1440 DAY）
+ * Shippori Mincho 実描画での ink 実測に基づく最終調整。
+ *   Reference 実測: wordmark ink h45 w428 / Main ink h60 w431 /
+ *   Sub ink h20 w306 / supporting ink 被覆率 33.3% 濃度 42.6
+ * ============================================================ */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__symbol{ width:164px; }
+  html[data-v2-mounted="true"] .vq01__wordmark{
+    font-weight:500;
+    font-size:48px;
+    letter-spacing:.152em;
+    text-indent:.152em;
+    line-height:1.16;
+  }
+  html[data-v2-mounted="true"] .vq01__enlabel{
+    letter-spacing:.30em;
+    text-indent:.30em;
+  }
+  html[data-v2-mounted="true"] .vq01__copy{
+    font-size:65px !important;
+    line-height:1.2615 !important;
+    letter-spacing:.064em;
+    text-indent:.064em;
+  }
+  html[data-v2-mounted="true"] .vq01__sub{
+    font-size:21px !important;
+    letter-spacing:.193em;
+    text-indent:.193em;
+  }
+  /* Reference の supporting は charcoal より濃く、やや太い */
+  html[data-v2-mounted="true"] .vq01__supp{
+    font-weight:500;
+    color:color-mix(in srgb, var(--e01-navy) 88%, var(--e01-charcoal)) !important;
+  }
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__symbol{ width:160px; }
+  html[data-v2-mounted="true"] .vq01__main{ padding-top:33px; }
+  html[data-v2-mounted="true"] .vq01__wordmark{ margin-top:16px !important; }
+  html[data-v2-mounted="true"] .vq01__copy{ margin-top:55px !important; padding-right:6px; }
+  html[data-v2-mounted="true"] .vq01__rule{ margin-top:28px; }
+  html[data-v2-mounted="true"] .vq01__sub{ margin-top:29px !important; }
+  html[data-v2-mounted="true"] .vq01__supp{ top:297px; }
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__wordmark{ font-weight:600; }
+}
+/* Reference の Main は 1 行目と 2 行目で光学中心が異なる（L1 x717 / L2 x674）。
+   CEO 指示により Desktop では行ごとに実描画位置へ合わせる。 */
+html[data-v2-mounted="true"] .vq01__copyline{ display:inline; position:relative; }
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__copyline--1{ left:21px; }
+  html[data-v2-mounted="true"] .vq01__copyline--2{ left:-25px; }
+}
+@media (min-width:900px){
+  /* Reference L2 の実描画幅 236px（x557-792）へ */
+  html[data-v2-mounted="true"] .vq01__copyline--2{ letter-spacing:.11em; left:-20px; }
+}
+
+/* ============================================================
+ * STEP 2 — 01 Entrance Mobile 390 DAY Visual Match
+ * Final Mobile Reference（941x1672 → 390x693 正規化）の ink 実測へ合わせる。
+ *   symbol   y148-230 w81      wordmark y244-266 w214
+ *   EN       y281-286 w128     Main L1  y335-365 w225 / L2 y389-418（行送り54）
+ *   rule     y449-451 w35      Sub      y476-488 w183
+ *   supp     y507-517 w235     CTA      y554-601 167x48
+ * Desktop（min-width:900px）は FREEZE 済みのため触らない。
+ * ============================================================ */
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .vq01__main{
+    justify-content:flex-start;
+    padding-top:84px;
+    padding-bottom:0;
+  }
+  html[data-v2-mounted="true"] .vq01__symbol{ width:83px; }
+  html[data-v2-mounted="true"] .vq01__wordmark{
+    margin-top:5px !important;
+    font-weight:600;
+    font-size:24.5px;
+    line-height:1.3;
+    letter-spacing:.128em;
+    text-indent:.128em;
+  }
+  html[data-v2-mounted="true"] .vq01__enlabel{
+    margin-top:7px !important;
+    font-size:8.5px;
+    letter-spacing:.177em;
+    text-indent:.177em;
+  }
+  html[data-v2-mounted="true"] .vq01__copy{
+    margin-top:34px !important;
+    font-size:33px !important;
+    line-height:1.606 !important;
+    letter-spacing:.06em;
+    text-indent:.06em;
+  }
+  html[data-v2-mounted="true"] .vq01__copyline{ left:0 !important; letter-spacing:inherit; }
+  html[data-v2-mounted="true"] .vq01__rule{ width:35px; height:2px; margin-top:18px; }
+  html[data-v2-mounted="true"] .vq01__sub{
+    margin-top:19px !important;
+    font-size:14px !important;
+    line-height:1.8;
+    letter-spacing:.08em;
+    text-indent:.08em;
+  }
+  html[data-v2-mounted="true"] .vq01__supp{
+    margin-top:8px !important;
+    font-size:11.5px !important;
+    line-height:1.8;
+    letter-spacing:.08em;
+    text-indent:.08em;
+  }
+  html[data-v2-mounted="true"] .vq01__cta{
+    margin-top:31px !important;
+    min-width:167px;
+    min-height:48px;
+    padding:0 24px !important;
+    font-size:16px !important;
+  }
+}
+/* STEP 2 2nd pass：Mobile Reference の実描画位置・字幅へ合わせ込む */
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .vq01__main{ padding-top:83px; }
+  html[data-v2-mounted="true"] .vq01__symbol{ width:81px; }
+  html[data-v2-mounted="true"] .vq01__wordmark{ margin-top:8px !important; }
+  html[data-v2-mounted="true"] .vq01__enlabel{ margin-top:4px !important; }
+  html[data-v2-mounted="true"] .vq01__copy{
+    margin-top:32px !important;
+    line-height:1.576 !important;
+    letter-spacing:.09em;
+    text-indent:.09em;
+  }
+  html[data-v2-mounted="true"] .vq01__copyline--1{ left:12px !important; }
+  html[data-v2-mounted="true"] .vq01__copyline--2{ left:15px !important; letter-spacing:.18em; }
+  html[data-v2-mounted="true"] .vq01__rule{ margin-top:22px; }
+  html[data-v2-mounted="true"] .vq01__sub{ margin-top:19px !important; padding-left:12px; }
+  html[data-v2-mounted="true"] .vq01__supp{
+    margin-top:6px !important;
+    letter-spacing:.155em;
+    text-indent:.155em;
+  }
+  html[data-v2-mounted="true"] .vq01__cta{ margin-top:32px !important; }
+}
+@media (max-width:899px){
+  /* Reference Mobile の supporting / Sub は現行より濃く、やや太い */
+  html[data-v2-mounted="true"] .vq01__supp{
+    font-weight:500;
+    color:color-mix(in srgb, var(--e01-navy) 88%, var(--e01-charcoal)) !important;
+  }
+  html[data-v2-mounted="true"] .vq01__sub{ font-weight:500; }
+}
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .vq01__copyline--2{ left:17px !important; }
+  html[data-v2-mounted="true"] .vq01__supp{
+    letter-spacing:.185em;
+    text-indent:.185em;
+    padding-left:5px;
+  }
+}
+/* 320（viewport 568）は STEP 2 の縦リズムだと CTA が First View を外れるため、
+   上余白だけを詰めて収める。390 の値には影響しない。 */
+@media (max-width:359px){
+  html[data-v2-mounted="true"] .vq01__main{ padding-top:34px; }
+}
+
+/* ============================================================
+ * 01 Entrance — NIGHT parity（承認済み DAY 構成の contract-preserving adaptation）
+ * DAY で承認された正式ロゴ asset の形状をそのまま使い、色だけを反転して
+ * 反転版（ivory の輪郭 / 内部は夜の地）にする。形状の再描画は行わない。
+ * ============================================================ */
+html[data-v2-mounted="true"][data-theme="night"] .vq01__symbol{
+  aspect-ratio:777 / 809;
+  background-image:url("assets/brand/emotion-bookstore-symbol-official.webp");
+  filter:invert(1);
+}
+
+/* ============================================================
+ * 01 Entrance — Desktop responsive：縦の短い desktop viewport（1024x768 等）
+ * では承認済み 1440x960 の構成比を保ったまま縦リズムを圧縮し、
+ * CTA を First View に収める。1440x960 には一切影響しない。
+ * ============================================================ */
+@media (min-width:900px) and (max-height:880px){
+  html[data-v2-mounted="true"] .vq01__header{ padding:24px 44px 0 43px; }
+  html[data-v2-mounted="true"] .vq01__main{ padding-top:12px; padding-bottom:12px; }
+  html[data-v2-mounted="true"] .vq01__symbol{ width:112px; }
+  html[data-v2-mounted="true"] .vq01__wordmark{ margin-top:10px !important; font-size:34px; }
+  html[data-v2-mounted="true"] .vq01__enlabel{ margin-top:9px !important; font-size:11px; }
+  html[data-v2-mounted="true"] .vq01__copy{
+    margin-top:30px !important;
+    font-size:46px !important;
+    line-height:1.34 !important;
+  }
+  html[data-v2-mounted="true"] .vq01__copyline--1,
+  html[data-v2-mounted="true"] .vq01__copyline--2{ left:0 !important; }
+  html[data-v2-mounted="true"] .vq01__rule{ margin-top:18px; }
+  html[data-v2-mounted="true"] .vq01__sub{ margin-top:18px !important; font-size:17px !important; }
+  html[data-v2-mounted="true"] .vq01__cta{
+    margin-top:22px !important;
+    min-width:212px; min-height:56px;
+    font-size:19px !important;
+  }
+  html[data-v2-mounted="true"] .vq01__words{ margin-top:20px; font-size:15px; }
+  html[data-v2-mounted="true"] .vq01__words > span{ padding:0 26px; }
+  html[data-v2-mounted="true"] .vq01__supp{
+    top:auto;
+    bottom:auto;
+    margin-top:0 !important;
+    font-size:16px !important;
+    padding:3px 0 3px 20px;
+  }
+}
+@media (min-width:900px) and (max-height:880px){
+  /* 縦が短い desktop では stack を版面中央へ置き、supporting は左中段を維持する */
+  html[data-v2-mounted="true"] .vq01__main{
+    justify-content:center;
+    padding-top:0;
+    padding-bottom:0;
+  }
+  html[data-v2-mounted="true"] .vq01__supp{
+    position:absolute;
+    top:41%;
+    left:44px;
+    margin:0 !important;
+  }
+}
+
+/* ============================================================
+ * 01 Entrance — EN adaptation（contract-preserving / 新規 design なし）
+ * EN は supporting が 1 文で長く、JA の明示改行を持たないため、
+ * 左中段ブロックとして成立する幅に収める。JA の 2 行組（実測 331px）は不変。
+ * ============================================================ */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__supp{ max-width:340px; }
+}
+@media (min-width:900px) and (max-height:880px){
+  html[data-v2-mounted="true"] .vq01__supp{ max-width:300px; }
+}
+/* 320 EN は行数が増えるため、CTA を First View に保つ分だけ縦を詰める */
+@media (max-width:359px){
+  html[lang="en"][data-v2-mounted="true"] .vq01__main{ padding-top:16px; }
+  html[lang="en"][data-v2-mounted="true"] .vq01__copy{
+    font-size:26px !important;
+    margin-top:22px !important;
+  }
+  html[lang="en"][data-v2-mounted="true"] .vq01__supp{ font-size:11px !important; margin-top:8px !important; }
+  html[lang="en"][data-v2-mounted="true"] .vq01__cta{ margin-top:22px !important; }
+}

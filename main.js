@@ -438,9 +438,9 @@ const MESSAGES = {
        同じ MESSAGES 辞書へ載せる。利用者本文・題名・写真・実在作品の原題は対象外。 */
     v2c01BrandSub: "みんなの",
     v2c01BrandMain: "感情書店",
-    v2c01Copy: "残ったものを、<br>一冊に。",
+    v2c01Copy: "<span class=\"vq01__copyline vq01__copyline--1\">残ったものを、</span><br><span class=\"vq01__copyline vq01__copyline--2\">一冊に。</span>",
     v2c01CopySub: "あとで、静かに読み返せる。",
-    v2c01Supp: "感情から、ことばや作品に出会う書店。",
+    v2c01Supp: "感情から、<br>ことばや作品に出会う書店",
     v2c01Words: "<span>読む。</span><span>残す。</span><span>書く。</span><span>再会する。</span>",
     v2c01Foot: "はじめての方も、ここから始められます。",
     v2c01StepsAria: "この書店の過ごし方",
