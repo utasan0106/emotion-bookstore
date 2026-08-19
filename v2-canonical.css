@@ -3021,3 +3021,559 @@ html[data-v2-mounted="true"] .v2c04__brandname{
   html[data-v2-mounted="true"] .v2c03__book--miwohiku{ min-height:175px; }
   html[data-v2-mounted="true"] .v2c03__book--namae{ min-height:175px; align-self:start; }
 }
+
+/* ============================================================
+ * AMR: Atmospheric Materiality + Organic Fidelity LIMITED FIX
+ * （2026-08-19 / BASE 6fa7631）
+ *
+ * 目的：canonical に既にある「モヤ・透明感・光のにじみ・写真と色面の
+ * 溶け合い・紙の質感・ごく弱い煌めき・不均一な輪郭」を Actual へ再現する。
+ * 新規画像は生成せず、既存 38 asset と repo 内の paper_grain_tile.webp
+ * （01 で既に読み込み済み）のみを使う。asset追加0 / 外部request追加0 /
+ * animation 0 / backdrop-filter 0。
+ * ============================================================ */
+
+/* ---------- 共通：紙と光のトークン ---------- */
+html[data-v2-mounted="true"]{
+  --amr-grain:url("assets/v2b0/01/paper_grain_tile.webp");
+  --amr-lightA:rgba(255,255,255,.58);   /* DAY 内部の白い自然光 */
+  --amr-lightB:rgba(255,255,255,.20);
+  --amr-sparkle:rgba(255,243,222,.72);  /* warm ivory */
+}
+html[data-v2-mounted="true"][data-theme="night"]{
+  --amr-lightA:rgba(255,246,230,.14);   /* NIGHT はごく弱い bloom */
+  --amr-lightB:rgba(255,246,230,.05);
+  --amr-sparkle:rgba(255,232,193,.50);
+}
+
+/* ============================================================
+ * 02 Lobby — 「3枚のカード」から「空間に浮かぶ3つの光の領域」へ
+ * ============================================================ */
+
+/* 面：flat fill をやめ、内部に不均一な明るさと紙の粒子を持たせる */
+html[data-v2-mounted="true"] .v2c02__card{
+  background-color:var(--v2c02-tint, #f3ead6) !important;
+  background-image:
+    radial-gradient(78% 62% at 24% 14%, var(--amr-lightA), rgba(255,255,255,0) 62%),
+    radial-gradient(64% 54% at 88% 92%, rgba(255,255,255,0) 34%, var(--amr-lightB)),
+    var(--amr-grain) !important;
+  background-size:auto, auto, 180px 180px !important;
+  background-repeat:no-repeat, no-repeat, repeat !important;
+  background-blend-mode:normal, normal, soft-light !important;
+}
+/* NIGHT：完全 opaque にせず、暗い空間から静かに浮かせる */
+html[data-v2-mounted="true"][data-theme="night"] .v2c02__card{
+  background-color:color-mix(in srgb, var(--v2c02-tint, #2a2a24) 88%, transparent) !important;
+  background-blend-mode:normal, normal, overlay !important;
+}
+
+/* 輪郭：楕円ではなく不均一な squircle（カードごとに膨らみを変える） */
+html[data-v2-mounted="true"] .v2c02__card:nth-of-type(1){
+  border-radius:38% 30% 34% 42% / 34% 40% 30% 38% !important;
+}
+html[data-v2-mounted="true"] .v2c02__card:nth-of-type(2){
+  border-radius:30% 40% 42% 32% / 40% 32% 38% 34% !important;
+}
+html[data-v2-mounted="true"] .v2c02__card:nth-of-type(3){
+  border-radius:42% 34% 30% 38% / 32% 38% 42% 30% !important;
+}
+
+/* 写真：独立した画像片に見せない。縁を mask で溶かして面と一体化させる */
+html[data-v2-mounted="true"] .v2c02__pane{
+  -webkit-mask-image:radial-gradient(112% 104% at 52% 48%, #000 40%, rgba(0,0,0,.86) 62%, rgba(0,0,0,.34) 84%, transparent 97%);
+  mask-image:radial-gradient(112% 104% at 52% 48%, #000 40%, rgba(0,0,0,.86) 62%, rgba(0,0,0,.34) 84%, transparent 97%);
+}
+/* 写真の上に置く極薄の色被り（面の色が写真へにじむ） */
+html[data-v2-mounted="true"] .v2c02__card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  background:radial-gradient(58% 42% at 50% 84%,
+    color-mix(in srgb, var(--v2c02-tint, #f3ead6) 42%, transparent),
+    rgba(255,255,255,0) 72%);
+  z-index:0;
+}
+/* ごく弱い煌めき：4点の小さな光。animation なし・操作を奪わない */
+html[data-v2-mounted="true"] .v2c02__card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  z-index:0;
+  background-repeat:no-repeat;
+  background-image:
+    radial-gradient(9px 1.6px at 78% 16%, var(--amr-sparkle), transparent 100%),
+    radial-gradient(1.6px 9px at 78% 16%, var(--amr-sparkle), transparent 100%),
+    radial-gradient(7px 1.3px at 15% 72%, var(--amr-sparkle), transparent 100%),
+    radial-gradient(1.3px 7px at 15% 72%, var(--amr-sparkle), transparent 100%);
+}
+@media (max-width:899px){
+  /* mobile は 1カード 1点まで */
+  html[data-v2-mounted="true"] .v2c02__card::after{
+    background-image:
+      radial-gradient(7px 1.3px at 62% 18%, var(--amr-sparkle), transparent 100%),
+      radial-gradient(1.3px 7px at 62% 18%, var(--amr-sparkle), transparent 100%);
+  }
+}
+/* text は必ず光層より前 */
+html[data-v2-mounted="true"] .v2c02__body{ position:relative; z-index:2; }
+
+/* Desktop：canonical の visual mass へ（実測 blob w≈403-424 / h≈454 / gap≈53） */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c02__stage{
+    max-width:84rem !important;
+    padding:0 20px 60px !important;
+  }
+  html[data-v2-mounted="true"] .v2c02__cards{ gap:52px !important; }
+  html[data-v2-mounted="true"] .v2c02__card{
+    min-height:452px;
+    padding:44px 40px 0 !important;
+  }
+  html[data-v2-mounted="true"] .v2c02__pane{
+    left:2%; right:2%; bottom:0%;
+    height:56% !important;
+  }
+}
+
+/* ============================================================
+ * 03 Emotion Shelf — 「色面＋貼られた写真」から
+ *                    「色・光・写真がひとつの有機的な棚面」へ
+ * ============================================================ */
+
+/* 面：内部の不均一な光 + 紙の粒子（flat fill をやめる） */
+html[data-v2-mounted="true"] .v2c03__book{
+  background-color:var(--shelf-tint, #eee) !important;
+  background-image:
+    radial-gradient(74% 66% at 18% 12%, var(--amr-lightA), rgba(255,255,255,0) 64%),
+    radial-gradient(60% 52% at 86% 90%, rgba(255,255,255,0) 40%, var(--amr-lightB)),
+    var(--amr-grain) !important;
+  background-size:auto, auto, 170px 170px !important;
+  background-repeat:no-repeat, no-repeat, repeat !important;
+  background-blend-mode:normal, normal, soft-light !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c03__book{
+  background-color:color-mix(in srgb, var(--shelf-tint, #333) 92%, transparent) !important;
+  background-blend-mode:normal, normal, overlay !important;
+}
+
+/* 写真：hard edge を消し、tint から photo へ徐々に遷移させる */
+html[data-v2-mounted="true"] .v2c03__book::after{
+  -webkit-mask-image:radial-gradient(126% 108% at 76% 50%, #000 38%, rgba(0,0,0,.88) 58%, rgba(0,0,0,.38) 80%, transparent 96%);
+  mask-image:radial-gradient(126% 108% at 76% 50%, #000 38%, rgba(0,0,0,.88) 58%, rgba(0,0,0,.38) 80%, transparent 96%);
+}
+
+/* 輪郭：棚ごとに四隅の膨らみを変える（均一な楕円・カプセルへ戻さない） */
+html[data-v2-mounted="true"] .v2c03__book--hazumu{ border-radius:34% 26% 30% 38% / 30% 36% 26% 34% !important; }
+html[data-v2-mounted="true"] .v2c03__book--atatamaru{ border-radius:26% 38% 34% 28% / 36% 28% 34% 30% !important; }
+html[data-v2-mounted="true"] .v2c03__book--hikareru{ border-radius:38% 28% 26% 36% / 26% 34% 38% 28% !important; }
+html[data-v2-mounted="true"] .v2c03__book--shizumu{ border-radius:28% 36% 38% 26% / 34% 26% 30% 38% !important; }
+html[data-v2-mounted="true"] .v2c03__book--zawatsuku{ border-radius:36% 30% 26% 34% / 28% 38% 34% 26% !important; }
+html[data-v2-mounted="true"] .v2c03__book--butsukaru{ border-radius:30% 34% 38% 30% / 38% 30% 26% 36% !important; }
+html[data-v2-mounted="true"] .v2c03__book--miwohiku{ border-radius:26% 30% 36% 40% / 32% 38% 28% 30% !important; }
+html[data-v2-mounted="true"] .v2c03__book--namae{ border-radius:30% 26% 34% 30% / 40% 34% 30% 38% !important; }
+/* mobile は面が小さいので、膨らみを px で抑えつつ不均一さは残す */
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .v2c03__book--hazumu{ border-radius:44px 30px 38px 52px !important; }
+  html[data-v2-mounted="true"] .v2c03__book--atatamaru{ border-radius:30px 46px 34px 40px !important; }
+  html[data-v2-mounted="true"] .v2c03__book--hikareru{ border-radius:48px 32px 42px 30px !important; }
+  html[data-v2-mounted="true"] .v2c03__book--shizumu{ border-radius:32px 44px 30px 46px !important; }
+  html[data-v2-mounted="true"] .v2c03__book--zawatsuku{ border-radius:46px 30px 48px 34px !important; }
+  html[data-v2-mounted="true"] .v2c03__book--butsukaru{ border-radius:34px 48px 32px 42px !important; }
+  html[data-v2-mounted="true"] .v2c03__book--miwohiku{ border-radius:30px 40px 46px 32px !important; }
+  html[data-v2-mounted="true"] .v2c03__book--namae{ border-radius:40px 34px 30px 44px !important; }
+}
+/* Desktop tile gap を canonical へもう一段近づける */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c03__grid{ gap:18px 16px; }
+}
+
+/* ============================================================
+ * 04 Emotion Detail — Hero composition は維持。
+ * 写真と紙 wash の境界の falloff だけを canonical の柔らかさへ。
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2c04__hero::after{
+  -webkit-mask-image:linear-gradient(96deg, rgba(0,0,0,.90) 0%, #000 30%, #000 100%);
+  mask-image:linear-gradient(96deg, rgba(0,0,0,.90) 0%, #000 30%, #000 100%);
+}
+
+/* ============================================================
+ * AMR-04P0: 04 Emotion Detail — Canonical Composition Correction
+ *
+ * STEP 1（composition / geometry / hierarchy）を先に行う。
+ * canonical pack の実測（mobile: page幅210mock=390CSS → scale 1.857 /
+ * desktop: page幅553mock、比率で換算）にもとづく。
+ *
+ * 実測サマリ（canonical → 修正前 actual）
+ *   mobile hero 高さ      401px → 290px
+ *   mobile title          約41px → 28.3px
+ *   mobile 01 item pitch  約156px → 80px
+ *   desktop hero 高さ     page幅の約0.61 → 0.25
+ *   desktop page content  約1300px → 1216px
+ * ============================================================ */
+
+/* ---------- content width（canonical は左右の余白が狭い一枚のEditorial page） ---------- */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c04__stage{
+    max-width:82rem !important;      /* 1312px：canonical の content 幅へ */
+    margin:0 auto;
+    padding:0 36px calc(var(--v2-nav-h) + 28px) !important;
+  }
+}
+
+/* ---------- Hero：visual mass を canonical へ ---------- */
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .v2c04__hero{
+    min-height:400px;                /* canonical 実測 401px */
+    padding-top:34px;
+    padding-bottom:34px;
+  }
+  html[data-v2-mounted="true"] .v2-page h1.v2c04__title{
+    font-size:40px !important;       /* canonical 実測 約41px */
+    line-height:1.38 !important;
+  }
+  html[data-v2-mounted="true"] .v2c04__lead{
+    font-size:13px !important;
+    margin-top:16px !important;
+  }
+  html[data-v2-mounted="true"] .v2c04__back{ margin-top:26px !important; }
+  /* 写真は右側の大きな面（canonical mobile と同じ左paper / 右photo） */
+  html[data-v2-mounted="true"] .v2c04__hero::after{
+    top:0 !important; bottom:0 !important; right:0 !important;
+    width:auto !important; height:auto !important;
+  }
+  html[data-v2-mounted="true"] .v2-page h1.v2c04__title{ max-width:62%; }
+  html[data-v2-mounted="true"] .v2c04__lead{ max-width:60%; }
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c04__hero{
+    min-height:min(76vh, 740px);     /* canonical: page幅の約0.61 */
+  }
+  html[data-v2-mounted="true"] .v2-page h1.v2c04__title{
+    font-size:64px !important;       /* canonical 実測 ≈78px。巨大化を避け 64px */
+    line-height:1.34 !important;
+  }
+  html[data-v2-mounted="true"] .v2c04__lead{
+    font-size:16px !important;
+    margin-top:20px !important;
+    max-width:40%;
+  }
+  html[data-v2-mounted="true"] .v2c04__back{
+    font-size:14px;
+    margin-top:34px !important;
+  }
+}
+
+/* ---------- section 間の vertical rhythm ---------- */
+html[data-v2-mounted="true"] .v2c04__sec{
+  margin-top:clamp(46px, 12cqw, 92px);
+}
+html[data-v2-mounted="true"] .v2c04__num{
+  font-size:clamp(22px, 6cqw, 30px);
+}
+html[data-v2-mounted="true"] .v2c04__sec .v2c04__h{
+  font-size:clamp(18px, 5cqw, 24px);
+}
+
+/* ---------- 01 ことば：Editorial card として読める高さと余白へ ---------- */
+html[data-v2-mounted="true"] .v2c04__words{
+  margin-top:clamp(22px, 6cqw, 34px);
+  gap:0;
+}
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card{
+  padding:22px 34px 24px 20px !important;   /* canonical: item pitch ≈156px */
+  min-height:132px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  border-bottom:1px solid var(--vq-rule) !important;
+}
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card:last-child{
+  border-bottom:0 !important;
+}
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card::before{
+  top:26px;
+  height:26px;
+}
+/* canonical の chevron（既存の遷移をそのまま示す静かな記号） */
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card::after{
+  content:"›";
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:20px;
+  line-height:1;
+  color:var(--vq-faint);
+  pointer-events:none;
+}
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card__name{
+  font-size:clamp(17px, 4.8cqw, 20px) !important;
+}
+html[data-v2-mounted="true"] .v2c04__words .v2-word-card__desc{
+  margin-top:10px;
+  font-size:clamp(12px, 3.4cqw, 13px) !important;
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c04__words{ column-gap:44px; }
+  html[data-v2-mounted="true"] .v2c04__words .v2-word-card{
+    min-height:200px;
+    padding:26px 30px 28px 22px !important;
+    border-bottom:0 !important;
+    border-left:1px solid var(--vq-rule) !important;
+    justify-content:flex-start;
+  }
+  html[data-v2-mounted="true"] .v2c04__words .v2-word-card::before{ left:0; }
+  html[data-v2-mounted="true"] .v2c04__words .v2-word-card::after{
+    top:auto; bottom:18px; right:auto; left:22px;
+    transform:none;
+  }
+}
+
+/* ---------- 02 作品：featured / secondary の hierarchy を canonical へ ----------
+   canonical の作品画像は third-party cover/still。現行在庫データは
+   「画像未使用（第三者 cover/still/jacket/thumbnail を一切参照しない）」が
+   承認済み方針のため画像は追加しない（KNOWN GAP として報告）。
+   ここでは size / typography / spacing で main と secondary の差を作る。 */
+html[data-v2-mounted="true"] .v2c04__worklist{
+  list-style:none;
+  margin:clamp(18px, 5cqw, 28px) 0 0;
+  padding:0;
+  display:grid;
+  gap:clamp(16px, 4cqw, 22px);
+}
+html[data-v2-mounted="true"] .v2c04__work{
+  position:relative;
+  padding:clamp(18px, 5cqw, 26px) clamp(16px, 4.4cqw, 24px);
+  border:0;
+  border-radius:18px 26px 20px 24px;
+  background:color-mix(in srgb, var(--vq-paper) 78%, transparent);
+}
+/* featured：canonical の main work */
+html[data-v2-mounted="true"] .v2c04__work:first-child{
+  padding:clamp(26px, 7cqw, 38px) clamp(20px, 5.4cqw, 32px);
+  border-radius:24px 34px 26px 30px;
+  background:
+    radial-gradient(72% 58% at 20% 12%, var(--amr-lightA), rgba(255,255,255,0) 62%),
+    color-mix(in srgb, var(--v2c04-tint, var(--vq-paper)) 26%, var(--vq-paper));
+}
+html[data-v2-mounted="true"] .v2c04__work:first-child .v2c04__work-title{
+  font-size:clamp(20px, 5.6cqw, 26px) !important;
+}
+html[data-v2-mounted="true"] .v2c04__work:first-child .v2c04__work-reason{
+  font-size:clamp(12.5px, 3.5cqw, 14px) !important;
+}
+/* secondary：静かに小さく */
+html[data-v2-mounted="true"] .v2c04__work:not(:first-child) .v2c04__work-title{
+  font-size:clamp(15px, 4.2cqw, 17px) !important;
+}
+html[data-v2-mounted="true"] .v2c04__work:not(:first-child) .v2c04__work-reason{
+  font-size:clamp(11.5px, 3.2cqw, 12.5px) !important;
+  color:var(--vq-muted) !important;
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c04__worklist{
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:26px;
+  }
+  html[data-v2-mounted="true"] .v2c04__work:first-child{
+    grid-column:1 / -1;
+  }
+}
+
+/* ---------- 03 自分の本：canonical の横に広い private panel ---------- */
+html[data-v2-mounted="true"] .v2c04__write{
+  position:relative;
+  overflow:hidden;
+  margin-top:clamp(18px, 5cqw, 26px) !important;
+  padding:clamp(26px, 7cqw, 40px) clamp(20px, 5.4cqw, 34px);
+  border-radius:22px 30px 24px 28px;
+  background:
+    radial-gradient(70% 56% at 18% 14%, var(--amr-lightA), rgba(255,255,255,0) 64%),
+    color-mix(in srgb, var(--vq-accent) 16%, var(--vq-paper));
+  min-height:200px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__write{
+  background:
+    radial-gradient(70% 56% at 18% 14%, var(--amr-lightA), rgba(255,255,255,0) 64%),
+    color-mix(in srgb, var(--vq-accent) 20%, var(--vq-paper));
+}
+/* 既存の「書く」導線の写真面（既存 05 Edition Room asset を再利用。新規assetなし） */
+html[data-v2-mounted="true"] .v2c04__write::after{
+  content:"";
+  position:absolute;
+  right:-4%;
+  top:0;
+  bottom:0;
+  width:44%;
+  background:url("assets/v2b0/05/05_desk_day.webp") center 42% / cover no-repeat;
+  border-radius:44% 0 0 44% / 50% 0 0 50%;
+  -webkit-mask-image:radial-gradient(122% 106% at 78% 50%, #000 40%, rgba(0,0,0,.84) 62%, rgba(0,0,0,.32) 82%, transparent 96%);
+  mask-image:radial-gradient(122% 106% at 78% 50%, #000 40%, rgba(0,0,0,.84) 62%, rgba(0,0,0,.32) 82%, transparent 96%);
+  pointer-events:none;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__write::after{
+  background-image:url("assets/v2b0/05/05_desk_night.webp");
+}
+html[data-v2-mounted="true"] .v2c04__writebtn,
+html[data-v2-mounted="true"] .v2c04__writenote{
+  position:relative;
+  z-index:1;
+  max-width:58%;
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c04__write{
+    min-height:280px;
+    padding:44px 40px;
+  }
+  html[data-v2-mounted="true"] .v2c04__write::after{ width:42%; }
+}
+
+/* ---------- AMR-04P0 追補：Hero の写真面と紙 wash の比率を canonical へ ----------
+   canonical は写真が Hero 右側の「大きな面」として見え、wash は左 40% 程度。
+   修正前は wash が広すぎて写真が背景のように沈んでいた。 */
+html[data-v2-mounted="true"] .v2c04__hero::after{
+  background-image:
+    linear-gradient(96deg,
+      var(--v2c04-wash) 0%,
+      var(--v2c04-wash) 18%,
+      color-mix(in srgb, var(--v2c04-wash) 55%, transparent) 33%,
+      transparent 52%),
+    var(--v2c04-heroimg, none);
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__hero::after{
+  background-image:
+    linear-gradient(96deg,
+      var(--v2c04-wash) 0%,
+      var(--v2c04-wash) 18%,
+      color-mix(in srgb, var(--v2c04-wash) 55%, transparent) 33%,
+      transparent 52%),
+    var(--v2c04-heroimg, none);
+}
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c04__hero::after{
+    background-image:
+      linear-gradient(96deg,
+        var(--v2c04-wash) 0%,
+        var(--v2c04-wash) 15%,
+        color-mix(in srgb, var(--v2c04-wash) 52%, transparent) 30%,
+        transparent 48%),
+      var(--v2c04-heroimg, none);
+  }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c04__hero::after{
+    background-image:
+      linear-gradient(96deg,
+        var(--v2c04-wash) 0%,
+        var(--v2c04-wash) 15%,
+        color-mix(in srgb, var(--v2c04-wash) 52%, transparent) 30%,
+        transparent 48%),
+      var(--v2c04-heroimg, none);
+  }
+}
+/* Hero 下端の柔らかな波形（canonical の organic transition）。
+   mask のみで実現し、filter / animation は増やさない。 */
+html[data-v2-mounted="true"] .v2c04__hero{
+  -webkit-mask-image:radial-gradient(120% 96% at 50% 0%, #000 82%, rgba(0,0,0,.55) 93%, transparent 100%);
+  mask-image:radial-gradient(120% 96% at 50% 0%, #000 82%, rgba(0,0,0,.55) 93%, transparent 100%);
+}
+/* 被写体が画面内に入るよう family 別の寄せを調整（master は無加工のまま） */
+html[data-v2-shelf-context="hazumu"]{ --v2c04-heropos:88% 46%; }
+html[data-theme="night"][data-v2-shelf-context="hazumu"]{ --v2c04-heropos:86% 48%; }
+html[data-v2-shelf-context="atatamaru"]{ --v2c04-heropos:70% 56%; }
+html[data-v2-shelf-context="hikareru"]{ --v2c04-heropos:74% 44%; }
+html[data-v2-shelf-context="miwohiku"]{ --v2c04-heropos:82% 56%; }
+
+/* Hero 写真は canonical と同じく主要被写体へ寄せる（master は無加工、表示側 zoom のみ） */
+html[data-v2-mounted="true"] .v2c04__hero::after{
+  background-size:auto, 128% auto !important;
+}
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .v2c04__hero::after{
+    background-size:auto, auto 118% !important;
+  }
+}
+
+/* Desktop Hero：canonical と同じく「左=紙の wash / 右=写真の大きな面」を
+   実体として分ける。全面 cover + 幅広 gradient では写真が引きすぎるため。
+   photo 面の左辺だけ mask で紙へ溶かす（暗幕は足さない）。 */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c04__hero::after{
+    left:44% !important;
+    right:0 !important;
+    top:0 !important;
+    bottom:0 !important;
+    width:auto !important;
+    height:auto !important;
+    background-image:var(--v2c04-heroimg, none) !important;
+    background-size:cover !important;
+    background-position:var(--v2c04-heropos, 62% 45%) !important;
+    -webkit-mask-image:linear-gradient(96deg, transparent 0%, rgba(0,0,0,.45) 9%, rgba(0,0,0,.86) 20%, #000 32%);
+    mask-image:linear-gradient(96deg, transparent 0%, rgba(0,0,0,.45) 9%, rgba(0,0,0,.86) 20%, #000 32%);
+  }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c04__hero::after{
+    background-image:var(--v2c04-heroimg, none) !important;
+  }
+}
+
+/* AMR-04 STEP3：Hero 左の紙 wash に canonical の有機的なにじみを与える
+   （composition 確定後の質感のみ。filter / animation は増やさない） */
+html[data-v2-mounted="true"] .v2c04__hero{
+  background-image:
+    radial-gradient(38% 46% at 8% 26%, color-mix(in srgb, var(--v2c04-tint, #eee) 62%, transparent), rgba(255,255,255,0) 72%),
+    radial-gradient(30% 34% at 26% 84%, color-mix(in srgb, var(--v2c04-tint, #eee) 52%, transparent), rgba(255,255,255,0) 74%),
+    radial-gradient(120% 130% at 86% 30%, rgba(255,255,255,.42), rgba(255,255,255,0) 55%),
+    var(--amr-grain) !important;
+  background-size:auto, auto, auto, 190px 190px !important;
+  background-repeat:no-repeat, no-repeat, no-repeat, repeat !important;
+  background-blend-mode:normal, normal, normal, soft-light !important;
+  background-color:color-mix(in srgb, var(--v2c04-tint, #eee) 66%, var(--vq-bg)) !important;
+}
+html[data-v2-mounted="true"][data-theme="night"] .v2c04__hero{
+  background-color:color-mix(in srgb, var(--v2c04-tint, #333) 30%, var(--vq-bg)) !important;
+  background-blend-mode:normal, normal, normal, overlay !important;
+}
+
+/* AMR-04 修正：FIX-8（≤26字 lead=1行 @390 / 最大3行）を維持する。
+   lead の幅を絞ると行数契約が壊れるため、幅は戻し、代わりに mobile の
+   wash を右へ広げて写真の上に文字が乗らないようにする。 */
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .v2c04__lead{
+    font-size:11.5px !important;
+    max-width:100% !important;
+    letter-spacing:.01em;
+  }
+  html[data-v2-mounted="true"] .v2-page h1.v2c04__title{ max-width:100%; }
+  html[data-v2-mounted="true"] .v2c04__hero::after{
+    background-image:
+      linear-gradient(96deg,
+        var(--v2c04-wash) 0%,
+        var(--v2c04-wash) 30%,
+        color-mix(in srgb, var(--v2c04-wash) 62%, transparent) 46%,
+        transparent 66%),
+      var(--v2c04-heroimg, none) !important;
+  }
+  html[data-v2-mounted="true"][data-theme="night"] .v2c04__hero::after{
+    background-image:
+      linear-gradient(96deg,
+        var(--v2c04-wash) 0%,
+        var(--v2c04-wash) 30%,
+        color-mix(in srgb, var(--v2c04-wash) 62%, transparent) 46%,
+        transparent 66%),
+      var(--v2c04-heroimg, none) !important;
+  }
+}
+
+/* 01 ことば：mobile の item pitch を canonical 実測（約156px）へ */
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .v2c04__words .v2-word-card{
+    min-height:150px;
+    padding-top:26px !important;
+    padding-bottom:28px !important;
+  }
+}
