@@ -2439,3 +2439,67 @@ html[data-v2-mounted="true"] #experienceMenu .pref-toggle{
 html[data-v2-mounted="true"] #experienceMenu .about-data-accordion > summary::before{
   content:none !important; display:none !important;
 }
+
+/* ============================================================
+ * VCR: 01 CTA label vertical centering（iOS Mincho baseline対策）
+ * paddingの場当たりでなく、content box内のflex centeringで安定させる。
+ * CTA boxのサイズ/位置/色は不変。
+ * ============================================================ */
+html[data-v2-mounted="true"] .vq01__cta{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  line-height:1 !important;
+  padding-top:0 !important;
+  padding-bottom:0 !important;
+  height:48px;
+}
+html[data-v2-mounted="true"] .vq01__cta > span{
+  display:block;
+  line-height:1;
+  transform:translateY(.04em); /* Mincho仮想ボディの上寄りを光学補正 */
+}
+
+/* ============================================================
+ * VCR: 05 Edition Room — Autosave/Privacy説明の声量をcanonicalへ
+ * 文言・意味は不変。サイズと透明度のみ一段下げる。
+ * ============================================================ */
+html[data-v2-mounted="true"] .vq05__status{
+  font-size:10.5px;
+  opacity:.82;
+}
+html[data-v2-mounted="true"] .vq05__privacy{ opacity:.72; }
+html[data-v2-mounted="true"] .vq05__bindnote{
+  font-size:10.5px;
+  opacity:.8;
+}
+
+/* ============================================================
+ * VCR: 06 Personal Library — 巨大な「新しく書く」Boxを静かな補助導線へ降格
+ * 挙動（data-v2-go="05"）は不変。Libraryの主役はbooks。
+ * ============================================================ */
+html[data-v2-mounted="true"] .v2c06__invite{
+  border:0 !important;
+  background:none !important;
+  border-radius:0 !important;
+  margin-top:clamp(18px, 5cqw, 28px) !important;
+  padding:6px 2px !important;
+  min-height:44px;
+  display:inline-flex !important;
+  align-items:center;
+  gap:8px;
+  width:auto !important;
+}
+html[data-v2-mounted="true"] .v2c06__invite .v2c06__invite-ic{
+  width:16px !important;
+  color:var(--vq-muted) !important;
+}
+html[data-v2-mounted="true"] .v2c06__invite .v2c06__invite-h{
+  color:var(--vq-muted) !important;
+  font-size:13px !important;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  font-weight:400 !important;
+}
+html[data-v2-mounted="true"] .v2c06__invite .v2c06__invite-n{ display:none !important; }
+html[data-v2-mounted="true"] .v2c06__invite:hover .v2c06__invite-h{ color:var(--vq-ink) !important; }
