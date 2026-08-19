@@ -1617,7 +1617,10 @@ html[data-v2-mounted="true"] .v2c03__stage{
   aspect-ratio:auto !important;
   height:auto !important;
   min-height:100dvh;
-  padding:0 clamp(16px, 4.6cqw, 24px) calc(var(--v2-nav-h) + 20px) !important;
+  max-height:none !important;
+  display:block !important;
+  box-shadow:none !important;
+  padding:0 clamp(16px, 4.6cqw, 24px) calc(var(--v2-nav-h) + 28px) !important;
   box-sizing:border-box;
 }
 html[data-v2-mounted="true"] .v2c03__brandrow{
@@ -1672,9 +1675,15 @@ html[data-v2-mounted="true"][data-theme="night"] .v2c03__book--namae{ --shelf-ti
 html[data-v2-mounted="true"] .v2c03__grid{
   display:grid !important;
   grid-template-columns:repeat(2, minmax(0,1fr));
-  gap:clamp(12px, 3.4cqw, 16px);
-  margin-top:clamp(16px, 4.6cqw, 24px);
+  grid-template-rows:none !important;
+  grid-auto-rows:auto !important;
+  gap:clamp(14px, 4cqw, 18px) clamp(12px, 3.4cqw, 16px);
+  margin:clamp(16px, 4.6cqw, 24px) 0 0 !important;
+  width:100% !important;
+  max-width:none !important;
   max-height:none !important;
+  flex:none !important;
+  min-height:0 !important;
 }
 html[data-v2-mounted="true"] .v2c03__book{
   position:relative;
@@ -1692,15 +1701,26 @@ html[data-v2-mounted="true"] .v2c03__book{
   min-height:150px;
   cursor:pointer;
 }
-/* organic radii のリズム */
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+1){ border-radius:34% 46% 42% 38% / 40% 38% 44% 40%; }
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+2){ border-radius:46% 36% 40% 44% / 38% 44% 38% 42%; }
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+3){ border-radius:40% 42% 36% 46% / 44% 38% 42% 38%; }
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+4){ border-radius:38% 44% 46% 36% / 40% 42% 38% 44%; }
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+5){ border-radius:44% 38% 38% 42% / 42% 40% 44% 36%; }
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+6){ border-radius:36% 46% 42% 40% / 44% 36% 40% 44%; }
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+7){ border-radius:42% 40% 44% 38% / 38% 46% 36% 42%; }
-html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+8){ border-radius:48% 40% 42% 44% / 52% 48% 44% 50%; }
+/* organic radii のリズム（mobileはpx基準：小さな面で文字を欠かず、棚同士が融合しない） */
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+1){ border-radius:30px 46px 38px 32px; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+2){ border-radius:44px 30px 40px 34px; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+3){ border-radius:36px 40px 30px 46px; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+4){ border-radius:32px 44px 42px 30px; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+5){ border-radius:42px 32px 34px 40px; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+6){ border-radius:30px 42px 32px 44px; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+7){ border-radius:40px 34px 44px 30px; }
+html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+8){ border-radius:36px 40px 44px 34px; }
+/* Desktopは大きな面なので%有機形（canonicalの丸み） */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+1){ border-radius:34% 46% 42% 38% / 40% 38% 44% 40%; }
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+2){ border-radius:46% 36% 40% 44% / 38% 44% 38% 42%; }
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+3){ border-radius:40% 42% 36% 46% / 44% 38% 42% 38%; }
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+4){ border-radius:38% 44% 46% 36% / 40% 42% 38% 44%; }
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+5){ border-radius:44% 38% 38% 42% / 42% 40% 44% 36%; }
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+6){ border-radius:36% 46% 42% 40% / 44% 36% 40% 44%; }
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+7){ border-radius:42% 40% 44% 38% / 38% 46% 36% 42%; }
+  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+8){ border-radius:48% 40% 42% 44% / 52% 48% 44% 50%; }
+}
 /* 番号 + 棚名（左上） */
 html[data-v2-mounted="true"] .v2c03__book::before{
   content:"";
@@ -1805,22 +1825,12 @@ html[data-v2-mounted="true"][data-theme="night"] .v2c03__name{ color:#1c2129 !im
     min-height:140px;
     padding-bottom:18px !important;
   }
-  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+1),
-  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+2),
-  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+3),
-  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+4),
-  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+5),
-  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+6),
-  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+7),
-  html[data-v2-mounted="true"] .v2c03__book:nth-child(8n+8){
-    border-radius:26px 34px 30px 28px !important;
-  }
 }
 
 /* --- Desktop：左title列 + 右8棚（3+3+2 / 08横長） --- */
 @media (min-width:900px){
   html[data-v2-mounted="true"] .v2c03__stage{
-    display:grid;
+    display:grid !important;
     grid-template-columns:minmax(230px, 300px) minmax(0, 1fr);
     grid-template-areas:
       "brand brand"
@@ -2531,3 +2541,30 @@ html[data-v2-mounted="true"] .v2c06__invite:hover .v2c06__invite-h{ color:var(--
     opacity:.6;
   }
 }
+
+/* VCR: 06 一冊の「…」operation（canonical B）。既存openBook契約への静かな入口 */
+html[data-v2-mounted="true"] .v2c06 .v2-shelf__item{
+  position:relative;
+  display:block;
+  min-width:0;
+}
+html[data-v2-mounted="true"] .v2c06 .v2-shelf__item .v2-shelf__spine{ width:100%; }
+html[data-v2-mounted="true"] .v2c06 .v2-shelf__more{
+  position:absolute;
+  right:-6px;
+  bottom:-4px;
+  width:34px; height:34px;
+  display:inline-flex; align-items:center; justify-content:center;
+  appearance:none; border:0; background:none;
+  color:var(--vq-muted);
+  font-size:17px; line-height:1;
+  letter-spacing:.1em;
+  cursor:pointer;
+  border-radius:8px;
+}
+html[data-v2-mounted="true"] .v2c06 .v2-shelf__more:hover{ color:var(--vq-ink); }
+html[data-v2-mounted="true"] .v2c06 .v2-shelf__more:focus-visible{
+  outline:2px solid var(--vq-accent); outline-offset:1px;
+}
+/* metadata（title以下）は…の分だけ右に余白 */
+html[data-v2-mounted="true"] .v2c06 .v2-shelf__item .v2-shelf__spine-title{ padding-right:26px; }

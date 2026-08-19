@@ -365,6 +365,40 @@
     }).catch(function () { /* 判定不能：canonical fallback = 01 のまま */ });
   }
 
+
+  /* --------------------------------------------------------------------
+   * VCR（06 canonical B operation）：一冊の「…」→ 既存 openBook(entry)。
+   * Reader ⋮ と同じ既存契約（#bookModal / modalEdit / modalDel）を開くだけで、
+   * 保存・削除確認・GA4・network の挙動には一切触れない。
+   * ------------------------------------------------------------------ */
+  function wireLibraryMore() {
+    doc.addEventListener('click', function (ev) {
+      var t = ev.target;
+      while (t && t !== doc) {
+        if (t.hasAttribute && t.hasAttribute('data-v2-book-more')) {
+          ev.stopPropagation();
+          ev.preventDefault();
+          var id = t.getAttribute('data-v2-book-more');
+          var entry = null;
+          try {
+            /* 既存READ-ONLY読み口（V2BookshelfAdapter.readLibrary）から同じentry参照を引く */
+            var bs = global.V2BookshelfAdapter;
+            var r = (bs && typeof bs.readLibrary === 'function') ? bs.readLibrary() : null;
+            var lib = (r && r.entries) ? r.entries : null;
+            if (lib && lib.length) {
+              for (var i = 0; i < lib.length; i++) {
+                if (lib[i] && lib[i].id !== null && lib[i].id !== undefined && String(lib[i].id) === id) { entry = lib[i]; break; }
+              }
+            }
+          } catch (e) { entry = null; }
+          if (entry && typeof global.openBook === 'function') global.openBook(entry);
+          return;
+        }
+        t = t.parentNode;
+      }
+    }, true);
+  }
+
   function boot() {
     if (!global.V2NavigationAdapter) return;
 
@@ -382,6 +416,7 @@
     wireUtilityMenu();
     wireReaderSecondary();
     wirePhotoBridge();
+    wireLibraryMore();
 
     doc.documentElement.setAttribute('data-v2-mounted', 'true');
     /* FIX-11：boot 状態はここで解除する。data-v2-mounted が付いた＝

@@ -230,7 +230,7 @@
   }
 
   function clearSpines(rack) {
-    var old = rack.querySelectorAll('[data-v2-book], [data-v2-bookshelf-month]');
+    var old = rack.querySelectorAll('.v2-shelf__item, [data-v2-book], [data-v2-bookshelf-month]');
     for (var i = 0; i < old.length; i++) {
       if (old[i].parentNode) old[i].parentNode.removeChild(old[i]);
     }
@@ -286,7 +286,28 @@
     }
 
     spine.setAttribute('aria-label', TF('v2BookOpenAria', '{title}を開く', { title: viewTitle(entry) }));
-    return spine;
+
+    /* VCR（canonical B operation）：一冊ごとの静かな「…」。
+       挙動は既存 openBook(entry)（=Reader ⋮ と同じ bookModal 経路）へ v2-mount.js が接続する。
+       button入れ子を避けるため、一冊は wrapper（div）+ 本体button + …button で構成する。
+       新しい保存・GA4・network は発生しない。 */
+    var item = doc.createElement('div');
+    item.className = 'v2-shelf__item';
+    item.appendChild(spine);
+    if (id) {
+      var more = doc.createElement('button');
+      more.type = 'button';
+      more.className = 'v2-shelf__more';
+      more.setAttribute('data-v2-book-more', id);
+      more.setAttribute('aria-label', T('v2c07MoreAria', 'この一冊の操作'));
+      more.setAttribute('aria-haspopup', 'dialog');
+      var moreDots = doc.createElement('span');
+      moreDots.setAttribute('aria-hidden', 'true');
+      moreDots.textContent = '…';
+      more.appendChild(moreDots);
+      item.appendChild(more);
+    }
+    return item;
   }
 
   /* FREEZE canonical 06（Month-grouped B）：連続する同年月のまとまりに、
