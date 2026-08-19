@@ -3650,735 +3650,597 @@ html[data-v2-mounted="true"][data-theme="night"] .v2c04__hero{
   }
 }
 
+
 /* ============================================================
- * PART B: 01 Entrance — Editorial Refit
- * 「独立系書店の店頭ポスター × 文化誌の表紙 × Webの入口」。
- * 画面全体を一枚の装丁として扱い、Typography を第一 Hierarchy に置く。
- * Desktop / Mobile はそれぞれ別の版面正本（単純縮小しない）。
- * 新規 font / 外部 request / animation なし。装飾は local CSS + inline SVG。
+ * 01 Entrance — FINAL SIMPLE OVERRIDE（2026-08-19 / BASE b523b3e）
+ *
+ * 添付 Final Reference（Desktop / Mobile）を唯一の正本とする。
+ * 直前の collage 中心 Entrance は撤去し、中央 lockup + 大きな余白 +
+ * 静かな Editorial hierarchy の一枚に置き換える。
+ * symbol は canonical master SVG の geometry をそのまま使用（再解釈しない）。
+ * 新規 font / 外部 request / animation は追加しない。
  * ============================================================ */
+html[data-v2-mounted="true"] .v2c01{
+  place-items:stretch !important;
+  background:var(--e01-paper) !important;
+}
 html[data-v2-mounted="true"] .vq01{
-  --e01-ivory:#f5efe3;
-  --e01-paper:#faf7f0;
-  --e01-navy:#33506e;
-  --e01-navy-deep:#22374d;
-  --e01-green:#6d7a57;
-  --e01-sage:#c3c2a1;
-  --e01-coral:#e09872;
-  --e01-yellow:#dab46c;
+  /* Brand canonical colors（01 Entrance に限定して適用） */
+  --e01-navy:#0F1B29;
+  --e01-paper:#FAF8F3;
+  --e01-charcoal:#4A525A;
+  --e01-vermilion:#D95338;
+  --e01-ink:var(--e01-navy);
   position:relative;
   overflow:hidden;
+  width:100% !important;
+  justify-self:stretch;
+  align-self:stretch;
   min-height:100dvh;
-  background-color:var(--e01-ivory);
-  background-image:var(--amr-grain);
-  background-size:190px 190px;
-  background-repeat:repeat;
-  background-blend-mode:soft-light;
-  color:var(--vq-ink);
   display:flex;
   flex-direction:column;
+  text-align:center;
+  background-color:var(--e01-paper);
+  background-image:var(--amr-grain);
+  background-size:200px 200px;
+  background-repeat:repeat;
+  background-blend-mode:soft-light;
+  color:var(--e01-ink);
 }
 html[data-v2-mounted="true"][data-theme="night"] .vq01{
-  --e01-ivory:#0e131b;
-  --e01-paper:#161d27;
-  --e01-sage:#5d6350;
+  --e01-paper:#0d1420;
+  --e01-navy:#e9e4d8;
+  --e01-charcoal:#a8b0ba;
+  --e01-ink:#e9e4d8;
   background-blend-mode:overlay;
 }
-/* 旧 Entrance の光の球は Editorial 版面では使わない */
+/* 旧 Entrance の装飾は使わない（DOM からも除去済み） */
 html[data-v2-mounted="true"] .vq01__orb{ display:none !important; }
 
 /* ---- Header：左 Brand / 右 Menu ---- */
 html[data-v2-mounted="true"] .vq01__header{
   flex:none;
   display:flex;
-  align-items:flex-start;
+  align-items:center;
   justify-content:space-between;
   height:auto;
-  padding:30px 30px 0;
+  padding:26px 30px 0;
   position:relative;
   z-index:3;
 }
 html[data-v2-mounted="true"] .vq01__brand{
   font-family:"Shippori Mincho", var(--font-display);
-  font-size:19px;
-  letter-spacing:.16em;
   font-weight:500;
-  color:var(--vq-ink);
+  font-size:17px;
+  letter-spacing:.12em;
+  color:var(--e01-ink);
 }
-/* Menu：既存 trigger の挙動・click target・aria は不変。表示だけ文字へ */
 html[data-v2-mounted="true"] .vq01 .v2b-menutrigger{
   position:static;
   width:auto;
   min-width:44px;
   height:44px;
-  padding:0 2px;
+  padding:0;
   display:inline-flex;
   align-items:center;
   justify-content:flex-end;
+  gap:12px;
   border:0;
   background:none;
   border-radius:0;
+  color:var(--e01-ink);
   cursor:pointer;
 }
-html[data-v2-mounted="true"] .vq01 .v2b-menutrigger svg{ display:none; }
 html[data-v2-mounted="true"] .vq01 .v2b-menutrigger::before{
   content:"Menu";
   font-family:"Shippori Mincho", var(--font-display);
   font-size:15px;
   letter-spacing:.1em;
-  color:var(--vq-ink);
-  border-bottom:1px solid color-mix(in srgb, var(--vq-ink) 60%, transparent);
-  padding-bottom:3px;
+  color:var(--e01-ink);
+}
+html[data-v2-mounted="true"] .vq01 .v2b-menutrigger svg{
+  display:block;
+  width:24px;
+  height:24px;
+  stroke:currentColor;
+  fill:none;
+  stroke-width:1.4;
 }
 html[data-v2-mounted="true"] .vq01 .v2b-menutrigger:focus-visible{
-  outline:2px solid var(--vq-accent);
-  outline-offset:3px;
+  outline:2px solid var(--e01-vermilion);
+  outline-offset:4px;
 }
 
-/* ---- 吊り下がる栞（presentation-only） ---- */
-html[data-v2-mounted="true"] .vq01__mark{
-  position:absolute;
-  top:0;
-  left:64%;
-  width:20px;
-  height:210px;
-  pointer-events:none;
-  z-index:1;
-}
-html[data-v2-mounted="true"] .vq01__mark::before{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:0;
-  width:1px;
-  height:150px;
-  background:color-mix(in srgb, var(--vq-ink) 42%, transparent);
-}
-html[data-v2-mounted="true"] .vq01__mark::after{
-  content:"";
-  position:absolute;
-  left:0;
-  top:150px;
-  width:20px;
-  height:52px;
-  background:var(--e01-navy);
-  clip-path:polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
-}
-
-/* ---- Main：版面 ---- */
+/* ---- Main：中央 lockup を軸にした一枚の版面 ---- */
 html[data-v2-mounted="true"] .vq01__main{
   flex:1 1 auto;
   position:relative;
-  display:block;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
   width:100%;
   max-width:none;
   margin:0;
-  padding:0;
-  align-items:stretch;
-  justify-content:flex-start;
+  padding:0 24px 34px;
+  text-align:center;
 }
-
-/* 淡い緑の紙片（Main Copy の背後） */
-html[data-v2-mounted="true"] .vq01__frag{
-  position:absolute;
-  pointer-events:none;
-  background:var(--e01-sage);
-  opacity:.92;
-  clip-path:polygon(4% 2%, 96% 0%, 100% 88%, 62% 100%, 38% 94%, 0% 97%);
-  z-index:0;
-}
-
-/* Main Copy：装丁のタイトル */
-html[data-v2-mounted="true"] .vq01__copy{
-  position:relative;
-  z-index:2;
-  font-family:"Shippori Mincho", var(--font-display) !important;
-  color:var(--vq-ink) !important;
-  font-weight:400;
-  letter-spacing:.07em;
-  text-align:left;
-  margin:0;
-}
-/* Sub：coral の細い罫と共に */
-html[data-v2-mounted="true"] .vq01__sub{
-  position:relative;
-  z-index:2;
-  display:flex;
-  align-items:center;
-  gap:14px;
-  font-family:"Shippori Mincho", var(--font-display);
-  color:var(--vq-ink) !important;
-  letter-spacing:.06em;
-  text-align:left;
-  margin:0;
-}
-html[data-v2-mounted="true"] .vq01__sub::before{
-  content:"";
+/* canonical symbol（master geometry） */
+html[data-v2-mounted="true"] .vq01__symbol{
+  display:block;
   flex:none;
-  width:38px;
+  width:clamp(96px, 12vw, 168px);
+  aspect-ratio:180 / 188;
+  pointer-events:none;
+}
+html[data-v2-mounted="true"] .vq01__symbol svg{ width:100%; height:100%; display:block; }
+/* 和文 wordmark */
+html[data-v2-mounted="true"] .vq01__wordmark{
+  display:block;
+  margin:clamp(16px, 2.4vw, 26px) 0 0;
+  font-family:"Shippori Mincho", var(--font-display);
+  font-weight:500;
+  font-size:clamp(29px, 3.2vw, 46px);
+  letter-spacing:.12em;
+  line-height:1.3;
+  color:var(--e01-ink);
+}
+/* 欧文 sub-label */
+html[data-v2-mounted="true"] .vq01__enlabel{
+  display:block;
+  margin:clamp(8px, 1vw, 14px) 0 0;
+  font-family:"Shippori Mincho", var(--font-display);
+  font-weight:500;
+  font-size:clamp(10.5px, .85vw, 13px);
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:color-mix(in srgb, var(--e01-ink) 82%, transparent);
+}
+/* Main Copy：第一 Hierarchy */
+html[data-v2-mounted="true"] .vq01__copy{
+  margin:clamp(34px, 4.4vw, 62px) 0 0 !important;
+  font-family:"Shippori Mincho", var(--font-display) !important;
+  font-weight:400;
+  font-size:clamp(38px, 4.6vw, 66px) !important;
+  line-height:1.5 !important;
+  letter-spacing:.06em;
+  color:var(--e01-ink) !important;
+  text-align:center !important;
+  max-width:100%;
+}
+/* Vermilion の小さな罫 */
+html[data-v2-mounted="true"] .vq01__rule{
+  display:block;
+  flex:none;
+  width:56px;
   height:1px;
-  background:var(--e01-coral);
+  margin:clamp(20px, 2.4vw, 32px) auto 0;
+  background:var(--e01-vermilion);
+  opacity:.72;
+}
+/* Sub */
+html[data-v2-mounted="true"] .vq01__sub{
+  margin:clamp(16px, 1.8vw, 24px) 0 0 !important;
+  font-family:"Shippori Mincho", var(--font-display);
+  font-size:clamp(14px, 1.15vw, 17px) !important;
+  letter-spacing:.08em;
+  line-height:1.8;
+  color:var(--e01-ink) !important;
+  text-align:center;
 }
 html[data-v2-mounted="true"] .vq01__sub:empty{ display:none; }
-/* Supplement */
+/* Supporting explanation */
 html[data-v2-mounted="true"] .vq01__supp{
-  position:relative;
-  z-index:2;
-  font-family:var(--font-ui);
-  color:color-mix(in srgb, var(--vq-ink) 74%, transparent);
-  line-height:1.95;
-  letter-spacing:.02em;
-  margin:0;
+  margin:clamp(10px, 1.1vw, 15px) 0 0 !important;
+  font-family:"Shippori Mincho", var(--font-display);
+  font-size:clamp(13px, 1vw, 15.5px) !important;
+  letter-spacing:.06em;
+  line-height:1.85;
+  color:var(--e01-charcoal) !important;
+  text-align:center;
 }
 html[data-v2-mounted="true"] .vq01__supp:empty{ display:none; }
 
-/* ---- 線画（説明図ではなく店頭ポスターの線） ---- */
-html[data-v2-mounted="true"] .vq01__lineart{
-  position:absolute;
-  pointer-events:none;
-  color:color-mix(in srgb, var(--vq-ink) 52%, transparent);
-  z-index:1;
-}
-html[data-v2-mounted="true"] .vq01__lineart svg{ width:100%; height:100%; display:block; }
-
-/* ---- CTA：Editorial action（pill / filled button にしない） ---- */
+/* ---- CTA：静かな outlined editorial control ---- */
 html[data-v2-mounted="true"] .vq01__cta{
-  position:relative;
-  z-index:2;
-  appearance:none;
-  border:0 !important;
-  background:none !important;
-  box-shadow:none !important;
-  border-radius:0 !important;
-  color:var(--vq-ink) !important;
-  font-family:"Shippori Mincho", var(--font-display);
-  letter-spacing:.14em;
-  display:inline-flex;
-  align-items:center;
-  gap:16px;
-  min-height:44px;
-  padding:0;
-  cursor:pointer;
-  text-align:left;
-}
-html[data-v2-mounted="true"] .vq01__cta > span{
-  border-bottom:1px solid color-mix(in srgb, var(--vq-ink) 55%, transparent);
-  padding-bottom:6px;
-}
-html[data-v2-mounted="true"] .vq01__cta::after{
-  content:"";
-  flex:none;
-  height:1px;
-  background:currentColor;
-  position:relative;
-}
-html[data-v2-mounted="true"] .vq01__cta::before{
-  content:"";
-  position:absolute;
-  left:2px;
-  bottom:-26px;
-  width:14px;
-  height:26px;
-  background:var(--e01-green);
-  clip-path:polygon(0 0, 100% 0, 100% 100%, 50% 74%, 0 100%);
-}
-html[data-v2-mounted="true"] .vq01__cta:hover > span{
-  border-bottom-color:var(--vq-ink);
-}
-html[data-v2-mounted="true"] .vq01__cta:active{ transform:none; }
-html[data-v2-mounted="true"] .vq01__cta:focus-visible{
-  outline:2px solid var(--vq-accent);
-  outline-offset:6px;
-}
-/* 既存の補足（現行 product copy として維持。声量は最小） */
-html[data-v2-mounted="true"] .vq01__foot{
-  position:relative;
-  z-index:2;
-  font-family:var(--font-ui);
-  color:color-mix(in srgb, var(--vq-ink) 52%, transparent);
-  letter-spacing:.02em;
-  text-align:left;
-  margin:0;
-}
-
-/* ---- 下部 Editorial collage（平面のコラージュ。3D の箱庭にしない） ---- */
-html[data-v2-mounted="true"] .vq01__collage{
-  position:absolute;
-  pointer-events:none;
-  z-index:1;
-}
-html[data-v2-mounted="true"] .vq01__collage > span{ position:absolute; display:block; }
-html[data-v2-mounted="true"] .vq01__collage-navy{
-  background:var(--e01-navy);
-  clip-path:polygon(2% 6%, 98% 0, 100% 92%, 46% 100%, 0 94%);
-}
-html[data-v2-mounted="true"] .vq01__collage-sun{
-  background:var(--e01-yellow);
-  border-radius:0 999px 999px 0;
-}
-html[data-v2-mounted="true"] .vq01__collage-grid{
-  background-image:
-    repeating-linear-gradient(0deg, color-mix(in srgb, var(--e01-coral) 62%, transparent) 0 1px, transparent 1px 13px),
-    repeating-linear-gradient(90deg, color-mix(in srgb, var(--e01-coral) 62%, transparent) 0 1px, transparent 1px 13px);
-  background-color:var(--e01-paper);
-  clip-path:polygon(6% 0, 100% 4%, 96% 100%, 0 92%);
-}
-html[data-v2-mounted="true"] .vq01__collage-dot{
-  background:var(--e01-green);
-  border-radius:50%;
-}
-html[data-v2-mounted="true"] .vq01__collage-card{
-  background:var(--e01-paper);
-  color:color-mix(in srgb, var(--vq-ink) 66%, transparent);
-  clip-path:polygon(1% 3%, 99% 0, 100% 96%, 40% 100%, 0 97%);
-  box-shadow:0 1px 0 color-mix(in srgb, var(--vq-ink) 8%, transparent);
-}
-html[data-v2-mounted="true"] .vq01__collage-card svg{ width:100%; height:100%; display:block; }
-/* 背表紙の列（左端） */
-html[data-v2-mounted="true"] .vq01__collage-spines{
-  background:
-    linear-gradient(90deg, transparent 0 4px, var(--e01-yellow) 4px 16px, transparent 16px 22px),
-    linear-gradient(90deg, transparent 0 22px, var(--e01-navy) 22px 38px, transparent 38px 44px),
-    linear-gradient(90deg, transparent 0 44px, var(--e01-green) 44px 58px, transparent 58px 64px),
-    linear-gradient(90deg, transparent 0 64px, var(--e01-coral) 64px 78px, transparent 78px 100%);
-  transform:rotate(-4deg);
-  transform-origin:bottom left;
-}
-/* 破れた紙の帯 + 4 拍のリズム（語は入れない） */
-html[data-v2-mounted="true"] .vq01__collage-band{
-  background:color-mix(in srgb, var(--e01-sage) 34%, var(--e01-paper));
-  clip-path:polygon(0 14%, 12% 4%, 34% 12%, 58% 2%, 82% 10%, 100% 4%, 100% 100%, 0 100%);
-}
-html[data-v2-mounted="true"] .vq01__collage-rhythm{
-  background-image:repeating-linear-gradient(90deg,
-    color-mix(in srgb, var(--vq-ink) 26%, transparent) 0 1px,
-    transparent 1px 25%);
-}
-
-/* ---------- 01 Entrance : Desktop 1440 版面（添付 Desktop Reference 正本） ---------- */
-@media (min-width:900px){
-  html[data-v2-mounted="true"] .vq01__header{
-    padding:34px 54px 0;
-  }
-  html[data-v2-mounted="true"] .vq01__brand{ font-size:25px; letter-spacing:.2em; }
-  html[data-v2-mounted="true"] .vq01 .v2b-menutrigger::before{ font-size:17px; }
-  html[data-v2-mounted="true"] .vq01__mark{ left:63%; height:230px; width:22px; }
-  html[data-v2-mounted="true"] .vq01__mark::before{ height:162px; }
-  html[data-v2-mounted="true"] .vq01__mark::after{ top:162px; width:22px; height:58px; }
-
-  html[data-v2-mounted="true"] .vq01__main{
-    max-width:1392px;
-    margin:0 auto;
-    padding:0 54px;
-  }
-  html[data-v2-mounted="true"] .vq01__frag{
-    left:22px;
-    top:132px;
-    width:150px;
-    height:196px;
-  }
-  html[data-v2-mounted="true"] .vq01__copy{
-    margin-top:152px !important;
-    font-size:86px !important;
-    line-height:1.5 !important;
-    max-width:60%;
-  }
-  html[data-v2-mounted="true"] .vq01__sub{
-    margin-top:34px !important;
-    font-size:23px !important;
-  }
-  html[data-v2-mounted="true"] .vq01__sub::before{ width:52px; }
-  html[data-v2-mounted="true"] .vq01__supp{
-    margin-top:26px !important;
-    margin-left:52px;
-    font-size:16px !important;
-  }
-  html[data-v2-mounted="true"] .vq01__cta{
-    margin-top:70px !important;
-    margin-left:52px;
-    font-size:19px;
-  }
-  html[data-v2-mounted="true"] .vq01__cta::after{ width:250px; }
-  html[data-v2-mounted="true"] .vq01__foot{
-    margin-top:44px !important;
-    margin-left:52px;
-    font-size:12.5px;
-  }
-  /* 右中段の線画 */
-  html[data-v2-mounted="true"] .vq01__lineart{
-    right:54px;
-    top:430px;
-    width:440px;
-    height:100px;
-  }
-  /* 右下の平面コラージュ */
-  html[data-v2-mounted="true"] .vq01__collage{
-    right:0;
-    bottom:0;
-    width:620px;
-    height:400px;
-  }
-  html[data-v2-mounted="true"] .vq01__collage-navy{ left:170px; bottom:36px; width:300px; height:120px; }
-  html[data-v2-mounted="true"] .vq01__collage-sun{ left:300px; bottom:56px; width:96px; height:150px; }
-  html[data-v2-mounted="true"] .vq01__collage-grid{ right:24px; bottom:14px; width:150px; height:170px; }
-  html[data-v2-mounted="true"] .vq01__collage-dot{ right:70px; top:6px; width:52px; height:52px; }
-  html[data-v2-mounted="true"] .vq01__collage-card{ left:120px; top:44px; width:330px; height:230px; }
-  /* 左下の背表紙と紙の帯 */
-  html[data-v2-mounted="true"] .vq01__collage-spines{
-    position:absolute;
-    left:-620px;
-    bottom:0;
-    width:96px;
-    height:200px;
-  }
-  html[data-v2-mounted="true"] .vq01__collage-band{
-    position:absolute;
-    left:-540px;
-    bottom:0;
-    width:560px;
-    height:150px;
-  }
-  html[data-v2-mounted="true"] .vq01__collage-rhythm{
-    position:absolute;
-    left:-420px;
-    bottom:32px;
-    width:300px;
-    height:74px;
-  }
-}
-
-/* ---------- 01 Entrance : Mobile 390 版面（添付 Mobile Reference 正本） ----------
-   長い LP ではなく「一枚の縦長 Editorial Book Jacket」。
-   CTA は First View（390x844）内に必ず見える。 */
-@media (max-width:899px){
-  html[data-v2-mounted="true"] .vq01{
-    display:block;
-    min-height:100dvh;
-  }
-  html[data-v2-mounted="true"] .vq01__header{
-    padding:22px 22px 0;
-    align-items:center;
-  }
-  html[data-v2-mounted="true"] .vq01__brand{ font-size:18px; letter-spacing:.16em; }
-  html[data-v2-mounted="true"] .vq01 .v2b-menutrigger::before{ font-size:14px; }
-  html[data-v2-mounted="true"] .vq01__mark{
-    left:auto;
-    right:74px;
-    top:0;
-    width:17px;
-    height:150px;
-  }
-  html[data-v2-mounted="true"] .vq01__mark::before{ height:104px; }
-  html[data-v2-mounted="true"] .vq01__mark::after{ top:104px; width:17px; height:42px; }
-
-  html[data-v2-mounted="true"] .vq01__main{
-    padding:0 22px 0;
-    width:auto;
-  }
-  html[data-v2-mounted="true"] .vq01__frag{
-    left:8px;
-    top:52px;
-    width:86px;
-    height:126px;
-  }
-  html[data-v2-mounted="true"] .vq01__copy{
-    margin-top:66px !important;
-    font-size:41px !important;
-    line-height:1.52 !important;
-    max-width:100%;
-  }
-  html[data-v2-mounted="true"] .vq01__sub{
-    margin-top:22px !important;
-    font-size:16px !important;
-    gap:11px;
-  }
-  html[data-v2-mounted="true"] .vq01__sub::before{ width:30px; }
-  html[data-v2-mounted="true"] .vq01__supp{
-    margin-top:16px !important;
-    margin-left:41px;
-    font-size:13.5px !important;
-    line-height:1.9;
-    max-width:78%;
-  }
-  html[data-v2-mounted="true"] .vq01__lineart{
-    position:relative;
-    right:auto;
-    top:auto;
-    display:block;
-    width:100%;
-    height:82px;
-    margin-top:26px;
-  }
-  html[data-v2-mounted="true"] .vq01__cta{
-    margin-top:26px !important;
-    margin-left:22px;
-    font-size:16.5px;
-  }
-  html[data-v2-mounted="true"] .vq01__cta::after{ width:132px; }
-  html[data-v2-mounted="true"] .vq01__foot{
-    margin-top:34px !important;
-    margin-left:22px;
-    font-size:11.5px;
-  }
-  /* 下部コラージュ：First View の下に静かに続く一枚の平面 */
-  html[data-v2-mounted="true"] .vq01__collage{
-    position:relative;
-    display:block;
-    width:100%;
-    height:330px;
-    margin-top:34px;
-  }
-  html[data-v2-mounted="true"] .vq01__collage-card{ left:32px; top:16px; width:212px; height:158px; }
-  html[data-v2-mounted="true"] .vq01__collage-navy{ left:74px; top:132px; width:190px; height:74px; }
-  html[data-v2-mounted="true"] .vq01__collage-sun{ left:172px; top:112px; width:62px; height:96px; }
-  html[data-v2-mounted="true"] .vq01__collage-grid{ right:-16px; top:118px; width:96px; height:112px; }
-  html[data-v2-mounted="true"] .vq01__collage-dot{ right:14px; top:8px; width:38px; height:38px; }
-  html[data-v2-mounted="true"] .vq01__collage-spines{
-    left:-22px;
-    bottom:56px;
-    width:82px;
-    height:140px;
-  }
-  html[data-v2-mounted="true"] .vq01__collage-band{
-    left:-22px;
-    bottom:0;
-    width:calc(100% + 44px);
-    height:96px;
-  }
-  html[data-v2-mounted="true"] .vq01__collage-rhythm{
-    left:88px;
-    bottom:20px;
-    width:210px;
-    height:56px;
-  }
-}
-/* 320：Main の clipping 0 / Menu overlap 0 / CTA visible / collage overflow 0 */
-@media (max-width:359px){
-  html[data-v2-mounted="true"] .vq01__copy{ font-size:34px !important; margin-top:56px !important; }
-  html[data-v2-mounted="true"] .vq01__sub{ font-size:14.5px !important; }
-  html[data-v2-mounted="true"] .vq01__supp{ font-size:12.5px !important; max-width:88%; }
-  html[data-v2-mounted="true"] .vq01__frag{ width:72px; height:108px; }
-  html[data-v2-mounted="true"] .vq01__mark{ right:64px; }
-  html[data-v2-mounted="true"] .vq01__lineart{ height:68px; }
-  html[data-v2-mounted="true"] .vq01__collage{ height:290px; }
-}
-/* reduced motion：本 Refit は animation を持たないため追加の分岐なし */
-
-/* 01 Entrance：版面を画面いっぱいに展開する。
-   legacy .v2c01 は display:grid + place-items:center のため、.vq01 が
-   shrink-to-fit で中央に縮んでいた（Editorial 版面が成立しない）。 */
-html[data-v2-mounted="true"] .v2c01{
-  place-items:stretch !important;
-  background:var(--vq-bg) !important;
-}
-html[data-v2-mounted="true"] .vq01{
-  width:100% !important;
-  justify-self:stretch;
-  align-self:stretch;
-  text-align:left;
-}
-html[data-v2-mounted="true"] .vq01__main{ text-align:left; }
-html[data-v2-mounted="true"] .vq01__cta{ padding:0 !important; }
-@media (min-width:900px){
-  html[data-v2-mounted="true"] .vq01__copy{ max-width:none; }
-}
-
-/* ---------- 01 Entrance Desktop：Reference 座標に沿った版面配置 ----------
-   （legacy の .v2-page h1.vq01__copy{text-align:center} を左揃えへ戻す） */
-html[data-v2-mounted="true"] .v2-page h1.vq01__copy{ text-align:left !important; }
-@media (min-width:900px){
-  html[data-v2-mounted="true"] .vq01__main{
-    position:relative;
-    max-width:none;
-    padding:0;
-    height:auto;
-    flex:1 1 auto;
-  }
-  /* Reference: main copy 左端 ≒ 画面幅の 12.4% / 上端 ≒ 高さの 22% */
-  html[data-v2-mounted="true"] .vq01__copy{
-    position:absolute;
-    left:12.4%;
-    top:15%;
-    margin:0 !important;
-    font-size:clamp(58px, 5.4vw, 82px) !important;
-    line-height:1.5 !important;
-  }
-  html[data-v2-mounted="true"] .vq01__frag{
-    left:7.4%;
-    top:12%;
-    width:clamp(110px, 9vw, 150px);
-    height:clamp(140px, 19vh, 196px);
-  }
-  html[data-v2-mounted="true"] .vq01__sub{
-    position:absolute;
-    left:8.2%;
-    top:47%;
-    margin:0 !important;
-    font-size:clamp(18px, 1.5vw, 23px) !important;
-  }
-  html[data-v2-mounted="true"] .vq01__supp{
-    position:absolute;
-    left:13.4%;
-    top:55.5%;
-    margin:0 !important;
-    font-size:15.5px !important;
-  }
-  html[data-v2-mounted="true"] .vq01__cta{
-    position:absolute;
-    left:13.6%;
-    top:66%;
-    margin:0 !important;
-    font-size:18px;
-  }
-  html[data-v2-mounted="true"] .vq01__cta::after{ width:clamp(150px, 15vw, 230px); }
-  html[data-v2-mounted="true"] .vq01__foot{
-    position:absolute;
-    left:13.6%;
-    top:78%;
-    margin:0 !important;
-    font-size:12px;
-  }
-  /* 右中段：文化的な線画 */
-  html[data-v2-mounted="true"] .vq01__lineart{
-    left:60%;
-    right:auto;
-    top:42%;
-    width:30%;
-    height:11%;
-  }
-  /* 下部：一枚の平面 Editorial collage（全幅の帯として扱う） */
-  html[data-v2-mounted="true"] .vq01__collage{
-    left:0;
-    right:0;
-    bottom:0;
-    top:auto;
-    width:auto;
-    height:44%;
-  }
-  html[data-v2-mounted="true"] .vq01__collage-card{ left:57%; top:6%; width:25%; height:60%; }
-  html[data-v2-mounted="true"] .vq01__collage-navy{ left:63%; top:52%; width:22%; height:30%; }
-  html[data-v2-mounted="true"] .vq01__collage-sun{ left:73.5%; top:46%; width:6.5%; height:34%; }
-  html[data-v2-mounted="true"] .vq01__collage-grid{ left:85%; top:48%; width:11%; height:42%; }
-  html[data-v2-mounted="true"] .vq01__collage-dot{ left:90%; top:0; width:50px; height:50px; }
-  html[data-v2-mounted="true"] .vq01__collage-spines{
-    left:1.5%; bottom:0; width:104px; height:56%;
-  }
-  html[data-v2-mounted="true"] .vq01__collage-band{
-    left:0; bottom:0; width:56%; height:32%;
-  }
-  html[data-v2-mounted="true"] .vq01__collage-rhythm{
-    left:19%; bottom:5%; width:22%; height:17%;
-  }
-}
-
-/* ---------- 01 Entrance CTA：Editorial action へ置換 ----------
-   旧 suede CTA 中和ブロック（position:static / filled green / radius / pseudo 停止）を
-   01 Entrance Refit の Editorial CTA へ上書きする。destination・click target は不変。 */
-html[data-v2-mounted="true"] .vq01__cta{
-  background-color:transparent !important;
+  margin:clamp(28px, 3.2vw, 44px) 0 0 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-height:52px;
+  padding:14px 46px !important;
+  background:transparent !important;
   background-image:none !important;
+  border:1px solid color-mix(in srgb, var(--e01-ink) 62%, transparent) !important;
   border-radius:0 !important;
-  color:var(--vq-ink) !important;
-  padding:0 !important;
+  box-shadow:none !important;
+  color:var(--e01-ink) !important;
   font-family:"Shippori Mincho", var(--font-display) !important;
-  font-size:17px !important;
-  letter-spacing:.14em !important;
-  justify-content:flex-start !important;
-  gap:16px;
-  width:auto !important;
-  height:auto !important;
-  min-height:44px;
+  font-size:clamp(15px, 1.1vw, 18px) !important;
+  letter-spacing:.16em !important;
+  line-height:1 !important;
   text-shadow:none !important;
+  width:auto !important;
+  max-width:none !important;
+  height:auto !important;
+  position:relative !important;
+  inset:auto !important;
+  transform:none !important;
+  cursor:pointer;
+}
+html[data-v2-mounted="true"] .vq01__cta::before,
+html[data-v2-mounted="true"] .vq01__cta::after{ display:none !important; content:none !important; }
+html[data-v2-mounted="true"] .vq01__cta > span{
+  border:0 !important;
+  padding:0 !important;
+}
+html[data-v2-mounted="true"] .vq01__cta:hover{
+  border-color:var(--e01-ink) !important;
+}
+html[data-v2-mounted="true"] .vq01__cta:focus-visible{
+  outline:2px solid var(--e01-vermilion) !important;
+  outline-offset:4px;
 }
 html[data-v2-mounted="true"][data-theme="night"] .vq01__cta{
-  background-color:transparent !important;
-  color:var(--vq-ink) !important;
+  background:transparent !important;
+  color:var(--e01-ink) !important;
 }
-html[data-v2-mounted="true"] .vq01__cta::after{
-  display:block !important;
-  content:"" !important;
-  flex:none;
-  height:1px;
-  background:currentColor;
-}
-html[data-v2-mounted="true"] .vq01__cta::before{
-  display:block !important;
-  content:"" !important;
-  position:absolute;
-  left:2px;
-  bottom:-28px;
-  width:14px;
-  height:26px;
-  background:var(--e01-green);
-  clip-path:polygon(0 0, 100% 0, 100% 100%, 50% 74%, 0 100%);
-}
-@media (min-width:900px){
-  html[data-v2-mounted="true"] .vq01__cta{
-    position:absolute !important;
-    inset:auto !important;
-    left:13.6% !important;
-    top:66% !important;
-    font-size:18px !important;
-  }
-  html[data-v2-mounted="true"] .vq01__cta::after{ width:clamp(150px, 15vw, 230px) !important; }
-}
-@media (max-width:899px){
-  html[data-v2-mounted="true"] .vq01__cta{
-    position:relative !important;
-    inset:auto !important;
-    margin-top:26px !important;
-    margin-left:22px !important;
-    font-size:16.5px !important;
-  }
-  html[data-v2-mounted="true"] .vq01__cta::after{ width:132px !important; }
+/* 既存の補足行（現行 product copy として維持。最小の声量） */
+html[data-v2-mounted="true"] .vq01__foot{
+  margin:clamp(14px, 1.6vw, 20px) 0 0 !important;
+  font-family:var(--font-ui);
+  font-size:11.5px;
+  letter-spacing:.04em;
+  color:color-mix(in srgb, var(--e01-charcoal) 82%, transparent) !important;
+  text-align:center;
 }
 
-/* CTA の矢羽根（Reference の細い矢印）。線は ::after、矢尻は span の後ろに置く */
-html[data-v2-mounted="true"] .vq01__cta{ position:relative; }
-html[data-v2-mounted="true"] .vq01__cta .vq01__cta-arrow{
-  position:absolute;
-  right:0;
-  top:50%;
-  width:9px;
-  height:9px;
-  border-top:1px solid currentColor;
-  border-right:1px solid currentColor;
-  transform:translateY(-50%) rotate(45deg);
+/* ---- 下部 editorial microcopy（navigation ではない / clickable でない） ---- */
+html[data-v2-mounted="true"] .vq01__words{
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+  margin:clamp(26px, 3.2vw, 44px) 0 0;
+  padding:0;
+  list-style:none;
+  color:var(--e01-charcoal);
+  font-family:"Shippori Mincho", var(--font-display);
+  font-size:clamp(12px, .95vw, 14.5px);
+  letter-spacing:.14em;
+  user-select:none;
+}
+html[data-v2-mounted="true"] .vq01__words:empty{ display:none; }
+html[data-v2-mounted="true"] .vq01__words > span{
+  padding:0 clamp(14px, 1.6vw, 26px);
+  border-left:1px solid color-mix(in srgb, var(--e01-charcoal) 34%, transparent);
+  line-height:1.6;
+}
+html[data-v2-mounted="true"] .vq01__words > span:first-child{ border-left:0; }
+
+/* ---- Desktop：Reference の重心（中央 lockup / 左中段の supporting） ---- */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__header{ padding:30px 46px 0; }
+  html[data-v2-mounted="true"] .vq01__brand{ font-size:19px; }
+  html[data-v2-mounted="true"] .vq01__main{
+    padding:0 46px 30px;
+    justify-content:flex-start;
+    padding-top:clamp(24px, 4vh, 54px);
+  }
+  /* supporting explanation は左中段（vermilion の縦罫つき） */
+  html[data-v2-mounted="true"] .vq01__supp{
+    position:absolute;
+    left:46px;
+    top:44%;
+    margin:0 !important;
+    max-width:26%;
+    text-align:left;
+    padding-left:18px;
+    border-left:2px solid var(--e01-vermilion);
+    line-height:2;
+  }
+  html[data-v2-mounted="true"] .vq01__words{ margin-top:clamp(20px, 2.6vw, 38px); }
+}
+/* ---- Mobile：中央 1 カラムの静かな版面（collage / line-art なし） ---- */
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .vq01__header{ padding:20px 20px 0; }
+  /* 中央 lockup が Brand を担うため、header の brand は重複させない */
+  html[data-v2-mounted="true"] .vq01__brand{
+    position:absolute;
+    width:1px; height:1px;
+    margin:-1px; padding:0;
+    overflow:hidden;
+    clip-path:inset(50%);
+    white-space:nowrap;
+  }
+  html[data-v2-mounted="true"] .vq01 .v2b-menutrigger{ margin-left:auto; }
+  html[data-v2-mounted="true"] .vq01__main{
+    padding:0 22px 26px;
+    justify-content:center;
+  }
+  html[data-v2-mounted="true"] .vq01__symbol{ width:clamp(84px, 30vw, 116px); }
+  html[data-v2-mounted="true"] .vq01__wordmark{ font-size:clamp(26px, 7.4vw, 32px); }
+  html[data-v2-mounted="true"] .vq01__enlabel{ font-size:10.5px; letter-spacing:.22em; }
+  html[data-v2-mounted="true"] .vq01__copy{
+    margin-top:clamp(26px, 7vw, 38px) !important;
+    font-size:clamp(32px, 9.4vw, 40px) !important;
+  }
+  html[data-v2-mounted="true"] .vq01__rule{ width:48px; margin-top:20px; }
+  html[data-v2-mounted="true"] .vq01__sub{ font-size:14.5px !important; margin-top:16px !important; }
+  html[data-v2-mounted="true"] .vq01__supp{ font-size:13px !important; margin-top:9px !important; }
+  html[data-v2-mounted="true"] .vq01__cta{
+    margin-top:28px !important;
+    padding:13px 40px !important;
+    font-size:15.5px !important;
+  }
+  html[data-v2-mounted="true"] .vq01__foot{ margin-top:14px !important; }
+  /* 下部 microcopy は Desktop Reference の要素。Mobile Reference には無い */
+  html[data-v2-mounted="true"] .vq01__words{ display:none; }
+}
+@media (max-width:359px){
+  html[data-v2-mounted="true"] .vq01__symbol{ width:76px; }
+  html[data-v2-mounted="true"] .vq01__wordmark{ font-size:23px; }
+  html[data-v2-mounted="true"] .vq01__copy{ font-size:28px !important; margin-top:22px !important; }
+  html[data-v2-mounted="true"] .vq01__sub{ font-size:13px !important; }
+  html[data-v2-mounted="true"] .vq01__supp{ font-size:12px !important; }
+  html[data-v2-mounted="true"] .vq01__cta{ padding:12px 32px !important; font-size:14.5px !important; }
+}
+
+/* 01 Entrance Desktop：Reference と同じく microcopy まで 1 画面に収める。
+   supporting explanation は Reference と同じ 2 行の版面へ。 */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__main{ padding-top:16px; }
+  html[data-v2-mounted="true"] .vq01__symbol{ width:clamp(88px, 9.8vw, 140px); }
+  html[data-v2-mounted="true"] .vq01__wordmark{ margin-top:clamp(14px, 1.8vw, 22px) 0 0; font-size:clamp(28px, 3vw, 42px); }
+  html[data-v2-mounted="true"] .vq01__copy{
+    margin-top:clamp(24px, 3vw, 42px) !important;
+    font-size:clamp(36px, 4.1vw, 58px) !important;
+  }
+  html[data-v2-mounted="true"] .vq01__rule{ margin-top:clamp(16px, 1.8vw, 24px); }
+  html[data-v2-mounted="true"] .vq01__sub{ margin-top:clamp(14px, 1.5vw, 20px) !important; }
+  html[data-v2-mounted="true"] .vq01__cta{ margin-top:clamp(22px, 2.4vw, 34px) !important; }
+  html[data-v2-mounted="true"] .vq01__foot{ margin-top:clamp(12px, 1.2vw, 16px) !important; }
+  html[data-v2-mounted="true"] .vq01__words{ margin-top:clamp(18px, 2vw, 30px); }
+  html[data-v2-mounted="true"] .vq01__supp{
+    max-width:15%;
+    top:46%;
+  }
+}
+
+/* 装飾・microcopy は操作を奪わない（microcopy は navigation ではない） */
+html[data-v2-mounted="true"] .vq01__rule,
+html[data-v2-mounted="true"] .vq01__words,
+html[data-v2-mounted="true"] .vq01__symbol{
   pointer-events:none;
 }
-/* 紙の帯：右端も破れた紙のように収める */
-html[data-v2-mounted="true"] .vq01__collage-band{
-  clip-path:polygon(0 14%, 12% 4%, 34% 12%, 58% 2%, 82% 10%, 94% 5%, 100% 26%, 97% 100%, 0 100%);
-}
 
-/* 01 Mobile：Reference と同じ改行位置（「感情から、ことばや / カルチャーに出会う書店。」）
-   と、緑の紙片の位置を微調整。copy は変更しない。 */
-@media (max-width:899px){
+/* ============================================================
+ * Design Quality Gate — PASS 1: Typography only
+ * Reference 実測（Desktop ref 1536px→1440 CSS / Mobile ref 941px→390 CSS）
+ * から求めた字送りへ合わせる。position / spacing / background /
+ * interaction は本 Pass では触らない。
+ *
+ * Desktop 実測 → 修正前 actual
+ *   brand        24px  → 19px
+ *   wordmark     47px  → 42px
+ *   EN label     13.5px→ 12.2px
+ *   Main         58px  → 58px（一致）
+ *   Sub          21px  → 16.6px
+ *   Supporting   19.5px→ 14.4px
+ *   CTA          22px  → 15.8px
+ *   microcopy    14px  → 13.7px（一致）
+ * Mobile 実測 → 修正前 actual
+ *   wordmark     24px  → 28.9px
+ *   Main         30px  → 36.7px
+ *   Sub 13 / Supporting 13.6 / CTA 15（ほぼ一致）
+ * ============================================================ */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__brand{ font-size:24px; letter-spacing:.12em; }
+  html[data-v2-mounted="true"] .vq01 .v2b-menutrigger::before{ font-size:16px; letter-spacing:.1em; }
+  html[data-v2-mounted="true"] .vq01__wordmark{
+    font-size:clamp(34px, 3.3vw, 47px);
+    letter-spacing:.12em;
+    line-height:1.28;
+  }
+  html[data-v2-mounted="true"] .vq01__enlabel{
+    font-size:clamp(11.5px, .95vw, 13.5px);
+    letter-spacing:.25em;
+  }
+  html[data-v2-mounted="true"] .vq01__copy{
+    font-size:clamp(38px, 4.05vw, 58px) !important;
+    line-height:1.52 !important;
+    letter-spacing:.06em;
+  }
+  html[data-v2-mounted="true"] .vq01__sub{
+    font-size:clamp(16px, 1.46vw, 21px) !important;
+    letter-spacing:.08em;
+    line-height:1.75;
+  }
   html[data-v2-mounted="true"] .vq01__supp{
-    max-width:62% !important;
+    font-size:clamp(15px, 1.36vw, 19.5px) !important;
+    letter-spacing:.06em;
+    line-height:1.9;
   }
-  html[data-v2-mounted="true"] .vq01__frag{
-    top:44px;
-    left:2px;
-    width:80px;
-    height:118px;
+  html[data-v2-mounted="true"] .vq01__cta{
+    font-size:clamp(17px, 1.53vw, 22px) !important;
+    letter-spacing:.16em !important;
+  }
+  html[data-v2-mounted="true"] .vq01__words{
+    font-size:clamp(12.5px, 1vw, 14px);
+    letter-spacing:.14em;
   }
 }
-@media (max-width:359px){
-  html[data-v2-mounted="true"] .vq01__supp{ max-width:70% !important; }
-}
-
-/* 320：吊り栞が Main Copy の字面へ掛からない位置・長さへ */
-@media (max-width:359px){
-  html[data-v2-mounted="true"] .vq01__mark{ right:16px; height:112px; }
-  html[data-v2-mounted="true"] .vq01__mark::before{ height:76px; }
-  html[data-v2-mounted="true"] .vq01__mark::after{ top:76px; height:34px; }
-}
-
-/* 01 Mobile：緑の紙片は Reference と同じく Main Copy 1行目の背後へ */
 @media (max-width:899px){
-  html[data-v2-mounted="true"] .vq01__frag{ top:26px; left:0; width:76px; height:112px; }
+  html[data-v2-mounted="true"] .vq01__wordmark{
+    font-size:clamp(22px, 6.2vw, 26px);
+    letter-spacing:.12em;
+    line-height:1.3;
+  }
+  html[data-v2-mounted="true"] .vq01__enlabel{
+    font-size:clamp(9.5px, 2.6vw, 11px);
+    letter-spacing:.24em;
+  }
+  html[data-v2-mounted="true"] .vq01__copy{
+    font-size:clamp(27px, 7.7vw, 32px) !important;
+    line-height:1.52 !important;
+  }
+  html[data-v2-mounted="true"] .vq01__sub{ font-size:13.5px !important; letter-spacing:.08em; }
+  html[data-v2-mounted="true"] .vq01__supp{ font-size:13.5px !important; letter-spacing:.06em; }
+  html[data-v2-mounted="true"] .vq01__cta{ font-size:15.5px !important; }
+}
+
+/* PASS 1 補正：EN sub-label の字送りを Reference 実測幅へ
+   （Desktop ref 256px / Mobile ref 128px。Cormorant Garamond 未導入のため
+     approved Mincho stack で幅と印象を合わせる） */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__enlabel{ letter-spacing:.36em; }
+}
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .vq01__enlabel{ font-size:9px; letter-spacing:.22em; }
+}
+
+/* ============================================================
+ * Design Quality Gate — PASS 2: Spacing only
+ * Reference の縦リズムを比率で照合（Desktop ref = 1440x960 CSS /
+ * Mobile ref = 390x693 CSS）。font-size / copy / icon geometry /
+ * interaction は本 Pass では触らない。
+ *
+ * Desktop（ref比率→900pxへ換算 / 修正前 actual）
+ *   symbol top  115 / 92    → 下げる
+ *   wordmark    292 / 264   → 下げる
+ *   Main        443 / 406   → 下げる
+ *   supporting  377 / 455   → 上げる
+ *   CTA 高さ     66 /  52    → breathing room を増やす
+ *   CTA top     703 / 698   ほぼ一致（維持）
+ *   microcopy   814 / 816   ほぼ一致（維持）
+ * Mobile（ref比率→844pxへ換算 / 修正前 actual）
+ *   Sub         580 / 529、Supporting 618 / 562、CTA 675 / 615
+ *   → Main 以降の間隔を Reference の呼吸へ広げる
+ * ============================================================ */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__main{
+    padding-top:40px;
+    padding-bottom:22px;
+  }
+  /* logo clear space（spec: symbol 高さの 1/3 以上）を確保しつつ Reference 比へ */
+  html[data-v2-mounted="true"] .vq01__symbol{ width:clamp(92px, 10.6vw, 152px); }
+  html[data-v2-mounted="true"] .vq01__copy{ margin-top:30px !important; }
+  html[data-v2-mounted="true"] .vq01__rule{ margin-top:18px; }
+  html[data-v2-mounted="true"] .vq01__sub{ margin-top:16px !important; }
+  html[data-v2-mounted="true"] .vq01__cta{
+    margin-top:24px !important;
+    padding:22px 52px !important;
+  }
+  html[data-v2-mounted="true"] .vq01__foot{ margin-top:12px !important; }
+  html[data-v2-mounted="true"] .vq01__words{ margin-top:22px; }
+  /* 左中段 supporting は Reference の高さへ */
+  html[data-v2-mounted="true"] .vq01__supp{ top:39%; }
+}
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .vq01__rule{ margin-top:34px; }
+  html[data-v2-mounted="true"] .vq01__sub{ margin-top:20px !important; }
+  html[data-v2-mounted="true"] .vq01__supp{ margin-top:12px !important; }
+  html[data-v2-mounted="true"] .vq01__cta{
+    margin-top:36px !important;
+    padding:16px 42px !important;
+  }
+}
+
+/* PASS 2 補正：Mobile は Reference と同じく stack をやや下へ置き、
+   Main 以降の呼吸を確保する。320 は viewport 568px のため個別に詰める。 */
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .vq01__main{ padding-top:56px; }
 }
 @media (max-width:359px){
-  html[data-v2-mounted="true"] .vq01__frag{ top:22px; width:66px; height:98px; }
+  html[data-v2-mounted="true"] .vq01__main{ padding-top:0; padding-bottom:18px; }
+  html[data-v2-mounted="true"] .vq01__rule{ margin-top:18px; }
+  html[data-v2-mounted="true"] .vq01__sub{ margin-top:14px !important; }
+  html[data-v2-mounted="true"] .vq01__supp{ margin-top:8px !important; }
+  html[data-v2-mounted="true"] .vq01__cta{ margin-top:20px !important; padding:13px 34px !important; }
+  html[data-v2-mounted="true"] .vq01__foot{ margin-top:10px !important; }
+}
+
+/* ============================================================
+ * Design Quality Gate — PASS 3: Interaction / Motion only
+ * 新しい motion は追加しない。既存 contract 内で、Reference の静けさを
+ * 損なわない最小の feedback だけを整える（220ms / bounce なし / scale なし）。
+ * typography / spacing は本 Pass では触らない。
+ * ============================================================ */
+html[data-v2-mounted="true"] .vq01__cta{
+  transition:border-color 220ms ease, color 220ms ease, background-color 220ms ease;
+}
+html[data-v2-mounted="true"] .vq01 .v2b-menutrigger{
+  transition:color 220ms ease;
+}
+/* pointer device: hover は輪郭のみ静かに濃くなる */
+@media (hover:hover){
+  html[data-v2-mounted="true"] .vq01__cta:hover{
+    border-color:var(--e01-ink) !important;
+    background-color:color-mix(in srgb, var(--e01-ink) 4%, transparent) !important;
+  }
+  html[data-v2-mounted="true"] .vq01 .v2b-menutrigger:hover{
+    color:var(--e01-navy);
+  }
+}
+/* pressed / touch feedback（hover を前提にしない） */
+html[data-v2-mounted="true"] .vq01__cta:active{
+  border-color:var(--e01-ink) !important;
+  background-color:color-mix(in srgb, var(--e01-ink) 8%, transparent) !important;
+  transform:none !important;
+}
+html[data-v2-mounted="true"] .vq01 .v2b-menutrigger:active{
+  color:var(--e01-navy);
+  transform:none !important;
+}
+@media (prefers-reduced-motion: reduce){
+  html[data-v2-mounted="true"] .vq01__cta,
+  html[data-v2-mounted="true"] .vq01 .v2b-menutrigger{
+    transition:none !important;
+  }
+}
+
+/* PASS 2 補正（clear space）：Brand spec の clear space は lockup の「周囲」に
+   対する規定（Reference も lockup 内部の行間は狭い）。lockup 下端と Main の間を
+   symbol 高さの 1/3 以上へ広げる。Desktop は総高 900px を超えないよう他を詰める。 */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .vq01__main{ padding-top:30px; }
+  html[data-v2-mounted="true"] .vq01__copy{ margin-top:52px !important; }
+  html[data-v2-mounted="true"] .vq01__rule{ margin-top:14px; }
+  html[data-v2-mounted="true"] .vq01__foot{ margin-top:10px !important; }
+  html[data-v2-mounted="true"] .vq01__words{ margin-top:16px; }
+}
+@media (max-width:899px){
+  html[data-v2-mounted="true"] .vq01__copy{ margin-top:52px !important; }
+}
+@media (max-width:359px){
+  html[data-v2-mounted="true"] .vq01__copy{ margin-top:34px !important; }
+}
+
+/* PASS 2 補正（320）：viewport 568px でも lockup の clear space を確保する。
+   symbol をわずかに小さくし、Main 以降の間隔を詰めて上下の余白を作る。 */
+@media (max-width:359px){
+  html[data-v2-mounted="true"] .vq01__symbol{ width:66px; }
+  html[data-v2-mounted="true"] .vq01__copy{ margin-top:26px !important; }
+  html[data-v2-mounted="true"] .vq01__rule{ margin-top:14px; }
+  html[data-v2-mounted="true"] .vq01__sub{ margin-top:12px !important; }
+  html[data-v2-mounted="true"] .vq01__cta{ margin-top:16px !important; }
+}
+
+/* ============================================================
+ * 01 Entrance — canonical symbol asset
+ * Override pack の canonical SVG をそのまま配置する。
+ *   DAY   : 04_emotion_bookstore_symbol_master.svg
+ *   NIGHT : 05_emotion_bookstore_symbol_reversed.svg
+ * 形状変更 / 再描画 / 簡略化 / 再着色は行っていない（pack と byte 一致）。
+ * ============================================================ */
+html[data-v2-mounted="true"] .vq01__symbol{
+  aspect-ratio:180 / 188;
+  background-image:url("assets/brand/emotion-bookstore-symbol-master.svg");
+  background-size:contain;
+  background-position:center;
+  background-repeat:no-repeat;
+}
+html[data-v2-mounted="true"][data-theme="night"] .vq01__symbol{
+  background-image:url("assets/brand/emotion-bookstore-symbol-reversed.svg");
 }
