@@ -4868,3 +4868,88 @@ html[data-v2-mounted="true"][data-theme="night"] .vq01__symbol{
   html[lang="en"][data-v2-mounted="true"] .vq01__supp{ font-size:11px !important; margin-top:8px !important; }
   html[lang="en"][data-v2-mounted="true"] .vq01__cta{ margin-top:22px !important; }
 }
+
+/* ==========================================================================
+ * Production Hotfix 01 — iOS safe area（店内メニューが status bar と重なる）
+ * --------------------------------------------------------------------------
+ * 現象：
+ * ・iPhone 実機で各画面右上の店内メニューボタンが status bar / battery /
+ *   Dynamic Island 領域と重なり、タップしづらい／押せない。
+ *
+ * 原因：
+ * ・index.html は viewport-fit=cover を指定しており、webview が safe area の
+ *   外（status bar の下）まで広がる。
+ * ・legacy 側（style.css）は .cover-menu-btn / .experience-bar に
+ *   env(safe-area-inset-*) 対応があるが、V2 layer（v2-canonical.css /
+ *   v2-mount.css）には top / right の safe area 対応が一切なかった
+ *   （bottom のみ 03 nav 用に存在）。
+ * ・そのため各画面の上部バーは固定 px の padding だけで配置され、実測で
+ *   menu button の top は 390/430/375 いずれも 2〜20px。iPhone の
+ *   inset-top（約 47〜59px）の内側に入っていた。
+ *
+ * 方針：
+ * ・上部バーへ「透明な top border」として inset を加算する。
+ *   - 既存の padding / margin / レイアウト値を一切書き換えない（最小差分）
+ *   - margin と違い border は相殺（margin collapse）しない
+ *   - バー自身の背景は border 領域まで描画されるため、status bar 下も
+ *     塗られたまま文字だけが下がる（legacy .experience-bar と同じ考え方）
+ * ・第2引数 0px により、safe area 非対応環境・ノッチなし端末・Android・
+ *   desktop では 0 となり従来と同じ余白になる。
+ * ・横持ちのノッチ側は menu button 側へ inset-right を加算する。
+ * ・DOM / MENU architecture / navigation logic / JS は変更しない。
+ * ========================================================================== */
+html[data-v2-mounted="true"]{
+  --v2-safe-top: env(safe-area-inset-top, 0px);
+  --v2-safe-right: env(safe-area-inset-right, 0px);
+}
+html[data-v2-mounted="true"] .vq01__header,
+html[data-v2-mounted="true"] .vq05__header,
+html[data-v2-mounted="true"] .v2c02__brandrow,
+html[data-v2-mounted="true"] .v2c03__brandrow,
+html[data-v2-mounted="true"] .v2c04__brandrow,
+html[data-v2-mounted="true"] .v2c06__brandrow,
+html[data-v2-mounted="true"] .v2c07__bar,
+html[data-v2-mounted="true"] .v2c08__brandrow{
+  border-top:var(--v2-safe-top) solid transparent;
+}
+/* 横持ちでノッチ側へ寄らないようにする（縦持ち・Android・desktop では 0） */
+html[data-v2-mounted="true"] [data-v2-open-menu]{
+  margin-right:var(--v2-safe-right);
+}
+/* 05 の header だけは固定 height（70px / 58px）を持つため、border-box のままだと
+   透明 border の分だけ content box が潰れる。縦 padding は 0 なので content-box へ
+   切り替えても inset 0 のときの高さは従来と同一（70px / 58px）になる。 */
+html[data-v2-mounted="true"] .vq05__header{
+  box-sizing:content-box;
+}
+
+/* ==========================================================================
+ * Production Hotfix 01 / ISSUE 3 — 02 Lobby Desktop の空白スクロール
+ * --------------------------------------------------------------------------
+ * 現象：
+ * ・02 Lobby / Desktop で、3 枚の card の後に内容の無い巨大な空白まで
+ *   スクロールできる（1440 実測 1,648px / 1024 実測 1,079px）。
+ *
+ * 原因：
+ * ・beta0.css の .v2c02__stage は mobile mockup 枠として
+ *     width: min(100vw, calc(100dvh * 0.5625));
+ *     aspect-ratio: 864 / 1536;   ← 9:16 縦長
+ *   を持つ。
+ * ・Desktop の canonical override は width / max-width / padding だけを
+ *   上書きし、aspect-ratio を解除していなかった。
+ * ・その結果 stage の高さが「幅 x 1.7778」で決まり、実コンテンツ
+ *   （最後の card 下端 741px）と無関係に膨らんでいた。
+ *     1440: 幅 1344（max-width 84rem） x 1.7778 = 2389px = 実測 scrollHeight
+ *     1024: 幅 1024               x 1.7778 = 1820px = 実測 scrollHeight
+ * ・Mobile は幅が小さく min-height:100dvh が勝つため発生していない。
+ *
+ * 方針：
+ * ・Desktop でのみ mockup の aspect-ratio を解除し、高さを内容に従わせる。
+ * ・card の size / position / visual、header / Global Menu / Navigation、
+ *   mobile の layout はいずれも変更しない。JS も変更しない。
+ * ========================================================================== */
+@media (min-width:900px){
+  html[data-v2-mounted="true"] .v2c02__stage{
+    aspect-ratio:auto !important;
+  }
+}
