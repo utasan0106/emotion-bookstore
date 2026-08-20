@@ -106,6 +106,14 @@
    * ------------------------------------------------------------------------ */
   function defaultReader() {
     try {
+      /* ★Hotfix01/ISSUE 6：libraryCache の初期値 [] は「まだ読んでいない」であって
+         「0冊」ではない。既存実装側の libraryHydrated が true になる（保存領域から
+         実際に読み戻せた）まで unknown を返し、08「本がありません」や 06 の「0冊」へ
+         倒さない。main.js が途中で中断した場合は let の TDZ で throw するか
+         typeof が 'undefined' になるため、いずれも unknown になる。
+         ここでは読むだけで、保存領域へは一切書き込まない。 */
+      /* eslint-disable-next-line no-undef */
+      if (typeof libraryHydrated === 'undefined' || libraryHydrated !== true) return undefined;
       /* eslint-disable-next-line no-undef */
       return (typeof libraryCache !== 'undefined') ? libraryCache : undefined;
     } catch (e) {

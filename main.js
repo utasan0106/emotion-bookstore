@@ -1836,7 +1836,12 @@ if(!_gaPageViewSent){
   _gaPageViewSent = true;
   trackAnalyticsEvent('page_view');
 }
-let activeCategory = (CATEGORIES && CATEGORIES.length) ? CATEGORIES[0].id : 'moyamoya';
+// ★Hotfix01/ISSUE 6：data.js が取得失敗すると CATEGORIES が未宣言となり、ここで
+// ReferenceError が発生して main.js の実行が中断していた。関数宣言は巻き上げ済みのため
+// 画面遷移だけは動き、libraryCache（下の宣言）が TDZ のまま残るため、本棚が
+// 「読み込めていない」のに空に見えていた。依存が無いときは既存の fallback をそのまま使う。
+let activeCategory = (typeof CATEGORIES !== 'undefined' && CATEGORIES && CATEGORIES.length)
+  ? CATEGORIES[0].id : 'moyamoya';
 // ★Hotfix1-F：利用者が実際に棚を選んだかどうか。falseの間は棚タブのハイライトを付けず、
 // 題名相談も汎用候補を使う（「名もなき感情」を自動的な既定値に見せないため）。
 let shelfWasChosen = false;
@@ -1851,6 +1856,10 @@ function setActiveShelf(id, opts){
   if(chosen) shelfWasChosen = true;
 }
 let libraryCache = [];
+// ★Hotfix01/ISSUE 6：libraryCache の初期値 [] は「まだ読んでいない」であって「0冊」ではない。
+// 実際に保存領域から読み戻せたときだけ true にし、それまでは read 結果を unknown として扱う。
+// これが false の間、bookshelf-adapter は 06 の「0冊」表示ではなく読み込み失敗表示を出す。
+let libraryHydrated = false;
 // ★追加：本棚が際限なく伸び続けるのを防ぐための「月別の棚」。
 // 既定は'all'（従来通り全冊表示）で、ユーザーがタブを選んだときだけ絞り込む＝挙動を壊さない追加機能。
 let selectedShelfMonth = 'all';
@@ -7891,6 +7900,7 @@ function warnInAppBrowserIfNeeded(){
   if(typeof applyUserNameDisplay === 'function') applyUserNameDisplay();
   // ★Step2：来店時の挨拶を判定するため、本棚データを挨拶より先に読み込む（読み込み箇所の移動のみ・二重読み込みなし）
   libraryCache = await loadJSON('emotion-bookstore-library', []);
+  libraryHydrated = true;   // ★Hotfix01/ISSUE 6：ここで初めて「読めた」と言える
   // ★微調整：#firstGreetingText（旧チャットUI＝#chatWindow内）は現行の公開画面では
   // 常時非表示のため、意味の通らない「こんばんは。棚は、そのままです。」という再訪文の
   // 描画自体を廃止した（#chatWindow・#firstGreeting自体はDOM・関数とも削除せず、互換性維持のため残す）。
