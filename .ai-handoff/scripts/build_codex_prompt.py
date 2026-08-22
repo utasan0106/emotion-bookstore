@@ -2,11 +2,14 @@
 import json
 from pathlib import Path
 
-from validate_request import TASK_FILE, load_and_validate_request
+from validate_request import load_and_validate_request
 
-r, _=load_and_validate_request()
-task=TASK_FILE.read_text(encoding="utf-8")
-rules=Path(".ai-handoff/HQ_RULES.md").read_text(encoding="utf-8")
+BUNDLE_ROOT = Path(__file__).resolve().parents[1]
+r, _ = load_and_validate_request(
+    BUNDLE_ROOT / "REQUEST.json", require_task_file=False
+)
+task = (BUNDLE_ROOT / "CODEX_TASK.md").read_text(encoding="utf-8")
+rules = (BUNDLE_ROOT / "HQ_RULES.md").read_text(encoding="utf-8")
 p=f"""You are Codex implementing one bounded V3 task.
 
 TASK_ID: {r['task_id']}
