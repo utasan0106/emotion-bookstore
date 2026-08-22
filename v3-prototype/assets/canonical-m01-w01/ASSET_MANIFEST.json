@@ -1,0 +1,346 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-21T08:53:00+09:00",
+  "authority": "99_v3_canonical_clean_v1.zip only",
+  "scope": "V3 M01/W01 DAY local prototype only",
+  "production_rights_status": "UNAPPROVED — prototype/evidence use only",
+  "source_files": {
+    "M01": {
+      "path": "canonical/mobile/M01_Entrance.png",
+      "width": 941,
+      "height": 1672,
+      "sha256": "89d8306b168f1ab4ae354b87ba6bcf22f1571fa6c1d52a53f363fa03e1e51c3e"
+    },
+    "W01": {
+      "path": "canonical/web/W01_Entrance.png",
+      "width": 1536,
+      "height": 1024,
+      "sha256": "a7eb49d467bd7556d321a11d0d1ba629a5aecf156076306a3045c148810c6db0"
+    }
+  },
+  "assets": [
+    {
+      "local_path": "assets/canonical-m01-w01/m01_hero.png",
+      "bytes": 910087,
+      "sha256": "a0c35bd0a7405b4921e6dce11b811f83a25b4b6beae614a23aae8f553530dc87",
+      "source_canonical_file": "canonical/mobile/M01_Entrance.png",
+      "source_canonical_sha256": "89d8306b168f1ab4ae354b87ba6bcf22f1571fa6c1d52a53f363fa03e1e51c3e",
+      "crop_xywh": [
+        0,
+        0,
+        941,
+        680
+      ],
+      "output_width": 941,
+      "output_height": 680,
+      "usage": "M01 hero",
+      "css_treatment": "width:100%; object-fit:cover; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/m01_stacked_lockup.png",
+      "bytes": 136093,
+      "sha256": "86bf12265652ceffa7c2faaa5a8aa6bff47613f39bce0a9bd34e41fc2300d69f",
+      "source_canonical_file": "canonical/mobile/M01_Entrance.png",
+      "source_canonical_sha256": "89d8306b168f1ab4ae354b87ba6bcf22f1571fa6c1d52a53f363fa03e1e51c3e",
+      "crop_xywh": [
+        270,
+        680,
+        402,
+        260
+      ],
+      "output_width": 402,
+      "output_height": 260,
+      "usage": "M01 stacked lockup",
+      "css_treatment": "object-fit:contain; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/m01_step_01.png",
+      "bytes": 20836,
+      "sha256": "f5ca12b16f08c4f0d770ef60ce71636a9aed3a1be07d12d1db3495720a46065c",
+      "source_canonical_file": "canonical/mobile/M01_Entrance.png",
+      "source_canonical_sha256": "89d8306b168f1ab4ae354b87ba6bcf22f1571fa6c1d52a53f363fa03e1e51c3e",
+      "crop_xywh": [
+        90,
+        1300,
+        135,
+        145
+      ],
+      "output_width": 135,
+      "output_height": 145,
+      "usage": "M01 core loop step 1",
+      "css_treatment": "object-fit:contain; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/m01_step_02.png",
+      "bytes": 20000,
+      "sha256": "5bc3d881b5e3d01e911f9826c88b8567917bd5d6e82f096d2f02e8c9f4efe504",
+      "source_canonical_file": "canonical/mobile/M01_Entrance.png",
+      "source_canonical_sha256": "89d8306b168f1ab4ae354b87ba6bcf22f1571fa6c1d52a53f363fa03e1e51c3e",
+      "crop_xywh": [
+        295,
+        1300,
+        135,
+        145
+      ],
+      "output_width": 135,
+      "output_height": 145,
+      "usage": "M01 core loop step 2",
+      "css_treatment": "object-fit:contain; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/m01_step_03.png",
+      "bytes": 20594,
+      "sha256": "45a587caeeaad138006f664d85303f3df9188394128e545b49e88c83464d8ddc",
+      "source_canonical_file": "canonical/mobile/M01_Entrance.png",
+      "source_canonical_sha256": "89d8306b168f1ab4ae354b87ba6bcf22f1571fa6c1d52a53f363fa03e1e51c3e",
+      "crop_xywh": [
+        500,
+        1300,
+        135,
+        145
+      ],
+      "output_width": 135,
+      "output_height": 145,
+      "usage": "M01 core loop step 3",
+      "css_treatment": "object-fit:contain; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/m01_step_04.png",
+      "bytes": 19503,
+      "sha256": "b19e3a22b3f25c2323a3300b59c17cab1a8e0aae14501c439c17b092bbacde73",
+      "source_canonical_file": "canonical/mobile/M01_Entrance.png",
+      "source_canonical_sha256": "89d8306b168f1ab4ae354b87ba6bcf22f1571fa6c1d52a53f363fa03e1e51c3e",
+      "crop_xywh": [
+        700,
+        1300,
+        135,
+        145
+      ],
+      "output_width": 135,
+      "output_height": 145,
+      "usage": "M01 core loop step 4",
+      "css_treatment": "object-fit:contain; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/w01_hero.png",
+      "bytes": 910087,
+      "sha256": "a0c35bd0a7405b4921e6dce11b811f83a25b4b6beae614a23aae8f553530dc87",
+      "source_canonical_file": "canonical/mobile/M01_Entrance.png",
+      "source_canonical_sha256": "89d8306b168f1ab4ae354b87ba6bcf22f1571fa6c1d52a53f363fa03e1e51c3e",
+      "crop_xywh": [
+        0,
+        0,
+        941,
+        680
+      ],
+      "output_width": 941,
+      "output_height": 680,
+      "usage": "W01 integrated hero source",
+      "css_treatment": "desktop-only object-fit:cover; object-position:center 90%; CSS paper-to-transparent left fade; no image filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/w01_horizontal_lockup.png",
+      "bytes": 36164,
+      "sha256": "71f94f08d0a78663e6b8a1fab1d829949994506c1e1747f65c4b21df9708b198",
+      "source_canonical_file": "canonical/web/W01_Entrance.png",
+      "source_canonical_sha256": "a7eb49d467bd7556d321a11d0d1ba629a5aecf156076306a3045c148810c6db0",
+      "crop_xywh": [
+        47,
+        20,
+        326,
+        70
+      ],
+      "output_width": 326,
+      "output_height": 70,
+      "usage": "W01 header horizontal lockup",
+      "css_treatment": "object-fit:contain; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/w01_step_01.png",
+      "bytes": 23268,
+      "sha256": "adf39581552a94f6048adfb1d27be763a4d2dc0a317e63355fa6c0bf7dd7cec9",
+      "source_canonical_file": "canonical/web/W01_Entrance.png",
+      "source_canonical_sha256": "a7eb49d467bd7556d321a11d0d1ba629a5aecf156076306a3045c148810c6db0",
+      "crop_xywh": [
+        145,
+        665,
+        142,
+        112
+      ],
+      "output_width": 142,
+      "output_height": 112,
+      "usage": "W01 core loop step 1",
+      "css_treatment": "object-fit:contain; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/w01_step_02.png",
+      "bytes": 20400,
+      "sha256": "5a2584366e92aa1920f9b378bb9a0e0fada07fc5226d068f0bca9502721814c5",
+      "source_canonical_file": "canonical/web/W01_Entrance.png",
+      "source_canonical_sha256": "a7eb49d467bd7556d321a11d0d1ba629a5aecf156076306a3045c148810c6db0",
+      "crop_xywh": [
+        512,
+        665,
+        134,
+        112
+      ],
+      "output_width": 134,
+      "output_height": 112,
+      "usage": "W01 core loop step 2",
+      "css_treatment": "object-fit:contain; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/w01_step_03.png",
+      "bytes": 19623,
+      "sha256": "07ca63925fb52f039fdbcff28bd39b8f16a2cd71cd468ada9a6704309ad78b43",
+      "source_canonical_file": "canonical/web/W01_Entrance.png",
+      "source_canonical_sha256": "a7eb49d467bd7556d321a11d0d1ba629a5aecf156076306a3045c148810c6db0",
+      "crop_xywh": [
+        873,
+        665,
+        120,
+        112
+      ],
+      "output_width": 120,
+      "output_height": 112,
+      "usage": "W01 core loop step 3",
+      "css_treatment": "object-fit:contain; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/w01_step_04.png",
+      "bytes": 24744,
+      "sha256": "c656078555ecdef8fbbbc21a05d44ae19b154a55c8e39ac41a92290f00a22923",
+      "source_canonical_file": "canonical/web/W01_Entrance.png",
+      "source_canonical_sha256": "a7eb49d467bd7556d321a11d0d1ba629a5aecf156076306a3045c148810c6db0",
+      "crop_xywh": [
+        1225,
+        665,
+        150,
+        112
+      ],
+      "output_width": 150,
+      "output_height": 112,
+      "usage": "W01 core loop step 4",
+      "css_treatment": "object-fit:contain; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/w01_trust_private.png",
+      "bytes": 3884,
+      "sha256": "4a3c7156ef7f746329f37608c2806b44d28a58f5638d496c91547b5c6d35d128",
+      "source_canonical_file": "canonical/web/W01_Entrance.png",
+      "source_canonical_sha256": "a7eb49d467bd7556d321a11d0d1ba629a5aecf156076306a3045c148810c6db0",
+      "crop_xywh": [
+        119,
+        925,
+        48,
+        55
+      ],
+      "output_width": 48,
+      "output_height": 55,
+      "usage": "W01 Trust registration/private icon",
+      "css_treatment": "object-fit:contain; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/w01_trust_no_ai.png",
+      "bytes": 4480,
+      "sha256": "00bce2555f1e873b1bcd725ca58103674aa4a53a42a8460d0eb492072aa38c72",
+      "source_canonical_file": "canonical/web/W01_Entrance.png",
+      "source_canonical_sha256": "a7eb49d467bd7556d321a11d0d1ba629a5aecf156076306a3045c148810c6db0",
+      "crop_xywh": [
+        585,
+        925,
+        54,
+        55
+      ],
+      "output_width": 54,
+      "output_height": 55,
+      "usage": "W01 Trust no-AI icon",
+      "css_treatment": "object-fit:contain; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/w01_trust_device.png",
+      "bytes": 3741,
+      "sha256": "61452b99371f149b33fc0798628a848d2b095a7a2672a07a30c9f666bf476b98",
+      "source_canonical_file": "canonical/web/W01_Entrance.png",
+      "source_canonical_sha256": "a7eb49d467bd7556d321a11d0d1ba629a5aecf156076306a3045c148810c6db0",
+      "crop_xywh": [
+        998,
+        925,
+        48,
+        55
+      ],
+      "output_width": 48,
+      "output_height": 55,
+      "usage": "W01 Trust local-device icon",
+      "css_treatment": "object-fit:contain; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/paper_texture.png",
+      "bytes": 5000,
+      "sha256": "a116eb956f1557c58e13d7b342898de148a0fe20eb6b1c2e2ab08bd84510d8fd",
+      "source_canonical_file": "canonical/web/W01_Entrance.png",
+      "source_canonical_sha256": "a7eb49d467bd7556d321a11d0d1ba629a5aecf156076306a3045c148810c6db0",
+      "crop_xywh": [
+        10,
+        112,
+        128,
+        52
+      ],
+      "output_width": 128,
+      "output_height": 52,
+      "usage": "M01/W01 warm paper surface texture",
+      "css_treatment": "CSS repeat background; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    },
+    {
+      "local_path": "assets/canonical-m01-w01/navy_texture.png",
+      "bytes": 3381,
+      "sha256": "93792d688267e6275c262f638a28b2522dd7507a7dbf6094594c89c003db1fe3",
+      "source_canonical_file": "canonical/web/W01_Entrance.png",
+      "source_canonical_sha256": "a7eb49d467bd7556d321a11d0d1ba629a5aecf156076306a3045c148810c6db0",
+      "crop_xywh": [
+        75,
+        520,
+        96,
+        42
+      ],
+      "output_width": 96,
+      "output_height": 42,
+      "usage": "M01/W01 CTA navy texture",
+      "css_treatment": "CSS repeat background; no filter/tint/recolor",
+      "transformation": "pixel crop only; no resize, redraw, recolor, AI generation, or font substitution",
+      "production_rights_approved": false
+    }
+  ]
+}
