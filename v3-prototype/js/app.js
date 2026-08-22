@@ -176,8 +176,8 @@
       if (state.deck.mode === 'base') {
         go('review');
         announce(kept.length === 0
-          ? '3つすべてを「今回は違う」としました。'
-          : '3つの体験を見終えました。');
+          ? activeDeckCount() + 'つすべてを「今回は違う」としました。'
+          : activeDeckCount() + 'つの体験を見終えました。');
       } else {
         go(deckKept().length > 0 ? 'review' : 'none');
       }
@@ -235,6 +235,7 @@
   function stepbarConfig() {
     var word = D.emotionById(state.emotion);
     var deck = state.deck;
+    var count = activeDeckCount();
     switch (screen) {
       case 'emotion':
         return { back: 'entrance', title: '感情を選ぶ', count: '1 / 3', progress: 1 / 3, step: 'STEP 1' };
@@ -243,19 +244,19 @@
       case 'discovery':
         return {
           back: deck && deck.mode === 'personalized' ? 'entrance' : 'understanding',
-          title: deck && deck.mode === 'personalized' ? '次の3つ' : (word ? word.label : ''),
+          title: deck && deck.mode === 'personalized' ? '次の' + count + 'つ' : (word ? word.label : ''),
           count: deck ? (deck.index + 1) + ' / ' + deck.ids.length : '',
           progress: deck ? (deck.index + 1) / deck.ids.length : 0,
           step: 'STEP 2 / 4',
-          stepTitle: '気になる3つの体験から選ぶ',
-          hint: '3つのうち、気になるものを1つ選んでください'
+          stepTitle: '気になる' + count + 'つの体験から選ぶ',
+          hint: count + 'つのうち、気になるものを1つ選んでください'
         };
       case 'review':
       case 'none':
         return {
-          back: 'discovery', title: '3つ見ました', count: '3 / 3', progress: 1,
-          step: 'STEP 2 / 4', stepTitle: '気になる3つの体験から選ぶ',
-          hint: '3つのうち、気になるものを1つ選んでください'
+          back: 'discovery', title: count + 'つ見ました', count: count + ' / ' + count, progress: 1,
+          step: 'STEP 2 / 4', stepTitle: '気になる' + count + 'つの体験から選ぶ',
+          hint: count + 'つのうち、気になるものを1つ選んでください'
         };
       case 'detail':
         return { back: 'review' };
@@ -811,10 +812,11 @@
 
   function surfaceLegacyDiscovery(deck, experience, counter) {
     var isReal = deck.mode === 'real-approved';
+    var count = activeDeckCount();
     var nodes = [
       h('h1', {
         class: 'deck-lead', tabindex: '-1', id: 'surface-title',
-        text: isReal ? 'この言葉の隣に、2つの体験。' : '前回残ったものから、次の3つ。'
+        text: isReal ? 'この言葉の隣に、' + count + 'つの体験。' : '前回残ったものから、次の' + count + 'つ。'
       }),
       h('p', {
         class: 'note',
@@ -967,6 +969,7 @@
   }
 
   function desktopDiscoveryStep() {
+    var count = activeDeckCount();
     return h('div', { class: 'w03-step-row', 'aria-label': 'Discoveryの進行状況' }, [
       h('button', {
         class: 'w03-step-back', type: 'button',
@@ -974,9 +977,9 @@
       }, [icon('back'), h('span', { text: '感情の言葉に戻る' })]),
       h('p', { class: 'w03-step-title' }, [
         h('span', { text: 'STEP 2/4' }),
-        h('strong', { text: '気になる3つの体験から選ぶ' })
+        h('strong', { text: '気になる' + count + 'つの体験から選ぶ' })
       ]),
-      h('p', { class: 'w03-step-hint', text: '3つのうち、気になるものを1つ選んでください' })
+      h('p', { class: 'w03-step-hint', text: count + 'つのうち、気になるものを1つ選んでください' })
     ]);
   }
 
@@ -1091,10 +1094,11 @@
   }
 
   function safeCanonicalDiscoverySurface() {
+    var count = activeDeckCount();
     var surface = section('04-discovery', [
       h('h1', {
         class: 'sr-only', tabindex: '-1', id: 'surface-title',
-        text: '気になる3つの体験から選ぶ'
+        text: '気になる' + count + 'つの体験から選ぶ'
       }),
       h('button', {
         class: 'm03-undo discovery-mobile-only', type: 'button',
@@ -1110,6 +1114,7 @@
     /* Canonical copy is prototype-only. PRODUCTION_COPY_REVIEW_REQUIRED
        PROTOTYPE_FIXTURE_NOT_VERIFIED / PRODUCTION_RIGHTS_UNREVIEWED */
     var recordId = deck.ids[deck.index];
+    var count = activeDeckCount();
     var fixtures = deck.ids.map(discoveryFixtureById);
     var fixture = discoveryFixtureById(recordId);
     if (!recordId || !fixture || fixtures.some(function (item) { return !item; })) {
@@ -1121,7 +1126,7 @@
       h('div', { class: 'm03-intro' }, [
         h('h1', { class: 'm03-headline' }, [
           h('span', { text: '「ざわつく」を入口に、' }),
-          h('span', { text: '3つの体験を選びました。' })
+          h('span', { text: count + 'つの体験を選びました。' })
         ]),
         h('p', { class: 'm03-support', text: 'まずは、1つ目の体験を見てみましょう。' })
       ]),
@@ -1186,7 +1191,7 @@
       mainSlot,
       h('section', { class: 'w03-alternates', 'aria-labelledby': 'w03-other-heading' }, [
         h('div', { class: 'w03-alternate-intro' }, [
-          h('h2', { id: 'w03-other-heading', text: '他の2つの体験も見る' }),
+          h('h2', { id: 'w03-other-heading', text: '他の' + Math.max(0, count - 1) + 'つの体験も見る' }),
           h('p', { text: '左右にスクロールできます' })
         ]),
         h('button', {
@@ -1205,7 +1210,7 @@
     var surface = section('04-discovery', [
       h('h1', {
         class: 'sr-only', tabindex: '-1', id: 'surface-title',
-        text: '気になる3つの体験から選ぶ'
+        text: '気になる' + count + 'つの体験から選ぶ'
       }),
       h('div', { class: 'discovery-mobile discovery-mobile-only' }, mobileNodes),
       h('div', { class: 'discovery-desktop discovery-desktop-only' }, desktopNodes)
@@ -1226,7 +1231,7 @@
 
   function personalizedExplanation(facets) {
     var quoted = (facets || []).map(function (f) { return '「' + f + '」'; }).join('');
-    return '前回、次の出会いの手がかりとして' + quoted + 'が選ばれました。そこから3つ置いています。';
+    return '前回、次の出会いの手がかりとして' + quoted + 'が選ばれました。そこから' + activeDeckCount() + 'つ置いています。';
   }
 
   function legacyJudgementRow(id) {
@@ -1336,7 +1341,7 @@
     render();
     var fixture = discoveryFixtureById(recordId);
     if (deckPassed().length === state.deck.ids.length) {
-      announce('3つすべてを「今回は違う」としました。');
+      announce(activeDeckCount() + 'つすべてを「今回は違う」としました。');
     } else if (value === 'keep') {
       announce(fixture.mobileTitle + 'を気になるにして、選択中にしました。');
     } else {
@@ -1426,6 +1431,7 @@
 
   function surfaceCanonicalReview() {
     var fixtures = state.deck.ids.map(discoveryFixtureById).filter(function (fixture) { return fixture; });
+    var count = activeDeckCount();
     var activeId = validActiveId();
     if (state.deck.activeId !== activeId) state.deck.activeId = activeId;
     var activeFixture = activeId ? discoveryFixtureById(activeId) : null;
@@ -1434,17 +1440,14 @@
     var intro = h('div', { class: 'm04-review-intro' }, [
       h('button', {
         class: 'm04-review-back m04-mobile-only', type: 'button',
-        'aria-label': '3つの体験を見直す', onclick: reviewToDiscovery
+        'aria-label': count + 'つの体験を見直す', onclick: reviewToDiscovery
       }, [icon('back')]),
       h('div', { class: 'm04-title-row' }, [
-        h('h1', { class: 'm04-review-title', tabindex: '-1', id: 'surface-title', text: '3つ見ました' }),
-        h('p', { class: 'm04-progress-count', text: '3 / 3' })
+        h('h1', { class: 'm04-review-title', tabindex: '-1', id: 'surface-title', text: count + 'つ見ました' }),
+        h('p', { class: 'm04-progress-count', text: count + ' / ' + count })
       ]),
-      h('div', { class: 'm04-progress-dots', 'aria-label': '3つ中3つを確認済み' }, [
-        h('span', { class: 'is-complete' }),
-        h('span', { class: 'is-complete' }),
-        h('span', { class: 'is-complete' })
-      ]),
+      h('div', { class: 'm04-progress-dots', 'aria-label': count + 'つ中' + count + 'つを確認済み' },
+        state.deck.ids.map(function () { return h('span', { class: 'is-complete' }); })),
       h('p', { class: 'm04-emotion-fixture', text: '「ざわつく」を入口に' }),
       h('p', {
         class: 'm04-mobile-instruction m04-mobile-only',
@@ -1456,7 +1459,7 @@
     var nodes = [
       h('div', { class: 'm04-desktop-only' }, [desktopDiscoveryStep()]),
       intro,
-      h('ul', { class: 'm04-review-grid', 'aria-label': '3つの体験の判定を見直す' }, fixtures.map(function (fixture) {
+      h('ul', { class: 'm04-review-grid', 'aria-label': count + 'つの体験の判定を見直す' }, fixtures.map(function (fixture) {
         return h('li', {}, [reviewCard(fixture, activeId)]);
       }))
     ];
@@ -1474,7 +1477,7 @@
     if (allPass) {
       nodes.push(h('p', {
         class: 'm04-all-pass-note',
-        text: '3つすべてを「今回は違う」とした場合は、ここで終了することも、もう一度3つを見ることもできます。'
+        text: count + 'つすべてを「今回は違う」とした場合は、ここで終了することも、もう一度' + count + 'つを見ることもできます。'
       }));
     }
 
@@ -1485,7 +1488,7 @@
       }, [h('span', { text: 'この体験を見てみる' }), h('span', { 'aria-hidden': 'true', text: '→' })]),
       h('button', {
         class: 'm04-secondary', type: 'button', onclick: reviewToDiscovery
-      }, [h('span', { text: '3つを見直す' })])
+      }, [h('span', { text: count + 'つを見直す' })])
     ];
     if (allPass) {
       actions.push(h('button', {
