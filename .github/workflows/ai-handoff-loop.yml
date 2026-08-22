@@ -1,0 +1,190 @@
+name: V3 AI Handoff Loop
+
+on:
+  push:
+    branches: [automation/ai-handoff-v1]
+    paths:
+      - ".ai-handoff/REQUEST.json"
+      - ".ai-handoff/CODEX_TASK.md"
+
+concurrency:
+  group: v3-ai-handoff-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  handoff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout workbench
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Read request
+        id: request
+        run: |
+          python - <<'PY'
+          import json, os
+          r=json.load(open(".ai-handoff/REQUEST.json"))
+          o=open(os.environ["GITHUB_OUTPUT"],"a")
+          o.write("enabled="+("true" if r.get("enabled") else "false")+"\n")
+          o.write("task_id="+str(r.get("task_id","unknown"))+"\n")
+          o.write("max_iterations="+str(max(1,min(3,int(r.get("max_auto_iterations",3)))))+"\n")
+          o.close()
+          PY
+
+      - name: Disabled
+        if: steps.request.outputs.enabled != 'true'
+        run: echo "REQUEST disabled; nothing executed." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Validate and freeze HQ tools
+        if: steps.request.outputs.enabled == 'true'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          test -n "$OPENAI_API_KEY" || { echo "::error::Configure OPENAI_API_KEY repository secret"; exit 2; }
+          test -d v3-prototype || { echo "::error::v3-prototype missing from workbench branch"; exit 3; }
+          python -m py_compile .ai-handoff/scripts/*.py
+          mkdir -p "$RUNNER_TEMP/hq-tools" "$RUNNER_TEMP/ai-handoff"
+          cp -R .ai-handoff/scripts .ai-handoff/schemas .ai-handoff/HQ_RULES.md "$RUNNER_TEMP/hq-tools/"
+          python "$RUNNER_TEMP/hq-tools/scripts/build_codex_prompt.py"
+          find v3-prototype -type f -print0 | sort -z | xargs -0 sha256sum > "$RUNNER_TEMP/ai-handoff/PRE_V3_SHA256SUMS.txt"
+
+      - name: Codex 1
+        if: steps.request.outputs.enabled == 'true'
+        uses: openai/codex-action@v1.11
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: /tmp/codex_prompt.md
+          output-file: ${{ runner.temp }}/ai-handoff/CODEX_REPORT_1.md
+          permission-profile: ":workspace"
+          safety-strategy: drop-sudo
+          model: ${{ vars.CODEX_MODEL || 'gpt-5.6-sol' }}
+          effort: ${{ vars.CODEX_EFFORT || 'max' }}
+
+      - name: Scope guard 1
+        if: steps.request.outputs.enabled == 'true'
+        run: python "$RUNNER_TEMP/hq-tools/scripts/scope_guard.py" --output "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_1.json"
+
+      - name: HQ review 1
+        if: steps.request.outputs.enabled == 'true'
+        id: review1
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          HQ_REVIEW_MODEL: ${{ vars.HQ_REVIEW_MODEL || 'gpt-5.6-sol' }}
+          HQ_REVIEW_EFFORT: ${{ vars.HQ_REVIEW_EFFORT || 'max' }}
+        run: |
+          python "$RUNNER_TEMP/hq-tools/scripts/hq_review.py" \
+            --iteration 1 \
+            --codex-report "$RUNNER_TEMP/ai-handoff/CODEX_REPORT_1.md" \
+            --scope-guard "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_1.json" \
+            --output "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_1.json" \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Fix prompt 2
+        if: steps.review1.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 2
+        run: python "$RUNNER_TEMP/hq-tools/scripts/make_fix_prompt.py" --review "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_1.json" --output /tmp/codex_fix_2.md
+
+      - name: Codex 2
+        if: steps.review1.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 2
+        uses: openai/codex-action@v1.11
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: /tmp/codex_fix_2.md
+          output-file: ${{ runner.temp }}/ai-handoff/CODEX_REPORT_2.md
+          permission-profile: ":workspace"
+          safety-strategy: drop-sudo
+          model: ${{ vars.CODEX_MODEL || 'gpt-5.6-sol' }}
+          effort: ${{ vars.CODEX_EFFORT || 'max' }}
+
+      - name: Scope guard 2
+        if: steps.review1.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 2
+        run: python "$RUNNER_TEMP/hq-tools/scripts/scope_guard.py" --output "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_2.json"
+
+      - name: HQ review 2
+        if: steps.review1.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 2
+        id: review2
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          HQ_REVIEW_MODEL: ${{ vars.HQ_REVIEW_MODEL || 'gpt-5.6-sol' }}
+          HQ_REVIEW_EFFORT: ${{ vars.HQ_REVIEW_EFFORT || 'max' }}
+        run: |
+          python "$RUNNER_TEMP/hq-tools/scripts/hq_review.py" \
+            --iteration 2 \
+            --codex-report "$RUNNER_TEMP/ai-handoff/CODEX_REPORT_2.md" \
+            --scope-guard "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_2.json" \
+            --output "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_2.json" \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Fix prompt 3
+        if: steps.review2.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 3
+        run: python "$RUNNER_TEMP/hq-tools/scripts/make_fix_prompt.py" --review "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_2.json" --output /tmp/codex_fix_3.md
+
+      - name: Codex 3
+        if: steps.review2.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 3
+        uses: openai/codex-action@v1.11
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: /tmp/codex_fix_3.md
+          output-file: ${{ runner.temp }}/ai-handoff/CODEX_REPORT_3.md
+          permission-profile: ":workspace"
+          safety-strategy: drop-sudo
+          model: ${{ vars.CODEX_MODEL || 'gpt-5.6-sol' }}
+          effort: ${{ vars.CODEX_EFFORT || 'max' }}
+
+      - name: Scope guard 3
+        if: steps.review2.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 3
+        run: python "$RUNNER_TEMP/hq-tools/scripts/scope_guard.py" --output "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_3.json"
+
+      - name: HQ review 3
+        if: steps.review2.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 3
+        id: review3
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          HQ_REVIEW_MODEL: ${{ vars.HQ_REVIEW_MODEL || 'gpt-5.6-sol' }}
+          HQ_REVIEW_EFFORT: ${{ vars.HQ_REVIEW_EFFORT || 'max' }}
+        run: |
+          python "$RUNNER_TEMP/hq-tools/scripts/hq_review.py" \
+            --iteration 3 \
+            --codex-report "$RUNNER_TEMP/ai-handoff/CODEX_REPORT_3.md" \
+            --scope-guard "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_3.json" \
+            --output "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_3.json" \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Finalize
+        if: always() && steps.request.outputs.enabled == 'true'
+        run: |
+          mkdir -p "$RUNNER_TEMP/ai-handoff/final"
+          git diff --binary -- . > "$RUNNER_TEMP/ai-handoff/final/SOURCE_DIFF.patch" || true
+          git status --short > "$RUNNER_TEMP/ai-handoff/final/FINAL_GIT_STATUS.txt"
+          git diff --name-only > "$RUNNER_TEMP/ai-handoff/final/CHANGED_FILENAMES.txt" || true
+          cp "$RUNNER_TEMP"/ai-handoff/CODEX_REPORT_*.md "$RUNNER_TEMP/ai-handoff/final/" 2>/dev/null || true
+          cp "$RUNNER_TEMP"/ai-handoff/HQ_REVIEW_*.json "$RUNNER_TEMP/ai-handoff/final/" 2>/dev/null || true
+          cp "$RUNNER_TEMP"/ai-handoff/SCOPE_GUARD_*.json "$RUNNER_TEMP/ai-handoff/final/" 2>/dev/null || true
+          cp "$RUNNER_TEMP/ai-handoff/PRE_V3_SHA256SUMS.txt" "$RUNNER_TEMP/ai-handoff/final/" || true
+          cp .ai-handoff/REQUEST.json .ai-handoff/CODEX_TASK.md .ai-handoff/HQ_RULES.md "$RUNNER_TEMP/ai-handoff/final/"
+          find outputs artifacts screenshots runtime evidence -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) -exec cp --parents {} "$RUNNER_TEMP/ai-handoff/final/" \; 2>/dev/null || true
+
+          python "$RUNNER_TEMP/hq-tools/scripts/finalize.py" \
+            --task-id "${{ steps.request.outputs.task_id }}" \
+            --output "$RUNNER_TEMP/ai-handoff/final/STATUS.json" \
+            --reviews \
+              "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_1.json" \
+              "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_2.json" \
+              "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_3.json"
+
+          cat "$RUNNER_TEMP/ai-handoff/final/STATUS.json" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload evidence
+        if: always() && steps.request.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-handoff-${{ steps.request.outputs.task_id }}-${{ github.run_id }}
+          path: ${{ runner.temp }}/ai-handoff/final
+          retention-days: 30
+          if-no-files-found: error
