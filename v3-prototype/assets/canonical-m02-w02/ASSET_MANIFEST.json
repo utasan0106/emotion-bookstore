@@ -1,0 +1,187 @@
+{
+  "created_at": "2026-08-21 JST",
+  "authority": "99_v3_canonical_clean_v1",
+  "production_rights_status": "UNREVIEWED_PROTOTYPE_ONLY",
+  "rules": [
+    "pixel crops only",
+    "no AI generation",
+    "no redraw",
+    "no recolor",
+    "no full canonical screenshot background",
+    "no text-baked crop"
+  ],
+  "sources": {
+    "M02_Emotion.png": {
+      "width": 1024,
+      "height": 1536,
+      "sha256": "212f68d5551262d84f4cac996331daa5af2029ee47ce478d58ba644e5e26bbf0"
+    },
+    "W02_Emotion.png": {
+      "width": 1536,
+      "height": 1024,
+      "sha256": "8b78c91e9d7a87b9add491dcdec9114324f4737bf343451dad88650675558389"
+    }
+  },
+  "assets": [
+    {
+      "file": "assets/canonical-m02-w02/emotion_hajimu.png",
+      "source": "canonical/M02_Emotion.png",
+      "source_sha256": "212f68d5551262d84f4cac996331daa5af2029ee47ce478d58ba644e5e26bbf0",
+      "crop_xywh": [
+        58,
+        532,
+        187,
+        212
+      ],
+      "output_width": 187,
+      "output_height": 212,
+      "output_sha256": "0898e81b3ecf88a6f42825079402d50f0a71f3662cb5d805a3012f22638976e1",
+      "usage": "心が弾む",
+      "css_treatment": "scale only; preserve aspect ratio; no recolor/crop at runtime unless specified in implementation prompt"
+    },
+    {
+      "file": "assets/canonical-m02-w02/emotion_atatamaru.png",
+      "source": "canonical/M02_Emotion.png",
+      "source_sha256": "212f68d5551262d84f4cac996331daa5af2029ee47ce478d58ba644e5e26bbf0",
+      "crop_xywh": [
+        292,
+        532,
+        195,
+        212
+      ],
+      "output_width": 195,
+      "output_height": 212,
+      "output_sha256": "5f48c67e8dc09abac0f2676d555fc9d53508252a5f7df157308dfadb347d8e99",
+      "usage": "心があたたまる",
+      "css_treatment": "scale only; preserve aspect ratio; no recolor/crop at runtime unless specified in implementation prompt"
+    },
+    {
+      "file": "assets/canonical-m02-w02/emotion_hikareru.png",
+      "source": "canonical/M02_Emotion.png",
+      "source_sha256": "212f68d5551262d84f4cac996331daa5af2029ee47ce478d58ba644e5e26bbf0",
+      "crop_xywh": [
+        529,
+        532,
+        198,
+        212
+      ],
+      "output_width": 198,
+      "output_height": 212,
+      "output_sha256": "01997a35abef02b27e3ea192c1691fa3ea14a713def19a148089cc4ec012685f",
+      "usage": "惹かれる",
+      "css_treatment": "scale only; preserve aspect ratio; no recolor/crop at runtime unless specified in implementation prompt"
+    },
+    {
+      "file": "assets/canonical-m02-w02/emotion_shizumu.png",
+      "source": "canonical/M02_Emotion.png",
+      "source_sha256": "212f68d5551262d84f4cac996331daa5af2029ee47ce478d58ba644e5e26bbf0",
+      "crop_xywh": [
+        768,
+        532,
+        194,
+        212
+      ],
+      "output_width": 194,
+      "output_height": 212,
+      "output_sha256": "de3696055cab4ead116311d4293e46c1de4e7295a4d32bf685402dec4794755e",
+      "usage": "沈む",
+      "css_treatment": "scale only; preserve aspect ratio; no recolor/crop at runtime unless specified in implementation prompt"
+    },
+    {
+      "file": "assets/canonical-m02-w02/emotion_zawatsuku.png",
+      "source": "canonical/M02_Emotion.png",
+      "source_sha256": "212f68d5551262d84f4cac996331daa5af2029ee47ce478d58ba644e5e26bbf0",
+      "crop_xywh": [
+        58,
+        920,
+        190,
+        198
+      ],
+      "output_width": 190,
+      "output_height": 198,
+      "output_sha256": "5ad222df3f6bdf0d66e061b3871f71e6f5487ff41080754b5a050190f8f50e50",
+      "usage": "ざわつく",
+      "css_treatment": "scale only; preserve aspect ratio; no recolor/crop at runtime unless specified in implementation prompt"
+    },
+    {
+      "file": "assets/canonical-m02-w02/emotion_butsukaru.png",
+      "source": "canonical/M02_Emotion.png",
+      "source_sha256": "212f68d5551262d84f4cac996331daa5af2029ee47ce478d58ba644e5e26bbf0",
+      "crop_xywh": [
+        292,
+        920,
+        199,
+        198
+      ],
+      "output_width": 199,
+      "output_height": 198,
+      "output_sha256": "990bdf0503dc47df78f0861a04523931170fa3d99420402629b147754741a11a",
+      "usage": "ぶつかる",
+      "css_treatment": "scale only; preserve aspect ratio; no recolor/crop at runtime unless specified in implementation prompt"
+    },
+    {
+      "file": "assets/canonical-m02-w02/emotion_miwohiku.png",
+      "source": "canonical/M02_Emotion.png",
+      "source_sha256": "212f68d5551262d84f4cac996331daa5af2029ee47ce478d58ba644e5e26bbf0",
+      "crop_xywh": [
+        530,
+        920,
+        198,
+        198
+      ],
+      "output_width": 198,
+      "output_height": 198,
+      "output_sha256": "62a175868ee725c640599b9202f2d6055e7664e082210dd9b1ace301cc3cab65",
+      "usage": "身を引く",
+      "css_treatment": "scale only; preserve aspect ratio; no recolor/crop at runtime unless specified in implementation prompt"
+    },
+    {
+      "file": "assets/canonical-m02-w02/emotion_mada.png",
+      "source": "canonical/M02_Emotion.png",
+      "source_sha256": "212f68d5551262d84f4cac996331daa5af2029ee47ce478d58ba644e5e26bbf0",
+      "crop_xywh": [
+        769,
+        920,
+        193,
+        198
+      ],
+      "output_width": 193,
+      "output_height": 198,
+      "output_sha256": "e12a5b22179df3787b30b97b9b6ceb5c38dab7cc206b5821c6c623a6472d4315",
+      "usage": "まだ名前がない",
+      "css_treatment": "scale only; preserve aspect ratio; no recolor/crop at runtime unless specified in implementation prompt"
+    },
+    {
+      "file": "assets/canonical-m02-w02/w02_hero.png",
+      "source": "canonical/W02_Emotion.png",
+      "source_sha256": "8b78c91e9d7a87b9add491dcdec9114324f4737bf343451dad88650675558389",
+      "crop_xywh": [
+        780,
+        92,
+        756,
+        300
+      ],
+      "output_width": 756,
+      "output_height": 300,
+      "output_sha256": "0656bf5f98b63bdfe5c088f71125598b4cd44f026542b02282d96cab8a24e8f9",
+      "usage": "W02 editorial window scene",
+      "css_treatment": "scale only; preserve aspect ratio; no recolor/crop at runtime unless specified in implementation prompt"
+    },
+    {
+      "file": "assets/canonical-m02-w02/guidance_leaf.png",
+      "source": "canonical/M02_Emotion.png",
+      "source_sha256": "212f68d5551262d84f4cac996331daa5af2029ee47ce478d58ba644e5e26bbf0",
+      "crop_xywh": [
+        60,
+        1290,
+        70,
+        72
+      ],
+      "output_width": 70,
+      "output_height": 72,
+      "output_sha256": "6f65ea91c38ab38af784ea0f46b53cf80c4df83086db82b1b05e99b4c98aaa57",
+      "usage": "guidance leaf",
+      "css_treatment": "scale only; preserve aspect ratio; no recolor/crop at runtime unless specified in implementation prompt"
+    }
+  ]
+}
