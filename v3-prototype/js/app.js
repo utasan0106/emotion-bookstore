@@ -65,6 +65,21 @@
     return REAL ? REAL.deckForEmotion(emotionId) : null;
   }
 
+  function selectedShelf() {
+    return D.emotionById(state.emotion);
+  }
+
+  function selectedShelfLabel() {
+    var shelf = selectedShelf();
+    return shelf ? shelf.label : '';
+  }
+
+  function approvedOutingById(id) {
+    var deck = approvedRealDeck(state.emotion);
+    if (!deck || deck.ids.indexOf(id) === -1) return null;
+    return REAL && REAL.byId ? REAL.byId(id) : null;
+  }
+
   function activeDeckCount() {
     return state.deck && state.deck.ids ? state.deck.ids.length : 0;
   }
@@ -238,7 +253,7 @@
     var count = activeDeckCount();
     switch (screen) {
       case 'emotion':
-        return { back: 'entrance', title: '感情を選ぶ', count: '1 / 3', progress: 1 / 3, step: 'STEP 1' };
+        return { back: 'entrance', title: '感情の棚を選ぶ', count: '1 / 3', progress: 1 / 3, step: 'STEP 1' };
       case 'understanding':
         return { back: 'emotion' };
       case 'discovery':
@@ -248,15 +263,15 @@
           count: deck ? (deck.index + 1) + ' / ' + deck.ids.length : '',
           progress: deck ? (deck.index + 1) / deck.ids.length : 0,
           step: 'STEP 2 / 4',
-          stepTitle: '気になる' + count + 'つの体験から選ぶ',
-          hint: count + 'つのうち、気になるものを1つ選んでください'
+          stepTitle: count + 'つの寄り道から選ぶ',
+          hint: count + 'つのうち、気になるものを選んでください'
         };
       case 'review':
       case 'none':
         return {
           back: 'discovery', title: count + 'つ見ました', count: count + ' / ' + count, progress: 1,
-          step: 'STEP 2 / 4', stepTitle: '気になる' + count + 'つの体験から選ぶ',
-          hint: count + 'つのうち、気になるものを1つ選んでください'
+          step: 'STEP 2 / 4', stepTitle: count + 'つの寄り道から選ぶ',
+          hint: count + 'つのうち、気になるものを選んでください'
         };
       case 'detail':
         return { back: 'review' };
@@ -328,8 +343,8 @@
         h('span', { class: 'display-line', text: '次に触れるものを見つける。' })
       ]),
       h('p', { class: 'lede' }, [
-        h('span', { class: 'lede-line', text: 'いまの気持ちに近い言葉を選ぶと、' }),
-        h('span', { class: 'lede-line', text: 'あなたにそっと寄り添う体験が見つかります。' }),
+        h('span', { class: 'lede-line', text: '気になる感情の棚をのぞくと、' }),
+        h('span', { class: 'lede-line', text: '理由のある寄り道が見つかります。' }),
         h('span', { class: 'lede-line', text: 'そして、実際に触れたあとに残ったものを、' }),
         h('span', { class: 'lede-line', text: '自分だけの記録として残せます。' })
       ]),
@@ -338,7 +353,7 @@
         onclick: function () { go('emotion'); }
       }, [
         h('span', { class: 'cta-main', text: 'はじめる' }),
-        h('span', { class: 'cta-sub', text: '感情の言葉を選ぶ' })
+        h('span', { class: 'cta-sub', text: '感情の棚を選ぶ' })
       ])
     ]);
 
@@ -369,13 +384,13 @@
   var LOOP_STEPS = [
     {
       asset: '01',
-      mobileTitle: '感情を選ぶ', mobileNote: ['いまの気持ちを', '言葉にする'],
-      desktopTitle: '感情を選ぶ', desktopNote: ['いまの気持ちを', '言葉にする']
+      mobileTitle: '感情の棚を選ぶ', mobileNote: ['気になる棚を', 'ひとつのぞく'],
+      desktopTitle: '感情の棚を選ぶ', desktopNote: ['今の気持ちと違っても、', '気になる棚をのぞく']
     },
     {
       asset: '02',
-      mobileTitle: '体験に出会う', mobileNote: ['3つの候補を見る'],
-      desktopTitle: '体験に出会う', desktopNote: ['感情に近い3つの候補から、', '気になるものを見つける']
+      mobileTitle: '寄り道に出会う', mobileNote: ['理由のある候補を見る'],
+      desktopTitle: '寄り道に出会う', desktopNote: ['棚の角度から置かれた、', '理由のある候補を見る']
     },
     {
       asset: '03',
@@ -472,12 +487,12 @@
   /* W01 MENU destination copy. PRODUCTION_COPY_REVIEW_REQUIRED */
   var EXPERIENCE_FLOW_ITEMS = [
     {
-      title: '感情の言葉をひとつ選ぶ',
-      copy: '正解はありません。いまの自分に近い言葉を、出会いの入口にします。'
+      title: '感情の棚をひとつ選ぶ',
+      copy: '今の気持ちと同じでなくて大丈夫です。少し気になる棚を、ひとつのぞきます。'
     },
     {
-      title: '3つの体験を見る',
-      copy: '本、映画、場所などから、少しずつ角度の違う3つの体験を置きます。'
+      title: '理由のある寄り道を見る',
+      copy: '人が定めた編集基準に基づき、理由を説明できるものだけを置きます。0件の棚もあります。'
     },
     {
       title: '気になるものに触れる',
@@ -495,11 +510,11 @@
       answer: '登録しなくても利用できます。V3 Beta0の基本体験は、アカウントを作らずに使える設計です。'
     },
     {
-      question: '感情の言葉は診断ですか？',
-      answer: 'いいえ。感情の言葉は出会いの入口です。正解を決めたり、あなたの状態を判定したりするものではありません。'
+      question: '感情の棚は診断ですか？',
+      answer: 'いいえ。今の感情を当てたり、性格を判定したりするものではありません。今の気持ちと同じ棚でなくても、気になる棚を自由にのぞけます。'
     },
     {
-      question: '選んだ言葉はあとから変えられますか？',
+      question: '選んだ棚はあとから変えられますか？',
       answer: 'はい。あとから選び直せます。「まだ名前がない」も、ひとつの正式な選択肢です。'
     },
     {
@@ -584,7 +599,7 @@
     }
 
     var list = h('ul', {
-      class: 'emotion-grid', 'aria-label': '感情の言葉をひとつ選ぶ'
+      class: 'emotion-grid', 'aria-label': '感情の棚をひとつ選ぶ'
     }, D.EMOTIONS.map(function (word) {
       return h('li', {}, [
         h('button', {
@@ -612,27 +627,19 @@
       class: 'emotion-heading', tabindex: '-1', id: 'surface-title'
     }, [
       h('span', { class: 'emotion-heading-mobile emotion-mobile-only' }, [
-        h('span', { class: 'emotion-copy-line', text: 'いま、' }),
-        h('span', { class: 'emotion-copy-line', text: 'どの言葉の近くにいますか？' })
+        h('span', { class: 'emotion-copy-line', text: 'どんな感情の棚を、' }),
+        h('span', { class: 'emotion-copy-line', text: 'のぞいてみますか？' })
       ]),
       h('span', { class: 'emotion-heading-desktop emotion-desktop-only' }, [
-        h('span', { class: 'emotion-copy-line', text: 'いまの気持ちに、' }),
-        h('span', { class: 'emotion-copy-line', text: 'いちばん近い言葉を選ぶ' })
+        h('span', { class: 'emotion-copy-line', text: 'どんな感情の棚を、' }),
+        h('span', { class: 'emotion-copy-line', text: 'のぞいてみますか？' })
       ])
     ]);
 
     var support = h('p', { class: 'emotion-support' }, [
-      h('span', { class: 'emotion-copy-line', text: '正解はありません。' }),
       h('span', {
         class: 'emotion-copy-line emotion-support-choice',
-        'aria-label': 'いまのあなたに、いちばんしっくりくる言葉をひとつ選んでください。'
-      }, [
-        h('span', { class: 'emotion-support-choice-line', text: 'いまのあなたに、いちばんしっくりくる言葉を' }),
-        h('span', { class: 'emotion-support-choice-line', text: 'ひとつ選んでください。' })
-      ]),
-      h('span', {
-        class: 'emotion-copy-line emotion-desktop-only',
-        text: 'あとから選び直すこともできます。'
+        text: '今の気持ちと同じでなくて大丈夫です。少し気になる棚を、ひとつ。'
       })
     ]);
 
@@ -651,7 +658,7 @@
     ]);
 
     var gridQuestion = h('h2', {
-      class: 'emotion-grid-question emotion-desktop-only', text: 'どの言葉の近くにいますか？'
+      class: 'emotion-grid-question emotion-desktop-only', text: '感情の棚'
     });
 
     var guidance = h('div', { class: 'emotion-guidance' }, [
@@ -662,14 +669,14 @@
       h('p', { class: 'emotion-guidance-copy' }, [
         h('span', {
           class: 'emotion-copy-line emotion-guidance-choice',
-          'aria-label': 'どの言葉もしっくりこないときは、「まだ名前がない」を選んでも大丈夫です。'
+          'aria-label': 'どの棚をのぞくか迷うときは、「まだ名前がない」を選んでも大丈夫です。'
         }, [
-          h('span', { class: 'emotion-guidance-choice-line', text: 'どの言葉もしっくりこないときは、' }),
+          h('span', { class: 'emotion-guidance-choice-line', text: 'どの棚をのぞくか迷うときは、' }),
           h('span', { class: 'emotion-guidance-choice-line', text: '「まだ名前がない」を選んでも大丈夫です。' })
         ]),
         h('span', {
           class: 'emotion-copy-line emotion-guidance-trust-copy emotion-desktop-only',
-          text: '選んだ言葉は、あなただけの手がかりとして使われます。他の人に見られることはありません。'
+          text: '選んだ棚は、今回の探索の手がかりとして使われます。性格や心理状態を決めつけません。'
         })
       ])
     ]);
@@ -680,12 +687,12 @@
       h('p', { class: 'emotion-trust-copy' }, [
         h('span', {
           class: 'emotion-copy-line emotion-trust-primary',
-          'aria-label': '選んだ言葉は、あなただけの手がかりとして使われます。'
+          'aria-label': '選んだ棚は、今回の探索の手がかりとして使われます。'
         }, [
-          h('span', { class: 'emotion-trust-primary-line', text: '選んだ言葉は、' }),
-          h('span', { class: 'emotion-trust-primary-line', text: 'あなただけの手がかりとして使われます。' })
+          h('span', { class: 'emotion-trust-primary-line', text: '選んだ棚は、' }),
+          h('span', { class: 'emotion-trust-primary-line', text: '今回の探索の手がかりとして使われます。' })
         ]),
-        h('span', { class: 'emotion-copy-line', text: '他の人に見られることはありません。' })
+        h('span', { class: 'emotion-copy-line', text: '性格や心理状態を決めつけません。' })
       ])
     ]);
 
@@ -701,44 +708,76 @@
 
   function surfaceUnderstanding() {
     var word = D.emotionById(state.emotion);
-    var copy = D.UNDERSTANDING[state.emotion];
     var realDeck = approvedRealDeck(state.emotion);
-    var deckCount = realDeck ? realDeck.ids.length : 3;
+    var deckCount = realDeck ? realDeck.ids.length : 0;
     var nodes = [];
 
-    nodes.push(h('p', { class: 'eyebrow', text: '選んだ言葉' }));
-    nodes.push(h('h1', { class: 'display display-sm', tabindex: '-1', id: 'surface-title', text: word ? word.label : '' }));
-    if (copy) {
-      nodes.push(h('p', { class: 'body-lg', text: copy.body }));
-      nodes.push(h('p', { class: 'note', text: copy.note }));
-    }
-    nodes.push(h('hr', { class: 'rule' }));
-    nodes.push(h('p', {
-      class: 'body-lg',
-      text: 'この言葉の隣に、' + deckCount + 'つの体験を置いています。'
-    }));
-    nodes.push(h('div', { class: 'actions' }, [
-      h('button', {
-        class: 'btn btn-primary', type: 'button',
-        onclick: function () {
-          if (realDeck) startDeck('real-approved', realDeck.ids);
-          else startDeck('base', P.baseDeck(state.recentIds));
-          persist();
-          go('discovery');
-        }
-      }, [h('span', { text: deckCount + 'つ見てみる' })])
+    nodes.push(h('p', { class: 'eyebrow', text: 'のぞいている感情の棚' }));
+    nodes.push(h('div', { class: 'understanding-shelf-identity' }, [
+      word ? h('img', {
+        class: 'understanding-shelf-image', alt: '',
+        src: './assets/canonical-m02-w02/' + word.asset
+      }) : null,
+      h('h1', {
+        class: 'display display-sm', tabindex: '-1', id: 'surface-title',
+        text: word ? word.label : ''
+      })
     ]));
+    nodes.push(h('p', {
+      class: 'body-lg understanding-editorial-note',
+      text: '「' + (word ? word.label : '') + '」という感情の角度から、少し世界を見てみる。'
+    }));
+    nodes.push(h('hr', { class: 'rule' }));
+    if (deckCount === 0) {
+      nodes.push(h('div', { class: 'understanding-empty', 'data-deck-count': '0' }, [
+        h('h2', { class: 'section-title', text: 'いま案内できる寄り道はありません' }),
+        h('p', { class: 'body-lg', text: 'この棚には、いま置けるものがありません。' }),
+        h('p', {
+          class: 'note',
+          text: '数をそろえるために、確認できていない体験を置くことはしません。'
+        }),
+        h('div', { class: 'actions' }, [
+          h('button', {
+            class: 'btn btn-line', type: 'button', onclick: function () { go('emotion'); }
+          }, [h('span', { text: '別の棚をのぞく' })])
+        ])
+      ]));
+    } else {
+      nodes.push(h('p', {
+        class: 'body-lg', 'data-deck-count': String(deckCount),
+        text: 'この棚から案内できる寄り道は、' + deckCount + 'つです。'
+      }));
+      nodes.push(h('p', {
+        class: 'note',
+        text: '人が定めた編集基準に基づき、理由を説明できるものだけを選んでいます。'
+      }));
+      nodes.push(h('div', { class: 'actions' }, [
+        h('button', {
+          class: 'btn btn-primary', type: 'button',
+          onclick: function () {
+            startDeck('real-approved', realDeck.ids);
+            persist();
+            go('discovery');
+          }
+        }, [h('span', { text: deckCount + 'つの寄り道を見る' })])
+      ]));
+    }
 
-    return section('03-understanding', nodes);
+    var surface = section('03-understanding', nodes);
+    surface.classList.add('understanding-bridge');
+    surface.setAttribute('data-selected-shelf', state.emotion || '');
+    return surface;
   }
 
   function experienceCard(experience, counter) {
+    var reason = experience && experience.placeDetail && experience.placeDetail.placementReason
+      ? experience.placeDetail.placementReason : experience.reason;
     return h('article', { class: 'card', 'aria-label': experience.title }, [
       counter ? h('p', { class: 'eyebrow', text: counter }) : null,
       experienceVisual(experience, 'card'),
       h('h2', { class: 'card-title', text: experience.title }),
       h('p', { class: 'card-meta', text: metaLine(experience) }),
-      h('p', { class: 'card-reason', text: experience.reason })
+      h('p', { class: 'card-reason', text: reason })
     ]);
   }
 
@@ -813,14 +852,17 @@
   function surfaceLegacyDiscovery(deck, experience, counter) {
     var isReal = deck.mode === 'real-approved';
     var count = activeDeckCount();
+    var shelfLabel = selectedShelfLabel();
     var nodes = [
       h('h1', {
         class: 'deck-lead', tabindex: '-1', id: 'surface-title',
-        text: isReal ? 'この言葉の隣に、' + count + 'つの体験。' : '前回残ったものから、次の' + count + 'つ。'
+        text: isReal ? '「' + shelfLabel + '」の棚から、' + count + 'つの寄り道を。' : '前回残ったものから、次の' + count + 'つ。'
       }),
       h('p', {
         class: 'note',
-        text: isReal ? '作品と場所を、一つずつ見ていきます。' : personalizedExplanation(deck.facets)
+        text: isReal
+          ? '人が定めた編集基準に基づき、この棚に置く理由を説明できるものだけをご案内します。'
+          : personalizedExplanation(deck.facets)
       })
     ];
     var card = experienceCard(experience, counter);
@@ -847,7 +889,9 @@
           [h('span', { text: '前の体験に戻る' })])
       ]));
     }
-    return section('09-personalized-discovery', nodes);
+    var surface = section(isReal ? '04-discovery' : '09-personalized-discovery', nodes);
+    if (isReal) surface.setAttribute('data-selected-shelf', state.emotion || '');
+    return surface;
   }
 
   function discoveryAsset(file) {
@@ -974,12 +1018,12 @@
       h('button', {
         class: 'w03-step-back', type: 'button',
         onclick: function () { go('emotion'); }
-      }, [icon('back'), h('span', { text: '感情の言葉に戻る' })]),
+      }, [icon('back'), h('span', { text: '感情の棚に戻る' })]),
       h('p', { class: 'w03-step-title' }, [
         h('span', { text: 'STEP 2/4' }),
-        h('strong', { text: '気になる' + count + 'つの体験から選ぶ' })
+        h('strong', { text: count + 'つの寄り道から選ぶ' })
       ]),
-      h('p', { class: 'w03-step-hint', text: count + 'つのうち、気になるものを1つ選んでください' })
+      h('p', { class: 'w03-step-hint', text: count + 'つのうち、気になるものを選んでください' })
     ]);
   }
 
@@ -1103,7 +1147,7 @@
       h('button', {
         class: 'm03-undo discovery-mobile-only', type: 'button',
         onclick: function () { go('emotion'); }
-      }, [h('span', { text: '感情の言葉に戻る' })]),
+      }, [h('span', { text: '感情の棚に戻る' })]),
       h('div', { class: 'discovery-desktop-only' }, [desktopDiscoveryStep()])
     ]);
     surface.classList.add('discovery-canonical');
@@ -1125,8 +1169,8 @@
     var mobileNodes = [
       h('div', { class: 'm03-intro' }, [
         h('h1', { class: 'm03-headline' }, [
-          h('span', { text: '「ざわつく」を入口に、' }),
-          h('span', { text: count + 'つの体験を選びました。' })
+          h('span', { text: '「' + selectedShelfLabel() + '」の棚から、' }),
+          h('span', { text: count + 'つの寄り道を。' })
         ]),
         h('p', { class: 'm03-support', text: 'まずは、1つ目の体験を見てみましょう。' })
       ]),
@@ -1221,12 +1265,13 @@
 
   function surfaceDiscovery() {
     var deck = state.deck;
-    var experience = D.byId(deck.ids[deck.index]);
-    var counter = (deck.index + 1) + ' / ' + deck.ids.length;
-    if (deck.mode === 'personalized' || deck.mode === 'real-approved') {
-      return surfaceLegacyDiscovery(deck, experience, counter);
+    if (!deck || deck.mode !== 'real-approved' || !deck.ids.length) {
+      return surfaceUnderstanding();
     }
-    return surfaceCanonicalDiscovery(deck);
+    var experience = approvedOutingById(deck.ids[deck.index]);
+    if (!experience) return surfaceUnderstanding();
+    var counter = (deck.index + 1) + ' / ' + deck.ids.length;
+    return surfaceLegacyDiscovery(deck, experience, counter);
   }
 
   function personalizedExplanation(facets) {
@@ -1289,6 +1334,9 @@
     var nodes = [];
 
     nodes.push(h('h1', { class: 'question', tabindex: '-1', id: 'surface-title', text: '気になる、と選んだもの。' }));
+    nodes.push(h('p', {
+      class: 'note', text: '「' + selectedShelfLabel() + '」の棚から見た、今回の寄り道です。'
+    }));
     nodes.push(h('ul', { class: 'rows' }, kept.map(legacyJudgementRow)));
 
     if (passed.length > 0) {
@@ -1448,7 +1496,7 @@
       ]),
       h('div', { class: 'm04-progress-dots', 'aria-label': count + 'つ中' + count + 'つを確認済み' },
         state.deck.ids.map(function () { return h('span', { class: 'is-complete' }); })),
-      h('p', { class: 'm04-emotion-fixture', text: '「ざわつく」を入口に' }),
+      h('p', { class: 'm04-emotion-fixture', text: '「' + selectedShelfLabel() + '」の棚から' }),
       h('p', {
         class: 'm04-mobile-instruction m04-mobile-only',
         text: '気になったものを、ひとつ選んでください。'
@@ -1503,7 +1551,9 @@
   }
 
   function surfaceReview() {
-    if (state.deck && state.deck.mode === 'base') return surfaceCanonicalReview();
+    if (!state.deck || state.deck.mode !== 'real-approved' || !state.deck.ids.length) {
+      return surfaceUnderstanding();
+    }
     return surfaceLegacyReview();
   }
 
@@ -1537,7 +1587,8 @@
   }
 
   function surfaceDetail() {
-    var experience = D.byId(state.selectedId);
+    var experience = approvedOutingById(state.selectedId);
+    if (!experience) return surfaceUnderstanding();
     var isReal = experience && experience.sourceClass === 'approved-real-experience';
     var placeDetail = experience && experience.placeDetail;
     var destinationActions = approvedDestinationActions(experience).map(function (action) {
@@ -1567,6 +1618,7 @@
     ]);
     var nodes = [
       experienceVisual(experience, 'detail'),
+      h('p', { class: 'eyebrow detail-shelf-context', text: '「' + selectedShelfLabel() + '」の棚から' }),
       h('h1', {
         class: 'display display-sm' + (placeDetail ? ' place-detail-title' : ''),
         tabindex: '-1', id: 'surface-title', text: experience.title
@@ -1587,7 +1639,7 @@
           h('p', { class: 'body-lg place-detail-body', text: placeDetail.recommendedStay })
         ]),
         h('section', { class: 'place-detail-section' }, [
-          h('h2', { class: 'section-title', text: 'なぜここにあるか' }),
+          h('h2', { class: 'section-title', text: 'この棚に置いた理由' }),
           h('p', { class: 'body-lg place-detail-body', text: placeDetail.placementReason })
         ]),
         h('section', { class: 'place-detail-section place-detail-access' }, [
@@ -1605,7 +1657,7 @@
          体験の説明文を prototype 側で創作しない。 */
       nodes.push(h('h2', { class: 'section-title', text: '何をするか' }));
       nodes.push(h('p', { class: 'tags', text: (experience.tags || []).join(' ・ ') }));
-      nodes.push(h('h2', { class: 'section-title', text: 'なぜここにあるか' }));
+      nodes.push(h('h2', { class: 'section-title', text: 'この棚に置いた理由' }));
       nodes.push(h('p', { class: 'body-lg', text: experience.reason }));
     }
     if (!isReal) {
@@ -1935,7 +1987,25 @@
     trace: surfaceTrace
   };
 
+  function currentDeckMatchesSelectedShelf() {
+    var approved = approvedRealDeck(state.emotion);
+    if (!approved || !state.deck || state.deck.mode !== 'real-approved') return false;
+    if (!Array.isArray(state.deck.ids) || state.deck.ids.length !== approved.ids.length) return false;
+    return approved.ids.every(function (id, index) { return state.deck.ids[index] === id; });
+  }
+
+  function failClosedStaleShelfRoute() {
+    if (['discovery', 'review', 'none', 'detail'].indexOf(screen) === -1) return;
+    if (currentDeckMatchesSelectedShelf()) return;
+    state.deck = null;
+    state.decisions = {};
+    state.selectedId = null;
+    screen = 'understanding';
+    persist();
+  }
+
   function render() {
+    failClosedStaleShelfRoute();
     var build = SURFACES[screen] || surfaceEntrance;
     var next = build();
     renderStepbar();
@@ -1957,7 +2027,7 @@
   /* Header Interaction Contract v0.3
      - >=1200px の MENU から既存4導線だけを開く
      - logo / 体験の流れ / よくある質問 は同一ページ内スクロール
-     - はじめる / 感情の言葉 は Hero CTA と同じ遷移（W02 Emotion）
+     - はじめる / 感情の棚 は Hero CTA と同じ遷移（W02 Emotion）
      - W01の体験の流れ / FAQは有限のbelow-fold editorial content
      - 新しい画面・locale 機能は作らない */
   function scrollToId(id) {

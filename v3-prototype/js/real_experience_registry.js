@@ -14,6 +14,13 @@
   var SOURCE_CLASS = 'approved-real-experience';
   var DECK_REF = 'DECK-P0-001';
   var EMOTION_ID = 'mada';
+  var SHELF_IDS = [
+    'hajimu', 'atatamaru', 'hikareru', 'shizumu',
+    'zawatsuku', 'butsukaru', 'miwohiku', 'mada'
+  ];
+  var OUTING_RELATIONS = {
+    mada: [{ experienceId: 'EXP_007', relation: 'opening' }]
+  };
   var fixtureById = global.V3_DATA && global.V3_DATA.byId;
 
   var CATEGORY_VISUALS = {
@@ -344,16 +351,25 @@
   }
 
   function deckForEmotion(emotionId, asOf) {
-    if (emotionId !== EMOTION_ID) return null;
-    var active = records.filter(function (record) {
-      return validateRecord(record, asOf).pass;
+    if (SHELF_IDS.indexOf(emotionId) === -1) return null;
+    var approvedRelations = OUTING_RELATIONS[emotionId] || [];
+    var active = approvedRelations.map(function (placement) {
+      var record = byId(placement.experienceId, asOf);
+      if (!record || record.type !== '場所' || !record.physicalDestination ||
+          record.physicalDestination.approved !== true ||
+          !record.editorial || record.editorial.relation !== placement.relation) return null;
+      return record;
+    }).filter(function (record) {
+      return Boolean(record);
     });
-    if (active.length !== 2 || active[0].id !== 'EXP_001' || active[1].id !== 'EXP_007') return null;
     return {
       deckRef: DECK_REF,
-      emotionId: EMOTION_ID,
+      emotionId: emotionId,
       ids: active.map(function (record) { return record.id; }),
-      relationCoverage: { direct: 1, adjacent: 0, opening: 1 },
+      relationCoverage: active.reduce(function (coverage, record) {
+        coverage[record.editorial.relation] += 1;
+        return coverage;
+      }, { direct: 0, adjacent: 0, opening: 0 }),
       fillFlag: false
     };
   }
@@ -366,11 +382,16 @@
   }
 
   global.V3_REAL_EXPERIENCE_REGISTRY = Object.freeze({
-    VERSION: 'sprint02-activation-v1.0',
+    VERSION: 'product-semantics-state-a-v1.0',
     SOURCE_CLASS: SOURCE_CLASS,
     DECK_REF: DECK_REF,
     EMOTION_ID: EMOTION_ID,
+    SHELF_IDS: Object.freeze(SHELF_IDS.slice()),
     APPROVED_IDS: Object.freeze(['EXP_001', 'EXP_007']),
+    OUTING_IDS: Object.freeze(['EXP_007']),
+    OUTING_EXCLUSIONS: Object.freeze({
+      EXP_001: 'CULTURE_SIDECAR_NOT_OUTING_EXACT_SHELF_RELATION_NOT_APPROVED'
+    }),
     CATEGORY_IDS: Object.freeze(Object.keys(CATEGORY_VISUALS)),
     EXCLUDED_DISPOSITIONS: Object.freeze(clone(excluded)),
     categoryVisualFor: categoryVisualFor,
