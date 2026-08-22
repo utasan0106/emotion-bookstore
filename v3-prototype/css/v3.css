@@ -326,6 +326,45 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 /* =============================================================================
+ * Product Semantics + State Integrity — bounded PASS A
+ * Minimum Understanding bridge / intentional zero-deck treatment only.
+ * ========================================================================== */
+
+.understanding-bridge { max-width: 760px; }
+.understanding-shelf-identity {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 14px;
+}
+.understanding-shelf-image {
+  width: 88px;
+  height: 88px;
+  flex: 0 0 88px;
+  object-fit: cover;
+  border-radius: var(--radius-image);
+}
+.understanding-editorial-note { max-width: 38rem; }
+.understanding-empty .section-title {
+  margin-top: 26px;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: var(--navy);
+}
+.understanding-empty .actions { margin-top: 24px; }
+.detail-shelf-context { margin-bottom: 8px; }
+
+@media (min-width: 900px) {
+  .understanding-bridge { padding-top: 64px; }
+  .understanding-shelf-identity { gap: 24px; margin-top: 18px; }
+  .understanding-shelf-image {
+    width: 124px;
+    height: 124px;
+    flex-basis: 124px;
+  }
+}
+
+/* =============================================================================
  * Place Detail limited fix — content and typography hierarchy
  * Only approved real-place Detail receives this treatment.
  * ========================================================================== */
