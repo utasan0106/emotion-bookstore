@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 import json
 from pathlib import Path
-r=json.loads(Path(".ai-handoff/REQUEST.json").read_text())
-task=Path(r["task_file"]).read_text()
-rules=Path(".ai-handoff/HQ_RULES.md").read_text()
+
+from validate_request import TASK_FILE, load_and_validate_request
+
+r, _=load_and_validate_request()
+task=TASK_FILE.read_text(encoding="utf-8")
+rules=Path(".ai-handoff/HQ_RULES.md").read_text(encoding="utf-8")
 p=f"""You are Codex implementing one bounded V3 task.
 
 TASK_ID: {r['task_id']}
@@ -24,4 +27,4 @@ AUTOMATION RULES:
 - Produce evidence and Actual screenshots if required and feasible.
 - If blocked, STOP rather than inventing a workaround.
 """
-Path("/tmp/codex_prompt.md").write_text(p)
+Path("/tmp/codex_prompt.md").write_text(p, encoding="utf-8")
