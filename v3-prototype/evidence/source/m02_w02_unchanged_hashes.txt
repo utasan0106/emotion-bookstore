@@ -1,0 +1,6 @@
+# Imported handoff baseline == final local SHA-256
+PASS  v3-prototype/README.md  49b1b8ddfe3480874518bf9d98452ef6fa6387f355c6ac1f530b2f30dfc8253c
+PASS  v3-prototype/js/data.js  72e2aed013ecb69522c01222f46414f073b917d47992e759cee59e1537a90250
+PASS  v3-prototype/js/store.js  651a15cc540c220e2afa9f3bcb8d89433feb03f4cbbe0cb9e80b325427c17bda
+PASS  v3-prototype/js/personalize.js  1125d767bac6aed317e2bdc8ba69311fda71d0a8450a264e48c536c9717bb65a
+PASS  package.json / lockfile added: no

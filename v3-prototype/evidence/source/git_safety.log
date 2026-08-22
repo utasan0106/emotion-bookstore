@@ -1,0 +1,12 @@
+# Git / scope safety
+timestamp=2026-08-21T00:25:53+0900
+branch=codex/v3-99-canonical-rebuild
+HEAD=910dbac29e70143fe50bc6e192eaaafa40729174
+origin_main=910dbac29e70143fe50bc6e192eaaafa40729174
+ahead_behind=0	0
+tracked_diff:
+status:
+?? V3_HANDOFF_MANIFEST.json
+?? V3_HANDOFF_README.md
+?? v3-prototype/
+No commit/push/PR/deploy/merge performed.

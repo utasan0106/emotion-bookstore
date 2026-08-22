@@ -1,0 +1,108 @@
+# canonical_source_contract.js
+timestamp=2026-08-21T00:25:50+0900
+PASS  branch = codex/v3-99-canonical-rebuild
+PASS  HEAD = origin/main audited SHA
+PASS  origin/main = audited SHA
+PASS  tracked files remain clean
+PASS  M02/W02+ regression hash unchanged: README.md  — 49b1b8ddfe3480874518bf9d98452ef6fa6387f355c6ac1f530b2f30dfc8253c
+PASS  M02/W02+ regression hash unchanged: js/data.js  — 72e2aed013ecb69522c01222f46414f073b917d47992e759cee59e1537a90250
+PASS  M02/W02+ regression hash unchanged: js/store.js  — 651a15cc540c220e2afa9f3bcb8d89433feb03f4cbbe0cb9e80b325427c17bda
+PASS  M02/W02+ regression hash unchanged: js/personalize.js  — 1125d767bac6aed317e2bdc8ba69311fda71d0a8450a264e48c536c9717bb65a
+PASS  package.json dependency addition 0
+PASS  JS parse: app/data/store/personalize
+PASS  Font Manifest external request expectation = 0
+PASS  Font Manifest includes 4 faces only  — 4
+PASS  Font Manifest weights = 400/500 only
+PASS  Font Manifest families exact
+PASS  Font source is official Google Fonts only
+PASS  Font files marked unmodified
+PASS  Font CSS unicode-range decision recorded
+PASS  font exists/hash/bytes: NotoSansJP-Regular.ttf  — 5472784 d930d5d52d15231c283089760f84584272ad5e37e14607ba0d19c798e7a9caec
+PASS  font sfnt signature: NotoSansJP-Regular.ttf  — 00010000
+PASS  font internal family/style names: NotoSansJP-Regular.ttf  — Noto Sans JP | Regular
+PASS  font exists/hash/bytes: NotoSansJP-Medium.ttf  — 5469400 7b8bbb543db880657eca298118e701a09fadeaac3e417a5012040ec98336d9c2
+PASS  font sfnt signature: NotoSansJP-Medium.ttf  — 00010000
+PASS  font internal family/style names: NotoSansJP-Medium.ttf  — Noto Sans JP Medium | Regular | Noto Sans JP | Medium
+PASS  font exists/hash/bytes: NotoSerifJP-Regular.ttf  — 7682584 5a04846a0e23acefae825f2f459205036a166f5a63462019ce3492d07bd20e92
+PASS  font sfnt signature: NotoSerifJP-Regular.ttf  — 00010000
+PASS  font internal family/style names: NotoSerifJP-Regular.ttf  — Noto Serif JP | Regular
+PASS  font exists/hash/bytes: NotoSerifJP-Medium.ttf  — 7681508 72ac6a8d81c077c5769577392b728e5d9f6acfcbec771a5d108f61a11b9ebc6b
+PASS  font sfnt signature: NotoSerifJP-Medium.ttf  — 00010000
+PASS  font internal family/style names: NotoSerifJP-Medium.ttf  — Noto Serif JP Medium | Regular | Noto Serif JP | Medium
+PASS  shared OFL.txt exists
+PASS  per-family OFL files exist
+PASS  @font-face count = 4
+PASS  CSS local face path: NotoSansJP-Regular.ttf
+PASS  CSS local face path: NotoSansJP-Medium.ttf
+PASS  CSS local face path: NotoSerifJP-Regular.ttf
+PASS  CSS local face path: NotoSerifJP-Medium.ttf
+PASS  runtime external Font CDN reference 0
+PASS  CSS @import 0
+PASS  font Base64 embedding 0
+PASS  CSS brace balance  — 291/291
+PASS  all local CSS url() targets exist  — ../assets/fonts/noto-serif-jp/NotoSerifJP-Regular.ttf, ../assets/fonts/noto-serif-jp/NotoSerifJP-Medium.ttf, ../assets/fonts/noto-sans-jp/NotoSansJP-Regular.ttf, ../assets/fonts/noto-sans-jp/NotoSansJP-Medium.ttf, ../assets/canonical-m01-w01/paper_texture.png, ../assets/canonical-m01-w01/navy_texture.png, ../assets/canonical-m01-w01/paper_texture.png, ../assets/canonical-m01-w01/navy_texture.png, ../assets/canonical-m01-w01/paper_texture.png
+PASS  Asset authority = 99_v3 only
+PASS  Asset count = 17  — 17
+PASS  Asset production rights are unapproved
+PASS  Asset transforms are pixel-crop only
+PASS  asset exists/hash/dim: m01_hero.png  — 941x680 a0c35bd0a7405b4921e6dce11b811f83a25b4b6beae614a23aae8f553530dc87
+PASS  asset exists/hash/dim: m01_stacked_lockup.png  — 402x260 86bf12265652ceffa7c2faaa5a8aa6bff47613f39bce0a9bd34e41fc2300d69f
+PASS  asset exists/hash/dim: m01_step_01.png  — 120x132 3cd98e1b61f3dff1c7aa6707c0c960a35cd59284861f0df90ebd7b7efbe61f53
+PASS  asset exists/hash/dim: m01_step_02.png  — 120x132 17df4241362927c55e0612c174d208209ec0012864a1236c841dc6e9b8134f05
+PASS  asset exists/hash/dim: m01_step_03.png  — 120x132 5ad6451ce2b3c21b61cb95644d3c88e2e9ff6e6e2d47465ba2d13c76e03f60de
+PASS  asset exists/hash/dim: m01_step_04.png  — 120x132 7e04620ad0742a86de1da6a1b5e41ae17b335e3e214f72c332d544d59f36d3a1
+PASS  asset exists/hash/dim: w01_hero.png  — 941x540 194e0fb5adf4aca66694c55aaef4661ac2370a616bf22512a21d58ad9f374b73
+PASS  asset exists/hash/dim: w01_horizontal_lockup.png  — 326x70 71f94f08d0a78663e6b8a1fab1d829949994506c1e1747f65c4b21df9708b198
+PASS  asset exists/hash/dim: w01_step_01.png  — 142x112 adf39581552a94f6048adfb1d27be763a4d2dc0a317e63355fa6c0bf7dd7cec9
+PASS  asset exists/hash/dim: w01_step_02.png  — 134x112 5a2584366e92aa1920f9b378bb9a0e0fada07fc5226d068f0bca9502721814c5
+PASS  asset exists/hash/dim: w01_step_03.png  — 120x112 07ca63925fb52f039fdbcff28bd39b8f16a2cd71cd468ada9a6704309ad78b43
+PASS  asset exists/hash/dim: w01_step_04.png  — 150x112 c656078555ecdef8fbbbc21a05d44ae19b154a55c8e39ac41a92290f00a22923
+PASS  asset exists/hash/dim: w01_trust_private.png  — 48x55 4a3c7156ef7f746329f37608c2806b44d28a58f5638d496c91547b5c6d35d128
+PASS  asset exists/hash/dim: w01_trust_no_ai.png  — 54x55 00bce2555f1e873b1bcd725ca58103674aa4a53a42a8460d0eb492072aa38c72
+PASS  asset exists/hash/dim: w01_trust_device.png  — 48x55 61452b99371f149b33fc0798628a848d2b095a7a2672a07a30c9f666bf476b98
+PASS  asset exists/hash/dim: paper_texture.png  — 128x52 a116eb956f1557c58e13d7b342898de148a0fe20eb6b1c2e2ab08bd84510d8fd
+PASS  asset exists/hash/dim: navy_texture.png  — 96x42 93792d688267e6275c262f638a28b2522dd7507a7dbf6094594c89c003db1fe3
+PASS  M01 canonical source hash exact
+PASS  W01 canonical source hash exact
+PASS  exact canonical copy: 感じていることから、
+PASS  exact canonical copy: 次に触れるものを見つける。
+PASS  exact canonical copy: はじめる
+PASS  exact canonical copy: 感情の言葉を選ぶ
+PASS  exact canonical copy: 外へ出る
+PASS  exact canonical copy: 実際に触れてみる
+PASS  exact canonical copy: 感情に近い3つの候補から、
+PASS  exact canonical copy: 気になるものを見つける
+PASS  exact canonical copy: 読む・観る・聴く・訪れる。
+PASS  exact canonical copy: 外の世界とつながる
+PASS  exact canonical copy: 心に残ったものを選んで、
+PASS  exact canonical copy: 自分だけの記録にする
+PASS  exact canonical copy: 登録不要・入力内容はこの端末を基本に扱います
+PASS  exact canonical copy: 登録不要・完全に非公開
+PASS  exact canonical copy: あなたの記録はあなただけのものです。
+PASS  exact canonical copy: AIは使用しません
+PASS  exact canonical copy: 本文をAIが読むことはありません。
+PASS  exact canonical copy: 記録はまずこの端末へ
+PASS  exact canonical copy: 大切な記録は、あなたの端末に保存されます。
+PASS  PRODUCTION_COPY_REVIEW_REQUIRED marker exists
+PASS  old cautious Trust copy removed
+PASS  M01/W01 app uses canonical asset directory only
+PASS  W01 header uses canonical horizontal lockup
+PASS  connector DOM count contract encoded
+PASS  Trust structure encoded as distinct icon + heading + support
+PASS  M01 horizontal 4-column contract
+PASS  W01 header/hero/loop/trust native geometry contracts encoded
+PASS  M01 full viewport shell contract
+PASS  No analytics/fetch/XHR invocation added to M01/W01 app
+PASS  CTA contrast >= 4.5:1  — 15.70
+PASS  body text contrast >= 4.5:1  — 12.43
+PASS  focus-visible outline retained
+PASS  screenshot target prepared: W01_1536x1024
+PASS  screenshot target prepared: M01_941x1672
+PASS  screenshot target prepared: M01_390x844
+PASS  screenshot target prepared: M01_430x932
+PASS  screenshot target prepared: M01_tablet_768x1024
+PASS  screenshot target prepared: W01_sanity_1536x960
+PASS  screenshot evidence includes computed styles
+PASS  screenshot evidence includes font request log
+
+104/104 PASS

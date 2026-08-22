@@ -1,0 +1,15 @@
+# Font official archive / extracted byte integrity
+timestamp=2026-08-21T00:25:51+0900
+## official archive SHA-256
+8a72b04517347457a70c234e80ff4fc6efadad260998f71ee490e2cf39f6eadf  /Users/shishikura_yuta/Downloads/Noto_Sans_JP.zip
+ed1d58971f500be5b3e9f6cc89f39a506de3cbe53979a25b51a4a35f1910e1e4  /Users/shishikura_yuta/Downloads/Noto_Serif_JP.zip
+## archive member -> self-host hash equality
+PASS  static/NotoSansJP-Regular.ttf -> noto-sans-jp/NotoSansJP-Regular.ttf  d930d5d52d15231c283089760f84584272ad5e37e14607ba0d19c798e7a9caec
+PASS  static/NotoSansJP-Medium.ttf -> noto-sans-jp/NotoSansJP-Medium.ttf  7b8bbb543db880657eca298118e701a09fadeaac3e417a5012040ec98336d9c2
+PASS  static/NotoSerifJP-Regular.ttf -> noto-serif-jp/NotoSerifJP-Regular.ttf  5a04846a0e23acefae825f2f459205036a166f5a63462019ce3492d07bd20e92
+PASS  static/NotoSerifJP-Medium.ttf -> noto-serif-jp/NotoSerifJP-Medium.ttf  72ac6a8d81c077c5769577392b728e5d9f6acfcbec771a5d108f61a11b9ebc6b
+## license hash
+593c86024e30a11245d6c6fb0f501a8a1e696a59d969de80120d61d38456de21  v3-prototype/assets/fonts/OFL.txt
+92c343f7e7caebff8bace350bc091b79755f4d0c8b70bb0df21570a1828917b8  v3-prototype/assets/fonts/noto-sans-jp/OFL.txt
+f7933a8d153874eb029b1b74eb9baa002543cabfd4e3388be5f9158055468d71  v3-prototype/assets/fonts/noto-serif-jp/OFL.txt
+FONT INTEGRITY PASS
