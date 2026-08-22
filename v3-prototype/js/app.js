@@ -1539,13 +1539,17 @@
   function surfaceDetail() {
     var experience = D.byId(state.selectedId);
     var isReal = experience && experience.sourceClass === 'approved-real-experience';
+    var placeDetail = experience && experience.placeDetail;
     var destinationActions = approvedDestinationActions(experience).map(function (action) {
       return h('button', {
         class: action.kind === 'primary' ? 'btn btn-line' : 'btn btn-text',
         type: 'button',
         'data-action-destination': action.kind,
         onclick: function () { openApprovedDestination(action, experience); }
-      }, [h('span', { text: action.label }), h('span', { 'aria-hidden': 'true', text: '↗' })]);
+      }, [
+        h('span', { text: placeDetail && action.kind === 'maps' ? '地図で見る' : action.label }),
+        h('span', { 'aria-hidden': 'true', text: '↗' })
+      ]);
     });
     var detailActions = destinationActions.concat([
       h('button', {
@@ -1563,18 +1567,47 @@
     ]);
     var nodes = [
       experienceVisual(experience, 'detail'),
-      h('h1', { class: 'display display-sm', tabindex: '-1', id: 'surface-title', text: experience.title }),
-      h('p', { class: 'card-meta', text: metaLine(experience) }),
-
+      h('h1', {
+        class: 'display display-sm' + (placeDetail ? ' place-detail-title' : ''),
+        tabindex: '-1', id: 'surface-title', text: experience.title
+      }),
+      h('p', {
+        class: 'card-meta' + (placeDetail ? ' place-detail-meta' : ''),
+        text: metaLine(experience)
+      })
+    ];
+    if (placeDetail) {
+      nodes.push(h('div', { class: 'place-detail-content' }, [
+        h('section', { class: 'place-detail-section' }, [
+          h('h2', { class: 'section-title', text: 'どんな場所か' }),
+          h('p', { class: 'body-lg place-detail-body', text: placeDetail.description })
+        ]),
+        h('section', { class: 'place-detail-section' }, [
+          h('h2', { class: 'section-title', text: 'おすすめの過ごし方' }),
+          h('p', { class: 'body-lg place-detail-body', text: placeDetail.recommendedStay })
+        ]),
+        h('section', { class: 'place-detail-section' }, [
+          h('h2', { class: 'section-title', text: 'なぜここにあるか' }),
+          h('p', { class: 'body-lg place-detail-body', text: placeDetail.placementReason })
+        ]),
+        h('section', { class: 'place-detail-section place-detail-access' }, [
+          h('h2', { class: 'section-title', text: '訪れるための情報' }),
+          h('dl', { class: 'facts place-detail-facts' }, [
+            h('dt', { text: '住所' }), h('dd', { text: placeDetail.access.address }),
+            h('dt', { text: '最寄駅' }), h('dd', { text: placeDetail.access.nearestStation }),
+            h('dt', { text: '徒歩' }), h('dd', { text: placeDetail.access.walkingTime })
+          ])
+        ])
+      ]));
+    } else {
       /* canonical は What / Practical information の本文を与えていないため、
          prototype data にある事実（tag・duration・price）だけを並べる。
          体験の説明文を prototype 側で創作しない。 */
-      h('h2', { class: 'section-title', text: '何をするか' }),
-      h('p', { class: 'tags', text: (experience.tags || []).join(' ・ ') }),
-
-      h('h2', { class: 'section-title', text: 'なぜここにあるか' }),
-      h('p', { class: 'body-lg', text: experience.reason })
-    ];
+      nodes.push(h('h2', { class: 'section-title', text: '何をするか' }));
+      nodes.push(h('p', { class: 'tags', text: (experience.tags || []).join(' ・ ') }));
+      nodes.push(h('h2', { class: 'section-title', text: 'なぜここにあるか' }));
+      nodes.push(h('p', { class: 'body-lg', text: experience.reason }));
+    }
     if (!isReal) {
       nodes.push(h('h2', { class: 'section-title', text: '実際の情報' }));
       nodes.push(h('dl', { class: 'facts' }, [
@@ -1587,7 +1620,9 @@
       }));
     }
     nodes.push(h('div', { class: 'actions' }, detailActions));
-    return section('05-experience-detail', nodes);
+    var surface = section('05-experience-detail', nodes);
+    if (placeDetail) surface.classList.add('place-detail');
+    return surface;
   }
 
   function surfacePlan() {

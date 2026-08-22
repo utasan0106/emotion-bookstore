@@ -134,6 +134,25 @@
       editorial: { relation: 'opening' },
       freshness: { recheckBy: '2027-02-18' },
       rights: { imageReuseApproved: false, textReuseApproved: false },
+      placeDetail: {
+        description: '新宿御苑は、ただ広い緑地ではありません。58.3ヘクタールの同じ園内で、芝生と巨樹がゆるやかな景色をつくる風景式庭園、左右対称のプラタナス並木を軸にした整形式庭園、日本庭園へと、歩くにつれて景色の秩序そのものが切り替わります。',
+        recommendedStay: '全部を見ようとせず、風景式庭園と整形式庭園の二つを歩き比べます。広い芝生と巨樹の間から、左右対称のプラタナス並木へ移り、同じ園内で視界の組み立て方がどう変わるかを見てみます。',
+        placementReason: '「まだ名前がない」は、ひとつの言葉に決める前の感覚を含めておける入口です。新宿御苑は、同じ園内で風景式・整形式・日本庭園へと景色の秩序が切り替わります。気持ちの意味を決める代わりに、異なる景色のつくられ方を外側から見比べられる場所として、この棚に置いています。',
+        access: {
+          address: '東京都新宿区内藤町11',
+          nearestStation: '東京メトロ丸ノ内線 新宿御苑前駅 出口1',
+          walkingTime: '徒歩5分'
+        },
+        provenance: {
+          garden: 'https://fng.or.jp/shinjuku/place/garden/',
+          access: 'https://fng.or.jp/shinjuku/access/',
+          verifiedOn: '2026-08-23'
+        }
+      },
+      physicalDestination: {
+        approved: true,
+        address: '東京都新宿区内藤町11'
+      },
       visualAsset: {
         status: 'real_ready',
         assetType: 'place_photo',
@@ -209,7 +228,25 @@
   function hasOnlyApprovedAction(record) {
     if (!AD || !record) return false;
     var actions = AD.actionsForExperience(record);
-    return actions.length === 1 && actions[0].kind === 'primary';
+    var hasApprovedPhysicalDestination = record.physicalDestination &&
+      record.physicalDestination.approved === true;
+    if (!actions.length || actions[0].kind !== 'primary') return false;
+    if (!hasApprovedPhysicalDestination) return actions.length === 1;
+    return actions.length === 2 && actions[1].kind === 'maps' &&
+      actions[1].destinationClass === 'map_directions';
+  }
+
+  function hasCompletePlaceDetail(record) {
+    if (!record || record.id !== 'EXP_007') return true;
+    var detail = record.placeDetail;
+    var access = detail && detail.access;
+    var provenance = detail && detail.provenance;
+    return Boolean(detail && detail.description && detail.recommendedStay &&
+      detail.placementReason && access && access.address && access.nearestStation &&
+      access.walkingTime && provenance && /^https:\/\//.test(provenance.garden || '') &&
+      /^https:\/\//.test(provenance.access || '') && isDateOnly(provenance.verifiedOn) &&
+      record.physicalDestination && record.physicalDestination.approved === true &&
+      record.physicalDestination.address === access.address);
   }
 
   function validateVisualAsset(asset, asOf) {
@@ -287,6 +324,7 @@
       reasons.push('APPROVED_RELATION_MISMATCH');
     }
     if (!record || !record.title || !record.reason) reasons.push('READER_FIELDS_INCOMPLETE');
+    if (!hasCompletePlaceDetail(record)) reasons.push('PLACE_DETAIL_INCOMPLETE');
     if (!isFresh(record, asOf)) reasons.push('STALE_OR_INVALID_FRESHNESS');
     if (!hasOnlyApprovedAction(record)) reasons.push('ACTION_DESTINATION_INVALID');
     var visual = validateVisualAsset(record && record.visualAsset, asOf);
