@@ -20,23 +20,14 @@ jobs:
     timeout-minutes: 120
     steps:
       - name: Checkout workbench
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           persist-credentials: false
           fetch-depth: 1
 
       - name: Read request
         id: request
-        run: |
-          python - <<'PY'
-          import json, os
-          r=json.load(open(".ai-handoff/REQUEST.json"))
-          o=open(os.environ["GITHUB_OUTPUT"],"a")
-          o.write("enabled="+("true" if r.get("enabled") else "false")+"\n")
-          o.write("task_id="+str(r.get("task_id","unknown"))+"\n")
-          o.write("max_iterations="+str(max(1,min(3,int(r.get("max_auto_iterations",3)))))+"\n")
-          o.close()
-          PY
+        run: python .ai-handoff/scripts/validate_request.py --github-output "$GITHUB_OUTPUT"
 
       - name: Disabled
         if: steps.request.outputs.enabled != 'true'
@@ -44,10 +35,7 @@ jobs:
 
       - name: Validate and freeze HQ tools
         if: steps.request.outputs.enabled == 'true'
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          test -n "$OPENAI_API_KEY" || { echo "::error::Configure OPENAI_API_KEY repository secret"; exit 2; }
           test -d v3-prototype || { echo "::error::v3-prototype missing from workbench branch"; exit 3; }
           python -m py_compile .ai-handoff/scripts/*.py
           mkdir -p "$RUNNER_TEMP/hq-tools" "$RUNNER_TEMP/ai-handoff"
@@ -57,7 +45,7 @@ jobs:
 
       - name: Codex 1
         if: steps.request.outputs.enabled == 'true'
-        uses: openai/codex-action@v1.11
+        uses: openai/codex-action@52fe01ec70a42f454c9d2ebd47598f9fd6893d56 # v1.11
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           prompt-file: /tmp/codex_prompt.md
@@ -92,7 +80,7 @@ jobs:
 
       - name: Codex 2
         if: steps.review1.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 2
-        uses: openai/codex-action@v1.11
+        uses: openai/codex-action@52fe01ec70a42f454c9d2ebd47598f9fd6893d56 # v1.11
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           prompt-file: /tmp/codex_fix_2.md
@@ -127,7 +115,7 @@ jobs:
 
       - name: Codex 3
         if: steps.review2.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 3
-        uses: openai/codex-action@v1.11
+        uses: openai/codex-action@52fe01ec70a42f454c9d2ebd47598f9fd6893d56 # v1.11
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           prompt-file: /tmp/codex_fix_3.md
@@ -158,6 +146,8 @@ jobs:
 
       - name: Finalize
         if: always() && steps.request.outputs.enabled == 'true'
+        env:
+          HANDOFF_TASK_ID: ${{ steps.request.outputs.task_id }}
         run: |
           mkdir -p "$RUNNER_TEMP/ai-handoff/final"
           git diff --binary -- . > "$RUNNER_TEMP/ai-handoff/final/SOURCE_DIFF.patch" || true
@@ -171,7 +161,7 @@ jobs:
           find outputs artifacts screenshots runtime evidence -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) -exec cp --parents {} "$RUNNER_TEMP/ai-handoff/final/" \; 2>/dev/null || true
 
           python "$RUNNER_TEMP/hq-tools/scripts/finalize.py" \
-            --task-id "${{ steps.request.outputs.task_id }}" \
+            --task-id "$HANDOFF_TASK_ID" \
             --output "$RUNNER_TEMP/ai-handoff/final/STATUS.json" \
             --reviews \
               "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_1.json" \
@@ -182,7 +172,7 @@ jobs:
 
       - name: Upload evidence
         if: always() && steps.request.outputs.enabled == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ai-handoff-${{ steps.request.outputs.task_id }}-${{ github.run_id }}
           path: ${{ runner.temp }}/ai-handoff/final
