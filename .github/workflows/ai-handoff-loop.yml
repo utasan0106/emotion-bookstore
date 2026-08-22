@@ -18,6 +18,8 @@ jobs:
   handoff:
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
     steps:
       - name: Checkout workbench
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -27,19 +29,39 @@ jobs:
 
       - name: Read request
         id: request
-        run: python .ai-handoff/scripts/validate_request.py --github-output "$GITHUB_OUTPUT"
+        run: python .ai-handoff/scripts/validate_request.py --github-output "$GITHUB_OUTPUT" --repo-root .
 
       - name: Disabled
         if: steps.request.outputs.enabled != 'true'
         run: echo "REQUEST disabled; nothing executed." >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Validate and freeze HQ tools
+      - name: Validate and freeze HQ authority
         if: steps.request.outputs.enabled == 'true'
         run: |
+          set -euo pipefail
           test -d v3-prototype || { echo "::error::v3-prototype missing from workbench branch"; exit 3; }
-          python -m py_compile .ai-handoff/scripts/*.py
+          if find .ai-handoff/scripts .ai-handoff/schemas -type l -print -quit | grep -q .; then
+            echo "::error::symlinks are forbidden in HQ scripts/schemas"
+            exit 4
+          fi
+          test ! -L .ai-handoff/HQ_RULES.md
+          test ! -L .ai-handoff/REQUEST.json
+          test ! -L .ai-handoff/CODEX_TASK.md
+          python - <<'PY'
+          from pathlib import Path
+          for path in sorted(Path('.ai-handoff/scripts').glob('*.py')):
+              compile(path.read_bytes(), str(path), 'exec')
+          PY
+
           mkdir -p "$RUNNER_TEMP/hq-tools" "$RUNNER_TEMP/ai-handoff"
-          cp -R .ai-handoff/scripts .ai-handoff/schemas .ai-handoff/HQ_RULES.md "$RUNNER_TEMP/hq-tools/"
+          git rev-parse HEAD > "$RUNNER_TEMP/ai-handoff/PRE_HEAD"
+          { git symbolic-ref -q HEAD || printf 'DETACHED\n'; } > "$RUNNER_TEMP/ai-handoff/PRE_REF"
+
+          cp -R .ai-handoff/scripts .ai-handoff/schemas "$RUNNER_TEMP/hq-tools/"
+          cp .ai-handoff/HQ_RULES.md .ai-handoff/REQUEST.json .ai-handoff/CODEX_TASK.md "$RUNNER_TEMP/hq-tools/"
+          find "$RUNNER_TEMP/hq-tools" -type f -print0 | sort -z | xargs -0 sha256sum > "$RUNNER_TEMP/ai-handoff/FROZEN_AUTHORITY_SHA256SUMS.txt"
+          chmod -R a-w "$RUNNER_TEMP/hq-tools"
+
           python "$RUNNER_TEMP/hq-tools/scripts/build_codex_prompt.py"
           find v3-prototype -type f -print0 | sort -z | xargs -0 sha256sum > "$RUNNER_TEMP/ai-handoff/PRE_V3_SHA256SUMS.txt"
 
@@ -48,6 +70,7 @@ jobs:
         uses: openai/codex-action@52fe01ec70a42f454c9d2ebd47598f9fd6893d56 # v1.11
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          codex-version: "0.149.0"
           prompt-file: /tmp/codex_prompt.md
           output-file: ${{ runner.temp }}/ai-handoff/CODEX_REPORT_1.md
           permission-profile: ":workspace"
@@ -57,7 +80,20 @@ jobs:
 
       - name: Scope guard 1
         if: steps.request.outputs.enabled == 'true'
-        run: python "$RUNNER_TEMP/hq-tools/scripts/scope_guard.py" --output "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_1.json"
+        run: |
+          set -euo pipefail
+          python "$RUNNER_TEMP/hq-tools/scripts/verify_head.py" \
+            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
+            --pre-ref "$RUNNER_TEMP/ai-handoff/PRE_REF" \
+            --output "$RUNNER_TEMP/ai-handoff/HEAD_CHECK_1.json"
+          python "$RUNNER_TEMP/hq-tools/scripts/scope_guard.py" \
+            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
+            --pre-ref "$RUNNER_TEMP/ai-handoff/PRE_REF" \
+            --output "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_1.json"
+          python "$RUNNER_TEMP/hq-tools/scripts/capture_diff.py" \
+            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
+            --output "$RUNNER_TEMP/ai-handoff/SOURCE_DIFF_1.patch" \
+            --names-output "$RUNNER_TEMP/ai-handoff/CHANGED_FILENAMES_1.txt"
 
       - name: HQ review 1
         if: steps.request.outputs.enabled == 'true'
@@ -71,6 +107,7 @@ jobs:
             --iteration 1 \
             --codex-report "$RUNNER_TEMP/ai-handoff/CODEX_REPORT_1.md" \
             --scope-guard "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_1.json" \
+            --source-diff "$RUNNER_TEMP/ai-handoff/SOURCE_DIFF_1.patch" \
             --output "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_1.json" \
             --github-output "$GITHUB_OUTPUT"
 
@@ -83,6 +120,7 @@ jobs:
         uses: openai/codex-action@52fe01ec70a42f454c9d2ebd47598f9fd6893d56 # v1.11
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          codex-version: "0.149.0"
           prompt-file: /tmp/codex_fix_2.md
           output-file: ${{ runner.temp }}/ai-handoff/CODEX_REPORT_2.md
           permission-profile: ":workspace"
@@ -92,7 +130,20 @@ jobs:
 
       - name: Scope guard 2
         if: steps.review1.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 2
-        run: python "$RUNNER_TEMP/hq-tools/scripts/scope_guard.py" --output "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_2.json"
+        run: |
+          set -euo pipefail
+          python "$RUNNER_TEMP/hq-tools/scripts/verify_head.py" \
+            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
+            --pre-ref "$RUNNER_TEMP/ai-handoff/PRE_REF" \
+            --output "$RUNNER_TEMP/ai-handoff/HEAD_CHECK_2.json"
+          python "$RUNNER_TEMP/hq-tools/scripts/scope_guard.py" \
+            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
+            --pre-ref "$RUNNER_TEMP/ai-handoff/PRE_REF" \
+            --output "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_2.json"
+          python "$RUNNER_TEMP/hq-tools/scripts/capture_diff.py" \
+            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
+            --output "$RUNNER_TEMP/ai-handoff/SOURCE_DIFF_2.patch" \
+            --names-output "$RUNNER_TEMP/ai-handoff/CHANGED_FILENAMES_2.txt"
 
       - name: HQ review 2
         if: steps.review1.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 2
@@ -106,6 +157,7 @@ jobs:
             --iteration 2 \
             --codex-report "$RUNNER_TEMP/ai-handoff/CODEX_REPORT_2.md" \
             --scope-guard "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_2.json" \
+            --source-diff "$RUNNER_TEMP/ai-handoff/SOURCE_DIFF_2.patch" \
             --output "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_2.json" \
             --github-output "$GITHUB_OUTPUT"
 
@@ -118,6 +170,7 @@ jobs:
         uses: openai/codex-action@52fe01ec70a42f454c9d2ebd47598f9fd6893d56 # v1.11
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          codex-version: "0.149.0"
           prompt-file: /tmp/codex_fix_3.md
           output-file: ${{ runner.temp }}/ai-handoff/CODEX_REPORT_3.md
           permission-profile: ":workspace"
@@ -127,7 +180,20 @@ jobs:
 
       - name: Scope guard 3
         if: steps.review2.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 3
-        run: python "$RUNNER_TEMP/hq-tools/scripts/scope_guard.py" --output "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_3.json"
+        run: |
+          set -euo pipefail
+          python "$RUNNER_TEMP/hq-tools/scripts/verify_head.py" \
+            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
+            --pre-ref "$RUNNER_TEMP/ai-handoff/PRE_REF" \
+            --output "$RUNNER_TEMP/ai-handoff/HEAD_CHECK_3.json"
+          python "$RUNNER_TEMP/hq-tools/scripts/scope_guard.py" \
+            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
+            --pre-ref "$RUNNER_TEMP/ai-handoff/PRE_REF" \
+            --output "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_3.json"
+          python "$RUNNER_TEMP/hq-tools/scripts/capture_diff.py" \
+            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
+            --output "$RUNNER_TEMP/ai-handoff/SOURCE_DIFF_3.patch" \
+            --names-output "$RUNNER_TEMP/ai-handoff/CHANGED_FILENAMES_3.txt"
 
       - name: HQ review 3
         if: steps.review2.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 3
@@ -141,6 +207,7 @@ jobs:
             --iteration 3 \
             --codex-report "$RUNNER_TEMP/ai-handoff/CODEX_REPORT_3.md" \
             --scope-guard "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_3.json" \
+            --source-diff "$RUNNER_TEMP/ai-handoff/SOURCE_DIFF_3.patch" \
             --output "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_3.json" \
             --github-output "$GITHUB_OUTPUT"
 
@@ -149,16 +216,29 @@ jobs:
         env:
           HANDOFF_TASK_ID: ${{ steps.request.outputs.task_id }}
         run: |
-          mkdir -p "$RUNNER_TEMP/ai-handoff/final"
-          git diff --binary -- . > "$RUNNER_TEMP/ai-handoff/final/SOURCE_DIFF.patch" || true
-          git status --short > "$RUNNER_TEMP/ai-handoff/final/FINAL_GIT_STATUS.txt"
-          git diff --name-only > "$RUNNER_TEMP/ai-handoff/final/CHANGED_FILENAMES.txt" || true
+          set -u
+          mkdir -p "$RUNNER_TEMP/ai-handoff/final/FROZEN_AUTHORITY"
+          python "$RUNNER_TEMP/hq-tools/scripts/verify_head.py" \
+            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
+            --pre-ref "$RUNNER_TEMP/ai-handoff/PRE_REF" \
+            --output "$RUNNER_TEMP/ai-handoff/final/FINAL_HEAD_CHECK.json" || true
+          python "$RUNNER_TEMP/hq-tools/scripts/capture_diff.py" \
+            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
+            --output "$RUNNER_TEMP/ai-handoff/final/SOURCE_DIFF.patch" \
+            --names-output "$RUNNER_TEMP/ai-handoff/final/CHANGED_FILENAMES.txt" || true
+          git status --short --untracked-files=all > "$RUNNER_TEMP/ai-handoff/final/FINAL_GIT_STATUS.txt"
           cp "$RUNNER_TEMP"/ai-handoff/CODEX_REPORT_*.md "$RUNNER_TEMP/ai-handoff/final/" 2>/dev/null || true
           cp "$RUNNER_TEMP"/ai-handoff/HQ_REVIEW_*.json "$RUNNER_TEMP/ai-handoff/final/" 2>/dev/null || true
           cp "$RUNNER_TEMP"/ai-handoff/SCOPE_GUARD_*.json "$RUNNER_TEMP/ai-handoff/final/" 2>/dev/null || true
-          cp "$RUNNER_TEMP/ai-handoff/PRE_V3_SHA256SUMS.txt" "$RUNNER_TEMP/ai-handoff/final/" || true
-          cp .ai-handoff/REQUEST.json .ai-handoff/CODEX_TASK.md .ai-handoff/HQ_RULES.md "$RUNNER_TEMP/ai-handoff/final/"
-          find outputs artifacts screenshots runtime evidence -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) -exec cp --parents {} "$RUNNER_TEMP/ai-handoff/final/" \; 2>/dev/null || true
+          cp "$RUNNER_TEMP"/ai-handoff/HEAD_CHECK_*.json "$RUNNER_TEMP/ai-handoff/final/" 2>/dev/null || true
+          cp "$RUNNER_TEMP/ai-handoff/PRE_HEAD" "$RUNNER_TEMP/ai-handoff/PRE_REF" "$RUNNER_TEMP/ai-handoff/PRE_V3_SHA256SUMS.txt" "$RUNNER_TEMP/ai-handoff/FROZEN_AUTHORITY_SHA256SUMS.txt" "$RUNNER_TEMP/ai-handoff/final/"
+          cp -R "$RUNNER_TEMP/hq-tools/." "$RUNNER_TEMP/ai-handoff/final/FROZEN_AUTHORITY/"
+
+          python "$RUNNER_TEMP/hq-tools/scripts/runtime_evidence.py" \
+            --repo-root . \
+            --destination "$RUNNER_TEMP/ai-handoff/final/RUNTIME_VISUAL" \
+            --manifest "$RUNNER_TEMP/ai-handoff/final/RUNTIME_VISUAL_MANIFEST.json" \
+            --changed-list "$RUNNER_TEMP/ai-handoff/final/CHANGED_FILENAMES.txt"
 
           python "$RUNNER_TEMP/hq-tools/scripts/finalize.py" \
             --task-id "$HANDOFF_TASK_ID" \
