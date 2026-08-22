@@ -1,9 +1,11 @@
 {
-  "enabled": false,
+  "enabled": true,
   "task_id": "SECURITY-DRYRUN-01",
   "task_file": ".ai-handoff/CODEX_TASK.md",
   "max_auto_iterations": 1,
   "requires_runtime_visual": false,
-  "allowed_paths": [],
-  "notes": "Disarmed immediately after controlled one-shot run ID creation."
+  "allowed_paths": [
+    "v3-prototype/README.md"
+  ],
+  "notes": "Controlled one-shot dry run only."
 }
