@@ -10,7 +10,8 @@
     "v3-prototype/js/data.js",
     "v3-prototype/verify/core_loop.js",
     "v3-prototype/verify/edge_cases.js",
-    "v3-prototype/verify/a11y_responsive.js"
+    "v3-prototype/verify/a11y_responsive.js",
+    "v3-prototype/evidence/runtime/m05-w05-actual.png"
   ],
   "notes": "Example only."
 }
