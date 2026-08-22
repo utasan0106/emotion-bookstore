@@ -1,0 +1,132 @@
+[
+  {
+    "file": "assets/reference/m01_hero_reference.png",
+    "source": "01_表紙(7).png",
+    "crop_box_px": [
+      80,
+      0,
+      861,
+      650
+    ],
+    "width_px": 781,
+    "height_px": 650,
+    "sha256": "f3a8613ce48f6556c30c966b34c35c0a3308637c6e0c7ca59cb91a32bb18d287"
+  },
+  {
+    "file": "assets/reference/w01_hero_reference.png",
+    "source": "01_表紙(7).png",
+    "crop_box_px": [
+      0,
+      100,
+      941,
+      620
+    ],
+    "width_px": 941,
+    "height_px": 520,
+    "sha256": "6ebf93d4ba928a7af1d522b52e8125931e67e2dc85541a8b7154eee0c85747b4"
+  },
+  {
+    "file": "assets/reference/m01_step_01.png",
+    "source": "01_表紙(7).png",
+    "crop_box_px": [
+      90,
+      1300,
+      225,
+      1445
+    ],
+    "width_px": 135,
+    "height_px": 145,
+    "sha256": "f5ca12b16f08c4f0d770ef60ce71636a9aed3a1be07d12d1db3495720a46065c"
+  },
+  {
+    "file": "assets/reference/m01_step_02.png",
+    "source": "01_表紙(7).png",
+    "crop_box_px": [
+      295,
+      1300,
+      430,
+      1445
+    ],
+    "width_px": 135,
+    "height_px": 145,
+    "sha256": "5bc3d881b5e3d01e911f9826c88b8567917bd5d6e82f096d2f02e8c9f4efe504"
+  },
+  {
+    "file": "assets/reference/m01_step_03.png",
+    "source": "01_表紙(7).png",
+    "crop_box_px": [
+      500,
+      1300,
+      635,
+      1445
+    ],
+    "width_px": 135,
+    "height_px": 145,
+    "sha256": "45a587caeeaad138006f664d85303f3df9188394128e545b49e88c83464d8ddc"
+  },
+  {
+    "file": "assets/reference/m01_step_04.png",
+    "source": "01_表紙(7).png",
+    "crop_box_px": [
+      700,
+      1300,
+      835,
+      1445
+    ],
+    "width_px": 135,
+    "height_px": 145,
+    "sha256": "b19e3a22b3f25c2323a3300b59c17cab1a8e0aae14501c439c17b092bbacde73"
+  },
+  {
+    "file": "assets/reference/w01_step_01.png",
+    "source": "感情書店の水彩ランディングページ.png",
+    "crop_box_px": [
+      150,
+      645,
+      285,
+      785
+    ],
+    "width_px": 135,
+    "height_px": 140,
+    "sha256": "0bf46f71243914bfd90890ff82ca025d027fdc0169c670bd68e6bf8cc009a9a7"
+  },
+  {
+    "file": "assets/reference/w01_step_02.png",
+    "source": "感情書店の水彩ランディングページ.png",
+    "crop_box_px": [
+      515,
+      640,
+      685,
+      790
+    ],
+    "width_px": 170,
+    "height_px": 150,
+    "sha256": "48c513608dc769918b86f1084fedd24a103960d68501313d0250e5cf970fb9e4"
+  },
+  {
+    "file": "assets/reference/w01_step_03.png",
+    "source": "感情書店の水彩ランディングページ.png",
+    "crop_box_px": [
+      880,
+      640,
+      1010,
+      790
+    ],
+    "width_px": 130,
+    "height_px": 150,
+    "sha256": "45802d96bb580b17a0e01181870828afc1c9b6b5b23d2edcf4434be9c1ff0197"
+  },
+  {
+    "file": "assets/reference/w01_step_04.png",
+    "source": "感情書店の水彩ランディングページ.png",
+    "crop_box_px": [
+      1235,
+      635,
+      1405,
+      790
+    ],
+    "width_px": 170,
+    "height_px": 155,
+    "sha256": "b7ff39ca21eb9356efcfb9347b1874689f9f50cdb60d685589fd914d67bddad2"
+  }
+]
