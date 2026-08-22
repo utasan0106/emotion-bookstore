@@ -1,6 +1,8 @@
-# CODEX TASK
+# SECURITY-DRYRUN-01
 
-No task is active.
+Add exactly one line to `v3-prototype/README.md`:
 
-Paste the next HQ-approved implementation contract here,
-then update REQUEST.json and set enabled=true.
+`AI Handoff controlled dry-run verification marker.`
+
+Change no other file. This is a non-functional controlled dry-run marker only.
+Do not change Product behavior, Visual, CSS, storage, analytics, or network behavior.
