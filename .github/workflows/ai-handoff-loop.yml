@@ -15,15 +15,20 @@ permissions:
   contents: read
 
 jobs:
-  handoff:
+  job_a_codex:
+    name: "Job A — isolated Codex and untrusted candidate export"
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 90
     env:
       PYTHONDONTWRITEBYTECODE: "1"
+    outputs:
+      enabled: ${{ steps.request.outputs.enabled }}
+      task_id: ${{ steps.request.outputs.task_id }}
     steps:
-      - name: Checkout workbench
+      - name: Checkout exact immutable source
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
+          ref: ${{ github.sha }}
           persist-credentials: false
           fetch-depth: 1
 
@@ -33,228 +38,300 @@ jobs:
 
       - name: Disabled
         if: steps.request.outputs.enabled != 'true'
-        run: echo "REQUEST disabled; nothing executed." >> "$GITHUB_STEP_SUMMARY"
+        run: echo "REQUEST disabled; no Codex or HQ model call executed." >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Validate and freeze HQ authority
+      - name: Freeze Job A authority and content baseline
         if: steps.request.outputs.enabled == 'true'
+        env:
+          SECURITY_ROOT: ${{ runner.temp }}/job-a-security
         run: |
           set -euo pipefail
-          test -d v3-prototype || { echo "::error::v3-prototype missing from workbench branch"; exit 3; }
-          if find .ai-handoff/scripts .ai-handoff/schemas -type l -print -quit | grep -q .; then
-            echo "::error::symlinks are forbidden in HQ scripts/schemas"
-            exit 4
-          fi
-          test ! -L .ai-handoff/HQ_RULES.md
-          test ! -L .ai-handoff/REQUEST.json
-          test ! -L .ai-handoff/CODEX_TASK.md
-          python - <<'PY'
-          from pathlib import Path
-          for path in sorted(Path('.ai-handoff/scripts').glob('*.py')):
-              compile(path.read_bytes(), str(path), 'exec')
-          PY
+          test -d v3-prototype || { echo "::error::v3-prototype missing"; exit 3; }
+          mkdir -m 700 "$SECURITY_ROOT" "$RUNNER_TEMP/job-a-export"
+          git rev-parse HEAD > "$SECURITY_ROOT/PRE_HEAD"
+          { git symbolic-ref -q HEAD || printf 'DETACHED\n'; } > "$SECURITY_ROOT/PRE_REF"
 
-          mkdir -p "$RUNNER_TEMP/hq-tools" "$RUNNER_TEMP/ai-handoff"
-          git rev-parse HEAD > "$RUNNER_TEMP/ai-handoff/PRE_HEAD"
-          { git symbolic-ref -q HEAD || printf 'DETACHED\n'; } > "$RUNNER_TEMP/ai-handoff/PRE_REF"
-
-          cp -R .ai-handoff/scripts .ai-handoff/schemas "$RUNNER_TEMP/hq-tools/"
-          cp .ai-handoff/HQ_RULES.md .ai-handoff/REQUEST.json .ai-handoff/CODEX_TASK.md "$RUNNER_TEMP/hq-tools/"
-          find "$RUNNER_TEMP/hq-tools" -type f -print0 | sort -z | xargs -0 sha256sum > "$RUNNER_TEMP/ai-handoff/FROZEN_AUTHORITY_SHA256SUMS.txt"
-          chmod -R a-w "$RUNNER_TEMP/hq-tools"
-
-          python "$RUNNER_TEMP/hq-tools/scripts/build_codex_prompt.py"
-          find v3-prototype -type f -print0 | sort -z | xargs -0 sha256sum > "$RUNNER_TEMP/ai-handoff/PRE_V3_SHA256SUMS.txt"
-
-      - name: Codex 1
-        if: steps.request.outputs.enabled == 'true'
-        uses: openai/codex-action@52fe01ec70a42f454c9d2ebd47598f9fd6893d56 # v1.11
-        with:
-          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-          codex-version: "0.149.0"
-          prompt-file: /tmp/codex_prompt.md
-          output-file: ${{ runner.temp }}/ai-handoff/CODEX_REPORT_1.md
-          permission-profile: ":workspace"
-          safety-strategy: drop-sudo
-          model: ${{ vars.CODEX_MODEL || 'gpt-5.6-sol' }}
-          effort: ${{ vars.CODEX_EFFORT || 'max' }}
-
-      - name: Scope guard 1
-        if: steps.request.outputs.enabled == 'true'
-        run: |
-          set -euo pipefail
-          python "$RUNNER_TEMP/hq-tools/scripts/verify_head.py" \
-            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
-            --pre-ref "$RUNNER_TEMP/ai-handoff/PRE_REF" \
-            --output "$RUNNER_TEMP/ai-handoff/HEAD_CHECK_1.json"
-          python "$RUNNER_TEMP/hq-tools/scripts/scope_guard.py" \
-            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
-            --pre-ref "$RUNNER_TEMP/ai-handoff/PRE_REF" \
-            --output "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_1.json"
-          python "$RUNNER_TEMP/hq-tools/scripts/capture_diff.py" \
-            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
-            --output "$RUNNER_TEMP/ai-handoff/SOURCE_DIFF_1.patch" \
-            --names-output "$RUNNER_TEMP/ai-handoff/CHANGED_FILENAMES_1.txt"
-
-      - name: HQ review 1
-        if: steps.request.outputs.enabled == 'true'
-        id: review1
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          HQ_REVIEW_MODEL: ${{ vars.HQ_REVIEW_MODEL || 'gpt-5.6-sol' }}
-          HQ_REVIEW_EFFORT: ${{ vars.HQ_REVIEW_EFFORT || 'max' }}
-        run: |
-          python "$RUNNER_TEMP/hq-tools/scripts/hq_review.py" \
-            --iteration 1 \
-            --codex-report "$RUNNER_TEMP/ai-handoff/CODEX_REPORT_1.md" \
-            --scope-guard "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_1.json" \
-            --source-diff "$RUNNER_TEMP/ai-handoff/SOURCE_DIFF_1.patch" \
-            --output "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_1.json" \
-            --github-output "$GITHUB_OUTPUT"
-
-      - name: Fix prompt 2
-        if: steps.review1.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 2
-        run: python "$RUNNER_TEMP/hq-tools/scripts/make_fix_prompt.py" --review "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_1.json" --output /tmp/codex_fix_2.md
-
-      - name: Codex 2
-        if: steps.review1.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 2
-        uses: openai/codex-action@52fe01ec70a42f454c9d2ebd47598f9fd6893d56 # v1.11
-        with:
-          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-          codex-version: "0.149.0"
-          prompt-file: /tmp/codex_fix_2.md
-          output-file: ${{ runner.temp }}/ai-handoff/CODEX_REPORT_2.md
-          permission-profile: ":workspace"
-          safety-strategy: drop-sudo
-          model: ${{ vars.CODEX_MODEL || 'gpt-5.6-sol' }}
-          effort: ${{ vars.CODEX_EFFORT || 'max' }}
-
-      - name: Scope guard 2
-        if: steps.review1.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 2
-        run: |
-          set -euo pipefail
-          python "$RUNNER_TEMP/hq-tools/scripts/verify_head.py" \
-            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
-            --pre-ref "$RUNNER_TEMP/ai-handoff/PRE_REF" \
-            --output "$RUNNER_TEMP/ai-handoff/HEAD_CHECK_2.json"
-          python "$RUNNER_TEMP/hq-tools/scripts/scope_guard.py" \
-            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
-            --pre-ref "$RUNNER_TEMP/ai-handoff/PRE_REF" \
-            --output "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_2.json"
-          python "$RUNNER_TEMP/hq-tools/scripts/capture_diff.py" \
-            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
-            --output "$RUNNER_TEMP/ai-handoff/SOURCE_DIFF_2.patch" \
-            --names-output "$RUNNER_TEMP/ai-handoff/CHANGED_FILENAMES_2.txt"
-
-      - name: HQ review 2
-        if: steps.review1.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 2
-        id: review2
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          HQ_REVIEW_MODEL: ${{ vars.HQ_REVIEW_MODEL || 'gpt-5.6-sol' }}
-          HQ_REVIEW_EFFORT: ${{ vars.HQ_REVIEW_EFFORT || 'max' }}
-        run: |
-          python "$RUNNER_TEMP/hq-tools/scripts/hq_review.py" \
-            --iteration 2 \
-            --codex-report "$RUNNER_TEMP/ai-handoff/CODEX_REPORT_2.md" \
-            --scope-guard "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_2.json" \
-            --source-diff "$RUNNER_TEMP/ai-handoff/SOURCE_DIFF_2.patch" \
-            --output "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_2.json" \
-            --github-output "$GITHUB_OUTPUT"
-
-      - name: Fix prompt 3
-        if: steps.review2.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 3
-        run: python "$RUNNER_TEMP/hq-tools/scripts/make_fix_prompt.py" --review "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_2.json" --output /tmp/codex_fix_3.md
-
-      - name: Codex 3
-        if: steps.review2.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 3
-        uses: openai/codex-action@52fe01ec70a42f454c9d2ebd47598f9fd6893d56 # v1.11
-        with:
-          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-          codex-version: "0.149.0"
-          prompt-file: /tmp/codex_fix_3.md
-          output-file: ${{ runner.temp }}/ai-handoff/CODEX_REPORT_3.md
-          permission-profile: ":workspace"
-          safety-strategy: drop-sudo
-          model: ${{ vars.CODEX_MODEL || 'gpt-5.6-sol' }}
-          effort: ${{ vars.CODEX_EFFORT || 'max' }}
-
-      - name: Scope guard 3
-        if: steps.review2.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 3
-        run: |
-          set -euo pipefail
-          python "$RUNNER_TEMP/hq-tools/scripts/verify_head.py" \
-            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
-            --pre-ref "$RUNNER_TEMP/ai-handoff/PRE_REF" \
-            --output "$RUNNER_TEMP/ai-handoff/HEAD_CHECK_3.json"
-          python "$RUNNER_TEMP/hq-tools/scripts/scope_guard.py" \
-            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
-            --pre-ref "$RUNNER_TEMP/ai-handoff/PRE_REF" \
-            --output "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_3.json"
-          python "$RUNNER_TEMP/hq-tools/scripts/capture_diff.py" \
-            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
-            --output "$RUNNER_TEMP/ai-handoff/SOURCE_DIFF_3.patch" \
-            --names-output "$RUNNER_TEMP/ai-handoff/CHANGED_FILENAMES_3.txt"
-
-      - name: HQ review 3
-        if: steps.review2.outputs.disposition == 'LIMITED_FIX' && fromJSON(steps.request.outputs.max_iterations) >= 3
-        id: review3
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          HQ_REVIEW_MODEL: ${{ vars.HQ_REVIEW_MODEL || 'gpt-5.6-sol' }}
-          HQ_REVIEW_EFFORT: ${{ vars.HQ_REVIEW_EFFORT || 'max' }}
-        run: |
-          python "$RUNNER_TEMP/hq-tools/scripts/hq_review.py" \
-            --iteration 3 \
-            --codex-report "$RUNNER_TEMP/ai-handoff/CODEX_REPORT_3.md" \
-            --scope-guard "$RUNNER_TEMP/ai-handoff/SCOPE_GUARD_3.json" \
-            --source-diff "$RUNNER_TEMP/ai-handoff/SOURCE_DIFF_3.patch" \
-            --output "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_3.json" \
-            --github-output "$GITHUB_OUTPUT"
-
-      - name: Finalize
-        if: always() && steps.request.outputs.enabled == 'true'
-        env:
-          HANDOFF_TASK_ID: ${{ steps.request.outputs.task_id }}
-        run: |
-          set -u
-          mkdir -p "$RUNNER_TEMP/ai-handoff/final/FROZEN_AUTHORITY"
-          python "$RUNNER_TEMP/hq-tools/scripts/verify_head.py" \
-            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
-            --pre-ref "$RUNNER_TEMP/ai-handoff/PRE_REF" \
-            --output "$RUNNER_TEMP/ai-handoff/final/FINAL_HEAD_CHECK.json" || true
-          python "$RUNNER_TEMP/hq-tools/scripts/capture_diff.py" \
-            --pre-head "$RUNNER_TEMP/ai-handoff/PRE_HEAD" \
-            --output "$RUNNER_TEMP/ai-handoff/final/SOURCE_DIFF.patch" \
-            --names-output "$RUNNER_TEMP/ai-handoff/final/CHANGED_FILENAMES.txt" || true
-          git status --short --untracked-files=all > "$RUNNER_TEMP/ai-handoff/final/FINAL_GIT_STATUS.txt"
-          cp "$RUNNER_TEMP"/ai-handoff/CODEX_REPORT_*.md "$RUNNER_TEMP/ai-handoff/final/" 2>/dev/null || true
-          cp "$RUNNER_TEMP"/ai-handoff/HQ_REVIEW_*.json "$RUNNER_TEMP/ai-handoff/final/" 2>/dev/null || true
-          cp "$RUNNER_TEMP"/ai-handoff/SCOPE_GUARD_*.json "$RUNNER_TEMP/ai-handoff/final/" 2>/dev/null || true
-          cp "$RUNNER_TEMP"/ai-handoff/HEAD_CHECK_*.json "$RUNNER_TEMP/ai-handoff/final/" 2>/dev/null || true
-          cp "$RUNNER_TEMP/ai-handoff/PRE_HEAD" "$RUNNER_TEMP/ai-handoff/PRE_REF" "$RUNNER_TEMP/ai-handoff/PRE_V3_SHA256SUMS.txt" "$RUNNER_TEMP/ai-handoff/FROZEN_AUTHORITY_SHA256SUMS.txt" "$RUNNER_TEMP/ai-handoff/final/"
-          cp -R "$RUNNER_TEMP/hq-tools/." "$RUNNER_TEMP/ai-handoff/final/FROZEN_AUTHORITY/"
-
-          python "$RUNNER_TEMP/hq-tools/scripts/runtime_evidence.py" \
+          python .ai-handoff/scripts/git_state_guard.py sanitize \
             --repo-root . \
-            --destination "$RUNNER_TEMP/ai-handoff/final/RUNTIME_VISUAL" \
-            --manifest "$RUNNER_TEMP/ai-handoff/final/RUNTIME_VISUAL_MANIFEST.json" \
-            --changed-list "$RUNNER_TEMP/ai-handoff/final/CHANGED_FILENAMES.txt"
+            --hooks-dir "$SECURITY_ROOT/neutral-hooks" \
+            --output "$SECURITY_ROOT/GIT_STATE_BASELINE.json"
 
-          python "$RUNNER_TEMP/hq-tools/scripts/finalize.py" \
-            --task-id "$HANDOFF_TASK_ID" \
-            --output "$RUNNER_TEMP/ai-handoff/final/STATUS.json" \
-            --reviews \
-              "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_1.json" \
-              "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_2.json" \
-              "$RUNNER_TEMP/ai-handoff/HQ_REVIEW_3.json"
+          cp .ai-handoff/scripts/verify_frozen_authority.py "$SECURITY_ROOT/bootstrap_verify.py"
+          chmod 400 "$SECURITY_ROOT/bootstrap_verify.py"
+          (cd "$SECURITY_ROOT" && sha256sum bootstrap_verify.py > BOOTSTRAP_VERIFY_SHA256SUMS.txt)
 
-          cat "$RUNNER_TEMP/ai-handoff/final/STATUS.json" >> "$GITHUB_STEP_SUMMARY"
+          python .ai-handoff/scripts/freeze_authority.py \
+            --source-root .ai-handoff \
+            --bundle "$SECURITY_ROOT/hq-tools" \
+            --manifest "$SECURITY_ROOT/FROZEN_AUTHORITY_MANIFEST.json" \
+            --sha256sums "$SECURITY_ROOT/FROZEN_AUTHORITY_SHA256SUMS.txt" \
+            --allowed-root "$RUNNER_TEMP"
 
-      - name: Upload evidence
+          (cd "$SECURITY_ROOT" && sha256sum --check BOOTSTRAP_VERIFY_SHA256SUMS.txt)
+          python -I "$SECURITY_ROOT/bootstrap_verify.py" \
+            --bundle "$SECURITY_ROOT/hq-tools" \
+            --manifest "$SECURITY_ROOT/FROZEN_AUTHORITY_MANIFEST.json" \
+            --output "$SECURITY_ROOT/FROZEN_AUTHORITY_PRE_CODEX.json"
+
+          python "$SECURITY_ROOT/hq-tools/scripts/content_manifest.py" snapshot \
+            --root . \
+            --output "$SECURITY_ROOT/PRE_WORKTREE_MANIFEST.json" \
+            --copy-to "$SECURITY_ROOT/PREIMAGE"
+
+          python "$SECURITY_ROOT/hq-tools/scripts/build_codex_prompt.py" \
+            --output "$SECURITY_ROOT/codex_prompt.md" \
+            --allowed-output-root "$RUNNER_TEMP"
+
+      - name: Codex bounded implementation
+        if: steps.request.outputs.enabled == 'true'
+        uses: openai/codex-action@52fe01ec70a42f454c9d2ebd47598f9fd6893d56 # v1.11
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          codex-version: "0.149.0"
+          prompt-file: ${{ runner.temp }}/job-a-security/codex_prompt.md
+          output-file: ${{ runner.temp }}/job-a-export/CODEX_REPORT.md
+          permission-profile: ":workspace"
+          safety-strategy: drop-sudo
+          model: ${{ vars.CODEX_MODEL || 'gpt-5.6-sol' }}
+          effort: ${{ vars.CODEX_EFFORT || 'max' }}
+
+      - name: Verify Job A and export content-authoritative candidate
+        if: steps.request.outputs.enabled == 'true'
+        env:
+          SECURITY_ROOT: ${{ runner.temp }}/job-a-security
+          EXPORT_ROOT: ${{ runner.temp }}/job-a-export
+        run: |
+          set -euo pipefail
+          # Bootstrap hash check happens before any frozen Python is executed.
+          (cd "$SECURITY_ROOT" && sha256sum --check BOOTSTRAP_VERIFY_SHA256SUMS.txt)
+          python -I "$SECURITY_ROOT/bootstrap_verify.py" \
+            --bundle "$SECURITY_ROOT/hq-tools" \
+            --manifest "$SECURITY_ROOT/FROZEN_AUTHORITY_MANIFEST.json" \
+            --output "$EXPORT_ROOT/FROZEN_AUTHORITY_POST_CODEX.json"
+          python "$SECURITY_ROOT/hq-tools/scripts/git_state_guard.py" verify \
+            --repo-root . \
+            --expected "$SECURITY_ROOT/GIT_STATE_BASELINE.json" \
+            --output "$EXPORT_ROOT/GIT_STATE_POST_CODEX.json"
+          python "$SECURITY_ROOT/hq-tools/scripts/verify_head.py" \
+            --pre-head "$SECURITY_ROOT/PRE_HEAD" \
+            --pre-ref "$SECURITY_ROOT/PRE_REF" \
+            --output "$EXPORT_ROOT/HEAD_CHECK.json"
+
+          python "$SECURITY_ROOT/hq-tools/scripts/content_manifest.py" snapshot \
+            --root . \
+            --output "$EXPORT_ROOT/POST_WORKTREE_MANIFEST.json"
+          python "$SECURITY_ROOT/hq-tools/scripts/capture_diff.py" \
+            --repo-root . \
+            --preimage-root "$SECURITY_ROOT/PREIMAGE" \
+            --pre-manifest "$SECURITY_ROOT/PRE_WORKTREE_MANIFEST.json" \
+            --post-manifest "$EXPORT_ROOT/POST_WORKTREE_MANIFEST.json" \
+            --output "$EXPORT_ROOT/SOURCE_DIFF.patch" \
+            --names-output "$EXPORT_ROOT/CHANGED_FILENAMES.txt" \
+            --changes-output "$EXPORT_ROOT/CHANGES.json" \
+            --candidate-output "$EXPORT_ROOT/CANDIDATE.tar.gz"
+          python "$SECURITY_ROOT/hq-tools/scripts/scope_guard.py" \
+            --pre-head "$SECURITY_ROOT/PRE_HEAD" \
+            --pre-ref "$SECURITY_ROOT/PRE_REF" \
+            --pre-manifest "$SECURITY_ROOT/PRE_WORKTREE_MANIFEST.json" \
+            --post-manifest "$EXPORT_ROOT/POST_WORKTREE_MANIFEST.json" \
+            --output "$EXPORT_ROOT/SCOPE_GUARD.json"
+
+          cp "$SECURITY_ROOT/PRE_HEAD" "$SECURITY_ROOT/PRE_REF" \
+             "$SECURITY_ROOT/PRE_WORKTREE_MANIFEST.json" \
+             "$SECURITY_ROOT/FROZEN_AUTHORITY_MANIFEST.json" \
+             "$EXPORT_ROOT/"
+          printf '%s\n' 'Job A exports patch/evidence only. Its .git, worktree, config, index, and hooks are not exported.' \
+            > "$EXPORT_ROOT/JOB_A_BOUNDARY.txt"
+
+      - name: Upload untrusted Job A packet
         if: always() && steps.request.outputs.enabled == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: ai-handoff-${{ steps.request.outputs.task_id }}-${{ github.run_id }}
-          path: ${{ runner.temp }}/ai-handoff/final
+          name: ai-handoff-job-a-${{ steps.request.outputs.task_id }}-${{ github.run_id }}
+          path: ${{ runner.temp }}/job-a-export
+          retention-days: 1
+          if-no-files-found: error
+
+  job_b_hq:
+    name: "Job B — fresh checkout, deterministic review, HQ review"
+    needs: job_a_codex
+    if: needs.job_a_codex.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Fresh checkout of exact immutable base
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Freeze fresh Job B authority and neutralize Git
+        env:
+          SECURITY_ROOT: ${{ runner.temp }}/job-b-security
+        run: |
+          set -euo pipefail
+          mkdir -m 700 "$SECURITY_ROOT" "$RUNNER_TEMP/job-b-final"
+          git rev-parse HEAD > "$SECURITY_ROOT/PRE_HEAD"
+          { git symbolic-ref -q HEAD || printf 'DETACHED\n'; } > "$SECURITY_ROOT/PRE_REF"
+          python .ai-handoff/scripts/validate_request.py --repo-root .
+          python .ai-handoff/scripts/git_state_guard.py sanitize \
+            --repo-root . \
+            --hooks-dir "$SECURITY_ROOT/neutral-hooks" \
+            --output "$SECURITY_ROOT/GIT_STATE_BASELINE.json"
+          cp .ai-handoff/scripts/verify_frozen_authority.py "$SECURITY_ROOT/bootstrap_verify.py"
+          chmod 400 "$SECURITY_ROOT/bootstrap_verify.py"
+          (cd "$SECURITY_ROOT" && sha256sum bootstrap_verify.py > BOOTSTRAP_VERIFY_SHA256SUMS.txt)
+          python .ai-handoff/scripts/freeze_authority.py \
+            --source-root .ai-handoff \
+            --bundle "$SECURITY_ROOT/hq-tools" \
+            --manifest "$SECURITY_ROOT/FROZEN_AUTHORITY_MANIFEST.json" \
+            --sha256sums "$SECURITY_ROOT/FROZEN_AUTHORITY_SHA256SUMS.txt" \
+            --allowed-root "$RUNNER_TEMP"
+          (cd "$SECURITY_ROOT" && sha256sum --check BOOTSTRAP_VERIFY_SHA256SUMS.txt)
+          python -I "$SECURITY_ROOT/bootstrap_verify.py" \
+            --bundle "$SECURITY_ROOT/hq-tools" \
+            --manifest "$SECURITY_ROOT/FROZEN_AUTHORITY_MANIFEST.json" \
+            --output "$SECURITY_ROOT/FROZEN_AUTHORITY_PRE_IMPORT.json"
+          python "$SECURITY_ROOT/hq-tools/scripts/content_manifest.py" snapshot \
+            --root . \
+            --output "$SECURITY_ROOT/PRE_WORKTREE_MANIFEST.json" \
+            --copy-to "$SECURITY_ROOT/PREIMAGE"
+
+      - name: Download Job A packet as untrusted data
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: ai-handoff-job-a-${{ needs.job_a_codex.outputs.task_id }}-${{ github.run_id }}
+          path: ${{ runner.temp }}/job-b-incoming
+
+      - name: Validate and import untrusted candidate only
+        env:
+          SECURITY_ROOT: ${{ runner.temp }}/job-b-security
+          INCOMING_ROOT: ${{ runner.temp }}/job-b-incoming
+          FINAL_ROOT: ${{ runner.temp }}/job-b-final
+        run: |
+          set -euo pipefail
+          if find "$INCOMING_ROOT" \( -name .git -o -type l \) -print -quit | grep -q .; then
+            echo "::error::Job A packet attempted to include .git state or a symlink"
+            exit 20
+          fi
+          test -f "$INCOMING_ROOT/CODEX_REPORT.md"
+          test "$(wc -c < "$INCOMING_ROOT/CODEX_REPORT.md")" -le 2000000
+          # Re-verify fresh authority after the untrusted artifact arrives.
+          (cd "$SECURITY_ROOT" && sha256sum --check BOOTSTRAP_VERIFY_SHA256SUMS.txt)
+          python -I "$SECURITY_ROOT/bootstrap_verify.py" \
+            --bundle "$SECURITY_ROOT/hq-tools" \
+            --manifest "$SECURITY_ROOT/FROZEN_AUTHORITY_MANIFEST.json" \
+            --output "$FINAL_ROOT/FROZEN_AUTHORITY_PRE_IMPORT.json"
+          python "$SECURITY_ROOT/hq-tools/scripts/candidate_import.py" \
+            --repo-root . \
+            --archive "$INCOMING_ROOT/CANDIDATE.tar.gz" \
+            --pre-manifest "$SECURITY_ROOT/PRE_WORKTREE_MANIFEST.json" \
+            --staging-root "$RUNNER_TEMP/job-b-candidate-staging" \
+            --output "$FINAL_ROOT/CANDIDATE_IMPORT.json"
+
+          python "$SECURITY_ROOT/hq-tools/scripts/content_manifest.py" snapshot \
+            --root . \
+            --output "$FINAL_ROOT/POST_WORKTREE_MANIFEST.json"
+          python "$SECURITY_ROOT/hq-tools/scripts/git_state_guard.py" verify \
+            --repo-root . \
+            --expected "$SECURITY_ROOT/GIT_STATE_BASELINE.json" \
+            --output "$FINAL_ROOT/GIT_STATE_POST_IMPORT.json"
+          python "$SECURITY_ROOT/hq-tools/scripts/verify_head.py" \
+            --pre-head "$SECURITY_ROOT/PRE_HEAD" \
+            --pre-ref "$SECURITY_ROOT/PRE_REF" \
+            --output "$FINAL_ROOT/HEAD_CHECK.json"
+          python "$SECURITY_ROOT/hq-tools/scripts/capture_diff.py" \
+            --repo-root . \
+            --preimage-root "$SECURITY_ROOT/PREIMAGE" \
+            --pre-manifest "$SECURITY_ROOT/PRE_WORKTREE_MANIFEST.json" \
+            --post-manifest "$FINAL_ROOT/POST_WORKTREE_MANIFEST.json" \
+            --output "$FINAL_ROOT/SOURCE_DIFF.patch" \
+            --names-output "$FINAL_ROOT/CHANGED_FILENAMES.txt" \
+            --changes-output "$FINAL_ROOT/CHANGES.json"
+          python "$SECURITY_ROOT/hq-tools/scripts/scope_guard.py" \
+            --pre-head "$SECURITY_ROOT/PRE_HEAD" \
+            --pre-ref "$SECURITY_ROOT/PRE_REF" \
+            --pre-manifest "$SECURITY_ROOT/PRE_WORKTREE_MANIFEST.json" \
+            --post-manifest "$FINAL_ROOT/POST_WORKTREE_MANIFEST.json" \
+            --output "$FINAL_ROOT/SCOPE_GUARD.json"
+
+          printf '{"job_a_git_state_reused":false,"job_a_worktree_reused":false,"job_a_index_reused":false,"job_a_hooks_reused":false,"input_class":"untrusted patch/evidence only"}\n' \
+            > "$FINAL_ROOT/JOB_BOUNDARY.json"
+          cp "$INCOMING_ROOT/CODEX_REPORT.md" "$FINAL_ROOT/CODEX_REPORT.md"
+          cp "$INCOMING_ROOT/SOURCE_DIFF.patch" "$FINAL_ROOT/JOB_A_SOURCE_DIFF_UNTRUSTED.patch"
+
+      - name: Verify frozen authority immediately before HQ review
+        env:
+          SECURITY_ROOT: ${{ runner.temp }}/job-b-security
+          FINAL_ROOT: ${{ runner.temp }}/job-b-final
+        run: |
+          set -euo pipefail
+          (cd "$SECURITY_ROOT" && sha256sum --check BOOTSTRAP_VERIFY_SHA256SUMS.txt)
+          python -I "$SECURITY_ROOT/bootstrap_verify.py" \
+            --bundle "$SECURITY_ROOT/hq-tools" \
+            --manifest "$SECURITY_ROOT/FROZEN_AUTHORITY_MANIFEST.json" \
+            --output "$FINAL_ROOT/FROZEN_AUTHORITY_PRE_HQ_REVIEW.json"
+
+      - name: Independent HQ review
+        id: review
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          HQ_REVIEW_MODEL: ${{ vars.HQ_REVIEW_MODEL || 'gpt-5.6-sol' }}
+          HQ_REVIEW_EFFORT: ${{ vars.HQ_REVIEW_EFFORT || 'max' }}
+        run: |
+          python "$RUNNER_TEMP/job-b-security/hq-tools/scripts/hq_review.py" \
+            --iteration 1 \
+            --codex-report "$RUNNER_TEMP/job-b-final/CODEX_REPORT.md" \
+            --scope-guard "$RUNNER_TEMP/job-b-final/SCOPE_GUARD.json" \
+            --source-diff "$RUNNER_TEMP/job-b-final/SOURCE_DIFF.patch" \
+            --authority-manifest "$RUNNER_TEMP/job-b-security/FROZEN_AUTHORITY_MANIFEST.json" \
+            --authority-verification-output "$RUNNER_TEMP/job-b-final/FROZEN_AUTHORITY_IN_HQ_REVIEW.json" \
+            --output "$RUNNER_TEMP/job-b-final/HQ_REVIEW.json" \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Finalize evidence from fresh Job B
+        if: always()
+        env:
+          HANDOFF_TASK_ID: ${{ needs.job_a_codex.outputs.task_id }}
+          SECURITY_ROOT: ${{ runner.temp }}/job-b-security
+          FINAL_ROOT: ${{ runner.temp }}/job-b-final
+        run: |
+          set -u
+          mkdir -p "$FINAL_ROOT/FROZEN_AUTHORITY" "$FINAL_ROOT/RUNTIME_VISUAL"
+          if ! (cd "$SECURITY_ROOT" && sha256sum --check BOOTSTRAP_VERIFY_SHA256SUMS.txt) || \
+             ! python -I "$SECURITY_ROOT/bootstrap_verify.py" \
+                 --bundle "$SECURITY_ROOT/hq-tools" \
+                 --manifest "$SECURITY_ROOT/FROZEN_AUTHORITY_MANIFEST.json" \
+                 --output "$FINAL_ROOT/FROZEN_AUTHORITY_FINALIZE.json"; then
+            printf '%s\n' 'Frozen authority invalid; no frozen finalizer code executed.' \
+              > "$FINAL_ROOT/FINALIZATION_SECURITY_HOLD.txt"
+            exit 0
+          fi
+          cp -R "$SECURITY_ROOT/hq-tools/." "$FINAL_ROOT/FROZEN_AUTHORITY/" 2>/dev/null || true
+          cp "$SECURITY_ROOT/FROZEN_AUTHORITY_MANIFEST.json" \
+             "$SECURITY_ROOT/FROZEN_AUTHORITY_SHA256SUMS.txt" \
+             "$SECURITY_ROOT/PRE_HEAD" "$SECURITY_ROOT/PRE_REF" \
+             "$SECURITY_ROOT/PRE_WORKTREE_MANIFEST.json" \
+             "$FINAL_ROOT/" 2>/dev/null || true
+          python "$SECURITY_ROOT/hq-tools/scripts/runtime_evidence.py" \
+            --repo-root . \
+            --destination "$FINAL_ROOT/RUNTIME_VISUAL" \
+            --manifest "$FINAL_ROOT/RUNTIME_VISUAL_MANIFEST.json" \
+            --changed-list "$FINAL_ROOT/CHANGED_FILENAMES.txt" || true
+          python "$SECURITY_ROOT/hq-tools/scripts/finalize.py" \
+            --task-id "$HANDOFF_TASK_ID" \
+            --output "$FINAL_ROOT/STATUS.json" \
+            --reviews "$FINAL_ROOT/HQ_REVIEW.json" || true
+          cat "$FINAL_ROOT/STATUS.json" >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+
+      - name: Upload final Job B evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ai-handoff-${{ needs.job_a_codex.outputs.task_id }}-${{ github.run_id }}
+          path: ${{ runner.temp }}/job-b-final
           retention-days: 30
           if-no-files-found: error

@@ -8,9 +8,22 @@ import urllib.request
 from pathlib import Path
 
 from runtime_evidence import authorized_image_paths
+from schema_validate import validate as validate_schema
 from validate_request import load_and_validate_request
+from verify_frozen_authority import verify as verify_frozen_authority
 
 BUNDLE_ROOT = Path(__file__).resolve().parents[1]
+MAX_REPORT_BYTES = 2_000_000
+MAX_DIFF_BYTES = 20_000_000
+
+
+def read_limited_text(path, maximum):
+    candidate = Path(path)
+    if candidate.is_symlink() or not candidate.is_file():
+        raise ValueError(f"review input must be a regular file: {candidate}")
+    if candidate.stat().st_size > maximum:
+        raise ValueError(f"review input exceeds byte limit: {candidate}")
+    return candidate.read_text(encoding="utf-8", errors="replace")
 
 
 def response_text(response):
@@ -23,7 +36,8 @@ def response_text(response):
     return "\n".join(texts).strip()
 
 
-def write_review(review, output_path, github_output):
+def write_review(review, schema, output_path, github_output):
+    validate_schema(review, schema)
     Path(output_path).write_text(
         json.dumps(review, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
@@ -52,7 +66,18 @@ def main():
     parser.add_argument("--source-diff", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--github-output", required=True)
+    parser.add_argument("--authority-manifest", required=True)
+    parser.add_argument("--authority-verification-output")
     args = parser.parse_args()
+
+    authority_check = verify_frozen_authority(BUNDLE_ROOT, args.authority_manifest)
+    if args.authority_verification_output:
+        Path(args.authority_verification_output).write_text(
+            json.dumps(authority_check, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+    if not authority_check["ok"]:
+        raise SystemExit("frozen HQ authority verification failed before review")
 
     request, _ = load_and_validate_request(
         BUNDLE_ROOT / "REQUEST.json", require_task_file=False
@@ -74,7 +99,7 @@ def main():
             },
             protected=True,
         )
-        write_review(review, args.output, args.github_output)
+        write_review(review, schema, args.output, args.github_output)
         return
 
     image_paths = authorized_image_paths(changed_paths=guard.get("changed", []))
@@ -91,14 +116,11 @@ def main():
         review["evidence_required"].append(
             "Create the exact runtime image path authorized by frozen REQUEST.allowed_paths."
         )
-        write_review(review, args.output, args.github_output)
+        write_review(review, schema, args.output, args.github_output)
         return
 
-    report_path = Path(args.codex_report)
-    report = report_path.read_text(encoding="utf-8") if report_path.exists() else "(missing)"
-    source_diff = Path(args.source_diff).read_text(
-        encoding="utf-8", errors="replace"
-    )
+    report = read_limited_text(args.codex_report, MAX_REPORT_BYTES)
+    source_diff = read_limited_text(args.source_diff, MAX_DIFF_BYTES)
 
     prompt = f"""Independent HQ review iteration {args.iteration}.
 
@@ -164,7 +186,7 @@ Review the implementation. Do not edit it.
 
     review = json.loads(response_text(api_response))
     review["runtime_visual_evidence_present"] = bool(image_paths)
-    write_review(review, args.output, args.github_output)
+    write_review(review, schema, args.output, args.github_output)
 
 
 if __name__ == "__main__":

@@ -29,6 +29,9 @@
 #   ogp*.jpg・ogp.png / sitemap.xml / guide-en.html
 # =============================================================================
 
+# ---- V3 automation workbench (never part of Production delivery) ------------
+/v3-prototype/
+
 # ---- 内部 QA / テスト ----------------------------------------------------
 tests/
 /smoke_test_content_trust_fix1.js
