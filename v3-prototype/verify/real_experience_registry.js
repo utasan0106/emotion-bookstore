@@ -98,12 +98,20 @@ const exp007 = R.byId('EXP_007', '2026-08-22');
 const exp001Actions = window.V3_ACTION_DESTINATION.actionsForExperience(exp001);
 const exp007Actions = window.V3_ACTION_DESTINATION.actionsForExperience(exp007);
 check('E EXP_001 AD passes Sprint 01 contract', exp001Actions.length === 1 && exp001Actions[0].url === 'https://e-comi.shogakukan.co.jp/books/098501800000d0000000');
-check('E EXP_007 AD passes Sprint 01 contract', exp007Actions.length === 1 && exp007Actions[0].url === 'https://fng.or.jp/shinjuku/');
+check('E EXP_007 AD passes Sprint 01 contract', exp007Actions.length === 2 &&
+  exp007Actions[0].url === 'https://fng.or.jp/shinjuku/' &&
+  exp007Actions[1].destinationClass === 'map_directions');
 check('E primary destinations are HTTPS', records.every((r) => new URL(r.actionDestination.url).protocol === 'https:'));
-check('E no invalid/dead AD among mounted records', records.every((r) => window.V3_ACTION_DESTINATION.actionsForExperience(r).length === 1));
+check('E no invalid/dead AD among mounted records', records.every((r) =>
+  window.V3_ACTION_DESTINATION.actionsForExperience(r).length === (r.id === 'EXP_007' ? 2 : 1)));
 check('F EXP_001 CTA makes electronic-comic medium explicit', /電子コミック/.test(exp001.actionDestination.label) && !/紙|ISBN/.test(exp001.actionDestination.label));
 check('G EXP_007 officiality remains official', exp007.actionDestination.officiality === 'official');
-check('G no Maps fallback is invented', records.every((r) => !('physicalDestination' in r)));
+check('G EXP_007 Maps utility uses approved public address only',
+  exp007.physicalDestination.approved === true &&
+  exp007.physicalDestination.address === '東京都新宿区内藤町11' &&
+  exp007Actions[1].url === 'https://www.google.com/maps/dir/?api=1&destination=' +
+    encodeURIComponent('東京都新宿区内藤町11') &&
+  !(new URL(exp007Actions[1].url)).searchParams.has('origin'));
 
 check('H placement approval does not itself claim image reuse', records.every((r) =>
   r.rights.imageReuseApproved === false));
