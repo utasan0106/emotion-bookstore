@@ -325,6 +325,91 @@ img { max-width: 100%; height: auto; display: block; }
   .loop-note { letter-spacing: 0; margin-inline: -4px; }
 }
 
+/* =============================================================================
+ * Place Detail limited fix — content and typography hierarchy
+ * Only approved real-place Detail receives this treatment.
+ * ========================================================================== */
+
+.place-detail {
+  max-width: 760px;
+}
+.place-detail .real-experience-visual--detail {
+  margin-bottom: 16px;
+}
+.place-detail-title {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+}
+.place-detail-meta {
+  margin-top: 5px;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+.place-detail-content {
+  margin-top: 20px;
+}
+.place-detail-section + .place-detail-section {
+  margin-top: 20px;
+}
+.place-detail .section-title {
+  margin-top: 0;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  color: var(--navy);
+}
+.place-detail-body {
+  margin-top: 7px;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+.place-detail-access {
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+}
+.place-detail-facts {
+  margin-top: 9px;
+  grid-template-columns: 4rem minmax(0, 1fr);
+  row-gap: 7px;
+  font-family: var(--sans);
+}
+.place-detail-facts dt {
+  font-size: 12px;
+  font-weight: 500;
+}
+.place-detail-facts dd {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.place-detail .actions {
+  margin-top: 24px;
+}
+
+@media (min-width: 760px) {
+  .place-detail-title {
+    font-size: 28px;
+  }
+  .place-detail-content {
+    margin-top: 22px;
+  }
+  .place-detail-section + .place-detail-section {
+    margin-top: 22px;
+  }
+  .place-detail-body {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+}
+
 .loop-step { text-align: center; display: flex; flex-direction: column; align-items: center; }
 .loop-step .loop-title { flex: none; }
 /* M01 asset は番号バッジと円形イラストを内包する。二重描画しない。 */
