@@ -1,0 +1,194 @@
+{
+  "schema": "V3_M03_W03_CANONICAL_ASSET_MANIFEST_v0_1",
+  "created_at_jst": "2026-08-21",
+  "authority": "99_v3_canonical_clean_v1",
+  "status": "CONDITIONAL_PREP_NOT_EXECUTION_AUTHORIZED",
+  "production_rights_status": "UNREVIEWED_PROTOTYPE_ONLY",
+  "rules": [
+    "target visual authority is M03_Discovery.png and W03_Discovery.png",
+    "no AI generation, inpainting, redraw, recolor, or external image",
+    "no full canonical screenshot background",
+    "no text-baked target crop",
+    "M03 clean cafe visual is a direct crop from canonical M04A of the same scene; source exception is explicitly recorded",
+    "all real-world-looking names, addresses, prices, hours, covers, and posters are unverified prototype fixtures and cannot ship to Production"
+  ],
+  "sources": {
+    "canonical/M03_Discovery.png": {
+      "width": 1024,
+      "height": 1536,
+      "sha256": "f2c0a98042bd53a0160c1dd31eac48011421170d6acd2d502451331df713df83"
+    },
+    "canonical/W03_Discovery.png": {
+      "width": 1536,
+      "height": 1024,
+      "sha256": "9f4b3d4ddbdbd38f6c1755675a786fca1728405f4c0349778cb9cc17c0de1361"
+    },
+    "provenance_sources/M04_DiscoveryReview_A.png": {
+      "width": 1024,
+      "height": 1536,
+      "sha256": "f128dc970cbe073033ec4d86042e9d33cc46055a330e6eb10fa03ce55f1269a1"
+    }
+  },
+  "assets": [
+    {
+      "file": "assets/canonical-m03-w03/m03_cafe_clean.png",
+      "source": "provenance_sources/M04_DiscoveryReview_A.png",
+      "source_sha256": "f128dc970cbe073033ec4d86042e9d33cc46055a330e6eb10fa03ce55f1269a1",
+      "crop_xywh": [
+        95,
+        508,
+        346,
+        270
+      ],
+      "output_width": 346,
+      "output_height": 270,
+      "output_sha256": "31e43cbf5366c55dc97f98a50f0653363166a5c3e60d418cfd390da83a3ac5cf",
+      "usage": "M03 mobile cafe image; clean same-scene crop from M04A because M03 screenshot contains a text badge",
+      "css_treatment": "object-fit:cover; object-position:center 8%; HTML/CSS location badge; no baked text"
+    },
+    {
+      "file": "assets/canonical-m03-w03/w03_cafe_main.png",
+      "source": "canonical/W03_Discovery.png",
+      "source_sha256": "9f4b3d4ddbdbd38f6c1755675a786fca1728405f4c0349778cb9cc17c0de1361",
+      "crop_xywh": [
+        63,
+        169,
+        646,
+        431
+      ],
+      "output_width": 646,
+      "output_height": 431,
+      "output_sha256": "aa26c8b6164a5481192f6fe24637c6f8d7fd9e4b2dcd4fae747147d054d25439",
+      "usage": "W03 primary cafe image",
+      "css_treatment": "scale only; preserve aspect ratio; no recolor"
+    },
+    {
+      "file": "assets/canonical-m03-w03/w03_thumb_01.png",
+      "source": "canonical/W03_Discovery.png",
+      "source_sha256": "9f4b3d4ddbdbd38f6c1755675a786fca1728405f4c0349778cb9cc17c0de1361",
+      "crop_xywh": [
+        63,
+        609,
+        111,
+        101
+      ],
+      "output_width": 111,
+      "output_height": 101,
+      "output_sha256": "1257857635858a6dd7a2599ae28d71df7cc83c8dcfda7b64a64b08b81cf05f38",
+      "usage": "W03 gallery thumbnail 1",
+      "css_treatment": "scale only"
+    },
+    {
+      "file": "assets/canonical-m03-w03/w03_thumb_02.png",
+      "source": "canonical/W03_Discovery.png",
+      "source_sha256": "9f4b3d4ddbdbd38f6c1755675a786fca1728405f4c0349778cb9cc17c0de1361",
+      "crop_xywh": [
+        183,
+        609,
+        122,
+        101
+      ],
+      "output_width": 122,
+      "output_height": 101,
+      "output_sha256": "a576e4e39300651b378ff0f2f0e36cd0cc5774644685e832eec32bc24252e536",
+      "usage": "W03 gallery thumbnail 2",
+      "css_treatment": "scale only"
+    },
+    {
+      "file": "assets/canonical-m03-w03/w03_thumb_03.png",
+      "source": "canonical/W03_Discovery.png",
+      "source_sha256": "9f4b3d4ddbdbd38f6c1755675a786fca1728405f4c0349778cb9cc17c0de1361",
+      "crop_xywh": [
+        314,
+        609,
+        132,
+        101
+      ],
+      "output_width": 132,
+      "output_height": 101,
+      "output_sha256": "7cbabc7116c9ed9f6f327225839b46f28fd40c0113e2d2e0b2a4d968e5e514a3",
+      "usage": "W03 gallery thumbnail 3",
+      "css_treatment": "scale only"
+    },
+    {
+      "file": "assets/canonical-m03-w03/w03_thumb_04.png",
+      "source": "canonical/W03_Discovery.png",
+      "source_sha256": "9f4b3d4ddbdbd38f6c1755675a786fca1728405f4c0349778cb9cc17c0de1361",
+      "crop_xywh": [
+        455,
+        609,
+        73,
+        101
+      ],
+      "output_width": 73,
+      "output_height": 101,
+      "output_sha256": "c955e6afb64665a3b99eece7f7073c77a8954843e0f5c4110c90df39bb842020",
+      "usage": "W03 gallery thumbnail 4",
+      "css_treatment": "scale only"
+    },
+    {
+      "file": "assets/canonical-m03-w03/w03_thumb_05.png",
+      "source": "canonical/W03_Discovery.png",
+      "source_sha256": "9f4b3d4ddbdbd38f6c1755675a786fca1728405f4c0349778cb9cc17c0de1361",
+      "crop_xywh": [
+        568,
+        609,
+        141,
+        101
+      ],
+      "output_width": 141,
+      "output_height": 101,
+      "output_sha256": "ef97ffbcb963411e6a9cb2d6d31b9ccc8db8e49cad84f3e1a250fa15f13bc6cd",
+      "usage": "W03 gallery thumbnail 5",
+      "css_treatment": "scale only"
+    },
+    {
+      "file": "assets/canonical-m03-w03/w03_book_cover.png",
+      "source": "canonical/W03_Discovery.png",
+      "source_sha256": "9f4b3d4ddbdbd38f6c1755675a786fca1728405f4c0349778cb9cc17c0de1361",
+      "crop_xywh": [
+        427,
+        801,
+        90,
+        135
+      ],
+      "output_width": 90,
+      "output_height": 135,
+      "output_sha256": "9e80eb45a07f0634e65a98c39b83e78337197d912fb6c7023f76edbc85278efc",
+      "usage": "W03 alternative book visual",
+      "css_treatment": "scale only; prototype fixture only"
+    },
+    {
+      "file": "assets/canonical-m03-w03/w03_film_poster.png",
+      "source": "canonical/W03_Discovery.png",
+      "source_sha256": "9f4b3d4ddbdbd38f6c1755675a786fca1728405f4c0349778cb9cc17c0de1361",
+      "crop_xywh": [
+        873,
+        801,
+        98,
+        135
+      ],
+      "output_width": 98,
+      "output_height": 135,
+      "output_sha256": "2c47db8762ea7ea5d6d5d69078672e4489238b25314fb631f16e65784cd65b16",
+      "usage": "W03 alternative film visual",
+      "css_treatment": "scale only; prototype fixture only"
+    },
+    {
+      "file": "assets/canonical-m03-w03/w03_editorial_decoration.png",
+      "source": "canonical/W03_Discovery.png",
+      "source_sha256": "9f4b3d4ddbdbd38f6c1755675a786fca1728405f4c0349778cb9cc17c0de1361",
+      "crop_xywh": [
+        1248,
+        505,
+        206,
+        193
+      ],
+      "output_width": 206,
+      "output_height": 193,
+      "output_sha256": "e59da582f662213d5a5369f0207ab0de6a4975f786f7a6f3c32efa0f1c215c86",
+      "usage": "W03 editorial vase/cup decoration",
+      "css_treatment": "scale only; optional enhancement"
+    }
+  ]
+}
