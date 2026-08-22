@@ -1,0 +1,9 @@
+{
+  "enabled": false,
+  "task_id": "BOOTSTRAP-NO-RUN",
+  "task_file": ".ai-handoff/CODEX_TASK.md",
+  "max_auto_iterations": 3,
+  "requires_runtime_visual": true,
+  "allowed_paths": [],
+  "notes": "Disabled until OPENAI_API_KEY is configured and a real task is inserted."
+}

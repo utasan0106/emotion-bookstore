@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "task_id": "V3-M05-W05-PHASE1",
+  "task_file": ".ai-handoff/CODEX_TASK.md",
+  "max_auto_iterations": 3,
+  "requires_runtime_visual": true,
+  "allowed_paths": [
+    "v3-prototype/css/v3.css",
+    "v3-prototype/js/app.js",
+    "v3-prototype/js/data.js",
+    "v3-prototype/verify/core_loop.js",
+    "v3-prototype/verify/edge_cases.js",
+    "v3-prototype/verify/a11y_responsive.js"
+  ],
+  "notes": "Example only."
+}
