@@ -54,7 +54,7 @@ const productJs = fs.readdirSync(path.join(SRC, 'js'))
 const records = R.snapshot();
 const deck = R.deckForEmotion('mada', '2026-08-22');
 
-check('registry version explicit', R.VERSION === 'sprint02-activation-v1.0');
+check('registry version explicit', R.VERSION === 'product-semantics-state-a-v1.0');
 check('A only human-approved real IDs exist', JSON.stringify(records.map((r) => r.id)) === JSON.stringify(['EXP_001', 'EXP_007']));
 check('A approved ID contract exact', JSON.stringify(R.APPROVED_IDS) === JSON.stringify(['EXP_001', 'EXP_007']));
 check('A approved records resolve', Boolean(R.byId('EXP_001', '2026-08-22') && R.byId('EXP_007', '2026-08-22')));
@@ -76,13 +76,21 @@ check('B fixture data contains no real registry payload',
   !fs.readFileSync(files.data, 'utf8').includes('EXP_001') &&
   !fs.readFileSync(files.data, 'utf8').includes('actionDestination'));
 
-check('C approved Deck mounts only two IDs', deck && JSON.stringify(deck.ids) === JSON.stringify(['EXP_001', 'EXP_007']));
-check('C no forced third card', deck && deck.ids.length === 2 && deck.fillFlag === false);
-check('C relation coverage exact', deck && JSON.stringify(deck.relationCoverage) === JSON.stringify({ direct: 1, adjacent: 0, opening: 1 }));
-check('C only まだ名前がない activates real Deck', R.deckForEmotion('zawatsuku', '2026-08-22') === null);
-check('C Product mode routes two-card Deck through existing generic surfaces',
+check('C approved Outing Deck mounts only EXP_007', deck && JSON.stringify(deck.ids) === JSON.stringify(['EXP_007']));
+check('C EXP_001 remains Registry record but not Outing slot',
+  R.byId('EXP_001', '2026-08-22') && R.OUTING_IDS.indexOf('EXP_001') === -1 &&
+  /CULTURE_SIDECAR_NOT_OUTING/.test(R.OUTING_EXCLUSIONS.EXP_001));
+check('C no forced fill', deck && deck.ids.length === 1 && deck.fillFlag === false);
+check('C relation coverage exact', deck && JSON.stringify(deck.relationCoverage) === JSON.stringify({ direct: 0, adjacent: 0, opening: 1 }));
+check('C all 8 shelves resolve finite 0/1 decks', R.SHELF_IDS.every((id) => {
+  const candidate = R.deckForEmotion(id, '2026-08-22');
+  return candidate && candidate.ids.length >= 0 && candidate.ids.length <= 3;
+}));
+check('C only まだ名前がない activates real Outing Deck',
+  R.SHELF_IDS.filter((id) => R.deckForEmotion(id, '2026-08-22').ids.length > 0).join('|') === 'mada');
+check('C Product mode routes one-card Deck through existing generic surfaces',
   app.includes("startDeck('real-approved', realDeck.ids)") &&
-  app.includes("deck.mode === 'personalized' || deck.mode === 'real-approved'") &&
+  app.includes("deck.mode !== 'real-approved'") &&
   app.includes("var counter = (deck.index + 1) + ' / ' + deck.ids.length"));
 check('C review/retry count derives from active Deck',
   app.includes("text: activeDeckCount() + 'つをもう一度見る'") &&
@@ -90,8 +98,8 @@ check('C review/retry count derives from active Deck',
 
 check('D freshness boundary includes recheck date', Boolean(R.byId('EXP_007', '2027-02-18')));
 check('D stale EXP_007 fails closed', R.byId('EXP_007', '2027-02-19') === null);
-check('D stale Deck fails closed rather than partial render', R.deckForEmotion('mada', '2027-02-19') === null);
-check('D invalid as-of date fails closed', R.deckForEmotion('mada', 'not-a-date') === null);
+check('D stale Deck fails closed to explicit zero rather than partial render', R.deckForEmotion('mada', '2027-02-19').ids.length === 0);
+check('D invalid as-of date fails closed to explicit zero', R.deckForEmotion('mada', 'not-a-date').ids.length === 0);
 
 const exp001 = R.byId('EXP_001', '2026-08-22');
 const exp007 = R.byId('EXP_007', '2026-08-22');

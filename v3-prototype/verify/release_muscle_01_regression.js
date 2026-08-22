@@ -85,7 +85,6 @@ const baseApp = atBase('v3-prototype/js/app.js');
 const app = current('v3-prototype/js/app.js');
 [
   'finiteDiscoveryIds', 'startDeck', 'undo',
-  'surfaceEntrance', 'surfaceEmotion',
   'surfacePlan', 'surfacePlanSaved',
   'surfaceMoment', 'surfaceTrace'
 ].forEach((name) => {
@@ -93,6 +92,10 @@ const app = current('v3-prototype/js/app.js');
   const after = functionSource(app, name);
   check(`${name} behavior source unchanged`, Boolean(before && after) && before === after);
 });
+check('authorized Entrance/Emotion semantics changed without route redesign',
+  functionSource(app, 'surfaceEntrance').includes('感情の棚を選ぶ') &&
+  functionSource(app, 'surfaceEmotion').includes('どんな感情の棚を、') &&
+  functionSource(app, 'surfaceEmotion').includes('今の気持ちと同じでなくて大丈夫です。少し気になる棚を、ひとつ。'));
 
 const normalizedDecide = functionSource(app, 'decide')
   .replace("activeDeckCount() + 'つすべてを「今回は違う」としました。'", "'3つすべてを「今回は違う」としました。'")
@@ -100,28 +103,9 @@ const normalizedDecide = functionSource(app, 'decide')
 check('decide behavior unchanged except authoritative Deck count',
   normalizedDecide === functionSource(baseApp, 'decide'));
 
-const normalizedCanonicalReview = functionSource(app, 'surfaceCanonicalReview')
-  .replace('    var count = activeDeckCount();\n', '')
-  .replace("count + 'つの体験を見直す'", "'3つの体験を見直す'")
-  .replace("count + 'つ見ました'", "'3つ見ました'")
-  .replace("count + ' / ' + count", "'3 / 3'")
-  .replace(
-    "h('div', { class: 'm04-progress-dots', 'aria-label': count + 'つ中' + count + 'つを確認済み' },\n" +
-    "        state.deck.ids.map(function () { return h('span', { class: 'is-complete' }); }))",
-    "h('div', { class: 'm04-progress-dots', 'aria-label': '3つ中3つを確認済み' }, [\n" +
-    "        h('span', { class: 'is-complete' }),\n" +
-    "        h('span', { class: 'is-complete' }),\n" +
-    "        h('span', { class: 'is-complete' })\n" +
-    "      ])"
-  )
-  .replace("count + 'つの体験の判定を見直す'", "'3つの体験の判定を見直す'")
-  .replace(
-    "count + 'つすべてを「今回は違う」とした場合は、ここで終了することも、もう一度' + count + 'つを見ることもできます。'",
-    "'3つすべてを「今回は違う」とした場合は、ここで終了することも、もう一度3つを見ることもできます。'"
-  )
-  .replace("count + 'つを見直す'", "'3つを見直す'");
-check('surfaceCanonicalReview behavior unchanged except authoritative Deck count',
-  normalizedCanonicalReview === functionSource(baseApp, 'surfaceCanonicalReview'));
+check('prototype canonical fixture Review is not reachable from current Product router',
+  functionSource(app, 'surfaceReview').includes("state.deck.mode !== 'real-approved'") &&
+  !functionSource(app, 'surfaceReview').includes('surfaceCanonicalReview'));
 
 const deckCountSurfaces = [
   'decide', 'stepbarConfig', 'surfaceLegacyDiscovery', 'desktopDiscoveryStep',
@@ -144,11 +128,11 @@ const twoRecordDiscovery = vm.runInNewContext(
 check('2-record active Deck cannot render count-dependent 3-copy',
   twoRecordReview.title === '2つ見ました' &&
   twoRecordReview.count === '2 / 2' &&
-  twoRecordReview.stepTitle === '気になる2つの体験から選ぶ' &&
-  twoRecordReview.hint === '2つのうち、気になるものを1つ選んでください' &&
+  twoRecordReview.stepTitle === '2つの寄り道から選ぶ' &&
+  twoRecordReview.hint === '2つのうち、気になるものを選んでください' &&
   twoRecordDiscovery.count === '2 / 2' &&
-  twoRecordDiscovery.stepTitle === '気になる2つの体験から選ぶ' &&
-  twoRecordDiscovery.hint === '2つのうち、気になるものを1つ選んでください' &&
+  twoRecordDiscovery.stepTitle === '2つの寄り道から選ぶ' &&
+  twoRecordDiscovery.hint === '2つのうち、気になるものを選んでください' &&
   app.includes('function activeDeckCount()') &&
   deckCountSurfaces.includes('activeDeckCount()') &&
   !/次の3つ|気になる3つの体験|3つのうち|3つ見ました|3 \/ 3|3つ中3つ|3つを見直す|他の2つの体験/.test(deckCountSurfaces));
@@ -175,8 +159,10 @@ check('Editorial/personalization mapping unchanged',
   current('v3-prototype/js/personalize.js') === atBase('v3-prototype/js/personalize.js'));
 
 const indexDiff = git(['diff', '--unified=0', BASE, '--', 'v3-prototype/index.html']);
-check('index change is script mount only',
+check('index keeps Action Destination mount and authorized Japanese-only header',
   indexDiff.includes('<script src="./js/action_destination.js"></script>') &&
+  current('v3-prototype/index.html').includes('>感情の棚</button>') &&
+  !/class="locale|locale-globe|locale-chevron|>JP</.test(current('v3-prototype/index.html')) &&
   !indexDiff.includes('<link') && !indexDiff.includes('<main'));
 check('N Canonical visual source retained (CSS/assets/data)',
   !git(['diff', '--unified=0', BASE, '--', 'v3-prototype/css/v3.css']).split('\n')

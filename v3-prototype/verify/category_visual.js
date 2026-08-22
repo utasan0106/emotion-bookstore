@@ -86,7 +86,9 @@ check('EXP_007 credit and visual contract unchanged', exp007.visualAsset.status 
   exp007.visualAsset.localAssetPath === './assets/real-experience/EXP_007_shinjuku_gyoen_official_landscape.jpg' &&
   exp007.visualAsset.attributionText === '写真提供「新宿御苑管理事務所」');
 const deck = R.deckForEmotion('mada', '2026-08-22');
-check('no third card/unapproved Experience', deck && JSON.stringify(deck.ids) === JSON.stringify(['EXP_001', 'EXP_007']) && deck.fillFlag === false);
+check('Outing deck excludes Culture Sidecar candidate and never pads',
+  deck && JSON.stringify(deck.ids) === JSON.stringify(['EXP_007']) && deck.fillFlag === false &&
+  R.OUTING_IDS.indexOf('EXP_001') === -1);
 
 const productJs = fs.readdirSync(path.join(SRC, 'js')).filter((name) => name.endsWith('.js'))
   .map((name) => fs.readFileSync(path.join(SRC, 'js', name), 'utf8')).join('\n');

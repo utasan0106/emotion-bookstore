@@ -132,8 +132,10 @@ check('no stretch rule: only contain/cover object-fit classes', css.includes('.f
 check('canonical CSS changes are additive only', !git(['diff', '--unified=0', BASE, '--', 'v3-prototype/css/v3.css']).split('\n').some((line) => /^-[^-]/.test(line)));
 
 const deck = R.deckForEmotion('mada', '2026-08-22');
-check('exactly EXP_001 / EXP_007 only', deck && JSON.stringify(deck.ids) === JSON.stringify(['EXP_001', 'EXP_007']));
-check('no third card', deck && deck.ids.length === 2 && deck.fillFlag === false);
+check('approved visual records remain EXP_001 / EXP_007',
+  JSON.stringify(R.APPROVED_IDS) === JSON.stringify(['EXP_001', 'EXP_007']));
+check('Outing deck uses only EXP_007 and does not fill',
+  deck && JSON.stringify(deck.ids) === JSON.stringify(['EXP_007']) && deck.fillFlag === false);
 ['EXP_003', 'EXP_005', 'EXP_008', 'EXP_010', 'EXP_011', 'EXP_012'].forEach((id) => {
   check(`${id} absent`, R.byId(id, '2026-08-22') === null);
 });
