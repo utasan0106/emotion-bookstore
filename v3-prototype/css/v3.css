@@ -576,6 +576,12 @@ img { max-width: 100%; height: auto; display: block; }
 @media (min-width: 1200px) {
   :root { --gutter: 40px; }
 
+  .stepbar-back svg {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+  }
+
   .site-header {
     display: flex; align-items: center; justify-content: space-between;
     gap: 32px;
