@@ -1,0 +1,10 @@
+# 検証実行のためにローカルへ入れる依存。Product の dependency ではないため
+# repo には含めない（dependency delta を 0 に保つ）。
+# verify/*.js の browser 検証に必要な場合のみ:
+#   npm install --no-save playwright@1.56.0
+node_modules/
+
+# RC 証跡のうち再生成できるもの。容量が大きいため repo には含めない。
+# 再生成: cd v3-prototype && node verify/release_closure_runtime_cert.js
+v3-prototype/.rc-evidence/screens/
+v3-prototype/.rc-evidence/runtime_cert.json
