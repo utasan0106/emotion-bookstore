@@ -19,6 +19,13 @@
     'zawatsuku', 'butsukaru', 'miwohiku', 'mada'
   ];
   var OUTING_RELATIONS = {
+    hajimu: [{ experienceId: 'EXP_101', relation: 'direct' }],
+    atatamaru: [{ experienceId: 'EXP_102', relation: 'direct' }],
+    hikareru: [{ experienceId: 'EXP_103', relation: 'direct' }],
+    shizumu: [{ experienceId: 'EXP_104', relation: 'direct' }],
+    zawatsuku: [{ experienceId: 'EXP_105', relation: 'direct' }],
+    butsukaru: [{ experienceId: 'EXP_106', relation: 'direct' }],
+    miwohiku: [{ experienceId: 'EXP_107', relation: 'direct' }],
     mada: [{ experienceId: 'EXP_007', relation: 'opening' }]
   };
   var fixtureById = global.V3_DATA && global.V3_DATA.byId;
@@ -123,28 +130,387 @@
       }
     },
     {
+      id: 'EXP_101',
+      sourceClass: SOURCE_CLASS,
+      title: 'チームラボボーダレス',
+      type: '展示',
+      duration: '8:30–21:00（通常）',
+      price: '大人 3,600円〜',
+      tags: ['展示を歩く'],
+      reason: '館内には地図がなく、作品も空間を移動する。感情書店では、決められた順路をたどるより、次の空間を自分で探しながら進む構造を見て、この場所を「心が弾む」に置きました。',
+      authority: {
+        state: APPROVED_STATE,
+        deckRef: DECK_REF,
+        placementRef: 'PH-RWO-001',
+        reviewerHuman: true,
+        reviewedAt: '2026-08-23T22:33:00+09:00',
+        realDataGateResult: 'REAL_DATA_GATE_READY_FOR_PHASE0',
+        livenessCheckedAt: '2026-08-23T22:33:00+09:00'
+      },
+      editorial: { relation: 'direct' },
+      freshness: { recheckBy: '2026-08-24' },
+      rights: { imageReuseApproved: false, textReuseApproved: false },
+      placeDetail: {
+        description: '作品同士が境界を越えて移動し、ほかの作品と影響し合いながら連続する、地図のないミュージアムです。',
+        recommendedStay: '順路を決めすぎず、ひとつの作品を追って別の空間へ進み、作品同士の重なりや変化を確かめます。',
+        placementReason: '館内には地図がなく、作品も空間を移動する。感情書店では、決められた順路をたどるより、次の空間を自分で探しながら進む構造を見て、この場所を「心が弾む」に置きました。',
+        access: {
+          address: '東京都港区虎ノ門5-9 麻布台ヒルズ ガーデンプラザB B1',
+          nearestStation: '東京メトロ日比谷線 神谷町駅 5番出口',
+          walkingTime: '駅直結'
+        },
+        provenance: {
+          garden: 'https://www.teamlab.art/jp/e/tokyo/',
+          access: 'https://www.teamlab.art/jp/e/tokyo/',
+          verifiedOn: '2026-08-23'
+        }
+      },
+      physicalDestination: {
+        approved: true,
+        address: '東京都港区虎ノ門5-9 麻布台ヒルズ ガーデンプラザB B1'
+      },
+      visualAsset: resolveVisualAsset(
+        null, 'exhibition', '展示', 'real_visual_reuse_not_verified'
+      ),
+      actionDestination: {
+        type: 'official_page',
+        nextAction: 'visit',
+        officiality: 'official',
+        url: 'https://www.teamlab.art/jp/e/tokyo/',
+        label: '公式サイトで日時とチケットを見る'
+      }
+    },
+    {
+      id: 'EXP_102',
+      sourceClass: SOURCE_CLASS,
+      title: '東京おもちゃ美術館',
+      type: '美術館',
+      duration: '10:00–16:00',
+      price: '大人 1,100円〜',
+      tags: ['おもちゃで遊ぶ'],
+      reason: 'ここでは、おもちゃを展示として眺めるだけでなく、実際に触れて遊び、おもちゃ学芸員が遊びと人の出会いをつなぐ。感情書店では、おもちゃを間にして人と人のやりとりが生まれる仕組みを見て、この場所を「心があたたまる」に置きました。',
+      authority: {
+        state: APPROVED_STATE,
+        deckRef: DECK_REF,
+        placementRef: 'PH-RWO-002',
+        reviewerHuman: true,
+        reviewedAt: '2026-08-23T22:33:00+09:00',
+        realDataGateResult: 'REAL_DATA_GATE_READY_FOR_PHASE0',
+        livenessCheckedAt: '2026-08-23T22:33:00+09:00'
+      },
+      editorial: { relation: 'direct' },
+      freshness: { recheckBy: '2026-09-06' },
+      rights: { imageReuseApproved: false, textReuseApproved: false },
+      placeDetail: {
+        description: '旧校舎を活用した館内に、世界およそ100か国・約1万5千点のおもちゃが集まり、遊びを案内する「おもちゃ学芸員」がいます。',
+        recommendedStay: '展示を眺めるだけでなく、おもちゃ学芸員に遊び方を尋ね、世代の異なる人が同じおもちゃをどう扱うかを見てみます。',
+        placementReason: 'ここでは、おもちゃを展示として眺めるだけでなく、実際に触れて遊び、おもちゃ学芸員が遊びと人の出会いをつなぐ。感情書店では、おもちゃを間にして人と人のやりとりが生まれる仕組みを見て、この場所を「心があたたまる」に置きました。',
+        access: {
+          address: '東京都新宿区四谷4-20 四谷ひろば内',
+          nearestStation: '東京メトロ丸ノ内線 四谷三丁目駅 2番出口',
+          walkingTime: '徒歩5分'
+        },
+        provenance: {
+          garden: 'https://art-play.or.jp/ttm/info/',
+          access: 'https://art-play.or.jp/ttm/info/',
+          verifiedOn: '2026-08-23'
+        }
+      },
+      physicalDestination: {
+        approved: true,
+        address: '東京都新宿区四谷4-20 四谷ひろば内'
+      },
+      visualAsset: resolveVisualAsset(
+        null, 'place', '場所', 'real_visual_reuse_not_verified'
+      ),
+      actionDestination: {
+        type: 'official_page',
+        nextAction: 'visit',
+        officiality: 'official',
+        url: 'https://art-play.or.jp/ttm/info/',
+        label: '公式サイトで利用案内を見る'
+      }
+    },
+    {
+      id: 'EXP_103',
+      sourceClass: SOURCE_CLASS,
+      title: 'ザ・ペーパーログ：膜と核',
+      type: '展示',
+      duration: '10:00–19:00',
+      price: '無料',
+      tags: ['素材と形を見る'],
+      reason: '衣服のプリーツ加工で生まれる副産物の紙が、「膜」のオブジェと「核」の家具プロトタイプへ、対照的な方法で展開されている。感情書店では、同じ紙が別の姿へ変わる対照そのものを入口にして、この展示を「惹かれる」に置きました。',
+      authority: {
+        state: APPROVED_STATE,
+        deckRef: DECK_REF,
+        placementRef: 'PH-RWO-003',
+        reviewerHuman: true,
+        reviewedAt: '2026-08-23T22:33:00+09:00',
+        realDataGateResult: 'REAL_DATA_GATE_READY_FOR_PHASE0',
+        livenessCheckedAt: '2026-08-23T22:33:00+09:00'
+      },
+      editorial: { relation: 'direct' },
+      freshness: { recheckBy: '2026-09-13' },
+      rights: { imageReuseApproved: false, textReuseApproved: false },
+      placeDetail: {
+        description: 'プリーツ製品の製造工程から生まれる副産物の紙「ペーパーログ」を、膜のような物体や家具の核へ展開する展示です。',
+        recommendedStay: '作品の形へ先に近づき、素材の由来を知ったあとでもう一度、膜と核の違いを見比べます。',
+        placementReason: '衣服のプリーツ加工で生まれる副産物の紙が、「膜」のオブジェと「核」の家具プロトタイプへ、対照的な方法で展開されている。感情書店では、同じ紙が別の姿へ変わる対照そのものを入口にして、この展示を「惹かれる」に置きました。',
+        access: {
+          address: '東京都港区赤坂9-7-6 東京ミッドタウン・ガーデン内',
+          nearestStation: '都営大江戸線 六本木駅／東京メトロ千代田線 乃木坂駅',
+          walkingTime: '徒歩5分'
+        },
+        provenance: {
+          garden: 'https://2121designsight.jp/gallery3/the_paper_log/',
+          access: 'https://2121designsight.jp/gallery3/the_paper_log/',
+          verifiedOn: '2026-08-23'
+        }
+      },
+      physicalDestination: {
+        approved: true,
+        address: '東京都港区赤坂9-7-6 東京ミッドタウン・ガーデン内'
+      },
+      visualAsset: resolveVisualAsset(
+        null, 'exhibition', '展示', 'real_visual_reuse_not_verified'
+      ),
+      actionDestination: {
+        type: 'official_page',
+        nextAction: 'visit',
+        officiality: 'official',
+        url: 'https://2121designsight.jp/gallery3/the_paper_log/',
+        label: '公式サイトで開催情報を見る'
+      }
+    },
+    {
+      id: 'EXP_104',
+      sourceClass: SOURCE_CLASS,
+      title: '東京都復興記念館',
+      type: '記念館',
+      duration: '9:00–17:00',
+      price: '無料',
+      tags: ['都市の記憶を見る'],
+      reason: '関東大震災の被災物や写真、絵画、復興模型に加え、東京空襲の実物資料も同じ建物に残されている。感情書店では、被害と復興の時間が資料として積み重なった場所に留まって見る入口として、この場所を「沈む」に置きました。',
+      authority: {
+        state: APPROVED_STATE,
+        deckRef: DECK_REF,
+        placementRef: 'PH-RWO-004',
+        reviewerHuman: true,
+        reviewedAt: '2026-08-23T22:33:00+09:00',
+        realDataGateResult: 'REAL_DATA_GATE_READY_FOR_PHASE0',
+        livenessCheckedAt: '2026-08-23T22:33:00+09:00'
+      },
+      editorial: { relation: 'direct' },
+      freshness: { recheckBy: '2026-12-27' },
+      rights: { imageReuseApproved: false, textReuseApproved: false },
+      placeDetail: {
+        description: '関東大震災と東京大空襲の被害、復興の歩みを、損傷した日用品、写真、絵画、模型などで伝える記念館です。',
+        recommendedStay: '損傷した実物と記録を急いで見終えず、都市の日常が壊れ、再びつくられてきた時間を一点ずつ確かめます。',
+        placementReason: '関東大震災の被災物や写真、絵画、復興模型に加え、東京空襲の実物資料も同じ建物に残されている。感情書店では、被害と復興の時間が資料として積み重なった場所に留まって見る入口として、この場所を「沈む」に置きました。',
+        access: {
+          address: '東京都墨田区横網2-3-25',
+          nearestStation: '都営大江戸線 両国駅 A1出口',
+          walkingTime: '徒歩2分'
+        },
+        provenance: {
+          garden: 'https://tokyoireikyoukai.or.jp/museum/tenji.html',
+          access: 'https://tokyoireikyoukai.or.jp/museum/riyou.html',
+          verifiedOn: '2026-08-23'
+        }
+      },
+      physicalDestination: {
+        approved: true,
+        address: '東京都墨田区横網2-3-25'
+      },
+      visualAsset: resolveVisualAsset(
+        null, 'place', '場所', 'real_visual_reuse_not_verified'
+      ),
+      actionDestination: {
+        type: 'official_page',
+        nextAction: 'visit',
+        officiality: 'official',
+        url: 'https://tokyoireikyoukai.or.jp/museum/riyou.html',
+        label: '公式サイトで利用案内を見る'
+      }
+    },
+    {
+      id: 'EXP_105',
+      sourceClass: SOURCE_CLASS,
+      title: 'TOPコレクション 明日の食卓',
+      type: '展示',
+      duration: '10:00–18:00',
+      price: '一般 700円',
+      tags: ['写真を見る'],
+      reason: '「食」を入口に、記憶や人とのつながりだけでなく、環境、高齢化、孤食などの社会的な問いまで見せる展覧会。感情書店では、見慣れた「食べる」という行為の周りに別の層が現れる構成を見て、この展示を「ざわつく」に置きました。',
+      authority: {
+        state: APPROVED_STATE,
+        deckRef: DECK_REF,
+        placementRef: 'PH-RWO-005',
+        reviewerHuman: true,
+        reviewedAt: '2026-08-23T22:33:00+09:00',
+        realDataGateResult: 'REAL_DATA_GATE_READY_FOR_PHASE0',
+        livenessCheckedAt: '2026-08-23T22:33:00+09:00'
+      },
+      editorial: { relation: 'direct' },
+      freshness: { recheckBy: '2026-09-21' },
+      rights: { imageReuseApproved: false, textReuseApproved: false },
+      placeDetail: {
+        description: '東京都写真美術館のコレクションから、食をめぐる記憶や家族、孤食、高齢化、環境などを写真でたどる展覧会です。',
+        recommendedStay: '身近な食卓を写した作品から見始め、安心していた見方がどの作品で揺れるかを立ち止まって確かめます。',
+        placementReason: '「食」を入口に、記憶や人とのつながりだけでなく、環境、高齢化、孤食などの社会的な問いまで見せる展覧会。感情書店では、見慣れた「食べる」という行為の周りに別の層が現れる構成を見て、この展示を「ざわつく」に置きました。',
+        access: {
+          address: '東京都目黒区三田1-13-3 恵比寿ガーデンプレイス内',
+          nearestStation: 'JR恵比寿駅 東口',
+          walkingTime: '徒歩7分'
+        },
+        provenance: {
+          garden: 'https://topmuseum.jp/exhibition/5419/',
+          access: 'https://topmuseum.jp/exhibition/5419/',
+          verifiedOn: '2026-08-23'
+        }
+      },
+      physicalDestination: {
+        approved: true,
+        address: '東京都目黒区三田1-13-3 恵比寿ガーデンプレイス内'
+      },
+      visualAsset: resolveVisualAsset(
+        null, 'exhibition', '展示', 'real_visual_reuse_not_verified'
+      ),
+      actionDestination: {
+        type: 'official_page',
+        nextAction: 'visit',
+        officiality: 'official',
+        url: 'https://topmuseum.jp/exhibition/5419/',
+        label: '公式サイトで開催情報を見る'
+      }
+    },
+    {
+      id: 'EXP_106',
+      sourceClass: SOURCE_CLASS,
+      title: '80 GRAPHIC TRIALS',
+      type: '展示',
+      duration: '10:00–18:00',
+      price: '無料',
+      tags: ['グラフィックを見る'],
+      reason: 'GRAPHIC TRIALは、クリエイターとTOPPANの共創で、グラフィックデザインと印刷表現の新しい可能性を探ってきた20年の試み。感情書店では、異なる発想と技術が接触し、その試行の積み重ねが見えることを「ぶつかる」として読みました。',
+      authority: {
+        state: APPROVED_STATE,
+        deckRef: DECK_REF,
+        placementRef: 'PH-RWO-006',
+        reviewerHuman: true,
+        reviewedAt: '2026-08-23T22:33:00+09:00',
+        realDataGateResult: 'REAL_DATA_GATE_READY_FOR_PHASE0',
+        livenessCheckedAt: '2026-08-23T22:33:00+09:00'
+      },
+      editorial: { relation: 'direct' },
+      freshness: { recheckBy: '2026-08-28' },
+      rights: { imageReuseApproved: false, textReuseApproved: false },
+      placeDetail: {
+        description: 'クリエイターと印刷会社が協働し、印刷表現の可能性を探ってきた企画から、80人のクリエイターによるグラフィック作品を紹介する展覧会です。',
+        recommendedStay: '一枚ずつ完成形だけを見るのではなく、異なる発想と印刷技術がどこで接触して表現になったかを見比べます。',
+        placementReason: 'GRAPHIC TRIALは、クリエイターとTOPPANの共創で、グラフィックデザインと印刷表現の新しい可能性を探ってきた20年の試み。感情書店では、異なる発想と技術が接触し、その試行の積み重ねが見えることを「ぶつかる」として読みました。',
+        access: {
+          address: '東京都文京区水道1-3-3 トッパン小石川本社ビル',
+          nearestStation: '東京メトロ有楽町線 江戸川橋駅 4番出口',
+          walkingTime: '徒歩8分'
+        },
+        provenance: {
+          garden: 'https://www.printing-museum.org/collection/exhibition/g20260627.php',
+          access: 'https://www.printing-museum.org/collection/exhibition/g20260627.php',
+          verifiedOn: '2026-08-23'
+        }
+      },
+      physicalDestination: {
+        approved: true,
+        address: '東京都文京区水道1-3-3 トッパン小石川本社ビル'
+      },
+      visualAsset: resolveVisualAsset(
+        null, 'exhibition', '展示', 'real_visual_reuse_not_verified'
+      ),
+      actionDestination: {
+        type: 'official_page',
+        nextAction: 'visit',
+        officiality: 'official',
+        url: 'https://www.printing-museum.org/collection/exhibition/g20260627.php',
+        label: '公式サイトで開催情報を見る'
+      }
+    },
+    {
+      id: 'EXP_107',
+      sourceClass: SOURCE_CLASS,
+      title: '文喫 六本木',
+      type: '書店',
+      duration: '9:00–21:00',
+      price: '平日 2,750円〜',
+      tags: ['本に囲まれて過ごす'],
+      reason: '文喫は、約3万冊の本を販売しながら、一人で本と向き合う閲覧室などを備え、入場料を払って滞在する書店。感情書店では、何かをすぐ選ぶより、本に囲まれる時間そのものを先に確保する仕組みを見て、この場所を「身を引く」に置きました。',
+      authority: {
+        state: APPROVED_STATE,
+        deckRef: DECK_REF,
+        placementRef: 'PH-RWO-007',
+        reviewerHuman: true,
+        reviewedAt: '2026-08-23T22:33:00+09:00',
+        realDataGateResult: 'REAL_DATA_GATE_READY_FOR_PHASE0',
+        livenessCheckedAt: '2026-08-23T22:33:00+09:00'
+      },
+      editorial: { relation: 'direct' },
+      freshness: { recheckBy: '2026-09-22' },
+      rights: { imageReuseApproved: false, textReuseApproved: false },
+      placeDetail: {
+        description: '約3万冊の本を販売しながら、閲覧室や研究室、喫茶室で本に囲まれて過ごせる入場制の書店です。',
+        recommendedStay: '目的の本をすぐ決めず、閲覧室や研究室で棚を眺め、いつもの情報の流れから距離を取る時間をつくります。',
+        placementReason: '文喫は、約3万冊の本を販売しながら、一人で本と向き合う閲覧室などを備え、入場料を払って滞在する書店。感情書店では、何かをすぐ選ぶより、本に囲まれる時間そのものを先に確保する仕組みを見て、この場所を「身を引く」に置きました。',
+        access: {
+          address: '東京都港区六本木6-1-20 六本木電気ビル1F',
+          nearestStation: '東京メトロ日比谷線／都営大江戸線 六本木駅 3・1a出口',
+          walkingTime: '徒歩1分'
+        },
+        provenance: {
+          garden: 'https://roppongi.bunkitsu.jp/store/',
+          access: 'https://roppongi.bunkitsu.jp/store/',
+          verifiedOn: '2026-08-23'
+        }
+      },
+      physicalDestination: {
+        approved: true,
+        address: '東京都港区六本木6-1-20 六本木電気ビル1F'
+      },
+      visualAsset: resolveVisualAsset(
+        null, 'bookstore', '書店', 'real_visual_reuse_not_verified'
+      ),
+      actionDestination: {
+        type: 'official_page',
+        nextAction: 'visit',
+        officiality: 'official',
+        url: 'https://roppongi.bunkitsu.jp/store/',
+        label: '公式サイトで利用案内を見る'
+      }
+    },
+    {
       id: 'EXP_007',
       sourceClass: SOURCE_CLASS,
       title: '新宿御苑',
       type: '場所',
+      duration: '9:00–18:00（8–9月）',
+      price: '一般 500円',
       tags: ['場所を訪れる'],
-      reason: '感情を入口に、場所という角度から世界へ触れるために置いています。',
+      reason: '新宿御苑では、整形式庭園、風景式庭園、日本庭園など、歩くうちに景色の組み立て方が切り替わる。感情書店では、ひとつの見方に名前をつけて固定する前に、異なる景色の秩序を行き来してみる場所として、この場所を「まだ名前がない」に置きました。',
       authority: {
         state: APPROVED_STATE,
         deckRef: DECK_REF,
         placementRef: 'PH-P0-003',
         reviewerHuman: true,
-        reviewedAt: '2026-08-22T20:05:00+09:00',
+        reviewedAt: '2026-08-23T22:33:00+09:00',
         realDataGateResult: 'REAL_DATA_GATE_READY_FOR_PHASE0',
-        livenessCheckedAt: '2026-08-22T19:17:42+09:00'
+        livenessCheckedAt: '2026-08-23T22:33:00+09:00'
       },
       editorial: { relation: 'opening' },
-      freshness: { recheckBy: '2027-02-18' },
+      freshness: { recheckBy: '2026-09-29' },
       rights: { imageReuseApproved: false, textReuseApproved: false },
       placeDetail: {
         description: '新宿御苑は、ただ広い緑地ではありません。58.3ヘクタールの同じ園内で、芝生と巨樹がゆるやかな景色をつくる風景式庭園、左右対称のプラタナス並木を軸にした整形式庭園、日本庭園へと、歩くにつれて景色の秩序そのものが切り替わります。',
         recommendedStay: '全部を見ようとせず、風景式庭園と整形式庭園の二つを歩き比べます。広い芝生と巨樹の間から、左右対称のプラタナス並木へ移り、同じ園内で視界の組み立て方がどう変わるかを見てみます。',
-        placementReason: '「まだ名前がない」は、ひとつの言葉に決める前の感覚を含めておける入口です。新宿御苑は、同じ園内で風景式・整形式・日本庭園へと景色の秩序が切り替わります。気持ちの意味を決める代わりに、異なる景色のつくられ方を外側から見比べられる場所として、この棚に置いています。',
+        placementReason: '新宿御苑では、整形式庭園、風景式庭園、日本庭園など、歩くうちに景色の組み立て方が切り替わる。感情書店では、ひとつの見方に名前をつけて固定する前に、異なる景色の秩序を行き来してみる場所として、この場所を「まだ名前がない」に置きました。',
         access: {
           address: '東京都新宿区内藤町11',
           nearestStation: '東京メトロ丸ノ内線 新宿御苑前駅 出口1',
@@ -171,7 +537,7 @@
         attributionText: '写真提供「新宿御苑管理事務所」',
         reuseOrCacheAllowed: true,
         checkedAt: '2026-08-22',
-        recheckBy: '2027-02-18',
+        recheckBy: '2026-09-29',
         localAssetPath: './assets/real-experience/EXP_007_shinjuku_gyoen_official_landscape.jpg',
         altTextJa: '新宿御苑の庭園と周囲の都市景観を上空から見渡した風景',
         fitMode: 'contain',
@@ -244,7 +610,9 @@
   }
 
   function hasCompletePlaceDetail(record) {
-    if (!record || record.id !== 'EXP_007') return true;
+    if (!record || !record.physicalDestination || record.physicalDestination.approved !== true) {
+      return true;
+    }
     var detail = record.placeDetail;
     var access = detail && detail.access;
     var provenance = detail && detail.provenance;
@@ -254,6 +622,21 @@
       /^https:\/\//.test(provenance.access || '') && isDateOnly(provenance.verifiedOn) &&
       record.physicalDestination && record.physicalDestination.approved === true &&
       record.physicalDestination.address === access.address);
+  }
+
+  function approvedRelationFor(recordId) {
+    var found = null;
+    SHELF_IDS.some(function (shelfId) {
+      var placements = OUTING_RELATIONS[shelfId] || [];
+      for (var i = 0; i < placements.length; i += 1) {
+        if (placements[i].experienceId === recordId) {
+          found = placements[i].relation;
+          return true;
+        }
+      }
+      return false;
+    });
+    return found;
   }
 
   function validateVisualAsset(asset, asOf) {
@@ -325,9 +708,11 @@
         record.authority.realDataGateResult !== 'REAL_DATA_GATE_READY_FOR_PHASE0') {
       reasons.push('HUMAN_APPROVAL_MISSING');
     }
+    var approvedRelation = record && approvedRelationFor(record.id);
     if (!record || !record.editorial ||
         (record.id === 'EXP_001' && record.editorial.relation !== 'direct') ||
-        (record.id === 'EXP_007' && record.editorial.relation !== 'opening')) {
+        (record.id !== 'EXP_001' &&
+          (!approvedRelation || record.editorial.relation !== approvedRelation))) {
       reasons.push('APPROVED_RELATION_MISMATCH');
     }
     if (!record || !record.title || !record.reason) reasons.push('READER_FIELDS_INCOMPLETE');
@@ -355,7 +740,7 @@
     var approvedRelations = OUTING_RELATIONS[emotionId] || [];
     var active = approvedRelations.map(function (placement) {
       var record = byId(placement.experienceId, asOf);
-      if (!record || record.type !== '場所' || !record.physicalDestination ||
+      if (!record || !record.physicalDestination ||
           record.physicalDestination.approved !== true ||
           !record.editorial || record.editorial.relation !== placement.relation) return null;
       return record;
@@ -382,13 +767,19 @@
   }
 
   global.V3_REAL_EXPERIENCE_REGISTRY = Object.freeze({
-    VERSION: 'product-semantics-state-a-v1.0',
+    VERSION: 'real-world-outing-activation-v1.0',
     SOURCE_CLASS: SOURCE_CLASS,
     DECK_REF: DECK_REF,
     EMOTION_ID: EMOTION_ID,
     SHELF_IDS: Object.freeze(SHELF_IDS.slice()),
-    APPROVED_IDS: Object.freeze(['EXP_001', 'EXP_007']),
-    OUTING_IDS: Object.freeze(['EXP_007']),
+    APPROVED_IDS: Object.freeze([
+      'EXP_001', 'EXP_101', 'EXP_102', 'EXP_103', 'EXP_104',
+      'EXP_105', 'EXP_106', 'EXP_107', 'EXP_007'
+    ]),
+    OUTING_IDS: Object.freeze([
+      'EXP_101', 'EXP_102', 'EXP_103', 'EXP_104',
+      'EXP_105', 'EXP_106', 'EXP_107', 'EXP_007'
+    ]),
     OUTING_EXCLUSIONS: Object.freeze({
       EXP_001: 'CULTURE_SIDECAR_NOT_OUTING_EXACT_SHELF_RELATION_NOT_APPROVED'
     }),

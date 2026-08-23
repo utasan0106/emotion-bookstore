@@ -139,6 +139,21 @@
     return shelf ? shelf.label : '';
   }
 
+  var PUBLIC_SHELF_LENS = Object.freeze({
+    hajimu: 'この棚では、身体や視線が前へ動き、次を見たくなる構造に注目しています。',
+    atatamaru: 'この棚では、世話や手渡しが、具体的な関係として続いていく場面に注目しています。',
+    hikareru: 'この棚では、理由を言い切る前に、形や細部へ視線が引かれる瞬間に注目しています。',
+    shizumu: 'この棚では、重さや時間の堆積を、すぐに持ち上げず見つめられるものに注目しています。',
+    zawatsuku: 'この棚では、見慣れたものに別の面が現れ、落ち着いていた見方が少し揺れるところに注目しています。',
+    butsukaru: 'この棚では、異なる方法や素材が出会い、摩擦から双方の輪郭が見える構造に注目しています。',
+    miwohiku: 'この棚では、距離を取ることや、いったん関わらないことで見えてくるものに注目しています。',
+    mada: 'この棚では、既存の言葉に閉じる前に、異なる形や秩序を見比べられるものに注目しています。'
+  });
+
+  function selectedShelfLens() {
+    return PUBLIC_SHELF_LENS[state.emotion] || '';
+  }
+
   function approvedOutingById(id) {
     var deck = approvedRealDeck(state.emotion);
     if (!deck || deck.ids.indexOf(id) === -1) return null;
@@ -561,7 +576,6 @@
       'aria-label': config.backLabel || '前の画面へ戻る',
       onclick: function () { go(config.back); }
     }, [
-      icon('back'),
       h('span', { class: 'stepbar-back-label', text: config.backLabel || '戻る' })
     ]);
 
@@ -962,10 +976,6 @@
     });
 
     var guidance = h('div', { class: 'emotion-guidance' }, [
-      h('img', {
-        class: 'emotion-guidance-leaf', alt: '',
-        src: './assets/canonical-m02-w02/guidance_leaf.png', width: '70', height: '72'
-      }),
       h('p', { class: 'emotion-guidance-copy' }, [
         h('span', {
           class: 'emotion-copy-line emotion-guidance-choice',
@@ -1015,7 +1025,7 @@
 
     outcome.push(h('p', {
       class: 'body-lg understanding-editorial-note',
-      text: '「' + (word ? word.label : '') + '」という感情の角度から、少し世界を見てみる。'
+      text: selectedShelfLens()
     }));
     outcome.push(h('hr', { class: 'rule' }));
     if (deckCount === 0) {
