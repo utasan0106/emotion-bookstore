@@ -4068,3 +4068,398 @@ body:has(.trace-phase1) .stepbar-back svg {
     height: 20px;
   }
 }
+
+/* =============================================================================
+ * Founder Visual Closure — bounded release-pre integration
+ * 99_v3 remains the visual authority; current Product/Trust semantics are the
+ * documented overrides. No inventory, storage, analytics or network contract.
+ * ========================================================================== */
+
+/* Global orientation: retain the canonical chevron on mobile and make the
+   desktop action explicit, centered and reachable from the content gutter. */
+.stepbar-back { justify-content: center; }
+.stepbar-back-label { display: none; }
+
+@media (min-width: 1200px) {
+  #stepbar:not(:empty) {
+    width: 100%;
+    max-width: 1320px;
+    margin-inline: auto;
+    padding: 12px 28px 0;
+  }
+  #stepbar:not(:empty) .stepbar-row {
+    grid-template-columns: 104px minmax(0, 1fr) 104px;
+  }
+  #stepbar:not(:empty) .stepbar-back {
+    width: auto;
+    min-width: 96px;
+    height: 44px;
+    justify-self: start;
+    gap: 7px;
+    padding: 0 13px;
+    border: 1px solid rgba(15, 27, 41, 0.24);
+    border-radius: 999px;
+    background: rgba(255, 253, 252, 0.8);
+  }
+  #stepbar:not(:empty) .stepbar-back svg {
+    width: 18px;
+    height: 18px;
+    transform: translateX(-1px);
+  }
+  #stepbar:not(:empty) .stepbar-back-label {
+    display: inline;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+}
+
+/* FAQ: current approved desktop override is a quiet, one-column accordion. */
+@media (min-width: 1200px) {
+  .w01-faq-list {
+    display: block;
+    max-width: 900px;
+    margin: 22px auto 0;
+  }
+  .w01-faq-item { padding: 0; }
+  .w01-faq-trigger {
+    appearance: none;
+    display: flex;
+    width: 100%;
+    min-height: 60px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 12px 4px;
+    border: 0;
+    background: transparent;
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.55;
+    letter-spacing: 0.025em;
+    text-align: left;
+    color: var(--navy);
+    cursor: pointer;
+  }
+  .w01-faq-mark {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(15, 27, 41, 0.2);
+    border-radius: 50%;
+    font-family: var(--sans);
+    font-size: 20px;
+    font-weight: 400;
+    transition: transform 150ms ease;
+  }
+  .w01-faq-trigger[aria-expanded="true"] .w01-faq-mark { transform: rotate(45deg); }
+  .w01-faq-answer {
+    max-width: 760px;
+    margin: 0;
+    padding: 0 4px 20px;
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.8;
+    color: #334252;
+  }
+}
+
+/* M02: preserve the canonical 4x2 overview while keeping each Japanese phrase
+   intact. Readability is restored before any tap-target reduction. */
+@media (max-width: 599px) {
+  body:has(.emotion-selection) .emotion-support {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  body:has(.emotion-selection) .emotion-card-label {
+    font-size: clamp(11px, 3vw, 12px);
+  }
+  body:has(.emotion-selection) .emotion-card-description {
+    font-size: clamp(8.5px, 2.35vw, 9.5px);
+    line-height: 1.48;
+  }
+  body:has(.emotion-selection) .emotion-description-phrase {
+    display: block;
+    white-space: nowrap;
+  }
+  body:has(.emotion-selection) .emotion-guidance-copy,
+  body:has(.emotion-selection) .emotion-trust-copy {
+    font-size: 10.5px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .emotion-intro { height: 276px; }
+  .emotion-hero,
+  .emotion-hero img { height: 276px; }
+  .emotion-hero img { width: 100%; object-fit: cover; }
+  .emotion-intro-copy { padding-top: 28px; }
+}
+
+/* Understanding is one finite Editorial bridge, not a sparse prototype page. */
+.understanding-bridge { max-width: 1040px; }
+.understanding-panel {
+  display: grid;
+  gap: 24px;
+}
+.understanding-outcome-column .body-lg:first-child { margin-top: 0; }
+
+@media (min-width: 900px) {
+  .understanding-bridge { padding-top: 58px; }
+  .understanding-panel {
+    grid-template-columns: minmax(300px, 42%) minmax(0, 58%);
+    align-items: center;
+    min-height: 430px;
+    gap: 48px;
+    padding: 46px 52px;
+    border: 1px solid rgba(15, 27, 41, 0.13);
+    border-radius: 18px;
+    background: rgba(255, 253, 252, 0.76);
+    box-shadow: var(--shadow-card);
+  }
+  .understanding-identity-column { text-align: center; }
+  .understanding-shelf-identity {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .understanding-shelf-image {
+    width: 230px;
+    height: 230px;
+    flex-basis: 230px;
+  }
+  .understanding-shelf-identity .display { font-size: 34px; }
+  .understanding-outcome-column .understanding-editorial-note {
+    font-size: 20px;
+    line-height: 1.85;
+  }
+  .understanding-outcome-column .actions { max-width: 420px; }
+}
+
+/* Real approved Discovery: one visual, one reason, one real action. */
+.surface[data-surface="04-discovery"]:not(.discovery-canonical) {
+  width: 100%;
+  max-width: 1180px;
+}
+.surface[data-surface="04-discovery"]:not(.discovery-canonical) .deck-lead {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--navy);
+}
+.real-discovery-card {
+  padding: 14px;
+  user-select: auto;
+}
+.real-discovery-media { min-width: 0; }
+.real-discovery-counter { margin: 0 0 6px 2px; }
+.real-discovery-card .real-experience-visual--card { margin: 0; }
+.real-discovery-card .real-experience-visual-image { height: 168px; }
+.real-discovery-copy { min-width: 0; padding: 14px 4px 2px; }
+.real-discovery-shelf {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+.real-discovery-card .card-title { margin-top: 5px; font-size: 24px; }
+.real-discovery-card .card-meta { margin-top: 4px; }
+.real-discovery-facts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.real-discovery-facts div { min-width: 0; }
+.real-discovery-facts dt {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+}
+.real-discovery-facts dd {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.real-discovery-reason { margin-top: 13px; }
+.real-discovery-reason h3 {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--navy);
+}
+.real-discovery-card .card-reason {
+  margin-top: 5px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.real-discovery-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+.real-discovery-actions .btn { min-height: 48px; margin: 0; padding: 9px 12px; font-size: 14px; }
+.real-discovery-primary { grid-column: 1 / -1; }
+.real-discovery-pass { grid-column: 1 / -1; justify-self: center; }
+.real-discovery-interest svg { width: 18px; height: 18px; }
+
+@media (min-width: 900px) {
+  .surface[data-surface="04-discovery"]:not(.discovery-canonical) { padding-top: 24px; }
+  .real-discovery-card {
+    display: grid;
+    grid-template-columns: minmax(0, 54%) minmax(0, 46%);
+    gap: 30px;
+    padding: 24px;
+  }
+  .real-discovery-media { display: flex; flex-direction: column; }
+  .real-discovery-card .real-experience-visual--card { flex: 1; }
+  .real-discovery-card .real-experience-visual-image { height: 430px; }
+  .real-discovery-copy { align-self: center; padding: 6px 10px 6px 0; }
+  .real-discovery-card .card-title { font-size: 32px; }
+  .real-discovery-card .card-reason { font-size: 16px; line-height: 1.75; }
+  .real-discovery-actions { margin-top: 22px; }
+  .real-discovery-actions .btn { min-height: 52px; }
+}
+
+/* Detail: Editorial Reason and real Action share or exceed visual mass. */
+.place-detail { max-width: 1180px; }
+.detail-hero { display: grid; gap: 18px; }
+.detail-visual-column,
+.detail-summary-column { min-width: 0; }
+.detail-visual-column .real-experience-visual--detail {
+  max-width: none;
+  margin: 0;
+}
+.detail-visual-column .real-experience-visual-image { height: 168px; }
+.detail-summary-column { padding: 0 2px; }
+.detail-editorial-reason { margin-top: 14px; }
+.detail-editorial-reason .section-title {
+  font-size: 17px;
+  letter-spacing: 0.045em;
+  color: var(--navy);
+}
+.detail-editorial-reason .place-detail-body { margin-top: 8px; }
+.detail-actions { margin-top: 18px; }
+.detail-actions .detail-primary-action { order: -4; }
+.detail-actions .detail-utility-action { order: -3; }
+.detail-actions .detail-plan-action { order: -2; }
+.place-detail > .place-detail-content { margin-top: 28px; }
+
+@media (min-width: 900px) {
+  .place-detail { padding-top: 28px; }
+  .detail-hero {
+    grid-template-columns: minmax(0, 54%) minmax(0, 46%);
+    align-items: start;
+    gap: 46px;
+  }
+  .detail-visual-column .real-experience-visual-image { height: 470px; }
+  .detail-summary-column { padding: 8px 0 0; }
+  .place-detail-title { font-size: 34px; }
+  .detail-editorial-reason { margin-top: 24px; }
+  .detail-editorial-reason .section-title { font-size: 20px; }
+  .detail-editorial-reason .place-detail-body { font-size: 16px; line-height: 1.78; }
+  .detail-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .detail-actions .detail-primary-action { grid-column: 1 / -1; }
+  .detail-actions .detail-plan-action { grid-column: 1 / -1; }
+  .place-detail > .place-detail-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.9fr;
+    gap: 28px;
+    margin-top: 34px;
+    padding-top: 30px;
+    border-top: 1px solid var(--rule);
+  }
+  .place-detail > .place-detail-content .place-detail-section,
+  .place-detail > .place-detail-content .place-detail-section + .place-detail-section {
+    margin-top: 0;
+  }
+  .place-detail > .place-detail-content .place-detail-access {
+    padding-top: 0;
+    padding-left: 24px;
+    border-top: 0;
+    border-left: 1px solid var(--rule);
+  }
+}
+
+/* Existing local-plan object shape is retained; this is presentation only. */
+.plan-surface,
+.plan-saved-surface { max-width: 760px; }
+.plan-form,
+.plan-saved-panel {
+  padding: 24px;
+  border: 1px solid rgba(15, 27, 41, 0.13);
+  border-radius: 18px;
+  background: rgba(255, 253, 252, 0.78);
+  box-shadow: var(--shadow-card);
+}
+.plan-choices { margin-top: 0; }
+.plan-choices .question { font-size: 26px; }
+.plan-choice {
+  min-height: 56px;
+  padding: 0 14px;
+  border: 1px solid rgba(15, 27, 41, 0.15);
+  border-radius: 12px;
+  background: var(--card);
+}
+.plan-choice:has(input:checked) {
+  border-color: var(--navy);
+  box-shadow: inset 0 0 0 1px var(--navy);
+}
+.datetime {
+  margin-top: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--warm);
+}
+.datetime label { font-size: 12px; font-weight: 500; }
+.datetime input { min-height: 48px; border-radius: 8px; }
+.plan-selection-summary {
+  margin-top: 18px;
+  padding: 13px 15px;
+  border-left: 3px solid var(--navy);
+  background: var(--warm);
+  font-size: 14px;
+  font-weight: 500;
+}
+.plan-saved-heading { display: flex; align-items: center; gap: 14px; }
+.plan-saved-icon {
+  display: inline-flex;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(15, 27, 41, 0.2);
+  border-radius: 50%;
+}
+.plan-saved-icon svg { width: 24px; height: 24px; }
+.plan-saved-summary { margin-top: 18px; font-size: 18px; font-weight: 500; color: var(--navy); }
+
+@media (min-width: 700px) {
+  .plan-form,
+  .plan-saved-panel { padding: 36px 40px; }
+  .plan-choices {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .plan-choices legend { grid-column: 1 / -1; }
+  .plan-choices .datetime { grid-column: 1 / -1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .w01-faq-mark,
+  .real-discovery-card { transition: none; animation: none; }
+}
