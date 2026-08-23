@@ -4776,3 +4776,64 @@ body:has(.trace-phase1) .stepbar-back svg {
     content: attr(data-label);
   }
 }
+
+/* =============================================================================
+ * Release closure — 公式説明（出典明示）レイヤー
+ * Fact（公式一次情報にもとづく要約）と Interpretation（なぜ、この棚に？）を
+ * 視覚的にも分離する。公式文の転載は行わない。
+ * ========================================================================== */
+.detail-official-description {
+  margin-top: 18px;
+  padding-left: 12px;
+  border-left: 2px solid var(--rule);
+}
+.detail-official-attribution {
+  margin-top: 6px;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.detail-official-description .place-detail-body { margin-top: 6px; }
+.detail-official-provenance {
+  margin-top: 8px;
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.detail-official-source-link {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.detail-official-source-link:hover { color: var(--ink); }
+.detail-official-source-link:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.detail-editorial-reason { margin-top: 20px; }
+
+/* Discovery card は一行の公式導入だけを持つ。カードを文章の壁にしない。 */
+.real-discovery-official {
+  margin-top: 8px;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+@media (min-width: 900px) {
+  .detail-official-description { margin-top: 20px; padding-left: 14px; }
+  .detail-official-description .place-detail-body { font-size: 16px; line-height: 1.78; }
+  .real-discovery-official { font-size: 14px; }
+}
+
+/* カード上の画像がネイティブ drag&drop を開始すると pointercancel が発生し、
+   横スワイプ判定が途中で失われる。画像 drag を無効化して swipe を成立させる。 */
+.real-discovery-card .real-experience-visual-image,
+.card .real-experience-visual-image {
+  -webkit-user-drag: none;
+  user-select: none;
+}

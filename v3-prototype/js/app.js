@@ -1274,6 +1274,13 @@
     return reason;
   }
 
+  function cardOfficialSummary(experience) {
+    /* Discovery card は公式一次情報にもとづく一行の導入だけを見せる。
+       全文は Detail の「どんな場所か」で出典付きで読む。 */
+    return experience && experience.placeDetail && experience.placeDetail.officialSummary
+      ? experience.placeDetail.officialSummary : null;
+  }
+
   function discoveryPracticalFacts(experience) {
     var access = experience && experience.placeDetail && experience.placeDetail.access;
     if (!access) return [];
@@ -1294,6 +1301,9 @@
         h('p', { class: 'real-discovery-shelf', text: '「' + selectedShelfLabel() + '」の棚から' }),
         h('h2', { class: 'card-title', text: experience.title }),
         h('p', { class: 'card-meta', text: metaLine(experience) }),
+        cardOfficialSummary(experience) ? h('p', {
+          class: 'real-discovery-official', text: cardOfficialSummary(experience)
+        }) : null,
         facts.length ? h('dl', { class: 'real-discovery-facts' }, facts.map(function (fact) {
           return h('div', {}, [h('dt', { text: fact.label }), h('dd', { text: fact.value })]);
         })) : null,
@@ -1349,6 +1359,11 @@
 
     function down(event) {
       if (event.button !== undefined && event.button !== 0) return;
+      /* カード全体で pointer capture を取ると、pointerup が card へ retarget され、
+         card 内の button に click が発火しなくなる（mouse で顕著）。
+         操作要素の上から始まった pointer では swipe を開始しない。 */
+      if (event.target && event.target.closest &&
+          event.target.closest('button, a, input, select, textarea, label, [role="button"]')) return;
       active = true; startX = event.clientX; dx = 0;
       card.setPointerCapture && card.setPointerCapture(event.pointerId);
       card.classList.add('is-dragging');
@@ -2175,6 +2190,11 @@
       }, [h('span', { text: '戻る' })])
     );
 
+    /* Release closure reader order:
+       1) title / identity  2) 公式説明（出典明示）  3) なぜ、この棚に？
+       4) 実用情報  5) Primary Action
+       公式説明は公式一次情報に基づく要約であり、公式文の転載ではない。 */
+    var officialSource = placeDetail && placeDetail.officialSource;
     var summary = [
       h('p', { class: 'eyebrow detail-shelf-context', text: '「' + selectedShelfLabel() + '」の棚から' }),
       h('h1', {
@@ -2185,14 +2205,33 @@
         class: 'card-meta' + (placeDetail ? ' place-detail-meta' : ''),
         text: metaLine(experience)
       }),
+      placeDetail ? h('section', {
+        class: 'detail-official-description', 'aria-labelledby': 'detail-official-title'
+      }, [
+        h('h2', { class: 'section-title', id: 'detail-official-title', text: 'どんな場所か' }),
+        officialSource ? h('p', {
+          class: 'detail-official-attribution', text: officialSource.attributionLabel
+        }) : null,
+        h('p', { class: 'body-lg place-detail-body', text: placeDetail.description }),
+        officialSource ? h('p', { class: 'detail-official-provenance' }, [
+          h('span', { text: '出典：' }),
+          h('a', {
+            class: 'detail-official-source-link',
+            href: officialSource.sourceUrl,
+            target: '_blank',
+            rel: 'noopener noreferrer',
+            text: officialSource.sourceName
+          }),
+          h('span', { text: '（' + officialSource.verifiedOn + ' 確認）' })
+        ]) : null
+      ]) : null,
       h('section', { class: 'detail-editorial-reason', 'aria-labelledby': 'detail-reason-title' }, [
         h('h2', { class: 'section-title', id: 'detail-reason-title', text: 'なぜ、この棚に？' }),
         h('p', {
           class: 'body-lg place-detail-body',
           text: placeDetail ? placeDetail.placementReason : experience.reason
         })
-      ]),
-      h('div', { class: 'actions detail-actions' }, detailActions)
+      ])
     ];
     var nodes = [
       h('div', { class: 'detail-hero' }, [
@@ -2202,10 +2241,6 @@
     ];
     if (placeDetail) {
       nodes.push(h('div', { class: 'place-detail-content' }, [
-        h('section', { class: 'place-detail-section' }, [
-          h('h2', { class: 'section-title', text: 'どんな場所か' }),
-          h('p', { class: 'body-lg place-detail-body', text: placeDetail.description })
-        ]),
         h('section', { class: 'place-detail-section' }, [
           h('h2', { class: 'section-title', text: 'おすすめの過ごし方' }),
           h('p', { class: 'body-lg place-detail-body', text: placeDetail.recommendedStay })
@@ -2237,6 +2272,7 @@
         text: 'これはUX確認用のprototype dataです。実在の店舗・イベントではありません。'
       }));
     }
+    nodes.push(h('div', { class: 'actions detail-actions' }, detailActions));
     var surface = section('05-experience-detail', nodes);
     if (placeDetail) surface.classList.add('place-detail');
     return surface;

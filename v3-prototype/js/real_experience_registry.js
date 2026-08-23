@@ -152,6 +152,16 @@
       rights: { imageReuseApproved: false, textReuseApproved: false },
       placeDetail: {
         description: '作品同士が境界を越えて移動し、ほかの作品と影響し合いながら連続する、地図のないミュージアムです。',
+        officialSummary: '地図を持たず、移動する作品のあいだを歩くミュージアム。',
+        officialSource: {
+          attributionLabel: '公式情報より',
+          mode: 'source_grounded_paraphrase',
+          sourceName: 'チームラボボーダレス 公式サイト',
+          sourceUrl: 'https://www.teamlab.art/jp/e/tokyo/',
+          verifiedOn: '2026-08-23',
+          quotedExcerpt: null,
+          rightsBasis: 'official_source_grounded_paraphrase_no_reproduction'
+        },
         recommendedStay: '順路を決めすぎず、ひとつの作品を追って別の空間へ進み、作品同士の重なりや変化を確かめます。',
         placementReason: '館内には地図がなく、作品も空間を移動する。感情書店では、決められた順路をたどるより、次の空間を自分で探しながら進む構造を見て、この場所を「心が弾む」に置きました。',
         access: {
@@ -203,6 +213,16 @@
       rights: { imageReuseApproved: false, textReuseApproved: false },
       placeDetail: {
         description: '旧校舎を活用した館内に、世界およそ100か国・約1万5千点のおもちゃが集まり、遊びを案内する「おもちゃ学芸員」がいます。',
+        officialSummary: '世界のおもちゃに実際に触れて遊べる、旧校舎の美術館。',
+        officialSource: {
+          attributionLabel: '公式情報より',
+          mode: 'source_grounded_paraphrase',
+          sourceName: '東京おもちゃ美術館 公式サイト',
+          sourceUrl: 'https://art-play.or.jp/ttm/info/',
+          verifiedOn: '2026-08-23',
+          quotedExcerpt: null,
+          rightsBasis: 'official_source_grounded_paraphrase_no_reproduction'
+        },
         recommendedStay: '展示を眺めるだけでなく、おもちゃ学芸員に遊び方を尋ね、世代の異なる人が同じおもちゃをどう扱うかを見てみます。',
         placementReason: 'ここでは、おもちゃを展示として眺めるだけでなく、実際に触れて遊び、おもちゃ学芸員が遊びと人の出会いをつなぐ。感情書店では、おもちゃを間にして人と人のやりとりが生まれる仕組みを見て、この場所を「心があたたまる」に置きました。',
         access: {
@@ -254,6 +274,16 @@
       rights: { imageReuseApproved: false, textReuseApproved: false },
       placeDetail: {
         description: 'プリーツ製品の製造工程から生まれる副産物の紙「ペーパーログ」を、膜のような物体や家具の核へ展開する展示です。',
+        officialSummary: 'プリーツ加工の副産物の紙が、膜と家具へ展開する展示。',
+        officialSource: {
+          attributionLabel: '公式情報より',
+          mode: 'source_grounded_paraphrase',
+          sourceName: '21_21 DESIGN SIGHT 公式サイト',
+          sourceUrl: 'https://2121designsight.jp/gallery3/the_paper_log/',
+          verifiedOn: '2026-08-23',
+          quotedExcerpt: null,
+          rightsBasis: 'official_source_grounded_paraphrase_no_reproduction'
+        },
         recommendedStay: '作品の形へ先に近づき、素材の由来を知ったあとでもう一度、膜と核の違いを見比べます。',
         placementReason: '衣服のプリーツ加工で生まれる副産物の紙が、「膜」のオブジェと「核」の家具プロトタイプへ、対照的な方法で展開されている。感情書店では、同じ紙が別の姿へ変わる対照そのものを入口にして、この展示を「惹かれる」に置きました。',
         access: {
@@ -305,6 +335,16 @@
       rights: { imageReuseApproved: false, textReuseApproved: false },
       placeDetail: {
         description: '関東大震災と東京大空襲の被害、復興の歩みを、損傷した日用品、写真、絵画、模型などで伝える記念館です。',
+        officialSummary: '関東大震災と東京空襲の資料を、同じ建物に残す記念館。',
+        officialSource: {
+          attributionLabel: '公式情報より',
+          mode: 'source_grounded_paraphrase',
+          sourceName: '東京都復興記念館（東京都慰霊協会）公式サイト',
+          sourceUrl: 'https://tokyoireikyoukai.or.jp/museum/tenji.html',
+          verifiedOn: '2026-08-23',
+          quotedExcerpt: null,
+          rightsBasis: 'official_source_grounded_paraphrase_no_reproduction'
+        },
         recommendedStay: '損傷した実物と記録を急いで見終えず、都市の日常が壊れ、再びつくられてきた時間を一点ずつ確かめます。',
         placementReason: '関東大震災の被災物や写真、絵画、復興模型に加え、東京空襲の実物資料も同じ建物に残されている。感情書店では、被害と復興の時間が資料として積み重なった場所に留まって見る入口として、この場所を「沈む」に置きました。',
         access: {
@@ -356,6 +396,16 @@
       rights: { imageReuseApproved: false, textReuseApproved: false },
       placeDetail: {
         description: '東京都写真美術館のコレクションから、食をめぐる記憶や家族、孤食、高齢化、環境などを写真でたどる展覧会です。',
+        officialSummary: '「食」をめぐる写真から、記憶と社会の層をたどる展覧会。',
+        officialSource: {
+          attributionLabel: '公式情報より',
+          mode: 'source_grounded_paraphrase',
+          sourceName: '東京都写真美術館 公式サイト',
+          sourceUrl: 'https://topmuseum.jp/exhibition/5419/',
+          verifiedOn: '2026-08-23',
+          quotedExcerpt: null,
+          rightsBasis: 'official_source_grounded_paraphrase_no_reproduction'
+        },
         recommendedStay: '身近な食卓を写した作品から見始め、安心していた見方がどの作品で揺れるかを立ち止まって確かめます。',
         placementReason: '「食」を入口に、記憶や人とのつながりだけでなく、環境、高齢化、孤食などの社会的な問いまで見せる展覧会。感情書店では、見慣れた「食べる」という行為の周りに別の層が現れる構成を見て、この展示を「ざわつく」に置きました。',
         access: {
@@ -407,6 +457,16 @@
       rights: { imageReuseApproved: false, textReuseApproved: false },
       placeDetail: {
         description: 'クリエイターと印刷会社が協働し、印刷表現の可能性を探ってきた企画から、80人のクリエイターによるグラフィック作品を紹介する展覧会です。',
+        officialSummary: '20年続く印刷表現の試みを、80人の作品でたどる展覧会。',
+        officialSource: {
+          attributionLabel: '公式情報より',
+          mode: 'source_grounded_paraphrase',
+          sourceName: '印刷博物館 公式サイト',
+          sourceUrl: 'https://www.printing-museum.org/collection/exhibition/g20260627.php',
+          verifiedOn: '2026-08-23',
+          quotedExcerpt: null,
+          rightsBasis: 'official_source_grounded_paraphrase_no_reproduction'
+        },
         recommendedStay: '一枚ずつ完成形だけを見るのではなく、異なる発想と印刷技術がどこで接触して表現になったかを見比べます。',
         placementReason: 'GRAPHIC TRIALは、クリエイターとTOPPANの共創で、グラフィックデザインと印刷表現の新しい可能性を探ってきた20年の試み。感情書店では、異なる発想と技術が接触し、その試行の積み重ねが見えることを「ぶつかる」として読みました。',
         access: {
@@ -458,6 +518,16 @@
       rights: { imageReuseApproved: false, textReuseApproved: false },
       placeDetail: {
         description: '約3万冊の本を販売しながら、閲覧室や研究室、喫茶室で本に囲まれて過ごせる入場制の書店です。',
+        officialSummary: '入場料を払って、本に囲まれる時間を先に確保する書店。',
+        officialSource: {
+          attributionLabel: '公式情報より',
+          mode: 'source_grounded_paraphrase',
+          sourceName: '文喫 六本木 公式サイト',
+          sourceUrl: 'https://roppongi.bunkitsu.jp/store/',
+          verifiedOn: '2026-08-23',
+          quotedExcerpt: null,
+          rightsBasis: 'official_source_grounded_paraphrase_no_reproduction'
+        },
         recommendedStay: '目的の本をすぐ決めず、閲覧室や研究室で棚を眺め、いつもの情報の流れから距離を取る時間をつくります。',
         placementReason: '文喫は、約3万冊の本を販売しながら、一人で本と向き合う閲覧室などを備え、入場料を払って滞在する書店。感情書店では、何かをすぐ選ぶより、本に囲まれる時間そのものを先に確保する仕組みを見て、この場所を「身を引く」に置きました。',
         access: {
@@ -509,6 +579,16 @@
       rights: { imageReuseApproved: false, textReuseApproved: false },
       placeDetail: {
         description: '新宿御苑は、ただ広い緑地ではありません。58.3ヘクタールの同じ園内で、芝生と巨樹がゆるやかな景色をつくる風景式庭園、左右対称のプラタナス並木を軸にした整形式庭園、日本庭園へと、歩くにつれて景色の秩序そのものが切り替わります。',
+        officialSummary: '歩くうちに庭園の秩序が切り替わる、58.3ヘクタールの庭園。',
+        officialSource: {
+          attributionLabel: '公式情報より',
+          mode: 'source_grounded_paraphrase',
+          sourceName: '新宿御苑（国民公園協会）公式サイト',
+          sourceUrl: 'https://fng.or.jp/shinjuku/place/garden/',
+          verifiedOn: '2026-08-23',
+          quotedExcerpt: null,
+          rightsBasis: 'official_source_grounded_paraphrase_no_reproduction'
+        },
         recommendedStay: '全部を見ようとせず、風景式庭園と整形式庭園の二つを歩き比べます。広い芝生と巨樹の間から、左右対称のプラタナス並木へ移り、同じ園内で視界の組み立て方がどう変わるかを見てみます。',
         placementReason: '新宿御苑では、整形式庭園、風景式庭園、日本庭園など、歩くうちに景色の組み立て方が切り替わる。感情書店では、ひとつの見方に名前をつけて固定する前に、異なる景色の秩序を行き来してみる場所として、この場所を「まだ名前がない」に置きました。',
         access: {
