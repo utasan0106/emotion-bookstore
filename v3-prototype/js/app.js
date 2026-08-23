@@ -839,11 +839,14 @@
       ])
     ]);
 
+    var supportCopy = '今の気持ちと同じでなくて大丈夫です。少し気になる棚を、ひとつ。';
+    var supportBreak = supportCopy.indexOf('。') + 1;
     var support = h('p', { class: 'emotion-support' }, [
-      h('span', {
-        class: 'emotion-copy-line emotion-support-choice',
-        text: '今の気持ちと同じでなくて大丈夫です。少し気になる棚を、ひとつ。'
-      })
+      h('span', { class: 'emotion-copy-line emotion-support-choice' }, [
+        h('span', { text: supportCopy.slice(0, supportBreak) }),
+        h('br', { class: 'emotion-support-mobile-break' }),
+        h('span', { text: supportCopy.slice(supportBreak) })
+      ])
     ]);
 
     var intro = h('div', { class: 'emotion-intro' }, [
