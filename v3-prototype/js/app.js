@@ -1271,8 +1271,7 @@
   function cardEditorialHook(experience) {
     var reason = experience && experience.placeDetail && experience.placeDetail.placementReason
       ? experience.placeDetail.placementReason : experience.reason;
-    var sentences = String(reason || '').match(/[^。]+。/g);
-    return sentences && sentences.length ? sentences[sentences.length - 1] : reason;
+    return reason;
   }
 
   function discoveryPracticalFacts(experience) {
