@@ -2006,7 +2006,19 @@
       class: 'btn btn-primary', type: 'submit', disabled: true
     }, [h('span', { text: '予定を残す' })]);
 
-    var options = D.PLAN_OPTIONS.map(function (option) {
+    var planOptions = [
+      { id: 'today', label: '今日' },
+      { id: 'tomorrow', label: '明日' },
+      { id: 'weekend', label: '今週末' },
+      { id: 'datetime', label: '日付を選ぶ' }
+    ];
+    /* Preserve an already-saved legacy "later" choice without showing it as a
+       new default option. The persisted field set and storage key stay exact. */
+    if (current && current.when === 'later') {
+      planOptions.push({ id: 'later', label: 'あとで決める' });
+    }
+
+    var options = planOptions.map(function (option) {
       var input = h('input', {
         type: 'radio', name: 'plan-when', id: 'plan-' + option.id, value: option.id,
         checked: chosen === option.id ? true : null,
