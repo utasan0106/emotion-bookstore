@@ -1,17 +1,26 @@
 V3 RELEASE CLOSURE — RC EVIDENCE PACKAGE
-generated: 2026-08-23T17:14:38Z / JST 2026-08-24 02:14
+generated: 2026-08-23T17:24:03Z / JST 2026-08-24 02:24
 
 == BRANCH / HEAD ==
 repo:            https://github.com/utasan0106/emotion-bookstore
 branch:          claude/v3-release-closure-20260824
 base branch:     codex/v3-preview-mirror-sprint03 @ 8ae0b8038dfb84c7220d07b8ea6eac3f1f217e11
-HEAD:            6e12265876476225a62634ca76af41f2d31f882b
-working tree:    CLEAN
+HEAD:            c913ab3021c2b3de76a2a49805c5559053967915
+working tree:    DIRTY
 commits this round:
+  c913ab3 chore: node_modules と再生成可能なRC証跡を .gitignore に追加
+  0fe1cb6 docs(v3): Discovery deck UI方針と形状検証プロトタイプ
+  a572551 docs(v3): RC evidence package を追加
   6e12265 fix(v3): Desktop Step-1 の1画面収まりとRC証跡の信頼性を改善
   cb165ec feat(v3): 公式説明レイヤー追加とDiscoveryカード操作不能の修正
 
 == CHANGED FILES vs accepted preview mirror ==
+  .gitignore
+  docs/v3-discovery-deck/SPEC.md
+  docs/v3-discovery-deck/index.html
+  docs/v3-discovery-deck/preview-390.png
+  v3-prototype/.rc-evidence/RC_EVIDENCE.txt
+  v3-prototype/.rc-evidence/README.md
   v3-prototype/css/v3.css
   v3-prototype/js/app.js
   v3-prototype/js/real_experience_registry.js
@@ -19,11 +28,21 @@ commits this round:
   v3-prototype/verify/release_closure_runtime_cert.js
 
 == CHANGED FILE SHA-256 ==
-  v3-prototype/css/v3.css                                      3f5c5a215b0842efe0b64e973648d86de3e6ed5413ccf18416329f32411fd53c
-  v3-prototype/js/app.js                                       c2a94204dafc0a21b2ceebf8af1a167b51efe37f7762020b80e2842577f62230
-  v3-prototype/js/real_experience_registry.js                  fd3b7ca6c1f2dfd485b42abc742bd6337bf3b38c4985c0ffb1beaf8899646c61
-  v3-prototype/verify/release_closure_official_description.js  da0390b0b71042ee39328fa0287a5b1ca5dd1edc3ea1d297b460a29438c118dc
-  v3-prototype/verify/release_closure_runtime_cert.js          2826d573a430c7dc98f0a8df9b965e47f75c2af0c5d7bca674ac8c60498e3794
+  .gitignore                                                     7573e802339e32fef7a9114ecb4b0f593e670b4f530a2cb17c62b36a355db09e
+  docs/v3-discovery-deck/SPEC.md                                 9caaa42a85c56829b5ac63855aa6d989629dbee61992ba0fba73836844eef022
+  docs/v3-discovery-deck/index.html                              46882adb79c8927a8c6776e7a581256a7d945f28070137d7bbfeb192cf889c1f
+  docs/v3-discovery-deck/preview-390.png                         10aa98b493dc1ff0ceec85358ecfe991b270156ec6604f4d262733967967e1b9
+  v3-prototype/.rc-evidence/RC_EVIDENCE.txt                      f4da026396d07123a6f0bfc333407df61ea234f76b4f086d0d561dddd00b6ea5
+  v3-prototype/.rc-evidence/README.md                            df2c9fbd86cd51d6daee026df390197cad99ebc0e2802dd44c988164d141f690
+  v3-prototype/css/v3.css                                        3f5c5a215b0842efe0b64e973648d86de3e6ed5413ccf18416329f32411fd53c
+  v3-prototype/js/app.js                                         c2a94204dafc0a21b2ceebf8af1a167b51efe37f7762020b80e2842577f62230
+  v3-prototype/js/real_experience_registry.js                    fd3b7ca6c1f2dfd485b42abc742bd6337bf3b38c4985c0ffb1beaf8899646c61
+  v3-prototype/verify/release_closure_official_description.js    da0390b0b71042ee39328fa0287a5b1ca5dd1edc3ea1d297b460a29438c118dc
+  v3-prototype/verify/release_closure_runtime_cert.js            2826d573a430c7dc98f0a8df9b965e47f75c2af0c5d7bca674ac8c60498e3794
+
+== PRODUCT SCOPE ==
+  Product 変更は v3-prototype/ の js/app.js, js/real_experience_registry.js, css/v3.css の3件のみ。
+  verify/ 2件は新規契約テスト、docs/ と .rc-evidence/ と .gitignore は非Product。
 
 == PROTECTED SCOPE: UNCHANGED ==
   UNCHANGED  v3-prototype/js/store.js
@@ -34,6 +53,7 @@ commits this round:
   UNCHANGED  v3-prototype/js/public_editorial_content.js
   main / V2 / Production / domain mutation: 0 (no push to main, no deploy)
   assets/ mutation: 0 files
+  dependency delta: 0 (node_modules は gitignore、package.json 変更なし)
 
 == TEST RESULTS ==
   baseline (8ae0b80):  773 PASS / 62 FAIL
@@ -51,3 +71,9 @@ commits this round:
     - horizontal overflow 0, page horizontal scroll 0
     - keyboard-only Entrance -> Plan reachable, focus ring visible
     - third-party network requests: 0
+
+== REPRODUCE ==
+  npm install --no-save playwright@1.56.0   # chromium 1194 に一致する版
+  cd v3-prototype
+  node verify/release_closure_official_description.js
+  node verify/release_closure_runtime_cert.js
