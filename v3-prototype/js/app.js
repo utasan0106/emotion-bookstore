@@ -13,12 +13,15 @@
   var P = global.V3_PERSONALIZE;
   var AD = global.V3_ACTION_DESTINATION;
   var REAL = global.V3_REAL_EXPERIENCE_REGISTRY;
+  var INTERESTED = global.V3_INTERESTED_RETRIEVAL;
 
   var state = STORE.emptyState();
   var interested = STORE.emptyInterested();
   var interestPending = {};
   var screen = 'entrance';
   var view, live, stepbar;
+  var interestedLayer = null;
+  var interestedOpener = null;
 
   /* ---------------------------------------------------------------- helpers */
 
@@ -95,6 +98,169 @@
 
   function interestedLabel(id) {
     return isInterested(id) ? '気になる・保存済み' : '気になる';
+  }
+
+  function interestedFocusable() {
+    if (!interestedLayer) return [];
+    return Array.prototype.slice.call(interestedLayer.querySelectorAll(
+      'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
+    ));
+  }
+
+  function setBackgroundInert(value) {
+    [document.querySelector('.site-header'), stepbar, view].forEach(function (node) {
+      if (!node) return;
+      node.inert = value;
+      if (value) node.setAttribute('aria-hidden', 'true');
+      else node.removeAttribute('aria-hidden');
+    });
+  }
+
+  function closeInterestedLayer(restoreFocus) {
+    if (!interestedLayer) return;
+    document.removeEventListener('keydown', onInterestedKeydown);
+    interestedLayer.remove();
+    interestedLayer = null;
+    document.body.classList.remove('has-interested-layer');
+    setBackgroundInert(false);
+    if (restoreFocus && interestedOpener && document.contains(interestedOpener)) {
+      interestedOpener.focus();
+    }
+    interestedOpener = null;
+  }
+
+  function onInterestedKeydown(event) {
+    if (!interestedLayer) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeInterestedLayer(true);
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    var focusable = interestedFocusable();
+    if (!focusable.length) return;
+    var first = focusable[0];
+    var last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function viewInterestedItem(item) {
+    if (!item || item.status !== 'actionable') return;
+    closeInterestedLayer(false);
+    state.emotion = item.shelfId;
+    startDeck('real-approved', [item.experienceId]);
+    state.deck.index = 1;
+    state.deck.decisions[item.experienceId] = 'keep';
+    state.deck.activeId = item.experienceId;
+    state.selectedId = item.experienceId;
+    persist();
+    go('detail');
+    announce('保存していた体験の詳細を開きました。');
+  }
+
+  function removeInterestedItem(item, button) {
+    if (!item || !item.experienceId || button.disabled) return;
+    button.disabled = true;
+    STORE.removeInterested(item.experienceId).then(function (result) {
+      if (!result || result.ok !== true) {
+        button.disabled = false;
+        announce('保存の解除に失敗しました。保存済みの状態を保ちます。');
+        return;
+      }
+      interested = result.value;
+      if (interested.items.length === 0) {
+        closeInterestedLayer(false);
+        render();
+        announce('保存を解除しました。');
+        return;
+      }
+      renderInterestedLayer();
+      announce('保存を解除しました。');
+    }).catch(function () {
+      button.disabled = false;
+      announce('保存の解除に失敗しました。保存済みの状態を保ちます。');
+    });
+  }
+
+  function interestedRow(item) {
+    var actionable = item.status === 'actionable';
+    var text = actionable ? [
+      h('p', { class: 'interested-item-type', text: item.type }),
+      h('h3', { class: 'interested-item-title', text: item.title }),
+      item.place ? h('p', { class: 'interested-item-place', text: item.place }) : null
+    ] : [
+      h('h3', { class: 'interested-item-title', text: '現在は案内できません' }),
+      h('p', {
+        class: 'interested-item-unavailable',
+        text: '最新の確認条件を満たしていないため、詳細は表示していません。'
+      })
+    ];
+    var actions = [];
+    if (actionable) {
+      actions.push(h('button', {
+        class: 'btn btn-line btn-sm', type: 'button',
+        onclick: function () { viewInterestedItem(item); }
+      }, [h('span', { text: '見る' })]));
+    }
+    var removeButton = h('button', {
+      class: 'btn btn-text btn-sm', type: 'button'
+    }, [h('span', { text: '保存を解除' })]);
+    removeButton.addEventListener('click', function () {
+      removeInterestedItem(item, removeButton);
+    });
+    actions.push(removeButton);
+    return h('li', {
+      class: 'interested-item' + (actionable ? '' : ' is-unavailable')
+    }, [
+      h('div', { class: 'interested-item-copy' }, text),
+      h('div', { class: 'interested-item-actions' }, actions)
+    ]);
+  }
+
+  function renderInterestedLayer() {
+    if (!interestedLayer) return;
+    var panel = interestedLayer.querySelector('.interested-panel');
+    var items = INTERESTED ? INTERESTED.resolveAll(interested) : [];
+    panel.textContent = '';
+    var closeButton = h('button', {
+      class: 'interested-close', type: 'button', 'aria-label': '閉じる',
+      onclick: function () { closeInterestedLayer(true); }
+    }, [h('span', { 'aria-hidden': 'true', text: '×' })]);
+    panel.appendChild(closeButton);
+    panel.appendChild(h('p', { class: 'eyebrow', text: 'この端末に保存したもの' }));
+    panel.appendChild(h('h2', {
+      class: 'interested-title', id: 'interested-title', text: '気になるもの'
+    }));
+    panel.appendChild(h('p', {
+      class: 'interested-note',
+      text: '保存した新しい順です。現在の確認条件を満たすものだけ、詳細を開けます。'
+    }));
+    panel.appendChild(h('ul', { class: 'interested-list' }, items.map(interestedRow)));
+    closeButton.focus();
+  }
+
+  function openInterestedLayer(opener) {
+    if (!interested.items.length) return;
+    closeInterestedLayer(false);
+    interestedOpener = opener;
+    interestedLayer = h('div', {
+      class: 'interested-layer', role: 'dialog', 'aria-modal': 'true',
+      'aria-labelledby': 'interested-title',
+      onclick: function (event) {
+        if (event.target === interestedLayer) closeInterestedLayer(true);
+      }
+    }, [h('div', { class: 'interested-panel' })]);
+    document.body.appendChild(interestedLayer);
+    document.body.classList.add('has-interested-layer');
+    setBackgroundInert(true);
+    document.addEventListener('keydown', onInterestedKeydown);
+    renderInterestedLayer();
   }
 
   /* Existing Discovery semantics stay authoritative. For approved real
@@ -354,7 +520,11 @@
       }, [
         h('span', { class: 'cta-main', text: 'はじめる' }),
         h('span', { class: 'cta-sub', text: '感情の棚を選ぶ' })
-      ])
+      ]),
+      interested.items.length ? h('button', {
+        class: 'interested-entry', type: 'button',
+        onclick: function (event) { openInterestedLayer(event.currentTarget); }
+      }, [icon('heart'), h('span', { text: '気になるものを見る' })]) : null
     ]);
 
     var nodes = [h('div', { class: 'entrance-hero' }, [copy, hero])];
@@ -2016,6 +2186,7 @@
   }
 
   function resetPrototype() {
+    closeInterestedLayer(false);
     STORE.clear().then(function () {
       state = STORE.emptyState();
       screen = 'entrance';
