@@ -54,11 +54,11 @@ check('おすすめの過ごし方 uses Shinjuku-Gyoen-specific spatial contrast
 check('placement reason includes emotion × place specificity × placement purpose',
   /まだ名前がない/.test(exp.placeDetail.placementReason) &&
   /新宿御苑/.test(exp.placeDetail.placementReason) &&
-  /風景式・整形式・日本庭園/.test(exp.placeDetail.placementReason) &&
-  /景色の秩序が切り替わ/.test(exp.placeDetail.placementReason) &&
-  /この棚に置いています/.test(exp.placeDetail.placementReason));
+  /整形式庭園、風景式庭園、日本庭園/.test(exp.placeDetail.placementReason) &&
+  /景色の組み立て方が切り替わ/.test(exp.placeDetail.placementReason) &&
+  /この場所を「まだ名前がない」に置きました/.test(exp.placeDetail.placementReason));
 check('placement reason passes Emotion-substitution test',
-  /ひとつの言葉に決める前/.test(exp.placeDetail.placementReason) &&
+  /ひとつの見方に名前をつけて固定する前/.test(exp.placeDetail.placementReason) &&
   !/感情を入口に|気分転換/.test(exp.placeDetail.placementReason));
 check('copy contains no diagnosis or therapeutic promise',
   !/(あなたは|診断|癒|治療|落ち着くはず|整う|元気にする|気分を改善)/.test([
