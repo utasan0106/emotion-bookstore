@@ -66,14 +66,26 @@
   function save(state) {
     memory = clone(state);
     return openDb().then(function (db) {
-      if (!db) return;
+      if (!db) return { ok: false, reason: 'INDEXEDDB_UNAVAILABLE' };
       return new Promise(function (resolve) {
-        var tx = db.transaction(STORE_NAME, 'readwrite');
-        tx.objectStore(STORE_NAME).put(clone(state), STATE_KEY);
-        tx.oncomplete = function () { resolve(); };
-        tx.onerror = function () { resolve(); };
-        tx.onabort = function () { resolve(); };
+        var settled = false;
+        function finish(result) {
+          if (settled) return;
+          settled = true;
+          resolve(result);
+        }
+        try {
+          var tx = db.transaction(STORE_NAME, 'readwrite');
+          tx.objectStore(STORE_NAME).put(clone(state), STATE_KEY);
+          tx.oncomplete = function () { finish({ ok: true, reason: null }); };
+          tx.onerror = function () { finish({ ok: false, reason: 'TRANSACTION_ERROR' }); };
+          tx.onabort = function () { finish({ ok: false, reason: 'TRANSACTION_ABORT' }); };
+        } catch (error) {
+          finish({ ok: false, reason: 'TRANSACTION_ERROR' });
+        }
       });
+    }).catch(function () {
+      return { ok: false, reason: 'INDEXEDDB_ERROR' };
     });
   }
 
@@ -214,14 +226,26 @@
   function clear() {
     memory = null;
     return openDb().then(function (db) {
-      if (!db) return;
+      if (!db) return { ok: false, reason: 'INDEXEDDB_UNAVAILABLE' };
       return new Promise(function (resolve) {
-        var tx = db.transaction(STORE_NAME, 'readwrite');
-        tx.objectStore(STORE_NAME).delete(STATE_KEY);
-        tx.oncomplete = function () { resolve(); };
-        tx.onerror = function () { resolve(); };
-        tx.onabort = function () { resolve(); };
+        var settled = false;
+        function finish(result) {
+          if (settled) return;
+          settled = true;
+          resolve(result);
+        }
+        try {
+          var tx = db.transaction(STORE_NAME, 'readwrite');
+          tx.objectStore(STORE_NAME).delete(STATE_KEY);
+          tx.oncomplete = function () { finish({ ok: true, reason: null }); };
+          tx.onerror = function () { finish({ ok: false, reason: 'TRANSACTION_ERROR' }); };
+          tx.onabort = function () { finish({ ok: false, reason: 'TRANSACTION_ABORT' }); };
+        } catch (error) {
+          finish({ ok: false, reason: 'TRANSACTION_ERROR' });
+        }
       });
+    }).catch(function () {
+      return { ok: false, reason: 'INDEXEDDB_ERROR' };
     });
   }
 

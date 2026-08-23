@@ -1,7 +1,8 @@
 /* =============================================================================
  * V3 Isolated UX Prototype — surfaces and state transitions
  * -----------------------------------------------------------------------------
- * 9 Surface 固定。Modal / bottom sheet 以外の第 10 画面は作らない。
+ * 既存9 Surfaceは固定。PASS C1の公開Editorial detailは、有限2-slotから
+ * 到達する補助surfaceとしてのみ追加し、feed/navigation系の画面を増やさない。
  * analytics network 送信 0 / 外部 AI 0 / login 0。
  * 外部遷移は approved Action Destination の HTTPS action だけを扱う。
  * ========================================================================== */
@@ -14,6 +15,8 @@
   var AD = global.V3_ACTION_DESTINATION;
   var REAL = global.V3_REAL_EXPERIENCE_REGISTRY;
   var INTERESTED = global.V3_INTERESTED_RETRIEVAL;
+  var PUBLIC_EDITORIAL = global.V3_PUBLIC_EDITORIAL;
+  var MEASUREMENT = global.V3_ANALYTICS;
 
   var state = STORE.emptyState();
   var interested = STORE.emptyInterested();
@@ -22,7 +25,10 @@
   var view, live, stepbar;
   var interestedLayer = null;
   var interestedOpener = null;
+  var selectedEditorialId = null;
   var historyReady = false;
+  var measurementSequence = 0;
+  var navigationSequence = 0;
 
   /* ---------------------------------------------------------------- helpers */
 
@@ -52,10 +58,58 @@
     global.setTimeout(function () { live.textContent = message; }, 30);
   }
 
-  function persist() { STORE.save(state); }
+  function persist() { return STORE.save(state); }
+
+  function cloneState() {
+    return JSON.parse(JSON.stringify(state));
+  }
+
+  function restoreState(snapshot) {
+    state = snapshot;
+    /* Keep the in-memory fallback aligned with the restored UI state. The
+       result remains fail-closed and is deliberately not presented as saved. */
+    STORE.save(state);
+  }
+
+  function nextMeasurementToken(kind) {
+    measurementSequence += 1;
+    return kind + ':' + measurementSequence;
+  }
+
+  function measureOnce(eventName, token) {
+    if (!MEASUREMENT || typeof MEASUREMENT.emitOnce !== 'function') return false;
+    try {
+      return MEASUREMENT.emitOnce(eventName, token, {}).ok === true;
+    } catch (error) {
+      /* Measurement availability must never block Product behavior. */
+      return false;
+    }
+  }
+
+  function measureDurableSave(saveResult, token) {
+    if (!MEASUREMENT || typeof MEASUREMENT.emitDurableSave !== 'function') return false;
+    try {
+      return MEASUREMENT.emitDurableSave(saveResult, token).ok === true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function measureCurrentView() {
+    var eventByScreen = {
+      entrance: 'v3_entrance_view',
+      discovery: 'v3_discovery_view',
+      'editorial-detail': 'v3_editorial_open',
+      moment: 'v3_return_view',
+      trace: 'v3_trace_start'
+    };
+    var eventName = eventByScreen[screen];
+    if (eventName) measureOnce(eventName, 'view:' + navigationSequence);
+  }
 
   function go(next, options) {
     screen = next;
+    navigationSequence += 1;
     if (historyReady && !(options && options.fromHistory)) {
       try {
         global.history.pushState({ v3Screen: next }, '', global.location.href);
@@ -95,6 +149,32 @@
     return state.deck && state.deck.ids ? state.deck.ids.length : 0;
   }
 
+  function publicEditorialRecords() {
+    var content = global.V3_PUBLIC_EDITORIAL_CONTENT;
+    return content && Array.isArray(content.records) ? content.records : [];
+  }
+
+  function publicEditorialOptions() {
+    return {
+      shelfIds: D.EMOTIONS.map(function (item) { return item.id; }),
+      asOf: new Date().toISOString().slice(0, 10)
+    };
+  }
+
+  function activeEditorialForShelf(shelfId) {
+    if (!PUBLIC_EDITORIAL || !PUBLIC_EDITORIAL.resolveForShelf) return [];
+    return PUBLIC_EDITORIAL.resolveForShelf(
+      publicEditorialRecords(), shelfId, publicEditorialOptions()
+    ).items;
+  }
+
+  function activeEditorialById(shelfId, connectionId) {
+    if (!PUBLIC_EDITORIAL || !PUBLIC_EDITORIAL.findActive || !connectionId) return null;
+    return PUBLIC_EDITORIAL.findActive(
+      publicEditorialRecords(), shelfId, connectionId, publicEditorialOptions()
+    );
+  }
+
   function isInterested(id) {
     return interested.items.some(function (item) { return item.experienceId === id; });
   }
@@ -116,7 +196,8 @@
   }
 
   function setBackgroundInert(value) {
-    [document.querySelector('.site-header'), stepbar, view].forEach(function (node) {
+    [document.querySelector('.site-header'), stepbar, view,
+      document.querySelector('.legal-footer')].forEach(function (node) {
       if (!node) return;
       node.inert = value;
       if (value) node.setAttribute('aria-hidden', 'true');
@@ -168,6 +249,7 @@
     state.deck.activeId = item.experienceId;
     state.selectedId = item.experienceId;
     persist();
+    measureOnce('v3_experience_select', nextMeasurementToken('experience-select'));
     go('detail');
     announce('保存していた体験の詳細を開きました。');
   }
@@ -274,6 +356,8 @@
   /* Existing Discovery semantics stay authoritative. For approved real
      Experiences, durable save/remove completes before the decision/UI moves. */
   function decideWithInterest(id, value, onSuccess) {
+    var shouldMeasureSave = value === 'keep' && !isInterested(id);
+    var saveToken = shouldMeasureSave ? nextMeasurementToken('experience-save') : null;
     function completeDecision() {
       if (onSuccess) onSuccess();
       else decide(id, value);
@@ -286,6 +370,7 @@
     var operation = value === 'keep' ? STORE.saveInterested(id) : STORE.removeInterested(id);
     operation.then(function (result) {
       delete interestPending[id];
+      if (shouldMeasureSave) measureDurableSave(result, saveToken);
       if (!result || result.ok !== true) {
         render();
         announce(value === 'keep'
@@ -430,6 +515,8 @@
         return { back: 'entrance', title: '感情の棚を選ぶ', count: '1 / 3', progress: 1 / 3, step: 'STEP 1' };
       case 'understanding':
         return { back: 'emotion' };
+      case 'editorial-detail':
+        return { back: 'understanding' };
       case 'discovery':
         return {
           back: deck && deck.mode === 'personalized' ? 'entrance' : 'understanding',
@@ -466,6 +553,7 @@
   function renderStepbar() {
     stepbar.textContent = '';
     var config = stepbarConfig();
+    var progressPercent;
     if (!config) return;
 
     var back = h('button', {
@@ -486,8 +574,13 @@
 
     var nodes = [h('div', { class: 'stepbar-row' }, [back, center, right])];
     if (config.progress) {
-      nodes.push(h('div', { class: 'stepbar-progress' }, [
-        h('span', { style: 'width:' + Math.round(config.progress * 100) + '%' })
+      progressPercent = Math.round(config.progress * 100);
+      nodes.push(h('div', {
+        class: 'stepbar-progress', role: 'progressbar',
+        'aria-label': '体験の進行状況', 'aria-valuemin': '0', 'aria-valuemax': '100',
+        'aria-valuenow': String(progressPercent)
+      }, [
+        h('span', { class: 'stepbar-progress-value is-' + progressPercent })
       ]));
     }
     nodes.forEach(function (node) { stepbar.appendChild(node); });
@@ -626,13 +719,13 @@
   var TRUST_ITEMS = [
     {
       asset: 'private',
-      heading: '登録不要・完全に非公開',
-      support: 'あなたの記録はあなただけのものです。'
+      heading: '登録不要・記録は非公開',
+      support: 'この端末に保存した記録は公開されません。'
     },
     {
       asset: 'no_ai',
-      heading: 'AIは使用しません',
-      support: '本文をAIが読むことはありません。'
+      heading: '記録を外部AIへ送りません',
+      support: 'この端末に保存した内容を、外部AIへ送る機能はありません。'
     },
     {
       asset: 'device',
@@ -659,7 +752,7 @@
         h('h2', { class: 'sr-only', id: 'trust-heading', text: 'よくある質問' }),
         h('p', { class: 'trust-mobile' }, [
           icon('lock'),
-          h('span', { text: '登録不要・入力内容はこの端末を基本に扱います' })
+          h('span', { text: '登録不要・この端末に保存した記録は公開されません' })
         ]),
         h('div', { class: 'trust-desktop' }, items)
       ]);
@@ -688,7 +781,7 @@
   var W01_FAQS = [
     {
       question: '登録は必要ですか？',
-      answer: '登録しなくても利用できます。V3 Beta0の基本体験は、アカウントを作らずに使える設計です。'
+      answer: '登録しなくても利用できます。現在のV3 Releaseは、アカウントを作らずに使えます。'
     },
     {
       question: '感情の棚は診断ですか？',
@@ -700,15 +793,15 @@
     },
     {
       question: '自分の記録は公開されますか？',
-      answer: '自分の記録は公開を前提に扱いません。現在のBeta0では、この端末で扱うことを基本にしています。'
+      answer: '自分の記録は公開されません。現在のV3ではこの端末のブラウザに保存し、外部サービスへ送信しません。公式サイトや地図を開いた後は、移動先の方針が適用されます。'
     },
     {
       question: 'AIが自分の本文を読みますか？',
-      answer: '現在のBeta0では、privateな本文を外部AIへ送る設計にはしません。'
+      answer: 'この端末に保存した記録を外部AIへ送る機能はありません。'
     },
     {
       question: '位置情報は自動で使われますか？',
-      answer: '現在のBeta0では、自動で位置情報を取得しません。将来利用する場合も、本人が明示的に選べることを前提にします。'
+      answer: 'いいえ。現在のV3では位置情報を取得しません。地図を開く場合も、公開されている目的地だけをGoogle Mapsへ渡します。'
     }
   ];
 
@@ -774,6 +867,7 @@
       state.emotion = word.id;
       state.deck = null;
       persist();
+      measureOnce('v3_emotion_select', nextMeasurementToken('emotion-select'));
 
       /* selected stateをpaintしてから既存Understanding routeへ進む。 */
       global.setTimeout(function () {
@@ -916,6 +1010,7 @@
     var word = D.emotionById(state.emotion);
     var realDeck = approvedRealDeck(state.emotion);
     var deckCount = realDeck ? realDeck.ids.length : 0;
+    var editorialItems = activeEditorialForShelf(state.emotion);
     var outcome = [];
 
     outcome.push(h('p', {
@@ -971,15 +1066,196 @@
         })
       ])
     ]);
-    var surface = section('03-understanding', [
+    var understandingChildren = [
       h('div', { class: 'understanding-panel' }, [
         identity,
         h('div', { class: 'understanding-outcome-column' }, outcome)
       ])
-    ]);
+    ];
+    if (editorialItems.length) understandingChildren.push(publicEditorialShelf(editorialItems));
+    var surface = section('03-understanding', understandingChildren);
     surface.classList.add('understanding-bridge');
     surface.setAttribute('data-selected-shelf', state.emotion || '');
     return surface;
+  }
+
+  function editorialSlotLabel(record) {
+    if (record.slot_type === 'fresh') {
+      if (record.content_type === 'video') return '今週の映像';
+      if (record.content_type === 'book') return '今週の一冊';
+      if (record.content_type === 'place') return '今週の場所';
+      return '今週の編集';
+    }
+    if (record.content_type === 'video') return 'この棚の映像';
+    if (record.content_type === 'book') return 'この棚の一冊';
+    if (record.content_type === 'place') return 'この棚の場所';
+    return 'この棚の編集';
+  }
+
+  function openEditorialDetail(record) {
+    if (!record || !record.connection_id) return;
+    selectedEditorialId = record.connection_id;
+    go('editorial-detail');
+  }
+
+  function publicEditorialCard(record) {
+    var nodes = [];
+    if (record.display_visual) {
+      nodes.push(h('img', {
+        class: 'public-editorial-card-visual', src: record.display_visual.src,
+        alt: record.display_visual.alt, loading: 'lazy'
+      }));
+    }
+    nodes.push(h('div', { class: 'public-editorial-card-copy' }, [
+      h('p', { class: 'eyebrow', text: editorialSlotLabel(record) }),
+      h('h3', { class: 'public-editorial-card-title', text: record.headline }),
+      h('p', { class: 'public-editorial-card-lead', text: record.lead }),
+      h('button', {
+        class: 'btn btn-text public-editorial-card-action', type: 'button',
+        onclick: function () { openEditorialDetail(record); }
+      }, [h('span', { text: 'のぞく' }), h('span', { 'aria-hidden': 'true', text: '→' })])
+    ]));
+    return h('article', {
+      class: 'public-editorial-card',
+      'data-editorial-slot': record.slot_type,
+      'data-connection-id': record.connection_id
+    }, nodes);
+  }
+
+  function publicEditorialShelf(items) {
+    return h('section', {
+      class: 'public-editorial-shelf', 'aria-labelledby': 'public-editorial-heading'
+    }, [
+      h('div', { class: 'public-editorial-shelf-heading' }, [
+        h('p', { class: 'eyebrow', text: '編集部が置いたもの' }),
+        h('h2', {
+          class: 'section-title', id: 'public-editorial-heading',
+          text: 'この棚から、もうひとつ。'
+        })
+      ]),
+      h('div', { class: 'public-editorial-grid' }, items.slice(0, 2).map(publicEditorialCard))
+    ]);
+  }
+
+  function editorialTargetMeta(target) {
+    return [target.kind, target.creator, target.release].filter(function (value) {
+      return Boolean(value);
+    }).join(' ／ ');
+  }
+
+  function surfaceEditorialDetail() {
+    var word = selectedShelf();
+    var record = activeEditorialById(state.emotion, selectedEditorialId);
+    var nodes;
+    var action;
+    var media;
+    var mediaIntentToken = nextMeasurementToken('editorial-media-intent');
+    var editorialActionToken = nextMeasurementToken('editorial-action');
+    if (!word || !record) return surfaceUnderstanding();
+
+    if (record.video) {
+      media = h('div', {
+        class: 'public-editorial-video',
+        'data-video-first-paint': 'provider-request-0'
+      }, [
+        h('p', { class: 'eyebrow', text: record.video.video_provider }),
+        h('h2', { class: 'public-editorial-video-title', text: record.video.video_title }),
+        h('p', { class: 'public-editorial-video-creator', text: record.video.creator_name })
+      ]);
+      action = h('button', {
+        class: 'btn btn-primary public-editorial-primary', type: 'button',
+        'data-video-activation': record.video.embed_status,
+        onclick: function () {
+          measureOnce('v3_editorial_media_intent', mediaIntentToken);
+          if (record.video.embed_status === 'link_only') {
+            measureOnce('v3_editorial_action', editorialActionToken);
+          }
+          if (PUBLIC_EDITORIAL.activateVideo(record, media)) {
+            announce(record.video.embed_status === 'allowed'
+              ? '映像を読み込みました。' : '公式の映像を新しいタブで開きました。');
+          }
+        }
+      }, [
+        h('span', { text: record.video.embed_status === 'allowed' ? '映像を再生' : '公式の映像を開く' }),
+        h('span', { 'aria-hidden': 'true', text: record.video.embed_status === 'allowed' ? '▶' : '↗' })
+      ]);
+    } else {
+      media = record.display_visual ? h('img', {
+        class: 'public-editorial-detail-visual', src: record.display_visual.src,
+        alt: record.display_visual.alt
+      }) : null;
+      action = h('button', {
+        class: 'btn btn-primary public-editorial-primary', type: 'button',
+        onclick: function () {
+          measureOnce('v3_editorial_action', editorialActionToken);
+          if (PUBLIC_EDITORIAL.openPrimary(record)) announce('公式の行き先を新しいタブで開きました。');
+        }
+      }, [
+        h('span', { text: record.primary_action.label }),
+        h('span', { 'aria-hidden': 'true', text: '↗' })
+      ]);
+    }
+
+    nodes = [
+      h('button', {
+        class: 'public-editorial-breadcrumb', type: 'button',
+        onclick: function () { go('understanding'); }
+      }, [
+        h('span', { 'aria-hidden': 'true', text: '←' }),
+        h('span', { text: '「' + word.label + '」の棚へ' })
+      ]),
+      h('div', { class: 'public-editorial-detail-hero' }, [
+        h('div', { class: 'public-editorial-detail-copy' }, [
+          h('p', { class: 'eyebrow', text: editorialSlotLabel(record) }),
+          h('h1', {
+            class: 'display display-sm public-editorial-headline', tabindex: '-1',
+            id: 'surface-title', text: record.headline
+          }),
+          h('p', { class: 'body-lg public-editorial-lead', text: record.lead }),
+          action
+        ]),
+        media
+      ]),
+      record.word_contour ? h('section', { class: 'public-editorial-detail-section' }, [
+        h('h2', { class: 'section-title', text: '言葉の輪郭' }),
+        h('p', { class: 'body-lg', text: record.word_contour })
+      ]) : null,
+      h('section', { class: 'public-editorial-detail-section' }, [
+        h('h2', { class: 'section-title', text: '編集部より' }),
+        h('p', { class: 'body-lg', text: record.editorial_note })
+      ]),
+      h('section', { class: 'public-editorial-detail-section' }, [
+        h('h2', { class: 'section-title', text: record.target.title }),
+        h('p', { class: 'card-meta', text: editorialTargetMeta(record.target) }),
+        h('p', { class: 'note', text: record.source_context.summary })
+      ]),
+      h('section', { class: 'public-editorial-detail-section public-editorial-reason' }, [
+        h('h2', { class: 'section-title', text: 'なぜ、これをここに？' }),
+        h('p', { class: 'body-lg', text: record.editorial_reason })
+      ]),
+      h('div', { class: 'public-editorial-evidence-grid' }, [
+        h('section', { class: 'public-editorial-detail-section' }, [
+          h('h2', { class: 'section-title', text: '確認した事実' }),
+          h('p', { class: 'body-lg', text: record.fact_anchor })
+        ]),
+        h('section', { class: 'public-editorial-detail-section' }, [
+          h('h2', { class: 'section-title', text: 'この棚とのつながり' }),
+          h('p', { class: 'body-lg', text: record.source_context.label })
+        ])
+      ]),
+      h('dl', { class: 'public-editorial-provenance' }, [
+        h('div', {}, [h('dt', { text: '出典' }), h('dd', { text: record.provenance.source_name })]),
+        h('div', {}, [h('dt', { text: '確認日' }), h('dd', { text: record.checked_at.slice(0, 10) })]),
+        h('div', {}, [h('dt', { text: '権利・表示' }), h('dd', { text: record.rights_status })])
+      ]),
+      h('div', { class: 'actions actions-quiet public-editorial-return' }, [
+        h('button', {
+          class: 'btn btn-text', type: 'button', onclick: function () { go('understanding'); }
+        }, [h('span', { text: '棚へ戻る' })])
+      ])
+    ];
+
+    return section('03-editorial-detail', nodes);
   }
 
   function cardEditorialHook(experience) {
@@ -1115,6 +1391,7 @@
       onclick: function () {
         state.selectedId = experience.id;
         persist();
+        measureOnce('v3_experience_select', nextMeasurementToken('experience-select'));
         go('detail');
       }
     }, [h('span', { text: '詳しく見る' })]));
@@ -1166,9 +1443,17 @@
   }
 
   function openApprovedDestination(action, experience) {
+    var token = arguments.length > 2 ? arguments[2] : nextMeasurementToken('external-open');
     if (!AD || !experience || !AD.openAction(action, experience.id)) {
       announce('この行き先は開けません。');
+      return;
     }
+    measureOnce('v3_external_open', token);
+  }
+
+  function destinationActionHandler(action, experience) {
+    var token = nextMeasurementToken('external-open');
+    return function () { openApprovedDestination(action, experience, token); };
   }
 
   function singleKeepToReview(recordId) {
@@ -1241,7 +1526,7 @@
       content.push(h('button', {
         class: 'm03-external-action', type: 'button',
         'data-action-destination': action.kind,
-        onclick: function () { openApprovedDestination(action, experience); }
+        onclick: destinationActionHandler(action, experience)
       }, [
         h('span', { class: 'discovery-inline-icon', 'aria-hidden': 'true', text: '↗' }),
         h('span', { text: action.label }),
@@ -1344,7 +1629,7 @@
       actions.push(h('button', {
         class: 'w03-link-button', type: 'button',
         'data-action-destination': action.kind,
-        onclick: function () { openApprovedDestination(action, experience); }
+        onclick: destinationActionHandler(action, experience)
       }, [h('span', { text: action.label }), h('span', { 'aria-hidden': 'true', text: '↗' })]));
     });
     actions.push(h('button', {
@@ -1570,6 +1855,7 @@
         onclick: function () {
           state.selectedId = id;
           persist();
+          measureOnce('v3_experience_select', nextMeasurementToken('experience-select'));
           go('detail');
         }
       }, [h('span', { text: '詳しく見る' })]));
@@ -1724,6 +2010,7 @@
     if (!activeId) return;
     state.selectedId = activeId;
     persist();
+    measureOnce('v3_experience_select', nextMeasurementToken('experience-select'));
     go('detail');
   }
 
@@ -1851,14 +2138,14 @@
       detailActions.push(h('button', {
         class: 'btn btn-primary detail-primary-action', type: 'button',
         'data-action-destination': primaryAction.kind,
-        onclick: function () { openApprovedDestination(primaryAction, experience); }
+        onclick: destinationActionHandler(primaryAction, experience)
       }, [h('span', { text: primaryAction.label }), h('span', { 'aria-hidden': 'true', text: '↗' })]));
     }
     secondaryActions.forEach(function (action) {
       detailActions.push(h('button', {
         class: 'btn btn-text detail-utility-action', type: 'button',
         'data-action-destination': action.kind,
-        onclick: function () { openApprovedDestination(action, experience); }
+        onclick: destinationActionHandler(action, experience)
       }, [
         h('span', { text: placeDetail && action.kind === 'maps' ? '地図で見る' : action.label }),
         h('span', { 'aria-hidden': 'true', text: '↗' })
@@ -2032,15 +2319,29 @@
 
     var actionNodes = [submit];
     if (current) {
-      actionNodes.push(h('button', {
+      var removePlanButton = h('button', {
         class: 'btn btn-text', type: 'button',
         onclick: function () {
+          var beforeRemove = cloneState();
+          removePlanButton.disabled = true;
           state.plan = null;
-          persist();
-          go('detail');
-          announce('予定を取り消しました。');
+          persist().then(function (result) {
+            if (result && result.ok === true) {
+              go('detail');
+              announce('予定を取り消しました。');
+              return;
+            }
+            restoreState(beforeRemove);
+            removePlanButton.disabled = false;
+            announce('予定を取り消せませんでした。保存済みの予定を保ちます。');
+          }).catch(function () {
+            restoreState(beforeRemove);
+            removePlanButton.disabled = false;
+            announce('予定を取り消せませんでした。保存済みの予定を保ちます。');
+          });
         }
-      }, [h('span', { text: '予定を取り消す' })]));
+      }, [h('span', { text: '予定を取り消す' })]);
+      actionNodes.push(removePlanButton);
     }
 
     var form = h('form', {
@@ -2048,10 +2349,26 @@
       onsubmit: function (event) {
         event.preventDefault();
         if (submit.disabled) return;
+        var beforeSave = cloneState();
+        form.setAttribute('aria-busy', 'true');
+        submit.disabled = true;
         state.plan = draftPlan();
         state.traceFacets = [];
-        persist();
-        go('plan-saved');
+        persist().then(function (result) {
+          form.removeAttribute('aria-busy');
+          if (result && result.ok === true) {
+            go('plan-saved');
+            return;
+          }
+          restoreState(beforeSave);
+          syncPlanForm();
+          announce('端末に予定を保存できませんでした。予定は保存済みにしていません。');
+        }).catch(function () {
+          form.removeAttribute('aria-busy');
+          restoreState(beforeSave);
+          syncPlanForm();
+          announce('端末に予定を保存できませんでした。予定は保存済みにしていません。');
+        });
       }
     }, [
       h('fieldset', { class: 'choices plan-choices' }, [
@@ -2107,10 +2424,24 @@
         }, [h('span', { text: '残すものがある' })]),
         h('button', {
           class: 'btn btn-line', type: 'button',
-          onclick: function () {
+          onclick: function (event) {
+            var beforeClose = cloneState();
+            var closeButton = event.currentTarget;
+            closeButton.disabled = true;
             state.plan.status = 'closed';
-            persist();
-            go('entrance');
+            persist().then(function (result) {
+              if (result && result.ok === true) {
+                go('entrance');
+                return;
+              }
+              restoreState(beforeClose);
+              closeButton.disabled = false;
+              announce('端末に状態を保存できませんでした。予定は変更していません。');
+            }).catch(function () {
+              restoreState(beforeClose);
+              closeButton.disabled = false;
+              announce('端末に状態を保存できませんでした。予定は変更していません。');
+            });
           }
         }, [h('span', { text: '今はない' })]),
         h('button', {
@@ -2156,6 +2487,8 @@
     var primaryReason;
     var summaryList;
     var submit;
+    var traceCompleteToken = nextMeasurementToken('trace-complete');
+    var traceSkipToken = nextMeasurementToken('trace-skip');
 
     function updateSummary() {
       if (!summaryList) return;
@@ -2244,9 +2577,29 @@
       class: 'btn btn-text m05-skip', type: 'button',
       onclick: function () {
         if (!state.plan) return;
+        var beforeSkip = cloneState();
+        form.setAttribute('aria-busy', 'true');
+        skip.disabled = true;
+        submit.disabled = true;
         state.plan.status = 'closed';
-        persist();
-        go('entrance');
+        persist().then(function (result) {
+          form.removeAttribute('aria-busy');
+          if (result && result.ok === true) {
+            measureOnce('v3_trace_skip', traceSkipToken);
+            go('entrance');
+            return;
+          }
+          restoreState(beforeSkip);
+          skip.disabled = false;
+          sync();
+          announce('端末に状態を保存できませんでした。記録は変更していません。');
+        }).catch(function () {
+          form.removeAttribute('aria-busy');
+          restoreState(beforeSkip);
+          skip.disabled = false;
+          sync();
+          announce('端末に状態を保存できませんでした。記録は変更していません。');
+        });
       }
     }, [h('span', { text: '今は残さない' })]);
 
@@ -2256,10 +2609,30 @@
         event.preventDefault();
         var normalized = normalizeTraceSelection(selected);
         if (!normalized.length || !state.plan) return;
+        var beforeTrace = cloneState();
+        form.setAttribute('aria-busy', 'true');
+        submit.disabled = true;
+        skip.disabled = true;
         state.traceFacets = normalized;
         state.plan.status = 'closed';
-        persist();
-        go('entrance');
+        persist().then(function (result) {
+          form.removeAttribute('aria-busy');
+          if (result && result.ok === true) {
+            measureOnce('v3_trace_complete', traceCompleteToken);
+            go('entrance');
+            return;
+          }
+          restoreState(beforeTrace);
+          skip.disabled = false;
+          sync();
+          announce('端末に記録を保存できませんでした。記録は保存済みにしていません。');
+        }).catch(function () {
+          form.removeAttribute('aria-busy');
+          restoreState(beforeTrace);
+          skip.disabled = false;
+          sync();
+          announce('端末に記録を保存できませんでした。記録は保存済みにしていません。');
+        });
       }
     }, [
       h('fieldset', { class: 'm05-facet-fieldset' }, [
@@ -2322,6 +2695,7 @@
     entrance: surfaceEntrance,
     emotion: surfaceEmotion,
     understanding: surfaceUnderstanding,
+    'editorial-detail': surfaceEditorialDetail,
     discovery: surfaceDiscovery,
     review: surfaceReview,
     none: surfaceNone,
@@ -2349,8 +2723,16 @@
     persist();
   }
 
+  function failClosedEditorialRoute() {
+    if (screen !== 'editorial-detail') return;
+    if (activeEditorialById(state.emotion, selectedEditorialId)) return;
+    selectedEditorialId = null;
+    screen = 'understanding';
+  }
+
   function render() {
     failClosedStaleShelfRoute();
+    failClosedEditorialRoute();
     var build = SURFACES[screen] || surfaceEntrance;
     var next = build();
     renderStepbar();
@@ -2358,15 +2740,24 @@
     view.appendChild(next);
     var title = document.getElementById('surface-title');
     if (title) title.focus();
+    measureCurrentView();
   }
 
   function resetPrototype() {
     closeInterestedLayer(false);
-    STORE.clear().then(function () {
+    STORE.clear().then(function (result) {
+      if (!result || result.ok !== true) {
+        announce('prototype の状態を初期化できませんでした。');
+        return;
+      }
       state = STORE.emptyState();
+      selectedEditorialId = null;
       screen = 'entrance';
+      navigationSequence += 1;
       render();
       announce('prototype の状態を初期化しました。');
+    }).catch(function () {
+      announce('prototype の状態を初期化できませんでした。');
     });
   }
 
@@ -2472,8 +2863,10 @@
       global.addEventListener('popstate', function (event) {
         var target = event.state && event.state.v3Screen;
         screen = target && SURFACES[target] ? target : 'entrance';
+        navigationSequence += 1;
         render();
       });
+      navigationSequence += 1;
       render();
     });
   }

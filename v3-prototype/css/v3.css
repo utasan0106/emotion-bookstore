@@ -150,6 +150,10 @@ img { max-width: 100%; height: auto; display: block; }
   overflow: hidden;
 }
 .stepbar-progress span { display: block; height: 100%; background: var(--navy); }
+.stepbar-progress-value.is-33 { width: 33%; }
+.stepbar-progress-value.is-50 { width: 50%; }
+.stepbar-progress-value.is-67 { width: 67%; }
+.stepbar-progress-value.is-100 { width: 100%; }
 .stepbar-step { display: none; }
 
 .view { display: block; padding: 0 var(--gutter) 40px; outline: none; }
@@ -921,6 +925,7 @@ body:has(.entrance) .view { padding-bottom: 0; }
    With saved items, it opens as a quiet layer rather than a tenth surface. */
 .interested-entry {
   display: inline-flex;
+  min-height: 44px;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -972,8 +977,8 @@ body.has-interested-layer { overflow: hidden; }
   position: absolute;
   top: 15px;
   right: 15px;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border: 1px solid rgba(15, 35, 56, 0.25);
   border-radius: 50%;
   background: rgba(255, 253, 249, 0.72);
@@ -2316,7 +2321,7 @@ body:has(.discovery-canonical) .view { padding-inline: clamp(22px, 4.3vw, 44px);
   .w03-link-button {
     appearance: none;
     display: inline-flex;
-    min-height: 42px;
+    min-height: 44px;
     align-items: center;
     gap: 7px;
     padding: 5px 0;
@@ -2402,7 +2407,7 @@ body:has(.discovery-canonical) .view { padding-inline: clamp(22px, 4.3vw, 44px);
   .w03-alternate-actions { display: flex; align-items: center; justify-content: flex-end; gap: 9px; }
   .w03-detail-button {
     appearance: none;
-    min-height: 36px;
+    min-height: 44px;
     padding: 6px 11px;
     border: 1px solid rgba(13, 35, 57, 0.28);
     border-radius: 5px;
@@ -2415,8 +2420,8 @@ body:has(.discovery-canonical) .view { padding-inline: clamp(22px, 4.3vw, 44px);
   .w03-alternate-keep {
     appearance: none;
     display: inline-flex;
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     align-items: center;
     justify-content: center;
     padding: 0;
@@ -2767,7 +2772,7 @@ body:has(.discovery-canonical) .view { padding-inline: clamp(22px, 4.3vw, 44px);
   .w03-alternate-actions { gap: 8px; }
   .w03-detail-button {
     min-width: 76px;
-    min-height: 38px;
+    min-height: 44px;
     padding: 6px 12px;
     font-size: 12px;
     font-weight: 500;
@@ -4242,6 +4247,148 @@ body:has(.trace-phase1) .stepbar-back svg {
   .understanding-outcome-column .actions { max-width: 420px; }
 }
 
+/* PASS C1 — two bounded public Editorial slots. Zero active records add no UI. */
+.public-editorial-shelf {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+}
+.public-editorial-shelf-heading .section-title { margin-top: 5px; }
+.public-editorial-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.public-editorial-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid rgba(15, 27, 41, 0.13);
+  border-radius: 14px;
+  background: rgba(255, 253, 252, 0.74);
+}
+.public-editorial-card-visual {
+  width: 100%;
+  height: 132px;
+  object-fit: cover;
+}
+.public-editorial-card-copy { min-width: 0; padding: 18px; }
+.public-editorial-card-title {
+  margin-top: 5px;
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--navy);
+}
+.public-editorial-card-lead {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.72;
+  color: var(--ink);
+}
+.public-editorial-card-action {
+  min-height: 44px;
+  margin-top: 8px;
+  padding-inline: 0;
+  gap: 9px;
+}
+
+.surface[data-surface="03-editorial-detail"] { max-width: 1040px; }
+.public-editorial-breadcrumb {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  margin: -6px 0 18px;
+  padding: 8px 4px;
+  border: 0;
+  background: transparent;
+  color: var(--navy);
+  font: inherit;
+  cursor: pointer;
+}
+.public-editorial-detail-hero {
+  display: grid;
+  gap: 20px;
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--rule);
+}
+.public-editorial-headline { margin-top: 8px; }
+.public-editorial-lead { margin-top: 14px; }
+.public-editorial-primary { min-height: 48px; margin-top: 20px; }
+.public-editorial-detail-visual {
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  border-radius: var(--radius-image);
+}
+.public-editorial-video {
+  min-height: 230px;
+  padding: 28px;
+  border: 1px solid rgba(15, 27, 41, 0.14);
+  border-radius: 14px;
+  background: var(--warm);
+}
+.public-editorial-video-title {
+  margin-top: 9px;
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.public-editorial-video-creator { margin-top: 8px; color: var(--muted); }
+.public-editorial-video iframe {
+  display: block;
+  width: 100%;
+  min-height: 230px;
+  border: 0;
+  border-radius: 10px;
+}
+.public-editorial-detail-section { margin-top: 26px; }
+.public-editorial-detail-section .body-lg { margin-top: 9px; }
+.public-editorial-reason {
+  padding: 22px;
+  border-left: 3px solid var(--navy);
+  background: var(--warm);
+}
+.public-editorial-evidence-grid { display: grid; gap: 0; }
+.public-editorial-provenance {
+  display: grid;
+  gap: 8px;
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+}
+.public-editorial-provenance div {
+  display: grid;
+  grid-template-columns: 7em minmax(0, 1fr);
+  gap: 12px;
+}
+.public-editorial-provenance dt { color: var(--muted); }
+.public-editorial-provenance dd { margin: 0; overflow-wrap: anywhere; }
+.public-editorial-return { margin-top: 22px; }
+
+@media (min-width: 700px) {
+  .public-editorial-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .public-editorial-card:has(.public-editorial-card-visual) {
+    grid-template-columns: minmax(120px, 34%) minmax(0, 1fr);
+  }
+  .public-editorial-card-visual { height: 100%; min-height: 170px; }
+  .public-editorial-evidence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+}
+
+@media (min-width: 900px) {
+  .public-editorial-shelf { margin-top: 34px; padding-top: 30px; }
+  .public-editorial-detail-hero {
+    grid-template-columns: minmax(0, 53%) minmax(0, 47%);
+    align-items: center;
+    gap: 44px;
+  }
+  .public-editorial-video { min-height: 300px; }
+  .public-editorial-video iframe { min-height: 300px; }
+}
+
 /* Real approved Discovery: one visual, one reason, one real action. */
 .surface[data-surface="04-discovery"]:not(.discovery-canonical) {
   width: 100%;
@@ -4464,4 +4611,168 @@ body:has(.trace-phase1) .stepbar-back svg {
 @media (prefers-reduced-motion: reduce) {
   .w01-faq-mark,
   .real-discovery-card { transition: none; animation: none; }
+}
+
+/* V3 Legal / Metadata Alignment: quiet, always-discoverable same-origin links. */
+.legal-footer {
+  margin-top: 8px;
+  padding: 12px var(--gutter) 24px;
+  border-top: 1px solid rgba(15, 27, 41, 0.12);
+}
+.legal-footer-links {
+  display: flex;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.legal-footer-link,
+.legal-back-link {
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* V3-specific Legal pages use only same-origin V3 assets and type. */
+.legal-page {
+  min-width: 0;
+  background-color: var(--paper);
+  background-image: url("../assets/canonical-m01-w01/paper_texture.png");
+  color: var(--navy);
+}
+.legal-page-header,
+.legal-page-main,
+.legal-page-footer {
+  width: min(100% - 32px, 820px);
+  margin-inline: auto;
+}
+.legal-page-header {
+  padding-top: 16px;
+}
+.legal-page-main {
+  padding: 18px 0 56px;
+  font-family: var(--sans);
+}
+.legal-page-main h1 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(26px, 6.4vw, 38px);
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+}
+.legal-page-updated {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.legal-page-main section {
+  margin-top: 34px;
+}
+.legal-page-main h2 {
+  margin: 0 0 12px;
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.035em;
+}
+.legal-page-main h3 {
+  margin: 22px 0 8px;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.65;
+}
+.legal-page-main p,
+.legal-page-main li,
+.legal-page-main th,
+.legal-page-main td {
+  font-size: 14px;
+  line-height: 1.9;
+}
+.legal-page-main p { margin: 10px 0 0; }
+.legal-page-main ul,
+.legal-page-main ol { margin: 10px 0 0; padding-left: 1.5em; }
+.legal-page-main li + li { margin-top: 5px; }
+.legal-table-wrap {
+  max-width: 100%;
+  margin-top: 14px;
+  overflow-x: auto;
+  border: 1px solid rgba(15, 27, 41, 0.16);
+  border-radius: 10px;
+  background: rgba(255, 253, 250, 0.58);
+}
+.legal-page-main table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+}
+.legal-page-main th,
+.legal-page-main td {
+  padding: 11px 12px;
+  border-bottom: 1px solid rgba(15, 27, 41, 0.12);
+  text-align: left;
+  vertical-align: top;
+}
+.legal-page-main th { font-weight: 500; }
+.legal-page-main tr:last-child td { border-bottom: 0; }
+.legal-page-note {
+  padding: 14px 16px;
+  border-left: 3px solid rgba(15, 27, 41, 0.32);
+  background: rgba(255, 253, 250, 0.58);
+}
+.legal-page-footer {
+  padding: 14px 0 28px;
+  border-top: 1px solid rgba(15, 27, 41, 0.12);
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--muted);
+  text-align: center;
+}
+
+@media (max-width: 599px) {
+  .legal-page-main { padding-bottom: 40px; }
+  .legal-table-wrap {
+    overflow: visible;
+    border: 0;
+    background: transparent;
+  }
+  .legal-page-main table,
+  .legal-page-main tbody,
+  .legal-page-main tr,
+  .legal-page-main th,
+  .legal-page-main td { display: block; min-width: 0; width: 100%; }
+  .legal-page-main thead { display: none; }
+  .legal-page-main tr {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border: 1px solid rgba(15, 27, 41, 0.16);
+    border-radius: 10px;
+    background: rgba(255, 253, 250, 0.58);
+  }
+  .legal-page-main td { padding: 3px 0; border: 0; }
+  .legal-page-main td::before {
+    display: block;
+    margin-bottom: 1px;
+    font-size: 11px;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    content: attr(data-label);
+  }
 }

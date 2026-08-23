@@ -12,6 +12,7 @@ const SRC = path.resolve(__dirname, '..');
 const REPO = path.resolve(SRC, '..');
 const START = 'aa4efc3e893b00af169190643624b483008aae0c';
 const MAIN = '910dbac29e70143fe50bc6e192eaaafa40729174';
+const EXPECTED_BRANCH = process.env.V3_EXPECTED_BRANCH || 'codex/v3-founder-visual-closure-final';
 const read = (rel) => fs.readFileSync(path.join(SRC, rel), 'utf8');
 const bytes = (rel) => fs.readFileSync(path.join(SRC, rel));
 const atStart = (rel) => cp.execFileSync('git', ['show', `${START}:v3-prototype/${rel}`], { cwd: REPO });
@@ -45,7 +46,7 @@ const D = window.V3_DATA;
 const AD = window.V3_ACTION_DESTINATION;
 const R = window.V3_REAL_EXPERIENCE_REGISTRY;
 
-check('source branch is bounded closure branch', git(['branch', '--show-current']) === 'codex/v3-founder-visual-closure-final');
+check('source branch is declared bounded branch', git(['branch', '--show-current']) === EXPECTED_BRANCH, EXPECTED_BRANCH);
 check('Start HEAD exists', git(['rev-parse', START]) === START);
 check('main authority object exists and is unchanged', git(['rev-parse', MAIN]) === MAIN);
 
