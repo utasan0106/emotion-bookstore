@@ -88,6 +88,11 @@ check('EXP_007 official Action remains primary', AD.actionsForExperience(R.byId(
 
 check('Plan retains existing option model', sha(bytes('js/data.js')) === sha(atStart('js/data.js')));
 check('Plan retains existing storage implementation', sha(bytes('js/store.js')) === sha(atStart('js/store.js')));
+check('Plan exposes approved quick choices without data migration',
+  app.includes("{ id: 'today', label: '今日' }") &&
+  app.includes("{ id: 'tomorrow', label: '明日' }") &&
+  app.includes("{ id: 'weekend', label: '今週末' }") &&
+  app.includes("{ id: 'datetime', label: '日付を選ぶ' }"));
 check('Plan persists same object field set', /when:\s*chosen[\s\S]*date:[\s\S]*time:[\s\S]*experienceId:[\s\S]*status:\s*'open'/.test(app));
 check('Plan has optional time and clear summary', app.includes("text: '時刻（任意）'") && app.includes("class: 'plan-selection-summary'"));
 check('Plan completion cue exact', app.includes("text: '予定を残しました。'") && app.includes("class: 'plan-saved-icon'"));
