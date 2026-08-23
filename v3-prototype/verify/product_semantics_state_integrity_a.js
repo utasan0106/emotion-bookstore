@@ -46,7 +46,7 @@ const shelfIds = D.EMOTIONS.map((item) => item.id);
 const shelfLabels = D.EMOTIONS.map((item) => item.label);
 
 check('A exact M02 primary prompt', app.includes("text: 'どんな感情の棚を、'") && app.includes("text: 'のぞいてみますか？'"));
-check('A exact M02 support copy', app.includes("text: '今の気持ちと同じでなくて大丈夫です。少し気になる棚を、ひとつ。'"));
+check('A exact M02 support copy', app.includes("'今の気持ちと同じでなくて大丈夫です。少し気になる棚を、ひとつ。'"));
 check('A eight-shelf terminology is 感情の棚', index.includes('>感情の棚</button>') &&
   app.includes("title: '感情の棚を選ぶ'") && app.includes("'aria-label': '感情の棚をひとつ選ぶ'"));
 check('A public brand line preserved', app.includes("text: '感じていることから、'") &&

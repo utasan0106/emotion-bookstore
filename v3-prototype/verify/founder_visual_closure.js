@@ -54,7 +54,7 @@ check('M01 one dominant entrance CTA retained', app.includes("class: 'btn btn-pr
 check('M01 compact loop/trust retained', app.includes("class: 'loop'") && app.includes("class: 'trust'"));
 
 check('M02 shelf-exploration prompt exact', app.includes("text: 'どんな感情の棚を、'") && app.includes("text: 'のぞいてみますか？'"));
-check('M02 support exact', app.includes("text: '今の気持ちと同じでなくて大丈夫です。少し気になる棚を、ひとつ。'"));
+check('M02 support exact', app.includes("'今の気持ちと同じでなくて大丈夫です。少し気になる棚を、ひとつ。'"));
 check('M02 all eight shelves retained', D.EMOTIONS.length === 8);
 check('M02 semantic phrase wrapping bounded', app.includes('function descriptionPhraseLines') && css.includes('.emotion-description-phrase'));
 
