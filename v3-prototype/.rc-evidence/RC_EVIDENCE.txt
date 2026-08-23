@@ -1,0 +1,53 @@
+V3 RELEASE CLOSURE — RC EVIDENCE PACKAGE
+generated: 2026-08-23T17:14:38Z / JST 2026-08-24 02:14
+
+== BRANCH / HEAD ==
+repo:            https://github.com/utasan0106/emotion-bookstore
+branch:          claude/v3-release-closure-20260824
+base branch:     codex/v3-preview-mirror-sprint03 @ 8ae0b8038dfb84c7220d07b8ea6eac3f1f217e11
+HEAD:            6e12265876476225a62634ca76af41f2d31f882b
+working tree:    CLEAN
+commits this round:
+  6e12265 fix(v3): Desktop Step-1 の1画面収まりとRC証跡の信頼性を改善
+  cb165ec feat(v3): 公式説明レイヤー追加とDiscoveryカード操作不能の修正
+
+== CHANGED FILES vs accepted preview mirror ==
+  v3-prototype/css/v3.css
+  v3-prototype/js/app.js
+  v3-prototype/js/real_experience_registry.js
+  v3-prototype/verify/release_closure_official_description.js
+  v3-prototype/verify/release_closure_runtime_cert.js
+
+== CHANGED FILE SHA-256 ==
+  v3-prototype/css/v3.css                                      3f5c5a215b0842efe0b64e973648d86de3e6ed5413ccf18416329f32411fd53c
+  v3-prototype/js/app.js                                       c2a94204dafc0a21b2ceebf8af1a167b51efe37f7762020b80e2842577f62230
+  v3-prototype/js/real_experience_registry.js                  fd3b7ca6c1f2dfd485b42abc742bd6337bf3b38c4985c0ffb1beaf8899646c61
+  v3-prototype/verify/release_closure_official_description.js  da0390b0b71042ee39328fa0287a5b1ca5dd1edc3ea1d297b460a29438c118dc
+  v3-prototype/verify/release_closure_runtime_cert.js          2826d573a430c7dc98f0a8df9b965e47f75c2af0c5d7bca674ac8c60498e3794
+
+== PROTECTED SCOPE: UNCHANGED ==
+  UNCHANGED  v3-prototype/js/store.js
+  UNCHANGED  v3-prototype/js/analytics.js
+  UNCHANGED  v3-prototype/js/action_destination.js
+  UNCHANGED  v3-prototype/index.html
+  UNCHANGED  v3-prototype/js/public_editorial.js
+  UNCHANGED  v3-prototype/js/public_editorial_content.js
+  main / V2 / Production / domain mutation: 0 (no push to main, no deploy)
+  assets/ mutation: 0 files
+
+== TEST RESULTS ==
+  baseline (8ae0b80):  773 PASS / 62 FAIL
+  after   (this HEAD): 891 PASS / 62 FAIL
+  new failures introduced by this round: 0
+  (the 62 baseline FAILs are branch-pinned historical source contracts and
+   stale pre-activation fixture tests; the 2 differing lines are the same
+   protected-byte-identity checks with updated hashes, not new checks.)
+
+  release_closure_official_description.js  118/118 PASS
+  release_closure_runtime_cert.js          295/295 PASS
+    - 8 shelves x 390x844 / 430x932 / 1440x1000
+    - reader order title -> 公式説明 -> なぜこの棚 -> 実用情報 -> Action
+    - attribution + official source link rendered
+    - horizontal overflow 0, page horizontal scroll 0
+    - keyboard-only Entrance -> Plan reachable, focus ring visible
+    - third-party network requests: 0
