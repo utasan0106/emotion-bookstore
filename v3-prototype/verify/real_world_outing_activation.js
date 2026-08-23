@@ -138,6 +138,9 @@ check('public sequence exposes Shelf → Experience → Why → Action',
 check('mandatory Why label remains visible on card and Detail',
   (app.match(/なぜ、この棚に？/g) || []).length >= 2 &&
   app.includes('placeDetail.placementReason'));
+check('Discovery card renders the full frozen Why without sentence truncation',
+  /function cardEditorialHook\(experience\)[\s\S]*?return reason;\s*}/.test(app) &&
+  !/sentences\[sentences\.length - 1\]/.test(app));
 check('Human-approved Culture videos/Public Editorial are not mounted as Outing',
   !records.some((record) => /Coin Operated|One Small Step|The Black Hole|Before Dawn|Mr Indifferent/.test(record.title)));
 check('Product-active public Editorial records remain 0',
@@ -177,7 +180,8 @@ const changed = cp.execFileSync('git', ['diff', '--name-only', START, '--'], {
 check('bounded scope only', changed.every((rel) => [
   'v3-prototype/js/app.js',
   'v3-prototype/js/real_experience_registry.js',
-  'v3-prototype/verify/real_world_outing_activation.js'
+  'v3-prototype/verify/real_world_outing_activation.js',
+  'v3-prototype/verify/place_detail_content_typography.js'
 ].includes(rel)), changed.join(', '));
 check('main/V2/Production/.ai-handoff/.github drift = 0', changed.every((rel) =>
   rel.startsWith('v3-prototype/') && !rel.startsWith('.ai-handoff/') && !rel.startsWith('.github/')));
