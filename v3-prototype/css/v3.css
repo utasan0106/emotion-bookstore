@@ -4837,3 +4837,22 @@ body:has(.trace-phase1) .stepbar-back svg {
   -webkit-user-drag: none;
   user-select: none;
 }
+
+/* =============================================================================
+ * Release closure — Desktop Step-1 viewport fit
+ * 「ほぼ収まる」スクロールを解消し、感情の棚8件 + guidance を1 viewport に収める。
+ * 可読タイプ（見出し・棚名・説明）とタップ領域(205px card)は縮めない。
+ * hero 高さと非意味的な余白だけを viewport 高さに追随させる。
+ * ========================================================================== */
+@media (min-width: 1200px) {
+  .emotion-intro { height: clamp(192px, 19.5vh, 276px); }
+  .emotion-hero { height: 100%; }
+  .emotion-hero img { height: 100%; width: 100%; object-fit: cover; }
+  .emotion-intro-copy { padding-top: clamp(8px, 1.2vh, 28px); }
+  .emotion-heading { margin-top: clamp(6px, 1vh, 18px); }
+  .emotion-support { margin-top: clamp(7px, 1.1vh, 17px); }
+  .emotion-grid-question { margin: clamp(7px, 1vh, 13px) 0 clamp(7px, 1vh, 14px); }
+  .emotion-grid { gap: clamp(11px, 1.5vh, 16px); }
+  .emotion-footer { margin-top: clamp(11px, 1.6vh, 22px); }
+  body:has(.emotion-selection) .view { padding-bottom: 16px; }
+}

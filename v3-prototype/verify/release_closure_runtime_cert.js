@@ -33,6 +33,42 @@ const VIEWPORTS = [
 const OUT = path.resolve(__dirname, '..', '.rc-evidence', 'screens');
 fs.mkdirSync(OUT, { recursive: true });
 
+async function settled(page) {
+  /* .surface は 160ms の fade-in を持つ。途中で撮ると証跡が薄く写る。 */
+  try {
+    await page.waitForFunction(() => {
+      const running = document.getAnimations().filter((a) => a.playState === 'running');
+      return running.length === 0;
+    }, null, { timeout: 4000 });
+  } catch (error) { /* 動きが終わらない環境でも撮影は続ける */ }
+  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+}
+
+async function tabToText(page, matcher, limit = 60) {
+  for (let i = 0; i < limit; i += 1) {
+    await page.keyboard.press('Tab');
+    const hit = await page.evaluate((m) => {
+      const node = document.activeElement;
+      if (!node || node === document.body) return false;
+      const text = (node.textContent || '').trim().replace(/\s+/g, ' ');
+      return new RegExp(m).test(text);
+    }, matcher);
+    if (hit) return true;
+  }
+  return false;
+}
+
+async function focusVisible(page) {
+  /* focus ring が視覚的に出ているか（outline か box-shadow のどちらか）。 */
+  return page.evaluate(() => {
+    const el = document.activeElement;
+    if (!el || el === document.body) return false;
+    const cs = getComputedStyle(el);
+    const ow = parseFloat(cs.outlineWidth || '0');
+    return (cs.outlineStyle !== 'none' && ow > 0) || (cs.boxShadow && cs.boxShadow !== 'none');
+  });
+}
+
 async function waitSurface(page, name, timeout = 8000) {
   /* 固定 wait ではなく surface 遷移そのものを待つ。 */
   try {
@@ -73,6 +109,7 @@ function check(name, ok, detail = '') {
       await waitSurface(page, '03-understanding');
       const surfU = await page.locator('.surface').first().getAttribute('data-surface');
       check(`${vp.name} ${shelf} understanding`, surfU === '03-understanding', surfU);
+      await settled(page);
       await page.screenshot({ path: `${OUT}/${vp.name}_${shelf}_03understanding.png`, fullPage: true });
 
       // proceed to discovery
@@ -88,6 +125,7 @@ function check(name, ok, detail = '') {
       check(`${vp.name} ${shelf} exactly one outing card`, cardCount === 1, `${cardCount}`);
       const officialLine = await page.locator('.real-discovery-official').first().textContent().catch(() => null);
       check(`${vp.name} ${shelf} card official summary present`, !!officialLine && officialLine.length > 5, `${officialLine}`);
+      await settled(page);
       await page.screenshot({ path: `${OUT}/${vp.name}_${shelf}_04discovery.png`, fullPage: true });
 
       // open detail
@@ -145,12 +183,45 @@ function check(name, ok, detail = '') {
         const bodyScroll = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
         check(`${vp.name} ${shelf} page does not scroll horizontally`, bodyScroll);
 
+        await settled(page);
         await page.screenshot({ path: `${OUT}/${vp.name}_${shelf}_05detail.png`, fullPage: true });
       }
       await page.close();
       await context.close();
     }
   }
+  /* ------------------------------------------------ keyboard-only 到達性 */
+  for (const vp of VIEWPORTS) {
+    const ctx = await browser.newContext({ viewport: { width: vp.width, height: vp.height } });
+    const page = await ctx.newPage();
+    await page.goto(base);
+    await waitSurface(page, '01-entrance');
+    const steps = [
+      ['はじめる|感情の棚を選ぶ', '02-emotion'],
+      ['心が弾む', '03-understanding'],
+      ['寄り道を見る', '04-discovery'],
+      ['詳しく見る', '05-experience-detail'],
+      ['日時を決めて予定を残す', '06-plan']
+    ];
+    let ok = true;
+    let ring = true;
+    for (const [matcher, expected] of steps) {
+      const found = await tabToText(page, matcher);
+      if (!found) { ok = false; check(`${vp.name} keyboard focus reaches ${matcher}`, false); break; }
+      if (!(await focusVisible(page))) ring = false;
+      await page.keyboard.press('Enter');
+      if (!(await waitSurface(page, expected))) {
+        ok = false;
+        const got = await page.locator('.surface').first().getAttribute('data-surface');
+        check(`${vp.name} keyboard ${matcher} -> ${expected}`, false, `got ${got}`);
+        break;
+      }
+    }
+    check(`${vp.name} keyboard-only Entrance -> Plan reachable`, ok);
+    check(`${vp.name} keyboard focus ring visible along the path`, ring);
+    await ctx.close();
+  }
+
   check('zero third-party network requests', netLog.length === 0, netLog.slice(0, 5).join(' '));
   await browser.close();
   server.close();
