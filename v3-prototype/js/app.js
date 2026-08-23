@@ -22,6 +22,7 @@
   var view, live, stepbar;
   var interestedLayer = null;
   var interestedOpener = null;
+  var historyReady = false;
 
   /* ---------------------------------------------------------------- helpers */
 
@@ -53,8 +54,15 @@
 
   function persist() { STORE.save(state); }
 
-  function go(next) {
+  function go(next, options) {
     screen = next;
+    if (historyReady && !(options && options.fromHistory)) {
+      try {
+        global.history.pushState({ v3Screen: next }, '', global.location.href);
+      } catch (error) {
+        /* The local prototype remains usable when History API is unavailable. */
+      }
+    }
     render();
   }
 
@@ -440,7 +448,7 @@
           hint: count + 'つのうち、気になるものを選んでください'
         };
       case 'detail':
-        return { back: 'review' };
+        return { back: validActiveId() ? 'review' : 'discovery' };
       case 'plan':
         return { back: 'detail' };
       case 'moment':
@@ -464,7 +472,10 @@
       class: 'stepbar-back', type: 'button',
       'aria-label': config.backLabel || '前の画面へ戻る',
       onclick: function () { go(config.back); }
-    }, [icon('back'), config.backLabel ? h('span', { text: config.backLabel }) : null]);
+    }, [
+      icon('back'),
+      h('span', { class: 'stepbar-back-label', text: config.backLabel || '戻る' })
+    ]);
 
     var center = h('p', { class: 'stepbar-title' }, [
       config.step ? h('span', { class: 'stepbar-step', text: config.step + (config.stepTitle ? '　' + config.stepTitle : '') }) : null,
@@ -728,10 +739,24 @@
       h('div', { class: 'w01-editorial-heading' }, [
         h('h2', { id: 'faq', tabindex: '-1', text: 'よくある質問' })
       ]),
-      h('div', { class: 'w01-faq-list' }, W01_FAQS.map(function (item) {
+      h('div', { class: 'w01-faq-list' }, W01_FAQS.map(function (item, index) {
+        var answerId = 'faq-answer-' + (index + 1);
+        var answer = h('p', { id: answerId, class: 'w01-faq-answer', text: item.answer, hidden: true });
+        var button = h('button', {
+          class: 'w01-faq-trigger', type: 'button',
+          'aria-expanded': 'false', 'aria-controls': answerId,
+          onclick: function () {
+            var expanded = button.getAttribute('aria-expanded') === 'true';
+            button.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+            answer.hidden = expanded;
+          }
+        }, [
+          h('span', { text: item.question }),
+          h('span', { class: 'w01-faq-mark', 'aria-hidden': 'true', text: '+' })
+        ]);
         return h('article', { class: 'w01-faq-item' }, [
-          h('h3', { text: item.question }),
-          h('p', { text: item.answer })
+          h('h3', {}, [button]),
+          answer
         ]);
       }))
     ]);
@@ -759,13 +784,21 @@
     }
 
     function descriptionPhraseLines(description) {
+      var semanticWrap = {
+        'どの言葉もしっくりこない': ['どの言葉も', 'しっくりこない']
+      };
       var phrases = description.split('、');
-      return phrases.map(function (phrase, index) {
-        return h('span', {
-          class: 'emotion-description-phrase',
-          text: phrase + (index < phrases.length - 1 ? '、' : '')
+      var lines = [];
+      phrases.forEach(function (phrase, index) {
+        var parts = semanticWrap[phrase] || [phrase];
+        parts.forEach(function (part, partIndex) {
+          lines.push(h('span', {
+            class: 'emotion-description-phrase',
+            text: part + (index < phrases.length - 1 && partIndex === parts.length - 1 ? '、' : '')
+          }));
         });
       });
+      return lines;
     }
 
     var list = h('ul', {
@@ -880,26 +913,15 @@
     var word = D.emotionById(state.emotion);
     var realDeck = approvedRealDeck(state.emotion);
     var deckCount = realDeck ? realDeck.ids.length : 0;
-    var nodes = [];
+    var outcome = [];
 
-    nodes.push(h('p', { class: 'eyebrow', text: 'のぞいている感情の棚' }));
-    nodes.push(h('div', { class: 'understanding-shelf-identity' }, [
-      word ? h('img', {
-        class: 'understanding-shelf-image', alt: '',
-        src: './assets/canonical-m02-w02/' + word.asset
-      }) : null,
-      h('h1', {
-        class: 'display display-sm', tabindex: '-1', id: 'surface-title',
-        text: word ? word.label : ''
-      })
-    ]));
-    nodes.push(h('p', {
+    outcome.push(h('p', {
       class: 'body-lg understanding-editorial-note',
       text: '「' + (word ? word.label : '') + '」という感情の角度から、少し世界を見てみる。'
     }));
-    nodes.push(h('hr', { class: 'rule' }));
+    outcome.push(h('hr', { class: 'rule' }));
     if (deckCount === 0) {
-      nodes.push(h('div', { class: 'understanding-empty', 'data-deck-count': '0' }, [
+      outcome.push(h('div', { class: 'understanding-empty', 'data-deck-count': '0' }, [
         h('h2', { class: 'section-title', text: 'いま案内できる寄り道はありません' }),
         h('p', { class: 'body-lg', text: 'この棚には、いま置けるものがありません。' }),
         h('p', {
@@ -913,15 +935,15 @@
         ])
       ]));
     } else {
-      nodes.push(h('p', {
+      outcome.push(h('p', {
         class: 'body-lg', 'data-deck-count': String(deckCount),
         text: 'この棚から案内できる寄り道は、' + deckCount + 'つです。'
       }));
-      nodes.push(h('p', {
+      outcome.push(h('p', {
         class: 'note',
         text: '人が定めた編集基準に基づき、理由を説明できるものだけを選んでいます。'
       }));
-      nodes.push(h('div', { class: 'actions' }, [
+      outcome.push(h('div', { class: 'actions' }, [
         h('button', {
           class: 'btn btn-primary', type: 'button',
           onclick: function () {
@@ -933,21 +955,66 @@
       ]));
     }
 
-    var surface = section('03-understanding', nodes);
+    var identity = h('div', { class: 'understanding-identity-column' }, [
+      h('p', { class: 'eyebrow', text: 'のぞいている感情の棚' }),
+      h('div', { class: 'understanding-shelf-identity' }, [
+        word ? h('img', {
+          class: 'understanding-shelf-image', alt: '',
+          src: './assets/canonical-m02-w02/' + word.asset
+        }) : null,
+        h('h1', {
+          class: 'display display-sm', tabindex: '-1', id: 'surface-title',
+          text: word ? word.label : ''
+        })
+      ])
+    ]);
+    var surface = section('03-understanding', [
+      h('div', { class: 'understanding-panel' }, [
+        identity,
+        h('div', { class: 'understanding-outcome-column' }, outcome)
+      ])
+    ]);
     surface.classList.add('understanding-bridge');
     surface.setAttribute('data-selected-shelf', state.emotion || '');
     return surface;
   }
 
-  function experienceCard(experience, counter) {
+  function cardEditorialHook(experience) {
     var reason = experience && experience.placeDetail && experience.placeDetail.placementReason
       ? experience.placeDetail.placementReason : experience.reason;
-    return h('article', { class: 'card', 'aria-label': experience.title }, [
-      counter ? h('p', { class: 'eyebrow', text: counter }) : null,
-      experienceVisual(experience, 'card'),
-      h('h2', { class: 'card-title', text: experience.title }),
-      h('p', { class: 'card-meta', text: metaLine(experience) }),
-      h('p', { class: 'card-reason', text: reason })
+    var sentences = String(reason || '').match(/[^。]+。/g);
+    return sentences && sentences.length ? sentences[sentences.length - 1] : reason;
+  }
+
+  function discoveryPracticalFacts(experience) {
+    var access = experience && experience.placeDetail && experience.placeDetail.access;
+    if (!access) return [];
+    return [
+      { label: '最寄駅', value: access.nearestStation },
+      { label: '徒歩', value: access.walkingTime }
+    ];
+  }
+
+  function experienceCard(experience, counter, actions) {
+    var facts = discoveryPracticalFacts(experience);
+    return h('article', { class: 'card real-discovery-card', 'aria-label': experience.title }, [
+      h('div', { class: 'real-discovery-media' }, [
+        counter ? h('p', { class: 'eyebrow real-discovery-counter', text: counter }) : null,
+        experienceVisual(experience, 'card')
+      ]),
+      h('div', { class: 'real-discovery-copy' }, [
+        h('p', { class: 'real-discovery-shelf', text: '「' + selectedShelfLabel() + '」の棚から' }),
+        h('h2', { class: 'card-title', text: experience.title }),
+        h('p', { class: 'card-meta', text: metaLine(experience) }),
+        facts.length ? h('dl', { class: 'real-discovery-facts' }, facts.map(function (fact) {
+          return h('div', {}, [h('dt', { text: fact.label }), h('dd', { text: fact.value })]);
+        })) : null,
+        h('section', { class: 'real-discovery-reason', 'aria-label': 'この棚に置いた理由' }, [
+          h('h3', { text: 'なぜ、この棚に？' }),
+          h('p', { class: 'card-reason', text: cardEditorialHook(experience) })
+        ]),
+        h('div', { class: 'real-discovery-actions' }, actions || [])
+      ])
     ]);
   }
 
@@ -1023,36 +1090,46 @@
     var isReal = deck.mode === 'real-approved';
     var count = activeDeckCount();
     var shelfLabel = selectedShelfLabel();
+    var primaryAction = approvedDestinationActions(experience).filter(function (action) {
+      return action.kind === 'primary';
+    })[0];
     var nodes = [
       h('h1', {
         class: 'deck-lead', tabindex: '-1', id: 'surface-title',
         text: isReal ? '「' + shelfLabel + '」の棚から、' + count + 'つの寄り道を。' : '前回残ったものから、次の' + count + 'つ。'
-      }),
-      h('p', {
-        class: 'note',
-        text: isReal
-          ? '人が定めた編集基準に基づき、この棚に置く理由を説明できるものだけをご案内します。'
-          : personalizedExplanation(deck.facets)
       })
     ];
-    var card = experienceCard(experience, counter);
+    var cardActions = [];
+    if (primaryAction) {
+      cardActions.push(h('button', {
+        class: 'btn btn-primary real-discovery-primary', type: 'button',
+        'data-action-destination': primaryAction.kind,
+        onclick: function () { openApprovedDestination(primaryAction, experience); }
+      }, [h('span', { text: primaryAction.label }), h('span', { 'aria-hidden': 'true', text: '↗' })]));
+    }
+    cardActions.push(h('button', {
+      class: 'btn btn-line real-discovery-detail', type: 'button',
+      onclick: function () {
+        state.selectedId = experience.id;
+        persist();
+        go('detail');
+      }
+    }, [h('span', { text: '詳しく見る' })]));
+    cardActions.push(h('button', {
+      class: 'btn btn-text real-discovery-interest', type: 'button',
+      'aria-pressed': isInterested(experience.id) ? 'true' : 'false',
+      'data-interest-state': isInterested(experience.id) ? 'saved' : 'unsaved',
+      onclick: function () { decideWithInterest(experience.id, 'keep'); }
+    }, [icon('heart'), h('span', { text: interestedLabel(experience.id) })]));
+    cardActions.push(h('button', {
+      class: 'btn btn-text real-discovery-pass', type: 'button',
+      onclick: function () { decideWithInterest(experience.id, 'pass'); }
+    }, [h('span', { text: '今回は違う' })]));
+    var card = experienceCard(experience, counter, cardActions);
     attachSwipe(card,
       function () { decideWithInterest(experience.id, 'pass'); },
       function () { decideWithInterest(experience.id, 'keep'); });
     nodes.push(h('div', { class: 'card-stage' }, [card]));
-    nodes.push(h('p', { class: 'hint', text: 'カードを左右に動かすか、下のボタンで選べます。' }));
-    nodes.push(h('div', { class: 'decision' }, [
-      h('button', {
-        class: 'btn btn-line', type: 'button',
-        onclick: function () { decideWithInterest(experience.id, 'pass'); }
-      }, [h('span', { text: '今回は違う' })]),
-      h('button', {
-        class: 'btn btn-solid', type: 'button',
-        'aria-pressed': isInterested(experience.id) ? 'true' : 'false',
-        'data-interest-state': isInterested(experience.id) ? 'saved' : 'unsaved',
-        onclick: function () { decideWithInterest(experience.id, 'keep'); }
-      }, [h('span', { text: interestedLabel(experience.id) })])
-    ]));
     if (deck.index > 0) {
       nodes.push(h('div', { class: 'actions actions-quiet' }, [
         h('button', { class: 'btn btn-text', type: 'button', onclick: undo },
@@ -1761,33 +1838,45 @@
     if (!experience) return surfaceUnderstanding();
     var isReal = experience && experience.sourceClass === 'approved-real-experience';
     var placeDetail = experience && experience.placeDetail;
-    var destinationActions = approvedDestinationActions(experience).map(function (action) {
-      return h('button', {
-        class: action.kind === 'primary' ? 'btn btn-line' : 'btn btn-text',
-        type: 'button',
+    var approvedActions = approvedDestinationActions(experience).map(function (action) {
+      return action;
+    });
+    var primaryAction = approvedActions.filter(function (action) { return action.kind === 'primary'; })[0];
+    var secondaryActions = approvedActions.filter(function (action) { return action.kind !== 'primary'; });
+    var detailActions = [];
+    if (primaryAction) {
+      detailActions.push(h('button', {
+        class: 'btn btn-primary detail-primary-action', type: 'button',
+        'data-action-destination': primaryAction.kind,
+        onclick: function () { openApprovedDestination(primaryAction, experience); }
+      }, [h('span', { text: primaryAction.label }), h('span', { 'aria-hidden': 'true', text: '↗' })]));
+    }
+    secondaryActions.forEach(function (action) {
+      detailActions.push(h('button', {
+        class: 'btn btn-text detail-utility-action', type: 'button',
         'data-action-destination': action.kind,
         onclick: function () { openApprovedDestination(action, experience); }
       }, [
         h('span', { text: placeDetail && action.kind === 'maps' ? '地図で見る' : action.label }),
         h('span', { 'aria-hidden': 'true', text: '↗' })
-      ]);
+      ]));
     });
-    var detailActions = destinationActions.concat([
+    detailActions.push(
       h('button', {
-        class: 'btn btn-primary', type: 'button',
+        class: 'btn btn-line detail-plan-action', type: 'button',
         onclick: function () {
           if (state.recentIds.indexOf(experience.id) === -1) state.recentIds.push(experience.id);
           persist();
           go('plan');
         }
-      }, [h('span', { text: 'この体験を選ぶ' })]),
+      }, [h('span', { text: '日時を決めて予定を残す' })]),
       h('button', {
         class: 'btn btn-text', type: 'button',
-        onclick: function () { go('review'); }
+        onclick: function () { go(validActiveId() ? 'review' : 'discovery'); }
       }, [h('span', { text: '戻る' })])
-    ]);
-    var nodes = [
-      experienceVisual(experience, 'detail'),
+    );
+
+    var summary = [
       h('p', { class: 'eyebrow detail-shelf-context', text: '「' + selectedShelfLabel() + '」の棚から' }),
       h('h1', {
         class: 'display display-sm' + (placeDetail ? ' place-detail-title' : ''),
@@ -1796,7 +1885,21 @@
       h('p', {
         class: 'card-meta' + (placeDetail ? ' place-detail-meta' : ''),
         text: metaLine(experience)
-      })
+      }),
+      h('section', { class: 'detail-editorial-reason', 'aria-labelledby': 'detail-reason-title' }, [
+        h('h2', { class: 'section-title', id: 'detail-reason-title', text: 'なぜ、この棚に？' }),
+        h('p', {
+          class: 'body-lg place-detail-body',
+          text: placeDetail ? placeDetail.placementReason : experience.reason
+        })
+      ]),
+      h('div', { class: 'actions detail-actions' }, detailActions)
+    ];
+    var nodes = [
+      h('div', { class: 'detail-hero' }, [
+        h('div', { class: 'detail-visual-column' }, [experienceVisual(experience, 'detail')]),
+        h('div', { class: 'detail-summary-column' }, summary)
+      ])
     ];
     if (placeDetail) {
       nodes.push(h('div', { class: 'place-detail-content' }, [
@@ -1807,10 +1910,6 @@
         h('section', { class: 'place-detail-section' }, [
           h('h2', { class: 'section-title', text: 'おすすめの過ごし方' }),
           h('p', { class: 'body-lg place-detail-body', text: placeDetail.recommendedStay })
-        ]),
-        h('section', { class: 'place-detail-section' }, [
-          h('h2', { class: 'section-title', text: 'この棚に置いた理由' }),
-          h('p', { class: 'body-lg place-detail-body', text: placeDetail.placementReason })
         ]),
         h('section', { class: 'place-detail-section place-detail-access' }, [
           h('h2', { class: 'section-title', text: '訪れるための情報' }),
@@ -1827,8 +1926,6 @@
          体験の説明文を prototype 側で創作しない。 */
       nodes.push(h('h2', { class: 'section-title', text: '何をするか' }));
       nodes.push(h('p', { class: 'tags', text: (experience.tags || []).join(' ・ ') }));
-      nodes.push(h('h2', { class: 'section-title', text: 'この棚に置いた理由' }));
-      nodes.push(h('p', { class: 'body-lg', text: experience.reason }));
     }
     if (!isReal) {
       nodes.push(h('h2', { class: 'section-title', text: '実際の情報' }));
@@ -1841,82 +1938,145 @@
         text: 'これはUX確認用のprototype dataです。実在の店舗・イベントではありません。'
       }));
     }
-    nodes.push(h('div', { class: 'actions' }, detailActions));
     var surface = section('05-experience-detail', nodes);
     if (placeDetail) surface.classList.add('place-detail');
     return surface;
   }
 
+  function planSummary(plan) {
+    if (!plan || !plan.when) return '';
+    var quick = {
+      today: '今日', tomorrow: '明日', weekend: '今週末', later: 'あとで決める'
+    };
+    if (plan.when !== 'datetime') return quick[plan.when] || '';
+    if (!plan.date) return '';
+    var date = new Date(plan.date + 'T00:00:00');
+    var label = isNaN(date.getTime()) ? plan.date : new Intl.DateTimeFormat('ja-JP', {
+      month: 'long', day: 'numeric', weekday: 'short'
+    }).format(date);
+    return label + (plan.time ? ' ' + plan.time : '');
+  }
+
   function surfacePlan() {
-    var chosen = null;
+    var current = state.plan && state.plan.experienceId === state.selectedId ? state.plan : null;
+    var chosen = current ? current.when : null;
     var dateWrap;
+    var dateInput;
+    var timeInput;
+    var summary;
+    var submit;
+
+    function draftPlan() {
+      return {
+        when: chosen,
+        date: chosen === 'datetime' ? dateInput.value : '',
+        time: chosen === 'datetime' ? timeInput.value : '',
+        experienceId: state.selectedId,
+        status: 'open'
+      };
+    }
+
+    function syncPlanForm() {
+      var custom = chosen === 'datetime';
+      dateWrap.hidden = !custom;
+      var label = chosen ? planSummary(draftPlan()) : '';
+      summary.textContent = label ? '選択中：' + label : '日付を選んでください。';
+      submit.disabled = !chosen || (custom && !dateInput.value);
+    }
+
+    dateInput = h('input', {
+      type: 'date', id: 'plan-date', value: current && current.date ? current.date : '',
+      onchange: syncPlanForm
+    });
+    timeInput = h('input', {
+      type: 'time', id: 'plan-time', value: current && current.time ? current.time : '',
+      onchange: syncPlanForm
+    });
+    dateWrap = h('div', { class: 'datetime', hidden: chosen !== 'datetime' }, [
+      h('label', { for: 'plan-date', text: '日付' }),
+      dateInput,
+      h('label', { for: 'plan-time', text: '時刻（任意）' }),
+      timeInput
+    ]);
+    summary = h('p', { class: 'plan-selection-summary', 'aria-live': 'polite' });
+    submit = h('button', {
+      class: 'btn btn-primary', type: 'submit', disabled: true
+    }, [h('span', { text: '予定を残す' })]);
 
     var options = D.PLAN_OPTIONS.map(function (option) {
       var input = h('input', {
         type: 'radio', name: 'plan-when', id: 'plan-' + option.id, value: option.id,
-        onchange: function () {
-          chosen = option.id;
-          dateWrap.hidden = option.id !== 'datetime';
-          submit.disabled = false;
-        }
+        checked: chosen === option.id ? true : null,
+        onchange: function () { chosen = option.id; syncPlanForm(); }
       });
-      return h('div', { class: 'choice' }, [
+      return h('div', { class: 'choice plan-choice' }, [
         input,
         h('label', { for: 'plan-' + option.id, text: option.label })
       ]);
     });
 
-    dateWrap = h('div', { class: 'datetime', hidden: true }, [
-      h('label', { for: 'plan-date', text: '日付' }),
-      h('input', { type: 'date', id: 'plan-date' }),
-      h('label', { for: 'plan-time', text: '時刻' }),
-      h('input', { type: 'time', id: 'plan-time' })
-    ]);
-
-    var submit = h('button', {
-      class: 'btn btn-primary', type: 'submit', disabled: true
-    }, [h('span', { text: '予定を残す' })]);
+    var actionNodes = [submit];
+    if (current) {
+      actionNodes.push(h('button', {
+        class: 'btn btn-text', type: 'button',
+        onclick: function () {
+          state.plan = null;
+          persist();
+          go('detail');
+          announce('予定を取り消しました。');
+        }
+      }, [h('span', { text: '予定を取り消す' })]));
+    }
 
     var form = h('form', {
       class: 'plan-form',
       onsubmit: function (event) {
         event.preventDefault();
-        if (!chosen) return;
-        state.plan = {
-          when: chosen,
-          date: chosen === 'datetime' ? document.getElementById('plan-date').value : '',
-          time: chosen === 'datetime' ? document.getElementById('plan-time').value : '',
-          experienceId: state.selectedId,
-          status: 'open'
-        };
+        if (submit.disabled) return;
+        state.plan = draftPlan();
         state.traceFacets = [];
         persist();
         go('plan-saved');
       }
     }, [
-      h('fieldset', { class: 'choices' }, [
+      h('fieldset', { class: 'choices plan-choices' }, [
         h('legend', { class: 'question', text: 'いつやってみますか？' })
       ].concat(options).concat([dateWrap])),
-      h('div', { class: 'actions' }, [submit])
+      summary,
+      h('div', { class: 'actions' }, actionNodes)
     ]);
+    syncPlanForm();
 
-    return section('06-plan', [
+    var surface = section('06-plan', [
       h('h1', { class: 'sr-only', tabindex: '-1', id: 'surface-title', text: 'いつやってみますか？' }),
       form
     ]);
+    surface.classList.add('plan-surface');
+    return surface;
   }
 
   function surfacePlanSaved() {
-    return section('06-plan-saved', [
-      h('h1', { class: 'display display-sm', tabindex: '-1', id: 'surface-title', text: '予定を残しました。' }),
-      h('p', { class: 'note', text: '感情書店は、この予定が実行されたかを自動では確認しません。' }),
-      h('div', { class: 'actions' }, [
-        h('button', {
-          class: 'btn btn-line', type: 'button',
-          onclick: function () { go('entrance'); }
-        }, [h('span', { text: '入口に戻る' })])
+    var summary = planSummary(state.plan);
+    var surface = section('06-plan-saved', [
+      h('div', { class: 'plan-saved-panel' }, [
+        h('div', { class: 'plan-saved-heading' }, [
+          h('span', { class: 'plan-saved-icon', 'aria-hidden': 'true' }, [icon('calendar')]),
+          h('h1', { class: 'display display-sm', tabindex: '-1', id: 'surface-title', text: '予定を残しました。' })
+        ]),
+        summary ? h('p', { class: 'plan-saved-summary', text: summary }) : null,
+        h('p', { class: 'note', text: 'この端末に保存しました。外部カレンダーとは同期していません。' }),
+        h('div', { class: 'actions' }, [
+          h('button', {
+            class: 'btn btn-line', type: 'button', onclick: function () { go('plan'); }
+          }, [h('span', { text: '日時を変更する' })]),
+          h('button', {
+            class: 'btn btn-text', type: 'button', onclick: function () { go('entrance'); }
+          }, [h('span', { text: '入口に戻る' })])
+        ])
       ])
     ]);
+    surface.classList.add('plan-saved-surface');
+    return surface;
   }
 
   function surfaceMoment() {
@@ -2288,6 +2448,17 @@
       state = loaded[0];
       interested = loaded[1];
       screen = 'entrance';
+      try {
+        global.history.replaceState({ v3Screen: 'entrance' }, '', global.location.href);
+        historyReady = true;
+      } catch (error) {
+        historyReady = false;
+      }
+      global.addEventListener('popstate', function (event) {
+        var target = event.state && event.state.v3Screen;
+        screen = target && SURFACES[target] ? target : 'entrance';
+        render();
+      });
       render();
     });
   }
