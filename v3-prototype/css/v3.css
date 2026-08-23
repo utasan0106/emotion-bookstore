@@ -4079,6 +4079,7 @@ body:has(.trace-phase1) .stepbar-back svg {
    desktop action explicit, centered and reachable from the content gutter. */
 .stepbar-back { justify-content: center; }
 .stepbar-back-label { display: none; }
+.emotion-support-mobile-break { display: none; }
 
 @media (min-width: 1200px) {
   #stepbar:not(:empty) {
@@ -4176,6 +4177,7 @@ body:has(.trace-phase1) .stepbar-back svg {
     font-size: 13px;
     line-height: 1.55;
   }
+  body:has(.emotion-selection) .emotion-support-mobile-break { display: block; }
   body:has(.emotion-selection) .emotion-card-label {
     font-size: clamp(11px, 3vw, 12px);
   }
