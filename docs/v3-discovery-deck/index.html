@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>V3 Discovery Deck — 形状検証プロトタイプ</title>
+<style>
+:root{
+  --paper:#FAF5F1; --navy:#0F1B29; --ink:#1A2530; --muted:#68717A;
+  --rule:#D7DBDE; --card:#FFFDFC; --warm:#F6F0EA; --soft-blue:#E8F1F7;
+  --border:1px solid rgba(15,27,41,.13);
+  --shadow-card:0 5px 18px rgba(15,27,41,.06);
+  --shadow-lift:0 10px 30px rgba(15,27,41,.10);
+  --serif:"Noto Serif JP","Yu Mincho","Hiragino Mincho ProN",serif;
+  --sans:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  --radius-card:18px; --radius-image:14px; --radius-button:14px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;}
+.wrap{max-width:480px;margin:0 auto;padding:20px 20px 48px;}
+.notice{border:1px dashed rgba(15,27,41,.28);border-radius:12px;padding:12px 14px;
+  font-size:12px;line-height:1.75;color:var(--muted);background:var(--warm);margin-bottom:22px;}
+.notice b{color:var(--ink);font-weight:600;}
+.shelf{font-size:12px;letter-spacing:.05em;color:var(--muted);margin:0 0 4px;}
+.lead{font-family:var(--serif);font-size:21px;line-height:1.5;letter-spacing:.04em;
+  color:var(--navy);margin:0 0 6px;font-weight:500;}
+.count{font-size:12px;letter-spacing:.1em;color:var(--muted);margin:0 0 16px;}
+
+/* ---- deck : 1画面に1候補。背後に次候補を少しだけ覗かせる ---- */
+.stage{position:relative;height:498px;margin-bottom:14px;touch-action:pan-y;}
+/* 背面の候補は「下に少しだけ」覗く。scale で内側に入ってしまうと重なりが見えないため、
+   横だけ縮めて縦は translateY で純粋に押し下げる。 */
+.slot{position:absolute;left:0;right:0;top:0;height:calc(100% - 30px);
+  background:var(--card);border:var(--border);
+  border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:14px;
+  transition:transform 220ms cubic-bezier(.22,.7,.3,1),opacity 220ms ease;
+  display:flex;flex-direction:column;overflow:hidden;}
+.slot[data-depth="0"]{transform:translateY(0) scaleX(1);z-index:3;box-shadow:var(--shadow-lift);}
+.slot[data-depth="1"]{transform:translateY(15px) scaleX(.955);z-index:2;}
+.slot[data-depth="2"]{transform:translateY(30px) scaleX(.91);z-index:1;}
+.slot[data-depth="gone"]{opacity:0;pointer-events:none;z-index:0;}
+.slot[data-depth="0"].is-drag{transition:none;}
+.media{position:relative;border-radius:var(--radius-image);overflow:hidden;background:var(--warm);
+  height:190px;flex:none;}
+.media img{width:100%;height:100%;object-fit:cover;display:block;-webkit-user-drag:none;user-select:none;}
+.tier{position:absolute;left:10px;bottom:10px;background:rgba(255,253,252,.92);
+  border-radius:999px;padding:4px 10px;font-size:11px;letter-spacing:.04em;color:var(--muted);}
+.copy{padding:14px 4px 0;display:flex;flex-direction:column;gap:0;min-height:0;}
+.title{font-family:var(--serif);font-size:21px;line-height:1.4;color:var(--navy);
+  margin:0;font-weight:500;}
+.kind{font-size:12px;color:var(--muted);margin:7px 0 0;}
+.official{font-size:13px;line-height:1.7;margin:9px 0 0;}
+.link{margin:11px 0 0;padding-top:10px;border-top:1px solid var(--rule);}
+.link h3{font-size:11px;letter-spacing:.09em;color:var(--muted);margin:0 0 5px;font-weight:600;}
+.link p{font-size:13px;line-height:1.7;margin:0;}
+
+/* ---- controls ---- */
+.arrows{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;}
+.arrow{appearance:none;width:44px;height:44px;border-radius:999px;border:1px solid rgba(15,27,41,.24);
+  background:rgba(255,253,252,.85);color:var(--navy);cursor:pointer;display:flex;
+  align-items:center;justify-content:center;font-size:16px;line-height:1;}
+.arrow:disabled{opacity:.32;cursor:default;}
+.arrow:focus-visible{outline:2px solid var(--navy);outline-offset:2px;}
+.dots{display:flex;gap:7px;}
+.dot{width:7px;height:7px;border-radius:999px;background:rgba(15,27,41,.18);}
+.dot.on{background:var(--navy);}
+.actions{display:flex;flex-direction:column;gap:10px;}
+.btn{appearance:none;font-family:var(--sans);font-size:15px;border-radius:var(--radius-button);
+  padding:14px 16px;cursor:pointer;min-height:48px;}
+.btn:focus-visible{outline:2px solid var(--navy);outline-offset:2px;}
+.btn-primary{background:var(--navy);color:#FAF5F1;border:1px solid var(--navy);}
+.btn-line{background:transparent;color:var(--navy);border:1px solid rgba(15,27,41,.3);}
+.btn-text{background:none;border:0;color:var(--muted);font-size:14px;min-height:44px;}
+.end{border:var(--border);border-radius:var(--radius-card);background:var(--card);
+  padding:26px 20px;text-align:center;}
+.end p{margin:0 0 6px;font-family:var(--serif);font-size:17px;color:var(--navy);}
+.end small{color:var(--muted);font-size:12.5px;line-height:1.8;display:block;}
+.saved{margin-top:18px;font-size:12.5px;color:var(--muted);line-height:1.8;}
+.hint{font-size:12px;color:var(--muted);text-align:center;margin:12px 0 0;line-height:1.7;}
+@media(prefers-reduced-motion:reduce){.slot{transition:none;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="notice">
+    <b>UI形状の検証用プロトタイプです。</b><br>
+    本番には接続していません。ここで3件並べているのは「在庫が増えたときの
+    めくる形」を確かめるためのもので、現在の承認済み在庫は1棚あたり1件です。
+    掲載内容は既存の承認済みレコードから流用した表示サンプルで、
+    新しい在庫を作ったものではありません。
+  </div>
+
+  <p class="shelf">「ざわつく」の棚から</p>
+  <h1 class="lead">見てみる寄り道</h1>
+  <p class="count" id="count"></p>
+
+  <div class="stage" id="stage"></div>
+
+  <div class="arrows">
+    <button class="arrow" id="prev" type="button" aria-label="前の候補に戻る">←</button>
+    <div class="dots" id="dots"></div>
+    <button class="arrow" id="next" type="button" aria-label="次の候補を見る">→</button>
+  </div>
+
+  <div class="actions" id="actions"></div>
+  <p class="hint" id="hint">横にドラッグしても、次へ進めます。</p>
+  <div class="saved" id="saved"></div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  /* 表示サンプル。承認済みレコードの公開情報のみを使う。
+     相性%・人気順・いいね数・マッチ演出は一切持たない。 */
+  var DECK = [
+    { title:'TOPコレクション 明日の食卓', kind:'展示 ／ 10:00–18:00 ／ 一般 700円',
+      official:'「食」をめぐる写真から、記憶と社会の層をたどる展覧会。',
+      why:'見慣れた「食べる」という行為の周りに、別の層が現れる構成でした。',
+      tier:'感情書店のカテゴリー画像', img:'../../v3-prototype/assets/category-visual/category_exhibition.webp' },
+    { title:'印刷博物館 80 GRAPHIC TRIALS', kind:'展示 ／ 10:00–18:00 ／ 一般 400円',
+      official:'20年続く印刷表現の試みを、80人の作品でたどる展覧会。',
+      why:'異なる発想と技術が接触し、その試行の積み重ねが見えていました。',
+      tier:'感情書店のカテゴリー画像', img:'../../v3-prototype/assets/category-visual/category_exhibition.webp' },
+    { title:'新宿御苑', kind:'場所 ／ 9:00–17:30 ／ 一般 500円',
+      official:'歩くうちに庭園の秩序が切り替わる、58.3ヘクタールの庭園。',
+      why:'ひとつの見方に名前をつけて固定する前に、行き来してみる場所として。',
+      tier:'公式提供の実写（写真提供「新宿御苑管理事務所」）',
+      img:'../../v3-prototype/assets/real-experience/EXP_007_shinjuku_gyoen_official_landscape.jpg' }
+  ];
+
+  var index = 0, kept = [], finished = false;
+  var stage = document.getElementById('stage');
+  var actions = document.getElementById('actions');
+  var countEl = document.getElementById('count');
+  var dotsEl = document.getElementById('dots');
+  var savedEl = document.getElementById('saved');
+  var hintEl = document.getElementById('hint');
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+
+  function el(tag, cls, text){
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function card(item){
+    var slot = el('div','slot');
+    var media = el('div','media');
+    var img = el('img'); img.src = item.img; img.alt = ''; img.draggable = false;
+    media.appendChild(img);
+    media.appendChild(el('span','tier', item.tier));
+    slot.appendChild(media);
+    var copy = el('div','copy');
+    copy.appendChild(el('h2','title', item.title));
+    copy.appendChild(el('p','kind', item.kind));
+    copy.appendChild(el('p','official', item.official));
+    var link = el('div','link');
+    link.appendChild(el('h3', null, 'この棚とのつながり'));
+    link.appendChild(el('p', null, item.why));
+    copy.appendChild(link);
+    slot.appendChild(copy);
+    return slot;
+  }
+
+  function render(){
+    stage.textContent = '';
+    dotsEl.textContent = '';
+    actions.textContent = '';
+    if (finished){
+      var end = el('div','end');
+      end.appendChild(el('p', null, kept.length ? 'ここまでです。' : 'ここまでです。'));
+      end.appendChild(el('small', null, kept.length
+        ? '気になると選んだものは、あとから見返せます。'
+        : '今回はどれも選ばなくて大丈夫です。棚はいつでも開けます。'));
+      stage.appendChild(end);
+      countEl.textContent = '';
+      prevBtn.disabled = true; nextBtn.disabled = true;
+      hintEl.textContent = '';
+      var back = el('button','btn btn-line','棚へ戻る');
+      back.type = 'button';
+      back.onclick = function(){ index = 0; kept = []; finished = false; render(); };
+      actions.appendChild(back);
+      savedEl.textContent = kept.length ? '' : '';
+      return;
+    }
+    countEl.textContent = (index + 1) + ' / ' + DECK.length;
+    /* 背後の候補を少しだけ覗かせ、次があることを静かに示す。無限には続かない。 */
+    for (var d = Math.min(2, DECK.length - index - 1); d >= 0; d -= 1){
+      var slot = card(DECK[index + d]);
+      slot.setAttribute('data-depth', String(d));
+      stage.appendChild(slot);
+    }
+    DECK.forEach(function(_, i){
+      var dot = el('span','dot' + (i === index ? ' on' : ''));
+      dotsEl.appendChild(dot);
+    });
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = index >= DECK.length - 1;
+    hintEl.textContent = '横にドラッグしても、次へ進めます。';
+
+    var detail = el('button','btn btn-primary','詳しく見る'); detail.type='button';
+    detail.onclick = function(){ alert('詳細では 公式説明 → なぜ、この棚に？ → 実用情報 → 公式Action の順で読みます。'); };
+    var keep = el('button','btn btn-line','気になる'); keep.type='button';
+    keep.onclick = function(){ if (kept.indexOf(index) === -1) kept.push(index); advance(); };
+    var pass = el('button','btn btn-text','今回は違う'); pass.type='button';
+    pass.onclick = advance;
+    actions.appendChild(detail); actions.appendChild(keep); actions.appendChild(pass);
+    savedEl.textContent = kept.length ? '気になる：' + kept.length + '件' : '';
+    attachDrag();
+  }
+
+  function advance(){
+    if (index >= DECK.length - 1){ finished = true; }
+    else { index += 1; }
+    render();
+  }
+  function back(){ if (index > 0){ index -= 1; render(); } }
+
+  nextBtn.onclick = function(){ if (index < DECK.length - 1){ index += 1; render(); } };
+  prevBtn.onclick = back;
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight') nextBtn.click();
+    if (e.key === 'ArrowLeft') prevBtn.click();
+  });
+
+  /* ドラッグ／スワイプ。操作要素の上から始まった pointer では開始しない
+     （card 全体で capture を取ると card 内 button の click が失われるため）。 */
+  function attachDrag(){
+    var top = stage.querySelector('.slot[data-depth="0"]');
+    if (!top) return;
+    var startX = 0, dx = 0, active = false;
+    top.addEventListener('pointerdown', function(e){
+      if (e.button !== undefined && e.button !== 0) return;
+      if (e.target.closest && e.target.closest('button, a, input, textarea, select, label')) return;
+      active = true; startX = e.clientX; dx = 0;
+      top.classList.add('is-drag');
+      top.setPointerCapture && top.setPointerCapture(e.pointerId);
+    });
+    top.addEventListener('pointermove', function(e){
+      if (!active) return;
+      dx = e.clientX - startX;
+      top.style.transform = 'translateX(' + (dx * .6) + 'px) rotate(' + (dx * .012) + 'deg)';
+    });
+    function end(){
+      if (!active) return;
+      active = false;
+      top.classList.remove('is-drag');
+      top.style.transform = '';
+      var threshold = Math.min(96, top.offsetWidth * .25);
+      if (dx <= -threshold) advance();
+      else if (dx >= threshold) back();
+    }
+    top.addEventListener('pointerup', end);
+    top.addEventListener('pointercancel', end);
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
