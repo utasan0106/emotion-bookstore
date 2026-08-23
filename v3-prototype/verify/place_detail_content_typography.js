@@ -67,8 +67,8 @@ check('copy contains no diagnosis or therapeutic promise',
     exp.placeDetail.placementReason
   ].join('\n')));
 check('generic registry reason is not reused on Place Detail',
-  appSource.includes('text: placeDetail.placementReason') &&
-  appSource.includes("text: 'この棚に置いた理由'") &&
+  appSource.includes('text: placeDetail ? placeDetail.placementReason : experience.reason') &&
+  appSource.includes("text: 'なぜ、この棚に？'") &&
   !appSource.includes("class: 'body-lg place-detail-body', text: experience.reason"));
 
 check('address is exact approved public destination',
@@ -97,7 +97,7 @@ check('Google Maps deep link contains destination',
   maps.searchParams.get('destination') === '東京都新宿区内藤町11');
 check('Google Maps deep link contains no origin', !maps.searchParams.has('origin'));
 
-['どんな場所か', 'おすすめの過ごし方', 'この棚に置いた理由', '訪れるための情報'].forEach((label) => {
+['どんな場所か', 'おすすめの過ごし方', 'なぜ、この棚に？', '訪れるための情報'].forEach((label) => {
   check(`Detail renders ${label}`, appSource.includes(`text: '${label}'`));
 });
 check('address / station / walk facts render from approved record',
