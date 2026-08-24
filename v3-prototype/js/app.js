@@ -2843,40 +2843,41 @@
     return currentDeckMatchesSelectedShelf() ? surfaceNone() : surfaceUnderstanding();
   }
 
+  /* Shelf completion = quiet editorial send-off（Founder承認copy固定）。
+     completion判定・遷移semanticsは不変更。表示のみ。 */
   function surfaceNone() {
-    var count = activeDeckCount();
     var actions = [
-      h('button', {
-        class: 'btn btn-line', type: 'button',
-        onclick: function () {
-          state.deck.index = Math.max(0, state.deck.ids.length - 1);
-          go('discovery');
-        }
-      }, [h('span', { text: '前の文化物へ' })]),
       h('button', {
         class: 'btn btn-primary', type: 'button', onclick: function () { go('understanding'); }
       }, [h('span', { text: '棚へ戻る' })])
     ];
     if (interested.items.length) {
       actions.push(h('button', {
-        class: 'btn btn-text', type: 'button',
+        class: 'btn btn-line', type: 'button',
         onclick: function (event) { openInterestedLayer(event.currentTarget); }
       }, [h('span', { text: '気になるものを見る' })]));
     }
+    actions.push(h('button', {
+      class: 'btn btn-text deck-completion-previous', type: 'button',
+      onclick: function () {
+        state.deck.index = Math.max(0, state.deck.ids.length - 1);
+        go('discovery');
+      }
+    }, [h('span', { text: '前の文化物へ' })]));
     var surface = section('04-discovery-none', [
       h('div', { class: 'deck-completion' }, [
-        h('p', { class: 'eyebrow', text: '「' + selectedShelfLabel() + '」の棚' }),
+        h('p', { class: 'eyebrow deck-completion-shelf', text: '「' + selectedShelfLabel() + '」の棚' }),
         h('h1', {
-          class: 'question', tabindex: '-1', id: 'surface-title',
+          class: 'deck-completion-title', tabindex: '-1', id: 'surface-title',
           text: 'この棚は、ここまでです。'
         }),
-        h('p', {
-          class: 'body-lg',
-          text: count === 1
-            ? 'ひとつの文化物を見終えました。ここで終えても、棚へ戻っても大丈夫です。'
-            : count + 'つの文化物を見終えました。続けるための候補は自動で足しません。'
+        h('img', {
+          class: 'deck-completion-illustration', alt: '',
+          src: './assets/canonical-m01-w01/w01_hero.webp',
+          width: '941', height: '680', loading: 'lazy', decoding: 'async'
         }),
-        h('div', { class: 'actions' }, actions)
+        h('p', { class: 'deck-completion-sendoff', text: 'さあ、感情の先に出かけよう！' }),
+        h('div', { class: 'actions deck-completion-actions' }, actions)
       ])
     ]);
     surface.setAttribute('data-selected-shelf', state.emotion || '');
