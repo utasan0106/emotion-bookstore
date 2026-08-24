@@ -283,11 +283,32 @@
   function visualDimensions(asset) {
     var path = asset && asset.localAssetPath ? asset.localAssetPath : '';
     if (/category-visual\//.test(path)) return { width: '1200', height: '900' };
+    if (/visual-system-v1\/runtime_webp\/(emotion|category)\//.test(path)) {
+      return { width: '960', height: '720' };
+    }
     if (/EXP_007_shinjuku_gyoen_official_landscape/.test(path)) {
       return { width: '1440', height: '959' };
     }
     if (/m01_stacked_lockup/.test(path)) return { width: '402', height: '260' };
     return {};
+  }
+
+  function emotionTileAsset(word) {
+    return './assets/visual-system-v1/runtime_webp/emotion/emotion_' + word.id + '.webp';
+  }
+
+  function emotionTileDescription(word) {
+    var shortDescriptions = {
+      hajimu: '軽やかにひらく',
+      atatamaru: 'やさしい光に触れる',
+      hikareru: '細部に目を留める',
+      shizumu: '静かな重さを見つめる',
+      zawatsuku: '揺れる気配をたどる',
+      butsukaru: '強い輪郭が交わる',
+      miwohiku: '少し離れた景色を見る',
+      mada: 'まだ言葉になる前'
+    };
+    return shortDescriptions[word.id] || word.description.split('、')[0];
   }
 
   function prepareEntranceCue() {
@@ -1117,13 +1138,15 @@
           h('span', { class: 'emotion-card-media', 'aria-hidden': 'true' }, [
             h('img', {
               class: 'emotion-card-image', alt: '',
-              src: './assets/canonical-m02-w02/' + word.asset,
-              width: '200', height: '212', loading: 'lazy', decoding: 'async'
+              src: emotionTileAsset(word),
+              width: '960', height: '720', loading: 'lazy', decoding: 'async'
             })
           ]),
           h('span', { class: 'emotion-card-copy' }, [
             h('strong', { class: 'emotion-card-label', text: word.label }),
-            h('span', { class: 'emotion-card-description' }, descriptionPhraseLines(word.description))
+            h('span', {
+              class: 'emotion-card-description', text: emotionTileDescription(word)
+            })
           ])
         ])
       ]);
@@ -1378,8 +1401,8 @@
       h('div', { class: 'understanding-shelf-identity' }, [
         word ? h('img', {
           class: 'understanding-shelf-image', alt: '',
-          src: './assets/canonical-m02-w02/' + word.asset,
-          width: '200', height: '212', loading: 'eager', decoding: 'async'
+          src: emotionTileAsset(word),
+          width: '960', height: '720', loading: 'eager', decoding: 'async'
         }) : null,
         h('h1', {
           class: 'display display-sm', tabindex: '-1', id: 'surface-title',
@@ -1797,9 +1820,6 @@
         experienceVisual(experience, 'card')
       ]),
       h('div', { class: 'real-discovery-copy' }, [
-        contract.firstPull ? h('p', {
-          class: 'first-pull', 'data-first-pull': 'approved', text: contract.firstPull
-        }) : null,
         h('p', { class: 'real-discovery-shelf' }, [
           h('span', { text: contextLabel }),
           h('span', { class: 'trust-cue trust-cue-editorial', text: '編集部選定' })
@@ -1809,6 +1829,9 @@
           class: 'card-meta',
           text: contract.practicalTruth.typeLabel + ' ／ ' + experience.type
         }),
+        contract.firstPull ? h('p', {
+          class: 'first-pull', 'data-first-pull': 'approved', text: contract.firstPull
+        }) : null,
         h('section', { class: 'real-discovery-reason', 'aria-label': 'この棚に置いた理由' }, [
           h('h3', { text: 'なぜ、この棚に？' }),
           h('p', { class: 'card-reason', text: contract.editorialWhy })
@@ -1846,7 +1869,7 @@
     if (isFallback) {
       children.push(h('span', {
         class: 'real-experience-media-status',
-        text: 'カテゴリ図版（実画像の表示権利を確認中）'
+        text: '感情書店のカテゴリ図版'
       }));
     }
     if (asset.attributionRequired && asset.attributionText) {
@@ -2114,9 +2137,6 @@
     }, [icon('heart'), h('span', { text: interestedLabel(experience.id) })]));
 
     var summary = [
-      contract.firstPull ? h('p', {
-        class: 'first-pull', 'data-first-pull': 'approved', text: contract.firstPull
-      }) : null,
       h('p', { class: 'detail-shelf-context' }, [
         h('span', { text: '棚を選ばない編集部の仕入れ' }),
         h('span', { class: 'trust-cue trust-cue-editorial', text: '編集部選定' })
@@ -2129,6 +2149,9 @@
         class: 'card-meta place-detail-meta',
         text: contract.practicalTruth.typeLabel + ' ／ ' + experience.type
       }),
+      contract.firstPull ? h('p', {
+        class: 'first-pull', 'data-first-pull': 'approved', text: contract.firstPull
+      }) : null,
       h('section', { class: 'detail-editorial-reason', 'aria-labelledby': 'no-emotion-reason-title' }, [
         h('h2', { class: 'section-title', id: 'no-emotion-reason-title', text: 'なぜ、ここに？' }),
         h('p', { class: 'body-lg place-detail-body', text: contract.editorialWhy })
@@ -2933,15 +2956,12 @@
     );
 
     /* Frontstage reader order:
-       FIRST PULL -> Identity -> Editorial Why -> Official Fact / Practical
+       Identity -> FIRST PULL -> Editorial Why -> Official Fact / Practical
        Truth -> Official Action. Official text is source-grounded paraphrase,
        never copied as an unsourced editorial claim. */
     var officialSource = contract.officialGrounding.source;
     var truthFacts = contract.practicalTruth.facts;
     var summary = [
-      contract.firstPull ? h('p', {
-        class: 'first-pull', 'data-first-pull': 'approved', text: contract.firstPull
-      }) : null,
       h('p', { class: 'eyebrow detail-shelf-context' }, [
         h('span', { text: '「' + selectedShelfLabel() + '」の棚から' }),
         h('span', { class: 'trust-cue trust-cue-editorial', text: '編集部選定' })
@@ -2954,6 +2974,9 @@
         class: 'card-meta' + (placeDetail ? ' place-detail-meta' : ''),
         text: contract.practicalTruth.typeLabel + ' ／ ' + experience.type
       }),
+      contract.firstPull ? h('p', {
+        class: 'first-pull', 'data-first-pull': 'approved', text: contract.firstPull
+      }) : null,
       h('section', { class: 'detail-editorial-reason', 'aria-labelledby': 'detail-reason-title' }, [
         h('h2', { class: 'section-title', id: 'detail-reason-title', text: 'なぜ、この棚に？' }),
         h('p', {
@@ -3594,6 +3617,7 @@
     var title = document.getElementById('surface-title');
     if (focusTarget) focusTarget.focus();
     else if (title) title.focus();
+    updatePrimaryNavigation();
     measureCurrentView();
   }
 
@@ -3644,9 +3668,9 @@
     });
   }
 
-  /* Header Interaction Contract v0.3
-     - >=1200px の MENU から既存4導線だけを開く
-     - logo / 体験の流れ / よくある質問 は同一ページ内スクロール
+  /* Header Interaction Contract v1.0
+     - desktop Header と mobile bottom navigation は既存導線だけを扱う
+     - logo / Home / 体験の流れ / よくある質問 は入口へ戻るか同一ページ内スクロール
      - はじめる / 感情の棚 は Hero CTA と同じ遷移（W02 Emotion）
      - W01の体験の流れ / FAQは有限のbelow-fold editorial content
      - 新しい画面・locale 機能は作らない */
@@ -3658,10 +3682,24 @@
     catch (error) { target.focus(); }
   }
 
+  function updatePrimaryNavigation() {
+    document.querySelectorAll('[data-nav="home"]').forEach(function (node) {
+      if (screen === 'entrance') node.setAttribute('aria-current', 'page');
+      else node.removeAttribute('aria-current');
+    });
+    document.querySelectorAll('[data-nav="interested"]').forEach(function (node) {
+      node.classList.toggle('has-saved-items', interested.items.length > 0);
+    });
+  }
+
   function bindHeader() {
-    var trigger = document.getElementById('headerMenuTrigger');
+    var triggers = [
+      document.getElementById('headerMenuTrigger'),
+      document.getElementById('bottomMenuTrigger')
+    ].filter(Boolean);
     var panel = document.getElementById('headerNavPanel');
     var firstItem = panel.querySelector('.site-nav-link');
+    var activeTrigger = null;
     /* v0.2 static shellとの互換性を保ちつつ、今回承認されたW01 destinationsを
        runtime DOMの正式なanchorにする。 */
     panel.querySelector('a[href="#core-loop"]').setAttribute('href', '#experience-flow');
@@ -3669,19 +3707,33 @@
 
     function closeHeaderMenu(restoreFocus) {
       panel.hidden = true;
-      trigger.setAttribute('aria-expanded', 'false');
-      if (restoreFocus) trigger.focus();
+      triggers.forEach(function (trigger) { trigger.setAttribute('aria-expanded', 'false'); });
+      if (restoreFocus && activeTrigger) activeTrigger.focus();
+      activeTrigger = null;
     }
 
-    function openHeaderMenu() {
+    function openHeaderMenu(trigger) {
+      activeTrigger = trigger;
       panel.hidden = false;
-      trigger.setAttribute('aria-expanded', 'true');
+      triggers.forEach(function (item) {
+        item.setAttribute('aria-expanded', item === trigger ? 'true' : 'false');
+      });
       firstItem.focus();
     }
 
-    trigger.addEventListener('click', function () {
-      if (trigger.getAttribute('aria-expanded') === 'true') closeHeaderMenu(true);
-      else openHeaderMenu();
+    triggers.forEach(function (trigger) {
+      trigger.addEventListener('click', function () {
+        if (trigger.getAttribute('aria-expanded') === 'true') closeHeaderMenu(true);
+        else openHeaderMenu(trigger);
+      });
+    });
+
+    document.querySelectorAll('[data-nav="home"]').forEach(function (node) {
+      node.addEventListener('click', function () {
+        closeHeaderMenu(false);
+        if (screen !== 'entrance') go('entrance');
+        scrollToId('top');
+      });
     });
 
     document.querySelectorAll('[data-nav="start"]').forEach(function (node) {
@@ -3712,25 +3764,26 @@
     });
     document.querySelector('.site-logo').addEventListener('click', function (event) {
       event.preventDefault();
+      closeHeaderMenu(false);
+      if (screen !== 'entrance') go('entrance');
       scrollToId('top');
     });
 
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') {
+      if (event.key === 'Escape' && !panel.hidden) {
         closeHeaderMenu(true);
       }
     });
     document.addEventListener('click', function (event) {
-      if (trigger.getAttribute('aria-expanded') === 'true' &&
-          !panel.contains(event.target) && event.target !== trigger) {
+      var withinTrigger = triggers.some(function (trigger) { return trigger.contains(event.target); });
+      if (!panel.hidden && !panel.contains(event.target) && !withinTrigger) {
         closeHeaderMenu(false);
       }
     });
     global.addEventListener('resize', function () {
-      if (global.innerWidth < 1200 && trigger.getAttribute('aria-expanded') === 'true') {
-        closeHeaderMenu(false);
-      }
+      if (!panel.hidden) closeHeaderMenu(false);
     });
+    updatePrimaryNavigation();
   }
 
   function boot() {

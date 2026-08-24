@@ -37,11 +37,11 @@
     music: { label: '音楽', file: 'category_music.webp' },
     place: { label: '場所', file: 'category_place.webp' },
     exhibition: { label: '展示', file: 'category_exhibition.webp' },
-    bookstore: { label: '書店', file: 'category_bookstore.webp' },
-    library: { label: '図書館', file: 'category_library.webp' },
-    food_cafe: { label: '喫茶・食', file: 'category_food_cafe.webp' },
+    bookstore: { label: '書店', file: 'category_book.webp' },
+    library: { label: '図書館', file: 'category_book.webp' },
+    food_cafe: { label: '喫茶・食', file: 'category_dining.webp' },
     event: { label: 'イベント', file: 'category_event.webp' },
-    workshop: { label: '工房・ワークショップ', file: 'category_workshop.webp' }
+    workshop: { label: '工房・ワークショップ', file: 'category_activity.webp' }
   };
 
   function categoryVisualFor(categoryId, fallbackReason) {
@@ -61,8 +61,8 @@
       reuseOrCacheAllowed: true,
       checkedAt: '2026-08-22',
       recheckBy: null,
-      localAssetPath: './assets/category-visual/' + category.file,
-      altTextJa: '感情書店の「' + category.label + '」カテゴリーを示すイラスト',
+      localAssetPath: './assets/visual-system-v1/runtime_webp/category/' + category.file,
+      altTextJa: '感情書店の「' + category.label + '」カテゴリーを表す抽象図版',
       fitMode: 'cover',
       fallbackReason: fallbackReason || 'real_visual_reuse_not_verified'
     };
@@ -848,7 +848,7 @@
       var validCategory = asset.assetType === 'category_visual' &&
         asset.sourceKind === 'emotion_bookstore_category_visual' && category &&
         asset.categoryLabel === category.label &&
-        asset.localAssetPath === './assets/category-visual/' + category.file &&
+        asset.localAssetPath === './assets/visual-system-v1/runtime_webp/category/' + category.file &&
         asset.rightsBasis === 'founder_provided_for_emotion_bookstore_service_use' &&
         asset.attributionRequired === false && asset.fitMode === 'cover';
       var validBrand = asset.assetType === 'brand_fallback' &&

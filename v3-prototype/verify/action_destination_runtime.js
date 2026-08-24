@@ -18,7 +18,7 @@ async function toCurrentDetail(page, base) {
   await page.waitForSelector('.surface[data-surface="01-entrance"]');
   await page.locator('.cta-primary').click();
   await page.waitForSelector('.surface[data-surface="02-emotion"]');
-  await page.locator('.emotion-card[data-emotion-label="心が弾む"]').click();
+  await page.locator('.emotion-card[data-emotion-label="心があたたまる"]').click();
   await page.waitForSelector('.surface[data-surface="03-understanding"]');
   await page.locator('.understanding-outcome-column .btn-primary').click();
   await page.waitForSelector('.real-discovery-card');
@@ -35,7 +35,7 @@ async function toCurrentDetail(page, base) {
   });
   const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
   const routed = [];
-  await context.route(/https:\/\/(www\.teamlab\.art|www\.google\.com)\//, async (route) => {
+  await context.route(/https:\/\/(art-play\.or\.jp|www\.google\.com)\//, async (route) => {
     routed.push({ url: route.request().url(), referer: route.request().headers().referer || '' });
     await route.fulfill({ status: 200, contentType: 'text/html', body: '<title>approved</title>' });
   });
@@ -59,7 +59,7 @@ async function toCurrentDetail(page, base) {
   const popup = await popupPromise;
   await popup.waitForLoadState('domcontentloaded');
   check('A current valid HTTPS destination opens in new context',
-    popup.url() === 'https://www.teamlab.art/jp/e/tokyo/');
+    popup.url() === 'https://art-play.or.jp/ttm/info/');
   check('F opened page has no opener', await popup.evaluate(() => window.opener === null));
   await popup.close();
 
@@ -69,7 +69,7 @@ async function toCurrentDetail(page, base) {
   await mapsPopup.waitForLoadState('domcontentloaded');
   const mapsUrl = new URL(mapsPopup.url());
   check('G/H Maps destination present and origin absent',
-    mapsUrl.searchParams.get('destination') === '東京都港区虎ノ門5-9 麻布台ヒルズ ガーデンプラザB B1' &&
+    mapsUrl.searchParams.get('destination') === '東京都新宿区四谷4-20 四谷ひろば内' &&
     !mapsUrl.searchParams.has('origin'));
   await mapsPopup.close();
 

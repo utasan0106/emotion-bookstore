@@ -1,0 +1,332 @@
+{
+  "version": "v3-visual-asset-pack-20260824",
+  "records": [
+    {
+      "kind": "emotion",
+      "id": "emotion_hajimu",
+      "source_original_name": "心弾む.png",
+      "source_png": "source_png/emotion/emotion_hajimu.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 1994720,
+      "source_sha256": "7e2ac9b1190fa2d104ed7a3f6eeec88930ba744673fffcb31f5255bb2d530a31",
+      "runtime_webp": "runtime_webp/emotion/emotion_hajimu.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 61980,
+      "runtime_sha256": "15f092b91dc68005fe687fb8af72748c244aeed66fe156f109867e1617f01742",
+      "webp_quality": 82
+    },
+    {
+      "kind": "emotion",
+      "id": "emotion_atatamaru",
+      "source_original_name": "心があたたまる.png",
+      "source_png": "source_png/emotion/emotion_atatamaru.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 2629006,
+      "source_sha256": "a1d7db9767e93bdd4bf5c2468c8f104598590a3d53bb8be6503c9982af78a2db",
+      "runtime_webp": "runtime_webp/emotion/emotion_atatamaru.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 63732,
+      "runtime_sha256": "0ae4172c0a5c2a95b4eac5da53e9d58435d22d4d8b39a812aa517ea6740fadb1",
+      "webp_quality": 82
+    },
+    {
+      "kind": "emotion",
+      "id": "emotion_hikareru",
+      "source_original_name": "惹かれる.png",
+      "source_png": "source_png/emotion/emotion_hikareru.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 1697641,
+      "source_sha256": "f4560764af846139b87bf0bce9c4dbe9e5274362bbf074f36dc4d1ea10514ab3",
+      "runtime_webp": "runtime_webp/emotion/emotion_hikareru.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 26882,
+      "runtime_sha256": "5081522845244e6a99a0a61e1b4b68cc256abee6e28febac51f5ff6883a5323e",
+      "webp_quality": 82
+    },
+    {
+      "kind": "emotion",
+      "id": "emotion_shizumu",
+      "source_original_name": "沈む.png",
+      "source_png": "source_png/emotion/emotion_shizumu.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 2428285,
+      "source_sha256": "2f49d14833cc572f2d3c670a1fc4b6cddc84560c1e4203baa7e1851853eaa059",
+      "runtime_webp": "runtime_webp/emotion/emotion_shizumu.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 35666,
+      "runtime_sha256": "d026e5ca0c064b20f3c6e321c4eff0510f50a87ed9c366de8951a9346826d30c",
+      "webp_quality": 82
+    },
+    {
+      "kind": "emotion",
+      "id": "emotion_zawatsuku",
+      "source_original_name": "ざわつく.png",
+      "source_png": "source_png/emotion/emotion_zawatsuku.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 1991996,
+      "source_sha256": "5450da483d4b7fa4d4f85a6d25c8d9faf63278c83b9a112bf6f64822c6c5cbc5",
+      "runtime_webp": "runtime_webp/emotion/emotion_zawatsuku.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 76352,
+      "runtime_sha256": "6f556ec22e9db7401aa2ba8f502ee4a2d7d7bc626e1c35987ce7864f8842bd72",
+      "webp_quality": 82
+    },
+    {
+      "kind": "emotion",
+      "id": "emotion_butsukaru",
+      "source_original_name": "ぶつかる.png",
+      "source_png": "source_png/emotion/emotion_butsukaru.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 1870569,
+      "source_sha256": "fc461ac7a7f54c17084cfb0d526ad4366ff1034a89d97484b035e54d737a699d",
+      "runtime_webp": "runtime_webp/emotion/emotion_butsukaru.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 50232,
+      "runtime_sha256": "8b656664508c2ee7193daa41da5f974d5620af2cecdb3ffd5a2367b6d2c8a502",
+      "webp_quality": 82
+    },
+    {
+      "kind": "emotion",
+      "id": "emotion_miwohiku",
+      "source_original_name": "身を引く.png",
+      "source_png": "source_png/emotion/emotion_miwohiku.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 1910312,
+      "source_sha256": "236462d5537dfbc572fdef58c0e3036482953268cb7cc0a85881ffcb38c3262e",
+      "runtime_webp": "runtime_webp/emotion/emotion_miwohiku.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 33272,
+      "runtime_sha256": "2f70052bc45eb8926aec68cc7d91a54b135dc23702119d411ebdb63e7904e738",
+      "webp_quality": 82
+    },
+    {
+      "kind": "emotion",
+      "id": "emotion_mada",
+      "source_original_name": "まだ名前がない.png",
+      "source_png": "source_png/emotion/emotion_mada.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 1723257,
+      "source_sha256": "8cc87a5ff98b589563352e980996320a36dc5e6bc09b0e633c32f81000de480f",
+      "runtime_webp": "runtime_webp/emotion/emotion_mada.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 41018,
+      "runtime_sha256": "bcd9fc2bc0bb6dc460ad12e500bcbab241d36fd83dc625d9fa8f517845f2f634",
+      "webp_quality": 82
+    },
+    {
+      "kind": "category",
+      "id": "category_book",
+      "source_original_name": "本.png",
+      "source_png": "source_png/category/category_book.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 1827786,
+      "source_sha256": "cb3e44e791542a1a905a0fd47cac42890199d935f44e44b057cc0eddfe8b8b2d",
+      "runtime_webp": "runtime_webp/category/category_book.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 24422,
+      "runtime_sha256": "8843e153cdb96be54b096ba1b22436a50a4f901459af0b3178433a478c91e25f",
+      "webp_quality": 82
+    },
+    {
+      "kind": "category",
+      "id": "category_film",
+      "source_original_name": "映画.png",
+      "source_png": "source_png/category/category_film.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 1873971,
+      "source_sha256": "7f1236efdeeee645afdb8f3ec71b76b416bb9d9c2ccb4177d8aac098d8fd8633",
+      "runtime_webp": "runtime_webp/category/category_film.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 22960,
+      "runtime_sha256": "1289d0d8f42403aca93e990380176b44c30388231627aa1a685d79c3252eb948",
+      "webp_quality": 82
+    },
+    {
+      "kind": "category",
+      "id": "category_music",
+      "source_original_name": "音楽.png",
+      "source_png": "source_png/category/category_music.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 2002590,
+      "source_sha256": "4fa2dc4be16667e33f0e5a02d1b40c4134c1b5f8367f01bc6e15f974ead89fa4",
+      "runtime_webp": "runtime_webp/category/category_music.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 30194,
+      "runtime_sha256": "55f7c5b7c980640579a79f016d0ffcc2021c71238ce345addf36d0af5fdbecec",
+      "webp_quality": 82
+    },
+    {
+      "kind": "category",
+      "id": "category_place",
+      "source_original_name": "場所.png",
+      "source_png": "source_png/category/category_place.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 2153272,
+      "source_sha256": "37eadd4980009b898b9c3b4223851da19e005eeb2bb3f5c03988e6fd9ff2b57d",
+      "runtime_webp": "runtime_webp/category/category_place.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 37132,
+      "runtime_sha256": "f75e71ca7f28ff1491af1b7c65314d0edd4c4a789a7279760e6af3bf2891f880",
+      "webp_quality": 82
+    },
+    {
+      "kind": "category",
+      "id": "category_exhibition",
+      "source_original_name": "展示.png",
+      "source_png": "source_png/category/category_exhibition.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 1994416,
+      "source_sha256": "f4a4d76b2c30ba04fedf31ccc9dc9589ee359a55d6089387187206ca7bf0a9b7",
+      "runtime_webp": "runtime_webp/category/category_exhibition.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 24136,
+      "runtime_sha256": "2e53d3c5cbe5193fe7ad14b0328e9bd1aef896247c0f04828282a05e9b764e63",
+      "webp_quality": 82
+    },
+    {
+      "kind": "category",
+      "id": "category_dining",
+      "source_original_name": "食.png",
+      "source_png": "source_png/category/category_dining.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 2112979,
+      "source_sha256": "ec87055aa19addaa4895372522b6f263bfe57e8fd104cd0786aa2c2ce3ac732a",
+      "runtime_webp": "runtime_webp/category/category_dining.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 34654,
+      "runtime_sha256": "bb0c18fce70e82757a2af7b8a878154ef9ff521a0ae61be932d9461d17ee3f1a",
+      "webp_quality": 82
+    },
+    {
+      "kind": "category",
+      "id": "category_event",
+      "source_original_name": "イベント.png",
+      "source_png": "source_png/category/category_event.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 2500046,
+      "source_sha256": "a56a9ca0de9e57714ba9a80692979a54b26f43c75374659a5cb29bc75cf11ae0",
+      "runtime_webp": "runtime_webp/category/category_event.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 35872,
+      "runtime_sha256": "2805b53e8ab02a150b07711110dd845b30fa09995cf237c889096f272412fa39",
+      "webp_quality": 82
+    },
+    {
+      "kind": "category",
+      "id": "category_activity",
+      "source_original_name": "体験.png",
+      "source_png": "source_png/category/category_activity.png",
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "source_bytes": 2246909,
+      "source_sha256": "857a0a06b8f9679d516274e383a0e5745620b810dd24293b668d751383e09339",
+      "runtime_webp": "runtime_webp/category/category_activity.webp",
+      "runtime_dimensions": [
+        960,
+        720
+      ],
+      "runtime_bytes": 43594,
+      "runtime_sha256": "3d0806b02f696177a8f248230db72804fb4e76c92ab327373bceba41284103d4",
+      "webp_quality": 82
+    }
+  ],
+  "notes": [
+    "Original PNG source assets are preserved unchanged in source_png/.",
+    "runtime_webp/ contains derived 960x720 WebP copies for UI use; do not replace canonical source files.",
+    "Emotion set includes regenerated atatamaru and newly generated shizumu.",
+    "Category set replaces the erroneous hikareru duplicate with regenerated event.",
+    "No rights-unclear third-party visual is included; these are founder-supplied/generated design assets."
+  ]
+}

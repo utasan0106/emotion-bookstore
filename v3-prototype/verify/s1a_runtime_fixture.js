@@ -13,6 +13,13 @@
   var fixtureRegistry = {};
   Object.keys(original).forEach(function (key) { fixtureRegistry[key] = original[key]; });
 
+  /* Keep this historical 0/1/2/3 fixture deterministic after a live record's
+     2026-08-24 recheck boundary. Product runtime still uses today's date. */
+  fixtureRegistry.byId = function (id, asOf) {
+    if (ids.indexOf(id) !== -1 && !asOf) return original.byId(id, '2026-08-24');
+    return original.byId(id, asOf);
+  };
+
   fixtureRegistry.deckForEmotion = function (emotionId, asOf) {
       if (emotionId !== fixtureShelf) return original.deckForEmotion(emotionId, asOf);
       if (mode === 'error') throw new Error('S1A isolated malformed-registry fixture');

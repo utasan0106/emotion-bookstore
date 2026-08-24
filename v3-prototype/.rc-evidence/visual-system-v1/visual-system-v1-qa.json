@@ -1,0 +1,1979 @@
+{
+  "generatedAt": "2026-08-24T15:49:25.947Z",
+  "branch": "codex/v3-visual-system-v1-20260825",
+  "head": "3e063ec472df3c10dc271473a28390ce17f553c7",
+  "start": "3e063ec472df3c10dc271473a28390ce17f553c7",
+  "viewports": {
+    "mobile-320": {
+      "entrance": {
+        "width": 320,
+        "overflow": {
+          "document": 0,
+          "body": 0
+        },
+        "body": {
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(31, 42, 51)",
+          "family": "\"Noto Sans JP\", \"Hiragino Kaku Gothic ProN\", \"Yu Gothic\", Meiryo, sans-serif",
+          "size": "15px",
+          "lineHeight": "25.8px"
+        },
+        "emotionColumns": 0,
+        "headerLogoVisible": true,
+        "bottomNavVisible": true,
+        "desktopHomeVisible": false,
+        "fonts": "loaded"
+      },
+      "performance": {
+        "resources": [
+          {
+            "name": "/assets/canonical-m01-w01/m01_hero.webp",
+            "initiatorType": "link",
+            "transferSize": 65982,
+            "decodedBodySize": 65682
+          },
+          {
+            "name": "/css/v3.css",
+            "initiatorType": "link",
+            "transferSize": 168984,
+            "decodedBodySize": 168684
+          },
+          {
+            "name": "/css/visual-system-v1.css",
+            "initiatorType": "link",
+            "transferSize": 30799,
+            "decodedBodySize": 30499
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_horizontal_lockup.png",
+            "initiatorType": "img",
+            "transferSize": 36464,
+            "decodedBodySize": 36164
+          },
+          {
+            "name": "/js/data.js",
+            "initiatorType": "script",
+            "transferSize": 10191,
+            "decodedBodySize": 9891
+          },
+          {
+            "name": "/js/store.js",
+            "initiatorType": "script",
+            "transferSize": 9755,
+            "decodedBodySize": 9455
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSansJP-Regular-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 174016,
+            "decodedBodySize": 173716
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSansJP-Medium-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 175384,
+            "decodedBodySize": 175084
+          },
+          {
+            "name": "/js/entrance_cue_store.js",
+            "initiatorType": "script",
+            "transferSize": 2911,
+            "decodedBodySize": 2611
+          },
+          {
+            "name": "/js/personalize.js",
+            "initiatorType": "script",
+            "transferSize": 3428,
+            "decodedBodySize": 3128
+          },
+          {
+            "name": "/js/action_destination.js",
+            "initiatorType": "script",
+            "transferSize": 5488,
+            "decodedBodySize": 5188
+          },
+          {
+            "name": "/js/cultural_matching.js",
+            "initiatorType": "script",
+            "transferSize": 26988,
+            "decodedBodySize": 26688
+          },
+          {
+            "name": "/js/real_experience_registry.js",
+            "initiatorType": "script",
+            "transferSize": 48298,
+            "decodedBodySize": 47998
+          },
+          {
+            "name": "/js/interested_retrieval.js",
+            "initiatorType": "script",
+            "transferSize": 4160,
+            "decodedBodySize": 3860
+          },
+          {
+            "name": "/js/calendar_action.js",
+            "initiatorType": "script",
+            "transferSize": 4149,
+            "decodedBodySize": 3849
+          },
+          {
+            "name": "/js/public_editorial.js",
+            "initiatorType": "script",
+            "transferSize": 17654,
+            "decodedBodySize": 17354
+          },
+          {
+            "name": "/js/public_editorial_content.js",
+            "initiatorType": "script",
+            "transferSize": 999,
+            "decodedBodySize": 699
+          },
+          {
+            "name": "/js/s1b_editorial_content.js",
+            "initiatorType": "script",
+            "transferSize": 1059,
+            "decodedBodySize": 759
+          },
+          {
+            "name": "/js/analytics.js",
+            "initiatorType": "script",
+            "transferSize": 4637,
+            "decodedBodySize": 4337
+          },
+          {
+            "name": "/js/app.js",
+            "initiatorType": "script",
+            "transferSize": 162954,
+            "decodedBodySize": 162654
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSerifJP-Medium-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 242520,
+            "decodedBodySize": 242220
+          },
+          {
+            "name": "/assets/canonical-m01-w01/navy_texture.png",
+            "initiatorType": "css",
+            "transferSize": 3681,
+            "decodedBodySize": 3381
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_stacked_lockup.png",
+            "initiatorType": "img",
+            "transferSize": 136393,
+            "decodedBodySize": 136093
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_step_01.png",
+            "initiatorType": "img",
+            "transferSize": 21136,
+            "decodedBodySize": 20836
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_step_02.png",
+            "initiatorType": "img",
+            "transferSize": 20300,
+            "decodedBodySize": 20000
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_step_03.png",
+            "initiatorType": "img",
+            "transferSize": 20894,
+            "decodedBodySize": 20594
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_step_04.png",
+            "initiatorType": "img",
+            "transferSize": 19803,
+            "decodedBodySize": 19503
+          },
+          {
+            "name": "/favicon.ico",
+            "initiatorType": "other",
+            "transferSize": 309,
+            "decodedBodySize": 9
+          }
+        ],
+        "totals": {
+          "transferSize": 1419336,
+          "decodedBodySize": 1410936
+        },
+        "navigation": {
+          "transferSize": 7695,
+          "decodedBodySize": 7395,
+          "domContentLoaded": 304.69999998807907,
+          "load": 333.80000001192093
+        },
+        "paints": {
+          "first-paint": 288,
+          "first-contentful-paint": 288
+        }
+      },
+      "emotion": {
+        "width": 320,
+        "overflow": {
+          "document": 0,
+          "body": 0
+        },
+        "body": {
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(31, 42, 51)",
+          "family": "\"Noto Sans JP\", \"Hiragino Kaku Gothic ProN\", \"Yu Gothic\", Meiryo, sans-serif",
+          "size": "15px",
+          "lineHeight": "25.8px"
+        },
+        "emotionColumns": 2,
+        "headerLogoVisible": true,
+        "bottomNavVisible": true,
+        "desktopHomeVisible": false,
+        "fonts": "loaded"
+      }
+    },
+    "mobile-390": {
+      "entrance": {
+        "width": 390,
+        "overflow": {
+          "document": 0,
+          "body": 0
+        },
+        "body": {
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(31, 42, 51)",
+          "family": "\"Noto Sans JP\", \"Hiragino Kaku Gothic ProN\", \"Yu Gothic\", Meiryo, sans-serif",
+          "size": "15px",
+          "lineHeight": "25.8px"
+        },
+        "emotionColumns": 0,
+        "headerLogoVisible": true,
+        "bottomNavVisible": true,
+        "desktopHomeVisible": false,
+        "fonts": "loaded"
+      },
+      "performance": {
+        "resources": [
+          {
+            "name": "/assets/canonical-m01-w01/m01_hero.webp",
+            "initiatorType": "link",
+            "transferSize": 65982,
+            "decodedBodySize": 65682
+          },
+          {
+            "name": "/css/v3.css",
+            "initiatorType": "link",
+            "transferSize": 168984,
+            "decodedBodySize": 168684
+          },
+          {
+            "name": "/css/visual-system-v1.css",
+            "initiatorType": "link",
+            "transferSize": 30799,
+            "decodedBodySize": 30499
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_horizontal_lockup.png",
+            "initiatorType": "img",
+            "transferSize": 36464,
+            "decodedBodySize": 36164
+          },
+          {
+            "name": "/js/data.js",
+            "initiatorType": "script",
+            "transferSize": 10191,
+            "decodedBodySize": 9891
+          },
+          {
+            "name": "/js/store.js",
+            "initiatorType": "script",
+            "transferSize": 9755,
+            "decodedBodySize": 9455
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSansJP-Regular-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 174016,
+            "decodedBodySize": 173716
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSansJP-Medium-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 175384,
+            "decodedBodySize": 175084
+          },
+          {
+            "name": "/js/entrance_cue_store.js",
+            "initiatorType": "script",
+            "transferSize": 2911,
+            "decodedBodySize": 2611
+          },
+          {
+            "name": "/js/personalize.js",
+            "initiatorType": "script",
+            "transferSize": 3428,
+            "decodedBodySize": 3128
+          },
+          {
+            "name": "/js/action_destination.js",
+            "initiatorType": "script",
+            "transferSize": 5488,
+            "decodedBodySize": 5188
+          },
+          {
+            "name": "/js/cultural_matching.js",
+            "initiatorType": "script",
+            "transferSize": 26988,
+            "decodedBodySize": 26688
+          },
+          {
+            "name": "/js/real_experience_registry.js",
+            "initiatorType": "script",
+            "transferSize": 48298,
+            "decodedBodySize": 47998
+          },
+          {
+            "name": "/js/interested_retrieval.js",
+            "initiatorType": "script",
+            "transferSize": 4160,
+            "decodedBodySize": 3860
+          },
+          {
+            "name": "/js/calendar_action.js",
+            "initiatorType": "script",
+            "transferSize": 4149,
+            "decodedBodySize": 3849
+          },
+          {
+            "name": "/js/public_editorial.js",
+            "initiatorType": "script",
+            "transferSize": 17654,
+            "decodedBodySize": 17354
+          },
+          {
+            "name": "/js/public_editorial_content.js",
+            "initiatorType": "script",
+            "transferSize": 999,
+            "decodedBodySize": 699
+          },
+          {
+            "name": "/js/s1b_editorial_content.js",
+            "initiatorType": "script",
+            "transferSize": 1059,
+            "decodedBodySize": 759
+          },
+          {
+            "name": "/js/analytics.js",
+            "initiatorType": "script",
+            "transferSize": 4637,
+            "decodedBodySize": 4337
+          },
+          {
+            "name": "/js/app.js",
+            "initiatorType": "script",
+            "transferSize": 162954,
+            "decodedBodySize": 162654
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSerifJP-Medium-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 242520,
+            "decodedBodySize": 242220
+          },
+          {
+            "name": "/assets/canonical-m01-w01/navy_texture.png",
+            "initiatorType": "css",
+            "transferSize": 3681,
+            "decodedBodySize": 3381
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_stacked_lockup.png",
+            "initiatorType": "img",
+            "transferSize": 136393,
+            "decodedBodySize": 136093
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_step_01.png",
+            "initiatorType": "img",
+            "transferSize": 21136,
+            "decodedBodySize": 20836
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_step_02.png",
+            "initiatorType": "img",
+            "transferSize": 20300,
+            "decodedBodySize": 20000
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_step_03.png",
+            "initiatorType": "img",
+            "transferSize": 20894,
+            "decodedBodySize": 20594
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_step_04.png",
+            "initiatorType": "img",
+            "transferSize": 19803,
+            "decodedBodySize": 19503
+          }
+        ],
+        "totals": {
+          "transferSize": 1419027,
+          "decodedBodySize": 1410927
+        },
+        "navigation": {
+          "transferSize": 7695,
+          "decodedBodySize": 7395,
+          "domContentLoaded": 295.69999998807907,
+          "load": 323.19999998807907
+        },
+        "paints": {
+          "first-paint": 260,
+          "first-contentful-paint": 260
+        }
+      },
+      "emotion": {
+        "width": 390,
+        "overflow": {
+          "document": 0,
+          "body": 0
+        },
+        "body": {
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(31, 42, 51)",
+          "family": "\"Noto Sans JP\", \"Hiragino Kaku Gothic ProN\", \"Yu Gothic\", Meiryo, sans-serif",
+          "size": "15px",
+          "lineHeight": "25.8px"
+        },
+        "emotionColumns": 2,
+        "headerLogoVisible": true,
+        "bottomNavVisible": true,
+        "desktopHomeVisible": false,
+        "fonts": "loaded"
+      }
+    },
+    "mobile-430": {
+      "entrance": {
+        "width": 430,
+        "overflow": {
+          "document": 0,
+          "body": 0
+        },
+        "body": {
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(31, 42, 51)",
+          "family": "\"Noto Sans JP\", \"Hiragino Kaku Gothic ProN\", \"Yu Gothic\", Meiryo, sans-serif",
+          "size": "15px",
+          "lineHeight": "25.8px"
+        },
+        "emotionColumns": 0,
+        "headerLogoVisible": true,
+        "bottomNavVisible": true,
+        "desktopHomeVisible": false,
+        "fonts": "loaded"
+      },
+      "performance": {
+        "resources": [
+          {
+            "name": "/assets/canonical-m01-w01/m01_hero.webp",
+            "initiatorType": "link",
+            "transferSize": 65982,
+            "decodedBodySize": 65682
+          },
+          {
+            "name": "/css/v3.css",
+            "initiatorType": "link",
+            "transferSize": 168984,
+            "decodedBodySize": 168684
+          },
+          {
+            "name": "/css/visual-system-v1.css",
+            "initiatorType": "link",
+            "transferSize": 30799,
+            "decodedBodySize": 30499
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_horizontal_lockup.png",
+            "initiatorType": "img",
+            "transferSize": 36464,
+            "decodedBodySize": 36164
+          },
+          {
+            "name": "/js/data.js",
+            "initiatorType": "script",
+            "transferSize": 10191,
+            "decodedBodySize": 9891
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSansJP-Regular-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 174016,
+            "decodedBodySize": 173716
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSansJP-Medium-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 175384,
+            "decodedBodySize": 175084
+          },
+          {
+            "name": "/js/store.js",
+            "initiatorType": "script",
+            "transferSize": 9755,
+            "decodedBodySize": 9455
+          },
+          {
+            "name": "/js/entrance_cue_store.js",
+            "initiatorType": "script",
+            "transferSize": 2911,
+            "decodedBodySize": 2611
+          },
+          {
+            "name": "/js/personalize.js",
+            "initiatorType": "script",
+            "transferSize": 3428,
+            "decodedBodySize": 3128
+          },
+          {
+            "name": "/js/action_destination.js",
+            "initiatorType": "script",
+            "transferSize": 5488,
+            "decodedBodySize": 5188
+          },
+          {
+            "name": "/js/cultural_matching.js",
+            "initiatorType": "script",
+            "transferSize": 26988,
+            "decodedBodySize": 26688
+          },
+          {
+            "name": "/js/real_experience_registry.js",
+            "initiatorType": "script",
+            "transferSize": 48298,
+            "decodedBodySize": 47998
+          },
+          {
+            "name": "/js/interested_retrieval.js",
+            "initiatorType": "script",
+            "transferSize": 4160,
+            "decodedBodySize": 3860
+          },
+          {
+            "name": "/js/calendar_action.js",
+            "initiatorType": "script",
+            "transferSize": 4149,
+            "decodedBodySize": 3849
+          },
+          {
+            "name": "/js/public_editorial.js",
+            "initiatorType": "script",
+            "transferSize": 17654,
+            "decodedBodySize": 17354
+          },
+          {
+            "name": "/js/public_editorial_content.js",
+            "initiatorType": "script",
+            "transferSize": 999,
+            "decodedBodySize": 699
+          },
+          {
+            "name": "/js/s1b_editorial_content.js",
+            "initiatorType": "script",
+            "transferSize": 1059,
+            "decodedBodySize": 759
+          },
+          {
+            "name": "/js/analytics.js",
+            "initiatorType": "script",
+            "transferSize": 4637,
+            "decodedBodySize": 4337
+          },
+          {
+            "name": "/js/app.js",
+            "initiatorType": "script",
+            "transferSize": 162954,
+            "decodedBodySize": 162654
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSerifJP-Medium-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 242520,
+            "decodedBodySize": 242220
+          },
+          {
+            "name": "/assets/canonical-m01-w01/navy_texture.png",
+            "initiatorType": "css",
+            "transferSize": 3681,
+            "decodedBodySize": 3381
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_stacked_lockup.png",
+            "initiatorType": "img",
+            "transferSize": 136393,
+            "decodedBodySize": 136093
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_step_01.png",
+            "initiatorType": "img",
+            "transferSize": 21136,
+            "decodedBodySize": 20836
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_step_02.png",
+            "initiatorType": "img",
+            "transferSize": 20300,
+            "decodedBodySize": 20000
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_step_03.png",
+            "initiatorType": "img",
+            "transferSize": 20894,
+            "decodedBodySize": 20594
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_step_04.png",
+            "initiatorType": "img",
+            "transferSize": 19803,
+            "decodedBodySize": 19503
+          }
+        ],
+        "totals": {
+          "transferSize": 1419027,
+          "decodedBodySize": 1410927
+        },
+        "navigation": {
+          "transferSize": 7695,
+          "decodedBodySize": 7395,
+          "domContentLoaded": 211.9000000357628,
+          "load": 239.10000002384186
+        },
+        "paints": {
+          "first-paint": 176,
+          "first-contentful-paint": 176
+        }
+      },
+      "emotion": {
+        "width": 430,
+        "overflow": {
+          "document": 0,
+          "body": 0
+        },
+        "body": {
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(31, 42, 51)",
+          "family": "\"Noto Sans JP\", \"Hiragino Kaku Gothic ProN\", \"Yu Gothic\", Meiryo, sans-serif",
+          "size": "15px",
+          "lineHeight": "25.8px"
+        },
+        "emotionColumns": 2,
+        "headerLogoVisible": true,
+        "bottomNavVisible": true,
+        "desktopHomeVisible": false,
+        "fonts": "loaded"
+      }
+    },
+    "desktop-1200": {
+      "entrance": {
+        "width": 1200,
+        "overflow": {
+          "document": 0,
+          "body": 0
+        },
+        "body": {
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(31, 42, 51)",
+          "family": "\"Noto Sans JP\", \"Hiragino Kaku Gothic ProN\", \"Yu Gothic\", Meiryo, sans-serif",
+          "size": "16px",
+          "lineHeight": "28px"
+        },
+        "emotionColumns": 0,
+        "headerLogoVisible": true,
+        "bottomNavVisible": false,
+        "desktopHomeVisible": true,
+        "fonts": "loaded"
+      },
+      "performance": {
+        "resources": [
+          {
+            "name": "/assets/canonical-m01-w01/w01_hero.webp",
+            "initiatorType": "link",
+            "transferSize": 65982,
+            "decodedBodySize": 65682
+          },
+          {
+            "name": "/css/v3.css",
+            "initiatorType": "link",
+            "transferSize": 168984,
+            "decodedBodySize": 168684
+          },
+          {
+            "name": "/css/visual-system-v1.css",
+            "initiatorType": "link",
+            "transferSize": 30799,
+            "decodedBodySize": 30499
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_horizontal_lockup.png",
+            "initiatorType": "img",
+            "transferSize": 36464,
+            "decodedBodySize": 36164
+          },
+          {
+            "name": "/js/data.js",
+            "initiatorType": "script",
+            "transferSize": 10191,
+            "decodedBodySize": 9891
+          },
+          {
+            "name": "/js/store.js",
+            "initiatorType": "script",
+            "transferSize": 9755,
+            "decodedBodySize": 9455
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSansJP-Regular-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 174016,
+            "decodedBodySize": 173716
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSansJP-Medium-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 175384,
+            "decodedBodySize": 175084
+          },
+          {
+            "name": "/js/entrance_cue_store.js",
+            "initiatorType": "script",
+            "transferSize": 2911,
+            "decodedBodySize": 2611
+          },
+          {
+            "name": "/js/personalize.js",
+            "initiatorType": "script",
+            "transferSize": 3428,
+            "decodedBodySize": 3128
+          },
+          {
+            "name": "/js/action_destination.js",
+            "initiatorType": "script",
+            "transferSize": 5488,
+            "decodedBodySize": 5188
+          },
+          {
+            "name": "/js/cultural_matching.js",
+            "initiatorType": "script",
+            "transferSize": 26988,
+            "decodedBodySize": 26688
+          },
+          {
+            "name": "/js/real_experience_registry.js",
+            "initiatorType": "script",
+            "transferSize": 48298,
+            "decodedBodySize": 47998
+          },
+          {
+            "name": "/js/interested_retrieval.js",
+            "initiatorType": "script",
+            "transferSize": 4160,
+            "decodedBodySize": 3860
+          },
+          {
+            "name": "/js/calendar_action.js",
+            "initiatorType": "script",
+            "transferSize": 4149,
+            "decodedBodySize": 3849
+          },
+          {
+            "name": "/js/public_editorial.js",
+            "initiatorType": "script",
+            "transferSize": 17654,
+            "decodedBodySize": 17354
+          },
+          {
+            "name": "/js/public_editorial_content.js",
+            "initiatorType": "script",
+            "transferSize": 999,
+            "decodedBodySize": 699
+          },
+          {
+            "name": "/js/s1b_editorial_content.js",
+            "initiatorType": "script",
+            "transferSize": 1059,
+            "decodedBodySize": 759
+          },
+          {
+            "name": "/js/analytics.js",
+            "initiatorType": "script",
+            "transferSize": 4637,
+            "decodedBodySize": 4337
+          },
+          {
+            "name": "/js/app.js",
+            "initiatorType": "script",
+            "transferSize": 162954,
+            "decodedBodySize": 162654
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSerifJP-Medium-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 242520,
+            "decodedBodySize": 242220
+          },
+          {
+            "name": "/assets/canonical-m01-w01/navy_texture.png",
+            "initiatorType": "css",
+            "transferSize": 3681,
+            "decodedBodySize": 3381
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSerifJP-Regular-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 239676,
+            "decodedBodySize": 239376
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_stacked_lockup.png",
+            "initiatorType": "img",
+            "transferSize": 136393,
+            "decodedBodySize": 136093
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_step_01.png",
+            "initiatorType": "img",
+            "transferSize": 23568,
+            "decodedBodySize": 23268
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_step_02.png",
+            "initiatorType": "img",
+            "transferSize": 20700,
+            "decodedBodySize": 20400
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_step_03.png",
+            "initiatorType": "img",
+            "transferSize": 19923,
+            "decodedBodySize": 19623
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_step_04.png",
+            "initiatorType": "img",
+            "transferSize": 25044,
+            "decodedBodySize": 24744
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_trust_private.png",
+            "initiatorType": "img",
+            "transferSize": 4184,
+            "decodedBodySize": 3884
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_trust_no_ai.png",
+            "initiatorType": "img",
+            "transferSize": 4780,
+            "decodedBodySize": 4480
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_trust_device.png",
+            "initiatorType": "img",
+            "transferSize": 4041,
+            "decodedBodySize": 3741
+          }
+        ],
+        "totals": {
+          "transferSize": 1678810,
+          "decodedBodySize": 1669510
+        },
+        "navigation": {
+          "transferSize": 7695,
+          "decodedBodySize": 7395,
+          "domContentLoaded": 295.10000002384186,
+          "load": 345.69999998807907
+        },
+        "paints": {
+          "first-paint": 228,
+          "first-contentful-paint": 228
+        }
+      },
+      "emotion": {
+        "width": 1200,
+        "overflow": {
+          "document": 0,
+          "body": 0
+        },
+        "body": {
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(31, 42, 51)",
+          "family": "\"Noto Sans JP\", \"Hiragino Kaku Gothic ProN\", \"Yu Gothic\", Meiryo, sans-serif",
+          "size": "16px",
+          "lineHeight": "28px"
+        },
+        "emotionColumns": 3,
+        "headerLogoVisible": true,
+        "bottomNavVisible": false,
+        "desktopHomeVisible": true,
+        "fonts": "loaded"
+      }
+    },
+    "desktop-1440": {
+      "entrance": {
+        "width": 1440,
+        "overflow": {
+          "document": 0,
+          "body": 0
+        },
+        "body": {
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(31, 42, 51)",
+          "family": "\"Noto Sans JP\", \"Hiragino Kaku Gothic ProN\", \"Yu Gothic\", Meiryo, sans-serif",
+          "size": "16px",
+          "lineHeight": "28px"
+        },
+        "emotionColumns": 0,
+        "headerLogoVisible": true,
+        "bottomNavVisible": false,
+        "desktopHomeVisible": true,
+        "fonts": "loaded"
+      },
+      "performance": {
+        "resources": [
+          {
+            "name": "/assets/canonical-m01-w01/w01_hero.webp",
+            "initiatorType": "link",
+            "transferSize": 65982,
+            "decodedBodySize": 65682
+          },
+          {
+            "name": "/css/v3.css",
+            "initiatorType": "link",
+            "transferSize": 168984,
+            "decodedBodySize": 168684
+          },
+          {
+            "name": "/css/visual-system-v1.css",
+            "initiatorType": "link",
+            "transferSize": 30799,
+            "decodedBodySize": 30499
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_horizontal_lockup.png",
+            "initiatorType": "img",
+            "transferSize": 36464,
+            "decodedBodySize": 36164
+          },
+          {
+            "name": "/js/data.js",
+            "initiatorType": "script",
+            "transferSize": 10191,
+            "decodedBodySize": 9891
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSansJP-Regular-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 174016,
+            "decodedBodySize": 173716
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSansJP-Medium-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 175384,
+            "decodedBodySize": 175084
+          },
+          {
+            "name": "/js/store.js",
+            "initiatorType": "script",
+            "transferSize": 9755,
+            "decodedBodySize": 9455
+          },
+          {
+            "name": "/js/entrance_cue_store.js",
+            "initiatorType": "script",
+            "transferSize": 2911,
+            "decodedBodySize": 2611
+          },
+          {
+            "name": "/js/personalize.js",
+            "initiatorType": "script",
+            "transferSize": 3428,
+            "decodedBodySize": 3128
+          },
+          {
+            "name": "/js/action_destination.js",
+            "initiatorType": "script",
+            "transferSize": 5488,
+            "decodedBodySize": 5188
+          },
+          {
+            "name": "/js/cultural_matching.js",
+            "initiatorType": "script",
+            "transferSize": 26988,
+            "decodedBodySize": 26688
+          },
+          {
+            "name": "/js/real_experience_registry.js",
+            "initiatorType": "script",
+            "transferSize": 48298,
+            "decodedBodySize": 47998
+          },
+          {
+            "name": "/js/interested_retrieval.js",
+            "initiatorType": "script",
+            "transferSize": 4160,
+            "decodedBodySize": 3860
+          },
+          {
+            "name": "/js/calendar_action.js",
+            "initiatorType": "script",
+            "transferSize": 4149,
+            "decodedBodySize": 3849
+          },
+          {
+            "name": "/js/public_editorial.js",
+            "initiatorType": "script",
+            "transferSize": 17654,
+            "decodedBodySize": 17354
+          },
+          {
+            "name": "/js/public_editorial_content.js",
+            "initiatorType": "script",
+            "transferSize": 999,
+            "decodedBodySize": 699
+          },
+          {
+            "name": "/js/s1b_editorial_content.js",
+            "initiatorType": "script",
+            "transferSize": 1059,
+            "decodedBodySize": 759
+          },
+          {
+            "name": "/js/analytics.js",
+            "initiatorType": "script",
+            "transferSize": 4637,
+            "decodedBodySize": 4337
+          },
+          {
+            "name": "/js/app.js",
+            "initiatorType": "script",
+            "transferSize": 162954,
+            "decodedBodySize": 162654
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSerifJP-Medium-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 242520,
+            "decodedBodySize": 242220
+          },
+          {
+            "name": "/assets/canonical-m01-w01/navy_texture.png",
+            "initiatorType": "css",
+            "transferSize": 3681,
+            "decodedBodySize": 3381
+          },
+          {
+            "name": "/assets/fonts/subset/NotoSerifJP-Regular-subset.woff2",
+            "initiatorType": "css",
+            "transferSize": 239676,
+            "decodedBodySize": 239376
+          },
+          {
+            "name": "/assets/canonical-m01-w01/m01_stacked_lockup.png",
+            "initiatorType": "img",
+            "transferSize": 136393,
+            "decodedBodySize": 136093
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_step_01.png",
+            "initiatorType": "img",
+            "transferSize": 23568,
+            "decodedBodySize": 23268
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_step_02.png",
+            "initiatorType": "img",
+            "transferSize": 20700,
+            "decodedBodySize": 20400
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_step_03.png",
+            "initiatorType": "img",
+            "transferSize": 19923,
+            "decodedBodySize": 19623
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_step_04.png",
+            "initiatorType": "img",
+            "transferSize": 25044,
+            "decodedBodySize": 24744
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_trust_private.png",
+            "initiatorType": "img",
+            "transferSize": 4184,
+            "decodedBodySize": 3884
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_trust_device.png",
+            "initiatorType": "img",
+            "transferSize": 4041,
+            "decodedBodySize": 3741
+          },
+          {
+            "name": "/assets/canonical-m01-w01/w01_trust_no_ai.png",
+            "initiatorType": "img",
+            "transferSize": 4780,
+            "decodedBodySize": 4480
+          }
+        ],
+        "totals": {
+          "transferSize": 1678810,
+          "decodedBodySize": 1669510
+        },
+        "navigation": {
+          "transferSize": 7695,
+          "decodedBodySize": 7395,
+          "domContentLoaded": 339.89999997615814,
+          "load": 389.89999997615814
+        },
+        "paints": {
+          "first-paint": 300,
+          "first-contentful-paint": 300
+        }
+      },
+      "emotion": {
+        "width": 1440,
+        "overflow": {
+          "document": 0,
+          "body": 0
+        },
+        "body": {
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(31, 42, 51)",
+          "family": "\"Noto Sans JP\", \"Hiragino Kaku Gothic ProN\", \"Yu Gothic\", Meiryo, sans-serif",
+          "size": "16px",
+          "lineHeight": "28px"
+        },
+        "emotionColumns": 4,
+        "headerLogoVisible": true,
+        "bottomNavVisible": false,
+        "desktopHomeVisible": true,
+        "fonts": "loaded"
+      }
+    }
+  },
+  "errors": [],
+  "results": [
+    {
+      "name": "exact fresh non-main branch",
+      "pass": true,
+      "detail": "codex/v3-visual-system-v1-20260825"
+    },
+    {
+      "name": "exact frozen Start HEAD is ancestor",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "asset pack: all 16 canonical source PNGs are byte-preserved",
+      "pass": true,
+      "detail": "16/16"
+    },
+    {
+      "name": "asset pack: all 16 bounded runtime WebPs match manifest",
+      "pass": true,
+      "detail": "16/16"
+    },
+    {
+      "name": "asset pack: runtime derivatives are exactly 960x720 by manifest",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "protected byte identity: store.js",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "protected byte identity: entrance_cue_store.js",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "protected byte identity: cultural_matching.js",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "protected byte identity: action_destination.js",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "protected byte identity: calendar_action.js",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "protected byte identity: interested_retrieval.js",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "protected byte identity: analytics.js",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Entrance cue key remains exactly entrance-cue-ack-v1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "separate CSP P0 remains unchanged",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "canonical visual tokens are explicit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "self-hosted WOFF2 path remains and no font CDN is added",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile navigation contains exactly Home/Saved/Menu",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "no-emotion navigation binding is preserved",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "obsolete Entrance copy remains absent",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: white/navy canonical body tokens",
+      "pass": true,
+      "detail": "{\"background\":\"rgb(255, 255, 255)\",\"color\":\"rgb(31, 42, 51)\",\"family\":\"\\\"Noto Sans JP\\\", \\\"Hiragino Kaku Gothic ProN\\\", \\\"Yu Gothic\\\", Meiryo, sans-serif\",\"size\":\"15px\",\"lineHeight\":\"25.8px\"}"
+    },
+    {
+      "name": "mobile-320: self-hosted fonts loaded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: Entrance has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"document\":0,\"body\":0}"
+    },
+    {
+      "name": "mobile-320: exact approved headline and CTA copy",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: mobile header and persistent 3-item bottom nav",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: MENU exposes no-emotion entry",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: first paint third-party request 0",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: eight editorial emotion tiles",
+      "pass": true,
+      "detail": "columns=2"
+    },
+    {
+      "name": "mobile-320: all emotion tiles use supplied runtime WebP",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: shelf text is name plus one short rendered line",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: emotion grid has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"document\":0,\"body\":0}"
+    },
+    {
+      "name": "mobile-320: Shelf Detail uses the new tile family",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: area labels remain exact",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: in-service mobile back remains explicit and >=44px",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: Discovery fallback is supplied abstract editorial art",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: Discovery has no popularity/commerce pressure signal",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: unsaved Interested is explicit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: saved Interested is reversible coral state",
+      "pass": true,
+      "detail": "{\"pressed\":\"true\",\"color\":\"rgb(228, 95, 100)\",\"fill\":\"rgb(228, 95, 100)\"}"
+    },
+    {
+      "name": "mobile-320: saved list remains image/title/category/short-line first",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: locked Detail reading order",
+      "pass": true,
+      "detail": "{\"visualTitle\":true,\"titlePull\":true,\"pullWhy\":true,\"whyTruth\":true,\"truthAction\":true}"
+    },
+    {
+      "name": "mobile-320: Detail action family has no blank CTA",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: Detail keeps a visible top back affordance",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: long copy and actions wrap without local overflow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: Detail has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"document\":0,\"body\":0}"
+    },
+    {
+      "name": "mobile-320: Calendar causes no request before explicit click",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: Calendar wording remains explicit add action",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: explicit Calendar action remains navigation-only",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: JavaScript errors 0 so far",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: white/navy canonical body tokens",
+      "pass": true,
+      "detail": "{\"background\":\"rgb(255, 255, 255)\",\"color\":\"rgb(31, 42, 51)\",\"family\":\"\\\"Noto Sans JP\\\", \\\"Hiragino Kaku Gothic ProN\\\", \\\"Yu Gothic\\\", Meiryo, sans-serif\",\"size\":\"15px\",\"lineHeight\":\"25.8px\"}"
+    },
+    {
+      "name": "mobile-390: self-hosted fonts loaded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: Entrance has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"document\":0,\"body\":0}"
+    },
+    {
+      "name": "mobile-390: exact approved headline and CTA copy",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: mobile header and persistent 3-item bottom nav",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: MENU exposes no-emotion entry",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: first paint third-party request 0",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: eight editorial emotion tiles",
+      "pass": true,
+      "detail": "columns=2"
+    },
+    {
+      "name": "mobile-390: all emotion tiles use supplied runtime WebP",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: shelf text is name plus one short rendered line",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: emotion grid has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"document\":0,\"body\":0}"
+    },
+    {
+      "name": "mobile-390: Shelf Detail uses the new tile family",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: area labels remain exact",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: in-service mobile back remains explicit and >=44px",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: Discovery fallback is supplied abstract editorial art",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: Discovery has no popularity/commerce pressure signal",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: unsaved Interested is explicit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: saved Interested is reversible coral state",
+      "pass": true,
+      "detail": "{\"pressed\":\"true\",\"color\":\"rgb(228, 95, 100)\",\"fill\":\"rgb(228, 95, 100)\"}"
+    },
+    {
+      "name": "mobile-390: saved list remains image/title/category/short-line first",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: locked Detail reading order",
+      "pass": true,
+      "detail": "{\"visualTitle\":true,\"titlePull\":true,\"pullWhy\":true,\"whyTruth\":true,\"truthAction\":true}"
+    },
+    {
+      "name": "mobile-390: Detail action family has no blank CTA",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: Detail keeps a visible top back affordance",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: long copy and actions wrap without local overflow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: Detail has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"document\":0,\"body\":0}"
+    },
+    {
+      "name": "mobile-390: Calendar causes no request before explicit click",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: Calendar wording remains explicit add action",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: explicit Calendar action remains navigation-only",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: JavaScript errors 0 so far",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: white/navy canonical body tokens",
+      "pass": true,
+      "detail": "{\"background\":\"rgb(255, 255, 255)\",\"color\":\"rgb(31, 42, 51)\",\"family\":\"\\\"Noto Sans JP\\\", \\\"Hiragino Kaku Gothic ProN\\\", \\\"Yu Gothic\\\", Meiryo, sans-serif\",\"size\":\"15px\",\"lineHeight\":\"25.8px\"}"
+    },
+    {
+      "name": "mobile-430: self-hosted fonts loaded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: Entrance has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"document\":0,\"body\":0}"
+    },
+    {
+      "name": "mobile-430: exact approved headline and CTA copy",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: mobile header and persistent 3-item bottom nav",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: MENU exposes no-emotion entry",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: first paint third-party request 0",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: eight editorial emotion tiles",
+      "pass": true,
+      "detail": "columns=2"
+    },
+    {
+      "name": "mobile-430: all emotion tiles use supplied runtime WebP",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: shelf text is name plus one short rendered line",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: emotion grid has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"document\":0,\"body\":0}"
+    },
+    {
+      "name": "mobile-430: Shelf Detail uses the new tile family",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: area labels remain exact",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: in-service mobile back remains explicit and >=44px",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: Discovery fallback is supplied abstract editorial art",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: Discovery has no popularity/commerce pressure signal",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: unsaved Interested is explicit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: saved Interested is reversible coral state",
+      "pass": true,
+      "detail": "{\"pressed\":\"true\",\"color\":\"rgb(228, 95, 100)\",\"fill\":\"rgb(228, 95, 100)\"}"
+    },
+    {
+      "name": "mobile-430: saved list remains image/title/category/short-line first",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: locked Detail reading order",
+      "pass": true,
+      "detail": "{\"visualTitle\":true,\"titlePull\":true,\"pullWhy\":true,\"whyTruth\":true,\"truthAction\":true}"
+    },
+    {
+      "name": "mobile-430: Detail action family has no blank CTA",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: Detail keeps a visible top back affordance",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: long copy and actions wrap without local overflow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: Detail has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"document\":0,\"body\":0}"
+    },
+    {
+      "name": "mobile-430: Calendar causes no request before explicit click",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: Calendar wording remains explicit add action",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: explicit Calendar action remains navigation-only",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: JavaScript errors 0 so far",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: white/navy canonical body tokens",
+      "pass": true,
+      "detail": "{\"background\":\"rgb(255, 255, 255)\",\"color\":\"rgb(31, 42, 51)\",\"family\":\"\\\"Noto Sans JP\\\", \\\"Hiragino Kaku Gothic ProN\\\", \\\"Yu Gothic\\\", Meiryo, sans-serif\",\"size\":\"16px\",\"lineHeight\":\"28px\"}"
+    },
+    {
+      "name": "desktop-1200: self-hosted fonts loaded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: Entrance has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"document\":0,\"body\":0}"
+    },
+    {
+      "name": "desktop-1200: exact approved headline and CTA copy",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: desktop header has Home/Saved/Menu and no bottom nav",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: exact approved desktop continuation copy",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: first paint third-party request 0",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: eight editorial emotion tiles",
+      "pass": true,
+      "detail": "columns=3"
+    },
+    {
+      "name": "desktop-1200: all emotion tiles use supplied runtime WebP",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: shelf text is name plus one short rendered line",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: emotion grid has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"document\":0,\"body\":0}"
+    },
+    {
+      "name": "desktop-1200: Shelf Detail uses the new tile family",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: area labels remain exact",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: Discovery fallback is supplied abstract editorial art",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: Discovery has no popularity/commerce pressure signal",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: unsaved Interested is explicit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: saved Interested is reversible coral state",
+      "pass": true,
+      "detail": "{\"pressed\":\"true\",\"color\":\"rgb(228, 95, 100)\",\"fill\":\"rgb(228, 95, 100)\"}"
+    },
+    {
+      "name": "desktop-1200: saved list remains image/title/category/short-line first",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: locked Detail reading order",
+      "pass": true,
+      "detail": "{\"visualTitle\":true,\"titlePull\":true,\"pullWhy\":true,\"whyTruth\":true,\"truthAction\":true}"
+    },
+    {
+      "name": "desktop-1200: Detail action family has no blank CTA",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: Detail keeps a visible top back affordance",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: long copy and actions wrap without local overflow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: Detail has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"document\":0,\"body\":0}"
+    },
+    {
+      "name": "desktop-1200: Calendar causes no request before explicit click",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: Calendar wording remains explicit add action",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: explicit Calendar action remains navigation-only",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: JavaScript errors 0 so far",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: white/navy canonical body tokens",
+      "pass": true,
+      "detail": "{\"background\":\"rgb(255, 255, 255)\",\"color\":\"rgb(31, 42, 51)\",\"family\":\"\\\"Noto Sans JP\\\", \\\"Hiragino Kaku Gothic ProN\\\", \\\"Yu Gothic\\\", Meiryo, sans-serif\",\"size\":\"16px\",\"lineHeight\":\"28px\"}"
+    },
+    {
+      "name": "desktop-1440: self-hosted fonts loaded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: Entrance has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"document\":0,\"body\":0}"
+    },
+    {
+      "name": "desktop-1440: exact approved headline and CTA copy",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: desktop header has Home/Saved/Menu and no bottom nav",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: exact approved desktop continuation copy",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: first paint third-party request 0",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: eight editorial emotion tiles",
+      "pass": true,
+      "detail": "columns=4"
+    },
+    {
+      "name": "desktop-1440: all emotion tiles use supplied runtime WebP",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: shelf text is name plus one short rendered line",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: emotion grid has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"document\":0,\"body\":0}"
+    },
+    {
+      "name": "desktop-1440: Shelf Detail uses the new tile family",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: area labels remain exact",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: Discovery fallback is supplied abstract editorial art",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: Discovery has no popularity/commerce pressure signal",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: unsaved Interested is explicit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: saved Interested is reversible coral state",
+      "pass": true,
+      "detail": "{\"pressed\":\"true\",\"color\":\"rgb(228, 95, 100)\",\"fill\":\"rgb(228, 95, 100)\"}"
+    },
+    {
+      "name": "desktop-1440: saved list remains image/title/category/short-line first",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: locked Detail reading order",
+      "pass": true,
+      "detail": "{\"visualTitle\":true,\"titlePull\":true,\"pullWhy\":true,\"whyTruth\":true,\"truthAction\":true}"
+    },
+    {
+      "name": "desktop-1440: Detail action family has no blank CTA",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: Detail keeps a visible top back affordance",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: long copy and actions wrap without local overflow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: Detail has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"document\":0,\"body\":0}"
+    },
+    {
+      "name": "desktop-1440: Calendar causes no request before explicit click",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: Calendar wording remains explicit add action",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: explicit Calendar action remains navigation-only",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: JavaScript errors 0 so far",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile MENU opens an accessible navigation panel",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile no-emotion route is real and reachable",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "prefers-reduced-motion is honored",
+      "pass": true,
+      "detail": "{\"matches\":true,\"surfaceDuration\":\"0s\"}"
+    },
+    {
+      "name": "keyboard focus is visible",
+      "pass": true,
+      "detail": "{\"tag\":\"BUTTON\",\"outlineStyle\":\"solid\",\"outlineWidth\":\"3px\"}"
+    },
+    {
+      "name": "browser JavaScript errors = 0",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "summary": {
+    "pass": 162,
+    "fail": 0
+  }
+}

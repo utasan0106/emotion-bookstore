@@ -38,19 +38,21 @@
   <link rel="preload" as="image" href="./assets/canonical-m01-w01/m01_hero.webp" media="(max-width: 1199px)" fetchpriority="high">
   <link rel="preload" as="image" href="./assets/canonical-m01-w01/w01_hero.webp" media="(min-width: 1200px)" fetchpriority="high">
   <link rel="stylesheet" href="./css/v3.css">
+  <link rel="stylesheet" href="./css/visual-system-v1.css">
 </head>
 <body>
   <span id="top"></span>
   <a class="skip-link" href="#view">本文へ移動</a>
 
-  <!-- W01 desktop header（Header Interaction Contract v0.1）。>=1200px でのみ表示。 -->
   <header class="site-header">
     <a class="site-logo" href="#top" aria-label="みんなの感情書店の入口へ戻る">
       <img src="./assets/canonical-m01-w01/w01_horizontal_lockup.png"
-           alt="" width="326" height="70" loading="lazy" decoding="async">
+           alt="" width="326" height="70" decoding="async">
     </a>
 
     <div class="site-header-end">
+      <button class="header-destination" type="button" data-nav="home">Home</button>
+      <button class="header-destination" type="button" data-nav="interested">保存済み</button>
       <button id="headerMenuTrigger" class="header-menu-trigger" type="button"
               aria-expanded="false" aria-controls="headerNavPanel" aria-haspopup="true">MENU</button>
     </div>
@@ -70,6 +72,22 @@
   <div id="stepbar"></div>
 
   <main id="view" class="view" tabindex="-1"></main>
+
+  <nav class="mobile-bottom-nav" aria-label="主要ナビゲーション">
+    <button class="mobile-bottom-nav-item" type="button" data-nav="home" aria-label="ホーム">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.5 12 3.8l8.5 6.7v9.2h-6v-5.5h-5v5.5h-6z"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="mobile-bottom-nav-item" type="button" data-nav="interested" aria-label="保存済み">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.2S4.2 15.8 4.2 9.7A4.2 4.2 0 0 1 12 7.4a4.2 4.2 0 0 1 7.8 2.3c0 6.1-7.8 10.5-7.8 10.5Z"/></svg>
+      <span>保存済み</span>
+    </button>
+    <button id="bottomMenuTrigger" class="mobile-bottom-nav-item" type="button" data-nav="menu"
+            aria-expanded="false" aria-controls="headerNavPanel" aria-haspopup="true" aria-label="メニュー">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+      <span>メニュー</span>
+    </button>
+  </nav>
 
   <footer class="legal-footer" aria-label="法的情報">
     <nav class="legal-footer-links" aria-label="プライバシーと利用規約">

@@ -116,3 +116,9 @@ docs/
 
 # 内部ドキュメント（非 anchored な docs/ でも一致するが、明示して曖昧さを消す）
 /v3-prototype/docs/
+
+# Visual System V1 のデザイン原本・内部マニフェスト。runtime は bounded WebP のみ配信する。
+/v3-prototype/assets/visual-system-v1/source_png/
+/v3-prototype/assets/visual-system-v1/README.md
+/v3-prototype/assets/visual-system-v1/V3_VISUAL_SYSTEM_CANONICAL_V1_20260824.md
+/v3-prototype/assets/visual-system-v1/ASSET_MANIFEST.json
