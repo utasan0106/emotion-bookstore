@@ -86,11 +86,15 @@ const unchanged = {
   'js/store.js': '651a15cc540c220e2afa9f3bcb8d89433feb03f4cbbe0cb9e80b325427c17bda',
   'js/personalize.js': '1125d767bac6aed317e2bdc8ba69311fda71d0a8450a264e48c536c9717bb65a'
 };
+/* Exact exception authorized by S1A commit e7f2148450f5874d6016445f10ccf8aa9dae6ecc:
+   index metadata/editorial wording plus its matching exact JSON-LD CSP hash.
+   This is deliberately a single full SHA-256, not a prefix or generic alternate. */
+const S1A_AUTHORIZED_INDEX_HASH = '63ee5078027d376948509affc51d3a04cfe6564d81fb15f9ee31f48a839e2381';
 for (const [rel, expected] of Object.entries(unchanged)) {
-  const s1aApprovedIndexHash = '63ee5078027d376948509affc51d3a04cfe6564d81fb15f9ee31f48a839e2381';
+  const actual = sha(file(rel));
   check(`protected or explicitly approved hash: ${rel}`,
-    sha(file(rel)) === expected || (rel === 'index.html' && sha(file(rel)) === s1aApprovedIndexHash),
-    sha(file(rel)));
+    actual === expected || (rel === 'index.html' && actual === S1A_AUTHORIZED_INDEX_HASH),
+    actual);
 }
 check('package.json dependency addition 0', !fs.existsSync(file('package.json')) && !fs.existsSync(file('package-lock.json')));
 

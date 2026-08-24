@@ -119,13 +119,20 @@
     });
   }
 
+  /* S1A has no public Review surface. Normalize the retired route before it
+     reaches History or rendering; stale/malformed decks remain fail-closed. */
+  function normalizePublicScreen(next) {
+    if (next !== 'review') return next;
+    return currentDeckMatchesSelectedShelf() ? 'none' : 'understanding';
+  }
+
   function go(next, options) {
     stopActiveMedia();
-    screen = next;
+    screen = normalizePublicScreen(next);
     navigationSequence += 1;
     if (historyReady && !(options && options.fromHistory)) {
       try {
-        global.history.pushState({ v3Screen: next }, '', global.location.href);
+        global.history.pushState({ v3Screen: screen }, '', global.location.href);
       } catch (error) {
         /* The local prototype remains usable when History API is unavailable. */
       }
@@ -2280,10 +2287,9 @@
   }
 
   function surfaceReview() {
-    if (!state.deck || state.deck.mode !== 'real-approved' || !state.deck.ids.length) {
-      return surfaceUnderstanding();
-    }
-    return surfaceLegacyReview();
+    /* Defensive renderer: even a future direct call cannot expose legacy
+       keep/pass semantics after bypassing the routing boundary. */
+    return currentDeckMatchesSelectedShelf() ? surfaceNone() : surfaceUnderstanding();
   }
 
   function surfaceNone() {
@@ -2948,8 +2954,9 @@
 
   function currentDeckMatchesSelectedShelf() {
     var approved = approvedRealDeck(state.emotion);
-    if (!approved || !state.deck || state.deck.mode !== 'real-approved') return false;
-    if (!Array.isArray(state.deck.ids) || state.deck.ids.length !== approved.ids.length) return false;
+    if (publicDeckState(approved) !== 'ready' || !state.deck ||
+        state.deck.mode !== 'real-approved' || publicDeckState(state.deck) !== 'ready') return false;
+    if (state.deck.ids.length !== approved.ids.length) return false;
     return approved.ids.every(function (id, index) { return state.deck.ids[index] === id; });
   }
 
@@ -2985,6 +2992,7 @@
   function render() {
     failClosedStaleShelfRoute();
     failClosedEditorialRoute();
+    screen = normalizePublicScreen(screen);
     var build = SURFACES[screen] || surfaceEntrance;
     var next = build();
     if (pendingDeckMotion && screen === 'discovery') {
@@ -3149,7 +3157,15 @@
       }
       global.addEventListener('popstate', function (event) {
         var target = event.state && event.state.v3Screen;
-        screen = target && SURFACES[target] ? target : 'entrance';
+        var requested = target && SURFACES[target] ? target : 'entrance';
+        screen = normalizePublicScreen(requested);
+        if (screen !== requested) {
+          try {
+            global.history.replaceState({ v3Screen: screen }, '', global.location.href);
+          } catch (error) {
+            /* Rendering remains normalized if History replacement is unavailable. */
+          }
+        }
         navigationSequence += 1;
         render();
       });

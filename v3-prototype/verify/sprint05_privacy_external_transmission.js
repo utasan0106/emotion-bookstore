@@ -155,7 +155,7 @@ check('existing storage keys only', store.includes("var STATE_KEY = 'session'") 
 check('private body/title/photo input absent', !/<textarea\b|type=["']file["']/i.test(index) &&
   !/type:\s*'file'|createElement\(['"]textarea/i.test(app));
 check('selected state not serialized into History URL',
-  app.includes("pushState({ v3Screen: next }, '', global.location.href)") &&
+  app.includes("pushState({ v3Screen: screen }, '', global.location.href)") &&
   !/pushState\([^\n]*(?:experienceId|selectedId|emotion|shelf|plan|trace)/.test(app));
 check('private user-authored content external transmission count = 0',
   matrix.current_counts.private_user_authored_content_external_transmissions === 0 &&

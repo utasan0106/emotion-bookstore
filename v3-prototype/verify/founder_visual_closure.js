@@ -77,7 +77,9 @@ check('Discovery uses shelf-specific approved Editorial reason', app.includes('c
 check('missing Action Destination still produces zero action', AD.actionsForExperience({ id: 'MISSING' }).length === 0);
 
 check('desktop Back has explicit label and native 44px target', app.includes("class: 'stepbar-back-label'") && css.includes('min-width: 96px;') && css.includes('height: 44px;'));
-check('History state uses same URL only', app.includes("pushState({ v3Screen: next }, '', global.location.href)") && !/pushState\([^\n]*(experienceId|selectedId|emotion|shelf)/.test(app));
+check('History state uses same URL only',
+  app.includes("pushState({ v3Screen: screen }, '', global.location.href)") &&
+  !/pushState\([^\n]*(experienceId|selectedId|emotion|shelf)/.test(app));
 check('FAQ is a collapsed accessible accordion', app.includes("'aria-expanded': 'false'") && app.includes("'aria-controls': answerId") && app.includes('answer.hidden = expanded'));
 check('FAQ desktop is single-column', css.includes('.w01-faq-list {') && css.includes('display: block;'));
 

@@ -8,7 +8,7 @@ const cp = require('child_process');
 
 const ROOT = path.resolve(__dirname, '../..');
 const BASELINE = 'eca334f9671bee07833892b2476aac118f8ed018';
-const EXPECTED_BRANCH = 'codex/v3-cultural-matching-s1a-20260824';
+const EXPECTED_BRANCH = 'codex/v3-s1a-limited-fix-20260824';
 const app = fs.readFileSync(path.join(ROOT, 'v3-prototype/js/app.js'), 'utf8');
 const css = fs.readFileSync(path.join(ROOT, 'v3-prototype/css/v3.css'), 'utf8');
 const index = fs.readFileSync(path.join(ROOT, 'v3-prototype/index.html'), 'utf8');
@@ -117,6 +117,16 @@ check('Arrow keys share finite navigation and ignore interactive/media controls'
   app.includes('input, textarea, select, [contenteditable="true"], audio, video, iframe, [role="slider"]'));
 check('leaving a surface stops local and embedded media',
   app.includes("view.querySelectorAll('audio, video')") && app.includes("frame.src = 'about:blank'"));
+check('legacy Review normalizes at ordinary go() boundary',
+  block(app, 'function go', 'function metaLine').includes('normalizePublicScreen(next)') &&
+  block(app, 'function go', 'function metaLine').includes('v3Screen: screen'));
+check('legacy Review normalizes during stale History restoration',
+  block(app, "global.addEventListener('popstate'", 'navigationSequence += 1').includes('normalizePublicScreen(requested)') &&
+  block(app, "global.addEventListener('popstate'", 'navigationSequence += 1').includes('replaceState({ v3Screen: screen }'));
+check('render-time and surface-level guards cannot call legacy Review',
+  block(app, 'function render()', 'function renderStartupState').includes('normalizePublicScreen(screen)') &&
+  block(app, 'function surfaceReview()', 'function surfaceNone').includes('surfaceNone()') &&
+  !block(app, 'function surfaceReview()', 'function surfaceNone').includes('surfaceLegacyReview'));
 
 const lenses = {
   hajimu: 'この棚では、歩き出す、手を伸ばす、次を探す。そんなふうに、身体や視線が前へ動く場面に注目しています。',

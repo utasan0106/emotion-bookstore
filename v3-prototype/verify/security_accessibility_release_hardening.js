@@ -159,6 +159,28 @@ function contrast(a, b) {
   return (values[0] + 0.05) / (values[1] + 0.05);
 }
 
+function privateInputFindings(staticMarkup, dynamicSource) {
+  const findings = [];
+  if (/<textarea\b/i.test(staticMarkup)) findings.push('static textarea');
+  if (/<input\b[^>]*\btype\s*=\s*["']?file\b/i.test(staticMarkup)) findings.push('static file input');
+  if (/<[^>]+\bcontenteditable\b/i.test(staticMarkup)) findings.push('static contenteditable');
+  if (/\baccept\s*=\s*["']/i.test(staticMarkup)) findings.push('static accept input');
+
+  if (/(?:\bcreateElement|\bh)\s*\(\s*["']textarea["']/i.test(dynamicSource)) {
+    findings.push('dynamic textarea');
+  }
+  if (/(?:["']?type["']?\s*:\s*["']file["']|\.type\s*=\s*["']file["']|setAttribute\s*\(\s*["']type["']\s*,\s*["']file["'])/i.test(dynamicSource)) {
+    findings.push('dynamic file input');
+  }
+  if (/\baccept\s*:\s*["']/i.test(dynamicSource)) findings.push('dynamic accept input');
+  if (/(?:["']?contenteditable["']?|contentEditable)\s*:\s*(?:true|["']true["'])/i.test(dynamicSource) ||
+      /\.contentEditable\s*=\s*(?:true|["']true["'])/i.test(dynamicSource) ||
+      /setAttribute\s*\(\s*["']contenteditable["']\s*,\s*(?:true|["']true["'])/i.test(dynamicSource)) {
+    findings.push('dynamic contenteditable');
+  }
+  return findings;
+}
+
 (async function run() {
   const cspIndex = extractCsp(index);
   const cspPrivacy = extractCsp(privacy);
@@ -195,7 +217,8 @@ function contrast(a, b) {
     !/G-[A-Z0-9]+/.test(analyticsSource + index));
   check('active public Editorial records remain zero', /records:\s*Object\.freeze\(\[\]\)/.test(editorialContent));
   check('history state contains screen only and reuses current URL',
-    app.includes("pushState({ v3Screen: next }, '', global.location.href)") &&
+    app.includes("pushState({ v3Screen: screen }, '', global.location.href)") &&
+    app.includes("replaceState({ v3Screen: screen }, '', global.location.href)") &&
     !/pushState\([^\n]*(?:experienceId|selectedId|emotion|shelf|title|place)/.test(app));
   check('Action Destination enforces HTTPS/no credentials',
     actionSource.includes("parsed.protocol !== 'https:'") && actionSource.includes('parsed.username || parsed.password'));
@@ -345,9 +368,23 @@ function contrast(a, b) {
   check('DAY primary button contrast >=4.5:1', contrast('#FAF5F1', '#0F1B29') >= 4.5,
     contrast('#FAF5F1', '#0F1B29').toFixed(2));
   check('Japanese-only release has no language switch', !/class=["'](?:locale|language)|>JP<|locale-globe|locale-chevron/.test(index));
+  const detectorFixtures = [
+    ['<textarea></textarea>', '', 'static textarea'],
+    ['', "document.createElement('textarea')", 'dynamic textarea'],
+    ['<input type="file">', '', 'static file input'],
+    ['', "h('input', { type: 'file' })", 'dynamic file input'],
+    ['<div contenteditable="true"></div>', '', 'static contenteditable'],
+    ['', "h('div', { contenteditable: true })", 'dynamic contenteditable'],
+    ['', "node.setAttribute('contenteditable', 'true')", 'dynamic contenteditable'],
+    ['', 'node.contentEditable = true', 'dynamic contenteditable']
+  ];
+  check('private-input verifier covers static and dynamic construction forms',
+    detectorFixtures.every((fixture) => privateInputFindings(fixture[0], fixture[1]).includes(fixture[2])));
+  check('contenteditable selector string is not a private-input false positive',
+    privateInputFindings('', "target.closest('[contenteditable=\"true\"]')").length === 0);
+  const privateInputSurfaceFindings = privateInputFindings(index + privacy + terms, app);
   check('no current file/photo/text input surface added',
-    !/type=["']file["']|accept=["']|<textarea\b/i.test(index + privacy + terms) &&
-    !/h\(['"]textarea['"]|type:\s*['"]file['"]|contenteditable:\s*['"]true['"]/i.test(app));
+    privateInputSurfaceFindings.length === 0, privateInputSurfaceFindings.join(', '));
 
   const secretPatterns = [
     /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,

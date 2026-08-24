@@ -104,7 +104,8 @@ check('decide behavior unchanged except authoritative Deck count',
   normalizedDecide === functionSource(baseApp, 'decide'));
 
 check('prototype canonical fixture Review is not reachable from current Product router',
-  functionSource(app, 'surfaceReview').includes("state.deck.mode !== 'real-approved'") &&
+  functionSource(app, 'surfaceReview').includes('currentDeckMatchesSelectedShelf() ? surfaceNone() : surfaceUnderstanding()') &&
+  !functionSource(app, 'surfaceReview').includes('surfaceLegacyReview') &&
   !functionSource(app, 'surfaceReview').includes('surfaceCanonicalReview'));
 
 const deckCountSurfaces = [
