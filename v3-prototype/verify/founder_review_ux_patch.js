@@ -75,23 +75,33 @@ const cueStorage = new Map();
 const cueWindow = {
   localStorage: {
     getItem(key) { return cueStorage.has(key) ? cueStorage.get(key) : null; },
-    setItem(key, value) { cueStorage.set(key, value); }
+    setItem(key, value) { cueStorage.set(key, value); },
+    removeItem(key) { cueStorage.delete(key); }
   }
 };
+cueStorage.set('v3-interested-entrance-cue-v1', JSON.stringify({
+  version: 1, experienceId: 'EXP_007', savedAt: '2026-08-23T01:02:03.000Z', shownAt: '2026-08-23T01:03:03.000Z'
+}));
 vm.runInNewContext(cueSource, { window: cueWindow, Date, JSON, Object, Array, RegExp, isNaN }, { filename: 'entrance_cue_store.js' });
 const savedAt = '2026-08-24T01:02:03.000Z';
-cueWindow.V3_ENTRANCE_CUE_STORE.markShown('EXP_007', savedAt);
-const cuePayload = JSON.parse(cueStorage.get('v3-interested-entrance-cue-v1'));
-check('Entrance cue uses versioned standalone local key', cueWindow.V3_ENTRANCE_CUE_STORE.KEY === 'v3-interested-entrance-cue-v1');
-check('Entrance cue stores minimal marker fields only',
-  JSON.stringify(Object.keys(cuePayload).sort()) === JSON.stringify(['experienceId', 'savedAt', 'shownAt', 'version']) &&
-  cuePayload.experienceId === 'EXP_007' && cuePayload.savedAt === savedAt);
+const initialCue = cueWindow.V3_ENTRANCE_CUE_STORE.load();
+cueWindow.V3_ENTRANCE_CUE_STORE.acknowledge(savedAt);
+const cuePayload = JSON.parse(cueStorage.get('entrance-cue-ack-v1'));
+check('Entrance cue uses approved standalone local key', cueWindow.V3_ENTRANCE_CUE_STORE.KEY === 'entrance-cue-ack-v1');
+check('Entrance cue safely discards the retired marker without migration',
+  !cueStorage.has('v3-interested-entrance-cue-v1') && initialCue.acknowledgedSavedAt === null);
+check('Entrance cue payload is exactly the approved minimum contract',
+  JSON.stringify(Object.keys(cuePayload).sort()) === JSON.stringify(['acknowledgedSavedAt', 'version']) &&
+  cuePayload.version === 1 && cuePayload.acknowledgedSavedAt === savedAt);
 check('Entrance cue carries no private/content/network field',
-  !/(title|description|reason|note|content|url|address|emotion|user|private)/i.test(JSON.stringify(cuePayload)) &&
+  !/(experienceId|shownAt|title|description|reason|note|content|url|address|emotion|user|private)/i.test(JSON.stringify(cuePayload)) &&
   !/fetch|XMLHttpRequest|sendBeacon|WebSocket/.test(cueSource));
 check('Entrance cue is latest-one and once-per-new-save', app.includes('function prepareEntranceCue') &&
-  app.includes('entranceCueMarker.experienceId === latest.experienceId') &&
-  app.includes('ENTRANCE_CUE_STORE.markShown(latest.experienceId, latest.savedAt)'));
+  cueWindow.V3_ENTRANCE_CUE_STORE.shouldShow(savedAt, initialCue) &&
+  !cueWindow.V3_ENTRANCE_CUE_STORE.shouldShow(savedAt, cuePayload) &&
+  cueWindow.V3_ENTRANCE_CUE_STORE.shouldShow('2026-08-24T01:02:04.000Z', cuePayload) &&
+  app.includes('ENTRANCE_CUE_STORE.shouldShow(latest.savedAt, entranceCueMarker)') &&
+  app.includes('ENTRANCE_CUE_STORE.acknowledge(entranceCueItem.savedAt)'));
 
 const opened = [];
 const calendarWindow = {
@@ -119,7 +129,9 @@ check('Privacy and Terms disclose the bounded Calendar action',
   privacy.includes('本文などの非公開記録は送りません') &&
   terms.includes('同期やアカウント接続は行いません'));
 check('Privacy and Terms disclose the standalone local marker',
-  [privacy, terms].every((page) => page.includes('作品IDと保存・表示時刻だけを別のlocalStorageへ保存します')));
+  [privacy, terms].every((page) =>
+    page.includes('最後に表示済みとした保存時刻のみをlocalStorageへ保存します') &&
+    page.includes('2026年8月24日版')));
 
 const preloadCount = (index.match(/rel="preload" as="image"/g) || []).length;
 const heroBytes = fs.statSync(path.join(SRC, 'assets/canonical-m01-w01/m01_hero.webp')).size;

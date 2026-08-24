@@ -200,10 +200,10 @@
       "timing": "local action",
       "data_sent": [],
       "user_authored_private_content": "NO EXTERNAL TRANSMISSION",
-      "persistent_identifier": "LOCAL KEYS ONLY: session, interested-experiences-v1, v3-interested-entrance-cue-v1",
+      "persistent_identifier": "LOCAL KEYS ONLY: session, interested-experiences-v1, entrance-cue-ack-v1",
       "purpose": "Preserve local Product state",
       "release_disposition": "CURRENT_LOCAL_ONLY",
-      "code_evidence": ["v3-prototype/js/store.js retains IndexedDB schema", "v3-prototype/js/entrance_cue_store.js stores ID/timestamps only and has no network primitive"]
+      "code_evidence": ["v3-prototype/js/store.js retains IndexedDB schema", "v3-prototype/js/entrance_cue_store.js stores only version/acknowledgedSavedAt and has no network primitive"]
     },
     {
       "id": "PROVENANCE_URLS",

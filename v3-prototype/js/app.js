@@ -295,11 +295,8 @@
     if (!INTERESTED || !ENTRANCE_CUE_STORE || !interested.items.length) return;
     var latest = INTERESTED.resolveAll(interested)[0];
     if (!latest || !latest.experienceId || !latest.savedAt) return;
-    if (entranceCueMarker && entranceCueMarker.experienceId === latest.experienceId &&
-        entranceCueMarker.savedAt === latest.savedAt) return;
+    if (!ENTRANCE_CUE_STORE.shouldShow(latest.savedAt, entranceCueMarker)) return;
     if (latest.status === 'actionable') entranceCueItem = latest;
-    ENTRANCE_CUE_STORE.markShown(latest.experienceId, latest.savedAt);
-    entranceCueMarker = ENTRANCE_CUE_STORE.load();
   }
 
   function interestedFocusable() {
@@ -849,6 +846,8 @@
           onclick: function () { viewInterestedItem(entranceCueItem); }
         }, [h('span', { text: entranceCueItem.title })])
       ]));
+      ENTRANCE_CUE_STORE.acknowledge(entranceCueItem.savedAt);
+      entranceCueMarker = ENTRANCE_CUE_STORE.load();
     }
 
     nodes.push(loopSection());

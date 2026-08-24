@@ -8,8 +8,9 @@
 
 1. V3 has no private body, private title, or photo input/control in its runtime.
 2. Existing Product state persists in IndexedDB. The one-time Entrance cue uses
-   a standalone localStorage marker containing only Experience ID and save/show
-   timestamps. Neither module contains a sender primitive.
+   a standalone localStorage marker containing only the version and the save
+   timestamp last acknowledged on Entrance. Neither module contains a sender
+   primitive.
 3. The local session may contain shelf/deck selection, selected Experience ID,
    Plan date/time, predefined Trace facets, and recent IDs. Interested storage
    contains only `experienceId` and `savedAt`. None are copied to a network call.
@@ -35,7 +36,7 @@
 | Private Book/bookshelf content | Not present in V3 runtime | 0 |
 | Selected shelf/deck identity | Existing `session` state | 0 |
 | Interested identity | `interested-experiences-v1` | 0 |
-| One-time Entrance marker | `v3-interested-entrance-cue-v1` (ID/timestamps only) | 0 |
+| One-time Entrance marker | `entrance-cue-ack-v1` (version/acknowledged save timestamp only) | 0 |
 | Plan date/time | Existing `session.plan` | 0 |
 | Trace facets | Existing `session.traceFacets` | 0 |
 | Geolocation | Not acquired | 0 |

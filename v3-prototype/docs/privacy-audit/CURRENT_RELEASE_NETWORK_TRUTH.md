@@ -54,10 +54,12 @@ and requests are zero. Historical V2 configuration is not V3 authority.
 existing `session` and `interested-experiences-v1` keys. Selected shelf/deck,
 Interested IDs/timestamps, Plan data, and predefined Trace facets stay in
 IndexedDB. The Interested schema is unchanged. A standalone versioned
-`v3-interested-entrance-cue-v1` localStorage marker contains only
-`experienceId`, `savedAt`, and `shownAt`, so the latest save can appear on the
-next Entrance once. It contains no title, description, URL, or private text and
-has no sender. There is no free-text, private title, or photo input in V3.
+`entrance-cue-ack-v1` localStorage marker contains only `version` and
+`acknowledgedSavedAt`, so the latest save can appear on the next Entrance once.
+The retired `v3-interested-entrance-cue-v1` marker is discarded without reading
+or migrating its data. The current marker contains no item identity, title,
+description, URL, or private text and has no sender. There is no free-text,
+private title, or photo input in V3.
 
 ## Future shell, not current traffic
 
