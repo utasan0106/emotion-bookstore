@@ -695,6 +695,7 @@
     lock: 'M7 11V8a5 5 0 0 1 10 0v3M6 11h12v9H6Z',
     location: 'M12 21s6-5.4 6-11a6 6 0 1 0-12 0c0 5.6 6 11 6 11Zm0-8.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z',
     calendar: 'M6 3v3M18 3v3M4 7h16v13H4ZM4 10h16',
+    play: 'M9.4 7.2 16.8 12l-7.4 4.8Z',
     yenCircle: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM8 7l4 5 4-5M12 12v6M8.5 13.5h7M8.5 16h7',
     back: 'M15 5l-7 7 7 7'
   };
@@ -720,13 +721,16 @@
   /* canonical がヘッダーを定義しているのは M02–M05 / W02–W05 のみ。
      canonical のない surface では back のみを出し、step 番号を作らない。 */
 
+  /* Enterprise Baseline: 探索ProductのためSTEP番号・進捗分数のwizard表現は
+     使わない。stepbarは「戻る」と現在地ラベルだけを扱う。progress描画の
+     accessibility契約（role=progressbar）はrenderStepbar側に保持する。 */
   function stepbarConfig() {
     var word = D.emotionById(state.emotion);
     var deck = state.deck;
     var count = activeDeckCount();
     switch (screen) {
       case 'emotion':
-        return { back: 'entrance', title: '感情の棚を選ぶ', count: '1 / 3', progress: 1 / 3, step: 'STEP 1' };
+        return { back: 'entrance', backLabel: 'ホームへ戻る' };
       case 'no-emotion':
         return { back: 'entrance', backLabel: '入口に戻る', transient: true };
       case 'no-emotion-detail':
@@ -738,20 +742,11 @@
       case 'discovery':
         return {
           back: deck && deck.mode === 'personalized' ? 'entrance' : 'understanding',
-          title: deck && deck.mode === 'personalized' ? '次の' + count + 'つ' : (word ? word.label : ''),
-          count: deck ? (deck.index + 1) + ' / ' + deck.ids.length : '',
-          progress: deck ? (deck.index + 1) / deck.ids.length : 0,
-          step: 'STEP 2 / 4',
-          stepTitle: count + 'つの文化物を見る',
-          hint: count > 1 ? '前へ／次へで、ひとつずつ見られます' : 'ひとつの文化物を、ゆっくり見られます'
+          title: deck && deck.mode === 'personalized' ? '次の' + count + 'つ' : (word ? word.label : '')
         };
       case 'review':
       case 'none':
-        return {
-          back: 'discovery', title: count + 'つ見ました', count: count + ' / ' + count, progress: 1,
-          step: 'STEP 2 / 4', stepTitle: count + 'つの文化物を見る',
-          hint: 'この棚は、ここまでです'
-        };
+        return { back: 'discovery', title: word ? word.label : '' };
       case 'detail':
         return { back: validActiveId() ? 'review' : 'discovery' };
       case 'plan':
@@ -759,10 +754,10 @@
       case 'moment':
         return { back: 'entrance' };
       case 'trace':
-        return {
-          back: 'moment', backLabel: '戻る', count: '4 / 4', progress: 1,
-          step: 'STEP 4 / 4', stepTitle: '触れたあとに、残ったものを選ぶ'
-        };
+        return { back: 'moment', backLabel: '戻る' };
+      case 'flow':
+      case 'faq':
+        return { back: 'entrance', backLabel: 'ホームへ戻る' };
       default:
         return null;
     }
@@ -842,6 +837,13 @@
           onclick: enterNoEmotion
         }, [h('span', { text: '選ばずに見る' })])
       ]),
+      /* 行き先が文化であることの静かな表示。navigation semanticsは持たない。 */
+      h('p', { class: 'entrance-culture-note' }, [
+        h('span', { class: 'entrance-culture-item', text: '本' }),
+        h('span', { class: 'entrance-culture-item', text: '映画' }),
+        h('span', { class: 'entrance-culture-item', text: '音楽' }),
+        h('span', { class: 'entrance-culture-item', text: '展示・場所・体験' })
+      ]),
       interested.items.length ? h('button', {
         class: 'interested-entry', type: 'button',
         onclick: function (event) { openInterestedLayer(event.currentTarget); }
@@ -862,76 +864,11 @@
       entranceCueMarker = ENTRANCE_CUE_STORE.load();
     }
 
-    nodes.push(loopSection());
     nodes.push(trustSection());
-    nodes.push(experienceFlowSection());
-    nodes.push(faqSection());
 
     var surface = section('01-entrance', nodes);
     surface.classList.add('entrance');
     return surface;
-  }
-
-  /* Core Loop 4 steps。M01/W01のcopyは99_v3 canonicalを文字単位で固定する。 */
-  var LOOP_STEPS = [
-    {
-      asset: '01',
-      mobileTitle: '入口を選ぶ', mobileNote: ['棚から／選ばずに見る'],
-      desktopTitle: '入口を選ぶ', desktopNote: ['8つの感情の棚から一つ選びます。']
-    },
-    {
-      asset: '02',
-      mobileTitle: '寄り道に出会う', mobileNote: ['理由のある候補を見る'],
-      desktopTitle: '寄り道に出会う', desktopNote: ['本、映画、音楽、体験に出会えます。']
-    },
-    {
-      asset: '03',
-      mobileTitle: '外へ出る', mobileNote: ['実際に触れてみる'],
-      desktopTitle: '実際に触れる', desktopNote: ['読む・観る・聴く・訪れる。', '外の世界とつながる']
-    },
-    {
-      asset: '04',
-      mobileTitle: '残ったものを残す', mobileNote: ['次の出会いの', '手がかりにする'],
-      desktopTitle: '残ったものを残す', desktopNote: ['心に残ったものを選んで、', '自分だけの記録にする']
-    }
-  ];
-
-  function copyLines(lines, className) {
-    return h('span', { class: className }, lines.map(function (line) {
-      return h('span', { class: 'copy-line', text: line });
-    }));
-  }
-
-  function loopSection() {
-    return h('ul', { class: 'loop', id: 'core-loop', 'aria-label': '体験の流れ' }, LOOP_STEPS.map(function (step, i) {
-      return h('li', { class: 'loop-step' }, [
-        h('span', { class: 'loop-visual' }, [
-          h('span', { class: 'loop-num', 'aria-hidden': 'true', text: String(i + 1) }),
-          h('picture', {}, [
-            h('source', {
-              media: '(min-width: 1200px)',
-              srcset: './assets/canonical-m01-w01/w01_step_' + step.asset + '.png'
-            }),
-            h('img', {
-              class: 'loop-img', alt: '',
-              src: './assets/canonical-m01-w01/m01_step_' + step.asset + '.png',
-              width: '135', height: '145', loading: 'lazy', decoding: 'async'
-            })
-          ])
-        ]),
-        i < LOOP_STEPS.length - 1 ? h('span', {
-          class: 'loop-connector', 'aria-hidden': 'true', text: '•••'
-        }) : null,
-        h('p', { class: 'loop-title' }, [
-          h('span', { class: 'copy-mobile', text: step.mobileTitle }),
-          h('span', { class: 'copy-desktop', text: step.desktopTitle })
-        ]),
-        h('p', { class: 'loop-note' }, [
-          copyLines(step.mobileNote, 'copy-mobile'),
-          copyLines(step.desktopNote, 'copy-desktop')
-        ])
-      ]);
-    }));
   }
 
   /* 99_v3 canonicalのcopyを改稿せず再現する。PRODUCTION_COPY_REVIEW_REQUIRED */
@@ -969,7 +906,7 @@
     });
     return h('section', { class: 'trust', id: 'trust', 'aria-labelledby': 'trust-heading' },
       [
-        h('h2', { class: 'sr-only', id: 'trust-heading', text: 'よくある質問' }),
+        h('h2', { class: 'sr-only', id: 'trust-heading', text: '安心してご利用いただくために' }),
         h('p', { class: 'trust-mobile' }, [
           icon('lock'),
           h('span', { text: '登録不要・この端末に保存した記録は公開されません' })
@@ -1025,38 +962,64 @@
     }
   ];
 
-  function experienceFlowSection() {
-    return h('section', {
-      class: 'w01-editorial-section w01-experience-flow',
-      'aria-labelledby': 'experience-flow'
-    }, [
-      h('div', { class: 'w01-editorial-heading' }, [
-        h('h2', { id: 'experience-flow', tabindex: '-1', text: '体験の流れ' }),
-        h('p', { text: '感じていることから、次に触れるものを見つけるまで。' })
+  /* 体験の流れ / よくある質問 — MENUから開く独立したProduct内画面。
+     Home下部sectionへのスクロールは廃止し、既存copyを画面として再構成する。
+     新しいProduct主張・GA4 event・URL構造は追加しない。 */
+  function surfaceFlow() {
+    var surface = section('12-experience-flow', [
+      h('div', { class: 'internal-page-heading' }, [
+        h('p', { class: 'eyebrow internal-page-eyebrow', text: 'ご案内' }),
+        h('h1', {
+          class: 'internal-page-title', tabindex: '-1', id: 'surface-title',
+          text: '体験の流れ'
+        }),
+        h('p', {
+          class: 'internal-page-lead',
+          text: '感じていることから、次に触れるものを見つけるまで。'
+        })
       ]),
-      h('ol', { class: 'w01-experience-list' }, EXPERIENCE_FLOW_ITEMS.map(function (item, index) {
-        return h('li', {}, [
-          h('span', { class: 'w01-experience-number', 'aria-hidden': 'true', text: String(index + 1) }),
-          h('h3', { text: item.title }),
-          h('p', { text: item.copy })
+      h('ol', { class: 'flow-steps' }, EXPERIENCE_FLOW_ITEMS.map(function (item, index) {
+        return h('li', { class: 'flow-step' }, [
+          h('span', { class: 'flow-step-number', 'aria-hidden': 'true', text: String(index + 1) }),
+          h('div', { class: 'flow-step-copy' }, [
+            h('h2', { class: 'flow-step-title', text: item.title }),
+            h('p', { class: 'flow-step-note', text: item.copy })
+          ])
         ]);
-      }))
+      })),
+      h('div', { class: 'actions internal-page-actions' }, [
+        h('button', {
+          class: 'btn btn-primary', type: 'button',
+          onclick: function () { go('emotion'); }
+        }, [h('span', { text: '感情の棚からはじめる' })]),
+        h('button', {
+          class: 'btn btn-text internal-page-back', type: 'button',
+          onclick: function () { go('entrance'); }
+        }, [h('span', { text: 'ホームへ戻る' })])
+      ])
     ]);
+    surface.classList.add('internal-page');
+    return surface;
   }
 
-  function faqSection() {
-    return h('section', {
-      class: 'w01-editorial-section w01-faq',
-      'aria-labelledby': 'faq'
-    }, [
-      h('div', { class: 'w01-editorial-heading' }, [
-        h('h2', { id: 'faq', tabindex: '-1', text: 'よくある質問' })
+  function surfaceFaq() {
+    var surface = section('13-help-faq', [
+      h('div', { class: 'internal-page-heading' }, [
+        h('p', { class: 'eyebrow internal-page-eyebrow', text: 'ヘルプ' }),
+        h('h1', {
+          class: 'internal-page-title', tabindex: '-1', id: 'surface-title',
+          text: 'よくある質問'
+        }),
+        h('p', {
+          class: 'internal-page-lead',
+          text: '現在のV3でできること・しないことを、そのまま説明しています。'
+        })
       ]),
-      h('div', { class: 'w01-faq-list' }, W01_FAQS.map(function (item, index) {
+      h('div', { class: 'help-faq-list' }, W01_FAQS.map(function (item, index) {
         var answerId = 'faq-answer-' + (index + 1);
-        var answer = h('p', { id: answerId, class: 'w01-faq-answer', text: item.answer, hidden: true });
+        var answer = h('p', { id: answerId, class: 'help-faq-answer', text: item.answer, hidden: true });
         var button = h('button', {
-          class: 'w01-faq-trigger', type: 'button',
+          class: 'help-faq-trigger', type: 'button',
           'aria-expanded': 'false', 'aria-controls': answerId,
           onclick: function () {
             var expanded = button.getAttribute('aria-expanded') === 'true';
@@ -1064,15 +1027,27 @@
             answer.hidden = expanded;
           }
         }, [
-          h('span', { text: item.question }),
-          h('span', { class: 'w01-faq-mark', 'aria-hidden': 'true', text: '+' })
+          h('span', { class: 'help-faq-question', text: item.question }),
+          h('span', { class: 'help-faq-mark', 'aria-hidden': 'true', text: '+' })
         ]);
-        return h('article', { class: 'w01-faq-item' }, [
-          h('h3', {}, [button]),
+        return h('article', { class: 'help-faq-item' }, [
+          h('h2', { class: 'help-faq-item-heading' }, [button]),
           answer
         ]);
-      }))
+      })),
+      h('p', {
+        class: 'note help-faq-legal-note',
+        text: 'プライバシーポリシーと利用規約は、ページ下部のリンクからいつでも確認できます。'
+      }),
+      h('div', { class: 'actions internal-page-actions' }, [
+        h('button', {
+          class: 'btn btn-text internal-page-back', type: 'button',
+          onclick: function () { go('entrance'); }
+        }, [h('span', { text: 'ホームへ戻る' })])
+      ])
     ]);
+    surface.classList.add('internal-page');
+    return surface;
   }
 
   function surfaceEmotion() {
@@ -1166,24 +1141,17 @@
       ])
     ]);
 
+    /* Enterprise Baseline: STEP眉見出しと重複する「感情の棚」小見出しを
+       撤去し、問いかけ1つだけの階層にする（wizard表現の廃止）。 */
     var intro = h('div', { class: 'emotion-intro' }, [
       h('div', { class: 'emotion-intro-copy' }, [
-        h('p', { class: 'emotion-eyebrow emotion-desktop-only', text: 'STEP 1' }),
         heading,
         support
-      ]),
-      h('picture', { class: 'emotion-hero emotion-desktop-only' }, [
-        h('img', {
-          src: './assets/canonical-m02-w02/w02_hero.png', alt: '',
-          width: '756', height: '300', loading: 'lazy', decoding: 'async'
-        })
       ])
     ]);
 
-    var gridQuestion = h('h2', {
-      class: 'emotion-grid-question emotion-desktop-only', text: '感情の棚'
-    });
-
+    /* Enterprise Baseline: trust文はtrust boxが唯一の掲載場所。guidanceとの
+       文面重複を表示しない（copy自体は変更しない）。 */
     var guidance = h('div', { class: 'emotion-guidance' }, [
       h('p', { class: 'emotion-guidance-copy' }, [
         h('span', {
@@ -1192,11 +1160,7 @@
         }, [
           h('span', { class: 'emotion-guidance-choice-line', text: 'どの棚をのぞくか迷うときは、' }),
           h('span', { class: 'emotion-guidance-choice-line', text: '「まだ名前がない」を選んでも大丈夫です。' })
-        ]),
-        h('span', {
-          class: 'emotion-copy-line emotion-guidance-trust-copy emotion-desktop-only',
-          text: '選んだ棚は、今回の探索の手がかりとして使われます。性格や心理状態を決めつけません。'
-        })
+        ])
       ])
     ]);
 
@@ -1217,7 +1181,6 @@
 
     var surface = section('02-emotion', [
       intro,
-      gridQuestion,
       list,
       h('aside', { class: 'emotion-footer', 'aria-label': '選択についての案内' }, [guidance, trust])
     ]);
@@ -1547,7 +1510,11 @@
     ]);
   }
 
+  /* Enterprise Baseline media flow: poster-first stage → explicit click-to-load
+     player in the same mount → editorial context stays on this surface.
+     Activation/CSP/no-write semantics are unchanged (MATCHING.activateVideo). */
   function s1bVideoCard(record) {
+    var stage;
     var mount = h('div', {
       class: 's1b-video-mount media-shape-' + record.mediaShape + ' ' +
         MATCHING.videoRatioClass(record),
@@ -1555,6 +1522,10 @@
       'data-native-width': String(record.nativeWidth),
       'data-native-height': String(record.nativeHeight)
     }, [
+      h('span', { class: 's1b-video-poster', 'aria-hidden': 'true' }, [
+        h('span', { class: 's1b-video-poster-mark' }, [icon('play')]),
+        h('span', { class: 's1b-video-poster-title', text: record.title })
+      ]),
       h('p', { class: 's1b-video-placeholder', text: '映像は再生するまで読み込みません。' })
     ]);
     var activate = h('button', {
@@ -1564,20 +1535,26 @@
         var result = MATCHING.activateVideo(record, mount, document, function () {
           return global.open.apply(global, arguments);
         });
+        if (result.ok && result.mode === 'click_to_load' && stage) {
+          stage.classList.add('is-playing');
+        }
         announce(result.ok
           ? (result.mode === 'click_to_load' ? '映像を読み込みました。' : '公式映像を開きました。')
           : '映像を開けませんでした。公式情報をご確認ください。');
       }
-    }, [h('span', {
-      text: record.mediaState === 'LINK_ONLY_READY' ? '公式映像を開く' : '映像を読み込む'
+    }, [icon('play'), h('span', {
+      text: record.mediaState === 'LINK_ONLY_READY' ? '公式映像を開く' : '映像を再生する'
     })]);
+    stage = h('div', { class: 's1b-video-stage' }, [mount, activate]);
     return h('article', {
       class: 's1b-video-card', 'data-editorial-video-id': record.videoId,
       'data-video-separate-from-deck': 'true'
     }, [
-      h('p', { class: 'eyebrow', text: 'この棚の映像' }),
-      h('h3', { class: 's1b-editorial-title', text: record.title }),
-      mount,
+      stage,
+      h('div', { class: 's1b-video-identity' }, [
+        h('p', { class: 'eyebrow', text: 'この棚の映像' }),
+        h('h3', { class: 's1b-editorial-title', text: record.title })
+      ]),
       h('section', { class: 's1b-editorial-why', 'aria-label': '映像を見るポイント' }, [
         h('h4', { text: 'この棚で見るポイント' }),
         h('p', { text: record.viewingPoint })
@@ -1587,9 +1564,8 @@
         h('p', { text: record.editorialWhy })
       ]),
       h('div', { class: 's1b-video-actions' }, [
-        activate,
         h('a', {
-          class: 'btn btn-text', href: record.officialUrl, target: '_blank',
+          class: 'btn btn-text s1b-video-official-link', href: record.officialUrl, target: '_blank',
           rel: 'noopener noreferrer', text: '公式ページを開く ↗'
         })
       ])
@@ -3550,7 +3526,9 @@
     plan: surfacePlan,
     'plan-saved': surfacePlanSaved,
     moment: surfaceMoment,
-    trace: surfaceTrace
+    trace: surfaceTrace,
+    flow: surfaceFlow,
+    faq: surfaceFaq
   };
 
   function currentDeckMatchesSelectedShelf() {
@@ -3659,12 +3637,12 @@
     });
   }
 
-  /* Header Interaction Contract v1.0
+  /* Header Interaction Contract v1.1 (Enterprise Baseline)
      - desktop Header と mobile bottom navigation は既存導線だけを扱う
-     - logo / Home / 体験の流れ / よくある質問 は入口へ戻るか同一ページ内スクロール
+     - logo / Home は入口へ戻る
      - はじめる / 感情の棚 は Hero CTA と同じ遷移（W02 Emotion）
-     - W01の体験の流れ / FAQは有限のbelow-fold editorial content
-     - 新しい画面・locale 機能は作らない */
+     - 体験の流れ / よくある質問 は独立したProduct内画面（flow / faq）を開く
+     - 新しいURL構造・locale 機能は作らない */
   function scrollToId(id) {
     var target = document.getElementById(id) || document.querySelector('[id="' + id + '"]');
     if (!target) return;
@@ -3691,10 +3669,6 @@
     var panel = document.getElementById('headerNavPanel');
     var firstItem = panel.querySelector('.site-nav-link');
     var activeTrigger = null;
-    /* v0.2 static shellとの互換性を保ちつつ、今回承認されたW01 destinationsを
-       runtime DOMの正式なanchorにする。 */
-    panel.querySelector('a[href="#core-loop"]').setAttribute('href', '#experience-flow');
-    panel.querySelector('a[href="#trust"]').setAttribute('href', '#faq');
 
     function closeHeaderMenu(restoreFocus) {
       panel.hidden = true;
@@ -3745,12 +3719,16 @@
         openInterestedLayer(event.currentTarget);
       });
     });
-    document.querySelectorAll('[data-nav="scroll"]').forEach(function (node) {
-      node.addEventListener('click', function (event) {
-        event.preventDefault();
+    document.querySelectorAll('[data-nav="flow"]').forEach(function (node) {
+      node.addEventListener('click', function () {
         closeHeaderMenu(false);
-        if (screen !== 'entrance') go('entrance');
-        scrollToId(node.getAttribute('href').slice(1));
+        go('flow');
+      });
+    });
+    document.querySelectorAll('[data-nav="faq"]').forEach(function (node) {
+      node.addEventListener('click', function () {
+        closeHeaderMenu(false);
+        go('faq');
       });
     });
     document.querySelector('.site-logo').addEventListener('click', function (event) {
