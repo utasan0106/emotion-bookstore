@@ -807,24 +807,15 @@
   /* --------------------------------------------------------------- surfaces */
 
   function surfaceEntrance() {
-    /* 99_v3 canonical からの未改変pixel cropのみを使用する。
-       Crop座標・hash・使用条件は ASSET_MANIFEST.json に固定する。 */
+    /* Visual System V1 uses one bounded Founder-approved Editorial Tile
+       derivative as a restrained, non-interactive entrance image. */
     var hero = h('picture', { class: 'hero' }, [
-      h('source', { media: '(min-width: 1200px)', srcset: './assets/canonical-m01-w01/w01_hero.webp' }),
       h('img', {
         class: 'hero-img',
-        src: './assets/canonical-m01-w01/m01_hero.webp',
-        alt: '外の世界へ続く道を歩く人のイラスト',
-        width: '941', height: '680', loading: 'eager', decoding: 'async',
+        src: './assets/visual-system-v1/runtime_webp/emotion/emotion_hajimu.webp',
+        alt: '外の世界へ向かって街を歩く人の写真',
+        width: '960', height: '720', loading: 'eager', decoding: 'async',
         fetchpriority: 'high'
-      })
-    ]);
-
-    var brand = h('p', { class: 'brand-lockup-wrap' }, [
-      h('img', {
-        class: 'brand-lockup', src: './assets/canonical-m01-w01/m01_stacked_lockup.png',
-        alt: 'みんなの感情書店 EMOTION BOOKSTORE', width: '402', height: '260',
-        decoding: 'async'
       })
     ]);
 
@@ -857,7 +848,7 @@
       }, [icon('heart'), h('span', { text: '保存済みを見る' })]) : null
     ]);
 
-    var nodes = [h('div', { class: 'entrance-hero' }, [brand, hero, copy])];
+    var nodes = [h('div', { class: 'entrance-hero' }, [hero, copy])];
 
     if (entranceCueItem) {
       nodes.push(h('aside', { class: 'return-surface', 'aria-label': '最新の保存済み' }, [

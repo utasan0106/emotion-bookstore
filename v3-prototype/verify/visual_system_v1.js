@@ -198,6 +198,22 @@ async function runViewport(browser, base, viewport) {
   check(`${viewport.name}: exact approved headline and CTA copy`,
     (await page.locator('#surface-title').textContent()).replace(/\s/g, '') === '感情の先に、世界がある' &&
     (await page.locator('.entrance-route-shelf').innerText()).trim() === 'はじめる');
+  const entranceVisual = await page.evaluate(() => {
+    const hero = document.querySelector('.entrance .hero');
+    const overlay = getComputedStyle(hero, '::after');
+    const accent = getComputedStyle(document.querySelector('.entrance .display'), '::before');
+    return {
+      src: document.querySelector('.entrance .hero-img').getAttribute('src'),
+      overlay: overlay.backgroundImage,
+      accent: accent.backgroundColor,
+      heroHeight: hero.getBoundingClientRect().height
+    };
+  });
+  check(`${viewport.name}: North Star photo + geometric Aqua treatment`,
+    /runtime_webp\/emotion\/emotion_hajimu\.webp$/.test(entranceVisual.src) &&
+    entranceVisual.overlay !== 'none' && entranceVisual.accent === 'rgb(70, 184, 200)' &&
+    (viewport.mobile ? entranceVisual.heroHeight <= 170 : entranceVisual.heroHeight >= 390),
+    JSON.stringify(entranceVisual));
   if (viewport.mobile) {
     check(`${viewport.name}: mobile header and persistent 3-item bottom nav`,
       entrance.headerLogoVisible && entrance.bottomNavVisible &&
@@ -263,6 +279,11 @@ async function runViewport(browser, base, viewport) {
     (await page.locator('.real-experience-media-status').innerText()).trim() === '感情書店のカテゴリ図版');
   check(`${viewport.name}: Discovery has no popularity/commerce pressure signal`,
     !/評価|ランキング|人気|SALE|トレンド|残り\d|急いで/.test(await page.locator('.real-discovery-card').innerText()));
+  check(`${viewport.name}: Discovery primary action follows Navy button hierarchy`,
+    await page.locator('.real-discovery-primary').evaluate((node) => {
+      const style = getComputedStyle(node);
+      return style.backgroundColor === 'rgb(23, 50, 77)' && style.color === 'rgb(255, 255, 255)';
+    }));
   check(`${viewport.name}: unsaved Interested is explicit`,
     (await page.locator('.real-discovery-interest').innerText()).trim() === '気になる' &&
     await page.locator('.real-discovery-interest').getAttribute('aria-pressed') === 'false');
@@ -431,6 +452,10 @@ async function verifyKeyboardAndMotion(browser, base) {
   check('no-emotion navigation binding is preserved',
     html.includes('data-nav="no-emotion"') && app.includes("document.querySelectorAll('[data-nav=\"no-emotion\"]')"));
   check('obsolete Entrance copy remains absent', !app.includes('選ばず、編集部の仕入れから。'));
+  check('Supplemental North Star: legacy watercolor Entrance hero is retired',
+    html.includes('runtime_webp/emotion/emotion_hajimu.webp') &&
+    app.includes("src: './assets/visual-system-v1/runtime_webp/emotion/emotion_hajimu.webp'") &&
+    !app.includes("src: './assets/canonical-m01-w01/m01_hero.webp'"));
 
   const { server, base } = await start(0);
   const browser = await chromium.launch({

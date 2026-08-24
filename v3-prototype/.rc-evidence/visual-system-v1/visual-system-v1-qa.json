@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-24T15:49:25.947Z",
+  "generatedAt": "2026-08-24T16:01:04.463Z",
   "branch": "codex/v3-visual-system-v1-20260825",
-  "head": "3e063ec472df3c10dc271473a28390ce17f553c7",
+  "head": "c935d086c54c73f7269b06a18e2b8a54ec151a2d",
   "start": "3e063ec472df3c10dc271473a28390ce17f553c7",
   "viewports": {
     "mobile-320": {
@@ -27,10 +27,10 @@
       "performance": {
         "resources": [
           {
-            "name": "/assets/canonical-m01-w01/m01_hero.webp",
+            "name": "/assets/visual-system-v1/runtime_webp/emotion/emotion_hajimu.webp",
             "initiatorType": "link",
-            "transferSize": 65982,
-            "decodedBodySize": 65682
+            "transferSize": 62280,
+            "decodedBodySize": 61980
           },
           {
             "name": "/css/v3.css",
@@ -41,8 +41,8 @@
           {
             "name": "/css/visual-system-v1.css",
             "initiatorType": "link",
-            "transferSize": 30799,
-            "decodedBodySize": 30499
+            "transferSize": 31933,
+            "decodedBodySize": 31633
           },
           {
             "name": "/assets/canonical-m01-w01/w01_horizontal_lockup.png",
@@ -143,8 +143,8 @@
           {
             "name": "/js/app.js",
             "initiatorType": "script",
-            "transferSize": 162954,
-            "decodedBodySize": 162654
+            "transferSize": 162555,
+            "decodedBodySize": 162255
           },
           {
             "name": "/assets/fonts/subset/NotoSerifJP-Medium-subset.woff2",
@@ -159,36 +159,6 @@
             "decodedBodySize": 3381
           },
           {
-            "name": "/assets/canonical-m01-w01/m01_stacked_lockup.png",
-            "initiatorType": "img",
-            "transferSize": 136393,
-            "decodedBodySize": 136093
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_step_01.png",
-            "initiatorType": "img",
-            "transferSize": 21136,
-            "decodedBodySize": 20836
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_step_02.png",
-            "initiatorType": "img",
-            "transferSize": 20300,
-            "decodedBodySize": 20000
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_step_03.png",
-            "initiatorType": "img",
-            "transferSize": 20894,
-            "decodedBodySize": 20594
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_step_04.png",
-            "initiatorType": "img",
-            "transferSize": 19803,
-            "decodedBodySize": 19503
-          },
-          {
             "name": "/favicon.ico",
             "initiatorType": "other",
             "transferSize": 309,
@@ -196,18 +166,18 @@
           }
         ],
         "totals": {
-          "transferSize": 1419336,
-          "decodedBodySize": 1410936
+          "transferSize": 1197843,
+          "decodedBodySize": 1190943
         },
         "navigation": {
-          "transferSize": 7695,
-          "decodedBodySize": 7395,
-          "domContentLoaded": 304.69999998807907,
-          "load": 333.80000001192093
+          "transferSize": 7562,
+          "decodedBodySize": 7262,
+          "domContentLoaded": 274.30000001192093,
+          "load": 296.39999997615814
         },
         "paints": {
-          "first-paint": 288,
-          "first-contentful-paint": 288
+          "first-paint": 252,
+          "first-contentful-paint": 252
         }
       },
       "emotion": {
@@ -253,10 +223,10 @@
       "performance": {
         "resources": [
           {
-            "name": "/assets/canonical-m01-w01/m01_hero.webp",
+            "name": "/assets/visual-system-v1/runtime_webp/emotion/emotion_hajimu.webp",
             "initiatorType": "link",
-            "transferSize": 65982,
-            "decodedBodySize": 65682
+            "transferSize": 62280,
+            "decodedBodySize": 61980
           },
           {
             "name": "/css/v3.css",
@@ -267,8 +237,8 @@
           {
             "name": "/css/visual-system-v1.css",
             "initiatorType": "link",
-            "transferSize": 30799,
-            "decodedBodySize": 30499
+            "transferSize": 31933,
+            "decodedBodySize": 31633
           },
           {
             "name": "/assets/canonical-m01-w01/w01_horizontal_lockup.png",
@@ -283,12 +253,6 @@
             "decodedBodySize": 9891
           },
           {
-            "name": "/js/store.js",
-            "initiatorType": "script",
-            "transferSize": 9755,
-            "decodedBodySize": 9455
-          },
-          {
             "name": "/assets/fonts/subset/NotoSansJP-Regular-subset.woff2",
             "initiatorType": "css",
             "transferSize": 174016,
@@ -299,6 +263,12 @@
             "initiatorType": "css",
             "transferSize": 175384,
             "decodedBodySize": 175084
+          },
+          {
+            "name": "/js/store.js",
+            "initiatorType": "script",
+            "transferSize": 9755,
+            "decodedBodySize": 9455
           },
           {
             "name": "/js/entrance_cue_store.js",
@@ -369,8 +339,8 @@
           {
             "name": "/js/app.js",
             "initiatorType": "script",
-            "transferSize": 162954,
-            "decodedBodySize": 162654
+            "transferSize": 162555,
+            "decodedBodySize": 162255
           },
           {
             "name": "/assets/fonts/subset/NotoSerifJP-Medium-subset.woff2",
@@ -383,51 +353,21 @@
             "initiatorType": "css",
             "transferSize": 3681,
             "decodedBodySize": 3381
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_stacked_lockup.png",
-            "initiatorType": "img",
-            "transferSize": 136393,
-            "decodedBodySize": 136093
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_step_01.png",
-            "initiatorType": "img",
-            "transferSize": 21136,
-            "decodedBodySize": 20836
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_step_02.png",
-            "initiatorType": "img",
-            "transferSize": 20300,
-            "decodedBodySize": 20000
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_step_03.png",
-            "initiatorType": "img",
-            "transferSize": 20894,
-            "decodedBodySize": 20594
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_step_04.png",
-            "initiatorType": "img",
-            "transferSize": 19803,
-            "decodedBodySize": 19503
           }
         ],
         "totals": {
-          "transferSize": 1419027,
-          "decodedBodySize": 1410927
+          "transferSize": 1197534,
+          "decodedBodySize": 1190934
         },
         "navigation": {
-          "transferSize": 7695,
-          "decodedBodySize": 7395,
-          "domContentLoaded": 295.69999998807907,
-          "load": 323.19999998807907
+          "transferSize": 7562,
+          "decodedBodySize": 7262,
+          "domContentLoaded": 213.4000000357628,
+          "load": 239.69999998807907
         },
         "paints": {
-          "first-paint": 260,
-          "first-contentful-paint": 260
+          "first-paint": 176,
+          "first-contentful-paint": 176
         }
       },
       "emotion": {
@@ -473,10 +413,10 @@
       "performance": {
         "resources": [
           {
-            "name": "/assets/canonical-m01-w01/m01_hero.webp",
+            "name": "/assets/visual-system-v1/runtime_webp/emotion/emotion_hajimu.webp",
             "initiatorType": "link",
-            "transferSize": 65982,
-            "decodedBodySize": 65682
+            "transferSize": 62280,
+            "decodedBodySize": 61980
           },
           {
             "name": "/css/v3.css",
@@ -487,8 +427,8 @@
           {
             "name": "/css/visual-system-v1.css",
             "initiatorType": "link",
-            "transferSize": 30799,
-            "decodedBodySize": 30499
+            "transferSize": 31933,
+            "decodedBodySize": 31633
           },
           {
             "name": "/assets/canonical-m01-w01/w01_horizontal_lockup.png",
@@ -503,6 +443,12 @@
             "decodedBodySize": 9891
           },
           {
+            "name": "/js/store.js",
+            "initiatorType": "script",
+            "transferSize": 9755,
+            "decodedBodySize": 9455
+          },
+          {
             "name": "/assets/fonts/subset/NotoSansJP-Regular-subset.woff2",
             "initiatorType": "css",
             "transferSize": 174016,
@@ -513,12 +459,6 @@
             "initiatorType": "css",
             "transferSize": 175384,
             "decodedBodySize": 175084
-          },
-          {
-            "name": "/js/store.js",
-            "initiatorType": "script",
-            "transferSize": 9755,
-            "decodedBodySize": 9455
           },
           {
             "name": "/js/entrance_cue_store.js",
@@ -589,8 +529,8 @@
           {
             "name": "/js/app.js",
             "initiatorType": "script",
-            "transferSize": 162954,
-            "decodedBodySize": 162654
+            "transferSize": 162555,
+            "decodedBodySize": 162255
           },
           {
             "name": "/assets/fonts/subset/NotoSerifJP-Medium-subset.woff2",
@@ -603,51 +543,21 @@
             "initiatorType": "css",
             "transferSize": 3681,
             "decodedBodySize": 3381
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_stacked_lockup.png",
-            "initiatorType": "img",
-            "transferSize": 136393,
-            "decodedBodySize": 136093
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_step_01.png",
-            "initiatorType": "img",
-            "transferSize": 21136,
-            "decodedBodySize": 20836
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_step_02.png",
-            "initiatorType": "img",
-            "transferSize": 20300,
-            "decodedBodySize": 20000
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_step_03.png",
-            "initiatorType": "img",
-            "transferSize": 20894,
-            "decodedBodySize": 20594
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_step_04.png",
-            "initiatorType": "img",
-            "transferSize": 19803,
-            "decodedBodySize": 19503
           }
         ],
         "totals": {
-          "transferSize": 1419027,
-          "decodedBodySize": 1410927
+          "transferSize": 1197534,
+          "decodedBodySize": 1190934
         },
         "navigation": {
-          "transferSize": 7695,
-          "decodedBodySize": 7395,
-          "domContentLoaded": 211.9000000357628,
-          "load": 239.10000002384186
+          "transferSize": 7562,
+          "decodedBodySize": 7262,
+          "domContentLoaded": 339.89999997615814,
+          "load": 365.60000002384186
         },
         "paints": {
-          "first-paint": 176,
-          "first-contentful-paint": 176
+          "first-paint": 308,
+          "first-contentful-paint": 308
         }
       },
       "emotion": {
@@ -693,10 +603,10 @@
       "performance": {
         "resources": [
           {
-            "name": "/assets/canonical-m01-w01/w01_hero.webp",
+            "name": "/assets/visual-system-v1/runtime_webp/emotion/emotion_hajimu.webp",
             "initiatorType": "link",
-            "transferSize": 65982,
-            "decodedBodySize": 65682
+            "transferSize": 62280,
+            "decodedBodySize": 61980
           },
           {
             "name": "/css/v3.css",
@@ -707,8 +617,8 @@
           {
             "name": "/css/visual-system-v1.css",
             "initiatorType": "link",
-            "transferSize": 30799,
-            "decodedBodySize": 30499
+            "transferSize": 31933,
+            "decodedBodySize": 31633
           },
           {
             "name": "/assets/canonical-m01-w01/w01_horizontal_lockup.png",
@@ -723,12 +633,6 @@
             "decodedBodySize": 9891
           },
           {
-            "name": "/js/store.js",
-            "initiatorType": "script",
-            "transferSize": 9755,
-            "decodedBodySize": 9455
-          },
-          {
             "name": "/assets/fonts/subset/NotoSansJP-Regular-subset.woff2",
             "initiatorType": "css",
             "transferSize": 174016,
@@ -739,6 +643,12 @@
             "initiatorType": "css",
             "transferSize": 175384,
             "decodedBodySize": 175084
+          },
+          {
+            "name": "/js/store.js",
+            "initiatorType": "script",
+            "transferSize": 9755,
+            "decodedBodySize": 9455
           },
           {
             "name": "/js/entrance_cue_store.js",
@@ -809,8 +719,8 @@
           {
             "name": "/js/app.js",
             "initiatorType": "script",
-            "transferSize": 162954,
-            "decodedBodySize": 162654
+            "transferSize": 162555,
+            "decodedBodySize": 162255
           },
           {
             "name": "/assets/fonts/subset/NotoSerifJP-Medium-subset.woff2",
@@ -829,69 +739,21 @@
             "initiatorType": "css",
             "transferSize": 239676,
             "decodedBodySize": 239376
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_stacked_lockup.png",
-            "initiatorType": "img",
-            "transferSize": 136393,
-            "decodedBodySize": 136093
-          },
-          {
-            "name": "/assets/canonical-m01-w01/w01_step_01.png",
-            "initiatorType": "img",
-            "transferSize": 23568,
-            "decodedBodySize": 23268
-          },
-          {
-            "name": "/assets/canonical-m01-w01/w01_step_02.png",
-            "initiatorType": "img",
-            "transferSize": 20700,
-            "decodedBodySize": 20400
-          },
-          {
-            "name": "/assets/canonical-m01-w01/w01_step_03.png",
-            "initiatorType": "img",
-            "transferSize": 19923,
-            "decodedBodySize": 19623
-          },
-          {
-            "name": "/assets/canonical-m01-w01/w01_step_04.png",
-            "initiatorType": "img",
-            "transferSize": 25044,
-            "decodedBodySize": 24744
-          },
-          {
-            "name": "/assets/canonical-m01-w01/w01_trust_private.png",
-            "initiatorType": "img",
-            "transferSize": 4184,
-            "decodedBodySize": 3884
-          },
-          {
-            "name": "/assets/canonical-m01-w01/w01_trust_no_ai.png",
-            "initiatorType": "img",
-            "transferSize": 4780,
-            "decodedBodySize": 4480
-          },
-          {
-            "name": "/assets/canonical-m01-w01/w01_trust_device.png",
-            "initiatorType": "img",
-            "transferSize": 4041,
-            "decodedBodySize": 3741
           }
         ],
         "totals": {
-          "transferSize": 1678810,
-          "decodedBodySize": 1669510
+          "transferSize": 1437210,
+          "decodedBodySize": 1430310
         },
         "navigation": {
-          "transferSize": 7695,
-          "decodedBodySize": 7395,
-          "domContentLoaded": 295.10000002384186,
-          "load": 345.69999998807907
+          "transferSize": 7562,
+          "decodedBodySize": 7262,
+          "domContentLoaded": 362,
+          "load": 424.7000000476837
         },
         "paints": {
-          "first-paint": 228,
-          "first-contentful-paint": 228
+          "first-paint": 328,
+          "first-contentful-paint": 328
         }
       },
       "emotion": {
@@ -937,10 +799,10 @@
       "performance": {
         "resources": [
           {
-            "name": "/assets/canonical-m01-w01/w01_hero.webp",
+            "name": "/assets/visual-system-v1/runtime_webp/emotion/emotion_hajimu.webp",
             "initiatorType": "link",
-            "transferSize": 65982,
-            "decodedBodySize": 65682
+            "transferSize": 62280,
+            "decodedBodySize": 61980
           },
           {
             "name": "/css/v3.css",
@@ -951,8 +813,8 @@
           {
             "name": "/css/visual-system-v1.css",
             "initiatorType": "link",
-            "transferSize": 30799,
-            "decodedBodySize": 30499
+            "transferSize": 31933,
+            "decodedBodySize": 31633
           },
           {
             "name": "/assets/canonical-m01-w01/w01_horizontal_lockup.png",
@@ -967,6 +829,12 @@
             "decodedBodySize": 9891
           },
           {
+            "name": "/js/store.js",
+            "initiatorType": "script",
+            "transferSize": 9755,
+            "decodedBodySize": 9455
+          },
+          {
             "name": "/assets/fonts/subset/NotoSansJP-Regular-subset.woff2",
             "initiatorType": "css",
             "transferSize": 174016,
@@ -977,12 +845,6 @@
             "initiatorType": "css",
             "transferSize": 175384,
             "decodedBodySize": 175084
-          },
-          {
-            "name": "/js/store.js",
-            "initiatorType": "script",
-            "transferSize": 9755,
-            "decodedBodySize": 9455
           },
           {
             "name": "/js/entrance_cue_store.js",
@@ -1053,8 +915,8 @@
           {
             "name": "/js/app.js",
             "initiatorType": "script",
-            "transferSize": 162954,
-            "decodedBodySize": 162654
+            "transferSize": 162555,
+            "decodedBodySize": 162255
           },
           {
             "name": "/assets/fonts/subset/NotoSerifJP-Medium-subset.woff2",
@@ -1073,69 +935,21 @@
             "initiatorType": "css",
             "transferSize": 239676,
             "decodedBodySize": 239376
-          },
-          {
-            "name": "/assets/canonical-m01-w01/m01_stacked_lockup.png",
-            "initiatorType": "img",
-            "transferSize": 136393,
-            "decodedBodySize": 136093
-          },
-          {
-            "name": "/assets/canonical-m01-w01/w01_step_01.png",
-            "initiatorType": "img",
-            "transferSize": 23568,
-            "decodedBodySize": 23268
-          },
-          {
-            "name": "/assets/canonical-m01-w01/w01_step_02.png",
-            "initiatorType": "img",
-            "transferSize": 20700,
-            "decodedBodySize": 20400
-          },
-          {
-            "name": "/assets/canonical-m01-w01/w01_step_03.png",
-            "initiatorType": "img",
-            "transferSize": 19923,
-            "decodedBodySize": 19623
-          },
-          {
-            "name": "/assets/canonical-m01-w01/w01_step_04.png",
-            "initiatorType": "img",
-            "transferSize": 25044,
-            "decodedBodySize": 24744
-          },
-          {
-            "name": "/assets/canonical-m01-w01/w01_trust_private.png",
-            "initiatorType": "img",
-            "transferSize": 4184,
-            "decodedBodySize": 3884
-          },
-          {
-            "name": "/assets/canonical-m01-w01/w01_trust_device.png",
-            "initiatorType": "img",
-            "transferSize": 4041,
-            "decodedBodySize": 3741
-          },
-          {
-            "name": "/assets/canonical-m01-w01/w01_trust_no_ai.png",
-            "initiatorType": "img",
-            "transferSize": 4780,
-            "decodedBodySize": 4480
           }
         ],
         "totals": {
-          "transferSize": 1678810,
-          "decodedBodySize": 1669510
+          "transferSize": 1437210,
+          "decodedBodySize": 1430310
         },
         "navigation": {
-          "transferSize": 7695,
-          "decodedBodySize": 7395,
-          "domContentLoaded": 339.89999997615814,
-          "load": 389.89999997615814
+          "transferSize": 7562,
+          "decodedBodySize": 7262,
+          "domContentLoaded": 295.19999998807907,
+          "load": 342.5
         },
         "paints": {
-          "first-paint": 300,
-          "first-contentful-paint": 300
+          "first-paint": 252,
+          "first-contentful-paint": 252
         }
       },
       "emotion": {
@@ -1257,6 +1071,11 @@
       "detail": ""
     },
     {
+      "name": "Supplemental North Star: legacy watercolor Entrance hero is retired",
+      "pass": true,
+      "detail": ""
+    },
+    {
       "name": "mobile-320: white/navy canonical body tokens",
       "pass": true,
       "detail": "{\"background\":\"rgb(255, 255, 255)\",\"color\":\"rgb(31, 42, 51)\",\"family\":\"\\\"Noto Sans JP\\\", \\\"Hiragino Kaku Gothic ProN\\\", \\\"Yu Gothic\\\", Meiryo, sans-serif\",\"size\":\"15px\",\"lineHeight\":\"25.8px\"}"
@@ -1275,6 +1094,11 @@
       "name": "mobile-320: exact approved headline and CTA copy",
       "pass": true,
       "detail": ""
+    },
+    {
+      "name": "mobile-320: North Star photo + geometric Aqua treatment",
+      "pass": true,
+      "detail": "{\"src\":\"./assets/visual-system-v1/runtime_webp/emotion/emotion_hajimu.webp\",\"overlay\":\"linear-gradient(115deg, rgba(70, 184, 200, 0.54), rgba(23, 50, 77, 0.34))\",\"accent\":\"rgb(70, 184, 200)\",\"heroHeight\":168}"
     },
     {
       "name": "mobile-320: mobile header and persistent 3-item bottom nav",
@@ -1333,6 +1157,11 @@
     },
     {
       "name": "mobile-320: Discovery has no popularity/commerce pressure signal",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-320: Discovery primary action follows Navy button hierarchy",
       "pass": true,
       "detail": ""
     },
@@ -1417,6 +1246,11 @@
       "detail": ""
     },
     {
+      "name": "mobile-390: North Star photo + geometric Aqua treatment",
+      "pass": true,
+      "detail": "{\"src\":\"./assets/visual-system-v1/runtime_webp/emotion/emotion_hajimu.webp\",\"overlay\":\"linear-gradient(115deg, rgba(70, 184, 200, 0.54), rgba(23, 50, 77, 0.34))\",\"accent\":\"rgb(70, 184, 200)\",\"heroHeight\":168}"
+    },
+    {
       "name": "mobile-390: mobile header and persistent 3-item bottom nav",
       "pass": true,
       "detail": ""
@@ -1473,6 +1307,11 @@
     },
     {
       "name": "mobile-390: Discovery has no popularity/commerce pressure signal",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: Discovery primary action follows Navy button hierarchy",
       "pass": true,
       "detail": ""
     },
@@ -1557,6 +1396,11 @@
       "detail": ""
     },
     {
+      "name": "mobile-430: North Star photo + geometric Aqua treatment",
+      "pass": true,
+      "detail": "{\"src\":\"./assets/visual-system-v1/runtime_webp/emotion/emotion_hajimu.webp\",\"overlay\":\"linear-gradient(115deg, rgba(70, 184, 200, 0.54), rgba(23, 50, 77, 0.34))\",\"accent\":\"rgb(70, 184, 200)\",\"heroHeight\":168}"
+    },
+    {
       "name": "mobile-430: mobile header and persistent 3-item bottom nav",
       "pass": true,
       "detail": ""
@@ -1613,6 +1457,11 @@
     },
     {
       "name": "mobile-430: Discovery has no popularity/commerce pressure signal",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: Discovery primary action follows Navy button hierarchy",
       "pass": true,
       "detail": ""
     },
@@ -1697,6 +1546,11 @@
       "detail": ""
     },
     {
+      "name": "desktop-1200: North Star photo + geometric Aqua treatment",
+      "pass": true,
+      "detail": "{\"src\":\"./assets/visual-system-v1/runtime_webp/emotion/emotion_hajimu.webp\",\"overlay\":\"linear-gradient(115deg, rgba(70, 184, 200, 0.54), rgba(23, 50, 77, 0.34))\",\"accent\":\"rgb(70, 184, 200)\",\"heroHeight\":410}"
+    },
+    {
       "name": "desktop-1200: desktop header has Home/Saved/Menu and no bottom nav",
       "pass": true,
       "detail": ""
@@ -1748,6 +1602,11 @@
     },
     {
       "name": "desktop-1200: Discovery has no popularity/commerce pressure signal",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: Discovery primary action follows Navy button hierarchy",
       "pass": true,
       "detail": ""
     },
@@ -1832,6 +1691,11 @@
       "detail": ""
     },
     {
+      "name": "desktop-1440: North Star photo + geometric Aqua treatment",
+      "pass": true,
+      "detail": "{\"src\":\"./assets/visual-system-v1/runtime_webp/emotion/emotion_hajimu.webp\",\"overlay\":\"linear-gradient(115deg, rgba(70, 184, 200, 0.54), rgba(23, 50, 77, 0.34))\",\"accent\":\"rgb(70, 184, 200)\",\"heroHeight\":410}"
+    },
+    {
       "name": "desktop-1440: desktop header has Home/Saved/Menu and no bottom nav",
       "pass": true,
       "detail": ""
@@ -1883,6 +1747,11 @@
     },
     {
       "name": "desktop-1440: Discovery has no popularity/commerce pressure signal",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: Discovery primary action follows Navy button hierarchy",
       "pass": true,
       "detail": ""
     },
@@ -1973,7 +1842,7 @@
     }
   ],
   "summary": {
-    "pass": 162,
+    "pass": 173,
     "fail": 0
   }
 }
