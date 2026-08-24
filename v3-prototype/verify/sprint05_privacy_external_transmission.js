@@ -120,6 +120,9 @@ check('analytics outbound host count = 0', matrix.current_counts.analytics_outbo
 
 const adWindow = { open() { return { opener: 'initial' }; } };
 vm.runInNewContext(adSource, { window: adWindow, URL, Object }, { filename: 'action_destination.js' });
+vm.runInNewContext(read('js/cultural_matching.js'), {
+  window: adWindow, URL, Object, Date, JSON, RegExp, Number, isNaN
+}, { filename: 'cultural_matching.js' });
 vm.runInNewContext(registrySource, { window: adWindow, URL, Object, Date, JSON, RegExp, isNaN },
   { filename: 'real_experience_registry.js' });
 const AD = adWindow.V3_ACTION_DESTINATION;

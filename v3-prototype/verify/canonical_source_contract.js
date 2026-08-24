@@ -90,10 +90,16 @@ const unchanged = {
    index metadata/editorial wording plus its matching exact JSON-LD CSP hash.
    This is deliberately a single full SHA-256, not a prefix or generic alternate. */
 const S1A_AUTHORIZED_INDEX_HASH = '63ee5078027d376948509affc51d3a04cfe6564d81fb15f9ee31f48a839e2381';
+/* Exact exception authorized by the V3 S1B final implementation instruction,
+   branch codex/v3-cultural-matching-s1b-20260824, from frozen S1A Start
+   38bf9ee4a642069f2e992f48c924e5cc23f14c88: two same-origin S1B scripts only.
+   This is one full SHA-256; wildcard/prefix/generic alternate acceptance is 0. */
+const S1B_AUTHORIZED_INDEX_HASH = 'ed249b6635d142581fba50874714ad51ce63338061b50afd652b947b7f66c082';
 for (const [rel, expected] of Object.entries(unchanged)) {
   const actual = sha(file(rel));
   check(`protected or explicitly approved hash: ${rel}`,
-    actual === expected || (rel === 'index.html' && actual === S1A_AUTHORIZED_INDEX_HASH),
+    actual === expected || (rel === 'index.html' &&
+      (actual === S1A_AUTHORIZED_INDEX_HASH || actual === S1B_AUTHORIZED_INDEX_HASH)),
     actual);
 }
 check('package.json dependency addition 0', !fs.existsSync(file('package.json')) && !fs.existsSync(file('package-lock.json')));

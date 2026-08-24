@@ -23,6 +23,7 @@ const app = read('js/app.js');
 const data = read('js/data.js');
 const store = read('js/store.js');
 const retrieval = read('js/interested_retrieval.js');
+const matching = read('js/cultural_matching.js');
 const registry = read('js/real_experience_registry.js');
 const ad = read('js/action_destination.js');
 const css = read('css/v3.css');
@@ -41,6 +42,7 @@ function check(name, pass, detail = '') {
 const window = { URL, open() { return null; } };
 vm.runInNewContext(data, { window }, { filename: 'data.js' });
 vm.runInNewContext(ad, { window, URL, Object }, { filename: 'action_destination.js' });
+vm.runInNewContext(matching, { window, URL, Object, Date, JSON, RegExp, Number, isNaN }, { filename: 'cultural_matching.js' });
 vm.runInNewContext(registry, { window, URL, Object, Date, JSON, RegExp, isNaN }, { filename: 'real_experience_registry.js' });
 const D = window.V3_DATA;
 const AD = window.V3_ACTION_DESTINATION;

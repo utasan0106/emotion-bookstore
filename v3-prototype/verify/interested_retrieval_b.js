@@ -62,6 +62,9 @@ function loadCurrentAuthorities() {
   vm.runInNewContext(fs.readFileSync(path.join(SRC, 'js/action_destination.js'), 'utf8'), {
     window, URL, Object
   }, { filename: 'action_destination.js' });
+  vm.runInNewContext(fs.readFileSync(path.join(SRC, 'js/cultural_matching.js'), 'utf8'), {
+    window, URL, Object, Date, JSON, RegExp, Number, isNaN
+  }, { filename: 'cultural_matching.js' });
   vm.runInNewContext(fs.readFileSync(path.join(SRC, 'js/real_experience_registry.js'), 'utf8'), {
     window, URL, Object, Date, JSON, RegExp, isNaN
   }, { filename: 'real_experience_registry.js' });

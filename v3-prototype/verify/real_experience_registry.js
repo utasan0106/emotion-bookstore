@@ -13,6 +13,7 @@ const REPO = path.resolve(SRC, '..');
 const BASE = 'db8689eeb4c329fb29bef6899a68ba217a879ff6';
 const files = {
   registry: path.join(SRC, 'js/real_experience_registry.js'),
+  matching: path.join(SRC, 'js/cultural_matching.js'),
   ad: path.join(SRC, 'js/action_destination.js'),
   data: path.join(SRC, 'js/data.js'),
   app: path.join(SRC, 'js/app.js'),
@@ -38,6 +39,9 @@ function forbiddenField(value, pattern) {
 const window = { URL, open() { return null; } };
 vm.runInNewContext(fs.readFileSync(files.data, 'utf8'), { window }, { filename: 'data.js' });
 vm.runInNewContext(fs.readFileSync(files.ad, 'utf8'), { window, URL, Object }, { filename: 'action_destination.js' });
+vm.runInNewContext(fs.readFileSync(files.matching, 'utf8'), {
+  window, URL, Object, Date, JSON, RegExp, Number, isNaN
+}, { filename: 'cultural_matching.js' });
 vm.runInNewContext(fs.readFileSync(files.registry, 'utf8'), {
   window, URL, Object, Date, JSON, RegExp, isNaN
 }, { filename: 'real_experience_registry.js' });

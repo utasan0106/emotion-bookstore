@@ -28,6 +28,7 @@ function slice(source, start, end) {
 }
 
 const app = read('v3-prototype/js/app.js');
+const matchingSource = read('v3-prototype/js/cultural_matching.js');
 const registrySource = read('v3-prototype/js/real_experience_registry.js');
 const index = read('v3-prototype/index.html');
 const css = read('v3-prototype/css/v3.css');
@@ -39,6 +40,7 @@ const productJs = fs.readdirSync(path.join(SRC, 'js'))
 const window = { URL, open() { return null; } };
 vm.runInNewContext(read('v3-prototype/js/data.js'), { window }, { filename: 'data.js' });
 vm.runInNewContext(read('v3-prototype/js/action_destination.js'), { window, URL, Object }, { filename: 'action_destination.js' });
+vm.runInNewContext(matchingSource, { window, URL, Object, Date, JSON, RegExp, Number, isNaN }, { filename: 'cultural_matching.js' });
 vm.runInNewContext(registrySource, { window, URL, Object, Date, JSON, RegExp, isNaN }, { filename: 'real_experience_registry.js' });
 const D = window.V3_DATA;
 const R = window.V3_REAL_EXPERIENCE_REGISTRY;

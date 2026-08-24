@@ -35,6 +35,9 @@ function loadRegistry(source) {
   const window = { URL, open() { return null; } };
   vm.runInNewContext(fs.readFileSync(path.join(SRC, 'js/data.js'), 'utf8'), { window });
   vm.runInNewContext(fs.readFileSync(path.join(SRC, 'js/action_destination.js'), 'utf8'), { window, URL, Object });
+  vm.runInNewContext(fs.readFileSync(path.join(SRC, 'js/cultural_matching.js'), 'utf8'), {
+    window, URL, Object, Date, JSON, RegExp, Number, isNaN
+  });
   vm.runInNewContext(source, { window, URL, Object, Date, JSON, RegExp, isNaN });
   return window.V3_REAL_EXPERIENCE_REGISTRY;
 }

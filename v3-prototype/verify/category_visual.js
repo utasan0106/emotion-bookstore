@@ -37,6 +37,9 @@ function current(rel) { return fs.readFileSync(path.join(REPO, rel)); }
 const window = { URL, open() { return null; } };
 vm.runInNewContext(current('v3-prototype/js/data.js').toString(), { window });
 vm.runInNewContext(current('v3-prototype/js/action_destination.js').toString(), { window, URL, Object });
+vm.runInNewContext(current('v3-prototype/js/cultural_matching.js').toString(), {
+  window, URL, Object, Date, JSON, RegExp, Number, isNaN
+});
 vm.runInNewContext(current('v3-prototype/js/real_experience_registry.js').toString(), {
   window, URL, Object, Date, JSON, RegExp, isNaN
 });

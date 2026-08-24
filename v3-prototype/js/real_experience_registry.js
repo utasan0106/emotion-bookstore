@@ -10,6 +10,7 @@
   'use strict';
 
   var AD = global.V3_ACTION_DESTINATION;
+  var MATCHING = global.V3_CULTURAL_MATCHING;
   var APPROVED_STATE = 'EDITORIAL_APPROVED';
   var SOURCE_CLASS = 'approved-real-experience';
   var DECK_REF = 'DECK-P0-001';
@@ -104,6 +105,10 @@
       sourceClass: SOURCE_CLASS,
       title: '『葬送のフリーレン』第1巻',
       type: '電子コミック',
+      canonicalType: 'Book',
+      practicalTruth: {
+        format: '電子コミック'
+      },
       tags: ['作品に触れる'],
       reason: '感情を入口に、作品という角度から世界へ触れるために置いています。',
       authority: {
@@ -136,6 +141,17 @@
       type: '展示',
       duration: '8:30–21:00（通常）',
       price: '大人 3,600円〜',
+      canonicalType: 'Exhibition',
+      practicalTruth: {
+        hours: '8:30–21:00（通常）',
+        area: '東京都港区虎ノ門5-9 麻布台ヒルズ ガーデンプラザB B1',
+        price: '大人 3,600円〜',
+        ticketStatus: '公式サイトで日時とチケットを確認'
+      },
+      contextEligibility: {
+        area: ['tokyo-core', 'tokyo-wide'],
+        budgetBand: ['under-5000', 'flexible']
+      },
       tags: ['展示を歩く'],
       reason: '館内には地図がなく、作品も空間を移動する。感情書店では、決められた順路をたどるより、次の空間を自分で探しながら進む構造を見て、この場所を「心が弾む」に置きました。',
       authority: {
@@ -197,6 +213,16 @@
       type: '美術館',
       duration: '10:00–16:00',
       price: '大人 1,100円〜',
+      canonicalType: 'Activity',
+      practicalTruth: {
+        location: '東京都新宿区四谷4-20 四谷ひろば内',
+        hours: '10:00–16:00',
+        price: '大人 1,100円〜'
+      },
+      contextEligibility: {
+        area: ['tokyo-core', 'tokyo-wide'],
+        budgetBand: ['under-3000', 'under-5000', 'flexible']
+      },
       tags: ['おもちゃで遊ぶ'],
       reason: 'ここでは、おもちゃを展示として眺めるだけでなく、実際に触れて遊び、おもちゃ学芸員が遊びと人の出会いをつなぐ。感情書店では、おもちゃを間にして人と人のやりとりが生まれる仕組みを見て、この場所を「心があたたまる」に置きました。',
       authority: {
@@ -258,6 +284,16 @@
       type: '展示',
       duration: '10:00–19:00',
       price: '無料',
+      canonicalType: 'Exhibition',
+      practicalTruth: {
+        hours: '10:00–19:00',
+        area: '東京都港区赤坂9-7-6 東京ミッドタウン・ガーデン内',
+        price: '無料'
+      },
+      contextEligibility: {
+        area: ['tokyo-core', 'tokyo-wide'],
+        budgetBand: ['free', 'under-3000', 'under-5000', 'flexible']
+      },
       tags: ['素材と形を見る'],
       reason: '衣服のプリーツ加工で生まれる副産物の紙が、「膜」のオブジェと「核」の家具プロトタイプへ、対照的な方法で展開されている。感情書店では、同じ紙が別の姿へ変わる対照そのものを入口にして、この展示を「惹かれる」に置きました。',
       authority: {
@@ -319,6 +355,17 @@
       type: '記念館',
       duration: '9:00–17:00',
       price: '無料',
+      canonicalType: 'Place',
+      practicalTruth: {
+        area: '東京都墨田区横網2-3-25',
+        hours: '9:00–17:00',
+        access: '都営大江戸線 両国駅 A1出口から徒歩2分',
+        admission: '無料'
+      },
+      contextEligibility: {
+        area: ['tokyo-core', 'tokyo-wide'],
+        budgetBand: ['free', 'under-3000', 'under-5000', 'flexible']
+      },
       tags: ['都市の記憶を見る'],
       reason: '関東大震災の被災物や写真、絵画、復興模型に加え、東京空襲の実物資料も同じ建物に残されている。感情書店では、被害と復興の時間が資料として積み重なった場所に留まって見る入口として、この場所を「沈む」に置きました。',
       authority: {
@@ -380,6 +427,16 @@
       type: '展示',
       duration: '10:00–18:00',
       price: '一般 700円',
+      canonicalType: 'Exhibition',
+      practicalTruth: {
+        hours: '10:00–18:00',
+        area: '東京都目黒区三田1-13-3 恵比寿ガーデンプレイス内',
+        price: '一般 700円'
+      },
+      contextEligibility: {
+        area: ['tokyo-core', 'tokyo-wide'],
+        budgetBand: ['under-3000', 'under-5000', 'flexible']
+      },
       tags: ['写真を見る'],
       reason: '「食」を入口に、記憶や人とのつながりだけでなく、環境、高齢化、孤食などの社会的な問いまで見せる展覧会。感情書店では、見慣れた「食べる」という行為の周りに別の層が現れる構成を見て、この展示を「ざわつく」に置きました。',
       authority: {
@@ -441,6 +498,16 @@
       type: '展示',
       duration: '10:00–18:00',
       price: '無料',
+      canonicalType: 'Exhibition',
+      practicalTruth: {
+        hours: '10:00–18:00',
+        area: '東京都文京区水道1-3-3 トッパン小石川本社ビル',
+        price: '無料'
+      },
+      contextEligibility: {
+        area: ['tokyo-core', 'tokyo-wide'],
+        budgetBand: ['free', 'under-3000', 'under-5000', 'flexible']
+      },
       tags: ['グラフィックを見る'],
       reason: 'GRAPHIC TRIALは、クリエイターとTOPPANの共創で、グラフィックデザインと印刷表現の新しい可能性を探ってきた20年の試み。感情書店では、異なる発想と技術が接触し、その試行の積み重ねが見えることを「ぶつかる」として読みました。',
       authority: {
@@ -502,6 +569,17 @@
       type: '書店',
       duration: '9:00–21:00',
       price: '平日 2,750円〜',
+      canonicalType: 'Place',
+      practicalTruth: {
+        area: '東京都港区六本木6-1-20 六本木電気ビル1F',
+        hours: '9:00–21:00',
+        access: '六本木駅 3・1a出口から徒歩1分',
+        admission: '平日 2,750円〜'
+      },
+      contextEligibility: {
+        area: ['tokyo-core', 'tokyo-wide'],
+        budgetBand: ['under-3000', 'under-5000', 'flexible']
+      },
       tags: ['本に囲まれて過ごす'],
       reason: '文喫は、約3万冊の本を販売しながら、一人で本と向き合う閲覧室などを備え、入場料を払って滞在する書店。感情書店では、何かをすぐ選ぶより、本に囲まれる時間そのものを先に確保する仕組みを見て、この場所を「身を引く」に置きました。',
       authority: {
@@ -563,6 +641,17 @@
       type: '場所',
       duration: '9:00–18:00（8–9月）',
       price: '一般 500円',
+      canonicalType: 'Place',
+      practicalTruth: {
+        area: '東京都新宿区内藤町11',
+        hours: '9:00–18:00（8–9月）',
+        access: '新宿御苑前駅 出口1から徒歩5分',
+        admission: '一般 500円'
+      },
+      contextEligibility: {
+        area: ['tokyo-core', 'tokyo-wide'],
+        budgetBand: ['under-3000', 'under-5000', 'flexible']
+      },
       tags: ['場所を訪れる'],
       reason: '新宿御苑では、整形式庭園、風景式庭園、日本庭園など、歩くうちに景色の組み立て方が切り替わる。感情書店では、ひとつの見方に名前をつけて固定する前に、異なる景色の秩序を行き来してみる場所として、この場所を「まだ名前がない」に置きました。',
       authority: {
@@ -796,6 +885,8 @@
       reasons.push('APPROVED_RELATION_MISMATCH');
     }
     if (!record || !record.title || !record.reason) reasons.push('READER_FIELDS_INCOMPLETE');
+    if (!MATCHING || typeof MATCHING.resolvePracticalTruth !== 'function' ||
+        !MATCHING.resolvePracticalTruth(record)) reasons.push('TYPE_SPECIFIC_TRUTH_INVALID');
     if (!hasCompletePlaceDetail(record)) reasons.push('PLACE_DETAIL_INCOMPLETE');
     if (!isFresh(record, asOf)) reasons.push('STALE_OR_INVALID_FRESHNESS');
     if (!hasOnlyApprovedAction(record)) reasons.push('ACTION_DESTINATION_INVALID');
@@ -839,6 +930,41 @@
     };
   }
 
+  function releaseRelations(asOf) {
+    var rows = [];
+    SHELF_IDS.forEach(function (shelfId) {
+      (OUTING_RELATIONS[shelfId] || []).forEach(function (placement) {
+        var record = byId(placement.experienceId, asOf);
+        var truth = record && MATCHING && MATCHING.resolvePracticalTruth(record);
+        var source = record && record.placeDetail && record.placeDetail.officialSource;
+        var action = record && AD && AD.actionsForExperience(record).filter(function (item) {
+          return item.kind === 'primary';
+        })[0];
+        var host = null;
+        try { host = source && new URL(source.sourceUrl).hostname; } catch (error) { host = null; }
+        if (!record || !truth || !source || !action) return;
+        rows.push({
+          shelfId: shelfId,
+          contentId: record.id,
+          canonicalObjectId: source.sourceUrl,
+          normalizedType: truth.type,
+          sourceFamily: host,
+          sourceUrl: source.sourceUrl,
+          sourceTraceable: true,
+          officialVerified: Boolean(source.verifiedOn),
+          editorialWhy: record.placeDetail.placementReason,
+          actionStatus: 'ready',
+          freshnessStatus: isFresh(record, asOf) ? 'ready' : 'stale',
+          mediaStatus: record.visualAsset.status === 'real_ready' ? 'real_ready' : 'fallback_ready',
+          language: 'ja',
+          eligible: true,
+          role: 'base'
+        });
+      });
+    });
+    return clone(rows);
+  }
+
   /* Adapter only: it does not append real records to the prototype fixture pool. */
   if (global.V3_DATA && typeof fixtureById === 'function') {
     global.V3_DATA.byId = function (id) {
@@ -872,6 +998,7 @@
     validateRecord: validateRecord,
     validateVisualAsset: validateVisualAsset,
     isFresh: isFresh,
+    releaseRelations: releaseRelations,
     snapshot: function () { return clone(records); }
   });
 })(window);

@@ -33,6 +33,9 @@ vm.runInNewContext(read('v3-prototype/js/data.js'), { window }, { filename: 'dat
 vm.runInNewContext(read('v3-prototype/js/action_destination.js'), {
   window, URL, Object
 }, { filename: 'action_destination.js' });
+vm.runInNewContext(read('v3-prototype/js/cultural_matching.js'), {
+  window, URL, Object, Date, JSON, RegExp, Number, isNaN
+}, { filename: 'cultural_matching.js' });
 vm.runInNewContext(read('v3-prototype/js/real_experience_registry.js'), {
   window, URL, Object, Date, JSON, RegExp, isNaN
 }, { filename: 'real_experience_registry.js' });

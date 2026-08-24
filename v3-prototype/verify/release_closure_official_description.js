@@ -1,12 +1,12 @@
 /* =============================================================================
- * Release Closure — 公式説明 → なぜ、この棚に？ 構造契約
+ * Release Closure — S1B Truth → Editorial → Action → Official Detail contract
  * 実行: node verify/release_closure_official_description.js
  * -----------------------------------------------------------------------------
  * 検証する新しい正式契約:
  *  - 8件の Outing に出典明示された公式説明レイヤーが存在する
  *  - 公式説明は公式一次情報にもとづく要約であり、公式文の転載ではない
  *  - Fact（公式説明）と Interpretation（なぜ、この棚に？）が分離されている
- *  - Detail の読み順が title → 公式説明 → なぜこの棚 → 実用情報 → Action
+ *  - Detail の読み順が Hero/Identity → Practical Truth → Editorial → Action → Official Detail
  *  - 公式出典 host が既存の承認済み Action destination host を超えない
  * ========================================================================== */
 const fs = require('fs');
@@ -17,11 +17,15 @@ const SRC = path.resolve(__dirname, '..');
 const read = (rel) => fs.readFileSync(path.join(SRC, rel), 'utf8');
 const appSource = read('js/app.js');
 const css = read('css/v3.css');
+const matchingSource = read('js/cultural_matching.js');
 const registrySource = read('js/real_experience_registry.js');
 
 const window = { URL, open() { return null; } };
 vm.runInNewContext(read('js/data.js'), { window }, { filename: 'data.js' });
 vm.runInNewContext(read('js/action_destination.js'), { window, URL, Object }, { filename: 'ad.js' });
+vm.runInNewContext(matchingSource, {
+  window, URL, Object, Date, JSON, RegExp, Number, isNaN
+}, { filename: 'cultural_matching.js' });
 vm.runInNewContext(registrySource, {
   window, URL, Object, Date, JSON, RegExp, isNaN
 }, { filename: 'registry.js' });
@@ -97,22 +101,29 @@ const detailEnd = appSource.indexOf('function planSummary(');
 const detailSrc = appSource.slice(detailStart, detailEnd);
 check('surfaceDetail source block located', detailStart > 0 && detailEnd > detailStart);
 
-const iTitle = detailSrc.indexOf("id: 'surface-title'");
-const iOfficial = detailSrc.indexOf('detail-official-description');
-const iWhy = detailSrc.indexOf('detail-editorial-reason');
-const iFacts = detailSrc.indexOf('place-detail-access');
-const iActions = detailSrc.indexOf("nodes.push(h('div', { class: 'actions detail-actions' }");
-check('reader order: title < 公式説明 < なぜこの棚',
-  iTitle > 0 && iOfficial > iTitle && iWhy > iOfficial, `${iTitle}/${iOfficial}/${iWhy}`);
-check('reader order: なぜこの棚 < 実用情報 < Primary Action',
-  iFacts > iWhy && iActions > iFacts, `${iWhy}/${iFacts}/${iActions}`);
+const summaryStart = detailSrc.indexOf('var summary = [');
+const nodesStart = detailSrc.indexOf('var nodes = [', summaryStart);
+const summarySrc = detailSrc.slice(summaryStart, nodesStart);
+const nodesSrc = detailSrc.slice(nodesStart);
+const iTitle = summarySrc.indexOf("id: 'surface-title'");
+const iTruth = summarySrc.indexOf('detail-practical-truth');
+const iWhy = summarySrc.indexOf('detail-editorial-reason');
+const iHero = nodesSrc.indexOf('detail-visual-column');
+const iActions = nodesSrc.indexOf("class: 'actions detail-actions'");
+const iOfficial = nodesSrc.indexOf('detail-official-description');
+const iFacts = nodesSrc.indexOf('place-detail-access');
+check('reader order: Identity < Practical Truth < Editorial Why',
+  iTitle > 0 && iTruth > iTitle && iWhy > iTruth, `${iTitle}/${iTruth}/${iWhy}`);
+check('reader order: Hero < Primary Action < Official Detail < deeper access',
+  iHero >= 0 && iActions > iHero && iOfficial > iActions && iFacts > iOfficial,
+  `${iHero}/${iActions}/${iOfficial}/${iFacts}`);
 check('official description renders attribution and source link',
   detailSrc.includes('detail-official-attribution') &&
   detailSrc.includes('detail-official-source-link') &&
   detailSrc.includes("rel: 'noopener noreferrer'") &&
   detailSrc.includes("target: '_blank'"));
-check('official description section keeps どんな場所か heading',
-  detailSrc.includes("text: 'どんな場所か'"));
+check('official description section has explicit deeper-fact heading',
+  detailSrc.includes("text: '公式情報からわかること'"));
 check('Discovery card renders a one-line official summary',
   appSource.includes('cardOfficialSummary') && appSource.includes('real-discovery-official'));
 

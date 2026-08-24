@@ -10,6 +10,7 @@ const SRC = path.resolve(__dirname, '..');
 const read = (rel) => fs.readFileSync(path.join(SRC, rel), 'utf8');
 const dataSource = read('js/data.js');
 const adSource = read('js/action_destination.js');
+const matchingSource = read('js/cultural_matching.js');
 const registrySource = read('js/real_experience_registry.js');
 const appSource = read('js/app.js');
 const css = read('css/v3.css');
@@ -21,6 +22,9 @@ const productJs = fs.readdirSync(path.join(SRC, 'js'))
 const window = { URL, open() { return null; } };
 vm.runInNewContext(dataSource, { window }, { filename: 'data.js' });
 vm.runInNewContext(adSource, { window, URL, Object }, { filename: 'action_destination.js' });
+vm.runInNewContext(matchingSource, {
+  window, URL, Object, Date, JSON, RegExp, Number, isNaN
+}, { filename: 'cultural_matching.js' });
 vm.runInNewContext(registrySource, {
   window, URL, Object, Date, JSON, RegExp, isNaN
 }, { filename: 'real_experience_registry.js' });
@@ -97,7 +101,7 @@ check('Google Maps deep link contains destination',
   maps.searchParams.get('destination') === '東京都新宿区内藤町11');
 check('Google Maps deep link contains no origin', !maps.searchParams.has('origin'));
 
-['どんな場所か', 'おすすめの過ごし方', 'なぜ、この棚に？', '訪れるための情報'].forEach((label) => {
+['公式情報からわかること', 'おすすめの過ごし方', '感情書店編集部より', '訪れるための情報'].forEach((label) => {
   check(`Detail renders ${label}`, appSource.includes(`text: '${label}'`));
 });
 check('address / station / walk facts render from approved record',
