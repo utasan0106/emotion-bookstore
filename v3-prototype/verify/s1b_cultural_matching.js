@@ -6,8 +6,8 @@ const path = require('path');
 const cp = require('child_process');
 
 const ROOT = path.resolve(__dirname, '../..');
-const START = '38bf9ee4a642069f2e992f48c924e5cc23f14c88';
-const BRANCH = 'codex/v3-cultural-matching-s1b-20260824';
+const START = '061afd13b90134cd46f4137e85d22dc7c8b6bc43';
+const BRANCH = 'codex/v3-frontstage-focused-patch-20260824';
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 const git = (args) => cp.execFileSync('git', args, { cwd: ROOT, encoding: 'utf8' }).trim();
 const app = read('v3-prototype/js/app.js');
@@ -40,12 +40,12 @@ function sameAtStart(rel) {
   }
 }
 
-check('exact S1B branch', git(['branch', '--show-current']) === BRANCH, git(['branch', '--show-current']));
+check('exact Frontstage branch', git(['branch', '--show-current']) === BRANCH, git(['branch', '--show-current']));
 let ancestor = true;
 try { cp.execFileSync('git', ['merge-base', '--is-ancestor', START, 'HEAD'], { cwd: ROOT }); }
 catch (error) { ancestor = false; }
-check('exact frozen S1A Start is ancestor', ancestor, START);
-check('S1B lineage merge-base is exact Start', git(['merge-base', START, 'HEAD']) === START);
+check('exact HQ-frozen S1B Start is ancestor', ancestor, START);
+check('Frontstage lineage merge-base is exact Start', git(['merge-base', START, 'HEAD']) === START);
 
 const protectedFiles = [
   'vercel.json', '.vercelignore', 'package.json', 'package-lock.json',
@@ -66,10 +66,10 @@ check('S1B foundation loads before Registry and App',
   scripts.indexOf('<script src="./js/s1b_editorial_content.js"') < scripts.indexOf('<script src="./js/app.js"'));
 check('first paint scripts remain same-origin only', scripts.every((tag) => /src="\.\//.test(tag)));
 check('Product background network remains blocked', /connect-src 'none'/.test(index));
-check('canonical index gate accepts only exact S1B hash with provenance',
-  canonicalGate.includes("const S1B_AUTHORIZED_INDEX_HASH = 'ed249b6635d142581fba50874714ad51ce63338061b50afd652b947b7f66c082'") &&
-  canonicalGate.includes('38bf9ee4a642069f2e992f48c924e5cc23f14c88') &&
-  !/S1B_AUTHORIZED_INDEX_HASH\.(?:startsWith|includes)|slice\([^)]*S1B_AUTHORIZED_INDEX_HASH/.test(canonicalGate));
+check('canonical index gate accepts only exact Frontstage hash with provenance',
+  canonicalGate.includes("const FRONTSTAGE_AUTHORIZED_INDEX_HASH = '103c47df36a3b3382e27df5de3c28b1b853b9c30e992c5add2b63c429e15654f'") &&
+  canonicalGate.includes('061afd13b90134cd46f4137e85d22dc7c8b6bc43') &&
+  !/FRONTSTAGE_AUTHORIZED_INDEX_HASH\.(?:startsWith|includes)|slice\([^)]*FRONTSTAGE_AUTHORIZED_INDEX_HASH/.test(canonicalGate));
 check('no third-party player is present in static Product HTML', !/<iframe\b|youtube-nocookie|player\.vimeo\.com\/video/i.test(
   index.replace(/content="[^"]*frame-src[^"]*"/, '')
 ));
@@ -90,7 +90,7 @@ check('Context controls do not persist, measure, or serialize',
 check('age/family relationship fields are absent from Product Context UI',
   !/\bage\b|\bchild\b|\bfamily\b|\bcompanion\b|\brelationship\b|\bgender\b/i.test(contextApp));
 
-const discovery = block(app, 'function surfaceLegacyDiscovery', 'function discoveryAsset');
+const discovery = block(app, 'function surfaceLegacyDiscovery', 'function moveNoEmotion');
 check('Discovery informational action is Primary',
   discovery.includes('btn btn-primary real-discovery-primary real-discovery-detail') &&
   discovery.indexOf('real-discovery-detail') < discovery.indexOf('real-discovery-interest'));
@@ -109,13 +109,15 @@ const detail = block(app, 'function surfaceDetail', 'function planSummary');
 const detailSummary = block(detail, 'var summary = [', 'var nodes = [');
 const detailNodes = block(detail, 'var nodes = [', "var surface = section('05-experience-detail'");
 const detailOrder = [
-  detailSummary.indexOf('detail-practical-truth'), detailSummary.indexOf('detail-editorial-reason'),
-  detailNodes.indexOf('detail-visual-column'), detailNodes.indexOf("class: 'actions detail-actions'"),
-  detailNodes.indexOf('detail-official-description')
+  detailSummary.indexOf('contract.firstPull'), detailSummary.indexOf("id: 'surface-title'"),
+  detailSummary.indexOf('detail-editorial-reason'), detailSummary.indexOf('detail-practical-truth'),
+  detailNodes.indexOf('detail-visual-column'), detailNodes.indexOf('detail-official-description'),
+  detailNodes.indexOf("class: 'actions detail-actions'")
 ];
-check('Detail skeleton order is Hero -> Identity/Truth -> Editorial -> Action -> Official detail',
+check('Detail hierarchy is FIRST PULL -> Identity -> Editorial -> Official Truth -> Action',
   detailOrder.every((position) => position >= 0) &&
-  detailOrder[0] < detailOrder[1] && detailOrder[2] < detailOrder[3] && detailOrder[3] < detailOrder[4],
+  detailOrder[0] < detailOrder[1] && detailOrder[1] < detailOrder[2] && detailOrder[2] < detailOrder[3] &&
+  detailOrder[4] < detailOrder[5] && detailOrder[5] < detailOrder[6],
   JSON.stringify(detailOrder));
 check('Detail back route cannot reopen legacy Review',
   detail.includes("onclick: function () { go('discovery'); }") && !detail.includes("go(validActiveId() ? 'review'"));
@@ -148,10 +150,17 @@ check('native media shapes avoid destructive cover crop',
   app.includes('MATCHING.videoRatioClass(record)') &&
   css.includes('.s1b-video-mount.media-ratio-4-3 { aspect-ratio: 4 / 3; }') &&
   !/s1b-video[^}]*object-fit:\s*cover/s.test(css));
-check('live Featured/video/daily inventory is zero, not invented',
+check('live Featured/video/daily/no-emotion inventory is zero, not invented',
   /featured:\s*Object\.freeze\(\[\]\)/.test(content) &&
   /videos:\s*Object\.freeze\(\[\]\)/.test(content) &&
-  /dailyLineups:\s*Object\.freeze\(\[\]\)/.test(content));
+  /dailyLineups:\s*Object\.freeze\(\[\]\)/.test(content) &&
+  /noEmotionLineups:\s*Object\.freeze\(\[\]\)/.test(content));
+check('no-emotion route is finite, shelf-independent and transient',
+  matching.includes('function resolveNoEmotionLineup') &&
+  app.includes("'no-emotion': surfaceNoEmotion") &&
+  app.includes("go('no-emotion-detail', { transient: true })") &&
+  !/Math\.random|forceFill|affinityScore|tasteScore/.test(block(matching,
+    'function resolveNoEmotionLineup', 'function sourceCounts')));
 check('release gate is separate from runtime finite contract',
   matching.includes('targetWorksPerShelf: 3') && matching.includes('targetVideosPerShelf: 1') &&
   matching.includes('runtimeMin: 0') && matching.includes('runtimeMax: 3'));

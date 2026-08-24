@@ -57,9 +57,9 @@ check('source branch exact', git(['branch', '--show-current']) === EXPECTED_BRAN
 check('approved Legal Alignment base is ancestor', cp.spawnSync('git', ['merge-base', '--is-ancestor', BASE, 'HEAD'], { cwd: ROOT }).status === 0);
 check('all V3 pages remain Japanese-only', pages.every((page) => page.includes('<html lang="ja">')));
 
-check('V3 entrance title exact', index.includes('<title>みんなの感情書店 V3｜感情の棚から、次に触れるものへ</title>'));
-check('V3 entrance description factual', index.includes('感じていることから、次に触れるものを見つける。') &&
-  index.includes('感情書店の編集部が理由を説明できる') && index.includes('0〜3件の寄り道') &&
+check('V3 entrance title exact', index.includes('<title>みんなの感情書店 V3｜二つの入口から文化へ</title>'));
+check('V3 entrance description factual', index.includes('感情の棚から、または棚を選ばずに') &&
+  index.includes('感情書店の編集部が理由を説明できる') && index.includes('0〜3件の有限な寄り道') &&
   index.includes('心理状態の診断やパーソナライズ推薦は行いません'));
 check('V3 entrance canonical exact', index.includes(`<link rel="canonical" href="${ORIGIN}/v3-prototype/">`));
 check('V3 entrance robots indexable', index.includes('<meta name="robots" content="index, follow, max-image-preview:large">'));

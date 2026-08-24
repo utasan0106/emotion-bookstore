@@ -32,6 +32,8 @@
   var navigationSequence = 0;
   var pendingDeckMotion = null;
   var pendingFocusSelector = null;
+  var noEmotionIndex = 0;
+  var noEmotionDetailId = null;
   /* Context Fit is intentionally closure-local and session-memory-only. It is
      never serialized by STORE, History, URL, analytics, Interested or Trace. */
   var contextSession = MATCHING && MATCHING.createContextSession
@@ -132,10 +134,14 @@
   }
 
   function go(next, options) {
+    var previousScreen = screen;
     stopActiveMedia();
     screen = normalizePublicScreen(next);
     navigationSequence += 1;
-    if (historyReady && !(options && options.fromHistory)) {
+    var transientNoEmotion = screen === 'no-emotion' || screen === 'no-emotion-detail' ||
+      previousScreen === 'no-emotion' || previousScreen === 'no-emotion-detail';
+    if (historyReady && !(options && options.fromHistory) &&
+        !(options && options.transient) && !transientNoEmotion) {
       try {
         global.history.pushState({ v3Screen: screen }, '', global.location.href);
       } catch (error) {
@@ -143,6 +149,12 @@
       }
     }
     render();
+  }
+
+  function enterNoEmotion() {
+    noEmotionIndex = 0;
+    noEmotionDetailId = null;
+    go('no-emotion', { transient: true });
   }
 
   function metaLine(experience) {
@@ -639,6 +651,10 @@
     switch (screen) {
       case 'emotion':
         return { back: 'entrance', title: '感情の棚を選ぶ', count: '1 / 3', progress: 1 / 3, step: 'STEP 1' };
+      case 'no-emotion':
+        return { back: 'entrance', backLabel: '入口に戻る', transient: true };
+      case 'no-emotion-detail':
+        return { back: 'no-emotion', backLabel: '一覧に戻る', transient: true };
       case 'understanding':
         return { back: 'emotion' };
       case 'editorial-detail':
@@ -685,7 +701,7 @@
     var back = h('button', {
       class: 'stepbar-back', type: 'button',
       'aria-label': config.backLabel || '前の画面へ戻る',
-      onclick: function () { go(config.back); }
+      onclick: function () { go(config.back, { transient: config.transient === true }); }
     }, [
       h('span', { class: 'stepbar-back-label', text: config.backLabel || '戻る' })
     ]);
@@ -734,21 +750,22 @@
         })
       ]),
       h('h1', { class: 'display', tabindex: '-1', id: 'surface-title' }, [
-        h('span', { class: 'display-line', text: '感じていることから、' }),
-        h('span', { class: 'display-line', text: '次に触れるものを見つける。' })
+        h('span', { class: 'frontstage-headline-line', text: '感情から、' }),
+        h('span', { class: 'frontstage-headline-line', text: '本・映画・音楽・場所へ。' })
       ]),
       h('p', { class: 'lede' }, [
-        h('span', { class: 'lede-line', text: '気になる感情の棚をのぞくと、' }),
-        h('span', { class: 'lede-line', text: '理由のある寄り道が見つかります。' }),
-        h('span', { class: 'lede-line', text: 'そして、実際に触れたあとに残ったものを、' }),
-        h('span', { class: 'lede-line', text: '自分だけの記録として残せます。' })
+        h('span', { class: 'lede-line', text: '感情の棚から。選ばず、編集部の仕入れから。' }),
+        h('span', { class: 'lede-line', text: 'どちらからでも、理由のある有限の寄り道へ進めます。' })
       ]),
-      h('button', {
-        class: 'btn btn-primary cta-primary', type: 'button',
-        onclick: function () { go('emotion'); }
-      }, [
-        h('span', { class: 'cta-main', text: 'はじめる' }),
-        h('span', { class: 'cta-sub', text: '感情の棚を選ぶ' })
+      h('div', { class: 'entrance-routes', 'aria-label': '入口を選ぶ' }, [
+        h('button', {
+          class: 'btn btn-primary cta-primary entrance-route-shelf', type: 'button',
+          onclick: function () { go('emotion'); }
+        }, [h('span', { class: 'cta-main', text: '棚から見る' })]),
+        h('button', {
+          class: 'btn btn-line cta-secondary entrance-route-no-emotion', type: 'button',
+          onclick: enterNoEmotion
+        }, [h('span', { text: '選ばずに見る' })])
       ]),
       interested.items.length ? h('button', {
         class: 'interested-entry', type: 'button',
@@ -783,8 +800,8 @@
   var LOOP_STEPS = [
     {
       asset: '01',
-      mobileTitle: '感情の棚を選ぶ', mobileNote: ['気になる棚を', 'ひとつのぞく'],
-      desktopTitle: '感情の棚を選ぶ', desktopNote: ['今の気持ちと違っても、', '気になる棚をのぞく']
+      mobileTitle: '入口を選ぶ', mobileNote: ['棚から／選ばずに見る'],
+      desktopTitle: '入口を選ぶ', desktopNote: ['感情の棚から。', '選ばず、編集部の仕入れから。']
     },
     {
       asset: '02',
@@ -886,8 +903,8 @@
   /* W01 MENU destination copy. PRODUCTION_COPY_REVIEW_REQUIRED */
   var EXPERIENCE_FLOW_ITEMS = [
     {
-      title: '感情の棚をひとつ選ぶ',
-      copy: '今の気持ちと同じでなくて大丈夫です。少し気になる棚を、ひとつのぞきます。'
+      title: '入口を選ぶ',
+      copy: '感情の棚から見ることも、棚を選ばず編集部の仕入れから見ることもできます。'
     },
     {
       title: '理由のある寄り道を見る',
@@ -1377,7 +1394,7 @@
 
   function s1bEditorialContent() {
     var content = global.V3_S1B_EDITORIAL_CONTENT;
-    return content || { featured: [], videos: [], dailyLineups: [] };
+    return content || { featured: [], videos: [], dailyLineups: [], noEmotionLineups: [] };
   }
 
   function todayLocalDate() {
@@ -1396,6 +1413,29 @@
   function activeS1bVideo(shelfId) {
     if (!MATCHING || typeof MATCHING.resolveVideo !== 'function') return null;
     return MATCHING.resolveVideo(s1bEditorialContent().videos, shelfId).item;
+  }
+
+  function activeNoEmotionLineup() {
+    if (!MATCHING || typeof MATCHING.resolveNoEmotionLineup !== 'function') {
+      return { label: null, items: [], reasons: ['NO_EMOTION_RESOLVER_UNAVAILABLE'] };
+    }
+    return MATCHING.resolveNoEmotionLineup(
+      s1bEditorialContent().noEmotionLineups,
+      todayLocalDate(),
+      function (id, asOf) {
+        var record = null;
+        try { record = REAL && REAL.byId ? REAL.byId(id, asOf) : null; }
+        catch (error) { return null; }
+        return record && experienceInformationContract(record) ? record : null;
+      }
+    );
+  }
+
+  function noEmotionExperience(id) {
+    var result = activeNoEmotionLineup();
+    if (result.reasons.length || result.items.indexOf(id) === -1) return null;
+    try { return REAL && REAL.byId ? REAL.byId(id, todayLocalDate()) : null; }
+    catch (error) { return null; }
   }
 
   function s1bFeaturedCard(record) {
@@ -1651,6 +1691,8 @@
           source: source
         } : null,
       editorialWhy: place && place.placementReason ? place.placementReason : experience.reason,
+      firstPull: MATCHING && typeof MATCHING.resolveFirstPull === 'function'
+        ? MATCHING.resolveFirstPull(experience) : null,
       practicalTruth: typeTruth,
       primaryAction: primaryAction || null,
       media: media || null,
@@ -1675,29 +1717,40 @@
     return required.every(function (key) { return Boolean(contract[key]); }) ? contract : null;
   }
 
-  function experienceCard(experience, contract, counter, actions) {
+  function experienceCard(experience, contract, counter, actions, options) {
+    options = options || {};
     var facts = discoveryPracticalFacts(experience);
+    var contextLabel = options.noEmotion
+      ? '棚を選ばない編集部の仕入れ'
+      : '「' + selectedShelfLabel() + '」の棚から';
     return h('article', { class: 'card real-discovery-card', 'aria-label': experience.title }, [
       h('div', { class: 'real-discovery-media' }, [
         counter ? h('p', { class: 'eyebrow real-discovery-counter', text: counter }) : null,
         experienceVisual(experience, 'card')
       ]),
       h('div', { class: 'real-discovery-copy' }, [
-        h('p', { class: 'real-discovery-shelf', text: '「' + selectedShelfLabel() + '」の棚から' }),
+        contract.firstPull ? h('p', {
+          class: 'first-pull', 'data-first-pull': 'approved', text: contract.firstPull
+        }) : null,
+        h('p', { class: 'real-discovery-shelf' }, [
+          h('span', { text: contextLabel }),
+          h('span', { class: 'trust-cue trust-cue-editorial', text: '編集部選定' })
+        ]),
         h('h2', { class: 'card-title', text: experience.title }),
         h('p', {
           class: 'card-meta',
           text: contract.practicalTruth.typeLabel + ' ／ ' + experience.type
         }),
-        h('p', {
-          class: 'real-discovery-official', text: contract.officialGrounding.summary
-        }),
-        facts.length ? h('dl', { class: 'real-discovery-facts' }, facts.map(function (fact) {
-          return h('div', {}, [h('dt', { text: fact.label }), h('dd', { text: fact.value })]);
-        })) : null,
         h('section', { class: 'real-discovery-reason', 'aria-label': 'この棚に置いた理由' }, [
           h('h3', { text: 'なぜ、この棚に？' }),
           h('p', { class: 'card-reason', text: contract.editorialWhy })
+        ]),
+        h('section', { class: 'real-discovery-official', 'aria-label': '公式情報にもとづく事実' }, [
+          h('p', { class: 'trust-cue trust-cue-official', text: '公式情報より' }),
+          h('p', { class: 'real-discovery-official-summary', text: contract.officialGrounding.summary }),
+          facts.length ? h('dl', { class: 'real-discovery-facts' }, facts.map(function (fact) {
+            return h('div', {}, [h('dt', { text: fact.label }), h('dd', { text: fact.value })]);
+          })) : null
         ]),
         h('div', { class: 'real-discovery-actions' }, actions || [])
       ])
@@ -1840,6 +1893,201 @@
     var surface = section(isReal ? '04-discovery' : '09-personalized-discovery', nodes);
     if (isReal) surface.setAttribute('data-selected-shelf', state.emotion || '');
     return surface;
+  }
+
+  function moveNoEmotion(delta) {
+    var lineup = activeNoEmotionLineup();
+    if (lineup.reasons.length || !lineup.items.length) return false;
+    var nextIndex = noEmotionIndex + delta;
+    if (nextIndex < 0 || nextIndex >= lineup.items.length) return false;
+    stopActiveMedia();
+    noEmotionIndex = nextIndex;
+    pendingDeckMotion = delta > 0 ? 'next' : 'previous';
+    render();
+    announce('仕入れ ' + (noEmotionIndex + 1) + ' / ' + lineup.items.length + ' を表示しました。');
+    return true;
+  }
+
+  function surfaceNoEmotion() {
+    var lineup = activeNoEmotionLineup();
+    var count = lineup.items.length;
+    var nodes = [
+      h('div', { class: 'no-emotion-heading' }, [
+        h('p', { class: 'eyebrow', text: '感情の棚を通らない入口' }),
+        h('h1', {
+          class: 'question', tabindex: '-1', id: 'surface-title', text: '選ばずに見る'
+        }),
+        h('p', {
+          class: 'body-lg',
+          text: '感情を選ばず、編集部が確認した0〜3件の仕入れだけを見られます。'
+        })
+      ])
+    ];
+
+    if (lineup.reasons.length) {
+      nodes.push(h('div', {
+        class: 'no-emotion-empty no-emotion-error', 'data-lineup-state': 'error',
+        'data-lineup-count': '0'
+      }, [
+        h('h2', { class: 'section-title', text: 'いま、案内を表示できません' }),
+        h('p', {
+          class: 'body-lg',
+          text: '仕入れ情報を正しく確認できなかったため、候補は表示していません。'
+        }),
+        h('p', { class: 'note', text: '不完全な情報を、3件の案内として扱うことはしません。' })
+      ]));
+    } else if (!count) {
+      nodes.push(h('div', {
+        class: 'no-emotion-empty', 'data-lineup-state': 'empty', 'data-lineup-count': '0'
+      }, [
+        h('p', { class: 'trust-cue trust-cue-editorial', text: '編集部選定' }),
+        h('h2', { class: 'section-title', text: 'いま、案内できるものはありません' }),
+        h('p', {
+          class: 'body-lg',
+          text: '確認済みの仕入れだけを置くため、数をそろえていません。'
+        })
+      ]));
+    } else {
+      if (noEmotionIndex >= count) noEmotionIndex = 0;
+      var experience = noEmotionExperience(lineup.items[noEmotionIndex]);
+      var contract = experienceInformationContract(experience);
+      if (!experience || !contract) {
+        return h('section', {
+          class: 'surface no-emotion-surface', 'data-surface': '10-no-emotion',
+          'data-lineup-state': 'error', 'data-lineup-count': '0',
+          'aria-labelledby': 'surface-title'
+        }, nodes.concat([h('div', { class: 'no-emotion-empty no-emotion-error' }, [
+          h('h2', { class: 'section-title', text: 'いま、案内を表示できません' }),
+          h('p', { class: 'body-lg', text: '確認済みの内容だけを表示するため、この仕入れは閉じています。' })
+        ])]));
+      }
+      var actions = [
+        h('button', {
+          class: 'btn btn-primary real-discovery-primary real-discovery-detail', type: 'button',
+          onclick: function () {
+            noEmotionDetailId = experience.id;
+            go('no-emotion-detail', { transient: true });
+          }
+        }, [h('span', { text: '詳しく見る' })]),
+        h('button', {
+          class: 'btn btn-line real-discovery-interest', type: 'button',
+          'aria-pressed': isInterested(experience.id) ? 'true' : 'false',
+          'data-interest-state': isInterested(experience.id) ? 'saved' : 'unsaved',
+          onclick: function () { toggleInterested(experience.id); }
+        }, [icon('bookmark'), h('span', { text: interestedLabel(experience.id) })])
+      ];
+      var card = experienceCard(
+        experience, contract, (noEmotionIndex + 1) + ' / ' + count, actions, { noEmotion: true }
+      );
+      if (count > 1) {
+        attachSwipe(card, function () { moveNoEmotion(1); }, function () { moveNoEmotion(-1); });
+      }
+      nodes.push(h('div', {
+        class: 'card-stage', 'data-lineup-state': 'ready', 'data-lineup-count': String(count),
+        'data-lineup-key': lineup.deterministicKey
+      }, [card]));
+      if (count > 1) {
+        nodes.push(h('nav', { class: 'deck-navigation no-emotion-navigation', 'aria-label': '仕入れを前後に見る' }, [
+          h('button', {
+            class: 'btn btn-line no-emotion-previous', type: 'button',
+            disabled: noEmotionIndex === 0, onclick: function () { moveNoEmotion(-1); }
+          }, [h('span', { 'aria-hidden': 'true', text: '←' }), h('span', { text: '前を見る' })]),
+          h('button', {
+            class: 'btn btn-line no-emotion-next', type: 'button',
+            disabled: noEmotionIndex === count - 1, onclick: function () { moveNoEmotion(1); }
+          }, [h('span', { text: '次を見る' }), h('span', { 'aria-hidden': 'true', text: '→' })])
+        ]));
+      }
+    }
+
+    var surface = section('10-no-emotion', nodes);
+    surface.classList.add('no-emotion-surface');
+    surface.setAttribute('data-lineup-count', String(count));
+    surface.setAttribute('data-lineup-state', lineup.reasons.length ? 'error' : (count ? 'ready' : 'empty'));
+    return surface;
+  }
+
+  function surfaceNoEmotionDetail() {
+    var experience = noEmotionExperience(noEmotionDetailId);
+    var contract = experienceInformationContract(experience);
+    if (!experience || !contract) {
+      noEmotionDetailId = null;
+      return surfaceNoEmotion();
+    }
+    var facts = contract.practicalTruth.facts;
+    var source = contract.officialGrounding.source;
+    var actions = approvedDestinationActions(experience);
+    var actionNodes = actions.map(function (action) {
+      return h('button', {
+        class: action.kind === 'primary' ? 'btn btn-primary detail-primary-action' : 'btn btn-text detail-utility-action',
+        type: 'button', 'data-action-destination': action.kind,
+        onclick: destinationActionHandler(action, experience)
+      }, [
+        h('span', { text: action.kind === 'maps' ? '地図で見る' : action.label }),
+        h('span', { 'aria-hidden': 'true', text: '↗' })
+      ]);
+    });
+    actionNodes.push(h('button', {
+      class: 'btn btn-line real-discovery-interest', type: 'button',
+      'aria-pressed': isInterested(experience.id) ? 'true' : 'false',
+      'data-interest-state': isInterested(experience.id) ? 'saved' : 'unsaved',
+      onclick: function () { toggleInterested(experience.id); }
+    }, [icon('bookmark'), h('span', { text: interestedLabel(experience.id) })]));
+
+    var summary = [
+      contract.firstPull ? h('p', {
+        class: 'first-pull', 'data-first-pull': 'approved', text: contract.firstPull
+      }) : null,
+      h('p', { class: 'detail-shelf-context' }, [
+        h('span', { text: '棚を選ばない編集部の仕入れ' }),
+        h('span', { class: 'trust-cue trust-cue-editorial', text: '編集部選定' })
+      ]),
+      h('h1', {
+        class: 'display display-sm place-detail-title', tabindex: '-1',
+        id: 'surface-title', text: experience.title
+      }),
+      h('p', {
+        class: 'card-meta place-detail-meta',
+        text: contract.practicalTruth.typeLabel + ' ／ ' + experience.type
+      }),
+      h('section', { class: 'detail-editorial-reason', 'aria-labelledby': 'no-emotion-reason-title' }, [
+        h('h2', { class: 'section-title', id: 'no-emotion-reason-title', text: 'なぜ、ここに？' }),
+        h('p', { class: 'body-lg place-detail-body', text: contract.editorialWhy })
+      ]),
+      h('section', { class: 'detail-practical-truth', 'aria-labelledby': 'no-emotion-truth-title' }, [
+        h('p', { class: 'trust-cue trust-cue-official', text: '公式情報より' }),
+        h('h2', { class: 'section-title', id: 'no-emotion-truth-title', text: '訪れる前にわかること' }),
+        h('p', { class: 'body-lg no-emotion-official-summary', text: contract.officialGrounding.summary }),
+        h('dl', { class: 'detail-truth-list' }, facts.map(function (fact) {
+          return h('div', {}, [h('dt', { text: fact.label }), h('dd', { text: fact.value })]);
+        }))
+      ])
+    ];
+
+    return section('11-no-emotion-detail', [
+      h('div', { class: 'detail-hero no-emotion-detail-hero' }, [
+        h('div', { class: 'detail-visual-column' }, [experienceVisual(experience, 'detail')]),
+        h('div', { class: 'detail-summary-column' }, summary)
+      ]),
+      h('section', { class: 'detail-official-description', 'aria-labelledby': 'no-emotion-official-title' }, [
+        h('h2', { class: 'section-title', id: 'no-emotion-official-title', text: '公式情報からわかること' }),
+        h('p', { class: 'detail-official-attribution', text: source.attributionLabel }),
+        h('p', { class: 'body-lg place-detail-body', text: contract.officialGrounding.description }),
+        h('p', { class: 'detail-official-provenance' }, [
+          h('span', { text: '出典：' }),
+          h('a', {
+            class: 'detail-official-source-link', href: source.sourceUrl,
+            target: '_blank', rel: 'noopener noreferrer', text: source.sourceName
+          }),
+          h('span', { text: '（' + source.verifiedOn + ' 確認）' })
+        ])
+      ]),
+      h('div', { class: 'actions detail-actions no-emotion-detail-actions', 'aria-label': 'この文化物の行き先' }, actionNodes),
+      h('button', {
+        class: 'btn btn-text no-emotion-detail-back', type: 'button',
+        onclick: function () { go('no-emotion', { transient: true }); }
+      }, [h('span', { text: '一覧に戻る' })])
+    ]);
   }
 
   function discoveryAsset(file) {
@@ -2599,14 +2847,20 @@
       }, [h('span', { text: '戻る' })])
     );
 
-    /* S1B reader order:
-       Hero -> Identity -> type-specific Practical Truth -> Editorial Why ->
-       Action -> deeper Official Detail. Official text is source-grounded
-       paraphrase, never copied as an unsourced editorial claim. */
+    /* Frontstage reader order:
+       FIRST PULL -> Identity -> Editorial Why -> Official Fact / Practical
+       Truth -> Official Action. Official text is source-grounded paraphrase,
+       never copied as an unsourced editorial claim. */
     var officialSource = contract.officialGrounding.source;
     var truthFacts = contract.practicalTruth.facts;
     var summary = [
-      h('p', { class: 'eyebrow detail-shelf-context', text: '「' + selectedShelfLabel() + '」の棚から' }),
+      contract.firstPull ? h('p', {
+        class: 'first-pull', 'data-first-pull': 'approved', text: contract.firstPull
+      }) : null,
+      h('p', { class: 'eyebrow detail-shelf-context' }, [
+        h('span', { text: '「' + selectedShelfLabel() + '」の棚から' }),
+        h('span', { class: 'trust-cue trust-cue-editorial', text: '編集部選定' })
+      ]),
       h('h1', {
         class: 'display display-sm' + (placeDetail ? ' place-detail-title' : ''),
         tabindex: '-1', id: 'surface-title', text: experience.title
@@ -2615,20 +2869,21 @@
         class: 'card-meta' + (placeDetail ? ' place-detail-meta' : ''),
         text: contract.practicalTruth.typeLabel + ' ／ ' + experience.type
       }),
-      h('section', {
-        class: 'detail-practical-truth', 'aria-labelledby': 'detail-truth-title'
-      }, [
-        h('h2', { class: 'section-title', id: 'detail-truth-title', text: '訪れる前にわかること' }),
-        h('dl', { class: 'detail-truth-list' }, truthFacts.map(function (fact) {
-          return h('div', {}, [h('dt', { text: fact.label }), h('dd', { text: fact.value })]);
-        }))
-      ]),
       h('section', { class: 'detail-editorial-reason', 'aria-labelledby': 'detail-reason-title' }, [
-        h('h2', { class: 'section-title', id: 'detail-reason-title', text: '感情書店編集部より' }),
+        h('h2', { class: 'section-title', id: 'detail-reason-title', text: 'なぜ、この棚に？' }),
         h('p', {
           class: 'body-lg place-detail-body',
           text: contract.editorialWhy
         })
+      ]),
+      h('section', {
+        class: 'detail-practical-truth', 'aria-labelledby': 'detail-truth-title'
+      }, [
+        h('p', { class: 'trust-cue trust-cue-official', text: '公式情報より' }),
+        h('h2', { class: 'section-title', id: 'detail-truth-title', text: '訪れる前にわかること' }),
+        h('dl', { class: 'detail-truth-list' }, truthFacts.map(function (fact) {
+          return h('div', {}, [h('dt', { text: fact.label }), h('dd', { text: fact.value })]);
+        }))
       ]),
       h('dl', { class: 'detail-trust-meta', 'aria-label': '情報とメディアの確認状況' }, [
         h('div', {}, [
@@ -2649,8 +2904,7 @@
       h('div', { class: 'detail-hero' }, [
         h('div', { class: 'detail-visual-column' }, [experienceVisual(experience, 'detail')]),
         h('div', { class: 'detail-summary-column' }, summary)
-      ]),
-      h('div', { class: 'actions detail-actions', 'aria-label': 'この文化物の行き先' }, detailActions)
+      ])
     ];
     if (placeDetail) {
       nodes.push(h('div', { class: 'place-detail-content' }, [
@@ -2703,6 +2957,9 @@
         text: 'これはUX確認用のprototype dataです。実在の店舗・イベントではありません。'
       }));
     }
+    nodes.push(h('div', {
+      class: 'actions detail-actions', 'aria-label': 'この文化物の行き先'
+    }, detailActions));
     var surface = section('05-experience-detail', nodes);
     if (placeDetail) surface.classList.add('place-detail');
     return surface;
@@ -3169,6 +3426,8 @@
   var SURFACES = {
     entrance: surfaceEntrance,
     emotion: surfaceEmotion,
+    'no-emotion': surfaceNoEmotion,
+    'no-emotion-detail': surfaceNoEmotionDetail,
     understanding: surfaceUnderstanding,
     'editorial-detail': surfaceEditorialDetail,
     discovery: surfaceDiscovery,
@@ -3224,7 +3483,7 @@
     screen = normalizePublicScreen(screen);
     var build = SURFACES[screen] || surfaceEntrance;
     var next = build();
-    if (pendingDeckMotion && screen === 'discovery') {
+    if (pendingDeckMotion && (screen === 'discovery' || screen === 'no-emotion')) {
       next.classList.add(pendingDeckMotion === 'next' ? 'deck-enter-next' : 'deck-enter-previous');
     }
     pendingDeckMotion = null;
@@ -3275,6 +3534,8 @@
       state = STORE.emptyState();
       if (contextSession) contextSession.clearAll();
       selectedEditorialId = null;
+      noEmotionIndex = 0;
+      noEmotionDetailId = null;
       screen = 'entrance';
       navigationSequence += 1;
       render();
@@ -3328,6 +3589,12 @@
       node.addEventListener('click', function () {
         closeHeaderMenu(false);
         go('emotion');
+      });
+    });
+    document.querySelectorAll('[data-nav="no-emotion"]').forEach(function (node) {
+      node.addEventListener('click', function () {
+        closeHeaderMenu(false);
+        enterNoEmotion();
       });
     });
     document.querySelectorAll('[data-nav="scroll"]').forEach(function (node) {

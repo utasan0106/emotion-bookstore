@@ -6,7 +6,7 @@
  *  - 8件の Outing に出典明示された公式説明レイヤーが存在する
  *  - 公式説明は公式一次情報にもとづく要約であり、公式文の転載ではない
  *  - Fact（公式説明）と Interpretation（なぜ、この棚に？）が分離されている
- *  - Detail の読み順が Hero/Identity → Practical Truth → Editorial → Action → Official Detail
+ *  - Detail の読み順が FIRST PULL → Identity → Editorial → Official Truth → Action
  *  - 公式出典 host が既存の承認済み Action destination host を超えない
  * ========================================================================== */
 const fs = require('fs');
@@ -105,6 +105,7 @@ const summaryStart = detailSrc.indexOf('var summary = [');
 const nodesStart = detailSrc.indexOf('var nodes = [', summaryStart);
 const summarySrc = detailSrc.slice(summaryStart, nodesStart);
 const nodesSrc = detailSrc.slice(nodesStart);
+const iPull = summarySrc.indexOf('contract.firstPull');
 const iTitle = summarySrc.indexOf("id: 'surface-title'");
 const iTruth = summarySrc.indexOf('detail-practical-truth');
 const iWhy = summarySrc.indexOf('detail-editorial-reason');
@@ -112,11 +113,12 @@ const iHero = nodesSrc.indexOf('detail-visual-column');
 const iActions = nodesSrc.indexOf("class: 'actions detail-actions'");
 const iOfficial = nodesSrc.indexOf('detail-official-description');
 const iFacts = nodesSrc.indexOf('place-detail-access');
-check('reader order: Identity < Practical Truth < Editorial Why',
-  iTitle > 0 && iTruth > iTitle && iWhy > iTruth, `${iTitle}/${iTruth}/${iWhy}`);
-check('reader order: Hero < Primary Action < Official Detail < deeper access',
-  iHero >= 0 && iActions > iHero && iOfficial > iActions && iFacts > iOfficial,
-  `${iHero}/${iActions}/${iOfficial}/${iFacts}`);
+check('reader order: FIRST PULL < Identity < Editorial Why < Practical Truth',
+  iPull >= 0 && iTitle > iPull && iWhy > iTitle && iTruth > iWhy,
+  `${iPull}/${iTitle}/${iWhy}/${iTruth}`);
+check('reader order: Hero < Official Detail < deeper access < Official Action',
+  iHero >= 0 && iOfficial > iHero && iFacts > iOfficial && iActions > iFacts,
+  `${iHero}/${iOfficial}/${iFacts}/${iActions}`);
 check('official description renders attribution and source link',
   detailSrc.includes('detail-official-attribution') &&
   detailSrc.includes('detail-official-source-link') &&

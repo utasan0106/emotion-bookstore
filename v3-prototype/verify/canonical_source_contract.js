@@ -95,11 +95,17 @@ const S1A_AUTHORIZED_INDEX_HASH = '63ee5078027d376948509affc51d3a04cfe6564d81fb1
    38bf9ee4a642069f2e992f48c924e5cc23f14c88: two same-origin S1B scripts only.
    This is one full SHA-256; wildcard/prefix/generic alternate acceptance is 0. */
 const S1B_AUTHORIZED_INDEX_HASH = 'ed249b6635d142581fba50874714ad51ce63338061b50afd652b947b7f66c082';
+/* Exact exception authorized by the Founder Frontstage Focused Patch contract,
+   branch codex/v3-frontstage-focused-patch-20260824, from HQ-frozen S1B Start
+   061afd13b90134cd46f4137e85d22dc7c8b6bc43: M01/W01 entrance metadata and
+   its matching exact JSON-LD CSP hash. Full SHA-256 only; wildcard/prefix 0. */
+const FRONTSTAGE_AUTHORIZED_INDEX_HASH = '103c47df36a3b3382e27df5de3c28b1b853b9c30e992c5add2b63c429e15654f';
 for (const [rel, expected] of Object.entries(unchanged)) {
   const actual = sha(file(rel));
   check(`protected or explicitly approved hash: ${rel}`,
     actual === expected || (rel === 'index.html' &&
-      (actual === S1A_AUTHORIZED_INDEX_HASH || actual === S1B_AUTHORIZED_INDEX_HASH)),
+      (actual === S1A_AUTHORIZED_INDEX_HASH || actual === S1B_AUTHORIZED_INDEX_HASH ||
+       actual === FRONTSTAGE_AUTHORIZED_INDEX_HASH)),
     actual);
 }
 check('package.json dependency addition 0', !fs.existsSync(file('package.json')) && !fs.existsSync(file('package-lock.json')));

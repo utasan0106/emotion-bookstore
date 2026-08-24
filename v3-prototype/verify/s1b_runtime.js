@@ -155,7 +155,10 @@ async function noHorizontalOverflow(page) {
         await page.locator('.detail-actions [data-action-destination="primary"]').count() === 1);
       const detailText = await page.locator('#view').textContent();
       check(`runtime ${count}: Official fact and Editorial Why are separate`,
-        detailText.includes('公式情報からわかること') && detailText.includes('感情書店編集部より'));
+        detailText.includes('公式情報からわかること') && detailText.includes('なぜ、この棚に？') &&
+        await page.locator('.detail-editorial-reason').count() === 1 &&
+        await page.locator('.detail-practical-truth .trust-cue-official').count() === 1 &&
+        await page.locator('.detail-editorial-reason .trust-cue-official').count() === 0);
       await page.click('.detail-actions .btn-text:last-child');
       await page.waitForSelector('.surface[data-surface="04-discovery"]');
 

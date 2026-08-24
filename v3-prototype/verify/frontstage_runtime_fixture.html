@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <base href="../">
+  <title>Frontstage focused patch isolated runtime fixture</title>
+  <link rel="stylesheet" href="./css/v3.css">
+</head>
+<body>
+  <span id="top"></span>
+  <a class="skip-link" href="#view">本文へ移動</a>
+  <header class="site-header">
+    <a class="site-logo" href="#top" aria-label="みんなの感情書店の入口へ戻る">
+      <img src="./assets/canonical-m01-w01/w01_horizontal_lockup.png" alt="" width="326" height="70">
+    </a>
+    <div class="site-header-end">
+      <button id="headerMenuTrigger" class="header-menu-trigger" type="button"
+              aria-expanded="false" aria-controls="headerNavPanel" aria-haspopup="true">MENU</button>
+    </div>
+    <nav id="headerNavPanel" class="site-nav header-nav-panel" aria-label="サイト内ナビゲーション" hidden>
+      <ul>
+        <li><button class="site-nav-link" type="button" data-nav="no-emotion">選ばずに見る</button></li>
+        <li><a class="site-nav-link" href="#core-loop" data-nav="scroll">体験の流れ</a></li>
+        <li><button class="site-nav-link" type="button" data-nav="start">感情の棚</button></li>
+        <li><a class="site-nav-link" href="#trust" data-nav="scroll">よくある質問</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div id="stepbar"></div>
+  <main id="view" class="view" tabindex="-1"></main>
+  <footer class="legal-footer" aria-label="法的情報">
+    <nav class="legal-footer-links" aria-label="プライバシーと利用規約">
+      <a class="legal-footer-link" href="./privacy.html">プライバシー</a>
+      <a class="legal-footer-link" href="./terms.html">利用規約</a>
+    </nav>
+  </footer>
+  <footer id="debugFooter" class="proto-footer" hidden>
+    <button id="reset" class="proto-reset" type="button">Reset Prototype</button>
+  </footer>
+  <div id="live" class="sr-only" role="status" aria-live="polite"></div>
+
+  <script src="./js/data.js"></script>
+  <script src="./js/store.js"></script>
+  <script src="./js/personalize.js"></script>
+  <script src="./js/action_destination.js"></script>
+  <script src="./js/cultural_matching.js"></script>
+  <script src="./js/real_experience_registry.js"></script>
+  <script src="./js/interested_retrieval.js"></script>
+  <script src="./js/public_editorial.js"></script>
+  <script src="./js/public_editorial_content.js"></script>
+  <script src="./js/s1b_editorial_content.js"></script>
+  <script src="./verify/frontstage_runtime_fixture.js"></script>
+  <script src="./js/analytics.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

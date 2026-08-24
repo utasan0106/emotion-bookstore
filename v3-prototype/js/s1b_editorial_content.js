@@ -4,9 +4,14 @@
   'use strict';
 
   global.V3_S1B_EDITORIAL_CONTENT = Object.freeze({
-    version: 'v3-s1b-editorial-content-v1',
+    version: 'v3-frontstage-editorial-content-v1',
     featured: Object.freeze([]),
     videos: Object.freeze([]),
-    dailyLineups: Object.freeze([])
+    dailyLineups: Object.freeze([]),
+    /* HQ may mount one READY weekly config after its referenced Registry records
+       pass Source / Official / Rights / Freshness / Human Editorial review:
+       { status, configVersion, label: '編集部の仕入れ', startsOn, expiresOn,
+         itemIds: [0..3 unique approved Registry IDs] }. */
+    noEmotionLineups: Object.freeze([])
   });
 })(window);

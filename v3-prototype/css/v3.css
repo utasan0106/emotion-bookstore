@@ -3935,6 +3935,7 @@ body:has(.trace-phase1) .stepbar-progress { display: block; }
   letter-spacing: 0.035em;
   text-wrap: balance;
 }
+
 .m05-helper,
 .m05-explanation {
   margin-top: 13px;
@@ -5417,4 +5418,250 @@ body:has(.trace-phase1) .stepbar-back svg {
     animation: s1a-deck-fade-in 120ms ease-out both !important;
   }
   .real-discovery-card { transition: color 120ms ease, border-color 120ms ease !important; }
+}
+
+/* =============================================================================
+ * V3 Frontstage Focused Patch — intentional M01/W01 canonical revision
+ * Two restrained entrance routes, shelf-independent finite editorial lineup,
+ * optional FIRST PULL, and compact Fact / Human Editorial trust cues.
+ * ========================================================================== */
+
+.entrance .display {
+  max-width: 19em;
+  margin-top: clamp(16px, 4vw, 28px);
+  font-size: clamp(25px, 6.7vw, 34px);
+  line-height: 1.48;
+  text-wrap: balance;
+}
+
+.frontstage-headline-line {
+  display: block;
+}
+
+.entrance-routes {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 9px;
+  width: min(84vw, 420px);
+  margin-top: 20px;
+}
+
+.entrance .entrance-routes .cta-primary {
+  position: static;
+  left: auto;
+  width: 100%;
+  min-height: 60px;
+  margin: 0;
+  padding: 12px 24px;
+  transform: none;
+}
+
+.entrance .entrance-routes .cta-primary .cta-main {
+  font-size: 18px;
+  letter-spacing: 0.11em;
+}
+
+.entrance .cta-secondary {
+  width: 100%;
+  min-height: 50px;
+  padding: 11px 20px;
+  border-color: rgba(13, 35, 57, 0.25);
+  background: rgba(255, 253, 250, 0.36);
+  font-family: var(--serif);
+  font-size: 15px;
+  letter-spacing: 0.1em;
+}
+
+.entrance .cta-secondary:hover {
+  border-color: rgba(13, 35, 57, 0.48);
+  background: rgba(255, 253, 250, 0.64);
+}
+
+.first-pull {
+  margin: 0 0 15px;
+  padding: 0 0 10px;
+  border-bottom: 1px solid rgba(15, 35, 56, 0.16);
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.65;
+  letter-spacing: 0.025em;
+  color: var(--navy);
+}
+
+.trust-cue {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  color: #536474;
+}
+
+.trust-cue-editorial {
+  padding: 2px 7px;
+  border: 1px solid rgba(15, 35, 56, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 254, 250, 0.72);
+}
+
+.trust-cue-official {
+  margin: 0 0 7px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(15, 35, 56, 0.26);
+}
+
+.real-discovery-shelf,
+.detail-shelf-context {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px 10px;
+}
+
+.real-discovery-reason {
+  margin-top: 14px;
+}
+
+.real-discovery-official {
+  margin-top: 14px;
+}
+
+.real-discovery-official-summary {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.72;
+  color: var(--ink);
+}
+
+.real-discovery-official .real-discovery-facts {
+  margin-top: 10px;
+}
+
+.detail-practical-truth .trust-cue-official {
+  margin-top: 0;
+}
+
+.no-emotion-surface,
+.surface[data-surface="11-no-emotion-detail"] {
+  max-width: 960px;
+  margin-inline: auto;
+}
+
+.no-emotion-heading {
+  max-width: 680px;
+}
+
+.no-emotion-heading .question {
+  margin-top: 8px;
+}
+
+.no-emotion-heading .body-lg {
+  margin-top: 13px;
+  color: var(--muted);
+}
+
+.no-emotion-empty {
+  max-width: 680px;
+  margin-top: 28px;
+  padding: 24px 22px;
+  border: 1px solid var(--reading-border);
+  border-radius: var(--radius-card);
+  background: var(--reading-surface);
+  box-shadow: 0 7px 22px rgba(15, 35, 56, 0.055);
+}
+
+.no-emotion-empty .section-title {
+  margin-top: 11px;
+}
+
+.no-emotion-empty .body-lg {
+  margin-top: 12px;
+}
+
+.no-emotion-error {
+  border-left: 3px solid #8193a2;
+}
+
+.no-emotion-navigation .btn:disabled {
+  opacity: 0.42;
+}
+
+.no-emotion-official-summary {
+  margin-top: 7px;
+}
+
+.no-emotion-detail-actions {
+  margin-top: 22px;
+}
+
+.no-emotion-detail-back {
+  margin: 12px auto 0;
+}
+
+@media (min-width: 1200px) {
+  .entrance .display {
+    max-width: min(620px, 52%);
+    margin-top: 0;
+    font-size: clamp(40px, 3.15vw, 48px);
+    line-height: 1.48;
+  }
+
+  .entrance .lede {
+    max-width: 44%;
+    margin-top: 16px;
+  }
+
+  .entrance-routes {
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+    width: auto;
+    margin-top: 26px;
+  }
+
+  .entrance .entrance-routes .cta-primary {
+    width: 244px;
+    min-height: 62px;
+    padding-inline: 30px;
+  }
+
+  .entrance .cta-secondary {
+    width: 184px;
+    min-height: 50px;
+    padding-inline: 20px;
+  }
+
+  .no-emotion-heading {
+    padding-top: 24px;
+  }
+
+  .no-emotion-empty {
+    padding: 30px 32px;
+  }
+}
+
+@media (max-width: 599px) {
+  .entrance .display {
+    margin-inline: 18px;
+  }
+
+  .no-emotion-surface,
+  .surface[data-surface="11-no-emotion-detail"] {
+    padding-top: 20px;
+  }
+
+  .no-emotion-heading .question {
+    font-size: 29px;
+  }
+
+  .no-emotion-empty {
+    margin-top: 22px;
+    padding: 21px 17px;
+  }
 }

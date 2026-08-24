@@ -441,6 +441,87 @@
     });
   }
 
+  /* Shelf-independent Frontstage lineup. HQ owns the finite ordered IDs; this
+     resolver only validates and returns them. It never selects, ranks, fills,
+     truncates, randomizes, or mutates a reader state. */
+  function resolveNoEmotionLineup(configs, asOf, resolveRecord) {
+    if (!isDateOnly(asOf)) {
+      return Object.freeze({
+        label: null, items: Object.freeze([]),
+        reasons: Object.freeze(['NO_EMOTION_DATE_INVALID']), deterministicKey: null
+      });
+    }
+    var source = Array.isArray(configs) ? configs : [];
+    var ready = source.filter(function (config) {
+      return config && config.status === 'READY';
+    });
+    if (!ready.length) {
+      return Object.freeze({
+        label: '編集部の仕入れ', items: Object.freeze([]),
+        reasons: Object.freeze([]), deterministicKey: asOf + ':empty'
+      });
+    }
+    var malformed = ready.some(function (config) {
+      return !isDateOnly(config.startsOn) || !isDateOnly(config.expiresOn) ||
+        config.startsOn > config.expiresOn;
+    });
+    if (malformed) {
+      return Object.freeze({
+        label: null, items: Object.freeze([]),
+        reasons: Object.freeze(['NO_EMOTION_LINEUP_INVALID']), deterministicKey: null
+      });
+    }
+    var active = ready.filter(function (config) {
+      return config.startsOn <= asOf && asOf <= config.expiresOn;
+    });
+    if (!active.length) {
+      return Object.freeze({
+        label: null, items: Object.freeze([]),
+        reasons: Object.freeze(['NO_EMOTION_LINEUP_EXPIRED']), deterministicKey: null
+      });
+    }
+    if (active.length !== 1) {
+      return Object.freeze({
+        label: null, items: Object.freeze([]),
+        reasons: Object.freeze(['NO_EMOTION_LINEUP_DUPLICATE']), deterministicKey: null
+      });
+    }
+    var config = active[0];
+    var ids = config.itemIds;
+    if (config.label !== '編集部の仕入れ' || !boundedText(config.configVersion, 120) ||
+        !Array.isArray(ids) || ids.length > 3 || ids.some(function (id, index) {
+          return !boundedText(id, 120) || ids.indexOf(id) !== index;
+        }) || typeof resolveRecord !== 'function') {
+      return Object.freeze({
+        label: null, items: Object.freeze([]),
+        reasons: Object.freeze(['NO_EMOTION_LINEUP_INVALID']), deterministicKey: null
+      });
+    }
+    var records = ids.map(function (id) { return resolveRecord(id, asOf); });
+    if (records.some(function (record) { return !record; })) {
+      return Object.freeze({
+        label: null, items: Object.freeze([]),
+        reasons: Object.freeze(['NO_EMOTION_ITEM_INVALID']), deterministicKey: null
+      });
+    }
+    return Object.freeze({
+      label: config.label,
+      items: Object.freeze(ids.slice()),
+      reasons: Object.freeze([]),
+      deterministicKey: asOf + ':' + config.configVersion
+    });
+  }
+
+  /* FIRST PULL is optional Human Editorial copy. Invalid or incomplete input is
+     omitted; Product never synthesizes a fallback. */
+  function resolveFirstPull(record) {
+    var pull = record && record.firstPull;
+    var text = boundedText(pull && pull.text, 180);
+    if (!isPlainObject(pull) || pull.status !== 'READY' ||
+        pull.reviewerHuman !== true || !text) return null;
+    return text;
+  }
+
   function sourceCounts(rows) {
     return rows.reduce(function (counts, row) {
       var key = boundedText(row.sourceFamily, 160) || 'unknown';
@@ -536,6 +617,8 @@
     activateVideo: activateVideo,
     approvedEmbedUrl: approvedEmbedUrl,
     resolveLineup: resolveLineup,
+    resolveNoEmotionLineup: resolveNoEmotionLineup,
+    resolveFirstPull: resolveFirstPull,
     auditReleaseReadiness: auditReleaseReadiness
   });
 })(window);

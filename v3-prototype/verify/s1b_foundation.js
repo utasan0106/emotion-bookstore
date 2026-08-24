@@ -260,7 +260,8 @@ check('release validator detects duplicate ID',
 check('live S1B editorial packet is explicitly empty, not filler',
   /featured:\s*Object\.freeze\(\[\]\)/.test(contentSource) &&
   /videos:\s*Object\.freeze\(\[\]\)/.test(contentSource) &&
-  /dailyLineups:\s*Object\.freeze\(\[\]\)/.test(contentSource));
+  /dailyLineups:\s*Object\.freeze\(\[\]\)/.test(contentSource) &&
+  /noEmotionLineups:\s*Object\.freeze\(\[\]\)/.test(contentSource));
 
 const failed = results.filter((result) => !result.pass);
 console.log(`\n${results.length - failed.length}/${results.length} PASS`);
