@@ -833,15 +833,17 @@
         h('span', { class: 'lede-line', text: '本、映画、音楽、体験。' }),
         h('span', { class: 'lede-line', text: '8つの感情から新たな出会いを。' })
       ]),
+      /* Mobile読み順: 世界（イラスト）→ 意味（コピー）→ 行動（CTA）。
+         supporting copyはCTAの前に置く。desktopはlede表示のまま非表示。 */
+      h('p', {
+        class: 'entrance-route-note',
+        text: '感情から、次に触れるものを見つけられます。'
+      }),
       h('div', { class: 'entrance-routes', 'aria-label': '入口を選ぶ' }, [
         h('button', {
           class: 'btn btn-primary cta-primary entrance-route-shelf', type: 'button',
           onclick: function () { go('emotion'); }
         }, [h('span', { class: 'cta-main', text: 'はじめる' })]),
-        h('p', {
-          class: 'entrance-route-note',
-          text: '感情から、次に触れるものを見つけられます。'
-        }),
         h('button', {
           class: 'btn btn-line cta-secondary entrance-route-no-emotion', type: 'button',
           onclick: enterNoEmotion
