@@ -4856,3 +4856,38 @@ body:has(.trace-phase1) .stepbar-back svg {
   .emotion-footer { margin-top: clamp(11px, 1.6vh, 22px); }
   body:has(.emotion-selection) .view { padding-bottom: 16px; }
 }
+
+/* =============================================================================
+ * RC Desktop Low-Height Viewport Fit — 2026-08-24
+ * 1280x800 / 1440x900 に残っていた「ほぼ収まる」縦スクロールを閉じる。
+ * 低背 viewport (<=985px) の desktop だけに効かせ、1440x1000 / 1920x1080 と
+ * mobile (<1200px) の既存ジオメトリには一切触れない。
+ * 削るのは hero の非意味的な縦余白と card 内部のジオメトリのみ。
+ * 読める型（見出し・支援文・棚名・説明・guidance / Trust）と 4x2 の 8棚、
+ * 44x44 以上のタップ領域は縮めない。
+ * ========================================================================== */
+@media (min-width: 1200px) and (max-height: 985px) {
+  /* hero と導入コピーの非意味的な余白のみを viewport 高さに追随させる。 */
+  .emotion-intro { height: clamp(176px, 23.2vh, 200px); }
+  .emotion-intro-copy { padding-top: clamp(6px, 0.9vh, 10px); }
+  .emotion-heading { margin-top: clamp(4px, 0.75vh, 8px); }
+  .emotion-support { margin-top: clamp(5px, 0.9vh, 9px); }
+
+  .emotion-grid-question { margin: clamp(4px, 0.7vh, 8px) 0; }
+  .emotion-grid { gap: clamp(9px, 1.25vh, 13px); }
+
+  /* card 高さは聖域ではない。min-height の下駄を外し、図版の高さだけを
+     低背 viewport に追随させる。棚名・説明の font-size は据え置く。 */
+  .emotion-card { min-height: 0; }
+  .emotion-card-media { height: clamp(100px, 13.7vh, 128px); }
+
+  .emotion-footer { margin-top: clamp(8px, 1.25vh, 12px); }
+
+  /* Step-1 の初期状態でだけ、下端の非意味的な余白を詰める。 */
+  body:has(.emotion-selection) .view { padding-bottom: clamp(6px, 1vh, 10px); }
+  body:has(.emotion-selection) .legal-footer {
+    margin-top: 4px;
+    padding-top: 8px;
+    padding-bottom: 12px;
+  }
+}

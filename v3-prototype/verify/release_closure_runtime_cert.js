@@ -8,6 +8,8 @@
  *  - 出典表示と公式リンクの描画
  *  - 横方向 overflow / clipping 0
  *  - third-party network request 0
+ *  - Emotion Step-1 が 1280x800 / 1440x900 / 1440x1000 / 1920x1080 で
+ *    1 viewport に収まる（縦の追加スクロール 0、4x2 の 8棚、44x44 以上）
  * screenshots は v3-prototype/.rc-evidence/screens/ に保存する。
  * ========================================================================== */
 const fs = require('fs');
@@ -190,6 +192,72 @@ function check(name, ok, detail = '') {
       await context.close();
     }
   }
+  /* ------------------------------------------------ Step-1 viewport fit
+   * RC Desktop Low-Height Viewport Fit — 2026-08-24
+   * Emotion Step-1 の初期状態が 1 viewport に収まることを恒久的に固定する。
+   * 低背 desktop で「ほぼ収まる」縦スクロールが再発したら FAIL にする。 */
+  const FIT_VIEWPORTS = [
+    { name: '1280x800', width: 1280, height: 800 },
+    { name: '1440x900', width: 1440, height: 900 },
+    { name: '1440x1000', width: 1440, height: 1000 },
+    { name: '1920x1080', width: 1920, height: 1080 }
+  ];
+  for (const vp of FIT_VIEWPORTS) {
+    const ctx = await browser.newContext({ viewport: { width: vp.width, height: vp.height } });
+    const page = await ctx.newPage();
+    await page.goto(base);
+    await waitSurface(page, '01-entrance');
+    await page.locator('.cta-primary').click();
+    await waitSurface(page, '02-emotion');
+    await settled(page);
+
+    const fit = await page.evaluate(() => {
+      const de = document.documentElement;
+      const cards = Array.from(document.querySelectorAll('.emotion-card'));
+      const rects = cards.map((el) => el.getBoundingClientRect());
+      const rows = Array.from(new Set(rects.map((r) => Math.round(r.top))));
+      const grid = document.querySelector('.emotion-grid');
+      const hidden = [];
+      const required = '.emotion-card-label, .emotion-card-description, .emotion-heading,'
+        + ' .emotion-support, .emotion-grid-question, .emotion-guidance-copy, .emotion-trust-copy';
+      document.querySelectorAll(required).forEach((el) => {
+        const cs = getComputedStyle(el);
+        if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0) {
+          hidden.push('hidden:' + el.className);
+        } else if (el.scrollHeight > el.clientHeight + 1 && cs.overflowY !== 'visible') {
+          hidden.push('clipped:' + el.className);
+        }
+      });
+      return {
+        extraScroll: Math.max(0, de.scrollHeight - de.clientHeight),
+        scrollHeight: de.scrollHeight,
+        clientHeight: de.clientHeight,
+        horizontal: de.scrollWidth - window.innerWidth,
+        cards: cards.length,
+        rows: rows.length,
+        columns: grid ? getComputedStyle(grid).gridTemplateColumns.split(' ').length : 0,
+        smallTargets: rects
+          .filter((r) => r.width < 44 || r.height < 44)
+          .map((r) => Math.round(r.width) + 'x' + Math.round(r.height)),
+        hidden: hidden.slice(0, 4)
+      };
+    });
+
+    check(`${vp.name} step-1 zero extra vertical scroll`, fit.extraScroll === 0,
+      `scrollHeight=${fit.scrollHeight} clientHeight=${fit.clientHeight} extra=${fit.extraScroll}`);
+    check(`${vp.name} step-1 keeps the 4x2 eight-shelf grammar`,
+      fit.cards === 8 && fit.rows === 2 && fit.columns === 4,
+      `cards=${fit.cards} rows=${fit.rows} columns=${fit.columns}`);
+    check(`${vp.name} step-1 no required content hidden or clipped`,
+      fit.hidden.length === 0, fit.hidden.join(','));
+    check(`${vp.name} step-1 shelf hit targets >= 44x44`,
+      fit.smallTargets.length === 0, fit.smallTargets.join(','));
+    check(`${vp.name} step-1 no horizontal overflow`, fit.horizontal <= 0, `${fit.horizontal}`);
+
+    await page.screenshot({ path: `${OUT}/${vp.name}_02emotion_viewportfit.png` });
+    await ctx.close();
+  }
+
   /* ------------------------------------------------ keyboard-only 到達性 */
   for (const vp of VIEWPORTS) {
     const ctx = await browser.newContext({ viewport: { width: vp.width, height: vp.height } });
