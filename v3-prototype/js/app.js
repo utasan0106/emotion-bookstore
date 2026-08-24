@@ -475,9 +475,18 @@
     if (items.length) {
       panel.appendChild(h('ul', { class: 'interested-list' }, items.map(interestedRow)));
     } else {
+      /* Empty-state grammar: title → one line → one useful next action.
+         行き先は既存の感情の棚（Discoveryへの既存導線）のみ。 */
       panel.appendChild(h('div', { class: 'interested-empty' }, [
-        h('p', { text: '保存済みのものは、まだありません。' }),
-        h('p', { class: 'note', text: 'DiscoveryやDetailの「気になる」から、この端末に保存できます。' })
+        h('p', { class: 'interested-empty-title', text: '保存済みのものは、まだありません。' }),
+        h('p', { class: 'note', text: 'DiscoveryやDetailの「気になる」から、この端末に保存できます。' }),
+        h('button', {
+          class: 'btn btn-line interested-empty-action', type: 'button',
+          onclick: function () {
+            closeInterestedLayer(false);
+            go('emotion');
+          }
+        }, [h('span', { text: '感情の棚をのぞく' })])
       ]));
     }
     closeButton.focus();
@@ -802,14 +811,15 @@
   /* --------------------------------------------------------------- surfaces */
 
   function surfaceEntrance() {
-    /* Visual System V1 uses one bounded Founder-approved Editorial Tile
-       derivative as a restrained, non-interactive entrance image. */
+    /* Founder最終方針: Homeカバーの視覚は、承認済みのEmotion Bookstore
+       世界観イラスト（w01 hero）をEnterpriseフレームの中で用いる。
+       新規画像生成・レイアウト復元は行わない。 */
     var hero = h('picture', { class: 'hero' }, [
       h('img', {
         class: 'hero-img',
-        src: './assets/visual-system-v1/runtime_webp/emotion/emotion_hajimu.webp',
-        alt: '外の世界へ向かって街を歩く人の写真',
-        width: '960', height: '720', loading: 'eager', decoding: 'async',
+        src: './assets/canonical-m01-w01/w01_hero.webp',
+        alt: '本の頁のあいだに開けた青空と道を歩く人の水彩画',
+        width: '941', height: '680', loading: 'eager', decoding: 'async',
         fetchpriority: 'high'
       })
     ]);
