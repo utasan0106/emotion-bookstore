@@ -172,8 +172,8 @@ function loadStore(indexedDB) {
   check('saved state is perceivable in text', appSource.includes("'気になる・保存済み'"));
   check('saved state exposed semantically', appSource.includes("'aria-pressed': isInterested") &&
     appSource.includes("'data-interest-state': isInterested"));
-  check('existing button is bound; no new screen/surface', appSource.includes('decideWithInterest(experience.id') &&
-    !appSource.includes('saved-items'));
+check('existing button is bound; no new screen/surface', appSource.includes('toggleInterested(experience.id)') &&
+  !appSource.includes('saved-items'));
   check('rehydration loads session and interested key together',
     appSource.includes('Promise.all([STORE.load(), STORE.loadInterested()])'));
   check('keyboard accessible native button retained', appSource.includes("class: 'btn btn-solid', type: 'button'"));

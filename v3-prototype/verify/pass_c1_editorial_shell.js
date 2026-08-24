@@ -218,7 +218,7 @@ check('Understanding mounts no placeholder when zero',
   appSource.includes('if (editorialItems.length) understandingChildren.push(publicEditorialShelf(editorialItems));'));
 check('Understanding cards max at two', appSource.includes('items.slice(0, 2).map(publicEditorialCard)'));
 check('Editorial slots remain separate from Outing deck count',
-  appSource.includes('var deckCount = realDeck ? realDeck.ids.length : 0;') &&
+  appSource.includes("var deckCount = deckState === 'ready' ? realDeck.ids.length : 0;") &&
   appSource.includes('var editorialItems = activeEditorialForShelf(state.emotion);'));
 check('browser Back route and quiet shelf return exist',
   appSource.includes("case 'editorial-detail':") && appSource.includes("return { back: 'understanding' };") &&

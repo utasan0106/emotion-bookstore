@@ -54,7 +54,7 @@ check('A public brand line preserved', app.includes("text: '感じているこ�
 check('A superseded current-emotion assertions absent from Product UI source',
   !/いまの気持ちに近い|いま、どの言葉の近くにいますか|いちばん近い言葉|いまのあなたに、いちばん/.test(app + index));
 check('A 感情の言葉 navigation terminology absent', !/感情の言葉/.test(app + index));
-check('A Human Editorial wording precise', app.includes('人が定めた編集基準に基づき、理由を説明できるものだけを選んでいます。') &&
+check('A Human Editorial wording precise', app.includes('感情書店の編集部が、理由を説明できるものだけを選んでいます。') &&
   !/すべて人が手作業|人だけで選/.test(app));
 
 check('B shelf IDs exact 8', JSON.stringify(shelfIds) === JSON.stringify([
@@ -67,7 +67,7 @@ check('B shelf labels exact 8', JSON.stringify(shelfLabels) === JSON.stringify([
 ]));
 check('B selected shelf is UI single source of truth', app.includes('function selectedShelfLabel()') &&
   app.includes("'「' + selectedShelfLabel() + '」の棚から'") &&
-  app.includes("'「' + shelfLabel + '」の棚から、' + count + 'つの寄り道を。'"));
+  app.includes("'「' + shelfLabel + '」の棚から、' + count + 'つの文化物を。'"));
 check('B stale persisted deck fails closed before render', app.includes('function currentDeckMatchesSelectedShelf()') &&
   app.includes('function failClosedStaleShelfRoute()') && app.includes("state.deck.mode !== 'real-approved'") &&
   app.includes("screen = 'understanding';") && app.includes('failClosedStaleShelfRoute();'));
@@ -96,8 +96,8 @@ check('D zero-deck is intentional Editorial state', app.includes('いま案内�
   app.includes('この棚には、いま置けるものがありません。') && app.includes('別の棚をのぞく'));
 check('D zero-deck preserves selected shelf identity', app.includes("surface.setAttribute('data-selected-shelf', state.emotion || '')") &&
   app.includes('understanding-shelf-image'));
-check('D zero-deck has no fabricated CTA', slice(app, 'if (deckCount === 0)', '} else {').includes('別の棚をのぞく') &&
-  !slice(app, 'if (deckCount === 0)', '} else {').includes('寄り道を見る'));
+check('D zero-deck has no fabricated CTA', slice(app, "} else if (deckState === 'empty')", '} else {').includes('別の棚をのぞく') &&
+  !slice(app, "} else if (deckState === 'empty')", '} else {').includes('寄り道を見る'));
 check('D multiple zero decks exist', shelfIds.filter((id) => decks[id].length === 0).length >= 2);
 check('E nonzero CTA derives from actual count', app.includes("text: deckCount + 'つの寄り道を見る'") &&
   !app.includes("else startDeck('base'"));

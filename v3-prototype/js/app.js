@@ -29,6 +29,8 @@
   var historyReady = false;
   var measurementSequence = 0;
   var navigationSequence = 0;
+  var pendingDeckMotion = null;
+  var pendingFocusSelector = null;
 
   /* ---------------------------------------------------------------- helpers */
 
@@ -107,7 +109,18 @@
     if (eventName) measureOnce(eventName, 'view:' + navigationSequence);
   }
 
+  function stopActiveMedia() {
+    if (!view) return;
+    view.querySelectorAll('audio, video').forEach(function (media) {
+      try { media.pause(); } catch (error) { /* removal still stops playback */ }
+    });
+    view.querySelectorAll('iframe').forEach(function (frame) {
+      try { frame.src = 'about:blank'; } catch (error) { /* fail closed on removal */ }
+    });
+  }
+
   function go(next, options) {
+    stopActiveMedia();
     screen = next;
     navigationSequence += 1;
     if (historyReady && !(options && options.fromHistory)) {
@@ -127,7 +140,19 @@
   }
 
   function approvedRealDeck(emotionId) {
-    return REAL ? REAL.deckForEmotion(emotionId) : null;
+    if (!REAL || typeof REAL.deckForEmotion !== 'function') return null;
+    try { return REAL.deckForEmotion(emotionId); }
+    catch (error) { return null; }
+  }
+
+  function publicDeckState(deck) {
+    if (!deck || !Array.isArray(deck.ids) || deck.ids.length > 3 ||
+        deck.ids.some(function (id, index) {
+          return typeof id !== 'string' || !id || deck.ids.indexOf(id) !== index;
+        })) {
+      return 'error';
+    }
+    return deck.ids.length === 0 ? 'empty' : 'ready';
   }
 
   function selectedShelf() {
@@ -140,14 +165,14 @@
   }
 
   var PUBLIC_SHELF_LENS = Object.freeze({
-    hajimu: 'この棚では、身体や視線が前へ動き、次を見たくなる構造に注目しています。',
-    atatamaru: 'この棚では、世話や手渡しが、具体的な関係として続いていく場面に注目しています。',
-    hikareru: 'この棚では、理由を言い切る前に、形や細部へ視線が引かれる瞬間に注目しています。',
-    shizumu: 'この棚では、重さや時間の堆積を、すぐに持ち上げず見つめられるものに注目しています。',
-    zawatsuku: 'この棚では、見慣れたものに別の面が現れ、落ち着いていた見方が少し揺れるところに注目しています。',
-    butsukaru: 'この棚では、異なる方法や素材が出会い、摩擦から双方の輪郭が見える構造に注目しています。',
-    miwohiku: 'この棚では、距離を取ることや、いったん関わらないことで見えてくるものに注目しています。',
-    mada: 'この棚では、既存の言葉に閉じる前に、異なる形や秩序を見比べられるものに注目しています。'
+    hajimu: 'この棚では、歩き出す、手を伸ばす、次を探す。そんなふうに、身体や視線が前へ動く場面に注目しています。',
+    atatamaru: 'この棚では、世話をする、声をかける、何かを手渡す。そんな小さなやりとりから、人とのつながりが育っていく場面に注目しています。',
+    hikareru: 'この棚では、形、細部、素材、音、動き。理由を言葉にする前に、まず目や耳が引かれるところに注目しています。',
+    shizumu: 'この棚では、失われたもの、重ねられた時間、静かな場所。すぐに答えを出さず、その重さのそばに留まれるものに注目しています。',
+    zawatsuku: 'この棚では、いつもの風景や習慣に、見慣れない一面が現れる。そんな、ものの見方が少し揺れる場面に注目しています。',
+    butsukaru: 'この棚では、異なる考え方、素材、方法が出会う。そこで生まれる摩擦から、それぞれの違いが見えてくる場面に注目しています。',
+    miwohiku: 'この棚では、少し離れる、いったん手を止める、関わらない。距離を取ることで初めて見えるものに注目しています。',
+    mada: 'この棚では、形や意味が一つに決まらず、いくつもの見方が残るものに注目しています。まだ言葉にできなくても、そのまま見比べられる棚です。'
   });
 
   function selectedShelfLens() {
@@ -156,8 +181,11 @@
 
   function approvedOutingById(id) {
     var deck = approvedRealDeck(state.emotion);
-    if (!deck || deck.ids.indexOf(id) === -1) return null;
-    return REAL && REAL.byId ? REAL.byId(id) : null;
+    if (publicDeckState(deck) === 'error' || deck.ids.indexOf(id) === -1) return null;
+    var experience = null;
+    try { experience = REAL && REAL.byId ? REAL.byId(id) : null; }
+    catch (error) { return null; }
+    return experience && experienceInformationContract(experience) ? experience : null;
   }
 
   function activeDeckCount() {
@@ -259,9 +287,6 @@
     closeInterestedLayer(false);
     state.emotion = item.shelfId;
     startDeck('real-approved', [item.experienceId]);
-    state.deck.index = 1;
-    state.deck.decisions[item.experienceId] = 'keep';
-    state.deck.activeId = item.experienceId;
     state.selectedId = item.experienceId;
     persist();
     measureOnce('v3_experience_select', nextMeasurementToken('experience-select'));
@@ -404,6 +429,37 @@
     });
   }
 
+  /* Public Cultural Matching uses explicit bookmark semantics only. Browsing,
+     Detail and media never call this function and never alter Interested. */
+  function toggleInterested(id) {
+    if (!usesDurableInterest(id) || interestPending[id]) return;
+    var wasInterested = isInterested(id);
+    var saveToken = wasInterested ? null : nextMeasurementToken('experience-save');
+    interestPending[id] = true;
+    var operation = wasInterested ? STORE.removeInterested(id) : STORE.saveInterested(id);
+    operation.then(function (result) {
+      delete interestPending[id];
+      if (!wasInterested) measureDurableSave(result, saveToken);
+      if (!result || result.ok !== true) {
+        render();
+        announce(wasInterested
+          ? '保存の解除に失敗しました。保存済みの状態を保ちます。'
+          : '端末に保存できませんでした。気になる状態にはしていません。');
+        return;
+      }
+      interested = result.value;
+      pendingFocusSelector = '.real-discovery-interest';
+      render();
+      announce(wasInterested ? '気になるものから外しました。' : 'この端末の気になるものに保存しました。');
+    }).catch(function () {
+      delete interestPending[id];
+      render();
+      announce(wasInterested
+        ? '保存の解除に失敗しました。保存済みの状態を保ちます。'
+        : '端末に保存できませんでした。気になる状態にはしていません。');
+    });
+  }
+
   /* ------------------------------------------------------------ deck helper */
 
   function finiteDiscoveryIds(ids) {
@@ -425,6 +481,30 @@
       activeId: null,
       facets: facets || []
     };
+  }
+
+  function navigateDeck(delta, preserveControlFocus) {
+    if (!state.deck || state.deck.mode !== 'real-approved' ||
+        publicDeckState(state.deck) !== 'ready') return false;
+    var nextIndex = state.deck.index + delta;
+    if (nextIndex < 0 || nextIndex >= state.deck.ids.length) return false;
+    stopActiveMedia();
+    state.deck.index = nextIndex;
+    pendingDeckMotion = delta > 0 ? 'next' : 'previous';
+    pendingFocusSelector = preserveControlFocus
+      ? (delta > 0 ? '.deck-next-action' : '.deck-previous-action') : null;
+    render();
+    var experience = approvedOutingById(state.deck.ids[state.deck.index]);
+    announce('候補 ' + (state.deck.index + 1) + ' / ' + state.deck.ids.length +
+      (experience ? '「' + experience.title + '」' : '') + 'を表示しました。');
+    return true;
+  }
+
+  function completeDeck() {
+    if (!state.deck || state.deck.mode !== 'real-approved' ||
+        publicDeckState(state.deck) !== 'ready') return;
+    go('none');
+    announce('この棚は、ここまでです。');
   }
 
   function deckHasId(id) {
@@ -539,15 +619,15 @@
           count: deck ? (deck.index + 1) + ' / ' + deck.ids.length : '',
           progress: deck ? (deck.index + 1) / deck.ids.length : 0,
           step: 'STEP 2 / 4',
-          stepTitle: count + 'つの寄り道から選ぶ',
-          hint: count + 'つのうち、気になるものを選んでください'
+          stepTitle: count + 'つの文化物を見る',
+          hint: count > 1 ? '前へ／次へで、ひとつずつ見られます' : 'ひとつの文化物を、ゆっくり見られます'
         };
       case 'review':
       case 'none':
         return {
           back: 'discovery', title: count + 'つ見ました', count: count + ' / ' + count, progress: 1,
-          step: 'STEP 2 / 4', stepTitle: count + 'つの寄り道から選ぶ',
-          hint: count + 'つのうち、気になるものを選んでください'
+          step: 'STEP 2 / 4', stepTitle: count + 'つの文化物を見る',
+          hint: 'この棚は、ここまでです'
         };
       case 'detail':
         return { back: validActiveId() ? 'review' : 'discovery' };
@@ -780,7 +860,7 @@
     },
     {
       title: '理由のある寄り道を見る',
-      copy: '人が定めた編集基準に基づき、理由を説明できるものだけを置きます。0件の棚もあります。'
+      copy: '感情書店の編集部が、理由を説明できるものだけを置きます。0件の棚もあります。'
     },
     {
       title: '気になるものに触れる',
@@ -1019,7 +1099,11 @@
   function surfaceUnderstanding() {
     var word = D.emotionById(state.emotion);
     var realDeck = approvedRealDeck(state.emotion);
-    var deckCount = realDeck ? realDeck.ids.length : 0;
+    var deckState = publicDeckState(realDeck);
+    if (deckState === 'ready' && !realDeck.ids.every(function (id) {
+      return Boolean(approvedOutingById(id));
+    })) deckState = 'error';
+    var deckCount = deckState === 'ready' ? realDeck.ids.length : 0;
     var editorialItems = activeEditorialForShelf(state.emotion);
     var outcome = [];
 
@@ -1028,7 +1112,24 @@
       text: selectedShelfLens()
     }));
     outcome.push(h('hr', { class: 'rule' }));
-    if (deckCount === 0) {
+    if (deckState === 'error') {
+      outcome.push(h('div', { class: 'understanding-error', 'data-deck-state': 'error' }, [
+        h('h2', { class: 'section-title', text: 'いま、棚の案内を読み込めません' }),
+        h('p', {
+          class: 'body-lg',
+          text: '確認済みの情報を正しく読み込めなかったため、候補は表示していません。'
+        }),
+        h('p', { class: 'note', text: '通信や情報の不備を、0件の案内として扱うことはしません。' }),
+        h('div', { class: 'actions' }, [
+          h('button', {
+            class: 'btn btn-line', type: 'button', onclick: function () { render(); }
+          }, [h('span', { text: 'もう一度確認する' })]),
+          h('button', {
+            class: 'btn btn-text', type: 'button', onclick: function () { go('emotion'); }
+          }, [h('span', { text: '棚へ戻る' })])
+        ])
+      ]));
+    } else if (deckState === 'empty') {
       outcome.push(h('div', { class: 'understanding-empty', 'data-deck-count': '0' }, [
         h('h2', { class: 'section-title', text: 'いま案内できる寄り道はありません' }),
         h('p', { class: 'body-lg', text: 'この棚には、いま置けるものがありません。' }),
@@ -1049,7 +1150,7 @@
       }));
       outcome.push(h('p', {
         class: 'note',
-        text: '人が定めた編集基準に基づき、理由を説明できるものだけを選んでいます。'
+        text: '感情書店の編集部が、理由を説明できるものだけを選んでいます。'
       }));
       outcome.push(h('div', { class: 'actions' }, [
         h('button', {
@@ -1290,7 +1391,57 @@
     ];
   }
 
-  function experienceCard(experience, counter, actions) {
+  /* Shared display contract for every touched Cultural Matching renderer.
+     New content types fail closed when a required layer is missing instead of
+     silently dropping Fact / Why / Action / Media / provenance information. */
+  function experienceInformationContract(experience) {
+    if (!experience) return null;
+    var place = experience.placeDetail;
+    var source = place && place.officialSource;
+    var actions = approvedDestinationActions(experience);
+    var primaryAction = actions.filter(function (action) { return action.kind === 'primary'; })[0];
+    var media = experience.visualAsset;
+    var contract = {
+      identity: experience.title && experience.type ? {
+        title: experience.title, type: experience.type
+      } : null,
+      officialGrounding: place && place.description && place.officialSummary && source &&
+        source.sourceName && source.sourceUrl && source.verifiedOn ? {
+          summary: place.officialSummary,
+          description: place.description,
+          source: source
+        } : null,
+      editorialWhy: place && place.placementReason ? place.placementReason : experience.reason,
+      practicalTruth: experience.duration && experience.price && place && place.access ? {
+        duration: experience.duration,
+        price: experience.price,
+        access: place.access,
+        recommendedStay: place.recommendedStay
+      } : null,
+      primaryAction: primaryAction || null,
+      media: media || null,
+      freshness: experience.freshness && experience.freshness.recheckBy ? experience.freshness : null,
+      rightsProvenance: media && media.status && media.sourceOwner && media.rightsBasis && media.checkedAt ? {
+        status: media.status,
+        sourceOwner: media.sourceOwner,
+        rightsBasis: media.rightsBasis,
+        checkedAt: media.checkedAt,
+        fallbackReason: media.fallbackReason || null
+      } : null,
+      contextFit: experience.contextFit || { status: 'not_collected_in_s1a' },
+      accessibilityLanguage: media && media.altTextJa ? {
+        language: 'ja', altText: media.altTextJa
+      } : null
+    };
+    var required = [
+      'identity', 'officialGrounding', 'editorialWhy', 'practicalTruth',
+      'primaryAction', 'media', 'freshness', 'rightsProvenance',
+      'contextFit', 'accessibilityLanguage'
+    ];
+    return required.every(function (key) { return Boolean(contract[key]); }) ? contract : null;
+  }
+
+  function experienceCard(experience, contract, counter, actions) {
     var facts = discoveryPracticalFacts(experience);
     return h('article', { class: 'card real-discovery-card', 'aria-label': experience.title }, [
       h('div', { class: 'real-discovery-media' }, [
@@ -1301,15 +1452,15 @@
         h('p', { class: 'real-discovery-shelf', text: '「' + selectedShelfLabel() + '」の棚から' }),
         h('h2', { class: 'card-title', text: experience.title }),
         h('p', { class: 'card-meta', text: metaLine(experience) }),
-        cardOfficialSummary(experience) ? h('p', {
-          class: 'real-discovery-official', text: cardOfficialSummary(experience)
-        }) : null,
+        h('p', {
+          class: 'real-discovery-official', text: contract.officialGrounding.summary
+        }),
         facts.length ? h('dl', { class: 'real-discovery-facts' }, facts.map(function (fact) {
           return h('div', {}, [h('dt', { text: fact.label }), h('dd', { text: fact.value })]);
         })) : null,
         h('section', { class: 'real-discovery-reason', 'aria-label': 'この棚に置いた理由' }, [
           h('h3', { text: 'なぜ、この棚に？' }),
-          h('p', { class: 'card-reason', text: cardEditorialHook(experience) })
+          h('p', { class: 'card-reason', text: contract.editorialWhy })
         ]),
         h('div', { class: 'real-discovery-actions' }, actions || [])
       ])
@@ -1335,6 +1486,10 @@
       children.push(h('span', {
         class: 'real-experience-category-label',
         text: asset.categoryLabel
+      }));
+      children.push(h('span', {
+        class: 'real-experience-media-status',
+        text: 'カテゴリ図版（実画像の表示権利を確認中）'
       }));
     }
     if (asset.attributionRequired && asset.attributionText) {
@@ -1393,13 +1548,13 @@
     var isReal = deck.mode === 'real-approved';
     var count = activeDeckCount();
     var shelfLabel = selectedShelfLabel();
-    var primaryAction = approvedDestinationActions(experience).filter(function (action) {
-      return action.kind === 'primary';
-    })[0];
+    var contract = experienceInformationContract(experience);
+    if (!contract) return surfaceUnderstanding();
+    var primaryAction = contract.primaryAction;
     var nodes = [
       h('h1', {
         class: 'deck-lead', tabindex: '-1', id: 'surface-title',
-        text: isReal ? '「' + shelfLabel + '」の棚から、' + count + 'つの寄り道を。' : '前回残ったものから、次の' + count + 'つ。'
+        text: isReal ? '「' + shelfLabel + '」の棚から、' + count + 'つの文化物を。' : '前回残ったものから、次の' + count + 'つ。'
       })
     ];
     var cardActions = [];
@@ -1414,7 +1569,6 @@
       class: 'btn btn-line real-discovery-detail', type: 'button',
       onclick: function () {
         state.selectedId = experience.id;
-        persist();
         measureOnce('v3_experience_select', nextMeasurementToken('experience-select'));
         go('detail');
       }
@@ -1423,23 +1577,37 @@
       class: 'btn btn-text real-discovery-interest', type: 'button',
       'aria-pressed': isInterested(experience.id) ? 'true' : 'false',
       'data-interest-state': isInterested(experience.id) ? 'saved' : 'unsaved',
-      onclick: function () { decideWithInterest(experience.id, 'keep'); }
-    }, [icon('heart'), h('span', { text: interestedLabel(experience.id) })]));
-    cardActions.push(h('button', {
-      class: 'btn btn-text real-discovery-pass', type: 'button',
-      onclick: function () { decideWithInterest(experience.id, 'pass'); }
-    }, [h('span', { text: '今回は違う' })]));
-    var card = experienceCard(experience, counter, cardActions);
-    attachSwipe(card,
-      function () { decideWithInterest(experience.id, 'pass'); },
-      function () { decideWithInterest(experience.id, 'keep'); });
-    nodes.push(h('div', { class: 'card-stage' }, [card]));
-    if (deck.index > 0) {
-      nodes.push(h('div', { class: 'actions actions-quiet' }, [
-        h('button', { class: 'btn btn-text', type: 'button', onclick: undo },
-          [h('span', { text: '前の体験に戻る' })])
-      ]));
+      onclick: function () { toggleInterested(experience.id); }
+    }, [icon('bookmark'), h('span', { text: interestedLabel(experience.id) })]));
+    var card = experienceCard(experience, contract, counter, cardActions);
+    if (count > 1) {
+      attachSwipe(card,
+        function () { navigateDeck(1, false); },
+        function () { navigateDeck(-1, false); });
     }
+    nodes.push(h('div', { class: 'card-stage' }, [card]));
+    var navigation = [];
+    if (deck.index > 0) {
+      navigation.push(h('button', {
+        class: 'btn btn-line deck-previous-action', type: 'button',
+        'data-deck-navigation': 'previous', onclick: function () { navigateDeck(-1, true); }
+      }, [h('span', { 'aria-hidden': 'true', text: '←' }), h('span', { text: '前を見る' })]));
+    }
+    if (deck.index < count - 1) {
+      navigation.push(h('button', {
+        class: 'btn btn-line deck-next-action', type: 'button',
+        'data-deck-navigation': 'next', onclick: function () { navigateDeck(1, true); }
+      }, [h('span', { text: '次を見る' }), h('span', { 'aria-hidden': 'true', text: '→' })]));
+    } else {
+      navigation.push(h('button', {
+        class: 'btn btn-line deck-next-action deck-finish-action', type: 'button',
+        'data-deck-navigation': 'finish', onclick: completeDeck
+      }, [h('span', { text: '棚を見終える' })]));
+    }
+    nodes.push(h('nav', {
+      class: 'deck-navigation' + (deck.index === 0 ? ' is-first' : ''),
+      'aria-label': '文化物を前後に見る'
+    }, navigation));
     var surface = section(isReal ? '04-discovery' : '09-personalized-discovery', nodes);
     if (isReal) surface.setAttribute('data-selected-shelf', state.emotion || '');
     return surface;
@@ -2120,36 +2288,49 @@
 
   function surfaceNone() {
     var count = activeDeckCount();
-    return section('04-discovery-none', [
-      h('h1', {
-        class: 'question', tabindex: '-1', id: 'surface-title',
-        text: '今日は、この' + count + 'つでした。'
-      }),
-      h('div', { class: 'stack' }, [
-        h('button', {
-          class: 'btn btn-line', type: 'button',
-          onclick: function () {
-            state.deck.index = 0;
-            state.deck.decisions = {};
-            persist();
-            go('discovery');
-          }
-        }, [h('span', { text: count + 'つをもう一度見る' })]),
-        h('button', {
-          class: 'btn btn-line', type: 'button',
-          onclick: function () { go('emotion'); }
-        }, [h('span', { text: '入口を変える' })]),
-        h('button', {
-          class: 'btn btn-text', type: 'button',
-          onclick: function () { go('entrance'); }
-        }, [h('span', { text: '今日は終わる' })])
+    var actions = [
+      h('button', {
+        class: 'btn btn-line', type: 'button',
+        onclick: function () {
+          state.deck.index = Math.max(0, state.deck.ids.length - 1);
+          go('discovery');
+        }
+      }, [h('span', { text: '前の文化物へ' })]),
+      h('button', {
+        class: 'btn btn-primary', type: 'button', onclick: function () { go('understanding'); }
+      }, [h('span', { text: '棚へ戻る' })])
+    ];
+    if (interested.items.length) {
+      actions.push(h('button', {
+        class: 'btn btn-text', type: 'button',
+        onclick: function (event) { openInterestedLayer(event.currentTarget); }
+      }, [h('span', { text: '気になるものを見る' })]));
+    }
+    var surface = section('04-discovery-none', [
+      h('div', { class: 'deck-completion' }, [
+        h('p', { class: 'eyebrow', text: '「' + selectedShelfLabel() + '」の棚' }),
+        h('h1', {
+          class: 'question', tabindex: '-1', id: 'surface-title',
+          text: 'この棚は、ここまでです。'
+        }),
+        h('p', {
+          class: 'body-lg',
+          text: count === 1
+            ? 'ひとつの文化物を見終えました。ここで終えても、棚へ戻っても大丈夫です。'
+            : count + 'つの文化物を見終えました。続けるための候補は自動で足しません。'
+        }),
+        h('div', { class: 'actions' }, actions)
       ])
     ]);
+    surface.setAttribute('data-selected-shelf', state.emotion || '');
+    return surface;
   }
 
   function surfaceDetail() {
     var experience = approvedOutingById(state.selectedId);
     if (!experience) return surfaceUnderstanding();
+    var contract = experienceInformationContract(experience);
+    if (!contract) return surfaceUnderstanding();
     var isReal = experience && experience.sourceClass === 'approved-real-experience';
     var placeDetail = experience && experience.placeDetail;
     var approvedActions = approvedDestinationActions(experience).map(function (action) {
@@ -2194,7 +2375,7 @@
        1) title / identity  2) 公式説明（出典明示）  3) なぜ、この棚に？
        4) 実用情報  5) Primary Action
        公式説明は公式一次情報に基づく要約であり、公式文の転載ではない。 */
-    var officialSource = placeDetail && placeDetail.officialSource;
+    var officialSource = contract.officialGrounding.source;
     var summary = [
       h('p', { class: 'eyebrow detail-shelf-context', text: '「' + selectedShelfLabel() + '」の棚から' }),
       h('h1', {
@@ -2212,7 +2393,7 @@
         officialSource ? h('p', {
           class: 'detail-official-attribution', text: officialSource.attributionLabel
         }) : null,
-        h('p', { class: 'body-lg place-detail-body', text: placeDetail.description }),
+        h('p', { class: 'body-lg place-detail-body', text: contract.officialGrounding.description }),
         officialSource ? h('p', { class: 'detail-official-provenance' }, [
           h('span', { text: '出典：' }),
           h('a', {
@@ -2229,8 +2410,22 @@
         h('h2', { class: 'section-title', id: 'detail-reason-title', text: 'なぜ、この棚に？' }),
         h('p', {
           class: 'body-lg place-detail-body',
-          text: placeDetail ? placeDetail.placementReason : experience.reason
+          text: contract.editorialWhy
         })
+      ]),
+      h('dl', { class: 'detail-trust-meta', 'aria-label': '情報とメディアの確認状況' }, [
+        h('div', {}, [
+          h('dt', { text: '情報確認' }),
+          h('dd', { text: contract.officialGrounding.source.verifiedOn.replace(/-/g, '.') })
+        ]),
+        h('div', {}, [
+          h('dt', { text: 'メディア' }),
+          h('dd', {
+            text: contract.rightsProvenance.status === 'real_ready'
+              ? '権利・出典を確認した実画像'
+              : '感情書店のカテゴリ図版（実画像の表示権利を確認中）'
+          })
+        ])
       ])
     ];
     var nodes = [
@@ -2243,7 +2438,7 @@
       nodes.push(h('div', { class: 'place-detail-content' }, [
         h('section', { class: 'place-detail-section' }, [
           h('h2', { class: 'section-title', text: 'おすすめの過ごし方' }),
-          h('p', { class: 'body-lg place-detail-body', text: placeDetail.recommendedStay })
+          h('p', { class: 'body-lg place-detail-body', text: contract.practicalTruth.recommendedStay })
         ]),
         h('section', { class: 'place-detail-section place-detail-access' }, [
           h('h2', { class: 'section-title', text: '訪れるための情報' }),
@@ -2775,17 +2970,62 @@
     screen = 'understanding';
   }
 
+  function onDeckKeydown(event) {
+    if (screen !== 'discovery' || !state.deck || state.deck.mode !== 'real-approved' ||
+        activeDeckCount() < 2 || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) return;
+    var target = event.target;
+    if (target && target.closest && target.closest(
+      'input, textarea, select, [contenteditable="true"], audio, video, iframe, [role="slider"]'
+    )) return;
+    var moved = event.key === 'ArrowLeft'
+      ? navigateDeck(-1, true) : navigateDeck(1, true);
+    if (moved) event.preventDefault();
+  }
+
   function render() {
     failClosedStaleShelfRoute();
     failClosedEditorialRoute();
     var build = SURFACES[screen] || surfaceEntrance;
     var next = build();
+    if (pendingDeckMotion && screen === 'discovery') {
+      next.classList.add(pendingDeckMotion === 'next' ? 'deck-enter-next' : 'deck-enter-previous');
+    }
+    pendingDeckMotion = null;
     renderStepbar();
     view.textContent = '';
     view.appendChild(next);
+    var focusTarget = pendingFocusSelector ? view.querySelector(pendingFocusSelector) : null;
+    pendingFocusSelector = null;
     var title = document.getElementById('surface-title');
-    if (title) title.focus();
+    if (focusTarget) focusTarget.focus();
+    else if (title) title.focus();
     measureCurrentView();
+  }
+
+  function renderStartupState(kind) {
+    var isError = kind === 'error';
+    var nodes = [
+      h('p', { class: 'eyebrow', text: isError ? '読み込みエラー' : '準備中' }),
+      h('h1', {
+        class: 'question', tabindex: '-1', id: 'surface-title',
+        text: isError ? '入口を開けませんでした' : '書店の入口を準備しています'
+      }),
+      h('p', {
+        class: 'body-lg',
+        text: isError
+          ? '端末内の状態を正しく読み込めなかったため、空の棚としては表示していません。'
+          : '確認済みの案内と、この端末に残したものを読み込んでいます。'
+      })
+    ];
+    if (isError) {
+      nodes.push(h('div', { class: 'actions' }, [
+        h('button', {
+          class: 'btn btn-primary', type: 'button', onclick: function () { global.location.reload(); }
+        }, [h('span', { text: 'もう一度読み込む' })])
+      ]));
+    }
+    view.textContent = '';
+    view.appendChild(section(isError ? '00-load-error' : '00-loading', nodes));
   }
 
   function resetPrototype() {
@@ -2889,6 +3129,8 @@
     stepbar = document.getElementById('stepbar');
     document.getElementById('reset').addEventListener('click', resetPrototype);
     bindHeader();
+    document.addEventListener('keydown', onDeckKeydown);
+    renderStartupState('loading');
 
     /* Reset Prototype は Visual Canonical に無い debug 用。?debug=1 のときだけ露出する。 */
     if (/[?&]debug=1(&|$)/.test(global.location.search)) {
@@ -2913,6 +3155,9 @@
       });
       navigationSequence += 1;
       render();
+    }).catch(function () {
+      renderStartupState('error');
+      announce('端末内の状態を読み込めませんでした。');
     });
   }
 

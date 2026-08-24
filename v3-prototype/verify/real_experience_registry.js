@@ -92,9 +92,9 @@ check('C Product mode routes one-card Deck through existing generic surfaces',
   app.includes("startDeck('real-approved', realDeck.ids)") &&
   app.includes("deck.mode !== 'real-approved'") &&
   app.includes("var counter = (deck.index + 1) + ' / ' + deck.ids.length"));
-check('C review/retry count derives from active Deck',
-  app.includes("text: activeDeckCount() + 'つをもう一度見る'") &&
-  app.includes("text: count + 'つをもう一度見る'"));
+check('C finite completion count derives from active Deck',
+  app.includes("count + 'つの文化物を見終えました。続けるための候補は自動で足しません。'") &&
+  app.includes("title: count + 'つ見ました'"));
 
 check('D freshness boundary includes recheck date', Boolean(R.byId('EXP_007', '2027-02-18')));
 check('D stale EXP_007 fails closed', R.byId('EXP_007', '2027-02-19') === null);

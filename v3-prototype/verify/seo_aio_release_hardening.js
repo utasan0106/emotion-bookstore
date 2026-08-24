@@ -59,7 +59,7 @@ check('all V3 pages remain Japanese-only', pages.every((page) => page.includes('
 
 check('V3 entrance title exact', index.includes('<title>みんなの感情書店 V3｜感情の棚から、次に触れるものへ</title>'));
 check('V3 entrance description factual', index.includes('感じていることから、次に触れるものを見つける。') &&
-  index.includes('人が承認した編集基準') && index.includes('0〜3件の寄り道') &&
+  index.includes('感情書店の編集部が理由を説明できる') && index.includes('0〜3件の寄り道') &&
   index.includes('心理状態の診断やパーソナライズ推薦は行いません'));
 check('V3 entrance canonical exact', index.includes(`<link rel="canonical" href="${ORIGIN}/v3-prototype/">`));
 check('V3 entrance robots indexable', index.includes('<meta name="robots" content="index, follow, max-image-preview:large">'));
@@ -153,7 +153,7 @@ check('JSON-LD parses', jsonLd !== null);
 check('JSON-LD type is factual WebSite only', jsonLd && jsonLd['@type'] === 'WebSite');
 check('JSON-LD canonical identity exact', jsonLd && jsonLd['@id'] === `${ORIGIN}/v3-prototype/#website` &&
   jsonLd.url === `${ORIGIN}/v3-prototype/` && jsonLd.name === 'みんなの感情書店 V3' && jsonLd.inLanguage === 'ja');
-check('JSON-LD current Product truth exact', jsonLd && jsonLd.description.includes('人が承認した編集基準') &&
+check('JSON-LD current Product truth exact', jsonLd && jsonLd.description.includes('感情書店の編集部が理由を説明できる') &&
   jsonLd.description.includes('0〜3件の有限な寄り道') && jsonLd.description.includes('実在する文化や場所') &&
   jsonLd.description.includes('診断やパーソナライズ推薦は行いません'));
 const jsonKeys = jsonLd ? Object.keys(jsonLd).sort() : [];

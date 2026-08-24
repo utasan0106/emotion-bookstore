@@ -67,7 +67,7 @@ check('copy contains no diagnosis or therapeutic promise',
     exp.placeDetail.placementReason
   ].join('\n')));
 check('generic registry reason is not reused on Place Detail',
-  appSource.includes('text: placeDetail ? placeDetail.placementReason : experience.reason') &&
+  appSource.includes('text: contract.editorialWhy') &&
   appSource.includes("text: 'なぜ、この棚に？'") &&
   !appSource.includes("class: 'body-lg place-detail-body', text: experience.reason"));
 

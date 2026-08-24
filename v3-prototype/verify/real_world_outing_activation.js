@@ -128,8 +128,10 @@ check('invalid date fails every deck closed', R.SHELF_IDS.every((shelfId) =>
   R.deckForEmotion(shelfId, 'not-a-date').ids.length === 0));
 
 check('public Shelf Lens exists for every shelf', [
-  '身体や視線が前へ動き', '世話や手渡し', '形や細部へ視線', '重さや時間の堆積',
-  '見慣れたものに別の面', '異なる方法や素材', '距離を取ること', '既存の言葉に閉じる前'
+  '歩き出す、手を伸ばす、次を探す', '世話をする、声をかける、何かを手渡す',
+  '形、細部、素材、音、動き', '失われたもの、重ねられた時間、静かな場所',
+  'いつもの風景や習慣に、見慣れない一面', '異なる考え方、素材、方法',
+  '少し離れる、いったん手を止める、関わらない', '形や意味が一つに決まらず'
 ].every((phrase) => app.includes(phrase)) && app.includes('function selectedShelfLens()'));
 check('public sequence exposes Shelf → Experience → Why → Action',
   app.indexOf('real-discovery-shelf') < app.indexOf("text: experience.title") &&

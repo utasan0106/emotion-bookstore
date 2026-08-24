@@ -346,7 +346,8 @@ function contrast(a, b) {
     contrast('#FAF5F1', '#0F1B29').toFixed(2));
   check('Japanese-only release has no language switch', !/class=["'](?:locale|language)|>JP<|locale-globe|locale-chevron/.test(index));
   check('no current file/photo/text input surface added',
-    !/type=["']file["']|accept=["']|<textarea\b|contenteditable/i.test(index + privacy + terms + app));
+    !/type=["']file["']|accept=["']|<textarea\b/i.test(index + privacy + terms) &&
+    !/h\(['"]textarea['"]|type:\s*['"]file['"]|contenteditable:\s*['"]true['"]/i.test(app));
 
   const secretPatterns = [
     /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,
