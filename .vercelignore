@@ -87,3 +87,32 @@ docs/
 /visual-refit-v2-prototype/data/04_Beta0_EditorialSnapshot_kanashii_v0_1.json
 /visual-refit-v2-prototype/data/04_Beta0_PublicInventory_v0_1.json
 /visual-refit-v2-prototype/data/V2_EMOTION_WORDS_BETA0_v0.1_PRODUCTION_APPROVED.json
+
+# ---- v3-prototype の非本番部分のみ -----------------------------------------
+# 判定根拠：index.html / privacy.html / terms.html を起点にした静的到達解析。
+#           runtime が参照するのは assets/ ・ css/v3.css ・ js/*.js の 86 件だけで、
+#           以下 4 パスへの参照は HTML / CSS / JS のいずれからも 0 件。
+#
+# ★ v3-prototype/ をディレクトリごと除外してはならない。
+#   この配下に V3 本体の runtime がある。そのため negation（!）で戻す方式は採らず、
+#   公開不要と確定したものだけを個別に列挙している。
+#   本番必須は以下のいずれにも一致しない。
+#     index.html / privacy.html / terms.html
+#     css/v3.css
+#     js/app.js / data.js / store.js / analytics.js / personalize.js
+#     js/action_destination.js / interested_retrieval.js
+#     js/public_editorial.js / public_editorial_content.js
+#     js/real_experience_registry.js
+#     assets/**（fonts / canonical-m01〜m03 / category-visual / real-experience / brand ほか）
+
+# 内部 QA：source contract / runtime 検証スクリプト
+/v3-prototype/verify/
+
+# RC 証跡（branch / HEAD / SHA-256 / テスト結果などの内部 lineage）
+/v3-prototype/.rc-evidence/
+
+# prototype 単体の内部説明
+/v3-prototype/README.md
+
+# 内部ドキュメント（非 anchored な docs/ でも一致するが、明示して曖昧さを消す）
+/v3-prototype/docs/
