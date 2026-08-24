@@ -41,7 +41,7 @@
 
     <section aria-labelledby="privacy-local">
       <h2 id="privacy-local">2. この端末に保存する情報</h2>
-      <p>現在のV3 Releaseは、選んだ感情の棚と画面の進行状態、「気になる」、予定、体験後に選ぶ記録を、ブラウザのIndexedDBへ保存します。アカウント登録やクラウド同期は行いません。</p>
+      <p>現在のV3 Releaseは、選んだ感情の棚と画面の進行状態、「気になる」、予定、体験後に選ぶ記録を、ブラウザのIndexedDBへ保存します。最新の「気になる」を次回の入口で一度だけ表示するため、作品IDと保存・表示時刻だけを別のlocalStorageへ保存します。アカウント登録やクラウド同期は行いません。</p>
       <p>これらの記録は公開されず、運営者のサーバーへ保存されません。ブラウザのサイトデータを削除した場合や、端末・ブラウザを変更した場合は、記録へアクセスできなくなることがあります。運営者は記録のコピーを持たないため、復元できません。</p>
       <p>現在のV3 Releaseには、本文、私的な題名、写真を入力・保存する機能はありません。</p>
     </section>
@@ -54,7 +54,7 @@
 
     <section aria-labelledby="privacy-external">
       <h2 id="privacy-external">4. 外部送信と外部サービス</h2>
-      <p>現在のV3 Releaseで確認されている外部送信は次のとおりです。外部サイトや地図は、利用者が該当する操作を選んだ場合だけ開きます。</p>
+      <p>現在のV3 Releaseで確認されている外部送信は次のとおりです。外部サイト、地図、Googleカレンダーは、利用者が該当する操作を選んだ場合だけ開きます。</p>
       <div class="legal-table-wrap" tabindex="0" aria-label="V3 Release 外部送信一覧">
         <table>
           <thead>
@@ -77,6 +77,11 @@
               <td data-label="情報と目的">公開されている目的地住所。現在地、originパラメータ、V3の非公開記録は送りません。V3は位置情報を取得しません。</td>
             </tr>
             <tr>
+              <td data-label="送信先・機能">Google Calendar（<code>calendar.google.com</code>）</td>
+              <td data-label="発生する時">利用者が「Googleカレンダーに追加」を選んだ時だけ</td>
+              <td data-label="情報と目的">作品名、選んだ日付・時刻、公開住所、公式URLと公開説明の最小範囲を、予定作成画面を開くためにURLへ含めます。本文などの非公開記録は送りません。同期やアカウント接続は行いません。</td>
+            </tr>
+            <tr>
               <td data-label="送信先・機能">Google Analytics 4</td>
               <td data-label="発生する時">現在は発生しません</td>
               <td data-label="情報と目的">送信先未設定、送信0です。</td>
@@ -89,7 +94,7 @@
           </tbody>
         </table>
       </div>
-      <p>公式サイトまたはGoogle Mapsを開いた後は、移動先の利用規約・プライバシーポリシーが適用されます。</p>
+      <p>公式サイト、Google MapsまたはGoogle Calendarを開いた後は、移動先の利用規約・プライバシーポリシーが適用されます。</p>
     </section>
 
     <section aria-labelledby="privacy-ga4">

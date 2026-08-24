@@ -120,8 +120,13 @@ async function entranceMetrics(page) {
     return {
       viewport: { width: innerWidth, height: innerHeight },
       headline: metric('#surface-title'),
+      lede: metric('.entrance .lede'),
+      logo: metric('.brand-lockup'),
+      hero: metric('.hero-img'),
       shelf: metric('.entrance-route-shelf'),
+      note: metric('.entrance-route-note'),
       noEmotion: metric('.entrance-route-no-emotion'),
+      loop: metric('.entrance .loop'),
       overflow: {
         document: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         body: document.body.scrollWidth - document.body.clientWidth
@@ -129,6 +134,11 @@ async function entranceMetrics(page) {
       visibleText
     };
   });
+}
+
+async function enterNoEmotionFromMenu(page) {
+  await page.click('#headerMenuTrigger');
+  await page.click('[data-nav="no-emotion"]');
 }
 
 (async function run() {
@@ -202,14 +212,21 @@ async function entranceMetrics(page) {
       await page.evaluate(() => document.fonts.ready);
       const metrics = await entranceMetrics(page);
       evidence.viewports[viewport.name] = metrics;
-      check(`${viewport.name}: headline and both routes in first viewport`,
-        metrics.headline.text === '感情から、本・映画・音楽・場所へ。' &&
-        metrics.shelf.text === '棚から見る' && metrics.noEmotion.text === '選ばずに見る' &&
-        metrics.headline.bottom <= viewport.height && metrics.shelf.bottom <= viewport.height &&
-        metrics.noEmotion.bottom <= viewport.height,
-        `bottoms=${metrics.headline.bottom.toFixed(1)}/${metrics.shelf.bottom.toFixed(1)}/${metrics.noEmotion.bottom.toFixed(1)}`);
+      const mobile = viewport.width < 1200;
+      check(`${viewport.name}: responsive Entrance contract`, mobile
+        ? metrics.headline.text === '感情の先に、世界がある' &&
+          metrics.logo.bottom <= viewport.height && metrics.hero.bottom <= viewport.height &&
+          metrics.shelf.text === 'はじめる' && metrics.shelf.bottom <= viewport.height &&
+          metrics.note.text === '感情から、次に触れるものを見つけられます。' &&
+          metrics.note.bottom <= viewport.height && metrics.loop.top >= viewport.height - 1
+        : metrics.headline.text === '感情の先に、世界がある' &&
+          metrics.lede.text === '本、映画、音楽、体験。8つの感情から新たな出会いを。' &&
+          metrics.shelf.text === 'はじめる' && metrics.noEmotion.text === '選ばずに見る' &&
+          metrics.headline.bottom <= viewport.height && metrics.shelf.bottom <= viewport.height &&
+          metrics.noEmotion.bottom <= viewport.height,
+        `hero=${metrics.hero.bottom.toFixed(1)} cta=${metrics.shelf.bottom.toFixed(1)} loop=${metrics.loop.top.toFixed(1)}`);
       check(`${viewport.name}: touch targets and horizontal overflow 0`,
-        metrics.shelf.height >= 44 && metrics.noEmotion.height >= 44 &&
+        metrics.shelf.height >= 44 && (mobile || metrics.noEmotion.height >= 44) &&
         metrics.overflow.document === 0 && metrics.overflow.body === 0,
         `targets=${metrics.shelf.height.toFixed(1)}/${metrics.noEmotion.height.toFixed(1)} overflow=${JSON.stringify(metrics.overflow)}`);
       check(`${viewport.name}: first-paint third-party requests 0`, external.length === 0, external.join(', '));
@@ -218,21 +235,18 @@ async function entranceMetrics(page) {
       await page.screenshot({ path: path.join(EVIDENCE, viewport.name + '.png'), fullPage: true });
 
       if (viewport.width === 390) {
-        const immediate = {
-          headline: metrics.headline.text,
-          routes: [metrics.shelf.text, metrics.noEmotion.text]
-        };
+        const immediate = { headline: metrics.headline.text, cta: metrics.shelf.text, note: metrics.note.text };
         await page.waitForTimeout(3000);
         const after3s = await entranceMetrics(page);
         await page.waitForTimeout(7000);
         const after10s = await entranceMetrics(page);
         evidence.comprehension = { immediate, after3s, after10s };
-        check('3s comprehension: purpose and both legitimate routes remain explicit',
+        check('3s comprehension: purpose and concise primary route remain stable',
           after3s.headline.text === immediate.headline &&
-          after3s.shelf.text === immediate.routes[0] && after3s.noEmotion.text === immediate.routes[1]);
+          after3s.shelf.text === immediate.cta && after3s.note.text === immediate.note);
         check('10s comprehension: no rotating/random replacement changes the contract',
           after10s.headline.text === immediate.headline &&
-          after10s.shelf.text === immediate.routes[0] && after10s.noEmotion.text === immediate.routes[1]);
+          after10s.shelf.text === immediate.cta && after10s.note.text === immediate.note);
       }
       await context.close();
     }
@@ -247,8 +261,8 @@ async function entranceMetrics(page) {
     check('棚から見る reaches unchanged eight-lens flow',
       await routePage.locator('.emotion-card').count() === 8);
     await routePage.goto(base + '/');
-    await routePage.waitForSelector('.entrance-route-no-emotion');
-    await routePage.click('.entrance-route-no-emotion');
+    await routePage.waitForSelector('#headerMenuTrigger');
+    await enterNoEmotionFromMenu(routePage);
     await routePage.waitForSelector('.surface[data-surface="10-no-emotion"]');
     check('選ばずに見る reaches truthful live empty route',
       await routePage.locator('[data-lineup-state="empty"][data-lineup-count="0"]').count() >= 1 &&
@@ -260,8 +274,8 @@ async function entranceMetrics(page) {
       const page = await context.newPage();
       page.on('pageerror', (error) => jsErrors.push(`lineup-${count}: ${error.message}`));
       await page.goto(`${base}/verify/frontstage_runtime_fixture.html?count=${count}`);
-      await page.waitForSelector('.entrance-route-no-emotion');
-      await page.click('.entrance-route-no-emotion');
+      await page.waitForSelector('.entrance-route-no-emotion', { state: 'attached' });
+      await enterNoEmotionFromMenu(page);
       await page.waitForSelector('.surface[data-surface="10-no-emotion"]');
       const state = await page.locator('.no-emotion-surface').getAttribute('data-lineup-state');
       const actualCount = Number(await page.locator('.no-emotion-surface').getAttribute('data-lineup-count'));
@@ -292,8 +306,8 @@ async function entranceMetrics(page) {
       const page = await context.newPage();
       page.on('pageerror', (error) => jsErrors.push(`${mode}: ${error.message}`));
       await page.goto(`${base}/verify/frontstage_runtime_fixture.html?mode=${mode}`);
-      await page.waitForSelector('.entrance-route-no-emotion');
-      await page.click('.entrance-route-no-emotion');
+      await page.waitForSelector('.entrance-route-no-emotion', { state: 'attached' });
+      await enterNoEmotionFromMenu(page);
       await page.waitForSelector('.surface[data-surface="10-no-emotion"]');
       check(`runtime ${mode}: fails closed, never truncates/fills`,
         await page.locator('.no-emotion-surface[data-lineup-state="error"][data-lineup-count="0"]').count() === 1 &&
@@ -305,8 +319,8 @@ async function entranceMetrics(page) {
     const pullPage = await pullContext.newPage();
     pullPage.on('pageerror', (error) => jsErrors.push(`first-pull: ${error.message}`));
     await pullPage.goto(`${base}/verify/frontstage_runtime_fixture.html?count=1&firstPull=approved`);
-    await pullPage.waitForSelector('.entrance-route-no-emotion');
-    await pullPage.click('.entrance-route-no-emotion');
+    await pullPage.waitForSelector('.entrance-route-no-emotion', { state: 'attached' });
+    await enterNoEmotionFromMenu(pullPage);
     await pullPage.waitForSelector('.real-discovery-card');
     check('approved FIRST PULL renders before Object Identity',
       await pullPage.locator('[data-first-pull="approved"]').count() === 1 &&
@@ -334,8 +348,8 @@ async function entranceMetrics(page) {
     const missingPullContext = await browser.newContext({ viewport: { width: 430, height: 932 } });
     const missingPullPage = await missingPullContext.newPage();
     await missingPullPage.goto(`${base}/verify/frontstage_runtime_fixture.html?count=1`);
-    await missingPullPage.waitForSelector('.entrance-route-no-emotion');
-    await missingPullPage.click('.entrance-route-no-emotion');
+    await missingPullPage.waitForSelector('.entrance-route-no-emotion', { state: 'attached' });
+    await enterNoEmotionFromMenu(missingPullPage);
     await missingPullPage.waitForSelector('.real-discovery-card');
     check('missing FIRST PULL renders nothing and no placeholder',
       await missingPullPage.locator('[data-first-pull]').count() === 0 &&
@@ -346,10 +360,10 @@ async function entranceMetrics(page) {
     const writePage = await writeContext.newPage();
     writePage.on('pageerror', (error) => jsErrors.push(`no-write: ${error.message}`));
     await writePage.goto(`${base}/verify/frontstage_runtime_fixture.html?count=2`);
-    await writePage.waitForSelector('.entrance-route-no-emotion');
+    await writePage.waitForSelector('.entrance-route-no-emotion', { state: 'attached' });
     await instrumentWrites(writePage);
     const before = await idbSnapshot(writePage);
-    await writePage.click('.entrance-route-no-emotion');
+    await enterNoEmotionFromMenu(writePage);
     await writePage.waitForSelector('.real-discovery-card');
     await writePage.click('.no-emotion-next');
     await writePage.click('.no-emotion-previous');

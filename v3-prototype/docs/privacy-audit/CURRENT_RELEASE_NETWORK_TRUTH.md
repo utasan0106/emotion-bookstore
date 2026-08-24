@@ -23,18 +23,21 @@ no external host and no V3 Product identifier or private content.
 
 ## Current explicit external actions
 
-The reachable real Outing inventory contains EXP_007. Its visible actions can
-open:
+Each of the eight reachable real Outings can open its record-specific verified
+official HTTPS page and a Google Maps directions URL containing only the
+approved public destination address. Both are explicit new-tab actions with
+`noopener,noreferrer`. Maps has no `origin` parameter and V3 never requests the
+user's geolocation.
 
-- `fng.or.jp`: verified official page;
-- `www.google.com`: Google Maps directions containing only the approved public
-  destination address.
+After the user has saved a local Plan, an additional explicit
+`Googleカレンダーに追加` action can open `calendar.google.com` with an event
+creation URL. V3 builds that URL locally from the public Experience title,
+user-selected date/time, approved public address, official URL, and a bounded
+public description. It does not open automatically, make a background request,
+connect an account, or sync. Private body/title/photo content does not exist in
+V3 and is not transmitted.
 
-Both are explicit new-tab actions with `noopener,noreferrer`. The destination
-receives normal network metadata under its own policy. V3 sends no selected
-shelf, Experience ID, Interested state, Plan, Trace, private text, or user
-location. The Maps URL has no origin and V3 does not call geolocation.
-
+Destinations receive normal navigation metadata under their own policies.
 EXP_001 has an approved `e-comi.shogakukan.co.jp` destination in the Registry,
 but it is not in the current reachable Outing deck and causes no current runtime
 transmission.
@@ -50,8 +53,11 @@ and requests are zero. Historical V2 configuration is not V3 authority.
 `v3-prototype-db` stores Product state in the `state` object store under the
 existing `session` and `interested-experiences-v1` keys. Selected shelf/deck,
 Interested IDs/timestamps, Plan data, and predefined Trace facets stay in
-IndexedDB. Store code contains no network primitive. There is no free-text,
-private title, or photo input in the V3 Release runtime.
+IndexedDB. The Interested schema is unchanged. A standalone versioned
+`v3-interested-entrance-cue-v1` localStorage marker contains only
+`experienceId`, `savedAt`, and `shownAt`, so the latest save can appear on the
+next Entrance once. It contains no title, description, URL, or private text and
+has no sender. There is no free-text, private title, or photo input in V3.
 
 ## Future shell, not current traffic
 

@@ -76,7 +76,7 @@
     budgetBand: '予算', logisticalNeed: '利用条件'
   });
   var CONTEXT_VALUE_LABELS = Object.freeze({
-    'tokyo-core': '東京23区内', 'tokyo-wide': '東京都内',
+    'tokyo-core': '東京23区内', 'tokyo-wide': '東京都内（23区外）',
     weekday: '平日', weekend: '週末', daytime: '日中', evening: '夕方以降',
     short: '短時間', 'half-day': '半日', 'full-day': '一日',
     free: '無料', 'under-3000': '3,000円以内', 'under-5000': '5,000円以内',

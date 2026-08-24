@@ -16,6 +16,7 @@ const fs = require('fs');
 const path = require('path');
 const { chromium } = require('playwright');
 const { start } = require('./serve');
+const SYSTEM_CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
 const SHELVES = [
   ['心が弾む', 'チームラボボーダレス'],
@@ -91,7 +92,11 @@ function check(name, ok, detail = '') {
 
 (async () => {
   const { server, base } = await start(4390);
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({
+    headless: true,
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ||
+      (fs.existsSync(SYSTEM_CHROME) ? SYSTEM_CHROME : undefined)
+  });
   const netLog = [];
 
   for (const vp of VIEWPORTS) {
@@ -154,14 +159,14 @@ function check(name, ok, detail = '') {
             else if (el.matches('.detail-official-provenance')) marks.push('SOURCE');
             else if (el.matches('.detail-actions')) marks.push('ACTIONS');
             else if (el.matches('.place-detail-access')) marks.push('FACTS');
-            else if (el.textContent.trim() === 'どんな場所か') marks.push('OFFICIAL');
+            else if (['どんな場所か', '公式情報からわかること'].includes(el.textContent.trim())) marks.push('OFFICIAL');
             else if (el.textContent.trim() === 'なぜ、この棚に？') marks.push('WHY');
           });
           return marks;
         });
         const idx = (m) => order.indexOf(m);
-        check(`${vp.name} ${shelf} order TITLE<OFFICIAL<WHY`,
-          idx('TITLE') >= 0 && idx('OFFICIAL') > idx('TITLE') && idx('WHY') > idx('OFFICIAL'), order.join('>'));
+        check(`${vp.name} ${shelf} order TITLE<WHY<OFFICIAL`,
+          idx('TITLE') >= 0 && idx('WHY') > idx('TITLE') && idx('OFFICIAL') > idx('WHY'), order.join('>'));
         check(`${vp.name} ${shelf} order WHY<FACTS<ACTIONS`,
           idx('FACTS') > idx('WHY') && idx('ACTIONS') > idx('FACTS'), order.join('>'));
         check(`${vp.name} ${shelf} attribution + source rendered`,

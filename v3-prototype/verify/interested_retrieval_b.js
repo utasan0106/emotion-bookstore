@@ -130,7 +130,7 @@ check('retrieval is a dialog layer, not a full-screen surface',
   appSource.includes("'aria-modal': 'true'") &&
   !/SURFACES\s*=\s*\{[^}]*interested/s.test(appSource));
 check('actionable items provide view and remove',
-  appSource.includes("text: '見る'") && appSource.includes("text: '保存を解除'"));
+  appSource.includes("text: '詳しく見る'") && appSource.includes("text: '保存を解除'"));
 check('unavailable items provide no view action',
   appSource.includes("if (actionable) {") && appSource.includes("現在は案内できません"));
 check('unavailable copy is quiet and fail closed',

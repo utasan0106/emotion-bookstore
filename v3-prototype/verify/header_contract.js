@@ -2,8 +2,10 @@
  * V3 prototype — Header MENU Interaction Contract v0.2（W01 / M01）
  * 実行: NODE_PATH=/opt/node22/lib/node_modules node verify/header_contract.js
  * ========================================================================== */
+const fs = require('fs');
 const { chromium } = require('playwright');
 const { start } = require('./serve');
+const SYSTEM_CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
 const results = [];
 function check(name, ok, detail) {
@@ -13,7 +15,11 @@ function check(name, ok, detail) {
 
 (async () => {
   const { server, base } = await start(4184);
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({
+    headless: true,
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ||
+      (fs.existsSync(SYSTEM_CHROME) ? SYSTEM_CHROME : undefined)
+  });
 
   /* ---------------------------------------------------- desktop (>=1200px) */
   const d = await browser.newPage({ viewport: { width: 1536, height: 1024 } });
@@ -34,16 +40,17 @@ function check(name, ok, detail) {
   const visiblePrimaryStarts = await d.evaluate(() => Array.from(document.querySelectorAll('button.btn-primary'))
     .filter((n) => n.getClientRects().length > 0 && getComputedStyle(n).visibility !== 'hidden')
     .filter((n) => n.textContent.trim().startsWith('はじめる')).length);
-  check('W01: closed visible primary はじめる = unchanged Hero CTA 1件',
-    visiblePrimaryStarts === 1 && (await d.locator('.cta-primary .cta-sub').textContent()) === '感情の言葉を選ぶ',
+  check('W01: closed visible primary はじめる = concise Hero CTA 1件',
+    visiblePrimaryStarts === 1 && (await d.locator('.cta-primary .cta-main').textContent()) === 'はじめる' &&
+      (await d.locator('.cta-primary .cta-sub').count()) === 0,
     String(visiblePrimaryStarts));
 
   const labels = await d.locator('.site-nav-link').allTextContents();
-  check('W01: nav 4項目の順序',
-    labels.join(',') === 'はじめる,体験の流れ,感情の言葉,よくある質問', labels.join(','));
+  check('W01: nav 5項目の順序',
+    labels.join(',') === '選ばずに見る,保存済みを見る,体験の流れ,感情の棚,よくある質問', labels.join(','));
   check('W01: nav landmark + list semantics / ARIA menu pattern 不使用',
     (await panel.evaluate((n) => n.tagName)) === 'NAV' &&
-    (await panel.locator(':scope > ul > li').count()) === 4 &&
+    (await panel.locator(':scope > ul > li').count()) === 5 &&
     (await d.locator('[role="menu"], [role="menuitem"]').count()) === 0);
 
   await trigger.click();
@@ -96,9 +103,9 @@ function check(name, ok, detail) {
   check('W01: Trust 3項目 = distinct icon + exact heading + exact support',
     trustCopy.length === 3 &&
     trustCopy.map((x) => x.heading).join('|') ===
-      '登録不要・完全に非公開|AIは使用しません|記録はまずこの端末へ' &&
+      '登録不要・記録は非公開|記録を外部AIへ送りません|記録はまずこの端末へ' &&
     trustCopy.map((x) => x.support).join('|') ===
-      'あなたの記録はあなただけのものです。|本文をAIが読むことはありません。|大切な記録は、あなたの端末に保存されます。' &&
+      'この端末に保存した記録は公開されません。|この端末に保存した内容を、外部AIへ送る機能はありません。|大切な記録は、あなたの端末に保存されます。' &&
     new Set(trustCopy.map((x) => x.icon)).size === 3,
     JSON.stringify(trustCopy));
 
@@ -122,7 +129,7 @@ function check(name, ok, detail) {
     await page.waitForTimeout(120);
     const before = await page.evaluate((x) => document.getElementById(x).getBoundingClientRect().top, id);
     await openMenu(page);
-    await page.locator('.site-nav-link', { hasText: id === 'core-loop' ? '体験の流れ' : 'よくある質問' }).click();
+    await page.locator('.site-nav-link', { hasText: id === 'experience-flow' ? '体験の流れ' : 'よくある質問' }).click();
     await page.waitForTimeout(700);
     return page.evaluate((args) => {
       const top = document.getElementById(args.id).getBoundingClientRect().top;
@@ -136,14 +143,14 @@ function check(name, ok, detail) {
     }, { id, before });
   };
 
-  const loopScroll = await scrollCheck(d, 'core-loop');
-  check('W01: 体験の流れ → #core-loop / selection closes panel',
+  const loopScroll = await scrollCheck(d, 'experience-flow');
+  check('W01: 体験の流れ → #experience-flow / selection closes panel',
     loopScroll.scrollY > 0 && loopScroll.top < loopScroll.before &&
-    (Math.abs(loopScroll.top) < 60 || loopScroll.atMax) && loopScroll.closed,
+    (loopScroll.top >= 0 && loopScroll.top < 180 || loopScroll.atMax) && loopScroll.closed,
     `top ${Math.round(loopScroll.top)} / scrollY ${Math.round(loopScroll.scrollY)}${loopScroll.atMax ? ' (最大)' : ''}`);
 
-  const trustScroll = await scrollCheck(d, 'trust');
-  check('W01: よくある質問 → #trust / selection closes panel',
+  const trustScroll = await scrollCheck(d, 'faq');
+  check('W01: よくある質問 → #faq / selection closes panel',
     trustScroll.scrollY > 0 && trustScroll.top < trustScroll.before &&
     (Math.abs(trustScroll.top) < 60 || trustScroll.atMax) && trustScroll.closed,
     `top ${Math.round(trustScroll.top)} / scrollY ${Math.round(trustScroll.scrollY)}${trustScroll.atMax ? ' (最大)' : ''}`);
@@ -154,21 +161,10 @@ function check(name, ok, detail) {
     (await d.locator('details, dialog, [role="dialog"], [role="tablist"]').count()) === 0);
 
   // locale は非対話の状態表示
-  const locale = await d.evaluate(() => {
-    const n = document.querySelector('.locale');
-    return {
-      focusable: n.hasAttribute('tabindex') || n.tagName === 'BUTTON' || n.tagName === 'A' || n.tagName === 'SELECT',
-      cursor: getComputedStyle(n).cursor,
-      srText: n.querySelector('.sr-only').textContent,
-      chevronHidden: n.querySelector('.locale-chevron').getAttribute('aria-hidden') === 'true'
-    };
-  });
-  check('W01: JP は非対話の locale status（focus 不可 / cursor default / 説明あり）',
-    !locale.focusable && locale.cursor === 'default' &&
-    locale.srText === '表示言語：日本語。言語切替は未提供です' && locale.chevronHidden, locale.cursor);
+  check('W01: 未提供の言語切替UIを表示しない', (await d.locator('.locale').count()) === 0);
 
   await openMenu(d);
-  await d.locator('.site-nav-link', { hasText: '感情の言葉' }).click();
+  await d.locator('.site-nav-link', { hasText: '感情の棚' }).click();
   await d.waitForTimeout(80);
   check('W01: 感情の言葉 → W02 Emotion（別画面を作らない）',
     (await d.getAttribute('.surface', 'data-surface')) === '02-emotion' && !(await panel.isVisible()));
@@ -179,15 +175,15 @@ function check(name, ok, detail) {
     (await d.locator('.emotion-card').count()) === 8 &&
     (await d.getAttribute('.emotion-hero img', 'src')) === './assets/canonical-m02-w02/w02_hero.png');
   await openMenu(d);
-  check('W02: MENU open stateは既存4項目panel',
-    await panel.isVisible() && (await panel.locator('.site-nav-link').count()) === 4);
+  check('W02: MENU open stateは現在の5項目panel',
+    await panel.isVisible() && (await panel.locator('.site-nav-link').count()) === 5);
   await d.keyboard.press('Escape');
 
   await d.goto(base); await d.waitForSelector('.surface');
   await openMenu(d);
-  await d.locator('.site-nav-link', { hasText: 'はじめる' }).click();
+  await d.locator('.site-nav-link', { hasText: '感情の棚' }).click();
   await d.waitForTimeout(80);
-  check('W01: nav はじめる → W02 Emotion',
+  check('W01: nav 感情の棚 → W02 Emotion',
     (await d.getAttribute('.surface', 'data-surface')) === '02-emotion' && !(await panel.isVisible()));
 
   await d.goto(base); await d.waitForSelector('.surface');
@@ -211,20 +207,25 @@ function check(name, ok, detail) {
   const rmScroll = await rm.evaluate(() => {
     const max = document.documentElement.scrollHeight - window.innerHeight;
     return { scrollY: window.scrollY, atMax: Math.abs(window.scrollY - max) < 2,
-             top: document.getElementById('core-loop').getBoundingClientRect().top };
+             top: document.getElementById('experience-flow').getBoundingClientRect().top };
   });
   check('reduced motion: 即時スクロール（補間なし）',
-    rmScroll.scrollY > 0 && (Math.abs(rmScroll.top) < 60 || rmScroll.atMax),
+    rmScroll.scrollY > 0 && (rmScroll.top >= 0 && rmScroll.top < 180 || rmScroll.atMax),
     `60ms 後 scrollY ${Math.round(rmScroll.scrollY)}${rmScroll.atMax ? ' (最大)' : ''}`);
   await rm.close();
 
-  /* ---------------------------------------------------- <1200px は非表示 */
+  /* ------------------------------------------ <1200px でも service MENU は到達可能 */
   for (const width of [390, 430, 768, 1199]) {
     const m = await browser.newPage({ viewport: { width, height: 900 } });
     await m.goto(base); await m.waitForSelector('.surface');
-    check(`M01 ${width}px: header / MENU / nav panel を出さない`,
-      !(await m.locator('.site-header').isVisible()) &&
-      !(await m.locator('#headerMenuTrigger').isVisible()) && !(await m.locator('#headerNavPanel').isVisible()));
+    check(`M01 ${width}px: header / MENU を表示し panel は閉じる`,
+      await m.locator('.site-header').isVisible() &&
+      await m.locator('#headerMenuTrigger').isVisible() && !(await m.locator('#headerNavPanel').isVisible()));
+    await openMenu(m);
+    check(`M01 ${width}px: MENU から no-emotion / saved route へ到達可能`,
+      await m.locator('[data-nav="no-emotion"]').isVisible() &&
+      await m.locator('[data-nav="interested"]').isVisible());
+    await m.keyboard.press('Escape');
     check(`M01 ${width}px: Hero CTA は canonical navy`,
       (await m.evaluate(() => getComputedStyle(document.querySelector('.cta-primary')).backgroundColor)) === 'rgb(13, 35, 57)');
     await m.close();

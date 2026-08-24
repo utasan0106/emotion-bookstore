@@ -16,6 +16,8 @@
   var MATCHING = global.V3_CULTURAL_MATCHING;
   var REAL = global.V3_REAL_EXPERIENCE_REGISTRY;
   var INTERESTED = global.V3_INTERESTED_RETRIEVAL;
+  var ENTRANCE_CUE_STORE = global.V3_ENTRANCE_CUE_STORE;
+  var CALENDAR_ACTION = global.V3_CALENDAR_ACTION;
   var PUBLIC_EDITORIAL = global.V3_PUBLIC_EDITORIAL;
   var MEASUREMENT = global.V3_ANALYTICS;
 
@@ -34,6 +36,8 @@
   var pendingFocusSelector = null;
   var noEmotionIndex = 0;
   var noEmotionDetailId = null;
+  var entranceCueMarker = ENTRANCE_CUE_STORE ? ENTRANCE_CUE_STORE.empty() : null;
+  var entranceCueItem = null;
   /* Context Fit is intentionally closure-local and session-memory-only. It is
      never serialized by STORE, History, URL, analytics, Interested or Trace. */
   var contextSession = MATCHING && MATCHING.createContextSession
@@ -137,6 +141,8 @@
     var previousScreen = screen;
     stopActiveMedia();
     screen = normalizePublicScreen(next);
+    if (screen === 'entrance' && previousScreen !== 'entrance') prepareEntranceCue();
+    else if (screen !== 'entrance') entranceCueItem = null;
     navigationSequence += 1;
     var transientNoEmotion = screen === 'no-emotion' || screen === 'no-emotion-detail' ||
       previousScreen === 'no-emotion' || previousScreen === 'no-emotion-detail';
@@ -271,7 +277,29 @@
   }
 
   function interestedLabel(id) {
-    return isInterested(id) ? '気になる・保存済み' : '気になる';
+    return isInterested(id) ? '保存済み' : '気になる';
+  }
+
+  function visualDimensions(asset) {
+    var path = asset && asset.localAssetPath ? asset.localAssetPath : '';
+    if (/category-visual\//.test(path)) return { width: '1200', height: '900' };
+    if (/EXP_007_shinjuku_gyoen_official_landscape/.test(path)) {
+      return { width: '1440', height: '959' };
+    }
+    if (/m01_stacked_lockup/.test(path)) return { width: '402', height: '260' };
+    return {};
+  }
+
+  function prepareEntranceCue() {
+    entranceCueItem = null;
+    if (!INTERESTED || !ENTRANCE_CUE_STORE || !interested.items.length) return;
+    var latest = INTERESTED.resolveAll(interested)[0];
+    if (!latest || !latest.experienceId || !latest.savedAt) return;
+    if (entranceCueMarker && entranceCueMarker.experienceId === latest.experienceId &&
+        entranceCueMarker.savedAt === latest.savedAt) return;
+    if (latest.status === 'actionable') entranceCueItem = latest;
+    ENTRANCE_CUE_STORE.markShown(latest.experienceId, latest.savedAt);
+    entranceCueMarker = ENTRANCE_CUE_STORE.load();
   }
 
   function interestedFocusable() {
@@ -347,6 +375,9 @@
         return;
       }
       interested = result.value;
+      if (entranceCueItem && entranceCueItem.experienceId === item.experienceId) {
+        entranceCueItem = null;
+      }
       if (interested.items.length === 0) {
         closeInterestedLayer(false);
         render();
@@ -363,6 +394,14 @@
 
   function interestedRow(item) {
     var actionable = item.status === 'actionable';
+    var experience = actionable && REAL && REAL.byId ? REAL.byId(item.experienceId) : null;
+    var asset = experience && experience.visualAsset;
+    var dimensions = visualDimensions(asset);
+    var media = asset && asset.localAssetPath ? h('img', {
+      class: 'interested-item-image', src: asset.localAssetPath,
+      alt: asset.altTextJa || '', loading: 'lazy', decoding: 'async',
+      width: dimensions.width, height: dimensions.height
+    }) : null;
     var text = actionable ? [
       h('p', { class: 'interested-item-type', text: item.type }),
       h('h3', { class: 'interested-item-title', text: item.title }),
@@ -379,7 +418,7 @@
       actions.push(h('button', {
         class: 'btn btn-line btn-sm', type: 'button',
         onclick: function () { viewInterestedItem(item); }
-      }, [h('span', { text: '見る' })]));
+      }, [h('span', { text: '詳しく見る' })]));
     }
     var removeButton = h('button', {
       class: 'btn btn-text btn-sm', type: 'button'
@@ -391,6 +430,7 @@
     return h('li', {
       class: 'interested-item' + (actionable ? '' : ' is-unavailable')
     }, [
+      media ? h('div', { class: 'interested-item-media' }, [media]) : null,
       h('div', { class: 'interested-item-copy' }, text),
       h('div', { class: 'interested-item-actions' }, actions)
     ]);
@@ -408,18 +448,24 @@
     panel.appendChild(closeButton);
     panel.appendChild(h('p', { class: 'eyebrow', text: 'この端末に保存したもの' }));
     panel.appendChild(h('h2', {
-      class: 'interested-title', id: 'interested-title', text: '気になるもの'
+      class: 'interested-title', id: 'interested-title', text: '保存済み'
     }));
     panel.appendChild(h('p', {
       class: 'interested-note',
       text: '保存した新しい順です。現在の確認条件を満たすものだけ、詳細を開けます。'
     }));
-    panel.appendChild(h('ul', { class: 'interested-list' }, items.map(interestedRow)));
+    if (items.length) {
+      panel.appendChild(h('ul', { class: 'interested-list' }, items.map(interestedRow)));
+    } else {
+      panel.appendChild(h('div', { class: 'interested-empty' }, [
+        h('p', { text: '保存済みのものは、まだありません。' }),
+        h('p', { class: 'note', text: 'DiscoveryやDetailの「気になる」から、この端末に保存できます。' })
+      ]));
+    }
     closeButton.focus();
   }
 
   function openInterestedLayer(opener) {
-    if (!interested.items.length) return;
     closeInterestedLayer(false);
     interestedOpener = opener;
     interestedLayer = h('div', {
@@ -478,12 +524,23 @@
     if (!usesDurableInterest(id) || interestPending[id]) return;
     var wasInterested = isInterested(id);
     var saveToken = wasInterested ? null : nextMeasurementToken('experience-save');
+    var beforeInterested = JSON.parse(JSON.stringify(interested));
     interestPending[id] = true;
+    if (wasInterested) {
+      interested.items = interested.items.filter(function (item) {
+        return item.experienceId !== id;
+      });
+    } else {
+      interested.items.push({ experienceId: id, savedAt: new Date().toISOString() });
+    }
+    pendingFocusSelector = '.real-discovery-interest';
+    render();
     var operation = wasInterested ? STORE.removeInterested(id) : STORE.saveInterested(id);
     operation.then(function (result) {
       delete interestPending[id];
       if (!wasInterested) measureDurableSave(result, saveToken);
       if (!result || result.ok !== true) {
+        interested = beforeInterested;
         render();
         announce(wasInterested
           ? '保存の解除に失敗しました。保存済みの状態を保ちます。'
@@ -496,6 +553,7 @@
       announce(wasInterested ? '気になるものから外しました。' : 'この端末の気になるものに保存しました。');
     }).catch(function () {
       delete interestPending[id];
+      interested = beforeInterested;
       render();
       announce(wasInterested
         ? '保存の解除に失敗しました。保存済みの状態を保ちます。'
@@ -656,7 +714,7 @@
       case 'no-emotion-detail':
         return { back: 'no-emotion', backLabel: '一覧に戻る', transient: true };
       case 'understanding':
-        return { back: 'emotion' };
+        return { back: 'emotion', backLabel: '感情の棚へ戻る' };
       case 'editorial-detail':
         return { back: 'understanding' };
       case 'discovery':
@@ -703,6 +761,7 @@
       'aria-label': config.backLabel || '前の画面へ戻る',
       onclick: function () { go(config.back, { transient: config.transient === true }); }
     }, [
+      icon('back'),
       h('span', { class: 'stepbar-back-label', text: config.backLabel || '戻る' })
     ]);
 
@@ -733,35 +792,42 @@
     /* 99_v3 canonical からの未改変pixel cropのみを使用する。
        Crop座標・hash・使用条件は ASSET_MANIFEST.json に固定する。 */
     var hero = h('picture', { class: 'hero' }, [
-      h('source', { media: '(min-width: 1200px)', srcset: './assets/canonical-m01-w01/w01_hero.png' }),
+      h('source', { media: '(min-width: 1200px)', srcset: './assets/canonical-m01-w01/w01_hero.webp' }),
       h('img', {
         class: 'hero-img',
-        src: './assets/canonical-m01-w01/m01_hero.png',
+        src: './assets/canonical-m01-w01/m01_hero.webp',
         alt: '外の世界へ続く道を歩く人のイラスト',
-        width: '941', height: '680'
+        width: '941', height: '680', loading: 'eager', decoding: 'async',
+        fetchpriority: 'high'
+      })
+    ]);
+
+    var brand = h('p', { class: 'brand-lockup-wrap' }, [
+      h('img', {
+        class: 'brand-lockup', src: './assets/canonical-m01-w01/m01_stacked_lockup.png',
+        alt: 'みんなの感情書店 EMOTION BOOKSTORE', width: '402', height: '260',
+        decoding: 'async'
       })
     ]);
 
     var copy = h('div', { class: 'entrance-copy' }, [
-      h('p', { class: 'brand-lockup-wrap' }, [
-        h('img', {
-          class: 'brand-lockup', src: './assets/canonical-m01-w01/m01_stacked_lockup.png',
-          alt: 'みんなの感情書店 EMOTION BOOKSTORE', width: '402', height: '260'
-        })
-      ]),
       h('h1', { class: 'display', tabindex: '-1', id: 'surface-title' }, [
-        h('span', { class: 'frontstage-headline-line', text: '感情から、' }),
-        h('span', { class: 'frontstage-headline-line', text: '本・映画・音楽・場所へ。' })
+        h('span', { class: 'frontstage-headline-line', text: '感情の先に、' }),
+        h('span', { class: 'frontstage-headline-line', text: '世界がある' })
       ]),
       h('p', { class: 'lede' }, [
-        h('span', { class: 'lede-line', text: '感情の棚から。選ばず、編集部の仕入れから。' }),
-        h('span', { class: 'lede-line', text: 'どちらからでも、理由のある有限の寄り道へ進めます。' })
+        h('span', { class: 'lede-line', text: '本、映画、音楽、体験。' }),
+        h('span', { class: 'lede-line', text: '8つの感情から新たな出会いを。' })
       ]),
       h('div', { class: 'entrance-routes', 'aria-label': '入口を選ぶ' }, [
         h('button', {
           class: 'btn btn-primary cta-primary entrance-route-shelf', type: 'button',
           onclick: function () { go('emotion'); }
-        }, [h('span', { class: 'cta-main', text: '棚から見る' })]),
+        }, [h('span', { class: 'cta-main', text: 'はじめる' })]),
+        h('p', {
+          class: 'entrance-route-note',
+          text: '感情から、次に触れるものを見つけられます。'
+        }),
         h('button', {
           class: 'btn btn-line cta-secondary entrance-route-no-emotion', type: 'button',
           onclick: enterNoEmotion
@@ -770,19 +836,18 @@
       interested.items.length ? h('button', {
         class: 'interested-entry', type: 'button',
         onclick: function (event) { openInterestedLayer(event.currentTarget); }
-      }, [icon('heart'), h('span', { text: '気になるものを見る' })]) : null
+      }, [icon('heart'), h('span', { text: '保存済みを見る' })]) : null
     ]);
 
-    var nodes = [h('div', { class: 'entrance-hero' }, [copy, hero])];
+    var nodes = [h('div', { class: 'entrance-hero' }, [brand, hero, copy])];
 
-    if (state.plan && state.plan.status === 'open') {
-      var planned = D.byId(state.plan.experienceId);
-      nodes.push(h('aside', { class: 'return-surface', 'aria-label': '前回の予定' }, [
-        h('p', { class: 'return-text', text: 'この前選んだ体験があります。' }),
+    if (entranceCueItem) {
+      nodes.push(h('aside', { class: 'return-surface', 'aria-label': '最新の保存済み' }, [
+        h('p', { class: 'return-text', text: '次に見るために保存したものがあります。' }),
         h('button', {
           class: 'btn btn-quiet', type: 'button',
-          onclick: function () { go('moment'); }
-        }, [h('span', { text: planned ? planned.title : '体験を見る' })])
+          onclick: function () { viewInterestedItem(entranceCueItem); }
+        }, [h('span', { text: entranceCueItem.title })])
       ]));
     }
 
@@ -801,12 +866,12 @@
     {
       asset: '01',
       mobileTitle: '入口を選ぶ', mobileNote: ['棚から／選ばずに見る'],
-      desktopTitle: '入口を選ぶ', desktopNote: ['感情の棚から。', '選ばず、編集部の仕入れから。']
+      desktopTitle: '入口を選ぶ', desktopNote: ['8つの感情の棚から一つ選びます。']
     },
     {
       asset: '02',
       mobileTitle: '寄り道に出会う', mobileNote: ['理由のある候補を見る'],
-      desktopTitle: '寄り道に出会う', desktopNote: ['棚の角度から置かれた、', '理由のある候補を見る']
+      desktopTitle: '寄り道に出会う', desktopNote: ['本、映画、音楽、体験に出会えます。']
     },
     {
       asset: '03',
@@ -838,7 +903,8 @@
             }),
             h('img', {
               class: 'loop-img', alt: '',
-              src: './assets/canonical-m01-w01/m01_step_' + step.asset + '.png'
+              src: './assets/canonical-m01-w01/m01_step_' + step.asset + '.png',
+              width: '135', height: '145', loading: 'lazy', decoding: 'async'
             })
           ])
         ]),
@@ -881,7 +947,8 @@
       return h('article', { class: 'trust-item' }, [
         h('img', {
           class: 'trust-icon', alt: '',
-          src: './assets/canonical-m01-w01/w01_trust_' + item.asset + '.png'
+          src: './assets/canonical-m01-w01/w01_trust_' + item.asset + '.png',
+          loading: 'lazy', decoding: 'async'
         }),
         h('span', { class: 'trust-copy' }, [
           h('strong', { class: 'trust-heading', text: item.heading }),
@@ -908,7 +975,7 @@
     },
     {
       title: '理由のある寄り道を見る',
-      copy: '感情書店の編集部が、理由を説明できるものだけを置きます。0件の棚もあります。'
+      copy: '感情書店の編集基準に基づき、理由を説明できるものだけを選んでいます。0件の棚もあります。'
     },
     {
       title: '気になるものに触れる',
@@ -1051,7 +1118,8 @@
           h('span', { class: 'emotion-card-media', 'aria-hidden': 'true' }, [
             h('img', {
               class: 'emotion-card-image', alt: '',
-              src: './assets/canonical-m02-w02/' + word.asset
+              src: './assets/canonical-m02-w02/' + word.asset,
+              width: '200', height: '212', loading: 'lazy', decoding: 'async'
             })
           ]),
           h('span', { class: 'emotion-card-copy' }, [
@@ -1094,7 +1162,7 @@
       h('picture', { class: 'emotion-hero emotion-desktop-only' }, [
         h('img', {
           src: './assets/canonical-m02-w02/w02_hero.png', alt: '',
-          width: '756', height: '300'
+          width: '756', height: '300', loading: 'lazy', decoding: 'async'
         })
       ])
     ]);
@@ -1146,7 +1214,7 @@
 
   var CONTEXT_OPTIONS = Object.freeze({
     area: Object.freeze([
-      ['', '指定しない'], ['tokyo-core', '東京23区内'], ['tokyo-wide', '東京都内']
+      ['', '指定しない'], ['tokyo-core', '東京23区内'], ['tokyo-wide', '東京都内（23区外）']
     ]),
     budgetBand: Object.freeze([
       ['', '指定しない'], ['free', '無料'], ['under-3000', '3,000円以内'],
@@ -1292,7 +1360,7 @@
       }));
       outcome.push(h('p', {
         class: 'note',
-        text: '感情書店の編集部が、理由を説明できるものだけを選んでいます。'
+        text: '感情書店の編集基準に基づき、理由を説明できるものだけを選んでいます。'
       }));
       outcome.push(h('div', { class: 'actions' }, [
         h('button', {
@@ -1311,7 +1379,8 @@
       h('div', { class: 'understanding-shelf-identity' }, [
         word ? h('img', {
           class: 'understanding-shelf-image', alt: '',
-          src: './assets/canonical-m02-w02/' + word.asset
+          src: './assets/canonical-m02-w02/' + word.asset,
+          width: '200', height: '212', loading: 'eager', decoding: 'async'
         }) : null,
         h('h1', {
           class: 'display display-sm', tabindex: '-1', id: 'surface-title',
@@ -1573,7 +1642,7 @@
     } else {
       media = record.display_visual ? h('img', {
         class: 'public-editorial-detail-visual', src: record.display_visual.src,
-        alt: record.display_visual.alt
+        alt: record.display_visual.alt, loading: 'eager', decoding: 'async'
       }) : null;
       action = h('button', {
         class: 'btn btn-primary public-editorial-primary', type: 'button',
@@ -1763,20 +1832,19 @@
     var isFallback = asset.status === 'brand_fallback_ready';
     var isCategoryVisual = isFallback && asset.assetType === 'category_visual';
     var isBrandFallback = isFallback && asset.assetType === 'brand_fallback';
+    var dimensions = visualDimensions(asset);
     var children = [
       h('img', {
         class: 'real-experience-visual-image fit-' + asset.fitMode,
         src: asset.localAssetPath,
         alt: asset.altTextJa,
-        loading: 'eager',
-        decoding: 'async'
+        loading: context === 'interested' ? 'lazy' : 'eager',
+        decoding: 'async',
+        width: dimensions.width,
+        height: dimensions.height
       })
     ];
     if (isFallback) {
-      children.push(h('span', {
-        class: 'real-experience-category-label',
-        text: asset.categoryLabel
-      }));
       children.push(h('span', {
         class: 'real-experience-media-status',
         text: 'カテゴリ図版（実画像の表示権利を確認中）'
@@ -1860,7 +1928,13 @@
       'aria-pressed': isInterested(experience.id) ? 'true' : 'false',
       'data-interest-state': isInterested(experience.id) ? 'saved' : 'unsaved',
       onclick: function () { toggleInterested(experience.id); }
-    }, [icon('bookmark'), h('span', { text: interestedLabel(experience.id) })]));
+    }, [icon('heart'), h('span', { text: interestedLabel(experience.id) })]));
+    if (interested.items.length) {
+      cardActions.push(h('button', {
+        class: 'btn btn-text saved-list-entry', type: 'button',
+        onclick: function (event) { openInterestedLayer(event.currentTarget); }
+      }, [h('span', { text: '保存済みを見る' })]));
+    }
     var card = experienceCard(experience, contract, counter, cardActions);
     if (count > 1) {
       attachSwipe(card,
@@ -1974,8 +2048,14 @@
           'aria-pressed': isInterested(experience.id) ? 'true' : 'false',
           'data-interest-state': isInterested(experience.id) ? 'saved' : 'unsaved',
           onclick: function () { toggleInterested(experience.id); }
-        }, [icon('bookmark'), h('span', { text: interestedLabel(experience.id) })])
+        }, [icon('heart'), h('span', { text: interestedLabel(experience.id) })])
       ];
+      if (interested.items.length) {
+        actions.push(h('button', {
+          class: 'btn btn-text saved-list-entry', type: 'button',
+          onclick: function (event) { openInterestedLayer(event.currentTarget); }
+        }, [h('span', { text: '保存済みを見る' })]));
+      }
       var card = experienceCard(
         experience, contract, (noEmotionIndex + 1) + ' / ' + count, actions, { noEmotion: true }
       );
@@ -2019,7 +2099,7 @@
     var actions = approvedDestinationActions(experience);
     var actionNodes = actions.map(function (action) {
       return h('button', {
-        class: action.kind === 'primary' ? 'btn btn-primary detail-primary-action' : 'btn btn-text detail-utility-action',
+        class: action.kind === 'primary' ? 'btn btn-primary detail-primary-action' : 'btn btn-line detail-utility-action',
         type: 'button', 'data-action-destination': action.kind,
         onclick: destinationActionHandler(action, experience)
       }, [
@@ -2032,7 +2112,7 @@
       'aria-pressed': isInterested(experience.id) ? 'true' : 'false',
       'data-interest-state': isInterested(experience.id) ? 'saved' : 'unsaved',
       onclick: function () { toggleInterested(experience.id); }
-    }, [icon('bookmark'), h('span', { text: interestedLabel(experience.id) })]));
+    }, [icon('heart'), h('span', { text: interestedLabel(experience.id) })]));
 
     var summary = [
       contract.firstPull ? h('p', {
@@ -2824,7 +2904,7 @@
     }
     secondaryActions.forEach(function (action) {
       detailActions.push(h('button', {
-        class: 'btn btn-text detail-utility-action', type: 'button',
+        class: 'btn btn-line detail-utility-action', type: 'button',
         'data-action-destination': action.kind,
         onclick: destinationActionHandler(action, experience)
       }, [
@@ -2842,7 +2922,13 @@
         }
       }, [h('span', { text: '日時を決めて予定を残す' })]),
       h('button', {
-        class: 'btn btn-text', type: 'button',
+        class: 'btn btn-line real-discovery-interest detail-interest-action', type: 'button',
+        'aria-pressed': isInterested(experience.id) ? 'true' : 'false',
+        'data-interest-state': isInterested(experience.id) ? 'saved' : 'unsaved',
+        onclick: function () { toggleInterested(experience.id); }
+      }, [icon('heart'), h('span', { text: interestedLabel(experience.id) })]),
+      h('button', {
+        class: 'btn btn-text detail-bottom-back', type: 'button',
         onclick: function () { go('discovery'); }
       }, [h('span', { text: '戻る' })])
     );
@@ -3121,6 +3207,9 @@
 
   function surfacePlanSaved() {
     var summary = planSummary(state.plan);
+    var experience = state.plan
+      ? (approvedOutingById(state.plan.experienceId) || D.byId(state.plan.experienceId))
+      : null;
     var surface = section('06-plan-saved', [
       h('div', { class: 'plan-saved-panel' }, [
         h('div', { class: 'plan-saved-heading' }, [
@@ -3128,8 +3217,19 @@
           h('h1', { class: 'display display-sm', tabindex: '-1', id: 'surface-title', text: '予定を残しました。' })
         ]),
         summary ? h('p', { class: 'plan-saved-summary', text: summary }) : null,
-        h('p', { class: 'note', text: 'この端末に保存しました。外部カレンダーとは同期していません。' }),
+        h('p', { class: 'note', text: 'この端末に予定を保存しました。日時はあとから変更できます。' }),
         h('div', { class: 'actions' }, [
+          h('button', {
+            class: 'btn btn-line google-calendar-action', type: 'button',
+            onclick: function () {
+              if (CALENDAR_ACTION && CALENDAR_ACTION.open(experience, state.plan)) {
+                announce('Googleカレンダーを新しいタブで開きました。');
+              } else {
+                announce('Googleカレンダーを開けませんでした。');
+              }
+            }
+          }, [icon('calendar'), h('span', { text: 'Googleカレンダーに追加' })]),
+          h('p', { class: 'google-calendar-note', text: 'Googleカレンダーが開きます。' }),
           h('button', {
             class: 'btn btn-line', type: 'button', onclick: function () { go('plan'); }
           }, [h('span', { text: '日時を変更する' })]),
@@ -3597,6 +3697,12 @@
         enterNoEmotion();
       });
     });
+    document.querySelectorAll('[data-nav="interested"]').forEach(function (node) {
+      node.addEventListener('click', function (event) {
+        closeHeaderMenu(false);
+        openInterestedLayer(event.currentTarget);
+      });
+    });
     document.querySelectorAll('[data-nav="scroll"]').forEach(function (node) {
       node.addEventListener('click', function (event) {
         event.preventDefault();
@@ -3645,7 +3751,9 @@
     Promise.all([STORE.load(), STORE.loadInterested()]).then(function (loaded) {
       state = loaded[0];
       interested = loaded[1];
+      entranceCueMarker = ENTRANCE_CUE_STORE ? ENTRANCE_CUE_STORE.load() : null;
       screen = 'entrance';
+      prepareEntranceCue();
       try {
         global.history.replaceState({ v3Screen: 'entrance' }, '', global.location.href);
         historyReady = true;

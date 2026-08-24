@@ -1,0 +1,825 @@
+{
+  "generatedAt": "2026-08-24T14:24:02.085Z",
+  "viewports": {
+    "mobile-390": {
+      "entrance": {
+        "width": 390,
+        "overflow": 0,
+        "surface": {
+          "left": 0,
+          "right": 390,
+          "top": 56,
+          "bottom": 1030.796875,
+          "width": 390,
+          "height": 974.796875
+        },
+        "detail": null,
+        "loop": {
+          "left": 0,
+          "right": 390,
+          "top": 874,
+          "bottom": 960.796875,
+          "width": 390,
+          "height": 86.796875
+        },
+        "hero": {
+          "left": 0,
+          "right": 390,
+          "top": 179.65625,
+          "bottom": 461.46875,
+          "width": 390,
+          "height": 281.8125
+        },
+        "cta": {
+          "left": 22,
+          "right": 368,
+          "top": 478.46875,
+          "bottom": 536.46875,
+          "width": 346,
+          "height": 58
+        },
+        "titleStyle": null,
+        "documentFonts": "loaded",
+        "desktop": false
+      },
+      "shelf": {
+        "width": 390,
+        "overflow": 0,
+        "surface": {
+          "left": 24,
+          "right": 366,
+          "top": 108,
+          "bottom": 619.59375,
+          "width": 342,
+          "height": 511.59375
+        },
+        "detail": null,
+        "loop": null,
+        "hero": null,
+        "cta": null,
+        "titleStyle": {
+          "family": "\"Noto Serif JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", \"Hiragino Mincho Pro\", \"MS PMincho\", serif",
+          "size": "20px",
+          "weight": "500",
+          "lineHeight": "29px",
+          "spacing": "0.4px"
+        },
+        "documentFonts": "loaded",
+        "desktop": false
+      },
+      "detail": {
+        "width": 390,
+        "overflow": 0,
+        "surface": {
+          "left": 24,
+          "right": 366,
+          "top": 70,
+          "bottom": 2132.40625,
+          "width": 342,
+          "height": 2062.40625
+        },
+        "detail": {
+          "left": 24,
+          "right": 366,
+          "top": 70,
+          "bottom": 2132.40625,
+          "width": 342,
+          "height": 2062.40625
+        },
+        "loop": null,
+        "hero": null,
+        "cta": null,
+        "titleStyle": null,
+        "documentFonts": "loaded",
+        "desktop": false
+      }
+    },
+    "mobile-430": {
+      "entrance": {
+        "width": 430,
+        "overflow": 0,
+        "surface": {
+          "left": 0,
+          "right": 430,
+          "top": 56,
+          "bottom": 1120.171875,
+          "width": 430,
+          "height": 1064.171875
+        },
+        "detail": null,
+        "loop": {
+          "left": 0,
+          "right": 430,
+          "top": 962,
+          "bottom": 1050.171875,
+          "width": 430,
+          "height": 88.171875
+        },
+        "hero": {
+          "left": 0,
+          "right": 430,
+          "top": 179.65625,
+          "bottom": 490.375,
+          "width": 430,
+          "height": 310.71875
+        },
+        "cta": {
+          "left": 22,
+          "right": 408,
+          "top": 507.375,
+          "bottom": 565.375,
+          "width": 386,
+          "height": 58
+        },
+        "titleStyle": null,
+        "documentFonts": "loaded",
+        "desktop": false
+      },
+      "shelf": {
+        "width": 430,
+        "overflow": 0,
+        "surface": {
+          "left": 24,
+          "right": 406,
+          "top": 108,
+          "bottom": 592.59375,
+          "width": 382,
+          "height": 484.59375
+        },
+        "detail": null,
+        "loop": null,
+        "hero": null,
+        "cta": null,
+        "titleStyle": {
+          "family": "\"Noto Serif JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", \"Hiragino Mincho Pro\", \"MS PMincho\", serif",
+          "size": "20px",
+          "weight": "500",
+          "lineHeight": "29px",
+          "spacing": "0.4px"
+        },
+        "documentFonts": "loaded",
+        "desktop": false
+      },
+      "detail": {
+        "width": 430,
+        "overflow": 0,
+        "surface": {
+          "left": 24,
+          "right": 406,
+          "top": -337,
+          "bottom": 1644.40625,
+          "width": 382,
+          "height": 1981.40625
+        },
+        "detail": {
+          "left": 24,
+          "right": 406,
+          "top": -337,
+          "bottom": 1644.40625,
+          "width": 382,
+          "height": 1981.40625
+        },
+        "loop": null,
+        "hero": null,
+        "cta": null,
+        "titleStyle": null,
+        "documentFonts": "loaded",
+        "desktop": false
+      }
+    },
+    "desktop-1200": {
+      "entrance": {
+        "width": 1200,
+        "overflow": 0,
+        "surface": {
+          "left": 0,
+          "right": 1200,
+          "top": 106,
+          "bottom": 2038.46875,
+          "width": 1200,
+          "height": 1932.46875
+        },
+        "detail": null,
+        "loop": {
+          "left": 0,
+          "right": 1200,
+          "top": 634,
+          "bottom": 910,
+          "width": 1200,
+          "height": 276
+        },
+        "hero": {
+          "left": 270,
+          "right": 1200,
+          "top": 106,
+          "bottom": 634,
+          "width": 930,
+          "height": 528
+        },
+        "cta": {
+          "left": 66,
+          "right": 310,
+          "top": 400.5625,
+          "bottom": 462.5625,
+          "width": 244,
+          "height": 62
+        },
+        "titleStyle": null,
+        "documentFonts": "loaded",
+        "desktop": true
+      },
+      "shelf": {
+        "width": 1200,
+        "overflow": 0,
+        "surface": {
+          "left": 80,
+          "right": 1120,
+          "top": 162,
+          "bottom": 738.796875,
+          "width": 1040,
+          "height": 576.796875
+        },
+        "detail": null,
+        "loop": null,
+        "hero": null,
+        "cta": null,
+        "titleStyle": {
+          "family": "\"Noto Serif JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", \"Hiragino Mincho Pro\", \"MS PMincho\", serif",
+          "size": "34px",
+          "weight": "500",
+          "lineHeight": "51px",
+          "spacing": "0.68px"
+        },
+        "documentFonts": "loaded",
+        "desktop": true
+      },
+      "detail": {
+        "width": 1200,
+        "overflow": 0,
+        "surface": {
+          "left": 40,
+          "right": 1160,
+          "top": 162,
+          "bottom": 1527.140625,
+          "width": 1120,
+          "height": 1365.140625
+        },
+        "detail": {
+          "left": 40,
+          "right": 1160,
+          "top": 162,
+          "bottom": 1527.140625,
+          "width": 1120,
+          "height": 1365.140625
+        },
+        "loop": null,
+        "hero": null,
+        "cta": null,
+        "titleStyle": null,
+        "documentFonts": "loaded",
+        "desktop": true
+      }
+    },
+    "desktop-1440": {
+      "entrance": {
+        "width": 1440,
+        "overflow": 0,
+        "surface": {
+          "left": 0,
+          "right": 1440,
+          "top": 106,
+          "bottom": 2009.03125,
+          "width": 1440,
+          "height": 1903.03125
+        },
+        "detail": null,
+        "loop": {
+          "left": 0,
+          "right": 1440,
+          "top": 634,
+          "bottom": 910,
+          "width": 1440,
+          "height": 276
+        },
+        "hero": {
+          "left": 324,
+          "right": 1440,
+          "top": 106,
+          "bottom": 634,
+          "width": 1116,
+          "height": 528
+        },
+        "cta": {
+          "left": 66,
+          "right": 310,
+          "top": 416.4375,
+          "bottom": 478.4375,
+          "width": 244,
+          "height": 62
+        },
+        "titleStyle": null,
+        "documentFonts": "loaded",
+        "desktop": true
+      },
+      "shelf": {
+        "width": 1440,
+        "overflow": 0,
+        "surface": {
+          "left": 200,
+          "right": 1240,
+          "top": 162,
+          "bottom": 738.796875,
+          "width": 1040,
+          "height": 576.796875
+        },
+        "detail": null,
+        "loop": null,
+        "hero": null,
+        "cta": null,
+        "titleStyle": {
+          "family": "\"Noto Serif JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", \"Hiragino Mincho Pro\", \"MS PMincho\", serif",
+          "size": "34px",
+          "weight": "500",
+          "lineHeight": "51px",
+          "spacing": "0.68px"
+        },
+        "documentFonts": "loaded",
+        "desktop": true
+      },
+      "detail": {
+        "width": 1440,
+        "overflow": 0,
+        "surface": {
+          "left": 160,
+          "right": 1280,
+          "top": 146,
+          "bottom": 1511.140625,
+          "width": 1120,
+          "height": 1365.140625
+        },
+        "detail": {
+          "left": 160,
+          "right": 1280,
+          "top": 146,
+          "bottom": 1511.140625,
+          "width": 1120,
+          "height": 1365.140625
+        },
+        "loop": null,
+        "hero": null,
+        "cta": null,
+        "titleStyle": null,
+        "documentFonts": "loaded",
+        "desktop": true
+      }
+    }
+  },
+  "errors": [],
+  "results": [
+    {
+      "name": "mobile-390: no horizontal overflow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: self-hosted fonts finish loaded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: concise first view only before lower steps",
+      "pass": true,
+      "detail": "hero=461.5 cta=536.5 loop=874.0"
+    },
+    {
+      "name": "mobile-390: eight Emotion shelves remain",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: Shelf Detail type is balanced",
+      "pass": true,
+      "detail": "{\"family\":\"\\\"Noto Serif JP\\\", \\\"Yu Mincho\\\", \\\"Hiragino Mincho ProN\\\", \\\"Hiragino Mincho Pro\\\", \\\"MS PMincho\\\", serif\",\"size\":\"20px\",\"weight\":\"500\",\"lineHeight\":\"29px\",\"spacing\":\"0.4px\"}"
+    },
+    {
+      "name": "mobile-390: in-service Shelf back is explicit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: Discovery image has no duplicate type overlay",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: Discovery keeps type in text",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: unsaved state is text plus outline heart",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: save tap becomes red Saved state",
+      "pass": true,
+      "detail": "{\"color\":\"rgb(200, 50, 62)\",\"fill\":\"rgb(200, 50, 62)\",\"pressed\":\"true\"}"
+    },
+    {
+      "name": "mobile-390: saved list has minimum retrieval truth",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: Detail image has no duplicate type overlay",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: Detail has no empty visible action",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: Map shares bordered action family",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: unsave returns outline and text",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: no Google Calendar request before click",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: explicit Calendar click builds public event URL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: Calendar is still navigation-only in QA",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: next Entrance shows latest saved once",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: second Entrance hides already-shown cue",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: saved removal reaches truthful empty state",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-390: first-party load has no background third-party request",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: no horizontal overflow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: self-hosted fonts finish loaded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: concise first view only before lower steps",
+      "pass": true,
+      "detail": "hero=490.4 cta=565.4 loop=962.0"
+    },
+    {
+      "name": "mobile-430: eight Emotion shelves remain",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: Shelf Detail type is balanced",
+      "pass": true,
+      "detail": "{\"family\":\"\\\"Noto Serif JP\\\", \\\"Yu Mincho\\\", \\\"Hiragino Mincho ProN\\\", \\\"Hiragino Mincho Pro\\\", \\\"MS PMincho\\\", serif\",\"size\":\"20px\",\"weight\":\"500\",\"lineHeight\":\"29px\",\"spacing\":\"0.4px\"}"
+    },
+    {
+      "name": "mobile-430: in-service Shelf back is explicit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: Discovery image has no duplicate type overlay",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: Discovery keeps type in text",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: unsaved state is text plus outline heart",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: save tap becomes red Saved state",
+      "pass": true,
+      "detail": "{\"color\":\"rgb(200, 50, 62)\",\"fill\":\"rgb(200, 50, 62)\",\"pressed\":\"true\"}"
+    },
+    {
+      "name": "mobile-430: saved list has minimum retrieval truth",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: Detail image has no duplicate type overlay",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: Detail has no empty visible action",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: Map shares bordered action family",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: unsave returns outline and text",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: no Google Calendar request before click",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: explicit Calendar click builds public event URL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: Calendar is still navigation-only in QA",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: next Entrance shows latest saved once",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: second Entrance hides already-shown cue",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: saved removal reaches truthful empty state",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile-430: first-party load has no background third-party request",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: no horizontal overflow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: self-hosted fonts finish loaded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: desktop copy exact",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: eight Emotion shelves remain",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: Discovery image has no duplicate type overlay",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: Discovery keeps type in text",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: unsaved state is text plus outline heart",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: save tap becomes red Saved state",
+      "pass": true,
+      "detail": "{\"color\":\"rgb(200, 50, 62)\",\"fill\":\"rgb(200, 50, 62)\",\"pressed\":\"true\"}"
+    },
+    {
+      "name": "desktop-1200: saved list has minimum retrieval truth",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: Detail image has no duplicate type overlay",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: Detail has no empty visible action",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: Map shares bordered action family",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: Detail is horizontally centered",
+      "pass": true,
+      "detail": "{\"left\":40,\"right\":1160,\"top\":162,\"bottom\":1527.140625,\"width\":1120,\"height\":1365.140625}"
+    },
+    {
+      "name": "desktop-1200: bottom Back is centered",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: unsave returns outline and text",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: no Google Calendar request before click",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: explicit Calendar click builds public event URL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: Calendar is still navigation-only in QA",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: next Entrance shows latest saved once",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: second Entrance hides already-shown cue",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: saved removal reaches truthful empty state",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1200: first-party load has no background third-party request",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: no horizontal overflow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: self-hosted fonts finish loaded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: desktop copy exact",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: eight Emotion shelves remain",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: Discovery image has no duplicate type overlay",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: Discovery keeps type in text",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: unsaved state is text plus outline heart",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: save tap becomes red Saved state",
+      "pass": true,
+      "detail": "{\"color\":\"rgb(200, 50, 62)\",\"fill\":\"rgb(200, 50, 62)\",\"pressed\":\"true\"}"
+    },
+    {
+      "name": "desktop-1440: saved list has minimum retrieval truth",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: Detail image has no duplicate type overlay",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: Detail has no empty visible action",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: Map shares bordered action family",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: Detail is horizontally centered",
+      "pass": true,
+      "detail": "{\"left\":160,\"right\":1280,\"top\":146,\"bottom\":1511.140625,\"width\":1120,\"height\":1365.140625}"
+    },
+    {
+      "name": "desktop-1440: bottom Back is centered",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: unsave returns outline and text",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: no Google Calendar request before click",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: explicit Calendar click builds public event URL",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: Calendar is still navigation-only in QA",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: next Entrance shows latest saved once",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: second Entrance hides already-shown cue",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: saved removal reaches truthful empty state",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1440: first-party load has no background third-party request",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "browser JavaScript errors = 0",
+      "pass": true,
+      "detail": ""
+    }
+  ]
+}

@@ -1,9 +1,11 @@
 /* =============================================================================
- * V3 Release Muscle Sprint 01 — Action Destination browser contract
- * 実行: node verify/action_destination_runtime.js（既存Playwrightがある環境のみ）
+ * V3 current-authority Action Destination browser contract
+ * 実行: node verify/action_destination_runtime.js（Playwright + Chromium）
  * ========================================================================== */
 const { chromium } = require('playwright');
+const fs = require('fs');
 const { start } = require('./serve');
+const SYSTEM_CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
 const results = [];
 function check(name, ok, detail = '') {
@@ -11,54 +13,53 @@ function check(name, ok, detail = '') {
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${detail ? ` — ${detail}` : ''}`);
 }
 
-async function toDetail(page) {
+async function toCurrentDetail(page, base) {
+  await page.goto(base);
+  await page.waitForSelector('.surface[data-surface="01-entrance"]');
   await page.locator('.cta-primary').click();
-  await page.locator('button:has-text("ざわつく")').click();
-  await page.locator('button:has-text("3つ見てみる")').click();
-  await page.locator('button:has-text("気になる")').click();
-  await page.locator('button:has-text("今回は違う")').click();
-  await page.locator('button:has-text("今回は違う")').click();
-  await page.locator('.m04-primary').click();
+  await page.waitForSelector('.surface[data-surface="02-emotion"]');
+  await page.locator('.emotion-card[data-emotion-label="心が弾む"]').click();
+  await page.waitForSelector('.surface[data-surface="03-understanding"]');
+  await page.locator('.understanding-outcome-column .btn-primary').click();
+  await page.waitForSelector('.real-discovery-card');
+  await page.locator('.real-discovery-detail').click();
+  await page.waitForSelector('.surface[data-surface="05-experience-detail"]');
 }
 
 (async () => {
   const { server, base } = await start(4178);
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({
+    headless: true,
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ||
+      (fs.existsSync(SYSTEM_CHROME) ? SYSTEM_CHROME : undefined)
+  });
   const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
   const routed = [];
-  await context.route(/https:\/\/(approved\.example|www\.google\.com)\//, async (route) => {
+  await context.route(/https:\/\/(www\.teamlab\.art|www\.google\.com)\//, async (route) => {
     routed.push({ url: route.request().url(), referer: route.request().headers().referer || '' });
     await route.fulfill({ status: 200, contentType: 'text/html', body: '<title>approved</title>' });
   });
 
-  const missing = await context.newPage();
-  await missing.goto(base);
-  await toDetail(missing);
-  check('E missing AD → dead affordance 0', await missing.locator('[data-action-destination]').count() === 0);
-  await missing.close();
-
   const page = await context.newPage();
-  await page.goto(base);
+  await toCurrentDetail(page, base);
+  check('E missing AD resolves dead affordance 0 in runtime module',
+    await page.evaluate(() => window.V3_ACTION_DESTINATION.actionsForExperience({}).length === 0));
+  check('current approved Detail renders primary + Maps only',
+    await page.locator('[data-action-destination="primary"]').count() === 1 &&
+    await page.locator('[data-action-destination="maps"]').count() === 1);
+  check('external request before explicit action = 0', routed.length === 0);
+
   await page.evaluate(() => {
-    const experience = window.V3_DATA.EXPERIENCES.find((item) => item.id === 'E01');
-    experience.actionDestination = {
-      type: 'official_page', nextAction: 'visit', officiality: 'official_designated',
-      url: 'https://approved.example/experience', label: '公式ページを見る'
-    };
-    experience.physicalDestination = { approved: true, address: '東京都千代田区丸の内1-1' };
     window.__externalOpenEvents = [];
     window.V3_ACTION_DESTINATION.onExternalOpen((event) => window.__externalOpenEvents.push(event));
   });
-  await toDetail(page);
 
-  check('approved AD renders primary + secondary only',
-    await page.locator('[data-action-destination="primary"]').count() === 1 &&
-    await page.locator('[data-action-destination="maps"]').count() === 1);
   const popupPromise = page.waitForEvent('popup');
   await page.locator('[data-action-destination="primary"]').click();
   const popup = await popupPromise;
   await popup.waitForLoadState('domcontentloaded');
-  check('A valid HTTPS destination opens in new context', popup.url() === 'https://approved.example/experience');
+  check('A current valid HTTPS destination opens in new context',
+    popup.url() === 'https://www.teamlab.art/jp/e/tokyo/');
   check('F opened page has no opener', await popup.evaluate(() => window.opener === null));
   await popup.close();
 
@@ -68,14 +69,15 @@ async function toDetail(page) {
   await mapsPopup.waitForLoadState('domcontentloaded');
   const mapsUrl = new URL(mapsPopup.url());
   check('G/H Maps destination present and origin absent',
-    mapsUrl.searchParams.get('destination') === '東京都千代田区丸の内1-1' &&
+    mapsUrl.searchParams.get('destination') === '東京都港区虎ノ門5-9 麻布台ヒルズ ガーデンプラザB B1' &&
     !mapsUrl.searchParams.has('origin'));
   await mapsPopup.close();
 
   const hookEvents = await page.evaluate(() => window.__externalOpenEvents);
-  check('analytics hook only emits allowed identifiers', hookEvents.length === 2 &&
+  check('analytics-ready hook only emits allowed identifiers', hookEvents.length === 2 &&
     Object.keys(hookEvents[0]).sort().join(',') === 'actionType,destinationClass,experienceId');
-  check('noreferrer on outbound requests', routed.length === 2 && routed.every((request) => request.referer === ''), JSON.stringify(routed));
+  check('noreferrer on outbound requests', routed.length === 2 &&
+    routed.every((request) => request.referer === ''), JSON.stringify(routed));
 
   await browser.close();
   server.close();

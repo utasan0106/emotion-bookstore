@@ -8,10 +8,10 @@
 
 @font-face {
   font-family: "Noto Serif JP";
-  src: url("../assets/fonts/noto-serif-jp/NotoSerifJP-Regular.ttf") format("truetype");
+  src: url("../assets/fonts/subset/NotoSerifJP-Regular-subset.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: block;
 }
 
 /* =============================================================================
@@ -256,24 +256,24 @@
 }
 @font-face {
   font-family: "Noto Serif JP";
-  src: url("../assets/fonts/noto-serif-jp/NotoSerifJP-Medium.ttf") format("truetype");
+  src: url("../assets/fonts/subset/NotoSerifJP-Medium-subset.woff2") format("woff2");
   font-style: normal;
   font-weight: 500;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "Noto Sans JP";
-  src: url("../assets/fonts/noto-sans-jp/NotoSansJP-Regular.ttf") format("truetype");
+  src: url("../assets/fonts/subset/NotoSansJP-Regular-subset.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "Noto Sans JP";
-  src: url("../assets/fonts/noto-sans-jp/NotoSansJP-Medium.ttf") format("truetype");
+  src: url("../assets/fonts/subset/NotoSansJP-Medium-subset.woff2") format("woff2");
   font-style: normal;
   font-weight: 500;
-  font-display: swap;
+  font-display: block;
 }
 
 /* ------------------------------------------------------------------ tokens */
@@ -568,6 +568,311 @@ img { max-width: 100%; height: auto; display: block; }
   .loop { grid-template-columns: repeat(2, 1fr); row-gap: 28px; }
   /* 2x2 では support copy を 1 行に収め、1 文字だけ送る改行を作らない */
   .loop-note { letter-spacing: 0; margin-inline: -4px; }
+}
+
+/* =============================================================================
+ * Founder Review Consolidated UX Patch — 2026-08-24
+ * Bounded copy, state, navigation, readability and measured loading fixes.
+ * ========================================================================== */
+
+:root { --interest-red: #c8323e; }
+
+.entrance-route-note {
+  display: block;
+  margin: 2px 8px 0;
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.65;
+  letter-spacing: 0.025em;
+  color: #536474;
+  text-align: center;
+}
+
+.real-experience-category-label { display: none; }
+
+.real-discovery-interest svg path,
+.detail-interest-action svg path {
+  fill: transparent;
+  stroke: currentColor;
+}
+
+.real-discovery-interest[aria-pressed="true"],
+.detail-interest-action[aria-pressed="true"] {
+  border-color: var(--interest-red);
+  color: var(--interest-red);
+  background: #fff7f7;
+}
+
+.real-discovery-interest[aria-pressed="true"] svg path,
+.detail-interest-action[aria-pressed="true"] svg path {
+  fill: var(--interest-red);
+  stroke: var(--interest-red);
+}
+
+.real-discovery-actions .real-discovery-detail {
+  color: var(--navy);
+}
+
+.saved-list-entry { grid-column: auto; }
+
+.interested-empty {
+  margin-top: 22px;
+  padding: 22px 18px;
+  border: 1px solid rgba(15, 35, 56, 0.14);
+  border-radius: 12px;
+  background: rgba(255, 253, 249, 0.58);
+  text-align: center;
+}
+
+.interested-item-media {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 9px;
+  background: #e8eef1;
+}
+
+.interested-item-image {
+  width: 100%;
+  height: 132px;
+  object-fit: cover;
+}
+
+.detail-actions .detail-utility-action,
+.detail-actions .detail-plan-action,
+.detail-actions .detail-interest-action {
+  border-color: rgba(15, 35, 56, 0.32);
+  background: var(--card);
+  text-decoration: none;
+}
+
+.detail-actions .detail-bottom-back {
+  order: 5;
+  align-self: center;
+}
+
+.google-calendar-note {
+  margin: -4px 0 2px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.plan-saved-panel .google-calendar-action svg {
+  width: 19px;
+  height: 19px;
+}
+
+.real-discovery-reason p,
+.real-discovery-official-summary,
+.place-detail-body,
+.public-editorial-detail-section .body-lg,
+.public-editorial-lead,
+.long-description {
+  max-width: 68ch;
+}
+
+@media (max-width: 1199px) {
+  .site-header {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    min-height: 56px;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 6px 16px;
+    background: #faf6ef;
+  }
+
+  .site-header .site-logo { display: none; }
+  .site-header-end { display: flex; margin-left: auto; }
+  .header-menu-trigger {
+    appearance: none;
+    display: inline-flex;
+    min-width: 68px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 0;
+    border: 0;
+    background: transparent;
+    color: var(--navy);
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+  }
+
+  .header-nav-panel[hidden] { display: none; }
+  .header-nav-panel:not([hidden]) {
+    position: absolute;
+    z-index: 30;
+    top: calc(100% - 2px);
+    right: 14px;
+    display: block;
+    width: min(292px, calc(100vw - 28px));
+    padding: 9px;
+    border: 1px solid rgba(13, 35, 57, 0.18);
+    border-radius: 10px;
+    background: #fffdfa;
+    box-shadow: 0 14px 36px rgba(13, 35, 57, 0.16);
+  }
+
+  .header-nav-panel ul { display: flex; flex-direction: column; align-items: stretch; }
+  .header-nav-panel .site-nav-link {
+    display: flex;
+    width: 100%;
+    min-height: 48px;
+    align-items: center;
+    padding: 10px 13px;
+    border: 0;
+    background: transparent;
+    color: var(--navy);
+    font-family: var(--sans);
+    font-size: 15px;
+    text-decoration: none;
+  }
+
+  .entrance .brand-lockup-wrap {
+    order: -2;
+    padding: 9px 0 6px;
+  }
+  .entrance .hero { order: -1; }
+  .entrance .display {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .entrance .entrance-copy { padding: 0 24px; }
+  .entrance-routes { width: min(calc(100vw - 48px), 420px); margin-top: 20px; }
+  .entrance .entrance-route-no-emotion { display: none; }
+  .entrance .entrance-routes .cta-primary {
+    width: 100%;
+    min-height: 58px;
+    border-radius: 12px;
+  }
+  .entrance .entrance-routes .cta-primary .cta-main { font-size: 18px; }
+
+  body:has(.understanding-bridge) #stepbar {
+    padding-top: 8px;
+  }
+  body:has(.understanding-bridge) .stepbar-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  body:has(.understanding-bridge) .stepbar-title,
+  body:has(.understanding-bridge) .stepbar-count { display: none; }
+  body:has(.understanding-bridge) .stepbar-back {
+    width: auto;
+    min-height: 44px;
+    justify-self: start;
+    justify-content: flex-start;
+    gap: 7px;
+    padding: 0 4px;
+  }
+  body:has(.understanding-bridge) .stepbar-back svg {
+    width: 18px;
+    height: 18px;
+  }
+  body:has(.understanding-bridge) .stepbar-back-label {
+    display: inline;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.035em;
+  }
+}
+
+@media (max-width: 599px) {
+  .brand-lockup { width: 168px; }
+  .entrance .hero-img { aspect-ratio: 941 / 680; }
+  .entrance .entrance-copy { padding-inline: 18px; }
+  .entrance-routes { width: min(calc(100vw - 44px), 386px); margin-top: 17px; }
+  .entrance-route-note { margin-top: 0; }
+
+  .understanding-bridge { padding-top: 8px; }
+  .understanding-panel { gap: 17px; }
+  .understanding-shelf-identity { gap: 13px; margin-top: 9px; }
+  .understanding-shelf-image {
+    width: 74px;
+    height: 74px;
+    flex-basis: 74px;
+  }
+  .understanding-shelf-identity .display {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: 0.02em;
+  }
+  .understanding-outcome-column .understanding-editorial-note {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+  }
+
+  .interested-item-image { height: 148px; }
+  .interested-item-actions { align-items: stretch; }
+  .interested-item-actions .btn { flex: 1 1 auto; }
+}
+
+@media (min-width: 700px) {
+  .interested-item {
+    grid-template-columns: 132px minmax(0, 1fr) auto;
+  }
+  .interested-item-image { height: 96px; }
+}
+
+@media (min-width: 1200px) {
+  .entrance-route-note { display: none; }
+  .entrance .lede { max-width: 470px; }
+  .entrance .lede-line { display: block; white-space: nowrap; }
+  .entrance .trust-desktop {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .entrance .trust-item,
+  .entrance .trust-copy { min-width: 0; }
+  .entrance .trust-support {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .surface[data-surface="04-discovery"]:not(.discovery-canonical),
+  .place-detail,
+  .surface[data-surface="11-no-emotion-detail"] {
+    width: min(100%, 1120px);
+    max-width: 1120px;
+    margin-inline: auto;
+  }
+
+  .real-discovery-card {
+    grid-template-columns: minmax(0, 54%) minmax(0, 46%);
+  }
+  .detail-hero {
+    grid-template-columns: minmax(0, 52%) minmax(0, 48%);
+    gap: 38px;
+  }
+  .detail-actions .detail-utility-action,
+  .detail-actions .detail-plan-action { grid-column: auto; }
+  .detail-actions .detail-interest-action,
+  .detail-actions .detail-bottom-back { grid-column: 1 / -1; }
+  .detail-actions .detail-bottom-back {
+    min-width: 120px;
+    justify-self: center;
+    text-align: center;
+  }
+  .place-detail > .place-detail-content { justify-content: center; }
+  .place-detail > .place-detail-content .place-detail-body { max-width: 62ch; }
+  .legal-footer-links { max-width: 1120px; }
 }
 
 /* =============================================================================
@@ -5664,4 +5969,225 @@ body:has(.trace-phase1) .stepbar-back svg {
     margin-top: 22px;
     padding: 21px 17px;
   }
+}
+
+/* =============================================================================
+ * Founder Review final cascade lock
+ * This file intentionally carries chronological release layers. Keep these
+ * bounded corrections last so older accepted layers cannot restore stale UI.
+ * ========================================================================== */
+
+.real-experience-category-label { display: none !important; }
+
+.real-discovery-interest svg path,
+.detail-interest-action svg path {
+  fill: transparent;
+  stroke: currentColor;
+}
+
+.real-discovery-interest[aria-pressed="true"],
+.detail-interest-action[aria-pressed="true"] {
+  border-color: var(--interest-red);
+  color: var(--interest-red);
+  background: #fff7f7;
+}
+
+.real-discovery-interest[aria-pressed="true"] svg path,
+.detail-interest-action[aria-pressed="true"] svg path {
+  fill: var(--interest-red);
+  stroke: var(--interest-red);
+}
+
+.real-discovery-actions .real-discovery-detail { color: var(--navy); }
+
+.detail-actions .detail-utility-action,
+.detail-actions .detail-plan-action,
+.detail-actions .detail-interest-action {
+  border-color: rgba(15, 35, 56, 0.32);
+  background: var(--card);
+  text-decoration: none;
+}
+
+.real-discovery-reason p,
+.real-discovery-official-summary,
+.detail-official-description .place-detail-body,
+.detail-editorial-reason .place-detail-body,
+.place-detail > .place-detail-content .place-detail-body,
+.public-editorial-detail-section .body-lg,
+.public-editorial-lead,
+.long-description {
+  max-width: 68ch;
+}
+
+@media (max-width: 1199px) {
+  .site-header {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    min-height: 56px;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 6px 16px;
+    background: #faf6ef;
+  }
+
+  .site-header .site-logo { display: none; }
+  .site-header-end { display: flex; margin-left: auto; }
+  .header-menu-trigger {
+    appearance: none;
+    display: inline-flex;
+    min-width: 68px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 0;
+    border: 0;
+    background: transparent;
+    color: var(--navy);
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+  }
+
+  .header-nav-panel[hidden] { display: none; }
+  .header-nav-panel:not([hidden]) {
+    position: absolute;
+    z-index: 30;
+    top: calc(100% - 2px);
+    right: 14px;
+    display: block;
+    width: min(292px, calc(100vw - 28px));
+    padding: 9px;
+    border: 1px solid rgba(13, 35, 57, 0.18);
+    border-radius: 10px;
+    background: #fffdfa;
+    box-shadow: 0 14px 36px rgba(13, 35, 57, 0.16);
+  }
+
+  .header-nav-panel ul { display: flex; flex-direction: column; align-items: stretch; }
+  .header-nav-panel .site-nav-link {
+    display: flex;
+    width: 100%;
+    min-height: 48px;
+    align-items: center;
+    padding: 10px 13px;
+    border: 0;
+    background: transparent;
+    color: var(--navy);
+    font-family: var(--sans);
+    font-size: 15px;
+    text-decoration: none;
+  }
+
+  .entrance .brand-lockup-wrap { order: -2; padding: 9px 0 6px; }
+  .entrance .hero { order: -1; }
+  .entrance .display {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .entrance .entrance-copy { padding-inline: 24px; }
+  .entrance-routes { width: min(calc(100vw - 48px), 420px); margin-top: 20px; }
+  .entrance .entrance-route-no-emotion { display: none; }
+  .entrance .entrance-routes .cta-primary {
+    width: 100%;
+    min-height: 58px;
+    border-radius: 12px;
+  }
+
+  body:has(.understanding-bridge) #stepbar { padding-top: 8px; }
+  body:has(.understanding-bridge) .stepbar-row { grid-template-columns: minmax(0, 1fr); }
+  body:has(.understanding-bridge) .stepbar-title,
+  body:has(.understanding-bridge) .stepbar-count { display: none; }
+  body:has(.understanding-bridge) .stepbar-back {
+    width: auto;
+    min-height: 44px;
+    justify-self: start;
+    justify-content: flex-start;
+    gap: 7px;
+    padding: 0 4px;
+  }
+  body:has(.understanding-bridge) .stepbar-back svg { width: 18px; height: 18px; }
+  body:has(.understanding-bridge) .stepbar-back-label {
+    display: inline;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.035em;
+  }
+}
+
+@media (max-width: 599px) {
+  .entrance-hero { min-height: calc(100svh - 56px); }
+  .entrance .loop-note { display: none; }
+  .brand-lockup { width: 168px; }
+  .entrance .hero-img { aspect-ratio: 941 / 680; }
+  .entrance .entrance-copy { padding-inline: 18px; }
+  .entrance-routes { width: min(calc(100vw - 44px), 386px); margin-top: 17px; }
+
+  .understanding-bridge { padding-top: 8px; }
+  .understanding-panel { gap: 17px; }
+  .understanding-shelf-identity { gap: 13px; margin-top: 9px; }
+  .understanding-shelf-image {
+    width: 74px;
+    height: 74px;
+    flex-basis: 74px;
+  }
+  .understanding-shelf-identity .display {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: 0.02em;
+  }
+  .understanding-outcome-column .understanding-editorial-note {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+  }
+
+  .interested-item-image { height: 148px; }
+  .interested-item-actions { align-items: stretch; }
+  .interested-item-actions .btn { flex: 1 1 auto; }
+}
+
+@media (min-width: 700px) {
+  .interested-item { grid-template-columns: 132px minmax(0, 1fr) auto; }
+  .interested-item-image { height: 96px; }
+}
+
+@media (min-width: 1200px) {
+  .entrance-route-note { display: none; }
+
+  .surface[data-surface="04-discovery"]:not(.discovery-canonical),
+  .place-detail,
+  .surface[data-surface="11-no-emotion-detail"] {
+    width: min(100%, 1120px);
+    max-width: 1120px;
+    margin-inline: auto;
+  }
+
+  .real-discovery-card { grid-template-columns: minmax(0, 54%) minmax(0, 46%); }
+  .detail-hero { grid-template-columns: minmax(0, 52%) minmax(0, 48%); gap: 38px; }
+  .detail-actions .detail-utility-action,
+  .detail-actions .detail-plan-action { grid-column: auto; }
+  .detail-actions .detail-interest-action,
+  .detail-actions .detail-bottom-back { grid-column: 1 / -1; }
+  .detail-actions .detail-bottom-back {
+    min-width: 120px;
+    justify-self: center;
+    text-align: center;
+  }
+  .place-detail > .place-detail-content { justify-content: center; }
+  .place-detail > .place-detail-content .place-detail-body { max-width: 62ch; }
+  .legal-footer-links { max-width: 1120px; margin-inline: auto; }
 }

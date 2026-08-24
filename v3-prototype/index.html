@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8X2mc5T2LBpk/LtHnsbWoHj5bd0lTXAk8UVJcXYlmFY='; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'none'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
-  <title>みんなの感情書店 V3｜二つの入口から文化へ</title>
+  <title>みんなの感情書店 V3｜感情の先に、世界がある</title>
   <meta name="description" content="感情の棚から、または棚を選ばずに、感情書店の編集部が理由を説明できる0〜3件の有限な寄り道から本・映画・音楽・場所へ進むV3です。心理状態の診断やパーソナライズ推薦は行いません。">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="canonical" href="https://emotion-bookstore.vercel.app/v3-prototype/">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ja_JP">
   <meta property="og:site_name" content="みんなの感情書店 V3">
-  <meta property="og:title" content="みんなの感情書店 V3｜二つの入口から文化へ">
+  <meta property="og:title" content="みんなの感情書店 V3｜感情の先に、世界がある">
   <meta property="og:description" content="感情の棚から、または棚を選ばずに、編集部が理由を説明できる有限の寄り道から本・映画・音楽・場所へ進みます。">
   <meta property="og:url" content="https://emotion-bookstore.vercel.app/v3-prototype/">
   <meta property="og:image" content="https://emotion-bookstore.vercel.app/v3-prototype/assets/canonical-m01-w01/w01_hero.png">
@@ -19,7 +19,7 @@
   <meta property="og:image:height" content="680">
   <meta property="og:image:alt" content="本の頁のあいだに開けた青空と道を歩く人の水彩画">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="みんなの感情書店 V3｜二つの入口から文化へ">
+  <meta name="twitter:title" content="みんなの感情書店 V3｜感情の先に、世界がある">
   <meta name="twitter:description" content="感情の棚から、または棚を選ばずに、編集部が理由を説明できる有限の寄り道から本・映画・音楽・場所へ進むV3です。">
   <meta name="twitter:image" content="https://emotion-bookstore.vercel.app/v3-prototype/assets/canonical-m01-w01/w01_hero.png">
   <meta name="twitter:image:alt" content="本の頁のあいだに開けた青空と道を歩く人の水彩画">
@@ -35,6 +35,8 @@
     "description": "感情の棚から、または棚を選ばずに、感情書店の編集部が理由を説明できる0〜3件の有限な寄り道から本・映画・音楽・場所へ進むウェブサイトです。心理状態の診断やパーソナライズ推薦は行いません。"
   }
   </script>
+  <link rel="preload" as="image" href="./assets/canonical-m01-w01/m01_hero.webp" media="(max-width: 1199px)" fetchpriority="high">
+  <link rel="preload" as="image" href="./assets/canonical-m01-w01/w01_hero.webp" media="(min-width: 1200px)" fetchpriority="high">
   <link rel="stylesheet" href="./css/v3.css">
 </head>
 <body>
@@ -45,7 +47,7 @@
   <header class="site-header">
     <a class="site-logo" href="#top" aria-label="みんなの感情書店の入口へ戻る">
       <img src="./assets/canonical-m01-w01/w01_horizontal_lockup.png"
-           alt="" width="326" height="70">
+           alt="" width="326" height="70" loading="lazy" decoding="async">
     </a>
 
     <div class="site-header-end">
@@ -57,6 +59,7 @@
          aria-label="サイト内ナビゲーション" hidden>
       <ul>
         <li><button class="site-nav-link" type="button" data-nav="no-emotion">選ばずに見る</button></li>
+        <li><button class="site-nav-link" type="button" data-nav="interested">保存済みを見る</button></li>
         <li><a class="site-nav-link" href="#core-loop" data-nav="scroll">体験の流れ</a></li>
         <li><button class="site-nav-link" type="button" data-nav="start">感情の棚</button></li>
         <li><a class="site-nav-link" href="#trust" data-nav="scroll">よくある質問</a></li>
@@ -83,11 +86,13 @@
 
   <script src="./js/data.js"></script>
   <script src="./js/store.js"></script>
+  <script src="./js/entrance_cue_store.js"></script>
   <script src="./js/personalize.js"></script>
   <script src="./js/action_destination.js"></script>
   <script src="./js/cultural_matching.js"></script>
   <script src="./js/real_experience_registry.js"></script>
   <script src="./js/interested_retrieval.js"></script>
+  <script src="./js/calendar_action.js"></script>
   <script src="./js/public_editorial.js"></script>
   <script src="./js/public_editorial_content.js"></script>
   <script src="./js/s1b_editorial_content.js"></script>

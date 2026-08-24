@@ -1,13 +1,14 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-08-21T00:10:55+09:00",
-  "scope": "V3 M01/W01 DAY local prototype only",
+  "generated_at": "2026-08-24T22:00:00+09:00",
+  "scope": "V3 M01/W01 DAY local prototype and Founder Review performance patch",
   "runtime_external_font_requests_expected": 0,
   "production_copy_gate": "PRODUCTION_COPY_REVIEW_REQUIRED",
   "format_decision": {
-    "selected": "official static TTF, weights 400 and 500",
-    "reason": "Google Fonts official family downloads provided static TTF files. They are self-hosted byte-for-byte; no WOFF2 conversion or glyph subsetting was performed because font modification and custom subsetting are prohibited.",
-    "css_unicode_range": "omitted; each static file retains the full official cmap"
+    "selected": "self-hosted WOFF2 subsets, weights 400 and 500; official static TTF sources retained",
+    "reason": "Founder device measurement found 26.3 MB of full Japanese TTF transfer across the flow. Runtime WOFF2 files are derived locally from the retained official OFL sources using the 909 codepoints present in the V3 public HTML and JavaScript corpus. No font request is sent to a third party.",
+    "css_unicode_range": "omitted; each runtime subset carries the bounded V3 public corpus",
+    "fallback_behavior": "font-display block prevents a visibly different fallback face during the short self-hosted load"
   },
   "official_sources": [
     {
@@ -89,6 +90,52 @@
       "source_retrieval_timestamp": "2026-08-21T00:05:50+09:00",
       "license": "SIL Open Font License 1.1",
       "unmodified": true
+    }
+  ],
+  "derived_runtime_fonts": [
+    {
+      "local_path": "assets/fonts/subset/NotoSansJP-Regular-subset.woff2",
+      "source_path": "assets/fonts/noto-sans-jp/NotoSansJP-Regular.ttf",
+      "bytes": 173716,
+      "sha256": "1d895289a237820e5defe242c6b1f283e98b7d96e3e2e1d0d85e560c31bbc55c",
+      "family": "Noto Sans JP",
+      "weight": 400,
+      "format": "WOFF2 subset",
+      "corpus_codepoints": 909,
+      "license": "SIL Open Font License 1.1"
+    },
+    {
+      "local_path": "assets/fonts/subset/NotoSansJP-Medium-subset.woff2",
+      "source_path": "assets/fonts/noto-sans-jp/NotoSansJP-Medium.ttf",
+      "bytes": 175084,
+      "sha256": "4af45f3156b286eeea4179124b83d36273eefcaae074d25ae3796791f482524d",
+      "family": "Noto Sans JP",
+      "weight": 500,
+      "format": "WOFF2 subset",
+      "corpus_codepoints": 909,
+      "license": "SIL Open Font License 1.1"
+    },
+    {
+      "local_path": "assets/fonts/subset/NotoSerifJP-Regular-subset.woff2",
+      "source_path": "assets/fonts/noto-serif-jp/NotoSerifJP-Regular.ttf",
+      "bytes": 239376,
+      "sha256": "14ae5d9cdcc580a09b416a214a9c5c7e3e1c9b7219b6437247a084b970029d95",
+      "family": "Noto Serif JP",
+      "weight": 400,
+      "format": "WOFF2 subset",
+      "corpus_codepoints": 909,
+      "license": "SIL Open Font License 1.1"
+    },
+    {
+      "local_path": "assets/fonts/subset/NotoSerifJP-Medium-subset.woff2",
+      "source_path": "assets/fonts/noto-serif-jp/NotoSerifJP-Medium.ttf",
+      "bytes": 242220,
+      "sha256": "bc45f52039d866bb6d0499f3e1e3fe671e0dc0b2b4e9d3ce7f19fb731a2f7049",
+      "family": "Noto Serif JP",
+      "weight": 500,
+      "format": "WOFF2 subset",
+      "corpus_codepoints": 909,
+      "license": "SIL Open Font License 1.1"
     }
   ],
   "license_files": [

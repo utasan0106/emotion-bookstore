@@ -169,7 +169,8 @@ function loadStore(indexedDB) {
     appSource.indexOf('interested = result.value'));
   check('failed save explicitly remains unsaved', appSource.includes('気になる状態にはしていません'));
   check('failed remove explicitly retains saved UI', appSource.includes('保存済みの状態を保ちます'));
-  check('saved state is perceivable in text', appSource.includes("'気になる・保存済み'"));
+  check('saved and unsaved states are perceivable in concise text',
+    appSource.includes("return isInterested(id) ? '保存済み' : '気になる'"));
   check('saved state exposed semantically', appSource.includes("'aria-pressed': isInterested") &&
     appSource.includes("'data-interest-state': isInterested"));
 check('existing button is bound; no new screen/surface', appSource.includes('toggleInterested(experience.id)') &&

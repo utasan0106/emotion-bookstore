@@ -707,7 +707,7 @@
         reuseOrCacheAllowed: true,
         checkedAt: '2026-08-22',
         recheckBy: '2026-09-29',
-        localAssetPath: './assets/real-experience/EXP_007_shinjuku_gyoen_official_landscape.jpg',
+        localAssetPath: './assets/real-experience/EXP_007_shinjuku_gyoen_official_landscape-1440.webp',
         altTextJa: '新宿御苑の庭園と周囲の都市景観を上空から見渡した風景',
         fitMode: 'contain',
         categoryLabel: '場所',

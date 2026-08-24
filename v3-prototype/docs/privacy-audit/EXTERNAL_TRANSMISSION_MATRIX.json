@@ -1,6 +1,6 @@
 {
   "model_version": "v3-external-transmission-truth-v1",
-  "as_of_source": "5e40791412223faddb909ed407268dc6977538db",
+  "as_of_source": "a82375f8895a88e4f6b0b4f669bfcecebebe82dc + founder-review-ux-patch",
   "classification_legend": {
     "A": "third-party navigation",
     "B": "embedded third-party request",
@@ -101,6 +101,21 @@
       "code_evidence": ["v3-prototype/js/action_destination.js buildMapsDirectionsUrl", "no origin parameter", "no geolocation call"]
     },
     {
+      "id": "GOOGLE_CALENDAR_EXPLICIT",
+      "feature": "Google Calendar event creation URL",
+      "classification": "A",
+      "trigger": "Explicit click on Googleカレンダーに追加 after a local Plan is saved",
+      "host": "calendar.google.com",
+      "request_navigation_type": "new-tab HTTPS navigation with noopener,noreferrer",
+      "timing": "explicit action only; no pre-click request",
+      "data_sent": ["public Experience title", "user-selected date/time", "approved public address", "official URL", "bounded public description"],
+      "user_authored_private_content": "NO",
+      "persistent_identifier": "NO V3 IDENTIFIER; GOOGLE MAY APPLY ITS OWN STORAGE/POLICY",
+      "purpose": "Open a prefilled event-creation screen without sync or account connection",
+      "release_disposition": "CURRENT_USER_INITIATED",
+      "code_evidence": ["v3-prototype/js/calendar_action.js builds locally", "window.open occurs only in explicit click handler", "no fetch/XHR/beacon/image sender"]
+    },
+    {
       "id": "EXP001_OFFICIAL_DORMANT",
       "feature": "EXP_001 official electronic-comic destination",
       "classification": "A",
@@ -177,18 +192,18 @@
     },
     {
       "id": "BROWSER_STORAGE_BOUNDARY",
-      "feature": "Selected shelf/deck, Interested, Plan, Trace state",
+      "feature": "Selected shelf/deck, Interested, Plan, Trace state, one-time Entrance marker",
       "classification": "NONE",
       "trigger": "Local Product actions",
       "host": null,
-      "request_navigation_type": "IndexedDB operation only",
+      "request_navigation_type": "IndexedDB and standalone localStorage operations only",
       "timing": "local action",
       "data_sent": [],
       "user_authored_private_content": "NO EXTERNAL TRANSMISSION",
-      "persistent_identifier": "LOCAL KEYS ONLY: session, interested-experiences-v1",
+      "persistent_identifier": "LOCAL KEYS ONLY: session, interested-experiences-v1, v3-interested-entrance-cue-v1",
       "purpose": "Preserve local Product state",
       "release_disposition": "CURRENT_LOCAL_ONLY",
-      "code_evidence": ["v3-prototype/js/store.js contains IndexedDB only and no network primitive"]
+      "code_evidence": ["v3-prototype/js/store.js retains IndexedDB schema", "v3-prototype/js/entrance_cue_store.js stores ID/timestamps only and has no network primitive"]
     },
     {
       "id": "PROVENANCE_URLS",
