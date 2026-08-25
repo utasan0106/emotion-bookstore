@@ -208,6 +208,23 @@ async function completionCta(page) {
   });
 }
 
+/* Zero-cover flows stop at the shelf Understanding surface (no cover deck). */
+async function openUnderstanding(page, base, query) {
+  await page.goto(base + FIXTURE + query);
+  await page.waitForSelector('.surface[data-surface="01-entrance"]');
+  await page.locator('.entrance-route-shelf').click();
+  await page.locator('.emotion-card[data-emotion-label="身を引く"]').click();
+  await page.waitForSelector('.surface[data-surface="03-understanding"]');
+  await settle(page);
+}
+
+async function understandingCta(page) {
+  return page.evaluate(() => {
+    const node = document.querySelector('.understanding-collection-entry');
+    return node ? node.textContent.trim() : null;
+  });
+}
+
 async function openCollection(page) {
   await page.locator('.deck-completion-collection').click();
   await page.waitForSelector('.surface[data-surface="15-shelf-collection"]');
@@ -336,6 +353,113 @@ async function storageSnapshot(page) {
       staleShelf.cardIds.indexOf('QA_EXP_STALE') === -1,
       JSON.stringify({ staleCta, cards: staleShelf.cardCount }));
     await staleContext.close();
+
+    /* --- zero-cover collection routing ------------------------------------ */
+    for (const [size, expected] of [[5, null], [6, '棚を一覧で見る（6件）'],
+      [15, '棚を一覧で見る（15件）'], [16, null]]) {
+      const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+      const page = await context.newPage();
+      page.on('pageerror', (error) => errors.push(`zerocover${size}: ${error.message}`));
+      await openUnderstanding(page, base, `?collection=${size}&cover=0`);
+      const cta = await understandingCta(page);
+      check(`cover=0 collection=${size}: understanding CTA ${expected ? 'appears as ' + expected : 'absent'}`,
+        cta === expected, String(cta));
+      if (expected === null) {
+        const plainEmpty = await page.evaluate(() =>
+          (document.querySelector('.understanding-empty') || { textContent: '' })
+            .textContent.includes('この棚には、いま置けるものがありません。'));
+        check(`cover=0 collection=${size}: plain empty state preserved (fail closed)`,
+          plainEmpty === true);
+      }
+      await context.close();
+    }
+
+    const zeroContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const zeroPage = await zeroContext.newPage();
+    zeroPage.on('pageerror', (error) => errors.push(`zerocover-open: ${error.message}`));
+    await openUnderstanding(zeroPage, base, '?collection=6&cover=0');
+    const zeroBefore = await storageSnapshot(zeroPage);
+    await zeroPage.locator('.understanding-collection-entry').click();
+    await zeroPage.waitForSelector('.surface[data-surface="15-shelf-collection"]');
+    await settle(zeroPage);
+    const zeroShelf = await collectionSnapshot(zeroPage);
+    const zeroAuthored = await zeroPage.evaluate(() => window.__SHELF_ABUNDANCE_QA__.authoredIds.slice());
+    check('zero-cover CTA opens the existing finite collection surface',
+      zeroShelf.surface === '15-shelf-collection' && zeroShelf.cardCount === 6 &&
+      zeroShelf.cardIds.join(',') === zeroAuthored.join(','),
+      JSON.stringify({ surface: zeroShelf.surface, cards: zeroShelf.cardCount }));
+    check('zero-cover collection keeps the finite grammar (no pagination copy)',
+      zeroShelf.forbiddenCopy.length === 0 && zeroShelf.heading.includes('（6件）'),
+      zeroShelf.heading);
+    const zeroAfter = await storageSnapshot(zeroPage);
+    check('zero-cover CTA click mutates no storage / URL / Interested',
+      JSON.stringify(zeroBefore.state) === JSON.stringify(zeroAfter.state) &&
+      JSON.stringify(zeroBefore.interested) === JSON.stringify(zeroAfter.interested) &&
+      zeroBefore.keys.join(',') === zeroAfter.keys.join(',') &&
+      zeroBefore.url === zeroAfter.url,
+      JSON.stringify({ before: zeroBefore.url, after: zeroAfter.url }));
+    await zeroPage.locator(`.collection-card[data-collection-id="${zeroAuthored[3]}"] .collection-card-detail`).click();
+    await zeroPage.waitForSelector('.surface[data-surface="05-experience-detail"]');
+    await zeroPage.locator('.detail-bottom-back').click();
+    await zeroPage.waitForSelector('.surface[data-surface="15-shelf-collection"]');
+    check('zero-cover Detail opens and returns to the collection', true);
+    await zeroPage.locator('.collection-bottom-back').click();
+    await zeroPage.waitForSelector('.surface[data-surface="03-understanding"]');
+    const zeroReturn = await zeroPage.evaluate(() =>
+      Boolean(document.querySelector('.understanding-collection-entry')));
+    check('zero-cover collection returns to Understanding with the CTA intact',
+      zeroReturn === true);
+    await zeroContext.close();
+
+    const normalContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const normalPage = await normalContext.newPage();
+    normalPage.on('pageerror', (error) => errors.push(`normal-cover: ${error.message}`));
+    await openUnderstanding(normalPage, base, '?collection=8&cover=3');
+    const normalUnderstanding = await understandingCta(normalPage);
+    check('cover=3 collection=8: no duplicate early CTA on Understanding',
+      normalUnderstanding === null, String(normalUnderstanding));
+    await normalPage.locator('.understanding-outcome-column .btn-primary').click();
+    await normalPage.waitForSelector('.surface[data-surface="04-discovery"]');
+    for (let step = 0; step < 3; step += 1) {
+      await normalPage.locator('.deck-next-action').first().click();
+      await normalPage.waitForTimeout(90);
+    }
+    await normalPage.waitForSelector('.surface[data-surface="04-discovery-none"]');
+    const normalCompletion = await completionCta(normalPage);
+    check('cover=3 collection=8: completion flow and its CTA unchanged',
+      normalCompletion === '棚を一覧で見る（8件）', String(normalCompletion));
+    await normalContext.close();
+
+    for (const [width, height, label] of [[320, 700, '320px'], [390, 844, '390×844'],
+      [430, 932, '430×932'], [1440, 900, '1440px']]) {
+      const context = await browser.newContext({ viewport: { width, height } });
+      const page = await context.newPage();
+      page.on('pageerror', (error) => errors.push(`zerocover-${width}: ${error.message}`));
+      await openUnderstanding(page, base, '?collection=8&cover=0');
+      const entry = await page.evaluate(() => {
+        const node = document.querySelector('.understanding-collection-entry');
+        const box = node ? node.getBoundingClientRect() : null;
+        return {
+          present: Boolean(node),
+          height: box ? Math.round(box.height) : 0,
+          width: box ? Math.round(box.width) : 0,
+          overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+        };
+      });
+      check(`${label} zero-cover: CTA present >=44px, no horizontal overflow`,
+        entry.present && entry.height >= 44 && entry.width >= 44 && entry.overflow <= 0,
+        JSON.stringify(entry));
+      await page.locator('.understanding-collection-entry').click();
+      await page.waitForSelector('.surface[data-surface="15-shelf-collection"]');
+      await settle(page);
+      const opened = await page.evaluate(() => ({
+        cards: document.querySelectorAll('.collection-card').length,
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+      }));
+      check(`${label} zero-cover: collection opens without overflow`,
+        opened.cards === 8 && opened.overflow <= 0, JSON.stringify(opened));
+      await context.close();
+    }
 
     /* --- full-shelf surface ---------------------------------------------- */
     const shelfContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
@@ -555,6 +679,23 @@ async function storageSnapshot(page) {
     check('選ばずに見る stays an independent finite 0–3 lineup',
       noEmotion.count <= 3 && noEmotion.chips === 0 && noEmotion.collectionCta === 0,
       JSON.stringify(noEmotion));
+
+    /* Real inventory: 心が弾む currently resolves cover=0 AND collection<6, so
+       the zero-cover CTA must stay hidden and the plain empty state must hold. */
+    await regressionPage.goto(base + '/index.html');
+    await regressionPage.waitForSelector('.surface[data-surface="01-entrance"]');
+    await regressionPage.locator('.entrance-route-shelf').click();
+    await regressionPage.locator('.emotion-card[data-emotion-label="心が弾む"]').click();
+    await regressionPage.waitForSelector('.surface[data-surface="03-understanding"]');
+    const productionEmpty = await regressionPage.evaluate(() => ({
+      cta: document.querySelectorAll('.understanding-collection-entry').length,
+      plain: (document.querySelector('.understanding-empty') || { textContent: '' })
+        .textContent.includes('この棚には、いま置けるものがありません。'),
+      collection: window.V3_REAL_EXPERIENCE_REGISTRY.collectionForEmotion('hajimu').count
+    }));
+    check('production zero-cover shelf (collection<6) keeps its plain empty state, no CTA',
+      productionEmpty.cta === 0 && productionEmpty.plain === true && productionEmpty.collection < 6,
+      JSON.stringify(productionEmpty));
     await regressionContext.close();
 
     check('runtime JS errors = 0', errors.length === 0, errors.join(' | '));

@@ -710,6 +710,24 @@
     return 'discovery';
   }
 
+  /* Zero-cover route: coverの承認deckが正当に0件（emptyでありerrorではない）
+     でも、承認collectionが利用可能なら、全棚一覧とそこから開いたDetailは
+     collection権威で成立する。cover deckのstale判定でfail closeしない。 */
+  function zeroCoverCollectionRouteActive() {
+    if (screen !== 'collection' && screen !== 'detail') return false;
+    if (publicDeckState(approvedRealDeck(state.emotion)) !== 'empty') return false;
+    var collection = approvedShelfCollection();
+    if (!collectionAvailable(collection)) return false;
+    return screen === 'collection' || collection.ids.indexOf(state.selectedId) !== -1;
+  }
+
+  /* 全棚一覧の戻り先。cover経由（完了画面から開いた）なら完了画面へ、
+     zero-cover経由なら棚のUnderstandingへ。 */
+  function collectionBackScreen() {
+    return publicDeckState(approvedRealDeck(state.emotion)) === 'empty'
+      ? 'understanding' : 'none';
+  }
+
   function validActiveId() {
     if (!state.deck || !deckHasId(state.deck.activeId)) return null;
     return state.deck.decisions[state.deck.activeId] === 'keep' ? state.deck.activeId : null;
@@ -828,7 +846,7 @@
       case 'none':
         return { back: 'discovery', title: word ? word.label : '' };
       case 'collection':
-        return { back: 'none', backLabel: '戻る', title: word ? word.label : '' };
+        return { back: collectionBackScreen(), backLabel: '戻る', title: word ? word.label : '' };
       case 'detail':
         return { back: validActiveId() ? 'review' : detailBackScreen(state.selectedId) };
       case 'plan':
@@ -1360,6 +1378,14 @@
     var video = activeS1bVideo(state.emotion);
     var contextFilteredEmpty = publicDeckState(baseDeck) === 'ready' &&
       deckState === 'empty' && contextSession && !contextSession.isEmpty();
+    /* Zero-cover Shelf Abundance: coverが正当に0件でも、承認collectionが
+       6件以上あるときだけ、全棚一覧への静かな継続導線をこの画面に置く。
+       自動遷移はしない。coverを偽装したり1枚目を発明したりもしない。 */
+    var zeroCoverCollection = null;
+    if (deckState === 'empty' && !contextFilteredEmpty) {
+      var shelfCollection = approvedShelfCollection();
+      if (collectionAvailable(shelfCollection)) zeroCoverCollection = shelfCollection;
+    }
     var outcome = [];
 
     outcome.push(h('p', {
@@ -1394,7 +1420,9 @@
           class: 'body-lg',
           text: contextFilteredEmpty
             ? '確認済みの候補はあります。条件を外すと、もとの棚を見られます。'
-            : 'この棚には、いま置けるものがありません。'
+            : (zeroCoverCollection
+              ? 'いま、この棚の寄り道はありません。棚に並んでいるものは、一覧から見られます。'
+              : 'この棚には、いま置けるものがありません。')
         }),
         h('p', {
           class: 'note',
@@ -1409,6 +1437,13 @@
               announce('条件をすべて外し、もとの候補を表示しました。');
             }
           }, [h('span', { text: '条件を外して、すべて見る' })]) : null,
+          zeroCoverCollection ? h('button', {
+            class: 'btn btn-line understanding-collection-entry', type: 'button',
+            onclick: function () {
+              collectionCategoryFilter = 'all';
+              go('collection');
+            }
+          }, [h('span', { text: '棚を一覧で見る（' + zeroCoverCollection.ids.length + '件）' })]) : null,
           h('button', {
             class: 'btn btn-line', type: 'button', onclick: function () { go('emotion'); }
           }, [h('span', { text: '別の棚をのぞく' })])
@@ -3087,7 +3122,7 @@
     nodes.push(h('div', { class: 'actions collection-bottom-actions' }, [
       h('button', {
         class: 'btn btn-text collection-bottom-back', type: 'button',
-        onclick: function () { go('none'); }
+        onclick: function () { go(collectionBackScreen()); }
       }, [h('span', { text: '戻る' })])
     ]));
 
@@ -3774,6 +3809,7 @@
   function failClosedStaleShelfRoute() {
     if (['discovery', 'review', 'none', 'collection', 'detail'].indexOf(screen) === -1) return;
     if (currentDeckMatchesSelectedShelf()) return;
+    if (zeroCoverCollectionRouteActive()) return;
     state.deck = null;
     state.decisions = {};
     state.selectedId = null;

@@ -47,6 +47,27 @@ PASS  collection 16: full-shelf CTA absent — null
 PASS  collection 16: completion copy preserved
 PASS  duplicate authored ID: shelf errors and CTA stays hidden — {"dupCta":null,"dupState":"error"}
 PASS  unresolvable authored ID is excluded, remaining shelf stays valid — {"staleCta":"棚を一覧で見る（8件）","cards":8}
+PASS  cover=0 collection=5: understanding CTA absent — null
+PASS  cover=0 collection=5: plain empty state preserved (fail closed)
+PASS  cover=0 collection=6: understanding CTA appears as 棚を一覧で見る（6件） — 棚を一覧で見る（6件）
+PASS  cover=0 collection=15: understanding CTA appears as 棚を一覧で見る（15件） — 棚を一覧で見る（15件）
+PASS  cover=0 collection=16: understanding CTA absent — null
+PASS  cover=0 collection=16: plain empty state preserved (fail closed)
+PASS  zero-cover CTA opens the existing finite collection surface — {"surface":"15-shelf-collection","cards":6}
+PASS  zero-cover collection keeps the finite grammar (no pagination copy) — 棚の一覧（6件）
+PASS  zero-cover CTA click mutates no storage / URL / Interested — {"before":"?collection=6&cover=0","after":"?collection=6&cover=0"}
+PASS  zero-cover Detail opens and returns to the collection
+PASS  zero-cover collection returns to Understanding with the CTA intact
+PASS  cover=3 collection=8: no duplicate early CTA on Understanding — null
+PASS  cover=3 collection=8: completion flow and its CTA unchanged — 棚を一覧で見る（8件）
+PASS  320px zero-cover: CTA present >=44px, no horizontal overflow — {"present":true,"height":46,"width":189,"overflow":0}
+PASS  320px zero-cover: collection opens without overflow — {"cards":8,"overflow":0}
+PASS  390×844 zero-cover: CTA present >=44px, no horizontal overflow — {"present":true,"height":46,"width":189,"overflow":0}
+PASS  390×844 zero-cover: collection opens without overflow — {"cards":8,"overflow":0}
+PASS  430×932 zero-cover: CTA present >=44px, no horizontal overflow — {"present":true,"height":46,"width":189,"overflow":0}
+PASS  430×932 zero-cover: collection opens without overflow — {"cards":8,"overflow":0}
+PASS  1440px zero-cover: CTA present >=44px, no horizontal overflow — {"present":true,"height":46,"width":189,"overflow":0}
+PASS  1440px zero-cover: collection opens without overflow — {"cards":8,"overflow":0}
 PASS  full shelf renders every collection object once — {"cards":10}
 PASS  full shelf keeps exact Human Editorial order — QA_EXP_01,QA_EXP_02,QA_EXP_03,QA_EXP_04,QA_EXP_05,QA_EXP_06,QA_EXP_07,QA_EXP_08,QA_EXP_09,QA_EXP_10
 PASS  heading states the finite count — 棚の一覧（10件）
@@ -89,6 +110,7 @@ PASS  195px (390 @200% zoom): fit matches the untouched production entrance (exi
 PASS  production cover behavior unchanged (finite 0–3 card view) — {"cards":1,"collection":1}
 PASS  production completion keeps its copy and hides the full-shelf CTA — {"cta":0}
 PASS  選ばずに見る stays an independent finite 0–3 lineup — {"cards":0,"chips":0,"collectionCta":0,"count":0}
+PASS  production zero-cover shelf (collection<6) keeps its plain empty state, no CTA — {"cta":0,"plain":true,"collection":0}
 PASS  runtime JS errors = 0
 
-92/92 PASS
+114/114 PASS
