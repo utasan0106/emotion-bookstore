@@ -1,0 +1,35 @@
+PASS  A. EXP_101: action set unchanged (primary + maps, no secondary) — ["primary","maps"]
+PASS  A. EXP_102: action set unchanged (primary + maps, no secondary) — ["primary","maps"]
+PASS  A. EXP_103: action set unchanged (primary + maps, no secondary) — ["primary","maps"]
+PASS  A. EXP_104: action set unchanged (primary + maps, no secondary) — ["primary","maps"]
+PASS  A. EXP_105: action set unchanged (primary + maps, no secondary) — ["primary","maps"]
+PASS  A. EXP_106: action set unchanged (primary + maps, no secondary) — ["primary","maps"]
+PASS  A. EXP_107: action set unchanged (primary + maps, no secondary) — ["primary","maps"]
+PASS  A. EXP_007: action set unchanged (primary + maps, no secondary) — ["primary","maps"]
+PASS  A. EXP_001: action set unchanged (primary only, no secondary) — ["primary"]
+PASS  A. absent secondaryActionDestinations changes nothing on a Music object
+PASS  A. empty secondary array yields primary only
+PASS  B. Music + 1 valid secondary: primary then secondary — ["primary","secondary"]
+PASS  C. Music + 2 valid secondaries: authored order preserved — https://example-provider.test/listen/qa-album | https://second-provider.test/a | https://third-provider.test/b
+PASS  D. 3 secondaries: whole set fails closed (no truncation), primary kept — ["primary"]
+PASS  E. non-Music with secondaries: set fails closed, primary kept — ["primary"]
+PASS  E2. missing canonicalType with secondaries fails closed — ["primary"]
+PASS  F. duplicate secondary URLs fail closed — ["primary"]
+PASS  G. secondary duplicating the primary URL fails closed — ["primary"]
+PASS  G2. duplicate labels fail closed — ["primary"]
+PASS  H. HTTP secondary URL fails closed — ["primary"]
+PASS  H2. credentialed secondary URL fails closed — ["primary"]
+PASS  H3. javascript: secondary URL fails closed — ["primary"]
+PASS  I. invalid officiality fails closed — ["primary"]
+PASS  I2. invalid destination type fails closed — ["primary"]
+PASS  I3. invalid nextAction fails closed — ["primary"]
+PASS  I4. malformed secondary object fails closed — ["primary"]
+PASS  I5. non-array secondaryActionDestinations fails closed — ["primary"]
+PASS  spec. no provider name is hardcoded in the runtime module
+PASS  J. secondary opens via HTTPS in a new tab with noopener,noreferrer — {"url":"https://second-provider.test/qa-album","target":"_blank","features":"noopener,noreferrer"}
+PASS  J2. external-open event carries only experienceId/actionType/destinationClass — {"experienceId":"QA_MUSIC_01","actionType":"listen","destinationClass":"official_viewing"}
+PASS  J3. primary open contract unchanged
+PASS  J4. tampered secondary with http URL is rejected at open time
+PASS  J5. unknown action kinds stay rejected
+
+33/33 PASS
