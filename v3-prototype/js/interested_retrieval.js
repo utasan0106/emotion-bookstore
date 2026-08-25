@@ -30,8 +30,17 @@
     });
   }
 
+  /* Shelf membership authority. A saved object stays resolvable while it is
+     currently approved shelf membership, independent of cover visibility
+     (Shelf Abundance: cover <=3 highlight / collection <=15 membership).
+     The legacy cover scan remains only as a fallback for registries that do
+     not expose the membership resolver. */
   function approvedShelfFor(experienceId, asOf) {
-    if (!REAL || !Array.isArray(REAL.SHELF_IDS) ||
+    if (!REAL) return null;
+    if (typeof REAL.shelfForExperience === 'function') {
+      return REAL.shelfForExperience(experienceId, asOf);
+    }
+    if (!Array.isArray(REAL.SHELF_IDS) ||
         typeof REAL.deckForEmotion !== 'function') return null;
     var matches = REAL.SHELF_IDS.filter(function (shelfId) {
       var deck = REAL.deckForEmotion(shelfId, asOf);

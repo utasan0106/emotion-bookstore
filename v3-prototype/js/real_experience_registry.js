@@ -29,6 +29,51 @@
     miwohiku: [{ experienceId: 'EXP_107', relation: 'direct' }],
     mada: [{ experienceId: 'EXP_007', relation: 'opening' }]
   };
+
+  /* ---------------------------------------------------------------------------
+   * Shelf Abundance Foundation — cover / collection separation
+   * COVER  = OUTING_RELATIONS（<=3、現行の有限Discovery表紙。挙動不変更）
+   * COLLECTION = 棚の現行承認メンバーシップ全体（<=15、Human Editorial順、
+   *              cover項目を必ず含む）。編集判断の器であり、quotaではない。
+   * 現行の実在承認inventoryではcollectionはcoverと同一内容（各棚1件）。
+   * force-fill・並び替え・engagement要素は導入しない。
+   * ------------------------------------------------------------------------- */
+  var COVER_MAX = 3;
+  var COLLECTION_MAX = 15;
+  var COLLECTION_MIN_AVAILABLE = 6;
+  var COLLECTION_RELATIONS = {
+    hajimu: [{ experienceId: 'EXP_101', relation: 'direct' }],
+    atatamaru: [{ experienceId: 'EXP_102', relation: 'direct' }],
+    hikareru: [{ experienceId: 'EXP_103', relation: 'direct' }],
+    shizumu: [{ experienceId: 'EXP_104', relation: 'direct' }],
+    zawatsuku: [{ experienceId: 'EXP_105', relation: 'direct' }],
+    butsukaru: [{ experienceId: 'EXP_106', relation: 'direct' }],
+    miwohiku: [{ experienceId: 'EXP_107', relation: 'direct' }],
+    mada: [{ experienceId: 'EXP_007', relation: 'opening' }]
+  };
+
+  /* Pure structural contract for one shelf plan. Order-preserving, fail-closed.
+     coverIds.length <= 3, collectionIds.length <= 15, no duplicates, and every
+     coverId must exist in collectionIds. Missing depth is NOT a failure. */
+  function validateShelfPlan(plan) {
+    var reasons = [];
+    var coverIds = plan && Array.isArray(plan.coverIds) ? plan.coverIds : null;
+    var collectionIds = plan && Array.isArray(plan.collectionIds) ? plan.collectionIds : null;
+    if (!coverIds || !collectionIds) {
+      return { pass: false, reasons: ['SHELF_PLAN_SHAPE_INVALID'] };
+    }
+    if (coverIds.length > COVER_MAX) reasons.push('COVER_OVER_3');
+    if (collectionIds.length > COLLECTION_MAX) reasons.push('COLLECTION_OVER_15');
+    collectionIds.forEach(function (id, index) {
+      if (typeof id !== 'string' || !id) reasons.push('COLLECTION_ID_INVALID');
+      else if (collectionIds.indexOf(id) !== index) reasons.push('COLLECTION_DUPLICATE_ID:' + id);
+    });
+    coverIds.forEach(function (id, index) {
+      if (coverIds.indexOf(id) !== index) reasons.push('COVER_DUPLICATE_ID:' + id);
+      if (collectionIds.indexOf(id) === -1) reasons.push('COVER_NOT_IN_COLLECTION:' + id);
+    });
+    return { pass: reasons.length === 0, reasons: reasons };
+  }
   var fixtureById = global.V3_DATA && global.V3_DATA.byId;
 
   var CATEGORY_VISUALS = {
@@ -930,6 +975,62 @@
     };
   }
 
+  /* Full-shelf membership resolver. Structural violations fail the whole shelf
+     closed; individually stale/invalid records are excluded (same policy as the
+     cover). Order stays exact Human Editorial input order. Never fills slots.
+     Collection eligibility relies on validateRecord + relation integrity; the
+     cover keeps its additional physical-outing gate unchanged. */
+  function collectionForEmotion(emotionId, asOf) {
+    if (SHELF_IDS.indexOf(emotionId) === -1) return null;
+    var authored = COLLECTION_RELATIONS[emotionId] || [];
+    var cover = OUTING_RELATIONS[emotionId] || [];
+    var plan = validateShelfPlan({
+      coverIds: cover.map(function (placement) { return placement.experienceId; }),
+      collectionIds: authored.map(function (placement) { return placement.experienceId; })
+    });
+    if (!plan.pass) {
+      return Object.freeze({
+        shelfId: emotionId, state: 'error', reasons: Object.freeze(plan.reasons.slice()),
+        ids: Object.freeze([]), coverIds: Object.freeze([]), count: 0, available: false
+      });
+    }
+    var active = authored.filter(function (placement) {
+      var record = byId(placement.experienceId, asOf);
+      return Boolean(record && record.editorial &&
+        record.editorial.relation === placement.relation);
+    });
+    var ids = active.map(function (placement) { return placement.experienceId; });
+    var coverDeck = deckForEmotion(emotionId, asOf);
+    var coverIds = coverDeck && Array.isArray(coverDeck.ids) ? coverDeck.ids.slice() : [];
+    return Object.freeze({
+      shelfId: emotionId,
+      state: 'ok',
+      reasons: Object.freeze([]),
+      ids: Object.freeze(ids),
+      coverIds: Object.freeze(coverIds),
+      count: ids.length,
+      available: ids.length >= COLLECTION_MIN_AVAILABLE && ids.length <= COLLECTION_MAX
+    });
+  }
+
+  /* Current-authority shelf membership for one experience, independent of
+     cover visibility. Interested resolution uses this instead of the cover. */
+  function shelfForExperience(experienceId, asOf) {
+    var matches = SHELF_IDS.filter(function (shelfId) {
+      return (COLLECTION_RELATIONS[shelfId] || []).some(function (placement) {
+        return placement.experienceId === experienceId;
+      });
+    });
+    if (matches.length !== 1) return null;
+    var record = byId(experienceId, asOf);
+    if (!record) return null;
+    var placement = (COLLECTION_RELATIONS[matches[0]] || []).filter(function (item) {
+      return item.experienceId === experienceId;
+    })[0];
+    return record.editorial && placement &&
+      record.editorial.relation === placement.relation ? matches[0] : null;
+  }
+
   function releaseRelations(asOf) {
     var rows = [];
     SHELF_IDS.forEach(function (shelfId) {
@@ -991,10 +1092,16 @@
     }),
     CATEGORY_IDS: Object.freeze(Object.keys(CATEGORY_VISUALS)),
     EXCLUDED_DISPOSITIONS: Object.freeze(clone(excluded)),
+    COVER_MAX: COVER_MAX,
+    COLLECTION_MAX: COLLECTION_MAX,
+    COLLECTION_MIN_AVAILABLE: COLLECTION_MIN_AVAILABLE,
     categoryVisualFor: categoryVisualFor,
     resolveVisualAsset: resolveVisualAsset,
     byId: byId,
     deckForEmotion: deckForEmotion,
+    validateShelfPlan: validateShelfPlan,
+    collectionForEmotion: collectionForEmotion,
+    shelfForExperience: shelfForExperience,
     validateRecord: validateRecord,
     validateVisualAsset: validateVisualAsset,
     isFresh: isFresh,

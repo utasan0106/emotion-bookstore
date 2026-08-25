@@ -2621,6 +2621,172 @@ body:has(.emotion-selection) .view {
   }
 }
 
+/* ======================================================== Shelf Abundance ==
+   全棚一覧（collection <=15）。有限で完結する一覧: 1列基準 → 390px以上で
+   compact 2列 → 900px以上で3列。表紙カードより密度の高いcompactカード。
+   filter chipは44px以上・可視focusは既存の:focus-visible契約を継承する。 */
+
+.collection-surface {
+  width: min(100%, 1120px);
+  max-width: 1120px;
+  margin-inline: auto;
+}
+
+.collection-shelf-context {
+  margin-bottom: 6px;
+}
+
+.collection-title {
+  margin: 0 0 8px;
+}
+
+.collection-lede {
+  margin: 0 0 18px;
+  color: var(--slate);
+}
+
+.collection-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 20px;
+}
+
+.collection-filter-chip {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.collection-filter-chip.is-active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #ffffff;
+}
+
+.collection-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 390px) {
+  .collection-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .collection-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+.collection-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  background: var(--card);
+  overflow: hidden;
+}
+
+.collection-card-visual .real-experience-visual--collection {
+  margin: 0;
+}
+
+.collection-card-visual .real-experience-visual-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+.collection-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  gap: 6px;
+  padding: 12px 14px 14px;
+  min-width: 0;
+}
+
+.collection-card-category {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--slate);
+}
+
+.collection-card-title {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ink);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* 完全なWhyはDetailが示す。ここは視覚的line clampのみ（要約はしない）。 */
+.collection-card-why {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--slate);
+  min-width: 0;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.collection-card-actions {
+  margin-top: auto;
+  padding-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.collection-card-actions .btn {
+  min-height: 44px;
+}
+
+.collection-card-detail {
+  flex: 1 1 auto;
+}
+
+.collection-card-interest {
+  min-width: 44px;
+}
+
+.collection-bottom-actions {
+  margin-top: 24px;
+  justify-content: center;
+}
+
+.collection-bottom-back {
+  min-height: 44px;
+  min-width: 44px;
+  color: var(--slate);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -36,6 +36,9 @@
   var pendingFocusSelector = null;
   var noEmotionIndex = 0;
   var noEmotionDetailId = null;
+  /* Shelf Abundance: full-shelf category filter is session/UI-only state.
+     Never persisted, never in URL/History payloads, never sent anywhere. */
+  var collectionCategoryFilter = 'all';
   var entranceCueMarker = ENTRANCE_CUE_STORE ? ENTRANCE_CUE_STORE.empty() : null;
   var entranceCueItem = null;
   /* Context Fit is intentionally closure-local and session-memory-only. It is
@@ -239,6 +242,64 @@
 
   function activeDeckCount() {
     return state.deck && state.deck.ids ? state.deck.ids.length : 0;
+  }
+
+  /* ------------------------------------------- Shelf Abundance: collection */
+  /* cover（<=3の表紙）とは別の、棚の現行承認メンバーシップ（<=15）。
+     Context Fitは表紙のDiscoveryレンズのままで、collectionには適用しない。 */
+
+  function approvedShelfCollection() {
+    if (!REAL || typeof REAL.collectionForEmotion !== 'function') return null;
+    try { return REAL.collectionForEmotion(state.emotion); }
+    catch (error) { return null; }
+  }
+
+  function collectionAvailable(collection) {
+    var min = REAL && REAL.COLLECTION_MIN_AVAILABLE;
+    var max = REAL && REAL.COLLECTION_MAX;
+    return Boolean(collection && collection.state === 'ok' && collection.available === true &&
+      typeof min === 'number' && typeof max === 'number' &&
+      collection.ids.length >= min && collection.ids.length <= max);
+  }
+
+  function approvedCollectionItemById(id) {
+    var collection = approvedShelfCollection();
+    if (!collection || collection.state !== 'ok' ||
+        collection.ids.indexOf(id) === -1) return null;
+    var record = null;
+    try { record = REAL && REAL.byId ? REAL.byId(id) : null; }
+    catch (error) { return null; }
+    return record || null;
+  }
+
+  function approvedCollectionEntries() {
+    var collection = approvedShelfCollection();
+    if (!collectionAvailable(collection)) return [];
+    return collection.ids.map(function (id) {
+      var record = approvedCollectionItemById(id);
+      if (!record) return null;
+      var contract = experienceInformationContract(record) ||
+        collectionInformationContract(record);
+      return contract ? { record: record, contract: contract } : null;
+    }).filter(Boolean);
+  }
+
+  /* Founder-approved user-facing category vocabulary for the full shelf. */
+  var COLLECTION_CATEGORY_GROUPS = Object.freeze([
+    Object.freeze({ id: 'book', label: '本', types: Object.freeze(['Book']) }),
+    Object.freeze({ id: 'film', label: '映画', types: Object.freeze(['Film']) }),
+    Object.freeze({ id: 'music', label: '音楽', types: Object.freeze(['Music']) }),
+    Object.freeze({ id: 'exhibition', label: '展示', types: Object.freeze(['Exhibition']) }),
+    Object.freeze({ id: 'place', label: '場所', types: Object.freeze(['Place', 'Dining']) }),
+    Object.freeze({ id: 'taiken', label: '体験', types: Object.freeze(['Activity', 'Travel']) }),
+    Object.freeze({ id: 'event', label: 'イベント', types: Object.freeze(['Event']) })
+  ]);
+
+  function collectionCategoryGroup(contract) {
+    var type = contract && contract.practicalTruth ? contract.practicalTruth.type : null;
+    return COLLECTION_CATEGORY_GROUPS.filter(function (group) {
+      return group.types.indexOf(type) !== -1;
+    })[0] || null;
   }
 
   function publicEditorialRecords() {
@@ -560,7 +621,7 @@
     } else {
       interested.items.push({ experienceId: id, savedAt: new Date().toISOString() });
     }
-    pendingFocusSelector = '.real-discovery-interest';
+    pendingFocusSelector = '[data-interest-id="' + id + '"]';
     render();
     var operation = wasInterested ? STORE.removeInterested(id) : STORE.saveInterested(id);
     operation.then(function (result) {
@@ -575,7 +636,7 @@
         return;
       }
       interested = result.value;
-      pendingFocusSelector = '.real-discovery-interest';
+      pendingFocusSelector = '[data-interest-id="' + id + '"]';
       render();
       announce(wasInterested ? '気になるものから外しました。' : 'この端末の気になるものに保存しました。');
     }).catch(function () {
@@ -637,6 +698,16 @@
 
   function deckHasId(id) {
     return Boolean(state.deck && id && state.deck.ids.indexOf(id) !== -1);
+  }
+
+  /* Detailの戻り先。coverのdeckにある物はこれまで通りdiscoveryへ。
+     collectionのみの深部objectだけが全棚一覧（collection）へ戻る。 */
+  function detailBackScreen(id) {
+    if (deckHasId(id)) return 'discovery';
+    var collection = approvedShelfCollection();
+    if (collectionAvailable(collection) &&
+        collection.ids.indexOf(id) !== -1) return 'collection';
+    return 'discovery';
   }
 
   function validActiveId() {
@@ -756,8 +827,10 @@
       case 'review':
       case 'none':
         return { back: 'discovery', title: word ? word.label : '' };
+      case 'collection':
+        return { back: 'none', backLabel: '戻る', title: word ? word.label : '' };
       case 'detail':
-        return { back: validActiveId() ? 'review' : 'discovery' };
+        return { back: validActiveId() ? 'review' : detailBackScreen(state.selectedId) };
       case 'plan':
         return { back: 'detail' };
       case 'moment':
@@ -1740,8 +1813,11 @@
 
   /* Shared display contract for every touched Cultural Matching renderer.
      New content types fail closed when a required layer is missing instead of
-     silently dropping Fact / Why / Action / Media / provenance information. */
-  function experienceInformationContract(experience) {
+     silently dropping Fact / Why / Action / Media / provenance information.
+     Shelf Abundance: the collection is cross-category, so official place
+     grounding is required for the cover contract but optional for the
+     type-neutral collection contract（Practical Truthが事実の基盤）. */
+  function informationContract(experience, requireOfficialGrounding) {
     if (!experience) return null;
     var place = experience.placeDetail;
     var source = place && place.officialSource;
@@ -1780,11 +1856,20 @@
       } : null
     };
     var required = [
-      'identity', 'officialGrounding', 'editorialWhy', 'practicalTruth',
+      'identity', 'editorialWhy', 'practicalTruth',
       'primaryAction', 'media', 'freshness', 'rightsProvenance',
       'contextFit', 'accessibilityLanguage'
     ];
+    if (requireOfficialGrounding) required.push('officialGrounding');
     return required.every(function (key) { return Boolean(contract[key]); }) ? contract : null;
+  }
+
+  function experienceInformationContract(experience) {
+    return informationContract(experience, true);
+  }
+
+  function collectionInformationContract(experience) {
+    return informationContract(experience, false);
   }
 
   function experienceCard(experience, contract, counter, actions, options) {
@@ -1839,7 +1924,7 @@
         class: 'real-experience-visual-image fit-' + asset.fitMode,
         src: asset.localAssetPath,
         alt: asset.altTextJa,
-        loading: context === 'interested' ? 'lazy' : 'eager',
+        loading: context === 'interested' || context === 'collection' ? 'lazy' : 'eager',
         decoding: 'async',
         width: dimensions.width,
         height: dimensions.height
@@ -1928,6 +2013,7 @@
       class: 'btn btn-line real-discovery-interest', type: 'button',
       'aria-pressed': isInterested(experience.id) ? 'true' : 'false',
       'data-interest-state': isInterested(experience.id) ? 'saved' : 'unsaved',
+      'data-interest-id': experience.id,
       onclick: function () { toggleInterested(experience.id); }
     }, [icon('heart'), h('span', { text: interestedLabel(experience.id) })]));
     if (interested.items.length) {
@@ -2048,6 +2134,7 @@
           class: 'btn btn-line real-discovery-interest', type: 'button',
           'aria-pressed': isInterested(experience.id) ? 'true' : 'false',
           'data-interest-state': isInterested(experience.id) ? 'saved' : 'unsaved',
+          'data-interest-id': experience.id,
           onclick: function () { toggleInterested(experience.id); }
         }, [icon('heart'), h('span', { text: interestedLabel(experience.id) })])
       ];
@@ -2112,6 +2199,7 @@
       class: 'btn btn-line real-discovery-interest', type: 'button',
       'aria-pressed': isInterested(experience.id) ? 'true' : 'false',
       'data-interest-state': isInterested(experience.id) ? 'saved' : 'unsaved',
+      'data-interest-id': experience.id,
       onclick: function () { toggleInterested(experience.id); }
     }, [icon('heart'), h('span', { text: interestedLabel(experience.id) })]));
 
@@ -2851,6 +2939,18 @@
         class: 'btn btn-primary', type: 'button', onclick: function () { go('understanding'); }
       }, [h('span', { text: '棚へ戻る' })])
     ];
+    /* Shelf Abundance: 承認済みcollectionが6件以上のときだけ、静かな継続導線。
+       現行の実在庫（各棚1件）では表示されない。quota促し文言は置かない。 */
+    var completionCollection = approvedShelfCollection();
+    if (collectionAvailable(completionCollection)) {
+      actions.push(h('button', {
+        class: 'btn btn-line deck-completion-collection', type: 'button',
+        onclick: function () {
+          collectionCategoryFilter = 'all';
+          go('collection');
+        }
+      }, [h('span', { text: '棚を一覧で見る（' + completionCollection.ids.length + '件）' })]));
+    }
     if (interested.items.length) {
       actions.push(h('button', {
         class: 'btn btn-line', type: 'button',
@@ -2884,10 +2984,127 @@
     return surface;
   }
 
+  /* Shelf Abundance: 全棚一覧（collection <=15）。明示的に開いた後だけ描画する
+     有限の一覧で、pagination・もっと見る・infinite scroll・swipe・並べ替えは
+     持たない。順序はHuman Editorial入力順のまま。category filterはsession内の
+     UI状態のみ（保存・URL・計測・Interestedのいずれにも影響しない）。 */
+  function surfaceCollection() {
+    var word = D.emotionById(state.emotion);
+    var collection = approvedShelfCollection();
+    var entries = approvedCollectionEntries();
+    if (!word || !collectionAvailable(collection) || entries.length === 0) {
+      return surfaceUnderstanding();
+    }
+
+    /* 空chipは作らない。すべて + 実在categoryのみ、上限5（+すべて）。 */
+    var presentGroups = COLLECTION_CATEGORY_GROUPS.filter(function (group) {
+      return entries.some(function (entry) {
+        return collectionCategoryGroup(entry.contract) === group;
+      });
+    }).slice(0, 5);
+    if (collectionCategoryFilter !== 'all' &&
+        !presentGroups.some(function (group) { return group.id === collectionCategoryFilter; })) {
+      collectionCategoryFilter = 'all';
+    }
+    var visibleEntries = entries.filter(function (entry) {
+      if (collectionCategoryFilter === 'all') return true;
+      var group = collectionCategoryGroup(entry.contract);
+      return Boolean(group && group.id === collectionCategoryFilter);
+    });
+
+    function chipButton(id, label) {
+      var active = collectionCategoryFilter === id;
+      return h('button', {
+        class: 'collection-filter-chip' + (active ? ' is-active' : ''),
+        type: 'button',
+        'aria-pressed': active ? 'true' : 'false',
+        'data-collection-filter': id,
+        onclick: function () {
+          if (collectionCategoryFilter === id) return;
+          collectionCategoryFilter = id;
+          pendingFocusSelector = '[data-collection-filter="' + id + '"]';
+          render();
+        }
+      }, [h('span', { text: label })]);
+    }
+
+    var nodes = [
+      h('p', { class: 'eyebrow collection-shelf-context', text: '「' + word.label + '」の棚' }),
+      h('h1', {
+        class: 'display display-sm collection-title', tabindex: '-1', id: 'surface-title',
+        text: '棚の一覧（' + entries.length + '件）'
+      }),
+      h('p', { class: 'body-lg collection-lede', text: 'この棚に、いま並んでいるすべてです。' })
+    ];
+
+    if (presentGroups.length >= 2) {
+      nodes.push(h('div', {
+        class: 'collection-filter-row', role: 'group', 'aria-label': '種類で絞り込む'
+      }, [chipButton('all', 'すべて')].concat(presentGroups.map(function (group) {
+        return chipButton(group.id, group.label);
+      }))));
+    }
+
+    var cards = visibleEntries.map(function (entry) {
+      var record = entry.record;
+      var contract = entry.contract;
+      var group = collectionCategoryGroup(contract);
+      return h('article', { class: 'collection-card', 'data-collection-id': record.id }, [
+        h('div', { class: 'collection-card-visual' }, [experienceVisual(record, 'collection')]),
+        h('div', { class: 'collection-card-body' }, [
+          h('p', {
+            class: 'collection-card-category',
+            text: group ? group.label : contract.practicalTruth.typeLabel
+          }),
+          h('h2', { class: 'collection-card-title', text: record.title }),
+          h('p', { class: 'collection-card-why', text: contract.editorialWhy }),
+          h('div', { class: 'collection-card-actions' }, [
+            h('button', {
+              class: 'btn btn-line collection-card-detail', type: 'button',
+              onclick: function () {
+                state.selectedId = record.id;
+                persist();
+                go('detail');
+              }
+            }, [h('span', { text: '詳しく見る' })]),
+            h('button', {
+              class: 'btn btn-text real-discovery-interest collection-card-interest', type: 'button',
+              'aria-pressed': isInterested(record.id) ? 'true' : 'false',
+              'data-interest-state': isInterested(record.id) ? 'saved' : 'unsaved',
+              'data-interest-id': record.id,
+              onclick: function () { toggleInterested(record.id); }
+            }, [icon('heart'), h('span', { text: interestedLabel(record.id) })])
+          ])
+        ])
+      ]);
+    });
+    nodes.push(h('div', {
+      class: 'collection-grid',
+      'data-collection-count': String(entries.length),
+      'data-collection-visible': String(visibleEntries.length)
+    }, cards));
+
+    nodes.push(h('div', { class: 'actions collection-bottom-actions' }, [
+      h('button', {
+        class: 'btn btn-text collection-bottom-back', type: 'button',
+        onclick: function () { go('none'); }
+      }, [h('span', { text: '戻る' })])
+    ]));
+
+    var surface = section('15-shelf-collection', nodes);
+    surface.classList.add('collection-surface');
+    surface.setAttribute('data-selected-shelf', state.emotion || '');
+    return surface;
+  }
+
   function surfaceDetail() {
-    var experience = approvedOutingById(state.selectedId);
+    /* cover（deck経由）と、承認collectionのみの深部objectの両方を受ける。
+       collection側はofficialGrounding任意のtype-neutral契約で描画する。 */
+    var experience = approvedOutingById(state.selectedId) ||
+      approvedCollectionItemById(state.selectedId);
     if (!experience) return surfaceUnderstanding();
-    var contract = experienceInformationContract(experience);
+    var contract = experienceInformationContract(experience) ||
+      collectionInformationContract(experience);
     if (!contract) return surfaceUnderstanding();
     var isReal = experience && experience.sourceClass === 'approved-real-experience';
     var placeDetail = experience && experience.placeDetail;
@@ -2927,11 +3144,12 @@
         class: 'btn btn-line real-discovery-interest detail-interest-action', type: 'button',
         'aria-pressed': isInterested(experience.id) ? 'true' : 'false',
         'data-interest-state': isInterested(experience.id) ? 'saved' : 'unsaved',
+        'data-interest-id': experience.id,
         onclick: function () { toggleInterested(experience.id); }
       }, [icon('heart'), h('span', { text: interestedLabel(experience.id) })]),
       h('button', {
         class: 'btn btn-text detail-bottom-back', type: 'button',
-        onclick: function () { go('discovery'); }
+        onclick: function () { go(detailBackScreen(experience.id)); }
       }, [h('span', { text: '戻る' })])
     );
 
@@ -2939,7 +3157,7 @@
        Identity -> FIRST PULL -> Editorial Why -> Official Fact / Practical
        Truth -> Official Action. Official text is source-grounded paraphrase,
        never copied as an unsourced editorial claim. */
-    var officialSource = contract.officialGrounding.source;
+    var officialSource = contract.officialGrounding ? contract.officialGrounding.source : null;
     var truthFacts = contract.practicalTruth.facts;
     var summary = [
       h('p', { class: 'eyebrow detail-shelf-context' }, [
@@ -2974,10 +3192,10 @@
         }))
       ]),
       h('dl', { class: 'detail-trust-meta', 'aria-label': '情報とメディアの確認状況' }, [
-        h('div', {}, [
+        officialSource ? h('div', {}, [
           h('dt', { text: '情報確認' }),
-          h('dd', { text: contract.officialGrounding.source.verifiedOn.replace(/-/g, '.') })
-        ]),
+          h('dd', { text: officialSource.verifiedOn.replace(/-/g, '.') })
+        ]) : null,
         h('div', {}, [
           h('dt', { text: 'メディア' }),
           h('dd', {
@@ -2996,7 +3214,7 @@
     ];
     if (placeDetail) {
       nodes.push(h('div', { class: 'place-detail-content' }, [
-        h('section', {
+        contract.officialGrounding ? h('section', {
           class: 'place-detail-section detail-official-description',
           'aria-labelledby': 'detail-official-title'
         }, [
@@ -3013,7 +3231,7 @@
             }),
             h('span', { text: '（' + officialSource.verifiedOn + ' 確認）' })
           ]) : null
-        ]),
+        ]) : null,
         h('section', { class: 'place-detail-section' }, [
           h('h2', { class: 'section-title', text: 'おすすめの過ごし方' }),
           h('p', { class: 'body-lg place-detail-body', text: placeDetail.recommendedStay })
@@ -3535,6 +3753,7 @@
     discovery: surfaceDiscovery,
     review: surfaceReview,
     none: surfaceNone,
+    collection: surfaceCollection,
     detail: surfaceDetail,
     plan: surfacePlan,
     'plan-saved': surfacePlanSaved,
@@ -3553,7 +3772,7 @@
   }
 
   function failClosedStaleShelfRoute() {
-    if (['discovery', 'review', 'none', 'detail'].indexOf(screen) === -1) return;
+    if (['discovery', 'review', 'none', 'collection', 'detail'].indexOf(screen) === -1) return;
     if (currentDeckMatchesSelectedShelf()) return;
     state.deck = null;
     state.decisions = {};

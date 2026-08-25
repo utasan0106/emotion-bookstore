@@ -1,0 +1,94 @@
+PASS  cover/collection thresholds are 3 / 15 / 6 — [3,15,6]
+PASS  cover 0 is structurally valid
+PASS  cover 1 is structurally valid
+PASS  cover 3 is structurally valid
+PASS  cover 4 is invalid (COVER_OVER_3) — COVER_OVER_3
+PASS  collection 5 is structurally valid
+PASS  collection 6 is structurally valid
+PASS  collection 8 is structurally valid
+PASS  collection 10 is structurally valid
+PASS  collection 15 is structurally valid
+PASS  collection 16 is invalid (COLLECTION_OVER_15) — COLLECTION_OVER_15
+PASS  duplicate collection IDs fail closed — COLLECTION_DUPLICATE_ID:ID_2
+PASS  cover ID absent from collection fails closed — COVER_NOT_IN_COLLECTION:ID_9
+PASS  malformed plan shape fails closed — SHELF_PLAN_SHAPE_INVALID
+PASS  validator never reorders the authored plan — ID_4,ID_1,ID_9,ID_2,ID_7,ID_3
+PASS  current approved shelf resolves as ok and finite — {"state":"ok","count":1}
+PASS  current approved depth (<6) is unavailable, not an error — {"available":false,"reasons":[]}
+PASS  cover is a subset of the current collection — {"cover":["EXP_107"],"collection":["EXP_107"]}
+PASS  unknown shelf id resolves to null
+PASS  a currently stale record is excluded from the collection — {"staleRecord":null,"ids":[]}
+PASS  the same record resolves before its recheck boundary
+PASS  shelf membership resolves independent of cover visibility — ["miwohiku","mada"]
+PASS  audit: cover >3 stays blocking — RUNTIME_DECK_OVER_3:qa
+PASS  audit: cover 3 + depth 7 is a valid 10-object collection — 10
+PASS  audit: collection <6 is unavailable, never blocking — {"blocking":[],"count":5}
+PASS  audit: collection 15 remains valid — 15
+PASS  audit: collection >15 blocks — RUNTIME_COLLECTION_OVER_15:qa
+PASS  audit: duplicate depth ID blocks — DUPLICATE_ID:qa_collection_0
+PASS  audit: stale depth row is excluded from the collection count — 5
+PASS  collection 0: no availability — {"count":0,"available":false}
+PASS  collection 1: full-shelf CTA absent — null
+PASS  collection 1: completion copy preserved
+PASS  collection 3: full-shelf CTA absent — null
+PASS  collection 3: completion copy preserved
+PASS  collection 5: full-shelf CTA absent — null
+PASS  collection 5: completion copy preserved
+PASS  collection 6: full-shelf CTA appears as 棚を一覧で見る（6件） — 棚を一覧で見る（6件）
+PASS  collection 6: completion copy preserved
+PASS  collection 6: no quota-filling encouragement — 「身を引く」の棚この棚は、ここまでです。さあ、感情の先に出かけよう！棚へ戻る棚を
+PASS  collection 8: full-shelf CTA appears as 棚を一覧で見る（8件） — 棚を一覧で見る（8件）
+PASS  collection 8: completion copy preserved
+PASS  collection 10: full-shelf CTA appears as 棚を一覧で見る（10件） — 棚を一覧で見る（10件）
+PASS  collection 10: completion copy preserved
+PASS  collection 15: full-shelf CTA appears as 棚を一覧で見る（15件） — 棚を一覧で見る（15件）
+PASS  collection 15: completion copy preserved
+PASS  collection 16: full-shelf CTA absent — null
+PASS  collection 16: completion copy preserved
+PASS  duplicate authored ID: shelf errors and CTA stays hidden — {"dupCta":null,"dupState":"error"}
+PASS  unresolvable authored ID is excluded, remaining shelf stays valid — {"staleCta":"棚を一覧で見る（8件）","cards":8}
+PASS  full shelf renders every collection object once — {"cards":10}
+PASS  full shelf keeps exact Human Editorial order — QA_EXP_01,QA_EXP_02,QA_EXP_03,QA_EXP_04,QA_EXP_05,QA_EXP_06,QA_EXP_07,QA_EXP_08,QA_EXP_09,QA_EXP_10
+PASS  heading states the finite count — 棚の一覧（10件）
+PASS  no pagination / load-more / ranking copy
+PASS  collection images lazy-load after explicit open — ["lazy","lazy","lazy"]
+PASS  no full-shelf card or image is generated before the explicit open — {"cards":0,"images":0,"surface":0}
+PASS  third-party requests remain 0
+PASS  only non-empty category chips appear, capped at 5 plus すべて — {"chips":["すべて","本","映画","音楽","展示","場所"],"expected":["本","映画","音楽","展示","場所"]}
+PASS  no empty category chip is rendered — {"chips":["すべて","本","映画","音楽","展示","場所"],"categories":["場所","体験","展示","本","映画","音楽","イベント"]}
+PASS  すべて is the initial state — すべて
+PASS  category chip「映画」filters to that category only — {"visible":1,"categories":["映画"]}
+PASS  filter state is not persisted to storage or URL — {"before":"?collection=10&cover=3","after":"?collection=10&cover=3"}
+PASS  filter is session/UI-only state — 映画
+PASS  a collection-only object saves and resolves as actionable — {"status":"actionable","shelf":"miwohiku"}
+PASS  saved schema stays exactly {experienceId, savedAt} — experienceId,savedAt
+PASS  type-neutral Detail renders identity, Why and Practical Truth — {"truth":["著者","出版社","刊行日","形式","公式の行き先"],"actions":1}
+PASS  Detail shows the complete approved Why (no summarization) — 125/125
+PASS  non-place object shows no fabricated place fields — {"placeSections":0}
+PASS  Detail returns to the full shelf it was opened from
+PASS  the full shelf returns to the completion send-off
+PASS  320px: 1-column grid, no horizontal overflow — {"columns":1,"overflow":0,"beyondLayout":0}
+PASS  320px: every control stays >=44px
+PASS  320px: Japanese titles wrap without one-character columns
+PASS  390×844: 2-column grid, no horizontal overflow — {"columns":2,"overflow":0,"beyondLayout":0}
+PASS  390×844: every control stays >=44px
+PASS  390×844: Japanese titles wrap without one-character columns
+PASS  430×932: 2-column grid, no horizontal overflow — {"columns":2,"overflow":0,"beyondLayout":0}
+PASS  430×932: every control stays >=44px
+PASS  430×932: Japanese titles wrap without one-character columns
+PASS  1200px: 3-column grid, no horizontal overflow — {"columns":3,"overflow":0,"beyondLayout":0}
+PASS  1200px: every control stays >=44px
+PASS  1200px: Japanese titles wrap without one-character columns
+PASS  1440px: 3-column grid, no horizontal overflow — {"columns":3,"overflow":0,"beyondLayout":0}
+PASS  1440px: every control stays >=44px
+PASS  1440px: Japanese titles wrap without one-character columns
+PASS  195px (390 @200% zoom): 1-column grid, no horizontal overflow — {"columns":1,"overflow":125,"beyondLayout":0}
+PASS  195px (390 @200% zoom): every control stays >=44px
+PASS  195px (390 @200% zoom): Japanese titles wrap without one-character columns
+PASS  195px (390 @200% zoom): fit matches the untouched production entrance (existing 320px floor) — {"entrance":125,"collection":125}
+PASS  production cover behavior unchanged (finite 0–3 card view) — {"cards":1,"collection":1}
+PASS  production completion keeps its copy and hides the full-shelf CTA — {"cta":0}
+PASS  選ばずに見る stays an independent finite 0–3 lineup — {"cards":0,"chips":0,"collectionCta":0,"count":0}
+PASS  runtime JS errors = 0
+
+92/92 PASS

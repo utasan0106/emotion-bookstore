@@ -548,8 +548,16 @@
     var allIds = {};
     var allCanonical = {};
     var shelves = shelfIds.map(function (shelfId) {
+      /* Shelf Abundance model: cover rows (<=3, existing roles) stay the
+         runtime deck; role 'collection' rows are full-shelf depth (cover +
+         depth <=15 total). Depth below 6 is not an editorial failure — the
+         full-shelf surface simply stays unavailable. No force-fill target. */
+      var depthRows = rows.filter(function (row) {
+        return row && row.shelfId === shelfId && row.role === 'collection';
+      }).filter(releaseRowReady);
       var visible = rows.filter(function (row) {
-        return row && row.shelfId === shelfId && row.role !== 'featured' && row.role !== 'timelyNow';
+        return row && row.shelfId === shelfId && row.role !== 'featured' &&
+          row.role !== 'timelyNow' && row.role !== 'collection';
       }).filter(releaseRowReady);
       var ids = visible.map(function (row) { return row.contentId; });
       var canonical = visible.map(function (row) { return row.canonicalObjectId; });
@@ -557,7 +565,13 @@
         counts[row.normalizedType] = (counts[row.normalizedType] || 0) + 1;
         return counts;
       }, {});
+      var collectionCount = visible.length + depthRows.length;
       if (visible.length > 3) blocking.push('RUNTIME_DECK_OVER_3:' + shelfId);
+      if (collectionCount > 15) blocking.push('RUNTIME_COLLECTION_OVER_15:' + shelfId);
+      depthRows.forEach(function (row) {
+        if (allIds[row.contentId]) blocking.push('DUPLICATE_ID:' + row.contentId);
+        allIds[row.contentId] = true;
+      });
       ids.forEach(function (id) {
         if (allIds[id]) blocking.push('DUPLICATE_ID:' + id);
         allIds[id] = true;
@@ -573,6 +587,8 @@
       return Object.freeze({
         shelfId: shelfId,
         visibleEligibleCount: visible.length,
+        collectionCount: collectionCount,
+        collectionAvailable: collectionCount >= 6 && collectionCount <= 15,
         worksReady: Math.min(visible.length, 3),
         videoReady: video.item ? 1 : 0,
         duplicateIdCount: ids.length - Object.keys(ids.reduce(function (set, id) { set[id] = true; return set; }, {})).length,
