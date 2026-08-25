@@ -1325,21 +1325,44 @@ body:has(.emotion-selection) .view {
     padding-inline: 18px;
   }
 
+  /* One-cover fit at 390x844: reclaim accumulated vertical spacing so the
+     sequence illustration → headline → copy → CTA → culture completes in the
+     first viewport. Composition, copy and CTA accessibility are unchanged. */
   .entrance {
-    padding-top: 14px;
+    padding-top: 8px;
+  }
+
+  .entrance .hero {
+    width: 94%;
+    margin: 6px auto 0;
   }
 
   .entrance .display {
+    margin: 8px 0 0;
     margin-inline: 0;
+    padding-top: 14px;
+    font-size: clamp(26px, 8.2vw, 32px);
+    line-height: 1.4;
   }
 
   .entrance .entrance-copy {
+    margin-top: 14px;
     padding-inline: 0;
+  }
+
+  .entrance-route-note {
+    margin-top: 10px;
+    font-size: 13.5px;
+    line-height: 1.65;
   }
 
   .entrance-routes {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 12px;
+  }
+
+  .entrance .entrance-routes .cta-primary {
+    min-height: 52px;
   }
 
   .entrance .hero-img {
@@ -1348,8 +1371,13 @@ body:has(.emotion-selection) .view {
 
   .entrance-culture-note {
     gap: 5px 13px;
-    margin-top: 16px;
+    margin-top: 13px;
     font-size: 12px;
+  }
+
+  .entrance .trust {
+    margin-top: 14px;
+    padding: 10px 12px;
   }
 
   body:has(.emotion-selection) #stepbar {
@@ -2400,6 +2428,53 @@ body:has(.emotion-selection) .view {
   padding: 10px 22px;
   font-size: 14px;
   white-space: nowrap;
+}
+
+/* ---- Practical Truth: structurally robust fact layout ---- */
+
+/* Value containers may always shrink and wrap — no one-character columns,
+   no clipped labels, no horizontal overflow, at any supported width. */
+.real-discovery-facts div,
+.detail-truth-list > div {
+  min-width: 0;
+}
+
+.facts dt,
+.facts dd,
+.place-detail-facts dt,
+.place-detail-facts dd {
+  min-width: 0;
+}
+
+.real-discovery-facts dd,
+.detail-truth-list dd,
+.place-detail-facts dd,
+.facts dd {
+  overflow-wrap: anywhere;
+  line-break: strict;
+}
+
+/* Narrow mobile: single-column stacked label→value grammar. */
+@media (max-width: 599px) {
+  .real-discovery-facts {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .real-discovery-facts > div {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .real-discovery-facts dt {
+    font-size: 11.5px;
+  }
+
+  .real-discovery-facts dd {
+    margin-top: 2px;
+  }
 }
 
 /* ---- Factual time/period readability (existing data only) ---- */
