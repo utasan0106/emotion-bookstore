@@ -2459,7 +2459,7 @@ body:has(.emotion-selection) .view {
 
 .deck-completion {
   max-width: 480px;
-  margin: 10px auto 0;
+  margin: 6px auto 0;
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -2486,9 +2486,9 @@ body:has(.emotion-selection) .view {
 
 .deck-completion-illustration {
   display: block;
-  width: min(72%, 300px);
+  width: min(70%, 290px);
   height: auto;
-  margin: 20px auto 0;
+  margin: 18px auto 0;
   border: 1px solid var(--border-color);
   border-radius: 14px;
   box-shadow: var(--shadow-card);
@@ -2506,7 +2506,7 @@ body:has(.emotion-selection) .view {
 
 .deck-completion-actions {
   max-width: 340px;
-  margin: 24px auto 0;
+  margin: 20px auto 0;
   gap: 10px;
 }
 
@@ -2522,9 +2522,15 @@ body:has(.emotion-selection) .view {
   font-weight: 500;
 }
 
+/* Fit the send-off within one viewport at supported desktop heights, so the
+   heading focus never scrolls the back control under the sticky header. */
 @media (min-width: 900px) {
+  .surface[data-surface="04-discovery-none"] {
+    padding-top: 26px;
+  }
+
   .deck-completion {
-    margin-top: 26px;
+    margin-top: 0;
   }
 
   .deck-completion-title {
@@ -2532,7 +2538,11 @@ body:has(.emotion-selection) .view {
   }
 
   .deck-completion-illustration {
-    width: min(60%, 320px);
+    width: min(54%, 290px);
+  }
+
+  .deck-completion-sendoff {
+    margin-top: 16px;
   }
 }
 
