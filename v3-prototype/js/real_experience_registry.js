@@ -184,14 +184,14 @@
       sourceClass: SOURCE_CLASS,
       title: 'チームラボボーダレス',
       type: '展示',
-      duration: '8:30–21:00（通常）',
+      duration: '通常 8:30–21:00（休館・短縮営業あり）',
       price: '大人 3,600円〜',
       canonicalType: 'Exhibition',
       practicalTruth: {
-        hours: '8:30–21:00（通常）',
+        hours: '通常 8:30–21:00（休館・短縮営業あり）',
         area: '東京都港区虎ノ門5-9 麻布台ヒルズ ガーデンプラザB B1',
         price: '大人 3,600円〜',
-        ticketStatus: '公式サイトで日時とチケットを確認'
+        ticketStatus: '日時指定・料金変動あり。公式サイトで最新の営業日・時間・チケットを確認'
       },
       contextEligibility: {
         area: ['tokyo-core', 'tokyo-wide'],
@@ -206,10 +206,12 @@
         reviewerHuman: true,
         reviewedAt: '2026-08-23T22:33:00+09:00',
         realDataGateResult: 'REAL_DATA_GATE_READY_FOR_PHASE0',
-        livenessCheckedAt: '2026-08-23T22:33:00+09:00'
+        livenessCheckedAt: '2026-08-25T09:00:00+09:00'
       },
       editorial: { relation: 'direct' },
-      freshness: { recheckBy: '2026-08-24' },
+      /* 2026-08-25 公式再確認。直近の例外（8/25休館・9/1 17:00閉館・9/8休館）
+         のため再確認期限は9/7まで。以降は既存freshness gateでfail closedする。 */
+      freshness: { recheckBy: '2026-09-07' },
       rights: { imageReuseApproved: false, textReuseApproved: false },
       placeDetail: {
         description: '作品同士が境界を越えて移動し、ほかの作品と影響し合いながら連続する、地図のないミュージアムです。',
@@ -219,7 +221,7 @@
           mode: 'source_grounded_paraphrase',
           sourceName: 'チームラボボーダレス 公式サイト',
           sourceUrl: 'https://www.teamlab.art/jp/e/tokyo/',
-          verifiedOn: '2026-08-23',
+          verifiedOn: '2026-08-25',
           quotedExcerpt: null,
           rightsBasis: 'official_source_grounded_paraphrase_no_reproduction'
         },
@@ -233,7 +235,7 @@
         provenance: {
           garden: 'https://www.teamlab.art/jp/e/tokyo/',
           access: 'https://www.teamlab.art/jp/e/tokyo/',
-          verifiedOn: '2026-08-23'
+          verifiedOn: '2026-08-25'
         }
       },
       physicalDestination: {

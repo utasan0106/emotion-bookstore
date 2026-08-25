@@ -167,13 +167,21 @@ function runRegistryContracts(REAL) {
     JSON.stringify(shelf && { cover: shelf.coverIds, collection: shelf.ids }));
   check('unknown shelf id resolves to null', REAL.collectionForEmotion('not-a-shelf') === null);
 
-  const stale = REAL.byId('EXP_101');
-  const staleShelf = REAL.collectionForEmotion('hajimu');
-  check('a currently stale record is excluded from the collection',
-    stale === null && staleShelf.state === 'ok' && staleShelf.ids.indexOf('EXP_101') === -1,
-    JSON.stringify({ staleRecord: stale, ids: staleShelf.ids }));
-  check('the same record resolves before its recheck boundary',
-    Boolean(REAL.byId('EXP_101', '2026-08-24')));
+  /* Freshness boundary contract (EXP_101 recheckBy 2026-09-07 after the
+     2026-08-25 official re-verification): fresh through the boundary, then
+     fail closed and excluded from cover and collection without re-approval. */
+  check('EXP_101 is valid as of 2026-08-25 and returns to the 心が弾む cover',
+    Boolean(REAL.byId('EXP_101', '2026-08-25')) &&
+    REAL.deckForEmotion('hajimu', '2026-08-25').ids.join(',') === 'EXP_101',
+    JSON.stringify(REAL.deckForEmotion('hajimu', '2026-08-25').ids));
+  check('EXP_101 stays valid through its recheck boundary (2026-09-07)',
+    Boolean(REAL.byId('EXP_101', '2026-09-07')));
+  const beyondShelf = REAL.collectionForEmotion('hajimu', '2026-09-08');
+  check('a record past its recheck boundary is excluded from cover and collection',
+    REAL.byId('EXP_101', '2026-09-08') === null &&
+    REAL.deckForEmotion('hajimu', '2026-09-08').ids.length === 0 &&
+    beyondShelf.state === 'ok' && beyondShelf.ids.indexOf('EXP_101') === -1,
+    JSON.stringify({ ids: beyondShelf.ids }));
 
   check('shelf membership resolves independent of cover visibility',
     REAL.shelfForExperience('EXP_107') === 'miwohiku' &&
@@ -680,22 +688,26 @@ async function storageSnapshot(page) {
       noEmotion.count <= 3 && noEmotion.chips === 0 && noEmotion.collectionCta === 0,
       JSON.stringify(noEmotion));
 
-    /* Real inventory: 心が弾む currently resolves cover=0 AND collection<6, so
-       the zero-cover CTA must stay hidden and the plain empty state must hold. */
+    /* Real inventory after the 2026-08-25 freshness sync: 心が弾む resolves its
+       1-item cover again (normal flow restored). Its collection (1 < 6) must
+       still expose no full-shelf CTA anywhere. The zero-cover contract itself
+       stays proven above with synthetic fixtures only. */
     await regressionPage.goto(base + '/index.html');
     await regressionPage.waitForSelector('.surface[data-surface="01-entrance"]');
     await regressionPage.locator('.entrance-route-shelf').click();
     await regressionPage.locator('.emotion-card[data-emotion-label="心が弾む"]').click();
     await regressionPage.waitForSelector('.surface[data-surface="03-understanding"]');
-    const productionEmpty = await regressionPage.evaluate(() => ({
+    const productionHajimu = await regressionPage.evaluate(() => ({
+      deckCount: (document.querySelector('[data-deck-count]') || { getAttribute: () => null })
+        .getAttribute('data-deck-count'),
+      emptyState: document.querySelectorAll('.understanding-empty').length,
       cta: document.querySelectorAll('.understanding-collection-entry').length,
-      plain: (document.querySelector('.understanding-empty') || { textContent: '' })
-        .textContent.includes('この棚には、いま置けるものがありません。'),
       collection: window.V3_REAL_EXPERIENCE_REGISTRY.collectionForEmotion('hajimu').count
     }));
-    check('production zero-cover shelf (collection<6) keeps its plain empty state, no CTA',
-      productionEmpty.cta === 0 && productionEmpty.plain === true && productionEmpty.collection < 6,
-      JSON.stringify(productionEmpty));
+    check('production 心が弾む cover restored; collection<6 still exposes no CTA',
+      productionHajimu.deckCount === '1' && productionHajimu.emptyState === 0 &&
+      productionHajimu.cta === 0 && productionHajimu.collection === 1,
+      JSON.stringify(productionHajimu));
     await regressionContext.close();
 
     check('runtime JS errors = 0', errors.length === 0, errors.join(' | '));

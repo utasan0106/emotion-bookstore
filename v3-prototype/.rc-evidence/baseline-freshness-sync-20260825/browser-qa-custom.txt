@@ -1,0 +1,19 @@
+PASS  first-paint third-party requests = 0
+PASS  flow/faq navigation third-party requests = 0
+PASS  mouse navigation: focused heading shows no outline  — {"tag":"H1","id":"surface-title","width":"0px","style":"none"}
+PASS  keyboard focus shows visible outline >=2px  — {"cls":"emotion-card","width":"2px","style":"solid","color":"rgb(24, 127, 142)"}
+PASS  flow screen + browser back returns to entrance  — 12-experience-flow -> 01-entrance
+PASS  faq screen + stepbar back returns home  — 13-help-faq
+PASS  detail -> back preserves discovery context  — 04-discovery 1 / 1
+PASS  「感情の棚へ戻る」 renders on one line  — {"h":19,"lh":20,"text":"感情の棚へ戻る"}
+PASS  video poster stage renders before activation
+PASS  poster first paint third-party requests = 0
+PASS  explicit click loads player into the same stage
+PASS  no horizontal overflow on flow/faq at 320px
+PASS  faq screen touch targets >=44px at 320px
+PASS  no horizontal overflow on flow/faq at 390px
+PASS  faq screen touch targets >=44px at 390px
+PASS  no horizontal overflow on flow/faq at 430px
+PASS  faq screen touch targets >=44px at 430px
+
+17/17 PASS
