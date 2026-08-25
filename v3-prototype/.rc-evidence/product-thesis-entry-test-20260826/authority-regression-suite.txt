@@ -1,0 +1,370 @@
+
+===== s1b_runtime.js =====
+PASS  runtime 0: truthful candidate count — 0
+PASS  runtime 0: Context is optional/skippable
+PASS  runtime 0: no force-fill/start CTA
+PASS  runtime 1: truthful candidate count — 1
+PASS  runtime 1: Context is optional/skippable
+PASS  runtime 1: exactly one object card renders — 新宿御苑
+PASS  runtime 1: Discovery Primary is informational
+PASS  runtime 1: no pass/review semantics
+PASS  runtime 1: external real-world CTA stays out of Discovery
+PASS  runtime 1: Detail has type-specific Practical Truth
+PASS  runtime 1: official real-world Action is in Detail
+PASS  runtime 1: Official fact and Editorial Why are separate
+PASS  runtime 1: finite completion is quiet and existing
+PASS  runtime 1: legacy Review never renders
+PASS  runtime 1: browsing writes no durable preference/Interested — {"stateWrites":0,"preferenceWrites":0}
+PASS  runtime 2: truthful candidate count — 2
+PASS  runtime 2: Context is optional/skippable
+PASS  runtime 2: exactly one object card renders — 新宿御苑
+PASS  runtime 2: Discovery Primary is informational
+PASS  runtime 2: no pass/review semantics
+PASS  runtime 2: external real-world CTA stays out of Discovery
+PASS  runtime 2: Next advances without decision
+PASS  runtime 2: Previous restores first object
+PASS  runtime 2: swipe is navigation only
+PASS  runtime 2: Detail has type-specific Practical Truth
+PASS  runtime 2: official real-world Action is in Detail
+PASS  runtime 2: Official fact and Editorial Why are separate
+PASS  runtime 2: finite completion is quiet and existing
+PASS  runtime 2: legacy Review never renders
+PASS  runtime 2: browsing writes no durable preference/Interested — {"stateWrites":0,"preferenceWrites":0}
+PASS  runtime 3: truthful candidate count — 3
+PASS  runtime 3: Context is optional/skippable
+PASS  runtime 3: exactly one object card renders — 新宿御苑
+PASS  runtime 3: Discovery Primary is informational
+PASS  runtime 3: no pass/review semantics
+PASS  runtime 3: external real-world CTA stays out of Discovery
+PASS  runtime 3: Next advances without decision
+PASS  runtime 3: Previous restores first object
+PASS  runtime 3: swipe is navigation only
+PASS  runtime 3: Detail has type-specific Practical Truth
+PASS  runtime 3: official real-world Action is in Detail
+PASS  runtime 3: Official fact and Editorial Why are separate
+PASS  runtime 3: finite completion is quiet and existing
+PASS  runtime 3: legacy Review never renders
+PASS  runtime 3: browsing writes no durable preference/Interested — {"stateWrites":0,"preferenceWrites":0}
+PASS  registry/error fixture fails closed separately from zero
+PASS  Context skip preserves broader 3-object fixture
+PASS  Context apply filters only factual feasibility — {"appliedContextCount":2,"result":"3件中2件を表示しています。"}
+PASS  Context materially removed candidates with visible reasons
+PASS  Context changes write no store/Interested/analytics state
+PASS  Context never enters URL/hash/query/History payload
+PASS  Context clear restores broader original set
+PASS  Context is in-memory only and resets on reload
+PASS  only explicit Interested action saves durably
+PASS  Interested survives reload
+PASS  explicit Interested removal survives reload
+PASS  video first paint third-party player request = 0
+PASS  video is a separate editorial slot, not a fourth deck candidate
+PASS  Featured fixture displays new-to-shelf badge without weekly claim
+PASS  video loads only after explicit click with autoplay 0 — {"src":"https://www.youtube-nocookie.com/embed/TEST_123","width":"1440","height":"1080","allow":"fullscreen; picture-in-picture"}
+PASS  video native non-16:9 ratio is preserved — {"width":310,"height":232.5}
+PASS  video view/play writes no durable preference/Interested
+PASS  video stops/is removed on Product navigation
+PASS  390x844: no horizontal overflow — {"understandingOverflow":{"doc":0,"body":0,"view":0},"discoveryOverflow":{"doc":0,"body":0,"view":0},"detailOverflow":{"doc":0,"body":0,"view":0}}
+PASS  390x844: navigation/action targets remain >=44px — [{"width":312,"height":48},{"width":152,"height":48},{"width":340,"height":48}]
+PASS  430x932: no horizontal overflow — {"understandingOverflow":{"doc":0,"body":0,"view":0},"discoveryOverflow":{"doc":0,"body":0,"view":0},"detailOverflow":{"doc":0,"body":0,"view":0}}
+PASS  430x932: navigation/action targets remain >=44px — [{"width":352,"height":48},{"width":172,"height":48},{"width":340,"height":48}]
+PASS  desktop: no horizontal overflow — {"understandingOverflow":{"doc":0,"body":0,"view":0},"discoveryOverflow":{"doc":0,"body":0,"view":0},"detailOverflow":{"doc":0,"body":0,"view":0}}
+PASS  desktop: navigation/action targets remain >=44px — [{"width":345.078125,"height":54},{"width":168.53125,"height":52},{"width":340,"height":48}]
+PASS  Context disclosure has visible keyboard focus — {"active":true,"outlineStyle":"solid","outlineWidth":"3px"}
+PASS  Context control has visible keyboard focus — {"active":true,"outlineStyle":"solid","outlineWidth":"3px"}
+PASS  keyboard focus remains visibly indicated — {"active":true,"outlineStyle":"solid","outlineWidth":"2px"}
+PASS  keyboard activates finite Next navigation
+PASS  reduced motion preserves finite navigation with bounded fade — {"name":"s1a-deck-fade-in","duration":"0.12s"}
+PASS  200% zoom practical sanity has no horizontal overflow — {"doc":0,"body":0,"view":0}
+PASS  actual Product runtime mounts only current approved one-object deck
+PASS  actual Product live Featured/video/daily activation remains zero
+PASS  actual Product Detail follows type-specific S1B presentation
+PASS  JS error = 0
+
+79/79 PASS
+
+===== s1a_stale_review_regression.js =====
+PASS  fixture: valid real-approved deck and durable Interested seed — {"deckIds":["EXP_007","EXP_101","EXP_102"],"stateWriteOk":true,"interestedWriteOk":true}
+PASS  stale History restoration: legacy Review never renders — ["01-entrance","04-discovery-none"]
+PASS  stale History restoration: 「今回は違う」 count = 0 — 0
+PASS  stale History restoration: legacy pass/keep decision controls = 0
+PASS  stale History restoration: Interested before === after
+PASS  stale History restoration: browsing gains no preference/affinity mutation — {"preferenceWrites":[],"sessionWrites":0}
+PASS  stale History restoration: lands on existing safe S1A finite-completion surface — 04-discovery-none
+PASS  stale History restoration: stale entry is normalized in runtime — {"history":"none","surface":"04-discovery-none"}
+PASS  internal fixture: valid real-approved deck and stale decisions — {"deckIds":["EXP_007","EXP_101","EXP_102"],"stateWriteOk":true,"interestedWriteOk":true}
+PASS  test-only bridge exposes closure-local go()
+PASS  direct/internal go(review): legacy Review never renders — ["01-entrance","04-discovery-none"]
+PASS  direct/internal go(review): 「今回は違う」 count = 0 — 0
+PASS  direct/internal go(review): legacy pass/keep decision controls = 0
+PASS  direct/internal go(review): Interested before === after
+PASS  direct/internal go(review): browsing gains no preference/affinity mutation — {"preferenceWrites":[],"sessionWrites":0}
+PASS  direct/internal go(review): lands on existing safe S1A finite-completion surface — 04-discovery-none
+PASS  direct/internal go(review): History records normalized safe screen — none
+PASS  JS error = 0
+
+18/18 PASS
+
+===== s1b_foundation.js =====
+PASS  canonical type set is exact
+PASS  Book: type-specific Practical Truth resolves — [{"key":"author","label":"著者","value":"著者"},{"key":"publisher","label":"出版社","value":"出版社"},{"key":"publicationDate","label":"刊行日","value":"2026-08-24"},{"key":"format","label":"形式","value":"単行本"}]
+PASS  Film: type-specific Practical Truth resolves — [{"key":"director","label":"監督","value":"監督"},{"key":"year","label":"年","value":"2026"},{"key":"runtime","label":"上映時間","value":"120分"},{"key":"viewingStatus","label":"公式の視聴案内","value":"公式上映案内あり"}]
+PASS  Music: type-specific Practical Truth resolves — [{"key":"artist","label":"アーティスト","value":"演奏者"},{"key":"workType","label":"作品形式","value":"アルバム"},{"key":"duration","label":"長さ","value":"42分"},{"key":"listeningStatus","label":"公式の視聴案内","value":"公式視聴案内あり"}]
+PASS  Exhibition: type-specific Practical Truth resolves — [{"key":"venue","label":"会場","value":"会場"},{"key":"startDate","label":"開始日","value":"2026-08-01"},{"key":"endDate","label":"終了日","value":"2026-09-01"},{"key":"hours","label":"時間","value":"10:00–18:00"}]
+PASS  Place: type-specific Practical Truth resolves — [{"key":"area","label":"場所","value":"東京都内"},{"key":"hours","label":"時間","value":"10:00–18:00"},{"key":"access","label":"アクセス","value":"駅から徒歩5分"},{"key":"reservation","label":"予約","value":"不要"}]
+PASS  Dining: type-specific Practical Truth resolves — [{"key":"area","label":"場所","value":"東京都内"},{"key":"serviceInfo","label":"営業・提供","value":"昼営業"},{"key":"reservation","label":"予約","value":"公式で確認"},{"key":"price","label":"予算","value":"3,000円前後"}]
+PASS  Travel: type-specific Practical Truth resolves — [{"key":"location","label":"行き先","value":"目的地"},{"key":"duration","label":"所要時間","value":"一泊二日"},{"key":"availability","label":"日程・提供","value":"指定日"},{"key":"reservation","label":"予約","value":"必要"}]
+PASS  Activity: type-specific Practical Truth resolves — [{"key":"location","label":"場所","value":"会場"},{"key":"duration","label":"所要時間","value":"90分"},{"key":"eligibility","label":"参加条件","value":"公式参加条件あり"},{"key":"price","label":"料金","value":"2,000円"}]
+PASS  Event: type-specific Practical Truth resolves — [{"key":"venue","label":"会場","value":"会場"},{"key":"startDate","label":"開始日","value":"2026-08-24"},{"key":"hours","label":"時間","value":"18:00開始"},{"key":"ticketStatus","label":"チケット","value":"公式販売あり"}]
+PASS  missing facts remain omitted
+PASS  unknown practical field fails closed
+PASS  native media grammar remains type-specific
+PASS  Context skip returns full eligible set
+PASS  unsupported demographic field is rejected
+PASS  coarse explicit Context value is accepted
+PASS  Context removes only deterministic factual mismatch — [{"record":{"id":"HIGH","title":"高予算","contextEligibility":{"budgetBand":["under-5000","flexible"]}},"reason":"予算「無料」と、確認済みの利用条件が合わないため"}]
+PASS  Context removal has ordinary-language explanation
+PASS  Context clear restores broader original set
+PASS  Context implementation has no durable/URL/analytics/private-state primitive
+PASS  Context implementation contains no inferred stereotype vocabulary
+PASS  Featured day 0 shows new-to-shelf badge
+PASS  Featured day 6 shows new-to-shelf badge
+PASS  Featured day 7 hides badge but item persists
+PASS  Featured future date fails closed
+PASS  Featured invalid date fails closed
+PASS  Featured duplicate slot fails closed
+PASS  Featured has no weekly replacement or random churn primitive
+PASS  video click-to-load fixture validates
+PASS  video native ratio token preserves non-16:9 source shape
+PASS  video embed rejects autoplay query
+PASS  video passive load/autoplay fails closed
+PASS  video first paint creates no third-party player
+PASS  video player is created only after explicit activation
+PASS  video native ratio is carried to player attributes
+PASS  video official-link fallback works
+PASS  Daily lineup 0 is truthful
+PASS  Daily lineup is finite and deterministic
+PASS  Daily lineup stale/ineligible item fails closed
+PASS  Daily lineup never randomizes or force-fills
+PASS  live runtime remains exactly one eligible work per shelf — [{"shelfId":"hajimu","visibleEligibleCount":1,"collectionCount":1,"collectionAvailable":false,"worksReady":1,"videoReady":0,"duplicateIdCount":0,"duplicateCanonicalCount":0,"normalizedCategoryDistribution":{"Exhibition":1},"sourceConcentration":{"www.teamlab.art":1},"releaseContentReady":false},{"shelfId":"atatamaru","visibleEligibleCount":1,"collectionCount":1,"collectionAvailable":false,"worksReady":1,"videoReady":0,"duplicateIdCount":0,"duplicateCanonicalCount":0,"normalizedCategoryDistribution":{"Activity":1},"sourceConcentration":{"art-play.or.jp":1},"releaseContentReady":false},{"shelfId":"hikareru","visibleEligibleCount":1,"collectionCount":1,"collectionAvailable":false,"worksReady":1,"videoReady":0,"duplicateIdCount":0,"duplicateCanonicalCount":0,"normalizedCategoryDistribution":{"Exhibition":1},"sourceConcentration":{"2121designsight.jp":1},"releaseContentReady":false},{"shelfId":"shizumu","visibleEligibleCount":1,"collectionCount":1,"collectionAvailable":false,"worksReady":1,"videoReady":0,"duplicateIdCount":0,"duplicateCanonicalCount":0,"normalizedCategoryDistribution":{"Place":1},"sourceConcentration":{"tokyoireikyoukai.or.jp":1},"releaseContentReady":false},{"shelfId":"zawatsuku","visibleEligibleCount":1,"collectionCount":1,"collectionAvailable":false,"worksReady":1,"videoReady":0,"duplicateIdCount":0,"duplicateCanonicalCount":0,"normalizedCategoryDistribution":{"Exhibition":1},"sourceConcentration":{"topmuseum.jp":1},"releaseContentReady":false},{"shelfId":"butsukaru","visibleEligibleCount":1,"collectionCount":1,"collectionAvailable":false,"worksReady":1,"videoReady":0,"duplicateIdCount":0,"duplicateCanonicalCount":0,"normalizedCategoryDistribution":{"Exhibition":1},"sourceConcentration":{"www.printing-museum.org":1},"releaseContentReady":false},{"shelfId":"miwohiku","visibleEligibleCount":1,"collectionCount":1,"collectionAvailable":false,"worksReady":1,"videoReady":0,"duplicateIdCount":0,"duplicateCanonicalCount":0,"normalizedCategoryDistribution":{"Place":1},"sourceConcentration":{"roppongi.bunkitsu.jp":1},"releaseContentReady":false},{"shelfId":"mada","visibleEligibleCount":1,"collectionCount":1,"collectionAvailable":false,"worksReady":1,"videoReady":0,"duplicateIdCount":0,"duplicateCanonicalCount":0,"normalizedCategoryDistribution":{"Place":1},"sourceConcentration":{"fng.or.jp":1},"releaseContentReady":false}]
+PASS  live editorial video readiness remains zero without approved records
+PASS  Release Content Gate truthfully remains not ready
+PASS  dedicated 3 works + 1 video fixture can pass Release Content Gate
+PASS  release validator reports category distribution and source concentration
+PASS  release validator detects duplicate canonical object
+PASS  release validator detects duplicate ID
+PASS  live S1B editorial packet is explicitly empty, not filler
+
+48/48 PASS
+
+===== sprint03_interested.js =====
+PASS  empty -> valid empty payload
+PASS  empty -> save EXP_001 -> durable success
+PASS  savedAt is generated ISO-8601
+PASS  save EXP_001 again -> one record
+PASS  idempotent repeat preserves original savedAt
+PASS  save EXP_007 -> both exist
+PASS  reload/new store read -> persisted
+PASS  remove EXP_001 -> only EXP_007
+PASS  remove missing ID -> safe/idempotent
+PASS  transaction error -> no durable success
+PASS  transaction error retains previous durable data
+PASS  transaction abort -> no durable success
+PASS  transaction abort does not add record
+PASS  IndexedDB unavailable -> no durable-success claim
+PASS  malformed stored payload -> safe empty valid list
+PASS  persisted top-level allowlist exact
+PASS  persisted item allowlist exact
+PASS  prohibited private/Product fields absent — {"version":1,"items":[{"experienceId":"EXP_001","savedAt":"2026-08-25T16:15:08.580Z"},{"experienceId":"EXP_007","savedAt":"2026-08-25T16:15:08.581Z"}]}
+PASS  separate key; existing session object untouched
+PASS  UI waits for durable result before decision
+PASS  failed save explicitly remains unsaved
+PASS  failed remove explicitly retains saved UI
+PASS  saved and unsaved states are perceivable in concise text
+PASS  saved state exposed semantically
+PASS  existing Interested architecture is bound; no new saved screen
+PASS  rehydration loads session and interested key together
+PASS  keyboard accessible native button retained
+PASS  V3 database/store exact
+PASS  no local/session storage or cookies
+PASS  save/remove network and analytics = 0
+PASS  no geolocation/external AI
+
+31/31 PASS
+
+===== interested_retrieval_b.js =====
+PASS  savedAt newest first
+PASS  sort does not mutate durable order
+PASS  valid current approved record resolves actionable
+PASS  current Registry fields resolve for view
+PASS  Action Destination URL not exported to retrieval view model
+PASS  withdrawn/currently missing record fails closed
+PASS  rights-invalid record fails closed
+PASS  missing approved shelf relation fails closed
+PASS  missing primary Action Destination fails closed
+PASS  malformed saved record fails closed
+PASS  current EXP_007 resolves as actionable Outing
+PASS  current EXP_001 resolves quiet unavailable, not fabricated Outing
+PASS  stale EXP_007 resolves quiet unavailable
+PASS  runtime module loads after Registry and before app
+PASS  existing key unchanged
+PASS  existing schema remains version + items only
+PASS  zero saved items produce zero retrieval entry
+PASS  retrieval is a dialog layer, not a full-screen surface
+PASS  actionable items provide view and remove
+PASS  unavailable items provide no view action
+PASS  unavailable copy is quiet and fail closed
+PASS  view reconstructs current approved shelf/deck only
+PASS  external Action is not invoked from retrieval layer
+PASS  remove UI updates only after durable success
+PASS  modal focus is trapped and Escape closes
+PASS  modal restores opener focus
+PASS  background becomes inert while dialog is open
+PASS  layer CSS has bounded sheet/modal geometry
+PASS  retrieval adds no analytics/network sender
+PASS  retrieval adds no geolocation/external AI/login/cloud sync
+PASS  retrieval does not add URL/query/history routing
+PASS  retrieval model has no ranking/personalization/commercial fields
+PASS  saved identity is not added to analytics or URL
+PASS  private/Product fields remain absent from persisted schema
+
+34/34 PASS
+
+===== action_destination.js =====
+PASS  Action Destination type enum exact
+PASS  nextAction enum exact
+PASS  officiality enum exact
+PASS  A valid HTTPS destination resolves
+PASS  A valid HTTPS destination opens
+PASS  F new tab + noopener/noreferrer — {"url":"https://approved.example/path?slot=1","target":"_blank","features":"noopener,noreferrer"}
+PASS  B javascript URL rejected
+PASS  C data URL rejected
+PASS  file URL rejected
+PASS  D malformed URL rejected
+PASS  credentials in URL rejected
+PASS  invalid destination never opens/falls back
+PASS  E missing AD produces zero actions
+PASS  missing required field produces zero actions
+PASS  G Maps URL contains encoded destination
+PASS  H Maps URL contains NO origin
+PASS  Maps remains secondary to approved primary
+PASS  unapproved address creates no Maps action
+PASS  analytics-ready hook carries only non-private identifiers — {"experienceId":"E-APPROVED-01","actionType":"book","destinationClass":"official_booking"}
+PASS  J commercial/tracking fields are not part of normalized model
+PASS  I geolocation API usage = 0
+PASS  K analytics network = 0
+PASS  index loads Action Destination before app
+PASS  Detail/Discovery use approved actions and no prototype external stub remains
+
+24/24 PASS
+
+===== action_destination_runtime.js =====
+PASS  E missing AD resolves dead affordance 0 in runtime module
+PASS  current approved Detail renders primary + Maps only
+PASS  external request before explicit action = 0
+PASS  A current valid HTTPS destination opens in new context
+PASS  F opened page has no opener
+PASS  G/H Maps destination present and origin absent
+PASS  analytics-ready hook only emits allowed identifiers
+PASS  noreferrer on outbound requests — [{"url":"https://art-play.or.jp/ttm/info/","referer":""},{"url":"https://www.google.com/maps/dir/?api=1&destination=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E5%9B%9B%E8%B0%B74-20%20%E5%9B%9B%E8%B0%B7%E3%81%B2%E3%82%8D%E3%81%B0%E5%86%85","referer":""}]
+
+8/8 PASS
+
+===== security_accessibility_release_hardening.js =====
+PASS  V3 index has a route-local CSP
+PASS  V3 Legal pages have route-local CSP
+PASS  Product CSP blocks background connect requests
+PASS  Legal CSP blocks every script and frame
+PASS  Product CSP permits only two approved click-gated frame hosts
+PASS  CSP contains no unsafe-inline/eval/data script permission
+PASS  JSON-LD is covered by exact SHA-256 CSP hash — 8X2mc5T2LBpk/LtHnsbWoHj5bd0lTXAk8UVJcXYlmFY=
+PASS  runtime has no inline style attribute/property
+PASS  no HTML preconnect/prefetch/dns-prefetch
+PASS  no user-controlled HTML/eval/new Function/document.write primitive
+PASS  dynamic content uses textContent/DOM construction
+PASS  no hidden fetch/beacon/XHR/socket/event stream sender
+PASS  no geolocation/external AI/login/cloud sync primitive
+PASS  analytics remains destinationless and fail-closed
+PASS  active public Editorial records remain zero
+PASS  history state contains screen only and reuses current URL
+PASS  Action Destination enforces HTTPS/no credentials
+PASS  external windows use noopener/noreferrer
+PASS  approved embed host/path accepts clean YouTube privacy URL
+PASS  approved embed rejects query parameters
+PASS  approved embed rejects fragments
+PASS  approved embed rejects deceptive host and wrong path
+PASS  iframe is created only inside explicit activateVideo
+PASS  iframe receives title/referrer/sandbox/limited allow attributes
+PASS  session durable save reports transaction completion
+PASS  session transaction error never reports success
+PASS  session transaction abort never reports success
+PASS  IndexedDB unavailable never reports durable success
+PASS  session clear reports transaction completion
+PASS  session clear error never reports success
+PASS  session clear abort never reports success
+PASS  Plan waits for durable save before completion screen
+PASS  Plan failed save remains explicitly unsaved
+PASS  Plan remove waits for durable result and restores on failure
+PASS  Plan form exposes pending state
+PASS  Trace completion waits for durable save before success/event
+PASS  Trace failure remains explicitly unsaved
+PASS  Trace skip waits for durable state before event/navigation
+PASS  Debug clear never announces success before durable clear
+PASS  Interested durable contract remains exact
+PASS  skip links and main landmark exist on all public pages
+PASS  dynamic surfaces have accessible heading reference
+PASS  native semantic controls are used; dialog backdrop is the sole non-button click target
+PASS  icon-only controls have accessible names
+PASS  global visible focus contract exists
+PASS  dialog traps focus, Escape closes, and opener focus is restored
+PASS  dialog makes all page landmarks inert including Legal footer
+PASS  progress indicator exposes progressbar semantics
+PASS  Interested entry and close targets are >=44px
+PASS  legacy reachable Discovery controls are >=44px
+PASS  Legal links are discoverable 44px controls with visible focus inheritance
+PASS  current form controls have labels/legend/status channels
+PASS  external actions have text plus visible external indicator semantics
+PASS  reduced-motion globally disables animation/transition
+PASS  320/390/430 responsive gutters and bounded widths exist
+PASS  Legal mobile table reflows without forced 640px width
+PASS  DAY base text contrast >=4.5:1 — 14.35
+PASS  DAY muted text contrast >=4.5:1 — 4.58
+PASS  DAY primary button contrast >=4.5:1 — 16.04
+PASS  Japanese-only release has no language switch
+PASS  private-input verifier covers static and dynamic construction forms
+PASS  contenteditable selector string is not a private-input false positive
+PASS  no current file/photo/text input surface added
+PASS  no credential/secret literal in V3 runtime
+
+64/64 PASS
+
+===== a11y_responsive.js =====
+PASS  keyboard: Entrance → Plan までキーボードのみで到達
+PASS  keyboard: Plan 保存
+PASS  focus: :focus-visible に outline が定義されている  — .s1b-context-fit > summary:focus-visible, .s1b-context-field select:focus-visible, .s1b-video-activate:focus-visible, .s1b-official-link:focus-visible { outline: 3px solid var(--navy); outline-offset: 3px; } :focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; } #surface-title:focus, #surface-title:focus-visible, .view:focus { outline: none; } .interested-entry:hover, .interested-entry:focus-visible { border-bottom-color: var(--navy); } .m05-facet-input:focus-visible + label { outline: 2px solid var(--navy); outline-offset: 3px; } .detail-official-source-link:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 2px; } :focus-visible, .s1b-context-fit > summary:focus-visible, .s1b-context-field select:focus-visible, .s1b-video-activate:focus-visible, .s1b-official-link:focus-visible { outline: 2px solid var(--aqua-strong); outline-offset: 2px; } h1[tabindex="-1"]:focus, h1[tabindex="-1"]:focus-visible, h2[tabindex="-1"]:focus, h2[tabindex="-1"]:focus-visible, .view:focus, .view:focus-visible { outline: none; }
+PASS  button fallback: 詳細 / Interested は native button で操作可能  — 詳しく見る,気になる
+PASS  semantics: クリック可能な div / span を使っていない
+PASS  screen reader: live region / surface label / card label  — TOPコレクション 明日の食卓
+PASS  touch target: 高さ 44px 未満なし
+PASS  reduced motion: surface animation 停止 / finite navigation は動作  — none 0s
+PASS  responsive 320px: service MENU is reachable  — {"visible":true,"height":44,"expanded":"false"}
+PASS  responsive 320px: 横スクロールなし / body 15px / 最小 12px  — MENU
+PASS  responsive 375px: service MENU is reachable  — {"visible":true,"height":44,"expanded":"false"}
+PASS  responsive 375px: 横スクロールなし / body 15px / 最小 12px  — MENU
+PASS  responsive 390px: service MENU is reachable  — {"visible":true,"height":44,"expanded":"false"}
+PASS  responsive 390px: 横スクロールなし / body 15px / 最小 12px  — MENU
+PASS  responsive 430px: service MENU is reachable  — {"visible":true,"height":44,"expanded":"false"}
+PASS  responsive 430px: 横スクロールなし / body 15px / 最小 12px  — MENU
+PASS  responsive 768px: service MENU is reachable  — {"visible":true,"height":44,"expanded":"false"}
+PASS  responsive 768px: 横スクロールなし / body 16px / 最小 12px  — MENU
+PASS  responsive 941px: service MENU is reachable  — {"visible":true,"height":44,"expanded":"false"}
+PASS  responsive 941px: 横スクロールなし / body 16px / 最小 12px  — MENU
+PASS  responsive 1199px: service MENU is reachable  — {"visible":true,"height":44,"expanded":"false"}
+PASS  responsive 1199px: 横スクロールなし / body 16px / 最小 12px  — MENU
+PASS  responsive 1200px: service MENU is reachable  — {"visible":true,"height":44,"expanded":"false"}
+PASS  responsive 1200px: 横スクロールなし / body 16px / 最小 12.5px  — この端末に保存した記録は
+PASS  responsive 1536px: service MENU is reachable  — {"visible":true,"height":44,"expanded":"false"}
+PASS  responsive 1536px: 横スクロールなし / body 16px / 最小 12.5px  — この端末に保存した記録は
+
+26/26 PASS
+
+9/9 suites PASS; 332 assertions PASS, 0 FAIL

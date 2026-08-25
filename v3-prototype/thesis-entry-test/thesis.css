@@ -1,0 +1,439 @@
+/* =============================================================================
+ * V3 PRODUCT THESIS ENTRY TEST 01 — prototype 専用 layout
+ * -----------------------------------------------------------------------------
+ * v3.css / visual-system-v1.css の token と component をそのまま使い、
+ * ここでは「入口構造の違い」を出すための layout だけを足す。
+ * 3案で card / typography / color / spacing の品質差を作らない。
+ * ========================================================================== */
+
+/* ------------------------------------------------------------- 検証用の外枠 */
+
+.thesis-bar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 10px 16px;
+  background: var(--navy);
+  color: #ffffff;
+}
+
+.thesis-bar-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+.thesis-bar-tag {
+  padding: 3px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  font-size: 11px;
+}
+
+.thesis-bar-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.thesis-bar-button {
+  min-height: 44px;
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  background: transparent;
+  color: #ffffff;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.thesis-bar-button.is-active {
+  background: #ffffff;
+  color: var(--navy);
+  border-color: #ffffff;
+}
+
+.thesis-bar-note {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.thesis-header {
+  justify-content: flex-start;
+}
+
+.thesis-footer {
+  margin-top: 40px;
+  padding: 20px 16px 32px;
+  border-top: 1px solid var(--border-color);
+  background: var(--surface-subtle);
+}
+
+.thesis-footer p {
+  margin: 0 auto 4px;
+  max-width: 1120px;
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--slate);
+}
+
+/* ------------------------------------------------------- 共通 surface / card */
+
+.thesis-surface {
+  width: min(100%, 1120px);
+  max-width: 1120px;
+  margin-inline: auto;
+}
+
+.thesis-back {
+  min-height: 44px;
+  margin-bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--slate);
+}
+
+.thesis-back svg {
+  width: 18px;
+  height: 18px;
+}
+
+.thesis-type-label {
+  margin: 0 0 4px;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--slate);
+}
+
+.thesis-visual {
+  margin: 0;
+}
+
+.thesis-visual-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-image);
+  object-fit: cover;
+}
+
+.thesis-visual--grid .thesis-visual-image,
+.thesis-visual--card .thesis-visual-image {
+  aspect-ratio: 3 / 2;
+}
+
+.thesis-visual--one .thesis-visual-image {
+  aspect-ratio: 4 / 3;
+}
+
+.thesis-visual-note {
+  margin-top: 6px;
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--slate);
+  text-align: center;
+}
+
+.thesis-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  background: var(--card);
+  overflow: hidden;
+}
+
+.thesis-card .thesis-visual-image {
+  border-radius: 0;
+}
+
+.thesis-card-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 14px 16px 16px;
+}
+
+.thesis-card-title {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.thesis-card-summary {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--slate);
+  overflow-wrap: anywhere;
+}
+
+.thesis-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+.thesis-card-actions .btn,
+.thesis-detail-actions .btn,
+.thesis-c-actions .btn,
+.thesis-c-peek-action .btn {
+  min-height: 44px;
+}
+
+.thesis-mark[aria-pressed="true"] {
+  color: var(--saved);
+  border-color: var(--saved);
+}
+
+.thesis-mark svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* --------------------------------------------------------- A｜CONTROL 固有 */
+
+.thesis-control-home .entrance-routes {
+  margin-top: 14px;
+}
+
+.thesis-control-shelves .emotion-intro {
+  margin-bottom: 18px;
+}
+
+/* ------------------------------------------------------- B｜ITEM-FIRST 固有 */
+
+.thesis-b-intro {
+  margin-bottom: 14px;
+}
+
+.thesis-b-lede {
+  margin: 6px 0 0;
+  color: var(--slate);
+}
+
+.thesis-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.thesis-chip {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.thesis-chip.is-active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #ffffff;
+}
+
+.thesis-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 390px) {
+  .thesis-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .thesis-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+/* --------------------------------------------------------- C｜ONE-ITEM 固有 */
+
+.thesis-one-item {
+  max-width: 620px;
+  text-align: left;
+}
+
+.thesis-c-eyebrow {
+  margin-bottom: 10px;
+}
+
+.thesis-c-stage {
+  margin-bottom: 14px;
+}
+
+.thesis-c-title {
+  margin: 0 0 10px;
+}
+
+.thesis-c-hook {
+  margin: 0 0 16px;
+  color: var(--ink);
+}
+
+.thesis-c-peek-action,
+.thesis-c-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
+.thesis-c-peek {
+  margin: 0 0 16px;
+}
+
+.thesis-c-position {
+  margin: 0;
+  color: var(--slate);
+}
+
+/* ------------------------------------------------------------ 共通 Detail 面 */
+
+.thesis-detail-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 900px) {
+  .thesis-detail-hero {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 28px;
+    align-items: start;
+  }
+}
+
+.thesis-detail-title {
+  margin: 0 0 10px;
+}
+
+.thesis-detail-summary-text {
+  margin: 4px 0 0;
+}
+
+.thesis-detail-block {
+  margin-bottom: 22px;
+  padding: 16px 18px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  background: var(--card);
+}
+
+.thesis-truth-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 0 0;
+}
+
+.thesis-truth-list > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.thesis-truth-list dt {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--slate);
+}
+
+.thesis-truth-list dd {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.thesis-relation {
+  background: var(--surface-subtle);
+}
+
+.thesis-relation-shelf {
+  margin: 0 0 6px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--aqua-strong);
+}
+
+.thesis-relation-why {
+  margin: 8px 0 0;
+}
+
+.thesis-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ------------------------------------------------------------ 棚の一覧（共通） */
+
+.thesis-shelf-lens {
+  margin: 10px 0 6px;
+}
+
+.thesis-shelf-count {
+  margin: 0 0 18px;
+  color: var(--slate);
+}
+
+.thesis-shelf-items {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 900px) {
+  .thesis-shelf-items {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thesis-surface {
+    animation: none !important;
+  }
+}
