@@ -1,0 +1,19 @@
+PASS  B: category-neutral headline — 何か、気になるものを。
+PASS  B: states only categories present in the pool — いまは、展示・場所・体験の8件を置いています。
+PASS  B: does not promise absent categories (本/映画/音楽) — ["すべて","展示","場所","体験"]
+PASS  B: EXP_007 is the first visible object — EXP_007,EXP_101,EXP_102,EXP_103,EXP_104,EXP_105,EXP_106,EXP_107
+PASS  B: same 8 items, deterministic order — EXP_007,EXP_101,EXP_102,EXP_103,EXP_104,EXP_105,EXP_106,EXP_107
+PASS  C: EXP_007 is the fixed first anchor — 新宿御苑
+PASS  C: anchor uses the REAL_READY photo (no fallback caption) — ./assets/real-experience/EXP_007_shinjuku_gyoen_official_landscape-1440.webp
+PASS  C: small action renamed to ordinary Japanese — もう少し見る
+PASS  C: no time/preview promise in the CTA — もう少し見る
+PASS  C: fixed-order position shown — 1 / 8（固定順）
+PASS  C: expansion shows approved static Practical Truth only — 場所,時間,アクセス
+PASS  C: 次を見る advances in fixed order — チームラボボーダレス / 2 / 8（固定順）
+PASS  A: Control home copy unchanged — 感情の先に、世界がある / 本、映画、音楽、体験。8つの感情から新たな出会いを。
+PASS  A: EXP_007 not artificially injected into the Control entry
+PASS  Detail identical for A/B/C (same object) — ["訪れる前にわかること","なぜ、この棚に？"] | 感情書店では「まだ名前がない」の棚に置いています
+PASS  no storage / GA4 / iframe after full interaction — {"ls":0,"ss":0,"store":"undefined","gtag":"undefined","dataLayer":"undefined","iframes":0}
+PASS  JS errors = 0
+
+17/17 PASS

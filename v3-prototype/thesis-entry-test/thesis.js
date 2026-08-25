@@ -146,6 +146,21 @@
 
   var POOL = buildPool();
 
+  /* HQ LIMITED FIX 3 — visual confound reduction（実験専用の並び）。
+     現行 pool の大半が category 図版 fallback のため、Item-first / One-item の
+     Thesis が「実写がない」という理由だけで不利にならないよう、rights 上安全な
+     唯一の REAL_READY object（EXP_007）を B / C の先頭 anchor に固定する。
+     - TEST-ONLY: registry の順序も Production の順序も変更していない。
+     - 決定的な固定順のみ。random / popularity / personalization は無い。
+     - A（Control）はこの並びを使わない（EXP_007 を人為的に挿入しない）。 */
+  var TEST_ANCHOR_ID = 'EXP_007';
+
+  function testOrderedPool() {
+    var anchor = POOL.filter(function (item) { return item.id === TEST_ANCHOR_ID; });
+    var rest = POOL.filter(function (item) { return item.id !== TEST_ANCHOR_ID; });
+    return anchor.concat(rest);
+  }
+
   function itemById(id) {
     return POOL.filter(function (item) { return item.id === id; })[0] || null;
   }
@@ -430,10 +445,15 @@
      感情との関係は Detail に入ってから初めて提示する。 */
 
   function surfaceItemFirst() {
+    var ordered = testOrderedPool();
     var groups = CATEGORY_GROUPS.filter(function (group) {
       return POOL.some(function (item) { return categoryGroup(item) === group; });
     });
-    var visible = POOL.filter(function (item) {
+    /* HQ LIMITED FIX 1 — pool に無い category を約束しない。
+       見出しは category 中立にし、実在する category だけをその場で明示する。
+       文言は pool から機械的に組み立てるので、pool が変われば表示も追随する。 */
+    var presentLabels = groups.map(function (group) { return group.label; });
+    var visible = ordered.filter(function (item) {
       if (state.category === 'all') return true;
       var group = categoryGroup(item);
       return Boolean(group && group.id === state.category);
@@ -457,9 +477,12 @@
       h('div', { class: 'thesis-b-intro' }, [
         h('h1', {
           class: 'display display-sm', tabindex: '-1', id: 'surface-title',
-          text: '本、映画、音楽、体験。'
+          text: '何か、気になるものを。'
         }),
-        h('p', { class: 'body-lg thesis-b-lede', text: '気になるものを見つける場所です。' })
+        h('p', {
+          class: 'body-lg thesis-b-lede',
+          text: 'いまは、' + presentLabels.join('・') + 'の' + POOL.length + '件を置いています。'
+        })
       ]),
       h('div', { class: 'thesis-chip-row', role: 'group', 'aria-label': '種類で絞り込む' },
         [chip('all', 'すべて')].concat(groups.map(function (group) {
@@ -489,7 +512,8 @@
      「次を見る」は POOL の固定順のみ。random / engagement 最適化は無い。 */
 
   function surfaceOneItem() {
-    var item = POOL[state.oneIndex];
+    var ordered = testOrderedPool();
+    var item = ordered[state.oneIndex];
     if (!item) return h('section', { class: 'surface thesis-surface' }, []);
     var nodes = [
       h('p', { class: 'eyebrow thesis-c-eyebrow', text: '今日は、これ。' }),
@@ -515,10 +539,13 @@
         })));
     } else {
       nodes.push(h('div', { class: 'actions thesis-c-peek-action' }, [
+        /* HQ LIMITED FIX 2 — 実際の動作は承認済み静的データを開くだけなので、
+           試聴・予告編のような体験を約束しない普通の日本語に改める。
+           外部通信・media・API は追加していない。 */
         h('button', {
           class: 'btn btn-line thesis-c-peek-open', type: 'button',
           onclick: function () { state.peeked = true; render(); }
-        }, [h('span', { text: '30秒だけ見る' })])
+        }, [h('span', { text: 'もう少し見る' })])
       ]));
     }
     nodes.push(h('div', { class: 'actions thesis-c-actions' }, [
@@ -527,7 +554,7 @@
       h('button', {
         class: 'btn btn-text thesis-c-next', type: 'button',
         onclick: function () {
-          state.oneIndex = (state.oneIndex + 1) % POOL.length;
+          state.oneIndex = (state.oneIndex + 1) % ordered.length;
           state.peeked = false;
           render();
           announce('次の一件を表示しました。');
@@ -536,7 +563,7 @@
     ]));
     nodes.push(h('p', {
       class: 'note thesis-c-position',
-      text: (state.oneIndex + 1) + ' / ' + POOL.length + '（固定順）'
+      text: (state.oneIndex + 1) + ' / ' + ordered.length + '（固定順）'
     }));
     return h('section', {
       class: 'surface thesis-surface thesis-one-item',

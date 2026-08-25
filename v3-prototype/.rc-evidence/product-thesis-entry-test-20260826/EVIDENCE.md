@@ -24,7 +24,7 @@
 - **Detail**: 3案で同一の surface（同一構造・同一情報・同一 Editorial relation 表示）。
 - **並び順**: 固定順のみ。random / ranking / personalization / recommendation logic は実装していない。
 
-pool（固定順）: EXP_101 チームラボボーダレス（展示・心が弾む）／EXP_102 東京おもちゃ美術館（体験・心があたたまる）／EXP_103 ザ・ペーパーログ：膜と核（展示・惹かれる）／EXP_104 東京都復興記念館（場所・沈む）／EXP_105 TOPコレクション 明日の食卓（展示・ざわつく）／EXP_106 80 GRAPHIC TRIALS（展示・ぶつかる）／EXP_107 文喫 六本木（場所・身を引く）／EXP_007 新宿御苑（場所・まだ名前がない）
+pool（registry 固定順）: EXP_101 チームラボボーダレス（展示・心が弾む）／EXP_102 東京おもちゃ美術館（体験・心があたたまる）／EXP_103 ザ・ペーパーログ：膜と核（展示・惹かれる）／EXP_104 東京都復興記念館（場所・沈む）／EXP_105 TOPコレクション 明日の食卓（展示・ざわつく）／EXP_106 80 GRAPHIC TRIALS（展示・ぶつかる）／EXP_107 文喫 六本木（場所・身を引く）／EXP_007 新宿御苑（場所・まだ名前がない）
 
 ## 3. 各 Variant の DOM / interaction
 
@@ -39,7 +39,7 @@ pool（固定順）: EXP_101 チームラボボーダレス（展示・心が弾
 
 ### B｜ITEM-FIRST DISCOVERY（実物から入る）
 - surface 順: `b-browse` → `detail` →（Detail 内）「〈感情〉の棚を見る」→ `shelf`
-- `b-browse` First View: `h1`「本、映画、音楽、体験。」＋`p`「気になるものを見つける場所です。」の直下に **実在コンテンツ 8 件の grid**（390px で 2 列 / 900px 以上で 3 列）
+- `b-browse` First View: `h1`「何か、気になるものを。」＋`p`「いまは、展示・場所・体験の8件を置いています。」の直下に **実在コンテンツ 8 件の grid**（390px で 2 列 / 900px 以上で 3 列）。見出しは category 中立で、pool に実在する category だけをその場で明示する（HQ LIMITED FIX 1）
 - 各カード: 実 visual → category label（展示 / 場所 / 体験）→ 対象名 → 公式一行要約 →「もっと知る」「気になる」
 - category chip: 承認済み語彙（本/映画/音楽/展示/場所/体験/イベント）のうち **pool に実在するものだけ**（現行は 展示・場所・体験）。session 内 UI 状態のみ
 - **First View に感情語は 1 つも出さない**。感情との関係は `detail` に入って初めて表示
@@ -48,8 +48,8 @@ pool（固定順）: EXP_101 チームラボボーダレス（展示・心が弾
 ### C｜ONE-ITEM（一個差し出す）
 - surface 順: `c-one` → `detail` →（Detail 内）同じ棚 → `shelf`／または `c-one` 上で「次を見る」
 - `c-one`: `.thesis-c-eyebrow`「今日は、これ。」→ 大きい実 visual → category label → 対象名 → **「何それ？」の一文＝公式情報にもとづく既存の一行要約**
-- 「30秒だけ見る」= その場で承認済み Practical Truth を最大3件展開するだけ（外部通信・遷移なし）
-- 「もっと知る」→ `detail`／「次を見る」→ pool の**固定順**で次の 1 件（`(i+1) % 8`）。random / engagement 最適化なし。現在地は「N / 8（固定順）」で明示
+- 「もう少し見る」= その場で承認済み Practical Truth を最大3件展開するだけ（外部通信・遷移なし）。試聴・予告編のような体験を約束しない普通の日本語にしている（HQ LIMITED FIX 2）
+- 「もっと知る」→ `detail`／「次を見る」→ **test 用固定順**で次の 1 件（`(i+1) % 8`）。random / engagement 最適化なし。現在地は「N / 8（固定順）」で明示
 - First View に一覧は出さない
 
 ### 共通 Detail（3案同一）
@@ -116,3 +116,71 @@ pool（固定順）: EXP_101 チームラボボーダレス（展示・心が弾
 
 - `origin/main` = `eca334f9671bee07833892b2476aac118f8ed018`（不変・未 merge・未 deploy）
 - commit 後 working tree clean
+
+
+---
+
+# ADDENDUM — HQ LIMITED FIX（experiment validity）
+
+- HQ review: TECHNICAL SAFETY = GO ／ EXPERIMENT VALIDITY = LIMITED FIX
+- 起点 HEAD: `81d866d5ccf7d246c785d733d309dc46c458deb6`（同一 branch 上で継続）
+- 再設計はしていない。既存 V3 Product ファイルは 1 件も触っていない。
+
+## 修正した 4 点
+
+### 1. Variant B の約束を pool の実態に合わせた
+- before: `h1`「本、映画、音楽、体験。」＋「気になるものを見つける場所です。」
+- after: `h1`「何か、気になるものを。」＋「いまは、展示・場所・体験の8件を置いています。」
+- 実在しない category（本 / 映画 / 音楽）を First View で約束しない。
+- 後半の一文は pool から機械的に生成しているため、pool が変われば表示も追随する（手書きの固定文言ではない）。
+- 8 件の中身は変更していない。
+
+### 2. Variant C の small action を実際の動作どおりにした
+- before:「30秒だけ見る」（実際には Practical Truth を開くだけで、試聴/予告編は存在しない）
+- after:「もう少し見る」
+- 展開内容は従来どおり承認済みの静的 Practical Truth のみ。新規 editorial copy・network・media・API はいずれも追加していない。
+- C の目的は ONE-ITEM-first 構造の検証であり、存在しない体験を装わない。
+
+### 3. Visual confound の低減（TEST-ONLY の並び）
+- 現行 pool の大半が category 図版 fallback のため、Item-first / One-item が「実写がないから」という理由で不利にならないようにする。
+- rights 上安全な唯一の REAL_READY object **EXP_007（新宿御苑）** を、
+  - Variant C の**固定 anchor（1件目）**
+  - Variant B の決定的テスト順における**先頭の可視 object**
+  にした。
+- 実装は `testOrderedPool()`（anchor を先頭に置くだけの決定的関数）。**registry の順序も Production の順序も変更していない**。random / popularity / personalization は無い。
+- **Variant A（Control）はこの並びを使わない。** EXP_007 を人為的に混ぜていないことをテストで確認済み。
+- pool の 8 件そのものは 3 案とも同一のまま。
+
+### 4. 共有 Detail は同一のまま
+- A / B / C から同一 object の Detail を開き、見出し・Editorial relation・Why・Practical Truth・Action の全署名が**完全一致**することを実測（variant 固有の優遇なし）。
+
+## 検証（`entry-test-limited-fix-check.txt` — 17/17 PASS）
+
+`thesis-entry-test/thesis_entry_test_check.js` として再実行可能な形で同梱。
+
+| 確認 | 実測 |
+| --- | --- |
+| B 見出しが category 中立 | 「何か、気になるものを。」 |
+| B が pool の category だけを明示 | 「いまは、展示・場所・体験の8件を置いています。」／chip = すべて・展示・場所・体験 |
+| B 先頭が EXP_007 | `EXP_007,EXP_101,EXP_102,EXP_103,EXP_104,EXP_105,EXP_106,EXP_107` |
+| C の anchor | 新宿御苑（`real-experience/EXP_007…webp`／fallback caption なし） |
+| C の small action 名 | 「もう少し見る」（秒数・試聴・予告の語なし） |
+| C の展開内容 | 承認済み Practical Truth 3 件のみ・追加 request 0 |
+| C の「次を見る」 | 2 / 8（固定順）→ チームラボボーダレス |
+| A の Control copy | 「感情の先に、世界がある」「本、映画、音楽、体験。8つの感情から新たな出会いを。」不変 |
+| A に EXP_007 の人為的挿入 | なし |
+| A/B/C の Detail 署名 | 完全一致 |
+| storage / GA4 / iframe / JS error | 0 / 0 / 0 / 0 |
+
+## Regression（既存 Product が無傷であること）
+
+| 検証 | 結果 |
+| --- | --- |
+| 権威 regression suite | 9/9 suites・332 assertions PASS・0 FAIL |
+| Shelf Abundance verifier | 115/115 PASS |
+| Music Action Bridge verifier | 33/33 PASS |
+| Browser QA（既存 index.html） | 17/17 PASS |
+| `node --check` / `git diff --check` | OK |
+
+`git diff 81d866d..HEAD` から prototype と evidence を除外すると**変更ファイル 0 件**（既存 Product ファイル未変更の機械的証明）。
+storage / GA4 / network / data model / registry / Privacy / Terms の差分は 0。
