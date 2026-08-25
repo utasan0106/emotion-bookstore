@@ -7,6 +7,7 @@
  *   2. C の small action が試聴・予告編を装っていない
  *   3. B / C の先頭が REAL_READY anchor（EXP_007）で、A は Control のまま
  *   4. Detail が A/B/C で同一
+ *   5. participant mode で実験用 chrome が 0 になり、Variant が固定されること
  * 併せて storage / GA4 / iframe / JS error が 0 であることを確認する。
  * ========================================================================== */
 const { chromium } = require('playwright');
@@ -137,6 +138,62 @@ function check(name, pass, detail = '') {
     storage.gtag === 'undefined' && storage.dataLayer === 'undefined' && storage.iframes === 0,
     JSON.stringify(storage));
   check('JS errors = 0', errors.length === 0, errors.join('|'));
+
+  /* --- participant mode: 実験用 chrome = 0 / Variant lock ------------------ */
+  const EXPERIMENT_STRINGS = [
+    '内部検証用', 'PRODUCT THESIS ENTRY TEST', 'CONTROL', 'ITEM-FIRST', 'ONE-ITEM',
+    '感情から入る', '実物から入る', '一個だけ差し出す',
+    'Product Thesis', 'prototype', 'Variant', 'A｜', 'B｜', 'C｜'
+  ];
+  const expectedEntry = { a: 'a-home', b: 'b-browse', c: 'c-one' };
+  const expectedMarker = { a: '感情の先に、世界がある', b: '何か、気になるものを。', c: '今日は、これ。' };
+
+  for (const v of ['a', 'b', 'c']) {
+    await page.goto(base + PAGE + `?v=${v}&participant=1`);
+    await page.waitForSelector('[data-thesis-surface]');
+    const p = await page.evaluate((strings) => {
+      const domText = (document.documentElement.textContent || '') + ' ' + document.title;
+      return {
+        surface: document.querySelector('[data-thesis-surface]').getAttribute('data-thesis-surface'),
+        leaked: strings.filter((word) => domText.includes(word)),
+        title: document.title,
+        bar: document.getElementById('thesisBar') === null ? 'removed' : 'present',
+        footer: document.querySelectorAll('.thesis-footer').length,
+        selectors: document.querySelectorAll('[data-variant], .thesis-bar-button').length,
+        headerTop: Math.round(document.querySelector('.site-header').getBoundingClientRect().top),
+        firstText: (document.getElementById('view').textContent || '').trim().slice(0, 24),
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        scrollY: window.scrollY
+      };
+    }, EXPERIMENT_STRINGS);
+    check(`participant ${v}: experiment wording in DOM/title = 0`, p.leaked.length === 0, p.leaked.join(','));
+    check(`participant ${v}: chrome removed from DOM (bar/footer)`,
+      p.bar === 'removed' && p.footer === 0, `${p.bar}/${p.footer}`);
+    check(`participant ${v}: no A/B/C selector control exists`, p.selectors === 0, String(p.selectors));
+    check(`participant ${v}: product header starts at the top (no spacer/gap)`,
+      p.headerTop === 0 && p.scrollY === 0, `top=${p.headerTop}`);
+    check(`participant ${v}: locked to the assigned variant`,
+      p.surface === expectedEntry[v] && p.firstText.length > 0, p.surface);
+    check(`participant ${v}: variant content unchanged`,
+      await page.evaluate((marker) => (document.getElementById('view').textContent || '').includes(marker),
+        expectedMarker[v]), expectedMarker[v]);
+    check(`participant ${v}: no horizontal overflow`, p.overflow <= 0, String(p.overflow));
+    check(`participant ${v}: product title only`, p.title === 'みんなの感情書店', p.title);
+  }
+
+  /* --- internal QA mode は従来どおり併存する ------------------------------- */
+  await page.goto(base + PAGE + '?v=b');
+  await page.waitForSelector('[data-thesis-surface="b-browse"]');
+  const qa = await page.evaluate(() => ({
+    bar: document.getElementById('thesisBar') ? 'present' : 'removed',
+    buttons: Array.from(document.querySelectorAll('.thesis-bar-button')).map(b => b.textContent.trim()),
+    footer: document.querySelectorAll('.thesis-footer').length
+  }));
+  check('internal QA mode still shows the A/B/C selector',
+    qa.bar === 'present' && qa.buttons.length === 3 && qa.footer === 1, qa.buttons.join(','));
+  await page.locator('.thesis-bar-button[data-variant="c"]').click();
+  await page.waitForSelector('[data-thesis-surface="c-one"]');
+  check('internal QA mode can still switch variants', true);
 
   await ctx.close(); await browser.close(); server.close();
   const passed = results.filter(Boolean).length;

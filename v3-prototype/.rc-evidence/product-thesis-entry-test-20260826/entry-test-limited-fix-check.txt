@@ -15,5 +15,31 @@ PASS  A: EXP_007 not artificially injected into the Control entry
 PASS  Detail identical for A/B/C (same object) — ["訪れる前にわかること","なぜ、この棚に？"] | 感情書店では「まだ名前がない」の棚に置いています
 PASS  no storage / GA4 / iframe after full interaction — {"ls":0,"ss":0,"store":"undefined","gtag":"undefined","dataLayer":"undefined","iframes":0}
 PASS  JS errors = 0
+PASS  participant a: experiment wording in DOM/title = 0
+PASS  participant a: chrome removed from DOM (bar/footer) — removed/0
+PASS  participant a: no A/B/C selector control exists — 0
+PASS  participant a: product header starts at the top (no spacer/gap) — top=0
+PASS  participant a: locked to the assigned variant — a-home
+PASS  participant a: variant content unchanged — 感情の先に、世界がある
+PASS  participant a: no horizontal overflow — 0
+PASS  participant a: product title only — みんなの感情書店
+PASS  participant b: experiment wording in DOM/title = 0
+PASS  participant b: chrome removed from DOM (bar/footer) — removed/0
+PASS  participant b: no A/B/C selector control exists — 0
+PASS  participant b: product header starts at the top (no spacer/gap) — top=0
+PASS  participant b: locked to the assigned variant — b-browse
+PASS  participant b: variant content unchanged — 何か、気になるものを。
+PASS  participant b: no horizontal overflow — 0
+PASS  participant b: product title only — みんなの感情書店
+PASS  participant c: experiment wording in DOM/title = 0
+PASS  participant c: chrome removed from DOM (bar/footer) — removed/0
+PASS  participant c: no A/B/C selector control exists — 0
+PASS  participant c: product header starts at the top (no spacer/gap) — top=0
+PASS  participant c: locked to the assigned variant — c-one
+PASS  participant c: variant content unchanged — 今日は、これ。
+PASS  participant c: no horizontal overflow — 0
+PASS  participant c: product title only — みんなの感情書店
+PASS  internal QA mode still shows the A/B/C selector — A｜CONTROL,B｜ITEM-FIRST,C｜ONE-ITEM
+PASS  internal QA mode can still switch variants
 
-17/17 PASS
+43/43 PASS

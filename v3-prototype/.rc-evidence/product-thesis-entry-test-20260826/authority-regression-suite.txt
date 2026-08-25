@@ -174,7 +174,7 @@ PASS  IndexedDB unavailable -> no durable-success claim
 PASS  malformed stored payload -> safe empty valid list
 PASS  persisted top-level allowlist exact
 PASS  persisted item allowlist exact
-PASS  prohibited private/Product fields absent — {"version":1,"items":[{"experienceId":"EXP_001","savedAt":"2026-08-25T16:30:37.194Z"},{"experienceId":"EXP_007","savedAt":"2026-08-25T16:30:37.195Z"}]}
+PASS  prohibited private/Product fields absent — {"version":1,"items":[{"experienceId":"EXP_001","savedAt":"2026-08-25T16:49:37.262Z"},{"experienceId":"EXP_007","savedAt":"2026-08-25T16:49:37.263Z"}]}
 PASS  separate key; existing session object untouched
 PASS  UI waits for durable result before decision
 PASS  failed save explicitly remains unsaved

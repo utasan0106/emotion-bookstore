@@ -169,6 +169,21 @@
     return POOL.filter(function (item) { return item.shelfId === shelfId; });
   }
 
+  /* ---------------------------------------------------------- participant mode */
+  /* HQ PARTICIPANT MODE FIX — observer 由来の実験汚染を消すためのモード。
+     `?participant=1` のとき、実験用 chrome（内部検証用の帯・A/B/C selector・
+     variant の説明文・prototype 注記）を DOM ごと取り除き、Variant を固定する。
+     A/B/C の内容・順序・copy・Detail・asset には一切触れない。
+     参加者は URL で割り当てられた 1 案だけを見る。 */
+  var PARTICIPANT = /[?&]participant=1(?:&|$)/.test(global.location.search || '');
+
+  function stripExperimentChrome() {
+    var bar = document.getElementById('thesisBar');
+    if (bar && bar.parentNode) bar.parentNode.removeChild(bar);
+    var footer = document.querySelector('.thesis-footer');
+    if (footer && footer.parentNode) footer.parentNode.removeChild(footer);
+  }
+
   /* --------------------------------------------------------------- UI state */
   /* すべて memory-only。reload で消える。端末には何も書かない。 */
   var state = {
@@ -600,7 +615,8 @@
   };
 
   function setVariant(variantId) {
-    if (!VARIANTS[variantId]) return;
+    /* participant mode では UI からの切替経路を持たない（Variant lock）。 */
+    if (PARTICIPANT || !VARIANTS[variantId]) return;
     state.variant = variantId;
     state.screen = 'entry';
     state.selectedId = null;
@@ -613,6 +629,7 @@
   }
 
   function renderSwitcher() {
+    if (PARTICIPANT) return;
     var bar = document.getElementById('thesisBar');
     if (!bar) return;
     bar.textContent = '';
@@ -654,6 +671,7 @@
   }
 
   state.variant = initialVariant();
+  if (PARTICIPANT) stripExperimentChrome();
   render();
 
   /* 検証用の read-only 参照。書き込み API は公開しない。 */

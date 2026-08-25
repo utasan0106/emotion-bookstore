@@ -184,3 +184,93 @@ pool（registry 固定順）: EXP_101 チームラボボーダレス（展示・
 
 `git diff 81d866d..HEAD` から prototype と evidence を除外すると**変更ファイル 0 件**（既存 Product ファイル未変更の機械的証明）。
 storage / GA4 / network / data model / registry / Privacy / Terms の差分は 0。
+
+
+---
+
+# ADDENDUM 2 — PARTICIPANT MODE FINAL FIX
+
+- HQ live visual certification: PRODUCT RENDERING = GO ／ HUMAN TEST VALIDITY = HOLD
+  （理由: 実験用 UI が参加者に見え、first viewport を実質的に占有していた）
+- 起点 HEAD: `2c5c86cc4e7fba3f2b1f4e761f9dd371d05c0df8`（同一 branch 上で継続）
+- 対象は **participant-mode の experiment chrome だけ**。A/B/C の内容・順序・copy・Detail・asset・
+  Product ファイルはいずれも変更していない。
+
+## 1. participant mode の追加
+
+`?v=a|b|c` に `&participant=1` を付けたときだけ有効。決定的・静的で、判定は URL のみ。
+
+participant mode で **DOM ごと除去**するもの:
+- 「内部検証用」／「PRODUCT THESIS ENTRY TEST 01」の帯（`#thesisBar` 要素そのものを削除）
+- A / B / C selector ボタン、CONTROL / ITEM-FIRST / ONE-ITEM のラベル
+- 「感情から入る（現行V3の入口を再現）」「実物から入る（感情はDetail以降）」「一個だけ差し出す（次を見るは固定順）」の説明文
+- prototype 注記の footer（`.thesis-footer` 要素を削除）
+- ブラウザ tab のタイトルも `みんなの感情書店` に切り替える（実験名を露出させない）
+
+一瞬の表示（flash）も残さないため、`<head>` の極小 bootstrap で `is-participant` を付けて CSS で先に落とし、
+その後 `thesis.js` が要素自体を DOM から取り除く二重構成にしている。
+
+## 2. Variant lock
+
+- participant mode では switcher を描画せず、`setVariant()` も participant 判定で即 return する。
+- したがって UI 上に切替経路が存在しない（`[data-variant]` / `.thesis-bar-button` の DOM 数 = 0 を実測）。
+- 参加者は URL で割り当てられた 1 案だけを見る。Variant の中身と挙動は不変。
+
+## 3. internal QA mode の併存
+
+`participant=1` が無い従来 URL では、A/B/C selector・説明文・footer はこれまでどおり表示され、切替も動作する
+（実測: selector 3 個・切替後に `c-one` へ遷移）。
+
+## 4. First view
+
+| 項目 | 実測（A / B / C とも同値） |
+| --- | --- |
+| `.site-header` の top 座標 | 0（人工的な spacer・gap なし） |
+| `body` の padding-top | 0px |
+| 初期 scrollY | 0（layout jump なし） |
+| 横スクロール | 0 |
+| Visual System | 既存のまま（v3.css / visual-system-v1.css） |
+
+## 5. 実験文言の露出 = 0
+
+`内部検証用 / PRODUCT THESIS ENTRY TEST / CONTROL / ITEM-FIRST / ONE-ITEM / 感情から入る / 実物から入る /
+一個だけ差し出す / Product Thesis / prototype / Variant / A｜ / B｜ / C｜` の 14 語について、
+participant mode の `documentElement.textContent` ＋ `document.title` を走査し **全て 0 件**を実測。
+
+なお、自動検証と運用確認のために `data-thesis-surface`（例: `a-home`）という **非表示の構造属性**だけは残している。
+これは Product 本体の `data-surface="01-entrance"` と同種の機械可読 hook で、画面上の文言としては一切現れない。
+不要であれば次の指示で外す。
+
+## 6. 検証（`entry-test-limited-fix-check.txt` — 43/43 PASS）
+
+既存 17 件（experiment validity）に participant mode の 26 件を追加。
+
+| 確認 | 実測（A / B / C） |
+| --- | --- |
+| 実験文言 DOM/title = 0 | 0 / 0 / 0 |
+| chrome の DOM 除去（bar / footer） | removed・0 |
+| A/B/C selector の存在 | 0 |
+| header top / scrollY | 0 / 0 |
+| 割当 Variant への固定 | `a-home` / `b-browse` / `c-one` |
+| Variant 内容の不変 | 「感情の先に、世界がある」／「何か、気になるものを。」／「今日は、これ。」 |
+| 横スクロール | 0 |
+| tab タイトル | みんなの感情書店 |
+| internal QA mode | selector 3 個・切替動作 OK |
+
+## 7. Regression
+
+| 検証 | 結果 |
+| --- | --- |
+| 権威 regression suite | 9/9 suites・332 assertions PASS・0 FAIL |
+| Shelf Abundance verifier | 115/115 PASS |
+| Music Action Bridge verifier | 33/33 PASS |
+| Browser QA（既存 index.html） | 17/17 PASS |
+| `node --check` / `git diff --check` | OK |
+
+prototype と evidence を除外した `git status` は**空**（既存 Product ファイル未変更の機械的証明）。
+registry / storage / GA4 / network / data model / Privacy / Terms の差分は 0。
+
+## 8. Screenshot（participant mode・390px）
+
+`m390-participant-a.png` / `m390-participant-b.png` / `m390-participant-c.png`（first viewport）
+`m390-participant-*-full.png`（全長）

@@ -6,6 +6,16 @@
   <meta name="robots" content="noindex, nofollow">
   <base href="../">
   <title>V3 PRODUCT THESIS ENTRY TEST 01（内部検証用）</title>
+  <script>
+    /* Participant mode: 実験用 chrome を first paint 前に消す。
+       参加者に見えるのは Product の通常面だけにする（chrome のみを対象とし、
+       A/B/C の内容・順序・copy には触れない）。 */
+    (function () {
+      if (!/[?&]participant=1(?:&|$)/.test(location.search)) return;
+      document.documentElement.className += ' is-participant';
+      document.title = 'みんなの感情書店';
+    })();
+  </script>
   <!-- 既存 V3 と同一の Visual language を使う。CSS は読むだけで変更しない。 -->
   <link rel="stylesheet" href="./css/v3.css">
   <link rel="stylesheet" href="./css/visual-system-v1.css">

@@ -7,6 +7,15 @@
  * ========================================================================== */
 
 /* ------------------------------------------------------------- 検証用の外枠 */
+/* participant mode では実験用 chrome を完全に消す。DOM からも thesis.js が
+   取り除くが、first paint での一瞬の表示も出さないため CSS でも落とす。
+   代わりの spacer は置かない（Product header がそのまま最上部に来る）。 */
+
+.is-participant .thesis-bar,
+.is-participant .thesis-footer {
+  display: none !important;
+}
+
 
 .thesis-bar {
   position: sticky;
