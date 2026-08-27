@@ -127,10 +127,20 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
   background: rgba(20,24,22,.84); color: #fff; cursor: pointer;
 }
 .detail-article { overflow: hidden; }
-.detail-count { position: absolute; z-index: 3; left: 20px; top: 14px; margin: 0; padding: 7px 9px; border-radius: 999px; background: rgba(20,24,22,.82); color: #fff; font-size: 10px; letter-spacing: .12em; }
-/* 詳細の media は First Pull ではなく証拠。全景を保ったまま高さだけ抑える。 */
-.detail-media { aspect-ratio: auto; height: min(46dvh, 420px); background: #ece5d8; }
-.detail-media img { object-fit: contain; object-position: center; }
+.detail-count { display: inline-block; margin: 16px 0 0 20px; padding: 6px 9px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,.72); color: var(--muted); font-size: 10px; letter-spacing: .12em; }
+/* 詳細の media は First Pull ではなく証拠。全景を保ったまま高さだけ抑える。
+   letterbox の帯を作らず、実寸比のまま紙面に置いた板として見せる。 */
+.detail-media {
+  aspect-ratio: auto; height: min(46dvh, 420px);
+  width: fit-content; max-width: calc(100% - 32px); margin: 18px auto 0;
+  background: transparent; overflow: visible;
+}
+.detail-media::after { box-shadow: none; }
+.detail-media img {
+  width: auto; max-width: 100%; height: 100%;
+  object-fit: contain; object-position: center;
+  border-radius: 6px; box-shadow: 0 10px 30px rgba(40,34,24,.14);
+}
 .detail-copy { padding: 30px clamp(20px, 5vw, 54px) 44px; }
 /* 既に読まれた Hook は小さく echo するだけ。大きくするのは未知の Reveal。 */
 .detail-hook-echo { margin: 0 0 14px; color: var(--muted); font-size: 13px; line-height: 1.6; letter-spacing: .02em; }
@@ -158,7 +168,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
   .hero { margin-top: 34px; margin-bottom: 38px; }
   .object-grid { grid-template-columns: 1fr; gap: 20px; }
   .object-hook { font-size: clamp(27px, 8vw, 38px); }
-  .detail-media { height: min(42dvh, 360px); }
+  .detail-media { height: min(42dvh, 360px); margin-top: 14px; max-width: calc(100% - 24px); }
 }
 
 @media (max-width: 430px) {
