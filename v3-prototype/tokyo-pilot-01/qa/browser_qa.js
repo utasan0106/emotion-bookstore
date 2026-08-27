@@ -184,6 +184,27 @@ function check(scope, name, pass, detail) {
       INTERNAL.filter(w => listText.includes(w)));
     check(S, 'list_no_objectname_in_dom', !/objectName/.test(listHtml));
 
+    // 目に見えるテキストだけでなく、読み上げに渡る文字列も検査する。
+    // alt / aria-label / title は「見えないから安全」ではない。
+    const a11yText = await page.evaluate(() => {
+      const out = [];
+      document.querySelectorAll('*').forEach(el => {
+        ['alt', 'aria-label', 'title', 'aria-description', 'placeholder'].forEach(attr => {
+          const v = el.getAttribute && el.getAttribute(attr);
+          if (v) out.push({ where: (el.className || el.tagName) + '@' + attr, text: v });
+        });
+      });
+      return out;
+    });
+    const a11yLeaks = a11yText.filter(x => SPOILERS.some(w => x.text.includes(w)));
+    check(S, 'list_a11y_text_no_spoiler', a11yLeaks.length === 0, a11yLeaks);
+    const a11yInternal = a11yText.filter(x => INTERNAL.some(w => x.text.includes(w)));
+    check(S, 'list_a11y_text_no_internal_term', a11yInternal.length === 0, a11yInternal);
+    // 一覧のすべての Real Media に、中身のある代替テキストがあること
+    const altCoverage = await page.$$eval('.object-card img',
+      els => els.map(i => (i.getAttribute('alt') || '').trim().length));
+    check(S, 'list_media_alt_present', altCoverage.length === 3 && altCoverage.every(n => n >= 8), altCoverage);
+
     // --- 6. ひらく が外部リンクに見えない --------------------------------
     const openBtn = await page.$$eval('.open-button', els => els.map(b => ({
       tag: b.tagName, text: b.textContent, href: b.getAttribute('href')
@@ -222,6 +243,9 @@ function check(scope, name, pass, detail) {
     check(S, 'dialog_no_internal_term', !INTERNAL.some(w => dlg.text.includes(w)),
       INTERNAL.filter(w => dlg.text.includes(w)));
     check(S, 'dialog_focus_inside', /dialog-close|detail|official/.test(String(dlg.focus)), dlg.focus);
+    const dlgAlt = await page.$eval('.detail-media img', i => (i.getAttribute('alt') || '').trim());
+    check(S, 'detail_media_alt_present', dlgAlt.length >= 8, dlgAlt);
+    check(S, 'detail_a11y_text_no_internal_term', !INTERNAL.some(w => dlgAlt.includes(w)), dlgAlt);
 
     const detailImg = await page.$eval('.detail-media img', i => ({
       w: i.naturalWidth, h: i.naturalHeight,

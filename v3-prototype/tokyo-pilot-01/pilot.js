@@ -76,7 +76,9 @@
   // 切ってよい端は content 側の mediaCrop が決める（'none' なら一切切らない）。
   // 棚は3件で終わる。Real Media が出ていないと Hook も成立しないので、
   // 3枚とも遅延させずに読む（lazy は3件では節約にならず、灰色の枠だけが残る）。
-  function media(object, className, eager) {
+  // 一覧では alt も Reveal の答えを名指ししない。読み上げ利用者だけが
+  // 先に答えを受け取ることのないようにする。
+  function media(object, className, eager, listContext) {
     return h('div', {
       class: 'media-frame ' + className,
       'data-crop': object.mediaCrop || 'none',
@@ -84,7 +86,7 @@
     }, [
       h('img', {
         src: object.mediaUrl,
-        alt: object.mediaAlt,
+        alt: listContext ? (object.cardMediaAlt || object.mediaAlt) : object.mediaAlt,
         width: object.mediaWidth,
         height: object.mediaHeight,
         loading: 'eager',
@@ -99,7 +101,7 @@
     var button;
     var article = h('article', { class: 'object-card', 'data-object-id': object.id }, [
       h('div', { class: 'card-number', text: String(index + 1).padStart(2, '0') + ' / 03' }),
-      media(object, 'card-media', index === 0),
+      media(object, 'card-media', index === 0, true),
       h('div', { class: 'card-body' }, [
         // 一覧では Real Media と Hook だけを出す。種別・地名は開いたあとの payoff 側に置く。
         h('h3', { class: 'object-hook', text: object.hook }),

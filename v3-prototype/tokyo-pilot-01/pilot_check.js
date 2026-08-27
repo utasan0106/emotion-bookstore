@@ -70,6 +70,13 @@ for (const object of (content && content.objects) || []) {
     failures.push(`${object.id} must declare integer mediaWidth/mediaHeight`);
   }
   if (!['none', 'bottom-safe'].includes(object.mediaCrop)) failures.push(`${object.id} must declare mediaCrop`);
+  // 一覧の alt は目で見える情報と等価にする。読み上げ利用者だけに答えを渡さない。
+  if (!object.cardMediaAlt) failures.push(`${object.id} must declare a non-spoiling cardMediaAlt`);
+  for (const spoiler of ['剥製', '標本']) {
+    if ((object.cardMediaAlt || '').includes(spoiler)) {
+      failures.push(`${object.id} cardMediaAlt leaks the Reveal answer: ${spoiler}`);
+    }
+  }
   if (!object.mediaCropNote) failures.push(`${object.id} must explain its crop policy`);
   if (object.mediaCrop !== 'none' && !/^\s*\S/.test(object.mediaCropNote || '')) {
     failures.push(`${object.id} non-none crop needs an explicit editorial reason`);
@@ -96,6 +103,7 @@ for (const forbidden of ['localStorage', 'sessionStorage', 'indexedDB', 'sendBea
 
 
 if (js.includes("class: 'object-name'")) failures.push('pre-open card must not render objectName (Reveal spoiler risk)');
+if (!js.includes('cardMediaAlt')) failures.push('card media must use the non-spoiling alt');
 if (js.includes("class: 'verified-note'")) failures.push('internal verifiedNote must not render in participant UI');
 if (/open-button[\s\S]{0,500}↗/.test(js)) failures.push('dialog open control must not look like an external link');
 

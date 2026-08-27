@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T09:47:07.537Z",
+  "generated_at": "2026-08-27T09:50:25.290Z",
   "viewports": [
     "320x800",
     "390x844",
@@ -7,7 +7,7 @@
     "1024x768",
     "1440x1000"
   ],
-  "total": 149,
+  "total": 174,
   "failed": 0,
   "verdict": "BROWSER_QA_GO",
   "results": [
@@ -162,6 +162,28 @@
     },
     {
       "scope": "m320",
+      "name": "list_a11y_text_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "list_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "list_media_alt_present",
+      "pass": true,
+      "detail": [
+        23,
+        20,
+        32
+      ]
+    },
+    {
+      "scope": "m320",
       "name": "open_control_is_button",
       "pass": true,
       "detail": [
@@ -229,6 +251,18 @@
       "name": "dialog_focus_inside",
       "pass": true,
       "detail": "dialog-close"
+    },
+    {
+      "scope": "m320",
+      "name": "detail_media_alt_present",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
+    },
+    {
+      "scope": "m320",
+      "name": "detail_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
     },
     {
       "scope": "m320",
@@ -450,6 +484,28 @@
     },
     {
       "scope": "m390",
+      "name": "list_a11y_text_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "list_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "list_media_alt_present",
+      "pass": true,
+      "detail": [
+        23,
+        20,
+        32
+      ]
+    },
+    {
+      "scope": "m390",
       "name": "open_control_is_button",
       "pass": true,
       "detail": [
@@ -517,6 +573,18 @@
       "name": "dialog_focus_inside",
       "pass": true,
       "detail": "dialog-close"
+    },
+    {
+      "scope": "m390",
+      "name": "detail_media_alt_present",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
+    },
+    {
+      "scope": "m390",
+      "name": "detail_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
     },
     {
       "scope": "m390",
@@ -738,6 +806,28 @@
     },
     {
       "scope": "m430",
+      "name": "list_a11y_text_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "list_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "list_media_alt_present",
+      "pass": true,
+      "detail": [
+        23,
+        20,
+        32
+      ]
+    },
+    {
+      "scope": "m430",
       "name": "open_control_is_button",
       "pass": true,
       "detail": [
@@ -805,6 +895,18 @@
       "name": "dialog_focus_inside",
       "pass": true,
       "detail": "dialog-close"
+    },
+    {
+      "scope": "m430",
+      "name": "detail_media_alt_present",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
+    },
+    {
+      "scope": "m430",
+      "name": "detail_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
     },
     {
       "scope": "m430",
@@ -1040,6 +1142,28 @@
     },
     {
       "scope": "d1024",
+      "name": "list_a11y_text_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "list_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "list_media_alt_present",
+      "pass": true,
+      "detail": [
+        23,
+        20,
+        32
+      ]
+    },
+    {
+      "scope": "d1024",
       "name": "open_control_is_button",
       "pass": true,
       "detail": [
@@ -1107,6 +1231,18 @@
       "name": "dialog_focus_inside",
       "pass": true,
       "detail": "dialog-close"
+    },
+    {
+      "scope": "d1024",
+      "name": "detail_media_alt_present",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
+    },
+    {
+      "scope": "d1024",
+      "name": "detail_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
     },
     {
       "scope": "d1024",
@@ -1342,6 +1478,28 @@
     },
     {
       "scope": "d1440",
+      "name": "list_a11y_text_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "list_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "list_media_alt_present",
+      "pass": true,
+      "detail": [
+        23,
+        20,
+        32
+      ]
+    },
+    {
+      "scope": "d1440",
       "name": "open_control_is_button",
       "pass": true,
       "detail": [
@@ -1409,6 +1567,18 @@
       "name": "dialog_focus_inside",
       "pass": true,
       "detail": "dialog-close"
+    },
+    {
+      "scope": "d1440",
+      "name": "detail_media_alt_present",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
+    },
+    {
+      "scope": "d1440",
+      "name": "detail_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
     },
     {
       "scope": "d1440",
