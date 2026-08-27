@@ -270,6 +270,9 @@ function check(scope, name, pass, detail) {
     check(S, 'dialog_no_internal_term', !INTERNAL.some(w => dlg.text.includes(w)),
       INTERNAL.filter(w => dlg.text.includes(w)));
     check(S, 'dialog_focus_inside', /dialog-close|detail|official/.test(String(dlg.focus)), dlg.focus);
+    // 開いたことは dialog 名（= Reveal）が伝える。status 側で重ねて読ませない。
+    const announced = await page.$eval('#live', el => el.textContent.trim());
+    check(S, 'open_is_not_announced_twice', announced === '', announced);
     const dlgAlt = await page.$eval('.detail-media img', i => (i.getAttribute('alt') || '').trim());
     check(S, 'detail_media_alt_present', dlgAlt.length >= 8, dlgAlt);
     check(S, 'detail_a11y_text_no_internal_term', !INTERNAL.some(w => dlgAlt.includes(w)), dlgAlt);
