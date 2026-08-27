@@ -63,17 +63,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
   font-weight: 500; line-height: 1.05; letter-spacing: -.035em;
 }
 .hero-line { display: inline; }
-.feature-chip {
-  width: fit-content; max-width: 100%; margin: 22px auto 0; padding: 10px 14px;
-  border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.52);
-  display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; justify-content: center;
-}
-.feature-chip span { font-size: 11px; color: var(--muted); }
-.feature-chip strong { font-size: 14px; font-weight: 650; }
-
 .objects-section { width: min(calc(100% - 28px), var(--max)); margin: 0 auto; }
-.section-heading { max-width: 680px; margin: 0 0 18px 4px; }
-.section-heading h2, .end-plate h2 {
+.end-plate h2 {
   margin: 0; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
   font-size: clamp(25px, 4vw, 39px); font-weight: 500; line-height: 1.4;
 }
@@ -172,10 +163,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
   .hero { width: calc(100% - 30px); margin-top: 24px; margin-bottom: 28px; text-align: left; }
   .hero h1 { font-size: clamp(42px, 12vw, 52px); }
   .hero-line { display: block; white-space: nowrap; }
-  .feature-chip { margin-left: 0; margin-top: 16px; justify-content: flex-start; border-radius: 15px; }
   .objects-section { width: calc(100% - 20px); }
-  .section-heading { margin-left: 5px; margin-right: 5px; }
-  .section-heading h2 { font-size: 24px; }
   .object-card { border-radius: 20px; }
   .card-body { padding: 17px 16px 18px; }
   .object-meta { font-size: 10px; }

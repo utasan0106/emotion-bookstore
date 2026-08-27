@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T09:22:43.648Z",
+  "generated_at": "2026-08-27T09:25:13.957Z",
   "viewports": [
     "320x800",
     "390x844",
@@ -7,7 +7,7 @@
     "1024x768",
     "1440x1000"
   ],
-  "total": 116,
+  "total": 126,
   "failed": 15,
   "verdict": "BROWSER_QA_FAIL",
   "results": [
@@ -74,10 +74,31 @@
           {
             "hook": "原稿執筆する人限定のカフェ。",
             "imgVisiblePx": 196,
-            "hookVisiblePx": 75
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
           }
-        ]
+        ],
+        "secondObjectPeekPx": 174
       }
+    },
+    {
+      "scope": "m320",
+      "name": "first_fold_open_affordance_visible",
+      "pass": true,
+      "detail": {
+        "hook": "原稿執筆する人限定のカフェ。",
+        "imgVisiblePx": 196,
+        "imgVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "first_fold_set_is_legible",
+      "pass": true,
+      "detail": 174
     },
     {
       "scope": "m320",
@@ -309,10 +330,31 @@
           {
             "hook": "原稿執筆する人限定のカフェ。",
             "imgVisiblePx": 242,
-            "hookVisiblePx": 86
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
           }
-        ]
+        ],
+        "secondObjectPeekPx": 150
       }
+    },
+    {
+      "scope": "m390",
+      "name": "first_fold_open_affordance_visible",
+      "pass": true,
+      "detail": {
+        "hook": "原稿執筆する人限定のカフェ。",
+        "imgVisiblePx": 242,
+        "imgVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "first_fold_set_is_legible",
+      "pass": true,
+      "detail": 150
     },
     {
       "scope": "m390",
@@ -544,10 +586,31 @@
           {
             "hook": "原稿執筆する人限定のカフェ。",
             "imgVisiblePx": 268,
-            "hookVisiblePx": 95
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
           }
-        ]
+        ],
+        "secondObjectPeekPx": 193
       }
+    },
+    {
+      "scope": "m430",
+      "name": "first_fold_open_affordance_visible",
+      "pass": true,
+      "detail": {
+        "hook": "原稿執筆する人限定のカフェ。",
+        "imgVisiblePx": 268,
+        "imgVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "first_fold_set_is_legible",
+      "pass": true,
+      "detail": 193
     },
     {
       "scope": "m430",
@@ -779,20 +842,45 @@
           {
             "hook": "原稿執筆する人限定のカフェ。",
             "imgVisiblePx": 254,
-            "hookVisiblePx": 73
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
           },
           {
             "hook": "渋谷のハチ公、本物は上野。",
             "imgVisiblePx": 239,
-            "hookVisiblePx": 73
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
           },
           {
             "hook": "8.8mのサナダムシ。",
             "imgVisiblePx": 239,
-            "hookVisiblePx": 37
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
           }
-        ]
+        ],
+        "secondObjectPeekPx": 239
       }
+    },
+    {
+      "scope": "d1024",
+      "name": "first_fold_open_affordance_visible",
+      "pass": true,
+      "detail": {
+        "hook": "原稿執筆する人限定のカフェ。",
+        "imgVisiblePx": 254,
+        "imgVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "first_fold_set_is_legible",
+      "pass": true,
+      "detail": 239
     },
     {
       "scope": "d1024",
@@ -1024,20 +1112,45 @@
           {
             "hook": "原稿執筆する人限定のカフェ。",
             "imgVisiblePx": 303,
-            "hookVisiblePx": 94
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
           },
           {
             "hook": "渋谷のハチ公、本物は上野。",
             "imgVisiblePx": 284,
-            "hookVisiblePx": 94
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
           },
           {
             "hook": "8.8mのサナダムシ。",
             "imgVisiblePx": 285,
-            "hookVisiblePx": 47
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
           }
-        ]
+        ],
+        "secondObjectPeekPx": 284
       }
+    },
+    {
+      "scope": "d1440",
+      "name": "first_fold_open_affordance_visible",
+      "pass": true,
+      "detail": {
+        "hook": "原稿執筆する人限定のカフェ。",
+        "imgVisiblePx": 303,
+        "imgVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "first_fold_set_is_legible",
+      "pass": true,
+      "detail": 284
     },
     {
       "scope": "d1440",

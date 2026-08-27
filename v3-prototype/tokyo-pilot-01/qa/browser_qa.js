@@ -92,6 +92,7 @@ function check(scope, name, pass, detail) {
     await page.waitForFunction(() => Array.from(document.images).every(i => i.complete));
 
     const S = vp.name;
+    const VP_IS_MOBILE = vp.mobile;
 
     // --- 1. Real Media が実際にデコードされている -----------------------
     const imgs = await page.$$eval('.object-card img', els => els.map(i => ({
@@ -114,20 +115,36 @@ function check(scope, name, pass, detail) {
     const firstFold = await page.evaluate(() => {
       const vh = window.innerHeight;
       const seen = [];
+      const vis = r => Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0));
       document.querySelectorAll('.object-card').forEach(card => {
         const img = card.querySelector('img');
         const hook = card.querySelector('.object-hook');
-        const ir = img.getBoundingClientRect(), hr = hook.getBoundingClientRect();
+        const btn = card.querySelector('.open-button');
+        const ir = img.getBoundingClientRect(), hr = hook.getBoundingClientRect(), br = btn.getBoundingClientRect();
         // 画像は縦の 1/3 以上、Hook は 1 行以上が fold 内に入っていること
-        const imgVis = Math.max(0, Math.min(ir.bottom, vh) - Math.max(ir.top, 0));
-        const hookVis = Math.max(0, Math.min(hr.bottom, vh) - Math.max(hr.top, 0));
-        if (imgVis >= ir.height / 3 && hookVis >= Math.min(hr.height, 20)) {
-          seen.push({ hook: hook.textContent, imgVisiblePx: Math.round(imgVis), hookVisiblePx: Math.round(hookVis) });
+        if (vis(ir) >= ir.height / 3 && vis(hr) >= Math.min(hr.height, 20)) {
+          seen.push({
+            hook: hook.textContent,
+            imgVisiblePx: Math.round(vis(ir)),
+            imgVisibleRatio: Number((vis(ir) / ir.height).toFixed(2)),
+            hookFullyVisible: vis(hr) >= hr.height - 1,
+            openAffordanceVisible: vis(br) >= br.height - 1
+          });
         }
       });
-      return { vh, seen };
+      // 「次がある」ことが 1 画面目でわかるか（2件目の media が少しでも見えているか）
+      const cards = document.querySelectorAll('.object-card');
+      const secondPeek = cards[1] ? Math.round(vis(cards[1].querySelector('img').getBoundingClientRect())) : 0;
+      return { vh, seen, secondObjectPeekPx: secondPeek };
     });
     check(S, 'first_fold_has_media_and_hook', firstFold.seen.length >= 1, firstFold);
+    // First Pull: 1 件目の Hook 全文と「ひらく」が、スクロールなしで見えていること
+    check(S, 'first_fold_open_affordance_visible',
+      firstFold.seen.length >= 1 && firstFold.seen[0].hookFullyVisible && firstFold.seen[0].openAffordanceVisible,
+      firstFold.seen[0] || null);
+    // 有限な棚であることが 1 画面目で伝わるか（2 件目の存在が見えている）
+    check(S, 'first_fold_set_is_legible', firstFold.secondObjectPeekPx > 0 || !VP_IS_MOBILE,
+      firstFold.secondObjectPeekPx);
 
     // --- 4. 横スクロール 0 ----------------------------------------------
     const overflow = await page.evaluate(() => {
