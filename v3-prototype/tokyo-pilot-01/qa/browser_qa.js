@@ -71,9 +71,13 @@ function check(scope, name, pass, detail) {
     });
     const page = await ctx.newPage();
 
-    // --- 外部通信・計測の監視 -------------------------------------------
+    // --- 外部通信・計測・エラーの監視 -------------------------------------
     const requests = [];
+    const consoleErrors = [];
+    const pageErrors = [];
     page.on('request', r => requests.push(r.url()));
+    page.on('console', m => { if (m.type() === 'error') consoleErrors.push(m.text()); });
+    page.on('pageerror', e => pageErrors.push(String(e && e.message || e)));
     await page.addInitScript(() => {
       window.__violations = [];
       const flag = k => window.__violations.push(k);
@@ -222,6 +226,12 @@ function check(scope, name, pass, detail) {
       els => els.map(i => (i.getAttribute('alt') || '').trim().length));
     check(S, 'list_media_alt_present', altCoverage.length === 3 && altCoverage.every(n => n >= 8), altCoverage);
 
+    // 読み上げの live region は1つだけ。一覧は読み込み時に描かれるだけなので
+    // live にしない（初回に3件ぶん読み上げられてしまう）。
+    const liveRegions = await page.$$eval('[aria-live], [role="status"], [role="alert"]',
+      els => els.map(e => ({ id: e.id, role: e.getAttribute('role'), live: e.getAttribute('aria-live') })));
+    check(S, 'single_live_region', liveRegions.length === 1 && liveRegions[0].id === 'live', liveRegions);
+
     // --- 6. ひらく が外部リンクに見えない --------------------------------
     const openBtn = await page.$$eval('.open-button', els => els.map(b => ({
       tag: b.tagName, text: b.textContent, href: b.getAttribute('href')
@@ -367,6 +377,9 @@ function check(scope, name, pass, detail) {
     check(S, 'no_fetch_xhr_beacon', storage.violations.length === 0, storage.violations);
     const external = requests.filter(u => !u.startsWith(base) && !u.startsWith('data:'));
     check(S, 'no_external_request', external.length === 0, external);
+    // 一連の操作を通して JS エラーが出ていないこと（出ると Loop が黙って壊れる）
+    check(S, 'no_page_error', pageErrors.length === 0, pageErrors);
+    check(S, 'no_console_error', consoleErrors.length === 0, consoleErrors);
 
     if (WANT_SHOTS) {
       // fullPage capture は大きい画像を取りこぼすことがあり、参加者が見る絵と一致しない。
