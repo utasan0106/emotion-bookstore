@@ -29,7 +29,18 @@ Use the participant's natural device when possible. Smartphone is preferred beca
 
 ## Precondition — STOP if any fails
 
-Run these three commands. All must pass on the exact commit the participants will see.
+Run this on the exact commit the participants will see. It runs all three checks,
+prints one GO / NO-GO, shows how much life each dated fact has left, and restates
+the one precondition it cannot check for you.
+
+```bash
+NODE_PATH=/opt/node22/lib/node_modules node qa/cycle_gate.js <配信URL>
+```
+
+Pass the delivery URL and it also prints the 18 participant URLs with the order
+assignment already applied, matching `HUMAN_TEST_SCORECARD.csv`.
+
+Individually, if you need to:
 
 ```bash
 node pilot_check.js --external-cycle   # → PILOT_CHECK_GO

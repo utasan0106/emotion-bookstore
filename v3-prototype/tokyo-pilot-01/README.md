@@ -26,8 +26,17 @@
 
 ## 検証
 
+外部サイクル直前は、これ1本でよい。3つの検査をまとめて回し、
+期限の残りと、機械で確認できない前提条件を必ず表示する。
+
+    NODE_PATH=/opt/node22/lib/node_modules node qa/cycle_gate.js [配信URL]
+
+配信URL を渡すと、参加者 18 名分の URL（順序割り当て済み）も出る。
+
+個別に回す場合:
+
     node pilot_check.js                    # 静的契約（開発中はこちら）
-    node pilot_check.js --external-cycle   # 外部サイクル直前の gate（期限切れは FAIL）
+    node pilot_check.js --external-cycle   # 期限切れを FAIL にする
     python media_validate.py               # 実バイト / 寸法 / SHA-256 と証跡の一致
     NODE_PATH=/opt/node22/lib/node_modules node qa/browser_qa.js [--shots]
 
