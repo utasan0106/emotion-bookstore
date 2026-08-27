@@ -60,6 +60,30 @@ for (const object of (content && content.objects) || []) {
   ids.add(object.id);
   if (Array.from(object.hook || '').length > 28) failures.push(`${object.id} hook too long (>28 chars)`);
   if (Array.from(object.reveal || '').length > 60) failures.push(`${object.id} reveal too long (>60 chars)`);
+  // Hook をそのまま言い直した Reveal は payoff にならない。
+  if (object.reveal && object.hook && object.reveal.includes(object.hook)) {
+    failures.push(`${object.id} reveal only repeats the hook`);
+  }
+  // 「行く前にわかること」は読み切れる量で、空欄が無いこと。
+  if (!Array.isArray(object.facts) || object.facts.length < 2 || object.facts.length > 5) {
+    failures.push(`${object.id} needs 2-5 fact rows, got ${(object.facts || []).length}`);
+  }
+  for (const row of object.facts || []) {
+    if (!Array.isArray(row) || row.length !== 2 || !String(row[0] || '').trim() || !String(row[1] || '').trim()) {
+      failures.push(`${object.id} has an incomplete fact row: ${JSON.stringify(row)}`);
+    } else if (Array.from(row[0]).length > 6) {
+      failures.push(`${object.id} fact label too long (>6 chars): ${row[0]}`);
+    } else if (Array.from(row[1]).length > 60) {
+      failures.push(`${object.id} fact value too long (>60 chars): ${row[1]}`);
+    }
+  }
+  // Official Action のラベルは、行き先が1行で分かる長さに収める。
+  if (Array.from(object.actionLabel || '').length > 22) {
+    failures.push(`${object.id} actionLabel too long (>22 chars)`);
+  }
+  // 参加者に出す代替テキストは、説明として成立する長さがあること。
+  if (Array.from(object.cardMediaAlt || '').length < 8) failures.push(`${object.id} cardMediaAlt too short`);
+  if (Array.from(object.mediaAlt || '').length < 8) failures.push(`${object.id} mediaAlt too short`);
   if (!/^https:\/\//.test(object.actionUrl || '')) failures.push(`${object.id} actionUrl must be https`);
   if (mediaPolicy === 'external-preview-only' && !/^https:\/\//.test(object.mediaUrl || '')) failures.push(`${object.id} external-preview mediaUrl must be https`);
   if (mediaPolicy === 'same-origin-localized' && !/^\.\/assets\//.test(object.mediaUrl || '')) failures.push(`${object.id} localized mediaUrl must be same-origin ./assets`);
