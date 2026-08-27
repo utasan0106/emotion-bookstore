@@ -65,6 +65,28 @@ for (const object of (content && content.objects) || []) {
   if (mediaPolicy === 'same-origin-localized' && !/^\.\/assets\//.test(object.mediaUrl || '')) failures.push(`${object.id} localized mediaUrl must be same-origin ./assets`);
   if (!/^https:\/\//.test(object.rightsUrl || '')) failures.push(`${object.id} rightsUrl must be https`);
   if (object.reverifyBeforeExternalCycle !== true) failures.push(`${object.id} must reverify before external cycle`);
+  // Real Media を frame の都合で切らないための宣言。
+  if (!Number.isInteger(object.mediaWidth) || !Number.isInteger(object.mediaHeight)) {
+    failures.push(`${object.id} must declare integer mediaWidth/mediaHeight`);
+  }
+  if (!['none', 'bottom-safe'].includes(object.mediaCrop)) failures.push(`${object.id} must declare mediaCrop`);
+  if (!object.mediaCropNote) failures.push(`${object.id} must explain its crop policy`);
+  if (object.mediaCrop !== 'none' && !/^\s*\S/.test(object.mediaCropNote || '')) {
+    failures.push(`${object.id} non-none crop needs an explicit editorial reason`);
+  }
+}
+
+// 宣言した寸法が実バイトの寸法（証跡）と一致していること。
+if (mediaPolicy === 'same-origin-localized' && fs.existsSync(path.join(root, 'MEDIA_LOCALIZATION_EVIDENCE.json'))) {
+  const ev = JSON.parse(fs.readFileSync(path.join(root, 'MEDIA_LOCALIZATION_EVIDENCE.json'), 'utf8'));
+  for (const object of (content && content.objects) || []) {
+    const rec = (ev.assets || []).find(a => a.id === object.id);
+    if (!rec) { failures.push(`${object.id} has no media evidence record`); continue; }
+    const [w, h] = rec.runtime_dimensions || [];
+    if (object.mediaWidth !== w || object.mediaHeight !== h) {
+      failures.push(`${object.id} declared media size ${object.mediaWidth}x${object.mediaHeight} != evidence ${w}x${h}`);
+    }
+  }
 }
 
 const js = fs.readFileSync(path.join(root, 'pilot.js'), 'utf8');
@@ -93,6 +115,19 @@ for (const bad of ['analytics.js', 'store.js', 'googletagmanager', 'google-analy
 const css = fs.readFileSync(path.join(root, 'pilot.css'), 'utf8');
 if (!css.includes('@media (max-width: 430px)')) failures.push('mobile breakpoint 430 missing');
 if (!css.includes('prefers-reduced-motion')) failures.push('reduced-motion handling missing');
+// frame の縦横比は media 自身の実寸から取る（固定 aspect-ratio に戻さない）。
+if (!/aspect-ratio:\s*var\(--media-w\)\s*\/\s*var\(--media-h\)/.test(css)) {
+  failures.push('media frame must derive its aspect ratio from the media itself');
+}
+if (/\.card-media\s*\{[^}]*aspect-ratio:\s*\d/.test(css)) failures.push('card media must not hardcode an aspect ratio');
+if (/\.detail-media\s*\{[^}]*aspect-ratio:\s*\d/.test(css)) failures.push('detail media must not hardcode an aspect ratio');
+if (!/\.detail-media img\s*\{[^}]*object-fit:\s*contain/.test(css)) {
+  failures.push('detail media must show the full frame (contain)');
+}
+// 一覧は Real Media と Hook だけ。種別・地名は開いたあとに置く。
+if (/class: 'object-meta'[\s\S]{0,200}class: 'object-hook'/.test(js)) {
+  failures.push('card must lead with the Hook, not with meta');
+}
 
 if (failures.length) {
   console.error('PILOT_CHECK_FAIL');

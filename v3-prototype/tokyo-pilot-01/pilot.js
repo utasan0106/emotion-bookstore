@@ -54,11 +54,19 @@
     return requested.split('').map(function (key) { return map[key]; });
   }
 
+  // frame は media 自身の縦横比を使う。Object の identity を crop で壊さないため、
+  // 切ってよい端は content 側の mediaCrop が決める（'none' なら一切切らない）。
   function media(object, className, eager) {
-    return h('div', { class: 'media-frame ' + className }, [
+    return h('div', {
+      class: 'media-frame ' + className,
+      'data-crop': object.mediaCrop || 'none',
+      style: '--media-w: ' + object.mediaWidth + '; --media-h: ' + object.mediaHeight
+    }, [
       h('img', {
         src: object.mediaUrl,
         alt: object.mediaAlt,
+        width: object.mediaWidth,
+        height: object.mediaHeight,
         loading: eager ? 'eager' : 'lazy',
         decoding: 'async',
         referrerpolicy: 'no-referrer'
@@ -72,7 +80,7 @@
       h('div', { class: 'card-number', text: String(index + 1).padStart(2, '0') + ' / 03' }),
       media(object, 'card-media', index === 0),
       h('div', { class: 'card-body' }, [
-        h('p', { class: 'object-meta', text: object.typeLabel + ' · ' + object.placeName }),
+        // 一覧では Real Media と Hook だけを出す。種別・地名は開いたあとの payoff 側に置く。
         h('h3', { class: 'object-hook', text: object.hook }),
         (button = h('button', {
           class: 'open-button', type: 'button',

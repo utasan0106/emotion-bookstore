@@ -38,7 +38,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
 .site-header {
   width: min(calc(100% - 36px), var(--max));
   margin: 0 auto;
-  padding: 20px 0 8px;
+  padding: 16px 0 6px;
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
 }
 .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
@@ -52,14 +52,14 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
 
 .hero {
   width: min(calc(100% - 36px), 900px);
-  margin: 42px auto 46px;
+  margin: 22px auto 20px;
   text-align: center;
 }
-.hero-kicker, .eyebrow { margin: 0 0 14px; color: var(--muted); font-size: 12px; letter-spacing: .13em; text-transform: uppercase; }
+.hero-kicker, .eyebrow { margin: 0 0 10px; color: var(--muted); font-size: 12px; letter-spacing: .13em; text-transform: uppercase; }
 .hero h1 {
   margin: 0;
   font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: clamp(44px, 7vw, 78px);
+  font-size: clamp(36px, 4.4vw, 58px);
   font-weight: 500; line-height: 1.05; letter-spacing: -.035em;
 }
 .hero-line { display: inline; }
@@ -68,29 +68,31 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
   margin: 0; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
   font-size: clamp(25px, 4vw, 39px); font-weight: 500; line-height: 1.4;
 }
-.object-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.object-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; gap: 18px; }
 .object-card {
   min-width: 0; overflow: hidden; position: relative;
   border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow);
 }
-.object-card:first-child { transform: translateY(-8px); }
 .card-number {
   position: absolute; z-index: 2; top: 14px; left: 14px;
   padding: 7px 9px; border-radius: 999px; background: rgba(20,24,22,.82); color: #fff;
   font-size: 10px; letter-spacing: .12em; backdrop-filter: blur(8px);
 }
-.media-frame { position: relative; background: #d8d4ca; overflow: hidden; }
+/* Real Media は Object の identity そのものなので、frame 側の都合で切らない。
+   frame の縦横比は画像自身の実寸（--media-w / --media-h）から取る。
+   data-crop="none" の Object は一切切らない。data-crop="bottom-safe" だけ、
+   一覧で縦に長くなりすぎたときに下端を落とすことを許す。 */
+.media-frame {
+  position: relative; width: 100%; background: #d8d4ca; overflow: hidden;
+  aspect-ratio: var(--media-w) / var(--media-h);
+}
 .media-frame::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); pointer-events: none; }
-.media-frame img { width: 100%; height: 100%; display: block; object-fit: cover; }
-/* The tapeworm image is itself evidence of the 8.8 m length. Do not crop it away. */
-.object-card[data-object-id="meguro-tapeworm"] .media-frame img,
-.detail-article[data-object-id="meguro-tapeworm"] .media-frame img { object-fit: contain; background: #d5d0c5; }
-.card-media { aspect-ratio: 4 / 3; }
-.object-card:first-child .card-media { aspect-ratio: 5 / 4; }
-.card-body { padding: 18px 18px 20px; }
+.media-frame img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center top; }
+
+.card-body { padding: 15px 18px 16px; }
 .object-meta { margin: 0 0 10px; color: var(--muted); font-size: 11px; line-height: 1.5; }
 .object-hook {
-  margin: 0; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  margin: 0 0 14px; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
   font-size: clamp(23px, 2.6vw, 34px); line-height: 1.38; font-weight: 600; letter-spacing: -.02em;
 }
 .open-button, .official-action {
@@ -127,7 +129,9 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
 }
 .detail-article { overflow: hidden; }
 .detail-count { position: absolute; z-index: 3; left: 20px; top: 14px; margin: 0; padding: 7px 9px; border-radius: 999px; background: rgba(20,24,22,.82); color: #fff; font-size: 10px; letter-spacing: .12em; }
-.detail-media { aspect-ratio: 16 / 8.8; }
+/* 詳細の media は First Pull ではなく証拠。全景を保ったまま高さだけ抑える。 */
+.detail-media { aspect-ratio: auto; height: min(46dvh, 420px); background: #ded9ce; }
+.detail-media img { object-fit: contain; object-position: center; }
 .detail-copy { padding: 30px clamp(20px, 5vw, 54px) 44px; }
 .detail-hook { margin: 0; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif; font-size: clamp(30px, 5vw, 50px); line-height: 1.25; font-weight: 600; }
 .detail-reveal { margin: 28px 0 0; max-width: 720px; font-size: clamp(20px, 3vw, 28px); line-height: 1.65; font-weight: 650; }
@@ -147,26 +151,24 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
 @media (max-width: 820px) {
   .hero { margin-top: 34px; margin-bottom: 38px; }
   .object-grid { grid-template-columns: 1fr; gap: 20px; }
-  .object-card:first-child { transform: none; }
-  .card-media, .object-card:first-child .card-media { aspect-ratio: 16 / 10.5; }
-  .card-body { padding: 18px 18px 20px; }
   .object-hook { font-size: clamp(27px, 8vw, 38px); }
   .site-footer { grid-template-columns: 1fr; }
   .privacy-note { text-align: left; }
-  .detail-media { aspect-ratio: 4 / 3; }
+  .detail-media { height: min(42dvh, 360px); }
 }
 
 @media (max-width: 430px) {
   .site-header { width: min(calc(100% - 28px), var(--max)); padding-top: 14px; }
   .brand-name { font-size: 14px; }
   .pilot-label { font-size: 9px; }
-  .hero { width: calc(100% - 30px); margin-top: 24px; margin-bottom: 28px; text-align: left; }
-  .hero h1 { font-size: clamp(42px, 12vw, 52px); }
-  .hero-line { display: block; white-space: nowrap; }
+  .hero { width: calc(100% - 30px); margin-top: 16px; margin-bottom: 18px; text-align: left; }
+  /* 1画面目は Object のものにする。hero は1行に収める。 */
+  .hero h1 { font-size: clamp(30px, 8.6vw, 38px); }
+  .hero-kicker { margin-bottom: 7px; font-size: 11px; }
+  .hero-line { display: inline; white-space: nowrap; }
   .objects-section { width: calc(100% - 20px); }
   .object-card { border-radius: 20px; }
-  .card-body { padding: 17px 16px 18px; }
-  .object-meta { font-size: 10px; }
+  .card-body { padding: 15px 16px 17px; }
   .end-plate { width: calc(100% - 30px); margin-top: 78px; }
   .site-footer { width: calc(100% - 30px); }
   .detail-dialog { width: calc(100% - 10px); max-height: calc(100dvh - 10px); border-radius: 18px; }
@@ -176,9 +178,15 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
   .fact-row { grid-template-columns: 72px 1fr; gap: 10px; }
 }
 
+/* 低背 desktop（1024x768 など）でも、1件目の Real Media + Hook +「ひらく」を
+   スクロールなしで成立させる。足りない高さは hero から回収する。 */
+@media (min-width: 821px) and (max-height: 820px) {
+  .hero { margin: 14px auto 16px; }
+  .hero h1 { font-size: clamp(32px, 3.4vw, 44px); }
+  .hero-kicker { margin-bottom: 8px; }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .object-card { transition: transform 180ms ease, box-shadow 180ms ease; }
   .object-card:hover { transform: translateY(-3px); box-shadow: 0 24px 64px rgba(40,34,24,.16); }
-  .object-card:first-child:hover { transform: translateY(-11px); }
-  @media (max-width: 820px) { .object-card:first-child:hover { transform: translateY(-3px); } }
 }

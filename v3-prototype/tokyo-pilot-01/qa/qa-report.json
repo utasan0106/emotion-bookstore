@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T09:25:13.957Z",
+  "generated_at": "2026-08-27T09:32:44.602Z",
   "viewports": [
     "320x800",
     "390x844",
@@ -7,8 +7,8 @@
     "1024x768",
     "1440x1000"
   ],
-  "total": 126,
-  "failed": 15,
+  "total": 141,
+  "failed": 5,
   "verdict": "BROWSER_QA_FAIL",
   "results": [
     {
@@ -21,7 +21,7 @@
           "w": 640,
           "h": 905,
           "boxW": 298,
-          "boxH": 196,
+          "boxH": 421,
           "fit": "cover"
         },
         {
@@ -29,7 +29,7 @@
           "w": 2048,
           "h": 1536,
           "boxW": 298,
-          "boxH": 196,
+          "boxH": 224,
           "fit": "cover"
         },
         {
@@ -37,30 +37,30 @@
           "w": 1363,
           "h": 2048,
           "boxW": 298,
-          "boxH": 196,
-          "fit": "contain"
+          "boxH": 448,
+          "fit": "cover"
         }
       ]
     },
     {
       "scope": "m320",
       "name": "card_media_identity_kept",
-      "pass": false,
+      "pass": true,
       "detail": [
         {
           "src": "manuscript-cafe.png",
           "fit": "cover",
-          "visible": 0.465
+          "visible": 0.999
         },
         {
           "src": "hachiko.jpg",
           "fit": "cover",
-          "visible": 0.877
+          "visible": 0.998
         },
         {
           "src": "meguro-tapeworm.jpg",
-          "fit": "contain",
-          "visible": 1
+          "fit": "cover",
+          "visible": 0.999
         }
       ]
     },
@@ -73,13 +73,14 @@
         "seen": [
           {
             "hook": "原稿執筆する人限定のカフェ。",
-            "imgVisiblePx": 196,
+            "imgVisiblePx": 421,
             "imgVisibleRatio": 1,
             "hookFullyVisible": true,
             "openAffordanceVisible": true
           }
         ],
-        "secondObjectPeekPx": 174
+        "finiteCounter": "01 / 03",
+        "finiteCounterVisible": true
       }
     },
     {
@@ -88,7 +89,7 @@
       "pass": true,
       "detail": {
         "hook": "原稿執筆する人限定のカフェ。",
-        "imgVisiblePx": 196,
+        "imgVisiblePx": 421,
         "imgVisibleRatio": 1,
         "hookFullyVisible": true,
         "openAffordanceVisible": true
@@ -98,7 +99,10 @@
       "scope": "m320",
       "name": "first_fold_set_is_legible",
       "pass": true,
-      "detail": 174
+      "detail": {
+        "counter": "01 / 03",
+        "visible": true
+      }
     },
     {
       "scope": "m320",
@@ -201,14 +205,14 @@
     {
       "scope": "m320",
       "name": "detail_media_identity_kept",
-      "pass": false,
+      "pass": true,
       "detail": {
         "w": 640,
         "h": 905,
         "boxW": 216,
-        "boxH": 162,
-        "fit": "cover",
-        "visible": 0.53
+        "boxH": 336,
+        "fit": "contain",
+        "visible": 1
       }
     },
     {
@@ -277,7 +281,7 @@
           "w": 640,
           "h": 905,
           "boxW": 368,
-          "boxH": 242,
+          "boxH": 520,
           "fit": "cover"
         },
         {
@@ -285,7 +289,7 @@
           "w": 2048,
           "h": 1536,
           "boxW": 368,
-          "boxH": 242,
+          "boxH": 276,
           "fit": "cover"
         },
         {
@@ -293,29 +297,29 @@
           "w": 1363,
           "h": 2048,
           "boxW": 368,
-          "boxH": 242,
-          "fit": "contain"
+          "boxH": 553,
+          "fit": "cover"
         }
       ]
     },
     {
       "scope": "m390",
       "name": "card_media_identity_kept",
-      "pass": false,
+      "pass": true,
       "detail": [
         {
           "src": "manuscript-cafe.png",
           "fit": "cover",
-          "visible": 0.465
+          "visible": 0.999
         },
         {
           "src": "hachiko.jpg",
           "fit": "cover",
-          "visible": 0.877
+          "visible": 1
         },
         {
           "src": "meguro-tapeworm.jpg",
-          "fit": "contain",
+          "fit": "cover",
           "visible": 1
         }
       ]
@@ -329,13 +333,14 @@
         "seen": [
           {
             "hook": "原稿執筆する人限定のカフェ。",
-            "imgVisiblePx": 242,
+            "imgVisiblePx": 520,
             "imgVisibleRatio": 1,
             "hookFullyVisible": true,
             "openAffordanceVisible": true
           }
         ],
-        "secondObjectPeekPx": 150
+        "finiteCounter": "01 / 03",
+        "finiteCounterVisible": true
       }
     },
     {
@@ -344,7 +349,7 @@
       "pass": true,
       "detail": {
         "hook": "原稿執筆する人限定のカフェ。",
-        "imgVisiblePx": 242,
+        "imgVisiblePx": 520,
         "imgVisibleRatio": 1,
         "hookFullyVisible": true,
         "openAffordanceVisible": true
@@ -354,7 +359,10 @@
       "scope": "m390",
       "name": "first_fold_set_is_legible",
       "pass": true,
-      "detail": 150
+      "detail": {
+        "counter": "01 / 03",
+        "visible": true
+      }
     },
     {
       "scope": "m390",
@@ -457,14 +465,14 @@
     {
       "scope": "m390",
       "name": "detail_media_identity_kept",
-      "pass": false,
+      "pass": true,
       "detail": {
         "w": 640,
         "h": 905,
         "boxW": 286,
-        "boxH": 215,
-        "fit": "cover",
-        "visible": 0.532
+        "boxH": 354,
+        "fit": "contain",
+        "visible": 1
       }
     },
     {
@@ -533,7 +541,7 @@
           "w": 640,
           "h": 905,
           "boxW": 408,
-          "boxH": 268,
+          "boxH": 577,
           "fit": "cover"
         },
         {
@@ -541,7 +549,7 @@
           "w": 2048,
           "h": 1536,
           "boxW": 408,
-          "boxH": 268,
+          "boxH": 306,
           "fit": "cover"
         },
         {
@@ -549,29 +557,29 @@
           "w": 1363,
           "h": 2048,
           "boxW": 408,
-          "boxH": 268,
-          "fit": "contain"
+          "boxH": 613,
+          "fit": "cover"
         }
       ]
     },
     {
       "scope": "m430",
       "name": "card_media_identity_kept",
-      "pass": false,
+      "pass": true,
       "detail": [
         {
           "src": "manuscript-cafe.png",
           "fit": "cover",
-          "visible": 0.465
+          "visible": 1
         },
         {
           "src": "hachiko.jpg",
           "fit": "cover",
-          "visible": 0.876
+          "visible": 1
         },
         {
           "src": "meguro-tapeworm.jpg",
-          "fit": "contain",
+          "fit": "cover",
           "visible": 1
         }
       ]
@@ -585,13 +593,14 @@
         "seen": [
           {
             "hook": "原稿執筆する人限定のカフェ。",
-            "imgVisiblePx": 268,
+            "imgVisiblePx": 577,
             "imgVisibleRatio": 1,
             "hookFullyVisible": true,
             "openAffordanceVisible": true
           }
         ],
-        "secondObjectPeekPx": 193
+        "finiteCounter": "01 / 03",
+        "finiteCounterVisible": true
       }
     },
     {
@@ -600,7 +609,7 @@
       "pass": true,
       "detail": {
         "hook": "原稿執筆する人限定のカフェ。",
-        "imgVisiblePx": 268,
+        "imgVisiblePx": 577,
         "imgVisibleRatio": 1,
         "hookFullyVisible": true,
         "openAffordanceVisible": true
@@ -610,7 +619,10 @@
       "scope": "m430",
       "name": "first_fold_set_is_legible",
       "pass": true,
-      "detail": 193
+      "detail": {
+        "counter": "01 / 03",
+        "visible": true
+      }
     },
     {
       "scope": "m430",
@@ -713,14 +725,14 @@
     {
       "scope": "m430",
       "name": "detail_media_identity_kept",
-      "pass": false,
+      "pass": true,
       "detail": {
         "w": 640,
         "h": 905,
         "boxW": 326,
-        "boxH": 245,
-        "fit": "cover",
-        "visible": 0.531
+        "boxH": 360,
+        "fit": "contain",
+        "visible": 1
       }
     },
     {
@@ -789,7 +801,7 @@
           "w": 640,
           "h": 905,
           "boxW": 318,
-          "boxH": 254,
+          "boxH": 450,
           "fit": "cover"
         },
         {
@@ -805,20 +817,20 @@
           "w": 1363,
           "h": 2048,
           "boxW": 318,
-          "boxH": 239,
-          "fit": "contain"
+          "boxH": 478,
+          "fit": "cover"
         }
       ]
     },
     {
       "scope": "d1024",
       "name": "card_media_identity_kept",
-      "pass": false,
+      "pass": true,
       "detail": [
         {
           "src": "manuscript-cafe.png",
           "fit": "cover",
-          "visible": 0.565
+          "visible": 0.999
         },
         {
           "src": "hachiko.jpg",
@@ -827,7 +839,7 @@
         },
         {
           "src": "meguro-tapeworm.jpg",
-          "fit": "contain",
+          "fit": "cover",
           "visible": 1
         }
       ]
@@ -841,7 +853,7 @@
         "seen": [
           {
             "hook": "原稿執筆する人限定のカフェ。",
-            "imgVisiblePx": 254,
+            "imgVisiblePx": 450,
             "imgVisibleRatio": 1,
             "hookFullyVisible": true,
             "openAffordanceVisible": true
@@ -855,13 +867,14 @@
           },
           {
             "hook": "8.8mのサナダムシ。",
-            "imgVisiblePx": 239,
+            "imgVisiblePx": 478,
             "imgVisibleRatio": 1,
             "hookFullyVisible": true,
             "openAffordanceVisible": true
           }
         ],
-        "secondObjectPeekPx": 239
+        "finiteCounter": "01 / 03",
+        "finiteCounterVisible": true
       }
     },
     {
@@ -870,7 +883,7 @@
       "pass": true,
       "detail": {
         "hook": "原稿執筆する人限定のカフェ。",
-        "imgVisiblePx": 254,
+        "imgVisiblePx": 450,
         "imgVisibleRatio": 1,
         "hookFullyVisible": true,
         "openAffordanceVisible": true
@@ -880,7 +893,10 @@
       "scope": "d1024",
       "name": "first_fold_set_is_legible",
       "pass": true,
-      "detail": 239
+      "detail": {
+        "counter": "01 / 03",
+        "visible": true
+      }
     },
     {
       "scope": "d1024",
@@ -983,14 +999,14 @@
     {
       "scope": "d1024",
       "name": "detail_media_identity_kept",
-      "pass": false,
+      "pass": true,
       "detail": {
         "w": 640,
         "h": 905,
         "boxW": 854,
-        "boxH": 470,
-        "fit": "cover",
-        "visible": 0.389
+        "boxH": 353,
+        "fit": "contain",
+        "visible": 1
       }
     },
     {
@@ -1059,7 +1075,7 @@
           "w": 640,
           "h": 905,
           "boxW": 379,
-          "boxH": 303,
+          "boxH": 536,
           "fit": "cover"
         },
         {
@@ -1075,20 +1091,20 @@
           "w": 1363,
           "h": 2048,
           "boxW": 379,
-          "boxH": 285,
-          "fit": "contain"
+          "boxH": 570,
+          "fit": "cover"
         }
       ]
     },
     {
       "scope": "d1440",
       "name": "card_media_identity_kept",
-      "pass": false,
+      "pass": true,
       "detail": [
         {
           "src": "manuscript-cafe.png",
           "fit": "cover",
-          "visible": 0.565
+          "visible": 1
         },
         {
           "src": "hachiko.jpg",
@@ -1097,8 +1113,8 @@
         },
         {
           "src": "meguro-tapeworm.jpg",
-          "fit": "contain",
-          "visible": 1
+          "fit": "cover",
+          "visible": 0.999
         }
       ]
     },
@@ -1111,7 +1127,7 @@
         "seen": [
           {
             "hook": "原稿執筆する人限定のカフェ。",
-            "imgVisiblePx": 303,
+            "imgVisiblePx": 536,
             "imgVisibleRatio": 1,
             "hookFullyVisible": true,
             "openAffordanceVisible": true
@@ -1125,13 +1141,14 @@
           },
           {
             "hook": "8.8mのサナダムシ。",
-            "imgVisiblePx": 285,
+            "imgVisiblePx": 570,
             "imgVisibleRatio": 1,
             "hookFullyVisible": true,
             "openAffordanceVisible": true
           }
         ],
-        "secondObjectPeekPx": 284
+        "finiteCounter": "01 / 03",
+        "finiteCounterVisible": true
       }
     },
     {
@@ -1140,7 +1157,7 @@
       "pass": true,
       "detail": {
         "hook": "原稿執筆する人限定のカフェ。",
-        "imgVisiblePx": 303,
+        "imgVisiblePx": 536,
         "imgVisibleRatio": 1,
         "hookFullyVisible": true,
         "openAffordanceVisible": true
@@ -1150,7 +1167,10 @@
       "scope": "d1440",
       "name": "first_fold_set_is_legible",
       "pass": true,
-      "detail": 284
+      "detail": {
+        "counter": "01 / 03",
+        "visible": true
+      }
     },
     {
       "scope": "d1440",
@@ -1253,14 +1273,14 @@
     {
       "scope": "d1440",
       "name": "detail_media_identity_kept",
-      "pass": false,
+      "pass": true,
       "detail": {
         "w": 640,
         "h": 905,
         "boxW": 854,
-        "boxH": 470,
-        "fit": "cover",
-        "visible": 0.389
+        "boxH": 420,
+        "fit": "contain",
+        "visible": 1
       }
     },
     {
@@ -1318,6 +1338,201 @@
       "name": "no_external_request",
       "pass": true,
       "detail": []
+    },
+    {
+      "scope": "m320/abc",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "manuscript-cafe",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 713,
+        "vh": 800
+      }
+    },
+    {
+      "scope": "m320/bac",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "hachiko-taxidermy",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 516,
+        "vh": 800
+      }
+    },
+    {
+      "scope": "m320/cab",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "meguro-tapeworm",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 703,
+        "vh": 800
+      }
+    },
+    {
+      "scope": "m390/abc",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "manuscript-cafe",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 828,
+        "vh": 844
+      }
+    },
+    {
+      "scope": "m390/bac",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "hachiko-taxidermy",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 583,
+        "vh": 844
+      }
+    },
+    {
+      "scope": "m390/cab",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "meguro-tapeworm",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 817,
+        "vh": 844
+      }
+    },
+    {
+      "scope": "m430/abc",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "manuscript-cafe",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 897,
+        "vh": 932
+      }
+    },
+    {
+      "scope": "m430/bac",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "hachiko-taxidermy",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 626,
+        "vh": 932
+      }
+    },
+    {
+      "scope": "m430/cab",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "meguro-tapeworm",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 885,
+        "vh": 932
+      }
+    },
+    {
+      "scope": "d1024/abc",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "manuscript-cafe",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 747,
+        "vh": 768
+      }
+    },
+    {
+      "scope": "d1024/bac",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "hachiko-taxidermy",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 536,
+        "vh": 768
+      }
+    },
+    {
+      "scope": "d1024/cab",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "meguro-tapeworm",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 738,
+        "vh": 768
+      }
+    },
+    {
+      "scope": "d1440/abc",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "manuscript-cafe",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 892,
+        "vh": 1000
+      }
+    },
+    {
+      "scope": "d1440/bac",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "hachiko-taxidermy",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 640,
+        "vh": 1000
+      }
+    },
+    {
+      "scope": "d1440/cab",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "meguro-tapeworm",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 879,
+        "vh": 1000
+      }
     },
     {
       "scope": "order",

@@ -92,7 +92,6 @@ function check(scope, name, pass, detail) {
     await page.waitForFunction(() => Array.from(document.images).every(i => i.complete));
 
     const S = vp.name;
-    const VP_IS_MOBILE = vp.mobile;
 
     // --- 1. Real Media が実際にデコードされている -----------------------
     const imgs = await page.$$eval('.object-card img', els => els.map(i => ({
@@ -132,19 +131,25 @@ function check(scope, name, pass, detail) {
           });
         }
       });
-      // 「次がある」ことが 1 画面目でわかるか（2件目の media が少しでも見えているか）
-      const cards = document.querySelectorAll('.object-card');
-      const secondPeek = cards[1] ? Math.round(vis(cards[1].querySelector('img').getBoundingClientRect())) : 0;
-      return { vh, seen, secondObjectPeekPx: secondPeek };
+      // 「全部で3件しかない」ことが 1 画面目でわかるか。
+      // 2件目の覗きではなく、1件目に載る 01 / 03 のカウンタがこれを担う。
+      const counter = document.querySelector('.object-card .card-number');
+      const cr = counter && counter.getBoundingClientRect();
+      return {
+        vh, seen,
+        finiteCounter: counter ? counter.textContent : null,
+        finiteCounterVisible: !!cr && vis(cr) >= cr.height - 1
+      };
     });
     check(S, 'first_fold_has_media_and_hook', firstFold.seen.length >= 1, firstFold);
     // First Pull: 1 件目の Hook 全文と「ひらく」が、スクロールなしで見えていること
     check(S, 'first_fold_open_affordance_visible',
       firstFold.seen.length >= 1 && firstFold.seen[0].hookFullyVisible && firstFold.seen[0].openAffordanceVisible,
       firstFold.seen[0] || null);
-    // 有限な棚であることが 1 画面目で伝わるか（2 件目の存在が見えている）
-    check(S, 'first_fold_set_is_legible', firstFold.secondObjectPeekPx > 0 || !VP_IS_MOBILE,
-      firstFold.secondObjectPeekPx);
+    // 有限な棚であることが 1 画面目で伝わるか（01 / 03 が読める）
+    check(S, 'first_fold_set_is_legible',
+      firstFold.finiteCounterVisible && /\/\s*03/.test(firstFold.finiteCounter || ''),
+      { counter: firstFold.finiteCounter, visible: firstFold.finiteCounterVisible });
 
     // --- 4. 横スクロール 0 ----------------------------------------------
     const overflow = await page.evaluate(() => {
@@ -257,7 +262,42 @@ function check(scope, name, pass, detail) {
     await ctx.close();
   }
 
-  // --- 11. 6 通りの order が同じ 3 identity を保つ ------------------------
+  // --- 11. どの Object が1件目に来ても First Pull が成立する ---------------
+  // order permutation で1件目が入れ替わるので、3 通りすべてで
+  // 「Real Media + Hook 全文 + ひらく」が1画面目に収まることを確認する。
+  for (const vp of VIEWPORTS) {
+    const ctx = await browser.newContext({
+      viewport: { width: vp.width, height: vp.height },
+      isMobile: vp.mobile, hasTouch: vp.mobile, reducedMotion: 'reduce'
+    });
+    const page = await ctx.newPage();
+    for (const order of ['abc', 'bac', 'cab']) {
+      await page.goto(`${base}index.html?order=${order}`, { waitUntil: 'load' });
+      await page.waitForFunction(() => document.querySelectorAll('.object-card').length === 3);
+      await page.waitForFunction(() => Array.from(document.images).every(i => i.complete));
+      const fold = await page.evaluate(() => {
+        const vh = window.innerHeight;
+        const vis = r => Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0));
+        const card = document.querySelector('.object-card');
+        const img = card.querySelector('img');
+        const hook = card.querySelector('.object-hook');
+        const btn = card.querySelector('.open-button');
+        const ir = img.getBoundingClientRect(), hr = hook.getBoundingClientRect(), br = btn.getBoundingClientRect();
+        return {
+          id: card.dataset.objectId,
+          mediaVisibleRatio: Number((vis(ir) / ir.height).toFixed(2)),
+          hookFullyVisible: vis(hr) >= hr.height - 1,
+          openAffordanceVisible: vis(br) >= br.height - 1,
+          openBottom: Math.round(br.bottom), vh
+        };
+      });
+      check(`${vp.name}/${order}`, 'first_pull_complete_in_fold',
+        fold.mediaVisibleRatio >= 0.34 && fold.hookFullyVisible && fold.openAffordanceVisible, fold);
+    }
+    await ctx.close();
+  }
+
+  // --- 12. 6 通りの order が同じ 3 identity を保つ ------------------------
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
     const page = await ctx.newPage();
