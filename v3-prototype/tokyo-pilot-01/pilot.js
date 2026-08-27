@@ -36,28 +36,23 @@
     return queryParams().get('participant') === '1';
   }
 
-  function haltParticipantCycle(reason) {
+  // 参加者サイクルの fail-closed。
+  // 前提が崩れたら、半端な棚を見せずに止める。内部の事情は書かない。
+  function haltParticipantCycle() {
     grid.textContent = 'この棚はいま準備中です。';
     var endPlate = document.querySelector('.end-plate');
     if (endPlate) endPlate.hidden = true;
     live.textContent = 'この棚はいま準備中です。';
-    return reason;
+    return true;
   }
 
+  // media がまだ同一オリジンに置かれていない。
   function blockUnlocalizedParticipantCycle() {
     if (!isParticipantMode() || CONTENT.feature.mediaPolicy === 'same-origin-localized') return false;
-    return haltParticipantCycle(true);
+    return haltParticipantCycle();
   }
 
-  // Real Media が出ないなら、この棚は成立しない。配信面の取りこぼしなどで
-  // 1枚でも読めなかったら、灰色の枠を並べたまま続けずに止める。
-  function reportMediaFailure(id) {
-    if (!isParticipantMode()) return;
-    haltParticipantCycle(true);
-  }
-
-  // 掲載事実に期限があるものは、期限を過ぎたら参加者へ出さない。
-  // 古い営業情報を「まだ有効」として見せないための fail-closed。
+  // 掲載事実の期限が切れている。古い営業情報を「まだ有効」として見せない。
   function blockStaleParticipantCycle() {
     if (!isParticipantMode()) return false;
     var now = Date.now();
@@ -66,8 +61,13 @@
       var at = Date.parse(object.expiresAt);
       return !isNaN(at) && at <= now;
     });
-    if (!stale) return false;
-    return haltParticipantCycle(true);
+    return stale ? haltParticipantCycle() : false;
+  }
+
+  // Real Media が配信されなかった。灰色の枠を3つ並べたまま続けない。
+  function blockMissingMediaParticipantCycle() {
+    if (!isParticipantMode()) return false;
+    return haltParticipantCycle();
   }
 
   function orderFromQuery() {
@@ -79,13 +79,14 @@
     return requested.split('').map(function (key) { return map[key]; });
   }
 
-  // frame は media 自身の縦横比を使う。Object の identity を crop で壊さないため、
-  // 切ってよい端は content 側の mediaCrop が決める（'none' なら一切切らない）。
-  // 棚は3件で終わる。Real Media が出ていないと Hook も成立しないので、
-  // 3枚とも遅延させずに読む（lazy は3件では節約にならず、灰色の枠だけが残る）。
-  // 一覧では alt も Reveal の答えを名指ししない。読み上げ利用者だけが
-  // 先に答えを受け取ることのないようにする。
-  function media(object, className, eager, listContext) {
+  // Real Media の出し方の決まりごと:
+  // - frame の縦横比は media 自身の実寸から取る。Object の identity を frame の
+  //   都合で切らない。切ってよい端があるなら content 側の mediaCrop が決める。
+  // - 棚は3件で終わるので3枚とも遅延させずに読む。lazy は3件では節約にならず、
+  //   スクロール中に灰色の枠だけが出る危険が残る。
+  // - 一覧の alt は Reveal の答えを名指ししない。読み上げ利用者だけが先に
+  //   答えを受け取ることのないようにする。
+  function media(object, className, isFirst, isListContext) {
     return h('div', {
       class: 'media-frame ' + className,
       'data-crop': object.mediaCrop || 'none',
@@ -93,12 +94,12 @@
     }, [
       h('img', {
         src: object.mediaUrl,
-        alt: listContext ? (object.cardMediaAlt || object.mediaAlt) : object.mediaAlt,
-        onerror: function () { reportMediaFailure(object.id); },
+        alt: isListContext ? (object.cardMediaAlt || object.mediaAlt) : object.mediaAlt,
+        onerror: blockMissingMediaParticipantCycle,
         width: object.mediaWidth,
         height: object.mediaHeight,
         loading: 'eager',
-        fetchpriority: eager ? 'high' : 'auto',
+        fetchpriority: isFirst ? 'high' : 'auto',
         decoding: 'async',
         referrerpolicy: 'no-referrer'
       })
@@ -176,6 +177,7 @@
     if (lastTrigger) lastTrigger.focus();
   }
 
+  // 描く前に、参加者へ出してよい状態か確かめる。
   if (blockUnlocalizedParticipantCycle()) return;
   if (blockStaleParticipantCycle()) return;
 
