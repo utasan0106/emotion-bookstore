@@ -297,7 +297,48 @@ function check(scope, name, pass, detail) {
     await ctx.close();
   }
 
-  // --- 12. 6 通りの order が同じ 3 identity を保つ ------------------------
+  // --- 12. 期限切れの事実を参加者へ出さない（fail-closed） ------------------
+  {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const page = await ctx.newPage();
+
+    // 参加者モードは通常どおり 3 件出る
+    await page.goto(`${base}index.html?participant=1`, { waitUntil: 'load' });
+    await page.waitForFunction(() => document.querySelectorAll('.object-card').length === 3, null, { timeout: 5000 })
+      .then(() => check('freshness', 'participant_mode_renders_when_fresh', true))
+      .catch(() => check('freshness', 'participant_mode_renders_when_fresh', false));
+
+    // 期限を過ぎた時計では、古い営業情報を出さずに止まる
+    const page2 = await ctx.newPage();
+    await page2.addInitScript(() => {
+      const SHIFT = 400 * 24 * 60 * 60 * 1000;
+      const RealDate = Date;
+      const now = () => RealDate.now() + SHIFT;
+      // eslint-disable-next-line no-global-assign
+      Date = class extends RealDate {
+        constructor(...a) { super(...(a.length ? a : [now()])); }
+        static now() { return now(); }
+      };
+      Date.parse = RealDate.parse;
+      Date.UTC = RealDate.UTC;
+    });
+    await page2.goto(`${base}index.html?participant=1`, { waitUntil: 'load' });
+    const stale = await page2.evaluate(() => ({
+      cards: document.querySelectorAll('.object-card').length,
+      gridText: document.getElementById('objectGrid').textContent,
+      endHidden: document.querySelector('.end-plate').hidden
+    }));
+    check('freshness', 'expired_facts_block_participant_cycle',
+      stale.cards === 0 && stale.endHidden === true, stale);
+    // 止めた画面にも内部語・監査文を出さない
+    const haltText = await page2.evaluate(() => document.body.innerText);
+    check('freshness', 'halt_screen_has_no_internal_term',
+      !INTERNAL.some(w => haltText.includes(w)) && !SPOILERS.some(w => haltText.includes(w)),
+      haltText.replace(/\n/g, ' / ').slice(0, 160));
+    await ctx.close();
+  }
+
+  // --- 13. 6 通りの order が同じ 3 identity を保つ ------------------------
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
     const page = await ctx.newPage();

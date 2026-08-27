@@ -129,10 +129,30 @@ if (/class: 'object-meta'[\s\S]{0,200}class: 'object-hook'/.test(js)) {
   failures.push('card must lead with the Hook, not with meta');
 }
 
+// 参加者へ出す前に事実の期限を確認する。--external-cycle を付けたときだけ
+// 期限切れを FAIL にする（開発中の QA を止めないため）。
+const EXTERNAL_CYCLE = process.argv.includes('--external-cycle');
+const now = Date.now();
+const stale = [];
+for (const object of (content && content.objects) || []) {
+  if (!object.expiresAt) continue;
+  const at = Date.parse(object.expiresAt);
+  if (isNaN(at)) { failures.push(`${object.id} expiresAt is not a valid date`); continue; }
+  if (at <= now) stale.push(`${object.id} expired at ${object.expiresAt}`);
+}
+if (!js.includes('blockStaleParticipantCycle')) failures.push('participant mode must fail closed on expired facts');
+if (EXTERNAL_CYCLE && stale.length) stale.forEach(m => failures.push(`external cycle blocked: ${m}`));
+
 if (failures.length) {
   console.error('PILOT_CHECK_FAIL');
   failures.forEach(f => console.error('- ' + f));
   process.exit(1);
 }
 console.log('PILOT_CHECK_GO');
+if (stale.length) {
+  console.log('FRESHNESS_STALE (external cycle would be blocked):');
+  stale.forEach(m => console.log('- ' + m));
+} else {
+  console.log('FRESHNESS_OK; every dated fact is still inside its stated window');
+}
 console.log('objects=3; storage=0; analytics=0; background fetch=0; search=0; account=0; finite ending=1; official actions=https; provenance/freshness=present');

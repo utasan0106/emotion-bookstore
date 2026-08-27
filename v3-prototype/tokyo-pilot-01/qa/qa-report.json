@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T09:35:21.142Z",
+  "generated_at": "2026-08-27T09:38:22.819Z",
   "viewports": [
     "320x800",
     "390x844",
@@ -7,9 +7,9 @@
     "1024x768",
     "1440x1000"
   ],
-  "total": 141,
-  "failed": 0,
-  "verdict": "BROWSER_QA_GO",
+  "total": 144,
+  "failed": 1,
+  "verdict": "BROWSER_QA_FAIL",
   "results": [
     {
       "scope": "m320",
@@ -1533,6 +1533,28 @@
         "openBottom": 879,
         "vh": 1000
       }
+    },
+    {
+      "scope": "freshness",
+      "name": "participant_mode_renders_when_fresh",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "freshness",
+      "name": "expired_facts_block_participant_cycle",
+      "pass": false,
+      "detail": {
+        "cards": 3,
+        "gridText": "01 / 03原稿執筆する人限定のカフェ。ひらく02 / 03渋谷のハチ公、本物は上野。ひらく03 / 038.8mのサナダムシ。ひらく",
+        "endHidden": false
+      }
+    },
+    {
+      "scope": "freshness",
+      "name": "halt_screen_has_no_internal_term",
+      "pass": true,
+      "detail": "本文へ移動 / 棚 / 東京の棚 / by みんなの感情書店 /  / まだ、行き先が決まっていない日に。 /  / 東京を、3つだけ。 / 東京の3つ / 01 / 03 / 原稿執筆する人限定のカフェ。 / ひらく / 02 / 03 / 渋谷のハチ公、本物は上野。 / ひらく / 03 / 03 / 8.8mのサ"
     },
     {
       "scope": "order",

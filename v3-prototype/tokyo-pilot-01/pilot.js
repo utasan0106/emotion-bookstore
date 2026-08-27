@@ -36,13 +36,31 @@
     return queryParams().get('participant') === '1';
   }
 
-  function blockUnlocalizedParticipantCycle() {
-    if (!isParticipantMode() || CONTENT.feature.mediaPolicy === 'same-origin-localized') return false;
-    grid.textContent = 'このテストは準備中です。';
+  function haltParticipantCycle(reason) {
+    grid.textContent = 'この棚はいま準備中です。';
     var endPlate = document.querySelector('.end-plate');
     if (endPlate) endPlate.hidden = true;
-    live.textContent = '実画像の準備が完了するまで、このテストは開始できません。';
-    return true;
+    live.textContent = 'この棚はいま準備中です。';
+    return reason;
+  }
+
+  function blockUnlocalizedParticipantCycle() {
+    if (!isParticipantMode() || CONTENT.feature.mediaPolicy === 'same-origin-localized') return false;
+    return haltParticipantCycle(true);
+  }
+
+  // 掲載事実に期限があるものは、期限を過ぎたら参加者へ出さない。
+  // 古い営業情報を「まだ有効」として見せないための fail-closed。
+  function blockStaleParticipantCycle() {
+    if (!isParticipantMode()) return false;
+    var now = Date.now();
+    var stale = CONTENT.objects.some(function (object) {
+      if (!object.expiresAt) return false;
+      var at = Date.parse(object.expiresAt);
+      return !isNaN(at) && at <= now;
+    });
+    if (!stale) return false;
+    return haltParticipantCycle(true);
   }
 
   function orderFromQuery() {
@@ -140,6 +158,7 @@
   }
 
   if (blockUnlocalizedParticipantCycle()) return;
+  if (blockStaleParticipantCycle()) return;
 
   orderFromQuery().forEach(function (object, index) {
     grid.appendChild(card(object, index));
