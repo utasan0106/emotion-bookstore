@@ -137,7 +137,10 @@
             target: '_blank',
             rel: 'noopener noreferrer',
             referrerpolicy: 'no-referrer'
-          }, [h('span', { text: object.actionLabel }), h('span', { 'aria-hidden': 'true', text: '↗' })]),
+          }, [h('span', { text: object.actionLabel }), h('span', { 'aria-hidden': 'true', text: '↗' })])
+        ]),
+        // 権利表記は必須だが、Official Action と並べると行き先が二択に見える。
+        h('p', { class: 'rights-note' }, [
           h('a', {
             class: 'rights-link', href: object.rightsUrl, target: '_blank',
             rel: 'noopener noreferrer', referrerpolicy: 'no-referrer', text: object.attribution

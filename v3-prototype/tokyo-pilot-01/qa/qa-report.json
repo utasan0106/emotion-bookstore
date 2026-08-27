@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T09:38:22.819Z",
+  "generated_at": "2026-08-27T09:40:23.033Z",
   "viewports": [
     "320x800",
     "390x844",
@@ -8,8 +8,8 @@
     "1440x1000"
   ],
   "total": 144,
-  "failed": 1,
-  "verdict": "BROWSER_QA_FAIL",
+  "failed": 0,
+  "verdict": "BROWSER_QA_GO",
   "results": [
     {
       "scope": "m320",
@@ -1543,18 +1543,18 @@
     {
       "scope": "freshness",
       "name": "expired_facts_block_participant_cycle",
-      "pass": false,
+      "pass": true,
       "detail": {
-        "cards": 3,
-        "gridText": "01 / 03原稿執筆する人限定のカフェ。ひらく02 / 03渋谷のハチ公、本物は上野。ひらく03 / 038.8mのサナダムシ。ひらく",
-        "endHidden": false
+        "cards": 0,
+        "gridText": "この棚はいま準備中です。",
+        "endHidden": true
       }
     },
     {
       "scope": "freshness",
       "name": "halt_screen_has_no_internal_term",
       "pass": true,
-      "detail": "本文へ移動 / 棚 / 東京の棚 / by みんなの感情書店 /  / まだ、行き先が決まっていない日に。 /  / 東京を、3つだけ。 / 東京の3つ / 01 / 03 / 原稿執筆する人限定のカフェ。 / ひらく / 02 / 03 / 渋谷のハチ公、本物は上野。 / ひらく / 03 / 03 / 8.8mのサ"
+      "detail": "本文へ移動 / 棚 / 東京の棚 / by みんなの感情書店 /  / まだ、行き先が決まっていない日に。 /  / 東京を、3つだけ。 / 東京の3つ / この棚はいま準備中です。 /  / このページでは保存・計測・個人ごとの推薦を行いません。画像は権利を確認した提供元から表示し、公式リンクは押したときだけ開きます"
     },
     {
       "scope": "order",

@@ -111,10 +111,9 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
 .end-plate p:last-child { margin: 18px auto 0; max-width: 560px; color: var(--muted); line-height: 1.8; }
 .site-footer {
   width: min(calc(100% - 36px), var(--max)); margin: 0 auto; padding: 0 0 44px;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 30px; color: var(--muted); font-size: 12px; line-height: 1.8;
+  color: var(--muted); font-size: 12px; line-height: 1.8;
 }
-.site-footer p { margin: 0; }
-.privacy-note { text-align: right; }
+.site-footer p { margin: 0 auto; max-width: 620px; text-align: center; }
 
 .detail-dialog {
   width: min(920px, calc(100% - 24px)); max-height: calc(100dvh - 24px); padding: 0;
@@ -148,8 +147,9 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
 .fact-row:last-child { border-bottom: 1px solid rgba(29,33,31,.1); }
 .fact-row dt { color: var(--muted); font-size: 12px; }
 .fact-row dd { margin: 0; font-size: 14px; line-height: 1.6; }
-.detail-actions { display: grid; gap: 14px; margin-top: 30px; }
+.detail-actions { display: grid; margin-top: 30px; }
 .official-action { width: 100%; min-height: 54px; }
+.rights-note { margin: 20px 0 0; padding-top: 14px; border-top: 1px solid rgba(29,33,31,.1); }
 .rights-link { color: var(--muted); font-size: 10px; line-height: 1.6; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
@@ -158,8 +158,6 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
   .hero { margin-top: 34px; margin-bottom: 38px; }
   .object-grid { grid-template-columns: 1fr; gap: 20px; }
   .object-hook { font-size: clamp(27px, 8vw, 38px); }
-  .site-footer { grid-template-columns: 1fr; }
-  .privacy-note { text-align: left; }
   .detail-media { height: min(42dvh, 360px); }
 }
 

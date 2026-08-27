@@ -47,7 +47,7 @@ window.TOKYO_PILOT_CONTENT = {
         ['種類', '秋田犬（ハチ）の剥製'],
         ['来館', '開館時間・休館日は公式サイトで最新情報を確認']
       ],
-      actionLabel: '科博の展示情報を見る',
+      actionLabel: '国立科学博物館の展示情報を見る',
       actionUrl: 'https://db.kahaku.go.jp/exh/detail?cls=col_z1_01&pkey=1759522',
       mediaWidth: 2048,
       mediaHeight: 1536,
