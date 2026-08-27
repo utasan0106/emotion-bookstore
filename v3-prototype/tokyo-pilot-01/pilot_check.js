@@ -88,6 +88,15 @@ for (const object of (content && content.objects) || []) {
   if (mediaPolicy === 'external-preview-only' && !/^https:\/\//.test(object.mediaUrl || '')) failures.push(`${object.id} external-preview mediaUrl must be https`);
   if (mediaPolicy === 'same-origin-localized' && !/^\.\/assets\//.test(object.mediaUrl || '')) failures.push(`${object.id} localized mediaUrl must be same-origin ./assets`);
   if (!/^https:\/\//.test(object.rightsUrl || '')) failures.push(`${object.id} rightsUrl must be https`);
+  // CC 表示に必要な要素が欠けたまま参加者へ出さない。
+  const rights = object.rights || {};
+  for (const key of ['author', 'source', 'sourceUrl', 'license', 'modification']) {
+    if (!rights[key]) failures.push(`${object.id} rights.${key} missing`);
+  }
+  if (!/^https:\/\//.test(rights.sourceUrl || '')) failures.push(`${object.id} rights.sourceUrl must be https`);
+  if (/^CC /.test(rights.license || '') && !/^https:\/\/creativecommons\.org\//.test(rights.licenseUrl || '')) {
+    failures.push(`${object.id} a CC licence must link to its deed`);
+  }
   if (object.reverifyBeforeExternalCycle !== true) failures.push(`${object.id} must reverify before external cycle`);
   // Real Media を frame の都合で切らないための宣言。
   if (!Number.isInteger(object.mediaWidth) || !Number.isInteger(object.mediaHeight)) {

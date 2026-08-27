@@ -166,8 +166,12 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
 .fact-row dd { margin: 0; font-size: 0.875rem; line-height: 1.6; }
 .detail-actions { display: grid; margin-top: 30px; }
 .official-action { width: 100%; min-height: 54px; }
-.rights-note { margin: 20px 0 0; padding-top: 14px; border-top: 1px solid rgba(29,33,31,.1); }
-.rights-link { color: var(--muted); font-size: 0.6875rem; line-height: 1.6; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.rights-note { margin: 26px 0 0; padding-top: 16px; border-top: 1px solid rgba(29,33,31,.14); display: grid; gap: 5px; }
+.rights-title { margin: 0 0 5px; font-size: 0.8125rem; font-weight: 600; color: var(--muted); }
+.rights-row { display: grid; grid-template-columns: 4.5em 1fr; gap: 12px; }
+.rights-key { color: var(--muted); font-size: 0.8125rem; }
+.rights-value { font-size: 0.8125rem; line-height: 1.65; color: var(--muted); }
+.rights-link { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 
 .noscript-note {
   margin: 8px 4px 0; padding: 18px; border: 1px solid var(--line); border-radius: 16px;

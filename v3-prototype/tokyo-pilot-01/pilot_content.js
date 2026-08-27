@@ -28,6 +28,14 @@ window.TOKYO_PILOT_CONTENT = {
       mediaUrl: './assets/manuscript-cafe.png',
       cardMediaAlt: '「原稿執筆カフェ」と大きく書かれた青いポスター',
       mediaAlt: '青地に「原稿執筆カフェ」と書かれた公式ビジュアル',
+      rights: {
+        author: '高円寺「原稿執筆カフェ」公式ページ',
+        source: '公式ページ',
+        sourceUrl: 'https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/',
+        license: 'メディア利用許可の記載にもとづく掲載',
+        licenseUrl: null,
+        modification: '変更なし'
+      },
       attribution: 'Image: 高円寺「原稿執筆カフェ」公式ページ / メディア利用許可記載あり',
       rightsUrl: 'https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/',
       mediaLicense: 'official bounded media permission',
@@ -57,6 +65,14 @@ window.TOKYO_PILOT_CONTENT = {
       mediaUrl: './assets/hachiko.jpg',
       cardMediaAlt: '博物館の展示ケースの中に立つ、白い秋田犬',
       mediaAlt: '国立科学博物館に展示されている忠犬ハチ公の剥製',
+      rights: {
+        author: 'Momotarou2012',
+        source: 'Wikimedia Commons',
+        sourceUrl: 'https://commons.wikimedia.org/wiki/File:Hachiko_in_National_Museum_of_Nature_and_Science.jpg',
+        license: 'CC BY-SA 3.0',
+        licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0/',
+        modification: '縮小のみ・cropなし'
+      },
       attribution: 'Photo: Momotarou2012 / Wikimedia Commons / CC BY-SA 3.0',
       rightsUrl: 'https://commons.wikimedia.org/wiki/File:Hachiko_in_National_Museum_of_Nature_and_Science.jpg',
       mediaLicense: 'CC BY-SA 3.0',
@@ -86,6 +102,14 @@ window.TOKYO_PILOT_CONTENT = {
       mediaUrl: './assets/meguro-tapeworm.jpg',
       cardMediaAlt: '細長い展示ケースの中で、白いひも状のものが何度も折り返されている',
       mediaAlt: '目黒寄生虫館に展示されている長いサナダムシ標本',
+      rights: {
+        author: 'Laika ac',
+        source: 'Wikimedia Commons',
+        sourceUrl: 'https://commons.wikimedia.org/wiki/File:Laika_ac_Meguro_Parasitological_Museum_(7482790682).jpg',
+        license: 'CC BY-SA 2.0',
+        licenseUrl: 'https://creativecommons.org/licenses/by-sa/2.0/',
+        modification: '縮小のみ・cropなし'
+      },
       attribution: 'Photo: Laika ac / Wikimedia Commons / CC BY-SA 2.0',
       rightsUrl: 'https://commons.wikimedia.org/wiki/File:Laika_ac_Meguro_Parasitological_Museum_(7482790682).jpg',
       mediaLicense: 'CC BY-SA 2.0',

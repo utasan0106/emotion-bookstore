@@ -123,6 +123,45 @@
     return article;
   }
 
+  // CC 表示に必要な要素をすべて出す: 著作者 / 出典 / ライセンス名 /
+  // ライセンス条文への link / 加えた変更。出典ファイルページへの link も残す。
+  function rightsBlock(object) {
+    var r = object.rights || {};
+    var rows = [
+      h('div', { class: 'rights-row' }, [
+        h('span', { class: 'rights-key', text: '撮影' }),
+        h('span', { class: 'rights-value', text: r.author })
+      ]),
+      h('div', { class: 'rights-row' }, [
+        h('span', { class: 'rights-key', text: '出典' }),
+        h('span', { class: 'rights-value' }, [
+          h('a', {
+            class: 'rights-link', href: r.sourceUrl, target: '_blank',
+            rel: 'noopener noreferrer', referrerpolicy: 'no-referrer', text: r.source
+          })
+        ])
+      ]),
+      h('div', { class: 'rights-row' }, [
+        h('span', { class: 'rights-key', text: '利用条件' }),
+        h('span', { class: 'rights-value' }, [
+          r.licenseUrl
+            ? h('a', {
+                class: 'rights-link', href: r.licenseUrl, target: '_blank',
+                rel: 'noopener noreferrer', referrerpolicy: 'no-referrer', text: r.license
+              })
+            : h('span', { text: r.license })
+        ])
+      ]),
+      h('div', { class: 'rights-row' }, [
+        h('span', { class: 'rights-key', text: '変更' }),
+        h('span', { class: 'rights-value', text: r.modification })
+      ])
+    ];
+    return h('section', { class: 'rights-note' }, [
+      h('h3', { class: 'rights-title', text: 'この写真について' })
+    ].concat(rows));
+  }
+
   function openDetail(object, index) {
     detail.textContent = '';
     var facts = h('dl', { class: 'facts-list' }, object.facts.map(function (row) {
@@ -153,13 +192,9 @@
             referrerpolicy: 'no-referrer'
           }, [h('span', { text: object.actionLabel }), h('span', { 'aria-hidden': 'true', text: '↗' })])
         ]),
-        // 権利表記は必須だが、Official Action と並べると行き先が二択に見える。
-        h('p', { class: 'rights-note' }, [
-          h('a', {
-            class: 'rights-link', href: object.rightsUrl, target: '_blank',
-            rel: 'noopener noreferrer', referrerpolicy: 'no-referrer', text: object.attribution
-          })
-        ])
+        // 権利表記。Official Action の下、詳細の最下部にだけ置く。
+        // 一覧には絶対に出さない。読めない大きさにもしない。
+        rightsBlock(object)
       ])
     ]));
 
