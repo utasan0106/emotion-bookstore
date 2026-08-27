@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T09:32:44.602Z",
+  "generated_at": "2026-08-27T09:35:21.142Z",
   "viewports": [
     "320x800",
     "390x844",
@@ -8,8 +8,8 @@
     "1440x1000"
   ],
   "total": 141,
-  "failed": 5,
-  "verdict": "BROWSER_QA_FAIL",
+  "failed": 0,
+  "verdict": "BROWSER_QA_GO",
   "results": [
     {
       "scope": "m320",
@@ -169,10 +169,10 @@
     {
       "scope": "m320",
       "name": "dialog_reveal_is_dominant",
-      "pass": false,
+      "pass": true,
       "detail": {
-        "reveal": 21,
-        "hook": 32
+        "reveal": 27,
+        "hook": 0
       }
     },
     {
@@ -429,10 +429,10 @@
     {
       "scope": "m390",
       "name": "dialog_reveal_is_dominant",
-      "pass": false,
+      "pass": true,
       "detail": {
-        "reveal": 21,
-        "hook": 32
+        "reveal": 27,
+        "hook": 0
       }
     },
     {
@@ -689,10 +689,10 @@
     {
       "scope": "m430",
       "name": "dialog_reveal_is_dominant",
-      "pass": false,
+      "pass": true,
       "detail": {
-        "reveal": 21,
-        "hook": 32
+        "reveal": 27,
+        "hook": 0
       }
     },
     {
@@ -963,10 +963,10 @@
     {
       "scope": "d1024",
       "name": "dialog_reveal_is_dominant",
-      "pass": false,
+      "pass": true,
       "detail": {
-        "reveal": 28,
-        "hook": 50
+        "reveal": 42,
+        "hook": 0
       }
     },
     {
@@ -1237,10 +1237,10 @@
     {
       "scope": "d1440",
       "name": "dialog_reveal_is_dominant",
-      "pass": false,
+      "pass": true,
       "detail": {
-        "reveal": 28,
-        "hook": 50
+        "reveal": 42,
+        "hook": 0
       }
     },
     {

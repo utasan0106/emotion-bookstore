@@ -104,9 +104,10 @@
       h('p', { class: 'detail-count', text: String(index + 1).padStart(2, '0') + ' / 03' }),
       media(object, 'detail-media', true),
       h('div', { class: 'detail-copy' }, [
+        // 開いた時点で Hook は既知。payoff は Reveal なので、Reveal を見出しにする。
+        h('p', { class: 'detail-hook-echo', text: object.hook }),
+        h('h2', { id: 'detailTitle', class: 'detail-reveal', text: object.reveal }),
         h('p', { class: 'object-meta', text: object.typeLabel + ' · ' + object.placeName }),
-        h('h2', { id: 'detailTitle', class: 'detail-hook', text: object.hook }),
-        h('p', { class: 'detail-reveal', text: object.reveal }),
         h('section', { class: 'verified-block' }, [
           h('h3', { text: '行く前にわかること' }),
           facts

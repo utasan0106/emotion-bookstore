@@ -92,7 +92,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
 .card-body { padding: 15px 18px 16px; }
 .object-meta { margin: 0 0 10px; color: var(--muted); font-size: 11px; line-height: 1.5; }
 .object-hook {
-  margin: 0 0 14px; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  margin: 0 0 14px; line-break: strict; overflow-wrap: normal; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
   font-size: clamp(23px, 2.6vw, 34px); line-height: 1.38; font-weight: 600; letter-spacing: -.02em;
 }
 .open-button, .official-action {
@@ -130,11 +130,17 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
 .detail-article { overflow: hidden; }
 .detail-count { position: absolute; z-index: 3; left: 20px; top: 14px; margin: 0; padding: 7px 9px; border-radius: 999px; background: rgba(20,24,22,.82); color: #fff; font-size: 10px; letter-spacing: .12em; }
 /* 詳細の media は First Pull ではなく証拠。全景を保ったまま高さだけ抑える。 */
-.detail-media { aspect-ratio: auto; height: min(46dvh, 420px); background: #ded9ce; }
+.detail-media { aspect-ratio: auto; height: min(46dvh, 420px); background: #ece5d8; }
 .detail-media img { object-fit: contain; object-position: center; }
 .detail-copy { padding: 30px clamp(20px, 5vw, 54px) 44px; }
-.detail-hook { margin: 0; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif; font-size: clamp(30px, 5vw, 50px); line-height: 1.25; font-weight: 600; }
-.detail-reveal { margin: 28px 0 0; max-width: 720px; font-size: clamp(20px, 3vw, 28px); line-height: 1.65; font-weight: 650; }
+/* 既に読まれた Hook は小さく echo するだけ。大きくするのは未知の Reveal。 */
+.detail-hook-echo { margin: 0 0 14px; color: var(--muted); font-size: 13px; line-height: 1.6; letter-spacing: .02em; }
+.detail-reveal {
+  margin: 0; max-width: 720px; line-break: strict; overflow-wrap: normal;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: clamp(27px, 4.2vw, 42px); line-height: 1.45; font-weight: 600; letter-spacing: -.015em;
+}
+.detail-copy .object-meta { margin: 22px 0 0; }
 .verified-block { margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--line); }
 .verified-block h3 { margin: 0 0 16px; font-size: 15px; }
 .facts-list { margin: 0; }
@@ -173,8 +179,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
   .site-footer { width: calc(100% - 30px); }
   .detail-dialog { width: calc(100% - 10px); max-height: calc(100dvh - 10px); border-radius: 18px; }
   .detail-copy { padding: 24px 17px 36px; }
-  .detail-hook { font-size: 32px; }
-  .detail-reveal { font-size: 21px; }
+  .detail-reveal { font-size: 27px; }
   .fact-row { grid-template-columns: 72px 1fr; gap: 10px; }
 }
 
@@ -184,6 +189,10 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
   .hero { margin: 14px auto 16px; }
   .hero h1 { font-size: clamp(32px, 3.4vw, 44px); }
   .hero-kicker { margin-bottom: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
