@@ -403,7 +403,78 @@ function check(scope, name, pass, detail) {
     await ctx.close();
   }
 
-  // --- 13. 6 通りの order が同じ 3 identity を保つ ------------------------
+  // --- 13. 極端な環境でも壊れないこと -------------------------------------
+  // First Pull の fold 条件はここでは課さない（横向きや 200% 拡大では
+  // スクロールが前提になる）。守るのは「壊れない・届く・漏れない」だけ。
+  {
+    const RESILIENCE = [
+      { name: 'landscape-390h', viewport: { width: 844, height: 390 }, zoom: 1, forcedColors: 'none' },
+      { name: 'zoom200-m390', viewport: { width: 390, height: 844 }, zoom: 2, forcedColors: 'none' },
+      { name: 'zoom200-d1440', viewport: { width: 1440, height: 1000 }, zoom: 2, forcedColors: 'none' },
+      { name: 'forced-colors', viewport: { width: 390, height: 844 }, zoom: 1, forcedColors: 'active' }
+    ];
+    for (const r of RESILIENCE) {
+      const ctx = await browser.newContext({
+        viewport: r.viewport, reducedMotion: 'reduce', forcedColors: r.forcedColors
+      });
+      const page = await ctx.newPage();
+      await page.goto(base + 'index.html', { waitUntil: 'load' });
+      if (r.zoom > 1) await page.evaluate(z => { document.documentElement.style.zoom = z; }, r.zoom);
+      await page.waitForFunction(() => document.querySelectorAll('.object-card').length === 3);
+      await page.waitForFunction(() => Array.from(document.images).every(i => i.complete && i.naturalWidth > 0));
+      await page.waitForTimeout(200);
+
+      const state = await page.evaluate(() => {
+        const doc = document.documentElement;
+        const wide = [];
+        document.querySelectorAll('body *').forEach(el => {
+          if (el.classList.contains('sr-only') || el.classList.contains('skip-link')) return;
+          const b = el.getBoundingClientRect();
+          if (b.width > 0 && b.right > doc.clientWidth + 1) wide.push(el.className || el.tagName);
+        });
+        const btn = document.querySelector('.open-button');
+        const cs = getComputedStyle(btn);
+        return {
+          overflow: doc.scrollWidth > doc.clientWidth + 1, wide: wide.slice(0, 5),
+          text: document.body.innerText,
+          btnHeight: Math.round(btn.getBoundingClientRect().height),
+          btnBorder: cs.borderTopWidth,
+          btnBackground: cs.backgroundColor,
+          btnColor: cs.color
+        };
+      });
+      // 背景色が捨てられる環境では、輪郭が無いと「ひらく」がただの文字になる。
+      // その環境では border を必須にする（背景色の有無では判定できない）。
+      const btnReadsAsControl = r.forcedColors === 'active'
+        ? parseFloat(state.btnBorder) >= 1
+        : !['rgba(0, 0, 0, 0)', 'transparent'].includes(state.btnBackground);
+      check(r.name, 'no_horizontal_overflow', !state.overflow, state.wide);
+      check(r.name, 'list_no_spoiler', !SPOILERS.some(w => state.text.includes(w)),
+        SPOILERS.filter(w => state.text.includes(w)));
+      check(r.name, 'open_control_stays_visible_as_a_control',
+        btnReadsAsControl && state.btnHeight >= 40,
+        { height: state.btnHeight, border: state.btnBorder, background: state.btnBackground });
+
+      await page.click('.object-card:nth-child(3) .open-button');
+      await page.waitForSelector('.detail-dialog[open]');
+      const dlg = await page.evaluate(() => {
+        const d = document.querySelector('.detail-dialog');
+        return {
+          overflowX: d.scrollWidth <= d.clientWidth + 1,
+          reveal: !!d.querySelector('.detail-reveal'),
+          action: d.querySelector('.official-action').getAttribute('href')
+        };
+      });
+      check(r.name, 'dialog_reachable_and_intact',
+        dlg.overflowX && dlg.reveal && /^https:/.test(dlg.action || ''), dlg);
+      await page.keyboard.press('Escape');
+      const closed = await page.evaluate(() => !document.querySelector('.detail-dialog').open);
+      check(r.name, 'escape_closes', closed);
+      await ctx.close();
+    }
+  }
+
+  // --- 14. 6 通りの order が同じ 3 identity を保つ ------------------------
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
     const page = await ctx.newPage();

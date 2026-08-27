@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T09:52:24.826Z",
+  "generated_at": "2026-08-27T09:56:31.662Z",
   "viewports": [
     "320x800",
     "390x844",
@@ -7,9 +7,9 @@
     "1024x768",
     "1440x1000"
   ],
-  "total": 184,
-  "failed": 5,
-  "verdict": "BROWSER_QA_FAIL",
+  "total": 204,
+  "failed": 0,
+  "verdict": "BROWSER_QA_GO",
   "results": [
     {
       "scope": "m320",
@@ -280,12 +280,12 @@
     {
       "scope": "m320",
       "name": "reopening_starts_from_the_top",
-      "pass": false,
+      "pass": true,
       "detail": {
-        "scrollTop": 395,
-        "mediaTop": -335,
-        "revealTop": 60,
-        "mediaAboveFold": false,
+        "scrollTop": 0,
+        "mediaTop": 60,
+        "revealTop": 455,
+        "mediaAboveFold": true,
         "revealAboveFold": true
       }
     },
@@ -620,12 +620,12 @@
     {
       "scope": "m390",
       "name": "reopening_starts_from_the_top",
-      "pass": false,
+      "pass": true,
       "detail": {
-        "scrollTop": 232,
-        "mediaTop": -172,
-        "revealTop": 241,
-        "mediaAboveFold": false,
+        "scrollTop": 0,
+        "mediaTop": 60,
+        "revealTop": 473,
+        "mediaAboveFold": true,
         "revealAboveFold": true
       }
     },
@@ -960,12 +960,12 @@
     {
       "scope": "m430",
       "name": "reopening_starts_from_the_top",
-      "pass": false,
+      "pass": true,
       "detail": {
-        "scrollTop": 108,
-        "mediaTop": -48,
-        "revealTop": 371,
-        "mediaAboveFold": false,
+        "scrollTop": 0,
+        "mediaTop": 60,
+        "revealTop": 479,
+        "mediaAboveFold": true,
         "revealAboveFold": true
       }
     },
@@ -1314,12 +1314,12 @@
     {
       "scope": "d1024",
       "name": "reopening_starts_from_the_top",
-      "pass": false,
+      "pass": true,
       "detail": {
-        "scrollTop": 258,
-        "mediaTop": -187,
-        "revealTop": 231,
-        "mediaAboveFold": false,
+        "scrollTop": 0,
+        "mediaTop": 71,
+        "revealTop": 489,
+        "mediaAboveFold": true,
         "revealAboveFold": true
       }
     },
@@ -1668,12 +1668,12 @@
     {
       "scope": "d1440",
       "name": "reopening_starts_from_the_top",
-      "pass": false,
+      "pass": true,
       "detail": {
-        "scrollTop": 92,
-        "mediaTop": -21,
-        "revealTop": 464,
-        "mediaAboveFold": false,
+        "scrollTop": 0,
+        "mediaTop": 71,
+        "revealTop": 556,
+        "mediaAboveFold": true,
         "revealAboveFold": true
       }
     },
@@ -1955,6 +1955,158 @@
       "name": "halt_screen_has_no_internal_term",
       "pass": true,
       "detail": "本文へ移動 / 棚 / 東京の棚 / by みんなの感情書店 /  / まだ、行き先が決まっていない日に。 /  / 東京を、3つだけ。 / 東京の3つ / この棚はいま準備中です。 /  / このページでは保存・計測・個人ごとの推薦を行いません。画像は権利を確認した提供元から表示し、公式リンクは押したときだけ開きます"
+    },
+    {
+      "scope": "landscape-390h",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "landscape-390h",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "landscape-390h",
+      "name": "open_control_stays_visible_as_a_control",
+      "pass": true,
+      "detail": {
+        "height": 48,
+        "border": "0px",
+        "background": "rgb(37, 76, 58)"
+      }
+    },
+    {
+      "scope": "landscape-390h",
+      "name": "dialog_reachable_and_intact",
+      "pass": true,
+      "detail": {
+        "overflowX": true,
+        "reveal": true,
+        "action": "https://www.kiseichu.org/information"
+      }
+    },
+    {
+      "scope": "landscape-390h",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "zoom200-m390",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "zoom200-m390",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "zoom200-m390",
+      "name": "open_control_stays_visible_as_a_control",
+      "pass": true,
+      "detail": {
+        "height": 96,
+        "border": "0px",
+        "background": "rgb(37, 76, 58)"
+      }
+    },
+    {
+      "scope": "zoom200-m390",
+      "name": "dialog_reachable_and_intact",
+      "pass": true,
+      "detail": {
+        "overflowX": true,
+        "reveal": true,
+        "action": "https://www.kiseichu.org/information"
+      }
+    },
+    {
+      "scope": "zoom200-m390",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "zoom200-d1440",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "zoom200-d1440",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "zoom200-d1440",
+      "name": "open_control_stays_visible_as_a_control",
+      "pass": true,
+      "detail": {
+        "height": 96,
+        "border": "0px",
+        "background": "rgb(37, 76, 58)"
+      }
+    },
+    {
+      "scope": "zoom200-d1440",
+      "name": "dialog_reachable_and_intact",
+      "pass": true,
+      "detail": {
+        "overflowX": true,
+        "reveal": true,
+        "action": "https://www.kiseichu.org/information"
+      }
+    },
+    {
+      "scope": "zoom200-d1440",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "forced-colors",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "forced-colors",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "forced-colors",
+      "name": "open_control_stays_visible_as_a_control",
+      "pass": true,
+      "detail": {
+        "height": 48,
+        "border": "2px",
+        "background": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "scope": "forced-colors",
+      "name": "dialog_reachable_and_intact",
+      "pass": true,
+      "detail": {
+        "overflowX": true,
+        "reveal": true,
+        "action": "https://www.kiseichu.org/information"
+      }
+    },
+    {
+      "scope": "forced-colors",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
     },
     {
       "scope": "order",

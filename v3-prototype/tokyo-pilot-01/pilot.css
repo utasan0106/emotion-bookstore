@@ -200,6 +200,19 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
   .hero-kicker { margin-bottom: 8px; }
 }
 
+/* Windows のハイコントラスト等では背景色が捨てられ、「ひらく」がただの文字に
+   なる。Object を開く手がかりが消えるので、輪郭をシステム色で描き直す。 */
+@media (forced-colors: active) {
+  .open-button, .official-action, .dialog-close {
+    border: 2px solid ButtonText;
+    forced-color-adjust: none;
+    background: ButtonFace; color: ButtonText;
+  }
+  .object-card, .media-frame, .detail-media img { border: 1px solid CanvasText; }
+  .card-number, .detail-count { border: 1px solid CanvasText; }
+  .detail-dialog { border: 1px solid CanvasText; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
