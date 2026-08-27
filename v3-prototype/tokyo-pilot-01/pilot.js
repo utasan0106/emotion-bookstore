@@ -175,6 +175,12 @@
     grid.appendChild(card(object, index));
   });
 
+  // 3件が実際に並んだときだけ、終わりを出す。
+  if (grid.querySelectorAll('.object-card').length === 3) {
+    var endPlate = document.querySelector('.end-plate');
+    if (endPlate) endPlate.hidden = false;
+  }
+
   closeButton.addEventListener('click', closeDetail);
   dialog.addEventListener('click', function (event) {
     if (event.target === dialog) closeDetail();

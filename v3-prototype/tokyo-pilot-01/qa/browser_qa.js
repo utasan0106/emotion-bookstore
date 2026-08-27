@@ -161,6 +161,23 @@ function check(scope, name, pass, detail) {
       firstFold.finiteCounterVisible && /\/\s*03/.test(firstFold.finiteCounter || ''),
       { counter: firstFold.finiteCounter, visible: firstFold.finiteCounterVisible });
 
+    // 参加者が読む文字の最小サイズ。日本語で 10px を切ると実機で読めない。
+    const tiny = await page.evaluate(() => {
+      const out = [];
+      document.querySelectorAll('body *').forEach(el => {
+        if (el.classList.contains('sr-only') || el.classList.contains('skip-link')) return;
+        const hasOwnText = Array.from(el.childNodes)
+          .some(n => n.nodeType === 3 && n.textContent.trim().length);
+        if (!hasOwnText) return;
+        const cs = getComputedStyle(el);
+        if (cs.visibility === 'hidden' || cs.display === 'none') return;
+        const size = parseFloat(cs.fontSize);
+        if (size < 10) out.push({ el: el.className || el.tagName, size, text: el.textContent.trim().slice(0, 24) });
+      });
+      return out;
+    });
+    check(S, 'no_text_below_10px', tiny.length === 0, tiny);
+
     // --- 4. 横スクロール 0 ----------------------------------------------
     const overflow = await page.evaluate(() => {
       const doc = document.documentElement;
@@ -288,12 +305,44 @@ function check(scope, name, pass, detail) {
     check(S, 'escape_closes', afterEsc.open === false);
     check(S, 'focus_returns_to_trigger', /open-button/.test(String(afterEsc.focus)), afterEsc.focus);
 
-    // --- 8. keyboard だけで 1件目を開ける --------------------------------
-    const kb = await page.evaluate(() => {
-      const order = Array.from(document.querySelectorAll('a[href], button')).map(e => e.className || e.tagName);
-      return order;
+    // --- 8. keyboard だけで 1件目を開いて、読んで、閉じられる ---------------
+    await page.evaluate(() => { window.scrollTo(0, 0); document.body.focus(); });
+    let stops = 0, reached = false;
+    for (; stops < 12; stops++) {
+      await page.keyboard.press('Tab');
+      const on = await page.evaluate(() => document.activeElement && document.activeElement.className);
+      if (/open-button/.test(String(on))) { reached = true; break; }
+    }
+    check(S, 'first_open_reachable_by_tab', reached && stops <= 6, { tabStops: stops + 1, reached });
+    await page.keyboard.press('Enter');
+    await page.waitForSelector('.detail-dialog[open]', { timeout: 3000 })
+      .then(() => check(S, 'enter_opens_detail', true))
+      .catch(() => check(S, 'enter_opens_detail', false));
+    // dialog の中を Tab で回っても背後の棚へ抜けないこと
+    const trapped = await page.evaluate(async () => {
+      const dlg = document.querySelector('.detail-dialog');
+      return dlg.contains(document.activeElement);
     });
-    check(S, 'focusable_order', kb.length > 0, kb);
+    check(S, 'focus_starts_inside_dialog', trapped);
+    // showModal 中は背後が inert になる。Tab を回しても棚側の要素へは行かないこと。
+    // （最後の要素の次で body / ブラウザ UI に抜けるのは native の挙動。）
+    const escapedTo = [];
+    for (let i = 0; i < 10; i++) {
+      await page.keyboard.press('Tab');
+      const where = await page.evaluate(() => {
+        const el = document.activeElement;
+        if (!el || el === document.body) return 'body';
+        const dlg = document.querySelector('.detail-dialog');
+        return dlg.contains(el) ? 'dialog' : ('OUTSIDE:' + (el.className || el.tagName));
+      });
+      if (where.startsWith('OUTSIDE')) escapedTo.push(where);
+    }
+    check(S, 'focus_never_reaches_the_shelf_behind', escapedTo.length === 0, escapedTo);
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !document.querySelector('.detail-dialog').open);
+    const backOnTrigger = await page.evaluate(() =>
+      /open-button/.test(String(document.activeElement && document.activeElement.className)));
+    check(S, 'keyboard_path_returns_focus', backOnTrigger);
 
     // --- 9. 有限な終わりが存在する ---------------------------------------
     const ending = await page.$eval('.end-plate', el => el.innerText);
@@ -474,7 +523,20 @@ function check(scope, name, pass, detail) {
     }
   }
 
-  // --- 14. 6 通りの order が同じ 3 identity を保つ ------------------------
+  // --- 14. JS が動かない環境で、終わりだけが残らないこと --------------------
+  {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto(base + 'index.html', { waitUntil: 'load' });
+    const text = await page.innerText('body');
+    check('no-js', 'explains_itself_without_js', /JavaScript/.test(text), text.replace(/\n/g, ' / ').slice(0, 120));
+    check('no-js', 'no_false_ending_without_js', !/見終わりました/.test(text));
+    check('no-js', 'no_spoiler_without_js', !SPOILERS.some(w => text.includes(w)),
+      SPOILERS.filter(w => text.includes(w)));
+    await ctx.close();
+  }
+
+  // --- 15. 6 通りの order が同じ 3 identity を保つ ------------------------
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
     const page = await ctx.newPage();
