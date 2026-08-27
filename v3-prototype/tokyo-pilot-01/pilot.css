@@ -94,7 +94,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
 .card-body { padding: 15px 18px 16px; }
 .object-meta { margin: 0 0 10px; color: var(--muted); font-size: 11px; line-height: 1.5; }
 .object-hook {
-  margin: 0 0 14px; line-break: strict; overflow-wrap: normal; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  margin: 0 0 14px; line-break: strict; overflow-wrap: normal; word-break: auto-phrase; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
   font-size: clamp(23px, 2.6vw, 34px); line-height: 1.38; font-weight: 600; letter-spacing: -.02em;
 }
 .open-button, .official-action {
@@ -152,7 +152,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
 /* 既に読まれた Hook は小さく echo するだけ。大きくするのは未知の Reveal。 */
 .detail-hook-echo { margin: 0 0 14px; color: var(--muted); font-size: 13px; line-height: 1.6; letter-spacing: .02em; }
 .detail-reveal {
-  margin: 0; max-width: 720px; line-break: strict; overflow-wrap: normal;
+  margin: 0; max-width: 720px; line-break: strict; overflow-wrap: normal; word-break: auto-phrase;
   font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
   font-size: clamp(27px, 4.2vw, 42px); line-height: 1.45; font-weight: 600; letter-spacing: -.015em;
 }
