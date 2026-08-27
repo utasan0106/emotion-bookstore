@@ -1,0 +1,1247 @@
+{
+  "generated_at": "2026-08-27T09:22:43.648Z",
+  "viewports": [
+    "320x800",
+    "390x844",
+    "430x932",
+    "1024x768",
+    "1440x1000"
+  ],
+  "total": 116,
+  "failed": 15,
+  "verdict": "BROWSER_QA_FAIL",
+  "results": [
+    {
+      "scope": "m320",
+      "name": "card_media_decoded_3",
+      "pass": true,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "w": 640,
+          "h": 905,
+          "boxW": 298,
+          "boxH": 196,
+          "fit": "cover"
+        },
+        {
+          "src": "hachiko.jpg",
+          "w": 2048,
+          "h": 1536,
+          "boxW": 298,
+          "boxH": 196,
+          "fit": "cover"
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "w": 1363,
+          "h": 2048,
+          "boxW": 298,
+          "boxH": 196,
+          "fit": "contain"
+        }
+      ]
+    },
+    {
+      "scope": "m320",
+      "name": "card_media_identity_kept",
+      "pass": false,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "fit": "cover",
+          "visible": 0.465
+        },
+        {
+          "src": "hachiko.jpg",
+          "fit": "cover",
+          "visible": 0.877
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "fit": "contain",
+          "visible": 1
+        }
+      ]
+    },
+    {
+      "scope": "m320",
+      "name": "first_fold_has_media_and_hook",
+      "pass": true,
+      "detail": {
+        "vh": 800,
+        "seen": [
+          {
+            "hook": "原稿執筆する人限定のカフェ。",
+            "imgVisiblePx": 196,
+            "hookVisiblePx": 75
+          }
+        ]
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": {
+        "scrollW": 320,
+        "clientW": 320,
+        "wide": []
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "list_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "list_no_objectname_in_dom",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m320",
+      "name": "open_control_is_button",
+      "pass": true,
+      "detail": [
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        }
+      ]
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_opens",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_shows_reveal",
+      "pass": true,
+      "detail": "入店時に目標を書き、達成するまで精算できない。進捗チェックもある。"
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_reveal_is_dominant",
+      "pass": false,
+      "detail": {
+        "reveal": 21,
+        "hook": 32
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_no_horizontal_overflow",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_action_https_newtab",
+      "pass": true,
+      "detail": {
+        "href": "https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/",
+        "rel": "noopener noreferrer"
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_focus_inside",
+      "pass": true,
+      "detail": "dialog-close"
+    },
+    {
+      "scope": "m320",
+      "name": "detail_media_identity_kept",
+      "pass": false,
+      "detail": {
+        "w": 640,
+        "h": 905,
+        "boxW": 216,
+        "boxH": 162,
+        "fit": "cover",
+        "visible": 0.53
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m320",
+      "name": "focus_returns_to_trigger",
+      "pass": true,
+      "detail": "open-button"
+    },
+    {
+      "scope": "m320",
+      "name": "focusable_order",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "brand",
+        "open-button",
+        "open-button",
+        "open-button",
+        "dialog-close",
+        "official-action",
+        "rights-link"
+      ]
+    },
+    {
+      "scope": "m320",
+      "name": "finite_ending_present",
+      "pass": true,
+      "detail": "今回は、ここまで /  / 3つ、見終わりました。 /  / 次の3つを仕入れたら、この棚を入れ替えます。"
+    },
+    {
+      "scope": "m320",
+      "name": "no_storage_written",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": []
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "no_fetch_xhr_beacon",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "no_external_request",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "card_media_decoded_3",
+      "pass": true,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "w": 640,
+          "h": 905,
+          "boxW": 368,
+          "boxH": 242,
+          "fit": "cover"
+        },
+        {
+          "src": "hachiko.jpg",
+          "w": 2048,
+          "h": 1536,
+          "boxW": 368,
+          "boxH": 242,
+          "fit": "cover"
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "w": 1363,
+          "h": 2048,
+          "boxW": 368,
+          "boxH": 242,
+          "fit": "contain"
+        }
+      ]
+    },
+    {
+      "scope": "m390",
+      "name": "card_media_identity_kept",
+      "pass": false,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "fit": "cover",
+          "visible": 0.465
+        },
+        {
+          "src": "hachiko.jpg",
+          "fit": "cover",
+          "visible": 0.877
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "fit": "contain",
+          "visible": 1
+        }
+      ]
+    },
+    {
+      "scope": "m390",
+      "name": "first_fold_has_media_and_hook",
+      "pass": true,
+      "detail": {
+        "vh": 844,
+        "seen": [
+          {
+            "hook": "原稿執筆する人限定のカフェ。",
+            "imgVisiblePx": 242,
+            "hookVisiblePx": 86
+          }
+        ]
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": {
+        "scrollW": 390,
+        "clientW": 390,
+        "wide": []
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "list_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "list_no_objectname_in_dom",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m390",
+      "name": "open_control_is_button",
+      "pass": true,
+      "detail": [
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        }
+      ]
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_opens",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_shows_reveal",
+      "pass": true,
+      "detail": "入店時に目標を書き、達成するまで精算できない。進捗チェックもある。"
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_reveal_is_dominant",
+      "pass": false,
+      "detail": {
+        "reveal": 21,
+        "hook": 32
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_no_horizontal_overflow",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_action_https_newtab",
+      "pass": true,
+      "detail": {
+        "href": "https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/",
+        "rel": "noopener noreferrer"
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_focus_inside",
+      "pass": true,
+      "detail": "dialog-close"
+    },
+    {
+      "scope": "m390",
+      "name": "detail_media_identity_kept",
+      "pass": false,
+      "detail": {
+        "w": 640,
+        "h": 905,
+        "boxW": 286,
+        "boxH": 215,
+        "fit": "cover",
+        "visible": 0.532
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m390",
+      "name": "focus_returns_to_trigger",
+      "pass": true,
+      "detail": "open-button"
+    },
+    {
+      "scope": "m390",
+      "name": "focusable_order",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "brand",
+        "open-button",
+        "open-button",
+        "open-button",
+        "dialog-close",
+        "official-action",
+        "rights-link"
+      ]
+    },
+    {
+      "scope": "m390",
+      "name": "finite_ending_present",
+      "pass": true,
+      "detail": "今回は、ここまで /  / 3つ、見終わりました。 /  / 次の3つを仕入れたら、この棚を入れ替えます。"
+    },
+    {
+      "scope": "m390",
+      "name": "no_storage_written",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": []
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "no_fetch_xhr_beacon",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "no_external_request",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "card_media_decoded_3",
+      "pass": true,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "w": 640,
+          "h": 905,
+          "boxW": 408,
+          "boxH": 268,
+          "fit": "cover"
+        },
+        {
+          "src": "hachiko.jpg",
+          "w": 2048,
+          "h": 1536,
+          "boxW": 408,
+          "boxH": 268,
+          "fit": "cover"
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "w": 1363,
+          "h": 2048,
+          "boxW": 408,
+          "boxH": 268,
+          "fit": "contain"
+        }
+      ]
+    },
+    {
+      "scope": "m430",
+      "name": "card_media_identity_kept",
+      "pass": false,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "fit": "cover",
+          "visible": 0.465
+        },
+        {
+          "src": "hachiko.jpg",
+          "fit": "cover",
+          "visible": 0.876
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "fit": "contain",
+          "visible": 1
+        }
+      ]
+    },
+    {
+      "scope": "m430",
+      "name": "first_fold_has_media_and_hook",
+      "pass": true,
+      "detail": {
+        "vh": 932,
+        "seen": [
+          {
+            "hook": "原稿執筆する人限定のカフェ。",
+            "imgVisiblePx": 268,
+            "hookVisiblePx": 95
+          }
+        ]
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": {
+        "scrollW": 430,
+        "clientW": 430,
+        "wide": []
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "list_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "list_no_objectname_in_dom",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m430",
+      "name": "open_control_is_button",
+      "pass": true,
+      "detail": [
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        }
+      ]
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_opens",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_shows_reveal",
+      "pass": true,
+      "detail": "入店時に目標を書き、達成するまで精算できない。進捗チェックもある。"
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_reveal_is_dominant",
+      "pass": false,
+      "detail": {
+        "reveal": 21,
+        "hook": 32
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_no_horizontal_overflow",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_action_https_newtab",
+      "pass": true,
+      "detail": {
+        "href": "https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/",
+        "rel": "noopener noreferrer"
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_focus_inside",
+      "pass": true,
+      "detail": "dialog-close"
+    },
+    {
+      "scope": "m430",
+      "name": "detail_media_identity_kept",
+      "pass": false,
+      "detail": {
+        "w": 640,
+        "h": 905,
+        "boxW": 326,
+        "boxH": 245,
+        "fit": "cover",
+        "visible": 0.531
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m430",
+      "name": "focus_returns_to_trigger",
+      "pass": true,
+      "detail": "open-button"
+    },
+    {
+      "scope": "m430",
+      "name": "focusable_order",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "brand",
+        "open-button",
+        "open-button",
+        "open-button",
+        "dialog-close",
+        "official-action",
+        "rights-link"
+      ]
+    },
+    {
+      "scope": "m430",
+      "name": "finite_ending_present",
+      "pass": true,
+      "detail": "今回は、ここまで /  / 3つ、見終わりました。 /  / 次の3つを仕入れたら、この棚を入れ替えます。"
+    },
+    {
+      "scope": "m430",
+      "name": "no_storage_written",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": []
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "no_fetch_xhr_beacon",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "no_external_request",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "card_media_decoded_3",
+      "pass": true,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "w": 640,
+          "h": 905,
+          "boxW": 318,
+          "boxH": 254,
+          "fit": "cover"
+        },
+        {
+          "src": "hachiko.jpg",
+          "w": 2048,
+          "h": 1536,
+          "boxW": 318,
+          "boxH": 239,
+          "fit": "cover"
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "w": 1363,
+          "h": 2048,
+          "boxW": 318,
+          "boxH": 239,
+          "fit": "contain"
+        }
+      ]
+    },
+    {
+      "scope": "d1024",
+      "name": "card_media_identity_kept",
+      "pass": false,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "fit": "cover",
+          "visible": 0.565
+        },
+        {
+          "src": "hachiko.jpg",
+          "fit": "cover",
+          "visible": 0.998
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "fit": "contain",
+          "visible": 1
+        }
+      ]
+    },
+    {
+      "scope": "d1024",
+      "name": "first_fold_has_media_and_hook",
+      "pass": true,
+      "detail": {
+        "vh": 768,
+        "seen": [
+          {
+            "hook": "原稿執筆する人限定のカフェ。",
+            "imgVisiblePx": 254,
+            "hookVisiblePx": 73
+          },
+          {
+            "hook": "渋谷のハチ公、本物は上野。",
+            "imgVisiblePx": 239,
+            "hookVisiblePx": 73
+          },
+          {
+            "hook": "8.8mのサナダムシ。",
+            "imgVisiblePx": 239,
+            "hookVisiblePx": 37
+          }
+        ]
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": {
+        "scrollW": 1024,
+        "clientW": 1024,
+        "wide": []
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "list_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "list_no_objectname_in_dom",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1024",
+      "name": "open_control_is_button",
+      "pass": true,
+      "detail": [
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        }
+      ]
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_opens",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_shows_reveal",
+      "pass": true,
+      "detail": "入店時に目標を書き、達成するまで精算できない。進捗チェックもある。"
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_reveal_is_dominant",
+      "pass": false,
+      "detail": {
+        "reveal": 28,
+        "hook": 50
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_no_horizontal_overflow",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_action_https_newtab",
+      "pass": true,
+      "detail": {
+        "href": "https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/",
+        "rel": "noopener noreferrer"
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_focus_inside",
+      "pass": true,
+      "detail": "dialog-close"
+    },
+    {
+      "scope": "d1024",
+      "name": "detail_media_identity_kept",
+      "pass": false,
+      "detail": {
+        "w": 640,
+        "h": 905,
+        "boxW": 854,
+        "boxH": 470,
+        "fit": "cover",
+        "visible": 0.389
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1024",
+      "name": "focus_returns_to_trigger",
+      "pass": true,
+      "detail": "open-button"
+    },
+    {
+      "scope": "d1024",
+      "name": "focusable_order",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "brand",
+        "open-button",
+        "open-button",
+        "open-button",
+        "dialog-close",
+        "official-action",
+        "rights-link"
+      ]
+    },
+    {
+      "scope": "d1024",
+      "name": "finite_ending_present",
+      "pass": true,
+      "detail": "今回は、ここまで /  / 3つ、見終わりました。 /  / 次の3つを仕入れたら、この棚を入れ替えます。"
+    },
+    {
+      "scope": "d1024",
+      "name": "no_storage_written",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": []
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "no_fetch_xhr_beacon",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "no_external_request",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "card_media_decoded_3",
+      "pass": true,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "w": 640,
+          "h": 905,
+          "boxW": 379,
+          "boxH": 303,
+          "fit": "cover"
+        },
+        {
+          "src": "hachiko.jpg",
+          "w": 2048,
+          "h": 1536,
+          "boxW": 379,
+          "boxH": 284,
+          "fit": "cover"
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "w": 1363,
+          "h": 2048,
+          "boxW": 379,
+          "boxH": 285,
+          "fit": "contain"
+        }
+      ]
+    },
+    {
+      "scope": "d1440",
+      "name": "card_media_identity_kept",
+      "pass": false,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "fit": "cover",
+          "visible": 0.565
+        },
+        {
+          "src": "hachiko.jpg",
+          "fit": "cover",
+          "visible": 0.999
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "fit": "contain",
+          "visible": 1
+        }
+      ]
+    },
+    {
+      "scope": "d1440",
+      "name": "first_fold_has_media_and_hook",
+      "pass": true,
+      "detail": {
+        "vh": 1000,
+        "seen": [
+          {
+            "hook": "原稿執筆する人限定のカフェ。",
+            "imgVisiblePx": 303,
+            "hookVisiblePx": 94
+          },
+          {
+            "hook": "渋谷のハチ公、本物は上野。",
+            "imgVisiblePx": 284,
+            "hookVisiblePx": 94
+          },
+          {
+            "hook": "8.8mのサナダムシ。",
+            "imgVisiblePx": 285,
+            "hookVisiblePx": 47
+          }
+        ]
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": {
+        "scrollW": 1440,
+        "clientW": 1440,
+        "wide": []
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "list_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "list_no_objectname_in_dom",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1440",
+      "name": "open_control_is_button",
+      "pass": true,
+      "detail": [
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        }
+      ]
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_opens",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_shows_reveal",
+      "pass": true,
+      "detail": "入店時に目標を書き、達成するまで精算できない。進捗チェックもある。"
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_reveal_is_dominant",
+      "pass": false,
+      "detail": {
+        "reveal": 28,
+        "hook": 50
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_no_horizontal_overflow",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_action_https_newtab",
+      "pass": true,
+      "detail": {
+        "href": "https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/",
+        "rel": "noopener noreferrer"
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_focus_inside",
+      "pass": true,
+      "detail": "dialog-close"
+    },
+    {
+      "scope": "d1440",
+      "name": "detail_media_identity_kept",
+      "pass": false,
+      "detail": {
+        "w": 640,
+        "h": 905,
+        "boxW": 854,
+        "boxH": 470,
+        "fit": "cover",
+        "visible": 0.389
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1440",
+      "name": "focus_returns_to_trigger",
+      "pass": true,
+      "detail": "open-button"
+    },
+    {
+      "scope": "d1440",
+      "name": "focusable_order",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "brand",
+        "open-button",
+        "open-button",
+        "open-button",
+        "dialog-close",
+        "official-action",
+        "rights-link"
+      ]
+    },
+    {
+      "scope": "d1440",
+      "name": "finite_ending_present",
+      "pass": true,
+      "detail": "今回は、ここまで /  / 3つ、見終わりました。 /  / 次の3つを仕入れたら、この棚を入れ替えます。"
+    },
+    {
+      "scope": "d1440",
+      "name": "no_storage_written",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": []
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "no_fetch_xhr_beacon",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "no_external_request",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "order",
+      "name": "all_six_orders_same_identities",
+      "pass": true,
+      "detail": {
+        "abc": [
+          "manuscript-cafe",
+          "hachiko-taxidermy",
+          "meguro-tapeworm"
+        ],
+        "acb": [
+          "manuscript-cafe",
+          "meguro-tapeworm",
+          "hachiko-taxidermy"
+        ],
+        "bac": [
+          "hachiko-taxidermy",
+          "manuscript-cafe",
+          "meguro-tapeworm"
+        ],
+        "bca": [
+          "hachiko-taxidermy",
+          "meguro-tapeworm",
+          "manuscript-cafe"
+        ],
+        "cab": [
+          "meguro-tapeworm",
+          "manuscript-cafe",
+          "hachiko-taxidermy"
+        ],
+        "cba": [
+          "meguro-tapeworm",
+          "hachiko-taxidermy",
+          "manuscript-cafe"
+        ]
+      }
+    }
+  ]
+}
