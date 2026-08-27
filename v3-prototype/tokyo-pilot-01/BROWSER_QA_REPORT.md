@@ -1,6 +1,6 @@
 # Browser QA — Tokyo Pilot 01
 
-Result: **`BROWSER_QA_GO` — 232 / 232**
+Result: **`BROWSER_QA_GO` — 268 / 268**
 Last run: 2026-08-27 JST
 Status: 隔離 Human Test の技術 QA = GO / Production = NO-GO
 
@@ -19,7 +19,7 @@ Chromium で描画する。data URI の差し替えや placeholder は使わな�
 
 | scope | 条件 | 件数 |
 | --- | --- | --- |
-| m320 / m390 / m430 / d1024 / d1440 | 320×800 / 390×844 / 430×932 / 1024×768 / 1440×1000 | 各 38 |
+| m320 / m390 / m430 / d1024 / d1440 | 320×800 / 390×844 / 430×932 / 1024×768 / 1440×1000 | 各 44 |
 | `<viewport>/<order>` | 1件目が入れ替わる3通り（abc / bac / cab）× 5 viewport | 各 1 |
 | order | 6通りの順列が同じ3 identity を保つ | 1 |
 | freshness | 参加者モードの正常描画 / 期限切れ停止 / 停止画面の漏れ | 3 |
@@ -28,7 +28,9 @@ Chromium で描画する。data URI の差し替えや placeholder は使わな�
 | forced-colors | ハイコントラスト | 5 |
 | no-js | JavaScript 無効 | 3 |
 
-48 種類の検査。
+freshness には media 欠落時の停止も含む。
+
+56 種類の検査。
 
 ## 検査していること
 
@@ -61,7 +63,8 @@ Chromium で描画する。data URI の差し替えや placeholder は使わな�
 
 **操作性**
 - 横スクロール 0（一覧・dialog とも）
-- Tab 6 打鍵以内で1件目の「ひらく」に到達し、Enter で開く
+- 初見の状態から 2 打鍵以内で1件目の「ひらく」に到達し、Enter で開く
+- 棚側の操作要素はちょうど4件（skip-link +「ひらく」×3）
 - focus が dialog の中から始まり、背面の棚へ抜けない
 - Escape で閉じ、focus が元の「ひらく」へ戻る
 - 参加者が読む文字が 10px を下回らない
@@ -73,8 +76,11 @@ Chromium で描画する。data URI の差し替えや placeholder は使わな�
 
 **保存 / 計測 / 外部通信**
 - localStorage / sessionStorage / cookie への書き込み 0
+- Service Worker の registration / controller 0、Cache Storage の key 0
+- IndexedDB の DB 0
 - fetch / XMLHttpRequest / sendBeacon の呼び出し 0
 - 同一オリジン以外への request 0
+- pageerror / console error 0
 
 ## 経緯（この日の実測で見つけて直したもの）
 
@@ -89,6 +95,12 @@ Chromium で描画する。data URI の差し替えや placeholder は使わな�
    Reveal を飛ばした途中から始まっていた（m390 で scrollTop 232）。
 5. ハイコントラストで「ひらく」が背景を失い、ただの文字になっていた。
 6. JS 無効時に空の棚と「3つ、見終わりました。」だけが残っていた。
+7. ヘッダの店名が行き先の無い link で、1件目の「ひらく」の手前で
+   tab stop を消費していた。
+8. 一覧のコンテナに aria-live が付いており、読み込み時に3件ぶんが
+   一気に読み上げられていた。開いた瞬間にも payoff の手前へ
+   「〇〇の詳細を開きました。」が挟まっていた。
+9. Hook と Reveal が語の途中で折れていた（原稿執筆する人限定のカ / フェ。）。
 
 いずれも意図的に元へ戻す negative test で FAIL することを確認している。
 
