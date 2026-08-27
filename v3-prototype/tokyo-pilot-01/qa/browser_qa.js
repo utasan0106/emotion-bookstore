@@ -316,14 +316,30 @@ function check(scope, name, pass, detail) {
     check(S, 'focus_returns_to_trigger', /open-button/.test(String(afterEsc.focus)), afterEsc.focus);
 
     // --- 8. keyboard だけで 1件目を開いて、読んで、閉じられる ---------------
-    await page.evaluate(() => { window.scrollTo(0, 0); document.body.focus(); });
-    let stops = 0, reached = false;
-    for (; stops < 12; stops++) {
+    // 直前の検査で focus が残っているので、初見と同じ状態から測り直す。
+    await page.reload({ waitUntil: 'load' });
+    await page.waitForFunction(() => document.querySelectorAll('.object-card').length === 3);
+    const tabPath = [];
+    let reached = false;
+    for (let i = 0; i < 12; i++) {
       await page.keyboard.press('Tab');
-      const on = await page.evaluate(() => document.activeElement && document.activeElement.className);
+      const on = await page.evaluate(() => {
+        const el = document.activeElement;
+        return el === document.body ? 'body' : (el.className || el.tagName);
+      });
+      tabPath.push(on);
       if (/open-button/.test(String(on))) { reached = true; break; }
     }
-    check(S, 'first_open_reachable_by_tab', reached && stops <= 6, { tabStops: stops + 1, reached });
+    // 棚に置いてよい操作要素は skip-link と3つの「ひらく」だけ。
+    // 1件目の「ひらく」までに 2 打鍵を超えるなら、余計なものが挟まっている。
+    check(S, 'first_open_reachable_by_tab', reached && tabPath.length <= 2, tabPath);
+    // dialog の中は閉じている間 focus できないので、棚側だけを数える。
+    const allFocusable = await page.$$eval(
+      'body > :not(dialog) a[href], body > :not(dialog) button, body > :not(dialog) [tabindex]:not([tabindex="-1"]), body > a[href]',
+      els => els.map(e => e.className || e.tagName));
+    check(S, 'shelf_has_only_the_intended_controls',
+      allFocusable.length === 4 && allFocusable.filter(c => /open-button/.test(c)).length === 3,
+      allFocusable);
     await page.keyboard.press('Enter');
     await page.waitForSelector('.detail-dialog[open]', { timeout: 3000 })
       .then(() => check(S, 'enter_opens_detail', true))
