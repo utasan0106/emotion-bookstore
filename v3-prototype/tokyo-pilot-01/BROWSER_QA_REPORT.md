@@ -1,6 +1,6 @@
 # Browser QA — Tokyo Pilot 01
 
-Result: **`BROWSER_QA_GO` — 281 / 281**
+Result: **`BROWSER_QA_GO` — 291 / 291**
 Last run: 2026-08-27 JST
 Status: 隔離 Human Test の技術 QA = GO / Production = NO-GO
 
@@ -19,7 +19,7 @@ Chromium で描画する。data URI の差し替えや placeholder は使わな�
 
 | scope | 条件 | 件数 |
 | --- | --- | --- |
-| m320 / m390 / m430 / d1024 / d1440 | 320×800 / 390×844 / 430×932 / 1024×768 / 1440×1000 | 各 45 |
+| m320 / m390 / m430 / d1024 / d1440 | 320×800 / 390×844 / 430×932 / 1024×768 / 1440×1000 | 各 47 |
 | `<viewport>/<order>` | 1件目が入れ替わる3通り（abc / bac / cab）× 5 viewport | 各 1 |
 | order | 6通りの順列が同じ3 identity を保つ | 1 |
 | freshness | 参加者モードの正常描画 / 期限切れ停止 / 停止画面の漏れ | 3 |
@@ -32,7 +32,7 @@ Chromium で描画する。data URI の差し替えや placeholder は使わな�
 
 freshness には media 欠落時の停止も含む。
 
-58 種類の検査。
+60 種類の検査。
 
 ## 検査していること
 
@@ -62,6 +62,10 @@ freshness には media 欠落時の停止も含む。
 
 **Official Action**
 - HTTPS かつ `noopener`、押したときだけ開く
+
+**色・コントラスト**
+- 参加者が読む文字が、実際に描画された色で WCAG AA を満たす
+  （暗い地側・刷り物側の両方。文字サイズと weight から large text も判定）
 
 **操作性**
 - 横スクロール 0（一覧・dialog とも）
@@ -109,6 +113,9 @@ freshness には media 欠落時の停止も含む。
 11. QA 自身のバグ: 要素名を変えたのに検査側を直し忘れ、存在しない
     セレクタと比較して常に PASS していた検査が1件あった。
     以後は harness が自分のセレクタを毎回検証する。
+12. Art Direction を暗い地へ変えたとき、Official Action の白文字/朱が
+    4.39:1、通し番号の朱/地が 4.23:1 で AA 未達だった。朱を用途別に
+    2値へ分けて解消し、以後は実描画色から測る検査で守る。
 
 いずれも意図的に元へ戻す negative test で FAIL することを確認している。
 

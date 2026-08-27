@@ -48,6 +48,24 @@
 
 `media_validate.py` は Pillow が必要（`pip install Pillow`）。
 
+## 見え方の決めごと
+
+- 地は夜の展示室（`#141312`）。3枚の写真はどれも暗い室内で照明の当たった
+  物を撮ったもので、地を暗くすると写真の中の空間が画面へ続く。
+  画面で光っているのは Real Media だけにする。
+- 刷り物（詳細）は紙（`#f1ebe0`）。地と紙をはっきり分け、
+  中間のグレーを何段も使わない。
+- signal は朱の1色だけ。通し番号と Official Action にしか使わない。
+  暗い地に載せる `--signal` と、白文字を載せる `--signal-fill` で
+  明度を分けてある（どちらも AA を満たす値。触るときは
+  `text_contrast_meets_aa` / `detail_text_contrast_meets_aa` が守る）。
+- 書体は明朝（標題・Hook・Reveal・札）と sans（facts・注記）の2系統だけ。
+  外部 Web Font は追加しない。
+- 一覧の composition は product 名のとおり「棚」。desktop は1本の棚板の上に
+  3点が実寸比のまま立ち、札は棚板の下。列幅は等分にせず1点目を広くとる。
+- Object は箱に入れない。カード・角丸・pill は使わない。
+  plate 全体が触れる面で、「ひらく」は札の最後の一行。
+
 ## 守っている契約
 
 runtime:
