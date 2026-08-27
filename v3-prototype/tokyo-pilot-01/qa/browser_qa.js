@@ -259,6 +259,26 @@ function check(scope, name, pass, detail) {
 
     if (WANT_SHOTS) await page.screenshot({ path: path.join(SHOT_DIR, `${S}-detail.png`), fullPage: false });
 
+    // 2件目を開いたとき、前の Object のスクロール位置を引き継がないこと。
+    // 引き継ぐと Real Media と Reveal を飛ばした途中から始まる。
+    await page.evaluate(() => { const d = document.querySelector('.detail-dialog'); d.scrollTop = d.scrollHeight; });
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !document.querySelector('.detail-dialog').open);
+    await page.click('.object-card:nth-child(2) .open-button');
+    await page.waitForSelector('.detail-dialog[open]');
+    const reopened = await page.evaluate(() => {
+      const d = document.querySelector('.detail-dialog');
+      const m = d.querySelector('.detail-media').getBoundingClientRect();
+      const r = d.querySelector('.detail-reveal').getBoundingClientRect();
+      return { scrollTop: Math.round(d.scrollTop), mediaTop: Math.round(m.top), revealTop: Math.round(r.top),
+        mediaAboveFold: m.top >= 0, revealAboveFold: r.top < window.innerHeight };
+    });
+    check(S, 'reopening_starts_from_the_top',
+      reopened.scrollTop === 0 && reopened.mediaAboveFold && reopened.revealAboveFold, reopened);
+    // dialog のスクロールが背面ページへ連鎖しないこと
+    const chain = await page.evaluate(() => getComputedStyle(document.querySelector('.detail-dialog')).overscrollBehaviorY);
+    check(S, 'dialog_scroll_does_not_chain', chain === 'contain', chain);
+
     await page.keyboard.press('Escape');
     await page.waitForFunction(() => !document.querySelector('.detail-dialog').open);
     const afterEsc = await page.evaluate(() => ({

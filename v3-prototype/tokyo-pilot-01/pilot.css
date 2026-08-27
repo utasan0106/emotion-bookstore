@@ -117,7 +117,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
 
 .detail-dialog {
   width: min(920px, calc(100% - 24px)); max-height: calc(100dvh - 24px); padding: 0;
-  overflow: auto; border: 0; border-radius: 24px; background: #f7f3eb; color: var(--ink); box-shadow: 0 24px 100px rgba(0,0,0,.26);
+  overflow: auto; overscroll-behavior: contain;
+  border: 0; border-radius: 24px; background: #f7f3eb; color: var(--ink); box-shadow: 0 24px 100px rgba(0,0,0,.26);
 }
 .detail-dialog::backdrop { background: rgba(15,18,17,.66); backdrop-filter: blur(7px); }
 .dialog-shell { position: relative; }

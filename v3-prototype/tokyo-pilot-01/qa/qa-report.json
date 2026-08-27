@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T09:50:25.290Z",
+  "generated_at": "2026-08-27T09:52:24.826Z",
   "viewports": [
     "320x800",
     "390x844",
@@ -7,9 +7,9 @@
     "1024x768",
     "1440x1000"
   ],
-  "total": 174,
-  "failed": 0,
-  "verdict": "BROWSER_QA_GO",
+  "total": 184,
+  "failed": 5,
+  "verdict": "BROWSER_QA_FAIL",
   "results": [
     {
       "scope": "m320",
@@ -276,6 +276,24 @@
         "fit": "contain",
         "visible": 1
       }
+    },
+    {
+      "scope": "m320",
+      "name": "reopening_starts_from_the_top",
+      "pass": false,
+      "detail": {
+        "scrollTop": 395,
+        "mediaTop": -335,
+        "revealTop": 60,
+        "mediaAboveFold": false,
+        "revealAboveFold": true
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_scroll_does_not_chain",
+      "pass": true,
+      "detail": "contain"
     },
     {
       "scope": "m320",
@@ -601,6 +619,24 @@
     },
     {
       "scope": "m390",
+      "name": "reopening_starts_from_the_top",
+      "pass": false,
+      "detail": {
+        "scrollTop": 232,
+        "mediaTop": -172,
+        "revealTop": 241,
+        "mediaAboveFold": false,
+        "revealAboveFold": true
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_scroll_does_not_chain",
+      "pass": true,
+      "detail": "contain"
+    },
+    {
+      "scope": "m390",
       "name": "escape_closes",
       "pass": true,
       "detail": null
@@ -920,6 +956,24 @@
         "fit": "contain",
         "visible": 1
       }
+    },
+    {
+      "scope": "m430",
+      "name": "reopening_starts_from_the_top",
+      "pass": false,
+      "detail": {
+        "scrollTop": 108,
+        "mediaTop": -48,
+        "revealTop": 371,
+        "mediaAboveFold": false,
+        "revealAboveFold": true
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_scroll_does_not_chain",
+      "pass": true,
+      "detail": "contain"
     },
     {
       "scope": "m430",
@@ -1259,6 +1313,24 @@
     },
     {
       "scope": "d1024",
+      "name": "reopening_starts_from_the_top",
+      "pass": false,
+      "detail": {
+        "scrollTop": 258,
+        "mediaTop": -187,
+        "revealTop": 231,
+        "mediaAboveFold": false,
+        "revealAboveFold": true
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_scroll_does_not_chain",
+      "pass": true,
+      "detail": "contain"
+    },
+    {
+      "scope": "d1024",
       "name": "escape_closes",
       "pass": true,
       "detail": null
@@ -1592,6 +1664,24 @@
         "fit": "contain",
         "visible": 1
       }
+    },
+    {
+      "scope": "d1440",
+      "name": "reopening_starts_from_the_top",
+      "pass": false,
+      "detail": {
+        "scrollTop": 92,
+        "mediaTop": -21,
+        "revealTop": 464,
+        "mediaAboveFold": false,
+        "revealAboveFold": true
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_scroll_does_not_chain",
+      "pass": true,
+      "detail": "contain"
     },
     {
       "scope": "d1440",

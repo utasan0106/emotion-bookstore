@@ -156,6 +156,9 @@
 
     if (typeof dialog.showModal === 'function') dialog.showModal();
     else dialog.setAttribute('open', '');
+    // 2件目以降を開いたとき、前に開いた Object のスクロール位置が残っていると
+    // Real Media と Reveal を飛ばした途中から始まってしまう。必ず頭から見せる。
+    dialog.scrollTop = 0;
     live.textContent = object.objectName + 'の詳細を開きました。';
   }
 
