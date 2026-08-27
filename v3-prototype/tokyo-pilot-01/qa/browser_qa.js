@@ -361,6 +361,9 @@ function check(scope, name, pass, detail) {
     if (WANT_SHOTS) {
       // fullPage capture は大きい画像を取りこぼすことがあり、参加者が見る絵と一致しない。
       // 実際にスクロールした viewport をそのまま撮る。
+      // 直前の dialog / focus 検査でページが動いているので、必ず先頭へ戻してから撮る。
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(250);
       await page.screenshot({ path: path.join(SHOT_DIR, `${S}-fold.png`), fullPage: false });
       for (let i = 2; i <= 3; i++) {
         await page.evaluate(n => document.querySelector(`.object-card:nth-child(${n})`)
@@ -444,6 +447,19 @@ function check(scope, name, pass, detail) {
     }));
     check('freshness', 'expired_facts_block_participant_cycle',
       stale.cards === 0 && stale.endHidden === true, stale);
+    // Real Media が1枚でも配信されなければ、灰色の枠を並べたまま続けない
+    const page3 = await ctx.newPage();
+    await page3.route('**/assets/hachiko.jpg', route => route.abort());
+    await page3.goto(`${base}index.html?participant=1`, { waitUntil: 'load' });
+    await page3.waitForTimeout(500);
+    const broken = await page3.evaluate(() => ({
+      cards: document.querySelectorAll('.object-card').length,
+      gridText: document.getElementById('objectGrid').textContent,
+      endHidden: document.querySelector('.end-plate').hidden
+    }));
+    check('freshness', 'missing_media_blocks_participant_cycle',
+      broken.cards === 0 && broken.endHidden === true, broken);
+
     // 止めた画面にも内部語・監査文を出さない
     const haltText = await page2.evaluate(() => document.body.innerText);
     check('freshness', 'halt_screen_has_no_internal_term',

@@ -49,6 +49,13 @@
     return haltParticipantCycle(true);
   }
 
+  // Real Media が出ないなら、この棚は成立しない。配信面の取りこぼしなどで
+  // 1枚でも読めなかったら、灰色の枠を並べたまま続けずに止める。
+  function reportMediaFailure(id) {
+    if (!isParticipantMode()) return;
+    haltParticipantCycle(true);
+  }
+
   // 掲載事実に期限があるものは、期限を過ぎたら参加者へ出さない。
   // 古い営業情報を「まだ有効」として見せないための fail-closed。
   function blockStaleParticipantCycle() {
@@ -87,6 +94,7 @@
       h('img', {
         src: object.mediaUrl,
         alt: listContext ? (object.cardMediaAlt || object.mediaAlt) : object.mediaAlt,
+        onerror: function () { reportMediaFailure(object.id); },
         width: object.mediaWidth,
         height: object.mediaHeight,
         loading: 'eager',

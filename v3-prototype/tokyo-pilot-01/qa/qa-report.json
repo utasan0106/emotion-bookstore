@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T10:03:45.889Z",
+  "generated_at": "2026-08-27T10:06:35.165Z",
   "viewports": [
     "320x800",
     "390x844",
@@ -7,7 +7,7 @@
     "1024x768",
     "1440x1000"
   ],
-  "total": 232,
+  "total": 233,
   "failed": 0,
   "verdict": "BROWSER_QA_GO",
   "results": [
@@ -2063,6 +2063,16 @@
     {
       "scope": "freshness",
       "name": "expired_facts_block_participant_cycle",
+      "pass": true,
+      "detail": {
+        "cards": 0,
+        "gridText": "この棚はいま準備中です。",
+        "endHidden": true
+      }
+    },
+    {
+      "scope": "freshness",
+      "name": "missing_media_blocks_participant_cycle",
       "pass": true,
       "detail": {
         "cards": 0,
