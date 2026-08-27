@@ -1,9 +1,11 @@
 # Tokyo Pilot 01 — Human Test Cycle 01
 
-Status: **TECHNICALLY READY FOR ISOLATED HUMAN TEST / PRODUCTION NO-GO**
+Status: **TECHNICAL GATES GREEN / BLOCKED ON THE HUMAN FACT RECHECK / PRODUCTION NO-GO**
 
 Prepared: 2026-08-27 JST
+Last verified: 2026-08-27 JST — all mechanical gates GO (see Precondition below)
 External participant recruitment / distribution: **NOT STARTED**
+Remaining blocker before any participant sees the page: **Precondition 13**
 
 ## What this test is for
 
@@ -27,16 +29,57 @@ Use the participant's natural device when possible. Smartphone is preferred beca
 
 ## Precondition — STOP if any fails
 
-1. All 3 exact Pilot runtime media assets are same-origin and `mediaPolicy="same-origin-localized"`.
-2. `MEDIA_LOCALIZATION_EVIDENCE.json` exists with exactly 3 records and records source URL/page, runtime SHA-256, dimensions, rights/permission basis, attribution, modification note, Human-Test-only scope, and `production_promotion=false`.
-3. `media_validate.py` = GO: all 3 local assets exist, decode, match the recorded SHA-256/byte size/dimensions, and are at least 600 px on the short usable axis.
-4. Cafe current schedule is reverified immediately before the cycle.
-5. Hachiko and Meguro current official facts/actions are reverified immediately before the cycle.
-6. `pilot_check.js` = GO.
-7. Real-media Browser QA = GO at 320/390/430/1024/1440.
-8. Meguro card/detail must preserve the full-frame evidence of length (`object-fit: contain`); do not crop the 8.8m display into a generic close-up.
-9. No storage / GA4 / fetch / XHR / beacon / account / recommendation runtime has been added.
-10. All six fixed order permutations preserve exactly the same 3 Object identities; order is the only difference.
+Run these three commands. All must pass on the exact commit the participants will see.
+
+```bash
+node pilot_check.js --external-cycle   # → PILOT_CHECK_GO
+python media_validate.py               # → MEDIA_VALIDATE_GO
+NODE_PATH=/opt/node22/lib/node_modules node qa/browser_qa.js   # → BROWSER_QA_GO
+```
+
+What they mechanically enforce (do not re-check these by hand):
+
+1. Exactly 3 Objects, finite ending, no search/account/save/history/ranking/feed.
+2. All 3 runtime media are same-origin and `mediaPolicy="same-origin-localized"`.
+3. `MEDIA_LOCALIZATION_EVIDENCE.json` has exactly 3 records with source URL/page,
+   runtime SHA-256, byte size, dimensions, rights basis, attribution, modification
+   note, `human_test_scope_only=true`, `production_promotion=false` — and the real
+   bytes on disk match all of them.
+4. No Real Media is cropped by its frame. Each Object declares `mediaCrop` and
+   `mediaCropNote`; all 3 are currently `none`. Meguro's 8.8 m length and the Cafe
+   poster's lettering are preserved at every viewport.
+5. Pre-open cards leak no Reveal answer (`objectName`, 剥製, 標本, 1986, 精算 …) and
+   no internal term (`verifiedNote`, Reveal, Human Test, Pilot …).
+6. `ひらく` is an in-page dialog control, never an external-link affordance.
+7. Official Action is HTTPS, `noopener noreferrer`, opens only on click.
+8. Dialog opens, Reveal is the dominant element, Escape closes, focus returns to
+   the trigger, no horizontal overflow — at 320/390/430/1024/1440.
+9. Storage writes 0, cookies 0, fetch/XHR/sendBeacon 0, external requests 0.
+10. All six order permutations preserve the same 3 Object identities.
+11. First Pull: whichever Object is first, its Real Media + full Hook + `ひらく`
+    are visible without scrolling, at all 5 viewports.
+12. Every dated fact is still inside its stated window. `--external-cycle` turns an
+    expired `expiresAt` into a hard FAIL, and participant mode refuses to render.
+
+## Precondition that is NOT mechanical — a human must do this
+
+**13. Reverify the current official facts against the primary sources, immediately
+before the cycle**, and update `verifiedAt` / `expiresAt` / the facts rows if
+anything moved:
+
+- Cafe schedule and rules — https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/
+- Hachiko exhibit record — https://db.kahaku.go.jp/exh/detail?cls=col_z1_01&pkey=1759522
+- Meguro hours / closures / admission — https://www.kiseichu.org/information
+
+Do not fill a gap with an estimate. If a source is unreachable or has changed in a
+way you cannot confirm, STOP the cycle and record it.
+
+> **Open blocker (2026-08-27):** this was not done in the current run. All three
+> official domains, plus `commons.wikimedia.org`, are blocked by the development
+> environment's network egress proxy, so no primary source could be read. The
+> Cafe's `expiresAt` is `2026-08-30T16:00:00+09:00`; after that the participant
+> gate closes by itself. Item 13 must be completed from a network that can reach
+> these sources before any participant sees the page.
 
 ## Media scope
 
@@ -47,6 +90,11 @@ Current same-origin assets are source-pinned **technical derivatives for this is
 - `assets/meguro-tapeworm.jpg` — 1363×2048, proportional Google-ingest/export derivative of the pinned Commons source
 
 They remove runtime hotlinks and keep the full frame. They are **not Production media approval** and must not be promoted to main/Production without the later Production media/legal/quality gate.
+
+Each is displayed at its own aspect ratio, in both the card and the detail. Nothing
+is cropped, and nothing is pillarboxed into a grey band. If a future Object needs a
+crop, declare it as `mediaCrop` plus a written `mediaCropNote` saying which edge may
+be lost and why — `pilot_check.js` refuses an undeclared one.
 
 ## Assignment
 

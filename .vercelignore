@@ -135,15 +135,16 @@ docs/
 /v3-prototype/tokyo-pilot-01/qa/
 
 # 内部ドキュメント（rights 監査文 / Human Test 手順 / Product 内部用語）
-/v3-prototype/tokyo-pilot-01/APPLY_TO_REPO.md
+/v3-prototype/tokyo-pilot-01/README.md
+/v3-prototype/tokyo-pilot-01/DECISIONS_NEEDED.md
 /v3-prototype/tokyo-pilot-01/BROWSER_QA_REPORT.md
 /v3-prototype/tokyo-pilot-01/HUMAN_TEST_CYCLE_01.md
 /v3-prototype/tokyo-pilot-01/HUMAN_TEST_SCORECARD.csv
 /v3-prototype/tokyo-pilot-01/MEDIA_ATTRIBUTION.md
 /v3-prototype/tokyo-pilot-01/MEDIA_LOCALIZATION_EVIDENCE.json
 /v3-prototype/tokyo-pilot-01/MEDIA_LOCALIZATION_READY.md
-/v3-prototype/tokyo-pilot-01/PACKAGE_MANIFEST.txt
 /v3-prototype/tokyo-pilot-01/PRODUCT_BET_20260827.md
 /v3-prototype/tokyo-pilot-01/RUN_REPORT_20260827_1600.md
 /v3-prototype/tokyo-pilot-01/RUN_REPORT_20260827_1650.md
 /v3-prototype/tokyo-pilot-01/RUN_REPORT_20260827_1700.md
+/v3-prototype/tokyo-pilot-01/RUN_REPORT_20260827_2100.md
