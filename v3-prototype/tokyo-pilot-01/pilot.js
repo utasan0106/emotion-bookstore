@@ -74,6 +74,8 @@
 
   // frame は media 自身の縦横比を使う。Object の identity を crop で壊さないため、
   // 切ってよい端は content 側の mediaCrop が決める（'none' なら一切切らない）。
+  // 棚は3件で終わる。Real Media が出ていないと Hook も成立しないので、
+  // 3枚とも遅延させずに読む（lazy は3件では節約にならず、灰色の枠だけが残る）。
   function media(object, className, eager) {
     return h('div', {
       class: 'media-frame ' + className,
@@ -85,7 +87,8 @@
         alt: object.mediaAlt,
         width: object.mediaWidth,
         height: object.mediaHeight,
-        loading: eager ? 'eager' : 'lazy',
+        loading: 'eager',
+        fetchpriority: eager ? 'high' : 'auto',
         decoding: 'async',
         referrerpolicy: 'no-referrer'
       })

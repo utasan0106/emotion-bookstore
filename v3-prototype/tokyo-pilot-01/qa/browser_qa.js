@@ -101,6 +101,16 @@ function check(scope, name, pass, detail) {
     })));
     check(S, 'card_media_decoded_3', imgs.length === 3 && imgs.every(i => i.w > 0 && i.h > 0), imgs);
 
+    // 遅延読み込みで枠だけ灰色になる状態を作らない。
+    // fold 外の Object も、スクロールを待たずに実画像が入っていること。
+    const loadState = await page.$$eval('.object-card img', els => els.map(i => ({
+      src: i.getAttribute('src'), loading: i.getAttribute('loading'),
+      complete: i.complete, natural: i.naturalWidth, currentSrc: !!i.currentSrc
+    })));
+    check(S, 'all_media_loaded_without_scroll',
+      loadState.length === 3 && loadState.every(i => i.loading === 'eager' && i.complete && i.natural > 0 && i.currentSrc),
+      loadState);
+
     // --- 2. 画像の identity: crop で失われる面積 -------------------------
     const cropLoss = imgs.map(i => {
       if (i.fit === 'contain' || !i.boxW || !i.boxH) return { src: i.src, fit: i.fit, visible: 1 };
@@ -256,8 +266,19 @@ function check(scope, name, pass, detail) {
     check(S, 'no_external_request', external.length === 0, external);
 
     if (WANT_SHOTS) {
+      // fullPage capture は大きい画像を取りこぼすことがあり、参加者が見る絵と一致しない。
+      // 実際にスクロールした viewport をそのまま撮る。
       await page.screenshot({ path: path.join(SHOT_DIR, `${S}-fold.png`), fullPage: false });
-      await page.screenshot({ path: path.join(SHOT_DIR, `${S}-home.png`), fullPage: true });
+      for (let i = 2; i <= 3; i++) {
+        await page.evaluate(n => document.querySelector(`.object-card:nth-child(${n})`)
+          .scrollIntoView({ block: 'center', behavior: 'instant' }), i);
+        await page.waitForTimeout(350);
+        await page.screenshot({ path: path.join(SHOT_DIR, `${S}-object${i}.png`), fullPage: false });
+      }
+      await page.evaluate(() => document.querySelector('.end-plate').scrollIntoView({ block: 'center', behavior: 'instant' }));
+      await page.waitForTimeout(350);
+      await page.screenshot({ path: path.join(SHOT_DIR, `${S}-end.png`), fullPage: false });
+      await page.evaluate(() => window.scrollTo(0, 0));
     }
     await ctx.close();
   }

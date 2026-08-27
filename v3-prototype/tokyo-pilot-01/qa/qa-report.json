@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T09:40:23.033Z",
+  "generated_at": "2026-08-27T09:42:13.261Z",
   "viewports": [
     "320x800",
     "390x844",
@@ -7,7 +7,7 @@
     "1024x768",
     "1440x1000"
   ],
-  "total": 144,
+  "total": 149,
   "failed": 0,
   "verdict": "BROWSER_QA_GO",
   "results": [
@@ -39,6 +39,34 @@
           "boxW": 298,
           "boxH": 448,
           "fit": "cover"
+        }
+      ]
+    },
+    {
+      "scope": "m320",
+      "name": "all_media_loaded_without_scroll",
+      "pass": true,
+      "detail": [
+        {
+          "src": "./assets/manuscript-cafe.png",
+          "loading": "eager",
+          "complete": true,
+          "natural": 640,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/hachiko.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 2048,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/meguro-tapeworm.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 1363,
+          "currentSrc": true
         }
       ]
     },
@@ -304,6 +332,34 @@
     },
     {
       "scope": "m390",
+      "name": "all_media_loaded_without_scroll",
+      "pass": true,
+      "detail": [
+        {
+          "src": "./assets/manuscript-cafe.png",
+          "loading": "eager",
+          "complete": true,
+          "natural": 640,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/hachiko.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 2048,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/meguro-tapeworm.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 1363,
+          "currentSrc": true
+        }
+      ]
+    },
+    {
+      "scope": "m390",
       "name": "card_media_identity_kept",
       "pass": true,
       "detail": [
@@ -564,6 +620,34 @@
     },
     {
       "scope": "m430",
+      "name": "all_media_loaded_without_scroll",
+      "pass": true,
+      "detail": [
+        {
+          "src": "./assets/manuscript-cafe.png",
+          "loading": "eager",
+          "complete": true,
+          "natural": 640,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/hachiko.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 2048,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/meguro-tapeworm.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 1363,
+          "currentSrc": true
+        }
+      ]
+    },
+    {
+      "scope": "m430",
       "name": "card_media_identity_kept",
       "pass": true,
       "detail": [
@@ -819,6 +903,34 @@
           "boxW": 318,
           "boxH": 478,
           "fit": "cover"
+        }
+      ]
+    },
+    {
+      "scope": "d1024",
+      "name": "all_media_loaded_without_scroll",
+      "pass": true,
+      "detail": [
+        {
+          "src": "./assets/manuscript-cafe.png",
+          "loading": "eager",
+          "complete": true,
+          "natural": 640,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/hachiko.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 2048,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/meguro-tapeworm.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 1363,
+          "currentSrc": true
         }
       ]
     },
@@ -1093,6 +1205,34 @@
           "boxW": 379,
           "boxH": 570,
           "fit": "cover"
+        }
+      ]
+    },
+    {
+      "scope": "d1440",
+      "name": "all_media_loaded_without_scroll",
+      "pass": true,
+      "detail": [
+        {
+          "src": "./assets/manuscript-cafe.png",
+          "loading": "eager",
+          "complete": true,
+          "natural": 640,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/hachiko.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 2048,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/meguro-tapeworm.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 1363,
+          "currentSrc": true
         }
       ]
     },
