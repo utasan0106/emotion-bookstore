@@ -154,7 +154,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
 .detail-reveal {
   margin: 0; max-width: 720px; line-break: strict; overflow-wrap: normal; word-break: auto-phrase;
   font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: clamp(1.6875rem, 4.2vw, 2.625rem); line-height: 1.45; font-weight: 600; letter-spacing: -.015em;
+  font-size: clamp(1.9rem, 4.2vw, 2.625rem); line-height: 1.45; font-weight: 600; letter-spacing: -.015em;
 }
 .detail-copy .object-meta { margin: 22px 0 0; }
 .verified-block { margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--line); }
@@ -180,6 +180,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
   .hero { margin-top: 34px; margin-bottom: 38px; }
   .object-grid { grid-template-columns: 1fr; gap: 20px; }
   .object-hook { font-size: clamp(1.6875rem, 8vw, 2.375rem); }
+  .detail-reveal { font-size: clamp(1.3rem, 5.2vw, 2.4rem); }
   .detail-media { height: min(42vh, 360px); margin-top: 14px; max-width: calc(100% - 24px); }
   .detail-media { height: min(42dvh, 360px); }
 }
@@ -201,7 +202,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offs
   .detail-dialog { width: calc(100% - 10px); max-height: calc(100vh - 10px); border-radius: 18px; }
   .detail-dialog { max-height: calc(100dvh - 10px); }
   .detail-copy { padding: 24px 17px 36px; }
-  .detail-reveal { font-size: 1.6875rem; }
+  .detail-reveal { font-size: clamp(1.2rem, 7vw, 2.1rem); }
   .fact-row { grid-template-columns: 72px 1fr; gap: 10px; }
 }
 

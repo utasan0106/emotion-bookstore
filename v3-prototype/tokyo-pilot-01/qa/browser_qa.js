@@ -245,7 +245,7 @@ function check(scope, name, pass, detail) {
     const dlg = await page.evaluate(() => {
       const d = document.querySelector('.detail-dialog');
       const reveal = d.querySelector('.detail-reveal');
-      const hook = d.querySelector('.detail-hook');
+      const hook = d.querySelector('.detail-hook-echo');
       const action = d.querySelector('.official-action');
       const cs = el => el ? parseFloat(getComputedStyle(el).fontSize) : 0;
       return {
@@ -262,8 +262,10 @@ function check(scope, name, pass, detail) {
     });
     check(S, 'dialog_opens', dlg.open === true);
     check(S, 'dialog_shows_reveal', !!dlg.revealText, dlg.revealText);
-    check(S, 'dialog_reveal_is_dominant', dlg.revealFont >= dlg.hookFont,
-      { reveal: dlg.revealFont, hook: dlg.hookFont });
+    // 既読の Hook より、未知の Reveal がはっきり大きいこと（1.6 倍以上）
+    check(S, 'dialog_reveal_is_dominant',
+      dlg.hookFont > 0 && dlg.revealFont >= dlg.hookFont * 1.6,
+      { reveal: dlg.revealFont, hookEcho: dlg.hookFont });
     check(S, 'dialog_no_horizontal_overflow', dlg.overflowX);
     check(S, 'dialog_action_https_newtab', /^https:\/\//.test(dlg.actionHref || '') &&
       /noopener/.test(dlg.actionRel || ''), { href: dlg.actionHref, rel: dlg.actionRel });
