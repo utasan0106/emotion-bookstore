@@ -349,11 +349,21 @@ function check(scope, name, pass, detail) {
     check(S, 'finite_ending_present', /3つ/.test(ending), ending.replace(/\n/g, ' / '));
 
     // --- 10. storage / analytics / 外部通信 0 -----------------------------
-    const storage = await page.evaluate(() => ({
+    const storage = await page.evaluate(async () => ({
       ls: localStorage.length, ss: sessionStorage.length,
-      cookie: document.cookie, violations: window.__violations
+      cookie: document.cookie, violations: window.__violations,
+      // Service Worker / Cache Storage も「端末に残る」経路。棚は何も残さない。
+      swController: !!(navigator.serviceWorker && navigator.serviceWorker.controller),
+      swRegistrations: navigator.serviceWorker
+        ? (await navigator.serviceWorker.getRegistrations()).length : 0,
+      cacheKeys: window.caches ? (await caches.keys()).length : 0,
+      idb: typeof indexedDB !== 'undefined' && indexedDB.databases
+        ? (await indexedDB.databases()).length : 0
     }));
     check(S, 'no_storage_written', storage.ls === 0 && storage.ss === 0 && storage.cookie === '', storage);
+    check(S, 'no_service_worker_or_cache',
+      !storage.swController && storage.swRegistrations === 0 && storage.cacheKeys === 0, storage);
+    check(S, 'no_indexeddb_created', storage.idb === 0, storage.idb);
     check(S, 'no_fetch_xhr_beacon', storage.violations.length === 0, storage.violations);
     const external = requests.filter(u => !u.startsWith(base) && !u.startsWith('data:'));
     check(S, 'no_external_request', external.length === 0, external);

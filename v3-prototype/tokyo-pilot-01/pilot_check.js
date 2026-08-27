@@ -97,8 +97,13 @@ if (mediaPolicy === 'same-origin-localized' && fs.existsSync(path.join(root, 'ME
 }
 
 const js = fs.readFileSync(path.join(root, 'pilot.js'), 'utf8');
-for (const forbidden of ['localStorage', 'sessionStorage', 'indexedDB', 'sendBeacon', 'gtag(', 'fetch(', 'XMLHttpRequest']) {
+const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+for (const forbidden of ['localStorage', 'sessionStorage', 'indexedDB', 'sendBeacon', 'gtag(', 'fetch(',
+  'XMLHttpRequest', 'serviceWorker', 'caches.', 'navigator.storage']) {
   if (js.includes(forbidden)) failures.push(`forbidden runtime token: ${forbidden}`);
+}
+for (const forbidden of ['serviceWorker', 'sw.js', 'manifest.json']) {
+  if (html.includes(forbidden)) failures.push(`forbidden delivery token in html: ${forbidden}`);
 }
 
 
@@ -110,7 +115,6 @@ if (/open-button[\s\S]{0,500}↗/.test(js)) failures.push('dialog open control m
 if (!js.includes("CONTENT.feature.mediaPolicy === 'same-origin-localized'")) failures.push('participant mode must fail closed until media is same-origin localized');
 if (!js.includes("get('participant') === '1'")) failures.push('participant-mode explicit gate missing');
 
-const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 if (!html.includes('noindex,nofollow')) failures.push('noindex missing');
 if (!html.includes('referrer" content="no-referrer')) failures.push('no-referrer meta missing');
 if ((html.match(/<h1\b/g) || []).length !== 1) failures.push('expected exactly one h1');
