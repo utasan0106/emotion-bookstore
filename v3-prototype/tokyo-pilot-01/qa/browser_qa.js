@@ -613,7 +613,31 @@ function check(scope, name, pass, detail) {
     await ctx.close();
   }
 
-  // --- 15. 6 通りの order が同じ 3 identity を保つ ------------------------
+  // --- 15. この harness 自体が空振りしていないこと -------------------------
+  // 一度、要素名を変えたのに検査側を直し忘れ、存在しないセレクタと比較して
+  // 常に PASS していた検査があった。同じことが起きないよう、harness が使う
+  // セレクタが実際の画面に当たっているかを毎回確かめる。
+  {
+    const source = fs.readFileSync(__filename, 'utf8');
+    const selectors = [...new Set(
+      [...source.matchAll(/(?:querySelector(?:All)?|\$\$?eval)\(\s*'([^']+)'/g)].map(m => m[1])
+    )].filter(sel => !['*', 'body *', 'img'].includes(sel));
+
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const page = await ctx.newPage();
+    await page.goto(base + 'index.html', { waitUntil: 'load' });
+    await page.waitForFunction(() => document.querySelectorAll('.object-card').length === 3);
+    await page.click('.object-card:nth-child(1) .open-button');
+    await page.waitForSelector('.detail-dialog[open]');
+    const zero = await page.evaluate(sels =>
+      sels.filter(sel => { try { return document.querySelectorAll(sel).length === 0; } catch (e) { return true; } }),
+      selectors);
+    check('self', 'every_selector_the_qa_uses_resolves', zero.length === 0,
+      { checked: selectors.length, matchingNothing: zero });
+    await ctx.close();
+  }
+
+  // --- 16. 6 通りの order が同じ 3 identity を保つ ------------------------
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
     const page = await ctx.newPage();
