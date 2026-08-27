@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T10:20:35.182Z",
+  "generated_at": "2026-08-27T10:43:32.471Z",
   "viewports": [
     "320x800",
     "390x844",
@@ -7,7 +7,7 @@
     "1024x768",
     "1440x1000"
   ],
-  "total": 233,
+  "total": 281,
   "failed": 0,
   "verdict": "BROWSER_QA_GO",
   "results": [
@@ -190,6 +190,18 @@
     },
     {
       "scope": "m320",
+      "name": "single_live_region",
+      "pass": true,
+      "detail": [
+        {
+          "id": "live",
+          "role": "status",
+          "live": "polite"
+        }
+      ]
+    },
+    {
+      "scope": "m320",
       "name": "open_control_is_button",
       "pass": true,
       "detail": [
@@ -227,8 +239,8 @@
       "name": "dialog_reveal_is_dominant",
       "pass": true,
       "detail": {
-        "reveal": 27,
-        "hook": 0
+        "reveal": 22.4,
+        "hookEcho": 13
       }
     },
     {
@@ -257,6 +269,12 @@
       "name": "dialog_focus_inside",
       "pass": true,
       "detail": "dialog-close"
+    },
+    {
+      "scope": "m320",
+      "name": "open_is_not_announced_twice",
+      "pass": true,
+      "detail": ""
     },
     {
       "scope": "m320",
@@ -317,10 +335,21 @@
       "scope": "m320",
       "name": "first_open_reachable_by_tab",
       "pass": true,
-      "detail": {
-        "tabStops": 1,
-        "reached": true
-      }
+      "detail": [
+        "skip-link",
+        "open-button"
+      ]
+    },
+    {
+      "scope": "m320",
+      "name": "shelf_has_only_the_intended_controls",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "open-button",
+        "open-button",
+        "open-button"
+      ]
     },
     {
       "scope": "m320",
@@ -360,8 +389,33 @@
         "ls": 0,
         "ss": 0,
         "cookie": "",
-        "violations": []
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
       }
+    },
+    {
+      "scope": "m320",
+      "name": "no_service_worker_or_cache",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "no_indexeddb_created",
+      "pass": true,
+      "detail": 0
     },
     {
       "scope": "m320",
@@ -372,6 +426,18 @@
     {
       "scope": "m320",
       "name": "no_external_request",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "no_page_error",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "no_console_error",
       "pass": true,
       "detail": []
     },
@@ -554,6 +620,18 @@
     },
     {
       "scope": "m390",
+      "name": "single_live_region",
+      "pass": true,
+      "detail": [
+        {
+          "id": "live",
+          "role": "status",
+          "live": "polite"
+        }
+      ]
+    },
+    {
+      "scope": "m390",
       "name": "open_control_is_button",
       "pass": true,
       "detail": [
@@ -591,8 +669,8 @@
       "name": "dialog_reveal_is_dominant",
       "pass": true,
       "detail": {
-        "reveal": 27,
-        "hook": 0
+        "reveal": 27.3,
+        "hookEcho": 13
       }
     },
     {
@@ -621,6 +699,12 @@
       "name": "dialog_focus_inside",
       "pass": true,
       "detail": "dialog-close"
+    },
+    {
+      "scope": "m390",
+      "name": "open_is_not_announced_twice",
+      "pass": true,
+      "detail": ""
     },
     {
       "scope": "m390",
@@ -681,10 +765,21 @@
       "scope": "m390",
       "name": "first_open_reachable_by_tab",
       "pass": true,
-      "detail": {
-        "tabStops": 1,
-        "reached": true
-      }
+      "detail": [
+        "skip-link",
+        "open-button"
+      ]
+    },
+    {
+      "scope": "m390",
+      "name": "shelf_has_only_the_intended_controls",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "open-button",
+        "open-button",
+        "open-button"
+      ]
     },
     {
       "scope": "m390",
@@ -724,8 +819,33 @@
         "ls": 0,
         "ss": 0,
         "cookie": "",
-        "violations": []
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
       }
+    },
+    {
+      "scope": "m390",
+      "name": "no_service_worker_or_cache",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "no_indexeddb_created",
+      "pass": true,
+      "detail": 0
     },
     {
       "scope": "m390",
@@ -736,6 +856,18 @@
     {
       "scope": "m390",
       "name": "no_external_request",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "no_page_error",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "no_console_error",
       "pass": true,
       "detail": []
     },
@@ -918,6 +1050,18 @@
     },
     {
       "scope": "m430",
+      "name": "single_live_region",
+      "pass": true,
+      "detail": [
+        {
+          "id": "live",
+          "role": "status",
+          "live": "polite"
+        }
+      ]
+    },
+    {
+      "scope": "m430",
       "name": "open_control_is_button",
       "pass": true,
       "detail": [
@@ -955,8 +1099,8 @@
       "name": "dialog_reveal_is_dominant",
       "pass": true,
       "detail": {
-        "reveal": 27,
-        "hook": 0
+        "reveal": 30.1,
+        "hookEcho": 13
       }
     },
     {
@@ -985,6 +1129,12 @@
       "name": "dialog_focus_inside",
       "pass": true,
       "detail": "dialog-close"
+    },
+    {
+      "scope": "m430",
+      "name": "open_is_not_announced_twice",
+      "pass": true,
+      "detail": ""
     },
     {
       "scope": "m430",
@@ -1045,10 +1195,21 @@
       "scope": "m430",
       "name": "first_open_reachable_by_tab",
       "pass": true,
-      "detail": {
-        "tabStops": 1,
-        "reached": true
-      }
+      "detail": [
+        "skip-link",
+        "open-button"
+      ]
+    },
+    {
+      "scope": "m430",
+      "name": "shelf_has_only_the_intended_controls",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "open-button",
+        "open-button",
+        "open-button"
+      ]
     },
     {
       "scope": "m430",
@@ -1088,8 +1249,33 @@
         "ls": 0,
         "ss": 0,
         "cookie": "",
-        "violations": []
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
       }
+    },
+    {
+      "scope": "m430",
+      "name": "no_service_worker_or_cache",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "no_indexeddb_created",
+      "pass": true,
+      "detail": 0
     },
     {
       "scope": "m430",
@@ -1100,6 +1286,18 @@
     {
       "scope": "m430",
       "name": "no_external_request",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "no_page_error",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "no_console_error",
       "pass": true,
       "detail": []
     },
@@ -1296,6 +1494,18 @@
     },
     {
       "scope": "d1024",
+      "name": "single_live_region",
+      "pass": true,
+      "detail": [
+        {
+          "id": "live",
+          "role": "status",
+          "live": "polite"
+        }
+      ]
+    },
+    {
+      "scope": "d1024",
       "name": "open_control_is_button",
       "pass": true,
       "detail": [
@@ -1334,7 +1544,7 @@
       "pass": true,
       "detail": {
         "reveal": 42,
-        "hook": 0
+        "hookEcho": 13
       }
     },
     {
@@ -1363,6 +1573,12 @@
       "name": "dialog_focus_inside",
       "pass": true,
       "detail": "dialog-close"
+    },
+    {
+      "scope": "d1024",
+      "name": "open_is_not_announced_twice",
+      "pass": true,
+      "detail": ""
     },
     {
       "scope": "d1024",
@@ -1423,10 +1639,21 @@
       "scope": "d1024",
       "name": "first_open_reachable_by_tab",
       "pass": true,
-      "detail": {
-        "tabStops": 1,
-        "reached": true
-      }
+      "detail": [
+        "skip-link",
+        "open-button"
+      ]
+    },
+    {
+      "scope": "d1024",
+      "name": "shelf_has_only_the_intended_controls",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "open-button",
+        "open-button",
+        "open-button"
+      ]
     },
     {
       "scope": "d1024",
@@ -1466,8 +1693,33 @@
         "ls": 0,
         "ss": 0,
         "cookie": "",
-        "violations": []
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
       }
+    },
+    {
+      "scope": "d1024",
+      "name": "no_service_worker_or_cache",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "no_indexeddb_created",
+      "pass": true,
+      "detail": 0
     },
     {
       "scope": "d1024",
@@ -1478,6 +1730,18 @@
     {
       "scope": "d1024",
       "name": "no_external_request",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "no_page_error",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "no_console_error",
       "pass": true,
       "detail": []
     },
@@ -1674,6 +1938,18 @@
     },
     {
       "scope": "d1440",
+      "name": "single_live_region",
+      "pass": true,
+      "detail": [
+        {
+          "id": "live",
+          "role": "status",
+          "live": "polite"
+        }
+      ]
+    },
+    {
+      "scope": "d1440",
       "name": "open_control_is_button",
       "pass": true,
       "detail": [
@@ -1712,7 +1988,7 @@
       "pass": true,
       "detail": {
         "reveal": 42,
-        "hook": 0
+        "hookEcho": 13
       }
     },
     {
@@ -1741,6 +2017,12 @@
       "name": "dialog_focus_inside",
       "pass": true,
       "detail": "dialog-close"
+    },
+    {
+      "scope": "d1440",
+      "name": "open_is_not_announced_twice",
+      "pass": true,
+      "detail": ""
     },
     {
       "scope": "d1440",
@@ -1801,10 +2083,21 @@
       "scope": "d1440",
       "name": "first_open_reachable_by_tab",
       "pass": true,
-      "detail": {
-        "tabStops": 1,
-        "reached": true
-      }
+      "detail": [
+        "skip-link",
+        "open-button"
+      ]
+    },
+    {
+      "scope": "d1440",
+      "name": "shelf_has_only_the_intended_controls",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "open-button",
+        "open-button",
+        "open-button"
+      ]
     },
     {
       "scope": "d1440",
@@ -1844,8 +2137,33 @@
         "ls": 0,
         "ss": 0,
         "cookie": "",
-        "violations": []
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
       }
+    },
+    {
+      "scope": "d1440",
+      "name": "no_service_worker_or_cache",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "no_indexeddb_created",
+      "pass": true,
+      "detail": 0
     },
     {
       "scope": "d1440",
@@ -1856,6 +2174,18 @@
     {
       "scope": "d1440",
       "name": "no_external_request",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "no_page_error",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "no_console_error",
       "pass": true,
       "detail": []
     },
@@ -2084,7 +2414,7 @@
       "scope": "freshness",
       "name": "halt_screen_has_no_internal_term",
       "pass": true,
-      "detail": "本文へ移動 / 棚 / 東京の棚 / by みんなの感情書店 /  / まだ、行き先が決まっていない日に。 /  / 東京を、3つだけ。 / 東京の3つ / この棚はいま準備中です。 /  / このページでは保存・計測・個人ごとの推薦を行いません。画像は権利を確認した提供元から表示し、公式リンクは押したときだけ開きます"
+      "detail": "本文へ移動 /  / 棚 / 東京の棚 /  / by みんなの感情書店 /  / まだ、行き先が決まっていない日に。 /  / 東京を、3つだけ。 / 東京の3つ / この棚はいま準備中です。 /  / このページでは保存・計測・個人ごとの推薦を行いません。画像は権利を確認した提供元から表示し、公式リンクは押したとき"
     },
     {
       "scope": "landscape-390h",
@@ -2239,10 +2569,108 @@
       "detail": null
     },
     {
+      "scope": "rootfont-20px",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "rootfont-20px",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "rootfont-20px",
+      "name": "open_control_stays_visible_as_a_control",
+      "pass": true,
+      "detail": {
+        "height": 48,
+        "border": "0px",
+        "background": "rgb(37, 76, 58)"
+      }
+    },
+    {
+      "scope": "rootfont-20px",
+      "name": "text_scales_with_browser_font_setting",
+      "pass": true,
+      "detail": {
+        "footer": 15,
+        "kicker": 13.75,
+        "label": 12.5,
+        "factor": 1.25
+      }
+    },
+    {
+      "scope": "rootfont-20px",
+      "name": "dialog_reachable_and_intact",
+      "pass": true,
+      "detail": {
+        "overflowX": true,
+        "reveal": true,
+        "action": "https://www.kiseichu.org/information"
+      }
+    },
+    {
+      "scope": "rootfont-20px",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "rootfont-24px",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "rootfont-24px",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "rootfont-24px",
+      "name": "open_control_stays_visible_as_a_control",
+      "pass": true,
+      "detail": {
+        "height": 48,
+        "border": "0px",
+        "background": "rgb(37, 76, 58)"
+      }
+    },
+    {
+      "scope": "rootfont-24px",
+      "name": "text_scales_with_browser_font_setting",
+      "pass": true,
+      "detail": {
+        "footer": 18,
+        "kicker": 16.5,
+        "label": 15,
+        "factor": 1.5
+      }
+    },
+    {
+      "scope": "rootfont-24px",
+      "name": "dialog_reachable_and_intact",
+      "pass": true,
+      "detail": {
+        "overflowX": true,
+        "reveal": true,
+        "action": "https://www.kiseichu.org/information"
+      }
+    },
+    {
+      "scope": "rootfont-24px",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
       "scope": "no-js",
       "name": "explains_itself_without_js",
       "pass": true,
-      "detail": "本文へ移動 / 棚 / 東京の棚 / by みんなの感情書店 /  / まだ、行き先が決まっていない日に。 /  / 東京を、3つだけ。 / 東京の3つ /  / この棚を見るには、ブラウザの JavaScript を有効にしてください。 "
+      "detail": "本文へ移動 /  / 棚 / 東京の棚 /  / by みんなの感情書店 /  / まだ、行き先が決まっていない日に。 /  / 東京を、3つだけ。 / 東京の3つ /  / この棚を見るには、ブラウザの JavaScript を有効にして"
     },
     {
       "scope": "no-js",
@@ -2255,6 +2683,15 @@
       "name": "no_spoiler_without_js",
       "pass": true,
       "detail": []
+    },
+    {
+      "scope": "self",
+      "name": "every_selector_the_qa_uses_resolves",
+      "pass": true,
+      "detail": {
+        "checked": 15,
+        "matchingNothing": []
+      }
     },
     {
       "scope": "order",
