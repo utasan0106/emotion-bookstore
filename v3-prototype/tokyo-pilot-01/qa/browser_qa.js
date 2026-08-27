@@ -518,7 +518,10 @@ function check(scope, name, pass, detail) {
       { name: 'landscape-390h', viewport: { width: 844, height: 390 }, zoom: 1, forcedColors: 'none' },
       { name: 'zoom200-m390', viewport: { width: 390, height: 844 }, zoom: 2, forcedColors: 'none' },
       { name: 'zoom200-d1440', viewport: { width: 1440, height: 1000 }, zoom: 2, forcedColors: 'none' },
-      { name: 'forced-colors', viewport: { width: 390, height: 844 }, zoom: 1, forcedColors: 'active' }
+      { name: 'forced-colors', viewport: { width: 390, height: 844 }, zoom: 1, forcedColors: 'active' },
+      // ブラウザの既定文字サイズを大きくしている利用者（page zoom とは別の設定）
+      { name: 'rootfont-20px', viewport: { width: 390, height: 844 }, zoom: 1, forcedColors: 'none', rootFontSize: '20px' },
+      { name: 'rootfont-24px', viewport: { width: 390, height: 844 }, zoom: 1, forcedColors: 'none', rootFontSize: '24px' }
     ];
     for (const r of RESILIENCE) {
       const ctx = await browser.newContext({
@@ -527,6 +530,7 @@ function check(scope, name, pass, detail) {
       const page = await ctx.newPage();
       await page.goto(base + 'index.html', { waitUntil: 'load' });
       if (r.zoom > 1) await page.evaluate(z => { document.documentElement.style.zoom = z; }, r.zoom);
+      if (r.rootFontSize) await page.evaluate(f => { document.documentElement.style.fontSize = f; }, r.rootFontSize);
       await page.waitForFunction(() => document.querySelectorAll('.object-card').length === 3);
       await page.waitForFunction(() => Array.from(document.images).every(i => i.complete && i.naturalWidth > 0));
       await page.waitForTimeout(200);
@@ -561,6 +565,19 @@ function check(scope, name, pass, detail) {
       check(r.name, 'open_control_stays_visible_as_a_control',
         btnReadsAsControl && state.btnHeight >= 40,
         { height: state.btnHeight, border: state.btnBorder, background: state.btnBackground });
+      // 既定文字サイズを上げている利用者では、本文まわりが実際に大きくなること。
+      // 見出し系は clamp(_, vw, _) で card 幅に追従させているので対象にしない。
+      if (r.rootFontSize) {
+        const scaled = await page.evaluate(() => {
+          const px = sel => parseFloat(getComputedStyle(document.querySelector(sel)).fontSize);
+          return { footer: px('.privacy-note'), kicker: px('.hero-kicker'), label: px('.pilot-label') };
+        });
+        const factor = parseFloat(r.rootFontSize) / 16;
+        check(r.name, 'text_scales_with_browser_font_setting',
+          scaled.footer > 12 * factor * 0.95 && scaled.kicker > 11 * factor * 0.95 &&
+          scaled.label > 10 * factor * 0.95,
+          { ...scaled, factor });
+      }
 
       await page.click('.object-card:nth-child(3) .open-button');
       await page.waitForSelector('.detail-dialog[open]');
