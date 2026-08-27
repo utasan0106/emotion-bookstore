@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light">
+  <title>東京の棚｜東京を3つだけ</title>
+  <link rel="stylesheet" href="./pilot.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="東京の棚 トップへ">
+      <span class="brand-mark" aria-hidden="true">棚</span>
+      <span class="brand-name">東京の棚</span>
+    </a>
+    <span class="pilot-label">by みんなの感情書店</span>
+  </header>
+
+  <main id="main">
+    <section id="top" class="hero" aria-labelledby="hero-title">
+      <p class="hero-kicker">まだ、行き先が決まっていない日に。</p>
+      <h1 id="hero-title"><span class="hero-line">東京を、</span><span class="hero-line">3つだけ。</span></h1>
+      <div class="feature-chip" aria-label="今回の特集">
+        <span>今の棚</span>
+        <strong>「それ、本当にあるの？」な3つ</strong>
+      </div>
+    </section>
+
+    <section class="objects-section" aria-labelledby="objects-title">
+      <h2 id="objects-title" class="sr-only">東京の3つ</h2>
+      <div id="objectGrid" class="object-grid" aria-live="polite"></div>
+    </section>
+
+    <section class="end-plate" aria-labelledby="end-title">
+      <p class="eyebrow">今回は、ここまで</p>
+      <h2 id="end-title">3つ、見終わりました。</h2>
+      <p>次の3つを仕入れたら、この棚を入れ替えます。</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>東京の棚は、まだ行き先を決めていない時間に、実在する文化や場所を3つだけ仕入れます。</p>
+    <p class="privacy-note">このページでは保存・計測・個人ごとの推薦を行いません。画像は権利を確認した提供元から表示し、公式リンクは押したときだけ開きます。</p>
+  </footer>
+
+  <dialog id="detailDialog" class="detail-dialog" aria-labelledby="detailTitle">
+    <div class="dialog-shell">
+      <button id="closeDialog" class="dialog-close" type="button" aria-label="詳細を閉じる">閉じる</button>
+      <div id="detailContent"></div>
+    </div>
+  </dialog>
+
+  <div id="live" class="sr-only" role="status" aria-live="polite"></div>
+
+  <script src="./pilot_content.js"></script>
+  <script src="./pilot.js"></script>
+</body>
+</html>

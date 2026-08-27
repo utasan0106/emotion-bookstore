@@ -116,3 +116,34 @@ docs/
 
 # 内部ドキュメント（非 anchored な docs/ でも一致するが、明示して曖昧さを消す）
 /v3-prototype/docs/
+
+# ---- v3-prototype/tokyo-pilot-01 の非参加者向けファイルのみ ----------------
+# 判定根拠：index.html を起点にした静的到達解析。
+#           参加者 runtime が参照するのは
+#             index.html / pilot.css / pilot_content.js / pilot.js /
+#             assets/manuscript-cafe.png / assets/hachiko.jpg / assets/meguro-tapeworm.jpg
+#           の 7 件だけで、以下への参照は HTML / CSS / JS のいずれからも 0 件。
+#
+# ★ /v3-prototype/tokyo-pilot-01/ をディレクトリごと除外してはならない。
+#   Human Test は Preview 配信面の index.html を参加者に見せる。
+#   そのため negation（!）は採らず、参加者画面に不要と確定したものだけを列挙する。
+#
+# 内部 QA / 検証スクリプト
+/v3-prototype/tokyo-pilot-01/pilot_check.js
+/v3-prototype/tokyo-pilot-01/media_validate.py
+/v3-prototype/tokyo-pilot-01/localize_media.py
+/v3-prototype/tokyo-pilot-01/qa/
+
+# 内部ドキュメント（rights 監査文 / Human Test 手順 / Product 内部用語）
+/v3-prototype/tokyo-pilot-01/APPLY_TO_REPO.md
+/v3-prototype/tokyo-pilot-01/BROWSER_QA_REPORT.md
+/v3-prototype/tokyo-pilot-01/HUMAN_TEST_CYCLE_01.md
+/v3-prototype/tokyo-pilot-01/HUMAN_TEST_SCORECARD.csv
+/v3-prototype/tokyo-pilot-01/MEDIA_ATTRIBUTION.md
+/v3-prototype/tokyo-pilot-01/MEDIA_LOCALIZATION_EVIDENCE.json
+/v3-prototype/tokyo-pilot-01/MEDIA_LOCALIZATION_READY.md
+/v3-prototype/tokyo-pilot-01/PACKAGE_MANIFEST.txt
+/v3-prototype/tokyo-pilot-01/PRODUCT_BET_20260827.md
+/v3-prototype/tokyo-pilot-01/RUN_REPORT_20260827_1600.md
+/v3-prototype/tokyo-pilot-01/RUN_REPORT_20260827_1650.md
+/v3-prototype/tokyo-pilot-01/RUN_REPORT_20260827_1700.md
