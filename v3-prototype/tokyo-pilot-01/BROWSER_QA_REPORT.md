@@ -1,79 +1,106 @@
-# Browser QA — Tokyo Pilot 01 / Real Media v2
+# Browser QA — Tokyo Pilot 01
 
-Result: **`BROWSER_QA_REAL_MEDIA_V2_GO`**
+Result: **`BROWSER_QA_GO` — 232 / 232**
+Last run: 2026-08-27 JST
+Status: 隔離 Human Test の技術 QA = GO / Production = NO-GO
 
-Status: isolated Human Test technical QA = GO / Production = NO-GO
+この文書は要約。実際の判定は毎回 harness が出す。
 
-## Viewports
+```bash
+NODE_PATH=/opt/node22/lib/node_modules node qa/browser_qa.js [--shots]
+# 判定 → qa/qa-report.json
+# screenshot → qa/shots/（git 管理しない）
+```
 
-- 320 × 800
-- 390 × 844
-- 430 × 932
-- 1024 × 768
-- 1440 × 1000
+harness は同梱の静的サーバで実ファイルを配信し、実バイトの Real Media を
+Chromium で描画する。data URI の差し替えや placeholder は使わない。
 
-## Runtime media verified
+## 条件
 
-The QA harness used the **actual frozen same-origin Pilot media bytes** by inlining those bytes as data URIs. It did not use generic placeholders.
+| scope | 条件 | 件数 |
+| --- | --- | --- |
+| m320 / m390 / m430 / d1024 / d1440 | 320×800 / 390×844 / 430×932 / 1024×768 / 1440×1000 | 各 38 |
+| `<viewport>/<order>` | 1件目が入れ替わる3通り（abc / bac / cab）× 5 viewport | 各 1 |
+| order | 6通りの順列が同じ3 identity を保つ | 1 |
+| freshness | 参加者モードの正常描画 / 期限切れ停止 / 停止画面の漏れ | 3 |
+| landscape-390h | 844×390（横向き） | 5 |
+| zoom200-m390 / zoom200-d1440 | 200% 拡大 | 各 5 |
+| forced-colors | ハイコントラスト | 5 |
+| no-js | JavaScript 無効 | 3 |
 
-- 原稿執筆カフェ: 640×905 PNG — decoded in all viewports
-- Hachiko: 2048×1536 JPEG — decoded in all viewports
-- Meguro tapeworm: 1363×2048 JPEG — decoded in all viewports
+48 種類の検査。
 
-The harness changes transport only for sandboxed QA; it does not change Pilot copy, DOM semantics, ordering logic, reveal logic, or stored files.
+## 検査していること
 
-## Verified in Chromium via Playwright
+**Real Media**
+- 3枚とも実バイトが decode される
+- スクロールを待たずに3枚とも読み込まれている（灰色の枠が出ない）
+- frame の都合で被写体が切れていない（card / detail とも、実測の可視面積で判定）
+- 代替テキストが空でない
 
-At every viewport:
-- exactly 3 cards render
-- all 3 frozen Real Media assets decode
-- horizontal overflow = 0
-- pre-open cards do **not** leak Hachiko `剥製` or Meguro `標本` Reveal answers
-- Object detail dialog opens
-- focus moves inside the dialog
-- Escape closes the dialog
-- focus returns to the originating `ひらく` button
-- Reveal renders only after open
-- internal `verifiedNote` audit copy does not render in participant UI
-- console/page errors = 0
+**First Pull**
+- 1画面目に Real Media と Hook が見える
+- 1件目の Hook 全文と「ひらく」がスクロールなしで見える
+- 「01 / 03」が1画面目で読める（有限であることが伝わる）
+- どの Object が1件目に来ても上記が成立する
 
-Information architecture / controls:
-- `ひらく` is an in-page dialog control and does not display an external-link arrow
-- external-link arrow is reserved for Official Action
-- frontstage presents `東京の棚`; `みんなの感情書店` is a quiet byline for this Pilot
-- no search, account, save/history, ranking, AI recommendation, or infinite feed was introduced
+**ネタバレ / 内部語**
+- 一覧の可視テキストに Reveal の答えが出ない
+- alt / aria-label / title など読み上げに渡る文字列にも出ない
+- DOM に `objectName` が出ない
+- 参加者画面・停止画面に内部語（verifiedNote / Reveal / Human Test / Pilot 等）が出ない
 
-## Evidence-preserving media behavior
+**Object Open → Reveal**
+- 「ひらく」は button で、外部リンクの見た目を持たない
+- dialog が開き、Reveal が最大の要素である
+- 2件目以降も必ず頭から始まる（前の Object のスクロール位置を引き継がない）
+- dialog のスクロールが背面の棚へ連鎖しない
 
-A real-media visual review exposed one material issue: the vertical Meguro image was initially cropped by `object-fit: cover`, which removed the visual evidence of the specimen's unusual length.
+**Official Action**
+- HTTPS かつ `noopener`、押したときだけ開く
 
-Fixed:
-- Meguro card: `object-fit: contain`
-- Meguro detail: `object-fit: contain`
-- full-frame evidence retained
+**操作性**
+- 横スクロール 0（一覧・dialog とも）
+- Tab 6 打鍵以内で1件目の「ひらく」に到達し、Enter で開く
+- focus が dialog の中から始まり、背面の棚へ抜けない
+- Escape で閉じ、focus が元の「ひらく」へ戻る
+- 参加者が読む文字が 10px を下回らない
+- ハイコントラストでも「ひらく」が操作に見える
 
-This is not visual rescue of weak content; it prevents the UI from destroying the fact the photograph is meant to demonstrate.
+**有限な終わり**
+- 3件が並んだときだけ「3つ、見終わりました。」が出る
+- JS 無効時は終わりだけが残らず、理由が表示される
 
-## Order counterbalance
+**保存 / 計測 / 外部通信**
+- localStorage / sessionStorage / cookie への書き込み 0
+- fetch / XMLHttpRequest / sendBeacon の呼び出し 0
+- 同一オリジン以外への request 0
 
-`order=abc/acb/bac/bca/cab/cba` preserves exactly the same three Object identities and changes order only.
+## 経緯（この日の実測で見つけて直したもの）
 
-## Media scope boundary
+1. 縦位置の原稿執筆カフェのポスターを横フレームに `cover` しており、
+   card 46〜57% / detail 39〜53% しか見えていなかった。
+   frame を media の実寸比にして解消。目黒だけ `contain` で救済していた
+   対症も不要になった。
+2. 詳細で既読の Hook が未知の Reveal より大きかった。入れ替えた。
+3. 一覧の `alt` が「剥製」「標本」と Reveal の答えを名指ししており、
+   読み上げ利用者にだけ先に答えが渡っていた。
+4. dialog の scroll 位置が Object をまたいで残り、2件目以降は Real Media と
+   Reveal を飛ばした途中から始まっていた（m390 で scrollTop 232）。
+5. ハイコントラストで「ひらく」が背景を失い、ただの文字になっていた。
+6. JS 無効時に空の棚と「3つ、見終わりました。」だけが残っていた。
 
-The runtime images are source-pinned Human-Test derivatives documented in `tokyo-pilot-01/MEDIA_LOCALIZATION_EVIDENCE.json` and `MEDIA_ATTRIBUTION.md`.
+いずれも意図的に元へ戻す negative test で FAIL することを確認している。
 
-They are approved for **isolated Human Test only**. This QA is not Production media/legal approval.
+## 範囲外
 
-## Evidence files
+- 横向き（844×390）と 200% 拡大では、1件目の Hook と「ひらく」に到達するのに
+  スクロールが要る。被写体を切らないことを優先した結果で、内容は欠けていない。
+  この2条件には First Pull の fold 条件を課していない。
+- runtime の3枚は隔離 Human Test 限定の technical derivative。
+  この QA は Production の media / legal 承認ではない。
 
-- `browser-qa-real-v2/qa-real-v2.json`
-- `browser-qa-real-v2/m320-home.png`
-- `browser-qa-real-v2/m320-meguro-detail.png`
-- `browser-qa-real-v2/m390-home.png`
-- `browser-qa-real-v2/m390-meguro-detail.png`
-- `browser-qa-real-v2/m430-home.png`
-- `browser-qa-real-v2/m430-meguro-detail.png`
-- `browser-qa-real-v2/d1024-home.png`
-- `browser-qa-real-v2/d1024-meguro-detail.png`
-- `browser-qa-real-v2/d1440-home.png`
-- `browser-qa-real-v2/d1440-meguro-detail.png`
+## 前提
+
+この QA が GO でも、公式一次情報の再確認（`HUMAN_TEST_CYCLE_01.md` の
+前提条件 13）が済むまで参加者に見せてはならない。
