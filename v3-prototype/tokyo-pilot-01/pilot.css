@@ -1,241 +1,573 @@
+/* ============================================================================
+   東京の棚 — Tokyo Pilot 01
+
+   Art direction: 夜の展示室。
+   3枚の写真はどれも「暗い室内で照明の当たった物」を撮ったもので、
+   画面の地を暗くすると写真の中の空間がそのまま続く。地を暗くしたぶん、
+   画面のなかで光っているのは Real Media だけになる。
+   文字と罫は図録の札として扱い、写真の邪魔をしない位置に置く。
+
+   この product の名前は「棚」。3つの物が1枚の棚板の上に並んでいる、
+   という composition にする。写真の縦横比の違いは、棚に並んだ物の
+   背の違いとしてそのまま出す。棚板より下が札。
+
+   単一の見え方に決めているので theme 分岐は持たない。
+   ただし色は全部ここで明示的に塗る（host の地を借りない）。
+   ========================================================================= */
+
 :root {
-  --paper: #f4f0e7;
-  --paper-deep: #ebe3d5;
-  --ink: #1d211f;
-  --muted: #68675f;
-  --line: rgba(29, 33, 31, 0.18);
-  --accent: #254c3a;
-  --accent-ink: #f8f5ee;
-  --surface: rgba(255, 255, 255, 0.58);
-  --shadow: 0 18px 50px rgba(40, 34, 24, 0.12);
-  --radius: 22px;
-  --max: 1180px;
+  /* 展示室 */
+  --hall:        #141312;
+  --hall-raised: #1c1a18;
+  --hall-line:   #2e2b28;
+
+  /* 札・刷り物 */
+  --bone:        #f1ebe0;
+  --bone-line:   rgba(20, 19, 18, .16);
+
+  /* 文字 */
+  --chalk:       #ece7de;   /* 暗い地の上の主文字 */
+  --chalk-dim:   #9a938a;   /* 暗い地の上の副文字 */
+  --ink:         #1a1815;   /* 明るい地の上の主文字 */
+  --ink-dim:     #6a635a;   /* 明るい地の上の副文字 */
+
+  /* 唯一の signal。通し番号と、外へ出る導線にだけ使う。 */
+  --signal:      #d8442b;
+  --signal-lift: #e5573e;
+
+  --serif: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+
+  --page: 1360px;
+  --gutter: 20px;
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--paper); }
+
+html { background: var(--hall); }
+
 body {
   margin: 0;
   min-height: 100vh;
-  /* viewport-fit=cover なので、切り欠き / ホームバーの下へ潜らせない */
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-  background:
-    radial-gradient(circle at 15% -10%, rgba(255,255,255,.88), transparent 34%),
-    linear-gradient(180deg, #f7f3eb 0%, var(--paper) 45%, #eee7da 100%);
-  color: var(--ink);
-  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  background: var(--hall);
+  color: var(--chalk);
+  font-family: var(--sans);
+  font-size: 1rem;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 a { color: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
-button:focus-visible, a:focus-visible { outline: 3px solid #1f6e50; outline-offset: 3px; }
+button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
+  outline: 2px solid var(--signal-lift);
+  outline-offset: 4px;
+}
 
 .skip-link {
   position: fixed; left: 12px; top: -100px; z-index: 100;
-  padding: 10px 14px; background: #fff; border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 16px; background: var(--bone); color: var(--ink);
+  border-radius: 2px; font-size: 0.875rem;
 }
 .skip-link:focus { top: 12px; }
 
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* ---------------------------------------------------------------- 見出し帯 */
+
 .site-header {
-  width: min(calc(100% - 36px), var(--max));
+  width: min(calc(100% - var(--gutter) * 2), var(--page));
   margin: 0 auto;
-  padding: 16px 0 6px;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 22px 0 0;
+  display: flex; align-items: baseline; justify-content: space-between; gap: 20px;
 }
-.brand { margin: 0; display: inline-flex; align-items: center; gap: 10px; }
-.brand-mark {
-  display: grid; place-items: center; width: 32px; height: 32px;
-  border: 1px solid var(--ink); border-radius: 50%; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: 0.875rem;
+.brand { margin: 0; }
+.brand-name {
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: .22em;
 }
-.brand-name { font-family: "Yu Mincho", "Hiragino Mincho ProN", serif; font-weight: 700; letter-spacing: .04em; }
-.pilot-label { font-size: 0.6875rem; letter-spacing: .16em; color: var(--muted); }
+.pilot-label {
+  margin: 0;
+  font-size: 0.8125rem;
+  letter-spacing: .2em;
+  color: var(--chalk-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------- 標題 */
 
 .hero {
-  width: min(calc(100% - 36px), 900px);
-  margin: 22px auto 20px;
-  text-align: center;
+  width: min(calc(100% - var(--gutter) * 2), var(--page));
+  margin: 0 auto;
+  padding: 24px 0 22px;
 }
-.hero-kicker, .eyebrow { margin: 0 0 10px; color: var(--muted); font-size: 0.75rem; letter-spacing: .13em; text-transform: uppercase; }
 .hero h1 {
   margin: 0;
-  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: clamp(2.25rem, 4.4vw, 3.625rem);
-  font-weight: 500; line-height: 1.05; letter-spacing: -.035em;
+  font-family: var(--serif);
+  font-size: clamp(2.375rem, 9.4vw, 4.5rem);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -.05em;
+  color: var(--chalk);
 }
-.hero-line { display: inline; }
-.objects-section { width: min(calc(100% - 28px), var(--max)); margin: 0 auto; }
-.end-plate h2 {
-  margin: 0; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: clamp(1.5625rem, 4vw, 2.4375rem); font-weight: 500; line-height: 1.4;
-}
-.object-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; gap: 18px; }
-.object-card {
-  min-width: 0; overflow: hidden; position: relative;
-  border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow);
-}
-.card-number {
-  position: absolute; z-index: 2; top: 14px; left: 14px;
-  padding: 7px 9px; border-radius: 999px; background: rgba(20,24,22,.82); color: #fff;
-  font-size: 0.625rem; letter-spacing: .12em; backdrop-filter: blur(8px);
-}
-/* Real Media は Object の identity そのものなので、frame 側の都合で切らない。
-   frame の縦横比は画像自身の実寸（--media-w / --media-h）から取る。
-   data-crop="none" の Object は一切切らない。data-crop="bottom-safe" だけ、
-   一覧で縦に長くなりすぎたときに下端を落とすことを許す。 */
-.media-frame {
-  position: relative; width: 100%; background: #d8d4ca; overflow: hidden;
-  aspect-ratio: var(--media-w) / var(--media-h);
-}
-.media-frame::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); pointer-events: none; }
-.media-frame img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center top; }
+.hero-line { display: block; }
 
-.card-body { padding: 15px 18px 16px; }
-.object-meta { margin: 0 0 10px; color: var(--muted); font-size: 0.6875rem; line-height: 1.5; }
+.eyebrow {
+  margin: 0 0 14px;
+  font-size: 0.8125rem;
+  letter-spacing: .2em;
+  color: var(--chalk-dim);
+}
+
+/* --------------------------------------------------------------- 展示の列 */
+
+.objects-section {
+  width: min(calc(100% - var(--gutter) * 2), var(--page));
+  margin: 0 auto;
+}
+
+.object-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 72px;
+}
+
+.object-card {
+  position: relative;
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto auto;
+}
+
+.media-frame {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding-bottom: 18px;
+  overflow: visible;
+  background: transparent;
+}
+.media-frame img {
+  display: block;
+  width: auto;
+  max-width: min(100%, var(--plate-w, 100%));
+  height: auto;
+  max-height: var(--plate-h, 62vh);
+  object-fit: contain;
+  background: var(--hall-raised);
+  outline: 1px solid rgba(236, 231, 222, .14);
+  outline-offset: 0;
+  box-shadow: 0 26px 56px -22px rgba(0,0,0,.85);
+}
+
+.card-media { --plate-h: 48vh; }
+.object-card:first-child .card-media { --plate-h: 54vh; }
+
+/* -------------------------------------------------------------------- 札 */
+
+.card-body {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  max-width: 30em;
+  padding-top: 16px;
+  border-top: 1px solid var(--hall-line);   /* 棚板 */
+}
+
+.card-number,
+.detail-count {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  font-family: var(--serif);
+  font-size: 0.9375rem;
+  letter-spacing: .1em;
+  font-variant-numeric: tabular-nums;
+  color: var(--chalk-dim);
+}
+.plate-n {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  letter-spacing: .02em;
+  color: var(--signal);
+  line-height: 1;
+}
+.plate-sep, .plate-of { color: var(--chalk-dim); }
+
 .object-hook {
-  margin: 0 0 14px; line-break: strict; overflow-wrap: normal; word-break: auto-phrase; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: clamp(1.4375rem, 2.6vw, 2.125rem); line-height: 1.38; font-weight: 600; letter-spacing: -.02em;
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 6.2vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.32;
+  letter-spacing: -.03em;
+  color: var(--chalk);
+  line-break: strict;
+  overflow-wrap: normal;
+  word-break: auto-phrase;
 }
-.open-button, .official-action {
-  min-height: 48px; border: 0; border-radius: 999px; padding: 0 18px;
-  background: var(--accent); color: var(--accent-ink); cursor: pointer; text-decoration: none;
-  display: inline-flex; align-items: center; justify-content: space-between; gap: 22px;
-  font: inherit; font-weight: 650;
+
+/* 「ひらく」は浮いた pill ではなく、札の最後の一行。
+   実際の当たり判定は plate 全体（::after）。 */
+.open-button {
+  justify-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
+  width: 100%;
+  min-height: 48px;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--hall-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--chalk);
+  font: inherit;
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  letter-spacing: .18em;
+  text-align: left;
+  cursor: pointer;
 }
-.open-button { width: 100%; }
-.open-button:hover, .official-action:hover { filter: brightness(.94); }
+.open-button::after {
+  content: "";
+  position: absolute;
+  inset: -14px -14px -14px -14px;
+}
+.open-word { color: var(--chalk); }
+.open-mark { color: var(--signal); font-size: 1.375rem; line-height: 1; }
+
+/* ------------------------------------------------------------------ 終わり */
 
 .end-plate {
-  width: min(calc(100% - 36px), 760px); margin: 110px auto 90px; padding: 48px 0;
-  text-align: center; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  width: min(calc(100% - var(--gutter) * 2), var(--page));
+  margin: 108px auto 0;
+  padding: 44px 0 0;
+  border-top: 1px solid var(--hall-line);
 }
-.end-plate p:last-child { margin: 18px auto 0; max-width: 560px; color: var(--muted); line-height: 1.8; }
-.site-footer {
-  width: min(calc(100% - 36px), var(--max)); margin: 0 auto; padding: 0 0 44px;
-  color: var(--muted); font-size: 0.75rem; line-height: 1.8;
+.end-plate h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 4.4vw, 2.625rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -.03em;
 }
-.site-footer p { margin: 0 auto; max-width: 620px; text-align: center; }
+.end-plate p:last-child {
+  margin: 18px 0 0;
+  max-width: 32em;
+  color: var(--chalk-dim);
+  font-size: 0.9375rem;
+  line-height: 1.9;
+}
 
-.detail-dialog {
-  width: min(920px, calc(100% - 24px)); padding: 0;
-  max-height: calc(100vh - 24px); /* dvh 非対応向けの下敷き */
-  max-height: calc(100dvh - 24px);
-  overflow: auto; overscroll-behavior: contain;
-  border: 0; border-radius: 24px; background: #f7f3eb; color: var(--ink); box-shadow: 0 24px 100px rgba(0,0,0,.26);
+.site-footer {
+  width: min(calc(100% - var(--gutter) * 2), var(--page));
+  margin: 0 auto;
+  padding: 68px 0 56px;
 }
-.detail-dialog::backdrop { background: rgba(15,18,17,.66); backdrop-filter: blur(7px); }
-.dialog-shell { position: relative; }
-.dialog-close {
-  position: sticky; float: right; top: 12px; right: 12px; z-index: 5; margin: 12px 12px -50px 0;
-  min-width: 54px; min-height: 44px; border: 1px solid rgba(255,255,255,.3); border-radius: 999px;
-  background: rgba(20,24,22,.84); color: #fff; cursor: pointer;
+.site-footer p {
+  margin: 0;
+  max-width: 44em;
+  color: var(--chalk-dim);
+  font-size: 0.8125rem;
+  line-height: 1.9;
 }
-.detail-article { overflow: hidden; }
-.detail-count { display: inline-block; margin: 16px 0 0 20px; padding: 6px 9px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,.72); color: var(--muted); font-size: 0.625rem; letter-spacing: .12em; }
-/* 詳細の media は First Pull ではなく証拠。全景を保ったまま高さだけ抑える。
-   letterbox の帯を作らず、実寸比のまま紙面に置いた板として見せる。 */
-.detail-media {
-  aspect-ratio: auto;
-  height: min(46vh, 420px); /* dvh 非対応向けの下敷き */
-  height: min(46dvh, 420px);
-  width: fit-content; max-width: calc(100% - 32px); margin: 18px auto 0;
-  background: transparent; overflow: visible;
-}
-.detail-media::after { box-shadow: none; }
-.detail-media img {
-  width: auto; max-width: 100%; height: 100%;
-  object-fit: contain; object-position: center;
-  border-radius: 6px; box-shadow: 0 10px 30px rgba(40,34,24,.14);
-}
-.detail-copy { padding: 30px clamp(20px, 5vw, 54px) 44px; }
-/* 既に読まれた Hook は小さく echo するだけ。大きくするのは未知の Reveal。 */
-.detail-hook-echo { margin: 0 0 14px; color: var(--muted); font-size: 0.8125rem; line-height: 1.6; letter-spacing: .02em; }
-.detail-reveal {
-  margin: 0; max-width: 720px; line-break: strict; overflow-wrap: normal; word-break: auto-phrase;
-  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: clamp(1.9rem, 4.2vw, 2.625rem); line-height: 1.45; font-weight: 600; letter-spacing: -.015em;
-}
-.detail-copy .object-meta { margin: 22px 0 0; }
-.verified-block { margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--line); }
-.verified-block h3 { margin: 0 0 16px; font-size: 0.9375rem; }
-.facts-list { margin: 0; }
-.fact-row { display: grid; grid-template-columns: 90px 1fr; gap: 16px; padding: 12px 0; border-top: 1px solid rgba(29,33,31,.1); }
-.fact-row:last-child { border-bottom: 1px solid rgba(29,33,31,.1); }
-.fact-row dt { color: var(--muted); font-size: 0.75rem; }
-.fact-row dd { margin: 0; font-size: 0.875rem; line-height: 1.6; }
-.detail-actions { display: grid; margin-top: 30px; }
-.official-action { width: 100%; min-height: 54px; }
-.rights-note { margin: 26px 0 0; padding-top: 16px; border-top: 1px solid rgba(29,33,31,.14); display: grid; gap: 5px; }
-.rights-title { margin: 0 0 5px; font-size: 0.8125rem; font-weight: 600; color: var(--muted); }
-.rights-row { display: grid; grid-template-columns: 4.5em 1fr; gap: 12px; }
-.rights-key { color: var(--muted); font-size: 0.8125rem; }
-.rights-value { font-size: 0.8125rem; line-height: 1.65; color: var(--muted); }
-.rights-link { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 
 .noscript-note {
-  margin: 8px 4px 0; padding: 18px; border: 1px solid var(--line); border-radius: 16px;
-  background: rgba(255,255,255,.52); color: var(--muted); font-size: 0.875rem; line-height: 1.7;
+  margin: 0;
+  padding: 22px;
+  border: 1px solid var(--hall-line);
+  color: var(--chalk-dim);
+  font-size: 0.9375rem;
+  line-height: 1.8;
 }
 
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+/* ------------------------------------------------------------------ 刷り物 */
+
+.detail-dialog {
+  width: 100%;
+  max-width: 100%;
+  margin: auto auto 0;
+  padding: 0;
+  border: 0;
+  border-radius: 18px 18px 0 0;
+  background: var(--bone);
+  color: var(--ink);
+  max-height: 94vh;
+  max-height: 94dvh;
+  overflow: auto;
+  overscroll-behavior: contain;
+  box-shadow: 0 -30px 80px rgba(0,0,0,.6);
+}
+.detail-dialog::backdrop { background: rgba(8, 7, 7, .82); }
+
+.dialog-shell { position: relative; }
+
+/* 閉じるは pill にしない。写真の上に来ても読めるよう、紙が右から
+   立ち上がってくる gradient の上に置く。四角い箱には見せない。 */
+.dialog-close {
+  position: sticky;
+  float: right;
+  top: 0; right: 0; z-index: 5;
+  margin: 0 0 -58px 0;
+  min-height: 58px; padding: 0 22px 0 44px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(to left, var(--bone) 58%, rgba(241, 235, 224, 0));
+  color: var(--ink-dim);
+  font: inherit;
+  font-family: var(--serif);
+  font-size: 1rem;
+  letter-spacing: .18em;
+  cursor: pointer;
+}
+.dialog-close:hover { color: var(--ink); }
+
+.detail-article { display: grid; }
+
+.detail-count {
+  color: var(--ink-dim);
+  padding: 22px 22px 0;
+}
+.detail-count .plate-sep, .detail-count .plate-of { color: var(--ink-dim); }
+
+.detail-media {
+  display: flex;
+  justify-content: center;
+  margin: 20px 22px 0;
+  background: transparent;
+}
+.detail-media img {
+  max-height: min(46vh, 420px);
+  max-height: min(46dvh, 420px);
+  background: transparent;
+  outline: 0;
+  box-shadow: 0 20px 44px -22px rgba(26, 24, 21, .55);
+}
+
+.detail-copy { padding: 30px 22px 40px; }
+
+.detail-hook-echo {
+  margin: 0 0 14px;
+  color: var(--ink-dim);
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.detail-reveal {
+  margin: 0;
+  max-width: 21em;
+  font-family: var(--serif);
+  font-size: clamp(1.625rem, 6.6vw, 2.375rem);
+  font-weight: 600;
+  line-height: 1.42;
+  letter-spacing: -.03em;
+  color: var(--ink);
+  line-break: strict;
+  overflow-wrap: normal;
+  word-break: auto-phrase;
+}
+
+.detail-copy .object-meta {
+  margin: 24px 0 0;
+  color: var(--ink-dim);
+  font-size: 0.8125rem;
+  letter-spacing: 0;
+  line-break: strict;
+}
+
+.verified-block { margin-top: 34px; padding-top: 26px; border-top: 1px solid var(--bone-line); }
+.verified-block h3 { margin: 0 0 14px; font-size: 0.8125rem; font-weight: 600; letter-spacing: .16em; color: var(--ink-dim); }
+.facts-list { margin: 0; }
+.fact-row { display: grid; grid-template-columns: 4.5em 1fr; gap: 16px; padding: 12px 0; border-top: 1px solid var(--bone-line); }
+.fact-row:first-of-type { border-top: 0; padding-top: 0; }
+.fact-row dt { color: var(--ink-dim); font-size: 0.8125rem; }
+.fact-row dd { margin: 0; font-size: 0.9375rem; line-height: 1.75; color: var(--ink); }
+
+.detail-actions { display: grid; margin-top: 34px; }
+.official-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  min-height: 58px;
+  padding: 0 22px;
+  border: 0;
+  background: var(--signal);
+  color: #fff;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-decoration: none;
+  cursor: pointer;
+}
+.official-action:hover { background: var(--signal-lift); }
+
+.rights-note { margin: 30px 0 0; padding-top: 18px; border-top: 1px solid var(--bone-line); display: grid; gap: 6px; }
+.rights-title { margin: 0 0 6px; font-size: 0.8125rem; font-weight: 600; letter-spacing: .16em; color: var(--ink-dim); }
+.rights-row { display: grid; grid-template-columns: 4.5em 1fr; gap: 16px; }
+.rights-key { color: var(--ink-dim); font-size: 0.8125rem; }
+.rights-value { font-size: 0.8125rem; line-height: 1.7; color: var(--ink-dim); }
+.rights-link { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+/* ------------------------------------------------------------- 小さい画面 */
 
 @media (max-width: 820px) {
-  .hero { margin-top: 34px; margin-bottom: 38px; }
-  .object-grid { grid-template-columns: 1fr; gap: 20px; }
-  .object-hook { font-size: clamp(1.6875rem, 8vw, 2.375rem); }
-  .detail-reveal { font-size: clamp(1.3rem, 5.2vw, 2.4rem); }
-  .detail-media { height: min(42vh, 360px); margin-top: 14px; max-width: calc(100% - 24px); }
-  .detail-media { height: min(42dvh, 360px); }
+  .media-frame { justify-content: center; }
+}
+
+/* ------------------------------------------------------------ 大きい画面 */
+
+@media (min-width: 821px) {
+  :root { --page: 1200px; --gutter: 56px; }
+
+  .site-header { padding-top: 30px; }
+  .hero { padding: 44px 0 46px; }
+  .hero h1 { font-size: clamp(3.25rem, 5vw, 4.25rem); }
+  .hero-line { display: inline; }
+
+  /* 棚板の高さ。全 Object の写真がこの高さの行の底に揃って立つ。
+     列は等分ではなく、1点目にだけ広い枠を与える。写真の幅は列幅と
+     自分の縦横比で決まるので、背の高い物・低い物・細い物がそのまま並ぶ。 */
+  .object-grid {
+    --shelf-h: 52vh;
+    grid-template-columns: 1.24fr 1fr 1fr;
+    justify-content: start;
+    align-items: stretch;
+    column-gap: 44px;
+    row-gap: 0;
+  }
+  /* 列の隙間ぶんの棚板を渡して、1本の水平線に見せる。 */
+  .object-grid::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0;
+    top: var(--shelf-h);
+    height: 1px;
+    background: var(--hall-line);
+    pointer-events: none;
+  }
+  .object-card { grid-template-rows: var(--shelf-h) auto; width: auto; max-width: 100%; }
+  .media-frame { align-items: flex-end; padding-bottom: 20px; }
+
+  .card-media,
+  .object-card:first-child .card-media { --plate-h: calc(var(--shelf-h) - 20px); --plate-w: 100%; }
+
+  .card-body { max-width: 100%; }
+
+  .object-card:first-child .object-hook { font-size: clamp(1.5rem, 1.95vw, 1.875rem); }
+  .object-card:nth-child(n+2) .object-hook { font-size: clamp(1.3125rem, 1.7vw, 1.5rem); }
+
+  .end-plate { margin-top: 132px; }
+
+  /* 詳細は中央の generic modal にしない。写真と刷り物の見開きにする。 */
+  .detail-dialog {
+    width: min(1140px, calc(100% - 64px));
+    max-width: min(1140px, calc(100% - 64px));
+    margin: auto;
+    border-radius: 4px;
+    max-height: min(88vh, 860px);
+    max-height: min(88dvh, 860px);
+    box-shadow: 0 40px 120px rgba(0,0,0,.62);
+  }
+  .detail-article {
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    align-items: start;
+  }
+  .detail-count {
+    grid-column: 1; grid-row: 1;
+    padding: 44px 0 0 44px;
+  }
+  .detail-media {
+    grid-column: 1; grid-row: 2;
+    align-self: start;
+    justify-content: center;
+    margin: 20px 24px 48px 44px;
+  }
+  .detail-media img { max-height: min(58vh, 520px); max-height: min(58dvh, 520px); }
+  .detail-copy {
+    grid-column: 2; grid-row: 1 / span 2;
+    padding: 40px 48px 48px 44px;
+  }
+  .detail-reveal { font-size: clamp(1.875rem, 2.5vw, 2.5rem); }
+  .detail-actions { margin-top: 38px; }
+}
+
+/* 低背の desktop（1024x768 など）でも、1点目の写真・Hook・ひらくが
+   スクロールなしで成立するよう、足りない高さは標題から回収する。 */
+@media (min-width: 821px) and (max-height: 820px) {
+  .hero { padding: 24px 0 26px; }
+  .hero h1 { font-size: clamp(2.5rem, 3.6vw, 3.25rem); }
+  .object-grid { --shelf-h: 48vh; }
+}
+
+@media (min-width: 1200px) {
+  .detail-copy { padding: 52px 60px 56px 52px; }
+  .detail-count { padding: 52px 0 0 56px; }
+  .detail-media { margin: 24px 24px 56px 56px; }
 }
 
 @media (max-width: 430px) {
-  .site-header { width: min(calc(100% - 28px), var(--max)); padding-top: 14px; }
-  .brand-name { font-size: 0.875rem; }
-  .pilot-label { font-size: 0.625rem; letter-spacing: .1em; }
-  .hero { width: calc(100% - 30px); margin-top: 16px; margin-bottom: 18px; text-align: left; }
-  /* 1画面目は Object のものにする。hero は1行に収める。 */
-  .hero h1 { font-size: clamp(1.875rem, 8.6vw, 2.375rem); }
-  .hero-kicker { margin-bottom: 7px; font-size: 0.6875rem; }
-  .hero-line { display: inline; white-space: nowrap; }
-  .objects-section { width: calc(100% - 20px); }
-  .object-card { border-radius: 20px; }
-  .card-body { padding: 15px 16px 17px; }
-  .end-plate { width: calc(100% - 30px); margin-top: 78px; }
-  .site-footer { width: calc(100% - 30px); }
-  .detail-dialog { width: calc(100% - 10px); max-height: calc(100vh - 10px); border-radius: 18px; }
-  .detail-dialog { max-height: calc(100dvh - 10px); }
-  .detail-copy { padding: 24px 17px 36px; }
-  .detail-reveal { font-size: clamp(1.2rem, 7vw, 2.1rem); }
-  .fact-row { grid-template-columns: 72px 1fr; gap: 10px; }
+  :root { --gutter: 18px; }
+  .hero { padding: 20px 0 20px; }
+  .object-grid { gap: 64px; }
+  .card-media { --plate-h: 46vh; }
+  .object-card:first-child .card-media { --plate-h: 51vh; }
+  .detail-copy { padding: 26px 18px 36px; }
+  .detail-count { padding: 20px 18px 0; }
+  .detail-media { margin: 16px 18px 0; }
+  .fact-row, .rights-row { grid-template-columns: 4em 1fr; gap: 12px; }
 }
 
-/* 低背 desktop（1024x768 など）でも、1件目の Real Media + Hook +「ひらく」を
-   スクロールなしで成立させる。足りない高さは hero から回収する。 */
-@media (min-width: 821px) and (max-height: 820px) {
-  .hero { margin: 14px auto 16px; }
-  .hero h1 { font-size: clamp(2rem, 3.4vw, 2.75rem); }
-  .hero-kicker { margin-bottom: 8px; }
-}
-
-/* Windows のハイコントラスト等では背景色が捨てられ、「ひらく」がただの文字に
-   なる。Object を開く手がかりが消えるので、輪郭をシステム色で描き直す。 */
-@media (forced-colors: active) {
-  .open-button, .official-action, .dialog-close {
-    border: 2px solid ButtonText;
-    forced-color-adjust: none;
-    background: ButtonFace; color: ButtonText;
-  }
-  .object-card, .media-frame, .detail-media img { border: 1px solid CanvasText; }
-  .card-number, .detail-count { border: 1px solid CanvasText; }
-  .detail-dialog { border: 1px solid CanvasText; }
-}
+/* --------------------------------------------------------------- 手ざわり */
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .object-card { transition: transform 180ms ease, box-shadow 180ms ease; }
-  .object-card:hover { transform: translateY(-3px); box-shadow: 0 24px 64px rgba(40,34,24,.16); }
+  html { scroll-behavior: smooth; }
+  .media-frame img,
+  .open-mark,
+  .open-button { transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease; }
+
+  .object-card:hover .media-frame img {
+    transform: translateY(-4px);
+    box-shadow: 0 44px 78px -24px rgba(0,0,0,.9);
+  }
+  .object-card:hover .open-mark { transform: translateX(5px); }
+  .object-card:hover .open-button { border-top-color: var(--chalk-dim); }
+  .object-card:active .media-frame img { transform: translateY(-1px) scale(.995); }
+
+  .detail-dialog[open] { animation: sheet-rise 190ms cubic-bezier(.2,.7,.3,1); }
+  @keyframes sheet-rise {
+    from { transform: translateY(26px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+}
+
+/* -------------------------------------------------- ハイコントラスト環境 */
+
+@media (forced-colors: active) {
+  .open-button, .official-action, .dialog-close {
+    border: 2px solid ButtonText;
+    forced-color-adjust: none;
+    background: ButtonFace; color: ButtonText;
+  }
+  .media-frame img, .detail-media img { border: 1px solid CanvasText; }
+  .detail-dialog { border: 1px solid CanvasText; }
 }

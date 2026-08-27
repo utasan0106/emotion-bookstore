@@ -236,8 +236,10 @@ function check(scope, name, pass, detail) {
     const openBtn = await page.$$eval('.open-button', els => els.map(b => ({
       tag: b.tagName, text: b.textContent, href: b.getAttribute('href')
     })));
+    // 「ひらく」は同一ページ内の操作。外部リンクの記号（↗）は使わない。
+    // ページ内の方向を示す → は許す（外部を示す ↗ とは別の記号）。
     check(S, 'open_control_is_button', openBtn.length === 3 &&
-      openBtn.every(b => b.tag === 'BUTTON' && !b.href && !/↗|→|外部/.test(b.text)), openBtn);
+      openBtn.every(b => b.tag === 'BUTTON' && !b.href && !/↗|外部|新しいタブ/.test(b.text)), openBtn);
 
     // --- 7. dialog: 開く / Reveal / Escape / focus 復帰 -------------------
     await page.click('.object-card:nth-child(1) .open-button');
@@ -556,11 +558,12 @@ function check(scope, name, pass, detail) {
           btnColor: cs.color
         };
       });
-      // 背景色が捨てられる環境では、輪郭が無いと「ひらく」がただの文字になる。
-      // その環境では border を必須にする（背景色の有無では判定できない）。
-      const btnReadsAsControl = r.forcedColors === 'active'
-        ? parseFloat(state.btnBorder) >= 1
-        : !['rgba(0, 0, 0, 0)', 'transparent'].includes(state.btnBackground);
+      // 「ひらく」が操作だと見て分かること。塗りでも罫でもよいが、
+      // どちらも無い（ただの文字）なら不可。背景色が捨てられる環境では
+      // 塗りは判定に使えないので、罫を必須にする。
+      const hasBorder = parseFloat(state.btnBorder) >= 1;
+      const hasFill = !['rgba(0, 0, 0, 0)', 'transparent'].includes(state.btnBackground);
+      const btnReadsAsControl = r.forcedColors === 'active' ? hasBorder : (hasBorder || hasFill);
       check(r.name, 'no_horizontal_overflow', !state.overflow, state.wide);
       check(r.name, 'list_no_spoiler', !SPOILERS.some(w => state.text.includes(w)),
         SPOILERS.filter(w => state.text.includes(w)));
@@ -572,12 +575,12 @@ function check(scope, name, pass, detail) {
       if (r.rootFontSize) {
         const scaled = await page.evaluate(() => {
           const px = sel => parseFloat(getComputedStyle(document.querySelector(sel)).fontSize);
-          return { footer: px('.privacy-note'), kicker: px('.hero-kicker'), label: px('.pilot-label') };
+          return { footer: px('.privacy-note'), number: px('.card-number'), label: px('.pilot-label') };
         });
         const factor = parseFloat(r.rootFontSize) / 16;
         check(r.name, 'text_scales_with_browser_font_setting',
-          scaled.footer > 12 * factor * 0.95 && scaled.kicker > 11 * factor * 0.95 &&
-          scaled.label > 10 * factor * 0.95,
+          scaled.footer > 13 * factor * 0.95 && scaled.number > 13 * factor * 0.95 &&
+          scaled.label > 13 * factor * 0.95,
           { ...scaled, factor });
       }
 

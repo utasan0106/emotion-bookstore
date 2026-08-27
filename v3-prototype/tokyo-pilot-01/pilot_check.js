@@ -160,15 +160,18 @@ for (const bad of ['analytics.js', 'store.js', 'googletagmanager', 'google-analy
 const css = fs.readFileSync(path.join(root, 'pilot.css'), 'utf8');
 if (!css.includes('@media (max-width: 430px)')) failures.push('mobile breakpoint 430 missing');
 if (!css.includes('prefers-reduced-motion')) failures.push('reduced-motion handling missing');
-// frame の縦横比は media 自身の実寸から取る（固定 aspect-ratio に戻さない）。
-if (!/aspect-ratio:\s*var\(--media-w\)\s*\/\s*var\(--media-h\)/.test(css)) {
-  failures.push('media frame must derive its aspect ratio from the media itself');
+// Real Media は原寸比のまま置く。frame 側の都合で切らない・伸ばさない。
+// img は intrinsic size を保ち、max-* でしか縛らない。
+if (/object-fit:\s*cover/.test(css)) failures.push('media must never be cropped by object-fit: cover');
+if (!/\.media-frame img\s*\{[\s\S]*?object-fit:\s*contain/.test(css)) {
+  failures.push('media images must be object-fit: contain');
+}
+if (!/\.media-frame img\s*\{[\s\S]*?width:\s*auto/.test(css) ||
+    !/\.media-frame img\s*\{[\s\S]*?height:\s*auto/.test(css)) {
+  failures.push('media images must keep their intrinsic size (width/height: auto)');
 }
 if (/\.card-media\s*\{[^}]*aspect-ratio:\s*\d/.test(css)) failures.push('card media must not hardcode an aspect ratio');
 if (/\.detail-media\s*\{[^}]*aspect-ratio:\s*\d/.test(css)) failures.push('detail media must not hardcode an aspect ratio');
-if (!/\.detail-media img\s*\{[^}]*object-fit:\s*contain/.test(css)) {
-  failures.push('detail media must show the full frame (contain)');
-}
 // 一覧は Real Media と Hook だけ。種別・地名は開いたあとに置く。
 if (/class: 'object-meta'[\s\S]{0,200}class: 'object-hook'/.test(js)) {
   failures.push('card must lead with the Hook, not with meta');

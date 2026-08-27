@@ -106,21 +106,34 @@
     ]);
   }
 
+  // 一点ずつ壁に掛かった展示物として組む。box に入れず、写真そのものを主役にし、
+  // その下に図録の札（通し番号・Hook・ひらく）を置く。札だけでなく plate 全体が
+  // 触れる面になる（open-button の ::after が plate を覆う）。
   function card(object, index) {
     var button;
-    var article = h('article', { class: 'object-card', 'data-object-id': object.id }, [
-      h('div', { class: 'card-number', text: String(index + 1).padStart(2, '0') + ' / 03' }),
+    var n = String(index + 1).padStart(2, '0');
+    var hookId = 'hook-' + object.id;
+    var openId = 'open-' + object.id;
+    return h('article', { class: 'object-card', 'data-object-id': object.id }, [
       media(object, 'card-media', index === 0, true),
       h('div', { class: 'card-body' }, [
-        // 一覧では Real Media と Hook だけを出す。種別・地名は開いたあとの payoff 側に置く。
-        h('h3', { class: 'object-hook', text: object.hook }),
+        h('p', { class: 'card-number' }, [
+          h('span', { class: 'plate-n', text: n }),
+          h('span', { class: 'plate-sep', text: ' / ' }),
+          h('span', { class: 'plate-of', text: '03' })
+        ]),
+        // 一覧では Real Media と Hook だけ。種別・地名は開いたあとの payoff 側に置く。
+        h('h3', { class: 'object-hook', id: hookId, text: object.hook }),
         (button = h('button', {
           class: 'open-button', type: 'button',
+          'aria-labelledby': openId + ' ' + hookId,
           onclick: function () { lastTrigger = button; openDetail(object, index); }
-        }, [h('span', { text: 'ひらく' })]))
+        }, [
+          h('span', { class: 'open-word', id: openId, text: 'ひらく' }),
+          h('span', { class: 'open-mark', 'aria-hidden': 'true', text: '→' })
+        ]))
       ])
     ]);
-    return article;
   }
 
   // CC 表示に必要な要素をすべて出す: 著作者 / 出典 / ライセンス名 /
@@ -172,7 +185,11 @@
     }));
 
     detail.appendChild(h('article', { class: 'detail-article', 'data-object-id': object.id }, [
-      h('p', { class: 'detail-count', text: String(index + 1).padStart(2, '0') + ' / 03' }),
+      h('p', { class: 'detail-count' }, [
+        h('span', { class: 'plate-n', text: String(index + 1).padStart(2, '0') }),
+        h('span', { class: 'plate-sep', text: ' / ' }),
+        h('span', { class: 'plate-of', text: '03' })
+      ]),
       media(object, 'detail-media', true),
       h('div', { class: 'detail-copy' }, [
         // 開いた時点で Hook は既知。payoff は Reveal なので、Reveal を見出しにする。
