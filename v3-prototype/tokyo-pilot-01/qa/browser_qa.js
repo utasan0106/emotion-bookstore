@@ -182,6 +182,43 @@ function check(scope, name, pass, detail) {
     });
     check(S, 'no_text_below_10px', tiny.length === 0, tiny);
 
+    // 参加者が読む文字のコントラスト。Art Direction を変えると真っ先に壊れる。
+    // 実際に描画された色から測る（token を読むのではなく computed style）。
+    const contrast = await page.evaluate(() => {
+      const lin = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+      const lum = rgb => 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
+      const parse = s => (s.match(/[\d.]+/g) || []).slice(0, 3).map(Number);
+      const bgOf = el => {
+        for (let n = el; n; n = n.parentElement) {
+          const c = getComputedStyle(n).backgroundColor;
+          const p = parse(c);
+          if (p.length === 3 && !/rgba\(.*,\s*0\)/.test(c)) return p;
+        }
+        return [0, 0, 0];
+      };
+      const ratio = (a, b) => {
+        const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
+        return (hi + 0.05) / (lo + 0.05);
+      };
+      const out = [];
+      document.querySelectorAll('.object-hook, .card-number, .plate-n, .open-button, .pilot-label, .brand-name, .privacy-note, .end-plate h2, .hero h1').forEach(el => {
+        const cs = getComputedStyle(el);
+        if (cs.visibility === 'hidden' || cs.display === 'none') return;
+        const size = parseFloat(cs.fontSize);
+        const bold = parseInt(cs.fontWeight, 10) >= 700;
+        // WCAG: 24px 以上、または 18.66px 以上の bold は large text（3:1）
+        const large = size >= 24 || (size >= 18.66 && bold);
+        out.push({
+          el: el.className || el.tagName, size,
+          ratio: Number(ratio(parse(cs.color), bgOf(el)).toFixed(2)),
+          need: large ? 3 : 4.5
+        });
+      });
+      return out;
+    });
+    const lowContrast = contrast.filter(c => c.ratio < c.need);
+    check(S, 'text_contrast_meets_aa', lowContrast.length === 0, lowContrast.length ? lowContrast : contrast.length);
+
     // --- 4. 横スクロール 0 ----------------------------------------------
     const overflow = await page.evaluate(() => {
       const doc = document.documentElement;
@@ -277,6 +314,37 @@ function check(scope, name, pass, detail) {
     // 開いたことは dialog 名（= Reveal）が伝える。status 側で重ねて読ませない。
     const announced = await page.$eval('#live', el => el.textContent.trim());
     check(S, 'open_is_not_announced_twice', announced === '', announced);
+    // 刷り物側（明るい地）の文字も同じ基準で測る。
+    const dlgContrast = await page.evaluate(() => {
+      const lin = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+      const lum = rgb => 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
+      const parse = s => (s.match(/[\d.]+/g) || []).slice(0, 3).map(Number);
+      const bgOf = el => {
+        for (let n = el; n; n = n.parentElement) {
+          const c = getComputedStyle(n).backgroundColor;
+          const p = parse(c);
+          if (p.length === 3 && !/rgba\(.*,\s*0\)/.test(c)) return p;
+        }
+        return [255, 255, 255];
+      };
+      const ratio = (a, b) => {
+        const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
+        return (hi + 0.05) / (lo + 0.05);
+      };
+      const out = [];
+      document.querySelectorAll('.detail-dialog .detail-reveal, .detail-dialog .detail-hook-echo, .detail-dialog .official-action, .detail-dialog .fact-row dd, .detail-dialog .fact-row dt, .detail-dialog .rights-value, .detail-dialog .rights-key, .detail-dialog .dialog-close, .detail-dialog .object-meta').forEach(el => {
+        const cs = getComputedStyle(el);
+        const size = parseFloat(cs.fontSize);
+        const bold = parseInt(cs.fontWeight, 10) >= 700;
+        const large = size >= 24 || (size >= 18.66 && bold);
+        out.push({ el: el.className || el.tagName, size,
+          ratio: Number(ratio(parse(cs.color), bgOf(el)).toFixed(2)), need: large ? 3 : 4.5 });
+      });
+      return out;
+    });
+    const dlgLow = dlgContrast.filter(c => c.ratio < c.need);
+    check(S, 'detail_text_contrast_meets_aa', dlgLow.length === 0, dlgLow.length ? dlgLow : dlgContrast.length);
+
     const dlgAlt = await page.$eval('.detail-media img', i => (i.getAttribute('alt') || '').trim());
     check(S, 'detail_media_alt_present', dlgAlt.length >= 8, dlgAlt);
     check(S, 'detail_a11y_text_no_internal_term', !INTERNAL.some(w => dlgAlt.includes(w)), dlgAlt);

@@ -19,7 +19,8 @@
   /* 展示室 */
   --hall:        #141312;
   --hall-raised: #1c1a18;
-  --hall-line:   #2e2b28;
+  --hall-line:   #2e2b28;   /* 棚板・区切り（構造。文字ではない） */
+  --hall-edge:   #6e675e;   /* 操作の輪郭。地に対して 3.33:1 */
 
   /* 札・刷り物 */
   --bone:        #f1ebe0;
@@ -31,9 +32,12 @@
   --ink:         #1a1815;   /* 明るい地の上の主文字 */
   --ink-dim:     #6a635a;   /* 明るい地の上の副文字 */
 
-  /* 唯一の signal。通し番号と、外へ出る導線にだけ使う。 */
-  --signal:      #d8442b;
-  --signal-lift: #e5573e;
+  /* 唯一の signal。通し番号と、外へ出る導線にだけ使う。
+     暗い地に載せる版と、白文字を載せる版で明度を分ける。
+     地に対して 4.92:1 / 白文字に対して 5.11:1。 */
+  --signal:      #e0563c;
+  --signal-fill: #c93a22;
+  --signal-lift: #d8442b;
 
   --serif: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", serif;
   --sans: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
@@ -50,7 +54,11 @@ body {
   margin: 0;
   min-height: 100vh;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-  background: var(--hall);
+  /* 展示室の光。中央がわずかに明るく、周辺が落ちる。装飾ではなく照明条件。 */
+  background:
+    radial-gradient(120% 80% at 50% 12%, #1a1816 0%, var(--hall) 58%, #100f0e 100%),
+    var(--hall);
+  background-attachment: fixed;
   color: var(--chalk);
   font-family: var(--sans);
   font-size: 1rem;
@@ -228,7 +236,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   min-height: 48px;
   padding: 0;
   border: 0;
-  border-top: 1px solid var(--hall-line);
+  border-top: 1px solid var(--hall-edge);
   border-radius: 0;
   background: transparent;
   color: var(--chalk);
@@ -405,7 +413,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   min-height: 58px;
   padding: 0 22px;
   border: 0;
-  background: var(--signal);
+  background: var(--signal-fill);
   color: #fff;
   font: inherit;
   font-size: 0.9375rem;
@@ -550,7 +558,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
     box-shadow: 0 44px 78px -24px rgba(0,0,0,.9);
   }
   .object-card:hover .open-mark { transform: translateX(5px); }
-  .object-card:hover .open-button { border-top-color: var(--chalk-dim); }
+  .object-card:hover .open-button { border-top-color: var(--chalk); }
   .object-card:active .media-frame img { transform: translateY(-1px) scale(.995); }
 
   .detail-dialog[open] { animation: sheet-rise 190ms cubic-bezier(.2,.7,.3,1); }
