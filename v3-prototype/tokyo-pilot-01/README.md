@@ -41,8 +41,10 @@
     NODE_PATH=/opt/node22/lib/node_modules node qa/browser_qa.js [--shots]
 
 `--shots` を付けると `qa/shots/` に 320 / 390 / 430 / 1024 / 1440 の
-実 viewport screenshot を出す。`qa/shots/` と `qa/qa-report.json` は
-git 管理しない（`qa/qa-baseline-20260827.json` だけ履歴として残す）。
+実 viewport screenshot を出す。`qa/shots/` と、毎回上書きされる
+`qa/qa-report.json` は git 管理しない。履歴として残すのは
+`qa/qa-baseline-20260827.json`（取り込み時点）と
+`qa/qa-evidence-20260827.json`（この日の最終結果）の2つ。
 
 `media_validate.py` は Pillow が必要（`pip install Pillow`）。
 

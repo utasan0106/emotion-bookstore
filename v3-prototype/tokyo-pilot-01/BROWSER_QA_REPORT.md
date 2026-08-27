@@ -8,7 +8,7 @@ Status: 隔離 Human Test の技術 QA = GO / Production = NO-GO
 
 ```bash
 NODE_PATH=/opt/node22/lib/node_modules node qa/browser_qa.js [--shots]
-# 判定 → qa/qa-report.json
+# 判定 → qa/qa-report.json（毎回上書き。git 管理しない）
 # screenshot → qa/shots/（git 管理しない）
 ```
 
