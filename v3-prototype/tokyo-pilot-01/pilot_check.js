@@ -151,7 +151,10 @@ if (!js.includes("get('participant') === '1'")) failures.push('participant-mode 
 if (!html.includes('noindex,nofollow')) failures.push('noindex missing');
 if (!html.includes('referrer" content="no-referrer')) failures.push('no-referrer meta missing');
 if ((html.match(/<h1\b/g) || []).length !== 1) failures.push('expected exactly one h1');
-if (!html.includes('3つ、見終わりました。')) failures.push('finite ending copy missing');
+if (!html.includes('この棚は、3つで終わりです。')) failures.push('neutral finite ending copy missing');
+for (const priming of ['次の3つ', 'また見たい', '見終わりました']) {
+  if (html.includes(priming)) failures.push(`participant UI primes or falsely claims completion: ${priming}`);
+}
 if (/type=["']search["']|<form\b|<input\b/i.test(html)) failures.push('search/form/input must not exist in first-session pilot');
 for (const bad of ['analytics.js', 'store.js', 'googletagmanager', 'google-analytics']) {
   if (html.includes(bad)) failures.push(`forbidden external/runtime dependency in html: ${bad}`);

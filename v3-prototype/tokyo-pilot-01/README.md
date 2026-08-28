@@ -93,4 +93,5 @@ runtime:
 ## Human Test
 
 手順・前提条件・記録様式は `HUMAN_TEST_CYCLE_01.md` と
-`HUMAN_TEST_SCORECARD.csv` を参照。
+`qa/human-test-v3/README.md` を参照（V3.1 以降の運用正本）。
+ルート直下の `HUMAN_TEST_SCORECARD.csv` は V3.0 時点の様式で、記録には使わない。

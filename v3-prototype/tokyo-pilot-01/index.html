@@ -31,17 +31,16 @@
       </noscript>
     </section>
 
-    <!-- 3件が実際に並んだときだけ「見終わりました」と言う。
-         描けなかったとき・止めたときに終わりだけ残らないよう既定は hidden。 -->
+    <!-- 3件が実際に並んだときだけ有限な終わりを出す。
+         participantが3件すべてを開いたとは断定せず、次回予告でReturn回答をprimingしない。 -->
     <section class="end-plate" aria-labelledby="end-title" hidden>
       <p class="eyebrow">今回は、ここまで</p>
-      <h2 id="end-title">3つ、見終わりました。</h2>
-      <p>次の3つを仕入れたら、この棚を入れ替えます。</p>
+      <h2 id="end-title">この棚は、3つで終わりです。</h2>
     </section>
   </main>
 
   <footer class="site-footer">
-    <p class="privacy-note">このページでは保存・計測・個人ごとの推薦を行いません。画像は権利を確認した提供元から表示し、公式リンクは押したときだけ開きます。</p>
+    <p class="privacy-note">このページでは保存・計測・個人ごとの推薦を行いません。画像の出典と利用条件は各詳細に記載しています。公式リンクは押したときだけ開きます。</p>
   </footer>
 
   <dialog id="detailDialog" class="detail-dialog" aria-labelledby="detailTitle">

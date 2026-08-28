@@ -38,7 +38,13 @@ NODE_PATH=/opt/node22/lib/node_modules node qa/cycle_gate.js <配信URL>
 ```
 
 Pass the delivery URL and it also prints the 18 participant URLs with the order
-assignment already applied, matching `HUMAN_TEST_SCORECARD.csv`.
+assignment already applied, matching `qa/human-test-v3/assignments.csv`.
+
+> **V3.1 以降の運用正本は `qa/human-test-v3/README.md`。** 記録は
+> `prepare_workspace.py` が作る ignored な `scorecard.local.csv` に書く。
+> ルート直下の `HUMAN_TEST_SCORECARD.csv` は V3.0 時点の様式で、
+> V3.1 の diagnostics 列（`first_open_latency_s` / `first_reveal_payoff`）を
+> 持たない。こちらには記録しない。
 
 Individually, if you need to:
 

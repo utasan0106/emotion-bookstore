@@ -30,6 +30,9 @@ function run(label, cmd, args) {
 }
 
 const steps = [
+  run('測定契約 / Return priming / local data boundary', process.execPath, ['qa/measurement_integrity_check.js']),
+  run('Human Test V3.1 analyzer regression', 'python3', ['qa/human-test-v3/test_analyze.py']),
+  run('Human Test V3.1 freeze contract', 'python3', ['qa/human-test-v3/test_freeze.py']),
   run('静的契約 / 事実の期限', process.execPath, ['pilot_check.js', '--external-cycle']),
   run('media 証跡（実バイト・寸法・SHA-256）', 'python', ['media_validate.py']),
   run('実ブラウザ QA', process.execPath, ['qa/browser_qa.js'])
@@ -82,9 +85,9 @@ if (baseUrl && passed) {
     const id = 'P' + String(i + 1).padStart(2, '0');
     console.log(`  ${id}  ${root}index.html?participant=1&order=${ORDERS[i % 6]}`);
   }
-  console.log('\n記録は HUMAN_TEST_SCORECARD.csv に、匿名 ID のまま書く。');
+  console.log('\n運用正本: qa/human-test-v3/README.md。記録前に prepare_workspace.py を実行し、ignored scorecard.local.csv に匿名IDで書く。');
 } else if (!baseUrl) {
-  console.log('\n（配信URL を引数に渡すと、参加者 18 名分の URL も出します）');
+  console.log('\n（配信URL を引数に渡すと参加者18名分のURLも出します。運用正本は qa/human-test-v3/README.md）');
 }
 
 process.exit(passed ? 0 : 1);
