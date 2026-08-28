@@ -211,6 +211,18 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 }
 .plate-sep, .plate-of { color: var(--chalk-dim); }
 
+/* 日本語見出しの意味単位ひとかたまり。keep-all が文節内の暗黙の改行機会を消すので、
+   通常は <wbr>（と読点の後）でしか折返せない。Safari も keep-all を解釈する。
+   nowrap ではなく keep-all にしているのは、文節そのものが1行に収まらない極端な幅で
+   横スクロールを出さないため。その最終手段としてだけ overflow-wrap: anywhere が働く。
+   break-word ではなく anywhere なのは、keep-all した文節が grid track の min-content を
+   押し広げて 200% zoom で横スクロールを作ってしまうため。anywhere は min-content を
+   1文字に戻すが、実際の改行は今までどおり <wbr> の位置が優先される。 */
+.jp-phrase {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
 .object-hook {
   margin: 0;
   font-family: var(--serif);

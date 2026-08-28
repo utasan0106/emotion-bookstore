@@ -19,10 +19,28 @@ const runtime=[html,read(path.join(ROOT,'pilot.js')),read(path.join(ROOT,'pilot_
 for(const phrase of ['次の3つ','また見たい','見終わりました']) forbid(runtime,phrase,'participant runtime');
 req(endPlateText(html),'この棚は、3つで終わりです。','neutral finite ending');
 if(!/<span class="end-phrase">この棚は、<\/span><wbr><span class="end-phrase">3つで終わりです。<\/span>/.test(html)) fail.push('finite ending must fix its line break with .end-phrase + <wbr>');
+// 日本語見出しの折返し制御。wording を変えていないこと（連結一致）と、
+// Safari-safe な CSS 契約が両方あることを見る。
+const contentSrc=read(path.join(ROOT,'pilot_content.js'));
+const sandbox={window:{}};
+try{ require('vm').runInNewContext(contentSrc,sandbox); }catch(e){ fail.push('pilot_content.js not evaluable: '+e.message); }
+const objs=(sandbox.window.TOKYO_PILOT_CONTENT&&sandbox.window.TOKYO_PILOT_CONTENT.objects)||[];
+if(objs.length!==3) fail.push('expected exactly 3 objects for phrase check');
+for(const o of objs){
+  for(const [f,pf] of [['hook','hookPhrases'],['reveal','revealPhrases']]){
+    if(!Array.isArray(o[pf])||o[pf].join('')!==o[f]) fail.push(`${o.id}: ${pf} must join back to ${f} unchanged`);
+  }
+}
+const jsSrc=read(path.join(ROOT,'pilot.js'));
+req(jsSrc,"phrases.join('') !== text",'jpHeading falls back to the plain wording on any phrase mismatch');
+req(jsSrc,"class: 'jp-phrase'",'jp-phrase spans are rendered');
 const css=read(path.join(ROOT,'pilot.css'));
 const endPhraseRule=(css.match(/\.end-phrase\s*\{[^}]*\}/)||[''])[0];
 if(!/word-break:\s*keep-all/.test(endPhraseRule)) fail.push('.end-phrase must be word-break: keep-all (Safari-safe fallback)');
 if(!/overflow-wrap:\s*break-word/.test(endPhraseRule)) fail.push('.end-phrase needs overflow-wrap: break-word so 200% zoom cannot overflow');
+const jpPhraseRule=(css.match(/\.jp-phrase\s*\{[^}]*\}/)||[''])[0];
+if(!/word-break:\s*keep-all/.test(jpPhraseRule)) fail.push('.jp-phrase must be word-break: keep-all (Safari-safe)');
+if(!/overflow-wrap:\s*anywhere/.test(jpPhraseRule)) fail.push('.jp-phrase needs overflow-wrap: anywhere so keep-all cannot widen min-content');
 req(html,'画像の出典と利用条件は各詳細に記載しています。','accurate rights/trust copy');
 for(const token of ['first_open_latency_s','first_reveal_payoff','scorecard.local.csv']) forbid(runtime,token,'runtime telemetry boundary');
 const csv=read(path.join(OPS,'scorecard_template.csv')).trimEnd().split(/\r?\n/);

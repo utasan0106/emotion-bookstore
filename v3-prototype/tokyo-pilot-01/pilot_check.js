@@ -160,6 +160,43 @@ if (!js.includes("get('participant') === '1'")) failures.push('participant-mode 
 if (!html.includes('noindex,nofollow')) failures.push('noindex missing');
 if (!html.includes('referrer" content="no-referrer')) failures.push('no-referrer meta missing');
 if ((html.match(/<h1\b/g) || []).length !== 1) failures.push('expected exactly one h1');
+// 日本語見出しは phrase span + <wbr> で折返し位置を決める。分割は表示上の都合であって
+// wording ではない。連結が hook / reveal と1文字でも違えば FAIL させる。
+for (const object of (content && content.objects) || []) {
+  for (const [field, phraseField] of [['hook', 'hookPhrases'], ['reveal', 'revealPhrases']]) {
+    const phrases = object[phraseField];
+    if (!Array.isArray(phrases) || phrases.length < 2) {
+      failures.push(`${object.id}: ${phraseField} must be an array of at least 2 phrases`);
+      continue;
+    }
+    if (phrases.some((p) => typeof p !== 'string' || !p)) {
+      failures.push(`${object.id}: ${phraseField} entries must be non-empty strings`);
+      continue;
+    }
+    if (phrases.join('') !== object[field]) {
+      failures.push(`${object.id}: ${phraseField} must join back to ${field} without changing wording`);
+    }
+  }
+}
+// 「カフェ。」「剥製。」のような意味単位が phrase をまたいで割られていないこと。
+for (const [id, unit, phraseField] of [
+  ['manuscript-cafe', 'カフェ。', 'hookPhrases'],
+  ['hachiko-taxidermy', '剥製。', 'revealPhrases'],
+  ['meguro-tapeworm', 'サナダムシ。', 'hookPhrases'],
+]) {
+  const object = ((content && content.objects) || []).find((o) => o.id === id);
+  const phrases = object && object[phraseField];
+  if (!Array.isArray(phrases) || !phrases.some((p) => p.includes(unit))) {
+    failures.push(`${id}: ${unit} must stay inside one ${phraseField} entry`);
+  }
+}
+
+const cssText = fs.readFileSync(path.join(root, 'pilot.css'), 'utf8');
+const jpRule = (cssText.match(/\.jp-phrase\s*\{[^}]*\}/) || [''])[0];
+if (!/word-break:\s*keep-all/.test(jpRule)) failures.push('.jp-phrase must be word-break: keep-all (Safari-safe)');
+if (!/overflow-wrap:\s*anywhere/.test(jpRule)) failures.push('.jp-phrase needs overflow-wrap: anywhere so keep-all cannot widen min-content');
+if (/\.jp-phrase\s*\{[^}]*white-space:\s*nowrap/.test(cssText)) failures.push('.jp-phrase must not be white-space: nowrap');
+
 if (!endPlateText(html).includes('この棚は、3つで終わりです。')) {
   failures.push('neutral finite ending copy missing');
 }

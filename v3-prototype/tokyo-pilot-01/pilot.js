@@ -28,6 +28,26 @@
     return el;
   }
 
+  // 日本語見出しの折返しを markup 側で決める。.jp-phrase は word-break: keep-all なので、
+  // 通常は phrase 境界（<wbr>）でしか改行できない。「カフェ。」「剥製。」のような
+  // 意味単位が文字途中で割れるのを防ぐ。Chromium 専用の word-break: auto-phrase に
+  // Safari の正しさを依存させない。
+  // phrases が無い / 連結しても本文と一致しない場合は、必ず本文そのものを出す。
+  function jpHeading(tag, attrs, phrases, text) {
+    if (!Array.isArray(phrases) || phrases.join('') !== text) {
+      var plain = {};
+      Object.keys(attrs).forEach(function (key) { plain[key] = attrs[key]; });
+      plain.text = text;
+      return h(tag, plain);
+    }
+    var children = [];
+    phrases.forEach(function (phrase, i) {
+      if (i) children.push(document.createElement('wbr'));
+      children.push(h('span', { class: 'jp-phrase', text: phrase }));
+    });
+    return h(tag, attrs, children);
+  }
+
   function queryParams() {
     return new URLSearchParams(location.search);
   }
@@ -123,7 +143,7 @@
           h('span', { class: 'plate-of', text: '03' })
         ]),
         // 一覧では Real Media と Hook だけ。種別・地名は開いたあとの payoff 側に置く。
-        h('h3', { class: 'object-hook', id: hookId, text: object.hook }),
+        jpHeading('h3', { class: 'object-hook', id: hookId }, object.hookPhrases, object.hook),
         (button = h('button', {
           class: 'open-button', type: 'button',
           'aria-labelledby': openId + ' ' + hookId,
@@ -193,8 +213,8 @@
       media(object, 'detail-media', true),
       h('div', { class: 'detail-copy' }, [
         // 開いた時点で Hook は既知。payoff は Reveal なので、Reveal を見出しにする。
-        h('p', { class: 'detail-hook-echo', text: object.hook }),
-        h('h2', { id: 'detailTitle', class: 'detail-reveal', text: object.reveal }),
+        jpHeading('p', { class: 'detail-hook-echo' }, object.hookPhrases, object.hook),
+        jpHeading('h2', { id: 'detailTitle', class: 'detail-reveal' }, object.revealPhrases, object.reveal),
         h('p', { class: 'object-meta', text: object.typeLabel + ' · ' + object.placeName }),
         h('section', { class: 'verified-block' }, [
           h('h3', { text: '行く前にわかること' }),

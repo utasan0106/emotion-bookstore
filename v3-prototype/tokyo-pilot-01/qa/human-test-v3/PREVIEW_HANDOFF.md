@@ -59,25 +59,27 @@ neutral ending / Return priming 語の不在 / Real Media 3枚の decode と con
 CC deed への直リンク / Official Action 前の外部 request 0 /
 `qa/human-test-v3/**` 等の内部ファイルが公開配信されていないこと。
 
-## 参加者が読む 7 ファイルの byte manifest（V3.2.2 checkout 実測）
+## 参加者が読む 7 ファイルの byte manifest（V3.2.3 checkout 実測）
 
 これは operator が手元 checkout を目視確認するための参考値であり、実行条件
 ではない。正となる比較は `preview_verify.js` が checkout から都度算出する。
 
 ```
 index.html                  ef7710542e79e9ce60df4adcacd73295cef474c4ac22017b7c402d9d5bd9c9ad   2966
-pilot.css                   4ba9d85c8c804f400711fbec7efb84a2c0ac6128a91617483f8d7b1190163697  18000
-pilot_content.js            ddb3ae20489882e7b8154bdf0a5beb51640a8fdaea21725c8b1a763baebfc85d   6324
-pilot.js                    57204ae78e19eda67cefd7efab146aceae9daa25ba9f910c120da24415f8697d  10806
+pilot.css                   bdf27f925be74ba17212818c1bec3d44d3c446392ee10b9a2c0a18df2d361cee  18839
+pilot_content.js            c94222cfd44d661f274aec362ec0bf67f8f9326dd1bee7685b085dbf33f5f240   6968
+pilot.js                    9033401c89651703132f1d58c5f4d3b9ec3febdf3a3769c4cd0086d66d2558e4  11888
 assets/manuscript-cafe.png  832f06fa774966f02025d188bf4ae786abdd1fe69f1d338d6e43017754617315 368960
 assets/hachiko.jpg          c634b597e9b09461159890784f15b2956ff810ee66c895cd92b19867e28a2767 353928
 assets/meguro-tapeworm.jpg  21ed2ffbe847c755c28f675d08b1cbec40ec1477e4e688f78f07b666c5ec45c4 258119
 ```
 
-V3.2 からの差分は `index.html` と `pilot.css` のみ。終了見出しの折返しを
-markup 側で固定し（`.end-phrase` + `<wbr>`）、その phrase boundary を
-`この棚は、` / `3つで終わりです。` に確定させたことによる。wording は不変。
-他 5 ファイルは byte 不変。
+V3.2 からの差分は `index.html` / `pilot.css` / `pilot.js` / `pilot_content.js`。
+すべて日本語見出しの折返し制御。終了見出しは `.end-phrase` + `<wbr>` で
+`この棚は、` / `3つで終わりです。` に固定。Object title と Detail Reveal は
+`.jp-phrase` + `<wbr>` で意味単位を保つ。wording はいずれも不変で、phrase を
+連結すると元の hook / reveal と1文字も違わないことを `pilot_check.js` と
+`qa/measurement_integrity_check.js` が guard する。Real Media 3枚は byte 不変。
 
 ## Historical / audit note
 
