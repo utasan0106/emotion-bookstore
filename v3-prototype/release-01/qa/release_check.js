@@ -44,6 +44,11 @@ for (const shelf of shelves) {
     }
     if (!['evergreen', 'current'].includes(o.mode)) failures.push(`${o.id}: mode must be evergreen|current`);
     if (o.mode === 'current' && !o.expiresAt) failures.push(`${o.id}: current requires expiresAt`);
+    // evergreen は日付に依存しない事実。finite expiry を持たせると、期限が来た瞬間に
+    // その棚が理由なく閉じる。期限が要るなら mode を current にする。
+    if (o.mode === 'evergreen' && o.expiresAt !== null && o.expiresAt !== undefined) {
+      failures.push(`${o.id}: evergreen must not carry a finite expiresAt (${o.expiresAt})`);
+    }
     if (!Array.isArray(o.facts) || o.facts.length !== 3) failures.push(`${o.id}: expected exactly 3 facts`);
     if (!/^https:\/\//.test(o.actionUrl || '')) failures.push(`${o.id}: actionUrl must be https`);
     if (!/^https:\/\//.test(o.factsSourceUrl || '')) failures.push(`${o.id}: factsSourceUrl must be https`);

@@ -259,6 +259,39 @@ function serve() {
     await ctx.close();
   }
 
+  /* ---- 旧 Pilot の 8/30 16:00 で東京が閉じないこと ---- */
+  {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const page = await ctx.newPage();
+    await page.addInitScript(() => {
+      const fixed = new Date('2026-08-30T16:00:00+09:00').getTime();
+      const RealDate = Date;
+      // eslint-disable-next-line no-global-assign
+      Date = class extends RealDate {
+        constructor(...a) { if (!a.length) super(fixed); else super(...a); }
+        static now() { return fixed; }
+      };
+    });
+    await page.goto(base + 'shelf.html?shelf=tokyo', { waitUntil: 'load' });
+    await page.waitForTimeout(250);
+    const t = await page.evaluate(() => ({
+      cards: document.querySelectorAll('.object-card').length,
+      endHidden: document.querySelector('.end-plate').hidden,
+      text: document.body.innerText
+    }));
+    check('2026-08-30T16:00+09:00', 'tokyo_flagship_stays_open', t.cards === 3, t.cards);
+    check('2026-08-30T16:00+09:00', 'tokyo_finite_ending_still_shown', t.endHidden === false);
+    check('2026-08-30T16:00+09:00', 'tokyo_still_shows_its_three_hooks',
+      ['原稿執筆する人限定のカフェ。', '渋谷のハチ公、本物は上野。', '8.8mのサナダムシ。']
+        .every((w) => t.text.replace(/\s+/g, '').includes(w.replace(/\s+/g, ''))), t.text.slice(0, 60));
+    // 同じ時刻で高円寺もまだ開いている（阿波おどりは 20:00 まで）。
+    await page.goto(base + 'shelf.html?shelf=koenji', { waitUntil: 'load' });
+    await page.waitForTimeout(250);
+    const k = await page.evaluate(() => document.querySelectorAll('.object-card').length);
+    check('2026-08-30T16:00+09:00', 'koenji_still_open_before_its_own_expiry', k === 3, k);
+    await ctx.close();
+  }
+
   /* ---- 200% 拡大 / forced-colors / coarse touch ---- */
   const RESILIENCE = [
     { name: 'zoom200-foyer', page: 'index.html', zoom: 2, forcedColors: 'none' },

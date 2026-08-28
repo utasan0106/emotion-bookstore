@@ -68,7 +68,10 @@ window.V3_RELEASE_CONTENT = {
           },
           factsSourceUrl: 'https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/',
           verifiedAt: '2026-08-27T17:16:00+09:00',
-          expiresAt: '2026-08-30T16:00:00+09:00'
+          // 表示している事実は「不定期。営業日は公式ページで確認」で、特定の日付に
+          // 依存していない。旧 Pilot 由来の finite expiry を残すと 8/30 16:00 に
+          // 東京 flagship が丸ごと閉じてしまうため、evergreen として期限を持たせない。
+          expiresAt: null
         },
         {
           id: 'hachiko-taxidermy',
