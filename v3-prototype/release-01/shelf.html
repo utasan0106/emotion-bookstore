@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#141312">
+  <title>みんなの感情書店｜棚</title>
+  <link rel="stylesheet" href="./release.css">
+</head>
+<body class="shelf-page">
+  <a class="skip-link" href="#main">本文へ移動</a>
+
+  <header class="site-header">
+    <p class="brand"><a class="brand-home" href="./index.html"><span class="brand-name">みんなの感情書店</span></a></p>
+    <p class="pilot-label" id="shelfLabel">全3点</p>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title"></h1>
+    </section>
+
+    <section class="objects-section" aria-labelledby="objects-title">
+      <h2 id="objects-title" class="sr-only">この棚の3つ</h2>
+      <div id="objectGrid" class="object-grid"></div>
+      <noscript>
+        <p class="noscript-note">この棚を見るには、ブラウザの JavaScript を有効にしてください。</p>
+      </noscript>
+    </section>
+
+    <!-- 3件が実際に並んだときだけ有限な終わりを出す。
+         次回予告や再訪を促す言い回しは置かない。出口はほかの棚への1本だけ。 -->
+    <section class="end-plate" aria-labelledby="end-title" hidden>
+      <p class="eyebrow">今回は、ここまで</p>
+      <!-- 折返し位置を markup で固定する。word-break: auto-phrase は 2026-08-28 時点で
+           stable Safari / iOS Safari 未対応のため、正しさをそれに依存させない。
+           .end-phrase は word-break: keep-all なので、改行は原則 <wbr> の位置でしか
+           起きない。 -->
+      <h2 id="end-title"><span class="end-phrase">この棚は、</span><wbr><span class="end-phrase">3つで終わりです。</span></h2>
+      <p class="end-exit"><a class="other-shelves" href="./index.html">ほかの棚を見る</a></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="privacy-note">このページでは保存・計測・個人ごとの推薦を行いません。画像の出典と利用条件は各詳細に記載しています。公式リンクは押したときだけ開きます。</p>
+  </footer>
+
+  <dialog id="detailDialog" class="detail-dialog" aria-labelledby="detailTitle">
+    <div class="dialog-shell">
+      <button id="closeDialog" class="dialog-close" type="button" aria-label="詳細を閉じる">閉じる</button>
+      <div id="detailContent"></div>
+    </div>
+  </dialog>
+
+  <div id="live" class="sr-only" role="status" aria-live="polite"></div>
+
+  <script src="./release_content.js"></script>
+  <script src="./release.js"></script>
+</body>
+</html>

@@ -134,6 +134,19 @@ docs/
 /v3-prototype/tokyo-pilot-01/localize_media.py
 /v3-prototype/tokyo-pilot-01/qa/
 
+# ---- v3-prototype/release-01 の非公開ファイルのみ --------------------------
+# 判定根拠：index.html / shelf.html を起点にした静的到達解析。
+#           公開 runtime が参照するのは
+#             index.html / shelf.html / release.css / release_content.js /
+#             release.js / assets/manuscript-cafe.png / assets/hachiko.jpg /
+#             assets/meguro-tapeworm.jpg
+#           の 8 件だけで、qa/ への参照は HTML / CSS / JS のいずれからも 0 件。
+#
+# ★ /v3-prototype/release-01/ をディレクトリごと除外してはならない。
+#   この配下に Release Candidate の公開 runtime がある。
+/v3-prototype/release-01/qa/
+/v3-prototype/release-01/README.md
+
 # 内部ドキュメント（rights 監査文 / Human Test 手順 / Product 内部用語）
 /v3-prototype/tokyo-pilot-01/README.md
 /v3-prototype/tokyo-pilot-01/DECISIONS_NEEDED.md
