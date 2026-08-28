@@ -1,13 +1,24 @@
-# Tokyo Pilot — Human Test V3.1 Operator Pack
+# Tokyo Pilot — Human Test V3.2 Operator Pack
 
 Purpose: bind the current Art Direction runtime to one reproducible, privacy-minimal Cycle 01 measurement contract without changing participant-facing runtime code.
 
 This directory belongs under `v3-prototype/tokyo-pilot-01/qa/human-test-v3/`. The parent `qa/` path is already excluded from the Vercel participant delivery surface.
 
+## What V3.2 adds on top of V3.1
+
+- screen exposure and the operator stopwatch start at the **same moment** (end of `どうぞ`); the page is loaded in advance but kept out of sight
+- Return Desire is asked **first**, before the occasion question, so the participant is not answering against a use case they just constructed out loud
+- Reveal payoff stays last; feature requests are only recorded if raised after all five questions
+- recruitment copy carries no hypothesis: no stated duration, no fixed question count, no `検索前` / `3つ` / `Human Editorial` / `面白い場所` …
+- `prior_pilot_exposure` is asked before the session; `yes` participants still run, but are excluded from primary valid n and every threshold
+- `recruitment_relation` (unknown / weak_tie / close_tie) is reported as a validity note over the first 12 primary-valid participants; a shortfall is a caveat, never a reason to discard anyone
+
+GO thresholds are unchanged: valid n ≥ 12, Open ≥ 60%, Return Yes ≥ 40%, six orders balanced ±1.
+
 ## What V3.1 adds
 
 - manual `first_open_latency_s` diagnostic measured from the end of the neutral `どうぞ` prompt to first voluntary Open; no runtime timer/telemetry
-- `first_reveal_payoff` diagnostic asked only after the four existing post-session questions
+- `first_reveal_payoff` diagnostic asked only after the other post-session questions
 - deterministic analyzer with Wilson intervals, open depth, Object×position, order/device diagnostics
 - explicit diagnostic completeness instead of invalidating core Open/Return data when the operator misses a stopwatch/reveal field
 - exact Git HEAD + runtime/contract SHA freeze after JIT official-source verification
@@ -26,7 +37,7 @@ No new UI, analytics, storage, account, recommendation, search, private writing,
 6. `python3 qa/human-test-v3/verify_freeze.py`
 7. immediately before each participant/batch, re-check the same Preview bytes without mutating evidence: `node qa/human-test-v3/preview_verify.js --check-only 'https://<exact-preview>/v3-prototype/tokyo-pilot-01/'`
 8. `python3 qa/human-test-v3/prepare_workspace.py`
-9. run 12–18 first-time participants using `assignments.csv`
+9. run 12–18 first-time participants using `assignments.csv`; record `prior_pilot_exposure` before each session and `recruitment_relation` per participant
 10. `python3 qa/human-test-v3/analyze.py qa/human-test-v3/scorecard.local.csv`
 11. map the aggregate result to `decision_matrix.md`; choose one next action only
 

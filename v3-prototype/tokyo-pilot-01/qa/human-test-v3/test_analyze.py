@@ -4,7 +4,7 @@ from pathlib import Path
 
 ANALYZER = Path(__file__).with_name('analyze.py')
 HEADERS = [
-    'participant_id','order','device','consent_confirmed','first_open_latency_s',
+    'participant_id','order','prior_pilot_exposure','recruitment_relation','device','consent_confirmed','first_open_latency_s',
     'voluntary_open','first_object','opened_objects','objects_opened',
     'raw_spontaneous_utterance','official_action','occasion_answer','return_desire',
     'return_reason','current_alternative','existing_alternative_sufficient',
@@ -14,11 +14,14 @@ HEADERS = [
 ORDERS=['abc','acb','bac','bca','cab','cba']
 OBJ={'a':'manuscript-cafe','b':'hachiko-taxidermy','c':'meguro-tapeworm'}
 
-def row(i, opened=True, ret='yes', latency='5', reveal='yes', depth=1):
+def row(i, opened=True, ret='yes', latency='5', reveal='yes', depth=1,
+        exposure='no', relation='unknown'):
     order=ORDERS[(i-1)%6]
     ids=[OBJ[c] for c in order[:depth]] if opened else []
     return {
-        'participant_id':f'P{i:02d}','order':order,'device':'mobile','consent_confirmed':'yes',
+        'participant_id':f'P{i:02d}','order':order,
+        'prior_pilot_exposure':exposure,'recruitment_relation':relation,
+        'device':'mobile','consent_confirmed':'yes',
         'first_open_latency_s':latency if opened else '', 'voluntary_open':'yes' if opened else 'no',
         'first_object':ids[0] if ids else '', 'opened_objects':';'.join(ids), 'objects_opened':str(len(ids)),
         'raw_spontaneous_utterance':'','official_action':'no','occasion_answer':'','return_desire':ret,
@@ -84,8 +87,40 @@ def test_free_text_never_changes_metrics():
         for k in ['raw_spontaneous_utterance','return_reason','first_reveal_payoff_reason','moderator_notes']: r[k]=noisy
     cpa,da=run(a); cpb,db=run(b); assert cpa.returncode==cpb.returncode==0; assert da==db
 
+def test_prior_exposure_excluded_from_primary():
+    """事前露出のある participant は primary valid n にも GO 判定にも入らない。"""
+    rows = [row(i) for i in range(1, 13)]
+    rows.append(row(13, exposure='yes'))
+    rows.append(row(14, exposure='yes'))
+    for i in range(15, 19):
+        r = {h: '' for h in HEADERS}; r['participant_id'] = f'P{i:02d}'; r['order'] = ORDERS[(i-1) % 6]
+        rows.append(r)
+    cp, d = run(rows)
+    assert cp.returncode == 0, cp.stdout + cp.stderr
+    assert d['completed_n'] == 12, d['completed_n']
+    assert d['prior_exposure_excluded_n'] == 2, d['prior_exposure_excluded_n']
+    assert d['prior_exposure_excluded_ids'] == ['P13', 'P14']
+    assert d['decision_flags']['prior_exposure_excluded_from_primary'] is True
+
+
+def test_recruitment_relation_validity_note():
+    """close_tie に偏った sample は破棄せず、validity note として出す。"""
+    rows = [row(i, relation='close_tie' if i <= 8 else 'unknown') for i in range(1, 13)]
+    for i in range(13, 19):
+        r = {h: '' for h in HEADERS}; r['participant_id'] = f'P{i:02d}'; r['order'] = ORDERS[(i-1) % 6]
+        rows.append(r)
+    cp, d = run(rows)
+    assert cp.returncode == 0, cp.stdout + cp.stderr
+    q = d['recruitment_quality']
+    assert q['counted_n'] == 12 and q['close_tie'] == 8 and q['unknown'] == 4
+    assert q['target_two_thirds_weak_or_unknown_met'] is False
+    # 破棄はしない
+    assert d['completed_n'] == 12
+
+
 def main():
-    tests=[test_empty,test_go,test_missing_diagnostics_are_warnings_not_core_failure,test_nonopener_diagnostic_contradiction_fails,test_reveal_reason_without_value_fails,test_count_contradiction_fails,test_first_object_order_fails,test_free_text_never_changes_metrics]
+    tests=[test_empty,test_go,test_missing_diagnostics_are_warnings_not_core_failure,test_nonopener_diagnostic_contradiction_fails,test_reveal_reason_without_value_fails,test_count_contradiction_fails,test_first_object_order_fails,test_free_text_never_changes_metrics,test_prior_exposure_excluded_from_primary,test_recruitment_relation_validity_note]
     for t in tests: t()
     print(f'HUMAN_TEST_V3_ANALYZER_GO {len(tests)}/{len(tests)}')
+
 if __name__=='__main__': main()

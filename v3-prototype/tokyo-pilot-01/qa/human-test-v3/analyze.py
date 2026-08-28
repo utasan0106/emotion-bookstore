@@ -26,10 +26,14 @@ YES_NO = {"yes", "no"}
 YES_MAYBE_NO = {"yes", "maybe", "no"}
 TRI = {"yes", "no", "unclear"}
 VALID_DEVICES = {"mobile", "desktop", "tablet"}
+VALID_RELATIONS = {"unknown", "weak_tie", "close_tie"}
+WEAK_OR_UNKNOWN = {"unknown", "weak_tie"}
 
 REQUIRED = [
     "participant_id",
     "order",
+    "prior_pilot_exposure",
+    "recruitment_relation",
     "device",
     "consent_confirmed",
     "first_open_latency_s",
@@ -47,6 +51,8 @@ REQUIRED = [
 
 # participant_id/order are intentionally excluded: the scorecard template prefills them.
 START_FIELDS = [
+    "prior_pilot_exposure",
+    "recruitment_relation",
     "device",
     "consent_confirmed",
     "first_open_latency_s",
@@ -146,6 +152,8 @@ def validate_row(row: dict[str, str], line_no: int):
         return errors, False, None
 
     consent = norm(row.get("consent_confirmed"))
+    exposure = norm(row.get("prior_pilot_exposure"))
+    relation = norm(row.get("recruitment_relation"))
     device = norm(row.get("device"))
     voluntary = norm(row.get("voluntary_open"))
     official = norm(row.get("official_action"))
@@ -156,6 +164,10 @@ def validate_row(row: dict[str, str], line_no: int):
 
     if consent != "yes":
         errors.append("completed participant requires consent_confirmed=yes")
+    if exposure not in YES_NO:
+        errors.append("prior_pilot_exposure must be yes/no; ask it before the session")
+    if relation and relation not in VALID_RELATIONS:
+        errors.append("recruitment_relation must be unknown/weak_tie/close_tie or blank")
     if device not in VALID_DEVICES:
         errors.append("device must be mobile/desktop/tablet")
     if voluntary not in YES_NO:
@@ -251,6 +263,24 @@ def analyze(rows: list[dict[str, str]]) -> dict:
     if errors:
         raise ValueError("\n".join(errors))
 
+    # First-time evidence を守る。事前に画面や仮説を見ている participant は
+    # session 自体は有効だが、primary valid n と GO 判定からは外す。
+    prior_exposed = [r for r in completed if norm(r.get("prior_pilot_exposure")) == "yes"]
+    completed = [r for r in completed if norm(r.get("prior_pilot_exposure")) != "yes"]
+
+    # Recruitment quality は最初の primary-valid 12 名で見る。
+    first12 = completed[:12]
+    relation_counts = Counter(norm(r.get("recruitment_relation")) or "unrecorded" for r in first12)
+    weak_unknown = sum(relation_counts[k] for k in WEAK_OR_UNKNOWN)
+    close = relation_counts["close_tie"]
+    relation_unrecorded = relation_counts["unrecorded"]
+    relation_target_met = (
+        len(first12) == 12
+        and relation_unrecorded == 0
+        and weak_unknown * 3 >= 12 * 2
+        and close * 3 <= 12
+    )
+
     n = len(completed)
     openers = [r for r in completed if norm(r["voluntary_open"]) == "yes"]
     open_n = len(openers)
@@ -329,9 +359,22 @@ def analyze(rows: list[dict[str, str]]) -> dict:
     result = {
         "status": status,
         "cycle": 1,
-        "measurement_version": "3.1",
+        "measurement_version": "3.2",
         "completed_n": n,
         "minimum_n_reached": n >= 12,
+        "prior_exposure_excluded_n": len(prior_exposed),
+        "prior_exposure_excluded_ids": sorted(
+            (r.get("participant_id") or "").strip() for r in prior_exposed
+        ),
+        "recruitment_quality": {
+            "scope": "first 12 primary-valid participants",
+            "counted_n": len(first12),
+            "unknown": relation_counts["unknown"],
+            "weak_tie": relation_counts["weak_tie"],
+            "close_tie": relation_counts["close_tie"],
+            "unrecorded": relation_unrecorded,
+            "target_two_thirds_weak_or_unknown_met": relation_target_met,
+        },
         "primary": {
             "object_open_rate_pct": open_rate,
             "object_open_n": open_n,
@@ -441,6 +484,8 @@ def analyze(rows: list[dict[str, str]]) -> dict:
             "latency_is_diagnostic_only": True,
             "reveal_payoff_is_diagnostic_only": True,
             "diagnostic_missing_does_not_invalidate_core_row": True,
+            "prior_exposure_excluded_from_primary": True,
+            "recruitment_relation_is_validity_note_only": True,
         },
         "notes": [
             "Free-text responses are not sentiment-scored, classified, or inferred by this analyzer.",
@@ -450,6 +495,8 @@ def analyze(rows: list[dict[str, str]]) -> dict:
             "Official Action is supporting evidence and never a standalone kill criterion.",
             "Cycle 01 GO is only a candidate for a second independent three-object set; it is not Production GO.",
             "Object/position/device rates are small-n diagnostics, not personalization or stable ranking estimates.",
+            "Participants who had prior exposure to the pilot screen, the Art Reset screenshots, the 3 Objects/Hooks/Reveals, or the project hypothesis are excluded from primary valid n and from every threshold; their sessions remain usable as qualitative reference only.",
+            "Recruitment relation is a validity note over the first 12 primary-valid participants, never a reason to discard a participant. A close-tie-heavy sample weakens Return Desire as market-demand evidence.",
         ],
     }
     return result

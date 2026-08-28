@@ -132,3 +132,13 @@ Final Cycle 01 summary must state:
 8. one next action only
 
 Raw participant quotes stay local and de-identified. Canonical Drive receives aggregate/decision evidence only.
+
+## Validity caveats to read before choosing an action
+
+- `prior_exposure_excluded_n` > 0: those sessions are qualitative reference only. They are
+  already out of every rate on this page.
+- `recruitment_quality.target_two_thirds_weak_or_unknown_met` = false: the first 12
+  primary-valid participants were close-tie heavy or unrecorded. Keep the sample, and do
+  not present Return Desire from it as market-demand evidence. Say so in the summary.
+- Latency and Reveal payoff never move a GO/KILL line. Missing values are completeness
+  warnings only.
