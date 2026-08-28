@@ -1,6 +1,6 @@
 # Preview verify — handoff
 
-Integration branch: `claude/tokyo-pilot-human-test-v321-integrity-20260828`
+Integration branch: `claude/tokyo-pilot-final-ending-20260828`
 Art Direction canonical: `claude/tokyo-discovery-experience-gqfjuo` @ `bbadc0172fab690e57fde36050cf53ad309a3d3e`
 
 このファイルは expected HEAD を持たない。tracked document に「自分自身を含む
@@ -15,7 +15,7 @@ Art Direction canonical: `claude/tokyo-discovery-experience-gqfjuo` @ `bbadc0172
 ## Status: NOT EXECUTABLE from the Claude environment
 
 FAIL ではない。この開発環境から Vercel へ到達できないため実行できない、という事実。
-実測（curl、V3.1 / V3.2 / V3.2.1 で再確認。retry loop はしていない）:
+実測（curl、V3.1 / V3.2 / V3.2.1 / final ending で再確認。retry loop はしていない）:
 
 ```
 https://vercel.com                    -> 000 (接続不可)
@@ -36,8 +36,8 @@ Vercel の credential もこの環境には無く、利用できる GitHub MCP t
 ## 外部ネットワークのある環境での手順
 
 ```bash
-git fetch origin claude/tokyo-pilot-human-test-v321-integrity-20260828
-EXACT_HEAD="$(git rev-parse origin/claude/tokyo-pilot-human-test-v321-integrity-20260828)"
+git fetch origin claude/tokyo-pilot-final-ending-20260828
+EXACT_HEAD="$(git rev-parse origin/claude/tokyo-pilot-final-ending-20260828)"
 git checkout --detach "$EXACT_HEAD"
 cd v3-prototype/tokyo-pilot-01
 NODE_PATH=/opt/node22/lib/node_modules node qa/human-test-v3/preview_verify.js \
@@ -84,8 +84,10 @@ markup 側で固定し（`.end-phrase` + `<wbr>`）、その phrase boundary を
 過去 revision の記録であって、実行条件ではない。
 
 ```
-V3.1 integrated HEAD  cd4d20c
-V3.2 integrated HEAD  c4c2ba13dda0da47fcc732b7f4c3f71dcf4ac9d0
+V3.1   integrated HEAD  cd4d20c
+V3.2   integrated HEAD  c4c2ba13dda0da47fcc732b7f4c3f71dcf4ac9d0
+V3.2.1 integrated HEAD  ccf0c410e4973a6c953b0eda93046ca4921bd5c6
+V3.2 final contract     2e6bace69c46e44d24c28b1177bf84f194788633
 ```
 
 ## そのあと
