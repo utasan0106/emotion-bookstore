@@ -59,14 +59,14 @@ neutral ending / Return priming 語の不在 / Real Media 3枚の decode と con
 CC deed への直リンク / Official Action 前の外部 request 0 /
 `qa/human-test-v3/**` 等の内部ファイルが公開配信されていないこと。
 
-## 参加者が読む 7 ファイルの byte manifest（V3.2.3 checkout 実測）
+## 参加者が読む 7 ファイルの byte manifest（V3.2.4 checkout 実測）
 
 これは operator が手元 checkout を目視確認するための参考値であり、実行条件
 ではない。正となる比較は `preview_verify.js` が checkout から都度算出する。
 
 ```
 index.html                  ef7710542e79e9ce60df4adcacd73295cef474c4ac22017b7c402d9d5bd9c9ad   2966
-pilot.css                   bdf27f925be74ba17212818c1bec3d44d3c446392ee10b9a2c0a18df2d361cee  18839
+pilot.css                   0f945d8be0f11a903c01346a85098857068cdfe9987a8b4bd1b9c0e3b4d08d57  20647
 pilot_content.js            c94222cfd44d661f274aec362ec0bf67f8f9326dd1bee7685b085dbf33f5f240   6968
 pilot.js                    9033401c89651703132f1d58c5f4d3b9ec3febdf3a3769c4cd0086d66d2558e4  11888
 assets/manuscript-cafe.png  832f06fa774966f02025d188bf4ae786abdd1fe69f1d338d6e43017754617315 368960
@@ -80,6 +80,12 @@ V3.2 からの差分は `index.html` / `pilot.css` / `pilot.js` / `pilot_content
 `.jp-phrase` + `<wbr>` で意味単位を保つ。wording はいずれも不変で、phrase を
 連結すると元の hook / reveal と1文字も違わないことを `pilot_check.js` と
 `qa/measurement_integrity_check.js` が guard する。Real Media 3枚は byte 不変。
+
+さらに V3.2.4 で `pilot.css` だけを editorial refinement 分だけ更新した
+（touch-action / mobile dialog radius・高さ / mobile backdrop / 閉じるの
+focus 表現 / coarse touch の hover 打ち消し）。wording・Hook・Reveal・
+Real Media・rights・Official Action・外部通信・JS は無変更で、
+`index.html` / `pilot.js` / `pilot_content.js` は byte 不変。
 
 ## Historical / audit note
 

@@ -68,6 +68,10 @@ body {
 
 a { color: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
+/* 主要操作は double-tap zoom 待ちを挟まない。見た目は変えない。 */
+.open-button,
+.dialog-close,
+.official-action { touch-action: manipulation; }
 button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   outline: 2px solid var(--signal-lift);
   outline-offset: 4px;
@@ -337,11 +341,13 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   margin: auto auto 0;
   padding: 0;
   border: 0;
-  border-radius: 18px 18px 0 0;
+  /* generic な 18px bottom-sheet に見せない。展示室から紙面が立ち上がる。
+     821px 以上では下の大画面ブロックが radius / max-height とも上書きする。 */
+  border-radius: 4px 4px 0 0;
   background: var(--bone);
   color: var(--ink);
-  max-height: 94vh;
-  max-height: 94dvh;
+  max-height: 96vh;
+  max-height: 96dvh;
   overflow: auto;
   overscroll-behavior: contain;
   box-shadow: 0 -30px 80px rgba(0,0,0,.6);
@@ -369,6 +375,15 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   cursor: pointer;
 }
 .dialog-close:hover { color: var(--ink); }
+/* programmatic focus でも keyboard focus は残す。ただし紙面の上に大きな
+   外周枠を描かず、図録の校正線のような内側の下線で示す。
+   forced-colors 環境では box-shadow が無視されるため、下の高コントラスト
+   ブロックで outline を戻している。 */
+.dialog-close:focus-visible {
+  outline: 0;
+  box-shadow: inset 0 -2px 0 var(--signal-fill);
+  color: var(--ink);
+}
 
 .detail-article { display: grid; }
 
@@ -463,6 +478,9 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 
 @media (max-width: 820px) {
   .media-frame { justify-content: center; }
+
+  /* 背後の棚を塗り潰さない。どこから開いたのかを残す。 */
+  .detail-dialog::backdrop { background: rgba(8, 7, 7, .72); }
 }
 
 /* ------------------------------------------------------------ 大きい画面 */
@@ -596,6 +614,19 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   }
 }
 
+/* touch 端末では :hover が tap 後に貼り付くことがある。desktop の hover
+   choreography を状態として残さない。押した手ざわりは既存の :active だけ。
+   hover 演出自体が prefers-reduced-motion: no-preference の中にしか無いので、
+   打ち消しも同じ条件に合わせる。 */
+@media (hover: none) and (pointer: coarse) and (prefers-reduced-motion: no-preference) {
+  .object-card:hover .media-frame img {
+    transform: none;
+    box-shadow: 0 26px 56px -22px rgba(0,0,0,.85);
+  }
+  .object-card:hover .open-mark { transform: none; }
+  .object-card:hover .open-button { border-top-color: var(--hall-edge); }
+}
+
 /* -------------------------------------------------- ハイコントラスト環境 */
 
 @media (forced-colors: active) {
@@ -606,4 +637,6 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   }
   .media-frame img, .detail-media img { border: 1px solid CanvasText; }
   .detail-dialog { border: 1px solid CanvasText; }
+  /* box-shadow が捨てられる環境なので、閉じるの focus は outline で示す。 */
+  .dialog-close:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
 }

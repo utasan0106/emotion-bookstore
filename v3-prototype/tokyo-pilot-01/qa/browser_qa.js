@@ -311,6 +311,34 @@ function check(scope, name, pass, detail) {
     check(S, 'dialog_no_internal_term', !INTERNAL.some(w => dlg.text.includes(w)),
       INTERNAL.filter(w => dlg.text.includes(w)));
     check(S, 'dialog_focus_inside', /dialog-close|detail|official/.test(String(dlg.focus)), dlg.focus);
+    // 閉じるの keyboard focus は「紙面に描かれた大きな外周枠」ではなく校正線にした。
+    // 見えなくなっていないことを実測する。:focus-visible は入力の種類で決まるので、
+    // script の .focus() ではなく実際の Tab で focus を立て直してから測る。
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Shift+Tab');
+    const closeFocus = await page.evaluate(() => {
+      const el = document.activeElement;
+      if (!el || !el.classList.contains('dialog-close')) return { onClose: false, cls: el && el.className };
+      const cs = getComputedStyle(el);
+      const w = parseFloat(cs.outlineWidth) || 0;
+      const solidOutline = w > 0 && cs.outlineStyle !== 'none' &&
+        !['transparent', 'rgba(0, 0, 0, 0)'].includes(cs.outlineColor);
+      const shadow = cs.boxShadow && cs.boxShadow !== 'none' ? cs.boxShadow : '';
+      const box = el.getBoundingClientRect();
+      return {
+        onClose: true,
+        matchesFocusVisible: el.matches(':focus-visible'),
+        indicated: solidOutline || /inset/.test(shadow),
+        outline: `${cs.outlineStyle} ${cs.outlineWidth} ${cs.outlineColor}`,
+        shadow,
+        w: Math.round(box.width), h: Math.round(box.height)
+      };
+    });
+    check(S, 'dialog_close_focus_stays_visible',
+      closeFocus.onClose && closeFocus.matchesFocusVisible && closeFocus.indicated, closeFocus);
+    // 44x44 CSS px 級の快適な操作面を保つ。
+    check(S, 'dialog_close_stays_comfortable_to_hit',
+      closeFocus.onClose && closeFocus.w >= 44 && closeFocus.h >= 44, closeFocus);
     // 開いたことは dialog 名（= Reveal）が伝える。status 側で重ねて読ませない。
     const announced = await page.$eval('#live', el => el.textContent.trim());
     check(S, 'open_is_not_announced_twice', announced === '', announced);
