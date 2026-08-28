@@ -4,14 +4,55 @@ Status: **analysis contract / no participant results yet / Production NO-GO**
 
 Purpose: resultsを見た後に都合の良い物語を作らないため、Cycle 01で観測し得る代表パターンと次アクションを先に固定する。
 
-Cycle 01は12–18名のsmall behavioral testであり、単独でProduct-market fit、Production GO、Product KILLを証明しない。
+Cycle 01は**12 primary-valid participants**で閉じるsmall behavioral testであり、単独でProduct-market fit、Production GO、Product KILLを証明しない。総session数の上限は18。
+
+## Stopping rule (precommitted / outcome-blind)
+
+Cycle 01 closes at **12 primary-valid participants**。primary-validの条件:
+
+- consent valid
+- `prior_pilot_exposure=no`
+- exact frozen artifactが維持されている
+- pre-definedなMajor protocol/session failureがない
+- six ordersが±1で balanced
+
+Open / Return / Reveal / Official Actionの値を停止判断に使わない。停止を決める時点で
+これらの値を見ない。
+
+`max_total_sessions=18`。P13–P18は**replacement reserve only**。
+
+使ってよい理由:
+
+- prior exposure exclusion
+- consent invalid / withdrawal
+- Major protocol deviation
+- technical / session failure
+- order-balance repair
+
+使ってはいけない理由（outcome-based extensionは禁止）:
+
+- Openが60%未満、または60%の直前
+- Return Yesが40%未満、または40%の直前
+- Wilson intervalが広い
+- Revealが弱い
+- Official Actionが低い
+- relation mixがclose-tie heavy
+- operator / Founderが「もう少し見たい」
+
+Recruitment relation shortfallはvalidity caveatのみ。replacement reasonではない。
+
+18 sessionを使い切ってもprimary-valid n < 12なら結果は`INCOMPLETE`。automatic P19+は無い。
+
+Major deviationのあったsessionは、同じparticipantをresetしてfirst-time扱いにしない。
+primary completed rowとして使わず、同じorderのreplacement reserveを使う。残すのは
+de-identifiedな事実のみ。Product結果を見た後にMajor/Minorを付け替えない。
 
 ## Measurement validity first
 
 結果をProduct解釈する前に以下を満たす。
 
 - valid consent rowsのみ
-- n ≥ 12でGO判定可能（n不足は`INCOMPLETE`）
+- primary-valid n = 12でGO判定可能（n不足は`INCOMPLETE`）。nを増やして閾値を跨がせない
 - six order assignments balanced within ±1 for `GO_CANDIDATE`
 - device別に重大なruntime-only failureがない
 - frozen artifact identityが維持されている
@@ -124,7 +165,7 @@ Final Cycle 01 summary must state:
 
 1. validity (n / consent / order balance / artifact freeze)
 2. Open Rate + Wilson 95% CI
-3. Return Yes / Maybe
+3. Return Yes / Maybe / Unclear
 4. object×position diagnostics
 5. alternative-sufficient / distinct-use evidence
 6. device diagnostics
@@ -142,3 +183,8 @@ Raw participant quotes stay local and de-identified. Canonical Drive receives ag
   not present Return Desire from it as market-demand evidence. Say so in the summary.
 - Latency and Reveal payoff never move a GO/KILL line. Missing values are completeness
   warnings only.
+- `secondary.return_unclear_n` > 0: those participants answered Return Desire in a way the
+  moderator could not classify after one neutral clarification. They stay in primary valid
+  n and in the Return Yes denominator, and they are not Yes. Do not re-read them as Yes,
+  as Maybe, or as a reason to run another session. A high unclear count is a caveat on how
+  legible the Return question was, not evidence about demand in either direction.

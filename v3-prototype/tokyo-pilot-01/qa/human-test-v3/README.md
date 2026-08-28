@@ -15,6 +15,67 @@ This directory belongs under `v3-prototype/tokyo-pilot-01/qa/human-test-v3/`. Th
 
 GO thresholds are unchanged: valid n ≥ 12, Open ≥ 60%, Return Yes ≥ 40%, six orders balanced ±1.
 
+## What V3.2 final operator contract adds
+
+- `return_desire` accepts `unclear` as a fourth valid value, matching the moderator rule "Use `unclear` instead of guessing." `unclear` stays in primary valid n and in the Return Yes denominator, never counts as Yes, and is never a replacement reason
+- the Cycle 01 stopping rule is precommitted below, so `12–18` can no longer be read as "run 12, look at the numbers, then decide whether to add more"
+
+Participant-facing runtime is unchanged by both.
+
+## Cycle 01 stopping rule (precommitted)
+
+Cycle 01 closes at **12 primary-valid participants**. A participant is primary-valid when
+consent is valid, `prior_pilot_exposure=no`, the exact frozen artifact was maintained,
+there was no pre-defined Major protocol/session failure, and the six orders are balanced
+within ±1.
+
+Open, Return, Reveal, and Official Action values are **not inputs to the stopping
+decision**.
+
+P13–P18 are a **replacement reserve only**. The allowed reasons to use one are:
+
+- prior exposure exclusion
+- consent invalid or withdrawn
+- Major protocol deviation
+- technical / session failure
+- order-balance repair
+
+The following are **not** allowed reasons to run another session:
+
+- Open below or near 60%
+- Return Yes below or near 40%
+- a wide Wilson interval
+- a weak Reveal result
+- low Official Action
+- a close-tie-heavy relation mix
+- operator or Founder wanting to "see a bit more"
+
+A recruitment relation shortfall is a validity caveat only, never a replacement reason.
+
+If all 18 total sessions are used and primary-valid n is still < 12, the cycle result is
+`INCOMPLETE`. There is no automatic P19+.
+
+Operator handoff string for `freeze.py --note` (exact, one line):
+
+```
+stopping_rule=primary_valid_12;max_total_sessions=18;p13_p18=replacement_only;replacement_reasons=prior_exposure|consent_invalid|major_protocol_deviation|technical_failure|order_balance;outcome_based_extension=forbidden;relation_shortfall=validity_caveat_only;if_max_sessions_and_valid_lt12=incomplete;no_auto_p19_plus
+```
+
+## Major deviation handling
+
+A session with a Major protocol deviation — accidental pre-exposure, the moderator
+explaining the Product or Return hypothesis, prompting an Open, the wrong assigned order,
+a broken required question order, or a runtime failure that made the normal experience
+impossible — is handled as follows:
+
+- do not reset that participant and re-run them as first-time
+- do not use the session as a primary completed row
+- use a replacement reserve session in the **same** order
+- keep only de-identified facts in the local operator note
+
+Major/Minor classification is fixed when the deviation happens. Never re-label it after
+seeing the Product result.
+
 ## What V3.1 adds
 
 - manual `first_open_latency_s` diagnostic measured from the end of the neutral `どうぞ` prompt to first voluntary Open; no runtime timer/telemetry
@@ -37,7 +98,7 @@ No new UI, analytics, storage, account, recommendation, search, private writing,
 6. `python3 qa/human-test-v3/verify_freeze.py`
 7. immediately before each participant/batch, re-check the same Preview bytes without mutating evidence: `node qa/human-test-v3/preview_verify.js --check-only 'https://<exact-preview>/v3-prototype/tokyo-pilot-01/'`
 8. `python3 qa/human-test-v3/prepare_workspace.py`
-9. run 12–18 first-time participants using `assignments.csv`; record `prior_pilot_exposure` before each session and `recruitment_relation` per participant
+9. run first-time participants using `assignments.csv` until **12 primary-valid** are reached, up to 18 total sessions; record `prior_pilot_exposure` before each session and `recruitment_relation` per participant. P13–P18 are replacement reserve only — see the stopping rule above
 10. `python3 qa/human-test-v3/analyze.py qa/human-test-v3/scorecard.local.csv`
 11. map the aggregate result to `decision_matrix.md`; choose one next action only
 

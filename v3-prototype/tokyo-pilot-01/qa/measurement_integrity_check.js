@@ -83,6 +83,39 @@ req(analyzer,'recruitment_relation_is_validity_note_only','recruitment relation 
 req(analyzer,'"measurement_version": "3.2"','analyzer measurement version');
 req(analyzer,'diagnostic_missing_does_not_invalidate_core_row','diagnostic missingness decision boundary');
 req(analyzer,'kill_not_permitted_from_cycle1_alone','Cycle 01 kill boundary');
+// --- V3.2 final operator contract -------------------------------------------------
+// 1) moderator contract が return_desire の unclear を正式に許可している
+req(moderator,'`return_desire`: yes / maybe / no / unclear','return_desire allows unclear');
+req(moderator,'yes / maybe / no のどれかに近ければどれですか？','single neutral Return clarification');
+req(moderator,'`unclear` is a valid Return Desire response','unclear is a valid response, not an exclusion');
+// 2) analyzer も unclear を valid として受理する
+req(analyzer,'RETURN_VALUES = {"yes", "maybe", "no", "unclear"}','analyzer accepts return_desire=unclear');
+// 3) unclear は Yes numerator へ入らず primary n に残る
+req(analyzer,'ret_unclear = sum(norm(r["return_desire"]) == "unclear" for r in completed)','unclear counted separately');
+req(analyzer,'"return_unclear_n": ret_unclear','return_unclear_n reported');
+req(analyzer,'"return_unclear_pct"','return_unclear_pct reported');
+req(analyzer,'ret_yes = sum(norm(r["return_desire"]) == "yes" for r in completed)','Yes numerator is yes only');
+req(analyzer,'"return_yes_wilson_95_pct": wilson(ret_yes, n)','Return Yes Wilson denominator stays primary-valid n');
+// completed から unclear を落としていないこと。除外 filter は prior exposure の1本だけ。
+if((analyzer.match(/completed = \[r for r in completed/g)||[]).length !== 1){
+  fail.push('analyzer must exclude only prior-exposure rows from primary valid n');
+}
+// 4) stopping rule が operator contract に precommit されている
+const decision=read(path.join(OPS,'decision_matrix.md'));
+for(const [needle,label] of [
+  ['12 primary-valid participants','stopping rule: primary_valid_12'],
+  ['max_total_sessions=18','stopping rule: max_total_sessions=18'],
+  ['replacement reserve only','stopping rule: P13-P18 replacement only'],
+  ['outcome-based extension','stopping rule: outcome-based extension forbidden'],
+  ['automatic P19+','stopping rule: no automatic P19+'],
+]) req(decision,needle,label);
+req(decision,'Open / Return / Reveal / Official Actionの値を停止判断に使わない','stopping decision is outcome-blind');
+const readme=read(path.join(OPS,'README.md'));
+req(readme,'stopping_rule=primary_valid_12;max_total_sessions=18;p13_p18=replacement_only;replacement_reasons=prior_exposure|consent_invalid|major_protocol_deviation|technical_failure|order_balance;outcome_based_extension=forbidden;relation_shortfall=validity_caveat_only;if_max_sessions_and_valid_lt12=incomplete;no_auto_p19_plus','exact freeze --note handoff string');
+forbid(readme,'run 12–18 first-time participants','README still reads as an open 12-18 range');
+req(moderator,'## Stopping rule','moderator sheet carries the stopping rule');
+req(moderator,'Cycle 01 closes at **12 primary-valid participants**','moderator stopping rule: primary_valid_12');
+
 const ignore=read(path.join(OPS,'.gitignore'));
 for(const n of ['scorecard.local.csv','result.json','result.md']) req(ignore,n,'local data ignore');
 const previewVerifierEarly=read(path.join(OPS,'preview_verify.js'));
