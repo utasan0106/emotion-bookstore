@@ -35,7 +35,10 @@
          participantが3件すべてを開いたとは断定せず、次回予告でReturn回答をprimingしない。 -->
     <section class="end-plate" aria-labelledby="end-title" hidden>
       <p class="eyebrow">今回は、ここまで</p>
-      <h2 id="end-title">この棚は、3つで終わりです。</h2>
+      <!-- 折返し位置を markup で固定する。word-break: auto-phrase は 2026-08-28 時点で
+           stable Safari / iOS Safari 未対応のため、正しさをそれに依存させない。
+           .end-phrase は nowrap なので、改行は <wbr> の位置でしか起きない。 -->
+      <h2 id="end-title"><span class="end-phrase">この棚は、3つで</span><wbr><span class="end-phrase">終わりです。</span></h2>
     </section>
   </main>
 

@@ -131,6 +131,15 @@ if (mediaPolicy === 'same-origin-localized' && fs.existsSync(path.join(root, 'ME
 
 const js = fs.readFileSync(path.join(root, 'pilot.js'), 'utf8');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+
+// 終了文は markup（.end-phrase + <wbr>）で折返し位置を固定しているため、
+// raw HTML の連続文字列では検査できない。tag を除いた text contract で見る。
+function endPlateText(rawHtml) {
+  const m = rawHtml.match(/<section class="end-plate"[\s\S]*?<\/section>/);
+  if (!m) return '';
+  return m[0].replace(/<[^>]*>/g, '').replace(/\s+/g, '').trim();
+}
+
 for (const forbidden of ['localStorage', 'sessionStorage', 'indexedDB', 'sendBeacon', 'gtag(', 'fetch(',
   'XMLHttpRequest', 'serviceWorker', 'caches.', 'navigator.storage']) {
   if (js.includes(forbidden)) failures.push(`forbidden runtime token: ${forbidden}`);
@@ -151,7 +160,13 @@ if (!js.includes("get('participant') === '1'")) failures.push('participant-mode 
 if (!html.includes('noindex,nofollow')) failures.push('noindex missing');
 if (!html.includes('referrer" content="no-referrer')) failures.push('no-referrer meta missing');
 if ((html.match(/<h1\b/g) || []).length !== 1) failures.push('expected exactly one h1');
-if (!html.includes('この棚は、3つで終わりです。')) failures.push('neutral finite ending copy missing');
+if (!endPlateText(html).includes('この棚は、3つで終わりです。')) {
+  failures.push('neutral finite ending copy missing');
+}
+// 折返しは Chromium 専用の word-break: auto-phrase ではなく markup で固定する。
+if (!/<span class="end-phrase">この棚は、3つで<\/span><wbr><span class="end-phrase">終わりです。<\/span>/.test(html)) {
+  failures.push('finite ending must fix its line break with .end-phrase + <wbr>');
+}
 for (const priming of ['次の3つ', 'また見たい', '見終わりました']) {
   if (html.includes(priming)) failures.push(`participant UI primes or falsely claims completion: ${priming}`);
 }

@@ -270,11 +270,22 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   font-weight: 600;
   line-height: 1.3;
   letter-spacing: -.03em;
-  /* Hook / Reveal と同じ日本語の文節折返し。390px で
-     「3つで終わりで / す。」のように語の途中で折れるのを避ける。 */
+  /* 390px で「3つで終わりで / す。」のように語の途中で折れるのを避ける。
+     実際の折返し位置は index.html の .end-phrase（nowrap）と <wbr> が決める。
+     word-break: auto-phrase は Chromium 系だけの progressive enhancement で、
+     Safari の正しさはこれに依存していない。 */
   line-break: strict;
   overflow-wrap: normal;
   word-break: auto-phrase;
+}
+/* 文節ひとかたまり。keep-all が文節内の暗黙の改行機会を消すので、通常は
+   <wbr>（と読点の後）でしか折返せない。Safari も keep-all は解釈する。
+   nowrap ではなく keep-all にしているのは、200% zoom のように文節そのものが
+   1行に収まらない場合に横スクロールを出さないため。その最終手段としてだけ
+   overflow-wrap: break-word が働く。 */
+.end-phrase {
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 .end-plate p:last-child {
   margin: 18px 0 0;
