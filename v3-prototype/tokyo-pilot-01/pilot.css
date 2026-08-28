@@ -270,6 +270,11 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   font-weight: 600;
   line-height: 1.3;
   letter-spacing: -.03em;
+  /* Hook / Reveal と同じ日本語の文節折返し。390px で
+     「3つで終わりで / す。」のように語の途中で折れるのを避ける。 */
+  line-break: strict;
+  overflow-wrap: normal;
+  word-break: auto-phrase;
 }
 .end-plate p:last-child {
   margin: 18px 0 0;
