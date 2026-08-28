@@ -178,9 +178,19 @@ if ((suggest.match(/x\.com/g) || []).length !== 1) failures.push('suggest.html: 
 if (/x\.com\/[^"']*[?&]/.test(suggest)) failures.push('suggest.html: X destination must carry no query');
 for (const notice of [
   '入力内容はこのページから自動送信されません。',
-  '送った候補がそのまま公開されることはありません。'
+  '送った候補がそのまま公開されることはありません。',
+  // コピーが端末のクリップボードへ書くことを言い落とさない。
+  'このページでは保存・計測・個人ごとの推薦を行いません。入力内容は自動送信されません。「候補文をコピー」を押した場合だけ、端末のクリップボードにコピーされます。公式Xは押したときだけ開きます。'
 ]) {
   if (!suggest.includes(notice)) failures.push(`suggest.html: required notice missing (${notice.slice(0, 12)}…)`);
+}
+// クリップボードへ書く以上、「ブラウザの外へ出ません」は言い過ぎになる。
+if (suggest.includes('ブラウザの外へ出ません')) {
+  failures.push('suggest.html: must not claim the input never leaves the browser (clipboard is outside it)');
+}
+// コピー前に browser 標準の検証を通すこと。独自の検証機構は作らない。
+if (!read('release.js').includes('form.reportValidity()')) {
+  failures.push('release.js: copy must run native form validation first');
 }
 for (const banned of ['アカウント', 'ログイン', 'メールアドレス', '電話番号', '住所', '写真をアップロード', 'いいね', '投稿数']) {
   if (suggest.includes(banned)) failures.push(`suggest.html: must not ask for ${banned}`);

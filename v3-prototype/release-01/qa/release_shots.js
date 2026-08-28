@@ -69,6 +69,8 @@ function serve() {
   await shot('RC02_SHELF_TOKYO_IDENTITY_FIRST_390', 'shelf.html?shelf=tokyo');
   await shot('RC02_FOYER_CATEGORY_BOOKS_390', 'index.html?category=books', { scrollTo: '.by-kind' });
   await shot('RC02_SUGGEST_390', 'suggest.html');
+  // 変わったのは footer の trust 表現なので、そこまで送った状態も残す。
+  await shot('RC02_SUGGEST_TRUST_390', 'suggest.html', { scrollTo: '.suggest-terms' });
   await shot('RC02_FOYER_1440', 'index.html', { w: 1440, h: 1000 });
   await shot('RC02_FOYER_390_ZOOM200', 'index.html', { zoom: 2 });
   await shot('RC02_SHELF_TOKYO_390_ZOOM200', 'shelf.html?shelf=tokyo', { zoom: 2 });

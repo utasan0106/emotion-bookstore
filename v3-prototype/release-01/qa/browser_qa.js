@@ -551,6 +551,112 @@ function serve() {
     await ctx.close();
   }
 
+  /* ---- D2. コピー前の検証と、クリップボードに実際に載るもの ---- */
+  {
+    const S = 'suggest-validation';
+    const SENTINEL = 'CLIPBOARD-UNTOUCHED-SENTINEL';
+    const ctx = await browser.newContext({
+      viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true,
+      permissions: ['clipboard-read', 'clipboard-write']
+    });
+    const external = [];
+    ctx.on('request', (req) => { if (!req.url().startsWith(origin)) external.push(req.url()); });
+    const page = await ctx.newPage();
+    const errs = [];
+    page.on('pageerror', (e) => errs.push(String(e)));
+    await page.goto(base + 'suggest.html', { waitUntil: 'load' });
+    await page.waitForFunction(() => document.querySelectorAll('#sg-category option').length === 5);
+
+    const seed = () => page.evaluate((v) => navigator.clipboard.writeText(v), SENTINEL);
+    const clip = () => page.evaluate(() => navigator.clipboard.readText());
+    const state = () => page.evaluate(() => ({
+      status: document.getElementById('sg-copy-status').textContent,
+      valid: document.getElementById('suggestForm').checkValidity()
+    }));
+
+    // J1: クリップボードの開示があり、言い過ぎの一文が消えている
+    const copy = await page.evaluate(() => document.body.innerText);
+    check(S, 'clipboard_disclosure_present',
+      copy.includes('「候補文をコピー」を押した場合だけ、端末のクリップボードにコピーされます。'));
+    check(S, 'no_overclaim_that_input_never_leaves_the_browser',
+      !copy.includes('ブラウザの外へ出ません'));
+
+    // 3. 場所・作品名が空 → コピーさせない
+    await seed();
+    await page.fill('#sg-name', '');
+    await page.fill('#sg-url', '');
+    await page.fill('#sg-note', '');
+    await page.click('#sg-copy');
+    await page.waitForTimeout(250);
+    const blank = await state();
+    check(S, 'blank_name_is_invalid', blank.valid === false);
+    check(S, 'blank_name_blocks_copy', (await clip()) === SENTINEL, await clip());
+    check(S, 'blank_name_shows_no_success', !/コピーしました/.test(blank.status), blank.status);
+    check(S, 'blank_name_asks_to_check_required', blank.status === '必須項目を確認してください。', blank.status);
+
+    // 4. 非空だが壊れた URL → コピーさせない
+    await seed();
+    await page.fill('#sg-name', '神保町の古書店');
+    await page.fill('#sg-url', 'not a url');
+    await page.click('#sg-copy');
+    await page.waitForTimeout(250);
+    const badUrl = await state();
+    check(S, 'malformed_url_is_invalid', badUrl.valid === false);
+    check(S, 'malformed_url_blocks_copy', (await clip()) === SENTINEL, await clip());
+    check(S, 'malformed_url_shows_no_success', !/コピーしました/.test(badUrl.status), badUrl.status);
+
+    // 5. 正しい入力 → 組み上がった候補文がそのままコピーされる
+    await seed();
+    await page.fill('#sg-url', 'https://example.com/shop');
+    await page.selectOption('#sg-category', 'books');
+    await page.fill('#sg-note', '棚の奥がよかった');
+    await page.waitForTimeout(150);
+    const composed = await page.evaluate(() => document.getElementById('sg-output').value);
+    await page.click('#sg-copy');
+    await page.waitForTimeout(300);
+    const good = await state();
+    const pasted = await clip();
+    check(S, 'valid_input_is_valid', good.valid === true);
+    check(S, 'valid_input_copies_the_exact_composed_text', pasted === composed,
+      { pasted: pasted.slice(0, 50), composed: composed.slice(0, 50) });
+    check(S, 'valid_input_reports_success', /コピーしました/.test(good.status), good.status);
+    check(S, 'composed_text_has_the_expected_shape',
+      composed.includes('場所・作品名: 神保町の古書店') &&
+      composed.includes('種類: 本・古書') &&
+      composed.includes('URL: https://example.com/shop') &&
+      composed.includes('棚の奥がよかった'), composed);
+
+    // 6/7/8/9
+    const after = await page.evaluate(() => {
+      const readStore = (fn) => { try { return fn(); } catch (e) { return 'THREW'; } };
+      return {
+        href: location.href, search: location.search, hash: location.hash,
+        ls: readStore(() => JSON.stringify(Object.entries(localStorage))),
+        ss: readStore(() => JSON.stringify(Object.entries(sessionStorage))),
+        cookie: document.cookie,
+        dataLayer: typeof window.dataLayer,
+        gtag: typeof window.gtag,
+        xHref: document.getElementById('sg-x').getAttribute('href')
+      };
+    });
+    const NEEDLE = '神保町の古書店';
+    check(S, 'no_external_request_through_typing_validation_and_copy',
+      external.length === 0, external.slice(0, 3));
+    check(S, 'input_never_reaches_url_or_query',
+      !after.href.includes(NEEDLE) && after.search === '' && after.hash === '', after.href);
+    check(S, 'input_never_reaches_local_storage',
+      !String(after.ls).includes(NEEDLE) && !String(after.ss).includes(NEEDLE),
+      { ls: after.ls, ss: after.ss });
+    check(S, 'input_never_reaches_cookies_or_analytics',
+      after.cookie === '' && after.dataLayer === 'undefined' && after.gtag === 'undefined', after);
+    check(S, 'x_destination_is_exact', after.xHref === 'https://x.com/emotion_books', after.xHref);
+    check(S, 'x_url_carries_no_query', !after.xHref.includes('?') && !after.xHref.includes('#'), after.xHref);
+    check(S, 'x_url_carries_no_candidate_text',
+      !after.xHref.includes(NEEDLE) && !after.xHref.includes('候補'), after.xHref);
+    check(S, 'no_js_error', errs.length === 0, errs.slice(0, 2));
+    await ctx.close();
+  }
+
   /* ---- 旧 Pilot の 8/30 16:00 で東京が閉じないこと ---- */
   {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });

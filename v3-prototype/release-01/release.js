@@ -483,6 +483,12 @@
     form.addEventListener('submit', function (event) { event.preventDefault(); });
 
     copy.addEventListener('click', function () {
+      // 空欄や壊れた URL のままコピーさせない。判定は browser 標準の
+      // constraint validation にまかせる。独自の検証機構は作らない。
+      if (typeof form.reportValidity === 'function' && !form.reportValidity()) {
+        status.textContent = '必須項目を確認してください。';
+        return;
+      }
       var text = output.value;
       function manual() {
         // Clipboard が使えない環境。選択だけしてあげて、あとは手でコピーしてもらう。
