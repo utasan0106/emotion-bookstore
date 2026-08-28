@@ -7,9 +7,22 @@ const read=(p)=>{ if(!fs.existsSync(p)){ fail.push('missing '+p); return ''; } r
 const req=(text,needle,label)=>{ if(!text.includes(needle)) fail.push(`${label} missing: ${needle}`); };
 const forbid=(text,needle,label)=>{ if(text.includes(needle)) fail.push(`${label} contains forbidden text: ${needle}`); };
 const html=read(path.join(ROOT,'index.html'));
+// 終了文は markup（.end-phrase + <wbr>）で折返し位置を固定しているため、
+// raw HTML の連続文字列では検査できない。tag を除いた text contract で見る。
+function endPlateText(rawHtml) {
+  const m = rawHtml.match(/<section class="end-plate"[\s\S]*?<\/section>/);
+  if (!m) return '';
+  return m[0].replace(/<[^>]*>/g, '').replace(/\s+/g, '').trim();
+}
+
 const runtime=[html,read(path.join(ROOT,'pilot.js')),read(path.join(ROOT,'pilot_content.js'))].join('\n');
 for(const phrase of ['次の3つ','また見たい','見終わりました']) forbid(runtime,phrase,'participant runtime');
-req(html,'この棚は、3つで終わりです。','neutral finite ending');
+req(endPlateText(html),'この棚は、3つで終わりです。','neutral finite ending');
+if(!/<span class="end-phrase">この棚は、3つで<\/span><wbr><span class="end-phrase">終わりです。<\/span>/.test(html)) fail.push('finite ending must fix its line break with .end-phrase + <wbr>');
+const css=read(path.join(ROOT,'pilot.css'));
+const endPhraseRule=(css.match(/\.end-phrase\s*\{[^}]*\}/)||[''])[0];
+if(!/word-break:\s*keep-all/.test(endPhraseRule)) fail.push('.end-phrase must be word-break: keep-all (Safari-safe fallback)');
+if(!/overflow-wrap:\s*break-word/.test(endPhraseRule)) fail.push('.end-phrase needs overflow-wrap: break-word so 200% zoom cannot overflow');
 req(html,'画像の出典と利用条件は各詳細に記載しています。','accurate rights/trust copy');
 for(const token of ['first_open_latency_s','first_reveal_payoff','scorecard.local.csv']) forbid(runtime,token,'runtime telemetry boundary');
 const csv=read(path.join(OPS,'scorecard_template.csv')).trimEnd().split(/\r?\n/);
@@ -72,8 +85,22 @@ req(analyzer,'diagnostic_missing_does_not_invalidate_core_row','diagnostic missi
 req(analyzer,'kill_not_permitted_from_cycle1_alone','Cycle 01 kill boundary');
 const ignore=read(path.join(OPS,'.gitignore'));
 for(const n of ['scorecard.local.csv','result.json','result.md']) req(ignore,n,'local data ignore');
+const previewVerifierEarly=read(path.join(OPS,'preview_verify.js'));
 const freeze=read(path.join(OPS,'freeze.py')), verify=read(path.join(OPS,'verify_freeze.py'));
-req(freeze,'tokyo-human-test-v3.1-freeze-1','freeze schema');
+req(freeze,'tokyo-human-test-v3.2-freeze-1','freeze schema');
+req(freeze,"'measurementVersion':'3.2'",'freeze measurement version');
+forbid(freeze,'v3.1-freeze','freeze schema still on V3.1');
+req(previewVerifierEarly,"schemaVersion:'tokyo-preview-v3.2-1'",'preview evidence schema');
+forbid(previewVerifierEarly,'tokyo-preview-v3.1','preview evidence schema still on V3.1');
+// PREVIEW_HANDOFF は tracked document なので、自分自身を含む最終 commit SHA を
+// 実行条件にすると更新のたび自己参照になる。SHA の突き合わせは evidence
+// (sourceGitHead) と freeze.py 側の責務であって、handoff 文書の責務ではない。
+const handoff=read(path.join(OPS,'PREVIEW_HANDOFF.md'));
+if(/rev-parse\s+HEAD[^\n]{0,40}=\s*['"`]?[0-9a-f]{7,40}/.test(handoff)){
+  fail.push('PREVIEW_HANDOFF must not gate on a self-referential hard-coded HEAD equality');
+}
+req(handoff,'EXACT_HEAD="$(git rev-parse origin/','handoff resolves HEAD from origin at run time');
+req(handoff,'git checkout --detach "$EXACT_HEAD"','handoff detaches at the fetched tip');
 req(verify,'manifest self-hash mismatch','freeze self hash');
 const previewVerifier=read(path.join(OPS,'preview_verify.js'));
 req(previewVerifier,'remote/local SHA mismatch','Preview byte identity gate');
