@@ -118,8 +118,51 @@ def test_recruitment_relation_validity_note():
     assert d['completed_n'] == 12
 
 
+def test_return_unclear_is_valid_and_not_yes():
+    """unclear は valid response。primary n に残り、Yes numerator へは入らない。"""
+    # yes 5 / maybe 3 / unclear 4 の balanced n=12
+    vals = ['yes']*5 + ['maybe']*3 + ['unclear']*4
+    rows = [row(i, ret=vals[i-1]) for i in range(1, 13)]
+    cp, d = run(rows)
+    assert cp.returncode == 0, cp.stdout + cp.stderr
+    # unclear participant は除外されない
+    assert d['completed_n'] == 12, d['completed_n']
+    assert d['minimum_n_reached'] is True
+    sec = d['secondary']
+    assert sec['return_unclear_n'] == 4, sec
+    assert sec['return_unclear_pct'] == 33.3, sec
+    # Yes numerator へ入らない。denominator は primary-valid n のまま。
+    assert sec['return_yes_n'] == 5, sec
+    assert sec['return_yes_pct'] == round(100*5/12, 1), sec
+    assert sec['return_maybe_n'] == 3, sec
+    assert d['decision_flags']['return_unclear_is_valid_and_not_yes'] is True
+    # threshold は不変: 5/12 = 41.7% >= 40% なので GO_CANDIDATE
+    assert d['status'] == 'GO_CANDIDATE', d['status']
+
+
+def test_return_unclear_does_not_reach_threshold_by_itself():
+    """unclear を Yes 側に寄せて解釈していないことを、閾値割れ側でも確認する。"""
+    vals = ['yes']*4 + ['unclear']*8
+    rows = [row(i, ret=vals[i-1]) for i in range(1, 13)]
+    cp, d = run(rows)
+    assert cp.returncode == 0, cp.stdout + cp.stderr
+    assert d['completed_n'] == 12
+    assert d['secondary']['return_yes_n'] == 4
+    assert d['secondary']['return_unclear_n'] == 8
+    # 4/12 = 33.3% < 40% -> GO にはならない（unclear を救済に使わない）
+    assert d['status'] == 'CONTINUE_OR_REVISE', d['status']
+    assert d['decision_flags']['open_return_metrics_threshold_met'] is False
+
+
+def test_return_desire_rejects_unknown_value():
+    r = row(1, ret='probably')
+    cp, _ = run([r])
+    assert cp.returncode != 0
+    assert 'return_desire must be yes/maybe/no/unclear' in cp.stdout
+
+
 def main():
-    tests=[test_empty,test_go,test_missing_diagnostics_are_warnings_not_core_failure,test_nonopener_diagnostic_contradiction_fails,test_reveal_reason_without_value_fails,test_count_contradiction_fails,test_first_object_order_fails,test_free_text_never_changes_metrics,test_prior_exposure_excluded_from_primary,test_recruitment_relation_validity_note]
+    tests=[test_empty,test_go,test_missing_diagnostics_are_warnings_not_core_failure,test_nonopener_diagnostic_contradiction_fails,test_reveal_reason_without_value_fails,test_count_contradiction_fails,test_first_object_order_fails,test_free_text_never_changes_metrics,test_prior_exposure_excluded_from_primary,test_recruitment_relation_validity_note,test_return_unclear_is_valid_and_not_yes,test_return_unclear_does_not_reach_threshold_by_itself,test_return_desire_rejects_unknown_value]
     for t in tests: t()
     print(f'HUMAN_TEST_V3_ANALYZER_GO {len(tests)}/{len(tests)}')
 

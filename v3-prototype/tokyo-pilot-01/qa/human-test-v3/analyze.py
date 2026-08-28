@@ -24,6 +24,9 @@ OBJECTS = tuple(OBJECT_BY_CODE.values())
 VALID_ORDERS = {"abc", "acb", "bac", "bca", "cab", "cba"}
 YES_NO = {"yes", "no"}
 YES_MAYBE_NO = {"yes", "maybe", "no"}
+# Return Desire は moderator contract の "Use unclear instead of guessing." と揃える。
+# unclear は valid response であり、primary-valid n から外さない。Yes numerator にも入れない。
+RETURN_VALUES = {"yes", "maybe", "no", "unclear"}
 TRI = {"yes", "no", "unclear"}
 VALID_DEVICES = {"mobile", "desktop", "tablet"}
 VALID_RELATIONS = {"unknown", "weak_tie", "close_tie"}
@@ -174,8 +177,8 @@ def validate_row(row: dict[str, str], line_no: int):
         errors.append("voluntary_open must be yes/no")
     if official not in YES_NO:
         errors.append("official_action must be yes/no")
-    if return_desire not in YES_MAYBE_NO:
-        errors.append("return_desire must be yes/maybe/no")
+    if return_desire not in RETURN_VALUES:
+        errors.append("return_desire must be yes/maybe/no/unclear")
     if alternative_enough not in TRI:
         errors.append("existing_alternative_sufficient must be yes/no/unclear")
     if distinct not in TRI:
@@ -286,6 +289,7 @@ def analyze(rows: list[dict[str, str]]) -> dict:
     open_n = len(openers)
     ret_yes = sum(norm(r["return_desire"]) == "yes" for r in completed)
     ret_maybe = sum(norm(r["return_desire"]) == "maybe" for r in completed)
+    ret_unclear = sum(norm(r["return_desire"]) == "unclear" for r in completed)
     official = sum(norm(r["official_action"]) == "yes" for r in completed)
     alt_enough = sum(norm(r["existing_alternative_sufficient"]) == "yes" for r in completed)
     distinct_yes = sum(norm(r["distinct_v3_use"]) == "yes" for r in completed)
@@ -386,6 +390,8 @@ def analyze(rows: list[dict[str, str]]) -> dict:
             "return_yes_wilson_95_pct": wilson(ret_yes, n),
             "return_maybe_pct": pct(ret_maybe, n),
             "return_maybe_n": ret_maybe,
+            "return_unclear_pct": pct(ret_unclear, n),
+            "return_unclear_n": ret_unclear,
             "official_action_pct": pct(official, n),
             "official_action_n": official,
         },
@@ -486,12 +492,14 @@ def analyze(rows: list[dict[str, str]]) -> dict:
             "diagnostic_missing_does_not_invalidate_core_row": True,
             "prior_exposure_excluded_from_primary": True,
             "recruitment_relation_is_validity_note_only": True,
+            "return_unclear_is_valid_and_not_yes": True,
         },
         "notes": [
             "Free-text responses are not sentiment-scored, classified, or inferred by this analyzer.",
             "First-open latency is manual seconds from the end of the neutral `どうぞ` prompt to first voluntary Open and is diagnostic, never a GO/KILL threshold; missing captures are reported as completeness, not core-row failure.",
             "Reveal payoff is asked only after the existing Return/alternative questions and is diagnostic, never a GO/KILL threshold; missing captures are reported as completeness, not core-row failure.",
             "Maybe is reported separately and is not counted as Return Desire Yes.",
+            "Unclear is a valid Return Desire response. It stays in primary valid n and in the Yes denominator, is never counted as Yes, and is never a reason to replace a participant. Guessing a value the participant did not give would bias the primary reading more than reporting unclear.",
             "Official Action is supporting evidence and never a standalone kill criterion.",
             "Cycle 01 GO is only a candidate for a second independent three-object set; it is not Production GO.",
             "Object/position/device rates are small-n diagnostics, not personalization or stable ranking estimates.",
@@ -512,7 +520,7 @@ def render_markdown(result: dict) -> str:
         "# Tokyo Pilot 01 — Human Test Result V3",
         "",
         f"Status: **{result['status']}**",
-        f"Completed: **{n}** / 12–18",
+        f"Completed primary-valid: **{n}** / 12 (max 18 total sessions; P13-P18 are replacement reserve only)",
         "",
         "## Decision metrics",
         (
@@ -526,6 +534,12 @@ def render_markdown(result: dict) -> str:
             f"({secondary['return_yes_n']}/{n}), Wilson 95% {secondary['return_yes_wilson_95_pct']}"
             if n
             else "- Return Desire Yes: n/a"
+        ),
+        (
+            f"- Return Desire Maybe / Unclear: {secondary['return_maybe_n']} / {secondary['return_unclear_n']} "
+            f"(neither is counted as Yes; both stay in the denominator)"
+            if n
+            else "- Return Desire Maybe / Unclear: n/a"
         ),
         "",
         "## Diagnostics",

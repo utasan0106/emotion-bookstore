@@ -113,11 +113,23 @@ reaction to what they actually saw.
 
 Coding:
 
-- `return_desire`: yes / maybe / no
+- `return_desire`: yes / maybe / no / unclear
 - `existing_alternative_sufficient`: yes / no / unclear
 - `distinct_v3_use`: yes / no / unclear
 
 Use `unclear` instead of guessing.
+
+If the first Return Desire answer cannot be classified as yes / maybe / no, do not estimate
+one. Ask this neutral clarification **once, and only once**:
+
+> `yes / maybe / no のどれかに近ければどれですか？ どれとも言えなければ、そのままで大丈夫です。`
+
+If the participant picks one, record that value. If they do not, record `unclear`.
+Do not ask a second time and do not rephrase it into a leading question.
+
+`unclear` is a valid Return Desire response. That participant stays in primary valid n and
+in the Return Yes denominator, is never counted as Yes, and is never replaced for having
+answered `unclear`.
 
 Then, **only if at least one Object was opened**, ask the final diagnostic question:
 
@@ -131,6 +143,15 @@ above**. Never solicit one. Never ask what they would add.
 
 Do not interpret answers. `unclear` stays `unclear`; a hesitant `maybe` is `maybe`, not a
 `yes` with a caveat. Do not infer mood, personality, or motive from tone.
+
+## Stopping rule
+
+Cycle 01 closes at **12 primary-valid participants**. Sessions P13–P18 are a replacement
+reserve only, used for prior exposure, invalid consent or withdrawal, a Major protocol
+deviation, a technical/session failure, or order-balance repair. Never run an extra
+session because Open, Return, Reveal, Official Action, the Wilson interval, or the
+relation mix looks close to a line. Do not look at those values while deciding whether to
+stop. Full rule: `README.md` and `decision_matrix.md`.
 
 ## Recruitment relation
 
