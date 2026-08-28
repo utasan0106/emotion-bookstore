@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#141312">
+  <title>みんなの感情書店｜候補を教える</title>
+  <link rel="stylesheet" href="./release.css">
+</head>
+<body class="suggest-page">
+  <a class="skip-link" href="#main">本文へ移動</a>
+
+  <header class="site-header">
+    <p class="brand"><a class="brand-home" href="./index.html"><span class="brand-name">みんなの感情書店</span></a></p>
+    <p class="pilot-label">候補を教える</p>
+  </header>
+
+  <main id="main">
+    <section class="site-intro" aria-label="このサイトについて">
+      <p class="site-explainer"><span class="jp-phrase">人が選んだ</span><wbr><span class="jp-phrase">場所・本・音楽・映画・催しを、</span><wbr><span class="jp-phrase">街や</span><wbr><span class="jp-phrase">種類ごとに</span><wbr><span class="jp-phrase">少しずつ並べる</span><wbr><span class="jp-phrase">文化案内です。</span></p>
+    </section>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title"><span class="hero-line">まだ無い一つを、</span><span class="hero-line">教えてください。</span></h1>
+    </section>
+
+    <section class="suggest-section" aria-labelledby="form-title">
+      <h2 id="form-title" class="sr-only">候補の入力</h2>
+
+      <!-- 送信先は無い。入力は browser の中だけで定型文になる。 -->
+      <form id="suggestForm" class="suggest-form" novalidate>
+        <div class="field">
+          <label for="sg-name">場所・作品名<span class="req">必須</span></label>
+          <input id="sg-name" name="name" type="text" maxlength="80" autocomplete="off"
+                 spellcheck="false" enterkeyhint="done" required>
+        </div>
+
+        <div class="field">
+          <label for="sg-url">URL<span class="opt">任意</span></label>
+          <input id="sg-url" name="url" type="url" maxlength="300" autocomplete="off"
+                 spellcheck="false" inputmode="url" placeholder="公式ページや地図など">
+        </div>
+
+        <div class="field">
+          <label for="sg-category">種類</label>
+          <select id="sg-category" name="category"></select>
+        </div>
+
+        <div class="field">
+          <label for="sg-note">どこが気になった？<span class="opt">任意・200字まで</span></label>
+          <textarea id="sg-note" name="note" rows="4" maxlength="200" spellcheck="false"></textarea>
+          <p class="counter"><span id="sg-count">0</span> / 200</p>
+        </div>
+      </form>
+
+      <!-- 主たる操作はコピー。外部へ開くのはその次の、独立した操作。 -->
+      <section class="suggest-output" aria-labelledby="output-title">
+        <h2 id="output-title" class="output-title">できあがる候補文</h2>
+        <textarea id="sg-output" class="suggest-output-text" readonly rows="7"
+                  aria-describedby="copy-fallback"></textarea>
+        <p id="copy-fallback" class="copy-fallback">コピーがうまくいかないときは、上の文をそのまま選んで手でコピーしてください。</p>
+        <p class="suggest-actions">
+          <button id="sg-copy" class="official-action" type="button">
+            <span>候補文をコピー</span><span aria-hidden="true">⧉</span>
+          </button>
+        </p>
+        <p id="sg-copy-status" class="copy-status" role="status" aria-live="polite"></p>
+        <p class="suggest-actions suggest-actions-secondary">
+          <a id="sg-x" class="other-shelves" href="https://x.com/emotion_books"
+             target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">公式Xを開く</a>
+        </p>
+      </section>
+
+      <section class="suggest-terms" aria-labelledby="terms-title">
+        <h2 id="terms-title" class="rights-title">この画面について</h2>
+        <p>入力内容はこのページから自動送信されません。候補文をコピーして公式Xを開いた後、送るかどうかはあなたが決めます。</p>
+        <p>送った候補がそのまま公開されることはありません。編集部が公式情報と権利を確認し、採用する場合だけ棚に追加します。</p>
+      </section>
+
+      <p class="end-exit"><a class="other-shelves" href="./index.html">棚に戻る</a></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="privacy-note">このページでは保存・計測・個人ごとの推薦を行いません。入力内容はブラウザの外へ出ません。公式リンクは押したときだけ開きます。</p>
+  </footer>
+
+  <div id="live" class="sr-only" role="status" aria-live="polite"></div>
+
+  <script src="./release_content.js"></script>
+  <script src="./release.js"></script>
+</body>
+</html>

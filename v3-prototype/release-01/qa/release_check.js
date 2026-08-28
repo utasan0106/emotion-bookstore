@@ -96,6 +96,96 @@ for (const shelf of shelves) {
   }
 }
 
+/* ---- A. site explainer が media より先に置かれている ------------------ */
+const EXPLAINER = '人が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べる文化案内です。';
+if (CONTENT && CONTENT.release && CONTENT.release.siteExplainer !== EXPLAINER) {
+  failures.push('release.siteExplainer must be the exact fixed sentence');
+}
+const explainerBlock = (src) => (src.match(/<p class="site-explainer">[\s\S]*?<\/p>/) || [''])[0];
+const explainerText = (src) => explainerBlock(src).replace(/<[^>]*>/g, '').replace(/\s+/g, '');
+for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
+  const src = read(page);
+  if (explainerText(src) !== EXPLAINER.replace(/\s+/g, '')) {
+    failures.push(`${page}: exact site explainer missing`); continue;
+  }
+  // 折返しは Chromium 専用の auto-phrase ではなく markup で決める。
+  if (!/<span class="jp-phrase">[^<]+<\/span><wbr>/.test(explainerBlock(src))) {
+    failures.push(`${page}: site explainer must keep the Safari-safe .jp-phrase + <wbr> structure`);
+  }
+  // static に置いていること。JS が動かなくても順序が崩れないようにする。
+  const at = src.indexOf('<p class="site-explainer">');
+  const main = src.indexOf('<main');
+  if (at < main) failures.push(`${page}: site explainer must live inside <main>`);
+  // 説明より前に Object の media が来ていないこと。
+  for (const marker of ['objectGrid', 'media-frame', '<img']) {
+    const m = src.indexOf(marker);
+    if (m !== -1 && m < at) failures.push(`${page}: ${marker} appears before the site explainer`);
+  }
+}
+
+/* ---- B/C. controlled category の整合 ---------------------------------- */
+const CATEGORIES = [
+  ['food', '飲食・喫茶'], ['experience', '体験・おでかけ'], ['books', '本・古書'],
+  ['music', '音楽・ライブ'], ['film-stage', '映画・演劇']
+];
+const cats = (CONTENT && CONTENT.categories) || [];
+if (cats.length !== 5) failures.push(`expected exactly 5 controlled categories, got ${cats.length}`);
+CATEGORIES.forEach(([id, name], i) => {
+  if (!cats[i] || cats[i].id !== id || cats[i].name !== name) {
+    failures.push(`category ${i} must be ${id}/${name}`);
+  }
+});
+const catIds = new Set(cats.map((c) => c.id));
+const allObjects = shelves.flatMap((sh) => sh.objects);
+if (allObjects.length !== 12) failures.push(`expected exactly 12 objects, got ${allObjects.length}`);
+for (const o of allObjects) {
+  const list = o.categoryIds;
+  if (!Array.isArray(list) || list.length < 1) { failures.push(`${o.id}: needs >= 1 categoryId`); continue; }
+  if (new Set(list).size !== list.length) failures.push(`${o.id}: duplicate categoryId`);
+  for (const c of list) if (!catIds.has(c)) failures.push(`${o.id}: unknown categoryId ${c}`);
+}
+// 1つの category の中に同じ Object が二度出ないこと。
+for (const c of cats) {
+  const inCat = allObjects.filter((o) => (o.categoryIds || []).includes(c.id)).map((o) => o.id);
+  if (new Set(inCat).size !== inCat.length) failures.push(`category ${c.id}: duplicate object`);
+}
+// 玄関に二軸が明示されていること。
+const foyerSrc = read('index.html');
+for (const axis of ['街から見る', '種類から見る']) {
+  if (!foyerSrc.includes(axis)) failures.push(`index.html: entry axis missing (${axis})`);
+}
+if (!foyerSrc.includes('id="categoryIndex"')) failures.push('index.html: category index container missing');
+
+/* ---- D. 候補受付は backend を持たない -------------------------------- */
+const suggest = read('suggest.html');
+const APPROVED_INPUT_IDS = ['sg-name', 'sg-url', 'sg-category', 'sg-note'];
+for (const id of APPROVED_INPUT_IDS) {
+  if (!suggest.includes(`id="${id}"`)) failures.push(`suggest.html: missing approved field ${id}`);
+}
+for (const control of (suggest.match(/<(input|textarea|select)\b[^>]*/g) || [])) {
+  const idMatch = control.match(/id="([^"]+)"/);
+  const id = idMatch && idMatch[1];
+  if (!APPROVED_INPUT_IDS.includes(id) && id !== 'sg-output') {
+    failures.push(`suggest.html: unapproved input control (${id || control.slice(0, 40)})`);
+  }
+  if (/type="(file|password|email|tel)"/.test(control)) {
+    failures.push(`suggest.html: forbidden input type in ${id}`);
+  }
+}
+if (/enctype|<form[^>]*action=|method="post"/i.test(suggest)) failures.push('suggest.html: form must not post anywhere');
+if (!suggest.includes('https://x.com/emotion_books')) failures.push('suggest.html: exact X destination missing');
+if ((suggest.match(/x\.com/g) || []).length !== 1) failures.push('suggest.html: exactly one X destination expected');
+if (/x\.com\/[^"']*[?&]/.test(suggest)) failures.push('suggest.html: X destination must carry no query');
+for (const notice of [
+  '入力内容はこのページから自動送信されません。',
+  '送った候補がそのまま公開されることはありません。'
+]) {
+  if (!suggest.includes(notice)) failures.push(`suggest.html: required notice missing (${notice.slice(0, 12)}…)`);
+}
+for (const banned of ['アカウント', 'ログイン', 'メールアドレス', '電話番号', '住所', '写真をアップロード', 'いいね', '投稿数']) {
+  if (suggest.includes(banned)) failures.push(`suggest.html: must not ask for ${banned}`);
+}
+
 /* ---- 参加者 runtime の境界 ------------------------------------------- */
 const js = read('release.js');
 const contentJs = read('release_content.js');
@@ -103,18 +193,20 @@ for (const token of ['localStorage', 'sessionStorage', 'indexedDB', 'sendBeacon'
   'XMLHttpRequest', 'serviceWorker', 'caches.', 'navigator.storage']) {
   if (js.includes(token)) failures.push(`forbidden runtime token: ${token}`);
 }
-const html = read('index.html') + read('shelf.html');
+const html = read('index.html') + read('shelf.html') + read('suggest.html');
 const runtime = [html, js, contentJs].join('\n');
 for (const word of ['次の3つ', 'また見たい', 'おすすめ', 'あなた向け', 'ランキング', '人気', 'トレンド',
   'NEW', 'TRENDING', 'FOR YOU', '見終わりました']) {
   if (runtime.includes(word)) failures.push(`release runtime must not contain: ${word}`);
 }
 for (const attr of ['noindex,nofollow', 'referrer" content="no-referrer']) {
-  if (!read('index.html').includes(attr)) failures.push(`index.html missing ${attr}`);
-  if (!read('shelf.html').includes(attr)) failures.push(`shelf.html missing ${attr}`);
+  for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
+    if (!read(page).includes(attr)) failures.push(`${page} missing ${attr}`);
+  }
 }
 if ((read('index.html').match(/<h1\b/g) || []).length !== 1) failures.push('index.html needs exactly one h1');
 if ((read('shelf.html').match(/<h1\b/g) || []).length !== 1) failures.push('shelf.html needs exactly one h1');
+if ((read('suggest.html').match(/<h1\b/g) || []).length !== 1) failures.push('suggest.html needs exactly one h1');
 
 /* ---- 玄関と終わりの言い回し ------------------------------------------ */
 const foyer = read('index.html');
@@ -158,5 +250,7 @@ if (failures.length) {
 const counts = shelves.map((s) => `${s.id}:${s.objects.length}`).join(' ');
 const plates = shelves.reduce((n, s) => n + s.objects.filter((o) => o.media.kind === 'plate').length, 0);
 const currents = shelves.reduce((n, s) => n + s.objects.filter((o) => o.mode === 'current').length, 0);
+const catCounts = cats.map((c) => `${c.id}:${allObjects.filter((o) => (o.categoryIds || []).includes(c.id)).length}`).join(' ');
 console.log('RELEASE_CHECK_GO');
 console.log(`shelves=4; ${counts}; photo=${12 - plates}; plate=${plates}; current=${currents}; storage=0; analytics=0; background fetch=0; search=0; account=0`);
+console.log(`categories=5; ${catCounts}; explainer=static; suggest=no-backend`);

@@ -96,6 +96,109 @@
       var endPlate = document.querySelector('.end-plate');
       if (endPlate) endPlate.hidden = false;
     }
+    renderCategoryIndex();
+  }
+
+  /* ------------------------------------------------------------ 種類の索引 */
+
+  // 期限の切れた current は索引にも出さない。別の Object で埋め合わせもしない。
+  function isLive(object) {
+    if (!object.expiresAt) return true;
+    var at = Date.parse(object.expiresAt);
+    return isNaN(at) ? true : at > Date.now();
+  }
+
+  function objectsInCategory(categoryId) {
+    var out = [];
+    CONTENT.shelves.forEach(function (shelf) {
+      shelf.objects.forEach(function (object) {
+        if (!isLive(object)) return;
+        if ((object.categoryIds || []).indexOf(categoryId) === -1) return;
+        out.push({ shelf: shelf, object: object });
+      });
+    });
+    return out;
+  }
+
+  function categoryResult(entry) {
+    var o = entry.object;
+    return h('article', { class: 'result-row', 'data-object-id': o.id }, [
+      h('p', { class: 'result-meta' }, [
+        h('span', { class: 'result-town', text: entry.shelf.area }),
+        h('span', { class: 'plate-sep', text: ' / ' }),
+        h('span', { class: 'result-type', text: o.typeLabel })
+      ]),
+      h('h4', { class: 'result-name', text: o.objectName }),
+      jpHeading('p', { class: 'result-hook' }, o.hookPhrases, o.hook),
+      h('p', { class: 'result-go' }, [
+        h('a', {
+          class: 'result-link',
+          href: './shelf.html?shelf=' + encodeURIComponent(entry.shelf.id)
+        }, [h('span', { text: 'この棚で見る' }), h('span', { 'aria-hidden': 'true', text: '→' })])
+      ])
+    ]);
+  }
+
+  function renderCategoryResults(categoryId) {
+    var box = document.getElementById('categoryResults');
+    if (!box) return;
+    box.textContent = '';
+    if (!categoryId) return;
+    var category = null;
+    CONTENT.categories.forEach(function (c) { if (c.id === categoryId) category = c; });
+    if (!category) return;
+    var entries = objectsInCategory(categoryId);
+    box.appendChild(h('p', { class: 'result-count' }, [
+      h('span', { class: 'result-count-name', text: category.name }),
+      h('span', { class: 'result-count-n', text: 'いま ' + entries.length + ' 件' })
+    ]));
+    if (!entries.length) {
+      box.appendChild(h('p', { class: 'result-empty', text: 'この種類は、いま棚にありません。' }));
+      return;
+    }
+    entries.forEach(function (entry) { box.appendChild(categoryResult(entry)); });
+  }
+
+  function renderCategoryIndex() {
+    var index = document.getElementById('categoryIndex');
+    if (!index || !Array.isArray(CONTENT.categories)) return;
+    var requested = queryParams().get('category') || '';
+    var known = CONTENT.categories.some(function (c) { return c.id === requested; });
+    var selected = known ? requested : '';
+
+    function paint() {
+      Array.prototype.forEach.call(index.querySelectorAll('.category-link'), function (a) {
+        var on = a.dataset.categoryId === selected;
+        a.setAttribute('aria-current', on ? 'true' : 'false');
+        a.className = 'category-link' + (on ? ' is-selected' : '');
+      });
+      renderCategoryResults(selected);
+    }
+
+    CONTENT.categories.forEach(function (category) {
+      var count = objectsInCategory(category.id).length;
+      var link = h('a', {
+        class: 'category-link',
+        href: './index.html?category=' + encodeURIComponent(category.id),
+        'data-category-id': category.id,
+        onclick: function (event) {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.button) return;
+          event.preventDefault();
+          selected = selected === category.id ? '' : category.id;
+          // 選んだ状態だけを URL に残す。入力値は一切載せない。
+          var next = selected
+            ? './index.html?category=' + encodeURIComponent(selected)
+            : './index.html';
+          if (history.replaceState) history.replaceState(null, '', next);
+          paint();
+        }
+      }, [
+        h('span', { class: 'category-name', text: category.name }),
+        h('span', { class: 'category-count', text: String(count) })
+      ]);
+      index.appendChild(link);
+    });
+    paint();
   }
 
   /* ---------------------------------------------------------------- 棚 */
@@ -327,10 +430,83 @@
     });
   }
 
+  /* ------------------------------------------------------ 候補を教える */
+
+  // backend は無い。入力は browser の中だけで定型文になる。
+  // URL / query / 計測 / 端末内保存のどこにも入力値を置かない。
+  // 外部へ開くのは利用者がその操作を押したときだけで、候補文は URL に載せない。
+  function renderSuggest() {
+    var form = document.getElementById('suggestForm');
+    if (!form) return;
+    var name = document.getElementById('sg-name');
+    var url = document.getElementById('sg-url');
+    var category = document.getElementById('sg-category');
+    var note = document.getElementById('sg-note');
+    var count = document.getElementById('sg-count');
+    var output = document.getElementById('sg-output');
+    var copy = document.getElementById('sg-copy');
+    var status = document.getElementById('sg-copy-status');
+
+    (CONTENT.categories || []).forEach(function (c, i) {
+      category.appendChild(h('option', { value: c.id, text: c.name, selected: i === 0 }));
+    });
+
+    function categoryName() {
+      var found = '';
+      (CONTENT.categories || []).forEach(function (c) { if (c.id === category.value) found = c.name; });
+      return found;
+    }
+
+    function compose() {
+      var lines = ['みんなの感情書店に、候補を1つ。'];
+      lines.push('');
+      lines.push('場所・作品名: ' + (name.value.trim() || '（未記入）'));
+      lines.push('種類: ' + categoryName());
+      if (url.value.trim()) lines.push('URL: ' + url.value.trim());
+      if (note.value.trim()) {
+        lines.push('気になったところ:');
+        lines.push(note.value.trim());
+      }
+      return lines.join('\n');
+    }
+
+    function repaint() {
+      count.textContent = String(note.value.length);
+      output.value = compose();
+      status.textContent = '';
+    }
+
+    [name, url, category, note].forEach(function (el) {
+      el.addEventListener('input', repaint);
+      el.addEventListener('change', repaint);
+    });
+    form.addEventListener('submit', function (event) { event.preventDefault(); });
+
+    copy.addEventListener('click', function () {
+      var text = output.value;
+      function manual() {
+        // Clipboard が使えない環境。選択だけしてあげて、あとは手でコピーしてもらう。
+        output.focus();
+        output.select();
+        status.textContent = 'コピーできませんでした。上の文を選んで手でコピーしてください。';
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () {
+          status.textContent = 'コピーしました。';
+        }, manual);
+      } else {
+        manual();
+      }
+    });
+
+    repaint();
+  }
+
   if (!CONTENT || !Array.isArray(CONTENT.shelves)) {
     haltShelf('この書店はいま準備中です。');
     return;
   }
   if (document.getElementById('shelfList')) renderFoyer();
   if (grid) renderShelf();
+  renderSuggest();
 })();

@@ -313,6 +313,245 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 .open-word { color: var(--chalk); }
 .open-mark { color: var(--signal); font-size: 1.375rem; line-height: 1; }
 
+/* ---------------------------------------------------------- 何のサイトか */
+
+/* identity のすぐ下に置く一文。写真より先に読ませるのが役目なので、
+   見出しより小さく、しかし読み飛ばせない大きさにする。 */
+.site-intro {
+  width: min(calc(100% - var(--gutter) * 2), var(--page));
+  margin: 0 auto;
+  padding: 4px 0 0;
+}
+.site-explainer {
+  margin: 0;
+  max-width: 34em;
+  color: var(--chalk-dim);
+  font-size: 0.9375rem;
+  line-height: 1.85;
+}
+
+/* 二つの入口。どちらも同じ格で並べる。 */
+.entry-axis {
+  width: min(calc(100% - var(--gutter) * 2), var(--page));
+  margin: 0 auto 18px;
+  font-family: var(--serif);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: .2em;
+  color: var(--chalk-dim);
+}
+.by-kind { margin-top: 72px; }
+
+/* 種類は EC の filter pill 群ではなく、書店の索引。名前と件数を1行ずつ。 */
+.category-index {
+  width: min(calc(100% - var(--gutter) * 2), var(--page));
+  margin: 0 auto;
+  display: grid;
+}
+.category-link {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 16px;
+  min-height: 48px;
+  padding: 13px 0;
+  border-top: 1px solid var(--hall-edge);
+  color: var(--chalk-dim);
+  text-decoration: none;
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  letter-spacing: .1em;
+}
+.category-link:last-child { border-bottom: 1px solid var(--hall-edge); }
+.category-link .category-count {
+  font-size: 0.8125rem;
+  letter-spacing: .16em;
+  color: var(--chalk-dim);
+}
+.category-link.is-selected { color: var(--chalk); }
+.category-link.is-selected .category-name {
+  text-decoration: underline;
+  text-decoration-color: var(--signal);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 7px;
+}
+.category-link.is-selected .category-count { color: var(--signal); }
+
+/* 結果は文字が先。写真の一覧にしない。 */
+.category-results {
+  width: min(calc(100% - var(--gutter) * 2), var(--page));
+  margin: 0 auto;
+}
+.result-count {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 26px 0 0;
+  font-size: 0.8125rem;
+  letter-spacing: .16em;
+  color: var(--chalk-dim);
+}
+.result-count-name { font-family: var(--serif); color: var(--chalk); }
+.result-empty {
+  margin: 18px 0 0;
+  color: var(--chalk-dim);
+  font-size: 0.9375rem;
+  line-height: 1.8;
+}
+.result-row {
+  padding: 22px 0 20px;
+  border-top: 1px solid var(--hall-edge);
+}
+.result-row:first-of-type { margin-top: 14px; }
+.result-row:last-child { border-bottom: 1px solid var(--hall-edge); }
+.result-meta {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: .16em;
+  color: var(--chalk-dim);
+}
+.result-name {
+  margin: 8px 0 0;
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--chalk-dim);
+}
+.result-hook {
+  margin: 6px 0 0;
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: -.02em;
+  color: var(--chalk);
+  line-break: strict;
+  overflow-wrap: anywhere;
+  word-break: auto-phrase;
+}
+.result-go { margin: 12px 0 0; }
+.result-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 0;
+  color: var(--chalk);
+  font-family: var(--serif);
+  font-size: 0.9375rem;
+  letter-spacing: .14em;
+  text-decoration-color: var(--signal);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+.result-link span[aria-hidden] { color: var(--signal); }
+
+/* 候補の導線は主要探索より下位。塗りの CTA にしない。 */
+.suggest-lane {
+  width: min(calc(100% - var(--gutter) * 2), var(--page));
+  margin: 78px auto 0;
+  padding-top: 26px;
+  border-top: 1px solid var(--hall-edge);
+}
+.suggest-lane-note {
+  margin: 0;
+  color: var(--chalk-dim);
+  font-size: 0.875rem;
+  line-height: 1.8;
+}
+.suggest-lane-link { margin: 2px 0 0; }
+
+/* ------------------------------------------------------------ 候補を教える */
+
+.suggest-section {
+  width: min(calc(100% - var(--gutter) * 2), var(--page));
+  margin: 0 auto;
+  max-width: 44em;
+}
+.suggest-form { display: grid; gap: 26px; }
+.field { display: grid; gap: 8px; }
+.field label {
+  font-size: 0.8125rem;
+  letter-spacing: .16em;
+  color: var(--chalk-dim);
+}
+.field .req, .field .opt {
+  margin-left: 10px;
+  font-size: 0.6875rem;
+  letter-spacing: .12em;
+}
+.field .req { color: var(--signal); }
+.field .opt { color: var(--hall-edge); }
+.field input, .field select, .field textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--hall-edge);
+  border-radius: 2px;
+  background: rgba(241, 235, 224, .04);
+  color: var(--chalk);
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.field textarea { min-height: 112px; resize: vertical; }
+.counter {
+  margin: 0;
+  text-align: right;
+  font-size: 0.75rem;
+  letter-spacing: .12em;
+  color: var(--chalk-dim);
+}
+
+.suggest-output { margin-top: 44px; }
+.output-title {
+  margin: 0 0 12px;
+  font-family: var(--serif);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: .16em;
+  color: var(--chalk-dim);
+}
+.suggest-output-text {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid var(--hall-edge);
+  border-radius: 2px;
+  background: rgba(241, 235, 224, .04);
+  color: var(--chalk);
+  font: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.85;
+  resize: vertical;
+}
+.copy-fallback {
+  margin: 10px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.8;
+  color: var(--chalk-dim);
+}
+.suggest-actions { margin: 20px 0 0; }
+.suggest-actions-secondary { margin-top: 8px; }
+.copy-status {
+  margin: 10px 0 0;
+  min-height: 1.6em;
+  font-size: 0.8125rem;
+  letter-spacing: .1em;
+  color: var(--signal);
+}
+.suggest-terms {
+  margin-top: 52px;
+  padding-top: 26px;
+  border-top: 1px solid var(--hall-edge);
+}
+.suggest-terms p {
+  margin: 14px 0 0;
+  color: var(--chalk-dim);
+  font-size: 0.875rem;
+  line-height: 1.9;
+}
+
 /* ------------------------------------------------------------------ 玄関 */
 
 /* 4つの棚は feed ではなく入口の並び。番号・名前・その棚の一行だけ。

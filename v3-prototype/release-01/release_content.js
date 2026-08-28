@@ -20,10 +20,22 @@ window.V3_RELEASE_CONTENT = {
     id: 'v3-release-01',
     title: 'みんなの感情書店',
     foyerLead: '今日は、どの棚へ。',
+    // サイト共通の短い説明。玄関にも、街の棚を直接開いたときにも、
+    // 最初の写真・図版より必ず先に出す。長い理念文は足さない。
+    siteExplainer: '人が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べる文化案内です。',
     verifiedAt: '2026-08-28T23:08:00+09:00',
     shelfCount: 4,
     objectsPerShelf: 3
   },
+  // 種類は新しい無限棚ではなく、いま公開中の12件を横断して見るための
+  // 有限な索引。初回はこの5つだけで、順番も固定する。
+  categories: [
+    { id: 'food', name: '飲食・喫茶' },
+    { id: 'experience', name: '体験・おでかけ' },
+    { id: 'books', name: '本・古書' },
+    { id: 'music', name: '音楽・ライブ' },
+    { id: 'film-stage', name: '映画・演劇' }
+  ],
   shelves: [
     {
       id: 'tokyo',
@@ -34,6 +46,7 @@ window.V3_RELEASE_CONTENT = {
       objects: [
         {
           id: 'manuscript-cafe',
+          categoryIds: ['food', 'experience'],
           objectName: '原稿執筆カフェ',
           placeName: '高円寺三角地帯 / 高円寺',
           typeLabel: 'カフェ・作業場所',
@@ -75,6 +88,7 @@ window.V3_RELEASE_CONTENT = {
         },
         {
           id: 'hachiko-taxidermy',
+          categoryIds: ['experience'],
           objectName: '忠犬ハチ公の剥製',
           placeName: '国立科学博物館 / 上野',
           typeLabel: '常設展示',
@@ -113,6 +127,7 @@ window.V3_RELEASE_CONTENT = {
         },
         {
           id: 'meguro-tapeworm',
+          categoryIds: ['experience'],
           objectName: '8.8mのサナダムシ標本',
           placeName: '目黒寄生虫館 / 目黒',
           typeLabel: '研究博物館',
@@ -160,6 +175,7 @@ window.V3_RELEASE_CONTENT = {
       objects: [
         {
           id: 'koenji-awaodori-2026',
+          categoryIds: ['experience'],
           objectName: '東京高円寺阿波おどり',
           placeName: '高円寺の街 / 高円寺',
           typeLabel: '祭り・街',
@@ -189,6 +205,7 @@ window.V3_RELEASE_CONTENT = {
         },
         {
           id: 'jirokichi',
+          categoryIds: ['music'],
           objectName: '高円寺 JIROKICHI',
           placeName: 'JIROKICHI / 高円寺',
           typeLabel: 'ライブハウス・音楽',
@@ -218,6 +235,7 @@ window.V3_RELEASE_CONTENT = {
         },
         {
           id: 'koenji-junjo-shotengai-book',
+          categoryIds: ['books'],
           objectName: '『高円寺純情商店街』',
           placeName: '高円寺駅北口の商店街 / 高円寺',
           typeLabel: '小説・商店街',
@@ -256,6 +274,7 @@ window.V3_RELEASE_CONTENT = {
       objects: [
         {
           id: 'shimokitazawa-shelter',
+          categoryIds: ['music'],
           objectName: '下北沢 SHELTER',
           placeName: 'SHELTER / 下北沢',
           typeLabel: 'ライブハウス・音楽',
@@ -285,6 +304,7 @@ window.V3_RELEASE_CONTENT = {
         },
         {
           id: 'honda-theater',
+          categoryIds: ['film-stage'],
           objectName: '本多劇場',
           placeName: '本多劇場 / 下北沢',
           typeLabel: '劇場・演劇',
@@ -314,6 +334,7 @@ window.V3_RELEASE_CONTENT = {
         },
         {
           id: 'machinouede-film',
+          categoryIds: ['film-stage'],
           objectName: '映画『街の上で』',
           placeName: '下北沢一帯 / 下北沢',
           typeLabel: '映画・街',
@@ -352,6 +373,7 @@ window.V3_RELEASE_CONTENT = {
       objects: [
         {
           id: 'jinbocho-book-town',
+          categoryIds: ['books'],
           objectName: 'JIMBOCHO古書店MAP',
           placeName: '神田古書店街 / 神保町',
           typeLabel: '古書店街・本',
@@ -381,6 +403,7 @@ window.V3_RELEASE_CONTENT = {
         },
         {
           id: 'yaguchi-shoten',
+          categoryIds: ['books', 'film-stage'],
           objectName: '矢口書店',
           placeName: '矢口書店 / 神保町',
           typeLabel: '古書店・映画・演劇',
@@ -410,6 +433,7 @@ window.V3_RELEASE_CONTENT = {
         },
         {
           id: 'jinbocho-theater-mizoguchi-2026',
+          categoryIds: ['film-stage'],
           objectName: '神保町シアター 溝口健二特集',
           placeName: '神保町シアター / 神保町',
           typeLabel: '名画座・映画',

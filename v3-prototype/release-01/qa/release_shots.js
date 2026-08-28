@@ -33,9 +33,17 @@ function serve() {
     if (o.zoom) await page.evaluate((z) => { document.documentElement.style.zoom = z; }, o.zoom);
     await page.waitForFunction(() =>
       document.querySelectorAll('.shelf-entry').length === 4 ||
-      document.querySelectorAll('.object-card').length === 3);
+      document.querySelectorAll('.object-card').length === 3 ||
+      document.querySelectorAll('#sg-category option').length === 5);
     await page.waitForFunction(() => Array.from(document.images).every((i) => i.complete && i.naturalWidth > 0));
     await page.waitForTimeout(400);
+    if (o.scrollTo) {
+      await page.evaluate((sel) => {
+        const el = document.querySelector(sel);
+        if (el) el.scrollIntoView({ block: 'start' });
+      }, o.scrollTo);
+      await page.waitForTimeout(400);
+    }
     if (o.open) {
       await page.click(`.object-card:nth-child(${o.open}) .open-button`);
       await page.waitForSelector('.detail-dialog[open]');
@@ -56,6 +64,14 @@ function serve() {
   await shot('RC01_DETAIL_JINBOCHO_390', 'shelf.html?shelf=jinbocho', { open: 3 });
   await shot('RC01_FOYER_390_ZOOM200', 'index.html', { zoom: 2 });
   await shot('RC01_SHELF_KOENJI_390_ZOOM200', 'shelf.html?shelf=koenji', { zoom: 2 });
+  // Entrance V2
+  await shot('RC02_FOYER_IDENTITY_DUALENTRY_390', 'index.html');
+  await shot('RC02_SHELF_TOKYO_IDENTITY_FIRST_390', 'shelf.html?shelf=tokyo');
+  await shot('RC02_FOYER_CATEGORY_BOOKS_390', 'index.html?category=books', { scrollTo: '.by-kind' });
+  await shot('RC02_SUGGEST_390', 'suggest.html');
+  await shot('RC02_FOYER_1440', 'index.html', { w: 1440, h: 1000 });
+  await shot('RC02_FOYER_390_ZOOM200', 'index.html', { zoom: 2 });
+  await shot('RC02_SHELF_TOKYO_390_ZOOM200', 'shelf.html?shelf=tokyo', { zoom: 2 });
   await browser.close(); server.close();
   console.log('RELEASE_SHOTS_OK ->', OUT);
 })().catch((e) => { console.error(e); process.exit(1); });

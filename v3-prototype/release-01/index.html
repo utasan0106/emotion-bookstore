@@ -19,22 +19,42 @@
   </header>
 
   <main id="main">
+  <!-- サイト共通の短い説明。identity のすぐ下、探索と Object media より必ず先に置く。
+       ここは static なので JavaScript が動かない環境でも順序が崩れない。 -->
+  <section class="site-intro" aria-label="このサイトについて">
+    <p class="site-explainer"><span class="jp-phrase">人が選んだ</span><wbr><span class="jp-phrase">場所・本・音楽・映画・催しを、</span><wbr><span class="jp-phrase">街や</span><wbr><span class="jp-phrase">種類ごとに</span><wbr><span class="jp-phrase">少しずつ並べる</span><wbr><span class="jp-phrase">文化案内です。</span></p>
+  </section>
+
     <section class="hero" aria-labelledby="hero-title">
       <h1 id="hero-title"><span class="hero-line">今日は、</span><span class="hero-line">どの棚へ。</span></h1>
     </section>
 
-    <section class="foyer" aria-labelledby="foyer-title">
-      <h2 id="foyer-title" class="sr-only">4つの棚</h2>
-      <nav id="shelfList" class="shelf-list" aria-labelledby="foyer-title"></nav>
+    <section class="foyer" aria-labelledby="by-town-title">
+      <h2 id="by-town-title" class="entry-axis">街から見る</h2>
+      <nav id="shelfList" class="shelf-list" aria-labelledby="by-town-title"></nav>
       <noscript>
         <p class="noscript-note">この書店を見るには、ブラウザの JavaScript を有効にしてください。</p>
       </noscript>
+    </section>
+
+    <!-- 種類は新しい棚ではなく、いま並んでいる12件を横断して見るための索引。
+         フィルタの pill 群にはしない。 -->
+    <section class="foyer by-kind" aria-labelledby="by-kind-title">
+      <h2 id="by-kind-title" class="entry-axis">種類から見る</h2>
+      <nav id="categoryIndex" class="category-index" aria-labelledby="by-kind-title"></nav>
+      <div id="categoryResults" class="category-results" aria-live="polite"></div>
     </section>
 
     <!-- 4棚が実際に並んだときだけ有限な終わりを出す。次回予告は置かない。 -->
     <section class="end-plate foyer-end" aria-labelledby="end-title" hidden>
       <p class="eyebrow">今日の書店は、ここまで</p>
       <h2 id="end-title"><span class="end-phrase">棚は、</span><wbr><span class="end-phrase">4つだけです。</span></h2>
+    </section>
+    <!-- 主要な探索の下に、静かに置く導線。Primary CTA にはしない。 -->
+    <section class="suggest-lane" aria-labelledby="suggest-lane-title">
+      <h2 id="suggest-lane-title" class="sr-only">候補を教える</h2>
+      <p class="suggest-lane-note">まだここに無い場所や作品を知っていたら、</p>
+      <p class="suggest-lane-link"><a class="other-shelves" href="./suggest.html">候補を教える</a></p>
     </section>
   </main>
 
