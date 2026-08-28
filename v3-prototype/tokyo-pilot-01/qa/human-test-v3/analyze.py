@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deterministic analyzer for Tokyo Pilot Cycle 01 measurement V3.1.
+"""Deterministic analyzer for Tokyo Pilot Cycle 01 measurement V3.2.
 
 This is a PRE-FREEZE SIDECAR. It reads one local CSV and writes local JSON/MD.
 It does not send data anywhere and never infers sentiment, mental state, or meaning

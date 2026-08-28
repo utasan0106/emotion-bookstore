@@ -118,8 +118,8 @@ def main():
             'manualVerifiedAt':fresh[o['id']].isoformat(),'manualEvidenceUrl':OFFICIAL[o['id']],
         })
     manifest={
-        'schemaVersion':'tokyo-human-test-v3.1-freeze-1','cycle':'tokyo-pilot-01-cycle-01',
-        'measurementVersion':'3.1','sourceGitHead':current_head,'frozenAt':now.isoformat(),
+        'schemaVersion':'tokyo-human-test-v3.2-freeze-1','cycle':'tokyo-pilot-01-cycle-01',
+        'measurementVersion':'3.2','sourceGitHead':current_head,'frozenAt':now.isoformat(),
         'previewUrl':a.preview_url.split('?')[0],'previewVerifiedAt':preview_evidence.get('verifiedAt'),'previewMaxAgeMinutes':a.max_age_minutes,'visualGate':a.visual_gate,
         'scope':'isolated-human-test-only','productionPromotion':False,'objects':objects,'files':files,
         'manualFreshnessMaxAgeMinutes':a.max_age_minutes,'note':a.note,

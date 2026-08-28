@@ -66,7 +66,7 @@ const hidden=['qa/human-test-v3/README.md','qa/browser_qa.js','MEDIA_ATTRIBUTION
    await page.keyboard.press('Escape');
  }
  let head=''; try{head=execFileSync('git',['rev-parse','HEAD'],{cwd:PILOT,encoding:'utf8'}).trim()}catch{}
- const evidence={schemaVersion:'tokyo-preview-v3.1-1',verdict:errors.length?'FAIL':'GO',verifiedAt:new Date().toISOString(),previewUrl:root.toString(),sourceGitHead:head,runtime,hiddenStatus,externalRequests:external,pageErrors,consoleErrors};
+ const evidence={schemaVersion:'tokyo-preview-v3.2-1',verdict:errors.length?'FAIL':'GO',verifiedAt:new Date().toISOString(),previewUrl:root.toString(),sourceGitHead:head,runtime,hiddenStatus,externalRequests:external,pageErrors,consoleErrors};
  if(!CHECK_ONLY) fs.writeFileSync(OUT,JSON.stringify(evidence,null,2)+'\n');
  await ctx.close(); await browser.close();
  if(errors.length){ console.error('PREVIEW_V3_VERIFY_FAIL'); errors.forEach(x=>console.error('- '+x)); process.exit(1); }
