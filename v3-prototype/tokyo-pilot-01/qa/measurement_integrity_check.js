@@ -18,7 +18,7 @@ function endPlateText(rawHtml) {
 const runtime=[html,read(path.join(ROOT,'pilot.js')),read(path.join(ROOT,'pilot_content.js'))].join('\n');
 for(const phrase of ['次の3つ','また見たい','見終わりました']) forbid(runtime,phrase,'participant runtime');
 req(endPlateText(html),'この棚は、3つで終わりです。','neutral finite ending');
-if(!/<span class="end-phrase">この棚は、3つで<\/span><wbr><span class="end-phrase">終わりです。<\/span>/.test(html)) fail.push('finite ending must fix its line break with .end-phrase + <wbr>');
+if(!/<span class="end-phrase">この棚は、<\/span><wbr><span class="end-phrase">3つで終わりです。<\/span>/.test(html)) fail.push('finite ending must fix its line break with .end-phrase + <wbr>');
 const css=read(path.join(ROOT,'pilot.css'));
 const endPhraseRule=(css.match(/\.end-phrase\s*\{[^}]*\}/)||[''])[0];
 if(!/word-break:\s*keep-all/.test(endPhraseRule)) fail.push('.end-phrase must be word-break: keep-all (Safari-safe fallback)');

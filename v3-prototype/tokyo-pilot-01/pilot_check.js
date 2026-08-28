@@ -164,7 +164,7 @@ if (!endPlateText(html).includes('この棚は、3つで終わりです。')) {
   failures.push('neutral finite ending copy missing');
 }
 // 折返しは Chromium 専用の word-break: auto-phrase ではなく markup で固定する。
-if (!/<span class="end-phrase">この棚は、3つで<\/span><wbr><span class="end-phrase">終わりです。<\/span>/.test(html)) {
+if (!/<span class="end-phrase">この棚は、<\/span><wbr><span class="end-phrase">3つで終わりです。<\/span>/.test(html)) {
   failures.push('finite ending must fix its line break with .end-phrase + <wbr>');
 }
 for (const priming of ['次の3つ', 'また見たい', '見終わりました']) {

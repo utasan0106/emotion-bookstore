@@ -59,13 +59,13 @@ neutral ending / Return priming 語の不在 / Real Media 3枚の decode と con
 CC deed への直リンク / Official Action 前の外部 request 0 /
 `qa/human-test-v3/**` 等の内部ファイルが公開配信されていないこと。
 
-## 参加者が読む 7 ファイルの byte manifest（V3.2.1 checkout 実測）
+## 参加者が読む 7 ファイルの byte manifest（V3.2.2 checkout 実測）
 
 これは operator が手元 checkout を目視確認するための参考値であり、実行条件
 ではない。正となる比較は `preview_verify.js` が checkout から都度算出する。
 
 ```
-index.html                  ac9d75a9b2582052f8dac65d4fde6634d29e346766821cb1f27185de1c5d8612   2775
+index.html                  ef7710542e79e9ce60df4adcacd73295cef474c4ac22017b7c402d9d5bd9c9ad   2966
 pilot.css                   4ba9d85c8c804f400711fbec7efb84a2c0ac6128a91617483f8d7b1190163697  18000
 pilot_content.js            ddb3ae20489882e7b8154bdf0a5beb51640a8fdaea21725c8b1a763baebfc85d   6324
 pilot.js                    57204ae78e19eda67cefd7efab146aceae9daa25ba9f910c120da24415f8697d  10806
@@ -75,7 +75,8 @@ assets/meguro-tapeworm.jpg  21ed2ffbe847c755c28f675d08b1cbec40ec1477e4e688f78f07
 ```
 
 V3.2 からの差分は `index.html` と `pilot.css` のみ。終了見出しの折返しを
-markup 側で固定した（`.end-phrase` + `<wbr>`）ことによる。wording は不変。
+markup 側で固定し（`.end-phrase` + `<wbr>`）、その phrase boundary を
+`この棚は、` / `3つで終わりです。` に確定させたことによる。wording は不変。
 他 5 ファイルは byte 不変。
 
 ## Historical / audit note
