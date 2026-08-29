@@ -248,7 +248,7 @@ for (const page of ['index.html', 'shelf.html']) {
    この案内のために組んだ扉。ほかの製品の画像を借りない。
    2026-08-30、公式ロゴ使用版（ogp-v3-20260830.png）へ差し替えた。
    旧扉（ogp-machi.jpg）は削除せず残す。履歴・他用途の可能性のため。 */
-const OGP_IMAGE = 'https://emotion-bookstore.vercel.app/assets/ogp-v3-20260830.png';
+const OGP_IMAGE = 'https://emotionbookstore.com/assets/ogp-v3-20260830.png';
 /* ブランドの正規データから起こした画像。同一オリジンに置き、ほかの製品の
    画像（ドメイン直下の shop-seal.png や ogp-v2.jpg）を借りない。
    一度 shop-seal.png を favicon に借りていたが、それは別の製品の意匠だった。 */
@@ -297,7 +297,7 @@ for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
 }
 /* 種類の絞り込みは同じ12件の別の見え方なので、玄関へ寄せる。
    棚は街ごとに中身が違うので、静的な canonical で1つに潰さない。 */
-if (!read('index.html').includes('<link rel="canonical" href="https://emotion-bookstore.vercel.app/">')) {
+if (!read('index.html').includes('<link rel="canonical" href="https://emotionbookstore.com/">')) {
   failures.push('index.html missing canonical to the site root');
 }
 if (read('shelf.html').includes('rel="canonical"')) {

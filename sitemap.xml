@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://emotion-bookstore.vercel.app/</loc>
+    <loc>https://emotionbookstore.com/</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://emotion-bookstore.vercel.app/shelf.html?shelf=tokyo</loc>
+    <loc>https://emotionbookstore.com/shelf.html?shelf=tokyo</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emotion-bookstore.vercel.app/shelf.html?shelf=koenji</loc>
+    <loc>https://emotionbookstore.com/shelf.html?shelf=koenji</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emotion-bookstore.vercel.app/shelf.html?shelf=shimokitazawa</loc>
+    <loc>https://emotionbookstore.com/shelf.html?shelf=shimokitazawa</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emotion-bookstore.vercel.app/shelf.html?shelf=jinbocho</loc>
+    <loc>https://emotionbookstore.com/shelf.html?shelf=jinbocho</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
