@@ -66,16 +66,23 @@ docs/
 #           以下 4 パスへの参照は HTML / CSS / JS のいずれからも 0 件。
 #
 # ★ v3-prototype/ をディレクトリごと除外してはならない。
-#   この配下に V3 本体の runtime がある。そのため negation（!）で戻す方式は採らず、
-#   公開不要と確定したものだけを個別に列挙している。
-#   本番必須は以下のいずれにも一致しない。
-#     index.html / privacy.html / terms.html
-#     css/v3.css
-#     js/app.js / data.js / store.js / analytics.js / personalize.js
-#     js/action_destination.js / interested_retrieval.js
-#     js/public_editorial.js / public_editorial_content.js
-#     js/real_experience_registry.js
-#     assets/**（fonts / canonical-m01〜m03 / category-visual / real-experience / brand ほか）
+#   凍結済み Human Test 用 /v3-prototype/tokyo-pilot-01/ がこの配下にあり、
+#   そちらは独立して配信を続ける必要がある（README.md 参照）。
+#   そのため negation（!）で戻す方式は採らず、公開不要と確定したものだけを
+#   個別に列挙している。
+#
+# 2026-08-29 追記：index.html / privacy.html / terms.html は現行の玄関・棚・
+# 候補ページ（ルート index.html / shelf.html / suggest.html / release.js /
+# release_content.js / qa/*.js）のいずれからも参照 0 件、tokyo-pilot-01/ とは
+# assets・css・js を一切共有していない（tokyo-pilot-01 は pilot.css /
+# pilot.js / pilot_content.js と独自の assets/ を持つ）ことを確認した孤立ページ。
+# canonical / og / JSON-LD に旧ドメインが残っており、公開資産として維持する
+# 意図がないため、この3ファイルのみ個別に配信対象外にする。
+# css/v3.css・js/*.js・assets/** はこの3ファイルからしか参照されないが、
+# 監査対象として明示された範囲を超えるため今回は据え置く（削除もしない）。
+/v3-prototype/index.html
+/v3-prototype/privacy.html
+/v3-prototype/terms.html
 
 # 内部 QA：source contract / runtime 検証スクリプト
 /v3-prototype/verify/
