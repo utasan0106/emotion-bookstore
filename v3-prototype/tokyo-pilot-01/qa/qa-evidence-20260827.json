@@ -1,0 +1,2734 @@
+{
+  "generated_at": "2026-08-27T10:43:32.471Z",
+  "viewports": [
+    "320x800",
+    "390x844",
+    "430x932",
+    "1024x768",
+    "1440x1000"
+  ],
+  "total": 281,
+  "failed": 0,
+  "verdict": "BROWSER_QA_GO",
+  "results": [
+    {
+      "scope": "m320",
+      "name": "card_media_decoded_3",
+      "pass": true,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "w": 640,
+          "h": 905,
+          "boxW": 298,
+          "boxH": 421,
+          "fit": "cover"
+        },
+        {
+          "src": "hachiko.jpg",
+          "w": 2048,
+          "h": 1536,
+          "boxW": 298,
+          "boxH": 224,
+          "fit": "cover"
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "w": 1363,
+          "h": 2048,
+          "boxW": 298,
+          "boxH": 448,
+          "fit": "cover"
+        }
+      ]
+    },
+    {
+      "scope": "m320",
+      "name": "all_media_loaded_without_scroll",
+      "pass": true,
+      "detail": [
+        {
+          "src": "./assets/manuscript-cafe.png",
+          "loading": "eager",
+          "complete": true,
+          "natural": 640,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/hachiko.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 2048,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/meguro-tapeworm.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 1363,
+          "currentSrc": true
+        }
+      ]
+    },
+    {
+      "scope": "m320",
+      "name": "card_media_identity_kept",
+      "pass": true,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "fit": "cover",
+          "visible": 0.999
+        },
+        {
+          "src": "hachiko.jpg",
+          "fit": "cover",
+          "visible": 0.998
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "fit": "cover",
+          "visible": 0.999
+        }
+      ]
+    },
+    {
+      "scope": "m320",
+      "name": "first_fold_has_media_and_hook",
+      "pass": true,
+      "detail": {
+        "vh": 800,
+        "seen": [
+          {
+            "hook": "原稿執筆する人限定のカフェ。",
+            "imgVisiblePx": 421,
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
+          }
+        ],
+        "finiteCounter": "01 / 03",
+        "finiteCounterVisible": true
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "first_fold_open_affordance_visible",
+      "pass": true,
+      "detail": {
+        "hook": "原稿執筆する人限定のカフェ。",
+        "imgVisiblePx": 421,
+        "imgVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "first_fold_set_is_legible",
+      "pass": true,
+      "detail": {
+        "counter": "01 / 03",
+        "visible": true
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "no_text_below_10px",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": {
+        "scrollW": 320,
+        "clientW": 320,
+        "wide": []
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "list_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "list_no_objectname_in_dom",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m320",
+      "name": "list_a11y_text_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "list_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "list_media_alt_present",
+      "pass": true,
+      "detail": [
+        23,
+        20,
+        32
+      ]
+    },
+    {
+      "scope": "m320",
+      "name": "single_live_region",
+      "pass": true,
+      "detail": [
+        {
+          "id": "live",
+          "role": "status",
+          "live": "polite"
+        }
+      ]
+    },
+    {
+      "scope": "m320",
+      "name": "open_control_is_button",
+      "pass": true,
+      "detail": [
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        }
+      ]
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_opens",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_shows_reveal",
+      "pass": true,
+      "detail": "入店時に目標を書き、達成するまで精算できない。進捗チェックもある。"
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_reveal_is_dominant",
+      "pass": true,
+      "detail": {
+        "reveal": 22.4,
+        "hookEcho": 13
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_no_horizontal_overflow",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_action_https_newtab",
+      "pass": true,
+      "detail": {
+        "href": "https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/",
+        "rel": "noopener noreferrer"
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_focus_inside",
+      "pass": true,
+      "detail": "dialog-close"
+    },
+    {
+      "scope": "m320",
+      "name": "open_is_not_announced_twice",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "scope": "m320",
+      "name": "detail_media_alt_present",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
+    },
+    {
+      "scope": "m320",
+      "name": "detail_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
+    },
+    {
+      "scope": "m320",
+      "name": "detail_media_identity_kept",
+      "pass": true,
+      "detail": {
+        "w": 640,
+        "h": 905,
+        "boxW": 192,
+        "boxH": 336,
+        "fit": "contain",
+        "visible": 1
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "reopening_starts_from_the_top",
+      "pass": true,
+      "detail": {
+        "scrollTop": 0,
+        "mediaTop": 60,
+        "revealTop": 455,
+        "mediaAboveFold": true,
+        "revealAboveFold": true
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "dialog_scroll_does_not_chain",
+      "pass": true,
+      "detail": "contain"
+    },
+    {
+      "scope": "m320",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m320",
+      "name": "focus_returns_to_trigger",
+      "pass": true,
+      "detail": "open-button"
+    },
+    {
+      "scope": "m320",
+      "name": "first_open_reachable_by_tab",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "open-button"
+      ]
+    },
+    {
+      "scope": "m320",
+      "name": "shelf_has_only_the_intended_controls",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "open-button",
+        "open-button",
+        "open-button"
+      ]
+    },
+    {
+      "scope": "m320",
+      "name": "enter_opens_detail",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m320",
+      "name": "focus_starts_inside_dialog",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m320",
+      "name": "focus_never_reaches_the_shelf_behind",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "keyboard_path_returns_focus",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m320",
+      "name": "finite_ending_present",
+      "pass": true,
+      "detail": "今回は、ここまで /  / 3つ、見終わりました。 /  / 次の3つを仕入れたら、この棚を入れ替えます。"
+    },
+    {
+      "scope": "m320",
+      "name": "no_storage_written",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "no_service_worker_or_cache",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
+      }
+    },
+    {
+      "scope": "m320",
+      "name": "no_indexeddb_created",
+      "pass": true,
+      "detail": 0
+    },
+    {
+      "scope": "m320",
+      "name": "no_fetch_xhr_beacon",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "no_external_request",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "no_page_error",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320",
+      "name": "no_console_error",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "card_media_decoded_3",
+      "pass": true,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "w": 640,
+          "h": 905,
+          "boxW": 368,
+          "boxH": 520,
+          "fit": "cover"
+        },
+        {
+          "src": "hachiko.jpg",
+          "w": 2048,
+          "h": 1536,
+          "boxW": 368,
+          "boxH": 276,
+          "fit": "cover"
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "w": 1363,
+          "h": 2048,
+          "boxW": 368,
+          "boxH": 553,
+          "fit": "cover"
+        }
+      ]
+    },
+    {
+      "scope": "m390",
+      "name": "all_media_loaded_without_scroll",
+      "pass": true,
+      "detail": [
+        {
+          "src": "./assets/manuscript-cafe.png",
+          "loading": "eager",
+          "complete": true,
+          "natural": 640,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/hachiko.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 2048,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/meguro-tapeworm.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 1363,
+          "currentSrc": true
+        }
+      ]
+    },
+    {
+      "scope": "m390",
+      "name": "card_media_identity_kept",
+      "pass": true,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "fit": "cover",
+          "visible": 0.999
+        },
+        {
+          "src": "hachiko.jpg",
+          "fit": "cover",
+          "visible": 1
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "fit": "cover",
+          "visible": 1
+        }
+      ]
+    },
+    {
+      "scope": "m390",
+      "name": "first_fold_has_media_and_hook",
+      "pass": true,
+      "detail": {
+        "vh": 844,
+        "seen": [
+          {
+            "hook": "原稿執筆する人限定のカフェ。",
+            "imgVisiblePx": 520,
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
+          }
+        ],
+        "finiteCounter": "01 / 03",
+        "finiteCounterVisible": true
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "first_fold_open_affordance_visible",
+      "pass": true,
+      "detail": {
+        "hook": "原稿執筆する人限定のカフェ。",
+        "imgVisiblePx": 520,
+        "imgVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "first_fold_set_is_legible",
+      "pass": true,
+      "detail": {
+        "counter": "01 / 03",
+        "visible": true
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "no_text_below_10px",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": {
+        "scrollW": 390,
+        "clientW": 390,
+        "wide": []
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "list_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "list_no_objectname_in_dom",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m390",
+      "name": "list_a11y_text_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "list_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "list_media_alt_present",
+      "pass": true,
+      "detail": [
+        23,
+        20,
+        32
+      ]
+    },
+    {
+      "scope": "m390",
+      "name": "single_live_region",
+      "pass": true,
+      "detail": [
+        {
+          "id": "live",
+          "role": "status",
+          "live": "polite"
+        }
+      ]
+    },
+    {
+      "scope": "m390",
+      "name": "open_control_is_button",
+      "pass": true,
+      "detail": [
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        }
+      ]
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_opens",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_shows_reveal",
+      "pass": true,
+      "detail": "入店時に目標を書き、達成するまで精算できない。進捗チェックもある。"
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_reveal_is_dominant",
+      "pass": true,
+      "detail": {
+        "reveal": 27.3,
+        "hookEcho": 13
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_no_horizontal_overflow",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_action_https_newtab",
+      "pass": true,
+      "detail": {
+        "href": "https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/",
+        "rel": "noopener noreferrer"
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_focus_inside",
+      "pass": true,
+      "detail": "dialog-close"
+    },
+    {
+      "scope": "m390",
+      "name": "open_is_not_announced_twice",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "scope": "m390",
+      "name": "detail_media_alt_present",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
+    },
+    {
+      "scope": "m390",
+      "name": "detail_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
+    },
+    {
+      "scope": "m390",
+      "name": "detail_media_identity_kept",
+      "pass": true,
+      "detail": {
+        "w": 640,
+        "h": 905,
+        "boxW": 251,
+        "boxH": 354,
+        "fit": "contain",
+        "visible": 1
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "reopening_starts_from_the_top",
+      "pass": true,
+      "detail": {
+        "scrollTop": 0,
+        "mediaTop": 60,
+        "revealTop": 473,
+        "mediaAboveFold": true,
+        "revealAboveFold": true
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "dialog_scroll_does_not_chain",
+      "pass": true,
+      "detail": "contain"
+    },
+    {
+      "scope": "m390",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m390",
+      "name": "focus_returns_to_trigger",
+      "pass": true,
+      "detail": "open-button"
+    },
+    {
+      "scope": "m390",
+      "name": "first_open_reachable_by_tab",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "open-button"
+      ]
+    },
+    {
+      "scope": "m390",
+      "name": "shelf_has_only_the_intended_controls",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "open-button",
+        "open-button",
+        "open-button"
+      ]
+    },
+    {
+      "scope": "m390",
+      "name": "enter_opens_detail",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m390",
+      "name": "focus_starts_inside_dialog",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m390",
+      "name": "focus_never_reaches_the_shelf_behind",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "keyboard_path_returns_focus",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m390",
+      "name": "finite_ending_present",
+      "pass": true,
+      "detail": "今回は、ここまで /  / 3つ、見終わりました。 /  / 次の3つを仕入れたら、この棚を入れ替えます。"
+    },
+    {
+      "scope": "m390",
+      "name": "no_storage_written",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "no_service_worker_or_cache",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
+      }
+    },
+    {
+      "scope": "m390",
+      "name": "no_indexeddb_created",
+      "pass": true,
+      "detail": 0
+    },
+    {
+      "scope": "m390",
+      "name": "no_fetch_xhr_beacon",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "no_external_request",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "no_page_error",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m390",
+      "name": "no_console_error",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "card_media_decoded_3",
+      "pass": true,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "w": 640,
+          "h": 905,
+          "boxW": 408,
+          "boxH": 577,
+          "fit": "cover"
+        },
+        {
+          "src": "hachiko.jpg",
+          "w": 2048,
+          "h": 1536,
+          "boxW": 408,
+          "boxH": 306,
+          "fit": "cover"
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "w": 1363,
+          "h": 2048,
+          "boxW": 408,
+          "boxH": 613,
+          "fit": "cover"
+        }
+      ]
+    },
+    {
+      "scope": "m430",
+      "name": "all_media_loaded_without_scroll",
+      "pass": true,
+      "detail": [
+        {
+          "src": "./assets/manuscript-cafe.png",
+          "loading": "eager",
+          "complete": true,
+          "natural": 640,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/hachiko.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 2048,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/meguro-tapeworm.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 1363,
+          "currentSrc": true
+        }
+      ]
+    },
+    {
+      "scope": "m430",
+      "name": "card_media_identity_kept",
+      "pass": true,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "fit": "cover",
+          "visible": 1
+        },
+        {
+          "src": "hachiko.jpg",
+          "fit": "cover",
+          "visible": 1
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "fit": "cover",
+          "visible": 1
+        }
+      ]
+    },
+    {
+      "scope": "m430",
+      "name": "first_fold_has_media_and_hook",
+      "pass": true,
+      "detail": {
+        "vh": 932,
+        "seen": [
+          {
+            "hook": "原稿執筆する人限定のカフェ。",
+            "imgVisiblePx": 577,
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
+          }
+        ],
+        "finiteCounter": "01 / 03",
+        "finiteCounterVisible": true
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "first_fold_open_affordance_visible",
+      "pass": true,
+      "detail": {
+        "hook": "原稿執筆する人限定のカフェ。",
+        "imgVisiblePx": 577,
+        "imgVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "first_fold_set_is_legible",
+      "pass": true,
+      "detail": {
+        "counter": "01 / 03",
+        "visible": true
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "no_text_below_10px",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": {
+        "scrollW": 430,
+        "clientW": 430,
+        "wide": []
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "list_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "list_no_objectname_in_dom",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m430",
+      "name": "list_a11y_text_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "list_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "list_media_alt_present",
+      "pass": true,
+      "detail": [
+        23,
+        20,
+        32
+      ]
+    },
+    {
+      "scope": "m430",
+      "name": "single_live_region",
+      "pass": true,
+      "detail": [
+        {
+          "id": "live",
+          "role": "status",
+          "live": "polite"
+        }
+      ]
+    },
+    {
+      "scope": "m430",
+      "name": "open_control_is_button",
+      "pass": true,
+      "detail": [
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        }
+      ]
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_opens",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_shows_reveal",
+      "pass": true,
+      "detail": "入店時に目標を書き、達成するまで精算できない。進捗チェックもある。"
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_reveal_is_dominant",
+      "pass": true,
+      "detail": {
+        "reveal": 30.1,
+        "hookEcho": 13
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_no_horizontal_overflow",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_action_https_newtab",
+      "pass": true,
+      "detail": {
+        "href": "https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/",
+        "rel": "noopener noreferrer"
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_focus_inside",
+      "pass": true,
+      "detail": "dialog-close"
+    },
+    {
+      "scope": "m430",
+      "name": "open_is_not_announced_twice",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "scope": "m430",
+      "name": "detail_media_alt_present",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
+    },
+    {
+      "scope": "m430",
+      "name": "detail_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
+    },
+    {
+      "scope": "m430",
+      "name": "detail_media_identity_kept",
+      "pass": true,
+      "detail": {
+        "w": 640,
+        "h": 905,
+        "boxW": 255,
+        "boxH": 360,
+        "fit": "contain",
+        "visible": 1
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "reopening_starts_from_the_top",
+      "pass": true,
+      "detail": {
+        "scrollTop": 0,
+        "mediaTop": 60,
+        "revealTop": 479,
+        "mediaAboveFold": true,
+        "revealAboveFold": true
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "dialog_scroll_does_not_chain",
+      "pass": true,
+      "detail": "contain"
+    },
+    {
+      "scope": "m430",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m430",
+      "name": "focus_returns_to_trigger",
+      "pass": true,
+      "detail": "open-button"
+    },
+    {
+      "scope": "m430",
+      "name": "first_open_reachable_by_tab",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "open-button"
+      ]
+    },
+    {
+      "scope": "m430",
+      "name": "shelf_has_only_the_intended_controls",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "open-button",
+        "open-button",
+        "open-button"
+      ]
+    },
+    {
+      "scope": "m430",
+      "name": "enter_opens_detail",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m430",
+      "name": "focus_starts_inside_dialog",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m430",
+      "name": "focus_never_reaches_the_shelf_behind",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "keyboard_path_returns_focus",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "m430",
+      "name": "finite_ending_present",
+      "pass": true,
+      "detail": "今回は、ここまで /  / 3つ、見終わりました。 /  / 次の3つを仕入れたら、この棚を入れ替えます。"
+    },
+    {
+      "scope": "m430",
+      "name": "no_storage_written",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "no_service_worker_or_cache",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
+      }
+    },
+    {
+      "scope": "m430",
+      "name": "no_indexeddb_created",
+      "pass": true,
+      "detail": 0
+    },
+    {
+      "scope": "m430",
+      "name": "no_fetch_xhr_beacon",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "no_external_request",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "no_page_error",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m430",
+      "name": "no_console_error",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "card_media_decoded_3",
+      "pass": true,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "w": 640,
+          "h": 905,
+          "boxW": 318,
+          "boxH": 450,
+          "fit": "cover"
+        },
+        {
+          "src": "hachiko.jpg",
+          "w": 2048,
+          "h": 1536,
+          "boxW": 318,
+          "boxH": 239,
+          "fit": "cover"
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "w": 1363,
+          "h": 2048,
+          "boxW": 318,
+          "boxH": 478,
+          "fit": "cover"
+        }
+      ]
+    },
+    {
+      "scope": "d1024",
+      "name": "all_media_loaded_without_scroll",
+      "pass": true,
+      "detail": [
+        {
+          "src": "./assets/manuscript-cafe.png",
+          "loading": "eager",
+          "complete": true,
+          "natural": 640,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/hachiko.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 2048,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/meguro-tapeworm.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 1363,
+          "currentSrc": true
+        }
+      ]
+    },
+    {
+      "scope": "d1024",
+      "name": "card_media_identity_kept",
+      "pass": true,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "fit": "cover",
+          "visible": 0.999
+        },
+        {
+          "src": "hachiko.jpg",
+          "fit": "cover",
+          "visible": 0.998
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "fit": "cover",
+          "visible": 1
+        }
+      ]
+    },
+    {
+      "scope": "d1024",
+      "name": "first_fold_has_media_and_hook",
+      "pass": true,
+      "detail": {
+        "vh": 768,
+        "seen": [
+          {
+            "hook": "原稿執筆する人限定のカフェ。",
+            "imgVisiblePx": 450,
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
+          },
+          {
+            "hook": "渋谷のハチ公、本物は上野。",
+            "imgVisiblePx": 239,
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
+          },
+          {
+            "hook": "8.8mのサナダムシ。",
+            "imgVisiblePx": 478,
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
+          }
+        ],
+        "finiteCounter": "01 / 03",
+        "finiteCounterVisible": true
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "first_fold_open_affordance_visible",
+      "pass": true,
+      "detail": {
+        "hook": "原稿執筆する人限定のカフェ。",
+        "imgVisiblePx": 450,
+        "imgVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "first_fold_set_is_legible",
+      "pass": true,
+      "detail": {
+        "counter": "01 / 03",
+        "visible": true
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "no_text_below_10px",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": {
+        "scrollW": 1024,
+        "clientW": 1024,
+        "wide": []
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "list_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "list_no_objectname_in_dom",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1024",
+      "name": "list_a11y_text_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "list_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "list_media_alt_present",
+      "pass": true,
+      "detail": [
+        23,
+        20,
+        32
+      ]
+    },
+    {
+      "scope": "d1024",
+      "name": "single_live_region",
+      "pass": true,
+      "detail": [
+        {
+          "id": "live",
+          "role": "status",
+          "live": "polite"
+        }
+      ]
+    },
+    {
+      "scope": "d1024",
+      "name": "open_control_is_button",
+      "pass": true,
+      "detail": [
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        }
+      ]
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_opens",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_shows_reveal",
+      "pass": true,
+      "detail": "入店時に目標を書き、達成するまで精算できない。進捗チェックもある。"
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_reveal_is_dominant",
+      "pass": true,
+      "detail": {
+        "reveal": 42,
+        "hookEcho": 13
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_no_horizontal_overflow",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_action_https_newtab",
+      "pass": true,
+      "detail": {
+        "href": "https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/",
+        "rel": "noopener noreferrer"
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_focus_inside",
+      "pass": true,
+      "detail": "dialog-close"
+    },
+    {
+      "scope": "d1024",
+      "name": "open_is_not_announced_twice",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "scope": "d1024",
+      "name": "detail_media_alt_present",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
+    },
+    {
+      "scope": "d1024",
+      "name": "detail_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
+    },
+    {
+      "scope": "d1024",
+      "name": "detail_media_identity_kept",
+      "pass": true,
+      "detail": {
+        "w": 640,
+        "h": 905,
+        "boxW": 250,
+        "boxH": 353,
+        "fit": "contain",
+        "visible": 1
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "reopening_starts_from_the_top",
+      "pass": true,
+      "detail": {
+        "scrollTop": 0,
+        "mediaTop": 71,
+        "revealTop": 489,
+        "mediaAboveFold": true,
+        "revealAboveFold": true
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "dialog_scroll_does_not_chain",
+      "pass": true,
+      "detail": "contain"
+    },
+    {
+      "scope": "d1024",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1024",
+      "name": "focus_returns_to_trigger",
+      "pass": true,
+      "detail": "open-button"
+    },
+    {
+      "scope": "d1024",
+      "name": "first_open_reachable_by_tab",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "open-button"
+      ]
+    },
+    {
+      "scope": "d1024",
+      "name": "shelf_has_only_the_intended_controls",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "open-button",
+        "open-button",
+        "open-button"
+      ]
+    },
+    {
+      "scope": "d1024",
+      "name": "enter_opens_detail",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1024",
+      "name": "focus_starts_inside_dialog",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1024",
+      "name": "focus_never_reaches_the_shelf_behind",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "keyboard_path_returns_focus",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1024",
+      "name": "finite_ending_present",
+      "pass": true,
+      "detail": "今回は、ここまで /  / 3つ、見終わりました。 /  / 次の3つを仕入れたら、この棚を入れ替えます。"
+    },
+    {
+      "scope": "d1024",
+      "name": "no_storage_written",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "no_service_worker_or_cache",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
+      }
+    },
+    {
+      "scope": "d1024",
+      "name": "no_indexeddb_created",
+      "pass": true,
+      "detail": 0
+    },
+    {
+      "scope": "d1024",
+      "name": "no_fetch_xhr_beacon",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "no_external_request",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "no_page_error",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1024",
+      "name": "no_console_error",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "card_media_decoded_3",
+      "pass": true,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "w": 640,
+          "h": 905,
+          "boxW": 379,
+          "boxH": 536,
+          "fit": "cover"
+        },
+        {
+          "src": "hachiko.jpg",
+          "w": 2048,
+          "h": 1536,
+          "boxW": 379,
+          "boxH": 284,
+          "fit": "cover"
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "w": 1363,
+          "h": 2048,
+          "boxW": 379,
+          "boxH": 570,
+          "fit": "cover"
+        }
+      ]
+    },
+    {
+      "scope": "d1440",
+      "name": "all_media_loaded_without_scroll",
+      "pass": true,
+      "detail": [
+        {
+          "src": "./assets/manuscript-cafe.png",
+          "loading": "eager",
+          "complete": true,
+          "natural": 640,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/hachiko.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 2048,
+          "currentSrc": true
+        },
+        {
+          "src": "./assets/meguro-tapeworm.jpg",
+          "loading": "eager",
+          "complete": true,
+          "natural": 1363,
+          "currentSrc": true
+        }
+      ]
+    },
+    {
+      "scope": "d1440",
+      "name": "card_media_identity_kept",
+      "pass": true,
+      "detail": [
+        {
+          "src": "manuscript-cafe.png",
+          "fit": "cover",
+          "visible": 1
+        },
+        {
+          "src": "hachiko.jpg",
+          "fit": "cover",
+          "visible": 0.999
+        },
+        {
+          "src": "meguro-tapeworm.jpg",
+          "fit": "cover",
+          "visible": 0.999
+        }
+      ]
+    },
+    {
+      "scope": "d1440",
+      "name": "first_fold_has_media_and_hook",
+      "pass": true,
+      "detail": {
+        "vh": 1000,
+        "seen": [
+          {
+            "hook": "原稿執筆する人限定のカフェ。",
+            "imgVisiblePx": 536,
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
+          },
+          {
+            "hook": "渋谷のハチ公、本物は上野。",
+            "imgVisiblePx": 284,
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
+          },
+          {
+            "hook": "8.8mのサナダムシ。",
+            "imgVisiblePx": 570,
+            "imgVisibleRatio": 1,
+            "hookFullyVisible": true,
+            "openAffordanceVisible": true
+          }
+        ],
+        "finiteCounter": "01 / 03",
+        "finiteCounterVisible": true
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "first_fold_open_affordance_visible",
+      "pass": true,
+      "detail": {
+        "hook": "原稿執筆する人限定のカフェ。",
+        "imgVisiblePx": 536,
+        "imgVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "first_fold_set_is_legible",
+      "pass": true,
+      "detail": {
+        "counter": "01 / 03",
+        "visible": true
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "no_text_below_10px",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": {
+        "scrollW": 1440,
+        "clientW": 1440,
+        "wide": []
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "list_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "list_no_objectname_in_dom",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1440",
+      "name": "list_a11y_text_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "list_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "list_media_alt_present",
+      "pass": true,
+      "detail": [
+        23,
+        20,
+        32
+      ]
+    },
+    {
+      "scope": "d1440",
+      "name": "single_live_region",
+      "pass": true,
+      "detail": [
+        {
+          "id": "live",
+          "role": "status",
+          "live": "polite"
+        }
+      ]
+    },
+    {
+      "scope": "d1440",
+      "name": "open_control_is_button",
+      "pass": true,
+      "detail": [
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ひらく",
+          "href": null
+        }
+      ]
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_opens",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_shows_reveal",
+      "pass": true,
+      "detail": "入店時に目標を書き、達成するまで精算できない。進捗チェックもある。"
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_reveal_is_dominant",
+      "pass": true,
+      "detail": {
+        "reveal": 42,
+        "hookEcho": 13
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_no_horizontal_overflow",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_action_https_newtab",
+      "pass": true,
+      "detail": {
+        "href": "https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/",
+        "rel": "noopener noreferrer"
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_no_internal_term",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_focus_inside",
+      "pass": true,
+      "detail": "dialog-close"
+    },
+    {
+      "scope": "d1440",
+      "name": "open_is_not_announced_twice",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "scope": "d1440",
+      "name": "detail_media_alt_present",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
+    },
+    {
+      "scope": "d1440",
+      "name": "detail_a11y_text_no_internal_term",
+      "pass": true,
+      "detail": "青地に「原稿執筆カフェ」と書かれた公式ビジュアル"
+    },
+    {
+      "scope": "d1440",
+      "name": "detail_media_identity_kept",
+      "pass": true,
+      "detail": {
+        "w": 640,
+        "h": 905,
+        "boxW": 297,
+        "boxH": 420,
+        "fit": "contain",
+        "visible": 1
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "reopening_starts_from_the_top",
+      "pass": true,
+      "detail": {
+        "scrollTop": 0,
+        "mediaTop": 71,
+        "revealTop": 556,
+        "mediaAboveFold": true,
+        "revealAboveFold": true
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "dialog_scroll_does_not_chain",
+      "pass": true,
+      "detail": "contain"
+    },
+    {
+      "scope": "d1440",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1440",
+      "name": "focus_returns_to_trigger",
+      "pass": true,
+      "detail": "open-button"
+    },
+    {
+      "scope": "d1440",
+      "name": "first_open_reachable_by_tab",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "open-button"
+      ]
+    },
+    {
+      "scope": "d1440",
+      "name": "shelf_has_only_the_intended_controls",
+      "pass": true,
+      "detail": [
+        "skip-link",
+        "open-button",
+        "open-button",
+        "open-button"
+      ]
+    },
+    {
+      "scope": "d1440",
+      "name": "enter_opens_detail",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1440",
+      "name": "focus_starts_inside_dialog",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1440",
+      "name": "focus_never_reaches_the_shelf_behind",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "keyboard_path_returns_focus",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "d1440",
+      "name": "finite_ending_present",
+      "pass": true,
+      "detail": "今回は、ここまで /  / 3つ、見終わりました。 /  / 次の3つを仕入れたら、この棚を入れ替えます。"
+    },
+    {
+      "scope": "d1440",
+      "name": "no_storage_written",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "no_service_worker_or_cache",
+      "pass": true,
+      "detail": {
+        "ls": 0,
+        "ss": 0,
+        "cookie": "",
+        "violations": [],
+        "swController": false,
+        "swRegistrations": 0,
+        "cacheKeys": 0,
+        "idb": 0
+      }
+    },
+    {
+      "scope": "d1440",
+      "name": "no_indexeddb_created",
+      "pass": true,
+      "detail": 0
+    },
+    {
+      "scope": "d1440",
+      "name": "no_fetch_xhr_beacon",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "no_external_request",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "no_page_error",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "d1440",
+      "name": "no_console_error",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "m320/abc",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "manuscript-cafe",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 713,
+        "vh": 800
+      }
+    },
+    {
+      "scope": "m320/bac",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "hachiko-taxidermy",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 516,
+        "vh": 800
+      }
+    },
+    {
+      "scope": "m320/cab",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "meguro-tapeworm",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 703,
+        "vh": 800
+      }
+    },
+    {
+      "scope": "m390/abc",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "manuscript-cafe",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 828,
+        "vh": 844
+      }
+    },
+    {
+      "scope": "m390/bac",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "hachiko-taxidermy",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 583,
+        "vh": 844
+      }
+    },
+    {
+      "scope": "m390/cab",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "meguro-tapeworm",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 817,
+        "vh": 844
+      }
+    },
+    {
+      "scope": "m430/abc",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "manuscript-cafe",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 897,
+        "vh": 932
+      }
+    },
+    {
+      "scope": "m430/bac",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "hachiko-taxidermy",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 626,
+        "vh": 932
+      }
+    },
+    {
+      "scope": "m430/cab",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "meguro-tapeworm",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 885,
+        "vh": 932
+      }
+    },
+    {
+      "scope": "d1024/abc",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "manuscript-cafe",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 747,
+        "vh": 768
+      }
+    },
+    {
+      "scope": "d1024/bac",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "hachiko-taxidermy",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 536,
+        "vh": 768
+      }
+    },
+    {
+      "scope": "d1024/cab",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "meguro-tapeworm",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 738,
+        "vh": 768
+      }
+    },
+    {
+      "scope": "d1440/abc",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "manuscript-cafe",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 892,
+        "vh": 1000
+      }
+    },
+    {
+      "scope": "d1440/bac",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "hachiko-taxidermy",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 640,
+        "vh": 1000
+      }
+    },
+    {
+      "scope": "d1440/cab",
+      "name": "first_pull_complete_in_fold",
+      "pass": true,
+      "detail": {
+        "id": "meguro-tapeworm",
+        "mediaVisibleRatio": 1,
+        "hookFullyVisible": true,
+        "openAffordanceVisible": true,
+        "openBottom": 879,
+        "vh": 1000
+      }
+    },
+    {
+      "scope": "freshness",
+      "name": "participant_mode_renders_when_fresh",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "freshness",
+      "name": "expired_facts_block_participant_cycle",
+      "pass": true,
+      "detail": {
+        "cards": 0,
+        "gridText": "この棚はいま準備中です。",
+        "endHidden": true
+      }
+    },
+    {
+      "scope": "freshness",
+      "name": "missing_media_blocks_participant_cycle",
+      "pass": true,
+      "detail": {
+        "cards": 0,
+        "gridText": "この棚はいま準備中です。",
+        "endHidden": true
+      }
+    },
+    {
+      "scope": "freshness",
+      "name": "halt_screen_has_no_internal_term",
+      "pass": true,
+      "detail": "本文へ移動 /  / 棚 / 東京の棚 /  / by みんなの感情書店 /  / まだ、行き先が決まっていない日に。 /  / 東京を、3つだけ。 / 東京の3つ / この棚はいま準備中です。 /  / このページでは保存・計測・個人ごとの推薦を行いません。画像は権利を確認した提供元から表示し、公式リンクは押したとき"
+    },
+    {
+      "scope": "landscape-390h",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "landscape-390h",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "landscape-390h",
+      "name": "open_control_stays_visible_as_a_control",
+      "pass": true,
+      "detail": {
+        "height": 48,
+        "border": "0px",
+        "background": "rgb(37, 76, 58)"
+      }
+    },
+    {
+      "scope": "landscape-390h",
+      "name": "dialog_reachable_and_intact",
+      "pass": true,
+      "detail": {
+        "overflowX": true,
+        "reveal": true,
+        "action": "https://www.kiseichu.org/information"
+      }
+    },
+    {
+      "scope": "landscape-390h",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "zoom200-m390",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "zoom200-m390",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "zoom200-m390",
+      "name": "open_control_stays_visible_as_a_control",
+      "pass": true,
+      "detail": {
+        "height": 96,
+        "border": "0px",
+        "background": "rgb(37, 76, 58)"
+      }
+    },
+    {
+      "scope": "zoom200-m390",
+      "name": "dialog_reachable_and_intact",
+      "pass": true,
+      "detail": {
+        "overflowX": true,
+        "reveal": true,
+        "action": "https://www.kiseichu.org/information"
+      }
+    },
+    {
+      "scope": "zoom200-m390",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "zoom200-d1440",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "zoom200-d1440",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "zoom200-d1440",
+      "name": "open_control_stays_visible_as_a_control",
+      "pass": true,
+      "detail": {
+        "height": 96,
+        "border": "0px",
+        "background": "rgb(37, 76, 58)"
+      }
+    },
+    {
+      "scope": "zoom200-d1440",
+      "name": "dialog_reachable_and_intact",
+      "pass": true,
+      "detail": {
+        "overflowX": true,
+        "reveal": true,
+        "action": "https://www.kiseichu.org/information"
+      }
+    },
+    {
+      "scope": "zoom200-d1440",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "forced-colors",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "forced-colors",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "forced-colors",
+      "name": "open_control_stays_visible_as_a_control",
+      "pass": true,
+      "detail": {
+        "height": 48,
+        "border": "2px",
+        "background": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "scope": "forced-colors",
+      "name": "dialog_reachable_and_intact",
+      "pass": true,
+      "detail": {
+        "overflowX": true,
+        "reveal": true,
+        "action": "https://www.kiseichu.org/information"
+      }
+    },
+    {
+      "scope": "forced-colors",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "rootfont-20px",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "rootfont-20px",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "rootfont-20px",
+      "name": "open_control_stays_visible_as_a_control",
+      "pass": true,
+      "detail": {
+        "height": 48,
+        "border": "0px",
+        "background": "rgb(37, 76, 58)"
+      }
+    },
+    {
+      "scope": "rootfont-20px",
+      "name": "text_scales_with_browser_font_setting",
+      "pass": true,
+      "detail": {
+        "footer": 15,
+        "kicker": 13.75,
+        "label": 12.5,
+        "factor": 1.25
+      }
+    },
+    {
+      "scope": "rootfont-20px",
+      "name": "dialog_reachable_and_intact",
+      "pass": true,
+      "detail": {
+        "overflowX": true,
+        "reveal": true,
+        "action": "https://www.kiseichu.org/information"
+      }
+    },
+    {
+      "scope": "rootfont-20px",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "rootfont-24px",
+      "name": "no_horizontal_overflow",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "rootfont-24px",
+      "name": "list_no_spoiler",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "rootfont-24px",
+      "name": "open_control_stays_visible_as_a_control",
+      "pass": true,
+      "detail": {
+        "height": 48,
+        "border": "0px",
+        "background": "rgb(37, 76, 58)"
+      }
+    },
+    {
+      "scope": "rootfont-24px",
+      "name": "text_scales_with_browser_font_setting",
+      "pass": true,
+      "detail": {
+        "footer": 18,
+        "kicker": 16.5,
+        "label": 15,
+        "factor": 1.5
+      }
+    },
+    {
+      "scope": "rootfont-24px",
+      "name": "dialog_reachable_and_intact",
+      "pass": true,
+      "detail": {
+        "overflowX": true,
+        "reveal": true,
+        "action": "https://www.kiseichu.org/information"
+      }
+    },
+    {
+      "scope": "rootfont-24px",
+      "name": "escape_closes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "no-js",
+      "name": "explains_itself_without_js",
+      "pass": true,
+      "detail": "本文へ移動 /  / 棚 / 東京の棚 /  / by みんなの感情書店 /  / まだ、行き先が決まっていない日に。 /  / 東京を、3つだけ。 / 東京の3つ /  / この棚を見るには、ブラウザの JavaScript を有効にして"
+    },
+    {
+      "scope": "no-js",
+      "name": "no_false_ending_without_js",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "scope": "no-js",
+      "name": "no_spoiler_without_js",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "scope": "self",
+      "name": "every_selector_the_qa_uses_resolves",
+      "pass": true,
+      "detail": {
+        "checked": 15,
+        "matchingNothing": []
+      }
+    },
+    {
+      "scope": "order",
+      "name": "all_six_orders_same_identities",
+      "pass": true,
+      "detail": {
+        "abc": [
+          "manuscript-cafe",
+          "hachiko-taxidermy",
+          "meguro-tapeworm"
+        ],
+        "acb": [
+          "manuscript-cafe",
+          "meguro-tapeworm",
+          "hachiko-taxidermy"
+        ],
+        "bac": [
+          "hachiko-taxidermy",
+          "manuscript-cafe",
+          "meguro-tapeworm"
+        ],
+        "bca": [
+          "hachiko-taxidermy",
+          "meguro-tapeworm",
+          "manuscript-cafe"
+        ],
+        "cab": [
+          "meguro-tapeworm",
+          "manuscript-cafe",
+          "hachiko-taxidermy"
+        ],
+        "cba": [
+          "meguro-tapeworm",
+          "hachiko-taxidermy",
+          "manuscript-cafe"
+        ]
+      }
+    }
+  ]
+}

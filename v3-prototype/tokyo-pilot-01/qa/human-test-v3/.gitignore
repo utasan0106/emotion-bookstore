@@ -1,0 +1,7 @@
+scorecard.local.csv
+result.json
+result.md
+empty_result.json
+empty_result.md
+__pycache__/
+*.pyc
