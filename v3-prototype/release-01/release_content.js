@@ -355,12 +355,12 @@ window.V3_RELEASE_CONTENT = {
           mode: 'evergreen',
           hook: 'ビールを飲みながら本を選べる本屋が、下北沢にある。',
           hookPhrases: ['ビールを飲みながら', '本を選べる本屋が、', '下北沢にある。'],
-          reveal: '本屋B&Bは2012年の開店。クラフトビールを常時7〜8種類置き、本にまつわるトークイベントをほぼ毎日開いている。',
-          revealPhrases: ['本屋B&Bは', '2012年の開店。', 'クラフトビールを', '常時7〜8種類置き、', '本にまつわる', 'トークイベントを', 'ほぼ毎日', '開いている。'],
+          reveal: '本屋B&Bは2012年7月20日、下北沢に開店。クラフトビールやハイボールを置き、本にまつわるイベントを開いている。',
+          revealPhrases: ['本屋B&Bは', '2012年7月20日、', '下北沢に開店。', 'クラフトビールや', 'ハイボールを置き、', '本にまつわる', 'イベントを', '開いている。'],
           facts: [
-            ['開店', '2012年'],
-            ['場所', '下北線路街「BONUS TRACK」内'],
-            ['催し', 'トークイベントの予定は公式ページで確認']
+            ['開店', '2012年7月20日'],
+            ['場所', '東京都世田谷区代田2-36-15 BONUS TRACK 2F'],
+            ['催し', 'イベントの予定は公式ページで確認']
           ],
           actionLabel: '本屋B&Bの公式ページを見る',
           actionUrl: 'https://bookandbeer.com/',
@@ -372,8 +372,8 @@ window.V3_RELEASE_CONTENT = {
             listAlt: '「本屋B&B」と大きく組んだ、この棚のための活字図版',
             detailAlt: '「本屋B&B」と大きく組んだ、この棚のための活字図版'
           },
-          factsSourceUrl: 'https://bookandbeer.com/about/',
-          verifiedAt: '2026-08-29T17:10:00+09:00',
+          factsSourceUrl: 'https://bookandbeer.com/',
+          verifiedAt: '2026-08-29T18:05:00+09:00',
           expiresAt: null
         }
       ]
