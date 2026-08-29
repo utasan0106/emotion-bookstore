@@ -2,54 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://emotion-bookstore.vercel.app/</loc>
-    <lastmod>2026-07-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://emotion-bookstore.vercel.app/guide.html</loc>
-    <lastmod>2026-07-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://emotion-bookstore.vercel.app/privacy.html</loc>
-    <lastmod>2026-07-26</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://emotion-bookstore.vercel.app/terms.html</loc>
-    <lastmod>2026-07-26</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://emotion-bookstore.vercel.app/machi/</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://emotion-bookstore.vercel.app/machi/shelf.html?shelf=tokyo</loc>
+    <loc>https://emotion-bookstore.vercel.app/shelf.html?shelf=tokyo</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emotion-bookstore.vercel.app/machi/shelf.html?shelf=koenji</loc>
+    <loc>https://emotion-bookstore.vercel.app/shelf.html?shelf=koenji</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emotion-bookstore.vercel.app/machi/shelf.html?shelf=shimokitazawa</loc>
+    <loc>https://emotion-bookstore.vercel.app/shelf.html?shelf=shimokitazawa</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emotion-bookstore.vercel.app/machi/shelf.html?shelf=jinbocho</loc>
+    <loc>https://emotion-bookstore.vercel.app/shelf.html?shelf=jinbocho</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

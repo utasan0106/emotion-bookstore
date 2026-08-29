@@ -13,7 +13,7 @@ claude.ai の Routines 画面で、Google Drive connector を付けた Routine �
 
 2. シートがあれば読む。前回の判定記録（同じフォルダ内の判定ログ）より後の新しい回答だけを対象にする。重複して判定しない。
 
-3. リポジトリの machi/qa/SUGGESTION_INTAKE.md と qa/EDITORIAL_ROTATION.md を読み、そこに書かれた編集契約に照らして各候補を判定する。主な観点: 事実が一次情報で確認できるか / evergreen にできるか、できなければ verifiedAt と expiresAt が引けるか / Hook が答えを先に言っていないか / 図版の権利が clear か、無ければ活字図版で組めるか / 既存12件と重複しないか。
+3. リポジトリの qa/SUGGESTION_INTAKE.md と qa/EDITORIAL_ROTATION.md を読み、そこに書かれた編集契約に照らして各候補を判定する。主な観点: 事実が一次情報で確認できるか / evergreen にできるか、できなければ verifiedAt と expiresAt が引けるか / Hook が答えを先に言っていないか / 図版の権利が clear か、無ければ活字図版で組めるか / 既存12件と重複しないか。
 
 4. 通った候補を qa/EDITORIAL_ROTATION.md の候補欄へ追記し、ブランチへ commit・push する。判定の記録（採否と理由）を Drive の同じフォルダへ書き残す。
 
