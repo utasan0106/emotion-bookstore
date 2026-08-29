@@ -246,7 +246,7 @@ for (const page of ['index.html', 'shelf.html']) {
 /* 共有されたときに何のページか分かること。description と OGP が無いと、
    リンクだけが貼られて中身が伝わらない。og:image は同一オリジンの、
    この案内のために組んだ扉。ほかの製品の画像を借りない。 */
-const OGP_IMAGE = 'https://emotion-bookstore.vercel.app/machi/assets/ogp-machi.jpg';
+const OGP_IMAGE = 'https://emotion-bookstore.vercel.app/assets/ogp-machi.jpg';
 /* ブランドの正規データから起こした画像。同一オリジンに置き、ほかの製品の
    画像（ドメイン直下の shop-seal.png や ogp-v2.jpg）を借りない。
    一度 shop-seal.png を favicon に借りていたが、それは別の製品の意匠だった。 */
@@ -280,8 +280,8 @@ for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
 }
 /* 種類の絞り込みは同じ12件の別の見え方なので、玄関へ寄せる。
    棚は街ごとに中身が違うので、静的な canonical で1つに潰さない。 */
-if (!read('index.html').includes('<link rel="canonical" href="https://emotion-bookstore.vercel.app/machi/">')) {
-  failures.push('index.html missing canonical to the /machi/ root');
+if (!read('index.html').includes('<link rel="canonical" href="https://emotion-bookstore.vercel.app/">')) {
+  failures.push('index.html missing canonical to the site root');
 }
 if (read('shelf.html').includes('rel="canonical"')) {
   failures.push('shelf.html must not carry a static canonical (4 shelves differ)');

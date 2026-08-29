@@ -4,15 +4,15 @@
 # 本ファイルは「配信（upload）対象から外す」だけで、リポジトリからは削除しない。
 # ローカルでのテスト実行・開発には一切影響しない。
 #
-# 対象は V2 M-08 Public Delivery Surface Audit で SAFE NOW と確定したものだけ。
-# 判定根拠：index.html を起点にした静的到達解析（BFS）と、
-#           DAY/NIGHT x 390/1440 x JA/EN の実ブラウザ全周回で記録した
-#           same-origin request の両方で「参照 0」であること。
+# 2026-08-29、CEO 判断で日記サービス（V2）をドメイン直下から廃止し、
+# 文化案内（旧 machi/）をそこへ昇格させた。日記サービス一式は
+# archive/emotion-diary-service/ へ移し、まとめてここで除外している。
+# 判定根拠：新しい index.html / shelf.html / suggest.html を起点にした
+#           静的到達解析（BFS）で、archive/ 配下への参照が 0 件であること。
 #
 # ★ visual-refit-v2-prototype/ をディレクトリごと除外してはならない。
-#   この配下には V2 本体 CSS と 4 つの adapter、3 つの data がある。
-#   そのため negation（!）で戻す方式は採らず、
-#   不要と確定したものだけを個別に列挙している。
+#   旧日記サービスからの参照は無くなったが、ファイルはまだ残っている
+#   （このセッションのスコープ外）。個別列挙の方針は変えない。
 #   本番必須 9 件には、以下のどのパターンも一致しない。
 #     css/beta0.css / css/master-tokens.css
 #     adapter/navigation-adapter.js / bookshelf-adapter.js
@@ -23,43 +23,15 @@
 # ★ vercel.json は除外しないこと。
 #   CSP / HSTS / X-Frame-Options 等のヘッダはこのファイルが供給しており、
 #   upload されないとセキュリティヘッダがすべて失われる。
-#
-# 除外しないもの（別 Gate で扱う）：
-#   root の重複画像 6 件 / manifest.json / sw.js /
-#   ogp*.jpg・ogp.png / sitemap.xml / guide-en.html
 # =============================================================================
 
-# ---- 内部 QA / テスト ----------------------------------------------------
-tests/
-/smoke_test_content_trust_fix1.js
-/smoke_test_daypart1_rc2_pageturn.js
-/smoke_test_desk_flow_fix1.js
-/smoke_test_en_dates.js
-/smoke_test_first_visit.js
-/smoke_test_quiet_en.js
-/smoke_test_quiet_hotfix.js
-/smoke_test_rc2.js
-/smoke_test_rc2b_batch2.js
-/smoke_test_rc3_counter_atmosphere.js
-/smoke_test_recommendation_repeat_fix1.js
-/smoke_test_shelf_swipe.js
-/smoke_test_sonnet_audit.js
-/smoke_test_sonnet_hotfix2.js
-/smoke_test_sonnet_hotfix3.js
-/smoke_test_sonnet_hotfix4.js
-/smoke_test_sonnet_hotfix4_1.js
-/smoke_test_uifix1_share_pin_overlap.js
-/smoke_test_visual_rc1.js
-/smoke_test_weather.js
-/smoke_test_weather_flag.js
-/smoke_test_weather_prototype1.js
-/en_dom_japanese_scan.js
-/test_results.log
-/manual_browser_check.md
+# ---- 廃止した日記サービス一式（配信しない。git 履歴には残す） -------------
+archive/
 
-# ---- 社内ドキュメント / 運用設定 ------------------------------------------
+# ---- 内部 QA / 運用設定 ---------------------------------------------------
 /CLAUDE.md
 /README.md
+/qa/
 docs/
 .claude/
 
@@ -133,19 +105,6 @@ docs/
 /v3-prototype/tokyo-pilot-01/media_validate.py
 /v3-prototype/tokyo-pilot-01/localize_media.py
 /v3-prototype/tokyo-pilot-01/qa/
-
-# ---- machi（文化案内）の非公開ファイルのみ --------------------------------
-# 判定根拠：index.html / shelf.html を起点にした静的到達解析。
-#           公開 runtime が参照するのは
-#             index.html / shelf.html / release.css / release_content.js /
-#             release.js / assets/manuscript-cafe.png / assets/hachiko.jpg /
-#             assets/meguro-tapeworm.jpg
-#           の 8 件だけで、qa/ への参照は HTML / CSS / JS のいずれからも 0 件。
-#
-# ★ /machi/ をディレクトリごと除外してはならない。
-#   この配下に Release Candidate の公開 runtime がある。
-/machi/qa/
-/machi/README.md
 
 # 内部ドキュメント（rights 監査文 / Human Test 手順 / Product 内部用語）
 /v3-prototype/tokyo-pilot-01/README.md
