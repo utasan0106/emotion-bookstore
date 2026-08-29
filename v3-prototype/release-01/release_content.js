@@ -174,34 +174,34 @@ window.V3_RELEASE_CONTENT = {
       area: '高円寺',
       objects: [
         {
-          id: 'koenji-awaodori-2026',
+          id: 'kosugiyu',
           categoryIds: ['experience'],
-          objectName: '東京高円寺阿波おどり',
-          placeName: '高円寺の街 / 高円寺',
-          typeLabel: '祭り・街',
-          mode: 'current',
-          hook: '1957年、商店街のにぎわいづくりから始まった。',
-          hookPhrases: ['1957年、', '商店街の', 'にぎわいづくりから', '始まった。'],
-          reveal: '今年の東京高円寺阿波おどりは8月29日・30日、17:00–20:00。高円寺の街に8つの演舞場が広がる。',
-          revealPhrases: ['今年の', '東京高円寺阿波おどりは', '8月29日・30日、', '17:00–20:00。', '高円寺の街に', '8つの演舞場が', '広がる。'],
+          objectName: '小杉湯',
+          placeName: '小杉湯 / 高円寺',
+          typeLabel: '銭湯・まちの湯',
+          mode: 'evergreen',
+          hook: '昭和8年から、高円寺で湯を沸かしている。',
+          hookPhrases: ['昭和8年から、', '高円寺で', '湯を沸かしている。'],
+          reveal: '2021年に国の登録有形文化財になった建物で、いまも毎日ミルク風呂が立つ。',
+          revealPhrases: ['2021年に', '国の登録有形文化財に', 'なった建物で、', 'いまも毎日', 'ミルク風呂が', '立つ。'],
           facts: [
-            ['開催', '2026年8月29日・30日 17:00–20:00'],
-            ['会場', '高円寺の街なか 8つの演舞場'],
-            ['確認', '当日の実施可否と最新の会場図は公式ページで確認']
+            ['創業', '昭和8年（1933年）'],
+            ['建物', '2021年に国の登録有形文化財へ登録'],
+            ['利用', '営業時間と休みは公式ページで確認']
           ],
-          actionLabel: '公式の開催情報を見る',
-          actionUrl: 'https://koenji-awaodori.com/about/about01.html',
+          actionLabel: '小杉湯の公式ページを見る',
+          actionUrl: 'https://kosugiyu.co.jp/',
           media: {
             kind: 'plate',
-            plateWord: '阿波おどり',
-            plateSub: '高円寺 / 祭り・街',
+            plateWord: '小杉湯',
+            plateSub: '高円寺 / 銭湯・まちの湯',
             ratio: '4 / 5',
-            listAlt: '「阿波おどり」と大きく組んだ、この棚のための活字図版',
-            detailAlt: '「阿波おどり」と大きく組んだ、この棚のための活字図版'
+            listAlt: '「小杉湯」と大きく組んだ、この棚のための活字図版',
+            detailAlt: '「小杉湯」と大きく組んだ、この棚のための活字図版'
           },
-          factsSourceUrl: 'https://koenji-awaodori.com/about/about01.html',
-          verifiedAt: '2026-08-28T23:08:00+09:00',
-          expiresAt: '2026-08-30T20:00:00+09:00'
+          factsSourceUrl: 'https://kosugiyu.co.jp/',
+          verifiedAt: '2026-08-29T14:26:00+09:00',
+          expiresAt: null
         },
         {
           id: 'jirokichi',
@@ -308,15 +308,15 @@ window.V3_RELEASE_CONTENT = {
           objectName: '本多劇場',
           placeName: '本多劇場 / 下北沢',
           typeLabel: '劇場・演劇',
-          mode: 'current',
-          hook: '下北沢では、今夜も本多劇場の舞台が上がっている。',
-          hookPhrases: ['下北沢では、', '今夜も', '本多劇場の', '舞台が', '上がっている。'],
-          reveal: '8月26日–30日は名取事務所『東京ブギウギと鈴木大拙』を上演。周辺の本多劇場グループ各館でも同時に複数公演が動いている。',
-          revealPhrases: ['8月26日–30日は', '名取事務所', '『東京ブギウギと鈴木大拙』を', '上演。', '周辺の', '本多劇場グループ各館でも', '同時に', '複数公演が', '動いている。'],
+          mode: 'evergreen',
+          hook: '下北沢が演劇の街になったのは、元映画俳優が一人いたから。',
+          hookPhrases: ['下北沢が', '演劇の街に', 'なったのは、', '元映画俳優が', '一人いたから。'],
+          reveal: '本多一夫が1981年にザ・スズナリ、1982年に本多劇場を開いた。いまも本多劇場グループの各館が駅の周りに点在している。',
+          revealPhrases: ['本多一夫が', '1981年に', 'ザ・スズナリ、', '1982年に', '本多劇場を開いた。', 'いまも', '本多劇場グループの', '各館が', '駅の周りに', '点在している。'],
           facts: [
-            ['上演', '2026年8月26日–30日 名取事務所『東京ブギウギと鈴木大拙』'],
-            ['周辺', '本多劇場グループ各館でも同時に複数公演'],
-            ['確認', '開演時刻と当日券は公式ページで確認']
+            ['開場', '1982年11月3日'],
+            ['規模', '客席386席。本多劇場グループで最大'],
+            ['確認', '公演と当日券は公式ページで確認']
           ],
           actionLabel: '本多劇場の公演を見る',
           actionUrl: 'https://www.honda-geki.com/',
@@ -329,8 +329,8 @@ window.V3_RELEASE_CONTENT = {
             detailAlt: '「本多劇場」と大きく組んだ、この棚のための活字図版'
           },
           factsSourceUrl: 'https://www.honda-geki.com/',
-          verifiedAt: '2026-08-28T23:08:00+09:00',
-          expiresAt: '2026-08-30T23:59:00+09:00'
+          verifiedAt: '2026-08-29T14:26:00+09:00',
+          expiresAt: null
         },
         {
           id: 'machinouede-film',

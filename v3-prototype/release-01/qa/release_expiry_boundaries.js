@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 /* 期限の境目を1本の表として固定する。
  *
- * ここで守りたいこと:
- *  - 東京 flagship は日付で閉じない（evergreen に finite expiry を戻さない）。
- *  - いちばん早く切れるのは高円寺の阿波おどりで、その1分前までは GO。
- *  - その瞬間からは FAIL し、理由として当該 id が名指しされる。
+ * 守りたいのは特定の会期ではなく、次の3つ:
+ *   - 日付に依存しない事実（evergreen）に finite expiry を持たせないこと
+ *   - 東京 flagship が日付で閉じないこと
+ *   - いちばん早く切れるものの境目が、本当にその1分の間にあること
+ *
+ * だから対象は release_content.js から実行時に導出する。id や日付をここへ
+ * 書くと、content を差し替えた瞬間に落ちて、product の欠陥と fixture の
+ * 賞味期限切れを判定者が区別できなくなる。
  *
  * preflight を実際に起動して判定させる。preflight 自身のロジックは複製しない。
  */
@@ -24,47 +28,83 @@ function run(at) {
     return { code: e.status, out: (e.stdout || '') + (e.stderr || '') };
   }
 }
+const iso = (ms) => new Date(ms).toISOString();
 
 const failures = [];
-const expect = (label, ok, detail) => { if (!ok) failures.push(`${label}${detail === undefined ? '' : ' :: ' + detail}`); };
+const unobserved = [];
+const expect = (label, ok, detail) => {
+  if (!ok) failures.push(`${label}${detail === undefined ? '' : ' :: ' + detail}`);
+};
 
-/* 1. evergreen は finite expiry を持たない ------------------------------- */
 const sandbox = { window: {} };
 vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync(path.join(ROOT, 'release_content.js'), 'utf8'), sandbox);
-for (const shelf of sandbox.window.V3_RELEASE_CONTENT.shelves) {
+const CONTENT = sandbox.window.V3_RELEASE_CONTENT;
+
+/* 1. evergreen は finite expiry を持たない ------------------------------- */
+for (const shelf of CONTENT.shelves) {
   for (const o of shelf.objects) {
     if (o.mode === 'evergreen' && o.expiresAt) {
       expect(`evergreen_has_no_finite_expiry ${shelf.id}/${o.id}`, false, String(o.expiresAt));
     }
   }
 }
-const tokyo = sandbox.window.V3_RELEASE_CONTENT.shelves.find((s) => s.id === 'tokyo');
-expect('tokyo_shelf_carries_no_expiry_at_all',
-  tokyo.objects.every((o) => !o.expiresAt),
-  tokyo.objects.filter((o) => o.expiresAt).map((o) => o.id).join(','));
 
-/* 2. 旧 Pilot 由来の 8/30 16:00 では、まだ何も切れていない --------------- */
-const at1600 = run('2026-08-30T16:00:00+09:00');
-expect('preflight_GO_at_2026-08-30T16:00+09:00', at1600.code === 0 && /RELEASE_PREFLIGHT_GO/.test(at1600.out), at1600.out.trim().split('\n')[0]);
-expect('tokyo_not_named_at_1600', !/manuscript-cafe/.test(at1600.out));
+/* 2. 東京 flagship は日付で閉じない -------------------------------------- */
+const flagship = CONTENT.shelves.find((s) => s.role === 'flagship');
+expect('a_flagship_shelf_exists', !!flagship);
+if (flagship) {
+  const dated = flagship.objects.filter((o) => o.expiresAt).map((o) => o.id);
+  expect(`${flagship.id}_carries_no_expiry_at_all`, dated.length === 0, dated.join(','));
+}
 
-/* 3. 高円寺の阿波おどりが切れる1分前まで GO ------------------------------ */
-const at1959 = run('2026-08-30T19:59:00+09:00');
-expect('preflight_GO_at_2026-08-30T19:59+09:00', at1959.code === 0 && /RELEASE_PREFLIGHT_GO/.test(at1959.out), at1959.out.trim().split('\n')[0]);
+/* 3/4. いちばん早く切れるものの境目 -------------------------------------- */
+const dated = [];
+for (const shelf of CONTENT.shelves) {
+  for (const o of shelf.objects) {
+    if (!o.expiresAt) continue;
+    const at = Date.parse(o.expiresAt);
+    if (!isNaN(at)) dated.push({ shelf, object: o, at });
+  }
+}
+dated.sort((a, b) => a.at - b.at);
+const soonest = dated[0];
 
-/* 4. その瞬間から FAIL し、理由は阿波おどり ------------------------------ */
-for (const at of ['2026-08-30T20:00:00+09:00', '2026-08-30T20:01:00+09:00', '2026-08-31T09:00:00+09:00']) {
-  const r = run(at);
-  expect(`preflight_FAIL_at_${at}`, r.code !== 0 && /RELEASE_PREFLIGHT_FAIL/.test(r.out), r.out.trim().split('\n')[0]);
-  expect(`fail_names_koenji_awaodori_at_${at}`, /koenji\/koenji-awaodori-2026/.test(r.out));
-  expect(`tokyo_never_the_reason_at_${at}`, !/manuscript-cafe/.test(r.out));
+if (!soonest) {
+  // 期限を持つ object が content に無い。境目は実物では観測できない。
+  // 黙って通さず、見られなかったこととして残す。
+  unobserved.push('expiry_boundary :: no object in release_content.js carries an expiresAt');
+} else {
+  const before = run(iso(soonest.at - 60 * 1000));
+  expect(`preflight_GO_one_minute_before_${soonest.object.id}_expires`,
+    before.code === 0 && /RELEASE_PREFLIGHT_GO/.test(before.out),
+    before.out.trim().split('\n')[0]);
+
+  for (const offset of [0, 60 * 1000, 24 * 3600 * 1000]) {
+    const at = iso(soonest.at + offset);
+    const r = run(at);
+    expect(`preflight_FAIL_at_${at}`,
+      r.code !== 0 && /RELEASE_PREFLIGHT_FAIL/.test(r.out), r.out.trim().split('\n')[0]);
+    expect(`fail_names_${soonest.object.id}_at_${at}`,
+      r.out.includes(`${soonest.shelf.id}/${soonest.object.id}`));
+    if (flagship) {
+      for (const o of flagship.objects) {
+        expect(`${flagship.id}_never_the_reason_at_${at}`, !r.out.includes(`${flagship.id}/${o.id}`));
+      }
+    }
+  }
 }
 
 if (failures.length) {
   console.error('RELEASE_EXPIRY_BOUNDARIES_FAIL');
   failures.forEach((f) => console.error('- ' + f));
+  unobserved.forEach((u) => console.error('- NOT OBSERVABLE ' + u));
   process.exit(1);
 }
-console.log('RELEASE_EXPIRY_BOUNDARIES_GO');
-console.log('tokyo=no expiry; 2026-08-30 16:00 GO; 19:59 GO; 20:00 FAIL (koenji/koenji-awaodori-2026)');
+console.log(`RELEASE_EXPIRY_BOUNDARIES_GO${unobserved.length ? `, ${unobserved.length} NOT OBSERVABLE` : ''}`);
+if (soonest) {
+  console.log(`flagship=${flagship ? flagship.id : 'n/a'} no expiry; ` +
+    `soonest ${soonest.shelf.id}/${soonest.object.id} at ${soonest.object.expiresAt}; ` +
+    'GO one minute before, FAIL from that instant');
+}
+unobserved.forEach((u) => console.log('- NOT OBSERVABLE ' + u));
