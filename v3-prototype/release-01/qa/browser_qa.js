@@ -65,6 +65,19 @@ function serve() {
   dated.sort((a, b) => a.at - b.at);
   const soonest = dated[0] || null;
 
+  /* category 索引の期待値を content から作る。件数や所属を書き写すと、
+     棚の入れ替えのたびに product の欠陥と fixture の賞味期限切れが
+     見分けられなくなる。 */
+  const stillLive = (o) => !o.expiresAt || Date.parse(o.expiresAt) > Date.now();
+  const allObjects = CONTENT.shelves.reduce((acc, sh) => acc.concat(sh.objects), []);
+  const objectIdsIn = (catId) => allObjects
+    .filter((o) => (o.categoryIds || []).includes(catId) && stillLive(o))
+    .map((o) => o.id).sort();
+  /* 「1件だけの category を水増ししない」を試すには、実際に1件の category が
+     要る。無ければ観測できないと言う。food に固定すると、food が2件になった
+     瞬間に product の欠陥のように見える。 */
+  const singleCat = (CONTENT.categories || []).find((c) => objectIdsIn(c.id).length === 1) || null;
+
   const VIEWPORTS = [
     { name: 'm320', width: 320, height: 800, mobile: true },
     { name: 'm390', width: 390, height: 844, mobile: true },
@@ -438,24 +451,32 @@ function serve() {
       count: document.querySelector('.result-count-n').textContent
     }));
     check(S, 'category_deep_link_selects_it', deep.selected.join(',') === 'books', deep.selected);
+    const expectedBooks = objectIdsIn('books');
     check(S, 'deep_link_results_are_the_mapped_objects',
-      deep.rows.map((r) => r.id).sort().join(',') ===
-      'jinbocho-book-town,koenji-junjo-shotengai-book,yaguchi-shoten', deep.rows.map((r) => r.id));
+      deep.rows.map((r) => r.id).sort().join(',') === expectedBooks.join(','),
+      { got: deep.rows.map((r) => r.id).sort(), want: expectedBooks });
     check(S, 'results_are_text_first', deep.images === 0, deep.images);
     check(S, 'result_row_carries_the_required_fields',
       deep.rows.every((r) => r.name && r.town && r.type && r.hook &&
         /^\.\/shelf\.html\?shelf=/.test(r.go)), deep.rows[0]);
-    check(S, 'result_count_is_honest', deep.count === 'いま 3 件', deep.count);
+    check(S, 'result_count_is_honest',
+      deep.count === `いま ${expectedBooks.length} 件`, deep.count);
 
     // 1件だけのカテゴリを水増ししない
-    await page.goto(base + 'index.html?category=food', { waitUntil: 'load' });
-    await page.waitForFunction(() => document.querySelectorAll('.result-row').length > 0);
-    const food = await page.evaluate(() => ({
-      rows: [...document.querySelectorAll('.result-row')].map((r) => r.dataset.objectId),
-      count: document.querySelector('.result-count-n').textContent
-    }));
-    check(S, 'single_item_category_is_not_padded',
-      food.rows.join(',') === 'manuscript-cafe' && food.count === 'いま 1 件', food);
+    if (!singleCat) {
+      notObservable(S, 'single_item_category_is_not_padded',
+        'いま1件だけの category が無い。水増しの有無をこの content では観測できない');
+    } else {
+      await page.goto(base + `index.html?category=${singleCat.id}`, { waitUntil: 'load' });
+      await page.waitForFunction(() => document.querySelectorAll('.result-row').length > 0);
+      const only = await page.evaluate(() => ({
+        rows: [...document.querySelectorAll('.result-row')].map((r) => r.dataset.objectId),
+        count: document.querySelector('.result-count-n').textContent
+      }));
+      check(S, 'single_item_category_is_not_padded',
+        only.rows.join(',') === objectIdsIn(singleCat.id).join(',') && only.count === 'いま 1 件',
+        { category: singleCat.id, ...only });
+    }
 
     // 知らない category は静かに無選択へ倒す
     await page.goto(base + 'index.html?category=nowhere', { waitUntil: 'load' });

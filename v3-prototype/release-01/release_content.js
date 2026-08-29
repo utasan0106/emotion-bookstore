@@ -342,41 +342,38 @@ window.V3_RELEASE_CONTENT = {
           expiresAt: null
         },
         {
-          id: 'machinouede-film',
-          categoryIds: ['film-stage'],
-          objectName: '映画『街の上で』',
-          placeName: '下北沢一帯 / 下北沢',
-          typeLabel: '映画・街',
+          /* 映画『街の上で』を外してここに入れ替えた。公開当時の公式ドメインが
+             失効し、配給元の作品ページも公開終了とともに 404 になるため、
+             「公式へ行ける」を満たし続けられる行き先が無かった。
+             リンクの延命を続けるより、公式ページが独立して立っている対象に
+             替える方が、棚の約束を守れる。 */
+          id: 'book-and-beer',
+          categoryIds: ['books', 'food'],
+          objectName: '本屋B&B',
+          placeName: 'BONUS TRACK / 下北沢',
+          typeLabel: '本屋・イベント',
           mode: 'evergreen',
-          hook: 'この映画、オール下北沢ロケ。',
-          hookPhrases: ['この映画、', 'オール下北沢', 'ロケ。'],
-          reveal: '今泉力哉監督『街の上で』は、古着屋・古本屋・自主映画・飲み屋まで、下北沢の日常そのものを舞台にした。',
-          revealPhrases: ['今泉力哉監督', '『街の上で』は、', '古着屋・古本屋・', '自主映画・飲み屋まで、', '下北沢の', '日常そのものを', '舞台にした。'],
+          hook: 'ビールを飲みながら本を選べる本屋が、下北沢にある。',
+          hookPhrases: ['ビールを飲みながら', '本を選べる本屋が、', '下北沢にある。'],
+          reveal: '本屋B&Bは2012年の開店。クラフトビールを常時7〜8種類置き、本にまつわるトークイベントをほぼ毎日開いている。',
+          revealPhrases: ['本屋B&Bは', '2012年の開店。', 'クラフトビールを', '常時7〜8種類置き、', '本にまつわる', 'トークイベントを', 'ほぼ毎日', '開いている。'],
           facts: [
-            ['監督', '今泉力哉'],
-            ['舞台', '古着屋・古本屋・自主映画・飲み屋など下北沢の日常'],
-            ['確認', '上映情報は配給元・劇場の公式ページで確認']
+            ['開店', '2012年'],
+            ['場所', '下北線路街「BONUS TRACK」内'],
+            ['催し', 'トークイベントの予定は公式ページで確認']
           ],
-          /* 公開当時の公式ドメイン machinouede.com は、2026-08-29 時点で
-             ERR_SSL_PROTOCOL_ERROR を返す（Founder 実機確認）。2021年公開作の
-             プロモーション用ドメインが失効した形で、利用者から見れば
-             「公式サイトを見る」を押すと壊れたページに着く状態だった。
-             この対象は evergreen なので、期限で消える上映ページではなく、
-             配給元（東京テアトル）の作品ページへ向ける。
-             万一この URL が 404 になった場合の代替は、年別アーカイブの
-             https://ttcg.jp/distribution/2021/ 。 */
-          actionLabel: '配給元の作品ページを見る',
-          actionUrl: 'https://ttcg.jp/movie/0650200.html',
+          actionLabel: '本屋B&Bの公式ページを見る',
+          actionUrl: 'https://bookandbeer.com/',
           media: {
             kind: 'plate',
-            plateWord: '街の上で',
-            plateSub: '下北沢 / 映画・街',
+            plateWord: '本屋B&B',
+            plateSub: '下北沢 / 本屋・イベント',
             ratio: '4 / 5',
-            listAlt: '「街の上で」と大きく組んだ、この棚のための活字図版',
-            detailAlt: '「街の上で」と大きく組んだ、この棚のための活字図版'
+            listAlt: '「本屋B&B」と大きく組んだ、この棚のための活字図版',
+            detailAlt: '「本屋B&B」と大きく組んだ、この棚のための活字図版'
           },
-          factsSourceUrl: 'https://ttcg.jp/movie/0650200.html',
-          verifiedAt: '2026-08-29T15:40:00+09:00',
+          factsSourceUrl: 'https://bookandbeer.com/about/',
+          verifiedAt: '2026-08-29T17:10:00+09:00',
           expiresAt: null
         }
       ]
