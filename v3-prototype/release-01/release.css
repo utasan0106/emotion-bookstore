@@ -230,15 +230,17 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 /* 実写を持たない対象のための活字図版。写真のふりをさせない。
    V3 が組んだ版面だと見て分かるように、罫と余白で図録の扉に寄せる。
    既存の表紙・ポスター・スチル・チラシは一切使わない。 */
-.media-plate { aspect-ratio: var(--plate-ratio, 4 / 5); }
+/* 高さは縦横比では決めない。写真は img の実寸で決まるので、図版を縦横比で
+   引き伸ばすと、中身と無関係な空白が残って「読み込めていない箱」に見える。
+   1440 では列幅に比例して1枚目だけ背が伸び、棚の行も揃わなくなる。
+   図版は活字なのだから、活字と余白で高さを決める。 */
 .media-plate .plate-inner {
   width: 100%;
-  height: 100%;
   display: grid;
   align-content: center;
   justify-items: start;
   gap: 18px;
-  padding: 34px 30px;
+  padding: 40px 30px 44px;
   background:
     linear-gradient(180deg, rgba(241, 235, 224, .07), rgba(241, 235, 224, .03)),
     var(--hall);
