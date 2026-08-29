@@ -95,15 +95,21 @@ NODE_PATH=/opt/node22/lib/node_modules node qa/release_shots.js # visual evidenc
 
 ## ブランド資産について
 
-favicon / apple-touch-icon / OGP は、2026-08-29 に Founder から
-「正規データ」として渡されたブランドアイデンティティ資料（HTML に PNG が
-埋め込まれたもの）から起こしている。
+favicon / apple-touch-icon は、リポジトリの採用済み資産
+`assets/brand/emotion-bookstore-symbol-official.webp`（777x809・背景透過）
+から起こしている。本体サイトの favicon
+（`assets/brand/favicon-emotion-bookstore.png`）と同じマークになる。
+同じブランドで実体を2つ持たないため、出所をここに揃えた。
 
-**リポジトリの `assets/brand/emotion-bookstore-symbol-master.svg` は使って
-いない。** 両者はマークの形が違う。SVG 版は本が小さな三角形だが、正規データ
-側は本が扇状に開いて頁が広がっている。同じ日に「正規」と示された方を正と
-したが、どちらが最新なのかは Founder に確認が要る。SVG の方が新しいと
-分かった場合は、そちらから作り直す（ベクタなのでどの寸法でも精度が出る）。
+**`assets/brand/emotion-bookstore-symbol-master.svg` は使っていない。**
+ベクタなので本来は最適だが、描画して比べると本の形が違う。SVG 版は本が
+小さな三角形で、採用済みの webp と Founder 提供の正規データは本が扇状に
+開いて頁が広がっている。多数決ではなく、本体サイトが実際に配信している方に
+合わせた。SVG が新しい版だと分かった場合は、そちらから作り直す。
 
-地色は指定値の `#FAF8F3` ではなく、画像データの実測値 `(250,245,241)` を
-使っている。指定値を敷くと、貼った画像との間に四角い継ぎ目が出るため。
+OGP のワードマークだけは `assets/brand/` に無いため、2026-08-29 に Founder
+から渡されたブランドアイデンティティ資料のロックアップを使っている。
+
+シンボルは正方形でないので、切らずに紙地で余白を足してから縮小している。
+地色は指定値の `#FAF8F3` ではなく、貼る画像の実測値を使う。指定値を敷くと
+四角い継ぎ目が出るため。
