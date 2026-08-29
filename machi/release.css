@@ -1020,3 +1020,16 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   /* box-shadow が捨てられる環境なので、閉じるの focus は outline で示す。 */
   .dialog-close:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
 }
+
+/* 同じブランドのもう一方（言葉を一冊にする書店）への出口。
+   ここから先へ進めないと、案内は行き止まりになる。ただし棚の主役では
+   ないので、注記と同じ弱さで置く。 */
+.sibling-row { margin: 14px 0 0; }
+.sibling-link {
+  color: var(--chalk-dim);
+  text-decoration: underline;
+  text-underline-offset: .28em;
+  font-size: 0.8125rem;
+  letter-spacing: .06em;
+}
+.sibling-link:hover { color: var(--chalk); }

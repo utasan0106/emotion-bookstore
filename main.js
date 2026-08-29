@@ -249,6 +249,7 @@ const MESSAGES = {
     shioriCardTitle: "今日の栞", shioriCardNote: "本棚ぜんたいを眺めた店主から、一枚。今日綴った一冊ではなく、いちばん多く並んでいる棚のお話です。",
     shioriLabel: "栞 — 店主より", shioriBtn: "栞を受け取る",
     footerBrand: "『みんなの感情書店』",
+    machiLink: "街の棚を見る",
     footerNote: "綴った言葉はサーバーには送信されず、この端末にのみ保存されます。",
     // ★Hotfix4追加：フッター注記を指定どおり2行に改行表示するための版（data-i18n-html用）。
     footerNoteHtml: "綴った言葉は運営者のサーバーへ送信されず、<br>この端末にのみ保存されます。",
@@ -771,6 +772,7 @@ const MESSAGES = {
     shioriCardTitle: "Today's Bookmark", shioriCardNote: "A note from the shopkeeper, after looking over your whole bookshelf — about the shelf that holds the most books, not the one you wrote in today.",
     shioriLabel: "Bookmark — from the shopkeeper", shioriBtn: "Receive today's bookmark",
     footerBrand: "\"The Bookstore of Feelings\"",
+    machiLink: "Town shelves (Japanese only)",
     footerNote: "What you write is never sent to a server — it's stored only on this device.",
     footerNoteHtml: "What you write is never sent to our servers —<br>it's stored only on this device.",
     shareBtn: "Share this bookstore", copyUrlBtn: "Copy URL", pwaPinBtn: "Pin to home screen",
