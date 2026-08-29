@@ -17,9 +17,15 @@ const FORBIDDEN = ['次の3つ', 'また見たい', 'おすすめ', 'あなた�
 
 let pass = 0;
 const fails = [];
+// 「見たが問題なかった」と「そもそも見られなかった」を同じ ◯ で返さない。
+// 見られなかったものは pass に混ぜず、総括行に別枠で出す。
+const unobserved = [];
 function check(scope, name, ok, detail) {
   if (ok) { pass++; return; }
   fails.push(`${scope} ${name} ${detail === undefined ? '' : JSON.stringify(detail)}`);
+}
+function notObservable(scope, name, why) {
+  unobserved.push(`${scope} ${name} :: ${why}`);
 }
 
 function serve() {
@@ -38,6 +44,26 @@ function serve() {
   const base = `http://127.0.0.1:${server.address().port}/`;
   const origin = new URL(base).origin;
   const browser = await chromium.launch();
+
+  // 期限テストの対象は content から実行時に選ぶ。
+  // 守りたいのは特定の会期ではなく fail-closed の挙動なので、テストを
+  // 特定の id / 日付 / 棚へ張り付けない。content を差し替えた瞬間に落ちる
+  // fixture は、product の欠陥と賞味期限切れを判定者から見分けられなくする。
+  const vm = require('vm');
+  const sandbox = { window: {} };
+  vm.createContext(sandbox);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, 'release_content.js'), 'utf8'), sandbox);
+  const CONTENT = sandbox.window.V3_RELEASE_CONTENT;
+  const dated = [];
+  for (const sh of CONTENT.shelves) {
+    for (const o of sh.objects) {
+      if (!o.expiresAt) continue;
+      const at = Date.parse(o.expiresAt);
+      if (!isNaN(at)) dated.push({ shelf: sh, object: o, at });
+    }
+  }
+  dated.sort((a, b) => a.at - b.at);
+  const soonest = dated[0] || null;
 
   const VIEWPORTS = [
     { name: 'm320', width: 320, height: 800, mobile: true },
@@ -255,32 +281,63 @@ function serve() {
   }
 
   /* ---- 期限切れ: 棚を閉じる（負のテスト） ---- */
-  {
+  if (!soonest) {
+    // content に期限を持つ object が1件も無い。fail-closed の挙動は
+    // 実物では観測できない。黙って通さず、見られなかったこととして残す。
+    notObservable('expired', 'shelf_fail_closed',
+      'no object in release_content.js carries an expiresAt');
+    notObservable('expired-index', 'expired_current_is_dropped_from_the_index',
+      'no object in release_content.js carries an expiresAt');
+  } else {
+    const S = `expired/${soonest.shelf.id}`;
+    const justAfter = soonest.at + 60 * 1000;
+    const siblings = soonest.shelf.objects
+      .filter((o) => o.id !== soonest.object.id)
+      .map((o) => o.objectName);
+
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const page = await ctx.newPage();
-    // Koenji の会期終了後に時計を進める。content は書き換えない。
-    await page.addInitScript(() => {
-      const fixed = new Date('2026-08-31T00:00:00+09:00').getTime();
+    // content は書き換えず、時計だけ期限の1分後へ進める。
+    await page.addInitScript((fixed) => {
       const RealDate = Date;
       // eslint-disable-next-line no-global-assign
       Date = class extends RealDate {
         constructor(...a) { if (!a.length) super(fixed); else super(...a); }
         static now() { return fixed; }
       };
-    });
-    await page.goto(base + 'shelf.html?shelf=koenji', { waitUntil: 'load' });
+    }, justAfter);
+    await page.goto(`${base}shelf.html?shelf=${soonest.shelf.id}`, { waitUntil: 'load' });
     await page.waitForTimeout(200);
     const stale = await page.evaluate(() => ({
       cards: document.querySelectorAll('.object-card').length,
       endHidden: document.querySelector('.end-plate').hidden,
       text: document.body.innerText
     }));
-    check('expired', 'expired_current_closes_the_shelf', stale.cards === 0, stale.cards);
-    check('expired', 'expired_shelf_hides_finite_ending', stale.endHidden === true);
-    check('expired', 'expired_shelf_says_nothing_internal',
+    check(S, 'expired_current_closes_the_shelf', stale.cards === 0, stale.cards);
+    check(S, 'expired_shelf_hides_finite_ending', stale.endHidden === true);
+    check(S, 'expired_shelf_says_nothing_internal',
       !/expire|期限|current/i.test(stale.text), stale.text.slice(0, 60));
-    check('expired', 'expired_shelf_does_not_auto_replace',
-      !stale.text.includes('JIROKICHI') && !stale.text.includes('純情商店街'), stale.text.slice(0, 60));
+    // 同じ棚の他の Object を繰り上げて埋めない。
+    check(S, 'expired_shelf_does_not_auto_replace',
+      siblings.every((name) => !stale.text.includes(name)),
+      siblings.filter((name) => stale.text.includes(name)));
+
+    // 期限の1分前は開いていること。境目が本当にそこにあるかを確かめる。
+    const before = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const beforePage = await before.newPage();
+    await beforePage.addInitScript((fixed) => {
+      const RealDate = Date;
+      // eslint-disable-next-line no-global-assign
+      Date = class extends RealDate {
+        constructor(...a) { if (!a.length) super(fixed); else super(...a); }
+        static now() { return fixed; }
+      };
+    }, soonest.at - 60 * 1000);
+    await beforePage.goto(`${base}shelf.html?shelf=${soonest.shelf.id}`, { waitUntil: 'load' });
+    await beforePage.waitForTimeout(200);
+    const openCards = await beforePage.evaluate(() => document.querySelectorAll('.object-card').length);
+    check(S, 'shelf_is_still_open_one_minute_before_expiry', openCards === 3, openCards);
+    await before.close();
     await ctx.close();
   }
 
@@ -427,33 +484,47 @@ function serve() {
   }
 
   /* ---- C. 期限切れは索引にも出さない ---- */
-  {
+  if (soonest) {
+    const S = 'expired-index';
+    const catId = soonest.object.categoryIds[0];
+    const justAfter = soonest.at + 60 * 1000;
+    // その時点で生きている同カテゴリの Object を content から数える。
+    const expectedLive = [];
+    for (const sh of CONTENT.shelves) {
+      for (const o of sh.objects) {
+        if (!(o.categoryIds || []).includes(catId)) continue;
+        if (o.expiresAt && Date.parse(o.expiresAt) <= justAfter) continue;
+        expectedLive.push(o.id);
+      }
+    }
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const page = await ctx.newPage();
-    await page.addInitScript(() => {
-      const fixed = new Date('2026-08-31T00:00:00+09:00').getTime();
+    await page.addInitScript((fixed) => {
       const RealDate = Date;
       // eslint-disable-next-line no-global-assign
       Date = class extends RealDate {
         constructor(...a) { if (!a.length) super(fixed); else super(...a); }
         static now() { return fixed; }
       };
-    });
-    await page.goto(base + 'index.html?category=experience', { waitUntil: 'load' });
+    }, justAfter);
+    await page.goto(`${base}index.html?category=${encodeURIComponent(catId)}`, { waitUntil: 'load' });
     await page.waitForFunction(() => document.querySelectorAll('.category-link').length === 5);
     await page.waitForTimeout(150);
-    const exp = await page.evaluate(() => ({
+    const exp = await page.evaluate((id) => ({
       rows: [...document.querySelectorAll('.result-row')].map((r) => r.dataset.objectId),
       count: document.querySelector('.result-count-n') && document.querySelector('.result-count-n').textContent,
-      allCounts: [...document.querySelectorAll('.category-link')].map((a) =>
-        a.dataset.categoryId + ':' + a.querySelector('.category-count').textContent)
-    }));
-    check('expired-index', 'expired_current_is_not_listed',
-      !exp.rows.includes('koenji-awaodori-2026'), exp.rows);
-    check('expired-index', 'no_auto_substitute_for_the_expired_one',
-      exp.rows.sort().join(',') === 'hachiko-taxidermy,manuscript-cafe,meguro-tapeworm', exp.rows);
-    check('expired-index', 'counts_shrink_honestly',
-      exp.count === 'いま 3 件' && exp.allCounts.includes('experience:3'), exp);
+      shown: [...document.querySelectorAll('.category-link')]
+        .filter((a) => a.dataset.categoryId === id)
+        .map((a) => a.querySelector('.category-count').textContent)[0]
+    }), catId);
+    check(S, 'expired_current_is_not_listed',
+      !exp.rows.includes(soonest.object.id), { expired: soonest.object.id, rows: exp.rows });
+    check(S, 'no_auto_substitute_for_the_expired_one',
+      exp.rows.slice().sort().join(',') === expectedLive.slice().sort().join(','),
+      { got: exp.rows, expected: expectedLive });
+    check(S, 'counts_shrink_honestly',
+      exp.count === `いま ${expectedLive.length} 件` && exp.shown === String(expectedLive.length),
+      { count: exp.count, indexCount: exp.shown, expected: expectedLive.length });
     await ctx.close();
   }
 
@@ -682,11 +753,18 @@ function serve() {
     check('2026-08-30T16:00+09:00', 'tokyo_still_shows_its_three_hooks',
       ['原稿執筆する人限定のカフェ。', '渋谷のハチ公、本物は上野。', '8.8mのサナダムシ。']
         .every((w) => t.text.replace(/\s+/g, '').includes(w.replace(/\s+/g, ''))), t.text.slice(0, 60));
-    // 同じ時刻で高円寺もまだ開いている（阿波おどりは 20:00 まで）。
-    await page.goto(base + 'shelf.html?shelf=koenji', { waitUntil: 'load' });
-    await page.waitForTimeout(250);
-    const k = await page.evaluate(() => document.querySelectorAll('.object-card').length);
-    check('2026-08-30T16:00+09:00', 'koenji_still_open_before_its_own_expiry', k === 3, k);
+    // この修正が他の棚を巻き込んで閉じていないこと。どの棚が開くべきかは
+    // 決め打ちせず、その時刻の content から導く。
+    const at1600 = Date.parse('2026-08-30T16:00:00+09:00');
+    for (const sh of CONTENT.shelves) {
+      const shouldBeOpen = sh.objects.every((o) =>
+        !o.expiresAt || Date.parse(o.expiresAt) > at1600);
+      await page.goto(`${base}shelf.html?shelf=${sh.id}`, { waitUntil: 'load' });
+      await page.waitForTimeout(200);
+      const n = await page.evaluate(() => document.querySelectorAll('.object-card').length);
+      check('2026-08-30T16:00+09:00', `${sh.id}_matches_what_content_says`,
+        n === (shouldBeOpen ? 3 : 0), { shelf: sh.id, cards: n, shouldBeOpen });
+    }
     await ctx.close();
   }
 
@@ -754,10 +832,15 @@ function serve() {
   server.close();
 
   const total = pass + fails.length;
+  // どこまで見たのかを総括行に出す。見られなかったものを合格へ混ぜない。
+  const seen = `${pass}/${total}` +
+    (unobserved.length ? `, ${unobserved.length} NOT OBSERVABLE` : '');
   if (fails.length) {
-    console.error(`RELEASE_BROWSER_QA_FAIL (${pass}/${total})`);
+    console.error(`RELEASE_BROWSER_QA_FAIL (${seen})`);
     fails.forEach((f) => console.error('- FAIL ' + f));
+    unobserved.forEach((u) => console.error('- NOT OBSERVABLE ' + u));
     process.exit(1);
   }
-  console.log(`RELEASE_BROWSER_QA_GO (${pass}/${total})`);
+  console.log(`RELEASE_BROWSER_QA_GO (${seen})`);
+  unobserved.forEach((u) => console.log('- NOT OBSERVABLE ' + u));
 })().catch((e) => { console.error(e); process.exit(1); });
