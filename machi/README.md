@@ -92,3 +92,18 @@ node qa/release_expiry_boundaries.js   # 期限の境目
 NODE_PATH=/opt/node22/lib/node_modules node qa/browser_qa.js    # 実ブラウザ
 NODE_PATH=/opt/node22/lib/node_modules node qa/release_shots.js # visual evidence
 ```
+
+## ブランド資産について
+
+favicon / apple-touch-icon / OGP は、2026-08-29 に Founder から
+「正規データ」として渡されたブランドアイデンティティ資料（HTML に PNG が
+埋め込まれたもの）から起こしている。
+
+**リポジトリの `assets/brand/emotion-bookstore-symbol-master.svg` は使って
+いない。** 両者はマークの形が違う。SVG 版は本が小さな三角形だが、正規データ
+側は本が扇状に開いて頁が広がっている。同じ日に「正規」と示された方を正と
+したが、どちらが最新なのかは Founder に確認が要る。SVG の方が新しいと
+分かった場合は、そちらから作り直す（ベクタなのでどの寸法でも精度が出る）。
+
+地色は指定値の `#FAF8F3` ではなく、画像データの実測値 `(250,245,241)` を
+使っている。指定値を敷くと、貼った画像との間に四角い継ぎ目が出るため。
