@@ -1667,6 +1667,14 @@ footer.shop-footer{
   text-decoration:underline;
 }
 .legal-sep{ color:var(--ink-soft); margin:0 6px; }
+/* 文化案内（/machi/）への静かな出口。書店の顔を壊さないよう、
+   凡例と同じ弱さで置く。押した人だけが別の入口へ移る。 */
+.machi-row{ margin:16px 0 0; }
+.machi-link{
+  color:var(--ink-soft);
+  text-decoration:underline;
+  font-size:11.5px;
+}
 .share-btn{
   font-family:var(--font-display);
   font-size:13px;
