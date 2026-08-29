@@ -247,8 +247,25 @@ for (const page of ['index.html', 'shelf.html']) {
    リンクだけが貼られて中身が伝わらない。og:image は同一オリジンの、
    この案内のために組んだ扉。ほかの製品の画像を借りない。 */
 const OGP_IMAGE = 'https://emotion-bookstore.vercel.app/machi/assets/ogp-machi.jpg';
-if (!fs.existsSync(path.join(root, 'assets/ogp-machi.jpg'))) {
-  failures.push('assets/ogp-machi.jpg missing');
+/* ブランドの正規データから起こした画像。同一オリジンに置き、ほかの製品の
+   画像（ドメイン直下の shop-seal.png や ogp-v2.jpg）を借りない。
+   一度 shop-seal.png を favicon に借りていたが、それは別の製品の意匠だった。 */
+for (const f of ['assets/ogp-machi.jpg', 'assets/favicon.ico',
+                 'assets/icon-512.png', 'assets/apple-touch-icon.png']) {
+  if (!fs.existsSync(path.join(root, f))) failures.push(`${f} missing`);
+}
+for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
+  const src = read(page);
+  for (const rel of ['rel="icon" href="./assets/favicon.ico"',
+                     'rel="apple-touch-icon" href="./assets/apple-touch-icon.png"']) {
+    if (!src.includes(rel)) failures.push(`${page} missing ${rel}`);
+  }
+  for (const foreign of ['shop-seal.png', 'ogp-v2.jpg', 'ogp.png',
+                         'ogp-emotion-bookstore-20260720.jpg']) {
+    if (src.includes(foreign)) {
+      failures.push(`${page} must not borrow another product's image (${foreign})`);
+    }
+  }
 }
 for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
   const src = read(page);
