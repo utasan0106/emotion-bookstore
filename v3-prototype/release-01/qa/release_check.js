@@ -252,6 +252,43 @@ if (!css.includes('.dialog-close:focus-visible')) failures.push('dialog close fo
 if (!/@media \(hover: none\) and \(pointer: coarse\)/.test(css)) failures.push('coarse-touch hover suppression missing');
 if (!/@media \(forced-colors: active\)/.test(css)) failures.push('forced-colors block missing');
 
+/* ---- 外部リンクの形 --------------------------------------------------- */
+/* 死活そのものは静的検査では分からない（qa/link_check.js が外部ネットワークの
+   ある環境で確認する）。ここで守れるのは形と、一度死んだと分かった host が
+   黙って戻ってこないことだけ。
+   2026-08-29、映画『街の上で』の actionUrl が失効ドメインを指したまま
+   Release Candidate に載っていた。利用者には「公式サイトを見る」を押すと
+   壊れたページに着く状態で、静的検査はすべて緑だった。 */
+const DEAD_HOSTS = [
+  /* Founder が実機で ERR_SSL_PROTOCOL_ERROR を確認。復活を確認するまで使わない。 */
+  'machinouede.com'
+];
+for (const shelf of shelves) {
+  for (const o of shelf.objects) {
+    const at = `${shelf.id}/${o.id}`;
+    const urls = [['actionUrl', o.actionUrl], ['factsSourceUrl', o.factsSourceUrl]];
+    if (o.rights) {
+      urls.push(['rights.sourceUrl', o.rights.sourceUrl]);
+      if (o.rights.licenseUrl) urls.push(['rights.licenseUrl', o.rights.licenseUrl]);
+    }
+    for (const [field, url] of urls) {
+      if (typeof url !== 'string' || !url) { failures.push(`${at} ${field} missing`); continue; }
+      let parsed;
+      try { parsed = new URL(url); } catch (_) { failures.push(`${at} ${field} is not a valid URL: ${url}`); continue; }
+      if (parsed.protocol !== 'https:') failures.push(`${at} ${field} must be https: ${url}`);
+      const host = parsed.hostname.replace(/^www\./, '');
+      if (DEAD_HOSTS.includes(host)) {
+        failures.push(`${at} ${field} points at a host known to be dead: ${host}`);
+      }
+    }
+    /* 押す前に何が起きるか分かる文言であること。行き先が公式サイトでないのに
+       「公式サイト」と書くと、それ自体が誤りになる。 */
+    if (typeof o.actionLabel !== 'string' || !o.actionLabel.trim()) {
+      failures.push(`${at} actionLabel missing`);
+    }
+  }
+}
+
 if (failures.length) {
   console.error('RELEASE_CHECK_FAIL');
   failures.forEach((f) => console.error('- ' + f));

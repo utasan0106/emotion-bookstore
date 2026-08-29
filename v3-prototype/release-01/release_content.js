@@ -346,10 +346,18 @@ window.V3_RELEASE_CONTENT = {
           facts: [
             ['監督', '今泉力哉'],
             ['舞台', '古着屋・古本屋・自主映画・飲み屋など下北沢の日常'],
-            ['確認', '上映情報は公式サイトで確認']
+            ['確認', '上映情報は配給元・劇場の公式ページで確認']
           ],
-          actionLabel: '映画の公式サイトを見る',
-          actionUrl: 'https://machinouede.com/',
+          /* 公開当時の公式ドメイン machinouede.com は、2026-08-29 時点で
+             ERR_SSL_PROTOCOL_ERROR を返す（Founder 実機確認）。2021年公開作の
+             プロモーション用ドメインが失効した形で、利用者から見れば
+             「公式サイトを見る」を押すと壊れたページに着く状態だった。
+             この対象は evergreen なので、期限で消える上映ページではなく、
+             配給元（東京テアトル）の作品ページへ向ける。
+             万一この URL が 404 になった場合の代替は、年別アーカイブの
+             https://ttcg.jp/distribution/2021/ 。 */
+          actionLabel: '配給元の作品ページを見る',
+          actionUrl: 'https://ttcg.jp/movie/0650200.html',
           media: {
             kind: 'plate',
             plateWord: '街の上で',
@@ -358,8 +366,8 @@ window.V3_RELEASE_CONTENT = {
             listAlt: '「街の上で」と大きく組んだ、この棚のための活字図版',
             detailAlt: '「街の上で」と大きく組んだ、この棚のための活字図版'
           },
-          factsSourceUrl: 'https://machinouede.com/',
-          verifiedAt: '2026-08-28T23:08:00+09:00',
+          factsSourceUrl: 'https://ttcg.jp/movie/0650200.html',
+          verifiedAt: '2026-08-29T15:40:00+09:00',
           expiresAt: null
         }
       ]
