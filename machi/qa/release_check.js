@@ -227,10 +227,47 @@ for (const word of ['次の3つ', 'また見たい', 'おすすめ', 'あなた�
   'NEW', 'TRENDING', 'FOR YOU', '見終わりました']) {
   if (runtime.includes(word)) failures.push(`release runtime must not contain: ${word}`);
 }
-for (const attr of ['noindex,nofollow', 'referrer" content="no-referrer']) {
-  for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
-    if (!read(page).includes(attr)) failures.push(`${page} missing ${attr}`);
+/* referrer は3ページとも落とさない。外部へ出るとき、どこから来たかを
+   相手に渡さない。 */
+for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
+  if (!read(page).includes('referrer" content="no-referrer')) {
+    failures.push(`${page} missing referrer no-referrer`);
   }
+}
+/* 公開にあたって、玄関と棚は検索に載せる。候補ページはフォーム画面で、
+   棚より上に出ても人の役に立たないので載せない。prototype 時代は3ページとも
+   noindex だったが、その前提はもう正しくない。 */
+if (!read('suggest.html').includes('noindex,nofollow')) {
+  failures.push('suggest.html must stay noindex');
+}
+for (const page of ['index.html', 'shelf.html']) {
+  if (read(page).includes('noindex')) failures.push(`${page} must not be noindex`);
+}
+/* 共有されたときに何のページか分かること。description と OGP が無いと、
+   リンクだけが貼られて中身が伝わらない。og:image は同一オリジンの、
+   この案内のために組んだ扉。ほかの製品の画像を借りない。 */
+const OGP_IMAGE = 'https://emotion-bookstore.vercel.app/machi/assets/ogp-machi.jpg';
+if (!fs.existsSync(path.join(root, 'assets/ogp-machi.jpg'))) {
+  failures.push('assets/ogp-machi.jpg missing');
+}
+for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
+  const src = read(page);
+  for (const tag of ['name="description"', 'property="og:title"', 'property="og:description"',
+                     'property="og:url"', 'property="og:image"', 'name="twitter:card"']) {
+    if (!src.includes(tag)) failures.push(`${page} missing ${tag}`);
+  }
+  if (!src.includes(OGP_IMAGE)) failures.push(`${page} og:image must be ${OGP_IMAGE}`);
+  const d = (src.match(/name="description" content="([^"]*)"/) || [])[1] || '';
+  if (d.length < 40) failures.push(`${page} description too short (${d.length})`);
+  if (d.length > 140) failures.push(`${page} description too long (${d.length})`);
+}
+/* 種類の絞り込みは同じ12件の別の見え方なので、玄関へ寄せる。
+   棚は街ごとに中身が違うので、静的な canonical で1つに潰さない。 */
+if (!read('index.html').includes('<link rel="canonical" href="https://emotion-bookstore.vercel.app/machi/">')) {
+  failures.push('index.html missing canonical to the /machi/ root');
+}
+if (read('shelf.html').includes('rel="canonical"')) {
+  failures.push('shelf.html must not carry a static canonical (4 shelves differ)');
 }
 if ((read('index.html').match(/<h1\b/g) || []).length !== 1) failures.push('index.html needs exactly one h1');
 if ((read('shelf.html').match(/<h1\b/g) || []).length !== 1) failures.push('shelf.html needs exactly one h1');
