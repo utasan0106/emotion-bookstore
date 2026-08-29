@@ -1,7 +1,15 @@
-# V3 Release Candidate 01 — 4つの棚
+# みんなの感情書店｜文化案内（4つの棚）
 
-`v3-prototype/release-01/` は、凍結済みの Human Test 用 `tokyo-pilot-01/` とは
-独立した公開候補です。`tokyo-pilot-01/` には一切手を触れていません。
+公開先は `/machi/`。凍結済みの Human Test 用
+`v3-prototype/tokyo-pilot-01/` とは独立していて、そちらには一切手を触れて
+いません。ドメイン直下の「一冊にする」サービス本体とも別物で、そちらの
+ファイルも変更していません。
+
+公開URLの起点:
+`https://emotion-bookstore.vercel.app/machi/`
+
+玄関と棚は検索に載せる。候補ページ（`suggest.html`）はフォーム画面なので
+`noindex` のままにしてある。棚より上に出ても人の役に立たないため。
 
 ## URL
 
