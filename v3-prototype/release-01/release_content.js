@@ -291,12 +291,21 @@ window.V3_RELEASE_CONTENT = {
           actionLabel: 'SHELTERの予定を見る',
           actionUrl: 'https://www.loft-prj.co.jp/schedule/shelter/schedule',
           media: {
-            kind: 'plate',
-            plateWord: 'SHELTER',
-            plateSub: '下北沢 / ライブハウス・音楽',
-            ratio: '4 / 5',
-            listAlt: '「SHELTER」と大きく組んだ、この棚のための活字図版',
-            detailAlt: '「SHELTER」と大きく組んだ、この棚のための活字図版'
+            kind: 'photo',
+            url: './assets/shimokitazawa-shelter.jpg',
+            width: 960,
+            height: 723,
+            crop: 'none',
+            listAlt: '夜の路地から、地下へ下りる階段の入口を見下ろしている',
+            detailAlt: '電球で縁取られた「SHELTER」の看板と、地下へ続く階段。壁にはライブの告知が貼られている'
+          },
+          rights: {
+            author: 'Syced',
+            source: 'Wikimedia Commons',
+            sourceUrl: 'https://commons.wikimedia.org/wiki/File:SHELTER.jpg',
+            license: 'CC0 1.0',
+            licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',
+            modification: '縮小のみ・cropなし'
           },
           factsSourceUrl: 'https://www.loft-prj.co.jp/schedule/shelter',
           verifiedAt: '2026-08-28T23:08:00+09:00',
@@ -428,12 +437,21 @@ window.V3_RELEASE_CONTENT = {
           actionLabel: '矢口書店の公式サイトを見る',
           actionUrl: 'https://yaguchishoten.jp/',
           media: {
-            kind: 'plate',
-            plateWord: '矢口書店',
-            plateSub: '神保町 / 古書店・映画・演劇',
-            ratio: '4 / 5',
-            listAlt: '「矢口書店」と大きく組んだ、この棚のための活字図版',
-            detailAlt: '「矢口書店」と大きく組んだ、この棚のための活字図版'
+            kind: 'photo',
+            url: './assets/yaguchi-shoten.jpg',
+            width: 960,
+            height: 640,
+            crop: 'none',
+            listAlt: '通りに面した二階建ての店の前面いっぱいに、木の書棚が並んでいる',
+            detailAlt: '「矢口書店」の看板を掲げた店構え。間口いっぱいの棚に本が詰まっている'
+          },
+          rights: {
+            author: 'Olaf2',
+            source: 'Wikimedia Commons',
+            sourceUrl: 'https://commons.wikimedia.org/wiki/File:Jimb%C5%8Dch%C5%8D_Book_Town_2025_02.jpg',
+            license: 'CC BY-SA 4.0',
+            licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+            modification: '縮小のみ・cropなし'
           },
           factsSourceUrl: 'https://yaguchishoten.jp/',
           verifiedAt: '2026-08-28T23:08:00+09:00',
