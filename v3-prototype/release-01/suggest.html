@@ -69,6 +69,12 @@
         </p>
         <p id="sg-copy-status" class="copy-status" role="status" aria-live="polite"></p>
         <p class="suggest-actions suggest-actions-secondary">
+          <!-- 送信は Google のページ側で起きる。このページは何も送らない。
+               prefill はしない。入力済みの文字を query に載せると、押した瞬間に
+               外部へ渡ることになり、開示文の意味が変わる。 -->
+          <a id="sg-form" class="other-shelves"
+             href="https://docs.google.com/forms/d/1ncxcjjRQ5P827alF1KczWxHRJlmPi881e44lD2EkNhQ/viewform"
+             target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">送信フォームを開く</a>
           <a id="sg-x" class="other-shelves" href="https://x.com/emotion_books"
              target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">公式Xを開く</a>
         </p>
@@ -76,7 +82,7 @@
 
       <section class="suggest-terms" aria-labelledby="terms-title">
         <h2 id="terms-title" class="rights-title">この画面について</h2>
-        <p>入力内容はこのページから自動送信されません。候補文をコピーして公式Xを開いた後、送るかどうかはあなたが決めます。</p>
+        <p>入力内容はこのページから自動送信されません。送信フォームか公式Xを開いた後、送るかどうかはあなたが決めます。フォームはGoogleのページで、記入と送信はそちらで行います。</p>
         <p>送った候補がそのまま公開されることはありません。編集部が公式情報と権利を確認し、採用する場合だけ棚に追加します。</p>
       </section>
 
@@ -85,7 +91,7 @@
   </main>
 
   <footer class="site-footer">
-    <p class="privacy-note">このページでは保存・計測・個人ごとの推薦を行いません。入力内容は自動送信されません。「候補文をコピー」を押した場合だけ、端末のクリップボードにコピーされます。公式Xは押したときだけ開きます。</p>
+    <p class="privacy-note">このページでは保存・計測・個人ごとの推薦を行いません。入力内容は自動送信されません。「候補文をコピー」を押した場合だけ、端末のクリップボードにコピーされます。送信フォームと公式Xは、押したときだけ開きます。フォームはGoogleのページで、記入と送信はそちらで行います。</p>
   </footer>
 
   <div id="live" class="sr-only" role="status" aria-live="polite"></div>

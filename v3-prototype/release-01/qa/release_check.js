@@ -176,11 +176,29 @@ if (/enctype|<form[^>]*action=|method="post"/i.test(suggest)) failures.push('sug
 if (!suggest.includes('https://x.com/emotion_books')) failures.push('suggest.html: exact X destination missing');
 if ((suggest.match(/x\.com/g) || []).length !== 1) failures.push('suggest.html: exactly one X destination expected');
 if (/x\.com\/[^"']*[?&]/.test(suggest)) failures.push('suggest.html: X destination must carry no query');
+/* 候補の受け取りは Google フォームへ出る link で行う。送信は Google の
+   ページ側で起きるので、このページ自体は引き続き何も送らない。
+   guard するのは「編集用 URL を公開しないこと」。/edit を貼ると訪問者が
+   フォームそのものを書き換えられるので、これは体裁ではなく事故になる。 */
+const formLinks = suggest.match(/https:\/\/docs\.google\.com\/forms\/[^"']+/g) || [];
+if (formLinks.length !== 1) {
+  failures.push(`suggest.html: expected exactly one Google form link (found ${formLinks.length})`);
+}
+for (const link of formLinks) {
+  if (/\/edit\b/.test(link)) {
+    failures.push('suggest.html: form link must not be an editor URL (/edit)');
+  }
+  /* prefill をやめている以上、query が付いていたら入力が外へ載っている疑い。 */
+  if (/[?&]/.test(link)) {
+    failures.push('suggest.html: form link must carry no query (no prefill)');
+  }
+}
 for (const notice of [
   '入力内容はこのページから自動送信されません。',
   '送った候補がそのまま公開されることはありません。',
-  // コピーが端末のクリップボードへ書くことを言い落とさない。
-  'このページでは保存・計測・個人ごとの推薦を行いません。入力内容は自動送信されません。「候補文をコピー」を押した場合だけ、端末のクリップボードにコピーされます。公式Xは押したときだけ開きます。'
+  // コピーが端末のクリップボードへ書くことと、フォームが外部であることを
+  // どちらも言い落とさない。
+  'このページでは保存・計測・個人ごとの推薦を行いません。入力内容は自動送信されません。「候補文をコピー」を押した場合だけ、端末のクリップボードにコピーされます。送信フォームと公式Xは、押したときだけ開きます。フォームはGoogleのページで、記入と送信はそちらで行います。'
 ]) {
   if (!suggest.includes(notice)) failures.push(`suggest.html: required notice missing (${notice.slice(0, 12)}…)`);
 }
