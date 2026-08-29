@@ -120,17 +120,19 @@ https://drive.google.com/drive/folders/19u7ywNUNfh-0I3eimsIUyLq-WTWqQeYx
 
 `候補の受け取り_SUGGESTIONS` のスプレッドシートを読み、次を判定する。
 
-毎週の起動は Routine で行う。**これは claude.ai の Routines 画面から作る
-必要がある。** Claude Code の側から作った Routine には Google Drive の
-connector が引き継がれず、起きても Drive を読めないため意味がない
-（2026-08-29 に実際に作って確認し、無意味な週次実行になるので削除した）。
+起動は当面 **Founder の声かけ**で行う（2026-08-29 決定）。「今週の候補見て」で
+Claude がシートを読みに行く。
 
-作り方:
+Routine による自動起動はまだ作らない。回答0件のシートを毎週読みに行く仕組みを
+先に作っても、動くのは「何もありませんでした」という報告だけになる。候補が
+実際に届き、週あたりの件数が見えてから作る方が、設定が無駄にならない。
 
-1. claude.ai の Routines で新規作成
-2. スケジュールを毎週1回にする（日本時間の月曜午前など）
-3. connector に **Google Drive** を付ける。これが本体
-4. prompt に `qa/SUGGESTION_WEEKLY_PROMPT.md` の中身をそのまま貼る
+作るときは claude.ai の Routines 画面から作る必要がある。**Claude Code の側から
+作った Routine には Google Drive の connector が引き継がれず、起きても Drive を
+読めない**（2026-08-29 に実際に作って確認し、無意味なので削除した）。
+手順は 1) claude.ai の Routines で新規作成 2) スケジュールを週1回
+3) connector に Google Drive を付ける（これが本体） 4) prompt に
+`qa/SUGGESTION_WEEKLY_PROMPT.md` の中身をそのまま貼る。
 
 1. 前回見た行より後の回答だけを見る
 2. 各候補を編集契約に照らす
