@@ -34,23 +34,29 @@ backend や第三者フォームサービスを置く案は採らない。secret
 
 ## 現在の状態（2026-08-29）
 
-フォームは作成済み。`suggest.html` に「送信フォームを開く」を追加し、開示文も
-差し替えた。貼っている URL はこれ。
+フォームは作成・公開済み。`suggest.html` に「送信フォームを開く」を追加し、
+開示文も差し替えた。貼っている URL はこれ。
 
 ```
-https://docs.google.com/forms/d/1ncxcjjRQ5P827alF1KczWxHRJlmPi881e44lD2EkNhQ/viewform
+https://docs.google.com/forms/d/e/1FAIpQLSdzTmEy7PyBOa3XdGU375tib6dK7PHHa5XMGy1Aw3w8v5aa6w/viewform
 ```
 
-Founder からは編集用の `/edit` URL を受け取ったが、それを公開ページに貼ると
-訪問者がフォームそのものを書き換えられるので、閲覧用の `/viewform` に直した。
-`release_check.js` が `/edit` と query 付きを FAIL にする guard を持っている。
+匿名の訪問者から開けることを、シークレットウィンドウで確認済み。
 
-Drive connector の scope に Forms が入っておらず、この URL が匿名の訪問者に
-どう見えるかを Claude 側から確認できない。**Founder がログアウト状態か
-シークレットウィンドウで一度開いて確認すること。** 「権限が必要です」と出る
-場合は、フォーム編集画面の「送信」→ リンクアイコンで出る
-`https://docs.google.com/forms/d/e/1FAIpQLS…/viewform` に差し替える。
-直すのは `suggest.html` のこの1行だけ。
+ここに至るまでに2回間違えている。記録として残す。
+
+1. Founder から最初に渡されたのは編集用の `/edit` URL だった。公開ページに
+   貼ると訪問者がフォームそのものを書き換えられる。閲覧用に直した。
+2. 直した `/d/<id>/viewform` も、匿名では「このドキュメントは公開されて
+   いません。」になった。原因はフォームが未公開だったこと。公開して発行される
+   `/d/e/1FAIpQLS…/viewform` が、他人が記入するための正しい URL。
+
+どちらも静的検査では気づけず、シークレットウィンドウで開いて初めて分かった。
+URL を差し替えたときは、必ず匿名で一度開く。
+
+受け取る URL には `?usp=publish-editor` や `?usp=dialog` が付いてくることが
+あるが、これは編集画面・共有ダイアログから来たことを示す印なので外す。
+`release_check.js` が query 付きを FAIL にするため、外した形でしか通らない。
 
 ## Founder にやってもらうこと
 
