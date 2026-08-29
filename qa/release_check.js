@@ -245,14 +245,31 @@ for (const page of ['index.html', 'shelf.html']) {
 }
 /* 共有されたときに何のページか分かること。description と OGP が無いと、
    リンクだけが貼られて中身が伝わらない。og:image は同一オリジンの、
-   この案内のために組んだ扉。ほかの製品の画像を借りない。 */
-const OGP_IMAGE = 'https://emotion-bookstore.vercel.app/assets/ogp-machi.jpg';
+   この案内のために組んだ扉。ほかの製品の画像を借りない。
+   2026-08-30、公式ロゴ使用版（ogp-v3-20260830.png）へ差し替えた。
+   旧扉（ogp-machi.jpg）は削除せず残す。履歴・他用途の可能性のため。 */
+const OGP_IMAGE = 'https://emotion-bookstore.vercel.app/assets/ogp-v3-20260830.png';
 /* ブランドの正規データから起こした画像。同一オリジンに置き、ほかの製品の
    画像（ドメイン直下の shop-seal.png や ogp-v2.jpg）を借りない。
    一度 shop-seal.png を favicon に借りていたが、それは別の製品の意匠だった。 */
-for (const f of ['assets/ogp-machi.jpg', 'assets/favicon.ico',
+for (const f of ['assets/ogp-v3-20260830.png', 'assets/ogp-machi.jpg', 'assets/favicon.ico',
                  'assets/icon-512.png', 'assets/apple-touch-icon.png']) {
   if (!fs.existsSync(path.join(root, f))) failures.push(`${f} missing`);
+}
+/* 実寸が宣言値（1200x630）と食い違っていないこと。crawler は og:image:width/
+   height を検証しないので、ここで確認しないと気づけない。
+   新規 dependency は入れない指示のため、PNG の IHDR チャンクを直接読む。 */
+{
+  const p = path.join(root, 'assets/ogp-v3-20260830.png');
+  if (fs.existsSync(p)) {
+    const buf = fs.readFileSync(p);
+    const isPng = buf.slice(0, 8).equals(Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a]));
+    const w = isPng ? buf.readUInt32BE(16) : null;
+    const h = isPng ? buf.readUInt32BE(20) : null;
+    if (!isPng || w !== 1200 || h !== 630) {
+      failures.push(`assets/ogp-v3-20260830.png must be a 1200x630 PNG, got ${isPng ? `${w}x${h}` : 'not a PNG'}`);
+    }
+  }
 }
 for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
   const src = read(page);
