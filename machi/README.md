@@ -92,3 +92,24 @@ node qa/release_expiry_boundaries.js   # 期限の境目
 NODE_PATH=/opt/node22/lib/node_modules node qa/browser_qa.js    # 実ブラウザ
 NODE_PATH=/opt/node22/lib/node_modules node qa/release_shots.js # visual evidence
 ```
+
+## ブランド資産について
+
+favicon / apple-touch-icon は、リポジトリの採用済み資産
+`assets/brand/emotion-bookstore-symbol-official.webp`（777x809・背景透過）
+から起こしている。本体サイトの favicon
+（`assets/brand/favicon-emotion-bookstore.png`）と同じマークになる。
+同じブランドで実体を2つ持たないため、出所をここに揃えた。
+
+**`assets/brand/emotion-bookstore-symbol-master.svg` は使っていない。**
+ベクタなので本来は最適だが、描画して比べると本の形が違う。SVG 版は本が
+小さな三角形で、採用済みの webp と Founder 提供の正規データは本が扇状に
+開いて頁が広がっている。多数決ではなく、本体サイトが実際に配信している方に
+合わせた。SVG が新しい版だと分かった場合は、そちらから作り直す。
+
+OGP のワードマークだけは `assets/brand/` に無いため、2026-08-29 に Founder
+から渡されたブランドアイデンティティ資料のロックアップを使っている。
+
+シンボルは正方形でないので、切らずに紙地で余白を足してから縮小している。
+地色は指定値の `#FAF8F3` ではなく、貼る画像の実測値を使う。指定値を敷くと
+四角い継ぎ目が出るため。
