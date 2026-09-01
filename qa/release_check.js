@@ -178,7 +178,7 @@ for (const shelf of shelves) {
 }
 
 /* ---- A. site explainer が media より先に置かれている ------------------ */
-const EXPLAINER = '人が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べる文化案内です。';
+const EXPLAINER = '感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べる文化案内です。';
 if (CONTENT && CONTENT.release && CONTENT.release.siteExplainer !== EXPLAINER) {
   failures.push('release.siteExplainer must be the exact fixed sentence');
 }
@@ -263,6 +263,15 @@ for (const page of ['index.html','shelf.html','suggest.html']) {
     failures.push(`${page}: Amazon disclosure missing`);
   }
 }
+for (const page of ['index.html','shelf.html','suggest.html','data.html']) {
+  const src = read(page);
+  if (!src.includes('class="footer-brand"') ||
+      !src.includes('class="footer-brand-image"') ||
+      !src.includes('./assets/brand/emotion-bookstore-lockup-reversed.png')) {
+    failures.push(`${page}: official footer brand lockup missing`);
+  }
+}
+
 const dataPageFinal = read('data.html');
 if (!dataPageFinal.includes('気になる') || !dataPageFinal.includes('localStorage')) failures.push('data.html: favorites storage explanation missing');
 if (!dataPageFinal.includes('Amazon のアソシエイトとして')) failures.push('data.html: affiliate explanation missing');
@@ -280,7 +289,7 @@ for (const required of [
 }
 const indexRuntime = read('index.html');
 for (const required of [
-  '人が選んだ場所・本・音楽・映画・催しを、',
+  '感情書店の編集部が選んだ場所・本・音楽・映画・催しを、',
   '街や種類ごとに少しずつ並べる文化案内です。',
   '<span class="weekly-video-plate-line">東京の文化を、</span>',
   '<span class="weekly-video-plate-line">31秒だけ</span>'
@@ -326,6 +335,19 @@ CATEGORIES.forEach(([id, name], i) => {
   }
 });
 const catIds = new Set(cats.map((c) => c.id));
+if (!Array.isArray(CONTENT.archive)) failures.push('archive must be an array');
+const archiveIds = new Set();
+for (const entry of (CONTENT.archive || [])) {
+  for (const key of ['id','sourceKind','shelfId','area','categoryIds','title','typeLabel','summary','verifiedAt','archivedAt']) {
+    if (!entry[key]) failures.push(`archive entry missing ${key}`);
+  }
+  if (archiveIds.has(entry.id)) failures.push(`duplicate archive id: ${entry.id}`);
+  archiveIds.add(entry.id);
+  if (!EXPECTED_SHELVES.includes(entry.shelfId)) failures.push(`${entry.id}: archive shelfId must be known`);
+  if (!Array.isArray(entry.categoryIds) || !entry.categoryIds.length) failures.push(`${entry.id}: archive categoryIds required`);
+  for (const c of (entry.categoryIds || [])) if (!catIds.has(c)) failures.push(`${entry.id}: unknown archive category ${c}`);
+  if (entry.actionUrl && !/^https:\/\//.test(entry.actionUrl)) failures.push(`${entry.id}: archive actionUrl must be https`);
+}
 const allObjects = shelves.flatMap((sh) => sh.objects);
 if (allObjects.length !== 12) failures.push(`expected exactly 12 objects, got ${allObjects.length}`);
 for (const o of allObjects) {
@@ -345,6 +367,17 @@ for (const axis of ['街から見る', '種類から見る']) {
   if (!foyerSrc.includes(axis)) failures.push(`index.html: entry axis missing (${axis})`);
 }
 if (!foyerSrc.includes('id="categoryIndex"')) failures.push('index.html: category index container missing');
+if (!foyerSrc.includes('id="categoryTownIndex"')) failures.push('index.html: category town index missing');
+if (!foyerSrc.includes('id="categoryArchive"')) failures.push('index.html: category archive container missing');
+const categoryRuntimeFinal = read('release.js');
+for (const required of [
+  'function archiveInCategory(categoryId, townId)',
+  'function archiveResult(entry)',
+  "queryParams().get('town')",
+  "class: 'category-town-link'"
+]) {
+  if (!categoryRuntimeFinal.includes(required)) failures.push(`release.js: category town/archive runtime missing ${required}`);
+}
 
 /* ---- D. 候補受付は backend を持たない -------------------------------- */
 const suggest = read('suggest.html');

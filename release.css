@@ -1809,3 +1809,79 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   .detour-destinations { display: grid; justify-items: start; gap: 4px; }
   .site-menu-section { margin-top: 28px; }
 }
+
+/* ================================================= Category town + archive */
+.category-town-index {
+  width: min(calc(100% - var(--gutter) * 2), var(--page));
+  margin: 0 auto 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  padding: 0 0 18px;
+  border-bottom: 1px solid var(--hall-line);
+}
+.category-town-link {
+  display: inline-block;
+  min-height: 44px;
+  padding: 11px 0 8px;
+  color: var(--chalk-dim);
+  font-family: var(--serif);
+  font-size: .875rem;
+  letter-spacing: .12em;
+  text-decoration: none;
+}
+.category-town-link.is-selected {
+  color: var(--chalk);
+  text-decoration: underline;
+  text-decoration-color: var(--signal);
+  text-underline-offset: 6px;
+}
+.category-archive {
+  width: min(calc(100% - var(--gutter) * 2), var(--page));
+  margin: 42px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--hall-edge);
+}
+.category-archive[hidden] { display: none !important; }
+.category-archive .eyebrow { margin-bottom: 8px; }
+.category-archive-title {
+  margin: 0 0 10px;
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  color: var(--chalk-dim);
+}
+.archive-result-row { opacity: .82; }
+.archive-status {
+  margin-left: 10px;
+  color: var(--signal);
+  font-size: .65rem;
+  letter-spacing: .14em;
+}
+.footer-brand {
+  display: block;
+  width: fit-content;
+  margin: 44px auto 0;
+  text-decoration: none;
+}
+.footer-brand-image {
+  display: block;
+  width: clamp(230px, 27vw, 360px);
+  max-width: min(100%, 360px);
+  height: auto;
+  opacity: .92;
+}
+@media (max-width: 820px) {
+  .category-town-index {
+    gap: 4px 18px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+  }
+  .category-town-link {
+    font-size: .8125rem;
+    letter-spacing: .1em;
+  }
+  .footer-brand { margin-top: 38px; }
+  .footer-brand-image { width: min(72vw, 280px); }
+}

@@ -431,16 +431,20 @@
 
   /* ------------------------------------------------------------ 種類の索引 */
 
-  // 期限の切れた current は索引にも出さない。別の Object で埋め合わせもしない。
   function isLive(object) {
     if (!object.expiresAt) return true;
     var at = Date.parse(object.expiresAt);
     return isNaN(at) ? true : at > Date.now();
   }
 
-  function objectsInCategory(categoryId) {
+  function categoryShelfById(id) {
+    return id ? shelfById(id) : null;
+  }
+
+  function objectsInCategory(categoryId, townId) {
     var out = [];
     CONTENT.shelves.forEach(function (shelf) {
+      if (townId && shelf.id !== townId) return;
       shelf.objects.forEach(function (object) {
         if (!isLive(object)) return;
         if ((object.categoryIds || []).indexOf(categoryId) === -1) return;
@@ -448,6 +452,14 @@
       });
     });
     return out;
+  }
+
+  function archiveInCategory(categoryId, townId) {
+    var archive = CONTENT && Array.isArray(CONTENT.archive) ? CONTENT.archive : [];
+    return archive.filter(function (entry) {
+      if (townId && entry.shelfId !== townId) return false;
+      return (entry.categoryIds || []).indexOf(categoryId) !== -1;
+    });
   }
 
   function categoryResult(entry) {
@@ -464,70 +476,182 @@
         h('a', {
           class: 'result-link',
           href: './shelf.html?shelf=' + encodeURIComponent(entry.shelf.id)
-        }, [h('span', { text: 'この棚で見る' }), h('span', { 'aria-hidden': 'true', text: '→' })])
+        }, [
+          h('span', { text: 'この棚で見る' }),
+          h('span', { 'aria-hidden': 'true', text: '→' })
+        ])
       ])
     ]);
   }
 
-  function renderCategoryResults(categoryId) {
+  function archiveResult(entry) {
+    var shelf = categoryShelfById(entry.shelfId);
+    var area = entry.area || (shelf && shelf.area) || '';
+    var children = [
+      h('p', { class: 'result-meta' }, [
+        h('span', { class: 'result-town', text: area }),
+        h('span', { class: 'plate-sep', text: ' / ' }),
+        h('span', { class: 'result-type', text: entry.typeLabel || '過去の棚' }),
+        h('span', { class: 'archive-status', text: 'ARCHIVE' })
+      ]),
+      h('h4', { class: 'result-name', text: entry.title }),
+      h('p', { class: 'result-hook', text: entry.summary || '' })
+    ];
+
+    if (entry.actionUrl) {
+      children.push(h('p', { class: 'result-go' }, [
+        h('a', {
+          class: 'result-link',
+          href: entry.actionUrl,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          referrerpolicy: 'no-referrer'
+        }, [
+          h('span', { text: entry.actionLabel || '公式情報を見る' }),
+          h('span', { 'aria-hidden': 'true', text: '↗' })
+        ])
+      ]));
+    }
+
+    return h('article', {
+      class: 'result-row archive-result-row',
+      'data-archive-id': entry.id
+    }, children);
+  }
+
+  function renderCategoryResults(categoryId, townId) {
     var box = document.getElementById('categoryResults');
+    var archiveSection = document.getElementById('categoryArchive');
+    var archiveBox = document.getElementById('categoryArchiveResults');
     if (!box) return;
+
     box.textContent = '';
+    if (archiveBox) archiveBox.textContent = '';
+    if (archiveSection) archiveSection.hidden = true;
     if (!categoryId) return;
+
     var category = null;
-    CONTENT.categories.forEach(function (c) { if (c.id === categoryId) category = c; });
+    CONTENT.categories.forEach(function (c) {
+      if (c.id === categoryId) category = c;
+    });
     if (!category) return;
-    var entries = objectsInCategory(categoryId);
+
+    var entries = objectsInCategory(categoryId, townId);
+    var archived = archiveInCategory(categoryId, townId);
+    var shelf = categoryShelfById(townId);
+    var scopeName = shelf ? shelf.area : 'すべての街';
+
     box.appendChild(h('p', { class: 'result-count' }, [
-      h('span', { class: 'result-count-name', text: category.name }),
+      h('span', { class: 'result-count-name', text: category.name + ' / ' + scopeName }),
       h('span', { class: 'result-count-n', text: 'いま ' + entries.length + ' 件' })
     ]));
+
     if (!entries.length) {
-      box.appendChild(h('p', { class: 'result-empty', text: 'この種類は、いま棚にありません。' }));
-      return;
+      box.appendChild(h('p', {
+        class: 'result-empty',
+        text: 'この組み合わせは、いま棚にありません。'
+      }));
+    } else {
+      entries.forEach(function (entry) {
+        box.appendChild(categoryResult(entry));
+      });
     }
-    entries.forEach(function (entry) { box.appendChild(categoryResult(entry)); });
+
+    if (archiveSection && archiveBox && archived.length) {
+      archived.forEach(function (entry) {
+        archiveBox.appendChild(archiveResult(entry));
+      });
+      archiveSection.hidden = false;
+    }
   }
 
   function renderCategoryIndex() {
     var index = document.getElementById('categoryIndex');
-    if (!index || !Array.isArray(CONTENT.categories)) return;
-    var requested = queryParams().get('category') || '';
-    var known = CONTENT.categories.some(function (c) { return c.id === requested; });
-    var selected = known ? requested : '';
+    var townIndex = document.getElementById('categoryTownIndex');
+    if (!index || !townIndex || !Array.isArray(CONTENT.categories)) return;
+
+    var requestedCategory = queryParams().get('category') || '';
+    var requestedTown = queryParams().get('town') || '';
+    var knownCategory = CONTENT.categories.some(function (c) {
+      return c.id === requestedCategory;
+    });
+    var knownTown = CONTENT.shelves.some(function (shelf) {
+      return shelf.id === requestedTown;
+    });
+
+    var selectedCategory = knownCategory ? requestedCategory : '';
+    var selectedTown = knownTown ? requestedTown : '';
+
+    function nextUrl() {
+      var params = new URLSearchParams();
+      if (selectedCategory) params.set('category', selectedCategory);
+      if (selectedTown) params.set('town', selectedTown);
+      var q = params.toString();
+      return './index.html' + (q ? '?' + q : '');
+    }
 
     function paint() {
       Array.prototype.forEach.call(index.querySelectorAll('.category-link'), function (a) {
-        var on = a.dataset.categoryId === selected;
+        var on = a.dataset.categoryId === selectedCategory;
         a.setAttribute('aria-current', on ? 'true' : 'false');
         a.className = 'category-link' + (on ? ' is-selected' : '');
+        var count = objectsInCategory(a.dataset.categoryId, selectedTown).length;
+        var countNode = a.querySelector('.category-count');
+        if (countNode) countNode.textContent = String(count);
       });
-      renderCategoryResults(selected);
+
+      Array.prototype.forEach.call(
+        townIndex.querySelectorAll('.category-town-link'),
+        function (a) {
+          var on = (a.dataset.townId || '') === selectedTown;
+          a.setAttribute('aria-current', on ? 'true' : 'false');
+          a.className = 'category-town-link' + (on ? ' is-selected' : '');
+        }
+      );
+
+      renderCategoryResults(selectedCategory, selectedTown);
     }
 
+    var towns = [{ id: '', name: 'すべて' }].concat(
+      CONTENT.shelves.map(function (shelf) {
+        return { id: shelf.id, name: shelf.area };
+      })
+    );
+
+    towns.forEach(function (town) {
+      townIndex.appendChild(h('a', {
+        class: 'category-town-link',
+        href: town.id ? './index.html?town=' + encodeURIComponent(town.id) : './index.html',
+        'data-town-id': town.id,
+        onclick: function (event) {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.button) return;
+          event.preventDefault();
+          selectedTown = town.id;
+          if (history.replaceState) history.replaceState(null, '', nextUrl());
+          paint();
+        }
+      }, [h('span', { text: town.name })]));
+    });
+
     CONTENT.categories.forEach(function (category) {
-      var count = objectsInCategory(category.id).length;
-      var link = h('a', {
+      var count = objectsInCategory(category.id, selectedTown).length;
+      index.appendChild(h('a', {
         class: 'category-link',
         href: './index.html?category=' + encodeURIComponent(category.id),
         'data-category-id': category.id,
         onclick: function (event) {
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.button) return;
           event.preventDefault();
-          selected = selected === category.id ? '' : category.id;
-          // 選んだ状態だけを URL に残す。入力値は一切載せない。
-          var next = selected
-            ? './index.html?category=' + encodeURIComponent(selected)
-            : './index.html';
-          if (history.replaceState) history.replaceState(null, '', next);
+          selectedCategory = selectedCategory === category.id ? '' : category.id;
+          if (history.replaceState) history.replaceState(null, '', nextUrl());
           paint();
         }
       }, [
         h('span', { class: 'category-name', text: category.name }),
         h('span', { class: 'category-count', text: String(count) })
-      ]);
-      index.appendChild(link);
+      ]));
     });
+
     paint();
   }
 

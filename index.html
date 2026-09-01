@@ -77,7 +77,7 @@
   <!-- サイト共通の短い説明。identity のすぐ下、探索と Object media より必ず先に置く。
        ここは static なので JavaScript が動かない環境でも順序が崩れない。 -->
   <section class="site-intro" aria-label="このサイトについて">
-    <p class="site-explainer"><span class="jp-phrase explainer-line">人が選んだ場所・本・音楽・映画・催しを、</span><wbr><span class="jp-phrase explainer-line">街や種類ごとに少しずつ並べる文化案内です。</span></p>
+    <p class="site-explainer"><span class="jp-phrase explainer-line">感情書店の編集部が選んだ場所・本・音楽・映画・催しを、</span><wbr><span class="jp-phrase explainer-line">街や種類ごとに少しずつ並べる文化案内です。</span></p>
   </section>
 
     <section class="hero" aria-labelledby="hero-title">
@@ -117,8 +117,14 @@
          フィルタの pill 群にはしない。 -->
     <section id="by-kind" class="foyer by-kind" aria-labelledby="by-kind-title">
       <h2 id="by-kind-title" class="entry-axis">種類から見る</h2>
+      <nav id="categoryTownIndex" class="category-town-index" aria-label="街で絞る"></nav>
       <nav id="categoryIndex" class="category-index" aria-labelledby="by-kind-title"></nav>
       <div id="categoryResults" class="category-results" aria-live="polite"></div>
+      <section id="categoryArchive" class="category-archive" aria-labelledby="categoryArchiveTitle" hidden>
+        <p class="eyebrow">ARCHIVE</p>
+        <h3 id="categoryArchiveTitle" class="category-archive-title">これまでの棚</h3>
+        <div id="categoryArchiveResults" class="category-archive-results"></div>
+      </section>
     </section>
 
     <!-- 4街で終える。横には、今週だけのCross-media Editorialを3本だけ置く。 -->
@@ -143,6 +149,9 @@
 
   <footer class="site-footer">
     <p class="affiliate-disclosure">Amazon のアソシエイトとして、みんなの感情書店は適格販売により収入を得ています。楽天アフィリエイトを利用しています。</p>
+    <a class="footer-brand" href="./index.html" aria-label="みんなの感情書店 トップへ">
+      <img class="footer-brand-image" src="./assets/brand/emotion-bookstore-lockup-reversed.png" alt="みんなの感情書店" width="1429" height="331" loading="lazy" decoding="async">
+    </a>
   </footer>
 
   <div id="live" class="sr-only" role="status" aria-live="polite"></div>

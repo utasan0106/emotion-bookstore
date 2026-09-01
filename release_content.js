@@ -22,7 +22,7 @@ window.V3_RELEASE_CONTENT = {
     foyerLead: '今日は、どの街へ。',
     // サイト共通の短い説明。玄関にも、街の棚を直接開いたときにも、
     // 最初の写真・図版より必ず先に出す。長い理念文は足さない。
-    siteExplainer: '人が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べる文化案内です。',
+    siteExplainer: '感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べる文化案内です。',
     verifiedAt: '2026-09-01T13:00:00+09:00',
     shelfCount: 4,
     objectsPerShelf: 3
@@ -36,6 +36,12 @@ window.V3_RELEASE_CONTENT = {
     { id: 'music', name: '音楽・ライブ' },
     { id: 'film-stage', name: '映画・演劇' }
   ],
+  // 入替済み・期限切れの編集対象を消さず、種類 × 街で辿るためのArchive。
+  // 現役の各街3件とは分離する。0件のあいだはUIにArchive欄を出さない。
+  // entry:
+  // { id, sourceKind, shelfId, area, categoryIds, title, typeLabel, summary,
+  //   actionLabel, actionUrl, verifiedAt, archivedAt }
+  archive: [],
   detour: {
     label: '今週の寄り道',
     weekOf: '2026-09-01',
