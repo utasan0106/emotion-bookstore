@@ -565,7 +565,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 /* ------------------------------------------------------------------ 玄関 */
 
 /* 4つの棚は feed ではなく入口の並び。番号・名前・その棚の一行だけ。
-   バッジも件数も出さない。東京だけを大きく置いて主役にする。 */
+   バッジも件数も出さず、4街を同じ文字サイズと余白で並べる。 */
 .shelf-list {
   width: min(calc(100% - var(--gutter) * 2), var(--page));
   margin: 0 auto;
@@ -626,10 +626,6 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   font-size: 1.375rem;
   line-height: 1;
 }
-
-/* 東京は flagship。同じ文法のまま、字だけを一段大きく置く。 */
-.shelf-entry.is-flagship .shelf-tagline { font-size: clamp(2.125rem, 8.4vw, 3.25rem); }
-.shelf-entry.is-flagship { padding-bottom: 38px; }
 
 .brand-home { text-decoration: none; }
 

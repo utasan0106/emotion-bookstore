@@ -108,13 +108,21 @@ function serve() {
         const b = el.getBoundingClientRect();
         if (b.width > 0 && b.right > doc.clientWidth + 1) wide.push(el.className || el.tagName);
       });
-      const size = (el) => parseFloat(getComputedStyle(el.querySelector('.shelf-tagline')).fontSize);
+      const sizes = entries.map((el) =>
+        parseFloat(getComputedStyle(el.querySelector('.shelf-tagline')).fontSize));
+      const paddings = entries.map((el) => {
+        const cs = getComputedStyle(el);
+        return [parseFloat(cs.paddingTop), parseFloat(cs.paddingBottom)];
+      });
       return {
         count: entries.length,
         ids: entries.map((e) => e.dataset.shelfId),
         hrefs: entries.map((e) => e.getAttribute('href')),
         taglines: entries.map((e) => e.querySelector('.shelf-tagline').textContent),
-        flagshipBigger: size(entries[0]) > size(entries[1]),
+        citySizesEqual: sizes.every((n) => Math.abs(n - sizes[0]) < 0.01),
+        cityPaddingEqual: paddings.every((p) =>
+          Math.abs(p[0] - paddings[0][0]) < 0.01 &&
+          Math.abs(p[1] - paddings[0][1]) < 0.01),
         h1: document.querySelectorAll('h1').length,
         lead: document.querySelector('h1').innerText.replace(/\s+/g, ''),
         endVisible: !document.querySelector('.end-plate').hidden,
@@ -131,7 +139,10 @@ function serve() {
     check(v.name, 'foyer_taglines',
       foyer.taglines.join('|') === '吉祥寺を、3つだけ。|高円寺を、3つだけ。|下北沢を、3つだけ。|神保町を、3つだけ。',
       foyer.taglines);
-    check(v.name, 'foyer_tokyo_is_visually_primary', foyer.flagshipBigger);
+    check(v.name, 'four_city_taglines_use_equal_size',
+      foyer.citySizesEqual === true, foyer);
+    check(v.name, 'four_city_entries_use_equal_padding',
+      foyer.cityPaddingEqual === true, foyer);
     check(v.name, 'foyer_single_h1', foyer.h1 === 1, foyer.h1);
     check(v.name, 'foyer_lead_copy', foyer.lead === '今日は、どの街へ。', foyer.lead);
     check(v.name, 'foyer_finite_ending_shown', foyer.endVisible);
