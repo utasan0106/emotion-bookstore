@@ -243,6 +243,16 @@ if (!finalContent.includes('open.spotify.com/track/36Thm3dOVuCR4SFyzwJioN')) fai
 if (!finalContent.includes('music.apple.com/jp/search?')) failures.push('Apple Music destination missing');
 if (!finalContent.includes('primevideo.com/-/ja/detail/0IBT9N6EWCZ8AEEA4511KKYAE3')) failures.push('Prime Video destination missing');
 
+const freshnessRuntime = read('release.js');
+for (const required of [
+  'function formatVerifiedDate(value)',
+  "class: 'detail-freshness'",
+  "class: 'weekly-feature-verified'",
+  "class: 'archive-verified'"
+]) {
+  if (!freshnessRuntime.includes(required)) failures.push(`release.js: visible freshness missing ${required}`);
+}
+
 const finalRuntime = read('release.js');
 for (const required of [
   'emotionBookstore.v3.weeklyFavorites.v1',
@@ -349,6 +359,17 @@ for (const entry of (CONTENT.archive || [])) {
   if (entry.actionUrl && !/^https:\/\//.test(entry.actionUrl)) failures.push(`${entry.id}: archive actionUrl must be https`);
 }
 const allObjects = shelves.flatMap((sh) => sh.objects);
+for (const object of allObjects) {
+  if (!object.verifiedAt || Number.isNaN(Date.parse(object.verifiedAt))) {
+    failures.push(`${object.id}: verifiedAt required and must be parseable`);
+  }
+}
+for (const shelf of shelves) {
+  const wf = shelf.weeklyFeature;
+  if (wf && (!wf.verifiedAt || Number.isNaN(Date.parse(wf.verifiedAt)))) {
+    failures.push(`${shelf.id}: weeklyFeature verifiedAt required and must be parseable`);
+  }
+}
 if (allObjects.length !== 12) failures.push(`expected exactly 12 objects, got ${allObjects.length}`);
 for (const o of allObjects) {
   const list = o.categoryIds;

@@ -42,6 +42,12 @@
     return new URLSearchParams(location.search);
   }
 
+  function formatVerifiedDate(value) {
+    var m = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!m) return '';
+    return Number(m[1]) + '年' + Number(m[2]) + '月' + Number(m[3]) + '日';
+  }
+
   function shelfById(id) {
     // 旧東京deep linkは、壊さず吉祥寺へ静かに引き継ぐ。
     if (id === 'tokyo') id = 'kichijoji';
@@ -222,7 +228,11 @@
     box.appendChild(h('article', { class: 'weekly-feature-card' }, [
       h('div', { class: 'weekly-feature-meta' }, [
         h('p', { class: 'weekly-feature-date', text: feature.dateLabel }),
-        h('p', { class: 'weekly-feature-venue', text: feature.venue })
+        h('p', { class: 'weekly-feature-venue', text: feature.venue }),
+        h('p', {
+          class: 'weekly-feature-verified',
+          text: '公式情報の確認日: ' + formatVerifiedDate(feature.verifiedAt)
+        })
       ]),
       jpHeading('h2', { id: 'weeklyFeatureTitle', class: 'weekly-feature-title' }, feature.titlePhrases, feature.title),
       h('p', { class: 'weekly-feature-why', text: feature.why }),
@@ -495,7 +505,11 @@
         h('span', { class: 'archive-status', text: 'ARCHIVE' })
       ]),
       h('h4', { class: 'result-name', text: entry.title }),
-      h('p', { class: 'result-hook', text: entry.summary || '' })
+      h('p', { class: 'result-hook', text: entry.summary || '' }),
+      entry.verifiedAt ? h('p', {
+        class: 'archive-verified',
+        text: '掲載時の公式情報確認日: ' + formatVerifiedDate(entry.verifiedAt)
+      }) : null
     ];
 
     if (entry.actionUrl) {
@@ -813,6 +827,10 @@
         jpHeading('p', { class: 'detail-hook-echo' }, object.hookPhrases, object.hook),
         jpHeading('h2', { id: 'detailTitle', class: 'detail-reveal' }, object.revealPhrases, object.reveal),
         h('p', { class: 'object-meta', text: object.typeLabel + ' · ' + object.placeName }),
+        h('p', {
+          class: 'detail-freshness',
+          text: '公式情報の確認日: ' + formatVerifiedDate(object.verifiedAt)
+        }),
         h('section', { class: 'verified-block' }, [
           h('h3', { text: '行く前にわかること' }),
           facts

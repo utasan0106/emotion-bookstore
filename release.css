@@ -1885,3 +1885,29 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   .footer-brand { margin-top: 38px; }
   .footer-brand-image { width: min(72vw, 280px); }
 }
+
+/* ================================================= Visible freshness */
+.weekly-feature-verified,
+.detail-freshness,
+.archive-verified {
+  margin: 6px 0 0;
+  color: var(--chalk-dim);
+  font-size: .72rem;
+  line-height: 1.65;
+  letter-spacing: .08em;
+}
+.detail-freshness {
+  color: var(--ink-dim);
+  margin-top: 8px;
+}
+.archive-verified {
+  margin-top: 10px;
+}
+@media (max-width: 820px) {
+  .weekly-feature-verified,
+  .detail-freshness,
+  .archive-verified {
+    font-size: .7rem;
+    letter-spacing: .06em;
+  }
+}
