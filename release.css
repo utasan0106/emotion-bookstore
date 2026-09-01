@@ -575,11 +575,12 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 
 .shelf-entry {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   grid-template-areas:
     "number mark"
     "name   mark"
-    "tag    mark";
+    "tag    mark"
+    "media  media";
   align-items: baseline;
   gap: 6px 18px;
   padding: 26px 0 30px;
@@ -625,6 +626,44 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   color: var(--signal);
   font-size: 1.375rem;
   line-height: 1;
+}
+
+.shelf-entry-media {
+  grid-area: media;
+  min-width: 0;
+  margin: 18px 0 0;
+}
+.shelf-entry-media-frame {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid rgba(236, 231, 222, .16);
+  background: var(--hall-raised);
+}
+.shelf-entry-media-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(20,19,18,.08), rgba(20,19,18,.02) 65%, rgba(20,19,18,.18)),
+    linear-gradient(180deg, rgba(20,19,18,.02), rgba(20,19,18,.22));
+  pointer-events: none;
+}
+.shelf-entry-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(.68) brightness(.72) contrast(1.12);
+  transform: scale(1.01);
+}
+.shelf-entry-media-credit {
+  margin: 7px 0 0;
+  color: var(--chalk-dim);
+  font-size: .625rem;
+  line-height: 1.45;
+  letter-spacing: .02em;
 }
 
 .brand-home { text-decoration: none; }
@@ -860,6 +899,25 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 }
 
 /* ------------------------------------------------------------ 大きい画面 */
+
+@media (min-width: 821px) {
+  .shelf-entry {
+    grid-template-columns: minmax(0, 1fr) clamp(240px, 24vw, 340px) 28px;
+    grid-template-areas:
+      "number media mark"
+      "name   media mark"
+      "tag    media mark";
+    column-gap: 34px;
+    align-items: center;
+    padding: 28px 0;
+  }
+  .shelf-entry-media {
+    margin: 0;
+    align-self: center;
+  }
+  .shelf-entry-media-frame { aspect-ratio: 16 / 9; }
+  .shelf-mark { justify-self: end; }
+}
 
 @media (min-width: 821px) {
   :root { --page: 1200px; --gutter: 56px; }

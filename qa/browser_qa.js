@@ -123,12 +123,23 @@ function serve() {
         cityPaddingEqual: paddings.every((p) =>
           Math.abs(p[0] - paddings[0][0]) < 0.01 &&
           Math.abs(p[1] - paddings[0][1]) < 0.01),
+        cityPhotosRightOnDesktop: entries.every((entry) => {
+          const text = entry.querySelector('.shelf-tagline').getBoundingClientRect();
+          const media = entry.querySelector('.shelf-entry-media').getBoundingClientRect();
+          return window.innerWidth < 821 || media.left > text.left + text.width * .55;
+        }),
         h1: document.querySelectorAll('h1').length,
         lead: document.querySelector('h1').innerText.replace(/\s+/g, ''),
         endVisible: !document.querySelector('.end-plate').hidden,
         overflow: doc.scrollWidth > doc.clientWidth + 1, wide: wide.slice(0, 4),
         text: document.body.innerText,
-        homeCityImages: document.querySelectorAll('.shelf-entry img').length,
+        homeCityImages: [...document.querySelectorAll('.shelf-entry img')].map((img) => ({
+          src: img.getAttribute('src'),
+          sameOrigin: new URL(img.src).origin === location.origin,
+          loaded: img.complete && img.naturalWidth > 0,
+          alt: img.getAttribute('alt') || ''
+        })),
+        homeCityCredits: [...document.querySelectorAll('.shelf-entry-media-credit')].map((el) => el.textContent),
         detourItems: document.querySelectorAll('.detour-item').length,
         detourIframes: document.querySelectorAll('.detour-media iframe').length,
         detourVideoButtons: document.querySelectorAll('.detour-video-play').length,
@@ -157,13 +168,24 @@ function serve() {
       foyer.citySizesEqual === true, foyer);
     check(v.name, 'four_city_entries_use_equal_padding',
       foyer.cityPaddingEqual === true, foyer);
+    if (!v.mobile) {
+      check(v.name, 'four_city_photos_are_to_the_right_of_text',
+        foyer.cityPhotosRightOnDesktop === true, foyer);
+    }
     check(v.name, 'foyer_single_h1', foyer.h1 === 1, foyer.h1);
     check(v.name, 'foyer_lead_copy', foyer.lead === '今日は、どの街へ。', foyer.lead);
     check(v.name, 'foyer_finite_ending_shown', foyer.endVisible);
     check(v.name, 'foyer_no_horizontal_overflow', !foyer.overflow, foyer.wide);
     check(v.name, 'foyer_no_engagement_words',
       !FORBIDDEN.some((w) => foyer.text.includes(w)), FORBIDDEN.filter((w) => foyer.text.includes(w)));
-    check(v.name, 'home_city_entries_stay_text_only', foyer.homeCityImages === 0, foyer.homeCityImages);
+    check(v.name, 'home_city_entries_have_exactly_four_local_photos',
+      foyer.homeCityImages.length === 4 &&
+      foyer.homeCityImages.every((x) => x.sameOrigin && x.loaded && x.alt),
+      foyer.homeCityImages);
+    check(v.name, 'home_city_photo_credits_are_visible',
+      foyer.homeCityCredits.length === 4 &&
+      foyer.homeCityCredits.every((x) => /写真:/.test(x) && /CC BY/.test(x)),
+      foyer.homeCityCredits);
     check(v.name, 'weekly_detour_is_exactly_three', foyer.detourItems === 3, foyer.detourItems);
     check(v.name, 'weekly_detour_has_two_click_gated_videos', foyer.detourVideoButtons === 2, foyer.detourVideoButtons);
     check(v.name, 'weekly_detour_loads_no_iframe_before_click', foyer.detourIframes === 0, foyer.detourIframes);

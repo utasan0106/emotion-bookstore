@@ -69,6 +69,17 @@ else {
   if (detourRuntime.includes('i.ytimg.com')) failures.push('release.js: detour must not load YouTube thumbnail before click');
 }
 
+const releaseRuntime = read('release.js');
+if (!releaseRuntime.includes("class: 'shelf-entry-media'")) {
+  failures.push('release.js: Home city photo renderer missing');
+}
+if (!releaseRuntime.includes('shelf.heroMedia')) {
+  failures.push('release.js: Home city photos must reuse shelf.heroMedia');
+}
+if (/https?:\/\/[^'"]+\.(?:jpg|jpeg|png|webp)/i.test(releaseRuntime)) {
+  failures.push('release.js: Home city photo renderer must not introduce remote image URLs');
+}
+
 const ids = new Set();
 for (const shelf of shelves) {
   if (shelf.objects.length !== 3) failures.push(`${shelf.id}: expected exactly 3 objects, got ${shelf.objects.length}`);

@@ -65,6 +65,30 @@
 
   /* ---------------------------------------------------------------- 玄関 */
 
+  function shelfEntryMedia(shelf) {
+    var m = shelf && shelf.heroMedia;
+    if (!m || !m.url) return null;
+
+    var credit = ['写真: ' + (m.author || ''), m.source || '', m.license || '']
+      .filter(Boolean)
+      .join(' / ');
+
+    return h('figure', { class: 'shelf-entry-media' }, [
+      h('div', { class: 'shelf-entry-media-frame' }, [
+        h('img', {
+          src: m.url,
+          alt: m.alt || (shelf.area + 'の街の風景'),
+          loading: 'lazy',
+          decoding: 'async',
+          referrerpolicy: 'no-referrer',
+          width: m.width,
+          height: m.height
+        })
+      ]),
+      h('figcaption', { class: 'shelf-entry-media-credit', text: credit })
+    ]);
+  }
+
   function shelfEntry(shelf, index) {
     var n = String(index + 1).padStart(2, '0');
     return h('a', {
@@ -79,6 +103,7 @@
       ]),
       h('span', { class: 'shelf-name', text: shelf.name }),
       jpHeading('span', { class: 'shelf-tagline' }, null, shelf.tagline),
+      shelfEntryMedia(shelf),
       h('span', { class: 'shelf-mark', 'aria-hidden': 'true', text: '→' })
     ]);
   }
