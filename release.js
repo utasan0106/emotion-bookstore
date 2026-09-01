@@ -58,6 +58,36 @@
     return null;
   }
 
+  function setMeta(selector, value) {
+    var node = document.querySelector(selector);
+    if (node) node.setAttribute('content', value);
+  }
+
+  function syncShelfMetadata(shelf) {
+    if (!shelf || !shelf.id || !shelf.area || !shelf.name) return;
+    var canonicalUrl = 'https://emotionbookstore.com/shelf.html?shelf=' + encodeURIComponent(shelf.id);
+    var pageTitle = 'みんなの感情書店｜' + shelf.name;
+    var description = '感情書店の編集部が選んだ' + shelf.area +
+      'の場所・本・音楽・映画・催しを、3つだけ並べる文化案内です。';
+
+    document.title = pageTitle;
+
+    var canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.rel = 'canonical';
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', canonicalUrl);
+
+    setMeta('meta[name="description"]', description);
+    setMeta('meta[property="og:title"]', pageTitle);
+    setMeta('meta[property="og:description"]', description);
+    setMeta('meta[property="og:url"]', canonicalUrl);
+    setMeta('meta[name="twitter:title"]', pageTitle);
+    setMeta('meta[name="twitter:description"]', description);
+  }
+
   // 期限の切れた current を「まだ有効」として見せない。差し替えは人の編集でだけ
   // 行うので、client 側で勝手に別の Object へ置き換えることはしない。
   function shelfHasExpiredCurrent(shelf) {
@@ -879,7 +909,7 @@
       return;
     }
 
-    document.title = 'みんなの感情書店｜' + shelf.name;
+    syncShelfMetadata(shelf);
     document.body.setAttribute('data-shelf', shelf.id);
     var title = document.querySelector('.hero h1');
     if (title) {

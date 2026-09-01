@@ -15,6 +15,7 @@ for (const file of ['index.html','shelf.html','data.html','robots.txt','sitemap.
 if (!failures.length) {
   const index = read('index.html');
   const shelf = read('shelf.html');
+  const runtime = read('release.js');
   const data = read('data.html');
   const robots = read('robots.txt');
   const sitemap = read('sitemap.xml');
@@ -41,6 +42,26 @@ if (!failures.length) {
   if (!shelf.includes('name="twitter:title"') ||
       !shelf.includes('name="twitter:description"')) {
     failures.push('shelf.html: Twitter metadata missing');
+  }
+
+  if (shelf.includes('rel="canonical"')) {
+    failures.push('shelf.html: static canonical must remain absent because 4 shelves differ');
+  }
+
+  for (const required of [
+    'function syncShelfMetadata(shelf)',
+    "document.createElement('link')",
+    "canonical.rel = 'canonical'",
+    "https://emotionbookstore.com/shelf.html?shelf=",
+    `setMeta('meta[property=\"og:url\"]', canonicalUrl)`,
+    `setMeta('meta[name=\"twitter:title\"]', pageTitle)`,
+    "syncShelfMetadata(shelf);"
+  ]) {
+    if (!runtime.includes(required)) failures.push(`release.js: shelf canonical/social sync missing ${required}`);
+  }
+
+  if (!runtime.includes("if (id === 'tokyo') id = 'kichijoji';")) {
+    failures.push('release.js: legacy tokyo shelf normalization missing');
   }
 
   if (!/^User-agent: \*\nAllow: \/\n\nSitemap: https:\/\/emotionbookstore\.com\/sitemap\.xml\n$/.test(robots)) {
