@@ -34,10 +34,7 @@
 
   <header class="site-header">
     <p class="brand"><span class="brand-lockup"><img class="brand-lockup-image" src="./assets/brand/emotion-bookstore-lockup-reversed.png" alt="みんなの感情書店" width="1429" height="331" decoding="async"></span></p>
-    <div class="header-actions">
-      <p class="pilot-label">4つの街</p>
-      <button class="menu-trigger" id="siteMenuButton" type="button" aria-haspopup="dialog" aria-controls="siteMenu">MENU</button>
-    </div>
+    <button class="menu-trigger" id="siteMenuButton" type="button" aria-haspopup="dialog" aria-controls="siteMenu">MENU</button>
   </header>
 
   <dialog id="siteMenu" class="site-menu" aria-labelledby="siteMenuTitle">
@@ -46,6 +43,7 @@
         <p class="eyebrow">MENU</p>
         <button id="siteMenuClose" class="site-menu-close" type="button" aria-label="メニューを閉じる">閉じる</button>
       </div>
+
       <h2 id="siteMenuTitle" class="site-menu-title">4つの街</h2>
       <nav class="site-menu-nav" aria-label="街を選ぶ">
         <a class="site-menu-link" data-menu-shelf="kichijoji" href="./shelf.html?shelf=kichijoji"><span>吉祥寺</span><span aria-hidden="true">→</span></a>
@@ -53,7 +51,25 @@
         <a class="site-menu-link" data-menu-shelf="shimokitazawa" href="./shelf.html?shelf=shimokitazawa"><span>下北沢</span><span aria-hidden="true">→</span></a>
         <a class="site-menu-link" data-menu-shelf="jinbocho" href="./shelf.html?shelf=jinbocho"><span>神保町</span><span aria-hidden="true">→</span></a>
       </nav>
-      <p class="site-menu-home"><a href="./index.html">入口へ戻る</a></p>
+
+      <section class="site-menu-section" aria-labelledby="siteMenuDiscoverTitle">
+        <p id="siteMenuDiscoverTitle" class="eyebrow">見つける</p>
+        <nav class="site-menu-secondary" aria-label="ほかの見方">
+          <a class="site-menu-secondary-link" href="./index.html#weekly-detour"><span>今週の寄り道</span><span aria-hidden="true">→</span></a>
+          <a class="site-menu-secondary-link" href="./index.html#by-kind"><span>種類から見る</span><span aria-hidden="true">→</span></a>
+          <a class="site-menu-secondary-link" href="./suggest.html"><span>候補を教える</span><span aria-hidden="true">→</span></a>
+        </nav>
+      </section>
+
+      <section class="site-menu-section site-menu-favorites-section" aria-labelledby="siteMenuFavoritesTitle">
+        <p id="siteMenuFavoritesTitle" class="eyebrow">気になるリスト</p>
+        <div id="siteMenuFavorites" class="site-menu-favorites"></div>
+      </section>
+
+      <div class="site-menu-bottom">
+        <a class="site-menu-data-link" href="./data.html">データの扱い</a>
+        <a class="site-menu-entry-link" href="./index.html">入口へ戻る</a>
+      </div>
     </div>
   </dialog>
 
@@ -99,7 +115,7 @@
 
     <!-- 種類は新しい棚ではなく、いま並んでいる12件を横断して見るための索引。
          フィルタの pill 群にはしない。 -->
-    <section class="foyer by-kind" aria-labelledby="by-kind-title">
+    <section id="by-kind" class="foyer by-kind" aria-labelledby="by-kind-title">
       <h2 id="by-kind-title" class="entry-axis">種類から見る</h2>
       <nav id="categoryIndex" class="category-index" aria-labelledby="by-kind-title"></nav>
       <div id="categoryResults" class="category-results" aria-live="polite"></div>
@@ -111,7 +127,7 @@
         <p class="eyebrow">今日の街は、ここまで</p>
         <h2 id="end-title"><span class="end-phrase">街は、</span><wbr><span class="end-phrase">4つだけです。</span></h2>
       </section>
-      <aside class="weekly-detour" aria-labelledby="detour-title">
+      <aside id="weekly-detour" class="weekly-detour" aria-labelledby="detour-title">
         <p class="eyebrow" id="detour-label">今週の寄り道</p>
         <h2 id="detour-title" class="detour-theme"></h2>
         <div id="detourList" class="detour-list"></div>
@@ -126,7 +142,7 @@
   </main>
 
   <footer class="site-footer">
-    <p class="privacy-note">サービス改善のためGoogle Analyticsでページ表示と操作段階を計測します。候補入力の内容や、閲覧した個別の場所・作品名は独自イベントへ送りません。広告パーソナライズや個人ごとの推薦には使いません。 <a href="./data.html">データの扱い</a></p>
+    <p class="affiliate-disclosure">Amazon のアソシエイトとして、みんなの感情書店は適格販売により収入を得ています。楽天アフィリエイトを利用しています。</p>
   </footer>
 
   <div id="live" class="sr-only" role="status" aria-live="polite"></div>

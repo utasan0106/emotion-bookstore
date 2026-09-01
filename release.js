@@ -66,6 +66,79 @@
 
   /* ---------------------------------------------------------- 共通 MENU */
 
+  var WEEKLY_FAVORITES_KEY = 'emotionBookstore.v3.weeklyFavorites.v1';
+
+  function readWeeklyFavorites() {
+    try {
+      var raw = localStorage.getItem(WEEKLY_FAVORITES_KEY);
+      var items = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(items)) items = [];
+      var now = Date.now();
+      var liveItems = items.filter(function (item) {
+        if (!item || !item.id || !item.shelfId || !item.title) return false;
+        if (!item.expiresAt) return true;
+        var at = Date.parse(item.expiresAt);
+        return isNaN(at) || at > now;
+      });
+      if (liveItems.length !== items.length) localStorage.setItem(WEEKLY_FAVORITES_KEY, JSON.stringify(liveItems));
+      return liveItems;
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function writeWeeklyFavorites(items) {
+    try {
+      localStorage.setItem(WEEKLY_FAVORITES_KEY, JSON.stringify(items));
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function weeklyFavoriteRecord(shelf, feature) {
+    return {
+      id: 'weekly:' + shelf.id + ':' + (feature.expiresAt || feature.title),
+      shelfId: shelf.id,
+      shelfName: shelf.area || shelf.name || '',
+      title: feature.title,
+      dateLabel: feature.dateLabel || '',
+      expiresAt: feature.expiresAt || ''
+    };
+  }
+
+  function isWeeklyFavorite(id) {
+    return readWeeklyFavorites().some(function (item) { return item.id === id; });
+  }
+
+  function toggleWeeklyFavorite(record) {
+    var items = readWeeklyFavorites();
+    var found = items.some(function (item) { return item.id === record.id; });
+    var next = found ? items.filter(function (item) { return item.id !== record.id; }) : items.concat([record]);
+    return { saved: !found, ok: writeWeeklyFavorites(next) };
+  }
+
+  function renderMenuFavorites() {
+    var box = document.getElementById('siteMenuFavorites');
+    if (!box) return;
+    box.textContent = '';
+    var items = readWeeklyFavorites();
+    if (!items.length) {
+      box.appendChild(h('p', { class: 'site-menu-favorites-empty', text: 'まだありません。' }));
+      return;
+    }
+    items.forEach(function (item) {
+      box.appendChild(h('a', {
+        class: 'site-menu-favorite-link',
+        href: './shelf.html?shelf=' + encodeURIComponent(item.shelfId)
+      }, [
+        h('span', { class: 'site-menu-favorite-town', text: item.shelfName }),
+        h('span', { class: 'site-menu-favorite-title', text: item.title }),
+        h('span', { class: 'site-menu-favorite-mark', 'aria-hidden': 'true', text: '→' })
+      ]));
+    });
+  }
+
   function initSiteMenu() {
     var button = document.getElementById('siteMenuButton');
     var menu = document.getElementById('siteMenu');
@@ -75,12 +148,10 @@
     function openMenu() {
       var current = document.body.getAttribute('data-shelf') || '';
       Array.prototype.forEach.call(menu.querySelectorAll('[data-menu-shelf]'), function (link) {
-        if (current && link.getAttribute('data-menu-shelf') === current) {
-          link.setAttribute('aria-current', 'page');
-        } else {
-          link.removeAttribute('aria-current');
-        }
+        if (current && link.getAttribute('data-menu-shelf') === current) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
       });
+      renderMenuFavorites();
       if (typeof menu.showModal === 'function') menu.showModal();
       else menu.setAttribute('open', '');
     }
@@ -93,49 +164,80 @@
 
     button.addEventListener('click', openMenu);
     close.addEventListener('click', closeMenu);
-    menu.addEventListener('click', function (event) {
-      if (event.target === menu) closeMenu();
-    });
-    menu.addEventListener('cancel', function (event) {
-      event.preventDefault();
-      closeMenu();
-    });
+    menu.addEventListener('click', function (event) { if (event.target === menu) closeMenu(); });
+    menu.addEventListener('cancel', function (event) { event.preventDefault(); closeMenu(); });
+  }
+
+  function googleCalendarUrl(feature) {
+    var params = new URLSearchParams();
+    params.set('action', 'TEMPLATE');
+    params.set('text', feature.title || '');
+    params.set('dates', feature.calendarDates || '');
+    params.set('details', (feature.why || '') + '\n' + (feature.actionUrl || ''));
+    params.set('location', feature.venue || '');
+    return 'https://calendar.google.com/calendar/render?' + params.toString();
   }
 
   function renderWeeklyFeature(shelf) {
     var section = document.getElementById('weeklyFeature');
     var box = document.getElementById('weeklyFeatureContent');
     if (!section || !box) return;
-
     section.hidden = true;
     box.textContent = '';
-
     var feature = shelf && shelf.weeklyFeature;
     if (!feature) return;
-
     var expires = Date.parse(feature.expiresAt || '');
     if (!isNaN(expires) && expires <= Date.now()) return;
+
+    var favorite = weeklyFavoriteRecord(shelf, feature);
+    var favoriteButton = h('button', {
+      class: 'weekly-feature-secondary weekly-feature-favorite',
+      type: 'button',
+      'aria-pressed': isWeeklyFavorite(favorite.id) ? 'true' : 'false'
+    });
+    function paintFavorite() {
+      var saved = isWeeklyFavorite(favorite.id);
+      favoriteButton.setAttribute('aria-pressed', saved ? 'true' : 'false');
+      favoriteButton.textContent = saved ? '気になる済み' : '気になる';
+    }
+    favoriteButton.addEventListener('click', function () {
+      var result = toggleWeeklyFavorite(favorite);
+      if (!result.ok) { favoriteButton.textContent = '保存できません'; return; }
+      paintFavorite();
+      renderMenuFavorites();
+    });
+    paintFavorite();
+
+    var calendarLink = h('a', {
+      class: 'weekly-feature-secondary weekly-feature-calendar',
+      href: googleCalendarUrl(feature),
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      referrerpolicy: 'no-referrer'
+    }, [
+      h('span', { text: 'Googleカレンダーに追加' }),
+      h('span', { 'aria-hidden': 'true', text: '↗' })
+    ]);
 
     box.appendChild(h('article', { class: 'weekly-feature-card' }, [
       h('div', { class: 'weekly-feature-meta' }, [
         h('p', { class: 'weekly-feature-date', text: feature.dateLabel }),
         h('p', { class: 'weekly-feature-venue', text: feature.venue })
       ]),
-      h('h2', { id: 'weeklyFeatureTitle', class: 'weekly-feature-title', text: feature.title }),
+      jpHeading('h2', { id: 'weeklyFeatureTitle', class: 'weekly-feature-title' }, feature.titlePhrases, feature.title),
       h('p', { class: 'weekly-feature-why', text: feature.why }),
-      h('p', { class: 'weekly-feature-action' }, [
+      h('div', { class: 'weekly-feature-actions' }, [
         h('a', {
+          class: 'weekly-feature-official',
           href: feature.actionUrl,
           target: '_blank',
           rel: 'noopener noreferrer',
           referrerpolicy: 'no-referrer'
-        }, [
-          h('span', { text: feature.actionLabel }),
-          h('span', { 'aria-hidden': 'true', text: '↗' })
-        ])
+        }, [h('span', { text: feature.actionLabel }), h('span', { 'aria-hidden': 'true', text: '↗' })]),
+        favoriteButton,
+        calendarLink
       ])
     ]));
-
     section.hidden = false;
   }
 
@@ -285,12 +387,29 @@
     return null;
   }
 
+  function detourDestinations(item) {
+    var items = Array.isArray(item.destinations) ? item.destinations : [];
+    if (!items.length) return null;
+    return h('div', { class: 'detour-destinations' }, items.map(function (destination) {
+      return h('a', {
+        class: 'detour-destination' + (destination.affiliate ? ' is-affiliate' : ''),
+        href: destination.url,
+        target: '_blank',
+        rel: destination.affiliate ? 'sponsored noopener noreferrer' : 'noopener noreferrer',
+        referrerpolicy: 'no-referrer',
+        text: destination.label + (destination.affiliate ? '（PR）' : '')
+      });
+    }));
+  }
+
   function renderDetour() {
     var box = document.getElementById('detourList');
     var title = document.getElementById('detour-title');
     if (!box || !title || !CONTENT || !CONTENT.detour) return;
     var d = CONTENT.detour;
-    title.textContent = d.theme || '';
+    title.textContent = '';
+    var theme = jpHeading('span', { class: 'detour-theme-copy' }, d.themePhrases, d.theme || '');
+    while (theme.firstChild) title.appendChild(theme.firstChild);
     box.textContent = '';
     (d.items || []).slice(0, 3).forEach(function (item) {
       box.appendChild(h('article', { class: 'detour-item' }, [
@@ -304,7 +423,8 @@
             class: 'detour-link', href: item.actionUrl, target: '_blank',
             rel: 'noopener noreferrer', referrerpolicy: 'no-referrer', text: item.actionLabel
           })
-        ])
+        ]),
+        detourDestinations(item)
       ]));
     });
   }

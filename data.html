@@ -18,9 +18,45 @@
   <a class="skip-link" href="#main">本文へ移動</a>
 
   <header class="site-header">
-    <p class="brand"><a class="brand-home" href="./index.html"><span class="brand-name">みんなの感情書店</span></a></p>
-    <p class="pilot-label">データの扱い</p>
+    <p class="brand"><a class="brand-home brand-lockup" href="./index.html"><img class="brand-lockup-image" src="./assets/brand/emotion-bookstore-lockup-reversed.png" alt="みんなの感情書店" width="1429" height="331" decoding="async"></a></p>
+    <button class="menu-trigger" id="siteMenuButton" type="button" aria-haspopup="dialog" aria-controls="siteMenu">MENU</button>
   </header>
+
+  <dialog id="siteMenu" class="site-menu" aria-labelledby="siteMenuTitle">
+    <div class="site-menu-shell">
+      <div class="site-menu-head">
+        <p class="eyebrow">MENU</p>
+        <button id="siteMenuClose" class="site-menu-close" type="button" aria-label="メニューを閉じる">閉じる</button>
+      </div>
+
+      <h2 id="siteMenuTitle" class="site-menu-title">4つの街</h2>
+      <nav class="site-menu-nav" aria-label="街を選ぶ">
+        <a class="site-menu-link" data-menu-shelf="kichijoji" href="./shelf.html?shelf=kichijoji"><span>吉祥寺</span><span aria-hidden="true">→</span></a>
+        <a class="site-menu-link" data-menu-shelf="koenji" href="./shelf.html?shelf=koenji"><span>高円寺</span><span aria-hidden="true">→</span></a>
+        <a class="site-menu-link" data-menu-shelf="shimokitazawa" href="./shelf.html?shelf=shimokitazawa"><span>下北沢</span><span aria-hidden="true">→</span></a>
+        <a class="site-menu-link" data-menu-shelf="jinbocho" href="./shelf.html?shelf=jinbocho"><span>神保町</span><span aria-hidden="true">→</span></a>
+      </nav>
+
+      <section class="site-menu-section" aria-labelledby="siteMenuDiscoverTitle">
+        <p id="siteMenuDiscoverTitle" class="eyebrow">見つける</p>
+        <nav class="site-menu-secondary" aria-label="ほかの見方">
+          <a class="site-menu-secondary-link" href="./index.html#weekly-detour"><span>今週の寄り道</span><span aria-hidden="true">→</span></a>
+          <a class="site-menu-secondary-link" href="./index.html#by-kind"><span>種類から見る</span><span aria-hidden="true">→</span></a>
+          <a class="site-menu-secondary-link" href="./suggest.html"><span>候補を教える</span><span aria-hidden="true">→</span></a>
+        </nav>
+      </section>
+
+      <section class="site-menu-section site-menu-favorites-section" aria-labelledby="siteMenuFavoritesTitle">
+        <p id="siteMenuFavoritesTitle" class="eyebrow">気になるリスト</p>
+        <div id="siteMenuFavorites" class="site-menu-favorites"></div>
+      </section>
+
+      <div class="site-menu-bottom">
+        <a class="site-menu-data-link" href="./data.html">データの扱い</a>
+        <a class="site-menu-entry-link" href="./index.html">入口へ戻る</a>
+      </div>
+    </div>
+  </dialog>
 
   <main id="main">
     <section class="site-intro" aria-label="このサイトについて">
@@ -38,6 +74,8 @@
         <p>トップページの「週末の前の一本」は、ページを表示しただけではYouTubeへ接続しません。「31秒の動画を再生」を押した場合だけ、YouTubeのプライバシー強化モード（youtube-nocookie.com）を読み込みます。その際、emotionbookstore.com のドメイン情報など、動画の表示に必要な通信がYouTube側へ送られます。</p>
         <p>動画の再生はGA4のオン／オフとは別の操作です。GA4をオフにしていても、利用者が動画の再生を押した場合はYouTubeへの通信が発生します。感情書店から候補入力や閲覧した個別Object名をYouTubeへ付加して送りません。</p>
         <p>候補入力の名称・URL・自由記述・候補文や、閲覧した個別の場所・作品の名前・IDを、感情書店が定義する独自イベントの項目として送りません。</p>
+        <p>「気になる」は、このブラウザのlocalStorageに公開中の特集名・街・期限だけを保存します。感情書店のサーバーやGA4へ「気になる」の内容を送りません。</p>
+        <p>Amazon・楽天への購入リンクには、紹介料の対象となるアフィリエイト識別子を含む場合があります。Amazon のアソシエイトとして、みんなの感情書店は適格販売により収入を得ています。楽天アフィリエイトを利用しています。</p>
         <p>戻って利用されたかを集計するため、GA4の <code>_ga</code> Cookieを使います。感情書店側で設定する有効期間は60日です。</p>
         <p>広告のパーソナライズ、個人ごとの推薦、感情・性格の推定、人気順・収益順で棚を並べるためには使いません。</p>
         <p>GA4で「公式ページを開いた」ことは確認できますが、その後に実際に行った・見た・買った等の行動まで断定しません。</p>
@@ -60,6 +98,7 @@
     <p class="privacy-note">計測はemotionbookstore.comの本番ページだけで有効になります。Do Not Trackが有効な場合、またはこのブラウザで計測をオフにした場合は送信しません。</p>
   </footer>
 
+  <script src="./release.js"></script>
   <script src="./analytics-v3.js"></script>
 </body>
 </html>

@@ -40,11 +40,16 @@ window.V3_RELEASE_CONTENT = {
     label: '今週の寄り道',
     weekOf: '2026-09-01',
     theme: 'ひとりで歩くと、街は少し違って見える。',
+    themePhrases: ['ひとりで歩くと、', '街は少し違って見える。'],
     items: [
       {
         kind: '本', title: 'すべて真夜中の恋人たち', creator: '川上未映子',
         why: '街の名前を説明する本ではなく、真夜中をひとりで歩く時間から、灯りや距離、人との間合いを感じ直すための一冊。',
         actionLabel: '講談社で見る', actionUrl: 'https://www.kodansha.co.jp/book/products/0000206651',
+        destinations: [
+          { label: 'Amazonで見る', url: 'https://www.amazon.co.jp/dp/4062779404?tag=uta0106-22', affiliate: true },
+          { label: '楽天ブックスで見る', url: 'https://hb.afl.rakuten.co.jp/hgc/5590cc07.86ee74b4.5590cc08.a766f047/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F12919330%2F&m=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F12919330%2F', affiliate: true }
+        ],
         media: {
           kind: 'publisher-link',
           sourceLabel: '書影は講談社公式ページで見る',
@@ -55,6 +60,9 @@ window.V3_RELEASE_CONTENT = {
         kind: '映画', title: 'PERFECT DAYS', creator: 'ヴィム・ヴェンダース 監督',
         why: '名所を巡る映画ではなく、同じ道と同じ仕事の反復のなかで、毎日の街が少しずつ違って見えてくる一本。',
         actionLabel: '公式サイトで見る', actionUrl: 'https://www.perfectdays-movie.jp/story/',
+        destinations: [
+          { label: 'Prime Videoで見る', url: 'https://www.primevideo.com/-/ja/detail/0IBT9N6EWCZ8AEEA4511KKYAE3', affiliate: false }
+        ],
         media: {
           kind: 'youtube',
           videoId: '15crm4zuB04',
@@ -68,6 +76,10 @@ window.V3_RELEASE_CONTENT = {
         kind: '音楽', title: 'ナイトクルージング', creator: 'フィッシュマンズ',
         why: 'どこかの街を名指しするのではなく、夜に移動するときの速度や遠さ、街灯のあいだを漂う感覚を置く一曲。',
         actionLabel: 'Universal Musicで見る', actionUrl: 'https://www.universal-music.co.jp/fishmans/discography/',
+        destinations: [
+          { label: 'Spotifyで聴く', url: 'https://open.spotify.com/track/36Thm3dOVuCR4SFyzwJioN', affiliate: false },
+          { label: 'Apple Musicで聴く', url: 'https://music.apple.com/jp/search?term=%E3%83%95%E3%82%A3%E3%83%83%E3%82%B7%E3%83%A5%E3%83%9E%E3%83%B3%E3%82%BA%20%E3%83%8A%E3%82%A4%E3%83%88%E3%82%AF%E3%83%AB%E3%83%BC%E3%82%B8%E3%83%B3%E3%82%B0', affiliate: false }
+        ],
         media: {
           kind: 'youtube',
           videoId: 'iy-YU6QHEQY',
@@ -88,6 +100,8 @@ window.V3_RELEASE_CONTENT = {
       area: '吉祥寺',
       weeklyFeature: {
         title: '井の頭アートマーケッツ',
+        titlePhrases: ['井の頭アートマーケッツ'],
+        calendarDates: '20260905/20260907',
         dateLabel: '9月5日（土）– 6日（日） 9:00–17:00',
         venue: '井の頭恩賜公園',
         why: '公園を通過するだけでなく、手づくりの作品とパフォーマンスが水辺に戻ってくる週末。街と公園の境目を見る一件として。',
@@ -205,6 +219,8 @@ window.V3_RELEASE_CONTENT = {
       area: '高円寺',
       weeklyFeature: {
         title: 'セシオン杉並まつり2026',
+        titlePhrases: ['セシオン杉並まつり', '2026'],
+        calendarDates: '20260905/20260907',
         dateLabel: '9月5日（土）– 6日（日） 10:00–15:00',
         venue: 'セシオン杉並',
         why: '阿波おどりの余韻が残る高円寺で、ピアノ、アート縁日、ちびっこ阿波おどりまで同じ場所に集まる二日間。街の文化が世代をまたぐところを見るために。',
@@ -328,6 +344,8 @@ window.V3_RELEASE_CONTENT = {
       area: '下北沢',
       weeklyFeature: {
         title: 'Outside dandy 一日限りの復活公演',
+        titlePhrases: ['Outside dandy ', '一日限りの復活公演'],
+        calendarDates: '20260905/20260906',
         dateLabel: '9月5日（土） OPEN 12:00 / START 12:30',
         venue: '下北沢SHELTER',
         why: '常設のライブハウスが、その日だけ別の時間を呼び戻す。一日限りの復活公演から、下北沢に積もっている音楽の時間を見る一件。',
@@ -465,6 +483,8 @@ window.V3_RELEASE_CONTENT = {
       area: '神保町',
       weeklyFeature: {
         title: '『まごわやさしい』3D原画展',
+        titlePhrases: ['『まごわやさしい』', '3D原画展'],
+        calendarDates: '20260902/20260916',
         dateLabel: '9月2日（水）– 15日（火） 11:00–18:00',
         venue: 'ブックハウスカフェ 1F ガリバー',
         why: '絵本の原画を平面ではなく3D作品として見る展示。書店街で、本になる前の素材と制作の痕跡へ寄れる一件として。',

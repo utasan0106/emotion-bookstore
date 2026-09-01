@@ -33,8 +33,14 @@ if (shelves[0] && shelves[0].role !== 'flagship') failures.push('kichijoji must 
 
 for (const shelf of shelves) {
   const wf = shelf.weeklyFeature || {};
-  for (const key of ['title','dateLabel','venue','why','actionLabel','actionUrl','verifiedAt','expiresAt']) {
+  for (const key of ['title','titlePhrases','calendarDates','dateLabel','venue','why','actionLabel','actionUrl','verifiedAt','expiresAt']) {
     if (!wf[key]) failures.push(`${shelf.id}: weeklyFeature missing ${key}`);
+  }
+  if (Array.isArray(wf.titlePhrases) && wf.titlePhrases.join('') !== wf.title) {
+    failures.push(`${shelf.id}: weeklyFeature titlePhrases must join back to title`);
+  }
+  if (wf.calendarDates && !/^\d{8}\/\d{8}$/.test(wf.calendarDates)) {
+    failures.push(`${shelf.id}: weeklyFeature calendarDates must be YYYYMMDD/YYYYMMDD`);
   }
   if (wf.actionUrl && !/^https:\/\//.test(wf.actionUrl)) failures.push(`${shelf.id}: weeklyFeature actionUrl must be https`);
   if (wf.expiresAt && isNaN(Date.parse(wf.expiresAt))) failures.push(`${shelf.id}: weeklyFeature expiresAt invalid`);
@@ -70,6 +76,10 @@ else {
       if (!x[key]) failures.push(`detour ${x.kind}: missing ${key}`);
     }
     if (!/^https:\/\//.test(x.actionUrl || '')) failures.push(`detour ${x.kind}: actionUrl must be https`);
+    if (!Array.isArray(x.destinations) || !x.destinations.length) failures.push(`detour ${x.kind}: destinations required`);
+    for (const d of (x.destinations || [])) {
+      if (!d.label || !/^https:\/\//.test(d.url || '')) failures.push(`detour ${x.kind}: invalid destination`);
+    }
     const m = x.media || {};
     if (!['cover','publisher-link','youtube'].includes(m.kind)) failures.push(`detour ${x.kind}: invalid media.kind`);
     if (m.kind === 'cover') {
@@ -224,6 +234,40 @@ if (!menuRuntime.includes('function initSiteMenu()')) failures.push('release.js:
 if (!menuRuntime.includes('function renderWeeklyFeature(shelf)')) failures.push('release.js: weekly feature runtime missing');
 if (!menuRuntime.includes('renderWeeklyFeature(shelf);')) failures.push('release.js: weekly feature must render from selected shelf');
 
+const FINAL_AMAZON_TAG = 'uta0106-22';
+const FINAL_RAKUTEN_AFFILIATE_ID = '5590cc07.86ee74b4.5590cc08.a766f047';
+const finalContent = read('release_content.js');
+if (!finalContent.includes(FINAL_AMAZON_TAG)) failures.push('Amazon tracking ID missing');
+if (!finalContent.includes(FINAL_RAKUTEN_AFFILIATE_ID)) failures.push('Rakuten affiliate ID missing');
+if (!finalContent.includes('open.spotify.com/track/36Thm3dOVuCR4SFyzwJioN')) failures.push('Spotify destination missing');
+if (!finalContent.includes('music.apple.com/jp/search?')) failures.push('Apple Music destination missing');
+if (!finalContent.includes('primevideo.com/-/ja/detail/0IBT9N6EWCZ8AEEA4511KKYAE3')) failures.push('Prime Video destination missing');
+
+const finalRuntime = read('release.js');
+for (const required of [
+  'emotionBookstore.v3.weeklyFavorites.v1',
+  'function renderMenuFavorites()',
+  'https://calendar.google.com/calendar/render?',
+  'function detourDestinations(item)'
+]) {
+  if (!finalRuntime.includes(required)) failures.push(`release.js: final UI runtime missing ${required}`);
+}
+
+for (const page of ['index.html','shelf.html','suggest.html']) {
+  const src = read(page);
+  if (src.includes('<p class="pilot-label">4つの街</p>')) failures.push(`${page}: header must not show 4つの街 beside MENU`);
+  for (const label of ['今週の寄り道','種類から見る','候補を教える','気になるリスト','データの扱い']) {
+    if (!src.includes(label)) failures.push(`${page}: MENU missing ${label}`);
+  }
+  if (!src.includes('Amazon のアソシエイトとして、みんなの感情書店は適格販売により収入を得ています。')) {
+    failures.push(`${page}: Amazon disclosure missing`);
+  }
+}
+const dataPageFinal = read('data.html');
+if (!dataPageFinal.includes('気になる') || !dataPageFinal.includes('localStorage')) failures.push('data.html: favorites storage explanation missing');
+if (!dataPageFinal.includes('Amazon のアソシエイトとして')) failures.push('data.html: affiliate explanation missing');
+if (!dataPageFinal.includes('id="siteMenuButton"')) failures.push('data.html: MENU missing');
+
 const responsiveCss = read('release.css');
 for (const required of [
   '.site-explainer .explainer-line',
@@ -364,9 +408,24 @@ for (const banned of ['アカウント', 'ログイン', 'メールアドレス'
 const js = read('release.js');
 if (!js.includes("media-frame card-media media-plate list-plate")) failures.push('release.js: shelf list cards must be typography-only');
 const contentJs = read('release_content.js');
-for (const token of ['localStorage', 'sessionStorage', 'indexedDB', 'sendBeacon', 'gtag(', 'fetch(',
+for (const token of ['sessionStorage', 'indexedDB', 'sendBeacon', 'gtag(', 'fetch(',
   'XMLHttpRequest', 'serviceWorker', 'caches.', 'navigator.storage']) {
   if (js.includes(token)) failures.push(`forbidden runtime token: ${token}`);
+}
+// localStorage は「今週の特集 > 気になる」専用キーだけを許可する。
+// それ以外の保存用途へ広がったらFAIL。
+const FAVORITES_STORAGE_KEY = "emotionBookstore.v3.weeklyFavorites.v1";
+if (!js.includes(`var WEEKLY_FAVORITES_KEY = '${FAVORITES_STORAGE_KEY}';`)) {
+  failures.push('release.js: weekly favorites storage key missing');
+}
+const localStorageCalls = js.match(/localStorage\.(?:getItem|setItem|removeItem|clear)\([^;\n]*/g) || [];
+if (localStorageCalls.length !== 3) {
+  failures.push(`release.js: expected exactly 3 localStorage calls for weekly favorites, got ${localStorageCalls.length}`);
+}
+for (const call of localStorageCalls) {
+  if (!call.includes('WEEKLY_FAVORITES_KEY')) {
+    failures.push(`release.js: unapproved localStorage call (${call})`);
+  }
 }
 const html = read('index.html') + read('shelf.html') + read('suggest.html');
 const runtime = [html, js, contentJs].join('\n');
