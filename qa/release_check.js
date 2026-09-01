@@ -329,8 +329,10 @@ if ((read('suggest.html').match(/<h1\b/g) || []).length !== 1) failures.push('su
 /* ---- 玄関と終わりの言い回し ------------------------------------------ */
 const foyer = read('index.html');
 if (!foyer.includes('みんなの感情書店')) failures.push('foyer eyebrow missing');
-if (!foyer.includes('今日は、')) failures.push('foyer lead missing');
-if (!foyer.includes('どの街へ。')) failures.push('foyer lead missing');
+const visibleCityH1 = '<h1 id="hero-title"><span class="hero-line">今日は、</span><span class="hero-line">どの街へ。</span></h1>';
+if (!foyer.includes(visibleCityH1)) {
+  failures.push('foyer visible H1 must be 今日は、どの街へ。');
+}
 const shelfHtml = read('shelf.html');
 const endPlate = (shelfHtml.match(/<section class="end-plate"[\s\S]*?<\/section>/) || [''])[0];
 const endText = endPlate.replace(/<[^>]*>/g, '').replace(/\s+/g, '');
