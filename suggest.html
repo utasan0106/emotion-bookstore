@@ -31,8 +31,28 @@
 
   <header class="site-header">
     <p class="brand"><a class="brand-home brand-lockup" href="./index.html"><img class="brand-lockup-image" src="./assets/brand/emotion-bookstore-lockup-reversed.png" alt="みんなの感情書店" width="1429" height="331" decoding="async"></a></p>
-    <p class="pilot-label">候補を教える</p>
+    <div class="header-actions">
+      <p class="pilot-label">候補を教える</p>
+      <button class="menu-trigger" id="siteMenuButton" type="button" aria-haspopup="dialog" aria-controls="siteMenu">MENU</button>
+    </div>
   </header>
+
+  <dialog id="siteMenu" class="site-menu" aria-labelledby="siteMenuTitle">
+    <div class="site-menu-shell">
+      <div class="site-menu-head">
+        <p class="eyebrow">MENU</p>
+        <button id="siteMenuClose" class="site-menu-close" type="button" aria-label="メニューを閉じる">閉じる</button>
+      </div>
+      <h2 id="siteMenuTitle" class="site-menu-title">4つの街</h2>
+      <nav class="site-menu-nav" aria-label="街を選ぶ">
+        <a class="site-menu-link" data-menu-shelf="kichijoji" href="./shelf.html?shelf=kichijoji"><span>吉祥寺</span><span aria-hidden="true">→</span></a>
+        <a class="site-menu-link" data-menu-shelf="koenji" href="./shelf.html?shelf=koenji"><span>高円寺</span><span aria-hidden="true">→</span></a>
+        <a class="site-menu-link" data-menu-shelf="shimokitazawa" href="./shelf.html?shelf=shimokitazawa"><span>下北沢</span><span aria-hidden="true">→</span></a>
+        <a class="site-menu-link" data-menu-shelf="jinbocho" href="./shelf.html?shelf=jinbocho"><span>神保町</span><span aria-hidden="true">→</span></a>
+      </nav>
+      <p class="site-menu-home"><a href="./index.html">入口へ戻る</a></p>
+    </div>
+  </dialog>
 
   <main id="main">
     <section class="site-intro" aria-label="このサイトについて">

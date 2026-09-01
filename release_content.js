@@ -86,6 +86,16 @@ window.V3_RELEASE_CONTENT = {
       role: 'flagship',
       tagline: '吉祥寺を、3つだけ。',
       area: '吉祥寺',
+      weeklyFeature: {
+        title: '井の頭アートマーケッツ',
+        dateLabel: '9月5日（土）– 6日（日） 9:00–17:00',
+        venue: '井の頭恩賜公園',
+        why: '公園を通過するだけでなく、手づくりの作品とパフォーマンスが水辺に戻ってくる週末。街と公園の境目を見る一件として。',
+        actionLabel: '吉祥寺公式サイトで見る',
+        actionUrl: 'https://kichijoji.me/events/%E4%BA%95%E3%81%AE%E9%A0%AD%E3%82%A2%E3%83%BC%E3%83%88%E3%83%9E%E3%83%BC%E3%82%B1%E3%83%83%E3%83%84/',
+        verifiedAt: '2026-09-01T17:30:00+09:00',
+        expiresAt: '2026-09-06T17:00:00+09:00'
+      },
       entryMedia: {
         kind: 'illustration',
         url: './assets/entry-kichijoji.webp', width: 1942, height: 809,
@@ -193,6 +203,16 @@ window.V3_RELEASE_CONTENT = {
       role: 'town',
       tagline: '高円寺を、3つだけ。',
       area: '高円寺',
+      weeklyFeature: {
+        title: 'セシオン杉並まつり2026',
+        dateLabel: '9月5日（土）– 6日（日） 10:00–15:00',
+        venue: 'セシオン杉並',
+        why: '阿波おどりの余韻が残る高円寺で、ピアノ、アート縁日、ちびっこ阿波おどりまで同じ場所に集まる二日間。街の文化が世代をまたぐところを見るために。',
+        actionLabel: 'セシオン杉並公式で見る',
+        actionUrl: 'https://www.sesion-suginami.jp/event/terrace/7490',
+        verifiedAt: '2026-09-01T17:30:00+09:00',
+        expiresAt: '2026-09-06T15:00:00+09:00'
+      },
       entryMedia: {
         kind: 'illustration',
         url: './assets/entry-koenji.webp', width: 1942, height: 809,
@@ -306,6 +326,16 @@ window.V3_RELEASE_CONTENT = {
       role: 'town',
       tagline: '下北沢を、3つだけ。',
       area: '下北沢',
+      weeklyFeature: {
+        title: 'Outside dandy 一日限りの復活公演',
+        dateLabel: '9月5日（土） OPEN 12:00 / START 12:30',
+        venue: '下北沢SHELTER',
+        why: '常設のライブハウスが、その日だけ別の時間を呼び戻す。一日限りの復活公演から、下北沢に積もっている音楽の時間を見る一件。',
+        actionLabel: 'SHELTER公式で見る',
+        actionUrl: 'https://www.loft-prj.co.jp/schedule/shelter/schedule?schedulemonth=9&scheduleyear=2026',
+        verifiedAt: '2026-09-01T17:30:00+09:00',
+        expiresAt: '2026-09-05T23:59:59+09:00'
+      },
       entryMedia: {
         kind: 'illustration',
         url: './assets/entry-shimokitazawa.webp', width: 1942, height: 809,
@@ -433,6 +463,16 @@ window.V3_RELEASE_CONTENT = {
       role: 'town',
       tagline: '神保町を、3つだけ。',
       area: '神保町',
+      weeklyFeature: {
+        title: '『まごわやさしい』3D原画展',
+        dateLabel: '9月2日（水）– 15日（火） 11:00–18:00',
+        venue: 'ブックハウスカフェ 1F ガリバー',
+        why: '絵本の原画を平面ではなく3D作品として見る展示。書店街で、本になる前の素材と制作の痕跡へ寄れる一件として。',
+        actionLabel: 'ブックハウスカフェ公式で見る',
+        actionUrl: 'https://bookhousecafe.jp/exhibition/content/2461',
+        verifiedAt: '2026-09-01T17:30:00+09:00',
+        expiresAt: '2026-09-15T17:00:00+09:00'
+      },
       entryMedia: {
         kind: 'illustration',
         url: './assets/entry-jinbocho.webp', width: 1942, height: 809,

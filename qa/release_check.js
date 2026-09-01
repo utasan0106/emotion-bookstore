@@ -32,6 +32,13 @@ if (shelves.filter((s) => s.role === 'flagship').length !== 1) failures.push('ex
 if (shelves[0] && shelves[0].role !== 'flagship') failures.push('kichijoji must be the flagship and come first');
 
 for (const shelf of shelves) {
+  const wf = shelf.weeklyFeature || {};
+  for (const key of ['title','dateLabel','venue','why','actionLabel','actionUrl','verifiedAt','expiresAt']) {
+    if (!wf[key]) failures.push(`${shelf.id}: weeklyFeature missing ${key}`);
+  }
+  if (wf.actionUrl && !/^https:\/\//.test(wf.actionUrl)) failures.push(`${shelf.id}: weeklyFeature actionUrl must be https`);
+  if (wf.expiresAt && isNaN(Date.parse(wf.expiresAt))) failures.push(`${shelf.id}: weeklyFeature expiresAt invalid`);
+
   const hm = shelf.heroMedia || {};
   for (const key of ['url','alt','author','source','sourceUrl','license','licenseUrl','modification']) {
     if (!hm[key]) failures.push(`${shelf.id}: heroMedia missing ${key}`);
@@ -200,6 +207,22 @@ for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
     if (src.includes(stale)) failures.push(`${page}: stale OGP URL remains (${stale})`);
   }
 }
+
+for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
+  const src = read(page);
+  if (!src.includes('id="siteMenuButton"') || !src.includes('id="siteMenu"')) {
+    failures.push(`${page}: MENU trigger/dialog missing`);
+  }
+}
+const shelfHtmlForFeature = read('shelf.html');
+if (!shelfHtmlForFeature.includes('id="weeklyFeature"') ||
+    !shelfHtmlForFeature.includes('id="weeklyFeatureContent"')) {
+  failures.push('shelf.html: weekly feature container missing');
+}
+const menuRuntime = read('release.js');
+if (!menuRuntime.includes('function initSiteMenu()')) failures.push('release.js: site menu runtime missing');
+if (!menuRuntime.includes('function renderWeeklyFeature(shelf)')) failures.push('release.js: weekly feature runtime missing');
+if (!menuRuntime.includes('renderWeeklyFeature(shelf);')) failures.push('release.js: weekly feature must render from selected shelf');
 
 const responsiveCss = read('release.css');
 for (const required of [

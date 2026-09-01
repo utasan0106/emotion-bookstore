@@ -63,6 +63,82 @@
     });
   }
 
+
+  /* ---------------------------------------------------------- 共通 MENU */
+
+  function initSiteMenu() {
+    var button = document.getElementById('siteMenuButton');
+    var menu = document.getElementById('siteMenu');
+    var close = document.getElementById('siteMenuClose');
+    if (!button || !menu || !close) return;
+
+    function openMenu() {
+      var current = document.body.getAttribute('data-shelf') || '';
+      Array.prototype.forEach.call(menu.querySelectorAll('[data-menu-shelf]'), function (link) {
+        if (current && link.getAttribute('data-menu-shelf') === current) {
+          link.setAttribute('aria-current', 'page');
+        } else {
+          link.removeAttribute('aria-current');
+        }
+      });
+      if (typeof menu.showModal === 'function') menu.showModal();
+      else menu.setAttribute('open', '');
+    }
+
+    function closeMenu() {
+      if (typeof menu.close === 'function' && menu.open) menu.close();
+      else menu.removeAttribute('open');
+      button.focus();
+    }
+
+    button.addEventListener('click', openMenu);
+    close.addEventListener('click', closeMenu);
+    menu.addEventListener('click', function (event) {
+      if (event.target === menu) closeMenu();
+    });
+    menu.addEventListener('cancel', function (event) {
+      event.preventDefault();
+      closeMenu();
+    });
+  }
+
+  function renderWeeklyFeature(shelf) {
+    var section = document.getElementById('weeklyFeature');
+    var box = document.getElementById('weeklyFeatureContent');
+    if (!section || !box) return;
+
+    section.hidden = true;
+    box.textContent = '';
+
+    var feature = shelf && shelf.weeklyFeature;
+    if (!feature) return;
+
+    var expires = Date.parse(feature.expiresAt || '');
+    if (!isNaN(expires) && expires <= Date.now()) return;
+
+    box.appendChild(h('article', { class: 'weekly-feature-card' }, [
+      h('div', { class: 'weekly-feature-meta' }, [
+        h('p', { class: 'weekly-feature-date', text: feature.dateLabel }),
+        h('p', { class: 'weekly-feature-venue', text: feature.venue })
+      ]),
+      h('h2', { id: 'weeklyFeatureTitle', class: 'weekly-feature-title', text: feature.title }),
+      h('p', { class: 'weekly-feature-why', text: feature.why }),
+      h('p', { class: 'weekly-feature-action' }, [
+        h('a', {
+          href: feature.actionUrl,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          referrerpolicy: 'no-referrer'
+        }, [
+          h('span', { text: feature.actionLabel }),
+          h('span', { 'aria-hidden': 'true', text: '↗' })
+        ])
+      ])
+    ]));
+
+    section.hidden = false;
+  }
+
   /* ---------------------------------------------------------------- 玄関 */
 
   function shelfEntryMedia(shelf) {
@@ -555,6 +631,8 @@
     var label = document.getElementById('shelfLabel');
     if (label) label.textContent = shelf.name + ' / 全3点';
 
+    renderWeeklyFeature(shelf);
+
     if (shelf.objects.length !== 3) return haltShelf('この棚はいま準備中です。');
     // 期限切れの会期・公演を「いま」として見せない。棚ごと閉じる。
     if (shelfHasExpiredCurrent(shelf)) return haltShelf('この棚はいま準備中です。');
@@ -655,6 +733,8 @@
 
     repaint();
   }
+
+  initSiteMenu();
 
   if (!CONTENT || !Array.isArray(CONTENT.shelves)) {
     haltShelf('この書店はいま準備中です。');
