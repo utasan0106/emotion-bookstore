@@ -189,6 +189,18 @@ if (releaseRuntimeForShelf.includes('renderShelfPortrait')) {
   failures.push('release.js: shelf portrait renderer must be removed');
 }
 
+const OFFICIAL_OGP = 'https://emotionbookstore.com/assets/ogp-official-artwork-20260901.png';
+if (!fs.existsSync(path.join(root, 'assets/ogp-official-artwork-20260901.png'))) {
+  failures.push('official OGP artwork missing');
+}
+for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
+  const src = read(page);
+  if (!src.includes(OFFICIAL_OGP)) failures.push(`${page}: official OGP artwork URL missing`);
+  for (const stale of ['ogp-v3-20260830.png','ogp-v3-city-20260901.png','ogp-official-logo-20260901.png']) {
+    if (src.includes(stale)) failures.push(`${page}: stale OGP URL remains (${stale})`);
+  }
+}
+
 const responsiveCss = read('release.css');
 for (const required of [
   '.site-explainer .explainer-line',
@@ -358,13 +370,13 @@ for (const page of ['index.html', 'shelf.html']) {
 /* 共有されたときに何のページか分かること。description と OGP が無いと、
    リンクだけが貼られて中身が伝わらない。og:image は同一オリジンの、
    この案内のために組んだ扉。ほかの製品の画像を借りない。
-   2026-08-30、公式ロゴ使用版（ogp-v3-20260830.png）へ差し替えた。
+   2026-08-30、公式ロゴ使用版（ogp-official-artwork-20260901.png）へ差し替えた。
    旧扉（ogp-machi.jpg）は削除せず残す。履歴・他用途の可能性のため。 */
-const OGP_IMAGE = 'https://emotionbookstore.com/assets/ogp-v3-20260830.png';
+const OGP_IMAGE = 'https://emotionbookstore.com/assets/ogp-official-artwork-20260901.png';
 /* ブランドの正規データから起こした画像。同一オリジンに置き、ほかの製品の
    画像（ドメイン直下の shop-seal.png や ogp-v2.jpg）を借りない。
    一度 shop-seal.png を favicon に借りていたが、それは別の製品の意匠だった。 */
-for (const f of ['assets/ogp-v3-20260830.png', 'assets/ogp-machi.jpg', 'assets/favicon.ico',
+for (const f of ['assets/ogp-official-artwork-20260901.png', 'assets/ogp-machi.jpg', 'assets/favicon.ico',
                  'assets/icon-512.png', 'assets/apple-touch-icon.png',
                  'assets/brand/emotion-bookstore-lockup-reversed.png']) {
   if (!fs.existsSync(path.join(root, f))) failures.push(`${f} missing`);
@@ -373,14 +385,14 @@ for (const f of ['assets/ogp-v3-20260830.png', 'assets/ogp-machi.jpg', 'assets/f
    height を検証しないので、ここで確認しないと気づけない。
    新規 dependency は入れない指示のため、PNG の IHDR チャンクを直接読む。 */
 {
-  const p = path.join(root, 'assets/ogp-v3-20260830.png');
+  const p = path.join(root, 'assets/ogp-official-artwork-20260901.png');
   if (fs.existsSync(p)) {
     const buf = fs.readFileSync(p);
     const isPng = buf.slice(0, 8).equals(Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a]));
     const w = isPng ? buf.readUInt32BE(16) : null;
     const h = isPng ? buf.readUInt32BE(20) : null;
     if (!isPng || w !== 1200 || h !== 630) {
-      failures.push(`assets/ogp-v3-20260830.png must be a 1200x630 PNG, got ${isPng ? `${w}x${h}` : 'not a PNG'}`);
+      failures.push(`assets/ogp-official-artwork-20260901.png must be a 1200x630 PNG, got ${isPng ? `${w}x${h}` : 'not a PNG'}`);
     }
   }
 }
