@@ -123,13 +123,28 @@ function serve() {
         cityPaddingEqual: paddings.every((p) =>
           Math.abs(p[0] - paddings[0][0]) < 0.01 &&
           Math.abs(p[1] - paddings[0][1]) < 0.01),
-        cityPhotosRightOnDesktop: entries.every((entry) => {
+        cityPanelsMatchReference: entries.every((entry) => {
           const text = entry.querySelector('.shelf-tagline').getBoundingClientRect();
           const media = entry.querySelector('.shelf-entry-media').getBoundingClientRect();
-          return window.innerWidth < 821 || media.left > text.left + text.width * .55;
+          if (window.innerWidth < 821) return media.top >= text.bottom - 2;
+          return media.left > text.left + text.width * .55 &&
+            media.width >= 320 &&
+            media.width <= 490 &&
+            media.height >= 150;
         }),
         h1: document.querySelectorAll('h1').length,
         lead: document.querySelector('h1').innerText.replace(/\s+/g, ''),
+        brandSymbols: [...document.querySelectorAll('.brand-symbol')].map((img) => ({
+          sameOrigin: new URL(img.src).origin === location.origin,
+          loaded: img.complete && img.naturalWidth > 0
+        })),
+        introOneLine: (() => {
+          const el = document.querySelector('.site-explainer');
+          if (!el) return false;
+          const cs = getComputedStyle(el);
+          const lh = parseFloat(cs.lineHeight);
+          return window.innerWidth < 1000 || el.getBoundingClientRect().height <= lh * 1.15;
+        })(),
         endVisible: !document.querySelector('.end-plate').hidden,
         overflow: doc.scrollWidth > doc.clientWidth + 1, wide: wide.slice(0, 4),
         text: document.body.innerText,
@@ -169,10 +184,19 @@ function serve() {
     check(v.name, 'four_city_entries_use_equal_padding',
       foyer.cityPaddingEqual === true, foyer);
     if (!v.mobile) {
-      check(v.name, 'four_city_photos_are_to_the_right_of_text',
-        foyer.cityPhotosRightOnDesktop === true, foyer);
+      check(v.name, 'four_city_editorial_panels_match_reference',
+        foyer.cityPanelsMatchReference === true, foyer);
     }
     check(v.name, 'foyer_single_h1', foyer.h1 === 1, foyer.h1);
+    check(v.name, 'official_brand_symbol_is_visible',
+      foyer.brandSymbols.length === 1 &&
+      foyer.brandSymbols[0].sameOrigin &&
+      foyer.brandSymbols[0].loaded,
+      foyer.brandSymbols);
+    if (v.width >= 1000) {
+      check(v.name, 'site_explainer_is_one_line_on_web',
+        foyer.introOneLine === true, foyer);
+    }
     check(v.name, 'foyer_lead_copy', foyer.lead === '今日は、どの街へ。', foyer.lead);
     check(v.name, 'foyer_finite_ending_shown', foyer.endVisible);
     check(v.name, 'foyer_no_horizontal_overflow', !foyer.overflow, foyer.wide);

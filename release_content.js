@@ -92,7 +92,7 @@ window.V3_RELEASE_CONTENT = {
         author: 'Stephen Kelly', source: 'Wikimedia Commons',
         sourceUrl: 'https://commons.wikimedia.org/wiki/File:Harmonica_Yokocho_in_Kichijoji_(53417122805).jpg',
         license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0/',
-        modification: 'Wikimedia Commons原本を取得後、長辺1600px以内へ縮小。表示時のみCSSでトリミング・明度・彩度・コントラスト調整'
+        modification: 'Wikimedia Commons原本を取得後、長辺1600px以内へ縮小。表示時のみCSSでトリミング・グレースケール・デュオトーン・コントラスト・網点風オーバーレイ'
       },
       objects: [
         {
@@ -193,7 +193,7 @@ window.V3_RELEASE_CONTENT = {
         author: 'NMaia', source: 'Wikimedia Commons',
         sourceUrl: 'https://commons.wikimedia.org/wiki/File:Street_in_Koenji.jpg',
         license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
-        modification: 'Wikimedia Commons原本を取得後、長辺1600px以内へ縮小。表示時のみCSSでトリミング・明度・彩度・コントラスト調整'
+        modification: 'Wikimedia Commons原本を取得後、長辺1600px以内へ縮小。表示時のみCSSでトリミング・グレースケール・デュオトーン・コントラスト・網点風オーバーレイ'
       },
       objects: [
         {
@@ -300,7 +300,7 @@ window.V3_RELEASE_CONTENT = {
         author: 'Aw1805', source: 'Wikimedia Commons',
         sourceUrl: 'https://commons.wikimedia.org/wiki/File:Shimokitazawa_Street_2015.jpg',
         license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
-        modification: 'Wikimedia Commons原本を取得後、長辺1600px以内へ縮小。表示時のみCSSでトリミング・明度・彩度・コントラスト調整'
+        modification: 'Wikimedia Commons原本を取得後、長辺1600px以内へ縮小。表示時のみCSSでトリミング・グレースケール・デュオトーン・コントラスト・網点風オーバーレイ'
       },
       objects: [
         {
@@ -421,7 +421,7 @@ window.V3_RELEASE_CONTENT = {
         author: 'Real Estate Japan / photo credit Scott Kouchi', source: 'Wikimedia Commons',
         sourceUrl: 'https://commons.wikimedia.org/wiki/File:Used_bookstore_in_Jimbocho_(50495926321).jpg',
         license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0/',
-        modification: 'Wikimedia Commons原本を取得後、長辺1600px以内へ縮小。表示時のみCSSでトリミング・明度・彩度・コントラスト調整'
+        modification: 'Wikimedia Commons原本を取得後、長辺1600px以内へ縮小。表示時のみCSSでトリミング・グレースケール・デュオトーン・コントラスト・網点風オーバーレイ'
       },
       objects: [
         {

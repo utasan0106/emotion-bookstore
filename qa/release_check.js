@@ -152,6 +152,21 @@ if (CONTENT && CONTENT.release && CONTENT.release.siteExplainer !== EXPLAINER) {
 }
 const explainerBlock = (src) => (src.match(/<p class="site-explainer">[\s\S]*?<\/p>/) || [''])[0];
 const explainerText = (src) => explainerBlock(src).replace(/<[^>]*>/g, '').replace(/\s+/g, '');
+const BRAND_SYMBOL = './assets/brand/emotion-bookstore-symbol-reversed.svg';
+if (!fs.existsSync(path.join(root, 'assets/brand/emotion-bookstore-symbol-reversed.svg'))) {
+  failures.push('official brand symbol missing');
+}
+for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
+  const src = read(page);
+  if (!src.includes('class="brand-symbol"') || !src.includes(BRAND_SYMBOL)) {
+    failures.push(`${page}: official brand symbol missing from header`);
+  }
+}
+const cityCss = read('release.css');
+for (const required of ['mix-blend-mode: multiply', 'mix-blend-mode: color', 'repeating-linear-gradient']) {
+  if (!cityCss.includes(required)) failures.push(`release.css: city editorial treatment missing ${required}`);
+}
+
 for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
   const src = read(page);
   if (explainerText(src) !== EXPLAINER.replace(/\s+/g, '')) {
@@ -165,10 +180,10 @@ for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
   const at = src.indexOf('<p class="site-explainer">');
   const main = src.indexOf('<main');
   if (at < main) failures.push(`${page}: site explainer must live inside <main>`);
-  // 説明より前に Object の media が来ていないこと。
+  // Headerのbrand symbolは許可する。<main>内では説明より前にObject mediaを置かない。
+  const mainLead = src.slice(main, at);
   for (const marker of ['objectGrid', 'media-frame', '<img']) {
-    const m = src.indexOf(marker);
-    if (m !== -1 && m < at) failures.push(`${page}: ${marker} appears before the site explainer`);
+    if (mainLead.includes(marker)) failures.push(`${page}: ${marker} appears before the site explainer inside main`);
   }
 }
 

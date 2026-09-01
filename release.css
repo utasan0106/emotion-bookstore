@@ -95,9 +95,21 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   width: min(calc(100% - var(--gutter) * 2), var(--page));
   margin: 0 auto;
   padding: 22px 0 0;
-  display: flex; align-items: baseline; justify-content: space-between; gap: 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
 }
 .brand { margin: 0; }
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+.brand-symbol {
+  display: block;
+  width: 38px;
+  height: auto;
+  flex: 0 0 auto;
+}
 .brand-name {
   font-family: var(--serif);
   font-size: 1.0625rem;
@@ -629,6 +641,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 }
 
 .shelf-entry-media {
+  position: relative;
   grid-area: media;
   min-width: 0;
   margin: 18px 0 0;
@@ -638,31 +651,69 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   overflow: hidden;
   width: 100%;
   aspect-ratio: 16 / 9;
-  border: 1px solid rgba(236, 231, 222, .16);
-  background: var(--hall-raised);
+  isolation: isolate;
+  border: 1px solid rgba(236, 231, 222, .18);
+  background:
+    linear-gradient(135deg, #dfc79a 0%, #a9b29f 44%, #7397a1 100%);
+}
+.shelf-entry-media-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(135deg,
+      rgba(224,86,60,.22) 0%,
+      rgba(223,199,154,.16) 38%,
+      rgba(115,151,161,.36) 100%);
+  mix-blend-mode: color;
+  pointer-events: none;
 }
 .shelf-entry-media-frame::after {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 3;
   background:
-    linear-gradient(90deg, rgba(20,19,18,.08), rgba(20,19,18,.02) 65%, rgba(20,19,18,.18)),
-    linear-gradient(180deg, rgba(20,19,18,.02), rgba(20,19,18,.22));
+    repeating-linear-gradient(
+      0deg,
+      rgba(241,235,224,.06) 0 1px,
+      transparent 1px 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(20,19,18,.018) 0 1px,
+      transparent 1px 5px
+    ),
+    radial-gradient(circle at 20% 18%, rgba(241,235,224,.14), transparent 34%),
+    linear-gradient(180deg, transparent 58%, rgba(20,19,18,.18));
+  mix-blend-mode: soft-light;
   pointer-events: none;
 }
 .shelf-entry-media img {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(.68) brightness(.72) contrast(1.12);
-  transform: scale(1.01);
+  filter: grayscale(1) contrast(1.38) brightness(1.02);
+  mix-blend-mode: multiply;
+  opacity: .80;
+  transform: scale(1.012);
 }
 .shelf-entry-media-credit {
-  margin: 7px 0 0;
-  color: var(--chalk-dim);
-  font-size: .625rem;
-  line-height: 1.45;
+  position: absolute;
+  z-index: 4;
+  left: 8px;
+  bottom: 7px;
+  margin: 0;
+  padding: 3px 5px;
+  max-width: calc(100% - 16px);
+  color: rgba(241,235,224,.76);
+  background: rgba(20,19,18,.48);
+  font-size: .48rem;
+  line-height: 1.25;
   letter-spacing: .02em;
 }
 
@@ -902,20 +953,26 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 
 @media (min-width: 821px) {
   .shelf-entry {
-    grid-template-columns: minmax(0, 1fr) clamp(240px, 24vw, 340px) 28px;
+    grid-template-columns: minmax(0, 1fr) clamp(330px, 34vw, 480px) 28px;
     grid-template-areas:
       "number media mark"
       "name   media mark"
       "tag    media mark";
     column-gap: 34px;
     align-items: center;
-    padding: 28px 0;
+    min-height: 208px;
+    padding: 22px 0;
   }
   .shelf-entry-media {
     margin: 0;
-    align-self: center;
+    align-self: stretch;
+    min-height: 0;
   }
-  .shelf-entry-media-frame { aspect-ratio: 16 / 9; }
+  .shelf-entry-media-frame {
+    height: 100%;
+    min-height: 166px;
+    aspect-ratio: auto;
+  }
   .shelf-mark { justify-self: end; }
 }
 
@@ -1299,4 +1356,31 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   .shelf-portrait-frame { aspect-ratio: 16 / 10; }
   .foyer-closing { gap: 24px; }
   .weekly-detour { padding-top: 34px; }
+}
+
+/* ================================================= Editorial city panels + official brand */
+@media (max-width: 820px) {
+  .shelf-entry {
+    grid-template-columns: minmax(0, 1fr) 24px;
+    grid-template-areas:
+      "number mark"
+      "name   mark"
+      "tag    mark"
+      "media  media";
+  }
+  .shelf-entry-media { margin-top: 16px; }
+  .shelf-entry-media-frame { aspect-ratio: 16 / 8; }
+  .shelf-entry-media-credit { font-size: .44rem; }
+}
+@media (min-width: 1000px) {
+  .site-explainer {
+    max-width: none;
+    white-space: nowrap;
+    font-size: clamp(.8125rem, 1.05vw, .9375rem);
+  }
+}
+@media (max-width: 520px) {
+  .brand-lockup { gap: 8px; }
+  .brand-symbol { width: 32px; }
+  .brand-name { font-size: .9375rem; }
 }
