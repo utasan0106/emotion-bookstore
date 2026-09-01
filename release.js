@@ -524,29 +524,6 @@
     if (lastTrigger) lastTrigger.focus();
   }
 
-  function renderShelfPortrait(shelf) {
-    var box = document.getElementById('shelfPortrait');
-    if (!box) return;
-    box.textContent = '';
-    box.className = 'shelf-portrait';
-    var m = shelf.heroMedia;
-    if (!m) return;
-    box.className = 'shelf-portrait has-media';
-    box.appendChild(h('div', { class: 'shelf-portrait-frame' }, [
-      h('img', {
-        src: m.url, alt: m.alt, width: m.width, height: m.height,
-        loading: 'eager', fetchpriority: 'high', decoding: 'async', referrerpolicy: 'no-referrer'
-      })
-    ]));
-    box.appendChild(h('figcaption', { class: 'shelf-portrait-credit' }, [
-      h('span', { text: '写真: ' + m.author + ' / ' }),
-      link(m.sourceUrl, m.source),
-      h('span', { text: ' / ' }),
-      link(m.licenseUrl, m.license),
-      h('span', { text: ' / ' + m.modification })
-    ]));
-  }
-
   function renderShelf() {
     if (!grid) return;
     var requested = queryParams().get('shelf') || 'kichijoji';
@@ -577,7 +554,6 @@
     }
     var label = document.getElementById('shelfLabel');
     if (label) label.textContent = shelf.name + ' / 全3点';
-    renderShelfPortrait(shelf);
 
     if (shelf.objects.length !== 3) return haltShelf('この棚はいま準備中です。');
     // 期限切れの会期・公演を「いま」として見せない。棚ごと閉じる。

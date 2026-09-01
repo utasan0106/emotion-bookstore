@@ -134,9 +134,10 @@ function serve() {
         }),
         h1: document.querySelectorAll('h1').length,
         lead: document.querySelector('h1').innerText.replace(/\s+/g, ''),
-        brandSymbols: [...document.querySelectorAll('.brand-symbol')].map((img) => ({
+        brandLockups: [...document.querySelectorAll('.brand-lockup-image')].map((img) => ({
           sameOrigin: new URL(img.src).origin === location.origin,
-          loaded: img.complete && img.naturalWidth > 0
+          loaded: img.complete && img.naturalWidth > 0,
+          alt: img.getAttribute('alt') || ''
         })),
         introOneLine: (() => {
           const el = document.querySelector('.site-explainer');
@@ -189,11 +190,12 @@ function serve() {
         foyer.cityPanelsMatchReference === true, foyer);
     }
     check(v.name, 'foyer_single_h1', foyer.h1 === 1, foyer.h1);
-    check(v.name, 'official_brand_symbol_is_visible',
-      foyer.brandSymbols.length === 1 &&
-      foyer.brandSymbols[0].sameOrigin &&
-      foyer.brandSymbols[0].loaded,
-      foyer.brandSymbols);
+    check(v.name, 'official_brand_lockup_is_visible',
+      foyer.brandLockups.length === 1 &&
+      foyer.brandLockups[0].sameOrigin &&
+      foyer.brandLockups[0].loaded &&
+      foyer.brandLockups[0].alt === 'みんなの感情書店',
+      foyer.brandLockups);
     if (v.width >= 1000) {
       check(v.name, 'site_explainer_is_one_line_on_web',
         foyer.introOneLine === true, foyer);
@@ -249,6 +251,8 @@ function serve() {
           cards: document.querySelectorAll('.object-card').length,
           h1: document.querySelectorAll('h1').length,
           hero: document.querySelector('h1').innerText.replace(/\s+/g, ''),
+          shelfPortraits: document.querySelectorAll('#shelfPortrait, .shelf-portrait').length,
+          shelfHeroImages: document.querySelectorAll('.shelf-hero img').length,
           endVisible: !end.hidden,
           endText: end.innerText.replace(/\s+/g, ''),
           exitHref: end.querySelector('.other-shelves').getAttribute('href'),
@@ -262,6 +266,9 @@ function serve() {
       check(S, 'exactly_3_objects', shelf.cards === 3, shelf.cards);
       check(S, 'single_h1', shelf.h1 === 1, shelf.h1);
       check(S, 'hero_is_shelf_tagline', /^.+を、3つだけ。$/.test(shelf.hero), shelf.hero);
+      check(S, 'shelf_top_has_no_city_image',
+        shelf.shelfPortraits === 0 && shelf.shelfHeroImages === 0,
+        { portraits: shelf.shelfPortraits, images: shelf.shelfHeroImages });
       check(S, 'finite_ending_shown', shelf.endVisible);
       check(S, 'ending_copy', shelf.endText.includes('この棚は、3つで終わりです。'), shelf.endText);
       check(S, 'ending_exit_to_other_shelves',
@@ -356,7 +363,7 @@ function serve() {
       return {
         overflow: doc.scrollWidth > doc.clientWidth + 1, wide: wide.slice(0, 4),
         h1: document.querySelectorAll('h1').length,
-        media: document.querySelectorAll('img, .media-frame').length,
+        media: document.querySelectorAll('main img, main .media-frame').length,
         fields: [...document.querySelectorAll('input, textarea, select')]
           .map((el) => Math.round(el.getBoundingClientRect().height))
       };

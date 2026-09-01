@@ -167,16 +167,28 @@ if (CONTENT && CONTENT.release && CONTENT.release.siteExplainer !== EXPLAINER) {
 }
 const explainerBlock = (src) => (src.match(/<p class="site-explainer">[\s\S]*?<\/p>/) || [''])[0];
 const explainerText = (src) => explainerBlock(src).replace(/<[^>]*>/g, '').replace(/\s+/g, '');
-const BRAND_SYMBOL = './assets/brand/emotion-bookstore-symbol-reversed.svg';
-if (!fs.existsSync(path.join(root, 'assets/brand/emotion-bookstore-symbol-reversed.svg'))) {
-  failures.push('official brand symbol missing');
+const BRAND_LOCKUP = './assets/brand/emotion-bookstore-lockup-reversed.png';
+if (!fs.existsSync(path.join(root, 'assets/brand/emotion-bookstore-lockup-reversed.png'))) {
+  failures.push('official brand lockup missing');
 }
 for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
   const src = read(page);
-  if (!src.includes('class="brand-symbol"') || !src.includes(BRAND_SYMBOL)) {
-    failures.push(`${page}: official brand symbol missing from header`);
+  if (!src.includes('class="brand-lockup-image"') || !src.includes(BRAND_LOCKUP)) {
+    failures.push(`${page}: official brand lockup missing from header`);
+  }
+  if (src.includes('emotion-bookstore-symbol-reversed.svg')) {
+    failures.push(`${page}: obsolete header symbol must not remain`);
   }
 }
+const shelfPage = read('shelf.html');
+const releaseRuntimeForShelf = read('release.js');
+if (shelfPage.includes('id="shelfPortrait"') || shelfPage.includes('class="shelf-portrait"')) {
+  failures.push('shelf.html: city portrait must not exist at the top of shelf pages');
+}
+if (releaseRuntimeForShelf.includes('renderShelfPortrait')) {
+  failures.push('release.js: shelf portrait renderer must be removed');
+}
+
 const cityCss = read('release.css');
 for (const required of ['mix-blend-mode: multiply', 'mix-blend-mode: color', 'repeating-linear-gradient']) {
   if (!cityCss.includes(required)) failures.push(`release.css: city editorial treatment missing ${required}`);
@@ -333,7 +345,8 @@ const OGP_IMAGE = 'https://emotionbookstore.com/assets/ogp-v3-20260830.png';
    画像（ドメイン直下の shop-seal.png や ogp-v2.jpg）を借りない。
    一度 shop-seal.png を favicon に借りていたが、それは別の製品の意匠だった。 */
 for (const f of ['assets/ogp-v3-20260830.png', 'assets/ogp-machi.jpg', 'assets/favicon.ico',
-                 'assets/icon-512.png', 'assets/apple-touch-icon.png']) {
+                 'assets/icon-512.png', 'assets/apple-touch-icon.png',
+                 'assets/brand/emotion-bookstore-lockup-reversed.png']) {
   if (!fs.existsSync(path.join(root, f))) failures.push(`${f} missing`);
 }
 /* 実寸が宣言値（1200x630）と食い違っていないこと。crawler は og:image:width/

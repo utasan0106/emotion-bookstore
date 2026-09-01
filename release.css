@@ -97,24 +97,22 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   padding: 22px 0 0;
   display: flex; align-items: center; justify-content: space-between; gap: 20px;
 }
-.brand { margin: 0; }
+.brand {
+  margin: 0;
+  min-width: 0;
+}
 .brand-lockup {
   display: inline-flex;
   align-items: center;
-  gap: 11px;
   min-width: 0;
+  text-decoration: none;
 }
-.brand-symbol {
+.brand-lockup-image {
   display: block;
-  width: 38px;
+  width: clamp(230px, 21vw, 292px);
+  max-width: 100%;
   height: auto;
-  flex: 0 0 auto;
-}
-.brand-name {
-  font-family: var(--serif);
-  font-size: 1.0625rem;
-  font-weight: 600;
-  letter-spacing: .22em;
+  flex: 0 1 auto;
 }
 .pilot-label {
   margin: 0;
@@ -1422,5 +1420,16 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 @media (max-width: 820px) {
   .shelf-entry-media.is-entry-illustration .shelf-entry-media-frame {
     aspect-ratio: 1942 / 809;
+  }
+}
+
+/* ================================================= Official 2026-09-01 lockup */
+@media (max-width: 520px) {
+  .site-header { gap: 10px; }
+  .brand-lockup-image { width: min(180px, 58vw); }
+  .pilot-label {
+    font-size: .625rem;
+    letter-spacing: .1em;
+    white-space: nowrap;
   }
 }
