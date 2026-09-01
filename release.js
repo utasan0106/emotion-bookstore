@@ -102,6 +102,81 @@
     renderDetour();
   }
 
+  function detourMedia(item) {
+    var m = item && item.media;
+    if (!m) return null;
+
+    if (m.kind === 'cover') {
+      return h('figure', { class: 'detour-media detour-cover' }, [
+        h('div', { class: 'detour-media-frame' }, [
+          h('img', {
+            src: m.url,
+            alt: m.alt || '',
+            loading: 'lazy',
+            decoding: 'async',
+            referrerpolicy: 'no-referrer'
+          })
+        ]),
+        h('figcaption', { class: 'detour-media-source' }, [
+          h('a', {
+            href: m.sourceUrl,
+            target: '_blank',
+            rel: 'noopener noreferrer',
+            referrerpolicy: 'no-referrer',
+            text: m.sourceLabel
+          })
+        ])
+      ]);
+    }
+
+    if (m.kind === 'publisher-link') {
+      return h('div', { class: 'detour-media detour-publisher-plate' }, [
+        h('a', {
+          class: 'detour-media-frame detour-publisher-link',
+          href: m.sourceUrl,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          referrerpolicy: 'no-referrer'
+        }, [
+          h('span', { class: 'detour-publisher-kicker', text: 'BOOK' }),
+          h('span', { class: 'detour-publisher-title', text: '書影を公式ページで見る' }),
+          h('span', { class: 'detour-video-mark', 'aria-hidden': 'true', text: '↗' })
+        ])
+      ]);
+    }
+
+    if (m.kind === 'youtube') {
+      var frame = h('div', { class: 'detour-media-frame' });
+      var button = h('button', {
+        class: 'detour-video-play',
+        type: 'button',
+        onclick: function () {
+          var videoId = m.videoId || '';
+          if (!/^[A-Za-z0-9_-]{11}$/.test(videoId)) return;
+          var iframe = h('iframe', {
+            class: 'detour-video-iframe',
+            title: m.videoTitle || item.title,
+            allow: 'autoplay; encrypted-media; picture-in-picture',
+            allowfullscreen: true,
+            referrerpolicy: 'strict-origin-when-cross-origin',
+            src: 'https://www.youtube-nocookie.com/embed/' +
+              encodeURIComponent(videoId) + '?autoplay=1&playsinline=1&rel=0'
+          });
+          frame.textContent = '';
+          frame.appendChild(iframe);
+        }
+      }, [
+        h('span', { class: 'detour-video-source', text: m.sourceLabel }),
+        h('span', { class: 'detour-video-label', text: m.buttonLabel }),
+        h('span', { class: 'detour-video-mark', 'aria-hidden': 'true', text: '▶' })
+      ]);
+      frame.appendChild(button);
+      return h('div', { class: 'detour-media detour-video' }, [frame]);
+    }
+
+    return null;
+  }
+
   function renderDetour() {
     var box = document.getElementById('detourList');
     var title = document.getElementById('detour-title');
@@ -111,6 +186,7 @@
     box.textContent = '';
     (d.items || []).slice(0, 3).forEach(function (item) {
       box.appendChild(h('article', { class: 'detour-item' }, [
+        detourMedia(item),
         h('p', { class: 'detour-kind', text: item.kind }),
         h('h3', { class: 'detour-name', text: item.title }),
         h('p', { class: 'detour-creator', text: item.creator }),

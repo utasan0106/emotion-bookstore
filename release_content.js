@@ -44,17 +44,38 @@ window.V3_RELEASE_CONTENT = {
       {
         kind: '本', title: 'すべて真夜中の恋人たち', creator: '川上未映子',
         why: '街の名前を説明する本ではなく、真夜中をひとりで歩く時間から、灯りや距離、人との間合いを感じ直すための一冊。',
-        actionLabel: '講談社で見る', actionUrl: 'https://www.kodansha.co.jp/book/products/0000206651'
+        actionLabel: '講談社で見る', actionUrl: 'https://www.kodansha.co.jp/book/products/0000206651',
+        media: {
+          kind: 'publisher-link',
+          sourceLabel: '書影は講談社公式ページで見る',
+          sourceUrl: 'https://www.kodansha.co.jp/book/products/0000206651'
+        }
       },
       {
         kind: '映画', title: 'PERFECT DAYS', creator: 'ヴィム・ヴェンダース 監督',
         why: '名所を巡る映画ではなく、同じ道と同じ仕事の反復のなかで、毎日の街が少しずつ違って見えてくる一本。',
-        actionLabel: '公式サイトで見る', actionUrl: 'https://www.perfectdays-movie.jp/story/'
+        actionLabel: '公式サイトで見る', actionUrl: 'https://www.perfectdays-movie.jp/story/',
+        media: {
+          kind: 'youtube',
+          videoId: '15crm4zuB04',
+          videoTitle: '映画『PERFECT DAYS』本予告',
+          buttonLabel: '本予告を再生',
+          sourceLabel: '公式予告: 映画会社ビターズ・エンド',
+          sourceUrl: 'https://www.youtube.com/watch?v=15crm4zuB04'
+        }
       },
       {
         kind: '音楽', title: 'ナイトクルージング', creator: 'フィッシュマンズ',
         why: 'どこかの街を名指しするのではなく、夜に移動するときの速度や遠さ、街灯のあいだを漂う感覚を置く一曲。',
-        actionLabel: 'Universal Musicで見る', actionUrl: 'https://www.universal-music.co.jp/fishmans/discography/'
+        actionLabel: 'Universal Musicで見る', actionUrl: 'https://www.universal-music.co.jp/fishmans/discography/',
+        media: {
+          kind: 'youtube',
+          videoId: 'iy-YU6QHEQY',
+          videoTitle: 'Fishmans - Night Cruising',
+          buttonLabel: '公式音源を再生',
+          sourceLabel: '公式音源: Universal Music Group',
+          sourceUrl: 'https://www.youtube.com/watch?v=iy-YU6QHEQY'
+        }
       }
     ]
   },

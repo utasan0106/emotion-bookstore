@@ -129,7 +129,21 @@ function serve() {
         overflow: doc.scrollWidth > doc.clientWidth + 1, wide: wide.slice(0, 4),
         text: document.body.innerText,
         homeCityImages: document.querySelectorAll('.shelf-entry img').length,
-        detourItems: document.querySelectorAll('.detour-item').length
+        detourItems: document.querySelectorAll('.detour-item').length,
+        detourIframes: document.querySelectorAll('.detour-media iframe').length,
+        detourVideoButtons: document.querySelectorAll('.detour-video-play').length,
+        detourTitlesOneLine: [...document.querySelectorAll('.detour-name')].every((el) => {
+          const cs = getComputedStyle(el);
+          const lh = parseFloat(cs.lineHeight);
+          return el.getBoundingClientRect().height <= lh * 1.15;
+        }),
+        footerOneLine: (() => {
+          const f = document.querySelector('.site-footer .privacy-note');
+          if (!f) return false;
+          const cs = getComputedStyle(f);
+          const lh = parseFloat(cs.lineHeight);
+          return f.getBoundingClientRect().height <= lh * 1.15;
+        })()
       };
     }, SHELVES);
     check(v.name, 'foyer_has_exactly_4_shelves', foyer.count === 4, foyer.count);
@@ -151,6 +165,12 @@ function serve() {
       !FORBIDDEN.some((w) => foyer.text.includes(w)), FORBIDDEN.filter((w) => foyer.text.includes(w)));
     check(v.name, 'home_city_entries_stay_text_only', foyer.homeCityImages === 0, foyer.homeCityImages);
     check(v.name, 'weekly_detour_is_exactly_three', foyer.detourItems === 3, foyer.detourItems);
+    check(v.name, 'weekly_detour_has_two_click_gated_videos', foyer.detourVideoButtons === 2, foyer.detourVideoButtons);
+    check(v.name, 'weekly_detour_loads_no_iframe_before_click', foyer.detourIframes === 0, foyer.detourIframes);
+    if (!v.mobile) {
+      check(v.name, 'weekly_detour_titles_are_one_line_on_web', foyer.detourTitlesOneLine === true, foyer);
+      if (v.width >= 1440) check(v.name, 'web_footer_is_one_line', foyer.footerOneLine === true, foyer);
+    }
     check(v.name, 'foyer_no_external_request', external.length === 0, external.slice(0, 3));
 
     /* ---- 4つの棚 ---- */

@@ -44,9 +44,29 @@ if (!detour || !Array.isArray(detour.items) || detour.items.length !== 3) failur
 else {
   if (detour.items.map((x) => x.kind).join(',') !== '本,映画,音楽') failures.push('detour kinds must be 本,映画,音楽');
   for (const x of detour.items) {
-    for (const key of ['title','creator','why','actionLabel','actionUrl']) if (!x[key]) failures.push(`detour ${x.kind}: missing ${key}`);
+    for (const key of ['title','creator','why','actionLabel','actionUrl','media']) {
+      if (!x[key]) failures.push(`detour ${x.kind}: missing ${key}`);
+    }
     if (!/^https:\/\//.test(x.actionUrl || '')) failures.push(`detour ${x.kind}: actionUrl must be https`);
+    const m = x.media || {};
+    if (!['cover','publisher-link','youtube'].includes(m.kind)) failures.push(`detour ${x.kind}: invalid media.kind`);
+    if (m.kind === 'cover') {
+      if (!/^\.\/assets\//.test(m.url || '')) failures.push(`detour ${x.kind}: cover must be same-origin`);
+      const rel = (m.url || '').replace(/^\.\//, '');
+      if (!rel || !fs.existsSync(path.join(root, rel))) failures.push(`detour ${x.kind}: cover file missing`);
+    }
+    if (m.kind === 'publisher-link' && !/^https:\/\/www\.kodansha\.co\.jp\//.test(m.sourceUrl || '')) {
+      failures.push('detour book fallback must point to Kodansha official');
+    }
+    if (m.kind === 'youtube') {
+      if (!/^[A-Za-z0-9_-]{11}$/.test(m.videoId || '')) failures.push(`detour ${x.kind}: invalid YouTube videoId`);
+      for (const key of ['videoTitle','buttonLabel','sourceLabel','sourceUrl']) if (!m[key]) failures.push(`detour ${x.kind}: YouTube media missing ${key}`);
+    }
   }
+  const detourRuntime = read('release.js');
+  if (!detourRuntime.includes("class: 'detour-video-play'")) failures.push('release.js: detour click-to-play control missing');
+  if (!detourRuntime.includes('https://www.youtube-nocookie.com/embed/')) failures.push('release.js: detour youtube-nocookie embed missing');
+  if (detourRuntime.includes('i.ytimg.com')) failures.push('release.js: detour must not load YouTube thumbnail before click');
 }
 
 const ids = new Set();
