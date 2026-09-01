@@ -56,7 +56,7 @@ function serve() {
   };
   await shot('RC01_FOYER_390', 'index.html');
   await shot('RC01_FOYER_1440', 'index.html', { w: 1440, h: 1000 });
-  for (const id of ['tokyo', 'koenji', 'shimokitazawa', 'jinbocho']) {
+  for (const id of ['kichijoji', 'koenji', 'shimokitazawa', 'jinbocho']) {
     await shot(`RC01_SHELF_${id.toUpperCase()}_390`, `shelf.html?shelf=${id}`);
   }
   await shot('RC01_DETAIL_KOENJI_390', 'shelf.html?shelf=koenji', { open: 1 });
@@ -66,14 +66,14 @@ function serve() {
   await shot('RC01_SHELF_KOENJI_390_ZOOM200', 'shelf.html?shelf=koenji', { zoom: 2 });
   // Entrance V2
   await shot('RC02_FOYER_IDENTITY_DUALENTRY_390', 'index.html');
-  await shot('RC02_SHELF_TOKYO_IDENTITY_FIRST_390', 'shelf.html?shelf=tokyo');
+  await shot('RC02_SHELF_KICHIJOJI_IDENTITY_FIRST_390', 'shelf.html?shelf=kichijoji');
   await shot('RC02_FOYER_CATEGORY_BOOKS_390', 'index.html?category=books', { scrollTo: '.by-kind' });
   await shot('RC02_SUGGEST_390', 'suggest.html');
   // 変わったのは footer の trust 表現なので、そこまで送った状態も残す。
   await shot('RC02_SUGGEST_TRUST_390', 'suggest.html', { scrollTo: '.suggest-terms' });
   await shot('RC02_FOYER_1440', 'index.html', { w: 1440, h: 1000 });
   await shot('RC02_FOYER_390_ZOOM200', 'index.html', { zoom: 2 });
-  await shot('RC02_SHELF_TOKYO_390_ZOOM200', 'shelf.html?shelf=tokyo', { zoom: 2 });
+  await shot('RC02_SHELF_KICHIJOJI_390_ZOOM200', 'shelf.html?shelf=kichijoji', { zoom: 2 });
   await browser.close(); server.close();
   console.log('RELEASE_SHOTS_OK ->', OUT);
 })().catch((e) => { console.error(e); process.exit(1); });

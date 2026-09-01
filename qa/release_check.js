@@ -21,7 +21,7 @@ vm.runInContext(read('release_content.js'), sandbox);
 const CONTENT = sandbox.window.V3_RELEASE_CONTENT;
 
 /* ---- 棚の形 ---------------------------------------------------------- */
-const EXPECTED_SHELVES = ['tokyo', 'koenji', 'shimokitazawa', 'jinbocho'];
+const EXPECTED_SHELVES = ['kichijoji', 'koenji', 'shimokitazawa', 'jinbocho'];
 if (!CONTENT || !Array.isArray(CONTENT.shelves)) failures.push('content missing');
 const shelves = (CONTENT && CONTENT.shelves) || [];
 if (shelves.length !== 4) failures.push(`expected exactly 4 shelves, got ${shelves.length}`);
@@ -29,7 +29,25 @@ if (shelves.map((s) => s.id).join(',') !== EXPECTED_SHELVES.join(',')) {
   failures.push(`shelf ids/order must be ${EXPECTED_SHELVES.join(',')}`);
 }
 if (shelves.filter((s) => s.role === 'flagship').length !== 1) failures.push('exactly one flagship shelf');
-if (shelves[0] && shelves[0].role !== 'flagship') failures.push('tokyo must be the flagship and come first');
+if (shelves[0] && shelves[0].role !== 'flagship') failures.push('kichijoji must be the flagship and come first');
+
+for (const shelf of shelves) {
+  const hm = shelf.heroMedia || {};
+  for (const key of ['url','alt','author','source','sourceUrl','license','licenseUrl','modification']) {
+    if (!hm[key]) failures.push(`${shelf.id}: heroMedia missing ${key}`);
+  }
+  if (!/^\.\/assets\/city-/.test(hm.url || '')) failures.push(`${shelf.id}: heroMedia must be local city image`);
+  if (hm.url && !fs.existsSync(path.join(root, hm.url.replace(/^\.\//,'')))) failures.push(`${shelf.id}: heroMedia file missing`);
+}
+const detour = CONTENT && CONTENT.detour;
+if (!detour || !Array.isArray(detour.items) || detour.items.length !== 3) failures.push('detour must have exactly 3 items');
+else {
+  if (detour.items.map((x) => x.kind).join(',') !== '本,映画,音楽') failures.push('detour kinds must be 本,映画,音楽');
+  for (const x of detour.items) {
+    for (const key of ['title','creator','why','actionLabel','actionUrl']) if (!x[key]) failures.push(`detour ${x.kind}: missing ${key}`);
+    if (!/^https:\/\//.test(x.actionUrl || '')) failures.push(`detour ${x.kind}: actionUrl must be https`);
+  }
+}
 
 const ids = new Set();
 for (const shelf of shelves) {
@@ -216,6 +234,7 @@ for (const banned of ['アカウント', 'ログイン', 'メールアドレス'
 
 /* ---- 参加者 runtime の境界 ------------------------------------------- */
 const js = read('release.js');
+if (!js.includes("media-frame card-media media-plate list-plate")) failures.push('release.js: shelf list cards must be typography-only');
 const contentJs = read('release_content.js');
 for (const token of ['localStorage', 'sessionStorage', 'indexedDB', 'sendBeacon', 'gtag(', 'fetch(',
   'XMLHttpRequest', 'serviceWorker', 'caches.', 'navigator.storage']) {
@@ -311,7 +330,7 @@ if ((read('suggest.html').match(/<h1\b/g) || []).length !== 1) failures.push('su
 const foyer = read('index.html');
 if (!foyer.includes('みんなの感情書店')) failures.push('foyer eyebrow missing');
 if (!foyer.includes('今日は、')) failures.push('foyer lead missing');
-if (!foyer.includes('どの棚へ。')) failures.push('foyer lead missing');
+if (!foyer.includes('どの街へ。')) failures.push('foyer lead missing');
 const shelfHtml = read('shelf.html');
 const endPlate = (shelfHtml.match(/<section class="end-plate"[\s\S]*?<\/section>/) || [''])[0];
 const endText = endPlate.replace(/<[^>]*>/g, '').replace(/\s+/g, '');

@@ -6,13 +6,13 @@
   <meta name="referrer" content="no-referrer">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#141312">
-  <title>みんなの感情書店｜今日は、どの棚へ。</title>
+  <title>みんなの感情書店｜今日は、どの街へ。</title>
   <meta name="description" content="「今日、何しよう」「なんかないかな」というときに。人が選んだ店・場所・本・映画・音楽・催しを、少し違う角度から紹介する文化案内です。">
   <link rel="canonical" href="https://emotionbookstore.com/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="みんなの感情書店">
   <meta property="og:locale" content="ja_JP">
-  <meta property="og:title" content="みんなの感情書店｜今日は、どの棚へ。">
+  <meta property="og:title" content="みんなの感情書店｜今日は、どの街へ。">
   <meta property="og:description" content="「今日、何しよう」「なんかないかな」というときに。人が選んだ店・場所・本・映画・音楽・催しを、少し違う角度から紹介する文化案内です。">
   <meta property="og:url" content="https://emotionbookstore.com/">
   <meta property="og:image" content="https://emotionbookstore.com/assets/ogp-v3-20260830.png">
@@ -20,7 +20,7 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="「みんなの感情書店」と組んだ、この案内のための扉">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="みんなの感情書店｜今日は、どの棚へ。">
+  <meta name="twitter:title" content="みんなの感情書店｜今日は、どの街へ。">
   <meta name="twitter:description" content="「今日、何しよう」「なんかないかな」というときに。人が選んだ店・場所・本・映画・音楽・催しを、少し違う角度から紹介する文化案内です。">
   <meta name="twitter:image" content="https://emotionbookstore.com/assets/ogp-v3-20260830.png">
   <link rel="icon" href="./assets/favicon.ico" sizes="any">
@@ -34,7 +34,7 @@
 
   <header class="site-header">
     <p class="brand"><span class="brand-name">みんなの感情書店</span></p>
-    <p class="pilot-label">全4棚</p>
+    <p class="pilot-label">4つの街</p>
   </header>
 
   <main id="main">
@@ -85,10 +85,17 @@
       <div id="categoryResults" class="category-results" aria-live="polite"></div>
     </section>
 
-    <!-- 4棚が実際に並んだときだけ有限な終わりを出す。次回予告は置かない。 -->
-    <section class="end-plate foyer-end" aria-labelledby="end-title" hidden>
-      <p class="eyebrow">今日の書店は、ここまで</p>
-      <h2 id="end-title"><span class="end-phrase">棚は、</span><wbr><span class="end-phrase">4つだけです。</span></h2>
+    <!-- 4街で終える。横には、今週だけのCross-media Editorialを3本だけ置く。 -->
+    <section class="foyer-closing" aria-label="今日の街と今週の寄り道">
+      <section class="end-plate foyer-end" aria-labelledby="end-title" hidden>
+        <p class="eyebrow">今日の街は、ここまで</p>
+        <h2 id="end-title"><span class="end-phrase">街は、</span><wbr><span class="end-phrase">4つだけです。</span></h2>
+      </section>
+      <aside class="weekly-detour" aria-labelledby="detour-title">
+        <p class="eyebrow" id="detour-label">今週の寄り道</p>
+        <h2 id="detour-title" class="detour-theme"></h2>
+        <div id="detourList" class="detour-list"></div>
+      </aside>
     </section>
     <!-- 主要な探索の下に、静かに置く導線。Primary CTA にはしない。 -->
     <section class="suggest-lane" aria-labelledby="suggest-lane-title">

@@ -43,6 +43,8 @@
   }
 
   function shelfById(id) {
+    // 旧東京deep linkは、壊さず吉祥寺へ静かに引き継ぐ。
+    if (id === 'tokyo') id = 'kichijoji';
     if (!CONTENT || !Array.isArray(CONTENT.shelves)) return null;
     for (var i = 0; i < CONTENT.shelves.length; i++) {
       if (CONTENT.shelves[i].id === id) return CONTENT.shelves[i];
@@ -97,6 +99,30 @@
       if (endPlate) endPlate.hidden = false;
     }
     renderCategoryIndex();
+    renderDetour();
+  }
+
+  function renderDetour() {
+    var box = document.getElementById('detourList');
+    var title = document.getElementById('detour-title');
+    if (!box || !title || !CONTENT || !CONTENT.detour) return;
+    var d = CONTENT.detour;
+    title.textContent = d.theme || '';
+    box.textContent = '';
+    (d.items || []).slice(0, 3).forEach(function (item) {
+      box.appendChild(h('article', { class: 'detour-item' }, [
+        h('p', { class: 'detour-kind', text: item.kind }),
+        h('h3', { class: 'detour-name', text: item.title }),
+        h('p', { class: 'detour-creator', text: item.creator }),
+        h('p', { class: 'detour-why', text: item.why }),
+        h('p', { class: 'detour-action' }, [
+          h('a', {
+            class: 'detour-link', href: item.actionUrl, target: '_blank',
+            rel: 'noopener noreferrer', referrerpolicy: 'no-referrer', text: item.actionLabel
+          })
+        ])
+      ]));
+    });
   }
 
   /* ------------------------------------------------------------ 種類の索引 */
@@ -261,13 +287,27 @@
     ]);
   }
 
+  function listPlate(object) {
+    var place = (object.placeName || '').split(' / ').pop() || '';
+    return h('div', {
+      class: 'media-frame card-media media-plate list-plate',
+      'data-crop': 'none'
+    }, [
+      h('div', { class: 'plate-inner', role: 'img', 'aria-label': object.objectName + 'の活字図版' }, [
+        h('span', { class: 'plate-rule', 'aria-hidden': 'true' }),
+        jpHeading('span', { class: 'plate-word', 'aria-hidden': 'true' }, null, object.objectName),
+        h('span', { class: 'plate-sub', 'aria-hidden': 'true', text: place + ' / ' + object.typeLabel })
+      ])
+    ]);
+  }
+
   function card(object, index) {
     var button;
     var n = String(index + 1).padStart(2, '0');
     var hookId = 'hook-' + object.id;
     var openId = 'open-' + object.id;
     return h('article', { class: 'object-card', 'data-object-id': object.id }, [
-      media(object, 'card-media', index === 0, true),
+      listPlate(object),
       h('div', { class: 'card-body' }, [
         h('p', { class: 'card-number' }, [
           h('span', { class: 'plate-n', text: n }),
@@ -376,9 +416,32 @@
     if (lastTrigger) lastTrigger.focus();
   }
 
+  function renderShelfPortrait(shelf) {
+    var box = document.getElementById('shelfPortrait');
+    if (!box) return;
+    box.textContent = '';
+    box.className = 'shelf-portrait';
+    var m = shelf.heroMedia;
+    if (!m) return;
+    box.className = 'shelf-portrait has-media';
+    box.appendChild(h('div', { class: 'shelf-portrait-frame' }, [
+      h('img', {
+        src: m.url, alt: m.alt, width: m.width, height: m.height,
+        loading: 'eager', fetchpriority: 'high', decoding: 'async', referrerpolicy: 'no-referrer'
+      })
+    ]));
+    box.appendChild(h('figcaption', { class: 'shelf-portrait-credit' }, [
+      h('span', { text: '写真: ' + m.author + ' / ' }),
+      link(m.sourceUrl, m.source),
+      h('span', { text: ' / ' }),
+      link(m.licenseUrl, m.license),
+      h('span', { text: ' / ' + m.modification })
+    ]));
+  }
+
   function renderShelf() {
     if (!grid) return;
-    var requested = queryParams().get('shelf') || 'tokyo';
+    var requested = queryParams().get('shelf') || 'kichijoji';
     var shelf = shelfById(requested);
 
     if (!shelf) {
@@ -406,6 +469,7 @@
     }
     var label = document.getElementById('shelfLabel');
     if (label) label.textContent = shelf.name + ' / 全3点';
+    renderShelfPortrait(shelf);
 
     if (shelf.objects.length !== 3) return haltShelf('この棚はいま準備中です。');
     // 期限切れの会期・公演を「いま」として見せない。棚ごと閉じる。

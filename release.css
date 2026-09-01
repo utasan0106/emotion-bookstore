@@ -1020,3 +1020,106 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   /* box-shadow が捨てられる環境なので、閉じるの focus は outline で示す。 */
   .dialog-close:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
 }
+
+
+/* ====================================================== City entrance V3 */
+/* Homeは文字だけ。街を開いた後にだけ、その街の風景を一枚見せる。 */
+.shelf-portrait { display: none; margin: 0; min-width: 0; }
+.shelf-portrait.has-media { display: block; }
+.shelf-portrait-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border: 1px solid rgba(236, 231, 222, .18);
+  background: var(--hall-raised);
+}
+.shelf-portrait-frame::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(20,19,18,.02), rgba(20,19,18,.3));
+  pointer-events: none;
+}
+.shelf-portrait img {
+  display: block; width: 100%; height: 100%; object-fit: cover;
+  filter: saturate(.66) brightness(.66) contrast(1.16);
+  transform: scale(1.01);
+}
+.shelf-portrait-credit {
+  margin: 9px 0 0;
+  color: var(--chalk-dim);
+  font-size: .6875rem;
+  line-height: 1.55;
+}
+.shelf-portrait-credit a { color: inherit; text-underline-offset: 3px; }
+
+/* Object一覧は全件活字札。写真は詳細を開いた後にだけ出る。 */
+.list-plate .plate-inner { min-height: 230px; }
+.list-plate .plate-word { font-size: clamp(1.75rem, 6.8vw, 2.75rem); }
+
+/* 4街の有限な終わりと、Cross-mediaの寄り道を同じ終端面に置く。 */
+.foyer-closing {
+  width: min(calc(100% - var(--gutter) * 2), var(--page));
+  margin: 84px auto 0;
+  display: grid;
+  gap: 48px;
+}
+.foyer-closing .foyer-end {
+  width: auto;
+  margin: 0;
+  padding-top: 44px;
+  border-top: 1px solid var(--hall-line);
+}
+.weekly-detour {
+  padding-top: 44px;
+  border-top: 1px solid var(--hall-line);
+}
+.detour-theme {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.55rem, 4vw, 2.15rem);
+  font-weight: 600;
+  line-height: 1.32;
+  letter-spacing: -.03em;
+}
+.detour-list { margin-top: 28px; display: grid; gap: 0; }
+.detour-item { padding: 20px 0 22px; border-top: 1px solid var(--hall-line); }
+.detour-kind {
+  margin: 0 0 8px; color: var(--signal); font-size: .75rem;
+  letter-spacing: .18em;
+}
+.detour-name {
+  margin: 0; font-family: var(--serif); font-size: 1.375rem;
+  font-weight: 600; line-height: 1.35;
+}
+.detour-creator { margin: 6px 0 0; color: var(--chalk-dim); font-size: .8125rem; }
+.detour-why { margin: 12px 0 0; color: var(--chalk-dim); font-size: .875rem; line-height: 1.8; }
+.detour-action { margin: 10px 0 0; }
+.detour-link {
+  display: inline-flex; min-height: 44px; align-items: center;
+  font-family: var(--serif); font-size: .875rem; letter-spacing: .1em;
+  text-decoration-color: var(--signal); text-underline-offset: 5px;
+}
+
+@media (min-width: 821px) {
+  .shelf-page .shelf-hero {
+    display: grid;
+    grid-template-columns: minmax(0, .95fr) minmax(340px, .72fr);
+    gap: 64px;
+    align-items: end;
+  }
+  .shelf-portrait-frame { aspect-ratio: 16 / 9; max-height: 300px; }
+  .foyer-closing {
+    grid-template-columns: minmax(0, .68fr) minmax(0, 1.32fr);
+    gap: 72px;
+    align-items: start;
+  }
+  .detour-list { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0 28px; }
+  .detour-item { min-width: 0; }
+}
+
+@media (max-width: 820px) {
+  .shelf-page .shelf-hero { display: grid; gap: 26px; }
+  .shelf-portrait-frame { aspect-ratio: 16 / 10; }
+  .foyer-closing { gap: 24px; }
+  .weekly-detour { padding-top: 34px; }
+}

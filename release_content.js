@@ -19,11 +19,11 @@ window.V3_RELEASE_CONTENT = {
   release: {
     id: 'v3-release-01',
     title: 'みんなの感情書店',
-    foyerLead: '今日は、どの棚へ。',
+    foyerLead: '今日は、どの街へ。',
     // サイト共通の短い説明。玄関にも、街の棚を直接開いたときにも、
     // 最初の写真・図版より必ず先に出す。長い理念文は足さない。
     siteExplainer: '人が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べる文化案内です。',
-    verifiedAt: '2026-08-28T23:08:00+09:00',
+    verifiedAt: '2026-09-01T13:00:00+09:00',
     shelfCount: 4,
     objectsPerShelf: 3
   },
@@ -36,133 +36,127 @@ window.V3_RELEASE_CONTENT = {
     { id: 'music', name: '音楽・ライブ' },
     { id: 'film-stage', name: '映画・演劇' }
   ],
+  detour: {
+    label: '今週の寄り道',
+    weekOf: '2026-09-01',
+    theme: 'ひとりで歩くと、街は少し違って見える。',
+    items: [
+      {
+        kind: '本', title: 'すべて真夜中の恋人たち', creator: '川上未映子',
+        why: '街の名前を説明する本ではなく、真夜中をひとりで歩く時間から、灯りや距離、人との間合いを感じ直すための一冊。',
+        actionLabel: '講談社で見る', actionUrl: 'https://www.kodansha.co.jp/book/products/0000206651'
+      },
+      {
+        kind: '映画', title: 'PERFECT DAYS', creator: 'ヴィム・ヴェンダース 監督',
+        why: '名所を巡る映画ではなく、同じ道と同じ仕事の反復のなかで、毎日の街が少しずつ違って見えてくる一本。',
+        actionLabel: '公式サイトで見る', actionUrl: 'https://www.perfectdays-movie.jp/story/'
+      },
+      {
+        kind: '音楽', title: 'ナイトクルージング', creator: 'フィッシュマンズ',
+        why: 'どこかの街を名指しするのではなく、夜に移動するときの速度や遠さ、街灯のあいだを漂う感覚を置く一曲。',
+        actionLabel: 'Universal Musicで見る', actionUrl: 'https://www.universal-music.co.jp/fishmans/discography/'
+      }
+    ]
+  },
   shelves: [
     {
-      id: 'tokyo',
-      name: '東京の棚',
+      id: 'kichijoji',
+      name: '吉祥寺の棚',
       role: 'flagship',
-      tagline: '東京を、3つだけ。',
-      area: '東京',
+      tagline: '吉祥寺を、3つだけ。',
+      area: '吉祥寺',
+      heroMedia: {
+        url: './assets/city-kichijoji.jpg', width: 1536, height: 2048,
+        alt: '赤い提灯が並ぶ吉祥寺・ハーモニカ横丁の路地',
+        author: 'Stephen Kelly', source: 'Wikimedia Commons',
+        sourceUrl: 'https://commons.wikimedia.org/wiki/File:Harmonica_Yokocho_in_Kichijoji_(53417122805).jpg',
+        license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0/',
+        modification: 'Wikimedia Commons原本を取得後、長辺1600px以内へ縮小。表示時のみCSSでトリミング・明度・彩度・コントラスト調整'
+      },
       objects: [
         {
-          id: 'manuscript-cafe',
-          categoryIds: ['food', 'experience'],
-          objectName: '原稿執筆カフェ',
-          placeName: '高円寺三角地帯 / 高円寺',
-          typeLabel: 'カフェ・作業場所',
+          id: 'inokashira-park',
+          categoryIds: ['experience'],
+          objectName: '井の頭恩賜公園',
+          placeName: '井の頭恩賜公園 / 吉祥寺',
+          typeLabel: '公園・水辺',
           mode: 'evergreen',
-          hook: '原稿執筆する人限定のカフェ。',
-          hookPhrases: ['原稿執筆する', '人限定の', 'カフェ。'],
-          reveal: '入店時に目標を書き、達成するまで精算できない。進捗チェックもある。',
-          revealPhrases: ['入店時に', '目標を書き、', '達成するまで', '精算できない。', '進捗チェックも', 'ある。'],
+          hook: '駅から5分で、街が水辺にほどける。',
+          hookPhrases: ['駅から5分で、', '街が水辺に', 'ほどける。'],
+          reveal: '井の頭池は江戸の水源として知られ、1917年に日本最初の恩賜公園・郊外公園として開園した。',
+          revealPhrases: ['井の頭池は', '江戸の水源として知られ、', '1917年に', '日本最初の恩賜公園・', '郊外公園として', '開園した。'],
           facts: [
-            ['場所', '東京都杉並区高円寺北2-1-24'],
-            ['営業', '不定期。営業日は公式ページで確認'],
-            ['利用', '原稿・編集・翻訳・企画書など創作作業を目的とする人向け']
+            ['開園', '1917年5月1日'],
+            ['アクセス', 'JR中央線・京王井の頭線「吉祥寺」駅から徒歩5分'],
+            ['園内', '井の頭池、ボート場、野外ステージなど']
           ],
-          actionLabel: '公式ページで営業日を見る',
-          actionUrl: 'https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/',
+          actionLabel: '井の頭恩賜公園の公式ページを見る',
+          actionUrl: 'https://www.kensetsu.metro.tokyo.lg.jp/jimusho/seibuk/inokashira',
           media: {
-            kind: 'photo',
-            url: './assets/manuscript-cafe.png',
-            width: 640,
-            height: 905,
-            crop: 'none',
-            listAlt: '「原稿執筆カフェ」と大きく書かれた青いポスター',
-            detailAlt: '青地に「原稿執筆カフェ」と書かれた公式ビジュアル'
+            kind: 'photo', url: './assets/inokashira-pond.jpg', width: 1280, height: 759, crop: 'none',
+            listAlt: '「井の頭恩賜公園」と組んだ活字図版',
+            detailAlt: '井の頭恩賜公園の井の頭池と水辺の景色'
           },
           rights: {
-            author: '高円寺「原稿執筆カフェ」公式ページ',
-            source: '公式ページ',
-            sourceUrl: 'https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/',
-            license: 'メディア利用許可の記載にもとづく掲載',
-            licenseUrl: null,
-            modification: '変更なし'
+            author: 'Htanaungg', source: 'Wikimedia Commons',
+            sourceUrl: 'https://commons.wikimedia.org/wiki/File:Inokashira_Pond.jpg',
+            license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+            modification: 'Wikimedia生成の1280px縮小版・cropなし'
           },
-          factsSourceUrl: 'https://koenji-sankakuchitai.blog.jp/ManuscriptWritingCafe/',
-          verifiedAt: '2026-08-27T17:16:00+09:00',
-          // 表示している事実は「不定期。営業日は公式ページで確認」で、特定の日付に
-          // 依存していない。旧 Pilot 由来の finite expiry を残すと 8/30 16:00 に
-          // 東京 flagship が丸ごと閉じてしまうため、evergreen として期限を持たせない。
-          expiresAt: null
+          factsSourceUrl: 'https://www.kensetsu.metro.tokyo.lg.jp/jimusho/seibuk/inokashira/kouenannai',
+          verifiedAt: '2026-09-01T13:00:00+09:00', expiresAt: null
         },
         {
-          id: 'hachiko-taxidermy',
-          categoryIds: ['experience'],
-          objectName: '忠犬ハチ公の剥製',
-          placeName: '国立科学博物館 / 上野',
-          typeLabel: '常設展示',
+          id: 'kichijoji-sometime',
+          categoryIds: ['music', 'food'],
+          objectName: '吉祥寺 SOMETIME',
+          placeName: 'SOMETIME / 吉祥寺',
+          typeLabel: 'ジャズクラブ・飲食',
           mode: 'evergreen',
-          hook: '渋谷のハチ公、本物は上野。',
-          hookPhrases: ['渋谷のハチ公、', '本物は上野。'],
-          reveal: '上野にいるのは、ハチ本人の剥製。',
-          revealPhrases: ['上野にいるのは、', 'ハチ本人の剥製。'],
+          hook: '地下へ降りると、昼も夜もジャズが鳴る。',
+          hookPhrases: ['地下へ降りると、', '昼も夜も', 'ジャズが鳴る。'],
+          reveal: '1975年に吉祥寺で誕生。食事と飲み物のすぐそばで、生演奏を聴ける店が続いている。',
+          revealPhrases: ['1975年に', '吉祥寺で誕生。', '食事と飲み物の', 'すぐそばで、', '生演奏を聴ける店が', '続いている。'],
           facts: [
-            ['展示', '日本館2F北翼「日本人と自然」'],
-            ['種類', '秋田犬（ハチ）の剥製'],
-            ['来館', '開館時間・休館日は公式サイトで最新情報を確認']
+            ['開業', '1975年'],
+            ['ライブ', '夜2セット。土日祝は昼のライブも実施'],
+            ['場所', '東京都武蔵野市吉祥寺本町1-11-31 B1F']
           ],
-          actionLabel: '国立科学博物館の展示情報を見る',
-          actionUrl: 'https://db.kahaku.go.jp/exh/detail?cls=col_z1_01&pkey=1759522',
+          actionLabel: 'SOMETIMEの公式ページを見る',
+          actionUrl: 'https://www.sometime.co.jp/sometime/',
           media: {
-            kind: 'photo',
-            url: './assets/hachiko.jpg',
-            width: 2048,
-            height: 1536,
-            crop: 'none',
-            listAlt: '博物館の展示ケースの中に立つ、白い秋田犬',
-            detailAlt: '国立科学博物館に展示されている忠犬ハチ公の剥製'
+            kind: 'plate', plateWord: 'SOMETIME', plateSub: '吉祥寺 / ジャズクラブ', ratio: '4 / 5',
+            listAlt: '「SOMETIME」と大きく組んだ、この棚のための活字図版',
+            detailAlt: '「SOMETIME」と大きく組んだ、この棚のための活字図版'
           },
-          rights: {
-            author: 'Momotarou2012',
-            source: 'Wikimedia Commons',
-            sourceUrl: 'https://commons.wikimedia.org/wiki/File:Hachiko_in_National_Museum_of_Nature_and_Science.jpg',
-            license: 'CC BY-SA 3.0',
-            licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0/',
-            modification: '縮小のみ・cropなし'
-          },
-          factsSourceUrl: 'https://db.kahaku.go.jp/exh/detail?cls=col_z1_01&pkey=1759522',
-          verifiedAt: '2026-08-27T17:16:00+09:00',
-          expiresAt: null
+          factsSourceUrl: 'https://www.sometime.co.jp/sometime/intro.html',
+          verifiedAt: '2026-09-01T13:00:00+09:00', expiresAt: null
         },
         {
-          id: 'meguro-tapeworm',
-          categoryIds: ['experience'],
-          objectName: '8.8mのサナダムシ標本',
-          placeName: '目黒寄生虫館 / 目黒',
-          typeLabel: '研究博物館',
+          id: 'kichijoji-theatre',
+          categoryIds: ['film-stage'],
+          objectName: '吉祥寺シアター',
+          placeName: '吉祥寺シアター / 吉祥寺',
+          typeLabel: '劇場・舞台芸術',
           mode: 'evergreen',
-          hook: '8.8mのサナダムシ。',
-          hookPhrases: ['8.8mの', 'サナダムシ。'],
-          reveal: '1986年に駆虫。今も、その8.8mを標本で見られる。',
-          revealPhrases: ['1986年に駆虫。', '今も、', 'その8.8mを', '標本で見られる。'],
+          hook: '駅から5分、街の中に小さな劇場。',
+          hookPhrases: ['駅から5分、', '街の中に', '小さな劇場。'],
+          reveal: '舞台芸術の創造・普及・発信の拠点としてつくられ、劇場とけいこ場、1階のカフェと公共ロビーまで同じ建物にある。',
+          revealPhrases: ['舞台芸術の', '創造・普及・発信の', '拠点としてつくられ、', '劇場とけいこ場、', '1階のカフェと', '公共ロビーまで', '同じ建物にある。'],
           facts: [
-            ['展示', '8.8mの日本海裂頭条虫（サナダムシ）の標本'],
-            ['開館', '10:00–17:00 / 月・火休館（祝日の場合は変更あり）'],
-            ['入館料', '無料（寄付を受付）']
+            ['開館', '2005年'],
+            ['アクセス', '吉祥寺駅北口から徒歩約5分'],
+            ['施設', '劇場・けいこ場・1階カフェ・公共ロビー']
           ],
-          actionLabel: '目黒寄生虫館の利用案内を見る',
-          actionUrl: 'https://www.kiseichu.org/information',
+          actionLabel: '吉祥寺シアターの公式ページを見る',
+          actionUrl: 'https://www.musashino.or.jp/k_theatre/index.html',
           media: {
-            kind: 'photo',
-            url: './assets/meguro-tapeworm.jpg',
-            width: 1363,
-            height: 2048,
-            crop: 'none',
-            listAlt: '細長い展示ケースの中で、白いひも状のものが何度も折り返されている',
-            detailAlt: '目黒寄生虫館に展示されている長いサナダムシ標本'
+            kind: 'plate', plateWord: '吉祥寺シアター', plateSub: '吉祥寺 / 劇場・舞台芸術', ratio: '4 / 5',
+            listAlt: '「吉祥寺シアター」と大きく組んだ、この棚のための活字図版',
+            detailAlt: '「吉祥寺シアター」と大きく組んだ、この棚のための活字図版'
           },
-          rights: {
-            author: 'Laika ac',
-            source: 'Wikimedia Commons',
-            sourceUrl: 'https://commons.wikimedia.org/wiki/File:Laika_ac_Meguro_Parasitological_Museum_(7482790682).jpg',
-            license: 'CC BY-SA 2.0',
-            licenseUrl: 'https://creativecommons.org/licenses/by-sa/2.0/',
-            modification: '縮小のみ・cropなし'
-          },
-          factsSourceUrl: 'https://www.kiseichu.org/information',
-          verifiedAt: '2026-08-27T17:16:00+09:00',
-          expiresAt: null
+          factsSourceUrl: 'https://www.musashino.or.jp/k_theatre/1002052/1002053.html',
+          verifiedAt: '2026-09-01T13:00:00+09:00', expiresAt: null
         }
       ]
     },
@@ -172,6 +166,14 @@ window.V3_RELEASE_CONTENT = {
       role: 'town',
       tagline: '高円寺を、3つだけ。',
       area: '高円寺',
+      heroMedia: {
+        url: './assets/city-koenji.jpg', width: 1536, height: 2048,
+        alt: '夕方の高円寺の路地と店先の灯り',
+        author: 'NMaia', source: 'Wikimedia Commons',
+        sourceUrl: 'https://commons.wikimedia.org/wiki/File:Street_in_Koenji.jpg',
+        license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+        modification: 'Wikimedia Commons原本を取得後、長辺1600px以内へ縮小。表示時のみCSSでトリミング・明度・彩度・コントラスト調整'
+      },
       objects: [
         {
           id: 'kosugiyu',
@@ -271,6 +273,14 @@ window.V3_RELEASE_CONTENT = {
       role: 'town',
       tagline: '下北沢を、3つだけ。',
       area: '下北沢',
+      heroMedia: {
+        url: './assets/city-shimokitazawa.jpg', width: 1280, height: 960,
+        alt: '歩行者と小さな店が並ぶ下北沢の通り',
+        author: 'Aw1805', source: 'Wikimedia Commons',
+        sourceUrl: 'https://commons.wikimedia.org/wiki/File:Shimokitazawa_Street_2015.jpg',
+        license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+        modification: 'Wikimedia Commons原本を取得後、長辺1600px以内へ縮小。表示時のみCSSでトリミング・明度・彩度・コントラスト調整'
+      },
       objects: [
         {
           id: 'shimokitazawa-shelter',
@@ -384,6 +394,14 @@ window.V3_RELEASE_CONTENT = {
       role: 'town',
       tagline: '神保町を、3つだけ。',
       area: '神保町',
+      heroMedia: {
+        url: './assets/city-jinbocho.jpg', width: 1280, height: 853,
+        alt: '本が並ぶ神保町の古書店の店先',
+        author: 'Real Estate Japan / photo credit Scott Kouchi', source: 'Wikimedia Commons',
+        sourceUrl: 'https://commons.wikimedia.org/wiki/File:Used_bookstore_in_Jimbocho_(50495926321).jpg',
+        license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0/',
+        modification: 'Wikimedia Commons原本を取得後、長辺1600px以内へ縮小。表示時のみCSSでトリミング・明度・彩度・コントラスト調整'
+      },
       objects: [
         {
           id: 'jinbocho-book-town',

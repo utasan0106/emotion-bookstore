@@ -11,7 +11,7 @@ const { chromium } = require('playwright');
 const ROOT = path.resolve(__dirname, '..');
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',
   '.png': 'image/png', '.jpg': 'image/jpeg' };
-const SHELVES = ['tokyo', 'koenji', 'shimokitazawa', 'jinbocho'];
+const SHELVES = ['kichijoji', 'koenji', 'shimokitazawa', 'jinbocho'];
 const FORBIDDEN = ['次の3つ', 'また見たい', 'おすすめ', 'あなた向け', 'ランキング', '人気順',
   'トレンド', 'NEW', 'TRENDING', 'FOR YOU', '見終わりました'];
 
@@ -119,7 +119,9 @@ function serve() {
         lead: document.querySelector('h1').innerText.replace(/\s+/g, ''),
         endVisible: !document.querySelector('.end-plate').hidden,
         overflow: doc.scrollWidth > doc.clientWidth + 1, wide: wide.slice(0, 4),
-        text: document.body.innerText
+        text: document.body.innerText,
+        homeCityImages: document.querySelectorAll('.shelf-entry img').length,
+        detourItems: document.querySelectorAll('.detour-item').length
       };
     }, SHELVES);
     check(v.name, 'foyer_has_exactly_4_shelves', foyer.count === 4, foyer.count);
@@ -127,15 +129,17 @@ function serve() {
     check(v.name, 'foyer_deep_link_hrefs',
       foyer.hrefs.every((h, i) => h === `./shelf.html?shelf=${SHELVES[i]}`), foyer.hrefs);
     check(v.name, 'foyer_taglines',
-      foyer.taglines.join('|') === '東京を、3つだけ。|高円寺を、3つだけ。|下北沢を、3つだけ。|神保町を、3つだけ。',
+      foyer.taglines.join('|') === '吉祥寺を、3つだけ。|高円寺を、3つだけ。|下北沢を、3つだけ。|神保町を、3つだけ。',
       foyer.taglines);
     check(v.name, 'foyer_tokyo_is_visually_primary', foyer.flagshipBigger);
     check(v.name, 'foyer_single_h1', foyer.h1 === 1, foyer.h1);
-    check(v.name, 'foyer_lead_copy', foyer.lead === '今日は、どの棚へ。', foyer.lead);
+    check(v.name, 'foyer_lead_copy', foyer.lead === '今日は、どの街へ。', foyer.lead);
     check(v.name, 'foyer_finite_ending_shown', foyer.endVisible);
     check(v.name, 'foyer_no_horizontal_overflow', !foyer.overflow, foyer.wide);
     check(v.name, 'foyer_no_engagement_words',
       !FORBIDDEN.some((w) => foyer.text.includes(w)), FORBIDDEN.filter((w) => foyer.text.includes(w)));
+    check(v.name, 'home_city_entries_stay_text_only', foyer.homeCityImages === 0, foyer.homeCityImages);
+    check(v.name, 'weekly_detour_is_exactly_three', foyer.detourItems === 3, foyer.detourItems);
     check(v.name, 'foyer_no_external_request', external.length === 0, external.slice(0, 3));
 
     /* ---- 4つの棚 ---- */
@@ -288,7 +292,7 @@ function serve() {
     await page.goto(base + 'shelf.html', { waitUntil: 'load' });
     await page.waitForFunction(() => document.querySelectorAll('.object-card').length === 3);
     const fallback = await page.evaluate(() => document.body.dataset.shelf);
-    check(v.name, 'shelf_without_param_falls_back_to_tokyo', fallback === 'tokyo', fallback);
+    check(v.name, 'shelf_without_param_falls_back_to_kichijoji', fallback === 'kichijoji', fallback);
 
     await ctx.close();
   }
@@ -358,7 +362,7 @@ function serve() {
   const EXPLAINER = '人が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べる文化案内です。';
   for (const target of [
     { name: 'foyer', url: 'index.html' },
-    { name: 'tokyo', url: 'shelf.html?shelf=tokyo' },
+    { name: 'kichijoji', url: 'shelf.html?shelf=kichijoji' },
     { name: 'koenji', url: 'shelf.html?shelf=koenji' },
     { name: 'shimokitazawa', url: 'shelf.html?shelf=shimokitazawa' },
     { name: 'jinbocho', url: 'shelf.html?shelf=jinbocho' }
@@ -499,7 +503,7 @@ function serve() {
     }));
     check(S, 'click_updates_deep_link', clicked.url === '?category=music', clicked.url);
     check(S, 'click_shows_the_mapped_objects',
-      clicked.rows.sort().join(',') === 'jirokichi,shimokitazawa-shelter', clicked.rows);
+      clicked.rows.sort().join(',') === objectIdsIn('music').join(','), clicked.rows);
     check(S, 'entrance_makes_no_external_request', external.length === 0, external.slice(0, 3));
     await ctx.close();
   }
@@ -749,43 +753,24 @@ function serve() {
     await ctx.close();
   }
 
-  /* ---- 旧 Pilot の 8/30 16:00 で東京が閉じないこと ---- */
+  /* ---- flagship evergreen regression ---- */
   {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const page = await ctx.newPage();
-    await page.addInitScript(() => {
-      const fixed = new Date('2026-08-30T16:00:00+09:00').getTime();
-      const RealDate = Date;
-      // eslint-disable-next-line no-global-assign
-      Date = class extends RealDate {
-        constructor(...a) { if (!a.length) super(fixed); else super(...a); }
-        static now() { return fixed; }
-      };
-    });
-    await page.goto(base + 'shelf.html?shelf=tokyo', { waitUntil: 'load' });
-    await page.waitForTimeout(250);
+    await page.goto(base + 'shelf.html?shelf=kichijoji', { waitUntil: 'load' });
+    await page.waitForFunction(() => document.querySelectorAll('.object-card').length === 3);
     const t = await page.evaluate(() => ({
       cards: document.querySelectorAll('.object-card').length,
-      endHidden: document.querySelector('.end-plate').hidden,
+      portrait: !!document.querySelector('.shelf-portrait.has-media img'),
+      photoCards: document.querySelectorAll('.object-card .card-media img').length,
       text: document.body.innerText
     }));
-    check('2026-08-30T16:00+09:00', 'tokyo_flagship_stays_open', t.cards === 3, t.cards);
-    check('2026-08-30T16:00+09:00', 'tokyo_finite_ending_still_shown', t.endHidden === false);
-    check('2026-08-30T16:00+09:00', 'tokyo_still_shows_its_three_hooks',
-      ['原稿執筆する人限定のカフェ。', '渋谷のハチ公、本物は上野。', '8.8mのサナダムシ。']
-        .every((w) => t.text.replace(/\s+/g, '').includes(w.replace(/\s+/g, ''))), t.text.slice(0, 60));
-    // この修正が他の棚を巻き込んで閉じていないこと。どの棚が開くべきかは
-    // 決め打ちせず、その時刻の content から導く。
-    const at1600 = Date.parse('2026-08-30T16:00:00+09:00');
-    for (const sh of CONTENT.shelves) {
-      const shouldBeOpen = sh.objects.every((o) =>
-        !o.expiresAt || Date.parse(o.expiresAt) > at1600);
-      await page.goto(`${base}shelf.html?shelf=${sh.id}`, { waitUntil: 'load' });
-      await page.waitForTimeout(200);
-      const n = await page.evaluate(() => document.querySelectorAll('.object-card').length);
-      check('2026-08-30T16:00+09:00', `${sh.id}_matches_what_content_says`,
-        n === (shouldBeOpen ? 3 : 0), { shelf: sh.id, cards: n, shouldBeOpen });
-    }
+    check('flagship', 'kichijoji_flagship_stays_open', t.cards === 3, t.cards);
+    check('flagship', 'city_photo_appears_only_after_entering_city', t.portrait === true);
+    check('flagship', 'object_list_cards_are_typography_only', t.photoCards === 0, t.photoCards);
+    check('flagship', 'kichijoji_three_hooks_present',
+      ['駅から5分で、街が水辺にほどける。', '地下へ降りると、昼も夜もジャズが鳴る。', '駅から5分、街の中に小さな劇場。']
+        .every((w) => t.text.replace(/\s+/g,'').includes(w.replace(/\s+/g,''))), t.text.slice(0,80));
     await ctx.close();
   }
 
@@ -836,12 +821,12 @@ function serve() {
   {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const page = await ctx.newPage();
-    await page.goto(base + 'shelf.html?shelf=tokyo', { waitUntil: 'load' });
+    await page.goto(base + 'shelf.html?shelf=kichijoji', { waitUntil: 'load' });
     await page.waitForFunction(() => document.querySelectorAll('.object-card').length === 3);
-    await page.hover('.object-card:nth-child(1) .card-media img').catch(() => {});
+    await page.hover('.object-card:nth-child(1) .list-plate').catch(() => {});
     await page.waitForTimeout(250);
     const t = await page.evaluate(() =>
-      getComputedStyle(document.querySelector('.object-card .card-media img')).transform);
+      getComputedStyle(document.querySelector('.object-card .list-plate')).transform);
     check('coarse-touch', 'no_sticky_hover_transform', t === 'none', t);
     const ta = await page.evaluate(() => ['.open-button'].map((s) =>
       getComputedStyle(document.querySelector(s)).touchAction));
