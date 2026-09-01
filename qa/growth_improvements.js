@@ -25,6 +25,36 @@ assert.deepStrictEqual(Array.from(generated[0].categoryIds), ['experience']);
 assert.strictEqual(content.archive.filter(x => x.id.indexOf('weekly:a:') === 0).length, 1, 'runtime lifecycle appends the expired feature once');
 vm.runInContext(source, sandbox);
 assert.strictEqual(content.archive.filter(x => x.id.indexOf('weekly:a:') === 0).length, 1, 'lifecycle is idempotent');
+
+const normalizedExpired = sandbox.window.V3_GROWTH.normalizeInterestedItems([
+  {
+    id: 'weekly:a:2026-08-02T00:00:00+09:00',
+    kind: 'weekly-feature',
+    kindLabel: '今週の特集',
+    title: 'expired',
+    area: 'A',
+    shelfId: 'a',
+    expiresAt: '2026-08-02T00:00:00+09:00'
+  }
+], Date.parse('2026-09-01T22:30:00+09:00'));
+assert.strictEqual(normalizedExpired.length, 1, 'expired saved weekly feature is retained only through Archive');
+assert.strictEqual(normalizedExpired[0].kind, 'archive', 'expired saved weekly feature becomes Archive');
+assert.strictEqual(normalizedExpired[0].title, 'expired');
+assert.strictEqual(normalizedExpired[0].archivedAt, '2026-08-02T00:00:00+09:00');
+
+const normalizedLive = sandbox.window.V3_GROWTH.normalizeInterestedItems([
+  {
+    id: 'weekly:b:2026-12-01T00:00:00+09:00',
+    kind: 'weekly-feature',
+    kindLabel: '今週の特集',
+    title: 'live',
+    area: 'B',
+    shelfId: 'b',
+    expiresAt: '2026-12-01T00:00:00+09:00'
+  }
+], Date.parse('2026-09-01T22:30:00+09:00'));
+assert.strictEqual(normalizedLive.length, 1, 'live saved weekly feature remains');
+assert.strictEqual(normalizedLive[0].kind, 'weekly-feature', 'live weekly state is unchanged');
 console.log('growth_improvements: PASS');
 
 

@@ -36,8 +36,46 @@
     return out;
   }
 
+  function archiveEntryForWeeklyFavorite(item, now) {
+    var atNow = typeof now === 'number' ? now : Date.now();
+    var expires = parseTime(item && item.expiresAt);
+    if (expires === null || expires > atNow) return null;
+    var archive = Array.isArray(CONTENT.archive) ? CONTENT.archive : [];
+    for (var i = 0; i < archive.length; i++) {
+      var entry = archive[i];
+      if (!entry || entry.sourceKind !== 'weekly-feature') continue;
+      if (entry.shelfId !== item.shelfId || entry.title !== item.title) continue;
+      if (item.expiresAt && entry.archivedAt && entry.archivedAt !== item.expiresAt) continue;
+      return entry;
+    }
+    return null;
+  }
+
+  function normalizeInterestedItems(items, now) {
+    var atNow = typeof now === 'number' ? now : Date.now();
+    var out = [];
+    var seen = {};
+    (Array.isArray(items) ? items : []).forEach(function (item) {
+      if (!item || !item.id || !item.title) return;
+      var next = item;
+      if (item.kind === 'weekly-feature' && item.expiresAt) {
+        var expires = parseTime(item.expiresAt);
+        if (expires !== null && expires <= atNow) {
+          var archived = archiveEntryForWeeklyFavorite(item, atNow);
+          if (!archived) return;
+          next = archiveRecord(archived);
+        }
+      }
+      if (seen[next.id]) return;
+      seen[next.id] = true;
+      out.push(next);
+    });
+    return out;
+  }
+
   window.V3_GROWTH = {
-    generatedWeeklyArchiveEntries: generatedWeeklyArchiveEntries
+    generatedWeeklyArchiveEntries: generatedWeeklyArchiveEntries,
+    normalizeInterestedItems: normalizeInterestedItems
   };
 
   if (!Array.isArray(CONTENT.archive)) CONTENT.archive = [];
@@ -78,7 +116,12 @@
   function readInterested() {
     try {
       var parsed = JSON.parse(localStorage.getItem(INTEREST_KEY) || '[]');
-      return Array.isArray(parsed) ? parsed.filter(function (item) { return item && item.id && item.title; }) : [];
+      if (!Array.isArray(parsed)) parsed = [];
+      var normalized = normalizeInterestedItems(parsed);
+      if (JSON.stringify(normalized) !== JSON.stringify(parsed)) {
+        localStorage.setItem(INTEREST_KEY, JSON.stringify(normalized));
+      }
+      return normalized;
     } catch (_) {
       return [];
     }
@@ -233,7 +276,7 @@
         expiresAt: item.expiresAt || ''
       });
     });
-    writeInterested(existing);
+    writeInterested(normalizeInterestedItems(existing));
   }
 
   function decorateObjectCards() {
