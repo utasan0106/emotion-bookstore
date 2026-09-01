@@ -1433,3 +1433,85 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
     white-space: nowrap;
   }
 }
+
+/* ================================================= Mobile editorial rhythm — 2026-09-01 */
+@media (min-width: 821px) {
+  .foyer-end .end-phrase {
+    display: inline-block;
+    white-space: nowrap;
+    word-break: keep-all;
+    overflow-wrap: normal;
+  }
+}
+
+@media (max-width: 820px) {
+  .site-explainer {
+    max-width: none;
+    font-size: clamp(.8125rem, 3.6vw, .875rem);
+    line-height: 1.85;
+  }
+  .site-explainer .explainer-line {
+    display: block;
+    white-space: nowrap;
+    word-break: keep-all;
+    overflow-wrap: normal;
+  }
+  .site-explainer wbr { display: none; }
+
+  .weekly-video-plate-title .weekly-video-plate-line {
+    display: block;
+    white-space: nowrap;
+    word-break: keep-all;
+  }
+
+  .shelf-entry {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "number"
+      "name"
+      "media"
+      "tag"
+      "mark";
+    row-gap: 8px;
+    column-gap: 0;
+    align-items: start;
+  }
+  .shelf-entry-media {
+    margin: 12px 0 8px;
+    width: 100%;
+  }
+  .shelf-tagline { margin-top: 4px; }
+  .shelf-mark {
+    justify-self: end;
+    align-self: end;
+    margin-top: 2px;
+    padding: 2px 0 0;
+  }
+
+  .shelf-entry-media.is-entry-illustration .shelf-entry-media-frame {
+    border: 0;
+    background: transparent;
+  }
+  .shelf-entry-media.is-entry-illustration .shelf-entry-media-frame::after {
+    display: block;
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      linear-gradient(to right,
+        rgba(20,19,18,.30) 0%,
+        transparent 5%,
+        transparent 95%,
+        rgba(20,19,18,.30) 100%),
+      linear-gradient(to bottom,
+        rgba(20,19,18,.18) 0%,
+        transparent 7%,
+        transparent 91%,
+        rgba(20,19,18,.30) 100%);
+  }
+  .shelf-entry-media.is-entry-illustration img {
+    filter: saturate(.94) brightness(.97);
+  }
+}

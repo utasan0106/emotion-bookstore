@@ -189,6 +189,26 @@ if (releaseRuntimeForShelf.includes('renderShelfPortrait')) {
   failures.push('release.js: shelf portrait renderer must be removed');
 }
 
+const responsiveCss = read('release.css');
+for (const required of [
+  '.site-explainer .explainer-line',
+  '.weekly-video-plate-title .weekly-video-plate-line',
+  '.foyer-end .end-phrase'
+]) {
+  if (!responsiveCss.includes(required)) {
+    failures.push(`release.css: mobile/editorial contract missing ${required}`);
+  }
+}
+const indexRuntime = read('index.html');
+for (const required of [
+  '人が選んだ場所・本・音楽・映画・催しを、',
+  '街や種類ごとに少しずつ並べる文化案内です。',
+  '<span class="weekly-video-plate-line">東京の文化を、</span>',
+  '<span class="weekly-video-plate-line">31秒だけ</span>'
+]) {
+  if (!indexRuntime.includes(required)) failures.push(`index.html: required mobile phrase missing (${required})`);
+}
+
 const cityCss = read('release.css');
 for (const required of ['mix-blend-mode: multiply', 'mix-blend-mode: color', 'repeating-linear-gradient']) {
   if (!cityCss.includes(required)) failures.push(`release.css: city editorial treatment missing ${required}`);
@@ -200,7 +220,7 @@ for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
     failures.push(`${page}: exact site explainer missing`); continue;
   }
   // 折返しは Chromium 専用の auto-phrase ではなく markup で決める。
-  if (!/<span class="jp-phrase">[^<]+<\/span><wbr>/.test(explainerBlock(src))) {
+  if (!/<span class="[^"]*\bjp-phrase\b[^"]*">[^<]+<\/span><wbr>/.test(explainerBlock(src))) {
     failures.push(`${page}: site explainer must keep the Safari-safe .jp-phrase + <wbr> structure`);
   }
   // static に置いていること。JS が動かなくても順序が崩れないようにする。

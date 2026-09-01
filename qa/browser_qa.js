@@ -171,6 +171,59 @@ function serve() {
           const cs = getComputedStyle(f);
           const lh = parseFloat(cs.lineHeight);
           return f.getBoundingClientRect().height <= lh * 1.15;
+        })(),
+        explainerMobileTwoLines: (() => {
+          if (window.innerWidth > 820) return true;
+          const lines = [...document.querySelectorAll('.site-explainer .explainer-line')];
+          if (lines.length !== 2) return false;
+          return lines[0].textContent === '人が選んだ場所・本・音楽・映画・催しを、' &&
+            lines[1].textContent === '街や種類ごとに少しずつ並べる文化案内です。' &&
+            lines.every((el) => {
+              const cs = getComputedStyle(el);
+              const lh = parseFloat(cs.lineHeight);
+              return el.getBoundingClientRect().height <= lh * 1.15;
+            }) &&
+            lines[1].getBoundingClientRect().top > lines[0].getBoundingClientRect().top + 2;
+        })(),
+        weeklyPlateMobileTwoLines: (() => {
+          if (window.innerWidth > 820) return true;
+          const lines = [...document.querySelectorAll('.weekly-video-plate-line')];
+          if (lines.length !== 2) return false;
+          return lines[0].textContent === '東京の文化を、' &&
+            lines[1].textContent === '31秒だけ' &&
+            lines[1].getBoundingClientRect().top > lines[0].getBoundingClientRect().top + 2;
+        })(),
+        mobileCityEntryOrder: entries.every((entry) => {
+          if (window.innerWidth > 820) return true;
+          const name = entry.querySelector('.shelf-name').getBoundingClientRect();
+          const media = entry.querySelector('.shelf-entry-media').getBoundingClientRect();
+          const tag = entry.querySelector('.shelf-tagline').getBoundingClientRect();
+          const mark = entry.querySelector('.shelf-mark').getBoundingClientRect();
+          return name.bottom <= media.top + 2 &&
+            media.bottom <= tag.top + 2 &&
+            tag.bottom <= mark.top + 2;
+        }),
+        mobileIllustrationsIntegrated: entries.every((entry) => {
+          if (window.innerWidth > 820) return true;
+          const frame = entry.querySelector('.shelf-entry-media.is-entry-illustration .shelf-entry-media-frame');
+          if (!frame) return false;
+          const cs = getComputedStyle(frame);
+          const after = getComputedStyle(frame, '::after');
+          return parseFloat(cs.borderTopWidth) === 0 && after.display !== 'none';
+        }),
+        foyerEndingPeriodSameLine: (() => {
+          if (window.innerWidth < 821) return true;
+          const phrase = document.querySelector('.foyer-end .end-phrase:last-child');
+          if (!phrase || !phrase.firstChild || phrase.firstChild.nodeType !== Node.TEXT_NODE) return false;
+          const text = phrase.firstChild.textContent || '';
+          if (!text.endsWith('です。')) return false;
+          const before = document.createRange();
+          before.setStart(phrase.firstChild, text.length - 2);
+          before.setEnd(phrase.firstChild, text.length - 1);
+          const period = document.createRange();
+          period.setStart(phrase.firstChild, text.length - 1);
+          period.setEnd(phrase.firstChild, text.length);
+          return Math.abs(before.getBoundingClientRect().top - period.getBoundingClientRect().top) < 2;
         })()
       };
     }, SHELVES);
@@ -202,6 +255,19 @@ function serve() {
     }
     check(v.name, 'foyer_lead_copy', foyer.lead === '今日は、どの街へ。', foyer.lead);
     check(v.name, 'foyer_finite_ending_shown', foyer.endVisible);
+    if (v.mobile) {
+      check(v.name, 'mobile_site_explainer_has_exact_two_lines',
+        foyer.explainerMobileTwoLines === true, foyer);
+      check(v.name, 'mobile_weekly_video_plate_has_exact_two_lines',
+        foyer.weeklyPlateMobileTwoLines === true, foyer);
+      check(v.name, 'mobile_city_entry_order_is_name_image_tagline_arrow',
+        foyer.mobileCityEntryOrder === true, foyer);
+      check(v.name, 'mobile_city_illustrations_blend_without_frame',
+        foyer.mobileIllustrationsIntegrated === true, foyer);
+    } else {
+      check(v.name, 'foyer_ending_period_stays_with_sentence',
+        foyer.foyerEndingPeriodSameLine === true, foyer);
+    }
     check(v.name, 'foyer_no_horizontal_overflow', !foyer.overflow, foyer.wide);
     check(v.name, 'foyer_no_engagement_words',
       !FORBIDDEN.some((w) => foyer.text.includes(w)), FORBIDDEN.filter((w) => foyer.text.includes(w)));
