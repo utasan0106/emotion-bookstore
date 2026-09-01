@@ -11,7 +11,7 @@ const root = path.resolve(__dirname, '..');
 const failures = [];
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 
-for (const file of ['index.html', 'shelf.html', 'release.css', 'release.js', 'release_content.js']) {
+for (const file of ['index.html', 'shelf.html', 'release.css', 'release.js', 'release_content.js', 'analytics-v3.js', 'data.html', 'weekly-video.js', 'weekly-video.css']) {
   if (!fs.existsSync(path.join(root, file))) failures.push(`missing ${file}`);
 }
 
@@ -198,7 +198,7 @@ for (const notice of [
   '送った候補がそのまま公開されることはありません。',
   // コピーが端末のクリップボードへ書くことと、フォームが外部であることを
   // どちらも言い落とさない。
-  'このページでは保存・計測・個人ごとの推薦を行いません。入力内容は自動送信されません。「候補文をコピー」を押した場合だけ、端末のクリップボードにコピーされます。送信フォームと公式Xは、押したときだけ開きます。フォームはGoogleのページで、記入と送信はそちらで行います。'
+  'サービス改善のためGoogle Analyticsでページ表示と操作段階を計測します。入力した名称・URL・自由記述・候補文はAnalyticsへ送りません。入力内容はこのページから自動送信されません。'
 ]) {
   if (!suggest.includes(notice)) failures.push(`suggest.html: required notice missing (${notice.slice(0, 12)}…)`);
 }
@@ -378,6 +378,36 @@ for (const shelf of shelves) {
   }
 }
 
+/* ---- E. approved Production measurement + weekly video ---------------- */
+const productionIndex = read('index.html');
+for (const required of ['analytics-v3.js', 'data.html', 'weekly-video.js', 'weekly-video.css']) {
+  if (!fs.existsSync(path.join(root, required))) failures.push(`missing ${required}`);
+}
+if (!productionIndex.includes('<script src="./analytics-v3.js"></script>')) failures.push('index.html: analytics-v3 loader missing');
+if (!read('shelf.html').includes('<script src="./analytics-v3.js"></script>')) failures.push('shelf.html: analytics-v3 loader missing');
+if (!read('suggest.html').includes('<script src="./analytics-v3.js"></script>')) failures.push('suggest.html: analytics-v3 loader missing');
+if (!productionIndex.includes('id="weeklyVideoPlay"') || !productionIndex.includes('data-video-id="TNomzoYXWMc"')) {
+  failures.push('index.html: approved weekly video module missing');
+}
+if (!productionIndex.includes('ページ表示時にはYouTubeへ接続しません')) failures.push('index.html: weekly video pre-click disclosure missing');
+if (productionIndex.includes('i.ytimg.com')) failures.push('index.html: external YouTube thumbnail must not load before play');
+const weeklyVideoJs = read('weekly-video.js');
+if (!weeklyVideoJs.includes('https://www.youtube-nocookie.com/embed/')) failures.push('weekly-video.js: youtube-nocookie embed missing');
+if (!weeklyVideoJs.includes("iframe.referrerPolicy = 'strict-origin-when-cross-origin'")) failures.push('weekly-video.js: iframe referrer policy missing');
+if (!weeklyVideoJs.includes("button.addEventListener('click'")) failures.push('weekly-video.js: click gate missing');
+for (const forbidden of ['youtube.com/iframe_api', 'localStorage', 'sessionStorage', 'indexedDB', 'geolocation']) {
+  if (weeklyVideoJs.includes(forbidden)) failures.push(`weekly-video.js: forbidden runtime token ${forbidden}`);
+}
+const analyticsJs = read('analytics-v3.js');
+if (!analyticsJs.includes("var PROD_HOST = 'emotionbookstore.com'")) failures.push('analytics-v3.js: Production hostname guard missing');
+if (!analyticsJs.includes('if (location.hostname !== PROD_HOST) return;')) failures.push('analytics-v3.js: non-Production early return missing');
+if (!analyticsJs.includes('send_page_view: false')) failures.push('analytics-v3.js: send_page_view must stay false');
+if (!analyticsJs.includes('allow_google_signals: false')) failures.push('analytics-v3.js: Google Signals must stay off');
+if (!analyticsJs.includes('allow_ad_personalization_signals: false')) failures.push('analytics-v3.js: ad personalization must stay off');
+const vercelPolicy = read('vercel.json');
+if (!vercelPolicy.includes("frame-src https://www.youtube-nocookie.com; frame-ancestors 'none'")) failures.push('vercel.json: approved YouTube CSP missing');
+if (!read('data.html').includes('GA4のオン／オフとは別の操作')) failures.push('data.html: YouTube/GA4 separation disclosure missing');
+
 if (failures.length) {
   console.error('RELEASE_CHECK_FAIL');
   failures.forEach((f) => console.error('- ' + f));
@@ -388,5 +418,5 @@ const plates = shelves.reduce((n, s) => n + s.objects.filter((o) => o.media.kind
 const currents = shelves.reduce((n, s) => n + s.objects.filter((o) => o.mode === 'current').length, 0);
 const catCounts = cats.map((c) => `${c.id}:${allObjects.filter((o) => (o.categoryIds || []).includes(c.id)).length}`).join(' ');
 console.log('RELEASE_CHECK_GO');
-console.log(`shelves=4; ${counts}; photo=${12 - plates}; plate=${plates}; current=${currents}; storage=0; analytics=0; background fetch=0; search=0; account=0`);
+console.log(`shelves=4; ${counts}; photo=${12 - plates}; plate=${plates}; current=${currents}; storage=0; analytics=production-host-only; background fetch=0; search=0; account=0`);
 console.log(`categories=5; ${catCounts}; explainer=static; suggest=no-backend`);

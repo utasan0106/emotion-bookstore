@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#141312">
+  <title>みんなの感情書店｜データの扱い</title>
+  <meta name="description" content="みんなの感情書店で、サービス改善のために行うアクセス計測と、その使い方について説明します。">
+  <link rel="icon" href="./assets/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="./assets/icon-512.png">
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="./release.css">
+</head>
+<body class="suggest-page">
+  <a class="skip-link" href="#main">本文へ移動</a>
+
+  <header class="site-header">
+    <p class="brand"><a class="brand-home" href="./index.html"><span class="brand-name">みんなの感情書店</span></a></p>
+    <p class="pilot-label">データの扱い</p>
+  </header>
+
+  <main id="main">
+    <section class="site-intro" aria-label="このサイトについて">
+      <p class="site-explainer"><span class="jp-phrase">人が選んだ</span><wbr><span class="jp-phrase">場所・本・音楽・映画・催しを、</span><wbr><span class="jp-phrase">街や</span><wbr><span class="jp-phrase">種類ごとに</span><wbr><span class="jp-phrase">少しずつ並べる</span><wbr><span class="jp-phrase">文化案内です。</span></p>
+    </section>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title"><span class="hero-line">データの扱い</span></h1>
+    </section>
+
+    <section class="suggest-section" aria-labelledby="data-title">
+      <h2 id="data-title" class="output-title">改善のための計測について</h2>
+      <div class="suggest-terms">
+        <p>サービス改善のため、Google Analytics 4（GA4）でページ表示と、棚を開く・詳細を開く・公式ページへ進むなどの操作段階を計測します。</p>
+        <p>トップページの「週末の前の一本」は、ページを表示しただけではYouTubeへ接続しません。「31秒の動画を再生」を押した場合だけ、YouTubeのプライバシー強化モード（youtube-nocookie.com）を読み込みます。その際、emotionbookstore.com のドメイン情報など、動画の表示に必要な通信がYouTube側へ送られます。</p>
+        <p>動画の再生はGA4のオン／オフとは別の操作です。GA4をオフにしていても、利用者が動画の再生を押した場合はYouTubeへの通信が発生します。感情書店から候補入力や閲覧した個別Object名をYouTubeへ付加して送りません。</p>
+        <p>候補入力の名称・URL・自由記述・候補文や、閲覧した個別の場所・作品の名前・IDを、感情書店が定義する独自イベントの項目として送りません。</p>
+        <p>戻って利用されたかを集計するため、GA4の <code>_ga</code> Cookieを使います。感情書店側で設定する有効期間は60日です。</p>
+        <p>広告のパーソナライズ、個人ごとの推薦、感情・性格の推定、人気順・収益順で棚を並べるためには使いません。</p>
+        <p>GA4で「公式ページを開いた」ことは確認できますが、その後に実際に行った・見た・買った等の行動まで断定しません。</p>
+      </div>
+
+      <section class="suggest-output" aria-labelledby="choice-title">
+        <h2 id="choice-title" class="output-title">このブラウザでの選択</h2>
+        <p class="suggest-lane-note">計測を止める場合は「計測をオフ」、再開する場合は「計測をオン」を選んでください。この設定はこのブラウザのlocalStorageに保存されます。</p>
+        <p class="suggest-actions suggest-actions-secondary">
+          <a class="other-shelves" href="./data.html?analytics=off">計測をオフ</a>
+          <a class="other-shelves" href="./data.html?analytics=on">計測をオン</a>
+        </p>
+      </section>
+
+      <p class="end-exit"><a class="other-shelves" href="./index.html">棚に戻る</a></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="privacy-note">計測はemotionbookstore.comの本番ページだけで有効になります。Do Not Trackが有効な場合、またはこのブラウザで計測をオフにした場合は送信しません。</p>
+  </footer>
+
+  <script src="./analytics-v3.js"></script>
+</body>
+</html>

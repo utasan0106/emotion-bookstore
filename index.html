@@ -27,6 +27,7 @@
   <link rel="icon" type="image/png" href="./assets/icon-512.png">
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
   <link rel="stylesheet" href="./release.css">
+  <link rel="stylesheet" href="./weekly-video.css">
 </head>
 <body class="foyer-page">
   <a class="skip-link" href="#main">本文へ移動</a>
@@ -45,6 +46,27 @@
 
     <section class="hero" aria-labelledby="hero-title">
       <h1 id="hero-title"><span class="hero-line">今日は、</span><span class="hero-line">どの棚へ。</span></h1>
+    </section>
+
+    <section class="weekly-video-section" aria-labelledby="weekly-video-title">
+      <p class="weekly-video-eyebrow">今週の、街と気持ち。</p>
+      <div class="weekly-video-card">
+        <div class="weekly-video-plate" id="weeklyVideoHost">
+          <div class="weekly-video-plate-inner">
+            <p class="weekly-video-plate-kicker">週末の前の一本</p>
+            <p class="weekly-video-plate-title">東京の文化を、31秒だけ。</p>
+          </div>
+        </div>
+        <div class="weekly-video-copy">
+          <h2 id="weekly-video-title" class="weekly-video-title">NOTHING LIKE TOKYO - Culture</h2>
+          <p class="weekly-video-source">Tokyo Tokyo / 東京都公式「東京動画」掲載 · 00:31</p>
+          <p class="weekly-video-why"><strong>なぜ今週これを置くか。</strong><br>古民家での食事から村上春樹ライブラリーまで、東京の文化を一つのジャンルに閉じず短く横切る映像。目的地を決める代わりではなく、週末前に「こんなのもある」を一つだけ置きます。</p>
+          <p class="weekly-video-notice">再生するとYouTube（プライバシー強化モード）が読み込まれ、emotionbookstore.com のドメイン情報など動画の表示に必要な通信がYouTubeへ送られます。ページ表示時にはYouTubeへ接続しません。</p>
+          <button class="weekly-video-play" id="weeklyVideoPlay" type="button" data-video-id="TNomzoYXWMc" data-video-title="Tokyo Tokyo Promotion Video NOTHING LIKE TOKYO - Culture">31秒の動画を再生</button>
+          <p id="weeklyVideoStatus" class="sr-only" role="status" aria-live="polite"></p>
+          <p class="weekly-video-after">自動再生・外部サムネイル・位置情報・個人ごとの推薦は使いません。</p>
+        </div>
+      </div>
     </section>
 
     <section class="foyer" aria-labelledby="by-town-title">
@@ -77,12 +99,14 @@
   </main>
 
   <footer class="site-footer">
-    <p class="privacy-note">このページでは保存・計測・個人ごとの推薦を行いません。画像の出典と利用条件は各詳細に記載しています。公式リンクは押したときだけ開きます。</p>
+    <p class="privacy-note">サービス改善のためGoogle Analyticsでページ表示と操作段階を計測します。候補入力の内容や、閲覧した個別の場所・作品名は独自イベントへ送りません。広告パーソナライズや個人ごとの推薦には使いません。 <a href="./data.html">データの扱い</a></p>
   </footer>
 
   <div id="live" class="sr-only" role="status" aria-live="polite"></div>
 
   <script src="./release_content.js"></script>
   <script src="./release.js"></script>
+  <script src="./weekly-video.js"></script>
+  <script src="./analytics-v3.js"></script>
 </body>
 </html>
