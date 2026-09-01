@@ -152,7 +152,8 @@ function serve() {
           src: img.getAttribute('src'),
           sameOrigin: new URL(img.src).origin === location.origin,
           loaded: img.complete && img.naturalWidth > 0,
-          alt: img.getAttribute('alt') || ''
+          alt: img.getAttribute('alt') || '',
+          illustration: !!img.closest('.shelf-entry-media.is-entry-illustration')
         })),
         homeCityCredits: [...document.querySelectorAll('.shelf-entry-media-credit')].map((el) => el.textContent),
         detourItems: document.querySelectorAll('.detour-item').length,
@@ -202,13 +203,14 @@ function serve() {
     check(v.name, 'foyer_no_horizontal_overflow', !foyer.overflow, foyer.wide);
     check(v.name, 'foyer_no_engagement_words',
       !FORBIDDEN.some((w) => foyer.text.includes(w)), FORBIDDEN.filter((w) => foyer.text.includes(w)));
-    check(v.name, 'home_city_entries_have_exactly_four_local_photos',
+    check(v.name, 'home_city_entries_have_exactly_four_ai_illustrations',
       foyer.homeCityImages.length === 4 &&
-      foyer.homeCityImages.every((x) => x.sameOrigin && x.loaded && x.alt),
+      foyer.homeCityImages.every((x) =>
+        x.sameOrigin && x.loaded && x.alt && x.illustration && /entry-.*\.webp$/.test(x.src)
+      ),
       foyer.homeCityImages);
-    check(v.name, 'home_city_photo_credits_are_visible',
-      foyer.homeCityCredits.length === 4 &&
-      foyer.homeCityCredits.every((x) => /写真:/.test(x) && /CC BY/.test(x)),
+    check(v.name, 'home_city_ai_illustrations_have_no_external_photo_credit',
+      foyer.homeCityCredits.length === 0,
       foyer.homeCityCredits);
     check(v.name, 'weekly_detour_is_exactly_three', foyer.detourItems === 3, foyer.detourItems);
     check(v.name, 'weekly_detour_has_two_click_gated_videos', foyer.detourVideoButtons === 2, foyer.detourVideoButtons);

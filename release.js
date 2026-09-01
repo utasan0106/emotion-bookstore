@@ -66,14 +66,11 @@
   /* ---------------------------------------------------------------- 玄関 */
 
   function shelfEntryMedia(shelf) {
-    var m = shelf && shelf.heroMedia;
+    var m = shelf && (shelf.entryMedia || shelf.heroMedia);
     if (!m || !m.url) return null;
 
-    var credit = ['写真: ' + (m.author || ''), m.source || '', m.license || '']
-      .filter(Boolean)
-      .join(' / ');
-
-    return h('figure', { class: 'shelf-entry-media' }, [
+    var isIllustration = !!(shelf.entryMedia && m === shelf.entryMedia);
+    var children = [
       h('div', { class: 'shelf-entry-media-frame' }, [
         h('img', {
           src: m.url,
@@ -84,9 +81,19 @@
           width: m.width,
           height: m.height
         })
-      ]),
-      h('figcaption', { class: 'shelf-entry-media-credit', text: credit })
-    ]);
+      ])
+    ];
+
+    if (!isIllustration) {
+      var credit = ['写真: ' + (m.author || ''), m.source || '', m.license || '']
+        .filter(Boolean)
+        .join(' / ');
+      children.push(h('figcaption', { class: 'shelf-entry-media-credit', text: credit }));
+    }
+
+    return h('figure', {
+      class: 'shelf-entry-media' + (isIllustration ? ' is-entry-illustration' : '')
+    }, children);
   }
 
   function shelfEntry(shelf, index) {

@@ -1384,3 +1384,43 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   .brand-symbol { width: 32px; }
   .brand-name { font-size: .9375rem; }
 }
+
+/* ================================================= Founder-supplied AI city illustrations */
+/* Home入口だけAIイラストをそのまま使う。街ページのheroMedia実写真には影響させない。 */
+.shelf-entry-media.is-entry-illustration .shelf-entry-media-frame {
+  aspect-ratio: 1942 / 809;
+  height: auto;
+  min-height: 0;
+  background: #f3eadb;
+}
+.shelf-entry-media.is-entry-illustration .shelf-entry-media-frame::before,
+.shelf-entry-media.is-entry-illustration .shelf-entry-media-frame::after {
+  display: none;
+}
+.shelf-entry-media.is-entry-illustration img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: none;
+  mix-blend-mode: normal;
+  opacity: 1;
+  transform: none;
+}
+.shelf-entry-media.is-entry-illustration .shelf-entry-media-credit {
+  display: none;
+}
+@media (min-width: 821px) {
+  .shelf-entry-media.is-entry-illustration {
+    align-self: center;
+  }
+  .shelf-entry-media.is-entry-illustration .shelf-entry-media-frame {
+    aspect-ratio: 1942 / 809;
+    height: auto;
+    min-height: 0;
+  }
+}
+@media (max-width: 820px) {
+  .shelf-entry-media.is-entry-illustration .shelf-entry-media-frame {
+    aspect-ratio: 1942 / 809;
+  }
+}

@@ -86,6 +86,12 @@ window.V3_RELEASE_CONTENT = {
       role: 'flagship',
       tagline: '吉祥寺を、3つだけ。',
       area: '吉祥寺',
+      entryMedia: {
+        kind: 'illustration',
+        url: './assets/entry-kichijoji.webp', width: 1942, height: 809,
+        alt: '吉祥寺の街の特徴を描いたエディトリアルイラスト',
+        provenance: 'AI-generated illustration supplied by site owner / 2026-09-01'
+      },
       heroMedia: {
         url: './assets/city-kichijoji.jpg', width: 1536, height: 2048,
         alt: '赤い提灯が並ぶ吉祥寺・ハーモニカ横丁の路地',
@@ -187,6 +193,12 @@ window.V3_RELEASE_CONTENT = {
       role: 'town',
       tagline: '高円寺を、3つだけ。',
       area: '高円寺',
+      entryMedia: {
+        kind: 'illustration',
+        url: './assets/entry-koenji.webp', width: 1942, height: 809,
+        alt: '高円寺の街の特徴を描いたエディトリアルイラスト',
+        provenance: 'AI-generated illustration supplied by site owner / 2026-09-01'
+      },
       heroMedia: {
         url: './assets/city-koenji.jpg', width: 1536, height: 2048,
         alt: '夕方の高円寺の路地と店先の灯り',
@@ -294,6 +306,12 @@ window.V3_RELEASE_CONTENT = {
       role: 'town',
       tagline: '下北沢を、3つだけ。',
       area: '下北沢',
+      entryMedia: {
+        kind: 'illustration',
+        url: './assets/entry-shimokitazawa.webp', width: 1942, height: 809,
+        alt: '下北沢の街の特徴を描いたエディトリアルイラスト',
+        provenance: 'AI-generated illustration supplied by site owner / 2026-09-01'
+      },
       heroMedia: {
         url: './assets/city-shimokitazawa.jpg', width: 1280, height: 960,
         alt: '歩行者と小さな店が並ぶ下北沢の通り',
@@ -415,6 +433,12 @@ window.V3_RELEASE_CONTENT = {
       role: 'town',
       tagline: '神保町を、3つだけ。',
       area: '神保町',
+      entryMedia: {
+        kind: 'illustration',
+        url: './assets/entry-jinbocho.webp', width: 1942, height: 809,
+        alt: '神保町の街の特徴を描いたエディトリアルイラスト',
+        provenance: 'AI-generated illustration supplied by site owner / 2026-09-01'
+      },
       heroMedia: {
         url: './assets/city-jinbocho.jpg', width: 1280, height: 853,
         alt: '本が並ぶ神保町の古書店の店先',

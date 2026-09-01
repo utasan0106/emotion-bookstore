@@ -38,6 +38,21 @@ for (const shelf of shelves) {
   }
   if (!/^\.\/assets\/city-/.test(hm.url || '')) failures.push(`${shelf.id}: heroMedia must be local city image`);
   if (hm.url && !fs.existsSync(path.join(root, hm.url.replace(/^\.\//,'')))) failures.push(`${shelf.id}: heroMedia file missing`);
+
+  const em = shelf.entryMedia || {};
+  for (const key of ['kind','url','alt','provenance']) {
+    if (!em[key]) failures.push(`${shelf.id}: entryMedia missing ${key}`);
+  }
+  if (em.kind !== 'illustration') failures.push(`${shelf.id}: entryMedia.kind must be illustration`);
+  if (!/^\.\/assets\/entry-[a-z-]+\.webp$/.test(em.url || '')) {
+    failures.push(`${shelf.id}: entryMedia must be same-origin WebP`);
+  }
+  if (em.url && !fs.existsSync(path.join(root, em.url.replace(/^\.\//,'')))) {
+    failures.push(`${shelf.id}: entryMedia file missing`);
+  }
+  if (em.width !== 1942 || em.height !== 809) {
+    failures.push(`${shelf.id}: entryMedia dimensions must be 1942x809`);
+  }
 }
 const detour = CONTENT && CONTENT.detour;
 if (!detour || !Array.isArray(detour.items) || detour.items.length !== 3) failures.push('detour must have exactly 3 items');
@@ -73,8 +88,8 @@ const releaseRuntime = read('release.js');
 if (!releaseRuntime.includes("class: 'shelf-entry-media'")) {
   failures.push('release.js: Home city photo renderer missing');
 }
-if (!releaseRuntime.includes('shelf.heroMedia')) {
-  failures.push('release.js: Home city photos must reuse shelf.heroMedia');
+if (!releaseRuntime.includes('shelf.entryMedia || shelf.heroMedia')) {
+  failures.push('release.js: Home city renderer must prefer entryMedia and fall back to heroMedia');
 }
 if (/https?:\/\/[^'"]+\.(?:jpg|jpeg|png|webp)/i.test(releaseRuntime)) {
   failures.push('release.js: Home city photo renderer must not introduce remote image URLs');
