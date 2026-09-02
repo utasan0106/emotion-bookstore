@@ -138,3 +138,10 @@ docs/
 # ★ /city-threads-prototype/ をディレクトリごと除外してはならない。
 #   isolated prototype 本体（index.html）は Preview で HQ が確認する。
 /city-threads-prototype/v0.9/qa/
+
+# ---- experiments/city-threads-immersive-koenji の内部 QA のみ -------------
+# 判定根拠（2026-09-02、読み取り専用で確認）：runtime（index.html / css / js）から
+#   qa/ への参照 0 件。qa/im_qa.js はローカル静的サーバ（repo root）だけを使う。
+#   docs/ は既存の非anchoredパターン `docs/` で除外される。
+# ★ /experiments/ をディレクトリごと除外してはならない（prototype 本体は Preview で HQ が確認する）。
+/experiments/city-threads-immersive-koenji/qa/
