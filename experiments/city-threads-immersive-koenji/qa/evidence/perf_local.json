@@ -1,0 +1,92 @@
+{
+  "320": {
+    "lcp_ms_local": 208,
+    "resources": [
+      [
+        "immersive.css",
+        15761
+      ],
+      [
+        "koenji-street-2026-640.jpg",
+        41254
+      ],
+      [
+        "immersive.js",
+        9770
+      ]
+    ],
+    "html_bytes": 28259
+  },
+  "390": {
+    "lcp_ms_local": 220,
+    "resources": [
+      [
+        "immersive.css",
+        15761
+      ],
+      [
+        "koenji-street-2026-640.jpg",
+        41254
+      ],
+      [
+        "immersive.js",
+        9770
+      ]
+    ],
+    "html_bytes": 28259
+  },
+  "430": {
+    "lcp_ms_local": 200,
+    "resources": [
+      [
+        "immersive.css",
+        15761
+      ],
+      [
+        "koenji-street-2026-640.jpg",
+        41254
+      ],
+      [
+        "immersive.js",
+        9770
+      ]
+    ],
+    "html_bytes": 28259
+  },
+  "1024": {
+    "lcp_ms_local": 172,
+    "resources": [
+      [
+        "immersive.css",
+        15761
+      ],
+      [
+        "koenji-street-2026.jpg",
+        127568
+      ],
+      [
+        "immersive.js",
+        9770
+      ]
+    ],
+    "html_bytes": 28259
+  },
+  "1440": {
+    "lcp_ms_local": 220,
+    "resources": [
+      [
+        "immersive.css",
+        15761
+      ],
+      [
+        "koenji-street-2026.jpg",
+        127568
+      ],
+      [
+        "immersive.js",
+        9770
+      ]
+    ],
+    "html_bytes": 28259
+  }
+}
