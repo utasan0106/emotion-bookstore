@@ -1,6 +1,6 @@
 {
   "320": {
-    "lcp_ms_local": 208,
+    "lcp_ms_local": 372,
     "resources": [
       [
         "immersive.css",
@@ -15,10 +15,10 @@
         9770
       ]
     ],
-    "html_bytes": 28259
+    "html_bytes": 27216
   },
   "390": {
-    "lcp_ms_local": 220,
+    "lcp_ms_local": 176,
     "resources": [
       [
         "immersive.css",
@@ -33,10 +33,10 @@
         9770
       ]
     ],
-    "html_bytes": 28259
+    "html_bytes": 27216
   },
   "430": {
-    "lcp_ms_local": 200,
+    "lcp_ms_local": 216,
     "resources": [
       [
         "immersive.css",
@@ -51,10 +51,10 @@
         9770
       ]
     ],
-    "html_bytes": 28259
+    "html_bytes": 27216
   },
   "1024": {
-    "lcp_ms_local": 172,
+    "lcp_ms_local": 164,
     "resources": [
       [
         "immersive.css",
@@ -69,10 +69,10 @@
         9770
       ]
     ],
-    "html_bytes": 28259
+    "html_bytes": 27216
   },
   "1440": {
-    "lcp_ms_local": 220,
+    "lcp_ms_local": 264,
     "resources": [
       [
         "immersive.css",
@@ -87,6 +87,6 @@
         9770
       ]
     ],
-    "html_bytes": 28259
+    "html_bytes": 27216
   }
 }

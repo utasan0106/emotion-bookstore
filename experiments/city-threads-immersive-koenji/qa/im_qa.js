@@ -116,7 +116,8 @@ const scrollable = (page) => page.evaluate(() => getComputedStyle(document.body)
     check(scope, 'inspect: shows confirms', (await page.textContent('#inspectConfirms')).length > 10);
     check(scope, 'inspect: layer moved near', await page.evaluate(() => /translate3d\([^)]*\)/.test(document.querySelector('.layer[data-i="1"]').style.transform) && parseFloat(document.querySelector('.layer[data-i="1"]').style.transform.split(',')[2]) > 0) || await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches));
     check(scope, 'inspect: close button >= 44px', await page.$eval('#inspectClose', (b) => b.getBoundingClientRect().height >= 44 && b.getBoundingClientRect().width >= 44));
-    check(scope, 'inspect: no strong wording', !(await page.textContent('#inspect')).includes('確認済') || (await page.textContent('#inspect')).includes('目視確認待ち'));
+    check(scope, 'inspect: no verification-status wording', !/確認済|確認待ち|SOURCE/.test(await page.textContent('#inspect')));
+    check(scope, 'page: no verification-status wording', !/確認済|確認待ち|出典特定/.test(await page.evaluate(() => document.body.innerText)));
     await page.screenshot({ path: path.join(EVID, `im_${w}_04_evidence_open.png`) });
     await page.keyboard.press('Escape'); await page.waitForTimeout(350);
     check(scope, 'inspect: Escape closes', !(await page.$eval('#inspect', (d) => d.open)));

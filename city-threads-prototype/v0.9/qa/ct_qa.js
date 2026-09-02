@@ -57,6 +57,7 @@ const rect = (page, sel) => page.evaluate((s) => { const r = document.querySelec
     check(scope, 'direction hidden before touch', await page.$eval('#direction', (el) => el.hidden));
     const bodyText = await page.evaluate(() => document.body.innerText);
     for (const wrd of FORBIDDEN_WORDS) check(scope, `forbidden word "${wrd}"`, !bodyText.includes(wrd));
+    check(scope, 'no verification-status wording', !/確認済|確認待ち|出典特定/.test(bodyText));
     check(scope, 'no uppercase english labels', !/[A-Z]{4,}/.test(bodyText.replace(/URL|HQ/g, '')));
     await page.screenshot({ path: path.join(EVID, `v09_${w}_01_start.png`) });
 

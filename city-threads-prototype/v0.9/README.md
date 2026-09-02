@@ -10,5 +10,5 @@ NODE_PATH=/opt/node22/lib/node_modules node city-threads-prototype/v0.9/qa/ct_qa
 ```
 
 史実は `FACTS.md`（Fact台帳）に一次Source URL・該当箇所・確認日を記録し、裏付けの取れたものだけを
-「出典特定 2026-09-02・人の目視確認待ち」として画面に載せている（SOURCE-TRACE READY。検索インデックス経由・全文未閲覧のため、Human Test 前に人が一次ページを目視するGateが残る）。
+画面には中立な「出典［n］」だけを載せている（SOURCE-TRACE READY。検索インデックス経由・全文未閲覧のため、Human Test 前に人が一次ページを目視するGateが残る）。
 画像・映像・ポスター・連名・賞名は Rights / Fact 確認まで載せない。横糸（高円寺→下北沢）は HQ判断で HOLD。
