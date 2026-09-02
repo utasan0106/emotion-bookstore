@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex, nofollow">
+<title>街のつづき｜高円寺 → 阿波おどり｜City Threads 試作 v0.9</title>
+<style>
+/* =====================================================================
+   City Threads v0.9 — 高円寺 → 阿波おどり vertical slice
+   isolated prototype / Production非接続 / 外部通信・計測・保存なし
+   ===================================================================== */
+:root{
+  /* surface */
+  --paper:#f4efe5;        /* Warm Ivory 主面 */
+  --paper-2:#ebe4d6;      /* 面の中の面（資料の地） */
+  --ink:#1b2226;
+  --ink-2:#464c4b;
+  --muted:#7b7a72;
+  --rule:rgba(27,34,38,.2);
+  --rule-strong:rgba(27,34,38,.7);
+  --navy:#142126;         /* 世界転換（下北沢の面）だけ */
+  --navy-paper:#eee7d9;
+  --green:#3f6b4a;        /* focus / state だけ */
+  --thread:#b23e2f;       /* 横糸だけ */
+  /* type */
+  --display:"Hiragino Mincho ProN","Hiragino Mincho Pro","Yu Mincho","YuMincho","Noto Serif JP","Noto Serif CJK JP","IPAexMincho",serif;
+  --ui:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP","Noto Sans CJK JP",sans-serif;
+  /* motion tokens（意味のある4種＋Exit） */
+  --m-trace:150ms;     /* TRACE_REVEAL   触れる／痕跡がある */
+  --m-time:400ms;      /* TIME_SHIFT     年が変わった */
+  --m-transfer:560ms;  /* CITY_TRANSFER  同じ年の別の街へ */
+  --m-settle:220ms;    /* EVIDENCE_SETTLE 探索→読む */
+  --ease:cubic-bezier(.2,.7,.2,1);
+  /* layout */
+  --w:min(1120px,100% - 48px);
+  --anchor-h:60px;
+}
+*{box-sizing:border-box}
+html{background:var(--paper);scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.8;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+button,a{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--green);outline-offset:4px}
+.skip{position:absolute;left:12px;top:-60px;background:var(--ink);color:var(--paper);padding:10px 14px;z-index:50}
+.skip:focus{top:12px}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- 錨（街・年・進捗）：常に見える ---------- */
+.anchor{position:fixed;top:0;left:0;right:0;height:var(--anchor-h);z-index:20;background:var(--paper);border-bottom:1px solid var(--rule);
+  transition:background var(--m-transfer) var(--ease),color var(--m-transfer) var(--ease)}
+.anchor-in{width:var(--w);margin:0 auto;height:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:baseline;gap:22px;padding-top:15px}
+.anchor-city{font-family:var(--display);font-size:1.15rem;letter-spacing:.04em;position:relative;display:inline-block}
+.anchor-year{font-family:var(--display);font-variant-numeric:tabular-nums;font-size:1.7rem;line-height:1;letter-spacing:.02em;min-width:4.2ch}
+.anchor-year small{font-family:var(--ui);font-size:.72rem;color:var(--muted);letter-spacing:.06em;margin-left:8px;font-variant-numeric:normal}
+.anchor-progress{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.anchor-progress b{color:var(--ink);font-weight:500}
+.anchor.is-navy{background:var(--navy);color:var(--navy-paper);border-color:rgba(238,231,217,.2)}
+.anchor.is-navy .anchor-progress,.anchor.is-navy .anchor-year small{color:rgba(238,231,217,.65)}
+.anchor.is-navy .anchor-progress b{color:var(--navy-paper)}
+
+/* ---------- 本文：歩く面 ---------- */
+main{transition:transform var(--m-transfer) var(--ease),opacity var(--m-transfer) var(--ease);transform-origin:50% 40%}
+main.is-away{transform:translateX(-6%);opacity:.35}
+.node{width:var(--w);margin:0 auto;min-height:100svh;padding:calc(var(--anchor-h) + 10vh) 0 12vh;display:grid;grid-template-columns:minmax(0,.42fr) minmax(0,.58fr);column-gap:56px;align-content:start;
+  transition:opacity var(--m-settle) var(--ease)}
+.node.is-dim{opacity:.42}  /* 到着していない節目は静かに */
+.node-head{grid-column:1}
+.node-body{grid-column:2}
+.node-kicker{margin:0 0 18px;font-size:.82rem;color:var(--muted);letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.node-kicker b{color:var(--ink);font-weight:500}
+.node-year{font-family:var(--display);font-variant-numeric:tabular-nums;font-size:clamp(4.6rem,9vw,8.4rem);line-height:.92;letter-spacing:-.02em;margin:0 0 10px}
+.node-year small{display:block;font-family:var(--ui);font-size:.95rem;letter-spacing:.06em;color:var(--ink-2);margin-top:14px;line-height:1.5}
+.node-title{font-family:var(--display);font-weight:500;font-size:clamp(1.55rem,2.4vw,2.15rem);line-height:1.45;margin:0 0 22px;letter-spacing:.01em}
+.node-text{font-size:1.02rem;line-height:1.95;max-width:34em;margin:0 0 34px;color:var(--ink)}
+.node-text p{margin:0 0 1em}
+.node-text p:last-child{margin:0}
+/* 余白注記：編集部のWhy（本の「余白」だけを残す） */
+.margin-note{border-left:1px solid var(--rule-strong);padding:2px 0 2px 16px;margin:38px 0 0;max-width:20em;color:var(--ink-2);font-size:.9rem;line-height:1.85}
+.margin-note .lab{display:block;font-size:.74rem;color:var(--muted);letter-spacing:.08em;margin-bottom:4px}
+
+/* 資料：角丸カードにしない。上罫と引用だけで立つ Text Evidence */
+.evidence{margin:0 0 30px}
+.plate{border-top:1px solid var(--rule-strong);padding:16px 0 20px}
+.plate + .plate{border-top:1px solid var(--rule)}
+.plate .lab{display:flex;gap:14px;align-items:baseline;font-size:.76rem;color:var(--muted);letter-spacing:.08em;margin:0 0 10px;font-variant-numeric:tabular-nums}
+.plate .lab b{color:var(--ink);font-weight:500}
+.plate blockquote{margin:0;font-family:var(--display);font-size:1.12rem;line-height:1.85;color:var(--ink)}
+.plate .src{margin:10px 0 0;font-size:.8rem;color:var(--muted);line-height:1.7}
+.plate .src .state{display:inline-flex;align-items:center;gap:6px;margin-left:12px;color:var(--ink-2)}
+.plate .src .state:before{content:"";width:8px;height:8px;border:1px solid var(--green);border-radius:50%;display:inline-block}
+.plate .src .state.is-ok:before{background:var(--green)}
+/* 出典脚注 */
+.sources{margin:0 0 30px;padding:0;list-style:none;font-size:.8rem;color:var(--muted);line-height:1.7}
+.sources li{padding-left:2.4em;text-indent:-2.4em}
+
+/* 動詞（button / link） */
+.acts{display:flex;flex-wrap:wrap;gap:12px 14px;align-items:center;margin:0}
+.act{min-height:48px;display:inline-flex;align-items:center;gap:12px;padding:0 20px;border:1px solid var(--ink);background:none;color:var(--ink);text-decoration:none;font-size:.95rem;line-height:1.2;letter-spacing:.02em;
+  transition:background var(--m-trace) linear,color var(--m-trace) linear}
+.act:hover{background:var(--paper-2)}
+.act-primary{background:var(--ink);color:var(--paper)}
+.act-primary:hover{background:#0f1518}
+.act-quiet{border-color:transparent;padding-left:0;text-decoration:underline;text-underline-offset:6px;text-decoration-color:var(--rule-strong)}
+.act-quiet:hover{background:none;text-decoration-color:var(--ink)}
+.act .arrow{font-family:var(--display);opacity:.7}
+.act[target="_blank"] .ext{font-size:.72rem;color:inherit;opacity:.65}
+.next{margin-top:8px}
+
+/* ---------- 第一画面 ---------- */
+/* 触れても街名が動かないよう、上から固定位置に置く（層は下へ開くだけ） */
+.node-start{grid-template-columns:1fr;align-content:start;min-height:100svh;padding-top:calc(var(--anchor-h) + 20vh)}
+.start-in{max-width:44em}
+.city-trace{display:inline-block;border:0;background:none;padding:6px 0 10px;margin:0 0 4px;text-align:left;font-family:var(--display);font-weight:500;font-size:clamp(3.6rem,10vw,7.6rem);line-height:1;letter-spacing:.02em;color:var(--ink);position:relative}
+/* 痕跡線：ここに触れられる、という印。装飾ではなく affordance */
+.city-trace .trace-mark{position:absolute;left:2px;right:14%;bottom:0;height:0;border-bottom:2px solid var(--ink);opacity:.55;transition:opacity var(--m-trace) linear,right var(--m-trace) var(--ease)}
+.city-trace:hover .trace-mark,.city-trace:focus-visible .trace-mark{opacity:1;right:0}
+.city-trace.is-open .trace-mark{opacity:1;right:0}
+.start-year{font-family:var(--display);font-variant-numeric:tabular-nums;font-size:clamp(1.5rem,3vw,2.2rem);letter-spacing:.04em;margin:0 0 6px;color:var(--ink)}
+.start-hint{margin:0;font-size:.95rem;color:var(--ink-2)}
+.start-hint .dash{display:inline-block;width:28px;border-top:1px solid var(--rule-strong);vertical-align:middle;margin-right:10px}
+/* 触れた瞬間に立ち上がる文化の層（TRACE_REVEAL） */
+.direction{margin-top:40px;padding-top:26px;border-top:1px solid var(--rule-strong);max-width:34em;
+  opacity:0;transform:translateY(6px);transition:opacity var(--m-trace) linear,transform var(--m-trace) var(--ease)}
+.direction.is-open{opacity:1;transform:none}
+.direction-kicker{margin:0 0 6px;font-size:.82rem;color:var(--muted);letter-spacing:.06em}
+.direction-title{margin:0 0 16px;font-family:var(--display);font-weight:500;font-size:clamp(2rem,4.2vw,3rem);line-height:1.2;letter-spacing:.02em}
+/* 年の幅：1957 ── 2026（5つの刻み） */
+.span{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;margin:0 0 22px;font-family:var(--display);font-variant-numeric:tabular-nums;font-size:1.05rem}
+.span .line{position:relative;height:1px;background:var(--rule-strong)}
+.span .line i{position:absolute;top:-4px;width:1px;height:9px;background:var(--ink)}
+.span-sub{margin:0 0 22px;font-size:.9rem;color:var(--ink-2)}
+
+/* ---------- 横糸（可能性の提示だけ） ---------- */
+.bridge{margin:6px 0 40px;padding:22px 0 0;border-top:1px solid var(--thread);max-width:34em}
+.bridge .lab{display:block;font-size:.78rem;color:var(--thread);letter-spacing:.08em;margin-bottom:8px}
+.bridge p{margin:0 0 16px;font-size:.98rem;line-height:1.9}
+.bridge .note{font-size:.8rem;color:var(--muted);margin:0 0 16px}
+.act-bridge{border-color:var(--thread);color:var(--thread)}
+.act-bridge:hover{background:rgba(178,62,47,.06)}
+.act-bridge .thread-line{display:inline-block;width:34px;border-top:1px solid var(--thread)}
+
+/* ---------- 出口 ---------- */
+.exit{margin:0 0 42px}
+.exit-group{display:grid;grid-template-columns:7em 1fr;gap:10px 18px;padding:14px 0;border-top:1px solid var(--rule);align-items:start}
+.exit-group:first-child{border-top:1px solid var(--rule-strong)}
+.exit-group .verb{font-family:var(--display);font-size:1.1rem;padding-top:8px}
+.exit-group .acts{gap:10px 12px}
+.exit-group .sub{grid-column:2;margin:0;font-size:.8rem;color:var(--muted)}
+.closing{font-family:var(--display);font-size:clamp(1.3rem,2.4vw,1.8rem);line-height:1.6;margin:0 0 22px}
+
+/* ---------- 下北沢の面：CITY_TRANSFER（年を固定したまま面が横から入る） ---------- */
+.transfer{position:fixed;inset:var(--anchor-h) 0 0 0;z-index:15;background:var(--navy);color:var(--navy-paper);overflow:auto;
+  transform:translateX(100%);visibility:hidden;transition:transform var(--m-transfer) var(--ease),visibility 0s linear var(--m-transfer)}
+.transfer.is-in{transform:none;visibility:visible;transition:transform var(--m-transfer) var(--ease),visibility 0s}
+.transfer-in{width:var(--w);margin:0 auto;padding:10vh 0 12vh;display:grid;grid-template-columns:minmax(0,.42fr) minmax(0,.58fr);column-gap:56px;align-content:start;min-height:100%}
+.transfer .node-year{color:var(--navy-paper)}
+.transfer .node-year small{color:rgba(238,231,217,.7)}
+.transfer .node-kicker,.transfer .plate .lab,.transfer .plate .src,.transfer .margin-note{color:rgba(238,231,217,.65)}
+.transfer .node-kicker b,.transfer .plate .lab b,.transfer .plate blockquote,.transfer .plate .src .state{color:var(--navy-paper)}
+.transfer .plate{border-top-color:rgba(238,231,217,.7)}
+.transfer .margin-note{border-left-color:rgba(238,231,217,.5)}
+.transfer .act{border-color:var(--navy-paper);color:var(--navy-paper)}
+.transfer .act:hover{background:rgba(238,231,217,.08)}
+.transfer .act-primary{background:var(--navy-paper);color:var(--navy)}
+.transfer .act-primary:hover{background:#fff}
+.transfer .node-text{color:var(--navy-paper)}
+.transfer .sealed{font-family:var(--display);font-size:1.15rem;line-height:1.8;margin:0 0 26px;padding:18px 0;border-top:1px solid rgba(238,231,217,.7);border-bottom:1px solid rgba(238,231,217,.25)}
+.transfer :focus-visible{outline-color:#8fc39a}
+
+/* ---------- 端 ---------- */
+.foot{width:var(--w);margin:0 auto;padding:26px 0 40px;border-top:1px solid var(--rule);font-size:.76rem;color:var(--muted);line-height:1.8;display:flex;flex-wrap:wrap;gap:8px 28px}
+
+/* ---------- Mobile recomposition ---------- */
+@media (max-width:899px){
+  :root{--w:min(100% - 36px,640px);--anchor-h:52px}
+  .anchor-in{gap:14px;padding-top:12px}
+  .anchor-city{font-size:1rem}
+  .anchor-year{font-size:1.45rem}
+  .anchor-year small{display:none}
+  .node,.transfer-in{grid-template-columns:1fr;column-gap:0;padding-top:calc(var(--anchor-h) + 7vh);padding-bottom:10vh}
+  .node-head,.node-body{grid-column:1}
+  .node-year{font-size:clamp(4rem,19vw,5.4rem);margin-bottom:6px}
+  .node-year small{margin-top:10px}
+  .node-title{margin-top:18px}
+  .margin-note{margin:0 0 28px;max-width:none}
+  /* 余白注記は本文と資料のあとに置く（読む順序を優先） */
+  .node-head{display:contents}
+  .node-head .node-kicker{order:0}
+  .node-head .node-year{order:1}
+  .node-head .margin-note{order:3}
+  .node-body{order:2;display:contents}
+  .node-body .node-title{order:2}
+  .node-body .node-text{order:2}
+  .node-body .evidence{order:2}
+  .node-body .sources{order:4}
+  .node-body .next{order:5}
+  .node-body .bridge{order:4}
+  .node-body .exit{order:4}
+  .node-body .closing{order:4}
+  .node-body .acts.next{order:5}
+  /* 下北沢の面も同じ順序：年 → 見出し → 封 → 本文 → 資料 → 注記 → 戻る */
+  .transfer .sealed{order:2}
+  .transfer .node-body > .acts{order:5}
+  .exit-group{grid-template-columns:1fr}
+  .exit-group .sub{grid-column:1}
+  .act{min-height:48px}
+  .city-trace{font-size:clamp(3.4rem,17vw,4.8rem)}
+  .direction{margin-top:32px}
+  .node-start{padding-top:calc(var(--anchor-h) + 13vh)}
+}
+@media (max-width:430px){
+  :root{--w:calc(100% - 32px)}
+  .anchor-in{grid-template-columns:auto auto 1fr;justify-items:start}
+  .anchor-progress{justify-self:end}
+}
+
+/* ---------- Reduced motion：意味は残し、移動をなくす ---------- */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition-duration:0s!important;animation:none!important}
+  .direction{transform:none}
+  main.is-away{transform:none;opacity:.35}
+  .transfer{transform:none}
+  .transfer:not(.is-in){visibility:hidden}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#walk">本文へ</a>
+
+<header class="anchor" id="anchor">
+  <div class="anchor-in">
+    <span class="anchor-city" id="anchorCity">高円寺</span>
+    <span class="anchor-year" id="anchorYear" aria-hidden="true">2026</span>
+    <span class="anchor-progress" id="anchorProgress"></span>
+  </div>
+</header>
+<p class="visually-hidden" id="live" aria-live="polite"></p>
+
+<main id="walk">
+
+  <!-- ================= 第一画面：一つの街、一つの年、一つの痕跡 ================= -->
+  <section class="node node-start" id="n-start" data-year="2026" data-step="0" data-label="はじめ" aria-labelledby="cityName">
+    <div class="start-in">
+      <h1 style="margin:0">
+        <button class="city-trace" id="cityTrace" type="button" aria-expanded="false" aria-controls="direction">
+          <span id="cityName">高円寺</span><span class="trace-mark" aria-hidden="true"></span>
+        </button>
+      </h1>
+      <p class="start-year">2026</p>
+      <p class="start-hint" id="startHint"><span class="dash" aria-hidden="true"></span>触れると、この街の時間が開く。</p>
+
+      <div class="direction" id="direction" hidden>
+        <p class="direction-kicker">この街に積もっている文化の層</p>
+        <p class="direction-title">阿波おどり</p>
+        <div class="span" aria-label="1957年から2026年まで、5つの節目">
+          <span>1957</span>
+          <span class="line" aria-hidden="true"><i style="left:0"></i><i style="left:12%"></i><i style="left:27%"></i><i style="left:98%"></i><i style="left:100%"></i></span>
+          <span>2026</span>
+        </div>
+        <p class="span-sub">商店街の踊りが、どうやって街の文化になったのか。5つの節目で、いちど終わります。</p>
+        <p class="acts"><button class="act act-primary" id="goOrigin" type="button">1957年へさかのぼる <span class="arrow" aria-hidden="true">↓</span></button></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 1 / 5 ================= -->
+  <section class="node is-dim" id="n-1957" data-year="1957" data-step="1" data-label="「ばか踊り」として始まる" aria-labelledby="t1957">
+    <div class="node-head">
+      <p class="node-kicker"><b>1 / 5</b>　「ばか踊り」として始まる</p>
+      <p class="node-year">1957<small>高円寺・商店街</small></p>
+      <aside class="margin-note"><span class="lab">編集部の余白</span>観光のためではなく、商店街の中から生まれた祭り。この一点が、あとの全部の始点になる。</aside>
+    </div>
+    <div class="node-body">
+      <h2 class="node-title" id="t1957">阿波おどりは、最初から「阿波おどり」ではなかった。</h2>
+      <div class="node-text">
+        <p>1957年。商店街の賑わいづくりのために、「高円寺ばか踊り」という名前で踊りが始まる。徳島の踊りを、街の人たちが商店街の出し物として踊った。</p>
+        <p>本場の型も、連の名前も、まだない。ここにあるのは、商店街と、踊ってみた人たちだけ。</p>
+      </div>
+      <div class="evidence">
+        <div class="plate">
+          <p class="lab"><b>資料 01</b><span>杉並区による紹介</span></p>
+          <blockquote>1957年、商店街の賑わいづくりとして「高円寺ばか踊り」から始まった。</blockquote>
+          <p class="src">出典：杉並区（区公式サイト）<span class="state">編集部の一次確認待ち</span></p>
+        </div>
+      </div>
+      <ul class="sources" aria-label="出典">
+        <li>［1］杉並区 公式サイト「高円寺阿波おどり」紹介ページ（URL・引用文言はHQ確認後に確定）</li>
+      </ul>
+      <p class="acts next"><button class="act act-primary" type="button" data-go="n-1960s">1960年代へ進む <span class="arrow" aria-hidden="true">↓</span></button></p>
+    </div>
+  </section>
+
+  <!-- ================= 2 / 5 ================= -->
+  <section class="node is-dim" id="n-1960s" data-year="1960" data-year-label="年代" data-step="2" data-label="本場に学び、連が生まれる" aria-labelledby="t1960s">
+    <div class="node-head">
+      <p class="node-kicker"><b>2 / 5</b>　本場に学び、連が生まれる</p>
+      <p class="node-year">1960<em style="font-style:normal">年代</em><small>高円寺 ⇄ 徳島</small></p>
+      <aside class="margin-note"><span class="lab">編集部の余白</span>ここで「街のイベント」が「踊り手たちの文化」に変わる。街を渡って学びに行った、という移動が先にある。</aside>
+    </div>
+    <div class="node-body">
+      <h2 class="node-title" id="t1960s">本場・徳島へ、学びに行く。</h2>
+      <div class="node-text">
+        <p>踊りを本物にするために、高円寺の人たちは本場の徳島へ学びに行く。徳島との交流が始まり、踊りの型が街に持ち帰られる。</p>
+        <p>そして商店街の出し物だった踊りから、独立した「連」が生まれていく。踊る人たちが、自分たちの名前を持つ。</p>
+      </div>
+      <div class="evidence">
+        <div class="plate">
+          <p class="lab"><b>資料 02</b><span>徳島との交流</span></p>
+          <blockquote>高円寺の踊り手が本場・徳島に学び、交流が始まる。</blockquote>
+          <p class="src">出典：東京高円寺阿波おどり 公式サイト「史料館」<span class="state">編集部の一次確認待ち</span></p>
+        </div>
+        <div class="plate">
+          <p class="lab"><b>資料 03</b><span>独立連の誕生</span></p>
+          <blockquote>商店街の出し物から、独立した連が生まれる。</blockquote>
+          <p class="src">出典：東京高円寺阿波おどり 公式サイト「史料館」<span class="state">編集部の一次確認待ち（年は確認後に入れる）</span></p>
+        </div>
+      </div>
+      <ul class="sources" aria-label="出典">
+        <li>［2］東京高円寺阿波おどり振興協会 公式サイト 史料館（徳島交流・独立連の記述。年の特定はHQ確認後）</li>
+      </ul>
+      <p class="acts next"><button class="act act-primary" type="button" data-go="n-1970s">1970年代へ進む <span class="arrow" aria-hidden="true">↓</span></button><button class="act act-quiet" type="button" data-go="n-1957">1957年へ戻る</button></p>
+    </div>
+  </section>
+
+  <!-- ================= 3 / 5 ================= -->
+  <section class="node is-dim" id="n-1970s" data-year="1970" data-year-label="年代" data-step="3" data-label="街全体へ、そして海外へ" aria-labelledby="t1970s">
+    <div class="node-head">
+      <p class="node-kicker"><b>3 / 5</b>　街全体へ、そして海外へ</p>
+      <p class="node-year">1970<em style="font-style:normal">年代</em><small>高円寺の街全体 → 1976年、海外へ</small></p>
+      <aside class="margin-note"><span class="lab">編集部の余白</span>「文化が街を渡る」ことは、この頃から起きていた。演舞場が商店街の外へ出た年代と、海外へ出た年が、同じ10年に入っている。</aside>
+    </div>
+    <div class="node-body">
+      <h2 class="node-title" id="t1970s">演舞場が商店街の一角から、街全体へ広がる。</h2>
+      <div class="node-text">
+        <p>1970年代。演舞場は商店街の一角から、高円寺の街全体へ広がっていく。踊る場所が増えるということは、街のほうが踊りに合わせて形を変えたということ。</p>
+        <p>1976年には海外遠征。高円寺の踊りが、街の外へ出ていった最初の記録のひとつ。</p>
+      </div>
+      <div class="evidence">
+        <div class="plate">
+          <p class="lab"><b>資料 04</b><span>演舞場の拡大</span></p>
+          <blockquote>演舞場が街全体へ広がる。</blockquote>
+          <p class="src">出典：東京高円寺阿波おどり 公式サイト「史料館」<span class="state">編集部の一次確認待ち</span></p>
+        </div>
+        <div class="plate">
+          <p class="lab"><b>資料 05</b><span>1976年・海外遠征</span></p>
+          <blockquote>1976年、海外遠征。</blockquote>
+          <p class="src">出典：東京高円寺阿波おどり 公式サイト「史料館」<span class="state">編集部の一次確認待ち（渡航先はHQ確認後）</span></p>
+        </div>
+      </div>
+      <ul class="sources" aria-label="出典">
+        <li>［2］東京高円寺阿波おどり振興協会 公式サイト 史料館</li>
+      </ul>
+      <p class="acts next"><button class="act act-primary" type="button" data-go="n-2025">2025年へ進む <span class="arrow" aria-hidden="true">↓</span></button><button class="act act-quiet" type="button" data-go="n-1960s">1960年代へ戻る</button></p>
+    </div>
+  </section>
+
+  <!-- ================= 4 / 5 ================= -->
+  <section class="node is-dim" id="n-2025" data-year="2025" data-step="4" data-label="その年の受賞連" aria-labelledby="t2025">
+    <div class="node-head">
+      <p class="node-kicker"><b>4 / 5</b>　その年の受賞連</p>
+      <p class="node-year">2025<small>高円寺・各演舞場</small></p>
+      <aside class="margin-note"><span class="lab">編集部の余白</span>賞が複数あるということは、踊りが一つの物差しで測られていないということ。だからここでは順位をつくらない。</aside>
+    </div>
+    <div class="node-body">
+      <h2 class="node-title" id="t2025">「大賞」はひとつではない。</h2>
+      <div class="node-text">
+        <p>東京高円寺阿波おどりには、東京都知事賞、東京都議会議長賞、杉並区長賞、読売新聞大賞、報知新聞賞など、複数の賞がある。ひとつの「大賞作品」があるのではない。</p>
+        <p>だから感情書店では、歴代の順位を作らない。2025年の受賞連を、公式の記録のまま見る。歴代のポスターを、公式の史料館でめくる。</p>
+      </div>
+      <div class="evidence">
+        <div class="plate">
+          <p class="lab"><b>資料 06</b><span>2025年度 受賞連</span></p>
+          <blockquote>2025年度は、複数のカテゴリーで受賞連が公式に掲載されている。</blockquote>
+          <p class="src">出典：東京高円寺阿波おどり 公式サイト<span class="state">編集部の一次確認待ち（連名は確認後にのみ掲載）</span></p>
+        </div>
+        <div class="plate">
+          <p class="lab"><b>資料 07</b><span>歴代ポスター</span></p>
+          <blockquote>公式サイトの史料館に、歴代ポスターがある。</blockquote>
+          <p class="src">出典：東京高円寺阿波おどり 公式サイト「史料館」<span class="state">画像はRights確認まで転載しない</span></p>
+        </div>
+      </div>
+      <p class="acts" style="margin-bottom:30px">
+        <a class="act" href="https://www.koenji-awaodori.com/" target="_blank" rel="noopener noreferrer">2025年の受賞連を公式で見る <span class="ext" aria-hidden="true">別タブ</span></a>
+        <a class="act" href="https://www.koenji-awaodori.com/" target="_blank" rel="noopener noreferrer">歴代ポスターを公式でめくる <span class="ext" aria-hidden="true">別タブ</span></a>
+      </p>
+      <ul class="sources" aria-label="出典">
+        <li>［3］東京高円寺阿波おどり振興協会 公式サイト（受賞連・史料館。到達先ページのURLはHQ確認後に個別指定）</li>
+      </ul>
+      <p class="acts next"><button class="act act-primary" type="button" data-go="n-2026">2026年、いまへ進む <span class="arrow" aria-hidden="true">↓</span></button><button class="act act-quiet" type="button" data-go="n-1970s">1970年代へ戻る</button></p>
+    </div>
+  </section>
+
+  <!-- ================= 5 / 5：終わり＝現在＝現実 ================= -->
+  <section class="node is-dim" id="n-2026" data-year="2026" data-step="5" data-label="この文化は、まだここにある" aria-labelledby="t2026">
+    <div class="node-head">
+      <p class="node-kicker"><b>5 / 5</b>　この文化は、まだここにある</p>
+      <p class="node-year">2026<small>高円寺・いま</small></p>
+      <aside class="margin-note"><span class="lab">編集部の余白</span>ここまでの5つの節目は、いま高円寺で毎年続いていることの、途中の記録。この先は画面の中ではなく、街にある。</aside>
+    </div>
+    <div class="node-body">
+      <h2 class="node-title" id="t2026">1957年に商店街から始まった踊りは、2026年も高円寺で続いている。</h2>
+      <div class="node-text">
+        <p>ばか踊りから、徳島に学び、連が生まれ、演舞場が街に広がり、海外へ出て、いまも複数の賞と、たくさんの連がある。</p>
+        <p>歩いてきた経路は、そのまま今年の東京高円寺阿波おどりへつながっている。</p>
+      </div>
+
+      <div class="exit" aria-label="現実への出口">
+        <div class="exit-group">
+          <p class="verb">行く</p>
+          <p class="acts"><a class="act act-primary" href="https://www.koenji-awaodori.com/" target="_blank" rel="noopener noreferrer">今年の開催日程と演舞場を公式で見る <span class="ext" aria-hidden="true">別タブ</span></a></p>
+          <p class="sub">東京高円寺阿波おどり 公式サイト。日程・演舞場は毎年公式で告知される。</p>
+        </div>
+        <div class="exit-group">
+          <p class="verb">観る・読む</p>
+          <p class="acts"><a class="act" href="https://www.koenji-awaodori.com/" target="_blank" rel="noopener noreferrer">史料館・歴代ポスター <span class="ext" aria-hidden="true">別タブ</span></a><a class="act" href="https://www.koenji-awaodori.com/" target="_blank" rel="noopener noreferrer">2025年の受賞連 <span class="ext" aria-hidden="true">別タブ</span></a></p>
+          <p class="sub">映像は権利が確認できたものだけ、あとから加える。</p>
+        </div>
+        <div class="exit-group">
+          <p class="verb">公式情報</p>
+          <p class="acts"><a class="act" href="https://www.city.suginami.tokyo.jp/" target="_blank" rel="noopener noreferrer">杉並区の公式サイト <span class="ext" aria-hidden="true">別タブ</span></a></p>
+          <p class="sub">区による紹介と、開催時の交通・安全の案内。</p>
+        </div>
+      </div>
+
+      <!-- 横糸：可能性の提示だけ。Factとしては出さない -->
+      <div class="bridge" id="bridge">
+        <span class="lab">別の街にも、このつづきがある</span>
+        <p>高円寺の連は、高円寺の外でも踊る。2026年、高円寺の連のひとつが下北沢の阿波おどりに出る、という報告がある。</p>
+        <p class="note">編集部が一次資料を確かめるまで、この橋は開きません。いまは、渡った先があることだけを示します。</p>
+        <p class="acts"><button class="act act-bridge" id="goBridge" type="button"><span class="thread-line" aria-hidden="true"></span>同じ2026年の下北沢へ渡る</button></p>
+      </div>
+
+      <p class="closing">この先は、高円寺にある。</p>
+      <p class="acts next"><button class="act act-quiet" type="button" data-go="n-start">はじめの高円寺へ戻る</button><button class="act act-quiet" type="button" data-go="n-2025">2025年へ戻る</button></p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>みんなの感情書店 ／ 街のつづき 試作 v0.9</span>
+    <span>Production非接続 ／ 計測・保存・位置情報・音の自動再生なし</span>
+    <span>史実は杉並区・東京高円寺阿波おどり振興協会の一次資料を編集部が確認してから確定する</span>
+  </footer>
+</main>
+
+<!-- ================= 下北沢の面（CITY_TRANSFER の行き先。閉じた橋） ================= -->
+<section class="transfer" id="transfer" aria-labelledby="tTransfer" aria-hidden="true">
+  <div class="transfer-in">
+    <div class="node-head">
+      <p class="node-kicker"><b>横糸</b>　高円寺 → 下北沢</p>
+      <p class="node-year">2026<small>下北沢・同じ年</small></p>
+      <aside class="margin-note"><span class="lab">橋の条件</span>事実の移動があること。資料が1つ以上あること。編集部が「なぜこの橋か」を書けること。行き先が決まっていること。4つ揃うまで、線は引かない。</aside>
+    </div>
+    <div class="node-body">
+      <h2 class="node-title" id="tTransfer">高円寺の連が、下北沢の阿波おどりへ。</h2>
+      <p class="sealed">この橋は、編集部が一次資料を確かめてから開きます。</p>
+      <div class="node-text">
+        <p>年は動いていません。同じ2026年のまま、街だけが変わりました。ここで示しているのは、「高円寺の踊りは、別の街へも渡っている」という可能性です。</p>
+        <p>連の名前、出演日、資料の所在が確認できたら、この面に資料と編集部の理由が入り、下北沢の時間を歩けるようになります。</p>
+      </div>
+      <div class="evidence">
+        <div class="plate">
+          <p class="lab"><b>資料（予定）</b><span>連の活動報告・2026年</span></p>
+          <blockquote>高円寺の連のひとつが、2026年の下北沢阿波おどりへの出演を報告している。</blockquote>
+          <p class="src">出典：連の公式発信<span class="state">編集部の一次確認待ち（未確認のため連名は伏せる）</span></p>
+        </div>
+      </div>
+      <p class="acts"><button class="act act-primary" id="backBridge" type="button"><span class="arrow" aria-hidden="true">←</span> 高円寺の2026年へ戻る</button></p>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const anchor = $('anchor'), anchorCity = $('anchorCity'), anchorYear = $('anchorYear'), anchorProgress = $('anchorProgress'), live = $('live');
+  const main = $('walk'), transfer = $('transfer');
+  const nodes = Array.from(document.querySelectorAll('.node'));
+  const TOTAL = 5;
+  let currentYear = 2026, currentId = 'n-start', tween = null, inTransfer = false, suppressHash = false;
+
+  /* ---- TIME_SHIFT：錨の年が転がる（reduced motion では即時） ---- */
+  function setYear(target, label) {
+    target = Number(target);
+    if (tween) cancelAnimationFrame(tween);
+    const from = currentYear, dur = reduce() ? 0 : 400;
+    const start = performance.now();
+    const step = (now) => {
+      const p = dur ? Math.min(1, (now - start) / dur) : 1;
+      const e = 1 - Math.pow(1 - p, 3);
+      const v = Math.round(from + (target - from) * e);
+      anchorYear.textContent = String(v);
+      if (p < 1) tween = requestAnimationFrame(step);
+      else { currentYear = target; tween = null; if (label) anchorYear.insertAdjacentHTML('beforeend', `<small>${label}</small>`); }
+    };
+    if (from === target) { anchorYear.textContent = String(target); if (label) anchorYear.insertAdjacentHTML('beforeend', `<small>${label}</small>`); return; }
+    step(start);
+  }
+
+  /* ---- 到着した節目：EVIDENCE_SETTLE ---- */
+  function arrive(node) {
+    if (!node || node.id === currentId && node.classList.contains('is-here')) return;
+    currentId = node.id;
+    nodes.forEach((n) => { n.classList.toggle('is-here', n === node); n.classList.toggle('is-dim', n !== node && n.dataset.step !== '0'); });
+    const y = node.dataset.year, lab = node.dataset.yearLabel || '', stepN = Number(node.dataset.step);
+    setYear(y, lab);
+    anchorProgress.innerHTML = stepN ? `<b>${stepN} / ${TOTAL}</b>　${node.dataset.label}` : '';
+    live.textContent = stepN ? `${lab || y + '年'}。${stepN}／${TOTAL}、${node.dataset.label}` : '高円寺、2026年';
+    if (!suppressHash) history.replaceState(null, '', `#koenji/${stepN ? (lab ? y : y) : 'start'}`);
+  }
+
+  /* ---- スクロール＝時間を歩く：画面の45%の高さにある節目を「いま」とみなす ----
+     IntersectionObserver の ratio は節目の高さに依存して壊れる（長い節目ほど比が小さい）ため、
+     位置で判定する。 */
+  function locate() {
+    const y = window.innerHeight * 0.45;
+    let best = null, bd = Infinity;
+    nodes.forEach((n) => {
+      const r = n.getBoundingClientRect();
+      const d = (r.top <= y && r.bottom >= y) ? 0 : Math.min(Math.abs(r.top - y), Math.abs(r.bottom - y));
+      if (d < bd) { bd = d; best = n; }
+    });
+    if (best) arrive(best);
+  }
+  let ticking = false;
+  window.addEventListener('scroll', () => { if (ticking) return; ticking = true; requestAnimationFrame(() => { ticking = false; if (!inTransfer) locate(); }); }, { passive: true });
+  window.addEventListener('resize', () => { if (!inTransfer) locate(); });
+
+  /* ---- 移動：button / keyboard ---- */
+  function go(id, instant) {
+    const node = $(id);
+    if (!node) return;
+    node.scrollIntoView({ behavior: instant || reduce() ? 'instant' : 'smooth', block: 'start' });
+    arrive(node);
+    // 到着先の見出しへフォーカス（キーボード利用者の現在地を保つ）
+    const h = node.querySelector('h2, h1');
+    if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+  }
+  document.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => go(b.dataset.go)));
+
+  /* ---- 第一画面：触れると文化の層が立ち上がる（TRACE_REVEAL） ---- */
+  const cityTrace = $('cityTrace'), direction = $('direction');
+  let opened = false;
+  function openDirection() {
+    if (opened) return;
+    opened = true;
+    direction.hidden = false;
+    cityTrace.classList.add('is-open');
+    cityTrace.setAttribute('aria-expanded', 'true');
+    $('startHint').textContent = '阿波おどり。この街に、69年ぶんの時間がある。';
+    requestAnimationFrame(() => requestAnimationFrame(() => direction.classList.add('is-open')));
+    live.textContent = '阿波おどり。1957年から2026年まで、5つの節目。';
+  }
+  cityTrace.addEventListener('pointerdown', (e) => { if (e.button === 0) openDirection(); });
+  cityTrace.addEventListener('click', openDirection);
+  cityTrace.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDirection(); if (opened) $('goOrigin').focus(); } });
+  $('goOrigin').addEventListener('click', () => go('n-1957'));
+
+  /* ---- 横糸：CITY_TRANSFER（年は固定、街だけが変わる） ---- */
+  function openTransfer(push) {
+    inTransfer = true;
+    transfer.setAttribute('aria-hidden', 'false');
+    transfer.classList.add('is-in');
+    main.classList.add('is-away');
+    main.setAttribute('aria-hidden', 'true');
+    anchor.classList.add('is-navy');
+    anchorCity.textContent = '下北沢';
+    anchorProgress.innerHTML = '<b>横糸</b>　高円寺 → 下北沢';
+    setYear(2026, '同じ年');
+    live.textContent = '同じ2026年の下北沢へ渡りました。この橋はまだ開いていません。';
+    if (push) history.pushState({ transfer: true }, '', '#shimokitazawa/2026');
+    setTimeout(() => $('backBridge').focus({ preventScroll: true }), reduce() ? 0 : 560);
+  }
+  function closeTransfer() {
+    if (!inTransfer) return;
+    inTransfer = false;
+    transfer.classList.remove('is-in');
+    transfer.setAttribute('aria-hidden', 'true');
+    main.classList.remove('is-away');
+    main.removeAttribute('aria-hidden');
+    anchor.classList.remove('is-navy');
+    anchorCity.textContent = '高円寺';
+    const n = $('n-2026');
+    n.classList.add('is-here');
+    anchorProgress.innerHTML = `<b>5 / ${TOTAL}</b>　${n.dataset.label}`;
+    setYear(2026, '');
+    live.textContent = '高円寺の2026年へ戻りました。';
+    $('goBridge').focus({ preventScroll: true });
+  }
+  $('goBridge').addEventListener('click', () => openTransfer(true));
+  $('backBridge').addEventListener('click', () => { if (history.state && history.state.transfer) history.back(); else closeTransfer(); });
+  transfer.addEventListener('keydown', (e) => { if (e.key === 'Escape') $('backBridge').click(); });
+  window.addEventListener('popstate', () => {
+    if (location.hash.startsWith('#shimokitazawa')) { if (!inTransfer) openTransfer(false); }
+    else if (inTransfer) closeTransfer();
+  });
+
+  /* ---- URLから復元：街・年・節目 ---- */
+  function restore() {
+    const h = location.hash.replace(/^#/, '');
+    const m = h.match(/^koenji\/(start|\d{4})$/);
+    if (m) {
+      const y = m[1];
+      const id = y === 'start' ? 'n-start' : (nodes.find((n) => n.dataset.year === y) || {}).id;
+      if (id && id !== 'n-start') { suppressHash = true; go(id, true); suppressHash = false; return; }
+    }
+    if (h.startsWith('shimokitazawa')) { suppressHash = true; go('n-2026', true); suppressHash = false; openTransfer(false); return; }
+    arrive($('n-start'));
+  }
+  restore();
+})();
+</script>
+</body>
+</html>
