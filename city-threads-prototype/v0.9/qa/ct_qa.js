@@ -43,10 +43,10 @@ const rect = (page, sel) => page.evaluate((s) => { const r = document.querySelec
     const scope = `[${w}]`;
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
     const page = await ctx.newPage();
-    const errors = []; const external = [];
+    const errors = []; const external = []; const requests = [];
     page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
     page.on('pageerror', (e) => errors.push(String(e)));
-    page.on('request', (q) => { if (!q.url().startsWith(base)) external.push(q.url()); });
+    page.on('request', (q) => { requests.push(q.url()); if (!q.url().startsWith(base)) external.push(q.url()); });
 
     await page.goto(base + PAGE);
     await page.waitForTimeout(300);
@@ -94,7 +94,7 @@ const rect = (page, sel) => page.evaluate((s) => { const r = document.querySelec
     await page.screenshot({ path: path.join(EVID, `v09_${w}_04_2025.png`) });
     await page.click('[data-go="n-2026"]'); await page.waitForTimeout(700);
     check(scope, 'anchor 2026 / 5/5', (await page.textContent('#anchorProgress')).includes('5 / 5'));
-    check(scope, 'exit actions visible', (await page.$$('#n-2026 .exit a.act')).length >= 3 && (await page.$$('#n-2026 .exit a.act')).length <= 5);
+    check(scope, 'exit actions visible', (await page.$$('#n-2026 .exit a.act')).length >= 3 && (await page.$$('#n-2026 .exit a.act')).length <= 6);
     check(scope, 'exit links open official in new tab', await page.$$eval('#n-2026 .exit a.act', (as) => as.every((a) => a.target === '_blank' && a.rel.includes('noopener') && /koenji-awaodori\.com|city\.suginami\.tokyo\.jp/.test(a.href))));
     await page.screenshot({ path: path.join(EVID, `v09_${w}_05_2026.png`) });
     await page.evaluate(() => document.getElementById('bridge').scrollIntoView({ behavior: 'instant', block: 'center' })); await page.waitForTimeout(300);
@@ -120,6 +120,7 @@ const rect = (page, sel) => page.evaluate((s) => { const r = document.querySelec
     const o = await overflow(page); check(scope, 'no horizontal overflow', o.sw <= o.iw, o);
     check(scope, 'console error 0', errors.length === 0, errors);
     check(scope, 'external request 0', external.length === 0, external);
+    check(scope, 'no request to qa/ (delivery-independent)', requests.every((u) => !u.includes('/qa/')), requests.filter((u) => u.includes('/qa/')));
 
     // URL復元：再読込で同じ節目へ
     await page.goto('about:blank'); await page.goto(base + PAGE + '#koenji/2025'); await page.waitForTimeout(500);

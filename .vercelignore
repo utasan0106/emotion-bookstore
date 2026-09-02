@@ -127,3 +127,14 @@ docs/
 /v3-prototype/tokyo-pilot-01/RUN_REPORT_20260827_1650.md
 /v3-prototype/tokyo-pilot-01/RUN_REPORT_20260827_1700.md
 /v3-prototype/tokyo-pilot-01/RUN_REPORT_20260827_2100.md
+
+# ---- city-threads-prototype/v0.9 の内部 QA のみ ----------------------------
+# 判定根拠（2026-09-02、読み取り専用で確認）：
+#   ・prototype runtime は単一の index.html で、HTML / CSS / JS のいずれからも
+#     qa/ への参照 0 件（外部 script / css / img の読み込みも 0 件）。
+#   ・qa/ct_qa.js はローカル静的サーバ（repo root）だけを使い、Preview 配信面の
+#     qa/ を参照しない。Human Test 手順も Preview 上の qa/ を必要としない。
+#   ・除外しても index.html の asset resolution に影響なし（外部 asset 0）。
+# ★ /city-threads-prototype/ をディレクトリごと除外してはならない。
+#   isolated prototype 本体（index.html）は Preview で HQ が確認する。
+/city-threads-prototype/v0.9/qa/
