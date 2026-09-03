@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+<title>街のつづき｜高円寺 × 阿波おどり｜Visual Canonical V2（390 proof）</title>
+<style>
+/* =====================================================================
+   VISUAL CANONICAL V2 — isolated visual proof（390 × 844 のみ）
+   HQ 指定の Exact Implementation Spec を再現する。既存 runtime には mount しない。
+   ===================================================================== */
+:root{
+  --bg:#0B1114; --paper:#F0E9DB; --paper-2:#E7DFD0; --ink:#182126; --light:#EEE9DF; --muted:#9A9C97;
+  --rule:rgba(238,233,223,.28); --rule-ink:rgba(24,33,38,.28);
+  --serif:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;
+  --pull:700px;   /* First Pull に使う scroll 距離（progress 0 → 1） */
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--light)}
+body{font-family:var(--serif);width:390px;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--light);outline-offset:3px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---- Running head：margin 内の小さな見出し。app bar ではない（box・border・sticky なし） ---- */
+.rh{position:fixed;top:18px;left:20px;right:20px;display:flex;justify-content:space-between;font-family:var(--sans);font-size:11px;line-height:1.4;color:var(--muted);letter-spacing:.04em;z-index:5;pointer-events:none}
+.rh.is-doc{position:absolute}
+
+/* ---- Scene 1：Entrance → First Pull → 1957 ---- */
+.scene1{position:relative;width:390px}
+.photo{position:fixed;left:0;top:52px;width:390px;height:610px;margin:0;overflow:hidden;transform-origin:50% 50%;z-index:1}
+.photo img{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.78) contrast(1.06) brightness(.86)}
+.photo::after{content:"";position:absolute;left:0;right:0;bottom:0;height:20%;background:linear-gradient(180deg,rgba(11,17,20,0),var(--bg));pointer-events:none}
+.title{position:absolute;left:20px;bottom:60px;z-index:2;color:var(--light)}
+.title b{display:block;font-family:var(--serif);font-weight:500;font-size:38px;line-height:1;letter-spacing:.04em}
+.title span{display:block;margin-top:8px;font-family:var(--sans);font-size:13px;line-height:1.4;color:var(--light)}
+/* 1957 の紙の縁：写真の真下に挟まっている。見えるのは 18px だけ */
+/* 写真下端の 6px 内側（写真はそこで背景へ溶けている）から 12px 下まで＝見えるのは 18px */
+.edge{position:fixed;left:46px;top:calc(52px + 610px - 6px);width:312px;height:18px;background:var(--paper);z-index:2}
+.edge b{position:absolute;right:20px;top:2px;font-family:var(--serif);font-weight:500;font-size:11px;line-height:1.3;color:var(--ink);letter-spacing:.06em}
+/* 透明な hit area（44px 以上）。視覚上は button にしない */
+.edge-hit{position:fixed;left:46px;top:calc(52px + 610px + 12px - 40px);width:312px;height:56px;z-index:3;background:transparent}
+
+/* ---- 紙：同じ要素を transform / top / width で動かす ---- */
+.paper{position:fixed;left:16px;top:822px;width:358px;min-height:690px;background:var(--paper);color:var(--ink);opacity:0;transform-origin:50% 0;z-index:2;padding:42px 22px 64px}
+.paper.is-doc{position:absolute;left:0;width:390px;min-height:1100px}
+.p-year{margin:0;font-family:var(--serif);font-weight:500;font-size:64px;line-height:1;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.p-chapter{margin:24px 0 0;font-family:var(--serif);font-size:14px;line-height:1.5;letter-spacing:.06em}
+.p-rest{opacity:0}
+.p-major{margin:28px 0 0;font-family:var(--serif);font-weight:500;font-size:27px;line-height:1.55}
+.p-notelab{margin:40px 0 0;font-family:var(--sans);font-size:12px;line-height:1.65;color:var(--muted);letter-spacing:.08em}
+.p-note{margin:4px 0 0;font-family:var(--serif);font-size:13px;line-height:1.8;color:var(--ink)}
+.p-rule{height:0;border:0;border-top:1px solid var(--rule-ink);margin:44px 0 0}
+.p-fact{margin:24px 0 0;font-family:var(--serif);font-size:17.5px;line-height:1.9}
+.p-src{margin:10px 0 0;font-family:var(--sans);font-size:12px;line-height:1.65;color:var(--muted)}
+.p-src button{font-family:var(--sans);font-size:12px;line-height:1.65;color:var(--ink);text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--rule-ink);min-height:44px;display:inline-flex;align-items:center}
+/* ---- Footnote：同じ紙の中に inline で開く。囲いなし。上の hairline 1本だけ ---- */
+.fn{display:none;border-top:1px solid var(--rule-ink);margin-top:18px;padding:22px 0 32px}
+.fn.is-open{display:block}
+.fn-num{margin:0;font-family:var(--sans);font-size:12px;line-height:1.65;color:var(--muted);letter-spacing:.08em}
+.fn-title{margin:6px 0 0;font-family:var(--serif);font-weight:500;font-size:17.5px;line-height:1.6}
+.fn-date{margin:6px 0 0;font-family:var(--serif);font-size:13px;line-height:1.8}
+.fn-meta{margin:14px 0 0;font-family:var(--sans);font-size:12px;line-height:1.65;color:var(--ink)}
+.fn-meta span{color:var(--muted);margin-right:1em}
+.fn-url{margin:4px 0 0;font-family:var(--sans);font-size:12px;line-height:1.65;color:var(--ink);overflow-wrap:anywhere}
+.fn-lab{margin:16px 0 0;font-family:var(--sans);font-size:12px;line-height:1.65;color:var(--muted);letter-spacing:.08em}
+.fn-body{margin:4px 0 0;font-family:var(--serif);font-size:13px;line-height:1.8}
+.fn-back{margin:22px 0 0;font-family:var(--serif);font-size:13px;line-height:1.8;text-decoration:underline;text-underline-offset:5px;text-decoration-color:var(--rule-ink);min-height:44px;display:inline-flex;align-items:center}
+/* fold 以下の本文 */
+.p-body{margin-top:250px;font-family:var(--serif);font-size:17.5px;line-height:1.9}
+.p-body p{margin:0 0 1em}
+.p-foot{margin:36px 0 0;font-family:var(--sans);font-size:11px;line-height:1.6;color:var(--muted);letter-spacing:.06em}
+
+/* ---- Scene 2：Ending ---- */
+.ending{position:relative;width:390px;padding:52px 0 80px;background:var(--bg)}
+.e-rh{position:absolute;top:18px;left:20px;right:20px;display:flex;justify-content:space-between;font-family:var(--sans);font-size:11px;color:var(--muted);letter-spacing:.04em}
+.e-photo{position:relative;margin:0;width:390px;height:500px;overflow:hidden;z-index:2}
+.e-photo img{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.78) contrast(1.06) brightness(.86)}
+/* 積もった時間：写真下端の後ろから、4枚の薄い紙の縁だけ 8px ずつ */
+.e-edges{position:relative;height:36px;width:390px;z-index:1}
+.e-edge{position:absolute;left:16px;height:9px;background:var(--paper-2)}
+.e-edge[data-k="1"]{width:358px}.e-edge[data-k="2"]{width:344px}.e-edge[data-k="3"]{width:330px}.e-edge[data-k="4"]{width:316px}
+.e-edge:nth-child(odd){background:var(--paper)}
+.e-edge b{position:absolute;right:8px;top:0;font-family:var(--serif);font-weight:500;font-size:9px;line-height:9px;color:var(--ink);letter-spacing:.04em}
+.e-edge[data-k="1"]{top:0}.e-edge[data-k="2"]{top:8px}.e-edge[data-k="3"]{top:16px}.e-edge[data-k="4"]{top:24px}
+.e-copy{padding:22px 22px 0;margin-top:22px}   /* 写真終了（edges 36px 含む）から 58px 下 */
+.e-folio{margin:0;font-family:var(--sans);font-size:11px;line-height:1.4;color:var(--muted);letter-spacing:.08em}
+.e-msg{margin:24px 0 0;font-family:var(--serif);font-weight:500;font-size:32px;line-height:1.45;color:var(--light)}
+.e-act{display:inline-flex;align-items:center;min-height:44px;margin:32px 0 0;font-family:var(--serif);font-size:16px;line-height:1.5;color:var(--light);text-decoration:underline;text-underline-offset:6px;text-decoration-color:var(--rule)}
+.e-src{margin:24px 0 0}
+.e-src summary{list-style:none;cursor:pointer;font-family:var(--sans);font-size:13px;line-height:1.6;color:var(--muted);min-height:44px;display:flex;align-items:center}
+.e-src summary::-webkit-details-marker{display:none}
+.e-src ul{margin:12px 0 0;padding:0;list-style:none;font-family:var(--sans);font-size:12px;line-height:1.65;color:var(--muted)}
+.e-src li{margin:0 0 6px;overflow-wrap:anywhere}
+.e-src .credit{margin:14px 0 0;font-family:var(--sans);font-size:12px;line-height:1.65;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+</style>
+</head>
+<body>
+
+<!-- ================= Scene 1 ================= -->
+<div class="scene1" id="scene1">
+  <div class="rh" id="rh"><span id="rhL">高円寺 / 2026</span><span>01 / 05</span></div>
+
+  <figure class="photo" id="photo">
+    <img src="../assets/koenji-street-2026-640.jpg" width="480" height="640" alt="">
+    <figcaption class="title" id="title"><b>高円寺</b><span>2026</span></figcaption>
+  </figure>
+  <div class="edge" id="edge" aria-hidden="true"><b>1957</b></div>
+  <button class="edge-hit" id="edgeHit" type="button" aria-label="写真の下に挟まった1957年の紙。触れると1957年へさかのぼる"></button>
+
+  <article class="paper" id="paper" aria-labelledby="pMajor">
+    <p class="p-year">1957</p>
+    <p class="p-chapter">「ばか踊り」として始まる</p>
+    <div class="p-rest" id="pRest">
+      <h1 class="p-major" id="pMajor">阿波おどりは、最初から「阿波おどり」ではなかった。</h1>
+      <p class="p-notelab">編集部の余白</p>
+      <p class="p-note">観光のためではなく、商店街の青年部の記念行事から始まった。1959年、続けるかどうかの無記名投票は10対9。1票差で、いまがある。</p>
+      <hr class="p-rule">
+      <p class="p-fact">8月27日、高円寺南口商盛会の青年部が「高円寺ばか踊り」を始める。</p>
+      <p class="p-src"><button type="button" id="fnOpen" aria-expanded="false" aria-controls="fn1">資料 01　杉並区「東京高円寺阿波おどり」［1］</button></p>
+      <div class="fn" id="fn1">
+        <p class="fn-num">資料 01</p>
+        <p class="fn-title">杉並区「東京高円寺阿波おどり」</p>
+        <p class="fn-date">1957年8月27日の記述</p>
+        <p class="fn-meta"><span>Source</span>杉並区公式サイト</p>
+        <p class="fn-url">https://www.city.suginami.tokyo.jp/s007/10581.html</p>
+        <p class="fn-lab">この資料から確認できること</p>
+        <p class="fn-body">始まりの年月日、始めた主体（高円寺南口商盛会 青年部）、当初の名称が「高円寺ばか踊り」であったこと。</p>
+        <button class="fn-back" type="button" id="fnClose">← 本文へ戻る</button>
+      </div>
+      <div class="p-body">
+        <p>1957年8月27日。高円寺南口商盛会（いまの高円寺パル商店街）の青年部の若手が、街の賑わいを求めて「高円寺ばか踊り」を始めた。隣の阿佐ヶ谷では1954年から七夕まつりが始まっていて、それに負けてなるものかと奮起した青年部の記念行事だった。</p>
+        <p>正式に「阿波おどり」と名乗るのは憚られた。踊りの経験者はいない。民謡の先生に教わり、おはやしはチンドン屋に頼み、リズムは「佐渡おけさ」。高円寺駅から宝橋までの約250メートルを、踊るというより走り抜けた。</p>
+        <p class="p-foot">出典［1］杉並区　［2］東京高円寺阿波おどり振興協会「高円寺阿波おどりの歴史 ─ 創成期」</p>
+      </div>
+    </div>
+  </article>
+</div>
+
+<!-- ================= Scene 2：Ending ================= -->
+<section class="ending" id="ending" aria-labelledby="eMsg">
+  <div class="e-rh"><span>高円寺 / 2026</span><span>05 / 05</span></div>
+  <figure class="e-photo"><img src="../assets/koenji-street-2026-640.jpg" width="480" height="640" alt=""></figure>
+  <div class="e-edges" aria-hidden="true">
+    <div class="e-edge" data-k="4"><b>2025</b></div>
+    <div class="e-edge" data-k="3"><b>1976</b></div>
+    <div class="e-edge" data-k="2"><b>1960s</b></div>
+    <div class="e-edge" data-k="1"><b>1957</b></div>
+  </div>
+  <div class="e-copy">
+    <p class="e-folio">05 / 05</p>
+    <h2 class="e-msg" id="eMsg">この先は、<br>高円寺にある。</h2>
+    <a class="e-act" href="https://www.koenji-awaodori.com/about/about01.html" target="_blank" rel="noopener noreferrer">今年の開催を見る ↗</a>
+    <details class="e-src">
+      <summary>出典と資料を見る</summary>
+      <ul>
+        <li>［1］杉並区「東京高円寺阿波おどり」 https://www.city.suginami.tokyo.jp/s007/10581.html</li>
+        <li>［2］東京高円寺阿波おどり振興協会「高円寺阿波おどりの歴史 ─ 創成期」 https://www.koenji-awaodori.com/about/his01.html</li>
+        <li>開催概要 https://www.koenji-awaodori.com/about/about01.html／史料館 https://www.koenji-awaodori.com/about/about05.html／各賞受賞連 https://www.koenji-awaodori.com/about/about07.html</li>
+      </ul>
+      <p class="credit">Credits：写真 NMaia “Street in Koenji”（CC BY-SA 4.0、Wikimedia Commons）。縮小のみ。史実は杉並区・東京高円寺阿波おどり振興協会の公式サイトを出典とする。</p>
+    </details>
+  </div>
+</section>
+
+<script>
+(() => {
+  'use strict';
+  const PULL = 700;
+  const $ = (id) => document.getElementById(id);
+  const scene1 = $('scene1'), photo = $('photo'), title = $('title'), edge = $('edge'), edgeHit = $('edgeHit'), paper = $('paper'), rest = $('pRest'), rh = $('rh'), rhL = $('rhL');
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const lerp = (a, b, t) => a + (b - a) * t;
+  // 折れ線補間：progress 0 / .5 / 1 の指定値
+  const seg = (p, v0, v5, v1) => p < .5 ? lerp(v0, v5, p / .5) : lerp(v5, v1, (p - .5) / .5);
+  let docMode = false;
+
+  function layout() {
+    const y = window.scrollY;
+    const p = clamp(y / PULL, 0, 1);
+    // Photo：scale 1 → .88 → .82、translateY 0 → -34 → -34、opacity 1 → .36 → .05
+    photo.style.transform = `translateY(${seg(p, 0, -34, -34).toFixed(1)}px) scale(${seg(p, 1, .88, .82).toFixed(3)})`;
+    photo.style.opacity = seg(p, 1, .36, .05).toFixed(3);
+    title.style.opacity = clamp(1 - p * 2, 0, 1).toFixed(3);
+    edge.style.opacity = clamp(1 - p * 2, 0, 1).toFixed(3);
+    edgeHit.style.pointerEvents = p > .2 ? 'none' : 'auto';
+    // Paper：top 822 → 245 → 52、width 358 → 358 → 390、left 16 → 16 → 0、opacity 0 → .96 → 1、scale .98 → .98 → 1
+    if (p < 1) {
+      if (docMode) { docMode = false; paper.classList.remove('is-doc'); rh.classList.remove('is-doc'); rh.style.top = ''; rhL.textContent = '高円寺 / 2026'; }
+      paper.style.top = seg(p, 822, 245, 52).toFixed(1) + 'px';
+      paper.style.width = seg(p, 358, 358, 390).toFixed(1) + 'px';
+      paper.style.left = seg(p, 16, 16, 0).toFixed(1) + 'px';
+      paper.style.opacity = seg(p, 0, .96, 1).toFixed(3);
+      paper.style.transform = `scale(${seg(p, .98, .98, 1).toFixed(3)})`;
+      paper.style.minHeight = '';
+    } else if (!docMode) {
+      // 到着：同じ紙をそのまま文書の流れに置く（見た目の位置は同一）
+      docMode = true;
+      paper.classList.add('is-doc');
+      paper.style.top = (PULL + 52) + 'px'; paper.style.width = ''; paper.style.left = ''; paper.style.opacity = '1'; paper.style.transform = 'none';
+      rh.classList.add('is-doc'); rh.style.top = (PULL + 18) + 'px'; rhL.textContent = '高円寺 / 1957';
+    }
+    // 紙面の文字：midpoint では 1957 と章の行だけ。本文は到着直前から
+    rest.style.opacity = clamp((p - .85) / .15, 0, 1).toFixed(3);
+    // 到着後、Ending の scene に入ったら scene1 の写真は消す
+    photo.style.visibility = y > PULL + 900 ? 'hidden' : 'visible';
+    // scene1 の高さ＝pull 距離 + 紙の高さ
+    scene1.style.height = (PULL + 52 + Math.max(1100, paper.offsetHeight) + 120) + 'px';
+  }
+  let ticking = false;
+  window.addEventListener('scroll', () => { if (ticking) return; ticking = true; requestAnimationFrame(() => { ticking = false; layout(); }); }, { passive: true });
+  window.addEventListener('resize', layout);
+  edgeHit.addEventListener('click', () => window.scrollTo({ top: PULL, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }));
+
+  // Footnote：同じ紙の中で開閉。閉じると同じ source 行へ戻る
+  const fn = $('fn1'), fnOpen = $('fnOpen'), fnClose = $('fnClose');
+  let fnScroll = 0;
+  fnOpen.addEventListener('click', () => { fnScroll = window.scrollY; fn.classList.add('is-open'); fnOpen.setAttribute('aria-expanded', 'true'); layout(); fnClose.focus({ preventScroll: true }); });
+  fnClose.addEventListener('click', () => { fn.classList.remove('is-open'); fnOpen.setAttribute('aria-expanded', 'false'); layout(); window.scrollTo({ top: fnScroll, behavior: 'instant' }); fnOpen.focus({ preventScroll: true }); });
+
+  // 検証用：progress を直接与える（render script のみが使う）
+  window.__adv2 = { setProgress: (p) => window.scrollTo({ top: Math.round(p * PULL), behavior: 'instant' }), PULL };
+  const img = photo.querySelector('img');
+  if (img && !img.complete) img.addEventListener('load', layout, { once: true });
+  layout();
+})();
+</script>
+</body>
+</html>
