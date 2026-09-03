@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B-V4 Motion Verification — Entrance → 1957</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&amp;family=Shippori+Mincho+B1:wght@400;500&amp;family=Zen+Kaku+Gothic+New:wght@300;400;500&amp;display=swap">
+<style>
+body{margin:0;background:#E9E7E1;font-family:'Zen Kaku Gothic New',sans-serif;color:#1D1C1A}
+#bar{width:390px;box-sizing:border-box;padding:12px 16px 10px;font-size:10.5px;letter-spacing:.12em;display:flex;flex-direction:column;gap:6px}
+#bar .row{display:flex;align-items:center;gap:10px}
+#t{flex:1;accent-color:#1D1C1A;height:2px;margin:0}
+#readout{font-size:9px;letter-spacing:.04em;color:#6B675F}
+
+.f{position:relative;width:390px;height:844px;overflow:hidden;background:#F4F2EC;color:#1D1C1A;font-family:'Shippori Mincho B1','Shippori Mincho',serif;font-weight:400;-webkit-font-smoothing:antialiased}
+.sans{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:400}
+.rh{position:absolute;left:28px;top:26px;font-size:10.5px;letter-spacing:.12em;color:#6B675F;font-family:'Zen Kaku Gothic New',sans-serif}
+.fo{position:absolute;left:28px;bottom:26px;font-size:11px;letter-spacing:.24em;color:#6B675F}
+.ph{position:absolute;overflow:hidden}
+.ph img{width:100%;height:100%;object-fit:cover;object-position:50% 62%;display:block}
+.cap{position:absolute;font-size:10px;letter-spacing:.08em;color:#6B675F;font-family:'Zen Kaku Gothic New',sans-serif;white-space:nowrap}
+.yr{position:absolute;line-height:1;letter-spacing:.02em;white-space:nowrap}
+.rule{position:absolute;height:1px;background:#1D1C1A}
+.hl{position:absolute;font-size:26px;line-height:1.6}
+.cue{position:absolute;display:flex;align-items:center;gap:12px;font-size:12px;letter-spacing:.14em;color:#3E3B35}
+.chap{font-size:21px;line-height:1.5;letter-spacing:.02em}
+.key{font-size:17px;line-height:1.75}
+.body{font-size:14px;line-height:2.0}
+.note{display:flex;flex-direction:column;gap:6px;font-family:'Zen Kaku Gothic New',sans-serif;color:#3E3B35}
+.note b{font-weight:400;font-size:10px;letter-spacing:.2em;color:#6B675F}
+.note p{margin:0;font-size:12px;line-height:1.8}
+.fn{font-size:11px;letter-spacing:.06em;color:#3E3B35;font-family:'Zen Kaku Gothic New',sans-serif}
+details summary::-webkit-details-marker{display:none}
+.ev{display:flex;flex-direction:column;gap:6px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:11px;line-height:1.7;color:#3E3B35;border-top:1px solid #1D1C1A;border-bottom:1px solid #C9C4B8;padding:14px 0 16px}
+
+</style>
+</head>
+<body>
+<div id="bar">
+  <div class="row"><span>TIME</span><span>2026</span><input id="t" type="range" min="0" max="1" step="0.01" value="0"><span>1957</span><span id="yr" style="min-width:34px;text-align:right">2026</span></div>
+  <div id="readout"></div>
+</div>
+<div id="stage"></div>
+<script>
+
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)); const seg=(t,a,b)=>clamp((t-a)/(b-a),0,1); const ease=(x)=>1-Math.pow(1-x,3); const lerp=(a,b,t)=>a+(b-a)*t; const n=(v)=>Number(v.toFixed(2));
+function layout(t){ const e=ease(seg(t,0,1)); return {
+  px:n(lerp(136,246,e)), py:n(lerp(52,96,e)), pw:n(lerp(254,116,e)), phh:n(lerp(404,88,e)), pgray:n(seg(t,.35,1)*.85),
+  capx:n(lerp(136,246,e)), capy:n(lerp(468,190,e)),
+  y26size:n(lerp(44,10.5,e)), y26x:n(lerp(28,330,e)), y26y:n(lerp(92,24,e)), y26ls:n(lerp(.02,.12,e)),
+  y57size:n(lerp(11,64,e)), y57y:n(lerp(772,88,e)), y57op:n(lerp(.7,1,e)),
+  ruley:n(lerp(500,214,e)), ruler:n(lerp(0,28,e)),
+  margin:n(lerp(28,44,e)), hlop:n(1-seg(t,.05,.32)), hly:n(-18*seg(t,.08,.6)), cueop:n(1-seg(t,0,.25)),
+  chop:n(0.62*seg(t,.26,.5)+0.38*seg(t,.5,1)), txop:n(seg(t,.65,1)), txy:n(22*(1-seg(t,.65,1))) }; }
+
+const stage = document.getElementById('stage'), t = document.getElementById('t'), yr = document.getElementById('yr'), ro = document.getElementById('readout');
+function view(v){
+  const l = layout(v);
+  stage.innerHTML = `<div class="f">
+  <div class="rh">高円寺 × 東京高円寺阿波おどり</div>
+  <div class="ph" style="left:${l.px}px;top:${l.py}px;width:${l.pw}px;height:${l.phh}px"><img src="koenji-2026.jpg" style="filter:grayscale(${l.pgray})"></div>
+  <div class="cap" style="left:${l.capx}px;top:${l.capy}px">高円寺、2026年。</div>
+  <div class="yr" style="left:${l.y26x}px;top:${l.y26y}px;font-size:${l.y26size}px;letter-spacing:${l.y26ls}em">2026</div>
+  <div class="yr" style="left:28px;top:${l.y57y}px;font-size:${l.y57size}px;opacity:${l.y57op}">1957</div>
+  <div class="rule" style="left:28px;right:${l.ruler}px;top:${l.ruley}px"></div>
+  <div class="hl" style="left:28px;width:320px;top:528px;opacity:${l.hlop};transform:translateY(${l.hly}px)">この街には、<br>69年ぶんの時間がある。</div>
+  <div class="cue" style="left:120px;bottom:26px;opacity:${l.cueop}"><span style="display:block;width:28px;height:1px;background:#3E3B35"></span><span>下へ、1957年へ</span></div>
+  <div style="position:absolute;left:${l.margin}px;right:28px;top:236px;display:flex;flex-direction:column;gap:22px;transform:translateY(${l.txy}px)">
+    <div class="chap" style="opacity:${l.chop}">「ばか踊り」として始まる</div>
+    <div class="key" style="opacity:${l.txop}">阿波おどりは、最初から「阿波おどり」ではなかった。</div>
+    <div class="body" style="opacity:${l.txop}">1957年8月27日。高円寺南口商盛会（いまの高円寺パル商店街）の青年部の若手が、街の賑わいを求めて「高円寺ばか踊り」を始めた。隣の阿佐ヶ谷では1954年から七夕まつりが始まっていて、それに負けてなるものかと奮起した青年部の記念行事だった。<span class="sans" style="font-size:10px;vertical-align:super;margin-left:2px">[1]</span></div>
+    <div class="note" style="opacity:${l.txop}"><b>編集部の余白</b><p>観光のためではなく、商店街の青年部の記念行事から始まった。1959年、続けるかどうかの無記名投票は10対9。1票差で、いまがある。</p></div>
+  </div>
+  <div style="position:absolute;left:${l.margin}px;right:28px;bottom:64px;opacity:${l.txop}"><div style="width:40px;height:1px;background:#C9C4B8;margin-bottom:8px"></div><div class="fn">1　杉並区「東京高円寺阿波おどり」</div></div>
+  <div class="fo">一 ／ 五</div>
+</div>`;
+  yr.textContent = String(Math.round(2026 - 69 * v));
+  ro.textContent = 'photo ' + Math.round(l.pw / 254 * 100) + '% · y ' + Math.round(l.py)
+    + '　year ' + Math.round(l.y26size) + 'px / ' + Math.round(l.y57size) + 'px'
+    + '　margin ' + Math.round(l.margin) + 'px　rule y ' + Math.round(l.ruley) + 'px';
+}
+t.addEventListener('input', () => view(parseFloat(t.value)));
+window.__setTime = (v) => { t.value = String(v); view(v); };
+view(0);
+</script>
+</body>
+</html>

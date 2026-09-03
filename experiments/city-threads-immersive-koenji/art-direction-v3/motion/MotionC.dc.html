@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&amp;family=Shippori+Mincho+B1:wght@400;500&amp;family=Zen+Kaku+Gothic+New:wght@300;400;500&amp;display=swap">
+<style>
+body{margin:0;background:transparent}
+a{color:inherit}a:hover{color:inherit}
+
+.bar{width:390px;height:60px;box-sizing:border-box;padding:12px 16px 0;background:#E9E7E1;color:#1D1C1A;font-family:'Zen Kaku Gothic New',sans-serif;font-size:11px;letter-spacing:.14em;display:flex;flex-direction:column;gap:6px}
+.bar .row{display:flex;align-items:center;gap:10px}
+.bar input{flex:1;accent-color:#1D1C1A;height:2px;margin:0}
+
+.f{position:relative;width:390px;height:844px;overflow:hidden;background:#494A4D;color:#F1EDE3;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:400;-webkit-font-smoothing:antialiased}
+.gd{position:absolute;left:0;top:0;width:390px;height:844px;background:radial-gradient(150% 70% at 50% 100%,#5A5B5E 0%,#48494C 50%,#3B3C3F 100%)}
+.gr{position:absolute;left:0;top:0;width:390px;height:844px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23g)' opacity='0.6'/></svg>");background-size:180px 180px;mix-blend-mode:overlay;opacity:.5;pointer-events:none}
+.band{position:absolute;left:0;top:0;width:390px;height:520px;overflow:hidden;transform-origin:50% 100%}
+.band img{width:100%;height:100%;object-fit:cover;object-position:50% 62%;display:block}
+.hd{position:absolute;left:24px;top:26px;font-size:12px;letter-spacing:.16em;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.ct{position:absolute;right:24px;top:26px;font-size:12px;letter-spacing:.16em;opacity:.85;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.tr{position:absolute;left:0;top:0;width:390px;height:844px;pointer-events:none}
+.lab{position:absolute;letter-spacing:.14em;color:#F1EDE3;font-weight:300}
+.plate{position:absolute;border:1px solid rgba(241,237,227,.75);transform-origin:50% 100%}
+
+</style>
+</helmet>
+<div style="width:390px;height:904px;overflow:hidden;background:#E9E7E1"><div class="bar">
+  <div class="row"><span>TIME</span><span>2026</span><input type="range" min="0" max="1" step="0.01" value="{{ t }}" onChange="{{ onTime }}"><span>1957</span><span style="min-width:34px;text-align:right">{{ year }}</span></div>
+</div><div class="f">
+  <div class="gd"></div>
+  <div class="band" style="top: {{c.bandTop}}px; transform: perspective(900px) rotateX({{c.rot}}deg) scale({{c.scale}}); opacity: {{c.bandOp}}"><img src="koenji-2026.jpg" style="filter: saturate({{c.sat}}) grayscale({{c.gray}}) brightness({{c.bright}})"></div>
+  <div style="position:absolute;left:0;top:440px;width:390px;height:80px;background:linear-gradient(to bottom,rgba(73,74,77,0),rgba(73,74,77,.9)); opacity: {{c.fadeOp}}"></div>
+  <div style="position:absolute;left:0;top:84px;width:390px;height:760px;transform-origin:50% 100%; transform: perspective(520px) rotateX({{c.tilt}}deg) translateY({{c.groundY}}px); opacity: {{c.groundOp}}"><svg viewBox="0 0 390 760" width="390" height="760" style="position:absolute;left:0;top:0" xmlns="http://www.w3.org/2000/svg"><line x1="302" y1="735" x2="302" y2="262" stroke="#F1EDE3" stroke-opacity=".8" stroke-width="1.5"/><line x1="293" y1="690" x2="311" y2="690" stroke="#F1EDE3" stroke-opacity="0.95" stroke-width="1.5"/><line x1="293" y1="578" x2="311" y2="578" stroke="#F1EDE3" stroke-opacity="0.85" stroke-width="1.5"/><line x1="293" y1="476" x2="311" y2="476" stroke="#F1EDE3" stroke-opacity="0.78" stroke-width="1.5"/><line x1="293" y1="386" x2="311" y2="386" stroke="#F1EDE3" stroke-opacity="0.72" stroke-width="1.5"/><line x1="293" y1="306" x2="311" y2="306" stroke="#F1EDE3" stroke-opacity="0.68" stroke-width="1.5"/></svg><div class="lab" style="right:104px;top:682px;font-size:12px;opacity:0.95">2026</div><div class="lab" style="right:104px;top:569px;font-size:13px;opacity:0.85">2025</div><div class="lab" style="right:104px;top:466px;font-size:14px;opacity:0.78">1976</div><div class="lab" style="right:104px;top:376px;font-size:15px;opacity:0.72">1960s</div><div class="lab" style="right:104px;top:295px;font-size:16px;opacity:0.68">1957</div></div>
+  <div class="gr"></div>
+  <div class="plate" style="left:70px;top:200px;width:250px;height:84px;transform:perspective(600px) rotateX(56deg); opacity: {{c.plateOp}}"><div class="lab" style="right:10px;bottom:6px;font-size:11px;opacity:.9">1957</div></div>
+  <div class="hd">高円寺　{{c.hdYear}}</div>
+  <div class="ct">01 / 05</div>
+  <div style="position:absolute;left:24px;top:556px;width:212px;display:flex;flex-direction:column;gap:14px; opacity: {{c.hintOp}}">
+    <div style="font-size:11.5px;letter-spacing:.12em;opacity:.85">高円寺 × 東京高円寺阿波おどり</div>
+    <div style="font-size:20px;line-height:1.6">この街には、<br>69年ぶんの時間がある。</div>
+    <div style="font-size:11.5px;letter-spacing:.16em;opacity:.8;margin-top:8px">下へ、1957年へ</div>
+  </div>
+  <div class="lab" style="left:24px;top:770px;font-size:26px; opacity: {{c.yNowOp}}">2026</div>
+  <div class="lab" style="left:24px;top:640px;font-size:26px; opacity: {{c.yThenOp}}">1957</div>
+  <div style="position:absolute;left:24px;right:24px;top:312px;display:flex;flex-direction:column;gap:13px; opacity: {{c.titleOp}}; transform: translateY({{c.titleY}}px)">
+    <div style="font-size:11px;letter-spacing:.18em;opacity:.8;font-weight:300">1957年8月27日</div>
+    <div style="font-size:26px;line-height:1.45;font-weight:500">「ばか踊り」として始まる</div>
+    <div style="font-size:15px;line-height:1.85">阿波おどりは、最初から「阿波おどり」ではなかった。</div>
+    <div style="font-size:13.5px;line-height:1.9;opacity:.92;font-weight:300">1957年8月27日。高円寺南口商盛会（いまの高円寺パル商店街）の青年部の若手が、街の賑わいを求めて「高円寺ばか踊り」を始めた。隣の阿佐ヶ谷では1954年から七夕まつりが始まっていて、それに負けてなるものかと奮起した青年部の記念行事だった。</div>
+    <div style="font-size:12px;letter-spacing:.05em;opacity:.9;text-decoration:underline dotted;text-underline-offset:6px;text-decoration-color:rgba(241,237,227,.7)">資料 01　杉並区「東京高円寺阿波おどり」［1］</div>
+  </div>
+</div></div>
+</x-dc>
+<script data-dc-script data-props='{"time":{"editor":"range","min":0,"max":1,"step":0.01,"default":0,"section":"TIME 2026 → 1957"}}'>
+
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const seg = (t, a, b) => clamp((t - a) / (b - a), 0, 1);
+const lerp = (a, b, t) => a + (b - a) * t;
+const num = (v, d = 3) => Number(v.toFixed(d));
+class Component extends DCLogic {
+  time() { return this.state && this.state.t !== undefined ? this.state.t : (this.props.time ?? 0); }
+  base(t) {
+    return { t: num(t, 2), year: String(Math.round(2026 - 69 * t)), onTime: (e) => this.setState({ t: parseFloat(e.target.value) }) };
+  }
+
+  renderVals() {
+    const t = this.time();
+    const c = {
+      bandTop: num(lerp(0, -236, seg(t, 0, .9))), rot: num(58 * seg(t, 0, .9)), scale: num(1 - .3 * seg(t, 0, .9)), bandOp: num(1 - .28 * seg(t, .5, 1)),
+      sat: num(1 - .45 * t), gray: num(.8 * seg(t, .5, 1)), bright: num(1 - .3 * t), fadeOp: num(1 - seg(t, 0, .3)),
+      tilt: num(lerp(40, 36, seg(t, 0, .5))), groundY: num(300 * seg(t, 0, .7)), groundOp: num(1 - seg(t, .7, .95)),
+      plateOp: num(seg(t, .8, 1)), hdYear: t < .5 ? '2026' : '1957',
+      hintOp: num(1 - seg(t, 0, .25)), yNowOp: num(seg(t, .2, .35) * (1 - seg(t, .55, .8)) * .3), yThenOp: num(seg(t, .3, .5) * (1 - seg(t, .75, .9)) * .8),
+      titleOp: num(seg(t, .85, 1)), titleY: num(16 * (1 - seg(t, .85, 1))),
+    };
+    return { ...this.base(t), c };
+  }
+}
+
+</script>
+</body>
+</html>

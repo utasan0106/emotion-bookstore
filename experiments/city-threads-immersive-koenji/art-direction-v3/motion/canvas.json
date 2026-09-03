@@ -1,0 +1,42 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 160,
+      "title": "V3 MOTION REVIEW"
+    },
+    {
+      "file": "MotionA.dc.html",
+      "x": 0,
+      "y": 300,
+      "w": 390,
+      "h": 904,
+      "title": "A  PHOTOGRAPHIC TIME",
+      "is_interactive": true
+    },
+    {
+      "file": "MotionB.dc.html",
+      "x": 520,
+      "y": 300,
+      "w": 390,
+      "h": 904,
+      "title": "B  EDITORIAL TIME",
+      "is_interactive": true
+    },
+    {
+      "file": "MotionC.dc.html",
+      "x": 1040,
+      "y": 300,
+      "w": 390,
+      "h": 904,
+      "title": "C  SPATIAL TRACE",
+      "is_interactive": true
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

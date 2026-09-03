@@ -1,0 +1,196 @@
+{
+  "pages": [
+    {
+      "id": "ref",
+      "name": "CURRENT BUILD — ANTI-REFERENCE"
+    },
+    {
+      "id": "dir-a",
+      "name": "A  PHOTOGRAPHIC TIME"
+    },
+    {
+      "id": "dir-b",
+      "name": "B  EDITORIAL TIME"
+    },
+    {
+      "id": "dir-c",
+      "name": "C  SPATIAL TRACE"
+    }
+  ],
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1240,
+      "h": 900,
+      "title": "CURRENT BUILD — ANTI-REFERENCE"
+    },
+    {
+      "file": "A0_Notes.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 2270,
+      "h": 300,
+      "page": "dir-a",
+      "title": "A — notes"
+    },
+    {
+      "file": "A1_Entrance.dc.html",
+      "x": 0,
+      "y": 440,
+      "w": 390,
+      "h": 844,
+      "page": "dir-a",
+      "title": "A1　Entrance"
+    },
+    {
+      "file": "A2_FirstPull.dc.html",
+      "x": 470,
+      "y": 440,
+      "w": 390,
+      "h": 844,
+      "page": "dir-a",
+      "title": "A2　First Pull midpoint"
+    },
+    {
+      "file": "A3_1957.dc.html",
+      "x": 940,
+      "y": 440,
+      "w": 390,
+      "h": 844,
+      "page": "dir-a",
+      "title": "A3　1957 arrived"
+    },
+    {
+      "file": "A4_Evidence.dc.html",
+      "x": 1410,
+      "y": 440,
+      "w": 390,
+      "h": 844,
+      "page": "dir-a",
+      "title": "A4　Evidence inspection"
+    },
+    {
+      "file": "A5_Ending.dc.html",
+      "x": 1880,
+      "y": 440,
+      "w": 390,
+      "h": 844,
+      "page": "dir-a",
+      "title": "A5　Ending"
+    },
+    {
+      "file": "B0_Notes.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 2270,
+      "h": 300,
+      "page": "dir-b",
+      "title": "B — notes"
+    },
+    {
+      "file": "B1_Entrance.dc.html",
+      "x": 0,
+      "y": 440,
+      "w": 390,
+      "h": 844,
+      "page": "dir-b",
+      "title": "B1　Entrance"
+    },
+    {
+      "file": "B2_FirstPull.dc.html",
+      "x": 470,
+      "y": 440,
+      "w": 390,
+      "h": 844,
+      "page": "dir-b",
+      "title": "B2　First Pull midpoint"
+    },
+    {
+      "file": "B3_1957.dc.html",
+      "x": 940,
+      "y": 440,
+      "w": 390,
+      "h": 844,
+      "page": "dir-b",
+      "title": "B3　1957 arrived"
+    },
+    {
+      "file": "B4_Evidence.dc.html",
+      "x": 1410,
+      "y": 440,
+      "w": 390,
+      "h": 844,
+      "page": "dir-b",
+      "title": "B4　Evidence inspection"
+    },
+    {
+      "file": "B5_Ending.dc.html",
+      "x": 1880,
+      "y": 440,
+      "w": 390,
+      "h": 844,
+      "page": "dir-b",
+      "title": "B5　Ending"
+    },
+    {
+      "file": "C0_Notes.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 2270,
+      "h": 300,
+      "page": "dir-c",
+      "title": "C — notes"
+    },
+    {
+      "file": "C1_Entrance.dc.html",
+      "x": 0,
+      "y": 440,
+      "w": 390,
+      "h": 844,
+      "page": "dir-c",
+      "title": "C1　Entrance"
+    },
+    {
+      "file": "C2_FirstPull.dc.html",
+      "x": 470,
+      "y": 440,
+      "w": 390,
+      "h": 844,
+      "page": "dir-c",
+      "title": "C2　First Pull midpoint"
+    },
+    {
+      "file": "C3_1957.dc.html",
+      "x": 940,
+      "y": 440,
+      "w": 390,
+      "h": 844,
+      "page": "dir-c",
+      "title": "C3　1957 arrived"
+    },
+    {
+      "file": "C4_Evidence.dc.html",
+      "x": 1410,
+      "y": 440,
+      "w": 390,
+      "h": 844,
+      "page": "dir-c",
+      "title": "C4　Evidence inspection"
+    },
+    {
+      "file": "C5_Ending.dc.html",
+      "x": 1880,
+      "y": 440,
+      "w": 390,
+      "h": 844,
+      "page": "dir-c",
+      "title": "C5　Ending"
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "ref"
+  }
+}

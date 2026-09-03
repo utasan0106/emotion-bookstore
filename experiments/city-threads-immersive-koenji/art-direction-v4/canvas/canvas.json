@@ -1,0 +1,64 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 2900,
+      "h": 150,
+      "title": "EDITORIAL TIME V4 REVIEW"
+    },
+    {
+      "file": "V4_1_Entrance.dc.html",
+      "x": 0,
+      "y": 280,
+      "w": 390,
+      "h": 844,
+      "title": "1　Entrance"
+    },
+    {
+      "file": "V4_2_FirstPullMid.dc.html",
+      "x": 470,
+      "y": 280,
+      "w": 390,
+      "h": 844,
+      "title": "2　First Pull midpoint"
+    },
+    {
+      "file": "V4_3_1957.dc.html",
+      "x": 940,
+      "y": 280,
+      "w": 390,
+      "h": 844,
+      "title": "3　1957 arrived"
+    },
+    {
+      "file": "V4_4_Evidence.dc.html",
+      "x": 1410,
+      "y": 280,
+      "w": 390,
+      "h": 844,
+      "title": "4　Evidence"
+    },
+    {
+      "file": "V4_5_Ending.dc.html",
+      "x": 1880,
+      "y": 280,
+      "w": 390,
+      "h": 844,
+      "title": "5　Ending"
+    },
+    {
+      "file": "V4_TimeSlider.dc.html",
+      "x": 2510,
+      "y": 280,
+      "w": 390,
+      "h": 904,
+      "title": "TIME slider　Entrance → 1957",
+      "is_interactive": true
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}
