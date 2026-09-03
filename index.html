@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
   <meta name="color-scheme" content="dark">
-  <meta name="theme-color" content="#141312">
+  <meta name="theme-color" content="#0e0f12">
   <title>みんなの感情書店｜今日は、どの街へ。</title>
   <meta name="description" content="「今日、何しよう」「なんかないかな」というときに。感情書店の編集部が選んだ店・場所・本・映画・音楽・催しを、少し違う角度から紹介する文化案内です。">
   <link rel="canonical" href="https://emotionbookstore.com/">
@@ -27,7 +27,6 @@
   <link rel="icon" type="image/png" href="./assets/icon-512.png">
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
   <link rel="stylesheet" href="./release.css">
-  <link rel="stylesheet" href="./weekly-video.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -39,13 +38,8 @@
   }
   </script>
 </head>
-<body class="foyer-page">
+<body class="home-canonical">
   <a class="skip-link" href="#main">本文へ移動</a>
-
-  <header class="site-header">
-    <p class="brand"><span class="brand-lockup"><img class="brand-lockup-image" src="./assets/brand/emotion-bookstore-lockup-reversed.png" alt="みんなの感情書店" width="1429" height="331" decoding="async"></span></p>
-    <button class="menu-trigger" id="siteMenuButton" type="button" aria-haspopup="dialog" aria-controls="siteMenu">MENU</button>
-  </header>
 
   <dialog id="siteMenu" class="site-menu" aria-labelledby="siteMenuTitle">
     <div class="site-menu-shell">
@@ -62,11 +56,14 @@
         <a class="site-menu-link" data-menu-shelf="jinbocho" href="./shelf.html?shelf=jinbocho"><span>神保町</span><span aria-hidden="true">→</span></a>
       </nav>
 
+      <!-- 「今週の寄り道」「種類から見る」は HOME 上の anchor だったが、HOME が
+           VISUAL_CANONICAL の5 section 構成になり、その節が HOME から外れた。
+           行き先の無い anchor を残すと嘘のリンクになるので出さない。
+           .site-menu-secondary 自体は残す（archive 追加時に growth-improvements.js
+           がここへ「Archiveを見る」を差し込む）。 -->
       <section class="site-menu-section" aria-labelledby="siteMenuDiscoverTitle">
         <p id="siteMenuDiscoverTitle" class="eyebrow">見つける</p>
         <nav class="site-menu-secondary" aria-label="ほかの見方">
-          <a class="site-menu-secondary-link" href="./index.html#weekly-detour"><span>今週の寄り道</span><span aria-hidden="true">→</span></a>
-          <a class="site-menu-secondary-link" href="./index.html#by-kind"><span>種類から見る</span><span aria-hidden="true">→</span></a>
           <a class="site-menu-secondary-link" href="./suggest.html"><span>候補を教える</span><span aria-hidden="true">→</span></a>
         </nav>
       </section>
@@ -84,92 +81,202 @@
   </dialog>
 
   <main id="main">
-  <!-- サイト共通の短い説明。identity のすぐ下、探索と Object media より必ず先に置く。
-       ここは static なので JavaScript が動かない環境でも順序が崩れない。 -->
-  <section class="site-intro" aria-label="このサイトについて">
-    <p class="site-explainer"><span class="jp-phrase explainer-line">感情書店の編集部が選んだ場所・本・音楽・映画・催しを、</span><wbr><span class="jp-phrase explainer-line">街や種類ごとに少しずつ並べる文化案内です。</span></p>
-  </section>
 
-    <section class="hero" aria-labelledby="hero-title">
-      <h1 id="hero-title"><span class="hero-line">今日は、</span><span class="hero-line">どの街へ。</span></h1>
+    <!-- ===================================================== 1. HERO ===== -->
+    <section class="hc-hero" aria-labelledby="hc-hero-title">
+      <div class="hc-hero-media" aria-hidden="true">
+        <img src="./assets/city-koenji.jpg" alt="" width="1200" height="1600" fetchpriority="high" decoding="async">
+      </div>
+
+      <header class="hc-header">
+        <p class="hc-brand"><a class="hc-brand-link" href="./index.html">みんなの感情書店</a></p>
+        <button class="hc-menu-trigger" id="siteMenuButton" type="button" aria-haspopup="dialog" aria-controls="siteMenu">
+          <span class="sr-only">メニューを開く</span>
+          <span class="hc-menu-bars" aria-hidden="true"></span>
+        </button>
+      </header>
+
+      <div class="hc-hero-body">
+        <h1 id="hc-hero-title" class="hc-hero-title"><span class="hc-hero-line">文化の</span><span class="hc-hero-line">つながりを、</span><span class="hc-hero-line">歩く。</span></h1>
+        <p class="hc-hero-sub">街から。作品から。ひとつの痕跡から。</p>
+        <!-- ROUTE_HOLD: Cultural Thread の runtime route はまだ無い。
+             見た目のために別の行き先へ結びつけない。 -->
+        <p class="hc-hero-cta" data-route-hold="thread-index"><span class="hc-hero-cta-label">スレッドを見る</span><span class="hc-hero-cta-mark" aria-hidden="true">→</span></p>
+      </div>
+
+      <p class="hc-hero-aside"><span class="hc-hero-aside-line">この先に、</span><span class="hc-hero-aside-line">物語がある。</span></p>
+
+      <p class="hc-hero-scroll"><span class="hc-hero-scroll-label">スクロールして、はじまる</span><span class="hc-hero-scroll-mark" aria-hidden="true"></span></p>
     </section>
 
-    <section class="weekly-video-section" aria-labelledby="weekly-video-title">
-      <p class="weekly-video-eyebrow">今週の、街と気持ち。</p>
-      <div class="weekly-video-card">
-        <div class="weekly-video-plate" id="weeklyVideoHost">
-          <div class="weekly-video-plate-inner">
-            <p class="weekly-video-plate-kicker">週末の前の一本</p>
-            <p class="weekly-video-plate-title"><span class="weekly-video-plate-line">東京の文化を、</span><span class="weekly-video-plate-line">31秒だけ</span></p>
+    <div class="hc-sheet">
+
+      <!-- ============================================ 2. 街から入る ===== -->
+      <section class="hc-section hc-cities" aria-labelledby="hc-cities-title">
+        <div class="hc-section-head">
+          <h2 id="hc-cities-title" class="hc-section-title">街から入る</h2>
+          <p class="hc-section-note">街には、文化が息づく理由がある。</p>
+          <!-- ROUTE_HOLD: 4街を一覧する index route は無い。 -->
+          <p class="hc-section-more" data-route-hold="all-cities">すべて見る<span class="hc-more-mark" aria-hidden="true">→</span></p>
+        </div>
+
+        <div class="hc-city-grid">
+          <a class="hc-city shelf-entry" href="./shelf.html?shelf=koenji">
+            <span class="hc-city-media"><img src="./assets/city-koenji.jpg" alt="" width="1200" height="1600" loading="lazy" decoding="async"></span>
+            <span class="hc-city-body">
+              <span class="hc-city-name">高円寺</span>
+              <span class="hc-city-q"><span class="hc-city-q-line">踊りは、</span><span class="hc-city-q-line">どうやって</span><span class="hc-city-q-line">街の文化になった？</span></span>
+              <span class="hc-city-mark" aria-hidden="true">→</span>
+            </span>
+          </a>
+
+          <a class="hc-city shelf-entry" href="./shelf.html?shelf=kichijoji">
+            <span class="hc-city-media"><img src="./assets/city-kichijoji.jpg" alt="" width="1200" height="1600" loading="lazy" decoding="async"></span>
+            <span class="hc-city-body">
+              <span class="hc-city-name">吉祥寺</span>
+              <span class="hc-city-q"><span class="hc-city-q-line">音は、</span><span class="hc-city-q-line">どうやって</span><span class="hc-city-q-line">街を育てた？</span></span>
+              <span class="hc-city-mark" aria-hidden="true">→</span>
+            </span>
+          </a>
+
+          <a class="hc-city shelf-entry" href="./shelf.html?shelf=shimokitazawa">
+            <span class="hc-city-media"><img src="./assets/city-shimokitazawa.jpg" alt="" width="1600" height="1200" loading="lazy" decoding="async"></span>
+            <span class="hc-city-body">
+              <span class="hc-city-name">下北沢</span>
+              <span class="hc-city-q"><span class="hc-city-q-line">舞台は、</span><span class="hc-city-q-line">どうやって</span><span class="hc-city-q-line">街を変えた？</span></span>
+              <span class="hc-city-mark" aria-hidden="true">→</span>
+            </span>
+          </a>
+
+          <a class="hc-city shelf-entry" href="./shelf.html?shelf=jinbocho">
+            <span class="hc-city-media"><img src="./assets/city-jinbocho.jpg" alt="" width="1600" height="1066" loading="lazy" decoding="async"></span>
+            <span class="hc-city-body">
+              <span class="hc-city-name">神保町</span>
+              <span class="hc-city-q"><span class="hc-city-q-line">本は、</span><span class="hc-city-q-line">どうやって</span><span class="hc-city-q-line">街の形になった？</span></span>
+              <span class="hc-city-mark" aria-hidden="true">→</span>
+            </span>
+          </a>
+        </div>
+      </section>
+
+      <!-- ========================================== 3. 作品から入る ===== -->
+      <!-- 街と同格の、文化への別の入口。category filter UI ではない。 -->
+      <section class="hc-section hc-works" aria-labelledby="hc-works-title">
+        <div class="hc-section-head">
+          <h2 id="hc-works-title" class="hc-section-title">作品から入る</h2>
+          <p class="hc-section-note">本・映画・音楽・映像… あらゆる作品が、街とつながっている。</p>
+        </div>
+
+        <!-- ASSET_HOLD: 4枠とも Production 権利確認済みの図版が無い。
+             geometry・枚数・foot row は canonical のまま保ち、画面だけ
+             card の地の色で置く。generic illustration / gradient blob /
+             icon-only へ置き換えない。
+             ROUTE_HOLD: 本 / 映画 / 音楽 / 映像 という作品種の route は無い。
+             既存の5 category 索引（飲食・喫茶 ほか）は別の taxonomy なので繋がない。 -->
+        <div class="hc-work-grid">
+          <div class="hc-work is-asset-hold" data-route-hold="work-book" data-asset-hold="work-book">
+            <span class="hc-work-foot">
+              <span class="hc-work-icon" aria-hidden="true">
+                <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.2h5.2c1.3 0 2.3.9 2.3 2v9.3c0-.8-.9-1.5-2.1-1.5H2.5z"/><path d="M17.5 4.2h-5.2c-1.3 0-2.3.9-2.3 2v9.3c0-.8.9-1.5 2.1-1.5h5.4z"/></svg>
+              </span>
+              <span class="hc-work-label">本</span>
+              <span class="hc-work-mark" aria-hidden="true">→</span>
+            </span>
+          </div>
+
+          <div class="hc-work is-asset-hold" data-route-hold="work-film" data-asset-hold="work-film">
+            <span class="hc-work-foot">
+              <span class="hc-work-icon" aria-hidden="true">
+                <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="2.4" y="4.4" width="15.2" height="11.2" rx="1.1"/><path d="M6.2 4.4v11.2M13.8 4.4v11.2"/><path d="M2.4 10h15.2"/></svg>
+              </span>
+              <span class="hc-work-label">映画</span>
+              <span class="hc-work-mark" aria-hidden="true">→</span>
+            </span>
+          </div>
+
+          <div class="hc-work is-asset-hold" data-route-hold="work-music" data-asset-hold="work-music">
+            <span class="hc-work-foot">
+              <span class="hc-work-icon" aria-hidden="true">
+                <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7.6 14.2V4.9l7.4-1.5v9.2"/><ellipse cx="5.6" cy="14.6" rx="2.1" ry="1.7"/><ellipse cx="13" cy="12.9" rx="2.1" ry="1.7"/></svg>
+              </span>
+              <span class="hc-work-label">音楽</span>
+              <span class="hc-work-mark" aria-hidden="true">→</span>
+            </span>
+          </div>
+
+          <div class="hc-work is-asset-hold" data-route-hold="work-video" data-asset-hold="work-video">
+            <span class="hc-work-foot">
+              <span class="hc-work-icon" aria-hidden="true">
+                <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="2.3" y="5.4" width="10.6" height="9.2" rx="1.1"/><path d="M12.9 9.1l4.8-2.5v6.8l-4.8-2.5z"/></svg>
+              </span>
+              <span class="hc-work-label">映像</span>
+              <span class="hc-work-mark" aria-hidden="true">→</span>
+            </span>
           </div>
         </div>
-        <div class="weekly-video-copy">
-          <h2 id="weekly-video-title" class="weekly-video-title">NOTHING LIKE TOKYO - Culture</h2>
-          <p class="weekly-video-source">Tokyo Tokyo / 東京都公式「東京動画」掲載 · 00:31</p>
-          <p class="weekly-video-why"><strong>なぜ今週これを置くか。</strong><br>古民家での食事から村上春樹ライブラリーまで、東京の文化を一つのジャンルに閉じず短く横切る映像。目的地を決める代わりではなく、週末前に「こんなのもある」を一つだけ置きます。</p>
-          <p class="weekly-video-notice">再生するとYouTube（プライバシー強化モード）が読み込まれ、emotionbookstore.com のドメイン情報など動画の表示に必要な通信がYouTubeへ送られます。ページ表示時にはYouTubeへ接続しません。</p>
-          <button class="weekly-video-play" id="weeklyVideoPlay" type="button" data-video-id="TNomzoYXWMc" data-video-title="Tokyo Tokyo Promotion Video NOTHING LIKE TOKYO - Culture">31秒の動画を再生</button>
-          <p id="weeklyVideoStatus" class="sr-only" role="status" aria-live="polite"></p>
-          <p class="weekly-video-after">自動再生・外部サムネイル・位置情報・個人ごとの推薦は使いません。</p>
+      </section>
+
+      <!-- ==================================== 4. いま辿れるスレッド ===== -->
+      <section class="hc-section hc-thread-section" aria-labelledby="hc-thread-title">
+        <div class="hc-thread">
+          <div class="hc-thread-head">
+            <h2 id="hc-thread-title" class="hc-thread-heading">いま辿れるスレッド</h2>
+            <p class="hc-thread-note">ひとつの痕跡から、物語をたどる。</p>
+          </div>
+
+          <div class="hc-thread-body">
+            <!-- ASSET_HOLD: canonical は阿波おどりの一枚。権利確認済みで最も近い
+                 のは高円寺の夜（CC BY-SA 4.0 / NMaia）。街は一致、被写体は不一致。 -->
+            <div class="hc-thread-media">
+              <img src="./assets/city-koenji.jpg" alt="夜の高円寺。灯りのついた店が並ぶ通り" width="1200" height="1600" loading="lazy" decoding="async">
+            </div>
+
+            <div class="hc-thread-copy">
+              <p class="hc-thread-pill">注目のスレッド</p>
+              <p class="hc-thread-title">高円寺阿波おどり</p>
+              <p class="hc-thread-sub">踊りがつなぐ、街・人・記憶の輪。</p>
+
+              <ol class="hc-thread-chain">
+                <li class="hc-node"><span class="hc-node-kind">街</span><span class="hc-node-name">高円寺</span></li>
+                <li class="hc-node"><span class="hc-node-kind">出来事</span><span class="hc-node-name">阿波おどり</span></li>
+                <li class="hc-node"><span class="hc-node-kind">人</span><span class="hc-node-name">踊り手たち</span></li>
+                <li class="hc-node"><span class="hc-node-kind">資料</span><span class="hc-node-name">記録と写真</span></li>
+                <li class="hc-node"><span class="hc-node-kind">現在</span><span class="hc-node-name">つづく祭り</span></li>
+              </ol>
+
+              <!-- ROUTE_HOLD: Thread 本体の route はまだ無い。 -->
+              <p class="hc-thread-read" data-route-hold="thread-koenji-awaodori">スレッドを読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></p>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
-
-    <section class="foyer" aria-labelledby="by-town-title">
-      <h2 id="by-town-title" class="entry-axis">街から見る</h2>
-      <nav id="shelfList" class="shelf-list" aria-labelledby="by-town-title"></nav>
-      <noscript>
-        <p class="noscript-note">この書店を見るには、ブラウザの JavaScript を有効にしてください。</p>
-      </noscript>
-    </section>
-
-    <!-- 種類は新しい棚ではなく、いま並んでいる12件を横断して見るための索引。
-         フィルタの pill 群にはしない。 -->
-    <section id="by-kind" class="foyer by-kind" aria-labelledby="by-kind-title">
-      <h2 id="by-kind-title" class="entry-axis">種類から見る</h2>
-      <nav id="categoryTownIndex" class="category-town-index" aria-label="街で絞る"></nav>
-      <nav id="categoryIndex" class="category-index" aria-labelledby="by-kind-title"></nav>
-      <div id="categoryResults" class="category-results" aria-live="polite"></div>
-      <section id="categoryArchive" class="category-archive" aria-labelledby="categoryArchiveTitle" hidden>
-        <p class="eyebrow">ARCHIVE</p>
-        <h3 id="categoryArchiveTitle" class="category-archive-title">これまでの棚</h3>
-        <div id="categoryArchiveResults" class="category-archive-results"></div>
       </section>
-    </section>
 
-    <!-- 4街で終える。横には、今週だけのCross-media Editorialを3本だけ置く。 -->
-    <section class="foyer-closing" aria-label="今日の街と今週の寄り道">
-      <section class="end-plate foyer-end" aria-labelledby="end-title" hidden>
-        <p class="eyebrow">今日の街は、ここまで</p>
-        <h2 id="end-title"><span class="end-phrase">街は、</span><wbr><span class="end-phrase">4つだけです。</span></h2>
+      <!-- ============================================ 5. 現実へ出る ===== -->
+      <section class="hc-section hc-reality" aria-labelledby="hc-reality-title">
+        <div class="hc-reality-copy">
+          <h2 id="hc-reality-title" class="hc-section-title">現実へ出る</h2>
+          <p class="hc-reality-lead"><span class="hc-reality-line">物語の終着点は、いつも現実のどこかにある。</span><span class="hc-reality-line">お店、場所、イベント、人に会いに行く。</span></p>
+          <!-- ROUTE_HOLD: スポット検索の route はまだ無い。 -->
+          <p class="hc-reality-cta" data-route-hold="spots"><span class="hc-reality-cta-label">スポットを探す</span><span class="hc-reality-cta-mark" aria-hidden="true">
+            <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17.4s5.2-4.7 5.2-9.1a5.2 5.2 0 1 0-10.4 0c0 4.4 5.2 9.1 5.2 9.1z"/><circle cx="10" cy="8.3" r="1.9"/></svg>
+          </span></p>
+        </div>
+
+        <div class="hc-reality-strip">
+          <figure class="hc-reality-shot"><img src="./assets/city-kichijoji.jpg" alt="吉祥寺ハモニカ横丁。赤い提灯の下に小さな店が並ぶ路地" width="1200" height="1600" loading="lazy" decoding="async"></figure>
+          <figure class="hc-reality-shot"><img src="./assets/yaguchi-shoten.jpg" alt="神保町の矢口書店。間口いっぱいの木の書棚に本が詰まっている" width="960" height="640" loading="lazy" decoding="async"></figure>
+          <figure class="hc-reality-shot"><img src="./assets/shimokitazawa-shelter.jpg" alt="下北沢SHELTER。電球で縁取られた看板と地下へ続く階段" width="960" height="723" loading="lazy" decoding="async"></figure>
+        </div>
       </section>
-      <aside id="weekly-detour" class="weekly-detour" aria-labelledby="detour-title">
-        <p class="eyebrow" id="detour-label">今週の寄り道</p>
-        <h2 id="detour-title" class="detour-theme"></h2>
-        <div id="detourList" class="detour-list"></div>
-      </aside>
-    </section>
-    <!-- 主要な探索の下に、静かに置く導線。Primary CTA にはしない。 -->
-    <section class="suggest-lane" aria-labelledby="suggest-lane-title">
-      <h2 id="suggest-lane-title" class="sr-only">候補を教える</h2>
-      <p class="suggest-lane-note">まだここに無い場所や作品を知っていたら、</p>
-      <p class="suggest-lane-link"><a class="other-shelves" href="./suggest.html">候補を教える</a></p>
-    </section>
+
+    </div>
   </main>
-
-  <footer class="site-footer">
-    <p class="affiliate-disclosure">Amazon のアソシエイトとして、みんなの感情書店は適格販売により収入を得ています。楽天アフィリエイトを利用しています。</p>
-    <a class="footer-brand" href="./index.html" aria-label="みんなの感情書店 トップへ">
-      <img class="footer-brand-image" src="./assets/brand/emotion-bookstore-lockup-reversed.png" alt="みんなの感情書店" width="1429" height="331" loading="lazy" decoding="async">
-    </a>
-  </footer>
 
   <div id="live" class="sr-only" role="status" aria-live="polite"></div>
 
   <script src="./release_content.js"></script>
   <script src="./growth-improvements.js"></script>
   <script src="./release.js"></script>
-  <script src="./weekly-video.js"></script>
   <script src="./analytics-v3.js"></script>
 </body>
 </html>

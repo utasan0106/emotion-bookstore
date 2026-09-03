@@ -1911,3 +1911,586 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
     letter-spacing: .06em;
   }
 }
+
+/* ==========================================================================
+   HOME — CONTENT-LED IMMERSIVE TIME / VISUAL_CANONICAL 853px
+
+   Founder/HQ 承認済み HOME 画像を唯一の正とした忠実実装。
+   Designer ではなく Frontend Implementer として書く。再解釈・整理・
+   modernize をしない。値は canonical から測ったものだけを置く。
+
+   材質は2つだけ。deep night と warm paper。
+   3つ目の材質・glass・gradient blob・floating card は足さない。
+
+   すべて .home-canonical 配下。shelf.html / suggest.html / data.html には
+   一切かからない。
+   ========================================================================== */
+
+.home-canonical {
+  --hc-night:        #0e0f12;
+  --hc-panel:        #131a24;
+  --hc-paper:        #f2ead8;
+  --hc-ink:          #23201b;
+  --hc-ink-dim:      #6b6459;
+  --hc-ink-faint:    #4a443c;
+  --hc-ivory:        #f2ece0;
+  --hc-ivory-dim:    #a49c90;
+  --hc-gold:         #c2a068;
+  --hc-gold-solid:   #c9a063;
+
+  --hc-pad: 32px;
+
+  margin: 0;
+  padding: 0;
+  background: var(--hc-night);
+  color: var(--hc-ink);
+  font-family: var(--sans);
+}
+
+.home-canonical #main { display: block; }
+
+/* -------------------------------------------------------------- 1. HERO */
+
+.hc-hero {
+  position: relative;
+  height: 617px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--hc-night);
+  color: var(--hc-ivory);
+}
+
+.hc-hero-media { position: absolute; inset: 0; z-index: 0; }
+.hc-hero-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 62%;
+  /* 権利確認済みの実写を canonical の夜の階調へ寄せる。CITY_MEDIA_ATTRIBUTION.md
+     に記した CSS treatment のみ。原本ファイルは書き換えない。 */
+  filter: brightness(.74) contrast(1.16) saturate(.78);
+}
+/* 読ませるための遮光。装飾の glow ではない。 */
+.hc-hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(8,9,12,.80) 0%, rgba(8,9,12,.46) 38%, rgba(8,9,12,.10) 64%, rgba(8,9,12,.34) 100%),
+    linear-gradient(180deg, rgba(8,9,12,.62) 0%, rgba(8,9,12,.14) 28%, rgba(8,9,12,.10) 62%, rgba(8,9,12,.68) 100%);
+}
+
+.hc-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 30px 0 28px;
+}
+.hc-brand { margin: 0; }
+.hc-brand-link {
+  display: inline-block;
+  font-family: var(--serif);
+  font-size: 23px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: .055em;
+  color: #ecdcb9;
+  text-decoration: none;
+}
+.hc-menu-trigger {
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 15px 0 0;
+  margin: 0;
+  width: 32px;
+  cursor: pointer;
+  color: var(--hc-ivory);
+  touch-action: manipulation;
+}
+.hc-menu-bars,
+.hc-menu-bars::before,
+.hc-menu-bars::after {
+  display: block;
+  width: 32px;
+  height: 1.6px;
+  background: currentColor;
+}
+.hc-menu-bars { position: relative; }
+.hc-menu-bars::before,
+.hc-menu-bars::after { content: ""; position: absolute; left: 0; }
+.hc-menu-bars::before { top: -8px; }
+.hc-menu-bars::after  { top: 8px; }
+
+.hc-hero-body {
+  position: absolute;
+  z-index: 2;
+  left: var(--hc-pad);
+  top: 147px;
+}
+.hc-hero-title {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 61px;
+  font-weight: 600;
+  line-height: 74px;
+  letter-spacing: .01em;
+  color: #f7f3ec;
+}
+.hc-hero-line { display: block; }
+
+.hc-hero-sub {
+  margin: 25px 0 0;
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: .04em;
+  color: #cfc7b8;
+}
+
+.hc-hero-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 244px;
+  height: 52px;
+  margin: 34px 0 0;
+  padding: 0 20px 0 39px;
+  border: 1px solid rgba(194,160,104,.85);
+  border-radius: 4px;
+  background: transparent;
+}
+.hc-hero-cta-label {
+  font-family: var(--serif);
+  font-size: 15px;
+  letter-spacing: .06em;
+  color: #f0e7d6;
+}
+.hc-hero-cta-mark { font-size: 15px; color: var(--hc-gold); }
+
+.hc-hero-aside {
+  position: absolute;
+  z-index: 2;
+  left: 690px;
+  top: 281px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 24px;
+  letter-spacing: .04em;
+  color: #e6ded0;
+}
+.hc-hero-aside-line { display: block; }
+
+.hc-hero-scroll {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  letter-spacing: .12em;
+  color: rgba(242,236,224,.72);
+}
+.hc-hero-scroll-mark {
+  display: block;
+  width: 11px;
+  height: 11px;
+  border-left: 1.3px solid rgba(242,236,224,.72);
+  border-bottom: 1.3px solid rgba(242,236,224,.72);
+  transform: rotate(-45deg);
+}
+
+/* --------------------------------------------------------- warm paper */
+
+.hc-sheet {
+  position: relative;
+  z-index: 1;
+  background: var(--hc-paper);
+  border-radius: 24px 24px 0 0;
+  color: var(--hc-ink);
+}
+
+.hc-section { padding-inline: var(--hc-pad); }
+
+/* 見出し / 副文 / すべて見る の3列。副文の左位置は canonical で固定。 */
+.hc-section-head {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: 0;
+}
+.hc-section-title {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 31px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: .01em;
+  color: var(--hc-ink);
+}
+.hc-section-note {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: .02em;
+  color: var(--hc-ink-dim);
+}
+.hc-section-more {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: .04em;
+  color: var(--hc-ink-faint);
+}
+
+/* ------------------------------------------------------ 2. 街から入る */
+
+.hc-cities { padding-top: 38px; }
+.hc-cities .hc-section-head { margin-bottom: 20px; }
+
+.hc-city-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* .shelf-entry は GA4 の v3_shelf_open が closest() で拾う class。
+   ここで玄関一覧用の旧 geometry を完全に打ち消してから card を組む。 */
+.home-canonical .hc-city {
+  position: relative;
+  display: block;
+  grid-template-columns: none;
+  grid-template-areas: none;
+  align-items: stretch;
+  gap: 0;
+  height: 311px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  isolation: isolate;
+  text-decoration: none;
+  color: var(--hc-ivory);
+  background: #14161b;
+}
+.home-canonical .hc-city:last-child { border-bottom: 0; }
+
+.hc-city-media { position: absolute; inset: 0; z-index: 0; display: block; }
+.hc-city-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 42%;
+  filter: brightness(.48) contrast(1.2) saturate(.6);
+}
+.hc-city-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10,10,13,.30) 0%, rgba(10,10,13,.46) 38%, rgba(10,10,13,.90) 100%);
+}
+
+.hc-city-body {
+  position: absolute;
+  z-index: 1;
+  left: 14px;
+  right: 14px;
+  bottom: 18px;
+  display: block;
+}
+.hc-city-name {
+  display: block;
+  font-family: var(--serif);
+  font-size: 25px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: .04em;
+  color: #f6f2ea;
+}
+.hc-city-q {
+  display: block;
+  margin-top: 14px;
+  font-size: 12.5px;
+  line-height: 20px;
+  letter-spacing: .01em;
+  color: #c8c1b4;
+}
+.hc-city-q-line { display: block; }
+.hc-city-mark {
+  display: block;
+  margin-top: 14px;
+  font-size: 16px;
+  line-height: 1;
+  color: rgba(230,222,208,.82);
+}
+
+/* ---------------------------------------------------- 3. 作品から入る */
+
+.hc-works { padding-top: 27px; }
+.hc-works .hc-section-head { margin-bottom: 29px; }
+
+.hc-work-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.hc-work {
+  position: relative;
+  height: 143px;
+  border-radius: 8px;
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--hc-ivory);
+  background: #14161b;
+}
+/* ASSET_HOLD。権利確認済みの図版が入るまで、geometry を保ったまま
+   card の地の色だけで立てる。illustration / blob / icon-only へ置換しない。 */
+.hc-work.is-asset-hold {
+  background: linear-gradient(180deg, #191c22 0%, #101318 100%);
+}
+.hc-work-foot {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hc-work-icon {
+  display: flex;
+  align-items: center;
+  color: rgba(240,236,228,.9);
+}
+.hc-work-label {
+  font-family: var(--serif);
+  font-size: 15px;
+  letter-spacing: .06em;
+  color: #f4f0e8;
+}
+.hc-work-mark {
+  margin-left: auto;
+  font-size: 15px;
+  color: rgba(230,222,208,.8);
+}
+
+/* --------------------------------------------- 4. いま辿れるスレッド */
+
+.hc-thread-section { padding: 28px 25px 25px; }
+
+.hc-thread {
+  border-radius: 12px;
+  background: var(--hc-panel);
+  color: var(--hc-ivory);
+  padding: 20px 21px 27px;
+}
+.hc-thread-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+}
+.hc-thread-heading {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 23px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: .05em;
+  color: #ede6da;
+}
+.hc-thread-note {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1;
+  letter-spacing: .02em;
+  color: #8e8880;
+}
+
+.hc-thread-body {
+  display: grid;
+  grid-template-columns: 292px minmax(0, 1fr);
+  column-gap: 22px;
+  margin-top: 23px;
+}
+.hc-thread-media {
+  height: 180px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(194,160,104,.38);
+}
+.hc-thread-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 46%;
+  filter: brightness(.94) contrast(1.1) saturate(.72);
+}
+
+.hc-thread-copy { padding-top: 7px; }
+.hc-thread-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 108px;
+  height: 22px;
+  margin: 0;
+  border-radius: 3px;
+  background: var(--hc-gold-solid);
+  color: #1a1710;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: .04em;
+}
+.hc-thread-title {
+  margin: 12px 0 0;
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: .01em;
+  color: #f0e9dc;
+}
+.hc-thread-sub {
+  margin: 12px 0 0;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: .02em;
+  color: #9c958b;
+}
+
+.hc-thread-chain {
+  display: flex;
+  align-items: center;
+  margin: 11px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.hc-node {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1px solid rgba(200,165,105,.42);
+  border-radius: 999px;
+  text-align: center;
+}
+.hc-node + .hc-node { margin-left: 26px; }
+.hc-node + .hc-node::before {
+  content: "→";
+  position: absolute;
+  left: -21px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  line-height: 1;
+  color: #7a7266;
+}
+.hc-node-kind { font-size: 10.5px; line-height: 14px; color: #a99b84; }
+.hc-node-name { font-size: 10.5px; line-height: 14px; color: #e4dcce; }
+
+.hc-thread-read {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  margin: 31px 0 0;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: .04em;
+  color: #d8cdbb;
+}
+.hc-thread-read-mark { display: block; width: 26px; text-align: right; }
+
+/* -------------------------------------------------------- 5. 現実へ出る */
+
+.hc-reality {
+  display: grid;
+  grid-template-columns: 301px minmax(0, 1fr);
+  padding: 21px 8px 38px var(--hc-pad);
+  align-items: start;
+}
+.hc-reality-copy { min-width: 0; }
+.hc-reality-lead {
+  margin: 18px 0 0;
+  font-size: 13.5px;
+  line-height: 26px;
+  letter-spacing: .02em;
+  color: #5c554b;
+}
+.hc-reality-line { display: block; white-space: nowrap; }
+
+.hc-reality-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 212px;
+  height: 48px;
+  margin: 32px 0 0;
+  padding: 0 18px 0 34px;
+  border-radius: 3px;
+  background: #1e1c19;
+}
+.hc-reality-cta-label {
+  font-family: var(--serif);
+  font-size: 14px;
+  letter-spacing: .06em;
+  color: #f0e9dc;
+}
+.hc-reality-cta-mark { display: flex; align-items: center; color: #efe6d4; }
+
+.hc-reality-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 7px;
+}
+.hc-reality-shot {
+  margin: 0;
+  height: 186px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #14161b;
+}
+.hc-reality-shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  filter: brightness(.6) contrast(1.16) saturate(.68);
+}
+
+/* -------------------------------------------------------------- 手ざわり */
+
+.home-canonical .hc-city:focus-visible,
+.home-canonical .hc-brand-link:focus-visible,
+.home-canonical .hc-menu-trigger:focus-visible {
+  outline: 2px solid var(--hc-gold);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-canonical * { animation: none !important; transition: none !important; }
+}
