@@ -80,7 +80,7 @@ const scrollable = (page) => page.evaluate(() => getComputedStyle(document.body)
     await page.click('#trace');
     await page.waitForSelector('#direction.is-open', { timeout: 500 });
     check(scope, 'trace: feedback <=500ms', Date.now() - t0 <= 500, Date.now() - t0);
-    await page.waitForTimeout(250);
+    await page.waitForTimeout(700);
     check(scope, 'trace: photo did not move', Math.abs((await page.evaluate(() => document.querySelector('.layer[data-i="0"]').getBoundingClientRect().top)) - photoTop0) < 2);
     check(scope, 'trace: direction shows 1957-2026 阿波おどり', await page.$eval('#direction', (el) => el.innerText.includes('1957') && el.innerText.includes('2026') && el.innerText.includes('阿波おどり')));
     check(scope, 'trace: primary action visible', await inView(page, '#goOrigin'));
@@ -94,6 +94,9 @@ const scrollable = (page) => page.evaluate(() => getComputedStyle(document.body)
         await page.waitForTimeout(120);
         await page.screenshot({ path: path.join(EVID, `im_390_seq_firstpull_${k}.png`) });
       }
+      // First Pull の中点（境界の 0.35vh 手前）
+      await page.evaluate(() => window.scrollTo({ top: document.getElementById('b1').offsetTop - window.innerHeight * 0.35, behavior: 'instant' })); await page.waitForTimeout(150);
+      await page.screenshot({ path: path.join(EVID, 'im_390_13_firstpull_mid.png') });
       await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' })); await page.waitForTimeout(200);
     }
     await page.click('#goOrigin');

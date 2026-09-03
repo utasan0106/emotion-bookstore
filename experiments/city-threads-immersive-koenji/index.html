@@ -32,11 +32,12 @@
       </picture>
       <figcaption><b>高円寺</b><span>2026</span></figcaption>
       <!-- 唯一の痕跡：写真の縁から覗く 1957 の紙の角。stage は pointer-events:none だが、この button だけ受ける -->
-      <button class="trace" id="trace" type="button" aria-expanded="false" aria-controls="direction" aria-label="1957年の角に触れる。この街の時間が開く"><span class="trace-paper"><b>1957</b></span></button>
+      <button class="trace" id="trace" type="button" aria-expanded="false" aria-controls="direction" aria-label="写真の下に挟まった1957年の紙に触れる。この街の時間が開く"><span class="trace-paper"><b>1957</b></span></button>
     </figure>
     <figure class="layer layer-paper" data-i="1">
       <p class="ly-year">1957</p>
       <p class="ly-label">「ばか踊り」として始まる</p>
+      <p class="ly-key">阿波おどりは、最初から「阿波おどり」ではなかった。</p>
       <p class="ly-note"><span>編集部の余白</span>観光のためではなく、商店街の青年部の記念行事から。1959年、続けるかどうかの無記名投票は10対9。1票差で、いまがある。</p>
       <p class="ly-line">8月27日、高円寺南口商盛会の青年部が「高円寺ばか踊り」を始める。</p>
       <p class="ly-src">杉並区／振興協会</p>
@@ -44,6 +45,7 @@
     <figure class="layer layer-paper" data-i="2">
       <p class="ly-year">1960<em>年代</em></p>
       <p class="ly-label">本場に学び、連が生まれ、演舞場が街へ広がる</p>
+      <p class="ly-key">本場・徳島へ、学びに行く。</p>
       <p class="ly-note"><span>編集部の余白</span>ここで「街のイベント」が「踊り手たちの文化」になる。街を渡って学んだ、という移動が先にある。</p>
       <p class="ly-line">1963 正式に「高円寺阿波おどり」／1965 徳島へ12人／1966 葵新連／演舞場 1965・1967・1969</p>
       <p class="ly-src">杉並区／振興協会</p>
@@ -51,6 +53,7 @@
     <figure class="layer layer-paper" data-i="3">
       <p class="ly-year">1976</p>
       <p class="ly-label">連が出揃い、海を渡る</p>
+      <p class="ly-key">連が出揃い、踊りが海を渡る。</p>
       <p class="ly-note"><span>編集部の余白</span>徳島から木場を経て高円寺に来た踊りが、今度は高円寺から海を渡った。</p>
       <p class="ly-line">1972年頃までに独立連が出揃う。1976年、初の海外遠征。</p>
       <p class="ly-src">振興協会／杉並区</p>
@@ -58,6 +61,7 @@
     <figure class="layer layer-paper" data-i="4">
       <p class="ly-year">2025</p>
       <p class="ly-label">その年の受賞連</p>
+      <p class="ly-key">「大賞」はひとつではない。</p>
       <p class="ly-note"><span>編集部の余白</span>賞が複数あるということは、踊りが一つの物差しで測られていないということ。順位はつくらない。</p>
       <p class="ly-line">第66回。賞はひとつではない。「各賞受賞連」として公式に記録される。</p>
       <p class="ly-src">振興協会</p>
@@ -79,7 +83,7 @@
     <div class="beat-in">
       <h1 class="city" id="h0">高円寺</h1>
       <p class="start-year">2026</p>
-      <p class="hint" id="hint"><span class="dash" aria-hidden="true"></span>写真の角に触れると、この街の時間が開く。</p>
+      <p class="hint" id="hint"><span class="dash" aria-hidden="true"></span>写真の下に、1957年の紙が挟まっている。触れると、この街の時間が開く。</p>
       <div class="direction" id="direction" hidden>
         <p class="direction-kicker">この街に積もっている文化の層</p>
         <p class="direction-title">阿波おどり</p>
@@ -205,22 +209,21 @@
         <p>第67回東京高円寺阿波おどりは、2026年8月29日（土）・30日（日）、午後5時から8時、高円寺駅の南北の商店街と高南通りでの開催として公式に告知された。JR高円寺駅周辺の8か所の演舞場に、延べ1万人の踊り手。</p>
         <p>ばか踊りから、木場と徳島に学び、連が生まれ、演舞場が街に広がり、海を渡って、いまも複数の賞と、たくさんの連がある。いま見ている街の写真の奥に、その全部が透けている。</p>
       </div>
-      <div class="plate" data-layer="5" data-title="杉並区「第67回東京高円寺阿波おどり」" data-year="2026年8月29日・30日" data-source="杉並区 公式サイト" data-url="https://www.city.suginami.tokyo.jp/s033/event/21345.html" data-confirms="第67回の開催日時・会場・演舞場数・踊り手の規模が公式に告知されたこと。実施結果はこの試作では未確認。">
+      <p class="closing">この先は、高円寺にある。</p>
+
+      <div class="exit" aria-label="現実への出口">
+        <div class="exit-group exit-primary"><p class="verb">行く</p><p class="acts"><a class="act act-primary" href="https://www.koenji-awaodori.com/about/about01.html" target="_blank" rel="noopener noreferrer">今年の開催を見る <span class="ext" aria-hidden="true">別タブ</span></a></p><p class="sub">東京高円寺阿波おどり振興協会 公式サイト。次の回の日程・演舞場はここで告知される。</p></div>
+        <details class="sources-fold" id="sourcesFold">
+          <summary>出典と資料を見る</summary>
+          <div class="plate" data-layer="5" data-title="杉並区「第67回東京高円寺阿波おどり」" data-year="2026年8月29日・30日" data-source="杉並区 公式サイト" data-url="https://www.city.suginami.tokyo.jp/s033/event/21345.html" data-confirms="第67回の開催日時・会場・演舞場数・踊り手の規模が公式に告知されたこと。実施結果はこの試作では未確認。">
         <p class="lab"><b>資料 09</b><span>杉並区「第67回東京高円寺阿波おどり」（要旨）</span></p>
         <blockquote>2026年8月29日（土）・30日（日）午後5時〜8時、高円寺駅南北商店街及び高南通り。JR高円寺駅周辺の8か所の演舞場を舞台に、延べ1万人の踊り手が練り踊る。</blockquote>
         <p class="src">出典［9］</p>
         <p class="acts"><button class="act act-near" type="button" data-inspect>この資料に近づく</button></p>
       </div>
-
-      <div class="exit" aria-label="現実への出口">
-        <div class="exit-group"><p class="verb">行く</p><p class="acts"><a class="act act-primary" href="https://www.koenji-awaodori.com/about/about01.html" target="_blank" rel="noopener noreferrer">開催概要を公式で見る <span class="ext" aria-hidden="true">別タブ</span></a></p><p class="sub">東京高円寺阿波おどり振興協会 公式サイト。次の回の日程・演舞場はここで告知される。</p></div>
-        <div class="exit-group"><p class="verb">観る・読む</p><p class="acts"><a class="act" href="https://www.koenji-awaodori.com/about/about05.html" target="_blank" rel="noopener noreferrer">史料館 <span class="ext" aria-hidden="true">別タブ</span></a><a class="act" href="https://www.koenji-awaodori.com/about/his08.html" target="_blank" rel="noopener noreferrer">歴代ポスター <span class="ext" aria-hidden="true">別タブ</span></a><a class="act" href="https://www.koenji-awaodori.com/about/about07.html" target="_blank" rel="noopener noreferrer">各賞受賞連 <span class="ext" aria-hidden="true">別タブ</span></a></p><p class="sub">映像は権利が確認できたものだけ、あとから加える。</p></div>
-        <div class="exit-group"><p class="verb">公式情報</p><p class="acts"><a class="act" href="https://www.city.suginami.tokyo.jp/s007/10581.html" target="_blank" rel="noopener noreferrer">杉並区「東京高円寺阿波おどり」 <span class="ext" aria-hidden="true">別タブ</span></a></p><p class="sub">区による紹介と、開催時の交通・安全の案内。</p></div>
-      </div>
-
-      <p class="closing">この先は、高円寺にある。</p>
-      <p class="acts next"><button class="act act-quiet" type="button" data-go="b0">はじめの高円寺へ戻る</button><button class="act act-quiet" type="button" data-go="b4">2025年へ戻る</button></p>
-      <ul class="sources" aria-label="出典">
+          <div class="exit-group"><p class="verb">観る・読む</p><p class="acts"><a class="act" href="https://www.koenji-awaodori.com/about/about05.html" target="_blank" rel="noopener noreferrer">史料館 <span class="ext" aria-hidden="true">別タブ</span></a><a class="act" href="https://www.koenji-awaodori.com/about/his08.html" target="_blank" rel="noopener noreferrer">歴代ポスター <span class="ext" aria-hidden="true">別タブ</span></a><a class="act" href="https://www.koenji-awaodori.com/about/about07.html" target="_blank" rel="noopener noreferrer">各賞受賞連 <span class="ext" aria-hidden="true">別タブ</span></a></p><p class="sub">映像は権利が確認できたものだけ、あとから加える。</p></div>
+          <div class="exit-group"><p class="verb">公式情報</p><p class="acts"><a class="act" href="https://www.city.suginami.tokyo.jp/s007/10581.html" target="_blank" rel="noopener noreferrer">杉並区「東京高円寺阿波おどり」 <span class="ext" aria-hidden="true">別タブ</span></a></p><p class="sub">区による紹介と、開催時の交通・安全の案内。</p></div>
+          <ul class="sources" aria-label="出典">
         <li>［1］杉並区「東京高円寺阿波おどり」 https://www.city.suginami.tokyo.jp/s007/10581.html</li>
         <li>［2］振興協会「高円寺阿波おどりの歴史 ─ 創成期」 https://www.koenji-awaodori.com/about/his01.html</li>
         <li>［3］同「発展期」 https://www.koenji-awaodori.com/about/his02.html</li>
@@ -231,9 +234,11 @@
         <li>［8］同「歴代ポスター」 https://www.koenji-awaodori.com/about/his08.html</li>
         <li>［9］杉並区「第67回東京高円寺阿波おどり」 https://www.city.suginami.tokyo.jp/s033/event/21345.html</li>
       </ul>
-      <p class="credit">写真：NMaia “Street in Koenji”（CC BY-SA 4.0、Wikimedia Commons）。縮小のみ。／ 史実は杉並区・東京高円寺阿波おどり振興協会の公式サイトを出典とする。／ 試作・Production非接続・計測・保存・位置情報・音の自動再生なし。</p>
-    </div>
-  </section>
+          <p class="credit">写真：NMaia “Street in Koenji”（CC BY-SA 4.0、Wikimedia Commons）。縮小のみ。／ 史実は杉並区・東京高円寺阿波おどり振興協会の公式サイトを出典とする。／ 試作・Production非接続・計測・保存・位置情報・音の自動再生なし。</p>
+        </details>
+      </div>
+      <p class="acts next"><button class="act act-quiet" type="button" data-go="b0">はじめの高円寺へ戻る</button><button class="act act-quiet" type="button" data-go="b4">2025年へ戻る</button></p>
+    </section>
 </main>
 
 <!-- ============ 資料に近づく（dialog） ============ -->

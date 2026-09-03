@@ -21,7 +21,9 @@
   let nearIndex = -1;        // 資料に近づいている層
   let tween = null, ticking = false, motionTimer = 0;
 
-  const depthScale = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--depth-scale')) || 1;
+  const cssNum = (name, fallback) => { const v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)); return Number.isFinite(v) ? v : fallback; };
+  const depthScale = () => cssNum('--depth-scale', 1);
+  const entranceIn = document.querySelector('#b0 .beat-in');
   const ease = (t) => 1 - Math.pow(1 - t, 3);
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
@@ -43,6 +45,9 @@
   /* ---- 層の配置：d = p − i。まだ来ていない層は手前から落ち着き、過ぎた層は奥へ沈んで薄く残る ---- */
   function layout() {
     const ds = depthScale(), rm = reduce() || document.documentElement.classList.contains('no-3d');
+    const sox = cssNum('--stack-ox', 2.2), soy = cssNum('--stack-oy', 1.6);
+    // Entrance の文（ヒント・層を開く）は First Pull が始まると静かに退く（mobile のみ。層の運動を隠さない）
+    if (entranceIn && window.innerWidth < 900) entranceIn.style.opacity = clamp(1 - p * 2.5, 0, 1).toFixed(3);
     layers.forEach((el, i) => {
       const d = p - i;
       let z = 0, op = 1, sc = 1;
@@ -52,8 +57,8 @@
       if (i === 5 && op > 0.86) op = 0.86;                       // 現在の写真は最後、奥の層が透ける
       if (nearIndex >= 0) { if (i === nearIndex) { z = rm ? 0 : 140 * ds; op = 1; } else op = Math.min(op, 0.35); }
       // 過ぎた層はわずかに横へずれて積み重なる（紙の縁が見える）
-      const ox = (i % 2 ? 1 : -1) * Math.min(2.4, Math.max(0, d)) * 2.2;
-      const oy = -Math.min(2.4, Math.max(0, d)) * 1.6;
+      const ox = (i % 2 ? 1 : -1) * Math.min(2.4, Math.max(0, d)) * sox;
+      const oy = -Math.min(2.4, Math.max(0, d)) * soy;
       el.style.transform = `translate3d(calc(-50% + ${ox}%), calc(-50% + ${oy}%), ${z.toFixed(1)}px) scale(${sc.toFixed(3)})`;
       el.style.opacity = op.toFixed(3);
       el.classList.toggle('is-here', Math.abs(d) < 0.5);
@@ -177,6 +182,9 @@
     }
     locate();
   }
+  // 出典と資料の畳み：Desktop は従来どおり開いた状態、mobile は畳む
+  const fold = $('sourcesFold');
+  if (fold && window.innerWidth >= 900) fold.open = true;
   const img = document.querySelector('.layer[data-i="0"] img');
   if (img && !img.complete) img.addEventListener('load', () => layout(), { once: true });
   restore();

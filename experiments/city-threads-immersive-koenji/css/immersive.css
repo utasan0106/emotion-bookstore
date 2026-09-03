@@ -157,46 +157,149 @@ main{position:relative;z-index:2;pointer-events:none}
 .inspect .act-primary:hover{background:#000}
 .inspect :focus-visible{outline-color:#3f6b4a}
 
-/* ---------- Mobile recomposition ---------- */
+
+/* 紙の層の「鍵となる一文」：mobile の reading surface だけで使う（desktop は非表示＝従来どおり） */
+.ly-key{display:none}
+/* 出典と資料の畳み（desktop は JS で open にし従来どおり展開表示） */
+.sources-fold{margin:0}
+.sources-fold summary{cursor:pointer;list-style:none;font-family:var(--display);font-size:1rem;padding:14px 0;border-top:1px solid var(--rule);color:var(--text)}
+.sources-fold summary::-webkit-details-marker{display:none}
+.sources-fold summary::after{content:"＋";float:right;color:var(--text-2)}
+.sources-fold[open] summary::after{content:"－"}
+:root{--stack-ox:2.2;--stack-oy:1.6}
+
+/* =====================================================================
+   Mobile（≤899px）— ART_DIRECTION_REFIT_V1：Editorial Cinema, not UI Cards
+   写真は viewport の主役、紙は reading surface、資料は同じ紙の延長（bottom sheet）
+   ===================================================================== */
 @media (max-width:899px){
-  :root{--w:min(100% - 32px,640px);--anchor-h:52px;--depth-scale:.7}
-  .anchor-in{gap:14px;padding-top:12px}
-  .anchor-city{font-size:1rem}
-  .anchor-year{font-size:1.45rem}
+  :root{--w:min(100% - 40px,640px);--anchor-h:52px;--depth-scale:.7;--stack-ox:0;--stack-oy:15;--sheet-h:70svh;--sheet-top:calc(var(--anchor-h) + 34px)}
+  body{font-family:var(--display)}
+  /* 錨：静かに。年は明朝、進捗は小さく */
+  .anchor{background:rgba(16,23,27,.86)}
+  .anchor-in{gap:14px;padding-top:13px;grid-template-columns:auto auto 1fr;justify-items:start}
+  .anchor-city{font-size:.95rem;color:var(--text-2)}
+  .anchor-year{font-size:1.3rem}
   .anchor-year small{display:none}
-  .stage{perspective:900px;perspective-origin:50% 30%}
-  .layer{left:50%;top:29%}
-  .layer-photo,.layer-paper{width:min(60vw,250px)}
-  .layer-paper{padding:16px 16px 14px}
-  .ly-year{font-size:clamp(2.2rem,11vw,3rem)}
-  .ly-label{font-size:.86rem;margin-top:8px}
-  .ly-line{font-size:.66rem;line-height:1.5}
-  .ly-note{font-size:.68rem;line-height:1.5;margin-bottom:8px}
-  .ly-note span{font-size:.58rem}
-  .ly-src{font-size:.62rem}
-  .layer-photo figcaption{padding:10px 12px}
-  .layer-photo figcaption b{font-size:1rem}
-  .trace{right:-18px;bottom:-14px}
-  .beat{grid-template-columns:1fr;column-gap:0;padding-top:calc(var(--anchor-h) + 50svh);padding-bottom:12vh;min-height:100svh}
-  /* Entrance は少し長くし、層が開く（goOrigin が見える）までは写真が沈まないようにする */
-  .beat-start{padding-top:calc(var(--anchor-h) + 42svh);min-height:132svh}
-  /* 本文の背後に静かな暗い面：移動中に層と文字が重なっても読める。上端だけ層が透ける */
-  .beat-in{grid-column:1;max-width:none;position:relative;padding-top:34px;background:linear-gradient(180deg,rgba(16,23,27,0) 0,rgba(16,23,27,.94) 34px,rgba(16,23,27,.94) 100%)}
-  .city{font-size:clamp(2.8rem,14vw,4rem)}
-  .exit-group{grid-template-columns:1fr}
-  .exit-group .sub{grid-column:1}
-  .inspect-dl{grid-template-columns:1fr;gap:2px 0}
-  .inspect-dl dd{margin-bottom:8px}
-  .inspect-in{padding:22px 20px 20px}
-}
-@media (max-width:430px){
-  :root{--w:calc(100% - 28px)}
-  .anchor-in{grid-template-columns:auto auto 1fr;justify-items:start}
-  .anchor-progress{justify-self:end;font-size:.72rem;white-space:nowrap}
+  .anchor-progress{justify-self:end;font-size:.74rem;white-space:nowrap;font-family:var(--ui)}
+
+  /* ---- 層：全幅の面。枠・影・角丸なし ---- */
+  .stage{perspective:900px;perspective-origin:50% 40%}
+  .stage::before{background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0) 60%,rgba(11,17,20,.55) 100%)}
+  .layer{left:50%;top:calc(var(--sheet-top) + var(--sheet-h) / 2)}
+  .layer-photo,.layer-paper{width:100vw;height:var(--sheet-h);aspect-ratio:auto;box-shadow:none;border-radius:0}
+  .layer-photo{background:var(--space)}
+  .layer-photo img{filter:saturate(.8) contrast(1)}
+  /* 写真の下端は空間へ溶ける（縁を消す） */
+  .layer-photo::after{content:"";position:absolute;left:0;right:0;bottom:0;height:36%;background:linear-gradient(180deg,rgba(16,23,27,0),rgba(16,23,27,.92));pointer-events:none}
+  .layer-photo figcaption{position:absolute;left:20px;right:20px;bottom:44px;padding:0;background:none;flex-direction:column;gap:2px;align-items:flex-start;z-index:2}
+  .layer-photo figcaption b{font-size:2.1rem;font-weight:500;letter-spacing:.04em;line-height:1.1}
+  .layer-photo figcaption span{font-family:var(--display);font-size:1.05rem;color:var(--text-2);letter-spacing:.06em}
+  .layer-now figcaption span{font-size:.9rem}
+  .layer-now img{opacity:.82}
+  /* 唯一の痕跡：写真の下に挟まった紙の縁。sticker ではなく、下端から数ミリ覗く */
+  .trace{left:50%;right:auto;bottom:-14px;transform:translateX(-50%);width:min(64vw,260px);height:52px;z-index:3}
+  .trace-paper{left:0;top:0;width:100%;height:100%;background:linear-gradient(180deg,var(--paper-2),var(--paper));box-shadow:0 -1px 0 rgba(27,34,38,.25),0 10px 24px rgba(0,0,0,.45);transform:translateY(22px) rotate(0);transform-origin:50% 0}
+  .trace-paper b{left:auto;right:16px;bottom:auto;top:6px;font-size:.95rem;color:var(--ink-2);letter-spacing:.1em}
+  .trace:hover .trace-paper,.trace:focus-visible .trace-paper{transform:translateY(16px) rotate(0)}
+  .trace.is-open .trace-paper{transform:translateY(6px) rotate(0)}
+  /* 紙：reading surface。年 → 章の行 → 鍵の一文 → 余白 → 事実 */
+  .layer-paper{padding:34px 22px 24px;background:linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%)}
+  .ly-year{font-size:3.6rem;letter-spacing:-.01em;line-height:1}
+  .ly-year em{font-size:.4em}
+  .ly-label{font-size:.92rem;margin-top:8px;color:var(--ink-2);letter-spacing:.06em}
+  .ly-key{display:block;margin:18px 0 0;font-family:var(--display);font-weight:500;font-size:1.45rem;line-height:1.5;color:var(--ink)}
+  .ly-note{margin:22px 0 0;font-size:.86rem;line-height:1.75;color:var(--ink-2);max-width:none}
+  .ly-note span{font-family:var(--ui);font-size:.7rem;letter-spacing:.1em}
+  .ly-line{margin-top:auto;font-size:.82rem;line-height:1.6;border-top:1px solid rgba(27,34,38,.28)}
+  .ly-src{font-family:var(--ui);font-size:.72rem}
+
+  /* ---- 本文：章の紙の続き（同じ一枚の紙として下へ続く） ---- */
+  .beat{grid-template-columns:1fr;column-gap:0;padding:calc(var(--sheet-top) + var(--sheet-h)) 0 0;min-height:100svh;width:100%;margin:0}
+  .beat-in{grid-column:1;max-width:none;width:100%;padding:28px 22px 44px;background:var(--paper);color:var(--ink)}
+  .beat .kicker{font-family:var(--ui);font-size:.74rem;color:var(--muted);letter-spacing:.08em;margin-bottom:14px}
+  .beat .kicker b{color:var(--ink-2)}
+  .beat .title{font-size:1.4rem;line-height:1.55;color:var(--ink);margin:0 0 18px}
+  .beat .text{font-size:1.09rem;line-height:1.95;color:var(--ink);margin-bottom:26px}
+  /* 章の紙に年・章の行・鍵の一文があるため、本文側の見出しは視覚上は出さない（見出し構造と focus は維持） */
+  .beat:not(.beat-start):not(.beat-end) .kicker,.beat:not(.beat-start):not(.beat-end) .title{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0}
+  .beat .note{border-left-color:rgba(27,34,38,.45);color:var(--ink-2);font-size:.95rem;margin:0 0 28px;max-width:none}
+  .beat .note .lab{font-family:var(--ui);font-size:.7rem;color:var(--muted);letter-spacing:.1em}
+  /* 資料：紙の上の folio。罫と引用だけ */
+  .beat .plate{border-top:1px solid rgba(27,34,38,.45);padding:14px 0 16px}
+  .beat .plate + .plate{border-top:1px solid rgba(27,34,38,.18)}
+  .beat .plate .lab{font-family:var(--ui);font-size:.72rem;color:var(--muted);letter-spacing:.08em}
+  .beat .plate .lab b{color:var(--ink-2)}
+  .beat .plate blockquote{font-size:1rem;line-height:1.85;color:var(--ink)}
+  .beat .plate .src{font-family:var(--ui);font-size:.78rem;color:var(--muted);margin:8px 0 6px}
+  /* 動詞：箱を減らす。文中の明朝の動詞（下線）。Primary だけ面を持つ */
+  .beat .act{border:0;padding:0 2px;min-height:44px;background:none;color:var(--ink);font-family:var(--display);font-size:1rem;text-decoration:underline;text-underline-offset:6px;text-decoration-color:rgba(27,34,38,.35)}
+  .beat .act:hover{background:none;text-decoration-color:var(--ink)}
+  .beat .act-near{font-size:.95rem;color:var(--ink-2)}
+  .beat .act-primary{background:var(--ink);color:var(--paper);text-decoration:none;padding:0 22px;min-height:50px;font-size:1rem}
+  .beat .act-quiet{color:var(--ink-2)}
+  .beat .act[target="_blank"] .ext{font-family:var(--ui);font-size:.68rem}
+  .beat .next{margin-top:18px;gap:12px 22px}
+
+  /* ---- Entrance：写真の下に、一行のヒントと、開いたときの層 ---- */
+  .beat-start{padding-top:calc(var(--sheet-top) + var(--sheet-h) + 34px);min-height:132svh}
+  .beat-start .beat-in{background:none;color:var(--text);padding:18px 22px 40px}
+  .beat-start .city,.beat-start .start-year{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .hint{font-size:1rem;line-height:1.8;color:var(--text-2)}
+  .hint .dash{border-top-color:rgba(236,230,216,.5)}
+  .direction{margin-top:22px;padding-top:18px;border-top:1px solid var(--rule);max-width:none}
+  .direction-kicker,.span-sub{display:none}
+  .direction-title{font-size:2rem;margin-bottom:12px}
+  .span{font-size:1rem;margin-bottom:16px}
+  .beat-start .act-primary{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+  .beat-start .credit{font-family:var(--ui);font-size:.72rem;color:var(--text-3);margin-top:18px}
+
+  /* ---- Ending：写真が主役に戻る。言葉は一つ、行動は一つ ---- */
+  .beat-end .beat-in{background:none;color:var(--text);padding:22px 22px 48px;display:flex;flex-direction:column}
+  .beat-end .kicker{order:1;color:var(--text-3)}
+  .beat-end .kicker b{color:var(--text-2)}
+  .beat-end .closing{order:2;font-size:1.66rem;line-height:1.5;margin:0 0 18px;color:var(--text);white-space:nowrap}
+  .beat-end .title{order:3;font-size:1.15rem;line-height:1.7;color:var(--text-2);margin:0 0 14px}
+  .beat-end .text{order:4;font-size:1rem;line-height:1.85;color:var(--text-2);margin-bottom:26px}
+  .beat-end .exit{order:5;margin:0 0 26px}
+  .beat-end .next{order:6}
+  .exit-group{grid-template-columns:1fr;gap:8px 0;padding:0;border:0}
+  .exit-group:first-child{border:0}
+  .exit-primary .verb{display:none}
+  .exit-primary .sub{grid-column:1;font-family:var(--ui);font-size:.78rem;color:var(--text-3);margin-top:8px}
+  .beat-end .act-primary{background:var(--paper);color:var(--ink);border-color:var(--paper);min-height:52px;padding:0 26px;font-size:1.05rem}
+  .beat-end .act{color:var(--text);text-decoration-color:rgba(236,230,216,.4)}
+  .beat-end .act-quiet{color:var(--text-2)}
+  .sources-fold{margin-top:28px}
+  .sources-fold summary{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-size:1rem;color:var(--text-2)}
+  .sources-fold .plate{border-top:0;padding-top:18px}
+  .sources-fold .plate .lab{color:var(--text-3)}
+  .sources-fold .plate .lab b{color:var(--text-2)}
+  .sources-fold .plate blockquote{color:var(--text);font-size:.98rem}
+  .sources-fold .plate .src{color:var(--text-3)}
+  .sources-fold .exit-group{padding:12px 0;border-top:1px solid var(--rule)}
+  .sources-fold .exit-group .verb{font-size:.95rem;color:var(--text-2);padding:0}
+  .sources-fold .exit-group .sub{grid-column:1;font-family:var(--ui);font-size:.76rem;color:var(--text-3)}
+  .sources-fold .sources{margin:14px 0 10px;color:var(--text-3);font-family:var(--ui);font-size:.74rem}
+  .sources-fold .credit{font-family:var(--ui);font-size:.72rem;color:var(--text-3)}
+
+  /* ---- 資料に近づく：中央の白い modal ではなく、同じ紙の下端から上がる bottom sheet ---- */
+  .inspect{position:fixed;inset:auto 0 0 0;margin:0;width:100%;max-width:none;max-height:84svh;box-shadow:0 -30px 60px rgba(0,0,0,.5);border-top:1px solid rgba(27,34,38,.35);background:linear-gradient(180deg,var(--paper),var(--paper-2))}
+  .inspect::backdrop{background:rgba(11,17,20,.5)}
+  .inspect-in{padding:22px 22px 30px}
+  .inspect .kicker{font-family:var(--ui);font-size:.72rem;letter-spacing:.1em;color:var(--muted);margin-bottom:10px}
+  .inspect .title{font-size:1.35rem;line-height:1.5;margin-bottom:16px}
+  .inspect-dl{grid-template-columns:1fr;gap:2px 0;font-size:.98rem;line-height:1.75}
+  .inspect-dl dt{font-family:var(--ui);font-size:.72rem;letter-spacing:.1em;color:var(--muted);padding-top:8px}
+  .inspect-dl dd{margin-bottom:6px;font-family:var(--display)}
+  .inspect .act-primary{background:none;color:var(--ink);border:0;padding:0 2px;min-height:44px;font-family:var(--display);text-decoration:underline;text-underline-offset:6px;text-decoration-color:rgba(27,34,38,.35)}
+  .inspect .act-primary:hover{background:none}
 }
 @media (max-width:340px){
-  .layer-photo,.layer-paper{width:min(62vw,200px)}
   .anchor-progress{display:none}
+  .beat-end .closing{font-size:1.36rem;white-space:normal}
+  .ly-year{font-size:3rem}
+  .ly-key{font-size:1.25rem}
 }
 
 /* ---------- Reduced motion：層の移動を止め、切り替えだけにする ---------- */

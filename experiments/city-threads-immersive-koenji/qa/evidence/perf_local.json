@@ -1,10 +1,10 @@
 {
   "320": {
-    "lcp_ms_local": 372,
+    "lcp_ms_local": 152,
     "resources": [
       [
         "immersive.css",
-        15761
+        25003
       ],
       [
         "koenji-street-2026-640.jpg",
@@ -12,17 +12,35 @@
       ],
       [
         "immersive.js",
-        9770
+        10455
       ]
     ],
-    "html_bytes": 27216
+    "html_bytes": 27736
   },
   "390": {
+    "lcp_ms_local": 172,
+    "resources": [
+      [
+        "immersive.css",
+        25003
+      ],
+      [
+        "koenji-street-2026-640.jpg",
+        41254
+      ],
+      [
+        "immersive.js",
+        10455
+      ]
+    ],
+    "html_bytes": 27736
+  },
+  "430": {
     "lcp_ms_local": 176,
     "resources": [
       [
         "immersive.css",
-        15761
+        25003
       ],
       [
         "koenji-street-2026-640.jpg",
@@ -30,35 +48,17 @@
       ],
       [
         "immersive.js",
-        9770
+        10455
       ]
     ],
-    "html_bytes": 27216
-  },
-  "430": {
-    "lcp_ms_local": 216,
-    "resources": [
-      [
-        "immersive.css",
-        15761
-      ],
-      [
-        "koenji-street-2026-640.jpg",
-        41254
-      ],
-      [
-        "immersive.js",
-        9770
-      ]
-    ],
-    "html_bytes": 27216
+    "html_bytes": 27736
   },
   "1024": {
-    "lcp_ms_local": 164,
+    "lcp_ms_local": 140,
     "resources": [
       [
         "immersive.css",
-        15761
+        25003
       ],
       [
         "koenji-street-2026.jpg",
@@ -66,17 +66,17 @@
       ],
       [
         "immersive.js",
-        9770
+        10455
       ]
     ],
-    "html_bytes": 27216
+    "html_bytes": 27736
   },
   "1440": {
-    "lcp_ms_local": 264,
+    "lcp_ms_local": 184,
     "resources": [
       [
         "immersive.css",
-        15761
+        25003
       ],
       [
         "koenji-street-2026.jpg",
@@ -84,9 +84,9 @@
       ],
       [
         "immersive.js",
-        9770
+        10455
       ]
     ],
-    "html_bytes": 27216
+    "html_bytes": 27736
   }
 }
