@@ -2,7 +2,7 @@
 'use strict';
 const fs=require('fs'),cp=require('child_process'),path=require('path');
 const ROOT=path.resolve(__dirname,'..');
-const allowed=new Set(['index.html','shelf.html','suggest.html','data.html','credits.html','vercel.json','analytics-v3.js','weekly-video.js','weekly-video.css','growth-improvements.js','qa/growth_improvements.js','qa/ga4_v3_client_selftest.js','qa/release_check.js','qa/browser_qa.js','qa/home_canonical_check.js']);
+const allowed=new Set(['index.html','shelf.html','suggest.html','data.html','credits.html','explore.html','vercel.json','analytics-v3.js','weekly-video.js','weekly-video.css','growth-improvements.js','qa/growth_improvements.js','qa/ga4_v3_client_selftest.js','qa/release_check.js','qa/browser_qa.js','qa/home_canonical_check.js']);
 const approvedEvents=new Set(['v3_home_view','v3_shelf_open','v3_shelf_view','v3_detail_open','v3_official_action','v3_suggest_view','v3_suggest_copy','v3_suggest_form_open']);
 function fail(m){console.error('V3_RELEASE_GROWTH_SELFTEST_FAIL: '+m);process.exit(1)}
 function assert(c,m){if(!c)fail(m)} function read(r){return fs.readFileSync(path.join(ROOT,r),'utf8')} function git(a){return cp.execFileSync('git',['-C',ROOT].concat(a),{encoding:'utf8'}).trimEnd()}
@@ -18,16 +18,20 @@ assert(analytics.includes("campaignSource === 'x' || campaignSource === 'note'")
 assert(!analytics.includes('target.href'),'external URL read into analytics');
 assert(!analytics.includes('objectName'),'object name analytics leak');
 const tokens=new Set(analytics.match(/v3_[a-z_]+/g)||[]); for(const t of tokens)assert(approvedEvents.has(t)||t==='v3_ga_optout','unapproved event '+t); for(const e of approvedEvents)assert(tokens.has(e),'missing event '+e);
-for(const rel of ['index.html','shelf.html','suggest.html','data.html','credits.html']){const h=read(rel);assert(!h.includes('このページでは保存・計測・個人ごとの推薦を行いません'),rel+': old copy');assert(h.includes('<script src="./analytics-v3.js"></script>'),rel+': analytics loader');assert(/<a\b[^>]*href="\.\/data\.html"[^>]*>データの扱い<\/a>/.test(h),rel+': data link')}
+for(const rel of ['index.html','shelf.html','suggest.html','data.html','credits.html','explore.html']){const h=read(rel);assert(!h.includes('このページでは保存・計測・個人ごとの推薦を行いません'),rel+': old copy');assert(h.includes('<script src="./analytics-v3.js"></script>'),rel+': analytics loader');assert(/<a\b[^>]*href="\.\/data\.html"[^>]*>データの扱い<\/a>/.test(h),rel+': data link')}
 /* canonical HOME（853 VISUAL_CANONICAL）: 週間動画 module は無い。旧「押すまで
    YouTube へ接続しない」より強い契約 —— HOME は外部 host を一切参照しない —— を
    固定する。GA4 event 定義は不変（v3_home_view は pathname 判定）。 */
 const index=read('index.html'); for(const t of ['id="weeklyVideoPlay"','data-video-id=','./weekly-video.css','./weekly-video.js','youtube','i.ytimg.com','<iframe']) assert(!index.includes(t),'retired weekly video token on HOME: '+t);
 const indexBody=index.slice(index.indexOf('<body')); assert(!/(?:src|href)="(?:https?:)?\/\/[^"]+"/.test(indexBody),'HOME body must not reference an external host');
 assert(index.includes('id="hc-works"')&&index.includes('id="hc-thread"'),'HOME section ids');
-for(const rel of ['index.html','shelf.html','suggest.html','data.html','credits.html']){const h=read(rel);assert(!h.includes('#weekly-detour')&&!h.includes('#by-kind'),rel+': retired HOME anchor');assert(h.includes('href="./credits.html"'),rel+': credits link')}
+for(const rel of ['index.html','shelf.html','suggest.html','data.html','credits.html','explore.html']){const h=read(rel);assert(!h.includes('#weekly-detour')&&!h.includes('#by-kind'),rel+': retired HOME anchor');assert(h.includes('href="./credits.html"'),rel+': credits link')}
 if(fs.existsSync(path.join(ROOT,'weekly-video.js'))){const video=read('weekly-video.js'); assert(video.includes('https://www.youtube-nocookie.com/embed/'),'nocookie'); assert(video.includes("iframe.referrerPolicy = 'strict-origin-when-cross-origin'"),'referrer'); assert(video.includes("button.addEventListener('click'"),'click gate'); assert(!video.includes('youtube.com/iframe_api'),'YT API'); assert(!video.includes('localStorage')&&!video.includes('geolocation'),'video storage/location');}
 const vercel=read('vercel.json'); assert(vercel.includes("frame-src https://www.youtube-nocookie.com; frame-ancestors 'none'"),'CSP'); assert(!vercel.includes("frame-src 'none'"),'old CSP');
-const data=read('data.html'); assert(data.includes('youtube-nocookie.com'),'YouTube disclosure'); assert(data.includes('GA4のオン／オフとは別の操作'),'GA4/YouTube distinction');
+/* data.html の trust copy は現在の runtime だけを言う。旧 HOME の週間動画
+   （週末の前の一本 / 31秒の動画を再生 / HOME の YouTube 埋め込み）は canonical HOME に
+   無く、いまどのページも YouTube を読まない。外部サービスへの移動は「押したときだけ」
+   で、GA4 のオン／オフとは別の操作であることは引き続き言う。 */
+const data=read('data.html'); for(const t of ['週末の前の一本','31秒の動画を再生','weeklyVideoPlay','youtube-nocookie']) assert(!data.includes(t),'data.html: retired HOME video claim remains: '+t); assert(!/トップページ[^<]*(YouTube|動画)/.test(data),'data.html: must not describe a HOME video/YouTube behaviour'); assert(data.includes('外部サービスへの移動はGA4のオン／オフとは別の操作です。'),'GA4/external navigation distinction');
 for(const p of ['release.js','release_content.js','release.css']) assert(git(['diff','--',p])==='','protected changed '+p); git(['diff','--check']); const status=git(['status','--porcelain']); if(status)for(const line of status.split(/\r?\n/)){let rel=line.slice(3).trim();if(rel.includes(' -> '))rel=rel.split(' -> ',2)[1];assert(allowed.has(rel),'unexpected '+rel)}
 console.log('V3_RELEASE_GROWTH_SELFTEST_GO');

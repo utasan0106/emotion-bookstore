@@ -54,6 +54,11 @@ function serve() {
   vm.createContext(sandbox);
   vm.runInContext(fs.readFileSync(path.join(ROOT, 'release_content.js'), 'utf8'), sandbox);
   const CONTENT = sandbox.window.V3_RELEASE_CONTENT;
+  /* growth-improvements.js の lifecycle（期限切れ weekly feature → archive）を同じ
+     sandbox で走らせ、いまの時計で browser が持つ archive と期待値を揃える。
+     V3_GROWTH の pure API は時計をずらした期待値にも使う。 */
+  vm.runInContext(fs.readFileSync(path.join(ROOT, 'growth-improvements.js'), 'utf8'), sandbox);
+  const GROWTH = sandbox.window.V3_GROWTH;
   const dated = [];
   for (const sh of CONTENT.shelves) {
     for (const o of sh.objects) {
@@ -620,6 +625,531 @@ function serve() {
       check(S, 'no_external_request_across_pages', external.length === 0, external.slice(0, 3));
       await ctx.close();
     }
+  }
+
+  /* ---- C. explore.html — 旧 HOME の有限 category / town / archive 索引を引き継ぐ
+     compatibility surface。feed / ranking / 推薦ではない。期待値は content から作る
+     （id や件数を書き写さない）。 ---- */
+  const liveIn = (catId, townId) => CONTENT.shelves
+    .filter((sh) => !townId || sh.id === townId)
+    .reduce((acc, sh) => acc.concat(sh.objects
+      .filter((o) => (o.categoryIds || []).includes(catId) && stillLive(o)).map((o) => o.id)), [])
+    .sort();
+  const catName = (id) => (CONTENT.categories.find((c) => c.id === id) || {}).name || '';
+  const areaOf = (id) => (CONTENT.shelves.find((sh) => sh.id === id) || {}).area || '';
+  const archivedIn = (catId, townId) => (CONTENT.archive || [])
+    .filter((e) => (!townId || e.shelfId === townId) && (e.categoryIds || []).includes(catId));
+  const CAT = CONTENT.categories.some((c) => c.id === 'books') ? 'books' : CONTENT.categories[0].id;
+  let pair = liveIn('music', 'koenji').length ? { category: 'music', town: 'koenji' } : null;
+  let zero = null;
+  for (const c of CONTENT.categories) {
+    for (const sh of CONTENT.shelves) {
+      if (!pair && liveIn(c.id, sh.id).length) pair = { category: c.id, town: sh.id };
+      if (!zero && !liveIn(c.id, sh.id).length) zero = { category: c.id, town: sh.id };
+    }
+  }
+  const readExplore = (page) => page.evaluate(() => {
+    const doc = document.documentElement;
+    const wide = [];
+    document.querySelectorAll('body *').forEach((el) => {
+      if (el.classList.contains('sr-only') || el.classList.contains('skip-link')) return;
+      const b = el.getBoundingClientRect();
+      if (b.width > 0 && b.right > doc.clientWidth + 1) wide.push(el.className || el.tagName);
+    });
+    const host = document.getElementById('archiveHost');
+    const catArchive = document.getElementById('categoryArchive');
+    const text = (sel) => ((document.querySelector(sel) || {}).textContent) || '';
+    return {
+      url: location.pathname.split('/').pop() + location.search + location.hash,
+      h1: document.querySelectorAll('h1').length,
+      h1Text: (document.querySelector('h1') || { innerText: '' }).innerText.replace(/\s+/g, ''),
+      categoryLinks: [...document.querySelectorAll('.category-link')].map((a) => ({
+        id: a.dataset.categoryId, href: a.getAttribute('href'), selected: a.classList.contains('is-selected'),
+        count: ((a.querySelector('.category-count') || {}).textContent) || ''
+      })),
+      townLinks: [...document.querySelectorAll('.category-town-link')].map((a) => ({
+        id: a.dataset.townId || '', href: a.getAttribute('href'), selected: a.classList.contains('is-selected')
+      })),
+      rows: [...document.querySelectorAll('#categoryResults .result-row')].map((r) => ({
+        id: r.getAttribute('data-object-id'),
+        town: ((r.querySelector('.result-town') || {}).textContent) || '',
+        link: r.querySelector('.result-link') ? r.querySelector('.result-link').getAttribute('href') : null,
+        interest: !!r.querySelector('.growth-card-interest')
+      })),
+      count: text('.result-count-n'),
+      empty: text('.result-empty'),
+      catArchiveHidden: !catArchive || catArchive.hidden,
+      catArchiveRows: [...document.querySelectorAll('#categoryArchiveResults .archive-result-row')].map((r) => r.getAttribute('data-archive-id')),
+      host: host ? { hidden: host.hidden, children: host.children.length } : null,
+      archive: !!document.getElementById('archive'),
+      archiveTitles: [...document.querySelectorAll('#archive .growth-archive-item h3')].map((h) => h.textContent),
+      menuArchive: [...document.querySelectorAll('#siteMenu .site-menu-secondary a')]
+        .filter((a) => /Archive/.test(a.textContent)).map((a) => a.getAttribute('href')),
+      live: ((document.getElementById('live') || {}).textContent) || '',
+      overflow: doc.scrollWidth > doc.clientWidth + 1, wide: wide.slice(0, 4),
+      feed: document.querySelectorAll('[class*=pagin], [class*=page-next], [rel=next], .object-card').length,
+      text: document.body.innerText
+    };
+  });
+  const selectedIds = (links) => links.filter((l) => l.selected).map((l) => l.id).join();
+
+  for (const v of [{ name: 'm390', width: 390, height: 844, mobile: true }, { name: 'd1440', width: 1440, height: 1000, mobile: false }]) {
+    const S = `explore/${v.name}`;
+    const ctx = await browser.newContext({
+      viewport: { width: v.width, height: v.height }, isMobile: v.mobile, hasTouch: v.mobile, reducedMotion: 'reduce'
+    });
+    const external = [];
+    ctx.on('request', (req) => { if (!req.url().startsWith(origin)) external.push(req.url()); });
+    const page = await ctx.newPage();
+    const errs = [];
+    page.on('pageerror', (e) => errs.push(String(e)));
+    page.on('console', (m) => { if (m.type() === 'error') errs.push('console: ' + m.text()); });
+    const ready = () => page.waitForFunction(() =>
+      document.querySelectorAll('.category-link').length === 5 && document.querySelectorAll('.category-town-link').length === 5);
+
+    // 1. category deep link
+    await page.goto(`${base}explore.html?category=${CAT}`, { waitUntil: 'load' });
+    await ready();
+    await page.waitForTimeout(150);
+    const a = await readExplore(page);
+    check(S, 'single_h1_names_the_kind_index', a.h1 === 1 && a.h1Text === '種類から見る', a.h1Text);
+    check(S, 'category_deep_link_selects_the_category', selectedIds(a.categoryLinks) === CAT, a.categoryLinks);
+    check(S, 'town_defaults_to_all', selectedIds(a.townLinks) === '', a.townLinks);
+    check(S, 'results_are_exactly_the_live_objects_of_the_category',
+      a.rows.map((r) => r.id).sort().join() === liveIn(CAT).join(), { got: a.rows.map((r) => r.id), want: liveIn(CAT) });
+    check(S, 'count_says_the_finite_number', a.count === `いま ${liveIn(CAT).length} 件`, a.count);
+    check(S, 'every_result_returns_to_its_shelf',
+      a.rows.length > 0 && a.rows.every((r) => /^\.\/shelf\.html\?shelf=/.test(r.link || '')), a.rows.map((r) => r.link));
+    check(S, 'every_result_carries_the_interest_button', a.rows.every((r) => r.interest), a.rows);
+    check(S, 'category_links_point_at_explore',
+      a.categoryLinks.every((c) => c.href === `./explore.html?category=${encodeURIComponent(c.id)}`), a.categoryLinks.map((c) => c.href));
+    check(S, 'town_links_point_at_explore',
+      a.townLinks.every((t) => t.href === (t.id ? `./explore.html?town=${encodeURIComponent(t.id)}` : './explore.html')), a.townLinks.map((t) => t.href));
+    check(S, 'category_counts_match_live_objects', a.categoryLinks.every((c) => c.count === String(liveIn(c.id).length)), a.categoryLinks);
+    check(S, 'category_archive_is_separated_from_live_results',
+      archivedIn(CAT).length ? (!a.catArchiveHidden && a.catArchiveRows.length === archivedIn(CAT).length) : (a.catArchiveHidden && a.catArchiveRows.length === 0),
+      { hidden: a.catArchiveHidden, rows: a.catArchiveRows });
+    check(S, 'archive_host_hidden_and_empty_while_no_entries',
+      (CONTENT.archive || []).length ? a.archive : (!!a.host && a.host.hidden && a.host.children === 0 && !a.archive), a.host);
+    check(S, 'menu_has_no_archive_link_while_no_entries', (CONTENT.archive || []).length ? true : a.menuArchive.length === 0, a.menuArchive);
+    check(S, 'no_feed_no_cards', a.feed === 0, a.feed);
+    check(S, 'no_horizontal_overflow', !a.overflow, a.wide);
+    check(S, 'no_engagement_words', !FORBIDDEN.some((w) => a.text.includes(w)), FORBIDDEN.filter((w) => a.text.includes(w)));
+
+    // 2. category × town deep link, 3. reload keeps the state
+    if (!pair) notObservable(S, 'category_town_deep_link', 'no (category, town) pair has a live object');
+    else {
+      await page.goto(`${base}explore.html?category=${pair.category}&town=${pair.town}`, { waitUntil: 'load' });
+      await ready();
+      await page.waitForTimeout(150);
+      const b = await readExplore(page);
+      const want = liveIn(pair.category, pair.town);
+      check(S, 'category_town_deep_link_selects_both',
+        selectedIds(b.categoryLinks) === pair.category && selectedIds(b.townLinks) === pair.town, { pair, url: b.url });
+      check(S, 'category_town_results_are_only_that_town',
+        b.rows.map((r) => r.id).sort().join() === want.join() && b.rows.every((r) => r.town === areaOf(pair.town)), { got: b.rows, want });
+      check(S, 'category_town_count', b.count === `いま ${want.length} 件`, b.count);
+      await page.reload({ waitUntil: 'load' });
+      await ready();
+      await page.waitForTimeout(150);
+      const r = await readExplore(page);
+      check(S, 'reload_keeps_category_and_town',
+        r.url === b.url && r.rows.map((x) => x.id).sort().join() === want.join() && selectedIds(r.townLinks) === pair.town, { url: r.url, rows: r.rows.map((x) => x.id) });
+    }
+
+    // 4. keyboard: focus + Enter on category / town links
+    await page.goto(base + 'explore.html', { waitUntil: 'load' });
+    await ready();
+    await page.focus(`.category-link[data-category-id="${CAT}"]`);
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(150);
+    const kb = await page.evaluate(() => ({
+      search: location.search,
+      selected: [...document.querySelectorAll('.category-link.is-selected')].map((a) => a.dataset.categoryId).join(),
+      focused: document.activeElement && document.activeElement.className,
+      focusVisible: !!document.activeElement && document.activeElement.matches(':focus-visible'),
+      outline: document.activeElement ? getComputedStyle(document.activeElement).outlineStyle : '',
+      rows: document.querySelectorAll('#categoryResults .result-row').length,
+      tabbable: [...document.querySelectorAll('.category-town-link, .category-link, .result-link')].every((a) => a.tabIndex >= 0)
+    }));
+    check(S, 'keyboard_enter_selects_category_and_writes_url',
+      kb.selected === CAT && kb.search === `?category=${CAT}` && kb.rows === liveIn(CAT).length, kb);
+    check(S, 'keyboard_focus_stays_visible_on_category_link',
+      /category-link/.test(String(kb.focused)) && kb.focusVisible === true && kb.outline !== 'none', kb);
+    check(S, 'index_and_results_are_tabbable', kb.tabbable === true);
+    if (pair) {
+      await page.focus(`.category-town-link[data-town-id="${pair.town}"]`);
+      await page.keyboard.press('Enter');
+      await page.waitForTimeout(150);
+      const kb2 = await page.evaluate(() => ({
+        search: location.search,
+        town: [...document.querySelectorAll('.category-town-link.is-selected')].map((a) => a.dataset.townId).join()
+      }));
+      check(S, 'keyboard_enter_selects_town_and_writes_url', kb2.town === pair.town && kb2.search === `?category=${CAT}&town=${pair.town}`, kb2);
+    }
+
+    // 5. back / forward stay sane（絞り込みは history を増やさない。URL が状態を持つ）
+    await page.goto(base + 'shelf.html?shelf=kichijoji', { waitUntil: 'load' });
+    await page.goto(`${base}explore.html?category=${CAT}`, { waitUntil: 'load' });
+    await ready();
+    if (pair) { await page.click(`.category-town-link[data-town-id="${pair.town}"]`); await page.waitForTimeout(150); }
+    await page.goBack({ waitUntil: 'load' });
+    const back = await page.evaluate(() => location.pathname.split('/').pop() + location.search);
+    check(S, 'back_returns_to_the_previous_page', back === 'shelf.html?shelf=kichijoji', back);
+    await page.goForward({ waitUntil: 'load' });
+    await ready();
+    await page.waitForTimeout(150);
+    const fwd = await readExplore(page);
+    const fwdWant = pair ? `explore.html?category=${CAT}&town=${pair.town}` : `explore.html?category=${CAT}`;
+    check(S, 'forward_restores_the_filtered_state',
+      fwd.url === fwdWant && selectedIds(fwd.categoryLinks) === CAT && (!pair || selectedIds(fwd.townLinks) === pair.town), { url: fwd.url, want: fwdWant });
+
+    // 6. zero-result state: 空でも壊れない・水増ししない
+    if (!zero) notObservable(S, 'zero_result_state', 'every (category, town) pair has a live object');
+    else {
+      await page.goto(`${base}explore.html?category=${zero.category}&town=${zero.town}`, { waitUntil: 'load' });
+      await ready();
+      await page.waitForTimeout(150);
+      const z = await readExplore(page);
+      check(S, 'zero_result_says_so_without_filling',
+        z.rows.length === 0 && z.count === 'いま 0 件' && z.empty === 'この組み合わせは、いま棚にありません。',
+        { rows: z.rows.length, count: z.count, empty: z.empty });
+      check(S, 'zero_result_keeps_the_selection', selectedIds(z.categoryLinks) === zero.category && selectedIds(z.townLinks) === zero.town, zero);
+      check(S, 'zero_result_has_no_horizontal_overflow', !z.overflow, z.wide);
+    }
+
+    // 7. unknown category / town は無視される（何も選ばれず、壊れない）
+    await page.goto(base + 'explore.html?category=nope&town=nowhere', { waitUntil: 'load' });
+    await ready();
+    const unknown = await readExplore(page);
+    check(S, 'unknown_query_selects_nothing',
+      unknown.categoryLinks.every((c) => !c.selected) && selectedIds(unknown.townLinks) === '' && unknown.rows.length === 0, unknown.categoryLinks);
+
+    // 8. #archive を開いたが Archive が無いとき：空 UI を出さず、live region で知らせる
+    if ((CONTENT.archive || []).length) notObservable(S, 'archive_hash_without_entries', 'archive already has entries at this clock');
+    else {
+      await page.goto(base + 'explore.html#archive', { waitUntil: 'load' });
+      await ready();
+      await page.waitForTimeout(200);
+      const ah = await readExplore(page);
+      check(S, 'archive_hash_without_entries_shows_no_empty_ui', !ah.archive && !!ah.host && ah.host.hidden && ah.host.children === 0, ah.host);
+      check(S, 'archive_hash_without_entries_is_announced', ah.live === 'Archiveは、まだありません。', ah.live);
+    }
+
+    check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
+    check(S, 'no_js_error', errs.length === 0, errs.slice(0, 2));
+    await ctx.close();
+  }
+
+  /* ---- C1. 棚の詳細 → 「街 × 種類で、もう少し見る」の意味が explore.html で
+     戻っていること（同じ街の <種類> / ほかの街の <種類>）。 ---- */
+  {
+    const S = 'explore/traversal';
+    /* 棚 page は 390 mobile で既知の横 overflow があり、Chromium の mobile viewport が
+       縮小して pointer 座標が CSS px とずれる。ここは pointer の実座標が要るので
+       desktop viewport で見る（既知 FAIL を pointer 検証に混ぜない）。 */
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 }, isMobile: false, hasTouch: false, reducedMotion: 'reduce' });
+    const external = [];
+    ctx.on('request', (req) => { if (!req.url().startsWith(origin)) external.push(req.url()); });
+    const page = await ctx.newPage();
+    const errs = [];
+    page.on('pageerror', (e) => errs.push(String(e)));
+    const target = (() => {
+      for (const sh of CONTENT.shelves) {
+        for (let i = 0; i < sh.objects.length; i++) {
+          const o = sh.objects[i];
+          if ((o.categoryIds || []).length && stillLive(o) && !sh.objects.some((x) => !stillLive(x))) return { shelf: sh, index: i, object: o };
+        }
+      }
+      return null;
+    })();
+    if (!target) notObservable(S, 'traversal_links', 'no open shelf has a live object with categoryIds');
+    else {
+      await page.goto(`${base}shelf.html?shelf=${target.shelf.id}`, { waitUntil: 'load' });
+      await page.waitForFunction(() => document.querySelectorAll('.object-card').length === 3);
+      await page.click(`.object-card:nth-child(${target.index + 1}) .open-button`);
+      await page.waitForSelector('.detail-dialog[open] .growth-traversal');
+      const links = await page.evaluate(() => [...document.querySelectorAll('.detail-dialog[open] .growth-traversal-links a')]
+        .map((a) => ({ text: a.textContent, href: a.getAttribute('href') })));
+      const want = [];
+      for (const cid of target.object.categoryIds) {
+        want.push({ text: `${target.shelf.area}の${catName(cid)}`, href: `./explore.html?category=${encodeURIComponent(cid)}&town=${encodeURIComponent(target.shelf.id)}` });
+        want.push({ text: `ほかの街の${catName(cid)}`, href: `./explore.html?category=${encodeURIComponent(cid)}` });
+      }
+      check(S, 'traversal_links_declare_town_and_category_in_the_url', JSON.stringify(links) === JSON.stringify(want), { links, want });
+      check(S, 'traversal_never_points_at_home_sections', links.length > 0 && links.every((l) => !/index\.html/.test(l.href)), links);
+
+      const cid = target.object.categoryIds[0];
+      /* dialog の中を Playwright に scroll させると mobile emulation では link が
+         viewport の縁に来て pointer が親に取られる。自分で中央へ寄せてから、その
+         実座標を pointer で押す（programmatic click ではなく実 pointer）。 */
+      const hit = await page.evaluate(() => {
+        const a = document.querySelector('.detail-dialog[open] .growth-traversal-links a');
+        a.scrollIntoView({ block: 'center' });
+        const b = a.getBoundingClientRect();
+        const cx = b.left + b.width / 2, cy = b.top + b.height / 2;
+        const el = document.elementFromPoint(cx, cy);
+        return { x: cx, y: cy, onLink: !!el && el.closest('.growth-traversal-links a') === a };
+      });
+      check(S, 'traversal_link_is_pointer_reachable_inside_the_dialog', hit.onLink === true, hit);
+      await page.mouse.click(hit.x, hit.y);
+      await page.waitForURL((u) => u.pathname.endsWith('/explore.html'), { timeout: 5000 });
+      await page.waitForFunction(() => document.querySelectorAll('.category-link').length === 5);
+      await page.waitForTimeout(150);
+      const same = await readExplore(page);
+      check(S, 'same_town_link_lands_on_that_town_and_category',
+        selectedIds(same.categoryLinks) === cid && selectedIds(same.townLinks) === target.shelf.id &&
+        same.rows.map((r) => r.id).sort().join() === liveIn(cid, target.shelf.id).join() &&
+        same.rows.every((r) => r.town === target.shelf.area) && same.rows.some((r) => r.id === target.object.id),
+        { url: same.url, rows: same.rows });
+
+      await page.goto(base + want[1].href.replace(/^\.\//, ''), { waitUntil: 'load' });
+      await page.waitForFunction(() => document.querySelectorAll('.category-link').length === 5);
+      await page.waitForTimeout(150);
+      const all = await readExplore(page);
+      check(S, 'all_towns_link_lands_on_the_category_across_towns',
+        selectedIds(all.categoryLinks) === cid && selectedIds(all.townLinks) === '' &&
+        all.rows.map((r) => r.id).sort().join() === liveIn(cid).join(), { url: all.url, rows: all.rows.map((r) => r.id), want: liveIn(cid) });
+    }
+    check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
+    check(S, 'no_js_error', errs.length === 0, errs.slice(0, 2));
+    await ctx.close();
+  }
+
+  /* ---- C2. 時間経過で Canonical HOME が変わらない（ARCHIVE isolation）----
+     最初の weekly feature が切れた 1 分後の時計で全ページを開く。Archive は
+     explore.html の host にだけ現れ、HOME / shelf / suggest / data / credits の
+     #main には何も足されないこと。content は書き換えず、時計だけ進める。 */
+  {
+    const S = 'timeshift';
+    const weekly = CONTENT.shelves
+      .map((sh) => ({ shelf: sh, feature: sh.weeklyFeature, at: Date.parse(((sh.weeklyFeature || {}).expiresAt) || '') }))
+      .filter((x) => !isNaN(x.at)).sort((a, b) => a.at - b.at);
+    const first = weekly[0];
+    if (!first) notObservable(S, 'archive_isolation_after_expiry', 'no weeklyFeature in release_content.js carries an expiresAt');
+    else {
+      const fixed = first.at + 60 * 1000;
+      const liveAt = (o) => !o.expiresAt || isNaN(Date.parse(o.expiresAt)) || Date.parse(o.expiresAt) > fixed;
+      const liveInAt = (catId, townId) => CONTENT.shelves.filter((sh) => !townId || sh.id === townId)
+        .reduce((acc, sh) => acc.concat(sh.objects.filter((o) => (o.categoryIds || []).includes(catId) && liveAt(o)).map((o) => o.id)), []).sort();
+      const expectedArchive = GROWTH.generatedWeeklyArchiveEntries(CONTENT, fixed);
+      const clock = async (viewport, mobile) => {
+        const ctx = await browser.newContext({ viewport, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1, reducedMotion: 'reduce' });
+        await ctx.addInitScript((f) => {
+          const RealDate = Date;
+          // eslint-disable-next-line no-global-assign
+          Date = class extends RealDate {
+            constructor(...a) { if (!a.length) super(f); else super(...a); }
+            static now() { return f; }
+          };
+        }, fixed);
+        return ctx;
+      };
+      check(S, 'first_expiry_generates_an_archive_entry_for_that_feature',
+        expectedArchive.length >= 1 && expectedArchive.some((e) => e.title === first.feature.title && e.shelfId === first.shelf.id),
+        { at: new Date(fixed).toISOString(), entries: expectedArchive.map((e) => e.id) });
+
+      // HOME 853 — 5 section のまま、geometry も canonical のまま
+      {
+        const H = `${S}/home853`;
+        const ctx = await clock({ width: 853, height: 1844 }, false);
+        const external = [];
+        ctx.on('request', (req) => { if (!req.url().startsWith(origin)) external.push(req.url()); });
+        const page = await ctx.newPage();
+        const errs = [];
+        page.on('pageerror', (e) => errs.push(String(e)));
+        await page.goto(base + 'index.html', { waitUntil: 'load' });
+        await page.waitForFunction(() => Array.from(document.images).every((i) => i.complete && i.naturalWidth > 0));
+        await page.waitForTimeout(300);
+        const home = await page.evaluate(() => {
+          const doc = document.documentElement;
+          const rect = (sel) => {
+            const el = document.querySelector(sel);
+            if (!el) return null;
+            const b = el.getBoundingClientRect();
+            return { x: Math.round(b.left), y: Math.round(b.top + scrollY), w: Math.round(b.width), h: Math.round(b.height) };
+          };
+          return {
+            now: new Date().toISOString(), docW: doc.scrollWidth, docH: doc.scrollHeight,
+            sections: [...document.querySelectorAll('main > section, main > .hc-sheet > section')]
+              .map((el) => el.id || [...el.classList].find((c) => c !== 'hc-section')),
+            archive: !!document.getElementById('archive'),
+            growth: document.querySelectorAll('.growth-archive, .growth-archive-item, #archiveHost').length,
+            mainChildren: [...document.getElementById('main').children].map((el) => el.tagName + (el.id ? '#' + el.id : '') + '.' + [...el.classList].join('.')),
+            listing: document.querySelectorAll('.result-row, .object-card, .category-link, #categoryIndex, #archive').length,
+            menuArchive: [...document.querySelectorAll('#siteMenu a')].filter((a) => /Archive/.test(a.textContent)).map((a) => a.getAttribute('href')),
+            rects: {
+              hero: rect('.hc-hero'), cta: rect('.hc-hero-cta'), cityGrid: rect('.hc-city-grid'), workGrid: rect('.hc-work-grid'),
+              thread: rect('.hc-thread'), strip: rect('.hc-reality-strip'), spots: rect('.hc-reality-cta')
+            }
+          };
+        });
+        const near = (r, x, y, w, h, tol) => !!r && Math.abs(r.x - x) <= tol && Math.abs(r.y - y) <= tol && Math.abs(r.w - w) <= tol && Math.abs(r.h - h) <= tol;
+        check(H, 'clock_is_after_the_first_weekly_expiry', Date.parse(home.now) >= first.at, { now: home.now, expiry: first.feature.expiresAt });
+        check(H, 'still_exactly_five_canonical_sections',
+          home.sections.join('|') === 'hc-hero|hc-cities|hc-works|hc-thread|hc-reality', home.sections);
+        check(H, 'no_archive_injected_into_home', !home.archive && home.growth === 0 && home.listing === 0,
+          { archive: home.archive, growth: home.growth, main: home.mainChildren });
+        check(H, 'main_keeps_hero_and_sheet_only', home.mainChildren.join('|') === 'SECTION.hc-hero|DIV.hc-sheet', home.mainChildren);
+        check(H, 'document_geometry_stays_canonical', home.docW === 853 && Math.abs(home.docH - 1844) <= 4, { w: home.docW, h: home.docH });
+        check(H, 'hero_rect', near(home.rects.hero, 0, 0, 853, 617, 1), home.rects.hero);
+        check(H, 'hero_cta_rect', near(home.rects.cta, 32, 452, 244, 52, 2), home.rects.cta);
+        check(H, 'city_grid_rect', near(home.rects.cityGrid, 32, 706, 789, 311, 2), home.rects.cityGrid);
+        check(H, 'work_grid_rect', near(home.rects.workGrid, 32, 1104, 789, 143, 2), home.rects.workGrid);
+        check(H, 'thread_panel_rect', near(home.rects.thread, 25, 1275, 803, 292, 2), home.rects.thread);
+        check(H, 'reality_strip_rect', near(home.rects.strip, 333, 1620, 512, 186, 2), home.rects.strip);
+        check(H, 'spots_button_rect', near(home.rects.spots, 32, 1746, 212, 48, 2), home.rects.spots);
+        check(H, 'menu_archive_link_if_any_points_at_explore', home.menuArchive.every((h) => h === './explore.html#archive'), home.menuArchive);
+        check(H, 'no_external_request', external.length === 0, external.slice(0, 3));
+        check(H, 'no_js_error', errs.length === 0, errs.slice(0, 2));
+        await ctx.close();
+      }
+
+      // data / credits / suggest / 4 shelves — archive はどこにも差し込まれない
+      {
+        const N = `${S}/non-home`;
+        const ctx = await clock({ width: 390, height: 844 }, true);
+        const page = await ctx.newPage();
+        const errs = [];
+        page.on('pageerror', (e) => errs.push(String(e)));
+        const seen = [];
+        for (const p of ['data.html', 'credits.html', 'suggest.html', ...SHELVES.map((id) => `shelf.html?shelf=${id}`)]) {
+          await page.goto(base + p, { waitUntil: 'load' });
+          await page.waitForTimeout(200);
+          seen.push([p, await page.evaluate(() => ({
+            archive: !!document.getElementById('archive'),
+            growth: document.querySelectorAll('.growth-archive, .growth-archive-item, #archiveHost').length,
+            menuArchive: [...document.querySelectorAll('#siteMenu a')].filter((a) => /Archive/.test(a.textContent)).map((a) => a.getAttribute('href'))
+          }))]);
+        }
+        check(N, 'no_archive_injected_into_any_other_page', seen.every(([, s]) => !s.archive && s.growth === 0), seen);
+        check(N, 'menu_archive_links_point_at_explore', seen.every(([, s]) => s.menuArchive.every((h) => h === './explore.html#archive')), seen);
+        check(N, 'no_js_error', errs.length === 0, errs.slice(0, 2));
+        await ctx.close();
+      }
+
+      // explore.html#archive — 期限切れの特集がここに、そしてここにだけ現れる
+      {
+        const E = `${S}/explore`;
+        const ctx = await clock({ width: 390, height: 844 }, true);
+        const external = [];
+        ctx.on('request', (req) => { if (!req.url().startsWith(origin)) external.push(req.url()); });
+        const page = await ctx.newPage();
+        const errs = [];
+        page.on('pageerror', (e) => errs.push(String(e)));
+        await page.goto(base + 'explore.html#archive', { waitUntil: 'load' });
+        await page.waitForSelector('#archiveHost:not([hidden]) #archive', { timeout: 5000 }).catch(() => {});
+        await page.waitForTimeout(200);
+        const ex = await page.evaluate(() => {
+          const doc = document.documentElement;
+          const host = document.getElementById('archiveHost');
+          const archive = document.getElementById('archive');
+          if (!archive) return { archive: false, hostHidden: host ? host.hidden : null };
+          const b = archive.getBoundingClientRect();
+          return {
+            archive: true, hostHidden: host.hidden, inHost: archive.parentElement === host,
+            eyebrow: ((archive.querySelector('.eyebrow') || {}).textContent) || '',
+            titles: [...archive.querySelectorAll('.growth-archive-item h3')].map((h) => h.textContent),
+            inView: b.top >= -2 && b.top < window.innerHeight,
+            actions: [...archive.querySelectorAll('.growth-action-link')].map((a) => ({ href: a.getAttribute('href'), rel: a.getAttribute('rel') })),
+            interest: archive.querySelectorAll('.growth-card-interest').length,
+            menuArchive: [...document.querySelectorAll('#siteMenu .site-menu-secondary a')].filter((a) => /Archive/.test(a.textContent)).map((a) => a.getAttribute('href')),
+            overflow: doc.scrollWidth > doc.clientWidth + 1,
+            liveRows: document.querySelectorAll('#categoryResults .result-row').length
+          };
+        });
+        check(E, 'expired_weekly_feature_is_visible_in_the_explore_archive',
+          ex.archive && !ex.hostHidden && ex.inHost && ex.eyebrow === 'ARCHIVE' && ex.titles.length === expectedArchive.length && ex.titles.includes(first.feature.title), ex);
+        check(E, 'archive_hash_lands_on_the_archive', ex.archive && ex.inView === true, ex);
+        check(E, 'archive_entries_carry_interest_and_official_action_only',
+          ex.archive && ex.interest === expectedArchive.length && ex.actions.every((a) => /^https:\/\//.test(a.href) && /noopener/.test(a.rel)), ex.actions);
+        check(E, 'menu_archive_link_points_at_explore', ex.archive && ex.menuArchive.join() === './explore.html#archive', ex.menuArchive);
+        check(E, 'no_horizontal_overflow', ex.archive && !ex.overflow);
+
+        // category × archive: 期限切れの特集は、その種類の ARCHIVE 欄にだけ出て、
+        // 現役の結果には混ざらない
+        const entry = expectedArchive[0];
+        const cid = (entry.categoryIds || ['experience'])[0];
+        await page.goto(`${base}explore.html?category=${cid}&town=${entry.shelfId}`, { waitUntil: 'load' });
+        await page.waitForFunction(() => document.querySelectorAll('.category-link').length === 5);
+        await page.waitForTimeout(200);
+        const ca = await page.evaluate(() => ({
+          hidden: document.getElementById('categoryArchive').hidden,
+          ids: [...document.querySelectorAll('#categoryArchiveResults .archive-result-row')].map((r) => r.getAttribute('data-archive-id')),
+          status: [...document.querySelectorAll('#categoryArchiveResults .archive-status')].map((s) => s.textContent),
+          live: [...document.querySelectorAll('#categoryResults .result-row')].map((r) => r.getAttribute('data-object-id')).sort(),
+          count: ((document.querySelector('.result-count-n') || {}).textContent) || ''
+        }));
+        check(E, 'expired_feature_appears_under_its_category_as_archive',
+          !ca.hidden && ca.ids.includes(entry.id) && ca.status.length > 0 && ca.status.every((s) => s === 'ARCHIVE'), ca);
+        check(E, 'archive_rows_never_mix_into_live_results',
+          ca.live.join() === liveInAt(cid, entry.shelfId).join() && ca.count === `いま ${liveInAt(cid, entry.shelfId).length} 件`,
+          { live: ca.live, want: liveInAt(cid, entry.shelfId), count: ca.count });
+        check(E, 'no_external_request', external.length === 0, external.slice(0, 3));
+        check(E, 'no_js_error', errs.length === 0, errs.slice(0, 2));
+        await ctx.close();
+      }
+    }
+  }
+
+  /* ---- C3. 旧 HOME の hash で Canonical HOME を開いたとき ----
+     #by-kind → explore（query の category / town を保つ）、#archive → explore#archive、
+     寄り道 / 週間動画 → 無関係な section へ飛ばさず hash を外して知らせる。loop しない。 */
+  {
+    const S = 'legacy-hash';
+    const ctx = await browser.newContext({ viewport: { width: 853, height: 1844 }, deviceScaleFactor: 1, reducedMotion: 'reduce' });
+    const external = [];
+    ctx.on('request', (req) => { if (!req.url().startsWith(origin)) external.push(req.url()); });
+    const page = await ctx.newPage();
+    const errs = [];
+    page.on('pageerror', (e) => errs.push(String(e)));
+    const open = async (url, expectRedirect) => {
+      // 同じ document への hash だけの移動にならないよう、いったん別 page を挟む
+      await page.goto(base + 'data.html', { waitUntil: 'load' });
+      await page.goto(base + url, { waitUntil: 'commit' }).catch(() => {});
+      if (expectRedirect) await page.waitForURL((u) => u.pathname.endsWith('/explore.html'), { timeout: 5000 }).catch(() => {});
+      await page.waitForLoadState('load').catch(() => {});
+      await page.waitForTimeout(400);
+      return page.evaluate(() => ({
+        url: location.pathname.split('/').pop() + location.search + location.hash,
+        scrollY: Math.round(window.scrollY),
+        live: ((document.getElementById('live') || {}).textContent) || '',
+        sections: document.querySelectorAll('main > section, main > .hc-sheet > section').length,
+        categoryLinks: document.querySelectorAll('.category-link').length,
+        selected: [...document.querySelectorAll('.category-link.is-selected')].map((a) => a.dataset.categoryId).join(),
+        town: [...document.querySelectorAll('.category-town-link.is-selected')].map((a) => a.dataset.townId).join(),
+        archive: !!document.getElementById('archive'),
+        archiveHost: !!document.getElementById('archiveHost')
+      }));
+    };
+    const a = await open('index.html#by-kind', true);
+    check(S, 'bare_by_kind_lands_on_explore', a.url === 'explore.html' && a.categoryLinks === 5 && a.selected === '' && a.town === '', a);
+    if (pair) {
+      const b = await open(`index.html?category=${pair.category}&town=${pair.town}#by-kind`, true);
+      check(S, 'by_kind_with_query_keeps_category_and_town',
+        b.url === `explore.html?category=${pair.category}&town=${pair.town}` && b.selected === pair.category && b.town === pair.town, b);
+    } else notObservable(S, 'by_kind_with_query', 'no (category, town) pair has a live object');
+    const c = await open('index.html#archive', true);
+    check(S, 'archive_hash_lands_on_the_explore_archive_host', c.url === 'explore.html#archive' && c.archiveHost === true, c);
+    for (const [hash, label] of [['#weekly-detour', '今週の寄り道'], ['#weekly-video-title', '今週の一本']]) {
+      const d = await open('index.html' + hash, false);
+      check(S, `${hash}_stays_on_home_without_jumping`, d.url === 'index.html' && d.scrollY === 0 && d.sections === 5 && !d.archive, d);
+      check(S, `${hash}_is_announced_in_the_live_region`, d.live.includes(label) && d.live.includes('ありません'), d.live);
+    }
+    // loop しない / back は HOME の前のページへ戻る（replace なので HOME は history に残らない）
+    await page.goto(base + 'shelf.html?shelf=koenji', { waitUntil: 'load' });
+    await page.goto(base + 'index.html#by-kind', { waitUntil: 'commit' }).catch(() => {});
+    await page.waitForURL((u) => u.pathname.endsWith('/explore.html'), { timeout: 5000 }).catch(() => {});
+    await page.waitForLoadState('load').catch(() => {});
+    await page.waitForTimeout(600);
+    const still = await page.evaluate(() => location.pathname.split('/').pop() + location.search + location.hash);
+    check(S, 'redirect_settles_on_explore_without_looping', still === 'explore.html', still);
+    await page.goBack({ waitUntil: 'load' });
+    const back = await page.evaluate(() => location.pathname.split('/').pop() + location.search);
+    check(S, 'back_after_redirect_returns_to_the_page_before_home', back === 'shelf.html?shelf=koenji', back);
+    check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
+    check(S, 'no_js_error', errs.length === 0, errs.slice(0, 2));
+    await ctx.close();
   }
 
   /* ---- D. 候補受付は backend を持たない ---- */

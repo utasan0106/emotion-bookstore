@@ -5,6 +5,18 @@
   var INTEREST_KEY = 'emotionBookstore.v3.interested.v2';
   var LEGACY_WEEKLY_KEY = 'emotionBookstore.v3.weeklyFavorites.v1';
 
+  /* 旧 HOME の有限 category / town / archive 索引は explore.html（compatibility
+     surface）が引き継ぐ。Canonical HOME には戻さない。 */
+  var EXPLORE_PAGE = './explore.html';
+  var LEGACY_UNAVAILABLE_LABEL = '旧HOME掲載項目';
+  /* 現在の受け手が無い旧 HOME の record kind。無関係な section へ振らない
+     （NO EVIDENCE = NO ROUTE）。 */
+  var LEGACY_KINDS_WITHOUT_SURFACE = { detour: true, 'weekly-video': true };
+  var LEGACY_HASH_NOTICE = {
+    '#weekly-detour': '旧HOMEの「今週の寄り道」は、いまのHOMEにありません。',
+    '#weekly-video-title': '旧HOMEの「今週の一本」は、いまのHOMEにありません。'
+  };
+
   function parseTime(value) {
     var at = Date.parse(value || '');
     return isNaN(at) ? null : at;
@@ -73,9 +85,98 @@
     return out;
   }
 
+  /* ---- 旧 HOME 由来の href を現在の受け手へ読み替える（pure） ----------------
+     HOME は VISUAL_CANONICAL の5 section 構成になり、旧 anchor
+     （#by-kind / #archive / #weekly-detour / #weekly-video-title）は消えた。
+     端末内に保存済みの record は旧 href を持ったままなので、表示時にだけ
+     読み替える。保存形式・保存内容は書き換えない。
+       旧 HOME の #by-kind（bare）                       → ./explore.html
+       旧 HOME の ?category=X&town=Y#by-kind             → ./explore.html?category=X&town=Y
+       旧 HOME の #archive                               → ./explore.html#archive
+       旧 HOME の #weekly-detour / #weekly-video-title   → null（現在の受け手が無い）
+     explore.html / shelf.html の href はそのまま返す（何度通しても同じ結果）。 */
+  function splitHref(href) {
+    var hashAt = href.indexOf('#');
+    var hash = hashAt < 0 ? '' : href.slice(hashAt);
+    var rest = hashAt < 0 ? href : href.slice(0, hashAt);
+    var queryAt = rest.indexOf('?');
+    return {
+      pathname: queryAt < 0 ? rest : rest.slice(0, queryAt),
+      query: queryAt < 0 ? '' : rest.slice(queryAt + 1),
+      hash: hash
+    };
+  }
+
+  function isHomePath(pathname) {
+    return pathname === './index.html' || pathname === 'index.html' || pathname === '/index.html';
+  }
+
+  function queryValue(query, key) {
+    var parts = (query || '').split('&');
+    for (var i = 0; i < parts.length; i++) {
+      var eq = parts[i].indexOf('=');
+      if ((eq < 0 ? parts[i] : parts[i].slice(0, eq)) !== key) continue;
+      try {
+        return decodeURIComponent((eq < 0 ? '' : parts[i].slice(eq + 1)).replace(/\+/g, ' '));
+      } catch (_) {
+        return '';
+      }
+    }
+    return '';
+  }
+
+  /* explore.html の URL。受け手のある引数（category / town）だけを載せる。 */
+  function exploreHref(params, hash) {
+    var out = [];
+    if (params && params.category) out.push('category=' + encodeURIComponent(params.category));
+    if (params && params.town) out.push('town=' + encodeURIComponent(params.town));
+    return EXPLORE_PAGE + (out.length ? '?' + out.join('&') : '') + (hash || '');
+  }
+
+  function migrateLegacyHref(href) {
+    if (typeof href !== 'string') return href;
+    var parts = splitHref(href);
+    if (!isHomePath(parts.pathname)) return href;
+    if (parts.hash === '#by-kind') {
+      return exploreHref({
+        category: queryValue(parts.query, 'category'),
+        town: queryValue(parts.query, 'town')
+      }, '');
+    }
+    if (parts.hash === '#archive') return exploreHref(null, '#archive');
+    if (LEGACY_HASH_NOTICE[parts.hash]) return null;
+    return href;
+  }
+
+  /* record の現在の行き先。null は「現在の受け手が無い。非リンクで残す」。 */
+  function recordRoute(record) {
+    if (!record) return null;
+    if (LEGACY_KINDS_WITHOUT_SURFACE[record.kind]) return null;
+    if (record.href) return migrateLegacyHref(record.href);
+    if (record.shelfId) return './shelf.html?shelf=' + encodeURIComponent(record.shelfId);
+    return './index.html';
+  }
+
+  function archiveRecord(entry) {
+    return {
+      id: 'archive:' + entry.id,
+      kind: 'archive',
+      kindLabel: entry.typeLabel || 'ARCHIVE',
+      title: entry.title,
+      area: entry.area || '',
+      shelfId: entry.shelfId || '',
+      categoryIds: (entry.categoryIds || []).slice(),
+      href: exploreHref(null, '#archive'),
+      archivedAt: entry.archivedAt || ''
+    };
+  }
+
   window.V3_GROWTH = {
     generatedWeeklyArchiveEntries: generatedWeeklyArchiveEntries,
-    normalizeInterestedItems: normalizeInterestedItems
+    normalizeInterestedItems: normalizeInterestedItems,
+    migrateLegacyHref: migrateLegacyHref,
+    recordRoute: recordRoute,
+    archiveRecord: archiveRecord
   };
 
   if (!Array.isArray(CONTENT.archive)) CONTENT.archive = [];
@@ -96,7 +197,6 @@
       '.growth-interest-button[aria-pressed="true"]{background:rgba(255,255,255,.08)}',
       '.growth-card-interest{margin-top:.7rem}',
       '.growth-detail-interest{margin-top:.85rem}',
-      '.growth-detour-interest{margin-top:.65rem}',
       '.growth-traversal{margin-top:1.3rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.22)}',
       '.growth-traversal-title{margin:0 0 .55rem;font-size:.78rem;letter-spacing:.1em}',
       '.growth-traversal-links{display:flex;flex-wrap:wrap;gap:.55rem 1rem;margin:0}',
@@ -108,6 +208,8 @@
       '.growth-archive-meta,.growth-archive-summary{margin:.25rem 0}',
       '.growth-action-link{display:inline-flex;gap:.45em;align-items:baseline}',
       '.site-menu-favorite-kind{opacity:.68;font-size:.78em}',
+      '.site-menu-favorite-link.is-unavailable{opacity:.72}',
+      '.site-menu-favorite-unavailable{color:inherit;font-size:.72em;letter-spacing:.06em;white-space:nowrap}',
       '@media (max-width:640px){.growth-interest-button{min-height:44px}.growth-traversal-links{display:grid}}'
     ].join('');
     document.head.appendChild(style);
@@ -146,29 +248,6 @@
     return readInterested().some(function (item) { return item.id === id; });
   }
 
-  /* HOME が VISUAL_CANONICAL の5 section 構成になり、旧 anchor
-     （#weekly-detour / #by-kind / #weekly-video-title）は消えた。端末内に
-     保存済みの record はその href を持ったままなので、表示時だけ現在の
-     section へ読み替える。保存形式・保存内容は書き換えない。 */
-  var RETIRED_HOME_ANCHORS = {
-    '#weekly-detour': '#hc-thread',
-    '#by-kind': '#hc-works',
-    '#weekly-video-title': '#hc-works'
-  };
-  function currentHomeHref(href) {
-    if (typeof href !== 'string') return href;
-    var at = href.indexOf('#');
-    if (at < 0 || href.slice(0, at) !== './index.html') return href;
-    var hash = href.slice(at);
-    return RETIRED_HOME_ANCHORS[hash] ? './index.html' + RETIRED_HOME_ANCHORS[hash] : href;
-  }
-
-  function recordHref(record) {
-    if (record.href) return currentHomeHref(record.href);
-    if (record.shelfId) return './shelf.html?shelf=' + encodeURIComponent(record.shelfId);
-    return './index.html';
-  }
-
   function renderInterestedMenu() {
     var box = document.getElementById('siteMenuFavorites');
     if (!box) return;
@@ -182,9 +261,10 @@
       return;
     }
     items.forEach(function (item) {
-      var a = document.createElement('a');
-      a.className = 'site-menu-favorite-link';
-      a.href = recordHref(item);
+      var route = recordRoute(item);
+      var row = document.createElement(route ? 'a' : 'div');
+      row.className = 'site-menu-favorite-link' + (route ? '' : ' is-unavailable');
+      if (route) row.href = route;
       var town = document.createElement('span');
       town.className = 'site-menu-favorite-town';
       town.textContent = item.area || item.kindLabel || '';
@@ -195,14 +275,21 @@
       kind.className = 'site-menu-favorite-kind';
       kind.textContent = item.archivedAt ? 'ARCHIVE' : (item.kindLabel || '');
       var mark = document.createElement('span');
-      mark.className = 'site-menu-favorite-mark';
-      mark.setAttribute('aria-hidden', 'true');
-      mark.textContent = '→';
-      a.appendChild(town);
-      a.appendChild(title);
-      if (kind.textContent) a.appendChild(kind);
-      a.appendChild(mark);
-      box.appendChild(a);
+      if (route) {
+        mark.className = 'site-menu-favorite-mark';
+        mark.setAttribute('aria-hidden', 'true');
+        mark.textContent = '→';
+      } else {
+        /* 現在の受け手が無い旧 HOME の record。消さず、無関係な section へも
+           振らず、題名と meta を保ったまま非リンクで残す。 */
+        mark.className = 'site-menu-favorite-mark site-menu-favorite-unavailable';
+        mark.textContent = LEGACY_UNAVAILABLE_LABEL;
+      }
+      row.appendChild(town);
+      row.appendChild(title);
+      if (kind.textContent) row.appendChild(kind);
+      row.appendChild(mark);
+      box.appendChild(row);
     });
   }
 
@@ -254,20 +341,6 @@
       shelfId: shelf.id,
       categoryIds: (object.categoryIds || []).slice(),
       href: './shelf.html?shelf=' + encodeURIComponent(shelf.id)
-    };
-  }
-
-  function archiveRecord(entry) {
-    return {
-      id: 'archive:' + entry.id,
-      kind: 'archive',
-      kindLabel: entry.typeLabel || 'ARCHIVE',
-      title: entry.title,
-      area: entry.area || '',
-      shelfId: entry.shelfId || '',
-      categoryIds: (entry.categoryIds || []).slice(),
-      href: './index.html#archive',
-      archivedAt: entry.archivedAt || ''
     };
   }
 
@@ -327,16 +400,14 @@
     categoryIds.forEach(function (categoryId) {
       var category = (CONTENT.categories || []).filter(function (c) { return c.id === categoryId; })[0];
       if (!category) return;
+      /* 旧「種類から見る」（街 × 種類の有限索引）は explore.html が引き継ぐ。
+         link が宣言している意図（この街の / ほかの街の）を URL に保つ。 */
       var sameTown = document.createElement('a');
-      /* 旧「種類から見る」は canonical HOME に無い。相当する導線は
-         「作品から入る」（Founder/HQ 指示）。category / town の query は
-         HOME 側に受け手が無くなったので付けない（効かない引数を URL に
-         載せない）。 */
-      sameTown.href = './index.html#hc-works';
+      sameTown.href = exploreHref({ category: category.id, town: shelf.id }, '');
       sameTown.textContent = shelf.area + 'の' + category.name;
       links.appendChild(sameTown);
       var allTowns = document.createElement('a');
-      allTowns.href = './index.html#hc-works';
+      allTowns.href = exploreHref({ category: category.id }, '');
       allTowns.textContent = 'ほかの街の' + category.name;
       links.appendChild(allTowns);
     });
@@ -355,19 +426,6 @@
     var button = makeInterestButton(objectRecord(found.shelf, found.object), 'growth-detail-interest');
     if (actions) actions.appendChild(button); else copy.appendChild(button);
     addTraversal(copy, found.shelf, found.object);
-  }
-
-  function decorateDetour() {
-    var items = CONTENT.detour && Array.isArray(CONTENT.detour.items) ? CONTENT.detour.items : [];
-    Array.prototype.forEach.call(document.querySelectorAll('.detour-item'), function (node, index) {
-      if (node.querySelector('.growth-detour-interest') || !items[index]) return;
-      var item = items[index];
-      node.appendChild(makeInterestButton({
-        id: 'detour:' + (CONTENT.detour.weekOf || '') + ':' + item.title,
-        kind: 'detour', kindLabel: item.kind || '寄り道', title: item.title,
-        area: '今週の寄り道', href: './index.html#hc-thread'
-      }, 'growth-detour-interest'));
-    });
   }
 
   function syncWeeklyFeature() {
@@ -390,18 +448,6 @@
     button.addEventListener('click', function () { setTimeout(syncFromLegacyButton, 0); });
   }
 
-  function decorateWeeklyVideo() {
-    var copy = document.querySelector('.weekly-video-copy');
-    var play = document.getElementById('weeklyVideoPlay');
-    var title = document.getElementById('weekly-video-title');
-    if (!copy || !play || !title || copy.querySelector('.growth-video-interest')) return;
-    copy.appendChild(makeInterestButton({
-      id: 'weekly-video:' + (play.getAttribute('data-video-id') || title.textContent),
-      kind: 'weekly-video', kindLabel: '今週の一本', title: title.textContent,
-      area: '今週の、街と気持ち。', href: './index.html#hc-works'
-    }, 'growth-video-interest'));
-  }
-
   function decorateArchiveRows() {
     Array.prototype.forEach.call(document.querySelectorAll('.archive-result-row[data-archive-id]'), function (row) {
       if (row.querySelector('.growth-card-interest')) return;
@@ -411,11 +457,15 @@
     });
   }
 
+  /* ARCHIVE は explore.html の明示的な host（#archiveHost）にだけ描く。
+     Canonical HOME や shelf / suggest / data / credits の #main には触れない
+     （時間経過で HOME の構成が変わらないこと）。entries が 0 のあいだは host を
+     hidden のまま残し、空の UI を出さない。 */
   function renderTopArchive() {
-    var main = document.getElementById('main');
-    if (!main || document.getElementById('archive')) return;
+    var host = document.getElementById('archiveHost');
+    if (!host || document.getElementById('archive')) return;
     var entries = Array.isArray(CONTENT.archive) ? CONTENT.archive.slice() : [];
-    if (!entries.length) return;
+    if (!entries.length) { host.hidden = true; return; }
     entries.sort(function (a, b) { return (parseTime(b.archivedAt) || 0) - (parseTime(a.archivedAt) || 0); });
     var section = document.createElement('section');
     section.id = 'archive';
@@ -446,16 +496,62 @@
       list.appendChild(article);
     });
     section.appendChild(eyebrow); section.appendChild(heading); section.appendChild(list);
-    var closing = document.querySelector('.foyer-closing');
-    main.insertBefore(section, closing || main.lastChild);
+    host.appendChild(section);
+    host.hidden = false;
+    /* #archive は runtime で生まれる。#archive 付きで開かれたときは browser の
+       fragment scroll が先に走って空振りしていることがあるので、ここで揃える。 */
+    if (location.hash === '#archive') section.scrollIntoView();
+  }
 
+  /* explore.html#archive で開いたが、まだ Archive が無いとき。空の UI は出さず、
+     live region で知らせるだけにする。 */
+  function announceArchiveHash() {
+    if (location.hash !== '#archive' || document.getElementById('archive')) return;
+    if (!document.getElementById('archiveHost')) return;
+    var live = document.getElementById('live');
+    if (live) live.textContent = 'Archiveは、まだありません。';
+  }
+
+  /* Archive が実在するときだけ、MENU に explore.html#archive への導線を足す。 */
+  function addArchiveMenuLink() {
+    var entries = Array.isArray(CONTENT.archive) ? CONTENT.archive : [];
+    if (!entries.length) return;
+    var href = exploreHref(null, '#archive');
     Array.prototype.forEach.call(document.querySelectorAll('.site-menu-secondary'), function (nav) {
-      if (nav.querySelector('a[href="./index.html#archive"]')) return;
+      if (nav.querySelector('a[href="' + href + '"]')) return;
       var a = document.createElement('a');
-      a.className = 'site-menu-secondary-link'; a.href = './index.html#archive';
+      a.className = 'site-menu-secondary-link'; a.href = href;
       a.innerHTML = '<span>Archiveを見る</span><span aria-hidden="true">→</span>';
       nav.appendChild(a);
     });
+  }
+
+  /* 旧 HOME の hash を持ったまま Canonical HOME が開かれたとき。
+       #by-kind（?category / ?town 付きも） → explore.html（history を増やさない replace）
+       #archive                            → explore.html#archive
+       #weekly-detour / #weekly-video-title → 現在の受け手が無い。無関係な section へ
+                                              飛ばさず hash を外し、live region で知らせる。
+     explore.html から HOME へ戻す処理は無いので loop しない。 */
+  function settleLegacyHomeHash() {
+    if (!document.body || !document.body.classList.contains('home-canonical')) return;
+    var hash = location.hash;
+    var query = location.search.replace(/^\?/, '');
+    if (hash === '#by-kind') {
+      location.replace(exploreHref({
+        category: queryValue(query, 'category'),
+        town: queryValue(query, 'town')
+      }, ''));
+      return;
+    }
+    if (hash === '#archive') {
+      location.replace(exploreHref(null, '#archive'));
+      return;
+    }
+    if (LEGACY_HASH_NOTICE[hash]) {
+      if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+      var live = document.getElementById('live');
+      if (live) live.textContent = LEGACY_HASH_NOTICE[hash];
+    }
   }
 
   function unifyOfficialActions() {
@@ -473,10 +569,10 @@
     injectStyles();
     migrateWeeklyFavorites();
     decorateObjectCards();
-    decorateDetour();
-    decorateWeeklyVideo();
     decorateArchiveRows();
     renderTopArchive();
+    announceArchiveHash();
+    addArchiveMenuLink();
     syncWeeklyFeature();
     unifyOfficialActions();
     renderInterestedMenu();
@@ -502,6 +598,7 @@
     if (menuButton) menuButton.addEventListener('click', function () { setTimeout(renderInterestedMenu, 0); });
   }
 
+  settleLegacyHomeHash();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', enhance);
   else enhance();
 })();

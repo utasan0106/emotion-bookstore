@@ -117,6 +117,7 @@ check((html.match(/<h1\b/g) || []).length === 1, 'exactly one h1 expected');
 // 行き先の無い anchor を残さない
 check(!html.includes('index.html#weekly-detour'), 'dead anchor: #weekly-detour');
 check(!html.includes('index.html#by-kind'), 'dead anchor: #by-kind');
+check(!html.includes('index.html#archive'), 'dead anchor: #archive (archive lives on explore.html)');
 
 /* ---- 4. ROUTE_HOLD は navigate しない -------------------------------- */
 
@@ -182,6 +183,18 @@ if (at > 0) {
 for (const banned of ['backdrop-filter', 'text-shadow', 'box-shadow', '@keyframes', 'parallax', 'canvas', 'WebGL']) {
   if (at > 0 && css.slice(at).includes(banned)) failures.push(`anti-drift: ${banned} in HOME canonical CSS`);
 }
+
+/* ---- 9. runtime が HOME を育てない ------------------------------------ */
+
+// 時間経過（weekly feature の期限切れ）で生まれる ARCHIVE は explore.html の
+// 明示的な host にだけ描く。HOME の #main に section を足す経路を runtime が
+// 持っていないこと。deploy 無しで HOME の構成が変わる経路を残さない。
+const growth = read('growth-improvements.js');
+check(!growth.includes("getElementById('main')"), 'growth-improvements.js must not append into #main (HOME would grow after expiry)');
+check(growth.includes("getElementById('archiveHost')"), 'growth-improvements.js archive must target the explicit explore.html host only');
+check(!html.includes('id="archiveHost"'), 'HOME must not carry an archive host');
+check(!html.includes('id="categoryIndex"') && !html.includes('id="categoryResults"'), 'HOME must not carry the category index DOM');
+check(!/index\.html#hc-/.test(growth), 'growth-improvements.js must not route saved records to HOME sections (fake route)');
 
 /* ---- 結果 ------------------------------------------------------------- */
 

@@ -7,14 +7,28 @@
   <meta name="referrer" content="no-referrer">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#141312">
-  <title>みんなの感情書店｜データの扱い</title>
-  <meta name="description" content="みんなの感情書店で、サービス改善のために行うアクセス計測と、その使い方について説明します。">
+  <title>みんなの感情書店｜種類から見る</title>
+  <meta name="description" content="感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街と種類で絞って見る有限の索引です。">
   <link rel="icon" href="./assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="./assets/icon-512.png">
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
   <link rel="stylesheet" href="./release.css">
+  <!-- この page だけの配置。共有 release.css（HOME block を含む）には触れない。
+       archive host と出口の link を、索引と同じ page 幅・gutter に揃えるだけ。 -->
+  <style>
+    .explore-page .growth-archive-host,
+    .explore-page .explore-exit {
+      width: min(calc(100% - var(--gutter) * 2), var(--page));
+      margin: 0 auto;
+    }
+    .explore-page .explore-exit { margin-top: 48px; }
+  </style>
 </head>
-<body class="suggest-page">
+<!-- 旧 HOME の「種類から見る」（街 × 種類の有限索引）と ARCHIVE を引き継ぐ
+     compatibility surface。新しい推薦・feed・ranking ではない。並ぶのは、いま
+     公開中の12件を種類 × 街で横断して見る索引と、期限を過ぎた特集・棚の記録だけ。
+     Canonical HOME にはこの DOM を戻さない。 -->
+<body class="explore-page">
   <a class="skip-link" href="#main">本文へ移動</a>
 
   <header class="site-header">
@@ -65,34 +79,34 @@
     </section>
 
     <section class="hero" aria-labelledby="hero-title">
-      <h1 id="hero-title"><span class="hero-line">データの扱い</span></h1>
+      <h1 id="hero-title"><span class="hero-line">種類から見る</span></h1>
     </section>
 
-    <section class="suggest-section" aria-labelledby="data-title">
-      <h2 id="data-title" class="output-title">改善のための計測について</h2>
-      <div class="suggest-terms">
-        <p>サービス改善のため、Google Analytics 4（GA4）でページ表示と、棚を開く・詳細を開く・公式ページへ進むなどの操作段階を計測します。</p>
-        <p>ページを表示しただけでは、GA4以外の外部サービスへ接続しません。公式ページや「Googleカレンダーに追加」など、外部サービスへ移動するリンクは、利用者が押した場合だけ開きます。その際は、移動先の外部サービスが通常どおりアクセスを受け取ります。「Googleカレンダーに追加」では、その特集の題名・日時・会場・紹介文・公式ページのURLをGoogleカレンダーの画面に引き渡します。</p>
-        <p>外部サービスへの移動はGA4のオン／オフとは別の操作です。GA4をオフにしていても、利用者が外部リンクを押した場合は移動先への通信が発生します。感情書店から候補入力の内容や「気になる」の内容を移動先へ付加して送りません。</p>
-        <p>候補入力の名称・URL・自由記述・候補文や、閲覧した個別の場所・作品の名前・IDを、感情書店が定義する独自イベントの項目として送りません。</p>
-        <p>「気になる」は、このブラウザのlocalStorageに、公開中・掲載済みの場所や作品、特集などを見分けるための公開情報だけを保存します。入力した文章や非公開情報は保存しません。感情書店のサーバーやGA4へ「気になる」の内容を送りません。</p>
-        <p>Amazon・楽天への購入リンクには、紹介料の対象となるアフィリエイト識別子を含む場合があります。Amazon のアソシエイトとして、みんなの感情書店は適格販売により収入を得ています。楽天アフィリエイトを利用しています。</p>
-        <p>戻って利用されたかを集計するため、GA4の <code>_ga</code> Cookieを使います。感情書店側で設定する有効期間は60日です。</p>
-        <p>広告のパーソナライズ、個人ごとの推薦、感情・性格の推定、人気順・収益順で棚を並べるためには使いません。</p>
-        <p>GA4で「公式ページを開いた」ことは確認できますが、その後に実際に行った・見た・買った等の行動まで断定しません。</p>
-      </div>
-
-      <section class="suggest-output" aria-labelledby="choice-title">
-        <h2 id="choice-title" class="output-title">このブラウザでの選択</h2>
-        <p class="suggest-lane-note">計測を止める場合は「計測をオフ」、再開する場合は「計測をオン」を選んでください。この設定はこのブラウザのlocalStorageに保存されます。</p>
-        <p class="suggest-actions suggest-actions-secondary">
-          <a class="other-shelves" href="./data.html?analytics=off">計測をオフ</a>
-          <a class="other-shelves" href="./data.html?analytics=on">計測をオン</a>
-        </p>
+    <!-- 種類は新しい棚ではなく、いま並んでいる12件を横断して見るための索引。
+         フィルタの pill 群にはしない。期限切れの Object は載せない。 -->
+    <section class="foyer by-kind" aria-labelledby="explore-kind-title">
+      <h2 id="explore-kind-title" class="entry-axis">街 × 種類</h2>
+      <nav id="categoryTownIndex" class="category-town-index" aria-label="街で絞る"></nav>
+      <nav id="categoryIndex" class="category-index" aria-labelledby="explore-kind-title"></nav>
+      <div id="categoryResults" class="category-results" aria-live="polite"></div>
+      <section id="categoryArchive" class="category-archive" aria-labelledby="categoryArchiveTitle" hidden>
+        <p class="eyebrow">ARCHIVE</p>
+        <h3 id="categoryArchiveTitle" class="category-archive-title">これまでの棚</h3>
+        <div id="categoryArchiveResults" class="category-archive-results"></div>
       </section>
-
-      <p class="end-exit"><a class="other-shelves" href="./index.html">棚に戻る</a></p>
+      <noscript>
+        <p class="noscript-note">この索引を見るには、ブラウザの JavaScript を有効にしてください。</p>
+      </noscript>
     </section>
+
+    <!-- ARCHIVE の唯一の host。期限を過ぎた特集・棚の記録が 1 件以上あるときだけ
+         growth-improvements.js がここへ #archive を描き、hidden を外す。0 件のあいだは
+         空の UI を出さない。ほかのページの #main には描かない。 -->
+    <div id="archiveHost" class="growth-archive-host" hidden></div>
+
+    <div class="explore-exit">
+      <p class="end-exit"><a class="other-shelves" href="./index.html">入口へ戻る</a></p>
+    </div>
   </main>
 
   <footer class="site-footer">
@@ -101,6 +115,8 @@
       <img class="footer-brand-image" src="./assets/brand/emotion-bookstore-lockup-reversed.png" alt="みんなの感情書店" width="1429" height="331" loading="lazy" decoding="async">
     </a>
   </footer>
+
+  <div id="live" class="sr-only" role="status" aria-live="polite"></div>
 
   <script src="./release_content.js"></script>
   <script src="./growth-improvements.js"></script>
