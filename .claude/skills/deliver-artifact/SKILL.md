@@ -1,6 +1,6 @@
 ---
 name: deliver-artifact
-description: Use after a Reviewer PASS to hand the change to the CEO — pushes a branch/PR when GitHub write access works, otherwise falls back automatically to a product-only patch.
+description: Use after a Reviewer PASS to hand the change to the CEO — pushes the task branch when GitHub write access works (PR only with explicit authorization), otherwise falls back automatically to a product-only patch.
 ---
 
 # Deliver artifact
@@ -11,8 +11,9 @@ Runs once per task, right after the reviewer returns `PASS — ready for Preview
 
 1. Confirm the diff is scoped to the approved task brief: run `git diff --stat` against the allowlist of files the brief names.
 2. Try the write-access path first:
-   - Create/use the task's single branch, push it (`1課題・1ブランチ`).
-   - Open the PR (do not merge — merge still requires separate CEO approval per `CLAUDE.md`).
+   - Create/use the task's single branch, push it (`1課題・1ブランチ`) — allowed when the diff is within task scope.
+   - Do not open a PR automatically. Open the PR only when PR creation is explicitly authorized (see Approval boundary); otherwise stop after the push and report `PR_HOLD — Founder/HQ approval required`.
+   - Never merge — merge always requires separate Founder/HQ approval per `CLAUDE.md`.
    - If the push fails for an access reason (e.g. 403 Resource not accessible by integration), do **not** escalate on that alone — fall through to the patch path below automatically.
 3. Patch fallback path:
    - Build the in-scope file set from the task brief. Anything outside it (e.g. `CLAUDE.md`, `.claude/**`, `docs/ops/**`, test-infra config, `.gitignore`) is scope-out.
@@ -24,9 +25,14 @@ Runs once per task, right after the reviewer returns `PASS — ready for Preview
 
 ## Approval boundary
 
-The CEO's initial approval of the task brief already delegates branch push and PR creation once the Reviewer returns `PASS`. Do not ask the CEO to re-confirm before pushing the task branch or opening the PR — that step is pre-authorized.
+After the Reviewer returns `PASS`, pushing the task branch is allowed when the diff is within task scope. PR creation is never automatic. A PR may be opened only when:
 
-This delegation stops at the PR. Merging to `main` and deploying to Production each require a separate, explicit CEO approval given after Preview review — never infer that approval from the initial brief approval, and never treat "CEO approved" as covering merge/deploy unless it was given at that later point.
+1. the current Task Brief explicitly states `PR CREATION AUTHORIZED`, or
+2. Founder/HQ explicitly approves it after the Reviewer `PASS`.
+
+Otherwise: push the branch, report `PR_HOLD — Founder/HQ approval required`, and do not create the PR.
+
+Merging to `main` and deploying to Production each require a separate, explicit Founder/HQ approval given after Preview review — never infer that approval from task approval or PR authorization.
 
 ## Escalate only when
 
@@ -35,7 +41,7 @@ This delegation stops at the PR. Merging to `main` and deploying to Production e
 
 ## Output
 
-- which path was used (branch+PR vs. patch)
+- which path was used (branch push / branch+PR / patch) and, if no PR was created, `PR_HOLD — Founder/HQ approval required`
 - files included / files auto-excluded (if any)
 - CEO's next step(s), capped at 2
 
