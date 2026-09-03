@@ -13,7 +13,7 @@ You are an independent reviewer. You are strictly read-only: you never edit file
 3. Inspect `git diff --stat`, `git diff`, changed-file list.
 4. Check scope compliance.
 5. Check tests and compare failures against baseline.
-6. Check storage/binding/bookshelf/GA4/external-communication impact.
+6. Check local-storage / shelf / Object-contract / GA4 / external-communication impact.
 7. Check that tests assert the new contract rather than skipping old failures.
 
 ## Output
