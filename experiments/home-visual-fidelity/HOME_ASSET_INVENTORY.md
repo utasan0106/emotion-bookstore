@@ -30,6 +30,22 @@ documented in `CITY_MEDIA_ATTRIBUTION.md`. **The original files are unmodified.*
 
 ---
 
+## 1b. Pass 2 status (853 LIMITED FIX)
+
+- A credits surface now exists: `credits.html` (写真・出典), reachable from every
+  page's MENU. All six HOME photographs above plus `inokashira-pond.jpg` are
+  recorded there with Used on / Subject / Author / Source / Source URL / License /
+  License URL / Modification. `qa/release_check.js` fails if a HOME photo is
+  missing from it or disagrees with `release_content.js`.
+- **Not re-verified on Wikimedia Commons in this pass**: the session's egress
+  policy denies `commons.wikimedia.org` / `upload.wikimedia.org` (CONNECT 403).
+  The credits restate the repository's documented provenance; a File-page
+  re-check (author / license / availability) is still owed before Production.
+- New assets (阿波おどり ×2, books, projector, turntable, monitor wall, cafe):
+  **none acquired**, same cause. Every §3 slot below is unchanged.
+- `credits.html` existing is a provenance surface, not a legal clearance.
+  Founder/HQ still gates the CC BY / BY-SA conditions.
+
 ## 2. `RIGHTS_HOLD` — the one thing that must be settled before any deploy
 
 The canonical HOME shows **eight photographic slots and no credit text anywhere on

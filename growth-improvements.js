@@ -146,8 +146,25 @@
     return readInterested().some(function (item) { return item.id === id; });
   }
 
+  /* HOME が VISUAL_CANONICAL の5 section 構成になり、旧 anchor
+     （#weekly-detour / #by-kind / #weekly-video-title）は消えた。端末内に
+     保存済みの record はその href を持ったままなので、表示時だけ現在の
+     section へ読み替える。保存形式・保存内容は書き換えない。 */
+  var RETIRED_HOME_ANCHORS = {
+    '#weekly-detour': '#hc-thread',
+    '#by-kind': '#hc-works',
+    '#weekly-video-title': '#hc-works'
+  };
+  function currentHomeHref(href) {
+    if (typeof href !== 'string') return href;
+    var at = href.indexOf('#');
+    if (at < 0 || href.slice(0, at) !== './index.html') return href;
+    var hash = href.slice(at);
+    return RETIRED_HOME_ANCHORS[hash] ? './index.html' + RETIRED_HOME_ANCHORS[hash] : href;
+  }
+
   function recordHref(record) {
-    if (record.href) return record.href;
+    if (record.href) return currentHomeHref(record.href);
     if (record.shelfId) return './shelf.html?shelf=' + encodeURIComponent(record.shelfId);
     return './index.html';
   }
@@ -311,11 +328,15 @@
       var category = (CONTENT.categories || []).filter(function (c) { return c.id === categoryId; })[0];
       if (!category) return;
       var sameTown = document.createElement('a');
-      sameTown.href = './index.html?category=' + encodeURIComponent(categoryId) + '&town=' + encodeURIComponent(shelf.id) + '#by-kind';
+      /* 旧「種類から見る」は canonical HOME に無い。相当する導線は
+         「作品から入る」（Founder/HQ 指示）。category / town の query は
+         HOME 側に受け手が無くなったので付けない（効かない引数を URL に
+         載せない）。 */
+      sameTown.href = './index.html#hc-works';
       sameTown.textContent = shelf.area + 'の' + category.name;
       links.appendChild(sameTown);
       var allTowns = document.createElement('a');
-      allTowns.href = './index.html?category=' + encodeURIComponent(categoryId) + '#by-kind';
+      allTowns.href = './index.html#hc-works';
       allTowns.textContent = 'ほかの街の' + category.name;
       links.appendChild(allTowns);
     });
@@ -344,7 +365,7 @@
       node.appendChild(makeInterestButton({
         id: 'detour:' + (CONTENT.detour.weekOf || '') + ':' + item.title,
         kind: 'detour', kindLabel: item.kind || '寄り道', title: item.title,
-        area: '今週の寄り道', href: './index.html#weekly-detour'
+        area: '今週の寄り道', href: './index.html#hc-thread'
       }, 'growth-detour-interest'));
     });
   }
@@ -377,7 +398,7 @@
     copy.appendChild(makeInterestButton({
       id: 'weekly-video:' + (play.getAttribute('data-video-id') || title.textContent),
       kind: 'weekly-video', kindLabel: '今週の一本', title: title.textContent,
-      area: '今週の、街と気持ち。', href: './index.html#weekly-video-title'
+      area: '今週の、街と気持ち。', href: './index.html#hc-works'
     }, 'growth-video-interest'));
   }
 

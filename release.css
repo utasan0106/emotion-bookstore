@@ -1912,6 +1912,61 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   }
 }
 
+/* ====================================================== 写真・出典 (credits) */
+/* HOME 本文に長い attribution を常時載せない代わりに置く、静かな一覧。
+   data.html と同じ .suggest-page の型の上に、asset ごとの記録だけを並べる。 */
+.credits-lead {
+  margin: 0;
+  color: var(--chalk-dim);
+  font-size: 0.875rem;
+  line-height: 1.9;
+}
+.credits-list {
+  display: grid;
+  gap: 28px;
+  margin-top: 28px;
+}
+.credits-entry {
+  padding-top: 22px;
+  border-top: 1px solid var(--hall-line);
+}
+.credits-title {
+  margin: 0 0 12px;
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--chalk);
+}
+.credits-meta {
+  display: grid;
+  grid-template-columns: 7.5em minmax(0, 1fr);
+  column-gap: 16px;
+  row-gap: 8px;
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.8;
+}
+.credits-meta dt {
+  margin: 0;
+  color: var(--chalk-dim);
+  letter-spacing: .06em;
+}
+.credits-meta dd {
+  margin: 0;
+  min-width: 0;
+  color: var(--chalk);
+  overflow-wrap: anywhere;
+}
+.credits-meta a {
+  color: var(--chalk);
+  text-underline-offset: 4px;
+}
+@media (max-width: 480px) {
+  .credits-meta { grid-template-columns: minmax(0, 1fr); row-gap: 2px; }
+  .credits-meta dd { margin-bottom: 8px; }
+}
+
 /* ==========================================================================
    HOME — CONTENT-LED IMMERSIVE TIME / VISUAL_CANONICAL 853px
 
@@ -1979,6 +2034,34 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   background:
     linear-gradient(90deg, rgba(8,9,12,.80) 0%, rgba(8,9,12,.46) 38%, rgba(8,9,12,.10) 64%, rgba(8,9,12,.34) 100%),
     linear-gradient(180deg, rgba(8,9,12,.62) 0%, rgba(8,9,12,.14) 28%, rgba(8,9,12,.10) 62%, rgba(8,9,12,.68) 100%);
+}
+
+/* Cultural trace。写真と scrim の上、文字の下。線は主役ではないので
+   ivory の低不透明度・1px。年号は Evidence 済みの4つだけ（markup 側）。
+   animation を持たないので prefers-reduced-motion でも同じ静止描画になる。 */
+.hc-hero-trace {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+.hc-trace-line {
+  fill: none;
+  stroke: rgba(242,236,224,.34);
+  stroke-width: 1;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.hc-trace-dot { fill: rgba(201,160,99,.82); }
+.hc-trace-year {
+  font-family: var(--sans);
+  font-size: 9.5px;
+  letter-spacing: .12em;
+  fill: rgba(242,236,224,.66);
 }
 
 .hc-header {

@@ -1,4 +1,4 @@
-# HOME VISUAL FIDELITY — 853px first pass
+# HOME VISUAL FIDELITY — 853px
 
 Review artifacts only. **Not runtime.** Excluded from the delivery surface via
 `/experiments/` in `.vercelignore`.
@@ -12,6 +12,29 @@ Review artifacts only. **Not runtime.** Excluded from the delivery surface via
 | `HOME_CURRENT_853.png` | This branch at 853 px — 853 × 1844 |
 | `HOME_SIDE_BY_SIDE_853.png` | Baseline and current, same scale, same width |
 | `HOME_OVERLAY_DIFF_853.png` | Current render with the Visual Contract's target rectangles drawn on it |
+
+## Pass 2 — ASSET / RIGHTS / QA LIMITED FIX (this branch, HEAD+1)
+
+Geometry from pass 1 is kept byte-for-byte (every contract rect re-read at
+853 × 1844: hero 0/0/853/617, CTA 32/452/244×52, city grid 32/706/789×311,
+work grid 32/1104/789×143, thread 25/1275/803×292, strip 333/1620/512×186,
+spots 32/1746/212×48; document exactly 853 × 1844). What changed:
+
+| Item | State |
+|---|---|
+| HERO cultural trace | **added** — static inline SVG (`.hc-hero-trace`), one 1px ivory line + 4 gold dots + the four Founder/HQ evidence-cleared Koenji years `1957 / 1961 / 1963 / 2026`. `pointer-events: none`, `aria-hidden`, no animation, sits between the photo scrim and the text (z 1 < 2). No other year, no captions. |
+| 高円寺 card / Featured Thread (阿波おどり) | **ASSET_HOLD — network** — the egress policy of this session denies `commons.wikimedia.org` and `upload.wikimedia.org` (CONNECT 403, also via WebFetch), so neither File page could be verified nor a byte fetched. Nothing was substituted. |
+| 作品から入る ×4 | **ASSET_HOLD — network** — same cause. Cards keep canonical geometry with the dark image plane. No gradient / blob / illustration. |
+| 現実へ出る #1 (cafe) | **ASSET_HOLD — network** — same cause; `city-kichijoji.jpg` (Harmonica Yokocho, a gathering alley) stays. #2 `yaguchi-shoten.jpg` and #3 `shimokitazawa-shelter.jpg` kept as the brief allows. Alt text names only what the photos actually show. |
+| Rights surface | **`credits.html` added** — 写真・出典. Reachable from the MENU of every page (index / shelf / suggest / data / credits). Records Used on / Subject / Author / Source / Source URL / License / License URL / Modification for all 7 third-party photographs in the site (6 on HOME + 井の頭池 on the kichijoji shelf). CC0 recorded the same way. `qa/release_check.js` cross-checks author / license / URLs against `release_content.js`. File pages could **not** be re-fetched from this session (egress) — the entries restate the repo's documented provenance (`CITY_MEDIA_ATTRIBUTION.md`, `release_content.js` rights, both dated 2026-09-01 / 2026-08-28). |
+| Dead HOME anchors | **0** — `#by-kind` → `#hc-works` (作品から入る), `#weekly-detour` → `#hc-thread` (いま辿れるスレッド) in shelf / suggest / data menus and `growth-improvements.js` (also `#weekly-video-title` → `#hc-works`, and saved 気になる records with retired hrefs are re-pointed at render time only — storage untouched). `release_check.js` now fails on any `index.html#id` whose id does not exist. |
+| MENU same-page anchor | `release.js` closes the dialog when a link inside it targets the current document, so `#hc-works` from HOME lands on the section instead of leaving the modal open. |
+| QA migration | `qa/release_check.js`, `qa/ga4_v3_client_selftest.js`, `qa/browser_qa.js` migrated from the old HOME (今日は、どの街へ。／種類から見る／今週の寄り道／週間動画／AI city illustration／`.shelf-tagline`) to the canonical contract. `release_check` now runs `home_canonical_check.js` as a sub-gate. `browser_qa` gained a `home853` block (geometry rects, 5 sections, wordmark header, 4 cities in canonical order, 4 route-held works, 5 nodes, 8 non-navigating holds, trace years, reduced-motion = 0 animations, 0 external, menu anchor behaviour) and a `credits` block at 390 / 1440. Non-853 widths for HOME are reported **NOT OBSERVABLE** (Founder/HQ deferred 390 / 1024 / 1440), never silently passed. |
+| Capture host font | `fonts-noto-cjk` installed and `/etc/fonts/local.conf` maps the shipped stacks → Noto Serif CJK JP / Noto Sans CJK JP (capture host only). CDP `CSS.getPlatformFontsForNode` confirms every `--serif` node rasterises in **Noto Serif CJK JP** and every `--sans` node in **Noto Sans CJK JP**, including the SVG year numerals. |
+| TRUE pixel comparison | **REFERENCE_FILE_HOLD** — see `reference/README.md`. The canonical reached this session only as an inline conversation image (no bytes on disk, none in `/mnt/attach`, none in Drive). `tools/true_compare.py` is committed and proven on a stand-in pair in scratch space; it exits 2 and writes nothing when the reference is absent. Drop the PNG into `reference/` and run it to get `HOME_TRUE_SIDE_BY_SIDE_853.png` / `HOME_TRUE_OVERLAY_853.png` / `HOME_TRUE_PIXEL_DIFF_853.png`. No image was fabricated to stand in for it. |
+
+Review shots added: `CREDITS_390.png` (credits page, full height) and
+`MENU_CREDITS_390.png` (MENU open, showing 写真・出典).
 
 ## `HOME_REFERENCE_853.png` is deliberately absent
 

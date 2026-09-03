@@ -200,7 +200,19 @@
 
     button.addEventListener('click', openMenu);
     close.addEventListener('click', closeMenu);
-    menu.addEventListener('click', function (event) { if (event.target === menu) closeMenu(); });
+    menu.addEventListener('click', function (event) {
+      if (event.target === menu) { closeMenu(); return; }
+      /* 同一 document 内の section へ飛ぶ link（HOME の #hc-works など）は
+         page 遷移が起きず modal が開いたまま残るので、ここで閉じる。 */
+      var link = event.target && event.target.closest ? event.target.closest('a[href]') : null;
+      if (!link) return;
+      var href = link.getAttribute('href') || '';
+      var hashAt = href.indexOf('#');
+      if (hashAt < 0) return;
+      var target = href.slice(0, hashAt).replace(/^\.\//, '');
+      var here = (location.pathname.split('/').pop() || 'index.html');
+      if (target === '' || target === here) closeMenu();
+    });
     menu.addEventListener('cancel', function (event) { event.preventDefault(); closeMenu(); });
   }
 

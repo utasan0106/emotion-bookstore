@@ -56,14 +56,16 @@
         <a class="site-menu-link" data-menu-shelf="jinbocho" href="./shelf.html?shelf=jinbocho"><span>神保町</span><span aria-hidden="true">→</span></a>
       </nav>
 
-      <!-- 「今週の寄り道」「種類から見る」は HOME 上の anchor だったが、HOME が
-           VISUAL_CANONICAL の5 section 構成になり、その節が HOME から外れた。
-           行き先の無い anchor を残すと嘘のリンクになるので出さない。
+      <!-- 旧 HOME の「種類から見る」「今週の寄り道」は canonical に無い。
+           相当する導線は Founder/HQ の指示で「作品から入る」「いま辿れるスレッド」
+           へ付け替える。行き先は index.html に実在する section id だけ。
            .site-menu-secondary 自体は残す（archive 追加時に growth-improvements.js
            がここへ「Archiveを見る」を差し込む）。 -->
       <section class="site-menu-section" aria-labelledby="siteMenuDiscoverTitle">
         <p id="siteMenuDiscoverTitle" class="eyebrow">見つける</p>
         <nav class="site-menu-secondary" aria-label="ほかの見方">
+          <a class="site-menu-secondary-link" href="./index.html#hc-works"><span>作品から入る</span><span aria-hidden="true">→</span></a>
+          <a class="site-menu-secondary-link" href="./index.html#hc-thread"><span>いま辿れるスレッド</span><span aria-hidden="true">→</span></a>
           <a class="site-menu-secondary-link" href="./suggest.html"><span>候補を教える</span><span aria-hidden="true">→</span></a>
         </nav>
       </section>
@@ -75,6 +77,7 @@
 
       <div class="site-menu-bottom">
         <a class="site-menu-data-link" href="./data.html">データの扱い</a>
+        <a class="site-menu-data-link" href="./credits.html">写真・出典</a>
         <a class="site-menu-entry-link" href="./index.html">入口へ戻る</a>
       </div>
     </div>
@@ -87,6 +90,23 @@
       <div class="hc-hero-media" aria-hidden="true">
         <img src="./assets/city-koenji.jpg" alt="" width="1200" height="1600" fetchpriority="high" decoding="async">
       </div>
+
+      <!-- Cultural trace: 街と時間を辿る一本の線。装飾であって主役ではない。
+           年号は Founder/HQ が Evidence 済みと定めた高円寺 relation の
+           1957 / 1961 / 1963 / 2026 だけ。架空年号・説明文は置かない。
+           静的 SVG。animation 無し（reduced-motion でも同じ描画）。
+           pointer-events: none で操作面に影響しない。 -->
+      <svg class="hc-hero-trace" viewBox="0 0 853 617" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path class="hc-trace-line" d="M 336 44 C 470 20, 630 84, 680 236 C 690 286, 610 300, 548 352 C 476 388, 420 420, 404 462 C 388 504, 400 532, 414 552"/>
+        <circle class="hc-trace-dot" cx="404" cy="462" r="2.2"/>
+        <circle class="hc-trace-dot" cx="455" cy="410" r="2.2"/>
+        <circle class="hc-trace-dot" cx="548" cy="352" r="2.2"/>
+        <circle class="hc-trace-dot" cx="680" cy="236" r="2.2"/>
+        <text class="hc-trace-year" x="392" y="458" text-anchor="end">1957</text>
+        <text class="hc-trace-year" x="464" y="428">1961</text>
+        <text class="hc-trace-year" x="536" y="346" text-anchor="end">1963</text>
+        <text class="hc-trace-year" x="668" y="226" text-anchor="end">2026</text>
+      </svg>
 
       <header class="hc-header">
         <p class="hc-brand"><a class="hc-brand-link" href="./index.html">みんなの感情書店</a></p>
@@ -161,7 +181,7 @@
 
       <!-- ========================================== 3. 作品から入る ===== -->
       <!-- 街と同格の、文化への別の入口。category filter UI ではない。 -->
-      <section class="hc-section hc-works" aria-labelledby="hc-works-title">
+      <section id="hc-works" class="hc-section hc-works" aria-labelledby="hc-works-title">
         <div class="hc-section-head">
           <h2 id="hc-works-title" class="hc-section-title">作品から入る</h2>
           <p class="hc-section-note">本・映画・音楽・映像… あらゆる作品が、街とつながっている。</p>
@@ -217,7 +237,7 @@
       </section>
 
       <!-- ==================================== 4. いま辿れるスレッド ===== -->
-      <section class="hc-section hc-thread-section" aria-labelledby="hc-thread-title">
+      <section id="hc-thread" class="hc-section hc-thread-section" aria-labelledby="hc-thread-title">
         <div class="hc-thread">
           <div class="hc-thread-head">
             <h2 id="hc-thread-title" class="hc-thread-heading">いま辿れるスレッド</h2>
@@ -225,8 +245,12 @@
           </div>
 
           <div class="hc-thread-body">
-            <!-- ASSET_HOLD: canonical は阿波おどりの一枚。権利確認済みで最も近い
-                 のは高円寺の夜（CC BY-SA 4.0 / NMaia）。街は一致、被写体は不一致。 -->
+            <!-- ASSET_HOLD: canonical は阿波おどりの一枚。Founder/HQ 候補
+                 （Wikimedia Commons: KoenjiAwaOdori.jpg / Koenj awaodori.jpg）は
+                 この実装環境の egress policy が commons.wikimedia.org と
+                 upload.wikimedia.org を拒否するため File page 確認も取得も
+                 できていない。権利確認済みで最も近い高円寺の夜（CC BY-SA 4.0 /
+                 NMaia）を維持。街は一致、被写体は不一致。 -->
             <div class="hc-thread-media">
               <img src="./assets/city-koenji.jpg" alt="夜の高円寺。灯りのついた店が並ぶ通り" width="1200" height="1600" loading="lazy" decoding="async">
             </div>

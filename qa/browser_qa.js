@@ -96,198 +96,13 @@ function serve() {
     const pageErrors = [];
     page.on('pageerror', (e) => pageErrors.push(String(e)));
 
-    /* ---- 玄関 ---- */
-    await page.goto(base + 'index.html', { waitUntil: 'load' });
-    await page.waitForFunction(() => document.querySelectorAll('.shelf-entry').length === 4);
-    const foyer = await page.evaluate((shelves) => {
-      const entries = [...document.querySelectorAll('.shelf-entry')];
-      const doc = document.documentElement;
-      const wide = [];
-      document.querySelectorAll('body *').forEach((el) => {
-        if (el.classList.contains('sr-only') || el.classList.contains('skip-link')) return;
-        const b = el.getBoundingClientRect();
-        if (b.width > 0 && b.right > doc.clientWidth + 1) wide.push(el.className || el.tagName);
-      });
-      const sizes = entries.map((el) =>
-        parseFloat(getComputedStyle(el.querySelector('.shelf-tagline')).fontSize));
-      const paddings = entries.map((el) => {
-        const cs = getComputedStyle(el);
-        return [parseFloat(cs.paddingTop), parseFloat(cs.paddingBottom)];
-      });
-      return {
-        count: entries.length,
-        ids: entries.map((e) => e.dataset.shelfId),
-        hrefs: entries.map((e) => e.getAttribute('href')),
-        taglines: entries.map((e) => e.querySelector('.shelf-tagline').textContent),
-        citySizesEqual: sizes.every((n) => Math.abs(n - sizes[0]) < 0.01),
-        cityPaddingEqual: paddings.every((p) =>
-          Math.abs(p[0] - paddings[0][0]) < 0.01 &&
-          Math.abs(p[1] - paddings[0][1]) < 0.01),
-        cityPanelsMatchReference: entries.every((entry) => {
-          const text = entry.querySelector('.shelf-tagline').getBoundingClientRect();
-          const media = entry.querySelector('.shelf-entry-media').getBoundingClientRect();
-          if (window.innerWidth < 821) return media.top >= text.bottom - 2;
-          return media.left > text.left + text.width * .55 &&
-            media.width >= 320 &&
-            media.width <= 490 &&
-            media.height >= 150;
-        }),
-        h1: document.querySelectorAll('h1').length,
-        lead: document.querySelector('h1').innerText.replace(/\s+/g, ''),
-        brandLockups: [...document.querySelectorAll('.brand-lockup-image')].map((img) => ({
-          sameOrigin: new URL(img.src).origin === location.origin,
-          loaded: img.complete && img.naturalWidth > 0,
-          alt: img.getAttribute('alt') || ''
-        })),
-        introOneLine: (() => {
-          const el = document.querySelector('.site-explainer');
-          if (!el) return false;
-          const cs = getComputedStyle(el);
-          const lh = parseFloat(cs.lineHeight);
-          return window.innerWidth < 1000 || el.getBoundingClientRect().height <= lh * 1.15;
-        })(),
-        endVisible: !document.querySelector('.end-plate').hidden,
-        overflow: doc.scrollWidth > doc.clientWidth + 1, wide: wide.slice(0, 4),
-        text: document.body.innerText,
-        homeCityImages: [...document.querySelectorAll('.shelf-entry img')].map((img) => ({
-          src: img.getAttribute('src'),
-          sameOrigin: new URL(img.src).origin === location.origin,
-          loaded: img.complete && img.naturalWidth > 0,
-          alt: img.getAttribute('alt') || '',
-          illustration: !!img.closest('.shelf-entry-media.is-entry-illustration')
-        })),
-        homeCityCredits: [...document.querySelectorAll('.shelf-entry-media-credit')].map((el) => el.textContent),
-        detourItems: document.querySelectorAll('.detour-item').length,
-        detourIframes: document.querySelectorAll('.detour-media iframe').length,
-        detourVideoButtons: document.querySelectorAll('.detour-video-play').length,
-        detourTitlesOneLine: [...document.querySelectorAll('.detour-name')].every((el) => {
-          const cs = getComputedStyle(el);
-          const lh = parseFloat(cs.lineHeight);
-          return el.getBoundingClientRect().height <= lh * 1.15;
-        }),
-        footerOneLine: (() => {
-          const f = document.querySelector('.site-footer .privacy-note');
-          if (!f) return false;
-          const cs = getComputedStyle(f);
-          const lh = parseFloat(cs.lineHeight);
-          return f.getBoundingClientRect().height <= lh * 1.15;
-        })(),
-        explainerMobileTwoLines: (() => {
-          if (window.innerWidth > 820) return true;
-          const lines = [...document.querySelectorAll('.site-explainer .explainer-line')];
-          if (lines.length !== 2) return false;
-          return lines[0].textContent === '人が選んだ場所・本・音楽・映画・催しを、' &&
-            lines[1].textContent === '街や種類ごとに少しずつ並べる文化案内です。' &&
-            lines.every((el) => {
-              const cs = getComputedStyle(el);
-              const lh = parseFloat(cs.lineHeight);
-              return el.getBoundingClientRect().height <= lh * 1.15;
-            }) &&
-            lines[1].getBoundingClientRect().top > lines[0].getBoundingClientRect().top + 2;
-        })(),
-        weeklyPlateMobileTwoLines: (() => {
-          if (window.innerWidth > 820) return true;
-          const lines = [...document.querySelectorAll('.weekly-video-plate-line')];
-          if (lines.length !== 2) return false;
-          return lines[0].textContent === '東京の文化を、' &&
-            lines[1].textContent === '31秒だけ' &&
-            lines[1].getBoundingClientRect().top > lines[0].getBoundingClientRect().top + 2;
-        })(),
-        mobileCityEntryOrder: entries.every((entry) => {
-          if (window.innerWidth > 820) return true;
-          const name = entry.querySelector('.shelf-name').getBoundingClientRect();
-          const media = entry.querySelector('.shelf-entry-media').getBoundingClientRect();
-          const tag = entry.querySelector('.shelf-tagline').getBoundingClientRect();
-          const mark = entry.querySelector('.shelf-mark').getBoundingClientRect();
-          return name.bottom <= media.top + 2 &&
-            media.bottom <= tag.top + 2 &&
-            tag.bottom <= mark.top + 2;
-        }),
-        mobileIllustrationsIntegrated: entries.every((entry) => {
-          if (window.innerWidth > 820) return true;
-          const frame = entry.querySelector('.shelf-entry-media.is-entry-illustration .shelf-entry-media-frame');
-          if (!frame) return false;
-          const cs = getComputedStyle(frame);
-          const after = getComputedStyle(frame, '::after');
-          return parseFloat(cs.borderTopWidth) === 0 && after.display !== 'none';
-        }),
-        foyerEndingPeriodSameLine: (() => {
-          if (window.innerWidth < 821) return true;
-          const phrase = document.querySelector('.foyer-end .end-phrase:last-child');
-          if (!phrase || !phrase.firstChild || phrase.firstChild.nodeType !== Node.TEXT_NODE) return false;
-          const text = phrase.firstChild.textContent || '';
-          if (!text.endsWith('です。')) return false;
-          const before = document.createRange();
-          before.setStart(phrase.firstChild, text.length - 2);
-          before.setEnd(phrase.firstChild, text.length - 1);
-          const period = document.createRange();
-          period.setStart(phrase.firstChild, text.length - 1);
-          period.setEnd(phrase.firstChild, text.length);
-          return Math.abs(before.getBoundingClientRect().top - period.getBoundingClientRect().top) < 2;
-        })()
-      };
-    }, SHELVES);
-    check(v.name, 'foyer_has_exactly_4_shelves', foyer.count === 4, foyer.count);
-    check(v.name, 'foyer_shelf_order', foyer.ids.join(',') === SHELVES.join(','), foyer.ids);
-    check(v.name, 'foyer_deep_link_hrefs',
-      foyer.hrefs.every((h, i) => h === `./shelf.html?shelf=${SHELVES[i]}`), foyer.hrefs);
-    check(v.name, 'foyer_taglines',
-      foyer.taglines.join('|') === '吉祥寺を、3つだけ。|高円寺を、3つだけ。|下北沢を、3つだけ。|神保町を、3つだけ。',
-      foyer.taglines);
-    check(v.name, 'four_city_taglines_use_equal_size',
-      foyer.citySizesEqual === true, foyer);
-    check(v.name, 'four_city_entries_use_equal_padding',
-      foyer.cityPaddingEqual === true, foyer);
-    if (!v.mobile) {
-      check(v.name, 'four_city_editorial_panels_match_reference',
-        foyer.cityPanelsMatchReference === true, foyer);
-    }
-    check(v.name, 'foyer_single_h1', foyer.h1 === 1, foyer.h1);
-    check(v.name, 'official_brand_lockup_is_visible',
-      foyer.brandLockups.length === 1 &&
-      foyer.brandLockups[0].sameOrigin &&
-      foyer.brandLockups[0].loaded &&
-      foyer.brandLockups[0].alt === 'みんなの感情書店',
-      foyer.brandLockups);
-    if (v.width >= 1000) {
-      check(v.name, 'site_explainer_is_one_line_on_web',
-        foyer.introOneLine === true, foyer);
-    }
-    check(v.name, 'foyer_lead_copy', foyer.lead === '今日は、どの街へ。', foyer.lead);
-    check(v.name, 'foyer_finite_ending_shown', foyer.endVisible);
-    if (v.mobile) {
-      check(v.name, 'mobile_site_explainer_has_exact_two_lines',
-        foyer.explainerMobileTwoLines === true, foyer);
-      check(v.name, 'mobile_weekly_video_plate_has_exact_two_lines',
-        foyer.weeklyPlateMobileTwoLines === true, foyer);
-      check(v.name, 'mobile_city_entry_order_is_name_image_tagline_arrow',
-        foyer.mobileCityEntryOrder === true, foyer);
-      check(v.name, 'mobile_city_illustrations_blend_without_frame',
-        foyer.mobileIllustrationsIntegrated === true, foyer);
-    } else {
-      check(v.name, 'foyer_ending_period_stays_with_sentence',
-        foyer.foyerEndingPeriodSameLine === true, foyer);
-    }
-    check(v.name, 'foyer_no_horizontal_overflow', !foyer.overflow, foyer.wide);
-    check(v.name, 'foyer_no_engagement_words',
-      !FORBIDDEN.some((w) => foyer.text.includes(w)), FORBIDDEN.filter((w) => foyer.text.includes(w)));
-    check(v.name, 'home_city_entries_have_exactly_four_ai_illustrations',
-      foyer.homeCityImages.length === 4 &&
-      foyer.homeCityImages.every((x) =>
-        x.sameOrigin && x.loaded && x.alt && x.illustration && /entry-.*\.webp$/.test(x.src)
-      ),
-      foyer.homeCityImages);
-    check(v.name, 'home_city_ai_illustrations_have_no_external_photo_credit',
-      foyer.homeCityCredits.length === 0,
-      foyer.homeCityCredits);
-    check(v.name, 'weekly_detour_is_exactly_three', foyer.detourItems === 3, foyer.detourItems);
-    check(v.name, 'weekly_detour_has_two_click_gated_videos', foyer.detourVideoButtons === 2, foyer.detourVideoButtons);
-    check(v.name, 'weekly_detour_loads_no_iframe_before_click', foyer.detourIframes === 0, foyer.detourIframes);
-    if (!v.mobile) {
-      check(v.name, 'weekly_detour_titles_are_one_line_on_web', foyer.detourTitlesOneLine === true, foyer);
-      if (v.width >= 1440) check(v.name, 'web_footer_is_one_line', foyer.footerOneLine === true, foyer);
-    }
-    check(v.name, 'foyer_no_external_request', external.length === 0, external.slice(0, 3));
+    /* ---- 玄関 ----
+       HOME は Founder/HQ 承認の VISUAL_CANONICAL（853 CSS px 固定 geometry）。
+       390 / 1024 / 1440 の responsive は次 Gate（HOME 853 brief §9）なので、
+       この幅では見ない。見なかったことを合格へ混ぜず、別枠で残す。
+       HOME の実ブラウザ契約は下の home853 block で見る。 */
+    notObservable(v.name, 'home_canonical_at_this_width',
+      'HOME は 853px canonical 固定。' + v.width + 'px の responsive は Founder/HQ が次 Gate と定めた');
 
     /* ---- 4つの棚 ---- */
     for (const id of SHELVES) {
@@ -511,9 +326,10 @@ function serve() {
   }
 
   /* ---- A. site explainer が最初の media より先 ---- */
-  const EXPLAINER = '人が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べる文化案内です。';
+  // 2026-09-01 に「感情書店の編集部が選んだ」へ改稿済み（qa/release_check.js と同じ文）。
+  const EXPLAINER = '感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べる文化案内です。';
+  /* canonical HOME に site-explainer は無い（hero copy が先に来ることは home853 で見る）。 */
   for (const target of [
-    { name: 'foyer', url: 'index.html' },
     { name: 'kichijoji', url: 'shelf.html?shelf=kichijoji' },
     { name: 'koenji', url: 'shelf.html?shelf=koenji' },
     { name: 'shimokitazawa', url: 'shelf.html?shelf=shimokitazawa' },
@@ -556,153 +372,254 @@ function serve() {
     await ctx.close();
   }
 
-  /* ---- B/C. 二軸の入口と種類の索引 ---- */
+  /* ---- B. HOME — VISUAL_CANONICAL 853 ----
+     Founder/HQ 承認済み HOME 画像（853 × 1844）の実ブラウザ契約。
+     旧「二軸の入口と種類の索引」を置き換える。二軸は 街から入る / 作品から入る。
+     category 索引・週間動画・寄り道は canonical に無く、HOME は Object を
+     一覧しない（有限・非 feed）。 */
   {
-    const S = 'entrance';
-    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const S = 'home853';
+    const ctx = await browser.newContext({
+      viewport: { width: 853, height: 1844 }, deviceScaleFactor: 1, reducedMotion: 'reduce'
+    });
     const external = [];
     ctx.on('request', (req) => { if (!req.url().startsWith(origin)) external.push(req.url()); });
     const page = await ctx.newPage();
+    const pageErrors = [];
+    page.on('pageerror', (e) => pageErrors.push(String(e)));
+    page.on('console', (m) => { if (m.type() === 'error') pageErrors.push('console: ' + m.text()); });
     await page.goto(base + 'index.html', { waitUntil: 'load' });
-    await page.waitForFunction(() => document.querySelectorAll('.category-link').length === 5);
-    const dual = await page.evaluate(() => ({
-      axes: [...document.querySelectorAll('.entry-axis')].map((e) => e.textContent.trim()),
-      shelves: document.querySelectorAll('.shelf-entry').length,
-      cats: [...document.querySelectorAll('.category-link')].map((a) => ({
-        id: a.dataset.categoryId, name: a.querySelector('.category-name').textContent,
-        n: a.querySelector('.category-count').textContent,
-        h: Math.round(a.getBoundingClientRect().height)
-      })),
-      resultsEmptyAtStart: document.getElementById('categoryResults').children.length === 0,
-      images: document.querySelectorAll('.category-results img').length,
-      pager: document.querySelectorAll('[class*=pagin], [class*=page-next], [rel=next]').length
-    }));
-    check(S, 'both_entry_axes_present',
-      dual.axes.join('|') === '街から見る|種類から見る', dual.axes);
-    check(S, 'four_city_shelves_kept', dual.shelves === 4, dual.shelves);
-    check(S, 'exactly_5_controlled_categories', dual.cats.length === 5, dual.cats.length);
-    check(S, 'category_ids_and_names',
-      dual.cats.map((c) => c.id + '=' + c.name).join('|') ===
-      'food=飲食・喫茶|experience=体験・おでかけ|books=本・古書|music=音楽・ライブ|film-stage=映画・演劇',
-      dual.cats);
-    check(S, 'category_controls_are_comfortable_to_hit',
-      dual.cats.every((c) => c.h >= 44), dual.cats.map((c) => c.h));
-    check(S, 'no_results_until_a_category_is_chosen', dual.resultsEmptyAtStart);
-    check(S, 'no_pagination_control', dual.pager === 0, dual.pager);
+    await page.waitForFunction(() => Array.from(document.images).every((i) => i.complete && i.naturalWidth > 0));
+    await page.waitForFunction(() => document.fonts.status === 'loaded');
+    await page.waitForTimeout(150);
+    const home = await page.evaluate((shelves) => {
+      const doc = document.documentElement;
+      const rect = (sel) => {
+        const el = document.querySelector(sel);
+        if (!el) return null;
+        const b = el.getBoundingClientRect();
+        return { x: Math.round(b.left), y: Math.round(b.top + scrollY), w: Math.round(b.width), h: Math.round(b.height) };
+      };
+      const wide = [];
+      document.querySelectorAll('body *').forEach((el) => {
+        if (el.classList.contains('sr-only') || el.classList.contains('skip-link')) return;
+        const b = el.getBoundingClientRect();
+        if (b.width > 0 && b.right > doc.clientWidth + 1) wide.push(el.className || el.tagName);
+      });
+      const cities = [...document.querySelectorAll('.hc-city.shelf-entry')];
+      const trace = document.querySelector('.hc-hero-trace');
+      const body = document.querySelector('.hc-hero-body');
+      return {
+        docW: doc.scrollWidth, docH: doc.scrollHeight,
+        overflow: doc.scrollWidth > doc.clientWidth + 1, wide: wide.slice(0, 4),
+        sections: [...document.querySelectorAll('main > section, main > .hc-sheet > section')]
+          .map((el) => el.id || [...el.classList].find((c) => c !== 'hc-section')),
+        h1: document.querySelectorAll('h1').length,
+        h1Text: document.querySelector('h1').innerText.replace(/\s+/g, ''),
+        h1LineTops: [...document.querySelectorAll('.hc-hero-line')].map((el) => Math.round(el.getBoundingClientRect().top)),
+        brand: (() => {
+          const a = document.querySelector('.hc-brand-link');
+          return a && { text: a.textContent, imgs: a.querySelectorAll('img').length, href: a.getAttribute('href') };
+        })(),
+        heroImgAlt: (document.querySelector('.hc-hero-media img') || {}).getAttribute ? document.querySelector('.hc-hero-media img').getAttribute('alt') : null,
+        cities: cities.map((a) => ({
+          href: a.getAttribute('href'), name: a.querySelector('.hc-city-name').textContent,
+          qLines: a.querySelectorAll('.hc-city-q-line').length, h: Math.round(a.getBoundingClientRect().height),
+          hasImg: !!a.querySelector('img')
+        })),
+        works: [...document.querySelectorAll('.hc-work')].map((w) => ({
+          label: w.querySelector('.hc-work-label').textContent, hold: w.getAttribute('data-route-hold'),
+          tag: w.tagName, href: w.getAttribute('href'), h: Math.round(w.getBoundingClientRect().height)
+        })),
+        nodes: [...document.querySelectorAll('.hc-node')].map((n) => n.innerText.replace(/\s+/g, '')),
+        holds: [...document.querySelectorAll('[data-route-hold]')].map((el) => ({
+          id: el.getAttribute('data-route-hold'), tag: el.tagName, href: el.getAttribute('href'), onclick: el.getAttribute('onclick')
+        })),
+        strip: document.querySelectorAll('.hc-reality-shot img').length,
+        images: [...document.images].map((img) => ({
+          src: img.getAttribute('src'), sameOrigin: new URL(img.src).origin === location.origin,
+          loaded: img.complete && img.naturalWidth > 0
+        })),
+        iframes: document.querySelectorAll('iframe').length,
+        trace: trace && {
+          pe: getComputedStyle(trace).pointerEvents, hidden: trace.getAttribute('aria-hidden'),
+          years: [...trace.querySelectorAll('.hc-trace-year')].map((t) => t.textContent),
+          belowText: body && parseInt(getComputedStyle(body).zIndex, 10) > parseInt(getComputedStyle(trace).zIndex, 10),
+          inHero: trace.closest('.hc-hero') !== null
+        },
+        animations: document.getAnimations().length,
+        rects: {
+          hero: rect('.hc-hero'), sheet: rect('.hc-sheet'), cta: rect('.hc-hero-cta'),
+          cityGrid: rect('.hc-city-grid'), workGrid: rect('.hc-work-grid'),
+          thread: rect('.hc-thread'), threadMedia: rect('.hc-thread-media'),
+          strip: rect('.hc-reality-strip'), spots: rect('.hc-reality-cta')
+        },
+        anchors: ['hc-works', 'hc-thread'].every((id) => !!document.getElementById(id)),
+        menu: {
+          credits: !!document.querySelector('#siteMenu a[href="./credits.html"]'),
+          works: !!document.querySelector('#siteMenu a[href="./index.html#hc-works"]'),
+          thread: !!document.querySelector('#siteMenu a[href="./index.html#hc-thread"]'),
+          retired: document.querySelectorAll('#siteMenu a[href*="#by-kind"], #siteMenu a[href*="#weekly-detour"]').length
+        },
+        listing: document.querySelectorAll('.result-row, .object-card, .category-link, .detour-item, .weekly-video, .shelf-tagline, #categoryIndex, #archive').length,
+        pager: document.querySelectorAll('[class*=pagin], [class*=page-next], [rel=next]').length,
+        fonts: document.fonts.status,
+        text: document.body.innerText
+      };
+    }, SHELVES);
+    const near = (r, x, y, w, h, tol) => !!r && Math.abs(r.x - x) <= tol && Math.abs(r.y - y) <= tol && Math.abs(r.w - w) <= tol && Math.abs(r.h - h) <= tol;
+    check(S, 'document_is_853_wide', home.docW === 853, home.docW);
+    check(S, 'document_height_is_canonical_1844', Math.abs(home.docH - 1844) <= 4, home.docH);
+    check(S, 'no_horizontal_overflow', !home.overflow, home.wide);
+    check(S, 'five_sections_in_canonical_order',
+      home.sections.join('|') === 'hc-hero|hc-cities|hc-works|hc-thread|hc-reality', home.sections);
+    check(S, 'single_h1', home.h1 === 1, home.h1);
+    check(S, 'h1_is_canonical_copy', home.h1Text === '文化のつながりを、歩く。', home.h1Text);
+    check(S, 'h1_breaks_into_three_lines', new Set(home.h1LineTops).size === 3, home.h1LineTops);
+    check(S, 'header_is_wordmark_only',
+      !!home.brand && home.brand.text === 'みんなの感情書店' && home.brand.imgs === 0 && home.brand.href === './index.html', home.brand);
+    check(S, 'hero_photo_is_decorative', home.heroImgAlt === '', home.heroImgAlt);
+    // canonical の並びは 高円寺 / 吉祥寺 / 下北沢 / 神保町（content の棚順とは違う）
+    const CANONICAL_ORDER = ['koenji', 'kichijoji', 'shimokitazawa', 'jinbocho'];
+    check(S, 'four_city_entries_in_canonical_order',
+      home.cities.length === 4 && home.cities.every((c, i) => c.href === `./shelf.html?shelf=${CANONICAL_ORDER[i]}`), home.cities.map((c) => c.href));
+    check(S, 'city_names', home.cities.map((c) => c.name).join('|') === '高円寺|吉祥寺|下北沢|神保町', home.cities.map((c) => c.name));
+    check(S, 'city_questions_are_three_lines_with_photo', home.cities.every((c) => c.qLines === 3 && c.hasImg), home.cities);
+    check(S, 'city_cards_are_311_tall', home.cities.every((c) => Math.abs(c.h - 311) <= 1), home.cities.map((c) => c.h));
+    check(S, 'four_work_entries', home.works.map((w) => w.label).join('|') === '本|映画|音楽|映像', home.works);
+    check(S, 'work_entries_hold_without_a_fake_route',
+      home.works.every((w) => w.hold && w.tag !== 'A' && w.tag !== 'BUTTON' && !w.href), home.works);
+    check(S, 'work_cards_are_143_tall', home.works.every((w) => Math.abs(w.h - 143) <= 1), home.works.map((w) => w.h));
+    check(S, 'thread_chain_is_five_nodes',
+      home.nodes.join('|') === '街高円寺|出来事阿波おどり|人踊り手たち|資料記録と写真|現在つづく祭り', home.nodes);
+    check(S, 'eight_route_holds_do_not_navigate',
+      home.holds.length === 8 && home.holds.every((h) => h.tag !== 'A' && h.tag !== 'BUTTON' && !h.href && !h.onclick), home.holds);
+    check(S, 'reality_strip_is_three_photos', home.strip === 3, home.strip);
+    check(S, 'all_images_same_origin_and_loaded',
+      home.images.length >= 9 && home.images.every((i) => i.sameOrigin && i.loaded), home.images.filter((i) => !i.sameOrigin || !i.loaded));
+    check(S, 'no_iframe', home.iframes === 0, home.iframes);
+    check(S, 'hero_cultural_trace_present_static_and_inert',
+      !!home.trace && home.trace.inHero && home.trace.pe === 'none' && home.trace.hidden === 'true' && home.trace.belowText === true, home.trace);
+    check(S, 'hero_trace_years_are_evidence_cleared_only',
+      !!home.trace && home.trace.years.join(',') === '1957,1961,1963,2026', home.trace && home.trace.years);
+    check(S, 'no_running_animation_under_reduced_motion', home.animations === 0, home.animations);
+    check(S, 'hero_rect', near(home.rects.hero, 0, 0, 853, 617, 1), home.rects.hero);
+    check(S, 'warm_sheet_starts_at_hero_edge', !!home.rects.sheet && Math.abs(home.rects.sheet.y - 617) <= 1, home.rects.sheet);
+    check(S, 'hero_cta_rect', near(home.rects.cta, 32, 452, 244, 52, 2), home.rects.cta);
+    check(S, 'city_grid_rect', near(home.rects.cityGrid, 32, 706, 789, 311, 2), home.rects.cityGrid);
+    check(S, 'work_grid_rect', near(home.rects.workGrid, 32, 1104, 789, 143, 2), home.rects.workGrid);
+    check(S, 'thread_panel_rect', near(home.rects.thread, 25, 1275, 803, 292, 2), home.rects.thread);
+    check(S, 'thread_image_rect', near(home.rects.threadMedia, 46, 1341, 292, 180, 2), home.rects.threadMedia);
+    check(S, 'reality_strip_rect', near(home.rects.strip, 333, 1620, 512, 186, 2), home.rects.strip);
+    check(S, 'spots_button_rect', near(home.rects.spots, 32, 1746, 212, 48, 2), home.rects.spots);
+    check(S, 'menu_anchor_targets_exist_on_home', home.anchors === true);
+    check(S, 'menu_reaches_works_thread_and_credits',
+      home.menu.credits && home.menu.works && home.menu.thread && home.menu.retired === 0, home.menu);
+    check(S, 'home_lists_no_objects_and_no_feed', home.listing === 0 && home.pager === 0, { listing: home.listing, pager: home.pager });
+    check(S, 'fonts_loaded', home.fonts === 'loaded', home.fonts);
+    check(S, 'no_engagement_words',
+      !FORBIDDEN.some((w) => home.text.includes(w)), FORBIDDEN.filter((w) => home.text.includes(w)));
+    check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
+    check(S, 'no_js_error', pageErrors.length === 0, pageErrors.slice(0, 2));
 
-    // deep link
+    // MENU の同一 page anchor は dialog を閉じて section へ移動する
+    await page.click('#siteMenuButton');
+    await page.waitForSelector('#siteMenu[open]');
+    await page.click('#siteMenu a[href="./index.html#hc-works"]');
+    await page.waitForTimeout(200);
+    const jumped = await page.evaluate(() => {
+      const b = document.getElementById('hc-works').getBoundingClientRect();
+      return {
+        open: document.getElementById('siteMenu').open, hash: location.hash,
+        worksInView: b.top >= -2 && b.top < window.innerHeight
+      };
+    });
+    check(S, 'menu_anchor_closes_menu_and_lands_on_works',
+      jumped.open === false && jumped.hash === '#hc-works' && jumped.worksInView === true, jumped);
+
+    // 旧 HOME の query（?category=）は HOME を変えない
     await page.goto(base + 'index.html?category=books', { waitUntil: 'load' });
-    await page.waitForFunction(() => document.querySelectorAll('.result-row').length > 0);
-    const deep = await page.evaluate(() => ({
-      selected: [...document.querySelectorAll('.category-link.is-selected')].map((a) => a.dataset.categoryId),
-      rows: [...document.querySelectorAll('.result-row')].map((r) => ({
-        id: r.dataset.objectId,
-        town: r.querySelector('.result-town').textContent,
-        type: r.querySelector('.result-type').textContent,
-        name: r.querySelector('.result-name').textContent,
-        hook: r.querySelector('.result-hook').innerText.replace(/\s+/g, ''),
-        go: r.querySelector('.result-link').getAttribute('href')
-      })),
-      images: document.querySelectorAll('.category-results img, .category-results .media-frame').length,
-      count: document.querySelector('.result-count-n').textContent
+    await page.waitForTimeout(200);
+    const withQuery = await page.evaluate(() => ({
+      docH: document.documentElement.scrollHeight,
+      listing: document.querySelectorAll('.result-row, .category-link, #categoryIndex').length
     }));
-    check(S, 'category_deep_link_selects_it', deep.selected.join(',') === 'books', deep.selected);
-    const expectedBooks = objectIdsIn('books');
-    check(S, 'deep_link_results_are_the_mapped_objects',
-      deep.rows.map((r) => r.id).sort().join(',') === expectedBooks.join(','),
-      { got: deep.rows.map((r) => r.id).sort(), want: expectedBooks });
-    check(S, 'results_are_text_first', deep.images === 0, deep.images);
-    check(S, 'result_row_carries_the_required_fields',
-      deep.rows.every((r) => r.name && r.town && r.type && r.hook &&
-        /^\.\/shelf\.html\?shelf=/.test(r.go)), deep.rows[0]);
-    check(S, 'result_count_is_honest',
-      deep.count === `いま ${expectedBooks.length} 件`, deep.count);
-
-    // 1件だけのカテゴリを水増ししない
-    if (!singleCat) {
-      notObservable(S, 'single_item_category_is_not_padded',
-        'いま1件だけの category が無い。水増しの有無をこの content では観測できない');
-    } else {
-      await page.goto(base + `index.html?category=${singleCat.id}`, { waitUntil: 'load' });
-      await page.waitForFunction(() => document.querySelectorAll('.result-row').length > 0);
-      const only = await page.evaluate(() => ({
-        rows: [...document.querySelectorAll('.result-row')].map((r) => r.dataset.objectId),
-        count: document.querySelector('.result-count-n').textContent
-      }));
-      check(S, 'single_item_category_is_not_padded',
-        only.rows.join(',') === objectIdsIn(singleCat.id).join(',') && only.count === 'いま 1 件',
-        { category: singleCat.id, ...only });
-    }
-
-    // 知らない category は静かに無選択へ倒す
-    await page.goto(base + 'index.html?category=nowhere', { waitUntil: 'load' });
-    await page.waitForFunction(() => document.querySelectorAll('.category-link').length === 5);
-    const unknown = await page.evaluate(() => ({
-      selected: document.querySelectorAll('.category-link.is-selected').length,
-      rows: document.querySelectorAll('.result-row').length
-    }));
-    check(S, 'unknown_category_selects_nothing',
-      unknown.selected === 0 && unknown.rows === 0, unknown);
-
-    // クリックで選べ、URL に category だけが載る
-    await page.goto(base + 'index.html', { waitUntil: 'load' });
-    await page.waitForFunction(() => document.querySelectorAll('.category-link').length === 5);
-    await page.click('.category-link[data-category-id="music"]');
-    await page.waitForTimeout(120);
-    const clicked = await page.evaluate(() => ({
-      url: location.search,
-      rows: [...document.querySelectorAll('.result-row')].map((r) => r.dataset.objectId)
-    }));
-    check(S, 'click_updates_deep_link', clicked.url === '?category=music', clicked.url);
-    check(S, 'click_shows_the_mapped_objects',
-      clicked.rows.sort().join(',') === objectIdsIn('music').join(','), clicked.rows);
-    check(S, 'entrance_makes_no_external_request', external.length === 0, external.slice(0, 3));
+    check(S, 'retired_category_query_does_not_change_home',
+      Math.abs(withQuery.docH - home.docH) <= 1 && withQuery.listing === 0, withQuery);
+    check(S, 'no_external_request_after_navigation', external.length === 0, external.slice(0, 3));
     await ctx.close();
   }
 
-  /* ---- C. 期限切れは索引にも出さない ---- */
-  if (soonest) {
-    const S = 'expired-index';
-    const catId = soonest.object.categoryIds[0];
-    const justAfter = soonest.at + 60 * 1000;
-    // その時点で生きている同カテゴリの Object を content から数える。
-    const expectedLive = [];
-    for (const sh of CONTENT.shelves) {
-      for (const o of sh.objects) {
-        if (!(o.categoryIds || []).includes(catId)) continue;
-        if (o.expiresAt && Date.parse(o.expiresAt) <= justAfter) continue;
-        expectedLive.push(o.id);
+  /* ---- B2. 写真・出典（credits.html）----
+     HOME 本文に長い attribution を載せない代わりの静かな surface。
+     HOME が使う第三者写真が全部載っていて、どのページの MENU からも届くこと。 */
+  {
+    const homeHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+    const OWN = new Set(['favicon.ico', 'icon-512.png', 'apple-touch-icon.png', 'ogp-official-artwork-20260901.png']);
+    const homePhotos = [...new Set([...homeHtml.matchAll(/\.\/assets\/([^"/]+\.(?:jpg|jpeg|png|webp))"/g)].map((m) => m[1]))]
+      .filter((f) => !OWN.has(f));
+    for (const v of [{ name: 'm390', width: 390, height: 844, mobile: true }, { name: 'd1440', width: 1440, height: 1000, mobile: false }]) {
+      const S = `credits/${v.name}`;
+      const ctx = await browser.newContext({
+        viewport: { width: v.width, height: v.height }, isMobile: v.mobile, hasTouch: v.mobile, reducedMotion: 'reduce'
+      });
+      const external = [];
+      ctx.on('request', (req) => { if (!req.url().startsWith(origin)) external.push(req.url()); });
+      const page = await ctx.newPage();
+      const errs = [];
+      page.on('pageerror', (e) => errs.push(String(e)));
+      await page.goto(base + 'credits.html', { waitUntil: 'load' });
+      await page.waitForFunction(() => Array.from(document.images).every((i) => i.complete && i.naturalWidth > 0));
+      const cr = await page.evaluate(() => {
+        const doc = document.documentElement;
+        const wide = [];
+        document.querySelectorAll('body *').forEach((el) => {
+          if (el.classList.contains('sr-only') || el.classList.contains('skip-link')) return;
+          const b = el.getBoundingClientRect();
+          if (b.width > 0 && b.right > doc.clientWidth + 1) wide.push(el.className || el.tagName);
+        });
+        return {
+          overflow: doc.scrollWidth > doc.clientWidth + 1, wide: wide.slice(0, 4),
+          h1: document.querySelectorAll('h1').length,
+          h1Text: document.querySelector('h1').innerText.replace(/\s+/g, ''),
+          entries: [...document.querySelectorAll('.credits-entry')].map((e) => ({
+            asset: e.getAttribute('data-credit-asset'),
+            fields: [...e.querySelectorAll('dt')].map((d) => d.textContent),
+            links: [...e.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')),
+            visible: e.getBoundingClientRect().height > 40
+          })),
+          imgs: [...document.images].map((i) => ({ sameOrigin: new URL(i.src).origin === location.origin, loaded: i.complete && i.naturalWidth > 0 })),
+          menuCredits: !!document.querySelector('#siteMenu a[href="./credits.html"]'),
+          text: document.body.innerText
+        };
+      });
+      check(S, 'no_horizontal_overflow', !cr.overflow, cr.wide);
+      check(S, 'single_h1_is_credits', cr.h1 === 1 && cr.h1Text === '写真・出典', cr.h1Text);
+      check(S, 'every_home_third_party_photo_is_credited',
+        homePhotos.every((f) => cr.entries.some((e) => e.asset === f)), { homePhotos, credited: cr.entries.map((e) => e.asset) });
+      check(S, 'each_entry_carries_the_eight_fields',
+        cr.entries.length > 0 && cr.entries.every((e) => e.fields.join('|') === '使用場所|被写体|作者|出典|出典URL|ライセンス|ライセンスURL|改変'),
+        cr.entries.map((e) => e.fields.join('|')));
+      check(S, 'each_entry_links_source_and_license_over_https',
+        cr.entries.every((e) => e.links.length === 2 && e.links.every((h) => /^https:\/\//.test(h))), cr.entries.map((e) => e.links));
+      check(S, 'entries_are_visible', cr.entries.every((e) => e.visible));
+      check(S, 'images_same_origin_and_loaded', cr.imgs.every((i) => i.sameOrigin && i.loaded), cr.imgs);
+      check(S, 'credits_is_in_its_own_menu', cr.menuCredits === true);
+      check(S, 'no_engagement_words',
+        !FORBIDDEN.some((w) => cr.text.includes(w)), FORBIDDEN.filter((w) => cr.text.includes(w)));
+      check(S, 'no_external_request_on_load', external.length === 0, external.slice(0, 3));
+      check(S, 'no_js_error', errs.length === 0, errs.slice(0, 2));
+
+      // どのページの MENU からも届く
+      const reach = [];
+      for (const p of ['index.html', 'shelf.html?shelf=kichijoji', 'suggest.html', 'data.html']) {
+        await page.goto(base + p, { waitUntil: 'load' });
+        reach.push([p, await page.evaluate(() => !!document.querySelector('#siteMenu a[href="./credits.html"]'))]);
       }
+      check(S, 'credits_reachable_from_every_menu', reach.every((r) => r[1] === true), reach);
+      check(S, 'no_external_request_across_pages', external.length === 0, external.slice(0, 3));
+      await ctx.close();
     }
-    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
-    const page = await ctx.newPage();
-    await page.addInitScript((fixed) => {
-      const RealDate = Date;
-      // eslint-disable-next-line no-global-assign
-      Date = class extends RealDate {
-        constructor(...a) { if (!a.length) super(fixed); else super(...a); }
-        static now() { return fixed; }
-      };
-    }, justAfter);
-    await page.goto(`${base}index.html?category=${encodeURIComponent(catId)}`, { waitUntil: 'load' });
-    await page.waitForFunction(() => document.querySelectorAll('.category-link').length === 5);
-    await page.waitForTimeout(150);
-    const exp = await page.evaluate((id) => ({
-      rows: [...document.querySelectorAll('.result-row')].map((r) => r.dataset.objectId),
-      count: document.querySelector('.result-count-n') && document.querySelector('.result-count-n').textContent,
-      shown: [...document.querySelectorAll('.category-link')]
-        .filter((a) => a.dataset.categoryId === id)
-        .map((a) => a.querySelector('.category-count').textContent)[0]
-    }), catId);
-    check(S, 'expired_current_is_not_listed',
-      !exp.rows.includes(soonest.object.id), { expired: soonest.object.id, rows: exp.rows });
-    check(S, 'no_auto_substitute_for_the_expired_one',
-      exp.rows.slice().sort().join(',') === expectedLive.slice().sort().join(','),
-      { got: exp.rows, expected: expectedLive });
-    check(S, 'counts_shrink_honestly',
-      exp.count === `いま ${expectedLive.length} 件` && exp.shown === String(expectedLive.length),
-      { count: exp.count, indexCount: exp.shown, expected: expectedLive.length });
-    await ctx.close();
   }
 
   /* ---- D. 候補受付は backend を持たない ---- */
@@ -927,18 +844,23 @@ function serve() {
   }
 
   /* ---- 200% 拡大 / forced-colors / coarse touch ---- */
+  /* HOME は 853 固定の canonical。200% 拡大は実質 426px 幅の responsive と同じ
+     問題なので、Founder/HQ が次 Gate と定めた範囲に入る（NOT OBSERVABLE）。
+     forced-colors は 853 で見る。credits.html は responsive な共通型なので
+     zoom / forced-colors の両方を見る。 */
+  notObservable('zoom200-foyer', 'no_horizontal_overflow', 'HOME 853 canonical の 200% 拡大は responsive gate（次 Gate）');
   const RESILIENCE = [
-    { name: 'zoom200-foyer', page: 'index.html', zoom: 2, forcedColors: 'none' },
     { name: 'zoom200-shelf', page: 'shelf.html?shelf=koenji', zoom: 2, forcedColors: 'none' },
-    { name: 'forced-foyer', page: 'index.html', zoom: 1, forcedColors: 'active' },
+    { name: 'forced-home853', page: 'index.html', zoom: 1, forcedColors: 'active', width: 853, height: 1844 },
     { name: 'forced-shelf', page: 'shelf.html?shelf=jinbocho', zoom: 1, forcedColors: 'active' },
-    { name: 'zoom200-category', page: 'index.html?category=books', zoom: 2, forcedColors: 'none' },
+    { name: 'zoom200-credits', page: 'credits.html', zoom: 2, forcedColors: 'none' },
+    { name: 'forced-credits', page: 'credits.html', zoom: 1, forcedColors: 'active' },
     { name: 'zoom200-suggest', page: 'suggest.html', zoom: 2, forcedColors: 'none' },
     { name: 'forced-suggest', page: 'suggest.html', zoom: 1, forcedColors: 'active' }
   ];
   for (const r of RESILIENCE) {
     const ctx = await browser.newContext({
-      viewport: { width: 390, height: 844 }, reducedMotion: 'reduce', forcedColors: r.forcedColors
+      viewport: { width: r.width || 390, height: r.height || 844 }, reducedMotion: 'reduce', forcedColors: r.forcedColors
     });
     const page = await ctx.newPage();
     await page.goto(base + r.page, { waitUntil: 'load' });
@@ -946,7 +868,8 @@ function serve() {
     await page.waitForFunction(() =>
       document.querySelectorAll('.shelf-entry').length === 4 ||
       document.querySelectorAll('.object-card').length === 3 ||
-      document.querySelectorAll('#sg-category option').length === 5);
+      document.querySelectorAll('#sg-category option').length === 5 ||
+      document.querySelectorAll('.credits-entry').length >= 1);
     await page.waitForTimeout(200);
     const st = await page.evaluate(() => {
       const doc = document.documentElement;
@@ -956,7 +879,7 @@ function serve() {
         const b = el.getBoundingClientRect();
         if (b.width > 0 && b.right > doc.clientWidth + 1) wide.push(el.className || el.tagName);
       });
-      const control = document.querySelector('.open-button, .shelf-entry, #sg-copy');
+      const control = document.querySelector('.open-button, .shelf-entry, #sg-copy, .other-shelves');
       const cs = getComputedStyle(control);
       return {
         overflow: doc.scrollWidth > doc.clientWidth + 1, wide: wide.slice(0, 4),
