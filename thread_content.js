@@ -313,7 +313,7 @@
         id: 'dest:join',
         label: '現在の連を知る／参加・体験を相談する',
         url: 'https://koenji-awaodori.com/category1/join.html',
-        why: '1961–62年に人から人へ渡った踊りを、いま続けている連。',
+        why: 'このThreadで1961–62年の「教わる」を辿ったあと、現在活動する連を知る入口です。',
         note: '参加の条件は連ごとに異なります。それぞれの案内で確かめてください。',
         relationIds: ['rel:learned-1961-62'],
         factIds: ['fact:present-groups'],
