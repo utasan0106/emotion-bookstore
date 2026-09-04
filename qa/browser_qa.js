@@ -101,13 +101,74 @@ function serve() {
     const pageErrors = [];
     page.on('pageerror', (e) => pageErrors.push(String(e)));
 
-    /* ---- 玄関 ----
-       HOME は Founder/HQ 承認の VISUAL_CANONICAL（853 CSS px 固定 geometry）。
-       390 / 1024 / 1440 の responsive は次 Gate（HOME 853 brief §9）なので、
-       この幅では見ない。見なかったことを合格へ混ぜず、別枠で残す。
-       HOME の実ブラウザ契約は下の home853 block で見る。 */
-    notObservable(v.name, 'home_canonical_at_this_width',
-      'HOME は 853px canonical 固定。' + v.width + 'px の responsive は Founder/HQ が次 Gate と定めた');
+    /* ---- 玄関（HOME）— Responsive Round 4 ----
+       853 の pixel identity は下の home853 block と capture_home_853.js + sha256 で
+       見る。ここでは各幅で Brief V2 の契約（5 section 順・横 overflow 0・grid・
+       hero 高さ / title・実 anchor / button 44px・route-hold 非操作・menu 開閉・
+       実 Noto CJK 描画・reduced motion で animation 0）を実測する。
+       数値の全契約は qa/home_responsive_check.js。 */
+    {
+      const H = `${v.name}/home`;
+      const EXPECT = {
+        m320: { hero: 600, title: 44, cols: 2, pad: 20 },
+        m390: { hero: 640, title: 54, cols: 2, pad: 24 },
+        m430: { hero: 660, title: 58, cols: 2, pad: 24 },
+        d1440: { hero: 680, title: 84, cols: 4, sheet: [100, 1240] }
+      }[v.name];
+      await page.goto(base + 'index.html', { waitUntil: 'load' });
+      await page.waitForFunction(() => Array.from(document.images).every((i) => i.complete && i.naturalWidth > 0));
+      await page.waitForTimeout(300);
+      const home = await page.evaluate(() => {
+        const doc = document.documentElement;
+        const rect = (sel) => { const el = document.querySelector(sel); if (!el) return null; const b = el.getBoundingClientRect(); return { x: Math.round(b.left), y: Math.round(b.top + scrollY), w: Math.round(b.width), h: Math.round(b.height) }; };
+        const cols = (sel) => getComputedStyle(document.querySelector(sel)).gridTemplateColumns.split(' ').filter(Boolean).length;
+        let animated = 0;
+        document.querySelectorAll('#main *').forEach((el) => { const s = getComputedStyle(el); if ((s.animationName && s.animationName !== 'none') || (s.transitionProperty !== 'none' && parseFloat(s.transitionDuration) > 0)) animated++; });
+        return {
+          docW: doc.scrollWidth, vw: doc.clientWidth,
+          sections: [...document.querySelectorAll('main > section, main > .hc-sheet > section')].map((el) => [...el.classList].find((c) => c !== 'hc-section')),
+          h1Lines: new Set([...document.querySelectorAll('.hc-hero-line')].map((e) => Math.round(e.getBoundingClientRect().top))).size,
+          hero: rect('.hc-hero'), sheet: rect('.hc-sheet'), cities: rect('.hc-city-grid'),
+          titleSize: parseFloat(getComputedStyle(document.querySelector('.hc-hero-title')).fontSize),
+          cityCols: cols('.hc-city-grid'), workCols: cols('.hc-work-grid'),
+          targets: [...document.querySelectorAll('#main a, #main button')].map((el) => { const b = el.getBoundingClientRect(); return [el.className.split(' ')[0] || el.tagName, Math.round(b.width), Math.round(b.height)]; }),
+          holds: [...document.querySelectorAll('[data-route-hold]')].map((el) => [el.getAttribute('data-route-hold'), el.tagName, el.getAttribute('href'), el.getAttribute('onclick'), el.tabIndex]),
+          images: [...document.images].every((i) => i.complete && i.naturalWidth > 0 && new URL(i.currentSrc || i.src, location.href).origin === location.origin),
+          animated, docAnimations: document.getAnimations().length
+        };
+      });
+      const cdp = await ctx.newCDPSession(page);
+      await cdp.send('DOM.enable'); await cdp.send('CSS.enable');
+      const { root } = await cdp.send('DOM.getDocument', { depth: -1 });
+      const fonts = {};
+      for (const [name, sel] of [['h1', '.hc-hero-title'], ['city', '.hc-city-name'], ['node', '.hc-node-name'], ['reality', '.hc-reality-line']]) {
+        const { nodeId } = await cdp.send('DOM.querySelector', { nodeId: root.nodeId, selector: sel });
+        const { fonts: pf } = await cdp.send('CSS.getPlatformFontsForNode', { nodeId });
+        fonts[name] = pf.map((f) => f.familyName).join('|');
+      }
+      await cdp.detach();
+      check(H, 'five_sections_in_canonical_order', home.sections.join('|') === 'hc-hero|hc-cities|hc-works|hc-thread-section|hc-reality', home.sections);
+      check(H, 'no_horizontal_overflow', home.docW <= home.vw, { docW: home.docW, vw: home.vw });
+      check(H, 'hero_height_for_this_width', Math.abs(home.hero.h - EXPECT.hero) <= 2, home.hero);
+      check(H, 'title_size_for_this_width_in_three_lines', Math.abs(home.titleSize - EXPECT.title) <= 0.5 && home.h1Lines === 3, { size: home.titleSize, lines: home.h1Lines });
+      check(H, 'city_and_work_grid_columns', home.cityCols === EXPECT.cols && home.workCols === EXPECT.cols, { city: home.cityCols, work: home.workCols });
+      if (EXPECT.pad !== undefined) check(H, 'mobile_shell_padding', Math.abs(home.cities.x - EXPECT.pad) <= 0.5, home.cities);
+      if (EXPECT.sheet) check(H, 'wide_sheet_shell', Math.abs(home.sheet.x - EXPECT.sheet[0]) <= 1 && Math.abs(home.sheet.w - EXPECT.sheet[1]) <= 1, home.sheet);
+      check(H, 'real_targets_are_44px', home.targets.length >= 6 && home.targets.every((t) => t[1] >= 44 && t[2] >= 44), home.targets.filter((t) => t[1] < 44 || t[2] < 44));
+      check(H, 'route_holds_are_static_labels', home.holds.length === 8 && home.holds.every((h) => h[1] !== 'A' && h[1] !== 'BUTTON' && !h[2] && !h[3] && h[4] < 0), home.holds);
+      check(H, 'images_loaded_same_origin', home.images === true);
+      check(H, 'actual_noto_cjk_font', Object.values(fonts).every((f) => /Noto (Serif|Sans) CJK JP/.test(f)), fonts);
+      check(H, 'reduced_motion_animation_0', home.animated === 0 && home.docAnimations === 0, { animated: home.animated, docAnimations: home.docAnimations });
+      await page.click('#siteMenuButton');
+      await page.waitForSelector('#siteMenu[open]');
+      const menuOpen = await page.evaluate(() => document.getElementById('siteMenu').open && document.getElementById('siteMenu').contains(document.activeElement));
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(150);
+      const menuClosed = await page.evaluate(() => document.getElementById('siteMenu').open === false && document.activeElement && document.activeElement.id === 'siteMenuButton');
+      check(H, 'menu_opens_and_escape_returns_focus', menuOpen === true && menuClosed === true, { menuOpen, menuClosed });
+      check(H, 'no_external_request', external.length === 0, external.slice(0, 3));
+      check(H, 'no_js_error', pageErrors.length === 0, pageErrors.slice(0, 2));
+    }
 
     /* ---- 4つの棚 ---- */
     for (const id of SHELVES) {
@@ -1408,11 +1469,33 @@ function serve() {
   }
 
   /* ---- 200% 拡大 / forced-colors / coarse touch ---- */
-  /* HOME は 853 固定の canonical。200% 拡大は実質 426px 幅の responsive と同じ
-     問題なので、Founder/HQ が次 Gate と定めた範囲に入る（NOT OBSERVABLE）。
+  /* HOME の 200% 拡大（Responsive Round 4）: 1440 の窓を 200% にすると layout は
+     720 CSS px・dsf 2 なので、その viewport で見る（853 Golden の CSS は変えない）。
      forced-colors は 853 で見る。credits.html は responsive な共通型なので
      zoom / forced-colors の両方を見る。 */
-  notObservable('zoom200-foyer', 'no_horizontal_overflow', 'HOME 853 canonical の 200% 拡大は responsive gate（次 Gate）');
+  {
+    const ctx = await browser.newContext({ viewport: { width: 720, height: 450 }, deviceScaleFactor: 2, reducedMotion: 'reduce' });
+    const page = await ctx.newPage();
+    await page.goto(base + 'index.html', { waitUntil: 'load' });
+    await page.waitForFunction(() => document.querySelectorAll('.shelf-entry').length === 4);
+    await page.waitForTimeout(200);
+    const st = await page.evaluate(() => {
+      const doc = document.documentElement;
+      const wide = [];
+      document.querySelectorAll('body *').forEach((el) => {
+        if (el.classList.contains('sr-only') || el.classList.contains('skip-link')) return;
+        const b = el.getBoundingClientRect();
+        if (b.width > 0 && b.right > doc.clientWidth + 1) wide.push(el.className || el.tagName);
+      });
+      const controls = [...document.querySelectorAll('#siteMenuButton, .hc-city')].map((el) => Math.round(el.getBoundingClientRect().height));
+      const cta = document.querySelector('.hc-hero-cta').getBoundingClientRect();
+      return { overflow: doc.scrollWidth > doc.clientWidth + 1, wide: wide.slice(0, 4), controlH: Math.min(...controls), ctaInside: cta.left >= 0 && cta.right <= doc.clientWidth, text: document.body.innerText };
+    });
+    check('zoom200-foyer', 'no_horizontal_overflow', !st.overflow, st.wide);
+    check('zoom200-foyer', 'primary_control_stays_reachable', st.controlH >= 44 && st.ctaInside, { controlH: st.controlH, ctaInside: st.ctaInside });
+    check('zoom200-foyer', 'content_is_not_lost', st.text.length > 40, st.text.length);
+    await ctx.close();
+  }
   const RESILIENCE = [
     { name: 'zoom200-shelf', page: 'shelf.html?shelf=koenji', zoom: 2, forcedColors: 'none' },
     { name: 'forced-home853', page: 'index.html', zoom: 1, forcedColors: 'active', width: 853, height: 1844 },

@@ -42,7 +42,10 @@ const PROBES = [
 (async () => {
   const server = await serve();
   const base = `http://127.0.0.1:${server.address().port}/`;
-  const browser = await chromium.launch();
+  /* checker-imaging（compositor 側の遅延 decode）が JPEG の縮小 decode scale を run ごとに
+     変え、thread 画像の 43 px が ±2/255 揺れて sha256 が一致しないことがある（Round 4 で判明、
+     MAE 0.0・目視差なし）。無効化すると Round 3 Golden と毎回 byte 一致する。 */
+  const browser = await chromium.launch({ args: ['--disable-checker-imaging', '--disable-partial-raster'] });
   const ctx = await browser.newContext({ viewport: { width: 853, height: 1844 }, deviceScaleFactor: 1, reducedMotion: 'reduce' });
   const page = await ctx.newPage();
   const errors = [];
@@ -50,6 +53,10 @@ const PROBES = [
   page.on('requestfailed', (r) => errors.push('requestfailed ' + r.url()));
   await page.goto(base + PAGE, { waitUntil: 'load' });
   await page.waitForFunction(() => Array.from(document.images).every((i) => i.complete && i.naturalWidth > 0));
+  /* Round 4 で判明: JPEG の縮小 decode 経路が load 直後の timing で揺れ、thread 画像の
+     43 px が ±2/255 だけ変わる（MAE 0.0、目視差なし）ことがある。img.decode() を
+     全画像に待つと表示 size での decode に揃い、Round 3 の Golden と byte 一致する。 */
+  await page.evaluate(() => Promise.all(Array.from(document.images).map((i) => i.decode().catch(() => null))));
   await page.waitForTimeout(500);
   const docH = await page.evaluate(() => document.documentElement.scrollHeight);
   const docW = await page.evaluate(() => document.documentElement.scrollWidth);

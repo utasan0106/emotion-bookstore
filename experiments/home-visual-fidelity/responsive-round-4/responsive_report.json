@@ -1,0 +1,2170 @@
+{
+  "root": "/home/user/emotion-bookstore",
+  "generatedAt": "2026-09-04T06:35:01.630Z",
+  "viewports": {
+    "HOME_320": {
+      "width": 320,
+      "file": "HOME_320.png",
+      "sha256": "cf6add1746183ffcd67a91649b69e1d6c827da3976d517032f8be374d062be01",
+      "errors": [],
+      "externalRequests": [],
+      "fonts": {
+        "brand": "Noto Serif CJK JP:8",
+        "h1": "Noto Serif CJK JP:12",
+        "hero-sub": "Noto Sans CJK JP:18",
+        "trace-year": "Noto Sans CJK JP:4",
+        "cities-title": "Noto Serif CJK JP:5",
+        "city-name": "Noto Serif CJK JP:3",
+        "city-q": "Noto Sans CJK JP:4",
+        "work-label": "Noto Serif CJK JP:1",
+        "thread-title": "Noto Serif CJK JP:8",
+        "node-name": "Noto Sans CJK JP:3",
+        "reality-line": "Noto Sans CJK JP:21",
+        "reality-cta": "Noto Serif CJK JP:7"
+      },
+      "vw": 320,
+      "docW": 320,
+      "docH": 2907,
+      "overflow": false,
+      "overflowCulprits": [
+        {
+          "sel": "svg",
+          "left": 117,
+          "right": 330
+        }
+      ],
+      "overflowCount": 1,
+      "sectionOrderOk": true,
+      "sectionsY": [
+        0,
+        600,
+        1210,
+        1588,
+        2200
+      ],
+      "sectionsCount": 5,
+      "rects": {
+        "hero": [
+          0,
+          0,
+          320,
+          600
+        ],
+        "header": [
+          0,
+          0,
+          320,
+          58
+        ],
+        "brand": [
+          12,
+          8,
+          210,
+          47
+        ],
+        "menu": [
+          262,
+          14,
+          44,
+          44
+        ],
+        "heroBody": [
+          20,
+          118,
+          280,
+          282
+        ],
+        "title": [
+          20,
+          118,
+          280,
+          158
+        ],
+        "cta": [
+          20,
+          348,
+          244,
+          52
+        ],
+        "heroAside": [
+          219,
+          66,
+          81,
+          48
+        ],
+        "scroll": [
+          0,
+          544,
+          320,
+          40
+        ],
+        "trace": [
+          117,
+          396,
+          213,
+          154
+        ],
+        "sheet": [
+          0,
+          600,
+          320,
+          2307
+        ],
+        "cities": [
+          20,
+          742,
+          280,
+          468
+        ],
+        "works": [
+          20,
+          1352,
+          280,
+          236
+        ],
+        "thread": [
+          20,
+          1632,
+          280,
+          569
+        ],
+        "threadMedia": [
+          38,
+          1713,
+          244,
+          150
+        ],
+        "threadCopy": [
+          38,
+          1881,
+          244,
+          301
+        ],
+        "chain": [
+          38,
+          1981,
+          244,
+          164
+        ],
+        "reality": [
+          0,
+          2200,
+          320,
+          707
+        ],
+        "realityCopy": [
+          20,
+          2244,
+          280,
+          207
+        ],
+        "strip": [
+          20,
+          2479,
+          280,
+          384
+        ],
+        "spots": [
+          20,
+          2403,
+          212,
+          48
+        ]
+      },
+      "titleSize": 44.0012,
+      "titleLH": "52.8014px",
+      "pad": 20,
+      "panelPad": 18,
+      "cityGap": "12px",
+      "workGap": "12px",
+      "threadGap": "22px",
+      "stripGap": "12px",
+      "cityCols": 2,
+      "cityRows": 2,
+      "workCols": 2,
+      "workRows": 2,
+      "stripCols": 2,
+      "stripRows": 2,
+      "realityCols": 1,
+      "threadStacked": true,
+      "threadSplit": false,
+      "nodeRows": 3,
+      "h1Lines": 3,
+      "tapTargets": [
+        {
+          "sel": "hc-brand-link[./index.html]",
+          "w": 210,
+          "h": 47
+        },
+        {
+          "sel": "hc-menu-trigger",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=koenji]",
+          "w": 134,
+          "h": 228
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=kichijoji]",
+          "w": 134,
+          "h": 228
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=shimokitazawa]",
+          "w": 134,
+          "h": 228
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=jinbocho]",
+          "w": 134,
+          "h": 228
+        }
+      ],
+      "smallTargets": [],
+      "cityCardH": [
+        228,
+        228,
+        228,
+        228
+      ],
+      "workCardH": [
+        112,
+        112,
+        112,
+        112
+      ],
+      "stripShotW": [
+        280,
+        134,
+        134
+      ],
+      "stripShotH": [
+        186,
+        186,
+        186
+      ],
+      "imagesOk": true,
+      "imgCount": 13,
+      "imagesSameOrigin": true
+    },
+    "HOME_390": {
+      "width": 390,
+      "file": "HOME_390.png",
+      "sha256": "8286a7527c47b8b198e0441310fcb46a98531e14477e8f7ea2378eb5b9c20b0c",
+      "errors": [],
+      "externalRequests": [],
+      "fonts": {
+        "brand": "Noto Serif CJK JP:8",
+        "h1": "Noto Serif CJK JP:12",
+        "hero-sub": "Noto Sans CJK JP:18",
+        "trace-year": "Noto Sans CJK JP:4",
+        "cities-title": "Noto Serif CJK JP:5",
+        "city-name": "Noto Serif CJK JP:3",
+        "city-q": "Noto Sans CJK JP:4",
+        "work-label": "Noto Serif CJK JP:1",
+        "thread-title": "Noto Serif CJK JP:8",
+        "node-name": "Noto Sans CJK JP:3",
+        "reality-line": "Noto Sans CJK JP:21",
+        "reality-cta": "Noto Serif CJK JP:7"
+      },
+      "vw": 390,
+      "docW": 390,
+      "docH": 3039,
+      "overflow": false,
+      "overflowCulprits": [
+        {
+          "sel": "svg",
+          "left": 187,
+          "right": 400
+        }
+      ],
+      "overflowCount": 1,
+      "sectionOrderOk": true,
+      "sectionsY": [
+        0,
+        640,
+        1298,
+        1704,
+        2358
+      ],
+      "sectionsCount": 5,
+      "rects": {
+        "hero": [
+          0,
+          0,
+          390,
+          640
+        ],
+        "header": [
+          0,
+          0,
+          390,
+          58
+        ],
+        "brand": [
+          16,
+          8,
+          210,
+          47
+        ],
+        "menu": [
+          328,
+          14,
+          44,
+          44
+        ],
+        "heroBody": [
+          24,
+          118,
+          342,
+          318
+        ],
+        "title": [
+          24,
+          118,
+          342,
+          194
+        ],
+        "cta": [
+          24,
+          384,
+          244,
+          52
+        ],
+        "heroAside": [
+          285,
+          66,
+          81,
+          48
+        ],
+        "scroll": [
+          0,
+          584,
+          390,
+          40
+        ],
+        "trace": [
+          187,
+          436,
+          213,
+          154
+        ],
+        "sheet": [
+          0,
+          640,
+          390,
+          2399
+        ],
+        "cities": [
+          24,
+          782,
+          342,
+          516
+        ],
+        "works": [
+          24,
+          1440,
+          342,
+          264
+        ],
+        "thread": [
+          24,
+          1748,
+          342,
+          610
+        ],
+        "threadMedia": [
+          46,
+          1833,
+          298,
+          184
+        ],
+        "threadCopy": [
+          46,
+          2035,
+          298,
+          301
+        ],
+        "chain": [
+          46,
+          2135,
+          298,
+          164
+        ],
+        "reality": [
+          0,
+          2358,
+          390,
+          681
+        ],
+        "realityCopy": [
+          24,
+          2402,
+          342,
+          181
+        ],
+        "strip": [
+          24,
+          2611,
+          342,
+          384
+        ],
+        "spots": [
+          24,
+          2535,
+          212,
+          48
+        ]
+      },
+      "titleSize": 54,
+      "titleLH": "64.8px",
+      "pad": 23.985,
+      "panelPad": 22,
+      "cityGap": "12px",
+      "workGap": "12px",
+      "threadGap": "22px",
+      "stripGap": "12px",
+      "cityCols": 2,
+      "cityRows": 2,
+      "workCols": 2,
+      "workRows": 2,
+      "stripCols": 2,
+      "stripRows": 2,
+      "realityCols": 1,
+      "threadStacked": true,
+      "threadSplit": false,
+      "nodeRows": 3,
+      "h1Lines": 3,
+      "tapTargets": [
+        {
+          "sel": "hc-brand-link[./index.html]",
+          "w": 210,
+          "h": 47
+        },
+        {
+          "sel": "hc-menu-trigger",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=koenji]",
+          "w": 165,
+          "h": 252
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=kichijoji]",
+          "w": 165,
+          "h": 252
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=shimokitazawa]",
+          "w": 165,
+          "h": 252
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=jinbocho]",
+          "w": 165,
+          "h": 252
+        }
+      ],
+      "smallTargets": [],
+      "cityCardH": [
+        252,
+        252,
+        252,
+        252
+      ],
+      "workCardH": [
+        126,
+        126,
+        126,
+        126
+      ],
+      "stripShotW": [
+        342,
+        165,
+        165
+      ],
+      "stripShotH": [
+        186,
+        186,
+        186
+      ],
+      "imagesOk": true,
+      "imgCount": 13,
+      "imagesSameOrigin": true
+    },
+    "HOME_430": {
+      "width": 430,
+      "file": "HOME_430.png",
+      "sha256": "0afad36375dbe111fdc20851cfcfc31eda89e9e1f67eaee083f77e08c0e973c9",
+      "errors": [],
+      "externalRequests": [],
+      "fonts": {
+        "brand": "Noto Serif CJK JP:8",
+        "h1": "Noto Serif CJK JP:12",
+        "hero-sub": "Noto Sans CJK JP:18",
+        "trace-year": "Noto Sans CJK JP:4",
+        "cities-title": "Noto Serif CJK JP:5",
+        "city-name": "Noto Serif CJK JP:3",
+        "city-q": "Noto Sans CJK JP:4",
+        "work-label": "Noto Serif CJK JP:1",
+        "thread-title": "Noto Serif CJK JP:8",
+        "node-name": "Noto Sans CJK JP:3",
+        "reality-line": "Noto Sans CJK JP:21",
+        "reality-cta": "Noto Serif CJK JP:7"
+      },
+      "vw": 430,
+      "docW": 430,
+      "docH": 3125,
+      "overflow": false,
+      "overflowCulprits": [
+        {
+          "sel": "svg",
+          "left": 227,
+          "right": 440
+        }
+      ],
+      "overflowCount": 1,
+      "sectionOrderOk": true,
+      "sectionsY": [
+        0,
+        660,
+        1342,
+        1766,
+        2444
+      ],
+      "sectionsCount": 5,
+      "rects": {
+        "hero": [
+          0,
+          0,
+          430,
+          660
+        ],
+        "header": [
+          0,
+          0,
+          430,
+          58
+        ],
+        "brand": [
+          16,
+          8,
+          210,
+          47
+        ],
+        "menu": [
+          368,
+          14,
+          44,
+          44
+        ],
+        "heroBody": [
+          24,
+          118,
+          382,
+          333
+        ],
+        "title": [
+          24,
+          118,
+          382,
+          209
+        ],
+        "cta": [
+          24,
+          399,
+          244,
+          52
+        ],
+        "heroAside": [
+          325,
+          66,
+          81,
+          48
+        ],
+        "scroll": [
+          0,
+          604,
+          430,
+          40
+        ],
+        "trace": [
+          227,
+          456,
+          213,
+          154
+        ],
+        "sheet": [
+          0,
+          660,
+          430,
+          2465
+        ],
+        "cities": [
+          24,
+          802,
+          382,
+          540
+        ],
+        "works": [
+          24,
+          1484,
+          382,
+          282
+        ],
+        "thread": [
+          24,
+          1810,
+          382,
+          635
+        ],
+        "threadMedia": [
+          46,
+          1895,
+          338,
+          208
+        ],
+        "threadCopy": [
+          46,
+          2121,
+          338,
+          301
+        ],
+        "chain": [
+          46,
+          2221,
+          338,
+          164
+        ],
+        "reality": [
+          0,
+          2444,
+          430,
+          681
+        ],
+        "realityCopy": [
+          24,
+          2488,
+          382,
+          181
+        ],
+        "strip": [
+          24,
+          2697,
+          382,
+          384
+        ],
+        "spots": [
+          24,
+          2621,
+          212,
+          48
+        ]
+      },
+      "titleSize": 58,
+      "titleLH": "69.6px",
+      "pad": 24,
+      "panelPad": 22,
+      "cityGap": "12px",
+      "workGap": "12px",
+      "threadGap": "22px",
+      "stripGap": "12px",
+      "cityCols": 2,
+      "cityRows": 2,
+      "workCols": 2,
+      "workRows": 2,
+      "stripCols": 2,
+      "stripRows": 2,
+      "realityCols": 1,
+      "threadStacked": true,
+      "threadSplit": false,
+      "nodeRows": 3,
+      "h1Lines": 3,
+      "tapTargets": [
+        {
+          "sel": "hc-brand-link[./index.html]",
+          "w": 210,
+          "h": 47
+        },
+        {
+          "sel": "hc-menu-trigger",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=koenji]",
+          "w": 185,
+          "h": 264
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=kichijoji]",
+          "w": 185,
+          "h": 264
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=shimokitazawa]",
+          "w": 185,
+          "h": 264
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=jinbocho]",
+          "w": 185,
+          "h": 264
+        }
+      ],
+      "smallTargets": [],
+      "cityCardH": [
+        264,
+        264,
+        264,
+        264
+      ],
+      "workCardH": [
+        135,
+        135,
+        135,
+        135
+      ],
+      "stripShotW": [
+        382,
+        185,
+        185
+      ],
+      "stripShotH": [
+        186,
+        186,
+        186
+      ],
+      "imagesOk": true,
+      "imgCount": 13,
+      "imagesSameOrigin": true
+    },
+    "HOME_768": {
+      "width": 768,
+      "file": "HOME_768.png",
+      "sha256": "91290938e2e1a7b19c9738a9a94fe65555eb6f47196bb903dcd46457c9c13810",
+      "errors": [],
+      "externalRequests": [],
+      "fonts": {
+        "brand": "Noto Serif CJK JP:8",
+        "h1": "Noto Serif CJK JP:12",
+        "hero-sub": "Noto Sans CJK JP:18",
+        "trace-year": "Noto Sans CJK JP:4",
+        "cities-title": "Noto Serif CJK JP:5",
+        "city-name": "Noto Serif CJK JP:3",
+        "city-q": "Noto Sans CJK JP:4",
+        "work-label": "Noto Serif CJK JP:1",
+        "thread-title": "Noto Serif CJK JP:8",
+        "node-name": "Noto Sans CJK JP:3",
+        "reality-line": "Noto Sans CJK JP:21",
+        "reality-cta": "Noto Serif CJK JP:7"
+      },
+      "vw": 768,
+      "docW": 768,
+      "docH": 1832,
+      "overflow": false,
+      "overflowCulprits": [],
+      "overflowCount": 0,
+      "sectionOrderOk": true,
+      "sectionsY": [
+        0,
+        600,
+        975,
+        1194,
+        1540
+      ],
+      "sectionsCount": 5,
+      "rects": {
+        "hero": [
+          0,
+          0,
+          768,
+          600
+        ],
+        "header": [
+          0,
+          0,
+          768,
+          58
+        ],
+        "brand": [
+          12,
+          8,
+          210,
+          47
+        ],
+        "menu": [
+          708,
+          14,
+          44,
+          44
+        ],
+        "heroBody": [
+          24,
+          147,
+          388,
+          369
+        ],
+        "title": [
+          24,
+          147,
+          388,
+          234
+        ],
+        "cta": [
+          24,
+          464,
+          244,
+          52
+        ],
+        "heroAside": [
+          613,
+          281,
+          81,
+          48
+        ],
+        "scroll": [
+          0,
+          544,
+          768,
+          40
+        ],
+        "trace": [
+          0,
+          0,
+          768,
+          600
+        ],
+        "sheet": [
+          0,
+          600,
+          768,
+          1232
+        ],
+        "cities": [
+          24,
+          689,
+          720,
+          286
+        ],
+        "works": [
+          24,
+          1062,
+          720,
+          132
+        ],
+        "thread": [
+          24,
+          1222,
+          720,
+          293
+        ],
+        "threadMedia": [
+          48,
+          1292,
+          280,
+          173
+        ],
+        "threadCopy": [
+          352,
+          1292,
+          368,
+          199
+        ],
+        "chain": [
+          352,
+          1399,
+          368,
+          48
+        ],
+        "reality": [
+          0,
+          1540,
+          768,
+          292
+        ],
+        "realityCopy": [
+          24,
+          1561,
+          240,
+          233
+        ],
+        "strip": [
+          264,
+          1568,
+          480,
+          154
+        ],
+        "spots": [
+          24,
+          1746,
+          212,
+          48
+        ]
+      },
+      "titleSize": 64,
+      "titleLH": "78px",
+      "pad": 24,
+      "panelPad": 24,
+      "cityGap": "12px",
+      "workGap": "12px",
+      "threadGap": "24px",
+      "stripGap": "10px",
+      "cityCols": 4,
+      "cityRows": 1,
+      "workCols": 4,
+      "workRows": 1,
+      "stripCols": 3,
+      "stripRows": 1,
+      "realityCols": 2,
+      "threadStacked": false,
+      "threadSplit": true,
+      "nodeRows": 1,
+      "h1Lines": 3,
+      "tapTargets": [
+        {
+          "sel": "hc-brand-link[./index.html]",
+          "w": 210,
+          "h": 47
+        },
+        {
+          "sel": "hc-menu-trigger",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=koenji]",
+          "w": 171,
+          "h": 286
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=kichijoji]",
+          "w": 171,
+          "h": 286
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=shimokitazawa]",
+          "w": 171,
+          "h": 286
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=jinbocho]",
+          "w": 171,
+          "h": 286
+        }
+      ],
+      "smallTargets": [],
+      "cityCardH": [
+        286,
+        286,
+        286,
+        286
+      ],
+      "workCardH": [
+        132,
+        132,
+        132,
+        132
+      ],
+      "stripShotW": [
+        153,
+        153,
+        153
+      ],
+      "stripShotH": [
+        154,
+        154,
+        154
+      ],
+      "imagesOk": true,
+      "imgCount": 13,
+      "imagesSameOrigin": true
+    },
+    "HOME_853_GOLDEN_REGRESSION": {
+      "width": 853,
+      "file": "HOME_853_GOLDEN_REGRESSION.png",
+      "sha256": "6f8a8e981cc731c5337224d445b6ec5469a0b81f88e1f3b6463d60905b506ce5",
+      "errors": [],
+      "externalRequests": [],
+      "fonts": {
+        "brand": "Noto Serif CJK JP:8",
+        "h1": "Noto Serif CJK JP:12",
+        "hero-sub": "Noto Sans CJK JP:18",
+        "trace-year": "Noto Sans CJK JP:4",
+        "cities-title": "Noto Serif CJK JP:5",
+        "city-name": "Noto Serif CJK JP:3",
+        "city-q": "Noto Sans CJK JP:4",
+        "work-label": "Noto Serif CJK JP:1",
+        "thread-title": "Noto Serif CJK JP:8",
+        "node-name": "Noto Sans CJK JP:3",
+        "reality-line": "Noto Sans CJK JP:21",
+        "reality-cta": "Noto Serif CJK JP:7"
+      },
+      "vw": 853,
+      "docW": 853,
+      "docH": 1844,
+      "overflow": false,
+      "overflowCulprits": [],
+      "overflowCount": 0,
+      "sectionOrderOk": true,
+      "sectionsY": [
+        0,
+        617,
+        1017,
+        1247,
+        1592
+      ],
+      "sectionsCount": 5,
+      "rects": {
+        "hero": [
+          0,
+          0,
+          853,
+          617
+        ],
+        "header": [
+          0,
+          0,
+          853,
+          46
+        ],
+        "brand": [
+          28,
+          20,
+          194,
+          23
+        ],
+        "menu": [
+          791,
+          20,
+          32,
+          17
+        ],
+        "heroBody": [
+          32,
+          147,
+          370,
+          357
+        ],
+        "title": [
+          32,
+          147,
+          370,
+          222
+        ],
+        "cta": [
+          32,
+          452,
+          244,
+          52
+        ],
+        "heroAside": [
+          690,
+          281,
+          81,
+          48
+        ],
+        "scroll": [
+          0,
+          561,
+          853,
+          40
+        ],
+        "trace": [
+          0,
+          0,
+          853,
+          617
+        ],
+        "sheet": [
+          0,
+          617,
+          853,
+          1227
+        ],
+        "cities": [
+          32,
+          706,
+          789,
+          311
+        ],
+        "works": [
+          32,
+          1104,
+          789,
+          143
+        ],
+        "thread": [
+          25,
+          1275,
+          803,
+          292
+        ],
+        "threadMedia": [
+          46,
+          1341,
+          292,
+          180
+        ],
+        "threadCopy": [
+          360,
+          1341,
+          447,
+          199
+        ],
+        "chain": [
+          360,
+          1448,
+          447,
+          48
+        ],
+        "reality": [
+          0,
+          1592,
+          853,
+          252
+        ],
+        "realityCopy": [
+          32,
+          1613,
+          301,
+          181
+        ],
+        "strip": [
+          333,
+          1620,
+          512,
+          186
+        ],
+        "spots": [
+          32,
+          1746,
+          212,
+          48
+        ]
+      },
+      "titleSize": 61,
+      "titleLH": "74px",
+      "pad": 32,
+      "panelPad": 21,
+      "cityGap": "12px",
+      "workGap": "12px",
+      "threadGap": "22px",
+      "stripGap": "12px",
+      "cityCols": 4,
+      "cityRows": 1,
+      "workCols": 4,
+      "workRows": 1,
+      "stripCols": 3,
+      "stripRows": 1,
+      "realityCols": 2,
+      "threadStacked": false,
+      "threadSplit": true,
+      "nodeRows": 1,
+      "h1Lines": 3,
+      "tapTargets": [
+        {
+          "sel": "hc-brand-link[./index.html]",
+          "w": 194,
+          "h": 23
+        },
+        {
+          "sel": "hc-menu-trigger",
+          "w": 32,
+          "h": 17
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=koenji]",
+          "w": 188,
+          "h": 311
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=kichijoji]",
+          "w": 188,
+          "h": 311
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=shimokitazawa]",
+          "w": 188,
+          "h": 311
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=jinbocho]",
+          "w": 188,
+          "h": 311
+        }
+      ],
+      "smallTargets": [
+        {
+          "sel": "hc-brand-link[./index.html]",
+          "w": 194,
+          "h": 23
+        },
+        {
+          "sel": "hc-menu-trigger",
+          "w": 32,
+          "h": 17
+        }
+      ],
+      "cityCardH": [
+        311,
+        311,
+        311,
+        311
+      ],
+      "workCardH": [
+        143,
+        143,
+        143,
+        143
+      ],
+      "stripShotW": [
+        163,
+        163,
+        163
+      ],
+      "stripShotH": [
+        186,
+        186,
+        186
+      ],
+      "imagesOk": true,
+      "imgCount": 13,
+      "imagesSameOrigin": true
+    },
+    "HOME_1024": {
+      "width": 1024,
+      "file": "HOME_1024.png",
+      "sha256": "142f523172a805bf2f40da819994e005ffba7497f2573146ae351ce42186413b",
+      "errors": [],
+      "externalRequests": [],
+      "fonts": {
+        "brand": "Noto Serif CJK JP:8",
+        "h1": "Noto Serif CJK JP:12",
+        "hero-sub": "Noto Sans CJK JP:18",
+        "trace-year": "Noto Sans CJK JP:4",
+        "cities-title": "Noto Serif CJK JP:5",
+        "city-name": "Noto Serif CJK JP:3",
+        "city-q": "Noto Sans CJK JP:4",
+        "work-label": "Noto Serif CJK JP:1",
+        "thread-title": "Noto Serif CJK JP:8",
+        "node-name": "Noto Sans CJK JP:3",
+        "reality-line": "Noto Sans CJK JP:21",
+        "reality-cta": "Noto Serif CJK JP:7"
+      },
+      "vw": 1024,
+      "docW": 1024,
+      "docH": 1935,
+      "overflow": false,
+      "overflowCulprits": [],
+      "overflowCount": 0,
+      "sectionOrderOk": true,
+      "sectionsY": [
+        0,
+        640,
+        1049,
+        1292,
+        1669
+      ],
+      "sectionsCount": 5,
+      "rects": {
+        "hero": [
+          0,
+          0,
+          1024,
+          640
+        ],
+        "header": [
+          0,
+          0,
+          1024,
+          58
+        ],
+        "brand": [
+          52,
+          8,
+          210,
+          47
+        ],
+        "menu": [
+          924,
+          14,
+          44,
+          44
+        ],
+        "heroBody": [
+          64,
+          147,
+          436,
+          396
+        ],
+        "title": [
+          64,
+          147,
+          436,
+          261
+        ],
+        "cta": [
+          64,
+          491,
+          244,
+          52
+        ],
+        "heroAside": [
+          829,
+          291,
+          81,
+          48
+        ],
+        "scroll": [
+          0,
+          584,
+          1024,
+          40
+        ],
+        "trace": [
+          107,
+          0,
+          885,
+          640
+        ],
+        "sheet": [
+          32,
+          640,
+          960,
+          1295
+        ],
+        "cities": [
+          64,
+          729,
+          896,
+          320
+        ],
+        "works": [
+          64,
+          1136,
+          896,
+          156
+        ],
+        "thread": [
+          64,
+          1320,
+          896,
+          324
+        ],
+        "threadMedia": [
+          92,
+          1394,
+          360,
+          222
+        ],
+        "threadCopy": [
+          484,
+          1394,
+          448,
+          222
+        ],
+        "chain": [
+          484,
+          1501,
+          448,
+          48
+        ],
+        "reality": [
+          32,
+          1669,
+          960,
+          266
+        ],
+        "realityCopy": [
+          64,
+          1690,
+          280,
+          207
+        ],
+        "strip": [
+          344,
+          1697,
+          616,
+          184
+        ],
+        "spots": [
+          64,
+          1849,
+          212,
+          48
+        ]
+      },
+      "titleSize": 72,
+      "titleLH": "87px",
+      "pad": 32,
+      "panelPad": 28,
+      "cityGap": "16px",
+      "workGap": "16px",
+      "threadGap": "32px",
+      "stripGap": "12px",
+      "cityCols": 4,
+      "cityRows": 1,
+      "workCols": 4,
+      "workRows": 1,
+      "stripCols": 3,
+      "stripRows": 1,
+      "realityCols": 2,
+      "threadStacked": false,
+      "threadSplit": true,
+      "nodeRows": 1,
+      "h1Lines": 3,
+      "tapTargets": [
+        {
+          "sel": "hc-brand-link[./index.html]",
+          "w": 210,
+          "h": 47
+        },
+        {
+          "sel": "hc-menu-trigger",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=koenji]",
+          "w": 212,
+          "h": 320
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=kichijoji]",
+          "w": 212,
+          "h": 320
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=shimokitazawa]",
+          "w": 212,
+          "h": 320
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=jinbocho]",
+          "w": 212,
+          "h": 320
+        }
+      ],
+      "smallTargets": [],
+      "cityCardH": [
+        320,
+        320,
+        320,
+        320
+      ],
+      "workCardH": [
+        156,
+        156,
+        156,
+        156
+      ],
+      "stripShotW": [
+        197,
+        197,
+        197
+      ],
+      "stripShotH": [
+        184,
+        184,
+        184
+      ],
+      "imagesOk": true,
+      "imgCount": 13,
+      "imagesSameOrigin": true
+    },
+    "HOME_1440": {
+      "width": 1440,
+      "file": "HOME_1440.png",
+      "sha256": "d1becc8895d5a038c6418a5b0b2ed25101a9dd945335f1795500ad4d2618bc17",
+      "errors": [],
+      "externalRequests": [],
+      "fonts": {
+        "brand": "Noto Serif CJK JP:8",
+        "h1": "Noto Serif CJK JP:12",
+        "hero-sub": "Noto Sans CJK JP:18",
+        "trace-year": "Noto Sans CJK JP:4",
+        "cities-title": "Noto Serif CJK JP:5",
+        "city-name": "Noto Serif CJK JP:3",
+        "city-q": "Noto Sans CJK JP:4",
+        "work-label": "Noto Serif CJK JP:1",
+        "thread-title": "Noto Serif CJK JP:8",
+        "node-name": "Noto Sans CJK JP:3",
+        "reality-line": "Noto Sans CJK JP:21",
+        "reality-cta": "Noto Serif CJK JP:7"
+      },
+      "vw": 1440,
+      "docW": 1440,
+      "docH": 2086,
+      "overflow": false,
+      "overflowCulprits": [],
+      "overflowCount": 0,
+      "sectionOrderOk": true,
+      "sectionsY": [
+        0,
+        680,
+        1109,
+        1366,
+        1800
+      ],
+      "sectionsCount": 5,
+      "rects": {
+        "hero": [
+          0,
+          0,
+          1440,
+          680
+        ],
+        "header": [
+          0,
+          0,
+          1440,
+          58
+        ],
+        "brand": [
+          120,
+          8,
+          210,
+          47
+        ],
+        "menu": [
+          1272,
+          14,
+          44,
+          44
+        ],
+        "heroBody": [
+          132,
+          147,
+          509,
+          441
+        ],
+        "title": [
+          132,
+          147,
+          509,
+          306
+        ],
+        "cta": [
+          132,
+          536,
+          244,
+          52
+        ],
+        "heroAside": [
+          1177,
+          310,
+          81,
+          48
+        ],
+        "scroll": [
+          0,
+          624,
+          1440,
+          40
+        ],
+        "trace": [
+          400,
+          0,
+          940,
+          680
+        ],
+        "sheet": [
+          100,
+          680,
+          1240,
+          1406
+        ],
+        "cities": [
+          132,
+          769,
+          1176,
+          340
+        ],
+        "works": [
+          132,
+          1196,
+          1176,
+          170
+        ],
+        "thread": [
+          132,
+          1394,
+          1176,
+          381
+        ],
+        "threadMedia": [
+          164,
+          1472,
+          440,
+          271
+        ],
+        "threadCopy": [
+          644,
+          1472,
+          632,
+          271
+        ],
+        "chain": [
+          644,
+          1579,
+          632,
+          48
+        ],
+        "reality": [
+          100,
+          1800,
+          1240,
+          286
+        ],
+        "realityCopy": [
+          132,
+          1821,
+          320,
+          181
+        ],
+        "strip": [
+          452,
+          1828,
+          856,
+          220
+        ],
+        "spots": [
+          132,
+          1954,
+          212,
+          48
+        ]
+      },
+      "titleSize": 84,
+      "titleLH": "102px",
+      "pad": 32,
+      "panelPad": 32,
+      "cityGap": "18px",
+      "workGap": "18px",
+      "threadGap": "40px",
+      "stripGap": "14px",
+      "cityCols": 4,
+      "cityRows": 1,
+      "workCols": 4,
+      "workRows": 1,
+      "stripCols": 3,
+      "stripRows": 1,
+      "realityCols": 2,
+      "threadStacked": false,
+      "threadSplit": true,
+      "nodeRows": 1,
+      "h1Lines": 3,
+      "tapTargets": [
+        {
+          "sel": "hc-brand-link[./index.html]",
+          "w": 210,
+          "h": 47
+        },
+        {
+          "sel": "hc-menu-trigger",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=koenji]",
+          "w": 281,
+          "h": 340
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=kichijoji]",
+          "w": 281,
+          "h": 340
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=shimokitazawa]",
+          "w": 281,
+          "h": 340
+        },
+        {
+          "sel": "hc-city[./shelf.html?shelf=jinbocho]",
+          "w": 281,
+          "h": 340
+        }
+      ],
+      "smallTargets": [],
+      "cityCardH": [
+        340,
+        340,
+        340,
+        340
+      ],
+      "workCardH": [
+        170,
+        170,
+        170,
+        170
+      ],
+      "stripShotW": [
+        276,
+        276,
+        276
+      ],
+      "stripShotH": [
+        220,
+        220,
+        220
+      ],
+      "imagesOk": true,
+      "imgCount": 13,
+      "imagesSameOrigin": true
+    }
+  },
+  "golden": {
+    "file": "experiments/home-visual-fidelity/asset-round-3/HOME_CURRENT_853_R3_FINAL2.png",
+    "sha256": "6f8a8e981cc731c5337224d445b6ec5469a0b81f88e1f3b6463d60905b506ce5",
+    "byteEqual": true
+  },
+  "menu390": {
+    "file": "HOME_390_MENU.png",
+    "sha256": "9a103e1c5284ac7f59fc27ffed0803dee4df7b8c594dc1a872e7109d7f515994",
+    "open": true,
+    "overflow": false,
+    "links": [
+      {
+        "t": "閉じる",
+        "h": 40,
+        "w": 48
+      },
+      {
+        "t": "吉祥寺→",
+        "h": 74,
+        "w": 346
+      },
+      {
+        "t": "高円寺→",
+        "h": 74,
+        "w": 346
+      },
+      {
+        "t": "下北沢→",
+        "h": 74,
+        "w": 346
+      },
+      {
+        "t": "神保町→",
+        "h": 74,
+        "w": 346
+      },
+      {
+        "t": "作品から入る→",
+        "h": 54,
+        "w": 346
+      },
+      {
+        "t": "いま辿れるスレッド→",
+        "h": 54,
+        "w": 346
+      },
+      {
+        "t": "候補を教える→",
+        "h": 54,
+        "w": 346
+      },
+      {
+        "t": "データの扱い",
+        "h": 24,
+        "w": 96
+      },
+      {
+        "t": "写真・出典",
+        "h": 24,
+        "w": 80
+      },
+      {
+        "t": "入口へ戻る",
+        "h": 24,
+        "w": 80
+      }
+    ],
+    "focus": "site-menu-close",
+    "escapeCloses": true,
+    "focusAfterEscape": "siteMenuButton"
+  },
+  "zoom200": {
+    "file": "HOME_200PCT.png",
+    "sha256": "9f67839f451af5f1fb666ad8ed515412efe81b50fc0d3e750330d1bbd72deb5f",
+    "note": "720 CSS px @ dsf 2 == 1440 window at 200 % (PNG saved at CSS scale)",
+    "errors": [],
+    "vw": 720,
+    "docW": 720,
+    "docH": 3285,
+    "overflow": false,
+    "overflowCulprits": [
+      {
+        "sel": "svg",
+        "left": 517,
+        "right": 730
+      }
+    ],
+    "overflowCount": 1,
+    "sectionOrderOk": true,
+    "sectionsY": [
+      0,
+      660,
+      1342,
+      1746,
+      2604
+    ],
+    "sectionsCount": 5,
+    "rects": {
+      "hero": [
+        0,
+        0,
+        720,
+        660
+      ],
+      "header": [
+        0,
+        0,
+        720,
+        58
+      ],
+      "brand": [
+        16,
+        8,
+        210,
+        47
+      ],
+      "menu": [
+        658,
+        14,
+        44,
+        44
+      ],
+      "heroBody": [
+        24,
+        118,
+        672,
+        333
+      ],
+      "title": [
+        24,
+        118,
+        672,
+        209
+      ],
+      "cta": [
+        24,
+        399,
+        244,
+        52
+      ],
+      "heroAside": [
+        615,
+        66,
+        81,
+        48
+      ],
+      "scroll": [
+        0,
+        604,
+        720,
+        40
+      ],
+      "trace": [
+        517,
+        456,
+        213,
+        154
+      ],
+      "sheet": [
+        0,
+        660,
+        720,
+        2625
+      ],
+      "cities": [
+        24,
+        802,
+        672,
+        540
+      ],
+      "works": [
+        24,
+        1464,
+        672,
+        282
+      ],
+      "thread": [
+        24,
+        1790,
+        672,
+        814
+      ],
+      "threadMedia": [
+        46,
+        1876,
+        628,
+        387
+      ],
+      "threadCopy": [
+        46,
+        2281,
+        628,
+        301
+      ],
+      "chain": [
+        46,
+        2381,
+        628,
+        164
+      ],
+      "reality": [
+        0,
+        2604,
+        720,
+        681
+      ],
+      "realityCopy": [
+        24,
+        2648,
+        672,
+        181
+      ],
+      "strip": [
+        24,
+        2857,
+        672,
+        384
+      ],
+      "spots": [
+        24,
+        2781,
+        212,
+        48
+      ]
+    },
+    "titleSize": 58,
+    "titleLH": "69.6px",
+    "pad": 24,
+    "panelPad": 22,
+    "cityGap": "12px",
+    "workGap": "12px",
+    "threadGap": "22px",
+    "stripGap": "12px",
+    "cityCols": 2,
+    "cityRows": 2,
+    "workCols": 2,
+    "workRows": 2,
+    "stripCols": 2,
+    "stripRows": 2,
+    "realityCols": 1,
+    "threadStacked": true,
+    "threadSplit": false,
+    "nodeRows": 3,
+    "h1Lines": 3,
+    "tapTargets": [
+      {
+        "sel": "hc-brand-link[./index.html]",
+        "w": 210,
+        "h": 47
+      },
+      {
+        "sel": "hc-menu-trigger",
+        "w": 44,
+        "h": 44
+      },
+      {
+        "sel": "hc-city[./shelf.html?shelf=koenji]",
+        "w": 330,
+        "h": 264
+      },
+      {
+        "sel": "hc-city[./shelf.html?shelf=kichijoji]",
+        "w": 330,
+        "h": 264
+      },
+      {
+        "sel": "hc-city[./shelf.html?shelf=shimokitazawa]",
+        "w": 330,
+        "h": 264
+      },
+      {
+        "sel": "hc-city[./shelf.html?shelf=jinbocho]",
+        "w": 330,
+        "h": 264
+      }
+    ],
+    "smallTargets": [],
+    "cityCardH": [
+      264,
+      264,
+      264,
+      264
+    ],
+    "workCardH": [
+      135,
+      135,
+      135,
+      135
+    ],
+    "stripShotW": [
+      672,
+      330,
+      330
+    ],
+    "stripShotH": [
+      186,
+      186,
+      186
+    ],
+    "imagesOk": true,
+    "imgCount": 13,
+    "imagesSameOrigin": true
+  },
+  "reducedMotion390": {
+    "identicalRender": true,
+    "reduce": {
+      "file": "HOME_390_motion-reduce.png",
+      "sha256": "5df5f72009bcb1c74b7f9eb0a86977b49e46850e9083769098df2fe87e0f02d3",
+      "anim": {
+        "animated": 0,
+        "transitions": 0,
+        "docAnimations": 0
+      }
+    },
+    "no-preference": {
+      "file": "HOME_390_motion-no-preference.png",
+      "sha256": "5df5f72009bcb1c74b7f9eb0a86977b49e46850e9083769098df2fe87e0f02d3",
+      "anim": {
+        "animated": 0,
+        "transitions": 0,
+        "docAnimations": 0
+      }
+    }
+  },
+  "keyboard": {
+    "390": [
+      {
+        "el": "A.skip-link",
+        "href": "#main",
+        "focusVisible": true,
+        "outline": "solid 2px",
+        "w": 102,
+        "h": 44
+      },
+      {
+        "el": "A.hc-brand-link",
+        "href": "./index.html",
+        "focusVisible": true,
+        "outline": "solid 2px",
+        "w": 210,
+        "h": 47
+      },
+      {
+        "el": "BUTTON.hc-menu-trigger#siteMenuButton",
+        "href": null,
+        "focusVisible": true,
+        "outline": "solid 2px",
+        "w": 44,
+        "h": 44
+      },
+      {
+        "el": "A.hc-city",
+        "href": "./shelf.html?shelf=koenji",
+        "focusVisible": true,
+        "outline": "solid 2px",
+        "w": 165,
+        "h": 252
+      },
+      {
+        "el": "A.hc-city",
+        "href": "./shelf.html?shelf=kichijoji",
+        "focusVisible": true,
+        "outline": "solid 2px",
+        "w": 165,
+        "h": 252
+      },
+      {
+        "el": "A.hc-city",
+        "href": "./shelf.html?shelf=shimokitazawa",
+        "focusVisible": true,
+        "outline": "solid 2px",
+        "w": 165,
+        "h": 252
+      },
+      {
+        "el": "A.hc-city",
+        "href": "./shelf.html?shelf=jinbocho",
+        "focusVisible": true,
+        "outline": "solid 2px",
+        "w": 165,
+        "h": 252
+      },
+      {
+        "el": "BODY"
+      }
+    ],
+    "1440": [
+      {
+        "el": "A.skip-link",
+        "href": "#main",
+        "focusVisible": true,
+        "outline": "solid 2px",
+        "w": 102,
+        "h": 44
+      },
+      {
+        "el": "A.hc-brand-link",
+        "href": "./index.html",
+        "focusVisible": true,
+        "outline": "solid 2px",
+        "w": 210,
+        "h": 47
+      },
+      {
+        "el": "BUTTON.hc-menu-trigger#siteMenuButton",
+        "href": null,
+        "focusVisible": true,
+        "outline": "solid 2px",
+        "w": 44,
+        "h": 44
+      },
+      {
+        "el": "A.hc-city",
+        "href": "./shelf.html?shelf=koenji",
+        "focusVisible": true,
+        "outline": "solid 2px",
+        "w": 281,
+        "h": 340
+      },
+      {
+        "el": "A.hc-city",
+        "href": "./shelf.html?shelf=kichijoji",
+        "focusVisible": true,
+        "outline": "solid 2px",
+        "w": 281,
+        "h": 340
+      },
+      {
+        "el": "A.hc-city",
+        "href": "./shelf.html?shelf=shimokitazawa",
+        "focusVisible": true,
+        "outline": "solid 2px",
+        "w": 281,
+        "h": 340
+      },
+      {
+        "el": "A.hc-city",
+        "href": "./shelf.html?shelf=jinbocho",
+        "focusVisible": true,
+        "outline": "solid 2px",
+        "w": 281,
+        "h": 340
+      },
+      {
+        "el": "BODY"
+      }
+    ]
+  }
+}

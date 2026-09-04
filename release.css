@@ -2600,3 +2600,204 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 @media (prefers-reduced-motion: reduce) {
   .home-canonical * { animation: none !important; transition: none !important; }
 }
+
+/* ---------------------------------------------- RESPONSIVE ROUND 4 ----
+   853 Golden は上の default rule のまま（visual delta 0）。以下は Brief V2 §3
+   の明示範囲だけに override を置き、800–899px（Golden corridor）には入らない。
+     Mobile   0–767   Tablet 768–799   Desktop 900–1199   Wide 1200–
+   新しい route / CTA / content / animation は持たない。 */
+
+/* corridor 外の全域: 実 anchor / button だけ当たり判定 44px 以上。
+   可視文字・bar の位置は padding と負 margin で変えない。 */
+@media (max-width: 799px), (min-width: 900px) {
+  .hc-brand-link { padding: 12px 8px; margin: -12px -8px; }
+  .hc-menu-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    margin: -6px -6px 0 0;
+  }
+}
+
+/* ------------------------------------------------- Mobile 0–767 */
+
+@media (max-width: 767px) {
+  .home-canonical {
+    --hc-pad: clamp(20px, 6.15vw, 24px);
+    /* 320→390 の一次補間（Brief §5 A の 3 幅を通る）。390 以上は次の block。 */
+    --hc-hero-h: clamp(600px, calc(417.143px + 57.143vw), 660px);
+    --hc-title: clamp(44px, calc(14.286vw - 1.714px), 58px);
+    --hc-city-h: clamp(228px, calc(118.286px + 34.286vw), 264px);
+    --hc-work-h: clamp(112px, calc(48px + 20vw), 135px);
+    --hc-panel-pad: clamp(18px, calc(5.714vw - 0.286px), 22px);
+  }
+
+  /* 1. HERO — full-bleed media、title 3 行、CTA は左 gutter、aside は右 gutter、
+     trace は CTA と scroll cue の間の帯に縮小（静的・同じ 4 年号）。 */
+  .hc-hero { height: var(--hc-hero-h); }
+  .hc-header { padding: 20px var(--hc-pad) 0; }
+  .hc-hero-body { left: var(--hc-pad); right: var(--hc-pad); top: 118px; }
+  .hc-hero-title { font-size: var(--hc-title); line-height: 1.2; }
+  .hc-hero-sub { margin-top: 20px; }
+  .hc-hero-cta { margin-top: 28px; }
+  .hc-hero-aside {
+    left: auto;
+    right: var(--hc-pad);
+    top: 66px;
+    text-align: right;
+  }
+  .hc-hero-trace {
+    left: auto;
+    right: -10px;
+    top: auto;
+    bottom: 50px;
+    width: 213px;   /* 853 × 0.25 */
+    height: 154px;  /* 617 × 0.25 */
+  }
+  .hc-trace-year { font-size: 36px; }  /* user unit × 0.25 ≈ 9px 描画 */
+  .hc-trace-dot { r: 9; }
+
+  /* 2–5. warm sheet — section 間 44px、head は縦積み */
+  .hc-sheet { border-radius: 20px 20px 0 0; }
+  .hc-section-head { grid-template-columns: minmax(0, 1fr); row-gap: 10px; }
+  .hc-section-note { line-height: 1.5; }
+  .hc-section-more { justify-content: flex-end; }
+
+  .hc-cities { padding-top: 40px; }
+  .hc-cities .hc-section-head,
+  .hc-works .hc-section-head { margin-bottom: 18px; }
+  .hc-city-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .home-canonical .hc-city { height: var(--hc-city-h); }
+  .hc-city-q { font-size: clamp(11px, 3.6vw, 12.5px); }
+
+  .hc-works { padding-top: 44px; }
+  .hc-work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hc-work { height: var(--hc-work-h); }
+
+  .hc-thread-section { padding: 44px var(--hc-pad) 0; }
+  .hc-thread { padding: var(--hc-panel-pad); }
+  .hc-thread-head { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .hc-thread-body { grid-template-columns: minmax(0, 1fr); row-gap: 18px; margin-top: 20px; }
+  .hc-thread-media { height: auto; aspect-ratio: 292 / 180; }
+  .hc-thread-copy { padding-top: 0; }
+  /* chain: DOM 5 node のまま 2 列に wrap、5 番目は 2 列 span。
+     行をまたぐ connector（3→、5→）は誤った直線関係になるので出さない。 */
+  .hc-thread-chain {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 26px;
+    row-gap: 10px;
+  }
+  .hc-node + .hc-node { margin-left: 0; }
+  .hc-node + .hc-node::before { display: none; }
+  .hc-node:nth-child(2)::before,
+  .hc-node:nth-child(4)::before { display: block; }
+  .hc-node:nth-child(5) { grid-column: 1 / -1; }
+  .hc-thread-read { margin-top: 24px; }
+
+  .hc-reality { grid-template-columns: minmax(0, 1fr); padding: 44px var(--hc-pad) 44px; }
+  /* 本文は列幅に収まらないときだけ折る。読点の後でしか折らない（keep-all）。 */
+  .hc-reality-line { white-space: normal; word-break: keep-all; }
+  .hc-reality-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 28px; }
+  .hc-reality-shot:first-child { grid-column: 1 / -1; }
+}
+
+/* 390→430 の一次補間（Brief §5 A の値を通り、430 以上は 430 の値で固定） */
+@media (min-width: 390px) and (max-width: 767px) {
+  .home-canonical {
+    --hc-hero-h: clamp(640px, calc(445px + 50vw), 660px);
+    --hc-title: clamp(54px, calc(15px + 10vw), 58px);
+    --hc-city-h: clamp(252px, calc(135px + 30vw), 264px);
+    --hc-work-h: clamp(126px, calc(38.25px + 22.5vw), 135px);
+    --hc-panel-pad: 22px;
+  }
+}
+
+/* ------------------------------------------------ Tablet 768–799 */
+
+@media (min-width: 768px) and (max-width: 799px) {
+  /* content shell 720px を viewport 中央に、左右 24px 以上。sheet は full-bleed。 */
+  .home-canonical { --hc-shell-x: max(24px, calc(50% - 360px)); }
+  .hc-hero { height: 600px; }
+  .hc-header { padding: 20px calc(var(--hc-shell-x) - 2px) 0 calc(var(--hc-shell-x) - 4px); }
+  .hc-hero-body { left: var(--hc-shell-x); }
+  .hc-hero-title { font-size: 64px; line-height: 78px; }
+  .hc-hero-aside { left: auto; right: calc(var(--hc-shell-x) + 50px); }
+
+  .hc-section { max-width: 768px; margin-inline: auto; padding-inline: 24px; }
+  .hc-thread-section { padding-inline: 24px; }
+  .home-canonical .hc-city { height: 286px; }
+  .hc-work { height: 132px; }
+
+  .hc-thread { padding: 24px; }
+  .hc-thread-body { grid-template-columns: 280px minmax(0, 1fr); column-gap: 24px; }
+  .hc-thread-media { height: auto; aspect-ratio: 292 / 180; }
+  .hc-node + .hc-node { margin-left: 18px; }
+  .hc-node + .hc-node::before { left: -15px; }
+
+  .hc-reality { grid-template-columns: 240px minmax(0, 1fr); padding-inline: 24px; }
+  .hc-reality-line { white-space: normal; word-break: keep-all; }
+  .hc-reality-strip { gap: 10px; }
+  .hc-reality-shot { height: 154px; }
+}
+
+/* ---------------------------------------------- Desktop 900–1199 */
+
+@media (min-width: 900px) and (max-width: 1199px) {
+  /* warm sheet は最大 960px・左右 32px 以上で中央。content はその内側 32px。
+     Hero の photo は full-bleed、header / body / aside / trace は shell 基準。 */
+  .home-canonical { --hc-shell-x: max(64px, calc(50% - 448px)); }
+  .hc-hero { height: 640px; }
+  .hc-header { padding: 20px calc(var(--hc-shell-x) - 2px) 0 calc(var(--hc-shell-x) - 4px); }
+  .hc-hero-body { left: var(--hc-shell-x); }
+  .hc-hero-title { font-size: 72px; line-height: 87px; }
+  .hc-hero-aside { left: auto; right: calc(var(--hc-shell-x) + 50px); top: 291px; }
+  /* trace は 853 の比率のまま hero 高さに等倍（横へ引き伸ばさない）、shell 右端に寄せる */
+  .hc-hero-trace { left: auto; right: calc(var(--hc-shell-x) - 32px); width: 885px; height: 100%; }
+
+  .hc-sheet { margin-inline: max(32px, calc(50% - 480px)); }
+  .hc-city-grid { gap: 16px; }
+  .home-canonical .hc-city { height: 320px; }
+  .hc-work-grid { gap: 16px; }
+  .hc-work { height: 156px; }
+
+  .hc-thread-section { padding-inline: 32px; }
+  .hc-thread { padding: 28px; }
+  .hc-thread-body { grid-template-columns: 360px minmax(0, 1fr); column-gap: 32px; }
+  .hc-thread-media { height: auto; aspect-ratio: 292 / 180; }
+
+  .hc-reality { grid-template-columns: 280px minmax(0, 1fr); padding-inline: 32px; }
+  .hc-reality-line { white-space: normal; word-break: keep-all; }
+  .hc-reality-shot { height: 184px; }
+}
+
+/* --------------------------------------------------- Wide 1200– */
+
+@media (min-width: 1200px) {
+  /* warm sheet は最大 1240px（1440 で左右 100px）。content はその内側 32px。 */
+  .home-canonical { --hc-shell-x: max(64px, calc(50% - 588px)); }
+  .hc-hero { height: 680px; }
+  .hc-header { padding: 20px calc(var(--hc-shell-x) - 2px) 0 calc(var(--hc-shell-x) - 4px); }
+  .hc-hero-body { left: var(--hc-shell-x); }
+  .hc-hero-title { font-size: 84px; line-height: 102px; max-width: 7.2em; }
+  .hc-hero-aside { left: auto; right: calc(var(--hc-shell-x) + 50px); top: 310px; }
+  .hc-hero-trace { left: auto; right: calc(var(--hc-shell-x) - 32px); width: 940px; height: 100%; }
+
+  .hc-sheet { margin-inline: max(32px, calc(50% - 620px)); }
+  .hc-city-grid { gap: 18px; }
+  .home-canonical .hc-city { height: 340px; }
+  .hc-work-grid { gap: 18px; }
+  .hc-work { height: 170px; }
+
+  .hc-thread-section { padding-inline: 32px; }
+  .hc-thread { padding: 32px; }
+  .hc-thread-body { grid-template-columns: 440px minmax(0, 1fr); column-gap: 40px; }
+  .hc-thread-media { height: auto; aspect-ratio: 292 / 180; }
+
+  .hc-reality { grid-template-columns: 320px minmax(0, 1fr); padding-inline: 32px; }
+  .hc-reality-strip { gap: 14px; }
+  .hc-reality-shot { height: 220px; }
+}
