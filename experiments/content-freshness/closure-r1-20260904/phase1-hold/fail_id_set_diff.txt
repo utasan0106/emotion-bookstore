@@ -1,4 +1,4 @@
-# browser_qa FAIL ID set: accepted (responsive-round-4/browser_qa_after_r4.txt) vs after content closure
+# browser_qa FAIL ID set: accepted (responsive-round-4/browser_qa_after_r4.txt) vs this run
 accepted=20 now=20
 diff: none (identical)
 

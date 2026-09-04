@@ -2,68 +2,80 @@
 
 Review artifacts only. **Not runtime.** `/experiments/` は `.vercelignore` で配信除外。
 
-- Brief: `CONTENT_FRESHNESS_CLOSURE_AUTHORITATIVE_V1.md`（HQ 添付。repo には置かない）
+- Brief 1: `CONTENT_FRESHNESS_CLOSURE_AUTHORITATIVE_V1.md`（HQ 添付。repo には置かない）
+- Brief 2: `CONTENT_FRESHNESS_HQ_VERIFIED_RESUME_V1.md`（HQ 添付。repo には置かない）
 - Accepted source: `claude/home-responsive-round-4-hq-go-3jdayn` @ `ce92b6eda3b9736ed31da16acb548d26c845af07`
 - 853 Golden: frozen `e440c81d5499d2ed505b40e7a8837e9aad8c4d1b`, sha256 `6f8a8e98…`（触れていない）
 - Execution branch: `claude/content-freshness-closure-r1-20260904`
-- Execution time (JST): `2026-09-04T16:16:30+09:00`
 
-## 結論 — FRESHNESS STATUS = HOLD
+## Phase 1 — HOLD（`b217b30`）
 
-Brief §2 が要求する「実行時に公式ソースを再度開く」が、この session の egress policy で
-**5 件すべて不可能**だった（CONNECT 403 policy denial。`source_reverify.txt`）。
-Brief §3「公式ページが開けないときは推測しない。record は HOLD / unchanged」に従い、
-**`release_content.js` は 1 byte も変更していない。** 新しい `verifiedAt` / `expiresAt` を
-ソースを見ずに書くことは、NO EVIDENCE = NO ROUTE に反するのでしていない。
+Claude session の egress policy で公式 5 source に到達できず（CONNECT 403）、runtime を変更しなかった。
+記録は `phase1-hold/`（`README_phase1.md`、`source_reverify.txt`、当時の固定時刻表・回帰・QA）。
 
-| 候補 | 公式ソース | 結果 | 該当 record | 状態 |
-|---|---|---|---|---|
-| 吉祥寺 谷口智則展 | musashino.or.jp | CONNECT 403 | `kichijoji.weeklyFeature`（井の頭アートマーケッツ, expires 2026-09-06T17:00+09:00） | HOLD / unchanged |
-| 高円寺 座・高円寺『夏の夜の夢』 | za-koenji.jp | CONNECT 403 | `koenji.weeklyFeature`（セシオン杉並まつり2026, expires 2026-09-06T15:00+09:00） | HOLD / unchanged |
-| 下北沢 SHELTER 35th “IGNITION GIGS” | loft-prj.co.jp | CONNECT 403 | `shimokitazawa.weeklyFeature`（Outside dandy, expires 2026-09-05T23:59:59+09:00）/ object `shimokitazawa-shelter`（expires 2026-09-27T23:59+09:00） | HOLD / unchanged |
-| 神保町 アリス館45周年企画 | bookhousecafe.jp | CONNECT 403 | `jinbocho.weeklyFeature`（『まごわやさしい』3D原画展, expires 2026-09-15T17:00+09:00） | HOLD / unchanged |
-| 神保町 女優魂2026 | shogakukan.co.jp | CONNECT 403 | object `jinbocho-theater-mizoguchi-2026`（expires 2026-09-11T23:59+09:00） | HOLD / unchanged |
+## Phase 2 — HQ VERIFIED RESUME（this commit）
 
-Changed record IDs: **none**。before → after: **none**。Rights / media changes: **NONE**。
-Brief の「Previously verified」値は、公式ページを開き直せていないので runtime に入れていない
-（`CANDIDATES_UNVERIFIED.md` に人の再確認用として転記。runtime からは参照されない）。
+HQ が **2026-09-04T16:25:53+09:00** に 5 件の公式一次 source を独立再確認し、source-evidence HOLD を解除。
+Resume Brief §2 の値を `release_content.js` にそのまま適用した（`release_content_diff.patch`）。
+`verifiedAt` は **HQ の確認時刻**であり、Claude 自身の fetch 時刻ではない。
 
-## 固定時刻 QA（現行コンテンツのまま）
+### 変更 record（before → after）
 
-`fixed_clock_preflight.txt`（`qa/release_preflight.js --at`）と `fixed_clock_browser.md`
-（実ブラウザ、Date を固定。tool は `tools/fixed_clock_browser.js`）。
+| shelf | field | before | after |
+|---|---|---|---|
+| kichijoji | weeklyFeature | 井の頭アートマーケッツ（expires 2026-09-06T17:00+09:00） | 谷口智則展「黒い森を抜けて」 2026-09-19〜11-03 10:00–19:30 / 武蔵野市立吉祥寺美術館 / expires `2026-11-03T19:30:00+09:00` |
+| koenji | weeklyFeature | セシオン杉並まつり2026（expires 2026-09-06T15:00+09:00） | 座・高円寺『夏の夜の夢』 2026-09-13〜10-17 / 座・高円寺1 / expires `2026-10-18T00:00:00+09:00`（翌日 00:00 exclusive、公式は最終日のみ） |
+| shimokitazawa | weeklyFeature | Outside dandy 一日限りの復活公演（expires 2026-09-05T23:59:59+09:00） | SHELTER 35th Anniversary “IGNITION GIGS” 2026-09-23 OPEN 12:00 / START 12:30 / 下北沢SHELTER / expires `2026-09-24T00:00:00+09:00`（翌日 00:00 exclusive） |
+| jinbocho | weeklyFeature | 『まごわやさしい』3D原画展（expires 2026-09-15T17:00+09:00） | Alicekan 45th Anniversary えほんパーティー 2026-09-16 13:00〜09-29 17:00 / ブックハウスカフェ 1F ディスプレイウィンドウ / expires `2026-09-29T17:00:00+09:00` |
+| jinbocho | object | `jinbocho-theater-mizoguchi-2026`（expires 2026-09-11T23:59+09:00） | `jinbocho-theater-joyu-damashii-2026` 女優魂2026 2026-09-12〜10-06 / expires `2026-10-07T00:00:00+09:00`（翌日 00:00 exclusive） |
+
+4 weeklyFeature とも `verifiedAt: '2026-09-04T16:25:53+09:00'`。object も同じ。
+
+### Brief の値からの LIMITED FIX（3 点、HQ 確認対象）
+
+`qa/release_check.js` の既存契約に Brief §2 の literal がそのまま通らなかった箇所。事実・日付・URL・期限は変えていない。
+
+1. `shimokitazawa.weeklyFeature.titlePhrases` — `['SHELTER 35th Anniversary', '“IGNITION GIGS”']` は連結すると title の空白が落ちる。
+   `['SHELTER 35th Anniversary ', '“IGNITION GIGS”']`（前半に空白を含める。旧 `'Outside dandy '` と同じ流儀）。title 不変。
+2. `jinbocho.weeklyFeature.titlePhrases` — 同じ理由で `['Alicekan 45th Anniversary ', 'えほんパーティー']`。title 不変。
+3. `jinbocho.weeklyFeature.why` — Brief の「グッズや**人気**絵本が」は runtime 禁止語 `人気`
+   （`release_check.js` の popularity guard、CLAUDE.md「Popularity ranking ではない」）に当たる。
+   「グッズや絵本が」へ弱めた（主張を弱める方向のみ。事実は増やしていない）。HQ が別の言い回しを望む場合は差し替え可。
+
+Archive（`archive: []`）には何も入れていない。`jinbocho-theater-mizoguchi-2026` は入替時点（09-04）で会期中（〜09-11）で「truly expired」ではないため（Brief 1 §6）。
+
+## 固定時刻 QA（Resume Brief §5 + Brief 1 §6）
+
+`fixed_clock_preflight.txt`（`qa/release_preflight.js --at`）、`fixed_clock_browser.md` / `.json`（実ブラウザ、Date 固定、`tools/fixed_clock_browser.js`）。
 
 | JST | preflight | 吉祥寺 | 高円寺 | 下北沢 | 神保町 | HOME |
 |---|---|---|---|---|---|---|
-| 実行時 2026-09-04T16:16:30+09:00 | GO | open, weekly 表示 | open, weekly 表示 | open, weekly 表示 | open, weekly 表示 | 5 section / 4 city / 5 node |
-| 09-06 00:00 | GO | open | open | weekly HIDDEN（Outside dandy 期限） | open | 5 |
-| 09-06 15:00 | GO | open | weekly HIDDEN | weekly HIDDEN | open | 5 |
-| 09-06 17:00 | GO | weekly HIDDEN | weekly HIDDEN | weekly HIDDEN | open | 5 |
-| 09-11 23:58 | GO | open | open | open | open | 5 |
-| 09-11 23:59 | **FAIL** jinbocho/jinbocho-theater-mizoguchi-2026 | open | open | open | **CLOSED**（準備中、cards 0） | 5 |
-| 09-12 00:01 / 09-13 00:01 | FAIL（同上） | open | open | open | CLOSED | 5 |
-| 09-15 17:00 / 09-16 00:01 / 09-19 00:01 | FAIL（同上） | open | open | open | CLOSED, weekly HIDDEN | 5 |
-| 09-27 23:58 | FAIL（同上） | open | open | open | CLOSED | 5 |
-| 09-27 23:59 / 09-30 00:01 / 10-07 00:01 | FAIL ×2（+ shimokitazawa/shimokitazawa-shelter） | open | open | **CLOSED** | CLOSED | 5 |
+| 09-04 16:25:53（HQ verifiedAt）/ 実行時 | GO | open, weekly 表示 | open, weekly 表示 | open, weekly 表示 | open, weekly 表示 | 5 section |
+| 09-06 17:00 / 09-11 23:59 / 09-12 00:01 / 09-13 00:01 / 09-16 00:01 / 09-19 00:01 | GO | open | open | open | **open（09/11 閉鎖が解消）** | 5 |
+| 09-23 23:59 | GO | open | open | open, weekly 表示 | open | 5 |
+| 09-24 00:00 | GO | open | open | weekly HIDDEN, open | open | 5 |
+| 09-27 23:58 → 23:59 | GO → **FAIL** shimokitazawa-shelter | open | open | open → **CLOSED**（object 自身の期限） | open | 5 |
+| 09-29 16:59:59 → 17:00 | FAIL（同上） | open | open | CLOSED | weekly 表示 → HIDDEN, open | 5 |
+| 10-06 23:59:59 → 10-07 00:00 | FAIL → FAIL ×2（+ joyu-damashii） | open | open | CLOSED | open → **CLOSED** | 5 |
+| 10-17 23:59:59 → 10-18 00:00 | FAIL ×2 | open | weekly 表示 → HIDDEN, open | CLOSED | CLOSED | 5 |
+| 11-03 19:29:59 → 19:30 | FAIL ×2 | weekly 表示 → HIDDEN, open | open | CLOSED | CLOSED | 5 |
 
-- 期限切れ Object は current として出ない（棚が fail-closed、cards 0）。自動差し替え 0。
-- Archive は空のまま（`archive: []`、explore の Archive 欄 hidden、rows 0）。期限切れでない entry を入れていない。
-- HOME は全時刻で 5 section。route 変更なし。JS error 0、外部 request 0。
-- 09-11 23:59 〜 09-15 17:00 の神保町は「準備中」表示の上に weekly 特集（会期内）が残る。
-  eyebrow「今週の特集」は `shelf.html` の固定文言で本 task の allowed files 外。stale claim ではない
-  （特集自体は会期内）。`fixed_clock_browser.md` の該当セルは tool の regex 命中を注記に置き換えた。
-- 「開催中」「上映中」「いま」を含む本文（mizoguchi）は期限と同時に棚ごと閉じるので、窓の外では表示されない。
+- 4 棚とも自分の current Object の期限までは open。期限切れ Object は出ない（棚が fail-closed、cards 0）。自動差し替え 0。
+- 期限切れ weekly は境目の瞬間に HIDDEN。Archive は空のまま（explore の Archive 欄 hidden、rows 0）。
+- HOME は全時刻で 5 section / 4 city / 5 node。JS error 0、外部 request 0。
+- 会期前（〜09-19 の吉祥寺、〜09-13 の高円寺、〜09-12 の女優魂）の本文は日付の平叙のみ（「上映する」「上演する」）。「開催中」「上映中」は書いていない。
 
-## Visual regression（content 不変なので identity を要求）
+## Visual regression
 
-`home_regression_sha256.txt` / `capture_853_after.json`。capture host: fonts-noto-cjk + `/etc/fonts/local.conf`
-（出荷 stack → Noto Serif / Sans CJK JP、WenQuanYi reject）。CDP font probe 23/23 Noto CJK JP。
+`home_regression_sha256.txt` / `capture_853_after.json`。capture host: fonts-noto-cjk + `/etc/fonts/local.conf`（Noto Serif / Sans CJK JP、WenQuanYi reject）。
 
 | 幅 | 結果 |
 |---|---|
-| 853 | Golden と **byte 一致**（sha256 `6f8a8e98…`、853×1844、5 section、error 0） |
+| 853 | Golden と **byte 一致**（sha256 `6f8a8e98…`、853×1844、5 section、font probe 23/23 Noto CJK JP、error 0） |
 | 320 / 390 / 430 / 768 / 1024 / 1440 | responsive-round-4 の accepted PNG と **byte 一致** |
 | `qa/home_responsive_check.js` | GO 251/251 |
+
+HOME は `release_content.js` の weeklyFeature / object を描画しないので byte 一致が期待どおり成立。
 
 ## Static / browser QA
 
@@ -73,30 +85,30 @@ Brief の「Previously verified」値は、公式ページを開き直せてい�
 |---|---|
 | home_canonical_check | GO |
 | release_check | GO（current=2） |
-| ga4_v3_client_selftest | GO |
+| ga4_v3_client_selftest | GO（commit 後の clean tree で実行。protected file の uncommitted diff を見る gate のため） |
 | growth_improvements | PASS |
-| release_expiry_boundaries | GO（soonest jinbocho-theater-mizoguchi-2026 2026-09-11T23:59+09:00） |
+| release_expiry_boundaries | GO（soonest shimokitazawa/shimokitazawa-shelter 2026-09-27T23:59+09:00） |
 | seo_check | GO |
 | release_preflight（now） | GO |
-| browser_qa | 734/754、FAIL 20、NOT OBSERVABLE 0 — FAIL ID 集合は accepted 20 と **同一**（diff なし） |
+| browser_qa | 734/754、FAIL 20、NOT OBSERVABLE 0 — FAIL ID 集合は accepted 20 と **同一** |
 | git diff --check | clean |
 
-新規 FAIL: **0**。既知 20 は直していない（Brief §8）。
+新規 FAIL: **0**。既知 20 は直していない。新規 asset: **0**。Rights ledger / credits: 不変。外部通信契約: 不変（browser QA external 0）。
 
-## 残る freshness risk（HQ 判断）
+## 端末内保存への影響
 
-1. **2026-09-05 23:59:59 JST** 下北沢 weekly、**09-06 15:00** 高円寺 weekly、**09-06 17:00** 吉祥寺 weekly が順に非表示になる（棚は開いたまま）。
-2. **2026-09-11 23:59 JST** に神保町の棚が閉じ、release preflight が FAIL に転じる。次の release gate をそれより前に通すか、
-   人が公式ページを開いて `jinbocho-theater-mizoguchi-2026` を差し替える必要がある。
-3. **2026-09-27 23:59 JST** に下北沢の棚が閉じる（`shimokitazawa-shelter`）。
-4. 公式ソースを開ける環境（または HQ が公式ページの実表示を添付）で、`CANDIDATES_UNVERIFIED.md` の
-   5 件を再確認してから content edit を行う。
+storage key / format / 削除挙動は不変。`weeklyFavorites` の record id は `weekly:<shelf>:<expiresAt>` なので新 weekly は新 id になり、旧 weekly の保存済み record は各自の `expiresAt` で既存 filter（`readWeeklyFavorites`）により自然に落ちる。
+
+## 次の freshness boundary（HQ 判断）
+
+1. **2026-09-27 23:59 JST** 下北沢の棚が閉じる（`shimokitazawa-shelter`、本 task の対象外）。
+2. **2026-10-07 00:00 JST** 神保町の棚が閉じる（`jinbocho-theater-joyu-damashii-2026`）。
 
 ## 再現
 
 ```bash
 node qa/release_preflight.js --at 2026-09-12T00:01:00+09:00
 NODE_PATH=/opt/node22/lib/node_modules node experiments/content-freshness/closure-r1-20260904/tools/fixed_clock_browser.js \
-  2026-09-11T23:58:00+09:00 2026-09-11T23:59:00+09:00 2026-09-12T00:01:00+09:00
+  2026-09-11T23:59:00+09:00 2026-09-12T00:01:00+09:00 2026-10-07T00:00:00+09:00
 NODE_PATH=/opt/node22/lib/node_modules node experiments/home-visual-fidelity/tools/capture_home_853.js --out /tmp/HOME_853.png
 ```
