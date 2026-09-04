@@ -2344,11 +2344,33 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 .hc-work.is-asset-hold {
   background: linear-gradient(180deg, #191c22 0%, #101318 100%);
 }
+/* 作品 card の image plane — city card と同じ材質（写真 + 暗い scrim）。
+   図版が入る card だけが持つ。foot row（icon / label / →）は上に載る。 */
+.hc-work-media { position: absolute; inset: 0; z-index: 0; display: block; }
+.hc-work-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  filter: brightness(.58) contrast(1.16) saturate(.66);
+}
+.hc-work-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10,10,13,.16) 0%, rgba(10,10,13,.34) 46%, rgba(10,10,13,.86) 100%);
+}
+/* 映画の原本は暗い室内（リールと映写機）なので、共通の減光だと被写体が沈む。
+   この card だけ減光を弱め、リールが読める明度にする（scrim は共通のまま）。 */
+.hc-work[data-route-hold="work-film"] .hc-work-media img { object-position: 50% 36%; filter: brightness(1.38) contrast(1.08) saturate(.5); }
+.hc-work[data-route-hold="work-video"] .hc-work-media img { object-position: 40% 50%; }
 .hc-work-foot {
   position: absolute;
   left: 14px;
   right: 14px;
   bottom: 14px;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2564,6 +2586,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   object-position: 50% 50%;
   filter: brightness(.6) contrast(1.16) saturate(.68);
 }
+.hc-reality-shot:first-child img { object-position: 64% 50%; }
 
 /* -------------------------------------------------------------- 手ざわり */
 

@@ -82,12 +82,19 @@ the pixels is cropped out of view.
 
 | Slot | Canonical shows | Status |
 |---|---|---|
-| 作品から入る — 本 | antique books, spines lit | **no candidate** |
-| 作品から入る — 映画 | film projector throwing a beam | **no candidate** |
-| 作品から入る — 音楽 | turntable, record spinning | **no candidate** |
-| 作品から入る — 映像 | wall of video monitors | **no candidate** |
-| HERO | AI-composited night alley with baked-in year numerals | nearest: `city-koenji.jpg` |
-| 高円寺 card / thread image | 阿波おどり lanterns and dancers | nearest: `city-koenji.jpg` (correct city, different subject) |
+| 作品から入る — 本 | antique books, spines lit | **still held** (Round 3: HQ replacement `Books on a Shelf.JPG` / CC0 chosen, bytes not yet supplied; `book.jpeg` = DO NOT USE) |
+| 作品から入る — 映画 | film projector throwing a beam | **filled, Round 3** — `home-work-film.jpg` (DiscoA340, CC0 1.0) |
+| 作品から入る — 音楽 | turntable, record spinning | **filled, Round 3** — `home-work-music.jpg` (Egle P., CC0 1.0) |
+| 作品から入る — 映像 | wall of video monitors | **filled, Round 3** — `home-work-video.jpg` (Popperipopp, PD dedication) |
+| HERO | AI-composited night alley with baked-in year numerals | nearest: `city-koenji.jpg` (unchanged) |
+| 高円寺 card | 阿波おどり lanterns and dancers | nearest: `city-koenji.jpg` (unchanged — Round 3 brief scopes the Awa asset to the Featured Thread only) |
+| thread image | 阿波おどり lanterns and dancers | **filled, Round 3** — `home-thread-koenji-awaodori.jpg` (Lucertola, PD dedication) |
+| 現実へ出る #1 | cafe interior | **filled, Round 3** — `home-reality-kichijoji-cafe.jpg` (Stephen Kelly, CC BY 2.0, LIMITED GO) |
+
+Round 3 rights records for the HOME-only photographs live in
+`asset-round-3/HOME_ASSET_LEDGER.json` (source of truth, checked by
+`qa/release_check.js`) and `credits.html`. They are deliberately **not** in
+`release_content.js`, which stays the contract for shelf / Object media only.
 
 The four 作品 cards hold the canonical geometry, count, radius, icon, label and
 arrow. Only the image plane is unfilled, rendered in the card's own dark material.

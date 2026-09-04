@@ -5,6 +5,7 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const vm = require('vm');
 
 const root = path.resolve(__dirname, '..');
@@ -818,9 +819,50 @@ for (const shelf of shelves) {
     if (shelf.heroMedia && shelf.heroMedia.url) known[shelf.heroMedia.url.replace(/^\.\/assets\//, '')] = shelf.heroMedia;
     for (const o of shelf.objects) if (o.rights && o.media && o.media.url) known[o.media.url.replace(/^\.\/assets\//, '')] = o.rights;
   }
+  /* HOME 専用写真（棚の heroMedia でも Object の media でもない図版）の権利は
+     release_content.js の content model には属さない。HQ 決定（HOME_ASSET_R3_RESUME_V2
+     §5）で別台帳 HOME_ASSET_LEDGER.json を source of truth にする。QA を通すためだけの
+     偽 Object を release_content.js に足さない。棚 / Object media の既存契約は不変。 */
+  const LEDGER = 'experiments/home-visual-fidelity/asset-round-3/HOME_ASSET_LEDGER.json';
+  const ledgerByFile = {};
+  if (fs.existsSync(path.join(root, LEDGER))) {
+    let ledger = [];
+    try { ledger = JSON.parse(read(LEDGER)); } catch (e) { failures.push(`${LEDGER}: invalid JSON (${e.message})`); }
+    if (!Array.isArray(ledger)) { failures.push(`${LEDGER}: must be an array of entries`); ledger = []; }
+    for (const e of ledger) {
+      const rp = String((e && e.runtimePath) || '');
+      if (!/^\.\/assets\/[^/]+\.(?:jpg|jpeg|png|webp)$/.test(rp)) { failures.push(`${LEDGER}: runtimePath must be ./assets/<file> (${rp})`); continue; }
+      const f = rp.replace(/^\.\/assets\//, '');
+      if (ledgerByFile[f]) failures.push(`${LEDGER}: duplicate entry ${f}`);
+      ledgerByFile[f] = e;
+      const abs = path.join(root, rp.replace(/^\.\//, ''));
+      if (!fs.existsSync(abs)) failures.push(`${LEDGER}: runtime file missing ${rp}`);
+      for (const k of ['slot', 'author', 'source', 'sourceUrl', 'license', 'licenseUrl', 'modification', 'derivativeSha256', 'checkedAt']) {
+        if (!e[k] || !String(e[k]).trim()) failures.push(`${LEDGER}: ${f} missing ${k}`);
+      }
+      for (const k of ['sourceUrl', 'licenseUrl']) if (e[k] && !/^https:\/\//.test(e[k])) failures.push(`${LEDGER}: ${f} ${k} must be https`);
+      for (const k of ['sourceDimensions', 'derivativeDimensions']) {
+        if (!Array.isArray(e[k]) || e[k].length !== 2 || !e[k].every((n) => Number.isInteger(n) && n > 0)) failures.push(`${LEDGER}: ${f} ${k} must be [width, height]`);
+      }
+      if (e.derivativeSha256 && fs.existsSync(abs)) {
+        const actual = crypto.createHash('sha256').update(fs.readFileSync(abs)).digest('hex');
+        if (actual !== e.derivativeSha256) failures.push(`${LEDGER}: ${f} derivativeSha256 does not match the file on disk`);
+      }
+      if (!homePhotos.includes(f)) failures.push(`${LEDGER}: ${f} is in the ledger but index.html does not use it`);
+      if (known[f]) failures.push(`${LEDGER}: ${f} is shelf/Object media — its rights live in release_content.js, not in the ledger`);
+      const entry = (credits.match(new RegExp(`data-credit-asset="${f.replace(/\./g, '\\.')}">[\\s\\S]*?<\\/article>`)) || [''])[0];
+      if (!entry) { failures.push(`credits.html: ledger asset ${f} has no credit entry`); continue; }
+      for (const [k, v] of [['author', e.author], ['license', e.license], ['sourceUrl', e.sourceUrl], ['licenseUrl', e.licenseUrl]]) {
+        if (v && !entry.includes(String(v))) failures.push(`credits.html: ${f} ${k} does not match ${LEDGER} (${v})`);
+      }
+    }
+  }
   for (const f of homePhotos) {
     const r = known[f];
-    if (!r) { failures.push(`release_content.js: HOME photo ${f} has no rights record to cross-check against`); continue; }
+    if (!r) {
+      if (!ledgerByFile[f]) failures.push(`HOME photo ${f} has neither a release_content.js rights record nor a HOME asset ledger entry (${LEDGER})`);
+      continue;
+    }
     const entry = (credits.match(new RegExp(`data-credit-asset="${f.replace(/\./g, '\\.')}">[\\s\\S]*?<\\/article>`)) || [''])[0];
     for (const [k, v] of [['author', r.author], ['license', r.license], ['sourceUrl', r.sourceUrl], ['licenseUrl', r.licenseUrl]]) {
       const needle = k === 'author' ? String(v).split(' / ')[0] : String(v);

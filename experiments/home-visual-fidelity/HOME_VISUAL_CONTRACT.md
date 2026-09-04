@@ -157,6 +157,12 @@ equivalent. Geometry, card count, radius, foot row and grid are held **unchanged
 the image plane renders as the dark card material only. No generic illustration,
 gradient blob, or icon-only substitution (§6).
 
+**Round 3 status (2026-09-04):** 映画 / 音楽 / 映像 filled with Founder/HQ
+rights-cleared photographs (`assets/home-work-film.jpg` / `-music.jpg` / `-video.jpg`,
+ledger `asset-round-3/HOME_ASSET_LEDGER.json`). 本 still held — the HQ-chosen
+replacement (`Books on a Shelf.JPG`, CC0) has not reached the implementer as bytes.
+Geometry unchanged.
+
 ---
 
 ## 6. いま辿れるスレッド
@@ -185,6 +191,9 @@ be a city. It is not a city-guide teaser.
 `ASSET_HOLD (thread)` — the canonical image is an Awa Odori lantern/dancer frame.
 Nearest rights-cleared asset is `assets/city-koenji.jpg` (Koenji night street,
 CC BY-SA 4.0, NMaia) — correct city, different subject.
+
+**Round 3 status (2026-09-04):** filled with `assets/home-thread-koenji-awaodori.jpg`
+(Lucertola, PD dedication) — Awa Odori dancers on the Koenji street. Geometry unchanged.
 
 `ROUTE_HOLD (thread)` — no runtime route exists for a 高円寺阿波おどり Cultural
 Thread page. 「スレッドを読む」 and the hero CTA 「スレッドを見る」 are rendered as
@@ -215,6 +224,8 @@ non-navigating.
 Photo slots — best available rights-documented matches (all three verified against
 `CITY_MEDIA_ATTRIBUTION.md` and the `rights` blocks in `release_content.js`):
 1. cafe / 店 → `assets/city-kichijoji.jpg` — Harmonica Yokocho, Stephen Kelly, **CC BY 2.0**
+   — **Round 3 (2026-09-04):** replaced by `assets/home-reality-kichijoji-cafe.jpg`
+   (tea shop / cafe front in Kichijoji, Stephen Kelly, **CC BY 2.0**, LIMITED GO).
 2. bookstore → `assets/yaguchi-shoten.jpg` — 矢口書店, Olaf2, **CC BY-SA 4.0**, downscale only
 3. live venue → `assets/shimokitazawa-shelter.jpg` — 下北沢 SHELTER, Syced, **CC0 1.0**, downscale only
 

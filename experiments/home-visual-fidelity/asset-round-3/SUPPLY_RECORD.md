@@ -54,3 +54,30 @@ macOS の resource fork で、資産ではない（無視）。
 | 2 | working tree clean | **PASS**（開始時 `git status` 0 件） |
 | 3 | `HOME_REFERENCE_853.png` 添付 | **PASS**（§1、checksum 一致） |
 | 4 | 6 点原本の添付と manifest 照合 | **添付は PASS / 照合は HOLD** — manifest を持つ `HOME_ASSET_INSERTION_R3_READY.md` が無い |
+
+## 5. RESUME V2（2026-09-04）— Founder/HQ の Rights 決定と追加供給
+
+Brief: `HOME_ASSET_R3_RESUME_V2.md`（添付。sha256
+`496bc79ea9e357d7bf94e2afa156cd959f233a73f02cc9503318eeb4f276f3ca`、repository には置かない）。
+
+| 受領 file（§2） | HQ 決定 | 作者 / license（Brief §2） | 期待寸法 | 実寸法 | 判定 |
+|---|---|---|---|---|---|
+| `book.jpeg` | **DO NOT USE**（埋め込み "All rights reserved" と Commons の CC0 表記が矛盾 → 保守的に不使用。metadata を剥がして使うことも禁止） | — | — | 3264 × 2176 | 不使用 |
+| `Books on a Shelf.JPG`（差し替え） | **REQUIRED**（MarkBuckawicki / CC0 1.0 / File:Books_on_a_Shelf.JPG） | MarkBuckawicki / CC0 1.0 | 3264 × 2448 | **byte 未着** — この session の添付は Brief の md のみ（`/root/.claude/uploads`・`/mnt/attach`・`/mnt/user-data` を検索、0 件）。メッセージ内のインライン画像には file byte が無い | **HOLD（byte 待ち）** |
+| `Film_Reel_on_an_IMAX_15_70_mm_Film_Projector.jpg` | GO | DiscoA340 / CC0 1.0 | 3264 × 2448 | 3264 × 2448 | 一致 |
+| `Turntable-1328823.jpg` | GO | Egle P. / CC0 1.0 | 3888 × 2592 | 3888 × 2592 | 一致 |
+| `Video_Camera.jpeg` | GO（`Video Camera.JPG` と byte 同一なら） | Popperipopp / Public Domain dedication | 1204 × 800 | 1204 × 800 | 寸法一致。Commons 側 byte との同一性はこの host から取得不可（egress 拒否）— §2 の sha256 と下の sha1 を HQ 側で File page の値と照合 |
+| `KoenjiAwaOdori.jpg` | GO | Lucertola / Public Domain dedication | 1524 × 1016 | 1524 × 1016 | 一致 |
+| `Tea_Shop_and_Cafe_in_Kichijoji_(53416855218).jpg` | LIMITED GO | Stephen Kelly / CC BY 2.0（Flickr → Commons、FlickreviewR 済） | 5333 × 4000 | 5333 × 4000 | 一致。透かしは消さない・案内先として薦めない |
+
+原本 sha1（Commons の File page / API の sha1 と照合する用）:
+
+| file | sha1 |
+|---|---|
+| `Film_Reel_on_an_IMAX_15_70_mm_Film_Projector.jpg` | `b097640e83fefb46d0f841a1ebb12a47367c7d36` |
+| `Turntable-1328823.jpg` | `70005f455c019a74aba5c7684440fa91dce9a9ee` |
+| `Video_Camera.jpeg` | `be6df7b919b9f67d7bb839503d7496264d85ddc6` |
+| `KoenjiAwaOdori.jpg` | `9dd4a8d6d83e636b92721ca7f9b2f88a3a851937` |
+| `Tea_Shop_and_Cafe_in_Kichijoji_(53416855218).jpg` | `7d621aa30e961655dc7750041f112b3504ed87b4` |
+
+派生 asset（runtime）の sha256 と加工内容は `HOME_ASSET_LEDGER.json` が正。

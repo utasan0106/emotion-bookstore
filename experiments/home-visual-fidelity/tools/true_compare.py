@@ -9,7 +9,7 @@ Review tooling only. Not runtime. Requires Pillow + numpy.
         --out       experiments/home-visual-fidelity
 
 Writes HOME_TRUE_SIDE_BY_SIDE_853.png / HOME_TRUE_OVERLAY_853.png /
-HOME_TRUE_PIXEL_DIFF_853.png and prints per-section MAE (0..255).
+HOME_TRUE_PIXEL_DIFF_853.png (optionally with --suffix) and prints per-section MAE (0..255).
 
 If the reference file is absent it prints REFERENCE_FILE_HOLD and exits 2
 without writing anything. Nothing is ever synthesised to stand in for the
@@ -49,6 +49,7 @@ def main():
     ap.add_argument('--reference', required=True)
     ap.add_argument('--current', required=True)
     ap.add_argument('--out', required=True)
+    ap.add_argument('--suffix', default='', help="appended before .png, e.g. _R3_FINAL")
     a = ap.parse_args()
     if not os.path.exists(a.reference):
         print('REFERENCE_FILE_HOLD: canonical PNG not on disk at', a.reference)
@@ -63,15 +64,15 @@ def main():
     sbs = Image.new('RGB', (ref.width * 2 + gap, ref.height + 32), (24, 24, 24))
     sbs.paste(label(ref.copy(), 'VISUAL_CANONICAL'), (0, 32))
     sbs.paste(label(cur.copy(), 'CURRENT'), (ref.width + gap, 32))
-    sbs.save(os.path.join(a.out, 'HOME_TRUE_SIDE_BY_SIDE_853.png'))
+    sbs.save(os.path.join(a.out, f'HOME_TRUE_SIDE_BY_SIDE_853{a.suffix}.png'))
 
-    Image.blend(ref, cur, 0.5).save(os.path.join(a.out, 'HOME_TRUE_OVERLAY_853.png'))
+    Image.blend(ref, cur, 0.5).save(os.path.join(a.out, f'HOME_TRUE_OVERLAY_853{a.suffix}.png'))
 
     diff = ImageChops.difference(ref, cur)
     arr = np.asarray(diff).astype(np.float32)
     mae = float(arr.mean())
     amp = np.clip(arr * 3, 0, 255).astype(np.uint8)  # amplify for the eye
-    Image.fromarray(amp).save(os.path.join(a.out, 'HOME_TRUE_PIXEL_DIFF_853.png'))
+    Image.fromarray(amp).save(os.path.join(a.out, f'HOME_TRUE_PIXEL_DIFF_853{a.suffix}.png'))
 
     print(f'size={ref.width}x{ref.height} overall_MAE={mae:.1f}/255')
     for name, y0, y1 in SECTIONS:

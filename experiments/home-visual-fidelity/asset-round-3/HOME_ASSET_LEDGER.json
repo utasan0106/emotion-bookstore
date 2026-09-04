@@ -1,0 +1,144 @@
+[
+  {
+    "runtimePath": "./assets/home-work-film.jpg",
+    "slot": "WORK_FILM",
+    "author": "DiscoA340",
+    "source": "Wikimedia Commons（作者自身の撮影）",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Film_Reel_on_an_IMAX_15_70_mm_Film_Projector.jpg",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "modification": "原本（3264×2448）を長辺1600pxへ縮小して保存。切り抜きなし。色空間をDisplay P3からsRGBへ変換、EXIFを除去。トップでは表示時のみCSSで切り抜き・明度・彩度・コントラストを調整",
+    "sourceDimensions": [
+      3264,
+      2448
+    ],
+    "derivativeDimensions": [
+      1600,
+      1200
+    ],
+    "derivativeSha256": "5197cb9360c8e2ca739029a35a402e56e364231cffb400c974a33213e4d04c98",
+    "checkedAt": "2026-09-04",
+    "sourceFile": "Film_Reel_on_an_IMAX_15_70_mm_Film_Projector.jpg",
+    "sourceSha256": "ed3da66c768cb8bac58ba7d5eee498bb9274d14fb2cd6dfe2c051a34dde8096e",
+    "sourceSha1": "b097640e83fefb46d0f841a1ebb12a47367c7d36",
+    "derivativeBytes": 261249,
+    "derivation": [
+      "colour: embedded Display P3 converted to sRGB",
+      "resize: 3264x2448 → 1600x1200 (LANCZOS, whole frame, no physical crop), JPEG q85, no EXIF/XMP/ICC"
+    ],
+    "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)"
+  },
+  {
+    "runtimePath": "./assets/home-work-music.jpg",
+    "slot": "WORK_MUSIC",
+    "author": "Egle P.",
+    "source": "Wikimedia Commons",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Turntable-1328823.jpg",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "modification": "原本（3888×2592）を長辺1600pxへ縮小して保存。切り抜きなし。EXIFを除去。トップでは表示時のみCSSで切り抜き・明度・彩度・コントラストを調整",
+    "sourceDimensions": [
+      3888,
+      2592
+    ],
+    "derivativeDimensions": [
+      1600,
+      1067
+    ],
+    "derivativeSha256": "3772448a90ab75db6b44871a0a9fe9c6c7b22e21af33a2b8263f06ec257246d7",
+    "checkedAt": "2026-09-04",
+    "sourceFile": "Turntable-1328823.jpg",
+    "sourceSha256": "790cc6f7fb1cc3c3624b1a31b4d9b39145ba86c26c48d803d8b9d7a870a37b69",
+    "sourceSha1": "70005f455c019a74aba5c7684440fa91dce9a9ee",
+    "derivativeBytes": 142028,
+    "derivation": [
+      "resize: 3888x2592 → 1600x1067 (LANCZOS, whole frame, no physical crop), JPEG q85, no EXIF/XMP/ICC"
+    ],
+    "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)"
+  },
+  {
+    "runtimePath": "./assets/home-work-video.jpg",
+    "slot": "WORK_VIDEO",
+    "author": "Popperipopp",
+    "source": "Wikimedia Commons",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Video_Camera.JPG",
+    "license": "パブリックドメイン（作者による権利放棄）",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "modification": "原本（1204×800）をそのままの画素で保存（縮小・切り抜きなし）。EXIFのみ除去。トップでは表示時のみCSSで切り抜き・明度・彩度・コントラストを調整",
+    "sourceDimensions": [
+      1204,
+      800
+    ],
+    "derivativeDimensions": [
+      1204,
+      800
+    ],
+    "derivativeSha256": "1f93bec8be15a55035d7447b980fc47b3d0b8799fac458dfeec38c1e4b02b5ed",
+    "checkedAt": "2026-09-04",
+    "sourceFile": "Video_Camera.jpeg",
+    "sourceSha256": "a47bd27151552f4d22c4582aa2aa66ec68f315663c91f52c1ef78ac1ef9f9a3f",
+    "sourceSha1": "be6df7b919b9f67d7bb839503d7496264d85ddc6",
+    "derivativeBytes": 75758,
+    "derivation": [
+      "resize: none (long edge 1204 ≤ 1600); pixels untouched, EXIF/XMP/IPTC/ICC APP segments dropped losslessly"
+    ],
+    "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)"
+  },
+  {
+    "runtimePath": "./assets/home-thread-koenji-awaodori.jpg",
+    "slot": "FEATURED_THREAD",
+    "author": "Lucertola",
+    "source": "Wikimedia Commons",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:KoenjiAwaOdori.jpg",
+    "license": "パブリックドメイン（作者による権利放棄）",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "modification": "原本（1524×1016）をそのままの画素で保存（縮小・切り抜きなし）。EXIFのみ除去。トップでは表示時のみCSSで切り抜き・明度・彩度・コントラストを調整",
+    "sourceDimensions": [
+      1524,
+      1016
+    ],
+    "derivativeDimensions": [
+      1524,
+      1016
+    ],
+    "derivativeSha256": "a2ead0c3b9e950cf2195cda37b82acec9434b6c516fa8915a9c097472860b726",
+    "checkedAt": "2026-09-04",
+    "sourceFile": "KoenjiAwaOdori.jpg",
+    "sourceSha256": "472b59cdb5ed0242940fa9f74c41c4d22dd2f89962e6d34121730d47ef1be1c4",
+    "sourceSha1": "9dd4a8d6d83e636b92721ca7f9b2f88a3a851937",
+    "derivativeBytes": 744032,
+    "derivation": [
+      "resize: none (long edge 1524 ≤ 1600); pixels untouched, EXIF/XMP/IPTC/ICC APP segments dropped losslessly"
+    ],
+    "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)"
+  },
+  {
+    "runtimePath": "./assets/home-reality-kichijoji-cafe.jpg",
+    "slot": "REALITY_RETURN_1",
+    "author": "Stephen Kelly",
+    "source": "Flickr（Wikimedia Commons 経由）",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tea_Shop_and_Cafe_in_Kichijoji_(53416855218).jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "modification": "原本（5333×4000）を長辺1600pxへ縮小して保存。切り抜きなし、EXIFを除去。写真左下の作者の透かし（© Stephen Kelly Photography）は消していない。トップでは表示時のみCSSで縦長に切り抜き（中央寄せのため透かしの部分は表示範囲の外になる）・明度・彩度・コントラストを調整",
+    "sourceDimensions": [
+      5333,
+      4000
+    ],
+    "derivativeDimensions": [
+      1600,
+      1200
+    ],
+    "derivativeSha256": "774e29ee884c738c433d0db5bc8236373ea9892d86b5596b990bb5d843bab8d3",
+    "checkedAt": "2026-09-04",
+    "sourceFile": "Tea_Shop_and_Cafe_in_Kichijoji_(53416855218).jpg",
+    "sourceSha256": "ae968670f15e5264da72951a00474e22889bbd97d7baa76bb1ab8e3ec6fcd8a8",
+    "sourceSha1": "7d621aa30e961655dc7750041f112b3504ed87b4",
+    "derivativeBytes": 420929,
+    "derivation": [
+      "colour: embedded sRGB profile dropped (sRGB assumed)",
+      "resize: 5333x4000 → 1600x1200 (LANCZOS, whole frame, no physical crop), JPEG q85, no EXIF/XMP/ICC"
+    ],
+    "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)"
+  }
+]

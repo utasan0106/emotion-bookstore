@@ -154,6 +154,18 @@ for (const a of assets) {
 // canonical 画像そのものを runtime 素材にしていないこと
 check(!/文化のつながり/.test(html), 'VISUAL_CANONICAL image must not be used as a runtime asset');
 
+// 作品 card: 図版が入った card は image plane（./assets/home-work-*.jpg）を持ち、
+// 入っていない card は data-asset-hold を明示する。どちらでもない中間状態を残さない。
+for (const m of html.match(/<div class="hc-work[^"]*"[^>]*>[\s\S]*?<span class="hc-work-foot">/g) || []) {
+  const held = /data-asset-hold="work-[a-z]+"/.test(m) && /\bis-asset-hold\b/.test(m);
+  const photo = /<span class="hc-work-media"><img src="\.\/assets\/home-work-[a-z]+\.jpg" alt=""/.test(m);
+  if (held === photo) failures.push(`work card must be either asset-held or carry its photo, not both/neither: ${m.slice(0, 70)}`);
+}
+check((html.match(/class="hc-work-media"/g) || []).length <= 4, 'at most four work image planes');
+// Featured Thread / 現実へ出る #1 は Asset Round 3 で HQ が権利確認した写真
+check(/<div class="hc-thread-media">\s*<img src="\.\/assets\/home-thread-koenji-awaodori\.jpg"/.test(html), 'thread image must be the Awa Odori asset');
+check(/<div class="hc-reality-strip">\s*<figure class="hc-reality-shot"><img src="\.\/assets\/home-reality-kichijoji-cafe\.jpg"/.test(html), 'reality strip #1 must be the cafe asset');
+
 /* ---- 7. CSS は .home-canonical の外へ出ない --------------------------- */
 
 const MARK = 'HOME — CONTENT-LED IMMERSIVE TIME';

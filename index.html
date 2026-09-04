@@ -187,9 +187,11 @@
           <p class="hc-section-note">本・映画・音楽・映像… あらゆる作品が、街とつながっている。</p>
         </div>
 
-        <!-- ASSET_HOLD: 4枠とも Production 権利確認済みの図版が無い。
-             geometry・枚数・foot row は canonical のまま保ち、画面だけ
-             card の地の色で置く。generic illustration / gradient blob /
+        <!-- 映画 / 音楽 / 映像: Founder/HQ が権利確認した写真（Asset Round 3、
+             台帳は experiments/home-visual-fidelity/asset-round-3/HOME_ASSET_LEDGER.json、
+             出典は credits.html）。geometry・枚数・foot row は canonical のまま。
+             ASSET_HOLD: 本 だけ、差し替え原本（Books on a Shelf.JPG / CC0）の byte が
+             未着。届くまで card の地の色で置く。generic illustration / gradient blob /
              icon-only へ置き換えない。
              ROUTE_HOLD: 本 / 映画 / 音楽 / 映像 という作品種の route は無い。
              既存の5 category 索引（飲食・喫茶 ほか）は別の taxonomy なので繋がない。 -->
@@ -204,7 +206,8 @@
             </span>
           </div>
 
-          <div class="hc-work is-asset-hold" data-route-hold="work-film" data-asset-hold="work-film">
+          <div class="hc-work" data-route-hold="work-film">
+            <span class="hc-work-media"><img src="./assets/home-work-film.jpg" alt="" width="1600" height="1200" loading="lazy" decoding="async"></span>
             <span class="hc-work-foot">
               <span class="hc-work-icon" aria-hidden="true">
                 <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="2.4" y="4.4" width="15.2" height="11.2" rx="1.1"/><path d="M6.2 4.4v11.2M13.8 4.4v11.2"/><path d="M2.4 10h15.2"/></svg>
@@ -214,7 +217,8 @@
             </span>
           </div>
 
-          <div class="hc-work is-asset-hold" data-route-hold="work-music" data-asset-hold="work-music">
+          <div class="hc-work" data-route-hold="work-music">
+            <span class="hc-work-media"><img src="./assets/home-work-music.jpg" alt="" width="1600" height="1067" loading="lazy" decoding="async"></span>
             <span class="hc-work-foot">
               <span class="hc-work-icon" aria-hidden="true">
                 <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7.6 14.2V4.9l7.4-1.5v9.2"/><ellipse cx="5.6" cy="14.6" rx="2.1" ry="1.7"/><ellipse cx="13" cy="12.9" rx="2.1" ry="1.7"/></svg>
@@ -224,7 +228,8 @@
             </span>
           </div>
 
-          <div class="hc-work is-asset-hold" data-route-hold="work-video" data-asset-hold="work-video">
+          <div class="hc-work" data-route-hold="work-video">
+            <span class="hc-work-media"><img src="./assets/home-work-video.jpg" alt="" width="1204" height="800" loading="lazy" decoding="async"></span>
             <span class="hc-work-foot">
               <span class="hc-work-icon" aria-hidden="true">
                 <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="2.3" y="5.4" width="10.6" height="9.2" rx="1.1"/><path d="M12.9 9.1l4.8-2.5v6.8l-4.8-2.5z"/></svg>
@@ -245,14 +250,10 @@
           </div>
 
           <div class="hc-thread-body">
-            <!-- ASSET_HOLD: canonical は阿波おどりの一枚。Founder/HQ 候補
-                 （Wikimedia Commons: KoenjiAwaOdori.jpg / Koenj awaodori.jpg）は
-                 この実装環境の egress policy が commons.wikimedia.org と
-                 upload.wikimedia.org を拒否するため File page 確認も取得も
-                 できていない。権利確認済みで最も近い高円寺の夜（CC BY-SA 4.0 /
-                 NMaia）を維持。街は一致、被写体は不一致。 -->
+            <!-- Featured Thread の一枚: 高円寺阿波おどり（Founder/HQ 権利確認済み、
+                 Asset Round 3。出典は credits.html）。 -->
             <div class="hc-thread-media">
-              <img src="./assets/city-koenji.jpg" alt="夜の高円寺。灯りのついた店が並ぶ通り" width="1200" height="1600" loading="lazy" decoding="async">
+              <img src="./assets/home-thread-koenji-awaodori.jpg" alt="夜の高円寺の路上で踊る阿波おどりの連。白い衣装の踊り手たち" width="1524" height="1016" loading="lazy" decoding="async">
             </div>
 
             <div class="hc-thread-copy">
@@ -287,7 +288,7 @@
         </div>
 
         <div class="hc-reality-strip">
-          <figure class="hc-reality-shot"><img src="./assets/city-kichijoji.jpg" alt="吉祥寺ハモニカ横丁。赤い提灯の下に小さな店が並ぶ路地" width="1200" height="1600" loading="lazy" decoding="async"></figure>
+          <figure class="hc-reality-shot"><img src="./assets/home-reality-kichijoji-cafe.jpg" alt="吉祥寺の紅茶店の店先。暖簾の奥のカウンターに客が座っている" width="1600" height="1200" loading="lazy" decoding="async"></figure>
           <figure class="hc-reality-shot"><img src="./assets/yaguchi-shoten.jpg" alt="神保町の矢口書店。間口いっぱいの木の書棚に本が詰まっている" width="960" height="640" loading="lazy" decoding="async"></figure>
           <figure class="hc-reality-shot"><img src="./assets/shimokitazawa-shelter.jpg" alt="下北沢SHELTER。電球で縁取られた看板と地下へ続く階段" width="960" height="723" loading="lazy" decoding="async"></figure>
         </div>

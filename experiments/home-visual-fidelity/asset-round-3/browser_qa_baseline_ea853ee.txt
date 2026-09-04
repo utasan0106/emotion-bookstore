@@ -1,0 +1,27 @@
+RELEASE_BROWSER_QA_FAIL (669/689, 5 NOT OBSERVABLE)
+- FAIL m320/kichijoji no_horizontal_overflow []
+- FAIL m320/koenji no_horizontal_overflow []
+- FAIL m320/shimokitazawa no_horizontal_overflow []
+- FAIL m320/jinbocho no_horizontal_overflow []
+- FAIL m320/suggest no_horizontal_overflow []
+- FAIL m390/kichijoji no_horizontal_overflow []
+- FAIL m390/koenji no_horizontal_overflow []
+- FAIL m390/shimokitazawa no_horizontal_overflow []
+- FAIL m390/jinbocho no_horizontal_overflow []
+- FAIL m390/suggest no_horizontal_overflow []
+- FAIL identity/kichijoji no_object_media_before_explainer {"found":true,"exBottom":124,"mediaTop":769,"domOrderOk":true,"mediaBeforeExplainer":1}
+- FAIL identity/koenji no_object_media_before_explainer {"found":true,"exBottom":124,"mediaTop":797,"domOrderOk":true,"mediaBeforeExplainer":1}
+- FAIL identity/shimokitazawa no_object_media_before_explainer {"found":true,"exBottom":124,"mediaTop":802,"domOrderOk":true,"mediaBeforeExplainer":1}
+- FAIL identity/jinbocho no_object_media_before_explainer {"found":true,"exBottom":124,"mediaTop":769,"domOrderOk":true,"mediaBeforeExplainer":1}
+- FAIL suggest-validation clipboard_disclosure_present
+- FAIL flagship city_photo_appears_only_after_entering_city
+- FAIL zoom200-shelf no_horizontal_overflow ["weekly-feature-meta","weekly-feature-date","weekly-feature-venue","weekly-feature-verified"]
+- FAIL forced-shelf no_horizontal_overflow []
+- FAIL zoom200-suggest no_horizontal_overflow []
+- FAIL forced-suggest no_horizontal_overflow []
+- NOT OBSERVABLE m320 home_canonical_at_this_width :: HOME は 853px canonical 固定。320px の responsive は Founder/HQ が次 Gate と定めた
+- NOT OBSERVABLE m390 home_canonical_at_this_width :: HOME は 853px canonical 固定。390px の responsive は Founder/HQ が次 Gate と定めた
+- NOT OBSERVABLE m430 home_canonical_at_this_width :: HOME は 853px canonical 固定。430px の responsive は Founder/HQ が次 Gate と定めた
+- NOT OBSERVABLE d1440 home_canonical_at_this_width :: HOME は 853px canonical 固定。1440px の responsive は Founder/HQ が次 Gate と定めた
+- NOT OBSERVABLE zoom200-foyer no_horizontal_overflow :: HOME 853 canonical の 200% 拡大は responsive gate（次 Gate）
+exit=1

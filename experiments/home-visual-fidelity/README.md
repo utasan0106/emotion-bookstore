@@ -18,7 +18,7 @@ Review artifacts only. **Not runtime.** Excluded from the delivery surface via
 | `HOME_TRUE_PIXEL_DIFF_853.png` | Per-pixel absolute difference, ×3 amplified (Round 3) |
 | `tools/capture_home_853.js` | Renders HOME at 853 × 1844 in one viewport and reports the platform font of every text probe over CDP |
 | `tools/true_compare.py` | Writes the three TRUE artifacts and prints MAE per section |
-| `asset-round-3/` | HOME Asset Round 3 — supply record, true-comparison numbers, holds |
+| `asset-round-3/` | HOME Asset Round 3 — supply record, `HOME_ASSET_LEDGER.json` (rights source of truth for HOME-only photos), `HOME_CURRENT_853_R3_FINAL.png` and the `*_R3_FINAL` true side-by-side / overlay / pixel diff after the asset insertion, holds |
 
 ## Pass 2 — ASSET / RIGHTS / QA LIMITED FIX (this branch, HEAD+1)
 
