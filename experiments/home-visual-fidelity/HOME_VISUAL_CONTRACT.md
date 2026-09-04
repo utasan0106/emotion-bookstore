@@ -23,6 +23,12 @@ readable by the implementer but there are no pixel bytes on disk. Consequences:
 To lift this hold: commit the canonical PNG to
 `experiments/home-visual-fidelity/HOME_REFERENCE_853.png` and re-run the loop.
 
+**Lifted 2026-09-03 (HOME Asset Round 3):** the Founder/HQ bytes are committed at
+`experiments/home-visual-fidelity/reference/HOME_REFERENCE_853.png` (sha256
+`cc31aef9666dabf2f9a763f8948b67980860e970dba42df0b01ca0e383936625`) and the true
+comparison artifacts exist — see `README.md` and `asset-round-3/README.md`.
+Every OBSERVED value below was measured off that same image.
+
 ---
 
 ## 1. Global page

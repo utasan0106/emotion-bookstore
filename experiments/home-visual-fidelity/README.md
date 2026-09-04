@@ -11,7 +11,14 @@ Review artifacts only. **Not runtime.** Excluded from the delivery surface via
 | `HOME_BASELINE_853.png` | `origin/main` HOME at 853 px — 853 × 3788 |
 | `HOME_CURRENT_853.png` | This branch at 853 px — 853 × 1844 |
 | `HOME_SIDE_BY_SIDE_853.png` | Baseline and current, same scale, same width |
-| `HOME_OVERLAY_DIFF_853.png` | Current render with the Visual Contract's target rectangles drawn on it |
+| `HOME_OVERLAY_DIFF_853.png` | Current render with the Visual Contract's target rectangles drawn on it (pass 1, before the reference existed) |
+| `reference/HOME_REFERENCE_853.png` | **The Founder/HQ canonical bytes** (Round 3, sha256 `cc31aef9…`) |
+| `HOME_TRUE_SIDE_BY_SIDE_853.png` | Canonical and current render, same size, true bytes on both sides (Round 3) |
+| `HOME_TRUE_OVERLAY_853.png` | 50 / 50 blend of canonical over current (Round 3) |
+| `HOME_TRUE_PIXEL_DIFF_853.png` | Per-pixel absolute difference, ×3 amplified (Round 3) |
+| `tools/capture_home_853.js` | Renders HOME at 853 × 1844 in one viewport and reports the platform font of every text probe over CDP |
+| `tools/true_compare.py` | Writes the three TRUE artifacts and prints MAE per section |
+| `asset-round-3/` | HOME Asset Round 3 — supply record, true-comparison numbers, holds |
 
 ## Pass 2 — ASSET / RIGHTS / QA LIMITED FIX (this branch, HEAD+1)
 
@@ -36,29 +43,37 @@ spots 32/1746/212×48; document exactly 853 × 1844). What changed:
 Review shots added: `CREDITS_390.png` (credits page, full height) and
 `MENU_CREDITS_390.png` (MENU open, showing 写真・出典).
 
-## `HOME_REFERENCE_853.png` is deliberately absent
+## `HOME_REFERENCE_853.png` — present since Round 3
 
-The VISUAL_CANONICAL was supplied as a **conversation attachment**. It is not in
-the repository and not on the capture host, so there are no pixel bytes to write
-out. Nothing was generated, reconstructed, or approximated to stand in for it —
-a fabricated reference would make every downstream comparison a lie.
+Pass 1 and pass 2 ran without the canonical bytes (the image had only reached
+the implementer as an inline conversation attachment), so `HOME_OVERLAY_DIFF_853.png`
+is a rect overlay, not an image diff. On 2026-09-03 Founder/HQ supplied the PNG
+with a checksum manifest; it is committed at
+`reference/HOME_REFERENCE_853.png` and the true comparison now exists:
 
-Two required artifacts are affected:
+| | MAE / 255 (2981ad76 render vs canonical) |
+|---|---|
+| overall | 30.4 |
+| HERO | 26.4 |
+| 街から入る | 28.5 |
+| 作品から入る | 25.0 |
+| いま辿れるスレッド | 37.0 |
+| 現実へ出る | 39.8 |
 
-- `HOME_REFERENCE_853.png` — cannot be written.
-- `HOME_OVERLAY_DIFF_853.png` — cannot be a true reference image-diff. What is here
-  instead is the render with the contract's measured target rectangles overlaid, so
-  a human can put it beside the canonical and check each target by eye.
-
-**To lift this hold:** commit the canonical PNG to this folder as
-`HOME_REFERENCE_853.png` and re-run the loop; the pixel overlay becomes possible
-immediately.
+The residual is concentrated in the photographic slots that are still
+`ASSET_HOLD` (thread image 51.6, 現実へ出る strip 62–70) and in glyph outlines
+(the canonical was rasterised with a different Mincho / Gothic than the
+capture host's Noto CJK). Geometry and section order coincide. Details and
+per-slot numbers: `asset-round-3/README.md`.
 
 ## How to reproduce the capture
 
 ```sh
 python3 -m http.server 8899 --bind 127.0.0.1     # from the repo root
 ```
+
+Or run `NODE_PATH=/opt/node22/lib/node_modules node experiments/home-visual-fidelity/tools/capture_home_853.js --out <png>`,
+which does all of the below and prints the platform font per text probe.
 
 Then render at viewport 853 × 1844, `deviceScaleFactor: 1`, in a single viewport —
 **not** a scrolling full-page capture. Chromium's full-page stitching intermittently
