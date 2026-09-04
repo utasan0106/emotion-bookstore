@@ -397,3 +397,34 @@ Artifacts: `HOME_CURRENT_853_R3_FINAL2.png` / `HOME_TRUE_SIDE_BY_SIDE_853_R3_FIN
 描画: 853 × 1844、5 section、rect 6 個が契約値、JS error 0、request 失敗 0、CDP 23 probe すべて
 Noto Serif / Sans CJK JP。目視: 本 card は棚に並ぶ本の背と棚板が読める（共通の減光と scrim の下でも
 「本」と分かる）。
+
+### 12.4 QA — 訂正を含む記録
+
+**訂正**: `5abc89b`（Book 挿入の commit）は、その時点の browser QA（`browser_qa_after_r3_final3_5abc89b.txt`、
+673 / 695）に **新規 FAIL 2 件**（`credits/m390` と `credits/d1440` の `no_engagement_words` — Book entry の
+被写体欄に書いた「店員の手書きのおすすめカード」の「おすすめ」が禁止語）を含んだまま push された。
+原因は実装側の手順ミス（heredoc の終端で `&&` の連鎖が切れ、QA 差分の guard が commit / push に
+届かなかった）。次の commit で被写体欄を「店員の手書きのカード」に直し（写真に写っているものの記述のみ、
+runtime file は不変）、browser QA を再走した。
+
+- 静的（訂正後）: `home_canonical_check` GO / `release_check` GO（台帳 6 entry、Book の sha256・credits 一致を含む）/
+  `growth_improvements` PASS / `release_expiry_boundaries` GO / `seo_check` GO / `release_preflight` GO /
+  `ga4_v3_client_selftest` GO / `git diff --check` clean。
+- browser（訂正後、`browser_qa_after_r3_final4.txt`）: **675 / 695**、FAIL は baseline `ea853ee` と**同一集合 20 件**
+  （全部非 HOME・既知）、**新規 FAIL 0**、NOT OBSERVABLE 5（次 Gate、PASS に数えない）。home853 の
+  `work_photos_fill_their_fields_same_origin`（4 枚 loaded・same-origin・188 × 143・cover・foot が上）、
+  `no_work_card_is_asset_held`、`featured_thread_image_is_awaodori_and_loaded`、`reality_first_shot_is_cafe_and_loaded`、
+  credits の `no_engagement_words` / `public_domain_entries_link_commons_rights_not_pdm` は PASS。
+- HOME 描画は `5abc89b` の FINAL2 から不変（訂正は credits.html の文言のみ。`index.html` / `release.css` / `assets/` 無変更）。
+
+### 12.5 端末内保存 / 棚 / Object 契約 / GA4 / 外部通信
+
+すべて**不変**。HOME の画像 13 枚すべて same-origin、外部 request 0、CSP / vercel.json 不変。
+
+### 12.6 未解決
+
+1. Commons 側の作者 / license / 原本 byte は HQ 検証に依拠（この host は egress 拒否）。Book の runtime byte は
+   HQ 供給の派生で、原本 byte との同一性は定義上ない（HQ 指示どおり比較しない）。
+
+`VISUAL STATUS = PASS（実装側。6/6 slot 充填、geometry・copy・route 不変、新規 FAIL 0）`。
+HQ HOME VISUAL FIDELITY GO は Founder/HQ の独立レビューで決まり、Claude は出さない。
