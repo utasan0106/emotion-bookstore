@@ -1,0 +1,502 @@
+/* ==========================================================================
+   Cultural Thread — thread.html だけの配置（RC）
+
+   release.css の共有 shell（skip-link / site-header / site-menu / site-footer /
+   noscript-note / sr-only / focus ring）と token（--hall / --chalk / --serif /
+   --sans / --gutter）の上に、Thread 固有の selector（.thread-page / .th-）だけを置く。
+   共有 page・HOME canonical block には一切かからない。
+
+   全幅で一列。animation / transition / box-shadow / text-shadow /
+   backdrop-filter は使わない（reduced motion でも同じ描画）。
+   sticky nav / carousel / card feed / modal / tooltip / progress / countdown は無い。
+   ========================================================================== */
+
+.thread-page .th-root,
+.thread-page .th-noscript {
+  width: min(calc(100% - var(--gutter) * 2), 640px);
+  margin: 0 auto;
+}
+.thread-page .th-noscript { padding-top: 28px; }
+
+.th-thread {
+  padding: 8px 0 12px;
+  color: var(--chalk);
+  font-size: 1.0625rem;
+  line-height: 1.9;
+}
+
+/* ------------------------------------------------------------ 見出し */
+
+.th-head { padding: 22px 0 34px; }
+.th-eyebrow {
+  margin: 0 0 12px;
+  font-size: 0.8125rem;
+  letter-spacing: .2em;
+  color: var(--chalk-dim);
+}
+.th-title {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(2rem, 7.4vw, 2.9rem);
+  font-weight: 600;
+  line-height: 1.22;
+  letter-spacing: -.03em;
+  color: var(--chalk);
+}
+.th-subject {
+  margin: 18px 0 0;
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--chalk);
+}
+.th-editor,
+.th-checked {
+  margin: 4px 0 0;
+  font-size: 0.8125rem;
+  letter-spacing: .06em;
+  color: var(--chalk-dim);
+}
+.th-lens {
+  margin: 14px 0 0;
+  padding: 12px 0;
+  border-top: 1px solid var(--hall-line);
+  border-bottom: 1px solid var(--hall-line);
+  font-size: 0.9375rem;
+  color: var(--chalk);
+}
+.th-checked { margin-top: 12px; }
+.th-guidance {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9375rem;
+  color: var(--chalk-dim);
+}
+.th-guidance-item { margin: 0; }
+
+/* 読む場所。位置情報も保存も無い。合図の文だけが変わる。 */
+.th-mode {
+  margin: 26px 0 0;
+  padding: 16px 18px 14px;
+  border: 1px solid var(--hall-edge);
+  border-radius: 2px;
+  min-width: 0;
+}
+.th-mode-legend {
+  padding: 0 6px;
+  font-size: 0.8125rem;
+  letter-spacing: .16em;
+  color: var(--chalk-dim);
+}
+.th-mode-options { display: grid; gap: 4px; }
+.th-mode-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 4px 6px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  color: var(--chalk);
+}
+.th-mode-input {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--signal);
+}
+.th-mode-note {
+  margin: 10px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.8;
+  color: var(--chalk-dim);
+}
+
+/* ------------------------------------------------------------ 場面 */
+
+.th-scene {
+  padding: 40px 0 8px;
+  border-top: 1px solid var(--hall-edge);
+}
+.th-scene-title {
+  margin: 0 0 18px;
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 5.4vw, 1.95rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -.02em;
+  color: var(--chalk);
+}
+.th-scene-lead,
+.th-scene-close {
+  margin: 0 0 18px;
+  color: var(--chalk);
+}
+.th-scene-close { margin: 22px 0 0; }
+
+.th-figure { margin: 0 0 22px; }
+.th-figure-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--hall-line);
+  background: var(--hall-raised);
+  color: var(--chalk-dim);
+  font-size: 0.875rem;
+}
+
+/* ------------------------------------- 事実 / 裏づけ（CLAIM / SUPPORT） */
+
+.th-relation,
+.th-fact {
+  margin: 18px 0;
+  padding: 18px 18px 16px;
+  border: 1px solid var(--hall-edge);
+  border-radius: 2px;
+  background: var(--hall-raised);
+}
+.th-relation-time {
+  margin: 0 0 6px;
+  font-family: var(--serif);
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -.01em;
+  color: var(--chalk);
+}
+.th-relation-nodes {
+  margin: 0 0 14px;
+  font-size: 0.9375rem;
+  letter-spacing: .04em;
+  color: var(--chalk);
+  overflow-wrap: anywhere;
+}
+.th-node-arrow { color: var(--signal); }
+
+.th-claim,
+.th-support { margin: 0; }
+.th-support {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hall-line);
+}
+.th-fact-badge {
+  margin: 0 0 6px;
+  font-size: 0.75rem;
+  letter-spacing: .18em;
+  color: var(--chalk-dim);
+}
+.th-claim-text { margin: 0; color: var(--chalk); }
+.th-relation-via,
+.th-relation-spatial,
+.th-fact-time {
+  margin: 8px 0 0;
+  font-size: 0.9375rem;
+  color: var(--chalk-dim);
+}
+.th-verification {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--chalk);
+}
+.th-support-mode {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+  color: var(--chalk-dim);
+}
+
+/* 資料の引き出し。開閉は details だけ（modal / tooltip は無い）。 */
+.th-evidence { margin: 10px 0 0; }
+.th-evidence-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 0;
+  cursor: pointer;
+  font-family: var(--serif);
+  font-size: 1rem;
+  letter-spacing: .1em;
+  color: var(--chalk);
+  text-decoration: underline;
+  text-decoration-color: var(--signal);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+.th-evidence-body { padding: 6px 0 4px; }
+.th-sources {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: th-source;
+}
+.th-source {
+  position: relative;
+  counter-increment: th-source;
+  padding: 14px 16px 14px 44px;
+  border: 1px solid var(--hall-line);
+  border-radius: 2px;
+  background: var(--hall);
+  font-size: 0.9375rem;
+  line-height: 1.8;
+}
+.th-source::before {
+  content: counter(th-source);
+  position: absolute;
+  left: 16px;
+  top: 14px;
+  font-family: var(--serif);
+  font-size: 0.875rem;
+  color: var(--chalk-dim);
+}
+.th-source-kind {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: .14em;
+  color: var(--chalk-dim);
+}
+.th-source-name {
+  margin: 2px 0 0;
+  font-family: var(--serif);
+  color: var(--chalk);
+}
+.th-source-variant {
+  margin: 8px 0 0;
+  display: grid;
+  gap: 2px;
+  color: var(--chalk);
+}
+.th-source-variant-year {
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  letter-spacing: .04em;
+}
+.th-source-variant-reading { color: var(--chalk-dim); }
+.th-source-link-row { margin: 8px 0 0; }
+.th-source-link,
+.th-destination-link {
+  display: inline-block;
+  min-height: 44px;
+  padding: 10px 0;
+  color: var(--chalk);
+  overflow-wrap: anywhere;
+  text-decoration-color: var(--signal);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+.th-order-note,
+.th-difference-note {
+  margin: 12px 0 0;
+  font-size: 0.875rem;
+  line-height: 1.8;
+  color: var(--chalk-dim);
+}
+.th-difference-note { color: var(--chalk); }
+
+/* ------------------------------------------ 編集部の読み（READING） */
+
+/* 事実の枠（実線・地の持ち上げ）とは別の見え方にする。破線は
+   forced-colors でも実線と区別が残る。fact badge も検証状態も持たない。 */
+.th-reading {
+  margin: 22px 0 0;
+  padding: 14px 18px;
+  border: 1px dashed var(--hall-edge);
+  border-radius: 2px;
+  background: transparent;
+}
+.th-reading-label {
+  margin: 0 0 6px;
+  font-family: var(--serif);
+  font-size: 0.8125rem;
+  letter-spacing: .16em;
+  color: var(--signal);
+}
+.th-reading-text { margin: 0; color: var(--chalk); }
+
+/* ------------------------------------------------------------ 合図 */
+
+.th-cue {
+  margin: 22px 0 0;
+  padding: 14px 0 14px 18px;
+  border-left: 2px solid var(--signal);
+}
+.th-cue-label {
+  margin: 0 0 4px;
+  font-size: 0.75rem;
+  letter-spacing: .18em;
+  color: var(--chalk-dim);
+}
+.th-cue-text {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  line-height: 1.85;
+  color: var(--chalk);
+}
+
+/* ---------------------------------------------------------- 六拍 */
+
+.th-beat {
+  margin: 26px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--hall-line);
+}
+.th-beat-label {
+  margin: 0 0 8px;
+  font-size: 0.75rem;
+  letter-spacing: .2em;
+  color: var(--chalk-dim);
+}
+.th-beat-lead { margin: 0 0 12px; color: var(--chalk); }
+.th-pair {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+.th-pair-item { margin: 0; }
+.th-pair-name {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  color: var(--chalk);
+}
+.th-pair-text { margin: 0; color: var(--chalk-dim); }
+
+/* 問い。答える欄も選択肢も無い。 */
+.th-question {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.375rem, 5vw, 1.75rem);
+  line-height: 1.5;
+  color: var(--chalk);
+}
+.th-evidence-list {
+  margin: 0;
+  padding-left: 1.4em;
+  color: var(--chalk);
+}
+.th-evidence-item { margin: 0 0 6px; }
+
+/* --------------------------------------------------------- 現実へ */
+
+.th-reality-lead {
+  margin: 0 0 18px;
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  line-height: 1.7;
+  color: var(--chalk);
+}
+.th-destinations {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.th-destination {
+  padding: 14px 0 12px;
+  border-top: 1px solid var(--hall-line);
+}
+.th-destination-link {
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  letter-spacing: .04em;
+}
+.th-destination-why,
+.th-destination-note {
+  margin: 4px 0 0;
+  font-size: 0.9375rem;
+  color: var(--chalk-dim);
+}
+.th-destination-why { color: var(--chalk); }
+
+.th-status {
+  margin: 26px 0 0;
+  padding: 14px 18px;
+  border: 1px solid var(--hall-line);
+  border-radius: 2px;
+}
+.th-status-title {
+  margin: 0 0 6px;
+  font-size: 0.75rem;
+  letter-spacing: .18em;
+  color: var(--chalk-dim);
+}
+.th-status-list {
+  margin: 0;
+  padding-left: 1.2em;
+  font-size: 0.9375rem;
+  color: var(--chalk);
+}
+.th-status-item { margin: 0 0 4px; }
+.th-status-checked { color: var(--chalk-dim); }
+
+/* 有限の終わり。関連スレッドも次回予告も無い。 */
+.th-end {
+  margin: 44px 0 0;
+  padding-top: 26px;
+  border-top: 1px solid var(--hall-edge);
+}
+.th-end-line {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  color: var(--chalk);
+}
+.th-end-exit { margin: 14px 0 0; }
+.th-exit {
+  display: inline-block;
+  min-height: 44px;
+  padding: 11px 0;
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  letter-spacing: .16em;
+  color: var(--chalk);
+  text-decoration-color: var(--signal);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 7px;
+}
+
+/* fail-closed（不明な id）。generic な一文と入口だけ。 */
+.th-lost { padding: 36px 0 24px; }
+.th-lost-line {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  line-height: 1.4;
+  color: var(--chalk);
+}
+
+/* ------------------------------------------------------- 手ざわり */
+
+.thread-page .th-evidence-summary:focus-visible,
+.thread-page .th-mode-input:focus-visible {
+  outline: 2px solid var(--signal-lift);
+  outline-offset: 4px;
+}
+.thread-page .th-mode-option:has(:focus-visible) {
+  outline: 2px solid var(--signal-lift);
+  outline-offset: 2px;
+}
+
+@media (forced-colors: active) {
+  .th-relation, .th-fact, .th-source, .th-mode, .th-status, .th-figure-image { border-color: CanvasText; }
+  .th-reading { border: 1px dashed CanvasText; }
+  .th-cue { border-left-color: CanvasText; }
+  .th-node-arrow, .th-reading-label { color: CanvasText; }
+  .th-evidence-summary:focus-visible, .th-mode-input:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
+}
+
+@media (min-width: 821px) {
+  .th-thread { padding-top: 4px; }
+  .th-head { padding-bottom: 40px; }
+  .th-scene { padding-top: 48px; }
+  .th-relation, .th-fact { padding: 22px 24px 20px; }
+}

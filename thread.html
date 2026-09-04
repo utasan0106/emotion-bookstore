@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#141312">
+  <title>みんなの感情書店｜スレッド</title>
+  <meta name="description" content="みんなの感情書店の編集部が、資料に沿って文化のつながりを辿るスレッドです。">
+  <link rel="icon" href="./assets/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="./assets/icon-512.png">
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="./release.css">
+  <link rel="stylesheet" href="./thread.css">
+</head>
+<!-- Cultural Thread の殻。本文（scene / relation / 資料 / 行き先）は
+     thread_content.js にだけあり、thread.js が ?thread=<id> で描く。
+     この静的 HTML は Thread 固有の copy を持たない。id が無い / 不明なら
+     generic な一文と入口だけ（fail-closed）。JavaScript が無ければ noscript の
+     一文と shell だけが出る。head に同期 JS は置かない。 -->
+<body class="thread-page">
+  <a class="skip-link" href="#main">本文へ移動</a>
+
+  <header class="site-header">
+    <p class="brand"><a class="brand-home brand-lockup" href="./index.html"><img class="brand-lockup-image" src="./assets/brand/emotion-bookstore-lockup-reversed.png" alt="みんなの感情書店" width="1429" height="331" decoding="async"></a></p>
+    <button class="menu-trigger" id="siteMenuButton" type="button" aria-haspopup="dialog" aria-controls="siteMenu">MENU</button>
+  </header>
+
+  <dialog id="siteMenu" class="site-menu" aria-labelledby="siteMenuTitle">
+    <div class="site-menu-shell">
+      <div class="site-menu-head">
+        <p class="eyebrow">MENU</p>
+        <button id="siteMenuClose" class="site-menu-close" type="button" aria-label="メニューを閉じる">閉じる</button>
+      </div>
+
+      <h2 id="siteMenuTitle" class="site-menu-title">4つの街</h2>
+      <nav class="site-menu-nav" aria-label="街を選ぶ">
+        <a class="site-menu-link" data-menu-shelf="kichijoji" href="./shelf.html?shelf=kichijoji"><span>吉祥寺</span><span aria-hidden="true">→</span></a>
+        <a class="site-menu-link" data-menu-shelf="koenji" href="./shelf.html?shelf=koenji"><span>高円寺</span><span aria-hidden="true">→</span></a>
+        <a class="site-menu-link" data-menu-shelf="shimokitazawa" href="./shelf.html?shelf=shimokitazawa"><span>下北沢</span><span aria-hidden="true">→</span></a>
+        <a class="site-menu-link" data-menu-shelf="jinbocho" href="./shelf.html?shelf=jinbocho"><span>神保町</span><span aria-hidden="true">→</span></a>
+      </nav>
+
+      <section class="site-menu-section" aria-labelledby="siteMenuDiscoverTitle">
+        <p id="siteMenuDiscoverTitle" class="eyebrow">見つける</p>
+        <nav class="site-menu-secondary" aria-label="ほかの見方">
+          <a class="site-menu-secondary-link" href="./index.html#hc-works"><span>作品から入る</span><span aria-hidden="true">→</span></a>
+          <a class="site-menu-secondary-link" href="./index.html#hc-thread"><span>いま辿れるスレッド</span><span aria-hidden="true">→</span></a>
+          <a class="site-menu-secondary-link" href="./suggest.html"><span>候補を教える</span><span aria-hidden="true">→</span></a>
+        </nav>
+      </section>
+
+      <section class="site-menu-section site-menu-favorites-section" aria-labelledby="siteMenuFavoritesTitle">
+        <p id="siteMenuFavoritesTitle" class="eyebrow">気になるリスト</p>
+        <div id="siteMenuFavorites" class="site-menu-favorites"></div>
+      </section>
+
+      <div class="site-menu-bottom">
+        <a class="site-menu-data-link" href="./data.html">データの扱い</a>
+        <a class="site-menu-data-link" href="./credits.html">写真・出典</a>
+        <a class="site-menu-entry-link" href="./index.html">入口へ戻る</a>
+      </div>
+    </div>
+  </dialog>
+
+  <main id="main">
+    <div id="threadRoot" class="th-root"></div>
+    <noscript>
+      <section class="th-noscript" aria-label="JavaScript が無効です">
+        <p class="noscript-note">このスレッドを読むには JavaScript を有効にしてください。</p>
+      </section>
+    </noscript>
+  </main>
+
+  <footer class="site-footer">
+    <p class="privacy-note">計測はemotionbookstore.comの本番ページだけで有効になります。Do Not Trackが有効な場合、またはこのブラウザで計測をオフにした場合は送信しません。</p>
+    <a class="footer-brand" href="./index.html" aria-label="みんなの感情書店 トップへ">
+      <img class="footer-brand-image" src="./assets/brand/emotion-bookstore-lockup-reversed.png" alt="みんなの感情書店" width="1429" height="331" loading="lazy" decoding="async">
+    </a>
+  </footer>
+
+  <div id="live" class="sr-only" role="status" aria-live="polite"></div>
+
+  <script src="./release_content.js"></script>
+  <script src="./growth-improvements.js"></script>
+  <script src="./release.js"></script>
+  <script src="./analytics-v3.js"></script>
+  <script src="./thread_content.js"></script>
+  <script src="./thread.js"></script>
+</body>
+</html>

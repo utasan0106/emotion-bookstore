@@ -133,6 +133,7 @@ function serve() {
           cityCols: cols('.hc-city-grid'), workCols: cols('.hc-work-grid'),
           targets: [...document.querySelectorAll('#main a, #main button')].map((el) => { const b = el.getBoundingClientRect(); return [el.className.split(' ')[0] || el.tagName, Math.round(b.width), Math.round(b.height)]; }),
           holds: [...document.querySelectorAll('[data-route-hold]')].map((el) => [el.getAttribute('data-route-hold'), el.tagName, el.getAttribute('href'), el.getAttribute('onclick'), el.tabIndex]),
+          threadRead: (() => { const a = document.querySelector('.hc-thread-read'); if (!a) return null; const b = a.getBoundingClientRect(); return [a.tagName, a.getAttribute('href'), a.hasAttribute('data-route-hold'), Math.round(b.width), Math.round(b.height)]; })(),
           images: [...document.images].every((i) => i.complete && i.naturalWidth > 0 && new URL(i.currentSrc || i.src, location.href).origin === location.origin),
           animated, docAnimations: document.getAnimations().length
         };
@@ -155,7 +156,9 @@ function serve() {
       if (EXPECT.pad !== undefined) check(H, 'mobile_shell_padding', Math.abs(home.cities.x - EXPECT.pad) <= 0.5, home.cities);
       if (EXPECT.sheet) check(H, 'wide_sheet_shell', Math.abs(home.sheet.x - EXPECT.sheet[0]) <= 1 && Math.abs(home.sheet.w - EXPECT.sheet[1]) <= 1, home.sheet);
       check(H, 'real_targets_are_44px', home.targets.length >= 6 && home.targets.every((t) => t[1] >= 44 && t[2] >= 44), home.targets.filter((t) => t[1] < 44 || t[2] < 44));
-      check(H, 'route_holds_are_static_labels', home.holds.length === 8 && home.holds.every((h) => h[1] !== 'A' && h[1] !== 'BUTTON' && !h[2] && !h[3] && h[4] < 0), home.holds);
+      check(H, 'route_holds_are_static_labels', home.holds.length === 7 && home.holds.every((h) => h[1] !== 'A' && h[1] !== 'BUTTON' && !h[2] && !h[3] && h[4] < 0), home.holds);
+      /* KOENJI R2: section 4 の「スレッドを読む」だけが実 route になった（hero の スレッドを見る は hold のまま） */
+      check(H, 'thread_read_is_a_real_anchor_44', !!home.threadRead && home.threadRead[0] === 'A' && home.threadRead[1] === './thread.html?thread=koenji-awaodori' && !home.threadRead[2] && home.threadRead[4] === 44 && home.threadRead[3] >= 44, home.threadRead);
       check(H, 'images_loaded_same_origin', home.images === true);
       check(H, 'actual_noto_cjk_font', Object.values(fonts).every((f) => /Noto (Serif|Sans) CJK JP/.test(f)), fonts);
       check(H, 'reduced_motion_animation_0', home.animated === 0 && home.docAnimations === 0, { animated: home.animated, docAnimations: home.docAnimations });
@@ -522,6 +525,7 @@ function serve() {
         holds: [...document.querySelectorAll('[data-route-hold]')].map((el) => ({
           id: el.getAttribute('data-route-hold'), tag: el.tagName, href: el.getAttribute('href'), onclick: el.getAttribute('onclick')
         })),
+        threadRead: (() => { const a = document.querySelector('.hc-thread-read'); if (!a) return null; const b = a.getBoundingClientRect(); return { tag: a.tagName, href: a.getAttribute('href'), hold: a.hasAttribute('data-route-hold'), w: Math.round(b.width), h: Math.round(b.height), text: a.textContent.replace(/\s+/g, '') }; })(),
         strip: document.querySelectorAll('.hc-reality-shot img').length,
         images: [...document.images].map((img) => ({
           src: img.getAttribute('src'), sameOrigin: new URL(img.src).origin === location.origin,
@@ -595,8 +599,12 @@ function serve() {
         /紅茶店|カフェ|喫茶/.test(home.realityImgs[0].alt || ''), home.realityImgs[0]);
     check(S, 'thread_chain_is_five_nodes',
       home.nodes.join('|') === '街高円寺|出来事阿波おどり|人踊り手たち|資料記録と写真|現在つづく祭り', home.nodes);
-    check(S, 'eight_route_holds_do_not_navigate',
-      home.holds.length === 8 && home.holds.every((h) => h.tag !== 'A' && h.tag !== 'BUTTON' && !h.href && !h.onclick), home.holds);
+    check(S, 'seven_route_holds_do_not_navigate',
+      home.holds.length === 7 && home.holds.every((h) => h.tag !== 'A' && h.tag !== 'BUTTON' && !h.href && !h.onclick), home.holds);
+    // KOENJI R2: 「スレッドを読む」だけが実 route。hero の スレッドを見る（thread-index）は hold のまま。
+    check(S, 'thread_read_anchor_points_at_the_real_thread_route',
+      !!home.threadRead && home.threadRead.tag === 'A' && home.threadRead.href === './thread.html?thread=koenji-awaodori' && !home.threadRead.hold && home.threadRead.text === 'スレッドを読む→' && home.threadRead.h === 44 && home.threadRead.w >= 44 &&
+        home.holds.some((h) => h.id === 'thread-index'), home.threadRead);
     check(S, 'reality_strip_is_three_photos', home.strip === 3, home.strip);
     check(S, 'all_images_same_origin_and_loaded',
       home.images.length >= 13 && home.images.every((i) => i.sameOrigin && i.loaded), home.images.filter((i) => !i.sameOrigin || !i.loaded));

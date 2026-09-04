@@ -2524,14 +2524,16 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 
 .hc-thread-read {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-end;
   gap: 14px;
-  margin: 31px 0 0;
+  height: 44px;
+  margin: 0;
   font-size: 13px;
   line-height: 1;
   letter-spacing: .04em;
   color: #d8cdbb;
+  text-decoration: none;
 }
 .hc-thread-read-mark { display: block; width: 26px; text-align: right; }
 
@@ -2600,7 +2602,8 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 
 .home-canonical .hc-city:focus-visible,
 .home-canonical .hc-brand-link:focus-visible,
-.home-canonical .hc-menu-trigger:focus-visible {
+.home-canonical .hc-menu-trigger:focus-visible,
+.home-canonical .hc-thread-read:focus-visible {
   outline: 2px solid var(--hc-gold);
   outline-offset: 3px;
 }
@@ -2704,7 +2707,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   .hc-node:nth-child(2)::before,
   .hc-node:nth-child(4)::before { display: block; }
   .hc-node:nth-child(5) { grid-column: 1 / -1; }
-  .hc-thread-read { margin-top: 24px; }
+  .hc-thread-read { margin-top: -7px; }
 
   .hc-reality { grid-template-columns: minmax(0, 1fr); padding: 44px var(--hc-pad) 44px; }
   /* 本文は列幅に収まらないときだけ折る。読点の後でしか折らない（keep-all）。 */

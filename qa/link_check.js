@@ -34,6 +34,11 @@ const sandbox = { window: {} };
 vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync(path.join(root, 'release_content.js'), 'utf8'), sandbox);
 const CONTENT = sandbox.window.V3_RELEASE_CONTENT;
+/* Thread の資料・現実への行き先も同じ扱い（thread_content.js も window へ代入する形）。 */
+const threadSandbox = { window: {} };
+vm.createContext(threadSandbox);
+vm.runInContext(fs.readFileSync(path.join(root, 'thread_content.js'), 'utf8'), threadSandbox);
+const THREADS = (threadSandbox.window.V3_THREAD_CONTENT || {}).threads || [];
 
 /* --- 検査対象の収集 ---------------------------------------------------- */
 
@@ -60,9 +65,15 @@ for (const shelf of CONTENT.shelves) {
 
 /* html に直接書かれた外部リンクも拾う。content 側だけ見ていると
    suggest.html の公式 X のような手書きの href を取りこぼす。 */
-for (const file of ['index.html', 'shelf.html', 'suggest.html']) {
+for (const file of ['index.html', 'shelf.html', 'suggest.html', 'thread.html']) {
   const src = fs.readFileSync(path.join(root, file), 'utf8');
   for (const m of src.matchAll(/href="(https?:\/\/[^"]+)"/g)) add(m[1], `${file} href`);
+}
+
+/* Thread: 資料（sources）と現実への行き先（realityDestinations）。 */
+for (const t of THREADS) {
+  for (const s of t.sources || []) add(s.url, `thread:${t.threadId} source ${s.id}`);
+  for (const d of t.realityDestinations || []) add(d.url, `thread:${t.threadId} destination ${d.id}`);
 }
 
 /* 同じ URL を何度も叩かない。相手のサーバに対して礼儀がないし、

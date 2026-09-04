@@ -121,7 +121,7 @@ check(!html.includes('index.html#archive'), 'dead anchor: #archive (archive live
 
 /* ---- 4. ROUTE_HOLD は navigate しない -------------------------------- */
 
-const HOLDS = ['thread-index', 'all-cities', 'work-book', 'work-film', 'work-music', 'work-video', 'thread-koenji-awaodori', 'spots'];
+const HOLDS = ['thread-index', 'all-cities', 'work-book', 'work-film', 'work-music', 'work-video', 'spots'];
 for (const h of HOLDS) {
   const re = new RegExp(`data-route-hold="${h}"`);
   check(re.test(html), `ROUTE_HOLD marker missing: ${h}`);
@@ -131,6 +131,14 @@ for (const m of html.match(/<[^>]*data-route-hold="[^"]*"[^>]*>/g) || []) {
   if (/\bhref=/.test(m) || /\bonclick=/.test(m)) failures.push(`ROUTE_HOLD element must not navigate: ${m.slice(0, 70)}`);
   if (/^<(a|button)\b/.test(m)) failures.push(`ROUTE_HOLD element must not be a/button: ${m.slice(0, 70)}`);
 }
+check((html.match(/data-route-hold="/g) || []).length === HOLDS.length, `exactly ${HOLDS.length} route holds expected`);
+// KOENJI R2: section 4 の「スレッドを読む」だけが実 route（thread.html?thread=koenji-awaodori）。
+// hero の「スレッドを見る」（thread-index）はまだ ROUTE_HOLD のまま。
+const THREAD_ANCHOR = '<a class="hc-thread-read" href="./thread.html?thread=koenji-awaodori">スレッドを読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></a>';
+check(html.split(THREAD_ANCHOR).length === 2, 'thread read must be the real anchor to ./thread.html?thread=koenji-awaodori, exactly once');
+check(!html.includes('data-route-hold="thread-koenji-awaodori"'), 'retired hold thread-koenji-awaodori must not remain');
+check((html.match(/thread\.html/g) || []).length === 1, 'HOME must link the Thread route exactly once');
+check(fs.existsSync(path.join(root, 'thread.html')), 'thread route target thread.html must exist on disk');
 
 /* ---- 5. 外部通信ゼロ / 端末内保存に触れない --------------------------- */
 
