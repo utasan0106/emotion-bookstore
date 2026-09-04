@@ -97,12 +97,13 @@ const MEASURE = () => {
     id: r.getAttribute('data-relation-id'), type: r.getAttribute('data-relation-type'), state: r.getAttribute('data-verification'), y: R(r).y,
     time: (r.querySelector('.th-relation-time') || {}).textContent, claims: r.querySelectorAll(':scope > .th-claim[data-layer="claim"]').length,
     supports: r.querySelectorAll(':scope > .th-support[data-layer="support"]').length, readingsInside: r.querySelectorAll('.th-reading').length,
-    verification: (r.querySelector('.th-verification') || {}).textContent, verificationH: r.querySelector('.th-verification') ? R(r.querySelector('.th-verification')).h : 0,
-    badges: txt('.th-fact-badge', r)
+    verification: (r.querySelector(':scope > .th-support > .th-verification') || {}).textContent, verificationH: r.querySelector(':scope > .th-support > .th-verification') ? R(r.querySelector(':scope > .th-support > .th-verification')).h : 0,
+    surface: r.innerText.replace(/\s+/g, ' '), summary: (r.querySelector('summary') || {}).innerText, open: !!(r.querySelector('details') || {}).open, badges: r.querySelectorAll('.th-fact-badge').length
   }));
-  const facts = [...document.querySelectorAll('.th-fact')].map((f) => ({ id: f.getAttribute('data-fact-id'), claims: f.querySelectorAll(':scope > .th-claim').length, supports: f.querySelectorAll(':scope > .th-support').length }));
+  const facts = [...document.querySelectorAll('.th-fact')].map((f) => ({ id: f.getAttribute('data-fact-id'), state: f.getAttribute('data-verification'), claims: f.querySelectorAll(':scope > .th-claim').length, supports: f.querySelectorAll(':scope > .th-support').length,
+    surface: f.innerText.replace(/\s+/g, ' '), summary: (f.querySelector('summary') || {}).innerText, open: !!(f.querySelector('details') || {}).open, badges: f.querySelectorAll('.th-fact-badge').length }));
   const readings = [...document.querySelectorAll('.th-reading')].map((r) => ({
-    layer: r.getAttribute('data-layer'), label: (r.querySelector('.th-reading-label') || {}).textContent, factBadges: r.querySelectorAll('.th-fact-badge').length,
+    layer: r.getAttribute('data-layer'), label: (r.querySelector('.th-reading-label') || {}).textContent, labelH: r.querySelector('.th-reading-label') ? R(r.querySelector('.th-reading-label')).h : 0, factBadges: r.querySelectorAll('.th-fact-badge').length,
     verification: r.hasAttribute('data-verification') || !!r.querySelector('.th-verification'), insideFact: !!r.closest('.th-relation, .th-fact'),
     scene: (r.closest('.th-scene') || {}).getAttribute ? r.closest('.th-scene').getAttribute('data-scene') : null, borderStyle: getComputedStyle(r).borderTopStyle
   }));
@@ -137,7 +138,7 @@ const MEASURE = () => {
 };
 
 const FONT_PROBES = [['h1', '.th-title'], ['scene', '.th-scene-title'], ['claim', '.th-claim-text'], ['cue', '.th-cue-text'], ['question', '.th-question'],
-  ['guide', '.th-guidance-item'], ['verification', '.th-verification'],
+  ['guide', '.th-guidance-item'], ['verification', '.th-relation[data-relation-id="rel:learned-1961-62"] > .th-support > .th-verification'], ['flag', '.th-evidence-flag'],
   /* source card は開いた drawer の中のものを読む（閉じた details の中は描画されず glyph が無い） */
   ['source', '.th-relation[data-relation-id="rel:learned-1961-62"] .th-source-name'], ['variant', '.th-relation[data-relation-id="rel:learned-1961-62"] .th-source-variant-reading'],
   ['destination', '.th-destination-label'], ['exit', '.th-exit']];
@@ -238,11 +239,19 @@ async function elementShot(page, selector, name, width) {
     check(S, 'reveal_shows_connected_then_learned', !!rel['rel:connected-1961'] && !!rel['rel:learned-1961-62'] && rel['rel:connected-1961'].y < rel['rel:learned-1961-62'].y &&
       /1961 ／ つながる/.test(rel['rel:connected-1961'].time || '') && /1961–62 ／ 教わる/.test(rel['rel:learned-1961-62'].time || ''), m.relations.map((r) => [r.id, r.time, r.y]));
     check(S, 'question_is_a_single_line_without_controls', !!m.question && m.question.text === 'この二つの間に、何が起きた？' && m.question.controls === 0, m.question);
-    check(S, 'source_difference_visible', !!rel['rel:learned-1961-62'] && rel['rel:learned-1961-62'].state === 'source_difference' && rel['rel:learned-1961-62'].verification === '検証状態：資料間に年次差' && rel['rel:learned-1961-62'].verificationH > 0, rel['rel:learned-1961-62']);
+    const learned = rel['rel:learned-1961-62'];
+    check(S, 'source_difference_visible', !!learned && learned.state === 'source_difference' && learned.verification === '検証状態：資料間に年次差' && learned.verificationH > 0 && /検証状態：資料間に年次差/.test(learned.surface) && /資料を見る（2件）/.test(learned.summary || '') && !/裏づけの種類/.test(learned.surface) && !learned.open, learned);
     check(S, 'relations_are_the_four_verified_ones', m.relations.map((r) => r.id).sort().join('|') === 'rel:connected-1961|rel:learned-1961-62|rel:originated-1957|rel:renamed-1963' && m.relations.every((r) => !/reading/.test(r.type)), m.relations.map((r) => [r.id, r.type]));
-    check(S, 'claim_and_support_are_separate_blocks', m.relations.every((r) => r.claims === 1 && r.supports === 1 && r.readingsInside === 0 && r.badges.join('|') === '事実|裏づけ') && m.facts.every((x) => x.claims === 1 && x.supports === 1), { relations: m.relations.map((r) => [r.id, r.claims, r.supports, r.readingsInside]), facts: m.facts });
-    check(S, 'editorial_reading_never_inherits_a_fact_badge', m.readings.length === 2 && m.readings.every((r) => r.layer === 'reading' && r.label === '編集部の読み' && r.factBadges === 0 && !r.verification && !r.insideFact && r.borderStyle === 'dashed') &&
+    check(S, 'claim_and_support_are_separate_blocks', m.relations.every((r) => r.claims === 1 && r.supports === 1 && r.readingsInside === 0 && r.badges === 0) && m.facts.every((x) => x.claims === 1 && x.supports === 1 && x.badges === 0), { relations: m.relations.map((r) => [r.id, r.claims, r.supports, r.readingsInside]), facts: m.facts });
+    /* HQ LIMITED FIX 01 UNIT B: 通常（single_source / corroborated）の closed surface は本文 + 「出典あり　資料を見る（N件）」だけ */
+    const light = m.relations.filter((r) => r.state !== 'source_difference').concat(m.facts.filter((x) => x.state !== 'source_difference'));
+    check(S, 'light_default_surface_for_normal_items', light.length === 4 && light.every((x) => !x.open && !/検証状態：単一資料|検証状態：複数の資料が一致|裏づけの種類|検証状態/.test(x.surface) && /^出典あり\s*資料を見る（\d件）$/.test((x.summary || '').trim())),
+      light.map((x) => [x.id, x.summary, x.surface.slice(0, 60)]));
+    check(S, 'editorial_reading_never_inherits_a_fact_badge', m.readings.length === 2 && m.readings.every((r) => r.layer === 'reading' && r.label === '編集部の読み' && r.labelH > 0 && r.factBadges === 0 && !r.verification && !r.insideFact && r.borderStyle === 'dashed') &&
       m.readings.map((r) => r.scene).join('|') === 's3|s4', m.readings);
+    /* HQ LIMITED FIX 01 UNIT A: 木場連 copy */
+    const encounterText = (m.beats.find((b) => b.id === 'encounter') || {}).text || '';
+    check(S, 'kiba_ren_copy_is_the_hq_fix', /徳島県人会で結成された連。/.test(encounterText) && !m.text.includes('徳島の阿波おどりの連。'), encounterText.slice(0, 120));
     check(S, 'mode_radios_remote_default', m.radios.length === 2 && m.radios[0].value === 'remote' && m.radios[0].checked && m.radios[1].value === 'onsite' && !m.radios[1].checked &&
       /いまは、高円寺にいない/.test(m.radios[0].label) && /いま、高円寺にいる/.test(m.radios[1].label) && m.radios.every((r) => r.h >= 44), m.radios);
     check(S, 'approved_image_once_same_origin_loaded', m.imgs.length === 1 && /home-thread-koenji-awaodori\.jpg$/.test(m.imgs[0].src) && m.imgs[0].loaded && m.imgs[0].sameOrigin && (m.imgs[0].alt || '').length > 0, m.imgs);
@@ -258,6 +267,22 @@ async function elementShot(page, selector, name, width) {
     check(S, 'no_analytics_layer_no_new_event', m.dataLayer === 'undefined' && m.gtag === 'undefined', { dataLayer: m.dataLayer, gtag: m.gtag });
     check(S, 'no_js_error', errs.length === 0, errs.slice(0, 2));
 
+    /* closed 状態の証跡（drawer を開く前に撮る） */
+    if (v.name === 'w390') { await elementShot(page, '#th-s1', 'THREAD_S1_EVIDENCE_CLOSED_390', v.width); await elementShot(page, '.th-relation[data-relation-id="rel:learned-1961-62"]', 'THREAD_S2_SOURCE_DIFFERENCE_CLOSED_390', v.width); }
+    if (v.name === 'w1440') await elementShot(page, '.th-relation[data-relation-id="rel:learned-1961-62"]', 'THREAD_S2_CLOSED_1440', v.width);
+
+    /* 通常 item の drawer: 検証状態・裏づけの種類・資料は drawer の中に全部残る（Evidence depth を削らない） */
+    const s1Sel = '.th-relation[data-relation-id="rel:originated-1957"] .th-evidence-summary';
+    await page.click(s1Sel);
+    await page.waitForTimeout(150);
+    const s1 = await page.evaluate(() => {
+      const d = document.querySelector('.th-relation[data-relation-id="rel:originated-1957"] .th-evidence');
+      return { open: d.open, body: d.querySelector('.th-evidence-body').innerText.replace(/\s+/g, ' '), cards: [...d.querySelectorAll('.th-source')].map((c) => ({ id: c.getAttribute('data-source-id'), href: c.querySelector('.th-source-link').getAttribute('href'), h: Math.round(c.getBoundingClientRect().height) })) };
+    });
+    check(S, 'normal_drawer_keeps_verification_and_support_mode_inside', s1.open === true && /検証状態：単一資料/.test(s1.body) && /裏づけの種類：資料の記述/.test(s1.body) && s1.cards.length === 1 && s1.cards[0].id === 'src:official-history' && /^https:\/\//.test(s1.cards[0].href) && s1.cards[0].h > 0, s1);
+    await page.click(s1Sel);
+    await page.waitForTimeout(100);
+
     /* 資料の引き出し: 公式 → 地域の文化アーカイブ の順、二枚を同時に（並列に）一列で、注記つき */
     const summarySel = '.th-relation[data-relation-id="rel:learned-1961-62"] .th-evidence-summary';
     await page.click(summarySel);
@@ -265,8 +290,10 @@ async function elementShot(page, selector, name, width) {
     const drawer = await page.evaluate(() => {
       const d = document.querySelector('.th-relation[data-relation-id="rel:learned-1961-62"] .th-evidence');
       const cards = [...d.querySelectorAll('.th-source')].map((c) => { const b = c.getBoundingClientRect(); return { id: c.getAttribute('data-source-id'), kind: c.getAttribute('data-source-kind'), x: Math.round(b.left), y: Math.round(b.top + scrollY), w: Math.round(b.width), h: Math.round(b.height), name: (c.querySelector('.th-source-name') || {}).textContent, variant: (c.querySelector('.th-source-variant-year') || {}).textContent, href: (c.querySelector('.th-source-link') || {}).getAttribute ? c.querySelector('.th-source-link').getAttribute('href') : null } });
-      return { open: d.open, summary: (d.querySelector('summary') || {}).textContent, cards, order: (d.querySelector('.th-order-note') || {}).textContent, difference: (d.querySelector('.th-difference-note') || {}).textContent, docW: document.documentElement.scrollWidth, vw: document.documentElement.clientWidth };
+      return { open: d.open, summary: (d.querySelector('summary') || {}).textContent, cards, order: (d.querySelector('.th-order-note') || {}).textContent, difference: (d.querySelector('.th-difference-note') || {}).textContent, docW: document.documentElement.scrollWidth, vw: document.documentElement.clientWidth,
+        body: d.querySelector('.th-evidence-body').innerText.replace(/\s+/g, ' '), verificationLines: document.querySelectorAll('.th-relation[data-relation-id="rel:learned-1961-62"] .th-verification').length };
     });
+    check(S, 'deep_drawer_keeps_support_mode_and_single_surface_verification', /裏づけの種類：資料の記述/.test(drawer.body) && drawer.verificationLines === 1, { body: drawer.body.slice(0, 80), lines: drawer.verificationLines });
     check(S, 'drawer_opens_with_official_first_local_archive_second', drawer.open === true && drawer.cards.length === 2 && drawer.cards[0].id === 'src:official-history' && drawer.cards[0].kind === 'official' && drawer.cards[1].id === 'src:suginami-gaku' && drawer.cards[1].kind === 'local_archive', drawer.cards.map((c) => [c.id, c.kind]));
     check(S, 'two_source_cards_shown_in_parallel_one_column', drawer.cards.length === 2 && drawer.cards.every((c) => c.h > 0 && c.w > 0) && drawer.cards[0].x === drawer.cards[1].x && drawer.cards[1].y > drawer.cards[0].y + drawer.cards[0].h - 1 && drawer.docW <= drawer.vw, drawer.cards);
     check(S, 'source_cards_carry_variant_and_https_link', drawer.cards.every((c) => /^https:\/\//.test(c.href || '') && !!c.name) && drawer.cards[0].variant === '1961' && drawer.cards[1].variant === '1961／1962', drawer.cards.map((c) => [c.variant, c.href]));

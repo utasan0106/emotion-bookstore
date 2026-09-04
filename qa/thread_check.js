@@ -299,6 +299,10 @@ check(S.s1 && !/この一点|一点から始ま|番地|丁目|\d+月|\d+日/.tes
   const B = Object.fromEntries(beats.map((b) => [b.id, b]));
   check(B.before && (B.before.items || []).length === 2 && !/徳島新聞社|木場連|鴨川/.test(flat(B.before)), 'BEFORE shows only the pre-contact state (no Tokushima Shimbun / Kiba-ren / Kamogawa)');
   check(B.encounter && ['徳島新聞社', '木場連', '鴨川長二'].every((n) => (B.encounter.items || []).some((i) => i.name === n)), 'ENCOUNTER must introduce 徳島新聞社 / 木場連 / 鴨川長二');
+  /* HQ LIMITED FIX 01 UNIT A: 木場連 の fact copy（地理的な誤解を招く旧 copy は残さない） */
+  check(B.encounter && (B.encounter.items || []).some((i) => i.name === '木場連' && i.text === '徳島県人会で結成された連。'), 'ENCOUNTER 木場連 copy must be「徳島県人会で結成された連。」');
+  check(contentCode.split('徳島県人会で結成された連。').length === 2, 'new 木場連 copy must appear exactly once');
+  check(!contentCode.includes('徳島の阿波おどりの連。') && !js.includes('徳島の阿波おどりの連。') && !html.includes('徳島の阿波おどりの連。'), 'old 木場連 copy「徳島の阿波おどりの連。」must not exist');
   check(B.question && B.question.line === 'この二つの間に、何が起きた？' && Object.keys(B.question).sort().join() === 'id,kind,label,line', 'QUESTION must be the single line with no answer field / options');
   check(!/正解|不正解|答え|スコア|得点|選択肢|回答/.test(flat(B.question)), 'QUESTION must carry no correct/incorrect/score vocabulary');
   check(B.evidence && (B.evidence.items || []).length === 3 && /手ほどきを求めた/.test(B.evidence.items[0]) && /徳島新聞社を介して/.test(B.evidence.items[1]) && /鴨川長二/.test(B.evidence.items[2]) &&
@@ -376,6 +380,16 @@ check(/\(scene\.beats \|\| \[\]\)\.forEach/.test(js), 'renderer must iterate sce
   check((js.match(/h\('input'/g) || []).length === 1 && fn('modeFieldset').includes("h('input'"), 'the only input the renderer creates is the mode radio');
   check(!/h\('button'|h\('select'|h\('form'|h\('textarea'/.test(js), 'renderer must create no button / select / form');
   check(js.includes("'※並び順は、資料の正しさの順位ではありません。'"), 'evidence drawer must carry the ordering note');
+  /* HQ LIMITED FIX 01 UNIT B: DISCOVERY CAN BE LIGHT. VERIFICATION MUST REMAIN DEEP.
+     default surface は verificationState だけで決まり、Evidence data は drawer に全部残る。 */
+  const isDeep = fn('isDeep'), drawer = fn('evidenceDrawer'), supportFn = fn('supportBlock');
+  check(/source_difference/.test(isDeep) && /unresolved/.test(isDeep) && !/single_source|corroborated/.test(isDeep), 'light default surface must be keyed on verificationState (source_difference / unresolved stay deep)');
+  check(supportFn.includes('deep ? verificationLine(item) : null') && !supportFn.includes('supportModeLine('), 'support block must show the verification line on the surface only for deep items, never the support mode');
+  check(drawer.includes('if (!deep) children.push(verificationLine(item));') && drawer.includes('children.push(supportModeLine(item));'), 'verification state and support mode must remain inside the drawer for light items (evidence depth kept)');
+  check(js.includes("text: '出典あり'") && js.includes("'th-evidence-flag'") && js.includes("'th-evidence-open'"), 'light closed surface must read 出典あり　資料を見る（N件）');
+  check(!js.includes('th-fact-badge') && !js.includes('factBadge('), 'no fact badge on the default surface');
+  check(fn('claimBlock').includes("'th-claim-text'") && !fn('claimBlock').includes('badge'), 'claim block must be the claim text only');
+  check(drawer.includes("'th-order-note'") && drawer.includes("'th-difference-note'") && drawer.includes('sourceCard(source, variant)'), 'drawer must keep source cards / order note / difference note');
   check(js.includes("'このスレッドはありません。'") && js.includes("'入口へ戻る'"), 'fail-closed copy must be generic');
   check(js.includes("'みんなの感情書店｜スレッド'"), 'fail-closed title must be generic');
   check(/検証状態：資料間に年次差/.test(js) && /検証状態：単一資料/.test(js), 'verification labels must be rendered as 検証状態：…');
@@ -412,6 +426,8 @@ for (const banned of ['animation', 'transition', '@keyframes', 'box-shadow', 'te
     }
   }
   check(/\.th-reading \{[^}]*dashed/.test(css), 'editorial reading must be visibly distinct from fact boxes (dashed), including under forced colors');
+  check(!cssRules.includes('.th-fact-badge') && cssRules.includes('.th-support-light') && cssRules.includes('.th-support-deep') && cssRules.includes('.th-evidence-flag'), 'thread.css must style the light / deep support surfaces without fact badges');
+  check(/\.th-reading-label \{[^}]*color/.test(css), 'editorial reading label must stay visible (styled, never hidden)');
   check(/forced-colors: active/.test(css) && /prefers-reduced-motion/.test(css) === false, 'thread.css must handle forced colors and needs no motion guard (nothing moves)');
   check(/min-height: 44px/.test(css), 'real controls must be at least 44px tall');
 }

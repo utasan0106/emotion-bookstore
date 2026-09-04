@@ -150,6 +150,8 @@
 }
 
 /* ------------------------------------- 事実 / 裏づけ（CLAIM / SUPPORT） */
+/* default surface は本文 → 必要なら出典、の順に見える軽さにする。
+   検証状態は source_difference / unresolved だけ表に出し、ほかは drawer の中。 */
 
 .th-relation,
 .th-fact {
@@ -179,16 +181,11 @@
 
 .th-claim,
 .th-support { margin: 0; }
-.th-support {
+.th-support-light { margin-top: 8px; }
+.th-support-deep {
   margin-top: 16px;
   padding-top: 14px;
   border-top: 1px solid var(--hall-line);
-}
-.th-fact-badge {
-  margin: 0 0 6px;
-  font-size: 0.75rem;
-  letter-spacing: .18em;
-  color: var(--chalk-dim);
 }
 .th-claim-text { margin: 0; color: var(--chalk); }
 .th-relation-via,
@@ -212,10 +209,12 @@
 
 /* 資料の引き出し。開閉は details だけ（modal / tooltip は無い）。 */
 .th-evidence { margin: 10px 0 0; }
+.th-support-light .th-evidence { margin-top: 0; }
 .th-evidence-summary {
   display: flex;
   align-items: center;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 4px 14px;
   min-height: 44px;
   padding: 8px 0;
   cursor: pointer;
@@ -223,12 +222,24 @@
   font-size: 1rem;
   letter-spacing: .1em;
   color: var(--chalk);
+}
+.th-evidence-open {
   text-decoration: underline;
   text-decoration-color: var(--signal);
   text-decoration-thickness: 1px;
   text-underline-offset: 6px;
 }
+.th-support-light .th-evidence-summary {
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  letter-spacing: .06em;
+  color: var(--chalk-dim);
+}
+.th-evidence-flag { color: var(--chalk-dim); }
 .th-evidence-body { padding: 6px 0 4px; }
+.th-evidence-body .th-verification,
+.th-evidence-body .th-support-mode { margin: 0 0 4px; }
+.th-evidence-body .th-sources { margin-top: 10px; }
 .th-sources {
   display: grid;
   gap: 12px;

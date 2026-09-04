@@ -17,7 +17,7 @@
 
   var GENERIC_TITLE = 'みんなの感情書店｜スレッド';
   var LOST = { line: 'このスレッドはありません。', exit: '入口へ戻る', href: './index.html' };
-  var LAYER = { claim: '事実', support: '裏づけ', reading: '編集部の読み' };
+  var LAYER = { reading: '編集部の読み' };
   var VERIFICATION = {
     single_source: '検証状態：単一資料',
     corroborated: '検証状態：複数の資料が一致',
@@ -57,8 +57,22 @@
 
   /* ------------------------------------------------------- CLAIM / SUPPORT */
 
-  function factBadge(text) {
-    return h('p', { class: 'th-fact-badge', text: text });
+  /* DISCOVERY CAN BE LIGHT. VERIFICATION MUST REMAIN DEEP.
+     single_source / corroborated の default surface は「出典あり　資料を見る（N件）」
+     の一行だけにし、検証状態・裏づけの種類は drawer の中へ。不確実性そのものが
+     理解上重要な source_difference / unresolved だけ、検証状態を表に残す。
+     data model・資料・並び順・注記は変えない。 */
+  function isDeep(item) {
+    return item.verificationState === 'source_difference' || item.verificationState === 'unresolved';
+  }
+
+  function verificationLine(item) {
+    return h('p', { class: 'th-verification', 'data-verification': item.verificationState, text: VERIFICATION[item.verificationState] || '検証状態：不明' });
+  }
+
+  function supportModeLine(item) {
+    var modes = (item.supportMode || []).map(function (m) { return SUPPORT_MODE[m] || m; }).join('・');
+    return modes ? h('p', { class: 'th-support-mode', text: '裏づけの種類：' + modes }) : null;
   }
 
   function sourceCard(source, variant) {
@@ -95,30 +109,32 @@
       cards.push(sourceCard(source, variant));
     });
     if (!cards.length) return null;
-    var children = [h('ol', { class: 'th-sources' }, cards)];
+    var deep = isDeep(item);
+    var children = [];
+    if (!deep) children.push(verificationLine(item));
+    children.push(supportModeLine(item));
+    children.push(h('ol', { class: 'th-sources' }, cards));
     if (cards.length >= 2) children.push(h('p', { class: 'th-order-note', text: ORDER_NOTE }));
     if (item.differenceNote) children.push(h('p', { class: 'th-difference-note', text: item.differenceNote }));
     return h('details', { class: 'th-evidence' }, [
       h('summary', { class: 'th-evidence-summary' }, [
-        h('span', { text: '資料を見る（' + cards.length + '件）' })
+        deep ? null : h('span', { class: 'th-evidence-flag', text: '出典あり' }),
+        h('span', { class: 'th-evidence-open', text: '資料を見る（' + cards.length + '件）' })
       ]),
       h('div', { class: 'th-evidence-body' }, children)
     ]);
   }
 
   function supportBlock(thread, item) {
-    var modes = (item.supportMode || []).map(function (m) { return SUPPORT_MODE[m] || m; }).join('・');
-    return h('div', { class: 'th-support', 'data-layer': 'support' }, [
-      factBadge(LAYER.support),
-      h('p', { class: 'th-verification', 'data-verification': item.verificationState, text: VERIFICATION[item.verificationState] || '検証状態：不明' }),
-      modes ? h('p', { class: 'th-support-mode', text: '裏づけの種類：' + modes }) : null,
+    var deep = isDeep(item);
+    return h('div', { class: 'th-support ' + (deep ? 'th-support-deep' : 'th-support-light'), 'data-layer': 'support' }, [
+      deep ? verificationLine(item) : null,
       evidenceDrawer(thread, item)
     ]);
   }
 
   function claimBlock(item, extra) {
     return h('div', { class: 'th-claim', 'data-layer': 'claim' }, [
-      factBadge(LAYER.claim),
       h('p', { class: 'th-claim-text', text: item.claim })
     ].concat(extra || []));
   }
