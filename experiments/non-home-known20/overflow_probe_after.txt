@@ -1,0 +1,130 @@
+# overflow probe — 2026-09-04T08:28:24.206Z (overflow_probe_after.json)
+
+m320/shelf-kichijoji           doc 320/320 body 320 overflow=false (+0px) forced=false rectWide=0 selfOverflow=section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=- pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 320 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 320 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 320 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 320 overflow=false (+0px) textWide=-
+   T5_all                       doc 320 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 320 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 284 scroll 284 font 13px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 284 scroll 284 font 13px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 284 scroll 284 font 13px ws=normal wb=keep-all ow=anywhere
+m320/shelf-koenji              doc 320/320 body 320 overflow=false (+0px) forced=false rectWide=0 selfOverflow=section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=- pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 320 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 320 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 320 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 320 overflow=false (+0px) textWide=-
+   T5_all                       doc 320 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 320 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 284 scroll 284 font 13px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 284 scroll 284 font 13px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 284 scroll 284 font 13px ws=normal wb=keep-all ow=anywhere
+m320/shelf-shimokitazawa       doc 320/320 body 320 overflow=false (+0px) forced=false rectWide=0 selfOverflow=section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=- pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 320 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 320 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 320 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 320 overflow=false (+0px) textWide=-
+   T5_all                       doc 320 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 320 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 284 scroll 284 font 13px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 284 scroll 284 font 13px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 284 scroll 284 font 13px ws=normal wb=keep-all ow=anywhere
+m320/shelf-jinbocho            doc 320/320 body 320 overflow=false (+0px) forced=false rectWide=0 selfOverflow=section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=- pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 320 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 320 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 320 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 320 overflow=false (+0px) textWide=-
+   T5_all                       doc 320 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 320 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 284 scroll 284 font 13px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 284 scroll 284 font 13px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 284 scroll 284 font 13px ws=normal wb=keep-all ow=anywhere
+m320/suggest                   doc 320/320 body 320 overflow=false (+0px) forced=false rectWide=0 selfOverflow=- textWide=- pseudoAbs=-
+   T1_open_button_after_off     doc 320 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 320 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 320 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 320 overflow=false (+0px) textWide=-
+   T5_all                       doc 320 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 320 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 284 scroll 284 font 13px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 284 scroll 284 font 13px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 284 scroll 284 font 13px ws=normal wb=keep-all ow=anywhere
+m390/shelf-kichijoji           doc 390/390 body 390 overflow=false (+0px) forced=false rectWide=0 selfOverflow=section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=- pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 390 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 390 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 354 scroll 354 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=normal wb=keep-all ow=anywhere
+m390/shelf-koenji              doc 390/390 body 390 overflow=false (+0px) forced=false rectWide=0 selfOverflow=section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=- pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 390 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 390 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 354 scroll 354 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=normal wb=keep-all ow=anywhere
+m390/shelf-shimokitazawa       doc 390/390 body 390 overflow=false (+0px) forced=false rectWide=0 selfOverflow=section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=- pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 390 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 390 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 354 scroll 354 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=normal wb=keep-all ow=anywhere
+m390/shelf-jinbocho            doc 390/390 body 390 overflow=false (+0px) forced=false rectWide=0 selfOverflow=section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=- pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 390 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 390 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 354 scroll 354 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=normal wb=keep-all ow=anywhere
+m390/suggest                   doc 390/390 body 390 overflow=false (+0px) forced=false rectWide=0 selfOverflow=- textWide=- pseudoAbs=-
+   T1_open_button_after_off     doc 390 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 390 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 354 scroll 354 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=normal wb=keep-all ow=anywhere
+control/m430/shelf-kichijoji   doc 430/430 body 430 overflow=false (+0px) forced=false rectWide=0 selfOverflow=section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=- pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 430 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 430 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 430 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 430 overflow=false (+0px) textWide=-
+   T5_all                       doc 430 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 430 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 394 scroll 394 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 394 scroll 394 font 14px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 394 scroll 394 font 14px ws=normal wb=keep-all ow=anywhere
+control/m430/suggest           doc 430/430 body 430 overflow=false (+0px) forced=false rectWide=0 selfOverflow=- textWide=- pseudoAbs=-
+   T1_open_button_after_off     doc 430 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 430 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 430 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 430 overflow=false (+0px) textWide=-
+   T5_all                       doc 430 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 430 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 394 scroll 394 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 394 scroll 394 font 14px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 394 scroll 394 font 14px ws=normal wb=keep-all ow=anywhere
+zoom200-shelf                  doc 390/390 body 195 overflow=false (+0px) forced=false rectWide=0 selfOverflow=section#weeklyFeature.weekly-feature,div#weeklyFeatureContent,article.weekly-feature-card,section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card,span.plate-word textWide=- pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 390 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 390 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 159 scroll 159 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 159 scroll 159 font 14px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 159 scroll 159 font 14px ws=normal wb=keep-all ow=anywhere
+forced-shelf                   doc 390/390 body 390 overflow=false (+0px) forced=true rectWide=0 selfOverflow=section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=- pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 390 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 390 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 354 scroll 354 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=normal wb=keep-all ow=anywhere
+zoom200-suggest                doc 390/390 body 195 overflow=false (+0px) forced=false rectWide=0 selfOverflow=- textWide=- pseudoAbs=-
+   T1_open_button_after_off     doc 390 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 390 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 159 scroll 159 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 159 scroll 159 font 14px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 159 scroll 159 font 14px ws=normal wb=keep-all ow=anywhere
+forced-suggest                 doc 390/390 body 390 overflow=false (+0px) forced=true rectWide=0 selfOverflow=- textWide=- pseudoAbs=-
+   T1_open_button_after_off     doc 390 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 390 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 354 scroll 354 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=normal wb=keep-all ow=anywhere | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=normal wb=keep-all ow=anywhere

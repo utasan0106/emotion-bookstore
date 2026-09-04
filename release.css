@@ -1450,11 +1450,19 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
     font-size: clamp(.8125rem, 3.6vw, .875rem);
     line-height: 1.85;
   }
+  /* 各文節は自分の行から始める（display: block）。文節の中では keep-all なので、
+     幅が足りるかぎり折返しは起きない。nowrap + overflow-wrap: normal にしていた
+     ときは、文節が 320 / 390 の幅に収まらないと（26 字 × 13-14px > 284 / 354px）
+     文が viewport の外へはみ出して横スクロールになり、末尾が読めなかった
+     （棚 / 候補 page の m320・m390・200% 拡大・forced-colors で実測）。
+     最終手段の折返しだけを許す：文節境界（・ 読点）で先に折れ、それでも
+     収まらない 200% 拡大では anywhere が働く。幅が足りる 430 以上では
+     以前と同じ 1 文節 1 行のまま。 */
   .site-explainer .explainer-line {
     display: block;
-    white-space: nowrap;
+    white-space: normal;
     word-break: keep-all;
-    overflow-wrap: normal;
+    overflow-wrap: anywhere;
   }
   .site-explainer wbr { display: none; }
 

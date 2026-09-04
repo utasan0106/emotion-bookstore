@@ -1,0 +1,130 @@
+# overflow probe — 2026-09-04T08:25:17.918Z (overflow_probe_baseline.json)
+
+m320/shelf-kichijoji           doc 369/320 body 369 overflow=true (+49px) forced=false rectWide=0 selfOverflow=main#main,section.site-intro,p.site-explainer,span.jp-phrase.explainer-line,section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=span.jp-phrase.explainer-line→369 "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、" pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 369 overflow=true (+49px) textWide=span.jp-phrase.explainer-line→369
+   T2_explainer_lines_wrap      doc 320 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 369 overflow=true (+49px) textWide=span.jp-phrase.explainer-line→369
+   T4_T1_plus_T2                doc 320 overflow=false (+0px) textWide=-
+   T5_all                       doc 320 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 320 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 284 scroll 351 font 13px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 284 scroll 351 font 13px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 284 scroll 284 font 13px ws=nowrap wb=keep-all ow=normal
+m320/shelf-koenji              doc 369/320 body 369 overflow=true (+49px) forced=false rectWide=0 selfOverflow=main#main,section.site-intro,p.site-explainer,span.jp-phrase.explainer-line,section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=span.jp-phrase.explainer-line→369 "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、" pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 369 overflow=true (+49px) textWide=span.jp-phrase.explainer-line→369
+   T2_explainer_lines_wrap      doc 320 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 369 overflow=true (+49px) textWide=span.jp-phrase.explainer-line→369
+   T4_T1_plus_T2                doc 320 overflow=false (+0px) textWide=-
+   T5_all                       doc 320 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 320 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 284 scroll 351 font 13px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 284 scroll 351 font 13px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 284 scroll 284 font 13px ws=nowrap wb=keep-all ow=normal
+m320/shelf-shimokitazawa       doc 369/320 body 369 overflow=true (+49px) forced=false rectWide=0 selfOverflow=main#main,section.site-intro,p.site-explainer,span.jp-phrase.explainer-line,section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=span.jp-phrase.explainer-line→369 "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、" pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 369 overflow=true (+49px) textWide=span.jp-phrase.explainer-line→369
+   T2_explainer_lines_wrap      doc 320 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 369 overflow=true (+49px) textWide=span.jp-phrase.explainer-line→369
+   T4_T1_plus_T2                doc 320 overflow=false (+0px) textWide=-
+   T5_all                       doc 320 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 320 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 284 scroll 351 font 13px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 284 scroll 351 font 13px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 284 scroll 284 font 13px ws=nowrap wb=keep-all ow=normal
+m320/shelf-jinbocho            doc 369/320 body 369 overflow=true (+49px) forced=false rectWide=0 selfOverflow=main#main,section.site-intro,p.site-explainer,span.jp-phrase.explainer-line,section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=span.jp-phrase.explainer-line→369 "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、" pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 369 overflow=true (+49px) textWide=span.jp-phrase.explainer-line→369
+   T2_explainer_lines_wrap      doc 320 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 369 overflow=true (+49px) textWide=span.jp-phrase.explainer-line→369
+   T4_T1_plus_T2                doc 320 overflow=false (+0px) textWide=-
+   T5_all                       doc 320 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 320 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 284 scroll 351 font 13px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 284 scroll 351 font 13px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 284 scroll 284 font 13px ws=nowrap wb=keep-all ow=normal
+m320/suggest                   doc 369/320 body 369 overflow=true (+49px) forced=false rectWide=0 selfOverflow=main#main,section.site-intro,p.site-explainer,span.jp-phrase.explainer-line textWide=span.jp-phrase.explainer-line→369 "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、" pseudoAbs=-
+   T1_open_button_after_off     doc 369 overflow=true (+49px) textWide=span.jp-phrase.explainer-line→369
+   T2_explainer_lines_wrap      doc 320 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 369 overflow=true (+49px) textWide=span.jp-phrase.explainer-line→369
+   T4_T1_plus_T2                doc 320 overflow=false (+0px) textWide=-
+   T5_all                       doc 320 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 320 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 284 scroll 351 font 13px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 284 scroll 351 font 13px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 284 scroll 284 font 13px ws=nowrap wb=keep-all ow=normal
+m390/shelf-kichijoji           doc 396/390 body 396 overflow=true (+6px) forced=false rectWide=0 selfOverflow=main#main,section.site-intro,p.site-explainer,span.jp-phrase.explainer-line,section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=span.jp-phrase.explainer-line→396 "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、" pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 396 overflow=true (+6px) textWide=span.jp-phrase.explainer-line→396
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 396 overflow=true (+6px) textWide=span.jp-phrase.explainer-line→396
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 354 scroll 378 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 354 scroll 378 font 14px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=nowrap wb=keep-all ow=normal
+m390/shelf-koenji              doc 396/390 body 396 overflow=true (+6px) forced=false rectWide=0 selfOverflow=main#main,section.site-intro,p.site-explainer,span.jp-phrase.explainer-line,section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=span.jp-phrase.explainer-line→396 "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、" pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 396 overflow=true (+6px) textWide=span.jp-phrase.explainer-line→396
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 396 overflow=true (+6px) textWide=span.jp-phrase.explainer-line→396
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 354 scroll 378 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 354 scroll 378 font 14px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=nowrap wb=keep-all ow=normal
+m390/shelf-shimokitazawa       doc 396/390 body 396 overflow=true (+6px) forced=false rectWide=0 selfOverflow=main#main,section.site-intro,p.site-explainer,span.jp-phrase.explainer-line,section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=span.jp-phrase.explainer-line→396 "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、" pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 396 overflow=true (+6px) textWide=span.jp-phrase.explainer-line→396
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 396 overflow=true (+6px) textWide=span.jp-phrase.explainer-line→396
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 354 scroll 378 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 354 scroll 378 font 14px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=nowrap wb=keep-all ow=normal
+m390/shelf-jinbocho            doc 396/390 body 396 overflow=true (+6px) forced=false rectWide=0 selfOverflow=main#main,section.site-intro,p.site-explainer,span.jp-phrase.explainer-line,section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=span.jp-phrase.explainer-line→396 "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、" pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 396 overflow=true (+6px) textWide=span.jp-phrase.explainer-line→396
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 396 overflow=true (+6px) textWide=span.jp-phrase.explainer-line→396
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 354 scroll 378 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 354 scroll 378 font 14px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=nowrap wb=keep-all ow=normal
+m390/suggest                   doc 396/390 body 396 overflow=true (+6px) forced=false rectWide=0 selfOverflow=main#main,section.site-intro,p.site-explainer,span.jp-phrase.explainer-line textWide=span.jp-phrase.explainer-line→396 "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、" pseudoAbs=-
+   T1_open_button_after_off     doc 396 overflow=true (+6px) textWide=span.jp-phrase.explainer-line→396
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 396 overflow=true (+6px) textWide=span.jp-phrase.explainer-line→396
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 354 scroll 378 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 354 scroll 378 font 14px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=nowrap wb=keep-all ow=normal
+control/m430/shelf-kichijoji   doc 430/430 body 430 overflow=false (+0px) forced=false rectWide=0 selfOverflow=section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=- pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 430 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 430 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 430 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 430 overflow=false (+0px) textWide=-
+   T5_all                       doc 430 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 430 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 394 scroll 394 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 394 scroll 394 font 14px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 394 scroll 394 font 14px ws=nowrap wb=keep-all ow=normal
+control/m430/suggest           doc 430/430 body 430 overflow=false (+0px) forced=false rectWide=0 selfOverflow=- textWide=- pseudoAbs=-
+   T1_open_button_after_off     doc 430 overflow=false (+0px) textWide=-
+   T2_explainer_lines_wrap      doc 430 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 430 overflow=false (+0px) textWide=-
+   T4_T1_plus_T2                doc 430 overflow=false (+0px) textWide=-
+   T5_all                       doc 430 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 430 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 394 scroll 394 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 394 scroll 394 font 14px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 394 scroll 394 font 14px ws=nowrap wb=keep-all ow=normal
+zoom200-shelf                  doc 792/390 body 396 overflow=true (+402px) forced=false rectWide=0 selfOverflow=main#main,section.site-intro,p.site-explainer,span.jp-phrase.explainer-line,span.jp-phrase.explainer-line,section#weeklyFeature.weekly-feature,div#weeklyFeatureContent,article.weekly-feature-card,section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card textWide=span.jp-phrase.explainer-line→792 "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、", span.jp-phrase.explainer-line→621 "街や種類ごとに少しずつ並べる文化案内です。" pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 792 overflow=true (+402px) textWide=span.jp-phrase.explainer-line→792, span.jp-phrase.explainer-line→621
+   T2_explainer_lines_wrap      doc 621 overflow=true (+231px) textWide=span.jp-phrase.explainer-line→456, span.jp-phrase.explainer-line→621
+   T3_weekly_meta_min_width_0   doc 792 overflow=true (+402px) textWide=span.jp-phrase.explainer-line→792, span.jp-phrase.explainer-line→621
+   T4_T1_plus_T2                doc 621 overflow=true (+231px) textWide=span.jp-phrase.explainer-line→456, span.jp-phrase.explainer-line→621
+   T5_all                       doc 621 overflow=true (+231px) textWide=span.jp-phrase.explainer-line→456, span.jp-phrase.explainer-line→621
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 159 scroll 378 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 159 scroll 378 font 14px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 159 scroll 292 font 14px ws=nowrap wb=keep-all ow=normal
+forced-shelf                   doc 396/390 body 396 overflow=true (+6px) forced=true rectWide=0 selfOverflow=main#main,section.site-intro,p.site-explainer,span.jp-phrase.explainer-line,section.objects-section,div#objectGrid.object-grid,article.object-card,article.object-card,article.object-card textWide=span.jp-phrase.explainer-line→396 "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、" pseudoAbs=button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px],button.open-button::after[-14px -14px -14px -14px]
+   T1_open_button_after_off     doc 396 overflow=true (+6px) textWide=span.jp-phrase.explainer-line→396
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 396 overflow=true (+6px) textWide=span.jp-phrase.explainer-line→396
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 354 scroll 378 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 354 scroll 378 font 14px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=nowrap wb=keep-all ow=normal
+zoom200-suggest                doc 792/390 body 396 overflow=true (+402px) forced=false rectWide=0 selfOverflow=main#main,section.site-intro,p.site-explainer,span.jp-phrase.explainer-line,span.jp-phrase.explainer-line textWide=span.jp-phrase.explainer-line→792 "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、", span.jp-phrase.explainer-line→621 "街や種類ごとに少しずつ並べる文化案内です。" pseudoAbs=-
+   T1_open_button_after_off     doc 792 overflow=true (+402px) textWide=span.jp-phrase.explainer-line→792, span.jp-phrase.explainer-line→621
+   T2_explainer_lines_wrap      doc 621 overflow=true (+231px) textWide=span.jp-phrase.explainer-line→456, span.jp-phrase.explainer-line→621
+   T3_weekly_meta_min_width_0   doc 792 overflow=true (+402px) textWide=span.jp-phrase.explainer-line→792, span.jp-phrase.explainer-line→621
+   T4_T1_plus_T2                doc 621 overflow=true (+231px) textWide=span.jp-phrase.explainer-line→456, span.jp-phrase.explainer-line→621
+   T5_all                       doc 621 overflow=true (+231px) textWide=span.jp-phrase.explainer-line→456, span.jp-phrase.explainer-line→621
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 159 scroll 378 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 159 scroll 378 font 14px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 159 scroll 292 font 14px ws=nowrap wb=keep-all ow=normal
+forced-suggest                 doc 396/390 body 396 overflow=true (+6px) forced=true rectWide=0 selfOverflow=main#main,section.site-intro,p.site-explainer,span.jp-phrase.explainer-line textWide=span.jp-phrase.explainer-line→396 "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、" pseudoAbs=-
+   T1_open_button_after_off     doc 396 overflow=true (+6px) textWide=span.jp-phrase.explainer-line→396
+   T2_explainer_lines_wrap      doc 390 overflow=false (+0px) textWide=-
+   T3_weekly_meta_min_width_0   doc 396 overflow=true (+6px) textWide=span.jp-phrase.explainer-line→396
+   T4_T1_plus_T2                doc 390 overflow=false (+0px) textWide=-
+   T5_all                       doc 390 overflow=false (+0px) textWide=-
+   T6_explainer_safe_wrap       doc 390 overflow=false (+0px) textWide=-
+   explainer: p.site-explainer: client 354 scroll 378 font 14px ws=normal wb=normal ow=normal | span.jp-phrase.explainer-line: client 354 scroll 378 font 14px ws=nowrap wb=keep-all ow=normal | span.jp-phrase.explainer-line: client 354 scroll 354 font 14px ws=nowrap wb=keep-all ow=normal

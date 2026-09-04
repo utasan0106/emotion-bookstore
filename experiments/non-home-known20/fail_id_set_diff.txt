@@ -1,0 +1,31 @@
+# browser_qa FAIL ID set — accepted (content-freshness/closure-r1-20260904/browser_qa_after.txt) vs this session
+
+## baseline (source HEAD e12fbe77, capture host with fonts-noto-cjk): accepted=20 baseline=20
+diff: none (identical)
+
+- FAIL flagship city_photo_appears_only_after_entering_city
+- FAIL forced-shelf no_horizontal_overflow
+- FAIL forced-suggest no_horizontal_overflow
+- FAIL identity/jinbocho no_object_media_before_explainer
+- FAIL identity/kichijoji no_object_media_before_explainer
+- FAIL identity/koenji no_object_media_before_explainer
+- FAIL identity/shimokitazawa no_object_media_before_explainer
+- FAIL m320/jinbocho no_horizontal_overflow
+- FAIL m320/kichijoji no_horizontal_overflow
+- FAIL m320/koenji no_horizontal_overflow
+- FAIL m320/shimokitazawa no_horizontal_overflow
+- FAIL m320/suggest no_horizontal_overflow
+- FAIL m390/jinbocho no_horizontal_overflow
+- FAIL m390/kichijoji no_horizontal_overflow
+- FAIL m390/koenji no_horizontal_overflow
+- FAIL m390/shimokitazawa no_horizontal_overflow
+- FAIL m390/suggest no_horizontal_overflow
+- FAIL suggest-validation clipboard_disclosure_present
+- FAIL zoom200-shelf no_horizontal_overflow
+- FAIL zoom200-suggest no_horizontal_overflow
+
+## after fixes: FAIL=0 NOT OBSERVABLE=0 new FAIL=0
+RELEASE_BROWSER_QA_GO (754/754)
+
+## note
+The first baseline run on a stock host (no fonts-noto-cjk) showed 24 FAIL: the 20 above plus m320/m390/m430/d1440 home actual_noto_cjk_font (WenQuanYi fallback). That is a capture-host artefact, not a product delta — see browser_qa_baseline_before_font_setup.txt. After installing fonts-noto-cjk + /etc/fonts/local.conf (same setup as home-visual-fidelity/README.md) the set is exactly the accepted 20 and the 853 Golden capture is byte-identical.

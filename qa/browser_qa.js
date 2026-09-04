@@ -410,24 +410,33 @@ function serve() {
       document.querySelectorAll('.object-card').length === 3);
     await page.waitForFunction(() => Array.from(document.images).every((i) => i.complete && i.naturalWidth > 0));
     await page.waitForTimeout(150);
-    const m = await page.evaluate((sentence) => {
+    /* 契約は「site explainer は Object / content media より先」。header の brand
+       lockup（<img>）や footer の brand は content media ではないので数えない。
+       以前は body 中の IMG を全部数えていたので、header の brand 画像 1 枚で
+       mediaBeforeExplainer = 1 になり、Object media が explainer の 600px 以上
+       下にあっても FAIL していた（既知 20 の identity/* 4 件）。
+       content media = #main の中の media-frame / media-plate / card-media /
+       img / picture / video。explainer 自身も #main の中なので、順序の要件は
+       弱めていない。 */
+    const CONTENT_MEDIA = '#main .media-frame, #main .media-plate, #main .card-media, #main img, #main picture, #main video';
+    const m = await page.evaluate(([sentence, contentMedia]) => {
       const ex = [...document.querySelectorAll('.site-explainer')]
         .find((el) => el.textContent.replace(/\s+/g, '') === sentence.replace(/\s+/g, ''));
       if (!ex) return { found: false };
-      const firstMedia = document.querySelector('.media-frame');
-      const all = [...document.querySelectorAll('body *')];
+      const media = [...document.querySelectorAll(contentMedia)];
+      const firstMedia = media[0] || null;
       return {
         found: true,
         exBottom: Math.round(ex.getBoundingClientRect().bottom),
         mediaTop: firstMedia ? Math.round(firstMedia.getBoundingClientRect().top) : null,
-        // DOM 順: explainer より前に media / img が居ないこと
+        contentMedia: media.length,
+        // DOM 順: explainer より前に content media が居ないこと
         domOrderOk: !firstMedia ||
           (ex.compareDocumentPosition(firstMedia) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0,
-        mediaBeforeExplainer: all.filter((el) =>
-          (el.classList.contains('media-frame') || el.tagName === 'IMG') &&
+        mediaBeforeExplainer: media.filter((el) =>
           (ex.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_PRECEDING) !== 0).length
       };
-    }, EXPLAINER);
+    }, [EXPLAINER, CONTENT_MEDIA]);
     check(S, 'exact_site_explainer_present', m.found === true, m);
     check(S, 'explainer_precedes_media_in_dom', m.found && m.domOrderOk === true, m);
     check(S, 'no_object_media_before_explainer', m.found && m.mediaBeforeExplainer === 0, m);
@@ -1447,7 +1456,13 @@ function serve() {
     await ctx.close();
   }
 
-  /* ---- flagship evergreen regression ---- */
+  /* ---- flagship evergreen regression ----
+     棚の上端に街の portrait は置かない（637f5e4 で撤去、qa/release_check.js と
+     各幅の shelf_top_has_no_city_image が同じ契約）。旧 assertion
+     city_photo_appears_only_after_entering_city は「flagship に入ったら portrait が
+     出る」という撤去済みの契約を要求していて、受け入れ済みの product と矛盾
+     していたので、受け入れ済みの契約（portrait 0 / hero img 0）に置き換える。
+     portrait を足して緑にはしない。 */
   {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const page = await ctx.newPage();
@@ -1455,12 +1470,14 @@ function serve() {
     await page.waitForFunction(() => document.querySelectorAll('.object-card').length === 3);
     const t = await page.evaluate(() => ({
       cards: document.querySelectorAll('.object-card').length,
-      portrait: !!document.querySelector('.shelf-portrait.has-media img'),
+      portraits: document.querySelectorAll('#shelfPortrait, .shelf-portrait, .shelf-portrait.has-media img').length,
+      heroImages: document.querySelectorAll('.shelf-hero img, .shelf-hero picture, .shelf-hero video').length,
       photoCards: document.querySelectorAll('.object-card .card-media img').length,
       text: document.body.innerText
     }));
     check('flagship', 'kichijoji_flagship_stays_open', t.cards === 3, t.cards);
-    check('flagship', 'city_photo_appears_only_after_entering_city', t.portrait === true);
+    check('flagship', 'shelf_top_has_no_city_portrait_after_entering_city',
+      t.portraits === 0 && t.heroImages === 0, { portraits: t.portraits, heroImages: t.heroImages });
     check('flagship', 'object_list_cards_are_typography_only', t.photoCards === 0, t.photoCards);
     check('flagship', 'kichijoji_three_hooks_present',
       ['駅から5分で、街が水辺にほどける。', '地下へ降りると、昼も夜もジャズが鳴る。', '駅から5分、街の中に小さな劇場。']
