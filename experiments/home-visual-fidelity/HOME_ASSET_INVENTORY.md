@@ -82,7 +82,7 @@ the pixels is cropped out of view.
 
 | Slot | Canonical shows | Status |
 |---|---|---|
-| 作品から入る — 本 | antique books, spines lit | **still held** (Round 3: HQ replacement `Books on a Shelf.JPG` / CC0 chosen, bytes not yet supplied; `book.jpeg` = DO NOT USE) |
+| 作品から入る — 本 | antique books, spines lit | **filled, Round 3 closure** — `home-work-book.jpg` (MarkBuckawicki, CC0 1.0; runtime bytes are an HQ-supplied 568×426 derivative of the verified Commons original, not the original file; `book.jpeg` = DO NOT USE) |
 | 作品から入る — 映画 | film projector throwing a beam | **filled, Round 3** — `home-work-film.jpg` (DiscoA340, CC0 1.0) |
 | 作品から入る — 音楽 | turntable, record spinning | **filled, Round 3** — `home-work-music.jpg` (Egle P., CC0 1.0) |
 | 作品から入る — 映像 | wall of video monitors | **filled, Round 3** — `home-work-video.jpg` (Popperipopp, PD dedication) |

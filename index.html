@@ -187,16 +187,15 @@
           <p class="hc-section-note">本・映画・音楽・映像… あらゆる作品が、街とつながっている。</p>
         </div>
 
-        <!-- 映画 / 音楽 / 映像: Founder/HQ が権利確認した写真（Asset Round 3、
+        <!-- 本 / 映画 / 音楽 / 映像: Founder/HQ が権利確認した写真（Asset Round 3、
              台帳は experiments/home-visual-fidelity/asset-round-3/HOME_ASSET_LEDGER.json、
-             出典は credits.html）。geometry・枚数・foot row は canonical のまま。
-             ASSET_HOLD: 本 だけ、差し替え原本（Books on a Shelf.JPG / CC0）の byte が
-             未着。届くまで card の地の色で置く。generic illustration / gradient blob /
-             icon-only へ置き換えない。
+             出典は credits.html）。本 は検証済み CC0 原本の HQ 供給派生（原本 byte ではない）。
+             geometry・枚数・foot row は canonical のまま。
              ROUTE_HOLD: 本 / 映画 / 音楽 / 映像 という作品種の route は無い。
              既存の5 category 索引（飲食・喫茶 ほか）は別の taxonomy なので繋がない。 -->
         <div class="hc-work-grid">
-          <div class="hc-work is-asset-hold" data-route-hold="work-book" data-asset-hold="work-book">
+          <div class="hc-work" data-route-hold="work-book">
+            <span class="hc-work-media"><img src="./assets/home-work-book.jpg" alt="" width="568" height="426" loading="lazy" decoding="async"></span>
             <span class="hc-work-foot">
               <span class="hc-work-icon" aria-hidden="true">
                 <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.2h5.2c1.3 0 2.3.9 2.3 2v9.3c0-.8-.9-1.5-2.1-1.5H2.5z"/><path d="M17.5 4.2h-5.2c-1.3 0-2.3.9-2.3 2v9.3c0-.8.9-1.5 2.1-1.5h5.4z"/></svg>

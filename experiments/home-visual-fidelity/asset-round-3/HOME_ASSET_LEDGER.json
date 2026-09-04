@@ -1,5 +1,30 @@
 [
   {
+    "runtimePath": "./assets/home-work-book.jpg",
+    "slot": "WORK_BOOK",
+    "sourceFile": "Books_on_a_Shelf_HQ_preview_derivative.jpg（HQ 供給の派生。原本 Books on a Shelf.JPG の Wikimedia byte ではない）",
+    "sourceWork": "Books on a Shelf.JPG",
+    "author": "MarkBuckawicki",
+    "source": "Own work / Wikimedia Commons（runtime の byte は検証済み CC0 原本のプレビューから HQ が作成した派生）",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Books_on_a_Shelf.JPG",
+    "license": "CC0 1.0 Universal Public Domain Dedication",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "modification": "runtime の byte は HQ 供給の派生（568×426、EXIF/ICC なし）をそのまま使用（再圧縮・縮小・切り抜きなし、sha256 は HQ manifest と一致）。派生は検証済み CC0 原本（3264×2448）の user-visible preview から HQ が作成したもので、原本 byte ではない。表示時のみ CSS で切り抜き・明度・彩度・コントラストを調整",
+    "sourceDimensions": [
+      3264,
+      2448
+    ],
+    "derivativeDimensions": [
+      568,
+      426
+    ],
+    "derivativeSha256": "d08bfe955d55751e7fa9b0d4b83720000daca514e3bec76d4c709e06f3c46598",
+    "sourceOriginalExpectedSha1": "38ab103f6e8de295ffdb4921973ad48839cdbfc4（Commons 原本の期待値。HQ 指示により派生とは比較しない）",
+    "supplyManifest": "Books_on_a_Shelf_WORK_BOOK_for_Claude.zip / BOOK_ASSET_DERIVATIVE_MANIFEST.json（derivative_sha256 一致を確認）",
+    "decision": "HOME_R3_FINAL_BOOK_AND_PD_PRECISION §1–2 + HQ message 2026-09-04（HQ 供給派生を authoritative byte-supply とする）",
+    "checkedAt": "2026-09-04"
+  },
+  {
     "runtimePath": "./assets/home-work-film.jpg",
     "slot": "WORK_FILM",
     "author": "DiscoA340",

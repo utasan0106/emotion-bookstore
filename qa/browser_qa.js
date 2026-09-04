@@ -507,16 +507,15 @@ function serve() {
     check(S, 'work_entries_hold_without_a_fake_route',
       home.works.every((w) => w.hold && w.tag !== 'A' && w.tag !== 'BUTTON' && !w.href), home.works);
     check(S, 'work_cards_are_143_tall', home.works.every((w) => Math.abs(w.h - 143) <= 1), home.works.map((w) => w.h));
-    // Asset Round 3: 映画 / 音楽 / 映像 は権利確認済みの写真で image plane を埋める。
-    // 本 は差し替え原本の byte 未着で asset-hold のまま（地の色、偽図版なし）。
-    const WORK_ASSETS = { '映画': './assets/home-work-film.jpg', '音楽': './assets/home-work-music.jpg', '映像': './assets/home-work-video.jpg' };
+    // Asset Round 3: 本 / 映画 / 音楽 / 映像 の 4 枚とも権利確認済みの写真で image plane を埋める
+    //（本 は検証済み CC0 原本の HQ 供給派生）。asset-hold の card は残っていない。
+    const WORK_ASSETS = { '本': './assets/home-work-book.jpg', '映画': './assets/home-work-film.jpg', '音楽': './assets/home-work-music.jpg', '映像': './assets/home-work-video.jpg' };
     check(S, 'work_photos_fill_their_fields_same_origin',
-      home.works.filter((w) => WORK_ASSETS[w.label]).length === 3 && home.works.filter((w) => WORK_ASSETS[w.label]).every((w) =>
+      home.works.filter((w) => WORK_ASSETS[w.label]).length === 4 && home.works.filter((w) => WORK_ASSETS[w.label]).every((w) =>
         !w.assetHold && !w.heldClass && !!w.img && w.img.src === WORK_ASSETS[w.label] && w.img.loaded && w.img.sameOrigin &&
         w.img.fit === 'cover' && Math.abs(w.img.w - 188) <= 1 && Math.abs(w.img.h - 143) <= 1 && w.footAbove),
       home.works.filter((w) => WORK_ASSETS[w.label]));
-    check(S, 'work_book_stays_asset_held_without_fake_image',
-      home.works.some((w) => w.label === '本' && w.assetHold === 'work-book' && w.heldClass && !w.img), home.works.find((w) => w.label === '本'));
+    check(S, 'no_work_card_is_asset_held', home.works.every((w) => !w.assetHold && !w.heldClass), home.works.map((w) => [w.label, w.assetHold, w.heldClass]));
     check(S, 'featured_thread_image_is_awaodori_and_loaded',
       !!home.threadImg && home.threadImg.src === './assets/home-thread-koenji-awaodori.jpg' && home.threadImg.loaded &&
         /阿波おどり/.test(home.threadImg.alt || '') && Math.abs(home.threadImg.w - 292) <= 2 && Math.abs(home.threadImg.h - 180) <= 2, home.threadImg);
@@ -530,7 +529,7 @@ function serve() {
       home.holds.length === 8 && home.holds.every((h) => h.tag !== 'A' && h.tag !== 'BUTTON' && !h.href && !h.onclick), home.holds);
     check(S, 'reality_strip_is_three_photos', home.strip === 3, home.strip);
     check(S, 'all_images_same_origin_and_loaded',
-      home.images.length >= 12 && home.images.every((i) => i.sameOrigin && i.loaded), home.images.filter((i) => !i.sameOrigin || !i.loaded));
+      home.images.length >= 13 && home.images.every((i) => i.sameOrigin && i.loaded), home.images.filter((i) => !i.sameOrigin || !i.loaded));
     check(S, 'no_iframe', home.iframes === 0, home.iframes);
     check(S, 'hero_cultural_trace_present_static_and_inert',
       !!home.trace && home.trace.inHero && home.trace.pe === 'none' && home.trace.hidden === 'true' && home.trace.belowText === true, home.trace);

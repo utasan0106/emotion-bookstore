@@ -94,3 +94,21 @@ Brief sha256 `bb34b7381bbbb92ff3f4ab8c3046579bf91274dc8f991057dc0da6de27a0cc25`�
 として届き、file としては保存されません。file として届けるには、`.md` や `.zip` と同じ
 「ファイル添付」（クリップ / ドラッグでファイルとして添付）で `Books on a Shelf.JPG` を
 付けてください。zip に入れて添付すれば byte が確実に届きます（Round 3 の 6 点原本と同じ方法）。
+
+## 7. WORK_BOOK — HQ 供給派生（2026-09-04、`Books_on_a_Shelf_WORK_BOOK_for_Claude.zip`）
+
+HQ の指示: 原本 `Books on a Shelf.JPG` の Wikimedia byte はこの環境へ転送できないため、
+検証済み CC0 原本の user-visible preview から HQ が作成した**派生**を authoritative
+byte-supply とする。Commons 原本 SHA-1 `38ab103f…` との比較は**行わない**（派生なので一致しない）。
+manifest の `derivative_sha256` を検証する。
+
+| zip 内 file | bytes | sha256 | 判定 |
+|---|---|---|---|
+| `Books_on_a_Shelf_HQ_preview_derivative.jpg` | 109,768 | `d08bfe955d55751e7fa9b0d4b83720000daca514e3bec76d4c709e06f3c46598` | **manifest `derivative_sha256` と一致**。568 × 426（manifest と一致）、baseline JPEG、EXIF 0 / ICC なし |
+| `BOOK_ASSET_DERIVATIVE_MANIFEST.json` | 909 | — | source_work / source_author MarkBuckawicki / source_url File:Books_on_a_Shelf.JPG / source_license CC0 1.0 / derivative_note（原本ではない・SHA-1 比較不可） |
+| `README_FOR_CLAUDE.txt` | 771 | — | 同旨。WORK_BOOK 188×143 slot だけに使う。credits に「HQ supplied preview derivative / display crop」を明記 |
+
+runtime `assets/home-work-book.jpg` は上の派生と **byte 同一**（再圧縮・縮小・切り抜きなし。EXIF は元から無い）
+なので、runtime file の sha256 = HQ manifest の値。原本（3264 × 2448）はこの環境に存在しない。
+権利表記は MarkBuckawicki / Wikimedia Commons / CC0 1.0 を保持し、台帳・credits の両方に
+「runtime の byte は HQ 供給の派生であり原本ではない」と明記した。

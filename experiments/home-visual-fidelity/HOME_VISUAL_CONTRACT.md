@@ -159,9 +159,10 @@ gradient blob, or icon-only substitution (§6).
 
 **Round 3 status (2026-09-04):** 映画 / 音楽 / 映像 filled with Founder/HQ
 rights-cleared photographs (`assets/home-work-film.jpg` / `-music.jpg` / `-video.jpg`,
-ledger `asset-round-3/HOME_ASSET_LEDGER.json`). 本 still held — the HQ-chosen
-replacement (`Books on a Shelf.JPG`, CC0) has not reached the implementer as bytes.
-Geometry unchanged.
+ledger `asset-round-3/HOME_ASSET_LEDGER.json`). 本 filled in the Round 3 closure with
+`assets/home-work-book.jpg` — an HQ-supplied 568×426 derivative of the verified CC0
+original `Books on a Shelf.JPG` (MarkBuckawicki), not the Commons original bytes.
+All four work cards carry photographs; no `is-asset-hold` card remains. Geometry unchanged.
 
 ---
 

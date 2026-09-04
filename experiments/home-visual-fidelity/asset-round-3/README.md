@@ -328,9 +328,72 @@ CC0 3 点（映画・音楽・既存 SHELTER）と CC BY 2.0 / BY-SA の entry �
   （全部非 HOME・既知）、新規 FAIL 0、NOT OBSERVABLE 5（次 Gate、PASS に数えない）。
   credits block の新 check `public_domain_entries_link_commons_rights_not_pdm` は m390 / d1440 とも PASS。
 
-### 11.4 未解決
+### 11.4 未解決（`34132b8` 時点 → §12 で WORK_BOOK 解消）
 
-1. **WORK_BOOK** — `Books on a Shelf.JPG` の byte 待ち（`SUPPLY_RECORD.md` §6 に添付方法の注記）。
+1. **WORK_BOOK** — `Books on a Shelf.JPG` の byte 待ち → §12 で HQ 供給派生により充填。
 2. Commons 側 byte 同一性・作者・license は HQ 検証に依拠（この host は egress 拒否）。
 
-`VISUAL STATUS = LIMITED FIX`（Book slot のみ未充填）。HQ HOME GO は Claude が出さない。
+
+---
+
+## 12. WORK_BOOK closure — HQ 供給派生で 6/6 slot 充填（2026-09-04）
+
+HQ 指示（message on `34132b8`）: `Books_on_a_Shelf_WORK_BOOK_for_Claude.zip` の派生 JPEG と
+`BOOK_ASSET_DERIVATIVE_MANIFEST.json` を authoritative byte-supply とし、Commons 原本 SHA-1 とは
+比較せず manifest の `derivative_sha256` を検証する。権利表記は MarkBuckawicki / Wikimedia Commons /
+CC0 1.0 を保持し、runtime の byte が HQ 供給の派生であることを台帳・credits に明記する。
+
+### 12.1 供給検証
+
+| 項目 | 値 | 判定 |
+|---|---|---|
+| 派生 sha256 | `d08bfe955d55751e7fa9b0d4b83720000daca514e3bec76d4c709e06f3c46598` | manifest `derivative_sha256` と**一致** |
+| 派生寸法 | 568 × 426 | manifest と一致。188 × 143 slot は DPR 2（376 × 286）まで実寸で足りる。upscale なし |
+| EXIF / ICC | 0 / なし | 除去済み（元から無い） |
+| Commons 原本 SHA-1 `38ab103f…` | 比較しない（HQ 指示。派生なので一致しない） | 記録のみ（`SUPPLY_RECORD.md` §7） |
+
+### 12.2 変更（Book slot のみ）
+
+- `assets/home-work-book.jpg`: HQ 派生と **byte 同一**（再圧縮・縮小・切り抜きなし）→ runtime file の
+  sha256 = manifest 値。
+- `index.html`: 本 card に `.hc-work-media` を追加、`is-asset-hold` / `data-asset-hold` を外す
+  （`data-route-hold="work-book"` は残す — route は無いまま）。`is-asset-hold` の card は 0。
+- `release.css`: **変更なし**（既存の `.hc-work-media` 共通 rule で描く。slot 別の override は不要と判断 —
+  4:3 の派生は 188 × 143 にほぼ全面が入る）。
+- `credits.html`: Book entry 追加（8 項目、CC0 URL、Commons File URL、「トップ」。出典欄と改変欄に
+  「編集部（HQ）が作成した縮小版で Wikimedia の原本ファイルそのものではない」を明記）。
+- `HOME_ASSET_LEDGER.json`: WORK_BOOK entry（author / source / sourceUrl / license CC0 / licenseUrl /
+  modification（HQ 供給派生・display crop）/ sourceDimensions 3264 × 2448 / derivativeDimensions 568 × 426 /
+  derivativeSha256 / sourceOriginalExpectedSha1（比較しない旨）/ supplyManifest / decision）。
+- `qa/browser_qa.js` home853: 作品 4 枚とも写真（`work_photos_fill_their_fields_same_origin` = 4）、
+  `no_work_card_is_asset_held`、画像総数 ≥ 13。`qa/home_canonical_check.js` は「asset-hold か写真か」の
+  二択契約のまま（本が写真になったので通る）。`release_check.js` の台帳契約は変更なしで Book entry を検証。
+- 変えていないもの: 他 5 asset の byte・markup・CSS、HERO、geometry、copy、route、`release_content.js`、GA4。
+
+### 12.3 TRUE comparison — `HOME_CURRENT_853_R3_FINAL2.png`
+
+| region | MAE ea853ee | MAE dfb8e6a (5 slots) | MAE FINAL2 (6 slots) |
+|---|---|---|---|
+| overall 853×1844 | 30.4 | 31.2 | 31.3 |
+| HERO y0–617 | 26.4 | 26.4 | 26.4 |
+| 街から入る y617–1030 | 28.5 | 28.5 | 28.5 |
+| 作品から入る y1030–1262 | 25.0 | 27.2 | 28.4 |
+| いま辿れるスレッド y1262–1592 | 37.0 | 40.0 | 40.0 |
+| 現実へ出る y1592–1844 | 39.8 | 39.1 | 39.1 |
+| slot 本 ★（今回） | 27.1 | 27.1 | 35.3 |
+| slot 映画 | 34.2 | 38.9 | 38.9 |
+| slot 音楽 | 33.0 | 34.4 | 34.4 |
+| slot 映像 | 35.1 | 45.8 | 45.8 |
+| slot thread image | 51.7 | 68.0 | 68.0 |
+| slot 現実へ出る #1 cafe | 62.5 | 57.5 | 57.5 |
+
+読み: 動いたのは Book slot だけ（27.1 → 35.3。canonical は暗い古書の背、runtime は明るい書店の棚を
+共通 filter で暗くしたもの — MAE は差の量であり合致度ではない）。**他 5 slot の MAE は小数点以下まで
+同じ**で、§4 の意図どおり drift なし。dfb8e6a → FINAL2 で変わった画素は 26,887、Book slot の外は 43 px
+（thread 画像の左右端 1–6 px 列、y1341–1520 = 画像端のラスタライズ差。rect は 6 個とも不変）。
+
+Artifacts: `HOME_CURRENT_853_R3_FINAL2.png` / `HOME_TRUE_SIDE_BY_SIDE_853_R3_FINAL2.png` /
+`HOME_TRUE_OVERLAY_853_R3_FINAL2.png` / `HOME_TRUE_PIXEL_DIFF_853_R3_FINAL2.png`。
+描画: 853 × 1844、5 section、rect 6 個が契約値、JS error 0、request 失敗 0、CDP 23 probe すべて
+Noto Serif / Sans CJK JP。目視: 本 card は棚に並ぶ本の背と棚板が読める（共通の減光と scrim の下でも
+「本」と分かる）。
