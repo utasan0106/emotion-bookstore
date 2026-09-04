@@ -204,11 +204,9 @@ Brief: 添付 `HOME_ASSET_R3_RESUME_V2.md`（HQ の Rights / QA 決定。reposit
 ### 10.3 credits / 台帳 / QA 契約
 
 - `credits.html`: 5 entry 追加（8 項目、CC license URL、Commons File page URL、「トップ」）。
-  CC0 の 2 点と CC BY 2.0 の 1 点はそれぞれの license URL。**PD dedication の 2 点
-  （阿波おどり・映像）は creativecommons.org に「作者による放棄」の URL が無いため
-  Public Domain Mark 1.0（`publicdomain/mark/1.0/`）を license URL にした** — 既存 gate
-  （credits の license URL は creativecommons.org 必須）を変えないための implementer 判断。
-  HQ が別の表記を望むなら差し替える。
+  CC0 の 2 点と CC BY 2.0 の 1 点はそれぞれの license URL。PD dedication の 2 点
+  （阿波おどり・映像）は `dfb8e6a` では Public Domain Mark 1.0 を license URL にしていたが、
+  HQ 訂正（§11）で「権利情報URL = Commons File page の Licensing 節」に置き換えた。
 - `experiments/home-visual-fidelity/asset-round-3/HOME_ASSET_LEDGER.json`: HOME 専用写真 5 件の
   台帳（Brief §5 の項目 + 原本 sha256 / sha1 / 派生の作り方 / 決定の出典）。
 - `qa/release_check.js`: HOME 写真の権利突合を「`release_content.js` の rights **または** 台帳」に
@@ -279,9 +277,60 @@ browser QA `no_external_request` PASS）。CSP / vercel.json 不変。
 ### 10.7 未解決 holds
 
 1. **WORK_BOOK**: `Books on a Shelf.JPG` の byte 待ち（HOLD）。届いたら §6 の手順で 1 slot。
-2. **Rights 表記**: PD dedication 2 点の license URL に Public Domain Mark を使った（§10.3）。
-   Commons 側 byte 同一性（sha1）と File page の作者 / license は HQ 検証済みという Brief の記述に
-   依拠しており、この host からは再取得できていない。
+2. **Rights 表記**: PD dedication 2 点は §11 で HQ 訂正どおりに直した。Commons 側 byte 同一性
+   （sha1）と File page の作者 / license は HQ 検証済みという Brief の記述に依拠しており、
+   この host からは再取得できていない。
 3. **名称**: カフェ写真に店名が写る。案内先・route にはしていないが、写真の選定自体は HQ 判断。
 
 `VISUAL STATUS` は Founder/HQ の独立レビューで決まる。Claude は GO を出さない。
+
+
+---
+
+## 11. FINAL closure — Book slot + Public Domain precision（2026-09-04）
+
+Brief: 添付 `HOME_R3_FINAL_BOOK_AND_PD_PRECISION.md`。開始状態: HEAD = remote = `dfb8e6a`、clean。
+
+### 11.1 Book slot — **HOLD 継続（byte 未着）**
+
+Brief §0 は「差し替え原本の byte が読めなければ STOP」。`Books on a Shelf.JPG` は今回も file
+として届いていない（`SUPPLY_RECORD.md` §6: uploads / `/mnt/attach` / 全 filesystem の sha1 走査で
+期待 SHA-1 `38ab103f…` に一致する file なし）。Book slot は `is-asset-hold` のまま、runtime
+（`index.html` / `release.css` / `assets/`）には触れていない。HOME 描画 sha256 は `dfb8e6a` と同一
+（`8c140ca1…`、この節の QA で再撮影して確認）。byte が届けば §6 の手順で 1 slot を閉じる。
+
+### 11.2 Public Domain rights precision — **完了**
+
+HQ 訂正: Public Domain Mark 1.0 は状態表示であって作者の放棄文書ではない。
+
+| asset | before（`dfb8e6a`） | after |
+|---|---|---|
+| `home-work-video.jpg` / `home-thread-koenji-awaodori.jpg` の credits | `ライセンスURL` = creativecommons.org/publicdomain/mark/1.0/ | `ライセンス` =「パブリックドメイン（著作権者本人による権利放棄。CCライセンスではなく、Public Domain Markでもない）」、`権利情報URL` = Commons File page `#Licensing` |
+| 台帳 | `licenseUrl` = PDM | `license` = "Public Domain — copyright holder release"、`licenseUrl` = ""、`rightsSourceUrl` = Commons File page `#Licensing`、`licenseNote` |
+| `qa/release_check.js` | credits 8 項目は固定名、全 entry に creativecommons.org 必須 | 台帳を先に読み、entry ごとに判定: CC / CC0 は従来どおり `ライセンスURL` + creativecommons.org 必須。著作権者本人の PD 放棄（`licenseUrl` 空 + `rightsSourceUrl` が Commons File page）だけ `権利情報URL` を要求し、その entry に creativecommons.org（PDM / CC）があれば FAIL、`ライセンスURL` ラベルがあれば FAIL、`rightsSourceUrl` と一致しなければ FAIL。台帳側: `licenseUrl` があれば creativecommons.org の license / CC0 URL 以外は FAIL（PDM を弾く）、無ければ PD かつ `rightsSourceUrl` 必須、それ以外は missing licenseUrl。「license URL は全部任意」にはしていない |
+| `qa/browser_qa.js` credits | 8 項目名を固定比較 | 7 番目は `ライセンスURL` か `権利情報URL` のどちらか一方。新 check `public_domain_entries_link_commons_rights_not_pdm`（PD entry は Commons `#Licensing` へ link し creativecommons.org を含まない） |
+
+CC0 3 点（映画・音楽・既存 SHELTER）と CC BY 2.0 / BY-SA の entry は不変。
+
+### 11.3 QA（`dfb8e6a` + この変更）
+
+- runtime 不変の証明: HOME を同 host で再撮影 → sha256 `8c140ca12577e009e0fcd30800bae8dcbc689cc1ce5c6972c045ee70755fc11d`
+  = commit 済み `HOME_CURRENT_853_R3_FINAL.png`（byte 一致）。853 × 1844、5 section、JS error 0。
+  Brief §4 の `*_R3_FINAL2` 画像は Book 挿入後に生成するものなので、Book が HOLD の今回は作らない
+  （同じ画素の複製を別名で置かない）。
+- ネガティブテスト（`release_check`、実行後に復元）: 阿波おどり entry に PDM URL を戻す → FAIL（2 件）、
+  PD entry のラベルを `ライセンスURL` に戻す → FAIL、台帳の映像 `licenseUrl` に PDM → FAIL
+  （"a Public Domain Mark is not a license"）、CC0 entry の `licenseUrl` を空に → FAIL（missing licenseUrl）。
+- 静的: `home_canonical_check` GO / `release_check` GO / `growth_improvements` PASS /
+  `release_expiry_boundaries` GO / `seo_check` GO / `release_preflight` GO / `git diff --check` clean /
+  `ga4_v3_client_selftest` は commit 後の clean tree で GO。
+- browser（`browser_qa_after_r3_final2.txt`）: 675 / 695、FAIL は baseline `ea853ee` と**同一集合 20 件**
+  （全部非 HOME・既知）、新規 FAIL 0、NOT OBSERVABLE 5（次 Gate、PASS に数えない）。
+  credits block の新 check `public_domain_entries_link_commons_rights_not_pdm` は m390 / d1440 とも PASS。
+
+### 11.4 未解決
+
+1. **WORK_BOOK** — `Books on a Shelf.JPG` の byte 待ち（`SUPPLY_RECORD.md` §6 に添付方法の注記）。
+2. Commons 側 byte 同一性・作者・license は HQ 検証に依拠（この host は egress 拒否）。
+
+`VISUAL STATUS = LIMITED FIX`（Book slot のみ未充填）。HQ HOME GO は Claude が出さない。

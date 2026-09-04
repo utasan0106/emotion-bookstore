@@ -62,8 +62,9 @@
     "author": "Popperipopp",
     "source": "Wikimedia Commons",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Video_Camera.JPG",
-    "license": "パブリックドメイン（作者による権利放棄）",
-    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "license": "Public Domain — copyright holder release",
+    "licenseUrl": "",
+    "rightsSourceUrl": "https://commons.wikimedia.org/wiki/File:Video_Camera.JPG#Licensing",
     "modification": "原本（1204×800）をそのままの画素で保存（縮小・切り抜きなし）。EXIFのみ除去。トップでは表示時のみCSSで切り抜き・明度・彩度・コントラストを調整",
     "sourceDimensions": [
       1204,
@@ -82,7 +83,8 @@
     "derivation": [
       "resize: none (long edge 1204 ≤ 1600); pixels untouched, EXIF/XMP/IPTC/ICC APP segments dropped losslessly"
     ],
-    "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)"
+    "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)",
+    "licenseNote": "作者（著作権者）自身によるパブリックドメインへの放棄（Wikimedia Commons の PD 表記）。Public Domain Mark 1.0 は状態表示であって作者の放棄文書ではないので license URL には使わない（HQ_R3_FINAL_BOOK_AND_PD_PRECISION §3）。権利情報の出典は Commons の File ページ Licensing 節。"
   },
   {
     "runtimePath": "./assets/home-thread-koenji-awaodori.jpg",
@@ -90,8 +92,9 @@
     "author": "Lucertola",
     "source": "Wikimedia Commons",
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:KoenjiAwaOdori.jpg",
-    "license": "パブリックドメイン（作者による権利放棄）",
-    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "license": "Public Domain — copyright holder release",
+    "licenseUrl": "",
+    "rightsSourceUrl": "https://commons.wikimedia.org/wiki/File:KoenjiAwaOdori.jpg#Licensing",
     "modification": "原本（1524×1016）をそのままの画素で保存（縮小・切り抜きなし）。EXIFのみ除去。トップでは表示時のみCSSで切り抜き・明度・彩度・コントラストを調整",
     "sourceDimensions": [
       1524,
@@ -110,7 +113,8 @@
     "derivation": [
       "resize: none (long edge 1524 ≤ 1600); pixels untouched, EXIF/XMP/IPTC/ICC APP segments dropped losslessly"
     ],
-    "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)"
+    "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)",
+    "licenseNote": "作者（著作権者）自身によるパブリックドメインへの放棄（Wikimedia Commons の PD 表記）。Public Domain Mark 1.0 は状態表示であって作者の放棄文書ではないので license URL には使わない（HQ_R3_FINAL_BOOK_AND_PD_PRECISION §3）。権利情報の出典は Commons の File ページ Licensing 節。"
   },
   {
     "runtimePath": "./assets/home-reality-kichijoji-cafe.jpg",

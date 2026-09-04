@@ -631,9 +631,15 @@ function serve() {
       check(S, 'single_h1_is_credits', cr.h1 === 1 && cr.h1Text === '写真・出典', cr.h1Text);
       check(S, 'every_home_third_party_photo_is_credited',
         homePhotos.every((f) => cr.entries.some((e) => e.asset === f)), { homePhotos, credited: cr.entries.map((e) => e.asset) });
+      // 7 番目は license の種類で変わる: CC / CC0 は「ライセンスURL」、著作権者本人による
+      // パブリックドメイン放棄は「権利情報URL」（Commons File page）。どちらか一方だけ。
       check(S, 'each_entry_carries_the_eight_fields',
-        cr.entries.length > 0 && cr.entries.every((e) => e.fields.join('|') === '使用場所|被写体|作者|出典|出典URL|ライセンス|ライセンスURL|改変'),
+        cr.entries.length > 0 && cr.entries.every((e) => /^使用場所\|被写体\|作者\|出典\|出典URL\|ライセンス\|(ライセンスURL|権利情報URL)\|改変$/.test(e.fields.join('|'))),
         cr.entries.map((e) => e.fields.join('|')));
+      check(S, 'public_domain_entries_link_commons_rights_not_pdm',
+        cr.entries.filter((e) => e.fields.includes('権利情報URL')).every((e) =>
+          e.links.some((h) => /^https:\/\/commons\.wikimedia\.org\/wiki\/File:.*#Licensing$/.test(h)) && !e.links.some((h) => /creativecommons\.org/.test(h))),
+        cr.entries.filter((e) => e.fields.includes('権利情報URL')).map((e) => e.links));
       check(S, 'each_entry_links_source_and_license_over_https',
         cr.entries.every((e) => e.links.length === 2 && e.links.every((h) => /^https:\/\//.test(h))), cr.entries.map((e) => e.links));
       check(S, 'entries_are_visible', cr.entries.every((e) => e.visible));

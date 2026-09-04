@@ -802,13 +802,39 @@ for (const shelf of shelves) {
   const homePhotos = [...new Set([...read('index.html').matchAll(/\.\/assets\/([^"/]+\.(?:jpg|jpeg|png|webp))"/g)].map((m) => m[1]))]
     .filter((f) => !OWN.has(f));
   if (!homePhotos.length) failures.push('index.html: no photograph referenced — canonical HOME has eight photo slots');
+
+  /* HOME asset ledger（HOME 専用写真の権利台帳、下で検証）を先に読む。credits の
+     権利 link の項目名は license の種類で決まる:
+     - CC / CC0 → 「ライセンスURL」（creativecommons.org 必須）
+     - 著作権者本人によるパブリックドメイン放棄 → 「権利情報URL」（Commons File page の
+       Licensing 節）。Public Domain Mark 1.0 は状態表示で作者の放棄文書ではないので、
+       license URL として出さない（HQ: HOME_R3_FINAL_BOOK_AND_PD_PRECISION §3）。 */
+  const LEDGER = 'experiments/home-visual-fidelity/asset-round-3/HOME_ASSET_LEDGER.json';
+  let ledger = [];
+  if (fs.existsSync(path.join(root, LEDGER))) {
+    try { ledger = JSON.parse(read(LEDGER)); } catch (e) { failures.push(`${LEDGER}: invalid JSON (${e.message})`); }
+    if (!Array.isArray(ledger)) { failures.push(`${LEDGER}: must be an array of entries`); ledger = []; }
+  }
+  const ledgerEntryFor = (f) => ledger.find((e) => e && String(e.runtimePath || '') === `./assets/${f}`);
+  const isPdRelease = (e) => !!e && !String(e.licenseUrl || '').trim() && /public domain/i.test(String(e.license || '')) &&
+    /^https:\/\/commons\.wikimedia\.org\/wiki\/File:/.test(String(e.rightsSourceUrl || ''));
+
   for (const f of homePhotos) {
     const entry = (credits.match(new RegExp(`<article class="credits-entry" data-credit-asset="${f.replace(/\./g, '\\.')}">[\\s\\S]*?<\\/article>`)) || [''])[0];
     if (!entry) { failures.push(`credits.html: HOME photo has no credit entry (${f})`); continue; }
-    for (const field of ['使用場所', '被写体', '作者', '出典', '出典URL', 'ライセンス', 'ライセンスURL', '改変']) {
+    const pdEntry = ledgerEntryFor(f);
+    const pd = isPdRelease(pdEntry);
+    for (const field of ['使用場所', '被写体', '作者', '出典', '出典URL', 'ライセンス', pd ? '権利情報URL' : 'ライセンスURL', '改変']) {
       if (!entry.includes(`<dt>${field}</dt>`)) failures.push(`credits.html: ${f} entry missing ${field}`);
     }
-    if (!/href="https:\/\/creativecommons\.org\/(licenses|publicdomain)\//.test(entry)) failures.push(`credits.html: ${f} entry needs a CC license URL`);
+    if (pd) {
+      if (entry.includes('<dt>ライセンスURL</dt>')) failures.push(`credits.html: ${f} is author-released public domain — its rights link is 権利情報URL, not ライセンスURL`);
+      if (/creativecommons\.org/.test(entry)) failures.push(`credits.html: ${f} is author-released public domain — must not present a creativecommons.org URL (PDM / CC) as its license`);
+      if (!entry.includes(`href="${pdEntry.rightsSourceUrl}"`)) failures.push(`credits.html: ${f} 権利情報URL must be the ledger rightsSourceUrl (${pdEntry.rightsSourceUrl})`);
+      if (!/パブリックドメイン|Public Domain/.test(entry)) failures.push(`credits.html: ${f} ライセンス text must say public domain`);
+    } else if (!/href="https:\/\/creativecommons\.org\/(licenses|publicdomain)\//.test(entry)) {
+      failures.push(`credits.html: ${f} entry needs a CC license URL`);
+    }
     if (!/href="https:\/\/commons\.wikimedia\.org\/wiki\/File:/.test(entry)) failures.push(`credits.html: ${f} entry needs its source File page URL`);
     if (!entry.includes('トップ')) failures.push(`credits.html: ${f} entry must say it is used on トップ`);
   }
@@ -823,12 +849,8 @@ for (const shelf of shelves) {
      release_content.js の content model には属さない。HQ 決定（HOME_ASSET_R3_RESUME_V2
      §5）で別台帳 HOME_ASSET_LEDGER.json を source of truth にする。QA を通すためだけの
      偽 Object を release_content.js に足さない。棚 / Object media の既存契約は不変。 */
-  const LEDGER = 'experiments/home-visual-fidelity/asset-round-3/HOME_ASSET_LEDGER.json';
   const ledgerByFile = {};
-  if (fs.existsSync(path.join(root, LEDGER))) {
-    let ledger = [];
-    try { ledger = JSON.parse(read(LEDGER)); } catch (e) { failures.push(`${LEDGER}: invalid JSON (${e.message})`); }
-    if (!Array.isArray(ledger)) { failures.push(`${LEDGER}: must be an array of entries`); ledger = []; }
+  {
     for (const e of ledger) {
       const rp = String((e && e.runtimePath) || '');
       if (!/^\.\/assets\/[^/]+\.(?:jpg|jpeg|png|webp)$/.test(rp)) { failures.push(`${LEDGER}: runtimePath must be ./assets/<file> (${rp})`); continue; }
@@ -837,10 +859,22 @@ for (const shelf of shelves) {
       ledgerByFile[f] = e;
       const abs = path.join(root, rp.replace(/^\.\//, ''));
       if (!fs.existsSync(abs)) failures.push(`${LEDGER}: runtime file missing ${rp}`);
-      for (const k of ['slot', 'author', 'source', 'sourceUrl', 'license', 'licenseUrl', 'modification', 'derivativeSha256', 'checkedAt']) {
+      for (const k of ['slot', 'author', 'source', 'sourceUrl', 'license', 'modification', 'derivativeSha256', 'checkedAt']) {
         if (!e[k] || !String(e[k]).trim()) failures.push(`${LEDGER}: ${f} missing ${k}`);
       }
-      for (const k of ['sourceUrl', 'licenseUrl']) if (e[k] && !/^https:\/\//.test(e[k])) failures.push(`${LEDGER}: ${f} ${k} must be https`);
+      /* 権利 link: CC / CC0 は licenseUrl（creativecommons.org）必須。著作権者本人の
+         パブリックドメイン放棄だけ licenseUrl を空にでき、その場合は rightsSourceUrl
+         （Commons File page）が必須。「license URL は全部任意」にはしない。 */
+      const pd = /public domain/i.test(String(e.license || ''));
+      const hasLicenseUrl = !!String(e.licenseUrl || '').trim();
+      if (hasLicenseUrl) {
+        if (!/^https:\/\/creativecommons\.org\/(licenses|publicdomain\/zero)\//.test(e.licenseUrl)) failures.push(`${LEDGER}: ${f} licenseUrl must be a creativecommons.org license / CC0 URL (a Public Domain Mark is not a license)`);
+      } else if (pd) {
+        if (!/^https:\/\/commons\.wikimedia\.org\/wiki\/File:/.test(String(e.rightsSourceUrl || ''))) failures.push(`${LEDGER}: ${f} author-released public domain needs rightsSourceUrl = its Commons File page`);
+      } else {
+        failures.push(`${LEDGER}: ${f} missing licenseUrl`);
+      }
+      for (const k of ['sourceUrl', 'licenseUrl', 'rightsSourceUrl']) if (e[k] && !/^https:\/\//.test(e[k])) failures.push(`${LEDGER}: ${f} ${k} must be https`);
       for (const k of ['sourceDimensions', 'derivativeDimensions']) {
         if (!Array.isArray(e[k]) || e[k].length !== 2 || !e[k].every((n) => Number.isInteger(n) && n > 0)) failures.push(`${LEDGER}: ${f} ${k} must be [width, height]`);
       }
@@ -852,9 +886,11 @@ for (const shelf of shelves) {
       if (known[f]) failures.push(`${LEDGER}: ${f} is shelf/Object media — its rights live in release_content.js, not in the ledger`);
       const entry = (credits.match(new RegExp(`data-credit-asset="${f.replace(/\./g, '\\.')}">[\\s\\S]*?<\\/article>`)) || [''])[0];
       if (!entry) { failures.push(`credits.html: ledger asset ${f} has no credit entry`); continue; }
-      for (const [k, v] of [['author', e.author], ['license', e.license], ['sourceUrl', e.sourceUrl], ['licenseUrl', e.licenseUrl]]) {
+      for (const [k, v] of [['author', e.author], ['sourceUrl', e.sourceUrl], ['licenseUrl', e.licenseUrl], ['rightsSourceUrl', e.rightsSourceUrl]]) {
         if (v && !entry.includes(String(v))) failures.push(`credits.html: ${f} ${k} does not match ${LEDGER} (${v})`);
       }
+      // license 文言: CC / CC0 は台帳の文字列がそのまま載る。PD 放棄は「パブリックドメイン」で照合（表記言語が違う）。
+      if (e.license && !(pd ? /パブリックドメイン|Public Domain/.test(entry) : entry.includes(String(e.license)))) failures.push(`credits.html: ${f} license does not match ${LEDGER} (${e.license})`);
     }
   }
   for (const f of homePhotos) {

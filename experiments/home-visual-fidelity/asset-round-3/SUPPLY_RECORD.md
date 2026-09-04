@@ -81,3 +81,16 @@ Brief: `HOME_ASSET_R3_RESUME_V2.md`（添付。sha256
 | `Tea_Shop_and_Cafe_in_Kichijoji_(53416855218).jpg` | `7d621aa30e961655dc7750041f112b3504ed87b4` |
 
 派生 asset（runtime）の sha256 と加工内容は `HOME_ASSET_LEDGER.json` が正。
+
+## 6. FINAL closure brief（2026-09-04、`HOME_R3_FINAL_BOOK_AND_PD_PRECISION.md`）
+
+Brief sha256 `bb34b7381bbbb92ff3f4ab8c3046579bf91274dc8f991057dc0da6de27a0cc25`。HQ が `dfb8e6a` を checkpoint として受理。
+
+| 供給 | 期待 | 実際 | 判定 |
+|---|---|---|---|
+| `Books on a Shelf.JPG`（MarkBuckawicki / CC0 1.0 / File:Books_on_a_Shelf.JPG） | 3264 × 2448、Commons SHA-1 `38ab103f6e8de295ffdb4921973ad48839cdbfc4` | **byte 未着**（2 回目）。`/root/.claude/uploads` には Brief の md のみ。`/mnt/attach` `/mnt/user-data` 空。全 filesystem の 1MB 超 JPEG を sha1 走査 → 期待 SHA-1 に一致する file なし。メッセージ内のインライン画像は表示用で、file byte も EXIF も無い | **HOLD 継続（Brief §0「readable でなければ STOP」）** |
+
+添付の方法について: Claude Code（web）では、チャット欄に貼った画像は「会話に見せる画像」
+として届き、file としては保存されません。file として届けるには、`.md` や `.zip` と同じ
+「ファイル添付」（クリップ / ドラッグでファイルとして添付）で `Books on a Shelf.JPG` を
+付けてください。zip に入れて添付すれば byte が確実に届きます（Round 3 の 6 点原本と同じ方法）。
