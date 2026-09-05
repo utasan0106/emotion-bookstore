@@ -595,7 +595,10 @@ async function elementShot(page, selector, name, width) {
       seps: document.querySelectorAll('.th-relation-sep').length, years: document.querySelectorAll('.th-relation-year').length,
       times: txt('.th-relation-time'), verbs: txt('.th-relation-verb'), spatial: txt('.th-relation-spatial'),
       scenes: txt('.th-scene-title'), w1close: one('#th-w1 .th-scene-close'), w0first: one('#th-w0 .th-pair-name'), w0pairs: txt('#th-w0 .th-pair-name'),
-      w2fact: { time: one('#th-w2 .th-fact-time'), claim: one('#th-w2 .th-fact .th-claim-text') }, w2pairs: txt('#th-w2 .th-pair-name'),
+      w2: { facts: document.querySelectorAll('#th-w2 .th-fact').length, factIdentity: document.querySelectorAll('#th-w2 [data-fact-id="fact:morisaki-film-identity"]').length,
+        order: [...document.querySelectorAll('#th-w2 > *')].map((e) => e.tagName.toLowerCase() + '.' + e.className.split(' ')[0] + (e.getAttribute('data-beat-kind') ? '[' + e.getAttribute('data-beat-kind') + ']' : '')).join('>'),
+        lead: one('#th-w2 .th-scene-lead'), pairs: txt('#th-w2 .th-pair-name'), pairTexts: txt('#th-w2 .th-pair-text'), close: one('#th-w2 .th-scene-close'),
+        text: (document.querySelector('#th-w2') || { innerText: '' }).innerText, html: (document.querySelector('#th-w2') || { innerHTML: '' }).innerHTML },
       w3notes: txt('#th-w3 .th-evidence-item').join('|'), w3rel: [...document.querySelectorAll('#th-w3 .th-relation')].map((r) => r.getAttribute('data-relation-id')).join('|'),
       w4: { lead: one('#th-w4 .th-scene-lead'), pairs: txt('#th-w4 .th-pair-name').join('|'), close: one('#th-w4 .th-scene-close'), readingLabel: one('#th-w4 .th-reading-label'), reading: one('#th-w4 .th-reading-text'), readingBorder: document.querySelector('#th-w4 .th-reading') ? getComputedStyle(document.querySelector('#th-w4 .th-reading')).borderTopStyle : null },
       readings: document.querySelectorAll('.th-reading').length,
@@ -625,6 +628,7 @@ async function elementShot(page, selector, name, width) {
     return out;
   }
   const relSets = {};
+  const w2Html = {};
   for (const id of Object.keys(MORISAKI)) for (const v of WIDTHS) {
     const S = `${v.name}/${id}`;
     const want = MORISAKI[id];
@@ -642,9 +646,18 @@ async function elementShot(page, selector, name, width) {
     check(S, 'relations_are_the_four_verified_ones_in_scenes', mm.relIds === 'rel:morisaki-adapted|rel:morisaki-depicts|rel:morisaki-filmed-in|rel:morisaki-set-in' && mm.relTypes === 'adapted_as|depicts|filmed_in|set_in' && mm.w3rel === 'rel:morisaki-set-in|rel:morisaki-depicts|rel:morisaki-filmed-in', { ids: mm.relIds, types: mm.relTypes, w3: mm.w3rel });
     check(S, 'claims_and_spatial_are_exact', mm.claims.join('|') === '映画『森崎書店の日々』は、八木沢里志の小説をもとにつくられた作品です。|『森崎書店の日々』は、神保町の古書店を物語の中心の場所にしています。|映画は、神田神保町の古書店街をめぐる作品として紹介されています。|映画は、神保町の街中に「森崎書店」のロケセットを組んで撮影されました。' &&
       mm.spatial.join('|') === '範囲：神保町の街（一点ではありません）|範囲：神保町の街（一点ではありません）|範囲：神保町の街なか（一点ではありません）', { claims: mm.claims, spatial: mm.spatial });
-    check(S, 'claim_and_support_are_separate_blocks', m.relations.every((r) => r.claims === 1 && r.supports === 1 && r.readingsInside === 0 && r.badges === 0) && m.facts.length === 1 && m.facts[0].claims === 1 && m.facts[0].supports === 1, { relations: m.relations.map((r) => [r.id, r.claims, r.supports]), facts: m.facts.length });
+    /* HQ LIMITED FIX: Morisaki は inline fact card を描かない（fact は graph にだけ残る）。relation card の claim / support 分離はそのまま。 */
+    check(S, 'claim_and_support_are_separate_blocks', m.relations.every((r) => r.claims === 1 && r.supports === 1 && r.readingsInside === 0 && r.badges === 0) && m.facts.length === 0, { relations: m.relations.map((r) => [r.id, r.claims, r.supports]), facts: m.facts.length });
     check(S, 'light_surface_with_evidence_flag', m.relations.every((r) => r.state === 'single_source' && !r.open && /^出典あり\s*資料を見る（1件）$/.test((r.summary || '').trim()) && !/検証状態/.test(r.surface)), m.relations.map((r) => [r.id, r.summary]));
-    check(S, 'w2_fact_is_the_film_identity', mm.w2fact.time === '2010-10-23' && /2010年10月23日公開、上映時間109分/.test(mm.w2fact.claim || '') && mm.w2pairs.join('|') === '残ったもの|変わったもの', mm.w2fact);
+    /* HQ LIMITED FIX: W2 は Lead → Pair → Close だけ。film identity fact は graph に残るが W2 に inline 表示しない。 */
+    check(S, 'w2_has_no_inline_fact_card', mm.w2.facts === 0 && mm.w2.factIdentity === 0, { facts: mm.w2.facts, identity: mm.w2.factIdentity });
+    check(S, 'w2_order_is_lead_pair_close', mm.w2.order === 'h2.th-scene-title>p.th-scene-lead>section.th-beat[pair]>p.th-scene-close', mm.w2.order);
+    check(S, 'w2_109min_exactly_once', (mm.w2.text.match(/109分/g) || []).length === 1, mm.w2.text.replace(/\s+/g, ' ').slice(0, 200));
+    check(S, 'w2_frozen_copy_exact', mm.w2.lead === '媒体が変わっても残るものと、映画になることで変わるものがあります。' && mm.w2.pairs.join('|') === '残ったもの|変わったもの' &&
+      mm.w2.pairTexts.join('|') === '貴子、叔父のサトル、神保町の古書店をめぐる物語。|文字で読む作品から、109分の映画へ。監督・脚本・俳優・撮影など、多くの手で形になる作品へ。' && mm.w2.close === 'けれど、変わったのは媒体だけではありません。', { lead: mm.w2.lead, pairs: mm.w2.pairs, texts: mm.w2.pairTexts, close: mm.w2.close });
+    check(S, 'w2_no_current_edition_page_count', !/ページ|頁|新装版/.test(mm.w2.text), mm.w2.text.slice(0, 120));
+    w2Html[id] = w2Html[id] || mm.w2.html;
+    check(S, 'w2_identical_at_every_width', w2Html[id] === mm.w2.html);
     check(S, 'w3_mandatory_notes_visible', mm.w3notes === M_NOTES, mm.w3notes);
     check(S, 'w4_reread_visible_with_editorial_reading', mm.w4.lead === '本 →（原作になる）→ 映画 →（神保町で撮る）→ 神保町' && mm.w4.pairs === '本|映画' && mm.w4.close === 'ここまでの関係を、資料に沿って並べ直したものです。' &&
       mm.w4.readingLabel === '編集部の読み' && mm.w4.reading === '同じ物語が媒体を移るとき、街は「舞台」から「制作の場所」にもなる。' && mm.w4.readingBorder === 'dashed' && mm.readings === 1 && m.readings.every((r) => r.scene === 'w4' && !r.insideFact && r.factBadges === 0), mm.w4);
@@ -698,8 +711,9 @@ async function elementShot(page, selector, name, width) {
     await ctx.close();
   }
   check('morisaki', 'book_and_film_reach_the_same_relation_set', relSets['morisaki-book'] === relSets['morisaki-film'] && relSets['morisaki-book'] === 'rel:morisaki-adapted|rel:morisaki-depicts|rel:morisaki-filmed-in|rel:morisaki-set-in', relSets);
+  check('morisaki', 'book_and_film_w2_rendered_composition_identical', !!w2Html['morisaki-book'] && w2Html['morisaki-book'] === w2Html['morisaki-film'] && !/th-fact/.test(w2Html['morisaki-book']), { book: (w2Html['morisaki-book'] || '').length, film: (w2Html['morisaki-film'] || '').length });
 
-  /* Morisaki keyboard（390）: radio が無いので skip → brand → menu → summary ×5 → 行き先 ×3 → 出口 → footer */
+  /* Morisaki keyboard（390）: radio が無いので skip → brand → menu → summary ×4（W1 relation 1 + W3 relation 3。W2 に fact card は無い）→ 行き先 ×3 → 出口 → footer */
   {
     const S = 'keyboard-390/morisaki-book';
     const { ctx, page } = await openThread(browser, base, origin, { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }, 'thread.html?thread=morisaki-book');
@@ -716,7 +730,7 @@ async function elementShot(page, selector, name, width) {
       if (info.el === 'BODY') break;
     }
     const names = order.map((o) => o.el).join('>');
-    check(S, 'tab_order_without_mode_radios', names === 'skip-link>brand-home>menu-trigger>th-evidence-summary>th-evidence-summary>th-evidence-summary>th-evidence-summary>th-evidence-summary>th-destination-link>th-destination-link>th-destination-link>th-exit>footer-brand>BODY', names);
+    check(S, 'tab_order_without_mode_radios', names === 'skip-link>brand-home>menu-trigger>th-evidence-summary>th-evidence-summary>th-evidence-summary>th-evidence-summary>th-destination-link>th-destination-link>th-destination-link>th-exit>footer-brand>BODY', names);
     check(S, 'focus_visible_outline_on_every_stop', order.filter((o) => o.el !== 'BODY').every((o) => o.fv && o.outline), order.filter((o) => o.el !== 'BODY' && !(o.fv && o.outline)));
     check(S, 'exit_href_is_works', order.some((o) => o.el === 'th-exit' && o.href === './works.html'), order.filter((o) => o.el === 'th-exit'));
     await ctx.close();
@@ -733,7 +747,7 @@ async function elementShot(page, selector, name, width) {
       return { overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1, relationBorder: bw('.th-relation'), readingBorder: bw('.th-reading'), readingStyle: bs('.th-reading'), relationStyle: bs('.th-relation'), summaries: document.querySelectorAll('summary').length, exit: !!document.querySelector('.th-exit') };
     });
     check(S, 'no_horizontal_overflow', !fc.overflow);
-    check(S, 'fact_and_reading_boxes_stay_distinguishable', fc.relationBorder >= 1 && fc.readingBorder >= 1 && fc.readingStyle === 'dashed' && fc.relationStyle === 'solid' && fc.summaries === 5 && fc.exit, fc);
+    check(S, 'fact_and_reading_boxes_stay_distinguishable', fc.relationBorder >= 1 && fc.readingBorder >= 1 && fc.readingStyle === 'dashed' && fc.relationStyle === 'solid' && fc.summaries === 4 && fc.exit, fc);
     check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
     await ctx.close();
   }

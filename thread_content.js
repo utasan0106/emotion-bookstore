@@ -504,7 +504,6 @@
         id: 'w2',
         title: '残ったもの、変わったもの',
         lead: '媒体が変わっても残るものと、映画になることで変わるものがあります。',
-        factIds: ['fact:morisaki-film-identity'],
         beats: [
           {
             id: 'w2-pair',

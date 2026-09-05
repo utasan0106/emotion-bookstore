@@ -390,7 +390,10 @@ function morisakiScenes(t, entry) {
   /* W2 */
   const w2 = S.w2 || {};
   check(w2.title === '残ったもの、変わったもの' && w2.lead === '媒体が変わっても残るものと、映画になることで変わるものがあります。' && w2.close === 'けれど、変わったのは媒体だけではありません。', `${what} W2 copy`);
-  check(JSON.stringify(w2.factIds) === '["fact:morisaki-film-identity"]', `${what} W2 carries the film identity fact (109分 is supported by JFDB)`);
+  /* HQ LIMITED FIX: fact:morisaki-film-identity は graph（MORISAKI_FACTS）に保持するが、W2 に inline 表示しない。
+     W2 の user-facing 構成は Lead → Pair → Close だけ。 */
+  check(!('factIds' in w2), `${what} W2 must not reference any fact inline (no factIds; composition is Lead → Pair → Close)`);
+  check(Object.keys(w2).sort().join() === 'beats,close,id,lead,title', `${what} W2 must carry only id / title / lead / beats / close (got ${Object.keys(w2).sort().join()})`);
   check((w2.beats || []).length === 1 && w2.beats[0].kind === 'pair' && JSON.stringify(w2.beats[0].items) === JSON.stringify([
     { name: '残ったもの', text: '貴子、叔父のサトル、神保町の古書店をめぐる物語。' },
     { name: '変わったもの', text: '文字で読む作品から、109分の映画へ。監督・脚本・俳優・撮影など、多くの手で形になる作品へ。' }]), `${what} W2 pair copy`);
