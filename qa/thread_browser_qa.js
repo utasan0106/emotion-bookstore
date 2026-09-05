@@ -540,12 +540,15 @@ async function elementShot(page, selector, name, width) {
         tag: a.tagName, href: a.getAttribute('href'), text: a.textContent.replace(/\s+/g, ''), w: Math.round(b.width), h: Math.round(b.height), hold: a.hasAttribute('data-route-hold'), tabIndex: a.tabIndex,
         holds: [...document.querySelectorAll('[data-route-hold]')].map((el) => el.getAttribute('data-route-hold')),
         heroHold: !!document.querySelector('.hc-hero-cta[data-route-hold="thread-index"]'),
+        works: [...document.querySelectorAll('a.hc-work')].map((w) => w.getAttribute('data-work') + ':' + w.getAttribute('href')).join('|'),
         sections: document.querySelectorAll('main > section, main > .hc-sheet > section').length
       };
     });
     check(S, 'thread_read_is_a_real_anchor_to_the_exact_route', home.tag === 'A' && home.href === './thread.html?thread=koenji-awaodori' && home.text === 'スレッドを読む→' && !home.hold && home.tabIndex === 0, home);
     check(S, 'thread_read_hit_area_44', home.h === 44 && home.w >= 44, { w: home.w, h: home.h });
-    check(S, 'seven_holds_remain_and_hero_stays_held', home.holds.length === 7 && !home.holds.includes('thread-koenji-awaodori') && home.heroHold && home.holds.join('|') === 'thread-index|all-cities|work-book|work-film|work-music|work-video|spots', home.holds);
+    /* WORKS ENTRY: 作品 4 card は実 anchor になったので hold は 3（thread-index / all-cities / spots） */
+    check(S, 'three_holds_remain_and_hero_stays_held', home.holds.length === 3 && !home.holds.includes('thread-koenji-awaodori') && home.heroHold && home.holds.join('|') === 'thread-index|all-cities|spots', home.holds);
+    check(S, 'four_work_cards_are_real_anchors', home.works === 'book:./works.html#book|film:./works.html#film|music:./works.html#music|video:./works.html#video', home.works);
     await page.focus('.hc-thread-read');
     const focused = await page.evaluate(() => { const el = document.activeElement; const cs = getComputedStyle(el); return { el: el.className, fv: el.matches(':focus-visible'), outline: cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) >= 2 }; });
     check(S, 'thread_read_focus_visible', /hc-thread-read/.test(focused.el) && focused.fv && focused.outline, focused);
@@ -572,6 +575,169 @@ async function elementShot(page, selector, name, width) {
     check(S, 'no_js_error', errs.length === 0, errs.slice(0, 2));
     await ctx.close();
   }
+
+  /* ---- WORKS CROSS-MEDIA PROOF: Morisaki Thread（Book-first / Film-first）を独立に検査 ----
+     Koenji の assertion は上のまま。同じ renderer で: mode fieldset なし / 孤立した
+     temporal separator なし / 同じ relation 集合へ到達 / 入口順だけ違う / Evidence drawer
+     が動く / W4 の再読が見える / Reality Return が逐語 / 有限の終わり（works.html へ）/
+     first-paint 外部 request 0 / 保存・位置情報・カメラ 0。 */
+  const MORISAKI = {
+    'morisaki-book': { title: '本から｜森崎書店の日々｜みんなの感情書店', eyebrow: '本から', w1: '原作と映画', w1close: 'ここまでは、原作と映画の関係です。', first: '本' },
+    'morisaki-film': { title: '映画から｜森崎書店の日々｜みんなの感情書店', eyebrow: '映画から', w1: 'この映画には、原作がある', w1close: '同じひとつの関係を、逆から読んでいます。矢印は 本 → 映画 のままです。', first: '映画' }
+  };
+  const M_DEST = [['古書店街を歩く', 'https://jimbou.info/map/'], ['神保町シアターの現在を見る', 'https://www.shogakukan.co.jp/jinbocho-theater/features/'], ['矢口書店を見る', 'https://yaguchishoten.jp/']];
+  const M_NOTES = '撮影のために街中に組まれたセットです。いま神保町にある店ではありません。|範囲：神保町の街なか（一点ではありません）';
+  const M_MEASURE = () => {
+    const txt = (sel, scope) => [...(scope || document).querySelectorAll(sel)].map((e) => e.textContent.replace(/\s+/g, ' ').trim());
+    const one = (sel) => { const el = document.querySelector(sel); return el ? el.textContent.replace(/\s+/g, ' ').trim() : null; };
+    const dest = (id) => document.querySelector(`[data-destination-id="${id}"]`);
+    return {
+      seps: document.querySelectorAll('.th-relation-sep').length, years: document.querySelectorAll('.th-relation-year').length,
+      times: txt('.th-relation-time'), verbs: txt('.th-relation-verb'), spatial: txt('.th-relation-spatial'),
+      scenes: txt('.th-scene-title'), w1close: one('#th-w1 .th-scene-close'), w0first: one('#th-w0 .th-pair-name'), w0pairs: txt('#th-w0 .th-pair-name'),
+      w2fact: { time: one('#th-w2 .th-fact-time'), claim: one('#th-w2 .th-fact .th-claim-text') }, w2pairs: txt('#th-w2 .th-pair-name'),
+      w3notes: txt('#th-w3 .th-evidence-item').join('|'), w3rel: [...document.querySelectorAll('#th-w3 .th-relation')].map((r) => r.getAttribute('data-relation-id')).join('|'),
+      w4: { lead: one('#th-w4 .th-scene-lead'), pairs: txt('#th-w4 .th-pair-name').join('|'), close: one('#th-w4 .th-scene-close'), readingLabel: one('#th-w4 .th-reading-label'), reading: one('#th-w4 .th-reading-text'), readingBorder: document.querySelector('#th-w4 .th-reading') ? getComputedStyle(document.querySelector('#th-w4 .th-reading')).borderTopStyle : null },
+      readings: document.querySelectorAll('.th-reading').length,
+      w5: { lead: one('#th-w5 .th-scene-lead'), notes: txt('#th-w5 .th-evidence-item').join('|'), questions: txt('#th-w5 .th-question'), disclosure: one('#th-w5 .th-scene-close'), realityLead: one('#th-w5 .th-reality-lead'), status: document.querySelectorAll('#th-w5 .th-status').length,
+        yaguchiWhy: dest('dest:yaguchi-shoten') ? dest('dest:yaguchi-shoten').querySelectorAll('.th-destination-why').length : -1, yaguchiNote: dest('dest:yaguchi-shoten') ? one('[data-destination-id="dest:yaguchi-shoten"] .th-destination-note') : null,
+        dest1Why: one('[data-destination-id="dest:jimbou-map"] .th-destination-why'), dest2Why: one('[data-destination-id="dest:jinbocho-theater"] .th-destination-why'),
+        disclosureBeforeDestinations: (() => { const l = document.querySelector('#th-w5 .th-scene-close'); const d = document.querySelector('#th-w5 .th-destinations'); return !!l && !!d && !!(l.compareDocumentPosition(d) & Node.DOCUMENT_POSITION_FOLLOWING); })() },
+      modes: document.querySelectorAll('.th-mode, input[name="thread-mode"]').length, cues: document.querySelectorAll('.th-cue').length, figures: document.querySelectorAll('#main img').length,
+      relIds: [...document.querySelectorAll('.th-relation')].map((r) => r.getAttribute('data-relation-id')).sort().join('|'),
+      relTypes: [...document.querySelectorAll('.th-relation')].map((r) => r.getAttribute('data-relation-type')).sort().join('|'),
+      claims: txt('.th-relation .th-claim-text'), summaries: txt('.th-evidence-summary'), text: document.body.innerText
+    };
+  };
+  const M_PROBES = [['h1', '.th-title'], ['scene', '.th-scene-title'], ['claim', '.th-claim-text'], ['verb', '.th-relation-verb'], ['note', '.th-evidence-item'], ['question', '.th-question'], ['reading', '.th-reading-text'], ['destination', '.th-destination-label'], ['exit', '.th-exit']];
+  async function fontsFor(ctx, page, probes) {
+    const cdp = await ctx.newCDPSession(page);
+    await cdp.send('DOM.enable'); await cdp.send('CSS.enable');
+    const { root } = await cdp.send('DOM.getDocument', { depth: -1 });
+    const out = {};
+    for (const [name, sel] of probes) {
+      const { nodeId } = await cdp.send('DOM.querySelector', { nodeId: root.nodeId, selector: sel });
+      if (!nodeId) { out[name] = 'NODE_NOT_FOUND'; continue; }
+      const { fonts: pf } = await cdp.send('CSS.getPlatformFontsForNode', { nodeId });
+      out[name] = pf.map((f) => f.familyName).join('|') || 'NO_GLYPHS';
+    }
+    await cdp.detach();
+    return out;
+  }
+  const relSets = {};
+  for (const id of Object.keys(MORISAKI)) for (const v of WIDTHS) {
+    const S = `${v.name}/${id}`;
+    const want = MORISAKI[id];
+    const { ctx, page, external, errs } = await openThread(browser, base, origin, { viewport: { width: v.width, height: v.height }, isMobile: !!v.mobile, hasTouch: !!v.mobile, deviceScaleFactor: v.dsf || 1 }, 'thread.html?thread=' + id);
+    await settle(page);
+    const m = await page.evaluate(MEASURE);
+    const mm = await page.evaluate(M_MEASURE);
+    check(S, 'thread_renders_morisaki', m.threadId === id && m.lost === 0 && m.sceneCount === 6 && m.title === want.title && m.h1 === 1 && m.h1Text === '二つの『森崎書店の日々』', { id: m.threadId, scenes: m.sceneCount, title: m.title, h1: m.h1Text });
+    check(S, 'header_copy_present', [want.eyebrow, '主題：森崎書店の日々', '編集：みんなの感情書店 編集部', '本と映画、その先の神保町を辿ります。', '最終確認：2026-09-05',
+      '本と映画を、ひとつの関係として辿ります。', '資料は、必要なところだけ開けます。', '位置情報・カメラは使いません。'].every((t) => m.header.includes(t)), m.header);
+    check(S, 'no_mode_fieldset_no_cue_no_image', mm.modes === 0 && mm.cues === 0 && mm.figures === 0 && m.radios.length === 0, { modes: mm.modes, cues: mm.cues, figures: mm.figures });
+    check(S, 'no_orphan_temporal_separator', mm.seps === 0 && mm.years === 0 && mm.times.join('|') === '映画になる|舞台になる|描かれる|撮影される' && mm.times.every((t, i) => t === mm.verbs[i]), { seps: mm.seps, years: mm.years, times: mm.times });
+    check(S, 'scenes_w0_to_w5_in_order', mm.scenes.join('|') === `二つの『森崎書店の日々』|${want.w1}|残ったもの、変わったもの|街が入る|もう一度、二つを見る|現実へ` && m.scenes.map((s) => s.id).join('|') === 'w0|w1|w2|w3|w4|w5', mm.scenes);
+    check(S, 'entry_order_and_w1_framing', mm.w0first === want.first && mm.w0pairs.join('|') === (want.first === '本' ? '本|映画' : '映画|本') && mm.w1close === want.w1close, { first: mm.w0first, pairs: mm.w0pairs, w1close: mm.w1close });
+    check(S, 'relations_are_the_four_verified_ones_in_scenes', mm.relIds === 'rel:morisaki-adapted|rel:morisaki-depicts|rel:morisaki-filmed-in|rel:morisaki-set-in' && mm.relTypes === 'adapted_as|depicts|filmed_in|set_in' && mm.w3rel === 'rel:morisaki-set-in|rel:morisaki-depicts|rel:morisaki-filmed-in', { ids: mm.relIds, types: mm.relTypes, w3: mm.w3rel });
+    check(S, 'claims_and_spatial_are_exact', mm.claims.join('|') === '映画『森崎書店の日々』は、八木沢里志の小説をもとにつくられた作品です。|『森崎書店の日々』は、神保町の古書店を物語の中心の場所にしています。|映画は、神田神保町の古書店街をめぐる作品として紹介されています。|映画は、神保町の街中に「森崎書店」のロケセットを組んで撮影されました。' &&
+      mm.spatial.join('|') === '範囲：神保町の街（一点ではありません）|範囲：神保町の街（一点ではありません）|範囲：神保町の街なか（一点ではありません）', { claims: mm.claims, spatial: mm.spatial });
+    check(S, 'claim_and_support_are_separate_blocks', m.relations.every((r) => r.claims === 1 && r.supports === 1 && r.readingsInside === 0 && r.badges === 0) && m.facts.length === 1 && m.facts[0].claims === 1 && m.facts[0].supports === 1, { relations: m.relations.map((r) => [r.id, r.claims, r.supports]), facts: m.facts.length });
+    check(S, 'light_surface_with_evidence_flag', m.relations.every((r) => r.state === 'single_source' && !r.open && /^出典あり\s*資料を見る（1件）$/.test((r.summary || '').trim()) && !/検証状態/.test(r.surface)), m.relations.map((r) => [r.id, r.summary]));
+    check(S, 'w2_fact_is_the_film_identity', mm.w2fact.time === '2010-10-23' && /2010年10月23日公開、上映時間109分/.test(mm.w2fact.claim || '') && mm.w2pairs.join('|') === '残ったもの|変わったもの', mm.w2fact);
+    check(S, 'w3_mandatory_notes_visible', mm.w3notes === M_NOTES, mm.w3notes);
+    check(S, 'w4_reread_visible_with_editorial_reading', mm.w4.lead === '本 →（原作になる）→ 映画 →（神保町で撮る）→ 神保町' && mm.w4.pairs === '本|映画' && mm.w4.close === 'ここまでの関係を、資料に沿って並べ直したものです。' &&
+      mm.w4.readingLabel === '編集部の読み' && mm.w4.reading === '同じ物語が媒体を移るとき、街は「舞台」から「制作の場所」にもなる。' && mm.w4.readingBorder === 'dashed' && mm.readings === 1 && m.readings.every((r) => r.scene === 'w4' && !r.insideFact && r.factBadges === 0), mm.w4);
+    check(S, 'w5_lead_notes_questions_disclosure', mm.w5.lead === 'ここから先は、いまの神保町です。' && mm.w5.notes === M_NOTES && mm.w5.questions.join('|') === '別の媒体になったとき、何が残って、何が変わったんだろう？|この画面は、現実のどこにつながっているんだろう？' &&
+      mm.w5.disclosure === '森崎書店は作中の書店です。ここに挙げた店は、いずれも神保町に実在する別の店です。' && mm.w5.disclosureBeforeDestinations && mm.w5.realityLead === '' && mm.w5.status === 0, mm.w5);
+    check(S, 'reality_destinations_are_the_three', m.dest.length === 3 && m.dest.every((d, i) => d.label === M_DEST[i][0] && d.href === M_DEST[i][1] && /noopener/.test(d.rel || '') && d.target === '_blank'), m.dest);
+    check(S, 'yaguchi_is_an_editorial_example_without_relation_prefix', mm.w5.yaguchiWhy === 0 && mm.w5.yaguchiNote === '編集部が選んだ、いま神保町にある専門古書店の一例です。作品との関係が確認されている店ではありません。' &&
+      mm.w5.dest1Why === 'このThreadとの関係：本が舞台とし、映画が描き、撮影した神保町の古書店街そのものへ戻る入口です。' && mm.w5.dest2Why === 'このThreadとの関係：この映画を上映してきた神保町の映画館の、現在のプログラムを見る入口です。', mm.w5);
+    check(S, 'finite_end_returns_to_works', m.endLine === 'このスレッドは、ここまでです。' && !!m.exit && m.exit.href === './works.html' && m.exit.text === '作品の入口へ戻る' && m.exit.h >= 44, { end: m.endLine, exit: m.exit });
+    check(S, 'no_horizontal_overflow', m.docW <= m.vw, { docW: m.docW, vw: m.vw });
+    check(S, 'no_clipped_text', m.clipped.length === 0, m.clipped.slice(0, 6));
+    check(S, 'one_column_everywhere', !!m.headRect && m.scenes.every((s) => s.rect.x === m.headRect.x && Math.abs(s.rect.w - m.headRect.w) <= 1) && m.headRect.w <= 640, { head: m.headRect });
+    check(S, 'real_targets_are_44px', m.targets.length >= 9 && m.targets.every((t) => t.w >= 44 && t.h >= 44), m.targets.filter((t) => t.w < 44 || t.h < 44));
+    check(S, 'reduced_motion_animation_0', m.animated === 0 && m.docAnimations === 0, { animated: m.animated, docAnimations: m.docAnimations });
+    check(S, 'no_engagement_words', !FORBIDDEN.some((w) => m.text.includes(w)), FORBIDDEN.filter((w) => m.text.includes(w)));
+    check(S, 'no_koenji_copy_in_morisaki', !/阿波おどり|木場連|鴨川|パル商店街|1957/.test(m.text), m.text.slice(0, 80));
+    check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
+    check(S, 'storage_writes_0', m.storage.writes === 0 && m.storage.ls === 0 && m.storage.ss === 0 && m.storage.cookie === '', m.storage);
+    check(S, 'permission_calls_0', m.perm === 0, m.perm);
+    check(S, 'no_analytics_layer_no_new_event', m.dataLayer === 'undefined' && m.gtag === 'undefined', { dataLayer: m.dataLayer, gtag: m.gtag });
+    check(S, 'no_js_error', errs.length === 0, errs.slice(0, 2));
+    relSets[id] = relSets[id] || mm.relIds;
+    check(S, 'same_relation_set_at_every_width', relSets[id] === mm.relIds, mm.relIds);
+
+    /* Evidence drawer: filmed_in（神保町シアター archive）を開く → 1 件、https、検証状態は drawer の中 */
+    const sel = '.th-relation[data-relation-id="rel:morisaki-filmed-in"] .th-evidence-summary';
+    await page.click(sel);
+    await page.waitForTimeout(150);
+    const drawer = await page.evaluate(() => {
+      const d = document.querySelector('.th-relation[data-relation-id="rel:morisaki-filmed-in"] .th-evidence');
+      return { open: d.open, body: d.querySelector('.th-evidence-body').innerText.replace(/\s+/g, ' '), cards: [...d.querySelectorAll('.th-source')].map((c) => ({ id: c.getAttribute('data-source-id'), kind: c.getAttribute('data-source-kind'), name: (c.querySelector('.th-source-name') || {}).textContent, href: c.querySelector('.th-source-link').getAttribute('href'), h: Math.round(c.getBoundingClientRect().height) })), docW: document.documentElement.scrollWidth, vw: document.documentElement.clientWidth };
+    });
+    check(S, 'evidence_drawer_works', drawer.open === true && drawer.cards.length === 1 && drawer.cards[0].id === 'src:morisaki-theater-archive' && drawer.cards[0].kind === 'cultural_archive' && drawer.cards[0].name === '神保町シアター（街と映画 Bプログラム）' &&
+      drawer.cards[0].href === 'https://www.shogakukan.co.jp/jinbocho-theater/archive/program/towns-b_list.html' && drawer.cards[0].h > 0 && /検証状態：単一資料/.test(drawer.body) && /裏づけの種類：資料の記述/.test(drawer.body) && drawer.docW <= drawer.vw, drawer);
+    const f = await fontsFor(ctx, page, M_PROBES);
+    console.log(`fonts ${v.name}/${id}: ${Object.entries(f).map(([k, x]) => `${k}=${x}`).join(' ')}`);
+    check(S, 'actual_noto_cjk_font', Object.values(f).every((x) => /Noto (Serif|Sans) CJK JP/.test(x)), f);
+    if (OUT && (v.name === 'w390' || v.name === 'w1440')) await elementShot(page, '.th-relation[data-relation-id="rel:morisaki-filmed-in"]', `${id.toUpperCase().replace('-', '_')}_W3_FILMED_IN_DRAWER_OPEN_${v.width}`, v.width);
+    await page.click(sel);
+    await page.waitForTimeout(100);
+    check(S, 'no_external_request_after_interaction', external.length === 0, external.slice(0, 3));
+    if (OUT) {
+      if (v.name === 'w390' || v.name === 'w1440') { await elementShot(page, '#th-w3', `${id.toUpperCase().replace('-', '_')}_W3_${v.width}`, v.width); await elementShot(page, '#th-w4', `${id.toUpperCase().replace('-', '_')}_W4_${v.width}`, v.width); await elementShot(page, '#th-w5', `${id.toUpperCase().replace('-', '_')}_W5_${v.width}`, v.width); }
+      if (v.dsf === 2) {
+        const docH = await page.evaluate(() => document.documentElement.scrollHeight);
+        await page.setViewportSize({ width: 720, height: Math.min(docH, 6000) });
+        await page.waitForTimeout(200);
+        await page.screenshot({ path: path.join(OUT, `${id.toUpperCase().replace('-', '_')}_200PCT.png`), fullPage: false, scale: 'css' });
+      } else await fullShot(page, `${id.toUpperCase().replace('-', '_')}_${v.width}`, v.width);
+    }
+    await ctx.close();
+  }
+  check('morisaki', 'book_and_film_reach_the_same_relation_set', relSets['morisaki-book'] === relSets['morisaki-film'] && relSets['morisaki-book'] === 'rel:morisaki-adapted|rel:morisaki-depicts|rel:morisaki-filmed-in|rel:morisaki-set-in', relSets);
+
+  /* Morisaki keyboard（390）: radio が無いので skip → brand → menu → summary ×5 → 行き先 ×3 → 出口 → footer */
+  {
+    const S = 'keyboard-390/morisaki-book';
+    const { ctx, page } = await openThread(browser, base, origin, { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }, 'thread.html?thread=morisaki-book');
+    await settle(page);
+    const order = [];
+    for (let i = 0; i < 20; i++) {
+      await page.keyboard.press('Tab');
+      const info = await page.evaluate(() => {
+        const el = document.activeElement; if (!el || el === document.body) return { el: 'BODY' };
+        const cs = getComputedStyle(el);
+        return { el: (typeof el.className === 'string' && el.className.split(' ')[0]) || el.tagName, href: el.getAttribute('href'), fv: el.matches(':focus-visible'), outline: cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) >= 2 };
+      });
+      order.push(info);
+      if (info.el === 'BODY') break;
+    }
+    const names = order.map((o) => o.el).join('>');
+    check(S, 'tab_order_without_mode_radios', names === 'skip-link>brand-home>menu-trigger>th-evidence-summary>th-evidence-summary>th-evidence-summary>th-evidence-summary>th-evidence-summary>th-destination-link>th-destination-link>th-destination-link>th-exit>footer-brand>BODY', names);
+    check(S, 'focus_visible_outline_on_every_stop', order.filter((o) => o.el !== 'BODY').every((o) => o.fv && o.outline), order.filter((o) => o.el !== 'BODY' && !(o.fv && o.outline)));
+    check(S, 'exit_href_is_works', order.some((o) => o.el === 'th-exit' && o.href === './works.html'), order.filter((o) => o.el === 'th-exit'));
+    await ctx.close();
+  }
+
+  /* Morisaki forced colors（390）: 事実の枠と読みの枠が色なしでも区別できる */
+  {
+    const S = 'forced-390/morisaki-film';
+    const { ctx, page, external } = await openThread(browser, base, origin, { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, forcedColors: 'active' }, 'thread.html?thread=morisaki-film');
+    await settle(page);
+    const fc = await page.evaluate(() => {
+      const bw = (sel) => { const el = document.querySelector(sel); return el ? parseFloat(getComputedStyle(el).borderTopWidth) : -1; };
+      const bs = (sel) => { const el = document.querySelector(sel); return el ? getComputedStyle(el).borderTopStyle : ''; };
+      return { overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1, relationBorder: bw('.th-relation'), readingBorder: bw('.th-reading'), readingStyle: bs('.th-reading'), relationStyle: bs('.th-relation'), summaries: document.querySelectorAll('summary').length, exit: !!document.querySelector('.th-exit') };
+    });
+    check(S, 'no_horizontal_overflow', !fc.overflow);
+    check(S, 'fact_and_reading_boxes_stay_distinguishable', fc.relationBorder >= 1 && fc.readingBorder >= 1 && fc.readingStyle === 'dashed' && fc.relationStyle === 'solid' && fc.summaries === 5 && fc.exit, fc);
+    check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
+    await ctx.close();
+  }
+
 
   await browser.close();
   server.close();

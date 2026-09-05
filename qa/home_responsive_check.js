@@ -95,6 +95,8 @@ const MEASURE = (args) => {
   const targets = [...document.querySelectorAll('#main a, #main button')].map((el) => { const b = R(el); return { sel: (typeof el.className === 'string' && el.className.split(' ')[0]) || el.tagName, w: Math.round(b.w), h: Math.round(b.h) }; });
   const holds = [...document.querySelectorAll('[data-route-hold]')].map((el) => ({ id: el.getAttribute('data-route-hold'), tag: el.tagName, href: el.getAttribute('href'), onclick: el.getAttribute('onclick'), tabindex: el.tabIndex, role: el.getAttribute('role') }));
   const threadRead = (() => { const a = document.querySelector('.hc-thread-read'); if (!a) return null; const b = R(a); return { tag: a.tagName, href: a.getAttribute('href'), hold: a.hasAttribute('data-route-hold'), w: Math.round(b.w), h: Math.round(b.h) }; })();
+  /* WORKS ENTRY: 作品 4 card は works.html#<work> への実 anchor（hold ではない、.shelf-entry も付けない） */
+  const works = [...document.querySelectorAll('.hc-work')].map((a) => { const b = R(a); return { tag: a.tagName, href: a.getAttribute('href'), work: a.getAttribute('data-work'), hold: a.hasAttribute('data-route-hold'), shelfEntry: a.classList.contains('shelf-entry'), w: Math.round(b.w), h: Math.round(b.h) }; });
   const secY = ['.hc-hero', '.hc-cities', '.hc-works', '.hc-thread-section', '.hc-reality'].map((s) => (r(s) || { y: -1 }).y);
   const media = r('.hc-thread-media'), copy = r('.hc-thread-copy'), rcopy = r('.hc-reality-copy'), strip = r('.hc-reality-strip');
   const shots = [...document.querySelectorAll('.hc-reality-shot')].map((e) => rr(R(e)));
@@ -116,7 +118,7 @@ const MEASURE = (args) => {
     workH: [...document.querySelectorAll('.hc-work')].map((e) => Math.round(e.getBoundingClientRect().height)),
     shots, threadStacked: media && copy ? copy.y >= media.b - 1 : null, threadSplit: media && copy ? copy.x >= media.r - 1 : null,
     copyBeforeStrip: rcopy && strip ? strip.y >= rcopy.b - 1 : null,
-    clipped, overlaps, targets, holds, threadRead,
+    clipped, overlaps, targets, holds, threadRead, works,
     images: { n: document.images.length, loaded: [...document.images].every((i) => i.complete && i.naturalWidth > 0), sameOrigin: [...document.images].every((i) => new URL(i.currentSrc || i.src, location.href).origin === location.origin) },
     animated, docAnimations: document.getAnimations ? document.getAnimations().length : null,
     asideRight: boxes.aside ? Math.round(vw - boxes.aside.r) : null,
@@ -167,9 +169,11 @@ const near = (a, b, tol) => typeof a === 'number' && Math.abs(a - b) <= tol;
     check(S, 'no_overlap_in_hero', m.overlaps.length === 0, m.overlaps);
     check(S, 'city_questions_stay_three_lines', m.qLines.every((n) => n === 3), m.qLines);
     check(S, 'images_loaded_same_origin', m.images.loaded && m.images.sameOrigin && m.images.n >= 13, m.images);
-    check(S, 'route_holds_are_static_labels', m.holds.length === 7 && m.holds.every((h) => h.tag !== 'A' && h.tag !== 'BUTTON' && !h.href && !h.onclick && h.tabindex < 0 && !h.role), m.holds);
+    check(S, 'route_holds_are_static_labels', m.holds.length === 3 && m.holds.every((h) => h.tag !== 'A' && h.tag !== 'BUTTON' && !h.href && !h.onclick && h.tabindex < 0 && !h.role), m.holds);
     /* KOENJI R2: section 4 の「スレッドを読む」は実 anchor（44px の当たり判定、hold ではない） */
     check(S, 'thread_read_is_a_real_anchor_44', !!m.threadRead && m.threadRead.tag === 'A' && m.threadRead.href === './thread.html?thread=koenji-awaodori' && !m.threadRead.hold && m.threadRead.h === 44 && m.threadRead.w >= 44, m.threadRead);
+    /* WORKS ENTRY: 本 / 映画 / 音楽 / 映像 は works.html#book / #film / #music / #video への実 anchor（44px 以上、hold 7 → 3） */
+    check(S, 'work_cards_are_real_anchors_to_works_44', m.works.length === 4 && m.works.every((w, i) => w.tag === 'A' && w.work === ['book', 'film', 'music', 'video'][i] && w.href === './works.html#' + w.work && !w.hold && !w.shelfEntry && w.w >= 44 && w.h >= 44), m.works);
     if (!v.corridor) check(S, 'real_targets_are_44px', m.targets.length >= 6 && m.targets.every((t) => t.w >= 44 && t.h >= 44), m.targets.filter((t) => t.w < 44 || t.h < 44));
     check(S, 'no_js_error', errs.length === 0, errs.slice(0, 2));
     check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
@@ -255,14 +259,14 @@ const near = (a, b, tol) => typeof a === 'number' && Math.abs(a - b) <= tol;
     check(S, 'identical_render_under_both_preferences', shots.reduce.png === shots['no-preference'].png);
   }
 
-  /* keyboard: skip link → brand → menu → 4 街、focus-visible の outline が見える */
+  /* keyboard: skip link → brand → menu → 4 街 → 4 作品 → スレッドを読む（12 meaningful stops）、focus-visible の outline が見える */
   for (const w of [390, 1440]) {
     const S = `keyboard-${w}`;
     const ctx = await browser.newContext({ viewport: { width: w, height: w < 500 ? 844 : 900 }, isMobile: w < 500, hasTouch: w < 500, deviceScaleFactor: 1, reducedMotion: 'reduce' });
     const page = await ctx.newPage();
     await page.goto(base + 'index.html', { waitUntil: 'load' });
     const order = [];
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < 12; i++) {
       await page.keyboard.press('Tab');
       order.push(await page.evaluate(() => {
         const el = document.activeElement; if (!el || el === document.body) return { el: 'BODY' };
@@ -272,10 +276,11 @@ const near = (a, b, tol) => typeof a === 'number' && Math.abs(a - b) <= tol;
       if (order[order.length - 1].el === 'BODY') break;
     }
     const names = order.map((o) => o.el).join('>');
-    check(S, 'tab_order_reaches_the_real_targets', names.startsWith('skip-link>hc-brand-link>hc-menu-trigger>hc-city>hc-city>hc-city>hc-city'), names);
+    check(S, 'tab_order_reaches_the_real_targets', names.startsWith('skip-link>hc-brand-link>hc-menu-trigger>hc-city>hc-city>hc-city>hc-city>hc-work>hc-work>hc-work>hc-work'), names);
+    check(S, 'work_anchors_follow_the_four_cities_in_order', order.filter((o) => o.el === 'hc-work').map((o) => o.href).join('|') === './works.html#book|./works.html#film|./works.html#music|./works.html#video', order.filter((o) => o.el === 'hc-work').map((o) => o.href));
     check(S, 'focus_visible_outline_on_every_stop', order.filter((o) => o.el !== 'BODY').every((o) => o.fv && o.outline), order.filter((o) => o.el !== 'BODY' && !(o.fv && o.outline)));
     check(S, 'route_holds_not_in_tab_order', order.every((o) => !/route|hold|section-more|reality-cta|hero-cta/.test(o.el)), names);
-    check(S, 'thread_read_anchor_follows_the_four_cities', names.includes('hc-city>hc-city>hc-city>hc-city>hc-thread-read') && order.some((o) => o.el === 'hc-thread-read' && o.href === './thread.html?thread=koenji-awaodori'), names);
+    check(S, 'thread_read_anchor_follows_the_four_works', names.includes('hc-work>hc-work>hc-work>hc-work>hc-thread-read') && order.some((o) => o.el === 'hc-thread-read' && o.href === './thread.html?thread=koenji-awaodori'), names);
     // menu by keyboard
     await page.focus('#siteMenuButton');
     await page.keyboard.press('Enter');

@@ -65,7 +65,7 @@ for (const shelf of CONTENT.shelves) {
 
 /* html に直接書かれた外部リンクも拾う。content 側だけ見ていると
    suggest.html の公式 X のような手書きの href を取りこぼす。 */
-for (const file of ['index.html', 'shelf.html', 'suggest.html', 'thread.html']) {
+for (const file of ['index.html', 'shelf.html', 'suggest.html', 'thread.html', 'works.html']) {
   const src = fs.readFileSync(path.join(root, file), 'utf8');
   for (const m of src.matchAll(/href="(https?:\/\/[^"]+)"/g)) add(m[1], `${file} href`);
 }

@@ -156,7 +156,7 @@ function serve() {
       if (EXPECT.pad !== undefined) check(H, 'mobile_shell_padding', Math.abs(home.cities.x - EXPECT.pad) <= 0.5, home.cities);
       if (EXPECT.sheet) check(H, 'wide_sheet_shell', Math.abs(home.sheet.x - EXPECT.sheet[0]) <= 1 && Math.abs(home.sheet.w - EXPECT.sheet[1]) <= 1, home.sheet);
       check(H, 'real_targets_are_44px', home.targets.length >= 6 && home.targets.every((t) => t[1] >= 44 && t[2] >= 44), home.targets.filter((t) => t[1] < 44 || t[2] < 44));
-      check(H, 'route_holds_are_static_labels', home.holds.length === 7 && home.holds.every((h) => h[1] !== 'A' && h[1] !== 'BUTTON' && !h[2] && !h[3] && h[4] < 0), home.holds);
+      check(H, 'route_holds_are_static_labels', home.holds.length === 3 && home.holds.every((h) => h[1] !== 'A' && h[1] !== 'BUTTON' && !h[2] && !h[3] && h[4] < 0), home.holds);
       /* KOENJI R2: section 4 の「スレッドを読む」だけが実 route になった（hero の スレッドを見る は hold のまま） */
       check(H, 'thread_read_is_a_real_anchor_44', !!home.threadRead && home.threadRead[0] === 'A' && home.threadRead[1] === './thread.html?thread=koenji-awaodori' && !home.threadRead[2] && home.threadRead[4] === 44 && home.threadRead[3] >= 44, home.threadRead);
       check(H, 'images_loaded_same_origin', home.images === true);
@@ -508,7 +508,7 @@ function serve() {
         works: [...document.querySelectorAll('.hc-work')].map((w) => {
           const img = w.querySelector('.hc-work-media img');
           return {
-            label: w.querySelector('.hc-work-label').textContent, hold: w.getAttribute('data-route-hold'),
+            label: w.querySelector('.hc-work-label').textContent, hold: w.hasAttribute('data-route-hold'), work: w.getAttribute('data-work'), shelfEntry: w.classList.contains('shelf-entry'),
             tag: w.tagName, href: w.getAttribute('href'), h: Math.round(w.getBoundingClientRect().height),
             assetHold: w.getAttribute('data-asset-hold'), heldClass: w.classList.contains('is-asset-hold'),
             img: img && { src: img.getAttribute('src'), loaded: img.complete && img.naturalWidth > 0, sameOrigin: new URL(img.src).origin === location.origin,
@@ -578,8 +578,9 @@ function serve() {
     check(S, 'city_questions_are_three_lines_with_photo', home.cities.every((c) => c.qLines === 3 && c.hasImg), home.cities);
     check(S, 'city_cards_are_311_tall', home.cities.every((c) => Math.abs(c.h - 311) <= 1), home.cities.map((c) => c.h));
     check(S, 'four_work_entries', home.works.map((w) => w.label).join('|') === '本|映画|音楽|映像', home.works);
-    check(S, 'work_entries_hold_without_a_fake_route',
-      home.works.every((w) => w.hold && w.tag !== 'A' && w.tag !== 'BUTTON' && !w.href), home.works);
+    // WORKS ENTRY: 本 / 映画 / 音楽 / 映像 は works.html#book / #film / #music / #video への実 anchor（.shelf-entry は付けない）
+    check(S, 'work_entries_are_real_anchors_to_works',
+      home.works.every((w, i) => w.tag === 'A' && w.work === ['book', 'film', 'music', 'video'][i] && w.href === './works.html#' + w.work && !w.hold && !w.shelfEntry), home.works);
     check(S, 'work_cards_are_143_tall', home.works.every((w) => Math.abs(w.h - 143) <= 1), home.works.map((w) => w.h));
     // Asset Round 3: 本 / 映画 / 音楽 / 映像 の 4 枚とも権利確認済みの写真で image plane を埋める
     //（本 は検証済み CC0 原本の HQ 供給派生）。asset-hold の card は残っていない。
@@ -599,8 +600,8 @@ function serve() {
         /紅茶店|カフェ|喫茶/.test(home.realityImgs[0].alt || ''), home.realityImgs[0]);
     check(S, 'thread_chain_is_five_nodes',
       home.nodes.join('|') === '街高円寺|出来事阿波おどり|人踊り手たち|資料記録と写真|現在つづく祭り', home.nodes);
-    check(S, 'seven_route_holds_do_not_navigate',
-      home.holds.length === 7 && home.holds.every((h) => h.tag !== 'A' && h.tag !== 'BUTTON' && !h.href && !h.onclick), home.holds);
+    check(S, 'three_route_holds_do_not_navigate',
+      home.holds.length === 3 && home.holds.every((h) => h.tag !== 'A' && h.tag !== 'BUTTON' && !h.href && !h.onclick), home.holds);
     // KOENJI R2: 「スレッドを読む」だけが実 route。hero の スレッドを見る（thread-index）は hold のまま。
     check(S, 'thread_read_anchor_points_at_the_real_thread_route',
       !!home.threadRead && home.threadRead.tag === 'A' && home.threadRead.href === './thread.html?thread=koenji-awaodori' && !home.threadRead.hold && home.threadRead.text === 'スレッドを読む→' && home.threadRead.h === 44 && home.threadRead.w >= 44 &&

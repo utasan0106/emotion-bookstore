@@ -2340,12 +2340,14 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 }
 .hc-work {
   position: relative;
+  display: block;
   height: 143px;
   border-radius: 8px;
   overflow: hidden;
   isolation: isolate;
   color: var(--hc-ivory);
   background: #14161b;
+  text-decoration: none;
 }
 /* ASSET_HOLD。権利確認済みの図版が入るまで、geometry を保ったまま
    card の地の色だけで立てる。illustration / blob / icon-only へ置換しない。 */
@@ -2371,8 +2373,8 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 }
 /* 映画の原本は暗い室内（リールと映写機）なので、共通の減光だと被写体が沈む。
    この card だけ減光を弱め、リールが読める明度にする（scrim は共通のまま）。 */
-.hc-work[data-route-hold="work-film"] .hc-work-media img { object-position: 50% 36%; filter: brightness(1.38) contrast(1.08) saturate(.5); }
-.hc-work[data-route-hold="work-video"] .hc-work-media img { object-position: 40% 50%; }
+.hc-work[data-work="film"] .hc-work-media img { object-position: 50% 36%; filter: brightness(1.38) contrast(1.08) saturate(.5); }
+.hc-work[data-work="video"] .hc-work-media img { object-position: 40% 50%; }
 .hc-work-foot {
   position: absolute;
   left: 14px;
@@ -2603,6 +2605,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 .home-canonical .hc-city:focus-visible,
 .home-canonical .hc-brand-link:focus-visible,
 .home-canonical .hc-menu-trigger:focus-visible,
+.home-canonical .hc-work:focus-visible,
 .home-canonical .hc-thread-read:focus-visible {
   outline: 2px solid var(--hc-gold);
   outline-offset: 3px;

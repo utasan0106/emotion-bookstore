@@ -125,10 +125,12 @@ check(JSON.stringify(thread.guidance) === JSON.stringify(['約15分。いつ止�
   check(opts.length === 2 && opts[0].id === 'remote' && opts[0].label === 'いまは、高円寺にいない' && opts[0].isDefault === true &&
     opts[1].id === 'onsite' && opts[1].label === 'いま、高円寺にいる' && !opts[1].isDefault, 'mode radios must be remote (default) / onsite with the exact labels');
 }
-/* 所要時間は「約15分」ひとつだけ（10–15分 / 14–16分 などの競合表記を出さない） */
+/* 所要時間は「約15分」ひとつだけ（10–15分 / 14–16分 などの競合表記を出さない）。
+   走査は Koenji thread 自身の copy と renderer / 殻に限る（thread_content.js には Works の
+   Morisaki thread も同居し、その「109分」は映画の上映時間であって所要時間ではない）。 */
 {
   const durations = new Set();
-  for (const src of [contentJs, js, html]) for (const m of src.match(/約?\d+(?:[–\-〜]\d+)?分/g) || []) durations.add(m);
+  for (const src of [JSON.stringify(thread), js, html]) for (const m of src.match(/約?\d+(?:[–\-〜]\d+)?分/g) || []) durations.add(m);
   check(durations.size === 1 && durations.has('約15分'), `duration copy must be exactly 約15分 (found ${[...durations].join(', ') || 'none'})`);
 }
 
@@ -432,13 +434,13 @@ for (const banned of ['animation', 'transition', '@keyframes', 'box-shadow', 'te
   check(/min-height: 44px/.test(css), 'real controls must be at least 44px tall');
 }
 
-/* ---- 7. HOME の接続: hold 7 + 実 anchor 1 ------------------------------ */
+/* ---- 7. HOME の接続: hold 3 + 実 anchor 1（+ Works の実 anchor 4） --------- */
 
 {
   const anchor = '<a class="hc-thread-read" href="./thread.html?thread=koenji-awaodori">スレッドを読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></a>';
   check(home.split(anchor).length === 2, 'HOME section 4 must carry the real Thread anchor exactly once');
   check(!home.includes('data-route-hold="thread-koenji-awaodori"'), 'the thread-koenji-awaodori hold must be gone');
-  check((home.match(/data-route-hold="/g) || []).length === 7, 'HOME must keep exactly 7 route holds');
+  check((home.match(/data-route-hold="/g) || []).length === 3, 'HOME must keep exactly 3 route holds (thread-index / all-cities / spots; the four work cards are real anchors to works.html)');
   check(home.includes('data-route-hold="thread-index"'), 'HOME hero スレッドを見る must stay ROUTE_HOLD');
   check((home.match(/thread\.html/g) || []).length === 1, 'HOME must link the Thread route exactly once');
   const rule = (releaseCss.match(/\.hc-thread-read \{[^}]*\}/) || [''])[0];
@@ -473,10 +475,47 @@ for (const banned of ['animation', 'transition', '@keyframes', 'box-shadow', 'te
   for (const re of [/\bAR\b/, /\bGPS\b/, /\bquiz\b/i, /\bscore\b/i, /\bstreak\b/i, /\branking\b/i]) check(!re.test(text), `thread runtime must not contain: ${re}`);
 }
 
+/* ---- 10. WORKS CROSS-MEDIA PROOF: Morisaki Thread（Book-first / Film-first）を独立に固定 ----
+   上の Koenji の契約はそのまま（KOENJI object は byte 単位で不変）。ここでは
+   同じ renderer が Morisaki を「mode fieldset なし・孤立 separator なし・同一 graph・
+   入口順だけ違う・W4 再読・Reality Return・有限の終わり」で描けることを見る。
+   深い data 検査（逐語 copy / 語彙 / Yaguchi / 外部 destination）は qa/works_check.js。 */
+{
+  const book = CONTENT.threads.find((t) => t && t.threadId === 'morisaki-book');
+  const film = CONTENT.threads.find((t) => t && t.threadId === 'morisaki-film');
+  check(!!book && !!film, 'thread_content.js must expose morisaki-book and morisaki-film next to koenji-awaodori');
+  check(CONTENT.threads.length === 3 && CONTENT.threads[0] === thread, 'KOENJI stays first; exactly three threads');
+  if (book && film) {
+    const same = (k) => book[k] === film[k];
+    check(same('nodes') && same('facts') && same('relations') && same('sources'), 'Morisaki Book / Film must share nodes / facts / relations / sources by reference');
+    check(book.nodes !== thread.nodes && book.relations !== thread.relations && book.sources !== thread.sources && book.facts !== thread.facts, 'Morisaki graph must not alias the KOENJI graph');
+    for (const t of [book, film]) {
+      check(!('modes' in t) && !('image' in t) && !('duration' in t), `${t.threadId}: no modes / image / duration`);
+      check(t.relations.every((r) => !('temporal' in r)), `${t.threadId}: relations carry no temporal (no fake temporal, no orphan separator)`);
+      check(t.relations.every((r) => Array.isArray(r.sourceIds) && r.sourceIds.length >= 1 && r.sourceIds.every((id) => t.sources.some((s) => s.id === id))), `${t.threadId}: NO EVIDENCE = NO BRIDGE`);
+      check(t.scenes.map((s) => s.id).join('|') === 'w0|w1|w2|w3|w4|w5', `${t.threadId}: scenes w0..w5`);
+      check(!t.scenes.some((s) => s.cue || s.figure || (s.beats || []).some((b) => b.cue || b.kind === 'cue' || b.kind === 'reveal' || b.kind === 'chain')), `${t.threadId}: no cue / figure / reveal / chain beats`);
+      const w4 = t.scenes.find((s) => s.id === 'w4') || {};
+      check((w4.beats || []).length === 1 && w4.beats[0].kind === 'pair' && w4.editorialReading && Array.isArray(w4.editorialReading.refs) && w4.editorialReading.refs.every((r) => t.relations.some((x) => x.id === r)), `${t.threadId}: W4 re-read uses the existing pair primitive and an editorial reading whose refs resolve`);
+      check(t.ending && t.ending.line === 'このスレッドは、ここまでです。' && t.ending.exitHref === './works.html' && t.ending.exitLabel === '作品の入口へ戻る', `${t.threadId}: finite end returns to works.html`);
+      check(t.realityDestinations.length === 3 && t.realityDestinations.every((d) => /^https:\/\//.test(d.url)), `${t.threadId}: three https destinations`);
+      check(t.realityDestinations.filter((d) => d.editorialExample).every((d) => !('why' in d) && !('relationIds' in d) && d.note), `${t.threadId}: editorial example destination carries note only (no why prefix, no relation)`);
+    }
+    const pairOf = (t) => JSON.stringify(((t.scenes[0].beats || [])[0] || {}).items || []);
+    check(pairOf(book) !== pairOf(film) && JSON.stringify(book.scenes.slice(2)) === JSON.stringify(film.scenes.slice(2)), 'entry order differs (W0 pair) while W2–W5 are identical');
+    check(book.relations.filter((r) => r.relationType === 'adapted_as').length === 1 && !book.relations.some((r) => r.relationType === 'adapted_from'), 'one adapted_as edge, no adapted_from');
+    check(!contentCode.includes('kind: \'chain\'') && !jsCode.includes('chain'), 'no chain beat kind anywhere');
+  }
+  /* renderer: R-01 timeless header / R-02 null fieldset — Koenji の描画は変えない */
+  const fnAt = (name) => { const at = js.indexOf(`function ${name}(`); if (at < 0) return ''; const next = js.indexOf('\n  function ', at + 1); return js.slice(at, next < 0 ? js.length : next); };
+  check(/rel\.temporal \? \[/.test(fnAt('relationCard')) && /\] : \[\s*h\('span', \{ class: 'th-relation-verb', text: rel\.displayVerb \}\)\s*\]/.test(fnAt('relationCard')), 'relationCard renders TIME ／ VERB only with temporal, VERB alone without');
+  check(fnAt('modeFieldset').includes('if (options.length === 0) return null;'), 'modeFieldset returns null without options (no empty fieldset)');
+}
+
 if (failures.length) {
   console.error('THREAD_CHECK_FAIL');
   for (const f of failures) console.error('- ' + f);
   process.exit(1);
 }
 console.log('THREAD_CHECK_GO');
-console.log(`thread=${thread.threadId}; scenes=${thread.scenes.length}; relations=${thread.relations.length}; facts=${thread.facts.length}; sources=${thread.sources.length} (all https); destinations=${thread.realityDestinations.length}; S2 beats=${(S.s2.beats || []).length}; HOME route holds=7 + 1 real anchor; storage/permissions/network tokens=0`);
+console.log(`thread=${thread.threadId}; scenes=${thread.scenes.length}; relations=${thread.relations.length}; facts=${thread.facts.length}; sources=${thread.sources.length} (all https); destinations=${thread.realityDestinations.length}; S2 beats=${(S.s2.beats || []).length}; HOME route holds=3 + 1 real anchor + 4 works anchors; storage/permissions/network tokens=0`);

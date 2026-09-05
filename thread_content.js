@@ -337,8 +337,309 @@
     }
   };
 
+  /* ---------------------------------------------------------------------
+     WORKS ENTRY + CROSS-MEDIA PROOF — 『森崎書店の日々』（本 ／ 映画 ／ 神保町）。
+     Book-first（morisaki-book）と Film-first（morisaki-film）は 1 つの truth graph
+     を共有する。nodes / facts / relations / sources は同一参照（配列を複製しない）。
+     違うのは entry framing・W0 の pair 順・W1 の title と close だけ。
+     modes（remote / onsite）・image・cue（20秒）は持たない。KOENJI object には触れない。
+
+     Precision guard: 実在の店を「森崎書店」と同定しない。ロケセットを現存店と
+     しない。正確な地点・座標を出さない。filmed_in は area より細かくしない。
+     adapted_as は Book → Film の 1 本だけ（adapted_from を作らない）。
+     現行 2025 年新装版は adaptation source node にしない（works.html の
+     current reading / action metadata）。screened_at は W5 destination の
+     secondary context にだけ使い、W0–W4 には出さない。
+     relation に temporal を付けない（fake temporal を作らない）。 */
+
+  var MORISAKI_NODES = [
+    { id: 'work:morisaki-book', type: 'Book', label: '森崎書店の日々' },
+    { id: 'work:morisaki-film', type: 'Film', label: '森崎書店の日々' },
+    { id: 'place:jinbocho', type: 'Place', label: '神保町' },
+    { id: 'org:jinbocho-theater', type: 'Organization', label: '神保町シアター' }
+  ];
+
+  /* HQ supplied / verified の資料だけ。URL を発明しない。kind は表示メタデータ。 */
+  var MORISAKI_SOURCES = [
+    {
+      id: 'src:morisaki-ndl',
+      kind: 'library_catalog',
+      kindLabel: '国立国会図書館',
+      name: '国立国会図書館サーチ（森崎書店の日々）',
+      url: 'https://ndlsearch.ndl.go.jp/books/R100000002-I034360568'
+    },
+    {
+      id: 'src:morisaki-jfdb',
+      kind: 'film_database',
+      kindLabel: '映画情報',
+      name: 'JFDB（森崎書店の日々）',
+      url: 'https://jfdb.jp/title/2240'
+    },
+    {
+      id: 'src:morisaki-theater-archive',
+      kind: 'cultural_archive',
+      kindLabel: '文化施設アーカイブ',
+      name: '神保町シアター（街と映画 Bプログラム）',
+      url: 'https://www.shogakukan.co.jp/jinbocho-theater/archive/program/towns-b_list.html'
+    }
+  ];
+
+  var MORISAKI_FACTS = [
+    {
+      id: 'fact:morisaki-film-identity',
+      claim: '映画『森崎書店の日々』は2010年10月23日公開、上映時間109分。監督・脚本は日向朝子。',
+      supportMode: ['direct_statement'],
+      verificationState: 'single_source',
+      sourceIds: ['src:morisaki-jfdb'],
+      temporal: { resolution: 'day', display: '2010-10-23', variants: [] }
+    }
+  ];
+
+  var MORISAKI_RELATIONS = [
+    {
+      id: 'rel:morisaki-adapted',
+      from: 'work:morisaki-book',
+      to: 'work:morisaki-film',
+      relationType: 'adapted_as',
+      displayVerb: '映画になる',
+      claim: '映画『森崎書店の日々』は、八木沢里志の小説をもとにつくられた作品です。',
+      supportMode: ['direct_statement'],
+      verificationState: 'single_source',
+      sourceIds: ['src:morisaki-jfdb'],
+      spatial: { resolution: 'not_applicable' }
+    },
+    {
+      id: 'rel:morisaki-set-in',
+      from: 'work:morisaki-book',
+      to: 'place:jinbocho',
+      relationType: 'set_in',
+      displayVerb: '舞台になる',
+      claim: '『森崎書店の日々』は、神保町の古書店を物語の中心の場所にしています。',
+      supportMode: ['direct_statement'],
+      verificationState: 'single_source',
+      sourceIds: ['src:morisaki-ndl'],
+      spatial: { resolution: 'area', display: '範囲：神保町の街（一点ではありません）' }
+    },
+    {
+      id: 'rel:morisaki-depicts',
+      from: 'work:morisaki-film',
+      to: 'place:jinbocho',
+      relationType: 'depicts',
+      displayVerb: '描かれる',
+      claim: '映画は、神田神保町の古書店街をめぐる作品として紹介されています。',
+      supportMode: ['direct_statement'],
+      verificationState: 'single_source',
+      sourceIds: ['src:morisaki-jfdb'],
+      spatial: { resolution: 'area', display: '範囲：神保町の街（一点ではありません）' }
+    },
+    {
+      id: 'rel:morisaki-filmed-in',
+      from: 'work:morisaki-film',
+      to: 'place:jinbocho',
+      relationType: 'filmed_in',
+      displayVerb: '撮影される',
+      claim: '映画は、神保町の街中に「森崎書店」のロケセットを組んで撮影されました。',
+      supportMode: ['direct_statement'],
+      verificationState: 'single_source',
+      sourceIds: ['src:morisaki-theater-archive'],
+      spatial: { resolution: 'area', display: '範囲：神保町の街なか（一点ではありません）' }
+    },
+    {
+      /* secondary context only。W0–W4 では使わない（W5 destination の理由にだけ）。 */
+      id: 'rel:morisaki-screened-at',
+      from: 'work:morisaki-film',
+      to: 'org:jinbocho-theater',
+      relationType: 'screened_at',
+      displayVerb: '上映される',
+      claim: '神保町シアターは『森崎書店の日々』を上映プログラムで扱ってきました。',
+      supportMode: ['direct_statement'],
+      verificationState: 'single_source',
+      sourceIds: ['src:morisaki-theater-archive'],
+      spatial: { resolution: 'not_applicable' }
+    }
+  ];
+
+  var MORISAKI_GUIDANCE = [
+    '本と映画を、ひとつの関係として辿ります。',
+    '資料は、必要なところだけ開けます。',
+    '位置情報・カメラは使いません。'
+  ];
+
+  /* W0 / W4 の pair。W4 は W0 と同じ pair を（既存 primitive のまま）繰り返す。 */
+  var MORISAKI_PAIR_BOOK = { name: '本', text: '八木沢里志『森崎書店の日々』' };
+  var MORISAKI_PAIR_FILM = { name: '映画', text: '日向朝子監督『森崎書店の日々』（2010）' };
+
+  /* filmed_in の必須注記（W3）。W5 でそのまま再掲する。 */
+  var MORISAKI_FILMED_IN_NOTES = [
+    '撮影のために街中に組まれたセットです。いま神保町にある店ではありません。',
+    '範囲：神保町の街なか（一点ではありません）'
+  ];
+
+  /* W0–W5。entry は 'book' / 'film'。違いは W0 の pair 順と W1 の title・close だけで、
+     事実・関係・資料・並び順（W2 以降）は同じ。 */
+  function morisakiScenes(entry) {
+    var bookFirst = entry === 'book';
+    return [
+      {
+        id: 'w0',
+        title: '二つの『森崎書店の日々』',
+        lead: '同じ名前の、本と映画。まずは二つの作品として置きます。',
+        beats: [
+          {
+            id: 'w0-pair',
+            kind: 'pair',
+            label: '',
+            items: bookFirst ? [MORISAKI_PAIR_BOOK, MORISAKI_PAIR_FILM] : [MORISAKI_PAIR_FILM, MORISAKI_PAIR_BOOK]
+          }
+        ],
+        close: 'この二つは、どうつながっているのか。'
+      },
+      {
+        id: 'w1',
+        title: bookFirst ? '原作と映画' : 'この映画には、原作がある',
+        relationIds: ['rel:morisaki-adapted'],
+        close: bookFirst ? 'ここまでは、原作と映画の関係です。' : '同じひとつの関係を、逆から読んでいます。矢印は 本 → 映画 のままです。'
+      },
+      {
+        id: 'w2',
+        title: '残ったもの、変わったもの',
+        lead: '媒体が変わっても残るものと、映画になることで変わるものがあります。',
+        factIds: ['fact:morisaki-film-identity'],
+        beats: [
+          {
+            id: 'w2-pair',
+            kind: 'pair',
+            label: '',
+            items: [
+              { name: '残ったもの', text: '貴子、叔父のサトル、神保町の古書店をめぐる物語。' },
+              { name: '変わったもの', text: '文字で読む作品から、109分の映画へ。監督・脚本・俳優・撮影など、多くの手で形になる作品へ。' }
+            ]
+          }
+        ],
+        close: 'けれど、変わったのは媒体だけではありません。'
+      },
+      {
+        /* Figure–Ground Flip（中心）。舞台になる → 描かれる → 撮影される。 */
+        id: 'w3',
+        title: '街が入る',
+        lead: '神保町は、本と映画で同じ役割をしているわけではありません。',
+        relationIds: ['rel:morisaki-set-in', 'rel:morisaki-depicts', 'rel:morisaki-filmed-in'],
+        beats: [
+          { id: 'w3-notes', kind: 'evidence', label: '', items: MORISAKI_FILMED_IN_NOTES }
+        ],
+        close: '街は、物語の背景であることをやめて、この映画がどう作られたかの一部になる。'
+      },
+      {
+        /* Retroactive Re-reading。W0 の pair をそのまま繰り返す（新しい beat kind は無い）。 */
+        id: 'w4',
+        title: 'もう一度、二つを見る',
+        lead: '本 →（原作になる）→ 映画 →（神保町で撮る）→ 神保町',
+        beats: [
+          {
+            id: 'w4-pair',
+            kind: 'pair',
+            label: '',
+            items: [MORISAKI_PAIR_BOOK, MORISAKI_PAIR_FILM]
+          }
+        ],
+        close: 'ここまでの関係を、資料に沿って並べ直したものです。',
+        editorialReading: {
+          text: '同じ物語が媒体を移るとき、街は「舞台」から「制作の場所」にもなる。',
+          refs: ['rel:morisaki-adapted', 'rel:morisaki-set-in', 'rel:morisaki-filmed-in']
+        }
+      },
+      {
+        /* 現実へ。filmed_in の注記を再掲し、持ち帰る問い（M10）を置き、必須の開示を
+           close として destinations の直前に置く → destinations → 有限の終わり。 */
+        id: 'w5',
+        title: '現実へ',
+        kind: 'reality',
+        lead: 'ここから先は、いまの神保町です。',
+        beats: [
+          { id: 'w5-notes', kind: 'evidence', label: '', items: MORISAKI_FILMED_IN_NOTES },
+          { id: 'w5-transfer-1', kind: 'question', label: '', line: '別の媒体になったとき、何が残って、何が変わったんだろう？' },
+          { id: 'w5-transfer-2', kind: 'question', label: '', line: 'この画面は、現実のどこにつながっているんだろう？' }
+        ],
+        close: '森崎書店は作中の書店です。ここに挙げた店は、いずれも神保町に実在する別の店です。'
+      }
+    ];
+  }
+
+  /* Thread との Relation を説明できる行き先だけ。矢口書店は編集部が選んだ
+     現在の一例で、作品との factual relation ではない（why / relationIds を持たない）。 */
+  var MORISAKI_DESTINATIONS = [
+    {
+      id: 'dest:jimbou-map',
+      label: '古書店街を歩く',
+      url: 'https://jimbou.info/map/',
+      why: '本が舞台とし、映画が描き、撮影した神保町の古書店街そのものへ戻る入口です。',
+      relationIds: ['rel:morisaki-set-in', 'rel:morisaki-depicts', 'rel:morisaki-filmed-in']
+    },
+    {
+      id: 'dest:jinbocho-theater',
+      label: '神保町シアターの現在を見る',
+      url: 'https://www.shogakukan.co.jp/jinbocho-theater/features/',
+      why: 'この映画を上映してきた神保町の映画館の、現在のプログラムを見る入口です。',
+      relationIds: ['rel:morisaki-screened-at']
+    },
+    {
+      id: 'dest:yaguchi-shoten',
+      label: '矢口書店を見る',
+      url: 'https://yaguchishoten.jp/',
+      editorialExample: true,
+      note: '編集部が選んだ、いま神保町にある専門古書店の一例です。作品との関係が確認されている店ではありません。'
+    }
+  ];
+
+  var MORISAKI_ENDING = {
+    line: 'このスレッドは、ここまでです。',
+    exitLabel: '作品の入口へ戻る',
+    exitHref: './works.html'
+  };
+
+  var MORISAKI_BOOK = {
+    threadId: 'morisaki-book',
+    eyebrow: '本から',
+    title: '二つの『森崎書店の日々』',
+    documentTitle: '本から｜森崎書店の日々｜みんなの感情書店',
+    subjectLabel: '主題：森崎書店の日々',
+    editor: '編集：みんなの感情書店 編集部',
+    lens: '本と映画、その先の神保町を辿ります。',
+    checkedAt: '2026-09-05',
+    checkedLabel: '最終確認：2026-09-05',
+    guidance: MORISAKI_GUIDANCE,
+    nodes: MORISAKI_NODES,
+    facts: MORISAKI_FACTS,
+    relations: MORISAKI_RELATIONS,
+    sources: MORISAKI_SOURCES,
+    scenes: morisakiScenes('book'),
+    realityDestinations: MORISAKI_DESTINATIONS,
+    ending: MORISAKI_ENDING
+  };
+
+  /* Film-first。同一の graph を映画側から読む。 */
+  var MORISAKI_FILM = {
+    threadId: 'morisaki-film',
+    eyebrow: '映画から',
+    title: '二つの『森崎書店の日々』',
+    documentTitle: '映画から｜森崎書店の日々｜みんなの感情書店',
+    subjectLabel: '主題：森崎書店の日々',
+    editor: '編集：みんなの感情書店 編集部',
+    lens: '本と映画、その先の神保町を辿ります。',
+    checkedAt: '2026-09-05',
+    checkedLabel: '最終確認：2026-09-05',
+    guidance: MORISAKI_GUIDANCE,
+    nodes: MORISAKI_NODES,
+    facts: MORISAKI_FACTS,
+    relations: MORISAKI_RELATIONS,
+    sources: MORISAKI_SOURCES,
+    scenes: morisakiScenes('film'),
+    realityDestinations: MORISAKI_DESTINATIONS,
+    ending: MORISAKI_ENDING
+  };
+
   window.V3_THREAD_CONTENT = {
     schema: 'v3-thread/rc1',
-    threads: [KOENJI]
+    threads: [KOENJI, MORISAKI_BOOK, MORISAKI_FILM]
   };
 })();

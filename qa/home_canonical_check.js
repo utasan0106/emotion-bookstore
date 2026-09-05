@@ -121,7 +121,7 @@ check(!html.includes('index.html#archive'), 'dead anchor: #archive (archive live
 
 /* ---- 4. ROUTE_HOLD は navigate しない -------------------------------- */
 
-const HOLDS = ['thread-index', 'all-cities', 'work-book', 'work-film', 'work-music', 'work-video', 'spots'];
+const HOLDS = ['thread-index', 'all-cities', 'spots'];
 for (const h of HOLDS) {
   const re = new RegExp(`data-route-hold="${h}"`);
   check(re.test(html), `ROUTE_HOLD marker missing: ${h}`);
@@ -139,6 +139,17 @@ check(html.split(THREAD_ANCHOR).length === 2, 'thread read must be the real anch
 check(!html.includes('data-route-hold="thread-koenji-awaodori"'), 'retired hold thread-koenji-awaodori must not remain');
 check((html.match(/thread\.html/g) || []).length === 1, 'HOME must link the Thread route exactly once');
 check(fs.existsSync(path.join(root, 'thread.html')), 'thread route target thread.html must exist on disk');
+// WORKS ENTRY: 作品 4 card（本 / 映画 / 音楽 / 映像）は works.html#book / #film / #music / #video への
+// 実 anchor（hold 7 → 3）。hc-work-media / hc-work-foot / icon / label / → / 画像 / 順序 / copy は不変。
+// .shelf-entry は付けない（GA4 v3_shelf_open が誤発火する）。
+for (const w of ['book', 'film', 'music', 'video']) {
+  check(html.split(`<a class="hc-work" data-work="${w}" href="./works.html#${w}">`).length === 2, `work card must be the real anchor to ./works.html#${w}, exactly once`);
+  check(!html.includes(`data-route-hold="work-${w}"`), `retired hold work-${w} must not remain`);
+}
+check((html.match(/class="hc-work"/g) || []).length === 4, 'exactly four work anchors expected');
+check(!/<a class="[^"]*hc-work[^"]*shelf-entry|<a class="[^"]*shelf-entry[^"]*hc-work/.test(html), 'work anchors must not carry .shelf-entry (GA4 v3_shelf_open)');
+check((html.match(/href="\.\/works\.html#/g) || []).length === 4, 'HOME must link works.html exactly four times (one per card)');
+check(fs.existsSync(path.join(root, 'works.html')), 'works route target works.html must exist on disk');
 
 /* ---- 5. 外部通信ゼロ / 端末内保存に触れない --------------------------- */
 
@@ -164,7 +175,7 @@ check(!/文化のつながり/.test(html), 'VISUAL_CANONICAL image must not be u
 
 // 作品 card: 図版が入った card は image plane（./assets/home-work-*.jpg）を持ち、
 // 入っていない card は data-asset-hold を明示する。どちらでもない中間状態を残さない。
-for (const m of html.match(/<div class="hc-work[^"]*"[^>]*>[\s\S]*?<span class="hc-work-foot">/g) || []) {
+for (const m of html.match(/<a class="hc-work[^"]*"[^>]*>[\s\S]*?<span class="hc-work-foot">/g) || []) {
   const held = /data-asset-hold="work-[a-z]+"/.test(m) && /\bis-asset-hold\b/.test(m);
   const photo = /<span class="hc-work-media"><img src="\.\/assets\/home-work-[a-z]+\.jpg" alt=""/.test(m);
   if (held === photo) failures.push(`work card must be either asset-held or carry its photo, not both/neither: ${m.slice(0, 70)}`);
@@ -224,5 +235,5 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log('HOME_CANONICAL_CHECK_GO');
-  console.log(`sections=5 in canonical order; shelf-entries=4; thread nodes=5; route holds=${HOLDS.length}; local assets=${assets.length}; external hosts=0; iframes=0`);
+  console.log(`sections=5 in canonical order; shelf-entries=4; thread nodes=5; route holds=${HOLDS.length}; works anchors=4; local assets=${assets.length}; external hosts=0; iframes=0`);
 }

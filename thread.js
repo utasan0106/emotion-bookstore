@@ -140,9 +140,13 @@
   }
 
   function relationCard(thread, rel) {
-    var head = h('p', { class: 'th-relation-time' }, [
-      h('span', { class: 'th-relation-year', text: rel.temporal ? rel.temporal.display : '' }),
+    /* temporal あり → TIME ／ VERB、なし → VERB だけ（separator を孤立させない。
+       relation に無い temporal を作らない）。 */
+    var head = h('p', { class: 'th-relation-time' }, rel.temporal ? [
+      h('span', { class: 'th-relation-year', text: rel.temporal.display }),
       h('span', { class: 'th-relation-sep', 'aria-hidden': 'true', text: ' ／ ' }),
+      h('span', { class: 'th-relation-verb', text: rel.displayVerb })
+    ] : [
       h('span', { class: 'th-relation-verb', text: rel.displayVerb })
     ]);
     var nodes = h('p', { class: 'th-relation-nodes' }, [
@@ -319,6 +323,8 @@
   function modeFieldset(thread) {
     var modes = thread.modes || {};
     var options = Array.isArray(modes.options) ? modes.options : [];
+    /* 読む場所の選択肢を持たない Thread では fieldset 自体を描かない。 */
+    if (options.length === 0) return null;
     var inputs = options.map(function (opt) {
       var input;
       var label = h('label', { class: 'th-mode-option' }, [
