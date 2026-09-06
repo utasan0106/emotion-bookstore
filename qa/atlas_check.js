@@ -63,7 +63,15 @@ for (const t of ['Cesium', 'cesium', 'plateauview', 'reearth', 'WebAssembly', 'w
 for (const t of ['navigator.geolocation', 'getCurrentPosition', 'watchPosition', 'getUserMedia', 'mediaDevices', 'localStorage', 'sessionStorage', 'indexedDB', 'document.cookie', 'gtag', 'dataLayer', 'sendBeacon', 'XMLHttpRequest', 'WebSocket', 'navigator.share', 'history.pushState', 'location.search']) {
   check(!app.includes(t) && !html.includes(t), `Atlas must not use ${t}`);
 }
-check(!html.includes('analytics-v3.js') && !html.includes('googletagmanager'), 'Atlas page loads no analytics script (no map-view / coordinate custom events)');
+/* Measurement v0.4: the Atlas loads only the shared hostname-gated analytics-v3.js (entry spatial/koenji, continue thread/koenji_dance_history,
+   evidence, external by hostname). app.js carries no measurement code; nothing about views / frames / coordinates / buildings is measured. */
+check((html.match(/<script src="\.\.\/analytics-v3\.js"><\/script>/g) || []).length === 1 && !html.includes('googletagmanager') && (html.match(/<script /g) || []).length === 2, 'Atlas loads the shared analytics-v3.js once (plus app.js) and nothing else');
+check(!app.includes('v3Analytics') && !app.includes('gtag') && !app.includes('dataLayer'), 'atlas/app.js carries no measurement code (measurement is central and bounded)');
+{
+  const analytics = read('analytics-v3.js');
+  check(analytics.includes("api.entryOpen('spatial', 'koenji')") && analytics.includes("api.continueOpen('thread', THREAD_IDS[threadRoute[1]])") && analytics.includes("api.evidenceOpen('spatial', 'koenji')"), 'analytics-v3.js: Atlas entry / continue / evidence are bounded to spatial/koenji and thread/koenji_dance_history');
+  check(!/gml|latitude|longitude|coordinates|zoom|viewport|camera|data-view|data-frame|al-view|measuredHeight/.test(analytics.replace(/\/\*[\s\S]*?\*\//g, '')), 'analytics-v3.js measures no view switch / frame / coordinate / building');
+}
 
 /* ---- 4. CSP: back to the remote baseline (+ atlas robots header only) ---- */
 check(csp === BASELINE_CSP, 'global CSP must equal the 5743a36 baseline (Cesium / PLATEAU hosts removed, youtube-nocookie frame-src kept)');

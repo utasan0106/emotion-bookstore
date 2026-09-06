@@ -4,7 +4,8 @@
    - 利用者が「現在の公式映像を見る」を押したときだけ、そのページ内に
      YouTube のプライバシー強化モード（youtube-nocookie.com）の player を置く。
    - 自動再生はしない（player の再生ボタンを押して初めて再生される）。
-   - 保存しない。位置情報・カメラ・fetch・XHR・計測 event を使わない。
+   - 保存しない。位置情報・カメラ・fetch・XHR を使わない。計測は、押して player を作った瞬間の
+     bounded event 1 回だけ（analytics-v3.js、本番 host だけ）。
    - host は data-video-id（11 文字の YouTube video id）と data-video-title を持つ
      .v3-video。中の .v3-video-frame に .v3-video-load ボタンがある。 */
 (function () {
@@ -33,6 +34,9 @@
       frame.appendChild(iframe);
       host.setAttribute('data-video-state', 'loaded');
       iframe.focus();
+      /* Measurement v0.4: the explicit click that created the player, once per page load.
+         Origin class only (thread | work); no video id / title / duration / playback. */
+      if (window.v3Analytics && typeof window.v3Analytics.mediaPreviewOpen === 'function') window.v3Analytics.mediaPreviewOpen();
     });
   }
 

@@ -504,14 +504,16 @@ morisakiScenes(film, 'film');
   check(releaseCss.includes('.home-canonical .hc-work:focus-visible,'), 'HOME focus group must include .hc-work');
 }
 
-/* ---- 8. 配信・計測: sitemap に Works なし、GA4 event 8 件、link_check に works.html ---- */
+/* ---- 8. 配信・計測: sitemap に Works なし、GA4 event 8 + 9 件（Measurement v0.4）、link_check に works.html ---- */
 
 {
   check(!/works/.test(read('sitemap.xml')), 'sitemap must not list Works');
   check(!/thread/.test(read('sitemap.xml')), 'sitemap must not list the Thread');
   check(read('qa/link_check.js').includes("'works.html'"), 'link_check must include works.html hrefs');
-  check(!analytics.includes('works') && !analytics.includes('thread'), 'analytics-v3.js must not know about Works (no new GA4 event)');
-  check(/v3_home_view: true,\s*v3_shelf_open: true,\s*v3_shelf_view: true,\s*v3_detail_open: true,\s*v3_official_action: true,\s*v3_suggest_view: true,\s*v3_suggest_copy: true,\s*v3_suggest_form_open: true/.test(analytics), 'GA4 allowed events must be the eight approved ones');
+  /* Measurement v0.4: Works is measured as bounded ids only (entry work/works, section reach once, continue to morisaki_book / morisaki_film,
+     external open by hostname, media preview content_id=work on the explicit click). No Work title / object / category / URL param. */
+  check(analytics.includes(".wk-work[data-work]") && analytics.includes("api.entryOpen('work', 'works')") && !/wk-object|wk-category|textContent|innerText|data-video-id/.test(analytics), 'analytics-v3.js measures Works by bounded ids and section reach only');
+  check(/v3_home_view: true,\s*v3_shelf_open: true,\s*v3_shelf_view: true,\s*v3_detail_open: true,\s*v3_official_action: true,\s*v3_suggest_view: true,\s*v3_suggest_copy: true,\s*v3_suggest_form_open: true,\s*v3_entry_open: true,\s*v3_works_section_view: true,\s*v3_thread_start: true,\s*v3_thread_stage: true,\s*v3_thread_complete: true,\s*v3_evidence_open: true,\s*v3_external_open: true,\s*v3_continue_open: true,\s*v3_media_preview_open: true/.test(analytics), 'GA4 allowed events must be the eight Beta events + the nine Measurement v0.4 events, in this order');
   for (const [name, src] of [['works.html', htmlCode], ['thread_content.js', contentCode]]) {
     for (const t of ['localStorage', 'sessionStorage', 'indexedDB', 'document.cookie', 'geolocation', 'getUserMedia', 'mediaDevices', 'fetch(', 'XMLHttpRequest',
       'WebSocket', 'sendBeacon', 'EventSource', 'setTimeout', 'setInterval', 'gtag', 'dataLayer', '<iframe', '<audio', '<video', '<canvas', 'getContext(']) {
@@ -575,4 +577,4 @@ if (failures.length) {
   process.exit(1);
 }
 console.log('WORKS_CHECK_GO');
-console.log(`works=4 (#book #film #music #video); external actions=${externalLinks.length} (click-only, frozen set); internal routes=2; morisaki threads=2 (shared nodes/facts/relations/sources); relations=${book.relations.length} (adapted_as=1, adapted_from=0); destinations=${book.realityDestinations.length} (Yaguchi editorial example, no why); HOME holds=0 + works anchors=4; sitemap works=0; GA4 events=8`);
+console.log(`works=4 (#book #film #music #video); external actions=${externalLinks.length} (click-only, frozen set); internal routes=2; morisaki threads=2 (shared nodes/facts/relations/sources); relations=${book.relations.length} (adapted_as=1, adapted_from=0); destinations=${book.realityDestinations.length} (Yaguchi editorial example, no why); HOME holds=0 + works anchors=4; sitemap works=0; GA4 events=17`);

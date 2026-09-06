@@ -463,8 +463,11 @@ for (const [name, src] of [['thread.js', jsCode], ['thread_content.js', contentC
     check(!src.includes(t), `${name} must not contain ${t}`);
   }
 }
-check(!analytics.includes('thread'), 'analytics-v3.js must not know about the Thread (no new GA4 event)');
-check(/v3_home_view: true,\s*v3_shelf_open: true,\s*v3_shelf_view: true,\s*v3_detail_open: true,\s*v3_official_action: true,\s*v3_suggest_view: true,\s*v3_suggest_copy: true,\s*v3_suggest_form_open: true/.test(analytics), 'GA4 allowed events must be the eight approved ones');
+/* Measurement v0.4: analytics-v3.js knows the Thread only as bounded ids (koenji_dance_history / morisaki_book / morisaki_film, stages s0–s5 / w0–w5).
+   It never reads Thread text, titles, sources or destinations into a param; only the route → id map and hostname-only link_domain. */
+check(analytics.includes("'koenji-dance-history': 'koenji_dance_history'") && analytics.includes("root.querySelector('.th-thread')") && analytics.includes(".th-scene[data-scene]") && !/textContent|innerText|\.title\b|data-video-id|dt33RGSRuo0/.test(analytics), 'analytics-v3.js measures the Thread by bounded ids and stage reach only (no text / title / video id)');
+check(!analytics.includes('koenji_awaodori') && !/高円寺|阿波|徳島|木場連|パル/.test(analytics), 'analytics-v3.js carries no Koenji copy or the retired id');
+check(/v3_home_view: true,\s*v3_shelf_open: true,\s*v3_shelf_view: true,\s*v3_detail_open: true,\s*v3_official_action: true,\s*v3_suggest_view: true,\s*v3_suggest_copy: true,\s*v3_suggest_form_open: true,\s*v3_entry_open: true,\s*v3_works_section_view: true,\s*v3_thread_start: true,\s*v3_thread_stage: true,\s*v3_thread_complete: true,\s*v3_evidence_open: true,\s*v3_external_open: true,\s*v3_continue_open: true,\s*v3_media_preview_open: true/.test(analytics), 'GA4 allowed events must be the eight Beta events + the nine Measurement v0.4 events, in this order');
 
 /* ---- 6. thread.css: Thread selector に閉じる・動かない・影を持たない ---- */
 
