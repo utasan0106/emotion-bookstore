@@ -51,14 +51,14 @@ const WIDTHS = [
     thread: 'split', chainRows: 1, mediaW: 440, threadGap: 40, panelPad: 32, copyW: 320, stripCols: 3, stripGap: 14, shotH: 220 },
 ];
 const TEXT = ['.hc-brand-link', '.hc-hero-title', '.hc-hero-sub', '.hc-hero-cta-label', '.hc-hero-aside', '.hc-hero-scroll-label',
-  '.hc-section-title', '.hc-section-note', '.hc-section-more', '.hc-city-name', '.hc-city-q-line', '.hc-work-label',
+  '.hc-section-title', '.hc-section-note', '.hc-city-name', '.hc-city-q-line', '.hc-work-label',
   '.hc-thread-heading', '.hc-thread-note', '.hc-thread-pill', '.hc-thread-title', '.hc-thread-sub', '.hc-node-kind', '.hc-node-name',
-  '.hc-thread-read', '.hc-reality-line', '.hc-reality-cta-label'];
+  '.hc-thread-read', '.hc-reality-line'];
 const CONTAIN = [['.hc-city-name', '.hc-city'], ['.hc-city-q-line', '.hc-city'], ['.hc-work-label', '.hc-work'], ['.hc-node-kind', '.hc-node'],
   ['.hc-node-name', '.hc-node'], ['.hc-thread-title', '.hc-thread'], ['.hc-thread-sub', '.hc-thread'], ['.hc-thread-pill', '.hc-thread'],
   ['.hc-reality-line', '.hc-reality-copy'], ['.hc-hero-title', '.hc-hero'], ['.hc-hero-cta', '.hc-hero'], ['.hc-hero-aside', '.hc-hero'], ['.hc-hero-scroll', '.hc-hero']];
 const FONT_PROBES = [['brand', '.hc-brand'], ['h1', '.hc-hero-title'], ['sub', '.hc-hero-sub'], ['year', '.hc-trace-year'], ['city', '.hc-city-name'],
-  ['q', '.hc-city-q-line'], ['work', '.hc-work-label'], ['thread', '.hc-thread-title'], ['node', '.hc-node-name'], ['reality', '.hc-reality-line'], ['cta', '.hc-reality-cta-label']];
+  ['q', '.hc-city-q-line'], ['work', '.hc-work-label'], ['thread', '.hc-thread-title'], ['node', '.hc-node-name'], ['reality', '.hc-reality-line'], ['cta', '.hc-hero-cta-label']];
 
 const MEASURE = (args) => {
   const { TEXT, CONTAIN } = args;
@@ -95,6 +95,8 @@ const MEASURE = (args) => {
   const targets = [...document.querySelectorAll('#main a, #main button')].map((el) => { const b = R(el); return { sel: (typeof el.className === 'string' && el.className.split(' ')[0]) || el.tagName, w: Math.round(b.w), h: Math.round(b.h) }; });
   const holds = [...document.querySelectorAll('[data-route-hold]')].map((el) => ({ id: el.getAttribute('data-route-hold'), tag: el.tagName, href: el.getAttribute('href'), onclick: el.getAttribute('onclick'), tabindex: el.tabIndex, role: el.getAttribute('role') }));
   const threadRead = (() => { const a = document.querySelector('.hc-thread-read'); if (!a) return null; const b = R(a); return { tag: a.tagName, href: a.getAttribute('href'), hold: a.hasAttribute('data-route-hold'), w: Math.round(b.w), h: Math.round(b.h) }; })();
+  /* FOUNDER PREVIEW FIX A1: hero の スレッドを見る は実 anchor（geometry は canonical のまま、underline なし） */
+  const heroCta = (() => { const a = document.querySelector('.hc-hero-cta'); if (!a) return null; const b = R(a); return { tag: a.tagName, href: a.getAttribute('href'), hold: a.hasAttribute('data-route-hold'), deco: getComputedStyle(a).textDecorationLine, w: Math.round(b.w), h: Math.round(b.h) }; })();
   /* WORKS ENTRY: 作品 4 card は works.html#<work> への実 anchor（hold ではない、.shelf-entry も付けない） */
   const works = [...document.querySelectorAll('.hc-work')].map((a) => { const b = R(a); return { tag: a.tagName, href: a.getAttribute('href'), work: a.getAttribute('data-work'), hold: a.hasAttribute('data-route-hold'), shelfEntry: a.classList.contains('shelf-entry'), w: Math.round(b.w), h: Math.round(b.h) }; });
   const secY = ['.hc-hero', '.hc-cities', '.hc-works', '.hc-thread-section', '.hc-reality'].map((s) => (r(s) || { y: -1 }).y);
@@ -111,14 +113,14 @@ const MEASURE = (args) => {
     titleSize: parseFloat(cs('.hc-hero-title', 'fontSize')), titleLH: parseFloat(cs('.hc-hero-title', 'lineHeight')),
     pad: parseFloat(cs('.hc-cities', 'paddingLeft')), panelPad: parseFloat(cs('.hc-thread', 'paddingLeft')),
     cityGap: parseFloat(cs('.hc-city-grid', 'columnGap')), threadGap: parseFloat(cs('.hc-thread-body', 'columnGap')), stripGap: parseFloat(cs('.hc-reality-strip', 'columnGap')),
-    rects: { hero: rr(r('.hc-hero')), body: rr(r('.hc-hero-body')), title: rr(boxes.title), cta: rr(boxes.cta), aside: rr(boxes.aside), scroll: rr(boxes.scroll), sheet: rr(r('.hc-sheet')), cities: rr(r('.hc-city-grid')), works: rr(r('.hc-work-grid')), thread: rr(r('.hc-thread')), media: rr(media), copy: rr(copy), reality: rr(r('.hc-reality')), rcopy: rr(rcopy), strip: rr(strip), spots: rr(r('.hc-reality-cta')) },
+    rects: { hero: rr(r('.hc-hero')), body: rr(r('.hc-hero-body')), title: rr(boxes.title), cta: rr(boxes.cta), aside: rr(boxes.aside), scroll: rr(boxes.scroll), sheet: rr(r('.hc-sheet')), cities: rr(r('.hc-city-grid')), works: rr(r('.hc-work-grid')), thread: rr(r('.hc-thread')), media: rr(media), copy: rr(copy), reality: rr(r('.hc-reality')), rcopy: rr(rcopy), strip: rr(strip) },
     cityCols: cols('.hc-city-grid'), cityRows: rows('.hc-city'), workCols: cols('.hc-work-grid'), workRows: rows('.hc-work'), stripCols: cols('.hc-reality-strip'), stripRows: rows('.hc-reality-shot'),
     chainRows: rows('.hc-node'), qLines,
     cityH: [...document.querySelectorAll('.hc-city')].map((e) => Math.round(e.getBoundingClientRect().height)),
     workH: [...document.querySelectorAll('.hc-work')].map((e) => Math.round(e.getBoundingClientRect().height)),
     shots, threadStacked: media && copy ? copy.y >= media.b - 1 : null, threadSplit: media && copy ? copy.x >= media.r - 1 : null,
     copyBeforeStrip: rcopy && strip ? strip.y >= rcopy.b - 1 : null,
-    clipped, overlaps, targets, holds, threadRead, works,
+    clipped, overlaps, targets, holds, threadRead, heroCta, works, falseCtas: document.querySelectorAll('.hc-section-more, .hc-reality-cta').length,
     images: { n: document.images.length, loaded: [...document.images].every((i) => i.complete && i.naturalWidth > 0), sameOrigin: [...document.images].every((i) => new URL(i.currentSrc || i.src, location.href).origin === location.origin) },
     animated, docAnimations: document.getAnimations ? document.getAnimations().length : null,
     asideRight: boxes.aside ? Math.round(vw - boxes.aside.r) : null,
@@ -167,9 +169,12 @@ const near = (a, b, tol) => typeof a === 'number' && Math.abs(a - b) <= tol;
     check(S, 'no_horizontal_overflow', m.docW <= m.vw, { docW: m.docW, vw: m.vw });
     check(S, 'no_clipped_text', m.clipped.length === 0, m.clipped.slice(0, 6));
     check(S, 'no_overlap_in_hero', m.overlaps.length === 0, m.overlaps);
-    check(S, 'city_questions_stay_three_lines', m.qLines.every((n) => n === 3), m.qLines);
+    /* FOUNDER PREVIEW FIX A3: 4 街とも同じ copy（3 行の span）。幅が狭いと 2 行目が折り返すので、行数は 4 card で同じ・3 以上・clip なし を見る。 */
+    check(S, 'city_copy_lines_uniform_across_cards', m.qLines.length === 4 && m.qLines.every((n) => n >= 3 && n === m.qLines[0]), m.qLines);
     check(S, 'images_loaded_same_origin', m.images.loaded && m.images.sameOrigin && m.images.n >= 13, m.images);
-    check(S, 'route_holds_are_static_labels', m.holds.length === 3 && m.holds.every((h) => h.tag !== 'A' && h.tag !== 'BUTTON' && !h.href && !h.onclick && h.tabindex < 0 && !h.role), m.holds);
+    /* FOUNDER PREVIEW FIX A5: route hold 0、false CTA（すべて見る / スポットを探す）0 */
+    check(S, 'no_route_holds_no_false_ctas', m.holds.length === 0 && m.falseCtas === 0, { holds: m.holds, falseCtas: m.falseCtas });
+    check(S, 'hero_cta_is_a_real_anchor_52', !!m.heroCta && m.heroCta.tag === 'A' && m.heroCta.href === './thread.html?thread=koenji-awaodori' && !m.heroCta.hold && m.heroCta.deco === 'none' && m.heroCta.h === 52 && m.heroCta.w >= 220, m.heroCta);
     /* KOENJI R2: section 4 の「スレッドを読む」は実 anchor（44px の当たり判定、hold ではない） */
     check(S, 'thread_read_is_a_real_anchor_44', !!m.threadRead && m.threadRead.tag === 'A' && m.threadRead.href === './thread.html?thread=koenji-awaodori' && !m.threadRead.hold && m.threadRead.h === 44 && m.threadRead.w >= 44, m.threadRead);
     /* WORKS ENTRY: 本 / 映画 / 音楽 / 映像 は works.html#book / #film / #music / #video への実 anchor（44px 以上、hold 7 → 3） */
@@ -207,7 +212,6 @@ const near = (a, b, tol) => typeof a === 'number' && Math.abs(a - b) <= tol;
       if (v.contentX !== undefined) check(S, 'content_shell', near(m.rects.cities[0], v.contentX, 1) && near(m.rects.cities[2], v.contentW, 1) && near(m.rects.thread[0], v.contentX, 1) && near(m.rects.thread[2], v.contentW, 1), { cities: m.rects.cities, thread: m.rects.thread });
       if (v.sheetFull) check(S, 'sheet_is_full_bleed', m.rects.sheet[0] === 0 && m.rects.sheet[2] === v.width, m.rects.sheet);
       if (v.sheetX !== undefined) check(S, 'sheet_shell', near(m.rects.sheet[0], v.sheetX, 1) && near(m.rects.sheet[2], v.sheetW, 1), m.rects.sheet);
-      check(S, 'spots_cta_48', near(m.rects.spots[3], 48, 0) && near(m.rects.spots[2], 212, 0), m.rects.spots);
     }
 
     /* menu: open / Escape / focus return（dialog の focus trap は release.js のまま） */
@@ -259,14 +263,14 @@ const near = (a, b, tol) => typeof a === 'number' && Math.abs(a - b) <= tol;
     check(S, 'identical_render_under_both_preferences', shots.reduce.png === shots['no-preference'].png);
   }
 
-  /* keyboard: skip link → brand → menu → 4 街 → 4 作品 → スレッドを読む（12 meaningful stops）、focus-visible の outline が見える */
+  /* keyboard: skip link → brand → menu → hero スレッドを見る → 4 街 → 4 作品 → スレッドを読む（13 meaningful stops）、focus-visible の outline が見える */
   for (const w of [390, 1440]) {
     const S = `keyboard-${w}`;
     const ctx = await browser.newContext({ viewport: { width: w, height: w < 500 ? 844 : 900 }, isMobile: w < 500, hasTouch: w < 500, deviceScaleFactor: 1, reducedMotion: 'reduce' });
     const page = await ctx.newPage();
     await page.goto(base + 'index.html', { waitUntil: 'load' });
     const order = [];
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 13; i++) {
       await page.keyboard.press('Tab');
       order.push(await page.evaluate(() => {
         const el = document.activeElement; if (!el || el === document.body) return { el: 'BODY' };
@@ -276,10 +280,11 @@ const near = (a, b, tol) => typeof a === 'number' && Math.abs(a - b) <= tol;
       if (order[order.length - 1].el === 'BODY') break;
     }
     const names = order.map((o) => o.el).join('>');
-    check(S, 'tab_order_reaches_the_real_targets', names.startsWith('skip-link>hc-brand-link>hc-menu-trigger>hc-city>hc-city>hc-city>hc-city>hc-work>hc-work>hc-work>hc-work'), names);
+    check(S, 'tab_order_reaches_the_real_targets', names.startsWith('skip-link>hc-brand-link>hc-menu-trigger>hc-hero-cta>hc-city>hc-city>hc-city>hc-city>hc-work>hc-work>hc-work>hc-work'), names);
+    check(S, 'hero_cta_is_the_fourth_stop_to_the_thread', order[3] && order[3].el === 'hc-hero-cta' && order[3].href === './thread.html?thread=koenji-awaodori', order[3]);
     check(S, 'work_anchors_follow_the_four_cities_in_order', order.filter((o) => o.el === 'hc-work').map((o) => o.href).join('|') === './works.html#book|./works.html#film|./works.html#music|./works.html#video', order.filter((o) => o.el === 'hc-work').map((o) => o.href));
     check(S, 'focus_visible_outline_on_every_stop', order.filter((o) => o.el !== 'BODY').every((o) => o.fv && o.outline), order.filter((o) => o.el !== 'BODY' && !(o.fv && o.outline)));
-    check(S, 'route_holds_not_in_tab_order', order.every((o) => !/route|hold|section-more|reality-cta|hero-cta/.test(o.el)), names);
+    check(S, 'route_holds_not_in_tab_order', order.every((o) => !/route|hold|section-more|reality-cta/.test(o.el)), names);
     check(S, 'thread_read_anchor_follows_the_four_works', names.includes('hc-work>hc-work>hc-work>hc-work>hc-thread-read') && order.some((o) => o.el === 'hc-thread-read' && o.href === './thread.html?thread=koenji-awaodori'), names);
     // menu by keyboard
     await page.focus('#siteMenuButton');

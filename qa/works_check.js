@@ -126,7 +126,7 @@ const EXTERNAL_SET = {
   'https://ebook.shogakukan.co.jp/detail.php?bc=093867650000d0000000&gid=1000': { label: '新装版を確認する ↗', section: 'book', official: true },
   'https://jfdb.jp/title/2240': { label: '作品情報を確認する ↗', section: 'film', official: false },
   'https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204': { label: '音源を聴く ↗', section: 'music', official: true },
-  'https://borisheavyrocks.com/discography/4525/': { label: '録音情報を確認する ↗', section: 'music', official: false },
+  'https://borisheavyrocks.com/discography/4525/': { label: '録音日と会場を確認する ↗', section: 'music', official: false },
   'https://www.loft-prj.co.jp/schedule/shelter': { label: 'いまのSHELTERを見る ↗', section: 'music', official: true },
   'https://www.youtube.com/watch?v=dt33RGSRuo0': { label: '映像を見る ↗', section: 'video', official: true },
   'https://www.koenji-awaodori.com/': { label: '東京高円寺阿波おどり公式を見る ↗', section: 'video', official: true }
@@ -165,7 +165,7 @@ const EXTERNAL_SET = {
 /* BOOK */
 {
   const s = textOf(sectionOf('book'));
-  for (const c of ['本', '森崎書店の日々', '八木沢里志', '編集部の読み', '一冊の物語を辿ると、映画になったあと、その先の神保町まで見えてきます。', '本 → 映画 → 神保町', 'この本から辿る',
+  for (const c of ['本', '森崎書店の日々', '八木沢里志', '編集部の読み', '一冊の物語を辿ると、映画になったあと、その先の神保町まで見えてきます。', 'つながり：この本が映画になり、その映画は神保町で撮影されました。', 'この本から辿る',
     '現在は2025年刊の新装版で読むことができます。', '新装版を確認する']) check(s.includes(c), `#book copy missing: ${c}`);
   check(sectionOf('book').includes('<p id="wk-book-category" class="wk-category">本</p>') && sectionOf('book').includes('<h2 id="wk-book-title" class="wk-object">森崎書店の日々</h2>') && sectionOf('book').includes('<p class="wk-byline">八木沢里志</p>'), '#book category / object / byline markup');
   check(!/ページ|\d+頁|\d+ページ/.test(s), '#book must not show the current edition page count');
@@ -173,7 +173,7 @@ const EXTERNAL_SET = {
 /* FILM */
 {
   const s = textOf(sectionOf('film'));
-  for (const c of ['映画', '森崎書店の日々', '監督・脚本：日向朝子 ／ 2010', '編集部の読み', '映画の背景に見えていた街が、作品を実際につくった場所として前に出てきます。', '映画 → 原作 → 神保町', 'この映画から辿る', '作品情報を確認する']) {
+  for (const c of ['映画', '森崎書店の日々', '監督・脚本：日向朝子 ／ 2010', '編集部の読み', '映画の背景に見えていた街が、作品を実際につくった場所として前に出てきます。', 'つながり：この映画には原作があり、神保町で撮影されました。', 'この映画から辿る', '作品情報を確認する']) {
     check(s.includes(c), `#film copy missing: ${c}`);
   }
   check(sectionOf('film').includes('<p id="wk-film-category" class="wk-category">映画</p>') && sectionOf('film').includes('<h2 id="wk-film-title" class="wk-object">森崎書店の日々</h2>') && sectionOf('film').includes('<p class="wk-byline">監督・脚本：日向朝子 ／ 2010</p>'), '#film category / object / byline markup');
@@ -183,11 +183,11 @@ const EXTERNAL_SET = {
   const raw = sectionOf('music');
   const s = textOf(raw);
   for (const c of ['音楽', '不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204', 'Boris with Michio Kurihara', '編集部の読み',
-    'ライブ盤を、曲の集まりだけでなく、2007年2月4日の下北沢SHELTERで起きた一度の演奏として聴き直します。', 'ライブ盤 → 2007.2.4 → 下北沢SHELTER', '音源を聴く', '録音情報を確認する', 'いまのSHELTERを見る',
+    'ライブ盤を、曲の集まりだけでなく、2007年2月4日の下北沢SHELTERで起きた一度の演奏として聴き直します。', 'つながり：2007年2月4日、下北沢SHELTERで録音されたライブ盤です。', '音源を聴く', '録音日と会場を確認する', 'いまのSHELTERを見る',
     'この音は、誰と、どこで、どの時間に生まれたんだろう？']) check(s.includes(c), `#music copy missing: ${c}`);
   check(raw.includes('<h2 id="wk-music-title" class="wk-object">不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204</h2>') && raw.includes('<p class="wk-byline">Boris with Michio Kurihara</p>'), '#music object / byline markup');
-  const order = ['音源を聴く', '録音情報を確認する', 'いまのSHELTERを見る', 'この音は、誰と'].map((t) => s.indexOf(t));
-  check(order.every((x, i) => x >= 0 && (i === 0 || x > order[i - 1])), '#music order must be 音源を聴く → 録音情報を確認する → いまのSHELTERを見る → transfer question');
+  const order = ['音源を聴く', '録音日と会場を確認する', 'いまのSHELTERを見る', 'この音は、誰と'].map((t) => s.indexOf(t));
+  check(order.every((x, i) => x >= 0 && (i === 0 || x > order[i - 1])), '#music order must be 音源を聴く → 録音日と会場を確認する → いまのSHELTERを見る → transfer question');
   check(raw.includes('<p class="wk-question">この音は、誰と、どこで、どの時間に生まれたんだろう？</p>'), 'music transfer question must be a single paragraph');
   check(!/4th Jan 2007|2007-01-04|1月4日|borisheavyrocks\.com\/news\/4479/.test(html), 'the Boris news misprint (4th Jan 2007) must not be a source');
   check(!/<img|<audio|<iframe|bandcamp\.com\/EmbeddedPlayer|album art|アルバムアート/.test(raw), '#music must carry no album art / embedded player');
@@ -199,13 +199,19 @@ const EXTERNAL_SET = {
   for (const c of ['映像', '第66回 東京高円寺阿波おどり - after movie -', '東京高円寺阿波おどり ／ 2025', 'この映像について',
     '2025年8月23日・24日に行われた第66回東京高円寺阿波おどりを伝える、主催団体の公式映像です。', '編集部の読み',
     '踊り手の動きと街路の流れを続けて見ると、高円寺の通りが背景ではなく、出来事を成立させる場所として見えてきます。',
-    '公式映像 → 第66回東京高円寺阿波おどり → 高円寺', '映像を見る', '東京高円寺阿波おどり公式を見る']) check(s.includes(c), `#video copy missing: ${c}`);
+    'つながり：高円寺の街で行われる阿波おどりを記録した、主催団体の公式映像です。', '映像を見る', '東京高円寺阿波おどり公式を見る']) check(s.includes(c), `#video copy missing: ${c}`);
   check(raw.includes('<h2 id="wk-video-title" class="wk-object">第66回 東京高円寺阿波おどり - after movie -</h2>') && raw.includes('<p class="wk-byline">東京高円寺阿波おどり ／ 2025</p>'), '#video object / byline markup');
   check(/<div class="wk-info" data-layer="claim">\s*<p class="wk-info-label">この映像について<\/p>\s*<p class="wk-info-text">2025年8月23日・24日に行われた第66回東京高円寺阿波おどりを伝える、主催団体の公式映像です。<\/p>\s*<\/div>/.test(raw), 'video fact block must be the claim layer with the frozen fact text');
   check(/<section class="wk-reading" data-layer="reading"[^>]*>\s*<p class="wk-reading-label">編集部の読み<\/p>\s*<p class="wk-reading-text">踊り手の動きと街路の流れを続けて見ると、高円寺の通りが背景ではなく、出来事を成立させる場所として見えてきます。<\/p>\s*<\/section>/.test(raw), 'video editorial reading must be a separate reading layer with the human-approved sentence');
   check(raw.indexOf('wk-info') < raw.indexOf('wk-reading'), 'video fact block comes before the editorial reading');
   check(!/再生回数|再生数|いいね|フォロワー|登録者|views|likes|subscribers|チャンネル登録/i.test(s), '#video must carry no popularity copy');
   check(!/<img|<iframe|<video|ytimg|youtube\.com\/embed|youtube-nocookie/.test(raw), '#video must carry no thumbnail / embed');
+}
+/* FOUNDER PREVIEW FIX B: relation preview は矢印記号ではなく、同じ factual meaning の平文 1 文 */
+{
+  const REL = { book: 'つながり：この本が映画になり、その映画は神保町で撮影されました。', film: 'つながり：この映画には原作があり、神保町で撮影されました。', music: 'つながり：2007年2月4日、下北沢SHELTERで録音されたライブ盤です。', video: 'つながり：高円寺の街で行われる阿波おどりを記録した、主催団体の公式映像です。' };
+  for (const [id, sentence] of Object.entries(REL)) check(sectionOf(id).includes(`<p class="wk-relation">${sentence}</p>`), `#${id} relation sentence must be exactly「${sentence}」`);
+  check((html.match(/class="wk-relation"/g) || []).length === 4 && !/wk-node|wk-arrow| → /.test(htmlCode), 'no symbolic arrow relation preview remains on works.html');
 }
 /* 全 section: 編集部の読み は reading layer、fact badge・検証状態を持たない */
 {
@@ -472,7 +478,7 @@ morisakiScenes(film, 'film');
     check(!home.includes(`data-route-hold="work-${w}"`), `HOME hold work-${w} must be retired`);
     check(html.includes(`<section id="${w}" class="wk-work" data-work="${w}"`), `works.html#${w} must exist as the anchor target`);
   }
-  check((home.match(/data-route-hold="/g) || []).length === 3 && ['thread-index', 'all-cities', 'spots'].every((h) => home.includes(`data-route-hold="${h}"`)), 'HOME route holds must be exactly thread-index / all-cities / spots');
+  check(!home.includes('data-route-hold'), 'HOME carries no route hold (Founder Preview Fix A5)');
   check(!/<a class="[^"]*hc-work[^"]*shelf-entry|<a class="[^"]*shelf-entry[^"]*hc-work/.test(home), 'HOME work anchors must not carry .shelf-entry');
   check((home.match(/class="hc-city shelf-entry"/g) || []).length === 4, 'HOME shelf entries stay exactly four');
   /* card 内部は不変（media / foot / icon / label / mark） */
@@ -505,17 +511,30 @@ morisakiScenes(film, 'film');
   for (const w of ['次の3つ', 'おすすめ', 'ランキング', '人気', 'いいね', 'フォロー', 'シェア', '限定', '会員', 'アプリ', 'クイズ', '診断', '気分', '名盤']) check(!contentCode.includes(w), `thread_content.js must not contain: ${w}`);
 }
 
-/* ---- 9. KOENJI object は frozen source と byte 一致（git があるときだけ観測） ---- */
-
+/* ---- 9. KOENJI object は frozen source と「modes / cue を外しただけ」で同一（git があるときだけ観測） ----
+   FOUNDER PREVIEW FIX C: location mode と cue UX は Founder 決定で削除。facts / nodes / relations /
+   sources / Reality Return / status notes / ending / image / header / guidance / S1 / S3 / S5 は
+   frozen source 2389b0ec と deep-equal。S0 / S4 は cue を除いて同一、S2 は AFTER cue beat を除いて同一。 */
 {
-  const slice = (s) => { const at = s.indexOf('  var KOENJI = {'); if (at < 0) return null; const end = s.indexOf('\n  };', at); return end < 0 ? null : s.slice(at, end + 5); };
-  const cur = slice(contentJs);
-  check(!!cur, 'KOENJI object must remain in thread_content.js');
-  let frozen = null;
-  try { frozen = require('child_process').execFileSync('git', ['-C', root, 'show', '2389b0ec2ddf90726baaaed56b98e5d17966039d:thread_content.js'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }); } catch (e) { frozen = null; }
-  if (frozen === null) console.log('- NOT OBSERVABLE: frozen source 2389b0ec is not readable here; KOENJI byte identity was not compared');
-  else check(cur === slice(frozen), 'KOENJI object must be byte-identical to the frozen source (2389b0ec)');
-  if (frozen !== null) check(contentJs.slice(0, contentJs.indexOf('  var KOENJI = {')) === frozen.slice(0, frozen.indexOf('  var KOENJI = {')), 'thread_content.js header must be unchanged');
+  let frozenJs = null;
+  try { frozenJs = require('child_process').execFileSync('git', ['-C', root, 'show', '2389b0ec2ddf90726baaaed56b98e5d17966039d:thread_content.js'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }); } catch (e) { frozenJs = null; }
+  if (frozenJs === null) console.log('- NOT OBSERVABLE: frozen source 2389b0ec is not readable here; KOENJI invariant was not compared');
+  else {
+    const fsb = { window: {} }; vm.createContext(fsb); vm.runInContext(frozenJs, fsb);
+    const OLD = (fsb.window.V3_THREAD_CONTENT.threads || []).find((t) => t.threadId === 'koenji-awaodori');
+    const J = (v) => JSON.stringify(v);
+    check(!!OLD && !!koenji, 'KOENJI must exist in both frozen source and candidate');
+    for (const k of ['threadId', 'eyebrow', 'title', 'documentTitle', 'subjectLabel', 'editor', 'lens', 'checkedAt', 'checkedLabel', 'duration', 'guidance', 'image', 'nodes', 'facts', 'relations', 'sources', 'presentReturn', 'realityDestinations', 'ending']) {
+      check(J(koenji[k]) === J(OLD[k]), `KOENJI.${k} must be deep-equal to the frozen source`);
+    }
+    check(!('modes' in koenji) && 'modes' in OLD, 'KOENJI modes removed (was present in the frozen source)');
+    const strip = (s) => { const c = JSON.parse(J(s)); delete c.cue; if (c.beats) c.beats = c.beats.filter((b) => b.kind !== 'cue'); return c; };
+    check(koenji.scenes.length === 6 && OLD.scenes.length === 6 && koenji.scenes.every((s, i) => J(s) === J(strip(OLD.scenes[i]))), 'KOENJI scenes must equal the frozen scenes with only cue / cue beats removed');
+    check(!koenji.scenes.some((s) => s.cue || (s.beats || []).some((b) => b.kind === 'cue' || b.cue)), 'KOENJI carries no cue anywhere');
+    check((koenji.scenes.find((s) => s.id === 's2').beats || []).map((b) => b.id).join('|') === 'before|encounter|question|evidence|reveal', 'KOENJI S2 keeps before / encounter / question / evidence / reveal');
+    check(!!koenji.scenes.find((s) => s.id === 's4').editorialReading && J(koenji.scenes.find((s) => s.id === 's4').editorialReading) === J(OLD.scenes.find((s) => s.id === 's4').editorialReading), 'KOENJI S4 editorial reading unchanged');
+    check(contentJs.slice(0, contentJs.indexOf('  var KOENJI = {')) === frozenJs.slice(0, frozenJs.indexOf('  var KOENJI = {')), 'thread_content.js header must be unchanged');
+  }
 }
 
 if (failures.length) {
@@ -524,4 +543,4 @@ if (failures.length) {
   process.exit(1);
 }
 console.log('WORKS_CHECK_GO');
-console.log(`works=4 (#book #film #music #video); external actions=${externalLinks.length} (click-only, frozen set); internal routes=2; morisaki threads=2 (shared nodes/facts/relations/sources); relations=${book.relations.length} (adapted_as=1, adapted_from=0); destinations=${book.realityDestinations.length} (Yaguchi editorial example, no why); HOME holds=3 + works anchors=4; sitemap works=0; GA4 events=8`);
+console.log(`works=4 (#book #film #music #video); external actions=${externalLinks.length} (click-only, frozen set); internal routes=2; morisaki threads=2 (shared nodes/facts/relations/sources); relations=${book.relations.length} (adapted_as=1, adapted_from=0); destinations=${book.realityDestinations.length} (Yaguchi editorial example, no why); HOME holds=0 + works anchors=4; sitemap works=0; GA4 events=8`);

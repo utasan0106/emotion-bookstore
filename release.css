@@ -2154,6 +2154,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   border: 1px solid rgba(194,160,104,.85);
   border-radius: 4px;
   background: transparent;
+  text-decoration: none;
 }
 .hc-hero-cta-label {
   font-family: var(--serif);
@@ -2602,6 +2603,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 
 /* -------------------------------------------------------------- 手ざわり */
 
+.home-canonical .hc-hero-cta:focus-visible,
 .home-canonical .hc-city:focus-visible,
 .home-canonical .hc-brand-link:focus-visible,
 .home-canonical .hc-menu-trigger:focus-visible,

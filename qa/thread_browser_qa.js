@@ -137,7 +137,7 @@ const MEASURE = () => {
   };
 };
 
-const FONT_PROBES = [['h1', '.th-title'], ['scene', '.th-scene-title'], ['claim', '.th-claim-text'], ['cue', '.th-cue-text'], ['question', '.th-question'],
+const FONT_PROBES = [['h1', '.th-title'], ['scene', '.th-scene-title'], ['claim', '.th-claim-text'], ['question', '.th-question'],
   ['guide', '.th-guidance-item'], ['verification', '.th-relation[data-relation-id="rel:learned-1961-62"] > .th-support > .th-verification'], ['flag', '.th-evidence-flag'],
   /* source card は開いた drawer の中のものを読む（閉じた details の中は描画されず glyph が無い） */
   ['source', '.th-relation[data-relation-id="rel:learned-1961-62"] .th-source-name'], ['variant', '.th-relation[data-relation-id="rel:learned-1961-62"] .th-source-variant-reading'],
@@ -232,7 +232,8 @@ async function elementShot(page, selector, name, width) {
       { head: m.headRect, scenes: m.scenes.map((s) => [s.id, s.rect]) });
     check(S, 'scenes_in_order_s0_to_s5', m.scenes.map((s) => s.id).join('|') === 's0|s1|s2|s3|s4|s5' &&
       m.scenes.map((s) => s.title).join('|') === 'いま|1957 ／ はじまる|1957のあと|1963 ／ 名を変える|いま、もう一度|現実へ', m.scenes.map((s) => [s.id, s.title]));
-    check(S, 's2_six_beats_in_order', m.beats.map((b) => b.id).join('|') === 'before|encounter|question|evidence|reveal|after' && m.beats.every((b, i) => i === 0 || b.y > m.beats[i - 1].y), m.beats.map((b) => [b.id, b.y]));
+    /* FOUNDER PREVIEW FIX C3: AFTER cue beat は無い。五拍。 */
+    check(S, 's2_five_beats_in_order', m.beats.map((b) => b.id).join('|') === 'before|encounter|question|evidence|reveal' && m.beats.every((b, i) => i === 0 || b.y > m.beats[i - 1].y), m.beats.map((b) => [b.id, b.y]));
     const revealAt = m.beats.findIndex((b) => b.id === 'reveal');
     check(S, 'no_learned_copy_before_reveal', revealAt > 0 && m.beats.slice(0, revealAt).every((b) => !/教わ|learned/.test(b.text)), m.beats.slice(0, revealAt).map((b) => b.id));
     const rel = Object.fromEntries(m.relations.map((r) => [r.id, r]));
@@ -252,8 +253,8 @@ async function elementShot(page, selector, name, width) {
     /* HQ LIMITED FIX 01 UNIT A: 木場連 copy */
     const encounterText = (m.beats.find((b) => b.id === 'encounter') || {}).text || '';
     check(S, 'kiba_ren_copy_is_the_hq_fix', /徳島県人会で結成された連。/.test(encounterText) && !m.text.includes('徳島の阿波おどりの連。'), encounterText.slice(0, 120));
-    check(S, 'mode_radios_remote_default', m.radios.length === 2 && m.radios[0].value === 'remote' && m.radios[0].checked && m.radios[1].value === 'onsite' && !m.radios[1].checked &&
-      /いまは、高円寺にいない/.test(m.radios[0].label) && /いま、高円寺にいる/.test(m.radios[1].label) && m.radios.every((r) => r.h >= 44), m.radios);
+    /* FOUNDER PREVIEW FIX C1 / C2 / C4: location mode fieldset も cue block も出さない。 */
+    check(S, 'no_mode_fieldset_no_cue', m.radios.length === 0 && m.cues.length === 0 && !/合図|高円寺にいるふり|いまは、高円寺にいない|いま、高円寺にいる|どこで読んでいますか|20秒/.test(m.text), { radios: m.radios.length, cues: m.cues.length });
     check(S, 'approved_image_once_same_origin_loaded', m.imgs.length === 1 && /home-thread-koenji-awaodori\.jpg$/.test(m.imgs[0].src) && m.imgs[0].loaded && m.imgs[0].sameOrigin && (m.imgs[0].alt || '').length > 0, m.imgs);
     check(S, 'reality_destinations_are_the_three', m.dest.length === 3 && m.dest.every((d, i) => d.label === DESTINATIONS[i][0] && d.href === DESTINATIONS[i][1] && /noopener/.test(d.rel || '') && d.target === '_blank') && !m.dest.some((d) => /stage04/.test(d.href)), m.dest);
     check(S, 'ended_festival_and_plus_are_not_upcoming', m.statusText.some((t) => /2026年の本祭/.test(t) && /終了/.test(t) && /最終確認：2026-09-04/.test(t)) && m.statusText.some((t) => /plus\+/.test(t) && /休止/.test(t)) && !/開催予定|これから開催/.test(m.text), m.statusText);
@@ -310,25 +311,9 @@ async function elementShot(page, selector, name, width) {
     const closed = await page.evaluate(() => document.querySelector('.th-relation[data-relation-id="rel:learned-1961-62"] .th-evidence').open);
     check(S, 'drawer_closes_again', closed === false, closed);
 
-    /* mode は合図の文だけを変える。事実・関係・資料・検証状態・並び順・URL・保存は不変。 */
-    const snapshot = () => page.evaluate(() => ({
-      facts: [...document.querySelectorAll('.th-scene-title, .th-relation-time, .th-relation-nodes, .th-claim, .th-support, .th-reading, .th-destination, .th-status, .th-beat-label, .th-pair, .th-question, .th-evidence-list, .th-end')].map((e) => e.textContent.replace(/\s+/g, ' ')).join('\n'),
-      order: [...document.querySelectorAll('[data-relation-id], [data-source-id], [data-beat], [data-scene]')].map((e) => e.getAttribute('data-relation-id') || e.getAttribute('data-source-id') || e.getAttribute('data-beat') || e.getAttribute('data-scene')).join('|'),
-      cues: [...document.querySelectorAll('.th-cue-text')].map((e) => e.textContent),
-      search: location.search, writes: window.__storageWrites, live: document.getElementById('live').textContent
-    }));
-    const before = await snapshot();
-    await page.click('label.th-mode-option:has(input[value="onsite"])');
-    await page.waitForTimeout(150);
-    const after = await snapshot();
-    check(S, 'mode_changes_only_cue_copy', after.facts === before.facts && after.order === before.order && after.cues.length === before.cues.length && after.cues.length === 3 &&
-      after.cues.every((c, i) => c !== before.cues[i]) && after.cues.every((c) => /通り|目の前/.test(c)) && before.cues.every((c) => /思い浮かべて/.test(c)), { before: before.cues, after: after.cues });
-    check(S, 'mode_is_not_persisted_anywhere', after.search === '?thread=koenji-awaodori' && after.writes === 0, { search: after.search, writes: after.writes });
-    check(S, 'mode_change_is_announced', /いま、高円寺にいる/.test(after.live) && /合図/.test(after.live), after.live);
-    await page.click('label.th-mode-option:has(input[value="remote"])');
-    await page.waitForTimeout(150);
-    const back = await snapshot();
-    check(S, 'mode_switches_back_to_remote_cues', back.cues.join('|') === before.cues.join('|') && back.facts === before.facts, back.cues);
+    /* FOUNDER PREVIEW FIX C: mode は無いので、URL / 保存 / live region が何も変わらないことだけを見る。 */
+    const noMode = await page.evaluate(() => ({ search: location.search, writes: window.__storageWrites, live: document.getElementById('live').textContent, fieldsets: document.querySelectorAll('fieldset, input').length }));
+    check(S, 'no_mode_controls_no_state', noMode.search === '?thread=koenji-awaodori' && noMode.writes === 0 && noMode.live === '' && noMode.fieldsets === 0, noMode);
 
     /* 外部 source が落ちても資料の metadata は消えない（runtime は fetch しないので、
        route を落としても名前と URL がそのまま残る） */
@@ -357,7 +342,7 @@ async function elementShot(page, selector, name, width) {
 
     /* 証跡 */
     if (OUT) {
-      if (v.name === 'w390' || v.name === 'w1440') await elementShot(page, '#th-s2', `THREAD_S2_SIX_BEATS_${v.width}`, v.width);
+      if (v.name === 'w390' || v.name === 'w1440') await elementShot(page, '#th-s2', `THREAD_S2_FIVE_BEATS_${v.width}`, v.width);
       if (v.dsf === 2) {
         const docH = await page.evaluate(() => document.documentElement.scrollHeight);
         await page.setViewportSize({ width: 720, height: Math.min(docH, 6000) });
@@ -380,7 +365,7 @@ async function elementShot(page, selector, name, width) {
       return { overflow: doc.scrollWidth > doc.clientWidth + 1, text: document.body.innerText.length, relationBorder: bw('.th-relation'), factBorder: bw('.th-fact'), readingBorder: bw('.th-reading'), readingStyle: bs('.th-reading'), relationStyle: bs('.th-relation'), radios: document.querySelectorAll('input[name="thread-mode"]').length, summaries: document.querySelectorAll('summary').length, exit: !!document.querySelector('.th-exit') };
     });
     check(S, 'no_horizontal_overflow', !fc.overflow);
-    check(S, 'content_is_not_lost', fc.text > 400 && fc.radios === 2 && fc.summaries >= 5 && fc.exit, fc);
+    check(S, 'content_is_not_lost', fc.text > 400 && fc.radios === 0 && fc.summaries >= 5 && fc.exit, fc);
     check(S, 'fact_and_reading_boxes_stay_distinguishable', fc.relationBorder >= 1 && fc.factBorder >= 1 && fc.readingBorder >= 1 && fc.readingStyle === 'dashed' && fc.relationStyle === 'solid', fc);
     check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
     check(S, 'no_js_error', errs.length === 0, errs.slice(0, 2));
@@ -404,7 +389,7 @@ async function elementShot(page, selector, name, width) {
     check(S, 'identical_render_under_both_preferences', shots.reduce.png === shots['no-preference'].png);
   }
 
-  /* ---- keyboard: skip → brand → menu → radios → summaries → 外部 link → 出口 → footer ---- */
+  /* ---- keyboard: skip → brand → menu → summaries → 外部 link → 出口 → footer（radio は無い） ---- */
   for (const w of [390, 1440]) {
     const S = `keyboard-${w}`;
     const { ctx, page } = await openThread(browser, base, origin, { viewport: { width: w, height: w < 500 ? 844 : 900 }, isMobile: w < 500, hasTouch: w < 500 });
@@ -421,16 +406,10 @@ async function elementShot(page, selector, name, width) {
       if (info.el === 'BODY') break;
     }
     const names = order.map((o) => o.el + (o.value ? `[${o.value}]` : '')).join('>');
-    check(S, 'tab_order_reaches_every_real_control', names.startsWith('skip-link>brand-home>menu-trigger>th-mode-input[remote]>th-evidence-summary') &&
+    check(S, 'tab_order_reaches_every_real_control', names.startsWith('skip-link>brand-home>menu-trigger>th-evidence-summary') && !/th-mode-input/.test(names) &&
       (names.match(/th-evidence-summary/g) || []).length === 5 && (names.match(/th-destination-link/g) || []).length === 3 && /th-destination-link>th-destination-link>th-destination-link>th-exit>footer-brand/.test(names), names);
     check(S, 'focus_visible_outline_on_every_stop', order.filter((o) => o.el !== 'BODY').every((o) => o.fv && o.outline), order.filter((o) => o.el !== 'BODY' && !(o.fv && o.outline)));
     check(S, 'no_source_link_in_tab_order_while_drawers_are_closed', !/th-source-link/.test(names), names);
-    // radio group: arrow keys move the choice, cues follow
-    await page.focus('input[name="thread-mode"][value="remote"]');
-    await page.keyboard.press('ArrowDown');
-    await page.waitForTimeout(120);
-    const arrow = await page.evaluate(() => ({ checked: [...document.querySelectorAll('input[name="thread-mode"]')].filter((i) => i.checked).map((i) => i.value).join(), cue: document.querySelector('.th-cue-text').textContent }));
-    check(S, 'arrow_keys_change_mode_and_cue', arrow.checked === 'onsite' && /通り/.test(arrow.cue), arrow);
     // summary by keyboard
     await page.focus('.th-relation[data-relation-id="rel:learned-1961-62"] .th-evidence-summary');
     await page.keyboard.press('Enter');
@@ -539,15 +518,15 @@ async function elementShot(page, selector, name, width) {
       return {
         tag: a.tagName, href: a.getAttribute('href'), text: a.textContent.replace(/\s+/g, ''), w: Math.round(b.width), h: Math.round(b.height), hold: a.hasAttribute('data-route-hold'), tabIndex: a.tabIndex,
         holds: [...document.querySelectorAll('[data-route-hold]')].map((el) => el.getAttribute('data-route-hold')),
-        heroHold: !!document.querySelector('.hc-hero-cta[data-route-hold="thread-index"]'),
+        heroCta: (() => { const a = document.querySelector('.hc-hero-cta'); return a ? a.tagName + ':' + a.getAttribute('href') + ':' + a.hasAttribute('data-route-hold') : null; })(),
         works: [...document.querySelectorAll('a.hc-work')].map((w) => w.getAttribute('data-work') + ':' + w.getAttribute('href')).join('|'),
         sections: document.querySelectorAll('main > section, main > .hc-sheet > section').length
       };
     });
     check(S, 'thread_read_is_a_real_anchor_to_the_exact_route', home.tag === 'A' && home.href === './thread.html?thread=koenji-awaodori' && home.text === 'スレッドを読む→' && !home.hold && home.tabIndex === 0, home);
     check(S, 'thread_read_hit_area_44', home.h === 44 && home.w >= 44, { w: home.w, h: home.h });
-    /* WORKS ENTRY: 作品 4 card は実 anchor になったので hold は 3（thread-index / all-cities / spots） */
-    check(S, 'three_holds_remain_and_hero_stays_held', home.holds.length === 3 && !home.holds.includes('thread-koenji-awaodori') && home.heroHold && home.holds.join('|') === 'thread-index|all-cities|spots', home.holds);
+    /* FOUNDER PREVIEW FIX A1 / A5: hold は 0。hero の スレッドを見る も同じ Thread への実 anchor。 */
+    check(S, 'no_holds_remain_and_hero_is_a_real_anchor', home.holds.length === 0 && home.heroCta === 'A:./thread.html?thread=koenji-awaodori:false', { holds: home.holds, heroCta: home.heroCta });
     check(S, 'four_work_cards_are_real_anchors', home.works === 'book:./works.html#book|film:./works.html#film|music:./works.html#music|video:./works.html#video', home.works);
     await page.focus('.hc-thread-read');
     const focused = await page.evaluate(() => { const el = document.activeElement; const cs = getComputedStyle(el); return { el: el.className, fv: el.matches(':focus-visible'), outline: cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) >= 2 }; });

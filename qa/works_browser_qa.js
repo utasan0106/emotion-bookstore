@@ -36,7 +36,7 @@ const EXTERNAL = {
   'https://ebook.shogakukan.co.jp/detail.php?bc=093867650000d0000000&gid=1000': { label: '新装版を確認する ↗', section: 'book', official: true },
   'https://jfdb.jp/title/2240': { label: '作品情報を確認する ↗', section: 'film', official: false },
   'https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204': { label: '音源を聴く ↗', section: 'music', official: true },
-  'https://borisheavyrocks.com/discography/4525/': { label: '録音情報を確認する ↗', section: 'music', official: false },
+  'https://borisheavyrocks.com/discography/4525/': { label: '録音日と会場を確認する ↗', section: 'music', official: false },
   'https://www.loft-prj.co.jp/schedule/shelter': { label: 'いまのSHELTERを見る ↗', section: 'music', official: true },
   'https://www.youtube.com/watch?v=dt33RGSRuo0': { label: '映像を見る ↗', section: 'video', official: true },
   'https://www.koenji-awaodori.com/': { label: '東京高円寺阿波おどり公式を見る ↗', section: 'video', official: true }
@@ -141,7 +141,7 @@ const MEASURE = () => {
 };
 
 const FONT_PROBES = [['h1', '.wk-title'], ['lead', '.wk-lead'], ['category', '.wk-category'], ['object', '.wk-object'], ['byline', '.wk-byline'], ['reading', '.wk-reading-text'],
-  ['relation', '.wk-node'], ['route', '.wk-route'], ['action', '.wk-action'], ['current', '.wk-current'], ['question', '.wk-question'], ['info', '.wk-info-text'], ['exit', '.other-shelves']];
+  ['relation', '.wk-relation'], ['route', '.wk-route'], ['action', '.wk-action'], ['current', '.wk-current'], ['question', '.wk-question'], ['info', '.wk-info-text'], ['exit', '.other-shelves']];
 async function fonts(ctx, page) {
   const cdp = await ctx.newCDPSession(page);
   await cdp.send('DOM.enable'); await cdp.send('CSS.enable');
@@ -229,16 +229,17 @@ async function elementShot(page, selector, name, width) {
     check(S, 'one_column_640_max', !!m.rootRect && m.rootRect.w <= 640 && m.sections.every((s) => s.rect.x === m.rootRect.x && Math.abs(s.rect.w - m.rootRect.w) <= 1), { root: m.rootRect, sections: m.sections.map((s) => s.rect) });
 
     check(S, 'book_copy_exact', !!sec.book && sec.book.category === '本' && sec.book.object === '森崎書店の日々' && sec.book.byline === '八木沢里志' && sec.book.readingLabel === '編集部の読み' &&
-      sec.book.reading === '一冊の物語を辿ると、映画になったあと、その先の神保町まで見えてきます。' && sec.book.relation === '本 → 映画 → 神保町' && sec.book.current === '現在は2025年刊の新装版で読むことができます。' && !sec.book.info, sec.book);
+      sec.book.reading === '一冊の物語を辿ると、映画になったあと、その先の神保町まで見えてきます。' && sec.book.relation === 'つながり：この本が映画になり、その映画は神保町で撮影されました。' && sec.book.current === '現在は2025年刊の新装版で読むことができます。' && !sec.book.info, sec.book);
     check(S, 'film_copy_exact', !!sec.film && sec.film.category === '映画' && sec.film.object === '森崎書店の日々' && sec.film.byline === '監督・脚本：日向朝子 ／ 2010' && sec.film.readingLabel === '編集部の読み' &&
-      sec.film.reading === '映画の背景に見えていた街が、作品を実際につくった場所として前に出てきます。' && sec.film.relation === '映画 → 原作 → 神保町' && !sec.film.info, sec.film);
+      sec.film.reading === '映画の背景に見えていた街が、作品を実際につくった場所として前に出てきます。' && sec.film.relation === 'つながり：この映画には原作があり、神保町で撮影されました。' && !sec.film.info, sec.film);
     check(S, 'music_copy_exact_boris', !!sec.music && sec.music.category === '音楽' && sec.music.object === '不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204' && sec.music.byline === 'Boris with Michio Kurihara' &&
-      sec.music.readingLabel === '編集部の読み' && sec.music.reading === 'ライブ盤を、曲の集まりだけでなく、2007年2月4日の下北沢SHELTERで起きた一度の演奏として聴き直します。' && sec.music.relation === 'ライブ盤 → 2007.2.4 → 下北沢SHELTER' &&
+      sec.music.readingLabel === '編集部の読み' && sec.music.reading === 'ライブ盤を、曲の集まりだけでなく、2007年2月4日の下北沢SHELTERで起きた一度の演奏として聴き直します。' && sec.music.relation === 'つながり：2007年2月4日、下北沢SHELTERで録音されたライブ盤です。' &&
       sec.music.question === 'この音は、誰と、どこで、どの時間に生まれたんだろう？' && !sec.music.info, sec.music);
     check(S, 'video_fact_and_reading_are_separate_layers', !!sec.video && sec.video.category === '映像' && sec.video.object === '第66回 東京高円寺阿波おどり - after movie -' && sec.video.byline === '東京高円寺阿波おどり ／ 2025' &&
       !!sec.video.info && sec.video.info.layer === 'claim' && sec.video.info.label === 'この映像について' && sec.video.info.text === '2025年8月23日・24日に行われた第66回東京高円寺阿波おどりを伝える、主催団体の公式映像です。' && sec.video.info.border === 'solid' &&
       sec.video.readingLayer === 'reading' && sec.video.readingLabel === '編集部の読み' && sec.video.reading === '踊り手の動きと街路の流れを続けて見ると、高円寺の通りが背景ではなく、出来事を成立させる場所として見えてきます。' &&
-      sec.video.relation === '公式映像 → 第66回東京高円寺阿波おどり → 高円寺' && sec.video.infoBeforeReading > 0, sec.video);
+      sec.video.relation === 'つながり：高円寺の街で行われる阿波おどりを記録した、主催団体の公式映像です。' && sec.video.infoBeforeReading > 0, sec.video);
+    check(S, 'relation_previews_are_plain_sentences', m.sections.every((s) => /^つながり：/.test(s.relation || '') && !/→/.test(s.relation || '')), m.sections.map((s) => s.relation));
     check(S, 'editorial_reading_is_dashed_everywhere', m.sections.every((s) => s.readingLayer === 'reading' && s.readingBorder === 'dashed'), m.sections.map((s) => [s.id, s.readingBorder]));
 
     /* 内部 route（Book / Film）と外部 action（凍結された 7 件、click-only の普通の link） */
@@ -250,7 +251,7 @@ async function elementShot(page, selector, name, width) {
     check(S, 'external_actions_open_safely', external7.every((l) => l.target === '_blank' && /noopener/.test(l.rel || '') && /noreferrer/.test(l.rel || '') && l.referrer === 'no-referrer'), external7.map((l) => [l.href, l.target, l.rel, l.referrer]));
     check(S, 'official_action_only_on_official_or_listening_actions', external7.every((l) => l.official === EXTERNAL[l.href].official && !l.shelfEntry), external7.map((l) => [l.href, l.official]));
     check(S, 'actions_are_links_not_buttons', m.sections.every((s) => s.controls === 0) && m.sections.every((s) => s.links.every((l) => l.display === 'inline-block' && l.bg === 'rgba(0, 0, 0, 0)')), m.sections.map((s) => [s.id, s.controls, s.links.map((l) => [l.display, l.bg])]));
-    check(S, 'music_order_listen_source_reality_question', (() => { const t = sec.music ? sec.music.text : ''; const o = ['音源を聴く', '録音情報を確認する', 'いまのSHELTERを見る', 'この音は、誰と'].map((x) => t.indexOf(x)); return o.every((x, i) => x >= 0 && (i === 0 || x > o[i - 1])); })(), sec.music && sec.music.text.slice(0, 200));
+    check(S, 'music_order_listen_source_reality_question', (() => { const t = sec.music ? sec.music.text : ''; const o = ['音源を聴く', '録音日と会場を確認する', 'いまのSHELTERを見る', 'この音は、誰と'].map((x) => t.indexOf(x)); return o.every((x, i) => x >= 0 && (i === 0 || x > o[i - 1])); })(), sec.music && sec.music.text.slice(0, 200));
     check(S, 'no_media_no_embed_no_thumbnail', m.mainMedia === 0 && m.iframes === 0 && m.sections.every((s) => s.media === 0), { main: m.mainMedia, iframes: m.iframes });
     check(S, 'works_is_static_not_a_thread', m.thread === 0, m.thread);
     check(S, 'real_targets_are_44px', m.targets.length >= 10 && m.targets.every((t) => t.w >= 44 && t.h >= 44), m.targets.filter((t) => t.w < 44 || t.h < 44));
@@ -422,7 +423,7 @@ async function elementShot(page, selector, name, width) {
     await ctx.close();
   }
 
-  /* ---- G. HOME の接続: 4 card → works.html#<work> → 戻る、hold 3、853 geometry ---- */
+  /* ---- G. HOME の接続: 4 card → works.html#<work> → 戻る、route hold 0（Founder Preview Fix）、853 geometry ---- */
   for (const v of [{ name: 'm390', width: 390, height: 844, mobile: true }, { name: 'c853', width: 853, height: 1844, mobile: false }, { name: 'd1440', width: 1440, height: 900, mobile: false }]) {
     const S = `home-${v.name}`;
     const { ctx, page, external, errs } = await openPage(browser, base, origin, { viewport: { width: v.width, height: v.height }, isMobile: v.mobile, hasTouch: v.mobile }, 'index.html');
@@ -440,7 +441,7 @@ async function elementShot(page, selector, name, width) {
     check(S, 'four_work_cards_are_real_anchors_to_works', home.works.length === 4 && home.works.every((w, i) => w.tag === 'A' && w.work === WORKS[i] && w.href === './works.html#' + WORKS[i] && !w.hold && !w.shelfEntry && w.img && w.tabIndex === 0 && w.display === 'block' && w.deco === 'none'), home.works);
     check(S, 'work_card_labels_unchanged', home.works.map((w) => w.label).join('|') === '本|映画|音楽|映像', home.works.map((w) => w.label));
     check(S, 'work_cards_hit_area_44', home.works.every((w) => w.rect.w >= 44 && w.rect.h >= 44), home.works.map((w) => w.rect));
-    check(S, 'three_holds_remain', home.holds.join('|') === 'thread-index|all-cities|spots', home.holds);
+    check(S, 'no_route_holds_remain_on_home', home.holds.length === 0, home.holds);
     if (v.width === 853) check(S, 'work_grid_keeps_853_geometry', home.grid.x === 32 && home.grid.y === 1104 && home.grid.w === 789 && home.grid.h === 143 && home.works.every((w) => w.rect.h === 143 && Math.abs(w.rect.w - 188) <= 1), { grid: home.grid, cards: home.works.map((w) => w.rect) });
     await page.focus('.hc-work[data-work="book"]');
     const focused = await page.evaluate(() => { const el = document.activeElement; const cs = getComputedStyle(el); return { el: el.className, fv: el.matches(':focus-visible'), outline: cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) >= 2 }; });

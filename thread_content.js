@@ -38,17 +38,6 @@
       '歩きながら見ないでください。立ち止まれる場所で。'
     ],
 
-    /* 読む場所。位置情報は使わず、保存もしない。変わるのは合図の文だけで、
-       事実・関係・資料・検証状態・並び順は変わらない。 */
-    modes: {
-      legend: 'いま、どこで読んでいますか',
-      note: 'この選択で変わるのは、見るときの合図の文だけです。事実・関係・資料は変わりません。',
-      options: [
-        { id: 'remote', label: 'いまは、高円寺にいない', isDefault: true },
-        { id: 'onsite', label: 'いま、高円寺にいる' }
-      ]
-    },
-
     /* 承認済み HOME asset を一度だけ使う（credits.html に権利記録あり）。 */
     image: {
       src: './assets/home-thread-koenji-awaodori.jpg',
@@ -162,7 +151,7 @@
       { id: 'src:official-home', kind: 'official', kindLabel: '公式（主催団体）', name: '東京高円寺阿波おどり 公式サイト（トップ）', url: 'https://koenji-awaodori.com/' }
     ],
 
-    /* S0–S5。S2 の六拍（BEFORE → ENCOUNTER → QUESTION → EVIDENCE → REVEAL → AFTER）
+    /* S0–S5。S2 の五拍（BEFORE → ENCOUNTER → QUESTION → EVIDENCE → REVEAL）
        は、この高円寺の learned_from のための構成で、あらゆる Relation の
        共通 template ではない。renderer は beats[] を数に依らず描く。 */
     scenes: [
@@ -172,11 +161,6 @@
         figure: true,
         lead: '高円寺の通りで、連が踊っている。',
         factIds: ['fact:present-groups'],
-        cue: {
-          label: '合図',
-          remote: '高円寺にいるふりはしなくてかまいません。知っている範囲の、いまの高円寺を思い浮かべてください。',
-          onsite: '20秒、画面から目を離して、いまの通りを見てください。'
-        },
         close: 'この状態が、どう始まり、誰から渡ってきたのか。ここから辿る。'
       },
       {
@@ -232,16 +216,6 @@
             kind: 'reveal',
             label: '関係',
             relationIds: ['rel:connected-1961', 'rel:learned-1961-62']
-          },
-          {
-            id: 'after',
-            kind: 'cue',
-            label: 'そのあとで',
-            cue: {
-              label: '合図',
-              remote: '画面を伏せて、20秒。いまの高円寺を、人から人へ渡ってきたものとして思い浮かべてください。',
-              onsite: '画面を伏せて、20秒。目の前の通りを、人から人へ渡ってきたものとして見てください。'
-            }
           }
         ]
       },
@@ -258,11 +232,6 @@
       {
         id: 's4',
         title: 'いま、もう一度',
-        cue: {
-          label: '合図',
-          remote: '画面を伏せて、20秒。いまの高円寺を、もう一度思い浮かべてください。',
-          onsite: '画面を伏せて、20秒。いまの通りを、もう一度見てください。'
-        },
         editorialReading: {
           text: '同じ高円寺の踊りが、人から人へ渡り、この街で名前を変えながら続いてきたものとして見える。——これは編集部の読みです。',
           refs: ['fact:present-groups', 'rel:learned-1961-62', 'rel:renamed-1963']

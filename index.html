@@ -119,9 +119,8 @@
       <div class="hc-hero-body">
         <h1 id="hc-hero-title" class="hc-hero-title"><span class="hc-hero-line">文化の</span><span class="hc-hero-line">つながりを、</span><span class="hc-hero-line">歩く。</span></h1>
         <p class="hc-hero-sub">街から。作品から。ひとつの痕跡から。</p>
-        <!-- ROUTE_HOLD: Cultural Thread の runtime route はまだ無い。
-             見た目のために別の行き先へ結びつけない。 -->
-        <p class="hc-hero-cta" data-route-hold="thread-index"><span class="hc-hero-cta-label">スレッドを見る</span><span class="hc-hero-cta-mark" aria-hidden="true">→</span></p>
+        <!-- HERO CTA は実 anchor（いま辿れる唯一の Thread へ）。label / 見た目は canonical のまま。 -->
+        <a class="hc-hero-cta" href="./thread.html?thread=koenji-awaodori"><span class="hc-hero-cta-label">スレッドを見る</span><span class="hc-hero-cta-mark" aria-hidden="true">→</span></a>
       </div>
 
       <p class="hc-hero-aside"><span class="hc-hero-aside-line">この先に、</span><span class="hc-hero-aside-line">物語がある。</span></p>
@@ -136,8 +135,6 @@
         <div class="hc-section-head">
           <h2 id="hc-cities-title" class="hc-section-title">街から入る</h2>
           <p class="hc-section-note">街には、文化が息づく理由がある。</p>
-          <!-- ROUTE_HOLD: 4街を一覧する index route は無い。 -->
-          <p class="hc-section-more" data-route-hold="all-cities">すべて見る<span class="hc-more-mark" aria-hidden="true">→</span></p>
         </div>
 
         <div class="hc-city-grid">
@@ -145,7 +142,7 @@
             <span class="hc-city-media"><img src="./assets/city-koenji.jpg" alt="" width="1200" height="1600" loading="lazy" decoding="async"></span>
             <span class="hc-city-body">
               <span class="hc-city-name">高円寺</span>
-              <span class="hc-city-q"><span class="hc-city-q-line">踊りは、</span><span class="hc-city-q-line">どうやって</span><span class="hc-city-q-line">街の文化になった？</span></span>
+              <span class="hc-city-q"><span class="hc-city-q-line">店・場所・作品など、</span><span class="hc-city-q-line">この街で触れられるものを</span><span class="hc-city-q-line">3つだけ。</span></span>
               <span class="hc-city-mark" aria-hidden="true">→</span>
             </span>
           </a>
@@ -154,7 +151,7 @@
             <span class="hc-city-media"><img src="./assets/city-kichijoji.jpg" alt="" width="1200" height="1600" loading="lazy" decoding="async"></span>
             <span class="hc-city-body">
               <span class="hc-city-name">吉祥寺</span>
-              <span class="hc-city-q"><span class="hc-city-q-line">音は、</span><span class="hc-city-q-line">どうやって</span><span class="hc-city-q-line">街を育てた？</span></span>
+              <span class="hc-city-q"><span class="hc-city-q-line">店・場所・作品など、</span><span class="hc-city-q-line">この街で触れられるものを</span><span class="hc-city-q-line">3つだけ。</span></span>
               <span class="hc-city-mark" aria-hidden="true">→</span>
             </span>
           </a>
@@ -163,7 +160,7 @@
             <span class="hc-city-media"><img src="./assets/city-shimokitazawa.jpg" alt="" width="1600" height="1200" loading="lazy" decoding="async"></span>
             <span class="hc-city-body">
               <span class="hc-city-name">下北沢</span>
-              <span class="hc-city-q"><span class="hc-city-q-line">舞台は、</span><span class="hc-city-q-line">どうやって</span><span class="hc-city-q-line">街を変えた？</span></span>
+              <span class="hc-city-q"><span class="hc-city-q-line">店・場所・作品など、</span><span class="hc-city-q-line">この街で触れられるものを</span><span class="hc-city-q-line">3つだけ。</span></span>
               <span class="hc-city-mark" aria-hidden="true">→</span>
             </span>
           </a>
@@ -172,7 +169,7 @@
             <span class="hc-city-media"><img src="./assets/city-jinbocho.jpg" alt="" width="1600" height="1066" loading="lazy" decoding="async"></span>
             <span class="hc-city-body">
               <span class="hc-city-name">神保町</span>
-              <span class="hc-city-q"><span class="hc-city-q-line">本は、</span><span class="hc-city-q-line">どうやって</span><span class="hc-city-q-line">街の形になった？</span></span>
+              <span class="hc-city-q"><span class="hc-city-q-line">店・場所・作品など、</span><span class="hc-city-q-line">この街で触れられるものを</span><span class="hc-city-q-line">3つだけ。</span></span>
               <span class="hc-city-mark" aria-hidden="true">→</span>
             </span>
           </a>
@@ -279,10 +276,6 @@
         <div class="hc-reality-copy">
           <h2 id="hc-reality-title" class="hc-section-title">現実へ出る</h2>
           <p class="hc-reality-lead"><span class="hc-reality-line">物語の終着点は、いつも現実のどこかにある。</span><span class="hc-reality-line">お店、場所、イベント、人に会いに行く。</span></p>
-          <!-- ROUTE_HOLD: スポット検索の route はまだ無い。 -->
-          <p class="hc-reality-cta" data-route-hold="spots"><span class="hc-reality-cta-label">スポットを探す</span><span class="hc-reality-cta-mark" aria-hidden="true">
-            <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17.4s5.2-4.7 5.2-9.1a5.2 5.2 0 1 0-10.4 0c0 4.4 5.2 9.1 5.2 9.1z"/><circle cx="10" cy="8.3" r="1.9"/></svg>
-          </span></p>
         </div>
 
         <div class="hc-reality-strip">

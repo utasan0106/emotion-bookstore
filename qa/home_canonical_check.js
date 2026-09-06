@@ -53,19 +53,20 @@ const COPY = [
   '<span class="hc-hero-line">文化の</span><span class="hc-hero-line">つながりを、</span><span class="hc-hero-line">歩く。</span>',
   '街から。作品から。ひとつの痕跡から。',
   'スレッドを見る',
-  '街から入る', '街には、文化が息づく理由がある。', 'すべて見る',
+  '街から入る', '街には、文化が息づく理由がある。',
   '作品から入る', '本・映画・音楽・映像… あらゆる作品が、街とつながっている。',
   'いま辿れるスレッド', 'ひとつの痕跡から、物語をたどる。',
   '注目のスレッド', '高円寺阿波おどり', '踊りがつなぐ、街・人・記憶の輪。', 'スレッドを読む',
-  '現実へ出る', '物語の終着点は、いつも現実のどこかにある。', 'お店、場所、イベント、人に会いに行く。', 'スポットを探す',
+  '現実へ出る', '物語の終着点は、いつも現実のどこかにある。', 'お店、場所、イベント、人に会いに行く。',
 ];
 for (const c of COPY) check(html.includes(c), `core copy missing: ${c.slice(0, 40)}`);
 
 const CITY_COPY = [
-  ['高円寺', ['踊りは、', 'どうやって', '街の文化になった？']],
-  ['吉祥寺', ['音は、', 'どうやって', '街を育てた？']],
-  ['下北沢', ['舞台は、', 'どうやって', '街を変えた？']],
-  ['神保町', ['本は、', 'どうやって', '街の形になった？']],
+  /* FOUNDER PREVIEW FIX A3: 因果の問いは shelf route が答えないので、4 街とも実際の遷移内容に合う同じ copy。 */
+  ['高円寺', ['店・場所・作品など、', 'この街で触れられるものを', '3つだけ。']],
+  ['吉祥寺', ['店・場所・作品など、', 'この街で触れられるものを', '3つだけ。']],
+  ['下北沢', ['店・場所・作品など、', 'この街で触れられるものを', '3つだけ。']],
+  ['神保町', ['店・場所・作品など、', 'この街で触れられるものを', '3つだけ。']],
 ];
 for (const [city, lines] of CITY_COPY) {
   check(html.includes(`>${city}</span>`), `city name missing: ${city}`);
@@ -121,7 +122,8 @@ check(!html.includes('index.html#archive'), 'dead anchor: #archive (archive live
 
 /* ---- 4. ROUTE_HOLD は navigate しない -------------------------------- */
 
-const HOLDS = ['thread-index', 'all-cities', 'spots'];
+/* FOUNDER PREVIEW FIX A5: false affordance を持たない。route hold は 0。 */
+const HOLDS = [];
 for (const h of HOLDS) {
   const re = new RegExp(`data-route-hold="${h}"`);
   check(re.test(html), `ROUTE_HOLD marker missing: ${h}`);
@@ -132,12 +134,18 @@ for (const m of html.match(/<[^>]*data-route-hold="[^"]*"[^>]*>/g) || []) {
   if (/^<(a|button)\b/.test(m)) failures.push(`ROUTE_HOLD element must not be a/button: ${m.slice(0, 70)}`);
 }
 check((html.match(/data-route-hold="/g) || []).length === HOLDS.length, `exactly ${HOLDS.length} route holds expected`);
-// KOENJI R2: section 4 の「スレッドを読む」だけが実 route（thread.html?thread=koenji-awaodori）。
-// hero の「スレッドを見る」（thread-index）はまだ ROUTE_HOLD のまま。
+// KOENJI R2 + FOUNDER PREVIEW FIX A1: section 4 の「スレッドを読む」と hero の「スレッドを見る」が同じ実 route（thread.html?thread=koenji-awaodori）。
 const THREAD_ANCHOR = '<a class="hc-thread-read" href="./thread.html?thread=koenji-awaodori">スレッドを読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></a>';
 check(html.split(THREAD_ANCHOR).length === 2, 'thread read must be the real anchor to ./thread.html?thread=koenji-awaodori, exactly once');
 check(!html.includes('data-route-hold="thread-koenji-awaodori"'), 'retired hold thread-koenji-awaodori must not remain');
-check((html.match(/thread\.html/g) || []).length === 1, 'HOME must link the Thread route exactly once');
+const HERO_ANCHOR = '<a class="hc-hero-cta" href="./thread.html?thread=koenji-awaodori"><span class="hc-hero-cta-label">スレッドを見る</span><span class="hc-hero-cta-mark" aria-hidden="true">→</span></a>';
+check(html.split(HERO_ANCHOR).length === 2, 'hero スレッドを見る must be the real anchor to ./thread.html?thread=koenji-awaodori, exactly once (no data-route-hold)');
+check(!html.includes('data-route-hold'), 'HOME must carry no data-route-hold at all');
+check((html.match(/thread\.html/g) || []).length === 2, 'HOME must link the Thread route exactly twice (hero CTA + section 4)');
+// FOUNDER PREVIEW FIX A2 / A4: route の無い「すべて見る」「スポットを探す」は出さない（新しい一覧 / spots page も作らない）
+check(!html.includes('すべて見る') && !html.includes('hc-section-more'), 'false affordance すべて見る must be absent');
+check(!html.includes('スポットを探す') && !html.includes('hc-reality-cta'), 'false affordance スポットを探す must be absent');
+check(!/どうやって/.test(html), 'the retired causal city questions must be absent');
 check(fs.existsSync(path.join(root, 'thread.html')), 'thread route target thread.html must exist on disk');
 // WORKS ENTRY: 作品 4 card（本 / 映画 / 音楽 / 映像）は works.html#book / #film / #music / #video への
 // 実 anchor（hold 7 → 3）。hc-work-media / hc-work-foot / icon / label / → / 画像 / 順序 / copy は不変。
@@ -235,5 +243,5 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log('HOME_CANONICAL_CHECK_GO');
-  console.log(`sections=5 in canonical order; shelf-entries=4; thread nodes=5; route holds=${HOLDS.length}; works anchors=4; local assets=${assets.length}; external hosts=0; iframes=0`);
+  console.log(`sections=5 in canonical order; shelf-entries=4; thread nodes=5; route holds=${HOLDS.length}; hero anchor=1; works anchors=4; local assets=${assets.length}; external hosts=0; iframes=0`);
 }

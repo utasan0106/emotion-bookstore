@@ -120,11 +120,9 @@ const HEADER = {
 for (const [k, v] of Object.entries(HEADER)) check(thread[k] === v, `thread.${k} must be exactly「${v}」(got ${thread[k]})`);
 check(JSON.stringify(thread.guidance) === JSON.stringify(['約15分。いつ止めてもかまいません。', 'アカウント・位置情報・カメラは使いません。', '歩きながら見ないでください。立ち止まれる場所で。']),
   'reading guidance must be the three fixed lines');
-{
-  const opts = (thread.modes && thread.modes.options) || [];
-  check(opts.length === 2 && opts[0].id === 'remote' && opts[0].label === 'いまは、高円寺にいない' && opts[0].isDefault === true &&
-    opts[1].id === 'onsite' && opts[1].label === 'いま、高円寺にいる' && !opts[1].isDefault, 'mode radios must be remote (default) / onsite with the exact labels');
-}
+/* FOUNDER PREVIEW FIX C1: location mode（remote / onsite）は持たない。 */
+check(!('modes' in thread), 'KOENJI must carry no location modes (Founder Preview Fix C1)');
+check(!/合図|いるふり|20秒|'remote'|'onsite'|kind: 'cue'/.test(contentCode), 'thread_content.js must carry no cue / mode copy (Founder Preview Fix C)');
 /* 所要時間は「約15分」ひとつだけ（10–15分 / 14–16分 などの競合表記を出さない）。
    走査は Koenji thread 自身の copy と renderer / 殻に限る（thread_content.js には Works の
    Morisaki thread も同居し、その「109分」は映画の上映時間であって所要時間ではない）。 */
@@ -274,7 +272,7 @@ check(S.s4 && S.s4.title === 'いま、もう一度', 'S4 title must be いま�
 check(S.s5 && S.s5.title === '現実へ' && S.s5.kind === 'reality', 'S5 must be 現実へ (reality)');
 check(S.s3 && S.s3.close === 'いまの名称が最初からあったのではなく、1963年に正式に変わったことが見える。', 'S3 acceptance copy must be the fact-safe sentence');
 
-/* S0: 現在の事実 + 承認済み画像 1 回 + 合図 */
+/* S0: 現在の事実 + 承認済み画像 1 回（cue は無い） */
 {
   const s0 = S.s0 || {};
   check(s0.figure === true && thread.scenes.filter((s) => s.figure).length === 1, 'the approved image is used exactly once, in S0');
@@ -283,18 +281,17 @@ check(S.s3 && S.s3.close === 'いまの名称が最初からあったのでは�
   check(!/https?:\/\/[^'"]+\.(?:jpg|jpeg|png|webp|gif|svg|mp4|mp3|pdf)/i.test(contentCode), 'content must not reference remote media');
   const f = fact((s0.factIds || [])[0]);
   check(!!f && /40を超える連/.test(f.claim) && /一年を通して/.test(f.claim) && JSON.stringify(f.sourceIds) === '["src:official-join"]', 'S0 present fact (40+ groups / practice through the year) must cite the official participation source');
-  check(s0.cue && s0.cue.remote && s0.cue.onsite && /20秒/.test(s0.cue.onsite), 'S0 needs remote / onsite cues (onsite = 20 seconds looking at the present environment)');
-  check(!/にいるふり|いるつもり/.test(s0.cue.onsite || '') && /ふりはしなくて/.test(s0.cue.remote || ''), 'S0 remote cue must not pretend to be onsite');
+  check(!('cue' in s0), 'S0 carries no cue (Founder Preview Fix C2)');
 }
 /* S1: 一点ではなく通り */
 check(S.s1 && !/この一点|一点から始ま|番地|丁目|\d+月|\d+日/.test(flat(S.s1) + flat(relation('rel:originated-1957'))), 'S1 must not name a point / building / day-month');
 
-/* S2: 六拍（この Thread 固有）。REVEAL より前に 教わる / learned_from を出さない */
+/* S2: 五拍（この Thread 固有。AFTER cue は Founder Preview Fix C3 で削除）。REVEAL より前に 教わる / learned_from を出さない */
 {
   const s2 = S.s2 || {};
   const beats = s2.beats || [];
-  check(beats.map((b) => b.id).join('|') === 'before|encounter|question|evidence|reveal|after', `S2 beats must be BEFORE → ENCOUNTER → QUESTION → EVIDENCE → REVEAL → AFTER (got ${beats.map((b) => b.id).join(',')})`);
-  check(beats.map((b) => b.kind).join('|') === 'pair|names|question|evidence|reveal|cue', 'S2 beat kinds must be pair / names / question / evidence / reveal / cue');
+  check(beats.map((b) => b.id).join('|') === 'before|encounter|question|evidence|reveal', `S2 beats must be BEFORE → ENCOUNTER → QUESTION → EVIDENCE → REVEAL (got ${beats.map((b) => b.id).join(',')})`);
+  check(beats.map((b) => b.kind).join('|') === 'pair|names|question|evidence|reveal', 'S2 beat kinds must be pair / names / question / evidence / reveal (no cue)');
   const revealAt = beats.findIndex((b) => b.id === 'reveal');
   const before = flat(s2.title) + beats.slice(0, revealAt).map(flat).join('');
   check(!/教わ|learned_from|learned/.test(before), 'before REVEAL, S2 copy must not expose 教わる / learned_from');
@@ -310,7 +307,7 @@ check(S.s1 && !/この一点|一点から始ま|番地|丁目|\d+月|\d+日/.tes
   check(B.evidence && (B.evidence.items || []).length === 3 && /手ほどきを求めた/.test(B.evidence.items[0]) && /徳島新聞社を介して/.test(B.evidence.items[1]) && /鴨川長二/.test(B.evidence.items[2]) &&
     JSON.stringify(B.evidence.sourceIds) === '["src:official-history","src:suginami-gaku"]', 'MINIMAL EVIDENCE must be the three contact/instruction facts with both sources');
   check(B.reveal && JSON.stringify(B.reveal.relationIds) === '["rel:connected-1961","rel:learned-1961-62"]', 'REVEAL must show 1961 ／ つながる first, then 1961–62 ／ 教わる');
-  check(B.after && B.after.cue && /20秒/.test(B.after.cue.remote) && /20秒/.test(B.after.cue.onsite) && /伏せて/.test(B.after.cue.remote), 'AFTER must be a textual 20-second screen-down cue');
+  check(!B.after && !beats.some((b) => b.kind === 'cue' || b.cue), 'no AFTER cue beat (Founder Preview Fix C3)');
   for (const b of beats) check(!/input|button|select|timer|countdown/i.test(Object.keys(b).join()), `beat ${b.id} must not declare controls`);
 }
 /* S3 / S4: 読みは scene の editorialReading。relation ではない */
@@ -322,7 +319,7 @@ for (const id of ['s3', 's4']) {
   check(!('verificationState' in er) && !('sourceIds' in er) && !('supportMode' in er), `${id} editorialReading must not carry support state`);
   check(/編集部の読み/.test(er.text), `${id} editorialReading must say it is the editors' reading`);
 }
-check(S.s4 && S.s4.cue && /20秒/.test(S.s4.cue.remote) && /20秒/.test(S.s4.cue.onsite), 'S4 must carry a 20-second cue for both modes');
+check(S.s4 && !('cue' in S.s4) && S.s4.editorialReading, 'S4 carries no cue but keeps its editorial reading (Founder Preview Fix C4)');
 /* 合図は歩行を義務にしない */
 for (const s of thread.scenes) {
   const cues = [s.cue].concat((s.beats || []).map((b) => b.cue)).filter(Boolean);
@@ -440,9 +437,10 @@ for (const banned of ['animation', 'transition', '@keyframes', 'box-shadow', 'te
   const anchor = '<a class="hc-thread-read" href="./thread.html?thread=koenji-awaodori">スレッドを読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></a>';
   check(home.split(anchor).length === 2, 'HOME section 4 must carry the real Thread anchor exactly once');
   check(!home.includes('data-route-hold="thread-koenji-awaodori"'), 'the thread-koenji-awaodori hold must be gone');
-  check((home.match(/data-route-hold="/g) || []).length === 3, 'HOME must keep exactly 3 route holds (thread-index / all-cities / spots; the four work cards are real anchors to works.html)');
-  check(home.includes('data-route-hold="thread-index"'), 'HOME hero スレッドを見る must stay ROUTE_HOLD');
-  check((home.match(/thread\.html/g) || []).length === 1, 'HOME must link the Thread route exactly once');
+  /* FOUNDER PREVIEW FIX A1 / A5: hero の スレッドを見る も同じ Thread への実 anchor。route hold は 0。 */
+  check(!home.includes('data-route-hold'), 'HOME must carry no route hold');
+  check(home.split('<a class="hc-hero-cta" href="./thread.html?thread=koenji-awaodori">').length === 2, 'HOME hero スレッドを見る must be a real anchor to the Koenji Thread, exactly once');
+  check((home.match(/thread\.html/g) || []).length === 2, 'HOME must link the Thread route exactly twice (hero + section 4)');
   const rule = (releaseCss.match(/\.hc-thread-read \{[^}]*\}/) || [''])[0];
   for (const decl of ['display: flex;', 'align-items: flex-end;', 'justify-content: flex-end;', 'gap: 14px;', 'height: 44px;', 'margin: 0;', 'font-size: 13px;', 'line-height: 1;', 'letter-spacing: .04em;', 'color: #d8cdbb;', 'text-decoration: none;']) {
     check(rule.includes(decl), `.hc-thread-read must keep the proven 44px geometry (${decl})`);
@@ -518,4 +516,4 @@ if (failures.length) {
   process.exit(1);
 }
 console.log('THREAD_CHECK_GO');
-console.log(`thread=${thread.threadId}; scenes=${thread.scenes.length}; relations=${thread.relations.length}; facts=${thread.facts.length}; sources=${thread.sources.length} (all https); destinations=${thread.realityDestinations.length}; S2 beats=${(S.s2.beats || []).length}; HOME route holds=3 + 1 real anchor + 4 works anchors; storage/permissions/network tokens=0`);
+console.log(`thread=${thread.threadId}; scenes=${thread.scenes.length}; relations=${thread.relations.length}; facts=${thread.facts.length}; sources=${thread.sources.length} (all https); destinations=${thread.realityDestinations.length}; S2 beats=${(S.s2.beats || []).length}; HOME route holds=0 + hero anchor + section-4 anchor + 4 works anchors; storage/permissions/network tokens=0`);
