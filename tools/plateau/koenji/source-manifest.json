@@ -1,0 +1,68 @@
+{
+  "schema_version": "v3-plateau-source-manifest/1",
+  "purpose": "Source identity + lineage inputs for the Koenji Cultural Signal Lens (/atlas/). Source lineage only; no cultural or historical-location claim.",
+  "acquisition": {
+    "mode": "offline_hq_handoff",
+    "note": "The build environment cannot reach geospatial.jp / plateauview hosts. HQ downloaded the official package, extracted the two Koenji meshes and handed the raw CityGML files over unchanged. No network request is made by any tool in this directory.",
+    "handoff_zip": "PLATEAU_SUGINAMI_2025_KOENJI_RAW_HANDOFF.zip",
+    "handoff_zip_sha256": "8b117ea46ca7f32de2951b418bd3c61966f381f77a3a529c290fb7505554f308"
+  },
+  "api_endpoint": "none (offline handoff; no PLATEAU API call from the build environment)",
+  "source": {
+    "provider": "Project PLATEAU / 国土交通省",
+    "dataset_title": "3D都市モデル（Project PLATEAU）杉並区（2025年度）",
+    "dataset_created": "2026年3月13日",
+    "city_code": "13115",
+    "city_name": "杉並区",
+    "year": 2025,
+    "spec": "3D都市モデル標準製品仕様書 第5.0版",
+    "dataset_url": "https://www.geospatial.jp/ckan/dataset/plateau-13115-suginami-ku-2025",
+    "package": "13115_suginami-ku_pref_2025_citygml_1_op.zip",
+    "package_bytes": 443720009,
+    "package_sha256": "9deaa984f060956f9aa2cde2507113ed7d3fcfffa0a53846081715ef68ca3816",
+    "citygml_version": "2.0",
+    "crs": "http://www.opengis.net/def/crs/EPSG/0/6697",
+    "position_accuracy": "地図情報レベル2500（README『品質』）"
+  },
+  "selected_meshes": ["53394541", "53394542"],
+  "files": [
+    { "type": "bldg", "mesh": "53394541", "path": "udx/bldg/53394541_bldg_6697_op.gml", "bytes": 90098462, "sha256": "4fe94e3e4a7d6fe85724b0918b6061cb32d6e0359a8683827f1caf7fc7da485d", "features": 6079 },
+    { "type": "bldg", "mesh": "53394542", "path": "udx/bldg/53394542_bldg_6697_op.gml", "bytes": 65086185, "sha256": "7c2f23e86bb9370d1398626cb137e0d1537d724877afcd729e21c816ee2a1c5c", "features": 4440 },
+    { "type": "tran", "mesh": "53394541", "path": "udx/tran/53394541_tran_6697_op.gml", "bytes": 5273404, "sha256": "df1cb4685e7ff06aab7ef338b78fa2ef38f3f6ea24d513c9546bc5b0dc324a86", "features": 1704 },
+    { "type": "tran", "mesh": "53394542", "path": "udx/tran/53394542_tran_6697_op.gml", "bytes": 4328125, "sha256": "b01cbfb5358622249c21be07fa45aa2b1c8c61d09ce4f610d07111428b66645a", "features": 1404 }
+  ],
+  "metadata_files": [
+    { "path": "README.md", "bytes": 4397, "sha256": "71aa28e1834c046d50d3aae21c4fa16eb558a69474bb214aa26917cd3381f3ad" },
+    { "path": "metadata/udx_13115_pref_2025_op.xml", "bytes": 36428, "sha256": "2bf29e85b61bf5c10d076a1963c8a3e3071b1c3b4beecd73aae2a353ea997750" },
+    { "path": "metadata/udx_13115_2025_resource_op.csv", "bytes": 41480, "sha256": "ad2936a2a2fa26fc697d01536121b43102e3f59b9bf83b066e5f25a27dd1fe6b" },
+    { "path": "codelists/Building_usage.xml", "bytes": 3797, "sha256": "03d58603b28287fc2fb6f3be283b000e62671c6c82b3a2eb00e7434f9ab9e0af" },
+    { "path": "codelists/Building_class.xml", "bytes": 1495, "sha256": "f69504def7b292e4c0219956a31e3f0268c837bb01c24cc2bd9bed93ee01cb18" },
+    { "path": "codelists/Building_lodType.xml", "bytes": 2399, "sha256": "5afb6fb412d77be112a9314bae9a491ae26976dabedb70a750f1cfb019e41c3b" },
+    { "path": "codelists/Road_usage.xml", "bytes": 1578, "sha256": "3ff3ccd8ac89afafbcd2e19a1ceb7f2dd139da1b34885ba08e1f1f7eb8e9c7ef" },
+    { "path": "codelists/Road_function.xml", "bytes": 3201, "sha256": "01720a0a651d2f9cd94bc67d12c7051cd9f950c8529830f47fe2d67d375b3109" },
+    { "path": "codelists/Road_lodType.xml", "bytes": 2782, "sha256": "d05a53fb95c6c7789e6b5ba4ad4f23bd3b3cf701794815d9e87042c805c5cda6" }
+  ],
+  "license": {
+    "statement_source": "bundled README.md『利用に関する留意事項』（PLATEAU Site Policy「３．著作権について」）",
+    "offered": [
+      "政府標準利用規約（第2.0版）",
+      "クリエイティブ・コモンズ・ライセンスの表示4.0国際",
+      "ODC BY",
+      "ODbL"
+    ],
+    "readme_terms": "利用者は、いずれかのライセンスを選択し、商用利用も含め、無償で自由にご利用いただけます。",
+    "selected_for_this_site": "政府標準利用規約（第2.0版）",
+    "attribution_text": "出典：3D都市モデル（Project PLATEAU）杉並区（2025年度）（国土交通省）を加工して作成",
+    "readme_caution": "原典資料の位置の正しさの違いや、作成された時期の違いにより、現状を正確に反映していない場合があることにご注意ください。"
+  },
+  "extraction": {
+    "tool": "tools/plateau/extract_koenji_corridor.py",
+    "tool_version": "0.1.0",
+    "method": "Python 3 stdlib xml.etree.iterparse; Building → bldg:lod0RoofEdge polygons + bldg:measuredHeight; Road → tran:lod1MultiSurface polygons; EPSG:6697 posList (lat lon height) → GeoJSON [lon, lat], height dropped; coordinates rounded to 6 decimals; no clipping / simplification / synthetic geometry; feature id = source gml:id",
+    "bbox_present_day_wgs84": [139.6465, 35.7027, 139.652, 35.7066],
+    "bbox_note": "Present-day viewing window (~497 m × 433 m) around the Koenji station structures and the streets south of them, chosen for the Koenji Thread. It is NOT a historical boundary and does not locate any 1957–1963 event.",
+    "selection_rule": "a feature is kept when its bbox intersects the crop bbox; kept features are stored whole",
+    "measured_height_sentinel": "PLATEAU -9999 (unmeasured) and non-positive values are stored as null",
+    "historical_geometry": false
+  }
+}

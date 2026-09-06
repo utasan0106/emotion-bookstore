@@ -1,0 +1,435 @@
+/* Cultural Thread — renderer (RC).
+   thread.html?thread=<id> を thread_content.js から描く。
+   - 不明 / 欠落の id は fail-closed（generic な文と入口への出口だけ）。
+   - 保存しない。位置情報・カメラ・fetch・XHR・計測 event を使わない。
+   - 読む場所（remote / onsite）は合図の文だけを変える。事実・関係・資料・
+     検証状態・並び順は変えない。
+   - CLAIM / SUPPORT / EDITORIAL READING は DOM を分ける（data-layer）。読みは
+     fact badge・検証状態・verified relation の見た目を継がない。読みのメタ label
+     （reading label）は公開 UI に出さない（Founder decision 2026-09-06 v2）。
+   - 公式映像は利用者が押したときだけページ内に置く（video-embed.js）。
+   - scene.beats[] は数に依らず描く（六拍はこの Thread の learned_from 固有の構成）。 */
+(function () {
+  'use strict';
+
+  var CONTENT = window.V3_THREAD_CONTENT;
+  var root = document.getElementById('threadRoot');
+  var live = document.getElementById('live');
+  if (!root) return;
+
+  var GENERIC_TITLE = 'みんなの感情書店｜スレッド';
+  var LOST = { line: 'このスレッドはありません。', exit: '入口へ戻る', href: './index.html' };
+  var VERIFICATION = {
+    single_source: '検証状態：単一資料',
+    corroborated: '検証状態：複数の資料が一致',
+    source_difference: '検証状態：資料間に年次差',
+    unresolved: '検証状態：未解決'
+  };
+  var SUPPORT_MODE = { direct_statement: '資料の記述', oral_testimony: '口述', editorial_synthesis: '編集部の整理' };
+  var ORDER_NOTE = '※並び順は、資料の正しさの順位ではありません。';
+
+  function h(tag, attrs, children) {
+    var el = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (key) {
+      var value = attrs[key];
+      if (value === null || value === undefined || value === false) return;
+      if (key === 'class') el.className = value;
+      else if (key === 'text') el.textContent = value;
+      else if (key.slice(0, 2) === 'on') el.addEventListener(key.slice(2), value);
+      else el.setAttribute(key, value === true ? '' : value);
+    });
+    (children || []).forEach(function (child) { if (child) el.appendChild(child); });
+    return el;
+  }
+
+  function find(list, id) {
+    for (var i = 0; i < (list || []).length; i++) if (list[i] && list[i].id === id) return list[i];
+    return null;
+  }
+
+  function nodeLabel(thread, id) {
+    var node = find(thread.nodes, id);
+    return node ? node.label : String(id || '');
+  }
+
+  function hostPath(url) {
+    return String(url || '').replace(/^https?:\/\//, '').replace(/\/$/, '');
+  }
+
+  /* ------------------------------------------------------- CLAIM / SUPPORT */
+
+  /* DISCOVERY CAN BE LIGHT. VERIFICATION MUST REMAIN DEEP.
+     single_source / corroborated の default surface は「出典あり　資料を見る（N件）」
+     の一行だけにし、検証状態・裏づけの種類は drawer の中へ。不確実性そのものが
+     理解上重要な source_difference / unresolved だけ、検証状態を表に残す。
+     data model・資料・並び順・注記は変えない。 */
+  function isDeep(item) {
+    return item.verificationState === 'source_difference' || item.verificationState === 'unresolved';
+  }
+
+  function verificationLine(item) {
+    return h('p', { class: 'th-verification', 'data-verification': item.verificationState, text: VERIFICATION[item.verificationState] || '検証状態：不明' });
+  }
+
+  function supportModeLine(item) {
+    var modes = (item.supportMode || []).map(function (m) { return SUPPORT_MODE[m] || m; }).join('・');
+    return modes ? h('p', { class: 'th-support-mode', text: '裏づけの種類：' + modes }) : null;
+  }
+
+  function sourceCard(source, variant) {
+    return h('li', { class: 'th-source', 'data-source-id': source.id, 'data-source-kind': source.kind }, [
+      h('p', { class: 'th-source-kind', text: source.kindLabel }),
+      h('p', { class: 'th-source-name', text: source.name }),
+      variant ? h('p', { class: 'th-source-variant' }, [
+        h('span', { class: 'th-source-variant-year', text: variant.display }),
+        h('span', { class: 'th-source-variant-reading', text: variant.reading })
+      ]) : null,
+      h('p', { class: 'th-source-link-row' }, [
+        h('a', {
+          class: 'th-source-link',
+          href: source.url,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          referrerpolicy: 'no-referrer'
+        }, [h('span', { text: hostPath(source.url) }), h('span', { 'aria-hidden': 'true', text: ' ↗' })])
+      ])
+    ]);
+  }
+
+  /* 資料の引き出し。並びは content の sourceIds の順（公式 → 地域の文化
+     アーカイブ）。並び順は正しさの順位ではない、と必ず添える。 */
+  function evidenceDrawer(thread, item) {
+    var ids = Array.isArray(item.sourceIds) ? item.sourceIds : [];
+    var variants = (item.temporal && Array.isArray(item.temporal.variants)) ? item.temporal.variants : [];
+    var cards = [];
+    ids.forEach(function (id) {
+      var source = find(thread.sources, id);
+      if (!source) return;
+      var variant = null;
+      variants.forEach(function (v) { if (v.sourceId === id) variant = v; });
+      cards.push(sourceCard(source, variant));
+    });
+    if (!cards.length) return null;
+    var deep = isDeep(item);
+    var children = [];
+    if (!deep) children.push(verificationLine(item));
+    children.push(supportModeLine(item));
+    children.push(h('ol', { class: 'th-sources' }, cards));
+    if (cards.length >= 2) children.push(h('p', { class: 'th-order-note', text: ORDER_NOTE }));
+    if (item.differenceNote) children.push(h('p', { class: 'th-difference-note', text: item.differenceNote }));
+    return h('details', { class: 'th-evidence' }, [
+      h('summary', { class: 'th-evidence-summary' }, [
+        deep ? null : h('span', { class: 'th-evidence-flag', text: '出典あり' }),
+        h('span', { class: 'th-evidence-open', text: '資料を見る（' + cards.length + '件）' })
+      ]),
+      h('div', { class: 'th-evidence-body' }, children)
+    ]);
+  }
+
+  function supportBlock(thread, item) {
+    var deep = isDeep(item);
+    return h('div', { class: 'th-support ' + (deep ? 'th-support-deep' : 'th-support-light'), 'data-layer': 'support' }, [
+      deep ? verificationLine(item) : null,
+      evidenceDrawer(thread, item)
+    ]);
+  }
+
+  function claimBlock(item, extra) {
+    return h('div', { class: 'th-claim', 'data-layer': 'claim' }, [
+      h('p', { class: 'th-claim-text', text: item.claim })
+    ].concat(extra || []));
+  }
+
+  function relationCard(thread, rel) {
+    /* temporal あり → TIME ／ VERB、なし → VERB だけ（separator を孤立させない。
+       relation に無い temporal を作らない）。 */
+    var head = h('p', { class: 'th-relation-time' }, rel.temporal ? [
+      h('span', { class: 'th-relation-year', text: rel.temporal.display }),
+      h('span', { class: 'th-relation-sep', 'aria-hidden': 'true', text: ' ／ ' }),
+      h('span', { class: 'th-relation-verb', text: rel.displayVerb })
+    ] : [
+      h('span', { class: 'th-relation-verb', text: rel.displayVerb })
+    ]);
+    var nodes = h('p', { class: 'th-relation-nodes' }, [
+      h('span', { class: 'th-node', text: nodeLabel(thread, rel.from) }),
+      h('span', { class: 'th-node-arrow', 'aria-hidden': 'true', text: ' → ' }),
+      h('span', { class: 'th-node', text: nodeLabel(thread, rel.to) })
+    ]);
+    var extra = [];
+    if (rel.via) extra.push(h('p', { class: 'th-relation-via', text: '仲介：' + nodeLabel(thread, rel.via) }));
+    if (rel.spatial && rel.spatial.display) extra.push(h('p', { class: 'th-relation-spatial', text: rel.spatial.display }));
+    return h('section', {
+      class: 'th-relation',
+      'data-relation-id': rel.id,
+      'data-relation-type': rel.relationType,
+      'data-verification': rel.verificationState,
+      'aria-label': (rel.temporal ? rel.temporal.display + ' ' : '') + rel.displayVerb
+    }, [head, nodes, claimBlock(rel, extra), supportBlock(thread, rel)]);
+  }
+
+  function factCard(thread, fact) {
+    return h('section', { class: 'th-fact', 'data-fact-id': fact.id, 'data-verification': fact.verificationState }, [
+      claimBlock(fact, fact.temporal && fact.temporal.display ? [h('p', { class: 'th-fact-time', text: fact.temporal.display })] : []),
+      supportBlock(thread, fact)
+    ]);
+  }
+
+  /* --------------------------------------------------- EDITORIAL READING */
+
+  /* 読みは fact badge・検証状態・relation の見た目を継がない。
+     参照 id は data 属性に残すだけで、verified relation としては描かない。
+     見える label は無い。読みであることは枠（破線）と data-layer で分ける。 */
+  function readingBlock(reading) {
+    if (!reading || !reading.text) return null;
+    return h('section', {
+      class: 'th-reading',
+      'data-layer': 'reading',
+      'data-refs': (reading.refs || []).join(' ')
+    }, [
+      h('p', { class: 'th-reading-text', text: reading.text })
+    ]);
+  }
+
+  /* ------------------------------------------------------------- 合図 */
+
+  var mode = 'remote';
+
+  function cueBlock(cue) {
+    if (!cue) return null;
+    return h('div', { class: 'th-cue' }, [
+      h('p', { class: 'th-cue-label', text: cue.label || '合図' }),
+      h('p', {
+        class: 'th-cue-text',
+        'data-cue-remote': cue.remote || '',
+        'data-cue-onsite': cue.onsite || cue.remote || '',
+        text: mode === 'onsite' ? (cue.onsite || cue.remote || '') : (cue.remote || '')
+      })
+    ]);
+  }
+
+  function repaintCues() {
+    Array.prototype.forEach.call(root.querySelectorAll('.th-cue-text'), function (el) {
+      var next = el.getAttribute('data-cue-' + mode);
+      if (next === null || next === '') next = el.getAttribute('data-cue-remote') || '';
+      el.textContent = next;
+    });
+  }
+
+  /* ----------------------------------------------------------- 六拍など */
+
+  function pairList(items) {
+    return h('dl', { class: 'th-pair' }, (items || []).map(function (item) {
+      return h('div', { class: 'th-pair-item' }, [
+        h('dt', { class: 'th-pair-name', text: item.name }),
+        h('dd', { class: 'th-pair-text', text: item.text })
+      ]);
+    }));
+  }
+
+  function beatBlock(thread, beat) {
+    var body = [];
+    if (beat.lead) body.push(h('p', { class: 'th-beat-lead', text: beat.lead }));
+    if (beat.kind === 'pair' || beat.kind === 'names') body.push(pairList(beat.items));
+    else if (beat.kind === 'question') body.push(h('p', { class: 'th-question', text: beat.line }));
+    else if (beat.kind === 'evidence') {
+      body.push(h('ol', { class: 'th-evidence-list' }, (beat.items || []).map(function (line) {
+        return h('li', { class: 'th-evidence-item', text: line });
+      })));
+    } else if (beat.kind === 'reveal') {
+      (beat.relationIds || []).forEach(function (id) {
+        var rel = find(thread.relations, id);
+        if (rel) body.push(relationCard(thread, rel));
+      });
+    } else if (beat.kind === 'cue') body.push(cueBlock(beat.cue));
+    return h('section', { class: 'th-beat', 'data-beat': beat.id, 'data-beat-kind': beat.kind }, [
+      h('p', { class: 'th-beat-label', text: beat.label || '' })
+    ].concat(body));
+  }
+
+  function figureBlock(image) {
+    if (!image || !image.src) return null;
+    return h('figure', { class: 'th-figure' }, [
+      h('img', {
+        class: 'th-figure-image',
+        src: image.src,
+        alt: image.alt || '',
+        width: image.width,
+        height: image.height,
+        decoding: 'async',
+        referrerpolicy: 'no-referrer'
+      })
+    ]);
+  }
+
+  /* 公式映像の行き先。表示しただけでは provider へ接続しない。利用者が押したときだけ、
+     video-embed.js がこの枠の中に player を置く（自動再生なし）。外部 anchor は出さない。 */
+  function videoDestination(d) {
+    return h('li', { class: 'th-destination th-destination-video', 'data-destination-id': d.id }, [
+      h('div', { class: 'v3-video th-video', 'data-video-id': d.videoId, 'data-video-title': d.videoTitle || d.label }, [
+        h('div', { class: 'v3-video-frame th-video-frame' }, [
+          h('button', { class: 'v3-video-load th-video-load', type: 'button' }, [
+            h('span', { class: 'th-destination-label', text: d.label }),
+            h('span', { class: 'th-video-mark', 'aria-hidden': 'true', text: ' ▶' })
+          ])
+        ])
+      ]),
+      d.why ? h('p', { class: 'th-destination-why', text: 'このThreadとの関係：' + d.why }) : null,
+      d.note ? h('p', { class: 'th-destination-note', text: d.note }) : null,
+      d.watchNote ? h('p', { class: 'v3-video-duration th-video-duration', text: d.watchNote }) : null
+    ]);
+  }
+
+  function spatialEntryBlock(entry) {
+    if (!entry || !entry.href || !entry.label) return null;
+    return h('div', { class: 'th-spatial-entry' }, [
+      h('p', { class: 'th-spatial-row' }, [
+        h('a', { class: 'th-spatial-link', href: entry.href }, [
+          h('span', { class: 'th-spatial-label', text: entry.label }),
+          h('span', { 'aria-hidden': 'true', text: ' →' })
+        ])
+      ]),
+      entry.note ? h('p', { class: 'th-spatial-note', text: entry.note }) : null
+    ]);
+  }
+
+  function realityBlock(thread) {
+    var pr = thread.presentReturn || {};
+    var children = [h('p', { class: 'th-reality-lead', text: pr.lead || '' })];
+    children.push(h('ol', { class: 'th-destinations' }, (thread.realityDestinations || []).map(function (d) {
+      if (d.videoId) return videoDestination(d);
+      return h('li', { class: 'th-destination', 'data-destination-id': d.id }, [
+        h('a', {
+          class: 'th-destination-link',
+          href: d.url,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          referrerpolicy: 'no-referrer'
+        }, [h('span', { class: 'th-destination-label', text: d.label }), h('span', { 'aria-hidden': 'true', text: ' ↗' })]),
+        d.why ? h('p', { class: 'th-destination-why', text: 'このThreadとの関係：' + d.why }) : null,
+        d.note ? h('p', { class: 'th-destination-note', text: d.note }) : null
+      ]);
+    })));
+    children.push(spatialEntryBlock(thread.spatialEntry));
+    if (Array.isArray(pr.notes) && pr.notes.length) {
+      children.push(h('div', { class: 'th-status' }, [
+        h('p', { class: 'th-status-title', text: pr.statusTitle || 'いまの状況' }),
+        h('ul', { class: 'th-status-list' }, pr.notes.map(function (n) {
+          return h('li', { class: 'th-status-item', 'data-status': n.status }, [
+            h('span', { text: n.text }),
+            n.checkedAt ? h('span', { class: 'th-status-checked', text: '（最終確認：' + n.checkedAt + '）' }) : null
+          ]);
+        }))
+      ]));
+    }
+    var ending = thread.ending || {};
+    children.push(h('div', { class: 'th-end' }, [
+      h('p', { class: 'th-end-line', text: ending.line || 'このスレッドは、ここまでです。' }),
+      h('p', { class: 'th-end-exit' }, [
+        h('a', { class: 'th-exit', href: ending.exitHref || './index.html', text: ending.exitLabel || '入口へ戻る' })
+      ])
+    ]));
+    return children;
+  }
+
+  function sceneBlock(thread, scene) {
+    var titleId = 'th-' + scene.id + '-title';
+    var body = [h('h2', { id: titleId, class: 'th-scene-title', text: scene.title })];
+    if (scene.figure) body.push(figureBlock(thread.image));
+    if (scene.lead) body.push(h('p', { class: 'th-scene-lead', text: scene.lead }));
+    (scene.factIds || []).forEach(function (id) {
+      var fact = find(thread.facts, id);
+      if (fact) body.push(factCard(thread, fact));
+    });
+    (scene.relationIds || []).forEach(function (id) {
+      var rel = find(thread.relations, id);
+      if (rel) body.push(relationCard(thread, rel));
+    });
+    (scene.beats || []).forEach(function (beat) { body.push(beatBlock(thread, beat)); });
+    if (scene.cue) body.push(cueBlock(scene.cue));
+    if (scene.close) body.push(h('p', { class: 'th-scene-close', text: scene.close }));
+    body.push(readingBlock(scene.editorialReading));
+    if (scene.kind === 'reality') body = body.concat(realityBlock(thread));
+    return h('section', { class: 'th-scene', id: 'th-' + scene.id, 'data-scene': scene.id, 'aria-labelledby': titleId }, body);
+  }
+
+  /* ------------------------------------------------------------- 見出し */
+
+  function modeFieldset(thread) {
+    var modes = thread.modes || {};
+    var options = Array.isArray(modes.options) ? modes.options : [];
+    /* 読む場所の選択肢を持たない Thread では fieldset 自体を描かない。 */
+    if (options.length === 0) return null;
+    var inputs = options.map(function (opt) {
+      var input;
+      var label = h('label', { class: 'th-mode-option' }, [
+        (input = h('input', {
+          class: 'th-mode-input',
+          type: 'radio',
+          name: 'thread-mode',
+          value: opt.id,
+          onchange: function () {
+            if (!input.checked) return;
+            mode = opt.id;
+            repaintCues();
+            if (live) live.textContent = '読む場所を「' + opt.label + '」にしました。合図の文だけが変わります。';
+          }
+        })),
+        h('span', { class: 'th-mode-label', text: opt.label })
+      ]);
+      if (opt.isDefault) { input.checked = true; mode = opt.id; }
+      return label;
+    });
+    return h('fieldset', { class: 'th-mode' }, [
+      h('legend', { class: 'th-mode-legend', text: modes.legend || '' }),
+      h('div', { class: 'th-mode-options' }, inputs),
+      modes.note ? h('p', { class: 'th-mode-note', text: modes.note }) : null
+    ]);
+  }
+
+  function headerBlock(thread) {
+    return h('header', { class: 'th-head' }, [
+      h('p', { class: 'th-eyebrow', text: thread.eyebrow }),
+      h('h1', { class: 'th-title', text: thread.title }),
+      h('p', { class: 'th-subject', text: thread.subjectLabel }),
+      h('p', { class: 'th-editor', text: thread.editor }),
+      h('p', { class: 'th-lens', text: thread.lens }),
+      h('p', { class: 'th-checked', text: thread.checkedLabel || ('最終確認：' + thread.checkedAt) }),
+      h('ul', { class: 'th-guidance' }, (thread.guidance || []).map(function (line) {
+        return h('li', { class: 'th-guidance-item', text: line });
+      })),
+      modeFieldset(thread)
+    ]);
+  }
+
+  /* --------------------------------------------------------------- 描画 */
+
+  function renderThread(thread) {
+    document.title = thread.documentTitle || GENERIC_TITLE;
+    root.textContent = '';
+    root.appendChild(h('article', { class: 'th-thread', 'data-thread-id': thread.threadId }, [
+      headerBlock(thread)
+    ].concat((thread.scenes || []).map(function (scene) { return sceneBlock(thread, scene); }))));
+    repaintCues();
+    if (window.V3_VIDEO_EMBED && typeof window.V3_VIDEO_EMBED.mount === 'function') window.V3_VIDEO_EMBED.mount(root);
+  }
+
+  function renderLost() {
+    document.title = GENERIC_TITLE;
+    root.textContent = '';
+    root.appendChild(h('section', { class: 'th-lost', 'aria-label': LOST.line }, [
+      h('p', { class: 'th-lost-line', text: LOST.line }),
+      h('p', { class: 'th-end-exit' }, [h('a', { class: 'th-exit', href: LOST.href, text: LOST.exit })])
+    ]));
+    if (live) live.textContent = LOST.line;
+  }
+
+  var requested = new URLSearchParams(location.search).get('thread') || '';
+  var thread = null;
+  if (CONTENT && Array.isArray(CONTENT.threads) && requested) {
+    for (var i = 0; i < CONTENT.threads.length; i++) {
+      if (CONTENT.threads[i] && CONTENT.threads[i].threadId === requested) thread = CONTENT.threads[i];
+    }
+  }
+  if (!thread) { renderLost(); return; }
+  renderThread(thread);
+})();

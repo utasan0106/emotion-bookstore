@@ -1,0 +1,42 @@
+{
+  "certificate_version": "plateau-lineage-v0.1",
+  "status": "GO",
+  "geojson_file": "koenji-plateau-2025-buildings.geojson",
+  "geojson_sha256": "1c2f98806ea587afe9aa345da3f7907d8058c5c07cca3d3043a879fc45651d99",
+  "output_features": 1045,
+  "traceable_output_ids": 1045,
+  "null_output_ids": 0,
+  "source_id_count": 10519,
+  "missing_output_ids": [],
+  "source_audits": [
+    {
+      "audit_file": "53394541_bldg.audit.json",
+      "source_file": "53394541_bldg_6697_op.gml",
+      "source_sha256": "4fe94e3e4a7d6fe85724b0918b6061cb32d6e0359a8683827f1caf7fc7da485d",
+      "citygml_version": "2.0",
+      "feature_count": 6079,
+      "gml_id_count": 6079,
+      "envelope": {
+        "srsName": "http://www.opengis.net/def/crs/EPSG/0/6697",
+        "lowerCorner": "35.699912673057476 139.63727934221885 0",
+        "upperCorner": "35.70861827108412 139.6511645884299 80.37170856"
+      }
+    },
+    {
+      "audit_file": "53394542_bldg.audit.json",
+      "source_file": "53394542_bldg_6697_op.gml",
+      "source_sha256": "7c2f23e86bb9370d1398626cb137e0d1537d724877afcd729e21c816ee2a1c5c",
+      "citygml_version": "2.0",
+      "feature_count": 4440,
+      "gml_id_count": 4440,
+      "envelope": {
+        "srsName": "http://www.opengis.net/def/crs/EPSG/0/6697",
+        "lowerCorner": "35.69972182236137 139.64975592029137 0",
+        "upperCorner": "35.70837787522461 139.66260046372193 137.94764722"
+      }
+    }
+  ],
+  "citygml_version": "2.0",
+  "historicalGeometry": false,
+  "claim_scope": "Source lineage only; no cultural or historical-location claim."
+}

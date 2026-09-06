@@ -105,16 +105,16 @@ window.V3_RELEASE_CONTENT = {
       tagline: '吉祥寺を、3つだけ。',
       area: '吉祥寺',
       weeklyFeature: {
-        title: '井の頭アートマーケッツ',
-        titlePhrases: ['井の頭アートマーケッツ'],
-        calendarDates: '20260905/20260907',
-        dateLabel: '9月5日（土）– 6日（日） 9:00–17:00',
-        venue: '井の頭恩賜公園',
-        why: '公園を通過するだけでなく、手づくりの作品とパフォーマンスが水辺に戻ってくる週末。街と公園の境目を見る一件として。',
-        actionLabel: '吉祥寺公式サイトで見る',
-        actionUrl: 'https://kichijoji.me/events/%E4%BA%95%E3%81%AE%E9%A0%AD%E3%82%A2%E3%83%BC%E3%83%88%E3%83%9E%E3%83%BC%E3%82%B1%E3%83%83%E3%83%84/',
-        verifiedAt: '2026-09-01T17:30:00+09:00',
-        expiresAt: '2026-09-06T17:00:00+09:00'
+        title: '谷口智則展「黒い森を抜けて」',
+        titlePhrases: ['谷口智則展', '「黒い森を抜けて」'],
+        calendarDates: '20260919/20261104',
+        dateLabel: '9月19日（土）– 11月3日（火・祝） 10:00–19:30',
+        venue: '武蔵野市立吉祥寺美術館',
+        why: '新作絵本の原画と、冬の井の頭恩賜公園を取材して構想された「黒い森」の景色が、吉祥寺の美術館に並ぶ。作品から街へ戻る入口として。',
+        actionLabel: '吉祥寺美術館公式で見る',
+        actionUrl: 'https://www.musashino.or.jp/museum/1002032/1002033/1009868.html',
+        verifiedAt: '2026-09-04T16:25:53+09:00',
+        expiresAt: '2026-11-03T19:30:00+09:00'
       },
       entryMedia: {
         kind: 'illustration',
@@ -224,16 +224,16 @@ window.V3_RELEASE_CONTENT = {
       tagline: '高円寺を、3つだけ。',
       area: '高円寺',
       weeklyFeature: {
-        title: 'セシオン杉並まつり2026',
-        titlePhrases: ['セシオン杉並まつり', '2026'],
-        calendarDates: '20260905/20260907',
-        dateLabel: '9月5日（土）– 6日（日） 10:00–15:00',
-        venue: 'セシオン杉並',
-        why: '阿波おどりの余韻が残る高円寺で、ピアノ、アート縁日、ちびっこ阿波おどりまで同じ場所に集まる二日間。街の文化が世代をまたぐところを見るために。',
-        actionLabel: 'セシオン杉並公式で見る',
-        actionUrl: 'https://www.sesion-suginami.jp/event/terrace/7490',
-        verifiedAt: '2026-09-01T17:30:00+09:00',
-        expiresAt: '2026-09-06T15:00:00+09:00'
+        title: '座・高円寺『夏の夜の夢』',
+        titlePhrases: ['座・高円寺', '『夏の夜の夢』'],
+        calendarDates: '20260913/20261018',
+        dateLabel: '9月13日（日）– 10月17日（土）',
+        venue: '座・高円寺1',
+        why: '高円寺の公立劇場で、シェイクスピアの喜劇を日本語・日本手話で上演する。街の現在を舞台芸術から見る一件として。',
+        actionLabel: '座・高円寺公式で見る',
+        actionUrl: 'https://za-koenji.jp/business/natsunoyo2026',
+        verifiedAt: '2026-09-04T16:25:53+09:00',
+        expiresAt: '2026-10-18T00:00:00+09:00'
       },
       entryMedia: {
         kind: 'illustration',
@@ -349,16 +349,16 @@ window.V3_RELEASE_CONTENT = {
       tagline: '下北沢を、3つだけ。',
       area: '下北沢',
       weeklyFeature: {
-        title: 'Outside dandy 一日限りの復活公演',
-        titlePhrases: ['Outside dandy ', '一日限りの復活公演'],
-        calendarDates: '20260905/20260906',
-        dateLabel: '9月5日（土） OPEN 12:00 / START 12:30',
+        title: 'SHELTER 35th Anniversary “IGNITION GIGS”',
+        titlePhrases: ['SHELTER 35th Anniversary ', '“IGNITION GIGS”'],
+        calendarDates: '20260923/20260924',
+        dateLabel: '9月23日（水） OPEN 12:00 / START 12:30',
         venue: '下北沢SHELTER',
-        why: '常設のライブハウスが、その日だけ別の時間を呼び戻す。一日限りの復活公演から、下北沢に積もっている音楽の時間を見る一件。',
+        why: '35年続く地下ライブハウスで、周年企画が現在の出演者によって続いている。下北沢に積もる音の時間を見る一件として。',
         actionLabel: 'SHELTER公式で見る',
-        actionUrl: 'https://www.loft-prj.co.jp/schedule/shelter/schedule?schedulemonth=9&scheduleyear=2026',
-        verifiedAt: '2026-09-01T17:30:00+09:00',
-        expiresAt: '2026-09-05T23:59:59+09:00'
+        actionUrl: 'https://www.loft-prj.co.jp/schedule/shelter/357199',
+        verifiedAt: '2026-09-04T16:25:53+09:00',
+        expiresAt: '2026-09-24T00:00:00+09:00'
       },
       entryMedia: {
         kind: 'illustration',
@@ -488,16 +488,16 @@ window.V3_RELEASE_CONTENT = {
       tagline: '神保町を、3つだけ。',
       area: '神保町',
       weeklyFeature: {
-        title: '『まごわやさしい』3D原画展',
-        titlePhrases: ['『まごわやさしい』', '3D原画展'],
-        calendarDates: '20260902/20260916',
-        dateLabel: '9月2日（水）– 15日（火） 11:00–18:00',
-        venue: 'ブックハウスカフェ 1F ガリバー',
-        why: '絵本の原画を平面ではなく3D作品として見る展示。書店街で、本になる前の素材と制作の痕跡へ寄れる一件として。',
+        title: 'Alicekan 45th Anniversary えほんパーティー',
+        titlePhrases: ['Alicekan 45th Anniversary ', 'えほんパーティー'],
+        calendarDates: '20260916/20260930',
+        dateLabel: '9月16日（水）13:00開始 – 29日（火）17:00終了',
+        venue: 'ブックハウスカフェ 1F ディスプレイウィンドウ',
+        why: '出版社アリス館の45周年にあわせ、絵本作品のグッズや絵本が神保町のこどもの本専門店に並ぶ。本が作られ、店へ届く現在を見る一件として。',
         actionLabel: 'ブックハウスカフェ公式で見る',
-        actionUrl: 'https://bookhousecafe.jp/exhibition/content/2461',
-        verifiedAt: '2026-09-01T17:30:00+09:00',
-        expiresAt: '2026-09-15T17:00:00+09:00'
+        actionUrl: 'https://bookhousecafe.jp/exhibition/content/2484',
+        verifiedAt: '2026-09-04T16:25:53+09:00',
+        expiresAt: '2026-09-29T17:00:00+09:00'
       },
       entryMedia: {
         kind: 'illustration',
@@ -584,34 +584,34 @@ window.V3_RELEASE_CONTENT = {
           expiresAt: null
         },
         {
-          id: 'jinbocho-theater-mizoguchi-2026',
+          id: 'jinbocho-theater-joyu-damashii-2026',
           categoryIds: ['film-stage'],
-          objectName: '神保町シアター 溝口健二特集',
+          objectName: '神保町シアター 女優魂2026',
           placeName: '神保町シアター / 神保町',
           typeLabel: '名画座・映画',
           mode: 'current',
-          hook: '本の街では、いま溝口健二をスクリーンで見直している。',
-          hookPhrases: ['本の街では、', 'いま', '溝口健二を', 'スクリーンで', '見直している。'],
-          reveal: '神保町シアターでは8月15日–9月11日、没後70年『映画監督・溝口健二の世界』を上映中。',
-          revealPhrases: ['神保町シアターでは', '8月15日–9月11日、', '没後70年', '『映画監督・溝口健二の世界』を', '上映中。'],
+          hook: '本の街で、女優の演技から映画を見直す特集が組まれている。',
+          hookPhrases: ['本の街で、', '女優の演技から', '映画を見直す特集が', '組まれている。'],
+          reveal: '神保町シアターでは9月12日から10月6日まで、女優たちの魂の演技を見るための特集『女優魂2026』を上映する。',
+          revealPhrases: ['神保町シアターでは', '9月12日から10月6日まで、', '女優たちの魂の演技を見るための', '特集『女優魂2026』を', '上映する。'],
           facts: [
-            ['会期', '2026年8月15日–9月11日'],
-            ['特集', '没後70年『映画監督・溝口健二の世界』'],
+            ['会期', '2026年9月12日–10月6日'],
+            ['特集', '神保町シアターセレクション 女優魂2026'],
             ['確認', '上映作品と時刻は公式ページで確認']
           ],
           actionLabel: '神保町シアターの特集を見る',
-          actionUrl: 'https://www.shogakukan.co.jp/jinbocho-theater/features/',
+          actionUrl: 'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-09-12_joyu-damashii-2026.html',
           media: {
             kind: 'plate',
-            plateWord: '溝口健二',
+            plateWord: '女優魂2026',
             plateSub: '神保町 / 名画座・映画',
             ratio: '4 / 5',
-            listAlt: '「溝口健二」と大きく組んだ、この棚のための活字図版',
-            detailAlt: '「溝口健二」と大きく組んだ、この棚のための活字図版'
+            listAlt: '「女優魂2026」と大きく組んだ、この棚のための活字図版',
+            detailAlt: '「女優魂2026」と大きく組んだ、この棚のための活字図版'
           },
-          factsSourceUrl: 'https://www.shogakukan.co.jp/jinbocho-theater/features/',
-          verifiedAt: '2026-08-28T23:08:00+09:00',
-          expiresAt: '2026-09-11T23:59:00+09:00'
+          factsSourceUrl: 'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-09-12_joyu-damashii-2026.html',
+          verifiedAt: '2026-09-04T16:25:53+09:00',
+          expiresAt: '2026-10-07T00:00:00+09:00'
         }
       ]
     }

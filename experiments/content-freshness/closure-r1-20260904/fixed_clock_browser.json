@@ -1,0 +1,902 @@
+[
+  {
+    "at": "2026-09-04T16:36:07+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "SHELTER 35th Anniversary “IGNITION GIGS”",
+        "weeklyDate": "9月23日（水） OPEN 12:00 / START 12:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "Alicekan 45th Anniversary えほんパーティー",
+        "weeklyDate": "9月16日（水）13:00開始 – 29日（火）17:00終了",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-04T16:25:53+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "SHELTER 35th Anniversary “IGNITION GIGS”",
+        "weeklyDate": "9月23日（水） OPEN 12:00 / START 12:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "Alicekan 45th Anniversary えほんパーティー",
+        "weeklyDate": "9月16日（水）13:00開始 – 29日（火）17:00終了",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-06T17:00:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "SHELTER 35th Anniversary “IGNITION GIGS”",
+        "weeklyDate": "9月23日（水） OPEN 12:00 / START 12:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "Alicekan 45th Anniversary えほんパーティー",
+        "weeklyDate": "9月16日（水）13:00開始 – 29日（火）17:00終了",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-11T23:59:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "SHELTER 35th Anniversary “IGNITION GIGS”",
+        "weeklyDate": "9月23日（水） OPEN 12:00 / START 12:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "Alicekan 45th Anniversary えほんパーティー",
+        "weeklyDate": "9月16日（水）13:00開始 – 29日（火）17:00終了",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-12T00:01:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "SHELTER 35th Anniversary “IGNITION GIGS”",
+        "weeklyDate": "9月23日（水） OPEN 12:00 / START 12:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "Alicekan 45th Anniversary えほんパーティー",
+        "weeklyDate": "9月16日（水）13:00開始 – 29日（火）17:00終了",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-13T00:01:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "SHELTER 35th Anniversary “IGNITION GIGS”",
+        "weeklyDate": "9月23日（水） OPEN 12:00 / START 12:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "Alicekan 45th Anniversary えほんパーティー",
+        "weeklyDate": "9月16日（水）13:00開始 – 29日（火）17:00終了",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-16T00:01:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "SHELTER 35th Anniversary “IGNITION GIGS”",
+        "weeklyDate": "9月23日（水） OPEN 12:00 / START 12:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "Alicekan 45th Anniversary えほんパーティー",
+        "weeklyDate": "9月16日（水）13:00開始 – 29日（火）17:00終了",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-19T00:01:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "SHELTER 35th Anniversary “IGNITION GIGS”",
+        "weeklyDate": "9月23日（水） OPEN 12:00 / START 12:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "Alicekan 45th Anniversary えほんパーティー",
+        "weeklyDate": "9月16日（水）13:00開始 – 29日（火）17:00終了",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-23T23:59:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "SHELTER 35th Anniversary “IGNITION GIGS”",
+        "weeklyDate": "9月23日（水） OPEN 12:00 / START 12:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "Alicekan 45th Anniversary えほんパーティー",
+        "weeklyDate": "9月16日（水）13:00開始 – 29日（火）17:00終了",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-24T00:00:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "Alicekan 45th Anniversary えほんパーティー",
+        "weeklyDate": "9月16日（水）13:00開始 – 29日（火）17:00終了",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-27T23:58:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "Alicekan 45th Anniversary えほんパーティー",
+        "weeklyDate": "9月16日（水）13:00開始 – 29日（火）17:00終了",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-27T23:59:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "Alicekan 45th Anniversary えほんパーティー",
+        "weeklyDate": "9月16日（水）13:00開始 – 29日（火）17:00終了",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-29T16:59:59+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "Alicekan 45th Anniversary えほんパーティー",
+        "weeklyDate": "9月16日（水）13:00開始 – 29日（火）17:00終了",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-29T17:00:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-10-06T23:59:59+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-10-07T00:00:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-10-17T23:59:59+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "座・高円寺『夏の夜の夢』",
+        "weeklyDate": "9月13日（日）– 10月17日（土）",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-10-18T00:00:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-11-03T19:29:59+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "谷口智則展「黒い森を抜けて」",
+        "weeklyDate": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-11-03T19:30:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  }
+]

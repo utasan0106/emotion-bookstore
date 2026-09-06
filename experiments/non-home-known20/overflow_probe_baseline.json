@@ -1,0 +1,5656 @@
+{
+  "generatedAt": "2026-09-04T08:25:17.918Z",
+  "scenarios": [
+    {
+      "name": "m320/shelf-kichijoji",
+      "page": "shelf.html?shelf=kichijoji",
+      "width": 320,
+      "height": 800,
+      "mobile": true,
+      "baseline": {
+        "docScrollWidth": 369,
+        "docClientWidth": 320,
+        "bodyScrollWidth": 369,
+        "bodyClientWidth": 320,
+        "innerWidth": 369,
+        "zoom": "1",
+        "forcedColors": false,
+        "activeElement": "body.shelf-page",
+        "overflow": true,
+        "overflowPx": 49,
+        "rectWide": [],
+        "selfOverflow": [
+          {
+            "el": "main#main",
+            "scrollWidth": 369,
+            "clientWidth": 320,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "section.site-intro",
+            "scrollWidth": 351,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "p.site-explainer",
+            "scrollWidth": 351,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "13px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 351,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "13px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          },
+          {
+            "el": "section.objects-section",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "この棚の3つ 井の頭恩賜公園吉祥寺 / 公園・水辺01 / 03駅から5分で、街"
+          },
+          {
+            "el": "div#objectGrid.object-grid",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "井の頭恩賜公園吉祥寺 / 公園・水辺01 / 03駅から5分で、街が水辺にほどけ"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "井の頭恩賜公園吉祥寺 / 公園・水辺01 / 03駅から5分で、街が水辺にほどけ"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "吉祥寺 SOMETIME吉祥寺 / ジャズクラブ・飲食02 / 03地下へ降りる"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "吉祥寺シアター吉祥寺 / 劇場・舞台芸術03 / 03駅から5分、街の中に小さな"
+          }
+        ],
+        "textWide": [
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 369,
+            "left": 18,
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          }
+        ],
+        "pseudoAbsolute": [
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "312px",
+            "height": "538.625px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "312px",
+            "height": "575.578px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "312px",
+            "height": "538.625px"
+          }
+        ],
+        "pseudoCount": 3,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "0px"
+          },
+          {
+            "el": "article.weekly-feature-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.weekly-feature-actions",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "wrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 298,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 298,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 298,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 284,
+            "scrollWidth": 351,
+            "fontSize": "13px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 302
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 284,
+            "scrollWidth": 351,
+            "fontSize": "13px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 302
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "fontSize": "13px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 302
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 369,
+          "overflow": true,
+          "overflowPx": 49,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 369,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 369,
+          "overflow": true,
+          "overflowPx": 49,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 369,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T5_all": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        }
+      }
+    },
+    {
+      "name": "m320/shelf-koenji",
+      "page": "shelf.html?shelf=koenji",
+      "width": 320,
+      "height": 800,
+      "mobile": true,
+      "baseline": {
+        "docScrollWidth": 369,
+        "docClientWidth": 320,
+        "bodyScrollWidth": 369,
+        "bodyClientWidth": 320,
+        "innerWidth": 369,
+        "zoom": "1",
+        "forcedColors": false,
+        "activeElement": "body.shelf-page",
+        "overflow": true,
+        "overflowPx": 49,
+        "rectWide": [],
+        "selfOverflow": [
+          {
+            "el": "main#main",
+            "scrollWidth": 369,
+            "clientWidth": 320,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "section.site-intro",
+            "scrollWidth": 351,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "p.site-explainer",
+            "scrollWidth": 351,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "13px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 351,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "13px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          },
+          {
+            "el": "section.objects-section",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "この棚の3つ 小杉湯高円寺 / 銭湯・まちの湯01 / 03昭和8年から、高円寺"
+          },
+          {
+            "el": "div#objectGrid.object-grid",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "小杉湯高円寺 / 銭湯・まちの湯01 / 03昭和8年から、高円寺で湯を沸かして"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "小杉湯高円寺 / 銭湯・まちの湯01 / 03昭和8年から、高円寺で湯を沸かして"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "高円寺 JIROKICHI高円寺 / ライブハウス・音楽02 / 03高円寺駅か"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "『高円寺純情商店街』高円寺 / 小説・商店街03 / 03高円寺の商店街は、直木"
+          }
+        ],
+        "textWide": [
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 369,
+            "left": 18,
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          }
+        ],
+        "pseudoAbsolute": [
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "312px",
+            "height": "575.578px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "312px",
+            "height": "575.578px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "312px",
+            "height": "538.625px"
+          }
+        ],
+        "pseudoCount": 3,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "0px"
+          },
+          {
+            "el": "article.weekly-feature-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.weekly-feature-actions",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "wrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 298,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 298,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 298,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 284,
+            "scrollWidth": 351,
+            "fontSize": "13px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 302
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 284,
+            "scrollWidth": 351,
+            "fontSize": "13px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 302
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "fontSize": "13px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 302
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 369,
+          "overflow": true,
+          "overflowPx": 49,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 369,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 369,
+          "overflow": true,
+          "overflowPx": 49,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 369,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T5_all": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        }
+      }
+    },
+    {
+      "name": "m320/shelf-shimokitazawa",
+      "page": "shelf.html?shelf=shimokitazawa",
+      "width": 320,
+      "height": 800,
+      "mobile": true,
+      "baseline": {
+        "docScrollWidth": 369,
+        "docClientWidth": 320,
+        "bodyScrollWidth": 369,
+        "bodyClientWidth": 320,
+        "innerWidth": 369,
+        "zoom": "1",
+        "forcedColors": false,
+        "activeElement": "body.shelf-page",
+        "overflow": true,
+        "overflowPx": 49,
+        "rectWide": [],
+        "selfOverflow": [
+          {
+            "el": "main#main",
+            "scrollWidth": 369,
+            "clientWidth": 320,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "section.site-intro",
+            "scrollWidth": 351,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "p.site-explainer",
+            "scrollWidth": 351,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "13px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 351,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "13px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          },
+          {
+            "el": "section.objects-section",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "この棚の3つ 下北沢 SHELTER下北沢 / ライブハウス・音楽01 / 03"
+          },
+          {
+            "el": "div#objectGrid.object-grid",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "下北沢 SHELTER下北沢 / ライブハウス・音楽01 / 03下北沢の地下1"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "下北沢 SHELTER下北沢 / ライブハウス・音楽01 / 03下北沢の地下1"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "本多劇場下北沢 / 劇場・演劇02 / 03下北沢が演劇の街になったのは、元映画"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "本屋B&B下北沢 / 本屋・イベント03 / 03ビールを飲みながら本を選べる本"
+          }
+        ],
+        "textWide": [
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 369,
+            "left": 18,
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          }
+        ],
+        "pseudoAbsolute": [
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "312px",
+            "height": "575.578px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "312px",
+            "height": "612.531px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "312px",
+            "height": "575.578px"
+          }
+        ],
+        "pseudoCount": 3,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "0px"
+          },
+          {
+            "el": "article.weekly-feature-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.weekly-feature-actions",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "wrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 298,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 298,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 298,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 284,
+            "scrollWidth": 351,
+            "fontSize": "13px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 302
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 284,
+            "scrollWidth": 351,
+            "fontSize": "13px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 302
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "fontSize": "13px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 302
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 369,
+          "overflow": true,
+          "overflowPx": 49,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 369,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 369,
+          "overflow": true,
+          "overflowPx": 49,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 369,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T5_all": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        }
+      }
+    },
+    {
+      "name": "m320/shelf-jinbocho",
+      "page": "shelf.html?shelf=jinbocho",
+      "width": 320,
+      "height": 800,
+      "mobile": true,
+      "baseline": {
+        "docScrollWidth": 369,
+        "docClientWidth": 320,
+        "bodyScrollWidth": 369,
+        "bodyClientWidth": 320,
+        "innerWidth": 369,
+        "zoom": "1",
+        "forcedColors": false,
+        "activeElement": "body.shelf-page",
+        "overflow": true,
+        "overflowPx": 49,
+        "rectWide": [],
+        "selfOverflow": [
+          {
+            "el": "main#main",
+            "scrollWidth": 369,
+            "clientWidth": 320,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "section.site-intro",
+            "scrollWidth": 351,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "p.site-explainer",
+            "scrollWidth": 351,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "13px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 351,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "13px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          },
+          {
+            "el": "section.objects-section",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "この棚の3つ JIMBOCHO古書店MAP神保町 / 古書店街・本01 / 03"
+          },
+          {
+            "el": "div#objectGrid.object-grid",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "JIMBOCHO古書店MAP神保町 / 古書店街・本01 / 03神保町には、2"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "JIMBOCHO古書店MAP神保町 / 古書店街・本01 / 03神保町には、2"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "矢口書店神保町 / 古書店・映画・演劇02 / 03100年以上続く古本屋が、映"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 298,
+            "clientWidth": 284,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "神保町シアター 女優魂2026神保町 / 名画座・映画03 / 03本の街で、女"
+          }
+        ],
+        "textWide": [
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 369,
+            "left": 18,
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          }
+        ],
+        "pseudoAbsolute": [
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "312px",
+            "height": "575.578px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "312px",
+            "height": "612.531px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "312px",
+            "height": "612.531px"
+          }
+        ],
+        "pseudoCount": 3,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "0px"
+          },
+          {
+            "el": "article.weekly-feature-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.weekly-feature-actions",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "wrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 298,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 298,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 298,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 284,
+            "scrollWidth": 351,
+            "fontSize": "13px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 302
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 284,
+            "scrollWidth": 351,
+            "fontSize": "13px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 302
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "fontSize": "13px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 302
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 369,
+          "overflow": true,
+          "overflowPx": 49,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 369,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 369,
+          "overflow": true,
+          "overflowPx": 49,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 369,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T5_all": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        }
+      }
+    },
+    {
+      "name": "m320/suggest",
+      "page": "suggest.html",
+      "width": 320,
+      "height": 800,
+      "mobile": true,
+      "baseline": {
+        "docScrollWidth": 369,
+        "docClientWidth": 320,
+        "bodyScrollWidth": 369,
+        "bodyClientWidth": 320,
+        "innerWidth": 369,
+        "zoom": "1",
+        "forcedColors": false,
+        "activeElement": "body.suggest-page",
+        "overflow": true,
+        "overflowPx": 49,
+        "rectWide": [],
+        "selfOverflow": [
+          {
+            "el": "main#main",
+            "scrollWidth": 369,
+            "clientWidth": 320,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "section.site-intro",
+            "scrollWidth": 351,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "p.site-explainer",
+            "scrollWidth": 351,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "13px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 351,
+            "clientWidth": 284,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "13px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          }
+        ],
+        "textWide": [
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 369,
+            "left": 18,
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          }
+        ],
+        "pseudoAbsolute": [],
+        "pseudoCount": 0,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "0px"
+          },
+          {
+            "el": "form#suggestForm.suggest-form",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "284px",
+            "flexWrap": "nowrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "auto"
+          },
+          {
+            "el": "p.suggest-actions.suggest-actions-secondary",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "wrap",
+            "width": 284,
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "minWidth": "0px"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 284,
+            "scrollWidth": 351,
+            "fontSize": "13px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 302
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 284,
+            "scrollWidth": 351,
+            "fontSize": "13px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 302
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 284,
+            "scrollWidth": 284,
+            "fontSize": "13px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 302
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 369,
+          "overflow": true,
+          "overflowPx": 49,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 369,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 369,
+          "overflow": true,
+          "overflowPx": 49,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 369,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T5_all": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 320,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        }
+      }
+    },
+    {
+      "name": "m390/shelf-kichijoji",
+      "page": "shelf.html?shelf=kichijoji",
+      "width": 390,
+      "height": 844,
+      "mobile": true,
+      "baseline": {
+        "docScrollWidth": 396,
+        "docClientWidth": 390,
+        "bodyScrollWidth": 396,
+        "bodyClientWidth": 390,
+        "innerWidth": 396,
+        "zoom": "1",
+        "forcedColors": false,
+        "activeElement": "body.shelf-page",
+        "overflow": true,
+        "overflowPx": 6,
+        "rectWide": [],
+        "selfOverflow": [
+          {
+            "el": "main#main",
+            "scrollWidth": 396,
+            "clientWidth": 390,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "section.site-intro",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "p.site-explainer",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          },
+          {
+            "el": "section.objects-section",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "この棚の3つ 井の頭恩賜公園吉祥寺 / 公園・水辺01 / 03駅から5分で、街"
+          },
+          {
+            "el": "div#objectGrid.object-grid",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "井の頭恩賜公園吉祥寺 / 公園・水辺01 / 03駅から5分で、街が水辺にほどけ"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "井の頭恩賜公園吉祥寺 / 公園・水辺01 / 03駅から5分で、街が水辺にほどけ"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "吉祥寺 SOMETIME吉祥寺 / ジャズクラブ・飲食02 / 03地下へ降りる"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "吉祥寺シアター吉祥寺 / 劇場・舞台芸術03 / 03駅から5分、街の中に小さな"
+          }
+        ],
+        "textWide": [
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 396,
+            "left": 18,
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          }
+        ],
+        "pseudoAbsolute": [
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "382px",
+            "height": "538.625px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "382px",
+            "height": "538.625px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "382px",
+            "height": "538.625px"
+          }
+        ],
+        "pseudoCount": 3,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          },
+          {
+            "el": "article.weekly-feature-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.weekly-feature-actions",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "wrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 368,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 368,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 368,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 354,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 354,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 396,
+          "overflow": true,
+          "overflowPx": 6,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 396,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 396,
+          "overflow": true,
+          "overflowPx": 6,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 396,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T5_all": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        }
+      }
+    },
+    {
+      "name": "m390/shelf-koenji",
+      "page": "shelf.html?shelf=koenji",
+      "width": 390,
+      "height": 844,
+      "mobile": true,
+      "baseline": {
+        "docScrollWidth": 396,
+        "docClientWidth": 390,
+        "bodyScrollWidth": 396,
+        "bodyClientWidth": 390,
+        "innerWidth": 396,
+        "zoom": "1",
+        "forcedColors": false,
+        "activeElement": "body.shelf-page",
+        "overflow": true,
+        "overflowPx": 6,
+        "rectWide": [],
+        "selfOverflow": [
+          {
+            "el": "main#main",
+            "scrollWidth": 396,
+            "clientWidth": 390,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "section.site-intro",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "p.site-explainer",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          },
+          {
+            "el": "section.objects-section",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "この棚の3つ 小杉湯高円寺 / 銭湯・まちの湯01 / 03昭和8年から、高円寺"
+          },
+          {
+            "el": "div#objectGrid.object-grid",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "小杉湯高円寺 / 銭湯・まちの湯01 / 03昭和8年から、高円寺で湯を沸かして"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "小杉湯高円寺 / 銭湯・まちの湯01 / 03昭和8年から、高円寺で湯を沸かして"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "高円寺 JIROKICHI高円寺 / ライブハウス・音楽02 / 03高円寺駅か"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "『高円寺純情商店街』高円寺 / 小説・商店街03 / 03高円寺の商店街は、直木"
+          }
+        ],
+        "textWide": [
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 396,
+            "left": 18,
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          }
+        ],
+        "pseudoAbsolute": [
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "382px",
+            "height": "538.625px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "382px",
+            "height": "575.578px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "382px",
+            "height": "538.625px"
+          }
+        ],
+        "pseudoCount": 3,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          },
+          {
+            "el": "article.weekly-feature-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.weekly-feature-actions",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "wrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 368,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 368,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 368,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 354,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 354,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 396,
+          "overflow": true,
+          "overflowPx": 6,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 396,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 396,
+          "overflow": true,
+          "overflowPx": 6,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 396,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T5_all": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        }
+      }
+    },
+    {
+      "name": "m390/shelf-shimokitazawa",
+      "page": "shelf.html?shelf=shimokitazawa",
+      "width": 390,
+      "height": 844,
+      "mobile": true,
+      "baseline": {
+        "docScrollWidth": 396,
+        "docClientWidth": 390,
+        "bodyScrollWidth": 396,
+        "bodyClientWidth": 390,
+        "innerWidth": 396,
+        "zoom": "1",
+        "forcedColors": false,
+        "activeElement": "body.shelf-page",
+        "overflow": true,
+        "overflowPx": 6,
+        "rectWide": [],
+        "selfOverflow": [
+          {
+            "el": "main#main",
+            "scrollWidth": 396,
+            "clientWidth": 390,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "section.site-intro",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "p.site-explainer",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          },
+          {
+            "el": "section.objects-section",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "この棚の3つ 下北沢 SHELTER下北沢 / ライブハウス・音楽01 / 03"
+          },
+          {
+            "el": "div#objectGrid.object-grid",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "下北沢 SHELTER下北沢 / ライブハウス・音楽01 / 03下北沢の地下1"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "下北沢 SHELTER下北沢 / ライブハウス・音楽01 / 03下北沢の地下1"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "本多劇場下北沢 / 劇場・演劇02 / 03下北沢が演劇の街になったのは、元映画"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "本屋B&B下北沢 / 本屋・イベント03 / 03ビールを飲みながら本を選べる本"
+          }
+        ],
+        "textWide": [
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 396,
+            "left": 18,
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          }
+        ],
+        "pseudoAbsolute": [
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "382px",
+            "height": "538.625px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "382px",
+            "height": "575.578px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "382px",
+            "height": "575.578px"
+          }
+        ],
+        "pseudoCount": 3,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          },
+          {
+            "el": "article.weekly-feature-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.weekly-feature-actions",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "wrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 368,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 368,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 368,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 354,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 354,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 396,
+          "overflow": true,
+          "overflowPx": 6,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 396,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 396,
+          "overflow": true,
+          "overflowPx": 6,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 396,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T5_all": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        }
+      }
+    },
+    {
+      "name": "m390/shelf-jinbocho",
+      "page": "shelf.html?shelf=jinbocho",
+      "width": 390,
+      "height": 844,
+      "mobile": true,
+      "baseline": {
+        "docScrollWidth": 396,
+        "docClientWidth": 390,
+        "bodyScrollWidth": 396,
+        "bodyClientWidth": 390,
+        "innerWidth": 396,
+        "zoom": "1",
+        "forcedColors": false,
+        "activeElement": "body.shelf-page",
+        "overflow": true,
+        "overflowPx": 6,
+        "rectWide": [],
+        "selfOverflow": [
+          {
+            "el": "main#main",
+            "scrollWidth": 396,
+            "clientWidth": 390,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "section.site-intro",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "p.site-explainer",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          },
+          {
+            "el": "section.objects-section",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "この棚の3つ JIMBOCHO古書店MAP神保町 / 古書店街・本01 / 03"
+          },
+          {
+            "el": "div#objectGrid.object-grid",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "JIMBOCHO古書店MAP神保町 / 古書店街・本01 / 03神保町には、2"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "JIMBOCHO古書店MAP神保町 / 古書店街・本01 / 03神保町には、2"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "矢口書店神保町 / 古書店・映画・演劇02 / 03100年以上続く古本屋が、映"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "神保町シアター 女優魂2026神保町 / 名画座・映画03 / 03本の街で、女"
+          }
+        ],
+        "textWide": [
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 396,
+            "left": 18,
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          }
+        ],
+        "pseudoAbsolute": [
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "382px",
+            "height": "538.625px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "382px",
+            "height": "575.578px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "382px",
+            "height": "575.578px"
+          }
+        ],
+        "pseudoCount": 3,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          },
+          {
+            "el": "article.weekly-feature-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.weekly-feature-actions",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "wrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 368,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 368,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 368,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 354,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 354,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 396,
+          "overflow": true,
+          "overflowPx": 6,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 396,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 396,
+          "overflow": true,
+          "overflowPx": 6,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 396,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T5_all": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        }
+      }
+    },
+    {
+      "name": "m390/suggest",
+      "page": "suggest.html",
+      "width": 390,
+      "height": 844,
+      "mobile": true,
+      "baseline": {
+        "docScrollWidth": 396,
+        "docClientWidth": 390,
+        "bodyScrollWidth": 396,
+        "bodyClientWidth": 390,
+        "innerWidth": 396,
+        "zoom": "1",
+        "forcedColors": false,
+        "activeElement": "body.suggest-page",
+        "overflow": true,
+        "overflowPx": 6,
+        "rectWide": [],
+        "selfOverflow": [
+          {
+            "el": "main#main",
+            "scrollWidth": 396,
+            "clientWidth": 390,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "section.site-intro",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "p.site-explainer",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          }
+        ],
+        "textWide": [
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 396,
+            "left": 18,
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          }
+        ],
+        "pseudoAbsolute": [],
+        "pseudoCount": 0,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          },
+          {
+            "el": "form#suggestForm.suggest-form",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "p.suggest-actions.suggest-actions-secondary",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "wrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 354,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 354,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 396,
+          "overflow": true,
+          "overflowPx": 6,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 396,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 396,
+          "overflow": true,
+          "overflowPx": 6,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 396,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T5_all": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        }
+      }
+    },
+    {
+      "name": "control/m430/shelf-kichijoji",
+      "page": "shelf.html?shelf=kichijoji",
+      "width": 430,
+      "height": 932,
+      "mobile": true,
+      "baseline": {
+        "docScrollWidth": 430,
+        "docClientWidth": 430,
+        "bodyScrollWidth": 430,
+        "bodyClientWidth": 430,
+        "innerWidth": 430,
+        "zoom": "1",
+        "forcedColors": false,
+        "activeElement": "body.shelf-page",
+        "overflow": false,
+        "overflowPx": 0,
+        "rectWide": [],
+        "selfOverflow": [
+          {
+            "el": "section.objects-section",
+            "scrollWidth": 408,
+            "clientWidth": 394,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "この棚の3つ 井の頭恩賜公園吉祥寺 / 公園・水辺01 / 03駅から5分で、街"
+          },
+          {
+            "el": "div#objectGrid.object-grid",
+            "scrollWidth": 408,
+            "clientWidth": 394,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "井の頭恩賜公園吉祥寺 / 公園・水辺01 / 03駅から5分で、街が水辺にほどけ"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 408,
+            "clientWidth": 394,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "井の頭恩賜公園吉祥寺 / 公園・水辺01 / 03駅から5分で、街が水辺にほどけ"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 408,
+            "clientWidth": 394,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "吉祥寺 SOMETIME吉祥寺 / ジャズクラブ・飲食02 / 03地下へ降りる"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 408,
+            "clientWidth": 394,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "吉祥寺シアター吉祥寺 / 劇場・舞台芸術03 / 03駅から5分、街の中に小さな"
+          }
+        ],
+        "textWide": [],
+        "pseudoAbsolute": [
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "422px",
+            "height": "538.625px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "422px",
+            "height": "538.625px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "422px",
+            "height": "538.625px"
+          }
+        ],
+        "pseudoCount": 3,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "minWidth": "0px"
+          },
+          {
+            "el": "article.weekly-feature-card",
+            "display": "grid",
+            "cols": "394px",
+            "flexWrap": "nowrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.weekly-feature-actions",
+            "display": "grid",
+            "cols": "394px",
+            "flexWrap": "wrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "394px",
+            "flexWrap": "nowrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 408,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "394px",
+            "flexWrap": "nowrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "394px",
+            "flexWrap": "nowrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 408,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "394px",
+            "flexWrap": "nowrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "394px",
+            "flexWrap": "nowrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 408,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "394px",
+            "flexWrap": "nowrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "minWidth": "auto"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "fontSize": "14px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 412
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 412
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 412
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 430,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 430,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 430,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 430,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T5_all": {
+          "docScrollWidth": 430,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 430,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        }
+      }
+    },
+    {
+      "name": "control/m430/suggest",
+      "page": "suggest.html",
+      "width": 430,
+      "height": 932,
+      "mobile": true,
+      "baseline": {
+        "docScrollWidth": 430,
+        "docClientWidth": 430,
+        "bodyScrollWidth": 430,
+        "bodyClientWidth": 430,
+        "innerWidth": 430,
+        "zoom": "1",
+        "forcedColors": false,
+        "activeElement": "body.suggest-page",
+        "overflow": false,
+        "overflowPx": 0,
+        "rectWide": [],
+        "selfOverflow": [],
+        "textWide": [],
+        "pseudoAbsolute": [],
+        "pseudoCount": 0,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "minWidth": "0px"
+          },
+          {
+            "el": "form#suggestForm.suggest-form",
+            "display": "grid",
+            "cols": "394px",
+            "flexWrap": "nowrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "394px",
+            "flexWrap": "nowrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "minWidth": "auto"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "394px",
+            "flexWrap": "nowrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "minWidth": "auto"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "394px",
+            "flexWrap": "nowrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "minWidth": "auto"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "394px",
+            "flexWrap": "nowrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "minWidth": "auto"
+          },
+          {
+            "el": "p.suggest-actions.suggest-actions-secondary",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "wrap",
+            "width": 394,
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "minWidth": "0px"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "fontSize": "14px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 412
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 412
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 394,
+            "scrollWidth": 394,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 412
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 430,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 430,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 430,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 430,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T5_all": {
+          "docScrollWidth": 430,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 430,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        }
+      }
+    },
+    {
+      "name": "zoom200-shelf",
+      "page": "shelf.html?shelf=koenji",
+      "width": 390,
+      "height": 844,
+      "zoom": 2,
+      "forcedColors": "none",
+      "baseline": {
+        "docScrollWidth": 792,
+        "docClientWidth": 390,
+        "bodyScrollWidth": 396,
+        "bodyClientWidth": 195,
+        "innerWidth": 390,
+        "zoom": "2",
+        "forcedColors": false,
+        "activeElement": "body.shelf-page",
+        "overflow": true,
+        "overflowPx": 402,
+        "rectWide": [],
+        "selfOverflow": [
+          {
+            "el": "main#main",
+            "scrollWidth": 396,
+            "clientWidth": 195,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "section.site-intro",
+            "scrollWidth": 378,
+            "clientWidth": 159,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "p.site-explainer",
+            "scrollWidth": 378,
+            "clientWidth": 159,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 378,
+            "clientWidth": 159,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 292,
+            "clientWidth": 159,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "街や種類ごとに少しずつ並べる文化案内です。"
+          },
+          {
+            "el": "section#weeklyFeature.weekly-feature",
+            "scrollWidth": 169,
+            "clientWidth": 159,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "今週の特集 9月13日（日）– 10月17日（土）座・高円寺1公式情報の確認日:"
+          },
+          {
+            "el": "div#weeklyFeatureContent",
+            "scrollWidth": 169,
+            "clientWidth": 159,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "9月13日（日）– 10月17日（土）座・高円寺1公式情報の確認日: 2026年"
+          },
+          {
+            "el": "article.weekly-feature-card",
+            "scrollWidth": 169,
+            "clientWidth": 159,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "9月13日（日）– 10月17日（土）座・高円寺1公式情報の確認日: 2026年"
+          },
+          {
+            "el": "section.objects-section",
+            "scrollWidth": 173,
+            "clientWidth": 159,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "この棚の3つ 小杉湯高円寺 / 銭湯・まちの湯01 / 03昭和8年から、高円寺"
+          },
+          {
+            "el": "div#objectGrid.object-grid",
+            "scrollWidth": 173,
+            "clientWidth": 159,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "小杉湯高円寺 / 銭湯・まちの湯01 / 03昭和8年から、高円寺で湯を沸かして"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 173,
+            "clientWidth": 159,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "小杉湯高円寺 / 銭湯・まちの湯01 / 03昭和8年から、高円寺で湯を沸かして"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 173,
+            "clientWidth": 159,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "高円寺 JIROKICHI高円寺 / ライブハウス・音楽02 / 03高円寺駅か"
+          }
+        ],
+        "textWide": [
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 792,
+            "left": 36,
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          },
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 621,
+            "left": 36,
+            "text": "街や種類ごとに少しずつ並べる文化案内です。"
+          }
+        ],
+        "pseudoAbsolute": [
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "187px",
+            "height": "612.508px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "187px",
+            "height": "750.852px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "187px",
+            "height": "654.852px"
+          }
+        ],
+        "pseudoCount": 3,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 318,
+            "clientWidth": 159,
+            "scrollWidth": 159,
+            "minWidth": "0px"
+          },
+          {
+            "el": "article.weekly-feature-card",
+            "display": "grid",
+            "cols": "169.438px",
+            "flexWrap": "nowrap",
+            "width": 318,
+            "clientWidth": 159,
+            "scrollWidth": 169,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.weekly-feature-actions",
+            "display": "grid",
+            "cols": "169.438px",
+            "flexWrap": "wrap",
+            "width": 339,
+            "clientWidth": 169,
+            "scrollWidth": 169,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "159px",
+            "flexWrap": "nowrap",
+            "width": 318,
+            "clientWidth": 159,
+            "scrollWidth": 173,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "159px",
+            "flexWrap": "nowrap",
+            "width": 318,
+            "clientWidth": 159,
+            "scrollWidth": 159,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "159px",
+            "flexWrap": "nowrap",
+            "width": 318,
+            "clientWidth": 159,
+            "scrollWidth": 173,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "159px",
+            "flexWrap": "nowrap",
+            "width": 318,
+            "clientWidth": 159,
+            "scrollWidth": 159,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "159px",
+            "flexWrap": "nowrap",
+            "width": 318,
+            "clientWidth": 159,
+            "scrollWidth": 173,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "159px",
+            "flexWrap": "nowrap",
+            "width": 318,
+            "clientWidth": 159,
+            "scrollWidth": 159,
+            "minWidth": "auto"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 159,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 354
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 159,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 354
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 159,
+            "scrollWidth": 292,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 354
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 792,
+          "overflow": true,
+          "overflowPx": 402,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 792,
+              "left": 36,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            },
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 621,
+              "left": 36,
+              "text": "街や種類ごとに少しずつ並べる文化案内です。"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "span.jp-phrase.explainer-line",
+            "section#weeklyFeature.weekly-feature",
+            "div#weeklyFeatureContent",
+            "article.weekly-feature-card",
+            "span.plate-word"
+          ]
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 621,
+          "overflow": true,
+          "overflowPx": 231,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 456,
+              "left": 36,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            },
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 621,
+              "left": 36,
+              "text": "街や種類ごとに少しずつ並べる文化案内です。"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "span.jp-phrase.explainer-line",
+            "section#weeklyFeature.weekly-feature",
+            "div#weeklyFeatureContent",
+            "article.weekly-feature-card",
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 792,
+          "overflow": true,
+          "overflowPx": 402,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 792,
+              "left": 36,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            },
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 621,
+              "left": 36,
+              "text": "街や種類ごとに少しずつ並べる文化案内です。"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "span.jp-phrase.explainer-line",
+            "section#weeklyFeature.weekly-feature",
+            "div#weeklyFeatureContent",
+            "article.weekly-feature-card",
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 621,
+          "overflow": true,
+          "overflowPx": 231,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 456,
+              "left": 36,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            },
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 621,
+              "left": 36,
+              "text": "街や種類ごとに少しずつ並べる文化案内です。"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "span.jp-phrase.explainer-line",
+            "section#weeklyFeature.weekly-feature",
+            "div#weeklyFeatureContent",
+            "article.weekly-feature-card",
+            "span.plate-word"
+          ]
+        },
+        "T5_all": {
+          "docScrollWidth": 621,
+          "overflow": true,
+          "overflowPx": 231,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 456,
+              "left": 36,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            },
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 621,
+              "left": 36,
+              "text": "街や種類ごとに少しずつ並べる文化案内です。"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "span.jp-phrase.explainer-line",
+            "section#weeklyFeature.weekly-feature",
+            "div#weeklyFeatureContent",
+            "article.weekly-feature-card",
+            "span.plate-word"
+          ]
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section#weeklyFeature.weekly-feature",
+            "div#weeklyFeatureContent",
+            "article.weekly-feature-card",
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card",
+            "span.plate-word"
+          ]
+        }
+      }
+    },
+    {
+      "name": "forced-shelf",
+      "page": "shelf.html?shelf=jinbocho",
+      "width": 390,
+      "height": 844,
+      "zoom": 1,
+      "forcedColors": "active",
+      "baseline": {
+        "docScrollWidth": 396,
+        "docClientWidth": 390,
+        "bodyScrollWidth": 396,
+        "bodyClientWidth": 390,
+        "innerWidth": 390,
+        "zoom": "1",
+        "forcedColors": true,
+        "activeElement": "body.shelf-page",
+        "overflow": true,
+        "overflowPx": 6,
+        "rectWide": [],
+        "selfOverflow": [
+          {
+            "el": "main#main",
+            "scrollWidth": 396,
+            "clientWidth": 390,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "section.site-intro",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "p.site-explainer",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          },
+          {
+            "el": "section.objects-section",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "この棚の3つ JIMBOCHO古書店MAP神保町 / 古書店街・本01 / 03"
+          },
+          {
+            "el": "div#objectGrid.object-grid",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "JIMBOCHO古書店MAP神保町 / 古書店街・本01 / 03神保町には、2"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "JIMBOCHO古書店MAP神保町 / 古書店街・本01 / 03神保町には、2"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "矢口書店神保町 / 古書店・映画・演劇02 / 03100年以上続く古本屋が、映"
+          },
+          {
+            "el": "article.object-card",
+            "scrollWidth": 368,
+            "clientWidth": 354,
+            "display": "grid",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "神保町シアター 女優魂2026神保町 / 名画座・映画03 / 03本の街で、女"
+          }
+        ],
+        "textWide": [
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 396,
+            "left": 18,
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          }
+        ],
+        "pseudoAbsolute": [
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "382px",
+            "height": "538.625px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "382px",
+            "height": "575.578px"
+          },
+          {
+            "el": "button.open-button",
+            "pseudo": "::after",
+            "content": "\"\"",
+            "position": "absolute",
+            "display": "block",
+            "inset": "-14px -14px -14px -14px",
+            "width": "382px",
+            "height": "575.578px"
+          }
+        ],
+        "pseudoCount": 3,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          },
+          {
+            "el": "article.weekly-feature-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.weekly-feature-actions",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "wrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 368,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 368,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "article.object-card",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 368,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.card-body",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 354,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 354,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 396,
+          "overflow": true,
+          "overflowPx": 6,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 396,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 396,
+          "overflow": true,
+          "overflowPx": 6,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 396,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T5_all": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": [
+            "section.objects-section",
+            "div#objectGrid.object-grid",
+            "article.object-card",
+            "article.object-card",
+            "article.object-card"
+          ]
+        }
+      }
+    },
+    {
+      "name": "zoom200-suggest",
+      "page": "suggest.html",
+      "width": 390,
+      "height": 844,
+      "zoom": 2,
+      "forcedColors": "none",
+      "baseline": {
+        "docScrollWidth": 792,
+        "docClientWidth": 390,
+        "bodyScrollWidth": 396,
+        "bodyClientWidth": 195,
+        "innerWidth": 390,
+        "zoom": "2",
+        "forcedColors": false,
+        "activeElement": "body.suggest-page",
+        "overflow": true,
+        "overflowPx": 402,
+        "rectWide": [],
+        "selfOverflow": [
+          {
+            "el": "main#main",
+            "scrollWidth": 396,
+            "clientWidth": 195,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "section.site-intro",
+            "scrollWidth": 378,
+            "clientWidth": 159,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "p.site-explainer",
+            "scrollWidth": 378,
+            "clientWidth": 159,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 378,
+            "clientWidth": 159,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 292,
+            "clientWidth": 159,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "街や種類ごとに少しずつ並べる文化案内です。"
+          }
+        ],
+        "textWide": [
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 792,
+            "left": 36,
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          },
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 621,
+            "left": 36,
+            "text": "街や種類ごとに少しずつ並べる文化案内です。"
+          }
+        ],
+        "pseudoAbsolute": [],
+        "pseudoCount": 0,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 318,
+            "clientWidth": 159,
+            "scrollWidth": 159,
+            "minWidth": "0px"
+          },
+          {
+            "el": "form#suggestForm.suggest-form",
+            "display": "grid",
+            "cols": "159px",
+            "flexWrap": "nowrap",
+            "width": 318,
+            "clientWidth": 159,
+            "scrollWidth": 159,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "159px",
+            "flexWrap": "nowrap",
+            "width": 318,
+            "clientWidth": 159,
+            "scrollWidth": 159,
+            "minWidth": "auto"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "159px",
+            "flexWrap": "nowrap",
+            "width": 318,
+            "clientWidth": 159,
+            "scrollWidth": 159,
+            "minWidth": "auto"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "159px",
+            "flexWrap": "nowrap",
+            "width": 318,
+            "clientWidth": 159,
+            "scrollWidth": 159,
+            "minWidth": "auto"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "159px",
+            "flexWrap": "nowrap",
+            "width": 318,
+            "clientWidth": 159,
+            "scrollWidth": 159,
+            "minWidth": "auto"
+          },
+          {
+            "el": "p.suggest-actions.suggest-actions-secondary",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "wrap",
+            "width": 318,
+            "clientWidth": 159,
+            "scrollWidth": 159,
+            "minWidth": "0px"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 159,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 354
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 159,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 354
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 159,
+            "scrollWidth": 292,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 354
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 792,
+          "overflow": true,
+          "overflowPx": 402,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 792,
+              "left": 36,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            },
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 621,
+              "left": 36,
+              "text": "街や種類ごとに少しずつ並べる文化案内です。"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 621,
+          "overflow": true,
+          "overflowPx": 231,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 456,
+              "left": 36,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            },
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 621,
+              "left": 36,
+              "text": "街や種類ごとに少しずつ並べる文化案内です。"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 792,
+          "overflow": true,
+          "overflowPx": 402,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 792,
+              "left": 36,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            },
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 621,
+              "left": 36,
+              "text": "街や種類ごとに少しずつ並べる文化案内です。"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 621,
+          "overflow": true,
+          "overflowPx": 231,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 456,
+              "left": 36,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            },
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 621,
+              "left": 36,
+              "text": "街や種類ごとに少しずつ並べる文化案内です。"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T5_all": {
+          "docScrollWidth": 621,
+          "overflow": true,
+          "overflowPx": 231,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 456,
+              "left": 36,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            },
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 621,
+              "left": 36,
+              "text": "街や種類ごとに少しずつ並べる文化案内です。"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        }
+      }
+    },
+    {
+      "name": "forced-suggest",
+      "page": "suggest.html",
+      "width": 390,
+      "height": 844,
+      "zoom": 1,
+      "forcedColors": "active",
+      "baseline": {
+        "docScrollWidth": 396,
+        "docClientWidth": 390,
+        "bodyScrollWidth": 396,
+        "bodyClientWidth": 390,
+        "innerWidth": 390,
+        "zoom": "1",
+        "forcedColors": true,
+        "activeElement": "body.suggest-page",
+        "overflow": true,
+        "overflowPx": 6,
+        "rectWide": [],
+        "selfOverflow": [
+          {
+            "el": "main#main",
+            "scrollWidth": 396,
+            "clientWidth": 390,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "section.site-intro",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "16px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "p.site-explainer",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べ"
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "scrollWidth": 378,
+            "clientWidth": 354,
+            "display": "block",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "minWidth": "0px",
+            "fontSize": "14px",
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          }
+        ],
+        "textWide": [
+          {
+            "parent": "span.jp-phrase.explainer-line",
+            "right": 396,
+            "left": 18,
+            "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+          }
+        ],
+        "pseudoAbsolute": [],
+        "pseudoCount": 0,
+        "tracks": [
+          {
+            "el": "header.site-header",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          },
+          {
+            "el": "form#suggestForm.suggest-form",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "div.field",
+            "display": "grid",
+            "cols": "354px",
+            "flexWrap": "nowrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "auto"
+          },
+          {
+            "el": "p.suggest-actions.suggest-actions-secondary",
+            "display": "flex",
+            "cols": "none",
+            "flexWrap": "wrap",
+            "width": 354,
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "minWidth": "0px"
+          }
+        ],
+        "explainer": [
+          {
+            "el": "p.site-explainer",
+            "clientWidth": 354,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "normal",
+            "wordBreak": "normal",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 354,
+            "scrollWidth": 378,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          },
+          {
+            "el": "span.jp-phrase.explainer-line",
+            "clientWidth": 354,
+            "scrollWidth": 354,
+            "fontSize": "14px",
+            "whiteSpace": "nowrap",
+            "wordBreak": "keep-all",
+            "overflowWrap": "normal",
+            "display": "block",
+            "rectRight": 372
+          }
+        ]
+      },
+      "toggles": {
+        "T1_open_button_after_off": {
+          "docScrollWidth": 396,
+          "overflow": true,
+          "overflowPx": 6,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 396,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T2_explainer_lines_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T3_weekly_meta_min_width_0": {
+          "docScrollWidth": 396,
+          "overflow": true,
+          "overflowPx": 6,
+          "textWide": [
+            {
+              "parent": "span.jp-phrase.explainer-line",
+              "right": 396,
+              "left": 18,
+              "text": "感情書店の編集部が選んだ場所・本・音楽・映画・催しを、"
+            }
+          ],
+          "rectWide": [],
+          "selfOverflow": [
+            "main#main",
+            "section.site-intro",
+            "p.site-explainer",
+            "span.jp-phrase.explainer-line"
+          ]
+        },
+        "T4_T1_plus_T2": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T5_all": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        },
+        "T6_explainer_safe_wrap": {
+          "docScrollWidth": 390,
+          "overflow": false,
+          "overflowPx": 0,
+          "textWide": [],
+          "rectWide": [],
+          "selfOverflow": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>みんなの感情書店｜街を立体で辿る（β）</title>
+<meta name="description" content="高円寺の文化の関係を、Project PLATEAU（杉並区 2025年度）から事前に取り出した現在の街の形の上で、資料が支える精度のまま辿るProduction Betaです。">
+<link rel="icon" href="../assets/favicon.ico" sizes="any">
+<link rel="stylesheet" href="./styles.css">
+<script defer src="./app.js"></script>
+</head>
+<body class="atlas-page">
+<a class="al-skip" href="#main">本文へ</a>
+
+<header class="al-top">
+  <p class="al-brand"><a href="../index.html">みんなの感情書店</a><span class="al-brand-sep"> · </span><span>街を立体で辿る（β）</span></p>
+  <!-- Production Beta 0: 高円寺だけ。Thread（文化導線）から入り、Thread へ戻る。 -->
+  <a class="al-return atlas-back-link" href="../thread.html?thread=koenji-dance-history">スレッドへ戻る →</a>
+</header>
+
+<main id="main" class="al-root">
+  <section class="al-head">
+    <p class="al-eyebrow" id="heroEyebrow">高円寺 · 街を立体で辿る（β）</p>
+    <h1 class="al-title" id="heroTitle">踊りが街に根づくまで</h1>
+    <p class="al-lead" id="heroLead"></p>
+    <p class="al-note" id="heroNote"></p>
+    <p class="al-status" id="dataStatus" role="status">現在の街の形を読み込んでいます。</p>
+  </section>
+
+  <section class="al-lens" aria-labelledby="lensTitle">
+    <h2 class="al-h2" id="lensTitle">現在の街の形を見ながら、文化のつながりを辿る</h2>
+    <nav class="al-views" id="views" aria-label="見方"></nav>
+
+    <!-- 関係が主役。年表は関係の順序で、地図上の位置ではない。 -->
+    <div class="al-rail" id="timeline" aria-label="関係の時間軸"></div>
+
+    <figure class="al-figure">
+      <svg class="al-svg" id="lens" viewBox="0 0 1000 900" role="img" aria-labelledby="lensSvgTitle lensSvgDesc" focusable="false">
+        <title id="lensSvgTitle">現在の街の形（Project PLATEAU 杉並区 2025年度から事前抽出）</title>
+        <desc id="lensSvgDesc">高円寺駅周辺の現在の建物と道路を、高さを表示用に縮尺した立体風の図として描きます。歴史上の地点は描きません。</desc>
+        <rect class="al-ground" x="0" y="0" width="1000" height="900"></rect>
+        <g id="city">
+          <g id="roadLayer" class="al-roads"></g>
+          <g id="buildingLayer" class="al-buildings"></g>
+          <g id="refLayer" class="al-ref"></g>
+        </g>
+      </svg>
+      <figcaption class="al-caption"><span class="al-chapter" id="viewChapter"></span><span id="viewCaption"></span></figcaption>
+    </figure>
+
+    <ul class="al-legend" id="legend"></ul>
+  </section>
+
+  <section class="al-story-section" aria-labelledby="storyHeading">
+    <h2 class="al-h2" id="storyHeading">いま見ている関係</h2>
+    <article class="al-story" id="story">
+      <p class="al-year" id="year"></p>
+      <h3 class="al-story-title" id="title"></h3>
+      <p class="al-claim" id="claim"></p>
+      <div class="al-precision"><strong class="al-precision-label">位置の精度</strong><span id="precision"></span></div>
+      <p class="al-story-note" id="note" hidden></p>
+      <p class="al-relation"><span class="al-relation-label">関係</span><strong id="relation"></strong></p>
+      <details class="al-evidence" id="evidenceDetails">
+        <summary class="al-evidence-summary">資料・公式情報を見る</summary>
+        <ul class="al-links" id="links"></ul>
+      </details>
+      <p class="al-actions"><button class="al-next" id="nextBtn" type="button">次の関係へ →</button></p>
+    </article>
+  </section>
+
+  <section class="al-return-block" aria-labelledby="returnHeading">
+    <h2 class="al-h2" id="returnHeading">現実へ戻る</h2>
+    <p class="al-return-lead" id="returnLead"></p>
+    <p class="al-return-row"><a class="al-return-link" id="returnLink" href="../thread.html?thread=koenji-dance-history">スレッドへ戻る →</a></p>
+  </section>
+
+  <footer class="al-foot">
+    <p class="al-attribution" id="attribution">出典：3D都市モデル（Project PLATEAU）杉並区（2025年度）（国土交通省）を加工して作成</p>
+    <p class="al-attribution-links"><a href="https://www.mlit.go.jp/plateau/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Project PLATEAU ↗</a><span> · </span><a href="https://www.geospatial.jp/ckan/dataset/plateau-13115-suginami-ku-2025" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">データセット（G空間情報センター） ↗</a></p>
+    <p class="al-foot-note" id="provenanceNote"></p>
+    <p class="al-foot-note">このページは、事前に取り出した街の形をこのサイト内から読み込みます。開いただけで外部の配信元へ接続せず、現在地・カメラ・入力欄・保存は使いません。外部サイトは押したときだけ開きます。</p>
+  </footer>
+</main>
+<!-- Measurement v0.4: shared hostname-gated loader. Entry / continue / evidence / external only; no coordinates, frame, view or building. -->
+<script src="../analytics-v3.js"></script>
+</body>
+</html>

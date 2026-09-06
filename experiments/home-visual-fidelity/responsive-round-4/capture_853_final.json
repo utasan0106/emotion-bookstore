@@ -1,0 +1,72 @@
+{
+  "out": "../../../tmp/claude-0/-home-user-emotion-bookstore/d3cbf9b1-aba3-59df-acfc-279e9bba78ef/scratchpad/final/HOME_853_final2_run4.png",
+  "docW": 853,
+  "docH": 1844,
+  "sha256": "6f8a8e981cc731c5337224d445b6ec5469a0b81f88e1f3b6463d60905b506ce5",
+  "bytes": 1399275,
+  "rects": {
+    "hero": [
+      0,
+      0,
+      853,
+      617
+    ],
+    "cities": [
+      32,
+      706,
+      789,
+      311
+    ],
+    "works": [
+      32,
+      1104,
+      789,
+      143
+    ],
+    "thread": [
+      25,
+      1275,
+      803,
+      292
+    ],
+    "strip": [
+      333,
+      1620,
+      512,
+      186
+    ],
+    "spots": [
+      32,
+      1746,
+      212,
+      48
+    ]
+  },
+  "sections": 5,
+  "errors": [],
+  "fonts": {
+    "brand": "Noto Serif CJK JP:8",
+    "h1": "Noto Serif CJK JP:12",
+    "hero-sub": "Noto Sans CJK JP:18",
+    "hero-cta": "Noto Serif CJK JP:7",
+    "hero-aside": "Noto Sans CJK JP:5",
+    "scroll-cue": "Noto Sans CJK JP:12",
+    "trace-year": "Noto Sans CJK JP:4",
+    "cities-title": "Noto Serif CJK JP:5",
+    "cities-note": "Noto Sans CJK JP:16",
+    "city-name": "Noto Serif CJK JP:3",
+    "city-q": "Noto Sans CJK JP:4",
+    "works-title": "Noto Serif CJK JP:6",
+    "work-label": "Noto Serif CJK JP:1",
+    "thread-heading": "Noto Serif CJK JP:9",
+    "thread-pill": "Noto Sans CJK JP:7",
+    "thread-title": "Noto Serif CJK JP:8",
+    "thread-sub": "Noto Sans CJK JP:16",
+    "node-kind": "Noto Sans CJK JP:1",
+    "node-name": "Noto Sans CJK JP:3",
+    "thread-read": "Noto Sans CJK JP:8",
+    "reality-title": "Noto Serif CJK JP:5",
+    "reality-line": "Noto Sans CJK JP:21",
+    "reality-cta": "Noto Serif CJK JP:7"
+  }
+}

@@ -5,13 +5,14 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const vm = require('vm');
 
 const root = path.resolve(__dirname, '..');
 const failures = [];
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 
-for (const file of ['index.html', 'shelf.html', 'release.css', 'release.js', 'release_content.js', 'analytics-v3.js', 'data.html', 'weekly-video.js', 'weekly-video.css']) {
+for (const file of ['index.html', 'shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html', 'release.css', 'release.js', 'release_content.js', 'analytics-v3.js', 'growth-improvements.js']) {
   if (!fs.existsSync(path.join(root, file))) failures.push(`missing ${file}`);
 }
 
@@ -188,13 +189,24 @@ const BRAND_LOCKUP = './assets/brand/emotion-bookstore-lockup-reversed.png';
 if (!fs.existsSync(path.join(root, 'assets/brand/emotion-bookstore-lockup-reversed.png'))) {
   failures.push('official brand lockup missing');
 }
-for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
+for (const page of ['shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html']) {
   const src = read(page);
   if (!src.includes('class="brand-lockup-image"') || !src.includes(BRAND_LOCKUP)) {
     failures.push(`${page}: official brand lockup missing from header`);
   }
   if (src.includes('emotion-bookstore-symbol-reversed.svg')) {
     failures.push(`${page}: obsolete header symbol must not remain`);
+  }
+}
+/* HOME は Founder/HQ 承認の VISUAL_CANONICAL（853）どおり wordmark-only。
+   旧 symbol + wordmark lockup へ戻さない（HOME 853 brief §2）。 */
+{
+  const src = read('index.html');
+  if (!src.includes('<a class="hc-brand-link" href="./index.html">みんなの感情書店</a>')) {
+    failures.push('index.html: canonical wordmark header missing');
+  }
+  for (const stale of ['brand-lockup-image', 'emotion-bookstore-symbol-reversed.svg', 'emotion-bookstore-lockup-reversed.png']) {
+    if (src.includes(stale)) failures.push(`index.html: HOME header must be wordmark-only (${stale})`);
   }
 }
 const shelfPage = read('shelf.html');
@@ -218,7 +230,7 @@ for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
   }
 }
 
-for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
+for (const page of ['index.html', 'shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html']) {
   const src = read(page);
   if (!src.includes('id="siteMenuButton"') || !src.includes('id="siteMenu"')) {
     failures.push(`${page}: MENU trigger/dialog missing`);
@@ -263,17 +275,47 @@ for (const required of [
   if (!finalRuntime.includes(required)) failures.push(`release.js: final UI runtime missing ${required}`);
 }
 
-for (const page of ['index.html','shelf.html','suggest.html']) {
+/* MENU は全ページ同じ。旧 HOME の「今週の寄り道」「種類から見る」は canonical に
+   無いので、Founder/HQ の指示どおり「いま辿れるスレッド」「作品から入る」へ。
+   写真・出典（credits.html）は HOME 本文へ長い attribution を載せない代わりの
+   静かな surface なので、どのページの MENU からも届くこと。 */
+const MENU_PAGES = ['index.html','shelf.html','suggest.html','data.html','credits.html','explore.html'];
+for (const page of MENU_PAGES) {
   const src = read(page);
   if (src.includes('<p class="pilot-label">4つの街</p>')) failures.push(`${page}: header must not show 4つの街 beside MENU`);
-  for (const label of ['今週の寄り道','種類から見る','候補を教える','気になるリスト','データの扱い']) {
+  for (const label of ['作品から入る','いま辿れるスレッド','候補を教える','気になるリスト','データの扱い','写真・出典']) {
     if (!src.includes(label)) failures.push(`${page}: MENU missing ${label}`);
   }
-  if (!src.includes('Amazon のアソシエイトとして、みんなの感情書店は適格販売により収入を得ています。')) {
+  for (const [href, label] of [['./index.html#hc-works','作品から入る'],['./index.html#hc-thread','いま辿れるスレッド'],['./credits.html','写真・出典'],['./suggest.html','候補を教える'],['./data.html','データの扱い']]) {
+    if (!src.includes(`href="${href}"`)) failures.push(`${page}: MENU link missing ${label} → ${href}`);
+  }
+  for (const retired of ['<span>今週の寄り道</span>','<span>種類から見る</span>','#weekly-detour','#by-kind']) {
+    if (src.includes(retired)) failures.push(`${page}: retired HOME anchor/label remains (${retired})`);
+  }
+}
+/* affiliate disclosure は affiliate 導線が描画されるページに置く。canonical HOME
+   には footer も affiliate link も無い（無いことを確認する）。 */
+for (const page of ['shelf.html','suggest.html','data.html']) {
+  if (!read(page).includes('Amazon のアソシエイトとして、みんなの感情書店は適格販売により収入を得ています。')) {
     failures.push(`${page}: Amazon disclosure missing`);
   }
 }
-for (const page of ['index.html','shelf.html','suggest.html','data.html']) {
+for (const token of ['amazon.co.jp', 'rakuten.co.jp', 'a.r10.to', 'amzn.to', 'tag=uta0106-22']) {
+  if (read('index.html').includes(token)) failures.push(`index.html: HOME must not carry affiliate links (${token}) — it has no disclosure surface`);
+}
+/* 行き先の無い anchor を残さない。index.html#xxx への link は、index.html に
+   静的に存在する id か、growth-improvements.js が runtime で作る id だけ。 */
+{
+  const homeIds = new Set([...read('index.html').matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]));
+  const runtimeIds = new Set([...read('growth-improvements.js').matchAll(/\.id = '([^']+)'/g)].map((m) => m[1]));
+  for (const file of [...MENU_PAGES, 'growth-improvements.js', 'release.js']) {
+    for (const m of read(file).matchAll(/index\.html#([A-Za-z0-9_-]+)/g)) {
+      if (!homeIds.has(m[1]) && !runtimeIds.has(m[1])) failures.push(`${file}: links to index.html#${m[1]} but HOME has no such id`);
+    }
+  }
+  for (const id of ['hc-works', 'hc-thread']) if (!homeIds.has(id)) failures.push(`index.html: section id missing (${id})`);
+}
+for (const page of ['shelf.html','suggest.html','data.html','credits.html','explore.html']) {
   const src = read(page);
   if (!src.includes('class="footer-brand"') ||
       !src.includes('class="footer-brand-image"') ||
@@ -281,6 +323,7 @@ for (const page of ['index.html','shelf.html','suggest.html','data.html']) {
     failures.push(`${page}: official footer brand lockup missing`);
   }
 }
+if (read('index.html').includes('class="site-footer"')) failures.push('index.html: canonical HOME ends at 現実へ出る — no footer');
 
 const dataPageFinal = read('data.html');
 if (!dataPageFinal.includes('気になる') || !dataPageFinal.includes('localStorage')) failures.push('data.html: favorites storage explanation missing');
@@ -290,29 +333,51 @@ if (!dataPageFinal.includes('id="siteMenuButton"')) failures.push('data.html: ME
 const responsiveCss = read('release.css');
 for (const required of [
   '.site-explainer .explainer-line',
-  '.weekly-video-plate-title .weekly-video-plate-line',
-  '.foyer-end .end-phrase'
+  'HOME — CONTENT-LED IMMERSIVE TIME',
+  '.hc-hero-trace'
 ]) {
   if (!responsiveCss.includes(required)) {
     failures.push(`release.css: mobile/editorial contract missing ${required}`);
   }
 }
-const indexRuntime = read('index.html');
-for (const required of [
-  '感情書店の編集部が選んだ場所・本・音楽・映画・催しを、',
-  '街や種類ごとに少しずつ並べる文化案内です。',
-  '<span class="weekly-video-plate-line">東京の文化を、</span>',
-  '<span class="weekly-video-plate-line">31秒だけ</span>'
-]) {
-  if (!indexRuntime.includes(required)) failures.push(`index.html: required mobile phrase missing (${required})`);
-}
 
+/* ---- HOME canonical (853) — 専用 gate をこの gate の一部として走らせる ---- */
+{
+  const r = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'home_canonical_check.js')], { encoding: 'utf8' });
+  if (r.status !== 0) {
+    failures.push('qa/home_canonical_check.js FAIL');
+    for (const line of String(r.stderr || '').split('\n')) if (line.startsWith('- ')) failures.push('  home_canonical: ' + line.slice(2));
+  }
+}
+/* 4街の写真は canonical の夜の階調へ CSS だけで寄せる（原本無加工）。 */
 const cityCss = read('release.css');
-for (const required of ['mix-blend-mode: multiply', 'mix-blend-mode: color', 'repeating-linear-gradient']) {
-  if (!cityCss.includes(required)) failures.push(`release.css: city editorial treatment missing ${required}`);
+const hcCss = cityCss.slice(cityCss.indexOf('HOME — CONTENT-LED IMMERSIVE TIME'));
+for (const required of ['.hc-hero-media::after', '.hc-city-media img', '.hc-city-media::after', 'object-fit: cover', '.hc-reality-shot img']) {
+  if (!hcCss.includes(required)) failures.push(`release.css: HOME canonical photo treatment missing ${required}`);
+}
+/* Cultural trace は装飾。操作面に乗らず、年号は Evidence 済みの4つだけ。 */
+{
+  const src = read('index.html');
+  const svg = (src.match(/<svg class="hc-hero-trace"[\s\S]*?<\/svg>/) || [''])[0];
+  if (!svg) failures.push('index.html: hero cultural trace missing');
+  const years = [...svg.matchAll(/<text[^>]*>(\d{4})<\/text>/g)].map((m) => m[1]);
+  if (years.join(',') !== '1957,1961,1963,2026') failures.push(`index.html: hero trace years must be exactly the evidence-cleared 1957,1961,1963,2026 (got ${years.join(',') || 'none'})`);
+  if (!/aria-hidden="true"/.test(svg)) failures.push('index.html: hero trace must be aria-hidden');
+  if (/<(a|animate|animateTransform|animateMotion|set|script)\b/.test(svg)) failures.push('index.html: hero trace must be static and non-interactive');
+  if (!/\.hc-hero-trace\s*\{[^}]*pointer-events:\s*none/.test(hcCss)) failures.push('release.css: .hc-hero-trace needs pointer-events: none');
 }
 
-for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
+/* canonical HOME には site-explainer が無い。HOME では hero の copy（H1 + sub）が
+   最初の街の写真より DOM 上で先にあり、HERO の写真は装飾（alt=""）であること。 */
+{
+  const src = read('index.html');
+  const h1 = src.indexOf('<h1 id="hc-hero-title"');
+  const sub = src.indexOf('街から。作品から。ひとつの痕跡から。');
+  const firstCity = src.indexOf('class="hc-city shelf-entry"');
+  if (h1 < 0 || sub < 0 || firstCity < 0 || h1 > firstCity || sub > firstCity) failures.push('index.html: hero copy must precede the first city entry');
+  if (!src.includes('<img src="./assets/city-koenji.jpg" alt="" width="1200" height="1600" fetchpriority="high"')) failures.push('index.html: hero photograph must be decorative (alt="") and fetchpriority high');
+}
+for (const page of ['shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html']) {
   const src = read(page);
   if (explainerText(src) !== EXPLAINER.replace(/\s+/g, '')) {
     failures.push(`${page}: exact site explainer missing`); continue;
@@ -383,13 +448,17 @@ for (const c of cats) {
   if (new Set(inCat).size !== inCat.length) failures.push(`category ${c.id}: duplicate object`);
 }
 // 玄関に二軸が明示されていること。
+/* canonical HOME の二軸は「街から入る」「作品から入る」。旧 category 索引
+   （種類から見る / categoryIndex / categoryTownIndex / categoryArchive）は
+   HOME から外れているので、復活していないことも見る。 */
 const foyerSrc = read('index.html');
-for (const axis of ['街から見る', '種類から見る']) {
-  if (!foyerSrc.includes(axis)) failures.push(`index.html: entry axis missing (${axis})`);
+for (const [axis, id] of [['街から入る', 'hc-cities-title'], ['作品から入る', 'hc-works-title']]) {
+  if (!foyerSrc.includes(`id="${id}"`) || !foyerSrc.includes(axis)) failures.push(`index.html: entry axis missing (${axis})`);
 }
-if (!foyerSrc.includes('id="categoryIndex"')) failures.push('index.html: category index container missing');
-if (!foyerSrc.includes('id="categoryTownIndex"')) failures.push('index.html: category town index missing');
-if (!foyerSrc.includes('id="categoryArchive"')) failures.push('index.html: category archive container missing');
+for (const stale of ['id="categoryIndex"', 'id="categoryTownIndex"', 'id="categoryArchive"', 'id="by-kind"', 'id="weekly-detour"', 'class="entry-axis"']) {
+  if (foyerSrc.includes(stale)) failures.push(`index.html: retired HOME surface present (${stale})`);
+}
+if ((foyerSrc.match(/class="hc-work(?:\s|")/g) || []).length !== 4) failures.push('index.html: 作品から入る must have exactly 4 entries');
 const categoryRuntimeFinal = read('release.js');
 for (const required of [
   'function archiveInCategory(categoryId, townId)',
@@ -398,6 +467,76 @@ for (const required of [
   "class: 'category-town-link'"
 ]) {
   if (!categoryRuntimeFinal.includes(required)) failures.push(`release.js: category town/archive runtime missing ${required}`);
+}
+
+/* ---- F. explore.html — 有限 compatibility surface ----------------------
+   旧 HOME の「種類から見る」（街 × 種類の有限索引）と ARCHIVE は Canonical HOME
+   に戻さず、explore.html だけがその DOM を持つ。新しい推薦・feed・ranking・
+   data model ではない。saved record / traversal の行き先は意味を保つ
+   （NO EVIDENCE = NO ROUTE）。ARCHIVE は explore.html の host にだけ描く。 */
+{
+  const ex = read('explore.html');
+  for (const hook of ['id="categoryTownIndex"', 'id="categoryIndex"', 'id="categoryResults"', 'id="categoryArchive"',
+    'id="categoryArchiveResults"', 'id="archiveHost"', 'id="live"', 'id="main"', 'class="skip-link" href="#main"']) {
+    if (!ex.includes(hook)) failures.push(`explore.html: required hook missing (${hook})`);
+  }
+  if (!/<div id="archiveHost"[^>]*\bhidden\b/.test(ex)) failures.push('explore.html: archive host must start hidden (no empty archive UI)');
+  if (/\bid="archive"/.test(ex)) failures.push('explore.html: #archive must exist only at runtime, when entries exist');
+  if (ex.includes('id="shelfList"') || ex.includes('id="detourList"') || ex.includes('weeklyVideoPlay')) failures.push('explore.html: must not host retired HOME modules (shelf list / detour / weekly video)');
+  if ((ex.match(/<h1\b/g) || []).length !== 1) failures.push('explore.html needs exactly one h1');
+  if (ex.includes('rel="canonical"')) failures.push('explore.html: compatibility surface carries no canonical');
+  for (const s of ['./release_content.js', './growth-improvements.js', './release.js', './analytics-v3.js']) {
+    if (!ex.includes(`<script src="${s}"></script>`)) failures.push(`explore.html: loader missing ${s}`);
+  }
+  const exBody = ex.slice(ex.indexOf('<body'));
+  for (const m of exBody.match(/(?:src|href)="(?:https?:)?\/\/[^"]+"/g) || []) failures.push(`explore.html must not reference an external host: ${m}`);
+  if (/<iframe/i.test(ex)) failures.push('explore.html must not embed an iframe');
+  for (const t of ['pagin', 'もっと見る', 'load-more', 'infinite']) {
+    if (ex.toLowerCase().includes(t)) failures.push(`explore.html: must stay finite (${t})`);
+  }
+
+  /* release.js: 索引は explore.html へ向き、旧 HOME の shelfList 無しでも描ける。
+     Canonical HOME にはその DOM が無いので HOME では動かない。 */
+  const rel = read('release.js');
+  if (!rel.includes("var EXPLORE_PAGE = './explore.html';")) failures.push('release.js: EXPLORE_PAGE missing');
+  if (!rel.includes("else if (document.getElementById('categoryIndex')) renderCategoryIndex();")) {
+    failures.push('release.js: category index must initialise on explore.html without the retired shelfList');
+  }
+  if (/'\.\/index\.html\?(?:category|town)=/.test(rel)) failures.push('release.js: category / town links must not point at HOME');
+  for (const required of ["return EXPLORE_PAGE + (q ? '?' + q : '');",
+    "EXPLORE_PAGE + '?town=' + encodeURIComponent(town.id)", "EXPLORE_PAGE + '?category=' + encodeURIComponent(category.id)"]) {
+    if (!rel.includes(required)) failures.push(`release.js: explore index link missing ${required}`);
+  }
+
+  /* growth-improvements.js: 意味のある route だけ。ARCHIVE は host 限定。 */
+  const growth = read('growth-improvements.js');
+  if (!growth.includes("exploreHref({ category: category.id, town: shelf.id }, '')")) failures.push('growth-improvements.js: same-town traversal must carry category + town');
+  if (!growth.includes("exploreHref({ category: category.id }, '')")) failures.push('growth-improvements.js: all-town traversal must carry the category');
+  if (/index\.html#hc-/.test(growth)) failures.push('growth-improvements.js: saved records / traversal must not be routed to HOME sections (fake route)');
+  if (growth.includes("'./index.html#archive'")) failures.push('growth-improvements.js: archive records must point at explore.html#archive');
+  if (growth.includes("getElementById('main')")) failures.push('growth-improvements.js: archive must never be appended to #main');
+  if (!growth.includes("getElementById('archiveHost')")) failures.push('growth-improvements.js: archive must render only into the explore.html host');
+  for (const legacy of ["'#by-kind'", "'#archive'", "'#weekly-detour'", "'#weekly-video-title'"]) {
+    if (!growth.includes(legacy)) failures.push(`growth-improvements.js: legacy HOME hash handling missing ${legacy}`);
+  }
+  if (!growth.includes('旧HOME掲載項目')) failures.push('growth-improvements.js: unavailable legacy records need the non-clickable state');
+  if (growth.includes('decorateDetour') || growth.includes('decorateWeeklyVideo')) {
+    failures.push('growth-improvements.js: retired detour / weekly video record factories must not mint HOME-section routes');
+  }
+  for (const token of ['fetch(', 'XMLHttpRequest', 'sendBeacon', 'gtag(', 'indexedDB', 'sessionStorage']) {
+    if (growth.includes(token)) failures.push(`growth-improvements.js: forbidden runtime token ${token}`);
+  }
+
+  /* data.html の trust copy は現在の runtime だけを言う。旧 HOME の週間動画は
+     canonical HOME に無く、いまどのページも YouTube を読まない。 */
+  const trust = read('data.html');
+  for (const stale of ['週末の前の一本', '31秒の動画を再生', 'weeklyVideoPlay', 'youtube-nocookie']) {
+    if (trust.includes(stale)) failures.push(`data.html: retired HOME video claim remains (${stale})`);
+  }
+  if (/トップページ[^<]*(?:YouTube|動画)/.test(trust)) failures.push('data.html: must not describe a HOME video / YouTube behaviour that no longer exists');
+  if (!trust.includes('外部サービスへの移動はGA4のオン／オフとは別の操作です。')) failures.push('data.html: external navigation / GA4 separation missing');
+  if (!trust.includes('Google Analytics 4（GA4）')) failures.push('data.html: GA4 description missing');
+  if (!trust.includes('利用者が押した場合だけ開きます')) failures.push('data.html: explicit external navigation must be described as user-initiated');
 }
 
 /* ---- D. 候補受付は backend を持たない -------------------------------- */
@@ -481,7 +620,7 @@ for (const call of localStorageCalls) {
     failures.push(`release.js: unapproved localStorage call (${call})`);
   }
 }
-const html = read('index.html') + read('shelf.html') + read('suggest.html');
+const html = read('index.html') + read('shelf.html') + read('suggest.html') + read('explore.html');
 const runtime = [html, js, contentJs].join('\n');
 for (const word of ['次の3つ', 'また見たい', 'おすすめ', 'あなた向け', 'ランキング', '人気', 'トレンド',
   'NEW', 'TRENDING', 'FOR YOU', '見終わりました']) {
@@ -489,7 +628,7 @@ for (const word of ['次の3つ', 'また見たい', 'おすすめ', 'あなた�
 }
 /* referrer は3ページとも落とさない。外部へ出るとき、どこから来たかを
    相手に渡さない。 */
-for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
+for (const page of ['index.html', 'shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html']) {
   if (!read(page).includes('referrer" content="no-referrer')) {
     failures.push(`${page} missing referrer no-referrer`);
   }
@@ -500,6 +639,11 @@ for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
 if (!read('suggest.html').includes('noindex,nofollow')) {
   failures.push('suggest.html must stay noindex');
 }
+/* 写真・出典は静かな surface。棚より上に検索で出す理由が無いので noindex。 */
+if (!read('credits.html').includes('noindex,nofollow')) failures.push('credits.html must stay noindex');
+/* explore.html は旧 HOME の索引を引き継ぐ compatibility surface。棚より上に
+   検索で出す理由が無いので noindex。 */
+if (!read('explore.html').includes('noindex,nofollow')) failures.push('explore.html must stay noindex');
 for (const page of ['index.html', 'shelf.html']) {
   if (read(page).includes('noindex')) failures.push(`${page} must not be noindex`);
 }
@@ -532,7 +676,7 @@ for (const f of ['assets/ogp-official-artwork-20260901.png', 'assets/ogp-machi.j
     }
   }
 }
-for (const page of ['index.html', 'shelf.html', 'suggest.html']) {
+for (const page of ['index.html', 'shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html']) {
   const src = read(page);
   for (const rel of ['rel="icon" href="./assets/favicon.ico"',
                      'rel="apple-touch-icon" href="./assets/apple-touch-icon.png"']) {
@@ -571,9 +715,9 @@ if ((read('suggest.html').match(/<h1\b/g) || []).length !== 1) failures.push('su
 /* ---- 玄関と終わりの言い回し ------------------------------------------ */
 const foyer = read('index.html');
 if (!foyer.includes('みんなの感情書店')) failures.push('foyer eyebrow missing');
-const visibleCityH1 = '<h1 id="hero-title"><span class="hero-line">今日は、</span><span class="hero-line">どの街へ。</span></h1>';
+const visibleCityH1 = '<h1 id="hc-hero-title" class="hc-hero-title"><span class="hc-hero-line">文化の</span><span class="hc-hero-line">つながりを、</span><span class="hc-hero-line">歩く。</span></h1>';
 if (!foyer.includes(visibleCityH1)) {
-  failures.push('foyer visible H1 must be 今日は、どの街へ。');
+  failures.push('foyer visible H1 must be 文化の／つながりを、／歩く。 (VISUAL_CANONICAL)');
 }
 const shelfHtml = read('shelf.html');
 const endPlate = (shelfHtml.match(/<section class="end-plate"[\s\S]*?<\/section>/) || [''])[0];
@@ -594,11 +738,17 @@ const endPhrase = rule('.end-phrase');
 if (!/word-break:\s*keep-all/.test(endPhrase)) failures.push('.end-phrase must be word-break: keep-all');
 // auto-phrase を使う見出しは min-content が文節まで膨らむ。200% 拡大で横スクロールを
 // 作らないよう、最終手段として折れることを必須にする。
-for (const sel of ['.shelf-tagline', '.plate-word']) {
+for (const sel of ['.plate-word']) {
   if (!/overflow-wrap:\s*anywhere/.test(rule(sel))) {
     failures.push(`${sel} needs overflow-wrap: anywhere so it cannot widen min-content`);
   }
 }
+/* canonical HOME の折返しは markup で決める（auto-phrase に依存しない）。
+   行の span は block でなければ canonical の行数にならない。 */
+for (const sel of ['.hc-hero-line', '.hc-city-q-line', '.hc-hero-aside-line', '.hc-reality-line']) {
+  if (!/display:\s*block/.test(rule(sel))) failures.push(`${sel} must be display: block (canonical hard line break)`);
+}
+if (read('index.html').includes('shelf-tagline')) failures.push('index.html: retired .shelf-tagline entry must not return to HOME');
 if (!/touch-action:\s*manipulation/.test(css)) failures.push('primary controls need touch-action: manipulation');
 if (!css.includes('.dialog-close:focus-visible')) failures.push('dialog close focus treatment missing');
 if (!/@media \(hover: none\) and \(pointer: coarse\)/.test(css)) failures.push('coarse-touch hover suppression missing');
@@ -641,25 +791,152 @@ for (const shelf of shelves) {
   }
 }
 
+/* ---- 写真・出典（credits.html）------------------------------------------
+   HOME 本文へ長い attribution を常時載せない代わりの surface。HOME が参照する
+   第三者写真は全部ここに、8項目そろって記録されていること。CC0 も provenance
+   として同じ形で残す。credits.html があることは「法務的に完全 OK」の自己判定
+   ではない —— 各 license の条件確認は Founder/HQ の gate。 */
+{
+  const credits = read('credits.html');
+  const OWN = new Set(['favicon.ico', 'icon-512.png', 'apple-touch-icon.png', 'ogp-official-artwork-20260901.png']);
+  const homePhotos = [...new Set([...read('index.html').matchAll(/\.\/assets\/([^"/]+\.(?:jpg|jpeg|png|webp))"/g)].map((m) => m[1]))]
+    .filter((f) => !OWN.has(f));
+  if (!homePhotos.length) failures.push('index.html: no photograph referenced — canonical HOME has eight photo slots');
+
+  /* HOME asset ledger（HOME 専用写真の権利台帳、下で検証）を先に読む。credits の
+     権利 link の項目名は license の種類で決まる:
+     - CC / CC0 → 「ライセンスURL」（creativecommons.org 必須）
+     - 著作権者本人によるパブリックドメイン放棄 → 「権利情報URL」（Commons File page の
+       Licensing 節）。Public Domain Mark 1.0 は状態表示で作者の放棄文書ではないので、
+       license URL として出さない（HQ: HOME_R3_FINAL_BOOK_AND_PD_PRECISION §3）。 */
+  const LEDGER = 'experiments/home-visual-fidelity/asset-round-3/HOME_ASSET_LEDGER.json';
+  let ledger = [];
+  if (fs.existsSync(path.join(root, LEDGER))) {
+    try { ledger = JSON.parse(read(LEDGER)); } catch (e) { failures.push(`${LEDGER}: invalid JSON (${e.message})`); }
+    if (!Array.isArray(ledger)) { failures.push(`${LEDGER}: must be an array of entries`); ledger = []; }
+  }
+  const ledgerEntryFor = (f) => ledger.find((e) => e && String(e.runtimePath || '') === `./assets/${f}`);
+  const isPdRelease = (e) => !!e && !String(e.licenseUrl || '').trim() && /public domain/i.test(String(e.license || '')) &&
+    /^https:\/\/commons\.wikimedia\.org\/wiki\/File:/.test(String(e.rightsSourceUrl || ''));
+
+  for (const f of homePhotos) {
+    const entry = (credits.match(new RegExp(`<article class="credits-entry" data-credit-asset="${f.replace(/\./g, '\\.')}">[\\s\\S]*?<\\/article>`)) || [''])[0];
+    if (!entry) { failures.push(`credits.html: HOME photo has no credit entry (${f})`); continue; }
+    const pdEntry = ledgerEntryFor(f);
+    const pd = isPdRelease(pdEntry);
+    for (const field of ['使用場所', '被写体', '作者', '出典', '出典URL', 'ライセンス', pd ? '権利情報URL' : 'ライセンスURL', '改変']) {
+      if (!entry.includes(`<dt>${field}</dt>`)) failures.push(`credits.html: ${f} entry missing ${field}`);
+    }
+    if (pd) {
+      if (entry.includes('<dt>ライセンスURL</dt>')) failures.push(`credits.html: ${f} is author-released public domain — its rights link is 権利情報URL, not ライセンスURL`);
+      if (/creativecommons\.org/.test(entry)) failures.push(`credits.html: ${f} is author-released public domain — must not present a creativecommons.org URL (PDM / CC) as its license`);
+      if (!entry.includes(`href="${pdEntry.rightsSourceUrl}"`)) failures.push(`credits.html: ${f} 権利情報URL must be the ledger rightsSourceUrl (${pdEntry.rightsSourceUrl})`);
+      if (!/パブリックドメイン|Public Domain/.test(entry)) failures.push(`credits.html: ${f} ライセンス text must say public domain`);
+    } else if (!/href="https:\/\/creativecommons\.org\/(licenses|publicdomain)\//.test(entry)) {
+      failures.push(`credits.html: ${f} entry needs a CC license URL`);
+    }
+    if (!/href="https:\/\/commons\.wikimedia\.org\/wiki\/File:/.test(entry)) failures.push(`credits.html: ${f} entry needs its source File page URL`);
+    if (!entry.includes('トップ')) failures.push(`credits.html: ${f} entry must say it is used on トップ`);
+  }
+  /* credits に載っている作者・出典・license は release_content.js の rights /
+     heroMedia と食い違わないこと。 */
+  const known = {};
+  for (const shelf of shelves) {
+    if (shelf.heroMedia && shelf.heroMedia.url) known[shelf.heroMedia.url.replace(/^\.\/assets\//, '')] = shelf.heroMedia;
+    for (const o of shelf.objects) if (o.rights && o.media && o.media.url) known[o.media.url.replace(/^\.\/assets\//, '')] = o.rights;
+  }
+  /* HOME 専用写真（棚の heroMedia でも Object の media でもない図版）の権利は
+     release_content.js の content model には属さない。HQ 決定（HOME_ASSET_R3_RESUME_V2
+     §5）で別台帳 HOME_ASSET_LEDGER.json を source of truth にする。QA を通すためだけの
+     偽 Object を release_content.js に足さない。棚 / Object media の既存契約は不変。 */
+  const ledgerByFile = {};
+  {
+    for (const e of ledger) {
+      const rp = String((e && e.runtimePath) || '');
+      if (!/^\.\/assets\/[^/]+\.(?:jpg|jpeg|png|webp)$/.test(rp)) { failures.push(`${LEDGER}: runtimePath must be ./assets/<file> (${rp})`); continue; }
+      const f = rp.replace(/^\.\/assets\//, '');
+      if (ledgerByFile[f]) failures.push(`${LEDGER}: duplicate entry ${f}`);
+      ledgerByFile[f] = e;
+      const abs = path.join(root, rp.replace(/^\.\//, ''));
+      if (!fs.existsSync(abs)) failures.push(`${LEDGER}: runtime file missing ${rp}`);
+      for (const k of ['slot', 'author', 'source', 'sourceUrl', 'license', 'modification', 'derivativeSha256', 'checkedAt']) {
+        if (!e[k] || !String(e[k]).trim()) failures.push(`${LEDGER}: ${f} missing ${k}`);
+      }
+      /* 権利 link: CC / CC0 は licenseUrl（creativecommons.org）必須。著作権者本人の
+         パブリックドメイン放棄だけ licenseUrl を空にでき、その場合は rightsSourceUrl
+         （Commons File page）が必須。「license URL は全部任意」にはしない。 */
+      const pd = /public domain/i.test(String(e.license || ''));
+      const hasLicenseUrl = !!String(e.licenseUrl || '').trim();
+      if (hasLicenseUrl) {
+        if (!/^https:\/\/creativecommons\.org\/(licenses|publicdomain\/zero)\//.test(e.licenseUrl)) failures.push(`${LEDGER}: ${f} licenseUrl must be a creativecommons.org license / CC0 URL (a Public Domain Mark is not a license)`);
+      } else if (pd) {
+        if (!/^https:\/\/commons\.wikimedia\.org\/wiki\/File:/.test(String(e.rightsSourceUrl || ''))) failures.push(`${LEDGER}: ${f} author-released public domain needs rightsSourceUrl = its Commons File page`);
+      } else {
+        failures.push(`${LEDGER}: ${f} missing licenseUrl`);
+      }
+      for (const k of ['sourceUrl', 'licenseUrl', 'rightsSourceUrl']) if (e[k] && !/^https:\/\//.test(e[k])) failures.push(`${LEDGER}: ${f} ${k} must be https`);
+      for (const k of ['sourceDimensions', 'derivativeDimensions']) {
+        if (!Array.isArray(e[k]) || e[k].length !== 2 || !e[k].every((n) => Number.isInteger(n) && n > 0)) failures.push(`${LEDGER}: ${f} ${k} must be [width, height]`);
+      }
+      if (e.derivativeSha256 && fs.existsSync(abs)) {
+        const actual = crypto.createHash('sha256').update(fs.readFileSync(abs)).digest('hex');
+        if (actual !== e.derivativeSha256) failures.push(`${LEDGER}: ${f} derivativeSha256 does not match the file on disk`);
+      }
+      if (!homePhotos.includes(f)) failures.push(`${LEDGER}: ${f} is in the ledger but index.html does not use it`);
+      if (known[f]) failures.push(`${LEDGER}: ${f} is shelf/Object media — its rights live in release_content.js, not in the ledger`);
+      const entry = (credits.match(new RegExp(`data-credit-asset="${f.replace(/\./g, '\\.')}">[\\s\\S]*?<\\/article>`)) || [''])[0];
+      if (!entry) { failures.push(`credits.html: ledger asset ${f} has no credit entry`); continue; }
+      for (const [k, v] of [['author', e.author], ['sourceUrl', e.sourceUrl], ['licenseUrl', e.licenseUrl], ['rightsSourceUrl', e.rightsSourceUrl]]) {
+        if (v && !entry.includes(String(v))) failures.push(`credits.html: ${f} ${k} does not match ${LEDGER} (${v})`);
+      }
+      // license 文言: CC / CC0 は台帳の文字列がそのまま載る。PD 放棄は「パブリックドメイン」で照合（表記言語が違う）。
+      if (e.license && !(pd ? /パブリックドメイン|Public Domain/.test(entry) : entry.includes(String(e.license)))) failures.push(`credits.html: ${f} license does not match ${LEDGER} (${e.license})`);
+    }
+  }
+  for (const f of homePhotos) {
+    const r = known[f];
+    if (!r) {
+      if (!ledgerByFile[f]) failures.push(`HOME photo ${f} has neither a release_content.js rights record nor a HOME asset ledger entry (${LEDGER})`);
+      continue;
+    }
+    const entry = (credits.match(new RegExp(`data-credit-asset="${f.replace(/\./g, '\\.')}">[\\s\\S]*?<\\/article>`)) || [''])[0];
+    for (const [k, v] of [['author', r.author], ['license', r.license], ['sourceUrl', r.sourceUrl], ['licenseUrl', r.licenseUrl]]) {
+      const needle = k === 'author' ? String(v).split(' / ')[0] : String(v);
+      if (v && !entry.includes(needle)) failures.push(`credits.html: ${f} ${k} does not match release_content.js (${needle})`);
+    }
+  }
+  if (/<iframe|<script src="http|<img src="http/.test(credits)) failures.push('credits.html: must not load external resources');
+  if ((credits.match(/<h1\b/g) || []).length !== 1) failures.push('credits.html needs exactly one h1');
+  if (!/<a\b[^>]*href="\.\/data\.html"[^>]*>データの扱い<\/a>/.test(credits)) failures.push('credits.html: data.html link missing');
+}
+
 /* ---- E. approved Production measurement + weekly video ---------------- */
 const productionIndex = read('index.html');
-for (const required of ['analytics-v3.js', 'data.html', 'weekly-video.js', 'weekly-video.css']) {
+for (const required of ['analytics-v3.js', 'data.html', 'credits.html']) {
   if (!fs.existsSync(path.join(root, required))) failures.push(`missing ${required}`);
 }
 if (!productionIndex.includes('<script src="./analytics-v3.js"></script>')) failures.push('index.html: analytics-v3 loader missing');
 if (!read('shelf.html').includes('<script src="./analytics-v3.js"></script>')) failures.push('shelf.html: analytics-v3 loader missing');
 if (!read('suggest.html').includes('<script src="./analytics-v3.js"></script>')) failures.push('suggest.html: analytics-v3 loader missing');
-if (!productionIndex.includes('id="weeklyVideoPlay"') || !productionIndex.includes('data-video-id="TNomzoYXWMc"')) {
-  failures.push('index.html: approved weekly video module missing');
+/* canonical HOME に週間動画 module は無い。旧 module の「押すまで YouTube へ
+   接続しない」より強い契約 —— HOME は表示時も操作時も外部 host へ出ない —— を
+   ここで固定する（qa/home_canonical_check.js が external host 0 を見る）。 */
+for (const retired of ['weekly-video.js', 'weekly-video.css', 'id="weeklyVideoPlay"', 'data-video-id=', 'youtube', 'i.ytimg.com', '<iframe']) {
+  if (productionIndex.includes(retired)) failures.push(`index.html: canonical HOME must not carry the retired weekly video module (${retired})`);
 }
-if (!productionIndex.includes('ページ表示時にはYouTubeへ接続しません')) failures.push('index.html: weekly video pre-click disclosure missing');
-if (productionIndex.includes('i.ytimg.com')) failures.push('index.html: external YouTube thumbnail must not load before play');
-const weeklyVideoJs = read('weekly-video.js');
-if (!weeklyVideoJs.includes('https://www.youtube-nocookie.com/embed/')) failures.push('weekly-video.js: youtube-nocookie embed missing');
-if (!weeklyVideoJs.includes("iframe.referrerPolicy = 'strict-origin-when-cross-origin'")) failures.push('weekly-video.js: iframe referrer policy missing');
-if (!weeklyVideoJs.includes("button.addEventListener('click'")) failures.push('weekly-video.js: click gate missing');
-for (const forbidden of ['youtube.com/iframe_api', 'localStorage', 'sessionStorage', 'indexedDB', 'geolocation']) {
-  if (weeklyVideoJs.includes(forbidden)) failures.push(`weekly-video.js: forbidden runtime token ${forbidden}`);
+/* weekly-video.js はどのページからも読まれなくなったが、file が残る限り
+   その click gate 契約は維持する（再接続されたときに黙って弱くならない）。 */
+if (fs.existsSync(path.join(root, 'weekly-video.js'))) {
+  const weeklyVideoJs = read('weekly-video.js');
+  if (!weeklyVideoJs.includes('https://www.youtube-nocookie.com/embed/')) failures.push('weekly-video.js: youtube-nocookie embed missing');
+  if (!weeklyVideoJs.includes("iframe.referrerPolicy = 'strict-origin-when-cross-origin'")) failures.push('weekly-video.js: iframe referrer policy missing');
+  if (!weeklyVideoJs.includes("button.addEventListener('click'")) failures.push('weekly-video.js: click gate missing');
+  for (const forbidden of ['youtube.com/iframe_api', 'localStorage', 'sessionStorage', 'indexedDB', 'geolocation']) {
+    if (weeklyVideoJs.includes(forbidden)) failures.push(`weekly-video.js: forbidden runtime token ${forbidden}`);
+  }
+}
+for (const page of ['shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html']) {
+  if (read(page).includes('weekly-video.js')) failures.push(`${page}: retired weekly video module must not be loaded`);
 }
 const analyticsJs = read('analytics-v3.js');
 if (!analyticsJs.includes("var PROD_HOST = 'emotionbookstore.com'")) failures.push('analytics-v3.js: Production hostname guard missing');
@@ -669,7 +946,7 @@ if (!analyticsJs.includes('allow_google_signals: false')) failures.push('analyti
 if (!analyticsJs.includes('allow_ad_personalization_signals: false')) failures.push('analytics-v3.js: ad personalization must stay off');
 const vercelPolicy = read('vercel.json');
 if (!vercelPolicy.includes("frame-src https://www.youtube-nocookie.com; frame-ancestors 'none'")) failures.push('vercel.json: approved YouTube CSP missing');
-if (!read('data.html').includes('GA4のオン／オフとは別の操作')) failures.push('data.html: YouTube/GA4 separation disclosure missing');
+if (!read('data.html').includes('GA4のオン／オフとは別の操作')) failures.push('data.html: external navigation / GA4 separation disclosure missing');
 
 if (failures.length) {
   console.error('RELEASE_CHECK_FAIL');

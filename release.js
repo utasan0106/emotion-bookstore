@@ -200,7 +200,19 @@
 
     button.addEventListener('click', openMenu);
     close.addEventListener('click', closeMenu);
-    menu.addEventListener('click', function (event) { if (event.target === menu) closeMenu(); });
+    menu.addEventListener('click', function (event) {
+      if (event.target === menu) { closeMenu(); return; }
+      /* 同一 document 内の section へ飛ぶ link（HOME の #hc-works など）は
+         page 遷移が起きず modal が開いたまま残るので、ここで閉じる。 */
+      var link = event.target && event.target.closest ? event.target.closest('a[href]') : null;
+      if (!link) return;
+      var href = link.getAttribute('href') || '';
+      var hashAt = href.indexOf('#');
+      if (hashAt < 0) return;
+      var target = href.slice(0, hashAt).replace(/^\.\//, '');
+      var here = (location.pathname.split('/').pop() || 'index.html');
+      if (target === '' || target === here) closeMenu();
+    });
     menu.addEventListener('cancel', function (event) { event.preventDefault(); closeMenu(); });
   }
 
@@ -471,6 +483,10 @@
 
   /* ------------------------------------------------------------ 種類の索引 */
 
+  /* 種類 × 街の有限索引は Canonical HOME には無い。explore.html（compatibility
+     surface）だけがその DOM を持ち、索引の link と URL 状態もそこへ向ける。 */
+  var EXPLORE_PAGE = './explore.html';
+
   function isLive(object) {
     if (!object.expiresAt) return true;
     var at = Date.parse(object.expiresAt);
@@ -631,7 +647,7 @@
       if (selectedCategory) params.set('category', selectedCategory);
       if (selectedTown) params.set('town', selectedTown);
       var q = params.toString();
-      return './index.html' + (q ? '?' + q : '');
+      return EXPLORE_PAGE + (q ? '?' + q : '');
     }
 
     function paint() {
@@ -665,7 +681,7 @@
     towns.forEach(function (town) {
       townIndex.appendChild(h('a', {
         class: 'category-town-link',
-        href: town.id ? './index.html?town=' + encodeURIComponent(town.id) : './index.html',
+        href: town.id ? EXPLORE_PAGE + '?town=' + encodeURIComponent(town.id) : EXPLORE_PAGE,
         'data-town-id': town.id,
         onclick: function (event) {
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.button) return;
@@ -681,7 +697,7 @@
       var count = objectsInCategory(category.id, selectedTown).length;
       index.appendChild(h('a', {
         class: 'category-link',
-        href: './index.html?category=' + encodeURIComponent(category.id),
+        href: EXPLORE_PAGE + '?category=' + encodeURIComponent(category.id),
         'data-category-id': category.id,
         onclick: function (event) {
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.button) return;
@@ -1033,6 +1049,9 @@
     return;
   }
   if (document.getElementById('shelfList')) renderFoyer();
+  /* explore.html: 旧 HOME の shelfList 無しでも、索引の DOM があれば描く。
+     Canonical HOME にはその DOM が無いので、ここは HOME では動かない。 */
+  else if (document.getElementById('categoryIndex')) renderCategoryIndex();
   if (grid) renderShelf();
   renderSuggest();
 })();

@@ -1,0 +1,857 @@
+[
+  {
+    "at": "2026-09-04T16:13:50+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "井の頭アートマーケッツ",
+        "weeklyDate": "9月5日（土）– 6日（日） 9:00–17:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "セシオン杉並まつり2026",
+        "weeklyDate": "9月5日（土）– 6日（日） 10:00–15:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "Outside dandy 一日限りの復活公演",
+        "weeklyDate": "9月5日（土） OPEN 12:00 / START 12:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "『まごわやさしい』3D原画展",
+        "weeklyDate": "9月2日（水）– 15日（火） 11:00–18:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-05T23:58:59+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "井の頭アートマーケッツ",
+        "weeklyDate": "9月5日（土）– 6日（日） 9:00–17:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "セシオン杉並まつり2026",
+        "weeklyDate": "9月5日（土）– 6日（日） 10:00–15:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "Outside dandy 一日限りの復活公演",
+        "weeklyDate": "9月5日（土） OPEN 12:00 / START 12:30",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "『まごわやさしい』3D原画展",
+        "weeklyDate": "9月2日（水）– 15日（火） 11:00–18:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-06T00:00:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "井の頭アートマーケッツ",
+        "weeklyDate": "9月5日（土）– 6日（日） 9:00–17:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "セシオン杉並まつり2026",
+        "weeklyDate": "9月5日（土）– 6日（日） 10:00–15:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "『まごわやさしい』3D原画展",
+        "weeklyDate": "9月2日（水）– 15日（火） 11:00–18:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-06T14:59:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "井の頭アートマーケッツ",
+        "weeklyDate": "9月5日（土）– 6日（日） 9:00–17:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "セシオン杉並まつり2026",
+        "weeklyDate": "9月5日（土）– 6日（日） 10:00–15:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "『まごわやさしい』3D原画展",
+        "weeklyDate": "9月2日（水）– 15日（火） 11:00–18:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-06T15:00:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "井の頭アートマーケッツ",
+        "weeklyDate": "9月5日（土）– 6日（日） 9:00–17:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "『まごわやさしい』3D原画展",
+        "weeklyDate": "9月2日（水）– 15日（火） 11:00–18:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-06T16:59:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "井の頭アートマーケッツ",
+        "weeklyDate": "9月5日（土）– 6日（日） 9:00–17:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "『まごわやさしい』3D原画展",
+        "weeklyDate": "9月2日（水）– 15日（火） 11:00–18:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-06T17:00:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "『まごわやさしい』3D原画展",
+        "weeklyDate": "9月2日（水）– 15日（火） 11:00–18:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-11T23:58:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "『まごわやさしい』3D原画展",
+        "weeklyDate": "9月2日（水）– 15日（火） 11:00–18:00",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-11T23:59:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "『まごわやさしい』3D原画展",
+        "weeklyDate": "9月2日（水）– 15日（火） 11:00–18:00",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": true
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-12T00:01:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "『まごわやさしい』3D原画展",
+        "weeklyDate": "9月2日（水）– 15日（火） 11:00–18:00",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": true
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-13T00:01:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "『まごわやさしい』3D原画展",
+        "weeklyDate": "9月2日（水）– 15日（火） 11:00–18:00",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": true
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-15T16:59:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "『まごわやさしい』3D原画展",
+        "weeklyDate": "9月2日（水）– 15日（火） 11:00–18:00",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": true
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-15T17:00:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-16T00:01:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-19T00:01:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-27T23:58:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-27T23:59:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-09-30T00:01:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  },
+  {
+    "at": "2026-10-07T00:01:00+09:00",
+    "shelves": {
+      "kichijoji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "koenji": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 3,
+        "closed": false,
+        "staleOnClosedShelf": false
+      },
+      "shimokitazawa": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      },
+      "jinbocho": {
+        "weekly": "HIDDEN",
+        "weeklyDate": "",
+        "cards": 0,
+        "closed": true,
+        "staleOnClosedShelf": false
+      }
+    },
+    "home": {
+      "sections": 5,
+      "cities": 4,
+      "nodes": 5
+    },
+    "explore": {
+      "archiveHidden": true,
+      "archiveRows": 0,
+      "results": 0
+    },
+    "errors": [],
+    "external": []
+  }
+]

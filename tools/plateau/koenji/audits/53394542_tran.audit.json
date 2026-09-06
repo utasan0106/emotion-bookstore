@@ -1,0 +1,51 @@
+{
+  "audit_version": "0.2",
+  "source_file": "53394542_tran_6697_op.gml",
+  "source_bytes": 4328125,
+  "source_sha256": "b01cbfb5358622249c21be07fa45aa2b1c8c61d09ce4f610d07111428b66645a",
+  "citygml_version": "2.0",
+  "allowed_citygml_versions": [
+    "2.0"
+  ],
+  "root_namespaces": {
+    "app": "http://www.opengis.net/citygml/appearance/2.0",
+    "bldg": "http://www.opengis.net/citygml/building/2.0",
+    "brid": "http://www.opengis.net/citygml/bridge/2.0",
+    "core": "http://www.opengis.net/citygml/2.0",
+    "dem": "http://www.opengis.net/citygml/relief/2.0",
+    "frn": "http://www.opengis.net/citygml/cityfurniture/2.0",
+    "gen": "http://www.opengis.net/citygml/generics/2.0",
+    "gml": "http://www.opengis.net/gml",
+    "grp": "http://www.opengis.net/citygml/cityobjectgroup/2.0",
+    "luse": "http://www.opengis.net/citygml/landuse/2.0",
+    "pbase": "http://www.opengis.net/citygml/profiles/base/2.0",
+    "sch": "http://www.ascc.net/xml/schematron",
+    "smil20": "http://www.w3.org/2001/SMIL20/",
+    "smil20lang": "http://www.w3.org/2001/SMIL20/Language",
+    "tex": "http://www.opengis.net/citygml/texturedsurface/2.0",
+    "tran": "http://www.opengis.net/citygml/transportation/2.0",
+    "tun": "http://www.opengis.net/citygml/tunnel/2.0",
+    "uro": "https://www.geospatial.jp/iur/uro/3.2",
+    "veg": "http://www.opengis.net/citygml/vegetation/2.0",
+    "wtr": "http://www.opengis.net/citygml/waterbody/2.0",
+    "xAL": "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0",
+    "xlink": "http://www.w3.org/1999/xlink",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance"
+  },
+  "feature_local_name": "Road",
+  "feature_count": 1404,
+  "gml_id_count": 1404,
+  "measured_height_count": 0,
+  "envelope": {
+    "srsName": "http://www.opengis.net/def/crs/EPSG/0/6697",
+    "lowerCorner": "35.69908478085204 139.64966991266536 0",
+    "upperCorner": "35.708587693785084 139.6631912984174 0"
+  },
+  "historicalGeometry": false,
+  "note": "Source lineage audit only. Current PLATEAU geometry is not historical evidence.",
+  "gml_ids_omitted": "full inventory kept in the HQ evidence bundle; this compact copy keeps counts + hashes",
+  "gml_ids_sha256": "0ad670809a80f1d3b6a650775f40ac7592aa7f99bb0572b458c6dbf7c5bd661e",
+  "gml_ids_unique": true,
+  "full_audit_sha256": "f83add466775f7730db0e2f75152669453a68b6bd09cb3a619dc6697e470580a",
+  "full_audit_bytes": 70871
+}

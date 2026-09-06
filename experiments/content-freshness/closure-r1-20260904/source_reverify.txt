@@ -1,0 +1,21 @@
+# Official source re-verification attempt — 2026-09-04T16:13:13+09:00
+# curl via session egress proxy (HTTPS_PROXY), --max-time 20; http_code 000 = CONNECT rejected
+https://www.musashino.or.jp/museum/1002032/1002033/1009868.html -> http_code=000 err=curl: (56) CONNECT tunnel failed, response 403
+https://za-koenji.jp/business/natsunoyo2026 -> http_code=000 err=curl: (56) CONNECT tunnel failed, response 403
+https://www.loft-prj.co.jp/schedule/shelter/357199 -> http_code=000 err=curl: (56) CONNECT tunnel failed, response 403
+https://bookhousecafe.jp/exhibition/content/2484 -> http_code=000 err=curl: (56) CONNECT tunnel failed, response 403
+https://www.shogakukan.co.jp/jinbocho-theater/features/2026-09-12_joyu-damashii-2026.html -> http_code=000 err=curl: (56) CONNECT tunnel failed, response 403
+
+# WebFetch tool result for the same 5 URLs (+ loft-prj September schedule): EGRESS_BLOCKED for every host
+
+# proxy relay log (recentRelayFailures)
+2026-09-04T07:09:58.484Z www.musashino.or.jp:443 connect_rejected - gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-09-04T07:09:58.705Z za-koenji.jp:443 connect_rejected - gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-09-04T07:09:58.939Z www.loft-prj.co.jp:443 connect_rejected - gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-09-04T07:09:59.160Z bookhousecafe.jp:443 connect_rejected - gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-09-04T07:09:59.397Z www.shogakukan.co.jp:443 connect_rejected - gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-09-04T07:13:13.319Z www.musashino.or.jp:443 connect_rejected - gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-09-04T07:13:13.562Z za-koenji.jp:443 connect_rejected - gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-09-04T07:13:13.867Z www.loft-prj.co.jp:443 connect_rejected - gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-09-04T07:13:14.158Z bookhousecafe.jp:443 connect_rejected - gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-09-04T07:13:14.387Z www.shogakukan.co.jp:443 connect_rejected - gateway answered 403 to CONNECT (policy denial or upstream failure)

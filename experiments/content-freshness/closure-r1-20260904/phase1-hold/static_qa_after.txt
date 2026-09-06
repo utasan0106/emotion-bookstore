@@ -1,0 +1,33 @@
+=== node qa/home_canonical_check.js
+HOME_CANONICAL_CHECK_GO
+sections=5 in canonical order; shelf-entries=4; thread nodes=5; route holds=8; local assets=15; external hosts=0; iframes=0
+=== node qa/release_check.js
+RELEASE_CHECK_GO
+shelves=4; kichijoji:3 koenji:3 shimokitazawa:3 jinbocho:3; photo=3; plate=9; current=2; storage=0; analytics=production-host-only; background fetch=0; search=0; account=0
+categories=5; food:2 experience:2 books:4 music:3 film-stage:4; explainer=static; suggest=no-backend
+=== node qa/ga4_v3_client_selftest.js
+V3_RELEASE_GROWTH_SELFTEST_GO
+=== node qa/growth_improvements.js
+growth_improvements: PASS
+growth_improvements: legacy routes PASS
+=== node qa/release_expiry_boundaries.js
+RELEASE_PREFLIGHT_FAIL
+- judged at 2026-09-11T14:59:00.000Z
+- jinbocho/jinbocho-theater-mizoguchi-2026: expired at 2026-09-11T23:59:00+09:00. Human editorial replacement required; the shelf stays closed until then.
+RELEASE_PREFLIGHT_FAIL
+- judged at 2026-09-11T15:00:00.000Z
+- jinbocho/jinbocho-theater-mizoguchi-2026: expired at 2026-09-11T23:59:00+09:00. Human editorial replacement required; the shelf stays closed until then.
+RELEASE_PREFLIGHT_FAIL
+- judged at 2026-09-12T14:59:00.000Z
+- jinbocho/jinbocho-theater-mizoguchi-2026: expired at 2026-09-11T23:59:00+09:00. Human editorial replacement required; the shelf stays closed until then.
+RELEASE_EXPIRY_BOUNDARIES_GO
+flagship=kichijoji no expiry; soonest jinbocho/jinbocho-theater-mizoguchi-2026 at 2026-09-11T23:59:00+09:00; GO one minute before, FAIL from that instant
+=== node qa/seo_check.js
+SEO_CHECK_GO
+=== node qa/release_preflight.js
+RELEASE_PREFLIGHT_GO
+judged at 2026-09-04T07:10:04.488Z
+  jinbocho/jinbocho-theater-mizoguchi-2026 expires 2026-09-11T23:59:00+09:00
+  shimokitazawa/shimokitazawa-shelter expires 2026-09-27T23:59:00+09:00
+=== git diff --check
+clean

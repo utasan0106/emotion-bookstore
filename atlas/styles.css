@@ -1,0 +1,313 @@
+/* ==========================================================================
+   街を立体で辿る（β）— /atlas/ Cultural Signal Lens（Production Beta 0、高円寺だけ）
+
+   release.css / thread.css と同じ token（hall / chalk / signal / serif / sans）を
+   このページ内で定義し直す。selector は .atlas-page / .al- だけ。
+   動き・遷移効果・影・ぼかしは使わない（reduced motion でも同じ描画）。
+   sticky nav / carousel / modal / tooltip / free-roam（pan・zoom）は無い。
+   ========================================================================== */
+
+.atlas-page {
+  --hall:        #141312;
+  --hall-raised: #1c1a18;
+  --hall-line:   #2e2b28;
+  --hall-edge:   #6e675e;
+  --chalk:       #ece7de;
+  --chalk-dim:   #9a938a;
+  --signal:      #e0563c;
+  --gold:        #c9a063;
+  --serif: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  --gutter: 20px;
+  margin: 0;
+  background: var(--hall);
+  color: var(--chalk);
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.9;
+  -webkit-text-size-adjust: 100%;
+  overflow-wrap: anywhere;
+}
+.atlas-page *, .atlas-page *::before, .atlas-page *::after { box-sizing: border-box; }
+.atlas-page a { color: var(--chalk); }
+.atlas-page a:focus-visible, .atlas-page button:focus-visible, .atlas-page summary:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+}
+
+.al-skip {
+  position: absolute; left: -9999px; top: 0;
+  padding: 10px 14px; background: var(--chalk); color: var(--hall); text-decoration: none;
+}
+.al-skip:focus { left: 8px; top: 8px; z-index: 10; }
+
+/* ------------------------------------------------------------ 上部 */
+.al-top {
+  width: min(calc(100% - var(--gutter) * 2), 720px);
+  margin: 0 auto;
+  padding: 18px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+.al-brand {
+  margin: 0;
+  font-size: 0.8125rem;
+  letter-spacing: .08em;
+  color: var(--chalk-dim);
+}
+.al-brand a { color: var(--chalk-dim); text-decoration: none; }
+.al-brand a:hover { color: var(--chalk); }
+.al-return {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--hall-edge);
+  border-radius: 2px;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  color: var(--chalk);
+}
+
+.al-root, .al-foot {
+  width: min(calc(100% - var(--gutter) * 2), 720px);
+  margin: 0 auto;
+}
+
+/* ------------------------------------------------------------ 見出し */
+.al-head { padding: 26px 0 30px; }
+.al-eyebrow {
+  margin: 0 0 12px;
+  font-size: 0.8125rem;
+  letter-spacing: .2em;
+  color: var(--chalk-dim);
+}
+.al-title {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(2rem, 7.4vw, 2.9rem);
+  font-weight: 600;
+  line-height: 1.22;
+  letter-spacing: -.03em;
+}
+.al-lead { margin: 18px 0 0; font-family: var(--serif); }
+.al-note { margin: 12px 0 0; font-size: 0.9375rem; color: var(--chalk-dim); }
+.al-status {
+  margin: 18px 0 0;
+  padding: 12px 0;
+  border-top: 1px solid var(--hall-line);
+  border-bottom: 1px solid var(--hall-line);
+  font-size: 0.9375rem;
+}
+.al-status[data-state="hold"] { color: var(--gold); }
+
+.al-h2 {
+  margin: 0 0 16px;
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 5vw, 1.8rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -.02em;
+}
+
+/* ------------------------------------------------------------ 見方（有限） */
+.al-lens { padding: 34px 0 8px; border-top: 1px solid var(--hall-edge); }
+.al-views {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0 0 18px;
+}
+.al-view {
+  min-height: 44px;
+  padding: 8px 4px;
+  border: 1px solid var(--hall-edge);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--chalk);
+  font: inherit;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+.al-view[aria-pressed="true"] { background: var(--chalk); color: var(--hall); border-color: var(--chalk); }
+
+/* 年表 = 関係の順序（地図上の位置ではない） */
+.al-rail {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+  margin: 0 0 12px;
+}
+.al-rail-item {
+  min-height: 44px;
+  padding: 8px 4px 6px;
+  border: 0;
+  border-top: 2px solid var(--hall-edge);
+  background: transparent;
+  color: var(--chalk-dim);
+  font: inherit;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+}
+.al-rail-item strong { display: block; font-size: 0.9375rem; color: var(--chalk); }
+.al-rail-item[aria-pressed="true"] { border-top-color: var(--signal); color: var(--chalk); }
+.al-rail-item[aria-pressed="true"] strong { color: var(--signal); }
+
+/* ------------------------------------------------------------ 図 */
+.al-figure { margin: 0; }
+.al-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--hall-line);
+  background: var(--hall-raised);
+}
+.al-ground { fill: #1c1a18; }
+.al-roads path { fill: #2c2926; stroke: none; }
+.al-buildings .al-side { fill: #2f2b27; stroke: none; }
+.al-buildings .al-top { fill: #403b35; stroke: #524c45; stroke-width: 0.8; }
+.al-buildings .al-flat { fill: #302c28; stroke: #4a443e; stroke-width: 0.8; stroke-dasharray: 3 3; }
+.al-buildings .al-station .al-top { fill: #4a4239; stroke: #6e6355; }
+.al-ref { display: none; }
+.al-ref .al-ref-dot { fill: var(--signal); stroke: var(--hall); stroke-width: 3; }
+.al-ref .al-ref-label { fill: var(--chalk); font-family: var(--sans); font-size: 30px; }
+.al-ref .al-ref-plate { fill: rgba(20, 19, 18, .85); }
+
+/* 有限の見方：強調だけを変える（自由な視点操作は無い） */
+.al-lens[data-view="relation"] .al-buildings, .al-lens[data-view="relation"] .al-roads { opacity: .55; }
+.al-lens[data-view="evidence"] .al-buildings, .al-lens[data-view="evidence"] .al-roads { opacity: .35; }
+.al-lens[data-view="time"] .al-buildings, .al-lens[data-view="time"] .al-roads { opacity: .4; }
+.al-lens[data-view="now"] .al-ref, .al-lens[data-view="city"] .al-ref { display: block; }
+.al-lens[data-view="now"] .al-buildings .al-station .al-top { fill: #5a4d3f; stroke: var(--gold); }
+
+.al-caption {
+  margin: 12px 0 0;
+  font-size: 0.9375rem;
+  color: var(--chalk-dim);
+}
+.al-chapter { display: block; margin-bottom: 4px; font-size: 0.8125rem; letter-spacing: .16em; color: var(--chalk-dim); }
+.al-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+  color: var(--chalk-dim);
+}
+.al-legend li { display: flex; align-items: center; gap: 8px; }
+.al-swatch { display: inline-block; width: 22px; height: 10px; border: 1px solid var(--hall-edge); }
+.al-swatch[data-key="buildings"] { background: #403b35; }
+.al-swatch[data-key="roads"] { background: #2c2926; }
+.al-swatch[data-key="reference"] { background: var(--signal); width: 10px; border-radius: 50%; }
+
+/* ------------------------------------------------------------ 場面 */
+.al-story-section { padding: 34px 0 8px; border-top: 1px solid var(--hall-edge); }
+.al-story {
+  padding: 18px 18px 16px;
+  border: 1px solid var(--hall-edge);
+  border-radius: 2px;
+  background: var(--hall-raised);
+}
+.al-year { margin: 0 0 4px; font-size: 0.8125rem; letter-spacing: .16em; color: var(--signal); }
+.al-story-title {
+  margin: 0 0 12px;
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 5.4vw, 1.8rem);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.al-claim { margin: 0 0 14px; font-family: var(--serif); }
+.al-precision {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--hall-line);
+  border-left: 2px solid var(--gold);
+  font-size: 0.9375rem;
+  color: var(--chalk);
+}
+.al-lens-emphasis .al-precision { border-color: var(--gold); }
+.al-precision-label { display: block; margin-bottom: 4px; font-size: 0.8125rem; letter-spacing: .12em; color: var(--gold); }
+.al-story-note { margin: 0 0 12px; padding-left: 12px; border-left: 2px solid var(--hall-edge); font-size: 0.9375rem; color: var(--chalk-dim); }
+.al-relation { margin: 0 0 12px; font-size: 0.9375rem; }
+.al-relation-label { display: block; font-size: 0.8125rem; letter-spacing: .12em; color: var(--chalk-dim); }
+.al-relation strong { font-weight: 600; color: var(--chalk); }
+.al-evidence { margin: 12px 0 0; padding-top: 12px; border-top: 1px solid var(--hall-line); }
+.al-evidence-summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  color: var(--chalk);
+}
+.al-links { margin: 8px 0 0; padding: 0; list-style: none; }
+.al-link-item { margin: 0 0 6px; }
+.al-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--hall-edge);
+  border-radius: 2px;
+  text-decoration: none;
+  font-size: 0.9375rem;
+}
+.al-link-kind { margin-left: 8px; font-size: 0.75rem; letter-spacing: .06em; color: var(--chalk-dim); }
+.al-actions { margin: 16px 0 0; }
+.al-next {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--chalk);
+  border-radius: 2px;
+  background: var(--chalk);
+  color: var(--hall);
+  font: inherit;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------ 現実へ戻る */
+.al-return-block { padding: 34px 0 8px; border-top: 1px solid var(--hall-edge); }
+.al-return-lead { margin: 0 0 14px; }
+.al-return-row { margin: 0; }
+.al-return-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--signal);
+  border-radius: 2px;
+  color: var(--chalk);
+  text-decoration: none;
+  font-family: var(--serif);
+}
+
+/* ------------------------------------------------------------ 出典 */
+.al-foot { padding: 34px 0 48px; border-top: 1px solid var(--hall-edge); margin-top: 26px; }
+.al-attribution { margin: 0 0 8px; font-size: 0.9375rem; }
+.al-attribution-links { margin: 0 0 10px; font-size: 0.9375rem; }
+.al-attribution-links a { display: inline-block; padding: 8px 0; }
+.al-foot-note { margin: 0 0 8px; font-size: 0.8125rem; color: var(--chalk-dim); }
+
+@media (min-width: 720px) {
+  .atlas-page { --gutter: 32px; }
+  .al-view, .al-rail-item { font-size: 1rem; }
+  .al-rail-item strong { font-size: 1.0625rem; }
+}
+@media (max-width: 359px) {
+  .al-views { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .al-rail { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .al-view, .al-rail-item { font-size: 0.875rem; }
+}
+@media (forced-colors: active) {
+  .al-view, .al-rail-item, .al-return, .al-return-link, .al-link, .al-next, .al-story, .al-precision, .al-svg { border-color: CanvasText; }
+  .al-view[aria-pressed="true"], .al-next { background: Highlight; color: HighlightText; forced-color-adjust: none; }
+  .al-rail-item[aria-pressed="true"] { border-top-color: Highlight; }
+}

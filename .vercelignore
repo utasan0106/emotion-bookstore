@@ -32,6 +32,7 @@ archive/
 /CLAUDE.md
 /README.md
 /qa/
+/experiments/
 docs/
 .claude/
 
@@ -127,3 +128,4 @@ docs/
 /v3-prototype/tokyo-pilot-01/RUN_REPORT_20260827_1650.md
 /v3-prototype/tokyo-pilot-01/RUN_REPORT_20260827_1700.md
 /v3-prototype/tokyo-pilot-01/RUN_REPORT_20260827_2100.md
+/tools/plateau/
