@@ -197,6 +197,7 @@ function serve() {
             fit: getComputedStyle(img).objectFit };
         });
         const end = document.querySelector('.end-plate');
+        const reading = document.getElementById('shelfReading');
         return {
           cards: document.querySelectorAll('.object-card').length,
           h1: document.querySelectorAll('h1').length,
@@ -207,6 +208,16 @@ function serve() {
           endText: end.innerText.replace(/\s+/g, ''),
           exitHref: end.querySelector('.other-shelves').getAttribute('href'),
           exitH: Math.round(end.querySelector('.other-shelves').getBoundingClientRect().height),
+          reading: {
+            visible: !!reading && !reading.hidden,
+            heading: reading ? reading.querySelector('h2').textContent : '',
+            separate: !!reading && !reading.closest('.objects-section') &&
+              reading.previousElementSibling.classList.contains('objects-section') && reading.nextElementSibling === end,
+            links: reading ? [...reading.querySelectorAll('a')].map((a) => ({
+              href: a.getAttribute('href'), text: a.textContent.replace(/→/g, ''),
+              height: a.getBoundingClientRect().height
+            })) : []
+          },
           media,
           openH: Math.round(document.querySelector('.open-button').getBoundingClientRect().height),
           overflow: doc.scrollWidth > doc.clientWidth + 1, wide: wide.slice(0, 4),
@@ -214,6 +225,14 @@ function serve() {
         };
       });
       check(S, 'exactly_3_objects', shelf.cards === 3, shelf.cards);
+      const readings = {
+        koenji: [['./thread.html?thread=koenji-dance-history', '踊りが街に根づくまで']],
+        jinbocho: [['./thread.html?thread=morisaki-book', '本から二つの『森崎書店の日々』'], ['./thread.html?thread=morisaki-film', '映画から二つの『森崎書店の日々』']]
+      }[id] || [];
+      check(S, 'city_reading_links_exact_and_separate',
+        shelf.reading.visible === (readings.length > 0) && shelf.reading.separate &&
+        shelf.reading.heading === 'この街の読みもの' && shelf.reading.links.length === readings.length &&
+        shelf.reading.links.every((a, i) => a.href === readings[i][0] && a.text === readings[i][1] && a.height >= 44), shelf.reading);
       check(S, 'single_h1', shelf.h1 === 1, shelf.h1);
       check(S, 'hero_is_shelf_tagline', /^.+を、3つだけ。$/.test(shelf.hero), shelf.hero);
       check(S, 'shelf_top_has_no_city_image',
@@ -694,7 +713,10 @@ function serve() {
       const errs = [];
       page.on('pageerror', (e) => errs.push(String(e)));
       await page.goto(base + 'credits.html', { waitUntil: 'load' });
+      // The footer image is lazy-loaded: bring it into view before waiting for every image.
+      await page.locator('.footer-brand-image').scrollIntoViewIfNeeded();
       await page.waitForFunction(() => Array.from(document.images).every((i) => i.complete && i.naturalWidth > 0));
+      await page.evaluate(() => window.scrollTo(0, 0));
       const cr = await page.evaluate(() => {
         const doc = document.documentElement;
         const wide = [];

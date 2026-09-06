@@ -721,6 +721,41 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 
 /* ------------------------------------------------------------------ 終わり */
 
+.shelf-reading {
+  width: min(calc(100% - var(--gutter) * 2), var(--page));
+  margin: 80px auto 0;
+  padding-top: 28px;
+  border-top: 1px solid var(--hall-line);
+}
+.shelf-reading h2 {
+  margin: 0 0 14px;
+  color: var(--chalk-dim);
+  font-size: .875rem;
+  font-weight: 400;
+  letter-spacing: .08em;
+}
+.shelf-reading-links { margin: 0; padding: 0; list-style: none; }
+.shelf-reading-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  padding: 12px 0;
+  color: var(--chalk);
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  line-height: 1.7;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+.shelf-reading-from {
+  display: block;
+  color: var(--chalk-dim);
+  font-family: var(--sans);
+  font-size: .8125rem;
+}
+
 .end-plate {
   width: min(calc(100% - var(--gutter) * 2), var(--page));
   margin: 108px auto 0;

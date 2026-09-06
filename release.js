@@ -908,6 +908,34 @@
     if (lastTrigger) lastTrigger.focus();
   }
 
+  function renderShelfReading(shelfId) {
+    var section = document.getElementById('shelfReading');
+    var links = document.getElementById('shelfReadingLinks');
+    if (!section || !links) return;
+    var readings = {
+      koenji: [
+        { title: '踊りが街に根づくまで', href: './thread.html?thread=koenji-dance-history' }
+      ],
+      jinbocho: [
+        { from: '本から', title: '二つの『森崎書店の日々』', href: './thread.html?thread=morisaki-book' },
+        { from: '映画から', title: '二つの『森崎書店の日々』', href: './thread.html?thread=morisaki-film' }
+      ]
+    }[shelfId];
+    if (!readings) return;
+    readings.forEach(function (reading) {
+      var text = h('span');
+      if (reading.from) text.appendChild(h('span', { class: 'shelf-reading-from', text: reading.from }));
+      text.appendChild(h('span', { text: reading.title }));
+      links.appendChild(h('li', {}, [
+        h('a', { class: 'shelf-reading-link', href: reading.href }, [
+          text,
+          h('span', { 'aria-hidden': 'true', text: '→' })
+        ])
+      ]));
+    });
+    section.hidden = false;
+  }
+
   function renderShelf() {
     if (!grid) return;
     var requested = queryParams().get('shelf') || 'kichijoji';
@@ -950,6 +978,7 @@
     });
 
     if (grid.querySelectorAll('.object-card').length === 3) {
+      renderShelfReading(shelf.id);
       var endPlate = document.querySelector('.end-plate');
       if (endPlate) endPlate.hidden = false;
     }
