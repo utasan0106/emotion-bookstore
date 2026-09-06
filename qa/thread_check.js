@@ -361,8 +361,12 @@ for (const s of thread.scenes) {
     check(html.indexOf('<script src="./video-embed.js"></script>') > 0 && html.indexOf('<script src="./video-embed.js"></script>') < html.indexOf('<script src="./thread.js"></script>'), 'thread.html loads video-embed.js before thread.js');
     check(js.includes("window.V3_VIDEO_EMBED.mount(root)") && js.includes("'data-video-id': d.videoId"), 'renderer mounts the shared click-to-load player on the video destination');
   }
-  /* Production Beta 0: 高円寺 Thread から /atlas/ への bounded entry（1 箇所）。HOME / Works は Atlas 化しない。 */
-  check(JSON.stringify(thread.spatialEntry) === JSON.stringify({ href: './atlas/', label: '街を立体で辿る（β）', note: 'Project PLATEAUの3D都市モデル（杉並区 2025年度）から取り出した、現在の街の形の上で、この関係をもう一度辿ります。' }), 'one bounded Atlas entry with the exact label / note');
+  /* Beta0 Closure: 独立 Atlas の入口を外し、既存 URL は高円寺 Thread へ一時転送する。 */
+  check(!('spatialEntry' in thread), 'Atlas entry is absent from the Production Thread');
+  const redirects = JSON.parse(read('vercel.json')).redirects || [];
+  for (const source of ['/atlas', '/atlas/', '/atlas/index.html']) {
+    check(redirects.filter((r) => r.source === source && r.destination === '/thread.html?thread=koenji-dance-history' && r.permanent === false).length === 1, `${source}: exact temporary redirect to the existing Koenji Thread`);
+  }
   check(read('atlas/index.html').includes('<meta name="robots" content="noindex,nofollow">') && !read('sitemap.xml').includes('atlas') && !home.includes('atlas') && !read('works.html').includes('atlas'), 'Atlas is noindex, off the sitemap, and not linked from HOME / Works');
   /* Founder decision v2: 公開 UI に「編集部の読み」の label を出さない（描画される文字列に 0） */
   check(!JSON.stringify(CONTENT, (k, v) => (k === 'url' || k === 'src' ? '' : v)).includes('編集部の読み'), 'no visible 編集部の読み in rendered Thread strings');

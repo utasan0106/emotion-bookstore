@@ -268,8 +268,8 @@ async function elementShot(page, selector, name, width) {
     check(S, 'finite_end_with_exit', m.endLine === 'このスレッドは、ここまでです。' && !!m.exit && m.exit.href === './index.html' && m.exit.text === '入口へ戻る' && m.exit.h >= 44, { end: m.endLine, exit: m.exit });
     /* Founder decision v2: 公開 UI に「編集部の読み」の label は 0（読みの本文は破線の枠のまま残る） */
     check(S, 'no_visible_editorial_label', m.readingLabels === 0 && !m.text.includes('編集部の読み') && m.readings.length === 2, { labels: m.readingLabels, readings: m.readings.length });
-    /* Production Beta 0: /atlas/ への bounded entry は 1 箇所、行き先の後・いまの状況の前、内部 route */
-    check(S, 'one_bounded_atlas_entry_after_destinations', !!m.spatial && m.spatial.count === 1 && m.spatial.href === './atlas/' && m.spatial.label === '街を立体で辿る（β）' && m.spatial.note === 'Project PLATEAUの3D都市モデル（杉並区 2025年度）から取り出した、現在の街の形の上で、この関係をもう一度辿ります。' && !m.spatial.target && m.spatial.h >= 44 && m.spatial.afterDestinations && m.spatial.beforeStatus, m.spatial);
+    /* Beta0 Closure: 独立 Atlas は Production Journey から降格。 */
+    check(S, 'atlas_entry_absent', m.spatial === null, m.spatial);
     check(S, 'real_targets_are_44px', m.targets.length >= 12 && m.targets.every((t) => t.w >= 44 && t.h >= 44), m.targets.filter((t) => t.w < 44 || t.h < 44));
     check(S, 'reduced_motion_animation_0', m.animated === 0 && m.docAnimations === 0, { animated: m.animated, docAnimations: m.docAnimations });
     check(S, 'no_engagement_words', !FORBIDDEN.some((w) => m.text.includes(w)), FORBIDDEN.filter((w) => m.text.includes(w)));
@@ -456,7 +456,7 @@ async function elementShot(page, selector, name, width) {
     }
     const names = order.map((o) => o.el + (o.value ? `[${o.value}]` : '')).join('>');
     check(S, 'tab_order_reaches_every_real_control', names.startsWith('skip-link>brand-home>menu-trigger>th-evidence-summary') && !/th-mode-input/.test(names) &&
-      (names.match(/th-evidence-summary/g) || []).length === 5 && (names.match(/th-destination-link/g) || []).length === 3 && /th-destination-link>th-destination-link>th-destination-link>v3-video-load>th-spatial-link>th-exit>footer-brand/.test(names), names);
+      (names.match(/th-evidence-summary/g) || []).length === 5 && (names.match(/th-destination-link/g) || []).length === 3 && /th-destination-link>th-destination-link>th-destination-link>v3-video-load>th-exit>footer-brand/.test(names), names);
     check(S, 'focus_visible_outline_on_every_stop', order.filter((o) => o.el !== 'BODY').every((o) => o.fv && o.outline), order.filter((o) => o.el !== 'BODY' && !(o.fv && o.outline)));
     check(S, 'no_source_link_in_tab_order_while_drawers_are_closed', !/th-source-link/.test(names), names);
     // summary by keyboard

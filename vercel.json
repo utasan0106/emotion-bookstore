@@ -1,4 +1,21 @@
 {
+  "redirects": [
+    {
+      "source": "/atlas",
+      "destination": "/thread.html?thread=koenji-dance-history",
+      "permanent": false
+    },
+    {
+      "source": "/atlas/",
+      "destination": "/thread.html?thread=koenji-dance-history",
+      "permanent": false
+    },
+    {
+      "source": "/atlas/index.html",
+      "destination": "/thread.html?thread=koenji-dance-history",
+      "permanent": false
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

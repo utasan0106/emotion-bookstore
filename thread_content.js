@@ -316,14 +316,6 @@
       }
     ],
 
-    /* Production Beta 0: 高円寺だけの Spatial Beta（/atlas/）への bounded entry。1 箇所だけ。
-       内部 route。現在の 3D 都市モデルは歴史の証拠ではない（Atlas 側で precision copy を出す）。 */
-    spatialEntry: {
-      href: './atlas/',
-      label: '街を立体で辿る（β）',
-      note: 'Project PLATEAUの3D都市モデル（杉並区 2025年度）から取り出した、現在の街の形の上で、この関係をもう一度辿ります。'
-    },
-
     ending: {
       line: 'このスレッドは、ここまでです。',
       exitLabel: '入口へ戻る',
