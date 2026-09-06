@@ -50,6 +50,7 @@ const WIDTHS = [
   { name: 'w1440', width: 1440, height: 900, mobile: false, sheetX: 100, sheetW: 1240, contentX: 132, contentW: 1176, hero: 680, title: 84, cityCols: 4, cityGap: 18, cityH: 340, workCols: 4, workH: 170,
     thread: 'split', chainRows: 1, mediaW: 440, threadGap: 40, panelPad: 32, copyW: 320, stripCols: 3, stripGap: 14, shotH: 220 },
 ];
+const CITY_COPY = 'この街で出会える|場所・作品などを|3つだけ。'; /* 4 都市共通、3 span exact */
 const TEXT = ['.hc-brand-link', '.hc-hero-title', '.hc-hero-sub', '.hc-hero-cta-label', '.hc-hero-aside', '.hc-hero-scroll-label',
   '.hc-section-title', '.hc-section-note', '.hc-city-name', '.hc-city-q-line', '.hc-work-label',
   '.hc-thread-heading', '.hc-thread-note', '.hc-thread-pill', '.hc-thread-title', '.hc-thread-sub', '.hc-node-kind', '.hc-node-name',
@@ -103,6 +104,9 @@ const MEASURE = (args) => {
   const media = r('.hc-thread-media'), copy = r('.hc-thread-copy'), rcopy = r('.hc-reality-copy'), strip = r('.hc-reality-strip');
   const shots = [...document.querySelectorAll('.hc-reality-shot')].map((e) => rr(R(e)));
   const qLines = [...document.querySelectorAll('.hc-city')].map((c) => new Set([...c.querySelectorAll('.hc-city-q-line')].map((l) => Math.round(l.getBoundingClientRect().top))).size);
+  /* FOUNDER PREVIEW FIX 02: 街 copy は 3 span がそれぞれ 1 視覚行（span 高さ ≤ line-height）。内部折返し・孤立文字を出さない */
+  const qSpans = [...document.querySelectorAll('.hc-city')].map((c) => [...c.querySelectorAll('.hc-city-q-line')].map((l) => { const cs = getComputedStyle(l); return { text: l.textContent, h: Math.round(l.getBoundingClientRect().height), lh: Math.round(parseFloat(cs.lineHeight)), rects: l.getClientRects().length }; }));
+  const qBox = [...document.querySelectorAll('.hc-city .hc-city-q')].map((e) => rr(R(e)));
   let animated = 0;
   document.querySelectorAll('#main *').forEach((el) => { const s = getComputedStyle(el); if ((s.animationName && s.animationName !== 'none') || (s.transitionProperty !== 'none' && parseFloat(s.transitionDuration) > 0)) animated++; });
   return {
@@ -115,7 +119,7 @@ const MEASURE = (args) => {
     cityGap: parseFloat(cs('.hc-city-grid', 'columnGap')), threadGap: parseFloat(cs('.hc-thread-body', 'columnGap')), stripGap: parseFloat(cs('.hc-reality-strip', 'columnGap')),
     rects: { hero: rr(r('.hc-hero')), body: rr(r('.hc-hero-body')), title: rr(boxes.title), cta: rr(boxes.cta), aside: rr(boxes.aside), scroll: rr(boxes.scroll), sheet: rr(r('.hc-sheet')), cities: rr(r('.hc-city-grid')), works: rr(r('.hc-work-grid')), thread: rr(r('.hc-thread')), media: rr(media), copy: rr(copy), reality: rr(r('.hc-reality')), rcopy: rr(rcopy), strip: rr(strip) },
     cityCols: cols('.hc-city-grid'), cityRows: rows('.hc-city'), workCols: cols('.hc-work-grid'), workRows: rows('.hc-work'), stripCols: cols('.hc-reality-strip'), stripRows: rows('.hc-reality-shot'),
-    chainRows: rows('.hc-node'), qLines,
+    chainRows: rows('.hc-node'), qLines, qSpans, qBox,
     cityH: [...document.querySelectorAll('.hc-city')].map((e) => Math.round(e.getBoundingClientRect().height)),
     workH: [...document.querySelectorAll('.hc-work')].map((e) => Math.round(e.getBoundingClientRect().height)),
     shots, threadStacked: media && copy ? copy.y >= media.b - 1 : null, threadSplit: media && copy ? copy.x >= media.r - 1 : null,
@@ -170,7 +174,9 @@ const near = (a, b, tol) => typeof a === 'number' && Math.abs(a - b) <= tol;
     check(S, 'no_clipped_text', m.clipped.length === 0, m.clipped.slice(0, 6));
     check(S, 'no_overlap_in_hero', m.overlaps.length === 0, m.overlaps);
     /* FOUNDER PREVIEW FIX A3: 4 街とも同じ copy（3 行の span）。幅が狭いと 2 行目が折り返すので、行数は 4 card で同じ・3 以上・clip なし を見る。 */
-    check(S, 'city_copy_lines_uniform_across_cards', m.qLines.length === 4 && m.qLines.every((n) => n >= 3 && n === m.qLines[0]), m.qLines);
+    check(S, 'city_copy_lines_uniform_across_cards', m.qLines.length === 4 && m.qLines.every((n) => n === 3), m.qLines);
+    check(S, 'city_copy_exact_three_lines_no_internal_wrap', m.qSpans.length === 4 && m.qSpans.every((card) => card.length === 3 && card.map((l) => l.text).join('|') === CITY_COPY && card.every((l) => l.h <= l.lh + 1 && l.rects === 1)), m.qSpans);
+    check(S, 'city_cards_equal_geometry', m.cityH.every((h) => h === m.cityH[0]) && m.qBox.every((b) => b.w === m.qBox[0].w && b.h === m.qBox[0].h), { cityH: m.cityH, qBox: m.qBox });
     check(S, 'images_loaded_same_origin', m.images.loaded && m.images.sameOrigin && m.images.n >= 13, m.images);
     /* FOUNDER PREVIEW FIX A5: route hold 0、false CTA（すべて見る / スポットを探す）0 */
     check(S, 'no_route_holds_no_false_ctas', m.holds.length === 0 && m.falseCtas === 0, { holds: m.holds, falseCtas: m.falseCtas });
