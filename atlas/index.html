@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>みんなの感情書店｜街を立体で辿る（β）</title>
+<meta name="description" content="高円寺の文化の関係を、現在の3D都市モデルと資料が支える精度のまま辿るProduction Betaです。">
+<link rel="icon" href="../assets/favicon.ico" sizes="any">
+<link rel="stylesheet" href="./styles.css">
+<script defer src="./app.js"></script>
+</head>
+<body>
+<div id="app" class="app">
+  <div id="mapStage" class="map-stage" aria-label="文化探索空間"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="scrim" aria-hidden="true"></div>
+
+  <!-- Production Beta 0: 高円寺だけ。Thread（文化導線）から入り、Thread へ戻る。 -->
+  <a class="atlas-back-link" href="../thread.html?thread=koenji-dance-history">スレッドへ戻る →</a>
+<header class="topbar">
+    <div class="brand"><small>みんなの感情書店 · 街を立体で辿る（β）</small><strong>文化の関係を、街の中で辿る。</strong></div>
+    <div class="status-row" aria-label="技術状態">
+      <span class="status warn" id="dataStatus">文化データ 読み込み中</span>
+      <span class="status">位置情報 0</span>
+      <span class="status">Tracking 0</span>
+    </div>
+  </header>
+
+  <nav class="city-switcher" id="citySwitcher" aria-label="街" hidden></nav>
+
+  <div class="map-credit" id="mapCredit" hidden>
+    <a href="https://www.mlit.go.jp/plateau/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">3D都市モデル: Project PLATEAU / 国土交通省</a>
+    <span> · </span>
+    <a href="https://docs.plateauview.mlit.go.jp/datasets/ortho/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">PLATEAU-Ortho</a>
+  </div>
+
+  <section class="hero-copy">
+    <div id="heroCity" class="hero-city"></div>
+    <h1 id="heroTitle"></h1>
+    <p id="heroLead"></p>
+    <div id="maturity" class="maturity"></div>
+    <p id="cityRouteNote" class="city-route-note"></p>
+    <div class="mode-row">
+      <button class="pill" id="overviewBtn" aria-pressed="true">街を俯瞰</button>
+      <button class="pill" id="focusBtnTop" aria-pressed="false">関係へ近づく</button>
+      <button class="pill" id="compareBtn" aria-pressed="false">一覧と比べる</button>
+      <button class="pill" id="qualityBtn" aria-pressed="false">軽量表示</button>
+    </div>
+  </section>
+
+  <aside class="panel" aria-live="polite">
+    <div class="panel-head">
+      <small>PLACE × TIME × EVIDENCE</small>
+      <h2 id="panelTitle"></h2>
+      <p id="panelLead"></p>
+      <div class="city-context" id="cityContext"></div>
+      <div id="timeline" class="timeline" aria-label="関係の時間軸"></div>
+    </div>
+
+    <div class="story" id="storyPanel">
+      <div id="holdBanner" class="city-hold-banner"></div>
+      <div class="story-top">
+        <div><div id="year" class="year"></div><h3 id="title"></h3></div>
+        <span id="factBadge" class="fact-badge">VERIFIED</span>
+      </div>
+      <p id="claim" class="claim"></p>
+      <div class="precision"><strong>SPATIAL PRECISION</strong><span id="precision"></span></div>
+      <div id="note" class="note"></div>
+      <div class="relation"><small>RELATION</small><strong id="relation"></strong></div>
+
+      <details class="evidence" id="evidenceDetails">
+        <summary>資料・公式情報を見る</summary>
+        <div class="links" id="links"></div>
+      </details>
+
+      <div class="actions">
+        <button class="action primary" id="nextBtn">次の関係へ →</button>
+        <button class="action" id="focusBtn">この関係を見る</button>
+      </div>
+    </div>
+
+    <div id="panelFoot" class="panel-foot"></div>
+  </aside>
+
+  <section id="compareOverlay" class="compare-overlay" aria-hidden="true">
+    <div class="compare-card">
+      <div class="compare-head">
+        <div><small>CONTROL VIEW</small><h2>同じ内容を、一覧で見る。</h2></div>
+        <button id="closeCompare" class="icon-btn" aria-label="比較表示を閉じる">×</button>
+      </div>
+      <p>同じ関係を、空間なしでも確認できます。内容・資料は同じです。</p>
+      <div id="compareList" class="compare-list"></div>
+    </div>
+  </section>
+
+  <div id="loading" class="loading">
+    <div class="loading-card">
+      <small>SPATIAL CULTURE BETA</small>
+      <h2 id="loadingTitle">文化の関係を準備しています。</h2>
+      <p id="loadingText">まず2.5Dで表示し、3D都市モデル（Project PLATEAU）が読み込めたら段階的に置き換えます。</p>
+      <div class="loader"></div>
+    </div>
+  </div>
+
+  <div id="techNote" class="tech-note" role="status"></div>
+</div>
+</body>
+</html>

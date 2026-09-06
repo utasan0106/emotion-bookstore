@@ -134,6 +134,7 @@ const MEASURE = () => {
     lost: document.querySelectorAll('.th-lost').length, sceneCount: document.querySelectorAll('.th-scene').length,
     cues: txt('.th-cue-text'), fonts: document.fonts.status,
     readingLabels: document.querySelectorAll('.th-reading-label').length,
+    spatial: (() => { const a = document.querySelector('.th-spatial-link'); return a ? { href: a.getAttribute('href'), label: (a.querySelector('.th-spatial-label') || {}).textContent, note: (document.querySelector('.th-spatial-note') || {}).textContent, target: a.getAttribute('target'), count: document.querySelectorAll('.th-spatial-link').length, h: R(a).h, afterDestinations: !!(document.querySelector('.th-destinations') && (document.querySelector('.th-destinations').compareDocumentPosition(a) & Node.DOCUMENT_POSITION_FOLLOWING)), beforeStatus: !!(document.querySelector('.th-status') && (a.compareDocumentPosition(document.querySelector('.th-status')) & Node.DOCUMENT_POSITION_FOLLOWING)) } : null; })(),
     text: document.body.innerText,
     storage: { writes: window.__storageWrites, ls: readStore(() => localStorage.length), ss: readStore(() => sessionStorage.length), cookie: document.cookie },
     perm: window.__permCalls, dataLayer: typeof window.dataLayer, gtag: typeof window.gtag,
@@ -267,6 +268,8 @@ async function elementShot(page, selector, name, width) {
     check(S, 'finite_end_with_exit', m.endLine === 'このスレッドは、ここまでです。' && !!m.exit && m.exit.href === './index.html' && m.exit.text === '入口へ戻る' && m.exit.h >= 44, { end: m.endLine, exit: m.exit });
     /* Founder decision v2: 公開 UI に「編集部の読み」の label は 0（読みの本文は破線の枠のまま残る） */
     check(S, 'no_visible_editorial_label', m.readingLabels === 0 && !m.text.includes('編集部の読み') && m.readings.length === 2, { labels: m.readingLabels, readings: m.readings.length });
+    /* Production Beta 0: /atlas/ への bounded entry は 1 箇所、行き先の後・いまの状況の前、内部 route */
+    check(S, 'one_bounded_atlas_entry_after_destinations', !!m.spatial && m.spatial.count === 1 && m.spatial.href === './atlas/' && m.spatial.label === '街を立体で辿る（β）' && m.spatial.note === '現在の3D都市モデル（Project PLATEAU）の上で、この関係をもう一度辿ります。' && !m.spatial.target && m.spatial.h >= 44 && m.spatial.afterDestinations && m.spatial.beforeStatus, m.spatial);
     check(S, 'real_targets_are_44px', m.targets.length >= 12 && m.targets.every((t) => t.w >= 44 && t.h >= 44), m.targets.filter((t) => t.w < 44 || t.h < 44));
     check(S, 'reduced_motion_animation_0', m.animated === 0 && m.docAnimations === 0, { animated: m.animated, docAnimations: m.docAnimations });
     check(S, 'no_engagement_words', !FORBIDDEN.some((w) => m.text.includes(w)), FORBIDDEN.filter((w) => m.text.includes(w)));
@@ -453,7 +456,7 @@ async function elementShot(page, selector, name, width) {
     }
     const names = order.map((o) => o.el + (o.value ? `[${o.value}]` : '')).join('>');
     check(S, 'tab_order_reaches_every_real_control', names.startsWith('skip-link>brand-home>menu-trigger>th-evidence-summary') && !/th-mode-input/.test(names) &&
-      (names.match(/th-evidence-summary/g) || []).length === 5 && (names.match(/th-destination-link/g) || []).length === 3 && /th-destination-link>th-destination-link>th-destination-link>v3-video-load>th-exit>footer-brand/.test(names), names);
+      (names.match(/th-evidence-summary/g) || []).length === 5 && (names.match(/th-destination-link/g) || []).length === 3 && /th-destination-link>th-destination-link>th-destination-link>v3-video-load>th-spatial-link>th-exit>footer-brand/.test(names), names);
     check(S, 'focus_visible_outline_on_every_stop', order.filter((o) => o.el !== 'BODY').every((o) => o.fv && o.outline), order.filter((o) => o.el !== 'BODY' && !(o.fv && o.outline)));
     check(S, 'no_source_link_in_tab_order_while_drawers_are_closed', !/th-source-link/.test(names), names);
     // summary by keyboard
@@ -626,7 +629,7 @@ async function elementShot(page, selector, name, width) {
         text: (document.querySelector('#th-w2') || { innerText: '' }).innerText, html: (document.querySelector('#th-w2') || { innerHTML: '' }).innerHTML },
       w3notes: txt('#th-w3 .th-evidence-item').join('|'), w3rel: [...document.querySelectorAll('#th-w3 .th-relation')].map((r) => r.getAttribute('data-relation-id')).join('|'),
       w4: { lead: one('#th-w4 .th-scene-lead'), pairs: txt('#th-w4 .th-pair-name').join('|'), close: one('#th-w4 .th-scene-close'), readingLabel: one('#th-w4 .th-reading-label'), reading: one('#th-w4 .th-reading-text'), readingBorder: document.querySelector('#th-w4 .th-reading') ? getComputedStyle(document.querySelector('#th-w4 .th-reading')).borderTopStyle : null },
-      readings: document.querySelectorAll('.th-reading').length, readingLabels: document.querySelectorAll('.th-reading-label').length, bodyText: document.body.innerText,
+      readings: document.querySelectorAll('.th-reading').length, readingLabels: document.querySelectorAll('.th-reading-label').length, bodyText: document.body.innerText, spatialLinks: document.querySelectorAll('.th-spatial-link').length,
       w5: { lead: one('#th-w5 .th-scene-lead'), notes: txt('#th-w5 .th-evidence-item').join('|'), questions: txt('#th-w5 .th-question'), disclosure: one('#th-w5 .th-scene-close'), realityLead: one('#th-w5 .th-reality-lead'), status: document.querySelectorAll('#th-w5 .th-status').length,
         yaguchiWhy: dest('dest:yaguchi-shoten') ? dest('dest:yaguchi-shoten').querySelectorAll('.th-destination-why').length : -1, yaguchiNote: dest('dest:yaguchi-shoten') ? one('[data-destination-id="dest:yaguchi-shoten"] .th-destination-note') : null,
         dest1Why: one('[data-destination-id="dest:jimbou-map"] .th-destination-why'), dest2Why: one('[data-destination-id="dest:jinbocho-theater"] .th-destination-why'),
@@ -698,7 +701,7 @@ async function elementShot(page, selector, name, width) {
     check(S, 'real_targets_are_44px', m.targets.length >= 9 && m.targets.every((t) => t.w >= 44 && t.h >= 44), m.targets.filter((t) => t.w < 44 || t.h < 44));
     check(S, 'reduced_motion_animation_0', m.animated === 0 && m.docAnimations === 0, { animated: m.animated, docAnimations: m.docAnimations });
     check(S, 'no_engagement_words', !FORBIDDEN.some((w) => m.text.includes(w)), FORBIDDEN.filter((w) => m.text.includes(w)));
-    check(S, 'no_visible_editorial_label_in_morisaki', mm.readingLabels === 0 && !mm.bodyText.includes('編集部の読み'), { labels: mm.readingLabels });
+    check(S, 'no_visible_editorial_label_in_morisaki_and_no_atlas_entry', mm.readingLabels === 0 && !mm.bodyText.includes('編集部の読み') && mm.spatialLinks === 0, { labels: mm.readingLabels, atlas: mm.spatialLinks });
     check(S, 'no_koenji_copy_in_morisaki', !/阿波おどり|木場連|鴨川|パル商店街|1957/.test(m.text), m.text.slice(0, 80));
     check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
     check(S, 'storage_writes_0', m.storage.writes === 0 && m.storage.ls === 0 && m.storage.ss === 0 && m.storage.cookie === '', m.storage);

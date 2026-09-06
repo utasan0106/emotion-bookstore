@@ -279,6 +279,19 @@
     ]);
   }
 
+  function spatialEntryBlock(entry) {
+    if (!entry || !entry.href || !entry.label) return null;
+    return h('div', { class: 'th-spatial-entry' }, [
+      h('p', { class: 'th-spatial-row' }, [
+        h('a', { class: 'th-spatial-link', href: entry.href }, [
+          h('span', { class: 'th-spatial-label', text: entry.label }),
+          h('span', { 'aria-hidden': 'true', text: ' →' })
+        ])
+      ]),
+      entry.note ? h('p', { class: 'th-spatial-note', text: entry.note }) : null
+    ]);
+  }
+
   function realityBlock(thread) {
     var pr = thread.presentReturn || {};
     var children = [h('p', { class: 'th-reality-lead', text: pr.lead || '' })];
@@ -296,6 +309,7 @@
         d.note ? h('p', { class: 'th-destination-note', text: d.note }) : null
       ]);
     })));
+    children.push(spatialEntryBlock(thread.spatialEntry));
     if (Array.isArray(pr.notes) && pr.notes.length) {
       children.push(h('div', { class: 'th-status' }, [
         h('p', { class: 'th-status-title', text: pr.statusTitle || 'いまの状況' }),

@@ -1,0 +1,119 @@
+{
+  "threadId": "koenji-dance-history",
+  "checkedAt": "2026-09-04",
+  "sources": {
+    "official-history": {
+      "label": "主催団体 公式サイト（歴史資料）",
+      "url": "https://koenji-awaodori.com/about/his01.html",
+      "kind": "official"
+    },
+    "suginami-gaku": {
+      "label": "すぎなみ学倶楽部（高円寺の踊り）",
+      "url": "https://suginamigaku.org/2022/11/koenji-awaodori.html",
+      "kind": "local_archive"
+    },
+    "pal-about": {
+      "label": "高円寺パル商店街",
+      "url": "https://www.koenji-pal.jp/about",
+      "kind": "official_place"
+    },
+    "pal-access": {
+      "label": "商店街へのアクセス",
+      "url": "https://www.koenji-pal.jp/access",
+      "kind": "official_place"
+    },
+    "official-join": {
+      "label": "主催団体 公式サイト（参加案内）",
+      "url": "https://koenji-awaodori.com/category1/join.html",
+      "kind": "official"
+    },
+    "official-home": {
+      "label": "主催団体 公式サイト",
+      "url": "https://koenji-awaodori.com/",
+      "kind": "official"
+    },
+    "official-video": {
+      "label": "現在の公式映像を見る",
+      "url": "https://www.youtube.com/watch?v=dt33RGSRuo0",
+      "kind": "official_video"
+    }
+  },
+  "scenes": [
+    {
+      "id": "s1957",
+      "year": "1957",
+      "title": "はじまる",
+      "claim": "1957年、高円寺ばか踊りが、高円寺パル商店街の通りで始まった。",
+      "relation": "高円寺ばか踊り → 高円寺パル商店街の通り",
+      "sourceIds": [
+        "official-history",
+        "pal-about",
+        "pal-access"
+      ],
+      "spatialResolution": "street_segment",
+      "mapPolicy": "corridor",
+      "precisionCopy": "資料が支えるのは『商店街の通り』という範囲です。一点の史跡としては置きません。画面の帯は現在の商店街方向を示す案内表現で、1957年の正確な境界ではありません。",
+      "note": ""
+    },
+    {
+      "id": "s1961",
+      "year": "1961",
+      "title": "つながる",
+      "claim": "1961年、高円寺の主催者たちは、徳島新聞社を介して木場連とつながった。",
+      "relation": "高円寺の主催者たち → 徳島新聞社 → 木場連",
+      "sourceIds": [
+        "official-history",
+        "suginami-gaku"
+      ],
+      "spatialResolution": "not_applicable",
+      "mapPolicy": "overview",
+      "precisionCopy": "現在の資料から、この関係が起きた一地点を特定していません。そのため3D地図上に新しい地点は作りません。",
+      "note": ""
+    },
+    {
+      "id": "s1961_62",
+      "year": "1961–62",
+      "title": "教わる",
+      "claim": "高円寺の主催者たちは、木場連（当時の連長・鴨川長二）から、阿波おどりを教わった。",
+      "relation": "高円寺の主催者たち → learned_from → 木場連",
+      "sourceIds": [
+        "official-history",
+        "suginami-gaku"
+      ],
+      "spatialResolution": "not_applicable",
+      "mapPolicy": "overview",
+      "precisionCopy": "教わった場所を一点表示できる根拠は、現在のThreadにはありません。街の3D表現は背景に留めます。",
+      "note": "資料では年の整理が分かれています。主催団体の歴史は1961年の出会いと手ほどきを一続きに記し、すぎなみ学倶楽部は1961年の出会いと1962年の指導を分けています。この試作では差を消しません。"
+    },
+    {
+      "id": "s1963",
+      "year": "1963",
+      "title": "名を変える",
+      "claim": "1963年、「高円寺ばか踊り」の正式名称が、現在使われている名称へ変わった。",
+      "relation": "高円寺ばか踊り → renamed_to → 現在の名称",
+      "sourceIds": [
+        "official-history"
+      ],
+      "spatialResolution": "not_applicable",
+      "mapPolicy": "overview",
+      "precisionCopy": "名称変更は時間上の事実です。場所の一点情報としては扱いません。",
+      "note": ""
+    },
+    {
+      "id": "snow",
+      "year": "現在",
+      "title": "いまの街へ戻る",
+      "claim": "現在、この催しには40を超える連が活動し、多くの連が一年を通して練習を続けています。ここまで辿った関係を、現在の街と公式映像へ戻して終えます。",
+      "relation": "past → present → official reality",
+      "sourceIds": [
+        "official-join",
+        "official-video",
+        "official-home"
+      ],
+      "spatialResolution": "city_overview",
+      "mapPolicy": "overview",
+      "precisionCopy": "現在の高円寺周辺を俯瞰します。ここで初めて、現在の街への行動と公式映像へ戻ります。",
+      "note": "「現在の公式映像を見る」を押すと、主催団体が公開している公式映像を別画面で開きます。ページを表示しただけではYouTubeへ接続しません。"
+    }
+  ]
+}

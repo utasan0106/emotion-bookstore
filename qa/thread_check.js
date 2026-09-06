@@ -361,6 +361,9 @@ for (const s of thread.scenes) {
     check(html.indexOf('<script src="./video-embed.js"></script>') > 0 && html.indexOf('<script src="./video-embed.js"></script>') < html.indexOf('<script src="./thread.js"></script>'), 'thread.html loads video-embed.js before thread.js');
     check(js.includes("window.V3_VIDEO_EMBED.mount(root)") && js.includes("'data-video-id': d.videoId"), 'renderer mounts the shared click-to-load player on the video destination');
   }
+  /* Production Beta 0: 高円寺 Thread から /atlas/ への bounded entry（1 箇所）。HOME / Works は Atlas 化しない。 */
+  check(JSON.stringify(thread.spatialEntry) === JSON.stringify({ href: './atlas/', label: '街を立体で辿る（β）', note: '現在の3D都市モデル（Project PLATEAU）の上で、この関係をもう一度辿ります。' }), 'one bounded Atlas entry with the exact label / note');
+  check(read('atlas/index.html').includes('<meta name="robots" content="noindex,nofollow">') && !read('sitemap.xml').includes('atlas') && !home.includes('atlas') && !read('works.html').includes('atlas'), 'Atlas is noindex, off the sitemap, and not linked from HOME / Works');
   /* Founder decision v2: 公開 UI に「編集部の読み」の label を出さない（描画される文字列に 0） */
   check(!JSON.stringify(CONTENT, (k, v) => (k === 'url' || k === 'src' ? '' : v)).includes('編集部の読み'), 'no visible 編集部の読み in rendered Thread strings');
   check(d.slice(0, 3).every((x) => Array.isArray(x.relationIds) && x.relationIds.length), 'the three place destinations keep their Thread relations');
@@ -481,7 +484,7 @@ for (const banned of ['animation', 'transition', '@keyframes', 'box-shadow', 'te
   check(/\.th-reading \{[^}]*dashed/.test(css), 'editorial reading must be visibly distinct from fact boxes (dashed), including under forced colors');
   check(!cssRules.includes('.th-fact-badge') && cssRules.includes('.th-support-light') && cssRules.includes('.th-support-deep') && cssRules.includes('.th-evidence-flag'), 'thread.css must style the light / deep support surfaces without fact badges');
   check(!/\.th-reading-label/.test(css), 'no visible reading-label rule remains (Founder decision v2)');
-  check(/\.th-video-frame \{[^}]*aspect-ratio: 16 \/ 9/.test(css) && /\.th-video-load \{[^}]*min-height: 44px/.test(css), 'inline player frame is 16:9 with 44px+ controls');
+  check(/\.th-video-frame \{[^}]*aspect-ratio: 16 \/ 9/.test(css) && /\.th-video-load \{[^}]*min-height: 44px/.test(css) && /\.th-spatial-link \{[^}]*min-height: 44px/.test(css), 'inline player frame is 16:9 with 44px+ controls; Atlas entry is a 44px+ link');
   check(/forced-colors: active/.test(css) && /prefers-reduced-motion/.test(css) === false, 'thread.css must handle forced colors and needs no motion guard (nothing moves)');
   check(/min-height: 44px/.test(css), 'real controls must be at least 44px tall');
 }
@@ -543,7 +546,7 @@ for (const banned of ['animation', 'transition', '@keyframes', 'box-shadow', 'te
     check(same('nodes') && same('facts') && same('relations') && same('sources'), 'Morisaki Book / Film must share nodes / facts / relations / sources by reference');
     check(book.nodes !== thread.nodes && book.relations !== thread.relations && book.sources !== thread.sources && book.facts !== thread.facts, 'Morisaki graph must not alias the KOENJI graph');
     for (const t of [book, film]) {
-      check(!('modes' in t) && !('image' in t) && !('duration' in t), `${t.threadId}: no modes / image / duration`);
+      check(!('modes' in t) && !('image' in t) && !('duration' in t) && !('spatialEntry' in t), `${t.threadId}: no modes / image / duration / Atlas entry`);
       check(t.relations.every((r) => !('temporal' in r)), `${t.threadId}: relations carry no temporal (no fake temporal, no orphan separator)`);
       check(t.relations.every((r) => Array.isArray(r.sourceIds) && r.sourceIds.length >= 1 && r.sourceIds.every((id) => t.sources.some((s) => s.id === id))), `${t.threadId}: NO EVIDENCE = NO BRIDGE`);
       check(t.scenes.map((s) => s.id).join('|') === 'w0|w1|w2|w3|w4|w5', `${t.threadId}: scenes w0..w5`);
