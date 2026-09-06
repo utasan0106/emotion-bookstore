@@ -51,8 +51,7 @@ for (const [name, marker] of [
 
 const COPY = [
   '<span class="hc-hero-line">文化の</span><span class="hc-hero-line">つながりを、</span><span class="hc-hero-line">歩く。</span>',
-  '街から。作品から。ひとつの痕跡から。',
-  'スレッドを見る',
+  '高円寺の踊りの物語を読む',
   '街から入る', '街には、文化が息づく理由がある。',
   '作品から入る', '本・映画・音楽・映像… あらゆる作品が、街とつながっている。',
   'いま辿れるスレッド', 'ひとつの痕跡から、物語をたどる。',
@@ -60,6 +59,8 @@ const COPY = [
   '実際の場所へ', '気になった場所は、公式情報を確かめて、', '実際の街へ。',
 ];
 for (const c of COPY) check(html.includes(c), `core copy missing: ${c.slice(0, 40)}`);
+const heroSub = (html.match(/<p class="hc-hero-sub">([\s\S]*?)<\/p>/) || [])[1] || '';
+check(heroSub.replace(/<[^>]*>/g, '') === '街や作品から、文化のつながりを辿る。必要なら資料を確かめ、その先で読む・聴く・見る・訪れる。', 'Beta0 Closure hero subcopy must match the approved promise');
 
 const CITY_COPY = [
   /* FOUNDER PREVIEW FIX A3: 因果の問いは shelf route が答えないので、4 街とも実際の遷移内容に合う同じ copy。 */
@@ -134,12 +135,12 @@ for (const m of html.match(/<[^>]*data-route-hold="[^"]*"[^>]*>/g) || []) {
   if (/^<(a|button)\b/.test(m)) failures.push(`ROUTE_HOLD element must not be a/button: ${m.slice(0, 70)}`);
 }
 check((html.match(/data-route-hold="/g) || []).length === HOLDS.length, `exactly ${HOLDS.length} route holds expected`);
-// KOENJI R2 + FOUNDER PREVIEW FIX A1: section 4 の「スレッドを読む」と hero の「スレッドを見る」が同じ実 route（thread.html?thread=koenji-awaodori）。
+// section 4 と hero CTA は引き続き同じ既存高円寺 Thread へ。
 const THREAD_ANCHOR = '<a class="hc-thread-read" href="./thread.html?thread=koenji-dance-history">スレッドを読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></a>';
 check(html.split(THREAD_ANCHOR).length === 2, 'thread read must be the real anchor to ./thread.html?thread=koenji-dance-history, exactly once');
 check(!html.includes('data-route-hold="thread-koenji-awaodori"'), 'retired hold thread-koenji-awaodori must not remain');
-const HERO_ANCHOR = '<a class="hc-hero-cta" href="./thread.html?thread=koenji-dance-history"><span class="hc-hero-cta-label">スレッドを見る</span><span class="hc-hero-cta-mark" aria-hidden="true">→</span></a>';
-check(html.split(HERO_ANCHOR).length === 2, 'hero スレッドを見る must be the real anchor to ./thread.html?thread=koenji-dance-history, exactly once (no data-route-hold)');
+const HERO_ANCHOR = '<a class="hc-hero-cta" href="./thread.html?thread=koenji-dance-history"><span class="hc-hero-cta-label">高円寺の踊りの物語を読む</span><span class="hc-hero-cta-mark" aria-hidden="true">→</span></a>';
+check(html.split(HERO_ANCHOR).length === 2, 'hero culture story CTA must be the real anchor to ./thread.html?thread=koenji-dance-history, exactly once (no data-route-hold)');
 check(!html.includes('data-route-hold'), 'HOME must carry no data-route-hold at all');
 check((html.match(/thread\.html/g) || []).length === 2, 'HOME must link the Thread route exactly twice (hero CTA + section 4)');
 // FOUNDER PREVIEW FIX A2 / A4: route の無い「すべて見る」「スポットを探す」は出さない（新しい一覧 / spots page も作らない）
@@ -201,7 +202,7 @@ for (const a of assets) {
   check(fs.existsSync(path.join(root, a)), `asset referenced but missing on disk: ${a}`);
 }
 // canonical 画像そのものを runtime 素材にしていないこと
-check(!/文化のつながり/.test(html), 'VISUAL_CANONICAL image must not be used as a runtime asset');
+check(!assets.some((asset) => /文化のつながり/.test(asset)), 'VISUAL_CANONICAL image must not be used as a runtime asset');
 
 // 作品 card: 図版が入った card は image plane（./assets/home-work-*.jpg）を持ち、
 // 入っていない card は data-asset-hold を明示する。どちらでもない中間状態を残さない。

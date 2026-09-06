@@ -2136,11 +2136,13 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 
 .hc-hero-sub {
   margin: 25px 0 0;
+  max-width: 20em;
   font-size: 15px;
   line-height: 24px;
-  letter-spacing: .04em;
+  letter-spacing: .03em;
   color: #cfc7b8;
 }
+.hc-hero-phrase { display: inline-block; max-width: 100%; }
 
 .hc-hero-cta {
   display: flex;
@@ -2148,9 +2150,10 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   justify-content: space-between;
   box-sizing: border-box;
   width: 244px;
+  max-width: 100%;
   height: 52px;
-  margin: 34px 0 0;
-  padding: 0 20px 0 39px;
+  margin: 12px 0 0;
+  padding: 0 16px;
   border: 1px solid rgba(194,160,104,.85);
   border-radius: 4px;
   background: transparent;
@@ -2710,7 +2713,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   .hc-hero-body { left: var(--hc-pad); right: var(--hc-pad); top: 118px; }
   .hc-hero-title { font-size: var(--hc-title); line-height: 1.2; }
   .hc-hero-sub { margin-top: 20px; }
-  .hc-hero-cta { margin-top: 28px; }
+  .hc-hero-cta { margin-top: 20px; }
   .hc-hero-aside {
     left: auto;
     right: var(--hc-pad);

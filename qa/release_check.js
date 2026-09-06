@@ -372,7 +372,7 @@ for (const required of ['.hc-hero-media::after', '.hc-city-media img', '.hc-city
 {
   const src = read('index.html');
   const h1 = src.indexOf('<h1 id="hc-hero-title"');
-  const sub = src.indexOf('街から。作品から。ひとつの痕跡から。');
+  const sub = src.indexOf('<p class="hc-hero-sub">');
   const firstCity = src.indexOf('class="hc-city shelf-entry"');
   if (h1 < 0 || sub < 0 || firstCity < 0 || h1 > firstCity || sub > firstCity) failures.push('index.html: hero copy must precede the first city entry');
   if (!src.includes('<img src="./assets/city-koenji.jpg" alt="" width="1200" height="1600" fetchpriority="high"')) failures.push('index.html: hero photograph must be decorative (alt="") and fetchpriority high');

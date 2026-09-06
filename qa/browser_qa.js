@@ -631,7 +631,7 @@ function serve() {
     check(S, 'no_running_animation_under_reduced_motion', home.animations === 0, home.animations);
     check(S, 'hero_rect', near(home.rects.hero, 0, 0, 853, 617, 1), home.rects.hero);
     check(S, 'warm_sheet_starts_at_hero_edge', !!home.rects.sheet && Math.abs(home.rects.sheet.y - 617) <= 1, home.rects.sheet);
-    check(S, 'hero_cta_rect', near(home.rects.cta, 32, 452, 244, 52, 2), home.rects.cta);
+    check(S, 'hero_cta_rect', near(home.rects.cta, 32, 478, 244, 52, 2), home.rects.cta);
     check(S, 'city_grid_rect', near(home.rects.cityGrid, 32, 706, 789, 311, 2), home.rects.cityGrid);
     check(S, 'work_grid_rect', near(home.rects.workGrid, 32, 1104, 789, 143, 2), home.rects.workGrid);
     check(S, 'thread_panel_rect', near(home.rects.thread, 25, 1275, 803, 292, 2), home.rects.thread);
@@ -1119,7 +1119,7 @@ function serve() {
         check(H, 'main_keeps_hero_and_sheet_only', home.mainChildren.join('|') === 'SECTION.hc-hero|DIV.hc-sheet', home.mainChildren);
         check(H, 'document_geometry_stays_canonical', home.docW === 853 && Math.abs(home.docH - 1844) <= 4, { w: home.docW, h: home.docH });
         check(H, 'hero_rect', near(home.rects.hero, 0, 0, 853, 617, 1), home.rects.hero);
-        check(H, 'hero_cta_rect', near(home.rects.cta, 32, 452, 244, 52, 2), home.rects.cta);
+        check(H, 'hero_cta_rect', near(home.rects.cta, 32, 478, 244, 52, 2), home.rects.cta);
         check(H, 'city_grid_rect', near(home.rects.cityGrid, 32, 706, 789, 311, 2), home.rects.cityGrid);
         check(H, 'work_grid_rect', near(home.rects.workGrid, 32, 1104, 789, 143, 2), home.rects.workGrid);
         check(H, 'thread_panel_rect', near(home.rects.thread, 25, 1275, 803, 292, 2), home.rects.thread);
