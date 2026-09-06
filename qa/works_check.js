@@ -547,7 +547,7 @@ morisakiScenes(film, 'film');
     const NAMES = { 'src:official-history': '主催団体 公式サイト（歴史資料）', 'src:suginami-gaku': 'すぎなみ学倶楽部（高円寺の踊り）', 'src:official-about': '主催団体 公式サイト（団体について）', 'src:official-join': '主催団体 公式サイト（参加案内）', 'src:official-archive': '主催団体 公式サイト（アーカイブ）', 'src:official-anniversary': '主催団体 公式サイト（周年アーカイブ）', 'src:official-plus': '主催団体 公式サイト（plus+）', 'src:official-home': '主催団体 公式サイト' };
     EXP.sources = EXP.sources.map((x) => (NAMES[x.id] ? { ...x, name: NAMES[x.id] } : x));
     EXP.sources.push({ id: 'src:official-video', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体の公式映像', url: YT });
-    EXP.spatialEntry = { href: './atlas/', label: '街を立体で辿る（β）', note: '現在の3D都市モデル（Project PLATEAU）の上で、この関係をもう一度辿ります。' };
+    EXP.spatialEntry = { href: './atlas/', label: '街を立体で辿る（β）', note: 'Project PLATEAUの3D都市モデル（杉並区 2025年度）から取り出した、現在の街の形の上で、この関係をもう一度辿ります。' };
     EXP.realityDestinations.push({ id: 'dest:official-video', label: '最後に、現在の公式映像を見る', url: YT, videoId: 'dt33RGSRuo0', videoTitle: '主催団体の公式映像', watchNote: '約15分で観終わります。', why: 'ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。', note: '2025年の催しを伝える、主催団体の公式映像です。', sourceIds: ['src:official-video'] });
     delete EXP.modes;
     EXP.scenes = EXP.scenes.map((sc) => { const c = JSON.parse(J(sc)); delete c.cue; if (c.beats) c.beats = c.beats.filter((b) => b.kind !== 'cue'); if (c.editorialReading) c.editorialReading.text = c.editorialReading.text.replace('——これは編集部の読みです。', ''); return c; });

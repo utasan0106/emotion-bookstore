@@ -1,0 +1,15 @@
+{
+  "schema_version": 2,
+  "mode": "production_candidate",
+  "production_eligible": true,
+  "buildings": "./data/koenji-plateau-2025-buildings-1c2f98806ea5.geojson",
+  "roads": "./data/koenji-plateau-2025-roads-516d7f880d33.geojson",
+  "provenance": "./data/koenji-plateau-2025-provenance-d7a48a44168f.json",
+  "historicalGeometry": false,
+  "dataset": {
+    "city_code": "13115",
+    "year": 2025,
+    "citygml_version": "2.0"
+  },
+  "lineage_required": true
+}

@@ -321,7 +321,7 @@
     spatialEntry: {
       href: './atlas/',
       label: '街を立体で辿る（β）',
-      note: '現在の3D都市モデル（Project PLATEAU）の上で、この関係をもう一度辿ります。'
+      note: 'Project PLATEAUの3D都市モデル（杉並区 2025年度）から取り出した、現在の街の形の上で、この関係をもう一度辿ります。'
     },
 
     ending: {

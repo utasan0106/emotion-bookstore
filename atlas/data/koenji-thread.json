@@ -1,6 +1,6 @@
 {
   "threadId": "koenji-dance-history",
-  "checkedAt": "2026-09-04",
+  "checkedAt": "2026-09-06",
   "sources": {
     "official-history": {
       "label": "主催団体 公式サイト（歴史資料）",
@@ -52,7 +52,7 @@
       ],
       "spatialResolution": "street_segment",
       "mapPolicy": "corridor",
-      "precisionCopy": "資料が支えるのは『商店街の通り』という範囲です。一点の史跡としては置きません。画面の帯は現在の商店街方向を示す案内表現で、1957年の正確な境界ではありません。",
+      "precisionCopy": "資料が支えるのは『商店街の通り』という範囲です。一点の史跡としては置きません。現在の道路データの上でどの通りかを線で示すことは、この版ではしていません。",
       "note": ""
     },
     {
@@ -67,7 +67,7 @@
       ],
       "spatialResolution": "not_applicable",
       "mapPolicy": "overview",
-      "precisionCopy": "現在の資料から、この関係が起きた一地点を特定していません。そのため3D地図上に新しい地点は作りません。",
+      "precisionCopy": "現在の資料から、この関係が起きた一地点を特定していません。そのため地図上に新しい地点は作りません。",
       "note": ""
     },
     {
@@ -82,7 +82,7 @@
       ],
       "spatialResolution": "not_applicable",
       "mapPolicy": "overview",
-      "precisionCopy": "教わった場所を一点表示できる根拠は、現在のThreadにはありません。街の3D表現は背景に留めます。",
+      "precisionCopy": "教わった場所を一点表示できる根拠は、現在のThreadにはありません。現在の街の形は背景に留めます。",
       "note": "資料では年の整理が分かれています。主催団体の歴史は1961年の出会いと手ほどきを一続きに記し、すぎなみ学倶楽部は1961年の出会いと1962年の指導を分けています。この試作では差を消しません。"
     },
     {
@@ -112,8 +112,18 @@
       ],
       "spatialResolution": "city_overview",
       "mapPolicy": "overview",
-      "precisionCopy": "現在の高円寺周辺を俯瞰します。ここで初めて、現在の街への行動と公式映像へ戻ります。",
+      "precisionCopy": "現在の高円寺駅周辺の街の形を見ます。駅の位置は目安です。ここで初めて、現在の街への行動と公式映像へ戻ります。",
       "note": "「現在の公式映像を見る」を押すと、主催団体が公開している公式映像を別画面で開きます。ページを表示しただけではYouTubeへ接続しません。"
     }
-  ]
+  ],
+  "spatialTruth": {
+    "currentGeometrySource": "Project PLATEAU 杉並区（2025年度）から事前抽出（atlas/data/runtime-spatial.json）",
+    "historicalGeometry": false,
+    "rules": {
+      "1957": "current street-segment precision only; no line drawn; not a historical boundary",
+      "1961": "no historical point",
+      "1961-62": "no historical point",
+      "1963": "no historical point"
+    }
+  }
 }

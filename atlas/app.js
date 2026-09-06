@@ -1,257 +1,232 @@
-/* 街を立体で辿る（β）— Production Beta 0、高円寺だけ。
-   - 2.5D（FallbackAdapter）が先に使える。PLATEAU / CesiumJS は非同期の progressive enhancement で、
-     失敗・遅延しても story / timeline / evidence は使える。
-   - ?mode=2d は Cesium / PLATEAU への request 0。
-   - 位置情報・カメラ・保存・計測は使わない。外部 link は allowlist の host だけ、押したときだけ。
-   - 現在の 3D 都市モデルは歴史の証拠ではない（historicalGeometry:false、1961 以降は地点を作らない）。 */
-(function(){
+/* 街を立体で辿る（β）— Production Beta 0、高円寺だけ。Cultural Signal Lens。
+   - 現在の街の形は、Project PLATEAU（杉並区 2025年度）から事前に取り出した same-origin の GeoJSON だけ。
+     外部の配信元・タイル・3D エンジン・バイナリ実行モジュールは使わない。
+   - 関係が主役、街の形は土台。見方は有限（関係 / 街の形 / 証拠 / 時間 / 現在）。自由な視点操作は無い。
+   - 現在の街の形は歴史の証拠ではない（historicalGeometry:false）。1957 は『通り』という範囲まで、
+     1961 / 1961–62 / 1963 は地点を作らない。現在の駅は目安（PLATEAU の建物 gml:id から導く）。
+   - 位置情報・カメラ・入力欄・保存・計測は使わない。外部 link は allowlist の host だけ、押したときだけ。 */
+(function () {
 'use strict';
-const $=id=>document.getElementById(id);
-const EXTERNAL_ALLOW=new Set([
-  'koenji-awaodori.com','www.koenji-awaodori.com','suginamigaku.org','www.koenji-pal.jp','www.youtube.com',
-  'www.mlit.go.jp','docs.plateauview.mlit.go.jp'
+const $ = (id) => document.getElementById(id);
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const EXTERNAL_ALLOW = new Set([
+  'koenji-awaodori.com', 'www.koenji-awaodori.com', 'suginamigaku.org', 'www.koenji-pal.jp', 'www.youtube.com',
+  'www.mlit.go.jp', 'www.geospatial.jp'
 ]);
-const state={index:null,city:null,thread:null,spatial:null,sceneIndex:0,adapter:null,fallbackAdapter:null,quality:'normal',compare:false,cityToken:0};
-const bundle=window.__V3_SPATIAL_BUNDLE__||null;
+const VIEW_IDS = ['relation', 'city', 'evidence', 'time', 'now'];
+const GML_ID = { bldg: /^bldg_[0-9a-f-]{36}$/, tran: /^tran_[0-9a-f-]{36}$/ };
+const state = { lens: null, thread: null, runtime: null, buildings: null, roads: null, provenance: null, sceneIndex: 0, view: 'relation', frames: {}, station: null };
 
-function clone(x){return JSON.parse(JSON.stringify(x))}
-function externalLink(label,url,kind){
-  const u=new URL(url);
-  if(!EXTERNAL_ALLOW.has(u.hostname)) throw new Error('External host not allowlisted: '+u.hostname);
-  const a=document.createElement('a');a.textContent=label+' ↗';a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.referrerPolicy='no-referrer';
-  if(kind){const s=document.createElement('span');s.className='source-kind';s.textContent=kind.replaceAll('_',' ');a.appendChild(s);}
+async function loadJson(path) {
+  if (!/^\.\/data\/[a-z0-9._-]+\.(json|geojson)$/i.test(path)) throw new Error('Not a local data path: ' + path);
+  const r = await fetch(path);
+  if (!r.ok) throw new Error(path + ' ' + r.status);
+  return r.json();
+}
+function setStatus(text, hold) { const el = $('dataStatus'); el.textContent = text; if (hold) el.dataset.state = 'hold'; else delete el.dataset.state; }
+function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
+function svgEl(tag, attrs) { const n = document.createElementNS(SVG_NS, tag); for (const k in attrs) n.setAttribute(k, String(attrs[k])); return n; }
+function externalLink(label, url, kind) {
+  const u = new URL(url);
+  if (u.protocol !== 'https:' || !EXTERNAL_ALLOW.has(u.hostname)) throw new Error('External host not allowlisted: ' + u.hostname);
+  const a = el('a', 'al-link', label + ' ↗');
+  a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.referrerPolicy = 'no-referrer';
+  if (kind) a.appendChild(el('span', 'al-link-kind', kind.replace(/_/g, ' ')));
   return a;
 }
-function scene(){return state.thread.scenes[state.sceneIndex]}
-function sourcesFor(s){return (s.sourceIds||[]).map(id=>{const x=state.thread.sources[id];if(!x)throw new Error('Missing source '+id);return x;})}
-function setStatus(text,ok){$('dataStatus').textContent=text;$('dataStatus').classList.toggle('ok',!!ok);$('dataStatus').classList.toggle('warn',!ok)}
-function showTech(msg){const el=$('techNote');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),6500)}
-function setPressed(id,on){$(id).setAttribute('aria-pressed',on?'true':'false')}
 
-async function loadJson(path){
-  if(bundle && bundle[path]) return clone(bundle[path]);
-  const r=await fetch(path,{cache:'no-store'});if(!r.ok)throw new Error(path+' '+r.status);return r.json();
-}
-function validateCity(city,thread,spatial){
-  if(!city||!thread||!spatial)throw new Error('Missing city data');
-  if(!thread.scenes?.length)throw new Error(city.id+': No scenes');
-  const allowedPolicy=new Set(['overview','corridor','area','current_place']);
-  const allowedResolution=new Set(['not_applicable','street_segment','area','place_identity','current_place','city_overview']);
-  for(const s of thread.scenes){
-    if(!allowedPolicy.has(s.mapPolicy))throw new Error(city.id+': unknown mapPolicy '+s.mapPolicy);
-    if(!allowedResolution.has(s.spatialResolution))throw new Error(city.id+': unknown spatialResolution '+s.spatialResolution);
-    if(s.mapPolicy==='corridor'&&s.spatialResolution!=='street_segment')throw new Error(city.id+': corridor requires street_segment');
-    if(s.mapPolicy==='area'&&s.spatialResolution!=='area')throw new Error(city.id+': area requires area resolution');
-    if(s.mapPolicy==='current_place'&&!['place_identity','current_place'].includes(s.spatialResolution))throw new Error(city.id+': current_place requires place identity');
-    if(s.spatialResolution==='not_applicable'&&s.mapPolicy!=='overview')throw new Error(city.id+': non-spatial scene cannot render geometry');
-    for(const id of s.sourceIds||[]){if(!thread.sources[id])throw new Error(city.id+': missing source '+id)}
+/* ---------------------------------------------------------------- contracts (fail closed) */
+function validateThread(t) {
+  if (!t || t.threadId !== 'koenji-dance-history' || !Array.isArray(t.scenes) || !t.scenes.length) throw new Error('thread data');
+  const allowedPolicy = new Set(['overview', 'corridor']);
+  const allowedResolution = new Set(['not_applicable', 'street_segment', 'city_overview']);
+  for (const s of t.scenes) {
+    if (!allowedPolicy.has(s.mapPolicy) || !allowedResolution.has(s.spatialResolution)) throw new Error('scene policy ' + s.id);
+    if (s.spatialResolution === 'not_applicable' && s.mapPolicy !== 'overview') throw new Error('non-spatial scene cannot render geometry ' + s.id);
+    if (typeof s.precisionCopy !== 'string' || !s.precisionCopy) throw new Error('precision copy ' + s.id);
+    for (const id of s.sourceIds || []) if (!t.sources[id]) throw new Error('missing source ' + id);
   }
-  for(const [id,src] of Object.entries(thread.sources||{})){const u=new URL(src.url);if(!EXTERNAL_ALLOW.has(u.hostname))throw new Error(city.id+': source host denied '+id)}
-  for(const g of spatial.geometries||[]){
-    if(g.historicalGeometry!==false)throw new Error(city.id+': geometry must not claim historical boundary');
-    if(!['corridor','area','current_place'].includes(g.kind))throw new Error(city.id+': geometry kind denied '+g.kind);
+  for (const id in t.sources) { const u = new URL(t.sources[id].url); if (u.protocol !== 'https:' || !EXTERNAL_ALLOW.has(u.hostname)) throw new Error('source host denied ' + id); }
+  if (!t.spatialTruth || t.spatialTruth.historicalGeometry !== false) throw new Error('spatialTruth');
+}
+function validateLens(l) {
+  if (!l || l.city !== 'koenji' || l.threadId !== 'koenji-dance-history') throw new Error('lens data');
+  if (!Array.isArray(l.views) || l.views.map((v) => v.id).join() !== VIEW_IDS.join()) throw new Error('views must be exactly ' + VIEW_IDS.join('/'));
+  if (!l.corridor || l.corridor.policy !== 'no_band') throw new Error('corridor policy');
+  if (!l.presentReference || l.presentReference.historicalClaim !== false || !Array.isArray(l.presentReference.gmlIds) || !l.presentReference.gmlIds.length) throw new Error('present reference');
+  for (const k of ['s1961', 's1961_62', 's1963']) if (!l.historicalPoints || l.historicalPoints[k] !== 'none') throw new Error('historical point policy ' + k);
+  for (const k of ['overview', 'close']) { const f = l.substrate.frames[k]; if (!Array.isArray(f) || f.length !== 4 || !(f[0] < f[2] && f[1] < f[3])) throw new Error('frame ' + k); }
+}
+function validateRuntime(r) {
+  if (!r || r.production_eligible !== true || r.lineage_required !== true || r.historicalGeometry !== false) throw new Error('runtime manifest is not a certified production candidate');
+  const d = r.dataset || {};
+  if (String(d.city_code) !== '13115' || Number(d.year) !== 2025 || d.citygml_version !== '2.0') throw new Error('runtime dataset identity');
+}
+function validateCollection(g, kind) {
+  const p = (g && g.properties) || {};
+  if (!g || g.type !== 'FeatureCollection' || !Array.isArray(g.features) || !g.features.length) throw new Error(kind + ' collection');
+  if (p.plateau_derived !== true || p.development_fixture !== false || String(p.municipality_code) !== '13115' || Number(p.dataset_year) !== 2025 || p.citygml_version !== '2.0' || p.historicalGeometry !== false) throw new Error(kind + ' provenance flags');
+  if (p.feature_type !== kind || Number(p.feature_count) !== g.features.length) throw new Error(kind + ' feature count');
+  for (const f of g.features) {
+    if (typeof f.id !== 'string' || !GML_ID[kind].test(f.id)) throw new Error(kind + ' feature id is not a source gml:id');
+    const t = f.geometry && f.geometry.type;
+    if (t !== 'Polygon' && t !== 'MultiPolygon') throw new Error(kind + ' geometry type');
   }
-  if(spatial.plateauEnabled && !spatial.plateau.tileset.includes(spatial.municipalityCode+'-bldg-maxlod2-latest'))throw new Error(city.id+': unexpected PLATEAU tileset');
+}
+function validateProvenance(p, b, r) {
+  if (!p || p.status !== 'VERIFIED_PLATEAU_DERIVED_WITH_LINEAGE' || p.historicalGeometry !== false) throw new Error('provenance status');
+  if (String(p.municipality_code) !== '13115' || Number(p.dataset_year) !== 2025 || p.citygml_version !== '2.0') throw new Error('provenance identity');
+  if (Number(p.building_features) !== b.features.length || Number(p.road_features) !== r.features.length) throw new Error('provenance counts');
 }
 
-function renderCitySwitcher(){
-  const nav=$('citySwitcher');nav.replaceChildren();
-  nav.hidden=state.index.cities.length<2; // Production Beta 0: 高円寺だけ。他の街は navigation に出さない。
-  state.index.cities.forEach(c=>{
-    const b=document.createElement('button');b.className='city-tab'+(c.state==='hold'?' hold':'');b.dataset.city=c.id;
-    b.innerHTML='<span>'+c.label+'</span><span class="city-state">'+c.stateLabel+'</span>';
-    b.setAttribute('aria-current',c.id===state.city?.id?'true':'false');
-    b.addEventListener('click',()=>switchCity(c.id,true));nav.appendChild(b);
-  });
+/* ---------------------------------------------------------------- projection (present-day frame only) */
+function polygons(geometry) { return geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates; }
+function makeFrame(bbox, rect) {
+  const lat0 = (bbox[1] + bbox[3]) / 2;
+  const mx = 111320 * Math.cos(lat0 * Math.PI / 180), my = 110940;
+  const wm = (bbox[2] - bbox[0]) * mx, hm = (bbox[3] - bbox[1]) * my;
+  const scale = Math.min(rect.w / wm, rect.h / hm);
+  const ox = rect.x + (rect.w - wm * scale) / 2, oy = rect.y + (rect.h - hm * scale) / 2;
+  return { scale, project: (p) => [ox + (p[0] - bbox[0]) * mx * scale, oy + (bbox[3] - p[1]) * my * scale] };
 }
-function renderHero(){
-  $('mapStage').dataset.city=state.city.id;
-  $('heroCity').textContent=state.city.label.toUpperCase()+' · SPATIAL CULTURE';
-  $('heroTitle').innerHTML=state.city.heroTitle;
-  $('heroLead').textContent=state.city.heroLead;
-  $('panelTitle').textContent=state.city.panelTitle;
-  $('panelLead').textContent=state.city.panelLead;
-  $('cityContext').textContent=state.city.context;
-  $('cityRouteNote').textContent=state.city.routeNote;
-  const maturity=$('maturity');maturity.textContent=state.city.stateLabel;maturity.classList.toggle('hold',state.city.state==='hold');
-  const badge=$('factBadge');badge.dataset.maturity=state.city.state;badge.textContent=state.city.state==='hold'?'EDITORIAL HOLD':'VERIFIED';
-  const hold=$('holdBanner');hold.classList.toggle('show',state.city.state==='hold');
-  hold.textContent=state.city.state==='hold'?'この街は、3Dを先に作るのではなく、Evidenceのある文化関係が揃うまでSpatial化を止めています。':'';
-  $('panelFoot').innerHTML=state.spatial.plateauEnabled
-    ? '3D都市モデル: Project PLATEAU / 国土交通省。自治体コード <code>'+state.spatial.municipalityCode+'</code> の建築物 <code>maxlod2-latest</code> を利用。配信失敗時は同じ文化データを使う2.5D fallbackへ切替。'
-    : 'この街はEDITORIAL HOLDのためPLATEAUを意図的に読み込みません。3Dが使えること自体を文化関係の根拠にしません。';
-}
-function renderTimeline(){
-  const el=$('timeline');el.replaceChildren();
-  state.thread.scenes.forEach((s,i)=>{
-    const b=document.createElement('button');b.innerHTML='<strong>'+s.year+'</strong>'+s.title;b.classList.toggle('active',i===state.sceneIndex);
-    b.addEventListener('click',()=>selectScene(i));el.appendChild(b);
-  });
-  el.style.gridTemplateColumns='repeat('+Math.min(state.thread.scenes.length,5)+',1fr)';
-}
-function renderCompare(){
-  const list=$('compareList');list.replaceChildren();
-  state.thread.scenes.forEach((s,i)=>{
-    const b=document.createElement('button');b.className='compare-item';
-    b.innerHTML='<small>'+s.year+'</small><strong>'+s.title+'</strong><span>'+s.claim+'</span>';
-    b.addEventListener('click',()=>{selectScene(i);setCompare(false);$('storyPanel').scrollIntoView({block:'start'});});list.appendChild(b);
-  });
-}
-function renderStory(){
-  const s=scene();
-  $('year').textContent=s.year;$('title').textContent=s.title;$('claim').textContent=s.claim;$('precision').textContent=s.precisionCopy;$('relation').textContent=s.relation;
-  $('note').style.display=s.note?'block':'none';$('note').textContent=s.note||'';
-  $('links').replaceChildren(...sourcesFor(s).map(x=>externalLink(x.label,x.url,x.kind)));
-  $('nextBtn').textContent=state.sceneIndex===state.thread.scenes.length-1?(state.thread.scenes.length===1?'この街はここまで':'最初から辿る ↺'):'次の関係へ →';
-  $('nextBtn').disabled=state.thread.scenes.length===1;
-  $('focusBtn').textContent=s.mapPolicy==='corridor'?'商店街方向へ近づく':s.mapPolicy==='area'?'街の範囲を見る':s.mapPolicy==='current_place'?'現在の場所を見る':'街の俯瞰を保つ';
-  $('focusBtnTop').textContent=$('focusBtn').textContent;
-  [...$('timeline').children].forEach((b,i)=>b.classList.toggle('active',i===state.sceneIndex));
-  if(state.adapter)state.adapter.applyScene(s);
-  $('evidenceDetails').open=false;
-}
-function selectScene(i){state.sceneIndex=i;renderStory()}
-function setCompare(open){state.compare=open;$('compareOverlay').classList.toggle('open',open);$('compareOverlay').setAttribute('aria-hidden',open?'false':'true');setPressed('compareBtn',open)}
-function updateUrl(cityId){const u=new URL(location.href);u.searchParams.set('city',cityId);history.replaceState({},'',u)}
+function pathD(points, close) { let d = ''; for (let i = 0; i < points.length; i++) d += (i ? 'L' : 'M') + points[i][0].toFixed(1) + ' ' + points[i][1].toFixed(1); return close ? d + 'Z' : d; }
 
-class FallbackAdapter{
-  constructor(container,spatial,city){this.container=container;this.spatial=spatial;this.city=city;this.world=null;this.corridor=null;this.area=null;this.current=null}
-  async init(){
-    this.container.replaceChildren();
-    const city=document.createElement('div');city.className='fallback-city';
-    const world=document.createElement('div');world.className='fallback-world';
-    world.innerHTML='<div class="f-street s1"></div><div class="f-street s2"></div><div class="f-street s3"></div><div class="f-block"></div><div class="f-block"></div><div class="f-block"></div><div class="f-block"></div><div class="f-block"></div><div class="f-block"></div><div class="f-corridor"></div><div class="f-area"></div><div class="f-current"></div><div class="f-station"></div>';
-    city.appendChild(world);this.container.appendChild(city);this.world=world;this.corridor=world.querySelector('.f-corridor');this.area=world.querySelector('.f-area');this.current=world.querySelector('.f-current');
-    const station=world.querySelector('.f-station');const ref=this.spatial.presentReferences?.[0];station.dataset.label=ref?.label||('現在の'+this.city.label);station.style.display=ref?'block':'none';this.current.dataset.label=ref?.label||'現在の場所';return this;
+function renderSubstrate(frame) {
+  const visual = state.lens.substrate.visual;
+  const hpx = (h) => Math.min(h, visual.maxVisualHeightMetres) * visual.pxPerMetreOfHeight * frame.scale;
+  const roads = $('roadLayer'), bldgs = $('buildingLayer');
+  roads.replaceChildren(); bldgs.replaceChildren();
+  for (const f of state.roads.features) {
+    let d = '';
+    for (const poly of polygons(f.geometry)) for (const ring of poly) d += pathD(ring.map(frame.project), true);
+    const p = svgEl('path', { d, 'data-gml-id': f.id }); roads.appendChild(p);
   }
-  overview(){this.world.classList.remove('street-focus')}
-  focus(){this.world.classList.add('street-focus')}
-  applyScene(s){this.corridor.classList.toggle('show',s.mapPolicy==='corridor');this.area.classList.toggle('show',s.mapPolicy==='area');this.current.classList.toggle('show',s.mapPolicy==='current_place');s.mapPolicy==='overview'?this.overview():this.focus()}
-  setQuality(){}
-  destroy(){this.container.replaceChildren()}
-}
-
-let cesiumLoadPromise=null;
-function loadCesium(){
-  if(window.Cesium)return Promise.resolve(window.Cesium);
-  if(cesiumLoadPromise)return cesiumLoadPromise;
-  cesiumLoadPromise=new Promise((resolve,reject)=>{
-    window.CESIUM_BASE_URL='https://cesium.com/downloads/cesiumjs/releases/1.117/Build/Cesium/';
-    const css=document.createElement('link');css.rel='stylesheet';css.href=window.CESIUM_BASE_URL+'Widgets/widgets.css';document.head.appendChild(css);
-    const script=document.createElement('script');script.src=window.CESIUM_BASE_URL+'Cesium.js';script.async=true;
-    script.onload=()=>window.Cesium?resolve(window.Cesium):reject(new Error('Cesium loaded without global'));
-    script.onerror=()=>reject(new Error('CesiumJS network error'));document.head.appendChild(script);
-  });return cesiumLoadPromise;
-}
-
-class PlateauAdapter{
-  constructor(container,spatial,city){this.container=container;this.spatial=spatial;this.city=city;this.viewer=null;this.tileset=null;this.entities=[]}
-  async init(){
-    await loadCesium();if(!window.Cesium)throw new Error('CesiumJS unavailable');const C=window.Cesium;this.container.replaceChildren();
-    const imagery=new C.UrlTemplateImageryProvider({url:this.spatial.plateau.imagery,maximumLevel:19,credit:'PLATEAU-Ortho / Project PLATEAU'});
-    this.viewer=new C.Viewer(this.container,{baseLayer:false,terrainProvider:new C.EllipsoidTerrainProvider(),animation:false,timeline:false,geocoder:false,homeButton:false,sceneModePicker:false,baseLayerPicker:false,navigationHelpButton:false,fullscreenButton:false,selectionIndicator:false,infoBox:false,shouldAnimate:false,requestRenderMode:true,maximumRenderTimeChange:Infinity});
-    this.viewer.scene.imageryLayers.addImageryProvider(imagery);
-    this.viewer.scene.globe.baseColor=C.Color.fromCssColorString('#1d2824');this.viewer.scene.globe.showGroundAtmosphere=false;this.viewer.scene.skyAtmosphere.show=false;this.viewer.scene.fog.enabled=true;this.viewer.scene.fog.density=.00018;this.viewer.scene.backgroundColor=C.Color.fromCssColorString('#101816');this.viewer.scene.screenSpaceCameraController.minimumZoomDistance=35;this.viewer.resolutionScale=this.defaultScale();
-    this.tileset=await C.Cesium3DTileset.fromUrl(this.spatial.plateau.tileset,{maximumScreenSpaceError:this.defaultSSE()});
-    this.viewer.scene.primitives.add(this.tileset);this.tileset.style=new C.Cesium3DTileStyle({color:"color('#d9d1bd',0.90)"});
-    this.addEditorialGeometry();this.setView(this.spatial.camera.overview,false);this.viewer.scene.requestRender();return this;
+  const stationIds = new Set(state.lens.presentReference.gmlIds);
+  const items = [];
+  for (const f of state.buildings.features) {
+    const rings = polygons(f.geometry).map((poly) => poly[0].map(frame.project));
+    let cx = 0, cy = 0, n = 0; for (const r of rings) for (const p of r) { cx += p[0]; cy += p[1]; n++; }
+    items.push({ f, rings, depth: cy / n - 0.25 * (cx / n) });
   }
-  defaultScale(){return innerWidth<=640?Math.min(.72,1/devicePixelRatio):Math.min(1,1/devicePixelRatio*1.25)}
-  defaultSSE(){return innerWidth<=640?24:14}
-  addEditorialGeometry(){
-    const C=window.Cesium;
-    for(const ref of this.spatial.presentReferences||[]){
-      const e=this.viewer.entities.add({id:'ref:'+ref.id,position:C.Cartesian3.fromDegrees(ref.lon,ref.lat,10),show:false,point:{pixelSize:9,color:C.Color.fromCssColorString('#f2d28e'),outlineColor:C.Color.fromCssColorString('#171c1a'),outlineWidth:2,disableDepthTestDistance:Number.POSITIVE_INFINITY},label:{text:ref.label,font:'12px sans-serif',fillColor:C.Color.fromCssColorString('#f5efdf'),showBackground:true,backgroundColor:C.Color.fromBytes(18,23,22,190),pixelOffset:new C.Cartesian2(0,-24),disableDepthTestDistance:Number.POSITIVE_INFINITY}});
-      this.entities.push({kind:'reference',id:ref.id,entity:e});
-    }
-    for(const g of this.spatial.geometries||[]){
-      let e=null;
-      if(g.kind==='corridor'){
-        e=this.viewer.entities.add({show:false,corridor:{positions:C.Cartesian3.fromDegreesArray(g.coordinates.flat()),width:28,material:C.Color.fromCssColorString('#c88d39').withAlpha(.34),outline:true,outlineColor:C.Color.fromCssColorString('#f1ce86').withAlpha(.85),height:2}});
-      }else if(g.kind==='area'){
-        e=this.viewer.entities.add({position:C.Cartesian3.fromDegrees(g.center[0],g.center[1],3),show:false,ellipse:{semiMajorAxis:g.semiMajorAxis,semiMinorAxis:g.semiMinorAxis,material:C.Color.fromCssColorString('#c88d39').withAlpha(.13),outline:true,outlineColor:C.Color.fromCssColorString('#f1ce86').withAlpha(.72),height:2}});
-      }else if(g.kind==='current_place'){
-        const ref=(this.spatial.presentReferences||[]).find(x=>x.id===g.referenceId);if(ref)e=this.viewer.entities.getById('ref:'+ref.id);
+  items.sort((a, b) => a.depth - b.depth); /* 奥（上・右）から手前へ */
+  for (const it of items) {
+    const h = it.f.properties.measuredHeight;
+    const g = svgEl('g', { 'data-gml-id': it.f.id, class: stationIds.has(it.f.id) ? 'al-building al-station' : 'al-building' });
+    if (typeof h !== 'number' || !(h > 0)) {
+      for (const r of it.rings) g.appendChild(svgEl('path', { class: 'al-flat', d: pathD(r, true) }));
+    } else {
+      const dz = hpx(h), dx = dz * 0.25;
+      let sides = '', tops = '';
+      for (const r of it.rings) {
+        const top = r.map((p) => [p[0] + dx, p[1] - dz]);
+        for (let i = 0; i < r.length - 1; i++) sides += pathD([r[i], r[i + 1], top[i + 1], top[i]], true);
+        tops += pathD(top, true);
       }
-      if(e)this.entities.push({kind:'geometry',id:g.id,scenes:g.sceneIds||[],entity:e,geometry:g});
+      g.appendChild(svgEl('path', { class: 'al-side', d: sides }));
+      g.appendChild(svgEl('path', { class: 'al-top', d: tops }));
     }
+    bldgs.appendChild(g);
   }
-  setView(c,fly=true){const C=window.Cesium;const opts={destination:C.Cartesian3.fromDegrees(c.lon,c.lat,c.height),orientation:{heading:C.Math.toRadians(c.heading),pitch:C.Math.toRadians(c.pitch),roll:0}};fly?this.viewer.camera.flyTo({...opts,duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:.7}):this.viewer.camera.setView(opts)}
-  overview(){this.setView(this.spatial.camera.overview,true)}
-  focus(){this.setView(this.spatial.camera.focus||this.spatial.camera.street||this.spatial.camera.overview,true)}
-  applyScene(s){
-    for(const x of this.entities){x.entity.show=false}
-    for(const x of this.entities){if(x.kind==='geometry'&&x.scenes.includes(s.id))x.entity.show=true}
-    if(s.mapPolicy==='current_place'){for(const x of this.entities){if(x.kind==='reference')x.entity.show=true}}
-    s.mapPolicy==='overview'?this.overview():this.focus();this.viewer.scene.requestRender();
-  }
-  setQuality(low){this.viewer.resolutionScale=low?Math.min(.62,1/devicePixelRatio):this.defaultScale();if(this.tileset)this.tileset.maximumScreenSpaceError=low?32:this.defaultSSE();this.viewer.scene.requestRender()}
-  destroy(){if(this.viewer&&!this.viewer.isDestroyed())this.viewer.destroy();this.viewer=null;this.container.replaceChildren()}
-}
-
-async function upgradeToPlateau(token,plateauLayer,fallbackLayer){
-  const adapter=new PlateauAdapter(plateauLayer,state.spatial,state.city);
-  try{
-    await adapter.init();
-    if(token!==state.cityToken){adapter.destroy();return}
-    state.adapter=adapter;
-    plateauLayer.classList.remove('hidden');
-    fallbackLayer.classList.add('hidden');
-    $('mapCredit').hidden=false;
-    setStatus('PLATEAU '+state.city.label+' maxLOD2',true);
-    adapter.applyScene(scene());
-  }catch(e){
-    if(token!==state.cityToken)return;
-    try{adapter.destroy()}catch(_){}
-    plateauLayer.remove();
-    state.adapter=state.fallbackAdapter;
-    setStatus('2.5D fallback',false);
-    showTech('PLATEAU/Cesiumを利用できなかったため2.5D表示を継続します。 '+e.message);
+  /* 現在の駅（目安）: PLATEAU の建物 gml:id から外接矩形の中心を導く。歴史上の地点ではない。 */
+  const ref = $('refLayer'); ref.replaceChildren();
+  const pts = [];
+  for (const f of state.buildings.features) if (stationIds.has(f.id)) for (const poly of polygons(f.geometry)) for (const p of poly[0]) pts.push(p);
+  if (pts.length) {
+    const lon = (Math.min(...pts.map((p) => p[0])) + Math.max(...pts.map((p) => p[0]))) / 2;
+    const lat = (Math.min(...pts.map((p) => p[1])) + Math.max(...pts.map((p) => p[1]))) / 2;
+    const [x, y] = frame.project([lon, lat]);
+    const label = state.lens.presentReference.label;
+    const w = label.length * 30 + 24;
+    ref.appendChild(svgEl('rect', { class: 'al-ref-plate', x: (x - w / 2).toFixed(1), y: (y - 70).toFixed(1), width: w, height: 44, rx: 2 }));
+    const t = svgEl('text', { class: 'al-ref-label', x: x.toFixed(1), y: (y - 38).toFixed(1), 'text-anchor': 'middle' }); t.textContent = label; ref.appendChild(t);
+    ref.appendChild(svgEl('circle', { class: 'al-ref-dot', cx: x.toFixed(1), cy: y.toFixed(1), r: 9 }));
+    state.station = { lon, lat };
   }
 }
-
-async function initAdapter(token){
-  const container=$('mapStage');container.replaceChildren();$('mapCredit').hidden=true;
-  const fallbackLayer=document.createElement('div');fallbackLayer.className='spatial-layer';container.appendChild(fallbackLayer);
-  state.fallbackAdapter=new FallbackAdapter(fallbackLayer,state.spatial,state.city);
-  await state.fallbackAdapter.init();
-  if(token!==state.cityToken)return;
-  state.adapter=state.fallbackAdapter;
-
-  // The 2.5D layer is the usable baseline, not a loading placeholder.
-  // PLATEAU is progressive enhancement and must never block the story UI.
-  if(!state.spatial.plateauEnabled){setStatus('2.5D only',false);return}
-  setStatus('2.5D ready · PLATEAU読込中',false);
-  const params=new URLSearchParams(location.search);
-  if(params.get('mode')==='2d'){setStatus('2.5D manual',false);return}
-
-  const plateauLayer=document.createElement('div');plateauLayer.className='spatial-layer hidden';container.appendChild(plateauLayer);
-  // Intentionally not awaited. Failure or delay leaves the fallback fully usable.
-  void upgradeToPlateau(token,plateauLayer,fallbackLayer);
+function applyFrame(name) {
+  const rect = { x: 0, y: 30, w: 1000, h: 860 };
+  if (!state.frames[name]) state.frames[name] = makeFrame(state.lens.substrate.frames[name], rect);
+  renderSubstrate(state.frames[name]);
+  document.querySelector('.al-lens').dataset.frame = name;
 }
-async function switchCity(id,userAction=false){
-  const city=state.index.cities.find(c=>c.id===id)||state.index.cities.find(c=>c.id===state.index.defaultCity);
-  const token=++state.cityToken;
-  if(state.adapter?.destroy)state.adapter.destroy();
-  state.city=city;state.sceneIndex=0;state.compare=false;setCompare(false);setStatus('文化データ 読み込み中',false);
-  if(userAction)updateUrl(city.id);
-  [state.thread,state.spatial]=await Promise.all([loadJson(city.thread),loadJson(city.spatial)]);
-  if(token!==state.cityToken)return;
-  validateCity(city,state.thread,state.spatial);renderCitySwitcher();renderHero();renderTimeline();renderCompare();await initAdapter(token);if(token!==state.cityToken)return;renderStory();
+
+/* ---------------------------------------------------------------- views (finite) */
+function renderViews() {
+  const nav = $('views'); nav.replaceChildren();
+  for (const v of state.lens.views) {
+    const b = el('button', 'al-view', v.label); b.type = 'button'; b.dataset.view = v.id; b.setAttribute('aria-pressed', v.id === state.view ? 'true' : 'false');
+    b.addEventListener('click', () => setView(v.id)); nav.appendChild(b);
+  }
 }
-async function init(){
-  try{
-    state.index=await loadJson('./data/cities.json');
-    const params=new URLSearchParams(location.search);const requested=params.get('city')||state.index.defaultCity;
-    await switchCity(requested,false);$('loading').style.display='none';if(params.get('view')==='list')setCompare(true);
-  }catch(e){$('loadingTitle').textContent='Spatial Engineを開始できませんでした。';$('loadingText').textContent=e.message;document.querySelector('.loader').style.display='none'}
+function setView(id) {
+  const v = state.lens.views.find((x) => x.id === id); if (!v) return;
+  const previous = state.view; state.view = id;
+  const lens = document.querySelector('.al-lens'); lens.dataset.view = id;
+  lens.classList.toggle('al-lens-emphasis', id === 'time');
+  for (const b of $('views').children) b.setAttribute('aria-pressed', b.dataset.view === id ? 'true' : 'false');
+  $('viewChapter').textContent = v.chapter; $('viewCaption').textContent = v.caption;
+  if (!previous || state.lens.views.find((x) => x.id === previous).frame !== v.frame || !$('buildingLayer').childElementCount) applyFrame(v.frame);
+  if (id === 'evidence') $('evidenceDetails').open = true;
+  if (id === 'now') selectScene(state.thread.scenes.length - 1);
 }
-$('nextBtn').addEventListener('click',()=>{if(state.thread.scenes.length>1)selectScene((state.sceneIndex+1)%state.thread.scenes.length)});
-$('focusBtn').addEventListener('click',()=>state.adapter?.focus());
-$('focusBtnTop').addEventListener('click',()=>state.adapter?.focus());
-$('overviewBtn').addEventListener('click',()=>state.adapter?.overview());
-$('compareBtn').addEventListener('click',()=>setCompare(!state.compare));$('closeCompare').addEventListener('click',()=>setCompare(false));
-$('qualityBtn').addEventListener('click',()=>{const low=state.quality!=='low';state.quality=low?'low':'normal';setPressed('qualityBtn',low);state.adapter?.setQuality(low)});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')setCompare(false);if(e.key==='ArrowRight'&&!state.compare&&state.thread?.scenes.length>1)selectScene((state.sceneIndex+1)%state.thread.scenes.length);if(e.key==='ArrowLeft'&&!state.compare&&state.thread?.scenes.length>1)selectScene((state.sceneIndex-1+state.thread.scenes.length)%state.thread.scenes.length)});
-window.addEventListener('DOMContentLoaded',init);
+
+/* ---------------------------------------------------------------- timeline + story */
+function renderTimeline() {
+  const rail = $('timeline'); rail.replaceChildren();
+  state.thread.scenes.forEach((s, i) => {
+    const b = el('button', 'al-rail-item'); b.type = 'button'; b.appendChild(el('strong', '', s.year)); b.appendChild(document.createTextNode(s.title));
+    b.setAttribute('aria-pressed', i === state.sceneIndex ? 'true' : 'false'); b.addEventListener('click', () => selectScene(i)); rail.appendChild(b);
+  });
+}
+function renderStory() {
+  const s = state.thread.scenes[state.sceneIndex];
+  $('year').textContent = s.year; $('title').textContent = s.title; $('claim').textContent = s.claim; $('precision').textContent = s.precisionCopy; $('relation').textContent = s.relation;
+  const note = $('note'); note.hidden = !s.note; note.textContent = s.note || '';
+  const links = $('links'); links.replaceChildren();
+  for (const id of s.sourceIds || []) { const src = state.thread.sources[id]; const li = el('li', 'al-link-item'); li.appendChild(externalLink(src.label, src.url, src.kind)); links.appendChild(li); }
+  const last = state.sceneIndex === state.thread.scenes.length - 1;
+  $('nextBtn').textContent = last ? '最初から辿る ↺' : '次の関係へ →';
+  [...$('timeline').children].forEach((b, i) => b.setAttribute('aria-pressed', i === state.sceneIndex ? 'true' : 'false'));
+  $('evidenceDetails').open = state.view === 'evidence';
+}
+function selectScene(i) { state.sceneIndex = i; renderStory(); }
+
+function renderLegend() { const ul = $('legend'); ul.replaceChildren(); for (const item of state.lens.legend) { const li = el('li'); const sw = el('span', 'al-swatch'); sw.dataset.key = item.id; sw.setAttribute('aria-hidden', 'true'); li.appendChild(sw); li.appendChild(document.createTextNode(item.label)); ul.appendChild(li); } }
+function renderHero() {
+  const h = state.lens.hero; $('heroEyebrow').textContent = h.eyebrow; $('heroTitle').textContent = h.title; $('heroLead').textContent = h.lead; $('heroNote').textContent = h.note;
+  $('returnLead').textContent = state.lens.return.lead; const rl = $('returnLink'); rl.textContent = state.lens.return.label + ' →'; rl.href = state.lens.return.href;
+}
+function renderProvenance() {
+  const p = state.provenance;
+  $('attribution').textContent = p.license.attribution_text;
+  $('provenanceNote').textContent = '対象範囲: 高円寺駅周辺（事前に取り出した建物 ' + p.building_features.toLocaleString('ja-JP') + ' 件・道路 ' + p.road_features.toLocaleString('ja-JP') + ' 件、CityGML ' + p.citygml_version + '、' + p.spec + '）。' + p.license.readme_caution;
+}
+
+async function init() {
+  try {
+    [state.lens, state.thread] = await Promise.all([loadJson('./data/koenji-lens.json'), loadJson('./data/koenji-thread.json')]);
+    validateLens(state.lens); validateThread(state.thread);
+    renderHero(); renderViews(); renderTimeline(); renderLegend(); renderStory();
+  } catch (e) {
+    setStatus('文化データを読み込めませんでした。スレッドへ戻って本文を読めます。', true);
+    return;
+  }
+  try {
+    state.runtime = await loadJson(state.lens.substrate.runtime); validateRuntime(state.runtime);
+    [state.buildings, state.roads, state.provenance] = await Promise.all([loadJson(state.runtime.buildings), loadJson(state.runtime.roads), loadJson(state.runtime.provenance)]);
+    validateCollection(state.buildings, 'bldg'); validateCollection(state.roads, 'tran'); validateProvenance(state.provenance, state.buildings, state.roads);
+    for (const id of state.lens.presentReference.gmlIds) if (!state.buildings.features.some((f) => f.id === id)) throw new Error('present reference gml:id missing ' + id);
+    setView('relation');
+    renderProvenance();
+    setStatus('現在の街の形: Project PLATEAU 杉並区（2025年度）から事前に取り出した建物 ' + state.buildings.features.length.toLocaleString('ja-JP') + ' 件・道路 ' + state.roads.features.length.toLocaleString('ja-JP') + ' 件（このサイト内のデータ）。歴史の証拠ではありません。', false);
+  } catch (e) {
+    /* 街の形が出なくても、関係・資料・現実への導線は失わない。 */
+    state.buildings = null; state.roads = null;
+    $('roadLayer').replaceChildren(); $('buildingLayer').replaceChildren(); $('refLayer').replaceChildren();
+    const v = state.lens.views[0]; $('viewChapter').textContent = v.chapter; $('viewCaption').textContent = '現在の街の形を表示できませんでした。関係と資料はこのまま読めます。';
+    setStatus('現在の街の形を表示できません（' + (e && e.message ? e.message : 'unknown') + '）。関係と資料はこのまま読めます。', true);
+  }
+}
+$('nextBtn').addEventListener('click', () => selectScene((state.sceneIndex + 1) % state.thread.scenes.length));
+window.addEventListener('DOMContentLoaded', init);
 })();

@@ -1,0 +1,42 @@
+{
+  "certificate_version": "plateau-lineage-v0.1",
+  "status": "GO",
+  "geojson_file": "koenji-plateau-2025-roads.geojson",
+  "geojson_sha256": "516d7f880d33b6c0236c81b52362214c91942abbc8c122185f7696de7b56a36c",
+  "output_features": 341,
+  "traceable_output_ids": 341,
+  "null_output_ids": 0,
+  "source_id_count": 3108,
+  "missing_output_ids": [],
+  "source_audits": [
+    {
+      "audit_file": "53394541_tran.audit.json",
+      "source_file": "53394541_tran_6697_op.gml",
+      "source_sha256": "df1cb4685e7ff06aab7ef338b78fa2ef38f3f6ea24d513c9546bc5b0dc324a86",
+      "citygml_version": "2.0",
+      "feature_count": 1704,
+      "gml_id_count": 1704,
+      "envelope": {
+        "srsName": "http://www.opengis.net/def/crs/EPSG/0/6697",
+        "lowerCorner": "35.69983973517362 139.6370310309323 0",
+        "upperCorner": "35.70884777958927 139.6502034425047 0"
+      }
+    },
+    {
+      "audit_file": "53394542_tran.audit.json",
+      "source_file": "53394542_tran_6697_op.gml",
+      "source_sha256": "b01cbfb5358622249c21be07fa45aa2b1c8c61d09ce4f610d07111428b66645a",
+      "citygml_version": "2.0",
+      "feature_count": 1404,
+      "gml_id_count": 1404,
+      "envelope": {
+        "srsName": "http://www.opengis.net/def/crs/EPSG/0/6697",
+        "lowerCorner": "35.69908478085204 139.64966991266536 0",
+        "upperCorner": "35.708587693785084 139.6631912984174 0"
+      }
+    }
+  ],
+  "citygml_version": "2.0",
+  "historicalGeometry": false,
+  "claim_scope": "Source lineage only; no cultural or historical-location claim."
+}

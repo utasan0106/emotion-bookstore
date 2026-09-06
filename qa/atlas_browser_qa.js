@@ -1,14 +1,13 @@
 #!/usr/bin/env node
-/* ATLAS BROWSER QA — 街を立体で辿る（β）/atlas/ の実ブラウザ検査（Production Beta 0、高円寺だけ）。
-   ATLAS_KOENJI_RUNTIME_FALLBACK_ACCEPTANCE v0.2 の Gate A–D を、vercel.json の Content-Security-Policy を
-   そのまま header に付けた local static server で確認する。
-   - A. 通常ページ（HOME / Works / Thread / data / credits）: Cesium / PLATEAU / YouTube への request 0、CSP violation 0
-   - B. Atlas、provider 遮断: 2.5D と story が使える、loading overlay が provider 待ちで固定されない、overflow 0
-   - C. Atlas ?mode=2d: Cesium / PLATEAU への request 0
-   - D. Atlas、provider 遅延（応答しない）: すぐ使える、操作可能
-   - E. Atlas、provider 成功のエミュレーション（環境変数 CESIUM_LOCAL に CesiumJS 1.117 の Build/Cesium がある場合だけ）:
-        cesium.com の script / worker / assets を local build で応答、PLATEAU tileset は空の tileset、imagery は 1×1 PNG。
-        bounded CSP（unsafe-eval なし）で 3D layer へ切り替わるか、CSP violation が 0 かを見る。無い場合は NOT OBSERVABLE。
+/* ATLAS BROWSER QA — 街を立体で辿る（β）/atlas/ の実ブラウザ検査（Production Beta 0、高円寺だけ、Correction C）。
+   vercel.json の Content-Security-Policy をそのまま header に付けた local static server で確認する。
+   - A. 通常ページ（HOME / Works / Thread / data / credits / shelf）: Cesium / PLATEAU / YouTube への request 0、CSP violation 0
+   - B. Atlas at 320 / 390 / 430 / 1024 / 1440: 外部 request 0（same-origin だけ）、CSP violation 0、console error 0、overflow 0、
+        現在の街の形（PLATEAU 由来の建物・道路）が描かれる、5 つの見方と 5 場面が動く、歴史上の地点 0、
+        保護名 0、synthetic fixture 0、出典表示、Thread へ戻る、外部 link は click-only
+   - C. 空間データが取れない場合（404）: 関係・資料・現実への導線は使える、console error 0
+   - D. prefers-reduced-motion: 動く要素 0
+   - E. キーボード: 見方 → 年表 → 資料 → 次へ → 戻る の順に到達
    使い方: NODE_PATH=/opt/node22/lib/node_modules node qa/atlas_browser_qa.js [--out <dir>] */
 'use strict';
 const fs = require('fs');
@@ -20,22 +19,18 @@ const argv = process.argv.slice(2);
 const arg = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const OUT = arg('--out', '');
 const ROOT = path.resolve(__dirname, '..');
-const CESIUM_LOCAL = process.env.CESIUM_LOCAL || '';
-const CESIUM_BASE = 'https://cesium.com/downloads/cesiumjs/releases/1.117/Build/Cesium/';
-const PROVIDER_RE = /cesium\.com|plateauview\.mlit\.go\.jp|plateau\.reearth\.io/;
+const PROVIDER_RE = /cesium|plateauview|reearth|3dtiles|tile\./i;
 const VIDEO_RE = /youtube|ytimg|googlevideo/;
-const DECLARED = ['cesium.com', 'api.plateauview.mlit.go.jp', 'tile.plateauview.mlit.go.jp', 'assets.cms.plateau.reearth.io'];
-const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.woff2': 'font/woff2', '.wasm': 'application/wasm', '.glsl': 'text/plain', '.xml': 'application/xml', '.txt': 'text/plain', '.md': 'text/markdown' };
+const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.geojson': 'application/geo+json', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.woff2': 'font/woff2', '.xml': 'application/xml', '.txt': 'text/plain', '.md': 'text/markdown' };
 const vercel = JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8'));
-const PRODUCTION_CSP = vercel.headers.find((h) => h.source === '/(.*)').headers.find((h) => h.key === 'Content-Security-Policy').value;
-/* test-only: ATLAS_CSP_OVERRIDE lets HQ evidence runs try a variant policy; the default is the exact vercel.json policy */
-const CSP = process.env.ATLAS_CSP_OVERRIDE || PRODUCTION_CSP;
-const PNG1 = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=', 'base64');
-const TILESET = JSON.stringify({ asset: { version: '1.1' }, geometricError: 500, root: { boundingVolume: { region: [2.4372, 0.6229, 2.4378, 0.6236, 0, 60] }, geometricError: 0, refine: 'ADD' } });
+const CSP = vercel.headers.find((h) => h.source === '/(.*)').headers.find((h) => h.key === 'Content-Security-Policy').value;
+const runtime = JSON.parse(fs.readFileSync(path.join(ROOT, 'atlas/data/runtime-spatial.json'), 'utf8'));
+const BUILDINGS = JSON.parse(fs.readFileSync(path.join(ROOT, 'atlas', runtime.buildings.slice(2)), 'utf8')).features.length;
+const ROADS = JSON.parse(fs.readFileSync(path.join(ROOT, 'atlas', runtime.roads.slice(2)), 'utf8')).features.length;
+const FORBIDDEN = ['東京高円寺阿波おどり', '高円寺阿波おどり', '高円寺阿波踊り'];
 
-let pass = 0; const fails = []; const unobserved = [];
+let pass = 0; const fails = [];
 function check(scope, name, ok, detail) { if (ok) pass++; else fails.push(`${scope} ${name} ${detail === undefined ? '' : JSON.stringify(detail).slice(0, 700)}`); }
-function notObservable(scope, name, why) { unobserved.push(`${scope} ${name}: ${why}`); }
 
 function serve() {
   const s = http.createServer((q, r) => {
@@ -45,7 +40,7 @@ function serve() {
     if (!f.startsWith(ROOT) || !fs.existsSync(f)) { r.writeHead(404); return r.end(); }
     const headers = { 'content-type': MIME[path.extname(f)] || 'application/octet-stream' };
     /* production header contract (vercel.json) — CSP is enforced by the browser exactly as in production */
-    for (const h of vercel.headers.find((x) => x.source === '/(.*)').headers) if (h.key !== 'Strict-Transport-Security') headers[h.key] = h.key === 'Content-Security-Policy' ? CSP : h.value;
+    for (const h of vercel.headers.find((x) => x.source === '/(.*)').headers) if (h.key !== 'Strict-Transport-Security') headers[h.key] = h.value;
     if (/^atlas\//.test(rel)) headers['X-Robots-Tag'] = 'noindex, nofollow';
     r.writeHead(200, headers); r.end(fs.readFileSync(f));
   });
@@ -54,8 +49,8 @@ function serve() {
 
 async function open(browser, base, origin, pageName, opts) {
   const ctx = await browser.newContext(Object.assign({ deviceScaleFactor: 1, reducedMotion: opts && opts.motion ? 'no-preference' : 'reduce' }, opts && opts.context ? opts.context : { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }));
-  const external = []; const providerReqs = [];
-  ctx.on('request', (r) => { const u = r.url(); if (!u.startsWith(origin)) { external.push(u); if (PROVIDER_RE.test(u)) providerReqs.push(u); } });
+  const external = []; const providerReqs = []; const all = [];
+  ctx.on('request', (r) => { const u = r.url(); all.push(u); if (!u.startsWith(origin)) { external.push(u); if (PROVIDER_RE.test(u)) providerReqs.push(u); } });
   const page = await ctx.newPage();
   const errs = []; const cspConsole = [];
   page.on('pageerror', (e) => errs.push(String(e)));
@@ -65,149 +60,129 @@ async function open(browser, base, origin, pageName, opts) {
     window.__perm = []; if (navigator.geolocation) { const g = navigator.geolocation; ['getCurrentPosition', 'watchPosition'].forEach((k) => { const o = g[k]; g[k] = function () { window.__perm.push(k); return o.apply(g, arguments); }; }); }
     window.__writes = 0; const so = Storage.prototype.setItem; Storage.prototype.setItem = function () { window.__writes++; return so.apply(this, arguments); };
   });
-  return { ctx, page, external, providerReqs, errs, cspConsole, goto: async (p) => { await page.goto(base + (p || pageName), { waitUntil: 'load' }); } };
+  return { ctx, page, external, providerReqs, all, errs, cspConsole, goto: async (p) => { await page.goto(base + (p || pageName), { waitUntil: 'load' }); } };
 }
+const READY = () => document.getElementById('buildingLayer').childElementCount > 0 || /表示できません|読み込めません/.test(document.getElementById('dataStatus').textContent);
 const ATLAS_STATE = () => ({
-  loadingVisible: (() => { const l = document.getElementById('loading'); return !!l && getComputedStyle(l).display !== 'none'; })(),
-  status: (document.getElementById('dataStatus') || {}).textContent, tech: (document.getElementById('techNote') || {}).textContent,
-  title: (document.getElementById('title') || {}).textContent, year: (document.getElementById('year') || {}).textContent, claim: (document.getElementById('claim') || {}).textContent, precision: (document.getElementById('precision') || {}).textContent,
-  timeline: document.querySelectorAll('#timeline button').length, activeIndex: [...document.querySelectorAll('#timeline button')].findIndex((b) => b.classList.contains('active')),
-  fallback: !!document.querySelector('.fallback-city'), plateauLayers: document.querySelectorAll('.spatial-layer').length, cesiumCanvas: document.querySelectorAll('canvas').length, cesiumScript: !!document.querySelector('script[src*="cesium.com"]'), cesiumCss: !!document.querySelector('link[href*="cesium.com"]'),
-  credit: (() => { const c = document.getElementById('mapCredit'); return !!c && !c.hidden; })(), switcherHidden: (document.getElementById('citySwitcher') || {}).hidden, cityTabs: document.querySelectorAll('.city-tab').length,
-  overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1, back: (document.querySelector('.atlas-back-link') || {}).getAttribute ? document.querySelector('.atlas-back-link').getAttribute('href') : null,
-  links: [...document.querySelectorAll('#links a')].map((a) => a.getAttribute('href')), h1: (document.querySelector('h1') || {}).textContent, docTitle: document.title, robots: (document.querySelector('meta[name="robots"]') || {}).content,
-  iframes: document.querySelectorAll('iframe, video, audio').length, inputs: document.querySelectorAll('input, textarea, form').length, cspv: window.__cspv, perm: window.__perm, writes: window.__writes, ls: localStorage.length, ss: sessionStorage.length,
-  compareOpen: document.getElementById('compareOverlay').classList.contains('open'), text: document.body.innerText,
+  status: document.getElementById('dataStatus').textContent, statusHold: document.getElementById('dataStatus').dataset.state === 'hold',
+  buildings: document.getElementById('buildingLayer').childElementCount, roads: document.getElementById('roadLayer').childElementCount, ref: document.getElementById('refLayer').childElementCount,
+  refVisible: getComputedStyle(document.getElementById('refLayer')).display !== 'none', refLabel: (document.querySelector('#refLayer text') || {}).textContent,
+  flats: document.querySelectorAll('#buildingLayer .al-flat').length, tops: document.querySelectorAll('#buildingLayer .al-top').length,
+  stationHighlighted: document.querySelectorAll('#buildingLayer .al-station').length,
+  gmlIds: [...document.querySelectorAll('#buildingLayer g')].slice(0, 5).map((g) => g.dataset.gmlId),
+  view: document.querySelector('.al-lens').dataset.view, frame: document.querySelector('.al-lens').dataset.frame, views: [...document.querySelectorAll('.al-view')].map((b) => b.textContent),
+  pressedView: (document.querySelector('.al-view[aria-pressed="true"]') || {}).textContent, caption: document.getElementById('viewCaption').textContent, chapter: document.getElementById('viewChapter').textContent,
+  rail: [...document.querySelectorAll('.al-rail-item')].map((b) => b.textContent), activeIndex: [...document.querySelectorAll('.al-rail-item')].findIndex((b) => b.getAttribute('aria-pressed') === 'true'),
+  year: document.getElementById('year').textContent, title: document.getElementById('title').textContent, claim: document.getElementById('claim').textContent, precision: document.getElementById('precision').textContent,
+  evidenceOpen: document.getElementById('evidenceDetails').open, links: [...document.querySelectorAll('#links a')].map((a) => ({ href: a.getAttribute('href'), target: a.getAttribute('target'), rel: a.getAttribute('rel'), rp: a.getAttribute('referrerpolicy') })),
+  overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1, back: [...document.querySelectorAll('a[href="../thread.html?thread=koenji-dance-history"]')].length,
+  h1: document.querySelector('h1').textContent, docTitle: document.title, robots: (document.querySelector('meta[name="robots"]') || {}).content, referrer: (document.querySelector('meta[name="referrer"]') || {}).content,
+  iframes: document.querySelectorAll('iframe, video, audio, canvas, embed, object').length, inputs: document.querySelectorAll('input, textarea, form, select').length, scripts: [...document.scripts].map((s) => s.getAttribute('src')),
+  cspv: window.__cspv, perm: window.__perm, writes: window.__writes, ls: localStorage.length, ss: sessionStorage.length,
+  attribution: document.getElementById('attribution').textContent, provenanceNote: document.getElementById('provenanceNote').textContent, attributionLinks: [...document.querySelectorAll('.al-attribution-links a')].map((a) => a.href),
+  historicalPins: document.querySelectorAll('[data-historical-pin], [data-scene-point]').length, svgH: document.getElementById('lens').getBoundingClientRect().height,
+  text: document.body.innerText,
 });
-const FORBIDDEN = ['東京高円寺阿波おどり', '高円寺阿波おどり', '高円寺阿波踊り'];
 
 (async () => {
   const server = await serve(); const base = `http://127.0.0.1:${server.address().port}/`; const origin = new URL(base).origin;
-  console.log('CSP policy under test: ' + (CSP === PRODUCTION_CSP ? 'vercel.json (production)' : 'OVERRIDE ' + CSP.slice(0, 160) + '…'));
-  const browser = await chromium.launch({ args: ['--disable-checker-imaging', '--disable-partial-raster', '--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
+  console.log('CSP policy under test: vercel.json (production)');
+  const browser = await chromium.launch();
   if (OUT) fs.mkdirSync(OUT, { recursive: true });
-  const shot = async (page, name) => { if (OUT) await page.screenshot({ path: path.join(OUT, name + '.png'), fullPage: false }); };
+  const shot = async (page, name, full) => { if (OUT) await page.screenshot({ path: path.join(OUT, name + '.png'), fullPage: !!full }); };
 
-  /* ---- A. normal pages: no provider leak, no CSP violation ---- */
+  /* ---- A. normal pages: no provider / video request, no CSP violation ---- */
   for (const p of ['index.html', 'works.html', 'thread.html?thread=koenji-dance-history', 'thread.html?thread=morisaki-book', 'data.html', 'credits.html', 'shelf.html?shelf=koenji']) {
     const S = 'normal-' + p.replace(/[^a-z-]+/gi, '_');
     const o = await open(browser, base, origin, p);
     await o.goto(); await o.page.waitForTimeout(700);
     const st = await o.page.evaluate(() => ({ cspv: window.__cspv, iframes: document.querySelectorAll('iframe').length, cesium: !!document.querySelector('script[src*="cesium"], link[href*="cesium"]'), overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1 }));
-    check(S, 'no_provider_request_on_first_paint', o.providerReqs.length === 0 && o.external.every((u) => !VIDEO_RE.test(u)) && !st.cesium, { provider: o.providerReqs.slice(0, 3), external: o.external.slice(0, 3) });
+    check(S, 'no_provider_or_video_request_on_first_paint', o.providerReqs.length === 0 && o.external.every((u) => !VIDEO_RE.test(u)) && !st.cesium, { provider: o.providerReqs.slice(0, 3), external: o.external.slice(0, 3) });
     check(S, 'no_csp_violation_under_production_csp', st.cspv.length === 0 && o.cspConsole.length === 0, { cspv: st.cspv.slice(0, 3), console: o.cspConsole.slice(0, 3) });
     check(S, 'no_iframe_no_overflow_no_js_error', st.iframes === 0 && !st.overflow && o.errs.length === 0, { iframes: st.iframes, overflow: st.overflow, errs: o.errs.slice(0, 2) });
     await o.ctx.close();
   }
 
-  /* ---- B. Atlas with providers blocked: 2.5D + story usable, overlay released, no fatal loop ---- */
-  const VIEWPORTS = [{ w: 320, h: 568, m: true }, { w: 390, h: 844, m: true }, { w: 430, h: 932, m: true }, { w: 853, h: 1280, m: false }, { w: 1024, h: 768, m: false }, { w: 1440, h: 900, m: false }];
+  /* ---- B. Atlas: local substrate + finite views, zero external requests ---- */
+  const VIEWPORTS = [{ w: 320, h: 568, m: true }, { w: 390, h: 844, m: true }, { w: 430, h: 932, m: true }, { w: 1024, h: 768, m: false }, { w: 1440, h: 900, m: false }];
   for (const v of VIEWPORTS) {
-    const S = `blocked-${v.w}`;
+    const S = `atlas-${v.w}`;
     const o = await open(browser, base, origin, 'atlas/', { context: { viewport: { width: v.w, height: v.h }, isMobile: v.m, hasTouch: v.m } });
-    await o.ctx.route((url) => PROVIDER_RE.test(url.hostname), (r) => r.abort('failed'));
     const t0 = Date.now(); await o.goto();
-    await o.page.waitForFunction(() => { const l = document.getElementById('loading'); return l && getComputedStyle(l).display === 'none'; }, null, { timeout: 8000 }).catch(() => {});
+    await o.page.waitForFunction(READY, null, { timeout: 15000 }).catch(() => {});
     const readyMs = Date.now() - t0;
-    await o.page.waitForTimeout(900);
+    await o.page.waitForTimeout(300);
     const st = await o.page.evaluate(ATLAS_STATE);
-    check(S, 'overlay_released_and_2_5d_story_usable_without_provider', !st.loadingVisible && readyMs < 8000 && st.fallback && st.timeline === 5 && st.activeIndex === 0 && st.year === '1957' && st.title === 'はじまる' && /1957年、高円寺ばか踊りが/.test(st.claim || '') && /一点の史跡としては置きません/.test(st.precision || ''), { readyMs, status: st.status, timeline: st.timeline, title: st.title });
-    check(S, 'status_reports_fallback_not_a_hang', /2\.5D/.test(st.status || '') && !st.cesiumCanvas && st.plateauLayers >= 1, { status: st.status, tech: st.tech, canvas: st.cesiumCanvas });
-    check(S, 'no_overflow_no_iframe_no_input_no_storage_no_geolocation', !st.overflow && st.iframes === 0 && st.inputs === 0 && st.writes === 0 && st.ls === 0 && st.ss === 0 && st.perm.length === 0, { overflow: st.overflow, inputs: st.inputs, writes: st.writes, perm: st.perm });
-    check(S, 'no_csp_violation_and_no_fatal_error_loop', st.cspv.length === 0 && o.cspConsole.length === 0 && o.errs.length <= 2, { cspv: st.cspv.slice(0, 3), console: o.cspConsole.slice(0, 3), errs: o.errs.slice(0, 3) });
-    check(S, 'koenji_only_noindex_neutral_names_return_to_thread', st.switcherHidden === true && st.cityTabs === 1 && st.robots === 'noindex,nofollow' && /踊りが街に/.test(st.h1 || '') && st.back === '../thread.html?thread=koenji-dance-history' && FORBIDDEN.every((f) => !st.text.includes(f)) && !st.text.includes('編集部の読み'), { h1: st.h1, back: st.back, tabs: st.cityTabs });
-    /* interaction: next → 1961 (no point), keyboard reaches evidence, compare overlay, Escape */
-    await o.page.click('#nextBtn'); await o.page.waitForTimeout(200);
-    const s2 = await o.page.evaluate(ATLAS_STATE);
-    await o.page.click('#compareBtn'); await o.page.waitForTimeout(200);
-    const cmp = await o.page.evaluate(() => ({ open: document.getElementById('compareOverlay').classList.contains('open'), items: document.querySelectorAll('.compare-item').length }));
-    await o.page.keyboard.press('Escape'); await o.page.waitForTimeout(150);
-    const closed = await o.page.evaluate(() => document.getElementById('compareOverlay').classList.contains('open'));
-    await o.page.focus('#evidenceDetails summary'); await o.page.keyboard.press('Enter'); await o.page.waitForTimeout(150);
-    const ev = await o.page.evaluate(() => ({ open: document.getElementById('evidenceDetails').open, links: [...document.querySelectorAll('#links a')].map((a) => ({ href: a.getAttribute('href'), target: a.getAttribute('target'), rel: a.getAttribute('rel'), rp: a.getAttribute('referrerpolicy') })) }));
-    check(S, 'timeline_next_moves_to_1961_without_creating_a_point', s2.activeIndex === 1 && s2.year === '1961' && /一地点を特定していません/.test(s2.precision || '') && s2.timeline === 5, { year: s2.year, precision: s2.precision });
-    check(S, 'compare_overlay_opens_and_escape_closes', cmp.open && cmp.items === 5 && closed === false, cmp);
-    check(S, 'evidence_links_keyboard_reachable_and_click_only', ev.open && ev.links.length >= 1 && ev.links.every((l) => /^https:\/\//.test(l.href) && l.target === '_blank' && /noopener/.test(l.rel || '') && l.rp === 'no-referrer') && o.external.every((u) => !/koenji-awaodori|suginamigaku|koenji-pal|youtube/.test(u)), ev);
-    if (OUT && (v.w === 390 || v.w === 1440)) await shot(o.page, `ATLAS_BLOCKED_${v.w}`);
-    await o.ctx.close();
-  }
-
-  /* ---- C. ?mode=2d: zero provider requests, no Cesium tag ---- */
-  for (const v of [{ w: 390, h: 844, m: true }, { w: 1440, h: 900, m: false }]) {
-    const S = `mode2d-${v.w}`;
-    const o = await open(browser, base, origin, 'atlas/?mode=2d', { context: { viewport: { width: v.w, height: v.h }, isMobile: v.m, hasTouch: v.m } });
-    await o.goto(); await o.page.waitForTimeout(1500);
-    const st = await o.page.evaluate(ATLAS_STATE);
-    check(S, 'mode_2d_makes_zero_provider_requests', o.providerReqs.length === 0 && !st.cesiumScript && !st.cesiumCss && st.cesiumCanvas === 0 && st.plateauLayers === 1, { provider: o.providerReqs.slice(0, 3), status: st.status });
-    check(S, 'mode_2d_story_usable', !st.loadingVisible && st.fallback && st.timeline === 5 && /2\.5D manual/.test(st.status || '') && !st.overflow && st.cspv.length === 0 && o.errs.length === 0, { status: st.status, errs: o.errs.slice(0, 2) });
-    if (OUT && v.w === 390) await shot(o.page, 'ATLAS_MODE2D_390');
-    await o.ctx.close();
-  }
-
-  /* ---- D. slow / unresolved provider: usable immediately ---- */
-  {
-    const S = 'slow-390';
-    const o = await open(browser, base, origin, 'atlas/');
-    await o.ctx.route((url) => PROVIDER_RE.test(url.hostname), () => { /* never respond: provider hang */ });
-    const t0 = Date.now(); await o.goto();
-    await o.page.waitForFunction(() => { const l = document.getElementById('loading'); return l && getComputedStyle(l).display === 'none'; }, null, { timeout: 8000 }).catch(() => {});
-    const readyMs = Date.now() - t0;
-    await o.page.waitForTimeout(600);
-    const st = await o.page.evaluate(ATLAS_STATE);
-    await o.page.click('#nextBtn'); await o.page.click('#nextBtn'); await o.page.waitForTimeout(200);
-    const s3 = await o.page.evaluate(ATLAS_STATE);
-    check(S, 'usable_before_provider_resolves', !st.loadingVisible && readyMs < 5000 && st.fallback && /PLATEAU読込中|2\.5D/.test(st.status || '') && s3.activeIndex === 2 && s3.year === '1961–62', { readyMs, status: st.status, year: s3.year });
-    check(S, 'no_csp_violation_no_error_while_waiting', st.cspv.length === 0 && o.cspConsole.length === 0 && o.errs.length === 0 && !st.overflow, { errs: o.errs.slice(0, 2) });
-    await o.ctx.close();
-  }
-
-  /* ---- E. provider success emulation under the production CSP (needs the local CesiumJS 1.117 build) ---- */
-  if (CESIUM_LOCAL && fs.existsSync(path.join(CESIUM_LOCAL, 'Cesium.js'))) {
-    for (const v of [{ w: 390, h: 844, m: true }, { w: 1440, h: 900, m: false }]) {
-      const S = `success-${v.w}`;
-      const o = await open(browser, base, origin, 'atlas/', { context: { viewport: { width: v.w, height: v.h }, isMobile: v.m, hasTouch: v.m } });
-      const hosts = new Set();
-      await o.ctx.route((url) => PROVIDER_RE.test(url.hostname), (route) => {
-        const u = route.request().url(); hosts.add(new URL(u).hostname);
-        if (u.startsWith(CESIUM_BASE)) { const f = path.join(CESIUM_LOCAL, decodeURIComponent(u.slice(CESIUM_BASE.length).split('?')[0])); if (fs.existsSync(f) && fs.statSync(f).isFile()) return route.fulfill({ status: 200, contentType: MIME[path.extname(f)] || 'application/octet-stream', body: fs.readFileSync(f) }); return route.fulfill({ status: 404, body: '' }); }
-        if (/tileset\.json$/.test(u)) return route.fulfill({ status: 200, contentType: 'application/json', body: TILESET });
-        if (/\.png$/.test(u)) return route.fulfill({ status: 200, contentType: 'image/png', body: PNG1 });
-        return route.fulfill({ status: 404, body: '' });
-      });
-      const t0 = Date.now(); await o.goto();
-      await o.page.waitForFunction(() => { const l = document.getElementById('loading'); return l && getComputedStyle(l).display === 'none'; }, null, { timeout: 8000 }).catch(() => {});
-      const readyMs = Date.now() - t0;
-      const early = await o.page.evaluate(ATLAS_STATE);
-      /* select a scene while PLATEAU is still loading, then wait for the upgrade */
-      await o.page.click('#nextBtn'); await o.page.waitForTimeout(100);
-      await o.page.waitForFunction(() => /PLATEAU 高円寺|2\.5D fallback/.test((document.getElementById('dataStatus') || {}).textContent || ''), null, { timeout: 60000 }).catch(() => {});
-      await o.page.waitForTimeout(1500);
-      const st = await o.page.evaluate(ATLAS_STATE);
-      const upgraded = /PLATEAU 高円寺 maxLOD2/.test(st.status || '');
-      check(S, 'story_usable_before_plateau_completes', !early.loadingVisible && readyMs < 8000 && early.fallback && early.timeline === 5, { readyMs, status: early.status });
-      check(S, 'plateau_upgrade_succeeds_under_bounded_csp_without_unsafe_eval', upgraded && st.cesiumCanvas >= 1 && st.credit === true && st.cspv.length === 0 && o.cspConsole.length === 0, { status: st.status, tech: st.tech, canvas: st.cesiumCanvas, credit: st.credit, cspv: st.cspv.slice(0, 4), console: o.cspConsole.slice(0, 4), errs: o.errs.slice(0, 3) });
-      check(S, 'scene_selection_survives_fallback_to_3d_switch', st.activeIndex === 1 && st.year === '1961', { active: st.activeIndex, year: st.year });
-      check(S, 'only_declared_provider_hosts', [...hosts].every((h) => DECLARED.includes(h)) && o.external.every((u) => PROVIDER_RE.test(u)), { hosts: [...hosts], external: o.external.filter((u) => !PROVIDER_RE.test(u)).slice(0, 3) });
-      check(S, 'no_overflow_no_storage_no_geolocation_in_3d', !st.overflow && st.writes === 0 && st.perm.length === 0 && st.inputs === 0, { overflow: st.overflow, writes: st.writes, perm: st.perm });
-      if (OUT) await shot(o.page, `ATLAS_3D_${v.w}`);
-      await o.ctx.close();
+    check(S, 'zero_external_requests_all_same_origin', o.external.length === 0 && o.providerReqs.length === 0 && o.all.every((u) => u.startsWith(origin)), { external: o.external.slice(0, 3) });
+    check(S, 'local_plateau_substrate_rendered', st.buildings === BUILDINGS && st.roads === ROADS && st.tops + st.flats >= BUILDINGS && st.gmlIds.every((id) => /^bldg_[0-9a-f-]{36}$/.test(id)) && /建物 1,045 件・道路 341 件/.test(st.status) && !st.statusHold && readyMs < 15000, { readyMs, status: st.status, buildings: st.buildings, roads: st.roads, ids: st.gmlIds.slice(0, 2) });
+    check(S, 'no_csp_violation_no_console_error', st.cspv.length === 0 && o.cspConsole.length === 0 && o.errs.length === 0, { cspv: st.cspv.slice(0, 3), console: o.cspConsole.slice(0, 3), errs: o.errs.slice(0, 3) });
+    check(S, 'no_overflow_no_player_no_input_no_storage_no_geolocation', !st.overflow && st.iframes === 0 && st.inputs === 0 && st.writes === 0 && st.ls === 0 && st.ss === 0 && st.perm.length === 0 && st.scripts.join() === './app.js', { overflow: st.overflow, inputs: st.inputs, writes: st.writes, perm: st.perm, scripts: st.scripts });
+    check(S, 'koenji_only_noindex_neutral_names_return_to_thread', st.robots === 'noindex,nofollow' && st.referrer === 'no-referrer' && /踊りが街に根づくまで/.test(st.h1) && st.back >= 2 && FORBIDDEN.every((f) => !st.text.includes(f)) && !st.text.includes('編集部の読み') && !/synthetic|fixture|Cesium|cesium|3D viewer/i.test(st.text) && !/神保町|下北沢|吉祥寺/.test(st.text), { h1: st.h1, back: st.back });
+    check(S, 'relation_first_city_underneath', st.view === 'relation' && st.frame === 'overview' && st.views.join() === '関係,街の形,証拠,時間,現在' && st.pressedView === '関係' && st.rail.length === 5 && st.activeIndex === 0 && st.year === '1957' && st.title === 'はじまる' && /1957年、高円寺ばか踊りが/.test(st.claim) && /線で示すことは、この版ではしていません/.test(st.precision) && !st.refVisible && st.historicalPins === 0, { view: st.view, views: st.views, year: st.year, precision: st.precision.slice(0, 40) });
+    check(S, 'source_attribution_visible', st.attribution === '出典：3D都市モデル（Project PLATEAU）杉並区（2025年度）（国土交通省）を加工して作成' && /建物 1,045 件・道路 341 件/.test(st.provenanceNote) && /CityGML 2\.0/.test(st.provenanceNote) && /現状を正確に反映していない場合がある/.test(st.provenanceNote) && st.attributionLinks.join() === 'https://www.mlit.go.jp/plateau/,https://www.geospatial.jp/ckan/dataset/plateau-13115-suginami-ku-2025', { attribution: st.attribution, links: st.attributionLinks });
+    if (OUT && (v.w === 390 || v.w === 1440)) await shot(o.page, `ATLAS_${v.w}_relation`, true);
+    /* finite views */
+    const seen = {};
+    for (const id of ['city', 'evidence', 'time', 'now', 'relation']) {
+      await o.page.click(`.al-view[data-view="${id}"]`); await o.page.waitForTimeout(120);
+      seen[id] = await o.page.evaluate(ATLAS_STATE);
+      if (OUT && (v.w === 390 || v.w === 1440) && (id === 'city' || id === 'now')) { await o.page.evaluate(() => document.getElementById('lens').scrollIntoView({ block: 'start' })); await shot(o.page, `ATLAS_${v.w}_${id}`); }
     }
-  } else {
-    notObservable('success', 'plateau_upgrade_under_csp', 'CESIUM_LOCAL (CesiumJS 1.117 Build/Cesium) not provided; cesium.com is not reachable from this host');
+    check(S, 'view_city_shows_close_frame_with_present_station_reference', seen.city.view === 'city' && seen.city.frame === 'close' && seen.city.refVisible && seen.city.ref === 3 && seen.city.refLabel === '現在の駅（目安）' && seen.city.stationHighlighted === 2 && seen.city.buildings === BUILDINGS && /Project PLATEAU（杉並区 2025年度）の現在の形です。過去の姿ではありません/.test(seen.city.caption), { frame: seen.city.frame, ref: seen.city.ref, label: seen.city.refLabel, station: seen.city.stationHighlighted });
+    check(S, 'view_evidence_opens_sources_click_only', seen.evidence.view === 'evidence' && seen.evidence.evidenceOpen && seen.evidence.links.length >= 1 && seen.evidence.links.every((l) => /^https:\/\/(koenji-awaodori\.com|www\.koenji-awaodori\.com|suginamigaku\.org|www\.koenji-pal\.jp|www\.youtube\.com)\//.test(l.href) && l.target === '_blank' && /noopener/.test(l.rel || '') && l.rp === 'no-referrer') && !seen.evidence.refVisible, seen.evidence.links);
+    check(S, 'view_time_states_no_historical_point', seen.time.view === 'time' && /1961年・1961–62年・1963年は地図上に地点を作りません/.test(seen.time.caption) && !seen.time.refVisible && seen.time.historicalPins === 0, { caption: seen.time.caption.slice(0, 60) });
+    check(S, 'view_now_returns_to_present_and_thread', seen.now.view === 'now' && seen.now.frame === 'close' && seen.now.refVisible && seen.now.activeIndex === 4 && seen.now.year === '現在' && /駅の位置は目安です/.test(seen.now.precision) && seen.now.back >= 2, { year: seen.now.year, active: seen.now.activeIndex });
+    check(S, 'view_relation_restores_overview', seen.relation.view === 'relation' && seen.relation.frame === 'overview' && !seen.relation.refVisible, { frame: seen.relation.frame });
+    /* timeline: 1961 (no point), next → 1961–62, last → 最初から */
+    await o.page.click('.al-rail-item:nth-child(2)'); await o.page.waitForTimeout(80);
+    const s2 = await o.page.evaluate(ATLAS_STATE);
+    await o.page.click('#nextBtn'); await o.page.waitForTimeout(80);
+    const s3 = await o.page.evaluate(ATLAS_STATE);
+    check(S, 'timeline_1961_and_next_create_no_point', s2.activeIndex === 1 && s2.year === '1961' && /一地点を特定していません/.test(s2.precision) && s2.buildings === BUILDINGS && s2.historicalPins === 0 && !s2.refVisible && s3.activeIndex === 2 && s3.year === '1961–62' && s3.links.length === 2, { y2: s2.year, y3: s3.year, links: s3.links.length });
+    check(S, 'no_external_request_from_any_interaction', o.external.length === 0 && o.errs.length === 0 && o.cspConsole.length === 0 && (await o.page.evaluate(() => window.__cspv.length)) === 0, { external: o.external.slice(0, 3), errs: o.errs.slice(0, 2) });
+    await o.ctx.close();
   }
 
-  /* ---- F. prefers-reduced-motion: no animation, still usable ---- */
+  /* ---- C. substrate unavailable (404): story usable, no console error, no external request ---- */
+  {
+    const S = 'substrate-404-390';
+    const o = await open(browser, base, origin, 'atlas/');
+    await o.ctx.route((url) => /koenji-plateau-2025-buildings/.test(url.pathname), (r) => r.fulfill({ status: 404, body: '' }));
+    await o.goto(); await o.page.waitForFunction(READY, null, { timeout: 15000 }).catch(() => {}); await o.page.waitForTimeout(200);
+    const st = await o.page.evaluate(ATLAS_STATE);
+    await o.page.click('.al-rail-item:nth-child(3)'); await o.page.waitForTimeout(80);
+    const s2 = await o.page.evaluate(ATLAS_STATE);
+    check(S, 'story_and_sources_usable_without_substrate', st.statusHold && /表示できません/.test(st.status) && st.buildings === 0 && st.roads === 0 && st.rail.length === 5 && st.views.length === 5 && s2.year === '1961–62' && s2.links.length === 2 && st.back >= 2 && /表示できませんでした/.test(st.caption), { status: st.status, buildings: st.buildings, year: s2.year });
+    check(S, 'no_error_no_external_request_in_fallback', o.errs.filter((e) => !/404/.test(e)).length === 0 && o.external.length === 0 && st.cspv.length === 0 && !st.overflow, { errs: o.errs.slice(0, 3) });
+    await o.ctx.close();
+  }
+
+  /* ---- D. prefers-reduced-motion: nothing animates ---- */
   {
     const S = 'reduced-motion-390';
-    const o = await open(browser, base, origin, 'atlas/?mode=2d');
-    await o.goto(); await o.page.waitForTimeout(800);
-    const st = await o.page.evaluate(() => { let animated = 0; document.querySelectorAll('#app *').forEach((el) => { const s = getComputedStyle(el); if (s.animationName && s.animationName !== 'none' && s.animationPlayState !== 'paused' && parseFloat(s.animationDuration) > 0) animated++; }); return { animated, loading: getComputedStyle(document.getElementById('loading')).display }; });
-    check(S, 'no_running_animation_under_reduced_motion', st.animated === 0 && st.loading === 'none', st);
+    const o = await open(browser, base, origin, 'atlas/');
+    await o.goto(); await o.page.waitForFunction(READY, null, { timeout: 15000 }).catch(() => {});
+    const st = await o.page.evaluate(() => { let animated = 0; document.querySelectorAll('body *').forEach((el) => { const s = getComputedStyle(el); if ((s.animationName && s.animationName !== 'none' && parseFloat(s.animationDuration) > 0) || (s.transitionDuration && s.transitionDuration.split(',').some((d) => parseFloat(d) > 0))) animated++; }); return { animated }; });
+    check(S, 'no_running_animation_or_transition', st.animated === 0, st);
+    await o.ctx.close();
+  }
+
+  /* ---- E. keyboard: return → views → rail → summary → next → return ---- */
+  {
+    const S = 'keyboard-1440';
+    const o = await open(browser, base, origin, 'atlas/', { context: { viewport: { width: 1440, height: 900 }, isMobile: false, hasTouch: false } });
+    await o.goto(); await o.page.waitForFunction(READY, null, { timeout: 15000 }).catch(() => {});
+    const order = [];
+    for (let i = 0; i < 24; i++) { await o.page.keyboard.press('Tab'); order.push(await o.page.evaluate(() => { const a = document.activeElement; return (a.className || a.tagName).toString().split(' ')[0]; })); }
+    check(S, 'focus_order_reaches_views_rail_evidence_next_return', order.join('>').includes('al-view>al-view>al-view>al-view>al-view>al-rail-item>al-rail-item>al-rail-item>al-rail-item>al-rail-item>al-evidence-summary>al-next>al-return-link'), order.join('>'));
+    await o.page.focus('.al-view[data-view="time"]'); await o.page.keyboard.press('Enter'); await o.page.waitForTimeout(80);
+    const st = await o.page.evaluate(ATLAS_STATE);
+    check(S, 'views_operable_by_keyboard', st.view === 'time' && st.pressedView === '時間', { view: st.view });
     await o.ctx.close();
   }
 
   await browser.close(); server.close();
-  for (const u of unobserved) console.log('- NOT OBSERVABLE: ' + u);
   if (fails.length) { console.log(`ATLAS_BROWSER_QA_FAIL (${pass}/${pass + fails.length})`); for (const f of fails) console.log('- FAIL ' + f); process.exit(1); }
   console.log(`ATLAS_BROWSER_QA_GO (${pass}/${pass})`);
+  console.log(`atlas external requests=0 at 320/390/430/1024/1440; substrate buildings=${BUILDINGS} roads=${ROADS} (local); CSP violations=0; historical pins=0`);
 })().catch((e) => { console.error('ATLAS_BROWSER_QA_ERROR', e); process.exit(1); });

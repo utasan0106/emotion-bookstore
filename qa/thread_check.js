@@ -362,7 +362,7 @@ for (const s of thread.scenes) {
     check(js.includes("window.V3_VIDEO_EMBED.mount(root)") && js.includes("'data-video-id': d.videoId"), 'renderer mounts the shared click-to-load player on the video destination');
   }
   /* Production Beta 0: 高円寺 Thread から /atlas/ への bounded entry（1 箇所）。HOME / Works は Atlas 化しない。 */
-  check(JSON.stringify(thread.spatialEntry) === JSON.stringify({ href: './atlas/', label: '街を立体で辿る（β）', note: '現在の3D都市モデル（Project PLATEAU）の上で、この関係をもう一度辿ります。' }), 'one bounded Atlas entry with the exact label / note');
+  check(JSON.stringify(thread.spatialEntry) === JSON.stringify({ href: './atlas/', label: '街を立体で辿る（β）', note: 'Project PLATEAUの3D都市モデル（杉並区 2025年度）から取り出した、現在の街の形の上で、この関係をもう一度辿ります。' }), 'one bounded Atlas entry with the exact label / note');
   check(read('atlas/index.html').includes('<meta name="robots" content="noindex,nofollow">') && !read('sitemap.xml').includes('atlas') && !home.includes('atlas') && !read('works.html').includes('atlas'), 'Atlas is noindex, off the sitemap, and not linked from HOME / Works');
   /* Founder decision v2: 公開 UI に「編集部の読み」の label を出さない（描画される文字列に 0） */
   check(!JSON.stringify(CONTENT, (k, v) => (k === 'url' || k === 'src' ? '' : v)).includes('編集部の読み'), 'no visible 編集部の読み in rendered Thread strings');

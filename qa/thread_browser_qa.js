@@ -269,7 +269,7 @@ async function elementShot(page, selector, name, width) {
     /* Founder decision v2: 公開 UI に「編集部の読み」の label は 0（読みの本文は破線の枠のまま残る） */
     check(S, 'no_visible_editorial_label', m.readingLabels === 0 && !m.text.includes('編集部の読み') && m.readings.length === 2, { labels: m.readingLabels, readings: m.readings.length });
     /* Production Beta 0: /atlas/ への bounded entry は 1 箇所、行き先の後・いまの状況の前、内部 route */
-    check(S, 'one_bounded_atlas_entry_after_destinations', !!m.spatial && m.spatial.count === 1 && m.spatial.href === './atlas/' && m.spatial.label === '街を立体で辿る（β）' && m.spatial.note === '現在の3D都市モデル（Project PLATEAU）の上で、この関係をもう一度辿ります。' && !m.spatial.target && m.spatial.h >= 44 && m.spatial.afterDestinations && m.spatial.beforeStatus, m.spatial);
+    check(S, 'one_bounded_atlas_entry_after_destinations', !!m.spatial && m.spatial.count === 1 && m.spatial.href === './atlas/' && m.spatial.label === '街を立体で辿る（β）' && m.spatial.note === 'Project PLATEAUの3D都市モデル（杉並区 2025年度）から取り出した、現在の街の形の上で、この関係をもう一度辿ります。' && !m.spatial.target && m.spatial.h >= 44 && m.spatial.afterDestinations && m.spatial.beforeStatus, m.spatial);
     check(S, 'real_targets_are_44px', m.targets.length >= 12 && m.targets.every((t) => t.w >= 44 && t.h >= 44), m.targets.filter((t) => t.w < 44 || t.h < 44));
     check(S, 'reduced_motion_animation_0', m.animated === 0 && m.docAnimations === 0, { animated: m.animated, docAnimations: m.docAnimations });
     check(S, 'no_engagement_words', !FORBIDDEN.some((w) => m.text.includes(w)), FORBIDDEN.filter((w) => m.text.includes(w)));

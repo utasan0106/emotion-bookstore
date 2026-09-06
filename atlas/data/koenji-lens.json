@@ -1,0 +1,94 @@
+{
+  "schema": "v3-cultural-signal-lens/1",
+  "city": "koenji",
+  "threadId": "koenji-dance-history",
+  "hero": {
+    "eyebrow": "高円寺 · 街を立体で辿る（β）",
+    "title": "踊りが街に根づくまで",
+    "lead": "現在の街の形を土台に、1957年から現在まで「何が、誰から、どう渡ったか」を、資料が支える精度のまま辿ります。",
+    "note": "現在の街の形は、Project PLATEAUの3D都市モデル（杉並区 2025年度）から、この場面に必要な範囲だけを事前に取り出したものです。歴史の証拠ではありません。"
+  },
+  "substrate": {
+    "runtime": "./data/runtime-spatial.json",
+    "frames": {
+      "overview": [139.6465, 35.7027, 139.652, 35.7066],
+      "close": [139.6478, 35.703, 139.6516, 35.7058]
+    },
+    "visual": {
+      "pxPerMetreOfHeight": 0.9,
+      "maxVisualHeightMetres": 45,
+      "note": "高さは measuredHeight（m）を表示用に縮尺したもの。不明（null）の建物は足元の形だけを描く。"
+    }
+  },
+  "presentReference": {
+    "id": "koenji-station-structures",
+    "label": "現在の駅（目安）",
+    "kind": "orientation_reference",
+    "historicalClaim": false,
+    "derivation": "PLATEAUの建物のうち、用途コード431（運輸倉庫施設）で中央線の位置に東西に長く伸びる2棟（下記 gml:id）の外接矩形の中心。駅名は3D都市モデルに含まれないため『目安』とする。",
+    "gmlIds": [
+      "bldg_56f78359-a616-4c15-b57f-48bee9244f7b",
+      "bldg_5cff6385-80a8-4323-a206-56992a0e971f"
+    ]
+  },
+  "corridor": {
+    "policy": "no_band",
+    "sceneId": "s1957",
+    "label": "商店街の通り（範囲）",
+    "note": "資料が支えるのは『商店街の通り』という範囲です。現在の道路データの上でどの通りかを線で示すことは、この版ではしていません。"
+  },
+  "historicalPoints": {
+    "s1957": "street_segment_no_line",
+    "s1961": "none",
+    "s1961_62": "none",
+    "s1963": "none",
+    "snow": "present_reference_only"
+  },
+  "views": [
+    {
+      "id": "relation",
+      "label": "関係",
+      "chapter": "01 / 関係",
+      "frame": "overview",
+      "caption": "まず、関係だけを見る。上の年表は関係の順序で、地図上の位置ではありません。現在の街の形は、その下に静かに置きます。"
+    },
+    {
+      "id": "city",
+      "label": "街の形",
+      "chapter": "02 / 街の形",
+      "frame": "close",
+      "caption": "関係の下に、現在の街が現れる。駅の南側の建物と道路は、Project PLATEAU（杉並区 2025年度）の現在の形です。過去の姿ではありません。"
+    },
+    {
+      "id": "evidence",
+      "label": "証拠",
+      "chapter": "03 / 証拠",
+      "frame": "overview",
+      "caption": "線を引くには、理由がいる。出典で支えられる関係だけを、次の場面へ進めます。資料は下の「資料・公式情報を見る」から開けます。"
+    },
+    {
+      "id": "time",
+      "label": "時間",
+      "chapter": "04 / 時間",
+      "frame": "overview",
+      "caption": "わからない過去は、点にしない。1957年は『商店街の通り』という範囲まで。1961年・1961–62年・1963年は地図上に地点を作りません。"
+    },
+    {
+      "id": "now",
+      "label": "現在",
+      "chapter": "05 / 現在",
+      "frame": "close",
+      "caption": "最後は、いま存在する文化へ。現在の駅の位置は目安です。ここからスレッドの「現実へ」に戻ります。"
+    }
+  ],
+  "legend": [
+    { "id": "buildings", "label": "現在の建物（高さは表示用に縮尺）" },
+    { "id": "roads", "label": "現在の道路" },
+    { "id": "reference", "label": "現在の駅（目安）" }
+  ],
+  "return": {
+    "href": "../thread.html?thread=koenji-dance-history",
+    "label": "スレッドへ戻る",
+    "lead": "空間表示の終点は地図操作ではありません。ここまで辿った関係を、スレッドの「現実へ」に返します。"
+  }
+}
