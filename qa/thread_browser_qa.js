@@ -115,7 +115,7 @@ const MEASURE = () => {
   const targets = [...document.querySelectorAll('#main a, #main button, #main summary, #main label.th-mode-option')].map((el) => {
     const b = R(el); return { sel: (typeof el.className === 'string' && el.className.split(' ')[0]) || el.tagName, w: b.w, h: b.h };
   });
-  const dest = [...document.querySelectorAll('.th-destination-link')].map((a) => ({ label: (a.querySelector('.th-destination-label') || a).textContent, href: a.getAttribute('href'), rel: a.getAttribute('rel'), target: a.getAttribute('target') }));
+  const dest = [...document.querySelectorAll('.th-destination')].map((li) => { const a = li.querySelector('.th-destination-link'); const v = li.querySelector('.v3-video'); return { id: li.getAttribute('data-destination-id'), label: (li.querySelector('.th-destination-label') || {}).textContent, href: a ? a.getAttribute('href') : null, rel: a ? a.getAttribute('rel') : null, target: a ? a.getAttribute('target') : null, videoId: v ? v.getAttribute('data-video-id') : null, videoState: v ? v.getAttribute('data-video-state') : null, button: !!li.querySelector('button.v3-video-load'), watchNote: (li.querySelector('.th-video-duration') || {}).textContent }; });
   const imgs = [...document.querySelectorAll('#main img')].map((i) => ({ src: i.getAttribute('src'), alt: i.getAttribute('alt'), loaded: i.complete && i.naturalWidth > 0, sameOrigin: new URL(i.currentSrc || i.src, location.href).origin === location.origin }));
   let animated = 0;
   document.querySelectorAll('#main *').forEach((el) => { const s = getComputedStyle(el); if ((s.animationName && s.animationName !== 'none') || (s.transitionProperty !== 'none' && parseFloat(s.transitionDuration) > 0)) animated++; });
@@ -133,6 +133,7 @@ const MEASURE = () => {
     exit: exit ? { href: exit.getAttribute('href'), text: exit.textContent, h: R(exit).h } : null,
     lost: document.querySelectorAll('.th-lost').length, sceneCount: document.querySelectorAll('.th-scene').length,
     cues: txt('.th-cue-text'), fonts: document.fonts.status,
+    readingLabels: document.querySelectorAll('.th-reading-label').length,
     text: document.body.innerText,
     storage: { writes: window.__storageWrites, ls: readStore(() => localStorage.length), ss: readStore(() => sessionStorage.length), cookie: document.cookie },
     perm: window.__permCalls, dataLayer: typeof window.dataLayer, gtag: typeof window.gtag,
@@ -253,7 +254,7 @@ async function elementShot(page, selector, name, width) {
     const light = m.relations.filter((r) => r.state !== 'source_difference').concat(m.facts.filter((x) => x.state !== 'source_difference'));
     check(S, 'light_default_surface_for_normal_items', light.length === 4 && light.every((x) => !x.open && !/検証状態：単一資料|検証状態：複数の資料が一致|裏づけの種類|検証状態/.test(x.surface) && /^出典あり\s*資料を見る（\d件）$/.test((x.summary || '').trim())),
       light.map((x) => [x.id, x.summary, x.surface.slice(0, 60)]));
-    check(S, 'editorial_reading_never_inherits_a_fact_badge', m.readings.length === 2 && m.readings.every((r) => r.layer === 'reading' && r.label === '編集部の読み' && r.labelH > 0 && r.factBadges === 0 && !r.verification && !r.insideFact && r.borderStyle === 'dashed') &&
+    check(S, 'editorial_reading_never_inherits_a_fact_badge', m.readings.length === 2 && m.readings.every((r) => r.layer === 'reading' && r.label === undefined && r.labelH === 0 && r.factBadges === 0 && !r.verification && !r.insideFact && r.borderStyle === 'dashed') &&
       m.readings.map((r) => r.scene).join('|') === 's3|s4', m.readings);
     /* HQ LIMITED FIX 01 UNIT A: 木場連 copy */
     const encounterText = (m.beats.find((b) => b.id === 'encounter') || {}).text || '';
@@ -261,9 +262,11 @@ async function elementShot(page, selector, name, width) {
     /* FOUNDER PREVIEW FIX C1 / C2 / C4: location mode fieldset も cue block も出さない。 */
     check(S, 'no_mode_fieldset_no_cue', m.radios.length === 0 && m.cues.length === 0 && !/合図|高円寺にいるふり|いまは、高円寺にいない|いま、高円寺にいる|どこで読んでいますか|20秒/.test(m.text), { radios: m.radios.length, cues: m.cues.length });
     check(S, 'approved_image_once_same_origin_loaded', m.imgs.length === 1 && /home-thread-koenji-awaodori\.jpg$/.test(m.imgs[0].src) && m.imgs[0].loaded && m.imgs[0].sameOrigin && (m.imgs[0].alt || '').length > 0, m.imgs);
-    check(S, 'reality_destinations_are_the_four', m.dest.length === 4 && m.dest.every((d, i) => d.label === DESTINATIONS[i][0] && d.href === DESTINATIONS[i][1] && /noopener/.test(d.rel || '') && d.target === '_blank') && !m.dest.some((d) => /stage04/.test(d.href)), m.dest);
+    check(S, 'reality_destinations_are_the_four', m.dest.length === 4 && m.dest.slice(0, 3).every((d, i) => d.label === DESTINATIONS[i][0] && d.href === DESTINATIONS[i][1] && /noopener/.test(d.rel || '') && d.target === '_blank') && m.dest[3].label === DESTINATIONS[3][0] && m.dest[3].href === null && m.dest[3].videoId === 'dt33RGSRuo0' && m.dest[3].button && m.dest[3].videoState === 'idle' && m.dest[3].watchNote === '約15分で観終わります。' && !m.dest.some((d) => /stage04/.test(d.href)), m.dest);
     check(S, 'ended_festival_and_plus_are_not_upcoming', m.statusText.some((t) => /2026年の本祭/.test(t) && /終了/.test(t) && /最終確認：2026-09-04/.test(t)) && m.statusText.some((t) => /plus\+/.test(t) && /休止/.test(t)) && !/開催予定|これから開催/.test(m.text), m.statusText);
     check(S, 'finite_end_with_exit', m.endLine === 'このスレッドは、ここまでです。' && !!m.exit && m.exit.href === './index.html' && m.exit.text === '入口へ戻る' && m.exit.h >= 44, { end: m.endLine, exit: m.exit });
+    /* Founder decision v2: 公開 UI に「編集部の読み」の label は 0（読みの本文は破線の枠のまま残る） */
+    check(S, 'no_visible_editorial_label', m.readingLabels === 0 && !m.text.includes('編集部の読み') && m.readings.length === 2, { labels: m.readingLabels, readings: m.readings.length });
     check(S, 'real_targets_are_44px', m.targets.length >= 12 && m.targets.every((t) => t.w >= 44 && t.h >= 44), m.targets.filter((t) => t.w < 44 || t.h < 44));
     check(S, 'reduced_motion_animation_0', m.animated === 0 && m.docAnimations === 0, { animated: m.animated, docAnimations: m.docAnimations });
     check(S, 'no_engagement_words', !FORBIDDEN.some((w) => m.text.includes(w)), FORBIDDEN.filter((w) => m.text.includes(w)));
@@ -345,35 +348,42 @@ async function elementShot(page, selector, name, width) {
     check(S, 'no_external_request_after_interaction', external.length === 0, external.slice(0, 3));
     check(S, 'no_js_error_after_interaction', errs.length === 0, errs.slice(0, 2));
 
-    /* FOUNDER PREVIEW FIX UNIT E: 公式映像は最後の行き先。埋め込み・サムネイル・事前読込なし、click までは YouTube への通信 0、
-       click で新しいタブに exact URL が開き、Thread 側は通信しない。 */
+    /* Founder decision v2（2026-09-06）: 公式映像は最後の行き先で、click-to-load の inline player。押すまでは
+       provider（YouTube / ytimg / googlevideo）への通信 0・iframe 0・サムネイル / preconnect 0。押すと同じ枠に
+       youtube-nocookie の iframe が入り、自動再生しない。外部 anchor は無い。新しい copy は「約15分で観終わります。」だけ。 */
     const videoBefore = await page.evaluate(() => {
       const li = document.querySelector('[data-destination-id="dest:official-video"]');
       const items = [...document.querySelectorAll('.th-destination')];
+      const host = li && li.querySelector('.v3-video'); const btn = li && li.querySelector('button.v3-video-load');
       return {
         isLast: !!li && items[items.length - 1] === li, count: items.length,
-        label: li ? (li.querySelector('.th-destination-label') || {}).textContent : '', href: li ? li.querySelector('.th-destination-link').getAttribute('href') : '',
-        why: li ? (li.querySelector('.th-destination-why') || {}).textContent : '', note: li ? (li.querySelector('.th-destination-note') || {}).textContent : '',
+        label: li ? (li.querySelector('.th-destination-label') || {}).textContent : '', anchors: li ? li.querySelectorAll('a').length : -1,
+        videoId: host ? host.getAttribute('data-video-id') : null, state: host ? host.getAttribute('data-video-state') : null, title: host ? host.getAttribute('data-video-title') : null,
+        why: li ? (li.querySelector('.th-destination-why') || {}).textContent : '', note: li ? (li.querySelector('.th-destination-note') || {}).textContent : '', watchNote: li ? (li.querySelector('.th-video-duration') || {}).textContent : '',
         embeds: document.querySelectorAll('iframe, video, audio, embed, object, [autoplay], link[rel="preconnect"], link[rel="preload"], link[rel="prefetch"], link[rel="dns-prefetch"]').length,
         ytAssets: [...document.querySelectorAll('img, source, script, link')].filter((e) => /youtube|ytimg|googlevideo/.test(e.getAttribute('src') || e.getAttribute('href') || '')).length,
-        h: li ? Math.round(li.querySelector('.th-destination-link').getBoundingClientRect().height) : 0
+        h: btn ? Math.round(btn.getBoundingClientRect().height) : 0, w: btn ? Math.round(btn.getBoundingClientRect().width) : 0,
+        text: li ? li.innerText : ''
       };
     });
-    check(S, 'official_video_is_the_final_destination_without_embed', videoBefore.isLast && videoBefore.count === 4 && videoBefore.label === DESTINATIONS[3][0] && videoBefore.href === YT_URL
+    check(S, 'official_video_is_the_final_destination_click_to_load', videoBefore.isLast && videoBefore.count === 4 && videoBefore.label === DESTINATIONS[3][0] && videoBefore.anchors === 0
+      && videoBefore.videoId === 'dt33RGSRuo0' && videoBefore.state === 'idle' && videoBefore.title === '主催団体の公式映像'
       && videoBefore.why === 'このThreadとの関係：ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。' && videoBefore.note === '2025年の催しを伝える、主催団体の公式映像です。'
-      && videoBefore.embeds === 0 && videoBefore.ytAssets === 0 && videoBefore.h >= 44 && external.every((u) => !/youtube|ytimg|googlevideo/.test(u)), videoBefore);
+      && videoBefore.watchNote === '約15分で観終わります。' && videoBefore.embeds === 0 && videoBefore.ytAssets === 0 && videoBefore.h >= 44 && videoBefore.w >= 44
+      && external.every((u) => !/youtube|ytimg|googlevideo/.test(u)), videoBefore);
+    check(S, 'video_block_carries_only_the_approved_copy', [DESTINATIONS[3][0], 'このThreadとの関係：ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。', '2025年の催しを伝える、主催団体の公式映像です。', '約15分で観終わります。'].reduce((t, c) => t.replace(c, ''), videoBefore.text).replace(/[▶\s]/g, '') === '', videoBefore.text);
     {
       const threadPageRequests = [];
       page.on('request', (r) => { if (!r.url().startsWith(origin)) threadPageRequests.push(r.url()); });
-      await ctx.route((url) => /youtube\.com/.test(url.hostname), (r) => r.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><title>stub</title>' }));
-      const [popup] = await Promise.all([ctx.waitForEvent('page', { timeout: 5000 }).catch(() => null), page.click('[data-destination-id="dest:official-video"] .th-destination-link')]);
-      if (popup) await popup.waitForLoadState('load', { timeout: 5000 }).catch(() => {});
-      const popupUrl = popup ? popup.url() : '';
-      const stillHere = await page.evaluate(() => ({ url: location.pathname + location.search, embeds: document.querySelectorAll('iframe, video').length }));
-      check(S, 'video_opens_exact_youtube_url_in_new_tab_only_on_click', !!popup && popupUrl === YT_URL && threadPageRequests.length === 0 && stillHere.url === '/thread.html?thread=koenji-dance-history' && stillHere.embeds === 0, { popupUrl, threadPageRequests: threadPageRequests.slice(0, 3), stillHere });
-      if (popup) await popup.close();
-      await ctx.unroute((url) => /youtube\.com/.test(url.hostname));
-      external.length = 0; /* the popup's own stubbed navigation is not a Thread-page request */
+      await ctx.route((url) => !url.href.startsWith(origin), (r) => r.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><title>stub</title>' }));
+      let popupSeen = false; ctx.once('page', () => { popupSeen = true; });
+      await page.click('[data-destination-id="dest:official-video"] button.v3-video-load');
+      await page.waitForTimeout(500);
+      const after = await page.evaluate(() => { const f = document.querySelector('[data-destination-id="dest:official-video"] iframe'); const host = document.querySelector('[data-destination-id="dest:official-video"] .v3-video'); return { url: location.pathname + location.search, iframes: document.querySelectorAll('iframe').length, src: f ? f.getAttribute('src') : null, title: f ? f.getAttribute('title') : null, allow: f ? f.getAttribute('allow') : null, rp: f ? f.getAttribute('referrerpolicy') : null, state: host ? host.getAttribute('data-video-state') : null, buttons: document.querySelectorAll('[data-destination-id="dest:official-video"] button').length }; });
+      check(S, 'click_loads_inline_nocookie_player_without_autoplay', !popupSeen && after.url === '/thread.html?thread=koenji-dance-history' && after.iframes === 1 && after.src === 'https://www.youtube-nocookie.com/embed/dt33RGSRuo0?playsinline=1&rel=0' && after.title === '主催団体の公式映像' && after.state === 'loaded' && after.buttons === 0 && !/autoplay=1/.test(after.src) && (after.allow || '').indexOf('autoplay') < 0 && after.rp === 'strict-origin-when-cross-origin', after);
+      check(S, 'provider_requests_only_after_click_and_only_nocookie', threadPageRequests.length >= 1 && threadPageRequests.every((u) => u.startsWith('https://www.youtube-nocookie.com/embed/dt33RGSRuo0')), threadPageRequests.slice(0, 3));
+      await ctx.unroute((url) => !url.href.startsWith(origin));
+      external.length = 0; /* the stubbed provider request happened only after the explicit click */
     }
 
     /* 証跡 */
@@ -443,7 +453,7 @@ async function elementShot(page, selector, name, width) {
     }
     const names = order.map((o) => o.el + (o.value ? `[${o.value}]` : '')).join('>');
     check(S, 'tab_order_reaches_every_real_control', names.startsWith('skip-link>brand-home>menu-trigger>th-evidence-summary') && !/th-mode-input/.test(names) &&
-      (names.match(/th-evidence-summary/g) || []).length === 5 && (names.match(/th-destination-link/g) || []).length === 4 && /th-destination-link>th-destination-link>th-destination-link>th-destination-link>th-exit>footer-brand/.test(names), names);
+      (names.match(/th-evidence-summary/g) || []).length === 5 && (names.match(/th-destination-link/g) || []).length === 3 && /th-destination-link>th-destination-link>th-destination-link>v3-video-load>th-exit>footer-brand/.test(names), names);
     check(S, 'focus_visible_outline_on_every_stop', order.filter((o) => o.el !== 'BODY').every((o) => o.fv && o.outline), order.filter((o) => o.el !== 'BODY' && !(o.fv && o.outline)));
     check(S, 'no_source_link_in_tab_order_while_drawers_are_closed', !/th-source-link/.test(names), names);
     // summary by keyboard
@@ -616,7 +626,7 @@ async function elementShot(page, selector, name, width) {
         text: (document.querySelector('#th-w2') || { innerText: '' }).innerText, html: (document.querySelector('#th-w2') || { innerHTML: '' }).innerHTML },
       w3notes: txt('#th-w3 .th-evidence-item').join('|'), w3rel: [...document.querySelectorAll('#th-w3 .th-relation')].map((r) => r.getAttribute('data-relation-id')).join('|'),
       w4: { lead: one('#th-w4 .th-scene-lead'), pairs: txt('#th-w4 .th-pair-name').join('|'), close: one('#th-w4 .th-scene-close'), readingLabel: one('#th-w4 .th-reading-label'), reading: one('#th-w4 .th-reading-text'), readingBorder: document.querySelector('#th-w4 .th-reading') ? getComputedStyle(document.querySelector('#th-w4 .th-reading')).borderTopStyle : null },
-      readings: document.querySelectorAll('.th-reading').length,
+      readings: document.querySelectorAll('.th-reading').length, readingLabels: document.querySelectorAll('.th-reading-label').length, bodyText: document.body.innerText,
       w5: { lead: one('#th-w5 .th-scene-lead'), notes: txt('#th-w5 .th-evidence-item').join('|'), questions: txt('#th-w5 .th-question'), disclosure: one('#th-w5 .th-scene-close'), realityLead: one('#th-w5 .th-reality-lead'), status: document.querySelectorAll('#th-w5 .th-status').length,
         yaguchiWhy: dest('dest:yaguchi-shoten') ? dest('dest:yaguchi-shoten').querySelectorAll('.th-destination-why').length : -1, yaguchiNote: dest('dest:yaguchi-shoten') ? one('[data-destination-id="dest:yaguchi-shoten"] .th-destination-note') : null,
         dest1Why: one('[data-destination-id="dest:jimbou-map"] .th-destination-why'), dest2Why: one('[data-destination-id="dest:jinbocho-theater"] .th-destination-why'),
@@ -675,7 +685,7 @@ async function elementShot(page, selector, name, width) {
     check(S, 'w2_identical_at_every_width', w2Html[id] === mm.w2.html);
     check(S, 'w3_mandatory_notes_visible', mm.w3notes === M_NOTES, mm.w3notes);
     check(S, 'w4_reread_visible_with_editorial_reading', mm.w4.lead === '本 →（原作になる）→ 映画 →（神保町で撮る）→ 神保町' && mm.w4.pairs === '本|映画' && mm.w4.close === 'ここまでの関係を、資料に沿って並べ直したものです。' &&
-      mm.w4.readingLabel === '編集部の読み' && mm.w4.reading === '同じ物語が媒体を移るとき、街は「舞台」から「制作の場所」にもなる。' && mm.w4.readingBorder === 'dashed' && mm.readings === 1 && m.readings.every((r) => r.scene === 'w4' && !r.insideFact && r.factBadges === 0), mm.w4);
+      !mm.w4.readingLabel && mm.w4.reading === '同じ物語が媒体を移るとき、街は「舞台」から「制作の場所」にもなる。' && mm.w4.readingBorder === 'dashed' && mm.readings === 1 && m.readings.every((r) => r.scene === 'w4' && !r.insideFact && r.factBadges === 0), mm.w4);
     check(S, 'w5_lead_notes_questions_disclosure', mm.w5.lead === 'ここから先は、いまの神保町です。' && mm.w5.notes === M_NOTES && mm.w5.questions.join('|') === '別の媒体になったとき、何が残って、何が変わったんだろう？|この画面は、現実のどこにつながっているんだろう？' &&
       mm.w5.disclosure === '森崎書店は作中の書店です。ここに挙げた店は、いずれも神保町に実在する別の店です。' && mm.w5.disclosureBeforeDestinations && mm.w5.realityLead === '' && mm.w5.status === 0, mm.w5);
     check(S, 'reality_destinations_are_the_three', m.dest.length === 3 && m.dest.every((d, i) => d.label === M_DEST[i][0] && d.href === M_DEST[i][1] && /noopener/.test(d.rel || '') && d.target === '_blank'), m.dest);
@@ -688,6 +698,7 @@ async function elementShot(page, selector, name, width) {
     check(S, 'real_targets_are_44px', m.targets.length >= 9 && m.targets.every((t) => t.w >= 44 && t.h >= 44), m.targets.filter((t) => t.w < 44 || t.h < 44));
     check(S, 'reduced_motion_animation_0', m.animated === 0 && m.docAnimations === 0, { animated: m.animated, docAnimations: m.docAnimations });
     check(S, 'no_engagement_words', !FORBIDDEN.some((w) => m.text.includes(w)), FORBIDDEN.filter((w) => m.text.includes(w)));
+    check(S, 'no_visible_editorial_label_in_morisaki', mm.readingLabels === 0 && !mm.bodyText.includes('編集部の読み'), { labels: mm.readingLabels });
     check(S, 'no_koenji_copy_in_morisaki', !/阿波おどり|木場連|鴨川|パル商店街|1957/.test(m.text), m.text.slice(0, 80));
     check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
     check(S, 'storage_writes_0', m.storage.writes === 0 && m.storage.ls === 0 && m.storage.ss === 0 && m.storage.cookie === '', m.storage);

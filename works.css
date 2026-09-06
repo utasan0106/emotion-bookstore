@@ -86,7 +86,8 @@
 }
 .wk-info-text { margin: 0; color: var(--chalk); }
 
-/* 編集部の読み。事実の枠とは別の見え方（破線）。fact badge も検証状態も持たない。 */
+/* 読み（reading layer）。事実の枠とは別の見え方（破線）。fact badge も検証状態も持たない。
+   見える label は無い（Founder decision 2026-09-06 v2）。 */
 .wk-reading {
   margin: 22px 0 0;
   padding: 14px 18px;
@@ -94,14 +95,54 @@
   border-radius: 2px;
   background: transparent;
 }
-.wk-reading-label {
-  margin: 0 0 6px;
-  font-family: var(--serif);
-  font-size: 0.8125rem;
-  letter-spacing: .16em;
-  color: var(--signal);
-}
 .wk-reading-text { margin: 0; color: var(--chalk); }
+
+/* 公式映像。押すまで provider へ接続しない click-to-load の枠（16:9）。
+   押したあとは同じ枠の中に player が入る。自動再生なし。 */
+.wk-video { margin: 18px 0 0; }
+.wk-video .v3-video-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--hall-edge);
+  border-radius: 2px;
+  background: var(--hall-raised);
+  overflow: hidden;
+}
+.wk-video-load {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  min-height: 44px;
+  padding: 16px;
+  border: 0;
+  background: transparent;
+  color: var(--chalk);
+  font: inherit;
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  letter-spacing: .04em;
+  text-align: center;
+  text-decoration: underline;
+  text-decoration-color: var(--signal);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+  cursor: pointer;
+}
+.wk-video-load .wk-mark { color: var(--signal); text-decoration: none; }
+.wk-video .v3-video-iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.wk-video-duration {
+  margin: 8px 0 0;
+  font-size: 0.9375rem;
+  color: var(--chalk-dim);
+}
 
 /* Relation preview。矢印は signal 色。 */
 .wk-relation {
@@ -201,7 +242,9 @@
   .wk-work, .wk-info, .wk-exit { border-color: CanvasText; }
   .wk-reading { border: 1px dashed CanvasText; }
   .wk-question { border-top-color: CanvasText; }
-  .wk-arrow, .wk-reading-label { color: CanvasText; }
+  .wk-arrow { color: CanvasText; }
+  .wk-video .v3-video-frame { border-color: CanvasText; }
+  .wk-video-load { border: 2px solid ButtonText; background: ButtonFace; color: ButtonText; forced-color-adjust: none; }
   /* 棚用の ButtonFace 塗りを継がない。普通の link として forced colors に任せる。 */
   .works-page .wk-action.official-action { border: 0; background: transparent; color: LinkText; forced-color-adjust: auto; }
 }

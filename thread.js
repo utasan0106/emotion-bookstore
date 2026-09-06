@@ -4,8 +4,10 @@
    - 保存しない。位置情報・カメラ・fetch・XHR・計測 event を使わない。
    - 読む場所（remote / onsite）は合図の文だけを変える。事実・関係・資料・
      検証状態・並び順は変えない。
-   - CLAIM / SUPPORT / EDITORIAL READING は DOM を分ける。読みは
-     fact badge・検証状態・verified relation の見た目を継がない。
+   - CLAIM / SUPPORT / EDITORIAL READING は DOM を分ける（data-layer）。読みは
+     fact badge・検証状態・verified relation の見た目を継がない。読みのメタ label
+     （reading label）は公開 UI に出さない（Founder decision 2026-09-06 v2）。
+   - 公式映像は利用者が押したときだけページ内に置く（video-embed.js）。
    - scene.beats[] は数に依らず描く（六拍はこの Thread の learned_from 固有の構成）。 */
 (function () {
   'use strict';
@@ -17,7 +19,6 @@
 
   var GENERIC_TITLE = 'みんなの感情書店｜スレッド';
   var LOST = { line: 'このスレッドはありません。', exit: '入口へ戻る', href: './index.html' };
-  var LAYER = { reading: '編集部の読み' };
   var VERIFICATION = {
     single_source: '検証状態：単一資料',
     corroborated: '検証状態：複数の資料が一致',
@@ -176,7 +177,8 @@
   /* --------------------------------------------------- EDITORIAL READING */
 
   /* 読みは fact badge・検証状態・relation の見た目を継がない。
-     参照 id は data 属性に残すだけで、verified relation としては描かない。 */
+     参照 id は data 属性に残すだけで、verified relation としては描かない。
+     見える label は無い。読みであることは枠（破線）と data-layer で分ける。 */
   function readingBlock(reading) {
     if (!reading || !reading.text) return null;
     return h('section', {
@@ -184,7 +186,6 @@
       'data-layer': 'reading',
       'data-refs': (reading.refs || []).join(' ')
     }, [
-      h('p', { class: 'th-reading-label', text: LAYER.reading }),
       h('p', { class: 'th-reading-text', text: reading.text })
     ]);
   }
@@ -260,10 +261,29 @@
     ]);
   }
 
+  /* 公式映像の行き先。表示しただけでは provider へ接続しない。利用者が押したときだけ、
+     video-embed.js がこの枠の中に player を置く（自動再生なし）。外部 anchor は出さない。 */
+  function videoDestination(d) {
+    return h('li', { class: 'th-destination th-destination-video', 'data-destination-id': d.id }, [
+      h('div', { class: 'v3-video th-video', 'data-video-id': d.videoId, 'data-video-title': d.videoTitle || d.label }, [
+        h('div', { class: 'v3-video-frame th-video-frame' }, [
+          h('button', { class: 'v3-video-load th-video-load', type: 'button' }, [
+            h('span', { class: 'th-destination-label', text: d.label }),
+            h('span', { class: 'th-video-mark', 'aria-hidden': 'true', text: ' ▶' })
+          ])
+        ])
+      ]),
+      d.why ? h('p', { class: 'th-destination-why', text: 'このThreadとの関係：' + d.why }) : null,
+      d.note ? h('p', { class: 'th-destination-note', text: d.note }) : null,
+      d.watchNote ? h('p', { class: 'v3-video-duration th-video-duration', text: d.watchNote }) : null
+    ]);
+  }
+
   function realityBlock(thread) {
     var pr = thread.presentReturn || {};
     var children = [h('p', { class: 'th-reality-lead', text: pr.lead || '' })];
     children.push(h('ol', { class: 'th-destinations' }, (thread.realityDestinations || []).map(function (d) {
+      if (d.videoId) return videoDestination(d);
       return h('li', { class: 'th-destination', 'data-destination-id': d.id }, [
         h('a', {
           class: 'th-destination-link',
@@ -376,6 +396,7 @@
       headerBlock(thread)
     ].concat((thread.scenes || []).map(function (scene) { return sceneBlock(thread, scene); }))));
     repaintCues();
+    if (window.V3_VIDEO_EMBED && typeof window.V3_VIDEO_EMBED.mount === 'function') window.V3_VIDEO_EMBED.mount(root);
   }
 
   function renderLost() {

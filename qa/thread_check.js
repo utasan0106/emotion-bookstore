@@ -74,9 +74,9 @@ check(html.includes('id="threadRoot"'), '#threadRoot missing');
   const head = html.slice(0, html.indexOf('</head>'));
   check(!/<script/i.test(head), 'no synchronous head JS');
   const scripts = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map((m) => m[1]);
-  check(scripts.join('|') === './release_content.js|./growth-improvements.js|./release.js|./analytics-v3.js|./thread_content.js|./thread.js',
-    `script order must be release_content → growth-improvements → release → analytics-v3 → thread_content → thread (got ${scripts.join(', ')})`);
-  check((html.match(/<script/g) || []).length === 6, 'exactly six script tags');
+  check(scripts.join('|') === './release_content.js|./growth-improvements.js|./release.js|./analytics-v3.js|./video-embed.js|./thread_content.js|./thread.js',
+    `script order must be release_content → growth-improvements → release → analytics-v3 → video-embed → thread_content → thread (got ${scripts.join(', ')})`);
+  check((html.match(/<script/g) || []).length === 7, 'exactly seven script tags (video-embed.js added by the Founder decision v2)');
   check(!/<script[^>]*>[^<]*\S[^<]*<\/script>/.test(html), 'no inline script');
 }
 check(/<noscript>[\s\S]*このスレッドを読むには JavaScript を有効にしてください。[\s\S]*<\/noscript>/.test(html), 'generic noscript message missing');
@@ -321,7 +321,7 @@ for (const id of ['s3', 's4']) {
   check(typeof er.text === 'string' && er.text.length > 0, `${id} must carry an editorialReading`);
   check(Array.isArray(er.refs) && er.refs.length && er.refs.every((r) => relIds.has(r) || factIds.has(r)), `${id} editorialReading refs must resolve to relations / facts`);
   check(!('verificationState' in er) && !('sourceIds' in er) && !('supportMode' in er), `${id} editorialReading must not carry support state`);
-  check(/編集部の読み/.test(er.text), `${id} editorialReading must say it is the editors' reading`);
+  check(!/編集部の読み/.test(er.text), `${id} editorialReading prose must not carry the visible meta label (Founder decision 2026-09-06 v2)`);
 }
 check(S.s4 && !('cue' in S.s4) && S.s4.editorialReading, 'S4 carries no cue but keeps its editorial reading (Founder Preview Fix C4)');
 /* 合図は歩行を義務にしない */
@@ -347,8 +347,22 @@ for (const s of thread.scenes) {
     && video.why === 'ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。'
     && video.note === '2025年の催しを伝える、主催団体の公式映像です。'
     && !('relationIds' in video) && !('factIds' in video) && JSON.stringify(video.sourceIds) === '["src:official-video"]', 'final destination must be the approved official video with the exact why / note and only the official-video source');
+  /* Founder decision v2（2026-09-06）: 公式映像は click-to-load の inline player。content は video id と、新しく足す唯一の copy「約15分で観終わります。」だけを持つ。 */
+  check(video.videoId === 'dt33RGSRuo0' && video.videoTitle === '主催団体の公式映像' && video.watchNote === '約15分で観終わります。', 'final destination carries the inline player data (approved id, neutral title, the single new copy 約15分で観終わります。)');
+  check(!/プライバシー|player|プレイヤー|操作|再生ボタン|YouTube/.test([video.label, video.why, video.note, video.watchNote].join(' ')), 'no privacy / provider / player / operating copy is added to the video destination');
   check((source('src:official-video') || {}).kind === 'official' && (source('src:official-video') || {}).url === 'https://www.youtube.com/watch?v=dt33RGSRuo0' && (source('src:official-video') || {}).name === '主催団体の公式映像' && thread.sources.filter((s) => /youtube\.com/.test(s.url)).length === 1, 'exactly one official-video source, with the exact approved YouTube URL and a neutral name');
-  check(!/youtube\.com\/embed|youtube-nocookie|ytimg|img\.youtube|autoplay|preload|<iframe|<video/i.test(contentCode) && !/youtube|ytimg|autoplay|<iframe|<video/i.test(js), 'no embed / autoplay / thumbnail / preload token in content or renderer');
+  check(!/youtube\.com\/embed|youtube-nocookie|ytimg|img\.youtube|autoplay|preload|<iframe|<video/i.test(contentCode) && !/youtube|ytimg|autoplay|<iframe|<video/i.test(js), 'no embed / autoplay / thumbnail / preload token in content or renderer (the player lives in video-embed.js)');
+  /* video-embed.js: click-to-load、プライバシー強化モード、自動再生なし、サムネイル / preconnect なし、保存・計測なし */
+  {
+    const ve = read('video-embed.js');
+    check(ve.includes("var PROVIDER = 'https://www.youtube-nocookie.com/embed/';") && ve.includes("'?playsinline=1&rel=0'") && !/autoplay=1/.test(ve), 'video-embed.js embeds youtube-nocookie without autoplay');
+    check(ve.includes("addEventListener('click'") && ve.includes("iframe.referrerPolicy = 'strict-origin-when-cross-origin'") && ve.includes("iframe.allow = 'encrypted-media; picture-in-picture; fullscreen'"), 'video-embed.js click gate / referrer / allow list');
+    for (const t of ['ytimg', 'img.youtube', 'preconnect', 'preload', 'prefetch', 'iframe_api', 'localStorage', 'sessionStorage', 'indexedDB', 'document.cookie', 'geolocation', 'fetch(', 'XMLHttpRequest', 'sendBeacon', 'setTimeout', 'setInterval', 'gtag', 'dataLayer', "'autoplay"]) check(!ve.includes(t), `video-embed.js must not contain ${t}`);
+    check(html.indexOf('<script src="./video-embed.js"></script>') > 0 && html.indexOf('<script src="./video-embed.js"></script>') < html.indexOf('<script src="./thread.js"></script>'), 'thread.html loads video-embed.js before thread.js');
+    check(js.includes("window.V3_VIDEO_EMBED.mount(root)") && js.includes("'data-video-id': d.videoId"), 'renderer mounts the shared click-to-load player on the video destination');
+  }
+  /* Founder decision v2: 公開 UI に「編集部の読み」の label を出さない（描画される文字列に 0） */
+  check(!JSON.stringify(CONTENT, (k, v) => (k === 'url' || k === 'src' ? '' : v)).includes('編集部の読み'), 'no visible 編集部の読み in rendered Thread strings');
   check(d.slice(0, 3).every((x) => Array.isArray(x.relationIds) && x.relationIds.length), 'the three place destinations keep their Thread relations');
   for (const x of d.slice(0, 3)) {
     check(/^https:\/\//.test(x.url), `destination ${x.id} must be https`);
@@ -412,12 +426,12 @@ check(/\(scene\.beats \|\| \[\]\)\.forEach/.test(js), 'renderer must iterate sce
   for (const t of ['th-fact-badge', 'th-claim', 'th-support', 'data-verification', 'th-relation', 'th-fact', 'factBadge(', 'supportBlock(']) {
     check(!reading.includes(t), `readingBlock must not inherit fact / support styling (${t})`);
   }
-  check(reading.includes("'data-layer': 'reading'") && reading.includes('th-reading-label'), 'readingBlock must mark itself as the reading layer');
+  check(reading.includes("'data-layer': 'reading'") && !reading.includes('th-reading-label') && !js.includes('編集部の読み'), 'readingBlock marks the reading layer without a visible label (Founder decision v2)');
   const claim = fn('claimBlock'), support = fn('supportBlock');
   check(claim.includes("'data-layer': 'claim'") && support.includes("'data-layer': 'support'"), 'claim / support blocks must be DOM-separated layers');
   check(js.includes("beat.kind === 'question'") && /beat\.kind === 'question'\) body\.push\(h\('p', \{ class: 'th-question', text: beat\.line \}\)\)/.test(js), 'question beat must render as a single paragraph');
   check((js.match(/h\('input'/g) || []).length === 1 && fn('modeFieldset').includes("h('input'"), 'the only input the renderer creates is the mode radio');
-  check(!/h\('button'|h\('select'|h\('form'|h\('textarea'/.test(js), 'renderer must create no button / select / form');
+  check((js.match(/h\('button'/g) || []).length === 1 && js.includes("h('button', { class: 'v3-video-load th-video-load', type: 'button' }") && !/h\('select'|h\('form'|h\('textarea'/.test(js), 'renderer creates exactly one button: the click-to-load video control (no select / form / textarea)');
   check(js.includes("'※並び順は、資料の正しさの順位ではありません。'"), 'evidence drawer must carry the ordering note');
   /* HQ LIMITED FIX 01 UNIT B: DISCOVERY CAN BE LIGHT. VERIFICATION MUST REMAIN DEEP.
      default surface は verificationState だけで決まり、Evidence data は drawer に全部残る。 */
@@ -466,7 +480,8 @@ for (const banned of ['animation', 'transition', '@keyframes', 'box-shadow', 'te
   }
   check(/\.th-reading \{[^}]*dashed/.test(css), 'editorial reading must be visibly distinct from fact boxes (dashed), including under forced colors');
   check(!cssRules.includes('.th-fact-badge') && cssRules.includes('.th-support-light') && cssRules.includes('.th-support-deep') && cssRules.includes('.th-evidence-flag'), 'thread.css must style the light / deep support surfaces without fact badges');
-  check(/\.th-reading-label \{[^}]*color/.test(css), 'editorial reading label must stay visible (styled, never hidden)');
+  check(!/\.th-reading-label/.test(css), 'no visible reading-label rule remains (Founder decision v2)');
+  check(/\.th-video-frame \{[^}]*aspect-ratio: 16 \/ 9/.test(css) && /\.th-video-load \{[^}]*min-height: 44px/.test(css), 'inline player frame is 16:9 with 44px+ controls');
   check(/forced-colors: active/.test(css) && /prefers-reduced-motion/.test(css) === false, 'thread.css must handle forced colors and needs no motion guard (nothing moves)');
   check(/min-height: 44px/.test(css), 'real controls must be at least 44px tall');
 }

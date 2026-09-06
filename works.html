@@ -81,8 +81,7 @@
         <p id="wk-book-category" class="wk-category">本</p>
         <h2 id="wk-book-title" class="wk-object">森崎書店の日々</h2>
         <p class="wk-byline">八木沢里志</p>
-        <section class="wk-reading" data-layer="reading" aria-label="編集部の読み">
-          <p class="wk-reading-label">編集部の読み</p>
+        <section class="wk-reading" data-layer="reading">
           <p class="wk-reading-text">一冊の物語を辿ると、映画になったあと、その先の神保町まで見えてきます。</p>
         </section>
         <p class="wk-relation">つながり：この本が映画になり、その映画は神保町で撮影されました。</p>
@@ -96,8 +95,7 @@
         <p id="wk-film-category" class="wk-category">映画</p>
         <h2 id="wk-film-title" class="wk-object">森崎書店の日々</h2>
         <p class="wk-byline">監督・脚本：日向朝子 ／ 2010</p>
-        <section class="wk-reading" data-layer="reading" aria-label="編集部の読み">
-          <p class="wk-reading-label">編集部の読み</p>
+        <section class="wk-reading" data-layer="reading">
           <p class="wk-reading-text">映画の背景に見えていた街が、作品を実際につくった場所として前に出てきます。</p>
         </section>
         <p class="wk-relation">つながり：この映画には原作があり、神保町で撮影されました。</p>
@@ -112,8 +110,7 @@
         <p id="wk-music-category" class="wk-category">音楽</p>
         <h2 id="wk-music-title" class="wk-object">不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204</h2>
         <p class="wk-byline">Boris with Michio Kurihara</p>
-        <section class="wk-reading" data-layer="reading" aria-label="編集部の読み">
-          <p class="wk-reading-label">編集部の読み</p>
+        <section class="wk-reading" data-layer="reading">
           <p class="wk-reading-text">ライブ盤を、曲の集まりだけでなく、2007年2月4日の下北沢SHELTERで起きた一度の演奏として聴き直します。</p>
         </section>
         <p class="wk-relation">つながり：2007年2月4日、下北沢SHELTERで録音されたライブ盤です。</p>
@@ -123,8 +120,10 @@
         <p class="wk-question">この音は、誰と、どこで、どの時間に生まれたんだろう？</p>
       </section>
 
-      <!-- 映像。LINK_ONLY。事実（この映像について）と 編集部の読み は別の枠に置く。
-           embed / thumbnail hotlink / autoplay / 再生数・いいね・フォロワー数は無い。 -->
+      <!-- 映像。事実（この映像について）は claim 枠。公式映像は利用者が押したときだけ
+           ページ内に置く click-to-load player（video-embed.js、プライバシー強化モード、
+           自動再生なし）。表示しただけでは provider へ接続しない。thumbnail hotlink /
+           再生数・いいね・フォロワー数は無い。 -->
       <section id="video" class="wk-work" data-work="video" aria-labelledby="wk-video-category wk-video-title">
         <p id="wk-video-category" class="wk-category">映像</p>
         <h2 id="wk-video-title" class="wk-object">高円寺の踊り｜主催団体の公式映像（2025）</h2>
@@ -133,12 +132,12 @@
           <p class="wk-info-label">この映像について</p>
           <p class="wk-info-text">2025年に高円寺で行われた催しを伝える、主催団体の公式映像です。</p>
         </div>
-        <section class="wk-reading" data-layer="reading" aria-label="編集部の読み">
-          <p class="wk-reading-label">編集部の読み</p>
-          <p class="wk-reading-text">踊り手の動きと街路の流れを続けて見ると、高円寺の通りが背景ではなく、出来事を成立させる場所として見えてきます。</p>
-        </section>
         <p class="wk-relation">つながり：高円寺の街で行われる踊りを記録した、主催団体の公式映像です。</p>
-        <p class="wk-primary"><a class="wk-action official-action" href="https://www.youtube.com/watch?v=dt33RGSRuo0" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">現在の公式映像を見る<span class="wk-mark" aria-hidden="true"> ↗</span></a></p>
+        <div class="wk-video v3-video" data-video-id="dt33RGSRuo0" data-video-title="高円寺の踊り｜主催団体の公式映像（2025）">
+          <div class="v3-video-frame"><button class="v3-video-load wk-video-load" type="button">現在の公式映像を見る<span class="wk-mark" aria-hidden="true"> ▶</span></button></div>
+          <p class="v3-video-duration wk-video-duration">約15分で観終わります。</p>
+          <noscript><p class="wk-primary"><a class="wk-action official-action" href="https://www.youtube.com/watch?v=dt33RGSRuo0" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">現在の公式映像を見る<span class="wk-mark" aria-hidden="true"> ↗</span></a></p></noscript>
+        </div>
         <p class="wk-action-row"><a class="wk-action official-action" href="https://www.koenji-awaodori.com/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">主催団体の公式サイトを見る<span class="wk-mark" aria-hidden="true"> ↗</span></a></p>
       </section>
 
@@ -162,5 +161,6 @@
   <script src="./growth-improvements.js"></script>
   <script src="./release.js"></script>
   <script src="./analytics-v3.js"></script>
+  <script src="./video-embed.js"></script>
 </body>
 </html>

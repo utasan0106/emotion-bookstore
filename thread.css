@@ -311,23 +311,17 @@
 }
 .th-difference-note { color: var(--chalk); }
 
-/* ------------------------------------------ 編集部の読み（READING） */
+/* ------------------------------------------ 読み（READING layer） */
 
 /* 事実の枠（実線・地の持ち上げ）とは別の見え方にする。破線は
-   forced-colors でも実線と区別が残る。fact badge も検証状態も持たない。 */
+   forced-colors でも実線と区別が残る。fact badge も検証状態も持たない。
+   見える label は無い（Founder decision 2026-09-06 v2）。 */
 .th-reading {
   margin: 22px 0 0;
   padding: 14px 18px;
   border: 1px dashed var(--hall-edge);
   border-radius: 2px;
   background: transparent;
-}
-.th-reading-label {
-  margin: 0 0 6px;
-  font-family: var(--serif);
-  font-size: 0.8125rem;
-  letter-spacing: .16em;
-  color: var(--signal);
 }
 .th-reading-text { margin: 0; color: var(--chalk); }
 
@@ -428,6 +422,56 @@
 }
 .th-destination-why { color: var(--chalk); }
 
+/* 公式映像。押すまで provider へ接続しない click-to-load の枠（16:9）。
+   押したあとは同じ枠の中に player が入る。自動再生なし。 */
+.th-video { margin: 0 0 4px; }
+.th-video-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--hall-edge);
+  border-radius: 2px;
+  background: var(--hall-raised);
+  overflow: hidden;
+}
+.th-video-load {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  min-height: 44px;
+  padding: 16px;
+  border: 0;
+  background: transparent;
+  color: var(--chalk);
+  font: inherit;
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  letter-spacing: .04em;
+  text-align: center;
+  cursor: pointer;
+}
+.th-video-load .th-destination-label {
+  text-decoration: underline;
+  text-decoration-color: var(--signal);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+.th-video-mark { color: var(--signal); }
+.th-video-frame .v3-video-iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.th-video-duration {
+  margin: 8px 0 0;
+  font-size: 0.9375rem;
+  color: var(--chalk-dim);
+}
+
+
 .th-status {
   margin: 26px 0 0;
   padding: 14px 18px;
@@ -500,8 +544,10 @@
 @media (forced-colors: active) {
   .th-relation, .th-fact, .th-source, .th-mode, .th-status, .th-figure-image { border-color: CanvasText; }
   .th-reading { border: 1px dashed CanvasText; }
+  .th-video-frame { border-color: CanvasText; }
+  .th-video-load { border: 2px solid ButtonText; background: ButtonFace; color: ButtonText; forced-color-adjust: none; }
   .th-cue { border-left-color: CanvasText; }
-  .th-node-arrow, .th-reading-label { color: CanvasText; }
+  .th-node-arrow { color: CanvasText; }
   .th-evidence-summary:focus-visible, .th-mode-input:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
 }
 

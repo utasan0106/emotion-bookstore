@@ -110,6 +110,7 @@ const MEASURE = () => {
       readingLayer: reading ? reading.getAttribute('data-layer') : null, readingBorder: reading ? getComputedStyle(reading).borderTopStyle : null,
       info: info ? { layer: info.getAttribute('data-layer'), label: txt('.wk-info-label', s), text: txt('.wk-info-text', s), border: getComputedStyle(info).borderTopStyle } : null,
       infoBeforeReading: info && reading ? info.compareDocumentPosition(reading) & Node.DOCUMENT_POSITION_FOLLOWING : null,
+      player: (() => { const host = s.querySelector('.v3-video'); if (!host) return null; const btn = host.querySelector('button.v3-video-load'); const rel = s.querySelector('.wk-relation'); return { id: host.getAttribute('data-video-id'), state: host.getAttribute('data-video-state'), title: host.getAttribute('data-video-title'), button: btn ? btn.textContent.replace(/\s+/g, ' ').trim() : null, h: btn ? R(btn).h : 0, w: btn ? R(btn).w : 0, duration: txt('.wk-video-duration', s), iframes: host.querySelectorAll('iframe').length, anchors: host.querySelectorAll('a').length, afterRelation: !!(rel && (rel.compareDocumentPosition(host) & Node.DOCUMENT_POSITION_FOLLOWING)) }; })(),
       relation: txt('.wk-relation', s), current: txt('.wk-current', s), question: txt('.wk-question', s),
       links: [...s.querySelectorAll('a')].map((a) => {
         const b = R(a); const cs = getComputedStyle(a);
@@ -134,7 +135,7 @@ const MEASURE = () => {
     exit: exit ? { href: exit.getAttribute('href'), text: exit.textContent.trim(), h: R(exit).h } : null,
     mainMedia: document.querySelectorAll('#main img, #main iframe, #main audio, #main video, #main canvas').length,
     iframes: document.querySelectorAll('iframe').length, thread: document.querySelectorAll('.th-thread, .th-scene, .th-relation').length,
-    fonts: document.fonts.status, text: document.body.innerText,
+    fonts: document.fonts.status, text: document.body.innerText, readingLabels: document.querySelectorAll('.wk-reading-label').length,
     storage: { writes: window.__storageWrites, ls: readStore(() => localStorage.length), ss: readStore(() => sessionStorage.length), cookie: document.cookie },
     perm: window.__permCalls, dataLayer: typeof window.dataLayer, gtag: typeof window.gtag
   };
@@ -228,31 +229,33 @@ async function elementShot(page, selector, name, width) {
     check(S, 'no_clipped_text', m.clipped.length === 0, m.clipped.slice(0, 6));
     check(S, 'one_column_640_max', !!m.rootRect && m.rootRect.w <= 640 && m.sections.every((s) => s.rect.x === m.rootRect.x && Math.abs(s.rect.w - m.rootRect.w) <= 1), { root: m.rootRect, sections: m.sections.map((s) => s.rect) });
 
-    check(S, 'book_copy_exact', !!sec.book && sec.book.category === '本' && sec.book.object === '森崎書店の日々' && sec.book.byline === '八木沢里志' && sec.book.readingLabel === '編集部の読み' &&
+    check(S, 'book_copy_exact', !!sec.book && sec.book.category === '本' && sec.book.object === '森崎書店の日々' && sec.book.byline === '八木沢里志' && sec.book.readingLabel === null &&
       sec.book.reading === '一冊の物語を辿ると、映画になったあと、その先の神保町まで見えてきます。' && sec.book.relation === 'つながり：この本が映画になり、その映画は神保町で撮影されました。' && sec.book.current === '現在は2025年刊の新装版で読むことができます。' && !sec.book.info, sec.book);
-    check(S, 'film_copy_exact', !!sec.film && sec.film.category === '映画' && sec.film.object === '森崎書店の日々' && sec.film.byline === '監督・脚本：日向朝子 ／ 2010' && sec.film.readingLabel === '編集部の読み' &&
+    check(S, 'film_copy_exact', !!sec.film && sec.film.category === '映画' && sec.film.object === '森崎書店の日々' && sec.film.byline === '監督・脚本：日向朝子 ／ 2010' && sec.film.readingLabel === null &&
       sec.film.reading === '映画の背景に見えていた街が、作品を実際につくった場所として前に出てきます。' && sec.film.relation === 'つながり：この映画には原作があり、神保町で撮影されました。' && !sec.film.info, sec.film);
     check(S, 'music_copy_exact_boris', !!sec.music && sec.music.category === '音楽' && sec.music.object === '不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204' && sec.music.byline === 'Boris with Michio Kurihara' &&
-      sec.music.readingLabel === '編集部の読み' && sec.music.reading === 'ライブ盤を、曲の集まりだけでなく、2007年2月4日の下北沢SHELTERで起きた一度の演奏として聴き直します。' && sec.music.relation === 'つながり：2007年2月4日、下北沢SHELTERで録音されたライブ盤です。' &&
+      sec.music.readingLabel === null && sec.music.reading === 'ライブ盤を、曲の集まりだけでなく、2007年2月4日の下北沢SHELTERで起きた一度の演奏として聴き直します。' && sec.music.relation === 'つながり：2007年2月4日、下北沢SHELTERで録音されたライブ盤です。' &&
       sec.music.question === 'この音は、誰と、どこで、どの時間に生まれたんだろう？' && !sec.music.info, sec.music);
-    check(S, 'video_fact_and_reading_are_separate_layers', !!sec.video && sec.video.category === '映像' && sec.video.object === '高円寺の踊り｜主催団体の公式映像（2025）' && sec.video.byline === '主催団体 ／ 2025' &&
+    check(S, 'video_fact_block_then_inline_player', !!sec.video && sec.video.category === '映像' && sec.video.object === '高円寺の踊り｜主催団体の公式映像（2025）' && sec.video.byline === '主催団体 ／ 2025' &&
       !!sec.video.info && sec.video.info.layer === 'claim' && sec.video.info.label === 'この映像について' && sec.video.info.text === '2025年に高円寺で行われた催しを伝える、主催団体の公式映像です。' && sec.video.info.border === 'solid' &&
-      sec.video.readingLayer === 'reading' && sec.video.readingLabel === '編集部の読み' && sec.video.reading === '踊り手の動きと街路の流れを続けて見ると、高円寺の通りが背景ではなく、出来事を成立させる場所として見えてきます。' &&
-      sec.video.relation === 'つながり：高円寺の街で行われる踊りを記録した、主催団体の公式映像です。' && sec.video.infoBeforeReading > 0, sec.video);
+      sec.video.readingLayer === null && sec.video.reading === null && sec.video.relation === 'つながり：高円寺の街で行われる踊りを記録した、主催団体の公式映像です。' &&
+      !!sec.video.player && sec.video.player.id === 'dt33RGSRuo0' && sec.video.player.state === 'idle' && sec.video.player.title === '高円寺の踊り｜主催団体の公式映像（2025）' && sec.video.player.button === '現在の公式映像を見る ▶' && sec.video.player.h >= 44 && sec.video.player.w >= 44 &&
+      sec.video.player.duration === '約15分で観終わります。' && sec.video.player.iframes === 0 && sec.video.player.anchors === 0 && sec.video.player.afterRelation && sec.video.controls === 1, sec.video);
+    check(S, 'no_visible_editorial_label', m.readingLabels === 0 && !m.text.includes('編集部の読み') && m.sections.filter((s) => s.readingLayer === 'reading').map((s) => s.id).join() === 'book,film,music', { labels: m.readingLabels, readings: m.sections.map((s) => s.id + ':' + s.readingLayer) });
     /* NAME AVOIDANCE（Founder no-inquiry decision）: works.html の描画テキスト / title / alt に保護名・類似名は 0。 */
     check(S, 'no_protected_event_name_on_works', !/東京高円寺阿波おどり|高円寺阿波おどり|高円寺阿波踊り/.test(m.text + '\n' + m.title), m.title);
     check(S, 'relation_previews_are_plain_sentences', m.sections.every((s) => /^つながり：/.test(s.relation || '') && !/→/.test(s.relation || '')), m.sections.map((s) => s.relation));
-    check(S, 'editorial_reading_is_dashed_everywhere', m.sections.every((s) => s.readingLayer === 'reading' && s.readingBorder === 'dashed'), m.sections.map((s) => [s.id, s.readingBorder]));
+    check(S, 'editorial_reading_is_dashed_where_present', m.sections.filter((s) => s.id !== 'video').every((s) => s.readingLayer === 'reading' && s.readingBorder === 'dashed') && m.sections.find((s) => s.id === 'video').readingLayer === null, m.sections.map((s) => [s.id, s.readingBorder]));
 
     /* 内部 route（Book / Film）と外部 action（凍結された 7 件、click-only の普通の link） */
     const internal = m.sections.flatMap((s) => s.links.filter((l) => /^\.\//.test(l.href)).map((l) => Object.assign({ section: s.id }, l)));
     check(S, 'internal_routes_book_and_film', internal.length === 2 && internal.every((l) => INTERNAL[l.section] && l.href === INTERNAL[l.section].href && l.label === INTERNAL[l.section].label && !l.target && !l.rel && !l.official && !l.shelfEntry && l.cls === 'wk-route'), internal);
     const external7 = m.sections.flatMap((s) => s.links.filter((l) => /^https?:/.test(l.href)).map((l) => Object.assign({ section: s.id }, l)));
-    check(S, 'external_actions_are_the_frozen_seven', external7.length === 7 && external7.every((l) => EXTERNAL[l.href] && EXTERNAL[l.href].section === l.section && EXTERNAL[l.href].label === l.label) &&
-      Object.keys(EXTERNAL).every((href) => external7.some((l) => l.href === href)), external7.map((l) => [l.section, l.href, l.label]));
+    check(S, 'external_actions_are_the_frozen_six_plus_inline_player', external7.length === 6 && !external7.some((l) => /youtube\.com/.test(l.href)) && m.sections.find((s) => s.id === 'video').player && external7.every((l) => EXTERNAL[l.href] && EXTERNAL[l.href].section === l.section && EXTERNAL[l.href].label === l.label) &&
+      Object.keys(EXTERNAL).filter((href) => !/youtube\.com/.test(href)).every((href) => external7.some((l) => l.href === href)), external7.map((l) => [l.section, l.href, l.label])); /* the YouTube URL survives only as the noscript fallback */
     check(S, 'external_actions_open_safely', external7.every((l) => l.target === '_blank' && /noopener/.test(l.rel || '') && /noreferrer/.test(l.rel || '') && l.referrer === 'no-referrer'), external7.map((l) => [l.href, l.target, l.rel, l.referrer]));
     check(S, 'official_action_only_on_official_or_listening_actions', external7.every((l) => l.official === EXTERNAL[l.href].official && !l.shelfEntry), external7.map((l) => [l.href, l.official]));
-    check(S, 'actions_are_links_not_buttons', m.sections.every((s) => s.controls === 0) && m.sections.every((s) => s.links.every((l) => l.display === 'inline-block' && l.bg === 'rgba(0, 0, 0, 0)')), m.sections.map((s) => [s.id, s.controls, s.links.map((l) => [l.display, l.bg])]));
+    check(S, 'actions_are_links_except_the_video_load_button', m.sections.every((s) => s.controls === (s.id === 'video' ? 1 : 0)) && m.sections.every((s) => s.links.every((l) => l.display === 'inline-block' && l.bg === 'rgba(0, 0, 0, 0)')), m.sections.map((s) => [s.id, s.controls, s.links.map((l) => [l.display, l.bg])]));
     check(S, 'music_order_listen_source_reality_question', (() => { const t = sec.music ? sec.music.text : ''; const o = ['音源を聴く', '録音日と会場を確認する', 'いまのSHELTERを見る', 'この音は、誰と'].map((x) => t.indexOf(x)); return o.every((x, i) => x >= 0 && (i === 0 || x > o[i - 1])); })(), sec.music && sec.music.text.slice(0, 200));
     check(S, 'no_media_no_embed_no_thumbnail', m.mainMedia === 0 && m.iframes === 0 && m.sections.every((s) => s.media === 0), { main: m.mainMedia, iframes: m.iframes });
     check(S, 'works_is_static_not_a_thread', m.thread === 0, m.thread);
@@ -304,7 +307,7 @@ async function elementShot(page, selector, name, width) {
       return { overflow: doc.scrollWidth > doc.clientWidth + 1, text: document.body.innerText.length, infoBorder: bw('.wk-info'), infoStyle: bs('.wk-info'), readingBorder: bw('.wk-reading'), readingStyle: bs('.wk-reading'), links: document.querySelectorAll('#main a').length, sections: document.querySelectorAll('section.wk-work').length };
     });
     check(S, 'no_horizontal_overflow', !fc.overflow);
-    check(S, 'content_is_not_lost', fc.text > 400 && fc.sections === 4 && fc.links >= 10, fc);
+    check(S, 'content_is_not_lost', fc.text > 400 && fc.sections === 4 && fc.links >= 9, fc);
     check(S, 'fact_and_reading_boxes_stay_distinguishable', fc.infoBorder >= 1 && fc.infoStyle === 'solid' && fc.readingBorder >= 1 && fc.readingStyle === 'dashed', fc);
     check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
     check(S, 'no_js_error', errs.length === 0, errs.slice(0, 2));
@@ -346,11 +349,11 @@ async function elementShot(page, selector, name, width) {
     }
     const names = order.map((o) => o.el).join('>');
     const hrefs = order.filter((o) => o.href && !/^#|^\.\/index\.html$/.test(o.href)).map((o) => o.href);
-    check(S, 'tab_order_reaches_every_real_control', names.startsWith('skip-link>brand-home>menu-trigger>wk-route>wk-action>wk-route>wk-action>wk-action>wk-action>wk-action>wk-action>wk-action>other-shelves>footer-brand'), names);
+    check(S, 'tab_order_reaches_every_real_control', names.startsWith('skip-link>brand-home>menu-trigger>wk-route>wk-action>wk-route>wk-action>wk-action>wk-action>wk-action>v3-video-load>wk-action>other-shelves>footer-brand'), names);
     check(S, 'tab_order_follows_the_page_order', hrefs.join('|') === [
       './thread.html?thread=morisaki-book', 'https://ebook.shogakukan.co.jp/detail.php?bc=093867650000d0000000&gid=1000', './thread.html?thread=morisaki-film', 'https://jfdb.jp/title/2240',
       'https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204', 'https://borisheavyrocks.com/discography/4525/', 'https://www.loft-prj.co.jp/schedule/shelter',
-      'https://www.youtube.com/watch?v=dt33RGSRuo0', 'https://www.koenji-awaodori.com/'].join('|'), hrefs);
+      'https://www.koenji-awaodori.com/'].join('|'), hrefs);
     check(S, 'focus_visible_outline_on_every_stop', order.filter((o) => o.el !== 'BODY').every((o) => o.fv && o.outline), order.filter((o) => o.el !== 'BODY' && !(o.fv && o.outline)));
     // menu by keyboard
     await page.focus('#siteMenuButton');
@@ -409,7 +412,7 @@ async function elementShot(page, selector, name, width) {
     await ctx.route((url) => !url.href.startsWith(origin), (r) => r.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><title>stub</title>' }));
     await settle(page);
     check(S, 'no_external_request_before_click', external.length === 0, external.slice(0, 3));
-    for (const [sel, host, name] of [['#music a[href^="https://boris.bandcamp.com/"]', 'https://boris.bandcamp.com/', 'music_listen'], ['#video a[href^="https://www.youtube.com/"]', 'https://www.youtube.com/', 'video_watch']]) {
+    for (const [sel, host, name] of [['#music a[href^="https://boris.bandcamp.com/"]', 'https://boris.bandcamp.com/', 'music_listen']]) {
       const before = external.length;
       await page.evaluate((s) => document.querySelector(s).scrollIntoView({ block: 'center' }), sel);
       const [popup] = await Promise.all([ctx.waitForEvent('page', { timeout: 5000 }).catch(() => null), page.click(sel)]);
@@ -420,6 +423,17 @@ async function elementShot(page, selector, name, width) {
       const stayed = await page.evaluate(() => ({ url: location.pathname.split('/').pop(), sections: document.querySelectorAll('section.wk-work').length }));
       check(S, `${name}_keeps_works_open`, stayed.url === 'works.html' && stayed.sections === 4, stayed);
       if (popup) await popup.close();
+    }
+    /* Founder decision v2: 公式映像は click-to-load の inline player。押すまで provider 通信 0、押すと同じ枠に youtube-nocookie の iframe（自動再生なし）。新しいタブは開かない。 */
+    {
+      const before = external.length; let popupSeen = false; ctx.once('page', () => { popupSeen = true; });
+      await page.evaluate(() => document.querySelector('#video button.v3-video-load').scrollIntoView({ block: 'center' }));
+      await page.click('#video button.v3-video-load');
+      await page.waitForTimeout(500);
+      const after = external.slice(before);
+      const st = await page.evaluate(() => { const f = document.querySelector('#video iframe'); const host = document.querySelector('#video .v3-video'); return { url: location.pathname.split('/').pop(), sections: document.querySelectorAll('section.wk-work').length, iframes: document.querySelectorAll('iframe').length, src: f ? f.getAttribute('src') : null, title: f ? f.getAttribute('title') : null, allow: f ? f.getAttribute('allow') : null, rp: f ? f.getAttribute('referrerpolicy') : null, state: host ? host.getAttribute('data-video-state') : null, buttons: document.querySelectorAll('#video button').length }; });
+      check(S, 'video_click_loads_inline_nocookie_player_without_autoplay', !popupSeen && st.url === 'works.html' && st.sections === 4 && st.iframes === 1 && st.src === 'https://www.youtube-nocookie.com/embed/dt33RGSRuo0?playsinline=1&rel=0' && st.title === '高円寺の踊り｜主催団体の公式映像（2025）' && !/autoplay=1/.test(st.src) && (st.allow || '').indexOf('autoplay') < 0 && st.rp === 'strict-origin-when-cross-origin' && st.state === 'loaded' && st.buttons === 0, st);
+      check(S, 'video_provider_requests_only_after_click_and_only_nocookie', after.length >= 1 && after.every((u) => u.startsWith('https://www.youtube-nocookie.com/embed/dt33RGSRuo0')), after.slice(0, 3));
     }
     check(S, 'no_js_error', errs.length === 0, errs.slice(0, 2));
     await ctx.close();
@@ -483,7 +497,7 @@ async function elementShot(page, selector, name, width) {
       shell: !!document.getElementById('siteMenuButton') && !!document.querySelector('.site-footer') && !!document.querySelector('.skip-link'), overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       text: document.getElementById('main').innerText
     }));
-    check(S, 'static_content_fully_readable_without_js', off.sections === 4 && off.links >= 10 && off.title === TITLE && /森崎書店の日々/.test(off.text) && /Boris with Michio Kurihara/.test(off.text) && /高円寺の踊り｜主催団体の公式映像（2025）/.test(off.text), { sections: off.sections, links: off.links });
+    check(S, 'static_content_fully_readable_without_js', off.sections === 4 && off.links >= 10 && off.title === TITLE && /森崎書店の日々/.test(off.text) && /Boris with Michio Kurihara/.test(off.text) && /高円寺の踊り｜主催団体の公式映像（2025）/.test(off.text) && /現在の公式映像を見る/.test(off.text) && !/編集部の読み/.test(off.text), { sections: off.sections, links: off.links });
     check(S, 'shell_intact_no_overflow', off.shell && !off.overflow, off);
     check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
     if (OUT) await shot(page, 'WORKS_JS_OFF_390');

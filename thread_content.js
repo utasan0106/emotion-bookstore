@@ -227,7 +227,7 @@
         relationIds: ['rel:renamed-1963'],
         close: 'いまの名称が最初からあったのではなく、1963年に正式に変わったことが見える。',
         editorialReading: {
-          text: '受け取ったものが、街の中で別の形になっていく。——これは編集部の読みです。名称が変わった理由そのものは、このThreadでは扱っていません。',
+          text: '受け取ったものが、街の中で別の形になっていく。名称が変わった理由そのものは、このThreadでは扱っていません。',
           refs: ['rel:learned-1961-62', 'rel:renamed-1963']
         }
       },
@@ -235,7 +235,7 @@
         id: 's4',
         title: 'いま、もう一度',
         editorialReading: {
-          text: '同じ高円寺の踊りが、人から人へ渡り、この街で名前を変えながら続いてきたものとして見える。——これは編集部の読みです。',
+          text: '同じ高円寺の踊りが、人から人へ渡り、この街で名前を変えながら続いてきたものとして見える。',
           refs: ['fact:present-groups', 'rel:learned-1961-62', 'rel:renamed-1963']
         }
       },
@@ -299,12 +299,17 @@
         relationIds: ['rel:renamed-1963'],
         sourceIds: ['src:official-home']
       },
-      /* FOUNDER PREVIEW FIX UNIT E: 最後の 4 つ目。ここまで辿った踊りを、主催団体の公式映像で見る。
-         埋め込み・自動再生・サムネイル・事前読込は使わない。user click でだけ開く。 */
+      /* FOUNDER PREVIEW FIX UNIT E + Founder decision v2（2026-09-06）: 最後の 4 つ目。ここまで辿った
+         踊りを、主催団体の公式映像で見る。利用者が押したときだけ、このページ内に player を置く
+         （video-embed.js、プライバシー強化モード、自動再生なし）。表示しただけでは provider へ
+         接続しない。サムネイル・事前読込は使わない。 */
       {
         id: 'dest:official-video',
         label: '最後に、現在の公式映像を見る',
         url: 'https://www.youtube.com/watch?v=dt33RGSRuo0',
+        videoId: 'dt33RGSRuo0',
+        videoTitle: '主催団体の公式映像',
+        watchNote: '約15分で観終わります。',
         why: 'ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。',
         note: '2025年の催しを伝える、主催団体の公式映像です。',
         sourceIds: ['src:official-video']

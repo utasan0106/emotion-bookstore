@@ -74,9 +74,9 @@ check(html.includes('<meta name="referrer" content="no-referrer">'), 'works.html
   check(!/<script/i.test(head), 'no synchronous head JS');
   check(!/rel="(?:preconnect|dns-prefetch|preload|prefetch|modulepreload)"/i.test(head), 'no preconnect / dns-prefetch / preload to any host');
   const scripts = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map((m) => m[1]);
-  check(scripts.join('|') === './release_content.js|./growth-improvements.js|./release.js|./analytics-v3.js',
-    `script order must be release_content → growth-improvements → release → analytics-v3 (got ${scripts.join(', ')})`);
-  check((html.match(/<script/g) || []).length === 4, 'exactly four script tags (no Music / Video / Works-specific JS)');
+  check(scripts.join('|') === './release_content.js|./growth-improvements.js|./release.js|./analytics-v3.js|./video-embed.js',
+    `script order must be release_content → growth-improvements → release → analytics-v3 → video-embed (got ${scripts.join(', ')})`);
+  check((html.match(/<script/g) || []).length === 5, 'exactly five script tags (shared video-embed.js click-to-load player; no Music / Works-specific JS)');
   check(!/<script[^>]*>[^<]*\S[^<]*<\/script>/.test(html), 'no inline script');
   check(!html.includes('thread.js') && !html.includes('thread_content.js'), 'works.html must not load the Thread renderer');
 }
@@ -90,7 +90,7 @@ check(html.includes('<meta name="referrer" content="no-referrer">'), 'works.html
   const main = (body.match(/<main[\s\S]*?<\/main>/) || [''])[0];
   check(main.length > 0, '<main> missing');
   check(!/<img/.test(main), '<main> of works.html must carry no image (no album art / thumbnail / provider image)');
-  check(!/<(button|input|select|textarea|form)\b/.test(main), '<main> of works.html must carry no control other than links');
+  check(!/<(input|select|textarea|form)\b/.test(main) && (main.match(/<button\b/g) || []).length === 1 && main.includes('<button class="v3-video-load wk-video-load" type="button">'), '<main> of works.html carries exactly one control besides links: the click-to-load video button');
   for (const hook of ['class="skip-link" href="#main"', 'id="siteMenuButton"', 'id="siteMenu"', 'id="siteMenuClose"', 'id="siteMenuFavorites"',
     'class="site-menu-secondary"', 'id="main"', 'id="live"', 'class="site-footer"', 'class="footer-brand"', 'class="brand-lockup-image"',
     'href="./data.html"', 'href="./credits.html"', 'href="./index.html#hc-works"', 'href="./index.html#hc-thread"']) {
@@ -165,7 +165,7 @@ const EXTERNAL_SET = {
 /* BOOK */
 {
   const s = textOf(sectionOf('book'));
-  for (const c of ['本', '森崎書店の日々', '八木沢里志', '編集部の読み', '一冊の物語を辿ると、映画になったあと、その先の神保町まで見えてきます。', 'つながり：この本が映画になり、その映画は神保町で撮影されました。', 'この本から辿る',
+  for (const c of ['本', '森崎書店の日々', '八木沢里志', '一冊の物語を辿ると、映画になったあと、その先の神保町まで見えてきます。', 'つながり：この本が映画になり、その映画は神保町で撮影されました。', 'この本から辿る',
     '現在は2025年刊の新装版で読むことができます。', '新装版を確認する']) check(s.includes(c), `#book copy missing: ${c}`);
   check(sectionOf('book').includes('<p id="wk-book-category" class="wk-category">本</p>') && sectionOf('book').includes('<h2 id="wk-book-title" class="wk-object">森崎書店の日々</h2>') && sectionOf('book').includes('<p class="wk-byline">八木沢里志</p>'), '#book category / object / byline markup');
   check(!/ページ|\d+頁|\d+ページ/.test(s), '#book must not show the current edition page count');
@@ -173,7 +173,7 @@ const EXTERNAL_SET = {
 /* FILM */
 {
   const s = textOf(sectionOf('film'));
-  for (const c of ['映画', '森崎書店の日々', '監督・脚本：日向朝子 ／ 2010', '編集部の読み', '映画の背景に見えていた街が、作品を実際につくった場所として前に出てきます。', 'つながり：この映画には原作があり、神保町で撮影されました。', 'この映画から辿る', '作品情報を確認する']) {
+  for (const c of ['映画', '森崎書店の日々', '監督・脚本：日向朝子 ／ 2010', '映画の背景に見えていた街が、作品を実際につくった場所として前に出てきます。', 'つながり：この映画には原作があり、神保町で撮影されました。', 'この映画から辿る', '作品情報を確認する']) {
     check(s.includes(c), `#film copy missing: ${c}`);
   }
   check(sectionOf('film').includes('<p id="wk-film-category" class="wk-category">映画</p>') && sectionOf('film').includes('<h2 id="wk-film-title" class="wk-object">森崎書店の日々</h2>') && sectionOf('film').includes('<p class="wk-byline">監督・脚本：日向朝子 ／ 2010</p>'), '#film category / object / byline markup');
@@ -182,7 +182,7 @@ const EXTERNAL_SET = {
 {
   const raw = sectionOf('music');
   const s = textOf(raw);
-  for (const c of ['音楽', '不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204', 'Boris with Michio Kurihara', '編集部の読み',
+  for (const c of ['音楽', '不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204', 'Boris with Michio Kurihara',
     'ライブ盤を、曲の集まりだけでなく、2007年2月4日の下北沢SHELTERで起きた一度の演奏として聴き直します。', 'つながり：2007年2月4日、下北沢SHELTERで録音されたライブ盤です。', '音源を聴く', '録音日と会場を確認する', 'いまのSHELTERを見る',
     'この音は、誰と、どこで、どの時間に生まれたんだろう？']) check(s.includes(c), `#music copy missing: ${c}`);
   check(raw.includes('<h2 id="wk-music-title" class="wk-object">不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204</h2>') && raw.includes('<p class="wk-byline">Boris with Michio Kurihara</p>'), '#music object / byline markup');
@@ -192,23 +192,26 @@ const EXTERNAL_SET = {
   check(!/4th Jan 2007|2007-01-04|1月4日|borisheavyrocks\.com\/news\/4479/.test(html), 'the Boris news misprint (4th Jan 2007) must not be a source');
   check(!/<img|<audio|<iframe|bandcamp\.com\/EmbeddedPlayer|album art|アルバムアート/.test(raw), '#music must carry no album art / embedded player');
 }
-/* VIDEO — Human GO（Addendum v0.3）: fact block + 編集部の読み（別の枠） */
+/* VIDEO — Founder decision v2（2026-09-06）: fact block（claim）+ relation + click-to-load inline player（主役）+ 主催団体 official action。
+   読みの段落は削除（冗長）。新しい copy は「約15分で観終わります。」だけ。 */
 {
   const raw = sectionOf('video');
   const s = textOf(raw);
   for (const c of ['映像', '高円寺の踊り｜主催団体の公式映像（2025）', '主催団体 ／ 2025', 'この映像について',
-    '2025年に高円寺で行われた催しを伝える、主催団体の公式映像です。', '編集部の読み',
-    '踊り手の動きと街路の流れを続けて見ると、高円寺の通りが背景ではなく、出来事を成立させる場所として見えてきます。',
-    'つながり：高円寺の街で行われる踊りを記録した、主催団体の公式映像です。', '現在の公式映像を見る', '主催団体の公式サイトを見る']) check(s.includes(c), `#video copy missing: ${c}`);
+    '2025年に高円寺で行われた催しを伝える、主催団体の公式映像です。',
+    'つながり：高円寺の街で行われる踊りを記録した、主催団体の公式映像です。', '現在の公式映像を見る', '約15分で観終わります。', '主催団体の公式サイトを見る']) check(s.includes(c), `#video copy missing: ${c}`);
   check(raw.includes('<h2 id="wk-video-title" class="wk-object">高円寺の踊り｜主催団体の公式映像（2025）</h2>') && raw.includes('<p class="wk-byline">主催団体 ／ 2025</p>'), '#video object / byline markup (neutral, Founder no-inquiry)');
   check(/<div class="wk-info" data-layer="claim">\s*<p class="wk-info-label">この映像について<\/p>\s*<p class="wk-info-text">2025年に高円寺で行われた催しを伝える、主催団体の公式映像です。<\/p>\s*<\/div>/.test(raw), 'video fact block must be the claim layer with the neutral fact text');
   /* NAME AVOIDANCE（Founder no-inquiry decision）: works.html の user-facing text に保護名・類似名は 0。外部 URL は provenance として除く。 */
   { const F = ['東京高円寺阿波おどり', '高円寺阿波おどり', '高円寺阿波踊り']; const t = textOf(stripHtml(html)) + ' ' + html.replace(/https?:\/\/[^\s"'<>)]+/g, ''); const hits = F.filter((x) => t.includes(x)); check(hits.length === 0, `NAME AVOIDANCE: works.html must not carry the protected / similar event name (${hits.join(' / ')})`); }
   check(!/after movie/.test(s), 'our own Work title must not reproduce the official YouTube title');
-  check(/<section class="wk-reading" data-layer="reading"[^>]*>\s*<p class="wk-reading-label">編集部の読み<\/p>\s*<p class="wk-reading-text">踊り手の動きと街路の流れを続けて見ると、高円寺の通りが背景ではなく、出来事を成立させる場所として見えてきます。<\/p>\s*<\/section>/.test(raw), 'video editorial reading must be a separate reading layer with the human-approved sentence');
-  check(raw.indexOf('wk-info') < raw.indexOf('wk-reading'), 'video fact block comes before the editorial reading');
+  check(!/wk-reading|踊り手の動きと街路の流れ/.test(raw), '#video carries no editorial-reading paragraph (removed as redundant, Founder decision v2)');
+  check(raw.includes('<div class="wk-video v3-video" data-video-id="dt33RGSRuo0" data-video-title="高円寺の踊り｜主催団体の公式映像（2025）">') && raw.includes('<div class="v3-video-frame"><button class="v3-video-load wk-video-load" type="button">現在の公式映像を見る<span class="wk-mark" aria-hidden="true"> ▶</span></button></div>') && raw.includes('<p class="v3-video-duration wk-video-duration">約15分で観終わります。</p>'), '#video inline player: exact click-to-load markup with the single new copy');
+  check((raw.match(/約15分で観終わります。/g) || []).length === 1 && !/プライバシー|プレイヤー|操作|再生ボタン|自動再生/.test(s), 'no privacy / player / operating copy in the visible video card');
+  check(raw.includes('<noscript><p class="wk-primary"><a class="wk-action official-action" href="https://www.youtube.com/watch?v=dt33RGSRuo0" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">現在の公式映像を見る<span class="wk-mark" aria-hidden="true"> ↗</span></a></p></noscript>'), 'noscript fallback keeps the approved external URL');
+  check(raw.indexOf('wk-info') < raw.indexOf('wk-relation') && raw.indexOf('wk-relation') < raw.indexOf('class="wk-video v3-video"') && raw.indexOf('class="wk-video v3-video"') < raw.indexOf('https://www.koenji-awaodori.com/'), '#video order: fact → relation → inline player → official site');
   check(!/再生回数|再生数|いいね|フォロワー|登録者|views|likes|subscribers|チャンネル登録/i.test(s), '#video must carry no popularity copy');
-  check(!/<img|<iframe|<video|ytimg|youtube\.com\/embed|youtube-nocookie/.test(raw), '#video must carry no thumbnail / embed');
+  check(!/<img|<iframe|<video|ytimg|youtube\.com\/embed|youtube-nocookie/.test(raw), '#video must carry no thumbnail / embed in static markup (the player is created only on click)');
 }
 /* FOUNDER PREVIEW FIX B: relation preview は矢印記号ではなく、同じ factual meaning の平文 1 文 */
 {
@@ -216,11 +219,14 @@ const EXTERNAL_SET = {
   for (const [id, sentence] of Object.entries(REL)) check(sectionOf(id).includes(`<p class="wk-relation">${sentence}</p>`), `#${id} relation sentence must be exactly「${sentence}」`);
   check((html.match(/class="wk-relation"/g) || []).length === 4 && !/wk-node|wk-arrow| → /.test(htmlCode), 'no symbolic arrow relation preview remains on works.html');
 }
-/* 全 section: 編集部の読み は reading layer、fact badge・検証状態を持たない */
+/* 読み（reading layer）: Book / Film / Music に 1 つずつ、見える label なし（Founder decision v2）。fact badge・検証状態を持たない */
 {
   const readings = html.match(/<section class="wk-reading" data-layer="reading"[\s\S]*?<\/section>/g) || [];
-  check(readings.length === 4, 'each of the four works carries exactly one 編集部の読み block');
-  for (const r of readings) check(r.includes('<p class="wk-reading-label">編集部の読み</p>') && !/検証状態|出典あり|data-verification|badge/.test(r), 'reading block must not inherit fact / support styling');
+  check(readings.length === 3, 'Book / Film / Music each carry one unlabeled reading block (the video Work has none)');
+  for (const r of readings) check(r.startsWith('<section class="wk-reading" data-layer="reading">') && !/wk-reading-label|aria-label|検証状態|出典あり|data-verification|badge/.test(r) && /<p class="wk-reading-text">[^<]+<\/p>/.test(r), 'reading block is plain unlabeled prose in the reading layer');
+  check(!htmlCode.includes('編集部の読み'), 'visible 編集部の読み = 0 on works.html');
+  /* video-embed.js: works.html が読み込む共有 click-to-load player（video-embed.js 自体の契約は qa/thread_check.js） */
+  check(htmlCode.includes('<script src="./video-embed.js"></script>') && fs.existsSync(path.join(root, 'video-embed.js')), 'works.html loads video-embed.js');
   for (const id of SECTIONS) check(!/#\w+|カテゴリ|フィルタ|絞り込み/.test(''), 'no filter UI');
 }
 
@@ -254,6 +260,7 @@ for (const banned of ['animation', 'transition', '@keyframes', 'box-shadow', 'te
     }
   }
   check(/\.wk-reading \{[^}]*dashed/.test(css), 'editorial reading must be visibly distinct from the fact box (dashed), including under forced colors');
+  check(!/\.wk-reading-label/.test(css) && /\.wk-video \.v3-video-frame \{[^}]*aspect-ratio: 16 \/ 9/.test(css) && /\.wk-video-load \{[^}]*min-height: 44px/.test(css), 'no reading-label rule; inline player frame 16:9 with a 44px+ load control');
   check(/\.wk-info \{[^}]*border: 1px solid/.test(css), 'video fact block must be a solid box');
   check(/forced-colors: active/.test(css) && !/prefers-reduced-motion/.test(css), 'works.css must handle forced colors and needs no motion guard (nothing moves)');
   check(/min-height: 44px/.test(css), 'real controls must be at least 44px tall');
@@ -540,9 +547,9 @@ morisakiScenes(film, 'film');
     const NAMES = { 'src:official-history': '主催団体 公式サイト（歴史資料）', 'src:suginami-gaku': 'すぎなみ学倶楽部（高円寺の踊り）', 'src:official-about': '主催団体 公式サイト（団体について）', 'src:official-join': '主催団体 公式サイト（参加案内）', 'src:official-archive': '主催団体 公式サイト（アーカイブ）', 'src:official-anniversary': '主催団体 公式サイト（周年アーカイブ）', 'src:official-plus': '主催団体 公式サイト（plus+）', 'src:official-home': '主催団体 公式サイト' };
     EXP.sources = EXP.sources.map((x) => (NAMES[x.id] ? { ...x, name: NAMES[x.id] } : x));
     EXP.sources.push({ id: 'src:official-video', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体の公式映像', url: YT });
-    EXP.realityDestinations.push({ id: 'dest:official-video', label: '最後に、現在の公式映像を見る', url: YT, why: 'ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。', note: '2025年の催しを伝える、主催団体の公式映像です。', sourceIds: ['src:official-video'] });
+    EXP.realityDestinations.push({ id: 'dest:official-video', label: '最後に、現在の公式映像を見る', url: YT, videoId: 'dt33RGSRuo0', videoTitle: '主催団体の公式映像', watchNote: '約15分で観終わります。', why: 'ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。', note: '2025年の催しを伝える、主催団体の公式映像です。', sourceIds: ['src:official-video'] });
     delete EXP.modes;
-    EXP.scenes = EXP.scenes.map((sc) => { const c = JSON.parse(J(sc)); delete c.cue; if (c.beats) c.beats = c.beats.filter((b) => b.kind !== 'cue'); return c; });
+    EXP.scenes = EXP.scenes.map((sc) => { const c = JSON.parse(J(sc)); delete c.cue; if (c.beats) c.beats = c.beats.filter((b) => b.kind !== 'cue'); if (c.editorialReading) c.editorialReading.text = c.editorialReading.text.replace('——これは編集部の読みです。', ''); return c; });
     for (const k of ['threadId', 'eyebrow', 'title', 'documentTitle', 'subjectLabel', 'editor', 'lens', 'checkedAt', 'checkedLabel', 'duration', 'guidance', 'image', 'nodes', 'facts', 'relations', 'sources', 'presentReturn', 'realityDestinations', 'ending', 'scenes']) {
       check(J(koenji[k]) === J(EXP[k]), `KOENJI.${k} must equal the frozen source with only the exact Founder overrides applied`);
     }
@@ -551,11 +558,12 @@ morisakiScenes(film, 'film');
     check(vSrc.id === 'src:official-video' && vSrc.kind === 'official' && vSrc.url === YT, 'appended source is the official video with the approved URL');
     check(vDest.id === 'dest:official-video' && vDest.url === YT && vDest.label === '最後に、現在の公式映像を見る' && J(vDest.sourceIds) === '["src:official-video"]' && !('relationIds' in vDest), 'appended destination is the approved official video (label / URL / source only)');
     check(!('modes' in koenji) && 'modes' in OLD, 'KOENJI modes removed (was present in the frozen source)');
-    const strip = (s) => { const c = JSON.parse(J(s)); delete c.cue; if (c.beats) c.beats = c.beats.filter((b) => b.kind !== 'cue'); return c; };
+    /* 凍結 scene との差は cue / cue beat の削除と、読み本文の自己ラベル「——これは編集部の読みです。」の削除（Founder decision v2）だけ */
+    const strip = (s) => { const c = JSON.parse(J(s)); delete c.cue; if (c.beats) c.beats = c.beats.filter((b) => b.kind !== 'cue'); if (c.editorialReading) c.editorialReading.text = c.editorialReading.text.replace('——これは編集部の読みです。', ''); return c; };
     check(koenji.scenes.length === 6 && OLD.scenes.length === 6 && koenji.scenes.every((s, i) => J(s) === J(strip(OLD.scenes[i]))), 'KOENJI scenes must equal the frozen scenes with only cue / cue beats removed');
     check(!koenji.scenes.some((s) => s.cue || (s.beats || []).some((b) => b.kind === 'cue' || b.cue)), 'KOENJI carries no cue anywhere');
     check((koenji.scenes.find((s) => s.id === 's2').beats || []).map((b) => b.id).join('|') === 'before|encounter|question|evidence|reveal', 'KOENJI S2 keeps before / encounter / question / evidence / reveal');
-    check(!!koenji.scenes.find((s) => s.id === 's4').editorialReading && J(koenji.scenes.find((s) => s.id === 's4').editorialReading) === J(OLD.scenes.find((s) => s.id === 's4').editorialReading), 'KOENJI S4 editorial reading unchanged');
+    check(!!koenji.scenes.find((s) => s.id === 's4').editorialReading && J(koenji.scenes.find((s) => s.id === 's4').editorialReading) === J(strip(OLD.scenes.find((s) => s.id === 's4')).editorialReading) && !koenji.scenes.find((s) => s.id === 's4').editorialReading.text.includes('編集部の読み'), 'KOENJI S4 editorial reading unchanged except the removed self-label');
     check(contentJs.slice(0, contentJs.indexOf('  var KOENJI = {')) === frozenJs.slice(0, frozenJs.indexOf('  var KOENJI = {')), 'thread_content.js header must be unchanged');
   }
 }
