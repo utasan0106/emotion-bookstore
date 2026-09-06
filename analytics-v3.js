@@ -6,13 +6,13 @@
   var OPTOUT_KEY = 'v3_ga_optout';
   var COOKIE_EXPIRES_SECONDS = 60 * 24 * 60 * 60;
 
-  /* Measurement v0.4 (2026-09-06, Production Beta 0 — inline video + Koenji Spatial Beta).
+  /* Measurement v4.1 (2026-09-06, Production Beta 0 — inline video + Koenji Spatial Beta).
      The eight Beta events stay as they were. Nine bounded events are added on top.
      Every custom param is allowlisted (content_type / content_id / link_domain only) and every value
-     is checked against a closed vocabulary; anything unknown is dropped, never coerced.
-     Never sent: visible title, body text, free text, full URL / path / query / hash, video id,
-     organizer name, map position or view state, selected building or its source id,
-     location, favorites, private input, emotion, account / user id. */
+     is checked against a closed vocabulary; anything unknown drops the whole event, never coerced.
+     Never sent as a custom event value: visible title, body text, free text, full external URL / query / hash,
+     video id, organizer name, exact position, map frame / camera / view, selected building or its id,
+     GPS, favorites, private input, emotion, account / user id. */
   var ALLOWED_EVENTS = {
     v3_home_view: true,
     v3_shelf_open: true,
@@ -36,9 +36,11 @@
 
   var SAFE_CONTENT_TYPES = {
     home: true,
+    city: true,
     shelf: true,
     work: true,
     thread: true,
+    thread_stage: true,
     spatial: true,
     external: true,
     video: true
@@ -52,19 +54,26 @@
     thread: true,
     spatial: true,
 
-    // Public content ids: the Works page, the four cities, the three public Threads.
-    works: true,
+    // Public content ids: the four cities, the four Works entries, the three public Threads.
     koenji: true,
     jinbocho: true,
     shimokitazawa: true,
     kichijoji: true,
+    book: true,
+    film: true,
+    music: true,
+    video: true,
     morisaki_book: true,
     morisaki_film: true,
     koenji_dance_history: true,
 
-    // Bounded thread-stage ids (Koenji s0..s5, Morisaki w0..w5).
-    s0: true, s1: true, s2: true, s3: true, s4: true, s5: true,
-    w0: true, w1: true, w2: true, w3: true, w4: true, w5: true
+    // Composite thread-stage ids (thread:stage). Bare stage ids are not allowed.
+    'koenji_dance_history:s0': true, 'koenji_dance_history:s1': true, 'koenji_dance_history:s2': true,
+    'koenji_dance_history:s3': true, 'koenji_dance_history:s4': true, 'koenji_dance_history:s5': true,
+    'morisaki_book:w0': true, 'morisaki_book:w1': true, 'morisaki_book:w2': true,
+    'morisaki_book:w3': true, 'morisaki_book:w4': true, 'morisaki_book:w5': true,
+    'morisaki_film:w0': true, 'morisaki_film:w1': true, 'morisaki_film:w2': true,
+    'morisaki_film:w3': true, 'morisaki_film:w4': true, 'morisaki_film:w5': true
   };
 
   /* Public routes → bounded ids. The route value itself never leaves the page; only the mapped id can. */
@@ -74,6 +83,16 @@
     'morisaki-film': 'morisaki_film'
   };
   var SHELF_IDS = { koenji: 'koenji', kichijoji: 'kichijoji', shimokitazawa: 'shimokitazawa', jinbocho: 'jinbocho' };
+  var WORK_ENTRY_IDS = { book: 'book', film: 'film', music: 'music', video: 'video' };
+
+  /* Approved external surfaces per public page. Nothing else (calendar utility, credits, menu, arbitrary anchors) is measured. */
+  var EXTERNAL_SURFACES = {
+    home: [{ anchor: 'a.hc-reality-card.official-action[href]' }],
+    shelf: [{ anchor: 'a.official-action[href]' }, { anchor: 'a.weekly-feature-official[href]' }],
+    work: [{ anchor: 'a.wk-action[href]' }],
+    thread: [{ anchor: 'a.th-source-link[href]' }, { anchor: 'a.th-destination-link[href]' }],
+    spatial: [{ anchor: 'a.al-link[href]' }, { anchor: 'a[href]', within: '.al-attribution-links' }]
+  };
 
   function isAllowedContentType(value) {
     return !!SAFE_CONTENT_TYPES[String(value || '')];
@@ -164,12 +183,13 @@
     }
   }
 
-  function threadIdFromRoute() {
-    return THREAD_IDS[initialUrl.searchParams.get('thread') || ''] || '';
-  }
-
-  function shelfIdFromRoute() {
-    return SHELF_IDS[initialUrl.searchParams.get('shelf') || ''] || '';
+  /* A route parameter read from an internal href, mapped only through a closed table. */
+  function routeParam(href, key) {
+    try {
+      return new URL(String(href || ''), location.origin).searchParams.get(key) || '';
+    } catch (_) {
+      return '';
+    }
   }
 
   window.dataLayer = window.dataLayer || [];
@@ -185,12 +205,17 @@
     analytics_storage: 'granted'
   });
   window.gtag('js', new Date());
+  /* Privacy hardening: the config itself carries only the sanitized page fields, so automatic collection
+     never sees the full URL (query / hash), the visible title or the referrer path. */
   window.gtag('config', MEASUREMENT_ID, {
     send_page_view: false,
     allow_google_signals: false,
     allow_ad_personalization_signals: false,
     cookie_expires: COOKIE_EXPIRES_SECONDS,
-    cookie_flags: 'SameSite=Lax;Secure'
+    cookie_flags: 'SameSite=Lax;Secure',
+    page_location: safeLocation(),
+    page_title: coarseTitle(),
+    page_referrer: safeReferrer()
   });
 
   var script = document.createElement('script');
@@ -230,6 +255,14 @@
     window.gtag('event', name, boundedParams(params));
   }
 
+  /* A bounded event: the whole event drops when its type / id is outside the closed vocabulary. */
+  function sendBounded(name, type, id, extra) {
+    if (!isAllowedContentType(type) || !isAllowedContentId(id)) return;
+    var params = { content_type: type, content_id: id };
+    if (extra && extra.link_domain) params.link_domain = extra.link_domain;
+    sendEvent(name, params);
+  }
+
   window.gtag('event', 'page_view', commonParams());
 
   var pageTitle = coarseTitle();
@@ -257,84 +290,102 @@
 
   var page = pageClass();
 
-  /* Bounded API. Page adapters below and video-embed.js call only these.
-     A call with a value outside the closed vocabulary sends nothing at all. */
-  function bounded(type, id) {
-    return isAllowedContentType(type) && isAllowedContentId(id);
-  }
+  /* Bounded API. Page adapters below and video-embed.js call only these. */
   var api = Object.freeze({
     entryOpen: function (type, id) {
-      if (!bounded(type, id)) return;
       once('entry:' + type + ':' + id, function () {
-        sendEvent('v3_entry_open', { content_type: type, content_id: id });
+        sendBounded('v3_entry_open', type, id);
       });
     },
-    worksSectionView: function () {
-      once('works-section', function () {
-        sendEvent('v3_works_section_view', { content_type: 'work', content_id: 'works' });
+    worksSectionView: function (sectionId) {
+      var id = WORK_ENTRY_IDS[String(sectionId || '')];
+      if (!id) return;
+      once('works-section:' + id, function () {
+        sendBounded('v3_works_section_view', 'work', id);
       });
     },
     threadStart: function (id) {
-      if (!bounded('thread', id)) return;
       once('thread-start:' + id, function () {
-        sendEvent('v3_thread_start', { content_type: 'thread', content_id: id });
+        sendBounded('v3_thread_start', 'thread', id);
       });
     },
-    threadStage: function (stageId) {
-      if (!bounded('thread', stageId)) return;
-      once('thread-stage:' + stageId, function () {
-        sendEvent('v3_thread_stage', { content_type: 'thread', content_id: stageId });
+    threadStage: function (threadId, stageId) {
+      var composite = String(threadId || '') + ':' + String(stageId || '');
+      once('thread-stage:' + composite, function () {
+        sendBounded('v3_thread_stage', 'thread_stage', composite);
       });
     },
     threadComplete: function (id) {
-      if (!bounded('thread', id)) return;
       once('thread-complete:' + id, function () {
-        sendEvent('v3_thread_complete', { content_type: 'thread', content_id: id });
+        sendBounded('v3_thread_complete', 'thread', id);
       });
     },
     evidenceOpen: function (type, id) {
-      if (!bounded(type, id)) return;
       once('evidence:' + type + ':' + id, function () {
-        sendEvent('v3_evidence_open', { content_type: type, content_id: id });
+        sendBounded('v3_evidence_open', type, id);
       });
     },
     externalOpen: function (originId, href) {
       var domain = safeDomain(href);
-      if (!bounded('external', originId) || !domain) return;
-      sendEvent('v3_external_open', {
-        content_type: 'external',
-        content_id: originId,
-        link_domain: domain
-      });
+      if (!domain) return;
+      sendBounded('v3_external_open', 'external', originId, { link_domain: domain });
     },
     continueOpen: function (type, id) {
-      if (!bounded(type, id)) return;
       once('continue:' + type + ':' + id, function () {
-        sendEvent('v3_continue_open', { content_type: type, content_id: id });
+        sendBounded('v3_continue_open', type, id);
       });
     },
-    /* Inline official video: only when the visitor's explicit click created the player
-       (video-embed.js). Once per page load. The origin class is the only id (thread | work);
-       no video id, title, duration or playback state. */
+    /* Inline official video: only when the visitor's explicit click created the player (video-embed.js,
+       which removes the load button, so each player host can call this once). The origin class is the
+       only id (thread | work); no video id, title, duration or playback state. Not a playback proof. */
     mediaPreviewOpen: function (id) {
       var origin = id || page;
       if (origin !== 'thread' && origin !== 'work') return;
-      once('media:' + origin, function () {
-        sendEvent('v3_media_preview_open', { content_type: 'video', content_id: origin });
-      });
+      sendEvent('v3_media_preview_open', { content_type: 'video', content_id: origin });
     }
   });
   window.v3Analytics = api;
 
-  /* ---- entry: landing on a bounded public surface ---- */
-  if (page === 'shelf') { var shelfId = shelfIdFromRoute(); if (shelfId) api.entryOpen('shelf', shelfId); }
-  else if (page === 'work') api.entryOpen('work', 'works');
-  else if (page === 'thread') { var threadId = threadIdFromRoute(); if (threadId) api.entryOpen('thread', threadId); }
-  else if (page === 'spatial') api.entryOpen('spatial', 'koenji');
+  /* ---- entry: the Spatial Beta counts on arrival (it has one bounded entrance); every other entry is a HOME click ---- */
+  if (page === 'spatial') api.entryOpen('spatial', 'koenji');
 
-  /* ---- clicks: the eight Beta events as before; external opens and cultural continuation on top ---- */
+  function homeEntry(target) {
+    var cityEntry = closest(target, 'a.hc-city.shelf-entry[href]');
+    if (cityEntry) {
+      var cityId = SHELF_IDS[routeParam(cityEntry.getAttribute('href'), 'shelf')];
+      if (cityId) api.entryOpen('city', cityId);
+      return;
+    }
+    var workEntry = closest(target, 'a.hc-work[data-work][href]');
+    if (workEntry) {
+      var workId = WORK_ENTRY_IDS[String(workEntry.getAttribute('data-work') || '')];
+      if (workId) api.entryOpen('work', workId);
+      return;
+    }
+    var threadEntry = closest(target, 'a.hc-hero-cta[href], a.hc-thread-read[href]');
+    if (threadEntry) {
+      var threadId = THREAD_IDS[routeParam(threadEntry.getAttribute('href'), 'thread')];
+      if (threadId) api.entryOpen('thread', threadId);
+    }
+  }
+
+  function approvedExternalAnchor(target) {
+    var surfaces = EXTERNAL_SURFACES[page] || [];
+    for (var i = 0; i < surfaces.length; i++) {
+      var anchor = closest(target, surfaces[i].anchor);
+      if (!anchor) continue;
+      if (surfaces[i].within && !closest(anchor, surfaces[i].within)) continue;
+      var href = String(anchor.getAttribute('href') || '');
+      if (/^https?:\/\//i.test(href)) return href;
+    }
+    return '';
+  }
+
+  /* ---- clicks: the eight Beta events as before; HOME entries, approved external opens and cultural continuation on top ---- */
   document.addEventListener('click', function (event) {
     var target = event.target;
+
+    if (page === 'home') homeEntry(target);
 
     if (closest(target, '.shelf-entry, .result-link')) {
       sendEvent('v3_shelf_open');
@@ -355,17 +406,18 @@
       sendEvent('v3_suggest_form_open');
       return;
     }
+    if (!page) return;
 
-    var anchor = closest(target, 'a[href]');
-    if (!anchor || !page) return;
-    var href = String(anchor.getAttribute('href') || '');
-    if (/^https?:\/\//i.test(href)) {
-      /* external open: origin class + hostname only */
-      api.externalOpen(page, href);
+    var externalHref = approvedExternalAnchor(target);
+    if (externalHref) {
+      api.externalOpen(page, externalHref);
       return;
     }
+
     /* cultural continuation between public surfaces (not generic navigation) */
-    var route = href.split('#')[0];
+    var anchor = closest(target, 'a[href]');
+    if (!anchor) return;
+    var route = String(anchor.getAttribute('href') || '').split('#')[0];
     var threadRoute = route.match(/(?:^|\/)thread\.html\?thread=([a-z0-9-]+)$/);
     if (threadRoute && THREAD_IDS[threadRoute[1]] && (page === 'work' || page === 'spatial')) {
       api.continueOpen('thread', THREAD_IDS[threadRoute[1]]);
@@ -379,14 +431,16 @@
     var el = event.target;
     if (!el || String(el.tagName).toUpperCase() !== 'DETAILS' || !el.open) return;
     if (page === 'thread') {
-      var tid = threadIdFromRoute();
+      var article = document.getElementById('threadRoot');
+      article = article && article.querySelector('.th-thread[data-thread-id]');
+      var tid = article ? THREAD_IDS[String(article.getAttribute('data-thread-id') || '')] : '';
       if (tid && closest(el, '.th-evidence')) api.evidenceOpen('thread', tid);
     } else if (page === 'spatial' && closest(el, '.al-evidence')) {
       api.evidenceOpen('spatial', 'koenji');
     }
   }, true);
 
-  /* ---- reach: Thread start / stage / complete and Works section, by visibility ---- */
+  /* ---- reach: Thread start / stage / complete and Works sections, by visibility ---- */
   function observeReach(elements, onReach) {
     if (typeof IntersectionObserver !== 'function' || !elements.length) return;
     var io = new IntersectionObserver(function (entries) {
@@ -400,21 +454,23 @@
   }
 
   function threadAdapter() {
-    var tid = threadIdFromRoute();
+    /* only a Thread that actually rendered (lost / unknown routes emit nothing) */
     var root = document.getElementById('threadRoot');
-    if (!tid || !root || !root.querySelector('.th-thread')) return;
+    var article = root && root.querySelector('.th-thread[data-thread-id]');
+    var tid = article ? THREAD_IDS[String(article.getAttribute('data-thread-id') || '')] : '';
+    if (!tid) return;
     api.threadStart(tid);
-    var scenes = Array.prototype.slice.call(root.querySelectorAll('.th-scene[data-scene]'));
-    var end = root.querySelector('.th-end');
+    var scenes = Array.prototype.slice.call(article.querySelectorAll('.th-scene[data-scene]'));
+    var end = article.querySelector('.th-end');
     observeReach(end ? scenes.concat([end]) : scenes, function (el) {
       if (el === end) api.threadComplete(tid);
-      else api.threadStage(el.getAttribute('data-scene') || '');
+      else api.threadStage(tid, el.getAttribute('data-scene') || '');
     });
   }
 
   function worksAdapter() {
     var sections = Array.prototype.slice.call(document.querySelectorAll('.wk-work[data-work]'));
-    observeReach(sections, function () { api.worksSectionView(); });
+    observeReach(sections, function (el) { api.worksSectionView(el.getAttribute('data-work') || ''); });
   }
 
   function runAdapters() {
