@@ -107,6 +107,9 @@ const MEASURE = (args) => {
   /* FOUNDER PREVIEW FIX 02: 街 copy は 3 span がそれぞれ 1 視覚行（span 高さ ≤ line-height）。内部折返し・孤立文字を出さない */
   const qSpans = [...document.querySelectorAll('.hc-city')].map((c) => [...c.querySelectorAll('.hc-city-q-line')].map((l) => { const cs = getComputedStyle(l); return { text: l.textContent, h: Math.round(l.getBoundingClientRect().height), lh: Math.round(parseFloat(cs.lineHeight)), rects: l.getClientRects().length }; }));
   const qBox = [...document.querySelectorAll('.hc-city .hc-city-q')].map((e) => rr(R(e)));
+  /* FOUNDER PREVIEW FIX UNIT D: 実際の場所へ = 3 つの実在の行き先 card（tap できる実 anchor、名前が見える、embed なし） */
+  const realityCards = [...document.querySelectorAll('.hc-reality-card')].map((a) => { const b = R(a); const n = a.querySelector('.hc-reality-name'); const nb = n ? R(n) : null; return { tag: a.tagName, href: a.getAttribute('href'), target: a.getAttribute('target'), rel: a.getAttribute('rel'), rp: a.getAttribute('referrerpolicy'), official: a.classList.contains('official-action'), name: n ? n.textContent : '', action: (a.querySelector('.hc-reality-action') || {}).textContent || '', rect: rr(b), nameInside: !!nb && nb.x >= b.x - 1 && nb.r <= b.r + 1 && nb.b <= b.b + 1 && nb.w > 0 && nb.h > 0, nameLines: n ? Math.round(nb.h / parseFloat(getComputedStyle(n).lineHeight)) : 0 }; });
+  const embeds = document.querySelectorAll('iframe, video, audio, embed, object').length;
   let animated = 0;
   document.querySelectorAll('#main *').forEach((el) => { const s = getComputedStyle(el); if ((s.animationName && s.animationName !== 'none') || (s.transitionProperty !== 'none' && parseFloat(s.transitionDuration) > 0)) animated++; });
   return {
@@ -119,7 +122,7 @@ const MEASURE = (args) => {
     cityGap: parseFloat(cs('.hc-city-grid', 'columnGap')), threadGap: parseFloat(cs('.hc-thread-body', 'columnGap')), stripGap: parseFloat(cs('.hc-reality-strip', 'columnGap')),
     rects: { hero: rr(r('.hc-hero')), body: rr(r('.hc-hero-body')), title: rr(boxes.title), cta: rr(boxes.cta), aside: rr(boxes.aside), scroll: rr(boxes.scroll), sheet: rr(r('.hc-sheet')), cities: rr(r('.hc-city-grid')), works: rr(r('.hc-work-grid')), thread: rr(r('.hc-thread')), media: rr(media), copy: rr(copy), reality: rr(r('.hc-reality')), rcopy: rr(rcopy), strip: rr(strip) },
     cityCols: cols('.hc-city-grid'), cityRows: rows('.hc-city'), workCols: cols('.hc-work-grid'), workRows: rows('.hc-work'), stripCols: cols('.hc-reality-strip'), stripRows: rows('.hc-reality-shot'),
-    chainRows: rows('.hc-node'), qLines, qSpans, qBox,
+    chainRows: rows('.hc-node'), qLines, qSpans, qBox, realityCards, embeds,
     cityH: [...document.querySelectorAll('.hc-city')].map((e) => Math.round(e.getBoundingClientRect().height)),
     workH: [...document.querySelectorAll('.hc-work')].map((e) => Math.round(e.getBoundingClientRect().height)),
     shots, threadStacked: media && copy ? copy.y >= media.b - 1 : null, threadSplit: media && copy ? copy.x >= media.r - 1 : null,
@@ -177,6 +180,9 @@ const near = (a, b, tol) => typeof a === 'number' && Math.abs(a - b) <= tol;
     check(S, 'city_copy_lines_uniform_across_cards', m.qLines.length === 4 && m.qLines.every((n) => n === 3), m.qLines);
     check(S, 'city_copy_exact_three_lines_no_internal_wrap', m.qSpans.length === 4 && m.qSpans.every((card) => card.length === 3 && card.map((l) => l.text).join('|') === CITY_COPY && card.every((l) => l.h <= l.lh + 1 && l.rects === 1)), m.qSpans);
     check(S, 'city_cards_equal_geometry', m.cityH.every((h) => h === m.cityH[0]) && m.qBox.every((b) => b.w === m.qBox[0].w && b.h === m.qBox[0].h), { cityH: m.cityH, qBox: m.qBox });
+    check(S, 'reality_cards_are_three_tappable_official_destinations', m.realityCards.length === 3 && m.embeds === 0
+      && m.realityCards.every((c) => c.tag === 'A' && c.target === '_blank' && c.rel === 'noopener noreferrer' && c.rp === 'no-referrer' && c.official && c.rect[2] >= 44 && c.rect[3] >= 44 && c.nameInside && c.nameLines >= 1 && c.nameLines <= 2)
+      && m.realityCards.map((c) => c.name + '|' + c.href).join('\n') === '井の頭恩賜公園|https://www.kensetsu.metro.tokyo.lg.jp/jimusho/seibuk/inokashira\n矢口書店|https://yaguchishoten.jp/\n下北沢 SHELTER|https://www.loft-prj.co.jp/schedule/shelter/schedule', m.realityCards);
     check(S, 'images_loaded_same_origin', m.images.loaded && m.images.sameOrigin && m.images.n >= 13, m.images);
     /* FOUNDER PREVIEW FIX A5: route hold 0、false CTA（すべて見る / スポットを探す）0 */
     check(S, 'no_route_holds_no_false_ctas', m.holds.length === 0 && m.falseCtas === 0, { holds: m.holds, falseCtas: m.falseCtas });
@@ -269,14 +275,14 @@ const near = (a, b, tol) => typeof a === 'number' && Math.abs(a - b) <= tol;
     check(S, 'identical_render_under_both_preferences', shots.reduce.png === shots['no-preference'].png);
   }
 
-  /* keyboard: skip link → brand → menu → hero スレッドを見る → 4 街 → 4 作品 → スレッドを読む（13 meaningful stops）、focus-visible の outline が見える */
+  /* keyboard: skip link → brand → menu → hero スレッドを見る → 4 街 → 4 作品 → スレッドを読む → 3 つの実際の場所（16 meaningful stops）、focus-visible の outline が見える */
   for (const w of [390, 1440]) {
     const S = `keyboard-${w}`;
     const ctx = await browser.newContext({ viewport: { width: w, height: w < 500 ? 844 : 900 }, isMobile: w < 500, hasTouch: w < 500, deviceScaleFactor: 1, reducedMotion: 'reduce' });
     const page = await ctx.newPage();
     await page.goto(base + 'index.html', { waitUntil: 'load' });
     const order = [];
-    for (let i = 0; i < 13; i++) {
+    for (let i = 0; i < 16; i++) {
       await page.keyboard.press('Tab');
       order.push(await page.evaluate(() => {
         const el = document.activeElement; if (!el || el === document.body) return { el: 'BODY' };
@@ -292,6 +298,7 @@ const near = (a, b, tol) => typeof a === 'number' && Math.abs(a - b) <= tol;
     check(S, 'focus_visible_outline_on_every_stop', order.filter((o) => o.el !== 'BODY').every((o) => o.fv && o.outline), order.filter((o) => o.el !== 'BODY' && !(o.fv && o.outline)));
     check(S, 'route_holds_not_in_tab_order', order.every((o) => !/route|hold|section-more|reality-cta/.test(o.el)), names);
     check(S, 'thread_read_anchor_follows_the_four_works', names.includes('hc-work>hc-work>hc-work>hc-work>hc-thread-read') && order.some((o) => o.el === 'hc-thread-read' && o.href === './thread.html?thread=koenji-awaodori'), names);
+    check(S, 'three_reality_cards_close_the_tab_order', names.endsWith('hc-thread-read>hc-reality-card>hc-reality-card>hc-reality-card') && order.filter((o) => o.el === 'hc-reality-card').map((o) => o.href).join('|') === 'https://www.kensetsu.metro.tokyo.lg.jp/jimusho/seibuk/inokashira|https://yaguchishoten.jp/|https://www.loft-prj.co.jp/schedule/shelter/schedule', names);
     // menu by keyboard
     await page.focus('#siteMenuButton');
     await page.keyboard.press('Enter');

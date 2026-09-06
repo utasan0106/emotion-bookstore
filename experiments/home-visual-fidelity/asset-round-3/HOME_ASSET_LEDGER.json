@@ -140,34 +140,5 @@
     ],
     "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)",
     "licenseNote": "作者（著作権者）自身によるパブリックドメインへの放棄（Wikimedia Commons の PD 表記）。Public Domain Mark 1.0 は状態表示であって作者の放棄文書ではないので license URL には使わない（HQ_R3_FINAL_BOOK_AND_PD_PRECISION §3）。権利情報の出典は Commons の File ページ Licensing 節。"
-  },
-  {
-    "runtimePath": "./assets/home-reality-kichijoji-cafe.jpg",
-    "slot": "REALITY_RETURN_1",
-    "author": "Stephen Kelly",
-    "source": "Flickr（Wikimedia Commons 経由）",
-    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tea_Shop_and_Cafe_in_Kichijoji_(53416855218).jpg",
-    "license": "CC BY 2.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
-    "modification": "原本（5333×4000）を長辺1600pxへ縮小して保存。切り抜きなし、EXIFを除去。写真左下の作者の透かし（© Stephen Kelly Photography）は消していない。トップでは表示時のみCSSで縦長に切り抜き（中央寄せのため透かしの部分は表示範囲の外になる）・明度・彩度・コントラストを調整",
-    "sourceDimensions": [
-      5333,
-      4000
-    ],
-    "derivativeDimensions": [
-      1600,
-      1200
-    ],
-    "derivativeSha256": "774e29ee884c738c433d0db5bc8236373ea9892d86b5596b990bb5d843bab8d3",
-    "checkedAt": "2026-09-04",
-    "sourceFile": "Tea_Shop_and_Cafe_in_Kichijoji_(53416855218).jpg",
-    "sourceSha256": "ae968670f15e5264da72951a00474e22889bbd97d7baa76bb1ab8e3ec6fcd8a8",
-    "sourceSha1": "7d621aa30e961655dc7750041f112b3504ed87b4",
-    "derivativeBytes": 420929,
-    "derivation": [
-      "colour: embedded sRGB profile dropped (sRGB assumed)",
-      "resize: 5333x4000 → 1600x1200 (LANCZOS, whole frame, no physical crop), JPEG q85, no EXIF/XMP/ICC"
-    ],
-    "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)"
   }
 ]

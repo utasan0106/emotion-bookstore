@@ -148,7 +148,9 @@
       { id: 'src:official-plus', kind: 'official', kindLabel: '公式（主催団体）', name: '東京高円寺阿波おどり 公式サイト（plus+）', url: 'https://koenji-awaodori.com/stage/stage04.html' },
       { id: 'src:koenji-pal-about', kind: 'official_place', kindLabel: '公式（商店街）', name: '高円寺パル商店街 公式サイト（商店街について）', url: 'https://www.koenji-pal.jp/about' },
       { id: 'src:koenji-pal-access', kind: 'official_place', kindLabel: '公式（商店街）', name: '高円寺パル商店街 公式サイト（アクセス）', url: 'https://www.koenji-pal.jp/access' },
-      { id: 'src:official-home', kind: 'official', kindLabel: '公式（主催団体）', name: '東京高円寺阿波おどり 公式サイト（トップ）', url: 'https://koenji-awaodori.com/' }
+      { id: 'src:official-home', kind: 'official', kindLabel: '公式（主催団体）', name: '東京高円寺阿波おどり 公式サイト（トップ）', url: 'https://koenji-awaodori.com/' },
+      /* FOUNDER PREVIEW FIX UNIT E: 主催団体の公式映像（Works で承認済みの同じ URL）。埋め込まず、user click でだけ開く。 */
+      { id: 'src:official-video', kind: 'official', kindLabel: '公式（主催団体）', name: '東京高円寺阿波おどり 公式映像「第66回 東京高円寺阿波おどり - after movie -」', url: 'https://www.youtube.com/watch?v=dt33RGSRuo0' }
     ],
 
     /* S0–S5。S2 の五拍（BEFORE → ENCOUNTER → QUESTION → EVIDENCE → REVEAL）
@@ -296,6 +298,16 @@
         note: '',
         relationIds: ['rel:renamed-1963'],
         sourceIds: ['src:official-home']
+      },
+      /* FOUNDER PREVIEW FIX UNIT E: 最後の 4 つ目。ここまで辿った踊りを、主催団体の公式映像で見る。
+         埋め込み・自動再生・サムネイル・事前読込は使わない。user click でだけ開く。 */
+      {
+        id: 'dest:official-video',
+        label: '最後に、いまの高円寺阿波おどりを映像で見る',
+        url: 'https://www.youtube.com/watch?v=dt33RGSRuo0',
+        why: 'ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。',
+        note: '2025年の第66回東京高円寺阿波おどりを伝える公式映像です。',
+        sourceIds: ['src:official-video']
       }
     ],
 

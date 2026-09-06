@@ -29,8 +29,11 @@ const KOENJI_TOKENS = ['踊りが街に根づくまで', '阿波おどり', '徳
 const DESTINATIONS = [
   ['1957の起点を歩く（高円寺パル商店街）', 'https://www.koenji-pal.jp/about'],
   ['現在の連を知る／参加・体験を相談する', 'https://koenji-awaodori.com/category1/join.html'],
-  ['現在の公式情報を見る', 'https://koenji-awaodori.com/']
+  ['現在の公式情報を見る', 'https://koenji-awaodori.com/'],
+  /* FOUNDER PREVIEW FIX UNIT E: 最後の 4 つ目は主催団体の公式映像（click でだけ開く） */
+  ['最後に、いまの高円寺阿波おどりを映像で見る', 'https://www.youtube.com/watch?v=dt33RGSRuo0']
 ];
+const YT_URL = 'https://www.youtube.com/watch?v=dt33RGSRuo0';
 const FORBIDDEN = ['次の3つ', 'また見たい', 'おすすめ', 'あなた向け', 'ランキング', '人気順', 'トレンド', 'NEW', 'TRENDING', 'FOR YOU', '見終わりました',
   'スタンプ', 'ポイント', 'スコア', '正解', '不正解', 'クイズ', '診断', 'カウントダウン', '次へ'];
 
@@ -256,7 +259,7 @@ async function elementShot(page, selector, name, width) {
     /* FOUNDER PREVIEW FIX C1 / C2 / C4: location mode fieldset も cue block も出さない。 */
     check(S, 'no_mode_fieldset_no_cue', m.radios.length === 0 && m.cues.length === 0 && !/合図|高円寺にいるふり|いまは、高円寺にいない|いま、高円寺にいる|どこで読んでいますか|20秒/.test(m.text), { radios: m.radios.length, cues: m.cues.length });
     check(S, 'approved_image_once_same_origin_loaded', m.imgs.length === 1 && /home-thread-koenji-awaodori\.jpg$/.test(m.imgs[0].src) && m.imgs[0].loaded && m.imgs[0].sameOrigin && (m.imgs[0].alt || '').length > 0, m.imgs);
-    check(S, 'reality_destinations_are_the_three', m.dest.length === 3 && m.dest.every((d, i) => d.label === DESTINATIONS[i][0] && d.href === DESTINATIONS[i][1] && /noopener/.test(d.rel || '') && d.target === '_blank') && !m.dest.some((d) => /stage04/.test(d.href)), m.dest);
+    check(S, 'reality_destinations_are_the_four', m.dest.length === 4 && m.dest.every((d, i) => d.label === DESTINATIONS[i][0] && d.href === DESTINATIONS[i][1] && /noopener/.test(d.rel || '') && d.target === '_blank') && !m.dest.some((d) => /stage04/.test(d.href)), m.dest);
     check(S, 'ended_festival_and_plus_are_not_upcoming', m.statusText.some((t) => /2026年の本祭/.test(t) && /終了/.test(t) && /最終確認：2026-09-04/.test(t)) && m.statusText.some((t) => /plus\+/.test(t) && /休止/.test(t)) && !/開催予定|これから開催/.test(m.text), m.statusText);
     check(S, 'finite_end_with_exit', m.endLine === 'このスレッドは、ここまでです。' && !!m.exit && m.exit.href === './index.html' && m.exit.text === '入口へ戻る' && m.exit.h >= 44, { end: m.endLine, exit: m.exit });
     check(S, 'real_targets_are_44px', m.targets.length >= 12 && m.targets.every((t) => t.w >= 44 && t.h >= 44), m.targets.filter((t) => t.w < 44 || t.h < 44));
@@ -340,6 +343,37 @@ async function elementShot(page, selector, name, width) {
     check(S, 'no_external_request_after_interaction', external.length === 0, external.slice(0, 3));
     check(S, 'no_js_error_after_interaction', errs.length === 0, errs.slice(0, 2));
 
+    /* FOUNDER PREVIEW FIX UNIT E: 公式映像は最後の行き先。埋め込み・サムネイル・事前読込なし、click までは YouTube への通信 0、
+       click で新しいタブに exact URL が開き、Thread 側は通信しない。 */
+    const videoBefore = await page.evaluate(() => {
+      const li = document.querySelector('[data-destination-id="dest:official-video"]');
+      const items = [...document.querySelectorAll('.th-destination')];
+      return {
+        isLast: !!li && items[items.length - 1] === li, count: items.length,
+        label: li ? (li.querySelector('.th-destination-label') || {}).textContent : '', href: li ? li.querySelector('.th-destination-link').getAttribute('href') : '',
+        why: li ? (li.querySelector('.th-destination-why') || {}).textContent : '', note: li ? (li.querySelector('.th-destination-note') || {}).textContent : '',
+        embeds: document.querySelectorAll('iframe, video, audio, embed, object, [autoplay], link[rel="preconnect"], link[rel="preload"], link[rel="prefetch"], link[rel="dns-prefetch"]').length,
+        ytAssets: [...document.querySelectorAll('img, source, script, link')].filter((e) => /youtube|ytimg|googlevideo/.test(e.getAttribute('src') || e.getAttribute('href') || '')).length,
+        h: li ? Math.round(li.querySelector('.th-destination-link').getBoundingClientRect().height) : 0
+      };
+    });
+    check(S, 'official_video_is_the_final_destination_without_embed', videoBefore.isLast && videoBefore.count === 4 && videoBefore.label === DESTINATIONS[3][0] && videoBefore.href === YT_URL
+      && videoBefore.why === 'このThreadとの関係：ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。' && videoBefore.note === '2025年の第66回東京高円寺阿波おどりを伝える公式映像です。'
+      && videoBefore.embeds === 0 && videoBefore.ytAssets === 0 && videoBefore.h >= 44 && external.every((u) => !/youtube|ytimg|googlevideo/.test(u)), videoBefore);
+    {
+      const threadPageRequests = [];
+      page.on('request', (r) => { if (!r.url().startsWith(origin)) threadPageRequests.push(r.url()); });
+      await ctx.route((url) => /youtube\.com/.test(url.hostname), (r) => r.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><title>stub</title>' }));
+      const [popup] = await Promise.all([ctx.waitForEvent('page', { timeout: 5000 }).catch(() => null), page.click('[data-destination-id="dest:official-video"] .th-destination-link')]);
+      if (popup) await popup.waitForLoadState('load', { timeout: 5000 }).catch(() => {});
+      const popupUrl = popup ? popup.url() : '';
+      const stillHere = await page.evaluate(() => ({ url: location.pathname + location.search, embeds: document.querySelectorAll('iframe, video').length }));
+      check(S, 'video_opens_exact_youtube_url_in_new_tab_only_on_click', !!popup && popupUrl === YT_URL && threadPageRequests.length === 0 && stillHere.url === '/thread.html?thread=koenji-awaodori' && stillHere.embeds === 0, { popupUrl, threadPageRequests: threadPageRequests.slice(0, 3), stillHere });
+      if (popup) await popup.close();
+      await ctx.unroute((url) => /youtube\.com/.test(url.hostname));
+      external.length = 0; /* the popup's own stubbed navigation is not a Thread-page request */
+    }
+
     /* 証跡 */
     if (OUT) {
       if (v.name === 'w390' || v.name === 'w1440') await elementShot(page, '#th-s2', `THREAD_S2_FIVE_BEATS_${v.width}`, v.width);
@@ -407,7 +441,7 @@ async function elementShot(page, selector, name, width) {
     }
     const names = order.map((o) => o.el + (o.value ? `[${o.value}]` : '')).join('>');
     check(S, 'tab_order_reaches_every_real_control', names.startsWith('skip-link>brand-home>menu-trigger>th-evidence-summary') && !/th-mode-input/.test(names) &&
-      (names.match(/th-evidence-summary/g) || []).length === 5 && (names.match(/th-destination-link/g) || []).length === 3 && /th-destination-link>th-destination-link>th-destination-link>th-exit>footer-brand/.test(names), names);
+      (names.match(/th-evidence-summary/g) || []).length === 5 && (names.match(/th-destination-link/g) || []).length === 4 && /th-destination-link>th-destination-link>th-destination-link>th-destination-link>th-exit>footer-brand/.test(names), names);
     check(S, 'focus_visible_outline_on_every_stop', order.filter((o) => o.el !== 'BODY').every((o) => o.fv && o.outline), order.filter((o) => o.el !== 'BODY' && !(o.fv && o.outline)));
     check(S, 'no_source_link_in_tab_order_while_drawers_are_closed', !/th-source-link/.test(names), names);
     // summary by keyboard
@@ -491,7 +525,7 @@ async function elementShot(page, selector, name, width) {
     await page.waitForSelector('.th-thread');
     await page.waitForTimeout(400);
     const m = await page.evaluate(MEASURE);
-    check(S, 'thread_still_renders_all_scenes', m.sceneCount === 6 && m.relations.length === 4 && m.dest.length === 3 && m.endLine === 'このスレッドは、ここまでです。', { scenes: m.sceneCount, relations: m.relations.length });
+    check(S, 'thread_still_renders_all_scenes', m.sceneCount === 6 && m.relations.length === 4 && m.dest.length === 4 && m.endLine === 'このスレッドは、ここまでです。', { scenes: m.sceneCount, relations: m.relations.length, dest: m.dest.length });
     check(S, 'image_failed_but_alt_and_meaning_remain', m.imgs.length === 1 && !m.imgs[0].loaded && (m.imgs[0].alt || '').length > 0 && /40を超える連/.test(m.text) && /1957/.test(m.text) && /教わる/.test(m.text), m.imgs);
     check(S, 'no_horizontal_overflow', m.docW <= m.vw, { docW: m.docW, vw: m.vw });
     check(S, 'no_js_error', errs.length === 0, errs.slice(0, 2));

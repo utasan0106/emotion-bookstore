@@ -524,9 +524,16 @@ morisakiScenes(film, 'film');
     const OLD = (fsb.window.V3_THREAD_CONTENT.threads || []).find((t) => t.threadId === 'koenji-awaodori');
     const J = (v) => JSON.stringify(v);
     check(!!OLD && !!koenji, 'KOENJI must exist in both frozen source and candidate');
-    for (const k of ['threadId', 'eyebrow', 'title', 'documentTitle', 'subjectLabel', 'editor', 'lens', 'checkedAt', 'checkedLabel', 'duration', 'guidance', 'image', 'nodes', 'facts', 'relations', 'sources', 'presentReturn', 'realityDestinations', 'ending']) {
+    for (const k of ['threadId', 'eyebrow', 'title', 'documentTitle', 'subjectLabel', 'editor', 'lens', 'checkedAt', 'checkedLabel', 'duration', 'guidance', 'image', 'nodes', 'facts', 'relations', 'presentReturn', 'ending']) {
       check(J(koenji[k]) === J(OLD[k]), `KOENJI.${k} must be deep-equal to the frozen source`);
     }
+    /* FOUNDER PREVIEW FIX UNIT E: sources / realityDestinations は凍結 source + 末尾に公式映像 1 件だけ */
+    for (const k of ['sources', 'realityDestinations']) {
+      check(Array.isArray(koenji[k]) && koenji[k].length === OLD[k].length + 1 && J(koenji[k].slice(0, OLD[k].length)) === J(OLD[k]), `KOENJI.${k} must equal the frozen source plus exactly one appended official-video record`);
+    }
+    const vSrc = koenji.sources[koenji.sources.length - 1] || {}, vDest = koenji.realityDestinations[koenji.realityDestinations.length - 1] || {};
+    check(vSrc.id === 'src:official-video' && vSrc.kind === 'official' && vSrc.url === 'https://www.youtube.com/watch?v=dt33RGSRuo0', 'appended source is the official video with the approved URL');
+    check(vDest.id === 'dest:official-video' && vDest.url === 'https://www.youtube.com/watch?v=dt33RGSRuo0' && vDest.label === '最後に、いまの高円寺阿波おどりを映像で見る' && J(vDest.sourceIds) === '["src:official-video"]' && !('relationIds' in vDest), 'appended destination is the approved official video (label / URL / source only)');
     check(!('modes' in koenji) && 'modes' in OLD, 'KOENJI modes removed (was present in the frozen source)');
     const strip = (s) => { const c = JSON.parse(J(s)); delete c.cue; if (c.beats) c.beats = c.beats.filter((b) => b.kind !== 'cue'); return c; };
     check(koenji.scenes.length === 6 && OLD.scenes.length === 6 && koenji.scenes.every((s, i) => J(s) === J(strip(OLD.scenes[i]))), 'KOENJI scenes must equal the frozen scenes with only cue / cue beats removed');

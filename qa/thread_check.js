@@ -151,7 +151,9 @@ const SUPPLIED_URLS = [
   'https://koenji-awaodori.com/about/his01.html', 'https://suginamigaku.org/2022/11/koenji-awaodori.html',
   'https://www.koenji-awaodori.com/about/about01.html', 'https://koenji-awaodori.com/category1/join.html',
   'https://www.koenji-awaodori.com/about/about05.html', 'https://www.koenji-awaodori.com/about/his04.html',
-  'https://koenji-awaodori.com/stage/stage04.html', 'https://www.koenji-pal.jp/about', 'https://www.koenji-pal.jp/access', 'https://koenji-awaodori.com/'
+  'https://koenji-awaodori.com/stage/stage04.html', 'https://www.koenji-pal.jp/about', 'https://www.koenji-pal.jp/access', 'https://koenji-awaodori.com/',
+  /* FOUNDER PREVIEW FIX UNIT E: 主催団体の公式映像（Works で承認済みの同じ URL） */
+  'https://www.youtube.com/watch?v=dt33RGSRuo0'
 ];
 for (const s of thread.sources) check(SUPPLIED_URLS.includes(s.url), `source url is not in the HQ-supplied set: ${s.url}`);
 for (const url of SUPPLIED_URLS) check(thread.sources.some((s) => s.url === url), `HQ-supplied source not recorded: ${url}`);
@@ -328,14 +330,25 @@ for (const s of thread.scenes) {
 /* S5: 現実へ。3 つの行き先、終了した本祭・休止中 plus+ を「これから」にしない、有限の終わり */
 {
   const d = thread.realityDestinations;
-  check(d.length === 3, 'exactly three reality destinations');
+  check(d.length === 4, 'exactly four reality destinations (three places + the final official video)');
   const want = [
     ['1957の起点を歩く（高円寺パル商店街）', 'https://www.koenji-pal.jp/about'],
     ['現在の連を知る／参加・体験を相談する', 'https://koenji-awaodori.com/category1/join.html'],
-    ['現在の公式情報を見る', 'https://koenji-awaodori.com/']
+    ['現在の公式情報を見る', 'https://koenji-awaodori.com/'],
+    ['最後に、いまの高円寺阿波おどりを映像で見る', 'https://www.youtube.com/watch?v=dt33RGSRuo0']
   ];
   want.forEach(([label, url], i) => check(d[i] && d[i].label === label && d[i].url === url, `destination ${i + 1} must be「${label}」→ ${url}`));
-  for (const x of d) {
+  /* FOUNDER PREVIEW FIX UNIT E: 最後の行き先は主催団体の公式映像。歴史の relation は持たず、公式映像 source だけを持つ。
+     埋め込み・自動再生・サムネイル・事前読込の token は content にも renderer にも無い。 */
+  const video = d[3] || {};
+  check(video.id === 'dest:official-video' && video.url === 'https://www.youtube.com/watch?v=dt33RGSRuo0'
+    && video.why === 'ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。'
+    && video.note === '2025年の第66回東京高円寺阿波おどりを伝える公式映像です。'
+    && !('relationIds' in video) && !('factIds' in video) && JSON.stringify(video.sourceIds) === '["src:official-video"]', 'final destination must be the approved official video with the exact why / note and only the official-video source');
+  check((source('src:official-video') || {}).kind === 'official' && (source('src:official-video') || {}).url === 'https://www.youtube.com/watch?v=dt33RGSRuo0' && thread.sources.filter((s) => /youtube\.com/.test(s.url)).length === 1, 'exactly one official-video source, with the exact approved YouTube URL');
+  check(!/youtube\.com\/embed|youtube-nocookie|ytimg|img\.youtube|autoplay|preload|<iframe|<video/i.test(contentCode) && !/youtube|ytimg|autoplay|<iframe|<video/i.test(js), 'no embed / autoplay / thumbnail / preload token in content or renderer');
+  check(d.slice(0, 3).every((x) => Array.isArray(x.relationIds) && x.relationIds.length), 'the three place destinations keep their Thread relations');
+  for (const x of d.slice(0, 3)) {
     check(/^https:\/\//.test(x.url), `destination ${x.id} must be https`);
     check(Array.isArray(x.relationIds) && x.relationIds.length && x.relationIds.every((r) => relIds.has(r)), `destination ${x.id} must explain its relation to the Thread`);
     check(typeof x.why === 'string' && x.why, `destination ${x.id} needs a why`);

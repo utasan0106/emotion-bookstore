@@ -521,6 +521,8 @@ function serve() {
           return i && { src: i.getAttribute('src'), alt: i.getAttribute('alt'), loaded: i.complete && i.naturalWidth > 0, w: Math.round(i.getBoundingClientRect().width), h: Math.round(i.getBoundingClientRect().height) };
         })(),
         realityImgs: [...document.querySelectorAll('.hc-reality-shot img')].map((i) => ({ src: i.getAttribute('src'), alt: i.getAttribute('alt'), loaded: i.complete && i.naturalWidth > 0 })),
+        realityCards: [...document.querySelectorAll('.hc-reality-card')].map((a) => { const b = a.getBoundingClientRect(); return { tag: a.tagName, href: a.getAttribute('href'), target: a.getAttribute('target'), rel: a.getAttribute('rel'), rp: a.getAttribute('referrerpolicy'), official: a.classList.contains('official-action'), name: (a.querySelector('.hc-reality-name') || {}).textContent, action: (a.querySelector('.hc-reality-action') || {}).textContent, w: Math.round(b.width), h: Math.round(b.height), shots: a.querySelectorAll('.hc-reality-shot img').length }; }),
+        embeds: document.querySelectorAll('iframe, video, audio, embed, object').length,
         nodes: [...document.querySelectorAll('.hc-node')].map((n) => n.innerText.replace(/\s+/g, '')),
         holds: [...document.querySelectorAll('[data-route-hold]')].map((el) => ({
           id: el.getAttribute('data-route-hold'), tag: el.tagName, href: el.getAttribute('href'), onclick: el.getAttribute('onclick')
@@ -597,9 +599,16 @@ function serve() {
       !!home.threadImg && home.threadImg.src === './assets/home-thread-koenji-awaodori.jpg' && home.threadImg.loaded &&
         /阿波おどり/.test(home.threadImg.alt || '') && Math.abs(home.threadImg.w - 292) <= 2 && Math.abs(home.threadImg.h - 180) <= 2, home.threadImg);
     // img は .hc-thread-media（292 × 180、1px border）の content box を埋めるので 290 × 178。枠の rect は thread_image_rect が見る。
-    check(S, 'reality_first_shot_is_cafe_and_loaded',
-      home.realityImgs.length === 3 && home.realityImgs[0].src === './assets/home-reality-kichijoji-cafe.jpg' && home.realityImgs[0].loaded &&
-        /紅茶店|カフェ|喫茶/.test(home.realityImgs[0].alt || ''), home.realityImgs[0]);
+    // FOUNDER PREVIEW FIX UNIT D: 「実際の場所へ」は 3 つの実在の行き先 card。#1 は井の頭恩賜公園（pond asset）。
+    check(S, 'reality_first_shot_is_inokashira_pond_and_loaded',
+      home.realityImgs.length === 3 && home.realityImgs[0].src === './assets/inokashira-pond.jpg' && home.realityImgs[0].loaded &&
+        /井の頭/.test(home.realityImgs[0].alt || '') && !home.realityImgs.some((i) => /kichijoji-cafe/.test(i.src)), home.realityImgs);
+    check(S, 'reality_cards_are_three_official_anchors',
+      home.realityCards.length === 3 && home.embeds === 0 && home.realityCards.every((c) => c.tag === 'A' && c.target === '_blank' && c.rel === 'noopener noreferrer' && c.rp === 'no-referrer' && c.official && c.shots === 1 && c.w >= 44 && c.h >= 44)
+        && home.realityCards.map((c) => c.name + '|' + c.action.replace(/\s*↗$/, '') + '|' + c.href).join('\n') === [
+          '井の頭恩賜公園|東京都公式を見る|https://www.kensetsu.metro.tokyo.lg.jp/jimusho/seibuk/inokashira',
+          '矢口書店|公式サイトを見る|https://yaguchishoten.jp/',
+          '下北沢 SHELTER|予定を見る|https://www.loft-prj.co.jp/schedule/shelter/schedule'].join('\n'), home.realityCards);
     check(S, 'thread_chain_is_five_nodes',
       home.nodes.join('|') === '街高円寺|出来事阿波おどり|人踊り手たち|資料記録と写真|現在つづく祭り', home.nodes);
     // FOUNDER PREVIEW FIX: route hold 0、false CTA（すべて見る / スポットを探す）0、hero の スレッドを見る も実 anchor。

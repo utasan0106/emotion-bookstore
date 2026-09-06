@@ -28,7 +28,7 @@ const SECTIONS = [
   ['街から入る', 'id="hc-cities-title"'],
   ['作品から入る', 'id="hc-works-title"'],
   ['いま辿れるスレッド', 'id="hc-thread-title"'],
-  ['現実へ出る', 'id="hc-reality-title"'],
+  ['実際の場所へ', 'id="hc-reality-title"'],
 ];
 let cursor = -1;
 for (const [name, marker] of SECTIONS) {
@@ -57,7 +57,7 @@ const COPY = [
   '作品から入る', '本・映画・音楽・映像… あらゆる作品が、街とつながっている。',
   'いま辿れるスレッド', 'ひとつの痕跡から、物語をたどる。',
   '注目のスレッド', '高円寺阿波おどり', '踊りがつなぐ、街・人・記憶の輪。', 'スレッドを読む',
-  '現実へ出る', '物語の終着点は、いつも現実のどこかにある。', 'お店、場所、イベント、人に会いに行く。',
+  '実際の場所へ', '気になった場所は、公式情報を確かめて、', '実際の街へ。',
 ];
 for (const c of COPY) check(html.includes(c), `core copy missing: ${c.slice(0, 40)}`);
 
@@ -161,10 +161,32 @@ check(fs.existsSync(path.join(root, 'works.html')), 'works route target works.ht
 
 /* ---- 5. 外部通信ゼロ / 端末内保存に触れない --------------------------- */
 
+/* FOUNDER PREVIEW FIX UNIT D: 外部へ出る href は「実際の場所へ」の 3 つの公式 destination だけ（click まで通信なし）。
+   それ以外の外部 src / href は引き続き 0。 */
+const REALITY_DESTINATIONS = [
+  ['井の頭恩賜公園', '東京都公式を見る', 'https://www.kensetsu.metro.tokyo.lg.jp/jimusho/seibuk/inokashira', './assets/inokashira-pond.jpg'],
+  ['矢口書店', '公式サイトを見る', 'https://yaguchishoten.jp/', './assets/yaguchi-shoten.jpg'],
+  ['下北沢 SHELTER', '予定を見る', 'https://www.loft-prj.co.jp/schedule/shelter/schedule', './assets/shimokitazawa-shelter.jpg'],
+];
 const body = html.slice(html.indexOf('<body'));
-for (const m of body.match(/(?:src|href)="(https?:)?\/\/[^"]+"/g) || []) {
-  failures.push(`HOME must not reference an external host at runtime: ${m}`);
+const allowedHrefs = REALITY_DESTINATIONS.map((d) => `href="${d[2]}"`);
+const externalRefs = body.match(/(?:src|href)="(https?:)?\/\/[^"]+"/g) || [];
+for (const m of externalRefs) {
+  if (!allowedHrefs.includes(m)) failures.push(`HOME must not reference an external host at runtime (only the three official destinations may be linked): ${m}`);
 }
+check(externalRefs.length === 3 && allowedHrefs.every((h) => externalRefs.includes(h)), 'HOME links exactly the three official destinations and nothing else external');
+check(!/<(iframe|video|audio|embed|object)\b/i.test(html) && !/instagram\.com/i.test(html), 'HOME carries no embed and no Instagram destination');
+const cards = html.match(/<a class="hc-reality-card official-action"[^>]*>[\s\S]*?<\/a>/g) || [];
+check(cards.length === 3 && (html.match(/hc-reality-card/g) || []).length === 3, 'exactly three reality destination cards (finite)');
+cards.forEach((c, i) => {
+  const [name, action, url, img] = REALITY_DESTINATIONS[i] || [];
+  check(c.includes(`href="${url}"`) && c.includes('target="_blank"') && c.includes('rel="noopener noreferrer"') && c.includes('referrerpolicy="no-referrer"')
+    && c.includes(`<span class="hc-reality-name">${name}</span>`) && c.includes(`<span class="hc-reality-action">${action}<span class="hc-reality-mark" aria-hidden="true"> ↗</span></span>`)
+    && c.includes(`<figure class="hc-reality-shot"><img src="${img}"`) && /alt="[^"]+"/.test(c) && !/data-route-hold/.test(c),
+    `reality card ${i + 1} must be ${name} → ${url} with the exact action label, its photo and click-only attributes`);
+});
+check(!html.includes('home-reality-kichijoji-cafe'), 'the generic Kichijoji tea-shop image must not be a clickable destination on HOME');
+check(html.replace(/<[^>]+>/g, '').includes('気になった場所は、公式情報を確かめて、実際の街へ。'), 'reality lead must read the exact sentence across its line spans');
 check(!/<iframe/i.test(html), 'HOME must not embed an iframe');
 for (const t of ['localStorage', 'sessionStorage', 'indexedDB', 'navigator.geolocation', 'fetch(', 'XMLHttpRequest']) {
   check(!html.includes(t), `HOME markup must not contain ${t}`);
@@ -191,7 +213,7 @@ for (const m of html.match(/<a class="hc-work[^"]*"[^>]*>[\s\S]*?<span class="hc
 check((html.match(/class="hc-work-media"/g) || []).length <= 4, 'at most four work image planes');
 // Featured Thread / 現実へ出る #1 は Asset Round 3 で HQ が権利確認した写真
 check(/<div class="hc-thread-media">\s*<img src="\.\/assets\/home-thread-koenji-awaodori\.jpg"/.test(html), 'thread image must be the Awa Odori asset');
-check(/<div class="hc-reality-strip">\s*<figure class="hc-reality-shot"><img src="\.\/assets\/home-reality-kichijoji-cafe\.jpg"/.test(html), 'reality strip #1 must be the cafe asset');
+check(/<div class="hc-reality-strip">\s*<a class="hc-reality-card official-action" href="https:\/\/www\.kensetsu\.metro\.tokyo\.lg\.jp\/jimusho\/seibuk\/inokashira"[^>]*>\s*<figure class="hc-reality-shot"><img src="\.\/assets\/inokashira-pond\.jpg"/.test(html), 'reality strip #1 must be the 井の頭恩賜公園 official destination with the pond asset');
 
 /* ---- 7. CSS は .home-canonical の外へ出ない --------------------------- */
 
@@ -243,5 +265,5 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log('HOME_CANONICAL_CHECK_GO');
-  console.log(`sections=5 in canonical order; shelf-entries=4; thread nodes=5; route holds=${HOLDS.length}; hero anchor=1; works anchors=4; local assets=${assets.length}; external hosts=0; iframes=0`);
+  console.log(`sections=5 in canonical order; shelf-entries=4; thread nodes=5; route holds=${HOLDS.length}; hero anchor=1; works anchors=4; local assets=${assets.length}; external hrefs=3 official destinations (click-only); other external hosts=0; iframes=0`);
 }

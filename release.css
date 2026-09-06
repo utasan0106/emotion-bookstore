@@ -2599,11 +2599,60 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   object-position: 50% 50%;
   filter: brightness(.6) contrast(1.16) saturate(.68);
 }
-.hc-reality-shot:first-child img { object-position: 64% 50%; }
+/* FOUNDER PREVIEW FIX UNIT D: 実際の場所へ — 3 つの行き先 card。写真の上に名前と公式 action を重ね、
+   strip の geometry（写真の高さ・列・gap）は変えない。.official-action の共通 button 見た目は HOME では使わない。 */
+.home-canonical .hc-reality-card,
+.home-canonical .hc-reality-card.official-action,
+.home-canonical .hc-reality-card.official-action:hover {
+  position: relative;
+  display: block;
+  min-width: 0;
+  width: auto;
+  min-height: 0;
+  padding: 0;
+  gap: 0;
+  border: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #14161b;
+  color: #f0e9dc;
+  font: inherit;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-decoration: none;
+  cursor: pointer;
+}
+.hc-reality-card .hc-reality-shot { border-radius: 0; }
+.hc-reality-body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: block;
+  padding: 28px 12px 11px;
+  background: linear-gradient(180deg, rgba(20, 22, 27, 0) 0%, rgba(20, 22, 27, .82) 100%);
+}
+.hc-reality-name {
+  display: block;
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 22px;
+  letter-spacing: .04em;
+  color: #f4eee2;
+}
+.hc-reality-action {
+  display: block;
+  margin-top: 2px;
+  font-size: 11.5px;
+  line-height: 18px;
+  letter-spacing: .04em;
+  color: #d9cfbd;
+}
 
 /* -------------------------------------------------------------- 手ざわり */
 
 .home-canonical .hc-hero-cta:focus-visible,
+.home-canonical .hc-reality-card:focus-visible,
 .home-canonical .hc-city:focus-visible,
 .home-canonical .hc-brand-link:focus-visible,
 .home-canonical .hc-menu-trigger:focus-visible,
@@ -2615,6 +2664,9 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 
 @media (prefers-reduced-motion: reduce) {
   .home-canonical * { animation: none !important; transition: none !important; }
+}
+@media (forced-colors: active) {
+  .home-canonical .hc-reality-card.official-action { border: 2px solid LinkText; background: Canvas; color: LinkText; forced-color-adjust: auto; }
 }
 
 /* ---------------------------------------------- RESPONSIVE ROUND 4 ----
@@ -2718,7 +2770,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   /* 本文は列幅に収まらないときだけ折る。読点の後でしか折らない（keep-all）。 */
   .hc-reality-line { white-space: normal; word-break: keep-all; }
   .hc-reality-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 28px; }
-  .hc-reality-shot:first-child { grid-column: 1 / -1; }
+  .hc-reality-card:first-child { grid-column: 1 / -1; }
 }
 
 /* 390→430 の一次補間（Brief §5 A の値を通り、430 以上は 430 の値で固定） */
