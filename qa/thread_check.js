@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* THREAD CHECK — Cultural Thread（thread.html?thread=koenji-awaodori）の静的契約。
+/* THREAD CHECK — Cultural Thread（thread.html?thread=koenji-dance-history）の静的契約。
  *
  *   node qa/thread_check.js
  *
@@ -50,8 +50,9 @@ vm.createContext(sandbox);
 vm.runInContext(contentJs, sandbox);
 const CONTENT = sandbox.window.V3_THREAD_CONTENT;
 check(CONTENT && Array.isArray(CONTENT.threads), 'thread_content.js must expose window.V3_THREAD_CONTENT.threads');
-const thread = ((CONTENT && CONTENT.threads) || []).find((t) => t && t.threadId === 'koenji-awaodori');
-check(!!thread, 'thread koenji-awaodori missing');
+const thread = ((CONTENT && CONTENT.threads) || []).find((t) => t && t.threadId === 'koenji-dance-history');
+check(!!thread, 'thread koenji-dance-history missing (public route renamed by the Founder no-inquiry decision)');
+check(!((CONTENT && CONTENT.threads) || []).some((t) => t && t.threadId === 'koenji-awaodori'), 'old threadId koenji-awaodori must not remain as a public route');
 finish();
 
 const byId = (list, id) => (list || []).find((x) => x && x.id === id) || null;
@@ -110,7 +111,7 @@ const HEADER = {
   eyebrow: '高円寺',
   title: '踊りが街に根づくまで',
   documentTitle: '高円寺｜踊りが街に根づくまで｜みんなの感情書店',
-  subjectLabel: '主題：高円寺阿波おどり',
+  subjectLabel: '主題：高円寺で受け継がれてきた踊り',
   editor: '編集：みんなの感情書店 編集部',
   lens: 'このThreadでは「教わる／伝わる」に注目しました。',
   checkedAt: '2026-09-04',
@@ -118,6 +119,7 @@ const HEADER = {
   duration: '約15分'
 };
 for (const [k, v] of Object.entries(HEADER)) check(thread[k] === v, `thread.${k} must be exactly「${v}」(got ${thread[k]})`);
+check(thread.image && thread.image.alt === '夜の高円寺の路上で踊る連。白い衣装の踊り手たち', 'image alt must be the neutral Founder copy');
 check(JSON.stringify(thread.guidance) === JSON.stringify(['約15分。いつ止めてもかまいません。', 'アカウント・位置情報・カメラは使いません。', '歩きながら見ないでください。立ち止まれる場所で。']),
   'reading guidance must be the three fixed lines');
 /* FOUNDER PREVIEW FIX C1: location mode（remote / onsite）は持たない。 */
@@ -282,7 +284,7 @@ check(S.s3 && S.s3.close === 'いまの名称が最初からあったのでは�
   check((contentCode.match(/\.\/assets\//g) || []).length === 1, 'content must reference exactly one local asset');
   check(!/https?:\/\/[^'"]+\.(?:jpg|jpeg|png|webp|gif|svg|mp4|mp3|pdf)/i.test(contentCode), 'content must not reference remote media');
   const f = fact((s0.factIds || [])[0]);
-  check(!!f && /40を超える連/.test(f.claim) && /一年を通して/.test(f.claim) && JSON.stringify(f.sourceIds) === '["src:official-join"]', 'S0 present fact (40+ groups / practice through the year) must cite the official participation source');
+  check(!!f && f.claim === '現在、この催しには40を超える連が活動している。多くの連は、一年を通して練習を続けている。' && JSON.stringify(f.sourceIds) === '["src:official-join"]', 'S0 present fact (40+ groups / practice through the year) must cite the official participation source');
   check(!('cue' in s0), 'S0 carries no cue (Founder Preview Fix C2)');
 }
 /* S1: 一点ではなく通り */
@@ -335,7 +337,7 @@ for (const s of thread.scenes) {
     ['1957の起点を歩く（高円寺パル商店街）', 'https://www.koenji-pal.jp/about'],
     ['現在の連を知る／参加・体験を相談する', 'https://koenji-awaodori.com/category1/join.html'],
     ['現在の公式情報を見る', 'https://koenji-awaodori.com/'],
-    ['最後に、いまの高円寺阿波おどりを映像で見る', 'https://www.youtube.com/watch?v=dt33RGSRuo0']
+    ['最後に、現在の公式映像を見る', 'https://www.youtube.com/watch?v=dt33RGSRuo0']
   ];
   want.forEach(([label, url], i) => check(d[i] && d[i].label === label && d[i].url === url, `destination ${i + 1} must be「${label}」→ ${url}`));
   /* FOUNDER PREVIEW FIX UNIT E: 最後の行き先は主催団体の公式映像。歴史の relation は持たず、公式映像 source だけを持つ。
@@ -343,9 +345,9 @@ for (const s of thread.scenes) {
   const video = d[3] || {};
   check(video.id === 'dest:official-video' && video.url === 'https://www.youtube.com/watch?v=dt33RGSRuo0'
     && video.why === 'ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。'
-    && video.note === '2025年の第66回東京高円寺阿波おどりを伝える公式映像です。'
+    && video.note === '2025年の催しを伝える、主催団体の公式映像です。'
     && !('relationIds' in video) && !('factIds' in video) && JSON.stringify(video.sourceIds) === '["src:official-video"]', 'final destination must be the approved official video with the exact why / note and only the official-video source');
-  check((source('src:official-video') || {}).kind === 'official' && (source('src:official-video') || {}).url === 'https://www.youtube.com/watch?v=dt33RGSRuo0' && thread.sources.filter((s) => /youtube\.com/.test(s.url)).length === 1, 'exactly one official-video source, with the exact approved YouTube URL');
+  check((source('src:official-video') || {}).kind === 'official' && (source('src:official-video') || {}).url === 'https://www.youtube.com/watch?v=dt33RGSRuo0' && (source('src:official-video') || {}).name === '主催団体の公式映像' && thread.sources.filter((s) => /youtube\.com/.test(s.url)).length === 1, 'exactly one official-video source, with the exact approved YouTube URL and a neutral name');
   check(!/youtube\.com\/embed|youtube-nocookie|ytimg|img\.youtube|autoplay|preload|<iframe|<video/i.test(contentCode) && !/youtube|ytimg|autoplay|<iframe|<video/i.test(js), 'no embed / autoplay / thumbnail / preload token in content or renderer');
   check(d.slice(0, 3).every((x) => Array.isArray(x.relationIds) && x.relationIds.length), 'the three place destinations keep their Thread relations');
   for (const x of d.slice(0, 3)) {
@@ -367,6 +369,31 @@ for (const s of thread.scenes) {
   check(thread.presentReturn.lead === 'いま辿った文化の続きを、現実で触れる。', 'S5 lead must be the fixed sentence');
   check(thread.ending && thread.ending.line === 'このスレッドは、ここまでです。' && thread.ending.exitLabel === '入口へ戻る' && thread.ending.exitHref === './index.html', 'finite end must be このスレッドは、ここまでです。 + 入口へ戻る');
   check(!/related|nextEpisode|recommend|次回|関連スレッド/.test(contentCode), 'no related threads / recommendation / next episode');
+}
+
+/* ---- 3b. NAME AVOIDANCE（Founder no-inquiry decision 2026-09-06）------------
+   保護名・類似名（東京高円寺阿波おどり / 高円寺阿波おどり / 高円寺阿波踊り）を自分たちの
+   user-facing surface に出さない。URL / asset filename / Commons File 名は provenance として除く。
+   一般的な踊りの種類としての「阿波おどり」は可。 */
+{
+  const FORBIDDEN = ['東京高円寺阿波おどり', '高円寺阿波おどり', '高円寺阿波踊り'];
+  const provenanceFree = (s) => s.replace(/https?:\/\/[^\s"'<>)]+/g, '').replace(/[\w.-]+\.(?:jpg|jpeg|png|webp|svg)\b/g, '').replace(/File:[^"'<>\s]+/g, '');
+  const rendered = JSON.stringify(CONTENT, (k, v) => (k === 'url' || k === 'src' ? '' : v));
+  for (const [name, text] of [['thread_content.js (rendered strings)', rendered], ['thread_content.js (whole file)', contentCode], ['thread.html', html], ['index.html', home], ['credits.html', credits], ['works.html', read('works.html')]]) {
+    const hits = FORBIDDEN.filter((t) => provenanceFree(text).includes(t));
+    check(hits.length === 0, `NAME AVOIDANCE: ${name} must not carry the protected / similar event name (${hits.join(' / ')})`);
+  }
+  check(!/thread=koenji-awaodori\b/.test(home + html + read('works.html') + credits), 'old public route thread=koenji-awaodori must be 0 on public surfaces');
+  check((byId(thread.nodes, 'event:koenji-awaodori') || {}).label === '現在の踊り', 'current event node label must be the neutral「現在の踊り」(node id stays internal)');
+  const rel = thread.relations.find((r) => r.id === 'rel:renamed-1963') || {};
+  check(rel.claim === '1963年、「高円寺ばか踊り」の正式名称が、現在使われている名称へ変わった。' && rel.from === 'event:koenji-baka-odori' && rel.to === 'event:koenji-awaodori', '1963 claim must be the neutral Founder copy, on the same nodes');
+  const NEUTRAL_SOURCE_NAMES = {
+    'src:official-history': '主催団体 公式サイト（歴史資料）', 'src:suginami-gaku': 'すぎなみ学倶楽部（高円寺の踊り）', 'src:official-about': '主催団体 公式サイト（団体について）',
+    'src:official-join': '主催団体 公式サイト（参加案内）', 'src:official-archive': '主催団体 公式サイト（アーカイブ）', 'src:official-anniversary': '主催団体 公式サイト（周年アーカイブ）',
+    'src:official-plus': '主催団体 公式サイト（plus+）', 'src:official-home': '主催団体 公式サイト', 'src:official-video': '主催団体の公式映像'
+  };
+  for (const [id, name] of Object.entries(NEUTRAL_SOURCE_NAMES)) check((source(id) || {}).name === name, `source ${id} name must be the neutral「${name}」(got ${(source(id) || {}).name})`);
+  check(thread.sources.every((s) => !/主催|公式/.test(s.name) || /^主催団体/.test(s.name) || /koenji-pal/.test(s.id)), 'official-domain sources are labelled 主催団体 …, never the event name');
 }
 
 /* ---- 4. renderer（thread.js）------------------------------------------ */
@@ -447,12 +474,12 @@ for (const banned of ['animation', 'transition', '@keyframes', 'box-shadow', 'te
 /* ---- 7. HOME の接続: hold 3 + 実 anchor 1（+ Works の実 anchor 4） --------- */
 
 {
-  const anchor = '<a class="hc-thread-read" href="./thread.html?thread=koenji-awaodori">スレッドを読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></a>';
+  const anchor = '<a class="hc-thread-read" href="./thread.html?thread=koenji-dance-history">スレッドを読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></a>';
   check(home.split(anchor).length === 2, 'HOME section 4 must carry the real Thread anchor exactly once');
   check(!home.includes('data-route-hold="thread-koenji-awaodori"'), 'the thread-koenji-awaodori hold must be gone');
   /* FOUNDER PREVIEW FIX A1 / A5: hero の スレッドを見る も同じ Thread への実 anchor。route hold は 0。 */
   check(!home.includes('data-route-hold'), 'HOME must carry no route hold');
-  check(home.split('<a class="hc-hero-cta" href="./thread.html?thread=koenji-awaodori">').length === 2, 'HOME hero スレッドを見る must be a real anchor to the Koenji Thread, exactly once');
+  check(home.split('<a class="hc-hero-cta" href="./thread.html?thread=koenji-dance-history">').length === 2, 'HOME hero スレッドを見る must be a real anchor to the Koenji Thread, exactly once');
   check((home.match(/thread\.html/g) || []).length === 2, 'HOME must link the Thread route exactly twice (hero + section 4)');
   const rule = (releaseCss.match(/\.hc-thread-read \{[^}]*\}/) || [''])[0];
   for (const decl of ['display: flex;', 'align-items: flex-end;', 'justify-content: flex-end;', 'gap: 14px;', 'height: 44px;', 'margin: 0;', 'font-size: 13px;', 'line-height: 1;', 'letter-spacing: .04em;', 'color: #d8cdbb;', 'text-decoration: none;']) {
@@ -494,7 +521,7 @@ for (const banned of ['animation', 'transition', '@keyframes', 'box-shadow', 'te
 {
   const book = CONTENT.threads.find((t) => t && t.threadId === 'morisaki-book');
   const film = CONTENT.threads.find((t) => t && t.threadId === 'morisaki-film');
-  check(!!book && !!film, 'thread_content.js must expose morisaki-book and morisaki-film next to koenji-awaodori');
+  check(!!book && !!film, 'thread_content.js must expose morisaki-book and morisaki-film next to koenji-dance-history');
   check(CONTENT.threads.length === 3 && CONTENT.threads[0] === thread, 'KOENJI stays first; exactly three threads');
   if (book && film) {
     const same = (k) => book[k] === film[k];

@@ -56,7 +56,7 @@ const COPY = [
   '街から入る', '街には、文化が息づく理由がある。',
   '作品から入る', '本・映画・音楽・映像… あらゆる作品が、街とつながっている。',
   'いま辿れるスレッド', 'ひとつの痕跡から、物語をたどる。',
-  '注目のスレッド', '高円寺阿波おどり', '踊りがつなぐ、街・人・記憶の輪。', 'スレッドを読む',
+  '注目のスレッド', '踊りが街に根づくまで', '踊りがつなぐ、街・人・記憶の輪。', 'スレッドを読む',
   '実際の場所へ', '気になった場所は、公式情報を確かめて、', '実際の街へ。',
 ];
 for (const c of COPY) check(html.includes(c), `core copy missing: ${c.slice(0, 40)}`);
@@ -135,11 +135,11 @@ for (const m of html.match(/<[^>]*data-route-hold="[^"]*"[^>]*>/g) || []) {
 }
 check((html.match(/data-route-hold="/g) || []).length === HOLDS.length, `exactly ${HOLDS.length} route holds expected`);
 // KOENJI R2 + FOUNDER PREVIEW FIX A1: section 4 の「スレッドを読む」と hero の「スレッドを見る」が同じ実 route（thread.html?thread=koenji-awaodori）。
-const THREAD_ANCHOR = '<a class="hc-thread-read" href="./thread.html?thread=koenji-awaodori">スレッドを読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></a>';
-check(html.split(THREAD_ANCHOR).length === 2, 'thread read must be the real anchor to ./thread.html?thread=koenji-awaodori, exactly once');
+const THREAD_ANCHOR = '<a class="hc-thread-read" href="./thread.html?thread=koenji-dance-history">スレッドを読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></a>';
+check(html.split(THREAD_ANCHOR).length === 2, 'thread read must be the real anchor to ./thread.html?thread=koenji-dance-history, exactly once');
 check(!html.includes('data-route-hold="thread-koenji-awaodori"'), 'retired hold thread-koenji-awaodori must not remain');
-const HERO_ANCHOR = '<a class="hc-hero-cta" href="./thread.html?thread=koenji-awaodori"><span class="hc-hero-cta-label">スレッドを見る</span><span class="hc-hero-cta-mark" aria-hidden="true">→</span></a>';
-check(html.split(HERO_ANCHOR).length === 2, 'hero スレッドを見る must be the real anchor to ./thread.html?thread=koenji-awaodori, exactly once (no data-route-hold)');
+const HERO_ANCHOR = '<a class="hc-hero-cta" href="./thread.html?thread=koenji-dance-history"><span class="hc-hero-cta-label">スレッドを見る</span><span class="hc-hero-cta-mark" aria-hidden="true">→</span></a>';
+check(html.split(HERO_ANCHOR).length === 2, 'hero スレッドを見る must be the real anchor to ./thread.html?thread=koenji-dance-history, exactly once (no data-route-hold)');
 check(!html.includes('data-route-hold'), 'HOME must carry no data-route-hold at all');
 check((html.match(/thread\.html/g) || []).length === 2, 'HOME must link the Thread route exactly twice (hero CTA + section 4)');
 // FOUNDER PREVIEW FIX A2 / A4: route の無い「すべて見る」「スポットを探す」は出さない（新しい一覧 / spots page も作らない）
@@ -214,6 +214,21 @@ check((html.match(/class="hc-work-media"/g) || []).length <= 4, 'at most four wo
 // Featured Thread / 現実へ出る #1 は Asset Round 3 で HQ が権利確認した写真
 check(/<div class="hc-thread-media">\s*<img src="\.\/assets\/home-thread-koenji-awaodori\.jpg"/.test(html), 'thread image must be the Awa Odori asset');
 check(/<div class="hc-reality-strip">\s*<a class="hc-reality-card official-action" href="https:\/\/www\.kensetsu\.metro\.tokyo\.lg\.jp\/jimusho\/seibuk\/inokashira"[^>]*>\s*<figure class="hc-reality-shot"><img src="\.\/assets\/inokashira-pond\.jpg"/.test(html), 'reality strip #1 must be the 井の頭恩賜公園 official destination with the pond asset');
+
+/* ---- 6b. NAME AVOIDANCE（Founder no-inquiry decision 2026-09-06）------------
+   自分たちの user-facing surface に保護名・類似名を出さない。外部 URL / asset filename /
+   Commons の File 名は provenance なので scan から除く。public route は koenji-dance-history。 */
+{
+  const FORBIDDEN = ['東京高円寺阿波おどり', '高円寺阿波おどり', '高円寺阿波踊り'];
+  const provenanceFree = (s) => s.replace(/https?:\/\/[^\s"'<>)]+/g, '').replace(/[\w.-]+\.(?:jpg|jpeg|png|webp|svg)\b/g, '').replace(/File:[^"'<>\s]+/g, '');
+  for (const [name, text] of [['index.html', html], ['works.html', fs.readFileSync(path.join(root, 'works.html'), 'utf8')], ['credits.html', fs.readFileSync(path.join(root, 'credits.html'), 'utf8')], ['thread.html', fs.readFileSync(path.join(root, 'thread.html'), 'utf8')]]) {
+    const hits = FORBIDDEN.filter((t) => provenanceFree(text).includes(t));
+    check(hits.length === 0, `NAME AVOIDANCE: ${name} must not carry the protected / similar event name (${hits.join(' / ')})`);
+    check(!/thread=koenji-awaodori\b/.test(text), `NAME AVOIDANCE: ${name} must not expose the old public route thread=koenji-awaodori`);
+  }
+  check((html.match(/thread=koenji-dance-history/g) || []).length === 2, 'HOME must link the public route thread=koenji-dance-history exactly twice (hero + section 4)');
+  check(html.includes('<p class="hc-thread-title">踊りが街に根づくまで</p>'), 'featured Thread title must be the neutral「踊りが街に根づくまで」');
+}
 
 /* ---- 7. CSS は .home-canonical の外へ出ない --------------------------- */
 

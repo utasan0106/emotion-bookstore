@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* THREAD BROWSER QA — Cultural Thread（thread.html?thread=koenji-awaodori）の実ブラウザ検査。
+/* THREAD BROWSER QA — Cultural Thread（thread.html?thread=koenji-dance-history）の実ブラウザ検査。
  *
  *   NODE_PATH=/opt/node22/lib/node_modules node qa/thread_browser_qa.js [--out <dir>]
  *
@@ -23,7 +23,7 @@ if (OUT) fs.mkdirSync(OUT, { recursive: true });
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',
   '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.ico': 'image/x-icon' };
 
-const THREAD = 'thread.html?thread=koenji-awaodori';
+const THREAD = 'thread.html?thread=koenji-dance-history';
 const TITLE = '高円寺｜踊りが街に根づくまで｜みんなの感情書店';
 const KOENJI_TOKENS = ['踊りが街に根づくまで', '阿波おどり', '徳島', '1957', '木場連', '鴨川', 'パル商店街'];
 const DESTINATIONS = [
@@ -31,7 +31,7 @@ const DESTINATIONS = [
   ['現在の連を知る／参加・体験を相談する', 'https://koenji-awaodori.com/category1/join.html'],
   ['現在の公式情報を見る', 'https://koenji-awaodori.com/'],
   /* FOUNDER PREVIEW FIX UNIT E: 最後の 4 つ目は主催団体の公式映像（click でだけ開く） */
-  ['最後に、いまの高円寺阿波おどりを映像で見る', 'https://www.youtube.com/watch?v=dt33RGSRuo0']
+  ['最後に、現在の公式映像を見る', 'https://www.youtube.com/watch?v=dt33RGSRuo0']
 ];
 const YT_URL = 'https://www.youtube.com/watch?v=dt33RGSRuo0';
 const FORBIDDEN = ['次の3つ', 'また見たい', 'おすすめ', 'あなた向け', 'ランキング', '人気順', 'トレンド', 'NEW', 'TRENDING', 'FOR YOU', '見終わりました',
@@ -223,10 +223,12 @@ async function elementShot(page, selector, name, width) {
     await settle(page);
     const m = await page.evaluate(MEASURE);
 
-    check(S, 'thread_renders_koenji', m.threadId === 'koenji-awaodori' && m.lost === 0 && m.sceneCount === 6, { id: m.threadId, scenes: m.sceneCount });
+    check(S, 'thread_renders_koenji', m.threadId === 'koenji-dance-history' && m.lost === 0 && m.sceneCount === 6, { id: m.threadId, scenes: m.sceneCount });
+    /* NAME AVOIDANCE（Founder no-inquiry decision）: 描画テキスト / title / alt に保護名・類似名は 0。 */
+    check(S, 'no_protected_event_name_in_rendered_thread', !/東京高円寺阿波おどり|高円寺阿波おどり|高円寺阿波踊り/.test(m.text + '\n' + m.title + '\n' + m.header + '\n' + m.imgs.map((i) => i.alt || '').join('\n')), { title: m.title, alts: m.imgs.map((i) => i.alt) });
     check(S, 'title_is_the_thread_title', m.title === TITLE, m.title);
     check(S, 'single_h1_is_the_thread_h1', m.h1 === 1 && m.h1Text === '踊りが街に根づくまで', { h1: m.h1, text: m.h1Text });
-    check(S, 'header_copy_present', ['高円寺', '主題：高円寺阿波おどり', '編集：みんなの感情書店 編集部', 'このThreadでは「教わる／伝わる」に注目しました。', '最終確認：2026-09-04',
+    check(S, 'header_copy_present', ['高円寺', '主題：高円寺で受け継がれてきた踊り', '編集：みんなの感情書店 編集部', 'このThreadでは「教わる／伝わる」に注目しました。', '最終確認：2026-09-04',
       '約15分。いつ止めてもかまいません。', 'アカウント・位置情報・カメラは使いません。', '歩きながら見ないでください。立ち止まれる場所で。'].every((t) => m.header.includes(t)), m.header);
     check(S, 'no_horizontal_overflow', m.docW <= m.vw, { docW: m.docW, vw: m.vw });
     check(S, 'no_clipped_text', m.clipped.length === 0, m.clipped.slice(0, 6));
@@ -316,7 +318,7 @@ async function elementShot(page, selector, name, width) {
 
     /* FOUNDER PREVIEW FIX C: mode は無いので、URL / 保存 / live region が何も変わらないことだけを見る。 */
     const noMode = await page.evaluate(() => ({ search: location.search, writes: window.__storageWrites, live: document.getElementById('live').textContent, fieldsets: document.querySelectorAll('fieldset, input').length }));
-    check(S, 'no_mode_controls_no_state', noMode.search === '?thread=koenji-awaodori' && noMode.writes === 0 && noMode.live === '' && noMode.fieldsets === 0, noMode);
+    check(S, 'no_mode_controls_no_state', noMode.search === '?thread=koenji-dance-history' && noMode.writes === 0 && noMode.live === '' && noMode.fieldsets === 0, noMode);
 
     /* 外部 source が落ちても資料の metadata は消えない（runtime は fetch しないので、
        route を落としても名前と URL がそのまま残る） */
@@ -358,7 +360,7 @@ async function elementShot(page, selector, name, width) {
       };
     });
     check(S, 'official_video_is_the_final_destination_without_embed', videoBefore.isLast && videoBefore.count === 4 && videoBefore.label === DESTINATIONS[3][0] && videoBefore.href === YT_URL
-      && videoBefore.why === 'このThreadとの関係：ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。' && videoBefore.note === '2025年の第66回東京高円寺阿波おどりを伝える公式映像です。'
+      && videoBefore.why === 'このThreadとの関係：ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。' && videoBefore.note === '2025年の催しを伝える、主催団体の公式映像です。'
       && videoBefore.embeds === 0 && videoBefore.ytAssets === 0 && videoBefore.h >= 44 && external.every((u) => !/youtube|ytimg|googlevideo/.test(u)), videoBefore);
     {
       const threadPageRequests = [];
@@ -368,7 +370,7 @@ async function elementShot(page, selector, name, width) {
       if (popup) await popup.waitForLoadState('load', { timeout: 5000 }).catch(() => {});
       const popupUrl = popup ? popup.url() : '';
       const stillHere = await page.evaluate(() => ({ url: location.pathname + location.search, embeds: document.querySelectorAll('iframe, video').length }));
-      check(S, 'video_opens_exact_youtube_url_in_new_tab_only_on_click', !!popup && popupUrl === YT_URL && threadPageRequests.length === 0 && stillHere.url === '/thread.html?thread=koenji-awaodori' && stillHere.embeds === 0, { popupUrl, threadPageRequests: threadPageRequests.slice(0, 3), stillHere });
+      check(S, 'video_opens_exact_youtube_url_in_new_tab_only_on_click', !!popup && popupUrl === YT_URL && threadPageRequests.length === 0 && stillHere.url === '/thread.html?thread=koenji-dance-history' && stillHere.embeds === 0, { popupUrl, threadPageRequests: threadPageRequests.slice(0, 3), stillHere });
       if (popup) await popup.close();
       await ctx.unroute((url) => /youtube\.com/.test(url.hostname));
       external.length = 0; /* the popup's own stubbed navigation is not a Thread-page request */
@@ -557,10 +559,10 @@ async function elementShot(page, selector, name, width) {
         sections: document.querySelectorAll('main > section, main > .hc-sheet > section').length
       };
     });
-    check(S, 'thread_read_is_a_real_anchor_to_the_exact_route', home.tag === 'A' && home.href === './thread.html?thread=koenji-awaodori' && home.text === 'スレッドを読む→' && !home.hold && home.tabIndex === 0, home);
+    check(S, 'thread_read_is_a_real_anchor_to_the_exact_route', home.tag === 'A' && home.href === './thread.html?thread=koenji-dance-history' && home.text === 'スレッドを読む→' && !home.hold && home.tabIndex === 0, home);
     check(S, 'thread_read_hit_area_44', home.h === 44 && home.w >= 44, { w: home.w, h: home.h });
     /* FOUNDER PREVIEW FIX A1 / A5: hold は 0。hero の スレッドを見る も同じ Thread への実 anchor。 */
-    check(S, 'no_holds_remain_and_hero_is_a_real_anchor', home.holds.length === 0 && home.heroCta === 'A:./thread.html?thread=koenji-awaodori:false', { holds: home.holds, heroCta: home.heroCta });
+    check(S, 'no_holds_remain_and_hero_is_a_real_anchor', home.holds.length === 0 && home.heroCta === 'A:./thread.html?thread=koenji-dance-history:false', { holds: home.holds, heroCta: home.heroCta });
     check(S, 'four_work_cards_are_real_anchors', home.works === 'book:./works.html#book|film:./works.html#film|music:./works.html#music|video:./works.html#video', home.works);
     await page.focus('.hc-thread-read');
     const focused = await page.evaluate(() => { const el = document.activeElement; const cs = getComputedStyle(el); return { el: el.className, fv: el.matches(':focus-visible'), outline: cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) >= 2 }; });
@@ -570,7 +572,7 @@ async function elementShot(page, selector, name, width) {
     await page.waitForTimeout(150);
     const scrollBefore = await page.evaluate(() => Math.round(scrollY));
     await page.click('.hc-thread-read');
-    await page.waitForURL((u) => u.pathname.endsWith('/thread.html') && u.search === '?thread=koenji-awaodori', { timeout: 5000 });
+    await page.waitForURL((u) => u.pathname.endsWith('/thread.html') && u.search === '?thread=koenji-dance-history', { timeout: 5000 });
     await page.waitForSelector('.th-thread');
     const arrived = await page.evaluate(() => ({ title: document.title, scenes: document.querySelectorAll('.th-scene').length, top: Math.round(scrollY) }));
     check(S, 'home_link_lands_on_the_thread', arrived.title === TITLE && arrived.scenes === 6 && arrived.top === 0, arrived);
@@ -579,7 +581,7 @@ async function elementShot(page, selector, name, width) {
     await page.waitForTimeout(400);
     const restored = await page.evaluate(() => ({
       url: location.pathname.split('/').pop() + location.search, sections: document.querySelectorAll('main > section, main > .hc-sheet > section').length,
-      anchor: !!document.querySelector('a.hc-thread-read[href="./thread.html?thread=koenji-awaodori"]'), scrollY: Math.round(scrollY),
+      anchor: !!document.querySelector('a.hc-thread-read[href="./thread.html?thread=koenji-dance-history"]'), scrollY: Math.round(scrollY),
       threadInView: (() => { const b = document.querySelector('.hc-thread-section').getBoundingClientRect(); return b.bottom > 0 && b.top < innerHeight; })()
     }));
     check(S, 'browser_back_restores_home_context', restored.url === 'index.html' && restored.sections === 5 && restored.anchor, restored);

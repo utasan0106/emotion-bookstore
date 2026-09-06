@@ -38,8 +38,8 @@ const EXTERNAL = {
   'https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204': { label: '音源を聴く ↗', section: 'music', official: true },
   'https://borisheavyrocks.com/discography/4525/': { label: '録音日と会場を確認する ↗', section: 'music', official: false },
   'https://www.loft-prj.co.jp/schedule/shelter': { label: 'いまのSHELTERを見る ↗', section: 'music', official: true },
-  'https://www.youtube.com/watch?v=dt33RGSRuo0': { label: '映像を見る ↗', section: 'video', official: true },
-  'https://www.koenji-awaodori.com/': { label: '東京高円寺阿波おどり公式を見る ↗', section: 'video', official: true }
+  'https://www.youtube.com/watch?v=dt33RGSRuo0': { label: '現在の公式映像を見る ↗', section: 'video', official: true },
+  'https://www.koenji-awaodori.com/': { label: '主催団体の公式サイトを見る ↗', section: 'video', official: true }
 };
 const INTERNAL = {
   book: { href: './thread.html?thread=morisaki-book', label: 'この本から辿る →', title: '本から｜森崎書店の日々｜みんなの感情書店', eyebrow: '本から' },
@@ -235,10 +235,12 @@ async function elementShot(page, selector, name, width) {
     check(S, 'music_copy_exact_boris', !!sec.music && sec.music.category === '音楽' && sec.music.object === '不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204' && sec.music.byline === 'Boris with Michio Kurihara' &&
       sec.music.readingLabel === '編集部の読み' && sec.music.reading === 'ライブ盤を、曲の集まりだけでなく、2007年2月4日の下北沢SHELTERで起きた一度の演奏として聴き直します。' && sec.music.relation === 'つながり：2007年2月4日、下北沢SHELTERで録音されたライブ盤です。' &&
       sec.music.question === 'この音は、誰と、どこで、どの時間に生まれたんだろう？' && !sec.music.info, sec.music);
-    check(S, 'video_fact_and_reading_are_separate_layers', !!sec.video && sec.video.category === '映像' && sec.video.object === '第66回 東京高円寺阿波おどり - after movie -' && sec.video.byline === '東京高円寺阿波おどり ／ 2025' &&
-      !!sec.video.info && sec.video.info.layer === 'claim' && sec.video.info.label === 'この映像について' && sec.video.info.text === '2025年8月23日・24日に行われた第66回東京高円寺阿波おどりを伝える、主催団体の公式映像です。' && sec.video.info.border === 'solid' &&
+    check(S, 'video_fact_and_reading_are_separate_layers', !!sec.video && sec.video.category === '映像' && sec.video.object === '高円寺の踊り｜主催団体の公式映像（2025）' && sec.video.byline === '主催団体 ／ 2025' &&
+      !!sec.video.info && sec.video.info.layer === 'claim' && sec.video.info.label === 'この映像について' && sec.video.info.text === '2025年に高円寺で行われた催しを伝える、主催団体の公式映像です。' && sec.video.info.border === 'solid' &&
       sec.video.readingLayer === 'reading' && sec.video.readingLabel === '編集部の読み' && sec.video.reading === '踊り手の動きと街路の流れを続けて見ると、高円寺の通りが背景ではなく、出来事を成立させる場所として見えてきます。' &&
-      sec.video.relation === 'つながり：高円寺の街で行われる阿波おどりを記録した、主催団体の公式映像です。' && sec.video.infoBeforeReading > 0, sec.video);
+      sec.video.relation === 'つながり：高円寺の街で行われる踊りを記録した、主催団体の公式映像です。' && sec.video.infoBeforeReading > 0, sec.video);
+    /* NAME AVOIDANCE（Founder no-inquiry decision）: works.html の描画テキスト / title / alt に保護名・類似名は 0。 */
+    check(S, 'no_protected_event_name_on_works', !/東京高円寺阿波おどり|高円寺阿波おどり|高円寺阿波踊り/.test(m.text + '\n' + m.title), m.title);
     check(S, 'relation_previews_are_plain_sentences', m.sections.every((s) => /^つながり：/.test(s.relation || '') && !/→/.test(s.relation || '')), m.sections.map((s) => s.relation));
     check(S, 'editorial_reading_is_dashed_everywhere', m.sections.every((s) => s.readingLayer === 'reading' && s.readingBorder === 'dashed'), m.sections.map((s) => [s.id, s.readingBorder]));
 
@@ -481,7 +483,7 @@ async function elementShot(page, selector, name, width) {
       shell: !!document.getElementById('siteMenuButton') && !!document.querySelector('.site-footer') && !!document.querySelector('.skip-link'), overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       text: document.getElementById('main').innerText
     }));
-    check(S, 'static_content_fully_readable_without_js', off.sections === 4 && off.links >= 10 && off.title === TITLE && /森崎書店の日々/.test(off.text) && /Boris with Michio Kurihara/.test(off.text) && /第66回 東京高円寺阿波おどり/.test(off.text), { sections: off.sections, links: off.links });
+    check(S, 'static_content_fully_readable_without_js', off.sections === 4 && off.links >= 10 && off.title === TITLE && /森崎書店の日々/.test(off.text) && /Boris with Michio Kurihara/.test(off.text) && /高円寺の踊り｜主催団体の公式映像（2025）/.test(off.text), { sections: off.sections, links: off.links });
     check(S, 'shell_intact_no_overflow', off.shell && !off.overflow, off);
     check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
     if (OUT) await shot(page, 'WORKS_JS_OFF_390');

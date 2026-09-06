@@ -158,7 +158,7 @@ function serve() {
       check(H, 'real_targets_are_44px', home.targets.length >= 6 && home.targets.every((t) => t[1] >= 44 && t[2] >= 44), home.targets.filter((t) => t[1] < 44 || t[2] < 44));
       check(H, 'route_holds_are_static_labels', home.holds.length === 0 && home.holds.every((h) => h[1] !== 'A' && h[1] !== 'BUTTON' && !h[2] && !h[3] && h[4] < 0), home.holds);
       /* KOENJI R2: section 4 の「スレッドを読む」だけが実 route になった（hero の スレッドを見る は hold のまま） */
-      check(H, 'thread_read_is_a_real_anchor_44', !!home.threadRead && home.threadRead[0] === 'A' && home.threadRead[1] === './thread.html?thread=koenji-awaodori' && !home.threadRead[2] && home.threadRead[4] === 44 && home.threadRead[3] >= 44, home.threadRead);
+      check(H, 'thread_read_is_a_real_anchor_44', !!home.threadRead && home.threadRead[0] === 'A' && home.threadRead[1] === './thread.html?thread=koenji-dance-history' && !home.threadRead[2] && home.threadRead[4] === 44 && home.threadRead[3] >= 44, home.threadRead);
       check(H, 'images_loaded_same_origin', home.images === true);
       check(H, 'actual_noto_cjk_font', Object.values(fonts).every((f) => /Noto (Serif|Sans) CJK JP/.test(f)), fonts);
       check(H, 'reduced_motion_animation_0', home.animated === 0 && home.docAnimations === 0, { animated: home.animated, docAnimations: home.docAnimations });
@@ -523,6 +523,8 @@ function serve() {
         realityImgs: [...document.querySelectorAll('.hc-reality-shot img')].map((i) => ({ src: i.getAttribute('src'), alt: i.getAttribute('alt'), loaded: i.complete && i.naturalWidth > 0 })),
         realityCards: [...document.querySelectorAll('.hc-reality-card')].map((a) => { const b = a.getBoundingClientRect(); return { tag: a.tagName, href: a.getAttribute('href'), target: a.getAttribute('target'), rel: a.getAttribute('rel'), rp: a.getAttribute('referrerpolicy'), official: a.classList.contains('official-action'), name: (a.querySelector('.hc-reality-name') || {}).textContent, action: (a.querySelector('.hc-reality-action') || {}).textContent, w: Math.round(b.width), h: Math.round(b.height), shots: a.querySelectorAll('.hc-reality-shot img').length }; }),
         embeds: document.querySelectorAll('iframe, video, audio, embed, object').length,
+        featuredTitle: (document.querySelector('.hc-thread-title') || {}).textContent,
+        nameHits: (() => { const F = ['東京高円寺阿波おどり', '高円寺阿波おどり', '高円寺阿波踊り']; const t = document.body.innerText + '\n' + document.title + '\n' + [...document.querySelectorAll('[alt], [aria-label], [title]')].map((e) => (e.getAttribute('alt') || '') + ' ' + (e.getAttribute('aria-label') || '') + ' ' + (e.getAttribute('title') || '')).join('\n'); return F.filter((f) => t.includes(f)); })(),
         nodes: [...document.querySelectorAll('.hc-node')].map((n) => n.innerText.replace(/\s+/g, '')),
         holds: [...document.querySelectorAll('[data-route-hold]')].map((el) => ({
           id: el.getAttribute('data-route-hold'), tag: el.tagName, href: el.getAttribute('href'), onclick: el.getAttribute('onclick')
@@ -609,13 +611,15 @@ function serve() {
           '井の頭恩賜公園|東京都公式を見る|https://www.kensetsu.metro.tokyo.lg.jp/jimusho/seibuk/inokashira',
           '矢口書店|公式サイトを見る|https://yaguchishoten.jp/',
           '下北沢 SHELTER|予定を見る|https://www.loft-prj.co.jp/schedule/shelter/schedule'].join('\n'), home.realityCards);
+    // NAME AVOIDANCE（Founder no-inquiry decision）: HOME の描画テキスト / title / alt / aria に保護名・類似名は 0。featured Thread は中立 title。
+    check(S, 'no_protected_event_name_on_home', home.nameHits.length === 0 && home.featuredTitle === '踊りが街に根づくまで', { hits: home.nameHits, featuredTitle: home.featuredTitle });
     check(S, 'thread_chain_is_five_nodes',
       home.nodes.join('|') === '街高円寺|出来事阿波おどり|人踊り手たち|資料記録と写真|現在つづく祭り', home.nodes);
     // FOUNDER PREVIEW FIX: route hold 0、false CTA（すべて見る / スポットを探す）0、hero の スレッドを見る も実 anchor。
     check(S, 'no_route_holds_no_false_ctas', home.holds.length === 0 && home.falseCtas === 0, { holds: home.holds, falseCtas: home.falseCtas });
-    check(S, 'hero_cta_is_a_real_anchor_to_the_thread', !!home.heroCta && home.heroCta.tag === 'A' && home.heroCta.href === './thread.html?thread=koenji-awaodori' && !home.heroCta.hold, home.heroCta);
+    check(S, 'hero_cta_is_a_real_anchor_to_the_thread', !!home.heroCta && home.heroCta.tag === 'A' && home.heroCta.href === './thread.html?thread=koenji-dance-history' && !home.heroCta.hold, home.heroCta);
     check(S, 'thread_read_anchor_points_at_the_real_thread_route',
-      !!home.threadRead && home.threadRead.tag === 'A' && home.threadRead.href === './thread.html?thread=koenji-awaodori' && !home.threadRead.hold && home.threadRead.text === 'スレッドを読む→' && home.threadRead.h === 44 && home.threadRead.w >= 44, home.threadRead);
+      !!home.threadRead && home.threadRead.tag === 'A' && home.threadRead.href === './thread.html?thread=koenji-dance-history' && !home.threadRead.hold && home.threadRead.text === 'スレッドを読む→' && home.threadRead.h === 44 && home.threadRead.w >= 44, home.threadRead);
     check(S, 'reality_strip_is_three_photos', home.strip === 3, home.strip);
     check(S, 'all_images_same_origin_and_loaded',
       home.images.length >= 13 && home.images.every((i) => i.sameOrigin && i.loaded), home.images.filter((i) => !i.sameOrigin || !i.loaded));

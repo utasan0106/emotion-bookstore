@@ -128,8 +128,8 @@ const EXTERNAL_SET = {
   'https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204': { label: '音源を聴く ↗', section: 'music', official: true },
   'https://borisheavyrocks.com/discography/4525/': { label: '録音日と会場を確認する ↗', section: 'music', official: false },
   'https://www.loft-prj.co.jp/schedule/shelter': { label: 'いまのSHELTERを見る ↗', section: 'music', official: true },
-  'https://www.youtube.com/watch?v=dt33RGSRuo0': { label: '映像を見る ↗', section: 'video', official: true },
-  'https://www.koenji-awaodori.com/': { label: '東京高円寺阿波おどり公式を見る ↗', section: 'video', official: true }
+  'https://www.youtube.com/watch?v=dt33RGSRuo0': { label: '現在の公式映像を見る ↗', section: 'video', official: true },
+  'https://www.koenji-awaodori.com/': { label: '主催団体の公式サイトを見る ↗', section: 'video', official: true }
 };
 {
   const seen = new Set();
@@ -196,12 +196,15 @@ const EXTERNAL_SET = {
 {
   const raw = sectionOf('video');
   const s = textOf(raw);
-  for (const c of ['映像', '第66回 東京高円寺阿波おどり - after movie -', '東京高円寺阿波おどり ／ 2025', 'この映像について',
-    '2025年8月23日・24日に行われた第66回東京高円寺阿波おどりを伝える、主催団体の公式映像です。', '編集部の読み',
+  for (const c of ['映像', '高円寺の踊り｜主催団体の公式映像（2025）', '主催団体 ／ 2025', 'この映像について',
+    '2025年に高円寺で行われた催しを伝える、主催団体の公式映像です。', '編集部の読み',
     '踊り手の動きと街路の流れを続けて見ると、高円寺の通りが背景ではなく、出来事を成立させる場所として見えてきます。',
-    'つながり：高円寺の街で行われる阿波おどりを記録した、主催団体の公式映像です。', '映像を見る', '東京高円寺阿波おどり公式を見る']) check(s.includes(c), `#video copy missing: ${c}`);
-  check(raw.includes('<h2 id="wk-video-title" class="wk-object">第66回 東京高円寺阿波おどり - after movie -</h2>') && raw.includes('<p class="wk-byline">東京高円寺阿波おどり ／ 2025</p>'), '#video object / byline markup');
-  check(/<div class="wk-info" data-layer="claim">\s*<p class="wk-info-label">この映像について<\/p>\s*<p class="wk-info-text">2025年8月23日・24日に行われた第66回東京高円寺阿波おどりを伝える、主催団体の公式映像です。<\/p>\s*<\/div>/.test(raw), 'video fact block must be the claim layer with the frozen fact text');
+    'つながり：高円寺の街で行われる踊りを記録した、主催団体の公式映像です。', '現在の公式映像を見る', '主催団体の公式サイトを見る']) check(s.includes(c), `#video copy missing: ${c}`);
+  check(raw.includes('<h2 id="wk-video-title" class="wk-object">高円寺の踊り｜主催団体の公式映像（2025）</h2>') && raw.includes('<p class="wk-byline">主催団体 ／ 2025</p>'), '#video object / byline markup (neutral, Founder no-inquiry)');
+  check(/<div class="wk-info" data-layer="claim">\s*<p class="wk-info-label">この映像について<\/p>\s*<p class="wk-info-text">2025年に高円寺で行われた催しを伝える、主催団体の公式映像です。<\/p>\s*<\/div>/.test(raw), 'video fact block must be the claim layer with the neutral fact text');
+  /* NAME AVOIDANCE（Founder no-inquiry decision）: works.html の user-facing text に保護名・類似名は 0。外部 URL は provenance として除く。 */
+  { const F = ['東京高円寺阿波おどり', '高円寺阿波おどり', '高円寺阿波踊り']; const t = textOf(stripHtml(html)) + ' ' + html.replace(/https?:\/\/[^\s"'<>)]+/g, ''); const hits = F.filter((x) => t.includes(x)); check(hits.length === 0, `NAME AVOIDANCE: works.html must not carry the protected / similar event name (${hits.join(' / ')})`); }
+  check(!/after movie/.test(s), 'our own Work title must not reproduce the official YouTube title');
   check(/<section class="wk-reading" data-layer="reading"[^>]*>\s*<p class="wk-reading-label">編集部の読み<\/p>\s*<p class="wk-reading-text">踊り手の動きと街路の流れを続けて見ると、高円寺の通りが背景ではなく、出来事を成立させる場所として見えてきます。<\/p>\s*<\/section>/.test(raw), 'video editorial reading must be a separate reading layer with the human-approved sentence');
   check(raw.indexOf('wk-info') < raw.indexOf('wk-reading'), 'video fact block comes before the editorial reading');
   check(!/再生回数|再生数|いいね|フォロワー|登録者|views|likes|subscribers|チャンネル登録/i.test(s), '#video must carry no popularity copy');
@@ -209,7 +212,7 @@ const EXTERNAL_SET = {
 }
 /* FOUNDER PREVIEW FIX B: relation preview は矢印記号ではなく、同じ factual meaning の平文 1 文 */
 {
-  const REL = { book: 'つながり：この本が映画になり、その映画は神保町で撮影されました。', film: 'つながり：この映画には原作があり、神保町で撮影されました。', music: 'つながり：2007年2月4日、下北沢SHELTERで録音されたライブ盤です。', video: 'つながり：高円寺の街で行われる阿波おどりを記録した、主催団体の公式映像です。' };
+  const REL = { book: 'つながり：この本が映画になり、その映画は神保町で撮影されました。', film: 'つながり：この映画には原作があり、神保町で撮影されました。', music: 'つながり：2007年2月4日、下北沢SHELTERで録音されたライブ盤です。', video: 'つながり：高円寺の街で行われる踊りを記録した、主催団体の公式映像です。' };
   for (const [id, sentence] of Object.entries(REL)) check(sectionOf(id).includes(`<p class="wk-relation">${sentence}</p>`), `#${id} relation sentence must be exactly「${sentence}」`);
   check((html.match(/class="wk-relation"/g) || []).length === 4 && !/wk-node|wk-arrow| → /.test(htmlCode), 'no symbolic arrow relation preview remains on works.html');
 }
@@ -266,9 +269,9 @@ const CONTENT = sandbox.window.V3_THREAD_CONTENT;
 const threads = (CONTENT && CONTENT.threads) || [];
 const book = threads.find((t) => t && t.threadId === 'morisaki-book');
 const film = threads.find((t) => t && t.threadId === 'morisaki-film');
-const koenji = threads.find((t) => t && t.threadId === 'koenji-awaodori');
-check(!!book && !!film && !!koenji, 'threads must expose koenji-awaodori, morisaki-book and morisaki-film');
-check(threads.map((t) => t.threadId).join('|') === 'koenji-awaodori|morisaki-book|morisaki-film', 'threads order must be KOENJI, MORISAKI_BOOK, MORISAKI_FILM');
+const koenji = threads.find((t) => t && t.threadId === 'koenji-dance-history');
+check(!!book && !!film && !!koenji, 'threads must expose koenji-dance-history, morisaki-book and morisaki-film');
+check(threads.map((t) => t.threadId).join('|') === 'koenji-dance-history|morisaki-book|morisaki-film', 'threads order must be KOENJI, MORISAKI_BOOK, MORISAKI_FILM');
 finish();
 
 /* shared identity（同一参照） */
@@ -524,16 +527,29 @@ morisakiScenes(film, 'film');
     const OLD = (fsb.window.V3_THREAD_CONTENT.threads || []).find((t) => t.threadId === 'koenji-awaodori');
     const J = (v) => JSON.stringify(v);
     check(!!OLD && !!koenji, 'KOENJI must exist in both frozen source and candidate');
-    for (const k of ['threadId', 'eyebrow', 'title', 'documentTitle', 'subjectLabel', 'editor', 'lens', 'checkedAt', 'checkedLabel', 'duration', 'guidance', 'image', 'nodes', 'facts', 'relations', 'presentReturn', 'ending']) {
-      check(J(koenji[k]) === J(OLD[k]), `KOENJI.${k} must be deep-equal to the frozen source`);
+    /* FOUNDER no-inquiry overlay（2026-09-06）: 凍結 SOURCE に exact override（route / 中立 label / 中立 claim / 中立 source name /
+       modes 削除 / cue 削除 / 公式映像 1 件追加）を当てたものと deep-equal であること。それ以外の差分は 0。 */
+    const YT = 'https://www.youtube.com/watch?v=dt33RGSRuo0';
+    const EXP = JSON.parse(J(OLD));
+    EXP.threadId = 'koenji-dance-history';
+    EXP.subjectLabel = '主題：高円寺で受け継がれてきた踊り';
+    EXP.image.alt = '夜の高円寺の路上で踊る連。白い衣装の踊り手たち';
+    EXP.nodes = EXP.nodes.map((n) => (n.id === 'event:koenji-awaodori' ? { ...n, label: '現在の踊り' } : n));
+    EXP.facts = EXP.facts.map((f) => (f.id === 'fact:present-groups' ? { ...f, claim: '現在、この催しには40を超える連が活動している。多くの連は、一年を通して練習を続けている。' } : f));
+    EXP.relations = EXP.relations.map((r) => (r.id === 'rel:renamed-1963' ? { ...r, claim: '1963年、「高円寺ばか踊り」の正式名称が、現在使われている名称へ変わった。' } : r));
+    const NAMES = { 'src:official-history': '主催団体 公式サイト（歴史資料）', 'src:suginami-gaku': 'すぎなみ学倶楽部（高円寺の踊り）', 'src:official-about': '主催団体 公式サイト（団体について）', 'src:official-join': '主催団体 公式サイト（参加案内）', 'src:official-archive': '主催団体 公式サイト（アーカイブ）', 'src:official-anniversary': '主催団体 公式サイト（周年アーカイブ）', 'src:official-plus': '主催団体 公式サイト（plus+）', 'src:official-home': '主催団体 公式サイト' };
+    EXP.sources = EXP.sources.map((x) => (NAMES[x.id] ? { ...x, name: NAMES[x.id] } : x));
+    EXP.sources.push({ id: 'src:official-video', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体の公式映像', url: YT });
+    EXP.realityDestinations.push({ id: 'dest:official-video', label: '最後に、現在の公式映像を見る', url: YT, why: 'ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。', note: '2025年の催しを伝える、主催団体の公式映像です。', sourceIds: ['src:official-video'] });
+    delete EXP.modes;
+    EXP.scenes = EXP.scenes.map((sc) => { const c = JSON.parse(J(sc)); delete c.cue; if (c.beats) c.beats = c.beats.filter((b) => b.kind !== 'cue'); return c; });
+    for (const k of ['threadId', 'eyebrow', 'title', 'documentTitle', 'subjectLabel', 'editor', 'lens', 'checkedAt', 'checkedLabel', 'duration', 'guidance', 'image', 'nodes', 'facts', 'relations', 'sources', 'presentReturn', 'realityDestinations', 'ending', 'scenes']) {
+      check(J(koenji[k]) === J(EXP[k]), `KOENJI.${k} must equal the frozen source with only the exact Founder overrides applied`);
     }
-    /* FOUNDER PREVIEW FIX UNIT E: sources / realityDestinations は凍結 source + 末尾に公式映像 1 件だけ */
-    for (const k of ['sources', 'realityDestinations']) {
-      check(Array.isArray(koenji[k]) && koenji[k].length === OLD[k].length + 1 && J(koenji[k].slice(0, OLD[k].length)) === J(OLD[k]), `KOENJI.${k} must equal the frozen source plus exactly one appended official-video record`);
-    }
+    check(JSON.stringify(Object.keys(koenji).sort()) === JSON.stringify(Object.keys(EXP).sort()), 'KOENJI carries no extra / missing top-level keys versus the frozen source (minus modes)');
     const vSrc = koenji.sources[koenji.sources.length - 1] || {}, vDest = koenji.realityDestinations[koenji.realityDestinations.length - 1] || {};
-    check(vSrc.id === 'src:official-video' && vSrc.kind === 'official' && vSrc.url === 'https://www.youtube.com/watch?v=dt33RGSRuo0', 'appended source is the official video with the approved URL');
-    check(vDest.id === 'dest:official-video' && vDest.url === 'https://www.youtube.com/watch?v=dt33RGSRuo0' && vDest.label === '最後に、いまの高円寺阿波おどりを映像で見る' && J(vDest.sourceIds) === '["src:official-video"]' && !('relationIds' in vDest), 'appended destination is the approved official video (label / URL / source only)');
+    check(vSrc.id === 'src:official-video' && vSrc.kind === 'official' && vSrc.url === YT, 'appended source is the official video with the approved URL');
+    check(vDest.id === 'dest:official-video' && vDest.url === YT && vDest.label === '最後に、現在の公式映像を見る' && J(vDest.sourceIds) === '["src:official-video"]' && !('relationIds' in vDest), 'appended destination is the approved official video (label / URL / source only)');
     check(!('modes' in koenji) && 'modes' in OLD, 'KOENJI modes removed (was present in the frozen source)');
     const strip = (s) => { const c = JSON.parse(J(s)); delete c.cue; if (c.beats) c.beats = c.beats.filter((b) => b.kind !== 'cue'); return c; };
     check(koenji.scenes.length === 6 && OLD.scenes.length === 6 && koenji.scenes.every((s, i) => J(s) === J(strip(OLD.scenes[i]))), 'KOENJI scenes must equal the frozen scenes with only cue / cue beats removed');

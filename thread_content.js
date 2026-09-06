@@ -22,11 +22,11 @@
   'use strict';
 
   var KOENJI = {
-    threadId: 'koenji-awaodori',
+    threadId: 'koenji-dance-history',
     eyebrow: '高円寺',
     title: '踊りが街に根づくまで',
     documentTitle: '高円寺｜踊りが街に根づくまで｜みんなの感情書店',
-    subjectLabel: '主題：高円寺阿波おどり',
+    subjectLabel: '主題：高円寺で受け継がれてきた踊り',
     editor: '編集：みんなの感情書店 編集部',
     lens: 'このThreadでは「教わる／伝わる」に注目しました。',
     checkedAt: '2026-09-04',
@@ -41,7 +41,7 @@
     /* 承認済み HOME asset を一度だけ使う（credits.html に権利記録あり）。 */
     image: {
       src: './assets/home-thread-koenji-awaodori.jpg',
-      alt: '夜の高円寺の路上で踊る阿波おどりの連。白い衣装の踊り手たち',
+      alt: '夜の高円寺の路上で踊る連。白い衣装の踊り手たち',
       width: 1524,
       height: 1016
     },
@@ -51,7 +51,7 @@
       { id: 'place:koenji-pal', type: 'Place', label: '高円寺パル商店街' },
       { id: 'place:tokushima', type: 'Place', label: '徳島' },
       { id: 'event:koenji-baka-odori', type: 'Event', label: '高円寺ばか踊り' },
-      { id: 'event:koenji-awaodori', type: 'Event', label: '高円寺阿波おどり' },
+      { id: 'event:koenji-awaodori', type: 'Event', label: '現在の踊り' },
       { id: 'org:koenji-organizers', type: 'Organization', label: '高円寺の主催者たち' },
       { id: 'org:tokushima-shimbun', type: 'Organization', label: '徳島新聞社' },
       { id: 'org:kiba-ren', type: 'Organization', label: '木場連' },
@@ -62,7 +62,7 @@
     facts: [
       {
         id: 'fact:present-groups',
-        claim: '高円寺阿波おどりには、40を超える連が活動している。多くの連は、一年を通して練習を続けている。',
+        claim: '現在、この催しには40を超える連が活動している。多くの連は、一年を通して練習を続けている。',
         supportMode: ['direct_statement'],
         verificationState: 'single_source',
         sourceIds: ['src:official-join'],
@@ -128,7 +128,7 @@
         to: 'event:koenji-awaodori',
         relationType: 'renamed_to',
         displayVerb: '名を変える',
-        claim: '1963年、正式名称が「高円寺ばか踊り」から「高円寺阿波おどり」に変わった。',
+        claim: '1963年、「高円寺ばか踊り」の正式名称が、現在使われている名称へ変わった。',
         supportMode: ['direct_statement'],
         verificationState: 'single_source',
         sourceIds: ['src:official-history'],
@@ -139,18 +139,18 @@
 
     /* HQ supplied / verified の資料だけ。URL は全部 https。 */
     sources: [
-      { id: 'src:official-history', kind: 'official', kindLabel: '公式（主催団体）', name: '東京高円寺阿波おどり 公式サイト（歴史）', url: 'https://koenji-awaodori.com/about/his01.html' },
-      { id: 'src:suginami-gaku', kind: 'local_archive', kindLabel: '地域の文化アーカイブ', name: 'すぎなみ学倶楽部（高円寺阿波おどり）', url: 'https://suginamigaku.org/2022/11/koenji-awaodori.html' },
-      { id: 'src:official-about', kind: 'official', kindLabel: '公式（主催団体）', name: '東京高円寺阿波おどり 公式サイト（団体について）', url: 'https://www.koenji-awaodori.com/about/about01.html' },
-      { id: 'src:official-join', kind: 'official', kindLabel: '公式（主催団体）', name: '東京高円寺阿波おどり 公式サイト（参加案内）', url: 'https://koenji-awaodori.com/category1/join.html' },
-      { id: 'src:official-archive', kind: 'official', kindLabel: '公式（主催団体）', name: '東京高円寺阿波おどり 公式サイト（アーカイブ）', url: 'https://www.koenji-awaodori.com/about/about05.html' },
-      { id: 'src:official-anniversary', kind: 'official', kindLabel: '公式（主催団体）', name: '東京高円寺阿波おどり 公式サイト（周年アーカイブ）', url: 'https://www.koenji-awaodori.com/about/his04.html' },
-      { id: 'src:official-plus', kind: 'official', kindLabel: '公式（主催団体）', name: '東京高円寺阿波おどり 公式サイト（plus+）', url: 'https://koenji-awaodori.com/stage/stage04.html' },
+      { id: 'src:official-history', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体 公式サイト（歴史資料）', url: 'https://koenji-awaodori.com/about/his01.html' },
+      { id: 'src:suginami-gaku', kind: 'local_archive', kindLabel: '地域の文化アーカイブ', name: 'すぎなみ学倶楽部（高円寺の踊り）', url: 'https://suginamigaku.org/2022/11/koenji-awaodori.html' },
+      { id: 'src:official-about', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体 公式サイト（団体について）', url: 'https://www.koenji-awaodori.com/about/about01.html' },
+      { id: 'src:official-join', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体 公式サイト（参加案内）', url: 'https://koenji-awaodori.com/category1/join.html' },
+      { id: 'src:official-archive', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体 公式サイト（アーカイブ）', url: 'https://www.koenji-awaodori.com/about/about05.html' },
+      { id: 'src:official-anniversary', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体 公式サイト（周年アーカイブ）', url: 'https://www.koenji-awaodori.com/about/his04.html' },
+      { id: 'src:official-plus', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体 公式サイト（plus+）', url: 'https://koenji-awaodori.com/stage/stage04.html' },
       { id: 'src:koenji-pal-about', kind: 'official_place', kindLabel: '公式（商店街）', name: '高円寺パル商店街 公式サイト（商店街について）', url: 'https://www.koenji-pal.jp/about' },
       { id: 'src:koenji-pal-access', kind: 'official_place', kindLabel: '公式（商店街）', name: '高円寺パル商店街 公式サイト（アクセス）', url: 'https://www.koenji-pal.jp/access' },
-      { id: 'src:official-home', kind: 'official', kindLabel: '公式（主催団体）', name: '東京高円寺阿波おどり 公式サイト（トップ）', url: 'https://koenji-awaodori.com/' },
+      { id: 'src:official-home', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体 公式サイト', url: 'https://koenji-awaodori.com/' },
       /* FOUNDER PREVIEW FIX UNIT E: 主催団体の公式映像（Works で承認済みの同じ URL）。埋め込まず、user click でだけ開く。 */
-      { id: 'src:official-video', kind: 'official', kindLabel: '公式（主催団体）', name: '東京高円寺阿波おどり 公式映像「第66回 東京高円寺阿波おどり - after movie -」', url: 'https://www.youtube.com/watch?v=dt33RGSRuo0' }
+      { id: 'src:official-video', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体の公式映像', url: 'https://www.youtube.com/watch?v=dt33RGSRuo0' }
     ],
 
     /* S0–S5。S2 の五拍（BEFORE → ENCOUNTER → QUESTION → EVIDENCE → REVEAL）
@@ -303,10 +303,10 @@
          埋め込み・自動再生・サムネイル・事前読込は使わない。user click でだけ開く。 */
       {
         id: 'dest:official-video',
-        label: '最後に、いまの高円寺阿波おどりを映像で見る',
+        label: '最後に、現在の公式映像を見る',
         url: 'https://www.youtube.com/watch?v=dt33RGSRuo0',
         why: 'ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。',
-        note: '2025年の第66回東京高円寺阿波おどりを伝える公式映像です。',
+        note: '2025年の催しを伝える、主催団体の公式映像です。',
         sourceIds: ['src:official-video']
       }
     ],
