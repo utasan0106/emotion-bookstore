@@ -1,0 +1,52 @@
+{
+  "checkedAt": "2026-09-07",
+  "surface": "experiments/parks-screen-r1/",
+  "publication": "isolated_prototype_only",
+  "video": {
+    "title": "2017/11/15 BD・DVDリリース『PARKS パークス』予告",
+    "videoId": "pm7RBghFt0I",
+    "watchUrl": "https://www.youtube.com/watch?v=pm7RBghFt0I",
+    "provider": "【公式】日活MOVIEチャンネル",
+    "providerChannel": "https://www.youtube.com/@nikkatsuchannel",
+    "relationshipEvidence": "https://movie-product.ponycanyon.co.jp/item010.html",
+    "relationship": "映画発売元として日活を確認",
+    "durationSeconds": 119,
+    "embedUiVerified": true,
+    "privacyEnhancedUiVerified": true,
+    "nativeEmbedPlaybackVerified": false,
+    "inlinePrototypePlaybackVerified": false,
+    "captions": "not_confirmed",
+    "rights": "Official provider embed only. Not a free download or rehosting license.",
+    "downloaded": false,
+    "thumbnailDownloaded": false,
+    "editing": "none",
+    "historicalAvailability": "2017年発売告知。現時点の上映・在庫・レンタル可否は保証しない。",
+    "sceneTimestamps": [],
+    "playbackLimitation": "rel=0 does not eliminate provider recommendations; no claim of provider-wide finite playback"
+  },
+  "photo": {
+    "localPath": "assets/inokashira-pond.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Inokashira_Pond.jpg",
+    "author": "Htanaungg",
+    "dateTaken": "2024-04-13",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "modification": "Reuse existing 1600 x 949 resized file, preserve aspect ratio; no new edit",
+    "notFilmStill": true,
+    "notHistoricalGeometry": true
+  },
+  "chronology": [
+    {"date": "2017", "relation": "ending_theme_of", "source": "https://movie-product.ponycanyon.co.jp/item010.html"},
+    {"date": "2016-04-27", "relation": "released_on_album", "source": "https://mirairecords.com/stsr/1025", "formatsMentioned": ["CD", "vinyl", "cassette"], "currentStockVerified": false},
+    {"date": "2014-06-12/2014-06-13", "relation": "song_development_started_at_session", "source": "https://mirairecords.com/stsr/999"},
+    {"date": "2012-11-12", "relation": "performance_with_silent_film_informed_later_sessions", "source": "https://www.cinra.net/article/interview-201705-yakushimaruetsuko", "attributedTo": "やくしまるえつこ"}
+  ],
+  "data": {
+    "storage": false,
+    "analyticsLoaded": false,
+    "privateInput": false,
+    "providerLoad": "explicit click only",
+    "iframeReferrerPolicy": "strict-origin-when-cross-origin",
+    "initialRuntimeNetworkMeasured": false
+  }
+}
