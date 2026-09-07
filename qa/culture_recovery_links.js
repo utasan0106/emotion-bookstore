@@ -19,13 +19,14 @@ console.log('PASS '+count+' local references and runtime parity');
 
 // Public works entry must reach the real listening surface before the long background.
 const works=fs.readFileSync(path.join(root,'works.html'),'utf8');
+const music=fs.readFileSync(path.join(root,'work-music.html'),'utf8');
 for(const href of ['./v3-prototype/culture-experience-r2/index.html','./v3-prototype/culture-experience-r2/shimokitazawa/?recording=shelter']) {
- assert.ok(works.includes('href="'+href+'"'));
+ assert.ok((works+music).includes('href="'+href+'"'));
  const u=new URL(href,'https://local.test/works.html');
  let p=path.join(root,u.pathname);if(fs.statSync(p).isDirectory())p=path.join(p,'index.html');
  assert.ok(fs.existsSync(p));
 }
-assert.ok(works.indexOf('?recording=shelter')<works.indexOf('この演奏が生まれた背景'));
+assert.ok(music.indexOf('?recording=shelter')<music.indexOf('この演奏が生まれた背景'));
 const hub=fs.readFileSync(path.join(base,'index.html'),'utf8');
 assert.doesNotMatch(hub,/PRODUCTION未接続|PREVIEW ONLY/);
 assert.ok(hub.includes('href="../../works.html"'));

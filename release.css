@@ -1667,6 +1667,12 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   padding: 0 0 30px;
   border-bottom: 1px solid var(--hall-line);
 }
+/* Event identity is readable before the editorial background. */
+.weekly-feature-kind, .weekly-feature-status { margin: 0 0 .5rem; font-size: 1rem; line-height: 1.6; color: var(--chalk); }
+.weekly-feature-status { font-weight: 600; }
+.weekly-feature-hours { margin: .5rem 0; font-size: .875rem; line-height: 1.6; color: var(--chalk-dim); }
+
+
 .weekly-feature-meta { grid-area: meta; }
 .weekly-feature-date,
 .weekly-feature-venue {
@@ -2516,14 +2522,14 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   font-family: var(--serif);
   font-size: 30px;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.4;
   letter-spacing: .01em;
   color: #f0e9dc;
 }
 .hc-thread-sub {
   margin: 12px 0 0;
   font-size: 13px;
-  line-height: 1;
+  line-height: 1.4;
   letter-spacing: .02em;
   color: #9c958b;
 }
@@ -2907,3 +2913,6 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   .hc-reality-strip { gap: 14px; }
   .hc-reality-shot { height: 220px; }
 }
+
+.hc-work-caption { min-width: 0; display: grid; gap: .2rem; }
+.hc-work-place { font-size: .875rem; line-height: 1.4; color: #f4f0e8; }

@@ -24,8 +24,8 @@ const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': '
   '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.ico': 'image/x-icon' };
 
 const THREAD = 'thread.html?thread=koenji-dance-history';
-const TITLE = '高円寺｜踊りが街に根づくまで｜みんなの感情書店';
-const KOENJI_TOKENS = ['踊りが街に根づくまで', '阿波おどり', '徳島', '1957', '木場連', '鴨川', 'パル商店街'];
+const TITLE = '高円寺｜高円寺の踊りは、どう始まった？｜みんなの感情書店';
+const KOENJI_TOKENS = ['高円寺の踊りは、どう始まった？', '阿波おどり', '徳島', '1957', '木場連', '鴨川', 'パル商店街'];
 const DESTINATIONS = [
   ['1957の起点を歩く（高円寺パル商店街）', 'https://www.koenji-pal.jp/about'],
   ['現在の連を知る／参加・体験を相談する', 'https://koenji-awaodori.com/category1/join.html'],
@@ -229,8 +229,8 @@ async function elementShot(page, selector, name, width) {
     /* NAME AVOIDANCE（Founder no-inquiry decision）: 描画テキスト / title / alt に保護名・類似名は 0。 */
     check(S, 'no_protected_event_name_in_rendered_thread', !/東京高円寺阿波おどり|高円寺阿波おどり|高円寺阿波踊り/.test(m.text + '\n' + m.title + '\n' + m.header + '\n' + m.imgs.map((i) => i.alt || '').join('\n')), { title: m.title, alts: m.imgs.map((i) => i.alt) });
     check(S, 'title_is_the_thread_title', m.title === TITLE, m.title);
-    check(S, 'single_h1_is_the_thread_h1', m.h1 === 1 && m.h1Text === '踊りが街に根づくまで', { h1: m.h1, text: m.h1Text });
-    check(S, 'header_copy_present', ['高円寺', '主題：高円寺で受け継がれてきた踊り', '編集：みんなの感情書店 編集部', 'このThreadでは「教わる／伝わる」に注目しました。', '最終確認：2026-09-04',
+    check(S, 'single_h1_is_the_thread_h1', m.h1 === 1 && m.h1Text === '高円寺の踊りは、どう始まった？', { h1: m.h1, text: m.h1Text });
+    check(S, 'header_copy_present', ['高円寺', '主題：高円寺の踊りの歴史', '編集：みんなの感情書店 編集部', '商店街での始まりから、木場連との出会いへ。1957年からの来歴を辿ります。', '最終確認：2026-09-04',
       '約15分'].every((t) => m.header.includes(t)), m.header);
     check(S, 'no_horizontal_overflow', m.docW <= m.vw, { docW: m.docW, vw: m.vw });
     check(S, 'no_clipped_text', m.clipped.length === 0, m.clipped.slice(0, 6));
@@ -238,7 +238,7 @@ async function elementShot(page, selector, name, width) {
       m.scenes.every((s, i) => i === 0 || s.rect.y >= m.scenes[i - 1].rect.y + m.scenes[i - 1].rect.h - 1) && m.headRect.w <= 640,
       { head: m.headRect, scenes: m.scenes.map((s) => [s.id, s.rect]) });
     check(S, 'scenes_in_order_s0_to_s5', m.scenes.map((s) => s.id).join('|') === 's0|s1|s2|s3|s4|s5' &&
-      m.scenes.map((s) => s.title).join('|') === 'いま|1957 ／ はじまる|1957のあと|1963 ／ 名を変える|いま、もう一度|現実へ', m.scenes.map((s) => [s.id, s.title]));
+      m.scenes.map((s) => s.title).join('|') === '高円寺の路上で踊る連|商店街で始まった踊り|高円寺と徳島のあいだ|踊りの名前の変化|いまの踊りを見直す|映像や商店街へ', m.scenes.map((s) => [s.id, s.title]));
     /* FOUNDER PREVIEW FIX C3: AFTER cue beat は無い。五拍。 */
     check(S, 's2_five_beats_in_order', m.beats.map((b) => b.id).join('|') === 'before|encounter|question|evidence|reveal' && m.beats.every((b, i) => i === 0 || b.y > m.beats[i - 1].y), m.beats.map((b) => [b.id, b.y]));
     const revealAt = m.beats.findIndex((b) => b.id === 'reveal');
@@ -517,7 +517,7 @@ async function elementShot(page, selector, name, width) {
       main: document.getElementById('main').innerText, note: !!document.querySelector('.noscript-note'), shell: !!document.getElementById('siteMenuButton') && !!document.querySelector('.site-footer') && !!document.querySelector('.skip-link'),
       scenes: document.querySelectorAll('.th-scene, .th-thread, .th-lost').length, images: document.querySelectorAll('#main img').length, title: document.title, overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1
     }));
-    check(S, 'generic_noscript_only', off.note && off.main.includes('このスレッドを読むには JavaScript を有効にしてください。') && off.scenes === 0 && off.images === 0, off);
+    check(S, 'generic_noscript_only', off.note && off.main.includes('この踊りの歴史を読むには JavaScript を有効にしてください。') && off.scenes === 0 && off.images === 0, off);
     check(S, 'no_koenji_body_content', KOENJI_TOKENS.every((t) => !off.main.includes(t)) && off.title === 'みんなの感情書店｜スレッド', { title: off.title });
     check(S, 'shell_intact_no_overflow', off.shell && !off.overflow, off);
     check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
@@ -572,7 +572,7 @@ async function elementShot(page, selector, name, width) {
         sections: document.querySelectorAll('main > section, main > .hc-sheet > section').length
       };
     });
-    check(S, 'thread_read_is_a_real_anchor_to_the_exact_route', home.tag === 'A' && home.href === './thread.html?thread=koenji-dance-history' && home.text === 'スレッドを読む→' && !home.hold && home.tabIndex === 0, home);
+    check(S, 'thread_read_is_a_real_anchor_to_the_exact_route', home.tag === 'A' && home.href === './thread.html?thread=koenji-dance-history' && home.text === '踊りの歴史を読む→' && !home.hold && home.tabIndex === 0, home);
     check(S, 'thread_read_hit_area_44', home.h === 44 && home.w >= 44, { w: home.w, h: home.h });
     /* FOUNDER PREVIEW FIX A1 / A5: hold は 0。hero の スレッドを見る も同じ Thread への実 anchor。 */
     check(S, 'no_holds_remain_and_hero_is_a_real_anchor', home.holds.length === 0 && home.heroCta === 'A:./thread.html?thread=koenji-dance-history:false', { holds: home.holds, heroCta: home.heroCta });

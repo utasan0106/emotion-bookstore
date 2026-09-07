@@ -40,7 +40,9 @@ for (const f of ['works.html', 'works.css', 'thread.html', 'thread.css', 'thread
 }
 finish();
 
-const html = read('works.html');
+// Editorial copy/rights contracts cover the source; work_page_check validates each actual generated page.
+require('child_process').execFileSync(process.execPath, [path.join(root, 'tools/build-work-pages.js'), '--check']);
+const html = read('tools/work-entry-source.html');
 const htmlCode = stripHtml(html);
 const css = read('works.css');
 const cssRules = css.replace(/\/\*[\s\S]*?\*\//g, '');
@@ -64,7 +66,7 @@ const STATES = ['single_source', 'corroborated', 'source_difference', 'unresolve
 
 check(html.includes('<meta name="robots" content="noindex,nofollow">'), 'works.html must be noindex,nofollow');
 check(!/property="og:|name="twitter:/.test(html), 'works.html must carry no OGP / twitter card');
-check(html.includes('<title>みんなの感情書店｜作品から入る</title>'), 'works.html <title> must be みんなの感情書店｜作品から入る');
+check(html.includes('<title>みんなの感情書店｜作品から入る</title>'), 'editorial source <title> must be みんなの感情書店｜作品から入る');
 check(html.includes('<link rel="stylesheet" href="./release.css">') && html.includes('<link rel="stylesheet" href="./works.css">') &&
   html.indexOf('./release.css') < html.indexOf('./works.css'), 'works.css must load after release.css');
 check(html.includes('<body class="works-page">'), 'body must carry .works-page');
@@ -488,7 +490,7 @@ morisakiScenes(film, 'film');
 
 {
   for (const w of ['book', 'film', 'music', 'video']) {
-    check(home.split(`<a class="hc-work" data-work="${w}" href="./works.html#${w}">`).length === 2, `HOME work card ${w} must be the exact anchor`);
+    check(home.split(`<a class="hc-work" data-work="${w}" href="./work-${w}.html">`).length === 2, `HOME work card ${w} must be the exact anchor`);
     check(!home.includes(`data-route-hold="work-${w}"`), `HOME hold work-${w} must be retired`);
     check(html.includes(`<section id="${w}" class="wk-work" data-work="${w}"`), `works.html#${w} must exist as the anchor target`);
   }
@@ -546,7 +548,11 @@ morisakiScenes(film, 'film');
     const YT = 'https://www.youtube.com/watch?v=dt33RGSRuo0';
     const EXP = JSON.parse(J(OLD));
     EXP.threadId = 'koenji-dance-history';
-    EXP.subjectLabel = '主題：高円寺で受け継がれてきた踊り';
+    // 2026-09-08: user requests an immediately understandable entry and non-duplicated chapter labels.
+    EXP.title = '高円寺の踊りは、どう始まった？';
+    EXP.documentTitle = '高円寺｜高円寺の踊りは、どう始まった？｜みんなの感情書店';
+    EXP.subjectLabel = '主題：高円寺の踊りの歴史';
+    EXP.lens = '商店街での始まりから、木場連との出会いへ。1957年からの来歴を辿ります。';
     EXP.image.alt = '夜の高円寺の路上で踊る連。白い衣装の踊り手たち';
     EXP.nodes = EXP.nodes.map((n) => (n.id === 'event:koenji-awaodori' ? { ...n, label: '現在の踊り' } : n));
     EXP.facts = EXP.facts.map((f) => (f.id === 'fact:present-groups' ? { ...f, claim: '現在、この催しには40を超える連が活動している。多くの連は、一年を通して練習を続けている。' } : f));
@@ -561,6 +567,7 @@ morisakiScenes(film, 'film');
     delete EXP.modes;
     const approvedScene = (sc) => {
       const c = JSON.parse(J(sc));
+      c.title = {s0:'高円寺の路上で踊る連',s1:'商店街で始まった踊り',s2:'高円寺と徳島のあいだ',s3:'踊りの名前の変化',s4:'いまの踊りを見直す',s5:'映像や商店街へ'}[c.id];
       delete c.cue;
       if (c.beats) c.beats = c.beats.filter((b) => b.kind !== 'cue');
       if (c.editorialReading) c.editorialReading.text = c.editorialReading.text.replace('——これは編集部の読みです。', '');

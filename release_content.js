@@ -105,6 +105,7 @@ window.V3_RELEASE_CONTENT = {
       tagline: '吉祥寺を、3つだけ。',
       area: '吉祥寺',
       weeklyFeature: {
+        eventType: '展示',
         title: '谷口智則展「黒い森を抜けて」',
         titlePhrases: ['谷口智則展', '「黒い森を抜けて」'],
         calendarDates: '20260919/20261104',
@@ -224,6 +225,7 @@ window.V3_RELEASE_CONTENT = {
       tagline: '高円寺を、3つだけ。',
       area: '高円寺',
       weeklyFeature: {
+        eventType: '演劇',
         title: '座・高円寺『夏の夜の夢』',
         titlePhrases: ['座・高円寺', '『夏の夜の夢』'],
         calendarDates: '20260913/20261018',
@@ -349,6 +351,7 @@ window.V3_RELEASE_CONTENT = {
       tagline: '下北沢を、3つだけ。',
       area: '下北沢',
       weeklyFeature: {
+        eventType: 'ライブ',
         title: 'SHELTER 35th Anniversary “IGNITION GIGS”',
         titlePhrases: ['SHELTER 35th Anniversary ', '“IGNITION GIGS”'],
         calendarDates: '20260923/20260924',
@@ -488,6 +491,7 @@ window.V3_RELEASE_CONTENT = {
       tagline: '神保町を、3つだけ。',
       area: '神保町',
       weeklyFeature: {
+        eventType: '展示・販売',
         title: 'Alicekan 45th Anniversary えほんパーティー',
         titlePhrases: ['Alicekan 45th Anniversary ', 'えほんパーティー'],
         calendarDates: '20260916/20260930',

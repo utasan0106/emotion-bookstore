@@ -158,7 +158,7 @@
     var path = location.pathname || '/';
     if (path === '/' || path === '/index.html') return 'home';
     if (path === '/shelf.html') return 'shelf';
-    if (path === '/works.html') return 'work';
+    if (path === '/works.html' || path === '/work-book.html' || path === '/work-film.html' || path === '/work-music.html' || path === '/work-video.html') return 'work';
     if (path === '/thread.html') return 'thread';
     if (path === '/atlas/' || path === '/atlas/index.html') return 'spatial';
     return '';

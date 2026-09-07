@@ -186,11 +186,11 @@ const near = (a, b, tol) => typeof a === 'number' && Math.abs(a - b) <= tol;
     check(S, 'images_loaded_same_origin', m.images.loaded && m.images.sameOrigin && m.images.n >= 13, m.images);
     /* FOUNDER PREVIEW FIX A5: route hold 0、false CTA（すべて見る / スポットを探す）0 */
     check(S, 'no_route_holds_no_false_ctas', m.holds.length === 0 && m.falseCtas === 0, { holds: m.holds, falseCtas: m.falseCtas });
-    check(S, 'hero_cta_is_a_real_anchor_52', !!m.heroCta && m.heroCta.tag === 'A' && m.heroCta.href === './thread.html?thread=koenji-dance-history' && !m.heroCta.hold && m.heroCta.deco === 'none' && m.heroCta.h === 52 && m.heroCta.w >= 220, m.heroCta);
-    /* KOENJI R2: section 4 の「スレッドを読む」は実 anchor（44px の当たり判定、hold ではない） */
+    check(S, 'hero_cta_is_a_real_anchor_52', !!m.heroCta && m.heroCta.tag === 'A' && m.heroCta.href === './v3-prototype/culture-experience-r2/index.html' && !m.heroCta.hold && m.heroCta.deco === 'none' && m.heroCta.h === 52 && m.heroCta.w >= 220, m.heroCta);
+    /* KOENJI R2: section 4 の「踊りの歴史を読む」は実 anchor（44px の当たり判定、hold ではない） */
     check(S, 'thread_read_is_a_real_anchor_44', !!m.threadRead && m.threadRead.tag === 'A' && m.threadRead.href === './thread.html?thread=koenji-dance-history' && !m.threadRead.hold && m.threadRead.h === 44 && m.threadRead.w >= 44, m.threadRead);
     /* WORKS ENTRY: 本 / 映画 / 音楽 / 映像 は works.html#book / #film / #music / #video への実 anchor（44px 以上、hold 7 → 3） */
-    check(S, 'work_cards_are_real_anchors_to_works_44', m.works.length === 4 && m.works.every((w, i) => w.tag === 'A' && w.work === ['book', 'film', 'music', 'video'][i] && w.href === './works.html#' + w.work && !w.hold && !w.shelfEntry && w.w >= 44 && w.h >= 44), m.works);
+    check(S, 'work_cards_are_real_anchors_to_works_44', m.works.length === 4 && m.works.every((w, i) => w.tag === 'A' && w.work === ['book', 'film', 'music', 'video'][i] && w.href === './work-' + w.work + '.html' && !w.hold && !w.shelfEntry && w.w >= 44 && w.h >= 44), m.works);
     if (!v.corridor) check(S, 'real_targets_are_44px', m.targets.length >= 6 && m.targets.every((t) => t.w >= 44 && t.h >= 44), m.targets.filter((t) => t.w < 44 || t.h < 44));
     check(S, 'no_js_error', errs.length === 0, errs.slice(0, 2));
     check(S, 'no_external_request', external.length === 0, external.slice(0, 3));
@@ -275,7 +275,7 @@ const near = (a, b, tol) => typeof a === 'number' && Math.abs(a - b) <= tol;
     check(S, 'identical_render_under_both_preferences', shots.reduce.png === shots['no-preference'].png);
   }
 
-  /* keyboard: skip link → brand → menu → hero スレッドを見る → 4 街 → 4 作品 → スレッドを読む → 3 つの実際の場所（16 meaningful stops）、focus-visible の outline が見える */
+  /* keyboard: skip link → brand → menu → hero スレッドを見る → 4 街 → 4 作品 → 踊りの歴史を読む → 3 つの実際の場所（16 meaningful stops）、focus-visible の outline が見える */
   for (const w of [390, 1440]) {
     const S = `keyboard-${w}`;
     const ctx = await browser.newContext({ viewport: { width: w, height: w < 500 ? 844 : 900 }, isMobile: w < 500, hasTouch: w < 500, deviceScaleFactor: 1, reducedMotion: 'reduce' });
@@ -293,8 +293,8 @@ const near = (a, b, tol) => typeof a === 'number' && Math.abs(a - b) <= tol;
     }
     const names = order.map((o) => o.el).join('>');
     check(S, 'tab_order_reaches_the_real_targets', names.startsWith('skip-link>hc-brand-link>hc-menu-trigger>hc-hero-cta>hc-city>hc-city>hc-city>hc-city>hc-work>hc-work>hc-work>hc-work'), names);
-    check(S, 'hero_cta_is_the_fourth_stop_to_the_thread', order[3] && order[3].el === 'hc-hero-cta' && order[3].href === './thread.html?thread=koenji-dance-history', order[3]);
-    check(S, 'work_anchors_follow_the_four_cities_in_order', order.filter((o) => o.el === 'hc-work').map((o) => o.href).join('|') === './works.html#book|./works.html#film|./works.html#music|./works.html#video', order.filter((o) => o.el === 'hc-work').map((o) => o.href));
+    check(S, 'hero_cta_is_the_fourth_stop_to_the_thread', order[3] && order[3].el === 'hc-hero-cta' && order[3].href === './v3-prototype/culture-experience-r2/index.html', order[3]);
+    check(S, 'work_anchors_follow_the_four_cities_in_order', order.filter((o) => o.el === 'hc-work').map((o) => o.href).join('|') === './work-book.html|./work-film.html|./work-music.html|./work-video.html', order.filter((o) => o.el === 'hc-work').map((o) => o.href));
     check(S, 'focus_visible_outline_on_every_stop', order.filter((o) => o.el !== 'BODY').every((o) => o.fv && o.outline), order.filter((o) => o.el !== 'BODY' && !(o.fv && o.outline)));
     check(S, 'route_holds_not_in_tab_order', order.every((o) => !/route|hold|section-more|reality-cta/.test(o.el)), names);
     check(S, 'thread_read_anchor_follows_the_four_works', names.includes('hc-work>hc-work>hc-work>hc-work>hc-thread-read') && order.some((o) => o.el === 'hc-thread-read' && o.href === './thread.html?thread=koenji-dance-history'), names);

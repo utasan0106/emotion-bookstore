@@ -226,6 +226,18 @@
     return 'https://calendar.google.com/calendar/render?' + params.toString();
   }
 
+  // Calendar dates mark the advertised period, never proof that doors are open now.
+  function featureTimingLabel(feature, now) {
+    var dates = /^(\d{4})(\d{2})(\d{2})\/(\d{8})$/.exec(feature.calendarDates || '');
+    var expires = Date.parse(feature.expiresAt || '');
+    if (!dates || !isFinite(expires)) return '日程は公式で確認';
+    var start = Date.parse(dates[1] + '-' + dates[2] + '-' + dates[3] + 'T00:00:00+09:00');
+    if (!isFinite(start) || expires <= start) return '日程は公式で確認';
+    if (now >= expires) return '終了';
+    if (now < start) return '開催予定';
+    return '開催期間内';
+  }
+
   function renderWeeklyFeature(shelf) {
     var section = document.getElementById('weeklyFeature');
     var box = document.getElementById('weeklyFeatureContent');
@@ -269,8 +281,11 @@
 
     box.appendChild(h('article', { class: 'weekly-feature-card' }, [
       h('div', { class: 'weekly-feature-meta' }, [
+        h('p', { class: 'weekly-feature-kind', text: (feature.eventType || 'イベント') + ' · ' + shelf.area }),
+        h('p', { class: 'weekly-feature-status', text: featureTimingLabel(feature, Date.now()) }),
         h('p', { class: 'weekly-feature-date', text: feature.dateLabel }),
         h('p', { class: 'weekly-feature-venue', text: feature.venue }),
+        h('p', { class: 'weekly-feature-hours', text: '開催日・開場時間は公式で確認' }),
         h('p', {
           class: 'weekly-feature-verified',
           text: '公式情報の確認日: ' + formatVerifiedDate(feature.verifiedAt)
@@ -838,7 +853,7 @@
         h('h3', { class: 'rights-title', text: 'この図版について' }),
         rightsRow('作成', h('span', { text: 'みんなの感情書店' })),
         rightsRow('種類', h('span', { text: 'この棚のために組んだ活字図版。既存の表紙・ポスター・スチル・チラシは使っていません' })),
-        rightsRow('事実の出典', link(object.factsSourceUrl, '公式ページ')),
+        rightsRow('事実の出典', object.factsSourceUrl === object.actionUrl ? h('span', { text: '上の公式ページ' }) : link(object.factsSourceUrl, '公式ページ')),
         rightsRow('変更', h('span', { text: '該当なし' }))
       ]);
     }

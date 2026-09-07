@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#141312">
+  <title>みんなの感情書店｜作品から入る</title>
+  <meta name="description" content="作品をひとつ辿ると、別の作品や街が見えてくる。">
+  <link rel="icon" href="./assets/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="./assets/icon-512.png">
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="./release.css">
+  <link rel="stylesheet" href="./works.css">
+</head>
+<!-- 作品から入る（WORKS ENTRY + CROSS-MEDIA PROOF）。HOME 3 の 4 card（本 / 映画 /
+     音楽 / 映像）の行き先。有限の 4 Object を静的に並べるだけで、feed・検索・
+     ranking・category filter ではない。本 / 映画 は Cultural Thread
+     （thread.html?thread=morisaki-book / morisaki-film）へ入る。音楽 / 映像 は
+     この page 自体が finite relation surface で、外部の公式・一次 destination へは
+     利用者が押したときだけ移動する（embed / autoplay / thumbnail hotlink /
+     provider preload なし。first paint で外部 host へ出ない）。JavaScript が無くても
+     本文は全部読める。head に同期 JS は置かない。 -->
+<body class="works-page">
+  <a class="skip-link" href="#main">本文へ移動</a>
+
+  <header class="site-header">
+    <p class="brand"><a class="brand-home brand-lockup" href="./index.html"><img class="brand-lockup-image" src="./assets/brand/emotion-bookstore-lockup-reversed.png" alt="みんなの感情書店" width="1429" height="331" decoding="async"></a></p>
+    <button class="menu-trigger" id="siteMenuButton" type="button" aria-haspopup="dialog" aria-controls="siteMenu">MENU</button>
+  </header>
+
+  <dialog id="siteMenu" class="site-menu" aria-labelledby="siteMenuTitle">
+    <div class="site-menu-shell">
+      <div class="site-menu-head">
+        <p class="eyebrow">MENU</p>
+        <button id="siteMenuClose" class="site-menu-close" type="button" aria-label="メニューを閉じる">閉じる</button>
+      </div>
+
+      <h2 id="siteMenuTitle" class="site-menu-title">4つの街</h2>
+      <nav class="site-menu-nav" aria-label="街を選ぶ">
+        <a class="site-menu-link" data-menu-shelf="kichijoji" href="./shelf.html?shelf=kichijoji"><span>吉祥寺</span><span aria-hidden="true">→</span></a>
+        <a class="site-menu-link" data-menu-shelf="koenji" href="./shelf.html?shelf=koenji"><span>高円寺</span><span aria-hidden="true">→</span></a>
+        <a class="site-menu-link" data-menu-shelf="shimokitazawa" href="./shelf.html?shelf=shimokitazawa"><span>下北沢</span><span aria-hidden="true">→</span></a>
+        <a class="site-menu-link" data-menu-shelf="jinbocho" href="./shelf.html?shelf=jinbocho"><span>神保町</span><span aria-hidden="true">→</span></a>
+      </nav>
+
+      <section class="site-menu-section" aria-labelledby="siteMenuDiscoverTitle">
+        <p id="siteMenuDiscoverTitle" class="eyebrow">見つける</p>
+        <nav class="site-menu-secondary" aria-label="ほかの見方">
+          <a class="site-menu-secondary-link" href="./index.html#hc-works"><span>作品から入る</span><span aria-hidden="true">→</span></a>
+          <a class="site-menu-secondary-link" href="./index.html#hc-thread"><span>いま辿れるスレッド</span><span aria-hidden="true">→</span></a>
+          <a class="site-menu-secondary-link" href="./suggest.html"><span>候補を教える</span><span aria-hidden="true">→</span></a>
+        </nav>
+      </section>
+
+      <section class="site-menu-section site-menu-favorites-section" aria-labelledby="siteMenuFavoritesTitle">
+        <p id="siteMenuFavoritesTitle" class="eyebrow">気になるリスト</p>
+        <div id="siteMenuFavorites" class="site-menu-favorites"></div>
+      </section>
+
+      <div class="site-menu-bottom">
+        <a class="site-menu-data-link" href="./data.html">データの扱い</a>
+        <a class="site-menu-data-link" href="./credits.html">写真・出典</a>
+        <a class="site-menu-entry-link" href="./index.html">入口へ戻る</a>
+      </div>
+    </div>
+  </dialog>
+
+  <main id="main">
+    <div class="wk-root">
+      <header class="wk-head">
+        <h1 class="wk-title">作品から入る</h1>
+        <p class="wk-lead">作品をひとつ辿ると、別の作品や街が見えてくる。</p>
+        <p class="wk-primary"><a class="wk-route" href="./v3-prototype/culture-experience-r2/index.html">一曲・一場面を聴く、観る<span class="wk-mark" aria-hidden="true"> →</span></a></p>
+      </header>
+
+      <!-- 本。Thread（morisaki-book）へ入る。現行の 2025 年新装版は current reading /
+           action metadata であって、2010 年の映画の adaptation source ではない。 -->
+      <section id="book" class="wk-work" data-work="book" aria-labelledby="wk-book-category wk-book-title">
+        <p id="wk-book-category" class="wk-category">本</p>
+        <h2 id="wk-book-title" class="wk-object">森崎書店の日々</h2>
+        <p class="wk-byline">八木沢里志</p>
+        <section class="wk-reading" data-layer="reading">
+          <p class="wk-reading-text">一冊の物語を辿ると、映画になったあと、その先の神保町まで見えてきます。</p>
+        </section>
+        <p class="wk-relation">つながり：この本が映画になり、その映画は神保町で撮影されました。</p>
+        <p class="wk-primary"><a class="wk-route" href="./thread.html?thread=morisaki-book">この本から辿る<span class="wk-mark" aria-hidden="true"> →</span></a></p>
+        <p class="wk-current">現在は2025年刊の新装版で読むことができます。</p>
+        <p class="wk-action-row"><a class="wk-action official-action" href="https://ebook.shogakukan.co.jp/detail.php?bc=093867650000d0000000&amp;gid=1000" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">新装版を確認する<span class="wk-mark" aria-hidden="true"> ↗</span></a></p>
+      </section>
+
+      <!-- 映画。Thread（morisaki-film）へ入る。同じ truth graph を映画側から読む。 -->
+      <section id="film" class="wk-work" data-work="film" aria-labelledby="wk-film-category wk-film-title">
+        <p id="wk-film-category" class="wk-category">映画</p>
+        <h2 id="wk-film-title" class="wk-object">森崎書店の日々</h2>
+        <p class="wk-byline">監督・脚本：日向朝子 ／ 2010</p>
+        <section class="wk-reading" data-layer="reading">
+          <p class="wk-reading-text">映画の背景に見えていた街が、作品を実際につくった場所として前に出てきます。</p>
+        </section>
+        <p class="wk-relation">つながり：この映画には原作があり、神保町で撮影されました。</p>
+        <p class="wk-primary"><a class="wk-route" href="./thread.html?thread=morisaki-film">この映画から辿る<span class="wk-mark" aria-hidden="true"> →</span></a></p>
+        <p class="wk-action-row"><a class="wk-action" href="https://jfdb.jp/title/2240" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">作品情報を確認する<span class="wk-mark" aria-hidden="true"> ↗</span></a></p>
+      </section>
+
+      <!-- 音楽。この section 自体が finite relation surface（Music Work → recorded_at →
+           下北沢SHELTER、2007-02-04）。deep Thread・Music 専用 JS・album art・
+           embedded player・autoplay・popularity copy は無い。 -->
+      <section id="music" class="wk-work" data-work="music" aria-labelledby="wk-music-category wk-music-title">
+        <p id="wk-music-category" class="wk-category">音楽</p>
+        <h2 id="wk-music-title" class="wk-object">不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204</h2>
+        <p class="wk-byline">Boris with Michio Kurihara</p>
+        <section class="wk-reading" data-layer="reading">
+          <p class="wk-reading-text">ライブ盤を、曲の集まりだけでなく、2007年2月4日の下北沢SHELTERで起きた一度の演奏として聴き直します。</p>
+        </section>
+        <p class="wk-relation">つながり：2007年2月4日、下北沢SHELTERで録音されたライブ盤です。</p>
+        <p class="wk-primary"><a class="wk-route" href="./v3-prototype/culture-experience-r2/shimokitazawa/?recording=shelter">「夕暮れのジャイロ」を聴き比べる<span class="wk-mark" aria-hidden="true"> →</span></a></p>
+        <div class="wk-info" data-layer="claim">
+          <p class="wk-info-label">この演奏が生まれた背景</p>
+          <p class="wk-info-text">この日は、共作アルバム『Rainbow』の発売記念公演でした。Borisの公式解説によると、この公演後、栗原ミチオはサポートギタリストとして2013年まで共演を続けました。</p>
+          <p class="wk-info-text">録音は2007年、ライブ盤の発売は2018年。2026年にはデジタル版が公開され、当日の演奏をいま聴ける形で辿れます。</p>
+          <p class="wk-current">出典：Boris公式作品紹介・公式Bandcampの解説（下のリンク）。</p>
+        </div>
+        <p class="wk-primary"><a class="wk-action official-action" href="https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">音源を聴く<span class="wk-mark" aria-hidden="true"> ↗</span></a></p>
+        <p class="wk-action-row"><a class="wk-action" href="https://borisheavyrocks.com/discography/4525/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">録音日と会場を確認する<span class="wk-mark" aria-hidden="true"> ↗</span></a></p>
+        <p class="wk-action-row"><a class="wk-action official-action" href="https://www.loft-prj.co.jp/schedule/shelter" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">いまのSHELTERを見る<span class="wk-mark" aria-hidden="true"> ↗</span></a></p>
+        <p class="wk-info-text">このライブ盤の3曲目「夕暮れのジャイロ」は、栗原ミチオのソロ盤『SUNSET NOTES』にも収録されています。同じ曲を、ソロ盤でも聴いてみる。</p>
+        <p class="wk-current">出典：Boris公式Bandcampの曲目・クレジットと、Pedal Recordsの収録曲一覧。</p>
+        <p class="wk-action-row"><a class="wk-action official-action" href="https://pedalrecords.bandcamp.com/album/sunset-notes" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">『SUNSET NOTES』を聴く<span class="wk-mark" aria-hidden="true"> ↗</span></a></p>
+        <p class="wk-question">この音は、誰と、どこで、どの時間に生まれたんだろう？</p>
+      </section>
+
+      <!-- 映像。事実（この映像について）は claim 枠。公式映像は利用者が押したときだけ
+           ページ内に置く click-to-load player（video-embed.js、プライバシー強化モード、
+           自動再生なし）。表示しただけでは provider へ接続しない。thumbnail hotlink /
+           再生数・いいね・フォロワー数は無い。 -->
+      <section id="video" class="wk-work" data-work="video" aria-labelledby="wk-video-category wk-video-title">
+        <p id="wk-video-category" class="wk-category">映像</p>
+        <h2 id="wk-video-title" class="wk-object">高円寺の踊り｜主催団体の公式映像（2025）</h2>
+        <p class="wk-byline">主催団体 ／ 2025</p>
+        <div class="wk-info" data-layer="claim">
+          <p class="wk-info-label">この映像について</p>
+          <p class="wk-info-text">2025年に高円寺で行われた催しを伝える、主催団体の公式映像です。</p>
+        </div>
+        <p class="wk-relation">つながり：高円寺の街で行われる踊りを記録した、主催団体の公式映像です。</p>
+        <div class="wk-video v3-video" data-video-id="dt33RGSRuo0" data-video-title="高円寺の踊り｜主催団体の公式映像（2025）">
+          <div class="v3-video-frame"><button class="v3-video-load wk-video-load" type="button">現在の公式映像を見る<span class="wk-mark" aria-hidden="true"> ▶</span></button></div>
+          <p class="v3-video-duration wk-video-duration">約15分で観終わります。</p>
+          <noscript><p class="wk-primary"><a class="wk-action official-action" href="https://www.youtube.com/watch?v=dt33RGSRuo0" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">現在の公式映像を見る<span class="wk-mark" aria-hidden="true"> ↗</span></a></p></noscript>
+        </div>
+        <p class="wk-action-row"><a class="wk-action official-action" href="https://www.koenji-awaodori.com/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">主催団体の公式サイトを見る<span class="wk-mark" aria-hidden="true"> ↗</span></a></p>
+      </section>
+
+      <!-- 有限の終わり。関連作品も推薦も無い。出口は入口へ戻るの 1 つ。 -->
+      <div class="wk-exit">
+        <p class="end-exit"><a class="other-shelves" href="./index.html">入口へ戻る</a></p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p class="privacy-note">計測はemotionbookstore.comの本番ページだけで有効になります。Do Not Trackが有効な場合、またはこのブラウザで計測をオフにした場合は送信しません。</p>
+    <a class="footer-brand" href="./index.html" aria-label="みんなの感情書店 トップへ">
+      <img class="footer-brand-image" src="./assets/brand/emotion-bookstore-lockup-reversed.png" alt="みんなの感情書店" width="1429" height="331" loading="lazy" decoding="async">
+    </a>
+  </footer>
+
+  <div id="live" class="sr-only" role="status" aria-live="polite"></div>
+
+  <script src="./release_content.js"></script>
+  <script src="./growth-improvements.js"></script>
+  <script src="./release.js"></script>
+  <script src="./analytics-v3.js"></script>
+  <script src="./video-embed.js"></script>
+</body>
+</html>

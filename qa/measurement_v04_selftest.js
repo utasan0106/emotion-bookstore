@@ -203,6 +203,23 @@ for (const host of ['emotion-bookstore-n8n5kl0xu-emotion-bookstore.vercel.app', 
   }
 }
 
+/* Split work pages keep section reach separate from player loading / actual playback. */
+for (const work of ['book', 'film', 'music', 'video']) {
+  const section = el({ cls: 'wk-work', attrs: { 'data-work': work } });
+  const r = run('emotionbookstore.com', '/work-' + work + '.html', '?private=ignored', { all: sel => sel === '.wk-work[data-work]' ? [section] : [] });
+  r.listeners.DOMContentLoaded();
+  check('split ' + work + ': arrival is not section reach', r.events().length === 0);
+  const io = r.observers.find(o => o.targets.includes(section));
+  check('split ' + work + ': section is observed', !!io);
+  if (io) { io.cb([{target:section,isIntersecting:true}]); io.cb([{target:section,isIntersecting:true}]); }
+  check('split ' + work + ': one section reach', by(r.events(), 'v3_works_section_view').length === 1);
+  check('split ' + work + ': bounded id preserved', by(r.events(), 'v3_works_section_view').every(e => e[2].content_id === work));
+  check('split ' + work + ': no implied playback', by(r.events(), 'v3_media_preview_open').length === 0);
+  auditParams('split ' + work, r.events());
+  const off = run('localhost', '/work-' + work + '.html');
+  check('split ' + work + ': local is unmeasured', off.head.length === 0 && !off.ctx.v3Analytics);
+}
+
 /* ---- 6. Thread: start after rendered .th-thread[data-thread-id]; composite stage ids; complete; evidence; approved external; continue ---- */
 {
   const scenes = ['s0', 's1', 's2', 's3', 's4', 's5'].map((id) => el({ tag: 'section', cls: 'th-scene', attrs: { 'data-scene': id } }));

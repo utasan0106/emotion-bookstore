@@ -255,3 +255,13 @@
   .wk-work { padding-top: 48px; }
   .wk-info { padding: 22px 24px 20px; }
 }
+
+/* Directory: one action per work, no embedded detail or player. */
+.wk-entry-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; }
+.wk-entry { min-width: 0; padding: 1.5rem 0; border-top: 1px solid var(--hall-edge); scroll-margin-top: 1.5rem; }
+.wk-entry .wk-object { font-size: 1.5rem; }
+.wk-entry .wk-category, .wk-back { font-size: .875rem; line-height: 1.6; }
+.wk-city { font-size: 1rem; line-height: 1.7; color: var(--chalk-dim); }
+.wk-back { margin: 0 0 1.25rem; }
+.wk-back a { display: inline-flex; align-items: center; min-height: 44px; color: var(--chalk); text-underline-offset: .3em; }
+@media (max-width: 680px) { .wk-entry-grid { grid-template-columns: minmax(0, 1fr); gap: 0; } }

@@ -51,11 +51,11 @@ for (const [name, marker] of [
 
 const COPY = [
   '<span class="hc-hero-line">文化の</span><span class="hc-hero-line">つながりを、</span><span class="hc-hero-line">歩く。</span>',
-  '高円寺の踊りの物語を読む',
+  '一曲・一場面を聴く、観る',
   '街から入る', '街には、文化が息づく理由がある。',
   '作品から入る', '本・映画・音楽・映像… あらゆる作品が、街とつながっている。',
   'いま辿れるスレッド', 'ひとつの痕跡から、物語をたどる。',
-  '注目のスレッド', '踊りが街に根づくまで', '踊りがつなぐ、街・人・記憶の輪。', 'スレッドを読む',
+  '高円寺の踊り', '高円寺の踊りは、どう始まった？', '1957年の始まりから、木場連との出会いへ。', '踊りの歴史を読む',
   '実際の場所へ', '気になった場所は、公式情報を確かめて、', '実際の街へ。',
 ];
 for (const c of COPY) check(html.includes(c), `core copy missing: ${c.slice(0, 40)}`);
@@ -136,28 +136,28 @@ for (const m of html.match(/<[^>]*data-route-hold="[^"]*"[^>]*>/g) || []) {
 }
 check((html.match(/data-route-hold="/g) || []).length === HOLDS.length, `exactly ${HOLDS.length} route holds expected`);
 // section 4 と hero CTA は引き続き同じ既存高円寺 Thread へ。
-const THREAD_ANCHOR = '<a class="hc-thread-read" href="./thread.html?thread=koenji-dance-history">スレッドを読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></a>';
+const THREAD_ANCHOR = '<a class="hc-thread-read" href="./thread.html?thread=koenji-dance-history">踊りの歴史を読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></a>';
 check(html.split(THREAD_ANCHOR).length === 2, 'thread read must be the real anchor to ./thread.html?thread=koenji-dance-history, exactly once');
 check(!html.includes('data-route-hold="thread-koenji-awaodori"'), 'retired hold thread-koenji-awaodori must not remain');
-const HERO_ANCHOR = '<a class="hc-hero-cta" href="./thread.html?thread=koenji-dance-history"><span class="hc-hero-cta-label">高円寺の踊りの物語を読む</span><span class="hc-hero-cta-mark" aria-hidden="true">→</span></a>';
+const HERO_ANCHOR = '<a class="hc-hero-cta" href="./v3-prototype/culture-experience-r2/index.html"><span class="hc-hero-cta-label">一曲・一場面を聴く、観る</span><span class="hc-hero-cta-mark" aria-hidden="true">→</span></a>';
 check(html.split(HERO_ANCHOR).length === 2, 'hero culture story CTA must be the real anchor to ./thread.html?thread=koenji-dance-history, exactly once (no data-route-hold)');
 check(!html.includes('data-route-hold'), 'HOME must carry no data-route-hold at all');
-check((html.match(/thread\.html/g) || []).length === 2, 'HOME must link the Thread route exactly twice (hero CTA + section 4)');
+check((html.match(/thread\.html/g) || []).length === 1, 'HOME keeps one primary link to the Koenji Thread');
 // FOUNDER PREVIEW FIX A2 / A4: route の無い「すべて見る」「スポットを探す」は出さない（新しい一覧 / spots page も作らない）
 check(!html.includes('すべて見る') && !html.includes('hc-section-more'), 'false affordance すべて見る must be absent');
 check(!html.includes('スポットを探す') && !html.includes('hc-reality-cta'), 'false affordance スポットを探す must be absent');
 check(!/どうやって/.test(html), 'the retired causal city questions must be absent');
 check(fs.existsSync(path.join(root, 'thread.html')), 'thread route target thread.html must exist on disk');
-// WORKS ENTRY: 作品 4 card（本 / 映画 / 音楽 / 映像）は works.html#book / #film / #music / #video への
+// WORKS ENTRY: 作品 4 card（本 / 映画 / 音楽 / 映像）は work-book.html / work-film.html / work-music.html / work-video.html への
 // 実 anchor（hold 7 → 3）。hc-work-media / hc-work-foot / icon / label / → / 画像 / 順序 / copy は不変。
 // .shelf-entry は付けない（GA4 v3_shelf_open が誤発火する）。
 for (const w of ['book', 'film', 'music', 'video']) {
-  check(html.split(`<a class="hc-work" data-work="${w}" href="./works.html#${w}">`).length === 2, `work card must be the real anchor to ./works.html#${w}, exactly once`);
+  check(html.split(`<a class="hc-work" data-work="${w}" href="./work-${w}.html">`).length === 2, `work card must be the real anchor to ./work-${w}.html, exactly once`);
   check(!html.includes(`data-route-hold="work-${w}"`), `retired hold work-${w} must not remain`);
 }
 check((html.match(/class="hc-work"/g) || []).length === 4, 'exactly four work anchors expected');
 check(!/<a class="[^"]*hc-work[^"]*shelf-entry|<a class="[^"]*shelf-entry[^"]*hc-work/.test(html), 'work anchors must not carry .shelf-entry (GA4 v3_shelf_open)');
-check((html.match(/href="\.\/works\.html#/g) || []).length === 4, 'HOME must link works.html exactly four times (one per card)');
+check((html.match(/href="\.\/work-(?:book|film|music|video)\.html"/g) || []).length === 4, 'HOME must link each work detail exactly once');
 check(fs.existsSync(path.join(root, 'works.html')), 'works route target works.html must exist on disk');
 
 /* ---- 5. 外部通信ゼロ / 端末内保存に触れない --------------------------- */
@@ -227,8 +227,8 @@ check(/<div class="hc-reality-strip">\s*<a class="hc-reality-card official-actio
     check(hits.length === 0, `NAME AVOIDANCE: ${name} must not carry the protected / similar event name (${hits.join(' / ')})`);
     check(!/thread=koenji-awaodori\b/.test(text), `NAME AVOIDANCE: ${name} must not expose the old public route thread=koenji-awaodori`);
   }
-  check((html.match(/thread=koenji-dance-history/g) || []).length === 2, 'HOME must link the public route thread=koenji-dance-history exactly twice (hero + section 4)');
-  check(html.includes('<p class="hc-thread-title">踊りが街に根づくまで</p>'), 'featured Thread title must be the neutral「踊りが街に根づくまで」');
+  check((html.match(/thread=koenji-dance-history/g) || []).length === 1, 'HOME must link the public route thread=koenji-dance-history exactly once (section 4)');
+  check(html.includes('<p class="hc-thread-title">高円寺の踊りは、どう始まった？</p>'), 'featured Thread title must be the neutral「高円寺の踊りは、どう始まった？」');
 }
 
 /* ---- 7. CSS は .home-canonical の外へ出ない --------------------------- */

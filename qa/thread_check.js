@@ -89,7 +89,7 @@ check(/<noscript>[\s\S]*このスレッドを読むには JavaScript を有効�
   check(!main.includes('高円寺'), '<main> of thread.html must carry no Koenji copy (content lives in thread_content.js)');
   check(!/<img/.test(main), '<main> of thread.html must carry no static image (the approved photo is rendered from content)');
 }
-for (const copy of ['踊りが街に根づくまで', '阿波おどり', '主題：', '徳島', '木場連', '鴨川', '1957', '1961', '1963', '教わる', 'learned_from',
+for (const copy of ['高円寺の踊りは、どう始まった？', '阿波おどり', '主題：', '徳島', '木場連', '鴨川', '1957', '1961', '1963', '教わる', 'learned_from',
   'パル商店街', '商店街の通り', 'このスレッドは、ここまでです', 'このスレッドはありません', '約15分', '高円寺にいる']) {
   check(!html.includes(copy), `thread.html must not contain Thread body copy: ${copy}`);
 }
@@ -109,11 +109,11 @@ check(/^\d{4}-\d{2}-\d{2}$/.test(thread.checkedAt || ''), 'checkedAt must be YYY
 
 const HEADER = {
   eyebrow: '高円寺',
-  title: '踊りが街に根づくまで',
-  documentTitle: '高円寺｜踊りが街に根づくまで｜みんなの感情書店',
-  subjectLabel: '主題：高円寺で受け継がれてきた踊り',
+  title: '高円寺の踊りは、どう始まった？',
+  documentTitle: '高円寺｜高円寺の踊りは、どう始まった？｜みんなの感情書店',
+  subjectLabel: '主題：高円寺の踊りの歴史',
   editor: '編集：みんなの感情書店 編集部',
-  lens: 'このThreadでは「教わる／伝わる」に注目しました。',
+  lens: '商店街での始まりから、木場連との出会いへ。1957年からの来歴を辿ります。',
   checkedAt: '2026-09-04',
   checkedLabel: '最終確認：2026-09-04',
   duration: '約15分'
@@ -269,11 +269,11 @@ check(!/transmission_reading/.test(contentCode + jsCode), 'transmission_reading 
 const sceneIds = thread.scenes.map((s) => s.id);
 check(sceneIds.join('|') === 's0|s1|s2|s3|s4|s5', `scenes must be s0..s5 in order (got ${sceneIds.join(',')})`);
 const S = Object.fromEntries(thread.scenes.map((s) => [s.id, s]));
-check(S.s0 && S.s0.title === 'いま', 'S0 title must be いま');
-check(S.s1 && S.s1.title === '1957 ／ はじまる' && JSON.stringify(S.s1.relationIds) === '["rel:originated-1957"]', 'S1 must be 1957 ／ はじまる with rel:originated-1957');
-check(S.s3 && S.s3.title === '1963 ／ 名を変える' && JSON.stringify(S.s3.relationIds) === '["rel:renamed-1963"]', 'S3 must be 1963 ／ 名を変える with rel:renamed-1963');
-check(S.s4 && S.s4.title === 'いま、もう一度', 'S4 title must be いま、もう一度');
-check(S.s5 && S.s5.title === '現実へ' && S.s5.kind === 'reality', 'S5 must be 現実へ (reality)');
+check(S.s0 && S.s0.title === '高円寺の路上で踊る連', 'S0 title must be いま');
+check(S.s1 && S.s1.title === '商店街で始まった踊り' && JSON.stringify(S.s1.relationIds) === '["rel:originated-1957"]', 'S1 must be 商店街で始まった踊り with rel:originated-1957');
+check(S.s3 && S.s3.title === '踊りの名前の変化' && JSON.stringify(S.s3.relationIds) === '["rel:renamed-1963"]', 'S3 must be 踊りの名前の変化 with rel:renamed-1963');
+check(S.s4 && S.s4.title === 'いまの踊りを見直す', 'S4 title must be いま、もう一度');
+check(S.s5 && S.s5.title === '映像や商店街へ' && S.s5.kind === 'reality', 'S5 must be 現実へ (reality)');
 check(S.s3 && S.s3.close === 'いまの名称が最初からあったのではなく、1963年に正式に変わったことが見える。', 'S3 acceptance copy must be the fact-safe sentence');
 
 /* S0: 現在の事実 + 承認済み画像 1 回（cue は無い） */
@@ -499,13 +499,13 @@ for (const banned of ['animation', 'transition', '@keyframes', 'box-shadow', 'te
 /* ---- 7. HOME の接続: hold 3 + 実 anchor 1（+ Works の実 anchor 4） --------- */
 
 {
-  const anchor = '<a class="hc-thread-read" href="./thread.html?thread=koenji-dance-history">スレッドを読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></a>';
+  const anchor = '<a class="hc-thread-read" href="./thread.html?thread=koenji-dance-history">踊りの歴史を読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></a>';
   check(home.split(anchor).length === 2, 'HOME section 4 must carry the real Thread anchor exactly once');
   check(!home.includes('data-route-hold="thread-koenji-awaodori"'), 'the thread-koenji-awaodori hold must be gone');
   /* FOUNDER PREVIEW FIX A1 / A5: hero の スレッドを見る も同じ Thread への実 anchor。route hold は 0。 */
   check(!home.includes('data-route-hold'), 'HOME must carry no route hold');
-  check(home.split('<a class="hc-hero-cta" href="./thread.html?thread=koenji-dance-history">').length === 2, 'HOME hero スレッドを見る must be a real anchor to the Koenji Thread, exactly once');
-  check((home.match(/thread\.html/g) || []).length === 2, 'HOME must link the Thread route exactly twice (hero + section 4)');
+  check(home.split('<a class="hc-hero-cta" href="./v3-prototype/culture-experience-r2/index.html">').length === 2, 'HOME hero must reach the quick audio/video hub, exactly once');
+  check((home.match(/thread\.html/g) || []).length === 1, 'HOME keeps one Thread route in section 4');
   const rule = (releaseCss.match(/\.hc-thread-read \{[^}]*\}/) || [''])[0];
   for (const decl of ['display: flex;', 'align-items: flex-end;', 'justify-content: flex-end;', 'gap: 14px;', 'height: 44px;', 'margin: 0;', 'font-size: 13px;', 'line-height: 1;', 'letter-spacing: .04em;', 'color: #d8cdbb;', 'text-decoration: none;']) {
     check(rule.includes(decl), `.hc-thread-read must keep the proven 44px geometry (${decl})`);

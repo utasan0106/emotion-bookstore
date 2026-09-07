@@ -24,11 +24,11 @@
   var KOENJI = {
     threadId: 'koenji-dance-history',
     eyebrow: '高円寺',
-    title: '踊りが街に根づくまで',
-    documentTitle: '高円寺｜踊りが街に根づくまで｜みんなの感情書店',
-    subjectLabel: '主題：高円寺で受け継がれてきた踊り',
+    title: '高円寺の踊りは、どう始まった？',
+    documentTitle: '高円寺｜高円寺の踊りは、どう始まった？｜みんなの感情書店',
+    subjectLabel: '主題：高円寺の踊りの歴史',
     editor: '編集：みんなの感情書店 編集部',
-    lens: 'このThreadでは「教わる／伝わる」に注目しました。',
+    lens: '商店街での始まりから、木場連との出会いへ。1957年からの来歴を辿ります。',
     checkedAt: '2026-09-04',
     checkedLabel: '最終確認：2026-09-04',
     duration: '約15分',
@@ -157,7 +157,7 @@
     scenes: [
       {
         id: 's0',
-        title: 'いま',
+        title: '高円寺の路上で踊る連',
         figure: true,
         lead: '高円寺の通りで、連が踊っている。',
         factIds: ['fact:present-groups'],
@@ -165,12 +165,12 @@
       },
       {
         id: 's1',
-        title: '1957 ／ はじまる',
+        title: '商店街で始まった踊り',
         relationIds: ['rel:originated-1957']
       },
       {
         id: 's2',
-        title: '1957のあと',
+        title: '高円寺と徳島のあいだ',
         beats: [
           {
             id: 'before',
@@ -220,7 +220,7 @@
       },
       {
         id: 's3',
-        title: '1963 ／ 名を変える',
+        title: '踊りの名前の変化',
         relationIds: ['rel:renamed-1963'],
         close: 'いまの名称が最初からあったのではなく、1963年に正式に変わったことが見える。',
         editorialReading: {
@@ -230,7 +230,7 @@
       },
       {
         id: 's4',
-        title: 'いま、もう一度',
+        title: 'いまの踊りを見直す',
         editorialReading: {
           text: '同じ高円寺の踊りが、人から人へ渡り、この街で名前を変えながら続いてきたものとして見える。',
           refs: ['fact:present-groups', 'rel:learned-1961-62', 'rel:renamed-1963']
@@ -238,7 +238,7 @@
       },
       {
         id: 's5',
-        title: '現実へ',
+        title: '映像や商店街へ',
         kind: 'reality'
       }
     ],
