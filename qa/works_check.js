@@ -128,6 +128,7 @@ const EXTERNAL_SET = {
   'https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204': { label: '音源を聴く ↗', section: 'music', official: true },
   'https://borisheavyrocks.com/discography/4525/': { label: '録音日と会場を確認する ↗', section: 'music', official: false },
   'https://www.loft-prj.co.jp/schedule/shelter': { label: 'いまのSHELTERを見る ↗', section: 'music', official: true },
+  'https://pedalrecords.bandcamp.com/album/sunset-notes': { label: '『SUNSET NOTES』を聴く ↗', section: 'music', official: true },
   'https://www.youtube.com/watch?v=dt33RGSRuo0': { label: '現在の公式映像を見る ↗', section: 'video', official: true },
   'https://www.koenji-awaodori.com/': { label: '主催団体の公式サイトを見る ↗', section: 'video', official: true }
 };
@@ -187,6 +188,7 @@ const EXTERNAL_SET = {
     'この音は、誰と、どこで、どの時間に生まれたんだろう？']) check(s.includes(c), `#music copy missing: ${c}`);
   check(raw.includes('この演奏が生まれた背景') && raw.includes('この日は、共作アルバム『Rainbow』の発売記念公演でした。') && raw.includes('この公演後、栗原ミチオはサポートギタリストとして2013年まで共演を続けました。'), 'music context attributes collaboration history to the artist');
   check(raw.includes('録音は2007年、ライブ盤の発売は2018年。2026年にはデジタル版が公開され') && raw.includes('出典：Boris公式作品紹介・公式Bandcampの解説（下のリンク）。'), 'music distinguishes recording, original release and digital edition with source attribution');
+  check(raw.includes('このライブ盤の3曲目「夕暮れのジャイロ」は、栗原ミチオのソロ盤『SUNSET NOTES』にも収録されています。') && raw.includes('出典：Boris公式Bandcampの曲目・クレジットと、Pedal Recordsの収録曲一覧。'), 'solo album continuation states the supported track relationship and both sources');
   check(raw.includes('<h2 id="wk-music-title" class="wk-object">不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204</h2>') && raw.includes('<p class="wk-byline">Boris with Michio Kurihara</p>'), '#music object / byline markup');
   const order = ['音源を聴く', '録音日と会場を確認する', 'いまのSHELTERを見る', 'この音は、誰と'].map((t) => s.indexOf(t));
   check(order.every((x, i) => x >= 0 && (i === 0 || x > order[i - 1])), '#music order must be 音源を聴く → 録音日と会場を確認する → いまのSHELTERを見る → transfer question');

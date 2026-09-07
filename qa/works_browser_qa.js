@@ -38,6 +38,7 @@ const EXTERNAL = {
   'https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204': { label: '音源を聴く ↗', section: 'music', official: true },
   'https://borisheavyrocks.com/discography/4525/': { label: '録音日と会場を確認する ↗', section: 'music', official: false },
   'https://www.loft-prj.co.jp/schedule/shelter': { label: 'いまのSHELTERを見る ↗', section: 'music', official: true },
+  'https://pedalrecords.bandcamp.com/album/sunset-notes': { label: '『SUNSET NOTES』を聴く ↗', section: 'music', official: true },
   'https://www.youtube.com/watch?v=dt33RGSRuo0': { label: '現在の公式映像を見る ↗', section: 'video', official: true },
   'https://www.koenji-awaodori.com/': { label: '主催団体の公式サイトを見る ↗', section: 'video', official: true }
 };
@@ -251,11 +252,12 @@ async function elementShot(page, selector, name, width) {
     const internal = m.sections.flatMap((s) => s.links.filter((l) => /^\.\//.test(l.href)).map((l) => Object.assign({ section: s.id }, l)));
     check(S, 'internal_routes_book_and_film', internal.length === 2 && internal.every((l) => INTERNAL[l.section] && l.href === INTERNAL[l.section].href && l.label === INTERNAL[l.section].label && !l.target && !l.rel && !l.official && !l.shelfEntry && l.cls === 'wk-route'), internal);
     const external7 = m.sections.flatMap((s) => s.links.filter((l) => /^https?:/.test(l.href)).map((l) => Object.assign({ section: s.id }, l)));
-    check(S, 'external_actions_are_the_frozen_six_plus_inline_player', external7.length === 6 && !external7.some((l) => /youtube\.com/.test(l.href)) && m.sections.find((s) => s.id === 'video').player && external7.every((l) => EXTERNAL[l.href] && EXTERNAL[l.href].section === l.section && EXTERNAL[l.href].label === l.label) &&
+    check(S, 'external_actions_are_the_approved_seven_plus_inline_player', external7.length === 7 && !external7.some((l) => /youtube\.com/.test(l.href)) && m.sections.find((s) => s.id === 'video').player && external7.every((l) => EXTERNAL[l.href] && EXTERNAL[l.href].section === l.section && EXTERNAL[l.href].label === l.label) &&
       Object.keys(EXTERNAL).filter((href) => !/youtube\.com/.test(href)).every((href) => external7.some((l) => l.href === href)), external7.map((l) => [l.section, l.href, l.label])); /* the YouTube URL survives only as the noscript fallback */
     check(S, 'external_actions_open_safely', external7.every((l) => l.target === '_blank' && /noopener/.test(l.rel || '') && /noreferrer/.test(l.rel || '') && l.referrer === 'no-referrer'), external7.map((l) => [l.href, l.target, l.rel, l.referrer]));
     check(S, 'official_action_only_on_official_or_listening_actions', external7.every((l) => l.official === EXTERNAL[l.href].official && !l.shelfEntry), external7.map((l) => [l.href, l.official]));
     check(S, 'actions_are_links_except_the_video_load_button', m.sections.every((s) => s.controls === (s.id === 'video' ? 1 : 0)) && m.sections.every((s) => s.links.every((l) => l.display === 'inline-block' && l.bg === 'rgba(0, 0, 0, 0)')), m.sections.map((s) => [s.id, s.controls, s.links.map((l) => [l.display, l.bg])]));
+    check(S, 'solo_album_relationship_and_sources_visible', sec.music.text.includes('このライブ盤の3曲目「夕暮れのジャイロ」は、栗原ミチオのソロ盤『SUNSET NOTES』にも収録されています。') && sec.music.text.includes('出典：Boris公式Bandcampの曲目・クレジットと、Pedal Recordsの収録曲一覧。'), sec.music.text);
     check(S, 'music_production_context_is_visible', !!sec.music.info && sec.music.info.layer === 'claim' && sec.music.info.label === 'この演奏が生まれた背景' && sec.music.text.includes('録音は2007年、ライブ盤の発売は2018年。2026年にはデジタル版が公開され') && sec.music.text.includes('出典：Boris公式作品紹介・公式Bandcampの解説（下のリンク）。'), sec.music.info);
     check(S, 'music_order_listen_source_reality_question', (() => { const t = sec.music ? sec.music.text : ''; const o = ['音源を聴く', '録音日と会場を確認する', 'いまのSHELTERを見る', 'この音は、誰と'].map((x) => t.indexOf(x)); return o.every((x, i) => x >= 0 && (i === 0 || x > o[i - 1])); })(), sec.music && sec.music.text.slice(0, 200));
     check(S, 'no_media_no_embed_no_thumbnail', m.mainMedia === 0 && m.iframes === 0 && m.sections.every((s) => s.media === 0), { main: m.mainMedia, iframes: m.iframes });
@@ -350,10 +352,10 @@ async function elementShot(page, selector, name, width) {
     }
     const names = order.map((o) => o.el).join('>');
     const hrefs = order.filter((o) => o.href && !/^#|^\.\/index\.html$/.test(o.href)).map((o) => o.href);
-    check(S, 'tab_order_reaches_every_real_control', names.startsWith('skip-link>brand-home>menu-trigger>wk-route>wk-action>wk-route>wk-action>wk-action>wk-action>wk-action>v3-video-load>wk-action>other-shelves>footer-brand'), names);
+    check(S, 'tab_order_reaches_every_real_control', names.startsWith('skip-link>brand-home>menu-trigger>wk-route>wk-action>wk-route>wk-action>wk-action>wk-action>wk-action>wk-action>v3-video-load>wk-action>other-shelves>footer-brand'), names);
     check(S, 'tab_order_follows_the_page_order', hrefs.join('|') === [
       './thread.html?thread=morisaki-book', 'https://ebook.shogakukan.co.jp/detail.php?bc=093867650000d0000000&gid=1000', './thread.html?thread=morisaki-film', 'https://jfdb.jp/title/2240',
-      'https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204', 'https://borisheavyrocks.com/discography/4525/', 'https://www.loft-prj.co.jp/schedule/shelter',
+      'https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204', 'https://borisheavyrocks.com/discography/4525/', 'https://www.loft-prj.co.jp/schedule/shelter', 'https://pedalrecords.bandcamp.com/album/sunset-notes',
       'https://www.koenji-awaodori.com/'].join('|'), hrefs);
     check(S, 'focus_visible_outline_on_every_stop', order.filter((o) => o.el !== 'BODY').every((o) => o.fv && o.outline), order.filter((o) => o.el !== 'BODY' && !(o.fv && o.outline)));
     // menu by keyboard
@@ -413,7 +415,7 @@ async function elementShot(page, selector, name, width) {
     await ctx.route((url) => !url.href.startsWith(origin), (r) => r.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><title>stub</title>' }));
     await settle(page);
     check(S, 'no_external_request_before_click', external.length === 0, external.slice(0, 3));
-    for (const [sel, host, name] of [['#music a[href^="https://boris.bandcamp.com/"]', 'https://boris.bandcamp.com/', 'music_listen']]) {
+    for (const [sel, host, name] of [['#music a[href^="https://boris.bandcamp.com/"]', 'https://boris.bandcamp.com/', 'music_listen'], ['#music a[href="https://pedalrecords.bandcamp.com/album/sunset-notes"]', 'https://pedalrecords.bandcamp.com/', 'solo_album_listen']]) {
       const before = external.length;
       await page.evaluate((s) => document.querySelector(s).scrollIntoView({ block: 'center' }), sel);
       const [popup] = await Promise.all([ctx.waitForEvent('page', { timeout: 5000 }).catch(() => null), page.click(sel)]);
