@@ -278,7 +278,7 @@ const book = threads.find((t) => t && t.threadId === 'morisaki-book');
 const film = threads.find((t) => t && t.threadId === 'morisaki-film');
 const koenji = threads.find((t) => t && t.threadId === 'koenji-dance-history');
 check(!!book && !!film && !!koenji, 'threads must expose koenji-dance-history, morisaki-book and morisaki-film');
-check(threads.map((t) => t.threadId).join('|') === 'koenji-dance-history|morisaki-book|morisaki-film|kichijoji-parks', 'existing three threads retain order; PARKS appended');
+check(threads.map((t) => t.threadId).join('|') === 'koenji-dance-history|morisaki-book|morisaki-film|kichijoji-parks|shimokitazawa-ladyjane', 'existing three threads retain order; PARKS and LADY JANE appended');
 finish();
 
 /* shared identity（同一参照） */

@@ -54,7 +54,7 @@
     thread: true,
     spatial: true,
 
-    // Public content ids: the four cities, the four Works entries, the four Threads.
+    // Public content ids: the four cities, the four Works entries, the five Threads.
     koenji: true,
     jinbocho: true,
     shimokitazawa: true,
@@ -67,6 +67,9 @@
     morisaki_film: true,
     koenji_dance_history: true,
     kichijoji_parks: true,
+    shimokitazawa_ladyjane: true,
+    'shimokitazawa_ladyjane:l0': true, 'shimokitazawa_ladyjane:l1': true,
+    'shimokitazawa_ladyjane:l2': true, 'shimokitazawa_ladyjane:l3': true,
     'kichijoji_parks:p0': true, 'kichijoji_parks:p1': true,
     'kichijoji_parks:p2': true, 'kichijoji_parks:p3': true,
 
@@ -83,6 +86,7 @@
   var THREAD_IDS = {
     'koenji-dance-history': 'koenji_dance_history',
     'kichijoji-parks': 'kichijoji_parks',
+    'shimokitazawa-ladyjane': 'shimokitazawa_ladyjane',
     'morisaki-book': 'morisaki_book',
     'morisaki-film': 'morisaki_film'
   };

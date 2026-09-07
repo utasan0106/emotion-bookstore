@@ -180,6 +180,29 @@ for (const host of ['emotion-bookstore-n8n5kl0xu-emotion-bookstore.vercel.app', 
   }
 }
 
+/* LADY JANE uses the existing event definitions, with only bounded public IDs added. */
+{
+  const scenes = ['l0', 'l1', 'l2', 'l3'].map((id) => el({ tag: 'section', cls: 'th-scene', attrs: { 'data-scene': id } }));
+  const end = el({ tag: 'div', cls: 'th-end' });
+  const article = el({ tag: 'article', cls: 'th-thread', attrs: { 'data-thread-id': 'shimokitazawa-ladyjane' }, children: scenes.concat([end]) });
+  const dom = { byId: { threadRoot: el({ tag: 'div', id: 'threadRoot', children: [article] }) } };
+  const r = run('emotionbookstore.com', '/thread.html', '?thread=shimokitazawa-ladyjane', dom);
+  r.listeners.DOMContentLoaded();
+  const io = r.observers[0];
+  check('LADY JANE observes four scenes and finite ending', !!io && io.targets.length === 5);
+  if (io) io.cb(io.targets.map((target) => ({ target, isIntersecting: true })));
+  r.ctx.v3Analytics.threadStage('shimokitazawa_ladyjane', 'p99');
+  r.ctx.v3Analytics.threadStage('shimokitazawa_ladyjane', 's0');
+  check('LADY JANE bounded start', by(r.events(), 'v3_thread_start').map((e) => e[2].content_id).join() === 'shimokitazawa_ladyjane');
+  check('LADY JANE stages exact; unknown and cross-thread stages dropped', by(r.events(), 'v3_thread_stage').map((e) => e[2].content_id).join() === 'shimokitazawa_ladyjane:l0,shimokitazawa_ladyjane:l1,shimokitazawa_ladyjane:l2,shimokitazawa_ladyjane:l3');
+  check('LADY JANE complete at finite ending', by(r.events(), 'v3_thread_complete').length === 1);
+  auditParams('LADY JANE', r.events());
+  for (const host of ['localhost', 'ladyjane-preview.vercel.app']) {
+    const p = run(host, '/thread.html', '?thread=shimokitazawa-ladyjane', dom);
+    check('LADY JANE preview/local GA4 zero ' + host, p.head.length === 0 && p.events().length === 0 && !p.ctx.v3Analytics);
+  }
+}
+
 /* ---- 6. Thread: start after rendered .th-thread[data-thread-id]; composite stage ids; complete; evidence; approved external; continue ---- */
 {
   const scenes = ['s0', 's1', 's2', 's3', 's4', 's5'].map((id) => el({ tag: 'section', cls: 'th-scene', attrs: { 'data-scene': id } }));

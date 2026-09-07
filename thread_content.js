@@ -707,8 +707,51 @@
     ending: { line: 'このスレッドは、ここまでです。', exitLabel: '吉祥寺の棚へ戻る', exitHref: './shelf.html?shelf=kichijoji' }
   };
 
+  /* 下北沢: production intentions are attributed to the participants.
+     The official page is one source, not multiple independent witnesses. */
+  var LADYJANE = {
+    threadId: 'shimokitazawa-ladyjane',
+    eyebrow: '下北沢',
+    title: '閉店のあと、劇場に集まった音楽',
+    documentTitle: '下北沢｜閉店のあと、劇場に集まった音楽｜みんなの感情書店',
+    subjectLabel: '主題：LADY JANE終幕式「破の刻」Final Stage',
+    editor: '編集：みんなの感情書店 編集部',
+    lens: '店で過ごした時間を、どう残すのか。LADY JANEから劇場、そして映画へ辿ります。',
+    checkedAt: '2026-09-07', checkedLabel: '最終確認：2026-09-07', guidance: [],
+    image: { src: './assets/suzunari-2008.jpg', alt: 'ザ・スズナリの看板と劇場入口。2008年3月22日撮影', width: 1024, height: 768, caption: 'ザ・スズナリ（2008年3月）。2025年の終幕式の写真ではありません。写真：Guwashi999 / CC BY 2.0。', creditHref: './credits.html#suzunari-2008' },
+    nodes: [
+      { id: 'place:ladyjane', type: 'Place', label: 'LADY JANE' },
+      { id: 'event:ladyjane-final', type: 'Event', label: 'LADY JANE終幕式' },
+      { id: 'place:suzunari', type: 'Place', label: 'ザ・スズナリ' },
+      { id: 'work:ladyjane-final', type: 'Film', label: 'LADY JANE終幕式「破の刻」Final Stage' },
+      { id: 'place:k2', type: 'Place', label: 'シモキタ - エキマエ - シネマ K2' }
+    ],
+    facts: [
+      { id: 'fact:ladyjane-recording', claim: '山田亜樹プロデューサーは、自分にできることとして4日間を映像に残そうとしたと述べています。栁澤裕美子監督は、集まった人たちが作る空気を映像で再び感じてもらいたかったと語っています。', supportMode: ['direct_statement'], verificationState: 'single_source', sourceIds: ['src:ladyjane-official'] }
+    ],
+    relations: [
+      { id: 'rel:ladyjane-finale', from: 'place:ladyjane', to: 'event:ladyjane-final', relationType: 'connected_with', displayVerb: '閉店後に終幕式が開かれる', claim: 'LADY JANEは2025年4月13日に閉店し、4月17日から20日に終幕式が開かれました。', supportMode: ['direct_statement'], verificationState: 'single_source', sourceIds: ['src:ladyjane-official'], spatial: { resolution: 'not_applicable' } },
+      { id: 'rel:ladyjane-venue', from: 'event:ladyjane-final', to: 'place:suzunari', relationType: 'connected_with', displayVerb: '劇場に集まる', claim: '山田プロデューサーによると、店主の大木雄高はザ・スズナリで終幕式のライブを開きたいと考えていました。店の看板やポスターも劇場へ運ばれました。', supportMode: ['direct_statement'], verificationState: 'single_source', sourceIds: ['src:ladyjane-official'], spatial: { resolution: 'not_applicable' } },
+      { id: 'rel:ladyjane-film', from: 'event:ladyjane-final', to: 'work:ladyjane-final', relationType: 'connected_with', displayVerb: '記録映画になる', claim: '『LADY JANE終幕式「破の刻」Final Stage』は、ザ・スズナリでの4日間をまとめたドキュメンタリーです。', supportMode: ['direct_statement'], verificationState: 'single_source', sourceIds: ['src:ladyjane-official'], spatial: { resolution: 'not_applicable' } },
+      { id: 'rel:ladyjane-screening', from: 'work:ladyjane-final', to: 'place:k2', relationType: 'connected_with', displayVerb: '街の映画館へつながる', claim: '山田プロデューサーによると、ステージの映像に上映の意向を示したのが、下北沢のK2でした。', supportMode: ['direct_statement'], verificationState: 'single_source', sourceIds: ['src:ladyjane-official'], spatial: { resolution: 'not_applicable' } }
+    ],
+    sources: [
+      { id: 'src:ladyjane-official', kind: 'official', kindLabel: '公式（映画・制作当事者の文章）', name: '映画公式：作品紹介・略年譜・山田亜樹／栁澤裕美子の文章', url: 'https://shimokita-ladyjane-movie.com/' }
+    ],
+    scenes: [
+      { id: 'l0', title: '店から劇場へ', figure: true, relationIds: ['rel:ladyjane-finale', 'rel:ladyjane-venue'] },
+      { id: 'l1', title: '自分にできることを、記録にする', factIds: ['fact:ladyjane-recording'], relationIds: ['rel:ladyjane-film'] },
+      { id: 'l2', title: '記録が、街の映画館へ', relationIds: ['rel:ladyjane-screening'] },
+      { id: 'l3', title: '作品の公式情報へ', kind: 'reality', lead: '店から劇場、映画へと辿った作品の公式情報を確認できます。' }
+    ],
+    realityDestinations: [
+      { id: 'dest:ladyjane-film', label: '映画の作品・公開情報を見る', url: 'https://shimokita-ladyjane-movie.com/', why: 'ここまで辿った記録映画の公式サイトです。', relationIds: ['rel:ladyjane-film', 'rel:ladyjane-screening'] }
+    ],
+    ending: { line: 'このスレッドは、ここまでです。', exitLabel: '下北沢の棚へ戻る', exitHref: './shelf.html?shelf=shimokitazawa' }
+  };
+
   window.V3_THREAD_CONTENT = {
     schema: 'v3-thread/rc1',
-    threads: [KOENJI, MORISAKI_BOOK, MORISAKI_FILM, PARKS]
+    threads: [KOENJI, MORISAKI_BOOK, MORISAKI_FILM, PARKS, LADYJANE]
   };
 })();

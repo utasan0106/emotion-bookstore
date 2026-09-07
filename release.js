@@ -913,6 +913,9 @@
     var links = document.getElementById('shelfReadingLinks');
     if (!section || !links) return;
     var readings = {
+      shimokitazawa: [
+        { title: '閉店のあと、劇場に集まった音楽', href: './thread.html?thread=shimokitazawa-ladyjane' }
+      ],
       kichijoji: [
         { title: '閉館から始まった、公園の映画', href: './thread.html?thread=kichijoji-parks' }
       ],
