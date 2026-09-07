@@ -235,7 +235,7 @@ async function elementShot(page, selector, name, width) {
       sec.film.reading === '映画の背景に見えていた街が、作品を実際につくった場所として前に出てきます。' && sec.film.relation === 'つながり：この映画には原作があり、神保町で撮影されました。' && !sec.film.info, sec.film);
     check(S, 'music_copy_exact_boris', !!sec.music && sec.music.category === '音楽' && sec.music.object === '不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204' && sec.music.byline === 'Boris with Michio Kurihara' &&
       sec.music.readingLabel === null && sec.music.reading === 'ライブ盤を、曲の集まりだけでなく、2007年2月4日の下北沢SHELTERで起きた一度の演奏として聴き直します。' && sec.music.relation === 'つながり：2007年2月4日、下北沢SHELTERで録音されたライブ盤です。' &&
-      sec.music.question === 'この音は、誰と、どこで、どの時間に生まれたんだろう？' && !sec.music.info, sec.music);
+      sec.music.question === 'この音は、誰と、どこで、どの時間に生まれたんだろう？' && !!sec.music.info && sec.music.info.layer === 'claim' && sec.music.info.label === 'この演奏が生まれた背景', sec.music);
     check(S, 'video_fact_block_then_inline_player', !!sec.video && sec.video.category === '映像' && sec.video.object === '高円寺の踊り｜主催団体の公式映像（2025）' && sec.video.byline === '主催団体 ／ 2025' &&
       !!sec.video.info && sec.video.info.layer === 'claim' && sec.video.info.label === 'この映像について' && sec.video.info.text === '2025年に高円寺で行われた催しを伝える、主催団体の公式映像です。' && sec.video.info.border === 'solid' &&
       sec.video.readingLayer === null && sec.video.reading === null && sec.video.relation === 'つながり：高円寺の街で行われる踊りを記録した、主催団体の公式映像です。' &&
@@ -256,6 +256,7 @@ async function elementShot(page, selector, name, width) {
     check(S, 'external_actions_open_safely', external7.every((l) => l.target === '_blank' && /noopener/.test(l.rel || '') && /noreferrer/.test(l.rel || '') && l.referrer === 'no-referrer'), external7.map((l) => [l.href, l.target, l.rel, l.referrer]));
     check(S, 'official_action_only_on_official_or_listening_actions', external7.every((l) => l.official === EXTERNAL[l.href].official && !l.shelfEntry), external7.map((l) => [l.href, l.official]));
     check(S, 'actions_are_links_except_the_video_load_button', m.sections.every((s) => s.controls === (s.id === 'video' ? 1 : 0)) && m.sections.every((s) => s.links.every((l) => l.display === 'inline-block' && l.bg === 'rgba(0, 0, 0, 0)')), m.sections.map((s) => [s.id, s.controls, s.links.map((l) => [l.display, l.bg])]));
+    check(S, 'music_production_context_is_visible', !!sec.music.info && sec.music.info.layer === 'claim' && sec.music.info.label === 'この演奏が生まれた背景' && sec.music.text.includes('録音は2007年、ライブ盤の発売は2018年。2026年にはデジタル版が公開され') && sec.music.text.includes('出典：Boris公式作品紹介・公式Bandcampの解説（下のリンク）。'), sec.music.info);
     check(S, 'music_order_listen_source_reality_question', (() => { const t = sec.music ? sec.music.text : ''; const o = ['音源を聴く', '録音日と会場を確認する', 'いまのSHELTERを見る', 'この音は、誰と'].map((x) => t.indexOf(x)); return o.every((x, i) => x >= 0 && (i === 0 || x > o[i - 1])); })(), sec.music && sec.music.text.slice(0, 200));
     check(S, 'no_media_no_embed_no_thumbnail', m.mainMedia === 0 && m.iframes === 0 && m.sections.every((s) => s.media === 0), { main: m.mainMedia, iframes: m.iframes });
     check(S, 'works_is_static_not_a_thread', m.thread === 0, m.thread);

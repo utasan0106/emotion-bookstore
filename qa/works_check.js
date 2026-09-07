@@ -185,6 +185,8 @@ const EXTERNAL_SET = {
   for (const c of ['音楽', '不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204', 'Boris with Michio Kurihara',
     'ライブ盤を、曲の集まりだけでなく、2007年2月4日の下北沢SHELTERで起きた一度の演奏として聴き直します。', 'つながり：2007年2月4日、下北沢SHELTERで録音されたライブ盤です。', '音源を聴く', '録音日と会場を確認する', 'いまのSHELTERを見る',
     'この音は、誰と、どこで、どの時間に生まれたんだろう？']) check(s.includes(c), `#music copy missing: ${c}`);
+  check(raw.includes('この演奏が生まれた背景') && raw.includes('この日は、共作アルバム『Rainbow』の発売記念公演でした。') && raw.includes('この公演後、栗原ミチオはサポートギタリストとして2013年まで共演を続けました。'), 'music context attributes collaboration history to the artist');
+  check(raw.includes('録音は2007年、ライブ盤の発売は2018年。2026年にはデジタル版が公開され') && raw.includes('出典：Boris公式作品紹介・公式Bandcampの解説（下のリンク）。'), 'music distinguishes recording, original release and digital edition with source attribution');
   check(raw.includes('<h2 id="wk-music-title" class="wk-object">不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204</h2>') && raw.includes('<p class="wk-byline">Boris with Michio Kurihara</p>'), '#music object / byline markup');
   const order = ['音源を聴く', '録音日と会場を確認する', 'いまのSHELTERを見る', 'この音は、誰と'].map((t) => s.indexOf(t));
   check(order.every((x, i) => x >= 0 && (i === 0 || x > order[i - 1])), '#music order must be 音源を聴く → 録音日と会場を確認する → いまのSHELTERを見る → transfer question');
