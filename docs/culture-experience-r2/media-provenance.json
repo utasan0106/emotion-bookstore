@@ -1,0 +1,58 @@
+{
+  "reviewedOn": "2026-09-07",
+  "publicationState": "isolated-prototype-only",
+  "media": [
+    {
+      "id": "shelter",
+      "title": "Time to Go -夕暮れのジャイロ-",
+      "artist": "Boris with Michio Kurihara",
+      "album": "不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204",
+      "track": 3,
+      "duration": "2:30",
+      "recordedAt": "下北沢SHELTER",
+      "recordedOn": "2007-02-04",
+      "officialTrack": "https://boris.bandcamp.com/track/time-to-go-2",
+      "source": "https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204",
+      "contextSource": "https://borisheavyrocks.com/discography/4525/",
+      "claimsSupported": ["録音会場と公演日", "Rainbow発売記念公演", "曲03の原演奏は栗原ミチオとのクレジット"],
+      "embedAlbumId": "1846332570",
+      "embedTrackId": "2437633909",
+      "embedProvenance": "Official track page > Share / Embed > medium > generated HTML, browser DOM read 2026-09-07",
+      "rights": "all rights reserved; official embed only; no download/rehosting/editing",
+      "excludedLookalike": "https://boris.bandcamp.com/track/time-to-go is a different U.F.O. CLUB recording, not this SHELTER track"
+    },
+    {
+      "id": "sunset",
+      "title": "夕暮れのジャイロ / Time To Go",
+      "artist": "栗原ミチオ / Michio Kurihara",
+      "album": "サンセット・ノーツ / SUNSET NOTES",
+      "track": 1,
+      "duration": "2:21",
+      "recordedAt": null,
+      "officialTrack": "https://pedalrecords.bandcamp.com/track/time-to-go",
+      "source": "https://pedalrecords.bandcamp.com/album/sunset-notes",
+      "claimsSupported": ["ソロ盤の1曲目に同曲が収録されている"],
+      "notClaimed": ["ソロ盤の録音場所", "ライブの選曲理由", "音の印象や効果"],
+      "embedAlbumId": "3603176382",
+      "embedTrackId": "1718126851",
+      "embedProvenance": "Official track page > Share / Embed > medium > generated HTML, browser DOM read 2026-09-07",
+      "rights": "official embed only; no download/rehosting/editing"
+    },
+    {
+      "id": "shelter-entrance",
+      "file": "assets/shimokitazawa-shelter.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:SHELTER.jpg",
+      "author": "Syced",
+      "license": "CC0-1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "dateAccordingToSource": "2022-09-25",
+      "changes": "Existing repository resized image; CSS object-fit crop in prototype",
+      "use": "Present venue's entrance photograph with explicit 2022 label; not a 2007 performance photo or live camera",
+      "downloadedThisTurn": false
+    }
+  ],
+  "practicalExit": "https://www.loft-prj.co.jp/schedule/shelter",
+  "finalLayout": "Slim, artwork none, height 42px. Display options verified in official Bandcamp Customize UI and applied to both verified recording IDs. Final inline playback not yet tested.",
+  "externalLoading": "Only after explicit load button; native Bandcamp player; no autoplay grant; no SDK, analytics, user input or persistence in parent",
+  "limitations": ["Provider controls and availability remain under Bandcamp", "Native album player may allow other tracks; two editorial entry points are not a provider-level playback limit", "Official player does not supply application playback state here; no claim of completed listening", "Production CSP and Trust have not been changed"]
+}
