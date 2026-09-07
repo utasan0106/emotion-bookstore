@@ -39,17 +39,23 @@ function setup(withPublicLoader = true) {
     'data-video-title': html.match(/data-video-title="([^"]+)"/)[1]
   }));
   const frame = host.appendChild(new Element('div', {class: 'v3-video-frame'}));
+  frame.appendChild(new Element('p', {class: 'invitation-title'}));
+  frame.appendChild(new Element('span', {class: 'invitation-meta'}));
   frame.appendChild(new Element('button', {class: 'v3-video-load', hidden: ''}));
   const stop = document.appendChild(new Element('button', {hidden: ''}));
   const status = document.appendChild(new Element('p'));
   const exits = [...html.matchAll(/<a data-leave href="([^"]+)"/g)].map(m => document.appendChild(new Element('a', {'data-leave': '', href: m[1]})));
   const elements = {trailer: host, 'stop-video': stop, 'video-status': status};
+  for (const id of ['scene-choices', 'scene-title', 'scene-note']) elements[id] = document.appendChild(new Element('div', {hidden: ''}));
+  elements['official-video'] = exits[0];
+  const choices = [...html.matchAll(/data-scene="([^"]+)" aria-pressed="([^"]+)"/g)].map(m => elements['scene-choices'].appendChild(new Element('button', {'data-scene':m[1], 'aria-pressed':m[2]})));
+  const returns = [...html.matchAll(/data-scene-target="([^"]+)"/g)].map(m => document.appendChild(new Element('a', {'data-scene-target':m[1]})));
   document.getElementById = id => elements[id];
   const window = new EventTarget();
   const context = vm.createContext({document, window});
   if (withPublicLoader) vm.runInContext(fs.readFileSync(path.join(root, 'video-embed.js'), 'utf8'), context);
   vm.runInContext(fs.readFileSync(path.join(dir, 'screen.js'), 'utf8'), context);
-  return {host, stop, status, exits, window, button: () => host.querySelector('.v3-video-load'), iframe: () => host.querySelector('iframe')};
+  return {host, stop, status, exits, window, elements, choices, returns, button: () => host.querySelector('.v3-video-load'), iframe: () => host.querySelector('iframe')};
 }
 let count = 0;
 const check = (name, fn) => { fn(); count++; console.log('PASS ' + name); };
@@ -74,8 +80,45 @@ app.window.dispatchEvent(new Event('pagehide'));
 check('pagehide removes player and leaves a usable return state', () => { assert.equal(app.iframe(), null); assert.equal(app.button().hidden, false); });
 app.button().click();
 check('back-cache restored document can load again', () => assert.ok(app.iframe()));
+const beforeSwitch = app.iframe();
+app.choices[1].click();
+check('switching to park detaches film without connecting to another video', () => {
+  assert.equal(beforeSwitch.isConnected, false);
+  assert.equal(app.iframe(), null);
+  assert.equal(app.host.getAttribute('data-video-id'), '80y5COiKdDw');
+  assert.deepEqual(app.choices.map(c => c.getAttribute('aria-pressed')), ['false','true']);
+  assert.match(app.elements['scene-note'].textContent, /現在の放送案内ではありません/);
+  assert.equal(app.elements['official-video'].href, 'https://www.youtube.com/watch?v=80y5COiKdDw');
+});
+app.button().click();
+check('park needs its own explicit load and opens the exact official record', () => {
+  assert.equal(app.iframe().src, 'https://www.youtube-nocookie.com/embed/80y5COiKdDw?playsinline=1&rel=0');
+  assert.match(app.iframe().title, /みらいレコーズ公式/);
+  assert.doesNotMatch(app.iframe().allow, /autoplay/);
+});
+const parkFrame = app.iframe();
+app.choices[1].click();
+check('choosing current scene never interrupts or remounts its player', () => assert.equal(app.iframe(), parkFrame));
+app.stop.click();
+app.button().click();
+check('stop and reopen retain chosen park identity', () => { assert.equal(parkFrame.isConnected, false); assert.match(app.iframe().src, /80y5COiKdDw/); });
+app.returns[0].click();
+check('return to trailer from background selects film without autoplay', () => {
+  assert.equal(app.iframe(), null);
+  assert.equal(app.host.getAttribute('data-video-id'), 'pm7RBghFt0I');
+  assert.deepEqual(app.choices.map(c => c.getAttribute('aria-pressed')), ['true','false']);
+  assert.match(app.elements['scene-note'].textContent, /2017年の発売告知/);
+});
+app.returns[2].click();
+app.button().click();
+app.window.dispatchEvent(new Event('pagehide'));
+check('park background link and pagehide also restore the same bounded scene', () => {
+  assert.equal(app.iframe(), null);
+  assert.equal(app.host.getAttribute('data-video-id'), '80y5COiKdDw');
+  assert.equal(app.button().hidden, false);
+});
 const unavailable = setup(false);
-check('missing shared loader leaves inert control hidden and fallback remains', () => { assert.equal(unavailable.button().hidden, true); assert.equal(unavailable.iframe(), null); assert.ok(html.includes('日活公式YouTubeで観る')); });
+check('missing shared loader hides inert scene choices and keeps fallback', () => { assert.equal(unavailable.elements['scene-choices'].hidden, true); assert.equal(unavailable.button().hidden, true); assert.equal(unavailable.iframe(), null); assert.ok(html.includes('日活公式YouTubeで観る')); });
 check('no initial external embeds, hotlinked thumbnails, analytics or preconnect', () => assert.doesNotMatch(html, /<iframe|<img[^>]+src="https?:|preconnect|preload|analytics-v3|googletagmanager/));
 check('exactly three voluntary context choices without tracking or completion gates', () => { assert.equal((html.match(/<details>/g) || []).length, 3); assert.doesNotMatch(html, /type="(?:text|email)"|data-recording|progressbar/); });
 check('correct current photo attribution and historical availability qualification', () => { for (const s of ['2024年4月13日', '映画の場面写真ではありません', 'Htanaungg', 'CC BY-SA 4.0', '縮小した既存画像', '2017年の発売告知']) assert.ok(html.includes(s), s); });

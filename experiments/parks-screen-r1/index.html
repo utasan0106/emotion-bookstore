@@ -18,18 +18,23 @@
     <section class="opening" aria-labelledby="title">
       <p class="eyebrow">吉祥寺 / 映画と音楽</p>
       <h1 id="title">映画の音から、<br class="mobile-break">公園へ。</h1>
-      <p class="intro">『PARKS パークス』の予告を観る。気になった音の、その背景へ。</p>
-      <h2 id="watch" tabindex="-1">公式予告 <span>1分59秒</span></h2>
+      <p class="intro">映画の予告と、公園で流れた声。ふたつを行き来してみる。</p>
+      <div id="scene-choices" class="scene-choices" role="group" aria-label="観る映像を選ぶ" hidden>
+        <button type="button" data-scene="film" aria-pressed="true" aria-controls="trailer"><strong>映画を観る</strong><span>PARKS 公式予告 · 1分59秒</span></button>
+        <button type="button" data-scene="park" aria-pressed="false" aria-controls="trailer"><strong>公園の声を聴く</strong><span>100周年記念放送の記録 · 57秒</span></button>
+      </div>
+      <h2 id="watch" tabindex="-1"><span id="scene-title">PARKS 公式予告 · 1分59秒</span></h2>
       <div id="trailer" class="v3-video" data-video-id="pm7RBghFt0I" data-video-title="日活公式『PARKS パークス』予告（1分59秒）">
         <div class="v3-video-frame">
-          <div class="invitation"><p lang="en">PARKS</p><span>パークス / 2017</span><button type="button" class="v3-video-load" hidden>公式予告プレイヤーを開く <span aria-hidden="true">▶</span></button></div>
+          <div class="invitation"><p class="invitation-title">PARKS</p><span class="invitation-meta">パークス / 2017</span><button type="button" class="v3-video-load" hidden>公式予告プレイヤーを開く <span aria-hidden="true">▶</span></button></div>
         </div>
       </div>
-      <div class="player-tools"><button id="stop-video" type="button" hidden>閉じて停止</button><a data-leave href="https://www.youtube.com/watch?v=pm7RBghFt0I" target="_blank" rel="noopener noreferrer">日活公式YouTubeで観る ↗</a></div>
+      <div class="player-tools"><button id="stop-video" type="button" hidden>閉じて停止</button><a data-leave href="https://www.youtube.com/watch?v=pm7RBghFt0I" id="official-video" target="_blank" rel="noopener noreferrer">日活公式YouTubeで観る ↗</a></div>
       <p id="video-status" role="status" aria-live="polite"></p>
-      <p class="small">2017年の発売告知を含む予告です。作品・ディスク情報は下の公式サイトで確認できます。</p>
+      <p id="scene-note" class="small">2017年の発売告知を含む予告です。作品・ディスク情報は下の公式サイトで確認できます。</p>
       <p class="privacy">開くとYouTubeに接続し、IPアドレスやこのサイトのドメイン等の通信情報が送られます。再生時にはCookie等が使われる場合があります。再生はプレイヤーの ▶ から。<a data-leave href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">提供元のプライバシー</a></p>
-      <noscript><p>ページ内の再生にはJavaScriptが必要です。上の日活公式YouTubeへのリンクで観られます。</p></noscript>
+      <p class="small">もう一方を選ぶとプレイヤーを閉じます。再び開くと最初から観られます。</p>
+      <noscript><p>ページ内の再生にはJavaScriptが必要です。公式ページで<a data-leave href="https://www.youtube.com/watch?v=pm7RBghFt0I">映画の予告</a>と<a data-leave href="https://www.youtube.com/watch?v=80y5COiKdDw">当時の公園放送</a>を観られます。</p></noscript>
       <p class="small">再生できない場合は公式YouTubeへ。音を出せないときは、下の背景から辿れます。</p>
     </section>
     <section class="questions" aria-labelledby="questions-title">
@@ -37,11 +42,11 @@
       <div class="answers">
         <details>
           <summary>なぜ、脚本の段階から音楽を？</summary>
-          <div class="answer"><p>瀬田なつき監督は、登場人物が音楽を作る物語なので、脚本段階からトクマルシューゴと曲の方向を考えたと説明しています。文字だけでは曖昧だった演奏のイメージを、彼の提案が具体的にしたといいます。</p><p class="source">出典：<a data-leave href="https://mikiki.tokyo.jp/articles/-/13961" target="_blank" rel="noopener noreferrer">瀬田なつき × トクマルシューゴ / Mikiki（2017年）</a></p><p class="prompt">もう一度観るなら：音楽を作る人の姿に目を向けてみる。</p><a href="#watch">予告へ戻る ↑</a></div>
+          <div class="answer"><p>瀬田なつき監督は、登場人物が音楽を作る物語なので、脚本段階からトクマルシューゴと曲の方向を考えたと説明しています。文字だけでは曖昧だった演奏のイメージを、彼の提案が具体的にしたといいます。</p><p class="source">出典：<a data-leave href="https://mikiki.tokyo.jp/articles/-/13961" target="_blank" rel="noopener noreferrer">瀬田なつき × トクマルシューゴ / Mikiki（2017年）</a></p><p class="prompt">もう一度観るなら：音楽を作る人の姿に目を向けてみる。</p><a data-scene-target="film" href="#watch">予告へ戻る ↑</a></div>
         </details>
         <details>
           <summary>なぜ、トクマルシューゴだった？</summary>
-          <div class="answer"><p>監督によると、樋口泰人プロデューサーが、公園に縁のあるトクマルシューゴを紹介しました。監督も以前から彼の音楽を聴いており、本人は10代から井の頭公園でバンドの練習をしていたと話しています。</p><p class="source">出典：<a data-leave href="https://mikiki.tokyo.jp/articles/-/13961" target="_blank" rel="noopener noreferrer">瀬田なつき × トクマルシューゴ / Mikiki（2017年）</a></p><p class="prompt">もう一度観るなら：作り手にも馴染みのあった公園を見る。</p><a href="#watch">予告へ戻る ↑</a></div>
+          <div class="answer"><p>監督によると、樋口泰人プロデューサーが、公園に縁のあるトクマルシューゴを紹介しました。監督も以前から彼の音楽を聴いており、本人は10代から井の頭公園でバンドの練習をしていたと話しています。</p><p class="source">出典：<a data-leave href="https://mikiki.tokyo.jp/articles/-/13961" target="_blank" rel="noopener noreferrer">瀬田なつき × トクマルシューゴ / Mikiki（2017年）</a></p><p class="prompt">もう一度観るなら：作り手にも馴染みのあった公園を見る。</p><a data-scene-target="film" href="#watch">予告へ戻る ↑</a></div>
         </details>
         <details>
           <summary>映画から遡ると、音はどこで生まれた？</summary>
@@ -52,6 +57,7 @@
               <li><time datetime="2014-06">2014</time><div><strong>閉館した映画館で、曲を育てる</strong><p>6月12・13日、解体前のバウスシアターでの録音から、この曲の制作が始まる。</p><a data-leave href="https://mirairecords.com/stsr/999" target="_blank" rel="noopener noreferrer">出典：みらいレコーズの制作記録</a></div></li>
               <li><time datetime="2012-11-12">2012</time><div><strong>映画を映しながら演奏する</strong><p>相対性理論はバウスで無声映画『月世界旅行』を上映しながら演奏した。やくしまるは、この経験から映像を流して曲を作る試みへ進んだと語る。</p><a data-leave href="https://www.cinra.net/article/interview-201705-yakushimaruetsuko" target="_blank" rel="noopener noreferrer">出典：やくしまるえつこ / CINRA（作品協賛記事）</a></div></li>
             </ol>
+            <p>この曲は、公園の100周年記念放送にも使われました。</p><p class="source">出典：<a data-leave href="https://yakushimaruetsuko.com/archives/2398/" target="_blank" rel="noopener noreferrer">やくしまるえつこ公式：当時の公園放送の案内</a></p><a data-scene-target="park" href="#watch">公園で流れた声を聴く ↑</a>
             <p>曲が生まれた経緯を辿っています。映画の結末の解説ではありません。</p><a data-leave href="../../thread.html?thread=kichijoji-parks#th-p2">映画館での演奏から、曲が育つまでを読む →</a>
           </div>
         </details>
@@ -61,7 +67,7 @@
       <figure><img src="../../assets/inokashira-pond.jpg" width="1600" height="949" alt="井の頭池のボートと水辺の木々。2024年4月13日撮影" loading="lazy"><figcaption>井の頭池 / 2024年4月13日。映画の場面写真ではありません。<br>写真：<a data-leave href="https://commons.wikimedia.org/wiki/File:Inokashira_Pond.jpg" target="_blank" rel="noopener noreferrer">Htanaungg / Wikimedia Commons</a> · <a data-leave href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>（縮小した既存画像を使用）</figcaption></figure>
       <div><p class="eyebrow">映画の外にも、つながりがある。</p><h2 id="reality-title">映画館から映画へ。<br>そして、公園へ。</h2><p>配給元boidは、閉館したバウスシアターのオーナーから、吉祥寺と井の頭公園の映画を作りたいという電話があったことを、企画の始まりとして記しています。</p><p class="source">出典：<a data-leave href="https://www.boid-s.com/1686" target="_blank" rel="noopener noreferrer">boid「井の頭公園の映画『PARKS』をつくります」</a></p><nav aria-label="作品と公園への出口"><a data-leave href="https://movie-product.ponycanyon.co.jp/item010.html" target="_blank" rel="noopener noreferrer">映画の作品・ディスク情報へ ↗</a><a data-leave href="https://mirairecords.com/stsr/2166" target="_blank" rel="noopener noreferrer">曲を収めた『天声ジングル』の公式情報へ ↗</a><a data-leave href="https://www.tokyo-park.or.jp/park/inokashira/index.html" target="_blank" rel="noopener noreferrer">東京都公園協会の公園案内へ ↗</a><a data-leave href="../../thread.html?thread=kichijoji-parks">制作のつながりを通して読む →</a></nav></div>
     </section>
-    <footer><p>今回の予告と、その背景はここまで。</p><a data-leave href="../../shelf.html?shelf=kichijoji">吉祥寺の棚へ戻る →</a></footer>
+    <footer><p>今回のふたつの映像は、ここまで。</p><a data-leave href="../../shelf.html?shelf=kichijoji">吉祥寺の棚へ戻る →</a></footer>
   </main>
 </body>
 </html>

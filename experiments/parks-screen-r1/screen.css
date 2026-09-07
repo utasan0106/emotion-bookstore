@@ -19,7 +19,12 @@ h2 { font-size:30px; line-height:1.6; margin:8px 0 24px; }
 .opening { padding:40px 0 36px; max-width:960px; margin:auto; }
 .intro { margin:0 0 26px; }
 #watch { font-family:inherit; font-size:14px; margin:0 0 12px; scroll-margin-top:20px; }
-#watch span { color:var(--muted); margin-left:12px; }
+#watch span { color:var(--muted); }
+.scene-choices { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:0 0 16px; }
+.scene-choices button { min-height:64px; padding:12px 16px; text-align:left; border:1px solid var(--line); background:none; }
+.scene-choices button[aria-pressed="true"] { border:2px solid var(--accent); padding:11px 15px; background:#2d3028; }
+.scene-choices strong { display:block; font-weight:500; font-size:16px; }
+.scene-choices span { display:block; color:var(--muted); font-size:11px; }
 .v3-video-frame { aspect-ratio:16/9; min-height:200px; background:#080908; border:1px solid var(--line); display:grid; }
 .v3-video-iframe { display:block; width:100%; height:100%; min-height:200px; border:0; }
 .invitation { align-self:center; text-align:center; padding:20px; }
@@ -74,4 +79,9 @@ footer a { padding:10px 0; }
   .invitation { padding:16px 10px; }
   .invitation > span { margin-bottom:14px; }
   .v3-video-load { padding:12px; font-size:13px; }
+  .scene-choices { gap:8px; }
+  .scene-choices button { padding:10px; }
+  .scene-choices button[aria-pressed="true"] { padding:9px; }
+  .scene-choices strong { font-size:14px; }
+  .invitation p { font-size:clamp(28px,7vw,44px); letter-spacing:.08em; }
 }

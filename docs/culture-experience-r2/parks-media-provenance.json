@@ -24,6 +24,28 @@
     "sceneTimestamps": [],
     "playbackLimitation": "rel=0 does not eliminate provider recommendations; no claim of provider-wide finite playback"
   },
+  "parkBroadcast": {
+    "title": "井の頭公園100年記念：やくしまるえつこ公園放送・相対性理論『弁天様はスピリチュア』放送 サンプル",
+    "videoId": "80y5COiKdDw",
+    "watchUrl": "https://www.youtube.com/watch?v=80y5COiKdDw",
+    "provider": "MIRAI records - 相対性理論 / やくしまるえつこ [Official]",
+    "providerChannel": "https://www.youtube.com/channel/UCiskW429cU09OfvJCLq9tPg",
+    "relationshipEvidence": "https://yakushimaruetsuko.com/archives/2398/",
+    "relationship": "Artist's own announcement embeds this exact record of the park's centenary broadcast and names the song used there.",
+    "durationSeconds": 57,
+    "durationEvidence": "Native player on artist's official page displayed 0:57 on 2026-09-07",
+    "officialPageEmbedVerified": true,
+    "nativeEmbedPlaybackVerified": false,
+    "inlinePrototypePlaybackVerified": false,
+    "captions": "Native player displayed 'No captions are available for this video' on 2026-09-07",
+    "rights": "Official provider embed only. Not a free download, extraction, remix or rehosting license.",
+    "downloaded": false,
+    "thumbnailDownloaded": false,
+    "editing": "none",
+    "recordingDate": null,
+    "currentBroadcastVerified": false,
+    "playbackLimitation": "Provider iframe loaded but remained at 0:00 after native play interaction. No error or bot block shown. Tab closed; no bypass or claimed audio QA."
+  },
   "photo": {
     "localPath": "assets/inokashira-pond.jpg",
     "source": "https://commons.wikimedia.org/wiki/File:Inokashira_Pond.jpg",
