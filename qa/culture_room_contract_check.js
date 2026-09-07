@@ -16,20 +16,26 @@ class Element extends EventTarget {
   focus() { focused = this; }
   click() { this.dispatchEvent(new Event('click')); }
 }
-const ids = ['player', 'consent', 'load-player', 'close-player', 'player-status', 'recording-kind', 'artist', 'recording-note', 'official-track'];
+const ids = ['recording-choices', 'player', 'consent', 'load-player', 'close-player', 'player-status', 'recording-kind', 'artist', 'recording-note', 'official-track'];
 const elements = Object.fromEntries(ids.map(id => [id, new Element(id)]));
 elements['close-player'].hidden = true;
 const choices = ['shelter', 'sunset'].map(key => { const e = new Element(key); e.dataset.recording = key; return e; });
 const win = new EventTarget();
+win.location={href:'https://example.test/?recording=sunset'};
+win.history={replaceState:(_,__,url)=>{win.location.href=String(url);}};
+const exit=new Element('exit');exit.getAttribute=()=> 'https://boris.bandcamp.com/track/time-to-go-2';
 const document = {
   getElementById: id => { assert.ok(elements[id], `known element ${id}`); return elements[id]; },
-  querySelectorAll: selector => { assert.equal(selector, '[data-recording]'); return choices; },
+  querySelectorAll: selector => { if(selector==='a[href]') return [exit]; assert.equal(selector, '[data-recording]'); return choices; },
   createElement: tag => { assert.equal(tag, 'iframe'); return new Element(tag); }
 };
-vm.runInNewContext(fs.readFileSync(path.join(room, 'room.js'), 'utf8'), {document, window:win});
+vm.runInNewContext(fs.readFileSync(path.join(room, 'room.js'), 'utf8'), {document, window:win, URL});
 let checks = 0;
 const check = (name, action) => { action(); checks++; console.log(`PASS ${name}`); };
 const player = elements.player;
+check('direct solo link selects without opening media',()=>assert.match(elements.artist.textContent,/栗原/));
+check('noJS has both official exits and hidden controls',()=>{assert.match(html,/id="recording-choices"[^>]*hidden/);assert.match(html,/<noscript>[\s\S]*pedalrecords.bandcamp.com/);});
+check('controls enabled after initialization',()=>assert.equal(elements['recording-choices'].hidden,false));
 check('initial load creates no external media', () => assert.equal(player.childElementCount, 0));
 choices[1].click();
 check('selection before consent creates no iframe', () => assert.equal(player.childElementCount, 0));
@@ -85,4 +91,9 @@ check('finite controls, photo timestamp, privacy and official fallback exist', (
 });
 check('prototype remains excluded from Vercel delivery', () => assert.match(fs.readFileSync(path.join(root, '.vercelignore'), 'utf8'), /^\/experiments\/$/m));
 check('reality return uses the existing exact shelf query contract', () => assert.ok(html.includes('href="../../shelf.html?shelf=shimokitazawa"')));
+elements['load-player'].click();exit.click();
+check('official exit destroys player',()=>assert.equal(player.childElementCount,0));
+elements['load-player'].click();win.dispatchEvent(Object.assign(new Event('securitypolicyviolation'),{disposition:'enforce',effectiveDirective:'frame-src',blockedURI:'https://bandcamp.com/EmbeddedPlayer/'}));
+check('blocked frame returns to official fallback',()=>{assert.equal(player.childElementCount,0);assert.match(elements['player-status'].textContent,/ブロック/);});
+check('selection updates bookmark',()=>assert.equal(new URL(win.location.href).searchParams.get('recording'),'shelter'));
 console.log(`CULTURE_ROOM_HOST_CONTRACT_GO (${checks}/${checks}); browser, audio, network and visual QA remain separate`);

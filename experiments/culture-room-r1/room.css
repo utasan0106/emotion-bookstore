@@ -85,3 +85,8 @@ footer a { padding:10px 0; }
  footer { display:block; padding:22px; }
 }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; } }
+
+/* Work-first mobile order; retain the desktop venue beside the controls. */
+@media(min-width:761px){.listening{grid-column:2;grid-row:1}.place{grid-column:1;grid-row:1}}
+.intro{font-size:16px}.choices small,.privacy,.fallback,.status,.external,.note,details{font-size:14px}
+@media(max-width:760px){.choices strong,.choices small,.eyebrow{font-size:14px}.listening{padding:22px}.intro{font-size:16px}}

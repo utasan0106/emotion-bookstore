@@ -36,7 +36,7 @@
     status.textContent = message;
   }
 
-  choices.forEach((button) => button.addEventListener('click', () => {
+  function select(button) {
     const key = button.dataset.recording;
     if (!Object.hasOwn(recordings, key) || selected === key) return;
     stop('演奏を選びました。プレイヤーを開くと、その演奏を聴けます。');
@@ -47,7 +47,30 @@
     byId('recording-note').textContent = recording.note;
     byId('official-track').href = recording.href;
     choices.forEach((choice) => choice.setAttribute('aria-pressed', String(choice === button)));
+  }
+  choices.forEach(button => button.addEventListener('click', () => {
+    select(button);
+    if (window.location && window.history) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('recording', selected);
+      window.history.replaceState(null, '', url);
+    }
   }));
+  if (window.location) {
+    const key = new URL(window.location.href).searchParams.get('recording');
+    const choice = choices.find(button => button.dataset.recording === key);
+    if (choice) select(choice);
+  }
+  document.querySelectorAll('a[href]').forEach(link => link.addEventListener('click', () => {
+    if (player.childElementCount && !link.getAttribute('href').startsWith('#')) stop('プレイヤーを閉じました。');
+  }));
+  window.addEventListener('securitypolicyviolation', event => {
+    if (!player.childElementCount || event.disposition !== 'enforce') return;
+    if (!['frame-src', 'child-src', 'default-src'].includes(event.effectiveDirective)) return;
+    if (!/^https:\/\/bandcamp\.com(?:\/|$)/.test(event.blockedURI || '')) return;
+    stop('プレイヤーが配信設定でブロックされました。公式の曲ページで聴けます。');
+    byId('official-track').focus({preventScroll:true});
+  });
 
   loadButton.addEventListener('click', () => {
     if (player.childElementCount) return;
@@ -60,7 +83,7 @@
     player.replaceChildren(frame);
     consent.hidden = true;
     closeButton.hidden = false;
-    status.textContent = '▶ で再生。曲のあとにアルバムの再生が続く場合は、上の「閉じて停止」で終えられます。';
+    status.textContent = 'プレイヤーの表示を待っています。表示されたら、その中の ▶ で再生してください。白いままの場合は、下の公式の曲ページで聴けます。曲のあとにアルバムの再生が続く場合は「閉じて停止」で終えられます。';
     // Keep keyboard focus usable when the load button is hidden.
     closeButton.focus({ preventScroll: true });
   });
@@ -69,4 +92,6 @@
     loadButton.focus({ preventScroll: true });
   });
   window.addEventListener('pagehide', () => stop());
+  byId('recording-choices').hidden = false;
+  consent.hidden = false;
 })();

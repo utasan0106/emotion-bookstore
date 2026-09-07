@@ -56,8 +56,18 @@
     choices.forEach(button => button.setAttribute('aria-pressed', String(button.getAttribute('data-scene') === key)));
   }
 
-  choices.forEach(button => button.addEventListener('click', () => select(button.getAttribute('data-scene'))));
-  document.querySelectorAll('[data-scene-target]').forEach(link => link.addEventListener('click', () => select(link.getAttribute('data-scene-target'))));
+  function choose(key) {
+    select(key);
+    if (window.location && window.history) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('scene', selected);
+      window.history.replaceState(null, '', url);
+    }
+  }
+  if (window.location) select(new URL(window.location.href).searchParams.get('scene'));
+
+  choices.forEach(button => button.addEventListener('click', () => choose(button.getAttribute('data-scene'))));
+  document.querySelectorAll('[data-scene-target]').forEach(link => link.addEventListener('click', () => choose(link.getAttribute('data-scene-target'))));
 
   host.addEventListener('click', () => {
     if (!host.querySelector('iframe')) return;
@@ -74,5 +84,3 @@
   }));
   window.addEventListener('pagehide', () => stop());
 })();
-
-

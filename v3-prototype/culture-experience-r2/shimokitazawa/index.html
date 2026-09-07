@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; frame-src https://bandcamp.com; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>下北沢、同じ曲をふたつの演奏で。｜文化体験の試作</title>
+  <title>夕暮れのジャイロ｜ふたつの演奏</title>
   <link rel="stylesheet" href="./room.css">
   <script src="./room.js" defer></script>
 </head>
@@ -18,16 +18,12 @@
   </header>
   <main>
     <div class="room">
-      <figure class="place">
-        <img src="../../../assets/shimokitazawa-shelter.jpg" width="1400" height="1054" alt="下北沢SHELTERの看板と、地下へ続く入口" fetchpriority="high">
-        <div class="place-title"><span>この曲へ辿った街</span><strong>下北沢</strong><span>SHELTER</span></div>
-        <figcaption>入口の写真：2022年9月25日（出典の撮影日表記）。2007年の公演写真ではありません。<br><a href="https://commons.wikimedia.org/wiki/File:SHELTER.jpg" target="_blank" rel="noopener noreferrer">Syced / Wikimedia Commons</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">CC0</a></figcaption>
-      </figure>
+
       <section id="listening" class="listening" aria-labelledby="room-title">
-        <p class="eyebrow">街で鳴った音から、もうひとつの演奏へ。</p>
-        <h1 id="room-title">同じ曲を、<br>ふたつの演奏で。</h1>
+        <p class="eyebrow">Boris with Michio Kurihara / 栗原ミチオ</p>
+        <h1 id="room-title">夕暮れのジャイロ</h1>
         <p class="intro">下北沢SHELTERのライブから、栗原ミチオのソロ盤へ。「夕暮れのジャイロ」を聴き比べる。</p>
-        <div class="choices" role="group" aria-label="聴く演奏を選ぶ">
+        <div id="recording-choices" class="choices" hidden role="group" aria-label="聴く演奏を選ぶ">
           <button type="button" data-recording="shelter" aria-pressed="true" aria-controls="selection"><span class="letter">A</span><span><strong>SHELTERのライブ</strong><small>2007.02.04 · 2:30</small></span></button>
           <button type="button" data-recording="sunset" aria-pressed="false" aria-controls="selection"><span class="letter">B</span><span><strong>ソロ盤の演奏</strong><small>SUNSET NOTES · 2:21</small></span></button>
         </div>
@@ -37,8 +33,8 @@
           <p id="artist">Boris with Michio Kurihara</p>
           <p id="recording-note" class="note">共作アルバム『Rainbow』の発売記念公演から。</p>
           <div id="player-area">
-            <noscript><p>このページ内のプレイヤーにはJavaScriptが必要です。下の公式の曲ページで聴けます。</p></noscript>
-            <div id="consent">
+            <noscript><p>公式ページで<a href="https://boris.bandcamp.com/track/time-to-go-2">SHELTERのライブ</a>と<a href="https://pedalrecords.bandcamp.com/track/time-to-go">ソロ盤の演奏</a>を聴けます。</p><p>このページ内のプレイヤーにはJavaScriptが必要です。下の公式の曲ページで聴けます。</p></noscript>
+            <div id="consent" hidden>
               <button type="button" id="load-player" class="primary">Bandcampプレイヤーを開く <span aria-hidden="true">↗</span></button>
               <p class="privacy">開くとBandcampに接続し、IPアドレスなどの通信情報が送られ、Cookie等が使われる場合があります。再生はプレイヤーの ▶ から。<a href="https://bandcamp.com/privacy" target="_blank" rel="noopener noreferrer">提供元のプライバシー</a></p>
             </div>
@@ -60,14 +56,20 @@
             <li><a href="https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204" target="_blank" rel="noopener noreferrer">Boris公式Bandcamp：曲目・クレジット ↗</a></li>
             <li><a href="https://pedalrecords.bandcamp.com/album/sunset-notes" target="_blank" rel="noopener noreferrer">Pedal Records：『SUNSET NOTES』の曲目 ↗</a></li>
           </ul>
+          <a href="#listening">ふたつの演奏へ戻る ↑</a>
         </details>
       </section>
+      <figure class="place">
+        <img src="../../../assets/shimokitazawa-shelter.jpg" width="1400" height="1054" alt="下北沢SHELTERの看板と、地下へ続く入口" fetchpriority="high">
+        <div class="place-title"><span>この曲へ辿った街</span><strong>下北沢</strong><span>SHELTER</span></div>
+        <figcaption>入口の写真：2022年9月25日（出典の撮影日表記）。2007年の公演写真ではありません。<br><a href="https://commons.wikimedia.org/wiki/File:SHELTER.jpg" target="_blank" rel="noopener noreferrer">Syced / Wikimedia Commons</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">CC0</a></figcaption>
+      </figure>
     </div>
     <section class="return" aria-labelledby="return-title">
       <div><p class="eyebrow">この先は、街で。</p><h2 id="return-title">次は、ライブのある日に。</h2><p>この録音の会場、SHELTERの公演予定を公式サイトで確かめる。</p></div>
       <a class="exit" href="https://www.loft-prj.co.jp/schedule/shelter" target="_blank" rel="noopener noreferrer">SHELTERの公演情報へ <span aria-hidden="true">↗</span></a>
     </section>
-    <footer><p>今回のふたつは、ここまで。</p><a href="../../../shelf.html?shelf=shimokitazawa">下北沢の棚へ戻る →</a></footer>
+    <footer><p>今回のふたつは、ここまで。</p><a href="../../../shelf.html?shelf=shimokitazawa">下北沢の棚へ戻る →</a><a href="../index.html">作品を選び直す →</a></footer>
   </main>
 </body>
 </html>

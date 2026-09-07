@@ -30,7 +30,7 @@ class Element extends EventTarget {
   focus() { focus = this; }
   click() { const ancestors = []; for (let node = this; node; node = node.parent) ancestors.push(node); ancestors.forEach(n => n.dispatchEvent(new Event('click'))); }
 }
-function setup(withPublicLoader = true) {
+function setup(withPublicLoader = true, scene = 'film') {
   const document = new Element('document');
   document.readyState = 'complete';
   document.createElement = tag => new Element(tag);
@@ -52,13 +52,19 @@ function setup(withPublicLoader = true) {
   const returns = [...html.matchAll(/data-scene-target="([^"]+)"/g)].map(m => document.appendChild(new Element('a', {'data-scene-target':m[1]})));
   document.getElementById = id => elements[id];
   const window = new EventTarget();
-  const context = vm.createContext({document, window});
+  window.location={href:'https://example.test/?scene='+scene};
+  window.history={replaceState:(_,__,url)=>{window.location.href=String(url);}};
+  const context = vm.createContext({document, window, URL});
   if (withPublicLoader) vm.runInContext(fs.readFileSync(path.join(root, 'video-embed.js'), 'utf8'), context);
   vm.runInContext(fs.readFileSync(path.join(dir, 'screen.js'), 'utf8'), context);
   return {host, stop, status, exits, window, elements, choices, returns, button: () => host.querySelector('.v3-video-load'), iframe: () => host.querySelector('iframe')};
 }
 let count = 0;
 const check = (name, fn) => { fn(); count++; console.log('PASS ' + name); };
+const deep = setup(true, 'park');
+check('direct park URL selects park without playback',()=>{assert.equal(deep.host.getAttribute('data-video-id'),'80y5COiKdDw');assert.equal(deep.iframe(),null);});
+const invalid=setup(true,'invalid');
+check('invalid selection retains film',()=>assert.equal(invalid.host.getAttribute('data-video-id'),'pm7RBghFt0I'));
 const app = setup();
 check('initial media remains absent and load control is usable', () => { assert.equal(app.iframe(), null); assert.equal(app.button().hidden, false); assert.equal(app.stop.hidden, true); });
 app.button().click();
