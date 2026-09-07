@@ -620,8 +620,8 @@
     ending: MORISAKI_ENDING
   };
 
-  /* 吉祥寺 R1: all factual edges are directly supported by the distributor's
-     publication. The pond photo is a 2024 place photograph, not a film still. */
+  /* 吉祥寺: role credits and first-person production accounts stay attributed.
+     The pond photo is a 2024 place photograph, not a film still. */
   var PARKS = {
     threadId: 'kichijoji-parks',
     eyebrow: '吉祥寺',
@@ -647,7 +647,11 @@
       { id: 'work:bentensama', type: 'Music', label: '弁天様はスピリチュア' }
     ],
     facts: [
-      { id: 'fact:parks-director', claim: '『PARKS パークス』の監督・脚本・編集は、瀬田なつきです。', supportMode: ['direct_statement'], verificationState: 'single_source', sourceIds: ['src:parks-ponycanyon'] }
+      { id: 'fact:parks-director', claim: '『PARKS パークス』の監督・脚本・編集は、瀬田なつきです。', supportMode: ['direct_statement'], verificationState: 'single_source', sourceIds: ['src:parks-ponycanyon'] },
+      { id: 'fact:parks-invitation', claim: '瀬田監督によると、音楽を作る物語を考えた際、樋口泰人プロデューサーが井の頭公園に縁のあるトクマルシューゴを紹介しました。監督も以前から彼の音楽を聴いていました。トクマル自身は、10代から公園でバンドの練習をしていたと話しています。', supportMode: ['direct_statement'], verificationState: 'single_source', sourceIds: ['src:parks-mikiki'] },
+      { id: 'fact:parks-song-origin', claim: 'やくしまるえつこによると、曲の出発点は解体前のバウスシアターでのセッションでした。合間に歩いた井の頭公園の印象も重ねたといいます。この時点では映画の話はなく、後に吉祥寺をテーマにした曲を求められ、この曲を仕上げていきました。', supportMode: ['direct_statement'], verificationState: 'single_source', sourceIds: ['src:parks-cinra'] },
+      { id: 'fact:parks-silent-film', claim: '相対性理論は2012年、バウスシアターでメリエスの無声映画『月世界旅行』を上映しながら演奏しています。やくしまるは、この経験が、映像を流しながら曲を作る試みにつながったと語っています。', supportMode: ['direct_statement'], verificationState: 'single_source', sourceIds: ['src:parks-cinra'] },
+      { id: 'fact:parks-park-broadcast', claim: '2017年の公式案内では、「弁天様はスピリチュア」は井の頭公園100周年の記念放送でも流されていました。映画の制作開始時から、瀬田監督が聴いていた曲でもあります。', supportMode: ['direct_statement'], verificationState: 'single_source', sourceIds: ['src:parks-mirai'] }
     ],
     relations: [
       {
@@ -660,9 +664,9 @@
       {
         id: 'rel:parks-music', from: 'person:tokumaru', to: 'work:parks',
         relationType: 'connected_with', displayVerb: '音楽監修として参加する',
-        claim: '音楽監修のトクマルシューゴは、脚本段階から映画に参加しています。',
+        claim: '瀬田監督は、登場人物が音楽を作る物語だからこそ、脚本の段階からトクマルシューゴと音楽の方向を考えたと説明しています。文章だけでは曖昧だった演奏曲のイメージが、彼の提案で具体的になりました。',
         supportMode: ['direct_statement'], verificationState: 'single_source',
-        sourceIds: ['src:parks-ponycanyon'], spatial: { resolution: 'not_applicable' }
+        sourceIds: ['src:parks-mikiki'], spatial: { resolution: 'not_applicable' }
       },
       {
         id: 'rel:parks-ending', from: 'work:parks', to: 'work:bentensama',
@@ -673,24 +677,32 @@
       }
     ],
     sources: [
-      { id: 'src:parks-ponycanyon', kind: 'official', kindLabel: '公式（販売元）', name: 'ポニーキャニオン『PARKS パークス』作品紹介・スタッフ', url: 'https://movie-product.ponycanyon.co.jp/item010.html' }
+      { id: 'src:parks-ponycanyon', kind: 'official', kindLabel: '公式（販売元）', name: 'ポニーキャニオン『PARKS パークス』作品紹介・スタッフ', url: 'https://movie-product.ponycanyon.co.jp/item010.html' },
+      { id: 'src:parks-mikiki', kind: 'interview', kindLabel: '制作当事者インタビュー', name: 'Mikiki：瀬田なつき × トクマルシューゴ（2017年4月27日）', url: 'https://mikiki.tokyo.jp/articles/-/13961' },
+      { id: 'src:parks-cinra', kind: 'interview', kindLabel: '制作当事者インタビュー（作品協賛記事）', name: 'CINRA：やくしまるえつこインタビュー（2017年5月9日）', url: 'https://www.cinra.net/article/interview-201705-yakushimaruetsuko' },
+      { id: 'src:parks-mirai', kind: 'official', kindLabel: '公式（アーティスト）', name: 'みらいレコーズ：映画と公園放送の案内（2017年1月31日）', url: 'https://mirairecords.com/stsr/1472' }
     ],
     scenes: [
       { id: 'p0', title: '映画館から、映画へ', figure: true,
         lead: '映画館が閉じたあとに、新しい作品が生まれることもある。',
         relationIds: ['rel:parks-origin'] },
-      { id: 'p1', title: '音楽は、脚本の段階から',
-        factIds: ['fact:parks-director'], relationIds: ['rel:parks-music'],
-        editorialReading: { text: '音楽が早くから制作に加わると、映画の見え方はどう変わるだろう。', refs: ['rel:parks-music'] } },
-      { id: 'p2', title: '映画から、一曲へ', relationIds: ['rel:parks-ending'],
-        editorialReading: { text: '映画を観たあと、その一曲をもう一度聴くと、何が残るだろう。', refs: ['rel:parks-ending'] } },
-      { id: 'p3', title: '作品へ', kind: 'reality', lead: '映画が気になったら、販売元の作品情報へ。' }
+      { id: 'p1', title: '公園で育った音楽家と、物語を作る',
+        factIds: ['fact:parks-director', 'fact:parks-invitation'], relationIds: ['rel:parks-music'] },
+      { id: 'p2', title: '映画より先に、曲が育っていた', relationIds: ['rel:parks-ending'],
+        factIds: ['fact:parks-silent-film', 'fact:parks-song-origin'],
+        editorialReading: { text: '映画を観たあとにこの曲を聴くと、スクリーンの物語だけでなく、音が生まれた映画館や公園にも耳が向くかもしれません。', refs: ['rel:parks-ending'] } },
+      { id: 'p3', title: '音楽から、もう一度公園へ', kind: 'reality',
+        factIds: ['fact:parks-park-broadcast'],
+        lead: '映画館で育った曲は、映画だけでなく、公園の放送にも使われました。',
+        close: 'ここで紹介した放送は2017年のものです。いま訪れる際は、公園の公式案内を確認してください。' }
     ],
     realityDestinations: [
       { id: 'dest:parks-disc', label: '『PARKS パークス』の作品・ディスク情報を見る',
         url: 'https://movie-product.ponycanyon.co.jp/item010.html',
         why: 'ここまで辿った映画の、販売元による作品情報です。',
-        relationIds: ['rel:parks-origin', 'rel:parks-music', 'rel:parks-ending'] }
+        relationIds: ['rel:parks-origin', 'rel:parks-music', 'rel:parks-ending'] },
+      { id: 'dest:parks-album', label: '曲を収めた『天声ジングル』の公式情報を見る', url: 'https://mirairecords.com/stsr/2166', why: 'エンディング曲を、アルバムの中でも辿れます。', relationIds: ['rel:parks-ending'] },
+      { id: 'dest:parks-park', label: '井の頭恩賜公園の公式案内を見る', url: 'https://www.kensetsu.metro.tokyo.lg.jp/jimusho/seibuk/inokashira', why: '映画の企画と音楽の背景にある、公園への入口です。', relationIds: ['rel:parks-origin'] }
     ],
     ending: { line: 'このスレッドは、ここまでです。', exitLabel: '吉祥寺の棚へ戻る', exitHref: './shelf.html?shelf=kichijoji' }
   };

@@ -81,7 +81,11 @@ const server = http.createServer((req, res) => {
       check(m.caption.includes('2024年4月') && m.caption.includes('Htanaungg') && m.caption.includes('CC BY-SA 4.0'), 'photo attribution ' + width);
       for (const detail of await page.locator('.th-evidence').all()) {
         await detail.locator('summary').click();
-        check(await detail.locator('.th-source-link').getAttribute('href') === t.sources[0].url, 'source drawer opens to exact source');
+        const id = await detail.evaluate(el => { const card = el.closest('[data-fact-id], [data-relation-id]'); return card.dataset.factId || card.dataset.relationId; });
+        const claim = t.facts.concat(t.relations).find(item => item.id === id);
+        const expected = claim.sourceIds.map(id => t.sources.find(source => source.id === id).url);
+        const actual = await detail.locator('.th-source-link').evaluateAll(links => links.map(link => link.getAttribute('href')));
+        check(JSON.stringify(actual) === JSON.stringify(expected), 'source drawer matches its claim: ' + id);
       }
       check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'open evidence overflow zero ' + width);
       if (out) await page.screenshot({ path: path.join(out, 'parks-evidence-' + width + '.png'), fullPage: true });
@@ -91,7 +95,8 @@ const server = http.createServer((req, res) => {
       await page.locator('.th-figure a').click();
       check(await page.locator('#inokashira-pond').count() === 1, 'credit anchor resolves ' + width);
       await page.goBack();
-      check(await page.locator('.th-destination-link').getAttribute('href') === t.realityDestinations[0].url, 'exact official exit ' + width);
+      check(JSON.stringify(await page.locator('.th-destination-link').evaluateAll(links => links.map(link => link.getAttribute('href')))) === JSON.stringify(t.realityDestinations.map(d => d.url)), 'exact three official exits ' + width);
+      check((await page.locator('body').innerText()).includes('ここで紹介した放送は2017年のものです。'), 'broadcast is explicitly historical ' + width);
       await page.locator('.th-exit').click();
       await page.waitForSelector('.object-card');
       check(page.url().endsWith('shelf.html?shelf=kichijoji'), 'returns to originating Shelf ' + width);
