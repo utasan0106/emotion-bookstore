@@ -44,10 +44,10 @@ function setup(withPublicLoader = true, scene = 'film') {
   frame.appendChild(new Element('button', {class: 'v3-video-load', hidden: ''}));
   const stop = document.appendChild(new Element('button', {hidden: ''}));
   const status = document.appendChild(new Element('p'));
-  const exits = [...html.matchAll(/<a data-leave href="([^"]+)"/g)].map(m => document.appendChild(new Element('a', {'data-leave': '', href: m[1]})));
+  const exits = [...html.matchAll(/<a\b[^>]*\bdata-leave\b[^>]*\bhref="([^"]+)"/g)].map(m => document.appendChild(new Element('a', {'data-leave': '', href: m[1]})));
   const elements = {trailer: host, 'stop-video': stop, 'video-status': status};
   for (const id of ['scene-choices', 'scene-title', 'scene-note']) elements[id] = document.appendChild(new Element('div', {hidden: ''}));
-  elements['official-video'] = exits[0];
+  elements['official-video'] = exits.find(link => link.getAttribute('href') === 'https://www.youtube.com/watch?v=pm7RBghFt0I');
   const choices = [...html.matchAll(/data-scene="([^"]+)" aria-pressed="([^"]+)"/g)].map(m => elements['scene-choices'].appendChild(new Element('button', {'data-scene':m[1], 'aria-pressed':m[2]})));
   const returns = [...html.matchAll(/data-scene-target="([^"]+)"/g)].map(m => document.appendChild(new Element('a', {'data-scene-target':m[1]})));
   document.getElementById = id => elements[id];
@@ -80,6 +80,9 @@ check('explicit stop detaches iframe and restores a focused load control', () =>
 app.button().click();
 check('play after stop reuses loader on a fresh frame', () => { assert.ok(app.iframe()); assert.notEqual(app.iframe(), first); });
 app.exits[0].click();
+check('choosing another work removes background player', () => assert.equal(app.iframe(), null));
+app.button().click();
+app.elements['official-video'].click();
 check('leaving for official page removes background player', () => assert.equal(app.iframe(), null));
 app.button().click();
 app.window.dispatchEvent(new Event('pagehide'));
@@ -124,6 +127,29 @@ check('park background link and pagehide also restore the same bounded scene', (
   assert.equal(app.button().hidden, false);
 });
 const unavailable = setup(false);
+const blocked = setup(true, 'park');
+const violation = (overrides = {}) => Object.assign(new Event('securitypolicyviolation'), {
+  disposition: 'enforce', effectiveDirective: 'frame-src',
+  blockedURI: 'https://www.youtube-nocookie.com/embed/80y5COiKdDw', ...overrides
+});
+blocked.button().click();
+const unaffected = blocked.iframe();
+for (const overrides of [{disposition:'report'}, {effectiveDirective:'img-src'}, {blockedURI:'https://example.test/'}, {blockedURI:'https://www.youtube-nocookie.com.evil.test/'}]) {
+  blocked.window.dispatchEvent(violation(overrides));
+}
+check('unrelated or report-only CSP events do not interrupt media', () => assert.equal(blocked.iframe(), unaffected));
+blocked.window.dispatchEvent(violation());
+check('blocked park frame is removed and its own official exit gets focus', () => {
+  assert.equal(blocked.iframe(), null);
+  assert.equal(unaffected.isConnected, false);
+  assert.equal(blocked.stop.hidden, true);
+  assert.equal(focus, blocked.elements['official-video']);
+  assert.equal(blocked.elements['official-video'].href, 'https://www.youtube.com/watch?v=80y5COiKdDw');
+  assert.match(blocked.status.textContent, /表示できませんでした/);
+  assert.equal(blocked.button().hidden, false);
+});
+blocked.button().click();
+check('retry after a blocked frame preserves the selected material', () => assert.match(blocked.iframe().src, /80y5COiKdDw/));
 check('missing shared loader hides inert scene choices and keeps fallback', () => { assert.equal(unavailable.elements['scene-choices'].hidden, true); assert.equal(unavailable.button().hidden, true); assert.equal(unavailable.iframe(), null); assert.ok(html.includes('日活公式YouTubeで観る')); });
 check('no initial external embeds, hotlinked thumbnails, analytics or preconnect', () => assert.doesNotMatch(html, /<iframe|<img[^>]+src="https?:|preconnect|preload|analytics-v3|googletagmanager/));
 check('exactly three voluntary context choices without tracking or completion gates', () => { assert.equal((html.match(/<details>/g) || []).length, 3); assert.doesNotMatch(html, /type="(?:text|email)"|data-recording|progressbar/); });

@@ -14,7 +14,7 @@
   <a class="skip" href="#listening">音楽を選ぶ</a>
   <header class="masthead">
     <a href="../../../index.html">みんなの感情書店</a>
-    <span>文化体験の試作 · 01</span>
+    <a class="choose-work" href="../index.html">作品を選び直す</a>
   </header>
   <main>
     <div class="room">
@@ -22,10 +22,10 @@
       <section id="listening" class="listening" aria-labelledby="room-title">
         <p class="eyebrow">Boris with Michio Kurihara / 栗原ミチオ</p>
         <h1 id="room-title">夕暮れのジャイロ</h1>
-        <p class="intro">下北沢SHELTERのライブから、栗原ミチオのソロ盤へ。「夕暮れのジャイロ」を聴き比べる。</p>
+        <p class="intro">同じ曲を、下北沢SHELTERのライブと栗原ミチオのソロ盤で聴き比べる。</p>
         <div id="recording-choices" class="choices" hidden role="group" aria-label="聴く演奏を選ぶ">
-          <button type="button" data-recording="shelter" aria-pressed="true" aria-controls="selection"><span class="letter">A</span><span><strong>SHELTERのライブ</strong><small>2007.02.04 · 2:30</small></span></button>
-          <button type="button" data-recording="sunset" aria-pressed="false" aria-controls="selection"><span class="letter">B</span><span><strong>ソロ盤の演奏</strong><small>SUNSET NOTES · 2:21</small></span></button>
+          <button type="button" data-recording="shelter" aria-pressed="true" aria-controls="selection"><span class="letter">A</span><span><strong>SHELTERのライブを選ぶ</strong><small>2007.02.04 · 2:30</small></span></button>
+          <button type="button" data-recording="sunset" aria-pressed="false" aria-controls="selection"><span class="letter">B</span><span><strong>ソロ盤の演奏を選ぶ</strong><small>SUNSET NOTES · 2:21</small></span></button>
         </div>
         <div id="selection" class="selection">
           <p id="recording-kind" class="eyebrow">A / 2007年2月4日、下北沢SHELTERで録音</p>
@@ -35,7 +35,8 @@
           <div id="player-area">
             <noscript><p>公式ページで<a href="https://boris.bandcamp.com/track/time-to-go-2">SHELTERのライブ</a>と<a href="https://pedalrecords.bandcamp.com/track/time-to-go">ソロ盤の演奏</a>を聴けます。</p><p>このページ内のプレイヤーにはJavaScriptが必要です。下の公式の曲ページで聴けます。</p></noscript>
             <div id="consent" hidden>
-              <button type="button" id="load-player" class="primary">Bandcampプレイヤーを開く <span aria-hidden="true">↗</span></button>
+              <p class="play-guide">このページ内で開きます。中の ▶ を押すと音が出ます。演奏を切り替えると、今の再生は止まります。</p>
+              <button type="button" id="load-player" class="primary">この演奏のプレイヤーを開く <span aria-hidden="true">▶</span></button>
               <p class="privacy">開くとBandcampに接続し、IPアドレスなどの通信情報が送られ、Cookie等が使われる場合があります。再生はプレイヤーの ▶ から。<a href="https://bandcamp.com/privacy" target="_blank" rel="noopener noreferrer">提供元のプライバシー</a></p>
             </div>
             <div id="player"></div>
@@ -69,7 +70,7 @@
       <div><p class="eyebrow">この先は、街で。</p><h2 id="return-title">次は、ライブのある日に。</h2><p>この録音の会場、SHELTERの公演予定を公式サイトで確かめる。</p></div>
       <a class="exit" href="https://www.loft-prj.co.jp/schedule/shelter" target="_blank" rel="noopener noreferrer">SHELTERの公演情報へ <span aria-hidden="true">↗</span></a>
     </section>
-    <footer><p>今回のふたつは、ここまで。</p><a href="../../../shelf.html?shelf=shimokitazawa">下北沢の棚へ戻る →</a><a href="../index.html">作品を選び直す →</a></footer>
+    <footer><p>今回のふたつは、ここまで。</p><a href="../../../shelf.html?shelf=shimokitazawa">下北沢の街案内へ →</a></footer>
   </main>
 </body>
 </html>

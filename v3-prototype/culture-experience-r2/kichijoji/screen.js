@@ -82,5 +82,12 @@
   document.querySelectorAll('[data-leave]').forEach(link => link.addEventListener('click', () => {
     if (host.querySelector('iframe')) stop('プレイヤーを閉じました。');
   }));
+  window.addEventListener('securitypolicyviolation', event => {
+    if (!host.querySelector('iframe') || event.disposition !== 'enforce') return;
+    if (!['frame-src', 'child-src', 'default-src'].includes(event.effectiveDirective)) return;
+    if (!/^https:\/\/www\.youtube-nocookie\.com(?:\/|$)/.test(event.blockedURI || '')) return;
+    stop('このページで動画を表示できませんでした。下の公式YouTubeで観られます。');
+    document.getElementById('official-video').focus({ preventScroll: true });
+  });
   window.addEventListener('pagehide', () => stop());
 })();
