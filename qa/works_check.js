@@ -523,10 +523,11 @@ morisakiScenes(film, 'film');
   for (const w of ['次の3つ', 'おすすめ', 'ランキング', '人気', 'いいね', 'フォロー', 'シェア', '限定', '会員', 'アプリ', 'クイズ', '診断', '気分', '名盤']) check(!contentCode.includes(w), `thread_content.js must not contain: ${w}`);
 }
 
-/* ---- 9. KOENJI object は frozen source と「modes / cue を外しただけ」で同一（git があるときだけ観測） ----
-   FOUNDER PREVIEW FIX C: location mode と cue UX は Founder 決定で削除。facts / nodes / relations /
-   sources / Reality Return / status notes / ending / image / header / guidance / S1 / S3 / S5 は
-   frozen source 2389b0ec と deep-equal。S0 / S4 は cue を除いて同一、S2 は AFTER cue beat を除いて同一。 */
+/* ---- 9. KOENJI: frozen source + exact approved Founder overlays ----
+   2026-09-06: route / labels / video / cue removal.
+   2026-09-07: Atlas demotion (Beta0 closure), then reading copy 5ca8c4e.
+   Keep the historical source and apply only explicit approved changes; do not
+   generate the expected object from the current candidate. */
 {
   let frozenJs = null;
   try { frozenJs = require('child_process').execFileSync('git', ['-C', root, 'show', '2389b0ec2ddf90726baaaed56b98e5d17966039d:thread_content.js'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }); } catch (e) { frozenJs = null; }
@@ -549,10 +550,21 @@ morisakiScenes(film, 'film');
     const NAMES = { 'src:official-history': '主催団体 公式サイト（歴史資料）', 'src:suginami-gaku': 'すぎなみ学倶楽部（高円寺の踊り）', 'src:official-about': '主催団体 公式サイト（団体について）', 'src:official-join': '主催団体 公式サイト（参加案内）', 'src:official-archive': '主催団体 公式サイト（アーカイブ）', 'src:official-anniversary': '主催団体 公式サイト（周年アーカイブ）', 'src:official-plus': '主催団体 公式サイト（plus+）', 'src:official-home': '主催団体 公式サイト' };
     EXP.sources = EXP.sources.map((x) => (NAMES[x.id] ? { ...x, name: NAMES[x.id] } : x));
     EXP.sources.push({ id: 'src:official-video', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体の公式映像', url: YT });
-    EXP.spatialEntry = { href: './atlas/', label: '街を立体で辿る（β）', note: 'Project PLATEAUの3D都市モデル（杉並区 2025年度）から取り出した、現在の街の形の上で、この関係をもう一度辿ります。' };
+    delete EXP.spatialEntry; // Founder Beta0 closure: demote Atlas from the journey.
+    EXP.guidance = ['約15分']; // Founder copy fix 5ca8c4e.
+    EXP.realityDestinations.find((d) => d.id === 'dest:pal-street').note = '商店街の公式サイトで、通りの案内を確認できます。';
     EXP.realityDestinations.push({ id: 'dest:official-video', label: '最後に、現在の公式映像を見る', url: YT, videoId: 'dt33RGSRuo0', videoTitle: '主催団体の公式映像', watchNote: '約15分で観終わります。', why: 'ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。', note: '2025年の催しを伝える、主催団体の公式映像です。', sourceIds: ['src:official-video'] });
     delete EXP.modes;
-    EXP.scenes = EXP.scenes.map((sc) => { const c = JSON.parse(J(sc)); delete c.cue; if (c.beats) c.beats = c.beats.filter((b) => b.kind !== 'cue'); if (c.editorialReading) c.editorialReading.text = c.editorialReading.text.replace('——これは編集部の読みです。', ''); return c; });
+    const approvedScene = (sc) => {
+      const c = JSON.parse(J(sc));
+      delete c.cue;
+      if (c.beats) c.beats = c.beats.filter((b) => b.kind !== 'cue');
+      if (c.editorialReading) c.editorialReading.text = c.editorialReading.text.replace('——これは編集部の読みです。', '');
+      if (c.id === 's1') delete c.close;
+      if (c.id === 's3') c.editorialReading.text = '受け取ったものが、街の中で別の形になっていく。';
+      return c;
+    };
+    EXP.scenes = EXP.scenes.map(approvedScene);
     for (const k of ['threadId', 'eyebrow', 'title', 'documentTitle', 'subjectLabel', 'editor', 'lens', 'checkedAt', 'checkedLabel', 'duration', 'guidance', 'image', 'nodes', 'facts', 'relations', 'sources', 'presentReturn', 'realityDestinations', 'ending', 'scenes']) {
       check(J(koenji[k]) === J(EXP[k]), `KOENJI.${k} must equal the frozen source with only the exact Founder overrides applied`);
     }
@@ -561,12 +573,10 @@ morisakiScenes(film, 'film');
     check(vSrc.id === 'src:official-video' && vSrc.kind === 'official' && vSrc.url === YT, 'appended source is the official video with the approved URL');
     check(vDest.id === 'dest:official-video' && vDest.url === YT && vDest.label === '最後に、現在の公式映像を見る' && J(vDest.sourceIds) === '["src:official-video"]' && !('relationIds' in vDest), 'appended destination is the approved official video (label / URL / source only)');
     check(!('modes' in koenji) && 'modes' in OLD, 'KOENJI modes removed (was present in the frozen source)');
-    /* 凍結 scene との差は cue / cue beat の削除と、読み本文の自己ラベル「——これは編集部の読みです。」の削除（Founder decision v2）だけ */
-    const strip = (s) => { const c = JSON.parse(J(s)); delete c.cue; if (c.beats) c.beats = c.beats.filter((b) => b.kind !== 'cue'); if (c.editorialReading) c.editorialReading.text = c.editorialReading.text.replace('——これは編集部の読みです。', ''); return c; };
-    check(koenji.scenes.length === 6 && OLD.scenes.length === 6 && koenji.scenes.every((s, i) => J(s) === J(strip(OLD.scenes[i]))), 'KOENJI scenes must equal the frozen scenes with only cue / cue beats removed');
+    check(koenji.scenes.length === 6 && OLD.scenes.length === 6 && koenji.scenes.every((s, i) => J(s) === J(approvedScene(OLD.scenes[i]))), 'KOENJI scenes match only approved cue and reading-copy changes');
     check(!koenji.scenes.some((s) => s.cue || (s.beats || []).some((b) => b.kind === 'cue' || b.cue)), 'KOENJI carries no cue anywhere');
     check((koenji.scenes.find((s) => s.id === 's2').beats || []).map((b) => b.id).join('|') === 'before|encounter|question|evidence|reveal', 'KOENJI S2 keeps before / encounter / question / evidence / reveal');
-    check(!!koenji.scenes.find((s) => s.id === 's4').editorialReading && J(koenji.scenes.find((s) => s.id === 's4').editorialReading) === J(strip(OLD.scenes.find((s) => s.id === 's4')).editorialReading) && !koenji.scenes.find((s) => s.id === 's4').editorialReading.text.includes('編集部の読み'), 'KOENJI S4 editorial reading unchanged except the removed self-label');
+    check(!!koenji.scenes.find((s) => s.id === 's4').editorialReading && J(koenji.scenes.find((s) => s.id === 's4').editorialReading) === J(approvedScene(OLD.scenes.find((s) => s.id === 's4')).editorialReading) && !koenji.scenes.find((s) => s.id === 's4').editorialReading.text.includes('編集部の読み'), 'KOENJI S4 editorial reading unchanged except the removed self-label');
     check(contentJs.slice(0, contentJs.indexOf('  var KOENJI = {')) === frozenJs.slice(0, frozenJs.indexOf('  var KOENJI = {')), 'thread_content.js header must be unchanged');
   }
 }
