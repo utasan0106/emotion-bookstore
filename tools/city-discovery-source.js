@@ -1,0 +1,82 @@
+// Editorial input, never fetched by the browser. See docs/city-discovery/README.md.
+'use strict';
+const items = [];
+const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({
+  city, kind, id, title, creator, hook, relation, relationNote, url, action,
+  sources: [...new Set([...sources, ...(url.startsWith('https:') ? [url] : [])])],
+  videoId, checkedAt: '2026-09-08', playbackChecked: false
+});
+const video = (city, id, title, creator, hook, relation, note, videoId, sources = []) => add(city, 'video', id, title, creator, hook, relation, note, 'https://www.youtube.com/watch?v=' + videoId, 'YouTubeでこの映像を見る', sources, videoId);
+const book = (city, id, title, creator, hook, relation, note, url, sources = []) => add(city, 'book', id, title, creator, hook, relation, note, url, '出版社で本の紹介・読書案内を見る', sources);
+const film = (city, id, title, creator, hook, relation, note, url, action, sources = []) => add(city, 'film', id, title, creator, hook, relation, note, url, action, sources);
+const koenjiFestival = 'https://za-koenji.jp/detail/?id=139';
+const mizoguchi = 'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-08-15_mizoguchi-kenji-70th.html';
+const bausBook = 'https://books.bunshun.jp/ud/book/num/9784160089457';
+const tefu = 'https://senrogai.com/event/by-tefu-lounge-bonus-track-members/';
+
+video('koenji', 'awa-2025', '高円寺の踊り', '東京高円寺阿波おどり振興協会 / 2025', '踊り手と観客の距離から、お祭りの熱気に触れる。', '街の祭りの映像', '高円寺の阿波おどりを紹介する主催団体の映像。2025年の記録です。現在開催中の配信ではありません。', 'dt33RGSRuo0');
+video('koenji', 'tenguren', '天狗連「日本の四季」', '天狗連 / PR映像', '阿波おどりの動きと、映像表現の組み合わせを楽しむ。', '街の踊り手', '高円寺の天狗連によるPR映像。街頭公演の生中継ではありません。', '8V9iHAM82bc', ['https://tenguren.com/gallery']);
+video('koenji', 'awa-history', '高円寺阿波おどり ～60年の歩み～', '杉並区 / 記録映像', 'いまの踊りを観たあと、その歩みを映像で遡る。', '祭りの来歴', '高円寺阿波おどりの60年を振り返る杉並区の記録。現在の開催日程は扱いません。', 'cFAtkUlajUI');
+video('koenji', 'pal-street', 'JOIN THE pal｜高円寺の一日', '高円寺パル商店街振興組合 / PR映像', '店先、古着、踊り。ひとつの商店街を映像で歩く。', '街を舞台にした映像', '高円寺パル商店街のプロモーション映像。実在の店舗と、物語仕立ての演出で構成されています。', 'ljxbhH_n9ak', ['https://www.value-press.com/pressrelease/352818']);
+video('koenji', 'street-food', '高円寺のクレープと餃子を巡る', 'TabiEats / 街歩き・英語', '食べ歩く人の目線から、店先の空気を感じる。', '街の取材映像', '高円寺を巡る「Street Food in Tokyo | Best Crepes & Dumplings In Koenji」。映像内の価格・営業状況は撮影当時の情報です。', 'JkxNRpc7NJU');
+book('koenji', 'junjo', '高円寺純情商店街', 'ねじめ正一', '店を営む家族の日常から、商店街の人間模様へ。', '物語の舞台', '高円寺の商店街を舞台にした小説です。', 'https://www.shinchosha.co.jp/book/102112/');
+book('koenji', 'jirokichi', '次郎吉 to JIROKICHI', 'Live Music JIROKICHI 編', 'ステージの音を支えてきた人たちの、50年の記録。', '会場の記録', '高円寺のライブハウスJIROKICHIの50年を扱う本。インタビューや公演の記録から会場の来歴を辿れます。', 'https://www.ele-king.net/books/012100/');
+book('koenji', 'cafe-junjo', '高円寺かふぇ純情の事情', '石原ひな子', '喫茶店に持ち込まれる悩みから、人のつながりを覗く。', '物語の舞台', '高円寺の商店街を舞台にした喫茶店の物語。架空の人物・出来事を描く小説です。', 'https://www.kadokawa.co.jp/product/321507000438/');
+book('koenji', 'shiroku-somaru', '君のいない町が白く染まる', '安倍雄太郎', '引っ越した街で始まる恋を、一冊の物語として。', '物語の舞台', '主人公が高円寺へ引っ越すところから始まる小説です。', 'https://www.shogakukan.co.jp/books/09406495');
+book('koenji', '1q84', '1Q84', '村上春樹', 'いつもの街が、別の世界の入口に見えてくる。', '物語に登場する街', '天吾が月を眺める高円寺の公園が登場します。新潮社の特集は「舞台かもしれない場所」を巡るもので、特定の公園を公式のモデルと断定していません。', 'https://www.shinchosha.co.jp/harukimurakami/review/100163-e.html');
+film('koenji', 'monterey-pop', 'MONTEREY POP モンタレー・ポップ', '音楽ドキュメンタリー', '1967年の音楽祭で生まれた、一度きりの演奏へ。', '高円寺の映画祭で上映', '2026年2月の座・高円寺ドキュメンタリーフェスティバルで上映。撮影地は高円寺ではなく、米国のモンタレーです。', 'https://www.sonymusic.co.jp/artist/jimihendrix/info/559938', '音楽レーベルの映画・予告案内を見る', [koenjiFestival]);
+film('koenji', 'unnameable-dance', '名付けようのない踊り', '犬童一心 監督 / 田中泯', '踊る身体と、その場に流れる時間を見つめる。', '高円寺の映画祭で上映', '2026年2月の座・高円寺ドキュメンタリーフェスティバルの上映作品。田中泯の踊りを辿る映画です。', 'https://happinet-phantom.com/unnameable-dance/', '映画公式サイトで映像・作品案内を見る', [koenjiFestival]);
+film('koenji', 'ramen-heads', 'ラーメンヘッズ', 'ドキュメンタリー', '一杯に向き合う人の仕事を、厨房の側から観る。', '高円寺の映画祭で上映', '2026年2月の座・高円寺ドキュメンタリーフェスティバルで上映。高円寺のラーメン店を扱った映画という意味ではありません。', 'https://www.ramenheads.com/', '映画公式サイトで作品に触れる', [koenjiFestival]);
+film('koenji', 'rokkoku-kitchen', 'ロッコク・キッチン', '川内有緒・三好大輔', '福島の食卓から、暮らす人の声に出会う。', '高円寺の映画祭で上映', '2026年2月の座・高円寺ドキュメンタリーフェスティバルの上映作品。ここから福島の暮らしを映した作品へ広がります。', 'https://rokkokukitchen.com/', '映画公式サイトで予告・作品案内を見る', [koenjiFestival]);
+film('koenji', 'shogakko', '小学校～それは小さな社会～', '山崎エマ 監督', '子どもたちの学校生活から、小さな社会を見つめる。', '高円寺の映画祭で上映', '2026年2月の座・高円寺ドキュメンタリーフェスティバルで上映。映画祭の選定をきっかけに紹介しています。', 'https://shogakko-film.com/', '映画公式サイトで予告・作品案内を見る', [koenjiFestival]);
+
+video('shimokitazawa', 'shelter-news', 'ニッポンのライブハウス：下北沢SHELTER', 'SPACE SHOWER NEWS', '地下のライブハウスを、音楽メディアの取材から知る。', '会場の取材映像', '下北沢SHELTERを取り上げたSPACE SHOWER NEWSの映像。別ページの2007年ライブ音源とは異なる取材映像です。', 'cyJYxL20Z3A');
+video('shimokitazawa', 'kitazawa-guide', 'ようこそ世田谷へ！北沢地区を紹介します', '世田谷区', '暮らす人に向けた案内から、街の身近な場所へ。', '地区の紹介映像', '世田谷区の北沢地区紹介。下北沢駅周辺を含む地区の見どころを扱います。', 'WkKHB5toNIg', ['https://www.city.setagaya.lg.jp/01048/8512.html']);
+video('shimokitazawa', 'tefu-1500', '下北沢で仕事もする人たち｜15:00', '下北線路街 / Web CM', '午後の下北沢を舞台にした、短い映像から。', '街を舞台にしたWeb CM', '下北線路街の企画で制作された(tefu) lounge・BONUS TRACKのWeb CMです。取材記録ではなく演出のある作品です。', '5riinr6xpWo', [tefu]);
+video('shimokitazawa', 'tefu-1930', '下北沢で仕事もする人たち｜19:30', '下北線路街 / Web CM', '同じ街の、夜の始まりへ視点を移す。', '街を舞台にしたWeb CM', '下北線路街の企画映像。同シリーズの19:30編で、夜の下北沢を舞台にしています。', 'WwCby-7FY-U', [tefu]);
+video('shimokitazawa', 'tefu-2200', '下北沢で仕事もする人たち｜22:00', '下北線路街 / Web CM', '一日の終わりにも、街に続いている時間を感じる。', '街を舞台にしたWeb CM', '下北線路街の企画映像。同シリーズの22:00編です。', 'i-YqgXKEVjU', [tefu]);
+book('shimokitazawa', 'lady-jane', '下北沢祝祭行 レディ・ジェーンは夜の扉', '大木雄高', '店に集まった人たちの言葉から、夜の文化を辿る。', '店主が綴った街の記録', '下北沢のLADY JANEを営む大木雄高の著書。店と人の関係を記したエッセイです。', 'https://www.genki-shobou.co.jp/books/978-4-901998-72-7');
+book('shimokitazawa', 'indies', '下北沢インディーズ ライブハウスの名探偵', '岡崎琢磨', 'バンドのいる日常を、音楽ミステリーとして楽しむ。', '物語の舞台', '下北沢のライブハウスを舞台にした小説。実在バンドのインディーズ時代を記録した本ではありません。', 'https://www.j-n.co.jp/books/978-4-408-55758-8/');
+book('shimokitazawa', 'kamisama', '神様のたまご 下北沢センナリ劇場の事件簿', '稲羽白菟', '小さな劇場で起こる謎から、舞台の裏側へ。', '物語の舞台', '下北沢を舞台にした演劇ミステリー。センナリ劇場は小説の中の劇場です。', 'https://books.bunshun.jp/ud/book/num/9784167922030');
+book('shimokitazawa', 'moshimoshi', 'もしもし下北沢', 'よしもとばなな', '料理と新しい暮らしのなかで、心が動き出す物語。', '物語の舞台', '下北沢で暮らし始める主人公を描く小説です。', 'https://www.gentosha.co.jp/book/detail/9784344419094/');
+book('shimokitazawa', 'honda', '「演劇の街」をつくった男 本多一夫と下北沢', '本多一夫 語り / 徳永京子 著', '劇場をつくる人と、そこに集まった演劇人の声へ。', '劇場と街の記録', '本多一夫と下北沢の劇場文化を扱う評伝。ぴあの出版案内から内容を確認できます。', 'https://prtimes.jp/main/html/rd/p/000000987.000011710.html');
+film('shimokitazawa', 'machinouede', '街の上で', '今泉力哉 監督', '偶然の会話と出会いを、一日分の散歩のように観る。', '物語の舞台', '下北沢を舞台にした映画です。', 'https://machinouede.com/', '映画公式サイトで予告・作品案内を見る');
+film('shimokitazawa', 'zawazawa', 'ざわざわ下北沢', '市川準 監督 / 2000', '店と人が行き交う街の、かつての姿に出会う。', '撮影された街', '全編を下北沢で撮影した映画。しもきたシネマ商店街の2021年の上映レポートで、制作の話も辿れます。', 'https://shimokitafilm.com/2021/09/19/quickreport0919_d/', '映画祭の上映・制作トーク記録を読む');
+film('shimokitazawa', 'gekijyo', '劇場', '行定勲 監督 / 2020', '舞台をつくる夢と、ふたりで暮らす時間を観る。', '物語の舞台・撮影地', '公式サイトが下北沢のロケ地を紹介しています。劇場や街並みと、登場人物の生活が重なる映画です。', 'https://gekijyo-movie.com/', '映画公式サイトで予告・作品案内を見る', ['https://gekijyo-movie.com/news/?id=54645']);
+film('shimokitazawa', 'aterui', '歌舞伎NEXT 阿弖流為〈アテルイ〉', '中島かずき 作 / いのうえひでのり 演出', '舞台の身体とアクションを、映画の画面で味わう。', '下北沢の映画館で上映', '松竹の記録では、2025年8月に下北沢トリウッドで上映。元の舞台公演は2015年の新橋演舞場です。', 'https://www.shochiku.co.jp/cinemakabuki/lineup/1779', '松竹で予告動画・作品案内を見る', ['https://www.shochiku.co.jp/cinemakabuki/news/2980']);
+film('shimokitazawa', 'blazer', 'シモキタブレイザー', '安藤光造 監督 / 2024', '一枚のレコードを巡る騒動を、街の疾走感とともに。', '物語の舞台', '下北沢出身の監督が下北沢を舞台にしたクライムコメディです。', 'https://shimokita-blazer.com/', '映画公式サイトで予告・作品案内を見る');
+
+video('kichijoji', 'park-voice', '井の頭公園100周年記念放送の記録', 'MIRAI records / 57秒', '公園に流れた声を、ひとつの短い記録として聴く。', '公園で流れた放送', '井の頭公園の100周年記念放送を記録した映像。現在の園内放送・ライブ配信ではありません。', '80y5COiKdDw', ['https://yakushimaruetsuko.com/archives/2398/']);
+video('kichijoji', 'uplink', 'アップリンク吉祥寺 コンセプト動画', 'アップリンク / 2018年の紹介映像', '映画を観る前の空間にも、作り手の発想がある。', '街の映画館', 'アップリンク吉祥寺のコンセプトを紹介する映像。当時の募集・案内は現在のものではありません。', 'FReSNt44TX4');
+video('kichijoji', 'kichion-ichihara', '市原ひかり｜吉祥寺の野外ライブ', 'キチオン37 / 吉祥寺音楽祭', '野外で響く演奏から、街の音楽に触れる。', '街で行われた演奏', '吉祥寺音楽祭「キチオン37」の公開ライブ映像です。生配信中の表示や現在の公演案内は行いません。', 'syHFyTLO1kY', ['https://kichion.com/']);
+video('kichijoji', 'kichion-toranoko', '虎の子ラミー｜吉祥寺の野外ライブ', 'キチオン37 / 吉祥寺音楽祭', '音楽祭のステージから、バンドの勢いを感じる。', '街で行われた演奏', '吉祥寺音楽祭「キチオン37」の公開ライブ映像です。', '9x2BEUFwoIw', ['https://kichion.com/']);
+video('kichijoji', 'kichion-lady', 'Lady Honkerz｜吉祥寺の野外ライブ', 'キチオン37 / 吉祥寺音楽祭', 'スウィングの音色を、野外ステージの記録から。', '街で行われた演奏', '吉祥寺音楽祭「キチオン37」の公開ライブ映像です。', 'zc7OjXup06Y', ['https://kichion.com/']);
+book('kichijoji', 'cinema-history', '吉祥寺に育てられた映画館', '本田拓夫', '映画館を営む人の目から、街の映画文化を辿る。', '映画館と街の記録', 'イノカン・MEG・バウスという吉祥寺の映画館の歩みを扱います。', bausBook);
+book('kichijoji', 'honnoniwa', '待ち合わせは〈本の庭〉で', '藤野ふじの', '棚を分け合う書店で、誰かの一冊に出会う。', '物語の舞台', '吉祥寺のシェア型書店を舞台にした小説。出版社の特設ページに試し読みの入口があります。', 'https://kotonohabunko.jp/special/honnoniwa/');
+book('kichijoji', 'yorozu', '吉祥寺よろず怪事請負処', '結城光流', '庭師のいる店に集まる、不思議な相談を辿る。', '物語の舞台', '吉祥寺を舞台にした小説。登場する店や出来事は物語の設定です。', 'https://www.kadokawa.co.jp/product/321612000260/');
+book('kichijoji', 'gou-gou-book', 'グーグーだって猫である', '大島弓子', '猫との生活を、漫画家の言葉と絵から味わう。', '映画化作品から街へ', 'この漫画を原作とする2008年の映画は吉祥寺が舞台です。原作の全場面の場所を特定する紹介ではありません。', 'https://www.kadokawa.co.jp/product/199999853258/', ['https://www.wowow.co.jp/detail/021429']);
+book('kichijoji', 'catwalk', '吉祥寺キャットウォーク 1', 'いしかわじゅん', '街で暮らす人たちの群像を、漫画のページから。', '物語の舞台', 'いしかわじゅんが吉祥寺を舞台に描く漫画です。', 'https://www.kadokawa.co.jp/product/301411001042/');
+film('kichijoji', 'parks', 'PARKS パークス', '瀬田なつき 監督 / 2017', '一曲が時代をつなぐ映画から、公園の声を聴きにいく。', '物語の舞台', '吉祥寺・井の頭公園を舞台にした映画。ここでは公式予告と公園の記念放送を選んで観られます。', '/v3-prototype/culture-experience-r2/kichijoji/?scene=film', '公式予告と公園の声を観る', ['https://www.youtube.com/watch?v=pm7RBghFt0I']);
+film('kichijoji', 'baus', 'BAUS 映画から船出した映画館', '甫木元空 監督 / 2025', '映画館を続ける人たちの時間を、一本の映画で。', '街の映画館の来歴', '吉祥寺のバウスシアターに連なる映画館の歩みをもとにした作品です。', 'https://bausmovie.com/', '映画公式サイトで予告・作品案内を見る');
+film('kichijoji', 'gou-gou-film', 'グーグーだって猫である', '犬童一心 監督 / 2008', '猫との出会いから、止まっていた日常が動き出す。', '物語の舞台', '吉祥寺が舞台の2008年の映画。後年のテレビドラマ版とは別作品です。', 'https://www.wowow.co.jp/detail/021429', 'WOWOWで作品・視聴案内を見る');
+film('kichijoji', 'asahina', '吉祥寺の朝日奈くん', '加藤章一 監督 / 2011', 'いつもの道と店から始まる、恋の物語。', '撮影された街', '武蔵野市観光機構が、全編吉祥寺での撮影とバウスシアターでの上映を紹介しています。', 'https://movie-tsutaya.tsite.jp/netdvd/dvd/goodsDetail.do?titleID=1745549881', 'TSUTAYAでDVDの案内を見る', ['https://blog.musashino-kanko.com/?p=8101']);
+film('kichijoji', 'rocky-horror', 'ロッキー・ホラー・ショー', 'ジム・シャーマン 監督 / 1975', '音楽と奇妙な世界を楽しむ、映画館の記憶への寄り道。', 'バウスシアターの上映文化', 'バウス館主の著書を紹介する出版社ページに、この映画の上映にまつわる項目があります。映画の撮影地が吉祥寺という意味ではありません。', 'https://www.20thcenturystudios.jp/movies/rocky-horror-show', '配給元で映画・視聴案内を見る', [bausBook]);
+
+const library = '千代田区立図書館公式チャンネル';
+video('jinbocho', 'gyokueido', '古書っと神保町｜玉英堂書店・前編', library, '古書店の人に案内されながら、本の世界を覗く。', '街の古書店の取材', '千代田区立図書館の「古書っと神保町」vol.1。玉英堂書店を紹介しています。', 'zQJz9x7XzxI');
+video('jinbocho', 'kudan', '古書っと神保町｜くだん書房・前編', library, '専門の古書店には、どんな出会いが待っているだろう。', '街の古書店の取材', '千代田区立図書館の「古書っと神保町」vol.3。くだん書房を紹介しています。', 'Wz37oubjNvY');
+video('jinbocho', 'italia', '古書っと神保町｜イタリア書房・前編', library, '一軒の書店から、別の国の言葉や文化へ。', '街の書店の取材', '千代田区立図書館の「古書っと神保町」vol.9。イタリア書房を紹介しています。', 'hhaGzqTeIuw', ['https://italiashobo.com/']);
+video('jinbocho', 'yumeno', '古書っと神保町｜夢野書店・前編', library, '店の棚と店主の話から、本を探す楽しみを知る。', '街の古書店の取材', '千代田区立図書館の「古書っと神保町」vol.13。合同会社 夢野書店を紹介しています。', 'gXecvpa5A3I');
+video('jinbocho', 'biblio', '古書っと神保町｜ビブリオ・前編', library, '好きな分野の本が集まる、一軒の店へ。', '街の古書店の取材', '千代田区立図書館の「古書っと神保町」vol.17。ビブリオを紹介しています。', 'mNH9U4ca0Aw');
+book('jinbocho', 'morisaki', '森崎書店の日々', '八木沢里志', '古書店で過ごす時間から、もう一度日常へ踏み出す。', '物語の舞台', '神保町の古書店を舞台にした小説。案内先は新装版です。', 'https://www.shogakukan.co.jp/books/09386765');
+book('jinbocho', 'morisaki-sequel', '続・森崎書店の日々', '八木沢里志', 'あの店に集う人たちの、その後をもう少し。', '物語の舞台', '神保町の古書店を舞台にした続編。前作の別装版ではなく、別の物語です。', 'https://www.shogakukan.co.jp/books/09386766');
+book('jinbocho', 'furuhon', '古本食堂', '原田ひ香', '本と食べ物から、街で暮らす人の輪へ。', '物語の舞台', '神保町の古書店を舞台にした小説です。', 'https://www.kadokawaharuki.co.jp/book/detail/detail.php?no=5208');
+book('jinbocho', 'furuhon-sequel', '古本食堂 新装開店', '原田ひ香', '古書店の続く日常に、また新しい人がやってくる。', '物語の舞台', '神保町を舞台にした『古本食堂』の続編。前作の装丁だけを変えた本ではありません。', 'https://www.kadokawaharuki.co.jp/book/detail/detail.php?no=7272');
+book('jinbocho', 'kaijin', '神保町の怪人', '紀田順一郎', '本を集める情熱が、謎と事件へ姿を変える。', '物語の舞台', '古書収集と神保町を扱う三つのミステリーを収めた短編集です。', 'https://www.tsogen.co.jp/np/isbn/9784488406080');
+film('jinbocho', 'morisaki-film', '森崎書店の日々', '日向朝子 監督 / 2010', '古書店の時間と人の出会いを、映像の物語で。', '撮影された街', '神保町で撮影された映画。日本映画データベースで作品の内容と制作情報を確認できます。', 'https://jfdb.jp/title/2240', '日本映画データベースで作品を知る');
+film('jinbocho', 'ginga', '銀河鉄道の夜', 'アニメーション映画 / 1985', '列車と音楽が運ぶ、夜の旅へ。', '神保町シアターの上映企画', '神保町シアターが2026年9月19日からの上映企画で紹介している作品。物語の舞台が神保町という意味ではありません。', 'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-09-19-ginga-tetsudou.html', '神保町シアターで作品・上映案内を見る');
+film('jinbocho', 'ugetsu', '雨月物語', '溝口健二 監督 / 1953', '現実と幻想のあわいを、白黒の映像で辿る。', '神保町シアターの上映企画', '神保町シアターの2026年「没後70年 溝口健二」特集の選定作品。街の映画館を入口に、日本映画へ寄り道します。', mizoguchi, '神保町シアターの溝口健二特集を見る');
+film('jinbocho', 'sansho', '山椒大夫', '溝口健二 監督 / 1954', '離ればなれになる家族の物語に向き合う。', '神保町シアターの上映企画', '神保町シアターの2026年「没後70年 溝口健二」特集の選定作品。撮影地ではなく、上映企画を介したつながりです。', mizoguchi, '神保町シアターの溝口健二特集を見る');
+film('jinbocho', 'chikamatsu', '近松物語', '溝口健二 監督 / 1954', '古典の物語が、映画の表情と動きになる瞬間へ。', '神保町シアターの上映企画', '神保町シアターの2026年「没後70年 溝口健二」特集の選定作品。上映企画から古典と映画へ広がる一作です。', mizoguchi, '神保町シアターの溝口健二特集を見る');
+
+module.exports = { items, checkedAt: '2026-09-08' };

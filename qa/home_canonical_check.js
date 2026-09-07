@@ -53,14 +53,14 @@ const COPY = [
   '<span class="hc-hero-line">文化の</span><span class="hc-hero-line">つながりを、</span><span class="hc-hero-line">歩く。</span>',
   '一曲・一場面を聴く、観る',
   '街から入る', '街には、文化が息づく理由がある。',
-  '作品から入る', '本・映画・音楽・映像… あらゆる作品が、街とつながっている。',
+  '作品から入る', 'まずひとつ観る・聴く。気になったら、作品と街を辿る。',
   'いま辿れるスレッド', 'ひとつの痕跡から、物語をたどる。',
   '高円寺の踊り', '高円寺の踊りは、どう始まった？', '1957年の始まりから、木場連との出会いへ。', '踊りの歴史を読む',
   '実際の場所へ', '気になった場所は、公式情報を確かめて、', '実際の街へ。',
 ];
 for (const c of COPY) check(html.includes(c), `core copy missing: ${c.slice(0, 40)}`);
 const heroSub = (html.match(/<p class="hc-hero-sub">([\s\S]*?)<\/p>/) || [])[1] || '';
-check(heroSub.replace(/<[^>]*>/g, '') === '街や作品から、文化のつながりを辿る。必要なら資料を確かめ、その先で読む・聴く・見る・訪れる。', 'Beta0 Closure hero subcopy must match the approved promise');
+check(heroSub.replace(/<[^>]*>/g, '') === '街の映像、音楽、本、映画に出会う文化案内。気になる作品から、ゆかりの場所へ。', 'First-visit hero must name the media and explain the purpose');
 
 const CITY_COPY = [
   /* FOUNDER PREVIEW FIX A3: 因果の問いは shelf route が答えないので、4 街とも実際の遷移内容に合う同じ copy。 */

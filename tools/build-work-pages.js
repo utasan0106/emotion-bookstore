@@ -50,6 +50,7 @@ write('works.html', header + `  <main id="main"><div class="wk-root">
       <h1 class="wk-title">作品から入る</h1>
       <p class="wk-lead">気になる作品をひとつ。紹介とつながりは、次のページで。</p>
       <p class="wk-primary"><a class="wk-route" href="./v3-prototype/culture-experience-r2/index.html">短い音・映像から楽しむ<span aria-hidden="true"> →</span></a></p>
+      <p class="wk-primary"><a class="wk-route" href="./discover/index.html">街別の映像・本・映画を選ぶ<span aria-hidden="true"> →</span></a></p>
     </header>
     <div class="wk-entry-grid">
 ${cards}

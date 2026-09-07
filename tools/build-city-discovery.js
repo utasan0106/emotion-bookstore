@@ -1,0 +1,65 @@
+'use strict';
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const {items, checkedAt} = require('./city-discovery-source');
+const root = path.resolve(__dirname, '..');
+const sandbox = {window:{}};
+vm.runInNewContext(fs.readFileSync(path.join(root, 'release_content.js'), 'utf8'), sandbox);
+const content = sandbox.window.V3_RELEASE_CONTENT;
+const cityNames = {koenji:'高円寺', shimokitazawa:'下北沢', kichijoji:'吉祥寺', jinbocho:'神保町'};
+const categories = {video:{name:'音・映像', verb:'映像を選ぶ', mark:'▶'}, book:{name:'本・漫画', verb:'本を選ぶ', mark:'本'}, film:{name:'映画', verb:'映画を選ぶ', mark:'映'}};
+const features = {
+  koenji:{title:'作品の舞台かもしれない場所を歩く', note:'新潮社の『1Q84』めぐり。高円寺の公園と小説を巡る特集。', url:'https://www.shinchosha.co.jp/harukimurakami/review/100163-e.html'},
+  shimokitazawa:{title:'下北沢の音楽・演劇・街歩きを知る', note:'東京の観光公式サイト GO TOKYO による下北沢ガイド。', url:'https://www.gotokyo.org/jp/destinations/western-tokyo/shimokitazawa/index.html'},
+  kichijoji:{title:'映画『吉祥寺の朝日奈くん』の撮影地へ', note:'武蔵野市観光機構の映画紹介。街を映した作品の背景を辿る。', url:'https://blog.musashino-kanko.com/?p=8101'},
+  jinbocho:{title:'古書店から始まるミステリーに出会う', note:'東京創元社による紀田順一郎の作品案内。神保町と本を巡る物語をさらに。', url:'https://www.tsogen.co.jp/sp/author/214'}
+};
+const esc = v => String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function media(city) { return content.shelves.find(c => c.id === city).heroMedia; }
+function photo(city, eager=false) {
+  const m = media(city);
+  return `<img src="/${m.url.replace('./','')}" alt="${esc(m.alt)}" width="${m.width}" height="${m.height}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
+}
+const external = (url, label, cls='') => `<a class="${cls}" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)} <span aria-hidden="true">↗</span></a>`;
+function credits(cities) {
+  return `<details class="credits"><summary>街の写真・出典</summary>${cities.map(c => {const m=media(c);return `<p>${cityNames[c]}の街の写真：${external(m.sourceUrl,m.author)} / ${external(m.licenseUrl,m.license)}。既存の縮小画像を使用し、表示範囲をトリミング。作品の表紙・場面写真ではありません。</p>`;}).join('')}</details>`;
+}
+function shell(title, body, back, active='') {
+  return `<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="description" content="街とつながる音・映像、本、映画を選ぶ文化案内。作品に触れたあと、ゆかりの場所や関連特集へ。"><title>${esc(title)}｜みんなの感情書店</title><link rel="icon" href="/assets/favicon.ico"><link rel="stylesheet" href="/discover/discover.css"></head>
+<body class="${active}"><a class="skip" href="#main">本文へ</a><header class="masthead"><a class="brand" href="/index.html">みんなの感情書店<span>街と作品の文化案内</span></a>${back || '<a href="/works.html">紹介した作品へ →</a>'}</header>
+<main id="main">${body}</main><footer class="footer"><p>気になる作品から、街と人のつながりへ。</p><a href="/credits.html">写真と出典について</a></footer>
+${body.includes('data-video-id') ? '<script src="/video-embed.js" defer></script><script src="/discover/player.js" defer></script>' : ''}</body></html>\n`;
+}
+let written = 0;
+function write(file, html) {
+  const output=path.join(root,'discover',file);
+  if(process.argv.includes('--check')) {
+    if(!fs.existsSync(output)||fs.readFileSync(output,'utf8')!==html)throw new Error('Generated page differs: '+output);
+  }else{fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,html);}
+  written++;
+}
+const cities=Object.keys(cityNames);
+write('index.html', shell('街から音・映像、本、映画を探す', `<section class="intro"><p class="eyebrow">観る・聴く・読む</p><h1>街から、<br>気になる作品へ。</h1><p class="lead">街の映像、ライブ、本、映画に出会う文化案内。<br>まずひとつ楽しんで、ゆかりの場所や関連特集へ。</p></section>
+<section class="city-grid" aria-label="街を選ぶ">${cities.map(c=>`<a class="city-card" href="/discover/${c}/video.html"><div class="city-image">${photo(c)}</div><div class="city-caption"><h2>${cityNames[c]}</h2><p>音・映像 ${items.filter(i=>i.city===c&&i.kind==='video').length} / 本・漫画 ${items.filter(i=>i.city===c&&i.kind==='book').length} / 映画 ${items.filter(i=>i.city===c&&i.kind==='film').length}</p><span>${cityNames[c]}の映像から探す →</span></div></a>`).join('')}</section>
+<section class="quick"><p class="eyebrow">短い体験から</p><h2>同じ場所、違う聴こえ方。</h2><div class="quick-grid"><a href="/v3-prototype/culture-experience-r2/shimokitazawa/?recording=shelter"><strong>「夕暮れのジャイロ」を聴き比べる →</strong><span>下北沢SHELTERのライブとソロ盤</span></a><a href="/v3-prototype/culture-experience-r2/kichijoji/?scene=film"><strong>『PARKS』の予告と公園の声へ →</strong><span>吉祥寺・井の頭公園 / 1分59秒と57秒</span></a></div></section>${credits(cities)}`));
+
+for(const city of cities) for(const [kind, category] of Object.entries(categories)) {
+  const selected=items.filter(i=>i.city===city&&i.kind===kind);
+  if(selected.length<5||selected.length>10)throw new Error(city+' '+kind+': keep a collection between five and ten entries');
+  const tabs=Object.entries(categories).map(([k,v])=>k===kind?`<span aria-current="page">${v.name} <small>${items.filter(i=>i.city===city&&i.kind===k).length}</small></span>`:`<a href="/discover/${city}/${k}.html">${v.name} <small>${items.filter(i=>i.city===city&&i.kind===k).length}</small></a>`).join('');
+  const cards=selected.map((i,n)=>`<article class="work-card ${kind}"><a href="/discover/${city}/${i.id}.html"><div class="card-art" aria-hidden="true"><span class="media-mark">${category.mark}</span><span class="card-number">${String(n+1).padStart(2,'0')}</span></div><div class="card-body"><p class="relation">${esc(i.relation)}</p><h2>${esc(i.title)}</h2><p class="creator">${esc(i.creator)}</p><p class="card-action">${kind==='video'?'この映像を見る':kind==='book'?'この本に出会う':'この映画に出会う'} <span aria-hidden="true">→</span></p></div></a></article>`).join('');
+  const f=features[city];
+  write(`${city}/${kind}.html`, shell(`${cityNames[city]}の${category.name}`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><p class="eyebrow">街と作品の文化案内</p><h1>${cityNames[city]}<span>の${category.name}</span></h1></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><p class="collection-lead">${kind==='video'?'街の人、演奏、店先。気になる映像をひとつ。':kind==='book'?'物語から入って、ゆかりの街を知る。': '街が舞台の映画と、街の映画館が選んだ映画。'}</p><section class="work-grid" aria-label="${category.name}の${selected.length}件">${cards}</section><aside class="feature"><p class="eyebrow">この街を、もう少し深く</p><h2>${external(f.url,f.title)}</h2><p>${esc(f.note)}</p><small>関連する外部特集・新しいタブ</small></aside><p class="city-exit"><a href="/shelf.html?shelf=${city}">${cityNames[city]}の場所・催しの案内へ →</a></p>${credits([city])}</div>`, '<a href="/discover/index.html">街を選び直す ←</a>', city));
+}
+for(const item of items) {
+  const {city,kind}=item;
+  const mainAction=item.id==='1q84'?'新潮社の作品ゆかりの地特集を読む':item.id==='honda'?'ぴあの出版案内を読む':item.action;
+  const action=item.url.startsWith('/')?`<a class="primary" href="${esc(item.url)}">${esc(mainAction)} →</a>`:external(item.url,mainAction,'primary official-exit');
+  const player=item.videoId?`<section class="player v3-video" data-video-id="${item.videoId}" data-video-title="${esc(item.title)}" aria-label="映像プレイヤー"><div class="v3-video-frame"><button class="v3-video-load primary" type="button" hidden>このページでプレイヤーを開く ▶</button><noscript><p>下のYouTubeへのリンクから、この映像を観られます。</p></noscript></div><button class="player-stop" type="button" hidden>プレイヤーを閉じて停止</button><p class="player-status" role="status" aria-live="polite">YouTubeの公開映像です。下のリンクからも観られます。</p></section>`:'';
+  const sourceLinks=item.sources.filter(s=>s!==item.url);
+  const background=`<details class="background"><summary>この街との関係・出典</summary><p>${esc(item.relationNote)}</p>${sourceLinks.map(s=>`<p>${external(s,new URL(s).hostname.replace('www.','')+' の掲載情報')}</p>`).join('')}<p>紹介先・出典確認：${checkedAt}。${item.videoId?'映像は公開元のプレイヤーで提供されます。':'外部の視聴・読書条件は各提供元の案内で確認できます。'}</p></details>`;
+  write(`${city}/${item.id}.html`, shell(item.title, `<article class="detail"><p class="eyebrow">${cityNames[city]} / ${categories[kind].name} / ${esc(item.relation)}</p><h1>${esc(item.title)}</h1><p class="detail-creator">${esc(item.creator)}</p><p class="detail-hook">${esc(item.hook)}</p>${player}<div class="destination">${action}<p>${item.url.startsWith('/')?'このサイト内で、本人操作による映像・音の体験へ。':item.videoId?'表示・再生できない場合は、公開元の同じ映像へ。':'外部の作品・特集ページへ。'}${item.url.startsWith('/')?'':'新しいタブで開きます。'}</p></div>${background}<p class="city-exit"><a href="/shelf.html?shelf=${city}">${cityNames[city]}の場所・催しの案内へ →</a></p></article>`, `<a href="/discover/${city}/${kind}.html">${categories[kind].name}を選び直す ←</a>`, city));
+}
+console.log(`PASS ${written} discovery pages ${process.argv.includes('--check')?'match source':'generated'}; ${items.length} editorial entries`);

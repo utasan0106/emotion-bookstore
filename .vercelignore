@@ -132,3 +132,5 @@ docs/
 
 # Editorial build input; generated work pages are the public surface.
 /tools/work-entry-source.html
+/tools/city-discovery-source.js
+/tools/build-city-discovery.js
