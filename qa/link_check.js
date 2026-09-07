@@ -9,15 +9,12 @@
  *
  * ただし Claude の開発環境は proxy policy で全ての外部 host に届かない。
  * 届かないことを「切れている」と報告するのは嘘なので、この script は
- * 3値で答える:
- *
- *   OK             到達して 2xx/3xx が返った
- *   DEAD           到達したが、内容として壊れている（4xx/5xx、TLS 不正、名前解決不能）
- *   NOT OBSERVABLE proxy に止められていて、この環境からは判定できない
- *
- * DEAD が1つでもあれば exit 1。NOT OBSERVABLE は exit 0 だが、
- * 何件観測できなかったかを必ず出す。「全部 OK」と「全部見えていない」を
- * 同じ緑にしない。
+ * 4値で答える:
+ *   OK             HTTP 2xx/3xxへ到達（内容や在庫の保証ではない）
+ *   DEAD           HEADとGETの両方で404/410を観測（本番変更前に人が再確認）
+ *   REVIEW         応答エラー・timeout・HEAD/GET不一致。リンク切れは未確定
+ *   NOT OBSERVABLE proxy等で未観測
+ * DEADはexit 1、REVIEW/未観測はexit 2。未確認をGOに混ぜない。
  *
  * 使い方（外部ネットワークのある環境で）:
  *   node qa/link_check.js
@@ -67,7 +64,7 @@ for (const shelf of CONTENT.shelves) {
    suggest.html の公式 X のような手書きの href を取りこぼす。 */
 for (const file of ['index.html', 'shelf.html', 'suggest.html', 'thread.html', 'works.html']) {
   const src = fs.readFileSync(path.join(root, file), 'utf8');
-  for (const m of src.matchAll(/href="(https?:\/\/[^"]+)"/g)) add(m[1], `${file} href`);
+  for (const m of src.matchAll(/href="(https?:\/\/[^"]+)"/g)) add(decodeHtmlUrl(m[1]), `${file} href`);
 }
 
 /* Thread: 資料（sources）と現実への行き先（realityDestinations）。 */
@@ -88,9 +85,19 @@ for (const t of targets) {
 
 const { execFile } = require('child_process');
 
+function decodeHtmlUrl(url) {
+  return url.replace(/&(amp|quot|apos|#[xX][0-9a-fA-F]+|#[0-9]+);/g, (whole, entity) => {
+    const named = { amp: '&', quot: '"', apos: "'" };
+    if (named[entity]) return named[entity];
+    const n = entity.slice(1);
+    const code = n[0].toLowerCase() === 'x' ? parseInt(n.slice(1), 16) : Number(n);
+    return code > 0 && code <= 0x10ffff && !(code >= 0xd800 && code <= 0xdfff) ? String.fromCodePoint(code) : whole;
+  });
+}
+
 function probe(url) {
   return new Promise((resolve) => {
-    /* HEAD を拒む server が実際にある（405 を返す）。その場合だけ GET に落とす。
+    /* HEADがエラーの場合はGETでも確認する。HEADを拒むserverや一時エラーを区別する。
        -L で redirect は追う。公式サイトは http -> https や www 付与を挟むことが多い。 */
     const args = ['-sS', '-o', '/dev/null', '-w', '%{http_code} %{url_effective}',
                   '-L', '--max-time', '25', '--retry', '1', '-A',
@@ -101,7 +108,7 @@ function probe(url) {
       execFile('curl', args, (err2, out2, errOut2) => {
         const second = parse(out2, errOut2, err2);
         /* HEAD が 4xx/5xx でも GET が通るなら、利用者にとっては生きている。 */
-        resolve(second.verdict === 'OK' ? second : worse(first, second));
+        resolve(combine(first, second));
       });
     });
   });
@@ -116,43 +123,51 @@ function parse(stdout, stderr, err) {
   const m = String(stdout || '').trim().match(/^(\d{3})\s*(\S*)/);
   const code = m ? Number(m[1]) : 0;
   const landed = m && m[2] ? m[2] : '';
+  if (err && code >= 200 && code < 400) return { verdict: 'REVIEW', detail: 'HTTP応答後に転送失敗（redirect等を要確認）', landed };
   if (code >= 200 && code < 400) return { verdict: 'OK', detail: `${code}`, landed };
-  if (code >= 400) return { verdict: 'DEAD', detail: `HTTP ${code}`, landed };
+  if (code === 404 || code === 410) return { verdict: 'DEAD', detail: `HTTP ${code}`, landed };
+  if (code >= 400) return { verdict: 'REVIEW', detail: `HTTP ${code}（リンク切れ未確定）`, landed };
 
   /* code 0 = 応答なし。原因を分けて出す。TLS 不正は今回の machinouede.com の壊れ方。 */
-  if (/SSL|TLS|certificate/i.test(text)) return { verdict: 'DEAD', detail: 'TLS エラー（証明書またはプロトコル不正）' };
-  if (/Could not resolve host|name resolution/i.test(text)) return { verdict: 'DEAD', detail: '名前解決できない' };
-  if (/Connection refused|Failed to connect|Couldn't connect to server/i.test(text)) return { verdict: 'DEAD', detail: '接続できない' };
-  if (/Operation timed out|timed out/i.test(text)) return { verdict: 'DEAD', detail: 'タイムアウト' };
+  if (/SSL|TLS|certificate/i.test(text)) return { verdict: 'REVIEW', detail: 'TLS エラー（証明書またはプロトコル不正）' };
+  if (/Could not resolve host|name resolution/i.test(text)) return { verdict: 'REVIEW', detail: '名前解決できない' };
+  if (/Connection refused|Failed to connect|Couldn't connect to server/i.test(text)) return { verdict: 'REVIEW', detail: '接続できない' };
+  if (/Operation timed out|timed out/i.test(text)) return { verdict: 'REVIEW', detail: 'タイムアウト' };
   return { verdict: 'NOT OBSERVABLE', detail: (text.split('\n')[0] || '原因不明').slice(0, 90) };
 }
 
-function worse(a, b) { return a.verdict === 'DEAD' ? a : b; }
+function combine(a, b) {
+  if (b.verdict === 'OK') return b;
+  if (a.verdict === 'DEAD' && b.verdict === 'DEAD') return b;
+  return { verdict: 'REVIEW', detail: `HEAD: ${a.detail}; GET: ${b.detail}`, landed: b.landed || a.landed };
+}
 
 /* --- 実行 --------------------------------------------------------------- */
 
-(async () => {
+async function main() {
   const urls = [...byUrl.keys()].sort();
   const dead = [];
   const unobserved = [];
+  const review = [];
   let ok = 0;
 
   for (const url of urls) {
     const r = await probe(url);
-    const mark = r.verdict === 'OK' ? 'OK  ' : r.verdict === 'DEAD' ? 'DEAD' : '?   ';
+    const mark = r.verdict === 'OK' ? 'OK  ' : r.verdict === 'DEAD' ? 'DEAD' : r.verdict === 'REVIEW' ? 'REVIEW' : '?   ';
     console.log(`${mark} ${url}  (${r.detail})`);
     for (const w of byUrl.get(url)) console.log(`       ${w}`);
     if (r.verdict === 'OK') ok++;
     else if (r.verdict === 'DEAD') dead.push({ url, r });
+    else if (r.verdict === 'REVIEW') review.push({ url, r });
     else unobserved.push({ url, r });
   }
 
   console.log('');
-  console.log(`checked=${urls.length} OK=${ok} DEAD=${dead.length} NOT_OBSERVABLE=${unobserved.length}`);
+  console.log(`checked=${urls.length} OK=${ok} DEAD=${dead.length} REVIEW=${review.length} NOT_OBSERVABLE=${unobserved.length}`);
 
   if (dead.length) {
     console.log('');
-    console.log('切れているリンク:');
+    console.log('HEAD/GETで404/410を観測したリンク（変更前に人が再確認）:');
     for (const d of dead) {
       console.log(`  ${d.url} — ${d.r.detail}`);
       for (const w of byUrl.get(d.url)) console.log(`      ${w}`);
@@ -162,13 +177,17 @@ function worse(a, b) { return a.verdict === 'DEAD' ? a : b; }
     process.exit(1);
   }
 
+  for (const item of review) console.log(`要再確認: ${item.url} — ${item.r.detail}`);
   if (unobserved.length === urls.length) {
-    console.log('RELEASE_LINK_CHECK_NOT_OBSERVABLE — 全て proxy に遮断された。この結果は GO ではない。');
-    process.exit(0);
+    console.log('RELEASE_LINK_CHECK_NOT_OBSERVABLE — 全件未観測。この結果は GO ではない。');
+    process.exit(2);
   }
-  if (unobserved.length) {
-    console.log(`RELEASE_LINK_CHECK_PARTIAL — ${unobserved.length}件が未観測。外部ネットワークのある環境で再実行する。`);
-    process.exit(0);
+  if (unobserved.length || review.length) {
+    console.log(`RELEASE_LINK_CHECK_PARTIAL — ${unobserved.length}件が未観測、${review.length}件が要再確認。この結果はGOではない。`);
+    process.exit(2);
   }
   console.log('RELEASE_LINK_CHECK_GO');
-})();
+}
+
+module.exports = { parse, combine, decodeHtmlUrl };
+if (require.main === module) main().catch((err) => { console.error(err.message); process.exitCode = 2; });
