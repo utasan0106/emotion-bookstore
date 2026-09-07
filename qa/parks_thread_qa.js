@@ -25,7 +25,9 @@ for (const s of t.scenes) {
   if (s.editorialReading) check(s.editorialReading.refs.every(id => t.relations.some(r => r.id === id)), 'editorial references resolve');
 }
 for (const f of ['release_content.js', 'works.html', 'data.html', 'vercel.json', '.vercelignore', 'release.css', 'thread.css']) {
-  check(fs.readFileSync(path.join(ROOT, f)).equals(execFileSync('git', ['show', BASE + ':' + f], { cwd: ROOT })), 'protected file unchanged: ' + f);
+  // Works includes the accepted Boris context and SUNSET NOTES additions.
+  const baseline = f === 'works.html' ? 'c57ca7c6edfd8854ccb19f528186874d14308355' : BASE;
+  check(fs.readFileSync(path.join(ROOT, f)).equals(execFileSync('git', ['show', baseline + ':' + f], { cwd: ROOT })), 'protected file unchanged: ' + f);
 }
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.jpg': 'image/jpeg', '.png': 'image/png', '.svg': 'image/svg+xml' };
 const server = http.createServer((req, res) => {
