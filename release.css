@@ -2915,4 +2915,11 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 }
 
 .hc-work-caption { min-width: 0; display: grid; gap: .2rem; }
+.hc-discovery-entry { margin: 24px 0 32px; padding: clamp(18px, 4vw, 30px); border: 1px solid var(--hc-ink-dim); }
+.hc-discovery-lead { margin: 0 0 16px; font-size: 18px; line-height: 1.6; color: var(--hc-ink); }
+.hc-discovery-button { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; box-sizing: border-box; padding: 16px 20px; background: var(--hc-ink); color: #f3eddd; font-size: 18px; line-height: 1.5; font-weight: 600; text-decoration: none; }
+.hc-discovery-button:hover { background: #433b30; }
+.hc-discovery-button:focus-visible { outline: 3px solid #9c452b; outline-offset: 4px; }
+.hc-discovery-note { margin: 14px 0 0; font-size: 14px; line-height: 1.7; color: var(--hc-ink-dim); }
+.hc-featured-heading { margin: 0 0 16px; font-size: 18px; line-height: 1.6; font-weight: 500; color: var(--hc-ink); }
 .hc-work-place { font-size: .875rem; line-height: 1.4; color: #f4f0e8; }
