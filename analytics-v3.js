@@ -54,7 +54,7 @@
     thread: true,
     spatial: true,
 
-    // Public content ids: the four cities, the four Works entries, the three public Threads.
+    // Public content ids: the four cities, the four Works entries, the four Threads.
     koenji: true,
     jinbocho: true,
     shimokitazawa: true,
@@ -66,6 +66,9 @@
     morisaki_book: true,
     morisaki_film: true,
     koenji_dance_history: true,
+    kichijoji_parks: true,
+    'kichijoji_parks:p0': true, 'kichijoji_parks:p1': true,
+    'kichijoji_parks:p2': true, 'kichijoji_parks:p3': true,
 
     // Composite thread-stage ids (thread:stage). Bare stage ids are not allowed.
     'koenji_dance_history:s0': true, 'koenji_dance_history:s1': true, 'koenji_dance_history:s2': true,
@@ -79,6 +82,7 @@
   /* Public routes → bounded ids. The route value itself never leaves the page; only the mapped id can. */
   var THREAD_IDS = {
     'koenji-dance-history': 'koenji_dance_history',
+    'kichijoji-parks': 'kichijoji_parks',
     'morisaki-book': 'morisaki_book',
     'morisaki-film': 'morisaki_film'
   };

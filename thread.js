@@ -257,7 +257,11 @@
         height: image.height,
         decoding: 'async',
         referrerpolicy: 'no-referrer'
-      })
+      }),
+      image.caption ? h('figcaption', { class: 'th-support-mode' }, [
+        h('span', { text: image.caption + ' ' }),
+        image.creditHref ? h('a', { href: image.creditHref, text: '写真の出典・利用条件' }) : null
+      ]) : null
     ]);
   }
 

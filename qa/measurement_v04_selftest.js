@@ -157,6 +157,29 @@ for (const host of ['emotion-bookstore-n8n5kl0xu-emotion-bookstore.vercel.app', 
   auditParams('works', ev);
 }
 
+/* PARKS uses the existing event definitions, with only bounded public IDs added. */
+{
+  const scenes = ['p0', 'p1', 'p2', 'p3'].map((id) => el({ tag: 'section', cls: 'th-scene', attrs: { 'data-scene': id } }));
+  const end = el({ tag: 'div', cls: 'th-end' });
+  const article = el({ tag: 'article', cls: 'th-thread', attrs: { 'data-thread-id': 'kichijoji-parks' }, children: scenes.concat([end]) });
+  const dom = { byId: { threadRoot: el({ tag: 'div', id: 'threadRoot', children: [article] }) } };
+  const r = run('emotionbookstore.com', '/thread.html', '?thread=kichijoji-parks', dom);
+  r.listeners.DOMContentLoaded();
+  const io = r.observers[0];
+  check('PARKS observes four scenes and finite ending', !!io && io.targets.length === 5);
+  if (io) io.cb(io.targets.map((target) => ({ target, isIntersecting: true })));
+  r.ctx.v3Analytics.threadStage('kichijoji_parks', 'p99');
+  r.ctx.v3Analytics.threadStage('kichijoji_parks', 's0');
+  check('PARKS bounded start', by(r.events(), 'v3_thread_start').map((e) => e[2].content_id).join() === 'kichijoji_parks');
+  check('PARKS stages exact; unknown and cross-thread stages dropped', by(r.events(), 'v3_thread_stage').map((e) => e[2].content_id).join() === 'kichijoji_parks:p0,kichijoji_parks:p1,kichijoji_parks:p2,kichijoji_parks:p3');
+  check('PARKS complete at finite ending', by(r.events(), 'v3_thread_complete').length === 1);
+  auditParams('PARKS', r.events());
+  for (const host of ['localhost', 'parks-preview.vercel.app']) {
+    const p = run(host, '/thread.html', '?thread=kichijoji-parks', dom);
+    check('PARKS preview/local GA4 zero ' + host, p.head.length === 0 && p.events().length === 0 && !p.ctx.v3Analytics);
+  }
+}
+
 /* ---- 6. Thread: start after rendered .th-thread[data-thread-id]; composite stage ids; complete; evidence; approved external; continue ---- */
 {
   const scenes = ['s0', 's1', 's2', 's3', 's4', 's5'].map((id) => el({ tag: 'section', cls: 'th-scene', attrs: { 'data-scene': id } }));

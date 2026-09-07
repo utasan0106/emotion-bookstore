@@ -620,8 +620,83 @@
     ending: MORISAKI_ENDING
   };
 
+  /* 吉祥寺 R1: all factual edges are directly supported by the distributor's
+     publication. The pond photo is a 2024 place photograph, not a film still. */
+  var PARKS = {
+    threadId: 'kichijoji-parks',
+    eyebrow: '吉祥寺',
+    title: '閉館から始まった、公園の映画',
+    documentTitle: '吉祥寺｜閉館から始まった、公園の映画｜みんなの感情書店',
+    subjectLabel: '主題：PARKS パークス',
+    editor: '編集：みんなの感情書店 編集部',
+    lens: '映画館から映画へ、その映画をつくった音楽へ辿ります。',
+    checkedAt: '2026-09-07',
+    checkedLabel: '最終確認：2026-09-07',
+    guidance: [],
+    image: {
+      src: './assets/inokashira-pond.jpg',
+      alt: '井の頭池に浮かぶボートと水辺の木々。2024年4月13日撮影',
+      width: 1600, height: 949,
+      caption: '井の頭池（2024年4月）。映画の場面写真ではありません。写真：Htanaungg / CC BY-SA 4.0。',
+      creditHref: './credits.html#inokashira-pond'
+    },
+    nodes: [
+      { id: 'place:baus', type: 'Place', label: 'バウスシアター' },
+      { id: 'work:parks', type: 'Film', label: 'PARKS パークス' },
+      { id: 'person:tokumaru', type: 'Person', label: 'トクマルシューゴ' },
+      { id: 'work:bentensama', type: 'Music', label: '弁天様はスピリチュア' }
+    ],
+    facts: [
+      { id: 'fact:parks-director', claim: '『PARKS パークス』の監督・脚本・編集は、瀬田なつきです。', supportMode: ['direct_statement'], verificationState: 'single_source', sourceIds: ['src:parks-ponycanyon'] }
+    ],
+    relations: [
+      {
+        id: 'rel:parks-origin', from: 'place:baus', to: 'work:parks',
+        relationType: 'connected_with', displayVerb: '閉館から企画が生まれる',
+        claim: 'バウスシアターの閉館にあたり、オーナーの意向から、井の頭公園100周年を記念して『PARKS パークス』が企画製作されました。',
+        supportMode: ['direct_statement'], verificationState: 'single_source',
+        sourceIds: ['src:parks-ponycanyon'], spatial: { resolution: 'not_applicable' }
+      },
+      {
+        id: 'rel:parks-music', from: 'person:tokumaru', to: 'work:parks',
+        relationType: 'connected_with', displayVerb: '音楽監修として参加する',
+        claim: '音楽監修のトクマルシューゴは、脚本段階から映画に参加しています。',
+        supportMode: ['direct_statement'], verificationState: 'single_source',
+        sourceIds: ['src:parks-ponycanyon'], spatial: { resolution: 'not_applicable' }
+      },
+      {
+        id: 'rel:parks-ending', from: 'work:parks', to: 'work:bentensama',
+        relationType: 'connected_with', displayVerb: 'エンディングで流れる',
+        claim: '映画のエンディングテーマは、相対性理論の「弁天様はスピリチュア」です。',
+        supportMode: ['direct_statement'], verificationState: 'single_source',
+        sourceIds: ['src:parks-ponycanyon'], spatial: { resolution: 'not_applicable' }
+      }
+    ],
+    sources: [
+      { id: 'src:parks-ponycanyon', kind: 'official', kindLabel: '公式（販売元）', name: 'ポニーキャニオン『PARKS パークス』作品紹介・スタッフ', url: 'https://movie-product.ponycanyon.co.jp/item010.html' }
+    ],
+    scenes: [
+      { id: 'p0', title: '映画館から、映画へ', figure: true,
+        lead: '映画館が閉じたあとに、新しい作品が生まれることもある。',
+        relationIds: ['rel:parks-origin'] },
+      { id: 'p1', title: '音楽は、脚本の段階から',
+        factIds: ['fact:parks-director'], relationIds: ['rel:parks-music'],
+        editorialReading: { text: '音楽が早くから制作に加わると、映画の見え方はどう変わるだろう。', refs: ['rel:parks-music'] } },
+      { id: 'p2', title: '映画から、一曲へ', relationIds: ['rel:parks-ending'],
+        editorialReading: { text: '映画を観たあと、その一曲をもう一度聴くと、何が残るだろう。', refs: ['rel:parks-ending'] } },
+      { id: 'p3', title: '作品へ', kind: 'reality', lead: '映画が気になったら、販売元の作品情報へ。' }
+    ],
+    realityDestinations: [
+      { id: 'dest:parks-disc', label: '『PARKS パークス』の作品・ディスク情報を見る',
+        url: 'https://movie-product.ponycanyon.co.jp/item010.html',
+        why: 'ここまで辿った映画の、販売元による作品情報です。',
+        relationIds: ['rel:parks-origin', 'rel:parks-music', 'rel:parks-ending'] }
+    ],
+    ending: { line: 'このスレッドは、ここまでです。', exitLabel: '吉祥寺の棚へ戻る', exitHref: './shelf.html?shelf=kichijoji' }
+  };
+
   window.V3_THREAD_CONTENT = {
     schema: 'v3-thread/rc1',
-    threads: [KOENJI, MORISAKI_BOOK, MORISAKI_FILM]
+    threads: [KOENJI, MORISAKI_BOOK, MORISAKI_FILM, PARKS]
   };
 })();

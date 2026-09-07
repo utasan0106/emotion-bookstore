@@ -281,7 +281,7 @@ check(S.s3 && S.s3.close === 'いまの名称が最初からあったのでは�
   const s0 = S.s0 || {};
   check(s0.figure === true && thread.scenes.filter((s) => s.figure).length === 1, 'the approved image is used exactly once, in S0');
   check(thread.image && thread.image.src === './assets/home-thread-koenji-awaodori.jpg' && thread.image.alt, 'S0 image must be the approved HOME asset with alt');
-  check((contentCode.match(/\.\/assets\//g) || []).length === 1, 'content must reference exactly one local asset');
+  check((contentCode.match(/\.\/assets\//g) || []).length === 2, 'content references Koenji and the licensed Inokashira photo only');
   check(!/https?:\/\/[^'"]+\.(?:jpg|jpeg|png|webp|gif|svg|mp4|mp3|pdf)/i.test(contentCode), 'content must not reference remote media');
   const f = fact((s0.factIds || [])[0]);
   check(!!f && f.claim === '現在、この催しには40を超える連が活動している。多くの連は、一年を通して練習を続けている。' && JSON.stringify(f.sourceIds) === '["src:official-join"]', 'S0 present fact (40+ groups / practice through the year) must cite the official participation source');
@@ -547,7 +547,7 @@ for (const banned of ['animation', 'transition', '@keyframes', 'box-shadow', 'te
   const book = CONTENT.threads.find((t) => t && t.threadId === 'morisaki-book');
   const film = CONTENT.threads.find((t) => t && t.threadId === 'morisaki-film');
   check(!!book && !!film, 'thread_content.js must expose morisaki-book and morisaki-film next to koenji-dance-history');
-  check(CONTENT.threads.length === 3 && CONTENT.threads[0] === thread, 'KOENJI stays first; exactly three threads');
+  check(CONTENT.threads.length === 4 && CONTENT.threads[0] === thread, 'KOENJI stays first; four threads including PARKS');
   if (book && film) {
     const same = (k) => book[k] === film[k];
     check(same('nodes') && same('facts') && same('relations') && same('sources'), 'Morisaki Book / Film must share nodes / facts / relations / sources by reference');

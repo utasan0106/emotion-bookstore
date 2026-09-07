@@ -226,6 +226,7 @@ function serve() {
       });
       check(S, 'exactly_3_objects', shelf.cards === 3, shelf.cards);
       const readings = {
+        kichijoji: [['./thread.html?thread=kichijoji-parks', '閉館から始まった、公園の映画']],
         koenji: [['./thread.html?thread=koenji-dance-history', '踊りが街に根づくまで']],
         jinbocho: [['./thread.html?thread=morisaki-book', '本から二つの『森崎書店の日々』'], ['./thread.html?thread=morisaki-film', '映画から二つの『森崎書店の日々』']]
       }[id] || [];

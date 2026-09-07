@@ -913,6 +913,9 @@
     var links = document.getElementById('shelfReadingLinks');
     if (!section || !links) return;
     var readings = {
+      kichijoji: [
+        { title: '閉館から始まった、公園の映画', href: './thread.html?thread=kichijoji-parks' }
+      ],
       koenji: [
         { title: '踊りが街に根づくまで', href: './thread.html?thread=koenji-dance-history' }
       ],
