@@ -20,10 +20,10 @@
   var GENERIC_TITLE = 'みんなの感情書店｜スレッド';
   var LOST = { line: 'このスレッドはありません。', exit: '入口へ戻る', href: './index.html' };
   var VERIFICATION = {
-    single_source: '検証状態：単一資料',
-    corroborated: '検証状態：複数の資料が一致',
-    source_difference: '検証状態：資料間に年次差',
-    unresolved: '検証状態：未解決'
+    single_source: '出典：1件の資料',
+    corroborated: '出典：複数の資料で一致',
+    source_difference: '出典：資料によって年次が異なります',
+    unresolved: '出典：資料だけでは確認できていません'
   };
   var SUPPORT_MODE = { direct_statement: '資料の記述', oral_testimony: '口述', editorial_synthesis: '編集部の整理' };
   var ORDER_NOTE = '※並び順は、資料の正しさの順位ではありません。';
@@ -68,7 +68,7 @@
   }
 
   function verificationLine(item) {
-    return h('p', { class: 'th-verification', 'data-verification': item.verificationState, text: VERIFICATION[item.verificationState] || '検証状態：不明' });
+    return h('p', { class: 'th-verification', 'data-verification': item.verificationState, text: VERIFICATION[item.verificationState] || '出典：確認情報なし' });
   }
 
   function supportModeLine(item) {

@@ -231,7 +231,7 @@ async function elementShot(page, selector, name, width) {
     check(S, 'title_is_the_thread_title', m.title === TITLE, m.title);
     check(S, 'single_h1_is_the_thread_h1', m.h1 === 1 && m.h1Text === '踊りが街に根づくまで', { h1: m.h1, text: m.h1Text });
     check(S, 'header_copy_present', ['高円寺', '主題：高円寺で受け継がれてきた踊り', '編集：みんなの感情書店 編集部', 'このThreadでは「教わる／伝わる」に注目しました。', '最終確認：2026-09-04',
-      '約15分。いつ止めてもかまいません。', 'アカウント・位置情報・カメラは使いません。', '歩きながら見ないでください。立ち止まれる場所で。'].every((t) => m.header.includes(t)), m.header);
+      '約15分'].every((t) => m.header.includes(t)), m.header);
     check(S, 'no_horizontal_overflow', m.docW <= m.vw, { docW: m.docW, vw: m.vw });
     check(S, 'no_clipped_text', m.clipped.length === 0, m.clipped.slice(0, 6));
     check(S, 'one_column_everywhere', !!m.headRect && m.scenes.every((s) => s.rect.x === m.headRect.x && Math.abs(s.rect.w - m.headRect.w) <= 1) &&
@@ -248,12 +248,12 @@ async function elementShot(page, selector, name, width) {
       /1961 ／ つながる/.test(rel['rel:connected-1961'].time || '') && /1961–62 ／ 教わる/.test(rel['rel:learned-1961-62'].time || ''), m.relations.map((r) => [r.id, r.time, r.y]));
     check(S, 'question_is_a_single_line_without_controls', !!m.question && m.question.text === 'この二つの間に、何が起きた？' && m.question.controls === 0, m.question);
     const learned = rel['rel:learned-1961-62'];
-    check(S, 'source_difference_visible', !!learned && learned.state === 'source_difference' && learned.verification === '検証状態：資料間に年次差' && learned.verificationH > 0 && /検証状態：資料間に年次差/.test(learned.surface) && /資料を見る（2件）/.test(learned.summary || '') && !/裏づけの種類/.test(learned.surface) && !learned.open, learned);
+    check(S, 'source_difference_visible', !!learned && learned.state === 'source_difference' && learned.verification === '出典：資料によって年次が異なります' && learned.verificationH > 0 && /出典：資料によって年次が異なります/.test(learned.surface) && /資料を見る（2件）/.test(learned.summary || '') && !/裏づけの種類/.test(learned.surface) && !learned.open, learned);
     check(S, 'relations_are_the_four_verified_ones', m.relations.map((r) => r.id).sort().join('|') === 'rel:connected-1961|rel:learned-1961-62|rel:originated-1957|rel:renamed-1963' && m.relations.every((r) => !/reading/.test(r.type)), m.relations.map((r) => [r.id, r.type]));
     check(S, 'claim_and_support_are_separate_blocks', m.relations.every((r) => r.claims === 1 && r.supports === 1 && r.readingsInside === 0 && r.badges === 0) && m.facts.every((x) => x.claims === 1 && x.supports === 1 && x.badges === 0), { relations: m.relations.map((r) => [r.id, r.claims, r.supports, r.readingsInside]), facts: m.facts });
     /* HQ LIMITED FIX 01 UNIT B: 通常（single_source / corroborated）の closed surface は本文 + 「出典あり　資料を見る（N件）」だけ */
     const light = m.relations.filter((r) => r.state !== 'source_difference').concat(m.facts.filter((x) => x.state !== 'source_difference'));
-    check(S, 'light_default_surface_for_normal_items', light.length === 4 && light.every((x) => !x.open && !/検証状態：単一資料|検証状態：複数の資料が一致|裏づけの種類|検証状態/.test(x.surface) && /^出典あり\s*資料を見る（\d件）$/.test((x.summary || '').trim())),
+    check(S, 'light_default_surface_for_normal_items', light.length === 4 && light.every((x) => !x.open && !/出典：1件の資料|出典：複数の資料で一致|裏づけの種類|検証状態/.test(x.surface) && /^出典あり\s*資料を見る（\d件）$/.test((x.summary || '').trim())),
       light.map((x) => [x.id, x.summary, x.surface.slice(0, 60)]));
     check(S, 'editorial_reading_never_inherits_a_fact_badge', m.readings.length === 2 && m.readings.every((r) => r.layer === 'reading' && r.label === undefined && r.labelH === 0 && r.factBadges === 0 && !r.verification && !r.insideFact && r.borderStyle === 'dashed') &&
       m.readings.map((r) => r.scene).join('|') === 's3|s4', m.readings);
@@ -291,7 +291,7 @@ async function elementShot(page, selector, name, width) {
       const d = document.querySelector('.th-relation[data-relation-id="rel:originated-1957"] .th-evidence');
       return { open: d.open, body: d.querySelector('.th-evidence-body').innerText.replace(/\s+/g, ' '), cards: [...d.querySelectorAll('.th-source')].map((c) => ({ id: c.getAttribute('data-source-id'), href: c.querySelector('.th-source-link').getAttribute('href'), h: Math.round(c.getBoundingClientRect().height) })) };
     });
-    check(S, 'normal_drawer_keeps_verification_and_support_mode_inside', s1.open === true && /検証状態：単一資料/.test(s1.body) && /裏づけの種類：資料の記述/.test(s1.body) && s1.cards.length === 1 && s1.cards[0].id === 'src:official-history' && /^https:\/\//.test(s1.cards[0].href) && s1.cards[0].h > 0, s1);
+    check(S, 'normal_drawer_keeps_verification_and_support_mode_inside', s1.open === true && /出典：1件の資料/.test(s1.body) && /裏づけの種類：資料の記述/.test(s1.body) && s1.cards.length === 1 && s1.cards[0].id === 'src:official-history' && /^https:\/\//.test(s1.cards[0].href) && s1.cards[0].h > 0, s1);
     await page.click(s1Sel);
     await page.waitForTimeout(100);
 
@@ -720,7 +720,7 @@ async function elementShot(page, selector, name, width) {
       return { open: d.open, body: d.querySelector('.th-evidence-body').innerText.replace(/\s+/g, ' '), cards: [...d.querySelectorAll('.th-source')].map((c) => ({ id: c.getAttribute('data-source-id'), kind: c.getAttribute('data-source-kind'), name: (c.querySelector('.th-source-name') || {}).textContent, href: c.querySelector('.th-source-link').getAttribute('href'), h: Math.round(c.getBoundingClientRect().height) })), docW: document.documentElement.scrollWidth, vw: document.documentElement.clientWidth };
     });
     check(S, 'evidence_drawer_works', drawer.open === true && drawer.cards.length === 1 && drawer.cards[0].id === 'src:morisaki-theater-archive' && drawer.cards[0].kind === 'cultural_archive' && drawer.cards[0].name === '神保町シアター（街と映画 Bプログラム）' &&
-      drawer.cards[0].href === 'https://www.shogakukan.co.jp/jinbocho-theater/archive/program/towns-b_list.html' && drawer.cards[0].h > 0 && /検証状態：単一資料/.test(drawer.body) && /裏づけの種類：資料の記述/.test(drawer.body) && drawer.docW <= drawer.vw, drawer);
+      drawer.cards[0].href === 'https://www.shogakukan.co.jp/jinbocho-theater/archive/program/towns-b_list.html' && drawer.cards[0].h > 0 && /出典：1件の資料/.test(drawer.body) && /裏づけの種類：資料の記述/.test(drawer.body) && drawer.docW <= drawer.vw, drawer);
     const f = await fontsFor(ctx, page, M_PROBES);
     console.log(`fonts ${v.name}/${id}: ${Object.entries(f).map(([k, x]) => `${k}=${x}`).join(' ')}`);
     check(S, 'actual_noto_cjk_font', Object.values(f).every((x) => /Noto (Serif|Sans) CJK JP/.test(x)), f);

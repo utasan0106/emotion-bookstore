@@ -33,9 +33,7 @@
     checkedLabel: '最終確認：2026-09-04',
     duration: '約15分',
     guidance: [
-      '約15分。いつ止めてもかまいません。',
-      'アカウント・位置情報・カメラは使いません。',
-      '歩きながら見ないでください。立ち止まれる場所で。'
+      '約15分'
     ],
 
     /* 承認済み HOME asset を一度だけ使う（credits.html に権利記録あり）。 */
@@ -168,8 +166,7 @@
       {
         id: 's1',
         title: '1957 ／ はじまる',
-        relationIds: ['rel:originated-1957'],
-        close: '起点は、一点ではなく通りです。'
+        relationIds: ['rel:originated-1957']
       },
       {
         id: 's2',
@@ -227,7 +224,7 @@
         relationIds: ['rel:renamed-1963'],
         close: 'いまの名称が最初からあったのではなく、1963年に正式に変わったことが見える。',
         editorialReading: {
-          text: '受け取ったものが、街の中で別の形になっていく。名称が変わった理由そのものは、このThreadでは扱っていません。',
+          text: '受け取ったものが、街の中で別の形になっていく。',
           refs: ['rel:learned-1961-62', 'rel:renamed-1963']
         }
       },
@@ -276,7 +273,7 @@
         label: '1957の起点を歩く（高円寺パル商店街）',
         url: 'https://www.koenji-pal.jp/about',
         why: '1957年に踊りが始まった、商店街の通り。',
-        note: '起点は通りとして辿ります。一点には特定していません。歩くことは必須ではありません。',
+        note: '商店街の公式サイトで、通りの案内を確認できます。',
         relationIds: ['rel:originated-1957'],
         sourceIds: ['src:koenji-pal-about', 'src:koenji-pal-access']
       },

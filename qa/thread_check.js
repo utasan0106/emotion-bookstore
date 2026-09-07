@@ -120,8 +120,8 @@ const HEADER = {
 };
 for (const [k, v] of Object.entries(HEADER)) check(thread[k] === v, `thread.${k} must be exactly「${v}」(got ${thread[k]})`);
 check(thread.image && thread.image.alt === '夜の高円寺の路上で踊る連。白い衣装の踊り手たち', 'image alt must be the neutral Founder copy');
-check(JSON.stringify(thread.guidance) === JSON.stringify(['約15分。いつ止めてもかまいません。', 'アカウント・位置情報・カメラは使いません。', '歩きながら見ないでください。立ち止まれる場所で。']),
-  'reading guidance must be the three fixed lines');
+check(JSON.stringify(thread.guidance) === JSON.stringify(['約15分']),
+  'reading guidance contains only 約15分');
 /* FOUNDER PREVIEW FIX C1: location mode（remote / onsite）は持たない。 */
 check(!('modes' in thread), 'KOENJI must carry no location modes (Founder Preview Fix C1)');
 check(!/合図|いるふり|20秒|'remote'|'onsite'|kind: 'cue'/.test(contentCode), 'thread_content.js must carry no cue / mode copy (Founder Preview Fix C)');
@@ -377,7 +377,7 @@ for (const s of thread.scenes) {
     check(typeof x.why === 'string' && x.why, `destination ${x.id} needs a why`);
     check(!/stage04/.test(x.url), 'plus+ must not be an active destination');
   }
-  check(/一点には特定していません/.test(d[0].note || '') && /必須ではありません/.test(d[0].note || ''), 'destination A must not name an exact origin point nor mandate walking');
+  check(d[0].note === '商店街の公式サイトで、通りの案内を確認できます。', 'destination A explains the official street information exit');
   check(/連ごとに異なります/.test(d[1].note || ''), 'destination B must not imply the same recruitment conditions across groups');
   const notes = (thread.presentReturn.notes || []);
   const ended = notes.find((n) => n.status === 'ended');
@@ -452,7 +452,7 @@ check(/\(scene\.beats \|\| \[\]\)\.forEach/.test(js), 'renderer must iterate sce
   check(drawer.includes("'th-order-note'") && drawer.includes("'th-difference-note'") && drawer.includes('sourceCard(source, variant)'), 'drawer must keep source cards / order note / difference note');
   check(js.includes("'このスレッドはありません。'") && js.includes("'入口へ戻る'"), 'fail-closed copy must be generic');
   check(js.includes("'みんなの感情書店｜スレッド'"), 'fail-closed title must be generic');
-  check(/検証状態：資料間に年次差/.test(js) && /検証状態：単一資料/.test(js), 'verification labels must be rendered as 検証状態：…');
+  check(/出典：資料によって年次が異なります/.test(js) && /出典：1件の資料/.test(js), 'verification labels must be rendered as 検証状態：…');
   check(js.includes("target: '_blank'") && js.includes("rel: 'noopener noreferrer'"), 'external links must open with noopener noreferrer');
   for (const cls of ['official-action', 'shelf-entry', 'result-link', 'open-button', 'sg-copy', 'sg-form']) check(!js.includes(cls) && !html.includes(cls), `thread must not reuse the analytics-bearing class ${cls}`);
 }
