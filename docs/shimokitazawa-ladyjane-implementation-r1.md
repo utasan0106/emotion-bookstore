@@ -71,3 +71,5 @@ License: https://creativecommons.org/licenses/by/2.0/
 Reviewer: PASS — ready for Preview。映画公式・Commonsを独立確認し、87件の画面QAと426件の計測QAを再実行。新規失敗・意図しない変更なし。
 
 追加回帰: PARKS 101件GO。Worksの5FAILはparent18aaba7でも再現し、今回の新規失敗ではない。
+
+最終回帰: Release browser 776/776GO。初回は追加creditの項目分離不足のみ2FAILで、原典URLとライセンスURLを既存8項目形式へ揃えた。テスト変更なしで全件再実行PASS。限定修正も独立レビューPASS。GA4 client selftest GO。
