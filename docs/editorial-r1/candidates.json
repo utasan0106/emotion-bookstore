@@ -1,0 +1,383 @@
+{
+  "status": "RESEARCH_ONLY_NOT_RUNTIME",
+  "checked_on": "2026-09-07",
+  "sources": {
+    "jiro": {
+      "url": "https://www.ele-king.net/books/012100/",
+      "kind": "出版社",
+      "access": "本文確認",
+      "supports": "正式書名・編者・2026-02-06刊行、スケジュール・写真等を収める記録本"
+    },
+    "jiro-club": {
+      "url": "https://jirokichi.net/news/20260116/",
+      "kind": "会場公式",
+      "access": "先行調査で確認済み・今回未再取得",
+      "supports": "既存Shelfの書籍言及の出典"
+    },
+    "sunset": {
+      "url": "https://pedalrecords.bandcamp.com/album/sunset-notes",
+      "kind": "レーベル",
+      "access": "本文確認",
+      "supports": "栗原ミチオ、2005年原発売／2020年デジタル版、収録曲Time To Go"
+    },
+    "shelter": {
+      "url": "https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204",
+      "kind": "アーティスト",
+      "access": "本文確認",
+      "supports": "2007年SHELTER録音。曲03は栗原ミチオの原演奏とクレジット"
+    },
+    "baus": {
+      "url": "https://bausmovie.com/",
+      "kind": "作品公式",
+      "access": "ページ確認・主要紹介は画像",
+      "supports": "公式の作品情報への出口。上映中とは断定しない"
+    },
+    "baus-producer": {
+      "url": "https://www.boid-s.com/8280",
+      "kind": "製作・配給当事者",
+      "access": "本文確認",
+      "supports": "本田拓夫著書を原作とし、青山真治の脚本を甫木元空が引き継ぐ"
+    },
+    "baus-interview": {
+      "url": "https://brutus.jp/post-413211/",
+      "kind": "監督・出演者インタビュー",
+      "access": "検索抜粋確認・本文の該当段落は未精読",
+      "supports": "制作理由の追加調査候補。確定関係の根拠には未採用"
+    },
+    "lady-book": {
+      "url": "https://www.genki-shobou.co.jp/books/978-4-901998-72-7",
+      "kind": "出版社",
+      "access": "本文確認",
+      "supports": "大木雄高、2011年4月、LADY JANEを拠点とする随筆"
+    },
+    "lady-film": {
+      "url": "https://shimokita-ladyjane-movie.com/",
+      "kind": "映画公式・制作当事者",
+      "access": "本文・年譜確認",
+      "supports": "2011年書籍、2015年記録映画、2017年改訂版への言及"
+    },
+    "comic": {
+      "url": "https://magazine.yanmaga.jp/c/kichijyojidakegasumitaimachidesuka/",
+      "kind": "出版社",
+      "access": "検索結果確認・直接取得失敗",
+      "supports": "原作漫画と作者マキヒロチ。続編と区別が必要"
+    },
+    "comic-interview": {
+      "url": "https://suumo.jp/journal/2016/04/15/109516/",
+      "kind": "著者本人インタビュー",
+      "access": "本文確認",
+      "supports": "街を取り上げる編集判断についての本人の説明"
+    },
+    "gugu": {
+      "url": "https://wod.wowow.co.jp/program/021429",
+      "kind": "放送・配信元",
+      "access": "非対応ブラウザ案内のみ取得",
+      "supports": "作品版・監督・現在配信の確定根拠にできない"
+    },
+    "machi": {
+      "url": "https://machinouede.com/",
+      "kind": "作品公式候補",
+      "access": "直接取得失敗",
+      "supports": "検索上の作品情報のみ。リンク切れとは断定しない"
+    },
+    "machi-distributor": {
+      "url": "https://www.unext.co.jp/en/press-room/machinouede-announce-2021-09-28",
+      "kind": "配信元",
+      "access": "検索結果確認",
+      "supports": "2021年配信開始告知。現在の配信根拠にはしない"
+    },
+    "shimokita-voice": {
+      "url": "https://www.tumblr.com/shimokita-voice/179272005198/下北沢で生きる-shimokita-2003-to-2017-改訂版",
+      "kind": "製作団体名義・同一性要確認",
+      "access": "検索結果確認",
+      "supports": "改訂版を2003 to 2017と表記。映画公式年譜の2014と相違"
+    },
+    "rainbow2": {
+      "url": "https://boris.bandcamp.com/album/rainbow-2",
+      "kind": "アーティスト",
+      "access": "本文確認",
+      "supports": "Rainbow特別版の追加盤から2026年デジタル版へ"
+    },
+    "cloud": {
+      "url": "https://boris.bandcamp.com/album/cloud-chamber",
+      "kind": "アーティスト",
+      "access": "本文確認",
+      "supports": "2008年発売作品の2026年デジタル版"
+    },
+    "ufo": {
+      "url": "https://boris.bandcamp.com/album/live-at-u-f-o-club",
+      "kind": "アーティスト",
+      "access": "本文・クレジット確認",
+      "supports": "2019-02-08 U.F.O. CLUB Tokyo録音、共演者"
+    },
+    "kichi-tv": {
+      "url": "https://www.tv-tokyo.co.jp/kichijoji/",
+      "kind": "放送局",
+      "access": "本文確認",
+      "supports": "2016年開始の番組アーカイブ。スタッフ詳細・現在視聴は未確認"
+    }
+  },
+  "candidates": [
+    {
+      "id": "jiro-book",
+      "title": "次郎吉 to JIROKICHI－高円寺のライブハウスが歩んだ50年－",
+      "medium": "Book",
+      "creator": "Live Music JIROKICHI 編",
+      "city_relation": "高円寺／既存Shelfの会場を記録する本",
+      "source_ids": [
+        "jiro",
+        "jiro-club"
+      ],
+      "relation_evidence": "ライブハウスの予定表が一冊の記録にまとまる。既存の会場紹介から本へ進める。",
+      "official_destination": "https://www.ele-king.net/books/012100/",
+      "access_status": "本文確認",
+      "rights_provenance": "表紙・ポスター・ジャケット・音源の転載許諾未確認。再利用しない。紹介は独自短文と外部リンク。画像を付けるならCommons/Unsplashの個別ライセンス確認を別ゲートとする。",
+      "why_this_exists_here": "Shelfで触れている本の正体と読む出口を具体化する。",
+      "why_now": "EVERGREEN",
+      "next_real_action": "出版社で書誌を確認し、書店で探す。会場の最新予定も公式で確認。",
+      "thread_potential": "HIGH",
+      "decision": "KEEP",
+      "gaps": "紹介文のみ実装可能。本文未読のため、収録証言の内容や編纂動機の掘り下げはHOLD。"
+    },
+    {
+      "id": "sunset-notes",
+      "title": "サンセット・ノーツ / SUNSET NOTES",
+      "medium": "Music",
+      "creator": "栗原ミチオ / Michio Kurihara",
+      "city_relation": "下北沢との関係は既存SHELTERライブ盤の収録曲経由。ソロ盤の録音地とは言わない",
+      "source_ids": [
+        "sunset",
+        "shelter"
+      ],
+      "relation_evidence": "ライブ盤のTime to Goからソロ盤の同曲へ辿れる。",
+      "official_destination": "https://pedalrecords.bandcamp.com/album/sunset-notes",
+      "access_status": "本文確認",
+      "rights_provenance": "表紙・ポスター・ジャケット・音源の転載許諾未確認。再利用しない。紹介は独自短文と外部リンク。画像を付けるならCommons/Unsplashの個別ライセンス確認を別ゲートとする。",
+      "why_this_exists_here": "共演者の名前を知るだけで終わらず、その人の音楽を実際に聴ける。",
+      "why_now": "EVERGREEN",
+      "next_real_action": "レーベルの作品ページで曲を聴き比べ、購入条件を確認。",
+      "thread_potential": "HIGH",
+      "decision": "KEEP",
+      "gaps": "原曲を選んだ理由は未確認。曲同一性・収録関係だけを使う。"
+    },
+    {
+      "id": "baus-film",
+      "title": "BAUS 映画から船出した映画館",
+      "medium": "Film",
+      "creator": "監督：甫木元空／脚本：青山真治・甫木元空",
+      "city_relation": "吉祥寺／バウスシアターを扱う作品",
+      "source_ids": [
+        "baus",
+        "baus-producer"
+      ],
+      "relation_evidence": "映画館についての本が、引き継がれた脚本を経て映画になる。",
+      "official_destination": "https://bausmovie.com/",
+      "access_status": "ページ確認・主要紹介は画像",
+      "rights_provenance": "表紙・ポスター・ジャケット・音源の転載許諾未確認。再利用しない。紹介は独自短文と外部リンク。画像を付けるならCommons/Unsplashの個別ライセンス確認を別ゲートとする。",
+      "why_this_exists_here": "PARKSで知った映画館を、別の制作過程から読み直す。両作品の直接因果は作らない。",
+      "why_now": "EVERGREEN",
+      "next_real_action": "公式で作品情報と公開情報を確認する。",
+      "thread_potential": "HIGH",
+      "decision": "KEEP",
+      "gaps": "映画の場面を史実にしない。全制作意図や現在上映は未確定。"
+    },
+    {
+      "id": "lady-book",
+      "title": "下北沢祝祭行 レディ・ジェーンは夜の扉",
+      "medium": "Book",
+      "creator": "大木雄高",
+      "city_relation": "下北沢／LADY JANEを拠点にした随筆",
+      "source_ids": [
+        "lady-book",
+        "lady-film"
+      ],
+      "relation_evidence": "終幕の映像から、店主が2011年に記した時間へ戻る。",
+      "official_destination": "https://www.genki-shobou.co.jp/books/978-4-901998-72-7",
+      "access_status": "本文確認",
+      "rights_provenance": "表紙・ポスター・ジャケット・音源の転載許諾未確認。再利用しない。紹介は独自短文と外部リンク。画像を付けるならCommons/Unsplashの個別ライセンス確認を別ゲートとする。",
+      "why_this_exists_here": "未公開LADY JANE Threadを閉店の話だけで終わらせない候補。",
+      "why_now": "EVERGREEN",
+      "next_real_action": "出版社で内容・書誌を確認し、書店で入手方法を調べる。",
+      "thread_potential": "MEDIUM",
+      "decision": "KEEP",
+      "gaps": "本の本文は未読。在庫保証・個々の証言の採用はしない。"
+    },
+    {
+      "id": "kichijoji-comic",
+      "title": "吉祥寺だけが住みたい街ですか？",
+      "medium": "Book / Comic",
+      "creator": "マキヒロチ",
+      "city_relation": "吉祥寺を入口に他の街へ目を向ける漫画。実際の住まいを利用者に推薦しない",
+      "source_ids": [
+        "comic",
+        "comic-interview"
+      ],
+      "relation_evidence": "街を選ぶ視点そのものを著者の説明から辿れる。",
+      "official_destination": "https://magazine.yanmaga.jp/c/kichijyojidakegasumitaimachidesuka/",
+      "access_status": "検索結果確認・直接取得失敗",
+      "rights_provenance": "表紙・ポスター・ジャケット・音源の転載許諾未確認。再利用しない。紹介は独自短文と外部リンク。画像を付けるならCommons/Unsplashの個別ライセンス確認を別ゲートとする。",
+      "why_this_exists_here": "映画館・閉店の文脈から離れ、街の見方の幅を広げる。",
+      "why_now": "EVERGREEN",
+      "next_real_action": "出版社の原作ページを確認する（到達再確認後）。",
+      "thread_potential": "HIGH",
+      "decision": "HOLD",
+      "gaps": "出版社直接取得失敗。続編との版区別と作品への出口を再確認。"
+    },
+    {
+      "id": "gugu-film",
+      "title": "グーグーだって猫である（2008年映画を調査対象）",
+      "medium": "Film",
+      "creator": "犬童一心（一次書誌での再確認待ち）",
+      "city_relation": "吉祥寺との作品関係を一次資料で要確認",
+      "source_ids": [
+        "gugu"
+      ],
+      "relation_evidence": "公園と映画の既存文脈に、原作漫画の創作背景を加えられる可能性。",
+      "official_destination": "https://wod.wowow.co.jp/program/021429",
+      "access_status": "非対応ブラウザ案内のみ取得",
+      "rights_provenance": "表紙・ポスター・ジャケット・音源の転載許諾未確認。再利用しない。紹介は独自短文と外部リンク。画像を付けるならCommons/Unsplashの個別ライセンス確認を別ゲートとする。",
+      "why_this_exists_here": "EVERGREEN候補。具体的な関係の採用はまだしない。",
+      "why_now": "EVERGREEN",
+      "next_real_action": "作品版に合う公式情報を特定した後に案内。",
+      "thread_potential": "LOW",
+      "decision": "HOLD",
+      "gaps": "取得先はブラウザ案内のみ。同名テレビ作品との混同を排除できていない。"
+    },
+    {
+      "id": "machinouede",
+      "title": "街の上で",
+      "medium": "Film",
+      "creator": "今泉力哉（配信元告知・正式クレジット再確認待ち）",
+      "city_relation": "下北沢の街と映画の関係を候補として調査",
+      "source_ids": [
+        "machi",
+        "machi-distributor"
+      ],
+      "relation_evidence": "劇場・ライブハウス紹介から、街を歩く映画へ進める可能性。",
+      "official_destination": "https://machinouede.com/",
+      "access_status": "直接取得失敗",
+      "rights_provenance": "表紙・ポスター・ジャケット・音源の転載許諾未確認。再利用しない。紹介は独自短文と外部リンク。画像を付けるならCommons/Unsplashの個別ライセンス確認を別ゲートとする。",
+      "why_this_exists_here": "閉店・記録以外の日常を扱う候補。",
+      "why_now": "EVERGREEN",
+      "next_real_action": "公式の作品情報へ（到達確認後）。",
+      "thread_potential": "MEDIUM",
+      "decision": "HOLD",
+      "gaps": "公式直接取得失敗。2021年配信開始を現在配信中としない。"
+    },
+    {
+      "id": "shimokita-documentary",
+      "title": "下北沢で生きる SHIMOKITA 2003 TO 2014（改訂版との区別未確定）",
+      "medium": "Film / Documentary",
+      "creator": "山田正美（改訂版クレジット）／製作総指揮：大木雄高",
+      "city_relation": "下北沢／LADY JANE店主の記録活動",
+      "source_ids": [
+        "lady-film",
+        "shimokita-voice"
+      ],
+      "relation_evidence": "店の文化と街の変化を、記録する行為から考える候補。",
+      "official_destination": null,
+      "access_status": "未確定",
+      "rights_provenance": "表紙・ポスター・ジャケット・音源の転載許諾未確認。再利用しない。紹介は独自短文と外部リンク。画像を付けるならCommons/Unsplashの個別ライセンス確認を別ゲートとする。",
+      "why_this_exists_here": "閉店の理由を推測せず、記録の実体を確認する。",
+      "why_now": "EVERGREEN",
+      "next_real_action": "版の同定と公式上映・作品案内を確認してから進む。",
+      "thread_potential": "HIGH",
+      "decision": "HOLD",
+      "gaps": "一次資料間で改訂版タイトルの対象年が異なる。視聴出口も未確定。"
+    },
+    {
+      "id": "rainbow2",
+      "title": "Rainbow 2",
+      "medium": "Music",
+      "creator": "Boris with Michio Kurihara",
+      "city_relation": "下北沢SHELTER作品の共演者・Rainbow経由。当地制作とは主張しない",
+      "source_ids": [
+        "rainbow2",
+        "shelter"
+      ],
+      "relation_evidence": "特別版に含まれた音源が、別の入口で聴けるようになる。",
+      "official_destination": "https://boris.bandcamp.com/album/rainbow-2",
+      "access_status": "本文確認",
+      "rights_provenance": "表紙・ポスター・ジャケット・音源の転載許諾未確認。再利用しない。紹介は独自短文と外部リンク。画像を付けるならCommons/Unsplashの個別ライセンス確認を別ゲートとする。",
+      "why_this_exists_here": "EVERGREEN。2026年配信は確認済みだが、時事理由だけで採用しない。",
+      "why_now": "EVERGREEN",
+      "next_real_action": "公式音源ページを聴く。",
+      "thread_potential": "MEDIUM",
+      "decision": "HOLD",
+      "gaps": "出典は強いが同一アーティストへの偏りを増やす。Sunset Notesを先行。"
+    },
+    {
+      "id": "cloud-chamber",
+      "title": "Cloud Chamber -クラウドチェンバー-",
+      "medium": "Music",
+      "creator": "Boris with Michio Kurihara",
+      "city_relation": "既存Boris作品の共演活動経由。4街内の制作場所は未採用",
+      "source_ids": [
+        "cloud",
+        "shelter"
+      ],
+      "relation_evidence": "同じ共演者の次の作品へ、アーティスト自身の解説で辿れる。",
+      "official_destination": "https://boris.bandcamp.com/album/cloud-chamber",
+      "access_status": "本文確認",
+      "rights_provenance": "表紙・ポスター・ジャケット・音源の転載許諾未確認。再利用しない。紹介は独自短文と外部リンク。画像を付けるならCommons/Unsplashの個別ライセンス確認を別ゲートとする。",
+      "why_this_exists_here": "EVERGREEN。原発売とデジタル化を分けて扱う。",
+      "why_now": "EVERGREEN",
+      "next_real_action": "公式の作品解説と音源を確認する。",
+      "thread_potential": "MEDIUM",
+      "decision": "HOLD",
+      "gaps": "最初の追加セットでは音楽の同一文脈が過密になる。"
+    },
+    {
+      "id": "ufo-live",
+      "title": "Live at U.F.O. CLUB",
+      "medium": "Music / Live",
+      "creator": "Boris with Michio Kurihara",
+      "city_relation": "SHELTER盤と同じ共演者の別公演。高円寺への地理的接続は会場公式で要確認",
+      "source_ids": [
+        "ufo",
+        "shelter"
+      ],
+      "relation_evidence": "2007年と2019年の別の演奏へ進める。",
+      "official_destination": "https://boris.bandcamp.com/album/live-at-u-f-o-club",
+      "access_status": "本文・クレジット確認",
+      "rights_provenance": "表紙・ポスター・ジャケット・音源の転載許諾未確認。再利用しない。紹介は独自短文と外部リンク。画像を付けるならCommons/Unsplashの個別ライセンス確認を別ゲートとする。",
+      "why_this_exists_here": "EVERGREEN。再会した理由と録音された事実を混ぜない。",
+      "why_now": "EVERGREEN",
+      "next_real_action": "公式音源で別公演を聴く。",
+      "thread_potential": "MEDIUM",
+      "decision": "HOLD",
+      "gaps": "同じ演奏者の集中。2018年再会と2019年録音の区別・会場地理の一次確認が必要。"
+    },
+    {
+      "id": "kichijoji-tv",
+      "title": "吉祥寺だけが住みたい街ですか？（テレビドラマ）",
+      "medium": "Video / TV",
+      "creator": "テレビ東京／製作委員会（監督等は未確定）",
+      "city_relation": "吉祥寺が入口の同名漫画の映像化候補",
+      "source_ids": [
+        "kichi-tv"
+      ],
+      "relation_evidence": "漫画の街の見せ方が映像でどう変わるかを辿る候補。",
+      "official_destination": "https://www.tv-tokyo.co.jp/kichijoji/",
+      "access_status": "本文確認",
+      "rights_provenance": "表紙・ポスター・ジャケット・音源の転載許諾未確認。再利用しない。紹介は独自短文と外部リンク。画像を付けるならCommons/Unsplashの個別ライセンス確認を別ゲートとする。",
+      "why_this_exists_here": "EVERGREEN。過去の放送告知を現在の放送として案内しない。",
+      "why_now": "EVERGREEN",
+      "next_real_action": "番組アーカイブで概要を確認する。",
+      "thread_potential": "LOW",
+      "decision": "HOLD",
+      "gaps": "原作・スタッフ詳細と現在視聴先を未確認。漫画と同時追加して件数を増やさない。"
+    }
+  ],
+  "shortlist": [
+    "jiro-book",
+    "sunset-notes",
+    "baus-film",
+    "lady-book"
+  ],
+  "first_three": [
+    "jiro-book",
+    "sunset-notes",
+    "baus-film"
+  ]
+}

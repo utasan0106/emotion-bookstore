@@ -1,0 +1,587 @@
+{
+  "scope": "Repository snapshot of last confirmed Production base; not a fresh full live-site audit",
+  "productionBase": "5ca8c4e1543d30ca34822c087bdc0090c3deb964",
+  "developmentBase": "16255dc0d3882ec14a2f2e24de6378bcbd0ffc00",
+  "shelves": [
+    {
+      "id": "kichijoji",
+      "name": "吉祥寺の棚",
+      "objects": [
+        {
+          "id": "inokashira-park",
+          "title": "井の頭恩賜公園",
+          "type": "公園・水辺",
+          "destination": "https://www.kensetsu.metro.tokyo.lg.jp/jimusho/seibuk/inokashira",
+          "source": "https://www.kensetsu.metro.tokyo.lg.jp/jimusho/seibuk/inokashira/kouenannai",
+          "mode": "evergreen",
+          "expiresAt": null
+        },
+        {
+          "id": "kichijoji-sometime",
+          "title": "吉祥寺 SOMETIME",
+          "type": "ジャズクラブ・飲食",
+          "destination": "https://www.sometime.co.jp/sometime/",
+          "source": "https://www.sometime.co.jp/sometime/intro.html",
+          "mode": "evergreen",
+          "expiresAt": null
+        },
+        {
+          "id": "kichijoji-theatre",
+          "title": "吉祥寺シアター",
+          "type": "劇場・舞台芸術",
+          "destination": "https://www.musashino.or.jp/k_theatre/index.html",
+          "source": "https://www.musashino.or.jp/k_theatre/1002052/1002053.html",
+          "mode": "evergreen",
+          "expiresAt": null
+        }
+      ],
+      "feature": {
+        "title": "谷口智則展「黒い森を抜けて」",
+        "titlePhrases": [
+          "谷口智則展",
+          "「黒い森を抜けて」"
+        ],
+        "calendarDates": "20260919/20261104",
+        "dateLabel": "9月19日（土）– 11月3日（火・祝） 10:00–19:30",
+        "venue": "武蔵野市立吉祥寺美術館",
+        "why": "新作絵本の原画と、冬の井の頭恩賜公園を取材して構想された「黒い森」の景色が、吉祥寺の美術館に並ぶ。作品から街へ戻る入口として。",
+        "actionLabel": "吉祥寺美術館公式で見る",
+        "actionUrl": "https://www.musashino.or.jp/museum/1002032/1002033/1009868.html",
+        "verifiedAt": "2026-09-04T16:25:53+09:00",
+        "expiresAt": "2026-11-03T19:30:00+09:00"
+      }
+    },
+    {
+      "id": "koenji",
+      "name": "高円寺の棚",
+      "objects": [
+        {
+          "id": "kosugiyu",
+          "title": "小杉湯",
+          "type": "銭湯・まちの湯",
+          "destination": "https://kosugiyu.co.jp/",
+          "source": "https://kosugiyu.co.jp/",
+          "mode": "evergreen",
+          "expiresAt": null
+        },
+        {
+          "id": "jirokichi",
+          "title": "高円寺 JIROKICHI",
+          "type": "ライブハウス・音楽",
+          "destination": "https://jirokichi.net/",
+          "source": "https://jirokichi.net/news/20260116/",
+          "mode": "evergreen",
+          "expiresAt": null
+        },
+        {
+          "id": "koenji-junjo-shotengai-book",
+          "title": "『高円寺純情商店街』",
+          "type": "小説・商店街",
+          "destination": "https://www.shinchosha.co.jp/book/102112/",
+          "source": "https://www.shinchosha.co.jp/book/102112/",
+          "mode": "evergreen",
+          "expiresAt": null
+        }
+      ],
+      "feature": {
+        "title": "座・高円寺『夏の夜の夢』",
+        "titlePhrases": [
+          "座・高円寺",
+          "『夏の夜の夢』"
+        ],
+        "calendarDates": "20260913/20261018",
+        "dateLabel": "9月13日（日）– 10月17日（土）",
+        "venue": "座・高円寺1",
+        "why": "高円寺の公立劇場で、シェイクスピアの喜劇を日本語・日本手話で上演する。街の現在を舞台芸術から見る一件として。",
+        "actionLabel": "座・高円寺公式で見る",
+        "actionUrl": "https://za-koenji.jp/business/natsunoyo2026",
+        "verifiedAt": "2026-09-04T16:25:53+09:00",
+        "expiresAt": "2026-10-18T00:00:00+09:00"
+      }
+    },
+    {
+      "id": "shimokitazawa",
+      "name": "下北沢の棚",
+      "objects": [
+        {
+          "id": "shimokitazawa-shelter",
+          "title": "下北沢 SHELTER",
+          "type": "ライブハウス・音楽",
+          "destination": "https://www.loft-prj.co.jp/schedule/shelter/schedule",
+          "source": "https://www.loft-prj.co.jp/schedule/shelter",
+          "mode": "current",
+          "expiresAt": "2026-09-27T23:59:00+09:00"
+        },
+        {
+          "id": "honda-theater",
+          "title": "本多劇場",
+          "type": "劇場・演劇",
+          "destination": "https://www.honda-geki.com/",
+          "source": "https://www.honda-geki.com/",
+          "mode": "evergreen",
+          "expiresAt": null
+        },
+        {
+          "id": "book-and-beer",
+          "title": "本屋B&B",
+          "type": "本屋・イベント",
+          "destination": "https://bookandbeer.com/",
+          "source": "https://bookandbeer.com/",
+          "mode": "evergreen",
+          "expiresAt": null
+        }
+      ],
+      "feature": {
+        "title": "SHELTER 35th Anniversary “IGNITION GIGS”",
+        "titlePhrases": [
+          "SHELTER 35th Anniversary ",
+          "“IGNITION GIGS”"
+        ],
+        "calendarDates": "20260923/20260924",
+        "dateLabel": "9月23日（水） OPEN 12:00 / START 12:30",
+        "venue": "下北沢SHELTER",
+        "why": "35年続く地下ライブハウスで、周年企画が現在の出演者によって続いている。下北沢に積もる音の時間を見る一件として。",
+        "actionLabel": "SHELTER公式で見る",
+        "actionUrl": "https://www.loft-prj.co.jp/schedule/shelter/357199",
+        "verifiedAt": "2026-09-04T16:25:53+09:00",
+        "expiresAt": "2026-09-24T00:00:00+09:00"
+      }
+    },
+    {
+      "id": "jinbocho",
+      "name": "神保町の棚",
+      "objects": [
+        {
+          "id": "jinbocho-book-town",
+          "title": "JIMBOCHO古書店MAP",
+          "type": "古書店街・本",
+          "destination": "https://jimbou.info/map/",
+          "source": "https://jimbou.info/map/",
+          "mode": "evergreen",
+          "expiresAt": null
+        },
+        {
+          "id": "yaguchi-shoten",
+          "title": "矢口書店",
+          "type": "古書店・映画・演劇",
+          "destination": "https://yaguchishoten.jp/",
+          "source": "https://yaguchishoten.jp/",
+          "mode": "evergreen",
+          "expiresAt": null
+        },
+        {
+          "id": "jinbocho-theater-joyu-damashii-2026",
+          "title": "神保町シアター 女優魂2026",
+          "type": "名画座・映画",
+          "destination": "https://www.shogakukan.co.jp/jinbocho-theater/features/2026-09-12_joyu-damashii-2026.html",
+          "source": "https://www.shogakukan.co.jp/jinbocho-theater/features/2026-09-12_joyu-damashii-2026.html",
+          "mode": "current",
+          "expiresAt": "2026-10-07T00:00:00+09:00"
+        }
+      ],
+      "feature": {
+        "title": "Alicekan 45th Anniversary えほんパーティー",
+        "titlePhrases": [
+          "Alicekan 45th Anniversary ",
+          "えほんパーティー"
+        ],
+        "calendarDates": "20260916/20260930",
+        "dateLabel": "9月16日（水）13:00開始 – 29日（火）17:00終了",
+        "venue": "ブックハウスカフェ 1F ディスプレイウィンドウ",
+        "why": "出版社アリス館の45周年にあわせ、絵本作品のグッズや絵本が神保町のこどもの本専門店に並ぶ。本が作られ、店へ届く現在を見る一件として。",
+        "actionLabel": "ブックハウスカフェ公式で見る",
+        "actionUrl": "https://bookhousecafe.jp/exhibition/content/2484",
+        "verifiedAt": "2026-09-04T16:25:53+09:00",
+        "expiresAt": "2026-09-29T17:00:00+09:00"
+      }
+    }
+  ],
+  "homeDetour": {
+    "label": "今週の寄り道",
+    "weekOf": "2026-09-01",
+    "theme": "ひとりで歩くと、街は少し違って見える。",
+    "themePhrases": [
+      "ひとりで歩くと、",
+      "街は少し違って見える。"
+    ],
+    "items": [
+      {
+        "kind": "本",
+        "title": "すべて真夜中の恋人たち",
+        "creator": "川上未映子",
+        "why": "街の名前を説明する本ではなく、真夜中をひとりで歩く時間から、灯りや距離、人との間合いを感じ直すための一冊。",
+        "actionLabel": "講談社で見る",
+        "actionUrl": "https://www.kodansha.co.jp/book/products/0000206651",
+        "destinations": [
+          {
+            "label": "Amazonで見る",
+            "url": "https://www.amazon.co.jp/dp/4062779404?tag=uta0106-22",
+            "affiliate": true
+          },
+          {
+            "label": "楽天ブックスで見る",
+            "url": "https://hb.afl.rakuten.co.jp/hgc/5590cc07.86ee74b4.5590cc08.a766f047/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F12919330%2F&m=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F12919330%2F",
+            "affiliate": true
+          }
+        ],
+        "media": {
+          "kind": "publisher-link",
+          "sourceLabel": "書影は講談社公式ページで見る",
+          "sourceUrl": "https://www.kodansha.co.jp/book/products/0000206651"
+        }
+      },
+      {
+        "kind": "映画",
+        "title": "PERFECT DAYS",
+        "creator": "ヴィム・ヴェンダース 監督",
+        "why": "名所を巡る映画ではなく、同じ道と同じ仕事の反復のなかで、毎日の街が少しずつ違って見えてくる一本。",
+        "actionLabel": "公式サイトで見る",
+        "actionUrl": "https://www.perfectdays-movie.jp/story/",
+        "destinations": [
+          {
+            "label": "Prime Videoで見る",
+            "url": "https://www.primevideo.com/-/ja/detail/0IBT9N6EWCZ8AEEA4511KKYAE3",
+            "affiliate": false
+          }
+        ],
+        "media": {
+          "kind": "youtube",
+          "videoId": "15crm4zuB04",
+          "videoTitle": "映画『PERFECT DAYS』本予告",
+          "buttonLabel": "本予告を再生",
+          "sourceLabel": "公式予告: 映画会社ビターズ・エンド",
+          "sourceUrl": "https://www.youtube.com/watch?v=15crm4zuB04"
+        }
+      },
+      {
+        "kind": "音楽",
+        "title": "ナイトクルージング",
+        "creator": "フィッシュマンズ",
+        "why": "どこかの街を名指しするのではなく、夜に移動するときの速度や遠さ、街灯のあいだを漂う感覚を置く一曲。",
+        "actionLabel": "Universal Musicで見る",
+        "actionUrl": "https://www.universal-music.co.jp/fishmans/discography/",
+        "destinations": [
+          {
+            "label": "Spotifyで聴く",
+            "url": "https://open.spotify.com/track/36Thm3dOVuCR4SFyzwJioN",
+            "affiliate": false
+          },
+          {
+            "label": "Apple Musicで聴く",
+            "url": "https://music.apple.com/jp/search?term=%E3%83%95%E3%82%A3%E3%83%83%E3%82%B7%E3%83%A5%E3%83%9E%E3%83%B3%E3%82%BA%20%E3%83%8A%E3%82%A4%E3%83%88%E3%82%AF%E3%83%AB%E3%83%BC%E3%82%B8%E3%83%B3%E3%82%B0",
+            "affiliate": false
+          }
+        ],
+        "media": {
+          "kind": "youtube",
+          "videoId": "iy-YU6QHEQY",
+          "videoTitle": "Fishmans - Night Cruising",
+          "buttonLabel": "公式音源を再生",
+          "sourceLabel": "公式音源: Universal Music Group",
+          "sourceUrl": "https://www.youtube.com/watch?v=iy-YU6QHEQY"
+        }
+      }
+    ]
+  },
+  "productionThreads": [
+    {
+      "id": "koenji-dance-history",
+      "title": "踊りが街に根づくまで",
+      "nodes": [
+        {
+          "id": "place:koenji",
+          "type": "Place",
+          "label": "高円寺"
+        },
+        {
+          "id": "place:koenji-pal",
+          "type": "Place",
+          "label": "高円寺パル商店街"
+        },
+        {
+          "id": "place:tokushima",
+          "type": "Place",
+          "label": "徳島"
+        },
+        {
+          "id": "event:koenji-baka-odori",
+          "type": "Event",
+          "label": "高円寺ばか踊り"
+        },
+        {
+          "id": "event:koenji-awaodori",
+          "type": "Event",
+          "label": "現在の踊り"
+        },
+        {
+          "id": "org:koenji-organizers",
+          "type": "Organization",
+          "label": "高円寺の主催者たち"
+        },
+        {
+          "id": "org:tokushima-shimbun",
+          "type": "Organization",
+          "label": "徳島新聞社"
+        },
+        {
+          "id": "org:kiba-ren",
+          "type": "Organization",
+          "label": "木場連"
+        },
+        {
+          "id": "person:kamogawa-choji",
+          "type": "Person",
+          "label": "鴨川長二",
+          "note": "当時の木場連の連長"
+        }
+      ],
+      "destinations": [
+        {
+          "id": "dest:pal-street",
+          "label": "1957の起点を歩く（高円寺パル商店街）",
+          "url": "https://www.koenji-pal.jp/about",
+          "why": "1957年に踊りが始まった、商店街の通り。",
+          "note": "商店街の公式サイトで、通りの案内を確認できます。",
+          "relationIds": [
+            "rel:originated-1957"
+          ],
+          "sourceIds": [
+            "src:koenji-pal-about",
+            "src:koenji-pal-access"
+          ]
+        },
+        {
+          "id": "dest:join",
+          "label": "現在の連を知る／参加・体験を相談する",
+          "url": "https://koenji-awaodori.com/category1/join.html",
+          "why": "このThreadで1961–62年の「教わる」を辿ったあと、現在活動する連を知る入口です。",
+          "note": "参加の条件は連ごとに異なります。それぞれの案内で確かめてください。",
+          "relationIds": [
+            "rel:learned-1961-62"
+          ],
+          "factIds": [
+            "fact:present-groups"
+          ],
+          "sourceIds": [
+            "src:official-join"
+          ]
+        },
+        {
+          "id": "dest:official",
+          "label": "現在の公式情報を見る",
+          "url": "https://koenji-awaodori.com/",
+          "why": "1963年からの名称で続く、いまの公式情報。",
+          "note": "",
+          "relationIds": [
+            "rel:renamed-1963"
+          ],
+          "sourceIds": [
+            "src:official-home"
+          ]
+        },
+        {
+          "id": "dest:official-video",
+          "label": "最後に、現在の公式映像を見る",
+          "url": "https://www.youtube.com/watch?v=dt33RGSRuo0",
+          "videoId": "dt33RGSRuo0",
+          "videoTitle": "主催団体の公式映像",
+          "watchNote": "約15分で観終わります。",
+          "why": "ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。",
+          "note": "2025年の催しを伝える、主催団体の公式映像です。",
+          "sourceIds": [
+            "src:official-video"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "morisaki-book",
+      "title": "二つの『森崎書店の日々』",
+      "nodes": [
+        {
+          "id": "work:morisaki-book",
+          "type": "Book",
+          "label": "森崎書店の日々"
+        },
+        {
+          "id": "work:morisaki-film",
+          "type": "Film",
+          "label": "森崎書店の日々"
+        },
+        {
+          "id": "place:jinbocho",
+          "type": "Place",
+          "label": "神保町"
+        },
+        {
+          "id": "org:jinbocho-theater",
+          "type": "Organization",
+          "label": "神保町シアター"
+        }
+      ],
+      "destinations": [
+        {
+          "id": "dest:jimbou-map",
+          "label": "古書店街を歩く",
+          "url": "https://jimbou.info/map/",
+          "why": "本が舞台とし、映画が描き、撮影した神保町の古書店街そのものへ戻る入口です。",
+          "relationIds": [
+            "rel:morisaki-set-in",
+            "rel:morisaki-depicts",
+            "rel:morisaki-filmed-in"
+          ]
+        },
+        {
+          "id": "dest:jinbocho-theater",
+          "label": "神保町シアターの現在を見る",
+          "url": "https://www.shogakukan.co.jp/jinbocho-theater/features/",
+          "why": "この映画を上映してきた神保町の映画館の、現在のプログラムを見る入口です。",
+          "relationIds": [
+            "rel:morisaki-screened-at"
+          ]
+        },
+        {
+          "id": "dest:yaguchi-shoten",
+          "label": "矢口書店を見る",
+          "url": "https://yaguchishoten.jp/",
+          "editorialExample": true,
+          "note": "編集部が選んだ、いま神保町にある専門古書店の一例です。作品との関係が確認されている店ではありません。"
+        }
+      ]
+    },
+    {
+      "id": "morisaki-film",
+      "title": "二つの『森崎書店の日々』",
+      "nodes": [
+        {
+          "id": "work:morisaki-book",
+          "type": "Book",
+          "label": "森崎書店の日々"
+        },
+        {
+          "id": "work:morisaki-film",
+          "type": "Film",
+          "label": "森崎書店の日々"
+        },
+        {
+          "id": "place:jinbocho",
+          "type": "Place",
+          "label": "神保町"
+        },
+        {
+          "id": "org:jinbocho-theater",
+          "type": "Organization",
+          "label": "神保町シアター"
+        }
+      ],
+      "destinations": [
+        {
+          "id": "dest:jimbou-map",
+          "label": "古書店街を歩く",
+          "url": "https://jimbou.info/map/",
+          "why": "本が舞台とし、映画が描き、撮影した神保町の古書店街そのものへ戻る入口です。",
+          "relationIds": [
+            "rel:morisaki-set-in",
+            "rel:morisaki-depicts",
+            "rel:morisaki-filmed-in"
+          ]
+        },
+        {
+          "id": "dest:jinbocho-theater",
+          "label": "神保町シアターの現在を見る",
+          "url": "https://www.shogakukan.co.jp/jinbocho-theater/features/",
+          "why": "この映画を上映してきた神保町の映画館の、現在のプログラムを見る入口です。",
+          "relationIds": [
+            "rel:morisaki-screened-at"
+          ]
+        },
+        {
+          "id": "dest:yaguchi-shoten",
+          "label": "矢口書店を見る",
+          "url": "https://yaguchishoten.jp/",
+          "editorialExample": true,
+          "note": "編集部が選んだ、いま神保町にある専門古書店の一例です。作品との関係が確認されている店ではありません。"
+        }
+      ]
+    }
+  ],
+  "unreleasedThreads": [
+    {
+      "id": "kichijoji-parks",
+      "title": "閉館から始まった、公園の映画",
+      "destinations": [
+        {
+          "id": "dest:parks-disc",
+          "label": "『PARKS パークス』の作品・ディスク情報を見る",
+          "url": "https://movie-product.ponycanyon.co.jp/item010.html",
+          "why": "ここまで辿った映画の、販売元による作品情報です。",
+          "relationIds": [
+            "rel:parks-origin",
+            "rel:parks-music",
+            "rel:parks-ending"
+          ]
+        },
+        {
+          "id": "dest:parks-album",
+          "label": "曲を収めた『天声ジングル』の公式情報を見る",
+          "url": "https://mirairecords.com/stsr/2166",
+          "why": "エンディング曲を、アルバムの中でも辿れます。",
+          "relationIds": [
+            "rel:parks-ending"
+          ]
+        },
+        {
+          "id": "dest:parks-park",
+          "label": "井の頭恩賜公園の公式案内を見る",
+          "url": "https://www.kensetsu.metro.tokyo.lg.jp/jimusho/seibuk/inokashira",
+          "why": "映画の企画と音楽の背景にある、公園への入口です。",
+          "relationIds": [
+            "rel:parks-origin"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shimokitazawa-ladyjane",
+      "title": "閉店のあと、劇場に集まった音楽",
+      "destinations": [
+        {
+          "id": "dest:ladyjane-film",
+          "label": "映画の作品・公開情報を見る",
+          "url": "https://shimokita-ladyjane-movie.com/",
+          "why": "ここまで辿った記録映画の公式サイトです。",
+          "relationIds": [
+            "rel:ladyjane-film",
+            "rel:ladyjane-screening"
+          ]
+        }
+      ]
+    }
+  ],
+  "works": [
+    {
+      "medium": "Book",
+      "title": "森崎書店の日々",
+      "creator": "八木沢里志",
+      "thread": "morisaki-book"
+    },
+    {
+      "medium": "Film",
+      "title": "森崎書店の日々",
+      "creator": "日向朝子",
+      "thread": "morisaki-film"
+    },
+    {
+      "medium": "Music",
+      "title": "不透明度 -You Laughed Like a Water Mark- Live at Shelter 20070204",
+      "creator": "Boris with Michio Kurihara",
+      "thread": null
+    },
+    {
+      "medium": "Video",
+      "title": "高円寺の踊り｜主催団体の公式映像（2025）",
+      "creator": "主催団体",
+      "thread": null
+    }
+  ]
+}
