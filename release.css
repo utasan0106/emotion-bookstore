@@ -2180,18 +2180,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 }
 .hc-hero-cta-mark { font-size: 15px; color: var(--hc-gold); }
 
-.hc-hero-aside {
-  position: absolute;
-  z-index: 2;
-  left: 690px;
-  top: 281px;
-  margin: 0;
-  font-size: 13px;
-  line-height: 24px;
-  letter-spacing: .04em;
-  color: #e6ded0;
-}
-.hc-hero-aside-line { display: block; }
+
 
 .hc-hero-scroll {
   position: absolute;
@@ -2727,12 +2716,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   .hc-hero-title { font-size: var(--hc-title); line-height: 1.2; }
   .hc-hero-sub { margin-top: 20px; }
   .hc-hero-cta { margin-top: 20px; }
-  .hc-hero-aside {
-    left: auto;
-    right: var(--hc-pad);
-    top: 66px;
-    text-align: right;
-  }
+
 
   /* 2–5. warm sheet — section 間 44px、head は縦積み */
   .hc-sheet { border-radius: 20px 20px 0 0; }
@@ -2799,7 +2783,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   .hc-header { padding: 20px calc(var(--hc-shell-x) - 2px) 0 calc(var(--hc-shell-x) - 4px); }
   .hc-hero-body { left: var(--hc-shell-x); }
   .hc-hero-title { font-size: 64px; line-height: 78px; }
-  .hc-hero-aside { left: auto; right: calc(var(--hc-shell-x) + 50px); }
+
 
   .hc-section { max-width: 768px; margin-inline: auto; padding-inline: 24px; }
   .hc-thread-section { padding-inline: 24px; }
@@ -2828,7 +2812,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   .hc-header { padding: 20px calc(var(--hc-shell-x) - 2px) 0 calc(var(--hc-shell-x) - 4px); }
   .hc-hero-body { left: var(--hc-shell-x); }
   .hc-hero-title { font-size: 72px; line-height: 87px; }
-  .hc-hero-aside { left: auto; right: calc(var(--hc-shell-x) + 50px); top: 291px; }
+
   /* trace は 853 の比率のまま hero 高さに等倍（横へ引き伸ばさない）、shell 右端に寄せる */
 
   .hc-sheet { margin-inline: max(32px, calc(50% - 480px)); }
@@ -2856,7 +2840,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   .hc-header { padding: 20px calc(var(--hc-shell-x) - 2px) 0 calc(var(--hc-shell-x) - 4px); }
   .hc-hero-body { left: var(--hc-shell-x); }
   .hc-hero-title { font-size: 84px; line-height: 102px; max-width: 7.2em; }
-  .hc-hero-aside { left: auto; right: calc(var(--hc-shell-x) + 50px); top: 310px; }
+
 
   .hc-sheet { margin-inline: max(32px, calc(50% - 620px)); }
   .hc-city-grid { gap: 18px; }
