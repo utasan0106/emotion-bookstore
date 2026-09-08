@@ -94,8 +94,8 @@ assert.match(fs.readFileSync(path.join(root,'.vercelignore'),'utf8'),/^\/tools\/
 assert.ok(!fs.readFileSync(path.join(root,'.vercelignore'),'utf8').includes('/discover/'));
 const sitemap=fs.readFileSync(path.join(root,'sitemap.xml'),'utf8');
 const sitemapUrls=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match=>match[1]);
-assert.equal(sitemapUrls.length,103);
-assert.equal(new Set(sitemapUrls).size,103);
+assert.equal(sitemapUrls.length,115);
+assert.equal(new Set(sitemapUrls).size,115);
 assert.ok(canonicals.every(url=>sitemapUrls.includes(url)));
 assert.ok(!sitemapUrls.some(url=>url.includes('?')));
 console.log('PASS 80 city entries + 3 common shorts, 16 bounded lists, 101 routes, SEO metadata and sitemap, embedded audio and bounded trailers, unique detail exits, local assets, honest media types');

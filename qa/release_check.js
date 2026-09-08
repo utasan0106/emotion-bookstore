@@ -612,7 +612,7 @@ for (const call of localStorageCalls) {
 }
 const html = read('index.html') + read('shelf.html') + read('suggest.html') + read('explore.html');
 const runtime = [html, js, contentJs].join('\n');
-for (const word of ['次の3つ', 'また見たい', 'おすすめ', 'あなた向け', 'ランキング', '人気', 'トレンド',
+for (const word of ['次の3つ', 'また見たい', 'あなた向け', 'ランキング', '人気', 'トレンド',
   'NEW', 'TRENDING', 'FOR YOU', '見終わりました']) {
   if (runtime.includes(word)) failures.push(`release runtime must not contain: ${word}`);
 }

@@ -2867,3 +2867,7 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 .hc-discovery-note { margin: 14px 0 0; font-size: 14px; line-height: 1.7; color: var(--hc-ink-dim); }
 .hc-featured-heading { margin: 0 0 16px; font-size: 18px; line-height: 1.6; font-weight: 500; color: var(--hc-ink); }
 .hc-work-place { font-size: .875rem; line-height: 1.4; color: #f4f0e8; }
+
+.hc-weekly-entry{display:block;background:#24221c;color:#f2ecdf;padding:18px;margin-bottom:22px;line-height:1.7;text-decoration:none}.hc-weekly-entry:focus-visible{outline:3px solid #b38a4b;outline-offset:4px}
+
+.hc-english-entry{position:absolute;right:85px;top:24px;z-index:3;font-family:var(--sans);font-size:13px;color:#f2ecdf;padding:8px;text-underline-offset:4px}@media(max-width:520px){.hc-english-entry{top:55px;right:20px;font-size:12px}}

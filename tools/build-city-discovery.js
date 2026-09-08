@@ -120,7 +120,8 @@ for (const file of fs.readdirSync(commonDir)) {
   if (process.argv.includes('--check')) throw new Error('Obsolete generated page remains: ' + obsolete);
   fs.unlinkSync(obsolete);
 }
-const sitemapPaths=['','works.html',...generatedFiles.map(file=>`discover/${file === 'index.html' ? '' : file.replace(/index\.html$/, '')}`)];
+const weeklyPaths=require('./build-weekly-outings');
+const sitemapPaths=['','works.html','visit/',...weeklyPaths,...generatedFiles.map(file=>`discover/${file === 'index.html' ? '' : file.replace(/index\.html$/, '')}`)];
 const sitemap=`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapPaths.map((file,index)=>`  <url>\n    <loc>https://emotionbookstore.com/${file}</loc>\n    <lastmod>${checkedAt}</lastmod>\n    <changefreq>${index<2?'weekly':'monthly'}</changefreq>\n    <priority>${index===0?'1.0':index<3?'0.9':file.endsWith('/')?'0.8':'0.6'}</priority>\n  </url>`).join('\n')}\n</urlset>\n`;
 const sitemapFile=path.join(root,'sitemap.xml');
 if(process.argv.includes('--check')) {
