@@ -73,6 +73,11 @@ function enrichSeo(file, html) {
     .replace('</title>',`</title><link rel="canonical" href="${canonical}"><meta property="og:type" content="website"><meta property="og:site_name" content="みんなの感情書店"><meta property="og:title" content="${esc(pageTitle)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${canonical}"><meta name="twitter:card" content="summary"><script type="application/ld+json">${schema}</script>`);
 }
 function write(file, html) {
+  const column=require('./city-columns')[file.split('/')[1]?.replace(/\.html$/, '')];
+  if(column && file.startsWith(column.city+'/')) {
+    const section=`<section class="city-column" aria-labelledby="city-column-title"><p class="eyebrow">街と人の小さなコラム</p><h2 id="city-column-title">${esc(column.title)}</h2>${column.paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}<p>${esc(column.note)}</p><details class="background"><summary>コラムの出典</summary>${column.sources.map(s=>`<p>${external(s.url,s.label)}</p>`).join('')}<p>確認：${esc(column.checkedAt)}</p></details></section>`;
+    html=html.replace('<details class="background"><summary>この街との関係・出典</summary>',section+'<details class="background"><summary>この街との関係・出典</summary>');
+  }
   const [city, categoryFile]=file.split('/');
   const kind=categoryFile?.replace(/\.html$/, '');
   if(cityNames[city] && categories[kind]) {

@@ -17,6 +17,14 @@ for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']){
 }
 const profiles=require('../tools/artist-profiles');
 const items=require('../tools/city-discovery-source').items;
+for(const [id,column] of Object.entries(require('../tools/city-columns'))) {
+  assert.ok(items.some(i=>i.id===id&&i.city===column.city));
+  const html=read(`discover/${column.city}/${id}.html`);
+  assert.ok(html.includes(column.title));
+  for(const source of column.sources) assert.ok(html.includes(source.url));
+  assert.match(html,/本人の取材記事ではなく/);
+  assert.doesNotMatch(html,/デビュー10周年の夜/);
+}
 for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']) {
   for(const kind of ['audio','video','book','film']) {
     const html=read(`discover/${city}/${kind}.html`);

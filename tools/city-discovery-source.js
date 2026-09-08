@@ -55,7 +55,7 @@ audio('shimokitazawa', 'mabuta-roundabout', 'roundabout', 'mabuta / 下北沢SHE
 audio('kichijoji', 'yoshida-night-edge', '誰もいない夜の果てを', '吉田和史 TRIO / STAR PINE’S CAFE 2026', '夜の会場で、歌とピアノとチェロを聴く。', '街のライブハウスでの演奏', '2026年2月18日に吉祥寺STAR PINE’S CAFEで収録されたライブ映像です。', 'CO9iiYZ3Rnc');
 audio('kichijoji', 'yoshida-tinderness', 'Tinderness', '吉田和史 BANDSET / STAR PINE’S CAFE 2026', '同じ夜を、バンド編成の響きで聴き比べる。', '街のライブハウスでの演奏', '2026年2月18日に吉祥寺STAR PINE’S CAFEで収録された別編成のライブ映像です。', 'W7hdph1vknw');
 audio('kichijoji', 'kobayashi-kokuhaku', '告白', '小林建樹 / STAR PINE’S CAFE', '会場録音として残った歌を、一曲だけ。', '街のライブハウスで録音', '吉祥寺STAR PINE’S CAFEでの演奏を収めた公式配信音源です。', 'Yq6ccYy65z4');
-audio('kichijoji', 'uchu-mao-haircolor', 'ヘアカラー', '宇宙まお / STAR PINE’S CAFE 2022', 'デビュー10周年の夜から、アコースティックな一曲を。', '街のライブハウスでの演奏', '2022年4月10日の吉祥寺STAR PINE’S CAFE公演から公開された公式ライブ映像です。', 'oDeXMJ_Krxw');
+audio('kichijoji', 'uchu-mao-haircolor', 'ヘアカラー', '宇宙まお / STAR PINE’S CAFE 2022', 'デビュー10周年の記念公演から、アコースティックな一曲を。', '街のライブハウスでの演奏', '2022年4月10日の吉祥寺STAR PINE’S CAFE公演から公開された公式ライブ映像です。', 'oDeXMJ_Krxw', ['https://mandala.gr.jp/SPC/schedule/20220410day/']);
 audio('kichijoji', 'takeuchi-ai-rain', '雨に見惚れたい', '竹内藍 / STAR PINE’S CAFE 2021', '雨を歌う声とバンドの呼吸を聴く。', '街のライブハウスでの演奏', '2021年12月8日の吉祥寺STAR PINE’S CAFE公演から公開されたライブ映像です。', 'D3ctGcULO_c');
 
 audio('jinbocho', 'honobe-girl', '女の子', 'ホノベミナミ / 神保町試聴室 2019', '小さな音楽室で歌われた一曲を聴く。', '街の音楽会場での演奏', '2019年10月19日に神保町試聴室で収録された本人公開のライブ映像です。', '3cAdJvRprto');
