@@ -1,6 +1,38 @@
 // Editorial input, never fetched by the browser. See docs/city-discovery/README.md.
 'use strict';
 const items = [];
+const commonVideos = [
+  {
+    id: 'sotetsu-100-years', title: '100 YEARS TRAIN', creator: '相鉄グループ / 2019',
+    hook: '一つの路線と、何度もすれ違う二人の100年を辿る。',
+    note: '相鉄線の都心直通を記念して制作された企業広告です。実在の一つの街を案内する記録映像ではなく、鉄道と人の時間を描く映像作品として紹介します。',
+    videoId: 'tUe6YedzjlM', sources: ['https://www.sotetsu.co.jp/media/2019/pressrelease/pdf/r19-131-pd2.pdf']
+  },
+  {
+    id: 'find-my-tokyo', title: 'Find my Tokyo. チャレンジャーズ', creator: '東京メトロ / 2024',
+    hook: '知っている街の、まだ知らない楽しみ方へ。',
+    note: '東京メトロが東京の新しい魅力を見つける企画として公開した企業広告です。このサイトの4街だけを扱う映像ではありません。',
+    videoId: 'RpSlspjIeG8', sources: ['https://www.tokyometro.jp/news/2024/218221.html']
+  },
+  {
+    id: 'calorie-mate-light-shadow', title: '光も影も', creator: 'カロリーメイト / 2023',
+    hook: '一人で描く時間と、隣で挑む友人の存在を見つめる。',
+    note: '美大受験生を描いたカロリーメイトの短編広告です。街の紹介ではありませんが、作品を生み出す孤独と、人と並んで進む温かさがこのサイトの体験とつながるため選んでいます。',
+    videoId: 'AuxXufx5kKQ', sources: ['https://prtimes.jp/main/html/rd/p/000000038.000045062.html']
+  },
+  {
+    id: 'toyota-loving-eyes', title: 'Loving Eyes', creator: 'TOYOTA / ブランドムービー',
+    hook: '同じ道のりを、父と娘それぞれの目線で見つめる。',
+    note: '自動車の安全技術を伝える企業広告で、父と娘の時間を二つの視点から描いた作品です。特定の街への案内ではありません。',
+    videoId: 'mh_QCvulKSY', sources: []
+  },
+  {
+    id: 'panasonic-life', title: 'Panasonic Quality「Life篇」', creator: 'パナソニック / 60秒',
+    hook: '名もない一日の、小さな営みと人の表情を見る。',
+    note: '暮らしの場面を描いたパナソニックの企業広告です。商品情報ではなく、人の生活を映した短編として選んでいます。',
+    videoId: 'Bu5LNJYGY8k', sources: ['https://channel.panasonic.com/jp/']
+  }
+].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: '2026-09-08', playbackChecked: false}));
 const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({
   city, kind, id, title, creator, hook, relation, relationNote, url, action,
   sources: [...new Set([...sources, ...(url.startsWith('https:') ? [url] : [])])],
@@ -11,6 +43,8 @@ const book = (city, id, title, creator, hook, relation, note, url, sources = [])
 const film = (city, id, title, creator, hook, relation, note, url, action, sources = []) => add(city, 'film', id, title, creator, hook, relation, note, url, action, sources);
 const koenjiFestival = 'https://za-koenji.jp/detail/?id=139';
 const mizoguchi = 'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-08-15_mizoguchi-kenji-70th.html';
+const ninetiesFilm = 'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-06-06_90s_2nd.html';
+const crimeFilm = 'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-04-25_crime-black-white.html';
 const bausBook = 'https://books.bunshun.jp/ud/book/num/9784160089457';
 const tefu = 'https://senrogai.com/event/by-tefu-lounge-bonus-track-members/';
 
@@ -33,8 +67,8 @@ film('koenji', 'shogakko', '小学校～それは小さな社会～', '山崎エ
 video('shimokitazawa', 'shelter-news', 'ニッポンのライブハウス：下北沢SHELTER', 'SPACE SHOWER NEWS', '地下のライブハウスを、音楽メディアの取材から知る。', '会場の取材映像', '下北沢SHELTERを取り上げたSPACE SHOWER NEWSの映像。別ページの2007年ライブ音源とは異なる取材映像です。', 'cyJYxL20Z3A');
 video('shimokitazawa', 'kitazawa-guide', 'ようこそ世田谷へ！北沢地区を紹介します', '世田谷区', '暮らす人に向けた案内から、街の身近な場所へ。', '地区の紹介映像', '世田谷区の北沢地区紹介。下北沢駅周辺を含む地区の見どころを扱います。', 'WkKHB5toNIg', ['https://www.city.setagaya.lg.jp/01048/8512.html']);
 video('shimokitazawa', 'tefu-1500', '下北沢で仕事もする人たち｜15:00', '下北線路街 / Web CM', '午後の下北沢を舞台にした、短い映像から。', '街を舞台にしたWeb CM', '下北線路街の企画で制作された(tefu) lounge・BONUS TRACKのWeb CMです。取材記録ではなく演出のある作品です。', '5riinr6xpWo', [tefu]);
-video('shimokitazawa', 'tefu-1930', '下北沢で仕事もする人たち｜19:30', '下北線路街 / Web CM', '同じ街の、夜の始まりへ視点を移す。', '街を舞台にしたWeb CM', '下北線路街の企画映像。同シリーズの19:30編で、夜の下北沢を舞台にしています。', 'WwCby-7FY-U', [tefu]);
-video('shimokitazawa', 'tefu-2200', '下北沢で仕事もする人たち｜22:00', '下北線路街 / Web CM', '一日の終わりにも、街に続いている時間を感じる。', '街を舞台にしたWeb CM', '下北線路街の企画映像。同シリーズの22:00編です。', 'i-YqgXKEVjU', [tefu]);
+video('shimokitazawa', 'obonro-walk', '俳優と歩く、下北沢', '劇団おぼんろ / さひがしジュンペイ', '舞台に立つ人の言葉を聞きながら、劇場のある街を歩く。', '街と劇場を辿る公式映像', '本多劇場公演を控えた劇団おぼんろが、劇団員の目線で下北沢を歩き、街への思いを語る公式企画です。公演は2026年2月に終了しています。', 'jFCmoShi5ns', ['https://www.obonro-web.com/', 'https://x.com/obonro_new/status/1984938548680683574']);
+video('shimokitazawa', 'womenslib-interview', '本多劇場に立つ前の、仲野太賀', '大人計画 / インタビュー', 'いま広く知られる俳優の、舞台へ向かう言葉を聴く。', '街の劇場で上演された舞台', '大人計画の舞台「もうがまんできない」出演時の仲野太賀インタビュー。公演は2023年に下北沢・本多劇場で行われました。作品の舞台設定が下北沢という意味ではありません。', 'K_LDvvjC8Uw', ['https://otonakeikaku.net/2023_mougamandekinai/']);
 book('shimokitazawa', 'lady-jane', '下北沢祝祭行 レディ・ジェーンは夜の扉', '大木雄高', '店に集まった人たちの言葉から、夜の文化を辿る。', '店主が綴った街の記録', '下北沢のLADY JANEを営む大木雄高の著書。店と人の関係を記したエッセイです。', 'https://www.genki-shobou.co.jp/books/978-4-901998-72-7');
 book('shimokitazawa', 'indies', '下北沢インディーズ ライブハウスの名探偵', '岡崎琢磨', 'バンドのいる日常を、音楽ミステリーとして楽しむ。', '物語の舞台', '下北沢のライブハウスを舞台にした小説。実在バンドのインディーズ時代を記録した本ではありません。', 'https://www.j-n.co.jp/books/978-4-408-55758-8/');
 book('shimokitazawa', 'kamisama', '神様のたまご 下北沢センナリ劇場の事件簿', '稲羽白菟', '小さな劇場で起こる謎から、舞台の裏側へ。', '物語の舞台', '下北沢を舞台にした演劇ミステリー。センナリ劇場は小説の中の劇場です。', 'https://books.bunshun.jp/ud/book/num/9784167922030');
@@ -64,10 +98,10 @@ film('kichijoji', 'rocky-horror', 'ロッキー・ホラー・ショー', 'ジ�
 
 const library = '千代田区立図書館公式チャンネル';
 video('jinbocho', 'gyokueido', '古書っと神保町｜玉英堂書店・前編', library, '古書店の人に案内されながら、本の世界を覗く。', '街の古書店の取材', '千代田区立図書館の「古書っと神保町」vol.1。玉英堂書店を紹介しています。', 'zQJz9x7XzxI');
-video('jinbocho', 'kudan', '古書っと神保町｜くだん書房・前編', library, '専門の古書店には、どんな出会いが待っているだろう。', '街の古書店の取材', '千代田区立図書館の「古書っと神保町」vol.3。くだん書房を紹介しています。', 'Wz37oubjNvY');
 video('jinbocho', 'italia', '古書っと神保町｜イタリア書房・前編', library, '一軒の書店から、別の国の言葉や文化へ。', '街の書店の取材', '千代田区立図書館の「古書っと神保町」vol.9。イタリア書房を紹介しています。', 'hhaGzqTeIuw', ['https://italiashobo.com/']);
-video('jinbocho', 'yumeno', '古書っと神保町｜夢野書店・前編', library, '店の棚と店主の話から、本を探す楽しみを知る。', '街の古書店の取材', '千代田区立図書館の「古書っと神保町」vol.13。合同会社 夢野書店を紹介しています。', 'gXecvpa5A3I');
-video('jinbocho', 'biblio', '古書っと神保町｜ビブリオ・前編', library, '好きな分野の本が集まる、一軒の店へ。', '街の古書店の取材', '千代田区立図書館の「古書っと神保町」vol.17。ビブリオを紹介しています。', 'mNH9U4ca0Aw');
+video('jinbocho', 'jinbocho-1960s', '1960年代の神保町を歩く', '千代田区 / 写真記録のカラー化', '本の街の今を知る前に、半世紀以上前の通りを覗く。', '街の記録映像', '千代田区の「ちよだ写真館」にある写真をもとに、1960年代の神保町をカラー化した区公式映像です。色は当時のカラー映像そのものではなく、後年の加工です。', 'bLGpAaB2zUA');
+video('jinbocho', 'iwanami-hall', 'ありがとう「岩波ホール」', '千代田区 / 記録映像', '閉館した映画館の客席と、そこで育った文化の記憶へ。', '街の映画館の記録', '2022年に閉館した神保町の岩波ホールを、千代田区が撮影・編集した公式記録です。現在営業している施設の紹介ではありません。', '8tXP7QSh12Y', ['https://www.city.chiyoda.lg.jp/koho/kuse/koho/pressrelease/r4/r408/20220801.html']);
+video('jinbocho', 'used-book-festival', '通りが本棚になる日｜神田古本まつり', 'TOKYO MX NEWS', '歩道に本が並び、人が集まる秋の街を短いニュース映像で。', '街の催しの報道映像', '神田神保町の恒例行事「神田古本まつり」を伝える報道映像です。開催日程は映像公開当時のもので、最新情報は主催者案内で確認してください。', 'dl8LHw1j_HI', ['https://jimbou.info/']);
 book('jinbocho', 'morisaki', '森崎書店の日々', '八木沢里志', '古書店で過ごす時間から、もう一度日常へ踏み出す。', '物語の舞台', '神保町の古書店を舞台にした小説。案内先は新装版です。', 'https://www.shogakukan.co.jp/books/09386765');
 book('jinbocho', 'morisaki-sequel', '続・森崎書店の日々', '八木沢里志', 'あの店に集う人たちの、その後をもう少し。', '物語の舞台', '神保町の古書店を舞台にした続編。前作の別装版ではなく、別の物語です。', 'https://www.shogakukan.co.jp/books/09386766');
 book('jinbocho', 'furuhon', '古本食堂', '原田ひ香', '本と食べ物から、街で暮らす人の輪へ。', '物語の舞台', '神保町の古書店を舞台にした小説です。', 'https://www.kadokawaharuki.co.jp/book/detail/detail.php?no=5208');
@@ -76,7 +110,7 @@ book('jinbocho', 'kaijin', '神保町の怪人', '紀田順一郎', '本を集�
 film('jinbocho', 'morisaki-film', '森崎書店の日々', '日向朝子 監督 / 2010', '古書店の時間と人の出会いを、映像の物語で。', '撮影された街', '神保町で撮影された映画。日本映画データベースで作品の内容と制作情報を確認できます。', 'https://jfdb.jp/title/2240', '日本映画データベースで作品を知る');
 film('jinbocho', 'ginga', '銀河鉄道の夜', 'アニメーション映画 / 1985', '列車と音楽が運ぶ、夜の旅へ。', '神保町シアターの上映企画', '神保町シアターが2026年9月19日からの上映企画で紹介している作品。物語の舞台が神保町という意味ではありません。', 'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-09-19-ginga-tetsudou.html', '神保町シアターで作品・上映案内を見る');
 film('jinbocho', 'ugetsu', '雨月物語', '溝口健二 監督 / 1953', '現実と幻想のあわいを、白黒の映像で辿る。', '神保町シアターの上映企画', '神保町シアターの2026年「没後70年 溝口健二」特集の選定作品。街の映画館を入口に、日本映画へ寄り道します。', mizoguchi, '神保町シアターの溝口健二特集を見る');
-film('jinbocho', 'sansho', '山椒大夫', '溝口健二 監督 / 1954', '離ればなれになる家族の物語に向き合う。', '神保町シアターの上映企画', '神保町シアターの2026年「没後70年 溝口健二」特集の選定作品。撮影地ではなく、上映企画を介したつながりです。', mizoguchi, '神保町シアターの溝口健二特集を見る');
-film('jinbocho', 'chikamatsu', '近松物語', '溝口健二 監督 / 1954', '古典の物語が、映画の表情と動きになる瞬間へ。', '神保町シアターの上映企画', '神保町シアターの2026年「没後70年 溝口健二」特集の選定作品。上映企画から古典と映画へ広がる一作です。', mizoguchi, '神保町シアターの溝口健二特集を見る');
+film('jinbocho', 'endless-waltz', 'エンドレス・ワルツ', '若松孝二 監督 / 1995', '音楽家と作家が生きた、激しく危うい時間へ。', '神保町シアターの上映企画', '天才サックス奏者・阿部薫と作家・鈴木いづみをモデルにした小説の映画化。神保町シアターの2026年「忘れられない90年代映画たちⅡ」で上映されました。撮影地が神保町という意味ではありません。', ninetiesFilm, '神保町シアターの上映記録で作品を知る');
+film('jinbocho', 'shadowless-voice', '影なき声', '鈴木清順 監督 / 1958', '聞き覚えのある声から始まる、白黒のサスペンスへ。', '神保町シアターの上映企画', '松本清張の短編「声」を鈴木清順が映画化した作品。神保町シアターの2026年「白と黒の犯罪映画」で上映されました。撮影地が神保町という意味ではありません。', crimeFilm, '神保町シアターの上映記録で作品を知る');
 
-module.exports = { items, checkedAt: '2026-09-08' };
+module.exports = { items, commonVideos, checkedAt: '2026-09-08' };

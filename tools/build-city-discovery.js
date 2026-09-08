@@ -2,7 +2,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
-const {items, checkedAt} = require('./city-discovery-source');
+const {items, commonVideos, checkedAt} = require('./city-discovery-source');
 const root = path.resolve(__dirname, '..');
 const sandbox = {window:{}};
 vm.runInNewContext(fs.readFileSync(path.join(root, 'release_content.js'), 'utf8'), sandbox);
@@ -43,7 +43,17 @@ function write(file, html) {
 const cities=Object.keys(cityNames);
 write('index.html', shell('街から音・映像、本、映画を探す', `<section class="intro"><p class="eyebrow">観る・聴く・読む</p><h1>街から、<br>気になる作品へ。</h1><p class="lead">街の映像、ライブ、本、映画に出会う文化案内。<br>まずひとつ楽しんで、ゆかりの場所や関連特集へ。</p></section>
 <section class="city-grid" aria-label="街を選ぶ">${cities.map(c=>`<a class="city-card" href="/discover/${c}/video.html"><div class="city-image">${photo(c)}</div><div class="city-caption"><h2>${cityNames[c]}</h2><p>音・映像 ${items.filter(i=>i.city===c&&i.kind==='video').length} / 本・漫画 ${items.filter(i=>i.city===c&&i.kind==='book').length} / 映画 ${items.filter(i=>i.city===c&&i.kind==='film').length}</p><span>${cityNames[c]}の映像から探す →</span></div></a>`).join('')}</section>
+<section class="quick"><p class="eyebrow">街を決めずに観る</p><h2>街へ出たくなる、5つの短編。</h2><div class="quick-grid"><a href="/discover/short-films/index.html"><strong>人・移動・出会いを描く映像へ →</strong><span>企業広告も、単体で心に残る映像作品として選びました</span></a></div></section>
 <section class="quick"><p class="eyebrow">短い体験から</p><h2>同じ場所、違う聴こえ方。</h2><div class="quick-grid"><a href="/v3-prototype/culture-experience-r2/shimokitazawa/?recording=shelter"><strong>「夕暮れのジャイロ」を聴き比べる →</strong><span>下北沢SHELTERのライブとソロ盤</span></a><a href="/v3-prototype/culture-experience-r2/kichijoji/?scene=film"><strong>『PARKS』の予告と公園の声へ →</strong><span>吉祥寺・井の頭公園 / 1分59秒と57秒</span></a></div></section>${credits(cities)}`));
+
+const commonCards = commonVideos.map((video,n)=>`<article class="work-card video"><a href="/discover/short-films/${video.id}.html"><div class="card-art" aria-hidden="true"><span class="media-mark">▶</span><span class="card-number">${String(n+1).padStart(2,'0')}</span></div><div class="card-body"><p class="relation">街へ出る気分をつくる短編</p><h2>${esc(video.title)}</h2><p class="creator">${esc(video.creator)}</p><p class="card-action">この映像を見る <span aria-hidden="true">→</span></p></div></a></article>`).join('');
+write('short-films/index.html', shell('街へ出たくなる短編映像', `<section class="intro"><p class="eyebrow">全街共通 / 約1〜4分</p><h1>街へ出たくなる、<br>5つの短編。</h1><p class="lead">街の資料だけではなく、単体の映像作品として面白く、人や移動、出会いの余韻が残るものを選びました。企業広告は、広告主の業種ではなく、この場所で観る理由から選んでいます。</p></section><div class="collection"><section class="work-grid" aria-label="共通の短編映像5件">${commonCards}</section><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p></div>`, '<a href="/discover/index.html">街と作品の一覧へ ←</a>'));
+
+for (const video of commonVideos) {
+  const sourceLinks = video.sources.map(source => `<p>${external(source,new URL(source).hostname.replace('www.','')+' の掲載情報')}</p>`).join('');
+  const player = `<section class="player v3-video" data-video-id="${video.videoId}" data-video-title="${esc(video.title)}" aria-label="映像プレイヤー"><div class="v3-video-frame"><button class="v3-video-load primary" type="button" hidden>このページでプレイヤーを開く ▶</button><noscript><p>下のYouTubeへのリンクから、この映像を観られます。</p></noscript></div><button class="player-stop" type="button" hidden>プレイヤーを閉じて停止</button><p class="player-status" role="status" aria-live="polite">YouTubeの公開映像です。下のリンクからも観られます。</p></section>`;
+  write(`short-films/${video.id}.html`, shell(video.title, `<article class="detail"><p class="eyebrow">全街共通 / 街へ出たくなる短編</p><h1>${esc(video.title)}</h1><p class="detail-creator">${esc(video.creator)}</p><p class="detail-hook">${esc(video.hook)}</p>${player}<div class="destination">${external(video.url,'YouTubeでこの映像を見る','primary official-exit')}<p>表示・再生できない場合は、公開元の同じ映像へ。新しいタブで開きます。</p></div><details class="background"><summary>このサイトで紹介する理由・出典</summary><p>${esc(video.note)}</p>${sourceLinks}<p>紹介先・出典確認：${checkedAt}。映像は公開元のプレイヤーで提供されます。</p></details><p class="city-exit"><a href="/discover/index.html">次は街から作品を探す →</a></p></article>`, '<a href="/discover/short-films/index.html">短編を選び直す ←</a>'));
+}
 
 for(const city of cities) for(const [kind, category] of Object.entries(categories)) {
   const selected=items.filter(i=>i.city===city&&i.kind===kind);
@@ -62,4 +72,28 @@ for(const item of items) {
   const background=`<details class="background"><summary>この街との関係・出典</summary><p>${esc(item.relationNote)}</p>${sourceLinks.map(s=>`<p>${external(s,new URL(s).hostname.replace('www.','')+' の掲載情報')}</p>`).join('')}<p>紹介先・出典確認：${checkedAt}。${item.videoId?'映像は公開元のプレイヤーで提供されます。':'外部の視聴・読書条件は各提供元の案内で確認できます。'}</p></details>`;
   write(`${city}/${item.id}.html`, shell(item.title, `<article class="detail"><p class="eyebrow">${cityNames[city]} / ${categories[kind].name} / ${esc(item.relation)}</p><h1>${esc(item.title)}</h1><p class="detail-creator">${esc(item.creator)}</p><p class="detail-hook">${esc(item.hook)}</p>${player}<div class="destination">${action}<p>${item.url.startsWith('/')?'このサイト内で、本人操作による映像・音の体験へ。':item.videoId?'表示・再生できない場合は、公開元の同じ映像へ。':'外部の作品・特集ページへ。'}${item.url.startsWith('/')?'':'新しいタブで開きます。'}</p></div>${background}<p class="city-exit"><a href="/shelf.html?shelf=${city}">${cityNames[city]}の場所・催しの案内へ →</a></p></article>`, `<a href="/discover/${city}/${kind}.html">${categories[kind].name}を選び直す ←</a>`, city));
 }
-console.log(`PASS ${written} discovery pages ${process.argv.includes('--check')?'match source':'generated'}; ${items.length} editorial entries`);
+// Entries are replaced during editorial maintenance. Remove only obsolete generated
+// detail pages inside known city directories; category pages and hand-authored assets
+// are explicitly protected.
+const protectedPages = new Set(['video.html', 'book.html', 'film.html']);
+const expectedDetails = new Set(items.map(item => `${item.city}/${item.id}.html`));
+for (const city of cities) {
+  const dir = path.join(root, 'discover', city);
+  for (const file of fs.readdirSync(dir)) {
+    if (!file.endsWith('.html') || protectedPages.has(file)) continue;
+    const relative = `${city}/${file}`;
+    if (expectedDetails.has(relative)) continue;
+    const obsolete = path.join(dir, file);
+    if (process.argv.includes('--check')) throw new Error('Obsolete generated page remains: ' + obsolete);
+    fs.unlinkSync(obsolete);
+  }
+}
+const expectedCommonDetails = new Set(commonVideos.map(video => `${video.id}.html`));
+const commonDir = path.join(root, 'discover', 'short-films');
+for (const file of fs.readdirSync(commonDir)) {
+  if (!file.endsWith('.html') || file === 'index.html' || expectedCommonDetails.has(file)) continue;
+  const obsolete = path.join(commonDir, file);
+  if (process.argv.includes('--check')) throw new Error('Obsolete generated page remains: ' + obsolete);
+  fs.unlinkSync(obsolete);
+}
+console.log(`PASS ${written} discovery pages ${process.argv.includes('--check')?'match source':'generated'}; ${items.length} city entries + ${commonVideos.length} common shorts`);

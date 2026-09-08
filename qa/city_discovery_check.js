@@ -4,11 +4,14 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
-const {items} = require('../tools/city-discovery-source');
+const {items, commonVideos} = require('../tools/city-discovery-source');
 const decode = s => s.replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"');
 assert.equal(items.length,60);
 assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,60);
 assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,20);
+assert.equal(commonVideos.length,5);
+assert.equal(new Set(commonVideos.map(i=>i.id)).size,5);
+assert.equal(new Set([...items.filter(i=>i.videoId),...commonVideos].map(i=>i.videoId)).size,25);
 const cities=['koenji','shimokitazawa','kichijoji','jinbocho'];
 for(const city of cities)for(const kind of ['video','book','film']) {
   const selected=items.filter(i=>i.city===city&&i.kind===kind);
@@ -40,7 +43,7 @@ function inspect(dir) {
   }
 }
 inspect(path.join(root,'discover'));
-assert.equal(pages,73);
+assert.equal(pages,79);
 for(const i of items) {
   assert.ok(i.sources.length && i.relation && i.relationNote);
   assert.equal(i.playbackChecked,false,'Never equate indexed media with tested playback');
@@ -55,7 +58,15 @@ for(const i of items) {
     assert.match(html,/<script src="\/video-embed.js" defer><\/script><script src="\/discover\/player.js" defer>/);
   }
 }
+for(const i of commonVideos) {
+  assert.equal(i.playbackChecked,false,'Search availability is not tested playback');
+  assert.match(i.videoId,/^[A-Za-z0-9_-]{11}$/);
+  assert.equal(new URL(i.url).searchParams.get('v'),i.videoId);
+  const html=fs.readFileSync(path.join(root,`discover/short-films/${i.id}.html`),'utf8');
+  assert.match(html,/このサイトで紹介する理由・出典/);
+  assert.match(html,/class="v3-video-load primary" type="button" hidden/);
+}
 for(const file of ['index.html','works.html'])assert.equal(fs.readFileSync(path.join(root,file),'utf8').split('href="./discover/index.html"').length-1,1);
 assert.match(fs.readFileSync(path.join(root,'.vercelignore'),'utf8'),/^\/tools\/city-discovery-source.js$/m);
 assert.ok(!fs.readFileSync(path.join(root,'.vercelignore'),'utf8').includes('/discover/'));
-console.log('PASS 60 entries, 12 bounded lists, 73 routes, unique detail exits, local assets, honest media types');
+console.log('PASS 60 city entries + 5 common shorts, 12 bounded lists, 79 routes, unique detail exits, local assets, honest media types');
