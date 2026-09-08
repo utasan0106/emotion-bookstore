@@ -80,6 +80,11 @@ function write(file, html) {
   }
   const [city, categoryFile]=file.split('/');
   const kind=categoryFile?.replace(/\.html$/, '');
+  const editorials=require('./city-editorials')[city];
+  if(editorials && (categoryFile==='index.html' || kind==='book')) {
+    const section=`<section class="city-editorials" aria-labelledby="editorials-title"><h2 id="editorials-title">漫画家と、吉祥寺</h2><p>知っている作品から、街とのつながりを辿る。</p>${editorials.map(entry=>`<details class="background" id="${esc(entry.id)}"><summary>${esc(entry.title)}</summary>${entry.paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}<p>${external(entry.sourceUrl,entry.sourceLabel)}</p><p>感情書店の独自編集文 · 出典確認：${esc(entry.checkedAt)}</p></details>`).join('')}<p>本人・関係団体による監修や公認を受けた記事ではありません。</p></section>`;
+    html=html.replace('<section class="quick">',section+'<section class="quick">');
+  }
   if(cityNames[city] && categories[kind]) {
     const alternatives=Object.entries(cityNames).filter(([id])=>id!==city).map(([id,name])=>({id,name,count:items.filter(item=>item.city===id&&item.kind===kind).length})).filter(entry=>entry.count>0);
     if(alternatives.length) {
