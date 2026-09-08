@@ -17,6 +17,15 @@ for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']){
 }
 const profiles=require('../tools/artist-profiles');
 const items=require('../tools/city-discovery-source').items;
+for(const city of ['koenji','kichijoji']) {
+  const html=read('discover/'+city+'/book.html');
+  assert.doesNotMatch(html,/本で触れた街を/);
+  assert.match(html,/同じ街から探す/);
+  const redirects=JSON.parse(read('vercel.json')).redirects;
+  for(const item of require('../tools/city-discovery-source').excludedItems.filter(i=>i.city===city&&i.kind==='book')) {
+    assert.equal(redirects.find(r=>r.source===`/discover/${city}/${item.id}.html`).destination,`/discover/${city}/`);
+  }
+}
 for(const item of items) {
   const html=read('discover/'+item.city+'/'+item.id+'.html');
   const article=html.match(/<article class="detail">[\s\S]*?<\/article>/)[0];

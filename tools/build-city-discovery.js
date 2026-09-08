@@ -37,6 +37,7 @@ function relatedPerformance(item) {
 }
 function cityContinuation(city,kind) {
   const name=cityNames[city];
+  if(!items.some(item=>item.city===city&&item.kind===kind)) return `<aside class="feature"><p class="eyebrow">同じ街から探す</p><h2><a href="/discover/${city}/video.html">${name}の街を映像で見る →</a></h2><p>この種類の作品は現在掲載していません。${name}の風景や人に触れる映像から選べます。</p><p><a href="/discover/${city}/">${name}の作品一覧へ →</a></p></aside>`;
   const reason=kind==='audio'?'演奏を聴いたあとは、会場のある街の風景や人を映像で。':kind==='video'?'映像で気になった街の場所や来歴を、次に辿れます。':kind==='book'?'本で触れた街を、今度は映像から眺めてみる。':'映画と街の関係を辿ったあとは、その街の風景も。';
   const target=kind==='video'?`/shelf.html?shelf=${city}`:`/discover/${city}/video.html`;
   const label=kind==='video'?`${name}の場所・歴史を見る`:`${name}の街を映像で見る`;
@@ -153,7 +154,7 @@ const configPath=path.join(root,'vercel.json');
 const config=JSON.parse(fs.readFileSync(configPath,'utf8'));
 const retiredPaths=new Set(excludedItems.map(i=>`/discover/${i.city}/${i.id}.html`));
 config.redirects=(config.redirects||[]).filter(r=>!retiredPaths.has(r.source));
-for(const i of excludedItems)config.redirects.push({source:`/discover/${i.city}/${i.id}.html`,destination:items.some(x=>x.city===i.city&&x.kind===i.kind)?`/discover/${i.city}/${i.kind}.html`:'/works.html',permanent:false});
+for(const i of excludedItems)config.redirects.push({source:`/discover/${i.city}/${i.id}.html`,destination:items.some(x=>x.city===i.city&&x.kind===i.kind)?`/discover/${i.city}/${i.kind}.html`:`/discover/${i.city}/`,permanent:false});
 const configText=JSON.stringify(config,null,2)+'\n';
 if(process.argv.includes('--check')){if(fs.readFileSync(configPath,'utf8')!==configText)throw new Error('Retired work redirects differ');}
 else fs.writeFileSync(configPath,configText);
