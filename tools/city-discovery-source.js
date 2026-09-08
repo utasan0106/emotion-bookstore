@@ -39,6 +39,7 @@ const add = (city, kind, id, title, creator, hook, relation, relationNote, url, 
   videoId, checkedAt: '2026-09-08', playbackChecked: false
 });
 const video = (city, id, title, creator, hook, relation, note, videoId, sources = []) => add(city, 'video', id, title, creator, hook, relation, note, 'https://www.youtube.com/watch?v=' + videoId, 'YouTubeでこの映像を見る', sources, videoId);
+const audio = (city, id, title, creator, hook, relation, note, videoId, sources = []) => add(city, 'audio', id, title, creator, hook, relation, note, 'https://www.youtube.com/watch?v=' + videoId, 'YouTubeでこの音を聴く', sources, videoId);
 const book = (city, id, title, creator, hook, relation, note, url, sources = []) => add(city, 'book', id, title, creator, hook, relation, note, url, '出版社で本の紹介・読書案内を見る', sources);
 const film = (city, id, title, creator, hook, relation, note, url, action, sources = []) => add(city, 'film', id, title, creator, hook, relation, note, url, action, sources);
 const koenjiFestival = 'https://za-koenji.jp/detail/?id=139';
@@ -47,6 +48,33 @@ const ninetiesFilm = 'https://www.shogakukan.co.jp/jinbocho-theater/features/202
 const crimeFilm = 'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-04-25_crime-black-white.html';
 const bausBook = 'https://books.bunshun.jp/ud/book/num/9784160089457';
 const tefu = 'https://senrogai.com/event/by-tefu-lounge-bonus-track-members/';
+
+// “Audio” is a listening collection. Some sources are filmed performances, but
+// they are selected for the performance/sound itself and are never duplicated in
+// the city video collection.
+audio('koenji', 'moon-in-june-play', 'play!／帰れない山', 'Moon In June / 高円寺HIGH 2025', 'ギターの残響から、高円寺HIGHの客席へ。', '街のライブハウスでの演奏', '2025年6月29日に高円寺HIGHで収録されたバンド公式のライブ映像です。街の紹介映像ではなく、この会場で鳴った演奏として紹介します。', 'm5T0OySBmEE');
+audio('koenji', 'big-the-grape', 'THANKS GIVING LIVE', 'big the grape / 高円寺HIGH', '小さな会場の熱量を、バンドの演奏から聴く。', '街のライブハウスでの演奏', '高円寺HIGHの公演を収録したアーティスト側のライブ映像です。', 'Gub-aCbRd_w');
+audio('koenji', 'night-glory-scarlet', 'scarlet', 'Night Glory / 高円寺HIGH 2024', '照明と音が立ち上がる瞬間を、一曲から。', '街のライブハウスでの演奏', '2024年4月26日に高円寺HIGHで収録された公式ライブクリップです。', 'z36AFHXk_YQ');
+audio('koenji', 'seabirth-live', 'UNTITLED Release Party', 'seabirth with Atsumi / 高円寺HIGH', '映画のように展開する演奏を、会場の記録で。', '街のライブハウスでの演奏', '2022年4月24日の高円寺HIGH公演を記録したライブ映像です。', 'UQy4T4beuuM');
+audio('koenji', 'pink-minds-live', 'ノーレシピLOVE', 'THE PINK MINDS / 高円寺HIGH 2025', '観客の前で跳ねるポップソングを一曲。', '街のライブハウスでの演奏', '2025年10月13日の高円寺HIGH公演から公開されたアーティスト公式ライブ映像です。', 'nXNIi_KijU0');
+
+audio('shimokitazawa', 'kaho-asa', '朝（Band set live ver.）', '果歩 / 下北沢SHELTER 2023', '歌声が地下の会場に広がる時間を聴く。', '街のライブハウスでの演奏', '2023年12月1日の下北沢SHELTER公演を、本人の公式チャンネルが公開したライブ映像です。', '3lzRKhS08Zo');
+audio('shimokitazawa', 'bilingualboy-love', 'LOVE', 'バイリンジボーイ / 下北沢SHELTER 2023', 'フロアとの距離が近い演奏を、一曲から。', '街のライブハウスでの演奏', '2023年6月30日の下北沢SHELTER公演から公開されたバンドのライブ映像です。', 'ID4fGwkTKHE');
+audio('shimokitazawa', 'sleepinside-recycle', 'リサイクル', 'SleepInside / 下北沢SHELTER 2026', '舞台袖の気配ごと、新しいバンドの現在を聴く。', '街のライブハウスでの演奏', '2026年6月1日の下北沢SHELTER公演を収録した公式ライブクリップです。', 'Np7r73nw_iY');
+audio('shimokitazawa', 'metrois-tokyo', '東京', 'MÉTROIS / 下北沢学生音楽祭 2024', '学生音楽祭のステージから、街で始まる一曲へ。', '街の音楽祭での演奏', '2024年1月4日の下北沢学生音楽祭で収録されたOfficial Live Music Videoです。', 'sO430hGTwj8');
+audio('shimokitazawa', 'mabuta-roundabout', 'roundabout', 'mabuta / 下北沢SHELTER 2023', 'ツアーの終着点で鳴った一曲を聴く。', '街のライブハウスでの演奏', '2023年8月10日の下北沢SHELTERワンマン公演から公開されたライブ映像です。', 'DtfH_SyrjMY');
+
+audio('kichijoji', 'yoshida-night-edge', '誰もいない夜の果てを', '吉田和史 TRIO / STAR PINE’S CAFE 2026', '夜の会場で、歌とピアノとチェロを聴く。', '街のライブハウスでの演奏', '2026年2月18日に吉祥寺STAR PINE’S CAFEで収録されたライブ映像です。', 'CO9iiYZ3Rnc');
+audio('kichijoji', 'yoshida-tinderness', 'Tinderness', '吉田和史 BANDSET / STAR PINE’S CAFE 2026', '同じ夜を、バンド編成の響きで聴き比べる。', '街のライブハウスでの演奏', '2026年2月18日に吉祥寺STAR PINE’S CAFEで収録された別編成のライブ映像です。', 'W7hdph1vknw');
+audio('kichijoji', 'kobayashi-kokuhaku', '告白', '小林建樹 / STAR PINE’S CAFE', '会場録音として残った歌を、一曲だけ。', '街のライブハウスで録音', '吉祥寺STAR PINE’S CAFEでの演奏を収めた公式配信音源です。', 'Yq6ccYy65z4');
+audio('kichijoji', 'uchu-mao-haircolor', 'ヘアカラー', '宇宙まお / STAR PINE’S CAFE 2022', 'デビュー10周年の夜から、アコースティックな一曲を。', '街のライブハウスでの演奏', '2022年4月10日の吉祥寺STAR PINE’S CAFE公演から公開された公式ライブ映像です。', 'oDeXMJ_Krxw');
+audio('kichijoji', 'takeuchi-ai-rain', '雨に見惚れたい', '竹内藍 / STAR PINE’S CAFE 2021', '雨を歌う声とバンドの呼吸を聴く。', '街のライブハウスでの演奏', '2021年12月8日の吉祥寺STAR PINE’S CAFE公演から公開されたライブ映像です。', 'D3ctGcULO_c');
+
+audio('jinbocho', 'honobe-girl', '女の子', 'ホノベミナミ / 神保町試聴室 2019', '小さな音楽室で歌われた一曲を聴く。', '街の音楽会場での演奏', '2019年10月19日に神保町試聴室で収録された本人公開のライブ映像です。', '3cAdJvRprto');
+audio('jinbocho', 'gorilla-secret', '秘密', 'ゴリラ祭ーズ / 神保町試聴室 2024', '三人のインストゥルメンタルを、会場の距離で。', '街の音楽会場での演奏', '2024年10月1日に神保町試聴室で収録されたバンド公式ライブ映像です。', '3d49S1QGJQc');
+audio('jinbocho', 'sunshin-anniversary', 'SUN蕊 10周年記念ライブ', 'SUN蕊 / 神保町 楽屋', '三味線、鳴り物、尺八の重なりを聴く。', '街の音楽会場での演奏', '神保町のライブレストラン「楽屋」で行われた10周年公演から、演奏2曲を公開した映像です。', '5C-_TAxiZbs');
+audio('jinbocho', 'chikuon-beautiful', 'ビューティフル', '井乃頭蓄音団 / 神保町試聴室 2024', '言葉と演奏が近くにある、小さな会場の一曲。', '街の音楽会場での演奏', '2024年6月29日に神保町試聴室で収録された公式ライブ映像です。', '25fMTtfgwlk');
+audio('jinbocho', 'motoki-tongping', 'とんぴんしゃん', 'motoki tanaka / 神保町試聴室 2024', 'アルバム発売の夜に鳴ったバンドの音を聴く。', '街の音楽会場での演奏', '2024年4月28日の神保町試聴室でのアルバム発売ライブから公開された演奏です。', 'mVYh6msmP7A');
 
 video('koenji', 'awa-2025', '高円寺の踊り', '東京高円寺阿波おどり振興協会 / 2025', '踊り手と観客の距離から、お祭りの熱気に触れる。', '街の祭りの映像', '高円寺の阿波おどりを紹介する主催団体の映像。2025年の記録です。現在開催中の配信ではありません。', 'dt33RGSRuo0');
 video('koenji', 'tenguren', '天狗連「日本の四季」', '天狗連 / PR映像', '阿波おどりの動きと、映像表現の組み合わせを楽しむ。', '街の踊り手', '高円寺の天狗連によるPR映像。街頭公演の生中継ではありません。', '8V9iHAM82bc', ['https://tenguren.com/gallery']);
@@ -112,5 +140,24 @@ film('jinbocho', 'ginga', '銀河鉄道の夜', 'アニメーション映画 / 1
 film('jinbocho', 'ugetsu', '雨月物語', '溝口健二 監督 / 1953', '現実と幻想のあわいを、白黒の映像で辿る。', '神保町シアターの上映企画', '神保町シアターの2026年「没後70年 溝口健二」特集の選定作品。街の映画館を入口に、日本映画へ寄り道します。', mizoguchi, '神保町シアターの溝口健二特集を見る');
 film('jinbocho', 'endless-waltz', 'エンドレス・ワルツ', '若松孝二 監督 / 1995', '音楽家と作家が生きた、激しく危うい時間へ。', '神保町シアターの上映企画', '天才サックス奏者・阿部薫と作家・鈴木いづみをモデルにした小説の映画化。神保町シアターの2026年「忘れられない90年代映画たちⅡ」で上映されました。撮影地が神保町という意味ではありません。', ninetiesFilm, '神保町シアターの上映記録で作品を知る');
 film('jinbocho', 'shadowless-voice', '影なき声', '鈴木清順 監督 / 1958', '聞き覚えのある声から始まる、白黒のサスペンスへ。', '神保町シアターの上映企画', '松本清張の短編「声」を鈴木清順が映画化した作品。神保町シアターの2026年「白と黒の犯罪映画」で上映されました。撮影地が神保町という意味ではありません。', crimeFilm, '神保町シアターの上映記録で作品を知る');
+
+// Only attach a trailer when a public, title-matching clip was identified. This is
+// intentionally incomplete: “no verified trailer” is better than a wrong embed.
+const trailerIds = {
+  'ramen-heads': '_Em5H7KlBSs',
+  shogakko: 'FDu7cbNuaXQ',
+  machinouede: '9lvk-4mVjC0',
+  gekijyo: 'PJ3RKuybYzU',
+  aterui: 'rakrdG7P2Jo',
+  blazer: 'f-Fr5ga8u3k',
+  parks: 'pm7RBghFt0I',
+  baus: '0dkX_-JxhgI',
+  'morisaki-film': '6M0vx8wLEbM'
+};
+for (const item of items.filter(item => item.kind === 'film' && trailerIds[item.id])) {
+  item.trailerVideoId = trailerIds[item.id];
+  item.trailerUrl = 'https://www.youtube.com/watch?v=' + item.trailerVideoId;
+  item.sources = [...new Set([...item.sources, item.trailerUrl])];
+}
 
 module.exports = { items, commonVideos, checkedAt: '2026-09-08' };

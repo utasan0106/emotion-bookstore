@@ -6,14 +6,16 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const {items, commonVideos} = require('../tools/city-discovery-source');
 const decode = s => s.replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"');
-assert.equal(items.length,60);
-assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,60);
-assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,20);
+assert.equal(items.length,80);
+assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,80);
+assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,40);
 assert.equal(commonVideos.length,5);
 assert.equal(new Set(commonVideos.map(i=>i.id)).size,5);
-assert.equal(new Set([...items.filter(i=>i.videoId),...commonVideos].map(i=>i.videoId)).size,25);
+assert.equal(new Set([...items.filter(i=>i.videoId),...commonVideos].map(i=>i.videoId)).size,45);
+const playbackIds=[...items.filter(i=>i.videoId).map(i=>i.videoId),...items.filter(i=>i.trailerVideoId).map(i=>i.trailerVideoId),...commonVideos.map(i=>i.videoId)];
+assert.equal(new Set(playbackIds).size,playbackIds.length,'Embedded media IDs must not be reused across entries');
 const cities=['koenji','shimokitazawa','kichijoji','jinbocho'];
-for(const city of cities)for(const kind of ['video','book','film']) {
+for(const city of cities)for(const kind of ['audio','video','book','film']) {
   const selected=items.filter(i=>i.city===city&&i.kind===kind);
   assert.equal(selected.length,5);
   const html=fs.readFileSync(path.join(root,`discover/${city}/${kind}.html`),'utf8');
@@ -43,7 +45,7 @@ function inspect(dir) {
   }
 }
 inspect(path.join(root,'discover'));
-assert.equal(pages,79);
+assert.equal(pages,103);
 for(const i of items) {
   assert.ok(i.sources.length && i.relation && i.relationNote);
   assert.equal(i.playbackChecked,false,'Never equate indexed media with tested playback');
@@ -57,6 +59,13 @@ for(const i of items) {
     assert.match(html,/class="v3-video-load primary" type="button" hidden/,'No inert no-JS button');
     assert.match(html,/<script src="\/video-embed.js" defer><\/script><script src="\/discover\/player.js" defer>/);
   }
+  if(i.trailerVideoId){
+    assert.equal(i.kind,'film');
+    assert.match(i.trailerVideoId,/^[A-Za-z0-9_-]{11}$/);
+    assert.equal(new URL(i.trailerUrl).searchParams.get('v'),i.trailerVideoId);
+    assert.match(html,/公式・公開予告/);
+    assert.match(html,/予告であり、本編ではありません/);
+  }
 }
 for(const i of commonVideos) {
   assert.equal(i.playbackChecked,false,'Search availability is not tested playback');
@@ -69,4 +78,4 @@ for(const i of commonVideos) {
 for(const file of ['index.html','works.html'])assert.equal(fs.readFileSync(path.join(root,file),'utf8').split('href="./discover/index.html"').length-1,1);
 assert.match(fs.readFileSync(path.join(root,'.vercelignore'),'utf8'),/^\/tools\/city-discovery-source.js$/m);
 assert.ok(!fs.readFileSync(path.join(root,'.vercelignore'),'utf8').includes('/discover/'));
-console.log('PASS 60 city entries + 5 common shorts, 12 bounded lists, 79 routes, unique detail exits, local assets, honest media types');
+console.log('PASS 80 city entries + 5 common shorts, 16 bounded lists, 103 routes, embedded audio and bounded trailers, unique detail exits, local assets, honest media types');
