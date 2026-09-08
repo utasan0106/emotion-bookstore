@@ -510,12 +510,13 @@ window.V3_RELEASE_CONTENT = {
         provenance: 'AI-generated illustration supplied by site owner / 2026-09-01'
       },
       heroMedia: {
-        url: './assets/city-jinbocho.jpg', width: 1280, height: 853,
-        alt: '本が並ぶ神保町の古書店の店先',
-        author: 'Real Estate Japan / photo credit Scott Kouchi', source: 'Wikimedia Commons',
-        sourceUrl: 'https://commons.wikimedia.org/wiki/File:Used_bookstore_in_Jimbocho_(50495926321).jpg',
-        license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0/',
-        modification: 'Wikimedia Commons原本を取得後、長辺1600px以内へ縮小。表示時のみCSSでトリミング・グレースケール・デュオトーン・コントラスト・網点風オーバーレイ'
+        url: './assets/city-jinbocho-suzuran.jpg', width: 1280, height: 853,
+        alt: '街灯と複数の店が連なる夕方の神保町・すずらん通り',
+        author: 'Fred Cherrygarden', source: 'Wikimedia Commons',
+        sourceUrl: 'https://commons.wikimedia.org/wiki/File:Suzuran_Street_Jimbocho.jpg',
+        license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+        capturedAt: '2023-04-02',
+        modification: 'Wikimedia Commonsの1280px縮小版をそのまま保存。表示時のみCSSでトリミング・明度・彩度を調整。画像の派生物はCC BY-SA 4.0で提供'
       },
       objects: [
         {
