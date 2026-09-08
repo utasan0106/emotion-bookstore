@@ -154,7 +154,11 @@
     "licenseNote": "作者（著作権者）自身によるパブリックドメインへの放棄（Wikimedia Commons の PD 表記）。Public Domain Mark 1.0 は状態表示であって作者の放棄文書ではないので license URL には使わない（HQ_R3_FINAL_BOOK_AND_PD_PRECISION §3）。権利情報の出典は Commons の File ページ Licensing 節。",
     "previousRuntimePath": "./assets/home-thread-koenji-awaodori.jpg",
     "previousDerivativeSha256": "a2ead0c3b9e950cf2195cda37b82acec9434b6c516fa8915a9c097472860b726",
-    "decision": "2026-09-08 user request: restore missing mobile images and manage the whole visual experience; optimize delivery without changing photo subjects."
+    "decision": "2026-09-08 user-requested character-free cover: real archival photograph, explicitly captioned; no current-weather implication.",
+    "usedIn": [
+      "HOME editorial cover",
+      "HOME dance history"
+    ]
   },
   {
     "runtimePath": "./assets/suzunari-2008.jpg",

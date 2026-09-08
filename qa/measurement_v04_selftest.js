@@ -90,6 +90,15 @@ for (const host of ['emotion-bookstore-n8n5kl0xu-emotion-bookstore.vercel.app', 
   check('page_view event sanitized', pv && pv[2].page_location === 'https://emotionbookstore.com/thread.html' && pv[2].page_referrer === 'https://example.org' && pv[2].campaign_source === 'x');
 }
 
+// Editorial feature: one direct official click, bounded source/domain only.
+{
+ const r = run('emotionbookstore.com', '/', '', {});
+ r.listeners.click({target:el({tag:'a',cls:'hc-hero-cta',attrs:{'data-featured-work':'',href:'https://www.youtube.com/watch?v=dt33RGSRuo0'}})});
+ const events = by(r.events(), 'v3_external_open');
+ check('editorial official video emits one bounded external event', events.length===1 && events[0][2].content_id==='home' && events[0][2].link_domain==='www.youtube.com', events);
+ check('editorial video sends no title, query, text or personal values', events.length===1 && !JSON.stringify(events).includes('dt33RGSRuo0'));
+}
+
 /* ---- 3. HOME: entry = actual cultural entrance clicks only; external = reality cards only ---- */
 {
   const r = run('emotionbookstore.com', '/', '', {});

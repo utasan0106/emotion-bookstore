@@ -504,7 +504,7 @@ for (const banned of ['animation', 'transition', '@keyframes', 'box-shadow', 'te
   check(!home.includes('data-route-hold="thread-koenji-awaodori"'), 'the thread-koenji-awaodori hold must be gone');
   /* FOUNDER PREVIEW FIX A1 / A5: hero の スレッドを見る も同じ Thread への実 anchor。route hold は 0。 */
   check(!home.includes('data-route-hold'), 'HOME must carry no route hold');
-  check(home.split('<a class="hc-hero-cta" href="./discover/index.html">').length === 2, 'HOME hero must reach the current work directory, exactly once');
+  check((home.match(/class="hc-hero-cta"[^>]+href="https:\/\/www\.youtube\.com\/watch\?v=dt33RGSRuo0"/g)||[]).length === 1, 'HOME editorial feature must reach the official video guide');
   check((home.match(/thread\.html/g) || []).length === 1, 'HOME keeps one Thread route in section 4');
   const rule = (releaseCss.match(/\.hc-thread-read \{[^}]*\}/) || [''])[0];
   for (const decl of ['display: flex;', 'align-items: flex-end;', 'justify-content: flex-end;', 'gap: 14px;', 'height: 44px;', 'margin: 0;', 'font-size: 13px;', 'line-height: 1;', 'letter-spacing: .04em;', 'color: #d8cdbb;', 'text-decoration: none;']) {

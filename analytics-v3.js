@@ -95,7 +95,7 @@
 
   /* Approved external surfaces per public page. Nothing else (calendar utility, credits, menu, arbitrary anchors) is measured. */
   var EXTERNAL_SURFACES = {
-    home: [{ anchor: 'a.hc-reality-card.official-action[href]' }],
+    home: [{ anchor: 'a.hc-reality-card.official-action[href]' }, { anchor: 'a.hc-hero-cta[data-featured-work][href]' }],
     shelf: [{ anchor: 'a.official-action[href]' }, { anchor: 'a.weekly-feature-official[href]' }],
     work: [{ anchor: 'a.wk-action[href]' }],
     thread: [{ anchor: 'a.th-source-link[href]' }, { anchor: 'a.th-destination-link[href]' }],

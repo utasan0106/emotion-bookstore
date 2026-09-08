@@ -43,7 +43,8 @@
   select.value = city;
   const hero = document.querySelector('.hc-hero');
   wrapper.append(panel, restore);
-  if (hero) hero.append(wrapper); else main.prepend(wrapper);
+  const homeWeather = document.querySelector('[data-home-weather]');
+  if (homeWeather) homeWeather.append(wrapper); else if (hero) hero.append(wrapper); else main.prepend(wrapper);
   const details = panel.querySelector('details');
   const summaryControl = panel.querySelector('summary');
   details.addEventListener('toggle', () => { summaryControl.textContent = details.open ? '詳細を閉じる' : '予報・観測地点'; });

@@ -50,7 +50,7 @@ for (const [name, marker] of [
 /* ---- 2. core copy が一字も違わない ------------------------------------ */
 
 const COPY = [
-  '好きの先に、', '知らない街。', '作品を探す',
+  '街が、', '踊りだす。', '作品を探す', '公式映像を見る',
   '街から入る', '街には、文化が息づく理由がある。',
   '作品から入る', 'まずひとつ観る・聴く。気になったら、作品と街を辿る。',
   '踊りから、街の歴史へ', '高円寺の踊りを、記録と写真で知る。',
@@ -59,7 +59,7 @@ const COPY = [
 ];
 for (const c of COPY) check(html.replace(/<[^>]*>/g, '').includes(c), `core copy missing: ${c.slice(0, 40)}`);
 const heroSub = (html.match(/<p class="hc-hero-sub">([\s\S]*?)<\/p>/) || [])[1] || '';
-check(heroSub.replace(/<[^>]*>/g, '') === '本、音楽、映画。心が動いた作品から、ゆかりの街と今の催しへ。', 'First-visit hero must name the media and explain the purpose');
+check(html.includes('本、音楽、映画。<span>作品から、街へ。</span>') && heroSub.includes('5分39秒'), 'Cover must explain the service and identify the featured experience');
 
 const CITY_COPY = [
   /* FOUNDER PREVIEW FIX A3: 因果の問いは shelf route が答えないので、4 街とも実際の遷移内容に合う同じ copy。 */
@@ -78,8 +78,8 @@ for (const w of ['本', '映画', '音楽', '映像']) {
 // User requested fewer simultaneous concepts on HOME; detailed history lives on its own page.
 check(!html.includes('class="hc-thread-chain"'), 'HOME must not repeat the detailed relationship chain');
 check(html.includes('class="hc-header-actions"'), 'English guide and menu must share a normal-flow layout');
-check(!html.includes('class="hc-hero-media"'), 'HOME must not use one city as its representative hero');
-check(html.includes('class="hc-culture-art"'), 'HOME introduces a shared cultural street through an illustration');
+check(html.includes('class="hc-feature-photo"') && html.includes('高円寺の踊りの記録写真'), 'Editorial cover must identify its real photographed subject');
+check(!/hc-culture-art|data-city-scene-image|home-encounter/.test(html), 'Withdrawn character cover must not load');
 
 /* ---- 3. 既存の functional contract を壊していない ---------------------- */
 
@@ -135,7 +135,7 @@ const THREAD_ANCHOR = '<a class="hc-thread-read" href="./thread.html?thread=koen
 check(html.split(THREAD_ANCHOR).length === 2, 'thread read must be the real anchor to ./thread.html?thread=koenji-dance-history, exactly once');
 check(!html.includes('data-route-hold="thread-koenji-awaodori"'), 'retired hold thread-koenji-awaodori must not remain');
 const hero = html.match(/<a class="hc-hero-cta"[^>]*>[\s\S]*?<\/a>/g)||[];
-check(hero.length === 1 && hero[0].includes('href="./discover/index.html"'), 'one primary hero action to the work catalogue');
+check(hero.length === 1 && hero[0].includes('href="https://www.youtube.com/watch?v=dt33RGSRuo0"'), 'Feature action must open the identified video, not a generic catalogue');
 check((html.match(/href="\.\/discover\/index\.html"/g)||[]).length === 1, 'no duplicate primary catalogue button');
 check(!html.includes('data-route-hold'), 'HOME must carry no data-route-hold at all');
 check((html.match(/thread\.html/g) || []).length === 1, 'HOME keeps one primary link to the Koenji Thread');
@@ -163,7 +163,7 @@ check(fs.existsSync(path.join(root, 'works.html')), 'works route target works.ht
 // User supersedes the old generic destination strip: actual dated cultural events instead.
 const body = html.slice(html.indexOf('<body'));
 const externalRefs = body.match(/(?:src|href)="(https?:)?\/\/[^"]+"/g) || [];
-check(externalRefs.length === 0, 'HOME keeps external providers behind the relevant detail pages');
+check(externalRefs.length === 1 && externalRefs[0] === 'href="https://www.youtube.com/watch?v=dt33RGSRuo0"', 'HOME permits exactly the user-triggered official feature video link');
 check(!/<(iframe|video|audio|embed|object)\b/i.test(html), 'HOME loads no external media');
 check(html.includes('文化イベントを選ぶ'), 'dated cultural events have a clear entry');
 check(!html.includes('class="hc-reality-card official-action"'), 'generic venue strip retired');
@@ -259,5 +259,5 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log('HOME_CANONICAL_CHECK_GO');
-  console.log(`sections=5 in canonical order; shelf-entries=4; thread nodes=0; route holds=${HOLDS.length}; hero anchor=1; works anchors=4; local assets=${assets.length}; external hrefs=0; other external hosts=0; iframes=0`);
+  console.log(`sections=5 in canonical order; shelf-entries=4; thread nodes=0; route holds=${HOLDS.length}; hero anchor=1; works anchors=4; local assets=${assets.length}; external hrefs=1 (official feature); external media src=0; iframes=0`);
 }

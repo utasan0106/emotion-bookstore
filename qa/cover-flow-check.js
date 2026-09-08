@@ -1,5 +1,5 @@
 'use strict';
-// Sep 8 user defects: visible local photos, consistent time/cover, direct official exits.
+// Sep 8 revised direction: character-free editorial cover, stable photos, direct official exits.
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),vm=require('node:vm');
 const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const home=read('index.html'),weather=read('city-weather.js'),css=read('page-nav.css');
@@ -8,16 +8,18 @@ const {mediaFor,postFor}=require('../tools/event-media-source');
 assert.doesNotMatch(css,/city-rain-drift|city-snow-drift|city-rain-surface/);
 assert.doesNotMatch(weather,/city-atmosphere|city-weather-motion|selectScene|sceneLink/);
 const photos=[...home.matchAll(/src="([^\"]*home-(?:work-|thread-)[^\"]+)"/g)].map(m=>m[1]);
-assert.equal(photos.length,5);for(const p of photos)assert.ok(fs.statSync(path.join(root,p)).size>1000,p);
+assert.equal(photos.length,6);for(const p of photos)assert.ok(fs.statSync(path.join(root,p)).size>1000,p);
 assert.equal((home.match(/loading="eager"/g)||[]).length,5,'Critical work/history photos must not wait for lazy intersection');
-const scene={attrs:{},getAttribute(k){return this.attrs[k];},setAttribute(k,v){this.attrs[k]=v;}};
-let now=Date.parse('2026-09-08T18:59:00+09:00'),tick;
-const doc={body:{dataset:{}},hidden:false,documentElement:{lang:'ja'},querySelector:s=>s==='[data-city-scene-image]'?scene:null,querySelectorAll:()=>[],addEventListener(){}};
-vm.runInNewContext(read('time-of-day.js'),{document:doc,Intl,Date:class extends Date{constructor(...args){super(...(args.length?args:[now]));}},setInterval:f=>tick=f});
-assert.ok(scene.attrs.src.includes('-day-'));
-now=Date.parse('2026-09-08T19:00:00+09:00');tick();assert.ok(scene.attrs.src.includes('-night-'));assert.match(scene.alt,/夜/);
-now=Date.parse('2026-09-09T05:00:00+09:00');tick();assert.ok(scene.attrs.src.includes('-day-'));
-for(const period of ['day','night'])assert.ok(fs.statSync(path.join(root,'assets/home-encounter-'+period+'-20260908.webp')).size>10000);
+assert.doesNotMatch(home,/home-encounter|data-city-scene-image|hc-culture-art/);
+assert.match(home,/<a class="hc-hero-cta"[^>]+href="https:\/\/www\.youtube\.com\/watch\?v=dt33RGSRuo0"/);
+assert.match(home,/高円寺の踊りの記録写真/);
+assert.match(home,/data-home-weather/);
+assert.doesNotMatch(read('time-of-day.js'),/setAttribute|home-encounter|scene/,'Time labels must not replace or recolour the editorial photograph');
+const {tokyoPeriod}=require('../time-of-day');
+for(const [time,expected] of [['2026-09-08T18:59:00+09:00','evening'],['2026-09-08T19:00:00+09:00','night'],['2026-09-09T05:00:00+09:00','morning']])assert.equal(tokyoPeriod(new Date(time)),expected);
+const editorial=read('home-editorial.css');
+assert.match(editorial,/body\.home-canonical\[data-daypart\]/);
+assert.match(editorial,/prefers-reduced-motion:reduce/);
 const index=read('outings/index.html');
 for(const e of events){
  const m=mediaFor(e);assert.ok(m.caption&&m.alt);assert.ok(fs.statSync(path.join(root,m.src)).size>1000);
@@ -31,4 +33,4 @@ for(const e of events){
 assert.match(read('outings/week.js'),/querySelector\('\[data-event-detail\]'\)\.href/);
 const suggest=read('suggest.html');assert.ok(suggest.indexOf('id="sg-form"')<suggest.indexOf('id="suggestForm"'),'Direct form entry precedes optional local drafting');
 assert.match(suggest,/紹介する文を、ここで下書きする/);
-console.log('PASS cover day/night rollover, 5 eager local photos, no rain particles, 24 direct official cards with local images, 2 attributed artist embeds, direct introduction form');
+console.log('PASS character-free editorial cover, time labels, 5 eager work/history photos plus priority feature, no rain particles, 24 direct official cards with local images, 2 attributed artist embeds, direct introduction form');

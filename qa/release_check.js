@@ -360,7 +360,7 @@ if (/hc-hero-trace|hc-trace-year/.test(read('index.html'))) failures.push('index
   const sub = src.indexOf('<p class="hc-hero-sub">');
   const firstCity = src.indexOf('class="hc-city shelf-entry"');
   if (h1 < 0 || sub < 0 || firstCity < 0 || h1 > firstCity || sub > firstCity) failures.push('index.html: hero copy must precede the first city entry');
-  if (src.includes('class="hc-hero-media"') || !src.includes('class="hc-culture-art"') || !src.includes('fetchpriority="high"')) failures.push('index.html: neutral culture hero with priority image required (R8 founder request)');
+  if (!src.includes('class="hc-feature-photo"') || /hc-culture-art|home-encounter|data-city-scene-image/.test(src) || !src.includes('fetchpriority="high"')) failures.push('index.html: character-free editorial cover with priority photograph required');
 }
 for (const page of ['shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html']) {
   const src = read(page);
@@ -700,7 +700,7 @@ if ((read('suggest.html').match(/<h1\b/g) || []).length !== 1) failures.push('su
 /* ---- 玄関と終わりの言い回し ------------------------------------------ */
 const foyer = read('index.html');
 if (!foyer.includes('みんなの感情書店')) failures.push('foyer eyebrow missing');
-const visibleCityH1 = '<h1 id="hc-hero-title" class="hc-hero-title"><span class="hc-hero-line">好きの先に、</span><span class="hc-hero-line">知らない<span class="hc-hero-accent">街</span>。</span></h1>';
+const visibleCityH1 = '<h1 id="hc-hero-title" class="hc-hero-title"><span class="hc-hero-line">街が、</span><span class="hc-hero-line">踊りだす。</span></h1>';
 if (!foyer.includes(visibleCityH1)) {
   failures.push('foyer visible H1 must explain the work-to-city purpose (R8 founder request)');
 }
@@ -903,10 +903,9 @@ for (const required of ['analytics-v3.js', 'data.html', 'credits.html']) {
 if (!productionIndex.includes('<script src="./analytics-v3.js"></script>')) failures.push('index.html: analytics-v3 loader missing');
 if (!read('shelf.html').includes('<script src="./analytics-v3.js"></script>')) failures.push('shelf.html: analytics-v3 loader missing');
 if (!read('suggest.html').includes('<script src="./analytics-v3.js"></script>')) failures.push('suggest.html: analytics-v3 loader missing');
-/* canonical HOME に週間動画 module は無い。旧 module の「押すまで YouTube へ
-   接続しない」より強い契約 —— HOME は表示時も操作時も外部 host へ出ない —— を
-   ここで固定する（qa/home_canonical_check.js が external host 0 を見る）。 */
-for (const retired of ['weekly-video.js', 'weekly-video.css', 'id="weeklyVideoPlay"', 'data-video-id=', 'youtube', 'i.ytimg.com', '<iframe']) {
+/* Editorial HOME has one explicit official link; no provider media loads on paint.
+   qa/home_canonical_check.js verifies the exact allowed link destination. */
+for (const retired of ['weekly-video.js', 'weekly-video.css', 'id="weeklyVideoPlay"', 'data-video-id=', 'i.ytimg.com', '<iframe']) {
   if (productionIndex.includes(retired)) failures.push(`index.html: canonical HOME must not carry the retired weekly video module (${retired})`);
 }
 /* weekly-video.js はどのページからも読まれなくなったが、file が残る限り

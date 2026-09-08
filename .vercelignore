@@ -31,6 +31,7 @@ archive/
 # ---- 内部 QA / 運用設定 ---------------------------------------------------
 /CLAUDE.md
 /README.md
+/DESIGN.md
 /qa/
 /experiments/
 docs/
