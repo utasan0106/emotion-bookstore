@@ -735,7 +735,7 @@ for (const sel of ['.plate-word']) {
 }
 /* canonical HOME の折返しは markup で決める（auto-phrase に依存しない）。
    行の span は block でなければ canonical の行数にならない。 */
-for (const sel of ['.hc-hero-line', '.hc-city-q-line', '.hc-hero-aside-line', '.hc-reality-line']) {
+for (const sel of ['.hc-hero-line', '.hc-city-q-line', '.hc-reality-line']) {
   if (!/display:\s*block/.test(rule(sel))) failures.push(`${sel} must be display: block (canonical hard line break)`);
 }
 if (read('index.html').includes('shelf-tagline')) failures.push('index.html: retired .shelf-tagline entry must not return to HOME');
@@ -950,3 +950,5 @@ const catCounts = cats.map((c) => `${c.id}:${allObjects.filter((o) => (o.categor
 console.log('RELEASE_CHECK_GO');
 console.log(`shelves=4; ${counts}; photo=${12 - plates}; plate=${plates}; current=${currents}; storage=0; analytics=production-host-only; background fetch=0; search=0; account=0`);
 console.log(`categories=5; ${catCounts}; explainer=static; suggest=no-backend`);
+
+if (/hc-hero-aside/.test(read('index.html'))) { console.error('Removed hero aside must not return'); process.exitCode = 1; }
