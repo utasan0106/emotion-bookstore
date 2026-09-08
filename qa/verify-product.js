@@ -5,6 +5,7 @@ const path=require('node:path');
 const root=path.resolve(__dirname,'..');
 const checks=[
  ['qa/cover-flow-check.js'],
+ ['qa/site_integration_check.js'],
  ['qa/release_check.js'],
  ['qa/weather_check.js'],
  ['qa/weather_client_check.js'],

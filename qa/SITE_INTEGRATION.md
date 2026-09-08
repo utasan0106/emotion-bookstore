@@ -59,3 +59,10 @@ Added Rocky Horror trailer Q3J9ewosl1A (20世紀スタジオ 公式チャンネ�
 Desktop home at 1440: no horizontal overflow or duplicate IDs; white canvas, gothic heading 32px. Actual browser screenshot reviewed. Official Happinet player loaded matching title/channel/duration and responded to Play, but elapsed-time advancement / actual playback could not be conclusively verified in this environment. Do not call all videos playback-tested.
 
 124-page integration check passes. Public deployment has not occurred. No subagents used.
+
+
+## Deployment preparation — 2026-09-08
+
+CI Product experience check still enforced retired Awa hero, six stand-in photos, 80 entries, no embeds and intact legacy work sections. Updated those assertions to the approved discovery home, 55 published entries, correct embedded media and scoped Bandcamp permissions. Preserved release privacy/storage/source/SEO checks; added the 124-page integration check to CI. No blanket skip of failing tests.
+
+Remote main freshly checked via git ls-remote: 29342dd49ff201493096919032959f27877effc9 (unchanged). GitHub connector reports repository admin/push access, which does not by itself establish Git transport write access. Vercel list_teams returns emotion-bookstore / team_eQhk85bAFSrBX9HMlk6wRz4W; list_projects returns an empty projects array. No deployment can be targeted from this connection. No production or preview changes performed.

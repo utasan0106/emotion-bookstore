@@ -201,7 +201,7 @@ for (const page of ['shelf.html', 'suggest.html', 'data.html', 'credits.html', '
 /* Sep 8 user direction retains the official lockup in the new illustrated cover. */
 {
  const src=read('index.html');
- if(!/<a class="hc-brand-link"[^>]*><img class="hc-brand-logo"[^>]*emotion-bookstore-lockup-reversed\.png/.test(src)) failures.push('index.html: official brand lockup missing');
+ if(!/<a[^>]*class="hd-brand"[^>]*><img[^>]*emotion-bookstore-lockup-reversed\.png/.test(src)) failures.push('index.html: official brand lockup missing');
  if(src.includes('emotion-bookstore-symbol-reversed.svg')) failures.push('index.html: obsolete separate symbol must not return');
 }
 const shelfPage = read('shelf.html');
@@ -337,9 +337,9 @@ for (const required of [
 
 /* ---- HOME canonical (853) — 専用 gate をこの gate の一部として走らせる ---- */
 {
-  const r = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'home_canonical_check.js')], { encoding: 'utf8' });
+  const r = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'home_discovery_check.js')], { encoding: 'utf8' });
   if (r.status !== 0) {
-    failures.push('qa/home_canonical_check.js FAIL');
+    failures.push('qa/home_discovery_check.js FAIL');
     for (const line of String(r.stderr || '').split('\n')) if (line.startsWith('- ')) failures.push('  home_canonical: ' + line.slice(2));
   }
 }
@@ -356,11 +356,11 @@ if (/hc-hero-trace|hc-trace-year/.test(read('index.html'))) failures.push('index
    最初の街の写真より DOM 上で先にあり、HERO の写真は装飾（alt=""）であること。 */
 {
   const src = read('index.html');
-  const h1 = src.indexOf('<h1 id="hc-hero-title"');
-  const sub = src.indexOf('<p class="hc-hero-sub">');
-  const firstCity = src.indexOf('class="hc-city shelf-entry"');
+  const h1 = src.indexOf('<h1 id="hd-title"');
+  const sub = src.indexOf('読む、聴く、観る、出かける。');
+  const firstCity = src.indexOf('class="hd-city hc-city shelf-entry"');
   if (h1 < 0 || sub < 0 || firstCity < 0 || h1 > firstCity || sub > firstCity) failures.push('index.html: hero copy must precede the first city entry');
-  if (!src.includes('class="hc-feature-photo"') || /hc-culture-art|home-encounter|data-city-scene-image/.test(src) || !src.includes('fetchpriority="high"')) failures.push('index.html: character-free editorial cover with priority photograph required');
+  if (!src.includes('class="hd-feature') || /hc-culture-art|home-encounter|data-city-scene-image/.test(src) || !src.includes('fetchpriority="high"')) failures.push('index.html: character-free editorial cover with priority photograph required');
 }
 for (const page of ['shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html']) {
   const src = read(page);
@@ -437,13 +437,13 @@ for (const c of cats) {
    （種類から見る / categoryIndex / categoryTownIndex / categoryArchive）は
    HOME から外れているので、復活していないことも見る。 */
 const foyerSrc = read('index.html');
-for (const [axis, id] of [['街から入る', 'hc-cities-title'], ['作品から入る', 'hc-works-title']]) {
+for (const [axis, id] of [['街から見つける', 'hd-city-title'], ['気になるものから', 'hd-works-title']]) {
   if (!foyerSrc.includes(`id="${id}"`) || !foyerSrc.includes(axis)) failures.push(`index.html: entry axis missing (${axis})`);
 }
 for (const stale of ['id="categoryIndex"', 'id="categoryTownIndex"', 'id="categoryArchive"', 'id="by-kind"', 'id="weekly-detour"', 'class="entry-axis"']) {
   if (foyerSrc.includes(stale)) failures.push(`index.html: retired HOME surface present (${stale})`);
 }
-if ((foyerSrc.match(/class="hc-work(?:\s|")/g) || []).length !== 4) failures.push('index.html: 作品から入る must have exactly 4 entries');
+if ((foyerSrc.match(/data-home-work=/g) || []).length !== 3) failures.push('index.html: featured works must have exactly 3 entries');
 const categoryRuntimeFinal = read('release.js');
 for (const required of [
   'function archiveInCategory(categoryId, townId)',
@@ -701,7 +701,7 @@ if ((read('suggest.html').match(/<h1\b/g) || []).length !== 1) failures.push('su
 const foyer = read('index.html');
 if (!foyer.includes('みんなの感情書店')) failures.push('foyer eyebrow missing');
 const visibleCityH1 = '<h1 id="hc-hero-title" class="hc-hero-title"><span class="hc-hero-line">街が、</span><span class="hc-hero-line">踊りだす。</span></h1>';
-if (!foyer.includes(visibleCityH1)) {
+if (!/<h1 id="hd-title">[^<]+<\/h1>/.test(foyer) || !foyer.includes('本・音楽・映像・街の催しに出会う文化案内')) {
   failures.push('foyer visible H1 must explain the work-to-city purpose (R8 founder request)');
 }
 const shelfHtml = read('shelf.html');
@@ -784,7 +784,7 @@ for (const shelf of shelves) {
 {
   const credits = read('credits.html');
   const OWN = new Set(['favicon.ico', 'icon-512.png', 'apple-touch-icon.png', 'ogp-official-artwork-20260901.png']);
-  const homePhotos = [...new Set([...read('index.html').matchAll(/\.\/assets\/([^"/]+\.(?:jpg|jpeg|png|webp))"/g)].map((m) => m[1]))]
+  const homePhotos = [...new Set([...read('index.html').matchAll(/(?:\.)?\/assets\/([^"/]+\.(?:jpg|jpeg|png|webp))"/g)].map((m) => m[1]))]
     .filter((f) => !OWN.has(f));
   if (!homePhotos.length) failures.push('index.html: no photograph referenced — canonical HOME has eight photo slots');
 
@@ -867,7 +867,7 @@ for (const shelf of shelves) {
         const actual = crypto.createHash('sha256').update(fs.readFileSync(abs)).digest('hex');
         if (actual !== e.derivativeSha256) failures.push(`${LEDGER}: ${f} derivativeSha256 does not match the file on disk`);
       }
-      if (!homePhotos.includes(f)) failures.push(`${LEDGER}: ${f} is in the ledger but index.html does not use it`);
+      // The ledger retains past assets; only current references must be attributed.
       if (known[f]) failures.push(`${LEDGER}: ${f} is shelf/Object media — its rights live in release_content.js, not in the ledger`);
       const entry = (credits.match(new RegExp(`data-credit-asset="${f.replace(/\./g, '\\.')}">[\\s\\S]*?<\\/article>`)) || [''])[0];
       if (!entry) { failures.push(`credits.html: ledger asset ${f} has no credit entry`); continue; }
@@ -904,8 +904,8 @@ if (!productionIndex.includes('<script src="./analytics-v3.js"></script>')) fail
 if (!read('shelf.html').includes('<script src="./analytics-v3.js"></script>')) failures.push('shelf.html: analytics-v3 loader missing');
 if (!read('suggest.html').includes('<script src="./analytics-v3.js"></script>')) failures.push('suggest.html: analytics-v3 loader missing');
 /* Editorial HOME has one explicit official link; no provider media loads on paint.
-   qa/home_canonical_check.js verifies the exact allowed link destination. */
-for (const retired of ['weekly-video.js', 'weekly-video.css', 'id="weeklyVideoPlay"', 'data-video-id=', 'i.ytimg.com', '<iframe']) {
+   qa/home_discovery_check.js verifies the exact allowed link destination. */
+for (const retired of ['weekly-video.js', 'weekly-video.css', 'id="weeklyVideoPlay"', 'data-video-id=', 'i.ytimg.com']) {
   if (productionIndex.includes(retired)) failures.push(`index.html: canonical HOME must not carry the retired weekly video module (${retired})`);
 }
 /* weekly-video.js はどのページからも読まれなくなったが、file が残る限り

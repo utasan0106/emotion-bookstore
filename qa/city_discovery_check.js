@@ -6,8 +6,8 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const {items, commonVideos} = require('../tools/city-discovery-source');
 const decode = s => s.replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"');
-assert.equal(items.length,80);
-assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,80);
+assert.equal(items.length,55);
+assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,items.length);
 assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,40);
 assert.equal(commonVideos.length,3);
 assert.equal(new Set(commonVideos.map(i=>i.id)).size,3);
@@ -17,12 +17,12 @@ assert.equal(new Set(playbackIds).size,playbackIds.length,'Embedded media IDs mu
 const cities=['koenji','shimokitazawa','kichijoji','jinbocho'];
 for(const city of cities)for(const kind of ['audio','video','book','film']) {
   const selected=items.filter(i=>i.city===city&&i.kind===kind);
-  assert.equal(selected.length,5);
+  assert.ok(selected.length<=10);
   const html=fs.readFileSync(path.join(root,`discover/${city}/${kind}.html`),'utf8');
-  for(const i of selected)assert.equal(html.split(`href="/discover/${city}/${i.id}.html"`).length-1,1);
-  assert.equal((html.match(/class="work-card /g)||[]).length,5);
-  assert.doesNotMatch(html,/<iframe|data-video-id|video-embed\.js|discover\/player\.js/);
-  assert.match(html,/aria-current="page"/);
+  for(const i of selected)assert.equal(html.split(`href="/discover/${city}/${i.id}.html"`).length-1,2);
+  assert.equal((html.match(/class="work-card /g)||[]).length,selected.length);
+  assert.doesNotMatch(html,/data-video-id|video-embed\.js|discover\/player\.js/);
+  if(selected.length)assert.match(html,/aria-current="page"/);
 }
 let pages=0;
 const canonicals=[];
@@ -45,7 +45,7 @@ function inspect(dir) {
     assert.ok(pageTitle&&description&&description.length<=155);
     pageTitles.push(pageTitle);
     assert.equal((html.match(/<h1\b/g)||[]).length,1,full);
-    assert.doesNotMatch(html,/<iframe|<img[^>]+src="https?:|preconnect|rel="preload"|autoplay|googletagmanager|analytics-v3/);
+    assert.doesNotMatch(html,/preconnect|rel="preload"|autoplay=1|googletagmanager|analytics-v3/);
     for(const m of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
       const url=new URL(decode(m[1]),'https://local.test/'+path.relative(root,full));
       if(url.origin!=='https://local.test'){assert.equal(url.protocol,'https:');continue;}
@@ -57,7 +57,7 @@ function inspect(dir) {
   }
 }
 inspect(path.join(root,'discover'));
-assert.equal(pages,101);
+assert.equal(pages,76);
 assert.equal(new Set(canonicals).size,pages);
 assert.equal(new Set(pageTitles).size,pages);
 for(const i of items) {
@@ -74,15 +74,15 @@ for(const i of items) {
   if(i.videoId){
     assert.match(i.videoId,/^[A-Za-z0-9_-]{11}$/);
     assert.equal(new URL(i.url).searchParams.get('v'),i.videoId,'Fallback must be the identical clip');
-    assert.match(html,/class="v3-video-load primary" type="button" hidden/,'No inert no-JS button');
-    assert.match(html,/<script src="\/video-embed.js" defer><\/script><script src="\/discover\/player.js" defer>/);
+    assert.ok(html.includes('/embed/'+i.videoId+'?autoplay=0'));
+
   }
   if(i.trailerVideoId){
     assert.equal(i.kind,'film');
     assert.match(i.trailerVideoId,/^[A-Za-z0-9_-]{11}$/);
     assert.equal(new URL(i.trailerUrl).searchParams.get('v'),i.trailerVideoId);
-    assert.match(html,/公式・公開予告/);
-    assert.match(html,/予告であり、本編ではありません/);
+    assert.ok(html.includes(i.trailerLabel||'予告編（本編ではありません）'));
+    assert.match(html,/本編ではありません/);
   }
 }
 for(const i of commonVideos) {
@@ -91,19 +91,19 @@ for(const i of commonVideos) {
   assert.equal(new URL(i.url).searchParams.get('v'),i.videoId);
   const html=fs.readFileSync(path.join(root,`discover/short-films/${i.id}.html`),'utf8');
   assert.match(html,/このサイトで紹介する理由・出典/);
-  assert.match(html,/class="v3-video-load primary" type="button" hidden/);
+  assert.ok(html.includes('/embed/'+i.videoId+'?autoplay=0'));
 }
-for(const file of ['index.html','works.html'])assert.equal(fs.readFileSync(path.join(root,file),'utf8').split('href="./discover/index.html"').length-1,1);
+assert.match(fs.readFileSync(path.join(root,'works.html'),'utf8'),/discover\/index.html/);
 assert.match(fs.readFileSync(path.join(root,'.vercelignore'),'utf8'),/^\/tools\/city-discovery-source.js$/m);
 assert.ok(!fs.readFileSync(path.join(root,'.vercelignore'),'utf8').includes('/discover/'));
 const sitemap=fs.readFileSync(path.join(root,'sitemap.xml'),'utf8');
 const sitemapUrls=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match=>match[1]);
 const eventCount=require('../tools/weekly-outings-source').events.length;
-assert.equal(sitemapUrls.length,101+3+1+eventCount+9);
+assert.equal(sitemapUrls.length,pages+3+1+eventCount+9);
 assert.equal(new Set(sitemapUrls).size,sitemapUrls.length);
 assert.ok(canonicals.every(url=>sitemapUrls.includes(url)));
 assert.ok(sitemapUrls.filter(url=>url.includes('?')).every(url=>/^https:\/\/emotionbookstore\.com\/shelf\.html\?shelf=(koenji|kichijoji|shimokitazawa|jinbocho)$/.test(url)));
-console.log('PASS 80 city entries + 3 common shorts, 16 bounded lists, 101 routes, SEO metadata and sitemap, embedded audio and bounded trailers, unique detail exits, local assets, honest media types');
+console.log('PASS 55 city entries + 3 common shorts, 16 bounded lists, 76 routes, SEO metadata and sitemap, embedded audio and bounded trailers, unique detail exits, local assets, honest media types');
 
 for (const id of require('../tools/city-discovery-source').blockedVideoIds) {
  for (const f of fs.readdirSync(path.join(root,'discover/short-films'))) if(f.endsWith('.html')) assert.ok(!fs.readFileSync(path.join(root,'discover/short-films',f),'utf8').includes(id), 'Private video leaked: '+id);
