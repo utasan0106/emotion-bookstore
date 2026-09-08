@@ -24,6 +24,17 @@ function artistProfile(item) {
   if(!profile) return '';
   return `<details class="background artist-profile"><summary>${esc(profile.name)}について</summary><p>${esc(profile.text)}</p><p>${external(profile.url,'公式プロフィール・出典')}</p><small>公式情報を要約 · 確認：${esc(profile.checkedAt)}</small></details>`;
 }
+function relatedPerformance(item) {
+  const pairs = {
+    'yoshida-night-edge': ['yoshida-tinderness', '同じ公演を、バンド編成でもう一曲。'],
+    'yoshida-tinderness': ['yoshida-night-edge', '同じ公演から、TRIO編成の演奏へ。']
+  };
+  const relation = pairs[item.id];
+  if (!relation) return '';
+  const target = items.find(candidate => candidate.city === item.city && candidate.id === relation[0]);
+  if (!target) throw new Error('Missing related performance: '+relation[0]);
+  return `<section class="related-performance"><h2>同じ人の、別の演奏</h2><p>${esc(relation[1])}</p><p><a href="/discover/${target.city}/${target.id}.html">${esc(target.title)} →</a></p></section>`;
+}
 function cityContinuation(city,kind) {
   const name=cityNames[city];
   const reason=kind==='audio'?'演奏を聴いたあとは、会場のある街の風景や人を映像で。':kind==='video'?'映像で気になった街の場所や来歴を、次に辿れます。':kind==='book'?'本で触れた街を、今度は映像から眺めてみる。':'映画と街の関係を辿ったあとは、その街の風景も。';
@@ -111,7 +122,7 @@ for(const item of items) {
   const trailer='';
   const sourceLinks=item.sources.filter(s=>s!==item.url&&s!==item.trailerUrl);
   const background=`<details class="background"><summary>この街との関係・出典</summary><p>${esc(item.relationNote)}</p>${sourceLinks.map(s=>`<p>${external(s,new URL(s).hostname.replace('www.','')+' の掲載情報')}</p>`).join('')}<p>紹介先・出典確認：${checkedAt}。${item.videoId?(kind==='audio'?'音楽・サウンド':'映像')+'は公開元のプレイヤーで提供されます。':'外部の視聴・読書条件は各提供元の案内で確認できます。'}</p></details>`;
-  write(`${city}/${item.id}.html`, shell(`${item.title}｜${cityNames[city]}の${categories[kind].name}`, `<article class="detail"><p class="eyebrow">${cityNames[city]} / ${categories[kind].name} / ${esc(item.relation)}</p><h1>${esc(item.title)}</h1><p class="detail-creator">${esc(item.creator)}</p><p class="detail-hook">${esc(item.hook)}</p>${player}${trailer}<div class="destination">${action}<p>${item.url.startsWith('/')?'このサイト内で、本人操作による映像・音の体験へ。':item.videoId?'表示・再生できない場合は、公開元の同じ'+(kind==='audio'?'音':'映像')+'へ。':'外部の作品・特集ページへ。'}${item.url.startsWith('/')?'':'新しいタブで開きます。'}</p></div>${artistProfile(item)}${background}<p class="city-exit"><a href="/shelf.html?shelf=${city}">${cityNames[city]}の場所・歴史へ →</a></p></article>`, `<a href="/discover/${city}/${kind}.html">${categories[kind].name}を選び直す ←</a>`, city));
+write(`${city}/${item.id}.html`, shell(`${item.title}｜${cityNames[city]}の${categories[kind].name}`, `<article class="detail"><p class="eyebrow">${cityNames[city]} / ${categories[kind].name} / ${esc(item.relation)}</p><h1>${esc(item.title)}</h1><p class="detail-creator">${esc(item.creator)}</p><p class="detail-hook">${esc(item.hook)}</p>${player}${trailer}<div class="destination">${action}<p>${item.url.startsWith('/')?'このサイト内で、本人操作による映像・音の体験へ。':item.videoId?'表示・再生できない場合は、公開元の同じ'+(kind==='audio'?'音':'映像')+'へ。':'外部の作品・特集ページへ。'}${item.url.startsWith('/')?'':'新しいタブで開きます。'}</p></div>${artistProfile(item)}${background}${relatedPerformance(item)}<p class="city-exit"><a href="/discover/${city}/${kind}.html">${categories[kind].name}を選び直す →</a></p><p class="city-exit"><a href="/shelf.html?shelf=${city}">${cityNames[city]}の場所・歴史へ →</a></p></article>`, `<a href="/discover/${city}/${kind}.html">${categories[kind].name}を選び直す ←</a>`, city));
 }
 // Entries are replaced during editorial maintenance. Remove only obsolete generated
 // detail pages inside known city directories; category pages and hand-authored assets

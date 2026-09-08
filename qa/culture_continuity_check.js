@@ -17,6 +17,16 @@ for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']){
 }
 const profiles=require('../tools/artist-profiles');
 const items=require('../tools/city-discovery-source').items;
+for(const item of items) {
+  const html=read('discover/'+item.city+'/'+item.id+'.html');
+  const article=html.match(/<article class="detail">[\s\S]*?<\/article>/)[0];
+  assert.ok(article.includes('/discover/'+item.city+'/'+item.kind+'.html'),'End of detail must offer re-selection: '+item.id);
+}
+for(const [from,to] of [['yoshida-night-edge','yoshida-tinderness'],['yoshida-tinderness','yoshida-night-edge']]){
+  const html=read('discover/kichijoji/'+from+'.html');
+  assert.ok(html.includes('/discover/kichijoji/'+to+'.html'));
+  assert.match(html,/同じ人の、別の演奏/);
+}
 for(const [id,p] of Object.entries(profiles)){
   const item=items.find(i=>i.id===id);
   assert.ok(item);

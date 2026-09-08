@@ -14,6 +14,7 @@ const checks=[
  ['qa/event_timing_check.js'],
  ['qa/memory_note_check.js'],
  ['qa/city_discovery_check.js'],
+ ['qa/culture_continuity_check.js'],
  ['qa/city_discovery_player_check.js'],
  ['qa/work_page_check.js'],
  ['qa/social_post_check.js'],
