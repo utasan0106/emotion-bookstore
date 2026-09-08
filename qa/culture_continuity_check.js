@@ -20,8 +20,10 @@ const items=require('../tools/city-discovery-source').items;
 for(const [id,p] of Object.entries(profiles)){
   const item=items.find(i=>i.id===id);
   assert.ok(item);
+  assert.ok(item.creator.includes(p.name), id+': profile identity must match credited artist');
+  assert.match(p.checkedAt,/^\d{4}-\d{2}-\d{2}$/);
   assert.ok(p.text&&p.name&&p.checkedAt&&new URL(p.url).protocol==='https:');
   assert.ok(read('discover/'+item.city+'/'+id+'.html').includes(p.url));
 }
 assert.ok(!read('discover/koenji/big-the-grape.html').includes('artist-profile'));
-console.log('PASS restored short-film entry points, 16 contextual next steps, 4 sourced profile placements, unknown profile omitted');
+console.log('PASS restored short-film entry points, 16 contextual next steps, '+Object.keys(profiles).length+' sourced profile placements, unknown profile omitted');

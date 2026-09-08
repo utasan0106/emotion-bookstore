@@ -3,6 +3,7 @@
 const motoki = {name:'motoki tanaka', text:'バンド編成とソロの弾き語りで活動するミュージシャン。2023年12月に1stアルバム『motoki tanaka』、2025年4月に2ndアルバム『Catch Me If You Can』を発表。', url:'https://motokitanakabandguitarmusic.wordpress.com/', checkedAt:'2026-09-09'};
 const yoshida = {name:'吉田和史', text:'シンガーソングライター。2017年に吉田和史×夜窓名義で『ルーザーズ』、2019年にソロアルバム『誰もいない夜の果てを』を発表。', url:'https://kazknee.aremond.com/profile/', checkedAt:'2026-09-09'};
 module.exports = {
+  'uchu-mao-haircolor': {name:'宇宙まお', text:'シンガーソングライター。2012年にCDデビュー、2017年にメジャーデビュー。作詞作曲やライブに加え、CM楽曲やアーティストへの楽曲提供も手がける。', url:'https://uchumao.bitfan.id/contents/menu/13722', checkedAt:'2026-09-09'},
   'motoki-tongping': motoki,
   'yoshida-night-edge': yoshida,
   'yoshida-tinderness': yoshida,
