@@ -1,3 +1,7 @@
+/* Same-origin Japanese webfonts; OFL notices and source hashes: assets/fonts/. */
+@font-face{font-family:"EB Reading";src:url('/assets/fonts/zen-kaku-gothic-400.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:"EB Reading";src:url('/assets/fonts/zen-kaku-gothic-500.woff2') format('woff2');font-style:normal;font-weight:500;font-display:swap}
+@font-face{font-family:"EB Display";src:url('/assets/fonts/shippori-mincho-500.woff2') format('woff2');font-style:normal;font-weight:500;font-display:swap}
 /* Shared navigation: one small pair, kept clear of text and mobile safe areas. */
 /* Forecast palette and scene effects; playback and reading controls remain clear. */
 body[data-city-weather="clear"]{--weather-canvas:#f8f5ec;--weather-panel:#f1ead9;--weather-accent:#73531f}
@@ -120,3 +124,48 @@ body[data-daypart] .site-menu-title{font-size:32px;line-height:1.45}
 .weekly-feature-photo{position:relative;max-width:100%;margin:0 0 24px;aspect-ratio:16/9;overflow:hidden;background:#dfe5d8}
 .weekly-feature-photo img{display:block;width:100%;height:100%;object-fit:cover}
 .weekly-feature-photo figcaption{position:absolute;right:10px;bottom:10px;padding:4px 8px;background:rgba(23,40,31,.83);color:#fffef7;font:12px/1.6 system-ui}
+
+/* Japanese typography: reading is regular gothic; editorial titles are medium mincho.
+   rem respects reader settings. palt is reserved for large titles, never body text. */
+:root,body{--sans:"EB Reading","Hiragino Sans","Yu Gothic",sans-serif;--serif:"EB Display","Yu Mincho",serif}
+body{font-family:var(--sans);font-synthesis:none;line-height:1.9;letter-spacing:.015em}
+body :is(button,input,select,textarea){font-family:var(--sans)}
+body :is(.city-weather,.city-weather-reading,.city-weather-info p,.city-weather-restore,.time-of-day,.page-tools,.memory-note,.social-post,.suggest-start p,.suggest-start .official-action,.weekly-feature-photo figcaption){font-family:var(--sans)}
+body h1,body .detail h1,body .event-detail h1,body .intro h1,body .city-heading h1,body .wk-title,body .thread-page .th-title{font-family:var(--serif);font-weight:500;font-size:clamp(1.75rem,1.2rem + 1.5vw,2.5rem);line-height:1.55;letter-spacing:.035em;font-feature-settings:"palt";text-wrap:pretty}
+body :is(h2,h3){font-family:var(--serif);font-weight:500;letter-spacing:.025em;line-height:1.6}
+body :is(strong,b){font-weight:500}
+body :is(.primary,.official-action,.site-menu-close,.site-menu-secondary-link){font-family:var(--sans);font-weight:500;letter-spacing:.02em}
+body .site-menu-title{font-family:var(--serif);font-weight:500;font-size:1.75rem}
+body .site-menu-link{font-family:var(--serif);font-weight:500}
+body .event-card h2{font-size:clamp(1.25rem,1.1rem + .4vw,1.5rem);line-height:1.65;letter-spacing:.025em}
+body .event-detail .detail-hook{font:400 1rem/1.9 var(--sans);letter-spacing:.015em}
+body .event-context p{font-size:1rem;line-height:1.95}
+body .event-date>span{font:500 1.5rem/1.3 var(--sans);letter-spacing:.015em;font-variant-numeric:tabular-nums}
+body .suggest-start .suggest-lead{font:500 1.125rem/1.9 var(--serif)}
+body .visit-page .intro h1,.visit-page .intro h1{font-family:Georgia,serif;font-size:clamp(2rem,1.3rem + 2vw,3rem);line-height:1.2;letter-spacing:-.015em;font-feature-settings:normal}
+
+/* A stable reading surface across routes. Weather belongs to its information panel. */
+body[data-daypart]{--time-canvas:#fff;--time-surface:#fff;--paper:#171717;--muted:#575757;--surface:#fff;--line:#d2d2ce;--accent:#b63122;--chalk:#171717;--chalk-dim:#575757;--hall-line:#d2d2ce;--hall-edge:#94948e;--signal:#b63122;background:#fff;color:#171717}
+body .primary,body .suggest-start .official-action{background:#171717;color:#fff;font-size:.9375rem;line-height:1.6}
+body .primary:hover,body .suggest-start .official-action:hover{background:#b63122}
+body .player+.destination .primary{background:transparent;color:#171717}
+body :is(.suggest-start p,.suggest-draft>summary,.suggest-start .suggest-lead){color:#333}
+body .page-tools a{background:#fff;color:#171717;border-color:#94948e;border-radius:4px}
+body .event-card,body .saved-card,body .visit-city{border-radius:0}
+body .event-date{background:#f4f4f1;color:#171717}
+body #event-filters{background:#f4f4f1;border-radius:4px}
+body #event-filters select{background:#fff;color:#171717;border-color:#94948e;font-size:1rem}
+body .memory-note button{background:#171717;color:#fff}
+body .memory-stamps button,body .memory-note [data-memory-copy]{background:transparent;color:#171717;border-color:#94948e}
+body .memory-stamps button[aria-pressed="true"]{background:#171717;color:#fff;border-color:#171717}
+body .event-card p{font-size:1rem}
+body .event-card .event-city{font-size:.875rem}
+body .event-card .card-action{font-size:.875rem}
+body .event-card .card-action{background:#171717;color:#fff;border-radius:0}
+body .event-photo figcaption{font-family:var(--sans);font-size:.75rem;line-height:1.7}
+body .event-card .event-detail-link{color:#575757;border-color:#d2d2ce}
+body main:has(>#event-filters)>.intro{padding:24px 0 20px}
+body main:has(>#event-filters)>.intro .eyebrow{margin-bottom:8px}
+body main:has(>#event-filters)>.intro h1{margin-bottom:12px}
+body main:has(>#event-filters)>.intro .lead{font-size:1rem;line-height:1.85;margin:0}
+body main:has(>#event-filters)>#event-filters{padding:16px;gap:12px;margin-bottom:16px}

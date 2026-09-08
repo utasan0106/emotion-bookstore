@@ -41,10 +41,9 @@
     const option = document.createElement('option'); option.value = key; option.textContent = item.label; select.append(option);
   });
   select.value = city;
-  const hero = document.querySelector('.hc-hero');
   wrapper.append(panel, restore);
   const homeWeather = document.querySelector('[data-home-weather]');
-  if (homeWeather) homeWeather.append(wrapper); else if (hero) hero.append(wrapper); else main.prepend(wrapper);
+  if (homeWeather) homeWeather.append(wrapper); else main.append(wrapper);
   const details = panel.querySelector('details');
   const summaryControl = panel.querySelector('summary');
   details.addEventListener('toggle', () => { summaryControl.textContent = details.open ? '詳細を閉じる' : '予報・観測地点'; });
