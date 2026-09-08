@@ -33,3 +33,14 @@ Local implementation on `astra/editorial-cover-20260908`, following home integra
 ## User instruction: no subagents
 
 During this run the user explicitly requested complete disablement of Codex subagents, with `features.multi_agent = false`, preserving all existing settings and backing up config before writing. After that instruction no subagents were used. The accessible local /root/.codex/config.toml is false and has a timestamped backup. This environment has no Codex binary, so effective state after restarting a Codex host is not verified. Do not treat a local config change as a guaranteed account-wide/hosted ChatGPT setting. Continue all subsequent development without subagents unless the user changes this instruction.
+
+
+## Mobile approval and film media follow-up — 2026-09-08
+
+User approved the shown mobile direction (「携帯はそれで良いので進めて」). Preserve this visual direction; continue implementation without another design-selection round. This is not publication approval. No subagents used.
+
+Added the exact YouTube embeds present in two official film sites to both catalogue cards and work detail pages:
+- 名付けようのない踊り: https://happinet-phantom.com/unnameable-dance/ → ELXE7PGOBT8
+- ロッコク・キッチン: https://rokkokukitchen.com/ → HrRTahmwIYI
+
+Both iframe URLs were read from official page HTML on 2026-09-08. Preserve explicit trailer labeling, no autoplay, and direct external links. This verifies provenance, not actual playback: YouTube fetches were throttled, so playback remains unverified. Film media gaps decrease from 11 to 9; 19 book-cover gaps remain. 149-page integration check passes after regeneration. Public site unchanged.

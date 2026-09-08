@@ -132,6 +132,10 @@ film('jinbocho', 'shadowless-voice', '影なき声', '鈴木清順 監督 / 1958
 // Only attach a trailer when a public, title-matching clip was identified. This is
 // intentionally incomplete: “no verified trailer” is better than a wrong embed.
 const trailerIds = {
+  // Embedded by the film's official site, checked 2026-09-08.
+  'unnameable-dance': 'ELXE7PGOBT8',
+  // Embedded by rokkokukitchen.com, checked 2026-09-08.
+  'rokkoku-kitchen': 'HrRTahmwIYI',
   'ramen-heads': '_Em5H7KlBSs',
   shogakko: 'FDu7cbNuaXQ',
   machinouede: '9lvk-4mVjC0',
