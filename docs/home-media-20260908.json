@@ -1,0 +1,179 @@
+[
+  {
+    "runtimePath": "./assets/home-work-book-20260908.webp",
+    "slot": "WORK_BOOK",
+    "sourceFile": "Books_on_a_Shelf_HQ_preview_derivative.jpg（HQ 供給の派生。原本 Books on a Shelf.JPG の Wikimedia byte ではない）",
+    "sourceWork": "Books on a Shelf.JPG",
+    "author": "MarkBuckawicki",
+    "source": "Own work / Wikimedia Commons（runtime の byte は検証済み CC0 原本のプレビューから HQ が作成した派生）",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Books_on_a_Shelf.JPG",
+    "license": "CC0 1.0 Universal Public Domain Dedication",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "modification": "runtime の byte は HQ 供給の派生（568×426、EXIF/ICC なし）をそのまま使用（再圧縮・縮小・切り抜きなし、sha256 は HQ manifest と一致）。派生は検証済み CC0 原本（3264×2448）の user-visible preview から HQ が作成したもので、原本 byte ではない。表示時のみ CSS で切り抜き・明度・彩度・コントラストを調整。2026-09-08：承認済みJPEGから同じ寸法のWebP（品質88）へ変換。画素内容の生成・描き足しなし。現行トップでは明度・彩度フィルターを外し、CSSの枠で切り抜き表示。",
+    "sourceDimensions": [
+      3264,
+      2448
+    ],
+    "derivativeDimensions": [
+      568,
+      426
+    ],
+    "derivativeSha256": "e36b0577e45e51e134f294926d1c62e9180465985f70826a3bc9e7fb384b80f4",
+    "sourceOriginalExpectedSha1": "38ab103f6e8de295ffdb4921973ad48839cdbfc4（Commons 原本の期待値。HQ 指示により派生とは比較しない）",
+    "supplyManifest": "Books_on_a_Shelf_WORK_BOOK_for_Claude.zip / BOOK_ASSET_DERIVATIVE_MANIFEST.json（derivative_sha256 一致を確認）",
+    "decision": "2026-09-08 user request: restore missing mobile images and manage the whole visual experience; optimize delivery without changing photo subjects.",
+    "checkedAt": "2026-09-08",
+    "previousRuntimePath": "./assets/home-work-book.jpg",
+    "previousDerivativeSha256": "d08bfe955d55751e7fa9b0d4b83720000daca514e3bec76d4c709e06f3c46598",
+    "derivativeBytes": 52062
+  },
+  {
+    "runtimePath": "./assets/home-work-film-20260908.webp",
+    "slot": "WORK_FILM",
+    "author": "DiscoA340",
+    "source": "Wikimedia Commons（作者自身の撮影）",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Film_Reel_on_an_IMAX_15_70_mm_Film_Projector.jpg",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "modification": "原本（3264×2448）を長辺1600pxへ縮小して保存。切り抜きなし。色空間をDisplay P3からsRGBへ変換、EXIFを除去。トップでは表示時のみCSSで切り抜き・明度・彩度・コントラストを調整。2026-09-08：承認済みJPEGから同じ寸法のWebP（品質88）へ変換。画素内容の生成・描き足しなし。現行トップでは明度・彩度フィルターを外し、CSSの枠で切り抜き表示。",
+    "sourceDimensions": [
+      3264,
+      2448
+    ],
+    "derivativeDimensions": [
+      1600,
+      1200
+    ],
+    "derivativeSha256": "75195c63d0a1ca54cec960ed5c4b86789f108033394de448e33cb54e10ee2e84",
+    "checkedAt": "2026-09-08",
+    "sourceFile": "Film_Reel_on_an_IMAX_15_70_mm_Film_Projector.jpg",
+    "sourceSha256": "ed3da66c768cb8bac58ba7d5eee498bb9274d14fb2cd6dfe2c051a34dde8096e",
+    "sourceSha1": "b097640e83fefb46d0f841a1ebb12a47367c7d36",
+    "derivativeBytes": 225006,
+    "derivation": [
+      "colour: embedded Display P3 converted to sRGB",
+      "resize: 3264x2448 → 1600x1200 (LANCZOS, whole frame, no physical crop), JPEG q85, no EXIF/XMP/ICC"
+    ],
+    "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)",
+    "previousRuntimePath": "./assets/home-work-film.jpg",
+    "previousDerivativeSha256": "5197cb9360c8e2ca739029a35a402e56e364231cffb400c974a33213e4d04c98",
+    "decision": "2026-09-08 user request: restore missing mobile images and manage the whole visual experience; optimize delivery without changing photo subjects."
+  },
+  {
+    "runtimePath": "./assets/home-work-music-20260908.webp",
+    "slot": "WORK_MUSIC",
+    "author": "Egle P.",
+    "source": "Wikimedia Commons",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Turntable-1328823.jpg",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "modification": "原本（3888×2592）を長辺1600pxへ縮小して保存。切り抜きなし。EXIFを除去。トップでは表示時のみCSSで切り抜き・明度・彩度・コントラストを調整。2026-09-08：承認済みJPEGから同じ寸法のWebP（品質88）へ変換。画素内容の生成・描き足しなし。現行トップでは明度・彩度フィルターを外し、CSSの枠で切り抜き表示。",
+    "sourceDimensions": [
+      3888,
+      2592
+    ],
+    "derivativeDimensions": [
+      1600,
+      1067
+    ],
+    "derivativeSha256": "b54bb81a3caad673378a00bfa2568d3a1f3695781383a2ff8cfe970ce3e24b5a",
+    "checkedAt": "2026-09-08",
+    "sourceFile": "Turntable-1328823.jpg",
+    "sourceSha256": "790cc6f7fb1cc3c3624b1a31b4d9b39145ba86c26c48d803d8b9d7a870a37b69",
+    "sourceSha1": "70005f455c019a74aba5c7684440fa91dce9a9ee",
+    "derivativeBytes": 76436,
+    "derivation": [
+      "resize: 3888x2592 → 1600x1067 (LANCZOS, whole frame, no physical crop), JPEG q85, no EXIF/XMP/ICC"
+    ],
+    "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)",
+    "previousRuntimePath": "./assets/home-work-music.jpg",
+    "previousDerivativeSha256": "3772448a90ab75db6b44871a0a9fe9c6c7b22e21af33a2b8263f06ec257246d7",
+    "decision": "2026-09-08 user request: restore missing mobile images and manage the whole visual experience; optimize delivery without changing photo subjects."
+  },
+  {
+    "runtimePath": "./assets/home-work-video-20260908.webp",
+    "slot": "WORK_VIDEO",
+    "author": "Popperipopp",
+    "source": "Wikimedia Commons",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Video_Camera.JPG",
+    "license": "Public Domain — copyright holder release",
+    "licenseUrl": "",
+    "rightsSourceUrl": "https://commons.wikimedia.org/wiki/File:Video_Camera.JPG#Licensing",
+    "modification": "原本（1204×800）をそのままの画素で保存（縮小・切り抜きなし）。EXIFのみ除去。トップでは表示時のみCSSで切り抜き・明度・彩度・コントラストを調整。2026-09-08：承認済みJPEGから同じ寸法のWebP（品質88）へ変換。画素内容の生成・描き足しなし。現行トップでは明度・彩度フィルターを外し、CSSの枠で切り抜き表示。",
+    "sourceDimensions": [
+      1204,
+      800
+    ],
+    "derivativeDimensions": [
+      1204,
+      800
+    ],
+    "derivativeSha256": "c24853162a1f60dbc3f05600475e00ccf55ff54e8f5c38fd3e1c0a452020455d",
+    "checkedAt": "2026-09-08",
+    "sourceFile": "Video_Camera.jpeg",
+    "sourceSha256": "a47bd27151552f4d22c4582aa2aa66ec68f315663c91f52c1ef78ac1ef9f9a3f",
+    "sourceSha1": "be6df7b919b9f67d7bb839503d7496264d85ddc6",
+    "derivativeBytes": 65844,
+    "derivation": [
+      "resize: none (long edge 1204 ≤ 1600); pixels untouched, EXIF/XMP/IPTC/ICC APP segments dropped losslessly"
+    ],
+    "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)",
+    "licenseNote": "作者（著作権者）自身によるパブリックドメインへの放棄（Wikimedia Commons の PD 表記）。Public Domain Mark 1.0 は状態表示であって作者の放棄文書ではないので license URL には使わない（HQ_R3_FINAL_BOOK_AND_PD_PRECISION §3）。権利情報の出典は Commons の File ページ Licensing 節。",
+    "previousRuntimePath": "./assets/home-work-video.jpg",
+    "previousDerivativeSha256": "1f93bec8be15a55035d7447b980fc47b3d0b8799fac458dfeec38c1e4b02b5ed",
+    "decision": "2026-09-08 user request: restore missing mobile images and manage the whole visual experience; optimize delivery without changing photo subjects."
+  },
+  {
+    "runtimePath": "./assets/home-thread-koenji-awaodori-20260908.webp",
+    "slot": "FEATURED_THREAD",
+    "author": "Lucertola",
+    "source": "Wikimedia Commons",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:KoenjiAwaOdori.jpg",
+    "license": "Public Domain — copyright holder release",
+    "licenseUrl": "",
+    "rightsSourceUrl": "https://commons.wikimedia.org/wiki/File:KoenjiAwaOdori.jpg#Licensing",
+    "modification": "原本（1524×1016）をそのままの画素で保存（縮小・切り抜きなし）。EXIFのみ除去。トップでは表示時のみCSSで切り抜き・明度・彩度・コントラストを調整。2026-09-08：承認済みJPEGから同じ寸法のWebP（品質88）へ変換。画素内容の生成・描き足しなし。現行トップでは明度・彩度フィルターを外し、CSSの枠で切り抜き表示。",
+    "sourceDimensions": [
+      1524,
+      1016
+    ],
+    "derivativeDimensions": [
+      1524,
+      1016
+    ],
+    "derivativeSha256": "bdcb4d85f71ee783dd0223b40896a63057151337bb0c5ccd0d70a7a1516fc584",
+    "checkedAt": "2026-09-08",
+    "sourceFile": "KoenjiAwaOdori.jpg",
+    "sourceSha256": "472b59cdb5ed0242940fa9f74c41c4d22dd2f89962e6d34121730d47ef1be1c4",
+    "sourceSha1": "9dd4a8d6d83e636b92721ca7f9b2f88a3a851937",
+    "derivativeBytes": 349792,
+    "derivation": [
+      "resize: none (long edge 1524 ≤ 1600); pixels untouched, EXIF/XMP/IPTC/ICC APP segments dropped losslessly"
+    ],
+    "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)",
+    "licenseNote": "作者（著作権者）自身によるパブリックドメインへの放棄（Wikimedia Commons の PD 表記）。Public Domain Mark 1.0 は状態表示であって作者の放棄文書ではないので license URL には使わない（HQ_R3_FINAL_BOOK_AND_PD_PRECISION §3）。権利情報の出典は Commons の File ページ Licensing 節。",
+    "previousRuntimePath": "./assets/home-thread-koenji-awaodori.jpg",
+    "previousDerivativeSha256": "a2ead0c3b9e950cf2195cda37b82acec9434b6c516fa8915a9c097472860b726",
+    "decision": "2026-09-08 user request: restore missing mobile images and manage the whole visual experience; optimize delivery without changing photo subjects."
+  },
+  {
+    "runtimePath": "./assets/suzunari-2008.jpg",
+    "slot": "CULTURE_EVENTS_R8",
+    "author": "Guwashi999",
+    "source": "Existing credited Wikimedia Commons photograph, reused from Shimokitazawa thread",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Suzunari_-_a_small_theater_(HDR)_-_Shimokitazawa,_2008-03-22_14.48.45_(by_Guwashi999).jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "modification": "Original local bytes preserved; CSS crop and scale only. 2008 building photograph, not a current event photograph.",
+    "sourceDimensions": [
+      1024,
+      768
+    ],
+    "derivativeDimensions": [
+      1024,
+      768
+    ],
+    "derivativeSha256": "4c40db19d33163299bef35e19b66894108a32691c90b648dc208596d15527251",
+    "checkedAt": "2026-09-08 (existing credits and local byte hash checked)"
+  }
+]

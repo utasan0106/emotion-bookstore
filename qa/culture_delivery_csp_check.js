@@ -19,7 +19,7 @@ for (const url of [...special, ...ordinary, ...social]) {
   const policies = policy(url);
   assert.equal(policies.length, 1, url + ': exactly one HTTP CSP');
   assert.deepEqual(directive(policies[0], 'frame-src'),
-    special.includes(url) ? ['https://bandcamp.com'] : social.includes(url) ? ['https://www.youtube-nocookie.com', 'https://embed.bsky.app'] : ['https://www.youtube-nocookie.com'], url);
+    special.includes(url) ? ['https://bandcamp.com'] : social.includes(url) ? ['https://www.youtube-nocookie.com', 'https://embed.bsky.app', 'https://www.instagram.com'] : ['https://www.youtube-nocookie.com'], url);
   assert.deepEqual(directive(policies[0], 'frame-ancestors'), ["'none'"], url);
   if (special.includes(url)) assert.deepEqual(directive(policies[0], 'connect-src'), ["'none'"]);
 }

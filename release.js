@@ -188,6 +188,7 @@
         else link.removeAttribute('aria-current');
       });
       renderMenuFavorites();
+      button.setAttribute('aria-expanded', 'true');
       if (typeof menu.showModal === 'function') menu.showModal();
       else menu.setAttribute('open', '');
     }
@@ -195,6 +196,7 @@
     function closeMenu() {
       if (typeof menu.close === 'function' && menu.open) menu.close();
       else menu.removeAttribute('open');
+      button.setAttribute('aria-expanded', 'false');
       button.focus();
     }
 
@@ -202,16 +204,10 @@
     close.addEventListener('click', closeMenu);
     menu.addEventListener('click', function (event) {
       if (event.target === menu) { closeMenu(); return; }
-      /* 同一 document 内の section へ飛ぶ link（HOME の #hc-works など）は
-         page 遷移が起きず modal が開いたまま残るので、ここで閉じる。 */
+      // Close on every link before native navigation, including the current page.
+      // Native anchors keep their normal keyboard / new-tab behaviour.
       var link = event.target && event.target.closest ? event.target.closest('a[href]') : null;
-      if (!link) return;
-      var href = link.getAttribute('href') || '';
-      var hashAt = href.indexOf('#');
-      if (hashAt < 0) return;
-      var target = href.slice(0, hashAt).replace(/^\.\//, '');
-      var here = (location.pathname.split('/').pop() || 'index.html');
-      if (target === '' || target === here) closeMenu();
+      if (link) closeMenu();
     });
     menu.addEventListener('cancel', function (event) { event.preventDefault(); closeMenu(); });
   }
@@ -280,6 +276,10 @@
     ]);
 
     box.appendChild(h('article', { class: 'weekly-feature-card' }, [
+      feature.media ? h('figure', { class: 'weekly-feature-photo' }, [
+        h('img', { src: feature.media.src, alt: feature.media.alt, loading: 'lazy', decoding: 'async', width: '960', height: '640' }),
+        h('figcaption', { text: feature.media.alt })
+      ]) : null,
       h('div', { class: 'weekly-feature-meta' }, [
         h('p', { class: 'weekly-feature-kind', text: (feature.eventType || 'イベント') + ' · ' + shelf.area }),
         h('p', { class: 'weekly-feature-status', text: featureTimingLabel(feature, Date.now()) }),
@@ -1038,7 +1038,11 @@
     var copy = document.getElementById('sg-copy');
     var status = document.getElementById('sg-copy-status');
 
-    (CONTENT.categories || []).forEach(function (c, i) {
+    var suggestCategories = (CONTENT.categories || []).slice().sort(function (a, b) {
+      var rank = function(c) { return /本/.test(c.name) ? 0 : /音楽/.test(c.name) ? 1 : /映画/.test(c.name) ? 2 : 3; };
+      return rank(a) - rank(b);
+    });
+    suggestCategories.forEach(function (c, i) {
       category.appendChild(h('option', { value: c.id, text: c.name, selected: i === 0 }));
     });
 
@@ -1049,7 +1053,7 @@
     }
 
     function compose() {
-      var lines = ['みんなの感情書店に、候補を1つ。'];
+      var lines = ['みんなの感情書店に、作品・催しを紹介します。'];
       lines.push('');
       lines.push('場所・作品名: ' + (name.value.trim() || '（未記入）'));
       lines.push('種類: ' + categoryName());
@@ -1089,7 +1093,7 @@
       }
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(function () {
-          status.textContent = 'コピーしました。';
+          status.textContent = '紹介文をコピーしました。まだ送信されていません。紹介フォームで送れます。';
         }, manual);
       } else {
         manual();

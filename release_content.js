@@ -107,6 +107,7 @@ window.V3_RELEASE_CONTENT = {
       weeklyFeature: {
         eventType: '展示',
         title: '谷口智則展「黒い森を抜けて」',
+        media: {src: '/assets/events/kichijoji-museum.webp', alt: '会場：吉祥寺美術館（2010年）'},
         titlePhrases: ['谷口智則展', '「黒い森を抜けて」'],
         calendarDates: '20260919/20261104',
         dateLabel: '9月19日（土）– 11月3日（火・祝） 10:00–19:30',
@@ -227,6 +228,7 @@ window.V3_RELEASE_CONTENT = {
       weeklyFeature: {
         eventType: '演劇',
         title: '座・高円寺『夏の夜の夢』',
+        media: {src: '/assets/events/za-koenji.webp', alt: '会場：座・高円寺（2018年）'},
         titlePhrases: ['座・高円寺', '『夏の夜の夢』'],
         calendarDates: '20260913/20261018',
         dateLabel: '9月13日（日）– 10月17日（土）',
@@ -353,6 +355,7 @@ window.V3_RELEASE_CONTENT = {
       weeklyFeature: {
         eventType: 'ライブ',
         title: 'SHELTER 35th Anniversary “IGNITION GIGS”',
+        media: {src: '/assets/shimokitazawa-shelter.jpg', alt: '会場：下北沢SHELTER'},
         titlePhrases: ['SHELTER 35th Anniversary ', '“IGNITION GIGS”'],
         calendarDates: '20260923/20260924',
         dateLabel: '9月23日（水） OPEN 12:00 / START 12:30',
@@ -493,6 +496,7 @@ window.V3_RELEASE_CONTENT = {
       weeklyFeature: {
         eventType: '展示・販売',
         title: 'Alicekan 45th Anniversary えほんパーティー',
+        media: {src: '/assets/city-jinbocho-suzuran.jpg', alt: '街の風景：神保町'},
         titlePhrases: ['Alicekan 45th Anniversary ', 'えほんパーティー'],
         calendarDates: '20260916/20260930',
         dateLabel: '9月16日（水）13:00開始 – 29日（火）17:00終了',

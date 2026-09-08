@@ -6,3 +6,27 @@
 #event-filters{background:#e9eee5}#event-filters select{background:#fffefa;color:var(--paper);color-scheme:light}
 .event-card{background:#fffefa}.event-card a:hover,.event-card a:focus-visible{background:#f1f4ec}.event-date{background:#e5eadb;color:#303c2b}
 .event-card .event-city,.checked{font-size:14px}.event-state.is-past{color:#785944}
+
+/* Sep 8: a photograph and one direct official action on each card. */
+.events-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:28px}
+.event-card{display:flex;flex-direction:column;border-radius:4px;overflow:hidden}
+.event-card>a.event-official{height:auto;flex:1;display:flex;flex-direction:column}
+.event-card .event-photo{margin:0;position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;background:#dfe5d8}
+.event-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.event-photo figcaption{position:absolute;right:10px;bottom:10px;max-width:calc(100% - 20px);padding:3px 7px;background:rgba(23,40,31,.83);color:#fffef7;font:11px/1.6 system-ui}
+.event-date{padding:14px 22px;background:#f0eee3}
+.event-date>span{font-size:26px}
+.event-card-body{padding:20px 22px 22px}
+.event-card h2{font-size:25px;line-height:1.5;margin:6px 0 12px}
+.event-card .event-city{font-size:12px;line-height:1.7}
+.event-card p{font-size:15px;line-height:1.85}
+.event-card .card-action{align-self:flex-start;background:#2b5141;color:#fffef7;padding:12px 18px;border-radius:3px;margin-top:6px;font-size:15px}
+.event-card .event-detail-link{display:flex;align-items:center;min-height:50px;box-sizing:border-box;padding:12px 22px;border-top:1px solid #d4d9cf;color:#53634f;font-size:14px;text-underline-offset:4px}
+.event-visual{margin:28px 0}
+.event-visual .event-photo{position:relative;margin:0;aspect-ratio:16/9;overflow:hidden;background:#dfe5d8}
+.event-detail>.primary{margin:8px 0 4px;min-height:54px;font-size:16px}
+.event-detail .event-artwork{margin:36px auto;max-width:540px}
+.event-artwork h2{font-size:24px}
+.event-artwork p{font-size:14px;line-height:1.8}
+.event-artwork iframe{box-sizing:border-box;display:block;width:100%;height:780px;border:1px solid #d7ddd3;border-radius:4px;background:#fff}
+@media(max-width:600px){.events-grid{grid-template-columns:1fr;gap:24px}.event-card h2{font-size:24px}.event-card-body{padding:18px 20px 20px}.event-card .event-detail-link{padding-inline:20px}.event-detail h1{font-size:30px}.event-detail .event-visual{margin:24px 0}.event-artwork iframe{height:680px}.event-detail>.primary{display:flex;justify-content:center;box-sizing:border-box;width:100%;line-height:1.6;padding:14px 16px}}

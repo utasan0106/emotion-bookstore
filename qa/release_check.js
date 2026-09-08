@@ -198,16 +198,11 @@ for (const page of ['shelf.html', 'suggest.html', 'data.html', 'credits.html', '
     failures.push(`${page}: obsolete header symbol must not remain`);
   }
 }
-/* HOME は Founder/HQ 承認の VISUAL_CANONICAL（853）どおり wordmark-only。
-   旧 symbol + wordmark lockup へ戻さない（HOME 853 brief §2）。 */
+/* Sep 8 user direction retains the official lockup in the new illustrated cover. */
 {
-  const src = read('index.html');
-  if (!src.includes('<a class="hc-brand-link" href="./index.html">みんなの感情書店</a>')) {
-    failures.push('index.html: canonical wordmark header missing');
-  }
-  for (const stale of ['brand-lockup-image', 'emotion-bookstore-symbol-reversed.svg', 'emotion-bookstore-lockup-reversed.png']) {
-    if (src.includes(stale)) failures.push(`index.html: HOME header must be wordmark-only (${stale})`);
-  }
+ const src=read('index.html');
+ if(!/<a class="hc-brand-link"[^>]*><img class="hc-brand-logo"[^>]*emotion-bookstore-lockup-reversed\.png/.test(src)) failures.push('index.html: official brand lockup missing');
+ if(src.includes('emotion-bookstore-symbol-reversed.svg')) failures.push('index.html: obsolete separate symbol must not return');
 }
 const shelfPage = read('shelf.html');
 const releaseRuntimeForShelf = read('release.js');
@@ -283,10 +278,10 @@ const MENU_PAGES = ['index.html','shelf.html','suggest.html','data.html','credit
 for (const page of MENU_PAGES) {
   const src = read(page);
   if (src.includes('<p class="pilot-label">4つの街</p>')) failures.push(`${page}: header must not show 4つの街 beside MENU`);
-  for (const label of ['作品から入る','踊りから、街の歴史へ','候補を教える','気になるリスト','データの扱い','写真・出典']) {
+  for (const label of ['作品から入る','踊りから、街の歴史へ','作品・催しを紹介する','気になるリスト','データの扱い','写真・出典']) {
     if (!src.includes(label)) failures.push(`${page}: MENU missing ${label}`);
   }
-  for (const [href, label] of [['./index.html#hc-works','作品から入る'],['./index.html#hc-thread','踊りから、街の歴史へ'],['./credits.html','写真・出典'],['./suggest.html','候補を教える'],['./data.html','データの扱い']]) {
+  for (const [href, label] of [['./index.html#hc-works','作品から入る'],['./index.html#hc-thread','踊りから、街の歴史へ'],['./credits.html','写真・出典'],['./suggest.html','作品・催しを紹介する'],['./data.html','データの扱い']]) {
     if (!src.includes(`href="${href}"`)) failures.push(`${page}: MENU link missing ${label} → ${href}`);
   }
   for (const retired of ['<span>今週の寄り道</span>','<span>種類から見る</span>','#weekly-detour','#by-kind']) {
@@ -365,7 +360,7 @@ if (/hc-hero-trace|hc-trace-year/.test(read('index.html'))) failures.push('index
   const sub = src.indexOf('<p class="hc-hero-sub">');
   const firstCity = src.indexOf('class="hc-city shelf-entry"');
   if (h1 < 0 || sub < 0 || firstCity < 0 || h1 > firstCity || sub > firstCity) failures.push('index.html: hero copy must precede the first city entry');
-  if (src.includes('class="hc-hero-media"') || !src.includes('class="hc-culture-mosaic"') || !src.includes('fetchpriority="high"')) failures.push('index.html: neutral culture hero with priority image required (R8 founder request)');
+  if (src.includes('class="hc-hero-media"') || !src.includes('class="hc-culture-art"') || !src.includes('fetchpriority="high"')) failures.push('index.html: neutral culture hero with priority image required (R8 founder request)');
 }
 for (const page of ['shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html']) {
   const src = read(page);
@@ -705,7 +700,7 @@ if ((read('suggest.html').match(/<h1\b/g) || []).length !== 1) failures.push('su
 /* ---- 玄関と終わりの言い回し ------------------------------------------ */
 const foyer = read('index.html');
 if (!foyer.includes('みんなの感情書店')) failures.push('foyer eyebrow missing');
-const visibleCityH1 = '<h1 id="hc-hero-title" class="hc-hero-title"><span class="hc-hero-line">気になる作品から、</span><span class="hc-hero-line">次に行きたい街へ。</span></h1>';
+const visibleCityH1 = '<h1 id="hc-hero-title" class="hc-hero-title"><span class="hc-hero-line">好きの先に、</span><span class="hc-hero-line">知らない<span class="hc-hero-accent">街</span>。</span></h1>';
 if (!foyer.includes(visibleCityH1)) {
   failures.push('foyer visible H1 must explain the work-to-city purpose (R8 founder request)');
 }
@@ -799,7 +794,7 @@ for (const shelf of shelves) {
      - 著作権者本人によるパブリックドメイン放棄 → 「権利情報URL」（Commons File page の
        Licensing 節）。Public Domain Mark 1.0 は状態表示で作者の放棄文書ではないので、
        license URL として出さない（HQ: HOME_R3_FINAL_BOOK_AND_PD_PRECISION §3）。 */
-  const LEDGER = 'experiments/home-visual-fidelity/asset-round-3/HOME_ASSET_LEDGER.json';
+  const LEDGER = 'docs/home-media-20260908.json';
   let ledger = [];
   if (fs.existsSync(path.join(root, LEDGER))) {
     try { ledger = JSON.parse(read(LEDGER)); } catch (e) { failures.push(`${LEDGER}: invalid JSON (${e.message})`); }

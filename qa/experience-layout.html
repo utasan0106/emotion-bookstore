@@ -1,0 +1,22 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>感情書店 開発確認</title>
+<style>body{margin:0;background:#7b8079;font:14px system-ui;color:#fff}form{display:flex;flex-wrap:wrap;gap:14px;padding:10px;align-items:center}select,button{font:inherit;padding:6px}iframe{display:block;margin:auto;border:0;height:850px;background:#fff}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;padding:16px}</style>
+<form><label>画面幅 <select id="width"><option>390</option><option>320</option><option>768</option><option>1280</option></select></label><label>画面 <select id="page"><option value="/">表紙</option><option value="/?qa-atmosphere=rain&amp;qa-hour=19">夜・雨</option><option value="/?qa-atmosphere=clear&amp;qa-hour=12">昼・晴れ</option><option value="/#hc-works">作品と写真</option><option value="/#hc-thread">踊りの写真</option><option value="/outings/?week=2026-09-14&amp;city=kichijoji">来週の吉祥寺</option><option value="/outings/events/kichijoji-taniguchi.html">谷口智則展</option><option value="/suggest.html">紹介フォーム</option><option value="/saved.html">保存</option><option value="/discover/koenji/moon-in-june-play.html">音楽を聴く</option><option value="/shelf.html?shelf=koenji">高円寺の街</option><option value="/visit/">English</option></select></label><button id="measure" type="button">この画面を計測</button><button id="batch" type="button">主要画面を一括計測</button><span id="status">開発専用</span></form><iframe id="view" title="携帯での表示確認" width="390" src="/"></iframe><pre id="report"></pre>
+<script>
+const frame=document.getElementById('view'),out=document.getElementById('report'),status=document.getElementById('status');
+document.getElementById('width').onchange=e=>frame.width=e.target.value;
+document.getElementById('page').onchange=e=>frame.src=e.target.value;
+function measure(){const d=frame.contentDocument,w=frame.contentWindow,visible=x=>{const r=x.getBoundingClientRect(),s=w.getComputedStyle(x);return r.width>0&&r.height>0&&s.display!=='none'&&s.visibility!=='hidden';};return{path:d.location.pathname+d.location.search,client:d.documentElement.clientWidth,scroll:d.documentElement.scrollWidth,daypart:d.body.dataset.daypart,scene:d.querySelector('[data-city-scene-image]')?.getAttribute('src'),images:[...d.images].filter(visible).map(x=>({src:x.getAttribute('src'),loaded:x.complete&&x.naturalWidth>0,failed:x.complete&&x.naturalWidth===0,visibleInFrame:x.getBoundingClientRect().bottom>0&&x.getBoundingClientRect().top<w.innerHeight,area:Math.round(x.getBoundingClientRect().width*x.getBoundingClientRect().height)})),smallControls:[...d.querySelectorAll('button,.hc-hero-cta,.hc-menu-trigger,.event-detail>.primary')].filter(visible).filter(x=>{const r=x.getBoundingClientRect();return r.width<43||r.height<43;}).map(x=>({text:x.textContent.trim().slice(0,60),width:Math.round(x.getBoundingClientRect().width),height:Math.round(x.getBoundingClientRect().height)}))};}
+document.getElementById('measure').onclick=()=>{out.textContent=JSON.stringify(measure(),null,2);status.textContent='計測済み';};
+async function measurePages(pages){
+ const results=[];
+ for(const page of pages){
+  await new Promise(resolve=>{frame.onload=resolve;frame.src=page;});
+  await Promise.all([...frame.contentDocument.images].filter(x=>x.loading!=='lazy').map(x=>x.decode().catch(()=>{})));
+  for(const width of [320,390,1280]){frame.width=width;await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));results.push(measure());}
+  status.textContent='計測中 '+results.length+'/'+pages.length*3;
+ }
+ out.textContent=JSON.stringify(results,null,2);status.textContent=results.every(r=>r.scroll<=r.client&&r.smallControls.length===0&&!r.images.some(x=>x.failed))?results.length+'画面：はみ出し・小さい操作・画像エラーなし':'要修正の画面あり';
+};
+document.getElementById('batch').onclick=()=>measurePages(['/','/?qa-atmosphere=rain&qa-hour=19','/?qa-atmosphere=clear&qa-hour=12','/suggest.html','/outings/?week=2026-09-14&city=kichijoji','/outings/events/koenji-midsummer.html','/discover/koenji/moon-in-june-play.html','/saved.html','/shelf.html?shelf=koenji','/visit/']);
+const retry=document.createElement('button');retry.type='button';retry.textContent='メニュー修正の再計測';retry.onclick=()=>measurePages(['/suggest.html','/shelf.html?shelf=koenji']);document.querySelector('form').append(retry);
+</script></html>

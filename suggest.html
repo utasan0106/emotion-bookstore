@@ -7,12 +7,12 @@
   <meta name="referrer" content="no-referrer">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#141312">
-  <title>みんなの感情書店｜候補を教える</title>
+  <title>みんなの感情書店｜作品・催しを紹介する</title>
   <meta name="description" content="まだ棚に無い場所・本・音楽・映画・催しを教えるページです。入力はこのページから自動送信されません。">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="みんなの感情書店">
   <meta property="og:locale" content="ja_JP">
-  <meta property="og:title" content="みんなの感情書店｜候補を教える">
+  <meta property="og:title" content="みんなの感情書店｜作品・催しを紹介する">
   <meta property="og:description" content="まだ棚に無い場所・本・音楽・映画・催しを教えるページです。入力はこのページから自動送信されません。">
   <meta property="og:url" content="https://emotionbookstore.com/suggest.html">
   <meta property="og:image" content="https://emotionbookstore.com/assets/ogp-official-artwork-20260901.png">
@@ -54,7 +54,8 @@
         <nav class="site-menu-secondary" aria-label="ほかの見方">
           <a class="site-menu-secondary-link" href="./index.html#hc-works"><span>作品から入る</span><span aria-hidden="true">→</span></a>
           <a class="site-menu-secondary-link" href="./index.html#hc-thread"><span>踊りから、街の歴史へ</span><span aria-hidden="true">→</span></a>
-          <a class="site-menu-secondary-link" href="./suggest.html"><span>候補を教える</span><span aria-hidden="true">→</span></a>
+          <a class="site-menu-secondary-link" href="/outings/"><span>今週の催し</span><span aria-hidden="true">→</span></a>
+          <a class="site-menu-secondary-link" href="./suggest.html"><span>作品・催しを紹介する</span><span aria-hidden="true">→</span></a>
         </nav>
       </section>
 
@@ -72,16 +73,25 @@
   </dialog>
 
   <main id="main">
-    <section class="site-intro" aria-label="このサイトについて">
+    <section class="site-intro" aria-label="このサイトについて" hidden>
       <p class="site-explainer"><span class="jp-phrase explainer-line">感情書店の編集部が選んだ場所・本・音楽・映画・催しを、</span><wbr><span class="jp-phrase explainer-line">街や種類ごとに少しずつ並べる文化案内です。</span></p>
     </section>
 
     <section class="hero" aria-labelledby="hero-title">
-      <h1 id="hero-title"><span class="hero-line">まだ無い一つを、</span><span class="hero-line">教えてください。</span></h1>
+      <h1 id="hero-title"><span class="hero-line">この作品、</span><span class="hero-line">みんなにも。</span></h1>
     </section>
 
+    <section class="suggest-start" aria-label="作品・催しの紹介">
+      <p class="suggest-lead">この街にゆかりのある本・音楽・映画や、<br>これから開催される催しを教えてください。</p>
+      <p>高円寺・吉祥寺・下北沢・神保町の、あなたが誰かに薦めたい一つを。</p>
+      <p>          <a id="sg-form" class="official-action"
+             href="https://docs.google.com/forms/d/e/1FAIpQLSdzTmEy7PyBOa3XdGU375tib6dK7PHHa5XMGy1Aw3w8v5aa6w/viewform"
+             target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">紹介フォームを開く</a></p>
+      <p class="suggest-external-note">Googleフォームが開きます。名前と、分かれば公式URLをご記入ください。</p>
+    </section>
+    <details class="suggest-draft"><summary>紹介する文を、ここで下書きする</summary>
     <section class="suggest-section" aria-labelledby="form-title">
-      <h2 id="form-title" class="sr-only">候補の入力</h2>
+      <h2 id="form-title" class="sr-only">紹介文の下書き</h2>
 
       <!-- 送信先は無い。入力は browser の中だけで定型文になる。 -->
       <form id="suggestForm" class="suggest-form" novalidate>
@@ -111,13 +121,13 @@
 
       <!-- 主たる操作はコピー。外部へ開くのはその次の、独立した操作。 -->
       <section class="suggest-output" aria-labelledby="output-title">
-        <h2 id="output-title" class="output-title">できあがる候補文</h2>
+        <h2 id="output-title" class="output-title">できあがる紹介文</h2>
         <textarea id="sg-output" class="suggest-output-text" readonly rows="7"
-                  aria-describedby="copy-fallback"></textarea>
-        <p id="copy-fallback" class="copy-fallback">「候補文をコピー」を押した場合だけ、端末のクリップボードにコピーされます。コピーがうまくいかないときは、上の文をそのまま選んで手でコピーしてください。</p>
+                  aria-label="できあがる紹介文" aria-describedby="copy-fallback"></textarea>
+        <p id="copy-fallback" class="copy-fallback">「紹介文をコピー」を押した場合だけ、端末のクリップボードにコピーされます。コピーがうまくいかないときは、上の文をそのまま選んで手でコピーしてください。</p>
         <p class="suggest-actions">
           <button id="sg-copy" class="official-action" type="button">
-            <span>候補文をコピー</span><span aria-hidden="true">⧉</span>
+            <span>紹介文をコピー</span><span aria-hidden="true">⧉</span>
           </button>
         </p>
         <p id="sg-copy-status" class="copy-status" role="status" aria-live="polite"></p>
@@ -125,9 +135,7 @@
           <!-- 送信は Google のページ側で起きる。このページは何も送らない。
                prefill はしない。入力済みの文字を query に載せると、押した瞬間に
                外部へ渡ることになり、開示文の意味が変わる。 -->
-          <a id="sg-form" class="other-shelves"
-             href="https://docs.google.com/forms/d/e/1FAIpQLSdzTmEy7PyBOa3XdGU375tib6dK7PHHa5XMGy1Aw3w8v5aa6w/viewform"
-             target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">送信フォームを開く</a>
+
           <a id="sg-x" class="other-shelves" href="https://x.com/emotion_books"
              target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">公式Xを開く</a>
         </p>
@@ -140,8 +148,9 @@
         <p>サービス改善のためGoogle Analyticsでページ表示と操作段階を計測します。入力した名称・URL・自由記述・候補文はAnalyticsへ送りません。入力内容はこのページから自動送信されません。</p>
       </section>
 
-      <p class="end-exit"><a class="other-shelves" href="./index.html">棚に戻る</a></p>
+      <p class="end-exit"><a class="other-shelves" href="./index.html">トップへ戻る</a></p>
     </section>
+    </details>
   </main>
 
   <footer class="site-footer">

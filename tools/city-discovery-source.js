@@ -40,7 +40,7 @@ const tefu = 'https://senrogai.com/event/by-tefu-lounge-bonus-track-members/';
 // “Audio” is a listening collection. Some sources are filmed performances, but
 // they are selected for the performance/sound itself and are never duplicated in
 // the city video collection.
-audio('koenji', 'moon-in-june-play', 'play!／帰れない山', 'Moon In June / 高円寺HIGH 2025', 'ギターの残響から、高円寺HIGHの客席へ。', '街のライブハウスでの演奏', '2025年6月29日に高円寺HIGHで収録されたバンド公式のライブ映像です。街の紹介映像ではなく、この会場で鳴った演奏として紹介します。', 'm5T0OySBmEE');
+audio('koenji', 'moon-in-june-play', 'play!／帰れない山', 'Moon In June / 高円寺HIGH 2025', 'ギターの残響から、高円寺HIGHの客席へ。', '街のライブハウスでの演奏', '公開者「食パン」が2025年6月29日の高円寺HIGH公演として紹介するライブ映像です。この会場で鳴った演奏として紹介します。', 'm5T0OySBmEE');
 audio('koenji', 'big-the-grape', 'THANKS GIVING LIVE', 'big the grape / 高円寺HIGH', '小さな会場の熱量を、バンドの演奏から聴く。', '街のライブハウスでの演奏', '高円寺HIGHの公演を収録したアーティスト側のライブ映像です。', 'Gub-aCbRd_w');
 audio('koenji', 'night-glory-scarlet', 'scarlet', 'Night Glory / 高円寺HIGH 2024', '照明と音が立ち上がる瞬間を、一曲から。', '街のライブハウスでの演奏', '2024年4月26日に高円寺HIGHで収録された公式ライブクリップです。', 'z36AFHXk_YQ');
 audio('koenji', 'seabirth-live', 'UNTITLED Release Party', 'seabirth with Atsumi / 高円寺HIGH', '映画のように展開する演奏を、会場の記録で。', '街のライブハウスでの演奏', '2022年4月24日の高円寺HIGH公演を記録したライブ映像です。', 'UQy4T4beuuM');

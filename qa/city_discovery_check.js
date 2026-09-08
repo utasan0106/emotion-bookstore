@@ -64,8 +64,12 @@ for(const i of items) {
   assert.ok(i.sources.length && i.relation && i.relationNote);
   assert.equal(i.playbackChecked,false,'Never equate indexed media with tested playback');
   const html=fs.readFileSync(path.join(root,`discover/${i.city}/${i.id}.html`),'utf8');
-  const links=[...html.matchAll(/href="([^"]+)"/g)].map(m=>decode(m[1]));
-  assert.equal(new Set(links).size,links.length,`${i.id}: duplicate destination on detail page`);
+  // Repeated Home/Saved links in global navigation and the local memory panel are intentional.
+  // Keep the actual work destinations unique inside their experience section.
+  const experience=(html.match(/<div class="destination"[\s\S]*?<\/div>/)||[])[0];
+  assert.ok(experience,`${i.id}: experience section missing`);
+  const links=[...experience.matchAll(/href="([^"]+)"/g)].map(m=>decode(m[1]));
+  assert.equal(new Set(links).size,links.length,`${i.id}: duplicate work destination`);
   assert.ok(html.indexOf('class="destination"')<html.indexOf('class="background"'),'Experience must precede background');
   if(i.videoId){
     assert.match(i.videoId,/^[A-Za-z0-9_-]{11}$/);

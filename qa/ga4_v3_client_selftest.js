@@ -38,11 +38,10 @@ const index=read('index.html'); for(const t of ['id="weeklyVideoPlay"','data-vid
 const indexBody=index.slice(index.indexOf('<body'));
 /* FOUNDER PREVIEW FIX UNIT D: HOME body の外部 href は「実際の場所へ」の 3 つの公式 destination（a.official-action、click まで通信なし）だけ。
    それ以外の外部 src / href は引き続き 0。GA4 は既存の v3_official_action を再利用し、event / param は増やさない。 */
-const HOME_OFFICIAL_DESTINATIONS=['https://www.kensetsu.metro.tokyo.lg.jp/jimusho/seibuk/inokashira','https://yaguchishoten.jp/','https://www.loft-prj.co.jp/schedule/shelter/schedule'];
+// Current HOME routes to the curated catalogue and event list on this origin.
 const homeExternal=indexBody.match(/(?:src|href)="(?:https?:)?\/\/[^"]+"/g)||[];
-assert(homeExternal.length===3&&HOME_OFFICIAL_DESTINATIONS.every((u)=>homeExternal.includes(`href="${u}"`)),'HOME body must reference no external host other than the three official destinations');
-for(const m of homeExternal)assert(HOME_OFFICIAL_DESTINATIONS.some((u)=>m===`href="${u}"`),'HOME body must not reference an external host: '+m);
-for(const u of HOME_OFFICIAL_DESTINATIONS)assert(indexBody.includes('<a class="hc-reality-card official-action" href="'+u+'" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">'),'official destination must be a click-only a.official-action: '+u);
+assert(homeExternal.length===0,'HOME images and navigation must stay on this origin');
+assert(indexBody.includes('href="./outings/"')&&indexBody.includes('href="./discover/index.html"'),'HOME must expose working event and work entries');
 assert(index.includes('id="hc-works"')&&index.includes('id="hc-thread"'),'HOME section ids');
 for(const rel of ['index.html','shelf.html','suggest.html','data.html','credits.html','explore.html']){const h=read(rel);assert(!h.includes('#weekly-detour')&&!h.includes('#by-kind'),rel+': retired HOME anchor');assert(h.includes('href="./credits.html"'),rel+': credits link')}
 if(fs.existsSync(path.join(ROOT,'weekly-video.js'))){const video=read('weekly-video.js'); assert(video.includes('https://www.youtube-nocookie.com/embed/'),'nocookie'); assert(video.includes("iframe.referrerPolicy = 'strict-origin-when-cross-origin'"),'referrer'); assert(video.includes("button.addEventListener('click'"),'click gate'); assert(!video.includes('youtube.com/iframe_api'),'YT API'); assert(!video.includes('localStorage')&&!video.includes('geolocation'),'video storage/location');}

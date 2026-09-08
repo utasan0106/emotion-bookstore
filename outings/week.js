@@ -33,7 +33,7 @@
   const selected=select(data.events,{week:weekSelect.value,city:citySelect.value,audience:withSelect.value});
   const byId=new Map(selected.map(e=>[e.id,e]));const params=new URLSearchParams();params.set('week',weekSelect.value);if(citySelect.value)params.set('city',citySelect.value);if(withSelect.value)params.set('with',withSelect.value);
   if(push)history.replaceState(null,'','?'+params.toString());
-  document.querySelectorAll('[data-event-card]').forEach(card=>{const e=byId.get(card.dataset.eventCard);card.hidden=!e;if(e){card.querySelector('[data-next-date]').textContent=short(e.nextDate);card.querySelector('a').href='/outings/events/'+e.id+'.html?from='+encodeURIComponent(params.toString());}});
+  document.querySelectorAll('[data-event-card]').forEach(card=>{const e=byId.get(card.dataset.eventCard);card.hidden=!e;if(e){card.querySelector('[data-next-date]').textContent=short(e.nextDate);card.querySelector('[data-event-detail]').href='/outings/events/'+e.id+'.html?from='+encodeURIComponent(params.toString());}});
   // Keep reading and keyboard order consistent with the displayed chronological order.
   const grid=document.querySelector('.events-grid');
   const cards=new Map([...grid.children].map(card=>[card.dataset.eventCard,card]));

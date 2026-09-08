@@ -25,8 +25,8 @@ const css = read('release.css');
 
 const SECTIONS = [
   ['HERO', 'class="hc-hero"'],
-  ['街から入る', 'id="hc-cities-title"'],
   ['作品から入る', 'id="hc-works-title"'],
+  ['街から入る', 'id="hc-cities-title"'],
   ['いま辿れるスレッド', 'id="hc-thread-title"'],
   ['実際の場所へ', 'id="hc-reality-title"'],
 ];
@@ -50,7 +50,7 @@ for (const [name, marker] of [
 /* ---- 2. core copy が一字も違わない ------------------------------------ */
 
 const COPY = [
-  '気になる作品から、', '次に行きたい街へ。', '作品を探す',
+  '好きの先に、', '知らない街。', '作品を探す',
   '街から入る', '街には、文化が息づく理由がある。',
   '作品から入る', 'まずひとつ観る・聴く。気になったら、作品と街を辿る。',
   '踊りから、街の歴史へ', '高円寺の踊りを、記録と写真で知る。',
@@ -59,7 +59,7 @@ const COPY = [
 ];
 for (const c of COPY) check(html.replace(/<[^>]*>/g, '').includes(c), `core copy missing: ${c.slice(0, 40)}`);
 const heroSub = (html.match(/<p class="hc-hero-sub">([\s\S]*?)<\/p>/) || [])[1] || '';
-check(heroSub.replace(/<[^>]*>/g, '') === '映像・音楽・本・映画と、ゆかりの街や今の催しをつなぐ文化案内。', 'First-visit hero must name the media and explain the purpose');
+check(heroSub.replace(/<[^>]*>/g, '') === '本、音楽、映画。心が動いた作品から、ゆかりの街と今の催しへ。', 'First-visit hero must name the media and explain the purpose');
 
 const CITY_COPY = [
   /* FOUNDER PREVIEW FIX A3: 因果の問いは shelf route が答えないので、4 街とも実際の遷移内容に合う同じ copy。 */
@@ -187,12 +187,12 @@ check(!assets.some((asset) => /文化のつながり/.test(asset)), 'VISUAL_CANO
 // 入っていない card は data-asset-hold を明示する。どちらでもない中間状態を残さない。
 for (const m of html.match(/<a class="hc-work[^"]*"[^>]*>[\s\S]*?<span class="hc-work-foot">/g) || []) {
   const held = /data-asset-hold="work-[a-z]+"/.test(m) && /\bis-asset-hold\b/.test(m);
-  const photo = /<span class="hc-work-media"><img src="\.\/assets\/home-work-[a-z]+\.jpg" alt=""/.test(m);
+  const photo = /<span class="hc-work-media"><img src="\.\/assets\/home-work-[a-z]+-20260908\.webp" alt="[^"]+"/.test(m);
   if (held === photo) failures.push(`work card must be either asset-held or carry its photo, not both/neither: ${m.slice(0, 70)}`);
 }
 check((html.match(/class="hc-work-media"/g) || []).length <= 4, 'at most four work image planes');
 // Featured Thread / 現実へ出る #1 は Asset Round 3 で HQ が権利確認した写真
-check(/<div class="hc-thread-media">\s*<img src="\.\/assets\/home-thread-koenji-awaodori\.jpg"/.test(html), 'thread image must be the Awa Odori asset');
+check(/<div class="hc-thread-media">\s*<img src="\.\/assets\/home-thread-koenji-awaodori-20260908\.webp"/.test(html), 'thread image must be the Awa Odori asset');
 
 /* ---- 6b. NAME AVOIDANCE（Founder no-inquiry decision 2026-09-06）------------
    自分たちの user-facing surface に保護名・類似名を出さない。外部 URL / asset filename /
