@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light">
+  <title>まなと、街の余白へ。｜感情書店・案内試作</title>
+  <link rel="stylesheet" href="window.css">
+  <script src="window.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip" href="#main">本文へ</a>
+  <header class="site-header">
+    <a class="brand" href="https://emotionbookstore.com/">みんなの感情書店</a>
+    <span class="edition">まなの窓 ／ 開発中</span>
+  </header>
+  <main id="main">
+    <div class="intro">
+      <p class="eyebrow">A SMALL WINDOW INTO CULTURE</p>
+      <h1><span>まなと、</span><span>街の余白へ。</span></h1>
+      <p>一つの風景から、気になる物語を見つける。</p>
+    </div>
+
+    <div class="stage-header">
+      <div class="city-picker" role="group" aria-label="見たい街">
+        <button type="button" data-city="koenji" aria-pressed="false">高円寺</button>
+        <button type="button" data-city="kichijoji" aria-pressed="false">吉祥寺</button>
+        <button type="button" data-city="shimokitazawa" aria-pressed="false">下北沢</button>
+        <button type="button" data-city="jinbocho" aria-pressed="false">神保町</button>
+      </div>
+      <p class="photo-label">写真での試作・ライブではありません</p>
+    </div>
+
+    <section class="window-layout" aria-label="街の風景とまな">
+      <div class="city-window">
+        <div class="mosaic" id="mosaic">
+          <figure><img src="assets/city-koenji.jpg" alt="夜の高円寺の通り" width="1536" height="2048"><figcaption>高円寺</figcaption></figure>
+          <figure><img src="assets/city-kichijoji.jpg" alt="吉祥寺のハーモニカ横丁" width="1536" height="2048"><figcaption>吉祥寺</figcaption></figure>
+          <figure><img src="assets/city-shimokitazawa.jpg" alt="下北沢の商店が並ぶ通り" width="1280" height="960"><figcaption>下北沢</figcaption></figure>
+          <figure><img src="assets/city-jinbocho.jpg" alt="神保町の古書店" width="1280" height="853"><figcaption>神保町</figcaption></figure>
+        </div>
+        <figure class="selected-scene" id="scene" hidden>
+          <img id="scene-image" alt="">
+          <figcaption><span class="scene-kind">街の写真</span><span id="scene-title"></span></figcaption>
+        </figure>
+        <p class="scene-error" id="scene-error" role="status" hidden>写真を読み込めませんでした。別の街を選べます。</p>
+      </div>
+
+      <aside class="mana-room" aria-label="書店の案内役、まな">
+        <div class="mana-label"><span>MANA</span><span>書店の案内役</span></div>
+        <div class="mana-portrait" id="portrait" role="img" aria-label="本を手に振り向くまな。茶色の髪と青灰色のブルゾン。背景は架空の街のイラストです">
+          <img src="assets/mana-reference.png" alt="" width="1672" height="941">
+        </div>
+        <p class="mana-line" id="mana-line">どの街を、のぞいてみますか。</p>
+        <div class="mana-controls">
+          <p>まなと背景は制作中のイラストです。</p>
+        </div>
+      </aside>
+    </section>
+
+    <div class="below-window">
+      <p id="selection-status" role="status" aria-live="polite">上の街名から、見たい風景を選べます。</p>
+      <button type="button" class="text-button" id="reset" hidden>4つの街に戻る</button>
+    </div>
+
+    <section class="next-story" id="next-story" hidden aria-labelledby="story-title">
+      <div><p class="eyebrow" id="story-kind"></p><h2 id="story-title"></h2><p id="story-hook"></p></div>
+      <div class="story-destination"><p id="story-relation"></p><a id="story-link" class="primary" href="https://emotionbookstore.com/discover/">この作品へ <span aria-hidden="true">↗</span></a></div>
+    </section>
+
+    <details class="study-details">
+      <summary>造形の確認・写真の出典</summary>
+      <div class="study-content">
+        <h2>まなの表現について</h2>
+        <p>線画と街の光を組み合わせたアニメ調の試案です。右の街並みは架空の背景です。キャラクターの動作は今後の制作工程で、現在は静止画を表示しています。</p>
+        <h2>ライブ映像への接続について</h2>
+        <p>この試作にはライブ配信を接続していません。現在の配信・公開元・埋め込み条件が確認できた映像だけを、今後追加します。まなはプレイヤーの外に置き、映像や操作ボタンを隠しません。</p>
+        <h2>写真の出典</h2>
+        <p>撮影時の街の記録です。現在の様子や、紹介する作品の具体的な撮影地点を示すものではありません。写真の変更は表示時のトリミングのみ。まなのイラストはAIによるオリジナル制作です。</p>
+        <ul class="credits">
+          <li>高円寺：NMaia「<a href="https://commons.wikimedia.org/wiki/File:Street_in_Koenji.jpg">Street in Koenji</a>」／<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></li>
+          <li>吉祥寺：Stephen Kelly「<a href="https://commons.wikimedia.org/wiki/File:Harmonica_Yokocho_in_Kichijoji_(53417122805).jpg">Harmonica Yokocho in Kichijoji</a>」／<a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a></li>
+          <li>下北沢：Aw1805「<a href="https://commons.wikimedia.org/wiki/File:Shimokitazawa_Street_2015.jpg">Shimokitazawa Street 2015</a>」／<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></li>
+          <li>神保町：Real Estate Japan / Scott Kouchi「<a href="https://commons.wikimedia.org/wiki/File:Used_bookstore_in_Jimbocho_(50495926321).jpg">Used bookstore in Jimbocho</a>」／<a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a></li>
+        </ul>
+      </div>
+    </details>
+    <noscript><p>街の切り替えにはJavaScriptが必要です。4つの街の写真と、まなのイラストはこのまま見られます。</p></noscript>
+  </main>
+  <footer><p>好きな一作が、次の寄り道になる。</p><a href="#top">ページの先頭へ ↑</a></footer>
+</body>
+</html>

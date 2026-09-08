@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "status": "preproduction_template_not_a_finished_character",
+  "targetBlender": "4.5 LTS; runtime not verified in this workspace",
+  "units": "meters",
+  "fps": 24,
+  "frames": [1, 192],
+  "renderSize": [1080, 1080],
+  "subjectHeightGuide": 1.6,
+  "cameras": [
+    {"name":"front", "position":[0,-4.5,0.85], "target":[0,0,0.85], "orthoScale":1.95},
+    {"name":"three_quarter", "position":[3,-4,1.1], "target":[0,0,0.85], "orthoScale":1.95},
+    {"name":"side", "position":[4.5,0,0.85], "target":[0,0,0.85], "orthoScale":1.95},
+    {"name":"back", "position":[0,4.5,0.85], "target":[0,0,0.85], "orthoScale":1.95},
+    {"name":"face", "position":[0,-3,1.48], "target":[0,0,1.48], "orthoScale":0.52}
+  ],
+  "lightingPresets": {
+    "studio": {
+      "worldStrength":0.15,
+      "lights":[
+        {"name":"key", "position":[-2,-3,3.3], "target":[0,0,1.0], "power":500, "size":2.0, "color":[1.0,0.89,0.76]},
+        {"name":"fill", "position":[2,-1,1.9], "target":[0,0,1.0], "power":120, "size":2.5, "color":[0.82,0.91,1.0]},
+        {"name":"rim", "position":[0.8,1.8,2.7], "target":[0,0,1.1], "power":250, "size":1.5, "color":[1.0,0.94,0.82]}
+      ]
+    },
+    "evening": {
+      "worldStrength":0.08,
+      "lights":[
+        {"name":"key", "position":[-1.7,-2.4,2.5], "target":[0,0,1.0], "power":220, "size":1.3, "color":[1.0,0.71,0.44]},
+        {"name":"fill", "position":[2,-1.5,2.5], "target":[0,0,1.1], "power":100, "size":3.0, "color":[0.49,0.66,1.0]},
+        {"name":"rim", "position":[0.5,1.8,2.0], "target":[0,0,1.0], "power":160, "size":1.2, "color":[0.59,0.76,1.0]}
+      ]
+    }
+  },
+  "guideBones": [
+    {"name":"root", "head":[0,0,0], "tail":[0,0,0.15]},
+    {"name":"hips", "head":[0,0,0.83], "tail":[0,0,0.97], "parent":"root"},
+    {"name":"spine", "head":[0,0,0.97], "tail":[0,0,1.11], "parent":"hips"},
+    {"name":"chest", "head":[0,0,1.11], "tail":[0,0,1.28], "parent":"spine"},
+    {"name":"neck", "head":[0,0,1.28], "tail":[0,0,1.38], "parent":"chest"},
+    {"name":"head", "head":[0,0,1.38], "tail":[0,0,1.60], "parent":"neck"},
+    {"name":"clavicle.L", "head":[0.02,0,1.27], "tail":[0.16,0,1.27], "parent":"chest", "mirror":true},
+    {"name":"upper_arm.L", "head":[0.16,0,1.27], "tail":[0.34,0,1.10], "parent":"clavicle.L", "mirror":true},
+    {"name":"forearm.L", "head":[0.34,0,1.10], "tail":[0.49,-0.02,0.94], "parent":"upper_arm.L", "mirror":true},
+    {"name":"hand.L", "head":[0.49,-0.02,0.94], "tail":[0.57,-0.02,0.86], "parent":"forearm.L", "mirror":true},
+    {"name":"thigh.L", "head":[0.10,0,0.86], "tail":[0.10,-0.035,0.48], "parent":"hips", "mirror":true},
+    {"name":"shin.L", "head":[0.10,-0.035,0.48], "tail":[0.10,0,0.10], "parent":"thigh.L", "mirror":true},
+    {"name":"foot.L", "head":[0.10,0,0.10], "tail":[0.10,-0.13,0.065], "parent":"shin.L", "mirror":true},
+    {"name":"toe.L", "head":[0.10,-0.13,0.065], "tail":[0.10,-0.22,0.045], "parent":"foot.L", "mirror":true}
+  ],
+  "plannedMorphs":["blink.L","blink.R","lid_follow.L","lid_follow.R","mouth_corner.L","mouth_corner.R"],
+  "plannedActions":["idle","look_to_window","short_step"],
+  "webBudgetTargets":{"triangles":18000,"textureResolution":1024,"textureSets":2,"glbBytes":5000000},
+  "notes":["All bone coordinates are initial guides, not measured anatomy or a matched rig.","No automatic weights, IK constraints, shape keys or character mesh are created.","Lighting values are starting points requiring render validation, not final grading."]
+}
