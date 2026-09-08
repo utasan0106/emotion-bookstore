@@ -16,7 +16,8 @@ function inventory() {
       relationNote:i.relationNote,sources:i.sources,checkedAt:i.checkedAt,
       status:'hold',reason:i.kind==='book'?'usable-cover-unconfirmed':'usable-media-unconfirmed',
       coverStatus:cover?.status||'not-recorded',
-      nextCheck:i.kind==='book'?'出版社等で版・書影利用条件・画像と紹介対象の一致を確認':'公式予告・公開元・作品一致・再生可否を確認',
+      mediaReview:cover?{checkedAt:cover.checkedAt,sourceUrl:cover.sourceUrl,note:cover.reviewNote}:null,
+      nextCheck:cover?.nextCheck||(i.kind==='book'?'出版社等で版・書影利用条件・画像と紹介対象の一致を確認':'公式予告・公開元・作品一致・再生可否を確認'),
       autoPublish:false};
   });
   return {published:items.length,held:excludedItems.length,rows,candidates};

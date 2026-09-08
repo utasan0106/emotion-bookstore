@@ -1,4 +1,22 @@
 {
+  "koenji/jirokichi": {
+    "status": "hold",
+    "isbn": "9784911484036",
+    "sourceUrl": "https://www.hanmoto.com/bd/isbn/9784911484036",
+    "termsUrl": "https://www.hanmoto.com/use_bibliographic_information",
+    "checkedAt": "2026-09-09",
+    "reviewNote": "版元ドットコムで利用可否不明。書影の再利用許諾は未確認。",
+    "nextCheck": "出版社の書影利用条件、または個別許諾を確認する。利用可否不明を許諾扱いしない。"
+  },
+  "kichijoji/honnoniwa": {
+    "status": "hold",
+    "isbn": "9784867168523",
+    "sourceUrl": "https://www.hanmoto.com/bd/isbn/9784867168523",
+    "termsUrl": "https://www.hanmoto.com/use_bibliographic_information",
+    "checkedAt": "2026-09-09",
+    "reviewNote": "書誌情報利用可の表示を確認。ただし書影リンクはnoimage.jpgで実書影なし。他サイトの書影利用許諾には転用しない。舞台・著者は出版社の特設ページでも確認。",
+    "nextCheck": "実書影が提供され、当該画像の利用条件を確認できる提供元を探す。"
+  },
   "shimokitazawa/indies": {
     "status": "usable",
     "isbn": "9784408557588",
