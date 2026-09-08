@@ -393,7 +393,7 @@
   function headerBlock(thread) {
     return h('header', { class: 'th-head' }, [
       h('p', { class: 'th-eyebrow', text: thread.eyebrow }),
-      h('h1', { class: 'th-title', text: thread.title }),
+      h('h1', { class: 'th-title' }, (thread.titlePhrases || [thread.title]).map(function (phrase) { return h('span', { class: 'title-phrase', text: phrase }); })),
       h('p', { class: 'th-subject', text: thread.subjectLabel }),
       h('p', { class: 'th-editor', text: thread.editor }),
       h('p', { class: 'th-lens', text: thread.lens }),

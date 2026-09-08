@@ -12,3 +12,5 @@
  if(document.documentElement.lang!=='ja'||!(path==='/'||path==='/index.html'||path==='/shelf.html'||/^\/(?:discover|outings)\/(?:[^/]+\/)?(?:(?:index|audio|video|book|film)\.html)?$/.test(path)))return;
  const script=document.createElement('script');script.src='/city-weather.js';script.defer=true;document.head.append(script);
 })();
+// Tokyo time changes the shared palette without a weather request or location permission.
+(function(){const script=document.createElement('script');script.src='/time-of-day.js';script.defer=true;document.head.append(script);})();

@@ -1,0 +1,233 @@
+[
+  {
+    "page": "/",
+    "viewport": 320,
+    "client": 305,
+    "scroll": 305,
+    "h1": {
+      "text": "気になる作品から、次に行きたい街へ。",
+      "size": "29px",
+      "height": 85
+    }
+  },
+  {
+    "page": "/",
+    "viewport": 390,
+    "client": 375,
+    "scroll": 375,
+    "h1": {
+      "text": "気になる作品から、次に行きたい街へ。",
+      "size": "29px",
+      "height": 85
+    }
+  },
+  {
+    "page": "/",
+    "viewport": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "h1": {
+      "text": "気になる作品から、次に行きたい街へ。",
+      "size": "49.92px",
+      "height": 148
+    }
+  },
+  {
+    "page": "/about.html",
+    "viewport": 320,
+    "client": 305,
+    "scroll": 305,
+    "h1": {
+      "text": "心が動いた、その先へ。",
+      "size": "29px",
+      "height": 87
+    }
+  },
+  {
+    "page": "/about.html",
+    "viewport": 390,
+    "client": 375,
+    "scroll": 375,
+    "h1": {
+      "text": "心が動いた、その先へ。",
+      "size": "29px",
+      "height": 44
+    }
+  },
+  {
+    "page": "/about.html",
+    "viewport": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "h1": {
+      "text": "心が動いた、その先へ。",
+      "size": "46px",
+      "height": 69
+    }
+  },
+  {
+    "page": "/visit/",
+    "viewport": 320,
+    "client": 305,
+    "scroll": 305,
+    "h1": {
+      "text": "Let a story lead you into Tokyo.",
+      "size": "34px",
+      "height": 78
+    }
+  },
+  {
+    "page": "/visit/",
+    "viewport": 390,
+    "client": 375,
+    "scroll": 375,
+    "h1": {
+      "text": "Let a story lead you into Tokyo.",
+      "size": "34px",
+      "height": 78
+    }
+  },
+  {
+    "page": "/visit/",
+    "viewport": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "h1": {
+      "text": "Let a story lead you into Tokyo.",
+      "size": "51.2px",
+      "height": 118
+    }
+  },
+  {
+    "page": "/saved.html",
+    "viewport": 320,
+    "client": 305,
+    "scroll": 305,
+    "h1": {
+      "text": "保存した想い",
+      "size": "29px",
+      "height": 44
+    }
+  },
+  {
+    "page": "/saved.html",
+    "viewport": 390,
+    "client": 390,
+    "scroll": 390,
+    "h1": {
+      "text": "保存した想い",
+      "size": "29px",
+      "height": 44
+    }
+  },
+  {
+    "page": "/saved.html",
+    "viewport": 1280,
+    "client": 1280,
+    "scroll": 1280,
+    "h1": {
+      "text": "保存した想い",
+      "size": "43.52px",
+      "height": 65
+    }
+  },
+  {
+    "page": "/thread.html?thread=koenji-dance-history",
+    "viewport": 320,
+    "client": 305,
+    "scroll": 305,
+    "h1": {
+      "text": "高円寺の踊りは、どう始まった？",
+      "size": "28px",
+      "height": 84
+    }
+  },
+  {
+    "page": "/thread.html?thread=koenji-dance-history",
+    "viewport": 390,
+    "client": 375,
+    "scroll": 375,
+    "h1": {
+      "text": "高円寺の踊りは、どう始まった？",
+      "size": "28px",
+      "height": 84
+    }
+  },
+  {
+    "page": "/thread.html?thread=koenji-dance-history",
+    "viewport": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "h1": {
+      "text": "高円寺の踊りは、どう始まった？",
+      "size": "43.52px",
+      "height": 65
+    }
+  },
+  {
+    "page": "/discover/jinbocho/book.html",
+    "viewport": 320,
+    "client": 305,
+    "scroll": 305,
+    "h1": {
+      "text": "神保町の本・漫画",
+      "size": "29px",
+      "height": 44
+    }
+  },
+  {
+    "page": "/discover/jinbocho/book.html",
+    "viewport": 390,
+    "client": 375,
+    "scroll": 375,
+    "h1": {
+      "text": "神保町の本・漫画",
+      "size": "29px",
+      "height": 44
+    }
+  },
+  {
+    "page": "/discover/jinbocho/book.html",
+    "viewport": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "h1": {
+      "text": "神保町の本・漫画",
+      "size": "43.52px",
+      "height": 65
+    }
+  },
+  {
+    "page": "/outings/",
+    "viewport": 320,
+    "client": 305,
+    "scroll": 305,
+    "h1": {
+      "text": "街の文化イベント",
+      "size": "29px",
+      "height": 44
+    }
+  },
+  {
+    "page": "/outings/",
+    "viewport": 390,
+    "client": 375,
+    "scroll": 375,
+    "h1": {
+      "text": "街の文化イベント",
+      "size": "29px",
+      "height": 44
+    }
+  },
+  {
+    "page": "/outings/",
+    "viewport": 1280,
+    "client": 1265,
+    "scroll": 1265,
+    "h1": {
+      "text": "街の文化イベント",
+      "size": "43.52px",
+      "height": 65
+    }
+  }
+]

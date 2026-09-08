@@ -5,18 +5,18 @@ const at=Date.parse('2026-09-08T16:50:00+09:00');
 function element(){return {dataset:{},events:{},children:[],textContent:'',hidden:false,attributes:{},setAttribute(k,v){this.attributes[k]=v;},focus(){this.focused=true;},append(...xs){this.children.push(...xs);},prepend(x){this.children.unshift(x);},addEventListener(n,f){this.events[n]=f;}};}
 async function mount(path='/',options={}){
  let clock=at;
- const nodes=Object.fromEntries(['select','.city-weather-reading','[data-weather-forecast]','[data-weather-observation]','input','details','summary','.city-weather-close'].map(k=>[k,element()]));
+ const nodes=Object.fromEntries(['select','.city-weather-reading','[data-weather-forecast]','[data-weather-observation]','input','details','summary','.city-weather-close','.city-weather-row','[data-weather-icon]'].map(k=>[k,element()]));
  const panel=element();panel.querySelector=k=>nodes[k];
  const main=element(),body=element(),events={},intervals=[],calls=[],buttons=[];
  let releaseResponse;
  const responseReady=options.deferred ? new Promise(resolve=>{releaseResponse=resolve;}) : Promise.resolve();
  let fail=Boolean(options.fail);
  const payload={forecast:{date:'2026-09-08',issuedAt:'2026-09-08T11:00:00+09:00',description:'くもり 後 雨 所により 雷を伴う',theme:'cloudy'},stations:{'44132':{name:'東京',temperature:26.7,observedAt:'2026-09-08T16:40:00+09:00'},'44071':{name:'練馬',temperature:26.2,observedAt:'2026-09-08T16:40:00+09:00'}}};
- const doc={documentElement:{lang:'ja'},body,hidden:false,querySelector:k=>k==='main'?main:null,createElement:k=>{const e=k==='section'?panel:element();if(k==='button')buttons.push(e);return e;},addEventListener:(n,f)=>events[n]=f};
+ const doc={documentElement:{lang:'ja'},body,hidden:false,querySelector:k=>k==='main'?main:options.scene?.[k]||null,createElement:k=>{const e=k==='section'?panel:element();if(k==='button')buttons.push(e);return e;},addEventListener:(n,f)=>events[n]=f};
  const ctx={document:doc,location:{pathname:path,search:''},URLSearchParams,Intl,AbortSignal,Date:class extends Date{static now(){return clock;}},setInterval:f=>intervals.push(f),fetch:async(url,opts)=>{calls.push({url,opts});await responseReady;return {ok:!fail,json:async()=>payload};}};
  vm.runInNewContext(source,ctx);
  await new Promise(setImmediate);
- return {releaseResponse,panel,restore:buttons[0],nodes,body,doc,main,events,intervals,calls,payload,advance:n=>clock+=n,setFail:v=>fail=v,flush:()=>new Promise(setImmediate)};
+ return {releaseResponse,panel,motion:buttons[1],restore:buttons[0],nodes,body,doc,main,events,intervals,calls,payload,advance:n=>clock+=n,setFail:v=>fail=v,flush:()=>new Promise(setImmediate)};
 }
 (async()=>{
  const h=await mount('/discover/koenji/');
@@ -54,6 +54,14 @@ async function mount(path='/',options={}){
  const midnight=await mount();midnight.advance(8*3600000);midnight.intervals[0]();await midnight.flush();
  assert.equal(midnight.body.dataset.cityWeather,undefined,'Cached yesterday data cannot keep the theme');
  assert.match(midnight.nodes['.city-weather-reading'].textContent,/取得できません/);
+ const scene=Object.fromEntries(['.hc-scene-stage','[data-city-scene-image]','[data-city-scene-caption]','.hc-hero-cta','.hc-hero-cta-label'].map(k=>[k,element()]));
+ const rain=await mount('/',{scene});rain.payload.forecast.theme='rain';rain.nodes.select.value='koenji';rain.nodes.select.events.change();
+ assert.equal(scene['[data-city-scene-image]'].attributes.src,'/assets/city-koenji.jpg');
+ assert.equal(scene['.hc-hero-cta'].attributes.href,'/discover/koenji/');
+ assert.equal(rain.nodes['[data-weather-icon]'].textContent,'☂');assert.equal(rain.motion.hidden,false);
+ rain.motion.events.click();assert.equal(rain.body.dataset.weatherMotion,'paused');rain.motion.events.click();assert.equal(rain.body.dataset.weatherMotion,'running');
+ rain.setFail(true);rain.advance(16*60000);rain.intervals[0]();await rain.flush();assert.equal(rain.motion.hidden,true);
+ assert.equal(scene['[data-city-scene-image]'].attributes.src,'/assets/city-koenji.jpg','Street choice survives weather outage');
  const detail=await mount('/discover/koenji/1q84.html');assert.equal(detail.calls.length,0);assert.equal(detail.main.children.length,0);
  const privacy=await mount('/data.html');assert.equal(privacy.calls.length,0);
  assert.equal(h.calls[0].url,'/api/tokyo-weather');assert.equal(h.calls[0].opts.credentials,'same-origin');assert.equal(h.calls[0].opts.referrerPolicy,'no-referrer');

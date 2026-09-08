@@ -72,11 +72,11 @@ check(html.includes('<body class="thread-page">'), 'body must carry .thread-page
 check(html.includes('id="threadRoot"'), '#threadRoot missing');
 {
   const head = html.slice(0, html.indexOf('</head>'));
-  check(!/<script/i.test(head), 'no synchronous head JS');
+  check(!/<script\b(?![^>]*\bdefer\b)/i.test(head), 'shared head JS must be deferred');
   const scripts = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map((m) => m[1]);
   check(scripts.join('|') === './release_content.js|./growth-improvements.js|./release.js|./analytics-v3.js|./video-embed.js|./thread_content.js|./thread.js',
     `script order must be release_content → growth-improvements → release → analytics-v3 → video-embed → thread_content → thread (got ${scripts.join(', ')})`);
-  check((html.match(/<script/g) || []).length === 7, 'exactly seven script tags (video-embed.js added by the Founder decision v2)');
+  check((html.match(/<script/g) || []).length === 8, 'eight scripts including the shared page navigation');
   check(!/<script[^>]*>[^<]*\S[^<]*<\/script>/.test(html), 'no inline script');
 }
 check(/<noscript>[\s\S]*このスレッドを読むには JavaScript を有効にしてください。[\s\S]*<\/noscript>/.test(html), 'generic noscript message missing');
@@ -504,7 +504,7 @@ for (const banned of ['animation', 'transition', '@keyframes', 'box-shadow', 'te
   check(!home.includes('data-route-hold="thread-koenji-awaodori"'), 'the thread-koenji-awaodori hold must be gone');
   /* FOUNDER PREVIEW FIX A1 / A5: hero の スレッドを見る も同じ Thread への実 anchor。route hold は 0。 */
   check(!home.includes('data-route-hold'), 'HOME must carry no route hold');
-  check(home.split('<a class="hc-hero-cta" href="./v3-prototype/culture-experience-r2/index.html">').length === 2, 'HOME hero must reach the quick audio/video hub, exactly once');
+  check(home.split('<a class="hc-hero-cta" href="./discover/index.html">').length === 2, 'HOME hero must reach the current work directory, exactly once');
   check((home.match(/thread\.html/g) || []).length === 1, 'HOME keeps one Thread route in section 4');
   const rule = (releaseCss.match(/\.hc-thread-read \{[^}]*\}/) || [''])[0];
   for (const decl of ['display: flex;', 'align-items: flex-end;', 'justify-content: flex-end;', 'gap: 14px;', 'height: 44px;', 'margin: 0;', 'font-size: 13px;', 'line-height: 1;', 'letter-spacing: .04em;', 'color: #d8cdbb;', 'text-decoration: none;']) {
@@ -521,7 +521,7 @@ for (const banned of ['animation', 'transition', '@keyframes', 'box-shadow', 'te
   const entry = (credits.match(/<article class="credits-entry" data-credit-asset="home-thread-koenji-awaodori\.jpg">[\s\S]*?<\/article>/) || [''])[0];
   check(entry.length > 0, 'credits.html entry for the Koenji photo missing');
   const usage = (entry.match(/<dt>使用場所<\/dt><dd>([^<]*)<\/dd>/) || ['', ''])[1];
-  check(/トップ（いま辿れるスレッド）/.test(usage) && /スレッド（高円寺）/.test(usage), `credits usage location must include スレッド（高円寺）(got ${usage})`);
+  check(/トップ（踊りから、街の歴史へ）/.test(usage) && /スレッド（高円寺）/.test(usage), `credits usage location must include スレッド（高円寺）(got ${usage})`);
   for (const keep of ['Lucertola', 'https://commons.wikimedia.org/wiki/File:KoenjiAwaOdori.jpg', 'パブリックドメイン', '#Licensing']) check(entry.includes(keep), `credits rights record must stay intact (${keep})`);
   check(!read('sitemap.xml').includes('thread'), 'sitemap must not list the Thread');
   check(read('qa/link_check.js').includes('thread_content.js'), 'link_check must include Thread sources / destinations');

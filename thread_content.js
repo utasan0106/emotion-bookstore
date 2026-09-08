@@ -25,6 +25,7 @@
     threadId: 'koenji-dance-history',
     eyebrow: '高円寺',
     title: '高円寺の踊りは、どう始まった？',
+    titlePhrases: ['高円寺の踊りは、', 'どう始まった？'],
     documentTitle: '高円寺｜高円寺の踊りは、どう始まった？｜みんなの感情書店',
     subjectLabel: '主題：高円寺の踊りの歴史',
     editor: '編集：みんなの感情書店 編集部',
