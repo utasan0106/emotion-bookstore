@@ -3,22 +3,10 @@
 const items = [];
 const commonVideos = [
   {
-    id: 'sotetsu-100-years', title: '100 YEARS TRAIN', creator: '相鉄グループ / 2019',
-    hook: '一つの路線と、何度もすれ違う二人の100年を辿る。',
-    note: '相鉄線の都心直通を記念して制作された企業広告です。実在の一つの街を案内する記録映像ではなく、鉄道と人の時間を描く映像作品として紹介します。',
-    videoId: 'tUe6YedzjlM', sources: ['https://www.sotetsu.co.jp/media/2019/pressrelease/pdf/r19-131-pd2.pdf']
-  },
-  {
     id: 'find-my-tokyo', title: 'Find my Tokyo. チャレンジャーズ', creator: '東京メトロ / 2024',
     hook: '知っている街の、まだ知らない楽しみ方へ。',
     note: '東京メトロが東京の新しい魅力を見つける企画として公開した企業広告です。このサイトの4街だけを扱う映像ではありません。',
     videoId: 'RpSlspjIeG8', sources: ['https://www.tokyometro.jp/news/2024/218221.html']
-  },
-  {
-    id: 'calorie-mate-light-shadow', title: '光も影も', creator: 'カロリーメイト / 2023',
-    hook: '一人で描く時間と、隣で挑む友人の存在を見つめる。',
-    note: '美大受験生を描いたカロリーメイトの短編広告です。街の紹介ではありませんが、作品を生み出す孤独と、人と並んで進む温かさがこのサイトの体験とつながるため選んでいます。',
-    videoId: 'AuxXufx5kKQ', sources: ['https://prtimes.jp/main/html/rd/p/000000038.000045062.html']
   },
   {
     id: 'toyota-loving-eyes', title: 'Loving Eyes', creator: 'TOYOTA / ブランドムービー',
@@ -160,4 +148,8 @@ for (const item of items.filter(item => item.kind === 'film' && trailerIds[item.
   item.sources = [...new Set([...item.sources, item.trailerUrl])];
 }
 
-module.exports = { items, commonVideos, checkedAt: '2026-09-08' };
+const blockedVideoIds = ['tUe6YedzjlM', 'AuxXufx5kKQ']; // User playback evidence: private, 2026-09-08.
+for (const item of [...items, ...commonVideos]) {
+  if (blockedVideoIds.includes(item.videoId) || blockedVideoIds.includes(item.trailerVideoId)) throw new Error('Private video must not be published: ' + item.id);
+}
+module.exports = { items, commonVideos, blockedVideoIds, checkedAt: '2026-09-08' };
