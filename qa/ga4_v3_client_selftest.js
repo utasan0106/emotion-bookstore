@@ -31,16 +31,15 @@ const ve=read('video-embed.js'); assert(ve.includes('window.v3Analytics.mediaPre
 assert(read('atlas/index.html').includes('<script src="../analytics-v3.js"></script>')&&!read('atlas/app.js').includes('v3Analytics')&&!read('atlas/app.js').includes('gtag'),'atlas: shared loader only; app.js carries no measurement code');
 const tokens=new Set(analytics.match(/v3_[a-z_]+/g)||[]); for(const t of tokens)assert(approvedEvents.has(t)||t==='v3_ga_optout','unapproved event '+t); for(const e of approvedEvents)assert(tokens.has(e),'missing event '+e);
 for(const rel of ['index.html','shelf.html','suggest.html','data.html','credits.html','explore.html']){const h=read(rel);assert(!h.includes('このページでは保存・計測・個人ごとの推薦を行いません'),rel+': old copy');assert(h.includes('<script src="./analytics-v3.js"></script>'),rel+': analytics loader');assert(/<a\b[^>]*href="\.\/data\.html"[^>]*>データの扱い<\/a>/.test(h),rel+': data link')}
-/* canonical HOME（853 VISUAL_CANONICAL）: 週間動画 module は無い。旧「押すまで
-   YouTube へ接続しない」より強い契約 —— HOME は外部 host を一切参照しない —— を
-   固定する。GA4 event 定義は不変（v3_home_view は pathname 判定）。 */
-const index=read('index.html'); for(const t of ['id="weeklyVideoPlay"','data-video-id=','./weekly-video.css','./weekly-video.js','youtube','i.ytimg.com','<iframe']) assert(!index.includes(t),'retired weekly video token on HOME: '+t);
+/* Editorial HOME opens one official video on click. No external media on paint.
+   Event definitions and bounded payloads remain unchanged. */
+const index=read('index.html'); for(const t of ['id="weeklyVideoPlay"','data-video-id=','./weekly-video.css','./weekly-video.js','i.ytimg.com','<iframe']) assert(!index.includes(t),'retired weekly video token on HOME: '+t);
 const indexBody=index.slice(index.indexOf('<body'));
 /* FOUNDER PREVIEW FIX UNIT D: HOME body の外部 href は「実際の場所へ」の 3 つの公式 destination（a.official-action、click まで通信なし）だけ。
    それ以外の外部 src / href は引き続き 0。GA4 は既存の v3_official_action を再利用し、event / param は増やさない。 */
 // Current HOME routes to the curated catalogue and event list on this origin.
 const homeExternal=indexBody.match(/(?:src|href)="(?:https?:)?\/\/[^"]+"/g)||[];
-assert(homeExternal.length===0,'HOME images and navigation must stay on this origin');
+assert(homeExternal.length===1&&homeExternal[0]==='href="https://www.youtube.com/watch?v=dt33RGSRuo0"','HOME permits only its explicitly selected official feature link');
 assert(indexBody.includes('href="./outings/"')&&indexBody.includes('href="./discover/index.html"'),'HOME must expose working event and work entries');
 assert(index.includes('id="hc-works"')&&index.includes('id="hc-thread"'),'HOME section ids');
 for(const rel of ['index.html','shelf.html','suggest.html','data.html','credits.html','explore.html']){const h=read(rel);assert(!h.includes('#weekly-detour')&&!h.includes('#by-kind'),rel+': retired HOME anchor');assert(h.includes('href="./credits.html"'),rel+': credits link')}
