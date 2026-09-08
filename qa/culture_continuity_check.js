@@ -17,6 +17,17 @@ for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']){
 }
 const profiles=require('../tools/artist-profiles');
 const items=require('../tools/city-discovery-source').items;
+for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']) {
+  for(const kind of ['audio','video','book','film']) {
+    const html=read(`discover/${city}/${kind}.html`);
+    const nav=html.match(/<nav class="other-cities"[\s\S]*?<\/nav>/)?.[0];
+    assert.ok(nav,'Cross-city navigation: '+city+'/'+kind);
+    for(const other of ['koenji','kichijoji','shimokitazawa','jinbocho']) {
+      const count=items.filter(i=>i.city===other&&i.kind===kind).length;
+      assert.equal(nav.includes(`/discover/${other}/${kind}.html`),other!==city&&count>0,'Only populated alternatives in same category');
+    }
+  }
+}
 for(const city of ['koenji','kichijoji']) {
   const html=read('discover/'+city+'/book.html');
   assert.doesNotMatch(html,/本で触れた街を/);

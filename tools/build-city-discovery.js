@@ -73,6 +73,16 @@ function enrichSeo(file, html) {
     .replace('</title>',`</title><link rel="canonical" href="${canonical}"><meta property="og:type" content="website"><meta property="og:site_name" content="みんなの感情書店"><meta property="og:title" content="${esc(pageTitle)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${canonical}"><meta name="twitter:card" content="summary"><script type="application/ld+json">${schema}</script>`);
 }
 function write(file, html) {
+  const [city, categoryFile]=file.split('/');
+  const kind=categoryFile?.replace(/\.html$/, '');
+  if(cityNames[city] && categories[kind]) {
+    const alternatives=Object.entries(cityNames).filter(([id])=>id!==city).map(([id,name])=>({id,name,count:items.filter(item=>item.city===id&&item.kind===kind).length})).filter(entry=>entry.count>0);
+    if(alternatives.length) {
+      const links=alternatives.map(entry=>`<a href="/discover/${entry.id}/${kind}.html">${entry.name}<span>${entry.count}件</span></a>`).join('');
+      const navigation=`<nav class="other-cities" aria-label="別の街の${categories[kind].name}"><h2>別の街の${categories[kind].name}も見る</h2><div>${links}</div></nav>`;
+      html=html.replace('<section class="work-grid"', navigation+'<section class="work-grid"');
+    }
+  }
   html=require('./page-chrome')(html);
   html=enrichSeo(file,html);
   const output=path.join(root,'discover',file);

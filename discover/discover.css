@@ -13,5 +13,10 @@
 .city-heading{display:flex;flex-direction:column;justify-content:center;padding:28px}.city-heading .eyebrow{color:var(--accent)}
 .card-art{background:#e6ebdf}.book .card-art{background:#eee4d0}.film .card-art{background:#e6e6ee}.audio .card-art{background:#dce9e2}.media-mark{color:#4b5f43}.film .media-mark{color:#50566e}.book .media-mark{color:#6d5736}
 .primary{color:#fff}.primary:hover{background:#5f421d}.v3-video-frame .primary{background:#f0e5cd;color:#282e25}
+.other-cities{margin:0 0 24px;padding:16px 0;border-block:1px solid var(--line)}
+.other-cities h2{font:inherit;font-size:.875rem;font-weight:600;margin:0 0 8px}
+.other-cities>div{display:flex;flex-wrap:wrap;gap:8px 16px}
+.other-cities a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 4px;font-size:1rem}
+.other-cities a span{font-size:.875rem;color:var(--muted)}
 .brand span{font-size:12px}.relation,.creator,.card-number,.city-caption p,.city-caption>span,.credits,.footer{font-size:14px}.quick-grid span,.feature p:not(.eyebrow),.feature small{font-size:14px}
 @media(max-width:600px){.city-hero{grid-template-columns:1fr}.city-panorama{height:170px}.city-heading{padding:20px}.city-heading h1{font-size:30px}.city-heading h1 span{display:inline-block;margin-left:12px}.category-nav{flex-wrap:wrap}.category-nav>a,.category-nav>span{font-size:14px}}
