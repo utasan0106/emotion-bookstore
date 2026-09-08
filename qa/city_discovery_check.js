@@ -15,6 +15,13 @@ assert.equal(new Set([...items.filter(i=>i.videoId),...commonVideos].map(i=>i.vi
 const playbackIds=[...items.filter(i=>i.videoId).map(i=>i.videoId),...items.filter(i=>i.trailerVideoId).map(i=>i.trailerVideoId),...commonVideos.map(i=>i.videoId)];
 assert.equal(new Set(playbackIds).size,playbackIds.length,'Embedded media IDs must not be reused across entries');
 const cities=['koenji','shimokitazawa','kichijoji','jinbocho'];
+for(const city of cities) {
+  const landing=fs.readFileSync(path.join(root,`discover/${city}/index.html`),'utf8');
+  const kinds=['audio','video','book','film'].filter(kind=>items.some(i=>i.city===city&&i.kind===kind));
+  assert.equal((landing.match(/class="work-card /g)||[]).length,kinds.length,'City entry must contain works, not just navigation');
+  for(const kind of kinds) assert.ok(landing.includes(`href="/discover/${city}/${kind}.html"`));
+  for(const kind of ['audio','video','book','film'].filter(kind=>!kinds.includes(kind))) assert.ok(!landing.includes(`href="/discover/${city}/${kind}.html"`),'Do not advertise an empty category');
+}
 for(const city of cities)for(const kind of ['audio','video','book','film']) {
   const selected=items.filter(i=>i.city===city&&i.kind===kind);
   assert.ok(selected.length<=10);
@@ -57,7 +64,7 @@ function inspect(dir) {
   }
 }
 inspect(path.join(root,'discover'));
-assert.equal(pages,76);
+assert.equal(pages,80);
 assert.equal(new Set(canonicals).size,pages);
 assert.equal(new Set(pageTitles).size,pages);
 for(const i of items) {
@@ -103,7 +110,7 @@ assert.equal(sitemapUrls.length,pages+3+1+eventCount+9);
 assert.equal(new Set(sitemapUrls).size,sitemapUrls.length);
 assert.ok(canonicals.every(url=>sitemapUrls.includes(url)));
 assert.ok(sitemapUrls.filter(url=>url.includes('?')).every(url=>/^https:\/\/emotionbookstore\.com\/shelf\.html\?shelf=(koenji|kichijoji|shimokitazawa|jinbocho)$/.test(url)));
-console.log('PASS 55 city entries + 3 common shorts, 16 bounded lists, 76 routes, SEO metadata and sitemap, embedded audio and bounded trailers, unique detail exits, local assets, honest media types');
+console.log('PASS 55 city entries + 3 common shorts, 4 populated city entries, 16 bounded lists, 80 routes, SEO metadata and sitemap, embedded audio and bounded trailers, unique detail exits, local assets, honest media types');
 
 for (const id of require('../tools/city-discovery-source').blockedVideoIds) {
  for (const f of fs.readdirSync(path.join(root,'discover/short-films'))) if(f.endsWith('.html')) assert.ok(!fs.readFileSync(path.join(root,'discover/short-films',f),'utf8').includes(id), 'Private video leaked: '+id);

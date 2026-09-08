@@ -991,7 +991,7 @@
     var culturePaths = document.getElementById('cityCulturePaths');
     if (culturePaths) {
       culturePaths.textContent = '';
-      culturePaths.appendChild(h('a', { href: './discover/' + shelf.id + '/', text: shelf.area + 'の映像・音楽・本・映画 →' }));
+      culturePaths.appendChild(h('a', { href: './discover/' + shelf.id + '/', text: shelf.area + 'の作品を見る →' }));
       culturePaths.appendChild(h('a', { href: './outings/?city=' + shelf.id, text: shelf.area + 'の文化イベント →' }));
       culturePaths.hidden = false;
     }

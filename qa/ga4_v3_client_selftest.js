@@ -33,7 +33,7 @@ assert(read('atlas/index.html').includes('<script src="../analytics-v3.js"></scr
 const tokens=new Set(analytics.match(/v3_[a-z_]+/g)||[]); for(const t of tokens)assert(approvedEvents.has(t)||t==='v3_ga_optout','unapproved event '+t); for(const e of approvedEvents)assert(tokens.has(e),'missing event '+e);
 for(const rel of ['index.html','shelf.html','suggest.html','data.html','credits.html','explore.html']){const h=read(rel);assert(!h.includes('このページでは保存・計測・個人ごとの推薦を行いません'),rel+': old copy');assert(h.includes('<script src="./analytics-v3.js"></script>'),rel+': analytics loader');assert(/<a\b[^>]*href="\.\/data\.html"[^>]*>データの扱い<\/a>/.test(h),rel+': data link')}
 /* Discovery HOME uses an approved book cover and official Bandcamp artwork.
-   YouTube stays a click-through; event definitions and bounded payloads are unchanged. */
+   PARKS uses its reviewed official trailer; event definitions and bounded payloads are unchanged. */
 const index=read('index.html'); for(const t of ['id="weeklyVideoPlay"','data-video-id=','./weekly-video.css','./weekly-video.js','i.ytimg.com']) assert(!index.includes(t),'retired weekly video token on HOME: '+t);
 const indexBody=index.slice(index.indexOf('<body'));
 const approvedHomeMedia=new Set([
@@ -41,11 +41,13 @@ const approvedHomeMedia=new Set([
  'https://img.hanmoto.com/bd/img/9784911191026.jpg?lastupdated=2025-04-23T10%3A22%3A06%2B09%3A00',
  'https://bandcamp.com/EmbeddedPlayer/album=1846332570/size=large/bgcol=ffffff/linkcol=0687f5/minimal=true/transparent=true/',
  'https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204',
- 'https://www.youtube.com/watch?v=dt33RGSRuo0'
+ 'https://www.youtube.com/watch?v=dt33RGSRuo0',
+ 'https://www.youtube.com/watch?v=pm7RBghFt0I',
+ 'https://www.youtube-nocookie.com/embed/pm7RBghFt0I?autoplay=0&amp;playsinline=1&amp;rel=0'
 ]);
 for(const [,url] of indexBody.matchAll(/(?:src|href)="((?:https?:)?\/\/[^"]+)"/g)) assert(approvedHomeMedia.has(url),'Unreviewed external home source: '+url);
 assert(indexBody.includes('href="/outings/"')&&indexBody.includes('href="/discover/"'),'HOME must expose working event and work entries');
-for(const [,src] of index.matchAll(/<iframe[^>]*src="([^"]+)"/g)) assert(src.startsWith('https://bandcamp.com/EmbeddedPlayer/'),'Only the approved official artwork player may load on HOME');
+for(const [,src] of index.matchAll(/<iframe[^>]*src="([^"]+)"/g)) assert(approvedHomeMedia.has(src)&&(/bandcamp\.com\/EmbeddedPlayer\/|youtube-nocookie\.com\/embed\/pm7RBghFt0I\?autoplay=0/.test(src)),'Only the reviewed album and PARKS trailer may load on HOME');
 assert(index.includes('id="hc-works"')&&index.includes('id="hc-thread"'),'HOME section ids');
 for(const rel of ['index.html','shelf.html','suggest.html','data.html','credits.html','explore.html']){const h=read(rel);assert(!h.includes('#weekly-detour')&&!h.includes('#by-kind'),rel+': retired HOME anchor');assert(h.includes('href="./credits.html"'),rel+': credits link')}
 if(fs.existsSync(path.join(ROOT,'weekly-video.js'))){const video=read('weekly-video.js'); assert(video.includes('https://www.youtube-nocookie.com/embed/'),'nocookie'); assert(video.includes("iframe.referrerPolicy = 'strict-origin-when-cross-origin'"),'referrer'); assert(video.includes("button.addEventListener('click'"),'click gate'); assert(!video.includes('youtube.com/iframe_api'),'YT API'); assert(!video.includes('localStorage')&&!video.includes('geolocation'),'video storage/location');}
@@ -54,6 +56,6 @@ const vercel=read('vercel.json'); assert(vercel.includes("frame-src https://www.
    （週末の前の一本 / 31秒の動画を再生 / HOME の YouTube 埋め込み）は canonical HOME に
    無く、いまどのページも YouTube を読まない。外部サービスへの移動は「押したときだけ」
    で、GA4 のオン／オフとは別の操作であることは引き続き言う。 */
-const data=read('data.html'); for(const t of ['週末の前の一本','31秒の動画を再生','weeklyVideoPlay','youtube-nocookie']) assert(!data.includes(t),'data.html: retired HOME video claim remains: '+t); assert(!/トップページ[^<]*(YouTube|動画)/.test(data),'data.html: must not describe a HOME video/YouTube behaviour'); assert(data.includes('外部サービスへの移動はGA4のオン／オフとは別の操作です。'),'GA4/external navigation distinction'); for(const t of ['どの種類の入口を開いたか、どの公開ページや段階まで到達したか、資料を開いたか、公式サイトなど現実側の外部リンクへ進んだかを、限定した公開IDで計測する場合があります','Cookie等の識別子、閲覧・操作のイベント、端末・ブラウザの情報、IPアドレス等から推定されるおおよその地域、参照元（リファラー）','「気になる」の内容、感情、GPSや現在地、アカウントやユーザーのIDを送りません','外部リンクの完全なURL・クエリ・ハッシュ、動画のID、正確な座標、視点や表示範囲、選択した建物やその識別子も送りません']) assert(data.includes(t),'data.html: v4.1 Trust disclosure missing: '+t); for(const t of ['位置情報はGA4へ送らない','位置情報を送りません','個人情報を送りません']) assert(!data.includes(t),'data.html: over-broad privacy claim: '+t);
+const data=read('data.html'); for(const t of ['週末の前の一本','31秒の動画を再生','weeklyVideoPlay','youtube-nocookie']) assert(!data.includes(t),'data.html: retired HOME video claim remains: '+t); assert(data.includes('トップページでは、映画『PARKS』のYouTube公式予告プレーヤーをページ表示時に読み込みます。'),'data.html: disclose eager HOME trailer'); assert(data.includes('外部サービスへの移動はGA4のオン／オフとは別の操作です。'),'GA4/external navigation distinction'); for(const t of ['どの種類の入口を開いたか、どの公開ページや段階まで到達したか、資料を開いたか、公式サイトなど現実側の外部リンクへ進んだかを、限定した公開IDで計測する場合があります','Cookie等の識別子、閲覧・操作のイベント、端末・ブラウザの情報、IPアドレス等から推定されるおおよその地域、参照元（リファラー）','「気になる」の内容、感情、GPSや現在地、アカウントやユーザーのIDを送りません','外部リンクの完全なURL・クエリ・ハッシュ、動画のID、正確な座標、視点や表示範囲、選択した建物やその識別子も送りません']) assert(data.includes(t),'data.html: v4.1 Trust disclosure missing: '+t); for(const t of ['位置情報はGA4へ送らない','位置情報を送りません','個人情報を送りません']) assert(!data.includes(t),'data.html: over-broad privacy claim: '+t);
 for(const p of ['release.js','release_content.js','release.css']) assert(git(['diff','--',p])==='','protected changed '+p); git(['diff','--check']); const status=git(['status','--porcelain']); if(status)for(const line of status.split(/\r?\n/)){let rel=line.slice(3).trim();if(rel.includes(' -> '))rel=rel.split(' -> ',2)[1];assert(allowed.has(rel),'unexpected '+rel)}
 console.log('V3_RELEASE_GROWTH_SELFTEST_GO');

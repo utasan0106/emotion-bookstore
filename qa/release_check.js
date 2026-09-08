@@ -360,7 +360,7 @@ if (/hc-hero-trace|hc-trace-year/.test(read('index.html'))) failures.push('index
   const sub = src.indexOf('読む、聴く、観る、出かける。');
   const firstCity = src.indexOf('class="hd-city hc-city shelf-entry"');
   if (h1 < 0 || sub < 0 || firstCity < 0 || h1 > firstCity || sub > firstCity) failures.push('index.html: hero copy must precede the first city entry');
-  if (!src.includes('class="hd-feature') || /hc-culture-art|home-encounter|data-city-scene-image/.test(src) || !src.includes('fetchpriority="high"')) failures.push('index.html: character-free editorial cover with priority photograph required');
+  if (!src.includes('class="hd-feature') || /hc-culture-art|home-encounter|data-city-scene-image|30秒|感情書店の小文/.test(src) || !src.includes('youtube-nocookie.com/embed/pm7RBghFt0I?autoplay=0')) failures.push('index.html: real PARKS trailer required; no invented reading feature');
 }
 for (const page of ['shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html']) {
   const src = read(page);

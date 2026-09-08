@@ -116,3 +116,41 @@ body.site-polished[data-daypart],body.site-polished[data-city-weather]{backgroun
  .site-polished .page-tools{flex-wrap:wrap}
 }
 @media(prefers-reduced-motion:reduce){.site-polished *{scroll-behavior:auto;transition:none}}
+
+/* One continuous white canvas; neutral inset surfaces, dark text, blue actions.
+   release.css uses --ink as TEXT, discover.css uses it as CANVAS. Do not mix them. */
+html:has(body.site-polished){background:#fff;color-scheme:light}
+body.site-polished{--hall-raised:#f1f3f5;--hall-line:#dfe3e8;--hall-edge:#7c8592;--bone:#fff;--bone-line:#dfe3e8;--ink-dim:#58616d;--signal:#3158b8;--signal-fill:#3158b8;--signal-lift:#254594;min-height:100vh}
+body.site-polished:is(.shelf-page,.works-page,.thread-page,.suggest-page){--ink:#25282e}
+.site-polished :is(.site-menu,.detail-dialog){background:#fff;color:#25282e}
+.site-polished .footer-brand-image{filter:brightness(0)}
+.site-polished :is(.site-menu-close,.dialog-close){background:#fff;color:#25282e;font-size:.875rem;letter-spacing:0}
+.site-polished .detail-dialog{box-shadow:0 16px 64px #171b2433}
+.site-polished :is(.site-menu,.detail-dialog)::backdrop{background:#171b2466}
+.site-polished :is(.city-culture-paths a,.open-button,.weekly-feature-secondary){background:#fff;color:#3158b8;border-color:#a4acb8}
+.site-polished .city-culture-paths a:first-child{background:#3158b8;color:#fff;border-color:#3158b8}
+.site-polished .media-plate .plate-inner{background:#f1f3f5}
+.site-polished .city-hero{background:#fff;border-bottom:1px solid #dfe3e8;border-radius:0;grid-template-columns:280px 1fr}
+.site-polished .city-panorama{height:170px}
+.site-polished .city-heading{padding:24px 32px}
+.site-polished .city-heading h1{font-size:2rem;font-weight:600}
+.site-polished .city-heading h1 span{display:inline;margin-left:.4em}
+.site-polished .category-nav a:hover{background:#f1f3f5;color:#254594;border-color:#3158b8}
+.site-polished .work-card{border:0;border-bottom:1px solid #dfe3e8;border-radius:0}
+.site-polished .card-body{padding:20px 0 24px}
+.site-polished .card-hook{font-size:1rem;color:#58616d}
+.site-polished .card-body h2{font-size:1.375rem;font-weight:600;line-height:1.5}
+.site-polished .official-media,.site-polished .official-media iframe{background:#f1f3f5}
+.site-polished .official-media figcaption{background:#fff;padding:10px 0}
+.site-polished .city-next{display:flex;gap:24px;flex-wrap:wrap;padding:24px 0;margin-top:24px;border-top:1px solid #dfe3e8}
+.site-polished .city-next a{display:flex;align-items:center;min-height:44px;font-size:1rem;color:#3158b8}
+.site-polished :is(.site-menu-link,.site-menu-secondary-link){font-family:var(--sans);letter-spacing:0}
+.site-polished :is(.growth-traversal,.growth-archive-item){border-color:#dfe3e8}
+.site-polished .growth-interest-button[aria-pressed="true"]{background:#3158b8;color:#fff;border-color:#3158b8}
+@media(max-width:600px){
+ .site-polished .city-hero{grid-template-columns:1fr}
+ .site-polished .city-panorama{height:150px}
+ .site-polished .city-heading{padding:20px 0}
+ .site-polished .city-heading h1{font-size:1.75rem}
+ .site-polished .category-nav{grid-template-columns:repeat(2,minmax(0,1fr))}
+}

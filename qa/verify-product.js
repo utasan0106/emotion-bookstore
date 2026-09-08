@@ -4,6 +4,7 @@ const {spawnSync}=require('node:child_process');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
 const checks=[
+ ['qa/catalogue_regression_check.js'],
  ['qa/cover-flow-check.js'],
  ['qa/site_integration_check.js'],
  ['qa/release_check.js'],

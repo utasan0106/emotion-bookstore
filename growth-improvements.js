@@ -533,7 +533,7 @@
                                               飛ばさず hash を外し、live region で知らせる。
      explore.html から HOME へ戻す処理は無いので loop しない。 */
   function settleLegacyHomeHash() {
-    if (!document.body || !document.body.classList.contains('home-canonical')) return;
+    if (!document.body || (!document.body.classList.contains('home-canonical') && !document.body.classList.contains('home-discovery'))) return;
     var hash = location.hash;
     var query = location.search.replace(/^\?/, '');
     if (hash === '#by-kind') {

@@ -360,7 +360,9 @@
   function homeEntry(target) {
     var cityEntry = closest(target, 'a.hc-city.shelf-entry[href]');
     if (cityEntry) {
-      var cityId = SHELF_IDS[routeParam(cityEntry.getAttribute('href'), 'shelf')];
+      var cityHref = cityEntry.getAttribute('href') || '';
+      var cityPath = cityHref.match(/^\/discover\/(koenji|kichijoji|shimokitazawa|jinbocho)\/(?:index\.html)?$/);
+      var cityId = SHELF_IDS[cityPath ? cityPath[1] : routeParam(cityHref, 'shelf')];
       if (cityId) api.entryOpen('city', cityId);
       return;
     }
