@@ -17,6 +17,17 @@ for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']){
 }
 const profiles=require('../tools/artist-profiles');
 const items=require('../tools/city-discovery-source').items;
+for(const [city,entries] of Object.entries(require('../tools/city-editorials'))) {
+  const html=read(`discover/${city}/index.html`);
+  for(const entry of entries) {
+    assert.ok(html.includes(entry.title));
+    assert.ok(html.includes(entry.sourceUrl));
+    if(entry.relatedUrl) {
+      assert.ok(html.includes(entry.relatedUrl));
+      assert.ok(fs.existsSync(path.join(root,entry.relatedUrl)));
+    }
+  }
+}
 for(const page of ['index','book']) {
   const html=read(`discover/kichijoji/${page}.html`);
   for(const entry of require('../tools/city-editorials').kichijoji) {

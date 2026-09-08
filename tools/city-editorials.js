@@ -1,7 +1,41 @@
 'use strict';
 // Original text based on public institutional sources, not copied articles.
 // Do not add private addresses, inferred residence, lyrics or unlicensed imagery.
-module.exports={kichijoji:[
+module.exports={
+koenji:[{
+  id:'nejime-shotengai',
+  title:'ねじめ正一の一冊から、高円寺へ',
+  paragraphs:[
+    '店の看板だけでなく、そこで暮らす人に目を向けて街を眺めたい。そんな入口として、ねじめ正一の『高円寺純情商店街』があります。',
+    '新潮社の著者紹介によると、ねじめ正一は1989年にこの小説で直木賞を受賞しました。作家の名前より先に、この本の題名を知っている人もいるかもしれません。',
+    'まずは出版社の作品紹介へ。小説を現在の店舗案内とは分けながら、街と文学のつながりを辿れます。本文や書影を転載せず、公式の読書案内につなぎます。'
+  ],
+  sourceUrl:'https://www.shinchosha.co.jp/book/102112/',
+  sourceLabel:'新潮社：作品・著者紹介',checkedAt:'2026-09-09'
+}],
+shimokitazawa:[{
+  id:'kudo-honda',
+  title:'宮藤官九郎、阿部サダヲ、仲野太賀。その舞台を下北沢から',
+  paragraphs:[
+    '映画やテレビで知った俳優を、劇場という入口から辿ってみる。下北沢の本多劇場と人物をつなぐ一例が、2023年の「もうがまんできない」です。',
+    '大人計画の公式公演記録には、作・演出を宮藤官九郎、出演者を阿部サダヲ、仲野太賀らとする案内が残っています。東京公演の会期は2023年4月14日から5月14日、本多劇場でした。',
+    'この公演は終了しています。俳優の居住地や作品の舞台設定ではなく、実際に上演された劇場との関係です。まずは当時の公式案内や、掲載中の出演者インタビューから。'
+  ],
+  sourceUrl:'https://otonakeikaku.net/stage/',sourceLabel:'大人計画：2023年4月の公演記録',checkedAt:'2026-09-09',
+  relatedUrl:'/discover/shimokitazawa/womenslib-interview.html',relatedLabel:'仲野太賀の公式インタビュー紹介へ'
+}],
+jinbocho:[{
+  id:'mizoguchi-screen',
+  title:'本の街で、溝口健二の映画に出会う',
+  paragraphs:[
+    '神保町で辿れる文化は、本だけではありません。映画館が組んだ特集を入口に、監督の仕事を知ることもできます。',
+    '神保町シアターは「没後70年 映画監督・溝口健二の世界」を、2026年8月15日〜9月11日の会期で告知しています。公式ページには上映作品と日時が掲載されています。',
+    'これは映画を上映する街とのつながりです。撮影地や監督の出身地が神保町という意味ではありません。開催状況を固定表示せず、鑑賞を考える際は公式の会期・上映日時を確認してください。'
+  ],
+  sourceUrl:'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-08-15_mizoguchi-kenji-70th.html',sourceLabel:'神保町シアター：特集と上映日程',checkedAt:'2026-09-09',
+  relatedUrl:'/discover/jinbocho/film.html',relatedLabel:'神保町で紹介する映画を見る'
+}],
+kichijoji:[
   {
     id:'umezz-town',
     title:'楳図かずおの漫画が、吉祥寺の街へ広がるとき',
