@@ -13,3 +13,7 @@
 ## 追記
 Boris公式ページのShare/Embedからmediumプレーヤーを取得しmodern.htmlへ組み込み。album=1846332570、ジャケットあり、tracklist=false、120px高。仮のレコード写真を削除。公式案内：https://get.bandcamp.help/en/articles/15263071-how-do-i-create-a-bandcamp-embedded-player
 小学館の許諾不要範囲は学校・図書館等の公共施設での紹介であり、当サイトへの包括許諾とは判断しない：https://www.shogakukan.co.jp/picture
+
+書籍ラフを「こじらせ男子とお茶をする」（月と文社 編／月と文社、ISBN9784911191026）へ変更。個別ページの利用可（連絡不要）を確認。書影全体・編者出版社併記。https://www.hanmoto.com/bd/isbn/9784911191026 。公開選定の確定ではなくデザイン確認用。
+
+携帯幅でsmall artworkが非表示となったためlarge artwork/470px高へ変更。実際の書影とジャケットをスクリーンショットで確認。音楽の高さは一覧密度に対して未調整。再生動作・200%拡大は未検証。
