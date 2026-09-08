@@ -7,3 +7,23 @@ html{font-size:100%}.modern{--body:1rem;--label:.8125rem;--title:1.125rem;--feat
 /* Shared media column; official embedded artwork retains its supported 170px size. */
 .modern .entry,.modern .music-embed{display:grid;grid-template-columns:170px minmax(0,1fr);gap:1rem;padding-block:0 1.5rem;margin-bottom:1.5rem}.modern .entry figure{display:flex;align-items:flex-start;justify-content:center;flex-wrap:wrap}.modern .entry img{max-height:170px;width:auto;max-width:170px}.modern .entry figcaption{width:100%;text-align:center}.music-embed iframe{margin:0;width:170px;height:170px}.modern .entry .description{font-size:.9375rem;line-height:1.7}.modern .entry .actions{display:block}.modern .entry .actions a{display:flex;font-size:.875rem}.modern .feature img{aspect-ratio:2.2}.feature-copy h2 br{display:none}.feature-copy h2{font-size:1.5rem}.feature-copy p{display:none}.feature-copy{padding:.875rem 0 0}.feature-copy h2{margin:0}.modern .intro{padding-bottom:1rem}.modern main{padding-top:1.25rem}.modern .section-title span{display:none}
 @media(max-width:359px){.modern .entry,.modern .music-embed{grid-template-columns:1fr}.modern .entry figure{justify-content:flex-start}.modern .entry figcaption{text-align:left}.modern .entry .actions{display:flex}.modern .entry img{max-height:170px}}
+
+/* Visual refinement: neutral canvas, restrained cobalt accent, consistent type roles. */
+.modern{--ink:#25282c;--muted:#60656c;--accent:#3158b8;--rule:#e5e7eb;color:var(--ink);font-family:Reading,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;letter-spacing:0;font-feature-settings:normal}
+.modern header p,.modern .intro p,.modern .entry .description{color:var(--muted)}
+.modern .intro h1{font-weight:500;letter-spacing:0;line-height:1.5}
+.modern .categories a{background:#f4f5f7;border-radius:6px;color:var(--ink);font-size:.875rem}
+.modern .categories a:hover{background:#edf1fb;color:var(--accent)}
+.modern .feature{background:transparent}.modern .feature-label{background:#f0f3fa;color:var(--accent);border-top:2px solid var(--accent);padding:.5rem .75rem;font-size:.8125rem}
+.modern .feature-label span{font-size:.8125rem;letter-spacing:0}
+.modern .feature-copy h2{font-size:1.5rem;letter-spacing:0;line-height:1.45}
+.modern .feature-copy span{font-size:.875rem;color:var(--accent);border:0}
+.modern .section-title{font-size:1.125rem;font-weight:500;letter-spacing:.015em;margin-bottom:1.5rem}
+.modern .entry{border-color:var(--rule);gap:1.25rem;padding-bottom:1.5rem;margin-bottom:1.5rem}
+.modern .entry h2{font-family:Reading,"Hiragino Kaku Gothic ProN",sans-serif;font-size:1.125rem;font-weight:500;line-height:1.55;letter-spacing:0;word-break:normal;overflow-wrap:break-word;margin-bottom:.5rem}
+.modern .entry .meta{color:var(--muted);font-size:.8125rem;line-height:1.6;margin-bottom:.5rem}
+.modern .entry .description{font-size:.9375rem;line-height:1.75;margin:0}
+.modern .actions{margin-top:.5rem}.modern .actions .primary{color:var(--accent);font-size:.875rem;font-weight:500}.modern .actions .detail{color:var(--muted);font-size:.8125rem}
+.modern .entry figcaption{font-size:.75rem;line-height:1.5;color:var(--muted);margin-top:.5rem}
+.modern .mini{background:#f4f5f7;border-radius:6px;padding:1.125rem}.modern .mini summary strong{font-size:1.0625rem;line-height:1.6}.modern .mini summary small{font-size:.8125rem;color:var(--muted)}
+.modern footer{border-color:var(--rule);line-height:1.8;color:var(--muted)}
