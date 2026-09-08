@@ -27,3 +27,6 @@ html{font-size:100%}.modern{--body:1rem;--label:.8125rem;--title:1.125rem;--feat
 .modern .entry figcaption{font-size:.75rem;line-height:1.5;color:var(--muted);margin-top:.5rem}
 .modern .mini{background:#f4f5f7;border-radius:6px;padding:1.125rem}.modern .mini summary strong{font-size:1.0625rem;line-height:1.6}.modern .mini summary small{font-size:.8125rem;color:var(--muted)}
 .modern footer{border-color:var(--rule);line-height:1.8;color:var(--muted)}
+
+/* Natural phrase wrapping and media caption grouping. */
+.modern .entry figure{align-content:flex-start;row-gap:0}.modern .entry figcaption{margin-top:.5rem}.modern .phrase{display:inline-block;max-width:100%;overflow-wrap:anywhere}.modern .entry .creator{font-size:.8125rem;line-height:1.65;color:var(--muted);margin:0 0 .5rem}.modern .entry h2{text-wrap:balance}.modern .entry .description{text-wrap:pretty;line-break:strict;word-break:normal}.modern .entry .actions{margin-top:.75rem}.modern .feature-copy h2{text-wrap:balance}.modern .entry .copy{overflow-wrap:normal}
