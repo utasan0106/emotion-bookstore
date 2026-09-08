@@ -1,27 +1,31 @@
 /* Shared navigation: one small pair, kept clear of text and mobile safe areas. */
 /* Forecast ambience: never recolour photos, video, artwork, or reading surfaces. */
-body[data-city-weather="clear"]{--weather-canvas:#201e18;--weather-panel:#2b281e;--weather-accent:#d8c396}
-body[data-city-weather="cloudy"]{--weather-canvas:#1b2021;--weather-panel:#252c2c;--weather-accent:#bdcbc7}
-body[data-city-weather="rain"]{--weather-canvas:#18212a;--weather-panel:#202e37;--weather-accent:#b4cbda}
-body[data-city-weather="snow"]{--weather-canvas:#22292c;--weather-panel:#303a3e;--weather-accent:#d8e0e3}
-body[data-city-weather]{background-color:var(--weather-canvas)}
+body[data-city-weather="clear"]{--weather-canvas:#f8f5ec;--weather-panel:#f1ead9;--weather-accent:#73531f}
+body[data-city-weather="cloudy"]{--weather-canvas:#f0f3f0;--weather-panel:#e5ece7;--weather-accent:#3f6055}
+body[data-city-weather="rain"]{--weather-canvas:#edf3f7;--weather-panel:#e0ebf2;--weather-accent:#315d79}
+body[data-city-weather="snow"]{--weather-canvas:#f4f6f7;--weather-panel:#e8edf0;--weather-accent:#4d6370}
+body[data-city-weather]{background:var(--weather-canvas)}
 body[data-city-weather] .hc-hero{background-color:var(--weather-canvas)}
-.city-weather{box-sizing:border-box;width:100%;margin:24px 0;padding:12px 16px;border-block:1px solid #66675e;background:var(--weather-panel,#22241f);color:#f1ecdf;font:14px/1.7 system-ui,sans-serif;text-align:left;letter-spacing:normal}
-.hc-hero>.city-weather{max-width:1272px;width:calc(100% - 48px);margin:36px auto 0}
-.city-weather-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px 22px}
-.city-weather-place{display:flex;align-items:center;gap:10px;flex-shrink:0;color:var(--weather-accent,#dacaaa);font-size:13px;white-space:nowrap}
-.city-weather select{box-sizing:border-box;max-width:100%;min-height:44px;padding:6px 28px 6px 12px;border:1px solid #92958a;border-radius:4px;background:#222621;color:#f1ecdf;font:16px/1.5 system-ui,sans-serif;color-scheme:dark}
-.city-weather .city-weather-reading{flex:1 1 240px;min-width:0;margin:0;color:#f1ecdf;font:14px/1.8 system-ui,sans-serif;overflow-wrap:anywhere}
-.city-weather-details{flex:0 0 auto;max-width:100%}
-.city-weather-details[open]{flex-basis:100%}
-.city-weather summary{cursor:pointer;min-height:44px;align-content:center;color:var(--weather-accent,#dacaaa);font-size:13px;text-underline-offset:4px}
+.city-weather-wrap{box-sizing:border-box;max-width:100%;margin:24px 0;text-align:left}
+.hc-hero>.city-weather-wrap{max-width:1272px;width:calc(100% - 48px);margin:36px auto 0}
+.city-weather{box-sizing:border-box;width:100%;padding:12px 16px;border:1px solid #bdc8bc;border-radius:6px;background:var(--weather-panel,#eaf0e8);color:#303b31;font:14px/1.7 system-ui,sans-serif;letter-spacing:normal}
+.city-weather-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px 20px}
+.city-weather-place{display:flex;align-items:center;gap:10px;flex-shrink:0;color:var(--weather-accent,#3f6055);font-size:14px;white-space:nowrap}
+.city-weather select{box-sizing:border-box;max-width:100%;min-height:44px;padding:6px 28px 6px 12px;border:1px solid #82917e;border-radius:4px;background:#fffef9;color:#303b31;font:16px/1.5 system-ui,sans-serif;color-scheme:light}
+.city-weather .city-weather-reading{flex:1 1 240px;min-width:0;margin:0;color:#303b31;font:14px/1.8 system-ui,sans-serif;overflow-wrap:anywhere}
+.city-weather button,.city-weather-restore{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 12px;border:1px solid #82917e;border-radius:4px;background:#fffef9;color:#303b31;font:14px/1.5 system-ui,sans-serif;cursor:pointer}
+.city-weather-close{order:4;margin-left:auto;flex:none}
+.city-weather-details{max-width:100%;order:3}
+.city-weather-details[open]{flex-basis:100%;order:5}
+.city-weather summary{cursor:pointer;min-height:44px;align-content:center;color:var(--weather-accent,#3f6055);font-size:14px;text-underline-offset:4px}
 .city-weather-info{max-width:760px;padding:4px 0 10px}
-.city-weather-info p{margin:6px 0;color:#e3e4dc;font:13px/1.8 system-ui,sans-serif}
+.city-weather-info p{margin:6px 0;color:#485647;font:14px/1.8 system-ui,sans-serif}
 .city-weather-info a{color:inherit;text-decoration:underline;text-underline-offset:4px}
-.city-weather-toggle{display:flex;align-items:center;gap:10px;min-height:44px;font-size:13px}
-.city-weather-toggle input{width:18px;height:18px;accent-color:#b3c9c6}
-.city-weather :is(select,summary,a,input):focus-visible{outline:3px solid #f0cf87;outline-offset:4px}
-@media(max-width:600px){.city-weather-row{gap:4px 6px}.city-weather .city-weather-reading{flex-basis:100%;order:2}.city-weather-details{margin-left:auto}.city-weather-details[open]{order:3;margin-left:0}.hc-hero>.city-weather{width:calc(100% - 32px);margin-top:24px}.city-weather{padding:10px 12px}.city-weather-place{gap:6px}.city-weather select{width:112px}.city-weather summary{font-size:12px}}
+.city-weather-toggle{display:flex;align-items:center;gap:10px;min-height:44px;font-size:14px}
+.city-weather-toggle input{width:18px;height:18px;accent-color:#426a58}
+.city-weather-wrap [hidden]{display:none!important}
+.city-weather :is(select,summary,a,input,button):focus-visible,.city-weather-restore:focus-visible{outline:3px solid #8a571e;outline-offset:4px}
+@media(max-width:600px){.city-weather-row{gap:4px 8px}.city-weather .city-weather-reading{flex-basis:100%;order:2}.city-weather-close{order:1}.city-weather-details,.city-weather-details[open]{order:3;flex-basis:100%;margin-left:0}.hc-hero>.city-weather-wrap{width:calc(100% - 32px);margin-top:24px}.city-weather{padding:10px 12px}.city-weather-place{gap:6px}.city-weather select{width:112px}}
 #page-top{display:block;width:0;height:0;overflow:hidden}
 .page-tools{display:flex;gap:8px;justify-content:center;padding:20px 16px;margin:0;box-sizing:border-box;font:500 13px/1.4 system-ui,sans-serif}
 .page-tools a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:8px 14px;border:1px solid #c3b48f;border-radius:6px;background:#211f1a;color:#fff8e6;text-decoration:none;box-sizing:border-box}

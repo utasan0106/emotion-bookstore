@@ -2,19 +2,21 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const source=fs.readFileSync(require.resolve('../city-weather'),'utf8');
 const at=Date.parse('2026-09-08T16:50:00+09:00');
-function element(){return {dataset:{},events:{},children:[],textContent:'',setAttribute(){},append(x){this.children.push(x);},prepend(x){this.children.unshift(x);},addEventListener(n,f){this.events[n]=f;}};}
+function element(){return {dataset:{},events:{},children:[],textContent:'',hidden:false,attributes:{},setAttribute(k,v){this.attributes[k]=v;},focus(){this.focused=true;},append(...xs){this.children.push(...xs);},prepend(x){this.children.unshift(x);},addEventListener(n,f){this.events[n]=f;}};}
 async function mount(path='/',options={}){
  let clock=at;
- const nodes=Object.fromEntries(['select','.city-weather-reading','[data-weather-forecast]','[data-weather-observation]','input'].map(k=>[k,element()]));
+ const nodes=Object.fromEntries(['select','.city-weather-reading','[data-weather-forecast]','[data-weather-observation]','input','details','summary','.city-weather-close'].map(k=>[k,element()]));
  const panel=element();panel.querySelector=k=>nodes[k];
- const main=element(),body=element(),events={},intervals=[],calls=[];
+ const main=element(),body=element(),events={},intervals=[],calls=[],buttons=[];
+ let releaseResponse;
+ const responseReady=options.deferred ? new Promise(resolve=>{releaseResponse=resolve;}) : Promise.resolve();
  let fail=Boolean(options.fail);
  const payload={forecast:{date:'2026-09-08',issuedAt:'2026-09-08T11:00:00+09:00',description:'くもり 後 雨 所により 雷を伴う',theme:'cloudy'},stations:{'44132':{name:'東京',temperature:26.7,observedAt:'2026-09-08T16:40:00+09:00'},'44071':{name:'練馬',temperature:26.2,observedAt:'2026-09-08T16:40:00+09:00'}}};
- const doc={documentElement:{lang:'ja'},body,hidden:false,querySelector:k=>k==='main'?main:null,createElement:k=>k==='section'?panel:element(),addEventListener:(n,f)=>events[n]=f};
- const ctx={document:doc,location:{pathname:path,search:''},URLSearchParams,Intl,AbortSignal,Date:class extends Date{static now(){return clock;}},setInterval:f=>intervals.push(f),fetch:async(url,opts)=>{calls.push({url,opts});return {ok:!fail,json:async()=>payload};}};
+ const doc={documentElement:{lang:'ja'},body,hidden:false,querySelector:k=>k==='main'?main:null,createElement:k=>{const e=k==='section'?panel:element();if(k==='button')buttons.push(e);return e;},addEventListener:(n,f)=>events[n]=f};
+ const ctx={document:doc,location:{pathname:path,search:''},URLSearchParams,Intl,AbortSignal,Date:class extends Date{static now(){return clock;}},setInterval:f=>intervals.push(f),fetch:async(url,opts)=>{calls.push({url,opts});await responseReady;return {ok:!fail,json:async()=>payload};}};
  vm.runInNewContext(source,ctx);
  await new Promise(setImmediate);
- return {nodes,body,doc,main,events,intervals,calls,payload,advance:n=>clock+=n,setFail:v=>fail=v,flush:()=>new Promise(setImmediate)};
+ return {releaseResponse,panel,restore:buttons[0],nodes,body,doc,main,events,intervals,calls,payload,advance:n=>clock+=n,setFail:v=>fail=v,flush:()=>new Promise(setImmediate)};
 }
 (async()=>{
  const h=await mount('/discover/koenji/');
@@ -34,12 +36,27 @@ async function mount(path='/',options={}){
  h.doc.hidden=false;h.events.visibilitychange();await h.flush();assert.equal(h.calls.length,2);
  h.setFail(true);h.advance(16*60000);h.intervals[0]();await h.flush();
  assert.equal(h.body.dataset.cityWeather,undefined);assert.match(h.nodes['.city-weather-reading'].textContent,/取得できません/);
+ const closable=await mount();
+ closable.nodes.details.open=true;closable.nodes.details.events.toggle();
+ assert.equal(closable.nodes.summary.textContent,'詳細を閉じる');
+ closable.nodes['.city-weather-close'].events.click();
+ assert.equal(closable.panel.hidden,true);assert.equal(closable.restore.hidden,false);
+ assert.equal(closable.nodes.details.open,false);assert.equal(closable.restore.focused,true);
+ assert.equal(closable.body.dataset.cityWeather,undefined);
+ closable.advance(16*60000);closable.intervals[0]();closable.events.visibilitychange();await closable.flush();
+ assert.equal(closable.calls.length,1,'Dismissed weather must not keep refreshing');
+ closable.restore.events.click();await closable.flush();
+ assert.equal(closable.panel.hidden,false);assert.equal(closable.restore.hidden,true);
+ assert.equal(closable.calls.length,2);assert.equal(closable.nodes.select.focused,true);
+ assert.equal(closable.body.dataset.cityWeather,'cloudy');
+ const pending=await mount('/',{deferred:true});pending.nodes['.city-weather-close'].events.click();pending.releaseResponse();await pending.flush();
+ assert.equal(pending.panel.hidden,true);assert.equal(pending.body.dataset.cityWeather,undefined,'A delayed response cannot reopen dismissed weather or restore its colour');
  const midnight=await mount();midnight.advance(8*3600000);midnight.intervals[0]();await midnight.flush();
  assert.equal(midnight.body.dataset.cityWeather,undefined,'Cached yesterday data cannot keep the theme');
  assert.match(midnight.nodes['.city-weather-reading'].textContent,/取得できません/);
  const detail=await mount('/discover/koenji/1q84.html');assert.equal(detail.calls.length,0);assert.equal(detail.main.children.length,0);
  const privacy=await mount('/data.html');assert.equal(privacy.calls.length,0);
- assert.equal(h.calls[0].url,'/api/tokyo-weather');assert.equal(h.calls[0].opts.credentials,'omit');assert.equal(h.calls[0].opts.referrerPolicy,'no-referrer');
+ assert.equal(h.calls[0].url,'/api/tokyo-weather');assert.equal(h.calls[0].opts.credentials,'same-origin');assert.equal(h.calls[0].opts.referrerPolicy,'no-referrer');
  assert.doesNotMatch(source,/localStorage|sessionStorage|geolocation|gtag\(/);
- console.log('WEATHER_CLIENT_GO: city choice, forecast wording, theme control, outage, expiry, visibility, detail exclusion and request privacy');
+ console.log('WEATHER_CLIENT_GO: close/reopen, focus, dismissed refresh, city choice, forecast wording, theme control, outage, expiry, visibility, detail exclusion and request privacy');
 })().catch(e=>{console.error(e);process.exitCode=1;});

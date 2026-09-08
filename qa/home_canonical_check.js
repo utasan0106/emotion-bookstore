@@ -57,7 +57,7 @@ const COPY = [
   '高円寺の踊り', '高円寺の踊りは、どう始まった？', '1957年の始まりから、木場連との出会いへ。', '踊りの歴史を読む',
   '今、街で出会える文化', '文化イベントを選ぶ',
 ];
-for (const c of COPY) check(html.includes(c), `core copy missing: ${c.slice(0, 40)}`);
+for (const c of COPY) check(html.replace(/<[^>]*>/g, '').includes(c), `core copy missing: ${c.slice(0, 40)}`);
 const heroSub = (html.match(/<p class="hc-hero-sub">([\s\S]*?)<\/p>/) || [])[1] || '';
 check(heroSub.replace(/<[^>]*>/g, '') === '映像・音楽・本・映画と、ゆかりの街や今の催しをつなぐ文化案内。', 'First-visit hero must name the media and explain the purpose');
 
@@ -79,7 +79,7 @@ for (const w of ['本', '映画', '音楽', '映像']) {
 check(!html.includes('class="hc-thread-chain"'), 'HOME must not repeat the detailed relationship chain');
 check(html.includes('class="hc-header-actions"'), 'English guide and menu must share a normal-flow layout');
 check(!html.includes('class="hc-hero-media"'), 'HOME must not use one city as its representative hero');
-check(html.includes('class="hc-culture-mosaic"'), 'HOME explains the media with local imagery');
+check(html.includes('class="hc-culture-art"'), 'HOME introduces a shared cultural street through an illustration');
 
 /* ---- 3. 既存の functional contract を壊していない ---------------------- */
 

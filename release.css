@@ -2019,6 +2019,15 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 
 .city-culture-paths{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 32px}.city-culture-paths a{padding:14px 18px;border:1px solid #887956;border-radius:4px;min-height:44px;font-size:15px;text-decoration:none;background:#211f1a;color:#fff8e6}.city-culture-paths[hidden]{display:none}
 
+.shelf-page{--hall:#f8f7f2;--hall-raised:#eeeee5;--hall-line:#d6d8ce;--hall-edge:#7f897b;--chalk:#292d26;--chalk-dim:#596252;background:#f8f7f2;color:var(--chalk);color-scheme:light}
+.shelf-page :is(.brand-lockup-image,.footer-brand-image){filter:brightness(0)}
+.shelf-page .shelf-portrait img{filter:none;transform:none}
+.shelf-page .shelf-portrait-frame::after{display:none}
+.shelf-page .media-plate .plate-inner{box-shadow:none;background:#eeeee5}
+.shelf-page .site-menu{background:#f8f7f2;color:#292d26}
+.shelf-page main>.city-weather-wrap,.shelf-page .city-culture-paths{width:min(calc(100% - var(--gutter) * 2),var(--page));margin-inline:auto}
+.shelf-page .city-culture-paths a{background:#edf0e8;color:#344231;border-color:#bbc3b2}
+
 /* ==========================================================================
    HOME — CONTENT-LED IMMERSIVE TIME / VISUAL_CANONICAL 853px
 
@@ -2927,3 +2936,52 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 @media(max-width:390px){.hc-header{column-gap:8px}.hc-brand-link{font-size:16px}.hc-header-actions{gap:10px}.hc-english-entry{font-size:12px}.hc-menu-trigger{width:40px}}
 
 .hc-about-link{display:inline-block;margin-top:16px;padding:8px 0;font-size:13px;color:#cfc7b8;text-underline-offset:4px}
+
+/* 2026-09-08: daylight around real streets; photographs carry their own light. */
+.home-canonical{--hc-night:#f8f7f2;--hc-paper:#eeece3;--hc-gold:#805d2e;background:#f8f7f2;color:#262923;color-scheme:light}
+.home-canonical .hc-hero{background:#f8f7f2;color:#262923}
+.home-canonical :is(.hc-brand-link,.hc-hero-title,.hc-english-entry){color:#262923}
+.home-canonical :is(.hc-hero-sub,.hc-about-link){color:#535d55}
+.home-canonical .hc-menu-bars,.home-canonical .hc-menu-bars::before,.home-canonical .hc-menu-bars::after{background:#262923}
+.home-canonical .hc-hero-cta{background:#294c42;color:#fff;min-height:56px;height:auto}
+.home-canonical .hc-hero-cta:hover{background:#203d35}
+.home-canonical .hc-header{max-width:1320px;margin:auto;padding:24px;box-sizing:border-box;border-bottom:1px solid #d9dace}
+.hc-brand-link{display:block}
+.hc-brand-logo{display:block;width:300px;max-width:100%;height:auto;filter:brightness(0)}
+.home-canonical .hc-hero-content{gap:clamp(28px,4vw,64px);margin-top:52px;padding:0 36px}
+.home-canonical .hc-hero-kicker{display:flex;align-items:center;gap:14px;color:#8b4934;font:500 15px/1.6 var(--sans);letter-spacing:.1em;margin-bottom:22px}
+.home-canonical .hc-hero-kicker::before{content:"";width:28px;height:2px;background:currentColor;flex:none}
+.home-canonical .hc-hero-title{font-size:clamp(30px,3.7vw,52px);line-height:1.5;letter-spacing:-.04em}
+.hc-hero-accent{color:#a44f34}
+.home-canonical .hc-hero-line:first-child{font-size:.85em;margin-bottom:5px}
+.home-canonical .hc-hero-sub{max-width:29em}
+.home-canonical .hc-city{display:flex;flex-direction:column;height:auto;background:#faf9f4;color:#262923;border:1px solid #d9dace;border-radius:6px}
+.home-canonical .hc-city:last-child{border-bottom:1px solid #d9dace}
+.home-canonical .hc-city-media{position:relative;inset:auto;height:auto;aspect-ratio:4/3;flex:none;overflow:hidden}
+.home-canonical .hc-city-media img{filter:none;object-position:50% 42%}
+.home-canonical .hc-city-media::after{display:none}
+.home-canonical .hc-city-body{position:static;padding:18px;display:flex;flex-direction:column;flex:1}
+.home-canonical .hc-city-name{color:#262923;font-size:26px;line-height:1.4}
+.home-canonical .hc-city-q{color:#586155;font-size:14px;line-height:1.8;margin-top:8px}
+.home-canonical .hc-city-mark{color:#294c42;margin-top:auto;padding-top:16px}
+.home-canonical .hc-city:hover{border-color:#667d70}
+@media(max-width:760px){.home-canonical .hc-culture-mosaic{height:260px;gap:8px}.hc-culture-mosaic figcaption{padding:5px 9px;font-size:13px}.home-canonical .hc-city-body{padding:14px}.home-canonical .hc-city-name{font-size:23px}}
+@media(max-width:390px){.home-canonical .hc-city-grid{grid-template-columns:1fr}.home-canonical .hc-city{display:grid;grid-template-columns:42% 1fr}.home-canonical .hc-city-media{height:100%;aspect-ratio:auto}.home-canonical .hc-city-body{padding:14px}.home-canonical .hc-city-mark{padding-top:8px}}
+@media(max-width:760px){
+.home-canonical .hc-header{padding:16px 20px;flex-wrap:nowrap;gap:12px}
+.hc-brand{flex:1;min-width:0}.hc-brand-logo{width:240px}
+.hc-header-actions{gap:14px}.hc-english-entry{font-size:12px}
+.home-canonical .hc-hero-content{margin-top:30px;padding:0 24px;gap:26px}
+.home-canonical .hc-hero-title{font-size:clamp(27px,6.5vw,42px)}
+.home-canonical .hc-hero-kicker{font-size:13px;gap:10px;margin-bottom:16px}
+.hc-culture-mosaic figcaption{padding:5px 2px 1px;font-size:13px}
+.hc-culture-mosaic figcaption small{display:none}
+}
+@media(max-width:440px){.home-canonical .hc-header{padding-inline:16px;align-items:center}.hc-header-actions{gap:8px}.hc-english-entry{width:42px;line-height:1.3}.hc-brand-logo{width:200px}.hc-culture-mosaic figure{border-width:4px}}
+
+/* A shared imagined street; actual city photographs remain in the city choices. */
+.hc-culture-art{min-width:0;margin:0}
+.hc-culture-art img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:3px}
+.hc-culture-art figcaption{margin-top:12px;color:#4c6054;font:14px/1.7 var(--sans)}
+.hc-culture-art figcaption span{display:block;margin-top:4px;color:#697060;font-size:11px}
+@media(max-width:760px){.hc-culture-art figcaption{font-size:12px}.hc-culture-art figcaption span{font-size:10px}.home-canonical .hc-hero-content{row-gap:22px}}
