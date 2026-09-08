@@ -21,10 +21,12 @@ for(const city of cities)for(const kind of ['audio','video','book','film']) {
   const html=fs.readFileSync(path.join(root,`discover/${city}/${kind}.html`),'utf8');
   for(const i of selected)assert.equal(html.split(`href="/discover/${city}/${i.id}.html"`).length-1,1);
   assert.equal((html.match(/class="work-card /g)||[]).length,5);
-  assert.doesNotMatch(html,/<iframe|<script|data-video-id/);
+  assert.doesNotMatch(html,/<iframe|data-video-id|video-embed\.js|discover\/player\.js/);
   assert.match(html,/aria-current="page"/);
 }
 let pages=0;
+const canonicals=[];
+const pageTitles=[];
 function inspect(dir) {
   for(const file of fs.readdirSync(dir,{withFileTypes:true})) {
     const full=path.join(dir,file.name);
@@ -32,6 +34,16 @@ function inspect(dir) {
     if(!file.name.endsWith('.html'))continue;
     pages++;
     const html=fs.readFileSync(full,'utf8');
+    const relative=path.relative(path.join(root,'discover'),full).replaceAll(path.sep,'/');
+    const expectedCanonical=`https://emotionbookstore.com/discover/${relative==='index.html'?'':relative.replace(/index\.html$/,'')}`;
+    assert.equal((html.match(/<link rel="canonical" href="([^"]+)">/)||[])[1],expectedCanonical);
+    assert.equal((html.match(/<meta property="og:url" content="([^"]+)">/)||[])[1],expectedCanonical);
+    assert.match(html,/<script type="application\/ld\+json">[^<]+<\/script>/);
+    canonicals.push(expectedCanonical);
+    const pageTitle=(html.match(/<title>([^<]+)<\/title>/)||[])[1];
+    const description=(html.match(/<meta name="description" content="([^"]+)">/)||[])[1];
+    assert.ok(pageTitle&&description&&description.length<=155);
+    pageTitles.push(pageTitle);
     assert.equal((html.match(/<h1\b/g)||[]).length,1,full);
     assert.doesNotMatch(html,/<iframe|<img[^>]+src="https?:|preconnect|rel="preload"|autoplay|googletagmanager|analytics-v3/);
     for(const m of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
@@ -46,6 +58,8 @@ function inspect(dir) {
 }
 inspect(path.join(root,'discover'));
 assert.equal(pages,103);
+assert.equal(new Set(canonicals).size,pages);
+assert.equal(new Set(pageTitles).size,pages);
 for(const i of items) {
   assert.ok(i.sources.length && i.relation && i.relationNote);
   assert.equal(i.playbackChecked,false,'Never equate indexed media with tested playback');
@@ -78,4 +92,10 @@ for(const i of commonVideos) {
 for(const file of ['index.html','works.html'])assert.equal(fs.readFileSync(path.join(root,file),'utf8').split('href="./discover/index.html"').length-1,1);
 assert.match(fs.readFileSync(path.join(root,'.vercelignore'),'utf8'),/^\/tools\/city-discovery-source.js$/m);
 assert.ok(!fs.readFileSync(path.join(root,'.vercelignore'),'utf8').includes('/discover/'));
-console.log('PASS 80 city entries + 5 common shorts, 16 bounded lists, 103 routes, embedded audio and bounded trailers, unique detail exits, local assets, honest media types');
+const sitemap=fs.readFileSync(path.join(root,'sitemap.xml'),'utf8');
+const sitemapUrls=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match=>match[1]);
+assert.equal(sitemapUrls.length,105);
+assert.equal(new Set(sitemapUrls).size,105);
+assert.ok(canonicals.every(url=>sitemapUrls.includes(url)));
+assert.ok(!sitemapUrls.some(url=>url.includes('?')));
+console.log('PASS 80 city entries + 5 common shorts, 16 bounded lists, 103 routes, SEO metadata and sitemap, embedded audio and bounded trailers, unique detail exits, local assets, honest media types');

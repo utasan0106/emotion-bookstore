@@ -22,6 +22,8 @@ function photo(city, eager=false) {
   return `<img src="/${m.url.replace('./','')}" alt="${esc(m.alt)}" width="${m.width}" height="${m.height}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
 }
 const external = (url, label, cls='') => `<a class="${cls}" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)} <span aria-hidden="true">↗</span></a>`;
+const plain = value => String(value).replace(/<br\s*\/?>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&[^;]+;/g,' ').replace(/\s+/g,' ').trim();
+const canonicalFor = file => `https://emotionbookstore.com/discover/${file === 'index.html' ? '' : file.replace(/index\.html$/, '')}`;
 function credits(cities) {
   return `<details class="credits"><summary>街の写真・出典</summary>${cities.map(c => {const m=media(c);return `<p>${cityNames[c]}の街の写真：${external(m.sourceUrl,m.author)} / ${external(m.licenseUrl,m.license)}。既存の縮小画像を使用し、表示範囲をトリミング。作品の表紙・場面写真ではありません。</p>`;}).join('')}</details>`;
 }
@@ -33,11 +35,26 @@ function shell(title, body, back, active='') {
 ${body.includes('data-video-id') ? '<script src="/video-embed.js" defer></script><script src="/discover/player.js" defer></script>' : ''}</body></html>\n`;
 }
 let written = 0;
+const generatedFiles = [];
+function enrichSeo(file, html) {
+  const pageTitle=plain((html.match(/<title>(.*?)<\/title>/s)||[])[1]||'みんなの感情書店');
+  const heading=plain((html.match(/<h1>(.*?)<\/h1>/s)||[])[1]||pageTitle).replace(/\s+の/g,'の');
+  const hook=plain((html.match(/class="(?:detail-hook|collection-lead|lead)"[^>]*>(.*?)<\/p>/s)||[])[1]||'');
+  const creator=plain((html.match(/class="detail-creator"[^>]*>(.*?)<\/p>/s)||[])[1]||'');
+  const description=plain([heading,creator,hook,'作品から街と人のつながりを辿る、みんなの感情書店。'].filter(Boolean).join('。')).replace(/。+/g,'。').slice(0,155);
+  const canonical=canonicalFor(file);
+  const schema=JSON.stringify({'@context':'https://schema.org','@type':'WebPage',name:heading,description,url:canonical,isPartOf:{'@type':'WebSite',name:'みんなの感情書店',url:'https://emotionbookstore.com/'}}).replace(/</g,'\\u003c');
+  return html
+    .replace(/<meta name="description" content="[^"]*">/,`<meta name="description" content="${esc(description)}">`)
+    .replace('</title>',`</title><link rel="canonical" href="${canonical}"><meta property="og:type" content="website"><meta property="og:site_name" content="みんなの感情書店"><meta property="og:title" content="${esc(pageTitle)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${canonical}"><meta name="twitter:card" content="summary"><script type="application/ld+json">${schema}</script>`);
+}
 function write(file, html) {
+  html=enrichSeo(file,html);
   const output=path.join(root,'discover',file);
   if(process.argv.includes('--check')) {
     if(!fs.existsSync(output)||fs.readFileSync(output,'utf8')!==html)throw new Error('Generated page differs: '+output);
   }else{fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,html);}
+  generatedFiles.push(file);
   written++;
 }
 const cities=Object.keys(cityNames);
@@ -52,7 +69,7 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
 for (const video of commonVideos) {
   const sourceLinks = video.sources.map(source => `<p>${external(source,new URL(source).hostname.replace('www.','')+' の掲載情報')}</p>`).join('');
   const player = `<section class="player v3-video" data-video-id="${video.videoId}" data-video-title="${esc(video.title)}" aria-label="映像プレイヤー"><div class="v3-video-frame"><button class="v3-video-load primary" type="button" hidden>このページでプレイヤーを開く ▶</button><noscript><p>下のYouTubeへのリンクから、この映像を観られます。</p></noscript></div><button class="player-stop" type="button" hidden>プレイヤーを閉じて停止</button><p class="player-status" role="status" aria-live="polite">YouTubeの公開映像です。下のリンクからも観られます。</p></section>`;
-  write(`short-films/${video.id}.html`, shell(video.title, `<article class="detail"><p class="eyebrow">全街共通 / 街へ出たくなる短編</p><h1>${esc(video.title)}</h1><p class="detail-creator">${esc(video.creator)}</p><p class="detail-hook">${esc(video.hook)}</p>${player}<div class="destination">${external(video.url,'YouTubeでこの映像を見る','primary official-exit')}<p>表示・再生できない場合は、公開元の同じ映像へ。新しいタブで開きます。</p></div><details class="background"><summary>このサイトで紹介する理由・出典</summary><p>${esc(video.note)}</p>${sourceLinks}<p>紹介先・出典確認：${checkedAt}。映像は公開元のプレイヤーで提供されます。</p></details><p class="city-exit"><a href="/discover/index.html">次は街から作品を探す →</a></p></article>`, '<a href="/discover/short-films/index.html">短編を選び直す ←</a>'));
+  write(`short-films/${video.id}.html`, shell(`${video.title}｜街へ出たくなる短編`, `<article class="detail"><p class="eyebrow">全街共通 / 街へ出たくなる短編</p><h1>${esc(video.title)}</h1><p class="detail-creator">${esc(video.creator)}</p><p class="detail-hook">${esc(video.hook)}</p>${player}<div class="destination">${external(video.url,'YouTubeでこの映像を見る','primary official-exit')}<p>表示・再生できない場合は、公開元の同じ映像へ。新しいタブで開きます。</p></div><details class="background"><summary>このサイトで紹介する理由・出典</summary><p>${esc(video.note)}</p>${sourceLinks}<p>紹介先・出典確認：${checkedAt}。映像は公開元のプレイヤーで提供されます。</p></details><p class="city-exit"><a href="/discover/index.html">次は街から作品を探す →</a></p></article>`, '<a href="/discover/short-films/index.html">短編を選び直す ←</a>'));
 }
 
 function youtubePlayer(videoId, title, mediaKind='video') {
@@ -77,7 +94,7 @@ for(const item of items) {
   const trailer=item.trailerVideoId?`<section class="trailer"><p class="eyebrow">公式・公開予告</p><h2>まず予告を観る</h2>${youtubePlayer(item.trailerVideoId,item.title+' 予告')}<p class="trailer-fallback">${external(item.trailerUrl,'YouTubeで同じ予告を見る')}</p><p class="player-status">予告であり、本編ではありません。表示・再生できない場合は公開元へ。</p></section>`:'';
   const sourceLinks=item.sources.filter(s=>s!==item.url&&s!==item.trailerUrl);
   const background=`<details class="background"><summary>この街との関係・出典</summary><p>${esc(item.relationNote)}</p>${sourceLinks.map(s=>`<p>${external(s,new URL(s).hostname.replace('www.','')+' の掲載情報')}</p>`).join('')}<p>紹介先・出典確認：${checkedAt}。${item.videoId?(kind==='audio'?'音楽・サウンド':'映像')+'は公開元のプレイヤーで提供されます。':'外部の視聴・読書条件は各提供元の案内で確認できます。'}</p></details>`;
-  write(`${city}/${item.id}.html`, shell(item.title, `<article class="detail"><p class="eyebrow">${cityNames[city]} / ${categories[kind].name} / ${esc(item.relation)}</p><h1>${esc(item.title)}</h1><p class="detail-creator">${esc(item.creator)}</p><p class="detail-hook">${esc(item.hook)}</p>${player}${trailer}<div class="destination">${action}<p>${item.url.startsWith('/')?'このサイト内で、本人操作による映像・音の体験へ。':item.videoId?'表示・再生できない場合は、公開元の同じ'+(kind==='audio'?'音':'映像')+'へ。':'外部の作品・特集ページへ。'}${item.url.startsWith('/')?'':'新しいタブで開きます。'}</p></div>${background}<p class="city-exit"><a href="/shelf.html?shelf=${city}">${cityNames[city]}の場所・催しの案内へ →</a></p></article>`, `<a href="/discover/${city}/${kind}.html">${categories[kind].name}を選び直す ←</a>`, city));
+  write(`${city}/${item.id}.html`, shell(`${item.title}｜${cityNames[city]}の${categories[kind].name}`, `<article class="detail"><p class="eyebrow">${cityNames[city]} / ${categories[kind].name} / ${esc(item.relation)}</p><h1>${esc(item.title)}</h1><p class="detail-creator">${esc(item.creator)}</p><p class="detail-hook">${esc(item.hook)}</p>${player}${trailer}<div class="destination">${action}<p>${item.url.startsWith('/')?'このサイト内で、本人操作による映像・音の体験へ。':item.videoId?'表示・再生できない場合は、公開元の同じ'+(kind==='audio'?'音':'映像')+'へ。':'外部の作品・特集ページへ。'}${item.url.startsWith('/')?'':'新しいタブで開きます。'}</p></div>${background}<p class="city-exit"><a href="/shelf.html?shelf=${city}">${cityNames[city]}の場所・催しの案内へ →</a></p></article>`, `<a href="/discover/${city}/${kind}.html">${categories[kind].name}を選び直す ←</a>`, city));
 }
 // Entries are replaced during editorial maintenance. Remove only obsolete generated
 // detail pages inside known city directories; category pages and hand-authored assets
@@ -103,4 +120,10 @@ for (const file of fs.readdirSync(commonDir)) {
   if (process.argv.includes('--check')) throw new Error('Obsolete generated page remains: ' + obsolete);
   fs.unlinkSync(obsolete);
 }
+const sitemapPaths=['','works.html',...generatedFiles.map(file=>`discover/${file === 'index.html' ? '' : file.replace(/index\.html$/, '')}`)];
+const sitemap=`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapPaths.map((file,index)=>`  <url>\n    <loc>https://emotionbookstore.com/${file}</loc>\n    <lastmod>${checkedAt}</lastmod>\n    <changefreq>${index<2?'weekly':'monthly'}</changefreq>\n    <priority>${index===0?'1.0':index<3?'0.9':file.endsWith('/')?'0.8':'0.6'}</priority>\n  </url>`).join('\n')}\n</urlset>\n`;
+const sitemapFile=path.join(root,'sitemap.xml');
+if(process.argv.includes('--check')) {
+  if(!fs.existsSync(sitemapFile)||fs.readFileSync(sitemapFile,'utf8')!==sitemap)throw new Error('Generated sitemap differs: '+sitemapFile);
+} else fs.writeFileSync(sitemapFile,sitemap);
 console.log(`PASS ${written} discovery pages ${process.argv.includes('--check')?'match source':'generated'}; ${items.length} city entries + ${commonVideos.length} common shorts`);
