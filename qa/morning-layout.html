@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ja"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1"><title>朝の修正・レスポンシブ検証</title>
+<style>body{margin:0;background:#e5e5e5;color:#262626;font:14px/1.6 system-ui,sans-serif}form{display:flex;flex-wrap:wrap;gap:16px;padding:12px}select,button{font:inherit;padding:8px;min-height:44px}iframe{display:block;margin:auto;border:0;height:1500px;max-width:100%;background:#fff}pre{white-space:pre-wrap;padding:24px;background:#fff}</style>
+<form><label>表示幅 <select id="width"><option>320</option><option selected>390</option><option>768</option><option>1280</option></select></label><label>文字サイズ <select id="zoom"><option value="100">100%</option><option value="200">200%</option></select></label><label>画面 <select id="page"><option value="/">トップ</option><option value="/discover/">街の一覧</option><option value="/discover/kichijoji/">吉祥寺</option><option value="/discover/kichijoji/audio.html">吉祥寺の音楽</option><option value="/discover/kichijoji/video.html">吉祥寺の映像</option><option value="/discover/jinbocho/book.html">神保町の本</option><option value="/outings/">催し</option><option value="/saved.html">保存</option><option value="/discover/kichijoji/parks.html">PARKS詳細</option><option value="/thread.html?thread=koenji-dance-history">読み物</option><option value="/work-music.html">音楽の読み物</option><option value="/shelf.html?shelf=koenji">高円寺</option></select></label><button id="batch" type="button">全画面を計測</button><span id="status">開発用・本番配信対象外</span></form>
+<iframe id="view" title="モバイル・文字拡大の確認" src="/" width="390"></iframe><pre id="report"></pre>
+<script>
+const frame=document.getElementById('view'),widthControl=document.getElementById('width'),zoomControl=document.getElementById('zoom'),pageControl=document.getElementById('page'),report=document.getElementById('report'),statusLabel=document.getElementById('status');
+function textScale(){if(frame.contentDocument?.documentElement)frame.contentDocument.documentElement.style.fontSize=zoomControl.value+'%';}
+widthControl.onchange=()=>{frame.width=widthControl.value;};zoomControl.onchange=textScale;pageControl.onchange=()=>{frame.src=pageControl.value;};frame.addEventListener('load',textScale);
+const tick=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+async function visit(page){frame.src=page;const end=Date.now()+12000;while(Date.now()<end){await new Promise(r=>setTimeout(r,100));const d=frame.contentDocument;if(d?.body&&d.readyState!=='loading'&&frame.contentWindow.location.pathname+frame.contentWindow.location.search===page)return d;}throw Error('画面読み込みタイムアウト：'+page);}
+document.getElementById('batch').onclick=async()=>{
+ const results=[];statusLabel.textContent='計測中';
+ try{for(const page of [...pageControl.options].map(o=>o.value)){
+  const d=await visit(page),w=frame.contentWindow;
+  for(const [width,zoom] of [[320,100],[390,100],[768,100],[1280,100],[320,200],[390,200]]){
+   frame.width=width;zoomControl.value=String(zoom);textScale();await tick();
+   const h=d.querySelector('h1'),r=h?.getBoundingClientRect();
+   const client=d.documentElement.clientWidth,scroll=d.documentElement.scrollWidth;
+   const overflow=scroll>client?[...d.body.querySelectorAll('*')].filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&(r.right>client+1||r.left< -1)}).map(e=>({tag:e.tagName,cls:e.className,text:e.textContent.slice(0,60),left:e.getBoundingClientRect().left,right:e.getBoundingClientRect().right})).slice(0,12):[];
+   results.push({page,width,zoom,client,scroll,overflow,h1:h?{text:h.textContent,font:w.getComputedStyle(h).fontFamily,size:w.getComputedStyle(h).fontSize,height:Math.round(r.height)}:null});
+   statusLabel.textContent='計測中 '+results.length+' / 72';
+  }
+ }report.textContent=JSON.stringify(results,null,2);statusLabel.textContent=results.every(r=>r.scroll<=r.client)?'72条件：横はみ出しなし':'はみ出しあり';}
+ catch(e){statusLabel.textContent=e.message;report.textContent=JSON.stringify(results,null,2);}
+};
+</script></html>

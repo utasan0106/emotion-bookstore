@@ -11,16 +11,22 @@ for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']) {
  const landing=read(`discover/${city}/index.html`);
  assert.match(landing,/class="work-card /,'Every home city link opens populated static content');
 }
-assert.match(css,/body\.site-polished:is\(\.shelf-page,\.works-page,\.thread-page,\.suggest-page\)\{--ink:#25282e\}/,'Legacy light panels must use dark ink');
-assert.match(css,/--hall-raised:#f1f3f5/,'Reading inset surfaces must not inherit the night theme');
+assert.match(css,/body\.site-polished:is\(\.shelf-page,\.works-page,\.thread-page,\.suggest-page\)\{--ink:#262626\}/,'Legacy light panels must use dark ink');
+assert.match(css,/--hall-raised:#f5f5f5/,'Reading inset surfaces must not inherit the night theme');
 assert.match(css,/--bone:#fff/);
 assert.match(homeCss,/\.home-discovery \.site-menu\{background:#fff;color:var\(--hd-ink\)/);
 const luminance=hex=>hex.slice(1).match(/../g).map(x=>parseInt(x,16)/255).map(x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4).reduce((v,x,i)=>v+x*[.2126,.7152,.0722][i],0);
 const ratios=[];
-for(const [fg,bg] of [['#25282e','#ffffff'],['#58616d','#ffffff'],['#58616d','#f1f3f5'],['#ffffff','#3158b8']]) {
+for(const [fg,bg] of [['#262626','#ffffff'],['#595959','#ffffff'],['#595959','#f5f5f5'],['#ffffff','#3158b8'],['#ffffff','#262626'],['#343430','#faf9f6'],['#595959','#faf9f6']]) {
  const a=luminance(fg),b=luminance(bg),ratio=(Math.max(a,b)+.05)/(Math.min(a,b)+.05);
  assert.ok(ratio>=4.5,`${fg} on ${bg}: ${ratio}`);ratios.push(ratio.toFixed(2));
 }
+assert.match(html,/<h1 id="hd-title" class="hd-purpose">本・音楽・映像・街の催しに出会う文化案内<\/h1>/,'The concise site purpose is the accessible H1');
+assert.doesNotMatch(html,/hd-intro|なんか、|今日の楽しみ/,'Latest direction: contents first; no promotional copy block before the works');
+assert.ok(html.indexOf('class="hd-categories"')<html.indexOf('class="hd-feature"'),'Category navigation leads immediately to the first work');
+assert.doesNotMatch(homeCss,/hd-intro|#faf9f6/,'Do not retain an unused promotional panel theme');
+assert.doesNotMatch(css+homeCss,/#f0f3fa|#f1f3f5|#dfe3eb/,'Retired blue-grey inset palette must not return');
+for (const href of ['/work-music.html','/work-video.html']) assert.ok(html.includes(`href="${href}">`),'Internal details preserve the current tab and native Back');
 const location={search:'',hash:'#reading'};
 let scrolled=false,focused=false,popstate;
 const title={textContent:'',focus(){focused=true;}},section={scrollIntoView(){scrolled=true;}};

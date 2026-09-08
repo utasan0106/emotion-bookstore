@@ -15,7 +15,9 @@ assert.equal(new Set([...items.filter(i=>i.videoId),...commonVideos].map(i=>i.vi
 const playbackIds=[...items.filter(i=>i.videoId).map(i=>i.videoId),...items.filter(i=>i.trailerVideoId).map(i=>i.trailerVideoId),...commonVideos.map(i=>i.videoId)];
 assert.equal(new Set(playbackIds).size,playbackIds.length,'Embedded media IDs must not be reused across entries');
 const cities=['koenji','shimokitazawa','kichijoji','jinbocho'];
+const directory=fs.readFileSync(path.join(root,'discover/index.html'),'utf8');
 for(const city of cities) {
+  assert.ok(directory.includes(`class="city-card" href="/discover/${city}/"`),'Directory city entries must open all available media, not the audio list');
   const landing=fs.readFileSync(path.join(root,`discover/${city}/index.html`),'utf8');
   const kinds=['audio','video','book','film'].filter(kind=>items.some(i=>i.city===city&&i.kind===kind));
   assert.equal((landing.match(/class="work-card /g)||[]).length,kinds.length,'City entry must contain works, not just navigation');

@@ -26,6 +26,9 @@ body[data-city-weather] .hc-hero{background-color:var(--weather-canvas)}
 .city-weather-info p{margin:6px 0;color:#485647;font:14px/1.8 system-ui,sans-serif}
 .city-weather-info a{color:inherit;text-decoration:underline;text-underline-offset:4px}
 .city-weather-wrap [hidden]{display:none!important}
+.city-weather .city-weather-scope{margin:8px 0 0;padding-top:8px;border-top:1px solid #dedede;color:#595959;font-family:inherit;font-size:.8125rem;font-weight:400;line-height:1.8;overflow-wrap:anywhere}
+body:is(.home-discovery,.site-polished) .city-weather{font-family:inherit;background:#f5f5f5;color:#262626;border-color:#dedede}
+body:is(.home-discovery,.site-polished) .city-weather :is(.city-weather-place,.city-weather-reading,summary,.city-weather-info p){color:#595959;font-family:inherit}
 .city-weather :is(select,summary,a,input,button):focus-visible,.city-weather-restore:focus-visible{outline:3px solid #8a571e;outline-offset:4px}
 @media(max-width:600px){.city-weather-row{gap:4px 8px}.city-weather .city-weather-reading{flex-basis:100%;order:2}.city-weather-close{order:1}.city-weather-details,.city-weather-details[open]{order:3;flex-basis:100%;margin-left:0}.hc-hero>.city-weather-wrap{width:calc(100% - 32px);margin-top:24px}.city-weather{padding:10px 12px}.city-weather-place{gap:6px}.city-weather select{width:112px}}
 #page-top{display:block;width:0;height:0;overflow:hidden}

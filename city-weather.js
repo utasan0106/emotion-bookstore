@@ -2,11 +2,11 @@
 (function () {
   if (document.documentElement.lang !== 'ja' || document.querySelector('[data-city-weather]')) return;
   const cities = {
-    tokyo: { label: '東京', station: '44132' },
-    koenji: { label: '高円寺', station: '44071' },
-    kichijoji: { label: '吉祥寺', station: '44071' },
-    shimokitazawa: { label: '下北沢', station: '44132' },
-    jinbocho: { label: '神保町', station: '44132' }
+    tokyo: { label: '東京', station: '44132', stationLabel: '東京' },
+    koenji: { label: '高円寺', station: '44071', stationLabel: '練馬' },
+    kichijoji: { label: '吉祥寺', station: '44071', stationLabel: '練馬' },
+    shimokitazawa: { label: '下北沢', station: '44132', stationLabel: '東京' },
+    jinbocho: { label: '神保町', station: '44132', stationLabel: '東京' }
   };
   const path = location.pathname;
   const params = new URLSearchParams(location.search);
@@ -15,7 +15,7 @@
   if (!eligible) return;
   const main = document.querySelector('main');
   if (!main) return;
-  const initial = cityFromPath || params.get('shelf') || params.get('city') || 'tokyo';
+  const initial = [cityFromPath, params.get('shelf'), params.get('city')].find(key => cities[key]) || 'tokyo';
   let city = cities[initial] ? initial : 'tokyo';
   let data = null;
   let inFlight = false;
@@ -68,6 +68,10 @@
   const reading = panel.querySelector('.city-weather-reading');
   const forecastLine = panel.querySelector('[data-weather-forecast]');
   const observationLine = panel.querySelector('[data-weather-observation]');
+  const scopeLine = document.createElement('p');
+  scopeLine.className = 'city-weather-scope';
+  scopeLine.dataset.weatherScope = '';
+  panel.append(scopeLine);
   const dateKey = value => {
     const n = new Date(value).getTime();
     return Number.isFinite(n) ? new Date(n + 9 * 3600000).toISOString().slice(0, 10) : '';
@@ -75,6 +79,9 @@
   const time = value => new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(value));
   function render() {
     if (dismissed) return;
+    const place = cities[city];
+    panel.setAttribute('aria-label', place.label + '周辺の天気・観測地点');
+    scopeLine.textContent = place.label + '周辺の目安です。予報は東京地方（4街共通）、気温は' + place.stationLabel + '観測所。' + (city === 'tokyo' ? '' : place.label + 'のピンポイント予報・実測値ではありません。');
     const now = Date.now();
     const forecast = data?.forecast?.date === dateKey(now) && now - Date.parse(data.forecast.issuedAt) <= 36 * 3600000 && now - Date.parse(data.forecast.issuedAt) >= -300000 ? data.forecast : null;
     const obs = data?.stations?.[cities[city].station];
@@ -87,9 +94,9 @@
     const summary = [];
     if (forecast) summary.push('今日の予報 · ' + forecast.description.split('所により')[0].trim());
     if (validObs) summary.push(obs.temperature.toFixed(1) + '℃（' + obs.name + '・' + time(obs.observedAt) + '）');
-    reading.textContent = summary.length ? summary.join('　') : '天気・気温は現在取得できません';
+    reading.textContent = place.label + '周辺｜' + (summary.length ? summary.join('　') : inFlight ? '天気を読み込んでいます' : '天気・気温は現在取得できません');
     forecastLine.textContent = forecast ? '東京地方：' + forecast.description + '（' + time(forecast.issuedAt) + '発表）' : '今日の予報は取得できません。';
-    observationLine.textContent = validObs ? cities[city].label + 'の近くの観測地点：' + obs.name + '。' + time(obs.observedAt) + '、' + obs.temperature.toFixed(1) + '℃。' : '新しい観測気温は取得できません。';
+    observationLine.textContent = validObs ? place.label + 'の参考観測地点：' + obs.name + '（地点番号 ' + place.station + '）。' + time(obs.observedAt) + '、' + obs.temperature.toFixed(1) + '℃。' : place.stationLabel + '観測所の新しい気温は取得できません。';
     if (theme) document.body.dataset.cityWeather = theme;
     else delete document.body.dataset.cityWeather;
   }
@@ -97,6 +104,7 @@
     if (lastAttempt) render();
     if (dismissed || inFlight || document.hidden || Date.now() - lastAttempt < 60000) return;
     inFlight = true; lastAttempt = Date.now();
+    render();
     try {
       // Keep the existing same-origin Preview session; nothing is forwarded to JMA.
       const response = await fetch('/api/tokyo-weather', { credentials: 'same-origin', referrerPolicy: 'no-referrer', signal: AbortSignal.timeout(42000) });
@@ -105,7 +113,7 @@
     } catch (_) { data = null; }
     finally { inFlight = false; render(); }
   }
-  select.addEventListener('change', () => { city = select.value; render(); });
+  select.addEventListener('change', () => { if (cities[select.value]) city = select.value; render(); });
   document.addEventListener('visibilitychange', () => {
     document.body.dataset.weatherVisibility = document.hidden ? 'hidden' : 'visible';
     if (!document.hidden) refresh();

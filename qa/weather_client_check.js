@@ -13,7 +13,7 @@ async function mount(path='/',options={}){
  let fail=Boolean(options.fail);
  const payload={forecast:{date:'2026-09-08',issuedAt:'2026-09-08T11:00:00+09:00',description:'くもり 後 雨 所により 雷を伴う',theme:'cloudy'},stations:{'44132':{name:'東京',temperature:26.7,observedAt:'2026-09-08T16:40:00+09:00'},'44071':{name:'練馬',temperature:26.2,observedAt:'2026-09-08T16:40:00+09:00'}}};
  const doc={documentElement:{lang:'ja'},body,hidden:false,querySelector:k=>k==='main'?main:options.scene?.[k]||null,createElement:k=>{const e=k==='section'?panel:element();if(k==='button')buttons.push(e);return e;},addEventListener:(n,f)=>events[n]=f};
- const ctx={document:doc,location:{pathname:path,search:''},URLSearchParams,Intl,AbortSignal,Date:class extends Date{static now(){return clock;}},setInterval:f=>intervals.push(f),fetch:async(url,opts)=>{calls.push({url,opts});await responseReady;return {ok:!fail,json:async()=>payload};}};
+ const ctx={document:doc,location:{pathname:path,search:options.search||''},URLSearchParams,Intl,AbortSignal,Date:class extends Date{static now(){return clock;}},setInterval:f=>intervals.push(f),fetch:async(url,opts)=>{calls.push({url,opts});await responseReady;return {ok:!fail,json:async()=>payload};}};
  vm.runInNewContext(source,ctx);
  await new Promise(setImmediate);
  return {releaseResponse,panel,motion:buttons[1],restore:buttons[0],nodes,body,doc,main,events,intervals,calls,payload,advance:n=>clock+=n,setFail:v=>fail=v,flush:()=>new Promise(setImmediate)};
@@ -27,6 +27,21 @@ async function mount(path='/',options={}){
  h.nodes.select.value='jinbocho';h.nodes.select.events.change();
  assert.match(h.nodes['.city-weather-reading'].textContent,/26.7℃（東京/);
  assert.equal(h.calls.length,1,'Changing street reuses the same regional payload');
+ for(const [key,label,station,temp] of [['koenji','高円寺','練馬','26.2'],['kichijoji','吉祥寺','練馬','26.2'],['shimokitazawa','下北沢','東京','26.7'],['jinbocho','神保町','東京','26.7']]) {
+   h.nodes.select.value=key;h.nodes.select.events.change();
+   assert.ok(h.nodes['.city-weather-reading'].textContent.startsWith(label+'周辺｜'));
+   assert.ok(h.nodes['.city-weather-reading'].textContent.includes(temp+'℃（'+station));
+   const scope=h.panel.children.find(e=>e.className==='city-weather-scope').textContent;
+   assert.ok(scope.includes('東京地方（4街共通）')&&scope.includes('気温は'+station+'観測所'));
+   assert.ok(scope.includes(label+'のピンポイント予報・実測値ではありません。'));
+   const direct=await mount('/discover/'+key+'/');assert.equal(direct.nodes.select.value,key);
+ }
+ const shelf=await mount('/shelf.html',{search:'?shelf=kichijoji'});assert.equal(shelf.nodes.select.value,'kichijoji');
+ const outings=await mount('/outings/',{search:'?city=shimokitazawa'});assert.equal(outings.nodes.select.value,'shimokitazawa');
+ const partial=await mount('/discover/kichijoji/');delete partial.payload.stations['44071'];partial.nodes.select.events.change();
+ assert.doesNotMatch(partial.nodes['.city-weather-reading'].textContent,/26.7/,'Missing Nerima readings must not silently use Tokyo');
+ assert.match(partial.nodes['[data-weather-observation]'].textContent,/練馬観測所の新しい気温は取得できません/);
+ assert.equal(h.calls.length,1,'All city choices use the fixed same-origin payload; no geolocation');
  assert.doesNotMatch(source,/type="checkbox"|city-weather-motion|動きを止める/,'Weather is informational; no ambiguous animation controls');
  h.advance(23*60000);h.doc.hidden=true;h.intervals[0]();await h.flush();
  assert.equal(h.calls.length,1,'No network while hidden');
@@ -46,7 +61,7 @@ async function mount(path='/',options={}){
  assert.equal(closable.panel.hidden,false);assert.equal(closable.restore.hidden,true);
  assert.equal(closable.calls.length,2);assert.equal(closable.nodes.select.focused,true);
  assert.equal(closable.body.dataset.cityWeather,'cloudy');
- const pending=await mount('/',{deferred:true});pending.nodes['.city-weather-close'].events.click();pending.releaseResponse();await pending.flush();
+ const pending=await mount('/',{deferred:true});pending.nodes.select.value='kichijoji';pending.nodes.select.events.change();assert.equal(pending.nodes['.city-weather-reading'].textContent,'吉祥寺周辺｜天気を読み込んでいます');pending.nodes['.city-weather-close'].events.click();pending.releaseResponse();await pending.flush();
  assert.equal(pending.panel.hidden,true);assert.equal(pending.body.dataset.cityWeather,undefined,'A delayed response cannot reopen dismissed weather or restore its colour');
  const midnight=await mount();midnight.advance(8*3600000);midnight.intervals[0]();await midnight.flush();
  assert.equal(midnight.body.dataset.cityWeather,undefined,'Cached yesterday data cannot keep the theme');

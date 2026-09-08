@@ -357,9 +357,9 @@ if (/hc-hero-trace|hc-trace-year/.test(read('index.html'))) failures.push('index
 {
   const src = read('index.html');
   const h1 = src.indexOf('<h1 id="hd-title"');
-  const sub = src.indexOf('読む、聴く、観る、出かける。');
+  const feature = src.indexOf('class="hd-feature"');
   const firstCity = src.indexOf('class="hd-city hc-city shelf-entry"');
-  if (h1 < 0 || sub < 0 || firstCity < 0 || h1 > firstCity || sub > firstCity) failures.push('index.html: hero copy must precede the first city entry');
+  if (h1 < 0 || feature < 0 || firstCity < 0 || h1 > feature || feature > firstCity) failures.push('index.html: concise site purpose, first work, then city entries');
   if (!src.includes('class="hd-feature') || /hc-culture-art|home-encounter|data-city-scene-image|30秒|感情書店の小文/.test(src) || !src.includes('youtube-nocookie.com/embed/pm7RBghFt0I?autoplay=0')) failures.push('index.html: real PARKS trailer required; no invented reading feature');
 }
 for (const page of ['shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html']) {
@@ -701,7 +701,8 @@ if ((read('suggest.html').match(/<h1\b/g) || []).length !== 1) failures.push('su
 const foyer = read('index.html');
 if (!foyer.includes('みんなの感情書店')) failures.push('foyer eyebrow missing');
 const visibleCityH1 = '<h1 id="hc-hero-title" class="hc-hero-title"><span class="hc-hero-line">街が、</span><span class="hc-hero-line">踊りだす。</span></h1>';
-if (!/<h1 id="hd-title">[^<]+<\/h1>/.test(foyer) || !foyer.includes('本・音楽・映像・街の催しに出会う文化案内')) {
+const homeHeading=(foyer.match(/<h1 id="hd-title" class="hd-purpose">([\s\S]*?)<\/h1>/)||[])[1]?.replace(/<[^>]+>/g,'');
+if (homeHeading !== '本・音楽・映像・街の催しに出会う文化案内') {
   failures.push('foyer visible H1 must explain the work-to-city purpose (R8 founder request)');
 }
 const shelfHtml = read('shelf.html');
