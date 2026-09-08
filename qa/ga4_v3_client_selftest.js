@@ -4,6 +4,7 @@ const fs=require('fs'),cp=require('child_process'),path=require('path');
 const ROOT=path.resolve(__dirname,'..');
 const allowed=new Set(['index.html','shelf.html','suggest.html','data.html','credits.html','explore.html','vercel.json','analytics-v3.js','video-embed.js','atlas/index.html','weekly-video.js','weekly-video.css','growth-improvements.js','qa/growth_improvements.js','qa/ga4_v3_client_selftest.js','qa/measurement_v04_selftest.js','qa/release_check.js','qa/browser_qa.js','qa/home_canonical_check.js','qa/thread_check.js','qa/works_check.js','qa/atlas_check.js','qa/atlas_browser_qa.js']);
 /* Measurement v0.4 (2026-09-06): the eight Beta events + nine bounded events. Params are content_type / content_id / link_domain only. */
+for(const file of ['home-discovery.css','home-discovery.js','outings/events-data.js','outings/index.html','outings/week.js','outings/outings.css','tools/build-weekly-outings.js','tools/weekly-outings-source.js','qa/home_discovery_check.js','qa/home-integration-layout.html','qa/HOME_INTEGRATION.md']) allowed.add(file);
 const approvedEvents=new Set(['v3_home_view','v3_shelf_open','v3_shelf_view','v3_detail_open','v3_official_action','v3_suggest_view','v3_suggest_copy','v3_suggest_form_open','v3_entry_open','v3_works_section_view','v3_thread_start','v3_thread_stage','v3_thread_complete','v3_evidence_open','v3_external_open','v3_continue_open','v3_media_preview_open']);
 function fail(m){console.error('V3_RELEASE_GROWTH_SELFTEST_FAIL: '+m);process.exit(1)}
 function assert(c,m){if(!c)fail(m)} function read(r){return fs.readFileSync(path.join(ROOT,r),'utf8')} function git(a){return cp.execFileSync('git',['-C',ROOT].concat(a),{encoding:'utf8'}).trimEnd()}
@@ -31,16 +32,20 @@ const ve=read('video-embed.js'); assert(ve.includes('window.v3Analytics.mediaPre
 assert(read('atlas/index.html').includes('<script src="../analytics-v3.js"></script>')&&!read('atlas/app.js').includes('v3Analytics')&&!read('atlas/app.js').includes('gtag'),'atlas: shared loader only; app.js carries no measurement code');
 const tokens=new Set(analytics.match(/v3_[a-z_]+/g)||[]); for(const t of tokens)assert(approvedEvents.has(t)||t==='v3_ga_optout','unapproved event '+t); for(const e of approvedEvents)assert(tokens.has(e),'missing event '+e);
 for(const rel of ['index.html','shelf.html','suggest.html','data.html','credits.html','explore.html']){const h=read(rel);assert(!h.includes('このページでは保存・計測・個人ごとの推薦を行いません'),rel+': old copy');assert(h.includes('<script src="./analytics-v3.js"></script>'),rel+': analytics loader');assert(/<a\b[^>]*href="\.\/data\.html"[^>]*>データの扱い<\/a>/.test(h),rel+': data link')}
-/* Editorial HOME opens one official video on click. No external media on paint.
-   Event definitions and bounded payloads remain unchanged. */
-const index=read('index.html'); for(const t of ['id="weeklyVideoPlay"','data-video-id=','./weekly-video.css','./weekly-video.js','i.ytimg.com','<iframe']) assert(!index.includes(t),'retired weekly video token on HOME: '+t);
+/* Discovery HOME uses an approved book cover and official Bandcamp artwork.
+   YouTube stays a click-through; event definitions and bounded payloads are unchanged. */
+const index=read('index.html'); for(const t of ['id="weeklyVideoPlay"','data-video-id=','./weekly-video.css','./weekly-video.js','i.ytimg.com']) assert(!index.includes(t),'retired weekly video token on HOME: '+t);
 const indexBody=index.slice(index.indexOf('<body'));
-/* FOUNDER PREVIEW FIX UNIT D: HOME body の外部 href は「実際の場所へ」の 3 つの公式 destination（a.official-action、click まで通信なし）だけ。
-   それ以外の外部 src / href は引き続き 0。GA4 は既存の v3_official_action を再利用し、event / param は増やさない。 */
-// Current HOME routes to the curated catalogue and event list on this origin.
-const homeExternal=indexBody.match(/(?:src|href)="(?:https?:)?\/\/[^"]+"/g)||[];
-assert(homeExternal.length===1&&homeExternal[0]==='href="https://www.youtube.com/watch?v=dt33RGSRuo0"','HOME permits only its explicitly selected official feature link');
-assert(indexBody.includes('href="./outings/"')&&indexBody.includes('href="./discover/index.html"'),'HOME must expose working event and work entries');
+const approvedHomeMedia=new Set([
+ 'https://www.hanmoto.com/bd/isbn/9784911191026',
+ 'https://img.hanmoto.com/bd/img/9784911191026.jpg?lastupdated=2025-04-23T10%3A22%3A06%2B09%3A00',
+ 'https://bandcamp.com/EmbeddedPlayer/album=1846332570/size=large/bgcol=ffffff/linkcol=0687f5/minimal=true/transparent=true/',
+ 'https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204',
+ 'https://www.youtube.com/watch?v=dt33RGSRuo0'
+]);
+for(const [,url] of indexBody.matchAll(/(?:src|href)="((?:https?:)?\/\/[^"]+)"/g)) assert(approvedHomeMedia.has(url),'Unreviewed external home source: '+url);
+assert(indexBody.includes('href="/outings/"')&&indexBody.includes('href="/discover/"'),'HOME must expose working event and work entries');
+for(const [,src] of index.matchAll(/<iframe[^>]*src="([^"]+)"/g)) assert(src.startsWith('https://bandcamp.com/EmbeddedPlayer/'),'Only the approved official artwork player may load on HOME');
 assert(index.includes('id="hc-works"')&&index.includes('id="hc-thread"'),'HOME section ids');
 for(const rel of ['index.html','shelf.html','suggest.html','data.html','credits.html','explore.html']){const h=read(rel);assert(!h.includes('#weekly-detour')&&!h.includes('#by-kind'),rel+': retired HOME anchor');assert(h.includes('href="./credits.html"'),rel+': credits link')}
 if(fs.existsSync(path.join(ROOT,'weekly-video.js'))){const video=read('weekly-video.js'); assert(video.includes('https://www.youtube-nocookie.com/embed/'),'nocookie'); assert(video.includes("iframe.referrerPolicy = 'strict-origin-when-cross-origin'"),'referrer'); assert(video.includes("button.addEventListener('click'"),'click gate'); assert(!video.includes('youtube.com/iframe_api'),'YT API'); assert(!video.includes('localStorage')&&!video.includes('geolocation'),'video storage/location');}

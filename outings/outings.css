@@ -32,3 +32,8 @@
 /* Prefer the title's spaces over splitting Japanese phrases to balance a line. */
 body main .event-detail h1{word-break:keep-all;overflow-wrap:anywhere;text-wrap:initial}
 @media(max-width:600px){.events-grid{grid-template-columns:1fr;gap:24px}.event-card h2{font-size:24px}.event-card-body{padding:18px 20px 20px}.event-card .event-detail-link{padding-inline:20px}.event-detail h1{font-size:30px}.event-detail .event-visual{margin:24px 0}.event-artwork iframe{height:680px}.event-detail>.primary{display:flex;justify-content:center;box-sizing:border-box;width:100%;line-height:1.6;padding:14px 16px}}
+
+/* Four independent filters: keep a balanced row on wide screens and two columns on phones. */
+#event-filters{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:800px){#event-filters{grid-template-columns:repeat(2,minmax(0,1fr))}#event-filters label:first-child{grid-column:auto}}
+@media(max-width:359px){#event-filters{grid-template-columns:1fr}}
