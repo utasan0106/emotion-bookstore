@@ -44,3 +44,18 @@ Added the exact YouTube embeds present in two official film sites to both catalo
 - ロッコク・キッチン: https://rokkokukitchen.com/ → HrRTahmwIYI
 
 Both iframe URLs were read from official page HTML on 2026-09-08. Preserve explicit trailer labeling, no autoplay, and direct external links. This verifies provenance, not actual playback: YouTube fetches were throttled, so playback remains unverified. Film media gaps decrease from 11 to 9; 19 book-cover gaps remain. 149-page integration check passes after regeneration. Public site unchanged.
+
+
+## No-correspondence publication policy — 2026-09-08
+
+Latest user instruction: exclude items requiring individual permission, and operate without external correspondence. Supersedes earlier promise to wait for all 80 work media. No messages or permission requests were sent.
+
+Published city inventory now 55 works (40 audio/video, 13 films, 2 books) plus 3 common shorts. 18 books without applicable confirmed cover terms and 7 films without verified official media are excluded. Research source is retained, but excluded detail HTML and sitemap entries are removed. Explicit nonpermanent redirects route old URLs to the current collection or works directory. Empty city categories are omitted from tabs; old category URLs retain a way to current works.
+
+Added real cover for 神保町の怪人 under Tokyo Sogensha FAQ's express book-introduction/review permission (personal blogs/SNS etc.), with title, creator, imprint, illustrator and designer adjacent. This is editorial introduction, not an advertising license. Work-book now introduces this book instead of the uncleared Morisaki book. Morisaki film remains a separate work with its verified trailer.
+
+Added Rocky Horror trailer Q3J9ewosl1A (20世紀スタジオ 公式チャンネル) and Ugetsu promotional footage -Jz4grZPstA (KADOKAWA映画), identities confirmed by YouTube oEmbed. Ugetsu is labelled 特別映像, not trailer or full film.
+
+Desktop home at 1440: no horizontal overflow or duplicate IDs; white canvas, gothic heading 32px. Actual browser screenshot reviewed. Official Happinet player loaded matching title/channel/duration and responded to Play, but elapsed-time advancement / actual playback could not be conclusively verified in this environment. Do not call all videos playback-tested.
+
+124-page integration check passes. Public deployment has not occurred. No subagents used.

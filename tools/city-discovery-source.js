@@ -136,6 +136,8 @@ const trailerIds = {
   'unnameable-dance': 'ELXE7PGOBT8',
   // Embedded by rokkokukitchen.com, checked 2026-09-08.
   'rokkoku-kitchen': 'HrRTahmwIYI',
+  'rocky-horror': 'Q3J9ewosl1A',
+  ugetsu: '-Jz4grZPstA',
   'ramen-heads': '_Em5H7KlBSs',
   shogakko: 'FDu7cbNuaXQ',
   machinouede: '9lvk-4mVjC0',
@@ -149,6 +151,7 @@ const trailerIds = {
 for (const item of items.filter(item => item.kind === 'film' && trailerIds[item.id])) {
   item.trailerVideoId = trailerIds[item.id];
   item.trailerUrl = 'https://www.youtube.com/watch?v=' + item.trailerVideoId;
+  if (item.id === 'ugetsu') item.trailerLabel = '特別映像（本編ではありません）';
   item.sources = [...new Set([...item.sources, item.trailerUrl])];
 }
 
@@ -156,4 +159,9 @@ const blockedVideoIds = ['tUe6YedzjlM', 'AuxXufx5kKQ']; // User playback evidenc
 for (const item of [...items, ...commonVideos]) {
   if (blockedVideoIds.includes(item.videoId) || blockedVideoIds.includes(item.trailerVideoId)) throw new Error('Private video must not be published: ' + item.id);
 }
-module.exports = { items, commonVideos, blockedVideoIds, checkedAt: '2026-09-08' };
+// Publication rule: no individual permission requests or external correspondence.
+// Keep research candidates in source, but publish only works with usable real media.
+const covers = require('./work-cover-source.json');
+const canPublish = item => Boolean(item.videoId || item.trailerVideoId || covers[item.city+'/'+item.id]?.status === 'usable');
+const excludedItems = items.filter(item => !canPublish(item));
+module.exports = { items: items.filter(canPublish), excludedItems, commonVideos, blockedVideoIds, checkedAt: '2026-09-08' };

@@ -13,7 +13,7 @@ function cover(key,title){
 }
 function forItem(item){
  if(item.videoId) return youtube(item.videoId,item.title,item.kind==='audio'?'公開元の演奏・音源':'公開元の映像');
- if(item.trailerVideoId) return youtube(item.trailerVideoId,item.title,'予告編（本編ではありません）',item.trailerUrl);
+ if(item.trailerVideoId) return youtube(item.trailerVideoId,item.title,item.trailerLabel || '予告編（本編ではありません）',item.trailerUrl);
  return cover(item.city+'/'+item.id,item.title);
 }
 function album(){return '<figure class="official-media album"><iframe title="Boris with Michio Kurihara｜不透明度のジャケット" src="https://bandcamp.com/EmbeddedPlayer/album=1846332570/size=large/bgcol=ffffff/linkcol=0687f5/minimal=true/transparent=true/" width="170" height="170" loading="lazy" seamless></iframe><figcaption>公式Bandcampのジャケット</figcaption></figure>';}

@@ -11,5 +11,18 @@
     "checkedAt": "2026-09-08",
     "basis": "Publication introduction under publisher FAQ; exact edition currently offered on publisher product page.",
     "reviewNote": "FAQ also asks users to inquire about titles for which a long time has passed since publication; no threshold is specified. Preserve this nuance; do not characterize this as a new release or an individual permission grant."
+  },
+  "jinbocho/kaijin": {
+    "status": "usable",
+    "isbn": "9784488406080",
+    "imageUrl": "https://www.tsogen.co.jp/img/cover_image_l/40608.jpg",
+    "width": 218,
+    "height": 306,
+    "sourceUrl": "https://www.tsogen.co.jp/np/isbn/9784488406080",
+    "termsUrl": "https://www.tsogen.co.jp/annai/faq.html",
+    "credit": "『神保町の怪人』紀田順一郎／創元推理文庫（東京創元社）／装画：影山徹／装幀：山田英春",
+    "checkedAt": "2026-09-08",
+    "basis": "Publisher FAQ expressly permits personal blog/SNS and similar book introductions/reviews. Used here solely within the operator-authored introduction with adjacent complete credits, not advertising or merchandise.",
+    "reviewNote": "This scoped editorial use is not a blanket commercial advertising license. Recheck before repurposing in advertisements."
   }
 }

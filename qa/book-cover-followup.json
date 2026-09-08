@@ -1,0 +1,105 @@
+[
+  {
+    "id": "junjo",
+    "error": "<urlopen error timed out>"
+  },
+  {
+    "id": "jirokichi",
+    "error": "<urlopen error timed out>"
+  },
+  {
+    "id": "shiroku-somaru",
+    "error": "<urlopen error timed out>"
+  },
+  {
+    "id": "lady-jane",
+    "error": "<urlopen error timed out>"
+  },
+  {
+    "id": "kamisama",
+    "isbn": "9784167922030",
+    "url": "https://www.hanmoto.com/bd/isbn/9784167922030",
+    "labels": [
+      "r: #ff0000; letter-spacing: 1px;\">【利用可否不明】</span>"
+    ],
+    "images": [
+      "https://img.hanmoto.com/bd/img/noimage.jpg",
+      "https://img.hanmoto.com/assets/img/logo.svg",
+      "https://img.hanmoto.com/bd/img/9784167922030_600.jpg?lastupdated=2024-03-28T10%3A06%3A42%2B09%3A00",
+      "https://img.hanmoto.com/bd/img/9784167922030_0.jpg?lastupdated=2024-03-28T10%3A06%3A42%2B09%3A00"
+    ]
+  },
+  {
+    "id": "moshimoshi",
+    "isbn": "9784344419094",
+    "url": "https://www.hanmoto.com/bd/isbn/9784344419094",
+    "labels": [
+      "r: #ff0000; letter-spacing: 1px;\">【利用可否不明】</span>"
+    ],
+    "images": [
+      "https://img.hanmoto.com/bd/img/9784344419094_600.jpg?lastupdated=2015-08-20T05%3A26%3A44%2B09%3A00",
+      "https://img.hanmoto.com/bd/img/9784344419094_0.jpg?lastupdated=2015-08-20T05%3A26%3A44%2B09%3A00",
+      "https://img.hanmoto.com/assets/img/logo.svg",
+      "https://img.hanmoto.com/bd/img/noimage.jpg"
+    ]
+  },
+  {
+    "id": "cinema-history",
+    "isbn": "9784160089457",
+    "url": "https://www.hanmoto.com/bd/isbn/9784160089457",
+    "labels": [
+      "r: #ff0000; letter-spacing: 1px;\">【利用可否不明】</span>"
+    ],
+    "images": [
+      "https://img.hanmoto.com/assets/img/logo.svg",
+      "https://img.hanmoto.com/bd/img/9784160089457_0.jpg?lastupdated=2025-03-08T11%3A18%3A03%2B09%3A00",
+      "https://img.hanmoto.com/bd/img/noimage.jpg",
+      "https://img.hanmoto.com/bd/img/9784160089457_600.jpg?lastupdated=2025-03-08T11%3A18%3A03%2B09%3A00",
+      "https://img.hanmoto.com/bd/img/9784160089457_0.in01.jpg?lastupdated=2025-03-08T11%3A18%3A03%2B09%3A00",
+      "https://img.hanmoto.com/bd/img/9784160089457_600.in01.jpg?lastupdated=2025-03-08T11%3A18%3A03%2B09%3A00"
+    ]
+  },
+  {
+    "id": "honnoniwa",
+    "isbn": "9784867168523",
+    "url": "https://www.hanmoto.com/bd/isbn/9784867168523",
+    "labels": [
+      "000000; letter-spacing: 1px;\">【書誌情報利用可】</span>"
+    ],
+    "images": [
+      "https://img.hanmoto.com/bd/img/noimage.jpg",
+      "https://img.hanmoto.com/assets/img/logo.svg",
+      "https://img.hanmoto.com/bd/img/9784867168523_600.jpg?lastupdated=2025-08-31T11%3A07%3A56%2B09%3A00"
+    ]
+  },
+  {
+    "id": "morisaki",
+    "error": "<urlopen error timed out>"
+  },
+  {
+    "id": "morisaki-sequel",
+    "error": "<urlopen error timed out>"
+  },
+  {
+    "id": "cafe-junjo",
+    "error": "<urlopen error timed out>"
+  },
+  {
+    "id": "yorozu",
+    "error": "<urlopen error timed out>"
+  },
+  {
+    "id": "gou-gou-book",
+    "isbn": "9784048532587",
+    "url": "https://www.hanmoto.com/bd/isbn/9784048532587",
+    "labels": [
+      "r: #ff0000; letter-spacing: 1px;\">【利用可否不明】</span>"
+    ],
+    "images": [
+      "https://img.hanmoto.com/bd/img/noimage.jpg",
+      "https://img.hanmoto.com/assets/img/logo.svg",
+      "https://img.hanmoto.com/bd/img/9784048532587_0.jpg?lastupdated=2015-08-20T04%3A49%3A04%2B09%3A00",
+      "https://img.hanmoto.com/bd/img/9784048532587_600.jpg?lastupdated=2015-08-20T04%3A49%3A04%2B09%3A00"
+    ]
+  }
+]

@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..'),read=f=>fs.readFileSync(path.join(root,f),'utf8');
-const {items,commonVideos}=require('../tools/city-discovery-source');
+const {items,excludedItems,commonVideos}=require('../tools/city-discovery-source');
 const chrome=require('../tools/page-chrome');
 const outputs=['works.html','work-book.html','work-film.html','work-music.html','work-video.html','saved.html','suggest.html','thread.html','shelf.html','about.html','data.html','credits.html','visit/index.html'];
 const walk=d=>fs.readdirSync(path.join(root,d),{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(d+'/'+e.name):e.name.endsWith('.html')?[d+'/'+e.name]:[]);
@@ -26,7 +26,8 @@ for(const item of items){
 for(const v of commonVideos)assert.ok(read('discover/short-films/'+v.id+'.html').includes('/embed/'+v.videoId));
 assert.match(read('discover/shimokitazawa/indies.html'),/R978-4-408-55758-8.jpg/);
 assert.match(read('discover/shimokitazawa/indies.html'),/岡崎琢磨／実業之日本社/);
-assert.doesNotMatch(read('discover/jinbocho/morisaki.html'),/<figure class="official-media cover">/,'Uncleared cover remains unresolved');
+for(const item of excludedItems){assert.ok(!fs.existsSync(path.join(root,`discover/${item.city}/${item.id}.html`)),'Excluded detail removed '+item.id);assert.ok(!read(`discover/${item.city}/${item.kind}.html`).includes(`/discover/${item.city}/${item.id}.html`),'Excluded listing removed '+item.id);}
+for(const item of items)assert.ok(require('../tools/work-media').forItem(item),'Every published work has real media '+item.id);
 const settings=JSON.parse(read('vercel.json'));
 for(const file of outputs){const url='/'+file.replace(/index.html$/,'');const csp=settings.headers.filter(h=>h.headers.some(x=>x.key==='Content-Security-Policy')&&new RegExp('^'+h.source+'$').test(url)).flatMap(h=>h.headers.filter(x=>x.key==='Content-Security-Policy').map(x=>x.value));assert.equal(csp.length,1,url+' exactly one CSP');const frames=[...read(file).matchAll(/<iframe[^>]+src="(https?:\/\/[^/]+)/g)].map(m=>m[1]);for(const origin of frames)assert.ok(csp[0].split('frame-src ')[1].split(';')[0].includes(origin),url+' blocked frame '+origin);}
 console.log('PASS '+outputs.length+' public pages: local links/assets, unique IDs, repeatable generation, exact work media, direct destinations, scoped CSP');

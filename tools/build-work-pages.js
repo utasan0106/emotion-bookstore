@@ -6,9 +6,9 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const source = fs.readFileSync(path.join(__dirname, 'work-entry-source.html'), 'utf8');
 const media=require('./work-media');
-const mediaFor=entry=>entry.id==='music'?media.album():entry.id==='video'?media.youtube('dt33RGSRuo0',entry.title,'主催団体の公式映像（5分39秒）'):media.cover('entry/'+entry.id,entry.title);
+const mediaFor=entry=>entry.id==='music'?media.album():entry.id==='video'?media.youtube('dt33RGSRuo0',entry.title,'主催団体の公式映像（5分39秒）'):entry.id==='film'?media.youtube('6M0vx8wLEbM',entry.title,'予告編（本編ではありません）'):media.cover('jinbocho/kaijin',entry.title);
 const entries = [
-  { id: 'book', kind: '本', title: '森崎書店の日々', byline: '八木沢里志', city: '神保町', relation: '物語の舞台', action: '本の紹介へ' },
+  { id: 'book', kind: '本', title: '神保町の怪人', byline: '紀田順一郎', city: '神保町', relation: '物語の舞台', action: '本の紹介へ' },
   { id: 'film', kind: '映画', title: '森崎書店の日々', byline: '日向朝子監督 / 2010', city: '神保町', relation: '撮影された街', action: '映画の紹介へ' },
   { id: 'music', kind: '音楽', title: '不透明度 — Live at Shelter 20070204', byline: 'Boris with Michio Kurihara', city: '下北沢', relation: 'ライブが録音された街', action: 'ライブ盤の紹介へ' },
   { id: 'video', kind: '映像', title: '高円寺の踊り', byline: '主催団体の公式映像 / 2025', city: '高円寺', relation: '踊りが行われた街', action: '街の映像へ' }
@@ -28,6 +28,7 @@ for (const entry of entries) {
   const match = source.match(new RegExp('<section id="' + entry.id + '"[\\s\\S]*?<\\/section>\\s*(?=<!--|<section|<div class="wk-exit")'));
   if (!match) throw new Error('Missing editorial section ' + entry.id);
   let section = match[0].trim().replace(/aria-labelledby="wk-[^"]+"/,'aria-label="'+entry.kind+'の紹介"');
+  if(entry.id==='book') section=`<section id="book" class="wk-entry" aria-label="本の紹介"><p class="wk-byline">紀田順一郎／創元推理文庫</p><p>本を集める情熱が、謎と事件へ姿を変える。</p><p>古書収集と神保町を扱う三つのミステリーを収めた短編集。街の古書店に並ぶ本を見る目が、少し変わるかもしれません。</p><p class="wk-primary"><a class="wk-action official-action" href="https://www.tsogen.co.jp/np/isbn/9784488406080" target="_blank" rel="noopener noreferrer">出版社で本の紹介を見る</a></p><p><a href="/discover/jinbocho/kaijin.html">作品と街のつながりを読む →</a></p></section>`;
   if(entry.id==='video') section=section.replace(/<div class="wk-video v3-video"[\s\S]*?<\/noscript>\s*<\/div>/,'');
   section=section.replace(/<p id="wk-[^"]+-category"[\s\S]*?<\/p>\s*<h2 id="wk-[^"]+-title"[\s\S]*?<\/h2>/,'');
   section=section.replace(/(<p class="wk-byline">[\s\S]*?<\/p>)/,'$1'+mediaFor(entry));
