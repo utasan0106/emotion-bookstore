@@ -28,7 +28,8 @@ for(const city of cities)for(const kind of ['audio','video','book','film']) {
   const selected=items.filter(i=>i.city===city&&i.kind===kind);
   assert.ok(selected.length<=10);
   const html=fs.readFileSync(path.join(root,`discover/${city}/${kind}.html`),'utf8');
-  for(const i of selected)assert.equal(html.split(`href="/discover/${city}/${i.id}.html"`).length-1,2);
+  const cardsOnly=(html.match(/<article class="work-card [\s\S]*?<\/article>/g)||[]).join('');
+  for(const i of selected)assert.equal(cardsOnly.split(`href="/discover/${city}/${i.id}.html"`).length-1,2);
   assert.equal((html.match(/class="work-card /g)||[]).length,selected.length);
   assert.doesNotMatch(html,/data-video-id|video-embed\.js|discover\/player\.js/);
   if(selected.length)assert.match(html,/aria-current="page"/);
