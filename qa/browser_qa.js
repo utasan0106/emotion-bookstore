@@ -645,10 +645,7 @@ function serve() {
     check(S, 'all_images_same_origin_and_loaded',
       home.images.length >= 13 && home.images.every((i) => i.sameOrigin && i.loaded), home.images.filter((i) => !i.sameOrigin || !i.loaded));
     check(S, 'no_iframe', home.iframes === 0, home.iframes);
-    check(S, 'hero_cultural_trace_present_static_and_inert',
-      !!home.trace && home.trace.inHero && home.trace.pe === 'none' && home.trace.hidden === 'true' && home.trace.belowText === true, home.trace);
-    check(S, 'hero_trace_years_are_evidence_cleared_only',
-      !!home.trace && home.trace.years.join(',') === '1957,1961,1963,2026', home.trace && home.trace.years);
+    check(S, 'hero_decorative_timeline_removed', home.trace === null, home.trace);
     check(S, 'no_running_animation_under_reduced_motion', home.animations === 0, home.animations);
     check(S, 'hero_rect', near(home.rects.hero, 0, 0, 853, 617, 1), home.rects.hero);
     check(S, 'warm_sheet_starts_at_hero_edge', !!home.rects.sheet && Math.abs(home.rects.sheet.y - 617) <= 1, home.rects.sheet);

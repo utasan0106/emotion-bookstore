@@ -2085,34 +2085,6 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
     linear-gradient(180deg, rgba(8,9,12,.62) 0%, rgba(8,9,12,.14) 28%, rgba(8,9,12,.10) 62%, rgba(8,9,12,.68) 100%);
 }
 
-/* Cultural trace。写真と scrim の上、文字の下。線は主役ではないので
-   ivory の低不透明度・1px。年号は Evidence 済みの4つだけ（markup 側）。
-   animation を持たないので prefers-reduced-motion でも同じ静止描画になる。 */
-.hc-hero-trace {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: block;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: visible;
-}
-.hc-trace-line {
-  fill: none;
-  stroke: rgba(242,236,224,.34);
-  stroke-width: 1;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-}
-.hc-trace-dot { fill: rgba(201,160,99,.82); }
-.hc-trace-year {
-  font-family: var(--sans);
-  font-size: 9.5px;
-  letter-spacing: .12em;
-  fill: rgba(242,236,224,.66);
-}
-
 .hc-header {
   position: relative;
   z-index: 2;
@@ -2761,16 +2733,6 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
     top: 66px;
     text-align: right;
   }
-  .hc-hero-trace {
-    left: auto;
-    right: -10px;
-    top: auto;
-    bottom: 50px;
-    width: 213px;   /* 853 × 0.25 */
-    height: 154px;  /* 617 × 0.25 */
-  }
-  .hc-trace-year { font-size: 36px; }  /* user unit × 0.25 ≈ 9px 描画 */
-  .hc-trace-dot { r: 9; }
 
   /* 2–5. warm sheet — section 間 44px、head は縦積み */
   .hc-sheet { border-radius: 20px 20px 0 0; }
@@ -2868,7 +2830,6 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   .hc-hero-title { font-size: 72px; line-height: 87px; }
   .hc-hero-aside { left: auto; right: calc(var(--hc-shell-x) + 50px); top: 291px; }
   /* trace は 853 の比率のまま hero 高さに等倍（横へ引き伸ばさない）、shell 右端に寄せる */
-  .hc-hero-trace { left: auto; right: calc(var(--hc-shell-x) - 32px); width: 885px; height: 100%; }
 
   .hc-sheet { margin-inline: max(32px, calc(50% - 480px)); }
   .hc-city-grid { gap: 16px; }
@@ -2896,7 +2857,6 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   .hc-hero-body { left: var(--hc-shell-x); }
   .hc-hero-title { font-size: 84px; line-height: 102px; max-width: 7.2em; }
   .hc-hero-aside { left: auto; right: calc(var(--hc-shell-x) + 50px); top: 310px; }
-  .hc-hero-trace { left: auto; right: calc(var(--hc-shell-x) - 32px); width: 940px; height: 100%; }
 
   .hc-sheet { margin-inline: max(32px, calc(50% - 620px)); }
   .hc-city-grid { gap: 18px; }

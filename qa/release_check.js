@@ -333,8 +333,7 @@ if (!dataPageFinal.includes('id="siteMenuButton"')) failures.push('data.html: ME
 const responsiveCss = read('release.css');
 for (const required of [
   '.site-explainer .explainer-line',
-  'HOME — CONTENT-LED IMMERSIVE TIME',
-  '.hc-hero-trace'
+  'HOME — CONTENT-LED IMMERSIVE TIME'
 ]) {
   if (!responsiveCss.includes(required)) {
     failures.push(`release.css: mobile/editorial contract missing ${required}`);
@@ -355,17 +354,8 @@ const hcCss = cityCss.slice(cityCss.indexOf('HOME — CONTENT-LED IMMERSIVE TIME
 for (const required of ['.hc-hero-media::after', '.hc-city-media img', '.hc-city-media::after', 'object-fit: cover', '.hc-reality-shot img']) {
   if (!hcCss.includes(required)) failures.push(`release.css: HOME canonical photo treatment missing ${required}`);
 }
-/* Cultural trace は装飾。操作面に乗らず、年号は Evidence 済みの4つだけ。 */
-{
-  const src = read('index.html');
-  const svg = (src.match(/<svg class="hc-hero-trace"[\s\S]*?<\/svg>/) || [''])[0];
-  if (!svg) failures.push('index.html: hero cultural trace missing');
-  const years = [...svg.matchAll(/<text[^>]*>(\d{4})<\/text>/g)].map((m) => m[1]);
-  if (years.join(',') !== '1957,1961,1963,2026') failures.push(`index.html: hero trace years must be exactly the evidence-cleared 1957,1961,1963,2026 (got ${years.join(',') || 'none'})`);
-  if (!/aria-hidden="true"/.test(svg)) failures.push('index.html: hero trace must be aria-hidden');
-  if (/<(a|animate|animateTransform|animateMotion|set|script)\b/.test(svg)) failures.push('index.html: hero trace must be static and non-interactive');
-  if (!/\.hc-hero-trace\s*\{[^}]*pointer-events:\s*none/.test(hcCss)) failures.push('release.css: .hc-hero-trace needs pointer-events: none');
-}
+/* 2026-09-08: ユーザー指示により装飾年表を撤去。 */
+if (/hc-hero-trace|hc-trace-year/.test(read('index.html'))) failures.push('index.html: removed decorative timeline must not return');
 
 /* canonical HOME には site-explainer が無い。HOME では hero の copy（H1 + sub）が
    最初の街の写真より DOM 上で先にあり、HERO の写真は装飾（alt=""）であること。 */
