@@ -37,8 +37,8 @@
     "inLanguage": "ja-JP"
   }
   </script>
-</head>
-<body class="home-canonical">
+<link rel="stylesheet" href="/page-nav.css"><script src="/page-nav.js" defer></script></head>
+<body class="home-canonical"><span id="page-top" tabindex="-1"></span>
   <a class="skip-link" href="#main">本文へ移動</a>
 
   <dialog id="siteMenu" class="site-menu" aria-labelledby="siteMenuTitle">
@@ -57,7 +57,7 @@
       </nav>
 
       <!-- 旧 HOME の「種類から見る」「今週の寄り道」は canonical に無い。
-           相当する導線は Founder/HQ の指示で「作品から入る」「いま辿れるスレッド」
+           相当する導線は Founder/HQ の指示で「作品から入る」「踊りから、街の歴史へ」
            へ付け替える。行き先は index.html に実在する section id だけ。
            .site-menu-secondary 自体は残す（archive 追加時に growth-improvements.js
            がここへ「Archiveを見る」を差し込む）。 -->
@@ -65,7 +65,7 @@
         <p id="siteMenuDiscoverTitle" class="eyebrow">見つける</p>
         <nav class="site-menu-secondary" aria-label="ほかの見方">
           <a class="site-menu-secondary-link" href="./index.html#hc-works"><span>作品から入る</span><span aria-hidden="true">→</span></a>
-          <a class="site-menu-secondary-link" href="./index.html#hc-thread"><span>いま辿れるスレッド</span><span aria-hidden="true">→</span></a>
+          <a class="site-menu-secondary-link" href="./index.html#hc-thread"><span>踊りから、街の歴史へ</span><span aria-hidden="true">→</span></a>
           <a class="site-menu-secondary-link" href="./suggest.html"><span>候補を教える</span><span aria-hidden="true">→</span></a>
         </nav>
       </section>
@@ -87,27 +87,27 @@
 
     <!-- ===================================================== 1. HERO ===== -->
     <section class="hc-hero" aria-labelledby="hc-hero-title">
-      <div class="hc-hero-media" aria-hidden="true">
-        <img src="./assets/city-koenji.jpg" alt="" width="1200" height="1600" fetchpriority="high" decoding="async">
-      </div>
-
-      <header class="hc-header">
-        <a class="hc-english-entry" href="./visit/" lang="en">English guide</a>
+<header class="hc-header">
         <p class="hc-brand"><a class="hc-brand-link" href="./index.html">みんなの感情書店</a></p>
+        <div class="hc-header-actions">
+        <a class="hc-english-entry" href="./visit/index.html" lang="en">English guide</a>
         <button class="hc-menu-trigger" id="siteMenuButton" type="button" aria-haspopup="dialog" aria-controls="siteMenu">
           <span class="sr-only">メニューを開く</span>
           <span class="hc-menu-bars" aria-hidden="true"></span>
         </button>
+        </div>
       </header>
 
-      <div class="hc-hero-body">
-        <h1 id="hc-hero-title" class="hc-hero-title"><span class="hc-hero-line">文化の</span><span class="hc-hero-line">つながりを、</span><span class="hc-hero-line">歩く。</span></h1>
-        <p class="hc-hero-sub"><span class="hc-hero-phrase">街の映像、音楽、本、映画に出会う</span><br><span class="hc-hero-phrase">文化案内。</span><wbr><span class="hc-hero-phrase">気になる作品から、ゆかりの場所へ。</span></p>
+      <div class="hc-hero-content"><div class="hc-hero-body">
+        <p class="hc-hero-kicker">心が動く、その先へ。</p>
+        <h1 id="hc-hero-title" class="hc-hero-title"><span class="hc-hero-line">気になる作品から、</span><span class="hc-hero-line">次に行きたい街へ。</span></h1>
+        <p class="hc-hero-sub">映像・音楽・本・映画と、ゆかりの街や今の催しをつなぐ文化案内。</p>
         <!-- 短い音・映像から入る。高円寺の読み物への入口は紹介欄に一つ。 -->
-        <a class="hc-hero-cta" href="./v3-prototype/culture-experience-r2/index.html"><span class="hc-hero-cta-label">一曲・一場面を聴く、観る</span><span class="hc-hero-cta-mark" aria-hidden="true">→</span></a>
+        <a class="hc-hero-cta" href="./discover/index.html"><span class="hc-hero-cta-label">作品を探す</span><span class="hc-hero-cta-mark" aria-hidden="true">→</span></a>
+        <a class="hc-about-link" href="./about.html">感情書店とは</a>
       </div>
 
-      <p class="hc-hero-scroll"><span class="hc-hero-scroll-label">スクロールして、はじまる</span><span class="hc-hero-scroll-mark" aria-hidden="true"></span></p>
+      <div class="hc-culture-mosaic" aria-label="本、音楽、映画の世界"><figure><img src="./assets/home-work-book.jpg" alt="本が並ぶ書棚" width="568" height="426" fetchpriority="high"><figcaption>読む</figcaption></figure><figure><img src="./assets/home-work-music.jpg" alt="レコードと針" width="1600" height="1067"><figcaption>聴く</figcaption></figure><figure><img src="./assets/home-work-film.jpg" alt="映写機のリール" width="1600" height="1200"><figcaption>観る</figcaption></figure></div></div>
     </section>
 
     <div class="hc-sheet">
@@ -166,12 +166,7 @@
           <p class="hc-section-note">まずひとつ観る・聴く。気になったら、作品と街を辿る。</p>
         </div>
 
-        <div class="hc-discovery-entry">
-          <p class="hc-discovery-lead">4つの街から、気になる一本・一冊へ。</p>
-          <a class="hc-discovery-button" href="./discover/index.html"><span>映像・本・映画を探す</span><span aria-hidden="true">→</span></a>
-          <p class="hc-discovery-note">高円寺・下北沢・吉祥寺・神保町。街を選んで、作品の一覧へ。</p>
-        </div>
-        <h3 class="hc-featured-heading">まず出会いたい4つの作品</h3>
+<h3 class="hc-featured-heading">まず出会いたい4つの作品</h3>
 
         <!-- 本 / 映画 / 音楽 / 映像: Founder/HQ が権利確認した写真（Asset Round 3、
              台帳は experiments/home-visual-fidelity/asset-round-3/HOME_ASSET_LEDGER.json、
@@ -226,12 +221,12 @@
         </div>
       </section>
 
-      <!-- ==================================== 4. いま辿れるスレッド ===== -->
+      <!-- ==================================== 4. 踊りから、街の歴史へ ===== -->
       <section id="hc-thread" class="hc-section hc-thread-section" aria-labelledby="hc-thread-title">
         <div class="hc-thread">
           <div class="hc-thread-head">
-            <h2 id="hc-thread-title" class="hc-thread-heading">いま辿れるスレッド</h2>
-            <p class="hc-thread-note">ひとつの痕跡から、物語をたどる。</p>
+            <h2 id="hc-thread-title" class="hc-thread-heading">踊りから、街の歴史へ</h2>
+            <p class="hc-thread-note">高円寺の踊りを、記録と写真で知る。</p>
           </div>
 
           <div class="hc-thread-body">
@@ -246,14 +241,6 @@
               <p class="hc-thread-title">高円寺の踊りは、どう始まった？</p>
               <p class="hc-thread-sub">1957年の始まりから、木場連との出会いへ。</p>
 
-              <ol class="hc-thread-chain">
-                <li class="hc-node"><span class="hc-node-kind">街</span><span class="hc-node-name">高円寺</span></li>
-                <li class="hc-node"><span class="hc-node-kind">出来事</span><span class="hc-node-name">阿波おどり</span></li>
-                <li class="hc-node"><span class="hc-node-kind">人</span><span class="hc-node-name">踊り手たち</span></li>
-                <li class="hc-node"><span class="hc-node-kind">資料</span><span class="hc-node-name">記録と写真</span></li>
-                <li class="hc-node"><span class="hc-node-kind">現在</span><span class="hc-node-name">つづく祭り</span></li>
-              </ol>
-
               <a class="hc-thread-read" href="./thread.html?thread=koenji-dance-history">踊りの歴史を読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></a>
             </div>
           </div>
@@ -262,28 +249,8 @@
 
       <!-- ============================================ 5. 実際の場所へ ===== -->
       <section class="hc-section hc-reality" aria-labelledby="hc-reality-title">
-        <div class="hc-reality-copy">
-          <a class="hc-weekly-entry" href="./outings/">誰と出かける？ 週替わりのおすすめ →</a>
-          <h2 id="hc-reality-title" class="hc-section-title">実際の場所へ</h2>
-          <p class="hc-reality-lead"><span class="hc-reality-line">気になった場所は、公式情報を確かめて、</span><span class="hc-reality-line">実際の街へ。</span></p>
-        </div>
-
-        <!-- FOUNDER PREVIEW FIX UNIT D: 実在する 3 つの行き先だけ。既存の検証済み V3 object と公式 URL を使う。
-             click までは外部通信なし。a.official-action は既存の粗い GA4 event（v3_official_action）を再利用する。 -->
-        <div class="hc-reality-strip">
-          <a class="hc-reality-card official-action" href="https://www.kensetsu.metro.tokyo.lg.jp/jimusho/seibuk/inokashira" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">
-            <figure class="hc-reality-shot"><img src="./assets/inokashira-pond.jpg" alt="井の頭恩賜公園の井の頭池と水辺の景色" width="1280" height="759" loading="lazy" decoding="async"></figure>
-            <span class="hc-reality-body"><span class="hc-reality-name">井の頭恩賜公園</span><span class="hc-reality-action">東京都公式を見る<span class="hc-reality-mark" aria-hidden="true"> ↗</span></span></span>
-          </a>
-          <a class="hc-reality-card official-action" href="https://yaguchishoten.jp/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">
-            <figure class="hc-reality-shot"><img src="./assets/yaguchi-shoten.jpg" alt="神保町の矢口書店。間口いっぱいの木の書棚に本が詰まっている" width="960" height="640" loading="lazy" decoding="async"></figure>
-            <span class="hc-reality-body"><span class="hc-reality-name">矢口書店</span><span class="hc-reality-action">公式サイトを見る<span class="hc-reality-mark" aria-hidden="true"> ↗</span></span></span>
-          </a>
-          <a class="hc-reality-card official-action" href="https://www.loft-prj.co.jp/schedule/shelter/schedule" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">
-            <figure class="hc-reality-shot"><img src="./assets/shimokitazawa-shelter.jpg" alt="下北沢SHELTER。電球で縁取られた看板と地下へ続く階段" width="960" height="723" loading="lazy" decoding="async"></figure>
-            <span class="hc-reality-body"><span class="hc-reality-name">下北沢 SHELTER</span><span class="hc-reality-action">予定を見る<span class="hc-reality-mark" aria-hidden="true"> ↗</span></span></span>
-          </a>
-        </div>
+        <div class="hc-reality-copy"><p class="hc-event-kicker">開催日から見つける</p><h2 id="hc-reality-title" class="hc-section-title">今、街で出会える文化</h2><p class="hc-reality-lead">音楽を聴いたらライブへ。本を読んだら、作り手の話を聞きに。街と作品の続きを、開催中・近日開催の催しから。</p><a class="hc-weekly-entry" href="./outings/">文化イベントを選ぶ →</a><p class="hc-reality-hint">街・開催週・誰と行くかで選べます。</p></div>
+        <figure class="hc-event-photo"><img src="./assets/suzunari-2008.jpg" alt="下北沢の劇場ザ・スズナリの建物" width="1000" height="667" loading="lazy"><figcaption>作品から、その作品に出会える場所へ。写真：下北沢</figcaption></figure>
       </section>
 
     </div>
@@ -295,5 +262,5 @@
   <script src="./growth-improvements.js"></script>
   <script src="./release.js"></script>
   <script src="./analytics-v3.js"></script>
-</body>
+<nav class="page-tools" data-page-tools aria-label="ページ移動"><a href="/" class="page-home">トップへ</a><a href="#page-top" class="page-up" data-page-up>ページ上部へ ↑</a></nav></body>
 </html>

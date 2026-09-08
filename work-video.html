@@ -14,9 +14,9 @@
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
   <link rel="stylesheet" href="./release.css">
   <link rel="stylesheet" href="./works.css">
-</head>
+<script src="/memory-note.js" defer></script><link rel="stylesheet" href="/page-nav.css"><script src="/page-nav.js" defer></script></head>
 <!-- Built from tools/work-entry-source.html. One work per detail page; all media load only on user action. -->
-<body class="works-page">
+<body class="works-page"><span id="page-top" tabindex="-1"></span>
   <a class="skip-link" href="#main">本文へ移動</a>
 
   <header class="site-header">
@@ -43,7 +43,7 @@
         <p id="siteMenuDiscoverTitle" class="eyebrow">見つける</p>
         <nav class="site-menu-secondary" aria-label="ほかの見方">
           <a class="site-menu-secondary-link" href="./index.html#hc-works"><span>作品から入る</span><span aria-hidden="true">→</span></a>
-          <a class="site-menu-secondary-link" href="./index.html#hc-thread"><span>いま辿れるスレッド</span><span aria-hidden="true">→</span></a>
+          <a class="site-menu-secondary-link" href="./index.html#hc-thread"><span>踊りから、街の歴史へ</span><span aria-hidden="true">→</span></a>
           <a class="site-menu-secondary-link" href="./suggest.html"><span>候補を教える</span><span aria-hidden="true">→</span></a>
         </nav>
       </section>
@@ -84,7 +84,7 @@
         <p class="wk-action-row"><a class="wk-action official-action" href="https://www.koenji-awaodori.com/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">主催団体の公式サイトを見る<span class="wk-mark" aria-hidden="true"> ↗</span></a></p>
       </section>
     <div class="wk-exit"><p class="end-exit"><a class="other-shelves" href="./index.html">入口へ戻る</a></p></div>
-  </div></main>
+  </div><details class="memory-note" data-memory-note><summary>想いを残す</summary><p>スタンプだけでも、ひとことでも。</p><div class="memory-stamps" role="group" aria-label="気持ちのスタンプ（複数選択可）"><button type="button" data-memory-stamp="心に残った" aria-pressed="false">心に残った</button><button type="button" data-memory-stamp="元気をもらった" aria-pressed="false">元気をもらった</button><button type="button" data-memory-stamp="誰かに伝えたい" aria-pressed="false">誰かに伝えたい</button><button type="button" data-memory-stamp="行ってみたい" aria-pressed="false">行ってみたい</button></div><label for="memory-text">どんな場面や言葉が残りましたか？（任意）</label><textarea id="memory-text" maxlength="500" rows="3" placeholder="ひとことだけでも。"></textarea><p>スタンプ・文章は自動保存されません。いつものアプリへ持ち帰れます。</p><div class="memory-actions"><button type="button" data-memory-share hidden>メモ・日記アプリへ送る</button><button type="button" data-memory-copy>コピーして持ち帰る</button></div><p>共有先は端末やインストールしたアプリによって異なります。</p><details class="memory-calendar"><summary>カレンダーに残す</summary><label for="memory-day">メモを残す日</label><input id="memory-day" data-memory-date type="date" required><p>選んだ日に終日のメモを作ります。催しの開演時刻・予約は公式案内で確認し、カレンダーで調整できます。</p><div class="memory-actions"><button type="button" data-memory-google>Googleカレンダーで開く ↗</button><button type="button" data-memory-ics>ほかのカレンダー用に保存</button></div></details><p role="status" aria-live="polite"></p><textarea data-memory-export aria-label="コピー用の文章" readonly hidden rows="6"></textarea></details></main>
 
   <footer class="site-footer">
     <p class="privacy-note">計測はemotionbookstore.comの本番ページだけで有効になります。Do Not Trackが有効な場合、またはこのブラウザで計測をオフにした場合は送信しません。</p>
@@ -100,5 +100,5 @@
   <script src="./release.js"></script>
   <script src="./analytics-v3.js"></script>
   <script src="./video-embed.js"></script>
-</body>
+<nav class="page-tools" data-page-tools aria-label="ページ移動"><a href="/" class="page-home">トップへ</a><a href="#page-top" class="page-up" data-page-up>ページ上部へ ↑</a></nav></body>
 </html>

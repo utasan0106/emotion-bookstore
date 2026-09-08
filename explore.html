@@ -23,12 +23,12 @@
     }
     .explore-page .explore-exit { margin-top: 48px; }
   </style>
-</head>
+<link rel="stylesheet" href="/page-nav.css"><script src="/page-nav.js" defer></script></head>
 <!-- 旧 HOME の「種類から見る」（街 × 種類の有限索引）と ARCHIVE を引き継ぐ
      compatibility surface。新しい推薦・feed・ranking ではない。並ぶのは、いま
      公開中の12件を種類 × 街で横断して見る索引と、期限を過ぎた特集・棚の記録だけ。
      Canonical HOME にはこの DOM を戻さない。 -->
-<body class="explore-page">
+<body class="explore-page"><span id="page-top" tabindex="-1"></span>
   <a class="skip-link" href="#main">本文へ移動</a>
 
   <header class="site-header">
@@ -55,7 +55,7 @@
         <p id="siteMenuDiscoverTitle" class="eyebrow">見つける</p>
         <nav class="site-menu-secondary" aria-label="ほかの見方">
           <a class="site-menu-secondary-link" href="./index.html#hc-works"><span>作品から入る</span><span aria-hidden="true">→</span></a>
-          <a class="site-menu-secondary-link" href="./index.html#hc-thread"><span>いま辿れるスレッド</span><span aria-hidden="true">→</span></a>
+          <a class="site-menu-secondary-link" href="./index.html#hc-thread"><span>踊りから、街の歴史へ</span><span aria-hidden="true">→</span></a>
           <a class="site-menu-secondary-link" href="./suggest.html"><span>候補を教える</span><span aria-hidden="true">→</span></a>
         </nav>
       </section>
@@ -122,5 +122,5 @@
   <script src="./growth-improvements.js"></script>
   <script src="./release.js"></script>
   <script src="./analytics-v3.js"></script>
-</body>
+<nav class="page-tools" data-page-tools aria-label="ページ移動"><a href="/" class="page-home">トップへ</a><a href="#page-top" class="page-up" data-page-up>ページ上部へ ↑</a></nav></body>
 </html>

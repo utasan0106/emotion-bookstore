@@ -14,13 +14,13 @@
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
   <link rel="stylesheet" href="./release.css">
   <link rel="stylesheet" href="./thread.css">
-</head>
+<link rel="stylesheet" href="/page-nav.css"><script src="/page-nav.js" defer></script></head>
 <!-- Cultural Thread の殻。本文（scene / relation / 資料 / 行き先）は
      thread_content.js にだけあり、thread.js が ?thread=<id> で描く。
      この静的 HTML は Thread 固有の copy を持たない。id が無い / 不明なら
      generic な一文と入口だけ（fail-closed）。JavaScript が無ければ noscript の
      一文と shell だけが出る。head に同期 JS は置かない。 -->
-<body class="thread-page">
+<body class="thread-page"><span id="page-top" tabindex="-1"></span>
   <a class="skip-link" href="#main">本文へ移動</a>
 
   <header class="site-header">
@@ -47,7 +47,7 @@
         <p id="siteMenuDiscoverTitle" class="eyebrow">見つける</p>
         <nav class="site-menu-secondary" aria-label="ほかの見方">
           <a class="site-menu-secondary-link" href="./index.html#hc-works"><span>作品から入る</span><span aria-hidden="true">→</span></a>
-          <a class="site-menu-secondary-link" href="./index.html#hc-thread"><span>いま辿れるスレッド</span><span aria-hidden="true">→</span></a>
+          <a class="site-menu-secondary-link" href="./index.html#hc-thread"><span>踊りから、街の歴史へ</span><span aria-hidden="true">→</span></a>
           <a class="site-menu-secondary-link" href="./suggest.html"><span>候補を教える</span><span aria-hidden="true">→</span></a>
         </nav>
       </section>
@@ -90,5 +90,5 @@
   <script src="./video-embed.js"></script>
   <script src="./thread_content.js"></script>
   <script src="./thread.js"></script>
-</body>
+<nav class="page-tools" data-page-tools aria-label="ページ移動"><a href="/" class="page-home">トップへ</a><a href="#page-top" class="page-up" data-page-up>ページ上部へ ↑</a></nav></body>
 </html>

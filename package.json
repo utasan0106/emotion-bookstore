@@ -2,5 +2,8 @@
   "name": "emotion-bookstore",
   "version": "1.0.0",
   "private": true,
-  "description": "みんなの感情書店 - プロトタイプ"
+  "description": "みんなの感情書店 - プロトタイプ",
+  "scripts": {
+    "dev": "node tools/visual-qa/node_modules/vite/bin/vite.js --config tools/visual-qa/vite.config.mjs"
+  }
 }

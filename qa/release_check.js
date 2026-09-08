@@ -276,17 +276,17 @@ for (const required of [
 }
 
 /* MENU は全ページ同じ。旧 HOME の「今週の寄り道」「種類から見る」は canonical に
-   無いので、Founder/HQ の指示どおり「いま辿れるスレッド」「作品から入る」へ。
+   無いので、Founder/HQ の指示どおり「踊りから、街の歴史へ」「作品から入る」へ。
    写真・出典（credits.html）は HOME 本文へ長い attribution を載せない代わりの
    静かな surface なので、どのページの MENU からも届くこと。 */
 const MENU_PAGES = ['index.html','shelf.html','suggest.html','data.html','credits.html','explore.html'];
 for (const page of MENU_PAGES) {
   const src = read(page);
   if (src.includes('<p class="pilot-label">4つの街</p>')) failures.push(`${page}: header must not show 4つの街 beside MENU`);
-  for (const label of ['作品から入る','いま辿れるスレッド','候補を教える','気になるリスト','データの扱い','写真・出典']) {
+  for (const label of ['作品から入る','踊りから、街の歴史へ','候補を教える','気になるリスト','データの扱い','写真・出典']) {
     if (!src.includes(label)) failures.push(`${page}: MENU missing ${label}`);
   }
-  for (const [href, label] of [['./index.html#hc-works','作品から入る'],['./index.html#hc-thread','いま辿れるスレッド'],['./credits.html','写真・出典'],['./suggest.html','候補を教える'],['./data.html','データの扱い']]) {
+  for (const [href, label] of [['./index.html#hc-works','作品から入る'],['./index.html#hc-thread','踊りから、街の歴史へ'],['./credits.html','写真・出典'],['./suggest.html','候補を教える'],['./data.html','データの扱い']]) {
     if (!src.includes(`href="${href}"`)) failures.push(`${page}: MENU link missing ${label} → ${href}`);
   }
   for (const retired of ['<span>今週の寄り道</span>','<span>種類から見る</span>','#weekly-detour','#by-kind']) {
@@ -365,7 +365,7 @@ if (/hc-hero-trace|hc-trace-year/.test(read('index.html'))) failures.push('index
   const sub = src.indexOf('<p class="hc-hero-sub">');
   const firstCity = src.indexOf('class="hc-city shelf-entry"');
   if (h1 < 0 || sub < 0 || firstCity < 0 || h1 > firstCity || sub > firstCity) failures.push('index.html: hero copy must precede the first city entry');
-  if (!src.includes('<img src="./assets/city-koenji.jpg" alt="" width="1200" height="1600" fetchpriority="high"')) failures.push('index.html: hero photograph must be decorative (alt="") and fetchpriority high');
+  if (src.includes('class="hc-hero-media"') || !src.includes('class="hc-culture-mosaic"') || !src.includes('fetchpriority="high"')) failures.push('index.html: neutral culture hero with priority image required (R8 founder request)');
 }
 for (const page of ['shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html']) {
   const src = read(page);
@@ -705,9 +705,9 @@ if ((read('suggest.html').match(/<h1\b/g) || []).length !== 1) failures.push('su
 /* ---- 玄関と終わりの言い回し ------------------------------------------ */
 const foyer = read('index.html');
 if (!foyer.includes('みんなの感情書店')) failures.push('foyer eyebrow missing');
-const visibleCityH1 = '<h1 id="hc-hero-title" class="hc-hero-title"><span class="hc-hero-line">文化の</span><span class="hc-hero-line">つながりを、</span><span class="hc-hero-line">歩く。</span></h1>';
+const visibleCityH1 = '<h1 id="hc-hero-title" class="hc-hero-title"><span class="hc-hero-line">気になる作品から、</span><span class="hc-hero-line">次に行きたい街へ。</span></h1>';
 if (!foyer.includes(visibleCityH1)) {
-  failures.push('foyer visible H1 must be 文化の／つながりを、／歩く。 (VISUAL_CANONICAL)');
+  failures.push('foyer visible H1 must explain the work-to-city purpose (R8 founder request)');
 }
 const shelfHtml = read('shelf.html');
 const endPlate = (shelfHtml.match(/<section class="end-plate"[\s\S]*?<\/section>/) || [''])[0];

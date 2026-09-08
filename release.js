@@ -988,6 +988,13 @@
     var label = document.getElementById('shelfLabel');
     if (label) label.textContent = shelf.name + ' / 全3点';
 
+    var culturePaths = document.getElementById('cityCulturePaths');
+    if (culturePaths) {
+      culturePaths.textContent = '';
+      culturePaths.appendChild(h('a', { href: './discover/' + shelf.id + '/', text: shelf.area + 'の映像・音楽・本・映画 →' }));
+      culturePaths.appendChild(h('a', { href: './outings/?city=' + shelf.id, text: shelf.area + 'の文化イベント →' }));
+      culturePaths.hidden = false;
+    }
     renderWeeklyFeature(shelf);
 
     if (shelf.objects.length !== 3) return haltShelf('この棚はいま準備中です。');

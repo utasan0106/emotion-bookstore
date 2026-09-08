@@ -140,5 +140,25 @@
     ],
     "rightsDecision": "HOME_ASSET_R3_RESUME_V2.md §2 (Founder/HQ)",
     "licenseNote": "作者（著作権者）自身によるパブリックドメインへの放棄（Wikimedia Commons の PD 表記）。Public Domain Mark 1.0 は状態表示であって作者の放棄文書ではないので license URL には使わない（HQ_R3_FINAL_BOOK_AND_PD_PRECISION §3）。権利情報の出典は Commons の File ページ Licensing 節。"
+  },
+  {
+    "runtimePath": "./assets/suzunari-2008.jpg",
+    "slot": "CULTURE_EVENTS_R8",
+    "author": "Guwashi999",
+    "source": "Existing credited Wikimedia Commons photograph, reused from Shimokitazawa thread",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Suzunari_-_a_small_theater_(HDR)_-_Shimokitazawa,_2008-03-22_14.48.45_(by_Guwashi999).jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "modification": "Original local bytes preserved; CSS crop and scale only. 2008 building photograph, not a current event photograph.",
+    "sourceDimensions": [
+      1024,
+      768
+    ],
+    "derivativeDimensions": [
+      1024,
+      768
+    ],
+    "derivativeSha256": "4c40db19d33163299bef35e19b66894108a32691c90b648dc208596d15527251",
+    "checkedAt": "2026-09-08 (existing credits and local byte hash checked)"
   }
 ]

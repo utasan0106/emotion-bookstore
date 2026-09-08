@@ -1,0 +1,25 @@
+name: Culture events review
+on:
+  workflow_dispatch:
+  schedule:
+    # JST Monday 00:10: verify the newly selected week.
+    - cron: '10 15 * * 0'
+    # JST Friday 09:10: check the weekend and next week.
+    - cron: '10 0 * * 5'
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - name: Review coverage, freshness and official links
+        run: node tools/review-culture-events.js --check-links --strict
+      - name: Keep review report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: culture-events-review
+          path: qa/artifacts/culture-events/
+          retention-days: 30

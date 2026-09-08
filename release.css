@@ -2016,6 +2016,9 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
   .credits-meta dd { margin-bottom: 8px; }
 }
 
+
+.city-culture-paths{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 32px}.city-culture-paths a{padding:14px 18px;border:1px solid #887956;border-radius:4px;min-height:44px;font-size:15px;text-decoration:none;background:#211f1a;color:#fff8e6}.city-culture-paths[hidden]{display:none}
+
 /* ==========================================================================
    HOME — CONTENT-LED IMMERSIVE TIME / VISUAL_CANONICAL 853px
 
@@ -2871,3 +2874,56 @@ button:focus-visible, a:focus-visible, .object-card:has(:focus-visible) {
 .hc-weekly-entry{display:block;background:#24221c;color:#f2ecdf;padding:18px;margin-bottom:22px;line-height:1.7;text-decoration:none}.hc-weekly-entry:focus-visible{outline:3px solid #b38a4b;outline-offset:4px}
 
 .hc-english-entry{position:absolute;right:85px;top:24px;z-index:3;font-family:var(--sans);font-size:13px;color:#f2ecdf;padding:8px;text-underline-offset:4px}@media(max-width:520px){.hc-english-entry{top:55px;right:20px;font-size:12px}}
+
+/* 2026-09-08 R8: Founder requested clear purpose, neutral culture imagery,
+   nonoverlapping controls, and compact HOME. Supersedes hero pixel contracts. */
+.hc-hero{height:auto;min-height:0;overflow:visible;padding-bottom:64px}
+.hc-header{padding:24px max(24px,calc((100vw - 1320px)/2));align-items:center;gap:20px}
+.hc-header-actions{display:flex;align-items:center;gap:24px;flex:none}
+.hc-english-entry{position:static;padding:12px 0;display:inline-block;font-size:14px;line-height:20px}
+.hc-menu-trigger{position:static;flex:none;width:44px;height:44px;padding:0;margin:0;display:flex;align-items:center;justify-content:center}
+.hc-brand-link{font-size:22px;line-height:1.5;margin:0;padding:0}
+.hc-hero-content{display:grid;grid-template-columns:1.05fr 1fr;gap:64px;max-width:1320px;margin:48px auto 0;padding:0 24px;align-items:center}
+.hc-hero-body{position:static;max-width:100%;min-width:0}
+.hc-hero-kicker{color:var(--hc-gold);font-size:14px;letter-spacing:.12em;margin:0 0 24px}
+.hc-hero-title{font-size:clamp(30px,3.4vw,50px);line-height:1.6;max-width:none;letter-spacing:0;font-weight:500}
+.hc-hero-sub{max-width:30em;font-size:16px;line-height:2;margin:24px 0 0}
+.hc-hero-cta{margin-top:30px;background:var(--hc-ivory);color:var(--hc-ink);padding:18px 28px;border:0;min-width:200px;justify-content:space-between;font-family:var(--sans)}
+.hc-hero-cta-label,.hc-hero-cta-mark{color:inherit}
+.hc-hero-cta-label{font-family:var(--sans);font-size:17px;font-weight:600}
+.hc-hero-sub{max-width:32em;text-wrap:pretty}
+.hc-culture-mosaic{display:grid;grid-template-columns:1fr 1fr;gap:12px;height:380px;min-width:0}
+.hc-culture-mosaic figure{margin:0;position:relative;overflow:hidden;min-height:0}
+.hc-culture-mosaic figure:first-child{grid-row:span 2}
+.hc-culture-mosaic img{width:100%;height:100%;object-fit:cover;filter:brightness(.78)}
+.hc-culture-mosaic figcaption{position:absolute;bottom:16px;left:16px;color:white;font-size:20px;font-family:var(--serif)}
+.hc-city-q{font-size:14px;line-height:1.8}
+.hc-thread-section .hc-thread-note{max-width:100%}
+.hc-reality{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center}
+.hc-reality-copy{max-width:100%}
+.hc-reality-lead{font-size:16px;line-height:2;max-width:34em}
+.hc-event-kicker{font-size:13px;color:#736041;letter-spacing:.1em}
+.hc-weekly-entry{display:inline-flex;padding:16px 22px;margin:16px 0 0;background:var(--hc-ink);color:var(--hc-ivory);border:0;text-decoration:none;font-size:17px}
+.hc-reality-hint{font-size:13px;color:#645b50}
+.hc-event-photo{margin:0;min-width:0}
+.hc-event-photo img{display:block;width:100%;height:260px;object-fit:cover}
+.hc-event-photo figcaption{font-size:12px;line-height:1.7;margin-top:10px;color:#645b50}
+@media(max-width:760px){
+.hc-header{padding:16px 20px;gap:12px;flex-wrap:wrap}
+.hc-header-actions{gap:14px;margin-left:auto}
+.hc-brand-link{font-size:18px}
+.hc-hero-content{grid-template-columns:1fr;gap:32px;margin-top:24px;padding:0 24px}
+.hc-hero-title{font-size:clamp(25px,5.5vw,38px);line-height:1.65}
+.hc-hero-kicker{margin-bottom:14px;font-size:12px}
+.hc-hero-sub{font-size:15px;line-height:1.9;margin-top:18px}
+.hc-hero-cta{margin-top:20px;padding:16px 24px}
+.hc-culture-mosaic{height:180px;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.hc-culture-mosaic figure:first-child{grid-row:auto}
+.hc-culture-mosaic figcaption{font-size:16px;bottom:12px;left:12px}
+.hc-hero{padding-bottom:40px}
+.hc-reality{grid-template-columns:1fr;gap:24px}
+.hc-event-photo img{height:210px}
+}
+@media(max-width:390px){.hc-header{column-gap:8px}.hc-brand-link{font-size:16px}.hc-header-actions{gap:10px}.hc-english-entry{font-size:12px}.hc-menu-trigger{width:40px}}
+
+.hc-about-link{display:inline-block;margin-top:16px;padding:8px 0;font-size:13px;color:#cfc7b8;text-underline-offset:4px}

@@ -15,6 +15,7 @@ const header = source.slice(0, source.indexOf('  <main id="main">')).replace(/<!
 const footer = source.slice(source.indexOf('  <footer class="site-footer">'));
 const escape = value => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 function write(name, html) {
+  html=require('./page-chrome')(html);
   const file = path.join(root, name);
   if (process.argv.includes('--check')) {
     if (!fs.existsSync(file) || fs.readFileSync(file, 'utf8') !== html) throw new Error('Generated page differs: ' + name);

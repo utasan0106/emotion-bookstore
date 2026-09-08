@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* HOME CANONICAL CHECK — 853px VISUAL_CANONICAL の静的契約。
+/* HOME CONTRACT CHECK — R8 explicit user requests supersede earlier visual-only locks.
  *
  * Founder/HQ 承認済み HOME 画像が定める新しい HOME の形を、runtime だけを
  * 読んで固定する。ネットワークには一切出ない。
@@ -50,17 +50,16 @@ for (const [name, marker] of [
 /* ---- 2. core copy が一字も違わない ------------------------------------ */
 
 const COPY = [
-  '<span class="hc-hero-line">文化の</span><span class="hc-hero-line">つながりを、</span><span class="hc-hero-line">歩く。</span>',
-  '一曲・一場面を聴く、観る',
+  '気になる作品から、', '次に行きたい街へ。', '作品を探す',
   '街から入る', '街には、文化が息づく理由がある。',
   '作品から入る', 'まずひとつ観る・聴く。気になったら、作品と街を辿る。',
-  'いま辿れるスレッド', 'ひとつの痕跡から、物語をたどる。',
+  '踊りから、街の歴史へ', '高円寺の踊りを、記録と写真で知る。',
   '高円寺の踊り', '高円寺の踊りは、どう始まった？', '1957年の始まりから、木場連との出会いへ。', '踊りの歴史を読む',
-  '実際の場所へ', '気になった場所は、公式情報を確かめて、', '実際の街へ。',
+  '今、街で出会える文化', '文化イベントを選ぶ',
 ];
 for (const c of COPY) check(html.includes(c), `core copy missing: ${c.slice(0, 40)}`);
 const heroSub = (html.match(/<p class="hc-hero-sub">([\s\S]*?)<\/p>/) || [])[1] || '';
-check(heroSub.replace(/<[^>]*>/g, '') === '街の映像、音楽、本、映画に出会う文化案内。気になる作品から、ゆかりの場所へ。', 'First-visit hero must name the media and explain the purpose');
+check(heroSub.replace(/<[^>]*>/g, '') === '映像・音楽・本・映画と、ゆかりの街や今の催しをつなぐ文化案内。', 'First-visit hero must name the media and explain the purpose');
 
 const CITY_COPY = [
   /* FOUNDER PREVIEW FIX A3: 因果の問いは shelf route が答えないので、4 街とも実際の遷移内容に合う同じ copy。 */
@@ -76,15 +75,11 @@ for (const [city, lines] of CITY_COPY) {
 for (const w of ['本', '映画', '音楽', '映像']) {
   check(html.includes(`<span class="hc-work-label">${w}</span>`), `work entry missing: ${w}`);
 }
-const NODES = [['街', '高円寺'], ['出来事', '阿波おどり'], ['人', '踊り手たち'], ['資料', '記録と写真'], ['現在', 'つづく祭り']];
-let nodeCursor = -1;
-for (const [kind, name] of NODES) {
-  const at = html.indexOf(`<span class="hc-node-kind">${kind}</span><span class="hc-node-name">${name}</span>`);
-  if (at < 0) { failures.push(`thread node missing: ${kind}/${name}`); continue; }
-  if (at < nodeCursor) failures.push(`thread node out of order: ${kind}/${name}`);
-  nodeCursor = at;
-}
-check((html.match(/class="hc-node"/g) || []).length === 5, 'thread chain must have exactly 5 nodes');
+// User requested fewer simultaneous concepts on HOME; detailed history lives on its own page.
+check(!html.includes('class="hc-thread-chain"'), 'HOME must not repeat the detailed relationship chain');
+check(html.includes('class="hc-header-actions"'), 'English guide and menu must share a normal-flow layout');
+check(!html.includes('class="hc-hero-media"'), 'HOME must not use one city as its representative hero');
+check(html.includes('class="hc-culture-mosaic"'), 'HOME explains the media with local imagery');
 
 /* ---- 3. 既存の functional contract を壊していない ---------------------- */
 
@@ -139,8 +134,9 @@ check((html.match(/data-route-hold="/g) || []).length === HOLDS.length, `exactly
 const THREAD_ANCHOR = '<a class="hc-thread-read" href="./thread.html?thread=koenji-dance-history">踊りの歴史を読む<span class="hc-thread-read-mark" aria-hidden="true">→</span></a>';
 check(html.split(THREAD_ANCHOR).length === 2, 'thread read must be the real anchor to ./thread.html?thread=koenji-dance-history, exactly once');
 check(!html.includes('data-route-hold="thread-koenji-awaodori"'), 'retired hold thread-koenji-awaodori must not remain');
-const HERO_ANCHOR = '<a class="hc-hero-cta" href="./v3-prototype/culture-experience-r2/index.html"><span class="hc-hero-cta-label">一曲・一場面を聴く、観る</span><span class="hc-hero-cta-mark" aria-hidden="true">→</span></a>';
-check(html.split(HERO_ANCHOR).length === 2, 'hero culture story CTA must be the real anchor to ./thread.html?thread=koenji-dance-history, exactly once (no data-route-hold)');
+const hero = html.match(/<a class="hc-hero-cta"[^>]*>[\s\S]*?<\/a>/g)||[];
+check(hero.length === 1 && hero[0].includes('href="./discover/index.html"'), 'one primary hero action to the work catalogue');
+check((html.match(/href="\.\/discover\/index\.html"/g)||[]).length === 1, 'no duplicate primary catalogue button');
 check(!html.includes('data-route-hold'), 'HOME must carry no data-route-hold at all');
 check((html.match(/thread\.html/g) || []).length === 1, 'HOME keeps one primary link to the Koenji Thread');
 // FOUNDER PREVIEW FIX A2 / A4: route の無い「すべて見る」「スポットを探す」は出さない（新しい一覧 / spots page も作らない）
@@ -164,30 +160,13 @@ check(fs.existsSync(path.join(root, 'works.html')), 'works route target works.ht
 
 /* FOUNDER PREVIEW FIX UNIT D: 外部へ出る href は「実際の場所へ」の 3 つの公式 destination だけ（click まで通信なし）。
    それ以外の外部 src / href は引き続き 0。 */
-const REALITY_DESTINATIONS = [
-  ['井の頭恩賜公園', '東京都公式を見る', 'https://www.kensetsu.metro.tokyo.lg.jp/jimusho/seibuk/inokashira', './assets/inokashira-pond.jpg'],
-  ['矢口書店', '公式サイトを見る', 'https://yaguchishoten.jp/', './assets/yaguchi-shoten.jpg'],
-  ['下北沢 SHELTER', '予定を見る', 'https://www.loft-prj.co.jp/schedule/shelter/schedule', './assets/shimokitazawa-shelter.jpg'],
-];
+// User supersedes the old generic destination strip: actual dated cultural events instead.
 const body = html.slice(html.indexOf('<body'));
-const allowedHrefs = REALITY_DESTINATIONS.map((d) => `href="${d[2]}"`);
 const externalRefs = body.match(/(?:src|href)="(https?:)?\/\/[^"]+"/g) || [];
-for (const m of externalRefs) {
-  if (!allowedHrefs.includes(m)) failures.push(`HOME must not reference an external host at runtime (only the three official destinations may be linked): ${m}`);
-}
-check(externalRefs.length === 3 && allowedHrefs.every((h) => externalRefs.includes(h)), 'HOME links exactly the three official destinations and nothing else external');
-check(!/<(iframe|video|audio|embed|object)\b/i.test(html) && !/instagram\.com/i.test(html), 'HOME carries no embed and no Instagram destination');
-const cards = html.match(/<a class="hc-reality-card official-action"[^>]*>[\s\S]*?<\/a>/g) || [];
-check(cards.length === 3 && (html.match(/hc-reality-card/g) || []).length === 3, 'exactly three reality destination cards (finite)');
-cards.forEach((c, i) => {
-  const [name, action, url, img] = REALITY_DESTINATIONS[i] || [];
-  check(c.includes(`href="${url}"`) && c.includes('target="_blank"') && c.includes('rel="noopener noreferrer"') && c.includes('referrerpolicy="no-referrer"')
-    && c.includes(`<span class="hc-reality-name">${name}</span>`) && c.includes(`<span class="hc-reality-action">${action}<span class="hc-reality-mark" aria-hidden="true"> ↗</span></span>`)
-    && c.includes(`<figure class="hc-reality-shot"><img src="${img}"`) && /alt="[^"]+"/.test(c) && !/data-route-hold/.test(c),
-    `reality card ${i + 1} must be ${name} → ${url} with the exact action label, its photo and click-only attributes`);
-});
-check(!html.includes('home-reality-kichijoji-cafe'), 'the generic Kichijoji tea-shop image must not be a clickable destination on HOME');
-check(html.replace(/<[^>]+>/g, '').includes('気になった場所は、公式情報を確かめて、実際の街へ。'), 'reality lead must read the exact sentence across its line spans');
+check(externalRefs.length === 0, 'HOME keeps external providers behind the relevant detail pages');
+check(!/<(iframe|video|audio|embed|object)\b/i.test(html), 'HOME loads no external media');
+check(html.includes('文化イベントを選ぶ'), 'dated cultural events have a clear entry');
+check(!html.includes('class="hc-reality-card official-action"'), 'generic venue strip retired');
 check(!/<iframe/i.test(html), 'HOME must not embed an iframe');
 for (const t of ['localStorage', 'sessionStorage', 'indexedDB', 'navigator.geolocation', 'fetch(', 'XMLHttpRequest']) {
   check(!html.includes(t), `HOME markup must not contain ${t}`);
@@ -214,7 +193,6 @@ for (const m of html.match(/<a class="hc-work[^"]*"[^>]*>[\s\S]*?<span class="hc
 check((html.match(/class="hc-work-media"/g) || []).length <= 4, 'at most four work image planes');
 // Featured Thread / 現実へ出る #1 は Asset Round 3 で HQ が権利確認した写真
 check(/<div class="hc-thread-media">\s*<img src="\.\/assets\/home-thread-koenji-awaodori\.jpg"/.test(html), 'thread image must be the Awa Odori asset');
-check(/<div class="hc-reality-strip">\s*<a class="hc-reality-card official-action" href="https:\/\/www\.kensetsu\.metro\.tokyo\.lg\.jp\/jimusho\/seibuk\/inokashira"[^>]*>\s*<figure class="hc-reality-shot"><img src="\.\/assets\/inokashira-pond\.jpg"/.test(html), 'reality strip #1 must be the 井の頭恩賜公園 official destination with the pond asset');
 
 /* ---- 6b. NAME AVOIDANCE（Founder no-inquiry decision 2026-09-06）------------
    自分たちの user-facing surface に保護名・類似名を出さない。外部 URL / asset filename /
@@ -281,5 +259,5 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log('HOME_CANONICAL_CHECK_GO');
-  console.log(`sections=5 in canonical order; shelf-entries=4; thread nodes=5; route holds=${HOLDS.length}; hero anchor=1; works anchors=4; local assets=${assets.length}; external hrefs=3 official destinations (click-only); other external hosts=0; iframes=0`);
+  console.log(`sections=5 in canonical order; shelf-entries=4; thread nodes=0; route holds=${HOLDS.length}; hero anchor=1; works anchors=4; local assets=${assets.length}; external hrefs=0; other external hosts=0; iframes=0`);
 }

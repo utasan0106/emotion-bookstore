@@ -1,23 +1,21 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
-const {state}=require('../outings/week');
-const {audiences,issues}=require('../tools/weekly-outings-source');
-const start='2026-09-07',end='2026-09-14';
-assert.equal(state(start,end,Date.parse('2026-09-06T14:59:59Z')),'future');
-assert.equal(state(start,end,Date.parse('2026-09-06T15:00:00Z')),'current');
-assert.equal(state(start,end,Date.parse('2026-09-13T14:59:59Z')),'current');
-assert.equal(state(start,end,Date.parse('2026-09-13T15:00:00Z')),'past');
+const {state,monday,select,dates}=require('../outings/week');
+const {audiences,events,cities}=require('../tools/weekly-outings-source');
+assert.equal(monday(Date.parse('2026-09-13T14:59:59Z')),'2026-09-07');
+assert.equal(monday(Date.parse('2026-09-13T15:00:00Z')),'2026-09-14');
+assert.equal(state('2026-09-07','2026-09-14',Date.parse('2026-09-13T15:00:00Z')),'past');
 assert.deepEqual(audiences.map(a=>a.id),['couple','children','family','friends','solo']);
+const now=Date.parse('2026-09-08T12:00:00+09:00');
+for(const city of Object.keys(cities))assert.ok(select(events,{now,city}).length>=3,city+' needs 3 actual events this week');
+for(const city of Object.keys(cities))assert.ok(select(events,{now,city,week:'2026-09-14'}).length>=3,city+' needs 3 actual events next week');
+const future=select(events,{now,week:'2026-09-14'});assert.ok(future.some(e=>e.id==='jinbocho-ginga'));assert.ok(!select(events,{now}).some(e=>e.id==='jinbocho-ginga'));
+assert.ok(!select(events,{now:Date.parse('2026-09-14T00:00:00+09:00')}).some(e=>e.id==='koenji-azuma'),'Ended events excluded');
+assert.equal(select(events,{now:Date.parse('2026-09-21T00:00:00+09:00')}).length,0,'Unreviewed schedules fail closed');
+const event=events.find(e=>e.id==='kichijoji-taniguchi');assert.ok(!dates(event).includes('2026-09-30'),'Museum closure is not an event day');
+assert.equal(select([{...event,status:'cancelled'}],{now,week:'2026-09-14'}).length,0);
+assert.ok(select(events,{now,audience:'children'}).every(e=>e.audiences.includes('children')));
 const root=path.resolve(__dirname,'..');
-for(const i of issues)for(const s of i.spots){
- const page=fs.readFileSync(path.join(root,`outings/${i.start}/${s.id}.html`),'utf8');
- assert.equal(page.split(`href="${s.url}"`).length-1,1);
- for(const link of page.matchAll(/href="(\/[^"]*)"/g)){
- const target=path.join(root,link[1]);assert.ok(fs.existsSync(target),target);
- }
- assert.match(page,/data-week-start/);assert.match(page,/公式情報確認/);
-}
-const js=fs.readFileSync(path.join(root,'outings/week.js'),'utf8');
-assert.doesNotMatch(js,/fetch\(|localStorage|geolocation|gtag/);
-assert.match(fs.readFileSync(path.join(root,'visit/index.html'),'utf8'),/<html lang="en">/);
-console.log('PASS five audiences, weekly JST start/end boundaries, dated archives, official exits, local routes, no profiling or tracking');
+for(const e of events){const page=fs.readFileSync(path.join(root,`outings/events/${e.id}.html`),'utf8');assert.equal(page.split(`href="${e.url.replaceAll('&','&amp;')}"`).length-1,1,'one official action');assert.match(page,/この街で、なぜこの催し/);assert.match(page,/data-event-status/);assert.match(page,/data-page-tools/);for(const link of page.matchAll(/href="(\/[^"]*)"/g)){const target=path.join(root,link[1].split(/[?#]/)[0]);assert.ok(fs.existsSync(target),target);}}
+assert.doesNotMatch(fs.readFileSync(path.join(root,'outings/week.js'),'utf8'),/fetch\(|localStorage|geolocation|gtag/);
+console.log('PASS '+events.length+' sourced events; 3+ per city this and next week; JST weekly rollover, closures, expiry, cancellation, filters, details and returns');

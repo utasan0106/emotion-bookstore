@@ -134,3 +134,6 @@ docs/
 /tools/work-entry-source.html
 /tools/city-discovery-source.js
 /tools/build-city-discovery.js
+
+# Development-only visual QA dependencies and configuration
+/tools/visual-qa/
