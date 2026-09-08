@@ -1,0 +1,214 @@
+{
+  "checkedAt": "2026-09-08",
+  "scope": "20 existing city-discovery book items; work-book.html uses the same Morisaki new edition. No item substitutions.",
+  "verifiedPublisherPermissionAndImage": [
+    {
+      "id": "indies",
+      "city": "shimokitazawa",
+      "title": "下北沢インディーズ ライブハウスの名探偵",
+      "author": "岡崎琢磨",
+      "publisher": "実業之日本社",
+      "isbn": "9784408557588",
+      "edition": "実業之日本社文庫, 2022-10-07, 288 pages",
+      "coverUrl": "https://www.j-n.co.jp/wp/wp-content/uploads/2022/09/R978-4-408-55758-8.jpg",
+      "width": 500,
+      "height": 719,
+      "sourceUrl": "https://www.j-n.co.jp/books/978-4-408-55758-8/",
+      "termsUrl": "https://www.j-n.co.jp/faq/",
+      "permissionBasis": "Publisher FAQ explicitly allows covers for introduction of the publication, and says currently published works may be introduced with title/author/publisher credit. Exact product page shows 在庫あり. Direct cover URL loaded as an image in the browser with dimensions above.",
+      "caveat": "FAQ also asks users to inquire about titles for which a long time has passed since publication; no threshold is specified. Preserve this nuance; do not characterize this as a new release or an individual permission grant.",
+      "credit": "『下北沢インディーズ ライブハウスの名探偵』岡崎琢磨／実業之日本社（カバーイラスト：ナナカワ）",
+      "html": "<figure><img src=\"https://www.j-n.co.jp/wp/wp-content/uploads/2022/09/R978-4-408-55758-8.jpg\" alt=\"『下北沢インディーズ ライブハウスの名探偵』の表紙\" width=\"500\" height=\"719\" loading=\"lazy\" decoding=\"async\"><figcaption>岡崎琢磨／実業之日本社（カバーイラスト：ナナカワ）</figcaption></figure>"
+    },
+    {
+      "id": "kaijin",
+      "city": "jinbocho",
+      "title": "神保町の怪人",
+      "author": "紀田順一郎",
+      "publisher": "東京創元社",
+      "isbn": "9784488406080",
+      "edition": "創元推理文庫（M）, 2023-10-20, 302 pages; M-き-2-7",
+      "coverUrl": "https://www.tsogen.co.jp/img/cover_image_l/40608.jpg",
+      "width": 218,
+      "height": 306,
+      "sourceUrl": "https://www.tsogen.co.jp/np/isbn/9784488406080",
+      "termsUrl": "https://www.tsogen.co.jp/annai/faq.html",
+      "permissionBasis": "Publisher FAQ explicitly permits personal blogs/SNS etc. to use covers for book introductions/reviews, within its stated quotation context. Exact product page confirms ISBN and cover credits. Direct image loaded at the dimensions above.",
+      "usageScope": "Editorial introduction/review with required nearby credits; this is not a blanket commercial advertising license.",
+      "credit": "『神保町の怪人』紀田順一郎／創元推理文庫（東京創元社）／装画：影山徹／装幀：山田英春",
+      "html": "<figure><img src=\"https://www.tsogen.co.jp/img/cover_image_l/40608.jpg\" alt=\"『神保町の怪人』の表紙\" width=\"218\" height=\"306\" loading=\"lazy\" decoding=\"async\"><figcaption>紀田順一郎／創元推理文庫（東京創元社）／装画：影山徹／装幀：山田英春</figcaption></figure>"
+    }
+  ],
+  "conditionalNotApprovedForAutomaticIntegration": [
+    {
+      "id": "cafe-junjo",
+      "isbn": "9784040707617",
+      "title": "高円寺かふぇ純情の事情",
+      "author": "石原ひな子",
+      "sourceUrl": "https://www.kadokawa.co.jp/product/321507000438/",
+      "coverUrl": "https://cdn.kdkw.jp/cover_1000/321507/321507000438.webp",
+      "termsUrl": "https://www.kadokawa.co.jp/support/b/media/",
+      "reason": "Official DOM contains exact cover URL. Publisher permits book introductions by media/corporations/groups, requires an unmodified band-free official image that can be saved by right-click, full-width ＫＡＤＯＫＡＷＡ credit, and checking special conditions. This run did not establish the site operator's covered category or complete right-click/save verification.",
+      "specialConditionsUrl": "https://media-cdn.kadokawa.co.jp/ijwyneak/hgdliokbjr/shoei.pdf",
+      "specialConditionsChecked": "April 6, 2026 list read; no entry for this title, author, or ISBN.",
+      "creditIfUsed": "『高円寺かふぇ純情の事情』石原ひな子 ＫＡＤＯＫＡＷＡ／富士見L文庫"
+    },
+    {
+      "id": "yorozu",
+      "isbn": "9784041054970",
+      "title": "吉祥寺よろず怪事請負処",
+      "author": "結城光流",
+      "sourceUrl": "https://www.kadokawa.co.jp/product/321612000260/",
+      "termsUrl": "https://www.kadokawa.co.jp/support/b/media/",
+      "reason": "Exact edition verified on publisher page. Same scoped KADOKAWA policy; cover file/right-click verification incomplete. Do not mark permitted by Hanmoto.",
+      "creditIfUsed": "『吉祥寺よろず怪事請負処』結城光流 ＫＡＤＯＫＡＷＡ／角川文庫"
+    },
+    {
+      "id": "gou-gou-book",
+      "isbn": "9784048532587",
+      "title": "グーグーだって猫である",
+      "author": "大島弓子",
+      "sourceUrl": "https://www.kadokawa.co.jp/product/199999853258/",
+      "termsUrl": "https://www.kadokawa.co.jp/support/b/media/",
+      "reason": "Exact original A5 2000-07-28 edition verified; not the bunko edition. Same scoped KADOKAWA policy; file/right-click verification incomplete.",
+      "creditIfUsed": "『グーグーだって猫である』大島弓子 ＫＡＤＯＫＡＷＡ"
+    },
+    {
+      "id": "catwalk",
+      "isbn": null,
+      "title": "吉祥寺キャットウォーク 1",
+      "author": "いしかわじゅん",
+      "sourceUrl": "https://www.kadokawa.co.jp/product/301411001042/",
+      "termsUrl": "https://www.kadokawa.co.jp/support/b/media/",
+      "reason": "Existing link identifies an electronic product page. Do not assign a guessed print ISBN or substitute another edition. Same KADOKAWA policy requires further item verification."
+    }
+  ],
+  "unresolved": [
+    {
+      "id": "junjo",
+      "title": "高円寺純情商店街",
+      "author": "ねじめ正一",
+      "isbn": "9784101021126",
+      "sourceUrl": "https://www.shinchosha.co.jp/book/102112/",
+      "reason": "Exact 新潮文庫 edition verified. Hanmoto page unavailable to research fetch; publisher page says no unauthorized image use. No applicable explicit permission confirmed."
+    },
+    {
+      "id": "jirokichi",
+      "title": "次郎吉 to JIROKICHI",
+      "author": "Live Music JIROKICHI 編",
+      "isbn": "9784911484036",
+      "sourceUrl": "https://www.ele-king.net/books/012100/",
+      "catalogUrl": "https://www.hanmoto.com/bd/isbn/9784911484036",
+      "reason": "Individual Hanmoto page explicitly 利用可否不明, not 利用可."
+    },
+    {
+      "id": "shiroku-somaru",
+      "title": "君のいない町が白く染まる",
+      "author": "安倍雄太郎",
+      "isbn": "9784094064957",
+      "sourceUrl": "https://www.shogakukan.co.jp/books/09406495",
+      "termsUrl": "https://www.shogakukan.co.jp/picture",
+      "reason": "Publisher's no-inquiry cover permission is scoped to schools/libraries and other public facilities; no applicable general-site permission confirmed."
+    },
+    {
+      "id": "1q84",
+      "title": "1Q84",
+      "author": "村上春樹",
+      "isbn": null,
+      "sourceUrl": "https://www.shinchosha.co.jp/harukimurakami/review/100163-e.html",
+      "reason": "Existing URL is a feature/review, not an unambiguous single-volume edition. Do not choose a volume or cover merely for art. No usable permission confirmed."
+    },
+    {
+      "id": "lady-jane",
+      "title": "下北沢祝祭行 レディ・ジェーンは夜の扉",
+      "author": "大木雄高",
+      "isbn": "9784901998727",
+      "sourceUrl": "https://www.genki-shobou.co.jp/books/978-4-901998-72-7",
+      "reason": "Exact work/ISBN identified; Hanmoto page could not be inspected. No explicit usable cover permission confirmed."
+    },
+    {
+      "id": "kamisama",
+      "title": "神様のたまご 下北沢センナリ劇場の事件簿",
+      "author": "稲羽白菟",
+      "isbn": "9784167922030",
+      "sourceUrl": "https://books.bunshun.jp/ud/book/num/9784167922030",
+      "reason": "Existing publisher ISBN retained. Hanmoto page unavailable; no applicable cover reuse terms confirmed."
+    },
+    {
+      "id": "moshimoshi",
+      "title": "もしもし下北沢",
+      "author": "よしもとばなな",
+      "isbn": "9784344419094",
+      "sourceUrl": "https://www.gentosha.co.jp/book/detail/9784344419094/",
+      "termsUrl": "https://www.gentosha.co.jp/sitepolicy/",
+      "reason": "General publisher terms require permission outside legally permitted use; no specific cover reuse grant verified."
+    },
+    {
+      "id": "honda",
+      "title": "「演劇の街」をつくった男 本多一夫と下北沢",
+      "author": "本多一夫 語り／徳永京子 著",
+      "isbn": null,
+      "sourceUrl": "https://prtimes.jp/main/html/rd/p/000000987.000011710.html",
+      "reason": "Original official release identified; no item-specific reusable-cover terms or exact ISBN finalized in time-box."
+    },
+    {
+      "id": "cinema-history",
+      "title": "吉祥寺に育てられた映画館",
+      "author": "本田拓夫",
+      "isbn": "9784160089457",
+      "sourceUrl": "https://books.bunshun.jp/ud/book/num/9784160089457",
+      "reason": "Existing publisher ISBN retained. Hanmoto page unavailable; no specific usable cover permission verified."
+    },
+    {
+      "id": "honnoniwa",
+      "title": "待ち合わせは〈本の庭〉で 吉祥寺・シェア型書店の小さな謎",
+      "author": "藤野ふじの／にーな 装画",
+      "isbn": "9784867168523",
+      "sourceUrl": "https://kotonohabunko.jp/detail/honnoniwa/",
+      "catalogUrl": "https://www.hanmoto.com/bd/isbn/9784867168523",
+      "reason": "Hanmoto individual-page label is 書誌情報利用可（連絡不要）, not an explicit 書影利用可 label. Its image link resolves to noimage.jpg in web extraction. Do not infer cover permission from this bibliographic-only wording or from the separate children's imprint FAQ."
+    },
+    {
+      "id": "morisaki",
+      "title": "森崎書店の日々",
+      "author": "八木沢里志",
+      "isbn": "9784093867658",
+      "edition": "新装版, 2025-10-29",
+      "sourceUrl": "https://www.shogakukan.co.jp/books/09386765",
+      "catalogUrl": "https://www.hanmoto.com/bd/isbn/9784093867658",
+      "termsUrl": "https://www.shogakukan.co.jp/picture",
+      "reason": "Hanmoto individual page explicitly 利用可否不明. Image link resolves to noimage.jpg in extraction. Do not mark permitted. Applies to work-book.html as well."
+    },
+    {
+      "id": "morisaki-sequel",
+      "title": "続・森崎書店の日々",
+      "author": "八木沢里志",
+      "isbn": "9784093867665",
+      "edition": "新装版, 2025-11-26",
+      "sourceUrl": "https://www.shogakukan.co.jp/books/09386766",
+      "catalogUrl": "https://www.hanmoto.com/bd/isbn/9784093867665",
+      "reason": "Hanmoto individual page explicitly 利用可否不明. This is a sequel; do not replace with the first volume's cover."
+    },
+    {
+      "id": "furuhon",
+      "title": "古本食堂",
+      "author": "原田ひ香",
+      "isbn": null,
+      "sourceUrl": "https://www.kadokawaharuki.co.jp/book/detail/detail.php?no=5208",
+      "reason": "Existing publisher URL returned 502 to research fetch. Print editions have distinct ISBNs; exact linked edition/permission not finalized."
+    },
+    {
+      "id": "furuhon-sequel",
+      "title": "古本食堂 新装開店",
+      "author": "原田ひ香",
+      "isbn": null,
+      "sourceUrl": "https://www.kadokawaharuki.co.jp/book/detail/detail.php?no=7272",
+      "reason": "Existing publisher URL returned 502. Exact linked edition/permission not finalized. This is a different story, not a new cover for the first book."
+    }
+  ],
+  "hanmotoPolicy": {
+    "url": "https://www.hanmoto.com/use_bibliographic_information",
+    "summary": "Only the individual-page 利用可 marking confirms publisher permission under this route; use entire cover unchanged except proportional resizing. 利用可否不明 means permission has not been obtained by Hanmoto, not a prohibition. Never treat the existence of a catalog or image URL as permission."
+  },
+  "implementation": "Keep object-fit:contain and aspect ratio; preserve complete artwork; no decorative crop, tint, generic shelf substitute, or item replacement. Attach required credits beside each actual cover."
+}

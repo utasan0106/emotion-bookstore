@@ -1,0 +1,118 @@
+/* Public reading/catalogue system. Same palette and Japanese gothic as home.
+   13 metadata / 15 descriptions / 16 reading / 18 cards / 24–32 headings.
+   Rem units follow text zoom; content width limits long reading lines. */
+body.site-polished{color-scheme:light;--paper:#25282e;--ink:#fff;--hall:#fff;--chalk:#25282e;--chalk-dim:#606772;--muted:#606772;--line:#dfe3eb;--accent:#3158b8;--surface:#fff;--panel:#f0f3fa;--gutter:24px;--sans:"EB Reading","Hiragino Kaku Gothic ProN",sans-serif;--serif:var(--sans);--weather-canvas:#fff;--weather-panel:#f0f3fa;--weather-accent:#3158b8;background:#fff;color:#25282e;font-family:var(--sans);font-size:1rem;line-height:1.85}
+body.site-polished[data-daypart],body.site-polished[data-city-weather]{background:#fff;color:#25282e;--paper:#25282e;--ink:#fff;--hall:#fff;--chalk:#25282e;--chalk-dim:#606772;--muted:#606772;--accent:#3158b8}
+.site-polished *, .site-polished *::before,.site-polished *::after{box-sizing:border-box}
+.site-polished :is(h1,h2,h3,.wk-object,.wk-title,.th-title,.th-object-title){font-family:var(--sans);font-weight:500;letter-spacing:0;line-height:1.55;word-break:normal;overflow-wrap:anywhere;text-wrap:pretty}
+.site-polished :is(h1,.intro h1,.detail h1,.event-detail h1,.wk-title,.th-title){font-size:clamp(1.5rem,1.1rem + 1.6vw,2rem);line-height:1.55}
+.site-polished .detail h1,.site-polished .wk-title{word-break:keep-all;overflow-wrap:anywhere;text-wrap:wrap}
+.site-polished :is(h2,h3,.event-context h2,.event-connections h2){font-size:1.25rem}
+.site-polished :is(p,li,dd){overflow-wrap:anywhere}
+.site-polished :is(a,button,summary,select,input,textarea):focus-visible{outline:3px solid #3158b8;outline-offset:4px}
+.site-polished :is(input,select,textarea,button){font-family:var(--sans);font-size:1rem}
+.site-polished :is(button,select,summary){min-height:44px}
+.site-polished :is(main,.masthead,.footer){max-width:1168px}
+.site-polished :is(.masthead,.site-header){min-height:80px;padding-block:20px;border-bottom:1px solid #dfe3eb;background:#fff;color:#25282e;gap:16px}
+.site-polished .masthead .brand{display:flex;align-items:center;max-width:200px;width:52%;flex-shrink:0}
+.site-polished .masthead .brand img{display:block;width:100%;height:auto;filter:brightness(0)}
+.site-polished .masthead>a:last-child:not(.brand){max-width:none;font-size:.8125rem;min-height:44px;display:flex;align-items:center}
+.site-polished .site-header .brand-lockup-image{filter:brightness(0)}
+.site-polished .intro{padding:40px 0 24px}
+.site-polished .intro h1{margin-bottom:16px}
+.site-polished :is(.lead,.collection-lead,.wk-lead,.detail-hook,.event-detail .detail-hook){color:#606772;font-size:1rem;line-height:1.85;max-width:46rem}
+.site-polished :is(.eyebrow,.wk-category,.th-eyebrow,.relation){color:#3158b8;font-size:.8125rem;line-height:1.7;letter-spacing:.025em}
+.site-polished :is(.creator,.detail-creator,.wk-byline,.checked,.credits,.footer,.source,.player-status,.official-media figcaption){color:#606772;font-size:.8125rem;line-height:1.75}
+.site-polished :is(.primary,.wk-route,.event-card .card-action){background:#3158b8;color:#fff;border:1px solid #3158b8;border-radius:4px;font-size:.9375rem;font-weight:500;padding:12px 18px;min-height:48px;line-height:1.6;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;max-width:100%;white-space:normal}
+.site-polished :is(.primary,.wk-route,.event-card .card-action):hover{background:#254594;color:#fff}
+.site-polished .city-hero{border:0;background:#f0f3fa;border-radius:6px;overflow:hidden;margin-top:24px;grid-template-columns:1.2fr 1fr}
+.site-polished .city-panorama{height:190px}
+.site-polished .city-heading h1{font-size:1.75rem}
+.site-polished .city-heading h1 span{font-family:var(--sans);font-size:1rem;display:block;margin:6px 0 0}
+.site-polished .category-nav{gap:8px;flex-wrap:wrap;overflow:visible}
+.site-polished .category-nav :is(a,span){min-width:0;padding:10px 14px;border-radius:4px;font-size:.875rem;gap:8px;min-height:44px}
+.site-polished .category-nav [aria-current]{background:#3158b8;border-color:#3158b8;color:#fff}
+.site-polished .work-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.site-polished .work-card{display:flex;flex-direction:column;min-width:0;border:1px solid #dfe3eb;border-radius:6px;overflow:hidden;background:#fff}
+.site-polished .card-body{padding:20px;gap:0}
+.site-polished .card-body h2{font-size:1.125rem;margin:0 0 8px}
+.site-polished .card-body h2 a{text-decoration:none}
+.site-polished .card-body .relation{margin-bottom:10px}
+.site-polished .card-body .creator{margin-bottom:12px}
+.site-polished .card-hook{font-size:.9375rem;line-height:1.8;margin-bottom:16px}
+.site-polished .card-links{margin:auto 0 0;display:flex;align-items:center;gap:8px 16px;flex-wrap:wrap}
+.site-polished .card-links>a{min-height:44px;display:inline-flex;align-items:center;font-size:.875rem}
+.site-polished .card-links .primary{min-height:44px;padding:10px 14px}
+.site-polished .official-media{margin:0;max-width:100%;background:#f0f3fa}
+.site-polished .official-media iframe{display:block;border:0;width:100%;height:auto;aspect-ratio:16/9;min-height:200px;background:#f0f3fa}
+.site-polished .official-media figcaption{padding:8px 16px;margin:0}
+.site-polished .official-media figcaption a{color:inherit}
+.site-polished .official-media.cover{padding:20px;display:flex;flex-direction:column;align-items:center}
+.site-polished .official-media.cover img{display:block;max-width:100%;width:auto;height:210px;object-fit:contain}
+.site-polished .official-media.album{padding:20px;display:flex;flex-direction:column;align-items:center}
+.site-polished .official-media.album iframe{width:170px;height:170px;min-height:170px;aspect-ratio:1}
+.site-polished .detail{max-width:760px;margin:40px auto 64px}
+.site-polished .detail>.official-media{margin:24px 0}
+.site-polished .detail>.destination{margin-top:20px}
+.site-polished .background{font-size:.9375rem;border-color:#dfe3eb}
+.site-polished .background summary{font-weight:500;color:#25282e}
+.site-polished .quick-grid a,.site-polished .feature,.site-polished .connection{border-color:#dfe3eb;background:#f0f3fa;border-radius:6px}
+.site-polished .feature{padding:24px}
+.site-polished .city-caption h2{font-size:1.5rem}
+.site-polished #event-filters{background:#f0f3fa;border-color:#dfe3eb;padding:20px}
+.site-polished #event-filters :is(label,select){color:#25282e;font-size:.9375rem}
+.site-polished #event-filters select{background:#fff;border-color:#aeb6c6;min-height:48px}
+.site-polished .event-card{background:#fff;border-color:#dfe3eb;border-radius:6px}
+.site-polished .event-card a:hover,.site-polished .event-card a:focus-visible{background:#f7f9fd}
+.site-polished .event-date{background:#f0f3fa;color:#25282e}
+.site-polished .event-date>span{font:500 1.25rem/1.4 var(--sans);font-variant-numeric:tabular-nums}
+.site-polished .event-card h2{font-size:1.125rem;line-height:1.65}
+.site-polished .event-card .event-city{font-size:.8125rem;color:#606772}
+.site-polished .event-detail{max-width:760px}
+.site-polished .event-detail .detail-hook,.site-polished .event-context p{font-size:1rem}
+.site-polished .event-card .event-detail-link{color:#3158b8;font-size:.875rem}
+.site-polished .event-photo figcaption{font-family:var(--sans);font-size:.6875rem;background:rgba(30,35,45,.88)}
+.site-polished :is(.wk-root,.th-root){max-width:760px}
+.site-polished .wk-head{padding:32px 0 24px}
+.site-polished .wk-entry-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.site-polished .wk-entry{margin:0;padding:0 0 20px;border:1px solid #dfe3eb;border-radius:6px;overflow:hidden}
+.site-polished .wk-entry>:not(.official-media){margin-left:20px;margin-right:20px}
+.site-polished .wk-entry .wk-category{margin-top:20px}
+.site-polished .wk-entry .wk-object{font-size:1.125rem}
+.site-polished .wk-work{padding:0 0 32px}
+.site-polished .wk-work>.wk-object{font-size:1.5rem}
+.site-polished .wk-work>.official-media{margin:20px 0}
+.site-polished .work-official>a{background:#3158b8;color:#fff;border:1px solid #3158b8;border-radius:4px;font-size:.9375rem;font-weight:500;padding:12px 18px;min-height:48px;line-height:1.6;display:inline-flex;align-items:center;text-decoration:none;max-width:100%}
+.site-polished :is(.wk-reading-text,.wk-info-text,.wk-relation,.th-reading,.th-claim-text){font-size:1rem;line-height:1.9}
+.site-polished :is(.wk-current,.wk-info-label,.th-source){font-size:.8125rem;color:#606772}
+.site-polished :is(.wk-info,.th-claim,.memory-note,.saved-empty,.saved-card){background:#f0f3fa;border-color:#dfe3eb;color:#25282e}
+.site-polished .memory-note :is(textarea,input,button),.site-polished .saved-filters :is(input,select){background:#fff;color:#25282e;border-color:#aeb6c6;max-width:100%}
+.site-polished .memory-stamps button[aria-pressed="true"]{background:#3158b8;color:#fff;border-color:#3158b8}
+.site-polished .page-tools a{background:#fff;border-color:#dfe3eb;color:#3158b8;font-family:var(--sans);font-size:.8125rem}
+.site-polished .page-tools.is-scrolled{box-shadow:0 2px 16px #25282e12;border-radius:6px}
+.site-polished .footer{font-size:.8125rem}
+.site-polished .city-weather{border-color:#dfe3eb;background:#f0f3fa}
+.site-polished .city-weather :is(select,button){background:#fff;color:#25282e}
+@media(max-width:600px){
+ body.site-polished{--gutter:20px}
+ .site-polished :is(main,.masthead,.footer){padding-inline:20px}
+ .site-polished .masthead{min-height:72px;gap:8px;padding-block:12px}
+ .site-polished .masthead .brand{max-width:190px;width:58%}
+ .site-polished .masthead>a:last-child:not(.brand){font-size:.8125rem}
+ .site-polished .city-hero{grid-template-columns:1fr}
+ .site-polished .city-panorama{height:140px}
+ .site-polished .city-heading{padding:20px}
+ .site-polished .city-heading h1{font-size:1.5rem}
+ .site-polished .category-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .site-polished .category-nav :is(a,span){justify-content:space-between;font-size:.875rem}
+ .site-polished :is(.work-grid,.wk-entry-grid){grid-template-columns:1fr;gap:20px}
+ .site-polished .detail{margin-top:28px}
+ .site-polished :is(.wk-root,.th-root){width:100%}
+ .site-polished .wk-head{padding-top:24px}
+ .site-polished .primary{width:auto}
+ .site-polished .card-links{align-items:flex-start}
+ .site-polished :is(.event-card-body,.card-body){padding:20px}
+ .site-polished .event-detail>.primary{width:100%}
+ .site-polished .page-tools{flex-wrap:wrap}
+}
+@media(prefers-reduced-motion:reduce){.site-polished *{scroll-behavior:auto;transition:none}}

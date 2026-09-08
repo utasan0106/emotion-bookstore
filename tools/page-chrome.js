@@ -1,5 +1,18 @@
 'use strict';
 module.exports=function chrome(html){
+ // One shared visual contract for the public catalogue and its reading pages.
+ // Keep the accepted home and historical experiments on their own stylesheets.
+ const polished=/href="\/discover\/discover\.css"|<body class="(?:works-page|thread-page|shelf-page|suggest-page)/.test(html);
+ if(polished){
+  html=html.replace(/<body\b([^>]*)>/,(_,attrs)=>'<body'+(/class="/.test(attrs)?attrs.replace(/class="([^"]*)"/,(_m,cls)=>'class="'+[...new Set((cls+' site-polished').split(/\s+/))].join(' ')+'"'):attrs+' class="site-polished"')+'>');
+  html=html.replace(/<meta name="color-scheme" content="dark">/,'<meta name="color-scheme" content="light">');
+  html=html.replace(/<meta name="theme-color" content="[^"]+">/,'<meta name="theme-color" content="#ffffff">');
+  let navCss=false,navJs=false,pageTop=false;
+  html=html.replace(/<link rel="stylesheet" href="\/page-nav\.css">/g,tag=>navCss?'':(navCss=true,tag))
+   .replace(/<script src="\/page-nav\.js" defer><\/script>/g,tag=>navJs?'':(navJs=true,tag))
+   .replace(/<span id="page-top" tabindex="-1"><\/span>/g,tag=>pageTop?'':(pageTop=true,tag));
+  if(!html.includes('href="/site-system.css"')) html=html.replace('</head>','<link rel="stylesheet" href="/site-system.css"></head>');
+ }
  html=html.replace(/(<a class="brand" href="\/">)(みんなの感情書店|Emotion Bookstore)(<\/a>)/, '$1<img src="/assets/brand/emotion-bookstore-lockup-reversed.png" alt="$2" width="1429" height="331">$3');
  const canonical=(html.match(/<link rel="canonical" href="https:\/\/emotionbookstore\.com([^"?]+)"/)||[])[1];
  const post=require('./social-posts-source').find(p=>p.path===canonical);
@@ -19,7 +32,7 @@ module.exports=function chrome(html){
  const en=/<html[^>]*lang="en"/.test(html);
  const nav=`<nav class="page-tools" data-page-tools aria-label="${en?'Page navigation':'ページ移動'}"><a href="/saved.html" class="page-saved">${en?'Saved':'保存した想い'}</a><a href="/" class="page-home">${en?'Home':'トップへ'}</a><a href="#page-top" class="page-up" data-page-up>${en?'Back to top ↑':'ページ上部へ ↑'}</a></nav>`;
  html=html.replace(/<body\b([^>]*)>/, '<body$1><span id="page-top" tabindex="-1"></span>');
- return html.replace('</head>','<link rel="stylesheet" href="/page-nav.css"><script src="/page-nav.js" defer></script></head>').replace('</body>',nav+'</body>');
+ return html.replace(polished?'<link rel="stylesheet" href="/site-system.css">':'</head>','<link rel="stylesheet" href="/page-nav.css"><script src="/page-nav.js" defer></script>'+(polished?'<link rel="stylesheet" href="/site-system.css">':'</head>')).replace('</body>',nav+'</body>');
 };
 
 function memoryForm(en=false) {

@@ -43,7 +43,7 @@
       ]
     },
     {
-      "source": "/((?!$|index\\.html$|v3-prototype/culture-experience-r2/shimokitazawa(?:/|$)|outings/events(?:/|$)).*)",
+      "source": "/((?!$|index\\.html$|works\\.html$|work-music\\.html$|v3-prototype/culture-experience-r2/shimokitazawa(?:/|$)|outings/events(?:/|$)).*)",
       "headers": [
         {
           "key": "Content-Security-Policy",
@@ -89,6 +89,24 @@
     },
     {
       "source": "/index.html",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://www.googleapis.com https://itunes.apple.com; frame-src https://www.youtube-nocookie.com https://bandcamp.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+        }
+      ]
+    },
+    {
+      "source": "/works.html",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://www.googleapis.com https://itunes.apple.com; frame-src https://www.youtube-nocookie.com https://bandcamp.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+        }
+      ]
+    },
+    {
+      "source": "/work-music.html",
       "headers": [
         {
           "key": "Content-Security-Policy",
