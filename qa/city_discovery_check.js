@@ -98,6 +98,10 @@ for(const essay of research) {
   const schemas=[...html.matchAll(/<script type="application\/ld\+json">([^<]+)<\/script>/g)].map(match=>JSON.parse(match[1]));
   const article=schemas.find(schema=>schema['@type']==='Article');
   assert.ok(article,'Research page needs Article schema');
+  for(const id of ['research-comparison','research-timeline','research-sources']) {
+    assert.ok(html.includes(`href="#${id}"`),'Missing research navigation');
+    assert.ok(html.includes(`id="${id}"`),'Missing research destination');
+  }
   assert.equal(article.citation.length,essay.sources.length);
   assert.ok(html.includes('2000年代の資料・当事者の声は未収集'));
   assert.ok(html.includes('すべて終了した企画'));
