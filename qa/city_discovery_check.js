@@ -67,7 +67,43 @@ function inspect(dir) {
   }
 }
 inspect(path.join(root,'discover'));
-assert.equal(pages,85);
+const research=require('../tools/city-research');
+assert.equal(pages,85+research.length);
+for(const essay of research) {
+  const html=fs.readFileSync(path.join(root,`discover/essays/${essay.id}.html`),'utf8');
+  assert.ok(essay.sources.length>=2,'Research needs distinct evidence sources');
+  assert.equal(new Set(essay.sources.map(s=>s.url)).size,essay.sources.length);
+  for(const section of essay.sections) {
+    if(section.kind==='確認できること') assert.ok(essay.sources.some(s=>s.id===section.source),'Fact missing evidence');
+    assert.ok(html.includes(section.title));
+  }
+  for(const source of essay.sources) {
+    assert.ok(source.publishedAt&&source.period&&source.limitation);
+    assert.ok(html.includes(source.url));
+  }
+  for(const row of [...essay.comparisons,...essay.timeline]) {
+    assert.ok(essay.sources.some(source=>source.id===row.source),'Comparison missing evidence');
+  }
+  assert.equal(essay.comparisons.length,4);
+  assert.equal(essay.timeline.length,8);
+  assert.ok(html.includes(`確認済み${essay.sources.length}資料`));
+  assert.ok(html.includes('2000年代の資料・当事者の声は未収集'));
+  assert.ok(html.includes('すべて終了した企画'));
+  assert.ok(html.includes('広告を実物で見る'));
+  assert.ok(html.includes('youtube-nocookie.com/embed/jw5y9UXNp58'));
+  assert.ok(html.includes('明示的な許諾は確認できていない'));
+  assert.ok(!html.includes('prcdn.freetls.fastly.net'),'Do not copy unresolved press images');
+  assert.ok(html.includes('当時の広告・発表画像を見る'));
+  for(const source of essay.sources.filter(source=>source.media)) {
+    assert.equal(source.media.status,'official-embed');
+    assert.match(source.media.videoId,/^[\w-]{11}$/);
+  }
+  assert.ok(html.includes('試読版'));
+  assert.ok(html.includes('広告が来街を増やしたという結論ではない'));
+  assert.ok(html.includes('生データは未検証'));
+  assert.equal((html.match(/<iframe\b/g)||[]).length,essay.sources.filter(source=>source.media?.status==='official-embed').length,'Only reviewed official ad embeds');
+  assert.ok(fs.readFileSync(path.join(root,'discover/kichijoji/index.html'),'utf8').includes(`/discover/essays/${essay.id}.html`));
+}
 assert.equal(new Set(canonicals).size,pages);
 assert.equal(new Set(pageTitles).size,pages);
 for(const i of items) {

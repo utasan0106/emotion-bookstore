@@ -9,6 +9,9 @@ const approvedEvents=new Set(['v3_home_view','v3_shelf_open','v3_shelf_view','v3
 // Morning polish: visual changes, explicit regional-weather labels, directory
 // routing and their bounded QA. The measurement code/payload contract is unchanged.
 for(const file of ['city-weather.js','discover/index.html','page-nav.css','site-system.css','tools/build-city-discovery.js','qa/catalogue_regression_check.js','qa/city_discovery_check.js','qa/weather_client_check.js','qa/type-layout.html','qa/morning-layout.html','DESIGN.md','docs/morning-polish-20260909.md']) allowed.add(file);
+// Source-reviewed city research changes presentation and provenance only. It does
+// not alter the bounded measurement vocabulary or attach analytics to research data.
+for(const file of ['tools/city-research.js','discover/essays/kichijoji-advertising.html','docs/city-discovery/RESEARCH-PILOT-20260909.md']) allowed.add(file);
 function fail(m){console.error('V3_RELEASE_GROWTH_SELFTEST_FAIL: '+m);process.exit(1)}
 function assert(c,m){if(!c)fail(m)} function read(r){return fs.readFileSync(path.join(ROOT,r),'utf8')} function git(a){return cp.execFileSync('git',['-C',ROOT].concat(a),{encoding:'utf8'}).trimEnd()}
 const analytics=read('analytics-v3.js');

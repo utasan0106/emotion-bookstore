@@ -37,6 +37,14 @@ jinbocho:[{
 }],
 kichijoji:[
   {
+    id:'advertising-city',
+    title:'広告の吉祥寺と、あなたが行く吉祥寺。',
+    paragraphs:['高校生だったころと、今の吉祥寺。駅や商業施設の変化、広告が誘う楽しみを年表で辿る試読版です。街の変化と、自分の過ごし方の変化を見比べます。'],
+    sourceUrl:'https://prtimes.jp/main/html/rd/p/000001505.000003639.html',
+    sourceLabel:'パルコ：当時のキャンペーン発表（終了済み）',checkedAt:'2026-09-09',
+    relatedUrl:'/discover/essays/kichijoji-advertising.html',relatedLabel:'広告から見る吉祥寺を読む'
+  },
+  {
     id:'umezz-town',
     title:'楳図かずおの漫画が、吉祥寺の街へ広がるとき',
     paragraphs:[
