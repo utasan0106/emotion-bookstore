@@ -68,7 +68,11 @@ function inspect(dir) {
 }
 inspect(path.join(root,'discover'));
 const research=require('../tools/city-research');
-assert.equal(pages,85+research.length);
+assert.equal(pages,86+research.length);
+const researchIndex=fs.readFileSync(path.join(root,'discover/essays/index.html'),'utf8');
+const discoveryHome=fs.readFileSync(path.join(root,'discover/index.html'),'utf8');
+assert.match(researchIndex,/一つの街を、<br>一つの答えにしない。/);
+assert.match(discoveryHome,/class="research-spotlight"/);
 for(const essay of research) {
   const html=fs.readFileSync(path.join(root,`discover/essays/${essay.id}.html`),'utf8');
   assert.ok(essay.sources.length>=2,'Research needs distinct evidence sources');
@@ -87,6 +91,14 @@ for(const essay of research) {
   assert.equal(essay.comparisons.length,4);
   assert.equal(essay.timeline.length,8);
   assert.ok(html.includes(`確認済み${essay.sources.length}資料`));
+  assert.ok(researchIndex.includes(`/discover/essays/${essay.id}.html`));
+  assert.ok(discoveryHome.includes(`/discover/essays/${essay.id}.html`));
+  assert.match(html,/<meta property="og:type" content="article">/);
+  assert.match(html,/<meta property="article:published_time"/);
+  const schemas=[...html.matchAll(/<script type="application\/ld\+json">([^<]+)<\/script>/g)].map(match=>JSON.parse(match[1]));
+  const article=schemas.find(schema=>schema['@type']==='Article');
+  assert.ok(article,'Research page needs Article schema');
+  assert.equal(article.citation.length,essay.sources.length);
   assert.ok(html.includes('2000年代の資料・当事者の声は未収集'));
   assert.ok(html.includes('すべて終了した企画'));
   assert.ok(html.includes('広告を実物で見る'));

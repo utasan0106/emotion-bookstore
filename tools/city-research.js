@@ -3,8 +3,14 @@
 // advertisement copy, interviews, or individual visitor data are republished.
 module.exports = [{
   id: 'kichijoji-advertising', city: 'kichijoji',
+  cityLabel: '吉祥寺',
+  series: 'AIで街を多角的に読む',
+  issue: '調査 01',
   title: '広告の吉祥寺と、あなたが行く吉祥寺。',
   lead: '同じ吉祥寺でも、広告が誘う楽しみは違う。作品に会う、俳優に会う、街の過ごし方を見つける。2015〜2021年の広告・販促企画を、2024年の来街調査と読み比べる。',
+  lenses: ['広告', '来街目的', '駅と商業施設', '世代と時間'],
+  publishedAt: '2026-09-09',
+  modifiedAt: '2026-09-09',
   checkedAt: '2026-09-09',
   sources: [
     {id:'atre-history', title:'アトレ：会社沿革', publisher:'株式会社アトレ', publishedAt:'掲載日記載なし', period:'2010年4月', type:'運営会社の沿革', url:'https://www.atre.co.jp/company/corporate/history/', limitation:'吉祥寺ロンロンのアトレ化の記録。全店舗の入れ替わりや建物全体の建て替えを示すものではない。'},
