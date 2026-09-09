@@ -1,5 +1,6 @@
 'use strict';
 module.exports=function chrome(html){
+ html=html.replaceAll('href="./index.html#hc-works"','href="/works.html"').replaceAll('<span>作品から入る</span>','<span>作品を探す</span>');
  // One shared visual contract for the public catalogue and its reading pages.
  // Keep the accepted home and historical experiments on their own stylesheets.
  const polished=/href="\/discover\/discover\.css"|<body class="(?:works-page|thread-page|shelf-page|suggest-page)/.test(html);
@@ -15,6 +16,10 @@ module.exports=function chrome(html){
  }
  html=html.replace(/(<a class="brand" href="\/">)(みんなの感情書店|Emotion Bookstore)(<\/a>)/, '$1<img src="/assets/brand/emotion-bookstore-lockup-reversed.png" alt="$2" width="1429" height="331">$3');
  const canonical=(html.match(/<link rel="canonical" href="https:\/\/emotionbookstore\.com([^"?]+)"/)||[])[1];
+ if(polished&&!/<html[^>]*lang="en"/.test(html)&&!html.includes('class="site-sections"')) {
+  const active=canonical?.startsWith('/outings/')?'outings':/class="(?:works-page)/.test(html)?'works':'';
+  html=html.replace('</header>','</header>'+require('./site-navigation')(active));
+ }
  const post=require('./social-posts-source').find(p=>p.path===canonical);
  if(post&&!html.includes('data-social-post')){
   const esc=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

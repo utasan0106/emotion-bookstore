@@ -278,10 +278,10 @@ const MENU_PAGES = ['index.html','shelf.html','suggest.html','data.html','credit
 for (const page of MENU_PAGES) {
   const src = read(page);
   if (src.includes('<p class="pilot-label">4つの街</p>')) failures.push(`${page}: header must not show 4つの街 beside MENU`);
-  for (const label of ['作品から入る','踊りから、街の歴史へ','作品・催しを紹介する','気になるリスト','データの扱い','写真・出典']) {
+  for (const label of ['作品を探す','踊りから、街の歴史へ','作品・催しを紹介する','気になるリスト','データの扱い','写真・出典']) {
     if (!src.includes(label)) failures.push(`${page}: MENU missing ${label}`);
   }
-  for (const [href, label] of [['./index.html#hc-works','作品から入る'],['./index.html#hc-thread','踊りから、街の歴史へ'],['./credits.html','写真・出典'],['./suggest.html','作品・催しを紹介する'],['./data.html','データの扱い']]) {
+  for (const [href, label] of [['/works.html','作品を探す'],['./index.html#hc-thread','踊りから、街の歴史へ'],['./credits.html','写真・出典'],['./suggest.html','作品・催しを紹介する'],['./data.html','データの扱い']]) {
     if (!src.includes(`href="${href}"`)) failures.push(`${page}: MENU link missing ${label} → ${href}`);
   }
   for (const retired of ['<span>今週の寄り道</span>','<span>種類から見る</span>','#weekly-detour','#by-kind']) {

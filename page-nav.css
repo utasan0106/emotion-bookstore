@@ -35,9 +35,18 @@ body:is(.home-discovery,.site-polished) .city-weather :is(.city-weather-place,.c
 .page-tools{display:flex;gap:8px;justify-content:center;padding:20px 16px;margin:0;box-sizing:border-box;font:500 13px/1.4 system-ui,sans-serif}
 .page-tools a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:8px 14px;border:1px solid #c3b48f;border-radius:6px;background:#211f1a;color:#fff8e6;text-decoration:none;box-sizing:border-box}
 .page-tools a:focus-visible{outline:3px solid #e8bb58;outline-offset:3px}
-.page-tools.is-scrolled{position:fixed;z-index:80;right:12px;bottom:max(12px,env(safe-area-inset-bottom));padding:0}
-body:has(.page-tools){padding-bottom:84px}
+.page-tools.is-scrolled{position:static;padding:20px 16px}
+body:has(.page-tools){padding-bottom:env(safe-area-inset-bottom)}
 @media(max-width:480px){.page-tools.is-scrolled{right:10px}.page-tools a{padding:8px 12px;font-size:12px}}
+
+/* Stable destinations on every catalogue and reading page. */
+.site-sections{display:flex;flex-wrap:wrap;gap:0 24px;max-width:1168px;margin:0 auto;padding:0 24px;border-bottom:1px solid #dedede;box-sizing:border-box;font:400 .875rem/1.6 var(--sans,sans-serif)}
+.site-sections a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:10px 0;box-sizing:border-box;color:#262626;text-decoration:none;border-bottom:2px solid transparent}
+.site-sections a:hover,.site-sections a[aria-current]{border-bottom-color:#262626}
+.site-sections a:focus-visible{outline:3px solid #3158b8;outline-offset:2px}
+.home-discovery .site-sections{padding-inline:0;max-width:none}
+@media(max-width:600px){.site-sections{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 8px;padding-inline:20px}.site-sections a{text-align:center;overflow-wrap:anywhere}}
+@media(max-width:360px){.site-sections{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 /* Keep shared mastheads readable at narrow widths. */
 .masthead{flex-wrap:wrap;row-gap:12px}.masthead .brand{white-space:normal;max-width:100%}.masthead>a{overflow-wrap:anywhere}

@@ -7,7 +7,7 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 assert.match(read('index.html'),/href="\/discover\/short-films\/"/);
 const discoveryHome=read('discover/index.html');
 assert.match(discoveryHome,/class="watch-now"/);
-assert.ok(discoveryHome.indexOf('class="watch-now"')<discoveryHome.indexOf('class="city-grid"'));
+assert.ok(discoveryHome.indexOf('class="city-grid"')<discoveryHome.indexOf('class="watch-now"'));
 for(const id of ['bocchi-main-pv','next-town-koenji','kichion-toranoko','used-book-festival']) assert.ok(discoveryHome.includes('/'+id+'.html'));
 assert.equal((discoveryHome.match(/class="official-media"/g)||[]).length,1,'Only the lead film embeds on the directory');
 for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']){

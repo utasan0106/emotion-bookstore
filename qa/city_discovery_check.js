@@ -73,11 +73,11 @@ const researchIndex=fs.readFileSync(path.join(root,'discover/essays/index.html')
 const discoveryHome=fs.readFileSync(path.join(root,'discover/index.html'),'utf8');
 const publicHome=fs.readFileSync(path.join(root,'index.html'),'utf8');
 assert.ok(publicHome.includes('href="/discover/essays/"'));
-assert.match(researchIndex,/一つの街を、<br>一つの答えにしない。/);
+assert.match(researchIndex,/<h1>街の記事<\/h1>/);
 assert.match(discoveryHome,/class="research-spotlight"/);
 assert.ok(discoveryHome.includes('id="city-signals"'));
-assert.ok(discoveryHome.includes('2026年9月9日に公式告知を確認'));
-assert.ok(discoveryHome.includes('自動更新ではありません'));
+assert.ok(discoveryHome.includes('公式告知の確認日：2026年9月9日'));
+assert.ok(discoveryHome.includes('自動更新や人気ランキングではありません'));
 for(const id of ['shimokita-moon','kichijoji-livepainting','jinbocho-pokemon','koenji-cafetalk']) {
   assert.ok(discoveryHome.includes(`/outings/events/${id}.html`));
 }
@@ -86,7 +86,7 @@ for(const essay of research) {
   assert.ok(essay.sources.length>=2,'Research needs distinct evidence sources');
   assert.equal(new Set(essay.sources.map(s=>s.url)).size,essay.sources.length);
   for(const section of essay.sections) {
-    if(section.kind==='確認できること') assert.ok(essay.sources.some(s=>s.id===section.source),'Fact missing evidence');
+    if(['確認できること','調査から分かること','当時の発表から'].includes(section.kind)) assert.ok(essay.sources.some(s=>s.id===section.source),'Fact missing evidence');
     assert.ok(html.includes(section.title));
   }
   for(const source of essay.sources) {
