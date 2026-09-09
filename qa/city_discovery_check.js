@@ -103,6 +103,13 @@ for(const essay of research) {
     assert.ok(html.includes(`id="${id}"`),'Missing research destination');
   }
   assert.equal(article.citation.length,essay.sources.length);
+  assert.ok(html.includes('<section id="research-sources">'),'Sources must remain visible without expanding a disclosure');
+  for(const source of essay.sources) {
+    assert.ok(html.includes(`id="source-${source.id}"`),'Missing source destination');
+  }
+  for(const entry of [...essay.timeline,...essay.comparisons,...essay.sections.filter(section=>section.source)]) {
+    assert.ok(html.includes(`href="#source-${entry.source}"`),'Missing contextual evidence link');
+  }
   assert.ok(html.includes('2000年代の資料・当事者の声は未収集'));
   assert.ok(html.includes('すべて終了した企画'));
   assert.ok(html.includes('広告を実物で見る'));
