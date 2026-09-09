@@ -75,6 +75,12 @@ const publicHome=fs.readFileSync(path.join(root,'index.html'),'utf8');
 assert.ok(publicHome.includes('href="/discover/essays/"'));
 assert.match(researchIndex,/一つの街を、<br>一つの答えにしない。/);
 assert.match(discoveryHome,/class="research-spotlight"/);
+assert.ok(discoveryHome.includes('id="city-signals"'));
+assert.ok(discoveryHome.includes('2026年9月9日に公式告知を確認'));
+assert.ok(discoveryHome.includes('自動更新ではありません'));
+for(const id of ['shimokita-moon','kichijoji-livepainting','jinbocho-pokemon','koenji-cafetalk']) {
+  assert.ok(discoveryHome.includes(`/outings/events/${id}.html`));
+}
 for(const essay of research) {
   const html=fs.readFileSync(path.join(root,`discover/essays/${essay.id}.html`),'utf8');
   assert.ok(essay.sources.length>=2,'Research needs distinct evidence sources');

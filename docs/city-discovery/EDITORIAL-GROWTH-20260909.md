@@ -113,6 +113,17 @@ Xの投稿文とnote導入は別紙 `LAUNCH-COPY-20260909.md` に準備。未投
 
 ## 出典
 
+### 追加：街のトレンドを扱う方針
+
+第一段階として「9月の街の動き」を街の入口に実装。2026年9月9日確認の固定号であり、リアルタイムの人気ランキングではない。4街の既存イベント案内につなぎ、公式告知と編集上の視点を分ける。確認時の開催期間を常に表示し、自動更新とは称さない。
+
+- 下北沢：街なかアート。https://moonartnightfes.com/
+- 吉祥寺：絵本作家の公開制作。https://www.musashino.or.jp/museum/1002032/1002033/1009876.html
+- 神保町：過去の短編アニメの再上映。https://www.shogakukan.co.jp/jinbocho-theater/features/2026-09-19-pokemon-tanpen-2nd.html
+- 高円寺：舞台制作の協働を聞くトーク。https://za-koenji.jp/cafetalk202609
+
+この4件は各街の活動例であり、増加傾向の証拠ではない。次段階では同じ対象・期間で告知を記録し、掲載元の増減や同一告知の転載を分離して比較する。検索関心、SNS言及、催事件数、実来街者数は別の指標とし、混ぜて人気スコアを作らない。比較データが揃うまでは「増えている」「急上昇」を使わない。固定号の差し替えと期限管理の自動化は未実装。
+
 1. BRUTUS「WITHBRUTUS」 https://brutus.jp/withbrutus/ — 会員・メール・体験への入口。
 2. POPEYE Web「僕が住む町の話。」 https://popeyemagazine.jp/category/my-town-episode/ — 人と街の連載構成。
 3. POPEYE Web「タウントーク」 https://popeyemagazine.jp/tag/town-talk/ — 連載、音声、街の案内、ニュースレター。
