@@ -66,11 +66,11 @@ for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']) {
 }
 for(const city of ['koenji','kichijoji']) {
   const html=read('discover/'+city+'/book.html');
-  assert.doesNotMatch(html,/本で触れた街を/);
-  assert.match(html,/同じ街から探す/);
+  assert.match(html,/本で触れた街を/);
+  assert.doesNotMatch(html,/現在掲載していません/);
   const redirects=JSON.parse(read('vercel.json')).redirects;
   for(const item of require('../tools/city-discovery-source').excludedItems.filter(i=>i.city===city&&i.kind==='book')) {
-    assert.equal(redirects.find(r=>r.source===`/discover/${city}/${item.id}.html`).destination,`/discover/${city}/`);
+    assert.equal(redirects.find(r=>r.source===`/discover/${city}/${item.id}.html`).destination,`/discover/${city}/book.html`);
   }
 }
 for(const item of items) {

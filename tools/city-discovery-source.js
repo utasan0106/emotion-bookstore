@@ -160,8 +160,21 @@ for (const item of [...items, ...commonVideos]) {
   if (blockedVideoIds.includes(item.videoId) || blockedVideoIds.includes(item.trailerVideoId)) throw new Error('Private video must not be published: ' + item.id);
 }
 // Publication rule: no individual permission requests or external correspondence.
-// Keep research candidates in source, but publish only works with usable real media.
+// Individually reviewed text-only books may be listed without reproducing a cover.
+// This is not a blanket approval of other research candidates or cover rights.
+const textOnlyBooks = {
+  'koenji/jirokichi': {source:'https://www.ele-king.net/books/012100/', checkedAt:'2026-09-09'},
+  'kichijoji/honnoniwa': {source:'https://kotonohabunko.jp/special/honnoniwa/', checkedAt:'2026-09-09'}
+};
+for(const item of items) {
+  const review=textOnlyBooks[item.city+'/'+item.id];
+  if(!review) continue;
+  if(item.kind!=='book'||item.url!==review.source) throw new Error('Text-only book review mismatch');
+  item.presentation='text-only';
+  item.checkedAt=review.checkedAt;
+  item.action=item.id==='honnoniwa'?'出版社で紹介・試し読みを見る':'出版社で書籍情報を見る';
+}
 const covers = require('./work-cover-source.json');
-const canPublish = item => Boolean(item.videoId || item.trailerVideoId || covers[item.city+'/'+item.id]?.status === 'usable');
+const canPublish = item => Boolean(item.videoId || item.trailerVideoId || covers[item.city+'/'+item.id]?.status === 'usable' || item.presentation==='text-only');
 const excludedItems = items.filter(item => !canPublish(item));
 module.exports = { items: items.filter(canPublish), excludedItems, commonVideos, blockedVideoIds, checkedAt: '2026-09-08' };

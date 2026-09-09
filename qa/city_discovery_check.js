@@ -6,7 +6,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const {items, commonVideos} = require('../tools/city-discovery-source');
 const decode = s => s.replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"');
-assert.equal(items.length,55);
+assert.equal(items.length,57);
 assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,items.length);
 assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,40);
 assert.equal(commonVideos.length,3);
@@ -67,7 +67,7 @@ function inspect(dir) {
   }
 }
 inspect(path.join(root,'discover'));
-assert.equal(pages,80);
+assert.equal(pages,82);
 assert.equal(new Set(canonicals).size,pages);
 assert.equal(new Set(pageTitles).size,pages);
 for(const i of items) {

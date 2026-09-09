@@ -185,7 +185,7 @@ for (const file of fs.readdirSync(commonDir)) {
 // Retired detail URLs retain a route to a current collection; no empty detail shells.
 const configPath=path.join(root,'vercel.json');
 const config=JSON.parse(fs.readFileSync(configPath,'utf8'));
-const retiredPaths=new Set(excludedItems.map(i=>`/discover/${i.city}/${i.id}.html`));
+const retiredPaths=new Set([...excludedItems,...items].map(i=>`/discover/${i.city}/${i.id}.html`));
 config.redirects=(config.redirects||[]).filter(r=>!retiredPaths.has(r.source));
 for(const i of excludedItems)config.redirects.push({source:`/discover/${i.city}/${i.id}.html`,destination:items.some(x=>x.city===i.city&&x.kind===i.kind)?`/discover/${i.city}/${i.kind}.html`:`/discover/${i.city}/`,permanent:false});
 const configText=JSON.stringify(config,null,2)+'\n';

@@ -17,27 +17,22 @@
     },
     {
       "source": "/discover/koenji/junjo.html",
-      "destination": "/discover/koenji/",
-      "permanent": false
-    },
-    {
-      "source": "/discover/koenji/jirokichi.html",
-      "destination": "/discover/koenji/",
+      "destination": "/discover/koenji/book.html",
       "permanent": false
     },
     {
       "source": "/discover/koenji/cafe-junjo.html",
-      "destination": "/discover/koenji/",
+      "destination": "/discover/koenji/book.html",
       "permanent": false
     },
     {
       "source": "/discover/koenji/shiroku-somaru.html",
-      "destination": "/discover/koenji/",
+      "destination": "/discover/koenji/book.html",
       "permanent": false
     },
     {
       "source": "/discover/koenji/1q84.html",
-      "destination": "/discover/koenji/",
+      "destination": "/discover/koenji/book.html",
       "permanent": false
     },
     {
@@ -72,27 +67,22 @@
     },
     {
       "source": "/discover/kichijoji/cinema-history.html",
-      "destination": "/discover/kichijoji/",
-      "permanent": false
-    },
-    {
-      "source": "/discover/kichijoji/honnoniwa.html",
-      "destination": "/discover/kichijoji/",
+      "destination": "/discover/kichijoji/book.html",
       "permanent": false
     },
     {
       "source": "/discover/kichijoji/yorozu.html",
-      "destination": "/discover/kichijoji/",
+      "destination": "/discover/kichijoji/book.html",
       "permanent": false
     },
     {
       "source": "/discover/kichijoji/gou-gou-book.html",
-      "destination": "/discover/kichijoji/",
+      "destination": "/discover/kichijoji/book.html",
       "permanent": false
     },
     {
       "source": "/discover/kichijoji/catwalk.html",
-      "destination": "/discover/kichijoji/",
+      "destination": "/discover/kichijoji/book.html",
       "permanent": false
     },
     {

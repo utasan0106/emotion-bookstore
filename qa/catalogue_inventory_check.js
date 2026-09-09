@@ -2,6 +2,17 @@
 const assert=require('node:assert/strict');
 const inventory=require('../tools/catalogue-inventory')();
 const {items,excludedItems}=require('../tools/city-discovery-source');
+const fs=require('node:fs');
+const path=require('node:path');
+for(const key of ['koenji/jirokichi','kichijoji/honnoniwa']) {
+  const item=items.find(i=>i.city+'/'+i.id===key);
+  assert.ok(item&&item.presentation==='text-only');
+  const html=fs.readFileSync(path.join(__dirname,'../discover',key+'.html'),'utf8');
+  assert.ok(html.includes(item.url));
+  assert.ok(!html.includes('class="official-media'));
+  const redirects=require('../vercel.json').redirects;
+  assert.ok(!redirects.some(r=>r.source==='/discover/'+key+'.html'),'Restored book must not redirect away');
+}
 assert.equal(inventory.rows.length,16);
 assert.equal(inventory.rows.reduce((n,r)=>n+r.published,0),items.length);
 assert.equal(inventory.rows.reduce((n,r)=>n+r.held,0),excludedItems.length);
