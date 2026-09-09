@@ -12,6 +12,8 @@ for(const file of ['city-weather.js','discover/index.html','page-nav.css','site-
 // Source-reviewed city research changes presentation and provenance only. It does
 // not alter the bounded measurement vocabulary or attach analytics to research data.
 for(const file of ['tools/city-research.js','discover/discover.css','discover/index.html','discover/essays/index.html','discover/essays/kichijoji-advertising.html','qa/city_discovery_check.js','tools/build-city-discovery.js','sitemap.xml','docs/city-discovery/RESEARCH-PILOT-20260909.md']) allowed.add(file);
+// Editorial launch slice: new sourced article and navigation only; no new analytics payloads.
+for(const file of ['discover/essays/shimokitazawa-railway.html','discover/shimokitazawa/index.html','docs/city-discovery/EDITORIAL-GROWTH-20260909.md','docs/city-discovery/LAUNCH-COPY-20260909.md']) allowed.add(file);
 function fail(m){console.error('V3_RELEASE_GROWTH_SELFTEST_FAIL: '+m);process.exit(1)}
 function assert(c,m){if(!c)fail(m)} function read(r){return fs.readFileSync(path.join(ROOT,r),'utf8')} function git(a){return cp.execFileSync('git',['-C',ROOT].concat(a),{encoding:'utf8'}).trimEnd()}
 const analytics=read('analytics-v3.js');

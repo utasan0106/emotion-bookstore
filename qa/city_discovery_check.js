@@ -71,6 +71,8 @@ const research=require('../tools/city-research');
 assert.equal(pages,86+research.length);
 const researchIndex=fs.readFileSync(path.join(root,'discover/essays/index.html'),'utf8');
 const discoveryHome=fs.readFileSync(path.join(root,'discover/index.html'),'utf8');
+const publicHome=fs.readFileSync(path.join(root,'index.html'),'utf8');
+assert.ok(publicHome.includes('href="/discover/essays/"'));
 assert.match(researchIndex,/一つの街を、<br>一つの答えにしない。/);
 assert.match(discoveryHome,/class="research-spotlight"/);
 for(const essay of research) {
@@ -89,10 +91,11 @@ for(const essay of research) {
     assert.ok(essay.sources.some(source=>source.id===row.source),'Comparison missing evidence');
   }
   assert.equal(essay.comparisons.length,4);
-  assert.equal(essay.timeline.length,8);
+  assert.equal(essay.timeline.length,essay.id==='kichijoji-advertising'?8:4);
   assert.ok(html.includes(`確認済み${essay.sources.length}資料`));
   assert.ok(researchIndex.includes(`/discover/essays/${essay.id}.html`));
   assert.ok(discoveryHome.includes(`/discover/essays/${essay.id}.html`));
+  assert.ok(publicHome.includes(`/discover/essays/${essay.id}.html`),'Editorial launch needs a public home entrance');
   assert.match(html,/<meta property="og:type" content="article">/);
   assert.match(html,/<meta property="article:published_time"/);
   const schemas=[...html.matchAll(/<script type="application\/ld\+json">([^<]+)<\/script>/g)].map(match=>JSON.parse(match[1]));
@@ -110,6 +113,7 @@ for(const essay of research) {
   for(const entry of [...essay.timeline,...essay.comparisons,...essay.sections.filter(section=>section.source)]) {
     assert.ok(html.includes(`href="#source-${entry.source}"`),'Missing contextual evidence link');
   }
+  if(essay.id==='kichijoji-advertising') {
   assert.ok(html.includes('2000年代の資料・当事者の声は未収集'));
   assert.ok(html.includes('すべて終了した企画'));
   assert.ok(html.includes('広告を実物で見る'));
@@ -124,8 +128,16 @@ for(const essay of research) {
   assert.ok(html.includes('試読版'));
   assert.ok(html.includes('広告が来街を増やしたという結論ではない'));
   assert.ok(html.includes('生データは未検証'));
+  } else {
+    assert.equal(essay.id,'shimokitazawa-railway');
+    assert.equal(essay.sources.length,5);
+    assert.ok(html.includes('2013年3月23日'));
+    assert.ok(html.includes('現在の上映案内ではありません'));
+    assert.ok(html.includes('/discover/shimokitazawa/film.html'));
+    assert.ok(!html.includes('/discover/kichijoji/film.html'));
+  }
   assert.equal((html.match(/<iframe\b/g)||[]).length,essay.sources.filter(source=>source.media?.status==='official-embed').length,'Only reviewed official ad embeds');
-  assert.ok(fs.readFileSync(path.join(root,'discover/kichijoji/index.html'),'utf8').includes(`/discover/essays/${essay.id}.html`));
+  assert.ok(fs.readFileSync(path.join(root,`discover/${essay.city}/index.html`),'utf8').includes(`/discover/essays/${essay.id}.html`));
 }
 assert.equal(new Set(canonicals).size,pages);
 assert.equal(new Set(pageTitles).size,pages);
