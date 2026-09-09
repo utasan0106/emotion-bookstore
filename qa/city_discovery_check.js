@@ -6,12 +6,12 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const {items, commonVideos} = require('../tools/city-discovery-source');
 const decode = s => s.replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"');
-assert.equal(items.length,59);
+assert.equal(items.length,60);
 assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,items.length);
-assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,42);
+assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,43);
 assert.equal(commonVideos.length,3);
 assert.equal(new Set(commonVideos.map(i=>i.id)).size,3);
-assert.equal(new Set([...items.filter(i=>i.videoId),...commonVideos].map(i=>i.videoId)).size,45);
+assert.equal(new Set([...items.filter(i=>i.videoId),...commonVideos].map(i=>i.videoId)).size,46);
 const playbackIds=[...items.filter(i=>i.videoId).map(i=>i.videoId),...items.filter(i=>i.trailerVideoId).map(i=>i.trailerVideoId),...commonVideos.map(i=>i.videoId)];
 assert.equal(new Set(playbackIds).size,playbackIds.length,'Embedded media IDs must not be reused across entries');
 const cities=['koenji','shimokitazawa','kichijoji','jinbocho'];
@@ -67,7 +67,7 @@ function inspect(dir) {
   }
 }
 inspect(path.join(root,'discover'));
-assert.equal(pages,84);
+assert.equal(pages,85);
 assert.equal(new Set(canonicals).size,pages);
 assert.equal(new Set(pageTitles).size,pages);
 for(const i of items) {
