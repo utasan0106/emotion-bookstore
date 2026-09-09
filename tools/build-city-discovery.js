@@ -81,6 +81,17 @@ function write(file, html) {
   const [city, categoryFile]=file.split('/');
   const kind=categoryFile?.replace(/\.html$/, '');
   const editorials=require('./city-editorials')[city];
+  // Columns are a separate reading route, including cities with no book inventory.
+  if(editorials?.length) {
+    const entry=`<p class="editorial-entry"><a href="/discover/${city}/#editorials-title">${cityNames[city]}の街と人のコラムを読む →</a></p>`;
+    html=html.replace('</nav><section class="work-grid"', '</nav>'+entry+'<section class="work-grid"');
+    html=html.replace('</nav><p class="collection-lead"', '</nav>'+entry+'<p class="collection-lead"');
+  }
+  const detailItem=items.find(item=>file===`${item.city}/${item.id}.html`);
+  if(detailItem) {
+    const relation=`<section class="work-city-context" aria-label="街とのつながり"><h2>${cityNames[city]}とのつながり</h2><p>${esc(detailItem.relationNote)}</p></section>`;
+    html=html.replace('<details class="background"><summary>この街との関係・出典</summary>',relation+'<details class="background"><summary>この街との関係・出典</summary>');
+  }
   const editorialKind={koenji:'book',kichijoji:'book',shimokitazawa:'video',jinbocho:'film'}[city];
   if(editorials && (categoryFile==='index.html' || kind===editorialKind)) {
     const heading=city==='kichijoji'?'漫画家と、吉祥寺':`人と作品から知る、${cityNames[city]}`;

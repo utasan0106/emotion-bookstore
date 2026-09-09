@@ -24,5 +24,11 @@
 .city-editorials p,.city-editorials summary{font-size:1rem;line-height:1.85}
 .city-editorials summary{color:var(--ink);font-weight:600}
 .city-editorials .background{margin-top:16px}
+.editorial-entry{margin:8px 0 20px;font-size:1rem}
+.editorial-entry a{display:inline-flex;align-items:center;min-height:44px;text-decoration:underline;text-underline-offset:.2em}
+.work-city-context{margin-block:24px;padding-block:20px;border-top:1px solid var(--line)}
+.work-city-context h2{font-size:1rem;margin:0 0 10px}
+.work-city-context p{font-size:1rem;line-height:1.85;max-width:42em}
+#editorials-title{scroll-margin-top:24px}
 .brand span{font-size:12px}.relation,.creator,.card-number,.city-caption p,.city-caption>span,.credits,.footer{font-size:14px}.quick-grid span,.feature p:not(.eyebrow),.feature small{font-size:14px}
 @media(max-width:600px){.city-hero{grid-template-columns:1fr}.city-panorama{height:170px}.city-heading{padding:20px}.city-heading h1{font-size:30px}.city-heading h1 span{display:inline-block;margin-left:12px}.category-nav{flex-wrap:wrap}.category-nav>a,.category-nav>span{font-size:14px}}

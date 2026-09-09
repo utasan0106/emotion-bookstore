@@ -19,6 +19,11 @@ const profiles=require('../tools/artist-profiles');
 const items=require('../tools/city-discovery-source').items;
 for(const [city,entries] of Object.entries(require('../tools/city-editorials'))) {
   const html=read(`discover/${city}/index.html`);
+  assert.ok(html.includes(`/discover/${city}/#editorials-title`));
+  assert.ok(html.includes('id="editorials-title"'));
+  for(const kind of ['audio','video','book','film']) {
+    assert.ok(read(`discover/${city}/${kind}.html`).includes(`/discover/${city}/#editorials-title`));
+  }
   for(const entry of entries) {
     assert.ok(html.includes(entry.title));
     assert.ok(html.includes(entry.sourceUrl));
@@ -71,6 +76,8 @@ for(const city of ['koenji','kichijoji']) {
 for(const item of items) {
   const html=read('discover/'+item.city+'/'+item.id+'.html');
   const article=html.match(/<article class="detail">[\s\S]*?<\/article>/)[0];
+  assert.match(article,/<section class="work-city-context"/);
+  assert.ok(article.indexOf('class="work-city-context"')<article.indexOf('<summary>この街との関係・出典</summary>'));
   assert.ok(article.includes('/discover/'+item.city+'/'+item.kind+'.html'),'End of detail must offer re-selection: '+item.id);
 }
 for(const [from,to] of [['yoshida-night-edge','yoshida-tinderness'],['yoshida-tinderness','yoshida-night-edge']]){
