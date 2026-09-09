@@ -89,6 +89,7 @@ function write(file, html) {
   }
   const detailItem=items.find(item=>file===`${item.city}/${item.id}.html`);
   if(detailItem) {
+    html=html.replace(`紹介先・出典確認：${checkedAt}。`,`紹介先・出典確認：${detailItem.checkedAt || checkedAt}。`);
     const relation=`<section class="work-city-context" aria-label="街とのつながり"><h2>${cityNames[city]}とのつながり</h2><p>${esc(detailItem.relationNote)}</p></section>`;
     html=html.replace('<details class="background"><summary>この街との関係・出典</summary>',relation+'<details class="background"><summary>この街との関係・出典</summary>');
   }

@@ -166,6 +166,9 @@ const textOnlyBooks = {
   'koenji/jirokichi': {source:'https://www.ele-king.net/books/012100/', checkedAt:'2026-09-09'},
   'kichijoji/honnoniwa': {source:'https://kotonohabunko.jp/special/honnoniwa/', checkedAt:'2026-09-09'}
 };
+video('koenji', 'next-town-koenji', 'となり街、高円寺', '杉並区 / 村井智 監督 / 2017', '初めて訪れる人の目線から、いつもの街を見直す。', '街を巡る観光PR映像', '杉並区の観光PR映像。高円寺を訪れる人物を通して街を紹介する作品です。2017年の制作で、登場する店舗等の営業状況を現在保証するものではありません。', 'Xswbd-IOihs', ['https://xn--elq759cnsa.com/tonarimachi/']);
+video('kichijoji', 'musashino-green', '緑あふれるまち 武蔵野市', '武蔵野市 / 2022年掲載', '駅前から少し離れて、木々や緑地のある風景へ。', '吉祥寺を含む武蔵野市の風景', '武蔵野市が紹介する公園・緑地のハイライト映像。吉祥寺東町農業公園や吉祥寺北町の千川上水、むさしの自然観察園を含みます。吉祥寺だけの映像ではなく、境・関前など市内の他地域も収録されています。', 'TFGQrtHflSg', ['https://www.city.musashino.lg.jp/gomi_kankyo/midori_koen/tokyonomoriwomamorutorikumi/1037102.html']);
+for(const item of items.filter(i=>['next-town-koenji','musashino-green'].includes(i.id))) item.checkedAt='2026-09-09';
 for(const item of items) {
   const review=textOnlyBooks[item.city+'/'+item.id];
   if(!review) continue;
