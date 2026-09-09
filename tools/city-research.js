@@ -20,7 +20,7 @@ module.exports = [{
     {id:'durarara', title:'パルコ：デュラララ!!期間限定ショップの発表', publisher:'株式会社パルコ', publishedAt:'2015-11-12', period:'2015年11月13日〜30日（終了）', type:'販促企画の主催者発表', url:'https://prtimes.jp/main/html/rd/p/000000247.000003639.html', limitation:'期間限定の展示・販売企画の告知。作品の舞台や作者の居住地が吉祥寺であることの証拠ではない。'},
     {id:'kirarina-spring', title:'京王電鉄：キラリナ開業5周年と春の改装発表', publisher:'京王電鉄株式会社', publishedAt:'2019-03-18', period:'2019年4月の5周年・改装企画（終了）', type:'施設運営者の広告・改装発表', url:'https://prtimes.jp/main/html/rd/p/000000300.000022856.html', limitation:'磯村勇斗の起用はキャンペーンとの関係。出身地や居住地との関係を示すものではない。'},
     {id:'kirarina-autumn', title:'京王電鉄：キラリナ秋の改装とキャンペーン発表', publisher:'京王電鉄株式会社', publishedAt:'2019-09-19', period:'2019年11月〜12月の改装・販促企画（終了）', type:'施設運営者の広告・改装発表', url:'https://prtimes.jp/main/html/rd/p/000000363.000022856.html', limitation:'春と同一施設・同一年の改装計画に属する続報。独立した来街者調査として数えず、当時の店舗情報を現在の案内に転用しない。'},
-    {id:'parco', title:'パルコ：吉祥寺パルコ40周年キャンペーン発表', publisher:'株式会社パルコ', publishedAt:'2021-03-09', period:'2021年3月19日〜5月31日の企画（終了）', type:'広告主の発表', url:'https://prtimes.jp/main/html/rd/p/000001505.000003639.html', limitation:'制作側が説明した企画意図。鑑賞者の受け取り方や広告効果の調査ではない。', media:{kind:'youtube',videoId:'jw5y9UXNp58',title:'吉祥寺パルコ40周年キャンペーンの公式ムービー',status:'official-embed',note:'パルコの公式発表に埋め込まれたYouTube動画。動画はYouTubeのプレイヤーから配信されます。'}},
+    {id:'parco', title:'パルコ：吉祥寺パルコ40周年キャンペーン発表', publisher:'株式会社パルコ', publishedAt:'2021-03-09', period:'2021年3月19日〜5月31日の企画（終了）', type:'広告主の発表', url:'https://prtimes.jp/main/html/rd/p/000001505.000003639.html', limitation:'制作側が説明した企画意図。鑑賞者の受け取り方や広告効果の調査ではない。掲載していたYouTube動画は非公開を確認し、2026年9月9日にプレイヤーと視聴リンクを取り下げた。', media:{kind:'youtube',videoId:'jw5y9UXNp58',title:'吉祥寺パルコ40周年キャンペーンの公式ムービー',status:'withdrawn-private',note:'YouTubeで非公開となったため掲載を取り下げました。'}},
     {id:'survey', title:'吉祥寺来街動機等調査2024：結果発表', publisher:'一般財団法人武蔵野市開発公社', publishedAt:'2025-03-13', period:'2024年1月1日〜12月31日', type:'調査実施団体の結果概要', url:'https://prtimes.jp/main/html/rd/p/000000013.000070948.html', limitation:'フリーWi-Fi利用156,623端末を対象とする調査。人数や全来街者の無作為標本ではない。本稿は概要のみを参照し、設問別の母数・生データは未検証。'}
   ],
   comparisons: [
@@ -30,7 +30,7 @@ module.exports = [{
     {source:'parco', when:'2021年 · 吉祥寺パルコ', person:'又吉直樹と街の人々', relation:'街とのゆかりを使った広告・参加企画', action:'好きな場所や過ごし方を共有する', missing:'街に暮らす全員の意見を集めたものではない。'}
   ],
   mediaPolicy: {
-    visible:'公式発表に埋め込まれたYouTube動画を、公式プレイヤーのまま表示します。',
+    visible:'掲載していたYouTube動画は非公開となったため、プレイヤーと視聴リンクを取り下げました。',
     linked:'広告・ポスターの静止画は、各発表元のページで確認できます。',
     withheld:'プレス素材を一般サイトへ転載できる明示的な許諾は確認できていないため、画像ファイルの複製・保存・切り抜きは行っていません。'
   },

@@ -123,12 +123,15 @@ for(const essay of research) {
   assert.ok(html.includes('2000年代の資料・当事者の声は未収集'));
   assert.ok(html.includes('すべて終了した企画'));
   assert.ok(html.includes('広告を実物で見る'));
-  assert.ok(html.includes('youtube-nocookie.com/embed/jw5y9UXNp58'));
+  assert.ok(html.includes('広告資料と文章を、並べて読む。'));
+  assert.ok(html.includes('YouTube動画は非公開となったため'));
+  assert.ok(!html.includes('youtube-nocookie.com/embed/jw5y9UXNp58'));
+  assert.ok(!html.includes('youtube.com/watch?v=jw5y9UXNp58'));
   assert.ok(html.includes('明示的な許諾は確認できていない'));
   assert.ok(!html.includes('prcdn.freetls.fastly.net'),'Do not copy unresolved press images');
   assert.ok(html.includes('当時の広告・発表画像を見る'));
   for(const source of essay.sources.filter(source=>source.media)) {
-    assert.equal(source.media.status,'official-embed');
+    assert.ok(['official-embed','withdrawn-private'].includes(source.media.status));
     assert.match(source.media.videoId,/^[\w-]{11}$/);
   }
   assert.ok(html.includes('試読版'));
