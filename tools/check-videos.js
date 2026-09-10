@@ -34,8 +34,15 @@ const idOf = value => {
 const args = process.argv.slice(2);
 let ids;
 if (args.includes('--catalogue')) {
-  const { items } = require('./city-discovery-source');
-  ids = [...new Set(items.flatMap(i => [i.videoId, i.trailerVideoId]).filter(Boolean))];
+  // Everything the site publishes: city objects, the trailers attached to them, and
+  // the short films, which live in their own list and are just as public. A mode
+  // called --catalogue that quietly skipped a list would be worse than no mode.
+  const { items, commonVideos } = require('./city-discovery-source');
+  ids = [...new Set([
+    ...items.flatMap(i => [i.videoId, i.trailerVideoId]),
+    ...commonVideos.map(v => v.videoId),
+  ].filter(Boolean))];
+  console.error('公開中の ' + ids.length + '本を点検します（街の作品・予告編・短編集）。');
 } else {
   const bad = args.filter(a => !idOf(a));
   if (!args.length || bad.length) {

@@ -85,7 +85,7 @@
 
 ```sh
 node tools/check-videos.js <id または url> [...]
-node tools/check-videos.js --catalogue   # 公開済みの全動画を一括点検
+node tools/check-videos.js --catalogue   # 公開中の全59本（街の作品・予告編・短編集）
 ```
 
 `NG` の行は公開しない。`埋め込み不可` は、動画は存在するが所有者が埋め込みを切っている
