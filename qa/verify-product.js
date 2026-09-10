@@ -22,6 +22,7 @@ const checks=[
  ['qa/social_post_check.js'],
  ['qa/culture_delivery_csp_check.js'],
  ['qa/analytics_contract_check.js'],
+ ['qa/duplicate_text_check.js'],
  ['tools/build-work-pages.js','--check'],
  ['tools/build-city-discovery.js','--check'],
  ['qa/ga4_v3_client_selftest.js']

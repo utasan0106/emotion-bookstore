@@ -254,6 +254,15 @@ const cardEvidence = i => {
   const written = i.sources.find(u => !/(^|\.)(youtube\.com|youtu\.be)$/.test(new URL(u).hostname.replace(/^www\./, '')));
   return written ? {label: '出典', url: written} : {label: '記録', url: i.sources[0]};
 };
+// 同じサイトの別ページを2本出すと、見出しが同じリンクが2つ並び、押すまで違いが
+// 分からない。同じホストが重なるときだけ、経路の先頭を足して区別する。
+const sourceLabel = (url, all) => {
+  const host = u => new URL(u).hostname.replace(/^www\./, '');
+  const name = host(url);
+  if (all.filter(u => host(u) === name).length < 2) return name + ' の掲載情報';
+  const seg = new URL(url).pathname.split('/').filter(Boolean)[0];
+  return name + (seg ? '/' + seg : '') + ' の掲載情報';
+};
 function workCard(i) {
   return `<article class="work-card ${i.kind}">${workMedia.forItem(i)}<div class="card-body"><p class="relation">${esc(categories[i.kind].name)} · ${esc(i.relation)}</p><h2><a href="/discover/${i.city}/${i.id}.html">${esc(i.title)}</a></h2><p class="creator">${esc(i.creator)}</p><p class="card-hook">${esc(i.hook)}</p><p class="card-why"><span>なぜこの街？</span>${esc(i.relationNote)}</p><p class="card-source">${cardEvidence(i).label} ${external(cardEvidence(i).url, sourceHost(cardEvidence(i).url))}</p>${artistProfile(i)}<div class="card-links"><a class="primary" href="/discover/${i.city}/${i.id}.html">作品を見る</a><a href="/discover/${i.city}/${i.kind}.html">${categories[i.kind].name}の一覧</a></div></div></article>`;
 }
@@ -395,7 +404,7 @@ for(const item of items) {
   // 同じ説明文を「街とのつながり」の節と開閉ブロックの両方に出していた。読者には
   // 同じ段落が二度続いて見える。しかも48件は開いても確認日しか入っていない。
   // 説明と、その根拠と、確認日は一つのものなので、一つの節にまとめる。
-  const background=`<section class="work-city-context" aria-label="街とのつながり"><h2>${cityNames[city]}とのつながり</h2><p>${esc(item.relationNote)}</p>${sourceLinks.map(s=>`<p>${external(s,new URL(s).hostname.replace('www.','')+' の掲載情報')}</p>`).join('')}<p>紹介先・出典確認：${checkedAt}。${item.videoId?(kind==='audio'?'音楽・サウンド':'映像')+'は公開元のプレイヤーで提供されます。':'外部の視聴・読書条件は各提供元の案内で確認できます。'}</p></section>`;
+  const background=`<section class="work-city-context" aria-label="街とのつながり"><h2>${cityNames[city]}とのつながり</h2><p>${esc(item.relationNote)}</p>${sourceLinks.map(s=>`<p>${external(s,sourceLabel(s,sourceLinks))}</p>`).join('')}<p>紹介先・出典確認：${checkedAt}。${item.videoId?(kind==='audio'?'音楽・サウンド':'映像')+'は公開元のプレイヤーで提供されます。':'外部の視聴・読書条件は各提供元の案内で確認できます。'}</p></section>`;
 write(`${city}/${item.id}.html`, shell(`${item.title}｜${cityNames[city]}の${categories[kind].name}`, `<article class="detail"><p class="eyebrow">${cityNames[city]} / ${categories[kind].name} / ${esc(item.relation)}</p><h1>${esc(item.title)}</h1><p class="detail-creator">${esc(item.creator)}</p><p class="detail-hook">${esc(item.hook)}</p>${player}${trailer}<div class="destination">${action}<p>${item.url.startsWith('/')?'このサイト内で、本人操作による映像・音の体験へ。':item.videoId?'表示・再生できない場合は、公開元の同じ'+(kind==='audio'?'音':'映像')+'へ。':'外部の作品・特集ページへ。'}${item.url.startsWith('/')?'':'新しいタブで開きます。'}</p></div>${artistProfile(item)}${background}${relatedPerformance(item)}${relatedWork(item)}<p class="city-exit"><a href="/discover/${city}/${kind}.html">${categories[kind].name}を選び直す →</a></p><p class="city-exit"><a href="/shelf.html?shelf=${city}">${cityNames[city]}の場所・歴史へ →</a></p></article>`, `<a href="/discover/${city}/${kind}.html">${categories[kind].name}を選び直す ←</a>`, city));
 }
 // Entries are replaced during editorial maintenance. Remove only obsolete generated
