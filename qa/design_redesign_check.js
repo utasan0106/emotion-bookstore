@@ -37,7 +37,20 @@ for(const file of files){
  for(const seg of text(base).split(' ')) if(seg&&!derived.test(seg)) baselineText.add(seg);
  currentText.push(text(html));
 }
-for(const l of baselineLinks) assert.ok(currentLinks.has(l),'destination no longer anywhere on the site: '+l);
+// 意図して閉じた行き先は、代わりにどこへ行くのかを書く。書かなければ落ちる。
+// 2026-09-10：トップのカテゴリはページ内の絞り込みだった。押しても1件しか出ず、
+// 読者が離脱する。全件のある一覧へ向け直した。
+const retiredDestinations={
+  '?kind=book#hc-works': '/work-book.html',
+  '?kind=music#hc-works': '/work-music.html',
+  '?kind=video#hc-works': '/work-video.html'
+};
+for(const l of baselineLinks){
+ if(currentLinks.has(l)) continue;
+ const replacement=retiredDestinations[l];
+ assert.ok(replacement,'destination no longer anywhere on the site: '+l);
+ assert.ok(currentLinks.has(replacement),'retired destination '+l+' names a replacement that is not linked: '+replacement);
+}
 const everything=currentText.join(' ');
 for(const seg of baselineText) assert.ok(everything.includes(seg),'content no longer anywhere on the site: '+JSON.stringify(seg.slice(0,40)));
 for(const file of ['release.js','release_content.js','release.css','analytics-v3.js','memory-note.js','api/tokyo-weather.js']){

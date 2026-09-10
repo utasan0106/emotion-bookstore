@@ -31,6 +31,18 @@ const events=[
  {id:'kichijoji-livepainting',city:'kichijoji',title:'谷口智則 サンタオブジェのライブペインティング',kind:'絵本・アート',venue:'武蔵野市立吉祥寺美術館 ロビー',dates:days('09',[19]),schedule:'9/19 14:00開始。',hook:'吉祥寺から着想した「ギターサンタ」が、目の前で色づく。',relation:'絵本作家・谷口智則が、吉祥寺をイメージしたサンタの立体作品を公開制作。絵本の作り手、音楽のモチーフ、街のイメージが一つの作品に重なります。',practical:'参加無料・事前申込不要。どなたでも参加可能。最新の実施案内は美術館公式へ。',audiences:everyone,companionNote:'子どもと色が加わる様子を見る、家族で作品の変化を話す時間にも。',url:'https://www.musashino.or.jp/museum/1002032/1002033/1009876.html',related:[{id:'kichijoji-taniguchi',reason:'同じ作家の絵本原画を、同じ美術館の展覧会で見られます。'}]},
  {id:'jinbocho-pokemon',city:'jinbocho',title:'ポケモン短編まつりⅡ',kind:'映画・アニメ',venue:'神保町シアター',dates:days('09',[19,20,21,22,23,24,25]),schedule:'9/19・21・23 11:00、9/20・22 17:45、9/24 16:30、9/25 19:15。',hook:'知っているポケモンから、映画館で観る短編アニメへ。',relation:'1999年、2001年、2003年の短編3作品を、神保町シアターでまとめて上映。街との接点は撮影地ではなく、この映画館の特集上映です。',practical:'3本立て74分。一般2,000円、3歳以上小学生以下1,500円。9/19・21の11:00回のみ親子で映画館デビュー応援上映（明るめ・音量控えめ）。ほかの回の条件・空席は公式へ。',audiences:everyone,companionNote:'子連れの場合は、親子向けの鑑賞環境が用意される9/19・21の回を選べます。',url:'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-09-19-pokemon-tanpen-2nd.html'},
 ];
-const kinds=[{id:'exhibition',label:'展示・アート'},{id:'live',label:'ライブ'}];
-const browseKinds=e=>e.kind==='ライブ'?['live']:['kichijoji-taniguchi','shimokita-moon','kichijoji-livepainting'].includes(e.id)?['exhibition']:[];
+// 種類は催しの実態に合わせる。24件のうち17件がどの種類にも属さず、
+// 「すべての催し」以外からは一切辿り着けなかった。kind 欄に書いてある内容で振り分ける。
+const kinds=[{id:'stage',label:'演劇・舞台'},{id:'film',label:'映画'},{id:'talk',label:'本・トーク'},{id:'exhibition',label:'展示・アート'},{id:'live',label:'ライブ'}];
+const browseKinds=e=>{
+ const k=e.kind, out=[];
+ // 「本・音楽・トーク」は音楽についての話であって、演奏を聴く催しではない。
+ // ライブは kind がそのものずばりのものだけにする。
+ if(k==='ライブ') out.push('live');
+ if(/美術|アート/.test(k)) out.push('exhibition');
+ if(/演劇|ダンス/.test(k)) out.push('stage');
+ if(/映画|アニメ/.test(k)) out.push('film');
+ if(/本|文学|トーク|お笑い/.test(k)) out.push('talk');
+ return out;
+};
 module.exports={cities,kinds,events:events.map(e=>({browseKinds:browseKinds(e),checkedAt:'2026-09-08',reviewThrough:'2026-09-20',status:'scheduled',...e})),audiences:[{id:'couple',label:'恋人と'},{id:'children',label:'子どもと'},{id:'family',label:'家族で'},{id:'friends',label:'友人と'},{id:'solo',label:'ひとりで'}]};
