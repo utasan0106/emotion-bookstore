@@ -240,8 +240,24 @@ for(const essay of research) {
   const summary=`<aside class="article-summary" aria-labelledby="article-summary-title"><h2 id="article-summary-title">この記事の要点</h2><ul>${essay.summary.map(point=>`<li>${esc(point)}</li>`).join('')}</ul></aside>`;
   write(`essays/${essay.id}.html`,shell(essay.title,`<article class="detail research-article"><p class="eyebrow">${esc(essay.series)} · ${esc(essay.issue)}</p><p class="research-back"><a href="/discover/essays/">街の記事一覧</a> / ${esc(essay.cityLabel)}</p><h1>${esc(essay.title)}</h1><p class="detail-hook">${esc(essay.lead)}</p><p class="research-byline">みんなの感情書店編集部 · 更新 ${esc(essay.modifiedAt)}</p>${summary}<nav class="research-toc" aria-label="記事の目次"><a href="#research-reading">本文を読む</a><a href="#research-timeline">街の変化を辿る</a><a href="#research-comparison">${essay.mediaIntro?'視点を比べる':'広告を比べる'}</a><a href="#research-sources">調べ方・出典</a></nav><div class="research-reading" id="research-reading">${sections}</div>${timeline}${comparison}${media}<section><h2>${esc(essay.nextTitle || '今度は、映像の吉祥寺へ。')}</h2><p>${esc(essay.nextText || '広告の中の街と見比べたら、映画や街の映像では何が目に留まるだろう。')}</p><p><a href="/discover/${essay.city}/film.html">${esc(essay.cityLabel)}とつながる映画を見る →</a></p><p><a href="/discover/${essay.city}/video.html">街の映像を選ぶ →</a></p></section><section id="research-sources"><h2>調べ方と出典：確認済み${essay.sources.length}資料</h2><p>${esc(essay.methodology)}</p><p>資料の発表内容と編集上の解釈を区別しています。AIを資料探索・比較・文章化に使用しています。出典ごとの対象期間と確認範囲は以下に記載しています。</p>${ledger}<p>出典確認：${esc(essay.checkedAt)}</p></section></article>`,'<a href="/discover/essays/">街の記事へ戻る</a>'));
 }
+// 差別化は理念ページではなく、一覧の1枚ごとに見えていなければ体験されない。
+// カードに載っているのは「映画 · 撮影された街」というラベルで、これは分類であって
+// 理由ではない。なぜその街なのかと、その根拠がどこにあるのかを、詳細ページまで
+// 進まなくても読めるようにする。出典は先頭の1件だけ。残りは詳細ページにある。
+const sourceHost = url => {
+  try { return new URL(url).hostname.replace(/^www\./, ''); }
+  catch { throw new Error('Source is not a url: ' + url); }
+};
+// 出典として先頭を機械的に出すと、27件が「出典 youtube.com」になる。それらは配信元の
+// 記事ではなく、その会場で実際に鳴った演奏の**記録そのもの**である。根拠として弱いのでは
+// なく、種類が違う。混ぜて「出典」と呼ぶと、確かめている度合いを実際より低く見せる。
+// 説明のある出典があればそれを採り、記録しかないものは「記録」と呼ぶ。
+const cardEvidence = i => {
+  const written = i.sources.find(u => !/(^|\.)(youtube\.com|youtu\.be)$/.test(new URL(u).hostname.replace(/^www\./, '')));
+  return written ? {label: '出典', url: written} : {label: '記録', url: i.sources[0]};
+};
 function workCard(i) {
-  return `<article class="work-card ${i.kind}">${workMedia.forItem(i)}<div class="card-body"><p class="relation">${esc(categories[i.kind].name)} · ${esc(i.relation)}</p><h2><a href="/discover/${i.city}/${i.id}.html">${esc(i.title)}</a></h2><p class="creator">${esc(i.creator)}</p><p class="card-hook">${esc(i.hook)}</p>${artistProfile(i)}<div class="card-links"><a class="primary" href="/discover/${i.city}/${i.id}.html">作品を見る</a><a href="/discover/${i.city}/${i.kind}.html">${categories[i.kind].name}の一覧</a></div></div></article>`;
+  return `<article class="work-card ${i.kind}">${workMedia.forItem(i)}<div class="card-body"><p class="relation">${esc(categories[i.kind].name)} · ${esc(i.relation)}</p><h2><a href="/discover/${i.city}/${i.id}.html">${esc(i.title)}</a></h2><p class="creator">${esc(i.creator)}</p><p class="card-hook">${esc(i.hook)}</p><p class="card-why"><span>なぜこの街？</span>${esc(i.relationNote)}</p><p class="card-source">${cardEvidence(i).label} ${external(cardEvidence(i).url, sourceHost(cardEvidence(i).url))}</p>${artistProfile(i)}<div class="card-links"><a class="primary" href="/discover/${i.city}/${i.id}.html">作品を見る</a><a href="/discover/${i.city}/${i.kind}.html">${categories[i.kind].name}の一覧</a></div></div></article>`;
 }
 // The rotation the city pages walk. Each list is an editorial order: the first entry
 // is what the page leads with in week one, the next in week two, and after the last
@@ -368,7 +384,7 @@ for(const city of cities) for(const [kind, category] of Object.entries(categorie
   const selected=items.filter(i=>i.city===city&&i.kind===kind);
   if(selected.length>10)throw new Error(city+' '+kind+': keep a collection at most ten entries');
   const tabs=Object.entries(categories).filter(([k])=>items.some(i=>i.city===city&&i.kind===k)).map(([k,v])=>k===kind?`<span aria-current="page">${v.name} <small>${items.filter(i=>i.city===city&&i.kind===k).length}</small></span>`:`<a href="/discover/${city}/${k}.html">${v.name} <small>${items.filter(i=>i.city===city&&i.kind===k).length}</small></a>`).join('');
-  const cards=selected.map(i=>`<article class="work-card ${kind}">${workMedia.forItem(i)}<div class="card-body"><p class="relation">${esc(i.relation)}</p><h2><a href="/discover/${city}/${i.id}.html">${esc(i.title)}</a></h2><p class="creator">${esc(i.creator)}</p><p class="card-hook">${esc(i.hook)}</p>${artistProfile(i)}<div class="card-links">${i.url.startsWith('/')?`<a class="primary" href="${esc(i.url)}">${esc(i.action)} →</a>`:external(i.url,i.action,'primary official-exit')}<a href="/discover/${city}/${i.id}.html">紹介を読む →</a></div></div></article>`).join('');
+  const cards=selected.map(i=>`<article class="work-card ${kind}">${workMedia.forItem(i)}<div class="card-body"><p class="relation">${esc(i.relation)}</p><h2><a href="/discover/${city}/${i.id}.html">${esc(i.title)}</a></h2><p class="creator">${esc(i.creator)}</p><p class="card-hook">${esc(i.hook)}</p><p class="card-why"><span>なぜこの街？</span>${esc(i.relationNote)}</p><p class="card-source">${cardEvidence(i).label} ${external(cardEvidence(i).url, sourceHost(cardEvidence(i).url))}</p>${artistProfile(i)}<div class="card-links">${i.url.startsWith('/')?`<a class="primary" href="${esc(i.url)}">${esc(i.action)} →</a>`:external(i.url,i.action,'primary official-exit')}<a href="/discover/${city}/${i.id}.html">紹介を読む →</a></div></div></article>`).join('');
   write(`${city}/${kind}.html`, shell(`${cityNames[city]}の${category.name}`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><p class="eyebrow">街と作品の文化案内</p><h1>${cityNames[city]}<span>の${category.name}</span></h1></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><p class="collection-lead">${kind==='audio'?'この街で実際に鳴った音楽やサウンドを、まず一曲。':kind==='video'?'街の人、店先、時間。気になる映像をひとつ。':kind==='book'?'物語から入って、ゆかりの街を知る。': '街が舞台の映画と、街の映画館が選んだ映画。'}</p><section class="work-grid" aria-label="${category.name}の${selected.length}件">${cards || `<p>この街の${category.name}は現在掲載していません。<a href="/works.html">紹介中の作品を見る →</a></p>`}</section>${cityContinuation(city,kind)}${seriesEntry(kind)}${shortFilmsEntry()}<p class="city-exit"><a href="/shelf.html?shelf=${city}">${cityNames[city]}の場所・歴史へ →</a></p><p class="city-exit"><a href="/outings/?city=${city}">${cityNames[city]}の今の文化イベントへ →</a></p>${credits([city])}</div>`, '<a href="/discover/index.html">街を選び直す ←</a>', city));
 }
 for(const item of items) {
