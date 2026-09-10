@@ -6,6 +6,41 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const source = fs.readFileSync(path.join(__dirname, 'work-entry-source.html'), 'utf8');
 const media=require('./work-media');
+const {items:cityItems}=require('./city-discovery-source');
+const cityNames={koenji:'高円寺',shimokitazawa:'下北沢',kichijoji:'吉祥寺',jinbocho:'神保町'};
+const catalogueKind={book:'book', film:'film', music:'audio', video:'video'};
+const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// The entry page led with one work and stopped there, so the whole catalogue of that
+// kind was reachable only through the city pages. A plain list, not a second grid of
+// cards: the reader is choosing what to read next, not being shown a shop front twice.
+// The work this page already leads with, where the catalogue holds the same object.
+// The music entry is a Bandcamp album that has no city entry, hence no id.
+const featuredCatalogueId={book:'jinbocho/kaijin', film:'jinbocho/morisaki-film', video:'koenji/awa-2025'};
+// The book entry already offered the way through to its city page; film and video did
+// not, so the object the page leads with was the one object it could not follow.
+function cityLink(entryId, section){
+  const led=featuredCatalogueId[entryId];
+  if(!led||section.includes(`/discover/${led}.html`)) return section;
+  return section.replace(/<\/section>\s*$/, `<p><a href="/discover/${led}.html">作品と街のつながりを読む →</a></p></section>`);
+}
+// How many of this kind are actually behind the entry. The catalogue grows, so the
+// number is counted rather than written down, and the featured work is counted once.
+function kindCount(entryId){
+  const kind=catalogueKind[entryId];
+  const led=featuredCatalogueId[entryId];
+  const total=cityItems.filter(i=>i.kind===kind).length + (led?0:1);
+  const label={book:'本', film:'映画', music:'音楽', video:'映像'}[entryId];
+  return `<span class="wk-count">${label} ${total}件</span>`;
+}
+function collection(entryId, section){
+  const kind=catalogueKind[entryId];
+  const led=featuredCatalogueId[entryId];
+  const rows=cityItems.filter(i=>i.kind===kind&&`${i.city}/${i.id}`!==led&&!section.includes(`/discover/${i.city}/${i.id}.html`));
+  if(!rows.length) return '';
+  const label={book:'本', film:'映画', music:'音楽', video:'映像'}[entryId];
+  const list=rows.map(i=>`<li><a href="/discover/${i.city}/${i.id}.html">${esc(i.title)}</a><span class="wk-list-by">${esc(i.creator)}</span><span class="wk-list-rel">${esc(cityNames[i.city])} · ${esc(i.relation)}</span></li>`).join('');
+  return `<section class="wk-list" aria-label="ほかの${label}"><h2>ほかの${label}</h2><p class="wk-list-lead">街ごとに、関係を確かめたものだけを並べています。</p><ul>${list}</ul></section>`;
+}
 const mediaFor=entry=>entry.id==='music'?media.album():entry.id==='video'?media.youtube('dt33RGSRuo0',entry.title,'主催団体の公式映像（5分39秒）'):entry.id==='film'?media.youtube('6M0vx8wLEbM',entry.title,'予告編（本編ではありません）'):media.cover('jinbocho/kaijin',entry.title);
 const entries = [
   { id: 'book', kind: '本', title: '神保町の怪人', byline: '紀田順一郎', city: '神保町', relation: '物語の舞台', action: '本の紹介へ' },
@@ -45,7 +80,8 @@ for (const entry of entries) {
       <h1 class="wk-title">${entry.title}</h1>
       <p class="wk-lead">${entry.kind} · ${entry.city} · ${entry.relation}</p>
     </header>
-    ${section}
+    ${cityLink(entry.id, section)}
+    ${collection(entry.id, section)}
     <div class="wk-exit"><p class="end-exit"><a class="other-shelves" href="./index.html">入口へ戻る</a></p></div>
   </div></main>
 
@@ -59,7 +95,7 @@ const cards = entries.map(e => `      <section id="${e.id}" class="wk-entry" ari
         <p class="wk-byline">${e.byline}</p>
         <p class="wk-city">${e.relation}：${e.city}</p>
         ${officialActions[e.id]||''}
-        <p class="wk-primary"><a class="wk-route" href="./work-${e.id}.html">${e.action}<span aria-hidden="true"> →</span></a></p>
+        <p class="wk-primary"><a class="wk-route" href="./work-${e.id}.html">${e.action}<span aria-hidden="true"> →</span></a>${kindCount(e.id)}</p>
       </section>`).join('\n');
 write('works.html', header + `  <main id="main"><div class="wk-root">
     <header class="wk-head">

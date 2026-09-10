@@ -8,6 +8,19 @@ const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const clean = s => s.replace(/<!--[\s\S]*?-->/g, '');
 const main = s => s.match(/<main\b[\s\S]*?<\/main>/)[0];
 const entries = ['book', 'film', 'music', 'video'];
+const {items:cityItems}=require('../tools/city-discovery-source');
+// The entry pages used to lead with one work and stop. Every published object of that
+// kind has to be reachable from its own entry page, not only through the city pages.
+{
+ const catalogueKind={book:'book', film:'film', music:'audio', video:'video'};
+ for(const [id,kind] of Object.entries(catalogueKind)){
+  const html=read('work-'+id+'.html');
+  const missing=cityItems.filter(i=>i.kind===kind&&!html.includes(`/discover/${i.city}/${i.id}.html`));
+  assert.deepEqual(missing.map(i=>i.city+'/'+i.id),[],'work-'+id+'.html must reach every published '+kind);
+  const listed=(html.match(/<li><a href="\/discover\//g)||[]).length;
+  assert.ok(listed>=10,'work-'+id+'.html lists only '+listed+' of them');
+ }
+}
 const directory = main(read('works.html'));
 // The directory keeps its four entries only, and contacts no provider on load.
 assert.doesNotMatch(directory, /class="wk-work"|class="wk-reading"|class="wk-info"|<iframe/);
