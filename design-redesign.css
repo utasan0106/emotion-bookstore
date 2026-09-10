@@ -186,6 +186,7 @@ body.design-redesign.site-polished[data-city-weather] {
 
 .design-redesign .masthead .dr-outings-brand {width:250px;max-width:80%;flex-direction:column;align-items:flex-start;gap:6px}
 .design-redesign .dr-outings-brand>span:not(.sr-only) {font-family:var(--sans);font-size:.8125rem;color:var(--dr-muted);white-space:normal}
+.design-redesign .dr-outings-brand .sr-only {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .design-redesign.works-page main:has(.wk-entry-grid) {max-width:1168px;width:calc(100% - 48px)}
 @media(max-width:760px){.design-redesign.works-page main:has(.wk-entry-grid){width:calc(100% - 32px)}}
 
