@@ -67,12 +67,27 @@ video(city, id, title, creator, hook, relation, note, videoId, sources = []);
 
 映像を1本足すごとに、次が全部ずれる。落ちたら数字を直す、で構わない。
 
+**2026-09-10 更新。** この日のうちに街をまたぐシリーズを3つ足したので、値と対象が増えている。
+
 | 場所 | いまの値 | 意味 |
 |---|---|---|
-| `tools/build-city-discovery.js` の `featuredRotation['<city>/video']` | 街ごとの配列 | **追加した作品を必ず入れる。** 抜けるとビルドが落ちる |
+| `build-city-discovery.js` の `featuredRotation['<city>/video']` | 街ごとの配列 | **追加した作品を必ず入れる。** 抜けるとビルドが落ちる |
 | `qa/city_discovery_check.js:9` | `items.length, 72` | 作品総数 |
-| `qa/city_discovery_check.js:74` | `pages, 98+research.length` | discover の生成ページ数 |
-| `qa/design-redesign/routes.json` | `public_html` 155件 | 生成物から再作成する |
+| `qa/city_discovery_check.js:74` | `pages, 101+research.length` | discover の生成ページ数 |
+| `qa/design-redesign/routes.json` | `public_html` 158件 | 生成物から再作成する |
+
+### シリーズ側（2026-09-10 追加）
+
+街をまたぐシリーズが3つある。**種類によって扱いが違う。**
+
+| シリーズ | 定義 | 映像を足したとき |
+|---|---|---|
+| `outingVideoIds`（街へ出かけたくなる映像） | 編集部が絞った16本 | **足さなくてよい。** 絞り込みなので全件である必要はない。入れるなら「いま行ける場所が写っているか」で判断する |
+| `readingBookIds`（読みたくなる本） | 公開中の本**全16冊** | 本を足したら**必ず追記**。抜けるとビルドが落ちる |
+| `listeningAudioIds`（聴きたくなる音楽） | 公開中の音楽**全20曲** | 音楽を足したら**必ず追記**。抜けるとビルドが落ちる |
+
+映画にはシリーズが無い。作るなら「いま観られるか」の基準が要る（神保町シアターの上映企画など、
+会期で関係が終わるものをどう扱うか）。編集判断が済んでいないので手を付けていない。
 
 `routes.json` は手で書かない：
 
