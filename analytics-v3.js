@@ -53,6 +53,7 @@
     work: true,
     thread: true,
     spatial: true,
+    outings: true,
 
     // Public content ids: the four cities, the four Works entries, the five Threads.
     koenji: true,
@@ -99,7 +100,10 @@
     shelf: [{ anchor: 'a.official-action[href]' }, { anchor: 'a.weekly-feature-official[href]' }],
     work: [{ anchor: 'a.wk-action[href]' }],
     thread: [{ anchor: 'a.th-source-link[href]' }, { anchor: 'a.th-destination-link[href]' }],
-    spatial: [{ anchor: 'a.al-link[href]' }, { anchor: 'a[href]', within: '.al-attribution-links' }]
+    spatial: [{ anchor: 'a.al-link[href]' }, { anchor: 'a[href]', within: '.al-attribution-links' }],
+    /* 催しの公式・予約先だけ。カードに出している出典・記録のリンク（class 無し）は
+       根拠であって行き先ではないので、意図的に入れない。 */
+    outings: [{ anchor: 'a.event-official[href]' }, { anchor: 'a.primary[href]' }]
   };
 
   function isAllowedContentType(value) {
@@ -161,6 +165,10 @@
     if (path === '/works.html' || path === '/work-book.html' || path === '/work-film.html' || path === '/work-music.html' || path === '/work-video.html') return 'work';
     if (path === '/thread.html') return 'thread';
     if (path === '/atlas/' || path === '/atlas/index.html') return 'spatial';
+    /* 催しのページ。ここは「現実へ出る」導線の本体だが、種別が無かったため公式サイトへの
+       退出が1件も測れていなかった。2026-09-11、催し一覧1ページだけで試している。
+       ここが 'outings' を返しても、スクリプトを読み込んでいないページでは何も起きない。 */
+    if (path.indexOf('/outings/') === 0) return 'outings';
     return '';
   }
 
@@ -171,6 +179,7 @@
     if (page === 'work') return 'V3 Works';
     if (page === 'thread') return 'V3 Thread';
     if (page === 'spatial') return 'V3 Spatial Beta';
+    if (page === 'outings') return 'V3 Outings';
     var path = location.pathname || '/';
     if (path === '/suggest.html') return 'V3 Suggest';
     if (path === '/data.html') return 'V3 Data';

@@ -52,8 +52,24 @@ for(const l of baselineLinks){
  assert.ok(currentLinks.has(replacement),'retired destination '+l+' names a replacement that is not linked: '+replacement);
 }
 const everything=currentText.join(' ');
-for(const seg of baselineText) assert.ok(everything.includes(seg),'content no longer anywhere on the site: '+JSON.stringify(seg.slice(0,40)));
-for(const file of ['release.js','release_content.js','release.css','analytics-v3.js','memory-note.js','api/tokyo-weather.js']){
+// 書き換えた文は、何に書き換えたのかを書く。書かなければ落ちる。行き先と同じ扱い。
+// 2026-09-11：催しの退出計測を1ページで試すにあたり、data.html の計測範囲の説明に
+// 「催し」を加えた。読者への説明が実装より狭いままにならないようにするため。
+const revisedText={
+  '4（GA4）でページ表示のほか、街・作品・スレッドなど公開中のコンテンツについて、どの種類の入口を開いたか、どの公開ページや段階まで到達したか、資料を開いたか、公式サイトなど現実側の外部リンクへ進んだかを、限定した公開IDで計測する場合があります。':
+  '4（GA4）でページ表示のほか、街・作品・催し・スレッドなど公開中のコンテンツについて、どの種類の入口を開いたか、どの公開ページや段階まで到達したか、資料を開いたか、公式サイトなど現実側の外部リンクへ進んだかを、限定した公開IDで計測する場合があります。'
+};
+for(const seg of baselineText){
+ if(everything.includes(seg)) continue;
+ const revised=revisedText[seg];
+ assert.ok(revised,'content no longer anywhere on the site: '+JSON.stringify(seg.slice(0,40)));
+ assert.ok(everything.includes(revised),'revised text names a replacement that is not on the site: '+JSON.stringify(revised.slice(0,40)));
+}
+// analytics-v3.js はここを外れた。2026-09-11、催しの退出計測を入れるため。
+// バイト一致は「一切変えるな」としか言えず、何を守りたかったのかを検証できない。
+// 同じ強さの契約を qa/analytics_contract_check.js に移した（出来事の名前・プライバシー
+// 設定・生URLを送らない関門・計測して良いリンク・計測を読み込むページ数）。緩めていない。
+for(const file of ['release.js','release_content.js','release.css','memory-note.js','api/tokyo-weather.js']){
  assert.equal(fs.readFileSync(file,'utf8'),cp.execFileSync('git',['show','2f4a156:'+file],{encoding:'utf8'}),file+' protected contract');
 }
 // vercel.json carries the redirects that keep retired URLs alive, and editorial work
