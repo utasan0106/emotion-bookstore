@@ -26,16 +26,6 @@
       "permanent": false
     },
     {
-      "source": "/discover/koenji/shiroku-somaru.html",
-      "destination": "/discover/koenji/book.html",
-      "permanent": false
-    },
-    {
-      "source": "/discover/koenji/1q84.html",
-      "destination": "/discover/koenji/book.html",
-      "permanent": false
-    },
-    {
       "source": "/discover/koenji/monterey-pop.html",
       "destination": "/discover/koenji/film.html",
       "permanent": false
@@ -76,11 +66,6 @@
       "permanent": false
     },
     {
-      "source": "/discover/kichijoji/gou-gou-book.html",
-      "destination": "/discover/kichijoji/book.html",
-      "permanent": false
-    },
-    {
       "source": "/discover/kichijoji/catwalk.html",
       "destination": "/discover/kichijoji/book.html",
       "permanent": false
@@ -93,26 +78,6 @@
     {
       "source": "/discover/kichijoji/asahina.html",
       "destination": "/discover/kichijoji/film.html",
-      "permanent": false
-    },
-    {
-      "source": "/discover/jinbocho/morisaki.html",
-      "destination": "/discover/jinbocho/book.html",
-      "permanent": false
-    },
-    {
-      "source": "/discover/jinbocho/morisaki-sequel.html",
-      "destination": "/discover/jinbocho/book.html",
-      "permanent": false
-    },
-    {
-      "source": "/discover/jinbocho/furuhon.html",
-      "destination": "/discover/jinbocho/book.html",
-      "permanent": false
-    },
-    {
-      "source": "/discover/jinbocho/furuhon-sequel.html",
-      "destination": "/discover/jinbocho/book.html",
       "permanent": false
     },
     {

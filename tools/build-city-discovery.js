@@ -179,11 +179,28 @@ for(const essay of research) {
 function workCard(i) {
   return `<article class="work-card ${i.kind}">${workMedia.forItem(i)}<div class="card-body"><p class="relation">${esc(categories[i.kind].name)} · ${esc(i.relation)}</p><h2><a href="/discover/${i.city}/${i.id}.html">${esc(i.title)}</a></h2><p class="creator">${esc(i.creator)}</p><p class="card-hook">${esc(i.hook)}</p>${artistProfile(i)}<div class="card-links"><a class="primary" href="/discover/${i.city}/${i.id}.html">作品を見る</a><a href="/discover/${i.city}/${i.kind}.html">${categories[i.kind].name}の一覧</a></div></div></article>`;
 }
+// The one work each city page leads with. 神保町 leads with 森崎書店の日々 rather than
+// 神保町の怪人: the title does not say the street, and the relation still does.
+const featuredWorkIds={
+  'koenji/audio':'moon-in-june-play', 'koenji/video':'awa-2025', 'koenji/book':'jirokichi', 'koenji/film':'unnameable-dance',
+  'shimokitazawa/audio':'kaho-asa', 'shimokitazawa/video':'shelter-news', 'shimokitazawa/book':'indies', 'shimokitazawa/film':'machinouede',
+  'kichijoji/audio':'yoshida-night-edge', 'kichijoji/video':'park-voice', 'kichijoji/book':'honnoniwa', 'kichijoji/film':'parks',
+  'jinbocho/audio':'honobe-girl', 'jinbocho/video':'gyokueido', 'jinbocho/book':'morisaki', 'jinbocho/film':'morisaki-film'
+};
 // Every city entry has a real static destination, including without JavaScript.
 for (const city of cities) {
   const available=Object.entries(categories).filter(([kind])=>items.some(i=>i.city===city&&i.kind===kind));
   const tabs=available.map(([kind,category])=>`<a href="/discover/${city}/${kind}.html">${category.name} <small>${items.filter(i=>i.city===city&&i.kind===kind).length}</small></a>`).join('');
-  const featured=available.map(([kind])=>items.find(i=>i.city===city&&i.kind===kind));
+  // Which work stands for the city is an editorial choice, not the order the
+  // objects happen to sit in the source. Adding an object must never move the
+  // shop window on its own, so every city/kind pick is written down.
+  const featured=available.map(([kind])=>{
+    const id=featuredWorkIds[city+'/'+kind];
+    if(!id) throw new Error('No editorial pick for the city page: '+city+' '+kind);
+    const item=items.find(i=>i.city===city&&i.kind===kind&&i.id===id);
+    if(!item) throw new Error('Editorial pick is not published: '+city+'/'+id);
+    return item;
+  });
   write(`${city}/index.html`,shell(`${cityNames[city]}の作品`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><div><p class="eyebrow">街から見つける</p><h1>${cityNames[city]}<span>の作品</span></h1></div><figure class="city-motif"><img src="/assets/city-editorial/${city}.webp" alt="" width="640" height="214" decoding="async"><figcaption>街のイメージ · AIイラスト</figcaption></figure></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><section class="work-grid" aria-label="${cityNames[city]}の作品">${featured.map(workCard).join('')}</section>${shortFilmsEntry()}<div class="city-next"><a href="/outings/?city=${city}">${cityNames[city]}の催し</a><a href="/shelf.html?shelf=${city}">ゆかりの場所・歴史</a></div>${credits([city])}</div>`, '<a href="/discover/">街を選び直す</a>',city));
 }
 const featuredVideoIds=['bocchi-main-pv','next-town-koenji','kichion-toranoko','used-book-festival'];

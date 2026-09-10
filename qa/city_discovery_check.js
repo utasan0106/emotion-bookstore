@@ -6,7 +6,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const {items, commonVideos} = require('../tools/city-discovery-source');
 const decode = s => s.replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"');
-assert.equal(items.length,60);
+assert.equal(items.length,67);
 assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,items.length);
 assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,43);
 assert.equal(commonVideos.length,3);
@@ -69,7 +69,7 @@ function inspect(dir) {
 }
 inspect(path.join(root,'discover'));
 const research=require('../tools/city-research');
-assert.equal(pages,86+research.length);
+assert.equal(pages,93+research.length);
 const researchIndex=fs.readFileSync(path.join(root,'discover/essays/index.html'),'utf8');
 const discoveryHome=fs.readFileSync(path.join(root,'discover/index.html'),'utf8');
 const publicHome=fs.readFileSync(path.join(root,'index.html'),'utf8');

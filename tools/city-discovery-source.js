@@ -162,9 +162,19 @@ for (const item of [...items, ...commonVideos]) {
 // Publication rule: no individual permission requests or external correspondence.
 // Individually reviewed text-only books may be listed without reproducing a cover.
 // This is not a blanket approval of other research candidates or cover rights.
+// Selection, 2026-09-10: the shelf reads as a label when the title names the street.
+// A book earns its place when the title does not say the city but the relation does,
+// and the relation can be shown. checkedAt stays the date each source was read.
 const textOnlyBooks = {
   'koenji/jirokichi': {source:'https://www.ele-king.net/books/012100/', checkedAt:'2026-09-09'},
-  'kichijoji/honnoniwa': {source:'https://kotonohabunko.jp/special/honnoniwa/', checkedAt:'2026-09-09'}
+  'kichijoji/honnoniwa': {source:'https://kotonohabunko.jp/special/honnoniwa/', checkedAt:'2026-09-09'},
+  'koenji/shiroku-somaru': {source:'https://www.shogakukan.co.jp/books/09406495', checkedAt:'2026-09-08'},
+  'koenji/1q84': {source:'https://www.shinchosha.co.jp/harukimurakami/review/100163-e.html', checkedAt:'2026-09-08', action:'出版社の特集で、この場面の紹介を読む'},
+  'kichijoji/gou-gou-book': {source:'https://www.kadokawa.co.jp/product/199999853258/', checkedAt:'2026-09-08'},
+  'jinbocho/morisaki': {source:'https://www.shogakukan.co.jp/books/09386765', checkedAt:'2026-09-08'},
+  'jinbocho/morisaki-sequel': {source:'https://www.shogakukan.co.jp/books/09386766', checkedAt:'2026-09-08'},
+  'jinbocho/furuhon': {source:'https://www.kadokawaharuki.co.jp/book/detail/detail.php?no=5208', checkedAt:'2026-09-08'},
+  'jinbocho/furuhon-sequel': {source:'https://www.kadokawaharuki.co.jp/book/detail/detail.php?no=7272', checkedAt:'2026-09-08'}
 };
 video('shimokitazawa', 'bocchi-main-pv', 'ぼっち・ざ・ろっく！｜TVアニメ本PV', 'アニプレックス / 2022', 'ひとりのギターが、バンドの音になる。下北沢を舞台にした物語の入口へ。', '下北沢が舞台のアニメ', '公式サイトが下北沢を作品の舞台として紹介しています。これはTVアニメの紹介PVで、本編や実在のライブ公演映像ではありません。映像内の放送告知は公開当時の情報です。', '1-o7fmQqSNg', ['https://bocchi.rocks/movie/', 'https://bocchi.rocks/kessokuband/info/?article_id=65508']);
 items[items.length-1].checkedAt='2026-09-09';
@@ -177,7 +187,7 @@ for(const item of items) {
   if(item.kind!=='book'||item.url!==review.source) throw new Error('Text-only book review mismatch');
   item.presentation='text-only';
   item.checkedAt=review.checkedAt;
-  item.action=item.id==='honnoniwa'?'出版社で紹介・試し読みを見る':'出版社で書籍情報を見る';
+  item.action=review.action||(item.id==='honnoniwa'?'出版社で紹介・試し読みを見る':'出版社で書籍情報を見る');
 }
 const covers = require('./work-cover-source.json');
 const canPublish = item => Boolean(item.videoId || item.trailerVideoId || covers[item.city+'/'+item.id]?.status === 'usable' || item.presentation==='text-only');
