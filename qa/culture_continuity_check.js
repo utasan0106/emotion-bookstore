@@ -82,7 +82,12 @@ for(const item of items) {
   const html=read('discover/'+item.city+'/'+item.id+'.html');
   const article=html.match(/<article class="detail">[\s\S]*?<\/article>/)[0];
   assert.match(article,/<section class="work-city-context"/);
-  assert.ok(article.indexOf('class="work-city-context"')<article.indexOf('<summary>この街との関係・出典</summary>'));
+  // 2026-09-11：説明が節と開閉ブロックに二度出ていたので、一つの節にまとめた。
+  // 前後関係を確かめる対象が無くなったかわりに、根拠が説明と同じ節にあることを見る。
+  const context=article.match(/<section class="work-city-context"[\s\S]*?<\/section>/)[0];
+  assert.ok(context.includes('紹介先・出典確認：'),'関係の説明と、その確認日は同じ節に置く: '+item.id);
+  for(const url of item.sources.filter(u=>u!==item.url&&u!==item.trailerUrl))
+    assert.ok(context.includes(url),'出典は関係の説明と同じ節に置く: '+item.id+' '+url);
   assert.ok(article.includes('/discover/'+item.city+'/'+item.kind+'.html'),'End of detail must offer re-selection: '+item.id);
 }
 for(const [from,to] of Object.entries({jirokichi:'next-town-koenji','next-town-koenji':'jirokichi',honnoniwa:'musashino-green','musashino-green':'honnoniwa',indies:'bocchi-main-pv','bocchi-main-pv':'indies',kaijin:'used-book-festival','used-book-festival':'kaijin'})) {

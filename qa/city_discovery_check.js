@@ -222,7 +222,14 @@ for(const i of items) {
   assert.ok(experience,`${i.id}: experience section missing`);
   const links=[...experience.matchAll(/href="([^"]+)"/g)].map(m=>decode(m[1]));
   assert.equal(new Set(links).size,links.length,`${i.id}: duplicate work destination`);
-  assert.ok(html.indexOf('class="destination"')<html.indexOf('class="background"'),'Experience must precede background');
+  // 体験（行き先）が先、背景（関係と出典）が後。2026-09-11、背景は開閉ブロックから
+  // 「◯◯とのつながり」の節になった。守る順序は変わっていないので目印だけ移す。
+  const background=html.indexOf('class="work-city-context"');
+  assert.ok(background>=0,`${i.id}: 街とのつながりの節が無い`);
+  assert.ok(html.indexOf('class="destination"')<background,'Experience must precede background');
+  // 説明文が二度出ていないこと。節と開閉ブロックの両方に同じ段落を出していた。
+  const escaped=String(i.relationNote).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  assert.equal(html.split('<p>'+escaped+'</p>').length-1,1,`${i.id}: 街との関係の説明が重複している`);
   if(i.videoId){
     assert.match(i.videoId,/^[A-Za-z0-9_-]{11}$/);
     assert.equal(new URL(i.url).searchParams.get('v'),i.videoId,'Fallback must be the identical clip');

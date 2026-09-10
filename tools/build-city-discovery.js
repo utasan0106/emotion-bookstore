@@ -165,7 +165,7 @@ function write(file, html) {
   const column=require('./city-columns')[file.split('/')[1]?.replace(/\.html$/, '')];
   if(column && file.startsWith(column.city+'/')) {
     const section=`<section class="city-column" aria-labelledby="city-column-title"><p class="eyebrow">街と人の小さなコラム</p><h2 id="city-column-title">${esc(column.title)}</h2>${column.paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}<p>${esc(column.note)}</p><details class="background"><summary>コラムの出典</summary>${column.sources.map(s=>`<p>${external(s.url,s.label)}</p>`).join('')}<p>確認：${esc(column.checkedAt)}</p></details></section>`;
-    html=html.replace('<details class="background"><summary>この街との関係・出典</summary>',section+'<details class="background"><summary>この街との関係・出典</summary>');
+    html=html.replace('<section class="work-city-context"',section+'<section class="work-city-context"');
   }
   const [city, categoryFile]=file.split('/');
   const kind=categoryFile?.replace(/\.html$/, '');
@@ -179,8 +179,6 @@ function write(file, html) {
   const detailItem=items.find(item=>file===`${item.city}/${item.id}.html`);
   if(detailItem) {
     html=html.replace(`紹介先・出典確認：${checkedAt}。`,`紹介先・出典確認：${detailItem.checkedAt || checkedAt}。`);
-    const relation=`<section class="work-city-context" aria-label="街とのつながり"><h2>${cityNames[city]}とのつながり</h2><p>${esc(detailItem.relationNote)}</p></section>`;
-    html=html.replace('<details class="background"><summary>この街との関係・出典</summary>',relation+'<details class="background"><summary>この街との関係・出典</summary>');
   }
   const editorialKind={koenji:'book',kichijoji:'book',shimokitazawa:'video',jinbocho:'film'}[city];
   if(editorials && (categoryFile==='index.html' || kind===editorialKind)) {
@@ -394,7 +392,10 @@ for(const item of items) {
   const player=workMedia.forItem(item);
   const trailer='';
   const sourceLinks=item.sources.filter(s=>s!==item.url&&s!==item.trailerUrl);
-  const background=`<details class="background"><summary>この街との関係・出典</summary><p>${esc(item.relationNote)}</p>${sourceLinks.map(s=>`<p>${external(s,new URL(s).hostname.replace('www.','')+' の掲載情報')}</p>`).join('')}<p>紹介先・出典確認：${checkedAt}。${item.videoId?(kind==='audio'?'音楽・サウンド':'映像')+'は公開元のプレイヤーで提供されます。':'外部の視聴・読書条件は各提供元の案内で確認できます。'}</p></details>`;
+  // 同じ説明文を「街とのつながり」の節と開閉ブロックの両方に出していた。読者には
+  // 同じ段落が二度続いて見える。しかも48件は開いても確認日しか入っていない。
+  // 説明と、その根拠と、確認日は一つのものなので、一つの節にまとめる。
+  const background=`<section class="work-city-context" aria-label="街とのつながり"><h2>${cityNames[city]}とのつながり</h2><p>${esc(item.relationNote)}</p>${sourceLinks.map(s=>`<p>${external(s,new URL(s).hostname.replace('www.','')+' の掲載情報')}</p>`).join('')}<p>紹介先・出典確認：${checkedAt}。${item.videoId?(kind==='audio'?'音楽・サウンド':'映像')+'は公開元のプレイヤーで提供されます。':'外部の視聴・読書条件は各提供元の案内で確認できます。'}</p></section>`;
 write(`${city}/${item.id}.html`, shell(`${item.title}｜${cityNames[city]}の${categories[kind].name}`, `<article class="detail"><p class="eyebrow">${cityNames[city]} / ${categories[kind].name} / ${esc(item.relation)}</p><h1>${esc(item.title)}</h1><p class="detail-creator">${esc(item.creator)}</p><p class="detail-hook">${esc(item.hook)}</p>${player}${trailer}<div class="destination">${action}<p>${item.url.startsWith('/')?'このサイト内で、本人操作による映像・音の体験へ。':item.videoId?'表示・再生できない場合は、公開元の同じ'+(kind==='audio'?'音':'映像')+'へ。':'外部の作品・特集ページへ。'}${item.url.startsWith('/')?'':'新しいタブで開きます。'}</p></div>${artistProfile(item)}${background}${relatedPerformance(item)}${relatedWork(item)}<p class="city-exit"><a href="/discover/${city}/${kind}.html">${categories[kind].name}を選び直す →</a></p><p class="city-exit"><a href="/shelf.html?shelf=${city}">${cityNames[city]}の場所・歴史へ →</a></p></article>`, `<a href="/discover/${city}/${kind}.html">${categories[kind].name}を選び直す ←</a>`, city));
 }
 // Entries are replaced during editorial maintenance. Remove only obsolete generated
