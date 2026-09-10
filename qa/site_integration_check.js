@@ -38,7 +38,7 @@ for(const item of items) {
  if(item.presentation==='text-only') {
   // Individually reviewed text-only books. Adding one is an editorial decision,
   // so the list is written out here rather than derived from the source.
-  assert.ok(['koenji/jirokichi','kichijoji/honnoniwa','koenji/shiroku-somaru','koenji/1q84','kichijoji/gou-gou-book','jinbocho/morisaki','jinbocho/morisaki-sequel','jinbocho/furuhon','jinbocho/furuhon-sequel'].includes(item.city+'/'+item.id));
+  assert.ok(['koenji/jirokichi','kichijoji/honnoniwa','koenji/shiroku-somaru','koenji/1q84','kichijoji/gou-gou-book','jinbocho/morisaki','jinbocho/morisaki-sequel','jinbocho/furuhon','jinbocho/furuhon-sequel','shimokitazawa/lady-jane','shimokitazawa/honda','kichijoji/cinema-history'].includes(item.city+'/'+item.id));
   assert.equal(item.kind,'book');
   assert.equal(media,'','Text-only editions must not reproduce unapproved covers');
   assert.ok(item.sources.includes(item.url));

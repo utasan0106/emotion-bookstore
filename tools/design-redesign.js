@@ -8,8 +8,9 @@ module.exports = function redesign(file, html) {
   if (file === 'kichijoji/index.html' && !html.includes('dr-city-lead')) {
     html = html.replace('<h1>吉祥寺<span>の作品</span></h1>',
       '<h1>吉祥寺<span>の作品</span></h1><p class="dr-city-lead">公園の声、ライブハウスの演奏、映画館の記憶。作品から、この街を知る。</p><a class="dr-text-link" href="/discover/essays/kichijoji-advertising.html">広告が描く吉祥寺も、読んでみる</a>');
-    html = html.replace('<section class="work-grid" aria-label="吉祥寺の作品">',
-      '<div class="dr-section-label"><span>作品を楽しむ</span><p>音楽・映像・本・映画から、一つずつ。</p></div><section class="work-grid" aria-label="吉祥寺の作品">');
+    // Anchored on the section itself, not on the exact attributes it happened to carry.
+    html = html.replace(/<section class="work-grid" aria-label="吉祥寺の作品"[^>]*>/,
+      m => '<div class="dr-section-label"><span>作品を楽しむ</span><p>音楽・映像・本・映画から、一つずつ。</p></div>' + m);
   }
   if (html.includes('class="detail research-article"') && !html.includes('class="dr-article-opening"')) {
     html = html.replace('<article class="detail research-article">', '<article class="detail research-article"><header class="dr-article-opening">')

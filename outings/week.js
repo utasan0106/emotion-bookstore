@@ -14,6 +14,8 @@
  }
  const api={stamp,date,add,monday,dates,state,select};
  if(typeof module!=='undefined')module.exports=api;
+ // The catalogue pages reuse the same JST week boundary for their rotation.
+ if(typeof window!=='undefined')window.V3_WEEK=api;
  if(typeof document==='undefined')return;
  const short=d=>d.slice(5).replace('-','/');
  const data=window.OUTINGS_DATA;

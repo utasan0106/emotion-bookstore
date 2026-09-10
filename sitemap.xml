@@ -613,7 +613,19 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://emotionbookstore.com/discover/shimokitazawa/lady-jane.html</loc>
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://emotionbookstore.com/discover/shimokitazawa/indies.html</loc>
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://emotionbookstore.com/discover/shimokitazawa/honda.html</loc>
     <lastmod>2026-09-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -668,6 +680,12 @@
   </url>
   <url>
     <loc>https://emotionbookstore.com/discover/kichijoji/kichion-lady.html</loc>
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://emotionbookstore.com/discover/kichijoji/cinema-history.html</loc>
     <lastmod>2026-09-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

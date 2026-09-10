@@ -31,11 +31,6 @@
       "permanent": false
     },
     {
-      "source": "/discover/shimokitazawa/lady-jane.html",
-      "destination": "/discover/shimokitazawa/book.html",
-      "permanent": false
-    },
-    {
       "source": "/discover/shimokitazawa/kamisama.html",
       "destination": "/discover/shimokitazawa/book.html",
       "permanent": false
@@ -46,18 +41,8 @@
       "permanent": false
     },
     {
-      "source": "/discover/shimokitazawa/honda.html",
-      "destination": "/discover/shimokitazawa/book.html",
-      "permanent": false
-    },
-    {
       "source": "/discover/shimokitazawa/zawazawa.html",
       "destination": "/discover/shimokitazawa/film.html",
-      "permanent": false
-    },
-    {
-      "source": "/discover/kichijoji/cinema-history.html",
-      "destination": "/discover/kichijoji/book.html",
       "permanent": false
     },
     {

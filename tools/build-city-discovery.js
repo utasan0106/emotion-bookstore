@@ -75,7 +75,7 @@ function shell(title, body, back, active='') {
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="description" content="街とつながる音楽、映像、本、映画を選ぶ文化案内。作品に触れたあと、ゆかりの場所や関連特集へ。"><title>${esc(title)}｜みんなの感情書店</title><link rel="icon" href="/assets/favicon.ico"><link rel="stylesheet" href="/discover/discover.css"></head>
 <body class="${active}"><a class="skip" href="#main">本文へ</a><header class="masthead"><a class="brand" href="/index.html"><img src="/assets/brand/emotion-bookstore-lockup-reversed.png" alt="みんなの感情書店" width="1429" height="331"></a>${back || '<a href="/works.html">紹介した作品へ →</a>'}</header>
 <main id="main">${body}</main><footer class="footer"><p>気になる作品から、街と人のつながりへ。</p><a href="/credits.html">写真と出典について</a></footer>
-${body.includes('data-video-id') ? '<script src="/video-embed.js" defer></script>' + (body.includes('class="player-stop"') ? '<script src="/discover/player.js" defer></script>' : '') : ''}</body></html>\n`;
+${body.includes('data-video-id') ? '<script src="/video-embed.js" defer></script>' + (body.includes('class="player-stop"') ? '<script src="/discover/player.js" defer></script>' : '') : ''}${body.includes('data-rotation-epoch') ? '<script src="/outings/week.js" defer></script><script src="/discover/feature-week.js" defer></script>' : ''}</body></html>\n`;
 }
 let written = 0;
 const generatedFiles = [];
@@ -179,29 +179,51 @@ for(const essay of research) {
 function workCard(i) {
   return `<article class="work-card ${i.kind}">${workMedia.forItem(i)}<div class="card-body"><p class="relation">${esc(categories[i.kind].name)} · ${esc(i.relation)}</p><h2><a href="/discover/${i.city}/${i.id}.html">${esc(i.title)}</a></h2><p class="creator">${esc(i.creator)}</p><p class="card-hook">${esc(i.hook)}</p>${artistProfile(i)}<div class="card-links"><a class="primary" href="/discover/${i.city}/${i.id}.html">作品を見る</a><a href="/discover/${i.city}/${i.kind}.html">${categories[i.kind].name}の一覧</a></div></div></article>`;
 }
-// The one work each city page leads with. 神保町 leads with 森崎書店の日々 rather than
-// 神保町の怪人: the title does not say the street, and the relation still does.
-const featuredWorkIds={
-  'koenji/audio':'moon-in-june-play', 'koenji/video':'awa-2025', 'koenji/book':'jirokichi', 'koenji/film':'unnameable-dance',
-  'shimokitazawa/audio':'kaho-asa', 'shimokitazawa/video':'shelter-news', 'shimokitazawa/book':'indies', 'shimokitazawa/film':'machinouede',
-  'kichijoji/audio':'yoshida-night-edge', 'kichijoji/video':'park-voice', 'kichijoji/book':'honnoniwa', 'kichijoji/film':'parks',
-  'jinbocho/audio':'honobe-girl', 'jinbocho/video':'gyokueido', 'jinbocho/book':'morisaki', 'jinbocho/film':'morisaki-film'
+// The rotation the city pages walk. Each list is an editorial order: the first entry
+// is what the page leads with in week one, the next in week two, and after the last
+// it starts again. Reordering a list here is how the shop window is changed — nothing
+// picks for us, and no object is dropped from its collection by not being first.
+const featuredRotation={
+  'koenji/audio': ['moon-in-june-play','big-the-grape','night-glory-scarlet','seabirth-live','pink-minds-live'],
+  'koenji/video': ['awa-2025','tenguren','awa-history','pal-street','street-food','next-town-koenji'],
+  'koenji/book': ['jirokichi','shiroku-somaru','1q84'],
+  'koenji/film': ['unnameable-dance','ramen-heads','rokkoku-kitchen','shogakko'],
+  'shimokitazawa/audio': ['kaho-asa','bilingualboy-love','sleepinside-recycle','metrois-tokyo','mabuta-roundabout'],
+  'shimokitazawa/video': ['shelter-news','kitazawa-guide','tefu-1500','obonro-walk','womenslib-interview','bocchi-main-pv'],
+  'shimokitazawa/book': ['indies','lady-jane','honda'],
+  'shimokitazawa/film': ['machinouede','gekijyo','aterui','blazer'],
+  'kichijoji/audio': ['yoshida-night-edge','yoshida-tinderness','kobayashi-kokuhaku','uchu-mao-haircolor','takeuchi-ai-rain'],
+  'kichijoji/video': ['park-voice','uplink','kichion-ichihara','kichion-toranoko','kichion-lady','musashino-green'],
+  'kichijoji/book': ['honnoniwa','cinema-history','gou-gou-book'],
+  'kichijoji/film': ['parks','baus','rocky-horror'],
+  'jinbocho/audio': ['honobe-girl','gorilla-secret','sunshin-anniversary','chikuon-beautiful','motoki-tongping'],
+  'jinbocho/video': ['gyokueido','italia','jinbocho-1960s','iwanami-hall','used-book-festival'],
+  'jinbocho/book': ['morisaki','morisaki-sequel','furuhon','furuhon-sequel','kaijin'],
+  'jinbocho/film': ['morisaki-film','ugetsu']
 };
+// Monday of the week the rotation starts from (JST), so week one is a real date and
+// not "whenever this happened to be built".
+const rotationEpoch='2026-09-14';
 // Every city entry has a real static destination, including without JavaScript.
 for (const city of cities) {
   const available=Object.entries(categories).filter(([kind])=>items.some(i=>i.city===city&&i.kind===kind));
   const tabs=available.map(([kind,category])=>`<a href="/discover/${city}/${kind}.html">${category.name} <small>${items.filter(i=>i.city===city&&i.kind===kind).length}</small></a>`).join('');
-  // Which work stands for the city is an editorial choice, not the order the
-  // objects happen to sit in the source. Adding an object must never move the
-  // shop window on its own, so every city/kind pick is written down.
-  const featured=available.map(([kind])=>{
-    const id=featuredWorkIds[city+'/'+kind];
-    if(!id) throw new Error('No editorial pick for the city page: '+city+' '+kind);
-    const item=items.find(i=>i.city===city&&i.kind===kind&&i.id===id);
-    if(!item) throw new Error('Editorial pick is not published: '+city+'/'+id);
-    return item;
+  // Every week of the rotation is written into the page. The first is the one the
+  // page opens with — that is what a reader without JavaScript keeps seeing — and
+  // feature-week.js swaps in the week's entry. Adding an object never moves the
+  // shop window on its own; only the list above does.
+  const featured=available.flatMap(([kind])=>{
+    const order=featuredRotation[city+'/'+kind];
+    if(!order||!order.length) throw new Error('No editorial rotation for the city page: '+city+' '+kind);
+    const published=items.filter(i=>i.city===city&&i.kind===kind);
+    if(order.length!==published.length||new Set(order).size!==order.length) throw new Error('Rotation must list each published '+kind+' of '+city+' exactly once');
+    return order.map((id,week)=>{
+      const item=published.find(i=>i.id===id);
+      if(!item) throw new Error('Rotation names an unpublished object: '+city+'/'+id);
+      return {item,kind,week};
+    });
   });
-  write(`${city}/index.html`,shell(`${cityNames[city]}の作品`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><div><p class="eyebrow">街から見つける</p><h1>${cityNames[city]}<span>の作品</span></h1></div><figure class="city-motif"><img src="/assets/city-editorial/${city}.webp" alt="" width="640" height="214" decoding="async"><figcaption>街のイメージ · AIイラスト</figcaption></figure></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><section class="work-grid" aria-label="${cityNames[city]}の作品">${featured.map(workCard).join('')}</section>${shortFilmsEntry()}<div class="city-next"><a href="/outings/?city=${city}">${cityNames[city]}の催し</a><a href="/shelf.html?shelf=${city}">ゆかりの場所・歴史</a></div>${credits([city])}</div>`, '<a href="/discover/">街を選び直す</a>',city));
+  write(`${city}/index.html`,shell(`${cityNames[city]}の作品`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><div><p class="eyebrow">街から見つける</p><h1>${cityNames[city]}<span>の作品</span></h1></div><figure class="city-motif"><img src="/assets/city-editorial/${city}.webp" alt="" width="640" height="214" decoding="async"><figcaption>街のイメージ · AIイラスト</figcaption></figure></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><section class="work-grid" aria-label="${cityNames[city]}の作品" data-rotation-epoch="${rotationEpoch}">${featured.map(({item,kind,week})=>workCard(item).replace('<article class="work-card ',`<article data-feature-kind="${kind}" data-feature-week="${week}"${week?' hidden':''} class="work-card `)).join('')}</section>${shortFilmsEntry()}<div class="city-next"><a href="/outings/?city=${city}">${cityNames[city]}の催し</a><a href="/shelf.html?shelf=${city}">ゆかりの場所・歴史</a></div>${credits([city])}</div>`, '<a href="/discover/">街を選び直す</a>',city));
 }
 const featuredVideoIds=['bocchi-main-pv','next-town-koenji','kichion-toranoko','used-book-festival'];
 const featuredVideos=featuredVideoIds.map(id=>items.find(item=>item.id===id));

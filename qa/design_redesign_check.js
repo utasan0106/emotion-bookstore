@@ -30,7 +30,11 @@ for(const file of files){
   .replace(/<button class="v3-video-load[^"]*"[^>]*>[\s\S]*?<\/button>/g,'')
   .replace(/<(span|p) class="official-media-note">[\s\S]*?<\/\1>/g,'')
   .replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
- for(const seg of text(base).split(' ')) if(seg) baselineText.add(seg);
+ // Counts are derived from the catalogue, not written by an editor: a collection that
+ // held one object and now holds three legitimately stops saying 1件. Everything a
+ // person actually wrote is still compared.
+ const derived=/^[0-9０-９]+(件|本|冊)?$/;
+ for(const seg of text(base).split(' ')) if(seg&&!derived.test(seg)) baselineText.add(seg);
  currentText.push(text(html));
 }
 for(const l of baselineLinks) assert.ok(currentLinks.has(l),'destination no longer anywhere on the site: '+l);

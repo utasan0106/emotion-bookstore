@@ -174,7 +174,13 @@ const textOnlyBooks = {
   'jinbocho/morisaki': {source:'https://www.shogakukan.co.jp/books/09386765', checkedAt:'2026-09-08'},
   'jinbocho/morisaki-sequel': {source:'https://www.shogakukan.co.jp/books/09386766', checkedAt:'2026-09-08'},
   'jinbocho/furuhon': {source:'https://www.kadokawaharuki.co.jp/book/detail/detail.php?no=5208', checkedAt:'2026-09-08'},
-  'jinbocho/furuhon-sequel': {source:'https://www.kadokawaharuki.co.jp/book/detail/detail.php?no=7272', checkedAt:'2026-09-08'}
+  'jinbocho/furuhon-sequel': {source:'https://www.kadokawaharuki.co.jp/book/detail/detail.php?no=7272', checkedAt:'2026-09-08'},
+  // The title names the street, and it earns that: these three are the record of how
+  // the street's culture happened, written by the people who ran it. A novel merely
+  // set on the street is a label, and stays off the shelf.
+  'shimokitazawa/lady-jane': {source:'https://www.genki-shobou.co.jp/books/978-4-901998-72-7', checkedAt:'2026-09-08'},
+  'shimokitazawa/honda': {source:'https://prtimes.jp/main/html/rd/p/000000987.000011710.html', checkedAt:'2026-09-08', action:'出版案内で内容を読む'},
+  'kichijoji/cinema-history': {source:'https://books.bunshun.jp/ud/book/num/9784160089457', checkedAt:'2026-09-08'}
 };
 video('shimokitazawa', 'bocchi-main-pv', 'ぼっち・ざ・ろっく！｜TVアニメ本PV', 'アニプレックス / 2022', 'ひとりのギターが、バンドの音になる。下北沢を舞台にした物語の入口へ。', '下北沢が舞台のアニメ', '公式サイトが下北沢を作品の舞台として紹介しています。これはTVアニメの紹介PVで、本編や実在のライブ公演映像ではありません。映像内の放送告知は公開当時の情報です。', '1-o7fmQqSNg', ['https://bocchi.rocks/movie/', 'https://bocchi.rocks/kessokuband/info/?article_id=65508']);
 items[items.length-1].checkedAt='2026-09-09';

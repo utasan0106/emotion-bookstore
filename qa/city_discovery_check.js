@@ -6,7 +6,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const {items, commonVideos} = require('../tools/city-discovery-source');
 const decode = s => s.replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"');
-assert.equal(items.length,67);
+assert.equal(items.length,70);
 assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,items.length);
 assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,43);
 assert.equal(commonVideos.length,3);
@@ -20,7 +20,9 @@ for(const city of cities) {
   assert.ok(directory.includes(`class="city-card" href="/discover/${city}/"`),'Directory city entries must open all available media, not the audio list');
   const landing=fs.readFileSync(path.join(root,`discover/${city}/index.html`),'utf8');
   const kinds=['audio','video','book','film'].filter(kind=>items.some(i=>i.city===city&&i.kind===kind));
-  assert.equal((landing.match(/class="work-card /g)||[]).length,kinds.length,'City entry must contain works, not just navigation');
+  // The page carries every week of the rotation; what the reader is shown is one per kind.
+  const openCards=(landing.match(/<article data-feature-kind="[a-z]+" data-feature-week="\d+" class="work-card /g)||[]).length;
+  assert.equal(openCards,kinds.length,'City entry must contain works, not just navigation');
   for(const kind of kinds) assert.ok(landing.includes(`href="/discover/${city}/${kind}.html"`));
   for(const kind of ['audio','video','book','film'].filter(kind=>!kinds.includes(kind))) assert.ok(!landing.includes(`href="/discover/${city}/${kind}.html"`),'Do not advertise an empty category');
 }
@@ -69,7 +71,30 @@ function inspect(dir) {
 }
 inspect(path.join(root,'discover'));
 const research=require('../tools/city-research');
-assert.equal(pages,93+research.length);
+assert.equal(pages,96+research.length);
+// Weekly rotation. Every week of the editorial order ships in the page, exactly one
+// entry per kind is open by default, and the reader without JavaScript keeps that one.
+{
+ const script=fs.readFileSync(path.join(root,'discover/feature-week.js'),'utf8');
+ assert.doesNotMatch(script,/localStorage|sessionStorage|indexedDB|fetch\(|XMLHttpRequest|gtag|dataLayer|v3Analytics/,'the rotation only chooses what is shown');
+ for(const city of ['koenji','shimokitazawa','kichijoji','jinbocho']){
+  const html=fs.readFileSync(path.join(root,`discover/${city}/index.html`),'utf8');
+  assert.match(html,/data-rotation-epoch="\d{4}-\d{2}-\d{2}"/,city+': the rotation needs a fixed first week');
+  assert.ok(html.includes('src="/discover/feature-week.js"')&&html.includes('src="/outings/week.js"'),city+': the rotation needs its module and the shared week boundary');
+  const cards=[...html.matchAll(/<article data-feature-kind="([a-z]+)" data-feature-week="(\d+)"( hidden)? /g)];
+  const byKind={};
+  for(const [,kind,week,hidden] of cards){
+   (byKind[kind]=byKind[kind]||[]).push({week:Number(week),open:!hidden});
+  }
+  for(const [kind,list] of Object.entries(byKind)){
+   const published=items.filter(i=>i.city===city&&i.kind===kind).length;
+   assert.equal(list.length,published,`${city}/${kind}: every published object takes a turn`);
+   assert.deepEqual(list.map(e=>e.week).sort((a,b)=>a-b),[...Array(published).keys()],`${city}/${kind}: the weeks run without a gap`);
+   assert.equal(list.filter(e=>e.open).length,1,`${city}/${kind}: exactly one entry is open without JavaScript`);
+   assert.equal(list.find(e=>e.open).week,0,`${city}/${kind}: the first week is the one that opens`);
+  }
+ }
+}
 const researchIndex=fs.readFileSync(path.join(root,'discover/essays/index.html'),'utf8');
 const discoveryHome=fs.readFileSync(path.join(root,'discover/index.html'),'utf8');
 const publicHome=fs.readFileSync(path.join(root,'index.html'),'utf8');
