@@ -71,7 +71,26 @@ function inspect(dir) {
 }
 inspect(path.join(root,'discover'));
 const research=require('../tools/city-research');
-assert.equal(pages,99+research.length);
+assert.equal(pages,101+research.length);
+// 街をまたいだ3シリーズ。棚を通った本と音楽は全部出る（増えたのに載らない、が起きない）。
+// 映像だけは「いま行ける場所」で絞るので、公開本数より少なくてよい。
+{
+ const pages={reading:'book', listening:'audio', outing:'video'};
+ for(const [slug,kind] of Object.entries(pages)){
+  const html=fs.readFileSync(path.join(root,`discover/${slug}/index.html`),'utf8');
+  const linked=[...html.matchAll(/<li><a href="\/discover\/([a-z]+)\/([a-z0-9-]+)\.html"/g)].map(m=>m[1]+'/'+m[2]);
+  assert.equal(new Set(linked).size,linked.length,slug+': 同じ作品を二度並べない');
+  for(const key of linked){
+   const [city,id]=key.split('/');
+   assert.ok(items.some(i=>i.city===city&&i.id===id&&i.kind===kind),slug+': 未公開または種類違いを並べている '+key);
+  }
+  const published=items.filter(i=>i.kind===kind);
+  if(slug==='outing') assert.ok(linked.length>=10&&linked.length<=published.length,'outing: 絞り込みの結果が範囲外 '+linked.length);
+  else assert.equal(linked.length,published.length,slug+': 公開した'+kind+'が全部は出ていない');
+  assert.match(html,/class="wk-list"/,slug+': 一覧は文字の一覧で出す');
+  assert.doesNotMatch(html,/<iframe/,slug+': 読み込み時に provider へ接続しない');
+ }
+}
 // Weekly rotation. Every week of the editorial order ships in the page, exactly one
 // entry per kind is open by default, and the reader without JavaScript keeps that one.
 {

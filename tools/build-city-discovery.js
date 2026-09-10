@@ -79,14 +79,51 @@ const outingVideoIds = [
   'kichijoji/park-voice', 'kichijoji/uplink', 'kichijoji/kichion-ichihara', 'kichijoji/kichion-toranoko', 'kichijoji/kichion-lady',
   'jinbocho/gyokueido', 'jinbocho/italia', 'jinbocho/used-book-festival'
 ];
+// 棚を通った本と音楽は、その時点で採否が済んでいる。だから絞り込みはせず、
+// 街をまたいで一つにまとめるだけ。順序は編集部の並びで、公開したものが一つでも
+// 抜ければビルドが落ちる（数合わせではなく、全部が出る保証のため）。
+const readingBookIds = [
+  'koenji/junjo', 'koenji/jirokichi', 'koenji/shiroku-somaru', 'koenji/1q84',
+  'shimokitazawa/nekomachi', 'shimokitazawa/lady-jane', 'shimokitazawa/indies', 'shimokitazawa/honda',
+  'kichijoji/cinema-history', 'kichijoji/honnoniwa', 'kichijoji/gou-gou-book',
+  'jinbocho/morisaki', 'jinbocho/morisaki-sequel', 'jinbocho/furuhon', 'jinbocho/furuhon-sequel', 'jinbocho/kaijin'
+];
+const listeningAudioIds = [
+  'koenji/moon-in-june-play', 'koenji/big-the-grape', 'koenji/night-glory-scarlet', 'koenji/seabirth-live', 'koenji/pink-minds-live',
+  'shimokitazawa/kaho-asa', 'shimokitazawa/bilingualboy-love', 'shimokitazawa/sleepinside-recycle', 'shimokitazawa/metrois-tokyo', 'shimokitazawa/mabuta-roundabout',
+  'kichijoji/yoshida-night-edge', 'kichijoji/yoshida-tinderness', 'kichijoji/kobayashi-kokuhaku', 'kichijoji/uchu-mao-haircolor', 'kichijoji/takeuchi-ai-rain',
+  'jinbocho/honobe-girl', 'jinbocho/gorilla-secret', 'jinbocho/sunshin-anniversary', 'jinbocho/chikuon-beautiful', 'jinbocho/motoki-tongping'
+];
+function seriesItems(ids, kind, label, complete) {
+  const picked = ids.map(key => {
+    const [city, id] = key.split('/');
+    const item = items.find(i => i.city === city && i.id === id && i.kind === kind);
+    if (!item) throw new Error(label + ' names an unpublished ' + kind + ': ' + key);
+    return item;
+  });
+  if (new Set(ids).size !== ids.length) throw new Error(label + ' lists the same object twice');
+  if (complete) {
+    const missing = items.filter(i => i.kind === kind && !ids.includes(i.city + '/' + i.id));
+    if (missing.length) throw new Error(label + ' leaves out a published ' + kind + ': ' + missing.map(i => i.city + '/' + i.id).join(', '));
+  }
+  return picked;
+}
 const outingVideos = outingVideoIds.map(key => {
   const [city, id] = key.split('/');
   const item = items.find(i => i.city === city && i.id === id && i.kind === 'video');
   if (!item) throw new Error('Outing series names an unpublished video: ' + key);
   return item;
 });
-function outingEntry() {
-  return '<section class="quick"><h2>街へ出かけたくなる映像</h2><p>いま行ける場所が写っている' + outingVideos.length + '本を、4つの街から選びました。</p><a href="/discover/outing/">' + outingVideos.length + '本を見る →</a></section>';
+const readingBooks = seriesItems(readingBookIds, 'book', '読みたくなる本', true);
+const listeningAudio = seriesItems(listeningAudioIds, 'audio', '聴きたくなる音楽', true);
+function seriesEntry(kind) {
+  const e = {
+    video: ['outing', '街へ出かけたくなる映像', 'いま行ける場所が写っている' + outingVideos.length + '本を、4つの街から選びました。', outingVideos.length + '本を見る'],
+    book:  ['reading', '読みたくなる、街の本', '背景を知ると、その街の本だと分かる' + readingBooks.length + '冊。4つの街ぶんをまとめて置いています。', readingBooks.length + '冊を見る'],
+    audio: ['listening', '聴きたくなる、街の音', 'その街で実際に鳴った演奏' + listeningAudio.length + '曲。4つの街ぶんをまとめて置いています。', listeningAudio.length + '曲を聴く']
+  }[kind];
+  if (!e) return '';
+  return `<section class="quick"><h2>${e[1]}</h2><p>${e[2]}</p><a href="/discover/${e[0]}/">${e[3]} →</a></section>`;
 }
 
 function shortFilmsEntry() {
@@ -262,22 +299,33 @@ const signalEvents=require('./weekly-outings-source').events;
 const signals=`<section class="quick" id="city-signals"><h2>9月の街の動き</h2><p>編集部が選んだ4つの文化企画。日程と参加条件は、それぞれの案内で確認できます。</p>${citySignals.map(signal=>{const event=signalEvents.find(e=>e.id===signal.event);if(!event)throw new Error('Missing city signal event: '+signal.event);const dates=event.dates||[event.start,event.end];return `<article><p class="eyebrow">${cityNames[event.city]} · 告知された開催期間 ${esc(dates[0])}〜${esc(dates.at(-1))}</p><h3>${esc(signal.title)}</h3><p>${esc(event.title)}</p><p>編集部の視点：${esc(signal.reading)}</p><p><a href="/outings/events/${event.id}.html">日程・参加条件を見る</a> · ${external(event.url,'公式告知')}</p></article>`;}).join('')}<p>公式告知の確認日：2026年9月9日。自動更新や人気ランキングではありません。開催変更・空席は公式案内をご確認ください。</p><a href="/outings/">開催週を選んで探す →</a></section>`;
 write('index.html', shell('街から音楽、映像、本、映画を探す', `<section class="intro"><p class="eyebrow">聴く・観る・読む</p><h1>街から探す</h1><p class="lead">街を選んで、ゆかりの本・音楽・映像・映画へ。</p></section>
 <section class="city-grid" aria-label="街を選ぶ">${cities.map(c=>`<a class="city-card" href="/discover/${c}/"><div class="city-image">${photo(c)}</div><div class="city-caption"><h2>${cityNames[c]}</h2><p>音楽 ${items.filter(i=>i.city===c&&i.kind==='audio').length} / 映像 ${items.filter(i=>i.city===c&&i.kind==='video').length} / 本・漫画 ${items.filter(i=>i.city===c&&i.kind==='book').length} / 映画 ${items.filter(i=>i.city===c&&i.kind==='film').length}</p><span>${cityNames[c]}の作品を選ぶ →</span></div></a>`).join('')}</section>${watchNow}${signals}${researchSpotlight}
-<section class="quick"><p class="eyebrow">街へ出かける</p><h2>いま行ける場所が写っている、${outingVideos.length}本。</h2><div class="quick-grid"><a href="/discover/outing/index.html"><strong>公園・商店街・ライブハウス・古書店へ →</strong><span>4つの街から、行き先の分かる映像を選びました</span></a></div></section>
+<section class="quick"><p class="eyebrow">街をまたいで選ぶ</p><h2>観る、読む、聴く。</h2><div class="quick-grid"><a href="/discover/outing/index.html"><strong>街へ出かけたくなる映像 ${outingVideos.length}本 →</strong><span>公園・商店街・ライブハウス・古書店。いま行ける場所が写っているもの</span></a><a href="/discover/reading/index.html"><strong>読みたくなる、街の本 ${readingBooks.length}冊 →</strong><span>書名に街の名前が無くても、背景を知るとその街の本だと分かる</span></a><a href="/discover/listening/index.html"><strong>聴きたくなる、街の音 ${listeningAudio.length}曲 →</strong><span>その街のライブハウスや路上で、実際に鳴った演奏</span></a></div></section>
 <section class="quick"><p class="eyebrow">街を決めずに観る</p><h2>街へ出たくなる、${commonVideos.length}つの短編。</h2><div class="quick-grid"><a href="/discover/short-films/index.html"><strong>人・移動・出会いを描く映像へ →</strong><span>企業広告も、単体で心に残る映像作品として選びました</span></a></div></section>
 <section class="quick"><p class="eyebrow">短い体験から</p><h2>同じ場所、違う聴こえ方。</h2><div class="quick-grid"><a href="/v3-prototype/culture-experience-r2/shimokitazawa/?recording=shelter"><strong>「夕暮れのジャイロ」を聴き比べる →</strong><span>下北沢SHELTERのライブとソロ盤</span></a><a href="/v3-prototype/culture-experience-r2/kichijoji/?scene=film"><strong>『PARKS』の予告と公園の声へ →</strong><span>吉祥寺・井の頭公園 / 1分59秒と57秒</span></a></div></section>${credits(cities)}`));
 
 const commonCards = commonVideos.map(video=>`<article class="work-card video">${workMedia.youtube(video.videoId,video.title)}<div class="card-body"><p class="relation">街へ出る気分をつくる短編</p><h2><a href="/discover/short-films/${video.id}.html">${esc(video.title)}</a></h2><p class="creator">${esc(video.creator)}</p><p class="card-hook">${esc(video.hook)}</p><div class="card-links">${external(video.url,'YouTubeで観る','primary official-exit')}<a href="/discover/short-films/${video.id}.html">紹介を読む →</a></div></div></article>`).join('');
-// 街へ出かけたくなる映像。街ごとに、いま行ける場所が写っている映像を並べる。
+// 街をまたいだシリーズのページ。3つとも同じ型で出す。
 // 一覧は work ページと同じ .wk-list（文字の一覧）。カードを二度見せない。
-{
+function seriesPage(slug, title, eyebrow, heading, lead, list, extraExit) {
   const byCity = {};
-  for (const v of outingVideos) (byCity[v.city] = byCity[v.city] || []).push(v);
-  const sections = Object.entries(byCity).map(([city, list]) =>
-    `<section class="wk-list" aria-label="${cityNames[city]}の${list.length}本"><h2>${cityNames[city]}</h2><ul>${
-      list.map(v => `<li><a href="/discover/${v.city}/${v.id}.html">${esc(v.title)}</a><span class="wk-list-by">${esc(v.creator)}</span><span class="wk-list-rel">${esc(v.relation)}</span></li>`).join('')
+  for (const v of list) (byCity[v.city] = byCity[v.city] || []).push(v);
+  const sections = Object.entries(byCity).map(([city, group]) =>
+    `<section class="wk-list" aria-label="${cityNames[city]}の${group.length}件"><h2>${cityNames[city]}</h2><ul>${
+      group.map(v => `<li><a href="/discover/${v.city}/${v.id}.html">${esc(v.title)}</a><span class="wk-list-by">${esc(v.creator)}</span><span class="wk-list-rel">${esc(v.relation)}</span></li>`).join('')
     }</ul></section>`).join('');
-  write('outing/index.html', shell('街へ出かけたくなる映像', `<section class="intro"><p class="eyebrow">4つの街 / ${outingVideos.length}本</p><h1>街へ出かけたく、<br>なる映像。</h1><p class="lead">公園、商店街、ライブハウス、古書店、映画館。いま行ける場所が写っている映像を選びました。閉じた施設や、過ぎた出来事そのものを扱う映像は入れていません。</p></section><div class="collection">${sections}<p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p><p class="city-exit"><a href="/discover/short-films/">街を決めずに観る短編へ →</a></p></div>`, '<a href="/discover/index.html">街から探す ←</a>'));
+  write(`${slug}/index.html`, shell(title,
+    `<section class="intro"><p class="eyebrow">${eyebrow}</p><h1>${heading}</h1><p class="lead">${lead}</p></section><div class="collection">${sections}<p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p>${extraExit}</div>`,
+    '<a href="/discover/index.html">街から探す ←</a>'));
 }
+seriesPage('outing', '街へ出かけたくなる映像', `4つの街 / ${outingVideos.length}本`, '街へ出かけたく、<br>なる映像。',
+  '公園、商店街、ライブハウス、古書店、映画館。いま行ける場所が写っている映像を選びました。閉じた施設や、過ぎた出来事そのものを扱う映像は入れていません。',
+  outingVideos, '<p class="city-exit"><a href="/discover/short-films/">街を決めずに観る短編へ →</a></p>');
+seriesPage('reading', '読みたくなる本', `4つの街 / ${readingBooks.length}冊`, '読みたくなる、<br>街の本。',
+  '街の名前が書名に無くても、背景を知るとその街の本だと分かる。そういう一冊から並べています。棚に出す時点で関係を確かめているので、ここには全部あります。',
+  readingBooks, '<p class="city-exit"><a href="/works.html#book">本の紹介から入る →</a></p>');
+seriesPage('listening', '聴きたくなる音楽', `4つの街 / ${listeningAudio.length}曲`, '聴きたくなる、<br>街の音。',
+  'その街のライブハウスや路上で、実際に鳴った演奏です。街の紹介曲ではなく、そこで録られた音を選んでいます。',
+  listeningAudio, '<p class="city-exit"><a href="/works.html#music">音楽の紹介から入る →</a></p>');
 write('short-films/index.html', shell('街へ出たくなる短編映像', `<section class="intro"><p class="eyebrow">全街共通 / 約1〜4分</p><h1>街へ出たくなる、<br>${commonVideos.length}つの短編。</h1><p class="lead">人との出会いや移動、暮らしを描く短編を選びました。特定の街の観光案内ではなく、企業広告を含む映像作品です。</p></section><div class="collection"><section class="work-grid" aria-label="共通の短編映像${commonVideos.length}件">${commonCards}</section><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p></div>`, '<a href="/discover/index.html">街から探す ←</a>'));
 
 for (const video of commonVideos) {
@@ -292,7 +340,7 @@ for(const city of cities) for(const [kind, category] of Object.entries(categorie
   if(selected.length>10)throw new Error(city+' '+kind+': keep a collection at most ten entries');
   const tabs=Object.entries(categories).filter(([k])=>items.some(i=>i.city===city&&i.kind===k)).map(([k,v])=>k===kind?`<span aria-current="page">${v.name} <small>${items.filter(i=>i.city===city&&i.kind===k).length}</small></span>`:`<a href="/discover/${city}/${k}.html">${v.name} <small>${items.filter(i=>i.city===city&&i.kind===k).length}</small></a>`).join('');
   const cards=selected.map(i=>`<article class="work-card ${kind}">${workMedia.forItem(i)}<div class="card-body"><p class="relation">${esc(i.relation)}</p><h2><a href="/discover/${city}/${i.id}.html">${esc(i.title)}</a></h2><p class="creator">${esc(i.creator)}</p><p class="card-hook">${esc(i.hook)}</p>${artistProfile(i)}<div class="card-links">${i.url.startsWith('/')?`<a class="primary" href="${esc(i.url)}">${esc(i.action)} →</a>`:external(i.url,i.action,'primary official-exit')}<a href="/discover/${city}/${i.id}.html">紹介を読む →</a></div></div></article>`).join('');
-  write(`${city}/${kind}.html`, shell(`${cityNames[city]}の${category.name}`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><p class="eyebrow">街と作品の文化案内</p><h1>${cityNames[city]}<span>の${category.name}</span></h1></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><p class="collection-lead">${kind==='audio'?'この街で実際に鳴った音楽やサウンドを、まず一曲。':kind==='video'?'街の人、店先、時間。気になる映像をひとつ。':kind==='book'?'物語から入って、ゆかりの街を知る。': '街が舞台の映画と、街の映画館が選んだ映画。'}</p><section class="work-grid" aria-label="${category.name}の${selected.length}件">${cards || `<p>この街の${category.name}は現在掲載していません。<a href="/works.html">紹介中の作品を見る →</a></p>`}</section>${cityContinuation(city,kind)}${kind==='video'?outingEntry():''}${shortFilmsEntry()}<p class="city-exit"><a href="/shelf.html?shelf=${city}">${cityNames[city]}の場所・歴史へ →</a></p><p class="city-exit"><a href="/outings/?city=${city}">${cityNames[city]}の今の文化イベントへ →</a></p>${credits([city])}</div>`, '<a href="/discover/index.html">街を選び直す ←</a>', city));
+  write(`${city}/${kind}.html`, shell(`${cityNames[city]}の${category.name}`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><p class="eyebrow">街と作品の文化案内</p><h1>${cityNames[city]}<span>の${category.name}</span></h1></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><p class="collection-lead">${kind==='audio'?'この街で実際に鳴った音楽やサウンドを、まず一曲。':kind==='video'?'街の人、店先、時間。気になる映像をひとつ。':kind==='book'?'物語から入って、ゆかりの街を知る。': '街が舞台の映画と、街の映画館が選んだ映画。'}</p><section class="work-grid" aria-label="${category.name}の${selected.length}件">${cards || `<p>この街の${category.name}は現在掲載していません。<a href="/works.html">紹介中の作品を見る →</a></p>`}</section>${cityContinuation(city,kind)}${seriesEntry(kind)}${shortFilmsEntry()}<p class="city-exit"><a href="/shelf.html?shelf=${city}">${cityNames[city]}の場所・歴史へ →</a></p><p class="city-exit"><a href="/outings/?city=${city}">${cityNames[city]}の今の文化イベントへ →</a></p>${credits([city])}</div>`, '<a href="/discover/index.html">街を選び直す ←</a>', city));
 }
 for(const item of items) {
   const {city,kind}=item;
