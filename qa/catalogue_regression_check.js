@@ -4,7 +4,10 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),asse
 const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const html=read('index.html'),css=read('site-system.css'),homeCss=read('home-discovery.css');
 assert.doesNotMatch(html,/30秒|感情書店の小文|data-open-reading|id="reading"/);
-assert.match(html,/PARKS パークス｜公式予告編（本編ではありません）/);
+assert.match(html,/href="\/discover\/kichijoji\/parks.html"/,'The film opens its existing playable detail');
+assert.match(html,/href="https:\/\/www.youtube.com\/watch\?v=pm7RBghFt0I"/,'The exact official trailer remains available');
+assert.match(html,/映画スチルではありません/,'The place photograph must not impersonate film artwork');
+assert.match(read('discover/kichijoji/parks.html'),/youtube-nocookie.com\/embed\/pm7RBghFt0I/,'The real trailer stays on the film detail');
 assert.doesNotMatch(html,/class="home-canonical/,'Do not inherit the retired home theme');
 for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']) {
  assert.ok(html.includes(`href="/discover/${city}/"`));

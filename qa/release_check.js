@@ -360,7 +360,7 @@ if (/hc-hero-trace|hc-trace-year/.test(read('index.html'))) failures.push('index
   const feature = src.indexOf('class="hd-feature"');
   const firstCity = src.indexOf('class="hd-city hc-city shelf-entry"');
   if (h1 < 0 || feature < 0 || firstCity < 0 || h1 > feature || feature > firstCity) failures.push('index.html: concise site purpose, first work, then city entries');
-  if (!src.includes('class="hd-feature') || /hc-culture-art|home-encounter|data-city-scene-image|30秒|感情書店の小文/.test(src) || !src.includes('youtube-nocookie.com/embed/pm7RBghFt0I?autoplay=0')) failures.push('index.html: real PARKS trailer required; no invented reading feature');
+  if (!src.includes('class="hd-feature') || /hc-culture-art|home-encounter|data-city-scene-image|30秒|感情書店の小文/.test(src) || !src.includes('href="https://www.youtube.com/watch?v=pm7RBghFt0I"') || !src.includes('href="/discover/kichijoji/parks.html"')) failures.push('index.html: existing film detail and official trailer destinations required; no invented reading feature');
 }
 for (const page of ['shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html']) {
   const src = read(page);
@@ -518,7 +518,7 @@ for (const required of [
   for (const stale of ['週末の前の一本', '31秒の動画を再生', 'weeklyVideoPlay', 'youtube-nocookie']) {
     if (trust.includes(stale)) failures.push(`data.html: retired HOME video claim remains (${stale})`);
   }
-  if (!trust.includes('トップページでは、映画『PARKS』のYouTube公式予告プレーヤーをページ表示時に読み込みます。')) failures.push('data.html: the HOME trailer connection must be disclosed accurately');
+  if (!trust.includes('トップではYouTubeプレーヤーを読み込みません。')) failures.push('data.html: the HOME trailer connection must be disclosed accurately');
   if (!trust.includes('外部サービスへの移動はGA4のオン／オフとは別の操作です。')) failures.push('data.html: external navigation / GA4 separation missing');
   if (!trust.includes('Google Analytics 4（GA4）')) failures.push('data.html: GA4 description missing');
   if (!trust.includes('利用者が押した場合だけ開きます')) failures.push('data.html: explicit external navigation must be described as user-initiated');

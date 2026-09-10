@@ -142,6 +142,7 @@ function write(file, html) {
   const themedCity=cityNames[city]?city:research.find(entry=>file===`essays/${entry.id}.html`)?.city;
   if(themedCity) html=html.replace('<body ',`<body data-editorial-city="${themedCity}" `);
   html=enrichSeo(file,html);
+  html=require('./design-redesign')(file,html);
   const output=path.join(root,'discover',file);
   if(process.argv.includes('--check')) {
     if(!fs.existsSync(output)||fs.readFileSync(output,'utf8')!==html)throw new Error('Generated page differs: '+output);
