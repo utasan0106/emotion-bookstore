@@ -32,6 +32,25 @@ for(const v of commonVideos){const h=read('discover/short-films/'+v.id+'.html');
  assert.ok(!h.includes('/embed/'+v.videoId),'No provider contact before the click '+v.id);}
 assert.match(read('discover/shimokitazawa/indies.html'),/R978-4-408-55758-8.jpg/);
 assert.match(read('discover/shimokitazawa/indies.html'),/岡崎琢磨／実業之日本社/);
+// An unpublished object has one of two reasons behind it, and they are not
+// interchangeable: one is waiting for artwork, the other was turned down. A cover
+// arriving later must not publish a declined book, so the gate is tested with the
+// cover requirement satisfied rather than only in its current state.
+{
+ const {declined, declinedItems, pendingItems}=require('../tools/city-discovery-source');
+ assert.ok(declined.length,'the declined list must not be empty while books are declined');
+ for(const i of declined){
+  const key=i.city+'/'+i.id;
+  assert.ok(declinedItems[key],'a declined object needs its reason recorded: '+key);
+  assert.ok(!items.some(p=>p.city===i.city&&p.id===i.id),'declined object is published: '+key);
+  assert.ok(!fs.existsSync(path.join(root,`discover/${i.city}/${i.id}.html`)),'declined object has a page: '+key);
+  assert.ok(!read(`discover/${i.city}/${i.kind}.html`).includes(`/discover/${key}.html`),'declined object is linked: '+key);
+  // Give it everything the mechanical gate asks for; the decision still has to hold.
+  const withCover={...i, presentation:'text-only', videoId:'12345678901'};
+  assert.ok(declinedItems[withCover.city+'/'+withCover.id],'the decision must not depend on artwork: '+key);
+ }
+ for(const i of pendingItems) assert.ok(!declinedItems[i.city+'/'+i.id],'an object cannot be both declined and pending: '+i.id);
+}
 for(const item of excludedItems){assert.ok(!fs.existsSync(path.join(root,`discover/${item.city}/${item.id}.html`)),'Excluded detail removed '+item.id);assert.ok(!read(`discover/${item.city}/${item.kind}.html`).includes(`/discover/${item.city}/${item.id}.html`),'Excluded listing removed '+item.id);}
 for(const item of items) {
  const media=require('../tools/work-media').forItem(item);

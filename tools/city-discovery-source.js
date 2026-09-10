@@ -206,6 +206,23 @@ for(const item of items) {
   item.action=review.action||(item.id==='honnoniwa'?'出版社で紹介・試し読みを見る':'出版社で書籍情報を見る');
 }
 const covers = require('./work-cover-source.json');
-const canPublish = item => Boolean(item.videoId || item.trailerVideoId || covers[item.city+'/'+item.id]?.status === 'usable' || item.presentation==='text-only');
+// Turned down by the editors, 2026-09-10, under SELECTION-20260910.md: the title says
+// the street and the relation is only that the story happens there, which is a label
+// rather than a reason to shelve it. They are not waiting for a cover — so acquiring
+// one later must not quietly put them back on the shelf, which is what would have
+// happened while the decision lived only in a document.
+const declinedItems = {
+  'koenji/cafe-junjo':      '書名が街を言い、関係は物語の舞台のみ',
+  'shimokitazawa/kamisama': '書名が街を言い、関係は物語の舞台のみ。センナリ劇場は作中の劇場',
+  'shimokitazawa/moshimoshi':'書名が街を言い、関係は物語の舞台のみ',
+  'kichijoji/yorozu':       '書名が街を言い、関係は物語の舞台のみ',
+  'kichijoji/catwalk':      '書名が街を言い、関係は物語の舞台のみ'
+};
+const canPublish = item => !declinedItems[item.city+'/'+item.id]
+  && Boolean(item.videoId || item.trailerVideoId || covers[item.city+'/'+item.id]?.status === 'usable' || item.presentation==='text-only');
 const excludedItems = items.filter(item => !canPublish(item));
-module.exports = { items: items.filter(canPublish), excludedItems, commonVideos, blockedVideoIds, checkedAt: '2026-09-08' };
+// Two different reasons sit behind an unpublished object, and reading them as one
+// caused a candidate review to report these five as "only missing a cover".
+const declined = excludedItems.filter(i => declinedItems[i.city+'/'+i.id]);
+const pendingItems = excludedItems.filter(i => !declinedItems[i.city+'/'+i.id]);
+module.exports = { items: items.filter(canPublish), excludedItems, declinedItems, declined, pendingItems, commonVideos, blockedVideoIds, checkedAt: '2026-09-08' };
