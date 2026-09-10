@@ -86,6 +86,8 @@ video('shimokitazawa', 'kitazawa-guide', 'ようこそ世田谷へ！北沢地�
 video('shimokitazawa', 'tefu-1500', '下北沢で仕事もする人たち｜15:00', '下北線路街 / Web CM', '午後の下北沢を舞台にした、短い映像から。', '街を舞台にしたWeb CM', '下北線路街の企画で制作された(tefu) lounge・BONUS TRACKのWeb CMです。取材記録ではなく演出のある作品です。', '5riinr6xpWo', [tefu]);
 video('shimokitazawa', 'obonro-walk', '俳優と歩く、下北沢', '劇団おぼんろ / さひがしジュンペイ', '舞台に立つ人の言葉を聞きながら、劇場のある街を歩く。', '街と劇場を辿る公式映像', '本多劇場公演を控えた劇団おぼんろが、劇団員の目線で下北沢を歩き、街への思いを語る公式企画です。公演は2026年2月に終了しています。', 'jFCmoShi5ns', ['https://www.obonro-web.com/', 'https://x.com/obonro_new/status/1984938548680683574']);
 video('shimokitazawa', 'womenslib-interview', '本多劇場に立つ前の、仲野太賀', '大人計画 / インタビュー', 'いま広く知られる俳優の、舞台へ向かう言葉を聴く。', '街の劇場で上演された舞台', '大人計画の舞台「もうがまんできない」出演時の仲野太賀インタビュー。公演は2023年に下北沢・本多劇場で行われました。作品の舞台設定が下北沢という意味ではありません。', 'K_LDvvjC8Uw', ['https://otonakeikaku.net/2023_mougamandekinai/']);
+// 世田谷区が公開する文化地図が、この詩人とこのまちの関係に一項を立てている。
+book('shimokitazawa', 'nekomachi', '猫町', '萩原朔太郎', '見慣れた道が、ふいに知らない町に見えるとき。', '街に住んだ詩人が書いた町', '世田谷区が公開する「下北沢文士町文化地図」（北沢川文化遺産保存の会 作成）は、下北沢周辺に暮らした文士として萩原朔太郎を挙げ、「小説『猫町』と下北沢」の項を設けています。1935年に発表された散文詩風の小説で、作中の町が下北沢の実在の場所を指すと確定した記述ではありません。', 'https://www.aozora.gr.jp/cards/000067/card641.html', ['https://www.city.setagaya.lg.jp/02205/10324.html']);
 book('shimokitazawa', 'lady-jane', '下北沢祝祭行 レディ・ジェーンは夜の扉', '大木雄高', '店に集まった人たちの言葉から、夜の文化を辿る。', '店主が綴った街の記録', '下北沢のLADY JANEを営む大木雄高の著書。店と人の関係を記したエッセイです。', 'https://www.genki-shobou.co.jp/books/978-4-901998-72-7');
 book('shimokitazawa', 'indies', '下北沢インディーズ ライブハウスの名探偵', '岡崎琢磨', 'バンドのいる日常を、音楽ミステリーとして楽しむ。', '物語の舞台', '下北沢のライブハウスを舞台にした小説。実在バンドのインディーズ時代を記録した本ではありません。', 'https://www.j-n.co.jp/books/978-4-408-55758-8/');
 book('shimokitazawa', 'kamisama', '神様のたまご 下北沢センナリ劇場の事件簿', '稲羽白菟', '小さな劇場で起こる謎から、舞台の裏側へ。', '物語の舞台', '下北沢を舞台にした演劇ミステリー。センナリ劇場は小説の中の劇場です。', 'https://books.bunshun.jp/ud/book/num/9784167922030');
@@ -184,7 +186,11 @@ const textOnlyBooks = {
   'kichijoji/cinema-history': {source:'https://books.bunshun.jp/ud/book/num/9784160089457', checkedAt:'2026-09-08'},
   // The title says the street, but the relation runs the other way: the street is
   // named after the book. Founder-verified against the street's own account, 2026-09-10.
-  'koenji/junjo': {source:'https://www.shinchosha.co.jp/book/102112/', checkedAt:'2026-09-10'}
+  'koenji/junjo': {source:'https://www.shinchosha.co.jp/book/102112/', checkedAt:'2026-09-10'},
+  // Out of copyright and readable in full where it is linked, so there is no cover to
+  // reproduce and nothing between the reader and the text. Relation verified by the
+  // Founder against the ward's own cultural map, 2026-09-10.
+  'shimokitazawa/nekomachi': {source:'https://www.aozora.gr.jp/cards/000067/card641.html', checkedAt:'2026-09-10', action:'青空文庫で全文を読む'}
 };
 video('shimokitazawa', 'bocchi-main-pv', 'ぼっち・ざ・ろっく！｜TVアニメ本PV', 'アニプレックス / 2022', 'ひとりのギターが、バンドの音になる。下北沢を舞台にした物語の入口へ。', '下北沢が舞台のアニメ', '公式サイトが下北沢を作品の舞台として紹介しています。これはTVアニメの紹介PVで、本編や実在のライブ公演映像ではありません。映像内の放送告知は公開当時の情報です。', '1-o7fmQqSNg', ['https://bocchi.rocks/movie/', 'https://bocchi.rocks/kessokuband/info/?article_id=65508']);
 items[items.length-1].checkedAt='2026-09-09';

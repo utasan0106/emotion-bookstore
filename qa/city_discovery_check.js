@@ -6,7 +6,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const {items, commonVideos} = require('../tools/city-discovery-source');
 const decode = s => s.replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"');
-assert.equal(items.length,71);
+assert.equal(items.length,72);
 assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,items.length);
 assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,43);
 assert.equal(commonVideos.length,3);
@@ -71,7 +71,7 @@ function inspect(dir) {
 }
 inspect(path.join(root,'discover'));
 const research=require('../tools/city-research');
-assert.equal(pages,97+research.length);
+assert.equal(pages,98+research.length);
 // Weekly rotation. Every week of the editorial order ships in the page, exactly one
 // entry per kind is open by default, and the reader without JavaScript keeps that one.
 {

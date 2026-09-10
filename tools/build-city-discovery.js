@@ -190,7 +190,7 @@ const featuredRotation={
   'koenji/film': ['unnameable-dance','ramen-heads','rokkoku-kitchen','shogakko'],
   'shimokitazawa/audio': ['kaho-asa','bilingualboy-love','sleepinside-recycle','metrois-tokyo','mabuta-roundabout'],
   'shimokitazawa/video': ['shelter-news','kitazawa-guide','tefu-1500','obonro-walk','womenslib-interview','bocchi-main-pv'],
-  'shimokitazawa/book': ['indies','lady-jane','honda'],
+  'shimokitazawa/book': ['indies','nekomachi','lady-jane','honda'],
   'shimokitazawa/film': ['machinouede','gekijyo','aterui','blazer'],
   'kichijoji/audio': ['yoshida-night-edge','yoshida-tinderness','kobayashi-kokuhaku','uchu-mao-haircolor','takeuchi-ai-rain'],
   'kichijoji/video': ['park-voice','uplink','kichion-ichihara','kichion-toranoko','kichion-lady','musashino-green'],
