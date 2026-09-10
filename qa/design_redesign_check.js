@@ -9,9 +9,19 @@ for(const file of files){
  assert.equal(require('../tools/design-redesign')(file.replace(/^discover\//,''),once),once,file+' idempotence');
  const base=cp.execFileSync('git',['show','2f4a156:'+file],{encoding:'utf8'});
  // All original links and content remain available; only wrappers/classes/styles change.
- const links=s=>[...s.matchAll(/(?:href|src)="([^"]+)"/g)].map(m=>m[1]).filter(v=>!v.endsWith('.css')&&v!=='/assets/brand/emotion-bookstore-lockup-reversed.png').sort();
+ // Official players are click-to-load: the provider URL now rides on data-embed-src
+ // instead of src, so it still has to be there. The loader itself is not a destination.
+ // A click-to-load YouTube player carries its id; it still resolves to the same
+ // provider target the page used to embed directly, so compare it in that form.
+ const expand=s=>s.replace(/data-video-id="([A-Za-z0-9_-]{11})"/g,(_m,id)=>'data-embed-src="https://www.youtube-nocookie.com/embed/'+id+'?autoplay=0&amp;playsinline=1&amp;rel=0"');
+ const links=s=>[...expand(s).matchAll(/(?:href|src|data-embed-src)="([^"]+)"/g)].map(m=>m[1]).filter(v=>!v.endsWith('.css')&&v!=='/assets/brand/emotion-bookstore-lockup-reversed.png'&&!/(?:^|\/)(?:video-embed|player)\.js$/.test(v)).sort();
  assert.deepEqual(links(html),links(base),file+' original destinations');
- const text=s=>s.replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/g,'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+ // Everything the reader had must still be there. The only addition allowed is the
+ // click-to-load affordance itself: its button and the sentence explaining it.
+ const text=s=>s.replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/g,'')
+  .replace(/<button class="v3-video-load[^"]*"[^>]*>[\s\S]*?<\/button>/g,'')
+  .replace(/<(span|p) class="official-media-note">[\s\S]*?<\/\1>/g,'')
+  .replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
  assert.equal(text(html),text(base),file+' original content');
 }
 for(const file of ['release.js','release_content.js','release.css','analytics-v3.js','memory-note.js','vercel.json','api/tokyo-weather.js']){

@@ -9,7 +9,8 @@ const clean = s => s.replace(/<!--[\s\S]*?-->/g, '');
 const main = s => s.match(/<main\b[\s\S]*?<\/main>/)[0];
 const entries = ['book', 'film', 'music', 'video'];
 const directory = main(read('works.html'));
-assert.doesNotMatch(directory, /class="wk-work"|class="wk-reading"|class="wk-info"|data-video-id/);
+// The directory keeps its four entries only, and contacts no provider on load.
+assert.doesNotMatch(directory, /class="wk-work"|class="wk-reading"|class="wk-info"|<iframe/);
 assert.equal((directory.match(/class="wk-entry"/g) || []).length, 4);
 for (const id of entries) {
   const target = 'work-' + id + '.html';
@@ -40,6 +41,7 @@ for (const name of ['works.html', ...entries.map(id => 'work-' + id + '.html')])
   }
 }
 assert.ok(read('work-music.html').indexOf('?recording=shelter') < read('work-music.html').indexOf('この演奏が生まれた背景'));
-assert.match(read('work-video.html'), /embed\/dt33RGSRuo0/);
+assert.match(read('work-video.html'), /data-video-id="dt33RGSRuo0"/);
+assert.doesNotMatch(read('work-video.html'), /\/embed\/dt33RGSRuo0/);
 assert.match(read('.vercelignore'), /^\/tools\/work-entry-source.html$/m);
 console.log('PASS separate work pages: real routes, unique destinations, actual work media, autoplay disabled');

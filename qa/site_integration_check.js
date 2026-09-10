@@ -20,10 +20,16 @@ for(const item of items){
  const detail=read(`discover/${item.city}/${item.id}.html`),list=read(`discover/${item.city}/${item.kind}.html`);
  assert.ok(list.includes('href="'+item.url.replace(/&/g,'&amp;')+'"'),'One-click destination '+item.id);
  const id=item.videoId||item.trailerVideoId;
- if(id)for(const html of [detail,list])assert.ok(html.includes('https://www.youtube-nocookie.com/embed/'+id+'?autoplay=0&amp;playsinline=1'),'Correct work preview '+item.id);
+ if(id)for(const html of [detail,list]){
+  assert.ok(html.includes('data-video-id="'+id+'"'),'Correct work preview '+item.id);
+  // Click-to-load: the provider URL is built by the click, never shipped in the page.
+  assert.ok(!html.includes('youtube-nocookie.com/embed/'+id),'No provider contact before the click '+item.id);
+ }
  assert.ok(!list.includes('card-art'),'No generic image substitute');
 }
-for(const v of commonVideos)assert.ok(read('discover/short-films/'+v.id+'.html').includes('/embed/'+v.videoId));
+for(const v of commonVideos){const h=read('discover/short-films/'+v.id+'.html');
+ assert.ok(h.includes('data-video-id="'+v.videoId+'"'));
+ assert.ok(!h.includes('/embed/'+v.videoId),'No provider contact before the click '+v.id);}
 assert.match(read('discover/shimokitazawa/indies.html'),/R978-4-408-55758-8.jpg/);
 assert.match(read('discover/shimokitazawa/indies.html'),/岡崎琢磨／実業之日本社/);
 for(const item of excludedItems){assert.ok(!fs.existsSync(path.join(root,`discover/${item.city}/${item.id}.html`)),'Excluded detail removed '+item.id);assert.ok(!read(`discover/${item.city}/${item.kind}.html`).includes(`/discover/${item.city}/${item.id}.html`),'Excluded listing removed '+item.id);}

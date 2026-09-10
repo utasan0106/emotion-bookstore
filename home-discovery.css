@@ -31,6 +31,11 @@ body.home-discovery{--sans:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Not
 .hd-entry figure{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;align-content:center;min-width:0;min-height:260px;background:var(--hd-panel);padding:16px}
 .hd-entry figure a{display:block}.hd-entry img{object-fit:contain;width:auto;height:auto;max-width:100%;max-height:210px}
 .hd-entry iframe{display:block;width:170px;height:170px;border:0;flex:none}
+/* Click-to-load: the album square stays, empty until the visitor asks for the player. */
+.hd-entry .hd-embed{width:170px;height:170px;flex:none}
+.hd-entry .hd-embed .v3-video-frame{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--hd-panel);border:1px solid var(--hd-rule)}
+.hd-entry .hd-embed .v3-video-load{width:100%;height:100%;min-height:44px;padding:10px;border:0;background:transparent;color:inherit;font:inherit;font-size:.8125rem;line-height:1.7;text-align:center;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.hd-entry .hd-embed .v3-video-iframe{display:block;width:100%;height:100%;border:0}
 .hd-entry[data-home-work="video"] figure{padding:0;background:#fff;align-content:flex-start}
 .hd-entry[data-home-work="video"] figure a{width:100%}
 .hd-entry[data-home-work="video"] img{width:100%;height:230px;object-fit:cover}
@@ -80,7 +85,7 @@ body.home-discovery{--sans:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Not
  .hd-entry{display:grid;grid-template-columns:minmax(0,104px) minmax(0,1fr);gap:16px;align-items:start}
  .hd-entry figure{min-height:0;padding:12px;min-width:0}
  .hd-entry img{max-height:160px}
- .hd-entry iframe{width:80px;height:80px}
+ .hd-entry iframe{width:80px;height:80px} .hd-entry .hd-embed{width:80px;height:80px} .hd-entry .hd-embed .v3-video-load{font-size:.6875rem;padding:6px;line-height:1.5}
  .hd-entry[data-home-work="video"] figure{background:var(--hd-panel);padding:0}
  .hd-entry[data-home-work="video"] img{height:auto;aspect-ratio:3/2;object-fit:cover}
  .hd-entry figcaption{padding:0 4px 8px}

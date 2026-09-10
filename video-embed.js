@@ -7,7 +7,9 @@
    - 保存しない。位置情報・カメラ・fetch・XHR を使わない。計測は、押して player を作った瞬間の
      bounded event 1 回だけ（analytics-v3.js、本番 host だけ）。
    - host は data-video-id（11 文字の YouTube video id）と data-video-title を持つ
-     .v3-video。中の .v3-video-frame に .v3-video-load ボタンがある。 */
+     .v3-video。中の .v3-video-frame に .v3-video-load ボタンがある。
+   - YouTube 以外の公式 player（Bandcamp / Instagram）は data-embed-src に、編集部が
+     確定した https の embed URL を持つ。この場合も、押すまで provider へ接続しない。 */
 (function () {
   'use strict';
 
@@ -16,20 +18,28 @@
   function mountOne(host) {
     if (!host || host.getAttribute('data-video-state')) return;
     var videoId = host.getAttribute('data-video-id') || '';
+    var embedSrc = host.getAttribute('data-embed-src') || '';
     var frame = host.querySelector('.v3-video-frame');
     var button = host.querySelector('.v3-video-load');
     if (!frame || !button) return;
-    if (!/^[A-Za-z0-9_-]{11}$/.test(videoId)) { button.disabled = true; return; }
+    /* Either a YouTube id, or a provider embed URL already fixed by the editors
+       (Bandcamp / Instagram). Both stay unrequested until the visitor clicks. */
+    if (embedSrc) { if (embedSrc.indexOf('https://') !== 0) { button.disabled = true; return; } }
+    else if (!/^[A-Za-z0-9_-]{11}$/.test(videoId)) { button.disabled = true; return; }
     host.setAttribute('data-video-state', 'idle');
     button.addEventListener('click', function () {
       if (host.getAttribute('data-video-state') === 'loaded') return;
       var iframe = document.createElement('iframe');
       iframe.className = 'v3-video-iframe';
       iframe.title = host.getAttribute('data-video-title') || '';
-      iframe.allow = 'encrypted-media; picture-in-picture; fullscreen';
-      iframe.allowFullscreen = true;
-      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
-      iframe.src = PROVIDER + encodeURIComponent(videoId) + '?playsinline=1&rel=0';
+      var allow = host.getAttribute('data-embed-allow');
+      iframe.allow = allow || 'encrypted-media; picture-in-picture; fullscreen';
+      iframe.allowFullscreen = !allow;
+      iframe.referrerPolicy = host.getAttribute('data-embed-referrerpolicy') || 'strict-origin-when-cross-origin';
+      /* Providers that were embedded under a sandbox keep exactly that sandbox. */
+      var sandbox = host.getAttribute('data-embed-sandbox');
+      if (sandbox) iframe.setAttribute('sandbox', sandbox);
+      iframe.src = embedSrc || (PROVIDER + encodeURIComponent(videoId) + '?playsinline=1&rel=0');
       frame.textContent = '';
       frame.appendChild(iframe);
       host.setAttribute('data-video-state', 'loaded');

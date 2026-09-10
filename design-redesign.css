@@ -187,6 +187,15 @@ body.design-redesign.site-polished[data-city-weather] {
 .design-redesign .masthead .dr-outings-brand {width:250px;max-width:80%;flex-direction:column;align-items:flex-start;gap:6px}
 .design-redesign .dr-outings-brand>span:not(.sr-only) {font-family:var(--sans);font-size:.8125rem;color:var(--dr-muted);white-space:normal}
 .design-redesign .dr-outings-brand .sr-only {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Official players are click-to-load. The waiting frame keeps the media's footprint
+   and the approved surface: light ground, dark type, one restrained green marker.
+   The home keeps its own album square (.hd-embed) and is left alone here. */
+.design-redesign .v3-video:not(.hd-embed) .v3-video-frame {aspect-ratio:16/9;width:100%;min-height:0;display:flex;align-items:center;justify-content:center;background:#f5f5f5;border:1px solid var(--dr-rule);padding:0}
+.design-redesign .v3-video:not(.hd-embed) .v3-video-load {display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:100%;min-height:44px;padding:16px;border:0;background:transparent;color:var(--dr-ink);font:inherit;font-family:var(--dr-display);font-size:1rem;line-height:1.6;text-align:center;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:6px;cursor:pointer}
+.design-redesign .v3-video:not(.hd-embed) .v3-video-load .wk-mark {color:var(--dr-accent);text-decoration:none}
+.design-redesign .v3-video:not(.hd-embed) .v3-video-iframe {display:block;width:100%;height:100%;border:0}
+.design-redesign .official-media-note {display:block;color:var(--dr-muted);font-size:.8125rem;line-height:1.8;margin:8px 0 0}
 .design-redesign.works-page main:has(.wk-entry-grid) {max-width:1168px;width:calc(100% - 48px)}
 @media(max-width:760px){.design-redesign.works-page main:has(.wk-entry-grid){width:calc(100% - 32px)}}
 

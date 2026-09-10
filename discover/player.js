@@ -9,6 +9,9 @@
   var stop = host.querySelector('.player-stop');
   var status = host.querySelector('.player-status');
   if (!window.V3_VIDEO_EMBED || host.getAttribute('data-video-state') !== 'idle') return;
+  /* Pages that only carry the click-to-load frame have no stop/return controls.
+     There is nothing to add there, so leave their player exactly as it is. */
+  if (!frame || !open || !stop || !status) return;
   open.hidden = false;
   status.textContent = '開くとYouTubeに接続します。再生はプレイヤーの ▶ から。';
   function close(focus) {

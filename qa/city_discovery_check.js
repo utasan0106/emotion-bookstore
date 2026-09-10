@@ -31,7 +31,8 @@ for(const city of cities)for(const kind of ['audio','video','book','film']) {
   const cardsOnly=(html.match(/<article class="work-card [\s\S]*?<\/article>/g)||[]).join('');
   for(const i of selected)assert.equal(cardsOnly.split(`href="/discover/${city}/${i.id}.html"`).length-1,2);
   assert.equal((html.match(/class="work-card /g)||[]).length,selected.length);
-  assert.doesNotMatch(html,/data-video-id|video-embed\.js|discover\/player\.js/);
+  // Players are click-to-load: the listing must not contact a provider on load.
+  assert.doesNotMatch(html,/<iframe/);
   if(selected.length)assert.match(html,/aria-current="page"/);
 }
 let pages=0;
@@ -181,7 +182,9 @@ for(const i of items) {
   if(i.videoId){
     assert.match(i.videoId,/^[A-Za-z0-9_-]{11}$/);
     assert.equal(new URL(i.url).searchParams.get('v'),i.videoId,'Fallback must be the identical clip');
-    assert.ok(html.includes('/embed/'+i.videoId+'?autoplay=0'));
+    // Click-to-load: the id is wired to the button; the provider URL is built by the click.
+    assert.ok(html.includes('data-video-id="'+i.videoId+'"'),'Player wired for '+i.id);
+    assert.ok(!html.includes('/embed/'+i.videoId),'No provider contact before the click: '+i.id);
 
   }
   if(i.trailerVideoId){
@@ -198,7 +201,8 @@ for(const i of commonVideos) {
   assert.equal(new URL(i.url).searchParams.get('v'),i.videoId);
   const html=fs.readFileSync(path.join(root,`discover/short-films/${i.id}.html`),'utf8');
   assert.match(html,/このサイトで紹介する理由・出典/);
-  assert.ok(html.includes('/embed/'+i.videoId+'?autoplay=0'));
+  assert.ok(html.includes('data-video-id="'+i.videoId+'"'),'Player wired for '+i.id);
+  assert.ok(!html.includes('/embed/'+i.videoId),'No provider contact before the click: '+i.id);
 }
 assert.match(fs.readFileSync(path.join(root,'works.html'),'utf8'),/discover\/index.html/);
 assert.match(fs.readFileSync(path.join(root,'.vercelignore'),'utf8'),/^\/tools\/city-discovery-source.js$/m);

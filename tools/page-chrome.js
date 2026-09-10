@@ -28,6 +28,8 @@ function chrome(html){
   html=html.replace('</main>',social+'</main>').replace('</head>','<script src="/social-post.js" defer></script></head>');
  }
  if(html.includes('data-memory-note')) html=html.replace(/<details class="memory-note"[^>]*>[\s\S]*?<textarea data-memory-export[^>]*>[\s\S]*?<\/textarea><\/details>/, memoryForm(/<html[^>]*lang="en"/.test(html)));
+ // Official players are click-to-load; the module that arms them must be present.
+ if(html.includes('v3-video')&&!/video-embed\.js/.test(html)) html=html.replace('</head>','<script src="/video-embed.js" defer></script></head>');
  const detail=/class="(?:detail|event-detail|wk-work)"/.test(html);
  if(detail&&!html.includes('data-memory-note')){
   const note=memoryForm();
