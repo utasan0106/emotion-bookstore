@@ -38,10 +38,10 @@ jinbocho:[{
 kichijoji:[
   {
     id:'advertising-city',
-    title:'広告の吉祥寺と、あなたが行く吉祥寺。',
-    paragraphs:['高校生だったころと、今の吉祥寺。駅や商業施設の変化、広告が誘う楽しみを年表で辿る試読版です。街の変化と、自分の過ごし方の変化を見比べます。'],
+    title:'吉祥寺の広告は、誰のための街を描くのか。',
+    paragraphs:['買う人、遊ぶ人、街の魅力を伝える人。4件の告知を読み比べると、広告が来訪者に用意する役割が見えてきます。平日の仕事や学校も映す来街者調査と合わせて、広告の外にある吉祥寺まで考えます。'],
     sourceUrl:'https://prtimes.jp/main/html/rd/p/000001505.000003639.html',
-    sourceLabel:'パルコ：当時のキャンペーン発表（終了済み）',checkedAt:'2026-09-09',
+    sourceLabel:'パルコ：当時のキャンペーン発表（終了済み）',checkedAt:'2026-09-10',
     relatedUrl:'/discover/essays/kichijoji-advertising.html',relatedLabel:'広告から見る吉祥寺を読む'
   },
   {

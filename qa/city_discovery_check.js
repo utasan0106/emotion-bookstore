@@ -88,6 +88,14 @@ for(const essay of research) {
   for(const section of essay.sections) {
     if(['確認できること','調査から分かること','当時の発表から'].includes(section.kind)) assert.ok(essay.sources.some(s=>s.id===section.source),'Fact missing evidence');
     assert.ok(html.includes(section.title));
+    for(const id of section.sources||[]) {
+      assert.ok(essay.sources.some(s=>s.id===id),'Comparative paragraph needs known sources');
+      assert.ok(html.includes(`href="#source-${id}"`),'Comparative evidence must be reachable');
+    }
+    for(const id of section.methodRefs||[]) {
+      assert.ok(Number.isInteger(id)&&essay.methods?.[id],'Theory needs an identified reference');
+      assert.ok(html.includes(essay.methods[id].url),'Theory source must be visible');
+    }
   }
   for(const source of essay.sources) {
     assert.ok(source.publishedAt&&source.period&&source.limitation);
@@ -137,6 +145,15 @@ for(const essay of research) {
   assert.ok(html.includes(essay.methodology),'Disclose source-based editorial method');
   assert.ok(html.includes('広告が来街を増やしたという結論ではない'));
   assert.ok(html.includes('生データは未検証'));
+  assert.ok(essay.methods.length>=4,'Show the methods actually used');
+  assert.ok(essay.analysisNotes.length>=3,'Preserve hypothesis decisions and limits');
+  for(const method of essay.methods) assert.ok(html.includes(method.url)&&html.includes(method.application));
+  for(const note of essay.analysisNotes) assert.ok(html.includes(note));
+  assert.ok(html.includes(essay.reviewNote),'Do not silently refresh old evidence checks');
+  for(const row of essay.comparisons) assert.ok(row.role&&html.includes(row.role),'Explain visitor roles');
+  assert.ok(html.includes('2015年にも')&&html.includes('購入条件付き'),'Preserve counterexamples to a linear trend');
+  assert.ok(html.includes('人数や各設問の回答数に置き換えてはいけない'),'Keep survey unit caveat next to the number');
+  assert.ok(!html.includes('sdm_process_download'),'Do not republish condition-limited survey downloads');
   } else {
     assert.equal(essay.id,'shimokitazawa-railway');
     assert.equal(essay.sources.length,5);

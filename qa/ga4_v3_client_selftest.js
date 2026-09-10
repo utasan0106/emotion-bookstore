@@ -9,6 +9,10 @@ const approvedEvents=new Set(['v3_home_view','v3_shelf_open','v3_shelf_view','v3
 // Morning polish: visual changes, explicit regional-weather labels, directory
 // Approved editorial summary and city art work; no tracking changes.
 for(const file of ['docs/city-discovery/EDITORIAL-STANDARDS-20260910.md']) allowed.add(file);
+// Source-based editorial method and claim ledger only; analytics contracts unchanged.
+allowed.add('docs/city-discovery/RESEARCH-METHODS-20260910.md');
+// Keep the city-page article teaser consistent with the revised evidence-led essay.
+allowed.add('tools/city-editorials.js');
 for(const file of ['assets/city-editorial/','docs/city-discovery/CITY-ART-20260910.md']) allowed.add(file);
 for(const city of ['kichijoji','koenji','shimokitazawa','jinbocho']) allowed.add('assets/city-editorial/'+city+'.webp');
 // routing and their bounded QA. The measurement code/payload contract is unchanged.
