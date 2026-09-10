@@ -71,7 +71,7 @@ function inspect(dir) {
 }
 inspect(path.join(root,'discover'));
 const research=require('../tools/city-research');
-assert.equal(pages,98+research.length);
+assert.equal(pages,99+research.length);
 // Weekly rotation. Every week of the editorial order ships in the page, exactly one
 // entry per kind is open by default, and the reader without JavaScript keeps that one.
 {
