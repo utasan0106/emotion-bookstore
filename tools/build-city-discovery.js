@@ -251,19 +251,19 @@ const featuredRotation={
   'koenji/audio': ['moon-in-june-play','big-the-grape','night-glory-scarlet','seabirth-live','pink-minds-live'],
   'koenji/video': ['awa-2025','tenguren','awa-history','pal-street','street-food','next-town-koenji'],
   'koenji/book': ['jirokichi','junjo','shiroku-somaru','1q84'],
-  'koenji/film': ['unnameable-dance','ramen-heads','rokkoku-kitchen','shogakko'],
+  'koenji/film': ['unnameable-dance','ramen-heads','rokkoku-kitchen','shogakko','monterey-pop'],
   'shimokitazawa/audio': ['kaho-asa','bilingualboy-love','sleepinside-recycle','metrois-tokyo','mabuta-roundabout'],
   'shimokitazawa/video': ['shelter-news','kitazawa-guide','tefu-1500','obonro-walk','womenslib-interview','bocchi-main-pv'],
   'shimokitazawa/book': ['indies','nekomachi','lady-jane','honda'],
-  'shimokitazawa/film': ['machinouede','gekijyo','aterui','blazer'],
+  'shimokitazawa/film': ['machinouede','gekijyo','aterui','blazer','zawazawa'],
   'kichijoji/audio': ['yoshida-night-edge','yoshida-tinderness','kobayashi-kokuhaku','uchu-mao-haircolor','takeuchi-ai-rain'],
   'kichijoji/video': ['park-voice','uplink','kichion-ichihara','kichion-toranoko','kichion-lady','musashino-green'],
   'kichijoji/book': ['honnoniwa','cinema-history','gou-gou-book'],
-  'kichijoji/film': ['parks','baus','rocky-horror'],
+  'kichijoji/film': ['parks','baus','rocky-horror','gou-gou-film','asahina'],
   'jinbocho/audio': ['honobe-girl','gorilla-secret','sunshin-anniversary','chikuon-beautiful','motoki-tongping'],
   'jinbocho/video': ['gyokueido','italia','jinbocho-1960s','iwanami-hall','used-book-festival'],
   'jinbocho/book': ['morisaki','morisaki-sequel','furuhon','furuhon-sequel','kaijin'],
-  'jinbocho/film': ['morisaki-film','ugetsu']
+  'jinbocho/film': ['morisaki-film','ugetsu','ginga']
 };
 // Monday of the week the rotation starts from (JST), so week one is a real date and
 // not "whenever this happened to be built".

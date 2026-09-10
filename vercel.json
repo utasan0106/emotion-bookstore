@@ -21,11 +21,6 @@
       "permanent": false
     },
     {
-      "source": "/discover/koenji/monterey-pop.html",
-      "destination": "/discover/koenji/film.html",
-      "permanent": false
-    },
-    {
       "source": "/discover/shimokitazawa/kamisama.html",
       "destination": "/discover/shimokitazawa/book.html",
       "permanent": false
@@ -36,11 +31,6 @@
       "permanent": false
     },
     {
-      "source": "/discover/shimokitazawa/zawazawa.html",
-      "destination": "/discover/shimokitazawa/film.html",
-      "permanent": false
-    },
-    {
       "source": "/discover/kichijoji/yorozu.html",
       "destination": "/discover/kichijoji/book.html",
       "permanent": false
@@ -48,21 +38,6 @@
     {
       "source": "/discover/kichijoji/catwalk.html",
       "destination": "/discover/kichijoji/book.html",
-      "permanent": false
-    },
-    {
-      "source": "/discover/kichijoji/gou-gou-film.html",
-      "destination": "/discover/kichijoji/film.html",
-      "permanent": false
-    },
-    {
-      "source": "/discover/kichijoji/asahina.html",
-      "destination": "/discover/kichijoji/film.html",
-      "permanent": false
-    },
-    {
-      "source": "/discover/jinbocho/ginga.html",
-      "destination": "/discover/jinbocho/film.html",
       "permanent": false
     },
     {

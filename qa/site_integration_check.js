@@ -55,10 +55,16 @@ for(const item of excludedItems){assert.ok(!fs.existsSync(path.join(root,`discov
 for(const item of items) {
  const media=require('../tools/work-media').forItem(item);
  if(item.presentation==='text-only') {
-  // Individually reviewed text-only books. Adding one is an editorial decision,
-  // so the list is written out here rather than derived from the source.
-  assert.ok(['koenji/jirokichi','kichijoji/honnoniwa','koenji/shiroku-somaru','koenji/1q84','kichijoji/gou-gou-book','jinbocho/morisaki','jinbocho/morisaki-sequel','jinbocho/furuhon','jinbocho/furuhon-sequel','shimokitazawa/lady-jane','shimokitazawa/honda','kichijoji/cinema-history','koenji/junjo','shimokitazawa/nekomachi'].includes(item.city+'/'+item.id));
-  assert.equal(item.kind,'book');
+  // Individually reviewed text-only works. Adding one is an editorial decision,
+  // so the list is written out here rather than derived from the source. The two
+  // lists stay apart so the kind is pinned per entry: a book listed as text is a
+  // cover we may not reproduce, a film listed as text is a poster we may not
+  // reproduce, and neither may quietly become the other.
+  const textOnlyBooks=['koenji/jirokichi','kichijoji/honnoniwa','koenji/shiroku-somaru','koenji/1q84','kichijoji/gou-gou-book','jinbocho/morisaki','jinbocho/morisaki-sequel','jinbocho/furuhon','jinbocho/furuhon-sequel','shimokitazawa/lady-jane','shimokitazawa/honda','kichijoji/cinema-history','koenji/junjo','shimokitazawa/nekomachi'];
+  const textOnlyFilms=['koenji/monterey-pop','shimokitazawa/zawazawa','kichijoji/gou-gou-film','kichijoji/asahina','jinbocho/ginga'];
+  const key=item.city+'/'+item.id;
+  assert.ok(textOnlyBooks.includes(key)||textOnlyFilms.includes(key),'text-only is an editorial decision, not a fallback: '+key);
+  assert.equal(item.kind,textOnlyFilms.includes(key)?'film':'book');
   assert.equal(media,'','Text-only editions must not reproduce unapproved covers');
   assert.ok(item.sources.includes(item.url));
  } else assert.ok(media,'Every other published work has real media '+item.id);

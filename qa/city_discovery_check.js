@@ -6,7 +6,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const {items, commonVideos} = require('../tools/city-discovery-source');
 const decode = s => s.replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"');
-assert.equal(items.length,72);
+assert.equal(items.length,77);
 assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,items.length);
 assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,43);
 assert.equal(commonVideos.length,3);
@@ -71,7 +71,7 @@ function inspect(dir) {
 }
 inspect(path.join(root,'discover'));
 const research=require('../tools/city-research');
-assert.equal(pages,101+research.length);
+assert.equal(pages,106+research.length);
 // 街をまたいだ3シリーズ。棚を通った本と音楽は全部出る（増えたのに載らない、が起きない）。
 // 映像だけは「いま行ける場所」で絞るので、公開本数より少なくてよい。
 {

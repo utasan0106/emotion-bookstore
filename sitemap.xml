@@ -583,6 +583,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://emotionbookstore.com/discover/koenji/monterey-pop.html</loc>
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://emotionbookstore.com/discover/koenji/unnameable-dance.html</loc>
     <lastmod>2026-09-08</lastmod>
     <changefreq>monthly</changefreq>
@@ -667,6 +673,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://emotionbookstore.com/discover/shimokitazawa/zawazawa.html</loc>
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://emotionbookstore.com/discover/shimokitazawa/gekijyo.html</loc>
     <lastmod>2026-09-08</lastmod>
     <changefreq>monthly</changefreq>
@@ -745,6 +757,18 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://emotionbookstore.com/discover/kichijoji/gou-gou-film.html</loc>
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://emotionbookstore.com/discover/kichijoji/asahina.html</loc>
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://emotionbookstore.com/discover/kichijoji/rocky-horror.html</loc>
     <lastmod>2026-09-08</lastmod>
     <changefreq>monthly</changefreq>
@@ -812,6 +836,12 @@
   </url>
   <url>
     <loc>https://emotionbookstore.com/discover/jinbocho/morisaki-film.html</loc>
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://emotionbookstore.com/discover/jinbocho/ginga.html</loc>
     <lastmod>2026-09-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

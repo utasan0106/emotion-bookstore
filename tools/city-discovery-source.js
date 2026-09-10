@@ -206,6 +206,34 @@ for(const item of items) {
   item.action=review.action||(item.id==='honnoniwa'?'出版社で紹介・試し読みを見る':'出版社で書籍情報を見る');
 }
 const covers = require('./work-cover-source.json');
+// Films carried the same way, decided 2026-09-10 on the founder's approval. Every one
+// of the held-back works was a film, and every one was held for the same reason: no
+// official trailer and no poster we may reproduce. Their titles, directors, relations
+// and sources were already complete, so artwork was the whole distance between held
+// back and published — the same distance the books crossed by being listed as text.
+//
+// Two are still held, and not for artwork. `endless-waltz` and `shadowless-voice` have
+// no destination of their own: their only link is a cinema programme page for a season
+// that ended in June and April. The four Koenji films from February's festival are
+// published because each one links to the film's own official site — the festival is
+// how the editors found them, not where the reader is sent. A work whose only address
+// is a closed season is padding, and 神保町 having the fewest films is not a reason.
+const textOnlyFilms = {
+  'koenji/monterey-pop':      {source:'https://www.sonymusic.co.jp/artist/jimihendrix/info/559938', checkedAt:'2026-09-08'},
+  'shimokitazawa/zawazawa':   {source:'https://shimokitafilm.com/2021/09/19/quickreport0919_d/', checkedAt:'2026-09-08'},
+  'kichijoji/gou-gou-film':   {source:'https://www.wowow.co.jp/detail/021429', checkedAt:'2026-09-08'},
+  'kichijoji/asahina':        {source:'https://movie-tsutaya.tsite.jp/netdvd/dvd/goodsDetail.do?titleID=1745549881', checkedAt:'2026-09-08'},
+  'jinbocho/ginga':           {source:'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-09-19-ginga-tetsudou.html', checkedAt:'2026-09-08'}
+};
+for(const item of items) {
+  const review=textOnlyFilms[item.city+'/'+item.id];
+  if(!review) continue;
+  if(item.kind!=='film'||item.url!==review.source) throw new Error('Text-only film review mismatch: '+item.city+'/'+item.id);
+  if(covers[item.city+'/'+item.id]) throw new Error('Text-only film has a cover entry: '+item.city+'/'+item.id);
+  item.presentation='text-only';
+  item.checkedAt=review.checkedAt;
+}
+
 // Turned down by the editors, 2026-09-10, under SELECTION-20260910.md: the title says
 // the street and the relation is only that the story happens there, which is a label
 // rather than a reason to shelve it. They are not waiting for a cover — so acquiring
