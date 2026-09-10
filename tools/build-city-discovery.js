@@ -136,10 +136,10 @@ function credits(cities) {
 }
 function shell(title, body, back, active='') {
   return `<!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="description" content="街とつながる音楽、映像、本、映画を選ぶ文化案内。作品に触れたあと、ゆかりの場所や関連特集へ。"><title>${esc(title)}｜みんなの感情書店</title><link rel="icon" href="/assets/favicon.ico"><link rel="stylesheet" href="/discover/discover.css"></head>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="description" content="街とつながる音楽、映像、本、映画を選ぶ文化案内。作品に触れたあと、ゆかりの場所や関連特集へ。"><title>${esc(title)}｜みんなの感情書店</title><link rel="icon" href="/assets/favicon.ico"><link rel="alternate" type="application/rss+xml" title="みんなの感情書店 — 新しく入った作品" href="/feed.xml"><link rel="stylesheet" href="/discover/discover.css"></head>
 <body class="${active}"><a class="skip" href="#main">本文へ</a><header class="masthead"><a class="brand" href="/index.html"><img src="/assets/brand/emotion-bookstore-lockup-reversed.png" alt="みんなの感情書店" width="1429" height="331"></a>${back || '<a href="/works.html">紹介した作品へ →</a>'}</header>
 <main id="main">${body}</main><footer class="footer"><p>気になる作品から、街と人のつながりへ。</p><a href="/credits.html">写真と出典について</a></footer>
-${body.includes('data-video-id') ? '<script src="/video-embed.js" defer></script>' + (body.includes('class="player-stop"') ? '<script src="/discover/player.js" defer></script>' : '') : ''}${body.includes('data-rotation-epoch') ? '<script src="/outings/week.js" defer></script><script src="/discover/feature-week.js" defer></script>' : ''}</body></html>\n`;
+${body.includes('data-video-id') ? '<script src="/video-embed.js" defer></script>' + (body.includes('class="player-stop"') ? '<script src="/discover/player.js" defer></script>' : '') : ''}${body.includes('data-rotation-epoch') ? '<script src="/outings/week.js" defer></script><script src="/discover/feature-week.js" defer></script>' : ''}${body.includes('data-ending-list') ? '<script src="/outings/week.js" defer></script><script src="/discover/weekly-issue.js" defer></script>' : ''}</body></html>\n`;
 }
 let written = 0;
 const generatedFiles = [];
@@ -299,6 +299,7 @@ const signalEvents=require('./weekly-outings-source').events;
 const signals=`<section class="quick" id="city-signals"><h2>9月の街の動き</h2><p>編集部が選んだ4つの文化企画。日程と参加条件は、それぞれの案内で確認できます。</p>${citySignals.map(signal=>{const event=signalEvents.find(e=>e.id===signal.event);if(!event)throw new Error('Missing city signal event: '+signal.event);const dates=event.dates||[event.start,event.end];return `<article><p class="eyebrow">${cityNames[event.city]} · 告知された開催期間 ${esc(dates[0])}〜${esc(dates.at(-1))}</p><h3>${esc(signal.title)}</h3><p>${esc(event.title)}</p><p>編集部の視点：${esc(signal.reading)}</p><p><a href="/outings/events/${event.id}.html">日程・参加条件を見る</a> · ${external(event.url,'公式告知')}</p></article>`;}).join('')}<p>公式告知の確認日：2026年9月9日。自動更新や人気ランキングではありません。開催変更・空席は公式案内をご確認ください。</p><a href="/outings/">開催週を選んで探す →</a></section>`;
 write('index.html', shell('街から音楽、映像、本、映画を探す', `<section class="intro"><p class="eyebrow">聴く・観る・読む</p><h1>街から探す</h1><p class="lead">街を選んで、ゆかりの本・音楽・映像・映画へ。</p></section>
 <section class="city-grid" aria-label="街を選ぶ">${cities.map(c=>`<a class="city-card" href="/discover/${c}/"><div class="city-image">${photo(c)}</div><div class="city-caption"><h2>${cityNames[c]}</h2><p>音楽 ${items.filter(i=>i.city===c&&i.kind==='audio').length} / 映像 ${items.filter(i=>i.city===c&&i.kind==='video').length} / 本・漫画 ${items.filter(i=>i.city===c&&i.kind==='book').length} / 映画 ${items.filter(i=>i.city===c&&i.kind==='film').length}</p><span>${cityNames[c]}の作品を選ぶ →</span></div></a>`).join('')}</section>${watchNow}${signals}${researchSpotlight}
+<section class="quick"><p class="eyebrow">今週</p><h2>今週の感情書店。</h2><div class="quick-grid"><a href="/discover/weekly/index.html"><strong>今週で終わる催しと、新しく入った作品 →</strong><span>毎週月曜に変わります。RSSでも受け取れます</span></a></div></section>
 <section class="quick"><p class="eyebrow">街をまたいで選ぶ</p><h2>観る、読む、聴く。</h2><div class="quick-grid"><a href="/discover/outing/index.html"><strong>街へ出かけたくなる映像 ${outingVideos.length}本 →</strong><span>公園・商店街・ライブハウス・古書店。いま行ける場所が写っているもの</span></a><a href="/discover/reading/index.html"><strong>読みたくなる、街の本 ${readingBooks.length}冊 →</strong><span>書名に街の名前が無くても、背景を知るとその街の本だと分かる</span></a><a href="/discover/listening/index.html"><strong>聴きたくなる、街の音 ${listeningAudio.length}曲 →</strong><span>その街のライブハウスや路上で、実際に鳴った演奏</span></a></div></section>
 <section class="quick"><p class="eyebrow">街を決めずに観る</p><h2>街へ出たくなる、${commonVideos.length}つの短編。</h2><div class="quick-grid"><a href="/discover/short-films/index.html"><strong>人・移動・出会いを描く映像へ →</strong><span>企業広告も、単体で心に残る映像作品として選びました</span></a></div></section>
 <section class="quick"><p class="eyebrow">短い体験から</p><h2>同じ場所、違う聴こえ方。</h2><div class="quick-grid"><a href="/v3-prototype/culture-experience-r2/shimokitazawa/?recording=shelter"><strong>「夕暮れのジャイロ」を聴き比べる →</strong><span>下北沢SHELTERのライブとソロ盤</span></a><a href="/v3-prototype/culture-experience-r2/kichijoji/?scene=film"><strong>『PARKS』の予告と公園の声へ →</strong><span>吉祥寺・井の頭公園 / 1分59秒と57秒</span></a></div></section>${credits(cities)}`));
@@ -327,6 +328,34 @@ seriesPage('listening', '聴きたくなる音楽', `4つの街 / ${listeningAud
   'その街のライブハウスや路上で、実際に鳴った演奏です。街の紹介曲ではなく、そこで録られた音を選んでいます。',
   listeningAudio, '<p class="city-exit"><a href="/works.html#music">音楽の紹介から入る →</a></p>');
 write('short-films/index.html', shell('街へ出たくなる短編映像', `<section class="intro"><p class="eyebrow">全街共通 / 約1〜4分</p><h1>街へ出たくなる、<br>${commonVideos.length}つの短編。</h1><p class="lead">人との出会いや移動、暮らしを描く短編を選びました。特定の街の観光案内ではなく、企業広告を含む映像作品です。</p></section><div class="collection"><section class="work-grid" aria-label="共通の短編映像${commonVideos.length}件">${commonCards}</section><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p></div>`, '<a href="/discover/index.html">街から探す ←</a>'));
+
+
+// 週替わりを「並べ替え」から「今週号」へ。順番が入れ替わるだけでは、読者にとって
+// 新しいものは1件も増えない。ログイン・通知・連続記録を足さずに「また来週」の
+// 理由をつくるには、毎週なにが変わったのかを言葉で示すしかない。
+//
+// 二つだけ載せる。**今週で終わる催し**（放っておくと消えるので、今週が最後）と、
+// **新しく入った作品**（publishedAt を書いたものだけ）。
+// 「今週の一本」は置かない。どれを推すかは編集部の判断で、生成物が決めることではない。
+{
+  const {events: issueEvents, cities: issueCities} = require('./weekly-outings-source');
+  const {dates: issueDates} = require('../outings/week');
+  const ending = issueEvents
+    .map(e => ({e, last: issueDates(e).at(-1)}))
+    .sort((a, b) => a.last.localeCompare(b.last) || a.e.id.localeCompare(b.e.id));
+  const endingRows = ending.map(({e, last}) =>
+    `<li data-ends="${last}" data-review="${e.reviewThrough}"><a href="/outings/events/${e.id}.html">${esc(e.title)}</a><span class="wk-list-by">${esc(issueCities[e.city])} · ${esc(e.venue)}</span><span class="wk-list-rel">${last.slice(5).replace('-', '/')} まで</span></li>`).join('');
+  const arrivals = items.filter(i => i.publishedAt)
+    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt) || a.title.localeCompare(b.title));
+  const arrivalRows = arrivals.map(i =>
+    `<li><a href="/discover/${i.city}/${i.id}.html">${esc(i.title)}</a><span class="wk-list-by">${esc(i.creator)}</span><span class="wk-list-rel">${esc(cityNames[i.city])} · ${esc(i.relation)}</span></li>`).join('');
+  write('weekly/index.html', shell('今週の感情書店',
+    `<section class="intro"><p class="eyebrow">毎週月曜に変わります</p><h1>今週の、<br>感情書店。</h1><p class="lead">今週で終わる催しと、新しく棚に入った作品。人気順でも、あなた向けでもありません。</p></section><div class="collection">`
+    + `<section class="wk-list" aria-label="今週で終わる催し"><h2>今週で終わる催し <small data-ending-count></small></h2><p class="lead">会期の最終日が今週のものです。今週を逃すと終わります。</p><ul data-ending-list>${endingRows}</ul><p data-ending-empty hidden>今週で終わる催しはありません。<a href="/outings/">催しを一覧で見る →</a></p></section>`
+    + `<section class="wk-list" aria-label="新しく入った作品${arrivals.length}件"><h2>新しく入った作品</h2><p class="lead">棚に出した日の新しい順です。${arrivals.length}件。</p><ul>${arrivalRows}</ul></section>`
+    + `<p class="city-exit"><a href="/outings/">催しをすべて見る →</a></p><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p><p class="city-exit"><a href="/feed.xml">新着をRSSで受け取る →</a></p></div>`,
+    '<a href="/discover/index.html">街から探す ←</a>'));
+}
 
 for (const video of commonVideos) {
   const sourceLinks = video.sources.map(source => `<p>${external(source,new URL(source).hostname.replace('www.','')+' の掲載情報')}</p>`).join('');
@@ -388,6 +417,22 @@ else fs.writeFileSync(configPath,configText);
 const weeklyPaths=require('./build-weekly-outings');
 const sitemapPaths=['','works.html','visit/','about.html',...Object.keys(cityNames).map(city=>'shelf.html?shelf='+city),...['book','film','music','video'].map(kind=>'work-'+kind+'.html'),...weeklyPaths,...generatedFiles.map(file=>`discover/${file === 'index.html' ? '' : file.replace(/index\.html$/, '')}`)];
 const sitemap=`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapPaths.map((file,index)=>`  <url>\n    <loc>https://emotionbookstore.com/${file}</loc>\n    <lastmod>${checkedAt}</lastmod>\n    <changefreq>${index<2?'weekly':'monthly'}</changefreq>\n    <priority>${index===0?'1.0':index<3?'0.9':file.endsWith('/')?'0.8':'0.6'}</priority>\n  </url>`).join('\n')}\n</urlset>\n`;
+// 新着をRSSで出す。アカウントも通知許可も要らずに「また来週」を届けられる唯一の手段で、
+// 掲げている原則（人気順で並べない・プロファイルしない）と何ひとつ衝突しない。
+// 読者が誰かをこちらは知らないままでよい。
+//
+// 中身は publishedAt を書いた作品だけ。日付を書き忘れた作品は出ない。
+{
+  const feedItems=items.filter(i=>i.publishedAt)
+    .sort((a,b)=>b.publishedAt.localeCompare(a.publishedAt)||a.title.localeCompare(b.title)).slice(0,50);
+  const rfc=d=>new Date(Date.parse(d+'T00:00:00+09:00')).toUTCString();
+  const site='https://emotionbookstore.com';
+  const feed=`<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n<channel>\n  <title>みんなの感情書店 — 新しく入った作品</title>\n  <link>${site}/discover/weekly/</link>\n  <atom:link href="${site}/feed.xml" rel="self" type="application/rss+xml"/>\n  <description>街とのつながりを出典で確かめた作品を、棚に入った順に。人気順でもおすすめ順でもありません。</description>\n  <language>ja</language>\n${feedItems.map(i=>`  <item>\n    <title>${esc(i.title)}</title>\n    <link>${site}/discover/${i.city}/${i.id}.html</link>\n    <guid isPermaLink="true">${site}/discover/${i.city}/${i.id}.html</guid>\n    <pubDate>${rfc(i.publishedAt)}</pubDate>\n    <description>${esc(cityNames[i.city]+' · '+i.relation+'。'+i.hook)}</description>\n  </item>`).join('\n')}\n</channel>\n</rss>\n`;
+  const feedFile=path.join(root,'feed.xml');
+  if(process.argv.includes('--check')){
+    if(!fs.existsSync(feedFile)||fs.readFileSync(feedFile,'utf8')!==feed)throw new Error('Generated feed differs: '+feedFile);
+  } else fs.writeFileSync(feedFile,feed);
+}
 const sitemapFile=path.join(root,'sitemap.xml');
 if(process.argv.includes('--check')) {
   if(!fs.existsSync(sitemapFile)||fs.readFileSync(sitemapFile,'utf8')!==sitemap)throw new Error('Generated sitemap differs: '+sitemapFile);

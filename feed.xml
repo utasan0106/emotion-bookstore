@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>みんなの感情書店 — 新しく入った作品</title>
+  <link>https://emotionbookstore.com/discover/weekly/</link>
+  <atom:link href="https://emotionbookstore.com/feed.xml" rel="self" type="application/rss+xml"/>
+  <description>街とのつながりを出典で確かめた作品を、棚に入った順に。人気順でもおすすめ順でもありません。</description>
+  <language>ja</language>
+  <item>
+    <title>MONTEREY POP モンタレー・ポップ</title>
+    <link>https://emotionbookstore.com/discover/koenji/monterey-pop.html</link>
+    <guid isPermaLink="true">https://emotionbookstore.com/discover/koenji/monterey-pop.html</guid>
+    <pubDate>Wed, 09 Sep 2026 15:00:00 GMT</pubDate>
+    <description>高円寺 · 高円寺の映画祭で上映。1967年の音楽祭で生まれた、一度きりの演奏へ。</description>
+  </item>
+  <item>
+    <title>グーグーだって猫である</title>
+    <link>https://emotionbookstore.com/discover/kichijoji/gou-gou-film.html</link>
+    <guid isPermaLink="true">https://emotionbookstore.com/discover/kichijoji/gou-gou-film.html</guid>
+    <pubDate>Wed, 09 Sep 2026 15:00:00 GMT</pubDate>
+    <description>吉祥寺 · 物語の舞台。猫との出会いから、止まっていた日常が動き出す。</description>
+  </item>
+  <item>
+    <title>ざわざわ下北沢</title>
+    <link>https://emotionbookstore.com/discover/shimokitazawa/zawazawa.html</link>
+    <guid isPermaLink="true">https://emotionbookstore.com/discover/shimokitazawa/zawazawa.html</guid>
+    <pubDate>Wed, 09 Sep 2026 15:00:00 GMT</pubDate>
+    <description>下北沢 · 撮影された街。店と人が行き交う街の、かつての姿に出会う。</description>
+  </item>
+  <item>
+    <title>吉祥寺の朝日奈くん</title>
+    <link>https://emotionbookstore.com/discover/kichijoji/asahina.html</link>
+    <guid isPermaLink="true">https://emotionbookstore.com/discover/kichijoji/asahina.html</guid>
+    <pubDate>Wed, 09 Sep 2026 15:00:00 GMT</pubDate>
+    <description>吉祥寺 · 撮影された街。いつもの道と店から始まる、恋の物語。</description>
+  </item>
+  <item>
+    <title>銀河鉄道の夜</title>
+    <link>https://emotionbookstore.com/discover/jinbocho/ginga.html</link>
+    <guid isPermaLink="true">https://emotionbookstore.com/discover/jinbocho/ginga.html</guid>
+    <pubDate>Wed, 09 Sep 2026 15:00:00 GMT</pubDate>
+    <description>神保町 · 神保町シアターの上映企画。列車と音楽が運ぶ、夜の旅へ。</description>
+  </item>
+</channel>
+</rss>

@@ -206,6 +206,29 @@ for(const item of items) {
   item.action=review.action||(item.id==='honnoniwa'?'出版社で紹介・試し読みを見る':'出版社で書籍情報を見る');
 }
 const covers = require('./work-cover-source.json');
+// 公開日。`checkedAt` は出典を読んだ日で、棚に出した日ではない。読者にとっての
+// 「新しく入った」はこちらで決まるので、別に持つ。
+//
+// git 履歴からは導出できない。引き継ぎでリポジトリの履歴が2026-09-08までしか無く、
+// そこから見ると全77件が同じ週の追加になってしまう。だから今日から積む。
+//
+// **作品を足したら必ずここに書く。** 書かなければ新着にもRSSにも出ない（落ちはしない）。
+const publishedAt = {
+  'koenji/monterey-pop':    '2026-09-10',
+  'shimokitazawa/zawazawa': '2026-09-10',
+  'kichijoji/gou-gou-film': '2026-09-10',
+  'kichijoji/asahina':      '2026-09-10',
+  'jinbocho/ginga':         '2026-09-10'
+};
+for(const item of items){
+  const at=publishedAt[item.city+'/'+item.id];
+  if(!at) continue;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(at)) throw new Error('publishedAt must be a date: '+item.id);
+  item.publishedAt=at;
+}
+for(const key of Object.keys(publishedAt))
+  if(!items.some(i=>i.city+'/'+i.id===key)) throw new Error('publishedAt names an object that is not in the catalogue: '+key);
+
 // Films carried the same way, decided 2026-09-10 on the founder's approval. Every one
 // of the held-back works was a film, and every one was held for the same reason: no
 // official trailer and no poster we may reproduce. Their titles, directors, relations
