@@ -175,6 +175,25 @@ body.site-polished:is(.shelf-page,.works-page,.thread-page,.suggest-page){--ink:
 .site-polished .research-article .research-byline{font-size:.8125rem;margin:0;padding-bottom:20px;border-bottom:0}
 .site-polished .research-toc{margin:0;padding:12px 0;border-block:1px solid #dedede;gap:4px 20px;font-size:.875rem}
 .site-polished .research-toc a{display:inline-flex;align-items:center;min-height:44px}
+.site-polished .article-summary{margin:0 0 20px;padding:16px 0 16px 16px;border-left:2px solid #303030;font-size:1rem;overflow-wrap:anywhere}
+.site-polished .article-summary h2{font-size:1rem;margin:0 0 10px}
+.site-polished .article-summary ul{margin:0;padding-left:1.2em}
+.site-polished .article-summary li{padding-left:.15em;margin:0 0 .55em;line-height:1.75}
+.site-polished .article-summary li:last-child{margin-bottom:0}
+/* Shared navigation and white reading surface; restrained city-specific accents. */
+.site-polished[data-editorial-city="kichijoji"]{--city-accent:#285b43}
+.site-polished[data-editorial-city="koenji"]{--city-accent:#713b58}
+.site-polished[data-editorial-city="shimokitazawa"]{--city-accent:#245f69}
+.site-polished[data-editorial-city="jinbocho"]{--city-accent:#75452b}
+.site-polished[data-editorial-city] :is(.eyebrow,.relation){color:var(--city-accent)}
+.site-polished[data-editorial-city] .city-hero{border-bottom:2px solid var(--city-accent)}
+.site-polished[data-editorial-city] .article-summary{border-left-color:var(--city-accent)}
+.site-polished[data-editorial-city] .city-heading h1{color:var(--city-accent)}
+.site-polished[data-editorial-city] .city-heading{display:grid;grid-template-columns:minmax(0,1fr) minmax(100px,40%);align-items:center;gap:16px}
+.site-polished .city-motif{margin:0;min-width:0}
+.site-polished .city-motif img{display:block;width:100%;height:auto;aspect-ratio:3/1;object-fit:contain}
+.site-polished .city-motif figcaption{font-size:.75rem;line-height:1.6;color:#595959;margin-top:6px}
+@media(max-width:360px){.site-polished[data-editorial-city] .city-heading{grid-template-columns:minmax(0,1fr) 100px;gap:8px}.site-polished .city-heading h1 span{display:block;margin-left:0}}
 .site-polished .research-source{font-size:.9375rem;padding:24px 0}
 .site-polished .research-source h3{font-size:1.0625rem}
 .site-polished .research-article :is(section,div,li)[id]{scroll-margin-top:24px}

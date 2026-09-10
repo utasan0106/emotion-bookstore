@@ -7,6 +7,9 @@ const allowed=new Set(['index.html','shelf.html','suggest.html','data.html','cre
 for(const file of ['home-discovery.css','home-discovery.js','outings/events-data.js','outings/index.html','outings/week.js','outings/outings.css','tools/build-weekly-outings.js','tools/weekly-outings-source.js','qa/home_discovery_check.js','qa/home-integration-layout.html','qa/HOME_INTEGRATION.md']) allowed.add(file);
 const approvedEvents=new Set(['v3_home_view','v3_shelf_open','v3_shelf_view','v3_detail_open','v3_official_action','v3_suggest_view','v3_suggest_copy','v3_suggest_form_open','v3_entry_open','v3_works_section_view','v3_thread_start','v3_thread_stage','v3_thread_complete','v3_evidence_open','v3_external_open','v3_continue_open','v3_media_preview_open']);
 // Morning polish: visual changes, explicit regional-weather labels, directory
+// Approved editorial summary and city art work; no tracking changes.
+for(const file of ['docs/city-discovery/EDITORIAL-STANDARDS-20260910.md']) allowed.add(file);
+for(const file of ['assets/city-editorial/','docs/city-discovery/CITY-ART-20260910.md']) allowed.add(file);
 // routing and their bounded QA. The measurement code/payload contract is unchanged.
 for(const file of ['city-weather.js','discover/index.html','page-nav.css','site-system.css','tools/build-city-discovery.js','qa/catalogue_regression_check.js','qa/city_discovery_check.js','qa/weather_client_check.js','qa/type-layout.html','qa/morning-layout.html','DESIGN.md','docs/morning-polish-20260909.md']) allowed.add(file);
 // Source-reviewed city research changes presentation and provenance only. It does

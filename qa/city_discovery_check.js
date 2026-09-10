@@ -134,7 +134,7 @@ for(const essay of research) {
     assert.ok(['official-embed','withdrawn-private'].includes(source.media.status));
     assert.match(source.media.videoId,/^[\w-]{11}$/);
   }
-  assert.ok(html.includes('試読版'));
+  assert.ok(html.includes(essay.methodology),'Disclose source-based editorial method');
   assert.ok(html.includes('広告が来街を増やしたという結論ではない'));
   assert.ok(html.includes('生データは未検証'));
   } else {
