@@ -16,11 +16,6 @@
       "permanent": false
     },
     {
-      "source": "/discover/koenji/junjo.html",
-      "destination": "/discover/koenji/book.html",
-      "permanent": false
-    },
-    {
       "source": "/discover/koenji/cafe-junjo.html",
       "destination": "/discover/koenji/book.html",
       "permanent": false

@@ -186,7 +186,7 @@ function workCard(i) {
 const featuredRotation={
   'koenji/audio': ['moon-in-june-play','big-the-grape','night-glory-scarlet','seabirth-live','pink-minds-live'],
   'koenji/video': ['awa-2025','tenguren','awa-history','pal-street','street-food','next-town-koenji'],
-  'koenji/book': ['jirokichi','shiroku-somaru','1q84'],
+  'koenji/book': ['jirokichi','junjo','shiroku-somaru','1q84'],
   'koenji/film': ['unnameable-dance','ramen-heads','rokkoku-kitchen','shogakko'],
   'shimokitazawa/audio': ['kaho-asa','bilingualboy-love','sleepinside-recycle','metrois-tokyo','mabuta-roundabout'],
   'shimokitazawa/video': ['shelter-news','kitazawa-guide','tefu-1500','obonro-walk','womenslib-interview','bocchi-main-pv'],

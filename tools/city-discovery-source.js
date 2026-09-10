@@ -69,7 +69,8 @@ video('koenji', 'tenguren', '天狗連「日本の四季」', '天狗連 / PR映
 video('koenji', 'awa-history', '高円寺阿波おどり ～60年の歩み～', '杉並区 / 記録映像', 'いまの踊りを観たあと、その歩みを映像で遡る。', '祭りの来歴', '高円寺阿波おどりの60年を振り返る杉並区の記録。現在の開催日程は扱いません。', 'cFAtkUlajUI');
 video('koenji', 'pal-street', 'JOIN THE pal｜高円寺の一日', '高円寺パル商店街振興組合 / PR映像', '店先、古着、踊り。ひとつの商店街を映像で歩く。', '街を舞台にした映像', '高円寺パル商店街のプロモーション映像。実在の店舗と、物語仕立ての演出で構成されています。', 'ljxbhH_n9ak', ['https://www.value-press.com/pressrelease/352818']);
 video('koenji', 'street-food', '高円寺のクレープと餃子を巡る', 'TabiEats / 街歩き・英語', '食べ歩く人の目線から、店先の空気を感じる。', '街の取材映像', '高円寺を巡る「Street Food in Tokyo | Best Crepes & Dumplings In Koenji」。映像内の価格・営業状況は撮影当時の情報です。', 'JkxNRpc7NJU');
-book('koenji', 'junjo', '高円寺純情商店街', 'ねじめ正一', '店を営む家族の日常から、商店街の人間模様へ。', '物語の舞台', '高円寺の商店街を舞台にした小説です。', 'https://www.shinchosha.co.jp/book/102112/');
+// Not a novel that borrowed the street's name — the street took the novel's.
+book('koenji', 'junjo', '高円寺純情商店街', 'ねじめ正一', '店を営む家族の日常から、商店街の人間模様へ。', '街が名前を変えた小説', '当商店街で少年時代を過ごしたねじめ正一の小説です。1989年に第101回直木賞を受賞したことから、正式名称「高円寺銀座商店会協同組合」の商店街が「高円寺純情商店街」を愛称と定め、商店街アーチにこの名前を掲げました。', 'https://www.shinchosha.co.jp/book/102112/', ['https://koenji-junjo-hotel.com/about-junjo/']);
 book('koenji', 'jirokichi', '次郎吉 to JIROKICHI', 'Live Music JIROKICHI 編', 'ステージの音を支えてきた人たちの、50年の記録。', '会場の記録', '高円寺のライブハウスJIROKICHIの50年を扱う本。インタビューや公演の記録から会場の来歴を辿れます。', 'https://www.ele-king.net/books/012100/');
 book('koenji', 'cafe-junjo', '高円寺かふぇ純情の事情', '石原ひな子', '喫茶店に持ち込まれる悩みから、人のつながりを覗く。', '物語の舞台', '高円寺の商店街を舞台にした喫茶店の物語。架空の人物・出来事を描く小説です。', 'https://www.kadokawa.co.jp/product/321507000438/');
 book('koenji', 'shiroku-somaru', '君のいない町が白く染まる', '安倍雄太郎', '引っ越した街で始まる恋を、一冊の物語として。', '物語の舞台', '主人公が高円寺へ引っ越すところから始まる小説です。', 'https://www.shogakukan.co.jp/books/09406495');
@@ -180,7 +181,10 @@ const textOnlyBooks = {
   // set on the street is a label, and stays off the shelf.
   'shimokitazawa/lady-jane': {source:'https://www.genki-shobou.co.jp/books/978-4-901998-72-7', checkedAt:'2026-09-08'},
   'shimokitazawa/honda': {source:'https://prtimes.jp/main/html/rd/p/000000987.000011710.html', checkedAt:'2026-09-08', action:'出版案内で内容を読む'},
-  'kichijoji/cinema-history': {source:'https://books.bunshun.jp/ud/book/num/9784160089457', checkedAt:'2026-09-08'}
+  'kichijoji/cinema-history': {source:'https://books.bunshun.jp/ud/book/num/9784160089457', checkedAt:'2026-09-08'},
+  // The title says the street, but the relation runs the other way: the street is
+  // named after the book. Founder-verified against the street's own account, 2026-09-10.
+  'koenji/junjo': {source:'https://www.shinchosha.co.jp/book/102112/', checkedAt:'2026-09-10'}
 };
 video('shimokitazawa', 'bocchi-main-pv', 'ぼっち・ざ・ろっく！｜TVアニメ本PV', 'アニプレックス / 2022', 'ひとりのギターが、バンドの音になる。下北沢を舞台にした物語の入口へ。', '下北沢が舞台のアニメ', '公式サイトが下北沢を作品の舞台として紹介しています。これはTVアニメの紹介PVで、本編や実在のライブ公演映像ではありません。映像内の放送告知は公開当時の情報です。', '1-o7fmQqSNg', ['https://bocchi.rocks/movie/', 'https://bocchi.rocks/kessokuband/info/?article_id=65508']);
 items[items.length-1].checkedAt='2026-09-09';
