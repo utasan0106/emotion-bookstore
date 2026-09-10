@@ -10,6 +10,7 @@ const approvedEvents=new Set(['v3_home_view','v3_shelf_open','v3_shelf_view','v3
 // Approved editorial summary and city art work; no tracking changes.
 for(const file of ['docs/city-discovery/EDITORIAL-STANDARDS-20260910.md']) allowed.add(file);
 for(const file of ['assets/city-editorial/','docs/city-discovery/CITY-ART-20260910.md']) allowed.add(file);
+for(const city of ['kichijoji','koenji','shimokitazawa','jinbocho']) allowed.add('assets/city-editorial/'+city+'.webp');
 // routing and their bounded QA. The measurement code/payload contract is unchanged.
 for(const file of ['city-weather.js','discover/index.html','page-nav.css','site-system.css','tools/build-city-discovery.js','qa/catalogue_regression_check.js','qa/city_discovery_check.js','qa/weather_client_check.js','qa/type-layout.html','qa/morning-layout.html','DESIGN.md','docs/morning-polish-20260909.md']) allowed.add(file);
 // Source-reviewed city research changes presentation and provenance only. It does
