@@ -139,7 +139,7 @@ function shell(title, body, back, active='') {
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="description" content="街とつながる音楽、映像、本、映画を選ぶ文化案内。作品に触れたあと、ゆかりの場所や関連特集へ。"><title>${esc(title)}｜みんなの感情書店</title><link rel="icon" href="/assets/favicon.ico"><link rel="alternate" type="application/rss+xml" title="みんなの感情書店 — 新しく入った作品" href="/feed.xml"><link rel="stylesheet" href="/discover/discover.css"></head>
 <body class="${active}"><a class="skip" href="#main">本文へ</a><header class="masthead"><a class="brand" href="/index.html"><img src="/assets/brand/emotion-bookstore-lockup-reversed.png" alt="みんなの感情書店" width="1429" height="331"></a>${back || '<a href="/works.html">紹介した作品へ →</a>'}</header>
 <main id="main">${body}</main><footer class="footer"><p>気になる作品から、街と人のつながりへ。</p><a href="/credits.html">写真と出典について</a></footer>
-${body.includes('data-video-id') ? '<script src="/video-embed.js" defer></script>' + (body.includes('class="player-stop"') ? '<script src="/discover/player.js" defer></script>' : '') : ''}${body.includes('data-rotation-epoch') ? '<script src="/outings/week.js" defer></script><script src="/discover/feature-week.js" defer></script>' : ''}${body.includes('data-ending-list') ? '<script src="/outings/week.js" defer></script><script src="/discover/weekly-issue.js" defer></script>' : ''}</body></html>\n`;
+${body.includes('data-video-id') ? '<script src="/video-embed.js" defer></script>' + (body.includes('class="player-stop"') ? '<script src="/discover/player.js" defer></script>' : '') : ''}${body.includes('data-rotation-epoch') ? '<script src="/outings/week.js" defer></script><script src="/discover/feature-week.js" defer></script>' : ''}${body.includes('data-ending-list') ? '<script src="/outings/week.js" defer></script><script src="/discover/weekly-issue.js" defer></script>' : ''}${body.includes('data-venue-events') ? '<script src="/outings/week.js" defer></script><script src="/discover/venue-events.js" defer></script>' : ''}</body></html>\n`;
 }
 let written = 0;
 const generatedFiles = [];
@@ -179,6 +179,10 @@ function write(file, html) {
   const detailItem=items.find(item=>file===`${item.city}/${item.id}.html`);
   if(detailItem) {
     html=html.replace(`紹介先・出典確認：${checkedAt}。`,`紹介先・出典確認：${detailItem.checkedAt || checkedAt}。`);
+    // その場所に他にも作品や催しがあるなら、そこへ抜けられるようにする。
+    // 会場ページを作っても、作品から行けなければ誰も辿り着かない。
+    const venue=require('./venue-source').venues.find(v=>v.city===detailItem.city&&v.works.includes(detailItem.id));
+    if(venue) html=html.replace('</section>','<p class="venue-entry"><a href="/discover/venue/'+venue.id+'/">'+esc(venue.name)+'から辿る →</a></p></section>');
   }
   const editorialKind={koenji:'book',kichijoji:'book',shimokitazawa:'video',jinbocho:'film'}[city];
   if(editorials && (categoryFile==='index.html' || kind===editorialKind)) {
@@ -263,6 +267,14 @@ const sourceLabel = (url, all) => {
   const seg = new URL(url).pathname.split('/').filter(Boolean)[0];
   return name + (seg ? '/' + seg : '') + ' の掲載情報';
 };
+// 街ページから会場へ。場所を軸にした横断は、街の一覧からも入れないと見つからない。
+const venueEntry = city => {
+  const here = require('./venue-source').venues.filter(v => v.city === city);
+  if (!here.length) return '';
+  return `<section class="quick"><p class="eyebrow">場所から辿る</p><h2>この街の、あの場所から。</h2><div class="quick-grid">${
+    here.map(v => `<a href="/discover/venue/${v.id}/"><strong>${esc(v.name)} →</strong><span>${esc(v.lead)}</span></a>`).join('')
+  }</div></section>`;
+};
 function workCard(i) {
   return `<article class="work-card ${i.kind}">${workMedia.forItem(i)}<div class="card-body"><p class="relation">${esc(categories[i.kind].name)} · ${esc(i.relation)}</p><h2><a href="/discover/${i.city}/${i.id}.html">${esc(i.title)}</a></h2><p class="creator">${esc(i.creator)}</p><p class="card-hook">${esc(i.hook)}</p><p class="card-why"><span>なぜこの街？</span>${esc(i.relationNote)}</p><p class="card-source">${cardEvidence(i).label} ${external(cardEvidence(i).url, sourceHost(cardEvidence(i).url))}</p>${artistProfile(i)}<div class="card-links"><a class="primary" href="/discover/${i.city}/${i.id}.html">作品を見る</a><a href="/discover/${i.city}/${i.kind}.html">${categories[i.kind].name}の一覧</a></div></div></article>`;
 }
@@ -310,7 +322,7 @@ for (const city of cities) {
       return {item,kind,week};
     });
   });
-  write(`${city}/index.html`,shell(`${cityNames[city]}の作品`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><div><p class="eyebrow">街から見つける</p><h1>${cityNames[city]}<span>の作品</span></h1></div><figure class="city-motif"><img src="/assets/city-editorial/${city}.webp" alt="" width="640" height="214" decoding="async"><figcaption>街のイメージ · AIイラスト</figcaption></figure></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><section class="work-grid" aria-label="${cityNames[city]}の作品" data-rotation-epoch="${rotationEpoch}">${featured.map(({item,kind,week})=>workCard(item).replace('<article class="work-card ',`<article data-feature-kind="${kind}" data-feature-week="${week}"${week?' hidden':''} class="work-card `)).join('')}</section>${shortFilmsEntry()}<div class="city-next"><a href="/outings/?city=${city}">${cityNames[city]}の催し</a><a href="/shelf.html?shelf=${city}">ゆかりの場所・歴史</a></div>${credits([city])}</div>`, '<a href="/discover/">街を選び直す</a>',city));
+  write(`${city}/index.html`,shell(`${cityNames[city]}の作品`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><div><p class="eyebrow">街から見つける</p><h1>${cityNames[city]}<span>の作品</span></h1></div><figure class="city-motif"><img src="/assets/city-editorial/${city}.webp" alt="" width="640" height="214" decoding="async"><figcaption>街のイメージ · AIイラスト</figcaption></figure></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><section class="work-grid" aria-label="${cityNames[city]}の作品" data-rotation-epoch="${rotationEpoch}">${featured.map(({item,kind,week})=>workCard(item).replace('<article class="work-card ',`<article data-feature-kind="${kind}" data-feature-week="${week}"${week?' hidden':''} class="work-card `)).join('')}</section>${shortFilmsEntry()}${venueEntry(city)}<div class="city-next"><a href="/outings/?city=${city}">${cityNames[city]}の催し</a><a href="/shelf.html?shelf=${city}">ゆかりの場所・歴史</a></div>${credits([city])}</div>`, '<a href="/discover/">街を選び直す</a>',city));
 }
 const featuredVideoIds=['bocchi-main-pv','next-town-koenji','kichion-toranoko','used-book-festival'];
 const featuredVideos=featuredVideoIds.map(id=>items.find(item=>item.id===id));
@@ -378,6 +390,35 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
     + `<section class="wk-list" aria-label="新しく入った作品${arrivals.length}件"><h2>新しく入った作品</h2><p class="lead">棚に出した日の新しい順です。${arrivals.length}件。</p><ul>${arrivalRows}</ul></section>`
     + `<p class="city-exit"><a href="/outings/">催しをすべて見る →</a></p><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p><p class="city-exit"><a href="/feed.xml">新着をRSSで受け取る →</a></p></div>`,
     '<a href="/discover/index.html">街から探す ←</a>'));
+}
+
+// 会場から辿る。街 → 分類 → 作品 → 外へ、という一直線では見えない交差を出す。
+// 同じ部屋で録られた演奏と、その部屋を書いた本と、今週その部屋でやっている催しは、
+// 読者にとって一つのものである。会場は会期で消えないので、この索引は空にならない。
+{
+  const {verify: verifyVenues} = require('./venue-source');
+  const {events: venueEvents, cities: venueCities} = require('./weekly-outings-source');
+  const {dates: venueDates} = require('../outings/week');
+  for (const v of verifyVenues(items)) {
+    const works = v.works.map(id => items.find(i => i.city === v.city && i.id === id));
+    const byKind = {};
+    for (const w of works) (byKind[w.kind] = byKind[w.kind] || []).push(w);
+    const workSections = Object.entries(byKind).map(([kind, group]) =>
+      `<section class="wk-list" aria-label="${categories[kind].name}${group.length}件"><h2>${categories[kind].name}</h2><ul>${
+        group.map(w => `<li><a href="/discover/${w.city}/${w.id}.html">${esc(w.title)}</a><span class="wk-list-by">${esc(w.creator)}</span><span class="wk-list-rel">${esc(w.relationNote)}</span></li>`).join('')
+      }</ul></section>`).join('');
+    const here = venueEvents.filter(e => e.venue.includes(v.eventVenue))
+      .map(e => ({e, last: venueDates(e).at(-1), next: venueDates(e)[0]}))
+      .sort((a, b) => a.next.localeCompare(b.next) || a.e.id.localeCompare(b.e.id));
+    const eventRows = here.map(({e, last, next}) =>
+      `<li data-event-last="${last}" data-event-review="${e.reviewThrough}"><a href="/outings/events/${e.id}.html">${esc(e.title)}</a><span class="wk-list-by">${esc(e.kind)}</span><span class="wk-list-rel">${next.slice(5).replace('-', '/')}${next === last ? '' : '〜' + last.slice(5).replace('-', '/')}</span></li>`).join('');
+    const eventSection = here.length
+      ? `<section class="wk-list" aria-label="${v.name}のいまの催し"><h2>いま、ここで <small data-venue-events-count></small></h2><ul data-venue-events>${eventRows}</ul><p data-venue-events-empty hidden>いま予定されている催しはありません。<a href="/outings/?city=${v.city}">${venueCities[v.city]}の催しを見る →</a></p></section>`
+      : `<section class="wk-list" aria-label="${v.name}のいまの催し"><h2>いま、ここで</h2><p>この会場の催しは、いまカタログにありません。<a href="/outings/?city=${v.city}">${venueCities[v.city]}の催しを見る →</a></p></section>`;
+    write(`venue/${v.id}/index.html`, shell(`${v.name}｜${venueCities[v.city]}`,
+      `<section class="intro"><p class="eyebrow">${venueCities[v.city]} / 場所から辿る</p><h1>${esc(v.name)}</h1><p class="lead">${esc(v.lead)}</p></section><div class="collection">${workSections}${eventSection}<p class="city-exit"><a href="/discover/${v.city}/">${venueCities[v.city]}の作品を見る →</a></p></div>`,
+      `<a href="/discover/${v.city}/">${venueCities[v.city]}へ ←</a>`, v.city));
+  }
 }
 
 for (const video of commonVideos) {
