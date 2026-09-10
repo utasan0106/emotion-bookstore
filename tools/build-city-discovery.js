@@ -336,6 +336,7 @@ write('index.html', shell('街から音楽、映像、本、映画を探す', `<
 <section class="city-grid" aria-label="街を選ぶ">${cities.map(c=>`<a class="city-card" href="/discover/${c}/"><div class="city-image">${photo(c)}</div><div class="city-caption"><h2>${cityNames[c]}</h2><p>音楽 ${items.filter(i=>i.city===c&&i.kind==='audio').length} / 映像 ${items.filter(i=>i.city===c&&i.kind==='video').length} / 本・漫画 ${items.filter(i=>i.city===c&&i.kind==='book').length} / 映画 ${items.filter(i=>i.city===c&&i.kind==='film').length}</p><span>${cityNames[c]}の作品を選ぶ →</span></div></a>`).join('')}</section>${watchNow}${signals}${researchSpotlight}
 <section class="quick"><p class="eyebrow">今週</p><h2>今週の感情書店。</h2><div class="quick-grid"><a href="/discover/weekly/index.html"><strong>今週で終わる催しと、新しく入った作品 →</strong><span>毎週月曜に変わります。RSSでも受け取れます</span></a></div></section>
 <section class="quick"><p class="eyebrow">街をまたいで選ぶ</p><h2>観る、読む、聴く。</h2><div class="quick-grid"><a href="/discover/outing/index.html"><strong>街へ出かけたくなる映像 ${outingVideos.length}本 →</strong><span>公園・商店街・ライブハウス・古書店。いま行ける場所が写っているもの</span></a><a href="/discover/reading/index.html"><strong>読みたくなる、街の本 ${readingBooks.length}冊 →</strong><span>書名に街の名前が無くても、背景を知るとその街の本だと分かる</span></a><a href="/discover/listening/index.html"><strong>聴きたくなる、街の音 ${listeningAudio.length}曲 →</strong><span>その街のライブハウスや路上で、実際に鳴った演奏</span></a></div></section>
+<section class="quick"><p class="eyebrow">街をまたいで、場所から</p><h2>本屋、映画館、ライブハウス、劇場。</h2><div class="quick-grid"><a href="/discover/places/index.html"><strong>場所そのものを扱った作品 18件 →</strong><span>作品の舞台としてではなく、その場所自体の記録と物語。記録と物語は分けています</span></a></div></section>
 <section class="quick"><p class="eyebrow">街を決めずに観る</p><h2>街へ出たくなる、${commonVideos.length}つの短編。</h2><div class="quick-grid"><a href="/discover/short-films/index.html"><strong>人・移動・出会いを描く映像へ →</strong><span>企業広告も、単体で心に残る映像作品として選びました</span></a></div></section>
 <section class="quick"><p class="eyebrow">短い体験から</p><h2>同じ場所、違う聴こえ方。</h2><div class="quick-grid"><a href="/v3-prototype/culture-experience-r2/shimokitazawa/?recording=shelter"><strong>「夕暮れのジャイロ」を聴き比べる →</strong><span>下北沢SHELTERのライブとソロ盤</span></a><a href="/v3-prototype/culture-experience-r2/kichijoji/?scene=film"><strong>『PARKS』の予告と公園の声へ →</strong><span>吉祥寺・井の頭公園 / 1分59秒と57秒</span></a></div></section>${credits(cities)}`));
 
@@ -419,6 +420,25 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
       `<section class="intro"><p class="eyebrow">${venueCities[v.city]} / 場所から辿る</p><h1>${esc(v.name)}</h1><p class="lead">${esc(v.lead)}</p></section><div class="collection">${workSections}${eventSection}<p class="city-exit"><a href="/discover/${v.city}/">${venueCities[v.city]}の作品を見る →</a></p></div>`,
       `<a href="/discover/${v.city}/">${venueCities[v.city]}へ ←</a>`, v.city));
   }
+}
+
+// 場所そのものを扱った作品のコーナー。街ではなく、文化が生まれる場所との関係で並べる。
+// 基準と、記録／物語の区別は tools/places-source.js に書いてある。
+{
+  const {verify: verifyPlaces, kinds: placeKinds} = require('./places-source');
+  const placeGroups = verifyPlaces(items);
+  const total = placeGroups.reduce((n, g) => n + g.works.length, 0);
+  const sections = placeGroups.map(g => {
+    const rows = g.works.map(key => {
+      const [city, id] = key.split('/');
+      const w = items.find(i => i.city === city && i.id === id);
+      return `<li><a href="/discover/${w.city}/${w.id}.html">${esc(w.title)}</a><span class="wk-list-by">${esc(w.creator)}</span><span class="wk-list-rel">${cityNames[w.city]} · ${esc(w.relationNote)}</span></li>`;
+    }).join('');
+    return `<section class="wk-list" aria-label="${g.title}${g.works.length}件"><h2>${g.title}</h2><p class="lead">${g.lead}</p><ul>${rows}</ul></section>`;
+  }).join('');
+  write('places/index.html', shell('本屋、映画館、ライブハウス、劇場',
+    `<section class="intro"><p class="eyebrow">4つの街をまたいで / ${total}件</p><h1>文化が生まれる、<br>場所そのものの話。</h1><p class="lead">${placeKinds.filter((k,n)=>n!==1&&n!==3).join('・')}。作品の舞台としてではなく、その場所自体を扱った本・映像・映画を集めました。記録と物語は分けています。</p></section><div class="collection">${sections}<p class="city-exit"><a href="/discover/venue/jirokichi/">実在の会場から辿る →</a></p><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p></div>`,
+    '<a href="/discover/index.html">街から探す ←</a>'));
 }
 
 for (const video of commonVideos) {

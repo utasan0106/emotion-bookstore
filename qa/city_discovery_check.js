@@ -71,7 +71,7 @@ function inspect(dir) {
 }
 inspect(path.join(root,'discover'));
 const research=require('../tools/city-research');
-assert.equal(pages,112+research.length);
+assert.equal(pages,113+research.length);
 // 街をまたいだ3シリーズ。棚を通った本と音楽は全部出る（増えたのに載らない、が起きない）。
 // 映像だけは「いま行ける場所」で絞るので、公開本数より少なくてよい。
 {
