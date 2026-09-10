@@ -356,7 +356,15 @@ for (const s of thread.scenes) {
   {
     const ve = read('video-embed.js');
     check(ve.includes("var PROVIDER = 'https://www.youtube-nocookie.com/embed/';") && ve.includes("'?playsinline=1&rel=0'") && !/autoplay=1/.test(ve), 'video-embed.js embeds youtube-nocookie without autoplay');
-    check(ve.includes("addEventListener('click'") && ve.includes("iframe.referrerPolicy = 'strict-origin-when-cross-origin'") && ve.includes("iframe.allow = 'encrypted-media; picture-in-picture; fullscreen'"), 'video-embed.js click gate / referrer / allow list');
+    /* Providers other than YouTube are embedded under their own sandbox and referrer
+       policy, so these are defaults rather than constants now. The defaults are still
+       exactly the approved ones, and there is no weaker referrer value in the file to
+       fall back to. */
+    check(ve.includes("addEventListener('click'")
+      && ve.includes("|| 'strict-origin-when-cross-origin'")
+      && ve.includes("|| 'encrypted-media; picture-in-picture; fullscreen'")
+      && !/unsafe-url|no-referrer-when-downgrade|origin-when-cross-origin'/.test(ve.replace(/strict-origin-when-cross-origin/g, '')),
+      'video-embed.js click gate / referrer / allow list');
     for (const t of ['ytimg', 'img.youtube', 'preconnect', 'preload', 'prefetch', 'iframe_api', 'localStorage', 'sessionStorage', 'indexedDB', 'document.cookie', 'geolocation', 'fetch(', 'XMLHttpRequest', 'sendBeacon', 'setTimeout', 'setInterval', 'gtag', 'dataLayer', "'autoplay"]) check(!ve.includes(t), `video-embed.js must not contain ${t}`);
     check(html.indexOf('<script src="./video-embed.js"></script>') > 0 && html.indexOf('<script src="./video-embed.js"></script>') < html.indexOf('<script src="./thread.js"></script>'), 'thread.html loads video-embed.js before thread.js');
     check(js.includes("window.V3_VIDEO_EMBED.mount(root)") && js.includes("'data-video-id': d.videoId"), 'renderer mounts the shared click-to-load player on the video destination');
