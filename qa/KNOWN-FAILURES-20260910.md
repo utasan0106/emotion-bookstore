@@ -105,7 +105,7 @@ playwright が解決できないときは `SKIP` と出て終わる（落ちな�
 | `link_check` | 実際に外部へ繋ぐ。ネットワークと相手サイトの状態で結果が変わる |
 | `browser_qa` `atlas_browser_qa` `atlas_check` `home_responsive_check` `release_shots` | ブラウザ。`NODE_PATH=/opt/node22/lib/node_modules` を付けても TimeoutError になるものがある |
 
-**45本のうち、いま毎回回っているのは22本である。**
+**45本のうち、いま毎回回っているのは27本である**（同日中に22本から増やした。下記）。
 残り23本の内訳は、承認済み再設計で守るものが無くなったもの（`home_canonical_check`
 `thread_check` `works_check`）、ブラウザ・ネットワークが要るもの、
 そして**回せば通るのに誰も回していないもの**である。最後の一群が今回の穴だった。
@@ -126,3 +126,41 @@ NODE_PATH=/opt/node22/lib/node_modules node qa/orphan_page_check.js
 **どこからも行けないこと自体は欠陥ではない。** 役目を終えた URL を 404 にせず
 `noindex` で残すのは正しい扱いで、10件がそれにあたる。
 欠陥は「検索に載せるつもりなのに、どこからも行けない」ほうである。
+
+## 2026-09-11 追加：`verify-product` を22本から27本へ
+
+**通るのに誰も回していないテストが11本あった。** そのうち環境に依らず速い9本を
+`verify-product` に入れた。全体で3.5秒しか増えない。
+
+追加したもの：`home_discovery_check` `design_redesign_check`
+`culture_room_contract_check` `parks_screen_contract_check`
+`release_preflight` `release_expiry_boundaries`
+`growth_improvements` `measurement_v04_selftest` `link_check_selftest`
+
+`release_preflight` は時刻で判定する門である。**将来これが落ちたら、fixture の
+賞味期限切れではなく、期限切れの `current` が公開されているという意味である。**
+
+入れなかった2本（`thread_browser_qa` `works_browser_qa`）はブラウザが要る。
+`works_browser_qa` は下記の本物の指摘を持っているので、入れれば suite が赤になる。
+
+## 2026-09-11 追加：`works_browser_qa` の指摘は本物（main でも落ちる）
+
+```
+AssertionError: works.html: duplicate destination
+```
+
+`works.html` の本のカードに、同じ行き先へのリンクが2本ある。
+
+| リンク | 役目 |
+|---|---|
+| `書籍情報 ↗`（figcaption 内） | 表紙画像の**出典表示**。権利の扱いとして要る |
+| `出版社で本の紹介を見る` | Reality Return の行き先。他の3カードにもある |
+
+**どちらも消すと何かを失う。** 出典リンクを消せば表紙の出どころが辿れなくなり、
+行動リンクを消せば本のカードだけ現実側への出口を失う。
+
+テストは「main 内に同じ行き先のリンクを2本置かない」と言っている。
+出典表示と行動リンクを区別していない。契約を変えるか、片方を消すかは
+**権利表示と導線の兼ね合いで、編集判断である。** 私は触っていない。
+
+`main` でも同じ指摘が出ることを確認済み（今回起因ではない）。
