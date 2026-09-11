@@ -54,6 +54,33 @@ function relatedWork(item) {
   const heading=item.kind==='book'?'本を閉じたら、この映像へ':'映像のあと、この本へ';
   return `<section class="related-work"><p class="eyebrow">${heading}</p><h2><a href="/discover/${target.city}/${target.id}.html">${esc(target.title)} →</a></h2><p>${esc(target.hook)}</p><small>${esc(categories[target.kind].name)} · このサイト内の紹介</small></section>`;
 }
+// 同じ物語の、別のかたち。原作と映画化が両方棚にあるのに、互いにリンクしていなかった。
+// 『森崎書店の日々』は本と映画で二度出てくるし、『グーグーだって猫である』もそうである。
+// 読者から見れば同じ作品なので、片方を見たらもう片方へ行けるほうがよい。
+//
+// 対は手で書く。題名が同じだから対だ、とは限らない（別作品の同名、続編、テレビ版）。
+// 書いた対は、両方が公開されていることと、同じ街にあることをビルドで確かめる。
+const adaptations = [
+  {book: 'jinbocho/morisaki', screen: 'jinbocho/morisaki-film',
+   note: '同じ小説を、2010年に映画にしたもの。'},
+  {book: 'kichijoji/gou-gou-book', screen: 'kichijoji/gou-gou-film',
+   note: '同じ漫画を、2008年に映画にしたもの。後年のテレビドラマ版とは別の作品。'}
+];
+const adaptationOf = key => {
+  for (const a of adaptations) {
+    if (a.book === key) return {other: a.screen, note: a.note, label: '映画'};
+    if (a.screen === key) return {other: a.book, note: a.note, label: '原作'};
+  }
+  return null;
+};
+for (const a of adaptations) for (const key of [a.book, a.screen]) {
+  const [city, id] = key.split('/');
+  const item = items.find(i => i.city === city && i.id === id);
+  if (!item) throw new Error('公開されていない作品を対にしている: ' + key);
+}
+for (const a of adaptations) if (a.book.split('/')[0] !== a.screen.split('/')[0])
+  throw new Error('別の街の作品を対にしている。街をまたぐ対は扱いを決めてから: ' + a.book);
+
 function cityContinuation(city,kind) {
   const name=cityNames[city];
   if(!items.some(item=>item.city===city&&item.kind===kind)) return `<aside class="feature"><p class="eyebrow">同じ街から探す</p><h2><a href="/discover/${city}/video.html">${name}の街を映像で見る →</a></h2><p>この種類の作品は現在掲載していません。${name}の風景や人に触れる映像から選べます。</p><p><a href="/discover/${city}/">${name}の作品一覧へ →</a></p></aside>`;
@@ -183,6 +210,15 @@ function write(file, html) {
     // 会場ページを作っても、作品から行けなければ誰も辿り着かない。
     const venue=require('./venue-source').venues.find(v=>v.city===detailItem.city&&v.works.includes(detailItem.id));
     if(venue) html=html.replace('</section>','<p class="venue-entry"><a href="/discover/venue/'+venue.id+'/">'+esc(venue.name)+'から辿る →</a></p></section>');
+    // 同じ物語の別のかたちがあるなら、そこへ抜けられるようにする。
+    const pair=adaptationOf(detailItem.city+'/'+detailItem.id);
+    if(pair){
+      const [oc,oid]=pair.other.split('/');
+      const other=items.find(i=>i.city===oc&&i.id===oid);
+      const block=`<aside class="feature"><p class="eyebrow">同じ物語の、別のかたち</p><h2><a href="/discover/${oc}/${oid}.html">${esc(other.title)}（${pair.label}）へ →</a></h2><p>${esc(pair.note)}</p><small>このサイト内の紹介</small></aside>`;
+      // 街とのつながりの節の直後。根拠を読んだあとに、同じ物語の別の形へ。
+      html=html.replace('</section>','</section>'+block);
+    }
   }
   const editorialKind={koenji:'book',kichijoji:'book',shimokitazawa:'video',jinbocho:'film'}[city];
   if(editorials && (categoryFile==='index.html' || kind===editorialKind)) {
