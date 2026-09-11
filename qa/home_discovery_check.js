@@ -17,10 +17,12 @@ assert.match(html,/https:\/\/img\.hanmoto\.com\/bd\/img\/9784911191026\.jpg/);as
 assert.doesNotMatch(html,/home-work-(?:music|film|video)-/,'No generic equipment image substituted for a work');
 assert.match(read('data.html'),/Bandcampの公式プレーヤー/);
 const {events}=require('../tools/weekly-outings-source'),{select}=require('../outings/week');
-const now=Date.parse('2026-09-08T19:00:00+09:00');
+const now=Date.parse('2026-09-11T19:00:00+09:00');
 assert.deepEqual(select(events,{now,week:'2026-09-07',kind:'live'}).map(e=>e.id),['koenji-azuma','kichijoji-kunita']);
 assert.equal(select(events,{now,week:'2026-09-07',kind:'exhibition'}).length,0,'Explicit week has no silent substitution');
 assert.equal(select(events,{now,week:'2026-09-14',kind:'exhibition'}).length,3);
 assert.deepEqual(select(events,{now,week:'2026-09-14',kind:'exhibition',city:'shimokitazawa'}).map(e=>e.id),['shimokita-moon']);
-assert.equal(select(events,{now:Date.parse('2026-09-21T00:00:00+09:00'),week:'2026-09-21',kind:'exhibition'}).length,0,'Expired verification cannot recommend events');
+// 再確認期限は会期と別に効く。shimokita-moon は 9/18〜10/4 の会期中だが、再確認が 9/20 で切れる。
+// 会期が残っていても、期限が切れた催しは推薦に出さない。
+assert.deepEqual(select(events,{now:Date.parse('2026-09-21T00:00:00+09:00'),week:'2026-09-21',kind:'exhibition'}).map(e=>e.id),['kichijoji-taniguchi'],'Expired verification cannot recommend events');
 console.log('PASS home destinations/anchors, real artwork, scoped Bandcamp CSP, combined event category/city/week/expiry');

@@ -18,6 +18,10 @@ for(const file of ['docs/city-discovery/EDITORIAL-STANDARDS-20260910.md']) allow
 allowed.add('docs/city-discovery/RESEARCH-METHODS-20260910.md');
 // Keep the city-page article teaser consistent with the revised evidence-led essay.
 allowed.add('tools/city-editorials.js');
+// 10月のX原稿を、公開中のページと突き合わせた結果で直した。計測の契約は変えていない。
+allowed.add('docs/city-discovery/LAUNCH-COPY-202610.md');
+// 催しの再確認と補充にあわせて、在庫下限と再確認期限の契約を実態へ書き直した。
+allowed.add('qa/weekly_outings_check.js');
 for(const file of ['assets/city-editorial/','docs/city-discovery/CITY-ART-20260910.md']) allowed.add(file);
 for(const city of ['kichijoji','koenji','shimokitazawa','jinbocho']) allowed.add('assets/city-editorial/'+city+'.webp');
 // routing and their bounded QA. The measurement code/payload contract is unchanged.
@@ -232,5 +236,8 @@ const vercel=read('vercel.json'); assert(vercel.includes("frame-src https://www.
    無く、いまどのページも YouTube を読まない。外部サービスへの移動は「押したときだけ」
    で、GA4 のオン／オフとは別の操作であることは引き続き言う。 */
 const data=read('data.html'); for(const t of ['週末の前の一本','31秒の動画を再生','weeklyVideoPlay','youtube-nocookie']) assert(!data.includes(t),'data.html: retired HOME video claim remains: '+t); assert(data.includes('トップではYouTubeプレーヤーを読み込みません。'),'data.html: disclose the homepage trailer link accurately'); assert(data.includes('外部サービスへの移動はGA4のオン／オフとは別の操作です。'),'GA4/external navigation distinction'); for(const t of ['どの種類の入口を開いたか、どの公開ページや段階まで到達したか、資料を開いたか、公式サイトなど現実側の外部リンクへ進んだかを、限定した公開IDで計測する場合があります','Cookie等の識別子、閲覧・操作のイベント、端末・ブラウザの情報、IPアドレス等から推定されるおおよその地域、参照元（リファラー）','「気になる」の内容、感情、GPSや現在地、アカウントやユーザーのIDを送りません','外部リンクの完全なURL・クエリ・ハッシュ、動画のID、正確な座標、視点や表示範囲、選択した建物やその識別子も送りません']) assert(data.includes(t),'data.html: v4.1 Trust disclosure missing: '+t); for(const t of ['位置情報はGA4へ送らない','位置情報を送りません','個人情報を送りません']) assert(!data.includes(t),'data.html: over-broad privacy claim: '+t);
-for(const p of ['release.js','release_content.js','release.css']) assert(git(['diff','--',p])==='','protected changed '+p); git(['diff','--check']); const status=git(['status','--porcelain']); if(status)for(const line of status.split(/\r?\n/)){let rel=line.slice(3).trim();if(rel.includes(' -> '))rel=rel.split(' -> ',2)[1];assert(allowed.has(rel),'unexpected '+rel)}
+/* 催しの再確認・補充は毎週の定常作業で、1件でも直せば催しの個別ページ・会場ページ・今週号が
+   必ず作り直される。中身は各 build の --check が別に照合するので、ここでは所在だけ許可する。 */
+const rebuiltByEvents=p=>p.startsWith('outings/events/')||p.startsWith('discover/venue/')||p==='discover/weekly/index.html';
+for(const p of ['release.js','release_content.js','release.css']) assert(git(['diff','--',p])==='','protected changed '+p); git(['diff','--check']); const status=git(['status','--porcelain']); if(status)for(const line of status.split(/\r?\n/)){let rel=line.slice(3).trim();if(rel.includes(' -> '))rel=rel.split(' -> ',2)[1];assert(allowed.has(rel)||rebuiltByEvents(rel),'unexpected '+rel)}
 console.log('V3_RELEASE_GROWTH_SELFTEST_GO');

@@ -6,12 +6,16 @@ assert.equal(monday(Date.parse('2026-09-13T14:59:59Z')),'2026-09-07');
 assert.equal(monday(Date.parse('2026-09-13T15:00:00Z')),'2026-09-14');
 assert.equal(state('2026-09-07','2026-09-14',Date.parse('2026-09-13T15:00:00Z')),'past');
 assert.deepEqual(audiences.map(a=>a.id),['couple','children','family','friends','solo']);
-const now=Date.parse('2026-09-08T12:00:00+09:00');
+const now=Date.parse('2026-09-11T12:00:00+09:00');
 for(const city of Object.keys(cities))assert.ok(select(events,{now,city}).length>=3,city+' needs 3 actual events this week');
 for(const city of Object.keys(cities))assert.ok(select(events,{now,city,week:'2026-09-14'}).length>=3,city+' needs 3 actual events next week');
 const future=select(events,{now,week:'2026-09-14'});assert.ok(future.some(e=>e.id==='jinbocho-ginga'));assert.ok(!select(events,{now}).some(e=>e.id==='jinbocho-ginga'));
 assert.ok(!select(events,{now:Date.parse('2026-09-14T00:00:00+09:00')}).some(e=>e.id==='koenji-azuma'),'Ended events excluded');
-assert.equal(select(events,{now:Date.parse('2026-09-21T00:00:00+09:00')}).length,0,'Unreviewed schedules fail closed');
+// 再確認期限は会期と別に効く。shimokita-moon は 9/18〜10/4 の会期中だが、再確認が 9/20 で切れる。
+// 会期が残っていても、期限を過ぎた催しは出さない。期限を延ばした催しだけが残る。
+const atExpiry=select(events,{now:Date.parse('2026-09-21T00:00:00+09:00')});
+assert.ok(!atExpiry.some(e=>e.id==='shimokita-moon'),'Unreviewed schedules fail closed');
+assert.ok(atExpiry.some(e=>e.id==='koenji-midsummer'),'Re-checked schedules stay listed');
 const event=events.find(e=>e.id==='kichijoji-taniguchi');assert.ok(!dates(event).includes('2026-09-30'),'Museum closure is not an event day');
 assert.equal(select([{...event,status:'cancelled'}],{now,week:'2026-09-14'}).length,0);
 assert.ok(select(events,{now,audience:'children'}).every(e=>e.audiences.includes('children')));
