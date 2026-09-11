@@ -183,6 +183,28 @@ function workSchema(item, canonical) {
   if(/^https:\/\//.test(item.url)) object.sameAs=item.url;
   return object;
 }
+// 街 → 種類 → 作品。読者が実際に辿る道と同じ順を、機械にも見せる。
+// 作品ページの eyebrow に「高円寺 / 本・漫画」と出ている、その階層そのものである。
+// 街の外にある一覧（記事・会場・特集・今週号）は親が一つに決まらないので書かない。
+// 無理に親を決めれば、読者が通っていない道を機械に教えることになる。
+const SITE='https://emotionbookstore.com/discover/';
+function breadcrumb(file) {
+  const [city, tail]=file.split('/');
+  if(!cityNames[city]||!tail) return null;
+  const trail=[{name:'街から探す', item:SITE},{name:cityNames[city], item:SITE+city+'/'}];
+  const slug=tail.replace(/\.html$/,'');
+  if(tail!=='index.html') {
+    if(categories[slug]) trail.push({name:categories[slug].name, item:SITE+city+'/'+slug+'.html'});
+    else {
+      const item=items.find(entry=>entry.city===city&&entry.id===slug);
+      if(!item) return null;
+      trail.push({name:categories[item.kind].name, item:SITE+city+'/'+item.kind+'.html'});
+      trail.push({name:item.title, item:SITE+file});
+    }
+  }
+  return {'@context':'https://schema.org','@type':'BreadcrumbList',
+    itemListElement:trail.map((step,i)=>({'@type':'ListItem',position:i+1,name:step.name,item:step.item}))};
+}
 function enrichSeo(file, html) {
   const pageTitle=plain((html.match(/<title>(.*?)<\/title>/s)||[])[1]||'みんなの感情書店');
   const heading=plain((html.match(/<h1>(.*?)<\/h1>/s)||[])[1]||pageTitle).replace(/\s+の/g,'の');
@@ -196,12 +218,14 @@ function enrichSeo(file, html) {
   const schemaObject=essay?{'@context':'https://schema.org','@type':'Article',headline:essay.title,description:essay.lead,datePublished:essay.publishedAt,dateModified:essay.modifiedAt,mainEntityOfPage:canonical,author:{'@type':'Organization',name:'みんなの感情書店編集部',url:'https://emotionbookstore.com/about.html'},publisher:{'@type':'Organization',name:'みんなの感情書店',url:'https://emotionbookstore.com/'},about:{'@type':'Place',name:essay.cityLabel},citation:essay.sources.map(source=>source.url)}:{'@context':'https://schema.org','@type':isResearchIndex?'CollectionPage':'WebPage',name:heading,description,url:canonical,isPartOf:{'@type':'WebSite',name:'みんなの感情書店',url:'https://emotionbookstore.com/'}};
   if(workItem) schemaObject.mainEntity=workSchema(workItem,canonical);
   const schema=JSON.stringify(schemaObject).replace(/</g,'\\u003c');
+  const crumbs=breadcrumb(file);
+  const crumbTag=crumbs?'\u003cscript type="application/ld+json">'+JSON.stringify(crumbs).replace(/</g,'\\u003c')+'\u003c/script>':'';
   const type=essay?'article':'website';
   const robotMeta=essay||isResearchIndex?'<meta name="robots" content="max-image-preview:large">':'';
   const articleMeta=essay?`<meta property="article:published_time" content="${esc(essay.publishedAt)}"><meta property="article:modified_time" content="${esc(essay.modifiedAt)}">`:'';
   return html
     .replace(/<meta name="description" content="[^"]*">/,`<meta name="description" content="${esc(description)}">`)
-    .replace('</title>',`</title><link rel="canonical" href="${canonical}">${robotMeta}<meta property="og:type" content="${type}"><meta property="og:site_name" content="みんなの感情書店"><meta property="og:title" content="${esc(pageTitle)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${canonical}">${articleMeta}<meta name="twitter:card" content="summary"><script type="application/ld+json">${schema}</script>`);
+    .replace('</title>',`</title><link rel="canonical" href="${canonical}">${robotMeta}<meta property="og:type" content="${type}"><meta property="og:site_name" content="みんなの感情書店"><meta property="og:title" content="${esc(pageTitle)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${canonical}">${articleMeta}<meta name="twitter:card" content="summary"><script type="application/ld+json">${schema}</script>${crumbTag}`);
 }
 function write(file, html) {
   const column=require('./city-columns')[file.split('/')[1]?.replace(/\.html$/, '')];

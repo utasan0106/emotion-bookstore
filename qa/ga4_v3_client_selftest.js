@@ -47,6 +47,7 @@ for (const f of ['llms.txt', 'robots.txt', 'tools/work-entry-source.html',
    書くのは持っている事実だけで、価格・画像・主催者は入れない（契約はテストが固定する）。 */
 allowed.add('qa/event_schema_check.js');
 allowed.add('qa/work_schema_check.js');
+allowed.add('qa/breadcrumb_check.js');
 // robots.txt のコメントで落ちていた既知外 FAIL を、契約の書き直しで解消した。
 allowed.add('qa/seo_check.js');
 for(const file of ['assets/city-editorial/','docs/city-discovery/CITY-ART-20260910.md']) allowed.add(file);
