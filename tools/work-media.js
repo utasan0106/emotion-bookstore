@@ -8,10 +8,17 @@ function youtube(id,title,label='公開元の映像',url='https://www.youtube.co
  // Host markup and behaviour are video-embed.js's (Founder decision 2026-09-06 v2).
  return `<figure class="official-media"><div class="wk-video v3-video" data-video-id="${id}" data-video-title="${esc(title)}｜${esc(label)}"><div class="v3-video-frame"><button class="v3-video-load wk-video-load" type="button">${esc(label)}を${esc(verb)}<span class="wk-mark" aria-hidden="true"> ▶</span></button></div></div><figcaption><span class="official-media-note">押すまでYouTubeへ接続しません。押すと、このページ内でプレイヤーが開きます。自動再生はしません。</span><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)}をYouTubeで開く ↗</a></figcaption></figure>`;
 }
-function cover(key,title){
+// 出典表示は権利の要件なので必ず出す。リンクにするかは別で、同じ行き先が
+// そのページの行動リンクに既にあるなら、文字だけにする。同じ場所へ行くボタンを
+// 二つ並べても読者は選べない。credit の文（出版社・装画・装幀）はそのまま残るので、
+// 出どころは消えない。alreadyLinked を渡さない呼び出し（街の作品カードなど）では
+// 出典が行動リンクと別の行き先なので、リンクのまま出す。
+function cover(key,title,alreadyLinked){
  const m=covers[key];
  if(!m||m.status!=='usable') return '';
- return `<figure class="official-media cover"><img src="${esc(m.imageUrl)}" alt="${esc(title)}の表紙" loading="lazy" decoding="async" width="${m.width}" height="${m.height}"><figcaption>${esc(m.credit)} · <a href="${esc(m.sourceUrl)}" target="_blank" rel="noopener noreferrer">書籍情報 ↗</a></figcaption></figure>`;
+ const credit=m.sourceUrl===alreadyLinked ? esc(m.credit)
+  : `${esc(m.credit)} · <a href="${esc(m.sourceUrl)}" target="_blank" rel="noopener noreferrer">書籍情報 ↗</a>`;
+ return `<figure class="official-media cover"><img src="${esc(m.imageUrl)}" alt="${esc(title)}の表紙" loading="lazy" decoding="async" width="${m.width}" height="${m.height}"><figcaption>${credit}</figcaption></figure>`;
 }
 function forItem(item){
  if(item.videoId) return youtube(item.videoId,item.title,item.kind==='audio'?'公開元の演奏・音源':'公開元の映像',undefined,item.kind==='audio'?'聴く':'見る');

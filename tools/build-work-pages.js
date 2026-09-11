@@ -41,7 +41,9 @@ function collection(entryId, section){
   const list=rows.map(i=>`<li><a href="/discover/${i.city}/${i.id}.html">${esc(i.title)}</a><span class="wk-list-by">${esc(i.creator)}</span><span class="wk-list-rel">${esc(cityNames[i.city])} · ${esc(i.relation)}</span></li>`).join('');
   return `<section class="wk-list" aria-label="ほかの${label}"><h2>ほかの${label}</h2><p class="wk-list-lead">街ごとに、関係を確かめたものだけを並べています。</p><ul>${list}</ul></section>`;
 }
-const mediaFor=entry=>entry.id==='music'?media.album():entry.id==='video'?media.youtube('dt33RGSRuo0',entry.title,'主催団体の公式映像（5分39秒）'):entry.id==='film'?media.youtube('6M0vx8wLEbM',entry.title,'予告編（本編ではありません）'):media.cover('jinbocho/kaijin',entry.title);
+// 本の公式の行き先。カードの行動リンクと表紙の出典が同じページなので、一箇所で持つ。
+const BOOK_OFFICIAL='https://www.tsogen.co.jp/np/isbn/9784488406080';
+const mediaFor=entry=>entry.id==='music'?media.album():entry.id==='video'?media.youtube('dt33RGSRuo0',entry.title,'主催団体の公式映像（5分39秒）'):entry.id==='film'?media.youtube('6M0vx8wLEbM',entry.title,'予告編（本編ではありません）'):media.cover('jinbocho/kaijin',entry.title,BOOK_OFFICIAL);
 const entries = [
   { id: 'book', kind: '本', title: '神保町の怪人', byline: '紀田順一郎', city: '神保町', relation: '物語の舞台', action: '本の紹介へ' },
   { id: 'film', kind: '映画', title: '森崎書店の日々', byline: '日向朝子監督 / 2010', city: '神保町', relation: '撮影された街', action: '映画の紹介へ' },
@@ -63,7 +65,7 @@ for (const entry of entries) {
   const match = source.match(new RegExp('<section id="' + entry.id + '"[\\s\\S]*?<\\/section>\\s*(?=<!--|<section|<div class="wk-exit")'));
   if (!match) throw new Error('Missing editorial section ' + entry.id);
   let section = match[0].trim().replace(/aria-labelledby="wk-[^"]+"/,'aria-label="'+entry.kind+'の紹介"');
-  if(entry.id==='book') section=`<section id="book" class="wk-entry" aria-label="本の紹介"><p class="wk-byline">紀田順一郎／創元推理文庫</p><p>本を集める情熱が、謎と事件へ姿を変える。</p><p>古書収集と神保町を扱う三つのミステリーを収めた短編集。街の古書店に並ぶ本を見る目が、少し変わるかもしれません。</p><p class="wk-primary"><a class="wk-action official-action" href="https://www.tsogen.co.jp/np/isbn/9784488406080" target="_blank" rel="noopener noreferrer">出版社で本の紹介を見る</a></p><p><a href="/discover/jinbocho/kaijin.html">作品と街のつながりを読む →</a></p></section>`;
+  if(entry.id==='book') section=`<section id="book" class="wk-entry" aria-label="本の紹介"><p class="wk-byline">紀田順一郎／創元推理文庫</p><p>本を集める情熱が、謎と事件へ姿を変える。</p><p>古書収集と神保町を扱う三つのミステリーを収めた短編集。街の古書店に並ぶ本を見る目が、少し変わるかもしれません。</p><p class="wk-primary"><a class="wk-action official-action" href="${BOOK_OFFICIAL}" target="_blank" rel="noopener noreferrer">出版社で本の紹介を見る</a></p><p><a href="/discover/jinbocho/kaijin.html">作品と街のつながりを読む →</a></p></section>`;
   if(entry.id==='video') section=section.replace(/<div class="wk-video v3-video"[\s\S]*?<\/noscript>\s*<\/div>/,'');
   section=section.replace(/<p id="wk-[^"]+-category"[\s\S]*?<\/p>\s*<h2 id="wk-[^"]+-title"[\s\S]*?<\/h2>/,'');
   section=section.replace(/(<p class="wk-byline">[\s\S]*?<\/p>)/,'$1'+mediaFor(entry));

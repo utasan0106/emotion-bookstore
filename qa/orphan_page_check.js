@@ -26,11 +26,12 @@ const SKIP = /^(\.git|qa|docs|archive|experiments|node_modules|\.claude|tools|as
 // 入口には入ってくるリンクが無くて当たり前である。
 const ENTRIES = new Set(['index.html']);
 
-// どこからも行けないまま残してよいページ。**理由が書けるものだけ。**
-// 増やすときは、なぜ読者が辿り着けなくてよいのかをここに書く。
-const KNOWN = {
-  'atlas/index.html': '街を立体で辿る（β）。導線を張るかは編集判断で、いまは保留',
-  'explore.html': '旧HOMEの索引の受け皿（compatibility）。release.js が定数として持つが、実際に開いてもどのページにもリンクは出ていない'
+// robots の書き方は1つではない。このサイトには noindex / noindex,nofollow /
+// noindex, follow の3通りある。**`content="noindex"` の完全一致で探すと、
+// 意図して畳んだページを「行けない欠陥」として数えてしまう。** 実際そうなった。
+const noindex = html => {
+  const m = html.match(/<meta name="robots" content="([^"]*)"/i);
+  return !!m && m[1].split(',').some(token => token.trim().toLowerCase() === 'noindex');
 };
 
 function pages() {
@@ -100,14 +101,11 @@ async function main() {
   }
 
   const orphans = all.filter(p => inbound.get(p) === 0 && !ENTRIES.has(p));
-  const retired = orphans.filter(p => fs.readFileSync(path.join(ROOT, p), 'utf8')
-    .includes('name="robots" content="noindex"'));
-  const known = orphans.filter(p => !retired.includes(p) && KNOWN[p]);
-  const found = orphans.filter(p => !retired.includes(p) && !KNOWN[p]);
+  const retired = orphans.filter(p => noindex(fs.readFileSync(path.join(ROOT, p), 'utf8')));
+  const found = orphans.filter(p => !retired.includes(p));
 
   console.log(`${read}/${all.length}ページを開いて、実際に出ているリンクを数えた。`);
   console.log(`役目を終えた URL（noindex で残してある）：${retired.length}件。欠陥ではない。`);
-  for (const p of known) console.log(`  既知：${p} — ${KNOWN[p]}`);
   // 本文から次へ行けないページ。辿る製品なので、ここが空でないこと自体が欠陥である。
   const stranded = deadEnds.filter(p => !retired.includes(p));
   if (stranded.length) {

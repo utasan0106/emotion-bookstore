@@ -49,6 +49,8 @@ allowed.add('qa/event_schema_check.js');
 allowed.add('qa/work_schema_check.js');
 allowed.add('qa/breadcrumb_check.js');
 allowed.add('qa/orphan_page_check.js');
+// 表紙の出典表示をリンクにするかどうかの分岐と、下書きを読むための一枚を作る道具。
+for(const file of ['tools/work-media.js','tools/build-work-pages.js','tools/review-event-drafts.js']) allowed.add(file);
 // robots.txt のコメントで落ちていた既知外 FAIL を、契約の書き直しで解消した。
 allowed.add('qa/seo_check.js');
 for(const file of ['assets/city-editorial/','docs/city-discovery/CITY-ART-20260910.md']) allowed.add(file);
