@@ -33,6 +33,11 @@ allowed.add('tools/check-post-length.js');
    鳴らさなかったことで見逃された。検知と、その契約を固定するテストを足した。 */
 for (const f of ['tools/review-culture-events.js', 'qa/events_expiry_cluster_check.js',
   'qa/verify-product.js']) allowed.add(f);
+/* 押しても読者には何も起きないリンクを、実際に押して見つける。HOMEの「すべて」が
+   そうだった。静的な検査では捕まらなかったので、検査そのものを足す（強める方向）。 */
+for (const f of ['qa/dead_click_check.js', 'qa/KNOWN-FAILURES-20260910.md',
+  'index.html', 'home-discovery.js', 'qa/design_redesign_check.js',
+  'qa/home_discovery_check.js']) allowed.add(f);
 for(const file of ['assets/city-editorial/','docs/city-discovery/CITY-ART-20260910.md']) allowed.add(file);
 for(const city of ['kichijoji','koenji','shimokitazawa','jinbocho']) allowed.add('assets/city-editorial/'+city+'.webp');
 // routing and their bounded QA. The measurement code/payload contract is unchanged.

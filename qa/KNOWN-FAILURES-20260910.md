@@ -65,3 +65,16 @@ diff <(cd /tmp/base && node qa/<check>.js 2>&1) <(node qa/<check>.js 2>&1)
 新しい作業で `verify-product` 以外を回して落ちたら、**まずここを見る。**
 ここに載っていない指摘が出たら、それは今回起因である。
 既知FAILが減ったら、この台帳を減らす。増やす方向の更新はしない。
+
+## 2026-09-11 追加：`dead_click_check` は playwright が要る
+
+`qa/dead_click_check.js` は入口ページのリンクを実際に押して、
+「押しても読者には何も起きないリンク」を見つける。ブラウザが要るので
+`verify-product` には入れていない。週次の運用で回す。
+
+```sh
+NODE_PATH=/opt/node22/lib/node_modules node qa/dead_click_check.js
+```
+
+playwright が解決できないときは `SKIP` と出て終わる（落ちない）。
+落ちたときは本物の指摘である。2026-09-11 時点では 4ページ118本を押して 0件。

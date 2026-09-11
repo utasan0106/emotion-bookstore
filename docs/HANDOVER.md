@@ -109,7 +109,10 @@ Routine ID：`trig_015rqQPN1AjoKDH31uknsguE`（`0 1 * * 5` UTC）。
 `docs/strategy/AUTONOMY-20260911.md` が無ければ、そのセッションは
 何もせず「未マージのため待機」と報告して終わる安全弁を入れてある。
 
-自走の範囲・採否基準・文言の型・越えてはいけない線は、すべて
+週次でやるのは二つ。**(A) 催しの在庫と期限**、**(B) 押しても何も起きないリンク探し**
+（`qa/dead_click_check.js`。playwright が要るので `NODE_PATH=/opt/node22/lib/node_modules`）。
+
+自走の範囲・採否基準・文言の型・越えてはいけない線・改善フェーズの進め方は、すべて
 `docs/strategy/AUTONOMY-20260911.md` にある。**`CLAUDE.md` からも参照している。**
 
 ### 同じ事故はもう先回りで鳴る
