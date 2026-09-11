@@ -24,6 +24,10 @@ allowed.add('docs/city-discovery/LAUNCH-COPY-202610.md');
 allowed.add('qa/weekly_outings_check.js');
 // 引き継ぎ書。9/21 の期限と、この環境から何処へ届くかが実測で変わった。
 allowed.add('docs/HANDOVER.md');
+// 足した催しのうち、会場写真があるものを会場に結び直した。権利は既存の記載のまま。
+allowed.add('tools/event-media-source.js');
+// Xの投稿が140字（weighted 280）に収まっているかを測る。配信面には出ない。
+allowed.add('tools/check-post-length.js');
 for(const file of ['assets/city-editorial/','docs/city-discovery/CITY-ART-20260910.md']) allowed.add(file);
 for(const city of ['kichijoji','koenji','shimokitazawa','jinbocho']) allowed.add('assets/city-editorial/'+city+'.webp');
 // routing and their bounded QA. The measurement code/payload contract is unchanged.
