@@ -11,11 +11,18 @@ for(const city of Object.keys(cities))assert.ok(select(events,{now,city}).length
 for(const city of Object.keys(cities))assert.ok(select(events,{now,city,week:'2026-09-14'}).length>=3,city+' needs 3 actual events next week');
 const future=select(events,{now,week:'2026-09-14'});assert.ok(future.some(e=>e.id==='jinbocho-ginga'));assert.ok(!select(events,{now}).some(e=>e.id==='jinbocho-ginga'));
 assert.ok(!select(events,{now:Date.parse('2026-09-14T00:00:00+09:00')}).some(e=>e.id==='koenji-azuma'),'Ended events excluded');
-// 再確認期限は会期と別に効く。shimokita-moon は 9/18〜10/4 の会期中だが、再確認が 9/20 で切れる。
-// 会期が残っていても、期限を過ぎた催しは出さない。期限を延ばした催しだけが残る。
-const atExpiry=select(events,{now:Date.parse('2026-09-21T00:00:00+09:00')});
-assert.ok(!atExpiry.some(e=>e.id==='shimokita-moon'),'Unreviewed schedules fail closed');
-assert.ok(atExpiry.some(e=>e.id==='koenji-midsummer'),'Re-checked schedules stay listed');
+// 再確認期限は会期と別に効く。会期が残っていても、期限を過ぎた催しは出さない（fail closed）。
+// 期限を延ばした催しだけが残る。
+//
+// この契約は合成データで見る。実データの特定の催しに結びつけると、**その催しを
+// 再確認したとたんにテストが落ちる**。実際 shimokita-moon でそうなった（2026-09-11）。
+// 会期が残っているのに未確認、という状態は本来すぐ解消されるべきもので、
+// それを契約の題材にすると「直すと落ちる」テストになってしまう。
+const stillRunning=reviewThrough=>({id:'x',status:'scheduled',city:'koenji',audiences:[],browseKinds:[],
+  checkedAt:'2026-09-01',reviewThrough,dates:['2026-09-22','2026-09-30']});
+const atExpiry=Date.parse('2026-09-21T00:00:00+09:00');
+assert.equal(select([stillRunning('2026-09-20')],{now:atExpiry}).length,0,'Unreviewed schedules fail closed');
+assert.equal(select([stillRunning('2026-10-04')],{now:atExpiry}).length,1,'Re-checked schedules stay listed');
 const event=events.find(e=>e.id==='kichijoji-taniguchi');assert.ok(!dates(event).includes('2026-09-30'),'Museum closure is not an event day');
 assert.equal(select([{...event,status:'cancelled'}],{now,week:'2026-09-14'}).length,0);
 assert.ok(select(events,{now,audience:'children'}).every(e=>e.audiences.includes('children')));
