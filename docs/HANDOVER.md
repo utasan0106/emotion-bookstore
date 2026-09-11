@@ -3,9 +3,8 @@
 **新しいクラウド環境 `emotion-bookstore` で開いたセッション向け。**
 この1枚で足りるように書く。詳細が要るときだけ、指したファイルを読む。
 
-`main` は `7a452f1`。**2026-09-11 に本番反映済み**（催し43件。9/21 の一斉消滅は回避した）。
-未反映のブランチ：`claude/all-button-and-moon-recheck`（HOMEの「すべて」修正、
-`shimokita-moon` 再確認、`dead_click_check` 追加）。
+`main` は `f3b9bdc`。**2026-09-11 に本番反映済み**（催し43件、9/21 の一斉消滅は回避、
+HOMEの「すべて」修正、`dead_click_check` 導入まで入っている）。
 
 ---
 
@@ -225,17 +224,21 @@ node -e "const fs=require('fs'),f=require('./tools/build-design-redesign'),r=req
 3. **`home_canonical_check` / `thread_check` の60件** — 承認済み再設計で消えた旧HOMEを
    検査し続けている。削除ではなく現行HOMEの契約へ書き直すのが筋だが、編集判断が要る
 4. **2026-09-11 に足した催し19件の `hook` と `relation`** — Claude の下書き。
-   ファウンダーの承認を得て書いたが、**掲載前に編集部が読む前提**である。
-   `tools/weekly-outings-source.js` の末尾、コメントで範囲を示してある
+   ファウンダーの承認を得て書いたが、**掲載前に編集部が読む前提だった。
+   その確認を待たずに本番へ出ている。** いま溜まっているのはこの19件。
+   データに `editorialReview:'pending'` が付いていて（配信面には出ない）、
+   `node tools/review-culture-events.js` が毎週件数を報告する。
+   **10件を超えているので、週次は新しい下書きを作らない**（期限の延長は続ける）。
+   読み終えた催しから `editorialReview` を外せば減る。
+   なぜこの線を引いたかは `docs/strategy/MEDIA-AI-RESEARCH-20260911.md` §4
 
 ---
 
 ## 8. ファウンダー側でしか動かないこと
 
-- **`claude/all-button-and-moon-recheck` を `main` にマージする。**
-  9/21 の事故は最初のマージ（`7a452f1`）で回避済みなので、こちらは急がない。
-  ただし**HOMEの「すべて」を押しても何も起きないバグは、まだ本番に残っている。**
-  このブランチにはその修正と、`shimokita-moon` の再確認、`dead_click_check` が入る
+- **催し19件の `hook` と `relation` を読む**（§7-4）。確認を待たずに本番へ出ている。
+  読み終えたものから `tools/weekly-outings-source.js` の `editorialReview` を外す。
+  **10件を下回るまで、週次は新しい催しの下書きを作らない**（期限の延長は続ける）
 - **本番での表示確認** — `emotionbookstore.com` に接続できないので Claude にはできない
 - `エンドレス・ワルツ`『影なき声』の行き先 — 台帳も「再上映まで Backlist」と判断。
   **いま何かする必要はない**
@@ -255,6 +258,7 @@ node -e "const fs=require('fs'),f=require('./tools/build-design-redesign'),r=req
 | `docs/city-discovery/LEDGER-AUDIT-20260911.md` | Drive台帳50件の精査結果 |
 | `docs/city-discovery/DIRECTION-20260910.md` | 在庫・メジャー・新しい街の方針 |
 | `docs/city-discovery/SELECTION-20260910.md` | 採否の基準（直喩を採らない、等） |
+| `docs/strategy/MEDIA-AI-RESEARCH-20260911.md` | 世界のニュースルームのAI運用と失敗事例。ここへの持ち帰り |
 | `docs/strategy/IDEAS.md` | 面白くするアイデア。却下したものも理由つき |
 | `docs/strategy/MARKET-REVIEW-PROMPT.md` | 外部に評価させるプロンプト |
 | `qa/KNOWN-FAILURES-20260910.md` | 既知FAILの台帳 |

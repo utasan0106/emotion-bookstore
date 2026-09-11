@@ -19,6 +19,7 @@ const { monday, select, add, date, dates } = require('../outings/week');
 // 数えるのは「期限の翌日にも会期が残っている」もの、つまり本当に消えるものだけ。
 const HORIZON_DAYS = 21;   // 何日先まで見るか。補充には公式ページを辿る時間が要る
 const CLUSTER = 3;         // 同じ日にこれだけ一度に消えると、街ごとの下限3件を割りうる
+const REVIEW_BACKLOG = 10; // 編集部が読む前提の下書きが、これを超えて溜まったら増やすのをやめる
 function expiringClusters(events, today) {
   const byDate = {};
   for (const e of events) {
@@ -52,6 +53,10 @@ async function main() {
   }));
   const expired = events.filter(e => e.reviewThrough < today).map(e => e.id);
   const clusters = expiringClusters(events, today);
+  // 編集部が読む前提の下書き（hook / relation）が、読まれないまま溜まっていないか。
+  // CNET は AI が書いた77本のうち41本に訂正が入った。量・開示・レビューの三つが
+  // 同時に崩れたためで、いちばん効くのは「読まれていないものが見えていること」である。
+  const awaitingReview = events.filter(e => e.editorialReview === 'pending').map(e => e.id);
   const socialExpired = socialPosts.filter(p => p.reviewThrough < today).map(p => p.path);
   const checks = [];
   const socialChecks = [];
@@ -80,8 +85,8 @@ async function main() {
       } catch (error) { socialChecks.push({ path: post.path, available: false, error: error.name }); }
     }
   }
-  const needsAttention = coverage.some(r => r.count < 3) || expired.length > 0 || clusters.length > 0 || checks.some(r => !r.reachable) || socialExpired.length > 0 || socialChecks.some(r => !r.available);
-  const report = { checkedOn: today, needsAttention, coverage, expiredVerification: expired, expiringClusters: clusters, linkChecks: checks, socialExpired, socialChecks,
+  const needsAttention = coverage.some(r => r.count < 3) || expired.length > 0 || clusters.length > 0 || awaitingReview.length > REVIEW_BACKLOG || checks.some(r => !r.reachable) || socialExpired.length > 0 || socialChecks.some(r => !r.available);
+  const report = { checkedOn: today, needsAttention, coverage, expiredVerification: expired, expiringClusters: clusters, awaitingEditorialReview: awaitingReview, linkChecks: checks, socialExpired, socialChecks,
     limitation: 'リンク到達確認は、開催継続・料金・空席・内容の確認ではありません。確認日を自動更新しません。' };
   const text = [
     '# 街の文化イベント 運営点検', '', `確認日：${today}（日本時間）`, '',
@@ -89,6 +94,12 @@ async function main() {
     '| 開催週（月曜） | 街 | 掲載件数 |', '| --- | --- | ---: |',
     ...coverage.map(r => `| ${r.week} | ${r.label} | ${r.count}${r.count < 3 ? ' 要補充' : ''} |`), '',
     `確認期限切れ：${expired.length}件。期限切れ情報は公開一覧に出ません。`, '',
+    ...(awaitingReview.length ? [
+      '編集部の確認待ち：' + awaitingReview.length + '件（hook と「なぜこの街か」の下書き）。'
+        + (awaitingReview.length > REVIEW_BACKLOG
+          ? '**' + REVIEW_BACKLOG + '件を超えた。確認が追いつくまで新しい下書きを作らないこと。**'
+          : '読み終えた催しは weekly-outings-source.js から editorialReview を外す。'), '',
+    ] : []),
     ...(clusters.length ? [
       `**${HORIZON_DAYS}日以内に、会期が残ったまま一度に消える催しがあります。**`,
       '切れてからでは読者も見ています。公式ページで開催を確かめてから期限を延ばすか、先に補充してください。',
