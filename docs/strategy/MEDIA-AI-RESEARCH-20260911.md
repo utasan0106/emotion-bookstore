@@ -142,3 +142,80 @@ CNETの教訓に照らすと、これは同じ型の入口である。量は19�
 - [Designed by Journalists, but Is It for Readers? Rethinking AI Disclosures and Transparency in News（arXiv）](https://arxiv.org/html/2606.11116)
 - [People are skeptical of headlines labeled as AI-generated, even if true or human-made（PMC）](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11443540/)
 - [“Transparency is More Than a Label”: Audiences' Information Needs for AI Use Disclosures in News（Digital Journalism, 2026）](https://www.tandfonline.com/doi/full/10.1080/21670811.2026.2700592)
+
+---
+
+## 6. 追補：どうやって見つけてもらうか（2026-09-11、第二の調査）
+
+ファウンダーの指示「世界中からメディアの育成方法について研究し、サービスに反映せよ」。
+
+### 調べて出てきた数字
+
+- **小規模な媒体は、検索からの流入を2年で60%失った**（大手は22%）
+- ニュースサイト2,500件で、Google検索の流入は前年比 **-33%**
+- 検索の **68%がクリックなしで終わる**。AI Overviews が先に答えるため
+- 各社は今後3年でさらに **-43%** を見込んでいる
+
+**検索に頼る前提はもう成り立たない。** 小さいほど早く効く。
+
+### 効いているとされるもの
+
+1. **自分で持つ読者資産**（ニュースレター、コミュニティなど）。プラットフォーム任せにしない
+2. **ニッチでの深い信頼。** 広さではなく、狭い領域での確からしさ
+3. **検索以外のチャネルを一つ試す**（パートナー、催し、コミュニティ）
+
+### AIに引用される側になるための実務（GEO）
+
+AIの回答に入る引用は **1回答あたり平均2.8件**。そこに入らなければ検索順位は関係ない。
+条件は三つ——**クローラーが読めること、断片で取り出せる構造であること、
+信頼に足ると判断されること**。
+
+- **AIクローラーをブロックしていないか確認する**（GPTBot / PerplexityBot / ClaudeBot / Google-Extended）
+- **llms.txt を置く。** ドメイン直下のMarkdownで、サイトの構造をAIに伝える。読解の負荷が下がり、引用の正確さが上がる
+- **構造のあるページ（箇条書き・引用・数字）は、AIの回答での可視性が30〜40%高い**
+- **答えを先に置く。** 各節の冒頭に要点を出し、前置きで埋めない
+
+### ここへの持ち帰り（実装した）
+
+**(1) RSS が HOME から見つからなかった。**
+`<link rel="alternate">` は `discover/` 配下115ページにしかなく、
+**トップページ・作品ハブ・催し一覧には無かった**。RSSリーダーはトップで探す。
+入口に無いのは穴である。176ページに広げた。
+
+引き継ぎ書はRSSを「アカウント不要の再訪導線」と位置づけている。
+**これがこのサイトの「自分で持つ読者資産」**である。
+ニュースレターは、メールアドレスを集める＝外部送信と個人情報の取り扱いになり、
+`CLAUDE.md` の「外部へのデータ送信を増やさない」と、端末内保存・アカウント不要という
+立て方に正面からぶつかる。**やるならファウンダーの判断が要る。**
+RSSを強くするほうが、いまの方針と矛盾しない。
+
+**(2) llms.txt を置いた。**
+AIが引用するときに要る前提を、最初に読む場所へ置いた。
+**人が選んでいること、人気順ではないこと、関係は出典で確かめていること、
+催しには確認日と再確認の期限があること。**
+
+これは読者向けの文言ではない。既に公開されている説明文（meta description、
+suggest.html の「編集部が選んだ…少しずつ並べる文化案内」、各ページの確認日の表示）を
+機械可読にまとめ直したもので、**新しい売り文句は作っていない**。
+リンク14本はすべて実在を確認した。
+
+**(3) robots.txt に、なぜ開けているのかを書いた。**
+AIクローラーは今も全部許可している。閉じる選択肢もあるが、
+**要約されて読者が来ないリスクより、正しく引用されない方が痛い**と判断した。
+ただしこれは開き続ける約束ではない。**方針の変更はファウンダーの判断である。**
+
+### 反映しなかったこと（判断が要る）
+
+- **ニュースレター。** 最も効くとされるが、外部送信と個人情報が伴う。上の理由で保留
+- **催し・コミュニティ。** 「検索以外のチャネル」として推奨されるが、これは事業判断
+- **他媒体への露出**（引用の86%はブランド管理下か隣接ソース由来）。編集部の領域
+
+### この追補の出典
+
+- [Publisher audience engagement strategy for 2026（Press Gazette）](https://pressgazette.co.uk/publishing-services-content/publisher-audience-engagement-strategy/)
+- [Small Publishers Lost 60% of Search Traffic, Now What?（DesignRush）](https://news.designrush.com/content-roundup-small-publishers-llm-audiences-linkedin-2026)
+- [68 percent of Google searches now end without a single click（The Blog Herald）](https://blogherald.com/seo/a-a-2026-study-of-search-behavior-found-that-68-percent-of-google-searches-now-end-without-a-single-click-and-small-publishers-lost-60-percent-of-their-referral-traffic-in-just-two-years/)
+- [Generative Engine Optimization: The Complete 2026 Guide（Similarweb）](https://aisearch.similarweb.com/blog/what-is-geo/)
+- [What Is LLMs.txt? The Guide To AI Search & GEO（Yotpo）](https://www.yotpo.com/blog/what-is-llms-txt/)
+- [15 Generative Engine Optimization Best Practices Backed by Latest Research（Erlin）](https://www.erlin.ai/blog/generative-engine-optimization-best-practices)
+- [Diagnosing and Repairing Citation Failures in Generative Engine Optimization（arXiv）](https://arxiv.org/pdf/2603.09296)

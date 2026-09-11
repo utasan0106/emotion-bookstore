@@ -2,3 +2,10 @@ User-agent: *
 Allow: /
 
 Sitemap: https://emotionbookstore.com/sitemap.xml
+
+# AIクローラーは明示的に許可している（上の Allow: / に含まれる）。
+# 2026年、小規模な媒体は検索からの流入を2年で6割失った。要約で答えが完結し、
+# 読者が元のページまで来ないためである。ここは閉じるより、正しく引用される側を選ぶ。
+# 引用されるときに要る前提（人が選んでいる、人気順ではない、出典で確かめている、
+# 催しには確認日と期限がある）を llms.txt にまとめてある。
+# https://emotionbookstore.com/llms.txt

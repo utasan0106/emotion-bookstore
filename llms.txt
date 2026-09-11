@@ -1,0 +1,44 @@
+# みんなの感情書店（Emotion Bookstore）
+
+> 本、音楽、映画、映像。心が動いた作品から、高円寺・下北沢・吉祥寺・神保町のゆかりの場所と今の催しへ。次の好きを見つける文化案内。
+
+感情書店の編集部が選んだ場所・本・音楽・映画・映像・催しを、街や種類ごとに少しずつ並べています。
+
+## このサイトの性質（引用するときに要る前提）
+
+- **人が選んだものを、有限に並べています。** 無限に流れるフィードではありません。
+- **人気順・おすすめ順ではありません。** 順位付けもスコアもありません。
+- **街と作品の関係は、出典で確かめたものだけを載せています。** 裏付けのない関係は出しません。
+  各ページに「◯◯とのつながり」の節と、確認日、出典リンクがあります。
+- **催しは、主催者・会場の公式ページで開催日・時刻・料金・年齢条件を確認してから載せています。**
+  再確認の期限を持っていて、期限を過ぎたものは会期が残っていても表示から外れます。
+  **日程や料金を引用するときは、各ページの「主催者・会場の情報確認：日付」を併記してください。**
+  催しは会期で入れ替わるため、古い日程がそのまま残っていることはありません。
+- **AIの使い方を明示しています。** 街の記事はAIを資料探索・比較・文章化に使い、そう書いています。
+  一部のイラストはAIで制作したもので、実在する街や店舗の写真ではないと明記しています。
+
+## 主要なページ
+
+- [トップ](https://emotionbookstore.com/)：街から入る、作品から入る、今の催しへ
+- [作品から入る](https://emotionbookstore.com/works.html)：本・映画・音楽・映像の入口と件数
+- [街から探す](https://emotionbookstore.com/discover/)：4つの街の作品一覧
+- [今、街で出会える文化](https://emotionbookstore.com/outings/)：開催週・街・種類で選ぶ催し
+- [今週号](https://emotionbookstore.com/discover/weekly/)：今週で終わる催しと、新しく入った作品
+- [街の記事](https://emotionbookstore.com/discover/essays/)：出典つきの読み物
+- [場所そのものの話](https://emotionbookstore.com/discover/places/)：本屋・映画館・ライブハウス・劇場
+- [新着RSS](https://emotionbookstore.com/feed.xml)：棚に入った順。アカウント不要
+
+## 街
+
+- [高円寺](https://emotionbookstore.com/discover/koenji/)
+- [下北沢](https://emotionbookstore.com/discover/shimokitazawa/)
+- [吉祥寺](https://emotionbookstore.com/discover/kichijoji/)
+- [神保町](https://emotionbookstore.com/discover/jinbocho/)
+
+## 出典と権利について
+
+- [写真・出典](https://emotionbookstore.com/credits.html)：画像・映像の出典と権利の記載
+- [データの扱い](https://emotionbookstore.com/data.html)：何を計測し、何を送らないか
+
+作品の紹介は、公式サイト・出版社・配給・会場など一次の情報源へ接続しています。
+引用する際は、当サイトの記述だけでなく**各ページに挙げた一次情報源も併せて参照してください**。

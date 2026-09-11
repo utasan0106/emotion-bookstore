@@ -38,6 +38,11 @@ for (const f of ['tools/review-culture-events.js', 'qa/events_expiry_cluster_che
 for (const f of ['qa/dead_click_check.js', 'qa/KNOWN-FAILURES-20260910.md',
   'index.html', 'home-discovery.js', 'qa/design_redesign_check.js',
   'qa/home_discovery_check.js']) allowed.add(f);
+/* 見つかるための土台。RSS の alternate が HOME に無く、llms.txt も無かった。
+   2026年、小規模な媒体は検索流入を2年で6割失っている。計測も送信内容も変えていない。 */
+for (const f of ['llms.txt', 'robots.txt', 'tools/work-entry-source.html',
+  'tools/build-weekly-outings.js', 'works.html', 'work-book.html', 'work-film.html',
+  'work-music.html', 'work-video.html']) allowed.add(f);
 for(const file of ['assets/city-editorial/','docs/city-discovery/CITY-ART-20260910.md']) allowed.add(file);
 for(const city of ['kichijoji','koenji','shimokitazawa','jinbocho']) allowed.add('assets/city-editorial/'+city+'.webp');
 // routing and their bounded QA. The measurement code/payload contract is unchanged.
