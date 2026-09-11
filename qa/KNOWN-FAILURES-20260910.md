@@ -109,3 +109,20 @@ playwright が解決できないときは `SKIP` と出て終わる（落ちな�
 残り23本の内訳は、承認済み再設計で守るものが無くなったもの（`home_canonical_check`
 `thread_check` `works_check`）、ブラウザ・ネットワークが要るもの、
 そして**回せば通るのに誰も回していないもの**である。最後の一群が今回の穴だった。
+
+## 2026-09-11 追加：`orphan_page_check` も playwright が要る
+
+`qa/orphan_page_check.js` は配信面の185ページを**実際にブラウザで開いて**、
+そのとき出ているリンクを数える。静的に `href` を数えるだけでは、
+JS が後から足すリンクを見落として「行けるページを行けない」と言ってしまう。
+
+```sh
+NODE_PATH=/opt/node22/lib/node_modules node qa/orphan_page_check.js
+```
+
+`dead_click_check` と同じく、playwright が無ければ `SKIP` と出て終わる（落ちない）。
+落ちたときは本物の指摘である。2026-09-11 時点では ORPHAN_PAGE_GO。
+
+**どこからも行けないこと自体は欠陥ではない。** 役目を終えた URL を 404 にせず
+`noindex` で残すのは正しい扱いで、10件がそれにあたる。
+欠陥は「検索に載せるつもりなのに、どこからも行けない」ほうである。
