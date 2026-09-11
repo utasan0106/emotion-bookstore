@@ -43,7 +43,11 @@ for(const file of files){
 const retiredDestinations={
   '?kind=book#hc-works': '/work-book.html',
   '?kind=music#hc-works': '/work-music.html',
-  '?kind=video#hc-works': '/work-video.html'
+  '?kind=video#hc-works': '/work-video.html',
+  // 2026-09-11：「すべて」だけが向け直されずに残っていた。HOMEの初期状態がもともと
+  // all なので、押しても表示は何も変わらない。ファウンダーが「押しても何もならない」と
+  // 指摘したのはこれ。上の3つと同じ方針で、件数の見える作品のハブへ渡す。
+  '?kind=all#hc-works': '/works.html'
 };
 for(const l of baselineLinks){
  if(currentLinks.has(l)) continue;
