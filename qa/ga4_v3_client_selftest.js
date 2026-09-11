@@ -43,6 +43,9 @@ for (const f of ['qa/dead_click_check.js', 'qa/KNOWN-FAILURES-20260910.md',
 for (const f of ['llms.txt', 'robots.txt', 'tools/work-entry-source.html',
   'tools/build-weekly-outings.js', 'works.html', 'work-book.html', 'work-film.html',
   'work-music.html', 'work-video.html']) allowed.add(f);
+/* 催しの構造化データ。日時と会場を持っているのに、機械にはただのページに見えていた。
+   書くのは持っている事実だけで、価格・画像・主催者は入れない（契約はテストが固定する）。 */
+allowed.add('qa/event_schema_check.js');
 for(const file of ['assets/city-editorial/','docs/city-discovery/CITY-ART-20260910.md']) allowed.add(file);
 for(const city of ['kichijoji','koenji','shimokitazawa','jinbocho']) allowed.add('assets/city-editorial/'+city+'.webp');
 // routing and their bounded QA. The measurement code/payload contract is unchanged.

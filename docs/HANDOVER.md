@@ -62,6 +62,7 @@ enjoytokyo・walkerplus に到達でき、`github.com` も通った。前の環�
 | `/discover/weekly/` | 今週号。今週で終わる催し＋新しく入った作品 |
 | `/feed.xml` | 新着のRSS。アカウント不要の再訪導線。**176ページから見つかる**（2026-09-11にトップ・作品ハブ・催し一覧へ広げた） |
 | `/llms.txt` | AIが引用するときに要る前提（人が選ぶ／人気順でない／出典で確かめる／催しに確認日と期限） |
+| 催しの構造化データ | 43件に Event / EventSeries。飛び飛びの日程は subEvent で1日ずつ。`qa/event_schema_check.js` が固定 |
 | `/discover/venue/<id>/` | 会場5つ。本→その場所の音源→今週の催し |
 | `/discover/places/` | 本屋・映画館・ライブハウス・劇場そのものの話18件（記録9／物語9） |
 | 作品カード | 「なぜこの街？」＋出典を全77件に。出典50／記録27 で言い分け |
@@ -260,6 +261,7 @@ node -e "const fs=require('fs'),f=require('./tools/build-design-redesign'),r=req
 | `docs/city-discovery/DIRECTION-20260910.md` | 在庫・メジャー・新しい街の方針 |
 | `docs/city-discovery/SELECTION-20260910.md` | 採否の基準（直喩を採らない、等） |
 | `docs/strategy/MEDIA-AI-RESEARCH-20260911.md` | 世界のニュースルームのAI運用と失敗事例。ここへの持ち帰り |
+| `docs/strategy/AUDIENCE-20260911.md` | 訪問者を増やす戦略。診断・直したもの・**次に積む順番**・やらないこと |
 | `docs/strategy/IDEAS.md` | 面白くするアイデア。却下したものも理由つき |
 | `docs/strategy/MARKET-REVIEW-PROMPT.md` | 外部に評価させるプロンプト |
 | `qa/KNOWN-FAILURES-20260910.md` | 既知FAILの台帳 |
