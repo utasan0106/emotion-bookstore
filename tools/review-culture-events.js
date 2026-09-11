@@ -5,7 +5,40 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { events, cities } = require('./weekly-outings-source');
 const socialPosts = require('./social-posts-source');
-const { monday, select, add, date } = require('../outings/week');
+const { monday, select, add, date, dates } = require('../outings/week');
+
+// 再確認期限が同じ日に固まっていると、その翌日に催しの節がまとめて空く。
+// 2026-09-21 の事故がこれだった。公開中24件の期限が全件 2026-09-20 で揃っていて、
+// 誰も気づかないまま10日前になって見つかった。
+//
+// 気づけなかった理由は、この道具が「切れてから」しか鳴らさなかったことにある
+// （expired は reviewThrough < today）。切れた日にはもう読者も見ている。
+// そこで、切れる前に鳴らす。
+//
+// ただし会期が先に終わる催しは、期限が切れても公開面から何も減らない。
+// 数えるのは「期限の翌日にも会期が残っている」もの、つまり本当に消えるものだけ。
+const HORIZON_DAYS = 21;   // 何日先まで見るか。補充には公式ページを辿る時間が要る
+const CLUSTER = 3;         // 同じ日にこれだけ一度に消えると、街ごとの下限3件を割りうる
+function expiringClusters(events, today) {
+  const byDate = {};
+  for (const e of events) {
+    if (e.reviewThrough < today) continue;
+    const days = Math.round((Date.parse(e.reviewThrough) - Date.parse(today)) / 86400000);
+    if (days > HORIZON_DAYS) continue;
+    // 期限の翌日にも開催日が残っているか。残っていなければ、消えても穴は空かない。
+    if (!dates(e).some(d => d > e.reviewThrough)) continue;
+    (byDate[e.reviewThrough] ||= []).push(e.id);
+  }
+  return Object.entries(byDate)
+    .filter(([, ids]) => ids.length >= CLUSTER)
+    .map(([d, ids]) => ({
+      date: d,
+      days: Math.round((Date.parse(d) - Date.parse(today)) / 86400000),
+      count: ids.length,
+      ids,
+    }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
 
 async function main() {
   const arg = process.argv.find(a => a.startsWith('--date='));
@@ -18,6 +51,7 @@ async function main() {
     return { week, city, label, count: items.length, ids: items.map(e => e.id) };
   }));
   const expired = events.filter(e => e.reviewThrough < today).map(e => e.id);
+  const clusters = expiringClusters(events, today);
   const socialExpired = socialPosts.filter(p => p.reviewThrough < today).map(p => p.path);
   const checks = [];
   const socialChecks = [];
@@ -46,8 +80,8 @@ async function main() {
       } catch (error) { socialChecks.push({ path: post.path, available: false, error: error.name }); }
     }
   }
-  const needsAttention = coverage.some(r => r.count < 3) || expired.length > 0 || checks.some(r => !r.reachable) || socialExpired.length > 0 || socialChecks.some(r => !r.available);
-  const report = { checkedOn: today, needsAttention, coverage, expiredVerification: expired, linkChecks: checks, socialExpired, socialChecks,
+  const needsAttention = coverage.some(r => r.count < 3) || expired.length > 0 || clusters.length > 0 || checks.some(r => !r.reachable) || socialExpired.length > 0 || socialChecks.some(r => !r.available);
+  const report = { checkedOn: today, needsAttention, coverage, expiredVerification: expired, expiringClusters: clusters, linkChecks: checks, socialExpired, socialChecks,
     limitation: 'リンク到達確認は、開催継続・料金・空席・内容の確認ではありません。確認日を自動更新しません。' };
   const text = [
     '# 街の文化イベント 運営点検', '', `確認日：${today}（日本時間）`, '',
@@ -55,6 +89,11 @@ async function main() {
     '| 開催週（月曜） | 街 | 掲載件数 |', '| --- | --- | ---: |',
     ...coverage.map(r => `| ${r.week} | ${r.label} | ${r.count}${r.count < 3 ? ' 要補充' : ''} |`), '',
     `確認期限切れ：${expired.length}件。期限切れ情報は公開一覧に出ません。`, '',
+    ...(clusters.length ? [
+      `**${HORIZON_DAYS}日以内に、会期が残ったまま一度に消える催しがあります。**`,
+      '切れてからでは読者も見ています。公式ページで開催を確かめてから期限を延ばすか、先に補充してください。',
+      ...clusters.map(c => `- ${c.date}（${c.days}日後）に ${c.count}件：${c.ids.join(' / ')}`), '',
+    ] : []),
     ...checks.filter(r => !r.reachable).map(r => `- 要確認：${r.url}（${r.status || r.error}）`), '',
     `関連投稿の確認期限切れ：${socialExpired.length}件。`,
     ...socialChecks.filter(r => !r.available).map(r => `- 関連投稿の要確認：${r.path}（${r.status || r.error}）`),
@@ -70,4 +109,5 @@ async function main() {
   console.log(text);
   if (process.argv.includes('--strict') && needsAttention) process.exitCode = 1;
 }
-main().catch(e => { console.error(e.message); process.exitCode = 1; });
+module.exports = { expiringClusters, HORIZON_DAYS, CLUSTER };
+if (require.main === module) main().catch(e => { console.error(e.message); process.exitCode = 1; });

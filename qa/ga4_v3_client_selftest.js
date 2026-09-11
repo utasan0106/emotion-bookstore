@@ -28,6 +28,10 @@ allowed.add('docs/HANDOVER.md');
 allowed.add('tools/event-media-source.js');
 // Xの投稿が140字（weighted 280）に収まっているかを測る。配信面には出ない。
 allowed.add('tools/check-post-length.js');
+/* 再確認期限の固まりを、切れる前に見つける。9/21 の事故は「切れてから」しか
+   鳴らさなかったことで見逃された。検知と、その契約を固定するテストを足した。 */
+for (const f of ['tools/review-culture-events.js', 'qa/events_expiry_cluster_check.js',
+  'qa/verify-product.js', 'docs/strategy/DELEGATION-20260911.md']) allowed.add(f);
 for(const file of ['assets/city-editorial/','docs/city-discovery/CITY-ART-20260910.md']) allowed.add(file);
 for(const city of ['kichijoji','koenji','shimokitazawa','jinbocho']) allowed.add('assets/city-editorial/'+city+'.webp');
 // routing and their bounded QA. The measurement code/payload contract is unchanged.
