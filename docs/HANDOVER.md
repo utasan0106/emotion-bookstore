@@ -1,36 +1,48 @@
-# 引き継ぎ書 — 2026-09-11
+# 引き継ぎ書 — 2026-09-11（同日 更新）
 
 **新しいクラウド環境 `emotion-bookstore` で開いたセッション向け。**
 この1枚で足りるように書く。詳細が要るときだけ、指したファイルを読む。
 
-起点コミット：`2813ebf`（main、本番反映済み）
+起点コミット：`5f16de8`（未反映。`main` は `2813ebf`）
 
 ---
 
 ## 0. 最初にやること：接続を確かめる
 
-ファウンダーが環境を作り直した。カスタムのドメイン許可と `YOUTUBE_API_KEY` が
-入っている**はず**。入っているかは**実測する。推測しない。**
+環境は作り直されている。**実測する。推測しない。**
 
 ```sh
 [ -n "$YOUTUBE_API_KEY" ] && echo "key: あり" || echo "key: なし"
-for h in github.com www.googleapis.com www.enjoytokyo.jp za-koenji.jp \
-         jirokichi.net www.shogakukan.co.jp bookandbeer.com www.musashino.or.jp; do
-  printf "%-24s %s\n" "$h" "$(curl -s -o /dev/null -w '%{http_code}' -m 12 "https://$h/")"
+for h in github.com www.enjoytokyo.jp za-koenji.jp jirokichi.net bookandbeer.com \
+         www.musashino.or.jp www.shogakukan.co.jp www.silver-elephant.com \
+         www.tokyodo-web.co.jp cinemalice.theater; do
+  printf "%-26s %s\n" "$h" "$(curl -s -o /dev/null -w '%{http_code}' -m 12 "https://$h/")"
 done
 ```
 
-`000` は届いていない（プロキシが 403 を返している）。
+`000` は届いていない（プロキシが 403 を返している）。理由は
+`curl -sS "$HTTPS_PROXY/__agentproxy/status"` の `recentRelayFailures` に出る。
 
-**`github.com` が届かないと本番反映ができない。** そこが落ちていたら、
-先に進まずファウンダーに知らせること。前の環境では全ドメインが塞がれていた。
+**2026-09-11 の実測**：`YOUTUBE_API_KEY` あり。会場10ドメインすべてと
+enjoytokyo・walkerplus に到達でき、`github.com` も通った。前の環境と違い、
+**催しの確認と補充をこの環境の中で完結できる。**
+
+届かなかったのは次の4つ。いずれも proxy policy の 403 で、許可ドメインに
+足せば解決する。
+
+| ドメイン | 何に要るか |
+|---|---|
+| `moonartnightfes.com` | ムーンアートナイト下北沢の再確認（§2 に残件） |
+| `jimbou.info` | 神田古本まつりの開催確認（X 10/22 の稿が出せない） |
+| `emotionbookstore.com` | 本番での表示確認。ローカルのページしか見られない |
+| `www.gotokyo.org` | 催しの一覧（他の一覧サイトで代替できる） |
 
 ---
 
 ## 1. いまのサイト
 
 本番 `https://emotionbookstore.com/`、Vercel が `main` への push で自動反映。
-生成ページ 170。
+生成ページ 183（催しを13件足したぶん増えた）。
 
 | | 本 | 音楽 | 映像 | 映画 | 計 |
 |---|---:|---:|---:|---:|---:|
@@ -40,7 +52,7 @@ done
 | 神保町 | 5 | 5 | 5 | 3 | 18 |
 | **計** | **16** | **20** | **23** | **18** | **77** |
 
-ほかに街をまたぐ短編3件、催し24件。保留2件、見送り5件。
+ほかに街をまたぐ短編3件、催し37件。保留2件、見送り5件。
 
 ### 2026-09-10〜11 に増えた面
 
@@ -56,41 +68,49 @@ done
 
 ---
 
-## 2. 期限があるのはこれだけ：催しが 9/21 に全部消える
+## 2. 催しの在庫：9/21 の一斉消滅は解消した。次は 10/05 の週
 
-**2026-09-21 に、公開中24件すべてが一度に表示から外れる。**
-会期ではない。`reviewThrough` が**全件 `2026-09-20`** で揃っているため。
+**9/21 に全24件が一度に消える問題は片づいた。** `reviewThrough` が全件
+`2026-09-20` で揃っていたのが原因だったので、会期が9/20以降も残る7件のうち
+6件を公式ページで確認し、公式に明記された会期終了日を期限にした。
+期限が日ごとに散ったので、もう一度に空にはならない。
+
+さらに13件を補い、催しは 24 → 37件。9/28 の週までは、どの街も3件以上ある。
 
 ```
-2026-09-14  12件
-2026-09-21   0件   ← ここで全部
-2026-09-28   0件
+2026-09-07  12件   2026-09-21  12件
+2026-09-14  12件   2026-09-28   8件
+2026-10-05   3件  ← 次に薄くなるのはここ
 ```
 
-`node qa/event_supply_check.js` が実測を出す。下限5件を割ると落ちる
-（正しく数えるので、9/14 に回せば来週0件で FAIL する）。
+**残っているのは二つ。**
 
-### 直し方（安い順）
+**(a) 10/05 の週が3件**（下限5件）。9/28 になると「来週」がここになり、
+`node qa/event_supply_check.js` が落ちる。**その前に足す。**
+9/28 の週も神保町が0件、吉祥寺が2件で、街ごとの下限3件には届いていない。
 
-**(a) 会期が9/20以降も残っている7件を再確認して `reviewThrough` を延ばす**
+**(b) `shimokita-moon` だけ再確認できていない。** ムーンアートナイト下北沢は
+9/18〜10/4 の会期が残っているのに、`moonartnightfes.com` がこの環境から
+開けず、期限 `2026-09-20` のままにしてある。**確認できないものは延ばさない。**
+許可ドメインに足せば確認できる。
 
-`koenji-midsummer` `koenji-cafetalk` `kichijoji-taniguchi` `kichijoji-winter`
-`jinbocho-ginga` `shimokita-moon` `jinbocho-pokemon`
+### 足し方
 
-**公式ページを開いて開催が生きていることを確かめてから延ばす。**
-確認せずに日付だけ書き換えない。`checkedAt` も確認した日に更新する。
-これで 9/21 の週が 0件 → 7件。ただし 9/28 は3件、10/05 は2件のまま。
+探し先は `docs/city-discovery/EVENT-SOURCES.md`。
+**一覧サイト（enjoytokyo・walkerplus）は出発点であって出典ではない。**
+必ず主催者・会場の公式ページまで辿り、そちらを `url` に書く。全37件がその形。
 
-**(b) 新しい催しを足す。** 探し先は `docs/city-discovery/EVENT-SOURCES.md`。
-**一覧サイト（enjoytokyo・walkerplus・gotokyo）は出発点であって出典ではない。**
-必ず主催者・会場の公式ページまで辿り、そちらを `url` と `sources` に書く。
-既存24件はすべてその形。
-
-**展示3件・ライブ4件が薄い。** トップの「展示」「ライブ」はここへ来るので、
-そこが読者の離脱点になる。優先して埋める。
+10月の在庫は実際に見てある。JIROKICHI は10月だけで20件超、本屋B&Bは
+10/3・10/4・10/12・10/18 に、吉祥寺シアターは『追熟しない果実』(10/2〜11) の
+あとに『三英花 煙夕空』(10/14〜18)・ラブ演劇博(10/23〜25) がある。
+神保町だけ薄い。神保町シアターの次の特集が未発表で、シネマリスの
+上映スケジュールは JavaScript で後から読み込まれるため取れない。
 
 1件に必要な8項目は `EVENT-SOURCES.md` に表がある。
-`hook` と「なぜこの街か」は編集部が書くもので、**渡された事実から勝手に作らない。**
+
+`hook` と「なぜこの街か」は編集部のもの。**渡された事実から勝手に作らない。**
+2026-09-11 の13件は、ファウンダーが「下書きまで Claude が作る」を選んだうえでの
+下書きである。同じことをする前に、**その都度ファウンダーに確かめること。**
 
 ---
 
@@ -126,8 +146,8 @@ node tools/check-videos.js <id> [<id>...]     # 保留中12本（OUTING-VIDEOS-H
 
 ```sh
 node qa/verify-product.js          # 22本。ここが緑でないと出さない
-node qa/design_redesign_check.js   # 170ページ。文言と行き先の消失を見る
-node qa/duplicate_text_check.js    # 168ページ。同じ文の二度出しを見る
+node qa/design_redesign_check.js   # 183ページ。文言と行き先の消失を見る
+node qa/duplicate_text_check.js    # 181ページ。同じ文の二度出しを見る
 node tools/build-city-discovery.js --check   # 生成物4本すべて --check が一致すること
 node tools/build-work-pages.js --check
 node tools/build-weekly-outings.js --check
@@ -166,12 +186,18 @@ node -e "const fs=require('fs'),f=require('./tools/build-design-redesign'),r=req
    同じ「なぜこの街？」が2枚並ぶ。`qa/duplicate_text_check.js` に名指しで登録してある
 3. **`home_canonical_check` / `thread_check` の60件** — 承認済み再設計で消えた旧HOMEを
    検査し続けている。削除ではなく現行HOMEの契約へ書き直すのが筋だが、編集判断が要る
+4. **2026-09-11 に足した催し13件の `hook` と `relation`** — Claude の下書き。
+   ファウンダーの承認を得て書いたが、**掲載前に編集部が読む前提**である。
+   `tools/weekly-outings-source.js` の末尾、コメントで範囲を示してある
 
 ---
 
 ## 8. ファウンダー側でしか動かないこと
 
-- 催し7件の再確認（**9/21 の期限**）
+- **許可ドメインに4つ足す**（§0 の表）。`moonartnightfes.com` と `jimbou.info` が
+  無いせいで、催し1件の再確認と X 10/22 の稿が止まっている
+- **本番での表示確認** — `emotionbookstore.com` に接続できないので Claude にはできない
+- **2026年の神田古本まつりの開催確認** — 取れるまで X 10/22 の稿は出せない
 - `エンドレス・ワルツ`『影なき声』の行き先 — 台帳も「再上映まで Backlist」と判断。
   **いま何かする必要はない**
 - メジャー作品の洗い出し、新しい街の選定（判断材料は `DIRECTION-20260910.md` の3条件）
@@ -184,7 +210,8 @@ node -e "const fs=require('fs'),f=require('./tools/build-design-redesign'),r=req
 | ファイル | 何が書いてあるか |
 |---|---|
 | `CLAUDE.md` | 正本。禁止事項と権限 |
-| `docs/city-discovery/EVENTS-SUPPLY-20260910.md` | 9/21問題の実測と直し方 |
+| `docs/city-discovery/EVENTS-SUPPLY-20260910.md` | 9/21問題の実測と直し方（問題は解消済み。考え方の記録として） |
+| `docs/city-discovery/LAUNCH-COPY-202610.md` | 10月のX原稿。照合結果と、稿ごとに何が消えうるか |
 | `docs/city-discovery/EVENT-SOURCES.md` | 催しの探し先と、1件に必要な8項目 |
 | `docs/city-discovery/LEDGER-AUDIT-20260911.md` | Drive台帳50件の精査結果 |
 | `docs/city-discovery/DIRECTION-20260910.md` | 在庫・メジャー・新しい街の方針 |

@@ -22,6 +22,8 @@ allowed.add('tools/city-editorials.js');
 allowed.add('docs/city-discovery/LAUNCH-COPY-202610.md');
 // 催しの再確認と補充にあわせて、在庫下限と再確認期限の契約を実態へ書き直した。
 allowed.add('qa/weekly_outings_check.js');
+// 引き継ぎ書。9/21 の期限と、この環境から何処へ届くかが実測で変わった。
+allowed.add('docs/HANDOVER.md');
 for(const file of ['assets/city-editorial/','docs/city-discovery/CITY-ART-20260910.md']) allowed.add(file);
 for(const city of ['kichijoji','koenji','shimokitazawa','jinbocho']) allowed.add('assets/city-editorial/'+city+'.webp');
 // routing and their bounded QA. The measurement code/payload contract is unchanged.
