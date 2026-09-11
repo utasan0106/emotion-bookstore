@@ -9,8 +9,16 @@
 | 下北沢 | https://www.enjoytokyo.jp/event/list/area1334/ |
 | 神保町 | https://www.enjoytokyo.jp/event/list/area1321/ |
 
-**この作業環境からは開けない。** `www.enjoytokyo.jp` はプロキシに拒否される
-（`403 CONNECT`、2026-09-11 確認）。解決は「環境の許可ドメインに足す」か
+街を限定しない一覧（2026-09-11 追加）：
+
+| | 一覧 |
+|---|---|
+| ウォーカープラス（東京） | https://www.walkerplus.com/event_list/ar0313/ |
+| 東京都 公式（GO TOKYO） | https://www.gotokyo.org/jp/calendar/index.html |
+
+**この作業環境からはどれも開けない。** enjoytokyo・walkerplus・gotokyo のいずれも
+プロキシに拒否される（`403 CONNECT`、2026-09-11 確認）。特定サイトの問題ではなく、
+外部接続が一律で塞がっている。解決は「環境の許可ドメインに足す」か
 「人が開いて渡す」のどちらか。手順は下記。
 
 ## 一覧サイトは出発点であって、出典ではない
@@ -50,6 +58,8 @@ claude.ai/code の Environment 設定に、この作業環境が接続してよ�
 
 ```
 www.enjoytokyo.jp          催しの一覧（4街）
+www.walkerplus.com         催しの一覧（東京全域）
+www.gotokyo.org            東京都公式カレンダー
 za-koenji.jp               座・高円寺
 jirokichi.net              高円寺JIROKICHI
 bookandbeer.com            本屋B&B
