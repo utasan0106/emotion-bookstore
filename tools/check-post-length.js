@@ -28,12 +28,16 @@ function weighted(text) {
   return n;
 }
 
+// 本文は見出しの次の行から、編集部向けの注記が始まる手前まで。
+//
+// URL の行で打ち切ってはいけない。10/22 のように、リンクのあとに開催情報を続け、
+// 末尾にもう1本、出典の URL を置く稿がある。最初の URL で切ると、
+// 実際に投稿される本文の半分しか測らないまま「収まっている」と言ってしまう。
 function bodyOf(section) {
   const out = [];
   for (const line of section.split('\n')) {
     if (/^\*\*/.test(line)) break;
     out.push(line);
-    if (/^https?:\/\//.test(line.trim())) break;
   }
   return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
