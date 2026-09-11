@@ -64,8 +64,17 @@ if (!failures.length) {
     failures.push('release.js: legacy tokyo shelf normalization missing');
   }
 
-  if (!/^User-agent: \*\nAllow: \/\n\nSitemap: https:\/\/emotionbookstore\.com\/sitemap\.xml\n$/.test(robots)) {
-    failures.push('robots.txt: exact allow-all + sitemap contract missing');
+  // 2026-09-11、AIクローラーを閉じない理由を robots.txt にコメントで残した。
+  // 閉じる判断は、この行を書き換えに来た人がここで読む。だから場所はここでなければ
+  // ならない。契約は「1バイトも違わない」から「命令は allow-all と Sitemap の二つだけ」
+  // へ移した。守るもの（何もブロックしない・sitemap を示す）は変えていない。
+  const robotLines = robots.split('\n');
+  const directives = robotLines.filter(line => line.trim() && !line.startsWith('#'));
+  if (directives.join('\n') !== 'User-agent: *\nAllow: /\nSitemap: https://emotionbookstore.com/sitemap.xml') {
+    failures.push('robots.txt: allow-all + sitemap contract missing');
+  }
+  if (!/^User-agent: \*\nAllow: \/\n\nSitemap: https:\/\/emotionbookstore\.com\/sitemap\.xml\n/.test(robots)) {
+    failures.push('robots.txt: the allow-all block must come first, before any comment');
   }
 
   const requiredUrls = [

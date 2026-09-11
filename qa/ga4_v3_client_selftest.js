@@ -46,6 +46,9 @@ for (const f of ['llms.txt', 'robots.txt', 'tools/work-entry-source.html',
 /* 催しの構造化データ。日時と会場を持っているのに、機械にはただのページに見えていた。
    書くのは持っている事実だけで、価格・画像・主催者は入れない（契約はテストが固定する）。 */
 allowed.add('qa/event_schema_check.js');
+allowed.add('qa/work_schema_check.js');
+// robots.txt のコメントで落ちていた既知外 FAIL を、契約の書き直しで解消した。
+allowed.add('qa/seo_check.js');
 for(const file of ['assets/city-editorial/','docs/city-discovery/CITY-ART-20260910.md']) allowed.add(file);
 for(const city of ['kichijoji','koenji','shimokitazawa','jinbocho']) allowed.add('assets/city-editorial/'+city+'.webp');
 // routing and their bounded QA. The measurement code/payload contract is unchanged.
@@ -263,5 +266,19 @@ const data=read('data.html'); for(const t of ['週末の前の一本','31秒の�
 /* 催しの再確認・補充は毎週の定常作業で、1件でも直せば催しの個別ページ・会場ページ・今週号が
    必ず作り直される。中身は各 build の --check が別に照合するので、ここでは所在だけ許可する。 */
 const rebuiltByEvents=p=>p.startsWith('outings/events/')||p.startsWith('discover/venue/')||p==='discover/weekly/index.html';
-for(const p of ['release.js','release_content.js','release.css']) assert(git(['diff','--',p])==='','protected changed '+p); git(['diff','--check']); const status=git(['status','--porcelain']); if(status)for(const line of status.split(/\r?\n/)){let rel=line.slice(3).trim();if(rel.includes(' -> '))rel=rel.split(' -> ',2)[1];assert(allowed.has(rel)||rebuiltByEvents(rel)||internalDoc(rel),'unexpected '+rel)}
+/* 作品ページも同じ生成物で、1件直せば115ページが作り直される。ここへ来るたびに
+   許可一覧へ足していくと、この番人は何も守らなくなる。所在を許すかわりに、
+   生成された HTML の差分が計測・端末内保存に触れていないことを見る。
+   中身が正しいかは build の --check と作品・催しの schema テストが別に固定する。 */
+const generatedPage=p=>/^discover\/.+\.html$/.test(p)||p.startsWith('outings/events/');
+const measurementToken=/gtag|dataLayer|localStorage|sessionStorage|analytics-v3|G-[A-Z0-9]{6,}/;
+function generatedStaysClear(p){
+  // 新しく作られたページは差分が無い。その場合は中身を丸ごと見る。
+  const added=git(['ls-files','--',p])==='';
+  const lines=added?read(p).split(/\r?\n/):git(['diff','--unified=0','--',p]).split(/\r?\n/)
+    .filter(l=>/^[+-]/.test(l)&&!/^(\+\+\+|---)/.test(l));
+  for(const line of lines) assert(!measurementToken.test(line),'generated page touches measurement or storage: '+p);
+  return true;
+}
+for(const p of ['release.js','release_content.js','release.css']) assert(git(['diff','--',p])==='','protected changed '+p); git(['diff','--check']); const status=git(['status','--porcelain']); if(status)for(const line of status.split(/\r?\n/)){let rel=line.slice(3).trim();if(rel.includes(' -> '))rel=rel.split(' -> ',2)[1];assert(allowed.has(rel)||rebuiltByEvents(rel)||internalDoc(rel)||(generatedPage(rel)&&generatedStaysClear(rel)),'unexpected '+rel)}
 console.log('V3_RELEASE_GROWTH_SELFTEST_GO');

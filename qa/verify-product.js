@@ -18,7 +18,7 @@ const checks=[
  ['qa/navigation_readability_check.js'],
  ['qa/catalogue_inventory_check.js', 'qa/catalogue_supply_check.js'],
  ['qa/city_discovery_player_check.js'],
- ['qa/work_page_check.js'],
+ ['qa/work_page_check.js', 'qa/work_schema_check.js'],
  ['qa/social_post_check.js'],
  ['qa/culture_delivery_csp_check.js'],
  ['qa/analytics_contract_check.js'],

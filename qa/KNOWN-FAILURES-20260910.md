@@ -78,3 +78,34 @@ NODE_PATH=/opt/node22/lib/node_modules node qa/dead_click_check.js
 
 playwright が解決できないときは `SKIP` と出て終わる（落ちない）。
 落ちたときは本物の指摘である。2026-09-11 時点では 4ページ118本を押して 0件。
+
+## 2026-09-11 追加：台帳どおりに起きた
+
+`robots.txt` に「なぜAIクローラーを閉じないか」のコメントを足したとき、
+`qa/seo_check.js` が robots.txt を1バイト単位で固定していたので落ちた。
+**丸一週間、誰も気づかなかった。`seo_check` は `verify-product` が回さない
+25本のうちの1本だからである。**
+
+この台帳の冒頭に「既知FAILを放置すると、新しい回帰を隠す」と書いてある。
+今回は放置ですらなく、**走らせてすらいなかった**ので、隠れる前に見えていなかった。
+
+契約を書き直して解消した。「1バイトも違わない」から
+「命令は allow-all と Sitemap の二つだけ、ブロックは一つも無い」へ移した。
+コメントは通り、`Disallow` を足せば落ちる。守るものは変えていない。
+したがって `seo_check` の既知FAILは1件（`index.html` の文言）のままである。
+
+## 2026-09-11 追加：落ちるが「製品の失敗」ではないもの
+
+全45本を回して突き合わせた結果。**いずれも `main` でも同じように落ちる。**
+既知FAIL表には足さない（あれは製品の契約の話である）。掘り直さないための記録。
+
+| テスト | 落ちる理由 |
+|---|---|
+| `ladyjane_thread_qa` `parks_thread_qa` | `git show <sha>:thread_content.js` が解決しない。参照先のコミットがこのクローンに無い |
+| `link_check` | 実際に外部へ繋ぐ。ネットワークと相手サイトの状態で結果が変わる |
+| `browser_qa` `atlas_browser_qa` `atlas_check` `home_responsive_check` `release_shots` | ブラウザ。`NODE_PATH=/opt/node22/lib/node_modules` を付けても TimeoutError になるものがある |
+
+**45本のうち、いま毎回回っているのは22本である。**
+残り23本の内訳は、承認済み再設計で守るものが無くなったもの（`home_canonical_check`
+`thread_check` `works_check`）、ブラウザ・ネットワークが要るもの、
+そして**回せば通るのに誰も回していないもの**である。最後の一群が今回の穴だった。

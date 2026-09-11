@@ -170,6 +170,19 @@ ${body.includes('data-video-id') ? '<script src="/video-embed.js" defer></script
 }
 let written = 0;
 const generatedFiles = [];
+// 作品ページが機械に渡すもの。催しと同じ考え方で、**持っている事実だけ**を書く。
+// creator は「犬童一心 監督 / 田中泯」「ドキュメンタリー」のような自由文で、
+// 著者・監督・演奏者として型に入れられる形では持っていない。だから author /
+// director / byArtist は書かない。街との関係（relation）も「物語の舞台」から
+// 「高円寺の映画祭で上映」まで40通り以上あり、contentLocation にすると
+// 上映しただけの街を「作品の舞台」と言うことになる。書かない。
+const workType={book:'Book', film:'Movie', audio:'MusicRecording', video:'VideoObject'};
+function workSchema(item, canonical) {
+  const object={'@type':workType[item.kind], name:item.title, description:item.hook, url:canonical};
+  // 公式・一次の行き先。サイト内のページはその作品そのものではないので書かない。
+  if(/^https:\/\//.test(item.url)) object.sameAs=item.url;
+  return object;
+}
 function enrichSeo(file, html) {
   const pageTitle=plain((html.match(/<title>(.*?)<\/title>/s)||[])[1]||'みんなの感情書店');
   const heading=plain((html.match(/<h1>(.*?)<\/h1>/s)||[])[1]||pageTitle).replace(/\s+の/g,'の');
@@ -179,7 +192,9 @@ function enrichSeo(file, html) {
   const canonical=canonicalFor(file);
   const essay=research.find(entry=>file===`essays/${entry.id}.html`);
   const isResearchIndex=file==='essays/index.html';
+  const workItem=items.find(item=>file===`${item.city}/${item.id}.html`);
   const schemaObject=essay?{'@context':'https://schema.org','@type':'Article',headline:essay.title,description:essay.lead,datePublished:essay.publishedAt,dateModified:essay.modifiedAt,mainEntityOfPage:canonical,author:{'@type':'Organization',name:'みんなの感情書店編集部',url:'https://emotionbookstore.com/about.html'},publisher:{'@type':'Organization',name:'みんなの感情書店',url:'https://emotionbookstore.com/'},about:{'@type':'Place',name:essay.cityLabel},citation:essay.sources.map(source=>source.url)}:{'@context':'https://schema.org','@type':isResearchIndex?'CollectionPage':'WebPage',name:heading,description,url:canonical,isPartOf:{'@type':'WebSite',name:'みんなの感情書店',url:'https://emotionbookstore.com/'}};
+  if(workItem) schemaObject.mainEntity=workSchema(workItem,canonical);
   const schema=JSON.stringify(schemaObject).replace(/</g,'\\u003c');
   const type=essay?'article':'website';
   const robotMeta=essay||isResearchIndex?'<meta name="robots" content="max-image-preview:large">':'';
