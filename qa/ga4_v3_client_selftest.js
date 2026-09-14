@@ -29,6 +29,14 @@ allowed.add('qa/weekly_outings_check.js');
 allowed.add('tools/event-media-source.js');
 // Xの投稿が140字（weighted 280）に収まっているかを測る。配信面には出ない。
 allowed.add('tools/check-post-length.js');
+/* 共有されたときのカード（og:image / twitter:card）の扉を1か所に置いた。
+   街の写真も作品の表紙も使わず、既に本番にある 1200x630 のブランド画像だけを指す。
+   計測でも外部送信でもなく、生成物の head に出る meta である。
+   扉の中身の契約は qa/release_check.js が独立した文字列で固定している。 */
+allowed.add('tools/site-ogp.js');
+/* その扉の契約を固定する検査。索引163ページの meta と、催し43件の説明が
+   1件ずつ違うことを見る。検査を足す方向で、緩めていない。 */
+allowed.add('qa/social_card_check.js');
 /* 再確認期限の固まりを、切れる前に見つける。9/21 の事故は「切れてから」しか
    鳴らさなかったことで見逃された。検知と、その契約を固定するテストを足した。 */
 for (const f of ['tools/review-culture-events.js', 'qa/events_expiry_cluster_check.js',

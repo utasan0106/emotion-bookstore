@@ -4,6 +4,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const {items, excludedItems, commonVideos, checkedAt} = require('./city-discovery-source');
 const workMedia=require('./work-media');
+const siteOgp=require('./site-ogp');
 const profiles=require('./artist-profiles');
 const research=require('./city-research');
 const citySignals=[
@@ -225,7 +226,7 @@ function enrichSeo(file, html) {
   const articleMeta=essay?`<meta property="article:published_time" content="${esc(essay.publishedAt)}"><meta property="article:modified_time" content="${esc(essay.modifiedAt)}">`:'';
   return html
     .replace(/<meta name="description" content="[^"]*">/,`<meta name="description" content="${esc(description)}">`)
-    .replace('</title>',`</title><link rel="canonical" href="${canonical}">${robotMeta}<meta property="og:type" content="${type}"><meta property="og:site_name" content="みんなの感情書店"><meta property="og:title" content="${esc(pageTitle)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${canonical}">${articleMeta}<meta name="twitter:card" content="summary"><script type="application/ld+json">${schema}</script>${crumbTag}`);
+    .replace('</title>',`</title><link rel="canonical" href="${canonical}">${robotMeta}<meta property="og:type" content="${type}"><meta property="og:site_name" content="みんなの感情書店"><meta property="og:title" content="${esc(pageTitle)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${canonical}">${articleMeta}${siteOgp.imageTags()}<script type="application/ld+json">${schema}</script>${crumbTag}`);
 }
 function write(file, html) {
   const column=require('./city-columns')[file.split('/')[1]?.replace(/\.html$/, '')];
