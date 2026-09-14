@@ -3,11 +3,22 @@
 **新しいクラウド環境 `emotion-bookstore` で開いたセッション向け。**
 この1枚で足りるように書く。詳細が要るときだけ、指したファイルを読む。
 
-`main` は `f7ce163`。**2026-09-11 に本番反映済み**（催し43件、9/21 の一斉消滅は回避、
-HOMEの「すべて」修正、`dead_click_check` 導入まで入っている）。
+`main` は `eab3e06`。**2026-09-14、ファウンダーの承認を得て本番反映した。**
+`claude/audience-discovery` を早送りで merge した（merge commit は作っていない）。
 
-作業中のブランチは `claude/audience-discovery`。**未マージ。**
-`main` には触っていない。PR も作っていない。
+この反映で本番に出たのは、9/11 以降にこのブランチへ積んだ8 commits である。
+
+| 出たもの | 読者に見えるか |
+|---|---|
+| 催し43件の JSON-LD（Event / EventSeries） | 見えない（`<head>` 内） |
+| 作品77件の JSON-LD、パンくず97ページ | 見えない（同上） |
+| RSS の `alternate` を176ページへ拡大、`llms.txt` | 見えない（同上） |
+| `robots.txt` に「なぜAIクローラーを閉じないか」のコメント | 見えない |
+| **`works.html` などの出典表示を、リンクから文字に** | **見える。唯一の見た目の変化** |
+
+**本番での表示確認はできていない。** `emotionbookstore.com` に接続できないためである
+（§0 の表）。反映前に `verify-product` 27/27、`design_redesign_check` 189ページ、
+`duplicate_text_check` 187ページがすべて緑であることは確かめた。
 
 ---
 
