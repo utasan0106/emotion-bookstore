@@ -1,10 +1,50 @@
-# 引き継ぎ書 — 2026-09-11（同日 更新）
+# 引き継ぎ書 — 2026-09-14 更新（本体は 2026-09-11）
 
 **新しいクラウド環境 `emotion-bookstore` で開いたセッション向け。**
 この1枚で足りるように書く。詳細が要るときだけ、指したファイルを読む。
 
-`main` は `f3b9bdc`。**2026-09-11 に本番反映済み**（催し43件、9/21 の一斉消滅は回避、
+`main` は `f7ce163`。**2026-09-11 に本番反映済み**（催し43件、9/21 の一斉消滅は回避、
 HOMEの「すべて」修正、`dead_click_check` 導入まで入っている）。
+
+作業中のブランチは `claude/audience-discovery`。**未マージ。**
+`main` には触っていない。PR も作っていない。
+
+---
+
+## 2026-09-14 に分かったこと（先に読む）
+
+**(1) 訪問者はほぼ来ていない。そして詰まっているのは入口の一段目である。**
+
+ファウンダーが GA4 の実数とXのスクリーンショットを渡した。数字は
+`docs/strategy/REACH-20260914.md`。要点だけ。
+
+- 7日間の流入は **Direct 1セッションのみ**。Organic Search / Organic Social / Referral は0
+- 現行サイト（8/29〜）になってからの新規ユーザーは **2人、以後ゼロ**
+- コホート維持率は **全28コホートで 日1=0、日7=0**
+- Xの表示回数が **6→4→3→2→1** と単調に低下。いいね・リポスト・返信は見えた範囲で0
+
+**下流は壊れていない。表示に比例した数だけ来ている。**
+だから `AUDIENCE-20260911.md` の柱A（機械に正しく読ませる）と
+柱B（戻ってくる理由）は**止めた**。積み増しても数字は動かない。
+動いているのは柱C（人のいる場所へ出る）だけで、**そこはファウンダーの領域**である。
+
+**(2) 私は「9月はXに1稿も投稿していない」と誤って報告した。**
+
+リポジトリに9月分の原稿ファイルが無いことだけを見て、投稿の不在を結論した。
+実際には投稿されていた。ファウンダーはこの誤情報を説明の場で使い、咎められた。
+
+**リポジトリは、製品の外側（X・note・実際の会話）の記録ではない。**
+不在の主張は、観測してから書く。`AUTONOMY-20260911.md` §2-B (18) に線として入れた。
+
+**(3) 神田古本まつりが催し一覧に無い。10月分でいちばん大きな取りこぼし。**
+
+10/22 に予約済みのXの投稿が「第66回 神田古本まつり」を扱うのに、
+`tools/weekly-outings-source.js` の43件に該当する催しが無い。
+**主催者の公式ページ（`jimbou.info`）に接続できないので、8項目を確認できず、足していない。**
+経路は3つ試した。詳細と、検索で出てくる第三者情報を採らなかった理由は
+`docs/city-discovery/LAUNCH-COPY-202610.md`。
+
+**`jimbou.info` を許可ドメインに足してもらえれば、こちらで足せる。**
 
 ---
 
@@ -183,7 +223,7 @@ node tools/check-videos.js <id> [<id>...]     # 保留中12本（OUTING-VIDEOS-H
 ## 5. 検証のしかた
 
 ```sh
-node qa/verify-product.js          # 22本。ここが緑でないと出さない
+node qa/verify-product.js          # 27本。ここが緑でないと出さない
 node qa/design_redesign_check.js   # 189ページ。文言と行き先の消失を見る
 node qa/duplicate_text_check.js    # 187ページ。同じ文の二度出しを見る
 node tools/build-city-discovery.js --check   # 生成物4本すべて --check が一致すること
@@ -194,8 +234,23 @@ git diff --check
 node tools/check-post-length.js docs/city-discovery/LAUNCH-COPY-202610.md  # Xの原稿を直したとき
 ```
 
-`qa/` には48本あるが `verify-product` が回すのは22本。残りには**既知FAILがある**。
+`qa/` には48本あるが `verify-product` が回すのは27本（2026-09-11 に22本から増やした）。
+残りには**既知FAILがある**。
 `qa/KNOWN-FAILURES-20260910.md` を先に読むこと。そこに無い指摘は今回起因である。
+
+### 最初に `25/27` になったら、コードではなく clone を疑う（2026-09-14）
+
+この環境は **shallow clone で始まる**。`verify-product` の2本
+（`design_redesign_check` と `analytics_contract_check`）は、
+ベースライン commit `2f4a156` の中身と突き合わせる契約なので、
+**その commit がローカルに無いと `fatal: invalid object name '2f4a156'` で落ちる。**
+コードの回帰ではない。
+
+```sh
+git fetch --unshallow origin   # これだけで 25/27 → 27/27 に戻る
+```
+
+2026-09-14 のセッションはこれで戻した。**テストは一つも書き換えていない。**
 
 作品を足したら `qa/city_discovery_check.js` の固定値（件数・ページ数）と
 `qa/design-redesign/routes.json` がずれる。**数字は実態に合わせて更新する。緩めない。**
@@ -242,6 +297,12 @@ node -e "const fs=require('fs'),f=require('./tools/build-design-redesign'),r=req
   読み終えたものから `tools/weekly-outings-source.js` の `editorialReview` を外す。
   **10件を下回るまで、週次は新しい催しの下書きを作らない**（期限の延長は続ける）
 - **本番での表示確認** — `emotionbookstore.com` に接続できないので Claude にはできない
+- **`jimbou.info` を許可ドメインに足すか** — 足せば神田古本まつりを催しとして入れられる。
+  10/22 の予約投稿の着地先と、いま1件しかない 10/19 の週が同時に埋まる
+- **GA4 側の設定2件**（コードではない。提案のみ）— 内部トラフィックの除外、
+  `v3_official_action` 等をキーイベントに指定。どちらも未実施
+- **Xの投稿にサイトへのリンクを入れるか**（`REACH-20260914.md` §6）。
+  見えた6件には1本も無い。10月の予約済み9稿は全稿が持っている
 - `エンドレス・ワルツ`『影なき声』の行き先 — 台帳も「再上映まで Backlist」と判断。
   **いま何かする必要はない**
 - メジャー作品の洗い出し、新しい街の選定（判断材料は `DIRECTION-20260910.md` の3条件）
@@ -261,7 +322,8 @@ node -e "const fs=require('fs'),f=require('./tools/build-design-redesign'),r=req
 | `docs/city-discovery/DIRECTION-20260910.md` | 在庫・メジャー・新しい街の方針 |
 | `docs/city-discovery/SELECTION-20260910.md` | 採否の基準（直喩を採らない、等） |
 | `docs/strategy/MEDIA-AI-RESEARCH-20260911.md` | 世界のニュースルームのAI運用と失敗事例。ここへの持ち帰り |
-| `docs/strategy/AUDIENCE-20260911.md` | 訪問者を増やす戦略。診断・直したもの・**次に積む順番**・やらないこと |
+| `docs/strategy/REACH-20260914.md` | **GA4とXの実測。**届いているかの数字と、私が犯した誤りの訂正 |
+| `docs/strategy/AUDIENCE-20260911.md` | 訪問者を増やす戦略。診断・直したもの・**三本柱（2026-09-14 に改訂）** |
 | `docs/strategy/IDEAS.md` | 面白くするアイデア。却下したものも理由つき |
 | `docs/strategy/MARKET-REVIEW-PROMPT.md` | 外部に評価させるプロンプト |
 | `qa/KNOWN-FAILURES-20260910.md` | 既知FAILの台帳 |
