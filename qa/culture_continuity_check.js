@@ -66,8 +66,10 @@ for(const [id,column] of Object.entries(require('../tools/city-columns'))) {
 for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']) {
   for(const kind of ['audio','book','film',...(city==='kichijoji'?['video']:[])]) {
     const html=read(`discover/${city}/${kind}.html`);
-    const nav=html.match(/<nav class="other-cities"[\s\S]*?<\/nav>/)?.[0];
-    assert.ok(nav,'Cross-city navigation: '+city+'/'+kind);
+    const nav=html.match(/<nav class="other-cities"[\s\S]*?<\/nav>/)?.[0]||'';
+    const alternatives=['koenji','kichijoji','shimokitazawa','jinbocho'].filter(other=>other!==city&&publicItems.some(i=>i.city===other&&i.kind===kind));
+    if(!alternatives.length) assert.equal(nav,'','No cross-city navigation when there are no public alternatives: '+city+'/'+kind);
+    else assert.ok(nav,'Cross-city navigation: '+city+'/'+kind);
     for(const other of ['koenji','kichijoji','shimokitazawa','jinbocho']) {
       const count=publicItems.filter(i=>i.city===other&&i.kind===kind).length;
       assert.equal(nav.includes(`/discover/${other}/${kind}.html`),other!==city&&count>0,'Only populated public alternatives in same category');
