@@ -366,7 +366,7 @@ if (/hc-hero-trace|hc-trace-year/.test(read('index.html'))) failures.push('index
   const feature = src.indexOf('class="hd-feature"');
   const firstCity = src.indexOf('class="hd-city hc-city shelf-entry"');
   if (h1 < 0 || feature < 0 || firstCity < 0 || h1 > feature || feature > firstCity) failures.push('index.html: concise site purpose, first work, then city entries');
-  if (!src.includes('class="hd-feature') || /hc-culture-art|home-encounter|data-city-scene-image|30秒|感情書店の小文/.test(src) || !src.includes('href="https://www.youtube.com/watch?v=pm7RBghFt0I"') || !src.includes('href="/discover/kichijoji/parks.html"')) failures.push('index.html: existing film detail and official trailer destinations required; no invented reading feature');
+  if (!src.includes('class="hd-feature') || /hc-culture-art|home-encounter|data-city-scene-image|30秒|感情書店の小文/.test(src) || !/data-weekly-feature="[^"]+"/.test(src) || !src.includes('href="/discover/kiyosumi/"')) failures.push('index.html: weekly top feature and real destination required; no invented reading feature');
 }
 for (const page of ['shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html']) {
   const src = read(page);
