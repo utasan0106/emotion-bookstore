@@ -11,7 +11,7 @@ const { chromium } = require('playwright');
 const ROOT = path.resolve(__dirname, '..');
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',
   '.png': 'image/png', '.jpg': 'image/jpeg' };
-const SHELVES = ['kichijoji', 'koenji', 'shimokitazawa', 'jinbocho'];
+const SHELVES = ['kichijoji', 'koenji', 'shimokitazawa', 'kiyosumi', 'jinbocho'];
 const FORBIDDEN = ['次の3つ', 'また見たい', 'おすすめ', 'あなた向け', 'ランキング', '人気順',
   'トレンド', 'NEW', 'TRENDING', 'FOR YOU', '見終わりました'];
 
@@ -423,7 +423,8 @@ function serve() {
     { name: 'kichijoji', url: 'shelf.html?shelf=kichijoji' },
     { name: 'koenji', url: 'shelf.html?shelf=koenji' },
     { name: 'shimokitazawa', url: 'shelf.html?shelf=shimokitazawa' },
-    { name: 'jinbocho', url: 'shelf.html?shelf=jinbocho' }
+    { name: 'jinbocho', url: 'shelf.html?shelf=jinbocho' },
+    { name: 'kiyosumi', url: 'shelf.html?shelf=kiyosumi' }
   ]) {
     const S = `identity/${target.name}`;
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
@@ -598,7 +599,7 @@ function serve() {
       !!home.brand && home.brand.text === 'みんなの感情書店' && home.brand.imgs === 0 && home.brand.href === './index.html', home.brand);
     check(S, 'hero_photo_is_decorative', home.heroImgAlt === '', home.heroImgAlt);
     // canonical の並びは 高円寺 / 吉祥寺 / 下北沢 / 神保町（content の棚順とは違う）
-    const CANONICAL_ORDER = ['koenji', 'kichijoji', 'shimokitazawa', 'jinbocho'];
+    const CANONICAL_ORDER = ['koenji', 'kichijoji', 'shimokitazawa', 'jinbocho', 'kiyosumi'];
     check(S, 'four_city_entries_in_canonical_order',
       home.cities.length === 4 && home.cities.every((c, i) => c.href === `./shelf.html?shelf=${CANONICAL_ORDER[i]}`), home.cities.map((c) => c.href));
     check(S, 'city_names', home.cities.map((c) => c.name).join('|') === '高円寺|吉祥寺|下北沢|神保町', home.cities.map((c) => c.name));
