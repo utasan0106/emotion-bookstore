@@ -280,6 +280,16 @@ for(const item of items) {
 // rather than a reason to shelve it. They are not waiting for a cover — so acquiring
 // one later must not quietly put them back on the shelf, which is what would have
 // happened while the decision lived only in a document.
+// Duration state must be applied after every video() call, including late additions.
+for (const item of items.filter(item => item.kind === 'video')) {
+  const key='city/'+item.city+'/'+item.id;
+  const approved=durationPolicy.approved[key];
+  item.durationSeconds=approved?.durationSeconds || null;
+  item.durationSource=approved?.durationSource || '';
+  item.durationExceptionReason=approved?.exceptionReason || '';
+  item.durationPolicyStatus=approved?'approved':'hold';
+}
+
 const declinedItems = {
   'koenji/cafe-junjo':      '書名が街を言い、関係は物語の舞台のみ',
   'shimokitazawa/kamisama': '書名が街を言い、関係は物語の舞台のみ。センナリ劇場は作中の劇場',
@@ -288,6 +298,7 @@ const declinedItems = {
   'kichijoji/catwalk':      '書名が街を言い、関係は物語の舞台のみ'
 };
 const canPublish = item => !declinedItems[item.city+'/'+item.id]
+  && (item.kind !== 'video' || item.durationPolicyStatus === 'approved')
   && Boolean(item.videoId || item.trailerVideoId || covers[item.city+'/'+item.id]?.status === 'usable' || item.presentation==='text-only');
 const excludedItems = items.filter(item => !canPublish(item));
 // Two different reasons sit behind an unpublished object, and reading them as one
