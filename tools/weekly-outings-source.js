@@ -66,4 +66,6 @@ const browseKinds=e=>{
  if(/本|文学|トーク|お笑い/.test(k)) out.push('talk');
  return out;
 };
-module.exports={cities,kinds,events:events.map(e=>({browseKinds:browseKinds(e),checkedAt:'2026-09-08',reviewThrough:'2026-09-20',status:'scheduled',...e})),audiences:[{id:'couple',label:'恋人と'},{id:'children',label:'子どもと'},{id:'family',label:'家族で'},{id:'friends',label:'友人と'},{id:'solo',label:'ひとりで'}]};
+const normalizedEvents=events.map(e=>({browseKinds:browseKinds(e),checkedAt:'2026-09-08',reviewThrough:'2026-09-20',status:'scheduled',...e}));
+const isPublishableEvent=e=>e.editorialReview!=='pending';
+module.exports={cities,kinds,events:normalizedEvents,isPublishableEvent,audiences:[{id:'couple',label:'恋人と'},{id:'children',label:'子どもと'},{id:'family',label:'家族で'},{id:'friends',label:'友人と'},{id:'solo',label:'ひとりで'}]};
