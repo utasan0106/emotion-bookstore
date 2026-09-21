@@ -579,7 +579,12 @@ if(process.argv.includes('--check')){if(fs.readFileSync(configPath,'utf8')!==con
 else fs.writeFileSync(configPath,configText);
 const weeklyPaths=require('./build-weekly-outings');
 const sitemapPaths=['','works.html','visit/','about.html',...[...Object.keys(cityNames),'kiyosumi'].map(city=>'shelf.html?shelf='+city),'discover/kiyosumi/',...['book','film','music','video'].map(kind=>'work-'+kind+'.html'),...weeklyPaths,...generatedFiles.map(file=>`discover/${file === 'index.html' ? '' : file.replace(/index\.html$/, '')}`)];
-const sitemap=`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapPaths.map((file,index)=>`  <url>\n    <loc>https://emotionbookstore.com/${file}</loc>\n    <lastmod>${checkedAt}</lastmod>\n    <changefreq>${index<2?'weekly':'monthly'}</changefreq>\n    <priority>${index===0?'1.0':index<3?'0.9':file.endsWith('/')?'0.8':'0.6'}</priority>\n  </url>`).join('\n')}\n</urlset>\n`;
+const siteUpdatedAt=String(content.release?.verifiedAt||checkedAt).slice(0,10);
+const sitemapLastmod=file=>{
+  if(file===''||file==='shelf.html?shelf=kiyosumi'||file==='discover/kiyosumi/'||file==='discover/short-films/'||file.startsWith('discover/short-films/')) return siteUpdatedAt;
+  return checkedAt;
+};
+const sitemap=`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapPaths.map((file,index)=>`  <url>\n    <loc>https://emotionbookstore.com/${file}</loc>\n    <lastmod>${sitemapLastmod(file)}</lastmod>\n    <changefreq>${index<2?'weekly':'monthly'}</changefreq>\n    <priority>${index===0?'1.0':index<3?'0.9':file.endsWith('/')?'0.8':'0.6'}</priority>\n  </url>`).join('\n')}\n</urlset>\n`;
 // 新着をRSSで出す。アカウントも通知許可も要らずに「また来週」を届けられる唯一の手段で、
 // 掲げている原則（人気順で並べない・プロファイルしない）と何ひとつ衝突しない。
 // 読者が誰かをこちらは知らないままでよい。
