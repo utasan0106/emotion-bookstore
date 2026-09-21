@@ -17,6 +17,7 @@ const checks=[
  ['qa/event_timing_check.js', 'qa/event_supply_check.js', 'qa/events_expiry_cluster_check.js', 'qa/event_schema_check.js'],
  ['qa/memory_note_check.js'],
  ['qa/city_discovery_check.js'],
+ ['qa/video_duration_gate_check.js'],
  ['qa/culture_continuity_check.js'],
  ['qa/navigation_readability_check.js'],
  ['qa/catalogue_inventory_check.js', 'qa/catalogue_supply_check.js'],
