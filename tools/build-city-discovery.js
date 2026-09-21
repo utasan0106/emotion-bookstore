@@ -265,7 +265,7 @@ function write(file, html) {
     if(related.length) html=html.replace('<section class="quick">',`<section class="quick"><h2>あの頃の街に、もう一度。</h2>${related.map(essay=>`<p><a href="/discover/essays/${essay.id}.html">${esc(essay.title)}</a></p>`).join('')}</section><section class="quick">`);
   }
   if(cityNames[city] && categories[kind]) {
-    const alternatives=Object.entries(cityNames).filter(([id])=>id!==city).map(([id,name])=>({id,name,count:items.filter(item=>item.city===id&&item.kind===kind).length})).filter(entry=>entry.count>0);
+    const alternatives=Object.entries(cityNames).filter(([id])=>id!==city).map(([id,name])=>({id,name,count:publicCount(id,kind)})).filter(entry=>entry.count>0);
     if(alternatives.length) {
       const links=alternatives.map(entry=>`<a href="/discover/${entry.id}/${kind}.html">${entry.name}<span>${entry.count}件</span></a>`).join('');
       const navigation=`<nav class="other-cities" aria-label="別の街の${categories[kind].name}"><h2>別の街の${categories[kind].name}も見る</h2><div>${links}</div></nav>`;
