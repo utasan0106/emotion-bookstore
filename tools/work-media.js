@@ -23,6 +23,7 @@ function cover(key,title,alreadyLinked){
 function forItem(item){
  if(item.videoId) return youtube(item.videoId,item.title,item.kind==='audio'?'公開元の演奏・音源':'公開元の映像',undefined,item.kind==='audio'?'聴く':'見る');
  if(item.trailerVideoId) return youtube(item.trailerVideoId,item.title,item.trailerLabel || '予告編（本編ではありません）',item.trailerUrl);
+ if(item.presentation==='text-only') return '';
  return cover(item.city+'/'+item.id,item.title);
 }
 const ALBUM_EMBED='https://bandcamp.com/EmbeddedPlayer/album=1846332570/size=large/bgcol=ffffff/linkcol=0687f5/minimal=true/transparent=true/';
