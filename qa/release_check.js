@@ -22,10 +22,10 @@ vm.runInContext(read('release_content.js'), sandbox);
 const CONTENT = sandbox.window.V3_RELEASE_CONTENT;
 
 /* ---- 棚の形 ---------------------------------------------------------- */
-const EXPECTED_SHELVES = ['kichijoji', 'koenji', 'shimokitazawa', 'jinbocho'];
+const EXPECTED_SHELVES = ['kichijoji', 'koenji', 'shimokitazawa', 'kiyosumi', 'jinbocho'];
 if (!CONTENT || !Array.isArray(CONTENT.shelves)) failures.push('content missing');
 const shelves = (CONTENT && CONTENT.shelves) || [];
-if (shelves.length !== 4) failures.push(`expected exactly 4 shelves, got ${shelves.length}`);
+if (shelves.length !== 5) failures.push(`expected exactly 5 shelves, got ${shelves.length}`);
 if (shelves.map((s) => s.id).join(',') !== EXPECTED_SHELVES.join(',')) {
   failures.push(`shelf ids/order must be ${EXPECTED_SHELVES.join(',')}`);
 }
@@ -58,7 +58,7 @@ for (const shelf of shelves) {
     if (!em[key]) failures.push(`${shelf.id}: entryMedia missing ${key}`);
   }
   if (em.kind !== 'illustration') failures.push(`${shelf.id}: entryMedia.kind must be illustration`);
-  if (!/^\.\/assets\/entry-[a-z-]+\.webp$/.test(em.url || '')) {
+  if (!/^\.\/assets\/entry-[a-z-]+\.(?:webp|svg)$/.test(em.url || '')) {
     failures.push(`${shelf.id}: entryMedia must be same-origin WebP`);
   }
   if (em.url && !fs.existsSync(path.join(root, em.url.replace(/^\.\//,'')))) {
@@ -943,7 +943,7 @@ const plates = shelves.reduce((n, s) => n + s.objects.filter((o) => o.media.kind
 const currents = shelves.reduce((n, s) => n + s.objects.filter((o) => o.mode === 'current').length, 0);
 const catCounts = cats.map((c) => `${c.id}:${allObjects.filter((o) => (o.categoryIds || []).includes(c.id)).length}`).join(' ');
 console.log('RELEASE_CHECK_GO');
-console.log(`shelves=4; ${counts}; photo=${12 - plates}; plate=${plates}; current=${currents}; storage=0; analytics=production-host-only; background fetch=0; search=0; account=0`);
+console.log(`shelves=${shelves.length}; ${counts}; photo=${allObjects.length - plates}; plate=${plates}; current=${currents}; storage=0; analytics=production-host-only; background fetch=0; search=0; account=0`);
 console.log(`categories=5; ${catCounts}; explainer=static; suggest=no-backend`);
 
 if (/hc-hero-aside/.test(read('index.html'))) { console.error('Removed hero aside must not return'); process.exitCode = 1; }
