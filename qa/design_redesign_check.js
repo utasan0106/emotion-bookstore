@@ -48,7 +48,8 @@ const retiredDestinations={
   // all なので、押しても表示は何も変わらない。ファウンダーが「押しても何もならない」と
   // 指摘したのはこれ。上の3つと同じ方針で、件数の見える作品のハブへ渡す。
   '?kind=all#hc-works': '/works.html',
-  '/credits.html#inokashira-pond': '/credits.html'
+  '/credits.html#inokashira-pond': '/credits.html',
+  'https://img.hanmoto.com/bd/img/9784911191026.jpg?lastupdated=2025-04-23T10%3A22%3A06%2B09%3A00': '/works.html'
 };
 for(const l of baselineLinks){
  if(currentLinks.has(l)) continue;
