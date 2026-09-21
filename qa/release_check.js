@@ -50,22 +50,28 @@ for (const shelf of shelves) {
   for (const key of ['url','alt','author','source','sourceUrl','license','licenseUrl','modification']) {
     if (!hm[key]) failures.push(`${shelf.id}: heroMedia missing ${key}`);
   }
-  if (!/^\.\/assets\/city-/.test(hm.url || '')) failures.push(`${shelf.id}: heroMedia must be local city image`);
-  if (hm.url && !fs.existsSync(path.join(root, hm.url.replace(/^\.\//,'')))) failures.push(`${shelf.id}: heroMedia file missing`);
+  const remoteKiyosumiPhoto = shelf.id === 'kiyosumi';
+  if (remoteKiyosumiPhoto) {
+    if (!/^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\//.test(hm.url || '')) failures.push('kiyosumi: heroMedia must be reviewed Wikimedia photo');
+    if (hm.license !== 'CC BY-SA 4.0') failures.push('kiyosumi: reviewed photo license must stay CC BY-SA 4.0');
+  } else {
+    if (!/^\.\/assets\/city-/.test(hm.url || '')) failures.push(`${shelf.id}: heroMedia must be local city image`);
+    if (hm.url && !fs.existsSync(path.join(root, hm.url.replace(/^\.\//,'')))) failures.push(`${shelf.id}: heroMedia file missing`);
+  }
 
   const em = shelf.entryMedia || {};
   for (const key of ['kind','url','alt','provenance']) {
     if (!em[key]) failures.push(`${shelf.id}: entryMedia missing ${key}`);
   }
-  if (em.kind !== 'illustration') failures.push(`${shelf.id}: entryMedia.kind must be illustration`);
-  if (!/^\.\/assets\/entry-[a-z-]+\.(?:webp|svg)$/.test(em.url || '')) {
-    failures.push(`${shelf.id}: entryMedia must be same-origin WebP`);
-  }
-  if (em.url && !fs.existsSync(path.join(root, em.url.replace(/^\.\//,'')))) {
-    failures.push(`${shelf.id}: entryMedia file missing`);
-  }
-  if (em.width !== 1942 || em.height !== 809) {
-    failures.push(`${shelf.id}: entryMedia dimensions must be 1942x809`);
+  if (remoteKiyosumiPhoto) {
+    if (em.kind !== 'photo') failures.push('kiyosumi: entryMedia.kind must be photo');
+    if (em.url !== hm.url) failures.push('kiyosumi: entry and hero must use the same reviewed photo');
+    if (em.width !== 640 || em.height !== 414) failures.push('kiyosumi: reviewed entry photo dimensions changed');
+  } else {
+    if (em.kind !== 'illustration') failures.push(`${shelf.id}: entryMedia.kind must be illustration`);
+    if (!/^\.\/assets\/entry-[a-z-]+\.(?:webp|svg)$/.test(em.url || '')) failures.push(`${shelf.id}: entryMedia must be same-origin WebP`);
+    if (em.url && !fs.existsSync(path.join(root, em.url.replace(/^\.\//,'')))) failures.push(`${shelf.id}: entryMedia file missing`);
+    if (em.width !== 1942 || em.height !== 809) failures.push(`${shelf.id}: entryMedia dimensions must be 1942x809`);
   }
 }
 const detour = CONTENT && CONTENT.detour;
