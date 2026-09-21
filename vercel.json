@@ -49,6 +49,11 @@
       "source": "/discover/jinbocho/shadowless-voice.html",
       "destination": "/discover/jinbocho/film.html",
       "permanent": false
+    },
+    {
+      "source": "/discover/short-films/panasonic-life.html",
+      "destination": "/discover/short-films/kiyosumi-kotomise.html",
+      "permanent": false
     }
   ],
   "headers": [
