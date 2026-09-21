@@ -62,9 +62,7 @@ const blocks = html => {
 // 持っている（どちらも「吉祥寺音楽祭『キチオン37』の公開ライブ映像です。」）。同じ音楽祭の
 // 別バンドなので事実は正しいが、棚に2枚並ぶと「なぜこの街？」が同じ文で二度出る。
 // 出演者・ステージ・年など、2作品を見分けられる一文に分けるかは編集部の判断。
-const pendingEditorial = [
-  'なぜこの街？吉祥寺音楽祭「キチオン37」の公開ライブ映像です。'
-];
+const pendingEditorial = [];
 
 const pages = walk('.');
 const offenders = [], pending = new Set();
