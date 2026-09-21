@@ -23,7 +23,7 @@ window.V3_RELEASE_CONTENT = {
     // サイト共通の短い説明。玄関にも、街の棚を直接開いたときにも、
     // 最初の写真・図版より必ず先に出す。長い理念文は足さない。
     siteExplainer: '感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べる文化案内です。',
-    verifiedAt: '2026-09-01T13:00:00+09:00',
+    verifiedAt: '2026-09-22T01:30:00+09:00',
     shelfCount: 4,
     objectsPerShelf: 3
   },
@@ -44,7 +44,7 @@ window.V3_RELEASE_CONTENT = {
   archive: [],
   detour: {
     label: '今週の寄り道',
-    weekOf: '2026-09-01',
+    weekOf: '2026-09-21',
     theme: 'ひとりで歩くと、街は少し違って見える。',
     themePhrases: ['ひとりで歩くと、', '街は少し違って見える。'],
     items: [
@@ -114,8 +114,8 @@ window.V3_RELEASE_CONTENT = {
         venue: '武蔵野市立吉祥寺美術館',
         why: '新作絵本の原画と、冬の井の頭恩賜公園を取材して構想された「黒い森」の景色が、吉祥寺の美術館に並ぶ。作品から街へ戻る入口として。',
         actionLabel: '吉祥寺美術館公式で見る',
-        actionUrl: 'https://www.musashino.or.jp/museum/1002032/1002033/1009868.html',
-        verifiedAt: '2026-09-04T16:25:53+09:00',
+        actionUrl: 'https://www.musashino.or.jp/museum/1002006/1003349/1009837.html',
+        verifiedAt: '2026-09-22T01:30:00+09:00',
         expiresAt: '2026-11-03T19:30:00+09:00'
       },
       entryMedia: {
@@ -236,7 +236,7 @@ window.V3_RELEASE_CONTENT = {
         why: '高円寺の公立劇場で、シェイクスピアの喜劇を日本語・日本手話で上演する。街の現在を舞台芸術から見る一件として。',
         actionLabel: '座・高円寺公式で見る',
         actionUrl: 'https://za-koenji.jp/business/natsunoyo2026',
-        verifiedAt: '2026-09-04T16:25:53+09:00',
+        verifiedAt: '2026-09-22T01:30:00+09:00',
         expiresAt: '2026-10-18T00:00:00+09:00'
       },
       entryMedia: {
@@ -363,7 +363,7 @@ window.V3_RELEASE_CONTENT = {
         why: '35年続く地下ライブハウスで、周年企画が現在の出演者によって続いている。下北沢に積もる音の時間を見る一件として。',
         actionLabel: 'SHELTER公式で見る',
         actionUrl: 'https://www.loft-prj.co.jp/schedule/shelter/357199',
-        verifiedAt: '2026-09-04T16:25:53+09:00',
+        verifiedAt: '2026-09-22T01:30:00+09:00',
         expiresAt: '2026-09-24T00:00:00+09:00'
       },
       entryMedia: {
@@ -417,8 +417,8 @@ window.V3_RELEASE_CONTENT = {
             modification: '縮小のみ・cropなし'
           },
           factsSourceUrl: 'https://www.loft-prj.co.jp/schedule/shelter',
-          verifiedAt: '2026-08-28T23:08:00+09:00',
-          expiresAt: '2026-09-27T23:59:00+09:00'
+          verifiedAt: '2026-09-22T01:30:00+09:00',
+          expiresAt: '2026-09-30T23:59:00+09:00'
         },
         {
           id: 'honda-theater',
@@ -504,7 +504,7 @@ window.V3_RELEASE_CONTENT = {
         why: '出版社アリス館の45周年にあわせ、絵本作品のグッズや絵本が神保町のこどもの本専門店に並ぶ。本が作られ、店へ届く現在を見る一件として。',
         actionLabel: 'ブックハウスカフェ公式で見る',
         actionUrl: 'https://bookhousecafe.jp/exhibition/content/2484',
-        verifiedAt: '2026-09-04T16:25:53+09:00',
+        verifiedAt: '2026-09-22T01:30:00+09:00',
         expiresAt: '2026-09-29T17:00:00+09:00'
       },
       entryMedia: {
@@ -619,7 +619,7 @@ window.V3_RELEASE_CONTENT = {
             detailAlt: '「女優魂2026」と大きく組んだ、この棚のための活字図版'
           },
           factsSourceUrl: 'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-09-12_joyu-damashii-2026.html',
-          verifiedAt: '2026-09-04T16:25:53+09:00',
+          verifiedAt: '2026-09-22T01:30:00+09:00',
           expiresAt: '2026-10-07T00:00:00+09:00'
         }
       ]
