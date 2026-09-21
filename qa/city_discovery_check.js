@@ -71,7 +71,7 @@ function inspect(dir) {
 }
 inspect(path.join(root,'discover'));
 const research=require('../tools/city-research');
-assert.equal(pages,113+research.length);
+assert.equal(pages,114+research.length);
 // 街をまたいだ3シリーズ。棚を通った本と音楽は全部出る（増えたのに載らない、が起きない）。
 // 映像だけは「いま行ける場所」で絞るので、公開本数より少なくてよい。
 {
@@ -264,8 +264,8 @@ const eventCount=require('../tools/weekly-outings-source').events.length;
 assert.equal(sitemapUrls.length,pages+3+1+eventCount+9);
 assert.equal(new Set(sitemapUrls).size,sitemapUrls.length);
 assert.ok(canonicals.every(url=>sitemapUrls.includes(url)));
-assert.ok(sitemapUrls.filter(url=>url.includes('?')).every(url=>/^https:\/\/emotionbookstore\.com\/shelf\.html\?shelf=(koenji|kichijoji|shimokitazawa|jinbocho)$/.test(url)));
-console.log('PASS 55 city entries + 3 common shorts, 4 populated city entries, 16 bounded lists, 80 routes, SEO metadata and sitemap, embedded audio and bounded trailers, unique detail exits, local assets, honest media types');
+assert.ok(sitemapUrls.filter(url=>url.includes('?')).every(url=>/^https:\/\/emotionbookstore\.com\/shelf\.html\?shelf=(koenji|kichijoji|shimokitazawa|jinbocho|kiyosumi)$/.test(url)));
+console.log('PASS 55 generated city entries + 3 common shorts + Kiyosumi works collection, 16 bounded lists, 80 routes, SEO metadata and sitemap, embedded audio and bounded trailers, unique detail exits, local assets, honest media types');
 
 for (const id of require('../tools/city-discovery-source').blockedVideoIds) {
  for (const f of fs.readdirSync(path.join(root,'discover/short-films'))) if(f.endsWith('.html')) assert.ok(!fs.readFileSync(path.join(root,'discover/short-films',f),'utf8').includes(id), 'Private video leaked: '+id);
