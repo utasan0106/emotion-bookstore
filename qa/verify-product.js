@@ -8,6 +8,7 @@ const checks=[
  ['qa/cover-flow-check.js'],
  ['qa/site_integration_check.js'],
  ['qa/release_check.js'],
+ ['qa/kiyosumi_city_check.js'],
  ['qa/weather_check.js'],
  ['qa/weather_client_check.js'],
  ['qa/weekly_outings_check.js'],
