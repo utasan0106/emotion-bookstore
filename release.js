@@ -5,6 +5,29 @@
   var live = document.getElementById('live');
   var lastTrigger = null;
 
+  function syncCityMenuFromContent() {
+    if (!CONTENT || !Array.isArray(CONTENT.shelves)) return;
+    var nav = document.querySelector('.site-menu-nav');
+    if (!nav) return;
+    CONTENT.shelves.forEach(function (shelf) {
+      if (!shelf || !shelf.id || !shelf.area) return;
+      if (nav.querySelector('[data-menu-shelf="' + shelf.id + '"]')) return;
+      var link = document.createElement('a');
+      link.className = 'site-menu-link';
+      link.setAttribute('data-menu-shelf', shelf.id);
+      link.href = './shelf.html?shelf=' + encodeURIComponent(shelf.id);
+      var name = document.createElement('span');
+      name.textContent = shelf.area;
+      var arrow = document.createElement('span');
+      arrow.setAttribute('aria-hidden', 'true');
+      arrow.textContent = '→';
+      link.appendChild(name); link.appendChild(arrow); nav.appendChild(link);
+    });
+    var title = document.querySelector('#siteMenuTitle');
+    if (title && /^\\d+つの街$/.test(title.textContent.trim())) title.textContent = CONTENT.shelves.length + 'つの街';
+  }
+  syncCityMenuFromContent();
+
   function h(tag, attrs, children) {
     var el = document.createElement(tag);
     Object.keys(attrs || {}).forEach(function (key) {
