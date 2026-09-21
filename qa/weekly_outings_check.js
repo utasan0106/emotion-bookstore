@@ -1,7 +1,8 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {state,monday,select,dates}=require('../outings/week');
-const {audiences,events,cities}=require('../tools/weekly-outings-source');
+const {audiences,events:allEvents,cities,isPublishableEvent}=require('../tools/weekly-outings-source');
+const events=allEvents.filter(isPublishableEvent);
 assert.equal(monday(Date.parse('2026-09-13T14:59:59Z')),'2026-09-07');
 assert.equal(monday(Date.parse('2026-09-13T15:00:00Z')),'2026-09-14');
 assert.equal(state('2026-09-07','2026-09-14',Date.parse('2026-09-13T15:00:00Z')),'past');
