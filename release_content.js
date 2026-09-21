@@ -488,6 +488,133 @@ window.V3_RELEASE_CONTENT = {
       ]
     },
     {
+      id: 'kiyosumi',
+      name: '清澄白河の棚',
+      role: 'town',
+      tagline: '清澄白河を、3つだけ。',
+      area: '清澄白河',
+      weeklyFeature: {
+        eventType: '落語',
+        title: 'らくご江戸めぐり',
+        media: {src: '/assets/city-kiyosumi.svg', alt: '清澄白河のエディトリアル図版'},
+        titlePhrases: ['らくご', '江戸めぐり'],
+        calendarDates: '20260926/20260927',
+        dateLabel: '9月26日（土） 14:00開演',
+        venue: '深川江戸資料館 小劇場',
+        why: '古典落語「寝床」を深川江戸資料館で聴く一日。公演当日はチケット提示で常設展示室も割引になり、江戸の町並み再現と同じ日に触れられる。',
+        actionLabel: '深川江戸資料館公式で見る',
+        actionUrl: 'https://www.kcf.or.jp/fukagawa/event/detail/?id=9453',
+        verifiedAt: '2026-09-22T01:30:00+09:00',
+        expiresAt: '2026-09-27T00:00:00+09:00'
+      },
+      entryMedia: {
+        kind: 'illustration',
+        url: './assets/entry-kiyosumi.svg', width: 1942, height: 809,
+        alt: '水面、庭園の石、美術館の格子を抽象化した清澄白河のエディトリアル図版',
+        provenance: 'みんなの感情書店 自社制作の活字・図形図版 / 2026-09-22'
+      },
+      heroMedia: {
+        url: './assets/city-kiyosumi.svg', width: 1200, height: 900,
+        alt: '水面、庭園の石、美術館の格子を抽象化した清澄白河のエディトリアル図版',
+        author: 'みんなの感情書店', source: '自社制作',
+        sourceUrl: 'https://emotionbookstore.com/credits.html',
+        license: '自社制作', licenseUrl: 'https://emotionbookstore.com/credits.html',
+        modification: '清澄白河の美術館・庭園・江戸文化を抽象化した独自SVG。実在景観の写真ではありません。'
+      },
+      objects: [
+        {
+          id: 'kiyosumi-garden',
+          categoryIds: ['experience'],
+          objectName: '清澄庭園',
+          placeName: '清澄庭園 / 清澄白河',
+          typeLabel: '庭園・水辺',
+          mode: 'evergreen',
+          hook: '泉水と石のあいだを歩く、明治から続く庭園。',
+          hookPhrases: ['泉水と石のあいだを歩く、', '明治から続く庭園。'],
+          reveal: '泉水・築山・枯山水を主体にした回遊式林泉庭園。明治11年に岩崎弥太郎が邸地を買い取り、深川親睦園として整備が進んだ。',
+          revealPhrases: ['泉水・築山・枯山水を主体にした', '回遊式林泉庭園。', '明治11年に岩崎弥太郎が邸地を買い取り、', '深川親睦園として整備が進んだ。'],
+          facts: [
+            ['所在地', '江東区清澄3-3-9'],
+            ['開園', '9:00～17:00（入園は16:30まで）'],
+            ['入園料', '一般150円、65歳以上70円']
+          ],
+          actionLabel: '清澄庭園の公式ページを見る',
+          actionUrl: 'https://www.tokyo-park.or.jp/park/kiyosumi/',
+          media: {
+            kind: 'plate',
+            plateWord: '清澄庭園',
+            plateSub: '清澄白河 / 庭園・水辺',
+            ratio: '4 / 5',
+            listAlt: '「清澄庭園」と大きく組んだ、この棚のための活字図版',
+            detailAlt: '「清澄庭園」と大きく組んだ、この棚のための活字図版'
+          },
+          factsSourceUrl: 'https://www.tokyo-park.or.jp/park/kiyosumi/',
+          verifiedAt: '2026-09-22T01:30:00+09:00',
+          expiresAt: null
+        },
+        {
+          id: 'fukagawa-edo-museum',
+          categoryIds: ['experience', 'film-stage'],
+          objectName: '深川江戸資料館',
+          placeName: '深川江戸資料館 / 清澄白河',
+          typeLabel: '資料館・江戸文化',
+          mode: 'evergreen',
+          hook: '実物大の江戸の町に、上がって歩ける資料館。',
+          hookPhrases: ['実物大の江戸の町に、', '上がって歩ける資料館。'],
+          reveal: '江戸時代末の深川佐賀町の町並みを実物大で再現し、店や長屋に上がって生活用具に触れられる体感型の展示室を持つ。',
+          revealPhrases: ['江戸時代末の深川佐賀町の町並みを', '実物大で再現し、', '店や長屋に上がって', '生活用具に触れられる', '体感型の展示室を持つ。'],
+          facts: [
+            ['開館', '1986年11月'],
+            ['展示室', '9:30～17:00（入館は16:30まで）'],
+            ['所在地', '江東区白河1-3-28']
+          ],
+          actionLabel: '深川江戸資料館の公式ページを見る',
+          actionUrl: 'https://www.kcf.or.jp/fukagawa/',
+          media: {
+            kind: 'plate',
+            plateWord: '深川江戸',
+            plateSub: '清澄白河 / 資料館・江戸文化',
+            ratio: '4 / 5',
+            listAlt: '「深川江戸」と大きく組んだ、この棚のための活字図版',
+            detailAlt: '「深川江戸」と大きく組んだ、この棚のための活字図版'
+          },
+          factsSourceUrl: 'https://www.kcf.or.jp/fukagawa/outline/',
+          verifiedAt: '2026-09-22T01:30:00+09:00',
+          expiresAt: null
+        },
+        {
+          id: 'mot-collection-light',
+          categoryIds: ['experience'],
+          objectName: 'MOTコレクション「いつかの光を今みている」',
+          placeName: '東京都現代美術館 / 清澄白河',
+          typeLabel: '美術館・展覧会',
+          mode: 'current',
+          hook: '「光」と「時間」を見る展覧会が、清澄白河で始まった。',
+          hookPhrases: ['「光」と「時間」を見る展覧会が、', '清澄白河で始まった。'],
+          reveal: '東京都現代美術館のMOTコレクション「いつかの光を今みている」は、2026年9月19日から2027年1月6日まで開催される。',
+          revealPhrases: ['東京都現代美術館のMOTコレクション', '「いつかの光を今みている」は、', '2026年9月19日から', '2027年1月6日まで開催される。'],
+          facts: [
+            ['会期', '2026年9月19日～2027年1月6日'],
+            ['会場', '東京都現代美術館'],
+            ['開館', '10:00～18:00（展示室入場は閉館30分前まで）']
+          ],
+          actionLabel: '東京都現代美術館の開催展を見る',
+          actionUrl: 'https://www.mot-collection-search.jp/exhibition/',
+          media: {
+            kind: 'plate',
+            plateWord: 'MOT',
+            plateSub: '清澄白河 / 美術館・展覧会',
+            ratio: '4 / 5',
+            listAlt: '「MOT」と大きく組んだ、この棚のための活字図版',
+            detailAlt: '「MOT」と大きく組んだ、この棚のための活字図版'
+          },
+          factsSourceUrl: 'https://www.mot-collection-search.jp/exhibition/',
+          verifiedAt: '2026-09-22T01:30:00+09:00',
+          expiresAt: '2027-01-07T00:00:00+09:00'
+        }
+      ]
+    },
+    {
       id: 'jinbocho',
       name: '神保町の棚',
       role: 'town',
