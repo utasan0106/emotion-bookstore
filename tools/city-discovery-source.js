@@ -4,25 +4,32 @@ const items = [];
 const commonVideosWeekOf = '2026-09-21';
 const commonVideos = [
   {
-    id: 'find-my-tokyo', title: 'Find my Tokyo. チャレンジャーズ', creator: '東京メトロ / 2024',
+    id: 'find-my-tokyo', title: 'Find my Tokyo. チャレンジャーズ', creator: '東京メトロ / 30秒',
     hook: '知っている街の、まだ知らない楽しみ方へ。',
-    note: '東京メトロが東京の新しい魅力を見つける企画として公開した企業広告です。このサイトの5街だけを扱う映像ではありません。',
-    videoId: 'RpSlspjIeG8', sources: ['https://www.tokyometro.jp/news/2024/218221.html']
+    note: '東京メトロ公式の2024年度「Find my Tokyo.」キャンペーン映像。30秒の短いCMとして街へ出るきっかけを置きます。',
+    videoId: 'CMM0QCw99c4', durationSeconds: 30,
+    durationSource: 'https://yutura.net/channel/15597/latest/?p=6',
+    sources: ['https://prtimes.jp/main/html/rd/p/000000029.000013243.html']
   },
   {
-    id: 'toyota-loving-eyes', title: 'Loving Eyes', creator: 'TOYOTA / ブランドムービー',
-    hook: '同じ道のりを、父と娘それぞれの目線で見つめる。',
-    note: '自動車の安全技術を伝える企業広告で、父と娘の時間を二つの視点から描いた作品です。特定の街への案内ではありません。',
-    videoId: 'mh_QCvulKSY', sources: []
-  },
-  {
-    id: 'kiyosumi-kotomise', title: 'ことみせ～清澄白河エリア・深川資料館通り～', creator: '江東区公式チャンネル / 2026',
-    hook: '店を巡る目線から、清澄白河の今の通りへ。',
-    note: '江東区の区政情報番組「江東ワイドスクエア」が、清澄白河エリアと深川資料館通りの店や通りを紹介した2026年の公式映像です。',
-    videoId: 'bLuK6QHKc7E', sources: ['https://www.city.koto.lg.jp/011502/kuse/koho/katsudo/catv/wide-square.html'],
+    id: 'tokyo-metro-newline', title: '新たな未来に向けた第一歩！新線プロジェクト', creator: '東京メトロ / 30秒',
+    hook: '路線が伸びると、街と人の移動はどう変わる。',
+    note: '東京メトロの有楽町線・南北線延伸を伝える30秒の公式映像。移動と街のつながりを短い時間で見る入口です。',
+    videoId: 'rjFh_eBwV_k', durationSeconds: 30,
+    durationSource: 'https://yutura.net/channel/15597/latest/?p=4',
+    sources: ['https://www.tokyometro-newline.jp/movie/'],
     checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
+  },
+  {
+    id: 'toyota-loving-eyes', title: 'Loving Eyes', creator: 'TOYOTA / 3分26秒',
+    hook: '同じ道のりを、父と娘それぞれの目線で見つめる。',
+    note: '父と娘の同じ時間を二つの視点で描くTOYOTAのブランドムービー。3分を超えますが、視点の反復が作品の核なので例外採用します。',
+    videoId: 'mh_QCvulKSY', durationSeconds: 206,
+    durationSource: 'https://dougamarketing.net/20170601/',
+    durationExceptionReason: '父と娘の同じ時間を二つの視点で描く構造が作品の核で、3分26秒でも最後まで見る理由が明確。',
+    sources: []
   }
-].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-08', playbackChecked: false}));
+.map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-08', playbackChecked: false}));
 const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({
   city, kind, id, title, creator, hook, relation, relationNote, url, action,
   sources: [...new Set([...sources, ...(url.startsWith('https:') ? [url] : [])])],
@@ -160,6 +167,15 @@ for (const item of items.filter(item => item.kind === 'film' && trailerIds[item.
   item.sources = [...new Set([...item.sources, item.trailerUrl])];
 }
 
+const durationPolicy = require('../video-duration-policy');
+for (const item of items.filter(item => item.kind === 'video')) {
+  const key='city/'+item.city+'/'+item.id;
+  const approved=durationPolicy.approved[key];
+  item.durationSeconds=approved?.durationSeconds || null;
+  item.durationSource=approved?.durationSource || '';
+  item.durationExceptionReason=approved?.exceptionReason || '';
+  item.durationPolicyStatus=approved?'approved':'hold';
+}
 const blockedVideoIds = ['tUe6YedzjlM', 'AuxXufx5kKQ']; // User playback evidence: private, 2026-09-08.
 for (const item of [...items, ...commonVideos]) {
   if (blockedVideoIds.includes(item.videoId) || blockedVideoIds.includes(item.trailerVideoId)) throw new Error('Private video must not be published: ' + item.id);
