@@ -266,7 +266,9 @@ const eventCount=require('../tools/weekly-outings-source').events.length;
 const blockedDiscoverPaths=videoPolicy.blockedPaths.filter(p=>p.startsWith('/discover/')).length;
 assert.equal(sitemapUrls.length,pages+3+1+eventCount+9-blockedDiscoverPaths);
 assert.equal(new Set(sitemapUrls).size,sitemapUrls.length);
-assert.ok(canonicals.every(url=>sitemapUrls.includes(url)));
+const blockedCanonicalUrls=new Set(videoPolicy.blockedPaths.map(p=>'https://emotionbookstore.com'+p));
+assert.ok(canonicals.filter(url=>!blockedCanonicalUrls.has(url)).every(url=>sitemapUrls.includes(url)));
+assert.ok(canonicals.filter(url=>blockedCanonicalUrls.has(url)).every(url=>!sitemapUrls.includes(url)));
 assert.ok(sitemapUrls.filter(url=>url.includes('?')).every(url=>/^https:\/\/emotionbookstore\.com\/shelf\.html\?shelf=(koenji|kichijoji|shimokitazawa|jinbocho|kiyosumi)$/.test(url)));
 console.log('PASS 55 generated city entries + 3 common shorts + Kiyosumi works collection, 16 bounded lists, 80 routes, SEO metadata and sitemap, embedded audio and bounded trailers, unique detail exits, local assets, honest media types');
 
