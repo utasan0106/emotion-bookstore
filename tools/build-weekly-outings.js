@@ -1,11 +1,18 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path');
-const {audiences,events,cities,kinds}=require('./weekly-outings-source');
+const {audiences,events:allEvents,cities,kinds,isPublishableEvent}=require('./weekly-outings-source');
+const events=allEvents.filter(isPublishableEvent);
 const {dates}=require('../outings/week');
 const chrome=require('./page-chrome');
 const {mediaFor,postFor}=require('./event-media-source');
 const siteOgp=require('./site-ogp');
 const root=path.resolve(__dirname,'..'),out=path.join(root,'outings'),files=[];
+const unpublished=allEvents.filter(e=>!isPublishableEvent(e));
+for(const e of unpublished){
+ const stale=path.join(out,'events',e.id+'.html');
+ if(process.argv.includes('--check')){if(fs.existsSync(stale))throw Error('Pending event detail must not exist: '+e.id);}
+ else if(fs.existsSync(stale))fs.rmSync(stale);
+}
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const checkedAt=events.map(e=>e.checkedAt).sort().at(-1);
 function save(file,text){const dest=path.join(out,file);if(process.argv.includes('--check')){if(!fs.existsSync(dest)||fs.readFileSync(dest,'utf8')!==text)throw Error('Generated outings differs: '+file);}else{fs.mkdirSync(path.dirname(dest),{recursive:true});fs.writeFileSync(dest,text);}}
