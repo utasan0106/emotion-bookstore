@@ -516,12 +516,12 @@ window.V3_RELEASE_CONTENT = {
       },
       entryMedia: {
         kind: 'photo',
-        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', width: 640, height: 414,
+        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', fallbackUrl: './assets/entry-kiyosumi.svg', width: 640, height: 414,
         alt: '池の水面と飛び石、樹木が見える清澄庭園の景色',
         provenance: 'Kakidai / Wikimedia Commons / CC BY-SA 4.0 / 2015-08-10'
       },
       heroMedia: {
-        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', width: 640, height: 414,
+        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', fallbackUrl: './assets/entry-kiyosumi.svg', width: 640, height: 414,
         alt: '池の水面と飛び石、樹木が見える清澄庭園の景色',
         author: 'Kakidai', source: 'Wikimedia Commons',
         sourceUrl: 'https://commons.wikimedia.org/wiki/File:Kiyosumi_Teien_-_Japanese_gardern_4.JPG',
