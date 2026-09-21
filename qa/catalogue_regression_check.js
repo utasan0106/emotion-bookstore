@@ -4,13 +4,13 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),asse
 const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const html=read('index.html'),css=read('site-system.css'),homeCss=read('home-discovery.css');
 assert.doesNotMatch(html,/30秒|感情書店の小文|data-open-reading|id="reading"/);
-assert.match(html,/href="\/discover\/kichijoji\/parks.html"/,'The film opens its existing playable detail');
-assert.match(html,/href="https:\/\/www.youtube.com\/watch\?v=pm7RBghFt0I"/,'The exact official trailer remains available');
-assert.match(html,/映画スチルではありません/,'The place photograph must not impersonate film artwork');
-assert.match(read('discover/kichijoji/parks.html'),/data-video-id="pm7RBghFt0I"/,'The real trailer stays on the film detail');
+assert.match(html,/data-weekly-feature="mot-collection-light"/,'Home feature rotates weekly instead of pinning PARKS');
+assert.match(html,/href="\/discover\/kiyosumi\/"/,'The current weekly feature opens a real destination');
+assert.match(html,/展覧会写真ではありません/,'The place photograph must not impersonate exhibition artwork');
+assert.match(read('discover/kichijoji/parks.html'),/data-video-id="pm7RBghFt0I"/,'PARKS and its real trailer remain available in the catalogue');
 assert.doesNotMatch(read('discover/kichijoji/parks.html'),/youtube-nocookie.com\/embed\//,'The trailer stays click-to-load');
 assert.doesNotMatch(html,/class="home-canonical/,'Do not inherit the retired home theme');
-for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']) {
+for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho','kiyosumi']) {
  assert.ok(html.includes(`href="/discover/${city}/"`));
  const landing=read(`discover/${city}/index.html`);
  assert.match(landing,/class="work-card /,'Every home city link opens populated static content');
@@ -34,8 +34,8 @@ for (const href of ['/work-music.html','/work-video.html']) assert.ok(html.inclu
 const location={search:'',hash:'#reading'};
 let scrolled=false,focused=false,popstate;
 const title={textContent:'',focus(){focused=true;}},section={scrollIntoView(){scrolled=true;}};
-const cards=['book','music','video'].map(homeWork=>({dataset:{homeWork},hidden:false}));
-const links=['book','music','video','all'].map(homeKind=>({dataset:{homeKind},attrs:{},getAttribute(){return `?kind=${homeKind}#hc-works`;},setAttribute(k,v){this.attrs[k]=v;},removeAttribute(k){delete this.attrs[k];},addEventListener(_event,handler){this.handler=handler;}}));
+const cards=['book','film','video'].map(homeWork=>({dataset:{homeWork},hidden:false}));
+const links=['book','film','video','all'].map(homeKind=>({dataset:{homeKind},attrs:{},getAttribute(){return `?kind=${homeKind}#hc-works`;},setAttribute(k,v){this.attrs[k]=v;},removeAttribute(k){delete this.attrs[k];},addEventListener(_event,handler){this.handler=handler;}}));
 const document={querySelector(s){return {'.home-discovery':{},'#hc-works':section,'#hd-works-title':title}[s]||null;},querySelectorAll(s){return {'[data-home-work]':cards,'[data-home-kind]':links}[s]||[];}};
 vm.runInNewContext(read('home-discovery.js'),{document,location,URLSearchParams,history:{pushState(_a,_b,url){const u=new URL(url,'https://example.test/');location.search=u.search;location.hash=u.hash;}},window:{addEventListener(_event,handler){popstate=handler;}}});
 assert.ok(cards.every(c=>!c.hidden),'A retired reading hash does not crash home');
@@ -44,7 +44,7 @@ for(const link of links) {
  link.handler({button:0,preventDefault(){prevented=true;}});
  assert.ok(prevented&&scrolled&&focused);
  assert.equal(link.attrs['aria-current'],'true');
- assert.deepEqual(cards.filter(c=>!c.hidden).map(c=>c.dataset.homeWork),link.dataset.homeKind==='all'?['book','music','video']:[link.dataset.homeKind]);
+ assert.deepEqual(cards.filter(c=>!c.hidden).map(c=>c.dataset.homeWork),link.dataset.homeKind==='all'?['book','film','video']:[link.dataset.homeKind]);
 }
 location.search='?kind=book';popstate();assert.deepEqual(cards.filter(c=>!c.hidden).map(c=>c.dataset.homeWork),['book']);
 location.search='?kind=unknown';popstate();assert.equal(cards.filter(c=>!c.hidden).length,3);
