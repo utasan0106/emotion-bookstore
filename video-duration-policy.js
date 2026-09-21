@@ -70,7 +70,6 @@
     blockedPaths:[
       '/discover/koenji/video.html',
       '/discover/shimokitazawa/video.html',
-      '/discover/kichijoji/video.html',
       '/discover/jinbocho/video.html',
       '/discover/koenji/awa-2025.html',
       '/discover/koenji/tenguren.html',
