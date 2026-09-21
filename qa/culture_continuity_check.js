@@ -21,7 +21,7 @@ for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']){
     assert.match(html,/href="\/discover\/short-films\/"/);
     const feature=html.match(/<aside class="feature">[\s\S]*?<\/aside>/)?.[0]||'';
     const hasPublicVideo=publicItems.some(i=>i.city===city&&i.kind==='video');
-    const expected=kind==='video'?'/shelf.html?shelf='+city:(hasPublicVideo?'/discover/'+city+'/video.html':'/discover/short-films/');
+    const expected=kind==='video'?(hasPublicVideo?'/shelf.html?shelf='+city:'/discover/short-films/'):(hasPublicVideo?'/discover/'+city+'/video.html':'/discover/short-films/');
     assert.ok(feature.includes(expected),city+'/'+kind+': next step must use a public destination');
   }
   assert.match(read('discover/'+city+'/index.html'),/href="\/discover\/short-films\/"/);
