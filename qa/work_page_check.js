@@ -34,7 +34,7 @@ for (const id of entries) {
   assert.match(body,new RegExp('id="'+id+'"'));
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
   assert.ok(body.includes('href="./works.html#' + id + '"'));
-  const city = {book:'神保町', film:'神保町', music:'下北沢', video:'高円寺'}[id];
+  const city = {book:'神保町', film:'神保町', music:'下北沢', video:'吉祥寺'}[id];
   assert.ok(body.includes(city));
   assert.match(body,/<figure class="official-media/);
   assert.doesNotMatch(clean(html),/autoplay=1|rel="preconnect"/);
