@@ -18,7 +18,7 @@
   });
  }
  syncHomeCities();
- const labels={book:'本から見つける',music:'音楽から見つける',video:'映像から見つける',all:'気になるものから'};
+ const labels={book:'本から見つける',music:'音楽から見つける',film:'映画から見つける',video:'映像から見つける',all:'気になるものから'};
  const section=document.querySelector('#hc-works'),title=document.querySelector('#hd-works-title');
  function filter(kind){
   kind=Object.hasOwn(labels,kind)?kind:'all';
