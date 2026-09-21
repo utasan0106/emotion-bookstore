@@ -4,6 +4,9 @@ const fs=require('node:fs');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const items=require('../tools/city-discovery-source').items;
+const videoPolicy=require('../video-duration-policy');
+const publicItems=items.filter(i=>i.kind!=='video'||videoPolicy.approved['city/'+i.city+'/'+i.id]);
 assert.match(read('index.html'),/href="\/discover\/short-films\/"/);
 const discoveryHome=read('discover/index.html');
 assert.match(discoveryHome,/class="watch-now"/);
@@ -24,9 +27,6 @@ for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']){
   assert.match(read('discover/'+city+'/index.html'),/href="\/discover\/short-films\/"/);
 }
 const profiles=require('../tools/artist-profiles');
-const items=require('../tools/city-discovery-source').items;
-const videoPolicy=require('../video-duration-policy');
-const publicItems=items.filter(i=>i.kind!=='video'||videoPolicy.approved['city/'+i.city+'/'+i.id]);
 for(const [city,entries] of Object.entries(require('../tools/city-editorials'))) {
   const html=read(`discover/${city}/index.html`);
   assert.ok(html.includes(`/discover/${city}/#editorials-title`));
