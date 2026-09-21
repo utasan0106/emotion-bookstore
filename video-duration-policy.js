@@ -9,6 +9,7 @@
   const approvedIds=new Set(Object.values(policy.approved).map(x=>x.videoId));
 
   function cityRoot(pathname){
+    if(/^\/discover\/[^/]+\/video\.html$/.test(pathname)) return '/discover/outing/';
     const m=pathname.match(/^\/discover\/([^/]+)\/[^/]+\.html$/);
     return m?'/discover/'+m[1]+'/':'/';
   }
@@ -67,6 +68,10 @@
       }
     },
     blockedPaths:[
+      '/discover/koenji/video.html',
+      '/discover/shimokitazawa/video.html',
+      '/discover/kichijoji/video.html',
+      '/discover/jinbocho/video.html',
       '/discover/koenji/awa-2025.html',
       '/discover/koenji/tenguren.html',
       '/discover/koenji/awa-history.html',
