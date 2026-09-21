@@ -291,6 +291,8 @@ function write(file, html) {
   written++;
 }
 const cities=Object.keys(cityNames);
+const publicVideoItems=items.filter(i=>i.kind==='video'&&videoDurationPolicy.approved['city/'+i.city+'/'+i.id]);
+const publicCount=(city,kind)=>kind==='video'?publicVideoItems.filter(i=>i.city===city).length:items.filter(i=>i.city===city&&i.kind===kind).length;
 const researchCards=research.map(essay=>`<article class="research-card"><p class="eyebrow">${esc(essay.issue)} · ${esc(essay.cityLabel)}</p><h2><a href="/discover/essays/${essay.id}.html">${esc(essay.title)}</a></h2><p>${esc(essay.lead)}</p><ul aria-label="調査の視点">${essay.lenses.map(lens=>`<li>${esc(lens)}</li>`).join('')}</ul><p class="research-meta">更新 ${esc(essay.modifiedAt)}</p><a class="research-link" href="/discover/essays/${essay.id}.html">記事を読む →</a></article>`).join('');
 write('essays/index.html',shell('街の記事',`<section class="intro research-intro"><p class="eyebrow">広告・歴史・人と作品</p><h1>街の記事</h1><p class="lead">駅前はどう変わった？ あの作品と街には、どんなつながりがある？ 広告や公開資料から、街の背景を読みます。</p></section><section class="research-grid" aria-label="公開中の街の調査">${researchCards}</section><section class="quick"><h2>人と作品から知る街</h2><div class="quick-grid">${cities.map(city=>`<a href="/discover/${city}/#editorials-title"><strong>${cityNames[city]}のコラム →</strong><span>${city==='kichijoji'?'漫画家と街のつながり':'人・作品と街のつながり'}</span></a>`).join('')}</div><p><a href="/thread.html?thread=koenji-dance-history">高円寺の阿波おどりの歴史を読む →</a></p></section><aside class="research-method"><h2>この調査で守ること</h2><p>出典の数を結論の強さに置き換えません。広告主の意図、調査結果、編集上の解釈を区別し、分からないことも記事に残します。</p></aside>`,'<a href="/discover/">街から探す</a>'));
 for(const essay of research) {
@@ -379,8 +381,8 @@ const featuredRotation={
 const rotationEpoch='2026-09-14';
 // Every city entry has a real static destination, including without JavaScript.
 for (const city of cities) {
-  const available=Object.entries(categories).filter(([kind])=>items.some(i=>i.city===city&&i.kind===kind));
-  const tabs=available.map(([kind,category])=>`<a href="/discover/${city}/${kind}.html">${category.name} <small>${items.filter(i=>i.city===city&&i.kind===kind).length}</small></a>`).join('');
+  const available=Object.entries(categories).filter(([kind])=>items.some(i=>i.city===city&&i.kind===kind&&(kind!=='video'||videoDurationPolicy.approved['city/'+city+'/'+i.id])));
+  const tabs=available.map(([kind,category])=>`<a href="/discover/${city}/${kind}.html">${category.name} <small>${publicCount(city,kind)}</small></a>`).join('');
   // Every week of the rotation is written into the page. The first is the one the
   // page opens with — that is what a reader without JavaScript keeps seeing — and
   // feature-week.js swaps in the week's entry. Adding an object never moves the
@@ -388,7 +390,7 @@ for (const city of cities) {
   const featured=available.flatMap(([kind])=>{
     const order=featuredRotation[city+'/'+kind];
     if(!order||!order.length) throw new Error('No editorial rotation for the city page: '+city+' '+kind);
-    const published=items.filter(i=>i.city===city&&i.kind===kind);
+    const published=items.filter(i=>i.city===city&&i.kind===kind&&(kind!=='video'||videoDurationPolicy.approved['city/'+city+'/'+i.id]));
     if(order.length!==published.length||new Set(order).size!==order.length) throw new Error('Rotation must list each published '+kind+' of '+city+' exactly once');
     return order.map((id,week)=>{
       const item=published.find(i=>i.id===id);
@@ -407,7 +409,7 @@ const researchSpotlight=`<section class="research-spotlight" aria-labelledby="re
 const signalEvents=require('./weekly-outings-source').events;
 const signals=`<section class="quick" id="city-signals"><h2>9月の街の動き</h2><p>編集部が選んだ4つの文化企画。日程と参加条件は、それぞれの案内で確認できます。</p>${citySignals.map(signal=>{const event=signalEvents.find(e=>e.id===signal.event);if(!event)throw new Error('Missing city signal event: '+signal.event);const dates=event.dates||[event.start,event.end];return `<article><p class="eyebrow">${cityNames[event.city]} · 告知された開催期間 ${esc(dates[0])}〜${esc(dates.at(-1))}</p><h3>${esc(signal.title)}</h3><p>${esc(event.title)}</p><p>編集部の視点：${esc(signal.reading)}</p><p><a href="/outings/events/${event.id}.html">日程・参加条件を見る</a> · ${external(event.url,'公式告知')}</p></article>`;}).join('')}<p>公式告知の確認日：2026年9月9日。自動更新や人気ランキングではありません。開催変更・空席は公式案内をご確認ください。</p><a href="/outings/">開催週を選んで探す →</a></section>`;
 write('index.html', shell('街から音楽、映像、本、映画を探す', `<section class="intro"><p class="eyebrow">聴く・観る・読む</p><h1>街から探す</h1><p class="lead">街を選んで、ゆかりの本・音楽・映像・映画へ。</p></section>
-<section class="city-grid" aria-label="街を選ぶ">${cities.map(c=>`<a class="city-card" href="/discover/${c}/"><div class="city-image">${photo(c)}</div><div class="city-caption"><h2>${cityNames[c]}</h2><p>音楽 ${items.filter(i=>i.city===c&&i.kind==='audio').length} / 映像 ${items.filter(i=>i.city===c&&i.kind==='video').length} / 本・漫画 ${items.filter(i=>i.city===c&&i.kind==='book').length} / 映画 ${items.filter(i=>i.city===c&&i.kind==='film').length}</p><span>${cityNames[c]}の作品を選ぶ →</span></div></a>`).join('')}</section>${watchNow}${signals}${researchSpotlight}
+<section class="city-grid" aria-label="街を選ぶ">${cities.map(c=>`<a class="city-card" href="/discover/${c}/"><div class="city-image">${photo(c)}</div><div class="city-caption"><h2>${cityNames[c]}</h2><p>音楽 ${publicCount(c,'audio')} / 映像 ${publicCount(c,'video')} / 本・漫画 ${publicCount(c,'book')} / 映画 ${publicCount(c,'film')}</p><span>${cityNames[c]}の作品を選ぶ →</span></div></a>`).join('')}</section>${watchNow}${signals}${researchSpotlight}
 <section class="quick"><p class="eyebrow">今週</p><h2>今週の感情書店。</h2><div class="quick-grid"><a href="/discover/weekly/index.html"><strong>今週で終わる催しと、新しく入った作品 →</strong><span>毎週月曜に変わります。RSSでも受け取れます</span></a></div></section>
 <section class="quick"><p class="eyebrow">街をまたいで選ぶ</p><h2>観る、読む、聴く。</h2><div class="quick-grid"><a href="/discover/outing/index.html"><strong>街へ出かけたくなる映像 ${outingVideos.length}本 →</strong><span>公園・商店街・ライブハウス・古書店。いま行ける場所が写っているもの</span></a><a href="/discover/reading/index.html"><strong>読みたくなる、街の本 ${readingBooks.length}冊 →</strong><span>書名に街の名前が無くても、背景を知るとその街の本だと分かる</span></a><a href="/discover/listening/index.html"><strong>聴きたくなる、街の音 ${listeningAudio.length}曲 →</strong><span>その街のライブハウスや路上で、実際に鳴った演奏</span></a></div></section>
 <section class="quick"><p class="eyebrow">街をまたいで、場所から</p><h2>本屋、映画館、ライブハウス、劇場。</h2><div class="quick-grid"><a href="/discover/places/index.html"><strong>場所そのものを扱った作品 18件 →</strong><span>作品の舞台としてではなく、その場所自体の記録と物語。記録と物語は分けています</span></a></div></section>
@@ -525,7 +527,7 @@ for (const video of commonVideos) {
 
 
 for(const city of cities) for(const [kind, category] of Object.entries(categories)) {
-  const selected=items.filter(i=>i.city===city&&i.kind===kind);
+  const selected=items.filter(i=>i.city===city&&i.kind===kind&&(kind!=='video'||videoDurationPolicy.approved['city/'+city+'/'+i.id]));
   if(selected.length>10)throw new Error(city+' '+kind+': keep a collection at most ten entries');
   const tabs=Object.entries(categories).filter(([k])=>items.some(i=>i.city===city&&i.kind===k)).map(([k,v])=>k===kind?`<span aria-current="page">${v.name} <small>${items.filter(i=>i.city===city&&i.kind===k).length}</small></span>`:`<a href="/discover/${city}/${k}.html">${v.name} <small>${items.filter(i=>i.city===city&&i.kind===k).length}</small></a>`).join('');
   const cards=selected.map(i=>`<article class="work-card ${kind}">${workMedia.forItem(i)}<div class="card-body"><p class="relation">${esc(i.relation)}</p><h2><a href="/discover/${city}/${i.id}.html">${esc(i.title)}</a></h2><p class="creator">${esc(i.creator)}</p><p class="card-hook">${esc(i.hook)}</p><p class="card-why"><span>なぜこの街？</span>${esc(i.relationNote)}</p><p class="card-source">${cardEvidence(i).label} ${external(cardEvidence(i).url, sourceHost(cardEvidence(i).url))}</p>${artistProfile(i)}<div class="card-links">${i.url.startsWith('/')?`<a class="primary" href="${esc(i.url)}">${esc(i.action)} →</a>`:external(i.url,i.action,'primary official-exit')}<a href="/discover/${city}/${i.id}.html">紹介を読む →</a></div></div></article>`).join('');
