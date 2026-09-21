@@ -51,8 +51,15 @@ const retiredDestinations={
   '/credits.html#inokashira-pond': '/credits.html',
   'https://img.hanmoto.com/bd/img/9784911191026.jpg?lastupdated=2025-04-23T10%3A22%3A06%2B09%3A00': '/works.html'
 };
+const durationPolicy=require('../video-duration-policy');
+const approvedVideoIds=new Set(Object.values(durationPolicy.approved).map(v=>v.videoId));
+const retiredByDurationPolicy=l=>{
+ const m=String(l).match(/(?:youtube\.com\/watch\?v=|youtube-nocookie\.com\/embed\/)([A-Za-z0-9_-]{11})/);
+ return Boolean(m&&!approvedVideoIds.has(m[1]));
+};
 for(const l of baselineLinks){
  if(currentLinks.has(l)) continue;
+ if(retiredByDurationPolicy(l)) continue;
  const replacement=retiredDestinations[l];
  assert.ok(replacement,'destination no longer anywhere on the site: '+l);
  assert.ok(currentLinks.has(replacement),'retired destination '+l+' names a replacement that is not linked: '+replacement);
