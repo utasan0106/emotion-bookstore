@@ -1,6 +1,6 @@
-/* みんなの感情書店 V3 — Release Candidate 01 / 4つの棚
+/* みんなの感情書店 V3 — Release Candidate 01 / 5つの棚
  *
- * 棚は4つ、1つの棚に3件だけ。並べ替えも追加読み込みもしない。
+ * 棚は5つ、1つの棚に3件だけ。並べ替えも追加読み込みもしない。
  * hookPhrases / revealPhrases は表示上の折返し単位を宣言するだけで、
  * join('') は必ず hook / reveal と1文字も違わない（release_check.js が guard）。
  *
@@ -27,7 +27,14 @@ window.V3_RELEASE_CONTENT = {
     shelfCount: 5,
     objectsPerShelf: 3
   },
-  // 種類は新しい無限棚ではなく、いま公開中の12件を横断して見るための
+  weeklyEdition: {
+    weekOf: '2026-09-21',
+    topFeatureId: 'mot-collection-light',
+    curiosityIds: ['morisaki', 'ginga', 'kiyosumi-kotomise'],
+    curiosityKinds: ['book', 'film', 'video'],
+    shortVideoIds: ['find-my-tokyo', 'toyota-loving-eyes', 'kiyosumi-kotomise']
+  },
+  // 種類は新しい無限棚ではなく、いま公開中の15件を横断して見るための
   // 有限な索引。初回はこの5つだけで、順番も固定する。
   categories: [
     { id: 'food', name: '飲食・喫茶' },
@@ -496,7 +503,7 @@ window.V3_RELEASE_CONTENT = {
       weeklyFeature: {
         eventType: '落語',
         title: 'らくご江戸めぐり',
-        media: {src: '/assets/city-kiyosumi.svg', alt: '清澄白河のエディトリアル図版'},
+        media: {src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', alt: '清澄庭園の池と庭園の景色'},
         titlePhrases: ['らくご', '江戸めぐり'],
         calendarDates: '20260926/20260927',
         dateLabel: '9月26日（土） 14:00開演',
@@ -508,18 +515,18 @@ window.V3_RELEASE_CONTENT = {
         expiresAt: '2026-09-27T00:00:00+09:00'
       },
       entryMedia: {
-        kind: 'illustration',
-        url: './assets/entry-kiyosumi.svg', width: 1942, height: 809,
-        alt: '水面、庭園の石、美術館の格子を抽象化した清澄白河のエディトリアル図版',
-        provenance: 'みんなの感情書店 自社制作の活字・図形図版 / 2026-09-22'
+        kind: 'photo',
+        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', width: 640, height: 414,
+        alt: '池の水面と飛び石、樹木が見える清澄庭園の景色',
+        provenance: 'Kakidai / Wikimedia Commons / CC BY-SA 4.0 / 2015-08-10'
       },
       heroMedia: {
-        url: './assets/city-kiyosumi.svg', width: 1200, height: 900,
-        alt: '水面、庭園の石、美術館の格子を抽象化した清澄白河のエディトリアル図版',
-        author: 'みんなの感情書店', source: '自社制作',
-        sourceUrl: 'https://emotionbookstore.com/credits.html',
-        license: '自社制作', licenseUrl: 'https://emotionbookstore.com/credits.html',
-        modification: '清澄白河の美術館・庭園・江戸文化を抽象化した独自SVG。実在景観の写真ではありません。'
+        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', width: 640, height: 414,
+        alt: '池の水面と飛び石、樹木が見える清澄庭園の景色',
+        author: 'Kakidai', source: 'Wikimedia Commons',
+        sourceUrl: 'https://commons.wikimedia.org/wiki/File:Kiyosumi_Teien_-_Japanese_gardern_4.JPG',
+        license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+        modification: 'Wikimedia Commonsの640px縮小版をそのまま参照。表示時のみCSSでトリミング。'
       },
       objects: [
         {
