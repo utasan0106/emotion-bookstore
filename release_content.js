@@ -24,7 +24,7 @@ window.V3_RELEASE_CONTENT = {
     // 最初の写真・図版より必ず先に出す。長い理念文は足さない。
     siteExplainer: '感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べる文化案内です。',
     verifiedAt: '2026-09-22T01:30:00+09:00',
-    shelfCount: 4,
+    shelfCount: 5,
     objectsPerShelf: 3
   },
   // 種類は新しい無限棚ではなく、いま公開中の12件を横断して見るための
