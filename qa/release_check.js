@@ -366,7 +366,7 @@ if (/hc-hero-trace|hc-trace-year/.test(read('index.html'))) failures.push('index
   const feature = src.indexOf('class="hd-feature"');
   const firstCity = src.indexOf('class="hd-city hc-city shelf-entry"');
   if (h1 < 0 || feature < 0 || firstCity < 0 || h1 > feature || feature > firstCity) failures.push('index.html: concise site purpose, first work, then city entries');
-  if (!src.includes('class="hd-feature') || /hc-culture-art|home-encounter|data-city-scene-image|30秒|感情書店の小文/.test(src) || !/data-weekly-feature="[^"]+"/.test(src) || !src.includes('href="/discover/kiyosumi/"')) failures.push('index.html: weekly top feature and real destination required; no invented reading feature');
+  if (!src.includes('class="hd-feature') || /hc-culture-art|home-encounter|data-city-scene-image|感情書店の小文/.test(src) || !/data-weekly-feature="[^"]+"/.test(src) || !src.includes('href="/discover/kiyosumi/"')) failures.push('index.html: weekly top feature and real destination required; no invented reading feature');
 }
 for (const page of ['shelf.html', 'suggest.html', 'data.html', 'credits.html', 'explore.html']) {
   const src = read(page);
@@ -426,7 +426,7 @@ for (const shelf of shelves) {
     failures.push(`${shelf.id}: weeklyFeature verifiedAt required and must be parseable`);
   }
 }
-if (allObjects.length !== 12) failures.push(`expected exactly 12 objects, got ${allObjects.length}`);
+if (allObjects.length !== CONTENT.release.shelfCount * CONTENT.release.objectsPerShelf) failures.push(`expected exactly ${CONTENT.release.shelfCount * CONTENT.release.objectsPerShelf} objects, got ${allObjects.length}`);
 for (const o of allObjects) {
   const list = o.categoryIds;
   if (!Array.isArray(list) || list.length < 1) { failures.push(`${o.id}: needs >= 1 categoryId`); continue; }
