@@ -21,7 +21,7 @@
     let p='';
     try{p=new URL(a.href,location.href).pathname;}catch(_){}
     if(!blocked.has(p)) return;
-    const row=a.closest('article,li');
+    const row=a.closest('li,.work-card,[data-feature-kind]');
     if(row) row.hidden=true;
     else a.hidden=true;
   });
