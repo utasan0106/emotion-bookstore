@@ -1,0 +1,34 @@
+name: Sync generated media audit
+on:
+  push:
+    branches: [chatgpt/media-integrity-audit-20260922]
+permissions:
+  contents: write
+jobs:
+  sync:
+    if: ${{ !contains(github.event.head_commit.message, '[generated-sync]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Regenerate public static surfaces
+        run: |
+          node tools/build-weekly-outings.js
+          node tools/build-work-pages.js
+          node tools/build-city-discovery.js
+      - name: Commit generated output
+        run: |
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "Generated output already synchronized."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "build: sync generated media surfaces [generated-sync]"
+          git push origin HEAD:chatgpt/media-integrity-audit-20260922
