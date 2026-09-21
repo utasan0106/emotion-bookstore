@@ -48,7 +48,7 @@
         sourceUrl:'https://www.youtube.com/watch?v=CMM0QCw99c4',
         reason:'東京メトロ公式の街歩きキャンペーンCM。'
       },
-      'common/newline-project':{
+      'common/tokyo-metro-newline':{
         videoId:'rjFh_eBwV_k',durationSeconds:30,
         durationSource:'https://yutura.net/channel/15597/latest/?p=4',
         sourceUrl:'https://www.tokyometro-newline.jp/movie/',
