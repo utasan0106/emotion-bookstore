@@ -54,7 +54,7 @@ for (const name of ['works.html', ...entries.map(id => 'work-' + id + '.html')])
   }
 }
 assert.ok(read('work-music.html').indexOf('?recording=shelter') < read('work-music.html').indexOf('この演奏が生まれた背景'));
-assert.match(read('work-video.html'), /data-video-id="dt33RGSRuo0"/);
-assert.doesNotMatch(read('work-video.html'), /\/embed\/dt33RGSRuo0/);
+assert.match(read('work-video.html'), /data-video-id="80y5COiKdDw"/);
+assert.doesNotMatch(read('work-video.html'), /\/embed\/80y5COiKdDw/);
 assert.match(read('.vercelignore'), /^\/tools\/work-entry-source.html$/m);
 console.log('PASS separate work pages: real routes, unique destinations, actual work media, autoplay disabled');
