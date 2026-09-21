@@ -338,8 +338,10 @@
     if (!m || !m.url) return null;
 
     var isIllustration = m.kind === 'illustration';
+    var frameAttrs = { class: 'shelf-entry-media-frame' };
+    if (m.fallbackUrl) frameAttrs.style = 'background-image:url("' + m.fallbackUrl + '");background-size:cover;background-position:center';
     var children = [
-      h('div', { class: 'shelf-entry-media-frame' }, [
+      h('div', frameAttrs, [
         h('img', {
           src: m.url,
           alt: m.alt || (shelf.area + 'の街の風景'),
