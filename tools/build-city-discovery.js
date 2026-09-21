@@ -520,7 +520,7 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
 for (const video of commonVideos) {
   const sourceLinks = video.sources.map(source => `<p>${external(source,new URL(source).hostname.replace('www.','')+' の掲載情報')}</p>`).join('');
   const player = workMedia.youtube(video.videoId,video.title);
-  write(`short-films/${video.id}.html`, shell(`${video.title}｜街へ出たくなる短編`, `<article class="detail"><p class="eyebrow">全街共通 / 街へ出たくなる短編</p><h1>${esc(video.title)}</h1><p class="detail-creator">${esc(video.creator)}</p><p class="detail-hook">${esc(video.hook)}</p>${player}<div class="destination">${external(video.url,'YouTubeでこの映像を見る','primary official-exit')}<p>表示・再生できない場合は、公開元の同じ映像へ。新しいタブで開きます。</p></div><details class="background"><summary>このサイトで紹介する理由・出典</summary><p>${esc(video.note)}</p>${sourceLinks}<p>紹介先・出典確認：${checkedAt}。映像は公開元のプレイヤーで提供されます。</p></details><p class="city-exit"><a href="/discover/index.html">次は街から作品を探す →</a></p></article>`, '<a href="/discover/short-films/index.html">短編を選び直す ←</a>'));
+  write(`short-films/${video.id}.html`, shell(`${video.title}｜街へ出たくなる短編`, `<article class="detail"><p class="eyebrow">全街共通 / 街へ出たくなる短編</p><h1>${esc(video.title)}</h1><p class="detail-creator">${esc(video.creator)}</p><p class="detail-hook">${esc(video.hook)}</p>${player}<div class="destination">${external(video.url,'YouTubeでこの映像を見る','primary official-exit')}<p>表示・再生できない場合は、公開元の同じ映像へ。新しいタブで開きます。</p></div><details class="background"><summary>このサイトで紹介する理由・出典</summary><p>${esc(video.note)}</p>${sourceLinks}<p>紹介先・出典確認：${video.checkedAt || checkedAt}。映像は公開元のプレイヤーで提供されます。</p></details><p class="city-exit"><a href="/discover/index.html">次は街から作品を探す →</a></p></article>`, '<a href="/discover/short-films/index.html">短編を選び直す ←</a>'));
 }
 
 
