@@ -11,6 +11,8 @@ const checks=[
  ['qa/weather_check.js'],
  ['qa/weather_client_check.js'],
  ['qa/weekly_outings_check.js'],
+ ['tools/build-weekly-outings.js','--check'],
+ ['qa/editorial_pending_gate_check.js'],
  ['qa/event_timing_check.js', 'qa/event_supply_check.js', 'qa/events_expiry_cluster_check.js', 'qa/event_schema_check.js'],
  ['qa/memory_note_check.js'],
  ['qa/city_discovery_check.js'],
