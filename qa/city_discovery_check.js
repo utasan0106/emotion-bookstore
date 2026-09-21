@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const {items, commonVideos} = require('../tools/city-discovery-source');
+const videoPolicy=require('../video-duration-policy');
 const decode = s => s.replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"');
 assert.equal(items.length,77);
 assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,items.length);
@@ -261,7 +262,8 @@ assert.ok(!fs.readFileSync(path.join(root,'.vercelignore'),'utf8').includes('/di
 const sitemap=fs.readFileSync(path.join(root,'sitemap.xml'),'utf8');
 const sitemapUrls=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match=>match[1]);
 const eventCount=require('../tools/weekly-outings-source').events.length;
-assert.equal(sitemapUrls.length,pages+3+1+eventCount+9);
+const blockedDiscoverPaths=videoPolicy.blockedPaths.filter(p=>p.startsWith('/discover/')).length;
+assert.equal(sitemapUrls.length,pages+3+1+eventCount+9-blockedDiscoverPaths);
 assert.equal(new Set(sitemapUrls).size,sitemapUrls.length);
 assert.ok(canonicals.every(url=>sitemapUrls.includes(url)));
 assert.ok(sitemapUrls.filter(url=>url.includes('?')).every(url=>/^https:\/\/emotionbookstore\.com\/shelf\.html\?shelf=(koenji|kichijoji|shimokitazawa|jinbocho|kiyosumi)$/.test(url)));
