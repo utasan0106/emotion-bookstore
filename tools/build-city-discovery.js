@@ -153,7 +153,7 @@ function seriesEntry(kind) {
 }
 
 function shortFilmsEntry() {
-  return '<section class="quick"><h2>街へ出たくなる短編映像</h2><p>人・移動・暮らしを描く3つの短編。特定の街の観光案内ではなく、企業広告を含む映像作品です。</p><a href="/discover/short-films/">3つの映像を選ぶ →</a></section>';
+  return '<section class="quick"><h2>街へ出たくなる短編映像</h2><p>原則3分以内。編集上の理由がある場合だけ5分以内までの3本を並べます。</p><a href="/discover/short-films/">3つの映像を選ぶ →</a></section>';
 }
 const plain = value => String(value).replace(/<br\s*\/?>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&[^;]+;/g,' ').replace(/\s+/g,' ').trim();
 const canonicalFor = file => `https://emotionbookstore.com/discover/${file === 'index.html' ? '' : file.replace(/index\.html$/, '')}`;
