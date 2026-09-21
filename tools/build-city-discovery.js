@@ -87,8 +87,9 @@ function cityContinuation(city,kind) {
   const name=cityNames[city];
   if(!items.some(item=>item.city===city&&item.kind===kind)) return `<aside class="feature"><p class="eyebrow">同じ街から探す</p><h2><a href="/discover/${city}/video.html">${name}の街を映像で見る →</a></h2><p>この種類の作品は現在掲載していません。${name}の風景や人に触れる映像から選べます。</p><p><a href="/discover/${city}/">${name}の作品一覧へ →</a></p></aside>`;
   const reason=kind==='audio'?'演奏を聴いたあとは、会場のある街の風景や人を映像で。':kind==='video'?'映像で気になった街の場所や来歴を、次に辿れます。':kind==='book'?'本で触れた街を、今度は映像から眺めてみる。':'映画と街の関係を辿ったあとは、その街の風景も。';
-  const target=kind==='video'?`/shelf.html?shelf=${city}`:`/discover/${city}/video.html`;
-  const label=kind==='video'?`${name}の場所・歴史を見る`:`${name}の街を映像で見る`;
+  const hasPublicVideo=items.some(i=>i.city===city&&i.kind==='video'&&videoDurationPolicy.approved['city/'+city+'/'+i.id]);
+  const target=kind==='video'? `/shelf.html?shelf=${city}`:(hasPublicVideo?`/discover/${city}/video.html`:'/discover/short-films/');
+  const label=kind==='video'?`${name}の場所・歴史を見る`:(hasPublicVideo?`${name}の街を映像で見る`:'3つの短編映像を見る');
   return `<aside class="feature"><p class="eyebrow">次は、街へ</p><h2><a href="${target}">${label} →</a></h2><p>${reason}</p><small>このサイト内の案内</small></aside>`;
 }
 // 街へ出かけたくなる。編集部が選んだ、いま行ける場所が写っている映像。
