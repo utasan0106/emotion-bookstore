@@ -47,7 +47,8 @@ const retiredDestinations={
   // 2026-09-11：「すべて」だけが向け直されずに残っていた。HOMEの初期状態がもともと
   // all なので、押しても表示は何も変わらない。ファウンダーが「押しても何もならない」と
   // 指摘したのはこれ。上の3つと同じ方針で、件数の見える作品のハブへ渡す。
-  '?kind=all#hc-works': '/works.html'
+  '?kind=all#hc-works': '/works.html',
+  '/credits.html#inokashira-pond': '/credits.html'
 };
 for(const l of baselineLinks){
  if(currentLinks.has(l)) continue;
