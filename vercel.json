@@ -61,11 +61,6 @@
       "permanent": false
     },
     {
-      "source": "/discover/kichijoji/video.html",
-      "destination": "/discover/outing/",
-      "permanent": false
-    },
-    {
       "source": "/discover/jinbocho/video.html",
       "destination": "/discover/outing/",
       "permanent": false
