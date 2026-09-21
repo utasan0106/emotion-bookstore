@@ -3,7 +3,7 @@
 // Read-only operations report. HTTP success is never treated as editorial verification.
 const fs = require('node:fs');
 const path = require('node:path');
-const { events, cities } = require('./weekly-outings-source');
+const { events, cities, isPublishableEvent } = require('./weekly-outings-source');
 const socialPosts = require('./social-posts-source');
 const { monday, select, add, date, dates } = require('../outings/week');
 
@@ -46,13 +46,14 @@ async function main() {
   const now = arg ? Date.parse(arg.slice(7) + 'T12:00:00+09:00') : Date.now();
   if (!Number.isFinite(now)) throw Error('Invalid --date (YYYY-MM-DD required)');
   const first = monday(now), today = date(now);
+  const publishableEvents = events.filter(isPublishableEvent);
   const coverage = [0, 1].flatMap(n => Object.entries(cities).map(([city, label]) => {
     const week = add(first, n * 7);
-    const items = select(events, { now, week, city });
+    const items = select(publishableEvents, { now, week, city });
     return { week, city, label, count: items.length, ids: items.map(e => e.id) };
   }));
-  const expired = events.filter(e => e.reviewThrough < today).map(e => e.id);
-  const clusters = expiringClusters(events, today);
+  const expired = publishableEvents.filter(e => e.reviewThrough < today).map(e => e.id);
+  const clusters = expiringClusters(publishableEvents, today);
   // 編集部が読む前提の下書き（hook / relation）が、読まれないまま溜まっていないか。
   // CNET は AI が書いた77本のうち41本に訂正が入った。量・開示・レビューの三つが
   // 同時に崩れたためで、いちばん効くのは「読まれていないものが見えていること」である。
