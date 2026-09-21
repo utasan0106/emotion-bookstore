@@ -1,11 +1,12 @@
 // Editorial input, never fetched by the browser. See docs/city-discovery/README.md.
 'use strict';
 const items = [];
+const commonVideosWeekOf = '2026-09-21';
 const commonVideos = [
   {
     id: 'find-my-tokyo', title: 'Find my Tokyo. チャレンジャーズ', creator: '東京メトロ / 2024',
     hook: '知っている街の、まだ知らない楽しみ方へ。',
-    note: '東京メトロが東京の新しい魅力を見つける企画として公開した企業広告です。このサイトの4街だけを扱う映像ではありません。',
+    note: '東京メトロが東京の新しい魅力を見つける企画として公開した企業広告です。このサイトの5街だけを扱う映像ではありません。',
     videoId: 'RpSlspjIeG8', sources: ['https://www.tokyometro.jp/news/2024/218221.html']
   },
   {
@@ -15,12 +16,13 @@ const commonVideos = [
     videoId: 'mh_QCvulKSY', sources: []
   },
   {
-    id: 'panasonic-life', title: 'Panasonic Quality「Life篇」', creator: 'パナソニック / 60秒',
-    hook: '名もない一日の、小さな営みと人の表情を見る。',
-    note: '暮らしの場面を描いたパナソニックの企業広告です。商品情報ではなく、人の生活を映した短編として選んでいます。',
-    videoId: 'Bu5LNJYGY8k', sources: ['https://channel.panasonic.com/jp/']
+    id: 'kiyosumi-kotomise', title: 'ことみせ～清澄白河エリア・深川資料館通り～', creator: '江東区公式チャンネル / 2026',
+    hook: '店を巡る目線から、清澄白河の今の通りへ。',
+    note: '江東区の区政情報番組「江東ワイドスクエア」が、清澄白河エリアと深川資料館通りの店や通りを紹介した2026年の公式映像です。',
+    videoId: 'bLuK6QHKc7E', sources: ['https://www.city.koto.lg.jp/011502/kuse/koho/katsudo/catv/wide-square.html'],
+    checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
   }
-].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: '2026-09-08', playbackChecked: false}));
+].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-08', playbackChecked: false}));
 const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({
   city, kind, id, title, creator, hook, relation, relationNote, url, action,
   sources: [...new Set([...sources, ...(url.startsWith('https:') ? [url] : [])])],
@@ -276,4 +278,4 @@ const excludedItems = items.filter(item => !canPublish(item));
 // caused a candidate review to report these five as "only missing a cover".
 const declined = excludedItems.filter(i => declinedItems[i.city+'/'+i.id]);
 const pendingItems = excludedItems.filter(i => !declinedItems[i.city+'/'+i.id]);
-module.exports = { items: items.filter(canPublish), excludedItems, declinedItems, declined, pendingItems, commonVideos, blockedVideoIds, checkedAt: '2026-09-08' };
+module.exports = { items: items.filter(canPublish), excludedItems, declinedItems, declined, pendingItems, commonVideos, commonVideosWeekOf, blockedVideoIds, checkedAt: '2026-09-08' };
