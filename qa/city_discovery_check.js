@@ -16,11 +16,12 @@ assert.equal(new Set([...items.filter(i=>i.videoId),...commonVideos].map(i=>i.vi
 const playbackIds=[...items.filter(i=>i.videoId).map(i=>i.videoId),...items.filter(i=>i.trailerVideoId).map(i=>i.trailerVideoId),...commonVideos.map(i=>i.videoId)];
 assert.equal(new Set(playbackIds).size,playbackIds.length,'Embedded media IDs must not be reused across entries');
 const cities=['koenji','shimokitazawa','kichijoji','jinbocho'];
+const publicItems=items.filter(i=>i.kind!=='video'||videoPolicy.approved['city/'+i.city+'/'+i.id]);
 const directory=fs.readFileSync(path.join(root,'discover/index.html'),'utf8');
 for(const city of cities) {
   assert.ok(directory.includes(`class="city-card" href="/discover/${city}/"`),'Directory city entries must open all available media, not the audio list');
   const landing=fs.readFileSync(path.join(root,`discover/${city}/index.html`),'utf8');
-  const kinds=['audio','video','book','film'].filter(kind=>items.some(i=>i.city===city&&i.kind===kind));
+  const kinds=['audio','video','book','film'].filter(kind=>publicItems.some(i=>i.city===city&&i.kind===kind));
   // The page carries every week of the rotation; what the reader is shown is one per kind.
   const openCards=(landing.match(/<article data-feature-kind="[a-z]+" data-feature-week="\d+" class="work-card /g)||[]).length;
   assert.equal(openCards,kinds.length,'City entry must contain works, not just navigation');
@@ -28,7 +29,7 @@ for(const city of cities) {
   for(const kind of ['audio','video','book','film'].filter(kind=>!kinds.includes(kind))) assert.ok(!landing.includes(`href="/discover/${city}/${kind}.html"`),'Do not advertise an empty category');
 }
 for(const city of cities)for(const kind of ['audio','video','book','film']) {
-  const selected=items.filter(i=>i.city===city&&i.kind===kind);
+  const selected=publicItems.filter(i=>i.city===city&&i.kind===kind);
   assert.ok(selected.length<=10);
   const html=fs.readFileSync(path.join(root,`discover/${city}/${kind}.html`),'utf8');
   const cardsOnly=(html.match(/<article class="work-card [\s\S]*?<\/article>/g)||[]).join('');
@@ -85,8 +86,8 @@ assert.equal(pages,114+research.length);
    const [city,id]=key.split('/');
    assert.ok(items.some(i=>i.city===city&&i.id===id&&i.kind===kind),slug+': 未公開または種類違いを並べている '+key);
   }
-  const published=items.filter(i=>i.kind===kind);
-  if(slug==='outing') assert.ok(linked.length>=10&&linked.length<=published.length,'outing: 絞り込みの結果が範囲外 '+linked.length);
+  const published=publicItems.filter(i=>i.kind===kind);
+  if(slug==='outing') assert.equal(linked.length,published.length,'outing: duration-approved videos only');
   else assert.equal(linked.length,published.length,slug+': 公開した'+kind+'が全部は出ていない');
   assert.match(html,/class="wk-list"/,slug+': 一覧は文字の一覧で出す');
   assert.doesNotMatch(html,/<iframe/,slug+': 読み込み時に provider へ接続しない');
@@ -107,7 +108,7 @@ assert.equal(pages,114+research.length);
    (byKind[kind]=byKind[kind]||[]).push({week:Number(week),open:!hidden});
   }
   for(const [kind,list] of Object.entries(byKind)){
-   const published=items.filter(i=>i.city===city&&i.kind===kind).length;
+   const published=publicItems.filter(i=>i.city===city&&i.kind===kind).length;
    assert.equal(list.length,published,`${city}/${kind}: every published object takes a turn`);
    assert.deepEqual(list.map(e=>e.week).sort((a,b)=>a-b),[...Array(published).keys()],`${city}/${kind}: the weeks run without a gap`);
    assert.equal(list.filter(e=>e.open).length,1,`${city}/${kind}: exactly one entry is open without JavaScript`);
