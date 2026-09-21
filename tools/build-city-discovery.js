@@ -102,10 +102,7 @@ function cityContinuation(city,kind) {
 //   jinbocho/iwanami-hall         2022年に閉館。もう行けない
 //   kichijoji/musashino-green     武蔵野市全体の風景
 const outingVideoIds = [
-  'koenji/awa-2025', 'koenji/tenguren', 'koenji/pal-street', 'koenji/street-food', 'koenji/next-town-koenji',
-  'shimokitazawa/shelter-news', 'shimokitazawa/tefu-1500', 'shimokitazawa/obonro-walk',
-  'kichijoji/park-voice', 'kichijoji/uplink', 'kichijoji/kichion-ichihara', 'kichijoji/kichion-toranoko', 'kichijoji/kichion-lady',
-  'jinbocho/gyokueido', 'jinbocho/italia', 'jinbocho/used-book-festival'
+  'kichijoji/park-voice'
 ];
 // 棚を通った本と音楽は、その時点で採否が済んでいる。だから絞り込みはせず、
 // 街をまたいで一つにまとめるだけ。順序は編集部の並びで、公開したものが一つでも
@@ -400,7 +397,7 @@ for (const city of cities) {
   });
   write(`${city}/index.html`,shell(`${cityNames[city]}の作品`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><div><p class="eyebrow">街から見つける</p><h1>${cityNames[city]}<span>の作品</span></h1></div><figure class="city-motif"><img src="/assets/city-editorial/${city}.webp" alt="" width="640" height="214" decoding="async"><figcaption>街のイメージ · AIイラスト</figcaption></figure></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><section class="work-grid" aria-label="${cityNames[city]}の作品" data-rotation-epoch="${rotationEpoch}">${featured.map(({item,kind,week})=>workCard(item).replace('<article class="work-card ',`<article data-feature-kind="${kind}" data-feature-week="${week}"${week?' hidden':''} class="work-card `)).join('')}</section>${shortFilmsEntry()}${venueEntry(city)}<div class="city-next"><a href="/outings/?city=${city}">${cityNames[city]}の催し</a><a href="/shelf.html?shelf=${city}">ゆかりの場所・歴史</a></div>${credits([city])}</div>`, '<a href="/discover/">街を選び直す</a>',city));
 }
-const featuredVideoIds=['bocchi-main-pv','next-town-koenji','kichion-toranoko','used-book-festival'];
+const featuredVideoIds=['park-voice'];
 const featuredVideos=featuredVideoIds.map(id=>items.find(item=>item.id===id));
 if(featuredVideos.some(item=>!item||item.kind!=='video')) throw new Error('Featured video missing');
 const leadVideo=featuredVideos[0];
@@ -439,7 +436,7 @@ seriesPage('reading', '読みたくなる本', `4つの街 / ${readingBooks.leng
 seriesPage('listening', '聴きたくなる音楽', `4つの街 / ${listeningAudio.length}曲`, '聴きたくなる、<br>街の音。',
   'その街のライブハウスや路上で、実際に鳴った演奏です。街の紹介曲ではなく、そこで録られた音を選んでいます。',
   listeningAudio, '<p class="city-exit"><a href="/works.html#music">音楽の紹介から入る →</a></p>');
-write('short-films/index.html', shell('街へ出たくなる短編映像', `<section class="intro"><p class="eyebrow">全街共通 / 約1〜4分</p><h1>街へ出たくなる、<br>${commonVideos.length}つの短編。</h1><p class="lead">人との出会いや移動、暮らしを描く短編を選びました。特定の街の観光案内ではなく、企業広告を含む映像作品です。</p></section><div class="collection"><section class="work-grid" aria-label="共通の短編映像${commonVideos.length}件">${commonCards}</section><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p></div>`, '<a href="/discover/index.html">街から探す ←</a>'));
+write('short-films/index.html', shell('街へ出たくなる短編映像', `<section class="intro"><p class="eyebrow">全街共通 / 30秒〜3分26秒</p><h1>街へ出たくなる、<br>${commonVideos.length}つの短編。</h1><p class="lead">人との出会いや移動、暮らしを描く短編を選びました。特定の街の観光案内ではなく、企業広告を含む映像作品です。</p></section><div class="collection"><section class="work-grid" aria-label="共通の短編映像${commonVideos.length}件">${commonCards}</section><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p></div>`, '<a href="/discover/index.html">街から探す ←</a>'));
 
 
 // 週替わりを「並べ替え」から「今週号」へ。順番が入れ替わるだけでは、読者にとって
