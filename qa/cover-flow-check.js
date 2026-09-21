@@ -3,7 +3,8 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),vm=require('node:vm');
 const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const home=read('index.html'),weather=read('city-weather.js'),css=read('page-nav.css');
-const {events}=require('../tools/weekly-outings-source');
+const {events:allEvents,isPublishableEvent}=require('../tools/weekly-outings-source');
+const events=allEvents.filter(isPublishableEvent);
 const {mediaFor,postFor}=require('../tools/event-media-source');
 assert.doesNotMatch(css,/city-rain-drift|city-snow-drift|city-rain-surface/);
 assert.doesNotMatch(weather,/city-atmosphere|city-weather-motion|selectScene|sceneLink/);
