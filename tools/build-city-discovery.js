@@ -80,7 +80,7 @@ for (const a of adaptations) if (a.book.split('/')[0] !== a.screen.split('/')[0]
 
 function cityContinuation(city,kind) {
   const name=cityNames[city];
-  if(!items.some(item=>item.city===city&&item.kind===kind)) return `<aside class="feature"><p class="eyebrow">同じ街から探す</p><h2><a href="/discover/${city}/video.html">${name}の街を映像で見る →</a></h2><p>この種類の作品は現在掲載していません。${name}の風景や人に触れる映像から選べます。</p><p><a href="/discover/${city}/">${name}の作品一覧へ →</a></p></aside>`;
+  if(!items.some(item=>item.city===city&&item.kind===kind)) return `<aside class="feature"><p class="eyebrow">同じ街から探す</p><h2><a href="/discover/short-films/">3つの短編映像を見る →</a></h2><p>この種類の作品は現在掲載していません。尺と公開元を確認済みの短編映像から選べます。</p><p><a href="/discover/${city}/">${name}の作品一覧へ →</a></p></aside>`;
   const reason=kind==='audio'?'演奏を聴いたあとは、会場のある街の風景や人を映像で。':kind==='video'?'映像で気になった街の場所や来歴を、次に辿れます。':kind==='book'?'本で触れた街を、今度は映像から眺めてみる。':'映画と街の関係を辿ったあとは、その街の風景も。';
   const hasPublicVideo=items.some(i=>i.city===city&&i.kind==='video'&&videoDurationPolicy.approved['city/'+city+'/'+i.id]);
   const target=kind==='video'? `/shelf.html?shelf=${city}`:(hasPublicVideo?`/discover/${city}/video.html`:'/discover/short-films/');
