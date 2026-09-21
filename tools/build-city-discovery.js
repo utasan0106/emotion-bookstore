@@ -102,10 +102,8 @@ function cityContinuation(city,kind) {
 //   jinbocho/iwanami-hall         2022年に閉館。もう行けない
 //   kichijoji/musashino-green     武蔵野市全体の風景
 const outingVideoIds = [
-  'koenji/awa-2025', 'koenji/tenguren', 'koenji/pal-street', 'koenji/street-food', 'koenji/next-town-koenji',
-  'shimokitazawa/shelter-news', 'shimokitazawa/tefu-1500', 'shimokitazawa/obonro-walk',
-  'kichijoji/park-voice', 'kichijoji/uplink', 'kichijoji/kichion-ichihara', 'kichijoji/kichion-toranoko', 'kichijoji/kichion-lady',
-  'jinbocho/gyokueido', 'jinbocho/italia', 'jinbocho/used-book-festival'
+  'shimokitazawa/kitazawa-guide',
+  'kichijoji/park-voice'
 ];
 // 棚を通った本と音楽は、その時点で採否が済んでいる。だから絞り込みはせず、
 // 街をまたいで一つにまとめるだけ。順序は編集部の並びで、公開したものが一つでも
