@@ -18,7 +18,7 @@
     "nextCheck": "実書影が提供され、当該画像の利用条件を確認できる提供元を探す。"
   },
   "shimokitazawa/indies": {
-    "status": "usable",
+    "status": "link-only",
     "isbn": "9784408557588",
     "imageUrl": "https://www.j-n.co.jp/wp/wp-content/uploads/2022/09/R978-4-408-55758-8.jpg",
     "width": 500,
@@ -26,12 +26,13 @@
     "sourceUrl": "https://www.j-n.co.jp/books/978-4-408-55758-8/",
     "termsUrl": "https://www.j-n.co.jp/faq/",
     "credit": "『下北沢インディーズ ライブハウスの名探偵』岡崎琢磨／実業之日本社（カバーイラスト：ナナカワ）",
-    "checkedAt": "2026-09-08",
+    "checkedAt": "2026-09-22",
     "basis": "Publication introduction under publisher FAQ; exact edition currently offered on publisher product page.",
-    "reviewNote": "FAQ also asks users to inquire about titles for which a long time has passed since publication; no threshold is specified. Preserve this nuance; do not characterize this as a new release or an individual permission grant."
+    "reviewNote": "FAQ also asks users to inquire about titles for which a long time has passed since publication; no threshold is specified. Preserve this nuance; do not characterize this as a new release or an individual permission grant.",
+    "displayPolicy": "Do not hotlink publisher cover images. Keep publisher page as the official destination."
   },
   "jinbocho/kaijin": {
-    "status": "usable",
+    "status": "link-only",
     "isbn": "9784488406080",
     "imageUrl": "https://www.tsogen.co.jp/img/cover_image_l/40608.jpg",
     "width": 218,
@@ -39,8 +40,9 @@
     "sourceUrl": "https://www.tsogen.co.jp/np/isbn/9784488406080",
     "termsUrl": "https://www.tsogen.co.jp/annai/faq.html",
     "credit": "『神保町の怪人』紀田順一郎／創元推理文庫（東京創元社）／装画：影山徹／装幀：山田英春",
-    "checkedAt": "2026-09-08",
+    "checkedAt": "2026-09-22",
     "basis": "Publisher FAQ expressly permits personal blog/SNS and similar book introductions/reviews. Used here solely within the operator-authored introduction with adjacent complete credits, not advertising or merchandise.",
-    "reviewNote": "This scoped editorial use is not a blanket commercial advertising license. Recheck before repurposing in advertisements."
+    "reviewNote": "This scoped editorial use is not a blanket commercial advertising license. Recheck before repurposing in advertisements.",
+    "displayPolicy": "Do not hotlink publisher cover images. Keep publisher page as the official destination."
   }
 }
