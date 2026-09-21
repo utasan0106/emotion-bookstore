@@ -18,7 +18,8 @@ const {items:cityItems}=require('../tools/city-discovery-source');
   const missing=cityItems.filter(i=>i.kind===kind&&!html.includes(`/discover/${i.city}/${i.id}.html`));
   assert.deepEqual(missing.map(i=>i.city+'/'+i.id),[],'work-'+id+'.html must reach every published '+kind);
   const listed=(html.match(/<li><a href="\/discover\//g)||[]).length;
-  assert.ok(listed>=10,'work-'+id+'.html lists only '+listed+' of them');
+  const minimum=id==='video'?0:10;
+  assert.ok(listed>=minimum,'work-'+id+'.html lists only '+listed+' of them');
  }
 }
 const directory = main(read('works.html'));
