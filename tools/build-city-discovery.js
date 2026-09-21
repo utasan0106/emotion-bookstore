@@ -391,8 +391,9 @@ for (const city of cities) {
     const order=featuredRotation[city+'/'+kind];
     if(!order||!order.length) throw new Error('No editorial rotation for the city page: '+city+' '+kind);
     const published=items.filter(i=>i.city===city&&i.kind===kind&&(kind!=='video'||videoDurationPolicy.approved['city/'+city+'/'+i.id]));
-    if(order.length!==published.length||new Set(order).size!==order.length) throw new Error('Rotation must list each published '+kind+' of '+city+' exactly once');
-    return order.map((id,week)=>{
+    const publicOrder=kind==='video'?order.filter(id=>videoDurationPolicy.approved['city/'+city+'/'+id]):order;
+    if(publicOrder.length!==published.length||new Set(publicOrder).size!==publicOrder.length) throw new Error('Rotation must list each published '+kind+' of '+city+' exactly once');
+    return publicOrder.map((id,week)=>{
       const item=published.find(i=>i.id===id);
       if(!item) throw new Error('Rotation names an unpublished object: '+city+'/'+id);
       return {item,kind,week};
