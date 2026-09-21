@@ -66,7 +66,7 @@ for (const shelf of shelves) {
   if (remoteKiyosumiPhoto) {
     if (em.kind !== 'photo') failures.push('kiyosumi: entryMedia.kind must be photo');
     if (em.url !== hm.url) failures.push('kiyosumi: entry and hero must use the same reviewed photo');
-    if (em.width !== 3000 || em.height !== 1941) failures.push('kiyosumi: reviewed entry photo dimensions changed');
+    if (em.width !== 960 || em.height !== 621) failures.push('kiyosumi: reviewed entry photo dimensions changed');
   } else {
     if (em.kind !== 'illustration') failures.push(`${shelf.id}: entryMedia.kind must be illustration`);
     if (!/^\.\/assets\/entry-[a-z-]+\.(?:webp|svg)$/.test(em.url || '')) failures.push(`${shelf.id}: entryMedia must be same-origin WebP`);
