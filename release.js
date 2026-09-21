@@ -337,7 +337,7 @@
     var m = shelf && (shelf.entryMedia || shelf.heroMedia);
     if (!m || !m.url) return null;
 
-    var isIllustration = !!(shelf.entryMedia && m === shelf.entryMedia);
+    var isIllustration = m.kind === 'illustration';
     var children = [
       h('div', { class: 'shelf-entry-media-frame' }, [
         h('img', {
@@ -353,7 +353,8 @@
     ];
 
     if (!isIllustration) {
-      var credit = ['写真: ' + (m.author || ''), m.source || '', m.license || '']
+      var creditSource = (m.author || m.source || m.license) ? m : (shelf.heroMedia || m);
+      var credit = ['写真: ' + (creditSource.author || ''), creditSource.source || '', creditSource.license || '']
         .filter(Boolean)
         .join(' / ');
       children.push(h('figcaption', { class: 'shelf-entry-media-credit', text: credit }));
