@@ -44,12 +44,7 @@ function relatedPerformance(item) {
   if (!target) throw new Error('Missing related performance: '+relation[0]);
   return `<section class="related-performance"><h2>同じ人の、別の演奏</h2><p>${esc(relation[1])}</p><p><a href="/discover/${target.city}/${target.id}.html">${esc(target.title)} →</a></p></section>`;
 }
-const crossMediaPairs={
-  jirokichi:'next-town-koenji','next-town-koenji':'jirokichi',
-  honnoniwa:'musashino-green','musashino-green':'honnoniwa',
-  indies:'bocchi-main-pv','bocchi-main-pv':'indies',
-  kaijin:'used-book-festival','used-book-festival':'kaijin'
-};
+const crossMediaPairs={};
 function relatedWork(item) {
   const target=items.find(candidate=>candidate.city===item.city&&candidate.id===crossMediaPairs[item.id]);
   if(!target) return '';
