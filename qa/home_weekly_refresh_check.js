@@ -48,4 +48,19 @@ assert.ok(source.commonVideos.some(v=>v.rotatedAt===cur.weekOf),'At least one sh
 const footerDate=(home.match(/ページ更新：<time datetime="(\d{4}-\d{2}-\d{2})"/)||[])[1];
 assert.ok(footerDate>=cur.weekOf,'Visible home update date must be current week');
 
-console.log('PASS weekly visible rotation: top feature, curiosity mix/new item, 1-of-3 short video, weekly feature recheck');
+const sitemap=read('sitemap.xml');
+for(const url of [
+  'https://emotionbookstore.com/',
+  'https://emotionbookstore.com/shelf.html?shelf=kiyosumi',
+  'https://emotionbookstore.com/discover/kiyosumi/',
+  'https://emotionbookstore.com/discover/short-films/',
+  'https://emotionbookstore.com/discover/short-films/kiyosumi-kotomise.html'
+]){
+  const pos=sitemap.indexOf('<loc>'+url+'</loc>');
+  assert.ok(pos>=0,'Fresh weekly surface missing from sitemap: '+url);
+  const near=sitemap.slice(pos,pos+220);
+  const m=near.match(/<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/);
+  assert.ok(m&&m[1]>=cur.weekOf,'Fresh weekly surface needs current sitemap lastmod: '+url);
+}
+
+console.log('PASS weekly visible rotation: top feature, curiosity mix/new item, 1-of-3 short video, weekly feature recheck, sitemap lastmod');
