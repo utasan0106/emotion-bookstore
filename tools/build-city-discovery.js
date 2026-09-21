@@ -358,19 +358,17 @@ function workCard(i) {
 // picks for us, and no object is dropped from its collection by not being first.
 const featuredRotation={
   'koenji/audio': ['moon-in-june-play','big-the-grape','night-glory-scarlet','seabirth-live','pink-minds-live'],
-  'koenji/video': ['awa-2025','tenguren','awa-history','pal-street','street-food','next-town-koenji'],
   'koenji/book': ['jirokichi','junjo','shiroku-somaru','1q84'],
   'koenji/film': ['unnameable-dance','ramen-heads','rokkoku-kitchen','shogakko','monterey-pop'],
   'shimokitazawa/audio': ['kaho-asa','bilingualboy-love','sleepinside-recycle','metrois-tokyo','mabuta-roundabout'],
-  'shimokitazawa/video': ['shelter-news','kitazawa-guide','tefu-1500','obonro-walk','womenslib-interview','bocchi-main-pv'],
+  'shimokitazawa/video': ['kitazawa-guide'],
   'shimokitazawa/book': ['indies','nekomachi','lady-jane','honda'],
   'shimokitazawa/film': ['machinouede','gekijyo','aterui','blazer','zawazawa'],
   'kichijoji/audio': ['yoshida-night-edge','yoshida-tinderness','kobayashi-kokuhaku','uchu-mao-haircolor','takeuchi-ai-rain'],
-  'kichijoji/video': ['park-voice','uplink','kichion-ichihara','kichion-toranoko','kichion-lady','musashino-green'],
+  'kichijoji/video': ['park-voice'],
   'kichijoji/book': ['honnoniwa','cinema-history','gou-gou-book'],
   'kichijoji/film': ['parks','baus','rocky-horror','gou-gou-film','asahina'],
   'jinbocho/audio': ['honobe-girl','gorilla-secret','sunshin-anniversary','chikuon-beautiful','motoki-tongping'],
-  'jinbocho/video': ['gyokueido','italia','jinbocho-1960s','iwanami-hall','used-book-festival'],
   'jinbocho/book': ['morisaki','morisaki-sequel','furuhon','furuhon-sequel','kaijin'],
   'jinbocho/film': ['morisaki-film','ugetsu','ginga']
 };
@@ -398,7 +396,7 @@ for (const city of cities) {
   });
   write(`${city}/index.html`,shell(`${cityNames[city]}の作品`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><div><p class="eyebrow">街から見つける</p><h1>${cityNames[city]}<span>の作品</span></h1></div><figure class="city-motif"><img src="/assets/city-editorial/${city}.webp" alt="" width="640" height="214" decoding="async"><figcaption>街のイメージ · AIイラスト</figcaption></figure></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><section class="work-grid" aria-label="${cityNames[city]}の作品" data-rotation-epoch="${rotationEpoch}">${featured.map(({item,kind,week})=>workCard(item).replace('<article class="work-card ',`<article data-feature-kind="${kind}" data-feature-week="${week}"${week?' hidden':''} class="work-card `)).join('')}</section>${shortFilmsEntry()}${venueEntry(city)}<div class="city-next"><a href="/outings/?city=${city}">${cityNames[city]}の催し</a><a href="/shelf.html?shelf=${city}">ゆかりの場所・歴史</a></div>${credits([city])}</div>`, '<a href="/discover/">街を選び直す</a>',city));
 }
-const featuredVideoIds=['bocchi-main-pv','next-town-koenji','kichion-toranoko','used-book-festival'];
+const featuredVideoIds=['park-voice','kitazawa-guide'];
 const featuredVideos=featuredVideoIds.map(id=>items.find(item=>item.id===id));
 if(featuredVideos.some(item=>!item||item.kind!=='video')) throw new Error('Featured video missing');
 const leadVideo=featuredVideos[0];
@@ -410,8 +408,8 @@ write('index.html', shell('街から音楽、映像、本、映画を探す', `<
 <section class="city-grid" aria-label="街を選ぶ">${cities.map(c=>`<a class="city-card" href="/discover/${c}/"><div class="city-image">${photo(c)}</div><div class="city-caption"><h2>${cityNames[c]}</h2><p>音楽 ${items.filter(i=>i.city===c&&i.kind==='audio').length} / 映像 ${items.filter(i=>i.city===c&&i.kind==='video').length} / 本・漫画 ${items.filter(i=>i.city===c&&i.kind==='book').length} / 映画 ${items.filter(i=>i.city===c&&i.kind==='film').length}</p><span>${cityNames[c]}の作品を選ぶ →</span></div></a>`).join('')}</section>${watchNow}${signals}${researchSpotlight}
 <section class="quick"><p class="eyebrow">今週</p><h2>今週の感情書店。</h2><div class="quick-grid"><a href="/discover/weekly/index.html"><strong>今週で終わる催しと、新しく入った作品 →</strong><span>毎週月曜に変わります。RSSでも受け取れます</span></a></div></section>
 <section class="quick"><p class="eyebrow">街をまたいで選ぶ</p><h2>観る、読む、聴く。</h2><div class="quick-grid"><a href="/discover/outing/index.html"><strong>街へ出かけたくなる映像 ${outingVideos.length}本 →</strong><span>公園・商店街・ライブハウス・古書店。いま行ける場所が写っているもの</span></a><a href="/discover/reading/index.html"><strong>読みたくなる、街の本 ${readingBooks.length}冊 →</strong><span>書名に街の名前が無くても、背景を知るとその街の本だと分かる</span></a><a href="/discover/listening/index.html"><strong>聴きたくなる、街の音 ${listeningAudio.length}曲 →</strong><span>その街のライブハウスや路上で、実際に鳴った演奏</span></a></div></section>
-<section class="quick"><p class="eyebrow">街をまたいで、場所から</p><h2>本屋、映画館、ライブハウス、劇場。</h2><div class="quick-grid"><a href="/discover/places/index.html"><strong>場所そのものを扱った作品 18件 →</strong><span>作品の舞台としてではなく、その場所自体の記録と物語。記録と物語は分けています</span></a></div></section>
-<section class="quick"><p class="eyebrow">街を決めずに観る</p><h2>街へ出たくなる、${commonVideos.length}つの短編。</h2><div class="quick-grid"><a href="/discover/short-films/index.html"><strong>人・移動・出会いを描く映像へ →</strong><span>企業広告も、単体で心に残る映像作品として選びました</span></a></div></section>
+<section class="quick"><p class="eyebrow">街をまたいで、場所から</p><h2>本屋、映画館、ライブハウス、劇場。</h2><div class="quick-grid"><a href="/discover/places/index.html"><strong>場所そのものを扱った作品 13件 →</strong><span>作品の舞台としてではなく、その場所自体の記録と物語。記録と物語は分けています</span></a></div></section>
+<section class="quick"><p class="eyebrow">街を決めずに観る</p><h2>街へ出たくなる、${commonVideos.length}つの短編。</h2><div class="quick-grid"><a href="/discover/short-films/index.html"><strong>人・移動・出会いを描く映像へ →</strong><span>原則3分以内。編集上の理由がある場合だけ5分以内まで</span></a></div></section>
 <section class="quick"><p class="eyebrow">短い体験から</p><h2>同じ場所、違う聴こえ方。</h2><div class="quick-grid"><a href="/v3-prototype/culture-experience-r2/shimokitazawa/?recording=shelter"><strong>「夕暮れのジャイロ」を聴き比べる →</strong><span>下北沢SHELTERのライブとソロ盤</span></a><a href="/v3-prototype/culture-experience-r2/kichijoji/?scene=film"><strong>『PARKS』の予告と公園の声へ →</strong><span>吉祥寺・井の頭公園 / 1分59秒と57秒</span></a></div></section>${credits(cities)}`));
 
 const commonCards = commonVideos.map(video=>`<article class="work-card video">${workMedia.youtube(video.videoId,video.title)}<div class="card-body"><p class="relation">街へ出る気分をつくる短編</p><h2><a href="/discover/short-films/${video.id}.html">${esc(video.title)}</a></h2><p class="creator">${esc(video.creator)}</p><p class="card-hook">${esc(video.hook)}</p><div class="card-links">${external(video.url,'YouTubeで観る','primary official-exit')}<a href="/discover/short-films/${video.id}.html">紹介を読む →</a></div></div></article>`).join('');
