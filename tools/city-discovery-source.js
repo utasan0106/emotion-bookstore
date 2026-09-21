@@ -1,28 +1,40 @@
 // Editorial input, never fetched by the browser. See docs/city-discovery/README.md.
 'use strict';
 const items = [];
+const VIDEO_DEFAULT_MAX_SECONDS = 180;
+const VIDEO_HARD_MAX_SECONDS = 300;
 const commonVideosWeekOf = '2026-09-21';
 const commonVideos = [
   {
-    id: 'find-my-tokyo', title: 'Find my Tokyo. チャレンジャーズ', creator: '東京メトロ / 2024',
-    hook: '知っている街の、まだ知らない楽しみ方へ。',
-    note: '東京メトロが東京の新しい魅力を見つける企画として公開した企業広告です。このサイトの5街だけを扱う映像ではありません。',
-    videoId: 'RpSlspjIeG8', sources: ['https://www.tokyometro.jp/news/2024/218221.html']
+    id: 'panasonic-life', title: 'Panasonic Quality「Life篇」', creator: 'パナソニック / 60秒',
+    hook: '名もない一日の、小さな営みと人の表情を見る。',
+    note: '暮らしの場面を描いたパナソニックの企業広告です。商品情報ではなく、人の生活を映した短編として選んでいます。',
+    videoId: 'Bu5LNJYGY8k', durationSeconds: 60,
+    sources: ['https://channel.panasonic.com/jp/'], checkedAt: '2026-09-22'
   },
   {
     id: 'toyota-loving-eyes', title: 'Loving Eyes', creator: 'TOYOTA / ブランドムービー',
     hook: '同じ道のりを、父と娘それぞれの目線で見つめる。',
-    note: '自動車の安全技術を伝える企業広告で、父と娘の時間を二つの視点から描いた作品です。特定の街への案内ではありません。',
-    videoId: 'mh_QCvulKSY', sources: []
+    note: '父と娘それぞれの視点を往復するブランドムービー。3分を超えるため、物語としての完成度を理由に5分以内の例外枠で掲載します。',
+    videoId: 'mh_QCvulKSY', durationSeconds: 206,
+    durationExceptionReason: '3分26秒。父と娘の二つの視点を一つの物語として見せる構成のため、5分以内の例外枠。',
+    sources: ['https://global.toyota/jp/detail/8775691/'], checkedAt: '2026-09-22'
   },
   {
-    id: 'kiyosumi-kotomise', title: 'ことみせ～清澄白河エリア・深川資料館通り～', creator: '江東区公式チャンネル / 2026',
-    hook: '店を巡る目線から、清澄白河の今の通りへ。',
-    note: '江東区の区政情報番組「江東ワイドスクエア」が、清澄白河エリアと深川資料館通りの店や通りを紹介した2026年の公式映像です。',
-    videoId: 'bLuK6QHKc7E', sources: ['https://www.city.koto.lg.jp/011502/kuse/koho/katsudo/catv/wide-square.html'],
-    checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
+    id: 'inokashira-park-voice', title: '井の頭公園100周年記念放送の記録', creator: 'MIRAI records / 57秒',
+    hook: '公園に流れた声を、57秒の記録から聴く。',
+    note: '井の頭公園の100周年記念放送を記録した57秒のサンプル映像です。現在の園内放送やライブ配信ではありません。',
+    videoId: '80y5COiKdDw', durationSeconds: 57, reusedFrom: 'kichijoji/park-voice',
+    sources: ['https://yakushimaruetsuko.com/archives/2398/'], checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
   }
-].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-08', playbackChecked: false}));
+].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, playbackChecked: false}));
+
+function videoDurationEligible(item) {
+  const seconds = item && item.durationSeconds;
+  if (!Number.isInteger(seconds) || seconds <= 0 || seconds > VIDEO_HARD_MAX_SECONDS) return false;
+  if (seconds > VIDEO_DEFAULT_MAX_SECONDS && !item.durationExceptionReason) return false;
+  return true;
+}
 const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({
   city, kind, id, title, creator, hook, relation, relationNote, url, action,
   sources: [...new Set([...sources, ...(url.startsWith('https:') ? [url] : [])])],
@@ -192,7 +204,9 @@ const textOnlyBooks = {
   // Out of copyright and readable in full where it is linked, so there is no cover to
   // reproduce and nothing between the reader and the text. Relation verified by the
   // Founder against the ward's own cultural map, 2026-09-10.
-  'shimokitazawa/nekomachi': {source:'https://www.aozora.gr.jp/cards/000067/card641.html', checkedAt:'2026-09-10', action:'青空文庫で全文を読む'}
+  'shimokitazawa/nekomachi': {source:'https://www.aozora.gr.jp/cards/000067/card641.html', checkedAt:'2026-09-10', action:'青空文庫で全文を読む'},
+  'shimokitazawa/indies': {source:'https://www.j-n.co.jp/books/978-4-408-55758-8/', checkedAt:'2026-09-22'},
+  'jinbocho/kaijin': {source:'https://www.tsogen.co.jp/np/isbn/9784488406080', checkedAt:'2026-09-22'}
 };
 video('shimokitazawa', 'bocchi-main-pv', 'ぼっち・ざ・ろっく！｜TVアニメ本PV', 'アニプレックス / 2022', 'ひとりのギターが、バンドの音になる。下北沢を舞台にした物語の入口へ。', '下北沢が舞台のアニメ', '公式サイトが下北沢を作品の舞台として紹介しています。これはTVアニメの紹介PVで、本編や実在のライブ公演映像ではありません。映像内の放送告知は公開当時の情報です。', '1-o7fmQqSNg', ['https://bocchi.rocks/movie/', 'https://bocchi.rocks/kessokuband/info/?article_id=65508']);
 items[items.length-1].checkedAt='2026-09-09';
@@ -207,6 +221,15 @@ for(const item of items) {
   item.checkedAt=review.checkedAt;
   item.action=review.action||(item.id==='honnoniwa'?'出版社で紹介・試し読みを見る':'出版社で書籍情報を見る');
 }
+const reviewedVideoDurations = {
+  'kichijoji/park-voice': {durationSeconds:57},
+  'shimokitazawa/kitazawa-guide': {durationSeconds:259, durationExceptionReason:'約4分19秒。自治体公式の地区案内として5分以内の例外枠。'}
+};
+for (const item of items.filter(item => item.kind === 'video')) {
+  const review = reviewedVideoDurations[item.city+'/'+item.id];
+  if (review) Object.assign(item, review);
+}
+
 const covers = require('./work-cover-source.json');
 // 公開日。`checkedAt` は出典を読んだ日で、棚に出した日ではない。読者にとっての
 // 「新しく入った」はこちらで決まるので、別に持つ。
@@ -272,10 +295,11 @@ const declinedItems = {
   'kichijoji/catwalk':      '書名が街を言い、関係は物語の舞台のみ'
 };
 const canPublish = item => !declinedItems[item.city+'/'+item.id]
+  && (item.kind !== 'video' || videoDurationEligible(item))
   && Boolean(item.videoId || item.trailerVideoId || covers[item.city+'/'+item.id]?.status === 'usable' || item.presentation==='text-only');
 const excludedItems = items.filter(item => !canPublish(item));
 // Two different reasons sit behind an unpublished object, and reading them as one
 // caused a candidate review to report these five as "only missing a cover".
 const declined = excludedItems.filter(i => declinedItems[i.city+'/'+i.id]);
 const pendingItems = excludedItems.filter(i => !declinedItems[i.city+'/'+i.id]);
-module.exports = { items: items.filter(canPublish), excludedItems, declinedItems, declined, pendingItems, commonVideos, commonVideosWeekOf, blockedVideoIds, checkedAt: '2026-09-08' };
+module.exports = { items: items.filter(canPublish), excludedItems, declinedItems, declined, pendingItems, commonVideos, commonVideosWeekOf, blockedVideoIds, videoDurationEligible, VIDEO_DEFAULT_MAX_SECONDS, VIDEO_HARD_MAX_SECONDS, checkedAt: '2026-09-08' };
