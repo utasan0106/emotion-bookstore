@@ -472,7 +472,8 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
 // 読者にとって一つのものである。会場は会期で消えないので、この索引は空にならない。
 {
   const {verify: verifyVenues} = require('./venue-source');
-  const {events: venueEvents, cities: venueCities} = require('./weekly-outings-source');
+  const {events: venueAllEvents, cities: venueCities, isPublishableEvent: venuePublishable} = require('./weekly-outings-source');
+  const venueEvents = venueAllEvents.filter(venuePublishable);
   const {dates: venueDates} = require('../outings/week');
   for (const v of verifyVenues(items)) {
     const works = v.works.map(id => items.find(i => i.city === v.city && i.id === id));
