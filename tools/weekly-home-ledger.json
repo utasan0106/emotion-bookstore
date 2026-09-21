@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "weeks": [
+    {
+      "weekOf": "2026-09-14",
+      "topFeatureId": "parks",
+      "curiosityIds": [
+        "tsukibunsha-interview",
+        "boris-shelter",
+        "koenji-awa-2026"
+      ],
+      "curiosityKinds": [
+        "book",
+        "music",
+        "video"
+      ],
+      "shortVideoIds": [
+        "find-my-tokyo",
+        "toyota-loving-eyes",
+        "panasonic-life"
+      ]
+    },
+    {
+      "weekOf": "2026-09-21",
+      "topFeatureId": "mot-collection-light",
+      "curiosityIds": [
+        "morisaki",
+        "ginga",
+        "kiyosumi-kotomise"
+      ],
+      "curiosityKinds": [
+        "book",
+        "film",
+        "video"
+      ],
+      "shortVideoIds": [
+        "find-my-tokyo",
+        "toyota-loving-eyes",
+        "kiyosumi-kotomise"
+      ]
+    }
+  ]
+}
