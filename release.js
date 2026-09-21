@@ -24,7 +24,7 @@
       link.appendChild(name); link.appendChild(arrow); nav.appendChild(link);
     });
     var title = document.querySelector('#siteMenuTitle');
-    if (title && /^\\d+つの街$/.test(title.textContent.trim())) title.textContent = CONTENT.shelves.length + 'つの街';
+    if (title && /^\d+つの街$/.test(title.textContent.trim())) title.textContent = CONTENT.shelves.length + 'つの街';
   }
   syncCityMenuFromContent();
 
