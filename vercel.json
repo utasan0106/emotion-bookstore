@@ -51,8 +51,118 @@
       "permanent": false
     },
     {
-      "source": "/discover/short-films/panasonic-life.html",
-      "destination": "/discover/short-films/kiyosumi-kotomise.html",
+      "source": "/discover/koenji/awa-2025.html",
+      "destination": "/discover/koenji/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/koenji/tenguren.html",
+      "destination": "/discover/koenji/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/koenji/awa-history.html",
+      "destination": "/discover/koenji/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/koenji/pal-street.html",
+      "destination": "/discover/koenji/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/koenji/street-food.html",
+      "destination": "/discover/koenji/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/koenji/next-town-koenji.html",
+      "destination": "/discover/koenji/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/shimokitazawa/shelter-news.html",
+      "destination": "/discover/shimokitazawa/video.html",
+      "permanent": false
+    },
+    {
+      "source": "/discover/shimokitazawa/tefu-1500.html",
+      "destination": "/discover/shimokitazawa/video.html",
+      "permanent": false
+    },
+    {
+      "source": "/discover/shimokitazawa/obonro-walk.html",
+      "destination": "/discover/shimokitazawa/video.html",
+      "permanent": false
+    },
+    {
+      "source": "/discover/shimokitazawa/womenslib-interview.html",
+      "destination": "/discover/shimokitazawa/video.html",
+      "permanent": false
+    },
+    {
+      "source": "/discover/shimokitazawa/bocchi-main-pv.html",
+      "destination": "/discover/shimokitazawa/video.html",
+      "permanent": false
+    },
+    {
+      "source": "/discover/kichijoji/uplink.html",
+      "destination": "/discover/kichijoji/video.html",
+      "permanent": false
+    },
+    {
+      "source": "/discover/kichijoji/kichion-ichihara.html",
+      "destination": "/discover/kichijoji/video.html",
+      "permanent": false
+    },
+    {
+      "source": "/discover/kichijoji/kichion-toranoko.html",
+      "destination": "/discover/kichijoji/video.html",
+      "permanent": false
+    },
+    {
+      "source": "/discover/kichijoji/kichion-lady.html",
+      "destination": "/discover/kichijoji/video.html",
+      "permanent": false
+    },
+    {
+      "source": "/discover/kichijoji/musashino-green.html",
+      "destination": "/discover/kichijoji/video.html",
+      "permanent": false
+    },
+    {
+      "source": "/discover/jinbocho/gyokueido.html",
+      "destination": "/discover/jinbocho/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/jinbocho/italia.html",
+      "destination": "/discover/jinbocho/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/jinbocho/jinbocho-1960s.html",
+      "destination": "/discover/jinbocho/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/jinbocho/iwanami-hall.html",
+      "destination": "/discover/jinbocho/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/jinbocho/used-book-festival.html",
+      "destination": "/discover/jinbocho/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/find-my-tokyo.html",
+      "destination": "/discover/short-films/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/kiyosumi-kotomise.html",
+      "destination": "/discover/kiyosumi/",
       "permanent": false
     }
   ],
