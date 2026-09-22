@@ -42,11 +42,11 @@
     standardMaxSeconds:180,
     absoluteMaxSeconds:300,
     approved:{
-      'common/find-my-tokyo':{
-        videoId:'CMM0QCw99c4',durationSeconds:30,
-        durationSource:'https://yutura.net/channel/15597/latest/?p=6',
-        sourceUrl:'https://www.youtube.com/watch?v=CMM0QCw99c4',
-        reason:'東京メトロ公式の街歩きキャンペーンCM。'
+      'common/thanks-tokyo':{
+        videoId:'pCDd7LkhkfE',durationSeconds:30,
+        durationSource:'https://www.youtube.com/watch?v=pCDd7LkhkfE',
+        sourceUrl:'https://www.youtube.com/watch?v=pCDd7LkhkfE',
+        reason:'東京都産業労働局公式の30秒観光映像。タイトル自体に30秒版と明記。'
       },
       'common/tokyo-metro-newline':{
         videoId:'rjFh_eBwV_k',durationSeconds:30,
