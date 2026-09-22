@@ -30,9 +30,9 @@ window.V3_RELEASE_CONTENT = {
   weeklyEdition: {
     weekOf: '2026-09-21',
     topFeatureId: 'mot-collection-light',
-    curiosityIds: ['morisaki', 'ginga', 'kiyosumi-kotomise'],
+    curiosityIds: ['morisaki', 'ginga', 'park-voice'],
     curiosityKinds: ['book', 'film', 'video'],
-    shortVideoIds: ['find-my-tokyo', 'toyota-loving-eyes', 'kiyosumi-kotomise']
+    shortVideoIds: ['thanks-tokyo', 'find-my-tokyo-30', 'nihonbashi-kayak']
   },
   // 種類は新しい無限棚ではなく、いま公開中の15件を横断して見るための
   // 有限な索引。初回はこの5つだけで、順番も固定する。
@@ -503,7 +503,7 @@ window.V3_RELEASE_CONTENT = {
       weeklyFeature: {
         eventType: '落語',
         title: 'らくご江戸めぐり',
-        media: {src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', alt: '清澄庭園の池と庭園の景色'},
+        media: {src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/KiyosumiGarden6.JPG/960px-KiyosumiGarden6.JPG', alt: '清澄庭園の池と庭園の景色'},
         titlePhrases: ['らくご', '江戸めぐり'],
         calendarDates: '20260926/20260927',
         dateLabel: '9月26日（土） 14:00開演',
@@ -516,17 +516,17 @@ window.V3_RELEASE_CONTENT = {
       },
       entryMedia: {
         kind: 'photo',
-        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', width: 640, height: 414,
+        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/KiyosumiGarden6.JPG/960px-KiyosumiGarden6.JPG', width: 960, height: 643,
         alt: '池の水面と飛び石、樹木が見える清澄庭園の景色',
-        provenance: 'Kakidai / Wikimedia Commons / CC BY-SA 4.0 / 2015-08-10'
+        provenance: 'Ippukucho / Wikimedia Commons / CC BY 3.0 / 2013-02-22'
       },
       heroMedia: {
-        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', width: 640, height: 414,
+        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/KiyosumiGarden6.JPG/960px-KiyosumiGarden6.JPG', width: 960, height: 643,
         alt: '池の水面と飛び石、樹木が見える清澄庭園の景色',
-        author: 'Kakidai', source: 'Wikimedia Commons',
-        sourceUrl: 'https://commons.wikimedia.org/wiki/File:Kiyosumi_Teien_-_Japanese_gardern_4.JPG',
-        license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
-        modification: 'Wikimedia Commonsの640px縮小版をそのまま参照。表示時のみCSSでトリミング。'
+        author: 'Ippukucho', source: 'Wikimedia Commons',
+        sourceUrl: 'https://commons.wikimedia.org/wiki/File:KiyosumiGarden6.JPG',
+        license: 'CC BY 3.0', licenseUrl: 'https://creativecommons.org/licenses/by/3.0/',
+        modification: 'Wikimedia Commonsが提供する640×414プレビューを参照。表示失敗時は同一オリジンの清澄白河図版へfail-closedし、表示時のみCSSでトリミング。'
       },
       objects: [
         {
