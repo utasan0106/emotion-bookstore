@@ -4,25 +4,33 @@ const items = [];
 const commonVideosWeekOf = '2026-09-21';
 const commonVideos = [
   {
-    id: 'find-my-tokyo', title: 'Find my Tokyo. チャレンジャーズ', creator: '東京メトロ / 2024',
-    hook: '知っている街の、まだ知らない楽しみ方へ。',
-    note: '東京メトロが東京の新しい魅力を見つける企画として公開した企業広告です。このサイトの5街だけを扱う映像ではありません。',
-    videoId: 'RpSlspjIeG8', sources: ['https://www.tokyometro.jp/news/2024/218221.html']
+    id: 'thanks-tokyo', title: 'THANKS,TOKYO.【30秒ver】', creator: '東京都産業労働局 / 30秒',
+    hook: '東京を楽しむ人と、街を支える人の姿から、外へ出るきっかけを。',
+    note: '東京都産業労働局公式チャンネルが公開する30秒版。観光を支える人と東京を楽しむ人を描く短編として選びます。',
+    videoId: 'pCDd7LkhkfE', durationSeconds: 30,
+    durationSource: 'https://www.youtube.com/watch?v=pCDd7LkhkfE',
+    sources: ['https://www.youtube.com/watch?v=pCDd7LkhkfE'],
+    checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
   },
   {
-    id: 'toyota-loving-eyes', title: 'Loving Eyes', creator: 'TOYOTA / ブランドムービー',
-    hook: '同じ道のりを、父と娘それぞれの目線で見つめる。',
-    note: '自動車の安全技術を伝える企業広告で、父と娘の時間を二つの視点から描いた作品です。特定の街への案内ではありません。',
-    videoId: 'mh_QCvulKSY', sources: []
+    id: 'find-my-tokyo-30', title: 'メトロで、ちょい冒険！「Find my Tokyo.チャレンジャーズ」篇', creator: '東京メトロ / 30秒',
+    hook: '知っている街を、もう一度知らない街として歩いてみる。',
+    note: '東京メトロ公式チャンネルの「Find my Tokyo.」キャンペーン映像。少し足を伸ばして東京の街を発見する気分をつくる30秒映像として選びます。',
+    videoId: 'CMM0QCw99c4', durationSeconds: 30,
+    durationSource: 'https://www.youtube.com/watch?v=CMM0QCw99c4',
+    sources: ['https://www.tokyometro.jp/news/2024/218221.html', 'https://www.youtube.com/watch?v=CMM0QCw99c4'],
+    checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
   },
   {
-    id: 'kiyosumi-kotomise', title: 'ことみせ～清澄白河エリア・深川資料館通り～', creator: '江東区公式チャンネル / 2026',
-    hook: '店を巡る目線から、清澄白河の今の通りへ。',
-    note: '江東区の区政情報番組「江東ワイドスクエア」が、清澄白河エリアと深川資料館通りの店や通りを紹介した2026年の公式映像です。',
-    videoId: 'bLuK6QHKc7E', sources: ['https://www.city.koto.lg.jp/011502/kuse/koho/katsudo/catv/wide-square.html'],
+    id: 'nihonbashi-kayak', title: 'Challenge644　カヤックで日本橋をくぐろう！', creator: '東京メトロ / 18秒',
+    hook: 'いつもの東京を、水の上から見直してみる。',
+    note: '東京メトロ公式チャンネルが公開する日本橋川のカヤック体験映像。実際の街へ出て、いつもと違う角度から東京を見るきっかけとして選びます。',
+    videoId: 'C04p6ftcKvA', durationSeconds: 18,
+    durationSource: 'https://www.youtube.com/watch?v=C04p6ftcKvA',
+    sources: ['https://www.youtube.com/watch?v=C04p6ftcKvA'],
     checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
   }
-].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-08', playbackChecked: false}));
+].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-22', playbackChecked: false}));
 const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({
   city, kind, id, title, creator, hook, relation, relationNote, url, action,
   sources: [...new Set([...sources, ...(url.startsWith('https:') ? [url] : [])])],
