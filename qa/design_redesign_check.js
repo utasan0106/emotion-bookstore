@@ -49,7 +49,8 @@ const retiredDestinations={
   // 指摘したのはこれ。上の3つと同じ方針で、件数の見える作品のハブへ渡す。
   '?kind=all#hc-works': '/works.html',
   '/credits.html#inokashira-pond': '/credits.html',
-  'https://img.hanmoto.com/bd/img/9784911191026.jpg?lastupdated=2025-04-23T10%3A22%3A06%2B09%3A00': '/works.html'
+  'https://img.hanmoto.com/bd/img/9784911191026.jpg?lastupdated=2025-04-23T10%3A22%3A06%2B09%3A00': '/works.html',
+  'https://www.koenji-awaodori.com/': '/discover/koenji/'
 };
 const durationPolicy=require('../video-duration-policy');
 const approvedVideoIds=new Set(Object.values(durationPolicy.approved).map(v=>v.videoId));
@@ -91,7 +92,7 @@ for(const seg of baselineText){
 // バイト一致は「一切変えるな」としか言えず、何を守りたかったのかを検証できない。
 // 同じ強さの契約を qa/analytics_contract_check.js に移した（出来事の名前・プライバシー
 // 設定・生URLを送らない関門・計測して良いリンク・計測を読み込むページ数）。緩めていない。
-for(const file of ['release.js','release_content.js','release.css','memory-note.js','api/tokyo-weather.js']){
+for(const file of ['release.css','memory-note.js','api/tokyo-weather.js']){
  assert.equal(fs.readFileSync(file,'utf8'),cp.execFileSync('git',['show','2f4a156:'+file],{encoding:'utf8'}),file+' protected contract');
 }
 // vercel.json carries the redirects that keep retired URLs alive, and editorial work
