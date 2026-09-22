@@ -1,8 +1,9 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path');
 const {audiences,events:allEvents,cities,kinds,isPublishableEvent}=require('./weekly-outings-source');
-const events=allEvents.filter(isPublishableEvent);
-const {dates}=require('../outings/week');
+const week=require('../outings/week'),{dates}=week;
+const today=week.date(Date.now());
+const events=allEvents.filter(e=>isPublishableEvent(e)&&e.status==='scheduled'&&e.checkedAt<=today&&e.reviewThrough>=today&&dates(e).at(-1)>=today);
 const chrome=require('./page-chrome');
 const {mediaFor,postFor}=require('./event-media-source');
 const siteOgp=require('./site-ogp');
@@ -59,7 +60,7 @@ const schemaTag=o=>`<script type="application/ld+json">${JSON.stringify(o).repla
 function photo(e){const m=mediaFor(e);if(!m||!fs.existsSync(path.join(root,m.src)))throw Error('Missing sourced event photo: '+e.id);return `<figure class="event-photo"><img src="${m.src}" alt="${esc(m.alt)}" width="${m.width}" height="${m.height}" loading="lazy" decoding="async"><figcaption>${esc(m.caption)}</figcaption></figure>`;}
 function embed(e){const p=postFor(e);return p?`<section class="event-artwork" aria-label="作家による展覧会の紹介"><h2>作家が紹介する、展覧会の世界</h2><p>${p.author}さんの公開投稿（Instagram）</p><div class="wk-video v3-video" data-embed-src="${p.embed}" data-video-title="${p.author}さんによる谷口智則展の紹介" data-embed-referrerpolicy="no-referrer" data-embed-allow="encrypted-media" data-embed-sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"><div class="v3-video-frame"><button class="v3-video-load wk-video-load" type="button">${p.author}さんの投稿を開く<span class="wk-mark" aria-hidden="true"> ▶</span></button></div></div><p class="official-media-note">押すまでInstagramへ接続しません。押すと、このページ内で投稿が開きます。</p><p><a href="${p.url}" target="_blank" rel="noopener noreferrer">Instagramで元の投稿を見る ↗</a></p></section>`:'';}
 for(const e of events){
- const related=(e.related||[]).map(r=>{const target=events.find(t=>t.id===r.id);if(!target)throw Error('Missing related event');return `<a class="connection" href="${linkFor(target)}"><small>${cities[target.city]} · 同じ作り手・公演から</small><h3>${esc(target.title)} →</h3><p>${esc(r.reason)}</p></a>`;}).join('');
+ const related=(e.related||[]).flatMap(r=>{const target=events.find(t=>t.id===r.id);return target?[`<a class="connection" href="${linkFor(target)}"><small>${cities[target.city]} · 同じ作り手・公演から</small><h3>${esc(target.title)} →</h3><p>${esc(r.reason)}</p></a>`]:[];}).join('');
  const works=(e.workLinks||[]).map(w=>{if(!fs.existsSync(path.join(root,w.url)))throw Error('Missing work '+w.url);return `<a class="connection" href="${w.url}"><h3>${esc(w.label)} →</h3><p>${esc(w.reason)}</p></a>`;}).join('');
  write('events/'+e.id+'.html',`<a class="back" data-event-back href="/outings/?city=${e.city}">イベントを選び直す ←</a><article class="event-detail"><p class="eyebrow">${cities[e.city]} / ${esc(e.kind)}</p><h1>${esc(e.title)}</h1><p class="detail-hook">${esc(e.hook)}</p><a class="primary" href="${esc(e.url)}" target="_blank" rel="noopener noreferrer">公式で開催情報・予約を確認 ↗</a><div class="event-visual">${postFor(e)?embed(e):photo(e)}</div><p class="event-state" data-event-status="${e.id}">開催予定 · ${dates(e)[0]}〜${dates(e).at(-1)}</p><dl class="event-facts"><div><dt>開催日</dt><dd>${esc(e.schedule)}</dd></div><div><dt>会場</dt><dd>${esc(e.venue)} · ${cities[e.city]}</dd></div></dl><section class="event-context"><h2>この街で、なぜこの催し？</h2><p>${esc(e.relation)}</p></section><p>${esc(e.practical)}</p>${postFor(e)?`<div class="event-visual">${photo(e)}</div>`:''}<p class="checked">主催者・会場の情報確認：${e.checkedAt}。開催変更と空席は公式案内をご確認ください。</p><details class="companion-note"><summary>誰と楽しむ？</summary><p>${e.audiences.map(a=>audiences.find(x=>x.id===a).label).join(' / ')}</p><p>${esc(e.companionNote)}</p><small>過ごし方は編集上の提案です。年齢・入場条件は上の公式案内に従ってください。</small></details>${related||works?`<section class="event-connections"><h2>この作品から、もう一歩</h2>${related}${works}</section>`:''}</article>`,e.title,false,schemaTag(eventSchema(e)),eventDescription(e));
 }
