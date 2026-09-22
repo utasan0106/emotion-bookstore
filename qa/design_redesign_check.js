@@ -107,7 +107,7 @@ const revisedText={
   '作品と吉祥寺のつながり':
   '作品と街のつながりを読む',
   '公式予告をYouTubeで観る':
-  '予告編（本編ではありません）をYouTubeで開く'
+  '公式予告と公園の声を観る'
 };
 for(const seg of baselineText){
  if(everything.includes(seg)) continue;
