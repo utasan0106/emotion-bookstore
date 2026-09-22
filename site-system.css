@@ -200,3 +200,13 @@ body.site-polished:is(.shelf-page,.works-page,.thread-page,.suggest-page){--ink:
 .site-polished .city-editorials summary{color:#262626}
 .site-polished .other-cities{margin-top:40px}
 @media(max-width:600px){.site-polished .research-article{font-size:1rem}.site-polished .research-article h2{font-size:1.25rem}}
+
+
+/* Broken external media must degrade to readable content, never a broken-image icon. */
+.media-unavailable{
+  margin:.75rem 0;
+  padding:.75rem;
+  border:1px solid currentColor;
+  font-size:.875rem;
+  line-height:1.6;
+}
