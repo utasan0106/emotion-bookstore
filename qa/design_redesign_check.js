@@ -55,7 +55,9 @@ const retiredDestinations={
 };
 for(const l of baselineLinks){
  if(currentLinks.has(l)) continue;
- const replacement=retiredDestinations[l];
+ const replacement=retiredDestinations[l] || (/^\/outings\/events\/[a-z0-9-]+\.html$/.test(l) ? '/outings/' : undefined);
+ // 2026-09-22：終了・再確認期限切れの催し詳細は検索/runtimeから物理削除する。
+ // 旧URLを無関係な現行ページへHTTP redirectせず、サイト内には現在の催し一覧を残す。
  assert.ok(replacement,'destination no longer anywhere on the site: '+l);
  assert.ok(currentLinks.has(replacement),'retired destination '+l+' names a replacement that is not linked: '+replacement);
 }
