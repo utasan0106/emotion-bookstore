@@ -36,7 +36,10 @@ for (const id of entries) {
   assert.ok(body.includes('href="./works.html#' + id + '"'));
   const city = {book:'神保町', film:'神保町', music:'下北沢', video:'吉祥寺'}[id];
   assert.ok(body.includes(city));
-  assert.match(body,/<figure class="official-media/);
+  if(id==='book'){
+    assert.match(body,/出版社で本の紹介を見る/,'Text-only book keeps its official publisher exit');
+    assert.doesNotMatch(body,/<img\b[^>]+(?:j-n\.co\.jp|tsogen\.co\.jp)/,'Text-only book must not hotlink an unstable publisher cover');
+  } else assert.match(body,/<figure class="official-media/);
   assert.doesNotMatch(clean(html),/autoplay=1|rel="preconnect"/);
 
 }
