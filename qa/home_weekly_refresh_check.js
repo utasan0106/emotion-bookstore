@@ -54,7 +54,7 @@ for(const url of [
   'https://emotionbookstore.com/shelf.html?shelf=kiyosumi',
   'https://emotionbookstore.com/discover/kiyosumi/',
   'https://emotionbookstore.com/discover/short-films/',
-  'https://emotionbookstore.com/discover/short-films/nihonbashi-kayak.html'
+  'https://emotionbookstore.com/discover/short-films/inokashira-park-voice.html'
 ]){
   const pos=sitemap.indexOf('<loc>'+url+'</loc>');
   assert.ok(pos>=0,'Fresh weekly surface missing from sitemap: '+url);
