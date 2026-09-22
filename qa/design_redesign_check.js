@@ -119,7 +119,9 @@ const revisedText={
   '作品と吉祥寺のつながり':
   '作品と街のつながりを読む',
   '公式予告をYouTubeで観る':
-  '公式予告と公園の声を観る'
+  '公式予告と公園の声を観る',
+  'みんなの感情書店｜作品から入る':
+  '東京の本・映画・音楽・映像｜みんなの感情書店'
 };
 for(const seg of baselineText){
  if(everything.includes(seg)) continue;
