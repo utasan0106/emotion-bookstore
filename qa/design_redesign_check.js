@@ -49,7 +49,9 @@ const retiredDestinations={
   // 指摘したのはこれ。上の3つと同じ方針で、件数の見える作品のハブへ渡す。
   '?kind=all#hc-works': '/works.html',
   // 2026-09-22：HOME画像直下の個別クレジットを表面から外し、詳細はCreditsへ集約。
-  '/credits.html#inokashira-pond': '/credits.html'
+  '/credits.html#inokashira-pond': '/credits.html',
+  // 2026-09-22：HOMEから外した外部書影URLは、権利・出典をCreditsへ集約。
+  'https://img.hanmoto.com/bd/img/9784911191026.jpg?lastupdated=2025-04-23T10%3A22%3A06%2B09%3A00': '/credits.html'
 };
 for(const l of baselineLinks){
  if(currentLinks.has(l)) continue;
