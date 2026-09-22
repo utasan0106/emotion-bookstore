@@ -32,7 +32,7 @@ window.V3_RELEASE_CONTENT = {
     topFeatureId: 'mot-collection-light',
     curiosityIds: ['morisaki', 'ginga', 'park-voice'],
     curiosityKinds: ['book', 'film', 'video'],
-    shortVideoIds: ['thanks-tokyo', 'find-my-tokyo-30', 'nihonbashi-kayak']
+    shortVideoIds: ['thanks-tokyo', 'tokyo-metro-newline', 'inokashira-park-voice']
   },
   // 種類は新しい無限棚ではなく、いま公開中の15件を横断して見るための
   // 有限な索引。初回はこの5つだけで、順番も固定する。
