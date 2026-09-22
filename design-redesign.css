@@ -2,9 +2,10 @@
 .design-redesign {
   --dr-ink:#222522; --dr-muted:#565d56; --dr-rule:#d9ded8;
   --dr-accent:#285b43; --dr-paper:#fff;
-  --dr-display:"EB Display","Hiragino Mincho ProN","Noto Serif CJK JP","Yu Mincho",serif;
+  --dr-display:var(--font-display,"EB Display","Hiragino Mincho ProN","Noto Serif CJK JP","Yu Mincho",serif);
+  --dr-body:var(--font-body,"EB Reading",-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif);
   --hd-accent:var(--dr-accent); --hd-ink:var(--dr-ink); --hd-muted:var(--dr-muted);
-  background:var(--dr-paper); color:var(--dr-ink);
+  background:var(--dr-paper); color:var(--dr-ink); font-family:var(--dr-body);
 }
 .design-redesign :is(a,button,summary):focus-visible { outline:3px solid var(--dr-accent); outline-offset:4px; }
 .design-redesign :is(h1,h2,h3,p,a,summary) { overflow-wrap:anywhere; }
@@ -228,3 +229,59 @@ body.design-redesign.dr-experience {color-scheme:light;--ink:#222522;--paper:#22
 .dr-experience .scene-choices button[aria-pressed="true"] span {color:#fff}
 .dr-experience .return {background:#f4f6f3;color:var(--dr-ink)}
 .dr-experience .return .eyebrow {color:var(--dr-accent)}
+
+/* Canonical public typography — 2026-09-22
+   Scope: HOME + public catalogue/city/article surfaces.
+   Display = EB Display (Shippori Mincho); body/UI = EB Reading (Zen Kaku Gothic).
+   Sizes come from page-nav.css tokens. Specialized shelf compositions remain outside this override. */
+body.design-redesign.home-discovery,
+body.design-redesign.site-polished{
+  font-family:var(--font-body);
+  font-size:var(--type-body);
+  line-height:var(--leading-body);
+}
+body.design-redesign.home-discovery :is(.dr-feature-title,.hd-section-head h2,.hd-entry h2,.hd-city span,.hd-history h2),
+body.design-redesign.site-polished :is(h1,h2,h3,.wk-object,.wk-title,.th-title,.th-object-title){
+  font-family:var(--font-display);
+  font-weight:500;
+}
+body.design-redesign.site-polished :is(.intro h1,.detail h1,.event-detail h1,.wk-title,.th-title,.about-copy h1){
+  font-size:var(--type-page-title);
+  line-height:var(--leading-heading);
+}
+body.design-redesign.home-discovery :is(.hd-section-head h2),
+body.design-redesign.site-polished :is(.city-caption h2,.research-card h2,.event-context h2,.event-connections h2,.about-copy h2){
+  font-size:var(--type-section-title);
+  line-height:var(--leading-heading);
+}
+body.design-redesign.home-discovery .hd-entry h2,
+body.design-redesign.site-polished :is(.card-body h2,.event-card h2,.saved-card h2){
+  font-size:var(--type-card-title);
+  line-height:var(--leading-heading);
+}
+body.design-redesign.home-discovery :is(.hd-purpose,.hd-meta,.hd-creator,.hd-credit),
+body.design-redesign.site-polished :is(.eyebrow,.relation,.creator,.detail-creator,.checked,.source,.footer){
+  font-family:var(--font-body);
+  font-size:var(--type-meta);
+}
+body.design-redesign.home-discovery :is(.hd-header-actions a,.hd-actions a,.hd-section-head>a),
+body.design-redesign.site-polished :is(.category-nav a,.card-links>a,.page-tools a){
+  font-family:var(--font-body);
+  font-size:var(--type-ui);
+}
+body.design-redesign.home-discovery :is(.hd-feature-note,.hd-description),
+body.design-redesign.site-polished :is(.card-hook,.detail-hook,.collection-lead,.lead){
+  font-family:var(--font-body);
+  font-size:var(--type-body);
+  line-height:var(--leading-body);
+}
+body.design-redesign.site-polished .research-reading p{
+  font-family:var(--font-body);
+  font-size:var(--type-lead);
+  line-height:var(--leading-reading);
+}
+/* Editorial surface rule: image source/rights metadata belongs in Credits/data-source areas. */
+body.design-redesign.home-discovery .dr-cover-photo figcaption,
+body.design-redesign.home-discovery .hd-entry figcaption{
+  display:none;
+}
