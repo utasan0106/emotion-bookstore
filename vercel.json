@@ -57,7 +57,7 @@
     },
     {
       "source": "/discover/short-films/find-my-tokyo.html",
-      "destination": "/discover/short-films/find-my-tokyo-30.html",
+      "destination": "/discover/short-films/",
       "permanent": false
     },
     {
