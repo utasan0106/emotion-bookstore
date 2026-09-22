@@ -262,8 +262,8 @@ const approvedHomeMedia=new Set([
  'https://www.youtube.com/watch?v=dt33RGSRuo0',
  'https://www.youtube.com/watch?v=pm7RBghFt0I',
  'https://www.youtube-nocookie.com/embed/pm7RBghFt0I?autoplay=0&amp;playsinline=1&amp;rel=0',
- 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG',
- 'https://commons.wikimedia.org/wiki/File:Kiyosumi_Teien_-_Japanese_gardern_4.JPG',
+ 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/KiyosumiGarden6.JPG/960px-KiyosumiGarden6.JPG',
+ 'https://commons.wikimedia.org/wiki/File:KiyosumiGarden6.JPG',
  'https://www.mot-collection-search.jp/exhibition/',
  'https://www.youtube.com/watch?v=80y5COiKdDw'
 ]);
