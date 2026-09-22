@@ -27,6 +27,26 @@
       "permanent": false
     },
     {
+      "source": "/discover/short-films/panasonic-life.html",
+      "destination": "/discover/short-films/kiyosumi-kotomise.html",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/find-my-tokyo.html",
+      "destination": "/discover/short-films/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/toyota-loving-eyes.html",
+      "destination": "/discover/short-films/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/kiyosumi-kotomise.html",
+      "destination": "/discover/kiyosumi/",
+      "permanent": false
+    },
+    {
       "source": "/discover/koenji/cafe-junjo.html",
       "destination": "/discover/koenji/book.html",
       "permanent": false
@@ -59,26 +79,6 @@
     {
       "source": "/discover/jinbocho/shadowless-voice.html",
       "destination": "/discover/jinbocho/film.html",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/panasonic-life.html",
-      "destination": "/discover/short-films/kiyosumi-kotomise.html",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/find-my-tokyo.html",
-      "destination": "/discover/short-films/",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/toyota-loving-eyes.html",
-      "destination": "/discover/short-films/",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/kiyosumi-kotomise.html",
-      "destination": "/discover/kiyosumi/",
       "permanent": false
     }
   ],
