@@ -4,15 +4,6 @@ const items = [];
 const commonVideosWeekOf = '2026-09-21';
 const commonVideos = [
   {
-    id: 'find-my-tokyo-akasaka', title: 'Find my Tokyo.「赤坂_ツウな人生のはじまり」篇', creator: '東京メトロ / 15秒',
-    hook: '知っているつもりの赤坂に、まだ知らない過ごし方を見つける。',
-    note: '東京メトロ公式チャンネルが公開する赤坂の15秒映像。街の先入観を少しずらし、実際に歩いてみるきっかけとして選びます。',
-    videoId: 'TZRBBxcktuU', durationSeconds: 15,
-    durationSource: 'https://www.youtube.com/watch?v=TZRBBxcktuU',
-    sources: ['https://www.youtube.com/watch?v=TZRBBxcktuU'],
-    checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
-  },
-  {
     id: 'thanks-tokyo', title: 'THANKS,TOKYO.【30秒ver】', creator: '東京都産業労働局 / 30秒',
     hook: '東京を楽しむ人と、街を支える観光の仕事を30秒で見る。',
     note: '東京都産業労働局公式チャンネルが公開する30秒版。短い時間で東京へ出る入口として使います。',
@@ -29,6 +20,15 @@ const commonVideos = [
     durationSource: 'https://www.youtube.com/watch?v=rjFh_eBwV_k',
     sources: ['https://www.tokyometro-newline.jp/movie/'],
     checkedAt: '2026-09-22'
+  },
+  {
+    id: 'find-my-tokyo-akasaka', title: 'Find my Tokyo.「赤坂_ツウな人生のはじまり」篇', creator: '東京メトロ / 15秒',
+    hook: '知っているつもりの赤坂に、まだ知らない過ごし方を見つける。',
+    note: '東京メトロ公式チャンネルが公開する赤坂の15秒映像。街の先入観を少しずらし、実際に歩いてみるきっかけとして選びます。',
+    videoId: 'TZRBBxcktuU', durationSeconds: 15,
+    durationSource: 'https://www.youtube.com/watch?v=TZRBBxcktuU',
+    sources: ['https://www.youtube.com/watch?v=TZRBBxcktuU'],
+    checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
   }
 ].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-22', playbackChecked: false}));
 const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({
