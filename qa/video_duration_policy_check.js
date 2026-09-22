@@ -48,6 +48,8 @@ for(const blocked of policy.blockedPaths.filter(p=>/\/[^/]+\.html$/.test(p))) as
 const sitemap=read('sitemap.xml');
 for(const blocked of policy.blockedPaths) assert.ok(!sitemap.includes('https://emotionbookstore.com'+blocked),'blocked route in sitemap: '+blocked);
 const config=JSON.parse(read('vercel.json'));
+const redirectSources=(config.redirects||[]).map(r=>r.source);
+assert.equal(new Set(redirectSources).size,redirectSources.length,'Each redirect source must have exactly one destination');
 for(const blocked of policy.blockedPaths){
   const redirect=(config.redirects||[]).find(r=>r.source===blocked);
   assert.ok(redirect,'missing redirect for blocked video: '+blocked);
