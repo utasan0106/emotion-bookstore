@@ -22,7 +22,7 @@ shimokitazawa:[{
     'この公演は終了しています。俳優の居住地や作品の舞台設定ではなく、実際に上演された劇場との関係です。まずは当時の公式案内や、掲載中の出演者インタビューから。'
   ],
   sourceUrl:'https://otonakeikaku.net/stage/',sourceLabel:'大人計画：2023年4月の公演記録',checkedAt:'2026-09-09',
-  relatedUrl:'/discover/shimokitazawa/womenslib-interview.html',relatedLabel:'仲野太賀の公式インタビュー紹介へ'
+  relatedUrl:null,relatedLabel:null
 }],
 jinbocho:[{
   id:'mizoguchi-screen',
