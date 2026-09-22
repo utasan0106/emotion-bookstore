@@ -578,6 +578,10 @@ const durationBlocked=new Set(videoDurationPolicy.blockedPaths);
 config.redirects=(config.redirects||[]).filter(r=>!retiredPaths.has(r.source)&&!durationBlocked.has(r.source));
 for(const i of excludedItems)config.redirects.push({source:`/discover/${i.city}/${i.id}.html`,destination:items.some(x=>x.city===i.city&&x.kind===i.kind)?`/discover/${i.city}/${i.kind}.html`:`/discover/${i.city}/`,permanent:false});
 for(const source of durationBlocked){
+  // A held catalogue item already receives its canonical replacement above.
+  // Do not add a second redirect for the same source; Vercel redirect order must
+  // have one authoritative destination per retired URL.
+  if(retiredPaths.has(source)) continue;
   const category=/^\/discover\/[^/]+\/video\.html$/.test(source);
   const city=(source.match(/^\/discover\/([^/]+)\//)||[])[1];
   config.redirects.push({source,destination:category?'/discover/outing/':city?'/discover/'+city+'/':'/discover/',permanent:false});
