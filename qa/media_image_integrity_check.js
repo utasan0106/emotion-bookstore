@@ -19,10 +19,8 @@ for(const rel of files){
     if(/^https?:\/\//.test(src)){
       externalCount++;
       assert.ok(html.includes('/page-nav.js')||html.includes('./page-nav.js'),'external image needs global failure guard: '+rel);
-      if(/KiyosumiGarden6/.test(src)){
-        assert.match(src,/\/960px-KiyosumiGarden6\.JPG$/,'Kiyosumi must use the reviewed Commons preview');
-        assert.match(tag,/data-image-fallback="\/assets\/city-kiyosumi\.svg"/,'Kiyosumi external photo needs same-origin fallback');
-      }
+      assert.match(src,/^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/0\/0c\/KiyosumiGarden6\.JPG\/960px-KiyosumiGarden6\.JPG$/,'Only the reviewed Kiyosumi Commons photo may remain as an external <img>: '+src+' in '+rel);
+      assert.match(tag,/data-image-fallback="\/assets\/city-kiyosumi\.svg"/,'Every external Kiyosumi photo needs same-origin fallback');
       continue;
     }
     if(/^data:/.test(src))continue;
@@ -41,4 +39,5 @@ assert.match(nav,/dataset\.imageFallback/);
 const release=fs.readFileSync(path.join(root,'release_content.js'),'utf8');
 assert.match(release,/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/0\/0c\/KiyosumiGarden6/);
 assert.match(release,/960px-KiyosumiGarden6\.JPG/);
-console.log('PASS media image integrity: '+imageCount+' img tags, '+externalCount+' external images, local existence + fallback contracts');
+assert.ok(externalCount>0,'Kiyosumi real photo should remain visible');
+console.log('PASS media image integrity: '+imageCount+' img tags; only reviewed Kiyosumi external photo remains; all local images exist; fallback contract enforced');
