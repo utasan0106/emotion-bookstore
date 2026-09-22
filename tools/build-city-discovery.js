@@ -457,10 +457,12 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
 // 「今週の一本」は置かない。どれを推すかは編集部の判断で、生成物が決めることではない。
 {
   const {events: issueEventInventory, cities: issueCities, isPublishableEvent} = require('./weekly-outings-source');
-  const {dates: issueDates} = require('../outings/week');
+  const issueWeek = require('../outings/week');
+  const issueToday=issueWeek.date(Date.now()), issueStart=issueWeek.monday(Date.now()), issueEnd=issueWeek.add(issueStart,7);
   const issueEvents = issueEventInventory.filter(isPublishableEvent);
   const ending = issueEvents
-    .map(e => ({e, last: issueDates(e).at(-1)}))
+    .map(e => ({e, last: issueWeek.dates(e).at(-1)}))
+    .filter(({e,last}) => e.status==='scheduled' && e.checkedAt<=issueToday && e.reviewThrough>=issueToday && last>=issueToday && last<issueEnd)
     .sort((a, b) => a.last.localeCompare(b.last) || a.e.id.localeCompare(b.e.id));
   const endingRows = ending.map(({e, last}) =>
     `<li data-ends="${last}" data-review="${e.reviewThrough}"><a href="/outings/events/${e.id}.html">${esc(e.title)}</a><span class="wk-list-by">${esc(issueCities[e.city])} · ${esc(e.venue)}</span><span class="wk-list-rel">${last.slice(5).replace('-', '/')} まで</span></li>`).join('');
@@ -482,8 +484,9 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
 {
   const {verify: verifyVenues} = require('./venue-source');
   const {events: venueEventInventory, cities: venueCities, isPublishableEvent} = require('./weekly-outings-source');
-  const {dates: venueDates} = require('../outings/week');
-  const venueEvents = venueEventInventory.filter(isPublishableEvent);
+  const venueWeek = require('../outings/week');
+  const venueToday=venueWeek.date(Date.now());
+  const venueEvents = venueEventInventory.filter(e => isPublishableEvent(e) && e.status==='scheduled' && e.checkedAt<=venueToday && e.reviewThrough>=venueToday && venueWeek.dates(e).at(-1)>=venueToday);
   for (const v of verifyVenues(items)) {
     const works = v.works.map(id => items.find(i => i.city === v.city && i.id === id));
     const byKind = {};
@@ -493,7 +496,7 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
         group.map(w => `<li><a href="/discover/${w.city}/${w.id}.html">${esc(w.title)}</a><span class="wk-list-by">${esc(w.creator)}</span><span class="wk-list-rel">${esc(w.relationNote)}</span></li>`).join('')
       }</ul></section>`).join('');
     const here = venueEvents.filter(e => e.venue.includes(v.eventVenue))
-      .map(e => ({e, last: venueDates(e).at(-1), next: venueDates(e)[0]}))
+      .map(e => ({e, last: venueWeek.dates(e).at(-1), next: venueWeek.dates(e)[0]}))
       .sort((a, b) => a.next.localeCompare(b.next) || a.e.id.localeCompare(b.e.id));
     const eventRows = here.map(({e, last, next}) =>
       `<li data-event-last="${last}" data-event-review="${e.reviewThrough}"><a href="/outings/events/${e.id}.html">${esc(e.title)}</a><span class="wk-list-by">${esc(e.kind)}</span><span class="wk-list-rel">${next.slice(5).replace('-', '/')}${next === last ? '' : '〜' + last.slice(5).replace('-', '/')}</span></li>`).join('');
