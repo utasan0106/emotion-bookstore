@@ -163,8 +163,12 @@ for(const seg of baselineText){
 // バイト一致は「一切変えるな」としか言えず、何を守りたかったのかを検証できない。
 // 同じ強さの契約を qa/analytics_contract_check.js に移した（出来事の名前・プライバシー
 // 設定・生URLを送らない関門・計測して良いリンク・計測を読み込むページ数）。緩めていない。
+// Protected runtime is scoped to this change set, not frozen forever to the 2026-09-11
+// snapshot. Compare against the actual current main merge-base: an acquisition/design PR
+// may not silently touch runtime, storage, weather or private-memory behavior.
+const protectedBase=cp.execFileSync('git',['merge-base','HEAD','origin/main'],{encoding:'utf8'}).trim();
 for(const file of ['release.js','release_content.js','release.css','memory-note.js','api/tokyo-weather.js']){
- assert.equal(fs.readFileSync(file,'utf8'),cp.execFileSync('git',['show','2f4a156:'+file],{encoding:'utf8'}),file+' protected contract');
+ assert.equal(fs.readFileSync(file,'utf8'),cp.execFileSync('git',['show',protectedBase+':'+file],{encoding:'utf8'}),file+' protected contract');
 }
 // vercel.json carries the redirects that keep retired URLs alive, and editorial work
 // edits it: publishing an object replaces its redirect with the real page. So what is
