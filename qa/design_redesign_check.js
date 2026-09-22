@@ -6,6 +6,9 @@ const files=require('../tools/build-design-redesign');
 // this is checked across the whole catalogue rather than page by page: a destination
 // or a sentence may move to another page, but it may not disappear.
 const baselineLinks=new Set(),currentLinks=new Set(),baselineText=new Set(),currentText=[];
+const eventSource=require('../tools/weekly-outings-source'),eventWeek=require('../outings/week');
+const eventToday=eventWeek.date(Date.now());
+const retiredEventLinks=new Set(eventSource.events.filter(e=>!(eventSource.isPublishableEvent(e)&&e.status==='scheduled'&&e.checkedAt<=eventToday&&e.reviewThrough>=eventToday&&eventWeek.dates(e).at(-1)>=eventToday)).flatMap(e=>['/outings/events/'+e.id+'.html',e.url]));
 for(const file of files){
  const html=fs.readFileSync(file,'utf8');
  assert.equal((html.match(/href="\/design-redesign.css"/g)||[]).length,1,file+' stylesheet count');
@@ -55,7 +58,7 @@ const retiredDestinations={
 };
 for(const l of baselineLinks){
  if(currentLinks.has(l)) continue;
- const replacement=retiredDestinations[l] || (/^\/outings\/events\/[a-z0-9-]+\.html$/.test(l) ? '/outings/' : undefined);
+ const replacement=retiredDestinations[l] || (retiredEventLinks.has(l) ? '/outings/' : undefined);
  // 2026-09-22：終了・再確認期限切れの催し詳細は検索/runtimeから物理削除する。
  // 旧URLを無関係な現行ページへHTTP redirectせず、サイト内には現在の催し一覧を残す。
  assert.ok(replacement,'destination no longer anywhere on the site: '+l);
