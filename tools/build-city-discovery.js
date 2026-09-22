@@ -448,7 +448,8 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
 // **新しく入った作品**（publishedAt を書いたものだけ）。
 // 「今週の一本」は置かない。どれを推すかは編集部の判断で、生成物が決めることではない。
 {
-  const {events: issueEvents, cities: issueCities} = require('./weekly-outings-source');
+  const {events: issueAllEvents, cities: issueCities, isPublishableEvent: issuePublishable} = require('./weekly-outings-source');
+  const issueEvents = issueAllEvents.filter(issuePublishable);
   const {dates: issueDates} = require('../outings/week');
   const ending = issueEvents
     .map(e => ({e, last: issueDates(e).at(-1)}))
