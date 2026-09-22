@@ -8,10 +8,11 @@ const chrome=require('./page-chrome');
 const {mediaFor,postFor}=require('./event-media-source');
 const siteOgp=require('./site-ogp');
 const root=path.resolve(__dirname,'..'),out=path.join(root,'outings'),files=[];
-const unpublished=allEvents.filter(e=>!isPublishableEvent(e));
-for(const e of unpublished){
+const activeIds=new Set(events.map(e=>e.id));
+const inactive=allEvents.filter(e=>!activeIds.has(e.id));
+for(const e of inactive){
  const stale=path.join(out,'events',e.id+'.html');
- if(process.argv.includes('--check')){if(fs.existsSync(stale))throw Error('Pending event detail must not exist: '+e.id);}
+ if(process.argv.includes('--check')){if(fs.existsSync(stale))throw Error('Inactive event detail must not exist: '+e.id);}
  else if(fs.existsSync(stale))fs.rmSync(stale);
 }
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
