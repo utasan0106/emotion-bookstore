@@ -30,7 +30,7 @@ const commonVideos = [
     durationExceptionReason: '父と娘の同じ時間を二つの視点で描く構造が作品の核で、3分26秒でも最後まで見る理由が明確。',
     sources: []
   }
-].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-08', playbackChecked: false}));
+].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-22', playbackChecked: false}));
 const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({
   city, kind, id, title, creator, hook, relation, relationNote, url, action,
   sources: [...new Set([...sources, ...(url.startsWith('https:') ? [url] : [])])],
@@ -168,6 +168,15 @@ for (const item of items.filter(item => item.kind === 'film' && trailerIds[item.
   item.sources = [...new Set([...item.sources, item.trailerUrl])];
 }
 
+const durationPolicy = require('../video-duration-policy');
+for (const item of items.filter(item => item.kind === 'video')) {
+  const key='city/'+item.city+'/'+item.id;
+  const approved=durationPolicy.approved[key];
+  item.durationSeconds=approved?.durationSeconds || null;
+  item.durationSource=approved?.durationSource || '';
+  item.durationExceptionReason=approved?.exceptionReason || '';
+  item.durationPolicyStatus=approved?'approved':'hold';
+}
 const blockedVideoIds = ['tUe6YedzjlM', 'AuxXufx5kKQ']; // User playback evidence: private, 2026-09-08.
 for (const item of [...items, ...commonVideos]) {
   if (blockedVideoIds.includes(item.videoId) || blockedVideoIds.includes(item.trailerVideoId)) throw new Error('Private video must not be published: ' + item.id);
@@ -200,7 +209,12 @@ const textOnlyBooks = {
   // Out of copyright and readable in full where it is linked, so there is no cover to
   // reproduce and nothing between the reader and the text. Relation verified by the
   // Founder against the ward's own cultural map, 2026-09-10.
-  'shimokitazawa/nekomachi': {source:'https://www.aozora.gr.jp/cards/000067/card641.html', checkedAt:'2026-09-10', action:'青空文庫で全文を読む'}
+  'shimokitazawa/nekomachi': {source:'https://www.aozora.gr.jp/cards/000067/card641.html', checkedAt:'2026-09-10', action:'青空文庫で全文を読む'},
+  // External publisher cover hotlinks are not a reliable public-image contract.
+  // Keep the books and their official exits, but render them as text until a
+  // same-origin/reliably hosted cover is both rights-cleared and operationally stable.
+  'shimokitazawa/indies': {source:'https://www.j-n.co.jp/books/978-4-408-55758-8/', checkedAt:'2026-09-22', action:'出版社で書籍情報を見る'},
+  'jinbocho/kaijin': {source:'https://www.tsogen.co.jp/np/isbn/9784488406080', checkedAt:'2026-09-22', action:'出版社で書籍情報を見る'}
 };
 video('shimokitazawa', 'bocchi-main-pv', 'ぼっち・ざ・ろっく！｜TVアニメ本PV', 'アニプレックス / 2022', 'ひとりのギターが、バンドの音になる。下北沢を舞台にした物語の入口へ。', '下北沢が舞台のアニメ', '公式サイトが下北沢を作品の舞台として紹介しています。これはTVアニメの紹介PVで、本編や実在のライブ公演映像ではありません。映像内の放送告知は公開当時の情報です。', '1-o7fmQqSNg', ['https://bocchi.rocks/movie/', 'https://bocchi.rocks/kessokuband/info/?article_id=65508']);
 items[items.length-1].checkedAt='2026-09-09';
@@ -272,6 +286,16 @@ for(const item of items) {
 // rather than a reason to shelve it. They are not waiting for a cover — so acquiring
 // one later must not quietly put them back on the shelf, which is what would have
 // happened while the decision lived only in a document.
+// Duration state must be applied after every video() call, including late additions.
+for (const item of items.filter(item => item.kind === 'video')) {
+  const key='city/'+item.city+'/'+item.id;
+  const approved=durationPolicy.approved[key];
+  item.durationSeconds=approved?.durationSeconds || null;
+  item.durationSource=approved?.durationSource || '';
+  item.durationExceptionReason=approved?.exceptionReason || '';
+  item.durationPolicyStatus=approved?'approved':'hold';
+}
+
 const declinedItems = {
   'koenji/cafe-junjo':      '書名が街を言い、関係は物語の舞台のみ',
   'shimokitazawa/kamisama': '書名が街を言い、関係は物語の舞台のみ。センナリ劇場は作中の劇場',
@@ -280,6 +304,7 @@ const declinedItems = {
   'kichijoji/catwalk':      '書名が街を言い、関係は物語の舞台のみ'
 };
 const canPublish = item => !declinedItems[item.city+'/'+item.id]
+  && (item.kind !== 'video' || item.durationPolicyStatus === 'approved')
   && Boolean(item.videoId || item.trailerVideoId || covers[item.city+'/'+item.id]?.status === 'usable' || item.presentation==='text-only');
 const excludedItems = items.filter(item => !canPublish(item));
 // Two different reasons sit behind an unpublished object, and reading them as one
