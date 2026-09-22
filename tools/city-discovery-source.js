@@ -209,7 +209,12 @@ const textOnlyBooks = {
   // Out of copyright and readable in full where it is linked, so there is no cover to
   // reproduce and nothing between the reader and the text. Relation verified by the
   // Founder against the ward's own cultural map, 2026-09-10.
-  'shimokitazawa/nekomachi': {source:'https://www.aozora.gr.jp/cards/000067/card641.html', checkedAt:'2026-09-10', action:'青空文庫で全文を読む'}
+  'shimokitazawa/nekomachi': {source:'https://www.aozora.gr.jp/cards/000067/card641.html', checkedAt:'2026-09-10', action:'青空文庫で全文を読む'},
+  // External publisher cover hotlinks are not a reliable public-image contract.
+  // Keep the books and their official exits, but render them as text until a
+  // same-origin/reliably hosted cover is both rights-cleared and operationally stable.
+  'shimokitazawa/indies': {source:'https://www.j-n.co.jp/books/978-4-408-55758-8/', checkedAt:'2026-09-22', action:'出版社で書籍情報を見る'},
+  'jinbocho/kaijin': {source:'https://www.tsogen.co.jp/np/isbn/9784488406080', checkedAt:'2026-09-22', action:'出版社で書籍情報を見る'}
 };
 video('shimokitazawa', 'bocchi-main-pv', 'ぼっち・ざ・ろっく！｜TVアニメ本PV', 'アニプレックス / 2022', 'ひとりのギターが、バンドの音になる。下北沢を舞台にした物語の入口へ。', '下北沢が舞台のアニメ', '公式サイトが下北沢を作品の舞台として紹介しています。これはTVアニメの紹介PVで、本編や実在のライブ公演映像ではありません。映像内の放送告知は公開当時の情報です。', '1-o7fmQqSNg', ['https://bocchi.rocks/movie/', 'https://bocchi.rocks/kessokuband/info/?article_id=65508']);
 items[items.length-1].checkedAt='2026-09-09';
