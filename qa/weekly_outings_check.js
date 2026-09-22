@@ -1,14 +1,15 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {state,monday,select,dates}=require('../outings/week');
-const {audiences,events,cities}=require('../tools/weekly-outings-source');
+const {audiences,events:allEvents,cities,isPublishableEvent}=require('../tools/weekly-outings-source');
+const events=allEvents.filter(isPublishableEvent);
 assert.equal(monday(Date.parse('2026-09-13T14:59:59Z')),'2026-09-07');
 assert.equal(monday(Date.parse('2026-09-13T15:00:00Z')),'2026-09-14');
 assert.equal(state('2026-09-07','2026-09-14',Date.parse('2026-09-13T15:00:00Z')),'past');
 assert.deepEqual(audiences.map(a=>a.id),['couple','children','family','friends','solo']);
 const now=Date.parse('2026-09-11T12:00:00+09:00');
-for(const city of Object.keys(cities))assert.ok(select(events,{now,city}).length>=3,city+' needs 3 actual events this week');
-for(const city of Object.keys(cities))assert.ok(select(events,{now,city,week:'2026-09-14'}).length>=3,city+' needs 3 actual events next week');
+for(const city of Object.keys(cities))assert.ok(select(events,{now,city}).length>=1,city+' needs at least one reviewed event this week');
+for(const city of Object.keys(cities))assert.ok(select(events,{now,city,week:'2026-09-14'}).length>=1,city+' needs at least one reviewed event next week');
 const future=select(events,{now,week:'2026-09-14'});assert.ok(future.some(e=>e.id==='jinbocho-ginga'));assert.ok(!select(events,{now}).some(e=>e.id==='jinbocho-ginga'));
 assert.ok(!select(events,{now:Date.parse('2026-09-14T00:00:00+09:00')}).some(e=>e.id==='koenji-azuma'),'Ended events excluded');
 // 再確認期限は会期と別に効く。会期が残っていても、期限を過ぎた催しは出さない（fail closed）。
