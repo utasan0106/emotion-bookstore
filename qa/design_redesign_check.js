@@ -57,6 +57,7 @@ for(const file of files){
   .replace(/<section[^>]*id="city-signals"[^>]*>[\s\S]*?<\/section>/g,'')
   .replace(/<ul[^>]*data-ending-list[^>]*>[\s\S]*?<\/ul>/g,'')
   .replace(/<ul[^>]*data-venue-events[^>]*>[\s\S]*?<\/ul>/g,'')
+  .replace(/<p class="checked"[^>]*>[\s\S]*?<\/p>/g,'')
   // 2026-09-22：画像直下は鑑賞・発見の表面。出典・作者・権利・「〜ではありません」
   // は Credits / source QA に集約したため、figcaption は本文保存契約の対象外にする。
   .replace(/<figcaption\b[^>]*>[\s\S]*?<\/figcaption>/g,'')
