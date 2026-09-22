@@ -19,8 +19,8 @@ for(const rel of files){
     if(/^https?:\/\//.test(src)){
       externalCount++;
       assert.ok(html.includes('/page-nav.js')||html.includes('./page-nav.js'),'external image needs global failure guard: '+rel);
-      if(/Kiyosumi_Teien/.test(src)){
-        assert.match(src,/\/640px-Kiyosumi_Teien_-_Japanese_gardern_4\.JPG$/,'Kiyosumi must use the reviewed Commons preview');
+      if(/KiyosumiGarden6/.test(src)){
+        assert.match(src,/\/960px-KiyosumiGarden6\.JPG$/,'Kiyosumi must use the reviewed Commons preview');
         assert.match(tag,/data-image-fallback="\/assets\/city-kiyosumi\.svg"/,'Kiyosumi external photo needs same-origin fallback');
       }
       continue;
@@ -39,6 +39,6 @@ assert.match(nav,/addEventListener\('error'/);
 assert.match(nav,/media-unavailable/);
 assert.match(nav,/dataset\.imageFallback/);
 const release=fs.readFileSync(path.join(root,'release_content.js'),'utf8');
-assert.match(release,/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/d\/d2\/Kiyosumi_Teien/);
-assert.match(release,/640px-Kiyosumi_Teien_-_Japanese_gardern_4\.JPG/);
+assert.match(release,/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/0\/0c\/KiyosumiGarden6/);
+assert.match(release,/960px-KiyosumiGarden6\.JPG/);
 console.log('PASS media image integrity: '+imageCount+' img tags, '+externalCount+' external images, local existence + fallback contracts');
