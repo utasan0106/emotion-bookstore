@@ -53,6 +53,16 @@ const entries = [
 const header = source.slice(0, source.indexOf('  <main id="main">')).replace(/<!-- 作品から入る[\s\S]*?-->/, '<!-- Built from tools/work-entry-source.html. Official work previews load when visible, without autoplay. -->');
 const footer = source.slice(source.indexOf('  <footer class="site-footer">'));
 const escape = value => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+function seoHeader(base, {title, description, canonical}) {
+  const safeTitle=escape(title), safeDescription=escape(description), safeCanonical=escape(canonical);
+  const schema=JSON.stringify({'@context':'https://schema.org','@type':'WebPage',name:title,description,url:canonical,isPartOf:{'@type':'WebSite',name:'みんなの感情書店',url:'https://emotionbookstore.com/'}}).replace(/</g,'\\u003c');
+  let out=base
+    .replace(/<meta name="robots"[^>]*>\s*/g,'')
+    .replace(/<title>[\s\S]*?<\/title>/, '<title>'+safeTitle+'</title>')
+    .replace(/<meta name="description" content="[^"]*">/, '<meta name="description" content="'+safeDescription+'">');
+  const tags='<link rel="canonical" href="'+safeCanonical+'"><meta property="og:type" content="website"><meta property="og:site_name" content="みんなの感情書店"><meta property="og:title" content="'+safeTitle+'"><meta property="og:description" content="'+safeDescription+'"><meta property="og:url" content="'+safeCanonical+'"><meta property="og:image" content="https://emotionbookstore.com/assets/ogp-official-artwork-20260901.png"><meta name="twitter:card" content="summary_large_image"><script type="application/ld+json">'+schema+'</script>';
+  return out.replace('</title>','</title>'+tags);
+}
 const officialActions={};
 function write(name, html) {
   html=require('./page-chrome')(html).replace(/[ \t]+$/gm,'');
@@ -75,7 +85,11 @@ for (const entry of entries) {
     officialActions[entry.id]=official[0].replace(/class="(?:wk-action-row|wk-primary)"/,'class="wk-primary work-official"');
     section=section.replace(official[0],'').replace(/(<p class="wk-byline">[\s\S]*?<\/p>(?:<figure[\s\S]*?<\/figure>)?)/,'$1'+officialActions[entry.id]);
   }
-  const pageHeader = header.replace('<title>みんなの感情書店｜作品から入る</title>', '<title>' + entry.title + '｜' + entry.kind + 'と' + entry.city + '｜みんなの感情書店</title>');
+  const pageHeader = seoHeader(header, {
+    title: entry.title + '｜' + entry.kind + 'と' + entry.city + '｜みんなの感情書店',
+    description: entry.title + '（' + entry.kind + '）。' + entry.city + 'との関係を辿り、公式の作品情報と街の関連作品へつなぐ文化案内。',
+    canonical: 'https://emotionbookstore.com/work-' + entry.id + '.html'
+  });
   const main = `  <main id="main"><div class="wk-root">
     <header class="wk-head">
       <p class="wk-back"><a href="./works.html#${entry.id}">作品を選び直す ←</a></p>
@@ -99,7 +113,12 @@ const cards = entries.map(e => `      <section id="${e.id}" class="wk-entry" ari
         ${officialActions[e.id]||''}
         <p class="wk-primary"><a class="wk-route" href="./work-${e.id}.html">${e.action}<span aria-hidden="true"> →</span></a>${kindCount(e.id)}</p>
       </section>`).join('\n');
-write('works.html', header + `  <main id="main"><div class="wk-root">
+const worksHeader=seoHeader(header,{
+  title:'東京の本・映画・音楽・映像｜みんなの感情書店',
+  description:'高円寺・下北沢・吉祥寺・神保町にゆかりのある本・映画・音楽・映像を、街との関係から選べる文化案内。',
+  canonical:'https://emotionbookstore.com/works.html'
+});
+write('works.html', worksHeader + `  <main id="main"><div class="wk-root">
     <header class="wk-head">
       <h1 class="wk-title">作品から入る</h1>
       <p class="wk-lead">気になる作品をひとつ。紹介とつながりは、次のページで。</p>
