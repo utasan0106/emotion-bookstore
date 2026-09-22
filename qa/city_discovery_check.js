@@ -121,11 +121,12 @@ assert.ok(publicHome.includes('href="/discover/essays/"'));
 assert.match(researchIndex,/<h1>街の記事<\/h1>/);
 assert.match(discoveryHome,/class="research-spotlight"/);
 assert.ok(discoveryHome.includes('id="city-signals"'));
-assert.ok(discoveryHome.includes('公式告知の確認日：2026年9月9日'));
+assert.ok(discoveryHome.includes('今の街の動き'));
 assert.ok(discoveryHome.includes('自動更新や人気ランキングではありません'));
-for(const id of ['shimokita-moon','kichijoji-livepainting','jinbocho-pokemon','koenji-cafetalk']) {
-  assert.ok(discoveryHome.includes(`/outings/events/${id}.html`));
+for(const id of ['shimokita-moon','jinbocho-pokemon','koenji-cafetalk']) {
+  assert.ok(discoveryHome.includes(`/outings/events/${id}.html`),'current city signal missing: '+id);
 }
+assert.ok(!discoveryHome.includes('/outings/events/kichijoji-livepainting.html'),'ended city signal must not remain on discovery HOME');
 for(const essay of research) {
   const html=fs.readFileSync(path.join(root,`discover/essays/${essay.id}.html`),'utf8');
   assert.ok(essay.sources.length>=2,'Research needs distinct evidence sources');
