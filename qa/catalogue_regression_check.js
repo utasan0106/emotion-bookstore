@@ -6,7 +6,9 @@ const html=read('index.html'),css=read('site-system.css'),homeCss=read('home-dis
 assert.doesNotMatch(html,/30秒|感情書店の小文|data-open-reading|id="reading"/);
 assert.match(html,/data-weekly-feature="mot-collection-light"/,'Home feature rotates weekly instead of pinning PARKS');
 assert.match(html,/href="\/discover\/kiyosumi\/"/,'The current weekly feature opens a real destination');
-assert.match(html,/自社制作エディトリアル図版/,'The Kiyosumi visual must be clearly identified as editorial artwork, not exhibition imagery');
+assert.match(html,/src="\/assets\/city-kiyosumi\.jpg"/,'Kiyosumi Home media must be localized');
+assert.doesNotMatch(html,/upload\.wikimedia\.org[^"']*Kiyosumi/i,'Kiyosumi must not hotlink Wikimedia at runtime');
+assert.match(html,/展覧会写真ではありません/,'The Kiyosumi place photograph must not impersonate exhibition artwork');
 assert.match(read('discover/kichijoji/parks.html'),/data-video-id="pm7RBghFt0I"/,'PARKS and its real trailer remain available in the catalogue');
 assert.doesNotMatch(read('discover/kichijoji/parks.html'),/youtube-nocookie.com\/embed\//,'The trailer stays click-to-load');
 assert.doesNotMatch(html,/class="home-canonical/,'Do not inherit the retired home theme');
