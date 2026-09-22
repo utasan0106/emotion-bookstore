@@ -46,7 +46,7 @@ function collection(entryId, section){
 }
 // 本の公式の行き先。カードの行動リンクと表紙の出典が同じページなので、一箇所で持つ。
 const BOOK_OFFICIAL='https://www.tsogen.co.jp/np/isbn/9784488406080';
-const mediaFor=entry=>entry.id==='music'?media.album():entry.id==='video'?media.youtube('80y5COiKdDw',entry.title,'公開元の映像（57秒）'):entry.id==='film'?media.youtube('6M0vx8wLEbM',entry.title,'予告編（本編ではありません）'):media.cover('jinbocho/kaijin',entry.title,BOOK_OFFICIAL);
+const mediaFor=entry=>entry.id==='music'?media.album():entry.id==='video'?media.youtube('80y5COiKdDw',entry.title,'公開元の映像（57秒）'):entry.id==='film'?media.youtube('6M0vx8wLEbM',entry.title,'予告編（本編ではありません）'):'';
 const entries = [
   { id: 'book', kind: '本', title: '神保町の怪人', byline: '紀田順一郎', city: '神保町', relation: '物語の舞台', action: '本の紹介へ' },
   { id: 'film', kind: '映画', title: '森崎書店の日々', byline: '日向朝子監督 / 2010', city: '神保町', relation: '撮影された街', action: '映画の紹介へ' },
