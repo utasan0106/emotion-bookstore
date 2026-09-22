@@ -439,7 +439,7 @@ seriesPage('reading', '読みたくなる本', `4つの街 / ${readingBooks.leng
 seriesPage('listening', '聴きたくなる音楽', `4つの街 / ${listeningAudio.length}曲`, '聴きたくなる、<br>街の音。',
   'その街のライブハウスや路上で、実際に鳴った演奏です。街の紹介曲ではなく、そこで録られた音を選んでいます。',
   listeningAudio, '<p class="city-exit"><a href="/works.html#music">音楽の紹介から入る →</a></p>');
-write('short-films/index.html', shell('街へ出たくなる短編映像', `<section class="intro"><p class="eyebrow">全街共通 / 約1〜4分</p><h1>街へ出たくなる、<br>${commonVideos.length}つの短編。</h1><p class="lead">人との出会いや移動、暮らしを描く短編を選びました。特定の街の観光案内ではなく、企業広告を含む映像作品です。</p></section><div class="collection"><section class="work-grid" aria-label="共通の短編映像${commonVideos.length}件">${commonCards}</section><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p></div>`, '<a href="/discover/index.html">街から探す ←</a>'));
+write('short-films/index.html', shell('街へ出たくなる短編映像', `<section class="intro"><p class="eyebrow">全街共通 / 3分以内</p><h1>街へ出たくなる、<br>${commonVideos.length}つの短編。</h1><p class="lead">人との出会いや移動、暮らしを描く短編を選びました。特定の街の観光案内ではなく、企業広告を含む映像作品です。</p></section><div class="collection"><section class="work-grid" aria-label="共通の短編映像${commonVideos.length}件">${commonCards}</section><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p></div>`, '<a href="/discover/index.html">街から探す ←</a>'));
 
 
 // 週替わりを「並べ替え」から「今週号」へ。順番が入れ替わるだけでは、読者にとって

@@ -30,9 +30,9 @@ window.V3_RELEASE_CONTENT = {
   weeklyEdition: {
     weekOf: '2026-09-21',
     topFeatureId: 'mot-collection-light',
-    curiosityIds: ['morisaki', 'ginga', 'kiyosumi-kotomise'],
+    curiosityIds: ['morisaki', 'ginga', 'park-voice'],
     curiosityKinds: ['book', 'film', 'video'],
-    shortVideoIds: ['find-my-tokyo', 'toyota-loving-eyes', 'kiyosumi-kotomise']
+    shortVideoIds: ['thanks-tokyo', 'tokyo-metro-newline', 'find-my-tokyo-akasaka']
   },
   // 種類は新しい無限棚ではなく、いま公開中の15件を横断して見るための
   // 有限な索引。初回はこの5つだけで、順番も固定する。

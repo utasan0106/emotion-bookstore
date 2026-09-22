@@ -300,7 +300,8 @@
 
     box.appendChild(h('article', { class: 'weekly-feature-card' }, [
       feature.media ? h('figure', { class: 'weekly-feature-photo' }, [
-        h('img', { src: feature.media.src, alt: feature.media.alt, loading: 'lazy', decoding: 'async', width: '960', height: '640' }),
+        h('img', { src: feature.media.src, alt: feature.media.alt, loading: 'lazy', decoding: 'async', width: '960', height: '640',
+          'data-image-fallback': shelf.id === 'kiyosumi' ? '/assets/city-kiyosumi.svg' : null, referrerpolicy: 'no-referrer' }),
         h('figcaption', { text: feature.media.alt })
       ]) : null,
       h('div', { class: 'weekly-feature-meta' }, [
@@ -347,7 +348,8 @@
           decoding: 'async',
           referrerpolicy: 'no-referrer',
           width: m.width,
-          height: m.height
+          height: m.height,
+          'data-image-fallback': /^https?:/.test(m.url) ? '/assets/city-kiyosumi.svg' : null
         })
       ])
     ];

@@ -37,8 +37,8 @@ const home=read('index.html');
 assert.ok(home.includes('data-weekly-edition="'+cur.weekOf+'"'),'Home must visibly identify current edition');
 assert.ok(home.includes('data-weekly-feature="'+cur.topFeatureId+'"'),'Home top feature must match ledger');
 for(const id of cur.curiosityIds) assert.ok(home.includes('data-weekly-item-id="'+id+'"'),'Home curiosity item missing: '+id);
-const changedShort=cur.shortVideoIds.find(id=>!prev.shortVideoIds.includes(id));
-assert.ok(changedShort&&home.includes('data-weekly-short-video="'+changedShort+'"'),'Home must name this week\'s changed short video');
+const changedShorts=cur.shortVideoIds.filter(id=>!prev.shortVideoIds.includes(id));
+assert.ok(changedShorts.length&&changedShorts.some(id=>home.includes('data-weekly-short-video="'+id+'"')),'Home must name at least one of this week\'s changed short videos');
 
 const source=require('../tools/city-discovery-source');
 assert.equal(source.commonVideosWeekOf,cur.weekOf,'Short-video source must carry current week');
@@ -54,7 +54,7 @@ for(const url of [
   'https://emotionbookstore.com/shelf.html?shelf=kiyosumi',
   'https://emotionbookstore.com/discover/kiyosumi/',
   'https://emotionbookstore.com/discover/short-films/',
-  'https://emotionbookstore.com/discover/short-films/kiyosumi-kotomise.html'
+  'https://emotionbookstore.com/discover/short-films/find-my-tokyo-akasaka.html'
 ]){
   const pos=sitemap.indexOf('<loc>'+url+'</loc>');
   assert.ok(pos>=0,'Fresh weekly surface missing from sitemap: '+url);

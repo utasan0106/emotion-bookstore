@@ -35,6 +35,7 @@ const checks=[
     残りはブラウザかネットワークが要るもので、qa/KNOWN-FAILURES に回し方を書いた。 */
  ['qa/home_discovery_check.js'],
  ['qa/home_weekly_refresh_check.js'],
+ ['qa/common_short_duration_check.js'],
  ['qa/design_redesign_check.js'],
  ['qa/culture_room_contract_check.js', 'qa/parks_screen_contract_check.js'],
  /* release_preflight は時刻で判定する門である。将来落ちたら fixture の

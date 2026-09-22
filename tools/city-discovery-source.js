@@ -4,25 +4,33 @@ const items = [];
 const commonVideosWeekOf = '2026-09-21';
 const commonVideos = [
   {
-    id: 'find-my-tokyo', title: 'Find my Tokyo. チャレンジャーズ', creator: '東京メトロ / 2024',
-    hook: '知っている街の、まだ知らない楽しみ方へ。',
-    note: '東京メトロが東京の新しい魅力を見つける企画として公開した企業広告です。このサイトの5街だけを扱う映像ではありません。',
-    videoId: 'RpSlspjIeG8', sources: ['https://www.tokyometro.jp/news/2024/218221.html']
+    id: 'thanks-tokyo', title: 'THANKS,TOKYO.【30秒ver】', creator: '東京都産業労働局 / 30秒',
+    hook: '東京を楽しむ人と、街を支える観光の仕事を30秒で見る。',
+    note: '東京都産業労働局公式チャンネルが公開する30秒版。短い時間で東京へ出る入口として使います。',
+    videoId: 'pCDd7LkhkfE', durationSeconds: 30,
+    durationSource: 'https://www.youtube.com/watch?v=pCDd7LkhkfE',
+    sources: ['https://www.youtube.com/watch?v=pCDd7LkhkfE'],
+    checkedAt: '2026-09-22'
   },
   {
-    id: 'toyota-loving-eyes', title: 'Loving Eyes', creator: 'TOYOTA / ブランドムービー',
-    hook: '同じ道のりを、父と娘それぞれの目線で見つめる。',
-    note: '自動車の安全技術を伝える企業広告で、父と娘の時間を二つの視点から描いた作品です。特定の街への案内ではありません。',
-    videoId: 'mh_QCvulKSY', sources: []
+    id: 'tokyo-metro-newline', title: '新たな未来に向けた第一歩！新線プロジェクト', creator: '東京メトロ / 30秒',
+    hook: '路線が伸びると、街と人の移動はどう変わる。',
+    note: '東京メトロの有楽町線・南北線延伸を伝える30秒の公式映像。移動と街のつながりを短い時間で見る入口です。',
+    videoId: 'rjFh_eBwV_k', durationSeconds: 30,
+    durationSource: 'https://www.youtube.com/watch?v=rjFh_eBwV_k',
+    sources: ['https://www.tokyometro-newline.jp/movie/'],
+    checkedAt: '2026-09-22'
   },
   {
-    id: 'kiyosumi-kotomise', title: 'ことみせ～清澄白河エリア・深川資料館通り～', creator: '江東区公式チャンネル / 2026',
-    hook: '店を巡る目線から、清澄白河の今の通りへ。',
-    note: '江東区の区政情報番組「江東ワイドスクエア」が、清澄白河エリアと深川資料館通りの店や通りを紹介した2026年の公式映像です。',
-    videoId: 'bLuK6QHKc7E', sources: ['https://www.city.koto.lg.jp/011502/kuse/koho/katsudo/catv/wide-square.html'],
+    id: 'find-my-tokyo-akasaka', title: 'Find my Tokyo.「赤坂_ツウな人生のはじまり」篇', creator: '東京メトロ / 15秒',
+    hook: '知っているつもりの赤坂に、まだ知らない過ごし方を見つける。',
+    note: '東京メトロ公式チャンネルが公開する赤坂の15秒映像。街の先入観を少しずらし、実際に歩いてみるきっかけとして選びます。',
+    videoId: 'TZRBBxcktuU', durationSeconds: 15,
+    durationSource: 'https://www.youtube.com/watch?v=TZRBBxcktuU',
+    sources: ['https://www.youtube.com/watch?v=TZRBBxcktuU'],
     checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
   }
-].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-08', playbackChecked: false}));
+].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-22', playbackChecked: false}));
 const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({
   city, kind, id, title, creator, hook, relation, relationNote, url, action,
   sources: [...new Set([...sources, ...(url.startsWith('https:') ? [url] : [])])],
