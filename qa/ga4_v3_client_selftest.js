@@ -261,7 +261,11 @@ const approvedHomeMedia=new Set([
  'https://boris.bandcamp.com/album/you-laughed-like-a-water-mark-live-at-shelter-20070204',
  'https://www.youtube.com/watch?v=dt33RGSRuo0',
  'https://www.youtube.com/watch?v=pm7RBghFt0I',
- 'https://www.youtube-nocookie.com/embed/pm7RBghFt0I?autoplay=0&amp;playsinline=1&amp;rel=0'
+ 'https://www.youtube-nocookie.com/embed/pm7RBghFt0I?autoplay=0&amp;playsinline=1&amp;rel=0',
+ 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/KiyosumiGarden6.JPG/960px-KiyosumiGarden6.JPG',
+ 'https://commons.wikimedia.org/wiki/File:KiyosumiGarden6.JPG',
+ 'https://www.mot-collection-search.jp/exhibition/',
+ 'https://www.youtube.com/watch?v=80y5COiKdDw'
 ]);
 for(const [,url] of indexBody.matchAll(/(?:src|href)="((?:https?:)?\/\/[^"]+)"/g)) assert(approvedHomeMedia.has(url),'Unreviewed external home source: '+url);
 assert(indexBody.includes('href="/outings/"')&&indexBody.includes('href="/discover/"'),'HOME must expose working event and work entries');
