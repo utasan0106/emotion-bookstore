@@ -3,7 +3,8 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),vm=require('node:vm');
 const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const home=read('index.html'),weather=read('city-weather.js'),css=read('page-nav.css');
-const {events}=require('../tools/weekly-outings-source');
+const {events,isPublishableEvent}=require('../tools/weekly-outings-source');
+const publishedEvents=events.filter(isPublishableEvent);
 const {mediaFor,postFor}=require('../tools/event-media-source');
 assert.doesNotMatch(css,/city-rain-drift|city-snow-drift|city-rain-surface/);
 assert.doesNotMatch(weather,/city-atmosphere|city-weather-motion|selectScene|sceneLink/);
@@ -19,7 +20,7 @@ const editorial=read('home-editorial.css');
 assert.match(read('home-discovery.css'),/home-discovery/);
 assert.match(editorial,/prefers-reduced-motion:reduce/);
 const index=read('outings/index.html');
-for(const e of events){
+for(const e of publishedEvents){
  const m=mediaFor(e);assert.ok(m.caption&&m.alt);assert.ok(fs.statSync(path.join(root,m.src)).size>1000);
  const card=(index.match(new RegExp('<article class="event-card" data-event-card="'+e.id+'"[\\s\\S]*?</article>'))||[])[0];assert.ok(card,e.id);
  assert.ok(card.includes('href="'+e.url.replaceAll('&','&amp;')+'"'),e.id+': official page must be a one-click card target');
@@ -31,4 +32,4 @@ for(const e of events){
 assert.match(read('outings/week.js'),/querySelector\('\[data-event-detail\]'\)\.href/);
 const suggest=read('suggest.html');assert.ok(suggest.indexOf('id="sg-form"')<suggest.indexOf('id="suggestForm"'),'Direct form entry precedes optional local drafting');
 assert.match(suggest,/紹介する文を、ここで下書きする/);
-console.log('PASS character-free editorial cover, time labels, 5 eager work/history photos plus priority feature, no rain particles, 24 direct official cards with local images, 2 attributed artist embeds, direct introduction form');
+console.log('PASS character-free editorial cover, time labels, 5 eager work/history photos plus priority feature, no rain particles, '+publishedEvents.length+' direct official cards with local images, 2 attributed artist embeds, direct introduction form');

@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const {items, excludedItems, commonVideos, checkedAt} = require('./city-discovery-source');
+const videoDurationPolicy=require('../video-duration-policy');
 const workMedia=require('./work-media');
 const siteOgp=require('./site-ogp');
 const profiles=require('./artist-profiles');
@@ -43,12 +44,7 @@ function relatedPerformance(item) {
   if (!target) throw new Error('Missing related performance: '+relation[0]);
   return `<section class="related-performance"><h2>同じ人の、別の演奏</h2><p>${esc(relation[1])}</p><p><a href="/discover/${target.city}/${target.id}.html">${esc(target.title)} →</a></p></section>`;
 }
-const crossMediaPairs={
-  jirokichi:'next-town-koenji','next-town-koenji':'jirokichi',
-  honnoniwa:'musashino-green','musashino-green':'honnoniwa',
-  indies:'bocchi-main-pv','bocchi-main-pv':'indies',
-  kaijin:'used-book-festival','used-book-festival':'kaijin'
-};
+const crossMediaPairs={};
 function relatedWork(item) {
   const target=items.find(candidate=>candidate.city===item.city&&candidate.id===crossMediaPairs[item.id]);
   if(!target) return '';
@@ -84,10 +80,11 @@ for (const a of adaptations) if (a.book.split('/')[0] !== a.screen.split('/')[0]
 
 function cityContinuation(city,kind) {
   const name=cityNames[city];
-  if(!items.some(item=>item.city===city&&item.kind===kind)) return `<aside class="feature"><p class="eyebrow">同じ街から探す</p><h2><a href="/discover/${city}/video.html">${name}の街を映像で見る →</a></h2><p>この種類の作品は現在掲載していません。${name}の風景や人に触れる映像から選べます。</p><p><a href="/discover/${city}/">${name}の作品一覧へ →</a></p></aside>`;
+  if(!items.some(item=>item.city===city&&item.kind===kind)) return `<aside class="feature"><p class="eyebrow">同じ街から探す</p><h2><a href="/discover/short-films/">3つの短編映像を見る →</a></h2><p>この種類の作品は現在掲載していません。尺と公開元を確認済みの短編映像から選べます。</p><p><a href="/discover/${city}/">${name}の作品一覧へ →</a></p></aside>`;
   const reason=kind==='audio'?'演奏を聴いたあとは、会場のある街の風景や人を映像で。':kind==='video'?'映像で気になった街の場所や来歴を、次に辿れます。':kind==='book'?'本で触れた街を、今度は映像から眺めてみる。':'映画と街の関係を辿ったあとは、その街の風景も。';
-  const target=kind==='video'?`/shelf.html?shelf=${city}`:`/discover/${city}/video.html`;
-  const label=kind==='video'?`${name}の場所・歴史を見る`:`${name}の街を映像で見る`;
+  const hasPublicVideo=items.some(i=>i.city===city&&i.kind==='video'&&videoDurationPolicy.approved['city/'+city+'/'+i.id]);
+  const target=kind==='video'? `/shelf.html?shelf=${city}`:(hasPublicVideo?`/discover/${city}/video.html`:'/discover/short-films/');
+  const label=kind==='video'?`${name}の場所・歴史を見る`:(hasPublicVideo?`${name}の街を映像で見る`:'3つの短編映像を見る');
   return `<aside class="feature"><p class="eyebrow">次は、街へ</p><h2><a href="${target}">${label} →</a></h2><p>${reason}</p><small>このサイト内の案内</small></aside>`;
 }
 // 街へ出かけたくなる。編集部が選んだ、いま行ける場所が写っている映像。
@@ -102,10 +99,7 @@ function cityContinuation(city,kind) {
 //   jinbocho/iwanami-hall         2022年に閉館。もう行けない
 //   kichijoji/musashino-green     武蔵野市全体の風景
 const outingVideoIds = [
-  'koenji/awa-2025', 'koenji/tenguren', 'koenji/pal-street', 'koenji/street-food', 'koenji/next-town-koenji',
-  'shimokitazawa/shelter-news', 'shimokitazawa/tefu-1500', 'shimokitazawa/obonro-walk',
-  'kichijoji/park-voice', 'kichijoji/uplink', 'kichijoji/kichion-ichihara', 'kichijoji/kichion-toranoko', 'kichijoji/kichion-lady',
-  'jinbocho/gyokueido', 'jinbocho/italia', 'jinbocho/used-book-festival'
+  'kichijoji/park-voice'
 ];
 // 棚を通った本と音楽は、その時点で採否が済んでいる。だから絞り込みはせず、
 // 街をまたいで一つにまとめるだけ。順序は編集部の並びで、公開したものが一つでも
@@ -271,7 +265,7 @@ function write(file, html) {
     if(related.length) html=html.replace('<section class="quick">',`<section class="quick"><h2>あの頃の街に、もう一度。</h2>${related.map(essay=>`<p><a href="/discover/essays/${essay.id}.html">${esc(essay.title)}</a></p>`).join('')}</section><section class="quick">`);
   }
   if(cityNames[city] && categories[kind]) {
-    const alternatives=Object.entries(cityNames).filter(([id])=>id!==city).map(([id,name])=>({id,name,count:items.filter(item=>item.city===id&&item.kind===kind).length})).filter(entry=>entry.count>0);
+    const alternatives=Object.entries(cityNames).filter(([id])=>id!==city).map(([id,name])=>({id,name,count:publicCount(id,kind)})).filter(entry=>entry.count>0);
     if(alternatives.length) {
       const links=alternatives.map(entry=>`<a href="/discover/${entry.id}/${kind}.html">${entry.name}<span>${entry.count}件</span></a>`).join('');
       const navigation=`<nav class="other-cities" aria-label="別の街の${categories[kind].name}"><h2>別の街の${categories[kind].name}も見る</h2><div>${links}</div></nav>`;
@@ -293,6 +287,8 @@ function write(file, html) {
   written++;
 }
 const cities=Object.keys(cityNames);
+const publicVideoItems=items.filter(i=>i.kind==='video'&&videoDurationPolicy.approved['city/'+i.city+'/'+i.id]);
+const publicCount=(city,kind)=>kind==='video'?publicVideoItems.filter(i=>i.city===city).length:items.filter(i=>i.city===city&&i.kind===kind).length;
 const researchCards=research.map(essay=>`<article class="research-card"><p class="eyebrow">${esc(essay.issue)} · ${esc(essay.cityLabel)}</p><h2><a href="/discover/essays/${essay.id}.html">${esc(essay.title)}</a></h2><p>${esc(essay.lead)}</p><ul aria-label="調査の視点">${essay.lenses.map(lens=>`<li>${esc(lens)}</li>`).join('')}</ul><p class="research-meta">更新 ${esc(essay.modifiedAt)}</p><a class="research-link" href="/discover/essays/${essay.id}.html">記事を読む →</a></article>`).join('');
 write('essays/index.html',shell('街の記事',`<section class="intro research-intro"><p class="eyebrow">広告・歴史・人と作品</p><h1>街の記事</h1><p class="lead">駅前はどう変わった？ あの作品と街には、どんなつながりがある？ 広告や公開資料から、街の背景を読みます。</p></section><section class="research-grid" aria-label="公開中の街の調査">${researchCards}</section><section class="quick"><h2>人と作品から知る街</h2><div class="quick-grid">${cities.map(city=>`<a href="/discover/${city}/#editorials-title"><strong>${cityNames[city]}のコラム →</strong><span>${city==='kichijoji'?'漫画家と街のつながり':'人・作品と街のつながり'}</span></a>`).join('')}</div><p><a href="/thread.html?thread=koenji-dance-history">高円寺の阿波おどりの歴史を読む →</a></p></section><aside class="research-method"><h2>この調査で守ること</h2><p>出典の数を結論の強さに置き換えません。広告主の意図、調査結果、編集上の解釈を区別し、分からないことも記事に残します。</p></aside>`,'<a href="/discover/">街から探す</a>'));
 for(const essay of research) {
@@ -316,7 +312,7 @@ for(const essay of research) {
   const timeline=`<section id="research-timeline"><h2>高校生のころから、何が変わった？</h2><p>${esc(essay.timelineIntro || '2026年の30代の高校時代は、おおむね2000年代〜2010年代前半にまたがります。今の年齢ではなく、自分が通っていた年を手掛かりに読んでください。現段階では2010年以降の出来事を掲載し、2000年代の資料・当事者の声は未収集です。')}</p><ol>${essay.timeline.map(row=>`<li><h3>${esc(row.year)} · ${esc(row.title)}</h3><p>${esc(row.text)}</p><p><a href="#source-${esc(row.source)}">根拠の資料と確認範囲 →</a></p></li>`).join('')}</ol><p>${esc(essay.timelineEnd || '街そのものの変化と、自分が高校生から大人になったことで変わった行動は別です。「昔のほうが良かった」「若者が来なくなった」といった評価は、この年表からは導けません。')}</p></section>`;
   if(!Array.isArray(essay.summary)||essay.summary.length!==3||essay.summary.some(point=>typeof point!=='string'||!point.trim())) throw new Error(`Missing editorial summary: ${essay.id}`);
   const summary=`<aside class="article-summary" aria-labelledby="article-summary-title"><h2 id="article-summary-title">この記事の要点</h2><ul>${essay.summary.map(point=>`<li>${esc(point)}</li>`).join('')}</ul></aside>`;
-  write(`essays/${essay.id}.html`,shell(essay.title,`<article class="detail research-article"><p class="eyebrow">${esc(essay.series)} · ${esc(essay.issue)}</p><p class="research-back"><a href="/discover/essays/">街の記事一覧</a> / ${esc(essay.cityLabel)}</p><h1>${esc(essay.title)}</h1><p class="detail-hook">${esc(essay.lead)}</p><p class="research-byline">みんなの感情書店編集部 · 更新 ${esc(essay.modifiedAt)}</p>${summary}<nav class="research-toc" aria-label="記事の目次"><a href="#research-reading">本文を読む</a><a href="#research-timeline">街の変化を辿る</a><a href="#research-comparison">${essay.mediaIntro?'視点を比べる':'広告を比べる'}</a><a href="#research-sources">調べ方・出典</a></nav><div class="research-reading" id="research-reading">${sections}</div>${timeline}${comparison}${media}<section><h2>${esc(essay.nextTitle || '今度は、映像の吉祥寺へ。')}</h2><p>${esc(essay.nextText || '広告の中の街と見比べたら、映画や街の映像では何が目に留まるだろう。')}</p><p><a href="/discover/${essay.city}/film.html">${esc(essay.cityLabel)}とつながる映画を見る →</a></p><p><a href="/discover/${essay.city}/video.html">街の映像を選ぶ →</a></p></section><section id="research-sources"><h2>調べ方と出典：確認済み${essay.sources.length}資料</h2><p>${esc(essay.methodology)}</p><p>資料の発表内容と編集上の解釈を区別しています。AIを資料探索・比較・文章化に使用しています。出典ごとの対象期間と確認範囲は以下に記載しています。</p>${ledger}<p>出典確認：${esc(essay.checkedAt)}</p></section></article>`,'<a href="/discover/essays/">街の記事へ戻る</a>'));
+  write(`essays/${essay.id}.html`,shell(essay.title,`<article class="detail research-article"><p class="eyebrow">${esc(essay.series)} · ${esc(essay.issue)}</p><p class="research-back"><a href="/discover/essays/">街の記事一覧</a> / ${esc(essay.cityLabel)}</p><h1>${esc(essay.title)}</h1><p class="detail-hook">${esc(essay.lead)}</p><p class="research-byline">みんなの感情書店編集部 · 更新 ${esc(essay.modifiedAt)}</p>${summary}<nav class="research-toc" aria-label="記事の目次"><a href="#research-reading">本文を読む</a><a href="#research-timeline">街の変化を辿る</a><a href="#research-comparison">${essay.mediaIntro?'視点を比べる':'広告を比べる'}</a><a href="#research-sources">調べ方・出典</a></nav><div class="research-reading" id="research-reading">${sections}</div>${timeline}${comparison}${media}<section><h2>${esc(essay.nextTitle || '今度は、映像の吉祥寺へ。')}</h2><p>${esc(essay.nextText || '広告の中の街と見比べたら、映画や街の映像では何が目に留まるだろう。')}</p><p><a href="/discover/${essay.city}/film.html">${esc(essay.cityLabel)}とつながる映画を見る →</a></p><p><a href="${publicCount(essay.city,'video')>0?'/discover/'+essay.city+'/video.html':'/discover/short-films/'}">${publicCount(essay.city,'video')>0?'街の映像を選ぶ':'3つの短編映像を見る'} →</a></p></section><section id="research-sources"><h2>調べ方と出典：確認済み${essay.sources.length}資料</h2><p>${esc(essay.methodology)}</p><p>資料の発表内容と編集上の解釈を区別しています。AIを資料探索・比較・文章化に使用しています。出典ごとの対象期間と確認範囲は以下に記載しています。</p>${ledger}<p>出典確認：${esc(essay.checkedAt)}</p></section></article>`,'<a href="/discover/essays/">街の記事へ戻る</a>'));
 }
 // 差別化は理念ページではなく、一覧の1枚ごとに見えていなければ体験されない。
 // カードに載っているのは「映画 · 撮影された街」というラベルで、これは分類であって
@@ -381,8 +377,8 @@ const featuredRotation={
 const rotationEpoch='2026-09-14';
 // Every city entry has a real static destination, including without JavaScript.
 for (const city of cities) {
-  const available=Object.entries(categories).filter(([kind])=>items.some(i=>i.city===city&&i.kind===kind));
-  const tabs=available.map(([kind,category])=>`<a href="/discover/${city}/${kind}.html">${category.name} <small>${items.filter(i=>i.city===city&&i.kind===kind).length}</small></a>`).join('');
+  const available=Object.entries(categories).filter(([kind])=>items.some(i=>i.city===city&&i.kind===kind&&(kind!=='video'||videoDurationPolicy.approved['city/'+city+'/'+i.id])));
+  const tabs=available.map(([kind,category])=>`<a href="/discover/${city}/${kind}.html">${category.name} <small>${publicCount(city,kind)}</small></a>`).join('');
   // Every week of the rotation is written into the page. The first is the one the
   // page opens with — that is what a reader without JavaScript keeps seeing — and
   // feature-week.js swaps in the week's entry. Adding an object never moves the
@@ -390,9 +386,10 @@ for (const city of cities) {
   const featured=available.flatMap(([kind])=>{
     const order=featuredRotation[city+'/'+kind];
     if(!order||!order.length) throw new Error('No editorial rotation for the city page: '+city+' '+kind);
-    const published=items.filter(i=>i.city===city&&i.kind===kind);
-    if(order.length!==published.length||new Set(order).size!==order.length) throw new Error('Rotation must list each published '+kind+' of '+city+' exactly once');
-    return order.map((id,week)=>{
+    const published=items.filter(i=>i.city===city&&i.kind===kind&&(kind!=='video'||videoDurationPolicy.approved['city/'+city+'/'+i.id]));
+    const publicOrder=kind==='video'?order.filter(id=>videoDurationPolicy.approved['city/'+city+'/'+id]):order;
+    if(publicOrder.length!==published.length||new Set(publicOrder).size!==publicOrder.length) throw new Error('Rotation must list each published '+kind+' of '+city+' exactly once');
+    return publicOrder.map((id,week)=>{
       const item=published.find(i=>i.id===id);
       if(!item) throw new Error('Rotation names an unpublished object: '+city+'/'+id);
       return {item,kind,week};
@@ -400,19 +397,20 @@ for (const city of cities) {
   });
   write(`${city}/index.html`,shell(`${cityNames[city]}の作品`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><div><p class="eyebrow">街から見つける</p><h1>${cityNames[city]}<span>の作品</span></h1></div><figure class="city-motif"><img src="/assets/city-editorial/${city}.webp" alt="" width="640" height="214" decoding="async"><figcaption>街のイメージ · AIイラスト</figcaption></figure></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><section class="work-grid" aria-label="${cityNames[city]}の作品" data-rotation-epoch="${rotationEpoch}">${featured.map(({item,kind,week})=>workCard(item).replace('<article class="work-card ',`<article data-feature-kind="${kind}" data-feature-week="${week}"${week?' hidden':''} class="work-card `)).join('')}</section>${shortFilmsEntry()}${venueEntry(city)}<div class="city-next"><a href="/outings/?city=${city}">${cityNames[city]}の催し</a><a href="/shelf.html?shelf=${city}">ゆかりの場所・歴史</a></div>${credits([city])}</div>`, '<a href="/discover/">街を選び直す</a>',city));
 }
-const featuredVideoIds=['bocchi-main-pv','next-town-koenji','kichion-toranoko','used-book-festival'];
+const featuredVideoIds=['park-voice'];
 const featuredVideos=featuredVideoIds.map(id=>items.find(item=>item.id===id));
 if(featuredVideos.some(item=>!item||item.kind!=='video')) throw new Error('Featured video missing');
 const leadVideo=featuredVideos[0];
-const watchNow=`<section class="watch-now" aria-labelledby="watch-now-title"><div class="watch-heading"><p class="eyebrow">今、観るなら</p><h2 id="watch-now-title">物語から、街へ。</h2><p>観光案内だけではなく、音楽や物語から街を好きになる映像を選びました。</p></div><div class="watch-layout"><article class="watch-lead">${workMedia.forItem(leadVideo)}<div><p class="relation">${cityNames[leadVideo.city]} · ${esc(leadVideo.relation)}</p><h3><a href="/discover/${leadVideo.city}/${leadVideo.id}.html">${esc(leadVideo.title)}</a></h3><p>${esc(leadVideo.hook)}</p><a class="watch-detail" href="/discover/${leadVideo.city}/${leadVideo.id}.html">紹介と街との関係を見る →</a></div></article><nav class="watch-list" aria-label="ほかの注目映像">${featuredVideos.slice(1).map(item=>`<a href="/discover/${item.city}/${item.id}.html"><span>${cityNames[item.city]}</span><strong>${esc(item.title)}</strong><small>${esc(item.hook)}</small></a>`).join('')}</nav></div></section>`;
+const watchNow=`<section class="watch-now" aria-labelledby="watch-now-title"><div class="watch-heading"><p class="eyebrow">今、観るなら</p><h2 id="watch-now-title">短い記録から、街へ。</h2><p>映像は原則3分以内。まず57秒の記録から、実際の場所へ戻ります。</p></div><div class="watch-layout"><article class="watch-lead">${workMedia.forItem(leadVideo)}<div><p class="relation">${cityNames[leadVideo.city]} · ${esc(leadVideo.relation)}</p><h3><a href="/discover/${leadVideo.city}/${leadVideo.id}.html">${esc(leadVideo.title)}</a></h3><p>${esc(leadVideo.hook)}</p><a class="watch-detail" href="/discover/${leadVideo.city}/${leadVideo.id}.html">紹介と街との関係を見る →</a></div></article><nav class="watch-list" aria-label="ほかの注目映像">${featuredVideos.slice(1).map(item=>`<a href="/discover/${item.city}/${item.id}.html"><span>${cityNames[item.city]}</span><strong>${esc(item.title)}</strong><small>${esc(item.hook)}</small></a>`).join('')}</nav></div></section>`;
+const publicPlaceCount=require('./places-source').verify(items).reduce((n,g)=>n+g.works.length,0);
 const researchSpotlight=`<section class="research-spotlight" aria-labelledby="research-spotlight-title"><div><h2 id="research-spotlight-title">あの頃の街に、もう一度。</h2><p>駅前の変化と、広告が誘った過ごし方。覚えている街を、資料と作品から読み直す。</p></div><div>${research.map(essay=>`<p><a class="research-link" href="/discover/essays/${essay.id}.html">${esc(essay.title)}</a></p>`).join('')}<a class="research-link" href="/discover/essays/">街の記事一覧 →</a></div></section>`;
 const signalEvents=require('./weekly-outings-source').events;
 const signals=`<section class="quick" id="city-signals"><h2>9月の街の動き</h2><p>編集部が選んだ4つの文化企画。日程と参加条件は、それぞれの案内で確認できます。</p>${citySignals.map(signal=>{const event=signalEvents.find(e=>e.id===signal.event);if(!event)throw new Error('Missing city signal event: '+signal.event);const dates=event.dates||[event.start,event.end];return `<article><p class="eyebrow">${cityNames[event.city]} · 告知された開催期間 ${esc(dates[0])}〜${esc(dates.at(-1))}</p><h3>${esc(signal.title)}</h3><p>${esc(event.title)}</p><p>編集部の視点：${esc(signal.reading)}</p><p><a href="/outings/events/${event.id}.html">日程・参加条件を見る</a> · ${external(event.url,'公式告知')}</p></article>`;}).join('')}<p>公式告知の確認日：2026年9月9日。自動更新や人気ランキングではありません。開催変更・空席は公式案内をご確認ください。</p><a href="/outings/">開催週を選んで探す →</a></section>`;
 write('index.html', shell('街から音楽、映像、本、映画を探す', `<section class="intro"><p class="eyebrow">聴く・観る・読む</p><h1>街から探す</h1><p class="lead">街を選んで、ゆかりの本・音楽・映像・映画へ。</p></section>
-<section class="city-grid" aria-label="街を選ぶ">${cities.map(c=>`<a class="city-card" href="/discover/${c}/"><div class="city-image">${photo(c)}</div><div class="city-caption"><h2>${cityNames[c]}</h2><p>音楽 ${items.filter(i=>i.city===c&&i.kind==='audio').length} / 映像 ${items.filter(i=>i.city===c&&i.kind==='video').length} / 本・漫画 ${items.filter(i=>i.city===c&&i.kind==='book').length} / 映画 ${items.filter(i=>i.city===c&&i.kind==='film').length}</p><span>${cityNames[c]}の作品を選ぶ →</span></div></a>`).join('')}</section>${watchNow}${signals}${researchSpotlight}
+<section class="city-grid" aria-label="街を選ぶ">${cities.map(c=>`<a class="city-card" href="/discover/${c}/"><div class="city-image">${photo(c)}</div><div class="city-caption"><h2>${cityNames[c]}</h2><p>音楽 ${publicCount(c,'audio')} / 映像 ${publicCount(c,'video')} / 本・漫画 ${publicCount(c,'book')} / 映画 ${publicCount(c,'film')}</p><span>${cityNames[c]}の作品を選ぶ →</span></div></a>`).join('')}</section>${watchNow}${signals}${researchSpotlight}
 <section class="quick"><p class="eyebrow">今週</p><h2>今週の感情書店。</h2><div class="quick-grid"><a href="/discover/weekly/index.html"><strong>今週で終わる催しと、新しく入った作品 →</strong><span>毎週月曜に変わります。RSSでも受け取れます</span></a></div></section>
 <section class="quick"><p class="eyebrow">街をまたいで選ぶ</p><h2>観る、読む、聴く。</h2><div class="quick-grid"><a href="/discover/outing/index.html"><strong>街へ出かけたくなる映像 ${outingVideos.length}本 →</strong><span>公園・商店街・ライブハウス・古書店。いま行ける場所が写っているもの</span></a><a href="/discover/reading/index.html"><strong>読みたくなる、街の本 ${readingBooks.length}冊 →</strong><span>書名に街の名前が無くても、背景を知るとその街の本だと分かる</span></a><a href="/discover/listening/index.html"><strong>聴きたくなる、街の音 ${listeningAudio.length}曲 →</strong><span>その街のライブハウスや路上で、実際に鳴った演奏</span></a></div></section>
-<section class="quick"><p class="eyebrow">街をまたいで、場所から</p><h2>本屋、映画館、ライブハウス、劇場。</h2><div class="quick-grid"><a href="/discover/places/index.html"><strong>場所そのものを扱った作品 18件 →</strong><span>作品の舞台としてではなく、その場所自体の記録と物語。記録と物語は分けています</span></a></div></section>
+<section class="quick"><p class="eyebrow">街をまたいで、場所から</p><h2>本屋、映画館、ライブハウス、劇場。</h2><div class="quick-grid"><a href="/discover/places/index.html"><strong>場所そのものを扱った作品 ${publicPlaceCount}件 →</strong><span>作品の舞台としてではなく、その場所自体の記録と物語。記録と物語は分けています</span></a></div></section>
 <section class="quick"><p class="eyebrow">街を決めずに観る</p><h2>街へ出たくなる、${commonVideos.length}つの短編。</h2><div class="quick-grid"><a href="/discover/short-films/index.html"><strong>人・移動・出会いを描く映像へ →</strong><span>企業広告も、単体で心に残る映像作品として選びました</span></a></div></section>
 <section class="quick"><p class="eyebrow">短い体験から</p><h2>同じ場所、違う聴こえ方。</h2><div class="quick-grid"><a href="/v3-prototype/culture-experience-r2/shimokitazawa/?recording=shelter"><strong>「夕暮れのジャイロ」を聴き比べる →</strong><span>下北沢SHELTERのライブとソロ盤</span></a><a href="/v3-prototype/culture-experience-r2/kichijoji/?scene=film"><strong>『PARKS』の予告と公園の声へ →</strong><span>吉祥寺・井の頭公園 / 1分59秒と57秒</span></a></div></section>${credits(cities)}`));
 
@@ -430,8 +428,8 @@ function seriesPage(slug, title, eyebrow, heading, lead, list, extraExit) {
     `<section class="intro"><p class="eyebrow">${eyebrow}</p><h1>${heading}</h1><p class="lead">${lead}</p></section><div class="collection">${sections}<p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p>${extraExit}</div>`,
     '<a href="/discover/index.html">街から探す ←</a>'));
 }
-seriesPage('outing', '街へ出かけたくなる映像', `4つの街 / ${outingVideos.length}本`, '街へ出かけたく、<br>なる映像。',
-  '公園、商店街、ライブハウス、古書店、映画館。いま行ける場所が写っている映像を選びました。閉じた施設や、過ぎた出来事そのものを扱う映像は入れていません。',
+seriesPage('outing', '街へ出かけたくなる映像', `${new Set(outingVideos.map(v=>v.city)).size}つの街 / ${outingVideos.length}本`, '街へ出かけたく、<br>なる映像。',
+  '原則3分以内。現在は尺を確認できた57秒の記録だけを公開しています。尺未確認の映像は掲載しません。',
   outingVideos, '<p class="city-exit"><a href="/discover/short-films/">街を決めずに観る短編へ →</a></p>');
 seriesPage('reading', '読みたくなる本', `4つの街 / ${readingBooks.length}冊`, '読みたくなる、<br>街の本。',
   '街の名前が書名に無くても、背景を知るとその街の本だと分かる。そういう一冊から並べています。棚に出す時点で関係を確かめているので、ここには全部あります。',
@@ -439,7 +437,7 @@ seriesPage('reading', '読みたくなる本', `4つの街 / ${readingBooks.leng
 seriesPage('listening', '聴きたくなる音楽', `4つの街 / ${listeningAudio.length}曲`, '聴きたくなる、<br>街の音。',
   'その街のライブハウスや路上で、実際に鳴った演奏です。街の紹介曲ではなく、そこで録られた音を選んでいます。',
   listeningAudio, '<p class="city-exit"><a href="/works.html#music">音楽の紹介から入る →</a></p>');
-write('short-films/index.html', shell('街へ出たくなる短編映像', `<section class="intro"><p class="eyebrow">全街共通 / 約1〜4分</p><h1>街へ出たくなる、<br>${commonVideos.length}つの短編。</h1><p class="lead">人との出会いや移動、暮らしを描く短編を選びました。特定の街の観光案内ではなく、企業広告を含む映像作品です。</p></section><div class="collection"><section class="work-grid" aria-label="共通の短編映像${commonVideos.length}件">${commonCards}</section><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p></div>`, '<a href="/discover/index.html">街から探す ←</a>'));
+write('short-films/index.html', shell('街へ出たくなる短編映像', `<section class="intro"><p class="eyebrow">全街共通 / 30秒〜3分26秒</p><h1>街へ出たくなる、<br>${commonVideos.length}つの短編。</h1><p class="lead">人との出会いや移動、暮らしを描く短編を選びました。特定の街の観光案内ではなく、企業広告を含む映像作品です。</p></section><div class="collection"><section class="work-grid" aria-label="共通の短編映像${commonVideos.length}件">${commonCards}</section><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p></div>`, '<a href="/discover/index.html">街から探す ←</a>'));
 
 
 // 週替わりを「並べ替え」から「今週号」へ。順番が入れ替わるだけでは、読者にとって
@@ -450,7 +448,8 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
 // **新しく入った作品**（publishedAt を書いたものだけ）。
 // 「今週の一本」は置かない。どれを推すかは編集部の判断で、生成物が決めることではない。
 {
-  const {events: issueEvents, cities: issueCities} = require('./weekly-outings-source');
+  const {events: issueAllEvents, cities: issueCities, isPublishableEvent: issuePublishable} = require('./weekly-outings-source');
+  const issueEvents = issueAllEvents.filter(issuePublishable);
   const {dates: issueDates} = require('../outings/week');
   const ending = issueEvents
     .map(e => ({e, last: issueDates(e).at(-1)}))
@@ -474,7 +473,8 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
 // 読者にとって一つのものである。会場は会期で消えないので、この索引は空にならない。
 {
   const {verify: verifyVenues} = require('./venue-source');
-  const {events: venueEvents, cities: venueCities} = require('./weekly-outings-source');
+  const {events: venueAllEvents, cities: venueCities, isPublishableEvent: venuePublishable} = require('./weekly-outings-source');
+  const venueEvents = venueAllEvents.filter(venuePublishable);
   const {dates: venueDates} = require('../outings/week');
   for (const v of verifyVenues(items)) {
     const works = v.works.map(id => items.find(i => i.city === v.city && i.id === id));
@@ -517,17 +517,19 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
     '<a href="/discover/index.html">街から探す ←</a>'));
 }
 
+const durationText = seconds => seconds < 60 ? seconds+'秒' : Math.floor(seconds/60)+'分'+String(seconds%60).padStart(2,'0')+'秒';
 for (const video of commonVideos) {
   const sourceLinks = video.sources.map(source => `<p>${external(source,new URL(source).hostname.replace('www.','')+' の掲載情報')}</p>`).join('');
   const player = workMedia.youtube(video.videoId,video.title);
-  write(`short-films/${video.id}.html`, shell(`${video.title}｜街へ出たくなる短編`, `<article class="detail"><p class="eyebrow">全街共通 / 街へ出たくなる短編</p><h1>${esc(video.title)}</h1><p class="detail-creator">${esc(video.creator)}</p><p class="detail-hook">${esc(video.hook)}</p>${player}<div class="destination">${external(video.url,'YouTubeでこの映像を見る','primary official-exit')}<p>表示・再生できない場合は、公開元の同じ映像へ。新しいタブで開きます。</p></div><details class="background"><summary>このサイトで紹介する理由・出典</summary><p>${esc(video.note)}</p>${sourceLinks}<p>紹介先・出典確認：${video.checkedAt || checkedAt}。映像は公開元のプレイヤーで提供されます。</p></details><p class="city-exit"><a href="/discover/index.html">次は街から作品を探す →</a></p></article>`, '<a href="/discover/short-films/index.html">短編を選び直す ←</a>'));
+  const durationNote = `<p>尺：${durationText(video.durationSeconds)}。${video.durationSeconds>180?' 3分を超える例外採用：'+esc(video.durationExceptionReason):' 原則3分以内。'}</p>`;
+  write(`short-films/${video.id}.html`, shell(`${video.title}｜街へ出たくなる短編`, `<article class="detail"><p class="eyebrow">全街共通 / 街へ出たくなる短編</p><h1>${esc(video.title)}</h1><p class="detail-creator">${esc(video.creator)}</p><p class="detail-hook">${esc(video.hook)}</p>${player}<div class="destination">${external(video.url,'YouTubeでこの映像を見る','primary official-exit')}<p>表示・再生できない場合は、公開元の同じ映像へ。新しいタブで開きます。</p></div><details class="background"><summary>このサイトで紹介する理由・出典</summary><p>${esc(video.note)}</p>${sourceLinks}${durationNote}<p>紹介先・出典確認：${video.checkedAt || checkedAt}。映像は公開元のプレイヤーで提供されます。</p></details><p class="city-exit"><a href="/discover/index.html">次は街から作品を探す →</a></p></article>`, '<a href="/discover/short-films/index.html">短編を選び直す ←</a>'));
 }
 
 
 for(const city of cities) for(const [kind, category] of Object.entries(categories)) {
-  const selected=items.filter(i=>i.city===city&&i.kind===kind);
+  const selected=items.filter(i=>i.city===city&&i.kind===kind&&(kind!=='video'||videoDurationPolicy.approved['city/'+city+'/'+i.id]));
   if(selected.length>10)throw new Error(city+' '+kind+': keep a collection at most ten entries');
-  const tabs=Object.entries(categories).filter(([k])=>items.some(i=>i.city===city&&i.kind===k)).map(([k,v])=>k===kind?`<span aria-current="page">${v.name} <small>${items.filter(i=>i.city===city&&i.kind===k).length}</small></span>`:`<a href="/discover/${city}/${k}.html">${v.name} <small>${items.filter(i=>i.city===city&&i.kind===k).length}</small></a>`).join('');
+  const tabs=Object.entries(categories).filter(([k])=>publicCount(city,k)>0).map(([k,v])=>k===kind?`<span aria-current="page">${v.name} <small>${publicCount(city,k)}</small></span>`:`<a href="/discover/${city}/${k}.html">${v.name} <small>${publicCount(city,k)}</small></a>`).join('');
   const cards=selected.map(i=>`<article class="work-card ${kind}">${workMedia.forItem(i)}<div class="card-body"><p class="relation">${esc(i.relation)}</p><h2><a href="/discover/${city}/${i.id}.html">${esc(i.title)}</a></h2><p class="creator">${esc(i.creator)}</p><p class="card-hook">${esc(i.hook)}</p><p class="card-why"><span>なぜこの街？</span>${esc(i.relationNote)}</p><p class="card-source">${cardEvidence(i).label} ${external(cardEvidence(i).url, sourceHost(cardEvidence(i).url))}</p>${artistProfile(i)}<div class="card-links">${i.url.startsWith('/')?`<a class="primary" href="${esc(i.url)}">${esc(i.action)} →</a>`:external(i.url,i.action,'primary official-exit')}<a href="/discover/${city}/${i.id}.html">紹介を読む →</a></div></div></article>`).join('');
   write(`${city}/${kind}.html`, shell(`${cityNames[city]}の${category.name}`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><p class="eyebrow">街と作品の文化案内</p><h1>${cityNames[city]}<span>の${category.name}</span></h1></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><p class="collection-lead">${kind==='audio'?'この街で実際に鳴った音楽やサウンドを、まず一曲。':kind==='video'?'街の人、店先、時間。気になる映像をひとつ。':kind==='book'?'物語から入って、ゆかりの街を知る。': '街が舞台の映画と、街の映画館が選んだ映画。'}</p><section class="work-grid" aria-label="${category.name}の${selected.length}件">${cards || `<p>この街の${category.name}は現在掲載していません。<a href="/works.html">紹介中の作品を見る →</a></p>`}</section>${cityContinuation(city,kind)}${seriesEntry(kind)}${shortFilmsEntry()}<p class="city-exit"><a href="/shelf.html?shelf=${city}">${cityNames[city]}の場所・歴史へ →</a></p><p class="city-exit"><a href="/outings/?city=${city}">${cityNames[city]}の今の文化イベントへ →</a></p>${credits([city])}</div>`, '<a href="/discover/index.html">街を選び直す ←</a>', city));
 }
@@ -572,13 +574,23 @@ for (const file of fs.readdirSync(commonDir)) {
 const configPath=path.join(root,'vercel.json');
 const config=JSON.parse(fs.readFileSync(configPath,'utf8'));
 const retiredPaths=new Set([...excludedItems,...items].map(i=>`/discover/${i.city}/${i.id}.html`));
-config.redirects=(config.redirects||[]).filter(r=>!retiredPaths.has(r.source));
+const durationBlocked=new Set(videoDurationPolicy.blockedPaths);
+config.redirects=(config.redirects||[]).filter(r=>!retiredPaths.has(r.source)&&!durationBlocked.has(r.source));
 for(const i of excludedItems)config.redirects.push({source:`/discover/${i.city}/${i.id}.html`,destination:items.some(x=>x.city===i.city&&x.kind===i.kind)?`/discover/${i.city}/${i.kind}.html`:`/discover/${i.city}/`,permanent:false});
+for(const source of durationBlocked){
+  // A held catalogue item already receives its canonical replacement above.
+  // Do not add a second redirect for the same source; Vercel redirect order must
+  // have one authoritative destination per retired URL.
+  if(retiredPaths.has(source)) continue;
+  const category=/^\/discover\/[^/]+\/video\.html$/.test(source);
+  const city=(source.match(/^\/discover\/([^/]+)\//)||[])[1];
+  config.redirects.push({source,destination:category?'/discover/outing/':city?'/discover/'+city+'/':'/discover/',permanent:false});
+}
 const configText=JSON.stringify(config,null,2)+'\n';
 if(process.argv.includes('--check')){if(fs.readFileSync(configPath,'utf8')!==configText)throw new Error('Retired work redirects differ');}
 else fs.writeFileSync(configPath,configText);
 const weeklyPaths=require('./build-weekly-outings');
-const sitemapPaths=['','works.html','visit/','about.html',...[...Object.keys(cityNames),'kiyosumi'].map(city=>'shelf.html?shelf='+city),'discover/kiyosumi/',...['book','film','music','video'].map(kind=>'work-'+kind+'.html'),...weeklyPaths,...generatedFiles.map(file=>`discover/${file === 'index.html' ? '' : file.replace(/index\.html$/, '')}`)];
+const sitemapPaths=['','works.html','visit/','about.html',...[...Object.keys(cityNames),'kiyosumi'].map(city=>'shelf.html?shelf='+city),'discover/kiyosumi/',...['book','film','music','video'].map(kind=>'work-'+kind+'.html'),...weeklyPaths,...generatedFiles.filter(file=>!durationBlocked.has('/discover/'+file.replace(/index\.html$/,''))).map(file=>`discover/${file === 'index.html' ? '' : file.replace(/index\.html$/, '')}`)];
 const siteUpdatedAt=String(content.release?.verifiedAt||checkedAt).slice(0,10);
 const sitemapLastmod=file=>{
   if(file===''||file==='shelf.html?shelf=kiyosumi'||file==='discover/kiyosumi/'||file==='discover/short-films/'||file.startsWith('discover/short-films/')) return siteUpdatedAt;

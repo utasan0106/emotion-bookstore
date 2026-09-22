@@ -27,8 +27,8 @@ const venues = [
   },
   {
     id: 'shelter', name: '下北沢SHELTER', city: 'shimokitazawa', mention: 'SHELTER',
-    lead: 'この場所で録られた演奏と、この場所そのものを撮った映像。',
-    works: ['kaho-asa', 'bilingualboy-love', 'sleepinside-recycle', 'mabuta-roundabout', 'shelter-news'],
+    lead: 'この場所で録られた演奏を、4つの記録から辿る。',
+    works: ['kaho-asa', 'bilingualboy-love', 'sleepinside-recycle', 'mabuta-roundabout'],
     eventVenue: 'SHELTER'
   },
   {

@@ -4,7 +4,7 @@ const root=path.resolve(__dirname,'..'),read=f=>fs.readFileSync(path.join(root,f
 const samples=['index.html','works.html','saved.html','outings/index.html','discover/index.html','discover/essays/index.html'];
 const cities=['kichijoji','koenji','shimokitazawa','jinbocho'];
 const expected=[['/discover/','街から探す'],['/works.html','作品を探す'],['/outings/','催しを探す'],['/discover/essays/','街の記事']];
-for(const city of cities)for(const file of ['index','audio','video','book','film'])samples.push(`discover/${city}/${file}.html`);
+for(const city of cities)for(const file of ['index','audio','video','book','film']){const p=`discover/${city}/${file}.html`;if(fs.existsSync(path.join(root,p)))samples.push(p);}
 for(const file of samples){
  const html=read(file),navs=[...html.matchAll(/<nav class="site-sections"[^>]*>(.*?)<\/nav>/gs)];
  assert.equal(navs.length,1,`One shared navigation: ${file}`);
@@ -17,7 +17,9 @@ for(const file of samples){
 const home=read('discover/index.html');
 assert.ok(home.indexOf('class="city-grid"')<home.indexOf('class="watch-now"'),'City selection precedes recommendations');
 for(const city of cities)for(const kind of ['audio','video','book','film']){
- const html=read(`discover/${city}/${kind}.html`);
+ const p=`discover/${city}/${kind}.html`;
+ if(!fs.existsSync(path.join(root,p))) continue;
+ const html=read(p);
  assert.ok(html.includes(`data-editorial-city="${city}"`),'City theme follows selected city');
  if(html.includes('class="other-cities"'))assert.ok(html.indexOf('class="other-cities"')>html.indexOf('class="work-grid"'),'Show selected city before alternatives');
 }

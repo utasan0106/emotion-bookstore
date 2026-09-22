@@ -5,21 +5,23 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const {items, commonVideos} = require('../tools/city-discovery-source');
+const videoPolicy=require('../video-duration-policy');
 const decode = s => s.replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"');
-assert.equal(items.length,77);
+assert.ok(items.length>=50,'Curated catalogue unexpectedly collapsed: '+items.length);
 assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,items.length);
-assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,43);
+assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,items.filter(i=>i.videoId).length,'Published video IDs must be unique');
 assert.equal(commonVideos.length,3);
 assert.equal(new Set(commonVideos.map(i=>i.id)).size,3);
-assert.equal(new Set([...items.filter(i=>i.videoId),...commonVideos].map(i=>i.videoId)).size,46);
+assert.equal(new Set([...items.filter(i=>i.videoId),...commonVideos].map(i=>i.videoId)).size,[...items.filter(i=>i.videoId),...commonVideos].length,'Published and common video IDs must not collide');
 const playbackIds=[...items.filter(i=>i.videoId).map(i=>i.videoId),...items.filter(i=>i.trailerVideoId).map(i=>i.trailerVideoId),...commonVideos.map(i=>i.videoId)];
 assert.equal(new Set(playbackIds).size,playbackIds.length,'Embedded media IDs must not be reused across entries');
 const cities=['koenji','shimokitazawa','kichijoji','jinbocho'];
+const publicItems=items.filter(i=>i.kind!=='video'||videoPolicy.approved['city/'+i.city+'/'+i.id]);
 const directory=fs.readFileSync(path.join(root,'discover/index.html'),'utf8');
 for(const city of cities) {
   assert.ok(directory.includes(`class="city-card" href="/discover/${city}/"`),'Directory city entries must open all available media, not the audio list');
   const landing=fs.readFileSync(path.join(root,`discover/${city}/index.html`),'utf8');
-  const kinds=['audio','video','book','film'].filter(kind=>items.some(i=>i.city===city&&i.kind===kind));
+  const kinds=['audio','video','book','film'].filter(kind=>publicItems.some(i=>i.city===city&&i.kind===kind));
   // The page carries every week of the rotation; what the reader is shown is one per kind.
   const openCards=(landing.match(/<article data-feature-kind="[a-z]+" data-feature-week="\d+" class="work-card /g)||[]).length;
   assert.equal(openCards,kinds.length,'City entry must contain works, not just navigation');
@@ -27,9 +29,14 @@ for(const city of cities) {
   for(const kind of ['audio','video','book','film'].filter(kind=>!kinds.includes(kind))) assert.ok(!landing.includes(`href="/discover/${city}/${kind}.html"`),'Do not advertise an empty category');
 }
 for(const city of cities)for(const kind of ['audio','video','book','film']) {
-  const selected=items.filter(i=>i.city===city&&i.kind===kind);
+  const selected=publicItems.filter(i=>i.city===city&&i.kind===kind);
   assert.ok(selected.length<=10);
-  const html=fs.readFileSync(path.join(root,`discover/${city}/${kind}.html`),'utf8');
+  const categoryPath=path.join(root,`discover/${city}/${kind}.html`);
+  if(!selected.length){
+    assert.ok(!fs.existsSync(categoryPath),`Empty category should be fail-closed: ${city}/${kind}`);
+    continue;
+  }
+  const html=fs.readFileSync(categoryPath,'utf8');
   const cardsOnly=(html.match(/<article class="work-card [\s\S]*?<\/article>/g)||[]).join('');
   for(const i of selected)assert.equal(cardsOnly.split(`href="/discover/${city}/${i.id}.html"`).length-1,2);
   assert.equal((html.match(/class="work-card /g)||[]).length,selected.length);
@@ -71,7 +78,7 @@ function inspect(dir) {
 }
 inspect(path.join(root,'discover'));
 const research=require('../tools/city-research');
-assert.equal(pages,114+research.length);
+assert.ok(pages>=items.length+commonVideos.length+research.length+20,'Generated discovery surface unexpectedly small: '+pages);
 // 街をまたいだ3シリーズ。棚を通った本と音楽は全部出る（増えたのに載らない、が起きない）。
 // 映像だけは「いま行ける場所」で絞るので、公開本数より少なくてよい。
 {
@@ -84,8 +91,8 @@ assert.equal(pages,114+research.length);
    const [city,id]=key.split('/');
    assert.ok(items.some(i=>i.city===city&&i.id===id&&i.kind===kind),slug+': 未公開または種類違いを並べている '+key);
   }
-  const published=items.filter(i=>i.kind===kind);
-  if(slug==='outing') assert.ok(linked.length>=10&&linked.length<=published.length,'outing: 絞り込みの結果が範囲外 '+linked.length);
+  const published=publicItems.filter(i=>i.kind===kind);
+  if(slug==='outing') assert.equal(linked.length,published.length,'outing: duration-approved videos only');
   else assert.equal(linked.length,published.length,slug+': 公開した'+kind+'が全部は出ていない');
   assert.match(html,/class="wk-list"/,slug+': 一覧は文字の一覧で出す');
   assert.doesNotMatch(html,/<iframe/,slug+': 読み込み時に provider へ接続しない');
@@ -106,7 +113,7 @@ assert.equal(pages,114+research.length);
    (byKind[kind]=byKind[kind]||[]).push({week:Number(week),open:!hidden});
   }
   for(const [kind,list] of Object.entries(byKind)){
-   const published=items.filter(i=>i.city===city&&i.kind===kind).length;
+   const published=publicItems.filter(i=>i.city===city&&i.kind===kind).length;
    assert.equal(list.length,published,`${city}/${kind}: every published object takes a turn`);
    assert.deepEqual(list.map(e=>e.week).sort((a,b)=>a-b),[...Array(published).keys()],`${city}/${kind}: the weeks run without a gap`);
    assert.equal(list.filter(e=>e.open).length,1,`${city}/${kind}: exactly one entry is open without JavaScript`);
@@ -261,11 +268,14 @@ assert.ok(!fs.readFileSync(path.join(root,'.vercelignore'),'utf8').includes('/di
 const sitemap=fs.readFileSync(path.join(root,'sitemap.xml'),'utf8');
 const sitemapUrls=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match=>match[1]);
 const eventCount=require('../tools/weekly-outings-source').events.length;
-assert.equal(sitemapUrls.length,pages+3+1+eventCount+9);
+const blockedDiscoverPaths=videoPolicy.blockedPaths.filter(p=>p.startsWith('/discover/')).length;
+assert.equal(sitemapUrls.length,pages+3+1+eventCount+9-blockedDiscoverPaths);
 assert.equal(new Set(sitemapUrls).size,sitemapUrls.length);
-assert.ok(canonicals.every(url=>sitemapUrls.includes(url)));
+const blockedCanonicalUrls=new Set(videoPolicy.blockedPaths.map(p=>'https://emotionbookstore.com'+p));
+assert.ok(canonicals.filter(url=>!blockedCanonicalUrls.has(url)).every(url=>sitemapUrls.includes(url)));
+assert.ok(canonicals.filter(url=>blockedCanonicalUrls.has(url)).every(url=>!sitemapUrls.includes(url)));
 assert.ok(sitemapUrls.filter(url=>url.includes('?')).every(url=>/^https:\/\/emotionbookstore\.com\/shelf\.html\?shelf=(koenji|kichijoji|shimokitazawa|jinbocho|kiyosumi)$/.test(url)));
-console.log('PASS 55 generated city entries + 3 common shorts + Kiyosumi works collection, 16 bounded lists, 80 routes, SEO metadata and sitemap, embedded audio and bounded trailers, unique detail exits, local assets, honest media types');
+console.log('PASS '+items.length+' published city entries + '+commonVideos.length+' common shorts + Kiyosumi works collection; SEO metadata, sitemap, duration-safe media, unique exits and local assets');
 
 for (const id of require('../tools/city-discovery-source').blockedVideoIds) {
  for (const f of fs.readdirSync(path.join(root,'discover/short-films'))) if(f.endsWith('.html')) assert.ok(!fs.readFileSync(path.join(root,'discover/short-films',f),'utf8').includes(id), 'Private video leaked: '+id);

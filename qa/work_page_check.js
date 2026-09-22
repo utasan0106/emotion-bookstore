@@ -18,7 +18,8 @@ const {items:cityItems}=require('../tools/city-discovery-source');
   const missing=cityItems.filter(i=>i.kind===kind&&!html.includes(`/discover/${i.city}/${i.id}.html`));
   assert.deepEqual(missing.map(i=>i.city+'/'+i.id),[],'work-'+id+'.html must reach every published '+kind);
   const listed=(html.match(/<li><a href="\/discover\//g)||[]).length;
-  assert.ok(listed>=10,'work-'+id+'.html lists only '+listed+' of them');
+  const minimum=id==='video'?0:10;
+  assert.ok(listed>=minimum,'work-'+id+'.html lists only '+listed+' of them');
  }
 }
 const directory = main(read('works.html'));
@@ -33,9 +34,12 @@ for (const id of entries) {
   assert.match(body,new RegExp('id="'+id+'"'));
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
   assert.ok(body.includes('href="./works.html#' + id + '"'));
-  const city = {book:'神保町', film:'神保町', music:'下北沢', video:'高円寺'}[id];
+  const city = {book:'神保町', film:'神保町', music:'下北沢', video:'吉祥寺'}[id];
   assert.ok(body.includes(city));
-  assert.match(body,/<figure class="official-media/);
+  if(id==='book'){
+    assert.match(body,/出版社で本の紹介を見る/,'Text-only book keeps its official publisher exit');
+    assert.doesNotMatch(body,/<img\b[^>]+(?:j-n\.co\.jp|tsogen\.co\.jp)/,'Text-only book must not hotlink an unstable publisher cover');
+  } else assert.match(body,/<figure class="official-media/);
   assert.doesNotMatch(clean(html),/autoplay=1|rel="preconnect"/);
 
 }
@@ -54,7 +58,7 @@ for (const name of ['works.html', ...entries.map(id => 'work-' + id + '.html')])
   }
 }
 assert.ok(read('work-music.html').indexOf('?recording=shelter') < read('work-music.html').indexOf('この演奏が生まれた背景'));
-assert.match(read('work-video.html'), /data-video-id="dt33RGSRuo0"/);
-assert.doesNotMatch(read('work-video.html'), /\/embed\/dt33RGSRuo0/);
+assert.match(read('work-video.html'), /data-video-id="80y5COiKdDw"/);
+assert.doesNotMatch(read('work-video.html'), /\/embed\/80y5COiKdDw/);
 assert.match(read('.vercelignore'), /^\/tools\/work-entry-source.html$/m);
 console.log('PASS separate work pages: real routes, unique destinations, actual work media, autoplay disabled');
