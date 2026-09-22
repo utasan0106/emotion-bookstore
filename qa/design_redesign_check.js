@@ -44,6 +44,9 @@ for(const file of files){
  // Everything the reader had must still be there. The only addition allowed is the
  // click-to-load affordance itself: its button and the sentence explaining it.
  const text=s=>s.replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/g,'')
+  // 2026-09-22：画像直下は鑑賞・発見の表面。出典・作者・権利・「〜ではありません」
+  // は Credits / source QA に集約したため、figcaption は本文保存契約の対象外にする。
+  .replace(/<figcaption\b[^>]*>[\s\S]*?<\/figcaption>/g,'')
   .replace(/<button class="v3-video-load[^"]*"[^>]*>[\s\S]*?<\/button>/g,'')
   .replace(/<(span|p) class="official-media-note">[\s\S]*?<\/\1>/g,'')
   .replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
