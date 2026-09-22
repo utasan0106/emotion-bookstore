@@ -16,7 +16,10 @@ for(const id of ['bocchi-main-pv','next-town-koenji','kichion-toranoko','used-bo
 assert.equal((discoveryHome.match(/class="official-media"/g)||[]).length,1,'Only the lead film embeds on the directory');
 for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']){
   for(const kind of ['audio','video','book','film']){
-    const html=read('discover/'+city+'/'+kind+'.html');
+    const category='discover/'+city+'/'+kind+'.html';
+    const hasKind=publicItems.some(i=>i.city===city&&i.kind===kind);
+    if(!hasKind){ assert.ok(!fs.existsSync(path.join(root,category)),'Empty category should be fail-closed: '+city+'/'+kind); continue; }
+    const html=read(category);
     assert.doesNotMatch(html,/この街を、もう少し深く|tsogen.co.jp\/sp\/author\/214/);
     assert.match(html,/href="\/discover\/short-films\/"/);
     const feature=html.match(/<aside class="feature">[\s\S]*?<\/aside>/)?.[0]||'';
@@ -32,7 +35,9 @@ for(const [city,entries] of Object.entries(require('../tools/city-editorials')))
   assert.ok(html.includes(`/discover/${city}/#editorials-title`));
   assert.ok(html.includes('id="editorials-title"'));
   for(const kind of ['audio','video','book','film']) {
-    assert.ok(read(`discover/${city}/${kind}.html`).includes(`/discover/${city}/#editorials-title`));
+    const file=`discover/${city}/${kind}.html`;
+    if(!publicItems.some(i=>i.city===city&&i.kind===kind)){ assert.ok(!fs.existsSync(path.join(root,file))); continue; }
+    assert.ok(read(file).includes(`/discover/${city}/#editorials-title`));
   }
   for(const entry of entries) {
     assert.ok(html.includes(entry.title));
