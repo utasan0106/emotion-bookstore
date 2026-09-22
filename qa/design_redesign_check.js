@@ -47,6 +47,9 @@ for(const file of files){
   // 2026-09-22：画像直下は鑑賞・発見の表面。出典・作者・権利・「〜ではありません」
   // は Credits / source QA に集約したため、figcaption は本文保存契約の対象外にする。
   .replace(/<figcaption\b[^>]*>[\s\S]*?<\/figcaption>/g,'')
+  // 催し一覧は週次で入れ替わる運用面。古い event-card の文言を永続保存せず、
+  // weekly_outings / timing / pending gate / generated-page QA で現在性を守る。
+  .replace(/<article class="event-card"\b[^>]*>[\s\S]*?<\/article>/g,'')
   .replace(/<button class="v3-video-load[^"]*"[^>]*>[\s\S]*?<\/button>/g,'')
   .replace(/<(span|p) class="official-media-note">[\s\S]*?<\/\1>/g,'')
   .replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
