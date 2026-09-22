@@ -4,12 +4,13 @@ const items = [];
 const commonVideosWeekOf = '2026-09-21';
 const commonVideos = [
   {
-    id: 'find-my-tokyo', title: 'Find my Tokyo. チャレンジャーズ', creator: '東京メトロ / 30秒',
-    hook: '知っている街の、まだ知らない楽しみ方へ。',
-    note: '東京メトロ公式の2024年度「Find my Tokyo.」キャンペーン映像。30秒の短いCMとして街へ出るきっかけを置きます。',
-    videoId: 'CMM0QCw99c4', durationSeconds: 30,
-    durationSource: 'https://yutura.net/channel/15597/latest/?p=6',
-    sources: ['https://prtimes.jp/main/html/rd/p/000000029.000013243.html']
+    id: 'thanks-tokyo', title: 'THANKS,TOKYO.【30秒ver】', creator: '東京都産業労働局 / 30秒',
+    hook: '東京を楽しむ人と、街を支える観光の仕事を30秒で見る。',
+    note: '東京都産業労働局公式チャンネルが公開する30秒版。短い時間で東京へ出る入口として使います。',
+    videoId: 'pCDd7LkhkfE', durationSeconds: 30,
+    durationSource: 'https://www.youtube.com/watch?v=pCDd7LkhkfE',
+    sources: ['https://www.youtube.com/watch?v=pCDd7LkhkfE'],
+    checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
   },
   {
     id: 'tokyo-metro-newline', title: '新たな未来に向けた第一歩！新線プロジェクト', creator: '東京メトロ / 30秒',
