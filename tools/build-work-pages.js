@@ -7,6 +7,9 @@ const root = path.resolve(__dirname, '..');
 const source = fs.readFileSync(path.join(__dirname, 'work-entry-source.html'), 'utf8');
 const media=require('./work-media');
 const {items:cityItems}=require('./city-discovery-source');
+const videoPolicy=require('../video-duration-policy');
+const approvedCityVideos=new Set(Object.keys(videoPolicy.approved).filter(k=>k.startsWith('city/')).map(k=>k.slice(5)));
+const catalogueItems=cityItems.filter(i=>i.kind!=='video'||approvedCityVideos.has(i.city+'/'+i.id));
 const cityNames={koenji:'高円寺',shimokitazawa:'下北沢',kichijoji:'吉祥寺',jinbocho:'神保町'};
 const catalogueKind={book:'book', film:'film', music:'audio', video:'video'};
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -15,7 +18,7 @@ const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 // cards: the reader is choosing what to read next, not being shown a shop front twice.
 // The work this page already leads with, where the catalogue holds the same object.
 // The music entry is a Bandcamp album that has no city entry, hence no id.
-const featuredCatalogueId={book:'jinbocho/kaijin', film:'jinbocho/morisaki-film', video:'koenji/awa-2025'};
+const featuredCatalogueId={book:'jinbocho/kaijin', film:'jinbocho/morisaki-film', video:'kichijoji/park-voice'};
 // The book entry already offered the way through to its city page; film and video did
 // not, so the object the page leads with was the one object it could not follow.
 function cityLink(entryId, section){
@@ -28,14 +31,14 @@ function cityLink(entryId, section){
 function kindCount(entryId){
   const kind=catalogueKind[entryId];
   const led=featuredCatalogueId[entryId];
-  const total=cityItems.filter(i=>i.kind===kind).length + (led?0:1);
+  const total=catalogueItems.filter(i=>i.kind===kind).length + (led?0:1);
   const label={book:'本', film:'映画', music:'音楽', video:'映像'}[entryId];
   return `<span class="wk-count">${label} ${total}件</span>`;
 }
 function collection(entryId, section){
   const kind=catalogueKind[entryId];
   const led=featuredCatalogueId[entryId];
-  const rows=cityItems.filter(i=>i.kind===kind&&`${i.city}/${i.id}`!==led&&!section.includes(`/discover/${i.city}/${i.id}.html`));
+  const rows=catalogueItems.filter(i=>i.kind===kind&&`${i.city}/${i.id}`!==led&&!section.includes(`/discover/${i.city}/${i.id}.html`));
   if(!rows.length) return '';
   const label={book:'本', film:'映画', music:'音楽', video:'映像'}[entryId];
   const list=rows.map(i=>`<li><a href="/discover/${i.city}/${i.id}.html">${esc(i.title)}</a><span class="wk-list-by">${esc(i.creator)}</span><span class="wk-list-rel">${esc(cityNames[i.city])} · ${esc(i.relation)}</span></li>`).join('');
@@ -43,12 +46,12 @@ function collection(entryId, section){
 }
 // 本の公式の行き先。カードの行動リンクと表紙の出典が同じページなので、一箇所で持つ。
 const BOOK_OFFICIAL='https://www.tsogen.co.jp/np/isbn/9784488406080';
-const mediaFor=entry=>entry.id==='music'?media.album():entry.id==='video'?media.youtube('dt33RGSRuo0',entry.title,'主催団体の公式映像（5分39秒）'):entry.id==='film'?media.youtube('6M0vx8wLEbM',entry.title,'予告編（本編ではありません）'):media.cover('jinbocho/kaijin',entry.title,BOOK_OFFICIAL);
+const mediaFor=entry=>entry.id==='music'?media.album():entry.id==='video'?media.youtube('80y5COiKdDw',entry.title,'公開元の映像（57秒）'):entry.id==='film'?media.youtube('6M0vx8wLEbM',entry.title,'予告編（本編ではありません）'):'';
 const entries = [
   { id: 'book', kind: '本', title: '神保町の怪人', byline: '紀田順一郎', city: '神保町', relation: '物語の舞台', action: '本の紹介へ' },
   { id: 'film', kind: '映画', title: '森崎書店の日々', byline: '日向朝子監督 / 2010', city: '神保町', relation: '撮影された街', action: '映画の紹介へ' },
   { id: 'music', kind: '音楽', title: '不透明度 — Live at Shelter 20070204', byline: 'Boris with Michio Kurihara', city: '下北沢', relation: 'ライブが録音された街', action: 'ライブ盤の紹介へ' },
-  { id: 'video', kind: '映像', title: '高円寺の踊り', byline: '主催団体の公式映像 / 2025', city: '高円寺', relation: '踊りが行われた街', action: '街の映像へ' }
+  { id: 'video', kind: '映像', title: '井の頭公園100周年記念放送の記録', byline: 'MIRAI records / 57秒', city: '吉祥寺', relation: '公園で流れた放送', action: '街の映像へ' }
 ];
 const header = source.slice(0, source.indexOf('  <main id="main">')).replace(/<!-- 作品から入る[\s\S]*?-->/, '<!-- Built from tools/work-entry-source.html. Official work previews load when visible, without autoplay. -->');
 const footer = source.slice(source.indexOf('  <footer class="site-footer">'));
