@@ -1,98 +1,92 @@
 #!/usr/bin/env node
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const exists=p=>fs.existsSync(path.join(root,p));
 
-const root = path.resolve(__dirname, '..');
-const failures = [];
-const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
-
-for (const file of ['index.html','shelf.html','data.html','robots.txt','sitemap.xml']) {
-  if (!fs.existsSync(path.join(root, file))) failures.push(`missing ${file}`);
+for(const file of ['index.html','works.html','shelf.html','robots.txt','sitemap.xml','vercel.json','discover/index.html','discover/weekly/index.html','outings/index.html']){
+  assert.ok(exists(file),'missing '+file);
 }
 
-if (!failures.length) {
-  const index = read('index.html');
-  const shelf = read('shelf.html');
-  const runtime = read('release.js');
-  const data = read('data.html');
-  const robots = read('robots.txt');
-  const sitemap = read('sitemap.xml');
+// Canonical host migration.
+const config=JSON.parse(read('vercel.json'));
+const legacyRedirect=(config.redirects||[]).find(r=>(r.has||[]).some(h=>h.type==='host'&&h.value==='emotion-bookstore.vercel.app'));
+assert.ok(legacyRedirect,'legacy Vercel hostname must redirect');
+assert.equal(legacyRedirect.permanent,true,'legacy host redirect must be permanent');
+assert.equal(legacyRedirect.destination,'https://emotionbookstore.com/:path*');
+assert.equal(legacyRedirect.source,'/:path*');
 
-  if (index.includes('人が選んだ店・場所・本・映画・音楽・催し')) {
-    failures.push('index.html: stale anonymous editorial metadata remains');
-  }
-  if (!index.includes('感情書店の編集部が選んだ店・場所・本・映画・音楽・催し')) {
-    failures.push('index.html: editorial-team metadata missing');
-  }
-  if (!index.includes('type="application/ld+json"') ||
-      !index.includes('"@type": "WebSite"') ||
-      !index.includes('"url": "https://emotionbookstore.com/"')) {
-    failures.push('index.html: WebSite JSON-LD missing');
-  }
+// Robots + sitemap.
+const robots=read('robots.txt');
+assert.match(robots,/^User-agent: \*\nAllow: \/\n\nSitemap: https:\/\/emotionbookstore\.com\/sitemap\.xml/m);
+const sitemap=read('sitemap.xml');
+assert.doesNotMatch(sitemap,/emotion-bookstore\.vercel\.app/,'sitemap must use canonical domain');
+assert.doesNotMatch(sitemap,/<loc>[^<]*\?[^<]*<\/loc>/,'query-state URLs do not belong in sitemap');
+const locs=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1]);
+assert.equal(new Set(locs).size,locs.length,'sitemap URLs must be unique');
+for(const required of [
+  'https://emotionbookstore.com/',
+  'https://emotionbookstore.com/works.html',
+  'https://emotionbookstore.com/discover/',
+  'https://emotionbookstore.com/discover/koenji/',
+  'https://emotionbookstore.com/discover/shimokitazawa/',
+  'https://emotionbookstore.com/discover/kichijoji/',
+  'https://emotionbookstore.com/discover/jinbocho/',
+  'https://emotionbookstore.com/discover/kiyosumi/',
+  'https://emotionbookstore.com/discover/weekly/',
+  'https://emotionbookstore.com/outings/'
+]) assert.ok(locs.includes(required),'sitemap missing '+required);
 
-  if (data.includes('<span class="jp-phrase">人が選んだ</span>')) {
-    failures.push('data.html: stale 人が選んだ copy remains');
-  }
-  if (!data.includes('<span class="jp-phrase">感情書店の編集部が選んだ</span>')) {
-    failures.push('data.html: editorial-team copy missing');
-  }
+// Index/noindex split: static search landings index, stateful shelf does not.
+const shelf=read('shelf.html');
+assert.match(shelf,/<meta name="robots" content="noindex,follow">/,'dynamic shelf must be noindex,follow');
+const works=read('works.html');
+assert.doesNotMatch(works,/<meta name="robots" content="noindex/,'works catalogue should be indexable');
 
-  if (!shelf.includes('name="twitter:title"') ||
-      !shelf.includes('name="twitter:description"')) {
-    failures.push('shelf.html: Twitter metadata missing');
-  }
+// Critical metadata.
+const critical=[
+ ['index.html','https://emotionbookstore.com/'],
+ ['works.html','https://emotionbookstore.com/works.html'],
+ ['discover/index.html','https://emotionbookstore.com/discover/'],
+ ['discover/koenji/index.html','https://emotionbookstore.com/discover/koenji/'],
+ ['discover/shimokitazawa/index.html','https://emotionbookstore.com/discover/shimokitazawa/'],
+ ['discover/kichijoji/index.html','https://emotionbookstore.com/discover/kichijoji/'],
+ ['discover/jinbocho/index.html','https://emotionbookstore.com/discover/jinbocho/'],
+ ['discover/kiyosumi/index.html','https://emotionbookstore.com/discover/kiyosumi/'],
+ ['discover/weekly/index.html','https://emotionbookstore.com/discover/weekly/'],
+ ['outings/index.html','https://emotionbookstore.com/outings/']
+];
+const titles=[];
+for(const [file,url] of critical){
+ const html=read(file);
+ const title=(html.match(/<title>([^<]+)<\/title>/)||[])[1];
+ const description=(html.match(/<meta name="description" content="([^"]+)">/)||[])[1];
+ const canonical=(html.match(/<link rel="canonical" href="([^"]+)"/)||[])[1];
+ assert.ok(title&&title.length>=8,file+': descriptive title required');
+ assert.ok(description&&description.length>=35,file+': useful meta description required');
+ assert.equal(canonical,url,file+': self canonical required');
+ assert.doesNotMatch(html,/emotion-bookstore\.vercel\.app/,file+': old host must not appear');
+ titles.push(title);
+}
+assert.equal(new Set(titles).size,titles.length,'critical titles should be unique');
+assert.match(read('index.html'),/<title>東京5街の本・映画・音楽・文化イベント｜みんなの感情書店<\/title>/);
+for(const city of ['高円寺','下北沢','吉祥寺','神保町']){
+ const file={高円寺:'koenji',下北沢:'shimokitazawa',吉祥寺:'kichijoji',神保町:'jinbocho'}[city];
+ assert.match(read('discover/'+file+'/index.html'),new RegExp('<title>'+city+'の本・映画・音楽・映像'));
+}
+assert.match(read('discover/weekly/index.html'),/<title>今週の東京カルチャー/);
+assert.match(read('outings/index.html'),/<title>高円寺・下北沢・吉祥寺・神保町の文化イベント/);
 
-  if (shelf.includes('rel="canonical"')) {
-    failures.push('shelf.html: static canonical must remain absent because 4 shelves differ');
-  }
-
-  for (const required of [
-    'function syncShelfMetadata(shelf)',
-    "document.createElement('link')",
-    "canonical.rel = 'canonical'",
-    "https://emotionbookstore.com/shelf.html?shelf=",
-    `setMeta('meta[property=\"og:url\"]', canonicalUrl)`,
-    `setMeta('meta[name=\"twitter:title\"]', pageTitle)`,
-    "syncShelfMetadata(shelf);"
-  ]) {
-    if (!runtime.includes(required)) failures.push(`release.js: shelf canonical/social sync missing ${required}`);
-  }
-
-  if (!runtime.includes("if (id === 'tokyo') id = 'kichijoji';")) {
-    failures.push('release.js: legacy tokyo shelf normalization missing');
-  }
-
-  // 2026-09-11、AIクローラーを閉じない理由を robots.txt にコメントで残した。
-  // 閉じる判断は、この行を書き換えに来た人がここで読む。だから場所はここでなければ
-  // ならない。契約は「1バイトも違わない」から「命令は allow-all と Sitemap の二つだけ」
-  // へ移した。守るもの（何もブロックしない・sitemap を示す）は変えていない。
-  const robotLines = robots.split('\n');
-  const directives = robotLines.filter(line => line.trim() && !line.startsWith('#'));
-  if (directives.join('\n') !== 'User-agent: *\nAllow: /\nSitemap: https://emotionbookstore.com/sitemap.xml') {
-    failures.push('robots.txt: allow-all + sitemap contract missing');
-  }
-  if (!/^User-agent: \*\nAllow: \/\n\nSitemap: https:\/\/emotionbookstore\.com\/sitemap\.xml\n/.test(robots)) {
-    failures.push('robots.txt: the allow-all block must come first, before any comment');
-  }
-
-  const requiredUrls = [
-    'https://emotionbookstore.com/',
-    'https://emotionbookstore.com/shelf.html?shelf=kichijoji',
-    'https://emotionbookstore.com/shelf.html?shelf=koenji',
-    'https://emotionbookstore.com/shelf.html?shelf=shimokitazawa',
-    'https://emotionbookstore.com/shelf.html?shelf=jinbocho'
-  ];
-  for (const url of requiredUrls) {
-    if (!sitemap.includes(`<loc>${url}</loc>`)) failures.push(`sitemap.xml missing ${url}`);
-  }
+// Unreviewed events must never become acquisition landing links.
+const inventory=require('../tools/weekly-outings-source');
+const pending=inventory.events.filter(e=>!inventory.isPublishableEvent(e)).map(e=>e.id);
+const weekly=read('discover/weekly/index.html');
+for(const id of pending) assert.doesNotMatch(weekly,new RegExp('/outings/events/'+id+'\\.html'), 'weekly links pending event '+id);
+for(const venue of ['jirokichi','za-koenji','shelter','star-pines-cafe','jinbocho-theater']){
+ const html=read('discover/venue/'+venue+'/index.html');
+ for(const id of pending) assert.doesNotMatch(html,new RegExp('/outings/events/'+id+'\\.html'),venue+' links pending event '+id);
 }
 
-if (failures.length) {
-  console.error('SEO_CHECK_FAIL');
-  failures.forEach((x) => console.error('- ' + x));
-  process.exit(1);
-}
-
-console.log('SEO_CHECK_GO');
+console.log('SEO_CHECK_GO: canonical host, clean sitemap, index split, unique metadata, reviewed-event acquisition surfaces');
