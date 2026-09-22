@@ -166,7 +166,7 @@ window.V3_RELEASE_CONTENT = {
           rights: {
             author: 'Htanaungg', source: 'Wikimedia Commons',
             sourceUrl: 'https://commons.wikimedia.org/wiki/File:Inokashira_Pond.jpg',
-            license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+            license: 'CC BY 3.0', licenseUrl: 'https://creativecommons.org/licenses/by/3.0/',
             modification: 'Wikimedia生成の1280px縮小版・cropなし'
           },
           factsSourceUrl: 'https://www.kensetsu.metro.tokyo.lg.jp/jimusho/seibuk/inokashira/kouenannai',
@@ -257,7 +257,7 @@ window.V3_RELEASE_CONTENT = {
         alt: '夕方の高円寺の路地と店先の灯り',
         author: 'NMaia', source: 'Wikimedia Commons',
         sourceUrl: 'https://commons.wikimedia.org/wiki/File:Street_in_Koenji.jpg',
-        license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+        license: 'CC BY 3.0', licenseUrl: 'https://creativecommons.org/licenses/by/3.0/',
         modification: 'Wikimedia Commons原本を取得後、長辺1600px以内へ縮小。表示時のみCSSでトリミング・グレースケール・デュオトーン・コントラスト・網点風オーバーレイ'
       },
       objects: [
@@ -384,7 +384,7 @@ window.V3_RELEASE_CONTENT = {
         alt: '歩行者と小さな店が並ぶ下北沢の通り',
         author: 'Aw1805', source: 'Wikimedia Commons',
         sourceUrl: 'https://commons.wikimedia.org/wiki/File:Shimokitazawa_Street_2015.jpg',
-        license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+        license: 'CC BY 3.0', licenseUrl: 'https://creativecommons.org/licenses/by/3.0/',
         modification: 'Wikimedia Commons原本を取得後、長辺1600px以内へ縮小。表示時のみCSSでトリミング・グレースケール・デュオトーン・コントラスト・網点風オーバーレイ'
       },
       objects: [
@@ -503,7 +503,7 @@ window.V3_RELEASE_CONTENT = {
       weeklyFeature: {
         eventType: '落語',
         title: 'らくご江戸めぐり',
-        media: {src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', alt: '清澄庭園の池と庭園の景色'},
+        media: {src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/KiyosumiGarden6.JPG/960px-KiyosumiGarden6.JPG', alt: '清澄庭園の池と庭園の景色'},
         titlePhrases: ['らくご', '江戸めぐり'],
         calendarDates: '20260926/20260927',
         dateLabel: '9月26日（土） 14:00開演',
@@ -516,16 +516,16 @@ window.V3_RELEASE_CONTENT = {
       },
       entryMedia: {
         kind: 'photo',
-        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', width: 640, height: 414,
+        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/KiyosumiGarden6.JPG/960px-KiyosumiGarden6.JPG', width: 960, height: 643,
         alt: '池の水面と飛び石、樹木が見える清澄庭園の景色',
-        provenance: 'Kakidai / Wikimedia Commons / CC BY-SA 4.0 / 2015-08-10'
+        provenance: 'Ippukucho / Wikimedia Commons / CC BY 3.0 / 2013-02-22'
       },
       heroMedia: {
-        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', width: 640, height: 414,
+        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/KiyosumiGarden6.JPG/960px-KiyosumiGarden6.JPG', width: 960, height: 643,
         alt: '池の水面と飛び石、樹木が見える清澄庭園の景色',
-        author: 'Kakidai', source: 'Wikimedia Commons',
-        sourceUrl: 'https://commons.wikimedia.org/wiki/File:Kiyosumi_Teien_-_Japanese_gardern_4.JPG',
-        license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+        author: 'Ippukucho', source: 'Wikimedia Commons',
+        sourceUrl: 'https://commons.wikimedia.org/wiki/File:KiyosumiGarden6.JPG',
+        license: 'CC BY 3.0', licenseUrl: 'https://creativecommons.org/licenses/by/3.0/',
         modification: 'Wikimedia Commonsが提供する640×414プレビューを参照。表示失敗時は同一オリジンの清澄白河図版へfail-closedし、表示時のみCSSでトリミング。'
       },
       objects: [
@@ -652,9 +652,9 @@ window.V3_RELEASE_CONTENT = {
         alt: '街灯と複数の店が連なる夕方の神保町・すずらん通り',
         author: 'Fred Cherrygarden', source: 'Wikimedia Commons',
         sourceUrl: 'https://commons.wikimedia.org/wiki/File:Suzuran_Street_Jimbocho.jpg',
-        license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+        license: 'CC BY 3.0', licenseUrl: 'https://creativecommons.org/licenses/by/3.0/',
         capturedAt: '2023-04-02',
-        modification: 'Wikimedia Commonsの1280px縮小版をそのまま保存。表示時のみCSSでトリミング・明度・彩度を調整。画像の派生物はCC BY-SA 4.0で提供'
+        modification: 'Wikimedia Commonsの1280px縮小版をそのまま保存。表示時のみCSSでトリミング・明度・彩度を調整。画像の派生物はCC BY 3.0で提供'
       },
       objects: [
         {
@@ -718,8 +718,8 @@ window.V3_RELEASE_CONTENT = {
             author: 'Olaf2',
             source: 'Wikimedia Commons',
             sourceUrl: 'https://commons.wikimedia.org/wiki/File:Jimb%C5%8Dch%C5%8D_Book_Town_2025_02.jpg',
-            license: 'CC BY-SA 4.0',
-            licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+            license: 'CC BY 3.0',
+            licenseUrl: 'https://creativecommons.org/licenses/by/3.0/',
             modification: '縮小のみ・cropなし'
           },
           factsSourceUrl: 'https://yaguchishoten.jp/',
