@@ -2,6 +2,23 @@
 @font-face{font-family:"EB Reading";src:url('/assets/fonts/zen-kaku-gothic-400.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
 @font-face{font-family:"EB Reading";src:url('/assets/fonts/zen-kaku-gothic-500.woff2') format('woff2');font-style:normal;font-weight:500;font-display:swap}
 @font-face{font-family:"EB Display";src:url('/assets/fonts/shippori-mincho-500.woff2') format('woff2');font-style:normal;font-weight:500;font-display:swap}
+:root{
+  --font-display:"EB Display","Hiragino Mincho ProN","Noto Serif CJK JP","Yu Mincho",serif;
+  --font-body:"EB Reading",-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Noto Sans CJK JP","Yu Gothic",Meiryo,sans-serif;
+  --type-xs:.75rem;
+  --type-meta:.8125rem;
+  --type-ui:.875rem;
+  --type-body:1rem;
+  --type-lead:1.0625rem;
+  --type-action:.9375rem;
+  --type-card-title:1.375rem;
+  --type-section-title:1.5rem;
+  --type-page-title:clamp(1.75rem,1.2rem + 1.5vw,2.5rem);
+  --leading-tight:1.45;
+  --leading-heading:1.55;
+  --leading-body:1.85;
+  --leading-reading:1.95;
+}
 /* Shared navigation: one small pair, kept clear of text and mobile safe areas. */
 /* Forecast palette and scene effects; playback and reading controls remain clear. */
 body[data-city-weather="clear"]{--weather-canvas:#f8f5ec;--weather-panel:#f1ead9;--weather-accent:#73531f}
