@@ -4,23 +4,31 @@ const items = [];
 const commonVideosWeekOf = '2026-09-21';
 const commonVideos = [
   {
-    id: 'find-my-tokyo', title: 'Find my Tokyo. チャレンジャーズ', creator: '東京メトロ / 2024',
-    hook: '知っている街の、まだ知らない楽しみ方へ。',
-    note: '東京メトロが東京の新しい魅力を見つける企画として公開した企業広告です。このサイトの5街だけを扱う映像ではありません。',
-    videoId: 'RpSlspjIeG8', sources: ['https://www.tokyometro.jp/news/2024/218221.html']
-  },
-  {
-    id: 'toyota-loving-eyes', title: 'Loving Eyes', creator: 'TOYOTA / ブランドムービー',
-    hook: '同じ道のりを、父と娘それぞれの目線で見つめる。',
-    note: '自動車の安全技術を伝える企業広告で、父と娘の時間を二つの視点から描いた作品です。特定の街への案内ではありません。',
-    videoId: 'mh_QCvulKSY', sources: []
-  },
-  {
-    id: 'kiyosumi-kotomise', title: 'ことみせ～清澄白河エリア・深川資料館通り～', creator: '江東区公式チャンネル / 2026',
-    hook: '店を巡る目線から、清澄白河の今の通りへ。',
-    note: '江東区の区政情報番組「江東ワイドスクエア」が、清澄白河エリアと深川資料館通りの店や通りを紹介した2026年の公式映像です。',
-    videoId: 'bLuK6QHKc7E', sources: ['https://www.city.koto.lg.jp/011502/kuse/koho/katsudo/catv/wide-square.html'],
+    id: 'thanks-tokyo', title: 'THANKS,TOKYO.【30秒ver】', creator: '東京都産業労働局 / 30秒',
+    hook: '東京を楽しむ人と、街を支える観光の仕事を30秒で見る。',
+    note: '東京都産業労働局公式チャンネルが公開する30秒版。短い時間で東京へ出る入口として使います。',
+    videoId: 'pCDd7LkhkfE', durationSeconds: 30,
+    durationSource: 'https://www.youtube.com/watch?v=pCDd7LkhkfE',
+    sources: ['https://www.youtube.com/watch?v=pCDd7LkhkfE'],
     checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
+  },
+  {
+    id: 'tokyo-metro-newline', title: '新たな未来に向けた第一歩！新線プロジェクト', creator: '東京メトロ / 30秒',
+    hook: '路線が伸びると、街と人の移動はどう変わる。',
+    note: '東京メトロの有楽町線・南北線延伸を伝える30秒の公式映像。移動と街のつながりを短い時間で見る入口です。',
+    videoId: 'rjFh_eBwV_k', durationSeconds: 30,
+    durationSource: 'https://yutura.net/channel/15597/latest/?p=4',
+    sources: ['https://www.tokyometro-newline.jp/movie/'],
+    checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
+  },
+  {
+    id: 'toyota-loving-eyes', title: 'Loving Eyes', creator: 'TOYOTA / 3分26秒',
+    hook: '同じ道のりを、父と娘それぞれの目線で見つめる。',
+    note: '父と娘の同じ時間を二つの視点で描くTOYOTAのブランドムービー。3分を超えますが、視点の反復が作品の核なので例外採用します。',
+    videoId: 'Me1GIDy-U9g', durationSeconds: 206,
+    durationSource: 'https://www.youtube.com/watch?v=Me1GIDy-U9g',
+    durationExceptionReason: '父と娘の同じ時間を二つの視点で描く構造が作品の核で、3分26秒でも最後まで見る理由が明確。',
+    sources: []
   }
 ].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-08', playbackChecked: false}));
 const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({
