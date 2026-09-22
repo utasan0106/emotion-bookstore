@@ -48,7 +48,22 @@ window.V3_RELEASE_CONTENT = {
   // entry:
   // { id, sourceKind, shelfId, area, categoryIds, title, typeLabel, summary,
   //   actionLabel, actionUrl, verifiedAt, archivedAt }
-  archive: [],
+  archive: [
+    {
+      id: 'weekly-shimokitazawa-shelter-20260923',
+      sourceKind: 'weeklyFeature',
+      shelfId: 'shimokitazawa',
+      area: '下北沢',
+      categoryIds: ['music'],
+      title: 'SHELTER 35th Anniversary “IGNITION GIGS”',
+      typeLabel: 'ライブ',
+      summary: '2026年9月23日の下北沢SHELTER 35周年企画。公式日程を確認し、次の週替わり特集へ入れ替えました。',
+      actionLabel: 'SHELTER公式で見る',
+      actionUrl: 'https://www.loft-prj.co.jp/schedule/shelter/357199',
+      verifiedAt: '2026-09-23T08:23:00+09:00',
+      archivedAt: '2026-09-23T08:23:00+09:00'
+    }
+  ],
   detour: {
     label: '今週の寄り道',
     weekOf: '2026-09-21',
@@ -360,18 +375,18 @@ window.V3_RELEASE_CONTENT = {
       tagline: '下北沢を、3つだけ。',
       area: '下北沢',
       weeklyFeature: {
-        eventType: 'ライブ',
-        title: 'SHELTER 35th Anniversary “IGNITION GIGS”',
-        media: {src: '/assets/shimokitazawa-shelter.jpg', alt: '会場：下北沢SHELTER'},
-        titlePhrases: ['SHELTER 35th Anniversary ', '“IGNITION GIGS”'],
-        calendarDates: '20260923/20260924',
-        dateLabel: '9月23日（水） OPEN 12:00 / START 12:30',
-        venue: '下北沢SHELTER',
-        why: '35年続く地下ライブハウスで、周年企画が現在の出演者によって続いている。下北沢に積もる音の時間を見る一件として。',
-        actionLabel: 'SHELTER公式で見る',
-        actionUrl: 'https://www.loft-prj.co.jp/schedule/shelter/357199',
-        verifiedAt: '2026-09-22T01:30:00+09:00',
-        expiresAt: '2026-09-24T00:00:00+09:00'
+        eventType: 'アート・演劇・音楽',
+        title: 'ムーンアートナイト下北沢 2026',
+        media: {src: '/assets/city-shimokitazawa.jpg', alt: '歩行者と小さな店が並ぶ下北沢の通り'},
+        titlePhrases: ['ムーンアートナイト', '下北沢 2026'],
+        calendarDates: '20260918/20261005',
+        dateLabel: '9月18日（金）– 10月4日（日）',
+        venue: '下北沢エリア全域・下北線路街ほか',
+        why: '下北沢の通りや線路街に作品が置かれ、展示・演劇・音楽を歩いて巡れる。日常の街と文化体験が同じ場所で重なる現在を見る一件として。',
+        actionLabel: '公式サイトで見る',
+        actionUrl: 'https://moonartnightfes.com/',
+        verifiedAt: '2026-09-23T08:23:00+09:00',
+        expiresAt: '2026-10-05T00:00:00+09:00'
       },
       entryMedia: {
         kind: 'illustration',
