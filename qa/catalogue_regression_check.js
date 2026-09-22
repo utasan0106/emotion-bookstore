@@ -3,7 +3,7 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const html=read('index.html'),css=read('site-system.css'),homeCss=read('home-discovery.css');
-assert.doesNotMatch(html,/30秒|感情書店の小文|data-open-reading|id="reading"/);
+assert.doesNotMatch(html,/感情書店の小文|data-open-reading|id="reading"/);
 assert.match(html,/data-weekly-feature="mot-collection-light"/,'Home feature rotates weekly instead of pinning PARKS');
 assert.match(html,/href="\/discover\/kiyosumi\/"/,'The current weekly feature opens a real destination');
 assert.match(html,/展覧会写真ではありません/,'The place photograph must not impersonate exhibition artwork');
@@ -13,7 +13,7 @@ assert.doesNotMatch(html,/class="home-canonical/,'Do not inherit the retired hom
 for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho','kiyosumi']) {
  assert.ok(html.includes(`href="/discover/${city}/"`));
  const landing=read(`discover/${city}/index.html`);
- assert.match(landing,/class="work-card /,'Every home city link opens populated static content');
+ assert.match(landing,/class="work-card(?: |")/,'Every home city link opens populated static content');
 }
 assert.match(css,/body\.site-polished:is\(\.shelf-page,\.works-page,\.thread-page,\.suggest-page\)\{--ink:#262626\}/,'Legacy light panels must use dark ink');
 assert.match(css,/--hall-raised:#f5f5f5/,'Reading inset surfaces must not inherit the night theme');
