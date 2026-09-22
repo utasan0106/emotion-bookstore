@@ -1,9 +1,6 @@
 name: Weekly acquisition refresh
 
 on:
-  push:
-    branches:
-      - chatgpt/acquisition-seo-foundation-20260922
   schedule:
     - cron: '15 0 * * 1'
     - cron: '15 0 * * 5'
@@ -20,7 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
@@ -50,4 +46,4 @@ jobs:
             exit 0
           fi
           git commit -m "build(growth): refresh current reviewed discovery surfaces"
-          git push origin HEAD:${{ github.ref_name }}
+          git push origin HEAD:main
