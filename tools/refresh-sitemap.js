@@ -61,5 +61,11 @@ for(const [loc,meta] of [...urls.entries()].sort((a,b)=>a[0].localeCompare(b[0])
   out.push('  </url>');
 }
 out.push('</urlset>','');
-fs.writeFileSync(sitemapPath,out.join('\n'));
-console.log('PASS sitemap refresh: '+urls.size+' canonical indexable pages');
+const next=out.join('\n');
+if(process.argv.includes('--check')){
+  if(!fs.existsSync(sitemapPath)||fs.readFileSync(sitemapPath,'utf8')!==next) throw new Error('Generated sitemap differs: '+sitemapPath);
+  console.log('PASS sitemap check: '+urls.size+' canonical indexable pages');
+}else{
+  fs.writeFileSync(sitemapPath,next);
+  console.log('PASS sitemap refresh: '+urls.size+' canonical indexable pages');
+}
