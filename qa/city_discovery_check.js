@@ -31,7 +31,12 @@ for(const city of cities) {
 for(const city of cities)for(const kind of ['audio','video','book','film']) {
   const selected=publicItems.filter(i=>i.city===city&&i.kind===kind);
   assert.ok(selected.length<=10);
-  const html=fs.readFileSync(path.join(root,`discover/${city}/${kind}.html`),'utf8');
+  const categoryPath=path.join(root,`discover/${city}/${kind}.html`);
+  if(!selected.length){
+    assert.ok(!fs.existsSync(categoryPath),`Empty category should be fail-closed: ${city}/${kind}`);
+    continue;
+  }
+  const html=fs.readFileSync(categoryPath,'utf8');
   const cardsOnly=(html.match(/<article class="work-card [\s\S]*?<\/article>/g)||[]).join('');
   for(const i of selected)assert.equal(cardsOnly.split(`href="/discover/${city}/${i.id}.html"`).length-1,2);
   assert.equal((html.match(/class="work-card /g)||[]).length,selected.length);
