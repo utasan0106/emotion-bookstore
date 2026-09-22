@@ -13,21 +13,21 @@ const commonVideos = [
     checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
   },
   {
-    id: 'find-my-tokyo-30', title: 'メトロで、ちょい冒険！「Find my Tokyo.チャレンジャーズ」篇', creator: '東京メトロ / 30秒',
-    hook: '知っている街を、もう一度知らない街として歩いてみる。',
-    note: '東京メトロ公式チャンネルの「Find my Tokyo.」キャンペーン映像。少し足を伸ばして東京の街を発見する気分をつくる30秒映像として選びます。',
-    videoId: 'CMM0QCw99c4', durationSeconds: 30,
-    durationSource: 'https://www.youtube.com/watch?v=CMM0QCw99c4',
-    sources: ['https://www.tokyometro.jp/news/2024/218221.html', 'https://www.youtube.com/watch?v=CMM0QCw99c4'],
+    id: 'tokyo-metro-newline', title: '新たな未来に向けた第一歩！新線プロジェクト（30秒）', creator: '東京メトロ / 30秒',
+    hook: '人と街がつながった先の、まだ見たことのない東京へ。',
+    note: '東京メトロ公式チャンネルが公開する30秒映像。路線の延伸そのものではなく、人と街の新しい接点を想像する短編として選びます。',
+    videoId: 'rjFh_eBwV_k', durationSeconds: 30,
+    durationSource: 'https://www.youtube.com/watch?v=rjFh_eBwV_k',
+    sources: ['https://www.tokyometro-newline.jp/movie/', 'https://www.youtube.com/watch?v=rjFh_eBwV_k'],
     checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
   },
   {
-    id: 'nihonbashi-kayak', title: 'Challenge644　カヤックで日本橋をくぐろう！', creator: '東京メトロ / 18秒',
-    hook: 'いつもの東京を、水の上から見直してみる。',
-    note: '東京メトロ公式チャンネルが公開する日本橋川のカヤック体験映像。実際の街へ出て、いつもと違う角度から東京を見るきっかけとして選びます。',
-    videoId: 'C04p6ftcKvA', durationSeconds: 18,
-    durationSource: 'https://www.youtube.com/watch?v=C04p6ftcKvA',
-    sources: ['https://www.youtube.com/watch?v=C04p6ftcKvA'],
+    id: 'inokashira-park-voice', title: '井の頭公園100周年記念放送の記録', creator: 'MIRAI records / 57秒',
+    hook: '公園に流れた声を、57秒の記録から聴く。',
+    note: '井の頭公園の100周年記念放送を記録した短いサンプル映像です。公園という実在の場所へ出かけるきっかけとして選びます。',
+    videoId: '80y5COiKdDw', durationSeconds: 57,
+    durationSource: 'https://yakushimaruetsuko.com/archives/2398/',
+    sources: ['https://yakushimaruetsuko.com/archives/2398/'],
     checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
   }
 ].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-22', playbackChecked: false}));
