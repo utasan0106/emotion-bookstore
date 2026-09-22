@@ -44,6 +44,10 @@ for(const file of files){
  // Everything the reader had must still be there. The only addition allowed is the
  // click-to-load affordance itself: its button and the sentence explaining it.
  const text=s=>s.replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/g,'')
+  // HOMEの週替わり面は固定本文ではない。top feature と「気になるものから」は
+  // weekly ledger / home_weekly_refresh_check が有限性・更新・行き先を検証する。
+  .replace(/<section class="hd-feature"\b[^>]*>[\s\S]*?<\/section>/g,'')
+  .replace(/<section id="hc-works"\b[^>]*>[\s\S]*?<\/section>/g,'')
   // 2026-09-22：画像直下は鑑賞・発見の表面。出典・作者・権利・「〜ではありません」
   // は Credits / source QA に集約したため、figcaption は本文保存契約の対象外にする。
   .replace(/<figcaption\b[^>]*>[\s\S]*?<\/figcaption>/g,'')
