@@ -105,7 +105,9 @@ const revisedText={
   '井の頭公園を舞台に、音楽と人がつながる映画。':
   '一曲が時代をつなぐ映画から、公園の声を聴きにいく。',
   '作品と吉祥寺のつながり':
-  '作品と街のつながりを読む'
+  '作品と街のつながりを読む',
+  '公式予告をYouTubeで観る':
+  '予告編（本編ではありません）をYouTubeで開く'
 };
 for(const seg of baselineText){
  if(everything.includes(seg)) continue;
