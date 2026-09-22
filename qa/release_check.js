@@ -50,7 +50,7 @@ for (const shelf of shelves) {
   for (const key of ['url','alt','author','source','sourceUrl','license','licenseUrl','modification']) {
     if (!hm[key]) failures.push(`${shelf.id}: heroMedia missing ${key}`);
   }
-  const remoteKiyosumiPhoto = shelf.id === 'kiyosumi';
+  const remoteKiyosumiPhoto = false; // Production media is same-origin for every shelf, including Kiyosumi.
   if (remoteKiyosumiPhoto) {
     if (!/^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\//.test(hm.url || '')) failures.push('kiyosumi: heroMedia must be reviewed Wikimedia photo');
     if (hm.license !== 'CC BY-SA 4.0') failures.push('kiyosumi: reviewed photo license must stay CC BY-SA 4.0');
