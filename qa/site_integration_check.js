@@ -30,8 +30,11 @@ for(const item of items){
 for(const v of commonVideos){const h=read('discover/short-films/'+v.id+'.html');
  assert.ok(h.includes('data-video-id="'+v.videoId+'"'));
  assert.ok(!h.includes('/embed/'+v.videoId),'No provider contact before the click '+v.id);}
-assert.match(read('discover/shimokitazawa/indies.html'),/R978-4-408-55758-8.jpg/);
-assert.match(read('discover/shimokitazawa/indies.html'),/岡崎琢磨／実業之日本社/);
+assert.doesNotMatch(read('discover/shimokitazawa/indies.html'),/R978-4-408-55758-8\.jpg/,'Unstable publisher cover hotlink must not ship');
+assert.match(read('discover/shimokitazawa/indies.html'),/岡崎琢磨/);
+assert.match(read('discover/shimokitazawa/indies.html'),/j-n\.co\.jp/,'Text-only book keeps official publisher exit');
+assert.doesNotMatch(read('discover/jinbocho/kaijin.html'),/<img[^>]+tsogen/,'Text-only Kaijin must not hotlink publisher cover');
+assert.match(read('discover/jinbocho/kaijin.html'),/tsogen\.co\.jp/,'Text-only Kaijin keeps official publisher exit');
 // An unpublished object has one of two reasons behind it, and they are not
 // interchangeable: one is waiting for artwork, the other was turned down. A cover
 // arriving later must not publish a declined book, so the gate is tested with the
@@ -60,7 +63,7 @@ for(const item of items) {
   // lists stay apart so the kind is pinned per entry: a book listed as text is a
   // cover we may not reproduce, a film listed as text is a poster we may not
   // reproduce, and neither may quietly become the other.
-  const textOnlyBooks=['koenji/jirokichi','kichijoji/honnoniwa','koenji/shiroku-somaru','koenji/1q84','kichijoji/gou-gou-book','jinbocho/morisaki','jinbocho/morisaki-sequel','jinbocho/furuhon','jinbocho/furuhon-sequel','shimokitazawa/lady-jane','shimokitazawa/honda','kichijoji/cinema-history','koenji/junjo','shimokitazawa/nekomachi'];
+  const textOnlyBooks=['koenji/jirokichi','kichijoji/honnoniwa','koenji/shiroku-somaru','koenji/1q84','kichijoji/gou-gou-book','jinbocho/morisaki','jinbocho/morisaki-sequel','jinbocho/furuhon','jinbocho/furuhon-sequel','shimokitazawa/lady-jane','shimokitazawa/honda','kichijoji/cinema-history','koenji/junjo','shimokitazawa/nekomachi','shimokitazawa/indies','jinbocho/kaijin'];
   const textOnlyFilms=['koenji/monterey-pop','shimokitazawa/zawazawa','kichijoji/gou-gou-film','kichijoji/asahina','jinbocho/ginga'];
   const key=item.city+'/'+item.id;
   assert.ok(textOnlyBooks.includes(key)||textOnlyFilms.includes(key),'text-only is an editorial decision, not a fallback: '+key);
