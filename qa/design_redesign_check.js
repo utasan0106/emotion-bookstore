@@ -72,8 +72,9 @@ for(const file of files){
  // held one object and now holds three legitimately stops saying 1件. Everything a
  // person actually wrote is still compared.
  const derived=/^[0-9０-９]+(件|本|冊)?$/;
- for(const seg of text(base,file).split(' ')) if(seg&&!derived.test(seg)) baselineText.add(seg);
- currentText.push(text(html,file));
+ const preserveText=!/<meta name="robots" content="[^"]*noindex/i.test(html);
+ if(preserveText) for(const seg of text(base,file).split(' ')) if(seg&&!derived.test(seg)) baselineText.add(seg);
+ if(preserveText) currentText.push(text(html,file));
 }
 // 意図して閉じた行き先は、代わりにどこへ行くのかを書く。書かなければ落ちる。
 // 2026-09-10：トップのカテゴリはページ内の絞り込みだった。押しても1件しか出ず、
