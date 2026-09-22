@@ -48,6 +48,11 @@ for(const file of files){
   // weekly ledger / home_weekly_refresh_check が有限性・更新・行き先を検証する。
   .replace(/<section class="hd-feature"[^>]*>[\s\S]*?<\/section>/g,'')
   .replace(/<section id="hc-works"[^>]*>[\s\S]*?<\/section>/g,'')
+  .replace(/<section[^>]*aria-labelledby="hd-shorts-title"[^>]*>[\s\S]*?<\/section>/g,'')
+  // 時間依存の一覧は design の固定本文ではない。専用の freshness / event QA で守る。
+  .replace(/<section[^>]*id="city-signals"[^>]*>[\s\S]*?<\/section>/g,'')
+  .replace(/<ul[^>]*data-ending-list[^>]*>[\s\S]*?<\/ul>/g,'')
+  .replace(/<ul[^>]*data-venue-events[^>]*>[\s\S]*?<\/ul>/g,'')
   // 2026-09-22：画像直下は鑑賞・発見の表面。出典・作者・権利・「〜ではありません」
   // は Credits / source QA に集約したため、figcaption は本文保存契約の対象外にする。
   .replace(/<figcaption\b[^>]*>[\s\S]*?<\/figcaption>/g,'')
