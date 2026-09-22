@@ -53,7 +53,7 @@ for (const shelf of shelves) {
   const remoteKiyosumiPhoto = shelf.id === 'kiyosumi';
   if (remoteKiyosumiPhoto) {
     if (!/^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\//.test(hm.url || '')) failures.push('kiyosumi: heroMedia must be reviewed Wikimedia photo');
-    if (hm.license !== 'CC BY-SA 4.0') failures.push('kiyosumi: reviewed photo license must stay CC BY-SA 4.0');
+    if (hm.license !== 'CC BY 3.0') failures.push('kiyosumi: reviewed photo license must stay CC BY 3.0');
   } else {
     if (!/^\.\/assets\/city-/.test(hm.url || '')) failures.push(`${shelf.id}: heroMedia must be local city image`);
     if (hm.url && !fs.existsSync(path.join(root, hm.url.replace(/^\.\//,'')))) failures.push(`${shelf.id}: heroMedia file missing`);
@@ -66,7 +66,7 @@ for (const shelf of shelves) {
   if (remoteKiyosumiPhoto) {
     if (em.kind !== 'photo') failures.push('kiyosumi: entryMedia.kind must be photo');
     if (em.url !== hm.url) failures.push('kiyosumi: entry and hero must use the same reviewed photo');
-    if (em.width !== 640 || em.height !== 414) failures.push('kiyosumi: reviewed entry photo dimensions changed');
+    if (em.width !== 960 || em.height !== 643) failures.push('kiyosumi: reviewed entry photo dimensions changed');
   } else {
     if (em.kind !== 'illustration') failures.push(`${shelf.id}: entryMedia.kind must be illustration`);
     if (!/^\.\/assets\/entry-[a-z-]+\.(?:webp|svg)$/.test(em.url || '')) failures.push(`${shelf.id}: entryMedia must be same-origin WebP`);
