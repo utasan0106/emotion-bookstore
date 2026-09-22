@@ -4,24 +4,29 @@ const fs=require('node:fs');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const items=require('../tools/city-discovery-source').items;
+const videoPolicy=require('../video-duration-policy');
+const publicItems=items.filter(i=>i.kind!=='video'||videoPolicy.approved['city/'+i.city+'/'+i.id]);
 assert.match(read('index.html'),/href="\/discover\/short-films\/"/);
 const discoveryHome=read('discover/index.html');
 assert.match(discoveryHome,/class="watch-now"/);
 assert.ok(discoveryHome.indexOf('class="city-grid"')<discoveryHome.indexOf('class="watch-now"'));
-for(const id of ['bocchi-main-pv','next-town-koenji','kichion-toranoko','used-book-festival']) assert.ok(discoveryHome.includes('/'+id+'.html'));
+assert.ok(discoveryHome.includes('/park-voice.html'));
+for(const id of ['bocchi-main-pv','next-town-koenji','kichion-toranoko','used-book-festival']) assert.ok(!discoveryHome.includes('/'+id+'.html'));
 assert.equal((discoveryHome.match(/class="official-media"/g)||[]).length,1,'Only the lead film embeds on the directory');
 for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']){
   for(const kind of ['audio','video','book','film']){
     const html=read('discover/'+city+'/'+kind+'.html');
     assert.doesNotMatch(html,/この街を、もう少し深く|tsogen.co.jp\/sp\/author\/214/);
     assert.match(html,/href="\/discover\/short-films\/"/);
-    const feature=html.match(/<aside class="feature">[\s\S]*?<\/aside>/)[0];
-    assert.ok(feature.includes(kind==='video'?'/shelf.html?shelf='+city:'/discover/'+city+'/video.html'));
+    const feature=html.match(/<aside class="feature">[\s\S]*?<\/aside>/)?.[0]||'';
+    const hasPublicVideo=publicItems.some(i=>i.city===city&&i.kind==='video');
+    const expected=kind==='video'?(hasPublicVideo?'/shelf.html?shelf='+city:'/discover/short-films/'):(hasPublicVideo?'/discover/'+city+'/video.html':'/discover/short-films/');
+    assert.ok(feature.includes(expected),city+'/'+kind+': next step must use a public destination');
   }
   assert.match(read('discover/'+city+'/index.html'),/href="\/discover\/short-films\/"/);
 }
 const profiles=require('../tools/artist-profiles');
-const items=require('../tools/city-discovery-source').items;
 for(const [city,entries] of Object.entries(require('../tools/city-editorials'))) {
   const html=read(`discover/${city}/index.html`);
   assert.ok(html.includes(`/discover/${city}/#editorials-title`));
@@ -59,13 +64,15 @@ for(const [id,column] of Object.entries(require('../tools/city-columns'))) {
   assert.doesNotMatch(html,/デビュー10周年の夜/);
 }
 for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']) {
-  for(const kind of ['audio','video','book','film']) {
+  for(const kind of ['audio','book','film',...(city==='kichijoji'?['video']:[])]) {
     const html=read(`discover/${city}/${kind}.html`);
-    const nav=html.match(/<nav class="other-cities"[\s\S]*?<\/nav>/)?.[0];
-    assert.ok(nav,'Cross-city navigation: '+city+'/'+kind);
+    const nav=html.match(/<nav class="other-cities"[\s\S]*?<\/nav>/)?.[0]||'';
+    const alternatives=['koenji','kichijoji','shimokitazawa','jinbocho'].filter(other=>other!==city&&publicItems.some(i=>i.city===other&&i.kind===kind));
+    if(!alternatives.length) assert.equal(nav,'','No cross-city navigation when there are no public alternatives: '+city+'/'+kind);
+    else assert.ok(nav,'Cross-city navigation: '+city+'/'+kind);
     for(const other of ['koenji','kichijoji','shimokitazawa','jinbocho']) {
-      const count=items.filter(i=>i.city===other&&i.kind===kind).length;
-      assert.equal(nav.includes(`/discover/${other}/${kind}.html`),other!==city&&count>0,'Only populated alternatives in same category');
+      const count=publicItems.filter(i=>i.city===other&&i.kind===kind).length;
+      assert.equal(nav.includes(`/discover/${other}/${kind}.html`),other!==city&&count>0,'Only populated public alternatives in same category');
     }
   }
 }
@@ -90,11 +97,9 @@ for(const item of items) {
     assert.ok(context.includes(url),'出典は関係の説明と同じ節に置く: '+item.id+' '+url);
   assert.ok(article.includes('/discover/'+item.city+'/'+item.kind+'.html'),'End of detail must offer re-selection: '+item.id);
 }
-for(const [from,to] of Object.entries({jirokichi:'next-town-koenji','next-town-koenji':'jirokichi',honnoniwa:'musashino-green','musashino-green':'honnoniwa',indies:'bocchi-main-pv','bocchi-main-pv':'indies',kaijin:'used-book-festival','used-book-festival':'kaijin'})) {
-  const item=items.find(i=>i.id===from),target=items.find(i=>i.id===to);
-  const html=read(`discover/${item.city}/${from}.html`);
-  assert.match(html,/class="related-work"/);
-  assert.ok(html.includes(`/discover/${target.city}/${to}.html`));
+for(const [city,id] of [['koenji','jirokichi'],['kichijoji','honnoniwa'],['shimokitazawa','indies'],['jinbocho','kaijin']]) {
+  const html=read(`discover/${city}/${id}.html`);
+  assert.doesNotMatch(html,/class="related-work"/,'Held video must not be a cross-media bridge: '+city+'/'+id);
 }
 for(const [from,to] of [['yoshida-night-edge','yoshida-tinderness'],['yoshida-tinderness','yoshida-night-edge']]){
   const html=read('discover/kichijoji/'+from+'.html');
@@ -103,11 +108,11 @@ for(const [from,to] of [['yoshida-night-edge','yoshida-tinderness'],['yoshida-ti
 }
 for(const [id,p] of Object.entries(profiles)){
   const item=items.find(i=>i.id===id);
-  assert.ok(item);
+  if(!item) continue; // profile may remain in research while its video is held by duration policy
   assert.ok(item.creator.includes(p.name)||item.title.includes(p.name), id+': profile identity must match credited artist or named interview subject');
   assert.match(p.checkedAt,/^\d{4}-\d{2}-\d{2}$/);
   assert.ok(p.text&&p.name&&p.checkedAt&&new URL(p.url).protocol==='https:');
   assert.ok(read('discover/'+item.city+'/'+id+'.html').includes(p.url));
 }
 assert.ok(!read('discover/koenji/big-the-grape.html').includes('artist-profile'));
-console.log('PASS restored short-film entry points, 16 contextual next steps, '+Object.keys(profiles).length+' sourced profile placements, unknown profile omitted');
+console.log('PASS duration-safe cultural continuity, verified short-film entry points, '+Object.keys(profiles).length+' sourced profile placements, unknown profile omitted');
