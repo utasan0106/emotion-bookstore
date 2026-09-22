@@ -10,6 +10,19 @@ const eventSource=require('../tools/weekly-outings-source'),eventWeek=require('.
 const eventToday=eventWeek.date(Date.now());
 const retiredEventLinks=new Set(eventSource.events.filter(e=>!(eventSource.isPublishableEvent(e)&&e.status==='scheduled'&&e.checkedAt<=eventToday&&e.reviewThrough>=eventToday&&eventWeek.dates(e).at(-1)>=eventToday)).flatMap(e=>['/outings/events/'+e.id+'.html',e.url]));
 const redirectDestinations=new Map((JSON.parse(fs.readFileSync('vercel.json','utf8')).redirects||[]).filter(r=>r.source&&r.destination).map(r=>[r.source,r.destination]));
+const retiredShortLinks=new Set([
+  'https://emotionbookstore.com/discover/short-films/panasonic-life.html',
+  'https://www.youtube-nocookie.com/embed/Bu5LNJYGY8k?autoplay=0&amp;playsinline=1&amp;rel=0',
+  'https://www.youtube.com/watch?v=Bu5LNJYGY8k',
+  'https://channel.panasonic.com/jp/',
+  'https://emotionbookstore.com/discover/short-films/find-my-tokyo.html',
+  'https://www.youtube-nocookie.com/embed/RpSlspjIeG8?autoplay=0&amp;playsinline=1&amp;rel=0',
+  'https://www.youtube.com/watch?v=RpSlspjIeG8',
+  'https://www.tokyometro.jp/news/2024/218221.html',
+  'https://emotionbookstore.com/discover/short-films/toyota-loving-eyes.html',
+  'https://www.youtube-nocookie.com/embed/mh_QCvulKSY?autoplay=0&amp;playsinline=1&amp;rel=0',
+  'https://www.youtube.com/watch?v=mh_QCvulKSY'
+]);
 for(const file of files){
  const html=fs.readFileSync(file,'utf8');
  assert.equal((html.match(/href="\/design-redesign.css"/g)||[]).length,1,file+' stylesheet count');
@@ -59,7 +72,7 @@ const retiredDestinations={
 };
 for(const l of baselineLinks){
  if(currentLinks.has(l)) continue;
- const replacement=retiredDestinations[l] || (retiredEventLinks.has(l) ? '/outings/' : undefined) || redirectDestinations.get(l);
+ const replacement=retiredDestinations[l] || (retiredEventLinks.has(l) ? '/outings/' : undefined) || (retiredShortLinks.has(l) ? '/discover/short-films/' : undefined) || redirectDestinations.get(l);
  // 2026-09-22：終了・再確認期限切れの催し詳細は検索/runtimeから物理削除する。
  // 旧URLを無関係な現行ページへHTTP redirectせず、サイト内には現在の催し一覧を残す。
  assert.ok(replacement,'destination no longer anywhere on the site: '+l);
