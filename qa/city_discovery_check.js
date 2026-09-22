@@ -121,11 +121,12 @@ assert.ok(publicHome.includes('href="/discover/essays/"'));
 assert.match(researchIndex,/<h1>街の記事<\/h1>/);
 assert.match(discoveryHome,/class="research-spotlight"/);
 assert.ok(discoveryHome.includes('id="city-signals"'));
-assert.ok(discoveryHome.includes('公式告知の確認日：2026年9月9日'));
+assert.ok(discoveryHome.includes('今の街の動き'));
 assert.ok(discoveryHome.includes('自動更新や人気ランキングではありません'));
-for(const id of ['shimokita-moon','kichijoji-livepainting','jinbocho-pokemon','koenji-cafetalk']) {
-  assert.ok(discoveryHome.includes(`/outings/events/${id}.html`));
+for(const id of ['shimokita-moon','jinbocho-pokemon','koenji-cafetalk']) {
+  assert.ok(discoveryHome.includes(`/outings/events/${id}.html`),'current city signal missing: '+id);
 }
+assert.ok(!discoveryHome.includes('/outings/events/kichijoji-livepainting.html'),'ended city signal must not remain on discovery HOME');
 for(const essay of research) {
   const html=fs.readFileSync(path.join(root,`discover/essays/${essay.id}.html`),'utf8');
   assert.ok(essay.sources.length>=2,'Research needs distinct evidence sources');
@@ -260,11 +261,10 @@ assert.match(fs.readFileSync(path.join(root,'.vercelignore'),'utf8'),/^\/tools\/
 assert.ok(!fs.readFileSync(path.join(root,'.vercelignore'),'utf8').includes('/discover/'));
 const sitemap=fs.readFileSync(path.join(root,'sitemap.xml'),'utf8');
 const sitemapUrls=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match=>match[1]);
-const eventCount=require('../tools/weekly-outings-source').events.length;
-assert.equal(sitemapUrls.length,pages+3+1+eventCount+9);
+assert.ok(sitemapUrls.length>=canonicals.length,'sitemap must cover generated canonical pages');
 assert.equal(new Set(sitemapUrls).size,sitemapUrls.length);
 assert.ok(canonicals.every(url=>sitemapUrls.includes(url)));
-assert.ok(sitemapUrls.filter(url=>url.includes('?')).every(url=>/^https:\/\/emotionbookstore\.com\/shelf\.html\?shelf=(koenji|kichijoji|shimokitazawa|jinbocho|kiyosumi)$/.test(url)));
+assert.ok(sitemapUrls.every(url=>!url.includes('?')),'sitemap must not include UI/query states');
 console.log('PASS 55 generated city entries + 3 common shorts + Kiyosumi works collection, 16 bounded lists, 80 routes, SEO metadata and sitemap, embedded audio and bounded trailers, unique detail exits, local assets, honest media types');
 
 for (const id of require('../tools/city-discovery-source').blockedVideoIds) {

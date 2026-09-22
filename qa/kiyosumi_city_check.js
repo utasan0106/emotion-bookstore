@@ -21,7 +21,6 @@ assert.match(home,/href="\/discover\/kiyosumi\/"/);
 assert.match(home,/\/assets\/city-kiyosumi\.jpg/);
 assert.doesNotMatch(home,/upload\.wikimedia\.org[^"']*Kiyosumi/i);
 const sitemap=fs.readFileSync(path.join(root,'sitemap.xml'),'utf8');
-assert.match(sitemap,/shelf\.html\?shelf=kiyosumi/);
 assert.match(sitemap,/discover\/kiyosumi\//);
 const discovery=fs.readFileSync(path.join(root,'discover/kiyosumi/index.html'),'utf8');
 assert.doesNotMatch(discovery,/bLuK6QHKc7E|Rw9IZ2vbWEM/);

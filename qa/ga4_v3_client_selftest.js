@@ -263,7 +263,7 @@ const approvedHomeMedia=new Set([
  'https://www.youtube.com/watch?v=pm7RBghFt0I',
  'https://www.youtube-nocookie.com/embed/pm7RBghFt0I?autoplay=0&amp;playsinline=1&amp;rel=0'
 ]);
-for(const [,url] of indexBody.matchAll(/(?:src|href)="((?:https?:)?\/\/[^"]+)"/g)) assert(approvedHomeMedia.has(url),'Unreviewed external home source: '+url);
+for(const [,url] of indexBody.matchAll(/(?:src)="((?:https?:)?\/\/[^"]+)"/g)) assert(approvedHomeMedia.has(url),'Unreviewed external HOME-loaded media source: '+url);
 assert(indexBody.includes('href="/outings/"')&&indexBody.includes('href="/discover/"'),'HOME must expose working event and work entries');
 for(const [,src] of index.matchAll(/<iframe[^>]*src="([^"]+)"/g)) assert(approvedHomeMedia.has(src)&&(/bandcamp\.com\/EmbeddedPlayer\/|youtube-nocookie\.com\/embed\/pm7RBghFt0I\?autoplay=0/.test(src)),'Only the reviewed album and PARKS trailer may load on HOME');
 assert(index.includes('id="hc-works"')&&index.includes('id="hc-thread"'),'HOME section ids');

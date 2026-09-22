@@ -1,6 +1,17 @@
 {
   "redirects": [
     {
+      "source": "/:path*",
+      "destination": "https://emotionbookstore.com/:path*",
+      "permanent": true,
+      "has": [
+        {
+          "type": "host",
+          "value": "emotion-bookstore.vercel.app"
+        }
+      ]
+    },
+    {
       "source": "/atlas",
       "destination": "/thread.html?thread=koenji-dance-history",
       "permanent": false
@@ -13,6 +24,26 @@
     {
       "source": "/atlas/index.html",
       "destination": "/thread.html?thread=koenji-dance-history",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/panasonic-life.html",
+      "destination": "/discover/short-films/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/find-my-tokyo.html",
+      "destination": "/discover/short-films/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/toyota-loving-eyes.html",
+      "destination": "/discover/short-films/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/kiyosumi-kotomise.html",
+      "destination": "/discover/kiyosumi/",
       "permanent": false
     },
     {
@@ -48,26 +79,6 @@
     {
       "source": "/discover/jinbocho/shadowless-voice.html",
       "destination": "/discover/jinbocho/film.html",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/panasonic-life.html",
-      "destination": "/discover/short-films/kiyosumi-kotomise.html",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/find-my-tokyo.html",
-      "destination": "/discover/short-films/",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/toyota-loving-eyes.html",
-      "destination": "/discover/short-films/",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/kiyosumi-kotomise.html",
-      "destination": "/discover/kiyosumi/",
       "permanent": false
     }
   ],

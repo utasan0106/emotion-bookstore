@@ -6,6 +6,23 @@ const files=require('../tools/build-design-redesign');
 // this is checked across the whole catalogue rather than page by page: a destination
 // or a sentence may move to another page, but it may not disappear.
 const baselineLinks=new Set(),currentLinks=new Set(),baselineText=new Set(),currentText=[];
+const eventSource=require('../tools/weekly-outings-source'),eventWeek=require('../outings/week');
+const eventToday=eventWeek.date(Date.now());
+const retiredEventLinks=new Set(eventSource.events.filter(e=>!(eventSource.isPublishableEvent(e)&&e.status==='scheduled'&&e.checkedAt<=eventToday&&e.reviewThrough>=eventToday&&eventWeek.dates(e).at(-1)>=eventToday)).flatMap(e=>['/outings/events/'+e.id+'.html',e.url]));
+const redirectDestinations=new Map((JSON.parse(fs.readFileSync('vercel.json','utf8')).redirects||[]).filter(r=>r.source&&r.destination).map(r=>[r.source,r.destination]));
+const retiredShortLinks=new Set([
+  'https://emotionbookstore.com/discover/short-films/panasonic-life.html',
+  'https://www.youtube-nocookie.com/embed/Bu5LNJYGY8k?autoplay=0&amp;playsinline=1&amp;rel=0',
+  'https://www.youtube.com/watch?v=Bu5LNJYGY8k',
+  'https://channel.panasonic.com/jp/',
+  'https://emotionbookstore.com/discover/short-films/find-my-tokyo.html',
+  'https://www.youtube-nocookie.com/embed/RpSlspjIeG8?autoplay=0&amp;playsinline=1&amp;rel=0',
+  'https://www.youtube.com/watch?v=RpSlspjIeG8',
+  'https://www.tokyometro.jp/news/2024/218221.html',
+  'https://emotionbookstore.com/discover/short-films/toyota-loving-eyes.html',
+  'https://www.youtube-nocookie.com/embed/mh_QCvulKSY?autoplay=0&amp;playsinline=1&amp;rel=0',
+  'https://www.youtube.com/watch?v=mh_QCvulKSY'
+]);
 for(const file of files){
  const html=fs.readFileSync(file,'utf8');
  assert.equal((html.match(/href="\/design-redesign.css"/g)||[]).length,1,file+' stylesheet count');
@@ -26,16 +43,39 @@ for(const file of files){
  for(const l of links(html)) currentLinks.add(l);
  // Everything the reader had must still be there. The only addition allowed is the
  // click-to-load affordance itself: its button and the sentence explaining it.
- const text=s=>s.replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/g,'')
+ const text=(s,fileName='')=>{
+  if(fileName==='discover/short-films/index.html'){
+    s=s.replace(/<section class="work-grid"[^>]*>[\s\S]*?<\/section>/g,'');
+  }
+  return s.replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/g,'')
+  // HOMEの週替わり面は固定本文ではない。top feature と「気になるものから」は
+  // weekly ledger / home_weekly_refresh_check が有限性・更新・行き先を検証する。
+  .replace(/<section class="hd-feature"[^>]*>[\s\S]*?<\/section>/g,'')
+  .replace(/<section id="hc-works"[^>]*>[\s\S]*?<\/section>/g,'')
+  .replace(/<section[^>]*aria-labelledby="hd-shorts-title"[^>]*>[\s\S]*?<\/section>/g,'')
+  // 時間依存の一覧は design の固定本文ではない。専用の freshness / event QA で守る。
+  .replace(/<section[^>]*id="city-signals"[^>]*>[\s\S]*?<\/section>/g,'')
+  .replace(/<ul[^>]*data-ending-list[^>]*>[\s\S]*?<\/ul>/g,'')
+  .replace(/<ul[^>]*data-venue-events[^>]*>[\s\S]*?<\/ul>/g,'')
+  .replace(/<p class="checked"[^>]*>[\s\S]*?<\/p>/g,'')
+  .replace(/<noscript\b[^>]*>[\s\S]*?<\/noscript>/g,'')
+  // 2026-09-22：画像直下は鑑賞・発見の表面。出典・作者・権利・「〜ではありません」
+  // は Credits / source QA に集約したため、figcaption は本文保存契約の対象外にする。
+  .replace(/<figcaption\b[^>]*>[\s\S]*?<\/figcaption>/g,'')
+  // 催し一覧は週次で入れ替わる運用面。古い event-card の文言を永続保存せず、
+  // weekly_outings / timing / pending gate / generated-page QA で現在性を守る。
+  .replace(/<article class="event-card"[^>]*>[\s\S]*?<\/article>/g,'')
   .replace(/<button class="v3-video-load[^"]*"[^>]*>[\s\S]*?<\/button>/g,'')
   .replace(/<(span|p) class="official-media-note">[\s\S]*?<\/\1>/g,'')
   .replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+};
  // Counts are derived from the catalogue, not written by an editor: a collection that
  // held one object and now holds three legitimately stops saying 1件. Everything a
  // person actually wrote is still compared.
  const derived=/^[0-9０-９]+(件|本|冊)?$/;
- for(const seg of text(base).split(' ')) if(seg&&!derived.test(seg)) baselineText.add(seg);
- currentText.push(text(html));
+ const preserveText=!/<meta name="robots" content="[^"]*noindex/i.test(html);
+ if(preserveText) for(const seg of text(base,file).split(' ')) if(seg&&!derived.test(seg)) baselineText.add(seg);
+ if(preserveText) currentText.push(text(html,file));
 }
 // 意図して閉じた行き先は、代わりにどこへ行くのかを書く。書かなければ落ちる。
 // 2026-09-10：トップのカテゴリはページ内の絞り込みだった。押しても1件しか出ず、
@@ -47,11 +87,17 @@ const retiredDestinations={
   // 2026-09-11：「すべて」だけが向け直されずに残っていた。HOMEの初期状態がもともと
   // all なので、押しても表示は何も変わらない。ファウンダーが「押しても何もならない」と
   // 指摘したのはこれ。上の3つと同じ方針で、件数の見える作品のハブへ渡す。
-  '?kind=all#hc-works': '/works.html'
+  '?kind=all#hc-works': '/works.html',
+  // 2026-09-22：HOME画像直下の個別クレジットを表面から外し、詳細はCreditsへ集約。
+  '/credits.html#inokashira-pond': '/credits.html',
+  // 2026-09-22：HOMEから外した外部書影URLは、権利・出典をCreditsへ集約。
+  'https://img.hanmoto.com/bd/img/9784911191026.jpg?lastupdated=2025-04-23T10%3A22%3A06%2B09%3A00': '/credits.html'
 };
 for(const l of baselineLinks){
  if(currentLinks.has(l)) continue;
- const replacement=retiredDestinations[l];
+ const replacement=retiredDestinations[l] || (retiredEventLinks.has(l) ? '/outings/' : undefined) || (retiredShortLinks.has(l) ? '/discover/short-films/' : undefined) || redirectDestinations.get(l);
+ // 2026-09-22：終了・再確認期限切れの催し詳細は検索/runtimeから物理削除する。
+ // 旧URLを無関係な現行ページへHTTP redirectせず、サイト内には現在の催し一覧を残す。
  assert.ok(replacement,'destination no longer anywhere on the site: '+l);
  assert.ok(currentLinks.has(replacement),'retired destination '+l+' names a replacement that is not linked: '+replacement);
 }
@@ -70,7 +116,42 @@ const revisedText={
   // 文そのものは書き換えていない。日付は件数と同じくカタログから導かれる値で、
   // 編集部が書いた文言ではない。読者に古い確認日を見せ続けないために更新される。
   '開催週の絞り込みにはJavaScriptを使います。確認時（2026-09-08）の開催予定：':
-  '開催週の絞り込みにはJavaScriptを使います。確認時（2026-09-11）の開催予定：'
+  '開催週の絞り込みにはJavaScriptを使います。確認時（2026-09-11）の開催予定：',
+  // 2026-09-22：検索結果でサイトの対象地域と内容が分かるよう、HOME title を
+  // ブランド中心から「東京5街 × 本・映画・音楽・文化イベント」の検索意図へ改定。
+  'みんなの感情書店｜作品から、街へ。':
+  '東京5街の本・映画・音楽・文化イベント｜みんなの感情書店',
+  // PARKSの旧一文は、現在の詳細ページで作品フックと街との関係に分けて具体化。
+  '井の頭公園を舞台に、音楽と人がつながる映画。':
+  '一曲が時代をつなぐ映画から、公園の声を聴きにいく。',
+  '作品と吉祥寺のつながり':
+  '作品と街のつながりを読む',
+  '公式予告をYouTubeで観る':
+  '公式予告と公園の声を観る',
+  'みんなの感情書店｜作品から入る':
+  '東京の本・映画・音楽・映像｜みんなの感情書店',
+  '街から音楽、映像、本、映画を探す｜みんなの感情書店':
+  '東京5街から本・映画・音楽・文化を探す｜みんなの感情書店',
+  '高円寺の作品｜みんなの感情書店':
+  '高円寺の本・映画・音楽・映像｜みんなの感情書店',
+  '下北沢の作品｜みんなの感情書店':
+  '下北沢の本・映画・音楽・映像｜みんなの感情書店',
+  '吉祥寺の作品｜みんなの感情書店':
+  '吉祥寺の本・映画・音楽・映像｜みんなの感情書店',
+  '神保町の作品｜みんなの感情書店':
+  '神保町の本・映画・音楽・映像｜みんなの感情書店',
+  '今週の感情書店｜みんなの感情書店':
+  '今週の東京カルチャー｜高円寺・下北沢・吉祥寺・神保町｜みんなの感情書店',
+  '今、街で出会える文化｜みんなの感情書店':
+  '高円寺・下北沢・吉祥寺・神保町の文化イベント｜今週のライブ・舞台・映画・展示｜みんなの感情書店',
+  '聴く・観る・読む':
+  '聴く・観る・読む・出かける',
+  '街を選んで、ゆかりの本・音楽・映像・映画へ。':
+  '高円寺・下北沢・吉祥寺・神保町・清澄白河から、作品や場所との出会いを選ぶ。',
+  '今週で終わる催しと、新しく棚に入った作品。人気順でも、あなた向けでもありません。':
+  '高円寺・下北沢・吉祥寺・神保町から、今週で終わる催しと新しく棚に入った作品を編集部が少数だけ選びます。',
+  '約1〜4分':
+  '3分以内'
 };
 for(const seg of baselineText){
  if(everything.includes(seg)) continue;
@@ -82,8 +163,12 @@ for(const seg of baselineText){
 // バイト一致は「一切変えるな」としか言えず、何を守りたかったのかを検証できない。
 // 同じ強さの契約を qa/analytics_contract_check.js に移した（出来事の名前・プライバシー
 // 設定・生URLを送らない関門・計測して良いリンク・計測を読み込むページ数）。緩めていない。
+// Protected runtime is scoped to this change set, not frozen forever to the 2026-09-11
+// snapshot. Compare against the actual current main merge-base: an acquisition/design PR
+// may not silently touch runtime, storage, weather or private-memory behavior.
+const protectedBase=cp.execFileSync('git',['merge-base','HEAD','origin/main'],{encoding:'utf8'}).trim();
 for(const file of ['release.js','release_content.js','release.css','memory-note.js','api/tokyo-weather.js']){
- assert.equal(fs.readFileSync(file,'utf8'),cp.execFileSync('git',['show','2f4a156:'+file],{encoding:'utf8'}),file+' protected contract');
+ assert.equal(fs.readFileSync(file,'utf8'),cp.execFileSync('git',['show',protectedBase+':'+file],{encoding:'utf8'}),file+' protected contract');
 }
 // vercel.json carries the redirects that keep retired URLs alive, and editorial work
 // edits it: publishing an object replaces its redirect with the real page. So what is

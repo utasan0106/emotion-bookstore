@@ -1,7 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {state,monday,select,dates}=require('../outings/week');
-const {audiences,events,cities}=require('../tools/weekly-outings-source');
+const source=require('../tools/weekly-outings-source'),{audiences,events,cities}=source;
 assert.equal(monday(Date.parse('2026-09-13T14:59:59Z')),'2026-09-07');
 assert.equal(monday(Date.parse('2026-09-13T15:00:00Z')),'2026-09-14');
 assert.equal(state('2026-09-07','2026-09-14',Date.parse('2026-09-13T15:00:00Z')),'past');
@@ -27,6 +27,8 @@ const event=events.find(e=>e.id==='kichijoji-taniguchi');assert.ok(!dates(event)
 assert.equal(select([{...event,status:'cancelled'}],{now,week:'2026-09-14'}).length,0);
 assert.ok(select(events,{now,audience:'children'}).every(e=>e.audiences.includes('children')));
 const root=path.resolve(__dirname,'..');
-for(const e of events){const page=fs.readFileSync(path.join(root,`outings/events/${e.id}.html`),'utf8');assert.equal(page.split(`href="${e.url.replaceAll('&','&amp;')}"`).length-1,1,'one official action');assert.match(page,/この街で、なぜこの催し/);assert.match(page,/data-event-status/);assert.match(page,/data-page-tools/);for(const link of page.matchAll(/href="(\/[^"]*)"/g)){const target=path.join(root,link[1].split(/[?#]/)[0]);assert.ok(fs.existsSync(target),target);}}
+const todayString=new Date(Date.now()+9*3600000).toISOString().slice(0,10);
+const currentRuntime=events.filter(e=>source.isPublishableEvent(e)&&e.status==='scheduled'&&e.checkedAt<=todayString&&e.reviewThrough>=todayString&&dates(e).at(-1)>=todayString);
+for(const e of currentRuntime){const page=fs.readFileSync(path.join(root,`outings/events/${e.id}.html`),'utf8');assert.equal(page.split(`href="${e.url.replaceAll('&','&amp;')}"`).length-1,1,'one official action');assert.match(page,/この街で、なぜこの催し/);assert.match(page,/data-event-status/);assert.match(page,/data-page-tools/);for(const link of page.matchAll(/href="(\/[^"]*)"/g)){const target=path.join(root,link[1].split(/[?#]/)[0]);assert.ok(fs.existsSync(target),target);}}
 assert.doesNotMatch(fs.readFileSync(path.join(root,'outings/week.js'),'utf8'),/fetch\(|localStorage|geolocation|gtag/);
-console.log('PASS '+events.length+' sourced events; 3+ per city this and next week; JST weekly rollover, closures, expiry, cancellation, filters, details and returns');
+console.log('PASS event selection contracts + '+currentRuntime.length+' current reviewed detail pages; JST rollover, closures, expiry, cancellation and filters');

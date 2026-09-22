@@ -1,0 +1,56 @@
+name: Weekly acquisition refresh
+
+on:
+  schedule:
+    - cron: '15 0 * * 1'
+    - cron: '15 0 * * 5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Rebuild current reviewed acquisition surfaces
+        run: |
+          set -euo pipefail
+          node tools/build-weekly-outings.js
+          node tools/build-city-discovery.js
+      - name: Reject unexpected generated changes
+        run: |
+          set -euo pipefail
+          unexpected="$(git status --porcelain | awk '{print $2}' | grep -Ev '^(discover/|outings/|sitemap\.xml$|feed\.xml$)' || true)"
+          if [ -n "$unexpected" ]; then
+            echo "Unexpected files changed by freshness rebuild:"
+            echo "$unexpected"
+            exit 1
+          fi
+      - name: Verify full product and acquisition contracts
+        run: |
+          set -euo pipefail
+          node tools/build-weekly-outings.js --check
+          node tools/build-city-discovery.js --check
+          node qa/seo_check.js
+          node qa/verify-product.js
+      - name: Commit freshness-only changes
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add discover outings sitemap.xml feed.xml
+          if git diff --cached --quiet; then
+            echo "No freshness changes."
+            exit 0
+          fi
+          git commit -m "build(growth): refresh current reviewed discovery surfaces"
+          git push origin HEAD:main

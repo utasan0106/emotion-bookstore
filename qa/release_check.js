@@ -428,7 +428,7 @@ for (const shelf of shelves) {
     failures.push(`${shelf.id}: weeklyFeature verifiedAt required and must be parseable`);
   }
 }
-if (allObjects.length !== 12) failures.push(`expected exactly 12 objects, got ${allObjects.length}`);
+if (allObjects.length !== 15) failures.push(`expected exactly 15 objects, got ${allObjects.length}`);
 for (const o of allObjects) {
   const list = o.categoryIds;
   if (!Array.isArray(list) || list.length < 1) { failures.push(`${o.id}: needs >= 1 categoryId`); continue; }
@@ -637,9 +637,8 @@ if (!read('credits.html').includes('noindex,nofollow')) failures.push('credits.h
 /* explore.html は旧 HOME の索引を引き継ぐ compatibility surface。棚より上に
    検索で出す理由が無いので noindex。 */
 if (!read('explore.html').includes('noindex,nofollow')) failures.push('explore.html must stay noindex');
-for (const page of ['index.html', 'shelf.html']) {
-  if (read(page).includes('noindex')) failures.push(`${page} must not be noindex`);
-}
+if (read('index.html').includes('noindex')) failures.push('index.html must not be noindex');
+if (!read('shelf.html').includes('noindex,follow')) failures.push('shelf.html must stay noindex,follow; static /discover/<city>/ pages own search');
 /* 共有されたときに何のページか分かること。description と OGP が無いと、
    リンクだけが貼られて中身が伝わらない。og:image は同一オリジンの、
    この案内のために組んだ扉。ほかの製品の画像を借りない。

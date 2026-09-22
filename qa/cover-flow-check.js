@@ -3,7 +3,9 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),vm=require('node:vm');
 const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const home=read('index.html'),weather=read('city-weather.js'),css=read('page-nav.css');
-const {events}=require('../tools/weekly-outings-source');
+const source=require('../tools/weekly-outings-source'),week=require('../outings/week');
+const today=week.date(Date.now());
+const events=source.events.filter(e=>source.isPublishableEvent(e)&&e.status==='scheduled'&&e.checkedAt<=today&&e.reviewThrough>=today&&week.dates(e).at(-1)>=today);
 const {mediaFor,postFor}=require('../tools/event-media-source');
 assert.doesNotMatch(css,/city-rain-drift|city-snow-drift|city-rain-surface/);
 assert.doesNotMatch(weather,/city-atmosphere|city-weather-motion|selectScene|sceneLink/);
@@ -31,4 +33,4 @@ for(const e of events){
 assert.match(read('outings/week.js'),/querySelector\('\[data-event-detail\]'\)\.href/);
 const suggest=read('suggest.html');assert.ok(suggest.indexOf('id="sg-form"')<suggest.indexOf('id="suggestForm"'),'Direct form entry precedes optional local drafting');
 assert.match(suggest,/紹介する文を、ここで下書きする/);
-console.log('PASS character-free editorial cover, time labels, 5 eager work/history photos plus priority feature, no rain particles, 24 direct official cards with local images, 2 attributed artist embeds, direct introduction form');
+console.log('PASS character-free editorial cover, time labels, current reviewed event cards with local images, direct official exits, direct introduction form');
