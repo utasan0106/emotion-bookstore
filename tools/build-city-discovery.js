@@ -211,7 +211,13 @@ function enrichSeo(file, html) {
   const heading=plain((html.match(/<h1>(.*?)<\/h1>/s)||[])[1]||pageTitle).replace(/\s+の/g,'の');
   const hook=plain((html.match(/class="(?:detail-hook|collection-lead|lead)"[^>]*>(.*?)<\/p>/s)||[])[1]||'');
   const creator=plain((html.match(/class="detail-creator"[^>]*>(.*?)<\/p>/s)||[])[1]||'');
-  const description=plain([heading,creator,hook,'作品から街と人のつながりを辿る、みんなの感情書店。'].filter(Boolean).join('。')).replace(/。+/g,'。').slice(0,155);
+  const cityIndexMatch=file.match(/^(koenji|shimokitazawa|kichijoji|jinbocho)\/index\.html$/);
+  const specialDescription=file==='weekly/index.html'
+    ? '高円寺・下北沢・吉祥寺・神保町から、今週で終わるライブ・舞台・映画・展示・トークと、新しく入った本・音楽・映像を編集部が少数だけ紹介します。'
+    : cityIndexMatch
+      ? cityNames[cityIndexMatch[1]]+'にゆかりのある本・映画・音楽・映像を、街との関係を一次情報で確かめて紹介。今の催しや場所の案内へも辿れます。'
+      : null;
+  const description=(specialDescription||plain([heading,creator,hook,'作品から街と人のつながりを辿る、みんなの感情書店。'].filter(Boolean).join('。')).replace(/。+/g,'。')).slice(0,155);
   const canonical=canonicalFor(file);
   const essay=research.find(entry=>file===`essays/${entry.id}.html`);
   const isResearchIndex=file==='essays/index.html';
@@ -398,7 +404,7 @@ for (const city of cities) {
       return {item,kind,week};
     });
   });
-  write(`${city}/index.html`,shell(`${cityNames[city]}の作品`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><div><p class="eyebrow">街から見つける</p><h1>${cityNames[city]}<span>の作品</span></h1></div><figure class="city-motif"><img src="/assets/city-editorial/${city}.webp" alt="" width="640" height="214" decoding="async"><figcaption>街のイメージ · AIイラスト</figcaption></figure></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><section class="work-grid" aria-label="${cityNames[city]}の作品" data-rotation-epoch="${rotationEpoch}">${featured.map(({item,kind,week})=>workCard(item).replace('<article class="work-card ',`<article data-feature-kind="${kind}" data-feature-week="${week}"${week?' hidden':''} class="work-card `)).join('')}</section>${shortFilmsEntry()}${venueEntry(city)}<div class="city-next"><a href="/outings/?city=${city}">${cityNames[city]}の催し</a><a href="/shelf.html?shelf=${city}">ゆかりの場所・歴史</a></div>${credits([city])}</div>`, '<a href="/discover/">街を選び直す</a>',city));
+  write(`${city}/index.html`,shell(`${cityNames[city]}の本・映画・音楽・映像`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><div><p class="eyebrow">街から見つける</p><h1>${cityNames[city]}<span>の作品</span></h1></div><figure class="city-motif"><img src="/assets/city-editorial/${city}.webp" alt="" width="640" height="214" decoding="async"><figcaption>街のイメージ · AIイラスト</figcaption></figure></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><section class="work-grid" aria-label="${cityNames[city]}の作品" data-rotation-epoch="${rotationEpoch}">${featured.map(({item,kind,week})=>workCard(item).replace('<article class="work-card ',`<article data-feature-kind="${kind}" data-feature-week="${week}"${week?' hidden':''} class="work-card `)).join('')}</section>${shortFilmsEntry()}${venueEntry(city)}<div class="city-next"><a href="/outings/?city=${city}">${cityNames[city]}の催し</a><a href="/shelf.html?shelf=${city}">ゆかりの場所・歴史</a></div>${credits([city])}</div>`, '<a href="/discover/">街を選び直す</a>',city));
 }
 const featuredVideoIds=['bocchi-main-pv','next-town-koenji','kichion-toranoko','used-book-festival'];
 const featuredVideos=featuredVideoIds.map(id=>items.find(item=>item.id===id));
@@ -450,8 +456,9 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
 // **新しく入った作品**（publishedAt を書いたものだけ）。
 // 「今週の一本」は置かない。どれを推すかは編集部の判断で、生成物が決めることではない。
 {
-  const {events: issueEvents, cities: issueCities} = require('./weekly-outings-source');
+  const {events: issueEventInventory, cities: issueCities, isPublishableEvent} = require('./weekly-outings-source');
   const {dates: issueDates} = require('../outings/week');
+  const issueEvents = issueEventInventory.filter(isPublishableEvent);
   const ending = issueEvents
     .map(e => ({e, last: issueDates(e).at(-1)}))
     .sort((a, b) => a.last.localeCompare(b.last) || a.e.id.localeCompare(b.e.id));
@@ -461,8 +468,8 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
     .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt) || a.title.localeCompare(b.title));
   const arrivalRows = arrivals.map(i =>
     `<li><a href="/discover/${i.city}/${i.id}.html">${esc(i.title)}</a><span class="wk-list-by">${esc(i.creator)}</span><span class="wk-list-rel">${esc(cityNames[i.city])} · ${esc(i.relation)}</span></li>`).join('');
-  write('weekly/index.html', shell('今週の感情書店',
-    `<section class="intro"><p class="eyebrow">毎週月曜に変わります</p><h1>今週の、<br>感情書店。</h1><p class="lead">今週で終わる催しと、新しく棚に入った作品。人気順でも、あなた向けでもありません。</p></section><div class="collection">`
+  write('weekly/index.html', shell('今週の東京カルチャー｜高円寺・下北沢・吉祥寺・神保町',
+    `<section class="intro"><p class="eyebrow">毎週月曜に変わります</p><h1>今週の、<br>感情書店。</h1><p class="lead">高円寺・下北沢・吉祥寺・神保町から、今週で終わる催しと新しく棚に入った作品を編集部が少数だけ選びます。</p></section><div class="collection">`
     + `<section class="wk-list" aria-label="今週で終わる催し"><h2>今週で終わる催し <small data-ending-count></small></h2><p class="lead">会期の最終日が今週のものです。今週を逃すと終わります。</p><ul data-ending-list>${endingRows}</ul><p data-ending-empty hidden>今週で終わる催しはありません。<a href="/outings/">催しを一覧で見る →</a></p></section>`
     + `<section class="wk-list" aria-label="新しく入った作品${arrivals.length}件"><h2>新しく入った作品</h2><p class="lead">棚に出した日の新しい順です。${arrivals.length}件。</p><ul>${arrivalRows}</ul></section>`
     + `<p class="city-exit"><a href="/outings/">催しをすべて見る →</a></p><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p><p class="city-exit"><a href="/feed.xml">新着をRSSで受け取る →</a></p></div>`,
@@ -474,8 +481,9 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
 // 読者にとって一つのものである。会場は会期で消えないので、この索引は空にならない。
 {
   const {verify: verifyVenues} = require('./venue-source');
-  const {events: venueEvents, cities: venueCities} = require('./weekly-outings-source');
+  const {events: venueEventInventory, cities: venueCities, isPublishableEvent} = require('./weekly-outings-source');
   const {dates: venueDates} = require('../outings/week');
+  const venueEvents = venueEventInventory.filter(isPublishableEvent);
   for (const v of verifyVenues(items)) {
     const works = v.works.map(id => items.find(i => i.city === v.city && i.id === id));
     const byKind = {};
