@@ -14,3 +14,28 @@
 })();
 // Tokyo time changes the shared palette without a weather request or location permission.
 (function(){const script=document.createElement('script');script.src='/time-of-day.js';script.defer=true;document.head.append(script);})();
+
+// Media integrity: external images must never leave a broken-image icon.
+(function(){
+ function fail(img){
+  if(!img||img.dataset.imageHandled==='1')return;
+  const fallback=img.dataset.imageFallback;
+  if(fallback&&img.dataset.imageFallbackTried!=='1'){
+   img.dataset.imageFallbackTried='1';
+   img.src=fallback;
+   return;
+  }
+  img.dataset.imageHandled='1';
+  img.hidden=true;
+  const host=img.closest('figure')||img.parentElement;
+  if(host&&!host.querySelector('.media-unavailable')){
+   const note=document.createElement('p');
+   note.className='media-unavailable';
+   note.setAttribute('role','status');
+   note.textContent='画像を表示できません。本文と公式リンクは利用できます。';
+   host.appendChild(note);
+  }
+ }
+ document.addEventListener('error',e=>{if(e.target&&e.target.tagName==='IMG')fail(e.target);},true);
+ document.querySelectorAll('img').forEach(img=>{if(img.complete&&img.naturalWidth===0)fail(img);});
+})();
