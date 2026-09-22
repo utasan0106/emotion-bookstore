@@ -34,9 +34,9 @@
         "video"
       ],
       "shortVideoIds": [
-        "find-my-tokyo-akasaka",
         "thanks-tokyo",
-        "tokyo-metro-newline"
+        "tokyo-metro-newline",
+        "find-my-tokyo-akasaka"
       ]
     }
   ]
