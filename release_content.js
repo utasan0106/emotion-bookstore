@@ -503,7 +503,7 @@ window.V3_RELEASE_CONTENT = {
       weeklyFeature: {
         eventType: '落語',
         title: 'らくご江戸めぐり',
-        media: {src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', alt: '清澄庭園の池と庭園の景色'},
+        media: {src: '/assets/city-kiyosumi.svg', alt: '清澄白河の街の要素を抽象化した自社制作図版'},
         titlePhrases: ['らくご', '江戸めぐり'],
         calendarDates: '20260926/20260927',
         dateLabel: '9月26日（土） 14:00開演',
@@ -515,18 +515,18 @@ window.V3_RELEASE_CONTENT = {
         expiresAt: '2026-09-27T00:00:00+09:00'
       },
       entryMedia: {
-        kind: 'photo',
-        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', width: 640, height: 414,
-        alt: '池の水面と飛び石、樹木が見える清澄庭園の景色',
-        provenance: 'Kakidai / Wikimedia Commons / CC BY-SA 4.0 / 2015-08-10'
+        kind: 'illustration',
+        url: './assets/entry-kiyosumi.svg', width: 1942, height: 809,
+        alt: '清澄白河の水面・石・美術館の格子を抽象化したエディトリアル図版',
+        provenance: 'みんなの感情書店編集部 自社制作 / 2026-09-22'
       },
       heroMedia: {
-        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/640px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG', width: 640, height: 414,
-        alt: '池の水面と飛び石、樹木が見える清澄庭園の景色',
-        author: 'Kakidai', source: 'Wikimedia Commons',
-        sourceUrl: 'https://commons.wikimedia.org/wiki/File:Kiyosumi_Teien_-_Japanese_gardern_4.JPG',
-        license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
-        modification: 'Wikimedia Commonsの640px縮小版をそのまま参照。表示時のみCSSでトリミング。'
+        url: './assets/city-kiyosumi.svg', width: 1200, height: 900,
+        alt: '清澄白河の水面・庭園の石・美術館の格子を抽象化したエディトリアル図版',
+        author: 'みんなの感情書店編集部', source: '自社制作',
+        sourceUrl: 'https://emotionbookstore.com/credits.html',
+        license: '自社制作', licenseUrl: 'https://emotionbookstore.com/credits.html',
+        modification: '自社制作SVGを同一オリジンで配信。表示時のみCSSでトリミング。'
       },
       objects: [
         {
