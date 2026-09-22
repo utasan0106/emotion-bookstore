@@ -1,0 +1,40 @@
+name: Localize Kiyosumi photo
+
+on:
+  push:
+    branches:
+      - chatgpt/kiyosumi-photo-localize-20260922
+
+permissions:
+  contents: write
+
+jobs:
+  localize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: chatgpt/kiyosumi-photo-localize-20260922
+      - name: Download reviewed Kiyosumi Garden photo
+        run: |
+          set -euo pipefail
+          mkdir -p assets
+          curl -fL --retry 3 --retry-delay 2 \
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kiyosumi_Teien_-_Japanese_gardern_4.JPG/1280px-Kiyosumi_Teien_-_Japanese_gardern_4.JPG" \
+            -o assets/city-kiyosumi.jpg
+          file assets/city-kiyosumi.jpg | grep -qi "JPEG image"
+          test "$(stat -c%s assets/city-kiyosumi.jpg)" -gt 50000
+          sha256sum assets/city-kiyosumi.jpg
+      - name: Commit localized photo
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/city-kiyosumi.jpg
+          if git diff --cached --quiet; then
+            echo "No asset change."
+            exit 0
+          fi
+          git commit -m "assets(kiyosumi): localize reviewed garden photo"
+          git push origin HEAD:chatgpt/kiyosumi-photo-localize-20260922
