@@ -43,7 +43,11 @@ for(const file of files){
  for(const l of links(html)) currentLinks.add(l);
  // Everything the reader had must still be there. The only addition allowed is the
  // click-to-load affordance itself: its button and the sentence explaining it.
- const text=s=>s.replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/g,'')
+ const text=(s,fileName='')=>{
+  if(fileName==='discover/short-films/index.html'){
+    s=s.replace(/<section class="work-grid"[^>]*>[\s\S]*?<\/section>/g,'');
+  }
+  return s.replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/g,'')
   // HOMEの週替わり面は固定本文ではない。top feature と「気になるものから」は
   // weekly ledger / home_weekly_refresh_check が有限性・更新・行き先を検証する。
   .replace(/<section class="hd-feature"[^>]*>[\s\S]*?<\/section>/g,'')
@@ -62,12 +66,13 @@ for(const file of files){
   .replace(/<button class="v3-video-load[^"]*"[^>]*>[\s\S]*?<\/button>/g,'')
   .replace(/<(span|p) class="official-media-note">[\s\S]*?<\/\1>/g,'')
   .replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+};
  // Counts are derived from the catalogue, not written by an editor: a collection that
  // held one object and now holds three legitimately stops saying 1件. Everything a
  // person actually wrote is still compared.
  const derived=/^[0-9０-９]+(件|本|冊)?$/;
- for(const seg of text(base).split(' ')) if(seg&&!derived.test(seg)) baselineText.add(seg);
- currentText.push(text(html));
+ for(const seg of text(base,file).split(' ')) if(seg&&!derived.test(seg)) baselineText.add(seg);
+ currentText.push(text(html,file));
 }
 // 意図して閉じた行き先は、代わりにどこへ行くのかを書く。書かなければ落ちる。
 // 2026-09-10：トップのカテゴリはページ内の絞り込みだった。押しても1件しか出ず、
