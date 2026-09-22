@@ -51,7 +51,7 @@ assert.ok(footerDate>=cur.weekOf,'Visible home update date must be current week'
 const sitemap=read('sitemap.xml');
 for(const url of [
   'https://emotionbookstore.com/',
-  'https://emotionbookstore.com/shelf.html?shelf=kiyosumi',
+  'https://emotionbookstore.com/discover/weekly/',
   'https://emotionbookstore.com/discover/kiyosumi/',
   'https://emotionbookstore.com/discover/short-films/',
   'https://emotionbookstore.com/discover/short-films/find-my-tokyo-akasaka.html'
