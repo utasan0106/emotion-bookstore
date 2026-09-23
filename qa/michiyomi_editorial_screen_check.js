@@ -18,6 +18,13 @@ const rail=screenCandidate({
 });
 assert.equal(rail.editorialScreen.status,'REJECT_RAIL');
 
+const koenji=screenCandidate({
+  sceneId:'c',captureYear:2024,distanceM:40,
+  summary:'高円寺駅の高架下に店舗が並ぶ一般道路。',
+  imagePage:'https://www.mapillary.com/app/?pKey=c'
+});
+assert.ok(!koenji.editorialScreen.positiveReasons.includes('寺院'));
+
 const set=screenSet({source:'michiyomi',fetchedAt:'x',query:{},coverage:{},candidates:[rail,alley]});
 assert.equal(set.totals.all,2);
 assert.equal(set.totals.humanReview,1);
