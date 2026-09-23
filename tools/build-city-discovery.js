@@ -247,6 +247,7 @@ function write(file, html) {
   if(editorials?.length) {
     const entry=`<p class="editorial-entry"><a href="/discover/${city}/#editorials-title">${cityNames[city]}の街と人のコラムを読む →</a></p>`;
     html=html.replace('</nav><section class="work-grid"', '</nav>'+entry+'<section class="work-grid"');
+    html=html.replace('</nav><section class="street-fragment"', '</nav>'+entry+'<section class="street-fragment"');
     html=html.replace('</nav><p class="collection-lead"', '</nav>'+entry+'<p class="collection-lead"');
   }
   const detailItem=items.find(item=>file===`${item.city}/${item.id}.html`);
@@ -411,7 +412,7 @@ for (const city of cities) {
       return {item,kind,week};
     });
   });
-  write(`${city}/index.html`,shell(`${cityNames[city]}の本・映画・音楽・映像`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><div><p class="eyebrow">街から見つける</p><h1>${cityNames[city]}<span>の作品</span></h1></div><figure class="city-motif"><img src="/assets/city-editorial/${city}.webp" alt="" width="640" height="214" decoding="async"><figcaption>街のイメージ · AIイラスト</figcaption></figure></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav><section class="work-grid" aria-label="${cityNames[city]}の作品" data-rotation-epoch="${rotationEpoch}">${featured.map(({item,kind,week})=>workCard(item).replace('<article class="work-card ',`<article data-feature-kind="${kind}" data-feature-week="${week}"${week?' hidden':''} class="work-card `)).join('')}</section>${city==='koenji'?koenjiStreetFragment():''}${shortFilmsEntry()}${venueEntry(city)}<div class="city-next"><a href="/outings/?city=${city}">${cityNames[city]}の催し</a><a href="/shelf.html?shelf=${city}">ゆかりの場所・歴史</a></div>${credits([city])}</div>`, '<a href="/discover/">街を選び直す</a>',city));
+  write(`${city}/index.html`,shell(`${cityNames[city]}の本・映画・音楽・映像`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><div><p class="eyebrow">街から見つける</p><h1>${cityNames[city]}<span>の作品</span></h1></div><figure class="city-motif"><img src="/assets/city-editorial/${city}.webp" alt="" width="640" height="214" decoding="async"><figcaption>街のイメージ · AIイラスト</figcaption></figure></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav>${city==='koenji'?koenjiStreetFragment():''}<section class="work-grid" aria-label="${cityNames[city]}の作品" data-rotation-epoch="${rotationEpoch}">${featured.map(({item,kind,week})=>workCard(item).replace('<article class="work-card ',`<article data-feature-kind="${kind}" data-feature-week="${week}"${week?' hidden':''} class="work-card `)).join('')}</section>${shortFilmsEntry()}${venueEntry(city)}<div class="city-next"><a href="/outings/?city=${city}">${cityNames[city]}の催し</a><a href="/shelf.html?shelf=${city}">ゆかりの場所・歴史</a></div>${credits([city])}</div>`, '<a href="/discover/">街を選び直す</a>',city));
 }
 const featuredVideoIds=['bocchi-main-pv','next-town-koenji','kichion-toranoko','used-book-festival'];
 const featuredVideos=featuredVideoIds.map(id=>items.find(item=>item.id===id));
