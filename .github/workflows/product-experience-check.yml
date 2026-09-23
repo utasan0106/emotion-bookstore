@@ -27,18 +27,25 @@ jobs:
             --lat 35.705347 \
             --lon 139.649825 \
             --radius 500 \
-            --limit 20 \
+            --limit 50 \
             --year-from 2020 > michiyomi-koenji-candidates.json
           node tools/michiyomi-scout.js \
             --lat 35.707906 \
             --lon 139.647784 \
             --radius 250 \
-            --limit 20 \
+            --limit 50 \
             --year-from 2020 > michiyomi-koenjikita-candidates.json
-          node -e "for(const f of ['michiyomi-koenji-candidates.json','michiyomi-koenjikita-candidates.json']){const x=require('./'+f);if(!Array.isArray(x.candidates))process.exit(1);console.log(f,'candidates:',x.candidates.length,'coverage:',x.coverage.releasedCount)}"
+          node tools/michiyomi-scout.js \
+            --lat 35.7058787 \
+            --lon 139.6540001 \
+            --radius 250 \
+            --limit 50 \
+            --year-from 2020 > michiyomi-za-koenji-candidates.json
+          node -e "for(const f of ['michiyomi-koenji-candidates.json','michiyomi-koenjikita-candidates.json','michiyomi-za-koenji-candidates.json']){const x=require('./'+f);if(!Array.isArray(x.candidates))process.exit(1);console.log(f,'candidates:',x.candidates.length,'coverage:',x.coverage.releasedCount)}"
           node tools/michiyomi-editorial-screen.js michiyomi-koenji-candidates.json > michiyomi-koenji-screened.json
           node tools/michiyomi-editorial-screen.js michiyomi-koenjikita-candidates.json > michiyomi-koenjikita-screened.json
-          node -e "for(const f of ['michiyomi-koenji-screened.json','michiyomi-koenjikita-screened.json']){const x=require('./'+f);console.log(f,x.totals)}"
+          node tools/michiyomi-editorial-screen.js michiyomi-za-koenji-candidates.json > michiyomi-za-koenji-screened.json
+          node -e "for(const f of ['michiyomi-koenji-screened.json','michiyomi-koenjikita-screened.json','michiyomi-za-koenji-screened.json']){const x=require('./'+f);console.log(f,x.totals)}"
       - name: Upload Michiyomi research candidates
         if: startsWith(github.ref_name, 'astra/michiyomi-integration-spike-')
         uses: actions/upload-artifact@v4
@@ -47,7 +54,9 @@ jobs:
           path: |
             michiyomi-koenji-candidates.json
             michiyomi-koenjikita-candidates.json
+            michiyomi-za-koenji-candidates.json
             michiyomi-koenji-screened.json
             michiyomi-koenjikita-screened.json
+            michiyomi-za-koenji-screened.json
           if-no-files-found: error
           retention-days: 7
