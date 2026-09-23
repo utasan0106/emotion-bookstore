@@ -19,3 +19,22 @@ jobs:
           node-version: '22'
       - name: Check photos, navigation, generation, privacy and local memory
         run: node qa/verify-product.js
+      - name: Scout Michiyomi around Koenji for research only
+        if: startsWith(github.ref_name, 'astra/michiyomi-integration-spike-')
+        run: |
+          set -euo pipefail
+          node tools/michiyomi-scout.js \
+            --lat 35.705347 \
+            --lon 139.649825 \
+            --radius 500 \
+            --limit 20 \
+            --year-from 2020 > michiyomi-koenji-candidates.json
+          node -e "const x=require('./michiyomi-koenji-candidates.json'); if(!Array.isArray(x.candidates)) process.exit(1); console.log('Michiyomi candidates:',x.candidates.length,'coverage:',x.coverage.releasedCount)"
+      - name: Upload Michiyomi research candidates
+        if: startsWith(github.ref_name, 'astra/michiyomi-integration-spike-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: michiyomi-koenji-candidates
+          path: michiyomi-koenji-candidates.json
+          if-no-files-found: error
+          retention-days: 7
