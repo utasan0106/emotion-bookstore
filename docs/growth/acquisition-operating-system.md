@@ -347,3 +347,26 @@ Do not roll out to all five cities until one-city editorial value is visible.
 ### Research tooling
 
 Use `tools/michiyomi-scout.js` for read-only candidate collection. It checks coverage before nearby scenes and outputs review JSON to stdout only. It does not publish, write to the product inventory, download images, or infer place identity.
+
+
+### Koenji pilot evidence
+
+The source lane has now been tested against the live Michiyomi API on the research branch.
+
+- Koenji Station, 500 m: coverage reported 1,583 released scenes. A proximity-first sample was dominated by rail-cab/platform imagery. Station-center nearest search is therefore not a useful editorial strategy by itself.
+- Koenji-kita neighborhood, 250 m: coverage reported 138 released scenes. Street-level results included narrow alleys, potted-plant edges, walls/signage and mixed residential/small-shop streets. Human screening surfaced a small review set, but many scenes remain private-life-adjacent and require source-image review.
+- Za Koenji cultural anchor, 250 m: coverage reported 464 released scenes. A larger sample surfaced several non-residential candidates around under-rail commercial space, shutters, shopfronts, arcades and the boundary between cultural/transport infrastructure and the street.
+- The editorial screen must be conservative and explainable. A term-matching false positive caused by the place name “Koenji” was found during the pilot and repaired; this is a reminder that machine screening is triage only.
+
+Decision from the pilot:
+**multi-anchor cultural-object sampling is promising; station-center nearest-only sampling is not.**
+
+Next research gate:
+1. start from existing approved cultural/public anchors,
+2. collect a finite nearby pool,
+3. remove transport-only and private-only noise,
+4. human-review the Mapillary source image,
+5. select at most 1–3 fragments that change how the city is seen,
+6. only then design a public “街の断片” module.
+
+No candidate from this pilot is Production-approved yet.
