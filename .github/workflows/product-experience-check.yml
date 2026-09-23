@@ -36,6 +36,9 @@ jobs:
             --limit 20 \
             --year-from 2020 > michiyomi-koenjikita-candidates.json
           node -e "for(const f of ['michiyomi-koenji-candidates.json','michiyomi-koenjikita-candidates.json']){const x=require('./'+f);if(!Array.isArray(x.candidates))process.exit(1);console.log(f,'candidates:',x.candidates.length,'coverage:',x.coverage.releasedCount)}"
+          node tools/michiyomi-editorial-screen.js michiyomi-koenji-candidates.json > michiyomi-koenji-screened.json
+          node tools/michiyomi-editorial-screen.js michiyomi-koenjikita-candidates.json > michiyomi-koenjikita-screened.json
+          node -e "for(const f of ['michiyomi-koenji-screened.json','michiyomi-koenjikita-screened.json']){const x=require('./'+f);console.log(f,x.totals)}"
       - name: Upload Michiyomi research candidates
         if: startsWith(github.ref_name, 'astra/michiyomi-integration-spike-')
         uses: actions/upload-artifact@v4
@@ -44,5 +47,7 @@ jobs:
           path: |
             michiyomi-koenji-candidates.json
             michiyomi-koenjikita-candidates.json
+            michiyomi-koenji-screened.json
+            michiyomi-koenjikita-screened.json
           if-no-files-found: error
           retention-days: 7
