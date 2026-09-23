@@ -276,3 +276,74 @@ Highest-value evidence:
 5. Which cross-media bridge most often moves a reader into a real-world action?
 
 Decisions should follow evidence, not a predetermined answer.
+
+
+## 15. Michiyomi / Mapillary street-detail source lane — RESEARCH
+
+Purpose: use public streetscape evidence to discover small, hard-to-source details of a neighborhood without turning Emotion Bookstore into a map database.
+
+Michiyomi is a **discovery source**, not an editorial authority. It converts public Mapillary street imagery into coordinate-searchable Japanese descriptions and exposes the originating Mapillary image page. The current public dataset is CC BY-SA 4.0 and preserves capture year / scene id / generation / provenance.
+
+### First product hypothesis
+
+Existing city pages are good at named cultural objects (venues, books, events) but weak at the unnamed texture between them: alleys, shutters, stairs, small public spaces, street furniture, traces of old uses, and other things a founder cannot realistically photograph or research one by one.
+
+A reviewed Michiyomi scene may become a **街の断片 / street fragment** when it adds a concrete reason to look at the city differently.
+
+Do not auto-publish Michiyomi analysis. Candidate flow:
+
+1. Start from an already-approved public city/venue coordinate.
+2. Call coverage first.
+3. Retrieve nearby scenes.
+4. Store candidate metadata only: snapshot, scene id, capture year, distance, summary, image_page, generation, license/attribution.
+5. Human editorial review decides whether the scene has cultural value.
+6. Verify the scene is public-street context and does not invite entry onto private property.
+7. Publish at most a small finite set inside an existing city/article surface.
+8. Keep the capture year visible. A past image is not current-state evidence.
+9. Keep a direct link to the Mapillary source page and Michiyomi attribution.
+
+### Publication boundary
+
+Initial pilot should **not embed Mapillary imagery**. Link to the source image page instead. This avoids inventing an image-delivery path and keeps Mapillary display-compliance separate.
+
+If inline source imagery is later tested:
+- visible Mapillary logo/link is mandatory per Michiyomi documentation,
+- license/provenance must remain visible or reachable,
+- image access method must comply with Mapillary terms,
+- do not copy image bytes into the repo without a separately verified right to do so.
+
+For text derived from Michiyomi:
+- preserve source scene id, capture year, release/snapshot and attribution,
+- clearly separate Michiyomi/VLM observation from Emotion Bookstore human editorial,
+- do not silently convert model interpretation into a factual place identity,
+- preserve CC BY-SA obligations for the derived material.
+
+### Safety / trust rules
+
+Reject a candidate when:
+- it chiefly depicts a private residence or identifiable private-life context,
+- its value depends on guessing who owns/uses a place,
+- the copy would imply public access that is not verified,
+- capture year is missing or unreliable,
+- the interesting claim exists only in VLM interpretation and cannot be presented as an interpretation,
+- the only reason to publish is novelty or SEO volume.
+
+Never label a scene as an actual destination such as “秘密基地” unless public access and identity are independently verified. A visual resemblance may be described editorially only as an impression, not a fact.
+
+### Pilot success condition
+
+One existing city only. Prefer 高円寺 for the first test because the current product already has a strong street/culture identity there.
+
+Pilot evidence:
+- 10–20 nearby Michiyomi candidates reviewed,
+- 1–3 genuinely distinctive fragments selected,
+- each fragment has source/provenance/capture-year intact,
+- at least one fragment creates a useful continuation to an existing work/place/event,
+- public rendering does not add a new feed, ranking, or infinite map,
+- social/deep-link copy can point to the same city page rather than creating thin SEO pages.
+
+Do not roll out to all five cities until one-city editorial value is visible.
+
+### Research tooling
+
+Use `tools/michiyomi-scout.js` for read-only candidate collection. It checks coverage before nearby scenes and outputs review JSON to stdout only. It does not publish, write to the product inventory, download images, or infer place identity.
