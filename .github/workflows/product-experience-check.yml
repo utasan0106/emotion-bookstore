@@ -29,12 +29,20 @@ jobs:
             --radius 500 \
             --limit 20 \
             --year-from 2020 > michiyomi-koenji-candidates.json
-          node -e "const x=require('./michiyomi-koenji-candidates.json'); if(!Array.isArray(x.candidates)) process.exit(1); console.log('Michiyomi candidates:',x.candidates.length,'coverage:',x.coverage.releasedCount)"
+          node tools/michiyomi-scout.js \
+            --lat 35.707906 \
+            --lon 139.647784 \
+            --radius 250 \
+            --limit 20 \
+            --year-from 2020 > michiyomi-koenjikita-candidates.json
+          node -e "for(const f of ['michiyomi-koenji-candidates.json','michiyomi-koenjikita-candidates.json']){const x=require('./'+f);if(!Array.isArray(x.candidates))process.exit(1);console.log(f,'candidates:',x.candidates.length,'coverage:',x.coverage.releasedCount)}"
       - name: Upload Michiyomi research candidates
         if: startsWith(github.ref_name, 'astra/michiyomi-integration-spike-')
         uses: actions/upload-artifact@v4
         with:
           name: michiyomi-koenji-candidates
-          path: michiyomi-koenji-candidates.json
+          path: |
+            michiyomi-koenji-candidates.json
+            michiyomi-koenjikita-candidates.json
           if-no-files-found: error
           retention-days: 7
