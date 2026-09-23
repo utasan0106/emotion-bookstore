@@ -276,3 +276,147 @@ Highest-value evidence:
 5. Which cross-media bridge most often moves a reader into a real-world action?
 
 Decisions should follow evidence, not a predetermined answer.
+
+
+## 15. Michiyomi / Mapillary street-detail source lane — RESEARCH
+
+Purpose: use public streetscape evidence to discover small, hard-to-source details of a neighborhood without turning Emotion Bookstore into a map database.
+
+Michiyomi is a **discovery source**, not an editorial authority. It converts public Mapillary street imagery into coordinate-searchable Japanese descriptions and exposes the originating Mapillary image page. The current public dataset is CC BY-SA 4.0 and preserves capture year / scene id / generation / provenance.
+
+### First product hypothesis
+
+Existing city pages are good at named cultural objects (venues, books, events) but weak at the unnamed texture between them: alleys, shutters, stairs, small public spaces, street furniture, traces of old uses, and other things a founder cannot realistically photograph or research one by one.
+
+A reviewed Michiyomi scene may become a **街の断片 / street fragment** when it adds a concrete reason to look at the city differently.
+
+Do not auto-publish Michiyomi analysis. Candidate flow:
+
+1. Start from an already-approved public city/venue coordinate.
+2. Call coverage first.
+3. Retrieve nearby scenes.
+4. Store candidate metadata only: snapshot, scene id, capture year, distance, summary, image_page, generation, license/attribution.
+5. Human editorial review decides whether the scene has cultural value.
+6. Verify the scene is public-street context and does not invite entry onto private property.
+7. Publish at most a small finite set inside an existing city/article surface.
+8. Keep the capture year visible. A past image is not current-state evidence.
+9. Keep a direct link to the Mapillary source page and Michiyomi attribution.
+
+### Publication boundary
+
+Initial pilot should **not embed Mapillary imagery**. Link to the source image page instead. This avoids inventing an image-delivery path and keeps Mapillary display-compliance separate.
+
+If inline source imagery is later tested:
+- visible Mapillary logo/link is mandatory per Michiyomi documentation,
+- license/provenance must remain visible or reachable,
+- image access method must comply with Mapillary terms,
+- do not copy image bytes into the repo without a separately verified right to do so.
+
+For text derived from Michiyomi:
+- preserve source scene id, capture year, release/snapshot and attribution,
+- clearly separate Michiyomi/VLM observation from Emotion Bookstore human editorial,
+- do not silently convert model interpretation into a factual place identity,
+- preserve CC BY-SA obligations for the derived material.
+
+### Safety / trust rules
+
+Reject a candidate when:
+- it chiefly depicts a private residence or identifiable private-life context,
+- its value depends on guessing who owns/uses a place,
+- the copy would imply public access that is not verified,
+- capture year is missing or unreliable,
+- the interesting claim exists only in VLM interpretation and cannot be presented as an interpretation,
+- the only reason to publish is novelty or SEO volume.
+
+Never label a scene as an actual destination such as “秘密基地” unless public access and identity are independently verified. A visual resemblance may be described editorially only as an impression, not a fact.
+
+### Pilot success condition
+
+One existing city only. Prefer 高円寺 for the first test because the current product already has a strong street/culture identity there.
+
+Pilot evidence:
+- 10–20 nearby Michiyomi candidates reviewed,
+- 1–3 genuinely distinctive fragments selected,
+- each fragment has source/provenance/capture-year intact,
+- at least one fragment creates a useful continuation to an existing work/place/event,
+- public rendering does not add a new feed, ranking, or infinite map,
+- social/deep-link copy can point to the same city page rather than creating thin SEO pages.
+
+Do not roll out to all five cities until one-city editorial value is visible.
+
+### Research tooling
+
+Use `tools/michiyomi-scout.js` for read-only candidate collection. It checks coverage before nearby scenes and outputs review JSON to stdout only. It does not publish, write to the product inventory, download images, or infer place identity.
+
+
+### Koenji pilot evidence
+
+The source lane has now been tested against the live Michiyomi API on the research branch.
+
+- Koenji Station, 500 m: coverage reported 1,583 released scenes. A proximity-first sample was dominated by rail-cab/platform imagery. Station-center nearest search is therefore not a useful editorial strategy by itself.
+- Koenji-kita neighborhood, 250 m: coverage reported 138 released scenes. Street-level results included narrow alleys, potted-plant edges, walls/signage and mixed residential/small-shop streets. Human screening surfaced a small review set, but many scenes remain private-life-adjacent and require source-image review.
+- Za Koenji cultural anchor, 250 m: coverage reported 464 released scenes. A larger sample surfaced several non-residential candidates around under-rail commercial space, shutters, shopfronts, arcades and the boundary between cultural/transport infrastructure and the street.
+- The editorial screen must be conservative and explainable. A term-matching false positive caused by the place name “Koenji” was found during the pilot and repaired; this is a reminder that machine screening is triage only.
+
+Decision from the pilot:
+**multi-anchor cultural-object sampling is promising; station-center nearest-only sampling is not.**
+
+Next research gate:
+1. start from existing approved cultural/public anchors,
+2. collect a finite nearby pool,
+3. remove transport-only and private-only noise,
+4. human-review the Mapillary source image,
+5. select at most 1–3 fragments that change how the city is seen,
+6. only then design a public “街の断片” module.
+
+No candidate from this pilot is Production-approved yet.
+
+
+## 16. Michiyomi observation-to-cultural-context — three bounded uses (2026-09-23)
+
+Founder intent: use open streetscape observations to make outings more concrete, including small facilities and the story behind something a visitor noticed. Acquisition remains the first priority: give a reader a specific reason to open an existing city page and continue to a real cultural destination. This section extends the research lane in §15; it does not approve production inventory.
+
+### What is actually obtainable
+
+- `/v1/coverage`: number and capture-year distribution around a coordinate. Zero means no observation, not absence of a feature.
+- `/v1/scenes/nearby`: nearest photographed scenes, scene id, capture year, rough position, summary and Mapillary image-page link. The nearest photographed point need not be the nearest object or public entrance.
+- `/v1/scenes/{id}`: source metadata; machine features including color/green view and geometric direction when available; VLM interpretation including permanent objects, signage, townscape, street structure, walkable-width estimates, tactile paving and visible infrastructure. The interpretation can be mistaken; width and building age are estimates.
+- `/v1/changes/nearby`: selected cross-year observations. They are leads for an editorial story, not independent confirmation of construction dates or the present condition.
+- `GET /v1/amenities/nearby` is now listed in the live `/v1` self-description and API wiki for `kind=vending_machine|toilet|bench`; `POST /amenities/search` accepts a JSON body so visitor coordinates need not be put in a URL. A live bench query around 高円寺北二丁目 returned 2023 and 2026 photo observations, while a 2022+ toilet query within 500 m returned zero. Those results are camera positions and capture-time clues, never a complete/current inventory, exact equipment locations, public access or opening hours. Keep the API contract and response under review before implementation.
+
+| Visitor question | Role for Michiyomi | Required second source | Initial Emotion Bookstore surface |
+| --- | --- | --- | --- |
+| 「これ、何だろう。なぜここにある？」 | Recorded sign, facade, street furniture, former-looking trace or changing streetscape; capture-year/source link | Official facility, municipal archive, operator or other attributable primary history to establish identity and meaning | One reviewed 「街で見たもの」 card inside an existing city/article page, linked to an existing cultural object |
+| 「このあたりで少し休める？」 | A photographed bench/shade or public-space clue | Facility/park operator for public access, opening hours and restrictions; fresh confirmation for practical claims | Optional practical note on the relevant city/outings detail, only if there is a verified usable place |
+| 「行くまでの街はどんな感じ？」 | Captured street texture, greenery, arcade, underpass and source photo | Existing approved destination coordinates and official access information; no safety or accessible-route claim from one image | One contextual observation beside an approved cultural destination |
+| 「この景色は変わった？」 | Before/after lead with years and image IDs | Independent official/archival evidence for the cause, dates and cultural interpretation | Article idea only after corroboration; no auto-generated change pages |
+
+Editorial joining key: `city_id + approved public cultural anchor + scene_id`. Preserve `snapshot, capture_year, observed_feature, feature_confidence, source_image_page, source_license, checked_at`; keep separately `place_identity, identity_source, historical_context_source, current_facility_source, human_editorial_text, review_status`. A photographed object is not automatically a named place. A scene coordinate is the camera location, never a proved object coordinate or route endpoint. Keep the raw AI observation distinct from the human-written explanation and from current operational facts.
+
+### First reviewable high-value slice
+
+Use the already collected Koenji-kita and Za Koenji samples; do not rescout the station-centre 500 m noise. Select up to three source-image candidates with distinct public-street details. For each, write a two-sentence editorial draft: (1) what the dated image visibly records, (2) what a separate source explains about the named cultural place/object or why it invites a look on the way to an existing destination. If identity or public access cannot be corroborated, retain the observation only as an internal lead. Reject private-residence-centred, rail-cab-only or uncertain-year scenes.
+
+The first production candidate, if any, belongs in the existing Koenji city page as a small finite card. It should lead to an existing work, venue, event or article; a dated Mapillary source link and source attribution remain visible. Do not add a standalone map, location permission, photo upload, crowdsourced reports, automated object recognition, or a new indexable keyword page in this pilot. Those would change the product/privacy/operations scope and need separate evidence and authority.
+
+For facilities, do a separate one-place desk check after the cultural card: inspect a Michiyomi bench/toilet clue and an official operator or municipal listing for the same place. If current access, hours, exact location or usability is uncertain, do not publish a utility promise. Vending-machine products and live stock are outside this source's coverage. Never turn estimated widths, risk cues or tactile-paving observations into accessibility or route-safety assurance.
+
+### Release and acquisition gate
+
+1. Verify original Mapillary images visually, scene year/location, matching official identity, public access, rights/attribution, and the precise claim the card makes. Keep CC BY-SA-derived observation attribution; inline source images need a separately verified compliant delivery and visible Mapillary logo/link.
+2. Human Editorial must explicitly approve any new interpretive copy. Pending remains unpublished under the existing fail-closed gate.
+3. Check the published card on mobile, its source/official links, fallback when an external image is unavailable, canonical and sitemap consistency. Do not infer a successful render from a URL or build result alone.
+4. Observe whether the existing city page gains non-brand search impressions when Search Console access is healthy, then continuation from card to cultural destination and official exit. With unavailable canonical Search Console data, label acquisition effect UNKNOWN; clicks and events are not people.
+5. Stop the pilot if no reviewed scene yields a distinct cultural connection, if source imagery cannot be checked, if current facility facts cannot be verified, or if a card attracts curiosity but does not connect to an actual cultural experience. Do not expand to five cities by copying the format.
+
+### One source-checked editorial specimen — pending Human Editorial
+
+**Candidate: 庚申通りの名前をたどる.** Michiyomi scene `538363923973908` was captured in 2015 at the camera point 35.708068, 139.649746 (高円寺北二丁目). A visual check in Michiyomi's photo viewer confirms a pedestrian shopping street with lamps, storefront signs and passersby. The scene analysis mentions 高円寺オズ歯科室 and KA・RA・DA factory; the present [庚申通り商店街 map](https://koushindoori.com/map) lists these businesses in the street. The [商店街's own historical note](https://koushindoori.com/about/mame1), attributing its account to the 杉並区教育委員会, explains its 1716 庚申塔. **The tower itself is not established by this photo**, and the 2015 storefronts do not establish today's tenants.
+
+Proposed copy for review: 「2015年の写真に写る庚申通り。商店街が伝えるその名の背景には、1716年に建てられた庚申塔があります。高円寺には、小説の題名から愛称が生まれた別の『純情商店街』も。二つの名前から、この街と一冊の本をたどってみませんか。」 Link the final sentence to the existing [『高円寺純情商店街』 work page](https://emotionbookstore.com/discover/koenji/junjo.html), whose cultural connection is corroborated by the [純情商店街自身の説明](https://www.kouenji.or.jp/event/9871.html). The two named shopping streets must remain distinct in wording and presentation. Attach the capture year, [Mapillary source image](https://www.mapillary.com/app/?pKey=538363923973908), scene ID, snapshot `2026-09-13-r1`, `© Mapillary contributors (CC BY-SA 4.0) を加工 / みちよみ`, and the [商店街の解説](https://koushindoori.com/about/mame1). The cultural continuation is to the existing book page, not a claim that the two names denote the same street. The wording is an editorial draft, not an approved public fact card.
+
+**Facility desk check:** live `GET /v1/amenities/nearby?lat=35.70807&lon=139.64975&kind=bench&radius_m=500&limit=3&year_from=2022` yielded `bn_9d48bd4cc979b1f2` (2023, camera 292 m away, scene `641250834808470`) and `bn_3b0133932fbc5bda` (2026, camera 409 m away, scene `1931076524219118`). Both say `evidence=ベンチ：良好`, one VLM-derived observation each, and `position_basis=capture_location`. The same query for `kind=toilet` yielded 0 for 2022+ within 500 m; this says nothing about real-world absence. Neither bench is approved as a public resting spot: source images, exact equipment location, property/access and current condition need an operator or municipal source and fresh check.
+
+The first editorial candidate joins a dated visible street scene to attributable local history. The facility lane has a live read-only API but a higher current-use burden. This is a reason to pilot the history card first and hold utility claims until verified.
+
+Primary source checks: https://michiyomi.dev/ ; https://michiyomi.dev/docs/ ; https://michiyomi.dev/v1 ; https://michiyomi.dev/v1/meta ; https://michiyomi.dev/vending/ ; https://michiyomi.dev/toilet/ ; https://michiyomi.dev/bench/ .
