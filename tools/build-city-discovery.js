@@ -247,6 +247,7 @@ function write(file, html) {
   if(editorials?.length) {
     const entry=`<p class="editorial-entry"><a href="/discover/${city}/#editorials-title">${cityNames[city]}の街と人のコラムを読む →</a></p>`;
     html=html.replace('</nav><section class="work-grid"', '</nav>'+entry+'<section class="work-grid"');
+    html=html.replace('</nav><section class="street-fragment"', '</nav>'+entry+'<section class="street-fragment"');
     html=html.replace('</nav><p class="collection-lead"', '</nav>'+entry+'<p class="collection-lead"');
   }
   const detailItem=items.find(item=>file===`${item.city}/${item.id}.html`);
