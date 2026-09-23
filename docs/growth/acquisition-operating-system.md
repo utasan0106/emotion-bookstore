@@ -370,3 +370,43 @@ Next research gate:
 6. only then design a public “街の断片” module.
 
 No candidate from this pilot is Production-approved yet.
+
+
+## 16. Michiyomi observation-to-cultural-context — three bounded uses (2026-09-23)
+
+Founder intent: use open streetscape observations to make outings more concrete, including small facilities and the story behind something a visitor noticed. Acquisition remains the first priority: give a reader a specific reason to open an existing city page and continue to a real cultural destination. This section extends the research lane in §15; it does not approve production inventory.
+
+### What is actually obtainable
+
+- `/v1/coverage`: number and capture-year distribution around a coordinate. Zero means no observation, not absence of a feature.
+- `/v1/scenes/nearby`: nearest photographed scenes, scene id, capture year, rough position, summary and Mapillary image-page link. The nearest photographed point need not be the nearest object or public entrance.
+- `/v1/scenes/{id}`: source metadata; machine features including color/green view and geometric direction when available; VLM interpretation including permanent objects, signage, townscape, street structure, walkable-width estimates, tactile paving and visible infrastructure. The interpretation can be mistaken; width and building age are estimates.
+- `/v1/changes/nearby`: selected cross-year observations. They are leads for an editorial story, not independent confirmation of construction dates or the present condition.
+- Michiyomi's public beta shows photographed vending machines, toilets and benches. Each interface explicitly limits its answer to the capture time and camera location. Before coding against an amenity endpoint, confirm the live `/v1`/OpenAPI contract and actual response: the consulted public `/v1` self-description and wiki did not list a stable amenity endpoint at this checkpoint. Do not promise these three as complete/current city inventories.
+
+| Visitor question | Role for Michiyomi | Required second source | Initial Emotion Bookstore surface |
+| --- | --- | --- | --- |
+| 「これ、何だろう。なぜここにある？」 | Recorded sign, facade, street furniture, former-looking trace or changing streetscape; capture-year/source link | Official facility, municipal archive, operator or other attributable primary history to establish identity and meaning | One reviewed 「街で見たもの」 card inside an existing city/article page, linked to an existing cultural object |
+| 「このあたりで少し休める？」 | A photographed bench/shade or public-space clue | Facility/park operator for public access, opening hours and restrictions; fresh confirmation for practical claims | Optional practical note on the relevant city/outings detail, only if there is a verified usable place |
+| 「行くまでの街はどんな感じ？」 | Captured street texture, greenery, arcade, underpass and source photo | Existing approved destination coordinates and official access information; no safety or accessible-route claim from one image | One contextual observation beside an approved cultural destination |
+| 「この景色は変わった？」 | Before/after lead with years and image IDs | Independent official/archival evidence for the cause, dates and cultural interpretation | Article idea only after corroboration; no auto-generated change pages |
+
+Editorial joining key: `city_id + approved public cultural anchor + scene_id`. Preserve `snapshot, capture_year, observed_feature, feature_confidence, source_image_page, source_license, checked_at`; keep separately `place_identity, identity_source, historical_context_source, current_facility_source, human_editorial_text, review_status`. A photographed object is not automatically a named place. A scene coordinate is the camera location, never a proved object coordinate or route endpoint. Keep the raw AI observation distinct from the human-written explanation and from current operational facts.
+
+### First reviewable high-value slice
+
+Use the already collected Koenji-kita and Za Koenji samples; do not rescout the station-centre 500 m noise. Select up to three source-image candidates with distinct public-street details. For each, write a two-sentence editorial draft: (1) what the dated image visibly records, (2) what a separate source explains about the named cultural place/object or why it invites a look on the way to an existing destination. If identity or public access cannot be corroborated, retain the observation only as an internal lead. Reject private-residence-centred, rail-cab-only or uncertain-year scenes.
+
+The first production candidate, if any, belongs in the existing Koenji city page as a small finite card. It should lead to an existing work, venue, event or article; a dated Mapillary source link and source attribution remain visible. Do not add a standalone map, location permission, photo upload, crowdsourced reports, automated object recognition, or a new indexable keyword page in this pilot. Those would change the product/privacy/operations scope and need separate evidence and authority.
+
+For facilities, do a separate one-place desk check after the cultural card: inspect a Michiyomi bench/toilet clue and an official operator or municipal listing for the same place. If current access, hours, exact location or usability is uncertain, do not publish a utility promise. Vending-machine products and live stock are outside this source's coverage. Never turn estimated widths, risk cues or tactile-paving observations into accessibility or route-safety assurance.
+
+### Release and acquisition gate
+
+1. Verify original Mapillary images visually, scene year/location, matching official identity, public access, rights/attribution, and the precise claim the card makes. Keep CC BY-SA-derived observation attribution; inline source images need a separately verified compliant delivery and visible Mapillary logo/link.
+2. Human Editorial must explicitly approve any new interpretive copy. Pending remains unpublished under the existing fail-closed gate.
+3. Check the published card on mobile, its source/official links, fallback when an external image is unavailable, canonical and sitemap consistency. Do not infer a successful render from a URL or build result alone.
+4. Observe whether the existing city page gains non-brand search impressions when Search Console access is healthy, then continuation from card to cultural destination and official exit. With unavailable canonical Search Console data, label acquisition effect UNKNOWN; clicks and events are not people.
+5. Stop the pilot if no reviewed scene yields a distinct cultural connection, if source imagery cannot be checked, if current facility facts cannot be verified, or if a card attracts curiosity but does not connect to an actual cultural experience. Do not expand to five cities by copying the format.
+
+Primary source checks: https://michiyomi.dev/ ; https://michiyomi.dev/docs/ ; https://michiyomi.dev/v1 ; https://michiyomi.dev/v1/meta ; https://michiyomi.dev/vending/ ; https://michiyomi.dev/toilet/ ; https://michiyomi.dev/bench/ .
