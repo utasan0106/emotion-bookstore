@@ -41,7 +41,8 @@ const checks=[
  /* release_preflight は時刻で判定する門である。将来落ちたら fixture の
     賞味期限切れではなく、期限切れの current が公開されているという意味。 */
  ['qa/release_preflight.js', 'qa/release_expiry_boundaries.js'],
- ['qa/growth_improvements.js', 'qa/measurement_v04_selftest.js', 'qa/link_check_selftest.js']
+ ['qa/growth_improvements.js', 'qa/measurement_v04_selftest.js', 'qa/link_check_selftest.js'],
+ ['qa/michiyomi_scout_contract_check.js']
 ];
 let failed=0;
 for(const args of checks){
