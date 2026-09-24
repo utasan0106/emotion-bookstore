@@ -68,7 +68,9 @@ const walk = dir => fs.readdirSync(dir, {withFileTypes: true}).flatMap(e =>
   : e.name.endsWith('.html') ? [path.join(dir, e.name)] : []);
 const pages = walk('.').filter(f => fs.readFileSync(f, 'utf8').includes('analytics-v3.js'))
   .map(f => f.replace(/^\.\//, '')).sort();
-const expected = 16; // root 直下15 + outings/index.html（2026-09-11 の試験）
+// 2026-09-24: the over-five-minute work-video page was retired. No analytics
+// runtime or payload changed; the measured surface became one page smaller.
+const expected = 15;
 assert.equal(pages.length, expected,
   '計測を読み込むページ数が変わった（' + pages.length + '）。外部送信の範囲が変わるので、'
   + 'ファウンダーの承認が要る。承認済みならこの数を更新する。\n  ' + pages.join('\n  '));

@@ -23,6 +23,26 @@ const retiredShortLinks=new Set([
   'https://www.youtube-nocookie.com/embed/mh_QCvulKSY?autoplay=0&amp;playsinline=1&amp;rel=0',
   'https://www.youtube.com/watch?v=mh_QCvulKSY'
 ]);
+const durationSource=require('../tools/city-discovery-source');
+const retiredDurationLinks=new Map();
+const retiredDurationText=new Set();
+for(const item of durationSource.excludedItems.filter(i=>i.kind==='video'&&durationSource.visualMedia.durationFor(i.videoId)>300)){
+  const replacement='/discover/'+item.city+'/video.html';
+  retiredDurationLinks.set(item.url,replacement);
+  retiredDurationLinks.set('https://www.youtube-nocookie.com/embed/'+item.videoId+'?autoplay=0&amp;playsinline=1&amp;rel=0',replacement);
+  retiredDurationLinks.set('/discover/'+item.city+'/'+item.id+'.html',replacement);
+  retiredDurationLinks.set('https://emotionbookstore.com/discover/'+item.city+'/'+item.id+'.html',replacement);
+  for(const value of [item.title,item.creator,item.hook,item.relation,item.relationNote]) if(value) {
+    retiredDurationText.add(value);
+    for(const token of value.split(/\s+/)) retiredDurationText.add(token);
+  }
+}
+retiredDurationLinks.set('https://www.youtube.com/watch?v=dt33RGSRuo0','/discover/short-films/');
+retiredDurationLinks.set('https://www.youtube-nocookie.com/embed/dt33RGSRuo0?autoplay=0&amp;playsinline=1&amp;rel=0','/discover/short-films/');
+retiredDurationLinks.set('/work-video.html','/discover/short-films/');
+retiredDurationLinks.set('./work-video.html','/discover/short-films/');
+retiredDurationLinks.set('https://emotionbookstore.com/work-video.html','/discover/short-films/');
+retiredDurationLinks.set('https://www.koenji-awaodori.com/','/discover/short-films/');
 for(const file of files){
  const html=fs.readFileSync(file,'utf8');
  assert.equal((html.match(/href="\/design-redesign.css"/g)||[]).length,1,file+' stylesheet count');
@@ -46,6 +66,9 @@ for(const file of files){
  const text=(s,fileName='')=>{
   if(fileName==='discover/short-films/index.html'){
     s=s.replace(/<section class="work-grid"[^>]*>[\s\S]*?<\/section>/g,'');
+  }
+  if(fileName==='works.html'){
+    s=s.replace(/<section id="video"[\s\S]*?<\/section>/g,'');
   }
   return s.replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/g,'')
   // HOMEの週替わり面は固定本文ではない。top feature と「気になるものから」は
@@ -83,7 +106,7 @@ for(const file of files){
 const retiredDestinations={
   '?kind=book#hc-works': '/work-book.html',
   '?kind=music#hc-works': '/work-music.html',
-  '?kind=video#hc-works': '/work-video.html',
+  '?kind=video#hc-works': '/discover/short-films/',
   // 2026-09-11：「すべて」だけが向け直されずに残っていた。HOMEの初期状態がもともと
   // all なので、押しても表示は何も変わらない。ファウンダーが「押しても何もならない」と
   // 指摘したのはこれ。上の3つと同じ方針で、件数の見える作品のハブへ渡す。
@@ -95,7 +118,7 @@ const retiredDestinations={
 };
 for(const l of baselineLinks){
  if(currentLinks.has(l)) continue;
- const replacement=retiredDestinations[l] || (retiredEventLinks.has(l) ? '/outings/' : undefined) || (retiredShortLinks.has(l) ? '/discover/short-films/' : undefined) || redirectDestinations.get(l);
+ const replacement=retiredDestinations[l] || retiredDurationLinks.get(l) || (retiredEventLinks.has(l) ? '/outings/' : undefined) || (retiredShortLinks.has(l) ? '/discover/short-films/' : undefined) || redirectDestinations.get(l);
  // 2026-09-22：終了・再確認期限切れの催し詳細は検索/runtimeから物理削除する。
  // 旧URLを無関係な現行ページへHTTP redirectせず、サイト内には現在の催し一覧を残す。
  assert.ok(replacement,'destination no longer anywhere on the site: '+l);
@@ -129,7 +152,7 @@ const revisedText={
   '公式予告をYouTubeで観る':
   '公式予告と公園の声を観る',
   'みんなの感情書店｜作品から入る':
-  '東京の本・映画・音楽・映像｜みんなの感情書店',
+  '東京の本・映画・音楽｜みんなの感情書店',
   '街から音楽、映像、本、映画を探す｜みんなの感情書店':
   '東京5街から本・映画・音楽・文化を探す｜みんなの感情書店',
   '高円寺の作品｜みんなの感情書店':
@@ -155,6 +178,7 @@ const revisedText={
 };
 for(const seg of baselineText){
  if(everything.includes(seg)) continue;
+ if(retiredDurationText.has(seg)) continue;
  const revised=revisedText[seg];
  assert.ok(revised,'content no longer anywhere on the site: '+JSON.stringify(seg.slice(0,40)));
  assert.ok(everything.includes(revised),'revised text names a replacement that is not on the site: '+JSON.stringify(revised.slice(0,40)));

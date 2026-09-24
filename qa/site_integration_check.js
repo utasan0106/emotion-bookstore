@@ -3,7 +3,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const root=path.resolve(__dirname,'..'),read=f=>fs.readFileSync(path.join(root,f),'utf8');
 const {items,excludedItems,commonVideos}=require('../tools/city-discovery-source');
 const chrome=require('../tools/page-chrome');
-const outputs=['works.html','work-book.html','work-film.html','work-music.html','work-video.html','saved.html','suggest.html','thread.html','shelf.html','about.html','data.html','credits.html','visit/index.html'];
+const outputs=['works.html','work-book.html','work-film.html','work-music.html','saved.html','suggest.html','thread.html','shelf.html','about.html','data.html','credits.html','visit/index.html'];
 const walk=d=>fs.readdirSync(path.join(root,d),{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(d+'/'+e.name):e.name.endsWith('.html')?[d+'/'+e.name]:[]);
 outputs.push(...walk('discover'),...walk('outings'));
 for(const file of outputs){

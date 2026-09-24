@@ -22,12 +22,9 @@ const groups = [
     lead: 'その店、その劇場、その映画館が、どう始まってどう続いてきたか。人が書き、撮った記録です。',
     works: [
       'koenji/jirokichi',                // ライブハウスの50年史
-      'shimokitazawa/shelter-news',      // ライブハウスの紹介映像
       'shimokitazawa/honda',             // 劇場文化をつくった人の評伝
       'kichijoji/cinema-history',        // 映画館3館の歩み
       'kichijoji/baus',                  // 映画館の歩みをもとにした作品
-      'jinbocho/gyokueido',              // 古書店の紹介
-      'jinbocho/italia',                 // 古書店の紹介
       'jinbocho/iwanami-hall',           // 閉館した映画館の公式記録
       'jinbocho/used-book-festival'      // 通りが本棚になる催しの記録
     ]

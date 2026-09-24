@@ -59,6 +59,13 @@ allowed.add('qa/breadcrumb_check.js');
 allowed.add('qa/orphan_page_check.js');
 // 表紙の出典表示をリンクにするかどうかの分岐と、下書きを読むための一枚を作る道具。
 for(const file of ['tools/work-media.js','tools/build-work-pages.js','tools/review-event-drafts.js']) allowed.add(file);
+// 2026-09-24 visual-duration safety gate. It only removes overlong public media
+// and adds QA metadata; analytics runtime and payload vocabulary remain unchanged.
+for(const file of ['tools/visual-media-duration.js','tools/city-discovery-source.js',
+  'tools/venue-source.js','tools/places-source.js','tools/build-design-redesign.js',
+  'qa/video_duration_gate_check.js','qa/verify-product.js','qa/work_page_check.js',
+  'qa/site_integration_check.js','qa/culture_continuity_check.js',
+  'qa/duplicate_text_check.js','qa/analytics_contract_check.js','thread_content.js','vercel.json']) allowed.add(file);
 // robots.txt のコメントで落ちていた既知外 FAIL を、契約の書き直しで解消した。
 allowed.add('qa/seo_check.js');
 for(const file of ['assets/city-editorial/','docs/city-discovery/CITY-ART-20260910.md']) allowed.add(file);

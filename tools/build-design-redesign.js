@@ -2,7 +2,7 @@
 // Public serving surfaces only. Archives, experiments and QA baselines stay frozen.
 const fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'..');
-const files=['index.html','works.html','work-book.html','work-film.html','work-music.html','work-video.html','shelf.html','thread.html','explore.html','suggest.html','data.html','credits.html','saved.html','about.html','visit/index.html',...['index.html','kichijoji/index.html','shimokitazawa/index.html','link-list/film.html','link-list/music.html'].map(f=>'v3-prototype/culture-experience-r2/'+f)];
+const files=['index.html','works.html','work-book.html','work-film.html','work-music.html','shelf.html','thread.html','explore.html','suggest.html','data.html','credits.html','saved.html','about.html','visit/index.html',...['index.html','kichijoji/index.html','shimokitazawa/index.html','link-list/film.html','link-list/music.html'].map(f=>'v3-prototype/culture-experience-r2/'+f)];
 for(const dir of ['discover','outings']) {
  const walk=rel=>{for(const e of fs.readdirSync(path.join(root,rel),{withFileTypes:true})){const f=rel+'/'+e.name;if(e.isDirectory())walk(f);else if(f.endsWith('.html'))files.push(f);}};
  walk(dir);

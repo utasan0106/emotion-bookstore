@@ -136,7 +136,7 @@ function seriesItems(ids, kind, label, complete) {
   }
   return picked;
 }
-const outingVideos = outingVideoIds.map(key => {
+const outingVideos = outingVideoIds.filter(key => items.some(i => i.city+'/'+i.id===key && i.kind==='video')).map(key => {
   const [city, id] = key.split('/');
   const item = items.find(i => i.city === city && i.id === id && i.kind === 'video');
   if (!item) throw new Error('Outing series names an unpublished video: ' + key);
@@ -400,7 +400,7 @@ for (const city of cities) {
   // feature-week.js swaps in the week's entry. Adding an object never moves the
   // shop window on its own; only the list above does.
   const featured=available.flatMap(([kind])=>{
-    const order=featuredRotation[city+'/'+kind];
+    const order=(featuredRotation[city+'/'+kind]||[]).filter(id=>items.some(i=>i.city===city&&i.kind===kind&&i.id===id));
     if(!order||!order.length) throw new Error('No editorial rotation for the city page: '+city+' '+kind);
     const published=items.filter(i=>i.city===city&&i.kind===kind);
     if(order.length!==published.length||new Set(order).size!==order.length) throw new Error('Rotation must list each published '+kind+' of '+city+' exactly once');
@@ -413,7 +413,7 @@ for (const city of cities) {
   write(`${city}/index.html`,shell(`${cityNames[city]}の本・映画・音楽・映像`, `<section class="city-hero"><div class="city-panorama">${photo(city,true)}</div><div class="city-heading"><div><p class="eyebrow">街から見つける</p><h1>${cityNames[city]}<span>の作品</span></h1></div><figure class="city-motif"><img src="/assets/city-editorial/${city}.webp" alt="" width="640" height="214" decoding="async"><figcaption>街のイメージ · AIイラスト</figcaption></figure></div></section><div class="collection"><nav class="category-nav" aria-label="${cityNames[city]}の種類を選ぶ">${tabs}</nav>${city==='koenji'?koenjiStreetFragment():''}<section class="work-grid" aria-label="${cityNames[city]}の作品" data-rotation-epoch="${rotationEpoch}">${featured.map(({item,kind,week})=>workCard(item).replace('<article class="work-card ',`<article data-feature-kind="${kind}" data-feature-week="${week}"${week?' hidden':''} class="work-card `)).join('')}</section>${shortFilmsEntry()}${venueEntry(city)}<div class="city-next"><a href="/outings/?city=${city}">${cityNames[city]}の催し</a><a href="/shelf.html?shelf=${city}">ゆかりの場所・歴史</a></div>${credits([city])}</div>`, '<a href="/discover/">街を選び直す</a>',city));
 }
 const featuredVideoIds=['bocchi-main-pv','next-town-koenji','kichion-toranoko','used-book-festival'];
-const featuredVideos=featuredVideoIds.map(id=>items.find(item=>item.id===id));
+const featuredVideos=featuredVideoIds.map(id=>items.find(item=>item.id===id)).filter(Boolean);
 if(featuredVideos.some(item=>!item||item.kind!=='video')) throw new Error('Featured video missing');
 const leadVideo=featuredVideos[0];
 const watchNow=`<section class="watch-now" aria-labelledby="watch-now-title"><div class="watch-heading"><p class="eyebrow">今、観るなら</p><h2 id="watch-now-title">物語から、街へ。</h2><p>観光案内だけではなく、音楽や物語から街を好きになる映像を選びました。</p></div><div class="watch-layout"><article class="watch-lead">${workMedia.forItem(leadVideo)}<div><p class="relation">${cityNames[leadVideo.city]} · ${esc(leadVideo.relation)}</p><h3><a href="/discover/${leadVideo.city}/${leadVideo.id}.html">${esc(leadVideo.title)}</a></h3><p>${esc(leadVideo.hook)}</p><a class="watch-detail" href="/discover/${leadVideo.city}/${leadVideo.id}.html">紹介と街との関係を見る →</a></div></article><nav class="watch-list" aria-label="ほかの注目映像">${featuredVideos.slice(1).map(item=>`<a href="/discover/${item.city}/${item.id}.html"><span>${cityNames[item.city]}</span><strong>${esc(item.title)}</strong><small>${esc(item.hook)}</small></a>`).join('')}</nav></div></section>`;

@@ -1,5 +1,6 @@
 // Editorial input, never fetched by the browser. See docs/city-discovery/README.md.
 'use strict';
+const visualMedia = require('./visual-media-duration');
 const items = [];
 const commonVideosWeekOf = '2026-09-21';
 const commonVideos = [
@@ -172,6 +173,13 @@ const blockedVideoIds = ['tUe6YedzjlM', 'AuxXufx5kKQ']; // User playback evidenc
 for (const item of [...items, ...commonVideos]) {
   if (blockedVideoIds.includes(item.videoId) || blockedVideoIds.includes(item.trailerVideoId)) throw new Error('Private video must not be published: ' + item.id);
 }
+// A visual-media duration is a publication requirement, not optional display
+// metadata. Audio is a separate listening collection and is intentionally not
+// evaluated by this gate.
+for (const video of commonVideos) {
+  if (!visualMedia.allowed(video.videoId)) throw new Error('Common short exceeds the duration gate: ' + video.id);
+  if (video.durationSeconds !== visualMedia.durationFor(video.videoId)) throw new Error('Common short duration inventory mismatch: ' + video.id);
+}
 // Publication rule: no individual permission requests or external correspondence.
 // Individually reviewed text-only books may be listed without reproducing a cover.
 // This is not a blanket approval of other research candidates or cover rights.
@@ -279,11 +287,35 @@ const declinedItems = {
   'kichijoji/yorozu':       '書名が街を言い、関係は物語の舞台のみ',
   'kichijoji/catwalk':      '書名が街を言い、関係は物語の舞台のみ'
 };
+// Run after every catalogue extension above. New videos therefore fail closed:
+// an unknown runtime can never appear merely because it was appended later.
+for (const item of items) {
+  if (item.kind === 'video' && item.videoId) {
+    item.durationSeconds = visualMedia.durationFor(item.videoId);
+    item.durationCheckedAt = visualMedia.checkedAt;
+    if (visualMedia.exceptions[item.videoId]) item.durationExceptionReason = visualMedia.exceptions[item.videoId];
+  }
+  if (item.trailerVideoId) {
+    item.trailerDurationSeconds = visualMedia.durationFor(item.trailerVideoId);
+    item.trailerDurationCheckedAt = visualMedia.checkedAt;
+    if (visualMedia.exceptions[item.trailerVideoId]) item.trailerDurationExceptionReason = visualMedia.exceptions[item.trailerVideoId];
+    if (!visualMedia.allowed(item.trailerVideoId)) {
+      item.sources = item.sources.filter(url => url !== item.trailerUrl);
+      delete item.trailerVideoId;
+      delete item.trailerUrl;
+      delete item.trailerLabel;
+      delete item.trailerDurationSeconds;
+      delete item.trailerDurationCheckedAt;
+      delete item.trailerDurationExceptionReason;
+    }
+  }
+}
 const canPublish = item => !declinedItems[item.city+'/'+item.id]
+  && (item.kind !== 'video' || visualMedia.allowed(item.videoId))
   && Boolean(item.videoId || item.trailerVideoId || covers[item.city+'/'+item.id]?.status === 'usable' || item.presentation==='text-only');
 const excludedItems = items.filter(item => !canPublish(item));
 // Two different reasons sit behind an unpublished object, and reading them as one
 // caused a candidate review to report these five as "only missing a cover".
 const declined = excludedItems.filter(i => declinedItems[i.city+'/'+i.id]);
 const pendingItems = excludedItems.filter(i => !declinedItems[i.city+'/'+i.id]);
-module.exports = { items: items.filter(canPublish), excludedItems, declinedItems, declined, pendingItems, commonVideos, commonVideosWeekOf, blockedVideoIds, checkedAt: '2026-09-08' };
+module.exports = { items: items.filter(canPublish), excludedItems, declinedItems, declined, pendingItems, commonVideos, commonVideosWeekOf, blockedVideoIds, visualMedia, checkedAt: '2026-09-08' };

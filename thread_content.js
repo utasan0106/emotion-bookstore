@@ -147,9 +147,7 @@
       { id: 'src:official-plus', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体 公式サイト（plus+）', url: 'https://koenji-awaodori.com/stage/stage04.html' },
       { id: 'src:koenji-pal-about', kind: 'official_place', kindLabel: '公式（商店街）', name: '高円寺パル商店街 公式サイト（商店街について）', url: 'https://www.koenji-pal.jp/about' },
       { id: 'src:koenji-pal-access', kind: 'official_place', kindLabel: '公式（商店街）', name: '高円寺パル商店街 公式サイト（アクセス）', url: 'https://www.koenji-pal.jp/access' },
-      { id: 'src:official-home', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体 公式サイト', url: 'https://koenji-awaodori.com/' },
-      /* FOUNDER PREVIEW FIX UNIT E: 主催団体の公式映像（Works で承認済みの同じ URL）。埋め込まず、user click でだけ開く。 */
-      { id: 'src:official-video', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体の公式映像', url: 'https://www.youtube.com/watch?v=dt33RGSRuo0' }
+      { id: 'src:official-home', kind: 'official', kindLabel: '公式（主催団体）', name: '主催団体 公式サイト', url: 'https://koenji-awaodori.com/' }
     ],
 
     /* S0–S5。S2 の五拍（BEFORE → ENCOUNTER → QUESTION → EVIDENCE → REVEAL）
@@ -296,21 +294,6 @@
         note: '',
         relationIds: ['rel:renamed-1963'],
         sourceIds: ['src:official-home']
-      },
-      /* FOUNDER PREVIEW FIX UNIT E + Founder decision v2（2026-09-06）: 最後の 4 つ目。ここまで辿った
-         踊りを、主催団体の公式映像で見る。利用者が押したときだけ、このページ内に player を置く
-         （video-embed.js、プライバシー強化モード、自動再生なし）。表示しただけでは provider へ
-         接続しない。サムネイル・事前読込は使わない。 */
-      {
-        id: 'dest:official-video',
-        label: '最後に、現在の公式映像を見る',
-        url: 'https://www.youtube.com/watch?v=dt33RGSRuo0',
-        videoId: 'dt33RGSRuo0',
-        videoTitle: '主催団体の公式映像',
-        watchNote: '約15分で観終わります。',
-        why: 'ここまで辿った踊りが、現在の街の中でどう見えるかを、主催団体の公式映像で確かめます。',
-        note: '2025年の催しを伝える、主催団体の公式映像です。',
-        sourceIds: ['src:official-video']
       }
     ],
 
