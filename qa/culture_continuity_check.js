@@ -8,7 +8,7 @@ assert.match(read('index.html'),/href="\/discover\/short-films\/"/);
 const discoveryHome=read('discover/index.html');
 assert.match(discoveryHome,/class="watch-now"/);
 assert.ok(discoveryHome.indexOf('class="city-grid"')<discoveryHome.indexOf('class="watch-now"'));
-for(const id of ['bocchi-main-pv','next-town-koenji','kichion-toranoko','used-book-festival']) assert.ok(discoveryHome.includes('/'+id+'.html'));
+for(const id of ['bocchi-main-pv','used-book-festival']) assert.ok(discoveryHome.includes('/'+id+'.html'));
 assert.equal((discoveryHome.match(/class="official-media"/g)||[]).length,1,'Only the lead film embeds on the directory');
 for(const city of ['koenji','kichijoji','shimokitazawa','jinbocho']){
   for(const kind of ['audio','video','book','film']){
@@ -90,7 +90,7 @@ for(const item of items) {
     assert.ok(context.includes(url),'出典は関係の説明と同じ節に置く: '+item.id+' '+url);
   assert.ok(article.includes('/discover/'+item.city+'/'+item.kind+'.html'),'End of detail must offer re-selection: '+item.id);
 }
-for(const [from,to] of Object.entries({jirokichi:'next-town-koenji','next-town-koenji':'jirokichi',honnoniwa:'musashino-green','musashino-green':'honnoniwa',indies:'bocchi-main-pv','bocchi-main-pv':'indies',kaijin:'used-book-festival','used-book-festival':'kaijin'})) {
+for(const [from,to] of Object.entries({honnoniwa:'musashino-green','musashino-green':'honnoniwa',indies:'bocchi-main-pv','bocchi-main-pv':'indies',kaijin:'used-book-festival','used-book-festival':'kaijin'})) {
   const item=items.find(i=>i.id===from),target=items.find(i=>i.id===to);
   const html=read(`discover/${item.city}/${from}.html`);
   assert.match(html,/class="related-work"/);

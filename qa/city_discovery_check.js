@@ -6,12 +6,12 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const {items, commonVideos} = require('../tools/city-discovery-source');
 const decode = s => s.replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"');
-assert.equal(items.length,77);
+assert.equal(items.length,65);
 assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,items.length);
-assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,43);
+assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,31);
 assert.equal(commonVideos.length,3);
 assert.equal(new Set(commonVideos.map(i=>i.id)).size,3);
-assert.equal(new Set([...items.filter(i=>i.videoId),...commonVideos].map(i=>i.videoId)).size,46);
+assert.equal(new Set([...items.filter(i=>i.videoId),...commonVideos].map(i=>i.videoId)).size,34);
 const playbackIds=[...items.filter(i=>i.videoId).map(i=>i.videoId),...items.filter(i=>i.trailerVideoId).map(i=>i.trailerVideoId),...commonVideos.map(i=>i.videoId)];
 assert.equal(new Set(playbackIds).size,playbackIds.length,'Embedded media IDs must not be reused across entries');
 const cities=['koenji','shimokitazawa','kichijoji','jinbocho'];
@@ -71,7 +71,7 @@ function inspect(dir) {
 }
 inspect(path.join(root,'discover'));
 const research=require('../tools/city-research');
-assert.equal(pages,114+research.length);
+assert.equal(pages,102+research.length);
 // 街をまたいだ3シリーズ。棚を通った本と音楽は全部出る（増えたのに載らない、が起きない）。
 // 映像だけは「いま行ける場所」で絞るので、公開本数より少なくてよい。
 {
@@ -85,7 +85,7 @@ assert.equal(pages,114+research.length);
    assert.ok(items.some(i=>i.city===city&&i.id===id&&i.kind===kind),slug+': 未公開または種類違いを並べている '+key);
   }
   const published=items.filter(i=>i.kind===kind);
-  if(slug==='outing') assert.ok(linked.length>=10&&linked.length<=published.length,'outing: 絞り込みの結果が範囲外 '+linked.length);
+  if(slug==='outing') assert.ok(linked.length>=5&&linked.length<=published.length,'outing: 絞り込みの結果が範囲外 '+linked.length);
   else assert.equal(linked.length,published.length,slug+': 公開した'+kind+'が全部は出ていない');
   assert.match(html,/class="wk-list"/,slug+': 一覧は文字の一覧で出す');
   assert.doesNotMatch(html,/<iframe/,slug+': 読み込み時に provider へ接続しない');

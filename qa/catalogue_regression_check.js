@@ -32,7 +32,7 @@ assert.doesNotMatch(html,/hd-intro|なんか、|今日の楽しみ/,'Latest dire
 assert.ok(html.indexOf('class="hd-categories"')<html.indexOf('class="hd-feature"'),'Category navigation leads immediately to the first work');
 assert.doesNotMatch(homeCss,/hd-intro|#faf9f6/,'Do not retain an unused promotional panel theme');
 assert.doesNotMatch(css+homeCss,/#f0f3fa|#f1f3f5|#dfe3eb/,'Retired blue-grey inset palette must not return');
-for (const href of ['/work-music.html','/work-video.html']) assert.ok(html.includes(`href="${href}">`),'Internal details preserve the current tab and native Back');
+for (const href of ['/work-music.html','/discover/short-films/']) assert.ok(html.includes(`href="${href}">`),'Category links open a current internal destination');
 const location={search:'',hash:'#reading'};
 let scrolled=false,focused=false,popstate;
 const title={textContent:'',focus(){focused=true;}},section={scrollIntoView(){scrolled=true;}};
