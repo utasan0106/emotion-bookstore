@@ -123,10 +123,13 @@ assert.match(discoveryHome,/class="research-spotlight"/);
 assert.ok(discoveryHome.includes('id="city-signals"'));
 assert.ok(discoveryHome.includes('今の街の動き'));
 assert.ok(discoveryHome.includes('自動更新や人気ランキングではありません'));
-for(const id of ['shimokita-moon','jinbocho-pokemon','koenji-cafetalk']) {
-  assert.ok(discoveryHome.includes(`/outings/events/${id}.html`),'current city signal missing: '+id);
+const signalSource=require('../tools/weekly-outings-source'),signalWeek=require('../outings/week');
+const signalToday=signalWeek.date(Date.now());
+for(const id of ['shimokita-moon','jinbocho-pokemon','koenji-cafetalk','kichijoji-livepainting']) {
+  const event=signalSource.events.find(e=>e.id===id);
+  const active=event&&signalSource.isPublishableEvent(event)&&event.status==='scheduled'&&event.checkedAt<=signalToday&&event.reviewThrough>=signalToday&&signalWeek.dates(event).at(-1)>=signalToday;
+  assert.equal(discoveryHome.includes(`/outings/events/${id}.html`),Boolean(active),(active?'current':'ended')+' city signal mismatch: '+id);
 }
-assert.ok(!discoveryHome.includes('/outings/events/kichijoji-livepainting.html'),'ended city signal must not remain on discovery HOME');
 for(const essay of research) {
   const html=fs.readFileSync(path.join(root,`discover/essays/${essay.id}.html`),'utf8');
   assert.ok(essay.sources.length>=2,'Research needs distinct evidence sources');

@@ -15,6 +15,23 @@ for(const e of inactive){
  if(process.argv.includes('--check')){if(fs.existsSync(stale))throw Error('Inactive event detail must not exist: '+e.id);}
  else if(fs.existsSync(stale))fs.rmSync(stale);
 }
+// When a dated detail stops being current, keep previously shared URLs useful
+// instead of turning them into 404s. Publishing the event again removes its old
+// redirect because all known event paths are rebuilt here in one pass.
+const vercelPath=path.join(root,'vercel.json');
+const vercel=JSON.parse(fs.readFileSync(vercelPath,'utf8'));
+const eventPaths=new Set(allEvents.map(e=>`/outings/events/${e.id}.html`));
+vercel.redirects=(vercel.redirects||[]).filter(r=>!eventPaths.has(r.source));
+for(const e of inactive)vercel.redirects.push({source:`/outings/events/${e.id}.html`,destination:'/outings/',permanent:false});
+const vercelText=JSON.stringify(vercel,null,2)+'\n';
+if(process.argv.includes('--check')){
+ const actual=JSON.parse(fs.readFileSync(vercelPath,'utf8')).redirects||[];
+ for(const e of events)if(actual.some(r=>r.source===`/outings/events/${e.id}.html`))throw Error('Active event must not redirect: '+e.id);
+ for(const e of inactive){
+  const expected={source:`/outings/events/${e.id}.html`,destination:'/outings/',permanent:false};
+  if(JSON.stringify(actual.find(r=>r.source===expected.source))!==JSON.stringify(expected))throw Error('Retired event redirect differs: '+e.id);
+ }
+}else fs.writeFileSync(vercelPath,vercelText);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const checkedAt=events.map(e=>e.checkedAt).sort().at(-1);
 function save(file,text){const dest=path.join(out,file);if(process.argv.includes('--check')){if(!fs.existsSync(dest)||fs.readFileSync(dest,'utf8')!==text)throw Error('Generated outings differs: '+file);}else{fs.mkdirSync(path.dirname(dest),{recursive:true});fs.writeFileSync(dest,text);}}

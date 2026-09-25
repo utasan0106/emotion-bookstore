@@ -12,8 +12,11 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { events } = require('../tools/weekly-outings-source');
+const source = require('../tools/weekly-outings-source');
 const { dates } = require('../outings/week');
+const today = new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10);
+const events = source.events.filter(e => source.isPublishableEvent(e) && e.status === 'scheduled'
+  && e.checkedAt <= today && e.reviewThrough >= today && dates(e).at(-1) >= today);
 
 const root = path.resolve(__dirname, '..');
 const read = id => {
