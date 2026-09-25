@@ -52,6 +52,191 @@
       "permanent": false
     },
     {
+      "source": "/outings/events/koenji-bakumatsu.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/koenji-azuma.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/koenji-cafetalk.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-hug.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-criticism.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-goat.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-unknown.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/kichijoji-festival.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/kichijoji-hard-problem.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/kichijoji-kunita.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/jinbocho-silent.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/jinbocho-whale.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/jinbocho-mizoguchi.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/jinbocho-taiwan.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/koenji-percussion.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/koenji-mambo.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-oshibon.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/kichijoji-livepainting.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/koenji-utanoarika.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/koenji-playrock.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-mirukoto.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-hitotsuki.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-jibunjikan.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/kichijoji-machikado.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/kichijoji-tsuijuku.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/jinbocho-taiwan-kitchen.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-maedaemma.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-pops.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-otoroe.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-kyofu.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/koenji-harmonica.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/jinbocho-joyu.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/koenji-resonance.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/koenji-beyond.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-rekishi.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-bergson.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/koenji-tomovsky.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
       "source": "/discover/koenji/awa-2025.html",
       "destination": "/discover/koenji/video.html",
       "permanent": false

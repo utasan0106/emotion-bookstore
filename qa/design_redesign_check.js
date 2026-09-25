@@ -8,7 +8,18 @@ const files=require('../tools/build-design-redesign');
 const baselineLinks=new Set(),currentLinks=new Set(),baselineText=new Set(),currentText=[];
 const eventSource=require('../tools/weekly-outings-source'),eventWeek=require('../outings/week');
 const eventToday=eventWeek.date(Date.now());
-const retiredEventLinks=new Set(eventSource.events.filter(e=>!(eventSource.isPublishableEvent(e)&&e.status==='scheduled'&&e.checkedAt<=eventToday&&e.reviewThrough>=eventToday&&eventWeek.dates(e).at(-1)>=eventToday)).flatMap(e=>['/outings/events/'+e.id+'.html',e.url]));
+const retiredEvents=eventSource.events.filter(e=>!(eventSource.isPublishableEvent(e)&&e.status==='scheduled'&&e.checkedAt<=eventToday&&e.reviewThrough>=eventToday&&eventWeek.dates(e).at(-1)>=eventToday));
+const retiredEventLinks=new Set(retiredEvents.flatMap(e=>['/outings/events/'+e.id+'.html',e.url]));
+const retiredEventText=new Set();
+for(const event of retiredEvents)for(const value of [event.title,event.hook,event.relation,event.practical,event.companionNote,event.schedule])if(value){
+ retiredEventText.add(value);
+ for(const token of value.split(/\s+/))retiredEventText.add(token);
+}
+const retiredEventIds=new Set(retiredEvents.map(e=>e.id));
+for(const event of eventSource.events)for(const relation of event.related||[])if(retiredEventIds.has(relation.id)){
+ retiredEventText.add(relation.reason);
+ for(const token of relation.reason.split(/\s+/))retiredEventText.add(token);
+}
 const redirectDestinations=new Map((JSON.parse(fs.readFileSync('vercel.json','utf8')).redirects||[]).filter(r=>r.source&&r.destination).map(r=>[r.source,r.destination]));
 const retiredShortLinks=new Set([
   'https://emotionbookstore.com/discover/short-films/panasonic-life.html',
@@ -178,6 +189,7 @@ const revisedText={
 };
 for(const seg of baselineText){
  if(everything.includes(seg)) continue;
+ if(retiredEventText.has(seg)) continue;
  if(retiredDurationText.has(seg)) continue;
  const revised=revisedText[seg];
  assert.ok(revised,'content no longer anywhere on the site: '+JSON.stringify(seg.slice(0,40)));
