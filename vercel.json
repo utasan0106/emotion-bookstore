@@ -122,6 +122,11 @@
       "permanent": false
     },
     {
+      "source": "/outings/events/jinbocho-ginga.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
       "source": "/outings/events/koenji-percussion.html",
       "destination": "/outings/",
       "permanent": false
@@ -138,6 +143,11 @@
     },
     {
       "source": "/outings/events/kichijoji-livepainting.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/jinbocho-pokemon.html",
       "destination": "/outings/",
       "permanent": false
     },
