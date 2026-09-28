@@ -23,16 +23,16 @@ window.V3_RELEASE_CONTENT = {
     // サイト共通の短い説明。玄関にも、街の棚を直接開いたときにも、
     // 最初の写真・図版より必ず先に出す。長い理念文は足さない。
     siteExplainer: '感情書店の編集部が選んだ場所・本・音楽・映画・催しを、街や種類ごとに少しずつ並べる文化案内です。',
-    verifiedAt: '2026-09-22T01:30:00+09:00',
+    verifiedAt: '2026-09-28T17:05:00+09:00',
     shelfCount: 5,
     objectsPerShelf: 3
   },
   weeklyEdition: {
-    weekOf: '2026-09-21',
-    topFeatureId: 'mot-collection-light',
-    curiosityIds: ['morisaki', 'ginga', 'park-voice'],
-    curiosityKinds: ['book', 'film', 'video'],
-    shortVideoIds: ['thanks-tokyo', 'tokyo-metro-newline', 'find-my-tokyo-akasaka']
+    weekOf: '2026-09-28',
+    topFeatureId: 'kichijoji-taniguchi',
+    curiosityIds: ['moon-in-june-play', 'honda', 'morisaki-film'],
+    curiosityKinds: ['music', 'book', 'film'],
+    shortVideoIds: ['thanks-tokyo', 'tokyo-metro-newline', 'musashino-green']
   },
   // 種類は新しい無限棚ではなく、いま公開中の15件を横断して見るための
   // 有限な索引。初回はこの5つだけで、順番も固定する。
@@ -66,7 +66,7 @@ window.V3_RELEASE_CONTENT = {
   ],
   detour: {
     label: '今週の寄り道',
-    weekOf: '2026-09-21',
+    weekOf: '2026-09-28',
     theme: 'ひとりで歩くと、街は少し違って見える。',
     themePhrases: ['ひとりで歩くと、', '街は少し違って見える。'],
     items: [
@@ -137,7 +137,7 @@ window.V3_RELEASE_CONTENT = {
         why: '新作絵本の原画と、冬の井の頭恩賜公園を取材して構想された「黒い森」の景色が、吉祥寺の美術館に並ぶ。作品から街へ戻る入口として。',
         actionLabel: '吉祥寺美術館公式で見る',
         actionUrl: 'https://www.musashino.or.jp/museum/1002006/1003349/1009837.html',
-        verifiedAt: '2026-09-22T01:30:00+09:00',
+        verifiedAt: '2026-09-28T17:05:00+09:00',
         expiresAt: '2026-11-03T19:30:00+09:00'
       },
       entryMedia: {
@@ -258,7 +258,7 @@ window.V3_RELEASE_CONTENT = {
         why: '高円寺の公立劇場で、シェイクスピアの喜劇を日本語・日本手話で上演する。街の現在を舞台芸術から見る一件として。',
         actionLabel: '座・高円寺公式で見る',
         actionUrl: 'https://za-koenji.jp/business/natsunoyo2026',
-        verifiedAt: '2026-09-22T01:30:00+09:00',
+        verifiedAt: '2026-09-28T17:05:00+09:00',
         expiresAt: '2026-10-18T00:00:00+09:00'
       },
       entryMedia: {
@@ -385,7 +385,7 @@ window.V3_RELEASE_CONTENT = {
         why: '下北沢の通りや線路街に作品が置かれ、展示・演劇・音楽を歩いて巡れる。日常の街と文化体験が同じ場所で重なる現在を見る一件として。',
         actionLabel: '公式サイトで見る',
         actionUrl: 'https://moonartnightfes.com/',
-        verifiedAt: '2026-09-23T08:23:00+09:00',
+        verifiedAt: '2026-09-28T17:05:00+09:00',
         expiresAt: '2026-10-05T00:00:00+09:00'
       },
       entryMedia: {
@@ -516,18 +516,18 @@ window.V3_RELEASE_CONTENT = {
       tagline: '清澄白河を、3つだけ。',
       area: '清澄白河',
       weeklyFeature: {
-        eventType: '落語',
-        title: 'らくご江戸めぐり',
+        eventType: '展覧会',
+        title: 'MOTコレクション「いつかの光を今みている」',
         media: {src: '/assets/city-kiyosumi.jpg', alt: '池と石、樹木が見える清澄庭園の景色'},
-        titlePhrases: ['らくご', '江戸めぐり'],
-        calendarDates: '20260926/20260927',
-        dateLabel: '9月26日（土） 14:00開演',
-        venue: '深川江戸資料館 小劇場',
-        why: '古典落語「寝床」を深川江戸資料館で聴く一日。公演当日はチケット提示で常設展示室も割引になり、江戸の町並み再現と同じ日に触れられる。',
-        actionLabel: '深川江戸資料館公式で見る',
-        actionUrl: 'https://www.kcf.or.jp/fukagawa/event/detail/?id=9453',
-        verifiedAt: '2026-09-22T01:30:00+09:00',
-        expiresAt: '2026-09-27T00:00:00+09:00'
+        titlePhrases: ['MOTコレクション', '「いつかの光を今みている」'],
+        calendarDates: '20260919/20270107',
+        dateLabel: '9月19日（土）– 2027年1月6日（水）',
+        venue: '東京都現代美術館',
+        why: '東京都現代美術館のコレクション展を入口に、清澄白河で現在見られる美術へ。会期の長い展示を、今週の街歩きから辿る一件として。',
+        actionLabel: '東京都現代美術館の開催展を見る',
+        actionUrl: 'https://www.mot-collection-search.jp/exhibition/',
+        verifiedAt: '2026-09-28T17:05:00+09:00',
+        expiresAt: '2027-01-07T00:00:00+09:00'
       },
       entryMedia: {
         kind: 'photo',
@@ -631,7 +631,7 @@ window.V3_RELEASE_CONTENT = {
             detailAlt: '「MOT」と大きく組んだ、この棚のための活字図版'
           },
           factsSourceUrl: 'https://www.mot-collection-search.jp/exhibition/',
-          verifiedAt: '2026-09-22T01:30:00+09:00',
+          verifiedAt: '2026-09-28T17:05:00+09:00',
           expiresAt: '2027-01-07T00:00:00+09:00'
         }
       ]
@@ -643,18 +643,18 @@ window.V3_RELEASE_CONTENT = {
       tagline: '神保町を、3つだけ。',
       area: '神保町',
       weeklyFeature: {
-        eventType: '展示・販売',
-        title: 'Alicekan 45th Anniversary えほんパーティー',
+        eventType: '原画展',
+        title: 'いとうひろし『そこなしもりはそこにある』原画展',
         media: {src: '/assets/city-jinbocho-suzuran.jpg', alt: '街の風景：神保町'},
-        titlePhrases: ['Alicekan 45th Anniversary ', 'えほんパーティー'],
-        calendarDates: '20260916/20260930',
-        dateLabel: '9月16日（水）13:00開始 – 29日（火）17:00終了',
-        venue: 'ブックハウスカフェ 1F ディスプレイウィンドウ',
-        why: '出版社アリス館の45周年にあわせ、絵本作品のグッズや絵本が神保町のこどもの本専門店に並ぶ。本が作られ、店へ届く現在を見る一件として。',
+        titlePhrases: ['いとうひろし', '『そこなしもりはそこにある』原画展'],
+        calendarDates: '20260930/20261014',
+        dateLabel: '9月30日（水）11:00 – 10月13日（火）17:00',
+        venue: 'ブックハウスカフェ 1F ガリバー',
+        why: 'いとうひろしの絵本『そこなしもりはそこにある』の原画展が、神保町のこどもの本専門店で始まる。今週の本の街を、原画と絵本から見る一件として。',
         actionLabel: 'ブックハウスカフェ公式で見る',
-        actionUrl: 'https://bookhousecafe.jp/exhibition/content/2484',
-        verifiedAt: '2026-09-22T01:30:00+09:00',
-        expiresAt: '2026-09-29T17:00:00+09:00'
+        actionUrl: 'https://bookhousecafe.jp/exhibition/content/2500',
+        verifiedAt: '2026-09-28T17:05:00+09:00',
+        expiresAt: '2026-10-13T17:00:00+09:00'
       },
       entryMedia: {
         kind: 'illustration',
