@@ -583,12 +583,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emotionbookstore.com/discover/short-films/find-my-tokyo-akasaka.html</loc>
-    <lastmod>2026-09-22</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://emotionbookstore.com/discover/short-films/thanks-tokyo.html</loc>
     <lastmod>2026-09-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -601,7 +595,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://emotionbookstore.com/discover/short-films/musashino-green.html</loc>
+    <loc>https://emotionbookstore.com/discover/short-films/find-my-tokyo-ichigaya.html</loc>
     <lastmod>2026-09-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
