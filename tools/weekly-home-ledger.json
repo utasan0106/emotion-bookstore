@@ -38,6 +38,25 @@
         "tokyo-metro-newline",
         "find-my-tokyo-akasaka"
       ]
+    },
+    {
+      "weekOf": "2026-09-28",
+      "topFeatureId": "kichijoji-taniguchi",
+      "curiosityIds": [
+        "moon-in-june-play",
+        "honda",
+        "morisaki-film"
+      ],
+      "curiosityKinds": [
+        "music",
+        "book",
+        "film"
+      ],
+      "shortVideoIds": [
+        "thanks-tokyo",
+        "tokyo-metro-newline",
+        "find-my-tokyo-ichigaya"
+      ]
     }
   ]
 }

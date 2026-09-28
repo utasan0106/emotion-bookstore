@@ -155,7 +155,7 @@ function seriesEntry(kind) {
 }
 
 function shortFilmsEntry() {
-  return '<section class="quick"><h2>街へ出たくなる短編映像</h2><p>人・移動・暮らしを描く3つの短編。特定の街の観光案内ではなく、企業広告を含む映像作品です。</p><a href="/discover/short-films/">3つの映像を選ぶ →</a></section>';
+  return '<section class="quick"><h2>街へ出たくなる短編映像</h2><p>人・移動・暮らし、街の風景を描く3つの短編。公式・公開元の映像から、街と人のつながりを辿ります。</p><a href="/discover/short-films/">3つの映像を選ぶ →</a></section>';
 }
 const plain = value => String(value).replace(/<br\s*\/?>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&[^;]+;/g,' ').replace(/\s+/g,' ').trim();
 const canonicalFor = file => `https://emotionbookstore.com/discover/${file === 'index.html' ? '' : file.replace(/index\.html$/, '')}`;
@@ -453,7 +453,7 @@ seriesPage('reading', '読みたくなる本', `4つの街 / ${readingBooks.leng
 seriesPage('listening', '聴きたくなる音楽', `4つの街 / ${listeningAudio.length}曲`, '聴きたくなる、<br>街の音。',
   'その街のライブハウスや路上で、実際に鳴った演奏です。街の紹介曲ではなく、そこで録られた音を選んでいます。',
   listeningAudio, '<p class="city-exit"><a href="/works.html#music">音楽の紹介から入る →</a></p>');
-write('short-films/index.html', shell('街へ出たくなる短編映像', `<section class="intro"><p class="eyebrow">全街共通 / 3分以内</p><h1>街へ出たくなる、<br>${commonVideos.length}つの短編。</h1><p class="lead">人との出会いや移動、暮らしを描く短編を選びました。特定の街の観光案内ではなく、企業広告を含む映像作品です。</p></section><div class="collection"><section class="work-grid" aria-label="共通の短編映像${commonVideos.length}件">${commonCards}</section><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p></div>`, '<a href="/discover/index.html">街から探す ←</a>'));
+write('short-films/index.html', shell('街へ出たくなる短編映像', `<section class="intro"><p class="eyebrow">全街共通 / 3分以内</p><h1>街へ出たくなる、<br>${commonVideos.length}つの短編。</h1><p class="lead">人との出会いや移動、暮らし、街の風景を描く短編を選びました。公式・公開元の映像から、街と人のつながりを辿ります。</p></section><div class="collection"><section class="work-grid" aria-label="共通の短編映像${commonVideos.length}件">${commonCards}</section><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p></div>`, '<a href="/discover/index.html">街から探す ←</a>'));
 
 
 // 週替わりを「並べ替え」から「今週号」へ。順番が入れ替わるだけでは、読者にとって

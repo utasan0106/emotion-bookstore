@@ -2,7 +2,7 @@
 'use strict';
 const visualMedia = require('./visual-media-duration');
 const items = [];
-const commonVideosWeekOf = '2026-09-21';
+const commonVideosWeekOf = '2026-09-28';
 const commonVideos = [
   {
     id: 'thanks-tokyo', title: 'THANKS,TOKYO.【30秒ver】', creator: '東京都産業労働局 / 30秒',
@@ -23,13 +23,14 @@ const commonVideos = [
     checkedAt: '2026-09-22'
   },
   {
-    id: 'find-my-tokyo-akasaka', title: 'Find my Tokyo.「赤坂_ツウな人生のはじまり」篇', creator: '東京メトロ / 15秒',
-    hook: '知っているつもりの赤坂に、まだ知らない過ごし方を見つける。',
-    note: '東京メトロ公式チャンネルが公開する赤坂の15秒映像。街の先入観を少しずらし、実際に歩いてみるきっかけとして選びます。',
-    videoId: 'TZRBBxcktuU', durationSeconds: 15,
-    durationSource: 'https://www.youtube.com/watch?v=TZRBBxcktuU',
-    sources: ['https://www.youtube.com/watch?v=TZRBBxcktuU'],
-    checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
+    id: 'find-my-tokyo-ichigaya', title: 'Find my Tokyo.「市ケ谷_私の心をほぐすもの」篇', creator: '東京メトロ / 30秒',
+    hook: '市ケ谷で、いつもの東京とは少し違う休み方を見つける。',
+    note: '東京メトロ公式チャンネルが公開する市ケ谷の30秒映像。街の過ごし方を短いCMから辿り、実際に歩くきっかけとして選びます。',
+    videoId: 'tvTBNgc2gyk', durationSeconds: 30,
+    durationSource: 'https://www.youtube.com/watch?v=tvTBNgc2gyk',
+    sources: ['https://www.tokyometro.jp/news/2026/222591.html', 'https://www.youtube.com/watch?v=tvTBNgc2gyk'],
+    checkedAt: '2026-09-28', rotatedAt: '2026-09-28'
+
   }
 ].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-22', playbackChecked: false}));
 const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({

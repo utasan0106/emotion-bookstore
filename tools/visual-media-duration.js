@@ -4,7 +4,7 @@
 // Public visual media is normally at most 180 seconds. A 181–300 second item
 // needs an explicit, already-supported editorial reason. Anything longer, or
 // without a measured duration, stays unpublished.
-const checkedAt = '2026-09-24';
+const checkedAt = '2026-09-28';
 const durations = {
   dt33RGSRuo0: 339,
   '8V9iHAM82bc': 487,
@@ -45,6 +45,7 @@ const durations = {
   pCDd7LkhkfE: 30,
   rjFh_eBwV_k: 30,
   TZRBBxcktuU: 15,
+  tvTBNgc2gyk: 30,
   '15crm4zuB04': 64
 };
 

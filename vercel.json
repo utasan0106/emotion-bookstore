@@ -147,6 +147,11 @@
       "permanent": false
     },
     {
+      "source": "/outings/events/kichijoji-winter.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
       "source": "/outings/events/jinbocho-pokemon.html",
       "destination": "/outings/",
       "permanent": false

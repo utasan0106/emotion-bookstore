@@ -54,7 +54,7 @@ for(const url of [
   'https://emotionbookstore.com/discover/weekly/',
   'https://emotionbookstore.com/discover/kiyosumi/',
   'https://emotionbookstore.com/discover/short-films/',
-  'https://emotionbookstore.com/discover/short-films/find-my-tokyo-akasaka.html'
+  ...cur.shortVideoIds.map(id=>'https://emotionbookstore.com/discover/short-films/'+id+'.html')
 ]){
   const pos=sitemap.indexOf('<loc>'+url+'</loc>');
   assert.ok(pos>=0,'Fresh weekly surface missing from sitemap: '+url);
