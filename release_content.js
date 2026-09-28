@@ -32,7 +32,7 @@ window.V3_RELEASE_CONTENT = {
     topFeatureId: 'kichijoji-taniguchi',
     curiosityIds: ['moon-in-june-play', 'honda', 'morisaki-film'],
     curiosityKinds: ['music', 'book', 'film'],
-    shortVideoIds: ['thanks-tokyo', 'tokyo-metro-newline', 'musashino-green']
+    shortVideoIds: ['thanks-tokyo', 'tokyo-metro-newline', 'find-my-tokyo-ichigaya']
   },
   // 種類は新しい無限棚ではなく、いま公開中の15件を横断して見るための
   // 有限な索引。初回はこの5つだけで、順番も固定する。
