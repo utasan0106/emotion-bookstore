@@ -23,13 +23,14 @@ const commonVideos = [
     checkedAt: '2026-09-22'
   },
   {
-    id: 'musashino-green', title: '緑あふれるまち 武蔵野市', creator: '武蔵野市 / 1分44秒',
-    hook: '公園や緑地をつないで、街の緑を短い映像で辿る。',
-    note: '武蔵野市公式ページが、公園・緑地・街路樹のハイライトとして公開する映像です。吉祥寺東町農業公園や吉祥寺北町の千川上水などを含みますが、吉祥寺だけの案内ではありません。',
-    videoId: 'TFGQrtHflSg', durationSeconds: 104,
-    durationSource: 'https://www.city.musashino.lg.jp/gomi_kankyo/midori_koen/tokyonomoriwomamorutorikumi/1037102.html',
-    sources: ['https://www.city.musashino.lg.jp/gomi_kankyo/midori_koen/tokyonomoriwomamorutorikumi/1037102.html'],
+    id: 'find-my-tokyo-ichigaya', title: 'Find my Tokyo.「市ケ谷_私の心をほぐすもの」篇', creator: '東京メトロ / 30秒',
+    hook: '市ケ谷で、いつもの東京とは少し違う休み方を見つける。',
+    note: '東京メトロ公式チャンネルが公開する市ケ谷の30秒映像。街の過ごし方を短いCMから辿り、実際に歩くきっかけとして選びます。',
+    videoId: 'tvTBNgc2gyk', durationSeconds: 30,
+    durationSource: 'https://www.youtube.com/watch?v=tvTBNgc2gyk',
+    sources: ['https://www.tokyometro.jp/news/2026/222591.html', 'https://www.youtube.com/watch?v=tvTBNgc2gyk'],
     checkedAt: '2026-09-28', rotatedAt: '2026-09-28'
+
   }
 ].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-22', playbackChecked: false}));
 const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({
