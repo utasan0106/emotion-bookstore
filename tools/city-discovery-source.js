@@ -2,7 +2,7 @@
 'use strict';
 const visualMedia = require('./visual-media-duration');
 const items = [];
-const commonVideosWeekOf = '2026-09-21';
+const commonVideosWeekOf = '2026-09-28';
 const commonVideos = [
   {
     id: 'thanks-tokyo', title: 'THANKS,TOKYO.【30秒ver】', creator: '東京都産業労働局 / 30秒',
@@ -23,13 +23,13 @@ const commonVideos = [
     checkedAt: '2026-09-22'
   },
   {
-    id: 'find-my-tokyo-akasaka', title: 'Find my Tokyo.「赤坂_ツウな人生のはじまり」篇', creator: '東京メトロ / 15秒',
-    hook: '知っているつもりの赤坂に、まだ知らない過ごし方を見つける。',
-    note: '東京メトロ公式チャンネルが公開する赤坂の15秒映像。街の先入観を少しずらし、実際に歩いてみるきっかけとして選びます。',
-    videoId: 'TZRBBxcktuU', durationSeconds: 15,
-    durationSource: 'https://www.youtube.com/watch?v=TZRBBxcktuU',
-    sources: ['https://www.youtube.com/watch?v=TZRBBxcktuU'],
-    checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
+    id: 'musashino-green', title: '緑あふれるまち 武蔵野市', creator: '武蔵野市 / 1分44秒',
+    hook: '公園や緑地をつないで、街の緑を短い映像で辿る。',
+    note: '武蔵野市公式ページが、公園・緑地・街路樹のハイライトとして公開する映像です。吉祥寺東町農業公園や吉祥寺北町の千川上水などを含みますが、吉祥寺だけの案内ではありません。',
+    videoId: 'TFGQrtHflSg', durationSeconds: 104,
+    durationSource: 'https://www.city.musashino.lg.jp/gomi_kankyo/midori_koen/tokyonomoriwomamorutorikumi/1037102.html',
+    sources: ['https://www.city.musashino.lg.jp/gomi_kankyo/midori_koen/tokyonomoriwomamorutorikumi/1037102.html'],
+    checkedAt: '2026-09-28', rotatedAt: '2026-09-28'
   }
 ].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-22', playbackChecked: false}));
 const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({
