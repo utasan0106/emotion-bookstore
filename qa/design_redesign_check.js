@@ -213,8 +213,10 @@ for(const seg of baselineText){
 // Protected runtime is scoped to this change set, not frozen forever to the 2026-09-11
 // snapshot. Compare against the actual current main merge-base: an acquisition/design PR
 // may not silently touch runtime, storage, weather or private-memory behavior.
+// release_content.js carries the weekly editorial selection and is validated by
+// release_check.js and the freshness checks instead of a byte-for-byte freeze.
 const protectedBase=cp.execFileSync('git',['merge-base','HEAD','origin/main'],{encoding:'utf8'}).trim();
-for(const file of ['release.js','release_content.js','release.css','memory-note.js','api/tokyo-weather.js']){
+for(const file of ['release.js','release.css','memory-note.js','api/tokyo-weather.js']){
  assert.equal(fs.readFileSync(file,'utf8'),cp.execFileSync('git',['show',protectedBase+':'+file],{encoding:'utf8'}),file+' protected contract');
 }
 // vercel.json carries the redirects that keep retired URLs alive, and editorial work
