@@ -252,6 +252,11 @@
       "permanent": false
     },
     {
+      "source": "/discover/short-films/thanks-tokyo.html",
+      "destination": "/discover/short-films/",
+      "permanent": false
+    },
+    {
       "source": "/discover/koenji/awa-2025.html",
       "destination": "/discover/koenji/video.html",
       "permanent": false
@@ -344,11 +349,6 @@
     {
       "source": "/discover/koenji/next-town-koenji.html",
       "destination": "/discover/koenji/video.html",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/thanks-tokyo.html",
-      "destination": "/discover/short-films/",
       "permanent": false
     }
   ],

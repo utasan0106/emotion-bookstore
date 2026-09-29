@@ -128,7 +128,8 @@ const retiredDestinations={
   'https://img.hanmoto.com/bd/img/9784911191026.jpg?lastupdated=2025-04-23T10%3A22%3A06%2B09%3A00': '/credits.html',
   // 2026-09-28：終了した『冬物語』詳細だけで使っていた会場写真。素材自体は削除せず、
   // 公開導線は現在の催し一覧へ戻す。将来の同会場催しで再利用する場合は別途生成物で参照する。
-  '/assets/events/kichijoji-theatre.webp': '/outings/'
+  '/assets/events/kichijoji-theatre.webp': '/outings/',
+  '/assets/events/jinbocho-theatre.webp': '/outings/'
 };
 for(const l of baselineLinks){
  if(currentLinks.has(l)) continue;

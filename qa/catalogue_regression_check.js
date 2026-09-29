@@ -4,11 +4,14 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),asse
 const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const html=read('index.html'),css=read('site-system.css'),homeCss=read('home-discovery.css');
 assert.doesNotMatch(html,/30秒|感情書店の小文|data-open-reading|id="reading"/);
-assert.match(html,/data-weekly-feature="mot-collection-light"/,'Home feature rotates weekly instead of pinning PARKS');
-assert.match(html,/href="\/discover\/kiyosumi\/"/,'The current weekly feature opens a real destination');
+const currentWeek=require('../tools/weekly-home-ledger.json').weeks.at(-1);
+assert.ok(html.includes(`data-weekly-feature="${currentWeek.topFeatureId}"`),'Home feature follows the current weekly edition');
+assert.match(html,/href="\/discover\/kiyosumi\/"/,'Kiyosumi remains available as a city destination');
 assert.match(html,/src="\/assets\/city-kiyosumi\.jpg"/,'Kiyosumi Home media must be localized');
 assert.doesNotMatch(html,/upload\.wikimedia\.org[^"']*Kiyosumi/i,'Kiyosumi must not hotlink Wikimedia at runtime');
-assert.doesNotMatch(html,/<figcaption>/,'HOME editorial imagery should not expose source metadata under images');
+for(const caption of html.matchAll(/<figcaption>([\s\S]*?)<\/figcaption>/g)) {
+ assert.match(caption[1],/href="\/credits\.html(?:#[^"]+)?"/,'Licensed home photography has a path to its credit');
+}
 assert.match(read('discover/kichijoji/parks.html'),/data-video-id="pm7RBghFt0I"/,'PARKS and its real trailer remain available in the catalogue');
 assert.doesNotMatch(read('discover/kichijoji/parks.html'),/youtube-nocookie.com\/embed\//,'The trailer stays click-to-load');
 assert.doesNotMatch(html,/class="home-canonical/,'Do not inherit the retired home theme');

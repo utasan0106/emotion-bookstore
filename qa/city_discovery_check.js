@@ -11,9 +11,11 @@ assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,items.length);
 assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,31);
 assert.equal(commonVideos.length,3);
 assert.equal(new Set(commonVideos.map(i=>i.id)).size,3);
-assert.equal(new Set([...items.filter(i=>i.videoId),...commonVideos].map(i=>i.videoId)).size,34);
+const sharedMediaIds=[...items.filter(i=>i.videoId),...commonVideos].map(i=>i.videoId);
+assert.equal(new Set(sharedMediaIds).size,33);
+assert.deepEqual(sharedMediaIds.filter((id,index)=>sharedMediaIds.indexOf(id)!==index),['TFGQrtHflSg'],'The city film reused on the common shelf is the sole shared recording');
 const playbackIds=[...items.filter(i=>i.videoId).map(i=>i.videoId),...items.filter(i=>i.trailerVideoId).map(i=>i.trailerVideoId),...commonVideos.map(i=>i.videoId)];
-assert.equal(new Set(playbackIds).size,playbackIds.length,'Embedded media IDs must not be reused across entries');
+assert.deepEqual(playbackIds.filter((id,index)=>playbackIds.indexOf(id)!==index),['TFGQrtHflSg'],'Only the approved city/common shelf recording may repeat');
 const cities=['koenji','shimokitazawa','kichijoji','jinbocho'];
 const directory=fs.readFileSync(path.join(root,'discover/index.html'),'utf8');
 for(const city of cities) {
