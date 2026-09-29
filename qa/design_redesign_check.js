@@ -14,6 +14,10 @@ const retiredEventText=new Set();
 // The last related-event block disappeared when 吉祥寺「冬物語」 ended;
 // its generic heading is not a permanent editorial promise.
 if(retiredEvents.some(e=>e.id==='kichijoji-winter'))retiredEventText.add('この作品から、もう一歩');
+const activeEventIds=new Set(eventSource.events.filter(e=>!retiredEvents.includes(e)).map(e=>e.id));
+if(!eventSource.events.some(e=>activeEventIds.has(e.id)&&(e.related||[]).some(r=>activeEventIds.has(r.id)))){
+ retiredEventText.add('同じ作り手・公演から');
+}
 for(const event of retiredEvents)for(const value of [event.title,event.hook,event.relation,event.practical,event.companionNote,event.schedule])if(value){
  retiredEventText.add(value);
  for(const token of value.split(/\s+/))retiredEventText.add(token);
