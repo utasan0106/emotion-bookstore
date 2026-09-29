@@ -11,6 +11,9 @@ const eventToday=eventWeek.date(Date.now());
 const retiredEvents=eventSource.events.filter(e=>!(eventSource.isPublishableEvent(e)&&e.status==='scheduled'&&e.checkedAt<=eventToday&&e.reviewThrough>=eventToday&&eventWeek.dates(e).at(-1)>=eventToday));
 const retiredEventLinks=new Set(retiredEvents.flatMap(e=>['/outings/events/'+e.id+'.html',e.url]));
 const retiredEventText=new Set();
+// The last related-event block disappeared when 吉祥寺「冬物語」 ended;
+// its generic heading is not a permanent editorial promise.
+if(retiredEvents.some(e=>e.id==='kichijoji-winter'))retiredEventText.add('この作品から、もう一歩');
 for(const event of retiredEvents)for(const value of [event.title,event.hook,event.relation,event.practical,event.companionNote,event.schedule])if(value){
  retiredEventText.add(value);
  for(const token of value.split(/\s+/))retiredEventText.add(token);
