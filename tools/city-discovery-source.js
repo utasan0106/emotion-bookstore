@@ -2,17 +2,8 @@
 'use strict';
 const visualMedia = require('./visual-media-duration');
 const items = [];
-const commonVideosWeekOf = '2026-09-21';
+const commonVideosWeekOf = '2026-09-28';
 const commonVideos = [
-  {
-    id: 'thanks-tokyo', title: 'THANKS,TOKYO.【30秒ver】', creator: '東京都産業労働局 / 30秒',
-    hook: '東京を楽しむ人と、街を支える観光の仕事を30秒で見る。',
-    note: '東京都産業労働局公式チャンネルが公開する30秒版。短い時間で東京へ出る入口として使います。',
-    videoId: 'pCDd7LkhkfE', durationSeconds: 30,
-    durationSource: 'https://www.youtube.com/watch?v=pCDd7LkhkfE',
-    sources: ['https://www.youtube.com/watch?v=pCDd7LkhkfE'],
-    checkedAt: '2026-09-22'
-  },
   {
     id: 'tokyo-metro-newline', title: '新たな未来に向けた第一歩！新線プロジェクト', creator: '東京メトロ / 30秒',
     hook: '路線が伸びると、街と人の移動はどう変わる。',
@@ -29,7 +20,16 @@ const commonVideos = [
     videoId: 'TZRBBxcktuU', durationSeconds: 15,
     durationSource: 'https://www.youtube.com/watch?v=TZRBBxcktuU',
     sources: ['https://www.youtube.com/watch?v=TZRBBxcktuU'],
-    checkedAt: '2026-09-22', rotatedAt: '2026-09-21'
+    checkedAt: '2026-09-22'
+  },
+  {
+    id: 'musashino-green', title: '緑あふれるまち 武蔵野市', creator: '武蔵野市 / 2022年掲載',
+    hook: '駅前から少し離れて、木々や緑地のある風景へ。',
+    note: '武蔵野市が紹介する公園・緑地のハイライト映像。吉祥寺東町農業公園や吉祥寺北町の千川上水、むさしの自然観察園を含みます。吉祥寺だけの映像ではなく、境・関前など市内の他地域も収録されています。',
+    videoId: 'TFGQrtHflSg', durationSeconds: 104,
+    durationSource: 'https://www.youtube.com/watch?v=TFGQrtHflSg',
+    sources: ['https://www.city.musashino.lg.jp/gomi_kankyo/midori_koen/tokyonomoriwomamorutorikumi/1037102.html'],
+    checkedAt: '2026-09-28', rotatedAt: '2026-09-28'
   }
 ].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-22', playbackChecked: false}));
 const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({

@@ -11,6 +11,13 @@ const eventToday=eventWeek.date(Date.now());
 const retiredEvents=eventSource.events.filter(e=>!(eventSource.isPublishableEvent(e)&&e.status==='scheduled'&&e.checkedAt<=eventToday&&e.reviewThrough>=eventToday&&eventWeek.dates(e).at(-1)>=eventToday));
 const retiredEventLinks=new Set(retiredEvents.flatMap(e=>['/outings/events/'+e.id+'.html',e.url]));
 const retiredEventText=new Set();
+// The last related-event block disappeared when 吉祥寺「冬物語」 ended;
+// its generic heading is not a permanent editorial promise.
+if(retiredEvents.some(e=>e.id==='kichijoji-winter'))retiredEventText.add('この作品から、もう一歩');
+const activeEventIds=new Set(eventSource.events.filter(e=>!retiredEvents.includes(e)).map(e=>e.id));
+if(!eventSource.events.some(e=>activeEventIds.has(e.id)&&(e.related||[]).some(r=>activeEventIds.has(r.id)))){
+ retiredEventText.add('同じ作り手・公演から');
+}
 for(const event of retiredEvents)for(const value of [event.title,event.hook,event.relation,event.practical,event.companionNote,event.schedule])if(value){
  retiredEventText.add(value);
  for(const token of value.split(/\s+/))retiredEventText.add(token);
@@ -125,7 +132,11 @@ const retiredDestinations={
   // 2026-09-22：HOME画像直下の個別クレジットを表面から外し、詳細はCreditsへ集約。
   '/credits.html#inokashira-pond': '/credits.html',
   // 2026-09-22：HOMEから外した外部書影URLは、権利・出典をCreditsへ集約。
-  'https://img.hanmoto.com/bd/img/9784911191026.jpg?lastupdated=2025-04-23T10%3A22%3A06%2B09%3A00': '/credits.html'
+  'https://img.hanmoto.com/bd/img/9784911191026.jpg?lastupdated=2025-04-23T10%3A22%3A06%2B09%3A00': '/credits.html',
+  // 2026-09-28：終了した『冬物語』詳細だけで使っていた会場写真。素材自体は削除せず、
+  // 公開導線は現在の催し一覧へ戻す。将来の同会場催しで再利用する場合は別途生成物で参照する。
+  '/assets/events/kichijoji-theatre.webp': '/outings/',
+  '/assets/events/jinbocho-theatre.webp': '/outings/'
 };
 for(const l of baselineLinks){
  if(currentLinks.has(l)) continue;
@@ -202,8 +213,10 @@ for(const seg of baselineText){
 // Protected runtime is scoped to this change set, not frozen forever to the 2026-09-11
 // snapshot. Compare against the actual current main merge-base: an acquisition/design PR
 // may not silently touch runtime, storage, weather or private-memory behavior.
+// release_content.js carries the weekly editorial selection and is validated by
+// release_check.js and the freshness checks instead of a byte-for-byte freeze.
 const protectedBase=cp.execFileSync('git',['merge-base','HEAD','origin/main'],{encoding:'utf8'}).trim();
-for(const file of ['release.js','release_content.js','release.css','memory-note.js','api/tokyo-weather.js']){
+for(const file of ['release.js','release.css','memory-note.js','api/tokyo-weather.js']){
  assert.equal(fs.readFileSync(file,'utf8'),cp.execFileSync('git',['show',protectedBase+':'+file],{encoding:'utf8'}),file+' protected contract');
 }
 // vercel.json carries the redirects that keep retired URLs alive, and editorial work

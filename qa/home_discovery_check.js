@@ -13,11 +13,12 @@ for(const [,hash] of html.matchAll(/href="#([^\"]+)"/g))assert.ok(ids.includes(h
 const cspFor=url=>config.headers.filter(h=>h.headers.some(x=>x.key==='Content-Security-Policy')&&new RegExp('^'+h.source+'$').test(url)).flatMap(h=>h.headers.filter(x=>x.key==='Content-Security-Policy').map(x=>x.value));
 for(const url of ['/','/index.html','/works.html','/work-music.html']){const policies=cspFor(url);assert.equal(policies.length,1,'One effective CSP for '+url);assert.match(policies[0],/frame-src [^;]*https:\/\/bandcamp\.com/);assert.match(policies[0],/object-src 'none'/);assert.match(policies[0],/frame-ancestors 'none'/);}
 for(const url of ['/work-book.html','/outings/','/outings/events/kichijoji-taniguchi.html','/index.html-other']){assert.equal(cspFor(url).length,1);assert.doesNotMatch(cspFor(url)[0],/bandcamp/,'Home permission remains scoped');}
-assert.match(html,/data-weekly-feature="mot-collection-light"/);
-for(const id of ['morisaki','ginga','park-voice']) assert.ok(html.includes('data-weekly-item-id="'+id+'"'),'Current weekly item missing: '+id);
+const currentWeek=require('../tools/weekly-home-ledger.json').weeks.at(-1);
+assert.ok(html.includes('data-weekly-feature="'+currentWeek.topFeatureId+'"'));
+for(const id of currentWeek.curiosityIds) assert.ok(html.includes('data-weekly-item-id="'+id+'"'),'Current weekly item missing: '+id);
 assert.match(html,/src="\/assets\/city-kiyosumi\.jpg"/);
 assert.ok(html.includes('href="/discover/kiyosumi/"'),'Kiyosumi works page must be reachable from Home');
-assert.match(html,/data-weekly-short-video="find-my-tokyo-akasaka"/);
+assert.ok(currentWeek.shortVideoIds.some(id=>html.includes('data-weekly-short-video="'+id+'"')),'Home short film belongs to the current weekly trio');
 assert.doesNotMatch(html,/upload\.wikimedia\.org[^"']*Kiyosumi/i);
 assert.doesNotMatch(html,/home-work-(?:music|film|video)-/,'No generic equipment image substituted for a work');
 assert.match(read('data.html'),/Bandcampの公式プレーヤー/);
