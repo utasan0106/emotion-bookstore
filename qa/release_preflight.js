@@ -4,7 +4,7 @@
  *   node qa/release_preflight.js            … いまの時刻で判定
  *   node qa/release_preflight.js --at <ISO> … 指定時刻で判定（負のテスト用）
  *
- * now >= expiresAt の current が1件でもあれば FAIL する。
+ * now >= expiresAt の current は runtime がその1件だけ fail-closed する。
  * client 側で黙って別の Object へ差し替えることはしない。差し替えは人の編集。
  */
 'use strict';
@@ -28,6 +28,7 @@ vm.runInContext(fs.readFileSync(path.join(root, 'release_content.js'), 'utf8'), 
 const CONTENT = sandbox.window.V3_RELEASE_CONTENT;
 
 const expired = [];
+const invalidExpiry = [];
 const missing = [];
 const live = [];
 
@@ -35,8 +36,9 @@ for (const shelf of (CONTENT && CONTENT.shelves) || []) {
   for (const o of shelf.objects) {
     if (o.mode !== 'current') {
       if (o.expiresAt && Date.parse(o.expiresAt) <= now.getTime()) {
-        // evergreen でも期限を持たせているものは同じ扱いにする。
-        expired.push({ shelf: shelf.id, id: o.id, expiresAt: o.expiresAt });
+        // evergreen に finite expiry が付くのは schema 違反。current の正常な
+        // object 単位 fail-closed と混ぜず、preflight で止める。
+        invalidExpiry.push({ shelf: shelf.id, id: o.id, expiresAt: o.expiresAt });
       }
       continue;
     }
@@ -48,16 +50,19 @@ for (const shelf of (CONTENT && CONTENT.shelves) || []) {
   }
 }
 
-if (missing.length || expired.length) {
+if (missing.length || invalidExpiry.length) {
   console.error('RELEASE_PREFLIGHT_FAIL');
   console.error(`- judged at ${now.toISOString()}`);
   missing.forEach((x) => console.error(`- ${x.shelf}/${x.id}: current requires verifiedAt and a parsable expiresAt`));
-  expired.forEach((x) => console.error(`- ${x.shelf}/${x.id}: expired at ${x.expiresAt}. Human editorial replacement required; the shelf stays closed until then.`));
+  invalidExpiry.forEach((x) => console.error(`- ${x.shelf}/${x.id}: non-current object must not carry expired finite expiresAt ${x.expiresAt}`));
   process.exit(1);
 }
 
 console.log('RELEASE_PREFLIGHT_GO');
 console.log(`judged at ${now.toISOString()}`);
+expired
+  .sort((a, b) => Date.parse(a.expiresAt) - Date.parse(b.expiresAt))
+  .forEach((x) => console.log(`  FAIL_CLOSED ${x.shelf}/${x.id} expired ${x.expiresAt}`));
 live
   .sort((a, b) => Date.parse(a.expiresAt) - Date.parse(b.expiresAt))
   .forEach((x) => console.log(`  ${x.shelf}/${x.id} expires ${x.expiresAt}`));

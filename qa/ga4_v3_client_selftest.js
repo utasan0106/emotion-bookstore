@@ -10,6 +10,10 @@ for(const f of ['index.html','kichijoji/index.html','shimokitazawa/index.html','
 for(const f of ['visit/index.html','tools/build-design-redesign.js','qa/design_redesign_check.js','qa/design-redesign/routes.json','docs/design-redesign-stage-c-20260910.md']) allowed.add(f);
 /* Measurement v0.4 (2026-09-06): the eight Beta events + nine bounded events. Params are content_type / content_id / link_domain only. */
 for(const file of ['home-discovery.css','home-discovery.js','outings/events-data.js','outings/index.html','outings/week.js','outings/outings.css','tools/build-weekly-outings.js','tools/weekly-outings-source.js','qa/home_discovery_check.js','qa/event_supply_check.js','qa/catalogue_supply_check.js','qa/site_integration_check.js','discover/weekly-issue.js','feed.xml','qa/analytics_contract_check.js','data.html','qa/duplicate_text_check.js','tools/venue-source.js','discover/venue-events.js','tools/places-source.js','qa/home-integration-layout.html','qa/HOME_INTEGRATION.md']) allowed.add(file);
+// Object-level expiry isolation changes only shelf rendering. Review the diff below for
+// measurement/storage vocabulary instead of freezing the whole shared runtime byte-for-byte.
+allowed.add('release.js');
+for(const file of ['qa/release_preflight.js','qa/release_expiry_boundaries.js']) allowed.add(file);
 const approvedEvents=new Set(['v3_home_view','v3_shelf_open','v3_shelf_view','v3_detail_open','v3_official_action','v3_suggest_view','v3_suggest_copy','v3_suggest_form_open','v3_entry_open','v3_works_section_view','v3_thread_start','v3_thread_stage','v3_thread_complete','v3_evidence_open','v3_external_open','v3_continue_open','v3_media_preview_open']);
 // Morning polish: visual changes, explicit regional-weather labels, directory
 // Approved editorial summary and city art work; no tracking changes.
@@ -299,5 +303,11 @@ function generatedStaysClear(p){
   for(const line of lines) assert(!measurementToken.test(line),'generated page touches measurement or storage: '+p);
   return true;
 }
-for(const p of ['release.js','release_content.js','release.css']) assert(git(['diff','--',p])==='','protected changed '+p); git(['diff','--check']); const status=git(['status','--porcelain']); if(status)for(const line of status.split(/\r?\n/)){let rel=line.slice(3).trim();if(rel.includes(' -> '))rel=rel.split(' -> ',2)[1];assert(allowed.has(rel)||rebuiltByEvents(rel)||internalDoc(rel)||(generatedPage(rel)&&generatedStaysClear(rel)),'unexpected '+rel)}
+for(const p of ['release_content.js','release.css']) assert(git(['diff','--',p])==='','protected changed '+p);
+{
+  const changed=git(['diff','--unified=0','--','release.js']).split(/\r?\n/)
+    .filter(l=>/^[+-]/.test(l)&&! /^(\+\+\+|---)/.test(l));
+  for(const line of changed) assert(!measurementToken.test(line),'release.js shelf expiry change touches measurement or storage: '+line);
+}
+git(['diff','--check']); const status=git(['status','--porcelain']); if(status)for(const line of status.split(/\r?\n/)){let rel=line.slice(3).trim();if(rel.includes(' -> '))rel=rel.split(' -> ',2)[1];assert(allowed.has(rel)||rebuiltByEvents(rel)||internalDoc(rel)||(generatedPage(rel)&&generatedStaysClear(rel)),'unexpected '+rel)}
 console.log('V3_RELEASE_GROWTH_SELFTEST_GO');

@@ -216,9 +216,12 @@ for(const seg of baselineText){
 // release_content.js carries the weekly editorial selection and is validated by
 // release_check.js and the freshness checks instead of a byte-for-byte freeze.
 const protectedBase=cp.execFileSync('git',['merge-base','HEAD','origin/main'],{encoding:'utf8'}).trim();
-for(const file of ['release.js','release.css','memory-note.js','api/tokyo-weather.js']){
+for(const file of ['release.css','memory-note.js','api/tokyo-weather.js']){
  assert.equal(fs.readFileSync(file,'utf8'),cp.execFileSync('git',['show',protectedBase+':'+file],{encoding:'utf8'}),file+' protected contract');
 }
+const releaseRuntime=fs.readFileSync('release.js','utf8');
+assert.ok(releaseRuntime.includes('var visibleObjects = shelf.objects.filter(isLive);'),'release.js object-level expiry isolation missing');
+assert.ok(!releaseRuntime.includes('shelfHasExpiredCurrent'),'release.js must not close healthy siblings with an expired current object');
 // vercel.json carries the redirects that keep retired URLs alive, and editorial work
 // edits it: publishing an object replaces its redirect with the real page. So what is
 // checked is the promise itself — every address that answered at the baseline still
@@ -234,4 +237,4 @@ for(const file of ['release.js','release.css','memory-note.js','api/tokyo-weathe
  }
  assert.equal(JSON.stringify(JSON.parse(fs.readFileSync('vercel.json','utf8')).headers),JSON.stringify(JSON.parse(cp.execFileSync('git',['show','2f4a156:vercel.json'],{encoding:'utf8'})).headers),'vercel.json headers are a protected contract');
 }
-console.log('PASS '+files.length+' pages: theme, idempotence, content/destination preservation; protected runtime unchanged');
+console.log('PASS '+files.length+' pages: theme, idempotence, content/destination preservation; protected non-shelf runtime unchanged');

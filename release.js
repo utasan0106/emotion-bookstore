@@ -111,18 +111,6 @@
     setMeta('meta[name="twitter:description"]', description);
   }
 
-  // 期限の切れた current を「まだ有効」として見せない。差し替えは人の編集でだけ
-  // 行うので、client 側で勝手に別の Object へ置き換えることはしない。
-  function shelfHasExpiredCurrent(shelf) {
-    var now = Date.now();
-    return shelf.objects.some(function (object) {
-      if (!object.expiresAt) return false;
-      var at = Date.parse(object.expiresAt);
-      return !isNaN(at) && at <= now;
-    });
-  }
-
-
   /* ---------------------------------------------------------- 共通 MENU */
 
   var WEEKLY_FAVORITES_KEY = 'emotionBookstore.v3.weeklyFavorites.v1';
@@ -1000,19 +988,23 @@
       return;
     }
 
+    var visibleObjects = shelf.objects.filter(isLive);
     syncShelfMetadata(shelf);
     document.body.setAttribute('data-shelf', shelf.id);
     var title = document.querySelector('.hero h1');
     if (title) {
       title.textContent = '';
-      shelf.tagline.split('、').forEach(function (part, i, all) {
+      var visibleTagline = visibleObjects.length === 3
+        ? shelf.tagline
+        : shelf.area + 'を、' + visibleObjects.length + 'つだけ。';
+      visibleTagline.split('、').forEach(function (part, i, all) {
         title.appendChild(h('span', {
           class: 'hero-line', text: i < all.length - 1 ? part + '、' : part
         }));
       });
     }
     var label = document.getElementById('shelfLabel');
-    if (label) label.textContent = shelf.name + ' / 全3点';
+    if (label) label.textContent = shelf.name + ' / 全' + visibleObjects.length + '点';
 
     var culturePaths = document.getElementById('cityCulturePaths');
     if (culturePaths) {
@@ -1024,17 +1016,22 @@
     renderWeeklyFeature(shelf);
 
     if (shelf.objects.length !== 3) return haltShelf('この棚はいま準備中です。');
-    // 期限切れの会期・公演を「いま」として見せない。棚ごと閉じる。
-    if (shelfHasExpiredCurrent(shelf)) return haltShelf('この棚はいま準備中です。');
+    // 期限切れの会期・公演だけを「いま」から外す。人の編集を装った自動差替えは
+    // せず、期限の無い同じ棚の Object はそのまま残す。
+    if (!visibleObjects.length) return haltShelf('この棚はいま準備中です。');
 
-    shelf.objects.forEach(function (object, index) {
+    visibleObjects.forEach(function (object, index) {
       grid.appendChild(card(object, index));
     });
 
-    if (grid.querySelectorAll('.object-card').length === 3) {
+    if (grid.querySelectorAll('.object-card').length === visibleObjects.length) {
       renderShelfReading(shelf.id);
       var endPlate = document.querySelector('.end-plate');
-      if (endPlate) endPlate.hidden = false;
+      if (endPlate) {
+        var countPhrase = endPlate.querySelector('#end-title .end-phrase:last-child');
+        if (countPhrase) countPhrase.textContent = visibleObjects.length + 'つで終わりです。';
+        endPlate.hidden = false;
+      }
     }
 
     closeButton.addEventListener('click', closeDetail);

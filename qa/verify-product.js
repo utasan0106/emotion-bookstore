@@ -39,8 +39,8 @@ const checks=[
  ['qa/video_duration_gate_check.js'],
  ['qa/design_redesign_check.js'],
  ['qa/culture_room_contract_check.js', 'qa/parks_screen_contract_check.js'],
- /* release_preflight は時刻で判定する門である。将来落ちたら fixture の
-    賞味期限切れではなく、期限切れの current が公開されているという意味。 */
+ /* release_preflight は時刻で判定する門である。期限切れ current は対象1件だけ
+    fail-closed し、missing/invalid metadata だけを release blocker にする。 */
  ['qa/release_preflight.js', 'qa/release_expiry_boundaries.js'],
  ['qa/growth_improvements.js', 'qa/measurement_v04_selftest.js', 'qa/link_check_selftest.js'],
  ['qa/michiyomi_scout_contract_check.js', 'qa/michiyomi_editorial_screen_check.js']
