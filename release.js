@@ -818,7 +818,7 @@
     ]);
   }
 
-  function card(object, index) {
+  function card(object, index, total) {
     var button;
     var n = String(index + 1).padStart(2, '0');
     var hookId = 'hook-' + object.id;
@@ -829,7 +829,7 @@
         h('p', { class: 'card-number' }, [
           h('span', { class: 'plate-n', text: n }),
           h('span', { class: 'plate-sep', text: ' / ' }),
-          h('span', { class: 'plate-of', text: '03' })
+          h('span', { class: 'plate-of', text: String(total).padStart(2, '0') })
         ]),
         // 一覧では Real Media と Hook だけ。種別・地名は開いたあとの payoff 側に置く。
         jpHeading('h3', { class: 'object-hook', id: hookId }, object.hookPhrases, object.hook),
@@ -1005,6 +1005,8 @@
     }
     var label = document.getElementById('shelfLabel');
     if (label) label.textContent = shelf.name + ' / 全' + visibleObjects.length + '点';
+    var objectsTitle = document.getElementById('objects-title');
+    if (objectsTitle) objectsTitle.textContent = 'この棚の' + visibleObjects.length + 'つ';
 
     var culturePaths = document.getElementById('cityCulturePaths');
     if (culturePaths) {
@@ -1021,7 +1023,7 @@
     if (!visibleObjects.length) return haltShelf('この棚はいま準備中です。');
 
     visibleObjects.forEach(function (object, index) {
-      grid.appendChild(card(object, index));
+      grid.appendChild(card(object, index, visibleObjects.length));
     });
 
     if (grid.querySelectorAll('.object-card').length === visibleObjects.length) {

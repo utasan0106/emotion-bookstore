@@ -114,6 +114,11 @@ const releaseRuntime = read('release.js');
 if (!releaseRuntime.includes('var visibleObjects = shelf.objects.filter(isLive);')) {
   failures.push('release.js: shelf must render only live objects');
 }
+if (!releaseRuntime.includes("objectsTitle.textContent = 'この棚の' + visibleObjects.length + 'つ';") ||
+    !releaseRuntime.includes("text: String(total).padStart(2, '0')") ||
+    !releaseRuntime.includes('card(object, index, visibleObjects.length)')) {
+  failures.push('release.js: visible shelf count must drive heading and card totals after object expiry');
+}
 if (releaseRuntime.includes('shelfHasExpiredCurrent')) {
   failures.push('release.js: one expired current object must not close healthy siblings');
 }

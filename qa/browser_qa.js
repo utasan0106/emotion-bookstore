@@ -201,6 +201,8 @@ function serve() {
         const reading = document.getElementById('shelfReading');
         return {
           cards: document.querySelectorAll('.object-card').length,
+          objectsTitle: (document.getElementById('objects-title') || {}).textContent || '',
+          cardTotals: [...document.querySelectorAll('.object-card .card-number .plate-of')].map((n) => n.textContent),
           h1: document.querySelectorAll('h1').length,
           hero: document.querySelector('h1').innerText.replace(/\s+/g, ''),
           shelfPortraits: document.querySelectorAll('#shelfPortrait, .shelf-portrait').length,
@@ -226,6 +228,11 @@ function serve() {
         };
       });
       check(S, 'only_live_objects', shelf.cards === expectedCards, { expectedCards, actual: shelf.cards });
+      check(S, 'visible_count_labels_match_live_objects',
+        shelf.objectsTitle === `この棚の${expectedCards}つ` &&
+        shelf.cardTotals.length === expectedCards &&
+        shelf.cardTotals.every((n) => n === String(expectedCards).padStart(2, '0')),
+        { title: shelf.objectsTitle, totals: shelf.cardTotals, expectedCards });
       const readings = {
         shimokitazawa: [['./thread.html?thread=shimokitazawa-ladyjane', '閉店のあと、劇場に集まった音楽']],
         kichijoji: [['./thread.html?thread=kichijoji-parks', '閉館から始まった、公園の映画']],

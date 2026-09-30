@@ -7,7 +7,7 @@
  * mode:
  *   evergreen … 期限のない事実。
  *   current   … 会期・公演など期限のある事実。verifiedAt と expiresAt が必須で、
- *               期限を過ぎたらその棚は fail-closed。差し替えは人の編集でだけ行う。
+ *               期限を過ぎたらその Object だけ fail-closed。差し替えは人の編集でだけ行う。
  *
  * media.kind:
  *   photo … 権利のはっきりした実写を同一オリジンへ置いたもの。
@@ -49,6 +49,20 @@ window.V3_RELEASE_CONTENT = {
   // { id, sourceKind, shelfId, area, categoryIds, title, typeLabel, summary,
   //   actionLabel, actionUrl, verifiedAt, archivedAt }
   archive: [
+    {
+      id: 'object-shimokitazawa-shelter-20260930',
+      sourceKind: 'object',
+      shelfId: 'shimokitazawa',
+      area: '下北沢',
+      categoryIds: ['music'],
+      title: '下北沢 SHELTER 35周年',
+      typeLabel: 'ライブハウス・音楽',
+      summary: '2026年9月30日まで公式日程を確認した35周年企画「IGNITION GIGS」のcurrent Object。期限後は対象だけを棚から外し、健康な2件を維持しました。',
+      actionLabel: 'SHELTER公式で見る',
+      actionUrl: 'https://www.loft-prj.co.jp/schedule/shelter/schedule',
+      verifiedAt: '2026-09-24T09:15:00+09:00',
+      archivedAt: '2026-10-01T00:00:00+09:00'
+    },
     {
       id: 'weekly-shimokitazawa-shelter-20260923',
       sourceKind: 'weeklyFeature',

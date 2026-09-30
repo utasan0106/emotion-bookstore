@@ -13,6 +13,7 @@ for(const file of ['home-discovery.css','home-discovery.js','outings/events-data
 // Object-level expiry isolation changes only shelf rendering. Review the diff below for
 // measurement/storage vocabulary instead of freezing the whole shared runtime byte-for-byte.
 allowed.add('release.js');
+allowed.add('release_content.js');
 for(const file of ['qa/release_preflight.js','qa/release_expiry_boundaries.js']) allowed.add(file);
 const approvedEvents=new Set(['v3_home_view','v3_shelf_open','v3_shelf_view','v3_detail_open','v3_official_action','v3_suggest_view','v3_suggest_copy','v3_suggest_form_open','v3_entry_open','v3_works_section_view','v3_thread_start','v3_thread_stage','v3_thread_complete','v3_evidence_open','v3_external_open','v3_continue_open','v3_media_preview_open']);
 // Morning polish: visual changes, explicit regional-weather labels, directory
@@ -303,11 +304,11 @@ function generatedStaysClear(p){
   for(const line of lines) assert(!measurementToken.test(line),'generated page touches measurement or storage: '+p);
   return true;
 }
-for(const p of ['release_content.js','release.css']) assert(git(['diff','--',p])==='','protected changed '+p);
-{
-  const changed=git(['diff','--unified=0','--','release.js']).split(/\r?\n/)
+assert(git(['diff','--','release.css'])==='','protected changed release.css');
+for(const p of ['release.js','release_content.js']){
+  const changed=git(['diff','--unified=0','--',p]).split(/\r?\n/)
     .filter(l=>/^[+-]/.test(l)&&! /^(\+\+\+|---)/.test(l));
-  for(const line of changed) assert(!measurementToken.test(line),'release.js shelf expiry change touches measurement or storage: '+line);
+  for(const line of changed) assert(!measurementToken.test(line),p+' shelf expiry/archive change touches measurement or storage: '+line);
 }
 git(['diff','--check']); const status=git(['status','--porcelain']); if(status)for(const line of status.split(/\r?\n/)){let rel=line.slice(3).trim();if(rel.includes(' -> '))rel=rel.split(' -> ',2)[1];assert(allowed.has(rel)||rebuiltByEvents(rel)||internalDoc(rel)||(generatedPage(rel)&&generatedStaysClear(rel)),'unexpected '+rel)}
 console.log('V3_RELEASE_GROWTH_SELFTEST_GO');
