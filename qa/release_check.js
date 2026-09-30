@@ -111,6 +111,12 @@ else {
 }
 
 const releaseRuntime = read('release.js');
+if (!releaseRuntime.includes('var visibleObjects = shelf.objects.filter(isLive);')) {
+  failures.push('release.js: shelf must render only live objects');
+}
+if (releaseRuntime.includes('shelfHasExpiredCurrent')) {
+  failures.push('release.js: one expired current object must not close healthy siblings');
+}
 if (!releaseRuntime.includes("class: 'shelf-entry-media'")) {
   failures.push('release.js: Home city photo renderer missing');
 }

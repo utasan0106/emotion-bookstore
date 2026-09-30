@@ -176,8 +176,9 @@ function serve() {
     /* ---- 4つの棚 ---- */
     for (const id of SHELVES) {
       const S = `${v.name}/${id}`;
+      const expectedCards = CONTENT.shelves.find((s) => s.id === id).objects.filter(stillLive).length;
       await page.goto(`${base}shelf.html?shelf=${id}`, { waitUntil: 'load' });
-      await page.waitForFunction(() => document.querySelectorAll('.object-card').length === 3);
+      await page.waitForFunction((count) => document.querySelectorAll('.object-card').length === count, expectedCards);
       await page.waitForFunction(() =>
         Array.from(document.images).every((i) => i.complete && i.naturalWidth > 0));
       const shelf = await page.evaluate(() => {
@@ -224,7 +225,7 @@ function serve() {
           text: document.body.innerText
         };
       });
-      check(S, 'exactly_3_objects', shelf.cards === 3, shelf.cards);
+      check(S, 'only_live_objects', shelf.cards === expectedCards, { expectedCards, actual: shelf.cards });
       const readings = {
         shimokitazawa: [['./thread.html?thread=shimokitazawa-ladyjane', '閉店のあと、劇場に集まった音楽']],
         kichijoji: [['./thread.html?thread=kichijoji-parks', '閉館から始まった、公園の映画']],
@@ -236,12 +237,12 @@ function serve() {
         shelf.reading.heading === 'この街の読みもの' && shelf.reading.links.length === readings.length &&
         shelf.reading.links.every((a, i) => a.href === readings[i][0] && a.text === readings[i][1] && a.height >= 44), shelf.reading);
       check(S, 'single_h1', shelf.h1 === 1, shelf.h1);
-      check(S, 'hero_is_shelf_tagline', /^.+を、3つだけ。$/.test(shelf.hero), shelf.hero);
+      check(S, 'hero_counts_visible_objects', shelf.hero.endsWith(`を、${expectedCards}つだけ。`), shelf.hero);
       check(S, 'shelf_top_has_no_city_image',
         shelf.shelfPortraits === 0 && shelf.shelfHeroImages === 0,
         { portraits: shelf.shelfPortraits, images: shelf.shelfHeroImages });
       check(S, 'finite_ending_shown', shelf.endVisible);
-      check(S, 'ending_copy', shelf.endText.includes('この棚は、3つで終わりです。'), shelf.endText);
+      check(S, 'ending_copy', shelf.endText.includes(`この棚は、${expectedCards}つで終わりです。`), shelf.endText);
       check(S, 'ending_exit_to_other_shelves',
         shelf.endText.includes('ほかの棚を見る') && shelf.exitHref === './index.html', shelf.exitHref);
       check(S, 'exit_is_comfortable_to_hit', shelf.exitH >= 44, shelf.exitH);
@@ -354,7 +355,7 @@ function serve() {
     await ctx.close();
   }
 
-  /* ---- 期限切れ: 棚を閉じる（負のテスト） ---- */
+  /* ---- 期限切れ: 対象1件だけを閉じる（負のテスト） ---- */
   if (!soonest) {
     // content に期限を持つ object が1件も無い。fail-closed の挙動は
     // 実物では観測できない。黙って通さず、見られなかったこととして残す。
@@ -365,6 +366,7 @@ function serve() {
   } else {
     const S = `expired/${soonest.shelf.id}`;
     const justAfter = soonest.at + 60 * 1000;
+    const expiredName = soonest.object.objectName;
     const siblings = soonest.shelf.objects
       .filter((o) => o.id !== soonest.object.id)
       .map((o) => o.objectName);
@@ -387,14 +389,15 @@ function serve() {
       endHidden: document.querySelector('.end-plate').hidden,
       text: document.body.innerText
     }));
-    check(S, 'expired_current_closes_the_shelf', stale.cards === 0, stale.cards);
-    check(S, 'expired_shelf_hides_finite_ending', stale.endHidden === true);
+    check(S, 'expired_current_is_the_only_hidden_object', stale.cards === siblings.length, stale.cards);
+    check(S, 'healthy_siblings_keep_the_finite_ending', stale.endHidden === false);
     check(S, 'expired_shelf_says_nothing_internal',
       !/expire|期限|current/i.test(stale.text), stale.text.slice(0, 60));
-    // 同じ棚の他の Object を繰り上げて埋めない。
-    check(S, 'expired_shelf_does_not_auto_replace',
-      siblings.every((name) => !stale.text.includes(name)),
-      siblings.filter((name) => stale.text.includes(name)));
+    check(S, 'expired_object_is_not_shown', !stale.text.includes(expiredName), expiredName);
+    // 同じ棚の健康な Object は巻き込まず、別候補への自動差替えもしない。
+    check(S, 'healthy_siblings_remain_visible',
+      siblings.every((name) => stale.text.includes(name)),
+      siblings.filter((name) => !stale.text.includes(name)));
 
     // 期限の1分前は開いていること。境目が本当にそこにあるかを確かめる。
     const before = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });

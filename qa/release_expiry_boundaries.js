@@ -4,7 +4,7 @@
  * 守りたいのは特定の会期ではなく、次の3つ:
  *   - 日付に依存しない事実（evergreen）に finite expiry を持たせないこと
  *   - 東京 flagship が日付で閉じないこと
- *   - いちばん早く切れるものの境目が、本当にその1分の間にあること
+ *   - いちばん早く切れるものが、その1件だけ fail-closed されること
  *
  * だから対象は release_content.js から実行時に導出する。id や日付をここへ
  * 書くと、content を差し替えた瞬間に落ちて、product の欠陥と fixture の
@@ -83,10 +83,10 @@ if (!soonest) {
   for (const offset of [0, 60 * 1000, 24 * 3600 * 1000]) {
     const at = iso(soonest.at + offset);
     const r = run(at);
-    expect(`preflight_FAIL_at_${at}`,
-      r.code !== 0 && /RELEASE_PREFLIGHT_FAIL/.test(r.out), r.out.trim().split('\n')[0]);
-    expect(`fail_names_${soonest.object.id}_at_${at}`,
-      r.out.includes(`${soonest.shelf.id}/${soonest.object.id}`));
+    expect(`preflight_GO_with_object_fail_closed_at_${at}`,
+      r.code === 0 && /RELEASE_PREFLIGHT_GO/.test(r.out), r.out.trim().split('\n')[0]);
+    expect(`fail_closed_names_${soonest.object.id}_at_${at}`,
+      r.out.includes(`FAIL_CLOSED ${soonest.shelf.id}/${soonest.object.id}`));
     if (flagship) {
       for (const o of flagship.objects) {
         expect(`${flagship.id}_never_the_reason_at_${at}`, !r.out.includes(`${flagship.id}/${o.id}`));
@@ -105,6 +105,6 @@ console.log(`RELEASE_EXPIRY_BOUNDARIES_GO${unobserved.length ? `, ${unobserved.l
 if (soonest) {
   console.log(`flagship=${flagship ? flagship.id : 'n/a'} no expiry; ` +
     `soonest ${soonest.shelf.id}/${soonest.object.id} at ${soonest.object.expiresAt}; ` +
-    'GO one minute before, FAIL from that instant');
+    'GO one minute before, object-only FAIL_CLOSED from that instant');
 }
 unobserved.forEach((u) => console.log('- NOT OBSERVABLE ' + u));
