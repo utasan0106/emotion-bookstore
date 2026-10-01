@@ -48,3 +48,9 @@ assert.equal(tokyoDay(new Date('2026-09-08T15:01:00Z')),'2026-09-09');
 const {tokyoPeriod}=require('../time-of-day');
 for(const [time,expected] of [['04:59','night'],['05:00','morning'],['09:59','morning'],['10:00','day'],['15:59','day'],['16:00','evening'],['18:59','evening'],['19:00','night']])assert.equal(tokyoPeriod(new Date('2026-09-08T'+time+':00+09:00')),expected);
 console.log('PASS memory persistence/update/remove, corruption/quota handling, URL safety, Tokyo date and time boundaries');
+
+const summary=(chrome.memoryForm().match(/<summary>([\s\S]*?)<\/summary>/)||[])[1];
+assert.ok(summary.includes('行ってみたいを保存'),'Closed entry explains the existing visit-save action');
+assert.ok(summary.includes('このブラウザだけに保存・端末間の同期なし'),'Local-only caveat is visible before opening');
+assert.match(chrome.memoryForm(true),/Only in this browser · no device sync/);
+console.log('PASS closed save entry and local-only storage explanation');

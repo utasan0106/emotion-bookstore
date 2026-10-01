@@ -59,7 +59,7 @@ function seoHeader(base, {title, description, canonical}) {
     .replace(/<meta name="robots"[^>]*>\s*/g,'')
     .replace(/<title>[\s\S]*?<\/title>/, '<title>'+safeTitle+'</title>')
     .replace(/<meta name="description" content="[^"]*">/, '<meta name="description" content="'+safeDescription+'">');
-  const tags='<link rel="canonical" href="'+safeCanonical+'"><meta property="og:type" content="website"><meta property="og:site_name" content="みんなの感情書店"><meta property="og:title" content="'+safeTitle+'"><meta property="og:description" content="'+safeDescription+'"><meta property="og:url" content="'+safeCanonical+'"><meta property="og:image" content="https://emotionbookstore.com/assets/ogp-official-artwork-20260901.png"><meta name="twitter:card" content="summary_large_image"><script type="application/ld+json">'+schema+'</script>';
+  const tags='<link rel="canonical" href="'+safeCanonical+'"><meta property="og:type" content="website"><meta property="og:site_name" content="みんなの感情書店"><meta property="og:title" content="'+safeTitle+'"><meta property="og:description" content="'+safeDescription+'"><meta property="og:url" content="'+safeCanonical+'">'+require('./site-ogp').imageTags()+'<script type="application/ld+json">'+schema+'</script>';
   return out.replace('</title>','</title>'+tags);
 }
 const officialActions={};

@@ -201,3 +201,9 @@ body.site-polished:is(.shelf-page,.works-page,.thread-page,.suggest-page){--ink:
 .site-polished .city-editorials summary{color:#262626}
 .site-polished .other-cities{margin-top:40px}
 @media(max-width:600px){.site-polished .research-article{font-size:1rem}.site-polished .research-article h2{font-size:1.25rem}}
+
+/* Weekly city rotation: authored flex layout must not reveal off-week cards. */
+.site-polished .work-card[hidden]{display:none}
+
+.city-shortcuts{display:flex;flex-wrap:wrap;gap:12px 24px;margin:0 0 24px}
+.city-shortcuts a{display:inline-flex;align-items:center;min-height:44px}

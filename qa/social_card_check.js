@@ -30,6 +30,7 @@ const attr = (src, re) => (src.match(re) || [])[1];
 const isNoindex = src => /name="robots" content="[^"]*noindex/.test(src);
 
 let indexable = 0;
+const inspectedUrls = new Set();
 const eventDescriptions = new Map();
 
 for (const page of pages) {
@@ -77,6 +78,7 @@ for (const page of pages) {
     failures.push(`${page}: og:url must be an absolute emotionbookstore.com address, got ${url}`);
   }
 
+  inspectedUrls.add(url);
   if (page.startsWith('outings/events/')) eventDescriptions.set(page, description);
 }
 
@@ -88,12 +90,19 @@ for (const page of pages) {
     if (seen.has(description)) failures.push(`${page}: og:description repeats ${seen.get(description)}`);
     else seen.set(description, page);
   }
-  if (eventDescriptions.size < 40) {
-    failures.push(`expected the event pages to carry share cards, found ${eventDescriptions.size}`);
-  }
+  const source = require('../tools/weekly-outings-source');
+  const week = require('../outings/week');
+  const today = week.date(Date.now());
+  const active = source.events.filter(e => source.isPublishableEvent(e) && e.status === 'scheduled' && e.checkedAt <= today && e.reviewThrough >= today && week.dates(e).at(-1) >= today);
+  const expected = new Set(active.map(e => `outings/events/${e.id}.html`));
+  for (const page of expected) if (!eventDescriptions.has(page)) failures.push(`${page}: active event missing share card`);
+  for (const page of eventDescriptions.keys()) if (!expected.has(page)) failures.push(`${page}: inactive event still advertised`);
 }
 
-if (indexable < 160) failures.push(`expected at least 160 indexable pages to carry a card, found ${indexable}`);
+// Retirements may reduce inventory; every current sitemap URL still needs a card.
+const sitemapUrls = [...fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8').matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1]);
+if (!sitemapUrls.length) failures.push('Sitemap has no indexable URLs');
+for (const url of sitemapUrls) if (!inspectedUrls.has(url)) failures.push(`${url}: sitemap URL missing from share-card inspection`);
 
 if (failures.length) {
   for (const f of failures) console.error('FAIL ' + f);
