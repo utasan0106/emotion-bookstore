@@ -26,7 +26,7 @@ async function serve(){
 (async()=>{
  server=await serve();const origin='http://127.0.0.1:'+server.address().port;
  browser=await chromium.launch(process.env.CHROMIUM_EXECUTABLE_PATH?{executablePath:process.env.CHROMIUM_EXECUTABLE_PATH}:{});
- for(const viewport of [{name:'mobile',width:390,height:844},{name:'desktop',width:1440,height:1000}]){
+ for(const viewport of [{name:'mobile',width:390,height:844},{name:'desktop',width:1440,height:900}]){
   const context=await browser.newContext({viewport:{width:viewport.width,height:viewport.height},isMobile:viewport.name==='mobile',hasTouch:viewport.name==='mobile',deviceScaleFactor:1,reducedMotion:'reduce'});
   const blocked=[],errors=[];let phase='home';
   await context.route('**/*',route=>{const url=route.request().url();if(new URL(url).origin!==origin){blocked.push({phase,url});return route.abort('blockedbyclient');}return route.continue();});
@@ -38,7 +38,7 @@ async function serve(){
    const layout=await page.evaluate(()=>{
     const image=document.querySelector('.hd-feature img'),title=document.querySelector('#hd-feature-title'),primary=document.querySelector('.hd-feature .hd-primary');
     const box=el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height};};
-    return {viewport:innerWidth,scrollWidth:document.documentElement.scrollWidth,title:title.textContent.trim(),titleBox:box(title),font:getComputedStyle(title).fontFamily,displayFontLoaded:document.fonts.check('500 32px "EB Display"'),readingFontLoaded:document.fonts.check('400 16px "EB Reading"'),image:{src:image.getAttribute('src'),naturalWidth:image.naturalWidth,naturalHeight:image.naturalHeight,declaredWidth:Number(image.getAttribute('width')),declaredHeight:Number(image.getAttribute('height')),render:box(image)},primary:{href:primary.getAttribute('href'),render:box(primary)},iframedProviders:document.querySelectorAll('iframe').length};
+    return {viewport:innerWidth,scrollWidth:document.documentElement.scrollWidth,title:title.textContent.trim(),titleBox:box(title),font:getComputedStyle(title).fontFamily,displayFontLoaded:document.fonts.check('500 32px "EB Display"'),readingFontLoaded:document.fonts.check('400 16px "EB Reading"'),image:{src:image.getAttribute('src'),objectFit:getComputedStyle(image).objectFit,naturalWidth:image.naturalWidth,naturalHeight:image.naturalHeight,declaredWidth:Number(image.getAttribute('width')),declaredHeight:Number(image.getAttribute('height')),render:box(image)},primary:{href:primary.getAttribute('href'),render:box(primary)},iframedProviders:document.querySelectorAll('iframe').length};
    });
    assert.ok(layout.scrollWidth<=viewport.width,'No horizontal overflow');
    assert.ok(layout.title.length>0&&layout.titleBox.width<=viewport.width,'Feature headline fits');
@@ -46,8 +46,12 @@ async function serve(){
    assert.ok(layout.image.src.startsWith('/assets/')&&layout.image.naturalWidth>0,'Local feature image loaded');
    assert.equal(layout.image.naturalWidth,layout.image.declaredWidth,'Image width metadata matches pixels');
    assert.equal(layout.image.naturalHeight,layout.image.declaredHeight,'Image height metadata matches pixels');
-   assert.ok(Math.abs(layout.image.render.width/layout.image.render.height-layout.image.naturalWidth/layout.image.naturalHeight)<0.02,'Feature photograph is not stretched');
+   const imageRatio=layout.image.render.width/layout.image.render.height;
+   const naturalRatio=layout.image.naturalWidth/layout.image.naturalHeight;
+   if(viewport.name==='desktop'&&edition.topFeatureId==='indies'){assert.equal(layout.image.objectFit,'cover','Desktop book cover uses a crop, never stretched pixels');assert.ok(Math.abs(imageRatio-2)<0.02,'Desktop book photograph keeps its intentional 2:1 crop');}
+   else assert.ok(Math.abs(imageRatio-naturalRatio)<0.02,'Uncropped feature photograph is not stretched');
    assert.ok(layout.primary.render.height>=44,'Primary target has adequate height');
+   assert.ok(layout.primary.render.y+layout.primary.render.height<=viewport.height,'Primary cover action is visible in the opening viewport');
    assert.equal(layout.iframedProviders,0,'External players remain unloaded');
    assert.equal(blocked.length,0,'Home must not request any external resource');
    if(feature){assert.equal(layout.primary.href,'/discover/'+feature.city+'/'+feature.id+'.html');assert.equal(await page.locator('.hd-feature .hd-detail').getAttribute('href'),feature.url);}
