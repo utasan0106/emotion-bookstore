@@ -52,3 +52,24 @@ for(const [id,lastDay,nextDay] of [['shimokita-moon','2026-10-04','2026-10-05'],
  assert.ok(!after.writes.get(path.join(root,'outings/events-data.js')).includes('"id":"'+id+'"'),'Expired event absent from runtime: '+id);
 }
 console.log('PASS real event generator and redirect guard agree across Oct 4→5 and Nov 3→4 JST');
+
+// Run the real discovery generator in memory too: an expired signal must not erase
+// the Home menu anchor, imply all events ended, or retain the expired festival.
+function generatedDiscoveryAt(instant){
+ const now=Date.parse(instant),writes=new Map(),removed=new Set();
+ const file=path.join(root,'tools/build-city-discovery.js'),load=createRequire(file);
+ const fakeFs={...fs,writeFileSync:(p,text)=>writes.set(path.resolve(p),String(text)),mkdirSync(){},
+  unlinkSync:p=>removed.add(path.resolve(p)),rmSync:p=>removed.add(path.resolve(p)),
+  existsSync:p=>!removed.has(path.resolve(p))&&(writes.has(path.resolve(p))||fs.existsSync(p)),
+  readFileSync:(p,...args)=>writes.has(path.resolve(p))?writes.get(path.resolve(p)):fs.readFileSync(p,...args)};
+ class FixedDate extends Date{constructor(...args){super(...(args.length?args:[now]));}static now(){return now;}}
+ vm.runInNewContext(fs.readFileSync(file,'utf8'),{__dirname:path.dirname(file),require:id=>id==='node:fs'?fakeFs:id==='node:child_process'?{execFileSync(){}}:load(id),process:{argv:[]},Date:FixedDate,URL,module:{exports:{}},console:{log(){}}},{filename:file});
+ return writes.get(path.join(root,'discover/index.html'));
+}
+const beforeSignal=generatedDiscoveryAt('2026-10-04T23:59:59.999+09:00'),afterSignal=generatedDiscoveryAt('2026-10-05T00:00:00.000+09:00');
+assert.match(beforeSignal,/id="city-signals"/);assert.match(beforeSignal,/outings\/events\/shimokita-moon\.html/);
+assert.match(afterSignal,/id="city-signals"><h2>今の街の動き<\/h2>/);
+assert.match(afterSignal,/現在、掲載できる街の動きはありません。<\/p><a href="\/outings\/">催しを探す/);
+assert.doesNotMatch(afterSignal,/outings\/events\/shimokita-moon\.html|ムーンアートナイト下北沢 2026/);
+console.log('PASS Oct 4→5 real discovery generation: empty anchor and honest outings exit survive, ended signal absent');
+module.exports={generatedDiscoveryAt};
