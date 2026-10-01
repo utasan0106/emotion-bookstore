@@ -7,6 +7,7 @@ const checks=[
  ['qa/verify_product_runner_check.js'],
  ['qa/catalogue_regression_check.js'],
  ['qa/cover-flow-check.js'],
+ ['qa/selection_feature_check.js'],
  ['qa/site_integration_check.js'],
  ['qa/release_check.js'],
  ['qa/kiyosumi_city_check.js'],

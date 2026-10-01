@@ -7,7 +7,7 @@ const outputs=['works.html','work-book.html','work-film.html','work-music.html',
 const walk=d=>fs.readdirSync(path.join(root,d),{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(d+'/'+e.name):e.name.endsWith('.html')?[d+'/'+e.name]:[]);
 outputs.push(...walk('discover'),...walk('outings'));
 for(const file of outputs){
- const html=read(file);assert.match(html,/site-polished/);assert.equal((html.match(/href="\/site-system.css"/g)||[]).length,1,file+' common style');assert.equal((html.match(/src="\/page-nav.js"/g)||[]).length,1,file+' navigation script');assert.equal(chrome(html),html,file+' generator chrome is idempotent');
+ const html=read(file);assert.match(html,/site-polished/);assert.equal((html.match(/href="\/site-system.css"/g)||[]).length,1,file+' common style');assert.equal((html.match(/src="\/page-nav.js"/g)||[]).length,file==='discover/selection/index.html'?0:1,file+' navigation script (selection uses native links only)');assert.equal(chrome(html),html,file+' generator chrome is idempotent');
  const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(ids.length,new Set(ids).size,file+' duplicate IDs');
  for(const [,url] of html.matchAll(/(?:href|src)="([^"]+)"/g)){
   if(/^(?:https?:|data:|mailto:|tel:|#|\?)/.test(url))continue;

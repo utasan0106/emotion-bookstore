@@ -11,6 +11,8 @@ on:
       - 'assets/**'
       - 'tools/weekly-home-ledger.json'
       - 'qa/home_cover_browser_check.js'
+      - 'qa/selection_browser_check.js'
+      - 'discover/selection/**'
       - '.github/workflows/home-cover-browser-check.yml'
   workflow_dispatch:
 permissions:
@@ -33,7 +35,9 @@ jobs:
       - name: Render exact checkout at mobile and desktop widths
         env:
           QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/home_cover_browser_check.js
+        run: |
+          NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/home_cover_browser_check.js
+          NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/selection_browser_check.js
       - name: Save screenshots and non-secret verification report
         if: always()
         uses: actions/upload-artifact@v4
@@ -42,5 +46,7 @@ jobs:
           path: |
             qa/artifacts/home-cover/*.png
             qa/artifacts/home-cover/report.json
+            qa/artifacts/selection/*.png
+            qa/artifacts/selection/report.json
           if-no-files-found: error
           retention-days: 7
