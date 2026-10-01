@@ -275,3 +275,14 @@ console.log('PASS 55 generated city entries + 3 common shorts + Kiyosumi works c
 for (const id of require('../tools/city-discovery-source').blockedVideoIds) {
  for (const f of fs.readdirSync(path.join(root,'discover/short-films'))) if(f.endsWith('.html')) assert.ok(!fs.readFileSync(path.join(root,'discover/short-films',f),'utf8').includes(id), 'Private video leaked: '+id);
 }
+
+const cityCss=fs.readFileSync(path.join(root,'site-system.css'),'utf8');
+assert.match(cityCss,/\.site-polished \.work-card\[hidden\]\s*\{\s*display\s*:\s*none\s*\}/,'Authored card layout must preserve hidden weekly cards');
+for(const city of cities){
+ const html=fs.readFileSync(path.join(root,`discover/${city}/index.html`),'utf8');
+ const shortcut=html.match(/<nav class="city-next city-shortcuts"[^>]*>[\s\S]*?<\/nav>/)?.[0];
+ assert.ok(shortcut&&html.indexOf(shortcut)<html.indexOf('<section class="work-grid"'),'Outing shortcuts precede work cards');
+ assert.ok(shortcut.includes(`/outings/?city=${city}`));
+ if(shortcut.includes('#city-venues'))assert.ok(html.includes('id="city-venues"'));
+}
+console.log('PASS weekly hidden-card CSS and above-catalogue outing/venue shortcuts');

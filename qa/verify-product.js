@@ -4,6 +4,7 @@ const {spawnSync}=require('node:child_process');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
 const checks=[
+ ['qa/verify_product_runner_check.js'],
  ['qa/catalogue_regression_check.js'],
  ['qa/cover-flow-check.js'],
  ['qa/site_integration_check.js'],
@@ -14,17 +15,24 @@ const checks=[
  ['qa/weekly_outings_check.js'],
  ['tools/build-weekly-outings.js','--check'],
  ['qa/editorial_pending_gate_check.js'],
- ['qa/event_timing_check.js', 'qa/event_supply_check.js', 'qa/events_expiry_cluster_check.js', 'qa/event_schema_check.js'],
+ ['qa/event_timing_check.js'],
+ ['qa/event_supply_check.js'],
+ ['qa/events_expiry_cluster_check.js'],
+ ['qa/event_schema_check.js'],
  ['qa/memory_note_check.js'],
  ['qa/city_discovery_check.js'],
  ['qa/culture_continuity_check.js'],
  ['qa/navigation_readability_check.js'],
- ['qa/catalogue_inventory_check.js', 'qa/catalogue_supply_check.js'],
+ ['qa/catalogue_inventory_check.js'],
+ ['qa/catalogue_supply_check.js'],
  ['qa/city_discovery_player_check.js'],
- ['qa/work_page_check.js', 'qa/work_schema_check.js', 'qa/breadcrumb_check.js'],
+ ['qa/work_page_check.js'],
+ ['qa/work_schema_check.js'],
+ ['qa/breadcrumb_check.js'],
  ['qa/social_post_check.js'],
  ['qa/culture_delivery_csp_check.js'],
- ['qa/analytics_contract_check.js', 'qa/social_card_check.js'],
+ ['qa/analytics_contract_check.js'],
+ ['qa/social_card_check.js'],
  ['qa/duplicate_text_check.js'],
  ['tools/build-work-pages.js','--check'],
  ['tools/build-city-discovery.js','--check'],
@@ -38,12 +46,17 @@ const checks=[
  ['qa/common_short_duration_check.js'],
  ['qa/video_duration_gate_check.js'],
  ['qa/design_redesign_check.js'],
- ['qa/culture_room_contract_check.js', 'qa/parks_screen_contract_check.js'],
+ ['qa/culture_room_contract_check.js'],
+ ['qa/parks_screen_contract_check.js'],
  /* release_preflight は時刻で判定する門である。期限切れ current は対象1件だけ
     fail-closed し、missing/invalid metadata だけを release blocker にする。 */
- ['qa/release_preflight.js', 'qa/release_expiry_boundaries.js'],
- ['qa/growth_improvements.js', 'qa/measurement_v04_selftest.js', 'qa/link_check_selftest.js'],
- ['qa/michiyomi_scout_contract_check.js', 'qa/michiyomi_editorial_screen_check.js']
+ ['qa/release_preflight.js'],
+ ['qa/release_expiry_boundaries.js'],
+ ['qa/growth_improvements.js'],
+ ['qa/measurement_v04_selftest.js'],
+ ['qa/link_check_selftest.js'],
+ ['qa/michiyomi_scout_contract_check.js'],
+ ['qa/michiyomi_editorial_screen_check.js']
 ];
 let failed=0;
 for(const args of checks){

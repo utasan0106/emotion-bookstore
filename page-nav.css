@@ -198,3 +198,5 @@ body main:has(>#event-filters)>.intro .eyebrow{margin-bottom:8px}
 body main:has(>#event-filters)>.intro h1{margin-bottom:12px}
 body main:has(>#event-filters)>.intro .lead{font-size:1rem;line-height:1.85;margin:0}
 body main:has(>#event-filters)>#event-filters{padding:16px;gap:12px;margin-bottom:16px}
+
+.memory-storage-hint{display:block;font-size:12px;font-weight:400;line-height:1.6;margin-top:4px}

@@ -2,7 +2,9 @@
 'use strict';
 const fs=require('fs'),cp=require('child_process'),path=require('path');
 const ROOT=path.resolve(__dirname,'..');
+// Runner regression checks do not add analytics, network, or storage behavior.
 const allowed=new Set(['index.html','shelf.html','suggest.html','data.html','credits.html','explore.html','vercel.json','analytics-v3.js','video-embed.js','atlas/index.html','weekly-video.js','weekly-video.css','growth-improvements.js','qa/growth_improvements.js','qa/ga4_v3_client_selftest.js','qa/measurement_v04_selftest.js','qa/release_check.js','qa/browser_qa.js','qa/home_canonical_check.js','qa/thread_check.js','qa/works_check.js','qa/atlas_check.js','qa/atlas_browser_qa.js']);
+for(const file of ['qa/verify_product_runner_check.js','qa/memory_note_check.js']) allowed.add(file);
 // Founder-requested Stage B presentation review. Measurement/storage checks below remain unchanged.
 for(const file of ['design-redesign.css','tools/design-redesign.js','docs/design-redesign-20260910.md','qa/design-redesign/','qa/design-redesign/index.html','qa/design-redesign/before-home.html','qa/design-redesign/before-city.html','qa/design-redesign/before-article.html']) allowed.add(file);
 for(const f of ['index.html','kichijoji/index.html','shimokitazawa/index.html','link-list/film.html','link-list/music.html']) allowed.add('v3-prototype/culture-experience-r2/'+f);
