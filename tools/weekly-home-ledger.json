@@ -41,7 +41,7 @@
     },
     {
       "weekOf": "2026-09-28",
-      "topFeatureId": "parks",
+      "topFeatureId": "indies",
       "curiosityIds": [
         "morisaki",
         "boris-shelter",
@@ -57,6 +57,17 @@
         "find-my-tokyo-akasaka",
         "musashino-green"
       ]
+    }
+  ],
+  "featureChanges": [
+    {
+      "changedOn": "2026-10-01",
+      "weekOf": "2026-09-28",
+      "from": "parks",
+      "to": "indies",
+      "previousVersion": "822cd8cc1d157a86e0a84fed53b2cf44b35409b2",
+      "note": "Midweek cover refresh using an existing reviewed book, its approved copy and a licensed local city photograph. The Sep 28 edition originally featured PARKS; preserve that change history here.",
+      "sourceUrl": "https://www.j-n.co.jp/books/978-4-408-55758-8/"
     }
   ]
 }
