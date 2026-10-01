@@ -73,7 +73,8 @@ function inspect(dir) {
 }
 inspect(path.join(root,'discover'));
 const research=require('../tools/city-research');
-assert.equal(pages,102+research.length);
+// One manually authored, script-free editorial selection alongside the existing catalogue.
+assert.equal(pages,103+research.length);
 // 街をまたいだ3シリーズ。棚を通った本と音楽は全部出る（増えたのに載らない、が起きない）。
 // 映像だけは「いま行ける場所」で絞るので、公開本数より少なくてよい。
 {
