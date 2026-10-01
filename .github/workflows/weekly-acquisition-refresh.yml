@@ -29,17 +29,13 @@ jobs:
       - name: Reject unexpected generated changes
         run: |
           set -euo pipefail
-          unexpected="$(git status --porcelain | awk '{print $2}' | grep -Ev '^(discover/|outings/|sitemap\.xml$|feed\.xml$)' || true)"
-          if [ -n "$unexpected" ]; then
-            echo "Unexpected files changed by freshness rebuild:"
-            echo "$unexpected"
-            exit 1
-          fi
+          node tools/check-freshness-output.js
       - name: Verify full product and acquisition contracts
         run: |
           set -euo pipefail
           node tools/build-weekly-outings.js --check
           node tools/build-city-discovery.js --check
+          node qa/freshness_workflow_check.js
           node qa/seo_check.js
           node qa/verify-product.js
       - name: Commit freshness-only changes
@@ -47,7 +43,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add discover outings sitemap.xml feed.xml
+          git add discover outings sitemap.xml feed.xml vercel.json
           if git diff --cached --quiet; then
             echo "No freshness changes."
             exit 0

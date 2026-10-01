@@ -18,7 +18,9 @@ jobs:
         with:
           node-version: '22'
       - name: Check photos, navigation, generation, privacy and local memory
-        run: node qa/verify-product.js
+        run: |
+          node qa/freshness_workflow_check.js
+          node qa/verify-product.js
       - name: Scout Michiyomi around Koenji for research only
         if: startsWith(github.ref_name, 'astra/michiyomi-integration-spike-')
         run: |
