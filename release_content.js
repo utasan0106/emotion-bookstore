@@ -29,7 +29,7 @@ window.V3_RELEASE_CONTENT = {
   },
   weeklyEdition: {
     weekOf: '2026-09-28',
-    topFeatureId: 'parks',
+    topFeatureId: 'indies',
     curiosityIds: ['morisaki', 'boris-shelter', 'park-voice'],
     curiosityKinds: ['book', 'music', 'video'],
     shortVideoIds: ['tokyo-metro-newline', 'find-my-tokyo-akasaka', 'musashino-green']

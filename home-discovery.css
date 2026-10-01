@@ -100,3 +100,8 @@ body.home-discovery{--sans:var(--font-body);--serif:var(--font-display);--hd-ink
 
 /* Surface rule: source/rights metadata belongs in Credits, not under editorial imagery. */
 .home-discovery .dr-cover-photo figcaption{display:none}
+
+/* Keep this longer two-line book title and its first action in the desktop opening. */
+@media(min-width:850px){
+ .home-discovery [data-weekly-feature="indies"] .dr-cover-photo img{aspect-ratio:2/1;object-fit:cover;object-position:center}
+}
