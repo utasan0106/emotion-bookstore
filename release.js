@@ -5,6 +5,13 @@
   var live = document.getElementById('live');
   var lastTrigger = null;
 
+  // The outings catalogue currently covers these four cities only.
+  function culturalEventLink(shelf) {
+    var supported = ['koenji', 'shimokitazawa', 'kichijoji', 'jinbocho'].indexOf(shelf.id) !== -1;
+    return { href: supported ? './outings/?city=' + shelf.id : './outings/',
+      text: supported ? shelf.area + 'の文化イベント →' : 'ほかの街の催しを見る →' };
+  }
+
   function syncCityMenuFromContent() {
     if (!CONTENT || !Array.isArray(CONTENT.shelves)) return;
     var nav = document.querySelector('.site-menu-nav');
@@ -1012,7 +1019,7 @@
     if (culturePaths) {
       culturePaths.textContent = '';
       culturePaths.appendChild(h('a', { href: './discover/' + shelf.id + '/', text: shelf.area + 'の作品を見る →' }));
-      culturePaths.appendChild(h('a', { href: './outings/?city=' + shelf.id, text: shelf.area + 'の文化イベント →' }));
+      culturePaths.appendChild(h('a', culturalEventLink(shelf)));
       culturePaths.hidden = false;
     }
     renderWeeklyFeature(shelf);

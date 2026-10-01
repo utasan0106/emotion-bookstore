@@ -52,6 +52,11 @@
       "permanent": false
     },
     {
+      "source": "/discover/short-films/thanks-tokyo.html",
+      "destination": "/discover/short-films/",
+      "permanent": false
+    },
+    {
       "source": "/outings/events/koenji-bakumatsu.html",
       "destination": "/outings/",
       "permanent": false
@@ -102,6 +107,11 @@
       "permanent": false
     },
     {
+      "source": "/outings/events/kichijoji-winter.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
       "source": "/outings/events/jinbocho-silent.html",
       "destination": "/outings/",
       "permanent": false
@@ -147,11 +157,6 @@
       "permanent": false
     },
     {
-      "source": "/outings/events/kichijoji-winter.html",
-      "destination": "/outings/",
-      "permanent": false
-    },
-    {
       "source": "/outings/events/jinbocho-pokemon.html",
       "destination": "/outings/",
       "permanent": false
@@ -187,11 +192,6 @@
       "permanent": false
     },
     {
-      "source": "/outings/events/kichijoji-tsuijuku.html",
-      "destination": "/outings/",
-      "permanent": false
-    },
-    {
       "source": "/outings/events/jinbocho-taiwan-kitchen.html",
       "destination": "/outings/",
       "permanent": false
@@ -222,22 +222,7 @@
       "permanent": false
     },
     {
-      "source": "/outings/events/jinbocho-joyu.html",
-      "destination": "/outings/",
-      "permanent": false
-    },
-    {
       "source": "/outings/events/koenji-resonance.html",
-      "destination": "/outings/",
-      "permanent": false
-    },
-    {
-      "source": "/outings/events/koenji-beyond.html",
-      "destination": "/outings/",
-      "permanent": false
-    },
-    {
-      "source": "/outings/events/shimokita-rekishi.html",
       "destination": "/outings/",
       "permanent": false
     },
@@ -249,11 +234,6 @@
     {
       "source": "/outings/events/koenji-tomovsky.html",
       "destination": "/outings/",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/thanks-tokyo.html",
-      "destination": "/discover/short-films/",
       "permanent": false
     },
     {

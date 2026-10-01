@@ -15,7 +15,12 @@
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const week = require(path.join(root, 'outings/week.js'));
-const { events, kinds } = require(path.join(root, 'tools/weekly-outings-source'));
+const { events, kinds, isPublishableEvent } = require(path.join(root, 'tools/weekly-outings-source'));
+
+// The source also contains editorial drafts; only published inventory can meet the floor.
+const selectPublished=(rows,options)=>week.select(rows.filter(isPublishableEvent),options);
+const fixture={id:'approved',city:'koenji',status:'scheduled',checkedAt:'2026-10-01',reviewThrough:'2026-10-02',dates:['2026-10-02'],audiences:[],browseKinds:[]};
+require('node:assert/strict').deepEqual(selectPublished([fixture,{...fixture,id:'pending',editorialReview:'pending'}],{now:week.stamp('2026-10-01')}).map(e=>e.id),['approved'],'Pending drafts must never count as published supply');
 
 const FLOOR = 5;          // 今週・来週に最低これだけは出す
 const OUTLOOK_WEEKS = 6;  // 見通しを出す週数
@@ -26,7 +31,7 @@ for (let n = 0; n < OUTLOOK_WEEKS; n++) {
   const start = week.add(week.monday(now), n * 7);
   // その週の月曜に site を開いた読者が見るもの。今週だけは「これから」なので実時刻で数える。
   const asOf = n === 0 ? now : week.stamp(start);
-  const selected = week.select(events, { now: asOf, week: start });
+  const selected = selectPublished(events, { now: asOf, week: start });
   const byKind = {};
   for (const e of selected) for (const k of e.browseKinds) byKind[k] = (byKind[k] || 0) + 1;
   rows.push({ start, total: selected.length, byKind });
@@ -42,7 +47,7 @@ for (const r of rows) {
 // 再確認期限は会期と別に効く。期限が切れた催しは、会期が残っていても表示から外れる。
 // 全件が同じ日付だと、その翌日に催しの節がまるごと空になる。日付ごとに何件かを出す。
 const byReview = {};
-for (const e of events) byReview[e.reviewThrough] = (byReview[e.reviewThrough] || 0) + 1;
+for (const e of events.filter(isPublishableEvent)) byReview[e.reviewThrough] = (byReview[e.reviewThrough] || 0) + 1;
 const reviewDates = Object.keys(byReview).sort();
 console.log('\n再確認期限（この日を過ぎると会期が残っていても表示から外れる）');
 for (const d of reviewDates) console.log('  ' + d + '  ' + byReview[d] + '件');
@@ -51,7 +56,7 @@ if (reviewDates.length === 1) {
   console.log('  ※ 全' + events.length + '件が同じ日。' + week.add(lastReview, 1) + ' に催しの節が一度に空になる。');
 }
 
-const uncategorised = events.filter(e => !e.browseKinds.length);
+const uncategorised = events.filter(isPublishableEvent).filter(e => !e.browseKinds.length);
 if (uncategorised.length) {
   console.log('\n種類が付いていない催し（「すべての催し」からしか辿れない）:');
   for (const e of uncategorised) console.log('  ' + e.kind + '  ' + e.id);

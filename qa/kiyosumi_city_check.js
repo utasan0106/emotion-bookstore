@@ -29,4 +29,15 @@ assert.doesNotMatch(discovery,/upload\.wikimedia\.org/);
 assert.match(discovery,/東京都現代美術館/);
 const runtime=fs.readFileSync(path.join(root,'release.js'),'utf8');
 assert.match(runtime,/syncCityMenuFromContent/);
+const eventLinkSource=runtime.match(/function culturalEventLink\(shelf\) \{[\s\S]*?\n  \}/);
+assert.ok(eventLinkSource,'Shelf event destination has an explicit supported-city boundary');
+const eventLink=vm.runInNewContext('('+eventLinkSource[0]+')');
+const supported=require('../tools/weekly-outings-source').cities;
+for(const city of content.shelves){
+ const link=eventLink(city);
+ assert.equal(link.href,supported[city.id]?'./outings/?city='+city.id:'./outings/');
+ assert.equal(link.text,supported[city.id]?city.area+'の文化イベント →':'ほかの街の催しを見る →');
+}
+assert.equal(eventLink({id:'unknown',area:'未対応の街'}).href,'./outings/');
+assert.match(runtime,/h\('a', culturalEventLink\(shelf\)\)/,'Rendered link uses the tested boundary');
 console.log('PASS Kiyosumi 5th-city contract');
