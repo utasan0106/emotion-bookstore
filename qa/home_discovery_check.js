@@ -51,13 +51,21 @@ if(featuredWork){
  assert.match(feature,/<img src="\/assets\//,'Cover image must be served locally');
 }
 
-const {events}=require('../tools/weekly-outings-source'),{select}=require('../outings/week');
+// Filter mechanics use a frozen synthetic calendar, not mutable checkedAt in live content.
+const {select}=require('../outings/week');
+const fixture=(id,city,kind,days)=>({id,city,browseKinds:[kind],dates:days.map(day=>'2026-09-'+day),
+ status:'scheduled',checkedAt:'2026-09-01',reviewThrough:'2026-09-30',audiences:[]});
+const events=[fixture('live-a','koenji','live',[12]),fixture('live-b','kichijoji','live',[13]),
+ fixture('art-a','kichijoji','exhibition',[19,22]),fixture('art-b','shimokitazawa','exhibition',[19,22]),
+ fixture('art-c','kichijoji','exhibition',[19])];
 const now=Date.parse('2026-09-11T19:00:00+09:00');
-assert.deepEqual(select(events,{now,week:'2026-09-07',kind:'live'}).map(e=>e.id),['koenji-azuma','kichijoji-kunita']);
+assert.deepEqual(select(events,{now,week:'2026-09-07',kind:'live'}).map(e=>e.id),['live-a','live-b']);
 assert.equal(select(events,{now,week:'2026-09-07',kind:'exhibition'}).length,0,'Explicit week has no silent substitution');
 assert.equal(select(events,{now,week:'2026-09-14',kind:'exhibition'}).length,3);
-assert.deepEqual(select(events,{now,week:'2026-09-14',kind:'exhibition',city:'shimokitazawa'}).map(e=>e.id),['shimokita-moon']);
-// 期限が切れた催しを推薦しないことは qa/weekly_outings_check.js が合成データで見る。
-// ここでは、その週に実際どの展示が並ぶかだけを見る（再確認が済めば増える。それでよい）。
-assert.deepEqual(select(events,{now:Date.parse('2026-09-21T00:00:00+09:00'),week:'2026-09-21',kind:'exhibition'}).map(e=>e.id),['kichijoji-taniguchi','shimokita-moon'],'Explicit week lists the exhibitions actually running');
+assert.deepEqual(select(events,{now,week:'2026-09-14',kind:'exhibition',city:'shimokitazawa'}).map(e=>e.id),['art-b']);
+assert.deepEqual(select(events,{now:Date.parse('2026-09-21T00:00:00+09:00'),week:'2026-09-21',kind:'exhibition'}).map(e=>e.id),['art-a','art-b'],'Week rollover omits finished exhibitions');
+const signalsLink=(html.match(/<a[^>]+href="\/discover\/#city-signals"[^>]*>[\s\S]*?<\/a>/)||[])[0];
+assert.ok(signalsLink&&signalsLink.includes('街の動き'));
+assert.doesNotMatch(signalsLink,/\d+月/,'Navigation must not imply an unverified monthly refresh');
+assert.match(read('discover/index.html'),/id="city-signals"><h2>今の街の動き<\/h2>/);
 console.log('PASS home destinations/anchors, real artwork, scoped Bandcamp CSP, combined event category/city/week/expiry');

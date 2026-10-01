@@ -7,13 +7,22 @@ assert.equal(monday(Date.parse('2026-09-13T15:00:00Z')),'2026-09-14');
 assert.equal(state('2026-09-07','2026-09-14',Date.parse('2026-09-13T15:00:00Z')),'past');
 assert.deepEqual(audiences.map(a=>a.id),['couple','children','family','friends','solo']);
 const now=Date.parse('2026-09-11T12:00:00+09:00');
-for(const city of Object.keys(cities))assert.ok(select(events,{now,city}).length>=3,city+' needs 3 actual events this week');
-// Historical fixtures shrink when an ended event is correctly retired. Preserve
-// the filter check without keeping that expired event as fake supply.
-for(const city of Object.keys(cities))assert.ok(select(events,{now,city,week:'2026-09-14'}).length>=1,city+' needs at least one reviewed event in this fixture week');
-assert.ok(!select(events,{now,city:'kichijoji',week:'2026-09-14'}).some(e=>e.id==='kichijoji-winter'),'Retired Kichijoji performance stays out of historical recommendations');
-const future=select(events,{now,week:'2026-09-14'});assert.ok(future.some(e=>e.id==='jinbocho-ginga'));assert.ok(!select(events,{now}).some(e=>e.id==='jinbocho-ginga'));
-assert.ok(!select(events,{now:Date.parse('2026-09-14T00:00:00+09:00')}).some(e=>e.id==='koenji-azuma'),'Ended events excluded');
+// Frozen synthetic calendar exercises selection independently of later official rechecks.
+// Production checkedAt must remain the real latest verification date.
+const fixtures=Object.keys(cities).flatMap(city=>[11,12,13,15].map(day=>({
+ id:city+'-'+day,city,status:'scheduled',checkedAt:'2026-09-01',reviewThrough:'2026-09-30',
+ dates:['2026-09-'+day],audiences:day===11?['children']:['solo'],browseKinds:['stage']
+})));
+for(const city of Object.keys(cities)){
+ assert.equal(select(fixtures,{now,city}).length,3,city+' current-week filter');
+ assert.equal(select(fixtures,{now,city,week:'2026-09-14'}).length,1,city+' explicit future-week filter');
+}
+assert.ok(!select(events,{now,city:'kichijoji',week:'2026-09-14'}).some(e=>e.id==='kichijoji-winter'),'Retired Kichijoji performance stays out of recommendations');
+assert.equal(select(fixtures,{now,week:'2026-09-14'}).length,4,'Future week selects only its dates');
+assert.ok(select(fixtures,{now}).every(e=>!e.id.endsWith('-15')));
+assert.ok(select(fixtures,{now:Date.parse('2026-09-14T00:00:00+09:00')}).every(e=>e.id.endsWith('-15')),'Ended event dates excluded');
+assert.equal(select(fixtures,{now,audience:'children'}).length,4,'Audience filter is nonempty and exact');
+assert.ok(select(fixtures,{now,audience:'children'}).every(e=>e.audiences.includes('children')));
 // 再確認期限は会期と別に効く。会期が残っていても、期限を過ぎた催しは出さない（fail closed）。
 // 期限を延ばした催しだけが残る。
 //
@@ -26,9 +35,19 @@ const stillRunning=reviewThrough=>({id:'x',status:'scheduled',city:'koenji',audi
 const atExpiry=Date.parse('2026-09-21T00:00:00+09:00');
 assert.equal(select([stillRunning('2026-09-20')],{now:atExpiry}).length,0,'Unreviewed schedules fail closed');
 assert.equal(select([stillRunning('2026-10-04')],{now:atExpiry}).length,1,'Re-checked schedules stay listed');
-const event=events.find(e=>e.id==='kichijoji-taniguchi');assert.ok(!dates(event).includes('2026-09-30'),'Museum closure is not an event day');
-assert.equal(select([{...event,status:'cancelled'}],{now,week:'2026-09-14'}).length,0);
+const event=events.find(e=>e.id==='kichijoji-taniguchi');assert.ok(!dates(event).includes('2026-09-30')&&!dates(event).includes('2026-10-28'),'Museum closures are not event days');
+assert.equal(select([{...event,status:'cancelled'}],{now:Date.parse(event.checkedAt+'T12:00:00+09:00')}).length,0);
 assert.ok(select(events,{now,audience:'children'}).every(e=>e.audiences.includes('children')));
+// Every publishable real event fails closed before verification and after review/end.
+for(const e of events.filter(source.isPublishableEvent)){
+ const start=Date.parse(e.checkedAt+'T00:00:00+09:00');
+ assert.equal(select([e],{now:start-1}).length,0,'Not verified yet: '+e.id);
+ const last=dates(e).at(-1),end=[last,e.reviewThrough].sort()[0];
+ const after=Date.parse(end+'T00:00:00+09:00')+86400000;
+ assert.equal(select([e],{now:after}).length,0,'Expired at JST midnight: '+e.id);
+ if(e.status==='scheduled'&&dates(e).includes(end)&&e.checkedAt<=end)
+  assert.equal(select([e],{now:after-1}).length,1,'Last valid day remains available: '+e.id);
+}
 const root=path.resolve(__dirname,'..');
 const todayString=new Date(Date.now()+9*3600000).toISOString().slice(0,10);
 const currentRuntime=events.filter(e=>source.isPublishableEvent(e)&&e.status==='scheduled'&&e.checkedAt<=todayString&&e.reviewThrough>=todayString&&dates(e).at(-1)>=todayString);
