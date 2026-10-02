@@ -102,6 +102,7 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
 
    for(const card of await page.locator('[data-event-card]:visible').all()){
     const title=await card.locator('h2').boundingBox(),dateBox=await card.locator('.event-date').boundingBox(),photoBox=await card.locator('figure').boundingBox();
+    assert.ok(await card.locator('h2').evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=24&&document.fonts.check('500 24px \"EB Display\"')),'Loaded Mincho title stays at least 24px');
     assert.ok(title.y+title.height<=photoBox.y&&dateBox.y+dateBox.height<=photoBox.y,'Title and complete date summary precede the contextual image');
     assert.ok((await card.locator('[data-next-date]').innerText()).includes('開催予定'),'Next date includes its meaning');
     const id=await card.getAttribute('data-event-card'),e=source.events.find(e=>e.id===id);
@@ -148,5 +149,14 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
   }catch(e){await page.screenshot({path:path.join(out,viewport.name+'-failure.png'),fullPage:true}).catch(()=>{});report.viewports.push({...viewport,passed:false,error:e.message,flows,external,missing,errors});throw e;}
   finally{await context.close();}
  }
+ const noJs=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
+ const noJsPage=await noJs.newPage();await noJsPage.goto(origin+'/outings/?week=all',{waitUntil:'networkidle'});
+ assert.equal(await noJsPage.locator('[data-event-card]:visible').count(),0);
+ assert.ok(await noJsPage.locator('noscript').isVisible());
+ for(const e of source.events.filter(source.isPublishableEvent)){
+  if(await noJsPage.locator('noscript a[href="/outings/events/'+e.id+'.html"]').count())assert.ok((await noJsPage.locator('noscript').innerText()).includes(e.schedule),'No-JS complete schedule '+e.id);
+ }
+ await noJsPage.screenshot({path:path.join(out,'mobile-no-js.png'),fullPage:true});await noJs.close();
+ report.noJs=true;
  report.passed=true;
 })().catch(e=>{report.passed=false;report.error=e.message;console.error(e);process.exitCode=1;}).finally(async()=>{fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');if(browser)await browser.close();if(server)await new Promise(resolve=>server.close(resolve));});
