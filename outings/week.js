@@ -9,7 +9,8 @@
  function state(start,end,now){return now<stamp(start)?'future':now<stamp(end)?'current':'past';}
  function select(events,{now=Date.now(),week=monday(now),city='',audience='',kind=''}={}){
   const today=date(now),all=week==='all',end=all?null:add(week,7);
-  return events.filter(e=>e.editorialReview!=='pending'&&e.status==='scheduled'&&e.checkedAt<=today&&e.reviewThrough>=today&&(!city||e.city===city)&&(!audience||e.audiences.includes(audience))&&(!kind||(e.browseKinds||[]).includes(kind)))
+  // Published runtime records omit review metadata; explicit non-approved values fail closed.
+  return events.filter(e=>(e.editorialReview===undefined||e.editorialReview==='approved')&&e.status==='scheduled'&&e.checkedAt<=today&&e.reviewThrough>=today&&(!city||e.city===city)&&(!audience||e.audiences.includes(audience))&&(!kind||(e.browseKinds||[]).includes(kind)))
    .map(e=>({...e,nextDate:dates(e).find(d=>d>=today&&(all||(d>=week&&d<end)))})).filter(e=>e.nextDate).sort((a,b)=>a.nextDate.localeCompare(b.nextDate)||a.id.localeCompare(b.id));
  }
  const api={stamp,date,add,monday,dates,state,select};

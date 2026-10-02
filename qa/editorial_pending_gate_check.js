@@ -7,6 +7,9 @@ const {events,isPublishableEvent}=require('../tools/weekly-outings-source');
 const week=require('../outings/week');
 
 assert.equal(typeof isPublishableEvent,'function','publishability gate must be exported');
+// Legacy reviewed source rows may omit the field; new unrecognized review states
+// must fail CI instead of being mistaken for approval by the legacy source gate.
+for(const e of events)assert.ok(e.editorialReview===undefined||['approved','pending'].includes(e.editorialReview),'Unrecognized editorial review state: '+e.id);
 const pending=events.filter(e=>!isPublishableEvent(e));
 const publishable=events.filter(isPublishableEvent);
 const today=week.date(Date.now());
@@ -22,6 +25,8 @@ const sitemap=fs.readFileSync(path.join(root,'sitemap.xml'),'utf8');
 assert.equal(runtime.events.length,currentPublishable.length,'runtime event count must equal current reviewed publishable count');
 const runtimeIds=new Set(runtime.events.map(e=>e.id));
 assert.deepEqual([...runtimeIds].sort(),currentPublishable.map(e=>e.id).sort(),'runtime IDs must match current reviewed events');
+assert.ok(runtime.events.every(e=>!Object.hasOwn(e,'editorialReview')),'Runtime approval is established by source generation, not per-row review metadata');
+assert.deepEqual(week.select(runtime.events,{week:'all'}).map(e=>e.id).sort(),currentPublishable.map(e=>e.id).sort(),'All dates is exactly the current publishable runtime inventory; no new source-loading or approval path');
 for(const event of pending){
   const id=event.id;
   assert.ok(!runtimeIds.has(id),'pending event leaked to runtime data: '+id);

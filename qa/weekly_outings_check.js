@@ -28,6 +28,7 @@ const allFixture={id:'multi',city:'koenji',status:'scheduled',editorialReview:'a
 const allFixtures=[
  {...allFixture,id:'future',dates:['2026-11-20']},allFixture,
  {...allFixture,id:'pending',editorialReview:'pending'},
+ ...['unknown','rejected','',null].map(editorialReview=>({...allFixture,id:'invalid-'+editorialReview,editorialReview})),
  {...allFixture,id:'expired-review',reviewThrough:'2026-09-10'},
  {...allFixture,id:'not-yet-checked',checkedAt:'2026-09-12'},
  {...allFixture,id:'unknown-review',reviewThrough:undefined},
@@ -42,6 +43,7 @@ const allOptions={now,week:'all',city:'koenji',kind:'live',audience:'solo'};
 assert.deepEqual(select(allFixtures,allOptions).map(e=>[e.id,e.nextDate]),[['multi','2026-09-11'],['future','2026-11-20']],'All dates includes later months once per event, ordered by next future date, with all AND filters and gates');
 assert.deepEqual(select(allFixtures,{...allOptions,now:Date.parse('2026-09-12T00:00:00+09:00')}).filter(e=>e.id==='multi').map(e=>e.nextDate),['2026-09-15'],'A multi-date event advances once after midnight');
 assert.equal(select([allFixture],{...allOptions,city:'jinbocho'}).length,0,'No matching all-date events gives an honest empty result');
+assert.equal(select([{...allFixture,editorialReview:undefined}],allOptions).length,1,'Generated publishable runtime rows omit editorialReview and remain compatible');
 // 再確認期限は会期と別に効く。会期が残っていても、期限を過ぎた催しは出さない（fail closed）。
 // 期限を延ばした催しだけが残る。
 //
