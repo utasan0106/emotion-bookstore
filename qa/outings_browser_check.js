@@ -82,6 +82,43 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
    }
    await page.evaluate(()=>window.scrollTo(0,0));
    await screen('october-12-next-week');flows.push({name:'Oct 5 next week includes both October 2 additions',url:page.url(),count:5});
+   // City-first layout and an explicit all-dates choice retain the current-week default.
+   const allAsOf='2026-10-02T09:00:00+09:00';await page.clock.setFixedTime(new Date(allAsOf));
+   await page.goto(origin+'/outings/',{waitUntil:'networkidle'});
+   const filterOrder=await page.locator('#event-filters select').evaluateAll(els=>els.map(el=>el.name));
+   assert.deepEqual(filterOrder,['city','week','kind','with']);
+   const cityBox=await page.locator('select[name=city]').boundingBox(),periodBox=await page.locator('select[name=week]').boundingBox();
+   assert.ok(cityBox.x<periodBox.x&&Math.abs(cityBox.y-periodBox.y)<2,'City is top left and period is immediately to its right');
+   await page.locator('select[name=city]').focus();
+   for(const name of ['week','kind','with']){await page.keyboard.press('Tab');assert.equal(await page.evaluate(()=>document.activeElement.name),name,'Keyboard follows visual filter order');}
+   assert.equal(await page.locator('select[name=week]').inputValue(),week.monday(Date.parse(allAsOf)),'Default remains this week');
+   await page.locator('select[name=week]').selectOption('all');
+   const allExpected=week.select(published,{now:Date.parse(allAsOf),week:'all'}).map(e=>e.id);
+   const visibleIds=()=>page.locator('[data-event-card]:visible').evaluateAll(els=>els.map(el=>el.dataset.eventCard));
+   assert.deepEqual(await visibleIds(),allExpected,'All reviewed upcoming events appear once in next-date order');
+   assert.equal(new URL(page.url()).searchParams.get('week'),'all');
+   assert.equal(new Set(await visibleIds()).size,allExpected.length,'Multi-day events are not repeated');
+   for(const img of await page.locator('[data-event-card]:visible img').all()){await img.scrollIntoViewIfNeeded();await img.evaluate(el=>el.decode());assert.ok(await img.evaluate(el=>el.complete&&el.naturalWidth>0));}
+   await page.evaluate(()=>window.scrollTo(0,0));await screen('all-dates');
+   await page.locator('select[name=city]').selectOption('koenji');await page.locator('select[name=kind]').selectOption('live');await page.locator('select[name=with]').selectOption('solo');
+   const combined=week.select(published,{now:Date.parse(allAsOf),week:'all',city:'koenji',kind:'live',audience:'solo'}).map(e=>e.id);
+   assert.deepEqual(await visibleIds(),combined,'All dates combines city, kind and companion with AND');
+   await page.evaluate(()=>window.scrollTo(0,0));await screen('all-dates-koenji-live');
+   const allListUrl=page.url();await page.reload({waitUntil:'networkidle'});assert.deepEqual(await visibleIds(),combined,'Shared all-dates URL restores filters');
+   await page.locator('[data-event-card="koenji-tomovsky"] [data-event-detail]').click();await page.waitForLoadState('networkidle');
+   assert.equal(new URLSearchParams(new URL(page.url()).searchParams.get('from')).get('week'),'all');
+   assert.equal(await page.locator('[data-event-status]').innerText(),'次の開催予定 10/16','All dates detail does not claim a selected week or parse all as a date');
+   const allDetailUrl=page.url();await page.goBack({waitUntil:'networkidle'});assert.equal(page.url(),allListUrl);assert.deepEqual(await visibleIds(),combined);
+   for(const [name,value] of [['week','all'],['city','koenji'],['kind','live'],['with','solo']])assert.equal(await page.locator('select[name='+name+']').inputValue(),value,'Back retains '+name);
+   await page.goForward({waitUntil:'networkidle'});assert.equal(page.url(),allDetailUrl);await page.locator('[data-event-back]').click();await page.waitForLoadState('networkidle');assert.equal(page.url(),allListUrl);assert.deepEqual(await visibleIds(),combined,'Detail return retains all four filters');
+   await page.locator('select[name=with]').selectOption('children');assert.equal((await visibleIds()).length,0);assert.ok(await page.locator('#event-empty').isVisible());await screen('all-dates-empty');
+   await page.goto(origin+'/outings/?kind=live',{waitUntil:'networkidle'});assert.equal(await page.locator('select[name=week]').inputValue(),'2026-10-05','Category-only entry still picks the nearest matching week, not all dates');
+   await page.goto(origin+'/outings/?week=all',{waitUntil:'networkidle'});
+   // A tab retained across the event's JST end date still keeps all selected and retires it.
+   await page.clock.setFixedTime(new Date('2026-10-17T00:00:00+09:00'));await page.reload({waitUntil:'networkidle'});
+   assert.equal(await page.locator('select[name=week]').inputValue(),'all');assert.ok(!(await visibleIds()).includes('koenji-tomovsky'));assert.ok((await visibleIds()).includes('shimokita-bergson'));
+   await page.clock.setFixedTime(new Date('2026-11-04T00:00:00+09:00'));await page.reload({waitUntil:'networkidle'});assert.equal((await visibleIds()).length,0);assert.ok(await page.locator('#event-empty').isVisible(),'All dates cannot restore ended or unreviewed events');
+   flows.push({name:'City-first all dates',asOf:allAsOf,count:allExpected.length,filterOrder,combined,back:true,forward:true,detailReturn:true,expiry:true});
    await page.clock.setFixedTime(new Date(report.asOf));
    await page.goto(origin+'/outings/?week=2026-10-05',{waitUntil:'networkidle'});assert.equal(await page.locator('[data-event-card]:visible').count(),5,'Next week has five reviewed events, without pending drafts');await screen('next-week');
    discoveryOverride=emptyDiscovery;await page.clock.setFixedTime(new Date('2026-10-05T00:00:00+09:00'));
