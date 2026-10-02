@@ -31,6 +31,7 @@ const state=page=>page.evaluate(()=>({url:location.href,history:history.length,t
    await page.screenshot({path:path.join(out,viewport.name+'-home-entry.png')});
    phase='selection';await page.keyboard.press('Enter');await page.waitForURL(origin+'/discover/selection/');await page.waitForLoadState('networkidle');await page.evaluate(()=>document.fonts.ready);
    const before=await state(page);assert.equal(before.scripts,0);assert.equal(before.analytics,'undefined');assert.equal(before.dataLayer,null);assert.equal(before.iframes,0);
+   assert.equal(await page.locator('.site-sections a[aria-current="location"]').innerText(),'作品を探す','The current parent section is visible');
    assert.equal(await page.locator('details').getAttribute('open'),null);
    const fonts=await page.evaluate(()=>({display:document.fonts.check('500 32px "EB Display"'),reading:document.fonts.check('400 16px "EB Reading"')}));assert.ok(fonts.display&&fonts.reading,'Local Japanese fonts loaded');
    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Closed view has no overflow');

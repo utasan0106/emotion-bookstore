@@ -28,7 +28,10 @@
  const status=document.querySelector('[data-event-status]');
  function detailState(){if(!status)return;const e=data.events.find(x=>x.id===status.dataset.eventStatus);if(!e)return;const today=date(Date.now()),upcoming=dates(e).filter(d=>d>=today);const chosenWeek=safeParams(new URLSearchParams(query.get('from')||'')).get('week'),selectedDate=chosenWeek&&chosenWeek!=='all'&&upcoming.find(d=>d>=chosenWeek&&d<add(chosenWeek,7));status.textContent=e.status==='cancelled'?'開催中止':!upcoming.length?'この催しは終了しました':today>e.reviewThrough?'開催状況を再確認中':selectedDate?'選んだ週の開催予定 '+short(selectedDate):upcoming[0]===today?'本日の開催予定':'次の開催予定 '+short(upcoming[0]);status.classList.toggle('is-past',!upcoming.length||today>e.reviewThrough);}
  const back=document.querySelector('[data-event-back]');
- if(back){const p=safeParams(new URLSearchParams(query.get('from')||''));back.href='/outings/'+(p.size?'?'+p.toString():'');}
+ // A validated listing state takes precedence. Direct, venue and other
+ // context-free entries keep the authored city fallback instead of being
+ // widened to the unfiltered catalogue.
+ if(back){const p=safeParams(new URLSearchParams(query.get('from')||''));if(p.size)back.href='/outings/?'+p.toString();}
  if(!form){detailState();document.addEventListener('visibilitychange',detailState);return;}
  const weekSelect=form.elements.week,citySelect=form.elements.city,withSelect=form.elements.with,kindSelect=form.elements.kind;
  function options(){const now=Date.now(),first=monday(now),old=weekSelect.value;weekSelect.replaceChildren();const all=document.createElement('option');all.value='all';all.textContent='すべて';weekSelect.append(all);for(let n=0;n<4;n++){const w=add(first,n*7),o=document.createElement('option');o.value=w;o.textContent=(n===0?'今週のこれから':n===1?'来週':'開催週')+' · '+short(w)+'〜'+short(add(w,6));weekSelect.append(o);}weekSelect.value=[...weekSelect.options].some(o=>o.value===old)?old:first;}

@@ -16,6 +16,7 @@ assert.match(html,/<details class="selection-topic">/,'No topic is selected init
 assert.match(html,/<title>作品のよりみち｜みんなの感情書店<\/title>/);
 for(const attr of ['rel="canonical" href','property="og:url" content'])assert.ok(html.includes(attr+'="https://emotionbookstore.com/discover/selection/"'));
 assert.match(html,/<meta name="referrer" content="no-referrer">/);
+assert.match(html,/<a href="\/works\.html" aria-current="location">作品を探す<\/a>/,'The feature exposes its parent location in the stable four-item navigation');
 const executable=html.replace(/<script type="application\/ld\+json">[^<]+<\/script>/g,'');
 assert.equal((html.match(/<script type="application\/ld\+json">/g)||[]).length,1);
 assert.doesNotMatch(read('discover/selection/selection.css'),/url\(|@import|expression/i,'Styles do not load resources');
