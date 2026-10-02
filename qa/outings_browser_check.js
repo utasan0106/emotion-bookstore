@@ -59,6 +59,17 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
    assert.equal(new URL(page.url()).search,'');assert.equal(await page.locator('select[name=city]').inputValue(),'');flows.push({name:'kiyosumi honest fallback',url:page.url()});
    phase='reviewed-outings';
    const published=source.events.filter(source.isPublishableEvent);
+   await page.goto(origin+'/outings/events/koenji-midsummer.html',{waitUntil:'networkidle'});
+   assert.equal(await page.locator('[data-event-back]').getAttribute('href'),'/outings/?city=koenji','Direct detail keeps its authored city fallback');
+   const unsafeFrom=encodeURIComponent('week=ALL&city=unknown&kind=unknown&with=unknown');
+   await page.goto(origin+'/outings/events/koenji-midsummer.html?from='+unsafeFrom,{waitUntil:'networkidle'});
+   assert.equal(await page.locator('[data-event-back]').getAttribute('href'),'/outings/?city=koenji','Invalid listing state cannot widen or replace the authored fallback');
+   await page.goto(origin+'/discover/venue/za-koenji/',{waitUntil:'networkidle'});
+   await page.locator('a[href="/outings/events/koenji-midsummer.html"]').click();await page.waitForLoadState('networkidle');
+   assert.equal(await page.locator('main h1').innerText(),'夏の夜の夢');
+   assert.equal(await page.locator('[data-event-back]').getAttribute('href'),'/outings/?city=koenji','Venue-to-detail keeps the relevant city fallback');
+   flows.push({name:'Direct and venue detail fallbacks',direct:'/outings/?city=koenji',invalidFromRejected:true,venue:true});
+   await page.goto(origin+'/outings/',{waitUntil:'networkidle'});
    assert.equal(await page.locator('[data-event-card]:visible').count(),week.select(published,{now:Date.parse(report.asOf)}).length);
    await screen('current-list');
    for(const id of [...newlyReviewed,...octoberReviewed]){
@@ -123,6 +134,7 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
    await page.locator('[data-event-card="koenji-tomovsky"] [data-event-detail]').click();await page.waitForLoadState('networkidle');
    assert.equal(new URLSearchParams(new URL(page.url()).searchParams.get('from')).get('week'),'all');
    assert.equal(await page.locator('[data-event-status]').innerText(),'次の開催予定 10/16','All dates detail does not claim a selected week or parse all as a date');
+   assert.equal(await page.locator('[data-event-back]').getAttribute('href'),'/outings/'+new URL(allListUrl).search,'Validated all-condition listing state becomes the detail return target');
    const allDetailUrl=page.url();await page.goBack({waitUntil:'networkidle'});assert.equal(page.url(),allListUrl);assert.deepEqual(await visibleIds(),combined);
    for(const [name,value] of [['week','all'],['city','koenji'],['kind','live'],['with','solo']])assert.equal(await page.locator('select[name='+name+']').inputValue(),value,'Back retains '+name);
    await page.goForward({waitUntil:'networkidle'});assert.equal(page.url(),allDetailUrl);await page.locator('[data-event-back]').click();await page.waitForLoadState('networkidle');assert.equal(page.url(),allListUrl);assert.deepEqual(await visibleIds(),combined,'Detail return retains all four filters');

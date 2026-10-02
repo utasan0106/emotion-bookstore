@@ -23,6 +23,12 @@ for(const city of cities)for(const kind of ['audio','video','book','film']){
 }
 for(const essay of require('../tools/city-research')){
  const html=read(`discover/essays/${essay.id}.html`);
+ assert.ok(html.includes('<header class="masthead"><a class="brand" href="/index.html">'),'Article retains the shared masthead: '+essay.id);
+ assert.ok(html.includes('<a href="/discover/essays/">街の記事へ戻る</a></header>'),'Article keeps one explicit return action: '+essay.id);
+ assert.ok(html.includes(`<p class="research-back">街の記事 / ${essay.cityLabel}</p>`),'Article exposes non-duplicated section/city context: '+essay.id);
+ assert.ok(!html.includes('<p class="research-back"><a'),'Article context does not duplicate the masthead return: '+essay.id);
+ assert.ok(html.includes(`href="/discover/${essay.city}/film.html"`),'Article keeps its city film route: '+essay.id);
+ assert.ok(html.includes(`href="/discover/${essay.city}/video.html"`),'Article keeps its city video route: '+essay.id);
  assert.equal(essay.summary.length,3,'Three editorial summary points');
  assert.ok(essay.methodology.includes('公開資料'),'Explain actual reporting basis');
  assert.ok(html.includes(essay.methodology),'Methodology remains visible');
