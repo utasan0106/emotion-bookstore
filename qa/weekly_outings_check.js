@@ -108,3 +108,8 @@ assert.match(index,/複数日開催 · 09\/13〜10\/17の指定日/);
 assert.match(index,/会期 09\/19〜11\/03 · 休館日あり/);
 const noScript=index.match(/<noscript>([\s\S]*?)<\/noscript>/)[1];
 for(const e of currentRuntime)assert.ok(noScript.includes(e.schedule.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')),'No-JS preserves the complete official schedule: '+e.id);
+
+for(const e of currentRuntime.filter(e=>dates(e).length===1)){
+ const card=index.match(new RegExp('<article class="event-card" data-event-card="'+e.id+'"[\\s\\S]*?<\\/article>'))[0];
+ assert.ok(!card.includes('<small>'),'Single dates are not repeated in a secondary schedule: '+e.id);
+}
