@@ -23,6 +23,27 @@ assert.ok(select(fixtures,{now}).every(e=>!e.id.endsWith('-15')));
 assert.ok(select(fixtures,{now:Date.parse('2026-09-14T00:00:00+09:00')}).every(e=>e.id.endsWith('-15')),'Ended event dates excluded');
 assert.equal(select(fixtures,{now,audience:'children'}).length,4,'Audience filter is nonempty and exact');
 assert.ok(select(fixtures,{now,audience:'children'}).every(e=>e.audiences.includes('children')));
+// All dates is a date-range choice, not a relaxation of the publication gates.
+const allFixture={id:'multi',city:'koenji',status:'scheduled',editorialReview:'approved',checkedAt:'2026-09-01',reviewThrough:'2026-12-31',dates:['2026-09-10','2026-09-11','2026-09-15','2026-11-20'],audiences:['solo'],browseKinds:['live']};
+const allFixtures=[
+ {...allFixture,id:'future',dates:['2026-11-20']},allFixture,
+ {...allFixture,id:'pending',editorialReview:'pending'},
+ ...['unknown','rejected','',null].map(editorialReview=>({...allFixture,id:'invalid-'+editorialReview,editorialReview})),
+ {...allFixture,id:'expired-review',reviewThrough:'2026-09-10'},
+ {...allFixture,id:'not-yet-checked',checkedAt:'2026-09-12'},
+ {...allFixture,id:'unknown-review',reviewThrough:undefined},
+ {...allFixture,id:'unknown-check',checkedAt:undefined},
+ {...allFixture,id:'cancelled',status:'cancelled'},
+ {...allFixture,id:'ended',dates:['2026-09-10']},
+ {...allFixture,id:'other-city',city:'shimokitazawa'},
+ {...allFixture,id:'other-kind',browseKinds:['book']},
+ {...allFixture,id:'other-audience',audiences:['friends']}
+];
+const allOptions={now,week:'all',city:'koenji',kind:'live',audience:'solo'};
+assert.deepEqual(select(allFixtures,allOptions).map(e=>[e.id,e.nextDate]),[['multi','2026-09-11'],['future','2026-11-20']],'All dates includes later months once per event, ordered by next future date, with all AND filters and gates');
+assert.deepEqual(select(allFixtures,{...allOptions,now:Date.parse('2026-09-12T00:00:00+09:00')}).filter(e=>e.id==='multi').map(e=>e.nextDate),['2026-09-15'],'A multi-date event advances once after midnight');
+assert.equal(select([allFixture],{...allOptions,city:'jinbocho'}).length,0,'No matching all-date events gives an honest empty result');
+assert.equal(select([{...allFixture,editorialReview:undefined}],allOptions).length,1,'Generated publishable runtime rows omit editorialReview and remain compatible');
 // 再確認期限は会期と別に効く。会期が残っていても、期限を過ぎた催しは出さない（fail closed）。
 // 期限を延ばした催しだけが残る。
 //
@@ -42,13 +63,24 @@ assert.ok(select(events,{now,audience:'children'}).every(e=>e.audiences.includes
 for(const e of events.filter(source.isPublishableEvent)){
  const start=Date.parse(e.checkedAt+'T00:00:00+09:00');
  assert.equal(select([e],{now:start-1}).length,0,'Not verified yet: '+e.id);
+ assert.equal(select([e],{now:start-1,week:'all'}).length,0,'All dates excludes unverified events: '+e.id);
  const last=dates(e).at(-1),end=[last,e.reviewThrough].sort()[0];
  const after=Date.parse(end+'T00:00:00+09:00')+86400000;
  assert.equal(select([e],{now:after}).length,0,'Expired at JST midnight: '+e.id);
- if(e.status==='scheduled'&&dates(e).includes(end)&&e.checkedAt<=end)
+ assert.equal(select([e],{now:after,week:'all'}).length,0,'All dates expires at JST midnight: '+e.id);
+ if(e.status==='scheduled'&&dates(e).includes(end)&&e.checkedAt<=end){
   assert.equal(select([e],{now:after-1}).length,1,'Last valid day remains available: '+e.id);
+  assert.equal(select([e],{now:after-1,week:'all'}).length,1,'All dates keeps the last valid day: '+e.id);
+ }
 }
 const root=path.resolve(__dirname,'..');
+const runtimeSource=fs.readFileSync(path.join(root,'outings/week.js'),'utf8');
+const safeParams=require('node:vm').runInNewContext('('+runtimeSource.match(/function safeParams\(p\)\{[^\n]+/)[0]+')',{URLSearchParams,data:source,...require('../outings/week')});
+assert.equal(safeParams(new URLSearchParams('week=all&city=koenji&kind=live&with=solo')).toString(),'week=all&city=koenji&with=solo&kind=live','All mode survives the same safe URL parser used for details and returns');
+for(const invalid of ['ALL','all-dates','2026-02-30','not-a-date'])assert.equal(safeParams(new URLSearchParams({week:invalid})).has('week'),false,'Reject malformed period '+invalid);
+const index=fs.readFileSync(path.join(root,'outings/index.html'),'utf8');
+const filterForm=index.match(/<form id="event-filters"[\s\S]*?<\/form>/)[0];
+assert.deepEqual([...filterForm.matchAll(/<select name="([^"]+)"/g)].map(m=>m[1]),['city','week','kind','with'],'City-first visual and keyboard order must come from DOM order');
 const todayString=new Date(Date.now()+9*3600000).toISOString().slice(0,10);
 const currentRuntime=events.filter(e=>source.isPublishableEvent(e)&&e.status==='scheduled'&&e.checkedAt<=todayString&&e.reviewThrough>=todayString&&dates(e).at(-1)>=todayString);
 for(const e of currentRuntime){const page=fs.readFileSync(path.join(root,`outings/events/${e.id}.html`),'utf8');assert.equal(page.split(`href="${e.url.replaceAll('&','&amp;')}"`).length-1,1,'one official action');assert.match(page,/この街で、なぜこの催し/);assert.match(page,/data-event-status/);assert.match(page,/data-page-tools/);for(const link of page.matchAll(/href="(\/[^"]*)"/g)){const target=path.join(root,link[1].split(/[?#]/)[0]);assert.ok(fs.existsSync(target),target);}}
