@@ -76,6 +76,11 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
    assert.equal(await page.locator('select[name=week] option:checked').innerText(),'来週 · 10/12〜10/18');
    assert.equal(await page.locator('[data-event-card]:visible').count(),5,'October 5 next-week inventory has five reviewed events');
    for(const id of octoberReviewed)assert.ok(await page.locator('[data-event-card="'+id+'"]').isVisible(),id+' is visible in next-week supply');
+   // Full-page screenshots do not trigger off-screen lazy images on narrow screens.
+   for(const img of await page.locator('[data-event-card]:visible img').all()){
+    await img.scrollIntoViewIfNeeded();await img.evaluate(el=>el.decode());assert.ok(await img.evaluate(el=>el.complete&&el.naturalWidth>0),'Every next-week card image loads');
+   }
+   await page.evaluate(()=>window.scrollTo(0,0));
    await screen('october-12-next-week');flows.push({name:'Oct 5 next week includes both October 2 additions',url:page.url(),count:5});
    await page.clock.setFixedTime(new Date(report.asOf));
    await page.goto(origin+'/outings/?week=2026-10-05',{waitUntil:'networkidle'});assert.equal(await page.locator('[data-event-card]:visible').count(),5,'Next week has five reviewed events, without pending drafts');await screen('next-week');
