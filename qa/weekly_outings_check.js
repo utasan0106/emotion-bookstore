@@ -91,3 +91,20 @@ for(const e of events.filter(e=>!currentRuntime.includes(e))){
 }
 assert.doesNotMatch(fs.readFileSync(path.join(root,'outings/week.js'),'utf8'),/fetch\(|localStorage|geolocation|gtag/);
 console.log('PASS event selection contracts + '+currentRuntime.length+' current reviewed detail pages; JST rollover, closures, expiry, cancellation and filters');
+
+// A date is a scheduled day, never an assertion that a show is running now.
+const {nextDateLabel}=require('../outings/week');
+const labelNow=Date.parse('2026-10-02T12:00:00+09:00');
+assert.equal(nextDateLabel({nextDate:'2026-10-02'},{now:labelNow}),'本日の開催予定 10/02');
+assert.equal(nextDateLabel({nextDate:'2026-10-09'},{now:labelNow}),'次の開催予定 10/09');
+assert.equal(nextDateLabel({nextDate:'2026-10-09'},{now:labelNow,week:'2026-10-05'}),'選んだ週の開催予定 10/09');
+for(const card of index.matchAll(/<article class="event-card"[\s\S]*?<\/article>/g)){
+ assert.ok(card[0].indexOf('<h2>')<card[0].indexOf('<figure'),'Title precedes contextual image');
+ assert.ok(card[0].indexOf('data-next-date')<card[0].indexOf('<figure'),'Schedule precedes image');
+ assert.match(card[0],/内容・詳しい日程を読む/);
+ assert.match(card[0],/class="event-official"[^>]*target="_blank"/);
+}
+assert.match(index,/複数日開催 · 09\/13〜10\/17の指定日/);
+assert.match(index,/会期 09\/19〜11\/03 · 休館日あり/);
+const noScript=index.match(/<noscript>([\s\S]*?)<\/noscript>/)[1];
+for(const e of currentRuntime)assert.ok(noScript.includes(e.schedule.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')),'No-JS preserves the complete official schedule: '+e.id);

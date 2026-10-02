@@ -99,6 +99,20 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
    assert.equal(new URL(page.url()).searchParams.get('week'),'all');
    assert.equal(new Set(await visibleIds()).size,allExpected.length,'Multi-day events are not repeated');
    for(const img of await page.locator('[data-event-card]:visible img').all()){await img.scrollIntoViewIfNeeded();await img.evaluate(el=>el.decode());assert.ok(await img.evaluate(el=>el.complete&&el.naturalWidth>0));}
+
+   for(const card of await page.locator('[data-event-card]:visible').all()){
+    const title=await card.locator('h2').boundingBox(),dateBox=await card.locator('.event-date').boundingBox(),photoBox=await card.locator('figure').boundingBox();
+    assert.ok(title.y+title.height<=photoBox.y&&dateBox.y+dateBox.height<=photoBox.y,'Title and complete date summary precede the contextual image');
+    assert.ok((await card.locator('[data-next-date]').innerText()).includes('開催予定'),'Next date includes its meaning');
+    const id=await card.getAttribute('data-event-card'),e=source.events.find(e=>e.id===id);
+    assert.equal(await card.locator('.event-official').getAttribute('href'),e.url);
+    assert.ok((await card.locator('figcaption').innerText()).match(/会場：|街の風景：/));
+   }
+   const firstCard=page.locator('[data-event-card]:visible').first();
+   await firstCard.locator('.event-official').focus();await page.keyboard.press('Tab');
+   assert.ok(await firstCard.locator('[data-event-detail]').evaluate(el=>el===document.activeElement),'Keyboard distinguishes official and internal actions');
+   const officialUrl=await firstCard.locator('.event-official').getAttribute('href'),officialPopup=page.waitForEvent('popup');
+   await firstCard.locator('.card-action').click();const officialPage=await officialPopup;await officialPage.waitForLoadState('domcontentloaded');assert.equal(officialPage.url(),officialUrl);await officialPage.close();
    await page.evaluate(()=>window.scrollTo(0,0));await screen('all-dates');
    await page.locator('select[name=city]').selectOption('koenji');await page.locator('select[name=kind]').selectOption('live');await page.locator('select[name=with]').selectOption('solo');
    const combined=week.select(published,{now:Date.parse(allAsOf),week:'all',city:'koenji',kind:'live',audience:'solo'}).map(e=>e.id);

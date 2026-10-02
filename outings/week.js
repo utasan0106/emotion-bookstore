@@ -13,7 +13,8 @@
   return events.filter(e=>(e.editorialReview===undefined||e.editorialReview==='approved')&&e.status==='scheduled'&&e.checkedAt<=today&&e.reviewThrough>=today&&(!city||e.city===city)&&(!audience||e.audiences.includes(audience))&&(!kind||(e.browseKinds||[]).includes(kind)))
    .map(e=>({...e,nextDate:dates(e).find(d=>d>=today&&(all||(d>=week&&d<end)))})).filter(e=>e.nextDate).sort((a,b)=>a.nextDate.localeCompare(b.nextDate)||a.id.localeCompare(b.id));
  }
- const api={stamp,date,add,monday,dates,state,select};
+ function nextDateLabel(e,{now=Date.now(),week='all'}={}){return (e.nextDate===date(now)?'本日の開催予定 ':week==='all'?'次の開催予定 ':'選んだ週の開催予定 ')+e.nextDate.slice(5).replace('-','/');}
+ const api={stamp,date,add,monday,dates,state,select,nextDateLabel};
  if(typeof module!=='undefined')module.exports=api;
  // The catalogue pages reuse the same JST week boundary for their rotation.
  if(typeof window!=='undefined')window.V3_WEEK=api;
@@ -38,7 +39,7 @@
   const selected=select(data.events,{week:weekSelect.value,city:citySelect.value,audience:withSelect.value,kind:kindSelect.value});
   const byId=new Map(selected.map(e=>[e.id,e]));const params=new URLSearchParams();params.set('week',weekSelect.value);if(citySelect.value)params.set('city',citySelect.value);if(withSelect.value)params.set('with',withSelect.value);if(kindSelect.value)params.set('kind',kindSelect.value);
   if(push)history.replaceState(null,'','?'+params.toString());
-  document.querySelectorAll('[data-event-card]').forEach(card=>{const e=byId.get(card.dataset.eventCard);card.hidden=!e;if(e){card.querySelector('[data-next-date]').textContent=short(e.nextDate);card.querySelector('[data-event-detail]').href='/outings/events/'+e.id+'.html?from='+encodeURIComponent(params.toString());}});
+  document.querySelectorAll('[data-event-card]').forEach(card=>{const e=byId.get(card.dataset.eventCard);card.hidden=!e;if(e){card.querySelector('[data-next-date]').textContent=nextDateLabel(e,{week:weekSelect.value});card.querySelector('[data-event-detail]').href='/outings/events/'+e.id+'.html?from='+encodeURIComponent(params.toString());}});
   // Keep reading and keyboard order consistent with the displayed chronological order.
   const grid=document.querySelector('.events-grid');
   const cards=new Map([...grid.children].map(card=>[card.dataset.eventCard,card]));
