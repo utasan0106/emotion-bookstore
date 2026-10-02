@@ -16,7 +16,6 @@ async function serve(){const s=http.createServer((req,res)=>{
  if(!fs.existsSync(file)||!fs.statSync(file).isFile()){res.writeHead(404);res.end();return;}
  res.writeHead(200,{'content-type':mime[path.extname(file)]||'application/octet-stream'});res.end(fs.readFileSync(file));
 });await new Promise((resolve,reject)=>{s.once('error',reject);s.listen(0,'127.0.0.1',resolve);});return s;}
-const state=page=>page.evaluate(()=>({url:location.href,history:history.length,title:document.title,local:{...localStorage},session:{...sessionStorage},cookie:document.cookie,dataLayer:window.dataLayer??null,analytics:typeof window.v3Analytics,scripts:[...document.scripts].filter(el=>el.type!=='application/ld+json').length,iframes:document.querySelectorAll('iframe').length}));
 (async()=>{
  server=await serve();const origin='http://127.0.0.1:'+server.address().port;
  browser=await chromium.launch({headless:true,...(process.env.QA_CHROMIUM?{executablePath:process.env.QA_CHROMIUM}:{} )});
@@ -26,11 +25,13 @@ const state=page=>page.evaluate(()=>({url:location.href,history:history.length,t
   const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
   const article='/discover/essays/creephyp-daisybar.html';
   await page.goto(origin+'/discover/shimokitazawa/',{waitUntil:'networkidle'});
+  const requestsBeforeArticle=external.length;
   const entrance=page.locator('a[href="'+article+'"]');await entrance.focus();await page.keyboard.press('Enter');await page.waitForURL(origin+article);await page.waitForLoadState('networkidle');
   await page.evaluate(()=>document.fonts.ready);
   const fonts=await page.evaluate(()=>({display:document.fonts.check('500 32px "EB Display"'),reading:document.fonts.check('400 16px "EB Reading"'),heading:getComputedStyle(document.querySelector('h1')).fontFamily}));
   assert.ok(fonts.display&&fonts.reading);assert.ok(fonts.heading.includes('EB Display'));assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   assert.equal(await page.locator('main h1').count(),1);
+  assert.equal(external.length,requestsBeforeArticle,'Article makes no automatic external request');
   await page.screenshot({path:path.join(out,width+'-'+(javaScriptEnabled?'js':'nojs')+'.png'),fullPage:true});
   const action=page.locator('#venue-action .official-exit');assert.equal(await action.getAttribute('href'),'https://daisybar.jp/schedule/');assert.equal(await action.getAttribute('target'),'_blank');
   await action.focus();const focus=await action.evaluate(el=>({active:el===document.activeElement,outline:getComputedStyle(el).outlineStyle}));assert.ok(focus.active);assert.equal(focus.outline,'solid');

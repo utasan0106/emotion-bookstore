@@ -14,7 +14,7 @@ No artist images, logos, lyrics, private locations, endorsements, event availabi
 
 ## Implementation
 
-`tools/city-stories.js` holds short factual culture guides separately from long-form comparative research. The existing discovery generator supplies the page shell, SEO, article schema and parent links. Existing research articles are unchanged. RSS remains works-only, as before; sitemap includes the new canonical route.
+`tools/city-stories.js` holds this factual culture guide separately from long-form comparative research. The short-story rendering path currently supports this one DaisyBar article only: its venue CTA and return-heading copy are intentionally fixed. Before adding a second story, move these into validated per-story fields or use a separate bounded renderer; do not reuse the present fixed destinations for another subject. The existing discovery generator supplies the page shell, SEO, article schema and parent links. Existing research articles are unchanged. RSS remains works-only, as before; sitemap includes the new canonical route.
 
 No new runtime scripts, storage keys, shelf/Object contracts, analytics definitions, automatic external requests, tracking or data collection. Official links are ordinary user-initiated navigation.
 
@@ -25,6 +25,7 @@ No new runtime scripts, storage keys, shelf/Object contracts, analytics definiti
 - Generator reproducibility, internal links, historical/current distinction, source links, source schema, canonical/OGP and article reachability checked
 - `git diff --check` and JavaScript syntax passed
 - Local Chromium cannot launch because this execution environment denies socket creation. Do not treat local browser testing as passed
-- Browser CI added for 390/1440 px × JavaScript on/off, fonts, overflow, keyboard entry/focus, official CTA target, source anchor, internal exits and browser Back; screenshots and report retained as workflow artifacts
+- Initial exact-head Browser CI passed on ebb1bde803ac63918727e7cf04a7352635f3710e (run 36951730188). Screenshots inspected at both widths; a lone final character in the desktop heading prompted an article-only text-wrap balance fix. Final-head rerun required after that fix.
+- Browser CI covers 390/1440 px × JavaScript on/off, fonts, overflow, keyboard entry/focus, official CTA target, source anchor, internal exits and browser Back; screenshots and report retained as workflow artifacts
 
 Status before PR: draft for parent review. No main merge or production deployment in this task. Visual acceptance depends on actual CI screenshots and review, not static checks alone.

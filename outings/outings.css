@@ -37,3 +37,16 @@ body main .event-detail h1{word-break:keep-all;overflow-wrap:anywhere;text-wrap:
 #event-filters{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media(max-width:800px){#event-filters{grid-template-columns:repeat(2,minmax(0,1fr))}#event-filters label:first-child{grid-column:auto}}
 @media(max-width:359px){#event-filters{grid-template-columns:1fr}}
+
+/* Content first: the event is identifiable before its contextual photograph. */
+body.design-redesign .event-card-heading{padding:24px 22px 20px;border-top:2px solid var(--dr-accent)}
+body.design-redesign.site-polished .event-card .event-card-heading h2{margin:8px 0 14px;font-size:clamp(24px,2.2vw,30px);line-height:1.55}
+body.design-redesign .event-card .event-kind{margin:0;font-size:12px;letter-spacing:.08em;color:var(--dr-accent)}
+body.design-redesign .event-card .event-city{margin:0;font-size:14px;color:var(--dr-muted);line-height:1.7}
+body.design-redesign .event-card .event-date{display:grid;gap:5px;margin-top:16px;padding:0;background:none;border:0}
+body.design-redesign .event-card .event-date>span{font:500 17px/1.65 var(--dr-display);font-variant-numeric:tabular-nums}
+body.design-redesign .event-card .event-date small{font-size:12px;line-height:1.7;color:var(--dr-muted)}
+body.design-redesign .event-card .event-photo{aspect-ratio:16/7}
+body.design-redesign .event-card .event-card-body{padding:18px 22px 20px}
+body.design-redesign .event-card .card-action{min-height:44px;box-sizing:border-box}
+@media(max-width:600px){body.design-redesign .event-card-heading{padding:22px 20px 18px}body.design-redesign .event-card .event-card-body{padding:18px 20px 20px}}
