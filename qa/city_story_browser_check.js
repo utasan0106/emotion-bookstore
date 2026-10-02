@@ -28,8 +28,8 @@ async function serve(){const s=http.createServer((req,res)=>{
   const requestsBeforeArticle=external.length;
   const entrance=page.locator('a[href="'+article+'"]');await entrance.focus();await page.keyboard.press('Enter');await page.waitForURL(origin+article);await page.waitForLoadState('networkidle');
   await page.evaluate(()=>document.fonts.ready);
-  const fonts=await page.evaluate(()=>({display:document.fonts.check('500 32px "EB Display"'),reading:document.fonts.check('400 16px "EB Reading"'),heading:getComputedStyle(document.querySelector('h1')).fontFamily}));
-  assert.ok(fonts.display&&fonts.reading);assert.ok(fonts.heading.includes('EB Display'));assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  const fonts=await page.evaluate(()=>({display:document.fonts.check('500 32px "EB Display"'),reading:document.fonts.check('400 16px "EB Reading"'),heading:getComputedStyle(document.querySelector('h1')).fontFamily,titleWrap:getComputedStyle(document.querySelector('h1')).textWrap,titleWordBreak:getComputedStyle(document.querySelector('h1')).wordBreak}));
+  assert.equal(fonts.titleWrap,'balance');assert.equal(fonts.titleWordBreak,'normal');assert.ok(fonts.display&&fonts.reading);assert.ok(fonts.heading.includes('EB Display'));assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   assert.equal(await page.locator('main h1').count(),1);
   assert.equal(external.length,requestsBeforeArticle,'Article makes no automatic external request');
   await page.screenshot({path:path.join(out,width+'-'+(javaScriptEnabled?'js':'nojs')+'.png'),fullPage:true});
