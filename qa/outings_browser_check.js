@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 'use strict';
-// Exact checkout, deterministic October 1 calendar. External navigation is intercepted.
+// Exact checkout, deterministic October 1 legacy and October 5 supply calendars. External navigation is intercepted.
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),http=require('node:http'),cp=require('node:child_process');
 const {chromium}=require('playwright');
 const root=path.resolve(__dirname,'..'),out=path.join(__dirname,'artifacts/outings');
 const source=require('../tools/weekly-outings-source'),week=require('../outings/week');
 const newlyReviewed=['kichijoji-tsuijuku','jinbocho-joyu','shimokita-rekishi','koenji-beyond'];
+const octoberReviewed=['koenji-tomovsky','shimokita-bergson'];
 const mime={'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.json':'application/json','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml','.woff2':'font/woff2','.ico':'image/x-icon'};
-const report={commit:cp.execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),sourceSha:process.env.QA_SOURCE_SHA||null,asOf:'2026-10-01T09:00:00Z',viewports:[],limits:['Local checkout: external navigation targets are intercepted, not live provider availability or purchase tests.','Calendar is fixed to the reviewed October 1 release; expiry is additionally checked at November 4 JST.','The existing Shimokitazawa publisher cover request is recorded and blocked; reviewed event flows must not add automatic external resources.']};
+const report={commit:cp.execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),sourceSha:process.env.QA_SOURCE_SHA||null,asOf:'2026-10-01T09:00:00Z',supplyAsOf:'2026-10-05T00:00:00+09:00',viewports:[],limits:['Local checkout: external navigation targets are intercepted, not live provider availability or purchase tests.','Calendar is fixed to October 1 for the four legacy reviewed cards and October 5 for two October 2 additions and next-week supply; expiry is additionally checked at November 4 JST.','The existing Shimokitazawa publisher cover request is recorded and blocked; reviewed event flows must not add automatic external resources.']};
 fs.mkdirSync(out,{recursive:true});let server,browser,discoveryOverride=null;
 const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt('2026-10-05T00:00:00+09:00');
 (async()=>{
@@ -60,7 +61,8 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
    const published=source.events.filter(source.isPublishableEvent);
    assert.equal(await page.locator('[data-event-card]:visible').count(),week.select(published,{now:Date.parse(report.asOf)}).length);
    await screen('current-list');
-   for(const id of newlyReviewed){
+   for(const id of [...newlyReviewed,...octoberReviewed]){
+    if(octoberReviewed.includes(id))await page.clock.setFixedTime(new Date('2026-10-05T00:00:00+09:00'));
     const e=source.events.find(x=>x.id===id),next=week.dates(e).find(d=>d>='2026-10-01'),selectedWeek=week.monday(week.stamp(next));
     await page.goto(origin+'/outings/',{waitUntil:'networkidle'});
     await page.locator('select[name=week]').selectOption(selectedWeek);await page.locator('select[name=city]').selectOption(e.city);
@@ -70,6 +72,12 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
     const popupPromise=page.waitForEvent('popup');await page.locator('.event-detail a.primary').click();const popup=await popupPromise;await popup.waitForLoadState('domcontentloaded');assert.equal(popup.url(),e.url);await popup.close();
     const detail=page.url();await page.goBack({waitUntil:'networkidle'});assert.equal(await page.locator('select[name=city]').inputValue(),e.city);assert.equal(await page.locator('select[name=week]').inputValue(),selectedWeek);flows.push({name:id,detail,official:e.url,back:true});
    }
+   await page.goto(origin+'/outings/?week=2026-10-12',{waitUntil:'networkidle'});
+   assert.equal(await page.locator('select[name=week] option:checked').innerText(),'来週 · 10/12〜10/18');
+   assert.equal(await page.locator('[data-event-card]:visible').count(),5,'October 5 next-week inventory has five reviewed events');
+   for(const id of octoberReviewed)assert.ok(await page.locator('[data-event-card="'+id+'"]').isVisible(),id+' is visible in next-week supply');
+   await screen('october-12-next-week');flows.push({name:'Oct 5 next week includes both October 2 additions',url:page.url(),count:5});
+   await page.clock.setFixedTime(new Date(report.asOf));
    await page.goto(origin+'/outings/?week=2026-10-05',{waitUntil:'networkidle'});assert.equal(await page.locator('[data-event-card]:visible').count(),5,'Next week has five reviewed events, without pending drafts');await screen('next-week');
    discoveryOverride=emptyDiscovery;await page.clock.setFixedTime(new Date('2026-10-05T00:00:00+09:00'));
    await page.goto(origin+'/',{waitUntil:'networkidle'});await page.locator('#siteMenuButton').click();await page.locator('a[href="/discover/#city-signals"]').click();await page.waitForURL(origin+'/discover/#city-signals');
@@ -80,7 +88,7 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
    assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);assert.ok(external.filter(x=>x.phase==='reviewed-outings').every(x=>x.navigation),'Reviewed outings and empty-state flows load no automatic external resources');
    const legacyCover='https://www.j-n.co.jp/wp/wp-content/uploads/2022/09/R978-4-408-55758-8.jpg';
    assert.ok(external.filter(x=>!x.navigation).every(x=>x.phase==='existing-city'&&x.url===legacyCover),'Only the existing city catalogue publisher cover may be requested; it is blocked in CI');
-   report.viewports.push({...viewport,passed:true,flows,externalTargets:external,missing,errors});console.log('PASS '+viewport.name+': five cities, month-neutral menu, Kiyosumi fallback, four reviewed cards/official targets/Back and expiry');
+   report.viewports.push({...viewport,passed:true,flows,externalTargets:external,missing,errors});console.log('PASS '+viewport.name+': five cities, month-neutral menu, Kiyosumi fallback, four legacy + two October reviewed cards/official targets/Back, Oct 5 next-week supply and expiry');
   }catch(e){await page.screenshot({path:path.join(out,viewport.name+'-failure.png'),fullPage:true}).catch(()=>{});report.viewports.push({...viewport,passed:false,error:e.message,flows,external,missing,errors});throw e;}
   finally{await context.close();}
  }

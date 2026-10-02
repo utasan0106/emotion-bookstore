@@ -227,16 +227,6 @@
       "permanent": false
     },
     {
-      "source": "/outings/events/shimokita-bergson.html",
-      "destination": "/outings/",
-      "permanent": false
-    },
-    {
-      "source": "/outings/events/koenji-tomovsky.html",
-      "destination": "/outings/",
-      "permanent": false
-    },
-    {
       "source": "/discover/koenji/awa-2025.html",
       "destination": "/discover/koenji/video.html",
       "permanent": false
