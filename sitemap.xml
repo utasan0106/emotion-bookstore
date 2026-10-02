@@ -614,7 +614,7 @@
   </url>
   <url>
     <loc>https://emotionbookstore.com/discover/venue/jirokichi/</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -644,7 +644,7 @@
   </url>
   <url>
     <loc>https://emotionbookstore.com/outings/</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -675,6 +675,18 @@
   <url>
     <loc>https://emotionbookstore.com/outings/events/koenji-midsummer.html</loc>
     <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://emotionbookstore.com/outings/events/koenji-tomovsky.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://emotionbookstore.com/outings/events/shimokita-bergson.html</loc>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

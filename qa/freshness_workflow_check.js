@@ -42,7 +42,7 @@ function generatedAt(instant){
  validate(['vercel.json'],JSON.parse(fs.readFileSync(path.join(root,'vercel.json'),'utf8')),config,redirectContract(now));
  return {config,writes,removed};
 }
-for(const [id,lastDay,nextDay] of [['shimokita-moon','2026-10-04','2026-10-05'],['kichijoji-taniguchi','2026-11-03','2026-11-04']]){
+for(const [id,lastDay,nextDay] of [['shimokita-moon','2026-10-04','2026-10-05'],['koenji-tomovsky','2026-10-16','2026-10-17'],['shimokita-bergson','2026-10-18','2026-10-19'],['kichijoji-taniguchi','2026-11-03','2026-11-04']]){
  const route=`/outings/events/${id}.html`,file=path.join(root,route);
  const before=generatedAt(lastDay+'T23:59:59.999+09:00'),after=generatedAt(nextDay+'T00:00:00.000+09:00');
  assert.ok(before.writes.has(file),'Detail remains available through final JST date: '+id);
@@ -51,7 +51,7 @@ for(const [id,lastDay,nextDay] of [['shimokita-moon','2026-10-04','2026-10-05'],
  assert.ok(after.config.redirects.some(r=>r.source===route&&r.destination==='/outings/'&&r.permanent===false),'Expired URL has safe temporary redirect: '+id);
  assert.ok(!after.writes.get(path.join(root,'outings/events-data.js')).includes('"id":"'+id+'"'),'Expired event absent from runtime: '+id);
 }
-console.log('PASS real event generator and redirect guard agree across Oct 4→5 and Nov 3→4 JST');
+console.log('PASS real event generator and redirect guard agree across Oct 4→5, Oct 16→17, Oct 18→19 and Nov 3→4 JST');
 
 // Run the real discovery generator in memory too: an expired signal must not erase
 // the Home menu anchor, imply all events ended, or retain the expired festival.
