@@ -7,6 +7,8 @@ const workMedia=require('./work-media');
 const siteOgp=require('./site-ogp');
 const profiles=require('./artist-profiles');
 const research=require('./city-research');
+const stories=require('./city-stories');
+const essays=[...research,...stories];
 const citySignals=[
   {event:'shimokita-moon',title:'通りを、アートを観る場所に',reading:'下北線路街を含む街全体に作品を展開する企画。線路跡の変化を読んだあと、そこで何が行われるのかを確かめる入口に。'},
   {event:'kichijoji-livepainting',title:'絵本の作り手に、街で出会う',reading:'吉祥寺をイメージしたギターサンタの公開制作。作品を見るだけでなく、色が加わる過程を楽しむという過ごし方。'},
@@ -219,7 +221,7 @@ function enrichSeo(file, html) {
       : null;
   const description=(specialDescription||plain([heading,creator,hook,'作品から街と人のつながりを辿る、みんなの感情書店。'].filter(Boolean).join('。')).replace(/。+/g,'。')).slice(0,155);
   const canonical=canonicalFor(file);
-  const essay=research.find(entry=>file===`essays/${entry.id}.html`);
+  const essay=essays.find(entry=>file===`essays/${entry.id}.html`);
   const isResearchIndex=file==='essays/index.html';
   const workItem=items.find(item=>file===`${item.city}/${item.id}.html`);
   const schemaObject=essay?{'@context':'https://schema.org','@type':'Article',headline:essay.title,description:essay.lead,datePublished:essay.publishedAt,dateModified:essay.modifiedAt,mainEntityOfPage:canonical,author:{'@type':'Organization',name:'みんなの感情書店編集部',url:'https://emotionbookstore.com/about.html'},publisher:{'@type':'Organization',name:'みんなの感情書店',url:'https://emotionbookstore.com/'},about:{'@type':'Place',name:essay.cityLabel},citation:essay.sources.map(source=>source.url)}:{'@context':'https://schema.org','@type':isResearchIndex?'CollectionPage':'WebPage',name:heading,description,url:canonical,isPartOf:{'@type':'WebSite',name:'みんなの感情書店',url:'https://emotionbookstore.com/'}};
@@ -274,6 +276,8 @@ function write(file, html) {
     html=html.replace('<section class="quick">',section+'<section class="quick">');
   }
   if(categoryFile==='index.html') {
+    const storyLinks=stories.filter(story=>story.city===city).map(story=>`<p><a class="research-link" href="/discover/essays/${story.id}.html">${esc(story.title)} →</a></p>`).join('');
+    if(storyLinks) html=html.replace('<p>知っている作品から、街とのつながりを辿る。</p>', '<p>知っている作品から、街とのつながりを辿る。</p>'+storyLinks);
     const related=research.filter(essay=>essay.city===city&&!html.includes(`/discover/essays/${essay.id}.html`));
     if(related.length) html=html.replace('<section class="quick">',`<section class="quick"><h2>あの頃の街に、もう一度。</h2>${related.map(essay=>`<p><a href="/discover/essays/${essay.id}.html">${esc(essay.title)}</a></p>`).join('')}</section><section class="quick">`);
   }
@@ -288,7 +292,7 @@ function write(file, html) {
   const section=file.startsWith('essays/')?'stories':'cities';
   html=html.replace('</header>','</header>'+require('./site-navigation')(section));
   html=require('./page-chrome')(html);
-  const themedCity=cityNames[city]?city:research.find(entry=>file===`essays/${entry.id}.html`)?.city;
+  const themedCity=cityNames[city]?city:essays.find(entry=>file===`essays/${entry.id}.html`)?.city;
   if(themedCity) html=html.replace('<body ',`<body data-editorial-city="${themedCity}" `);
   html=enrichSeo(file,html);
   html=require('./design-redesign')(file,html);
@@ -300,8 +304,14 @@ function write(file, html) {
   written++;
 }
 const cities=Object.keys(cityNames);
-const researchCards=research.map(essay=>`<article class="research-card"><p class="eyebrow">${esc(essay.issue)} · ${esc(essay.cityLabel)}</p><h2><a href="/discover/essays/${essay.id}.html">${esc(essay.title)}</a></h2><p>${esc(essay.lead)}</p><ul aria-label="調査の視点">${essay.lenses.map(lens=>`<li>${esc(lens)}</li>`).join('')}</ul><p class="research-meta">更新 ${esc(essay.modifiedAt)}</p><a class="research-link" href="/discover/essays/${essay.id}.html">記事を読む →</a></article>`).join('');
+const researchCards=essays.map(essay=>`<article class="research-card"><p class="eyebrow">${esc(essay.issue)} · ${esc(essay.cityLabel)}</p><h2><a href="/discover/essays/${essay.id}.html">${esc(essay.title)}</a></h2><p>${esc(essay.lead)}</p><ul aria-label="調査の視点">${essay.lenses.map(lens=>`<li>${esc(lens)}</li>`).join('')}</ul><p class="research-meta">更新 ${esc(essay.modifiedAt)}</p><a class="research-link" href="/discover/essays/${essay.id}.html">記事を読む →</a></article>`).join('');
 write('essays/index.html',shell('街の記事',`<section class="intro research-intro"><p class="eyebrow">広告・歴史・人と作品</p><h1>街の記事</h1><p class="lead">駅前はどう変わった？ あの作品と街には、どんなつながりがある？ 広告や公開資料から、街の背景を読みます。</p></section><section class="research-grid" aria-label="公開中の街の調査">${researchCards}</section><section class="quick"><h2>人と作品から知る街</h2><div class="quick-grid">${cities.map(city=>`<a href="/discover/${city}/#editorials-title"><strong>${cityNames[city]}のコラム →</strong><span>${city==='kichijoji'?'漫画家と街のつながり':'人・作品と街のつながり'}</span></a>`).join('')}</div><p><a href="/thread.html?thread=koenji-dance-history">高円寺の阿波おどりの歴史を読む →</a></p></section><aside class="research-method"><h2>この調査で守ること</h2><p>出典の数を結論の強さに置き換えません。広告主の意図、調査結果、編集上の解釈を区別し、分からないことも記事に残します。</p></aside>`,'<a href="/discover/">街から探す</a>'));
+for(const story of stories) {
+  const sections=story.sections.map(section=>`<section><h2>${esc(section.title)}</h2>${section.paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}</section>`).join('');
+  const summary=`<aside class="article-summary" aria-labelledby="article-summary-title"><h2 id="article-summary-title">この記事の要点</h2><ul>${story.summary.map(point=>`<li>${esc(point)}</li>`).join('')}</ul></aside>`;
+  const sources=story.sources.map(source=>`<div class="research-source"><h3>${external(source.url,source.label)}</h3><p>${esc(source.scope)}</p></div>`).join('');
+  write(`essays/${story.id}.html`,shell(story.title,`<article class="detail research-article"><p class="eyebrow">${esc(story.cityLabel)} / ${esc(story.series)}</p><p class="research-back"><a href="/discover/essays/">街の記事一覧</a> / <a href="/discover/${story.city}/">${esc(story.cityLabel)}</a></p><h1 class="city-story-title">${esc(story.title)}</h1><p class="detail-hook">${esc(story.lead)}</p><p class="research-byline">みんなの感情書店編集部 · ${esc(story.modifiedAt)} · 読了目安 ${story.readingMinutes}分</p>${summary}<nav class="research-toc" aria-label="記事の目次"><a href="#research-reading">本文を読む</a><a href="#venue-action">現在の公演を探す</a><a href="#research-sources">出典・確認日</a></nav><div class="research-reading" id="research-reading">${sections}</div><section id="venue-action" class="destination"><h2>DaisyBarへ、次の一歩。</h2><p>下北沢駅南西口から徒歩4分。これからの出演者・料金・入場条件は、会場の公式案内で。</p><p>${external('https://daisybar.jp/schedule/','DaisyBarの現在の公演を探す','primary official-exit')}</p><p>${external('https://daisybar.jp/access/','会場への行き方を見る')}</p><p>公式サイトは新しいタブで開きます。</p></section><section id="research-sources"><h2>出典・確認日</h2><p>情報確認：${esc(story.checkedAt)}。公式の記録と、音楽の楽しみ方の提案を区別しています。AIを資料探索・文章化の補助に使用しています。</p>${sources}<p>${external('https://www.creephyp.com/','クリープハイプの公式サイト')}</p><p>本記事は、みんなの感情書店による独立した文化案内です。本人・関係団体による監修や公認を受けた記事ではありません。</p></section><section><h2>下北沢の音楽を、もう少し。</h2><p><a class="research-link" href="/discover/${story.city}/audio.html">下北沢の音楽・サウンドを見る →</a></p><p><a class="research-link" href="/outings/?city=${story.city}">下北沢の催しを探す →</a></p><p><a class="research-link" href="/discover/${story.city}/">下北沢の街ページへ戻る →</a></p><p><a class="research-link" href="/discover/essays/">街の記事一覧へ戻る →</a></p></section></article>`,'<a href="/discover/essays/">街の記事へ戻る</a>'));
+}
 for(const essay of research) {
   const sources=new Map(essay.sources.map(source=>[source.id,source]));
   for(const entry of [...essay.comparisons,...essay.timeline,...essay.sections.filter(section=>section.source)]) {

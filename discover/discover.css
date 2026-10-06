@@ -45,3 +45,6 @@
 .brand span{font-size:12px}.relation,.creator,.card-number,.city-caption p,.city-caption>span,.credits,.footer{font-size:14px}.quick-grid span,.feature p:not(.eyebrow),.feature small{font-size:14px}
 @media(max-width:600px){.city-hero{grid-template-columns:1fr}.city-panorama{height:170px}.city-heading{padding:20px}.city-heading h1{font-size:30px}.city-heading h1 span{display:inline-block;margin-left:12px}.category-nav{flex-wrap:wrap}.category-nav>a,.category-nav>span{font-size:14px}}
 @media(max-width:700px){.watch-heading,.watch-layout,.research-spotlight{grid-template-columns:1fr}.watch-heading{row-gap:10px}.watch-heading .eyebrow{grid-column:auto}.watch-list>a{min-height:108px;padding-inline:0}.related-work{padding:20px}.research-spotlight{gap:18px;padding:22px}.research-spotlight>div:last-child{border-left:0;border-top:1px solid var(--line);padding:18px 0 0}.research-card{padding:22px}.research-card ul{gap:6px 16px}}
+
+/* Keep the short cultural guide heading balanced without changing other articles. */
+.site-polished .detail h1.city-story-title{text-wrap:balance;word-break:normal}
