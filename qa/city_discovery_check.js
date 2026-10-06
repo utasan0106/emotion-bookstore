@@ -125,10 +125,16 @@ assert.match(researchIndex,/<h1>街の記事<\/h1>/);
 assert.match(discoveryHome,/class="research-spotlight"/);
 assert.ok(discoveryHome.includes('id="city-signals"'));
 assert.ok(discoveryHome.includes('今の街の動き'));
-assert.ok(discoveryHome.includes('自動更新や人気ランキングではありません'));
 const signalSource=require('../tools/weekly-outings-source'),signalWeek=require('../outings/week');
 const signalToday=signalWeek.date(Date.now());
-for(const id of ['shimokita-moon','jinbocho-pokemon','koenji-cafetalk','kichijoji-livepainting']) {
+const signalIds=['shimokita-moon','jinbocho-pokemon','koenji-cafetalk','kichijoji-livepainting'];
+const activeSignalIds=signalIds.filter(id=>{
+  const event=signalSource.events.find(e=>e.id===id);
+  return event&&signalSource.isPublishableEvent(event)&&event.status==='scheduled'&&event.checkedAt<=signalToday&&event.reviewThrough>=signalToday&&signalWeek.dates(event).at(-1)>=signalToday;
+});
+if(activeSignalIds.length) assert.ok(discoveryHome.includes('自動更新や人気ランキングではありません'),'Active city signals must keep the editorial/ranking disclaimer');
+else assert.match(discoveryHome,/id="city-signals"><h2>今の街の動き<\/h2><p>現在、掲載できる街の動きはありません。<\/p><a href="\/outings\/">催しを探す →<\/a><\/section>/,'No active signal must render the honest empty state and outings exit');
+for(const id of signalIds) {
   const event=signalSource.events.find(e=>e.id===id);
   const active=event&&signalSource.isPublishableEvent(event)&&event.status==='scheduled'&&event.checkedAt<=signalToday&&event.reviewThrough>=signalToday&&signalWeek.dates(event).at(-1)>=signalToday;
   assert.equal(discoveryHome.includes(`/outings/events/${id}.html`),Boolean(active),(active?'current':'ended')+' city signal mismatch: '+id);
