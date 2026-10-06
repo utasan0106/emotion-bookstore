@@ -48,7 +48,7 @@ async function serve(){
    assert.equal(layout.image.naturalHeight,layout.image.declaredHeight,'Image height metadata matches pixels');
    const imageRatio=layout.image.render.width/layout.image.render.height;
    const naturalRatio=layout.image.naturalWidth/layout.image.naturalHeight;
-   if(viewport.name==='desktop'&&edition.topFeatureId==='indies'){assert.equal(layout.image.objectFit,'cover','Desktop book cover uses a crop, never stretched pixels');assert.ok(Math.abs(imageRatio-2)<0.02,'Desktop book photograph keeps its intentional 2:1 crop');}
+   if(viewport.name==='desktop'&&['indies','mot-collection-light'].includes(edition.topFeatureId)){assert.equal(layout.image.objectFit,'cover','Reviewed desktop weekly cover uses a crop, never stretched pixels');assert.ok(Math.abs(imageRatio-2)<0.02,'Reviewed desktop weekly photograph keeps its intentional 2:1 crop');}
    else assert.ok(Math.abs(imageRatio-naturalRatio)<0.02,'Uncropped feature photograph is not stretched');
    assert.ok(layout.primary.render.height>=44,'Primary target has adequate height');
    assert.ok(layout.primary.render.y+layout.primary.render.height<=viewport.height,'Primary cover action is visible in the opening viewport');

@@ -125,10 +125,16 @@ assert.match(researchIndex,/<h1>街の記事<\/h1>/);
 assert.match(discoveryHome,/class="research-spotlight"/);
 assert.ok(discoveryHome.includes('id="city-signals"'));
 assert.ok(discoveryHome.includes('今の街の動き'));
-assert.ok(discoveryHome.includes('自動更新や人気ランキングではありません'));
 const signalSource=require('../tools/weekly-outings-source'),signalWeek=require('../outings/week');
 const signalToday=signalWeek.date(Date.now());
-for(const id of ['shimokita-moon','jinbocho-pokemon','koenji-cafetalk','kichijoji-livepainting']) {
+const signalIds=['shimokita-moon','jinbocho-pokemon','koenji-cafetalk','kichijoji-livepainting'];
+const activeSignalIds=signalIds.filter(id=>{
+  const event=signalSource.events.find(e=>e.id===id);
+  return event&&signalSource.isPublishableEvent(event)&&event.status==='scheduled'&&event.checkedAt<=signalToday&&event.reviewThrough>=signalToday&&signalWeek.dates(event).at(-1)>=signalToday;
+});
+if(activeSignalIds.length) assert.ok(discoveryHome.includes('自動更新や人気ランキングではありません'),'Active city signals must keep the editorial/ranking disclaimer');
+else assert.match(discoveryHome,/id="city-signals"><h2>今の街の動き<\/h2><p>現在、掲載できる街の動きはありません。<\/p><a href="\/outings\/">催しを探す →<\/a><\/section>/,'No active signal must render the honest empty state and outings exit');
+for(const id of signalIds) {
   const event=signalSource.events.find(e=>e.id===id);
   const active=event&&signalSource.isPublishableEvent(event)&&event.status==='scheduled'&&event.checkedAt<=signalToday&&event.reviewThrough>=signalToday&&signalWeek.dates(event).at(-1)>=signalToday;
   assert.equal(discoveryHome.includes(`/outings/events/${id}.html`),Boolean(active),(active?'current':'ended')+' city signal mismatch: '+id);
@@ -254,7 +260,12 @@ for(const i of items) {
   }
 }
 for(const i of commonVideos) {
-  assert.equal(i.playbackChecked,false,'Search availability is not tested playback');
+  if (i.id === 'thanks-tokyo') {
+    assert.equal(i.playbackChecked,true,'THANKS,TOKYO. playback was verified in the official public player');
+    assert.equal(i.playbackCheckedAt,'2026-10-06','Playback evidence date must stay explicit');
+  } else {
+    assert.equal(i.playbackChecked,false,'Do not claim playback for an unplayed short');
+  }
   assert.match(i.videoId,/^[A-Za-z0-9_-]{11}$/);
   assert.equal(new URL(i.url).searchParams.get('v'),i.videoId);
   const html=fs.readFileSync(path.join(root,`discover/short-films/${i.id}.html`),'utf8');

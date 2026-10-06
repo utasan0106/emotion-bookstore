@@ -2,16 +2,17 @@
 'use strict';
 const visualMedia = require('./visual-media-duration');
 const items = [];
-const commonVideosWeekOf = '2026-09-28';
+const commonVideosWeekOf = '2026-10-05';
 const commonVideos = [
   {
-    id: 'tokyo-metro-newline', title: '新たな未来に向けた第一歩！新線プロジェクト', creator: '東京メトロ / 30秒',
-    hook: '路線が伸びると、街と人の移動はどう変わる。',
-    note: '東京メトロの有楽町線・南北線延伸を伝える30秒の公式映像。移動と街のつながりを短い時間で見る入口です。',
-    videoId: 'rjFh_eBwV_k', durationSeconds: 30,
-    durationSource: 'https://www.youtube.com/watch?v=rjFh_eBwV_k',
-    sources: ['https://www.tokyometro-newline.jp/movie/'],
-    checkedAt: '2026-09-22'
+    id: 'thanks-tokyo', title: 'THANKS,TOKYO.【30秒ver】', creator: '東京都産業労働局 / 30秒',
+    hook: '東京を楽しむ人と、街を支える観光の仕事を30秒で見る。',
+    note: '東京都産業労働局公式チャンネルが公開する30秒版。短い時間で東京へ出る入口として使います。',
+    videoId: 'pCDd7LkhkfE', durationSeconds: 30,
+    durationSource: 'https://www.youtube.com/watch?v=pCDd7LkhkfE',
+    sources: ['https://www.youtube.com/watch?v=pCDd7LkhkfE'],
+    checkedAt: '2026-10-06', rotatedAt: '2026-10-05',
+    playbackChecked: true, playbackCheckedAt: '2026-10-06'
   },
   {
     id: 'find-my-tokyo-akasaka', title: 'Find my Tokyo.「赤坂_ツウな人生のはじまり」篇', creator: '東京メトロ / 15秒',
@@ -31,7 +32,7 @@ const commonVideos = [
     sources: ['https://www.city.musashino.lg.jp/gomi_kankyo/midori_koen/tokyonomoriwomamorutorikumi/1037102.html'],
     checkedAt: '2026-09-28', rotatedAt: '2026-09-28'
   }
-].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-22', playbackChecked: false}));
+].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-22', playbackChecked: video.playbackChecked === true}));
 const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({
   city, kind, id, title, creator, hook, relation, relationNote, url, action,
   sources: [...new Set([...sources, ...(url.startsWith('https:') ? [url] : [])])],
@@ -138,6 +139,9 @@ book('jinbocho', 'furuhon', '古本食堂', '原田ひ香', '本と食べ物か�
 book('jinbocho', 'furuhon-sequel', '古本食堂 新装開店', '原田ひ香', '古書店の続く日常に、また新しい人がやってくる。', '物語の舞台', '神保町を舞台にした『古本食堂』の続編。前作の装丁だけを変えた本ではありません。', 'https://www.kadokawaharuki.co.jp/book/detail/detail.php?no=7272');
 book('jinbocho', 'kaijin', '神保町の怪人', '紀田順一郎', '本を集める情熱が、謎と事件へ姿を変える。', '物語の舞台', '古書収集と神保町を扱う三つのミステリーを収めた短編集です。', 'https://www.tsogen.co.jp/np/isbn/9784488406080');
 film('jinbocho', 'morisaki-film', '森崎書店の日々', '日向朝子 監督 / 2010', '古書店の時間と人の出会いを、映像の物語で。', '撮影された街', '神保町で撮影された映画。日本映画データベースで作品の内容と制作情報を確認できます。', 'https://jfdb.jp/title/2240', '日本映画データベースで作品を知る');
+for (const item of items.filter(item => ['park-voice', 'morisaki-film'].includes(item.id))) {
+  item.checkedAt = '2026-10-06';
+}
 film('jinbocho', 'ginga', '銀河鉄道の夜', 'アニメーション映画 / 1985', '列車と音楽が運ぶ、夜の旅へ。', '神保町シアターの上映企画', '神保町シアターが2026年9月19日からの上映企画で紹介している作品。物語の舞台が神保町という意味ではありません。', 'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-09-19-ginga-tetsudou.html', '神保町シアターで作品・上映案内を見る');
 film('jinbocho', 'ugetsu', '雨月物語', '溝口健二 監督 / 1953', '現実と幻想のあわいを、白黒の映像で辿る。', '神保町シアターの上映企画', '神保町シアターの2026年「没後70年 溝口健二」特集の選定作品。街の映画館を入口に、日本映画へ寄り道します。', mizoguchi, '神保町シアターの溝口健二特集を見る');
 film('jinbocho', 'endless-waltz', 'エンドレス・ワルツ', '若松孝二 監督 / 1995', '音楽家と作家が生きた、激しく危うい時間へ。', '神保町シアターの上映企画', '天才サックス奏者・阿部薫と作家・鈴木いづみをモデルにした小説の映画化。神保町シアターの2026年「忘れられない90年代映画たちⅡ」で上映されました。撮影地が神保町という意味ではありません。', ninetiesFilm, '神保町シアターの上映記録で作品を知る');

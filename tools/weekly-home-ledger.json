@@ -57,6 +57,25 @@
         "find-my-tokyo-akasaka",
         "musashino-green"
       ]
+    },
+    {
+      "weekOf": "2026-10-05",
+      "topFeatureId": "mot-collection-light",
+      "curiosityIds": [
+        "morisaki",
+        "morisaki-film",
+        "park-voice"
+      ],
+      "curiosityKinds": [
+        "book",
+        "film",
+        "video"
+      ],
+      "shortVideoIds": [
+        "thanks-tokyo",
+        "find-my-tokyo-akasaka",
+        "musashino-green"
+      ]
     }
   ],
   "featureChanges": [

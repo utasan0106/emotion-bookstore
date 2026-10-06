@@ -59,6 +59,19 @@ assert.equal(select([stillRunning('2026-10-04')],{now:atExpiry}).length,1,'Re-ch
 const event=events.find(e=>e.id==='kichijoji-taniguchi');assert.ok(!dates(event).includes('2026-09-30')&&!dates(event).includes('2026-10-28'),'Museum closures are not event days');
 assert.equal(select([{...event,status:'cancelled'}],{now:Date.parse(event.checkedAt+'T12:00:00+09:00')}).length,0);
 assert.ok(select(events,{now,audience:'children'}).every(e=>e.audiences.includes('children')));
+const filmFestival=events.find(e=>e.id==='shimokita-film-festival');
+assert.ok(filmFestival&&source.isPublishableEvent(filmFestival),'Reviewed Shimokitazawa film festival is publishable');
+assert.deepEqual(dates(filmFestival),['2026-10-10','2026-10-11','2026-10-12'],'Only the Oct 10–12 main festival belongs to this event');
+assert.equal(filmFestival.venue,'北沢タウンホールほか');
+assert.deepEqual(filmFestival.browseKinds,['film'],'Existing film classification is sufficient');
+assert.match(filmFestival.schedule,/会場・開場・上映時刻はプログラムごとに異なります/);
+assert.match(filmFestival.schedule,/10\/9の前夜祭.*K2関連上映はこの掲載に含めません/);
+assert.match(filmFestival.practical,/Bプログラム『ジュンについて』は一般1,800円/);
+assert.match(filmFestival.practical,/全会場・全プログラム共通料金ではありません/);
+assert.equal(filmFestival.url,'https://shimokitafilm.com/');
+const festivalMedia=require('../tools/event-media-source').mediaFor(filmFestival);
+assert.equal(festivalMedia.src,'/assets/city-shimokitazawa.jpg');
+assert.match(festivalMedia.alt,/2015年.*映画祭会場・当日の写真ではありません/);
 // Every publishable real event fails closed before verification and after review/end.
 for(const e of events.filter(source.isPublishableEvent)){
  const start=Date.parse(e.checkedAt+'T00:00:00+09:00');

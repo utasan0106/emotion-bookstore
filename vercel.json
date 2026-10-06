@@ -52,7 +52,7 @@
       "permanent": false
     },
     {
-      "source": "/discover/short-films/thanks-tokyo.html",
+      "source": "/discover/short-films/tokyo-metro-newline.html",
       "destination": "/discover/short-films/",
       "permanent": false
     },
@@ -143,6 +143,11 @@
     },
     {
       "source": "/outings/events/koenji-mambo.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-moon.html",
       "destination": "/outings/",
       "permanent": false
     },

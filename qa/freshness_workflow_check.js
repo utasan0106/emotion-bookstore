@@ -29,29 +29,53 @@ console.log('PASS freshness workflow positive/negative guards; existing schedule
 const path=require('node:path'),vm=require('node:vm'),{createRequire}=require('node:module');
 const root=path.resolve(__dirname,'..'),builder=path.join(root,'tools/build-weekly-outings.js');
 const builderRequire=createRequire(builder),builderSource=fs.readFileSync(builder,'utf8');
-function generatedAt(instant){
+function generatedAt(instant,{existing=[],missing=[]}={}){
  const now=Date.parse(instant),writes=new Map(),removed=new Set();
+ const seededExisting=new Set(existing.map(file=>path.resolve(file)));
+ const seededMissing=new Set(missing.map(file=>path.resolve(file)));
  const fakeFs={...fs,
   writeFileSync:(file,text)=>{writes.set(path.resolve(file),String(text));removed.delete(path.resolve(file));},
   mkdirSync(){},rmSync:file=>removed.add(path.resolve(file)),
-  existsSync:file=>!removed.has(path.resolve(file))&&(writes.has(path.resolve(file))||fs.existsSync(file)),
+  existsSync:file=>{const absolute=path.resolve(file);return !removed.has(absolute)&&(writes.has(absolute)||seededExisting.has(absolute)||(!seededMissing.has(absolute)&&fs.existsSync(file)));},
   readFileSync:(file,...args)=>writes.has(path.resolve(file))?writes.get(path.resolve(file)):fs.readFileSync(file,...args)};
  class FixedDate extends Date{constructor(...args){super(...(args.length?args:[now]));}static now(){return now;}}
  vm.runInNewContext(builderSource,{__dirname:path.dirname(builder),require:id=>id==='node:fs'?fakeFs:builderRequire(id),process:{argv:[]},Date:FixedDate,module:{exports:{}},console:{log(){}}},{filename:builder});
  const config=JSON.parse(writes.get(path.join(root,'vercel.json')));
  validate(['vercel.json'],JSON.parse(fs.readFileSync(path.join(root,'vercel.json'),'utf8')),config,redirectContract(now));
- return {config,writes,removed};
+ return {config,writes,removed,exists:file=>fakeFs.existsSync(file)};
 }
-for(const [id,lastDay,nextDay] of [['shimokita-moon','2026-10-04','2026-10-05'],['koenji-tomovsky','2026-10-16','2026-10-17'],['shimokita-bergson','2026-10-18','2026-10-19'],['kichijoji-taniguchi','2026-11-03','2026-11-04']]){
+const eventIds=result=>JSON.parse(result.writes.get(path.join(root,'outings/events-data.js')).match(/^window\.OUTINGS_DATA=(.*);\s*$/s)[1]).events.map(event=>event.id);
+for(const [id,lastDay,nextDay,activeId] of [['shimokita-moon','2026-10-04','2026-10-05','jinbocho-joyu'],['jinbocho-joyu','2026-10-06','2026-10-07','kichijoji-tsuijuku'],['koenji-tomovsky','2026-10-16','2026-10-17','shimokita-bergson'],['shimokita-bergson','2026-10-18','2026-10-19','kichijoji-taniguchi'],['kichijoji-taniguchi','2026-11-03','2026-11-04',null]]){
  const route=`/outings/events/${id}.html`,file=path.join(root,route);
- const before=generatedAt(lastDay+'T23:59:59.999+09:00'),after=generatedAt(nextDay+'T00:00:00.000+09:00');
+ const before=generatedAt(lastDay+'T23:59:59.999+09:00');
  assert.ok(before.writes.has(file),'Detail remains available through final JST date: '+id);
  assert.ok(!before.config.redirects.some(r=>r.source===route),'Active event must not redirect: '+id);
- assert.ok(after.removed.has(file)&&!after.writes.has(file),'Ended detail must be removed: '+id);
- assert.ok(after.config.redirects.some(r=>r.source===route&&r.destination==='/outings/'&&r.permanent===false),'Expired URL has safe temporary redirect: '+id);
- assert.ok(!after.writes.get(path.join(root,'outings/events-data.js')).includes('"id":"'+id+'"'),'Expired event absent from runtime: '+id);
+ const afterExisting=generatedAt(nextDay+'T00:00:00.000+09:00',{existing:[file]});
+ const afterMissing=generatedAt(nextDay+'T00:00:00.000+09:00',{missing:[file]});
+ assert.ok(afterExisting.removed.has(file),'Existing ended detail must be removed: '+id);
+ assert.ok(!afterMissing.removed.has(file),'Already-absent ended detail needs no removal call: '+id);
+ for(const [state,result] of [['existing',afterExisting],['already absent',afterMissing]]){
+  assert.ok(!result.exists(file)&&!result.writes.has(file),`Ended detail stays absent and is not regenerated (${state}): ${id}`);
+  assert.ok(result.config.redirects.some(r=>r.source===route&&r.destination==='/outings/'&&r.permanent===false),`Expired URL has safe temporary redirect (${state}): ${id}`);
+  assert.ok(!result.writes.get(path.join(root,'outings/events-data.js')).includes('"id":"'+id+'"'),`Expired event absent from runtime (${state}): ${id}`);
+  if(activeId){
+   const activeRoute=`/outings/events/${activeId}.html`,activeFile=path.join(root,activeRoute);
+   assert.ok(result.writes.has(activeFile),`Active detail remains generated (${state}): ${activeId}`);
+   assert.ok(!result.config.redirects.some(r=>r.source===activeRoute),`Active detail must not redirect (${state}): ${activeId}`);
+  }
+ }
 }
-console.log('PASS real event generator and redirect guard agree across Oct 4→5, Oct 16→17, Oct 18→19 and Nov 3→4 JST');
+const oct6=generatedAt('2026-10-06T00:00:00.000+09:00');
+assert.ok(oct6.writes.has(path.join(root,'outings/events/jinbocho-joyu.html')),'女優魂 detail remains at Oct 6 00:00 JST');
+assert.ok(!oct6.config.redirects.some(r=>r.source==='/outings/events/jinbocho-joyu.html'),'女優魂 does not redirect at Oct 6 00:00 JST');
+const oct7=generatedAt('2026-10-07T00:00:00.000+09:00',{existing:[path.join(root,'outings/events/jinbocho-joyu.html')]});
+assert.deepEqual(eventIds(oct7),eventIds(oct6).filter(id=>id!=='jinbocho-joyu'),'Oct 7 retires only 女優魂 from the Oct 6 active set');
+for(const id of eventIds(oct7)){
+ const route=`/outings/events/${id}.html`;
+ assert.ok(oct7.writes.has(path.join(root,route)),'Oct 7 active detail remains generated: '+id);
+ assert.ok(!oct7.config.redirects.some(r=>r.source===route),'Oct 7 active detail must not redirect: '+id);
+}
+console.log('PASS real event generator and redirect guard agree across Oct 4→5, Oct 6→7, Oct 16→17, Oct 18→19 and Nov 3→4 JST');
 
 // Run the real discovery generator in memory too: an expired signal must not erase
 // the Home menu anchor, imply all events ended, or retain the expired festival.

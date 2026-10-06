@@ -28,11 +28,11 @@ window.V3_RELEASE_CONTENT = {
     objectsPerShelf: 3
   },
   weeklyEdition: {
-    weekOf: '2026-09-28',
-    topFeatureId: 'indies',
-    curiosityIds: ['morisaki', 'boris-shelter', 'park-voice'],
-    curiosityKinds: ['book', 'music', 'video'],
-    shortVideoIds: ['tokyo-metro-newline', 'find-my-tokyo-akasaka', 'musashino-green']
+    weekOf: '2026-10-05',
+    topFeatureId: 'mot-collection-light',
+    curiosityIds: ['morisaki', 'morisaki-film', 'park-voice'],
+    curiosityKinds: ['book', 'film', 'video'],
+    shortVideoIds: ['thanks-tokyo', 'find-my-tokyo-akasaka', 'musashino-green']
   },
   // 種類は新しい無限棚ではなく、いま公開中の15件を横断して見るための
   // 有限な索引。初回はこの5つだけで、順番も固定する。
@@ -80,7 +80,8 @@ window.V3_RELEASE_CONTENT = {
   ],
   detour: {
     label: '今週の寄り道',
-    weekOf: '2026-09-28',
+    weekOf: '2026-10-05',
+    verifiedAt: '2026-10-06T00:00:00+09:00',
     theme: 'ひとりで歩くと、街は少し違って見える。',
     themePhrases: ['ひとりで歩くと、', '街は少し違って見える。'],
     items: [
@@ -150,8 +151,8 @@ window.V3_RELEASE_CONTENT = {
         venue: '武蔵野市立吉祥寺美術館',
         why: '新作絵本の原画と、冬の井の頭恩賜公園を取材して構想された「黒い森」の景色が、吉祥寺の美術館に並ぶ。作品から街へ戻る入口として。',
         actionLabel: '吉祥寺美術館公式で見る',
-        actionUrl: 'https://www.musashino.or.jp/museum/1002006/1003349/1009837.html',
-        verifiedAt: '2026-09-28T00:00:00+09:00',
+        actionUrl: 'https://www.musashino.or.jp/museum/1002032/1002033/1009868.html',
+        verifiedAt: '2026-10-06T00:00:00+09:00',
         expiresAt: '2026-11-03T19:30:00+09:00'
       },
       entryMedia: {
@@ -271,8 +272,8 @@ window.V3_RELEASE_CONTENT = {
         venue: '座・高円寺1',
         why: '高円寺の公立劇場で、シェイクスピアの喜劇を日本語・日本手話で上演する。街の現在を舞台芸術から見る一件として。',
         actionLabel: '座・高円寺公式で見る',
-        actionUrl: 'https://za-koenji.jp/business/natsunoyo2026',
-        verifiedAt: '2026-09-28T00:00:00+09:00',
+        actionUrl: 'https://za-koenji.jp/detail/?id=251',
+        verifiedAt: '2026-10-06T00:00:00+09:00',
         expiresAt: '2026-10-18T00:00:00+09:00'
       },
       entryMedia: {
@@ -389,18 +390,18 @@ window.V3_RELEASE_CONTENT = {
       tagline: '下北沢を、3つだけ。',
       area: '下北沢',
       weeklyFeature: {
-        eventType: 'アート・演劇・音楽',
-        title: 'ムーンアートナイト下北沢 2026',
+        eventType: '本・トーク',
+        title: '歴史を描く技術　小説の場合、評論の場合',
         media: {src: '/assets/city-shimokitazawa.jpg', alt: '歩行者と小さな店が並ぶ下北沢の通り'},
-        titlePhrases: ['ムーンアートナイト', '下北沢 2026'],
-        calendarDates: '20260918/20261005',
-        dateLabel: '9月18日（金）– 10月4日（日）',
-        venue: '下北沢エリア全域・下北線路街ほか',
-        why: '下北沢の通りや線路街に作品が置かれ、展示・演劇・音楽を歩いて巡れる。日常の街と文化体験が同じ場所で重なる現在を見る一件として。',
-        actionLabel: '公式サイトで見る',
-        actionUrl: 'https://moonartnightfes.com/',
-        verifiedAt: '2026-09-28T00:00:00+09:00',
-        expiresAt: '2026-10-05T00:00:00+09:00'
+        titlePhrases: ['歴史を描く技術　', '小説の場合、評論の場合'],
+        calendarDates: '20261012/20261013',
+        dateLabel: '10月12日（月・祝）19:00–21:00',
+        venue: '本屋B&B・オンライン配信',
+        why: '歴史を小説と評論でどう描くかを、二人の書き手が下北沢の本屋で語る。作品を読むことから、書く技術へ広がる一件として。',
+        actionLabel: '本屋B&B公式で見る',
+        actionUrl: 'https://bookandbeer.com/event/bb261012a/',
+        verifiedAt: '2026-10-06T00:00:00+09:00',
+        expiresAt: '2026-10-13T00:00:00+09:00'
       },
       entryMedia: {
         kind: 'illustration',
@@ -532,26 +533,26 @@ window.V3_RELEASE_CONTENT = {
       weeklyFeature: {
         eventType: '展示',
         title: 'MOTコレクション「いつかの光を今みている」',
-        media: {src: '/assets/city-kiyosumi.jpg', alt: '池と石、樹木が見える清澄庭園の景色'},
+        media: {src: '/assets/city-kiyosumi.jpg', alt: '2015年の清澄庭園。展覧会の展示写真ではありません'},
         titlePhrases: ['MOTコレクション', '「いつかの光を今みている」'],
         calendarDates: '20260919/20270107',
         dateLabel: '9月19日（土）– 2027年1月6日（水）',
         venue: '東京都現代美術館',
         why: '「光」と「時間」を見る展覧会が、清澄白河で始まった。',
         actionLabel: '東京都現代美術館公式で見る',
-        actionUrl: 'https://www.mot-art-museum.jp/exhibitions/mot-collection-260919/',
-        verifiedAt: '2026-09-28T00:00:00+09:00',
+        actionUrl: 'https://www.mot-collection-search.jp/lending/2165/',
+        verifiedAt: '2026-10-06T00:00:00+09:00',
         expiresAt: '2027-01-07T00:00:00+09:00'
       },
       entryMedia: {
         kind: 'photo',
         url: './assets/city-kiyosumi.jpg', width: 1280, height: 828,
-        alt: '池と石、樹木が見える清澄庭園の景色',
+        alt: '2015年の清澄庭園。展覧会の展示写真ではありません',
         provenance: 'Kakidai / Wikimedia Commons / CC BY-SA 4.0 / 2015-08-10 / 1280px縮小版をローカル保存'
       },
       heroMedia: {
         url: './assets/city-kiyosumi.jpg', width: 1280, height: 828,
-        alt: '池と石、樹木が見える清澄庭園の景色',
+        alt: '2015年の清澄庭園。展覧会の展示写真ではありません',
         author: 'Kakidai', source: 'Wikimedia Commons',
         sourceUrl: 'https://commons.wikimedia.org/wiki/File:Kiyosumi_Teien_-_Japanese_gardern_4.JPG',
         license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
@@ -635,7 +636,7 @@ window.V3_RELEASE_CONTENT = {
             ['開館', '10:00～18:00（展示室入場は閉館30分前まで）']
           ],
           actionLabel: '東京都現代美術館の開催展を見る',
-          actionUrl: 'https://www.mot-collection-search.jp/exhibition/',
+          actionUrl: 'https://www.mot-collection-search.jp/lending/2165/',
           media: {
             kind: 'plate',
             plateWord: 'MOT',
@@ -644,8 +645,8 @@ window.V3_RELEASE_CONTENT = {
             listAlt: '「MOT」と大きく組んだ、この棚のための活字図版',
             detailAlt: '「MOT」と大きく組んだ、この棚のための活字図版'
           },
-          factsSourceUrl: 'https://www.mot-collection-search.jp/exhibition/',
-          verifiedAt: '2026-09-28T00:00:00+09:00',
+          factsSourceUrl: 'https://www.mot-collection-search.jp/lending/2165/',
+          verifiedAt: '2026-10-06T00:00:00+09:00',
           expiresAt: '2027-01-07T00:00:00+09:00'
         }
       ]
@@ -657,18 +658,18 @@ window.V3_RELEASE_CONTENT = {
       tagline: '神保町を、3つだけ。',
       area: '神保町',
       weeklyFeature: {
-        eventType: '展示・販売',
-        title: 'Alicekan 45th Anniversary えほんパーティー',
-        media: {src: '/assets/city-jinbocho-suzuran.jpg', alt: '街の風景：神保町'},
-        titlePhrases: ['Alicekan 45th Anniversary ', 'えほんパーティー'],
-        calendarDates: '20260916/20260930',
-        dateLabel: '9月16日（水）13:00開始 – 29日（火）17:00終了',
-        venue: 'ブックハウスカフェ 1F ディスプレイウィンドウ',
-        why: '出版社アリス館の45周年にあわせ、絵本作品のグッズや絵本が神保町のこどもの本専門店に並ぶ。本が作られ、店へ届く現在を見る一件として。',
-        actionLabel: 'ブックハウスカフェ公式で見る',
-        actionUrl: 'https://bookhousecafe.jp/exhibition/content/2484',
-        verifiedAt: '2026-09-28T00:00:00+09:00',
-        expiresAt: '2026-09-29T17:00:00+09:00'
+        eventType: '映画',
+        title: '80年代ノスタルジアⅢ',
+        media: {src: '/assets/events/jinbocho-theatre.webp', alt: '会場：神保町シアター（2011年）'},
+        titlePhrases: ['80年代', 'ノスタルジアⅢ'],
+        calendarDates: '20261010/20261107',
+        dateLabel: '10月10日（土）– 11月6日（金）',
+        venue: '神保町シアター',
+        why: '1980年代に劇場公開された映画を、娯楽大作からラブコメ、特撮、アニメーションまで幅広く振り返る。街の映画館の次の特集として。',
+        actionLabel: '神保町シアター公式で見る',
+        actionUrl: 'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-10-10_80s_3rd.html',
+        verifiedAt: '2026-10-06T00:00:00+09:00',
+        expiresAt: '2026-11-07T00:00:00+09:00'
       },
       entryMedia: {
         kind: 'illustration',
