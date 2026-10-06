@@ -241,7 +241,7 @@ for(const file of [
 // Script-free editorial feature and its verification harness; runtime payload checks stay intact.
 for(const file of ['.github/workflows/home-cover-browser-check.yml','discover/selection/selection.css','qa/selection_feature_check.js','qa/selection_browser_check.js']) allowed.add(file);
 // Read-only browser harness and supported-city navigation regression checks only.
-for(const file of ['qa/outings_browser_check.js','qa/kiyosumi_city_check.js','qa/freshness_workflow_check.js']) allowed.add(file);
+for(const file of ['qa/home_cover_browser_check.js','qa/outings_browser_check.js','qa/kiyosumi_city_check.js','qa/freshness_workflow_check.js']) allowed.add(file);
 // The weekly HOME edition ledger selects already-reviewed editorial entries only.
 // It does not add measurement code, event names, parameters, or local storage.
 allowed.add('tools/weekly-home-ledger.json');
