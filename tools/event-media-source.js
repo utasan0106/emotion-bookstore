@@ -13,14 +13,17 @@ const streets={
  shimokitazawa:{src:'/assets/city-shimokitazawa.jpg',width:1280,height:960,alt:'下北沢の通り',caption:'街の風景：下北沢'},
  jinbocho:{src:'/assets/city-jinbocho-suzuran.jpg',width:1280,height:853,alt:'神保町すずらん通り',caption:'街の風景：神保町'}
 };
+const contextual={
+ shimokitaFilmFestival:{src:'/assets/city-shimokitazawa.jpg',width:1280,height:960,alt:'2015年の下北沢の通り。映画祭会場・当日の写真ではありません',caption:'2015年の街の風景：下北沢（映画祭会場・当日の写真ではありません）'}
+};
 const byId={
  'koenji-midsummer':'za','koenji-bakumatsu':'za','koenji-cafetalk':'za',
  'kichijoji-hard-problem':'theatre','kichijoji-winter':'theatre',
  'kichijoji-taniguchi':'museum','kichijoji-livepainting':'museum',
  'jinbocho-mizoguchi':'cinema','jinbocho-ginga':'cinema','jinbocho-pokemon':'cinema','jinbocho-joyu':'cinema',
- 'kichijoji-tsuijuku':'theatre'
+ 'kichijoji-tsuijuku':'theatre','shimokita-film-festival':'shimokitaFilmFestival'
 };
 const artistPost={url:'https://www.instagram.com/p/DbrZqrgEyrd/',embed:'https://www.instagram.com/p/DbrZqrgEyrd/embed/captioned/',author:'谷口智則',checkedAt:'2026-09-08',evidence:'Native Instagram embed verified in browser: author tomonori_taniguchi; exhibition title, Sep19–Nov3 2026 and Kichijoji Art Museum match the official event.'};
-function mediaFor(e){return venues[byId[e.id]]||streets[e.city];}
+function mediaFor(e){return venues[byId[e.id]]||contextual[byId[e.id]]||streets[e.city];}
 function postFor(e){return ['kichijoji-taniguchi','kichijoji-livepainting'].includes(e.id)?artistPost:null;}
-module.exports={mediaFor,postFor,venues,streets};
+module.exports={mediaFor,postFor,venues,streets,contextual};
