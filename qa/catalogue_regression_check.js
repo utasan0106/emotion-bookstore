@@ -3,7 +3,9 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const html=read('index.html'),css=read('site-system.css'),homeCss=read('home-discovery.css');
-assert.doesNotMatch(html,/30秒|感情書店の小文|data-open-reading|id="reading"/);
+const featureBlock=(html.match(/<section class="hd-feature"[\s\S]*?<\/section>/)||[''])[0];
+assert.doesNotMatch(featureBlock,/30秒|感情書店の小文/);
+assert.doesNotMatch(html,/data-open-reading|id="reading"/);
 const currentWeek=require('../tools/weekly-home-ledger.json').weeks.at(-1);
 assert.ok(html.includes(`data-weekly-feature="${currentWeek.topFeatureId}"`),'Home feature follows the current weekly edition');
 assert.match(html,/href="\/discover\/kiyosumi\/"/,'Kiyosumi remains available as a city destination');

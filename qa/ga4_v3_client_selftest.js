@@ -242,6 +242,9 @@ for(const file of [
 for(const file of ['.github/workflows/home-cover-browser-check.yml','discover/selection/selection.css','qa/selection_feature_check.js','qa/selection_browser_check.js']) allowed.add(file);
 // Read-only browser harness and supported-city navigation regression checks only.
 for(const file of ['qa/outings_browser_check.js','qa/kiyosumi_city_check.js','qa/freshness_workflow_check.js']) allowed.add(file);
+// The weekly HOME edition ledger selects already-reviewed editorial entries only.
+// It does not add measurement code, event names, parameters, or local storage.
+allowed.add('tools/weekly-home-ledger.json');
 function fail(m){console.error('V3_RELEASE_GROWTH_SELFTEST_FAIL: '+m);process.exit(1)}
 function assert(c,m){if(!c)fail(m)} function read(r){return fs.readFileSync(path.join(ROOT,r),'utf8')} function git(a){return cp.execFileSync('git',['-C',ROOT].concat(a),{encoding:'utf8'}).trimEnd()}
 const analytics=read('analytics-v3.js');

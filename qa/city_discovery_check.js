@@ -260,7 +260,12 @@ for(const i of items) {
   }
 }
 for(const i of commonVideos) {
-  assert.equal(i.playbackChecked,false,'Search availability is not tested playback');
+  if (i.id === 'thanks-tokyo') {
+    assert.equal(i.playbackChecked,true,'THANKS,TOKYO. playback was verified in the official public player');
+    assert.equal(i.playbackCheckedAt,'2026-10-06','Playback evidence date must stay explicit');
+  } else {
+    assert.equal(i.playbackChecked,false,'Do not claim playback for an unplayed short');
+  }
   assert.match(i.videoId,/^[A-Za-z0-9_-]{11}$/);
   assert.equal(new URL(i.url).searchParams.get('v'),i.videoId);
   const html=fs.readFileSync(path.join(root,`discover/short-films/${i.id}.html`),'utf8');
