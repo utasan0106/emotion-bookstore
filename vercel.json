@@ -147,6 +147,11 @@
       "permanent": false
     },
     {
+      "source": "/outings/events/shimokita-moon.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
       "source": "/outings/events/shimokita-oshibon.html",
       "destination": "/outings/",
       "permanent": false
