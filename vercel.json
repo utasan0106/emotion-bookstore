@@ -227,6 +227,11 @@
       "permanent": false
     },
     {
+      "source": "/outings/events/jinbocho-joyu.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
       "source": "/outings/events/koenji-resonance.html",
       "destination": "/outings/",
       "permanent": false
