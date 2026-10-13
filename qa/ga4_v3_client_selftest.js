@@ -25,6 +25,8 @@ for(const file of ['docs/city-discovery/EDITORIAL-STANDARDS-20260910.md']) allow
 allowed.add('docs/city-discovery/RESEARCH-METHODS-20260910.md');
 // Keep the city-page article teaser consistent with the revised evidence-led essay.
 allowed.add('tools/city-editorials.js');
+// Build-only story data and its bounded static/browser checks; no runtime analytics.
+for(const file of ['tools/city-stories.js','qa/city_story_check.js','qa/city_story_browser_check.js']) allowed.add(file);
 /* docs/ は .vercelignore で配信面から外れている内部文書で、runtime には出ない。
    ここが見るのは「保護された runtime が変わっていないこと」なので、文書は対象外でよい。
    1件ずつ許可を足していくと、作業のたびに検査を緩める癖がつく。分類として一度で決める。
