@@ -11,7 +11,7 @@ const octoberReviewed=['koenji-tomovsky','shimokita-bergson'];
 // browser clock backward must never imply that the public build regenerates it.
 const retiredAtGeneration=new Set(['shimokita-moon']);
 const mime={'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.json':'application/json','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml','.woff2':'font/woff2','.ico':'image/x-icon'};
-const report={commit:cp.execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),sourceSha:process.env.QA_SOURCE_SHA||null,asOf:'2026-10-15T00:00:00+09:00',supplyAsOf:'2026-10-15T00:00:00+09:00',viewports:[],limits:['Local checkout: external navigation targets are intercepted, not live provider availability or purchase tests.','Calendar is fixed to October 15 for the reviewed current and next-week supply; expiry is additionally checked after November 6 JST.','The existing Shimokitazawa publisher cover request is recorded and blocked; reviewed event flows must not add automatic external resources.']};
+const report={commit:cp.execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),sourceSha:process.env.QA_SOURCE_SHA||null,asOf:'2026-10-15T00:00:00+09:00',supplyAsOf:'2026-10-15T00:00:00+09:00',viewports:[],limits:['Local checkout: external navigation targets are intercepted, not live provider availability or purchase tests.','Calendar is fixed to October 15 for the reviewed current and next-week supply; expiry is additionally checked after November 6 JST.','The two existing city catalogue publisher cover requests are recorded and blocked; reviewed event flows must not add automatic external resources.']};
 fs.mkdirSync(out,{recursive:true});let server,browser,discoveryOverride=null;
 const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(report.asOf);
 (async()=>{
@@ -146,8 +146,8 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
    await page.clock.setFixedTime(new Date('2026-11-07T00:00:00+09:00'));await page.reload({waitUntil:'networkidle'});assert.equal(await page.locator('[data-event-card]:visible').count(),0,'Expired events disappear');assert.ok(await page.locator('#event-empty').isVisible());
    for(const e of source.events.filter(e=>!source.isPublishableEvent(e)))assert.equal(await page.locator('[data-event-card="'+e.id+'"]').count(),0,'Pending has no runtime card');
    assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);assert.ok(external.filter(x=>x.phase==='reviewed-outings').every(x=>x.navigation),'Reviewed outings and empty-state flows load no automatic external resources');
-   const legacyCover='https://www.j-n.co.jp/wp/wp-content/uploads/2022/09/R978-4-408-55758-8.jpg';
-   assert.ok(external.filter(x=>!x.navigation).every(x=>x.phase==='existing-city'&&x.url===legacyCover),'Only the existing city catalogue publisher cover may be requested; it is blocked in CI');
+   const legacyCovers=new Set(['https://www.j-n.co.jp/wp/wp-content/uploads/2022/09/R978-4-408-55758-8.jpg','https://www.tsogen.co.jp/img/cover_image_l/40608.jpg']);
+   assert.ok(external.filter(x=>!x.navigation).every(x=>x.phase==='existing-city'&&legacyCovers.has(x.url)),'Only the two existing city catalogue publisher covers may be requested; they are blocked in CI');
    report.viewports.push({...viewport,passed:true,flows,externalTargets:external,missing,errors});console.log('PASS '+viewport.name+': five cities, month-neutral menu, Kiyosumi fallback, current reviewed cards/official targets/Back, Oct 15 current/next-week supply and expiry');
   }catch(e){await page.screenshot({path:path.join(out,viewport.name+'-failure.png'),fullPage:true}).catch(()=>{});report.viewports.push({...viewport,passed:false,error:e.message,flows,external,missing,errors});throw e;}
   finally{await context.close();}
