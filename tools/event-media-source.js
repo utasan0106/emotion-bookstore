@@ -21,6 +21,7 @@ const byId={
  'kichijoji-hard-problem':'theatre','kichijoji-winter':'theatre',
  'kichijoji-taniguchi':'museum','kichijoji-livepainting':'museum',
  'jinbocho-mizoguchi':'cinema','jinbocho-ginga':'cinema','jinbocho-pokemon':'cinema','jinbocho-joyu':'cinema',
+ 'jinbocho-80s-3rd':'cinema','koenji-dance-now-asia':'za',
  'kichijoji-tsuijuku':'theatre','shimokita-film-festival':'shimokitaFilmFestival'
 };
 const artistPost={url:'https://www.instagram.com/p/DbrZqrgEyrd/',embed:'https://www.instagram.com/p/DbrZqrgEyrd/embed/captioned/',author:'谷口智則',checkedAt:'2026-09-08',evidence:'Native Instagram embed verified in browser: author tomonori_taniguchi; exhibition title, Sep19–Nov3 2026 and Kichijoji Art Museum match the official event.'};

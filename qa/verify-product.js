@@ -3,6 +3,8 @@
 const {spawnSync}=require('node:child_process');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
+const skipEventSupply=process.argv.includes('--skip-event-supply');
+const eventSupplyCheck=['qa','event_supply_check.js'].join('/');
 const checks=[
  ['qa/verify_product_runner_check.js'],
  ['qa/catalogue_regression_check.js'],
@@ -59,12 +61,13 @@ const checks=[
  ['qa/michiyomi_scout_contract_check.js'],
  ['qa/michiyomi_editorial_screen_check.js']
 ];
+const selectedChecks=skipEventSupply?checks.filter(args=>args[0]!==eventSupplyCheck):checks;
 let failed=0;
-for(const args of checks){
+for(const args of selectedChecks){
  const result=spawnSync(process.execPath,args,{cwd:root,encoding:'utf8',timeout:60000});
  const ok=result.status===0;
  console.log((ok?'PASS ':'FAIL ')+args.join(' '));
  if(!ok){failed++;console.error(result.error?.message||'',result.stdout,result.stderr);}
 }
-console.log(`${checks.length-failed}/${checks.length} product checks passed`);
+console.log(`${selectedChecks.length-failed}/${selectedChecks.length} product checks passed`);
 process.exitCode=failed?1:0;

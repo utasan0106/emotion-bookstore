@@ -76,6 +76,25 @@
         "find-my-tokyo-akasaka",
         "musashino-green"
       ]
+    },
+    {
+      "weekOf": "2026-10-12",
+      "topFeatureId": "indies",
+      "curiosityIds": [
+        "morisaki",
+        "boris-shelter",
+        "park-voice"
+      ],
+      "curiosityKinds": [
+        "book",
+        "music",
+        "video"
+      ],
+      "shortVideoIds": [
+        "tokyo-metro-newline",
+        "find-my-tokyo-akasaka",
+        "musashino-green"
+      ]
     }
   ],
   "featureChanges": [

@@ -2,17 +2,16 @@
 'use strict';
 const visualMedia = require('./visual-media-duration');
 const items = [];
-const commonVideosWeekOf = '2026-10-05';
+const commonVideosWeekOf = '2026-10-12';
 const commonVideos = [
   {
-    id: 'thanks-tokyo', title: 'THANKS,TOKYO.【30秒ver】', creator: '東京都産業労働局 / 30秒',
-    hook: '東京を楽しむ人と、街を支える観光の仕事を30秒で見る。',
-    note: '東京都産業労働局公式チャンネルが公開する30秒版。短い時間で東京へ出る入口として使います。',
-    videoId: 'pCDd7LkhkfE', durationSeconds: 30,
-    durationSource: 'https://www.youtube.com/watch?v=pCDd7LkhkfE',
-    sources: ['https://www.youtube.com/watch?v=pCDd7LkhkfE'],
-    checkedAt: '2026-10-06', rotatedAt: '2026-10-05',
-    playbackChecked: true, playbackCheckedAt: '2026-10-06'
+    id: 'tokyo-metro-newline', title: '新たな未来に向けた第一歩！新線プロジェクト', creator: '東京メトロ / 30秒',
+    hook: '路線が伸びると、街と人の移動はどう変わる。',
+    note: '東京メトロの有楽町線・南北線延伸を伝える30秒の公式映像。移動と街のつながりを短い時間で見る入口です。',
+    videoId: 'rjFh_eBwV_k', durationSeconds: 30,
+    durationSource: 'https://www.youtube.com/watch?v=rjFh_eBwV_k',
+    sources: ['https://www.tokyometro-newline.jp/movie/'],
+    checkedAt: '2026-10-15', rotatedAt: '2026-10-12'
   },
   {
     id: 'find-my-tokyo-akasaka', title: 'Find my Tokyo.「赤坂_ツウな人生のはじまり」篇', creator: '東京メトロ / 15秒',

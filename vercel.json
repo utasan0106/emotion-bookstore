@@ -32,28 +32,8 @@
       "permanent": false
     },
     {
-      "source": "/discover/short-films/panasonic-life.html",
-      "destination": "/discover/short-films/",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/find-my-tokyo.html",
-      "destination": "/discover/short-films/",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/toyota-loving-eyes.html",
-      "destination": "/discover/short-films/",
-      "permanent": false
-    },
-    {
       "source": "/discover/short-films/kiyosumi-kotomise.html",
       "destination": "/discover/kiyosumi/",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/tokyo-metro-newline.html",
-      "destination": "/discover/short-films/",
       "permanent": false
     },
     {
@@ -197,6 +177,11 @@
       "permanent": false
     },
     {
+      "source": "/outings/events/kichijoji-tsuijuku.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
       "source": "/outings/events/jinbocho-taiwan-kitchen.html",
       "destination": "/outings/",
       "permanent": false
@@ -233,6 +218,21 @@
     },
     {
       "source": "/outings/events/koenji-resonance.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/koenji-beyond.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-film-festival.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-rekishi.html",
       "destination": "/outings/",
       "permanent": false
     },
@@ -329,6 +329,26 @@
     {
       "source": "/discover/koenji/next-town-koenji.html",
       "destination": "/discover/koenji/video.html",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/find-my-tokyo.html",
+      "destination": "/discover/short-films/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/toyota-loving-eyes.html",
+      "destination": "/discover/short-films/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/panasonic-life.html",
+      "destination": "/discover/short-films/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/thanks-tokyo.html",
+      "destination": "/discover/short-films/",
       "permanent": false
     }
   ],

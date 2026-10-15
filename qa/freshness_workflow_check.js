@@ -21,8 +21,15 @@ const workflow=fs.readFileSync('.github/workflows/weekly-acquisition-refresh.yml
 assert.match(workflow,/node tools\/check-freshness-output\.js/);
 assert.match(workflow,/git add discover outings sitemap\.xml feed\.xml vercel\.json/);
 assert.match(workflow,/node qa\/freshness_workflow_check\.js/);
+assert.ok(workflow.indexOf('node tools/build-weekly-outings.js --check')<workflow.indexOf('git add discover outings sitemap.xml feed.xml vercel.json'),'Generated display contracts must pass before a freshness commit');
+assert.ok(workflow.indexOf('node qa/verify-product.js --skip-event-supply')<workflow.indexOf('git add discover outings sitemap.xml feed.xml vercel.json'),'Every non-supply product check must pass before a freshness commit');
+assert.ok(workflow.indexOf('git push origin HEAD:main')<workflow.lastIndexOf('node qa/event_supply_check.js'),'Safe generated freshness must commit before editorial supply diagnostics');
+const fullQa=fs.readFileSync('qa/verify-product.js','utf8');
+assert.match(fullQa,/event_supply_check\.js/,'Full QA must retain the event supply floor');
+assert.match(fullQa,/--skip-event-supply/,'Scheduled freshness may isolate only the supply diagnostic');
+assert.match(workflow,/node qa\/editorial_pending_gate_check\.js/,'Pending editorial content must remain blocked before freshness commit');
 assert.match(workflow,/cron: '15 0 \* \* 1'/);assert.match(workflow,/cron: '15 0 \* \* 5'/);
-console.log('PASS freshness workflow positive/negative guards; existing schedules retained');
+console.log('PASS freshness display commits independently; full supply gate and existing schedules retained');
 
 // Execute the real event generator against an in-memory filesystem at JST midnight.
 // No source edits, generated files, or network calls escape this test.
