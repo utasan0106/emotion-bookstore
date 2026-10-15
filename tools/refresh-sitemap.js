@@ -33,6 +33,17 @@ try{
 }catch{}
 const jstDate=()=>new Date(Date.now()+9*3600000).toISOString().slice(0,10);
 const today=process.env.SITEMAP_DATE||jstDate();
+// These routes share the weekly Home edition even when their own generated HTML
+// is byte-for-byte unchanged. Keep their lastmod aligned with the editorial
+// source instead of pretending the previous edition is still current.
+const weeklyHomeChanged=['index.html','release_content.js','tools/weekly-home-ledger.json','tools/city-discovery-source.js'].some(file=>changed.has(file));
+const weeklyHomeCanonicals=new Set([
+  'https://emotionbookstore.com/',
+  'https://emotionbookstore.com/discover/weekly/',
+  'https://emotionbookstore.com/discover/kiyosumi/',
+  'https://emotionbookstore.com/discover/short-films/',
+  'https://emotionbookstore.com/discover/short-films/find-my-tokyo-akasaka.html'
+]);
 const urls=new Map();
 for(const file of candidates){
   const html=fs.readFileSync(file,'utf8');
@@ -41,7 +52,7 @@ for(const file of candidates){
   if(!canonical||!canonical.startsWith('https://emotionbookstore.com/')||canonical.includes('?')) continue;
   const rel=path.relative(root,file).replace(/\\/g,'/');
   const prev=old.get(canonical)||{};
-  const isChanged=changed.has(rel);
+  const isChanged=changed.has(rel)||(weeklyHomeChanged&&weeklyHomeCanonicals.has(canonical));
   const isHome=canonical==='https://emotionbookstore.com/';
   const isHub=/\/$/.test(canonical)||canonical.endsWith('/works.html');
   urls.set(canonical,{

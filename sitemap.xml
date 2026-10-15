@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://emotionbookstore.com/</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -290,7 +290,7 @@
   </url>
   <url>
     <loc>https://emotionbookstore.com/discover/kiyosumi/</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -584,13 +584,13 @@
   </url>
   <url>
     <loc>https://emotionbookstore.com/discover/short-films/</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://emotionbookstore.com/discover/short-films/find-my-tokyo-akasaka.html</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -601,20 +601,20 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://emotionbookstore.com/discover/short-films/thanks-tokyo.html</loc>
-    <lastmod>2026-10-06</lastmod>
+    <loc>https://emotionbookstore.com/discover/short-films/tokyo-metro-newline.html</loc>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://emotionbookstore.com/discover/venue/jinbocho-theater/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://emotionbookstore.com/discover/venue/jirokichi/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -632,21 +632,33 @@
   </url>
   <url>
     <loc>https://emotionbookstore.com/discover/venue/za-koenji/</loc>
-    <lastmod>2026-09-25</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://emotionbookstore.com/discover/weekly/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://emotionbookstore.com/outings/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emotionbookstore.com/outings/events/jinbocho-80s-3rd.html</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://emotionbookstore.com/outings/events/jinbocho-book-festival-34.html</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://emotionbookstore.com/outings/events/kichijoji-taniguchi.html</loc>
@@ -655,14 +667,8 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://emotionbookstore.com/outings/events/kichijoji-tsuijuku.html</loc>
-    <lastmod>2026-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://emotionbookstore.com/outings/events/koenji-beyond.html</loc>
-    <lastmod>2026-10-01</lastmod>
+    <loc>https://emotionbookstore.com/outings/events/koenji-dance-now-asia.html</loc>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -685,14 +691,8 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://emotionbookstore.com/outings/events/shimokita-film-festival.html</loc>
-    <lastmod>2026-10-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://emotionbookstore.com/outings/events/shimokita-rekishi.html</loc>
-    <lastmod>2026-10-01</lastmod>
+    <loc>https://emotionbookstore.com/outings/events/shimokita-design-landscape.html</loc>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

@@ -197,6 +197,11 @@
       "permanent": false
     },
     {
+      "source": "/outings/events/kichijoji-tsuijuku.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
       "source": "/outings/events/jinbocho-taiwan-kitchen.html",
       "destination": "/outings/",
       "permanent": false
@@ -233,6 +238,21 @@
     },
     {
       "source": "/outings/events/koenji-resonance.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/koenji-beyond.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-film-festival.html",
+      "destination": "/outings/",
+      "permanent": false
+    },
+    {
+      "source": "/outings/events/shimokita-rekishi.html",
       "destination": "/outings/",
       "permanent": false
     },

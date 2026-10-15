@@ -30,14 +30,16 @@ jobs:
         run: |
           set -euo pipefail
           node tools/check-freshness-output.js
-      - name: Verify full product and acquisition contracts
+      - name: Verify freshness output contracts
         run: |
           set -euo pipefail
           node tools/build-weekly-outings.js --check
           node tools/build-city-discovery.js --check
           node qa/freshness_workflow_check.js
+          node qa/editorial_pending_gate_check.js
+          node qa/event_timing_check.js
+          node qa/event_schema_check.js
           node qa/seo_check.js
-          node qa/verify-product.js
       - name: Commit freshness-only changes
         run: |
           set -euo pipefail
@@ -50,3 +52,7 @@ jobs:
           fi
           git commit -m "build(growth): refresh current reviewed discovery surfaces"
           git push origin HEAD:main
+      - name: Verify full product and acquisition contracts
+        run: |
+          set -euo pipefail
+          node qa/verify-product.js

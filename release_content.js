@@ -28,11 +28,11 @@ window.V3_RELEASE_CONTENT = {
     objectsPerShelf: 3
   },
   weeklyEdition: {
-    weekOf: '2026-10-05',
-    topFeatureId: 'mot-collection-light',
-    curiosityIds: ['morisaki', 'morisaki-film', 'park-voice'],
-    curiosityKinds: ['book', 'film', 'video'],
-    shortVideoIds: ['thanks-tokyo', 'find-my-tokyo-akasaka', 'musashino-green']
+    weekOf: '2026-10-12',
+    topFeatureId: 'indies',
+    curiosityIds: ['morisaki', 'boris-shelter', 'park-voice'],
+    curiosityKinds: ['book', 'music', 'video'],
+    shortVideoIds: ['tokyo-metro-newline', 'find-my-tokyo-akasaka', 'musashino-green']
   },
   // 種類は新しい無限棚ではなく、いま公開中の15件を横断して見るための
   // 有限な索引。初回はこの5つだけで、順番も固定する。
@@ -80,8 +80,8 @@ window.V3_RELEASE_CONTENT = {
   ],
   detour: {
     label: '今週の寄り道',
-    weekOf: '2026-10-05',
-    verifiedAt: '2026-10-06T00:00:00+09:00',
+    weekOf: '2026-10-12',
+    verifiedAt: '2026-10-15T00:00:00+09:00',
     theme: 'ひとりで歩くと、街は少し違って見える。',
     themePhrases: ['ひとりで歩くと、', '街は少し違って見える。'],
     items: [
@@ -152,7 +152,7 @@ window.V3_RELEASE_CONTENT = {
         why: '新作絵本の原画と、冬の井の頭恩賜公園を取材して構想された「黒い森」の景色が、吉祥寺の美術館に並ぶ。作品から街へ戻る入口として。',
         actionLabel: '吉祥寺美術館公式で見る',
         actionUrl: 'https://www.musashino.or.jp/museum/1002032/1002033/1009868.html',
-        verifiedAt: '2026-10-06T00:00:00+09:00',
+        verifiedAt: '2026-10-15T00:00:00+09:00',
         expiresAt: '2026-11-03T19:30:00+09:00'
       },
       entryMedia: {
@@ -273,7 +273,7 @@ window.V3_RELEASE_CONTENT = {
         why: '高円寺の公立劇場で、シェイクスピアの喜劇を日本語・日本手話で上演する。街の現在を舞台芸術から見る一件として。',
         actionLabel: '座・高円寺公式で見る',
         actionUrl: 'https://za-koenji.jp/detail/?id=251',
-        verifiedAt: '2026-10-06T00:00:00+09:00',
+        verifiedAt: '2026-10-15T00:00:00+09:00',
         expiresAt: '2026-10-18T00:00:00+09:00'
       },
       entryMedia: {
@@ -391,17 +391,17 @@ window.V3_RELEASE_CONTENT = {
       area: '下北沢',
       weeklyFeature: {
         eventType: '本・トーク',
-        title: '歴史を描く技術　小説の場合、評論の場合',
+        title: '未完了の時間を生きるために',
         media: {src: '/assets/city-shimokitazawa.jpg', alt: '歩行者と小さな店が並ぶ下北沢の通り'},
-        titlePhrases: ['歴史を描く技術　', '小説の場合、評論の場合'],
-        calendarDates: '20261012/20261013',
-        dateLabel: '10月12日（月・祝）19:00–21:00',
+        titlePhrases: ['未完了の時間を', '生きるために'],
+        calendarDates: '20261018/20261019',
+        dateLabel: '10月18日（日）19:00–21:00',
         venue: '本屋B&B・オンライン配信',
-        why: '歴史を小説と評論でどう描くかを、二人の書き手が下北沢の本屋で語る。作品を読むことから、書く技術へ広がる一件として。',
+        why: 'ベルクソンの時間論を入口に、時間について哲学が何を言えるのかを二人の書き手が語る。下北沢の本屋で考えごとを持ち帰る一件として。',
         actionLabel: '本屋B&B公式で見る',
-        actionUrl: 'https://bookandbeer.com/event/bb261012a/',
-        verifiedAt: '2026-10-06T00:00:00+09:00',
-        expiresAt: '2026-10-13T00:00:00+09:00'
+        actionUrl: 'https://bookandbeer.com/event/20261018a/',
+        verifiedAt: '2026-10-15T00:00:00+09:00',
+        expiresAt: '2026-10-19T00:00:00+09:00'
       },
       entryMedia: {
         kind: 'illustration',
@@ -541,7 +541,7 @@ window.V3_RELEASE_CONTENT = {
         why: '「光」と「時間」を見る展覧会が、清澄白河で始まった。',
         actionLabel: '東京都現代美術館公式で見る',
         actionUrl: 'https://www.mot-collection-search.jp/lending/2165/',
-        verifiedAt: '2026-10-06T00:00:00+09:00',
+        verifiedAt: '2026-10-15T00:00:00+09:00',
         expiresAt: '2027-01-07T00:00:00+09:00'
       },
       entryMedia: {
@@ -668,7 +668,7 @@ window.V3_RELEASE_CONTENT = {
         why: '1980年代に劇場公開された映画を、娯楽大作からラブコメ、特撮、アニメーションまで幅広く振り返る。街の映画館の次の特集として。',
         actionLabel: '神保町シアター公式で見る',
         actionUrl: 'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-10-10_80s_3rd.html',
-        verifiedAt: '2026-10-06T00:00:00+09:00',
+        verifiedAt: '2026-10-15T00:00:00+09:00',
         expiresAt: '2026-11-07T00:00:00+09:00'
       },
       entryMedia: {
