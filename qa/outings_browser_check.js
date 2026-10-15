@@ -76,7 +76,7 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
     const detail=page.url();await page.goBack({waitUntil:'networkidle'});assert.equal(await page.locator('select[name=city]').inputValue(),e.city);assert.equal(await page.locator('select[name=week]').inputValue(),selectedWeek);flows.push({name:id,detail,official:e.url,back:true});
    }
    await page.goto(origin+'/outings/?week=2026-10-12',{waitUntil:'networkidle'});
-   assert.equal(await page.locator('select[name=week] option:checked').innerText(),'今週 · 10/12〜10/18');
+   assert.equal(await page.locator('select[name=week] option:checked').innerText(),'今週のこれから · 10/12〜10/18');
    assert.equal(await page.locator('[data-event-card]:visible').count(),5,'October 15 current-week inventory has five reviewed events');
    for(const id of octoberReviewed)assert.ok(await page.locator('[data-event-card="'+id+'"]').isVisible(),id+' is visible in current-week supply');
    // Full-page screenshots do not trigger off-screen lazy images on narrow screens.
