@@ -4,6 +4,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),cp=require('nod
 function redirectContract(now=Date.now()){
  const events=require('./weekly-outings-source'),week=require('../outings/week');
  const city=require('./city-discovery-source'),today=week.date(now);
+ const ledger=require('./weekly-home-ledger.json');
  const paths=new Set(),expected=[];
  for(const e of events.events){
   const source=`/outings/events/${e.id}.html`;paths.add(source);
@@ -12,6 +13,12 @@ function redirectContract(now=Date.now()){
  }
  for(const i of [...city.items,...city.excludedItems])paths.add(`/discover/${i.city}/${i.id}.html`);
  for(const i of city.excludedItems)expected.push({source:`/discover/${i.city}/${i.id}.html`,destination:city.items.some(x=>x.city===i.city&&x.kind===i.kind)?`/discover/${i.city}/${i.kind}.html`:`/discover/${i.city}/`,permanent:false});
+ const activeCommonVideoIds=new Set(city.commonVideos.map(video=>video.id));
+ const knownCommonVideoIds=new Set([...activeCommonVideoIds,...ledger.weeks.flatMap(entry=>entry.shortVideoIds)]);
+ for(const id of knownCommonVideoIds){
+  const source=`/discover/short-films/${id}.html`;paths.add(source);
+  if(!activeCommonVideoIds.has(id))expected.push({source,destination:'/discover/short-films/',permanent:false});
+ }
  return {paths,expected};
 }
 function validate(paths,before,after,contract=redirectContract()){

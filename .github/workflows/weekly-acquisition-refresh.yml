@@ -40,6 +40,7 @@ jobs:
           node qa/event_timing_check.js
           node qa/event_schema_check.js
           node qa/seo_check.js
+          node qa/verify-product.js --skip-event-supply
       - name: Commit freshness-only changes
         run: |
           set -euo pipefail
@@ -52,7 +53,7 @@ jobs:
           fi
           git commit -m "build(growth): refresh current reviewed discovery surfaces"
           git push origin HEAD:main
-      - name: Verify full product and acquisition contracts
+      - name: Report editorial supply floor
         run: |
           set -euo pipefail
-          node qa/verify-product.js
+          node qa/event_supply_check.js

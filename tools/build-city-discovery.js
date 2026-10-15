@@ -591,8 +591,13 @@ for (const file of fs.readdirSync(commonDir)) {
 const configPath=path.join(root,'vercel.json');
 const config=JSON.parse(fs.readFileSync(configPath,'utf8'));
 const retiredPaths=new Set([...excludedItems,...items].map(i=>`/discover/${i.city}/${i.id}.html`));
+const ledger=require('./weekly-home-ledger.json');
+const activeCommonVideoIds=new Set(commonVideos.map(video=>video.id));
+const knownCommonVideoIds=new Set([...activeCommonVideoIds,...ledger.weeks.flatMap(week=>week.shortVideoIds)]);
+for(const id of knownCommonVideoIds)retiredPaths.add(`/discover/short-films/${id}.html`);
 config.redirects=(config.redirects||[]).filter(r=>!retiredPaths.has(r.source));
 for(const i of excludedItems)config.redirects.push({source:`/discover/${i.city}/${i.id}.html`,destination:items.some(x=>x.city===i.city&&x.kind===i.kind)?`/discover/${i.city}/${i.kind}.html`:`/discover/${i.city}/`,permanent:false});
+for(const id of knownCommonVideoIds)if(!activeCommonVideoIds.has(id))config.redirects.push({source:`/discover/short-films/${id}.html`,destination:'/discover/short-films/',permanent:false});
 const configText=JSON.stringify(config,null,2)+'\n';
 if(process.argv.includes('--check')){if(fs.readFileSync(configPath,'utf8')!==configText)throw new Error('Retired work redirects differ');}
 else fs.writeFileSync(configPath,configText);

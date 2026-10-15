@@ -52,9 +52,8 @@ const sitemap=read('sitemap.xml');
 for(const url of [
   'https://emotionbookstore.com/',
   'https://emotionbookstore.com/discover/weekly/',
-  'https://emotionbookstore.com/discover/kiyosumi/',
   'https://emotionbookstore.com/discover/short-films/',
-  'https://emotionbookstore.com/discover/short-films/find-my-tokyo-akasaka.html'
+  'https://emotionbookstore.com/discover/short-films/tokyo-metro-newline.html'
 ]){
   const pos=sitemap.indexOf('<loc>'+url+'</loc>');
   assert.ok(pos>=0,'Fresh weekly surface missing from sitemap: '+url);
@@ -62,5 +61,14 @@ for(const url of [
   const m=near.match(/<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/);
   assert.ok(m&&m[1]>=cur.weekOf,'Fresh weekly surface needs current sitemap lastmod: '+url);
 }
+for(const url of [
+  'https://emotionbookstore.com/discover/kiyosumi/',
+  'https://emotionbookstore.com/discover/short-films/find-my-tokyo-akasaka.html'
+]){
+  const pos=sitemap.indexOf('<loc>'+url+'</loc>');
+  assert.ok(pos>=0,'Stable surface missing from sitemap: '+url);
+  const m=sitemap.slice(pos,pos+220).match(/<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/);
+  assert.ok(m&&m[1]<cur.weekOf,'Unchanged surface must preserve its earlier sitemap lastmod: '+url);
+}
 
-console.log('PASS weekly visible rotation: top feature, curiosity mix/new item, 1-of-3 short video, weekly feature recheck, sitemap lastmod');
+console.log('PASS weekly visible rotation: top feature, curiosity mix/new item, 1-of-3 short video, weekly feature recheck, page-specific sitemap lastmod');

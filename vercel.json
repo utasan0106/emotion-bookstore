@@ -32,28 +32,8 @@
       "permanent": false
     },
     {
-      "source": "/discover/short-films/panasonic-life.html",
-      "destination": "/discover/short-films/",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/find-my-tokyo.html",
-      "destination": "/discover/short-films/",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/toyota-loving-eyes.html",
-      "destination": "/discover/short-films/",
-      "permanent": false
-    },
-    {
       "source": "/discover/short-films/kiyosumi-kotomise.html",
       "destination": "/discover/kiyosumi/",
-      "permanent": false
-    },
-    {
-      "source": "/discover/short-films/tokyo-metro-newline.html",
-      "destination": "/discover/short-films/",
       "permanent": false
     },
     {
@@ -349,6 +329,26 @@
     {
       "source": "/discover/koenji/next-town-koenji.html",
       "destination": "/discover/koenji/video.html",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/find-my-tokyo.html",
+      "destination": "/discover/short-films/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/toyota-loving-eyes.html",
+      "destination": "/discover/short-films/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/panasonic-life.html",
+      "destination": "/discover/short-films/",
+      "permanent": false
+    },
+    {
+      "source": "/discover/short-films/thanks-tokyo.html",
+      "destination": "/discover/short-films/",
       "permanent": false
     }
   ],

@@ -247,7 +247,7 @@ for(const file of ['qa/home_cover_browser_check.js','qa/outings_browser_check.js
 allowed.add('tools/weekly-home-ledger.json');
 // Weekly freshness sequencing and sitemap dependency tracking change deployment
 // order and metadata only; the analytics runtime and payload vocabulary stay fixed.
-for(const file of ['.github/workflows/weekly-acquisition-refresh.yml','tools/refresh-sitemap.js']) allowed.add(file);
+for(const file of ['.github/workflows/weekly-acquisition-refresh.yml','tools/refresh-sitemap.js','tools/check-freshness-output.js','qa/home_weekly_refresh_check.js']) allowed.add(file);
 function fail(m){console.error('V3_RELEASE_GROWTH_SELFTEST_FAIL: '+m);process.exit(1)}
 function assert(c,m){if(!c)fail(m)} function read(r){return fs.readFileSync(path.join(ROOT,r),'utf8')} function git(a){return cp.execFileSync('git',['-C',ROOT].concat(a),{encoding:'utf8'}).trimEnd()}
 const analytics=read('analytics-v3.js');
