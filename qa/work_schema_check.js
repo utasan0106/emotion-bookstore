@@ -103,6 +103,29 @@ for (const file of notWork) {
   assert.ok(!('mainEntity' in ld(file)), file + ': 一覧ページを作品として書かない');
 }
 
+// Independently reviewed edition expectations, not inferred from title strings.
+const newEditions={
+ '9784103549512':{title:'成瀬は天下を取りにいく',author:'宮島未奈',date:'2023-03-17'},
+ '9784103524519':{title:'思わず考えちゃう',author:'ヨシタケシンスケ',date:'2019-03-29'}
+};
+for(const book of require('../tools/work-catalogue').catalogue().books) {
+  const html=fs.readFileSync(path.join(root,book.path),'utf8');
+  const page=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+  const work=page.mainEntity, expected=newEditions[book.isbn];
+  assert.ok(expected,'New editions require independent QA evidence');
+  assert.equal(page['@type'],'WebPage');assert.equal(work['@type'],'Book');
+  assert.equal(page.url,'https://emotionbookstore.com'+book.path);
+  assert.equal(work['@id'],page.url+'#book');assert.equal(work.url,page.url);
+  assert.equal(work.name,expected.title);assert.deepEqual(work.author,{'@type':'Person',name:expected.author});
+  assert.equal(work.isbn,book.isbn,'Independent Book ISBN matches its reviewed edition');assert.ok(validIsbn13(work.isbn));
+  assert.deepEqual(work.publisher,{'@type':'Organization',name:'新潮社'});
+  assert.equal(work.datePublished,expected.date);assert.equal(work.sameAs,book.sourceUrl);
+  assert.deepEqual(page.citation,book.sources.map(s=>s.url));
+  for(const value of [expected.title,expected.author,work.isbn,expected.date,book.editionLabel,book.sourceCheckedOn]) assert.ok(html.includes(escaped(value)),'Visible edition fact missing: '+value);
+  for(const field of ['review','aggregateRating','offers','locationCreated','contentLocation']) assert.ok(!(field in work));
+  assert.ok(!('datePublished' in page)&&!('dateModified' in page),'Book publication/source checks cannot fabricate a page publication date');
+}
+
 console.log('PASS ' + items.length + '件の作品に構造化データ（'
   + Object.entries(counts).map(([t, n]) => t + ' ' + n).join(' / ')
   + '）。題名・紹介文・公式の行き先は元データと一致し、持っていない事実は書いていない');

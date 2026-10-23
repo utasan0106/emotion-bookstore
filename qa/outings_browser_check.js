@@ -3,6 +3,8 @@
 // Exact checkout, deterministic October 23 reviewed inventory. External navigation is intercepted.
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),http=require('node:http'),cp=require('node:child_process');
 const {chromium}=require('playwright');
+const outingsStateReady=require('./outings_state_ready');
+require('./outings_state_ready_check');
 const root=path.resolve(__dirname,'..'),out=path.join(__dirname,'artifacts/outings');
 const source=require('../tools/weekly-outings-source'),week=require('../outings/week');
 // Freeze both source publication eligibility and the browser clock at the reviewed build.
@@ -141,7 +143,13 @@ assert.match(emptyDiscovery,/現在、掲載できる街の動きはありませ
    assert.equal(await page.locator('[data-event-status]').innerText(),'次の開催予定 10/28','All dates detail does not claim a selected week or parse all as a date');
    const allDetailUrl=page.url();await page.goBack({waitUntil:'networkidle'});assert.equal(page.url(),allListUrl);assert.deepEqual(await visibleIds(),combined);
    for(const [name,value] of [['week','all'],['city','koenji'],['kind','stage'],['with','solo']])assert.equal(await page.locator('select[name='+name+']').inputValue(),value,'Back retains '+name);
-   await page.goForward({waitUntil:'networkidle'});assert.equal(page.url(),allDetailUrl);await page.locator('[data-event-back]').click();await page.waitForLoadState('networkidle');assert.equal(page.url(),allListUrl);assert.deepEqual(await visibleIds(),combined,'Detail return retains all four filters');
+   await page.goForward({waitUntil:'networkidle'});assert.equal(page.url(),allDetailUrl);
+   // A click followed by networkidle can observe the preceding document's idle state.
+   // Wait for the destination and its exact rendered contract, never an arbitrary sleep.
+   await Promise.all([page.waitForURL(allListUrl,{waitUntil:'load'}),page.locator('[data-event-back]').click()]);
+   await page.waitForFunction(outingsStateReady,{url:allListUrl,filters:{week:'all',city:'koenji',kind:'stage',with:'solo'},ids:combined},{timeout:15000});
+   assert.equal(page.url(),allListUrl);assert.deepEqual(await visibleIds(),combined,'Detail return retains all four filters');
+   for(const [name,value] of [['week','all'],['city','koenji'],['kind','stage'],['with','solo']])assert.equal(await page.locator('select[name='+name+']').inputValue(),value,'Detail return retains '+name);
    await page.locator('select[name=with]').selectOption('children');assert.equal((await visibleIds()).length,0);assert.ok(await page.locator('#event-empty').isVisible());await screen('all-dates-empty');
    await page.goto(origin+'/outings/?kind=stage',{waitUntil:'networkidle'});assert.equal(await page.locator('select[name=week]').inputValue(),currentWeek,'Category-only entry still picks the nearest matching week, not all dates');
    await page.goto(origin+'/outings/?week=all',{waitUntil:'networkidle'});

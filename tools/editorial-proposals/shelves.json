@@ -1,0 +1,182 @@
+[
+  {
+    "id": "shelves/ordinary-day-curiosities",
+    "slug": "ordinary-day-curiosities",
+    "editorialReview": "pending",
+    "adoption": null,
+    "path": "/shelves/ordinary-day-curiosities.html",
+    "title": "何でもない一日を、おもしろがる。",
+    "intro": "思いつきを行動にする人、小さな疑問を描く人、店先の暮らしを見つめる人。いつもの一日への、三つの向き合い方。",
+    "note": "出版社の作品紹介と公開試し読みから、いつもの一日への向き合い方を比べて選んでいます。同じ気持ちになることを保証する棚ではありません。",
+    "color": "gold",
+    "featuredProposal": true,
+    "sourceCheckedOn": "2026-10-23",
+    "works": [
+      {
+        "id": "books/naruse-wa-tenka-wo-toriniiku",
+        "reason": "何かを始めたい日は、成瀬の思いつきから。閉店前の店に通う計画と、そばで見守る友人のやりとりを入口に。",
+        "fact": "中学2年生の成瀬が、閉店前の百貨店に毎日通うと宣言。友人の島崎を巻き込む計画から始まる青春小説です。",
+        "next": {
+          "id": "books/omowazu-kangaechau",
+          "label": "やってみる人の次は、考えちゃう人。",
+          "reason": "思いつきを行動にする成瀬の次は、日常の小さな疑問をスケッチする人へ。物語から短いエッセイへ、読み方も変えられます。"
+        }
+      },
+      {
+        "id": "books/omowazu-kangaechau",
+        "reason": "いつもの暮らしにも、まだ気になることがある。小さな疑問を描いたスケッチと短文から、今日は一つだけ。",
+        "fact": "日常の小さな疑問や子育て中の気づきを、スケッチと短い文章でつづるエッセイ集。100点以上のイラストを収録しています。",
+        "next": {
+          "id": "koenji/junjo",
+          "label": "小さな疑問から、店先の観察へ。",
+          "reason": "日常を見る視点を、スケッチから商店街で育つ少年の物語へ替えます。"
+        }
+      },
+      {
+        "id": "koenji/junjo",
+        "reason": "まずは店先へ。商店街で暮らす人の話から、ほかの誰かの日常をのぞく。",
+        "fact": "乾物屋の一人息子の視点から、家族と商店街の人々を描く。",
+        "next": {
+          "id": "books/naruse-wa-tenka-wo-toriniiku",
+          "label": "店のある暮らしを、別の目で。",
+          "reason": "乾物屋の家で育つ少年から、閉店前の百貨店へ通う少女へ。店と人の関係を違う場所から読みます。"
+        }
+      }
+    ]
+  },
+  {
+    "id": "shelves/places-to-share",
+    "slug": "places-to-share",
+    "editorialReview": "pending",
+    "adoption": null,
+    "path": "/shelves/places-to-share.html",
+    "title": "居場所をめぐる三冊。",
+    "intro": "猫と暮らす日々、本の好みが並ぶ棚、劇場をつくる仕事。誰かと過ごす場所を、三つの形から。",
+    "note": "生活、本屋、劇場。それぞれの場所に関わる人や猫に目を向けた棚です。居場所が得られるという効果を約束するものではありません。出版社の紹介に基づく選書で、全編読了の感想ではありません。",
+    "color": "green",
+    "featuredProposal": true,
+    "sourceCheckedOn": "2026-10-23",
+    "works": [
+      {
+        "id": "kichijoji/gou-gou-book",
+        "reason": "人が集まる店や劇場の前に、猫と暮らす日々へ。同じ場所で過ごす相手から、この棚を始めます。",
+        "fact": "ペットショップで出会った子猫グーグー。猫たちとの日々を、大島弓子が描く一冊です。",
+        "next": {
+          "id": "kichijoji/honnoniwa",
+          "label": "暮らしの相手から、本を選ぶ人へ。",
+          "reason": "猫と過ごす日々の次は、好みの本が並ぶ書店へ。場所にいる相手の違いからつなぎます。"
+        }
+      },
+      {
+        "id": "kichijoji/honnoniwa",
+        "reason": "次に読む本を、ランキングではなく誰かの本棚から決めてみたい日に。",
+        "fact": "シェア型書店の棚主の選書、ZINE、書き込み本などを巡る小さな謎。",
+        "next": {
+          "id": "shimokitazawa/honda",
+          "label": "棚をつくる人から、劇場をつくる人へ。",
+          "reason": "本屋の物語から、劇場をつくった人の歩みへ。場所をつくる仕事に目を向けます。"
+        }
+      },
+      {
+        "id": "shimokitazawa/honda",
+        "reason": "舞台の上から、舞台をつくった人へ。客席では見えない仕事をたどりたくなったら。",
+        "fact": "本人と演劇人の証言で、劇場をつくった歩みをたどる。",
+        "next": {
+          "id": "kichijoji/gou-gou-book",
+          "label": "劇場の営みから、暮らしの日々へ。",
+          "reason": "人が集まる場所から、猫と同じ場所で過ごす日々へ。場所の大きさを替えて読みます。"
+        }
+      }
+    ]
+  },
+  {
+    "id": "shelves/after-a-good-day",
+    "slug": "after-a-good-day",
+    "editorialReview": "pending",
+    "adoption": null,
+    "path": "/shelves/after-a-good-day.html",
+    "title": "楽しい日の、続きがほしい。",
+    "intro": "人のいる店、人が並べる棚、人が鳴らす音。誰かの好きなものへ、寄り道する3冊。",
+    "note": "楽しい気分で次の一冊を探す日の棚です。どの本も明るい結末、という意味ではありません。作品の紹介に見える、人と場所のつながりから選びました。",
+    "color": "rose",
+    "featuredProposal": false,
+    "sourceCheckedOn": "2026-10-23",
+    "works": [
+      {
+        "id": "koenji/junjo",
+        "reason": "まずは店先へ。商店街で暮らす人の話から、ほかの誰かの日常をのぞく。",
+        "fact": "乾物屋の一人息子の視点から、家族と商店街の人々を描く。",
+        "next": {
+          "id": "kichijoji/honnoniwa",
+          "label": "商店街から、誰かの本棚へ。",
+          "reason": "次は、本を選ぶ人たちが集まる書店の物語。場所に集まる人をたどる編集上の組み合わせです。"
+        }
+      },
+      {
+        "id": "kichijoji/honnoniwa",
+        "reason": "次に読む本を、ランキングではなく誰かの本棚から決めてみたい日に。",
+        "fact": "シェア型書店の棚主の選書、ZINE、書き込み本などを巡る小さな謎。",
+        "next": {
+          "id": "shimokitazawa/indies",
+          "label": "本を選ぶ人から、音を鳴らす人へ。",
+          "reason": "人の好きなものをたどる寄り道を、本棚からライブハウスの物語へ伸ばします。"
+        }
+      },
+      {
+        "id": "shimokitazawa/indies",
+        "reason": "人の「好き」をたどる寄り道を、本棚からライブハウスへ伸ばす。",
+        "fact": "新人音楽編集者がバンドを取材する青春ミステリー。事件や切なさを含む作品。",
+        "next": {
+          "id": "koenji/junjo",
+          "label": "にぎわいの裏側にいる人へ。",
+          "reason": "ライブハウスから商店街へ、舞台になる場所ではなく、そこにいる人をつないで読みます。"
+        }
+      }
+    ]
+  },
+  {
+    "id": "shelves/people-behind-the-place",
+    "slug": "people-behind-the-place",
+    "editorialReview": "pending",
+    "adoption": null,
+    "path": "/shelves/people-behind-the-place.html",
+    "title": "あの場所は、誰がつくった？",
+    "intro": "劇場をつくる。映画館を続ける。ライブハウスの時間を残す。好きな場所を支えた人を、3つの作品から。",
+    "note": "劇場や店で楽しく過ごした帰りに、舞台裏も知りたくなったら。作品の公式紹介から「つくる・続ける・記録する」の違いを選んだ棚です。",
+    "color": "green",
+    "featuredProposal": false,
+    "sourceCheckedOn": "2026-10-23",
+    "works": [
+      {
+        "id": "shimokitazawa/honda",
+        "reason": "舞台の上から、舞台をつくった人へ。客席では見えない仕事をたどりたくなったら。",
+        "fact": "本人と演劇人の証言で、劇場をつくった歩みをたどる。",
+        "next": {
+          "id": "kichijoji/baus",
+          "label": "「つくる」の次は、「続ける」。",
+          "reason": "一人の歩みから、映画館を続ける家族の時間へ。異なる場所の営みを並べる編集上の組み合わせです。"
+        }
+      },
+      {
+        "id": "kichijoji/baus",
+        "reason": "劇場を始める一人の情熱の次に、映画館を続ける家族の時間を。",
+        "fact": "本田拓夫の映画館史を原作に、映画館を続けた家族を描く。",
+        "next": {
+          "id": "koenji/jirokichi",
+          "label": "続けた時間を、記録から。",
+          "reason": "次はライブハウスの50年。インタビューや日程から、その場所を別の角度でたどります。"
+        }
+      },
+      {
+        "id": "koenji/jirokichi",
+        "reason": "一夜の演奏を、50年分の日付の中へ戻してみる。好きな音の場所を、人と記録から知るために。",
+        "fact": "出演者インタビュー、50年分の日程、写真やチラシを収録。",
+        "next": {
+          "id": "shimokitazawa/honda",
+          "label": "場所のはじまりへ戻る。",
+          "reason": "積み重なった記録の次に、劇場をつくった人の歩みを読む。"
+        }
+      }
+    ]
+  }
+]

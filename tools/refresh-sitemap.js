@@ -3,6 +3,7 @@
 
 const fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process');
 const root=path.resolve(__dirname,'..');
+const editorial=require('./work-catalogue').catalogue();
 const sitemapPath=path.join(root,'sitemap.xml');
 const existing=fs.existsSync(sitemapPath)?fs.readFileSync(sitemapPath,'utf8'):'';
 const old=new Map();
@@ -25,7 +26,9 @@ const candidates=[
   path.join(root,'about.html'),
   ...walk(path.join(root,'visit')),
   ...walk(path.join(root,'discover')),
-  ...walk(path.join(root,'outings'))
+  ...walk(path.join(root,'outings')),
+  ...['books','shelves'].flatMap(dir=>walk(path.join(root,dir)))
+    .filter(file=>editorial.publishablePaths.has('/'+path.relative(root,file).replace(/\\/g,'/')))
 ].filter(fs.existsSync);
 let changed=new Set();
 try{

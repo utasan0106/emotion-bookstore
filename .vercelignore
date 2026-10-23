@@ -136,5 +136,10 @@ docs/
 /tools/city-discovery-source.js
 /tools/build-city-discovery.js
 
+# Unadopted editorial inputs and local-only compiler; public outputs are gated.
+/tools/editorial-proposals/
+/tools/work-catalogue.js
+/tools/build-editorial-pages.js
+
 # Development-only visual QA dependencies and configuration
 /tools/visual-qa/
