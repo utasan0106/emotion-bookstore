@@ -34,6 +34,26 @@ const server = http.createServer((req, res) => {
 // Serialized into the page, with no dependence on the Node environment.
 function measureContrast() {
   const rows = [];
+  // Resolve only simple absolute decorations in their own positioned ancestor.
+  // Any unmodelled geometry remains unsupported, never silently passed.
+  function pseudoBounds(p, ps) {
+    const owner=getComputedStyle(p);
+    const px=v=>/^[-\d.]+px$/.test(v)?parseFloat(v):null;
+    if(ps.position!=='absolute'||owner.position==='static'||owner.transform!=='none'||(owner.zoom&&Number(owner.zoom)!==1)||ps.transform!=='none'||ps.boxShadow!=='none'||ps.filter!=='none'||ps.writingMode!=='horizontal-tb') return null;
+    for(let a=p.parentElement;a;a=a.parentElement) if(getComputedStyle(a).transform!=='none'||(getComputedStyle(a).zoom&&Number(getComputedStyle(a).zoom)!==1)) return null;
+    if(['marginLeft','marginRight','marginTop','marginBottom'].some(k=>px(ps[k])!==0)) return null;
+    const w=px(ps.width),h=px(ps.height);
+    if(w===null||h===null) return null;
+    const extras=keys=>keys.reduce((n,k)=>n+(px(ps[k])??NaN),0);
+    const width=w+(ps.boxSizing==='border-box'?0:extras(['paddingLeft','paddingRight','borderLeftWidth','borderRightWidth']));
+    const height=h+(ps.boxSizing==='border-box'?0:extras(['paddingTop','paddingBottom','borderTopWidth','borderBottomWidth']));
+    const r=p.getBoundingClientRect(),left=px(ps.left),right=px(ps.right),top=px(ps.top),bottom=px(ps.bottom);
+    if(!Number.isFinite(width)||!Number.isFinite(height)||(left===null&&right===null)||(top===null&&bottom===null)) return null;
+    const x=r.left+p.clientLeft-p.scrollLeft+(left===null?p.clientWidth-right-width:left);
+    const y=r.top+p.clientTop-p.scrollTop+(top===null?p.clientHeight-bottom-height:top);
+    return {left:x,top:y,right:x+width,bottom:y+height};
+  }
+  const intersects=(a,b)=>a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top;
   const media=[...document.querySelectorAll('img,video,canvas,svg')].map(el=>({el,rect:el.getBoundingClientRect()}));
   const rgba = value => {
     const m = value.match(/^rgba?\(([^)]+)\)$/);
@@ -68,7 +88,10 @@ function measureContrast() {
       }
       for (const pseudo of ['::before','::after']) {
         const ps=getComputedStyle(p,pseudo);
-        if (ps.content !== 'none' && ps.content !== 'normal' && ps.display !== 'none' && (ps.backgroundImage !== 'none' || (rgba(ps.backgroundColor)||[0,0,0,0])[3]>0)) unsupported.push('painted pseudo-element: '+pseudo);
+        if (ps.content !== 'none' && ps.content !== 'normal' && ps.display !== 'none' && (ps.backgroundImage !== 'none' || (rgba(ps.backgroundColor)||[0,0,0,0])[3]>0)) {
+          const bounds=pseudoBounds(p,ps);
+          if(!bounds||rects.some(r=>intersects(r,bounds))) unsupported.push('painted pseudo-element: '+pseudo+(bounds?' overlaps text':' geometry unmodelled'));
+        }
       }
     }
     // Text laid over a sibling photo/video cannot be proven from ancestor colors.
@@ -137,7 +160,16 @@ function measureContrast() {
             img.loading='eager';
             let error=null;
             try {await Promise.race([img.decode(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Image decode timeout')),15000))]);} catch(e) {error=e.message;}
-            rows.push({src:img.currentSrc||img.src,naturalWidth:img.naturalWidth,naturalHeight:img.naturalHeight,error,passed:!error&&img.naturalWidth>0&&img.naturalHeight>0});
+            const box=img.getBoundingClientRect(),style=getComputedStyle(img);
+            const declared=style.aspectRatio.match(/^([\d.]+)\s*\/\s*([\d.]+)$/);
+            // Explicit CSS ratios must actually size the image box. Uncropped
+            // editorial/book images must not retain a huge HTML height attribute.
+            const expectedRatio=declared?Number(declared[1])/Number(declared[2]):img.matches('.book-mat img,.feature-story img')?img.naturalWidth/img.naturalHeight:null;
+            const actualRatio=box.width/box.height;
+            const ratioPassed=expectedRatio===null||(Number.isFinite(actualRatio)&&Math.abs(actualRatio/expectedRatio-1)<=0.02);
+            rows.push({src:img.currentSrc||img.src,naturalWidth:img.naturalWidth,naturalHeight:img.naturalHeight,
+              renderedWidth:box.width,renderedHeight:box.height,cssAspectRatio:style.aspectRatio,objectFit:style.objectFit,
+              expectedRatio,actualRatio,ratioPassed,error,passed:!error&&img.naturalWidth>0&&img.naturalHeight>0&&box.width>0&&box.height>0&&ratioPassed});
           }
           return {passed:rows.length>0&&rows.every(x=>x.passed),rows};
         });

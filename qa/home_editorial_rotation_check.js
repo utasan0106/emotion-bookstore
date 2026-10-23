@@ -46,6 +46,8 @@ for(const photo of feature.matchAll(/<figure[^>]*>[\s\S]*?<\/figure>/g))if(/src=
 }
 // Book-cover features must use the exact source-catalogue edition, with intact media and attribution.
 if(feature.includes('hd-editorial-book-cover')){
+ assert.equal((feature.match(/class="hd-primary"/g)||[]).length,1,'One primary feature action, not a duplicate');
+ assert.ok(feature.indexOf('class="hd-primary"')<feature.indexOf('<figure'),'Primary book action precedes the portrait and adjacent credit so narrow readers can act before scrolling past the cover');
  const item=catalogue.find(x=>x.id===edition.topFeatureId);
  const cover=require('../tools/work-cover-source.json')[item.city+'/'+item.id];
  assert.equal(cover.status,'usable');
