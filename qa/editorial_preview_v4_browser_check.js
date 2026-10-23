@@ -327,6 +327,33 @@ async function checkInteractions(browser, origin) {
         });
         await page.evaluate(()=>document.fonts.ready);
         if(route===routes[0]) result.editorialFont=await checkEditorialFont(context,page);
+        // A non-overflowing heading can still wrap a final particle onto its own line.
+        // Keep the authored two-line desktop composition at normal text size only.
+        if(route===routes[0] && width>=768 && fontPercent===100) {
+          result.headingLines=await page.evaluate(()=>{
+            const expected=['本から、本へ。','ときどき、街へ。'];
+            const rows=[...document.querySelectorAll('.opening h1 > span')].map(el=>{
+              // Read text-node rectangles only: nested phrase wrappers have their
+              // own line-height boxes, which are not additional painted text lines.
+              const rects=[];
+              const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
+              for(let node;(node=walker.nextNode());) {
+                if(!node.textContent.trim()) continue;
+                const range=document.createRange();range.selectNodeContents(node);
+                rects.push(...[...range.getClientRects()].filter(r=>r.width>0&&r.height>0));
+              }
+              const lineTops=[];
+              for(const r of rects) if(!lineTops.some(y=>Math.abs(y-r.top)<1)) lineTops.push(r.top);
+              const box=el.getBoundingClientRect();
+              return {text:el.textContent,lineCount:lineTops.length,lineTops,width:box.width,
+                fontSize:getComputedStyle(el).fontSize,
+                contained:rects.every(r=>r.left>=box.left-1&&r.right<=box.right+1)};
+            });
+            return {method:'Actual text Range line rectangles, not CSS font size or overflow alone.',
+              rows,passed:rows.length===2&&rows.every((r,i)=>r.text===expected[i]&&r.lineCount===1&&r.contained)};
+          });
+        }
+
         result.images=await page.evaluate(async()=>{
           const rows=[];
           // Finish lazy image layout before capturing adjacent text rectangles.
@@ -445,6 +472,28 @@ async function checkInteractions(browser, origin) {
             await response.dispose();
           } catch(e) {result.links.rows.push({href,passed:false,error:e.message});result.links.passed=false;}
         }
+        if(route===routes[0]) {
+          result.shelfNavigation=await page.evaluate(()=>{
+            const shelf=document.querySelector('.main-shelf');
+            const children=[...shelf.children].map(el=>el.className||el.tagName.toLowerCase());
+            const links=[...shelf.querySelectorAll('a[href]')];
+            const expected=[...shelf.querySelectorAll('.cover-strip a[href]'),...shelf.querySelectorAll('.cover-records a[href]'),shelf.querySelector('.shelf-read')];
+            const group=shelf.querySelector('.book-group').getBoundingClientRect();
+            const deck=shelf.querySelector('.shelf-deck').getBoundingClientRect();
+            const read=shelf.querySelector('.shelf-read').getBoundingClientRect();
+            return {children,linkCount:links.length,domOrder:links.map(a=>a.getAttribute('href')),
+              passed:children.join('|')==='editorial-index|h2|book-group|shelf-deck|shelf-read'&&
+                links.length===10&&links.every((a,i)=>a===expected[i])&&group.bottom<=deck.top+1&&deck.bottom<=read.top+1};
+          });
+          const links=page.locator('.main-shelf a[href]');
+          result.shelfNavigation.tabOrder=[];
+          await links.first().focus();
+          for(let i=0;i<result.shelfNavigation.linkCount;i++) {
+            result.shelfNavigation.tabOrder.push(await links.nth(i).evaluate(el=>el===document.activeElement));
+            if(i+1<result.shelfNavigation.linkCount) await page.keyboard.press('Tab');
+          }
+          result.shelfNavigation.passed=result.shelfNavigation.passed&&result.shelfNavigation.tabOrder.every(Boolean);
+        }
         // Geometry works for off-screen text too; no click, scroll, or provider interaction.
         result.contrast=await page.evaluate(measureContrast);
         // networkidle and decoded images already establish render readiness.
@@ -452,6 +501,8 @@ async function checkInteractions(browser, origin) {
         result.runtime={passed:result.pageErrors.length===0&&result.failedLocalRequests.length===0};
         result.passed=['navigation','invariants','images','layout','links','contrast','privacy','runtime'].every(k=>result[k].passed);
         if(result.editorialFont) result.passed=result.passed&&result.editorialFont.passed;
+        if(result.headingLines) result.passed=result.passed&&result.headingLines.passed;
+        if(result.shelfNavigation) result.passed=result.passed&&result.shelfNavigation.passed;
       } catch(e) {result.errors.push(e.stack||String(e));}
       finally {
         if(page) {
