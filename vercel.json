@@ -57,6 +57,11 @@
       "permanent": false
     },
     {
+      "source": "/discover/short-films/thanks-tokyo.html",
+      "destination": "/discover/short-films/",
+      "permanent": false
+    },
+    {
       "source": "/outings/events/koenji-midsummer.html",
       "destination": "/outings/",
       "permanent": false

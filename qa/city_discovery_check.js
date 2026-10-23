@@ -13,6 +13,23 @@ assert.equal(heldInterview.videoId,'K_LDvvjC8Uw');
 assert.equal(heldInterview.durationSeconds,181);
 assert.equal(visualMedia.allowed(heldInterview.videoId),false);
 assert.equal(visualMedia.exceptions[heldInterview.videoId],undefined);
+// Retiring an already-published detail must preserve its shared URL without
+// restoring the held recording. The discovery generator must retain these rules.
+const retiredRoutes = {
+  '/discover/short-films/thanks-tokyo.html': '/discover/short-films/',
+  '/discover/shimokitazawa/womenslib-interview.html': '/discover/shimokitazawa/video.html'
+};
+const routeConfig=JSON.parse(fs.readFileSync(path.join(root,'vercel.json'),'utf8'));
+const currentSitemap=fs.readFileSync(path.join(root,'sitemap.xml'),'utf8');
+for(const [source,destination] of Object.entries(retiredRoutes)){
+  const matches=routeConfig.redirects.filter(rule=>rule.source===source);
+  assert.equal(matches.length,1,'Exactly one fallback for retired URL: '+source);
+  assert.deepEqual(matches[0],{source,destination,permanent:false});
+  assert.ok(!fs.existsSync(path.join(root,source.slice(1))),'Retired detail must stay unpublished: '+source);
+  assert.ok(!currentSitemap.includes(source),'Retired detail must leave sitemap: '+source);
+  assert.ok(fs.existsSync(path.join(root,destination.slice(1),...(destination.endsWith('/')?['index.html']:[]))),'Retired URL fallback must exist: '+destination);
+}
+
 assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,items.length);
 assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,30);
 assert.equal(commonVideos.length,3);
