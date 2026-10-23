@@ -81,7 +81,7 @@
     if (dismissed) return;
     const place = cities[city];
     panel.setAttribute('aria-label', place.label + '周辺の天気・観測地点');
-    scopeLine.textContent = place.label + '周辺の目安です。予報は東京地方（4街共通）、気温は' + place.stationLabel + '観測所。' + (city === 'tokyo' ? '' : place.label + 'のピンポイント予報・実測値ではありません。');
+    scopeLine.textContent = place.label + '周辺の目安です。予報は東京地方（対象の街で共通）、気温は' + place.stationLabel + '観測所。' + (city === 'tokyo' ? '' : place.label + 'のピンポイント予報・実測値ではありません。');
     const now = Date.now();
     const forecast = data?.forecast?.date === dateKey(now) && now - Date.parse(data.forecast.issuedAt) <= 36 * 3600000 && now - Date.parse(data.forecast.issuedAt) >= -300000 ? data.forecast : null;
     const obs = data?.stations?.[cities[city].station];

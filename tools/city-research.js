@@ -4,7 +4,7 @@
 module.exports = [{
   id: 'kichijoji-advertising', city: 'kichijoji',
   cityLabel: '吉祥寺',
-  series: 'AIで街を多角的に読む',
+  series: '街と広告を読む',
   issue: '調査 01',
   title: '吉祥寺の広告は、誰のための街を描くのか。',
   lead: '買う人、遊ぶ人、それとも街の魅力を伝える人。2015〜2021年の4件の告知を同じ物差しで読むと、広告が来訪者に用意する役割が見えてくる。平日の用事を映す調査とも、比べてみよう。',

@@ -6,10 +6,18 @@ const fs=require('node:fs');
 const path=require('node:path');
 for(const key of ['koenji/jirokichi','kichijoji/honnoniwa']) {
   const item=items.find(i=>i.city+'/'+i.id===key);
-  assert.ok(item&&item.presentation==='text-only');
+  assert.ok(item);
+  if(key==='koenji/jirokichi') assert.equal(item.presentation,'text-only');
+  else assert.equal(item.presentation,undefined,'Honnoniwa has an individually reviewed publisher cover');
   const html=fs.readFileSync(path.join(__dirname,'../discover',key+'.html'),'utf8');
   assert.ok(html.includes(item.url));
-  assert.ok(!html.includes('class="official-media'));
+  if(key==='koenji/jirokichi') assert.ok(!html.includes('class="official-media'));
+  else {
+    const cover=require('../tools/work-cover-source.json')[key];
+    assert.equal(cover.status,'usable');assert.equal(cover.isbn,'9784867168523');
+    assert.ok(html.includes('src="'+cover.imageUrl+'"'));
+    assert.ok(html.includes('class="official-media cover"'));
+  }
   const redirects=require('../vercel.json').redirects;
   assert.ok(!redirects.some(r=>r.source==='/discover/'+key+'.html'),'Restored book must not redirect away');
 }

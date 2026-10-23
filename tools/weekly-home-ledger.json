@@ -76,6 +76,25 @@
         "find-my-tokyo-akasaka",
         "musashino-green"
       ]
+    },
+    {
+      "weekOf": "2026-10-19",
+      "topFeatureId": "honnoniwa",
+      "curiosityIds": [
+        "jirokichi",
+        "baus",
+        "kaho-asa"
+      ],
+      "curiosityKinds": [
+        "book",
+        "film",
+        "music"
+      ],
+      "shortVideoIds": [
+        "tefu-1500",
+        "find-my-tokyo-akasaka",
+        "musashino-green"
+      ]
     }
   ],
   "featureChanges": [

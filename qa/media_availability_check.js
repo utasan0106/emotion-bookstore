@@ -1,0 +1,12 @@
+'use strict';
+const assert=require('node:assert/strict');
+const media=require('../tools/work-media');
+const held=media.youtube('Np7r73nw_iY','リサイクル');
+assert.match(held,/視聴条件を確認中/);
+assert.doesNotMatch(held,/data-video-id|v3-video-load|<iframe/);
+assert.match(held,/https:\/\/www.youtube.com\/watch\?v=Np7r73nw_iY/);
+const normal=media.youtube('5riinr6xpWo','下北沢で仕事もする人たち');
+assert.match(normal,/data-video-id="5riinr6xpWo"/);
+assert.doesNotMatch(normal,/<iframe/);
+assert.doesNotThrow(()=>media.forItem({videoId:'Np7r73nw_iY',title:'リサイクル',kind:'audio'}));
+console.log('media availability: held media has no inline player; ordinary click-to-load preserved');

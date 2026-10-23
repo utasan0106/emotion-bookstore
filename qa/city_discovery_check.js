@@ -4,18 +4,41 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
-const {items, commonVideos} = require('../tools/city-discovery-source');
+const {items, excludedItems, visualMedia, commonVideos} = require('../tools/city-discovery-source');
 const decode = s => s.replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"');
-assert.equal(items.length,65);
+assert.equal(items.length,64);
+const heldInterview=excludedItems.find(i=>i.id==='womenslib-interview');
+assert.ok(heldInterview);
+assert.equal(heldInterview.videoId,'K_LDvvjC8Uw');
+assert.equal(heldInterview.durationSeconds,181);
+assert.equal(visualMedia.allowed(heldInterview.videoId),false);
+assert.equal(visualMedia.exceptions[heldInterview.videoId],undefined);
+// Retiring an already-published detail must preserve its shared URL without
+// restoring the held recording. The discovery generator must retain these rules.
+const retiredRoutes = {
+  '/discover/short-films/thanks-tokyo.html': '/discover/short-films/',
+  '/discover/shimokitazawa/womenslib-interview.html': '/discover/shimokitazawa/video.html'
+};
+const routeConfig=JSON.parse(fs.readFileSync(path.join(root,'vercel.json'),'utf8'));
+const currentSitemap=fs.readFileSync(path.join(root,'sitemap.xml'),'utf8');
+for(const [source,destination] of Object.entries(retiredRoutes)){
+  const matches=routeConfig.redirects.filter(rule=>rule.source===source);
+  assert.equal(matches.length,1,'Exactly one fallback for retired URL: '+source);
+  assert.deepEqual(matches[0],{source,destination,permanent:false});
+  assert.ok(!fs.existsSync(path.join(root,source.slice(1))),'Retired detail must stay unpublished: '+source);
+  assert.ok(!currentSitemap.includes(source),'Retired detail must leave sitemap: '+source);
+  assert.ok(fs.existsSync(path.join(root,destination.slice(1),...(destination.endsWith('/')?['index.html']:[]))),'Retired URL fallback must exist: '+destination);
+}
+
 assert.equal(new Set(items.map(i=>i.city+'/'+i.id)).size,items.length);
-assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,31);
+assert.equal(new Set(items.filter(i=>i.videoId).map(i=>i.videoId)).size,30);
 assert.equal(commonVideos.length,3);
 assert.equal(new Set(commonVideos.map(i=>i.id)).size,3);
 const sharedMediaIds=[...items.filter(i=>i.videoId),...commonVideos].map(i=>i.videoId);
-assert.equal(new Set(sharedMediaIds).size,33);
-assert.deepEqual(sharedMediaIds.filter((id,index)=>sharedMediaIds.indexOf(id)!==index),['TFGQrtHflSg'],'The city film reused on the common shelf is the sole shared recording');
+assert.equal(new Set(sharedMediaIds).size,31);
+assert.deepEqual(sharedMediaIds.filter((id,index)=>sharedMediaIds.indexOf(id)!==index),['5riinr6xpWo','TFGQrtHflSg'],'Only the reviewed Shimokitazawa and Musashino shorts repeat across city/common shelves');
 const playbackIds=[...items.filter(i=>i.videoId).map(i=>i.videoId),...items.filter(i=>i.trailerVideoId).map(i=>i.trailerVideoId),...commonVideos.map(i=>i.videoId)];
-assert.deepEqual(playbackIds.filter((id,index)=>playbackIds.indexOf(id)!==index),['TFGQrtHflSg'],'Only the approved city/common shelf recording may repeat');
+assert.deepEqual(playbackIds.filter((id,index)=>playbackIds.indexOf(id)!==index),['5riinr6xpWo','TFGQrtHflSg'],'Only the approved Shimokitazawa and Musashino recordings may repeat');
 const cities=['koenji','shimokitazawa','kichijoji','jinbocho'];
 const directory=fs.readFileSync(path.join(root,'discover/index.html'),'utf8');
 for(const city of cities) {
@@ -74,7 +97,7 @@ function inspect(dir) {
 inspect(path.join(root,'discover'));
 const research=require('../tools/city-research');
 // One manually authored, script-free editorial selection alongside the existing catalogue.
-assert.equal(pages,103+research.length);
+assert.equal(pages,102+research.length);
 // 街をまたいだ3シリーズ。棚を通った本と音楽は全部出る（増えたのに載らない、が起きない）。
 // 映像だけは「いま行ける場所」で絞るので、公開本数より少なくてよい。
 {
@@ -247,7 +270,12 @@ for(const i of items) {
     assert.match(i.videoId,/^[A-Za-z0-9_-]{11}$/);
     assert.equal(new URL(i.url).searchParams.get('v'),i.videoId,'Fallback must be the identical clip');
     // Click-to-load: the id is wired to the button; the provider URL is built by the click.
-    assert.ok(html.includes('data-video-id="'+i.videoId+'"'),'Player wired for '+i.id);
+    if (i.videoId==='Np7r73nw_iY') {
+      assert.equal(require('../tools/media-availability-source.json').youtube[i.videoId].inlinePlayback,'hold');
+      assert.ok(!html.includes('data-video-id="'+i.videoId+'"'),'Held recording has no inline player');
+      assert.match(html,/視聴条件を確認中/);
+      assert.ok(html.includes(i.url),'Held recording keeps exact official fallback');
+    } else assert.ok(html.includes('data-video-id="'+i.videoId+'"'),'Player wired for '+i.id);
     assert.ok(!html.includes('/embed/'+i.videoId),'No provider contact before the click: '+i.id);
 
   }

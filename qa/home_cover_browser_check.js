@@ -26,7 +26,7 @@ async function serve(){
 (async()=>{
  server=await serve();const origin='http://127.0.0.1:'+server.address().port;
  browser=await chromium.launch(process.env.CHROMIUM_EXECUTABLE_PATH?{executablePath:process.env.CHROMIUM_EXECUTABLE_PATH}:{});
- for(const viewport of [{name:'mobile',width:390,height:844},{name:'desktop',width:1440,height:900}]){
+ for(const viewport of [{name:'narrow',width:320,height:844},{name:'mobile',width:390,height:844},{name:'desktop',width:1440,height:900}]){
   const context=await browser.newContext({viewport:{width:viewport.width,height:viewport.height},isMobile:viewport.name==='mobile',hasTouch:viewport.name==='mobile',deviceScaleFactor:1,reducedMotion:'reduce'});
   const blocked=[],errors=[];let phase='home';
   await context.route('**/*',route=>{const url=route.request().url();if(new URL(url).origin!==origin){blocked.push({phase,url});return route.abort('blockedbyclient');}return route.continue();});
@@ -35,6 +35,7 @@ async function serve(){
    await page.goto(origin+'/',{waitUntil:'networkidle'});
    await page.evaluate(()=>document.fonts.ready);
    await page.locator('.hd-feature img').waitFor({state:'visible'});
+   await page.locator('.hd-feature img').evaluate(el=>el.decode());
    const layout=await page.evaluate(()=>{
     const image=document.querySelector('.hd-feature img'),title=document.querySelector('#hd-feature-title'),primary=document.querySelector('.hd-feature .hd-primary');
     const box=el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height};};
@@ -48,7 +49,15 @@ async function serve(){
    assert.equal(layout.image.naturalHeight,layout.image.declaredHeight,'Image height metadata matches pixels');
    const imageRatio=layout.image.render.width/layout.image.render.height;
    const naturalRatio=layout.image.naturalWidth/layout.image.naturalHeight;
-   if(viewport.name==='desktop'&&['indies','mot-collection-light'].includes(edition.topFeatureId)){assert.equal(layout.image.objectFit,'cover','Reviewed desktop weekly cover uses a crop, never stretched pixels');assert.ok(Math.abs(imageRatio-2)<0.02,'Reviewed desktop weekly photograph keeps its intentional 2:1 crop');}
+   if(feature?.kind==='book'){
+    const cover=require('../tools/work-cover-source.json')[feature.city+'/'+feature.id];
+    assert.equal(cover?.status,'usable','A featured book has individually approved cover media');
+    assert.equal(layout.image.src,cover.imageUrl,'Featured book displays its exact approved edition, not a context street photograph');
+    assert.equal(layout.image.objectFit,'contain','Complete book cover is never cropped');
+    assert.equal(layout.image.naturalWidth,cover.width);assert.equal(layout.image.naturalHeight,cover.height);
+    assert.equal(require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(root,cover.imageUrl))).digest('hex'),cover.sha256,'Exact reviewed cover bytes');
+    assert.ok((await page.locator('.hd-feature figcaption').innerText()).includes('書影'),'Cover is explicitly identified as a book cover');
+   } else if(viewport.name==='desktop'&&layout.image.objectFit==='cover')assert.ok(Math.abs(imageRatio-2)<0.02,'Reviewed desktop context photograph keeps its intentional 2:1 crop');
    else assert.ok(Math.abs(imageRatio-naturalRatio)<0.02,'Uncropped feature photograph is not stretched');
    assert.ok(layout.primary.render.height>=44,'Primary target has adequate height');
    assert.ok(layout.primary.render.y+layout.primary.render.height<=viewport.height,'Primary cover action is visible in the opening viewport');

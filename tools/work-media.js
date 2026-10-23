@@ -1,9 +1,12 @@
 'use strict';
 // Actual work media only. No decorative stand-ins for unresolved covers/stills.
 const covers = require('./work-cover-source.json');
+const availability = require('./media-availability-source.json');
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function youtube(id,title,label='公開元の映像',url='https://www.youtube.com/watch?v='+id,verb='見る'){
  if(!/^[\w-]{11}$/.test(id)) throw Error('Invalid YouTube ID: '+id);
+ const review=availability.youtube[id];
+ if(review && review.inlinePlayback==='hold') return `<figure class="official-media media-unverified" data-media-status="verification-pending"><figcaption><p>${esc(review.publicNote)}</p><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">公開元で視聴条件を確認する ↗</a></figcaption></figure>`;
  // Click-to-load: the page never contacts the provider until the visitor asks for it.
  // Host markup and behaviour are video-embed.js's (Founder decision 2026-09-06 v2).
  return `<figure class="official-media"><div class="wk-video v3-video" data-video-id="${id}" data-video-title="${esc(title)}｜${esc(label)}"><div class="v3-video-frame"><button class="v3-video-load wk-video-load" type="button">${esc(label)}を${esc(verb)}<span class="wk-mark" aria-hidden="true"> ▶</span></button></div></div><figcaption><span class="official-media-note">押すまでYouTubeへ接続しません。押すと、このページ内でプレイヤーが開きます。自動再生はしません。</span><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)}をYouTubeで開く ↗</a></figcaption></figure>`;
@@ -16,9 +19,10 @@ function youtube(id,title,label='公開元の映像',url='https://www.youtube.co
 function cover(key,title,alreadyLinked){
  const m=covers[key];
  if(!m||m.status!=='usable') return '';
- const credit=m.sourceUrl===alreadyLinked ? esc(m.credit)
-  : `${esc(m.credit)} · <a href="${esc(m.sourceUrl)}" target="_blank" rel="noopener noreferrer">書籍情報 ↗</a>`;
- return `<figure class="official-media cover"><img src="${esc(m.imageUrl)}" alt="${esc(title)}の表紙" loading="lazy" decoding="async" width="${m.width}" height="${m.height}"><figcaption>${credit}</figcaption></figure>`;
+ const creditText=esc(m.credit).replace(/ＫＡＤＯＫＡＷＡ/g,'<span style="white-space:nowrap">ＫＡＤＯＫＡＷＡ</span>');
+ const credit=m.sourceUrl===alreadyLinked ? creditText
+  : `${creditText} · <a href="${esc(m.sourceUrl)}" target="_blank" rel="noopener noreferrer">書籍情報 ↗</a>`;
+ return `<figure class="official-media cover"><img src="${esc(m.imageUrl)}" alt="${esc(m.coverTitle||title)}の表紙" loading="lazy" decoding="async" width="${m.width}" height="${m.height}"><figcaption>${credit}</figcaption></figure>`;
 }
 function forItem(item){
  if(item.videoId) return youtube(item.videoId,item.title,item.kind==='audio'?'公開元の演奏・音源':'公開元の映像',undefined,item.kind==='audio'?'聴く':'見る');

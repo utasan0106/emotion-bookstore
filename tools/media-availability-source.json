@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-10-23",
+  "method": "Public provider oEmbed and watch-page metadata. Not actual playback.",
+  "youtube": {
+    "Np7r73nw_iY": {
+      "inlinePlayback": "hold",
+      "providerStatus": "LOGIN_REQUIRED",
+      "durationSeconds": null,
+      "actualPlaybackChecked": false,
+      "sourceUrl": "https://www.youtube.com/watch?v=Np7r73nw_iY",
+      "publicNote": "この映像は視聴条件を確認中です。現在、このページ内での再生案内を一時停止しています。公開元で最新の視聴条件をご確認ください。",
+      "nextCheck": "Verify actual playback and embed availability without bypassing login or restrictions. oEmbed success alone does not clear this hold."
+    }
+  }
+}

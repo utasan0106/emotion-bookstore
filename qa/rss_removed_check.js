@@ -1,0 +1,13 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
+assert.ok(!fs.existsSync(path.join(root,'feed.xml')),'Removed RSS file must not be recreated');
+const walk=d=>fs.readdirSync(path.join(root,d),{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(d,e.name)):e.name.endsWith('.html')?[path.join(d,e.name)]:[]);
+const files=[...fs.readdirSync(root).filter(p=>p.endsWith('.html')),...['discover','outings','visit','atlas'].filter(d=>fs.existsSync(path.join(root,d))).flatMap(walk)];
+for(const file of files)assert.doesNotMatch(read(file),/application\/rss\+xml|(?:href|src)=["'][^"']*feed\.xml|>[^<]*RSS/i,file+' must not expose RSS discovery or promotion');
+for(const file of ['tools/build-city-discovery.js','tools/build-weekly-outings.js','tools/work-entry-source.html','llms.txt','.github/workflows/weekly-acquisition-refresh.yml'])assert.doesNotMatch(read(file),/feed\.xml|application\/rss\+xml|<rss\b/i,file+' must not regenerate, advertise, or schedule RSS');
+const settings=JSON.parse(read('vercel.json'));
+assert.ok(!(settings.redirects||[]).some(r=>r.source==='/feed.xml'),'Do not disguise the removed feed as unrelated HTML');
+const {validate}=require('../tools/check-freshness-output');
+assert.throws(()=>validate(['feed.xml'],{},{}),/Unexpected generated file/,'Scheduled output guard rejects RSS reintroduction');
+console.log(`PASS RSS removed: ${files.length} current public pages, source generators, discoverability and scheduled output guard`);

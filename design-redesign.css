@@ -285,3 +285,32 @@ body.design-redesign.home-discovery .dr-cover-photo figcaption,
 body.design-redesign.home-discovery .hd-entry figcaption{
   display:none;
 }
+
+/* Preserve title phrases, not a desktop-only line composition. */
+.design-redesign .dr-title-phrase{display:inline-block;max-width:100%;vertical-align:top;white-space:normal;word-break:normal;overflow-wrap:anywhere;line-break:strict}
+
+/* Article opening: specific title, context photograph, then a clear reading path.
+   Full images preserve source context/watermarks; never place text over photography. */
+.design-redesign .dr-article-opening{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:0 40px;align-items:start}
+.design-redesign .dr-article-photo{grid-column:2;grid-row:1/6;margin:0;min-width:0;align-self:center}
+.design-redesign .dr-article-photo img{display:block;width:100%;height:auto;max-height:36rem;object-fit:contain}
+.design-redesign .dr-article-photo figcaption{font:400 .75rem/1.7 var(--font-body);color:var(--dr-muted);margin-top:10px}
+.design-redesign .dr-article-photo figcaption a{text-decoration:underline;text-underline-offset:3px}
+.design-redesign .dr-article-opening .article-summary{grid-column:1/-1;grid-row:auto;margin-top:32px;padding:24px 0 0;border:0;border-top:1px solid var(--dr-rule);background:none}
+.design-redesign .dr-article-opening .article-summary ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;padding-left:28px}
+.design-redesign .dr-article-opening .article-summary li{padding-left:4px;margin:0;font-size:.9375rem;line-height:1.85}
+@media(max-width:900px){
+ .design-redesign .dr-article-opening{display:block}
+ .design-redesign .dr-article-photo{margin:0 0 24px}
+ .design-redesign .dr-article-photo img{max-height:28rem}
+ .design-redesign .dr-article-opening .article-summary ul{display:block}
+ .design-redesign .dr-article-opening .article-summary li+li{margin-top:16px}
+}
+
+/* Exact-book editorial feature: preserve the complete licensed portrait and its adjacent credit.
+   This is not a decorative masthead or site-brand image. */
+body.design-redesign.home-discovery .hd-editorial-book-cover{margin:20px 0;}
+body.design-redesign.home-discovery .hd-editorial-book-cover>a{display:block;}
+body.design-redesign.home-discovery .hd-editorial-book-cover img{display:block;width:auto;max-width:100%;height:auto;max-height:18rem;margin:0 auto;aspect-ratio:945/1350;object-fit:contain;}
+body.design-redesign.home-discovery .hd-editorial-book-cover figcaption{display:block;font-size:.75rem;line-height:1.7;}
+@media(max-width:600px){body.design-redesign.home-discovery .hd-editorial-book-cover img{max-height:16rem;}}

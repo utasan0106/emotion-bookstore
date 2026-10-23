@@ -11,12 +11,18 @@ for(const f of ['index.html','kichijoji/index.html','shimokitazawa/index.html','
 // Founder approved full-page design expansion; runtime payload assertions are unchanged.
 for(const f of ['visit/index.html','tools/build-design-redesign.js','qa/design_redesign_check.js','qa/design-redesign/routes.json','docs/design-redesign-stage-c-20260910.md']) allowed.add(f);
 /* Measurement v0.4 (2026-09-06): the eight Beta events + nine bounded events. Params are content_type / content_id / link_domain only. */
-for(const file of ['home-discovery.css','home-discovery.js','outings/events-data.js','outings/index.html','outings/week.js','outings/outings.css','tools/build-weekly-outings.js','tools/weekly-outings-source.js','qa/home_discovery_check.js','qa/event_supply_check.js','qa/catalogue_supply_check.js','qa/site_integration_check.js','discover/weekly-issue.js','feed.xml','qa/analytics_contract_check.js','data.html','qa/duplicate_text_check.js','tools/venue-source.js','discover/venue-events.js','tools/places-source.js','qa/home-integration-layout.html','qa/HOME_INTEGRATION.md']) allowed.add(file);
+for(const file of ['home-discovery.css','home-discovery.js','outings/events-data.js','outings/index.html','outings/week.js','outings/outings.css','tools/build-weekly-outings.js','tools/weekly-outings-source.js','qa/home_discovery_check.js','qa/event_supply_check.js','qa/catalogue_supply_check.js','qa/site_integration_check.js','discover/weekly-issue.js','qa/analytics_contract_check.js','data.html','qa/duplicate_text_check.js','tools/venue-source.js','discover/venue-events.js','tools/places-source.js','qa/home-integration-layout.html','qa/HOME_INTEGRATION.md']) allowed.add(file);
 // Object-level expiry isolation changes only shelf rendering. Review the diff below for
 // measurement/storage vocabulary instead of freezing the whole shared runtime byte-for-byte.
 allowed.add('release.js');
 allowed.add('release_content.js');
 for(const file of ['qa/release_preflight.js','qa/release_expiry_boundaries.js']) allowed.add(file);
+// 2026-10-23 bounded media/editorial repair: data, local artwork, and regression tests only.
+// Analytics runtime, payload vocabulary, storage and privacy assertions below are unchanged.
+for(const file of ['assets/book-covers/9784101021126.jpg','assets/book-covers/9784101001630.png','assets/book-covers/9784048532587.webp','assets/book-covers/9784867168523.jpg','assets/book-covers/9784835638492.jpg','tools/work-cover-source.json','tools/media-availability-source.json',
+ 'tools/catalogue-inventory.js','tools/city-editorials.js','.github/workflows/weekly-acquisition-refresh.yml','qa/rss_removed_check.js','tools/check-freshness-output.js','qa/catalogue_inventory_check.js','qa/canonical_redirect_check.js','qa/five_city_browser_check.js','qa/five_city_surface_check.js',
+ 'qa/home_editorial_rotation_check.js','qa/home-feature-honnoniwa-20261023.json','qa/media-repair-20261023.json','qa/media_availability_check.js',
+ 'qa/typography_browser_check.js','qa/typography_contract_check.js','qa/weekly-source-verification-20261023.json']) allowed.add(file);
 const approvedEvents=new Set(['v3_home_view','v3_shelf_open','v3_shelf_view','v3_detail_open','v3_official_action','v3_suggest_view','v3_suggest_copy','v3_suggest_form_open','v3_entry_open','v3_works_section_view','v3_thread_start','v3_thread_stage','v3_thread_complete','v3_evidence_open','v3_external_open','v3_continue_open','v3_media_preview_open']);
 // Morning polish: visual changes, explicit regional-weather labels, directory
 // Approved editorial summary and city art work; no tracking changes.
@@ -307,17 +313,17 @@ const generatedPage=p=>/^discover\/.+\.html$/.test(p)||p.startsWith('outings/eve
 const measurementToken=/gtag|dataLayer|localStorage|sessionStorage|analytics-v3|G-[A-Z0-9]{6,}/;
 function generatedStaysClear(p){
   // 新しく作られたページは差分が無い。その場合は中身を丸ごと見る。
-  const added=git(['ls-files','--',p])==='';
-  const lines=added?read(p).split(/\r?\n/):git(['diff','--unified=0','--',p]).split(/\r?\n/)
+  const added=fs.existsSync(path.join(ROOT,p))&&git(['ls-files','--',p])==='';
+  const lines=added?read(p).split(/\r?\n/):git(['diff','--unified=0','HEAD','--',p]).split(/\r?\n/)
     .filter(l=>/^[+-]/.test(l)&&!/^(\+\+\+|---)/.test(l));
   for(const line of lines) assert(!measurementToken.test(line),'generated page touches measurement or storage: '+p);
   return true;
 }
-assert(git(['diff','--','release.css'])==='','protected changed release.css');
+assert(git(['diff','HEAD','--','release.css'])==='','protected changed release.css');
 for(const p of ['release.js','release_content.js']){
-  const changed=git(['diff','--unified=0','--',p]).split(/\r?\n/)
+  const changed=git(['diff','--unified=0','HEAD','--',p]).split(/\r?\n/)
     .filter(l=>/^[+-]/.test(l)&&! /^(\+\+\+|---)/.test(l));
   for(const line of changed) assert(!measurementToken.test(line),p+' shelf expiry/archive change touches measurement or storage: '+line);
 }
-git(['diff','--check']); const status=git(['status','--porcelain']); if(status)for(const line of status.split(/\r?\n/)){let rel=line.slice(3).trim();if(rel.includes(' -> '))rel=rel.split(' -> ',2)[1];assert(allowed.has(rel)||rebuiltByEvents(rel)||internalDoc(rel)||(generatedPage(rel)&&generatedStaysClear(rel)),'unexpected '+rel)}
+git(['diff','--check']); const status=git(['status','--porcelain']); if(status)for(const line of status.split(/\r?\n/)){let rel=line.slice(3).trim();if(rel.includes(' -> '))rel=rel.split(' -> ',2)[1];assert((rel==='feed.xml'&&!fs.existsSync(path.join(ROOT,rel)))||allowed.has(rel)||rebuiltByEvents(rel)||internalDoc(rel)||(generatedPage(rel)&&generatedStaysClear(rel)),'unexpected '+rel)}
 console.log('V3_RELEASE_GROWTH_SELFTEST_GO');

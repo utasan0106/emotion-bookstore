@@ -12,7 +12,12 @@ assert.match(html,/href="\/discover\/kiyosumi\/"/,'Kiyosumi remains available as
 assert.match(html,/src="\/assets\/city-kiyosumi\.jpg"/,'Kiyosumi Home media must be localized');
 assert.doesNotMatch(html,/upload\.wikimedia\.org[^"']*Kiyosumi/i,'Kiyosumi must not hotlink Wikimedia at runtime');
 for(const caption of html.matchAll(/<figcaption>([\s\S]*?)<\/figcaption>/g)) {
- assert.match(caption[1],/href="\/credits\.html(?:#[^"]+)?"/,'Licensed home photography has a path to its credit');
+ if(caption[1].includes('書影')) {
+  const feature=require('../tools/city-discovery-source').items.find(x=>x.id===currentWeek.topFeatureId);
+  const cover=require('../tools/work-cover-source.json')[feature.city+'/'+feature.id];
+  assert.equal(cover.status,'usable');
+  assert.ok(caption[1].includes('href="'+cover.sourceUrl+'"'),'Featured book has its exact licensed publisher-source attribution');
+ } else assert.match(caption[1],/href="\/credits\.html(?:#[^"]+)?"/,'Licensed home photography has a path to its credit');
 }
 assert.match(read('discover/kichijoji/parks.html'),/data-video-id="pm7RBghFt0I"/,'PARKS and its real trailer remain available in the catalogue');
 assert.doesNotMatch(read('discover/kichijoji/parks.html'),/youtube-nocookie.com\/embed\//,'The trailer stays click-to-load');
@@ -56,4 +61,4 @@ for(const link of links) {
 location.search='?kind=book';popstate();assert.deepEqual(cards.filter(c=>!c.hidden).map(c=>c.dataset.homeWork),['book']);
 location.search='?kind=unknown';popstate();assert.equal(cards.filter(c=>!c.hidden).length,3);
 links[0].handler({button:0,ctrlKey:true,preventDefault(){throw Error('Modified clicks must remain native');}});
-console.log('PASS 4 populated home city routes; home filters, history and retired hash; source palette contrast ratios '+ratios.join(', '));
+console.log('PASS 5 populated home city routes; home filters, history and retired hash; source palette contrast ratios '+ratios.join(', '));

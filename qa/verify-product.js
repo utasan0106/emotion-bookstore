@@ -5,6 +5,12 @@ const path=require('node:path');
 const root=path.resolve(__dirname,'..');
 const checks=[
  ['qa/verify_product_runner_check.js'],
+ ['qa/rss_removed_check.js'],
+ ['qa/canonical_redirect_check.js'],
+ ['qa/five_city_surface_check.js'],
+ ['qa/home_editorial_rotation_check.js'],
+ ['qa/typography_contract_check.js'],
+ ['qa/media_availability_check.js'],
  ['qa/catalogue_regression_check.js'],
  ['qa/cover-flow-check.js'],
  ['qa/selection_feature_check.js'],

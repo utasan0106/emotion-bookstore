@@ -1,19 +1,30 @@
 #!/usr/bin/env node
 'use strict';
-// Exact checkout, deterministic October 1 legacy and October 5 supply calendars. External navigation is intercepted.
+// Exact checkout, deterministic October 23 reviewed inventory. External navigation is intercepted.
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),http=require('node:http'),cp=require('node:child_process');
 const {chromium}=require('playwright');
 const root=path.resolve(__dirname,'..'),out=path.join(__dirname,'artifacts/outings');
 const source=require('../tools/weekly-outings-source'),week=require('../outings/week');
-const newlyReviewed=['kichijoji-tsuijuku','jinbocho-joyu','shimokita-rekishi','koenji-beyond'];
-const octoberReviewed=['koenji-tomovsky','shimokita-bergson'];
-// Exact checkout generation has already retired this ended detail. Moving the
-// browser clock backward must never imply that the public build regenerates it.
-const retiredAtGeneration=new Set(['shimokita-moon']);
+// Freeze both source publication eligibility and the browser clock at the reviewed build.
+const generationDate='2026-10-23',asOf=generationDate+'T09:00:00+09:00';
+const reviewedIds=['koenji-dna2026','shimokita-design2026','shimokita-kotoba2026','shimokita-gun-island2026','koenji-akame2026','jinbocho-tabishite2026','jinbocho-yumemidori2026','kiyosumi-tada2026'];
+const published=source.events.filter(e=>source.isPublishableEvent(e)&&e.status==='scheduled'&&e.checkedAt<=generationDate&&e.reviewThrough>=generationDate&&week.dates(e).at(-1)>=generationDate);
+const generatedData=JSON.parse(fs.readFileSync(path.join(root,'outings/events-data.js'),'utf8').match(/^window\.OUTINGS_DATA=(.*);\s*$/s)[1]);
+assert.deepEqual(generatedData.events.map(e=>e.id).sort(),published.map(e=>e.id).sort(),'Runtime inventory matches source eligibility at generation, not a historical browser clock');
+for(const id of reviewedIds)assert.ok(published.some(e=>e.id===id),'Pinned official reviewed event is published: '+id);
+const retiredAtGeneration=source.events.filter(e=>!published.some(p=>p.id===e.id));
+const currentWeek=week.monday(Date.parse(asOf)),nextWeek=week.add(currentWeek,7);
+const currentExpected=week.select(published,{now:Date.parse(asOf)}).map(e=>e.id);
+const nextExpected=week.select(published,{now:Date.parse(asOf),week:nextWeek}).map(e=>e.id);
+assert.deepEqual(currentExpected,['kichijoji-taniguchi','kiyosumi-tada2026','koenji-dna2026','jinbocho-yumemidori2026','shimokita-design2026','shimokita-kotoba2026']);
+assert.deepEqual(nextExpected,['jinbocho-yumemidori2026','kichijoji-taniguchi','kiyosumi-tada2026','koenji-akame2026','shimokita-gun-island2026','jinbocho-tabishite2026']);
+const expiredAsOf=week.add(published.map(e=>week.dates(e).at(-1)).sort().at(-1),1)+'T00:00:00+09:00';
 const mime={'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.json':'application/json','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml','.woff2':'font/woff2','.ico':'image/x-icon'};
-const report={commit:cp.execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),sourceSha:process.env.QA_SOURCE_SHA||null,asOf:'2026-10-01T09:00:00Z',supplyAsOf:'2026-10-05T00:00:00+09:00',viewports:[],limits:['Local checkout: external navigation targets are intercepted, not live provider availability or purchase tests.','Calendar is fixed to October 1 for the four legacy reviewed cards and October 5 for two October 2 additions and next-week supply; expiry is additionally checked at November 4 JST.','The existing Shimokitazawa publisher cover request is recorded and blocked; reviewed event flows must not add automatic external resources.']};
+const report={commit:cp.execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),sourceSha:process.env.QA_SOURCE_SHA||null,asOf,generationDate,expiredAsOf,viewports:[],limits:['Local checkout: external navigation targets are intercepted, not live provider availability or purchase tests.','Calendar is fixed to October 23 for current/next-week reviewed supply; expiry is checked after the latest published event ends in JST.','The existing Shimokitazawa publisher cover request is recorded and blocked; reviewed event flows must not add automatic external resources.']};
 fs.mkdirSync(out,{recursive:true});let server,browser,discoveryOverride=null;
-const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt('2026-10-05T00:00:00+09:00');
+// Use the exact generated checkout, never run a generator as a browser-test side effect.
+const emptyDiscovery=fs.readFileSync(path.join(root,'discover/index.html'),'utf8');
+assert.match(emptyDiscovery,/現在、掲載できる街の動きはありません。/);
 (async()=>{
  server=http.createServer((req,res)=>{
   const pathname=new URL(req.url,'http://localhost').pathname;
@@ -27,7 +38,7 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
  });await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const origin='http://127.0.0.1:'+server.address().port;
  browser=await chromium.launch();
- for(const viewport of [{name:'mobile',width:390,height:844},{name:'desktop',width:1440,height:900}]){
+ for(const viewport of [{name:'narrow',width:320,height:844},{name:'mobile',width:390,height:844},{name:'desktop',width:1440,height:900}]){
   discoveryOverride=null;
   const context=await browser.newContext({viewport:{width:viewport.width,height:viewport.height},reducedMotion:'reduce'});
   const external=[],errors=[],missing=[];let phase='existing-city';
@@ -57,17 +68,17 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
    }
    await page.getByRole('link',{name:'清澄庭園',exact:true}).click();await page.waitForLoadState('networkidle');await page.locator('[data-object-id="kiyosumi-garden"] .open-button').click();await page.locator('#detailDialog[open]').waitFor();
    await page.locator('#closeDialog').click();assert.equal(await page.locator('#detailDialog').getAttribute('open'),null);
-   const fallback=page.locator('#cityCulturePaths a').nth(1);assert.equal(await fallback.innerText(),'ほかの街の催しを見る →');assert.equal(await fallback.getAttribute('href'),'./outings/');
-   await fallback.scrollIntoViewIfNeeded();await screen('kiyosumi-route');await fallback.click();await page.waitForURL(origin+'/outings/');await page.waitForLoadState('networkidle');
-   assert.equal(new URL(page.url()).search,'');assert.equal(await page.locator('select[name=city]').inputValue(),'');flows.push({name:'kiyosumi honest fallback',url:page.url()});
+   const fallback=page.locator('#cityCulturePaths a').nth(1);assert.equal(await fallback.innerText(),'清澄白河の文化イベント →');assert.equal(await fallback.getAttribute('href'),'./outings/?city=kiyosumi');
+   await fallback.scrollIntoViewIfNeeded();await screen('kiyosumi-route');await fallback.click();await page.waitForURL(origin+'/outings/?city=kiyosumi');await page.waitForLoadState('networkidle');
+   assert.equal(new URL(page.url()).searchParams.get('city'),'kiyosumi');assert.equal(await page.locator('select[name=city]').inputValue(),'kiyosumi');assert.ok(await page.locator('[data-event-card="kiyosumi-tada2026"]').isVisible());flows.push({name:'kiyosumi actual city-filtered route',url:page.url()});
    phase='reviewed-outings';
-   const published=source.events.filter(e=>source.isPublishableEvent(e)&&!retiredAtGeneration.has(e.id));
-   assert.equal(await page.locator('[data-event-card="shimokita-moon"]').count(),0,'Retired Moon card is not regenerated by a historical browser clock');
-   assert.equal(await page.locator('[data-event-card]:visible').count(),week.select(published,{now:Date.parse(report.asOf)}).length);
+   await page.goto(origin+'/outings/',{waitUntil:'networkidle'});
+   for(const e of retiredAtGeneration)assert.equal(await page.locator('[data-event-card="'+e.id+'"]').count(),0,'Retired or unreviewed card is absent: '+e.id);
+   assert.deepEqual(await page.locator('[data-event-card]:visible').evaluateAll(els=>els.map(el=>el.dataset.eventCard)),currentExpected);
+   assert.equal(await page.locator('select[name=week] option:checked').innerText(),'今週のこれから · 10/19〜10/25');
    await screen('current-list');
-   for(const id of [...newlyReviewed,...octoberReviewed]){
-    if(octoberReviewed.includes(id))await page.clock.setFixedTime(new Date('2026-10-05T00:00:00+09:00'));
-    const e=source.events.find(x=>x.id===id),next=week.dates(e).find(d=>d>='2026-10-01'),selectedWeek=week.monday(week.stamp(next));
+   for(const id of reviewedIds){
+    const e=source.events.find(x=>x.id===id),next=week.dates(e).find(d=>d>=generationDate),selectedWeek=week.monday(week.stamp(next));
     await page.goto(origin+'/outings/',{waitUntil:'networkidle'});
     await page.locator('select[name=week]').selectOption(selectedWeek);await page.locator('select[name=city]').selectOption(e.city);
     const card=page.locator('[data-event-card="'+id+'"]');assert.ok(await card.isVisible(),id+' appears in its actual week/city');await card.scrollIntoViewIfNeeded();await card.locator('img').evaluate(el=>el.decode());assert.ok(await card.locator('img').evaluate(el=>el.complete&&el.naturalWidth>0));
@@ -76,23 +87,23 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
     const popupPromise=page.waitForEvent('popup');await page.locator('.event-detail a.primary').click();const popup=await popupPromise;await popup.waitForLoadState('domcontentloaded');assert.equal(popup.url(),e.url);await popup.close();
     const detail=page.url();await page.goBack({waitUntil:'networkidle'});assert.equal(await page.locator('select[name=city]').inputValue(),e.city);assert.equal(await page.locator('select[name=week]').inputValue(),selectedWeek);flows.push({name:id,detail,official:e.url,back:true});
    }
-   await page.goto(origin+'/outings/?week=2026-10-12',{waitUntil:'networkidle'});
-   assert.equal(await page.locator('select[name=week] option:checked').innerText(),'来週 · 10/12〜10/18');
-   assert.equal(await page.locator('[data-event-card]:visible').count(),5,'October 5 next-week inventory has five reviewed events');
-   for(const id of octoberReviewed)assert.ok(await page.locator('[data-event-card="'+id+'"]').isVisible(),id+' is visible in next-week supply');
+   await page.goto(origin+'/outings/?week='+nextWeek,{waitUntil:'networkidle'});
+   assert.equal(await page.locator('select[name=week] option:checked').innerText(),'来週 · 10/26〜11/01');
+   assert.deepEqual(await page.locator('[data-event-card]:visible').evaluateAll(els=>els.map(el=>el.dataset.eventCard)),nextExpected,'Next-week inventory contains exactly six reviewed events in date order');
    // Full-page screenshots do not trigger off-screen lazy images on narrow screens.
    for(const img of await page.locator('[data-event-card]:visible img').all()){
     await img.scrollIntoViewIfNeeded();await img.evaluate(el=>el.decode());assert.ok(await img.evaluate(el=>el.complete&&el.naturalWidth>0),'Every next-week card image loads');
    }
    await page.evaluate(()=>window.scrollTo(0,0));
-   await screen('october-12-next-week');flows.push({name:'Oct 5 next week includes both October 2 additions',url:page.url(),count:5});
+   await screen('october-26-next-week');flows.push({name:'Oct 23 next week reviewed supply',url:page.url(),count:nextExpected.length});
    // City-first layout and an explicit all-dates choice retain the current-week default.
-   const allAsOf='2026-10-02T09:00:00+09:00';await page.clock.setFixedTime(new Date(allAsOf));
+   const allAsOf=asOf;await page.clock.setFixedTime(new Date(allAsOf));
    await page.goto(origin+'/outings/',{waitUntil:'networkidle'});
    const filterOrder=await page.locator('#event-filters select').evaluateAll(els=>els.map(el=>el.name));
    assert.deepEqual(filterOrder,['city','week','kind','with']);
    const cityBox=await page.locator('select[name=city]').boundingBox(),periodBox=await page.locator('select[name=week]').boundingBox();
-   assert.ok(cityBox.x<periodBox.x&&Math.abs(cityBox.y-periodBox.y)<2,'City is top left and period is immediately to its right');
+   if(viewport.width<359)assert.ok(Math.abs(cityBox.x-periodBox.x)<2&&cityBox.y+cityBox.height<=periodBox.y,'Narrow layout stacks city before period without overflow');
+   else assert.ok(cityBox.x<periodBox.x&&Math.abs(cityBox.y-periodBox.y)<2,'City is top left and period is immediately to its right');
    await page.locator('select[name=city]').focus();
    for(const name of ['week','kind','with']){await page.keyboard.press('Tab');assert.equal(await page.evaluate(()=>document.activeElement.name),name,'Keyboard follows visual filter order');}
    assert.equal(await page.locator('select[name=week]').inputValue(),week.monday(Date.parse(allAsOf)),'Default remains this week');
@@ -119,48 +130,51 @@ const emptyDiscovery=require('./freshness_workflow_check').generatedDiscoveryAt(
    const officialUrl=await firstCard.locator('.event-official').getAttribute('href'),officialPopup=page.waitForEvent('popup');
    await firstCard.locator('.card-action').click();const officialPage=await officialPopup;await officialPage.waitForLoadState('domcontentloaded');assert.equal(officialPage.url(),officialUrl);await officialPage.close();
    await page.evaluate(()=>window.scrollTo(0,0));await screen('all-dates');
-   await page.locator('select[name=city]').selectOption('koenji');await page.locator('select[name=kind]').selectOption('live');await page.locator('select[name=with]').selectOption('solo');
-   const combined=week.select(published,{now:Date.parse(allAsOf),week:'all',city:'koenji',kind:'live',audience:'solo'}).map(e=>e.id);
+   await page.locator('select[name=city]').selectOption('koenji');await page.locator('select[name=kind]').selectOption('stage');await page.locator('select[name=with]').selectOption('solo');
+   const combined=week.select(published,{now:Date.parse(allAsOf),week:'all',city:'koenji',kind:'stage',audience:'solo'}).map(e=>e.id);
+   assert.deepEqual(combined,['koenji-dna2026','koenji-akame2026'],'Combined filter exercises two distinct current/future stage events');
    assert.deepEqual(await visibleIds(),combined,'All dates combines city, kind and companion with AND');
-   await page.evaluate(()=>window.scrollTo(0,0));await screen('all-dates-koenji-live');
+   await page.evaluate(()=>window.scrollTo(0,0));await screen('all-dates-koenji-stage');
    const allListUrl=page.url();await page.reload({waitUntil:'networkidle'});assert.deepEqual(await visibleIds(),combined,'Shared all-dates URL restores filters');
-   await page.locator('[data-event-card="koenji-tomovsky"] [data-event-detail]').click();await page.waitForLoadState('networkidle');
+   await page.locator('[data-event-card="koenji-akame2026"] [data-event-detail]').click();await page.waitForLoadState('networkidle');
    assert.equal(new URLSearchParams(new URL(page.url()).searchParams.get('from')).get('week'),'all');
-   assert.equal(await page.locator('[data-event-status]').innerText(),'次の開催予定 10/16','All dates detail does not claim a selected week or parse all as a date');
+   assert.equal(await page.locator('[data-event-status]').innerText(),'次の開催予定 10/28','All dates detail does not claim a selected week or parse all as a date');
    const allDetailUrl=page.url();await page.goBack({waitUntil:'networkidle'});assert.equal(page.url(),allListUrl);assert.deepEqual(await visibleIds(),combined);
-   for(const [name,value] of [['week','all'],['city','koenji'],['kind','live'],['with','solo']])assert.equal(await page.locator('select[name='+name+']').inputValue(),value,'Back retains '+name);
+   for(const [name,value] of [['week','all'],['city','koenji'],['kind','stage'],['with','solo']])assert.equal(await page.locator('select[name='+name+']').inputValue(),value,'Back retains '+name);
    await page.goForward({waitUntil:'networkidle'});assert.equal(page.url(),allDetailUrl);await page.locator('[data-event-back]').click();await page.waitForLoadState('networkidle');assert.equal(page.url(),allListUrl);assert.deepEqual(await visibleIds(),combined,'Detail return retains all four filters');
    await page.locator('select[name=with]').selectOption('children');assert.equal((await visibleIds()).length,0);assert.ok(await page.locator('#event-empty').isVisible());await screen('all-dates-empty');
-   await page.goto(origin+'/outings/?kind=live',{waitUntil:'networkidle'});assert.equal(await page.locator('select[name=week]').inputValue(),'2026-10-05','Category-only entry still picks the nearest matching week, not all dates');
+   await page.goto(origin+'/outings/?kind=stage',{waitUntil:'networkidle'});assert.equal(await page.locator('select[name=week]').inputValue(),currentWeek,'Category-only entry still picks the nearest matching week, not all dates');
    await page.goto(origin+'/outings/?week=all',{waitUntil:'networkidle'});
    // A tab retained across the event's JST end date still keeps all selected and retires it.
-   await page.clock.setFixedTime(new Date('2026-10-17T00:00:00+09:00'));await page.reload({waitUntil:'networkidle'});
-   assert.equal(await page.locator('select[name=week]').inputValue(),'all');assert.ok(!(await visibleIds()).includes('koenji-tomovsky'));assert.ok((await visibleIds()).includes('shimokita-bergson'));
-   await page.clock.setFixedTime(new Date('2026-11-04T00:00:00+09:00'));await page.reload({waitUntil:'networkidle'});assert.equal((await visibleIds()).length,0);assert.ok(await page.locator('#event-empty').isVisible(),'All dates cannot restore ended or unreviewed events');
+   await page.clock.setFixedTime(new Date('2026-10-26T00:00:00+09:00'));await page.reload({waitUntil:'networkidle'});
+   assert.equal(await page.locator('select[name=week]').inputValue(),'all');assert.ok(!(await visibleIds()).includes('koenji-dna2026'));assert.ok((await visibleIds()).includes('koenji-akame2026'));
+   await page.clock.setFixedTime(new Date(expiredAsOf));await page.reload({waitUntil:'networkidle'});assert.equal((await visibleIds()).length,0);assert.ok(await page.locator('#event-empty').isVisible(),'All dates cannot restore ended or unreviewed events');
    flows.push({name:'City-first all dates',asOf:allAsOf,count:allExpected.length,filterOrder,combined,back:true,forward:true,detailReturn:true,expiry:true});
    await page.clock.setFixedTime(new Date(report.asOf));
-   await page.goto(origin+'/outings/?week=2026-10-05',{waitUntil:'networkidle'});assert.equal(await page.locator('[data-event-card]:visible').count(),5,'Next week has five reviewed events, without pending drafts');await screen('next-week');
-   discoveryOverride=emptyDiscovery;await page.clock.setFixedTime(new Date('2026-10-05T00:00:00+09:00'));
+   await page.goto(origin+'/outings/?week='+nextWeek,{waitUntil:'networkidle'});assert.equal(await page.locator('[data-event-card]:visible').count(),nextExpected.length,'Next week has six reviewed events, without pending drafts');await screen('next-week');
+   discoveryOverride=emptyDiscovery;await page.clock.setFixedTime(new Date(asOf));
    await page.goto(origin+'/',{waitUntil:'networkidle'});await page.locator('#siteMenuButton').click();await page.locator('a[href="/discover/#city-signals"]').click();await page.waitForURL(origin+'/discover/#city-signals');
    assert.ok(await page.locator('#city-signals').isVisible());assert.equal(await page.locator('#city-signals article').count(),0);assert.ok((await page.locator('#city-signals').innerText()).includes('現在、掲載できる街の動きはありません。'));
-   await page.locator('#city-signals').scrollIntoViewIfNeeded();await screen('empty-signals');await page.locator('#city-signals a[href="/outings/"]').click();await page.waitForURL(origin+'/outings/');await page.waitForLoadState('networkidle');assert.equal(await page.locator('[data-event-card]:visible').count(),5,'Empty editorial signals do not imply no events');flows.push({name:'Oct 5 empty signal anchor and exit',url:page.url()});
-   await page.clock.setFixedTime(new Date('2026-11-04T00:00:00+09:00'));await page.reload({waitUntil:'networkidle'});assert.equal(await page.locator('[data-event-card]:visible').count(),0,'Expired events disappear');assert.ok(await page.locator('#event-empty').isVisible());
+   await page.locator('#city-signals').scrollIntoViewIfNeeded();await screen('empty-signals');await page.locator('#city-signals a[href="/outings/"]').click();await page.waitForURL(origin+'/outings/');await page.waitForLoadState('networkidle');assert.equal(await page.locator('[data-event-card]:visible').count(),currentExpected.length,'Empty editorial signals do not imply no events');flows.push({name:'Oct 23 empty signal anchor and exit',url:page.url()});
+   await page.clock.setFixedTime(new Date(expiredAsOf));await page.reload({waitUntil:'networkidle'});assert.equal(await page.locator('[data-event-card]:visible').count(),0,'Expired events disappear');assert.ok(await page.locator('#event-empty').isVisible());
    for(const e of source.events.filter(e=>!source.isPublishableEvent(e)))assert.equal(await page.locator('[data-event-card="'+e.id+'"]').count(),0,'Pending has no runtime card');
    assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);assert.ok(external.filter(x=>x.phase==='reviewed-outings').every(x=>x.navigation),'Reviewed outings and empty-state flows load no automatic external resources');
-   const legacyCover='https://www.j-n.co.jp/wp/wp-content/uploads/2022/09/R978-4-408-55758-8.jpg';
-   assert.ok(external.filter(x=>!x.navigation).every(x=>x.phase==='existing-city'&&x.url===legacyCover),'Only the existing city catalogue publisher cover may be requested; it is blocked in CI');
-   report.viewports.push({...viewport,passed:true,flows,externalTargets:external,missing,errors});console.log('PASS '+viewport.name+': five cities, month-neutral menu, Kiyosumi fallback, four legacy + two October reviewed cards/official targets/Back, Oct 5 next-week supply and expiry');
+   const legacyCovers=['https://www.j-n.co.jp/wp/wp-content/uploads/2022/09/R978-4-408-55758-8.jpg','https://www.tsogen.co.jp/img/cover_image_l/40608.jpg'];
+   assert.ok(external.filter(x=>!x.navigation).every(x=>x.phase==='existing-city'&&legacyCovers.includes(x.url)),'Only the two pre-existing city catalogue publisher covers may be requested; they are blocked in CI');
+   report.viewports.push({...viewport,passed:true,flows,externalTargets:external,missing,errors});console.log('PASS '+viewport.name+': five cities, month-neutral menu, Kiyosumi filtered route, eight current reviewed cards/official targets/Back, Oct 23 current/next-week supply and expiry');
   }catch(e){await page.screenshot({path:path.join(out,viewport.name+'-failure.png'),fullPage:true}).catch(()=>{});report.viewports.push({...viewport,passed:false,error:e.message,flows,external,missing,errors});throw e;}
   finally{await context.close();}
  }
  const noJs=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
+ const noJsExternal=[];await noJs.route('**/*',route=>{if(new URL(route.request().url()).origin===origin)return route.continue();noJsExternal.push(route.request().url());return route.abort('blockedbyclient');});
  const noJsPage=await noJs.newPage();await noJsPage.goto(origin+'/outings/?week=all',{waitUntil:'networkidle'});
  assert.equal(await noJsPage.locator('[data-event-card]:visible').count(),0);
  assert.ok(await noJsPage.locator('noscript').isVisible());
- for(const e of source.events.filter(source.isPublishableEvent)){
-  if(await noJsPage.locator('noscript a[href="/outings/events/'+e.id+'.html"]').count())assert.ok((await noJsPage.locator('noscript').innerText()).includes(e.schedule),'No-JS complete schedule '+e.id);
+ assert.equal(await noJsPage.locator('noscript a[href^="/outings/events/"]').count(),published.length);
+ for(const e of published){
+  assert.equal(await noJsPage.locator('noscript a[href="/outings/events/'+e.id+'.html"]').count(),1);assert.ok((await noJsPage.locator('noscript').innerText()).includes(e.schedule),'No-JS complete schedule '+e.id);
  }
- await noJsPage.screenshot({path:path.join(out,'mobile-no-js.png'),fullPage:true});await noJs.close();
+ await noJsPage.screenshot({path:path.join(out,'mobile-no-js.png'),fullPage:true});assert.deepEqual(noJsExternal,[],'No-JS fallback loads no automatic external resources');await noJs.close();
  report.noJs=true;
  report.passed=true;
 })().catch(e=>{report.passed=false;report.error=e.message;console.error(e);process.exitCode=1;}).finally(async()=>{fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');if(browser)await browser.close();if(server)await new Promise(resolve=>server.close(resolve));});

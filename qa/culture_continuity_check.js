@@ -103,6 +103,14 @@ for(const [from,to] of [['yoshida-night-edge','yoshida-tinderness'],['yoshida-ti
 }
 for(const [id,p] of Object.entries(profiles)){
   const item=items.find(i=>i.id===id);
+  if(id==='womenslib-interview') {
+    const held=require('../tools/city-discovery-source').excludedItems.find(i=>i.id===id);
+    assert.ok(held && held.durationSeconds===181 && held.videoId==='K_LDvvjC8Uw');
+    assert.equal(item,undefined);
+    assert.equal(fs.existsSync(path.join(root,'discover/shimokitazawa/'+id+'.html')),false);
+    assert.ok(p.text && p.name && new URL(p.url).protocol==='https:','Retain sourced profile for duration-held interview');
+    continue;
+  }
   assert.ok(item);
   assert.ok(item.creator.includes(p.name)||item.title.includes(p.name), id+': profile identity must match credited artist or named interview subject');
   assert.match(p.checkedAt,/^\d{4}-\d{2}-\d{2}$/);
@@ -110,4 +118,4 @@ for(const [id,p] of Object.entries(profiles)){
   assert.ok(read('discover/'+item.city+'/'+id+'.html').includes(p.url));
 }
 assert.ok(!read('discover/koenji/big-the-grape.html').includes('artist-profile'));
-console.log('PASS restored short-film entry points, 16 contextual next steps, '+Object.keys(profiles).length+' sourced profile placements, unknown profile omitted');
+console.log('PASS restored short-film entry points, 16 contextual next steps, '+Object.keys(profiles).filter(id=>items.some(i=>i.id===id)).length+' sourced profile placements, unknown profile omitted');

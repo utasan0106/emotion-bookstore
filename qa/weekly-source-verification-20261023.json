@@ -1,0 +1,66 @@
+{
+  "checkedAt": "2026-10-23T14:03:00+09:00",
+  "scope": "Official source verification; no booking, purchase or publication. Ticket inventory not verified.",
+  "detour": [
+    {
+      "title": "すべて真夜中の恋人たち",
+      "url": "https://book-sp.kodansha.co.jp/topics/mayonaka/",
+      "status": "Existing evergreen selection retained; official title/creator/content rechecked, not newly published work."
+    },
+    {
+      "title": "PERFECT DAYS",
+      "url": "https://www.perfectdays-movie.jp/story/",
+      "status": "Existing evergreen selection retained; official title/creator/content rechecked, not newly published work."
+    },
+    {
+      "title": "ナイトクルージング",
+      "url": "https://www.universal-music.co.jp/fishmans/products/podh-1288/",
+      "status": "Existing evergreen selection retained; official title/creator/content rechecked, not newly published work."
+    }
+  ],
+  "cities": [
+    {
+      "city": "kichijoji",
+      "title": "谷口智則展「黒い森を抜けて」",
+      "url": "https://www.musashino.or.jp/museum/1002032/1002033/1009868.html",
+      "dateLabel": "9月19日（土）– 11月3日（火・祝） 10:00–19:30｜10月28日休館",
+      "expiresAt": "2026-11-03T19:30:00+09:00"
+    },
+    {
+      "city": "koenji",
+      "title": "wonder×works『アカメ』",
+      "url": "https://za-koenji.jp/detail/?id=287",
+      "dateLabel": "10月28日（水）– 11月5日（木）｜開演時刻は公式日程へ",
+      "expiresAt": "2026-11-06T00:00:00+09:00"
+    },
+    {
+      "city": "shimokitazawa",
+      "title": "風景は、どこからやってくるのか。",
+      "url": "https://bookandbeer.com/event/bb20261024y/",
+      "dateLabel": "10月24日（土）19:00–21:00",
+      "expiresAt": "2026-10-24T21:00:00+09:00"
+    },
+    {
+      "city": "kiyosumi",
+      "title": "MOTコレクション「いつかの光を今みている」",
+      "url": "https://www.mot-collection-search.jp/lending/2165/",
+      "dateLabel": "9月19日（土）– 2027年1月6日（水）",
+      "expiresAt": "2027-01-07T00:00:00+09:00"
+    },
+    {
+      "city": "jinbocho",
+      "title": "80年代ノスタルジアⅢ",
+      "url": "https://www.shogakukan.co.jp/jinbocho-theater/features/2026-10-10_80s_3rd.html",
+      "dateLabel": "10月10日（土）– 11月6日（金）",
+      "expiresAt": "2026-11-07T00:00:00+09:00"
+    }
+  ],
+  "notes": [
+    "MOT dates also confirmed in official indexed exhibition listing https://www.mot-collection-search.jp/exhibition/?list_id=510862&page=1 ; direct collection page fetch intermittently fails. Do not describe full page fetch as successful.",
+    "Kodansha product endpoint 403; replaced detour action with accessible publisher special page. No current price or stock claim.",
+    "Koenji old Summer Night ended October17. Replaced with upcoming Akame October28–November5; general6000JPY, preschoolers not admitted; ticket inventory not checked.",
+    "Shimokitazawa old October12 talk removed. New October24 landscape talk official page confirms venue+online and2750/1650JPY; no ticket inventory guarantee. Street image is historical2015, not B&B interior.",
+    "Koenji Festival October24–25 was researched but not selected because official sale period ended October22. B&B Momoko October24 venue lottery closed September26 and was not selected.",
+    "Current verified dates distinguish fact recheck from editorial novelty. Existing three detour works retained, not claimed new."
+  ]
+}

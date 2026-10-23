@@ -28,11 +28,23 @@ window.V3_RELEASE_CONTENT = {
     objectsPerShelf: 3
   },
   weeklyEdition: {
-    weekOf: '2026-10-05',
-    topFeatureId: 'mot-collection-light',
-    curiosityIds: ['morisaki', 'morisaki-film', 'park-voice'],
-    curiosityKinds: ['book', 'film', 'video'],
-    shortVideoIds: ['thanks-tokyo', 'find-my-tokyo-akasaka', 'musashino-green']
+      "weekOf": "2026-10-19",
+      "topFeatureId": "honnoniwa",
+      "curiosityIds": [
+          "jirokichi",
+          "baus",
+          "kaho-asa"
+      ],
+      "curiosityKinds": [
+          "book",
+          "film",
+          "music"
+      ],
+      "shortVideoIds": [
+          "tefu-1500",
+          "find-my-tokyo-akasaka",
+          "musashino-green"
+      ]
   },
   // 種類は新しい無限棚ではなく、いま公開中の15件を横断して見るための
   // 有限な索引。初回はこの5つだけで、順番も固定する。
@@ -80,15 +92,15 @@ window.V3_RELEASE_CONTENT = {
   ],
   detour: {
     label: '今週の寄り道',
-    weekOf: '2026-10-05',
-    verifiedAt: '2026-10-06T00:00:00+09:00',
+    weekOf: '2026-10-19',
+    verifiedAt: '2026-10-23T14:03:00+09:00',
     theme: 'ひとりで歩くと、街は少し違って見える。',
     themePhrases: ['ひとりで歩くと、', '街は少し違って見える。'],
     items: [
       {
         kind: '本', title: 'すべて真夜中の恋人たち', creator: '川上未映子',
         why: '街の名前を説明する本ではなく、真夜中をひとりで歩く時間から、灯りや距離、人との間合いを感じ直すための一冊。',
-        actionLabel: '講談社で見る', actionUrl: 'https://www.kodansha.co.jp/book/products/0000206651',
+        actionLabel: '講談社で見る', actionUrl: 'https://book-sp.kodansha.co.jp/topics/mayonaka/',
         destinations: [
           { label: 'Amazonで見る', url: 'https://www.amazon.co.jp/dp/4062779404?tag=uta0106-22', affiliate: true },
           { label: '楽天ブックスで見る', url: 'https://hb.afl.rakuten.co.jp/hgc/5590cc07.86ee74b4.5590cc08.a766f047/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F12919330%2F&m=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F12919330%2F', affiliate: true }
@@ -96,7 +108,7 @@ window.V3_RELEASE_CONTENT = {
         media: {
           kind: 'publisher-link',
           sourceLabel: '書影は講談社公式ページで見る',
-          sourceUrl: 'https://www.kodansha.co.jp/book/products/0000206651'
+          sourceUrl: 'https://book-sp.kodansha.co.jp/topics/mayonaka/'
         }
       },
       {
@@ -118,7 +130,7 @@ window.V3_RELEASE_CONTENT = {
       {
         kind: '音楽', title: 'ナイトクルージング', creator: 'フィッシュマンズ',
         why: 'どこかの街を名指しするのではなく、夜に移動するときの速度や遠さ、街灯のあいだを漂う感覚を置く一曲。',
-        actionLabel: 'Universal Musicで見る', actionUrl: 'https://www.universal-music.co.jp/fishmans/discography/',
+        actionLabel: 'Universal Musicで見る', actionUrl: 'https://www.universal-music.co.jp/fishmans/products/podh-1288/',
         destinations: [
           { label: 'Spotifyで聴く', url: 'https://open.spotify.com/track/36Thm3dOVuCR4SFyzwJioN', affiliate: false },
           { label: 'Apple Musicで聴く', url: 'https://music.apple.com/jp/search?term=%E3%83%95%E3%82%A3%E3%83%83%E3%82%B7%E3%83%A5%E3%83%9E%E3%83%B3%E3%82%BA%20%E3%83%8A%E3%82%A4%E3%83%88%E3%82%AF%E3%83%AB%E3%83%BC%E3%82%B8%E3%83%B3%E3%82%B0', affiliate: false }
@@ -147,12 +159,12 @@ window.V3_RELEASE_CONTENT = {
         media: {src: '/assets/events/kichijoji-museum.webp', alt: '会場：吉祥寺美術館（2010年）'},
         titlePhrases: ['谷口智則展', '「黒い森を抜けて」'],
         calendarDates: '20260919/20261104',
-        dateLabel: '9月19日（土）– 11月3日（火・祝） 10:00–19:30',
+        dateLabel: '9月19日（土）– 11月3日（火・祝） 10:00–19:30｜10月28日休館',
         venue: '武蔵野市立吉祥寺美術館',
         why: '新作絵本の原画と、冬の井の頭恩賜公園を取材して構想された「黒い森」の景色が、吉祥寺の美術館に並ぶ。作品から街へ戻る入口として。',
         actionLabel: '吉祥寺美術館公式で見る',
         actionUrl: 'https://www.musashino.or.jp/museum/1002032/1002033/1009868.html',
-        verifiedAt: '2026-10-06T00:00:00+09:00',
+        verifiedAt: '2026-10-23T14:03:00+09:00',
         expiresAt: '2026-11-03T19:30:00+09:00'
       },
       entryMedia: {
@@ -264,17 +276,17 @@ window.V3_RELEASE_CONTENT = {
       area: '高円寺',
       weeklyFeature: {
         eventType: '演劇',
-        title: '座・高円寺『夏の夜の夢』',
+        title: 'wonder×works『アカメ』',
         media: {src: '/assets/events/za-koenji.webp', alt: '会場：座・高円寺（2018年）'},
-        titlePhrases: ['座・高円寺', '『夏の夜の夢』'],
-        calendarDates: '20260913/20261018',
-        dateLabel: '9月13日（日）– 10月17日（土）',
+        titlePhrases: ['wonder×works', '『アカメ』'],
+        calendarDates: '20261028/20261106',
+        dateLabel: '10月28日（水）– 11月5日（木）｜開演時刻は公式日程へ',
         venue: '座・高円寺1',
-        why: '高円寺の公立劇場で、シェイクスピアの喜劇を日本語・日本手話で上演する。街の現在を舞台芸術から見る一件として。',
+        why: '北海道の山小屋と鹿撃ちをめぐるサスペンスを、座・高円寺で上演。一般6,000円。未就学児入場不可。残席は公式窓口で確認を。',
         actionLabel: '座・高円寺公式で見る',
-        actionUrl: 'https://za-koenji.jp/detail/?id=251',
-        verifiedAt: '2026-10-06T00:00:00+09:00',
-        expiresAt: '2026-10-18T00:00:00+09:00'
+        actionUrl: 'https://za-koenji.jp/detail/?id=287',
+        verifiedAt: '2026-10-23T14:03:00+09:00',
+        expiresAt: '2026-11-06T00:00:00+09:00'
       },
       entryMedia: {
         kind: 'illustration',
@@ -391,17 +403,17 @@ window.V3_RELEASE_CONTENT = {
       area: '下北沢',
       weeklyFeature: {
         eventType: '本・トーク',
-        title: '歴史を描く技術　小説の場合、評論の場合',
-        media: {src: '/assets/city-shimokitazawa.jpg', alt: '歩行者と小さな店が並ぶ下北沢の通り'},
-        titlePhrases: ['歴史を描く技術　', '小説の場合、評論の場合'],
-        calendarDates: '20261012/20261013',
-        dateLabel: '10月12日（月・祝）19:00–21:00',
+        title: '風景は、どこからやってくるのか。',
+        media: {src: '/assets/city-shimokitazawa.jpg', alt: '下北沢の通り（2015年）。本屋B&Bの会場写真ではありません'},
+        titlePhrases: ['風景は、', 'どこからやってくるのか。'],
+        calendarDates: '20261024/20261025',
+        dateLabel: '10月24日（土）19:00–21:00',
         venue: '本屋B&B・オンライン配信',
-        why: '歴史を小説と評論でどう描くかを、二人の書き手が下北沢の本屋で語る。作品を読むことから、書く技術へ広がる一件として。',
+        why: '岡美里・岡本仁・クマタイチが、町の風景の見方を語る『デザイン採集譚』刊行記念トーク。来店2,750円／配信1,650円。受付状況は公式ページで確認を。',
         actionLabel: '本屋B&B公式で見る',
-        actionUrl: 'https://bookandbeer.com/event/bb261012a/',
-        verifiedAt: '2026-10-06T00:00:00+09:00',
-        expiresAt: '2026-10-13T00:00:00+09:00'
+        actionUrl: 'https://bookandbeer.com/event/bb20261024y/',
+        verifiedAt: '2026-10-23T14:03:00+09:00',
+        expiresAt: '2026-10-24T21:00:00+09:00'
       },
       entryMedia: {
         kind: 'illustration',
@@ -538,10 +550,10 @@ window.V3_RELEASE_CONTENT = {
         calendarDates: '20260919/20270107',
         dateLabel: '9月19日（土）– 2027年1月6日（水）',
         venue: '東京都現代美術館',
-        why: '「光」と「時間」を見る展覧会が、清澄白河で始まった。',
+        why: '「光」と「時間」を切り口に収蔵作品を紹介するMOTコレクション。会期中の休館日・入場条件は美術館の案内で確認を。',
         actionLabel: '東京都現代美術館公式で見る',
         actionUrl: 'https://www.mot-collection-search.jp/lending/2165/',
-        verifiedAt: '2026-10-06T00:00:00+09:00',
+        verifiedAt: '2026-10-23T14:03:00+09:00',
         expiresAt: '2027-01-07T00:00:00+09:00'
       },
       entryMedia: {
@@ -665,10 +677,10 @@ window.V3_RELEASE_CONTENT = {
         calendarDates: '20261010/20261107',
         dateLabel: '10月10日（土）– 11月6日（金）',
         venue: '神保町シアター',
-        why: '1980年代に劇場公開された映画を、娯楽大作からラブコメ、特撮、アニメーションまで幅広く振り返る。街の映画館の次の特集として。',
+        why: '1980年代に劇場公開された映画を、娯楽大作からラブコメ、特撮、アニメーションまで幅広く振り返る。神保町シアターで開催中の特集。作品ごとの上映日は公式日程へ。',
         actionLabel: '神保町シアター公式で見る',
         actionUrl: 'https://www.shogakukan.co.jp/jinbocho-theater/features/2026-10-10_80s_3rd.html',
-        verifiedAt: '2026-10-06T00:00:00+09:00',
+        verifiedAt: '2026-10-23T14:03:00+09:00',
         expiresAt: '2026-11-07T00:00:00+09:00'
       },
       entryMedia: {

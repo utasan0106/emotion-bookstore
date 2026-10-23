@@ -1,0 +1,16 @@
+{
+  "featureId": "honnoniwa",
+  "city": "kichijoji",
+  "isbn": "9784867168523",
+  "checkedAt": "2026-10-23",
+  "officialSource": "https://kotonohabunko.jp/special/honnoniwa/",
+  "publisherRelease": "https://prtimes.jp/main/html/rd/p/000002412.000048095.html",
+  "publicationDate": "2025-10-20",
+  "scope": "Existing published hook, exact-book unpaid editorial feature, not site branding. Full portrait, adjacent title/author/publisher/source, no crop or overlay. No new-release or real-venue claim.",
+  "unchanged": [
+    "brand logo",
+    "curiosity trio",
+    "short-video trio"
+  ],
+  "publication": "Not deployed"
+}
