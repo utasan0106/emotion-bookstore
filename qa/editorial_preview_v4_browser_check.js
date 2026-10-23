@@ -12,7 +12,7 @@ fs.mkdirSync(out, {recursive: true});
 const widths = [320, 390, 430, 768, 1440];
 const routes = ['/qa/editorial-preview-v4/index.html', '/qa/editorial-preview-v4/outings.html',
   '/qa/editorial-preview-v4/books/naruse-wa-tenka-wo-toriniiku.html', '/qa/editorial-preview-v4/books/omowazu-kangaechau.html',
-  '/qa/editorial-preview-v4/shelves/ordinary-day-curiosities.html', '/qa/editorial-preview-v4/shelves/after-a-good-day.html', '/qa/editorial-preview-v4/shelves/people-behind-the-place.html'];
+  '/qa/editorial-preview-v4/shelves/ordinary-day-curiosities.html', '/qa/editorial-preview-v4/shelves/after-a-good-day.html', '/qa/editorial-preview-v4/shelves/people-behind-the-place.html', '/qa/editorial-preview-v4/shelves/places-to-share.html'];
 const fontPercents = [100, 200];
 const expectedCases = routes.length * widths.length * fontPercents.length;
 const report = {sourceSha: process.env.QA_SOURCE_SHA || null, checkoutSha: null,
