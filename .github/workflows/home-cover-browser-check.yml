@@ -17,6 +17,8 @@ on:
       - 'qa/typography_browser_check.js'
       - 'qa/editorial_preview_browser_check.js'
       - 'qa/editorial-preview/**'
+      - 'qa/editorial_preview_v3_browser_check.js'
+      - 'qa/editorial-preview-v3/**'
       - 'discover/essays/**'
       - 'visit/**'
       - 'tools/design-redesign.js'
@@ -68,6 +70,11 @@ jobs:
         env:
           QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_preview_browser_check.js
+      - name: Render isolated V3 editorial study without changing public home
+        if: success() || failure()
+        env:
+          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_preview_v3_browser_check.js
       - name: Save screenshots and non-secret verification report
         if: always()
         uses: actions/upload-artifact@v4
@@ -86,5 +93,7 @@ jobs:
             qa/artifacts/typography/report.json
             qa/artifacts/editorial-preview/*.png
             qa/artifacts/editorial-preview/report.json
+            qa/artifacts/editorial-preview-v3/*.png
+            qa/artifacts/editorial-preview-v3/report.json
           if-no-files-found: error
           retention-days: 7
