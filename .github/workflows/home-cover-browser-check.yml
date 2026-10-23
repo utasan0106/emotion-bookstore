@@ -15,10 +15,8 @@ on:
       - 'qa/outings_browser_check.js'
       - 'qa/five_city_browser_check.js'
       - 'qa/typography_browser_check.js'
-      - 'qa/editorial_preview_browser_check.js'
-      - 'qa/editorial-preview/**'
-      - 'qa/editorial_preview_v3_browser_check.js'
-      - 'qa/editorial-preview-v3/**'
+      - 'qa/editorial_preview_v4_browser_check.js'
+      - 'qa/editorial-preview-v4/**'
       - 'discover/essays/**'
       - 'visit/**'
       - 'tools/design-redesign.js'
@@ -65,16 +63,11 @@ jobs:
             sleep 1
           done
           NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/typography_browser_check.js
-      - name: Render isolated editorial preview without changing the public home
+      - name: Render isolated V4 editorial study without changing public home
         if: success() || failure()
         env:
           QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_preview_browser_check.js
-      - name: Render isolated V3 editorial study without changing public home
-        if: success() || failure()
-        env:
-          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_preview_v3_browser_check.js
+        run: NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_preview_v4_browser_check.js
       - name: Save screenshots and non-secret verification report
         if: always()
         uses: actions/upload-artifact@v4
@@ -91,9 +84,8 @@ jobs:
             qa/artifacts/five-city/report.json
             qa/artifacts/typography/*.png
             qa/artifacts/typography/report.json
-            qa/artifacts/editorial-preview/*.png
-            qa/artifacts/editorial-preview/report.json
-            qa/artifacts/editorial-preview-v3/*.png
-            qa/artifacts/editorial-preview-v3/report.json
+            qa/artifacts/editorial-preview-v4/*.png
+            qa/artifacts/editorial-preview-v4/report.json
+            qa/artifacts/editorial-preview-v4/interaction-report.json
           if-no-files-found: error
           retention-days: 7
