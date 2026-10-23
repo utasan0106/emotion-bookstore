@@ -1,13 +1,7 @@
 #!/usr/bin/env node
 'use strict';
-// 作品77件の構造化データが、持っている事実と食い違っていないか。
-//
-// 催しのときと同じ線を引いている。**多く書くほど良い、ではない。**
-// creator は「犬童一心 監督 / 田中泯」「ドキュメンタリー」のような自由文で、
-// 著者・監督・演奏者として型に入れられる形では持っていない。街との関係も
-// 「物語の舞台」から「高円寺の映画祭で上映」まで40通り以上あり、
-// contentLocation にすると、上映しただけの街を作品の舞台だと言うことになる。
-// 書かないことが正しい。このテストは、書かないことのほうを固定する。
+// 作品の構造化データを表示本文・確認済みの書誌と照合する。
+// 未確認の役割・版・体験・評価は補わない。街との関係を所在地へ変換しない。
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -15,6 +9,12 @@ const path = require('node:path');
 const { items } = require('../tools/city-discovery-source');
 
 const root = path.resolve(__dirname, '..');
+// この小修正は出典不明のコメント削除だけ。検索・学習の許可を変えない。
+const robotsDirectives = fs.readFileSync(path.join(root, 'robots.txt'), 'utf8')
+  .split(/(?<=\n)/).filter(line => !/^\s*#/.test(line)).join('');
+assert.equal(robotsDirectives,
+  'User-agent: *\nAllow: /\n\nSitemap: https://emotionbookstore.com/sitemap.xml\n\n',
+  'robots.txt: コメント以外の実ディレクティブを変更しない');
 const expected = { book: 'Book', film: 'Movie', audio: 'MusicRecording', video: 'VideoObject' };
 const ld = file => {
   const html = fs.readFileSync(path.join(root, 'discover', file), 'utf8');
@@ -22,6 +22,25 @@ const ld = file => {
   assert.ok(m, file + ': 構造化データが無い');
   return JSON.parse(m[1].replace(/\\u003c/g, '<'));
 };
+
+// Source-independent expectations for the reviewed Book author/edition change.
+const bookAuthors = {
+  'koenji/junjo':'ねじめ正一', 'koenji/shiroku-somaru':'安倍雄太郎', 'koenji/1q84':'村上春樹',
+  'shimokitazawa/nekomachi':'萩原朔太郎', 'shimokitazawa/lady-jane':'大木雄高',
+  'shimokitazawa/indies':'岡崎琢磨', 'shimokitazawa/honda':'徳永京子',
+  'kichijoji/cinema-history':'本田拓夫', 'kichijoji/honnoniwa':'藤野ふじの',
+  'kichijoji/gou-gou-book':'大島弓子', 'jinbocho/morisaki':'八木沢里志',
+  'jinbocho/morisaki-sequel':'八木沢里志', 'jinbocho/furuhon':'原田ひ香',
+  'jinbocho/furuhon-sequel':'原田ひ香', 'jinbocho/kaijin':'紀田順一郎'
+};
+const bookIsbns = {
+  'koenji/junjo':'9784101021126', 'shimokitazawa/indies':'9784408557588',
+  'shimokitazawa/honda':'9784835638492', 'kichijoji/honnoniwa':'9784867168523',
+  'kichijoji/gou-gou-book':'9784048532587', 'jinbocho/kaijin':'9784488406080'
+};
+const covers = require('../tools/work-cover-source.json');
+const escaped = text => text.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const validIsbn13 = value => /^\d{13}$/.test(value) && [...value].reduce((sum,n,i)=>sum+Number(n)*(i%2?3:1),0)%10===0;
 
 const counts = {};
 for (const item of items) {
@@ -37,22 +56,42 @@ for (const item of items) {
   assert.equal(work.description, item.hook, file + ': 紹介文が一致しない');
   assert.equal(work.url, 'https://emotionbookstore.com/discover/' + file, file + ': ページの住所が違う');
 
-  // 公式・一次の行き先だけを sameAs にする。サイト内のページは同じものではない。
-  if (/^https:\/\//.test(item.url)) {
-    assert.equal(work.sameAs, item.url, file + ': 公式の行き先が一致しない');
+  const key = item.city+'/'+item.id;
+  const citationOnly = key === 'koenji/1q84';
+  if (citationOnly) {
+    assert.ok(!('sameAs' in work), file + ': ゆかりの地記事を作品と同一視しない');
+    assert.equal(page.citation, item.url, file + ': 紹介ページの根拠を保持する');
+    assert.ok(!('citation' in work), file + ': 元の本が後年の記事を引用したとは言わない');
+  } else if (/^https:\/\//.test(item.url)) {
+    assert.equal(work.sameAs, item.url, file + ': 既存の公式行き先が一致しない');
   } else {
     assert.ok(!('sameAs' in work), file + ': サイト内のページを作品そのものとして書かない');
   }
-
-  // 型に入れられる形で持っていないものは書かない。
-  for (const key of ['author', 'director', 'byArtist', 'creator', 'actor', 'musicBy']) {
+  if (bookAuthors[key]) {
+    assert.equal(item.kind, 'book');
+    assert.deepEqual(work.author, {'@type':'Person',name:bookAuthors[key]}, file + ': 確認済み著者と一致');
+    const displayCreator = key === 'shimokitazawa/honda' ? '本多一夫 語り / 徳永京子 著' : bookAuthors[key];
+    assert.equal(item.creator, displayCreator, file + ': 語り手と著者の役割を混ぜない');
+    const html = fs.readFileSync(path.join(root,'discover',file),'utf8');
+    assert.ok(html.includes('<p class="detail-creator">'+escaped(displayCreator)+'</p>'), file + ': 表示本文とも一致');
+  } else {
+    assert.ok(!('author' in work), file + ': 編者・未確認の役割を著者へ変換しない');
+  }
+  if (bookIsbns[key]) {
+    assert.equal(work.isbn, bookIsbns[key]);
+    assert.equal(covers[key].isbn, work.isbn, file + ': 既存版台帳と一致');
+    assert.ok(validIsbn13(work.isbn), file + ': ISBN-13 checksum');
+  } else {
+    assert.ok(!('isbn' in work), file + ': 未確認の版や1Q84の一冊を全作品へ流用しない');
+  }
+  for (const key of ['director', 'byArtist', 'creator', 'actor', 'musicBy']) {
     assert.ok(!(key in work), file + ': ' + key + ' は自由文しか持っていない');
   }
   for (const key of ['contentLocation', 'spatialCoverage', 'locationCreated']) {
     assert.ok(!(key in work), file + ': 街との関係は「上映」も含む。場所として書かない');
   }
   for (const key of ['image', 'thumbnailUrl', 'datePublished', 'uploadDate', 'duration',
-                     'isbn', 'aggregateRating', 'review', 'offers']) {
+                     'aggregateRating', 'review', 'offers']) {
     assert.ok(!(key in work), file + ': ' + key + ' は持っていない');
   }
 }

@@ -2,8 +2,18 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),vm=require('node:vm');
 const root=path.resolve(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const maintenance=(process.argv||[]).includes('--maintenance');
 const ledger=JSON.parse(read('tools/weekly-home-ledger.json'));
 assert.ok(Array.isArray(ledger.weeks)&&ledger.weeks.length>=2,'Need previous and current weekly entries');
+for(const entry of ledger.weeks){
+  assert.match(entry.weekOf||'',/^\d{4}-\d{2}-\d{2}$/,'Edition date must be ISO');
+  assert.equal(new Date(entry.weekOf+'T00:00:00Z').toISOString().slice(0,10),entry.weekOf,'Edition date must exist');
+  assert.equal(new Date(entry.weekOf+'T00:00:00Z').getUTCDay(),1,'Edition must start Monday');
+  assert.equal(typeof entry.topFeatureId,'string');
+  assert.ok(entry.topFeatureId.length,'Edition needs top feature');
+  for(const key of ['curiosityIds','curiosityKinds','shortVideoIds']) assert.ok(Array.isArray(entry[key])&&entry[key].every(x=>typeof x==='string'&&x.length),'Invalid edition '+key);
+}
+assert.equal(new Set(ledger.weeks.map(x=>x.weekOf)).size,ledger.weeks.length,'Duplicate edition dates');
 const weeks=[...ledger.weeks].sort((a,b)=>a.weekOf.localeCompare(b.weekOf));
 const prev=weeks.at(-2), cur=weeks.at(-1);
 
@@ -14,7 +24,8 @@ function mondayJst(now=Date.now()){
   const monday=new Date(Date.UTC(y,m,day-delta));
   return monday.toISOString().slice(0,10);
 }
-assert.equal(cur.weekOf,mondayJst(),'Weekly home ledger must be refreshed for the current JST week');
+assert.ok(cur.weekOf<=mondayJst(),'Future edition must not be published');
+if(!maintenance) assert.equal(cur.weekOf,mondayJst(),'Weekly home ledger must be refreshed for the current JST week');
 assert.notEqual(cur.topFeatureId,prev.topFeatureId,'Top feature must change every week');
 assert.ok(cur.curiosityIds.some(id=>!prev.curiosityIds.includes(id)),'At least one curiosity item must be new each week');
 assert.notDeepEqual(cur.curiosityKinds,prev.curiosityKinds,'Curiosity kind mix must change every week');
@@ -60,7 +71,9 @@ for(const url of [
   assert.ok(pos>=0,'Fresh weekly surface missing from sitemap: '+url);
   const near=sitemap.slice(pos,pos+220);
   const m=near.match(/<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/);
-  assert.ok(m&&m[1]>=cur.weekOf,'Fresh weekly surface needs current sitemap lastmod: '+url);
+  assert.ok(m,'Weekly surface needs a sitemap lastmod: '+url);
+  assert.equal(new Date(m[1]+'T00:00:00Z').toISOString().slice(0,10),m[1],'Invalid sitemap lastmod: '+url);
+  if(!maintenance) assert.ok(m[1]>=cur.weekOf,'Fresh weekly surface needs current sitemap lastmod: '+url);
 }
 
-console.log('PASS weekly visible rotation: top feature, curiosity mix/new item, 1-of-3 short video, weekly feature recheck, sitemap lastmod');
+console.log((maintenance?'PASS published edition integrity (current-week readiness checked separately): ':'PASS weekly visible rotation: ')+ ' top feature, curiosity mix/new item, 1-of-3 short video, weekly feature recheck, sitemap lastmod');

@@ -171,17 +171,45 @@ ${body.includes('data-video-id') ? '<script src="/video-embed.js" defer></script
 }
 let written = 0;
 const generatedFiles = [];
-// 作品ページが機械に渡すもの。催しと同じ考え方で、**持っている事実だけ**を書く。
-// creator は「犬童一心 監督 / 田中泯」「ドキュメンタリー」のような自由文で、
-// 著者・監督・演奏者として型に入れられる形では持っていない。だから author /
-// director / byArtist は書かない。街との関係（relation）も「物語の舞台」から
-// 「高円寺の映画祭で上映」まで40通り以上あり、contentLocation にすると
-// 上映しただけの街を「作品の舞台」と言うことになる。書かない。
+// 作品ページが機械に渡すものは、表示本文と確認済み書誌に限る。
+// Book の author は表示 creator と照合した明示リスト。編者・語り手を
+// 著者へ自動変換しない。映画・音楽の自由文から役割を推測しない。
+// ISBN は work-cover-source.json と出版社で版を確認済みの6冊だけ。
+// 1Q84 はシリーズを案内するため、表示書影の BOOK3 前編の ISBN は付けない。
+const bookMetadata = {
+  'koenji/junjo': {creator:'ねじめ正一', author:'ねじめ正一', isbn:'9784101021126'},
+  'koenji/shiroku-somaru': {creator:'安倍雄太郎', author:'安倍雄太郎'},
+  'koenji/1q84': {creator:'村上春樹', author:'村上春樹'},
+  'shimokitazawa/nekomachi': {creator:'萩原朔太郎', author:'萩原朔太郎'},
+  'shimokitazawa/lady-jane': {creator:'大木雄高', author:'大木雄高'},
+  'shimokitazawa/indies': {creator:'岡崎琢磨', author:'岡崎琢磨', isbn:'9784408557588'},
+  'shimokitazawa/honda': {creator:'本多一夫 語り / 徳永京子 著', author:'徳永京子', isbn:'9784835638492'},
+  'kichijoji/cinema-history': {creator:'本田拓夫', author:'本田拓夫'},
+  'kichijoji/honnoniwa': {creator:'藤野ふじの', author:'藤野ふじの', isbn:'9784867168523'},
+  'kichijoji/gou-gou-book': {creator:'大島弓子', author:'大島弓子', isbn:'9784048532587'},
+  'jinbocho/morisaki': {creator:'八木沢里志', author:'八木沢里志'},
+  'jinbocho/morisaki-sequel': {creator:'八木沢里志', author:'八木沢里志'},
+  'jinbocho/furuhon': {creator:'原田ひ香', author:'原田ひ香'},
+  'jinbocho/furuhon-sequel': {creator:'原田ひ香', author:'原田ひ香'},
+  'jinbocho/kaijin': {creator:'紀田順一郎', author:'紀田順一郎', isbn:'9784488406080'}
+};
+// この記事は「舞台かもしれない場所」の根拠で、作品そのものの同定先ではない。
+// citation は本ではなく、この紹介 WebPage に付ける。
+const workCitationOnly = item => item.kind === 'book' && item.city === 'koenji' && item.id === '1q84';
 const workType={book:'Book', film:'Movie', audio:'MusicRecording', video:'VideoObject'};
 function workSchema(item, canonical) {
   const object={'@type':workType[item.kind], name:item.title, description:item.hook, url:canonical};
-  // 公式・一次の行き先。サイト内のページはその作品そのものではないので書かない。
-  if(/^https:\/\//.test(item.url)) object.sameAs=item.url;
+  if(/^https:\/\//.test(item.url) && !workCitationOnly(item)) object.sameAs=item.url;
+  const facts=item.kind==='book' && bookMetadata[item.city+'/'+item.id];
+  if(facts) {
+    if(item.creator!==facts.creator) throw new Error('Book author display changed: '+item.city+'/'+item.id);
+    object.author={'@type':'Person', name:facts.author};
+    if(facts.isbn) {
+      const cover=require('./work-cover-source.json')[item.city+'/'+item.id];
+      if(!cover || cover.isbn!==facts.isbn) throw new Error('Book edition evidence changed: '+item.city+'/'+item.id);
+      object.isbn=facts.isbn;
+    }
+  }
   return object;
 }
 // 街 → 種類 → 作品。読者が実際に辿る道と同じ順を、機械にも見せる。
@@ -224,6 +252,7 @@ function enrichSeo(file, html) {
   const workItem=items.find(item=>file===`${item.city}/${item.id}.html`);
   const schemaObject=essay?{'@context':'https://schema.org','@type':'Article',headline:essay.title,description:essay.lead,datePublished:essay.publishedAt,dateModified:essay.modifiedAt,mainEntityOfPage:canonical,author:{'@type':'Organization',name:'みんなの感情書店編集部',url:'https://emotionbookstore.com/about.html'},publisher:{'@type':'Organization',name:'みんなの感情書店',url:'https://emotionbookstore.com/'},about:{'@type':'Place',name:essay.cityLabel},citation:essay.sources.map(source=>source.url)}:{'@context':'https://schema.org','@type':isResearchIndex?'CollectionPage':'WebPage',name:heading,description,url:canonical,isPartOf:{'@type':'WebSite',name:'みんなの感情書店',url:'https://emotionbookstore.com/'}};
   if(workItem) schemaObject.mainEntity=workSchema(workItem,canonical);
+  if(workItem && workCitationOnly(workItem)) schemaObject.citation=workItem.url;
   const schema=JSON.stringify(schemaObject).replace(/</g,'\\u003c');
   const crumbs=breadcrumb(file);
   const crumbTag=crumbs?'\u003cscript type="application/ld+json">'+JSON.stringify(crumbs).replace(/</g,'\\u003c')+'\u003c/script>':'';

@@ -65,12 +65,14 @@ const checks=[
  ['qa/michiyomi_scout_contract_check.js'],
  ['qa/michiyomi_editorial_screen_check.js']
 ];
+const maintenance=(process.argv||[]).includes('--maintenance');
+const selected=maintenance?checks.filter(args=>!args[0].endsWith('/event_supply_check.js')).map(args=>args[0].endsWith('/home_weekly_refresh_check.js')?[...args,'--maintenance']:args):checks;
 let failed=0;
-for(const args of checks){
+for(const args of selected){
  const result=spawnSync(process.execPath,args,{cwd:root,encoding:'utf8',timeout:60000});
  const ok=result.status===0;
  console.log((ok?'PASS ':'FAIL ')+args.join(' '));
  if(!ok){failed++;console.error(result.error?.message||'',result.stdout,result.stderr);}
 }
-console.log(`${checks.length-failed}/${checks.length} product checks passed`);
+console.log(`${selected.length-failed}/${selected.length} ${maintenance?'maintenance integrity':'product'} checks passed${maintenance?'; editorial readiness NOT asserted':''}`);
 process.exitCode=failed?1:0;

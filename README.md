@@ -10,7 +10,7 @@
 （`.vercelignore` で除外）。復元したい場合はその中身を元の場所へ戻せば動く。
 
 公開URLの起点:
-`https://emotion-bookstore.vercel.app/`
+`https://emotionbookstore.com/`
 
 玄関と棚は検索に載せる。候補ページ（`suggest.html`）はフォーム画面なので
 `noindex` のままにしてある。棚より上に出ても人の役に立たないため。

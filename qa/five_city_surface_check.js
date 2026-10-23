@@ -27,8 +27,22 @@ assert.equal(mot.end,'2026-12-06');assert.equal(mot.reviewThrough,'2026-11-01');
 assert.equal(week.dates(mot).at(-1),'2026-12-06');
 assert.ok(week.dates(mot).includes('2026-11-23'));assert.ok(!week.dates(mot).includes('2026-11-24'));
 assert.equal(week.select([mot],{now:Date.parse('2026-11-02T12:00:00+09:00'),week:'all'}).length,0,'Expired review suppresses listing without changing actual end');
-const schemas=[...read('outings/events/kiyosumi-tada2026.html').matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/g)].map(x=>JSON.parse(x[1]));
-assert.equal(schemas.find(x=>x['@type']==='Event').endDate,'2026-12-06');
+function assertMotDetail(now,detail){
+ const eligible=week.select([mot],{now,week:'all'}).length>0;
+ if(!eligible){assert.equal(detail,null,'Expired or unreviewed MOT detail must be retired');return;}
+ assert.equal(typeof detail,'string','Eligible MOT detail must be generated');
+ const schemas=[...detail.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/g)].map(x=>JSON.parse(x[1]));
+ assert.equal(schemas.find(x=>x['@type']==='Event')?.endDate,mot.end,'Schema must retain actual exhibition end');
+}
+const detailPath=require('node:path').join(__dirname,'../outings/events/kiyosumi-tada2026.html');
+assertMotDetail(Date.now(),fs.existsSync(detailPath)?fs.readFileSync(detailPath,'utf8'):null);
+const motSchema='<script type="application/ld+json">'+JSON.stringify({'@type':'Event',endDate:mot.end})+'</script>';
+assertMotDetail(Date.parse(mot.checkedAt+'T12:00:00+09:00'),motSchema);
+assert.throws(()=>assertMotDetail(Date.parse(mot.checkedAt+'T12:00:00+09:00'),null),'Missing current detail fails');
+assert.throws(()=>assertMotDetail(Date.parse(mot.checkedAt+'T12:00:00+09:00'),motSchema.replace(mot.end,mot.reviewThrough)),'Review deadline cannot replace actual end');
+const reviewExpired=Date.parse(week.add(mot.reviewThrough,1)+'T00:00:00+09:00');
+assertMotDetail(reviewExpired,null);
+assert.throws(()=>assertMotDetail(reviewExpired,motSchema),'Stale detail fails after review expiry');
 function detailLabel(instant){
  const status={dataset:{eventStatus:mot.id},classList:{toggle(){}}};
  const now=Date.parse(instant);class FixedDate extends Date{static now(){return now;}}

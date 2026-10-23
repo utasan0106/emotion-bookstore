@@ -30,14 +30,15 @@ jobs:
         run: |
           set -euo pipefail
           node tools/check-freshness-output.js
-      - name: Verify full product and acquisition contracts
+      - name: Verify maintenance integrity and acquisition contracts
         run: |
           set -euo pipefail
           node tools/build-weekly-outings.js --check
           node tools/build-city-discovery.js --check
           node qa/freshness_workflow_check.js
+          node qa/maintenance_readiness_check.js
           node qa/seo_check.js
-          node qa/verify-product.js
+          node qa/verify-product.js --maintenance
       - name: Commit freshness-only changes
         run: |
           set -euo pipefail
@@ -45,8 +46,22 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add discover outings sitemap.xml vercel.json
           if git diff --cached --quiet; then
-            echo "No freshness changes."
+            echo "Maintenance integrity passed; no freshness changes. Editorial readiness is checked separately." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
           git commit -m "build(growth): refresh current reviewed discovery surfaces"
           git push origin HEAD:main
+          echo "Maintenance integrity passed and reviewed generated updates pushed. Editorial readiness is checked separately." >> "$GITHUB_STEP_SUMMARY"
+      - name: Report editorial readiness separately
+        if: always()
+        run: |
+          set +e
+          node qa/home_weekly_refresh_check.js
+          home_status=$?
+          node qa/event_supply_check.js
+          supply_status=$?
+          if [ "$home_status" -ne 0 ] || [ "$supply_status" -ne 0 ]; then
+            echo "Editorial NOT READY: home=$home_status supply=$supply_status. Maintenance is a separate result; no editorial approval was granted." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo "Editorial readiness checks passed. See separate maintenance and commit results." >> "$GITHUB_STEP_SUMMARY"
