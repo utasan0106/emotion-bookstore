@@ -8,6 +8,8 @@ const {chromium}=require('playwright');
 const {measureContrast,measureImages}=require('./editorial-c3-deep-browser-helpers.cjs');
 const {validateDeepFonts,validateDeepContent}=require('./editorial-c3-deep-contract.cjs');
 const {readPaintedFonts}=require('./editorial-c3-readiness.cjs');
+const {navigationSnapshot,validateNavigation}=require('./editorial-c3-navigation-contract.cjs');
+const {validateRouteStructure}=require('./editorial-c3-route-structure-contract.cjs');
 const expected=require('./editorial-c3-deep-content.json');
 const root=path.resolve(__dirname,'..'),out=path.join(__dirname,'artifacts/editorial-c3-deep');
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'qa/editorial-study-c3/assets/deep-font-manifest.json')));
@@ -112,7 +114,7 @@ async function roundTrips(browser,origin){
   // Reuse six extra contexts only, not additional viewport matrices.
   for(const exp of expected){const r={route:exp.route,externalRequests:[],pageErrors:[],failedLocalRequests:[],pageRequests:[],errors:[],links:[],passed:false};report.roundTrips.push(r);let context,page;
     try{({context,page}=await fresh(browser,origin,r));await page.goto(origin+exp.route,{waitUntil:'networkidle'});r.initialReadiness=await waitForLocalReady(page);
-      const targets=await page.locator('a[href]').evaluateAll(links=>[...new Set(links.map(a=>a.getAttribute('href')).filter(h=>h?.startsWith('/qa/editorial-study-c3/')&&!h.endsWith('#listen')&&h!==location.pathname))]);
+      const targets=await page.locator('a[href]').evaluateAll(links=>[...new Set(links.map(a=>a.getAttribute('href')).filter(h=>h?.startsWith('/qa/editorial-study-c3/')&&h!==location.pathname))]);
       for(const href of targets){const item={href};const anchor=page.locator('a[href="'+href+'"]').first();await anchor.focus();await Promise.all([page.waitForURL(origin+href),page.keyboard.press('Enter')]);item.forwardReadiness=await waitForLocalReady(page);item.forward=page.url()===origin+href;
         if(href.includes('#'))item.target=await page.evaluate(()=>{const e=document.getElementById(decodeURIComponent(location.hash.slice(1)));return !!e&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true});});else item.target=await page.locator('h1').count()===1;
         item.storageForward=await page.evaluate(()=>window.__qaStorageAccesses.slice());await page.goBack({waitUntil:'domcontentloaded'});item.backReadiness=await waitForLocalReady(page);item.back=page.url()===origin+exp.route;item.passed=item.forward&&item.target&&item.back&&!item.storageForward.length;r.links.push(item);
@@ -130,9 +132,20 @@ async function roundTrips(browser,origin){
     try{({context,page}=await fresh(browser,origin,r,width));const response=await page.goto(origin+exp.route,{waitUntil:'networkidle',timeout:30000});r.navigation={passed:response?.ok(),status:response?.status()};
       if(fontPercent===200)await page.evaluate(()=>{const sizes=[...document.querySelectorAll('*')].map(e=>[e,parseFloat(getComputedStyle(e).fontSize)]);for(const [e,s] of sizes)if(Number.isFinite(s))e.style.setProperty('font-size',s*2+'px','important');});await page.evaluate(()=>document.fonts.ready);
       r.initialReadiness=await waitForLocalReady(page);await page.evaluate(()=>scrollTo(0,0));await twoPaintFrames(page);
+      r.navigationItems=await page.evaluate(navigationSnapshot);r.navigationItems.passed=validateNavigation(r.navigationItems,exp.route);
       r.content=await page.evaluate(contentSnapshot);r.content.passed=validateDeepContent(r.content,exp);r.images=await page.evaluate(measureImages);
       for(const image of r.images.rows)if(image.src.endsWith('/9784048532587.webp')){image.nativeSizePassed=image.renderedWidth<=image.naturalWidth+1&&image.renderedHeight<=image.naturalHeight+1;r.images.passed=r.images.passed&&image.nativeSizePassed;}
       if(exp.kind==='culture-film')r.images.passed=r.images.passed&&r.images.rows.filter(i=>i.src.endsWith('/assets/city-jinbocho-suzuran.jpg')).every(i=>!i.objectCropped&&!i.stretched);
+      r.structure=await page.evaluate(kind=>{
+        let hero=null;
+        if(kind==='culture-film'){
+          const photo=document.querySelector('.route-hero-photo'),pair=document.querySelector('.work-pair'),image=photo?.querySelector('img'),caption=photo?.querySelector('figcaption'),b=image?.getBoundingClientRect(),c=caption?.getBoundingClientRect(),p=pair?.getBoundingClientRect(),visible=e=>!!e&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true});
+          hero={imageVisible:visible(image),captionVisible:visible(caption),caption:caption?.textContent.trim(),imageCount:document.querySelectorAll('img[src="/assets/city-jinbocho-suzuran.jpg"]').length,imageTop:b?.top,imageBottom:b?.bottom,imageLeft:b?.left,imageRight:b?.right,captionBottom:c?.bottom,pairTop:p?.top,width:b?.width,height:b?.height};
+        }
+        if(kind==='culture-outings'){const headings=[...document.querySelectorAll('.outing-stop h2')];hero={type:'typographic',headingTexts:headings.map(e=>e.textContent.trim()),sizes:headings.map(e=>parseFloat(getComputedStyle(e).fontSize)),mainImageCount:document.querySelectorAll('main img').length};}
+        return {hero,viewportHeight:innerHeight};
+      },exp.kind);
+      r.structure.passed=validateRouteStructure(r.structure,{kind:exp.kind,width,fontPercent,viewportHeight:r.structure.viewportHeight});
       r.closedLayout=await page.evaluate(layoutSnapshot);r.closedContrast=await page.evaluate(measureContrast);
       const prefix=exp.route.split('/').at(-1).replace('.html','')+'-'+width+'-'+fontPercent;
       r.firstViewportScreenshot=prefix+'-first-viewport.png';await page.screenshot({path:path.join(out,r.firstViewportScreenshot),fullPage:false});r.closedScreenshot=prefix+'-fullpage.png';await page.screenshot({path:path.join(out,r.closedScreenshot),fullPage:true});
@@ -142,7 +155,7 @@ async function roundTrips(browser,origin){
       if(width===390&&fontPercent===100&&exp.detailsCount>0){r.openScreenshot=prefix+'-disclosures-open.png';await page.screenshot({path:path.join(out,r.openScreenshot),fullPage:true});}
       r.storage={accesses:await page.evaluate(()=>window.__qaStorageAccesses.slice())};r.storage.passed=r.storage.accesses.length===0&&r.storageAttempts.length===0;
       r.privacy={passed:r.externalRequests.length===0&&r.content.scripts.length===0&&!r.pageRequests.some(x=>x.type==='script'),externalRequestsBlocked:true,pageScriptElements:r.content.scripts.length,pageScriptRequests:r.pageRequests.filter(x=>x.type==='script')};r.runtime={passed:!r.pageErrors.length&&!r.failedLocalRequests.length};
-      r.passed=['navigation','content','images','closedLayout','closedContrast','disclosures','studyFont','openLayout','openContrast','links','safeFocus','publisherNames','storage','privacy','runtime'].every(k=>r[k]?.passed);
+      r.passed=['navigation','navigationItems','content','images','structure','closedLayout','closedContrast','disclosures','studyFont','openLayout','openContrast','links','safeFocus','publisherNames','storage','privacy','runtime'].every(k=>r[k]?.passed);
     }catch(e){r.errors.push(e.stack||String(e));}finally{if(context)await context.close().catch(e=>r.errors.push(e.message));if(r.errors.length)r.passed=false;save();console.log((r.passed?'PASS':'FAIL')+' deep '+exp.route+' '+width+' '+fontPercent+'%');}
   }
   await roundTrips(browser,origin);report.passed=report.cases.length===36&&report.cases.every(r=>r.passed)&&report.roundTrips.length===6&&report.roundTrips.every(r=>r.passed);

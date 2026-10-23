@@ -7,58 +7,58 @@
     {
       "route": "/qa/editorial-study-c3/index.html",
       "source_path": "qa/editorial-study-c3/index.html",
-      "sha256": "32c73dacfaafcf0a2df0d0325426d2edaa24d3981e2018b3a8e0fe60e761855b",
-      "corpus_text_sha256": "2ad7aef95c09ae6d8774c542c61e9540ebf0f519cf43b1964d750ea472d1032e"
+      "sha256": "a62302dcfe88dedf01c4b0daeef033ea3025e34013a68e114bfe096a7ac896fa",
+      "corpus_text_sha256": "fbc221a731fe09a64ff8158184ca103420c985d56c0d77395394f61838927826"
     },
     {
       "route": "/qa/editorial-study-c3/books/junjo.html",
       "source_path": "qa/editorial-study-c3/books/junjo.html",
-      "sha256": "59f6384ca3582199b9e73c7e3f9b2ed3b8dc06a5d27a34e2feded6b516800efa",
-      "corpus_text_sha256": "cbc920fa4f0fb1b79f4e19bea0f99772e6691cdb4522846e2559bac527a1ad5e"
+      "sha256": "2a7ffd1ba9729acfdace40ccbdeb0875bd621269bd21fa91cf193fc250948b8b",
+      "corpus_text_sha256": "43da37719df60ec9f1a74cd1f38dfe42eafbec4f37751e556f70f8929e4cb0fb"
     },
     {
       "route": "/qa/editorial-study-c3/books/naruse.html",
       "source_path": "qa/editorial-study-c3/books/naruse.html",
-      "sha256": "679e76d2d5447106297a46d643612b4b401c056302353e3dda6c7febb36a6909",
-      "corpus_text_sha256": "b75ebb9616fc82041d2ed45d3922412350a9b11c3dfddb62c1caff229b2e95b6"
+      "sha256": "426da370a2511abb959703627cc42ec53d542ba6de57809d5fbe9927b98d7b3b",
+      "corpus_text_sha256": "efc8c5b877b236da00c9f1fc3a399654be914f8e5d76b8e183a60bf83df39680"
     },
     {
       "route": "/qa/editorial-study-c3/books/omowazu.html",
       "source_path": "qa/editorial-study-c3/books/omowazu.html",
-      "sha256": "5a3fcf6b0b315416c16e951656e66c9cc1a4f5f4d1d599f951cb01b3a9d2350c",
-      "corpus_text_sha256": "6bbdf068c3c6f80ee88062fd85a0745417c269494863183f4acc96faebd502dc"
+      "sha256": "372218727325b101c72eb8ffad93a9d22ccf2643161349e2bd3463bcf79dd5f2",
+      "corpus_text_sha256": "07385b70b42174072500d3597c35e7064da43ce1a36e6810d441ccbfd59b32ef"
     },
     {
       "route": "/qa/editorial-study-c3/shelves/places-to-share.html",
       "source_path": "qa/editorial-study-c3/shelves/places-to-share.html",
-      "sha256": "fa912ebaf540e3dd5fa4e33fdd1222d7e02c53fa95d7c456f3d5c67b86b90977",
-      "corpus_text_sha256": "8e33e0e0f1f5e88bc6e1f252ec5fda273957457c8304d6779008a32b6c20e8b5"
+      "sha256": "08a1020afbfc558914b0fd7eb127a78a732b48233f20656f70decc47c05691cf",
+      "corpus_text_sha256": "43915d6a0e1184f67647c843fa57a2ceb82706950480e92335bdee5abaf8e7ca"
     },
     {
       "route": "/qa/editorial-study-c3/film-and-books.html",
       "source_path": "qa/editorial-study-c3/film-and-books.html",
-      "sha256": "8c9096107de08f704b0c307956b0ae5a5070ebf9cf3f2e6d27b72751acc62792",
-      "corpus_text_sha256": "31fc291f944c64846f59eaa85ceff43eda514269db449dca558d6724a2a8b7f6"
+      "sha256": "f6a1e76b3e2ab0639b3faaee8d51d2f450cd128e90826867d1892e155102e349",
+      "corpus_text_sha256": "2573d8b5eb3b859d8e810c457a414195138cc1b5ef8fc4c773eea5c4b9b4fa42"
     },
     {
       "route": "/qa/editorial-study-c3/outings.html",
       "source_path": "qa/editorial-study-c3/outings.html",
-      "sha256": "848104b76d391ee6d43eb810e3bb1c1173e8fda15d0adef577e9bda00bf64fce",
-      "corpus_text_sha256": "271c9c2e18e669905728141a97654dddd870611693b97f969e5d065438fadf2e"
+      "sha256": "16cac6eb3f47f63cc84b08acf774a8ed2e2975f1b3602fb290c2576fe31aa6c0",
+      "corpus_text_sha256": "38ca2af0fa71b605f44def09c006fdbc3b916607bdc47543789f72fa116778d0"
     }
   ],
   "corpus_file": "deep-font-corpus.txt",
-  "corpus_sha256": "9945fa30f481280cd87f6d70d15a2a1fe364dc8dde6d886d492d69d322d9c90b",
-  "required_unique_codepoints": 517,
+  "corpus_sha256": "1ee46775ca2bd9f2b1c967300d12a41a0d19b05f51fb87fb0f611561c17b9574",
+  "required_unique_codepoints": 515,
   "extra_coverage": "Printable ASCII plus supported Japanese kana. New kanji require regeneration.",
   "fonts": [
     {
       "file": "deep-zen-kaku-gothic-400.woff2",
-      "bytes": 77644,
-      "sha256": "a48185045464e9aa8d4afea727a4faa0b16e0757159558df1a618bc1bf4ba8aa",
+      "bytes": 77460,
+      "sha256": "9f57b579cfb98abf885f7d9e2435be4ad6ad84f1db9e901a6b9a6cb67c71327c",
       "postscript_name": "ZenKakuGothicNew-Regular",
       "weight": 400,
-      "covered_codepoints": 652,
+      "covered_codepoints": 650,
       "missing_required_codepoints": [],
       "original_file": "ZenKakuGothicNew-Regular.ttf",
       "original_sha256": "b840cd07a67d89cacca44249ae49aa99ee7640eb5ce623be8d8983d6aabac801",
@@ -66,11 +66,11 @@
     },
     {
       "file": "deep-zen-kaku-gothic-700.woff2",
-      "bytes": 77984,
-      "sha256": "ebed3875e5f8b0e78e5dae919c1ac1f658a43bcd929e6b668f7eb0880d3986ed",
+      "bytes": 77832,
+      "sha256": "9eafca7d04105df7dcd7824fa9a209be5d59258f48da02a724d6f3b487910f13",
       "postscript_name": "ZenKakuGothicNew-Bold",
       "weight": 700,
-      "covered_codepoints": 652,
+      "covered_codepoints": 650,
       "missing_required_codepoints": [],
       "original_file": "ZenKakuGothicNew-Bold.ttf",
       "original_sha256": "0081cedabc4921982fcd061f845a005664ac7fb642af2dd34b4007bc63ccd235",
@@ -85,6 +85,6 @@
   },
   "corpus_scope": "Seven complete C3 HTML documents including titles and accessible text. Home culture fragment is represented in the integrated home.",
   "original_license_sha256": "0fac78a235c98d640cb06332eb5362c211d86fa03c011df438c35005d22ad2c7",
-  "integration_rebuild_utc": "2026-10-23T17:03:19.607410+00:00",
+  "integration_rebuild_utc": "2026-10-23T17:35:53.455956+00:00",
   "integration_note": "Offline union regeneration from the same pinned official originals after culture integration, phrase markup and limited owner-approved wording changes. No new font source or dependency."
 }

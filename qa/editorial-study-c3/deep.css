@@ -85,7 +85,7 @@ summary{cursor:pointer;min-height:44px;padding:8px 0;font-size:.9375rem;font-wei
 @media(max-width:700px){
  .masthead{min-height:60px;padding:8px 16px;gap:4px 12px}
  .brand{gap:8px}.brand img{width:28px;flex-basis:28px}.brand-name{font-size:1rem}
- .masthead nav{gap:4px 6px}.masthead nav a{font-size:.8125rem}
+ .masthead nav{gap:4px 6px}.masthead nav a{font-size:.875rem}
  .deep-shell{width:calc(100% - 40px);padding:16px 0 48px}.back{margin-bottom:24px}
  .book-opening{grid-template-columns:minmax(0,1fr);gap:24px}
  .book-opening>.cover img{max-height:290px}

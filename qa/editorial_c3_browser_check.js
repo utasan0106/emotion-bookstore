@@ -10,11 +10,13 @@ const {execFileSync} = require('node:child_process');
 const {chromium} = require('playwright');
 const {validateRenderedFonts} = require('./editorial-c3-font-contract.cjs');
 const {validatePolish}=require('./editorial-c3-polish-contract.cjs');
-const {validateOverview} = require('./editorial-c3-layout-contract.cjs');
+const {validateDirectDetail,validateDestination}=require('./editorial-c3-direct-detail-contract.cjs');
+const homeBooks=require('./editorial-c3-home-books.json');
+const {navigationSnapshot,validateNavigation}=require('./editorial-c3-navigation-contract.cjs');
 const root = path.resolve(__dirname, '..');
 const assetPins={
-  'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-400.woff2':'a48185045464e9aa8d4afea727a4faa0b16e0757159558df1a618bc1bf4ba8aa',
-  'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-700.woff2':'ebed3875e5f8b0e78e5dae919c1ac1f658a43bcd929e6b668f7eb0880d3986ed',
+  'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-400.woff2':'9f57b579cfb98abf885f7d9e2435be4ad6ad84f1db9e901a6b9a6cb67c71327c',
+  'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-700.woff2':'9eafca7d04105df7dcd7824fa9a209be5d59258f48da02a724d6f3b487910f13',
   'qa/editorial-study-desk/assets/editor-desk.webp':'7cb8e1ca97cf9e5287fa62654d31a197825433a384f4ccc4dd96dc7018083a9d'
 };
 for(const [file,expected] of Object.entries(assetPins)) {
@@ -34,9 +36,9 @@ try { report.checkoutSha = execFileSync('git', ['rev-parse', 'HEAD'], {cwd: root
 const interactionReport = {sourceSha: report.sourceSha, checkoutSha: report.checkoutSha,
   method: 'Fresh page per host and keyboard key (Enter/Space). External HTTP and WebSocket requests remain blocked. Verifies iframe DOM creation, URL, no autoplay, idempotence, focus, and top-level navigation only; actual playback is neither attempted nor verified.',
   widths: [390], fontPercents: [100], keys: ['Enter', 'Space'], inventory: [], expectedCases: 0, cases: [], errors: [], passed: false};
-const coverNavigationReport={sourceSha:report.sourceSha,checkoutSha:report.checkoutSha,method:'Enter activates each native cover link, reaches its own visible title and full reason, then browser Back returns to the overview. External requests remain blocked.',expectedCases:routes.length*3,cases:[],passed:false};
+const coverNavigationReport={sourceSha:report.sourceSha,checkoutSha:report.checkoutSha,method:'Enter activates each cover and title directly into its own C3 detail. The visible full reason must equal the home source text, including mobile-hidden home reasons. Browser Back returns home with the originating card link in the viewport; focus restoration is recorded, not assumed. External requests remain blocked.',expectedCases:routes.length*6,cases:[],passed:false};
 function save() {
-  fs.writeFileSync(path.join(out, 'cover-navigation-report.json'), JSON.stringify(coverNavigationReport, null, 2) + '\n');
+  fs.writeFileSync(path.join(out, 'direct-detail-navigation-report.json'), JSON.stringify(coverNavigationReport, null, 2) + '\n');
   fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(report, null, 2) + '\n');
   fs.writeFileSync(path.join(out, 'interaction-report.json'), JSON.stringify(interactionReport, null, 2) + '\n');
 }
@@ -241,48 +243,28 @@ async function checkInteractions(browser, origin) {
   interactionReport.passed=interactionReport.inventory.length===routes.length&&interactionReport.expectedCases>0&&interactionReport.cases.length===interactionReport.expectedCases&&interactionReport.cases.every(c=>c.passed)&&!interactionReport.errors.length;
 }
 
-async function checkCoverNavigation(browser,origin) {
-  for(const route of routes) for(let index=0;index<3;index++) {
-    const row={route,index,width:390,key:'Enter',passed:false,externalRequests:[],pageErrors:[],errors:[]};
-    coverNavigationReport.cases.push(row);
-    let context;
-    try {
-      context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce',serviceWorkers:'block'});
-      await context.route('**/*',r=>{
-        const url=r.request().url();
-        if(new URL(url).origin===origin) return r.continue();
-        row.externalRequests.push(url);return r.abort('blockedbyclient');
-      });
-      await context.routeWebSocket('**/*',ws=>{row.externalRequests.push(ws.url());ws.close();});
-      const page=await context.newPage();
-      page.on('pageerror',e=>row.pageErrors.push(e.message));
-      await page.goto(origin+route,{waitUntil:'networkidle'});
-      await page.evaluate(()=>document.fonts.ready);
-      const cover=page.locator('.book-choice-link').nth(index);
-      row.href=await cover.getAttribute('href');
-      await cover.focus();
-      await page.keyboard.press('Enter');
-      await page.waitForFunction(hash=>location.hash===hash,row.href);
-      row.target=await page.evaluate(hash=>{
-        const title=document.querySelector(hash),reason=title?.closest('.book-selection')?.querySelector('.selection-reason');
-        const rect=el=>{const r=el?.getBoundingClientRect();return r?{left:r.left,top:r.top,right:r.right,bottom:r.bottom}:null;};
-        const t=rect(title),r=rect(reason);
-        return {title:title?.textContent.trim(),reason:reason?.textContent.trim(),titleRect:t,reasonRect:r,
-          passed:!!title&&!!reason&&title.checkVisibility()&&reason.checkVisibility()&&t.top>=-1&&t.bottom<=innerHeight+1&&r.top>=-1&&r.bottom<=innerHeight+1};
-      },row.href);
-      await page.goBack({waitUntil:'domcontentloaded'});
-      await page.waitForFunction(()=>location.hash==='');
-      row.back=await page.evaluate(()=>({hash:location.hash,passed:location.hash===''}));
-      row.passed=row.target.passed&&row.back.passed&&!row.externalRequests.length&&!row.pageErrors.length;
-    } catch(e) {row.errors.push(e.stack||String(e));}
-    finally {
-      if(context) await context.close().catch(e=>row.errors.push(e.message));
-      if(row.errors.length) row.passed=false;
-      save();
-      console.log(`${row.passed?'PASS':'FAIL'} cover navigation ${route} ${index+1}`);
-    }
-  }
-  coverNavigationReport.passed=coverNavigationReport.cases.length===coverNavigationReport.expectedCases&&coverNavigationReport.cases.every(c=>c.passed);
+async function settleLocalPage(page){
+  await page.evaluate(async()=>{const bound=(promise,label)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(Error(label+' readiness timeout')),15000))]);for(const img of document.images)img.loading='eager';await bound(document.fonts.ready,'font');await Promise.all([...document.images].map(img=>bound(img.decode(),'image')));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));});
+  await page.waitForLoadState('networkidle',{timeout:15000});
+}
+async function checkCoverNavigation(browser,origin){
+ for(const route of routes)for(let index=0;index<3;index++)for(const trigger of ['cover','title']){
+  const book=homeBooks[index],row={route,index,trigger,href:null,externalRequests:[],failedLocalRequests:[],pageErrors:[],errors:[],passed:false};coverNavigationReport.cases.push(row);let context;
+  try{
+   context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce',serviceWorkers:'block'});
+   await context.route('**/*',r=>{const url=r.request().url();if(new URL(url).origin===origin)return r.continue();row.externalRequests.push(url);return r.abort('blockedbyclient');});
+   await context.routeWebSocket('**/*',ws=>{row.externalRequests.push(ws.url());ws.close();});
+   const page=await context.newPage();page.on('pageerror',e=>row.pageErrors.push(e.message));page.on('requestfailed',r=>{if(r.url().startsWith(origin+'/'))row.failedLocalRequests.push({url:r.url(),failure:r.failure()});});page.on('response',r=>{if(r.url().startsWith(origin+'/')&&r.status()>=400)row.failedLocalRequests.push({url:r.url(),status:r.status()});});
+   await page.goto(origin+route,{waitUntil:'networkidle'});await settleLocalPage(page);
+   const selector=trigger==='cover'?'.book-choice-link':'.choice-title a';const link=page.locator(selector).nth(index);row.href=await link.getAttribute('href');
+   await link.focus();await Promise.all([page.waitForURL(origin+book.href),page.keyboard.press('Enter')]);await settleLocalPage(page);
+   row.target=await page.evaluate(book=>{const title=document.querySelector('h1'),reason=[...document.querySelectorAll('.selection-reason')].find(e=>e.textContent.trim()===book.reason),cover=document.querySelector('main .cover img'),source=[...document.querySelectorAll('main a[href]')].find(e=>e.getAttribute('href')===book.source),visible=e=>!!e&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true});return {title:title?.textContent.trim(),titleVisible:visible(title),reason:reason?.textContent.trim(),reasonVisible:visible(reason),cover:cover?.getAttribute('src'),coverVisible:visible(cover),source:source?.getAttribute('href'),sourceVisible:visible(source)};},book);
+   Object.assign(row.target,{localErrors:row.failedLocalRequests.length,externalRequests:row.externalRequests.length});row.target.passed=validateDestination(row.target,book)&&page.url()===origin+book.href;
+   await page.goBack({waitUntil:'domcontentloaded'});await settleLocalPage(page);row.back=await page.locator(selector).nth(index).evaluate((e,href)=>{const b=e.getBoundingClientRect(),inViewport=b.left>=-1&&b.right<=innerWidth+1&&b.top>=-1&&b.bottom<=innerHeight+1;return {url:location.pathname,inViewport,focusRestored:document.activeElement===e,passed:e.getAttribute('href')===href&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true})&&inViewport};},book.href);row.back.passed=row.back.passed&&page.url()===origin+route;
+   row.passed=row.href===book.href&&row.target.passed&&row.back.passed&&!row.externalRequests.length&&!row.failedLocalRequests.length&&!row.pageErrors.length;
+  }catch(e){row.errors.push(e.stack||String(e));}finally{if(context)await context.close().catch(e=>row.errors.push(e.message));if(row.errors.length)row.passed=false;save();console.log((row.passed?'PASS':'FAIL')+' direct detail '+trigger+' '+index);}
+ }
+ coverNavigationReport.passed=coverNavigationReport.cases.length===coverNavigationReport.expectedCases&&coverNavigationReport.cases.every(r=>r.passed);
 }
 
 (async () => {
@@ -336,9 +318,9 @@ async function checkCoverNavigation(browser,origin) {
           for(const el of document.querySelectorAll('body,body *')) {
             if(['SCRIPT','STYLE','NOSCRIPT'].includes(el.tagName)||!el.checkVisibility({checkOpacity:true,checkVisibilityCSS:true})) continue;
             if(![...el.childNodes].some(n=>n.nodeType===Node.TEXT_NODE&&n.textContent.trim())) continue;
-            const role=el.closest('#theme')?'hero':el.matches('.brand-name')?'brand':el.closest('.choice-title,.book-title')?'bookTitle':el.matches('.selection-reason')?'body':'other';
+            const role=el.closest('#theme')?'hero':el.matches('.brand-name')?'brand':el.closest('.choice-title')?'bookTitle':el.closest('.masthead nav')?'nav':el.matches('.selection-reason')?'body':el.closest('.book-meta,.book-credit')?'metadata':'other';
             const id=String(rows.length);el.setAttribute('data-qa-font-node',id);
-            rows.push({id,role,text:el.textContent.trim().slice(0,100),fontSynthesis:getComputedStyle(el).fontSynthesis});
+            rows.push({id,role,visible:el.checkVisibility({checkOpacity:true,checkVisibilityCSS:true}),bookId:el.closest('.book-choice')?.dataset.bookId||null,text:el.textContent.trim().slice(0,100),fontSynthesis:getComputedStyle(el).fontSynthesis});
           }
           return rows;
         });
@@ -356,7 +338,7 @@ async function checkCoverNavigation(browser,origin) {
             rows.push({...item,nodeId,family,weight,fontSynthesis,fonts});
           }
           result.studyFont={method:'Actual rendered glyph fonts for every visible direct-text parent, with role-specific 700/400 checks; no system fallback permitted.',
-            designApproval:false,fontStatus:'reference-led candidate only; actual screenshots still require visual review',rows,passed:validateRenderedFonts(rows)};
+            designApproval:false,fontStatus:'reference-led candidate only; actual screenshots still require visual review',rows,passed:validateRenderedFonts(rows,{width})};
         } finally {
           await fontSession.detach();
           await page.evaluate(()=>document.querySelectorAll('[data-qa-font-node]').forEach(el=>el.removeAttribute('data-qa-font-node')));
@@ -483,19 +465,11 @@ async function checkCoverNavigation(browser,origin) {
           const box=el=>{const r=el?.getBoundingClientRect();return r?{left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height}:null;};
           const visible=el=>!!el&&el.checkVisibility({checkOpacity:true,checkVisibilityCSS:true});
           const nextShelf=document.querySelector('.next-shelf');
-          const credits=[...document.querySelectorAll('.book-selection h2')].map(el=>({text:el.textContent.trim(),visible:visible(el),rect:box(el)}));
-          const required=['宮島未奈『成瀬は天下を取りにいく』（新潮社刊）','ヨシタケシンスケ『思わず考えちゃう』（新潮社刊）','ねじめ正一『高円寺純情商店街』（新潮文庫刊）'];
           const mappings=[...document.querySelectorAll('.book-choice')].map(choice=>{
-            const image=choice.querySelector('.work-art img'),link=choice.querySelector('.book-choice-link');
-            const target=document.getElementById(choice.dataset.bookId),article=target?.closest('.book-selection');
-            const reason=article?.querySelector('.selection-reason');
-            return {choiceBox:box(choice),selectionBox:box(article),cover:box(image),coverSrc:image?.getAttribute('src'),bookTitleSize:parseFloat(getComputedStyle(choice.querySelector('.choice-title')).fontSize),bookTitle:box(choice.querySelector('.choice-title')),bookTitleText:choice.querySelector('.choice-title')?.textContent.trim(),
-              visible:visible(image)&&visible(choice.querySelector('.choice-title')),
-              href:link?.getAttribute('href'),targetId:choice.dataset.bookId,
-              accessibleName:link?.getAttribute('aria-label')||image?.alt||'',
-              targetVisible:visible(target)&&visible(reason),target:box(target),reason:box(reason),
-              reasonText:reason?.textContent.trim(),credit:article?.querySelector('.book-credit a')?.getAttribute('href'),
-              workHref:target?.querySelector('a')?.getAttribute('href')};
+            const article=choice.querySelector('.book-card'),image=choice.querySelector('.work-art img'),link=choice.querySelector('.book-choice-link'),title=choice.querySelector('.choice-title'),titleLink=title?.querySelector('a'),author=choice.querySelector('.book-author'),publisher=choice.querySelector('.book-publisher'),creditTitle=choice.querySelector('.credit-title'),source=choice.querySelector('.book-credit a'),reason=choice.querySelector('.selection-reason');
+            return {id:choice.dataset.bookId,choiceBox:box(choice),cardBox:box(article),cover:box(image),coverSrc:image?.getAttribute('src'),bookTitleSize:parseFloat(getComputedStyle(title).fontSize),bookTitle:box(title),bookTitleText:title?.textContent.trim(),visibleTitleCount:[...choice.querySelectorAll('h2')].filter(visible).length,
+              visible:visible(image)&&visible(title),authorText:author?.textContent.trim(),publisherText:publisher?.textContent.trim(),authorVisible:visible(author),publisherVisible:visible(publisher),creditTitleVisible:visible(creditTitle),creditTitleBox:box(creditTitle),authorBox:box(author),publisherBox:box(publisher),authorSize:parseFloat(getComputedStyle(author).fontSize),publisherSize:parseFloat(getComputedStyle(publisher).fontSize),sourceVisible:visible(source),creditText:source?.textContent.trim(),creditSize:parseFloat(getComputedStyle(source).fontSize),sourceBox:box(source),coverLinkBox:box(link),titleLinkBox:box(titleLink),
+              href:link?.getAttribute('href'),titleHref:titleLink?.getAttribute('href'),accessibleName:link?.getAttribute('aria-label'),reasonVisible:visible(reason),reasonDisplay:getComputedStyle(reason).display,reason:box(reason),reasonText:reason?.textContent.trim(),credit:source?.getAttribute('href')};
           });
           const selection=[...document.querySelectorAll('.shelf > .other-entry')];
           const staleLabels=['いま、ひらく棚','表紙を押すと、作品紹介へ。','一冊ずつ、選んだ理由。'];
@@ -514,19 +488,20 @@ async function checkCoverNavigation(browser,origin) {
           const secondary=document.querySelector('.music .music-external');
           return {scene:box(scene),deskArt:box(deskArt),shelf:box(shelf),musicBox:box(document.querySelector('.music')),photoBox:box(venue.querySelector('img')),musicButtonBox:box(musicButton[0]),
             visualPolish:{cultureLinks,primaryMusicControls:musicButton.length,secondaryHref:secondary?.getAttribute('href'),secondaryFontSize:parseFloat(getComputedStyle(secondary).fontSize),buttonFontSize:parseFloat(getComputedStyle(musicButton[0]).fontSize),privacy:document.querySelector('.privacy').textContent.trim()},heroFontSize:parseFloat(getComputedStyle(document.querySelector('#theme')).fontSize),nextShelf:box(nextShelf),header:box(document.querySelector('.masthead')),theme:box(document.querySelector('#theme')),
-            credits,mappings,headings,obsoleteInstructionLabels,documentarySeparation,fontPercent,viewportHeight:innerHeight,
-            contractVersion:'C3: 390/1440 at 100% show all three full-sized cover choices and their exact titles; compact header; native same-page cover links reach their own full reason. No redundant instruction labels or numbered interface scaffolding. 200% permits vertical growth, never clipping.',
+            cardCount:document.querySelectorAll('.book-card').length,bookListCount:document.querySelectorAll('.desk-books').length,retiredDetailListCount:document.querySelectorAll('.book-selections,.book-selection').length,mappings,headings,obsoleteInstructionLabels,documentarySeparation,fontPercent,viewportHeight:innerHeight,
+            contractVersion:'C3 direct-detail: one visible title/author/publisher/source per card; all three full-size covers/titles initially visible at390/1440. Mobile<=700 hides home reasons, requiring exact full reason on the direct destination. Four stable navigation items may wrap. 200% permits vertical growth, never clipping.',
             reducedMotion:reduced,scrollBehavior:getComputedStyle(document.documentElement).scrollBehavior,requireInitial,
-            passed:visible(nextShelf)&&!document.querySelector('.read-cta')&&credits.length===3&&credits.every(c=>c.visible)&&required.every((text,i)=>credits[i]?.text.includes(text))&&
+            passed:visible(nextShelf)&&!document.querySelector('.read-cta')&&
               !obsoleteInstructionLabels.length&&!document.querySelector('.book-number,.reason-number')&&documentarySeparation&&
               headings.filter(h=>h.tag==='H1').length===1&&headings.filter(h=>h.tag==='H2').length===5&&headings.some(h=>h.text==='本の続きは、街で。')&&headings.every(h=>h.visible)&&
               selection.length===1&&document.querySelectorAll('.other-entry').length===1&&selection[0].previousElementSibling?.classList.contains('next-shelf')&&selection[0].getBoundingClientRect().height>=44&&selection[0].getAttribute('href')==='/discover/selection/'&&selection[0].relList.contains('noreferrer')&&
               ![...selection[0].attributes].some(a=>a.name.startsWith('data-')||a.name.startsWith('on'))&&!selection[0].hasAttribute('ping')&&
               reduced&&getComputedStyle(document.documentElement).scrollBehavior==='auto'&&!animations.length&&!document.querySelector('video[autoplay],audio[autoplay]')};
         },{requireInitial:fontPercent===100&&(width===390||width===1440),fontPercent});
-        result.studyContract.overviewPassed=validateOverview(result.studyContract,{width,fontPercent,viewportHeight:result.studyContract.viewportHeight});
+        result.navigationItems=await page.evaluate(navigationSnapshot);result.navigationItems.passed=validateNavigation(result.navigationItems,route);
+        result.studyContract.directDetailPassed=validateDirectDetail(result.studyContract,{width,fontPercent,viewportHeight:result.studyContract.viewportHeight});
         result.studyContract.polishPassed=validatePolish(result.studyContract,{width,fontPercent});
-        result.studyContract.passed=result.studyContract.passed&&result.studyContract.overviewPassed&&result.studyContract.polishPassed;
+        result.studyContract.passed=result.studyContract.passed&&result.studyContract.directDetailPassed&&result.studyContract.polishPassed&&result.navigationItems.passed;
         const prefix=route.split('/').at(-2)+'-'+width+'-'+fontPercent;
         await page.screenshot({path:path.join(out,prefix+'-first-viewport.png'),fullPage:false});
         result.firstViewportScreenshot=prefix+'-first-viewport.png';
@@ -571,7 +546,7 @@ async function checkCoverNavigation(browser,origin) {
     }
     await checkInteractions(browser,origin);
     await checkCoverNavigation(browser,origin);
-    report.coverNavigation={file:"cover-navigation-report.json",passed:coverNavigationReport.passed,expectedCases:coverNavigationReport.expectedCases};
+    report.coverNavigation={file:"direct-detail-navigation-report.json",passed:coverNavigationReport.passed,expectedCases:coverNavigationReport.expectedCases};
     report.interactions={file:"interaction-report.json",passed:interactionReport.passed,expectedCases:interactionReport.expectedCases};
     report.passed=report.cases.length===expectedCases&&report.cases.every(x=>x.passed)&&interactionReport.passed&&coverNavigationReport.passed;
   } catch(e) {report.errors.push(e.stack||String(e));}

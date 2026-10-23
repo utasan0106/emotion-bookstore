@@ -6,7 +6,7 @@
       "/assets/book-covers/9784101021126.jpg"
     ],
     "reasons": [
-      "店を営む家族の日常から、商店街の人間模様へ。"
+      "まずは店先へ。商店街で暮らす人の話から、ほかの誰かの日常をのぞく。"
     ],
     "credits": [
       "ねじめ正一『高円寺純情商店街』（新潮文庫刊） · 書籍情報"
@@ -14,7 +14,8 @@
     "relatedLinks": [],
     "detailsCount": 1,
     "originalHref": "/discover/koenji/junjo.html",
-    "publisherNames": []
+    "publisherNames": [],
+    "homeReason": "まずは店先へ。商店街で暮らす人の話から、ほかの誰かの日常をのぞく。"
   },
   {
     "route": "/qa/editorial-study-c3/books/naruse.html",
@@ -40,7 +41,8 @@
     ],
     "detailsCount": 1,
     "originalHref": null,
-    "publisherNames": []
+    "publisherNames": [],
+    "homeReason": "何かを始めたい日は、成瀬の思いつきから。閉店前の店に通う計画と、そばで見守る友人のやりとりを入口に。"
   },
   {
     "route": "/qa/editorial-study-c3/books/omowazu.html",
@@ -66,7 +68,8 @@
     ],
     "detailsCount": 1,
     "originalHref": null,
-    "publisherNames": []
+    "publisherNames": [],
+    "homeReason": "いつもの暮らしにも、まだ気になることがある。小さな疑問を描いたスケッチと短文から、今日は一つだけ。"
   },
   {
     "route": "/qa/editorial-study-c3/shelves/places-to-share.html",
@@ -97,7 +100,8 @@
     "publisherNames": [
       "ＫＡＤＯＫＡＷＡ",
       "ＫＡＤＯＫＡＷＡ"
-    ]
+    ],
+    "homeReason": null
   },
   {
     "kind": "culture-film",
@@ -140,16 +144,17 @@
       "#main",
       "/qa/editorial-study-c3/index.html",
       "/qa/editorial-study-c3/index.html#shelves",
+      "/qa/editorial-study-c3/index.html#listen",
       "/qa/editorial-study-c3/film-and-books.html",
       "/qa/editorial-study-c3/outings.html",
       "/qa/editorial-study-c3/index.html#shelves",
+      "https://commons.wikimedia.org/wiki/File:Suzuran_Street_Jimbocho.jpg",
+      "https://creativecommons.org/licenses/by-sa/4.0/",
       "/thread.html?thread=morisaki-book",
       "https://ndlsearch.ndl.go.jp/books/R100000002-I034360568",
       "/work-film.html",
       "https://www.youtube.com/watch?v=6M0vx8wLEbM",
       "https://jimbou.info/map/",
-      "https://commons.wikimedia.org/wiki/File:Suzuran_Street_Jimbocho.jpg",
-      "https://creativecommons.org/licenses/by-sa/4.0/",
       "https://yaguchishoten.jp/",
       "https://www.shogakukan.co.jp/jinbocho-theater/features/",
       "https://jfdb.jp/title/2240",
@@ -163,7 +168,8 @@
       "/outings/",
       "/credits.html"
     ],
-    "publisherNames": []
+    "publisherNames": [],
+    "homeReason": null
   },
   {
     "kind": "culture-outings",
@@ -196,6 +202,7 @@
       "#main",
       "/qa/editorial-study-c3/index.html",
       "/qa/editorial-study-c3/index.html#shelves",
+      "/qa/editorial-study-c3/index.html#listen",
       "/qa/editorial-study-c3/film-and-books.html",
       "/qa/editorial-study-c3/outings.html",
       "/qa/editorial-study-c3/index.html#shelves",
@@ -208,6 +215,7 @@
       "/outings/",
       "/credits.html"
     ],
-    "publisherNames": []
+    "publisherNames": [],
+    "homeReason": null
   }
 ]

@@ -82,3 +82,22 @@
 @media (max-width: 360px) {
   .culture-route .route-paper { width: calc(100% - 16px); }
 }
+
+/* The real street photo leads the route, with its full documentary caption. */
+.culture-route .route-hero { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); align-items: start; gap: 32px; padding: 24px 40px 36px; }
+.culture-route .route-hero .route-heading { padding: 0; }
+.culture-route .route-hero-photo { margin-top: 0; }
+.culture-route .street-return-text { grid-template-columns: minmax(0, 1fr); }
+.culture-route .street-return-text .street-reading { max-width: 48em; }
+@media (max-width: 1100px) { .culture-route .route-hero { padding-inline: 28px; gap: 24px; } }
+@media (max-width: 700px) { .culture-route .route-hero { grid-template-columns: minmax(0, 1fr); padding: 14px 20px 28px; gap: 24px; } }
+
+/* With no verified local photograph, Title is the typographic starting point. */
+.culture-route .outing-stop:first-child { padding-top: 40px; padding-bottom: 44px; }
+.culture-route .outing-stop:first-child h2 { font-size: 2.75rem; line-height: 1.25; }
+.culture-route .outing-stop:first-child p:first-child { font-size: 1.125rem; line-height: 1.85; }
+@media (max-width: 700px) {
+  .culture-route .outing-stop:first-child { padding-block: 28px 32px; }
+  .culture-route .outing-stop:first-child h2 { font-size: 2rem; }
+  .culture-route .outing-stop:first-child p:first-child { font-size: 1rem; }
+}

@@ -4,6 +4,8 @@ from pathlib import Path
 from html.parser import HTMLParser
 from fontTools.ttLib import TTFont
 import hashlib, json, re, sys
+from lxml import html
+from urllib.parse import urlsplit,unquote
 ROOT=Path(__file__).resolve().parent.parent
 PAGE=ROOT/'qa/editorial-study-c3/index.html'
 CSS=ROOT/'qa/editorial-study-c3/study.css'
@@ -32,8 +34,11 @@ for tag,attrs in page.tags:
         value=attrs[attr]
         if value.startswith(('https://','http://')):continue
         if value.startswith('#'):resources.append((value,value[1:] in ids));continue
-        file=ROOT/value.lstrip('/') if value.startswith('/') else PAGE.parent/value
-        resources.append((value,file.exists()))
+        parsed=urlsplit(value);file=ROOT/unquote(parsed.path).lstrip('/') if parsed.path.startswith('/') else PAGE.parent/unquote(parsed.path)
+        target=file/'index.html' if file.is_dir() else file
+        ok=target.exists()
+        if ok and parsed.fragment:ok=parsed.fragment in html.parse(str(target)).xpath('//@id')
+        resources.append((value,ok))
 check('All local resources and anchor targets resolve without a server',all(ok for _,ok in resources),resources)
 manifest=json.loads((ROOT/'qa/editorial-study-c3/assets/font-manifest.json').read_text())
 font_checks=[]
@@ -51,12 +56,17 @@ check('Decorative play/arrow icons are SVG, not fallback glyphs',all(c not in ''
 original=(ROOT/'qa/editorial-study-c2/index.html').read_text()
 reasons=lambda html:re.findall(r'<p class="selection-reason">(.*?)</p>',html)
 check('All three complete reasons remain verbatim from C2',len(reasons(source))==3 and reasons(source)==reasons(original))
-credits=lambda html:[re.sub('<[^>]+>','',x) for x in re.findall(r'<h[23] id="book-[^"]+">(.*?)</h[23]>',html)]
-check('Author/title/publisher credits remain exact',len(credits(source))==3 and credits(source)==credits(original),credits(source))
-check('Three native cover-to-reason links',all(re.search(r'class="book-choice-link" href="#book-'+x+r'-title" aria-label="[^"]+"',source) for x in ('one','two','three')))
+doc=html.fromstring(source)
+books=json.loads((ROOT/'qa/editorial-c3-home-books.json').read_text())
+cards=doc.xpath('//article[@class="book-card"]')
+check('One list with three complete cards, no duplicated detail list',len(cards)==3 and len(doc.xpath('//ol[@class="desk-books"]'))==1 and not doc.xpath('//*[@class="book-selections" or @class="book-selection"]'))
+check('Exact visible-source title/author/publisher/source fields',all(''.join(card.xpath('.//h2//text()')).strip()==book['title'] and card.xpath('.//span[@class="book-author"]/text()')==[book['author']] and card.xpath('.//span[@class="book-publisher"]/text()')==[book['publisher']] and card.xpath('.//p[@class="book-credit"]/a/@href')==[book['source']] for card,book in zip(cards,books)))
+check('Required full credit appears as one visible-source link in publisher order',all(''.join(card.xpath('.//p[@class="book-credit"]/a//text()'))==book['author']+'『'+book['title']+'』'+book['publisher'] for card,book in zip(cards,books)) and not doc.xpath('//p[@class="book-meta"]') and '書影出典' not in source)
+check('Both native card links go directly to own detail',all(card.xpath('.//a[@class="book-choice-link"]/@href')==[book['href']] and card.xpath('.//h2/a/@href')==[book['href']] for card,book in zip(cards,books)))
+check('Mobile-hidden home reasons remain exact and visible-source in all three detail pages',all(book['reason'] in html.parse(str(ROOT/book['href'].lstrip('/'))).xpath('//p[@class="selection-reason"]/text()') for book in books) and '.book-card .selection-reason { display: none; }' in css)
 check('Obsolete instruction labels and numbered interface scaffolding removed',all(x not in source for x in ('いま、ひらく棚','表紙を押すと、作品紹介へ','一冊ずつ、選んだ理由。','book-number','reason-number')))
 check('Specific semantic heading hierarchy',sum(t=='h1' for t,_ in page.tags)==1 and sum(t=='h2' for t,_ in page.tags)==5 and not any(t=='h3' for t,_ in page.tags))
-check('Three exact titles immediately follow their covers',all('<p class="choice-title">'+title+'</p>' in re.sub(r'<span class="title-phrase">(.*?)</span>',r'\1',source) for title in ('成瀬は天下を取りにいく','思わず考えちゃう','高円寺純情商店街')) and 'book-perspective' not in source)
+check('Formal title follows cover once per card',all(len(card.xpath('.//h2[@class="choice-title"]'))==1 for card in cards))
 check('Duplicate reasons CTA removed; next shelf retained','read-cta' not in source and 'class="next-shelf"' in source)
 check('Mood entry follows the next shelf before music, with no footer duplicate',source.count('class="other-entry"')==1 and source.index('class="next-shelf"')<source.index('class="other-entry"')<source.index('class="music"') and 'href="/discover/selection/" rel="noreferrer"' in source and not re.search(r'<footer>.*class="other-entry"',source,re.S))
 check('Only original click-to-load script, no new storage/tracker',[(t,a['src']) for t,a in page.tags if t=='script' and 'src' in a]==[('script','/video-embed.js')] and not re.search(r'localStorage|sessionStorage|analytics|googletagmanager|<iframe|<video|<audio',source))
@@ -69,8 +79,8 @@ check('Culture entry points are exact native links; expiry-managed events stay a
 css_without_comments=re.sub(r'/\*.*?\*/','',css,flags=re.S)
 check('CSS brace-balance smoke check',css_without_comments.count('{')==css_without_comments.count('}'))
 pins={
-'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-400.woff2':'a48185045464e9aa8d4afea727a4faa0b16e0757159558df1a618bc1bf4ba8aa',
-'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-700.woff2':'ebed3875e5f8b0e78e5dae919c1ac1f658a43bcd929e6b668f7eb0880d3986ed',
+'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-400.woff2':'9f57b579cfb98abf885f7d9e2435be4ad6ad84f1db9e901a6b9a6cb67c71327c',
+'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-700.woff2':'9eafca7d04105df7dcd7824fa9a209be5d59258f48da02a724d6f3b487910f13',
 'qa/editorial-study-desk/assets/editor-desk.webp':'7cb8e1ca97cf9e5287fa62654d31a197825433a384f4ccc4dd96dc7018083a9d'}
 check('Original artwork and final candidate font bytes pinned',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in pins.items()))
 report={'passed':all(x['passed'] for x in checks),'kind':'offline source checks only','browserExecuted':False,'visualApproval':False,'fontApproval':False,'fontStatus':'Reference-led Zen Kaku 700/400 candidate, pending actual browser screenshots and independent visual review.','checks':checks}

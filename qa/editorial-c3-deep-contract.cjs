@@ -12,7 +12,7 @@ function validateDeepFonts(rows,profile="books"){
     if(!Array.isArray(r.fonts)||!r.fonts.length||!r.fonts.every(f=>f.glyphCount>0&&f.isCustomFont===true&&f.postScriptName===PS[w]))return false;
     roles[r.role]++;
   }
-  return roles.heading>=1&&roles.brand===1&&roles.body>=1&&roles.credit>=1&&roles.nav>=3&&(profile==='culture-outings'?roles.summary===0:roles.summary>=1);
+  return roles.heading>=1&&roles.brand===1&&roles.body>=1&&roles.credit>=1&&roles.nav===4&&(profile==='culture-outings'?roles.summary===0:roles.summary>=1);
 }
 function validateDeepContent(data,expected){
   if(!data||!expected)return false;
@@ -24,6 +24,7 @@ function validateDeepContent(data,expected){
     data.duplicateIds.length===0&&data.unresolvedAria.length===0&&data.scripts.length===0&&data.facades===0&&
     data.eagerMedia===0&&data.remoteResources.length===0&&data.reducedMotion&&data.scrollBehavior==='auto'&&
     data.animations===0&&data.originalHref===expected.originalHref&&
+    (!expected.homeReason||data.reasons.includes(expected.homeReason))&&
     (!expected.kind||(
       ['culture-film','culture-outings'].includes(expected.kind)&&same(data.paragraphs,expected.paragraphs)&&
       same(data.headingTexts,expected.headingTexts)&&same(data.captions,expected.captions)&&same(data.allLinks,expected.allLinks)

@@ -149,6 +149,8 @@ for filename in HTML + CSS:
         if line.rstrip() != line:
             errors.append(f'{filename}:{no}: trailing whitespace')
 
+# works.html/work-film.html pins include the already published 135db73 five-city
+# menu fix (4->5 and Kiyosumi entry); work/film evidence prose was unchanged.
 before = json.loads((ROOT / 'qa/editorial-c3-culture-source.json').read_text())
 snapshots = {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == digest for name, digest in before.items()}
 errors += [name + ': frozen source hash changed' for name, unchanged in snapshots.items() if not unchanged]
@@ -172,6 +174,13 @@ fragment = (ROOT / DIRECTORY / 'home-culture-section.html').read_text().strip()
 fragment = re.sub(r'<!--.*?-->', '', fragment, flags=re.S).strip()
 if re.sub(r'>\s+<', '><', fragment) not in re.sub(r'>\s+<', '><', home):
     errors.append('Homepage culture fragment is missing or diverged')
+from lxml import html as lxml_html
+navigation=[('本の棚','/qa/editorial-study-c3/index.html#shelves'),('音楽','/qa/editorial-study-c3/index.html#listen'),('映画','/qa/editorial-study-c3/film-and-books.html'),('街へ','/qa/editorial-study-c3/outings.html')]
+all_pages=[ROOT/DIRECTORY/'index.html',*sorted((ROOT/DIRECTORY/'books').glob('*.html')),*sorted((ROOT/DIRECTORY/'shelves').glob('*.html')),*[ROOT/DIRECTORY/x for x in PAGES]]
+for path in all_pages:
+    route='/'+str(path.relative_to(ROOT));doc=lxml_html.parse(str(path));nav_links=doc.xpath('//header[@class="masthead"]/nav/a')
+    if [(a.text_content().strip(),a.get('href')) for a in nav_links]!=navigation or any(a.get('aria-current')!=('page' if a.get('href')==route else None) for a in nav_links):
+        errors.append(route+': shared navigation/current-page mismatch')
 report = {
     'static_pass': not errors,
     'html_files': HTML,

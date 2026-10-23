@@ -98,12 +98,13 @@ jobs:
         run: |
           node --test qa/editorial-type-font-contract.test.cjs qa/editorial-c2-layout-contract.test.cjs
           NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_c2_browser_check.js
-      - name: Render isolated C3 typography and cover overview
+      - name: Render isolated C3 cards and direct detail paths
         if: success() || failure()
         env:
           QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          node qa/editorial-c3-layout-contract.test.cjs
+          node qa/editorial-c3-direct-detail-contract.test.cjs
+          node qa/editorial-c3-navigation-contract.test.cjs
           node qa/editorial-c3-font-contract.test.cjs
           node qa/editorial-c3-polish-contract.test.cjs
           NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_c3_browser_check.js
@@ -114,6 +115,7 @@ jobs:
         run: |
           node qa/editorial-c3-deep-contract.test.cjs
           node qa/editorial-c3-readiness.test.cjs
+          node qa/editorial-c3-route-structure-contract.test.cjs
           NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_c3_deep_browser_check.js
       - name: Save screenshots and non-secret verification report
         if: always()

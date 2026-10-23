@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const {validateDeepFonts,validateDeepContent}=require('./editorial-c3-deep-contract.cjs');
 let n=0;const test=(label,fn)=>{fn();n++;console.log('PASS '+label);};
 const row=(role,w)=>({role,weight:String(w),family:'EditorialReading, sans-serif',fontSynthesis:'none',fonts:[{glyphCount:5,isCustomFont:true,postScriptName:w===400?'ZenKakuGothicNew-Regular':'ZenKakuGothicNew-Bold'}]});
-const valid=[row('heading',700),row('brand',700),row('body',400),row('credit',400),...Array.from({length:3},()=>row('nav',700)),row('summary',700)];
+const valid=[row('heading',700),row('brand',700),row('body',400),row('credit',400),...Array.from({length:4},()=>row('nav',700)),row('summary',700)];
 const copy=()=>structuredClone(valid);
 test('real role fonts',()=>assert(validateDeepFonts(valid)));
 for(const [label,edit] of [
@@ -24,4 +24,7 @@ const ce={...e,kind:'culture-film',paragraphs:['fact'],headingTexts:['title'],ca
 const cd={...d,...ce};
 test('culture exact evidence inventory',()=>assert(validateDeepContent(cd,ce)));
 for(const key of ['paragraphs','headingTexts','captions','allLinks'])test('culture '+key+' cannot disappear',()=>assert(!validateDeepContent({...cd,[key]:[]},ce)));
+test('all four navigation fonts required',()=>{const r=copy();r.splice(r.findIndex(r=>r.role==='nav'),1);assert(!validateDeepFonts(r));});
+test('home full reason retained on detail',()=>assert(validateDeepContent(d,{...e,homeReason:d.reasons[0]})));
+test('home full reason cannot become a different short summary',()=>assert(!validateDeepContent(d,{...e,homeReason:'different or shortened reason'})));
 console.log(n+' C3 deep contract fixtures passed; not browser evidence.');
