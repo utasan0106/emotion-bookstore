@@ -32,7 +32,8 @@ async function mount(path='/',options={}){
    assert.ok(h.nodes['.city-weather-reading'].textContent.startsWith(label+'周辺｜'));
    assert.ok(h.nodes['.city-weather-reading'].textContent.includes(temp+'℃（'+station));
    const scope=h.panel.children.find(e=>e.className==='city-weather-scope').textContent;
-   assert.ok(scope.includes('東京地方（4街共通）')&&scope.includes('気温は'+station+'観測所'));
+   assert.ok(scope.includes('東京地方（対象の街で共通）')&&scope.includes('気温は'+station+'観測所'));
+   assert.doesNotMatch(scope,/[0-9０-９]+街共通/,'Regional forecast explanation must not hard-code the catalogue city count');
    assert.ok(scope.includes(label+'のピンポイント予報・実測値ではありません。'));
    const direct=await mount('/discover/'+key+'/');assert.equal(direct.nodes.select.value,key);
  }
