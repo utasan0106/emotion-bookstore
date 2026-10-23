@@ -300,7 +300,7 @@ async function checkInteractions(browser, origin) {
             const naturalRatio=img.naturalWidth/img.naturalHeight;
             const actualRatio=contentWidth/contentHeight;
             const isBookCover=img.matches('.work-art img,.book-mat img,[data-full-cover]')||/\/book-covers\//.test(img.currentSrc||img.src);
-            const declared=style.aspectRatio.match(/^(?:auto\s+)?([\d.]+)\s*\/\s*([\d.]+)$/);
+            const declared=style.aspectRatio.match(/^([\d.]+)\s*\/\s*([\d.]+)$/);
             const expectedRatio=declared?Number(declared[1])/Number(declared[2]):null;
             const declaredBoxRatio=style.boxSizing==='border-box'?box.width/box.height:actualRatio;
             const declaredRatioPassed=expectedRatio===null||(Number.isFinite(declaredBoxRatio)&&Math.abs(declaredBoxRatio/expectedRatio-1)<=0.02);

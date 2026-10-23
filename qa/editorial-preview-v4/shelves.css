@@ -17,3 +17,7 @@
 .work-art>a{display:flex;align-items:center;justify-content:center;width:100%;height:100%;max-height:100%;min-width:0;min-height:0}.work-art>a>img{flex:0 1 auto;min-width:0;width:auto;height:auto;object-fit:contain}
 /* White editorial masthead keeps shelf colors as content signals. */
 .brand-band{background:#fff;color:#202920}.brand-band .brand img{filter:brightness(0)}.brand-band a:hover{color:#284d42}.brand-band a:focus-visible{outline-color:#155fa6}.nav-band{border-top:1px solid #202920;border-bottom:1px solid #202920}.nav-band .nav a{font-weight:600}.nav-band .nav a[aria-current]{font-weight:800}.location-band{background:#f0f2eb}
+
+/* Text-size-aware shelf reflow, without clipping or shrinking enlarged text. */
+.trio{grid-template-columns:repeat(auto-fit,minmax(min(100%,5.5rem),1fr))}.work{overflow-wrap:anywhere}.detail-works .work{grid-template-columns:200px minmax(0,1fr)}.detail-works .work>div,.related-work>div{min-width:0}.book-focus,.related-work,.book-record{overflow-wrap:anywhere}
+@media(max-width:650px){.detail-works .work{grid-template-columns:100px minmax(0,1fr)}}
