@@ -44,13 +44,18 @@ const retiredShortLinks=new Set([
 const durationSource=require('../tools/city-discovery-source');
 const retiredDurationLinks=new Map();
 const retiredDurationText=new Set();
-for(const item of durationSource.excludedItems.filter(i=>i.kind==='video'&&durationSource.visualMedia.durationFor(i.videoId)>300)){
+for(const item of durationSource.excludedItems.filter(i=>i.kind==='video'&&!durationSource.visualMedia.allowed(i.videoId))){
   const replacement='/discover/'+item.city+'/video.html';
   retiredDurationLinks.set(item.url,replacement);
   retiredDurationLinks.set('https://www.youtube-nocookie.com/embed/'+item.videoId+'?autoplay=0&amp;playsinline=1&amp;rel=0',replacement);
   retiredDurationLinks.set('/discover/'+item.city+'/'+item.id+'.html',replacement);
   retiredDurationLinks.set('https://emotionbookstore.com/discover/'+item.city+'/'+item.id+'.html',replacement);
-  for(const value of [item.title,item.creator,item.hook,item.relation,item.relationNote]) if(value) {
+  const heldProfile=require('../tools/artist-profiles')[item.id];
+  if(heldProfile) {
+    retiredDurationLinks.set(heldProfile.url,replacement);
+    retiredDurationText.add(heldProfile.name+'について');
+  }
+  for(const value of [item.title,item.creator,item.hook,item.relation,item.relationNote,heldProfile?.text,heldProfile?.name]) if(value) {
     retiredDurationText.add(value);
     for(const token of value.split(/\s+/)) retiredDurationText.add(token);
   }
@@ -122,6 +127,10 @@ for(const file of files){
 // 2026-09-10：トップのカテゴリはページ内の絞り込みだった。押しても1件しか出ず、
 // 読者が離脱する。全件のある一覧へ向け直した。
 const retiredDestinations={
+  // Restricted playback uses the exact provider page, not an unverified inline player.
+  'https://www.youtube-nocookie.com/embed/Np7r73nw_iY?autoplay=0&amp;playsinline=1&amp;rel=0': 'https://www.youtube.com/watch?v=Np7r73nw_iY',
+  // 2026-10-23 weekly home rotation replaces the prior pond photograph; asset is retained.
+  '/assets/inokashira-pond.jpg': '/credits.html',
   '?kind=book#hc-works': '/work-book.html',
   '?kind=music#hc-works': '/work-music.html',
   '?kind=video#hc-works': '/discover/short-films/',
@@ -139,6 +148,9 @@ const retiredDestinations={
   '/assets/events/jinbocho-theatre.webp': '/outings/'
 };
 for(const l of baselineLinks){
+ // Owner removed RSS entirely, rather than substituting an unrelated destination.
+ if(l==='/feed.xml') {assert.ok(!fs.existsSync('feed.xml'));assert.ok(!currentLinks.has(l));continue;}
+
  if(currentLinks.has(l)) continue;
  const replacement=retiredDestinations[l] || retiredDurationLinks.get(l) || (retiredEventLinks.has(l) ? '/outings/' : undefined) || (retiredShortLinks.has(l) ? '/discover/short-films/' : undefined) || redirectDestinations.get(l);
  // 2026-09-22：終了・再確認期限切れの催し詳細は検索/runtimeから物理削除する。
@@ -151,6 +163,17 @@ const everything=currentText.join(' ');
 // 2026-09-11：催しの退出計測を1ページで試すにあたり、data.html の計測範囲の説明に
 // 「催し」を加えた。読者への説明が実装より狭いままにならないようにするため。
 const revisedText={
+  'この条件の開催予定は、まだありません。': 'この条件で掲載している催しはありません。',
+  '催しの予定がない週は、街の作品から辿れます。': '掲載している催しがない週は、街の作品から辿れます。',
+
+  'AIで街を多角的に読む': '街と広告を読む',
+
+  // Five-city English guide now includes verified Kiyosumi destinations.
+  'Four': 'Five',
+  '4つの街から': '5つの街から',
+  '毎週月曜に変わります。RSSでも受け取れます': '街の作品と、開催日を確認した催しを紹介します。',
+  '新着をRSSで受け取る': '街から作品を探す',
+
   // 2026-09-11：詳細ページで、街との関係の説明が「◯◯とのつながり」の節と、この開閉
   // ブロックの両方に、同じ文面で二度出ていた。48件は開いても確認日しか入っていない。
   // 説明・出典・確認日を一つの節にまとめ、開閉ブロックを畳んだ。見出しは節が引き継ぐ。
@@ -188,13 +211,14 @@ const revisedText={
   '今週の感情書店｜みんなの感情書店':
   '今週の東京カルチャー｜高円寺・下北沢・吉祥寺・神保町｜みんなの感情書店',
   '今、街で出会える文化｜みんなの感情書店':
-  '高円寺・下北沢・吉祥寺・神保町の文化イベント｜今週のライブ・舞台・映画・展示｜みんなの感情書店',
+  '高円寺・下北沢・吉祥寺・神保町・清澄白河の文化イベント｜今週のライブ・舞台・映画・展示｜みんなの感情書店',
   '聴く・観る・読む':
   '聴く・観る・読む・出かける',
   '街を選んで、ゆかりの本・音楽・映像・映画へ。':
   '高円寺・下北沢・吉祥寺・神保町・清澄白河から、作品や場所との出会いを選ぶ。',
   '今週で終わる催しと、新しく棚に入った作品。人気順でも、あなた向けでもありません。':
   '高円寺・下北沢・吉祥寺・神保町から、今週で終わる催しと新しく棚に入った作品を編集部が少数だけ選びます。',
+  '仲野太賀の公式インタビュー紹介へ': '下北沢の公式映像紹介へ',
   '9月の街の動き': '街の動き',
   '約1〜4分':
   '3分以内'

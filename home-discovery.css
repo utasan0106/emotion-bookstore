@@ -106,3 +106,7 @@ body.home-discovery{--sans:var(--font-body);--serif:var(--font-display);--hd-ink
  .home-discovery [data-weekly-feature="indies"] .dr-cover-photo img,
  .home-discovery [data-weekly-feature="mot-collection-light"] .dr-cover-photo img{aspect-ratio:2/1;object-fit:cover;object-position:center}
 }
+
+/* Editorial phrase boundaries survive narrow screens without fixed lines or spaces.
+   max-width + emergency wrapping keep enlarged text inside the reading column. */
+.home-discovery .hd-title-phrase{display:inline-block;max-width:100%;vertical-align:top;white-space:normal;word-break:normal;overflow-wrap:anywhere;line-break:strict}

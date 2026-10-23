@@ -96,7 +96,7 @@ else {
       const rel = (m.url || '').replace(/^\.\//, '');
       if (!rel || !fs.existsSync(path.join(root, rel))) failures.push(`detour ${x.kind}: cover file missing`);
     }
-    if (m.kind === 'publisher-link' && !/^https:\/\/www\.kodansha\.co\.jp\//.test(m.sourceUrl || '')) {
+    if (m.kind === 'publisher-link' && m.sourceUrl !== 'https://book-sp.kodansha.co.jp/topics/mayonaka/') {
       failures.push('detour book fallback must point to Kodansha official');
     }
     if (m.kind === 'youtube') {

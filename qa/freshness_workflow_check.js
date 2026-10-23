@@ -6,9 +6,9 @@ const retired={source:'/outings/events/example.html',destination:'/outings/',per
 const contract={paths:new Set([retired.source]),expected:[retired]};
 const valid={...base,redirects:[...base.redirects,retired]};
 const check=(paths,before,after)=>validate(paths,before,after,contract);
-check(['vercel.json','outings/index.html','discover/koenji/index.html','sitemap.xml','feed.xml'],base,valid);
+check(['vercel.json','outings/index.html','discover/koenji/index.html','sitemap.xml'],base,valid);
 check(['discover/koenji/index.html'],base,base);
-for(const file of ['analytics-v3.js','.github/workflows/other.yml','vercel.json.bak','sitemap.xml.bak'])assert.throws(()=>check([file],base,valid));
+for(const file of ['analytics-v3.js','.github/workflows/other.yml','vercel.json.bak','sitemap.xml.bak','feed.xml'])assert.throws(()=>check([file],base,valid));
 assert.throws(()=>check(['vercel.json'],base,{...valid,redirects:[retired,...base.redirects]}),'Generated redirects cannot shadow canonical rules');
 assert.throws(()=>check(['vercel.json'],base,{...valid,headers:[]}),'CSP/header changes blocked');
 assert.throws(()=>check(['vercel.json'],base,{...valid,rewrites:[{source:'/(.*)',destination:'https://example.org'}]}),'Rewrites blocked');
@@ -19,7 +19,7 @@ assert.throws(()=>check(['vercel.json'],base,{...valid,redirects:[...valid.redir
 assert.throws(()=>check(['vercel.json'],base,base),'Missing expiry redirect blocked');
 const workflow=fs.readFileSync('.github/workflows/weekly-acquisition-refresh.yml','utf8');
 assert.match(workflow,/node tools\/check-freshness-output\.js/);
-assert.match(workflow,/git add discover outings sitemap\.xml feed\.xml vercel\.json/);
+assert.match(workflow,/git add discover outings sitemap\.xml vercel\.json/);
 assert.match(workflow,/node qa\/freshness_workflow_check\.js/);
 assert.match(workflow,/cron: '15 0 \* \* 1'/);assert.match(workflow,/cron: '15 0 \* \* 5'/);
 console.log('PASS freshness workflow positive/negative guards; existing schedules retained');
@@ -45,7 +45,7 @@ function generatedAt(instant,{existing=[],missing=[]}={}){
  return {config,writes,removed,exists:file=>fakeFs.existsSync(file)};
 }
 const eventIds=result=>JSON.parse(result.writes.get(path.join(root,'outings/events-data.js')).match(/^window\.OUTINGS_DATA=(.*);\s*$/s)[1]).events.map(event=>event.id);
-for(const [id,lastDay,nextDay,activeId] of [['shimokita-moon','2026-10-04','2026-10-05','jinbocho-joyu'],['jinbocho-joyu','2026-10-06','2026-10-07','kichijoji-tsuijuku'],['koenji-tomovsky','2026-10-16','2026-10-17','shimokita-bergson'],['shimokita-bergson','2026-10-18','2026-10-19','kichijoji-taniguchi'],['kichijoji-taniguchi','2026-11-03','2026-11-04',null]]){
+for(const [id,lastDay,nextDay,activeId] of [['shimokita-moon','2026-10-04','2026-10-05','jinbocho-joyu'],['jinbocho-joyu','2026-10-06','2026-10-07','kichijoji-tsuijuku'],['koenji-tomovsky','2026-10-16','2026-10-17','shimokita-bergson'],['shimokita-bergson','2026-10-18','2026-10-19',null],['shimokita-design2026','2026-10-24','2026-10-25','kichijoji-taniguchi'],['kichijoji-taniguchi','2026-11-03','2026-11-04',null]]){
  const route=`/outings/events/${id}.html`,file=path.join(root,route);
  const before=generatedAt(lastDay+'T23:59:59.999+09:00');
  assert.ok(before.writes.has(file),'Detail remains available through final JST date: '+id);
@@ -75,11 +75,11 @@ for(const id of eventIds(oct7)){
  assert.ok(oct7.writes.has(path.join(root,route)),'Oct 7 active detail remains generated: '+id);
  assert.ok(!oct7.config.redirects.some(r=>r.source===route),'Oct 7 active detail must not redirect: '+id);
 }
-console.log('PASS real event generator and redirect guard agree across Oct 4→5, Oct 6→7, Oct 16→17, Oct 18→19 and Nov 3→4 JST');
+console.log('PASS real event generator and redirect guard agree across Oct 4→5, Oct 6→7, Oct 16→17, Oct 18→19, Oct 24→25 and Nov 3→4 JST');
 
 // Run the real discovery generator in memory too: an expired signal must not erase
 // the Home menu anchor, imply all events ended, or retain the expired festival.
-function generatedDiscoveryAt(instant){
+function generatedDiscoveryAt(instant,output='discover/index.html'){
  const now=Date.parse(instant),writes=new Map(),removed=new Set();
  const file=path.join(root,'tools/build-city-discovery.js'),load=createRequire(file);
  const fakeFs={...fs,writeFileSync:(p,text)=>writes.set(path.resolve(p),String(text)),mkdirSync(){},
@@ -88,7 +88,7 @@ function generatedDiscoveryAt(instant){
   readFileSync:(p,...args)=>writes.has(path.resolve(p))?writes.get(path.resolve(p)):fs.readFileSync(p,...args)};
  class FixedDate extends Date{constructor(...args){super(...(args.length?args:[now]));}static now(){return now;}}
  vm.runInNewContext(fs.readFileSync(file,'utf8'),{__dirname:path.dirname(file),require:id=>id==='node:fs'?fakeFs:id==='node:child_process'?{execFileSync(){}}:load(id),process:{argv:[]},Date:FixedDate,URL,module:{exports:{}},console:{log(){}}},{filename:file});
- return writes.get(path.join(root,'discover/index.html'));
+ return writes.get(path.join(root,output));
 }
 const beforeSignal=generatedDiscoveryAt('2026-10-04T23:59:59.999+09:00'),afterSignal=generatedDiscoveryAt('2026-10-05T00:00:00.000+09:00');
 assert.match(beforeSignal,/id="city-signals"/);assert.match(beforeSignal,/outings\/events\/shimokita-moon\.html/);

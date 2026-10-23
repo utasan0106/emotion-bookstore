@@ -26,7 +26,6 @@
 - [今週号](https://emotionbookstore.com/discover/weekly/)：今週で終わる催しと、新しく入った作品
 - [街の記事](https://emotionbookstore.com/discover/essays/)：出典つきの読み物
 - [場所そのものの話](https://emotionbookstore.com/discover/places/)：本屋・映画館・ライブハウス・劇場
-- [新着RSS](https://emotionbookstore.com/feed.xml)：棚に入った順。アカウント不要
 
 ## 街
 

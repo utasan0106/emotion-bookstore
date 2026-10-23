@@ -15,7 +15,7 @@ function redirectContract(now=Date.now()){
  return {paths,expected};
 }
 function validate(paths,before,after,contract=redirectContract()){
- for(const file of paths)assert.match(file,/^(?:discover\/|outings\/|sitemap\.xml$|feed\.xml$|vercel\.json$)/,`Unexpected generated file: ${file}`);
+ for(const file of paths)assert.match(file,/^(?:discover\/|outings\/|sitemap\.xml$|vercel\.json$)/,`Unexpected generated file: ${file}`);
  if(!paths.includes('vercel.json'))return;
  const {redirects:oldRedirects=[],...oldConfig}=before,{redirects:newRedirects=[],...newConfig}=after;
  assert.deepEqual(newConfig,oldConfig,'Non-redirect Vercel settings must not change');

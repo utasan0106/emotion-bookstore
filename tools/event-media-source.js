@@ -8,6 +8,7 @@ const venues={
  cinema:{src:'/assets/events/jinbocho-theatre.webp',width:960,height:720,alt:'神保町シアターの入口',caption:'会場：神保町シアター（2011年）'}
 };
 const streets={
+ kiyosumi:{src:'/assets/city-kiyosumi.jpg',width:1280,height:828,alt:'2015年の清澄庭園。展覧会の会場・展示写真ではありません',caption:'街の風景：2015年の清澄庭園（展覧会の会場・展示写真ではありません）'},
  koenji:{src:'/assets/city-koenji.jpg',width:1200,height:1600,alt:'高円寺の路地',caption:'街の風景：高円寺'},
  kichijoji:{src:'/assets/city-kichijoji.jpg',width:1200,height:1600,alt:'吉祥寺のハーモニカ横丁',caption:'街の風景：吉祥寺'},
  shimokitazawa:{src:'/assets/city-shimokitazawa.jpg',width:1280,height:960,alt:'下北沢の通り',caption:'街の風景：下北沢'},
@@ -17,6 +18,7 @@ const contextual={
  shimokitaFilmFestival:{src:'/assets/city-shimokitazawa.jpg',width:1280,height:960,alt:'2015年の下北沢の通り。映画祭会場・当日の写真ではありません',caption:'2015年の街の風景：下北沢（映画祭会場・当日の写真ではありません）'}
 };
 const byId={
+ 'koenji-akame2026':'za','koenji-dna2026':'za',
  'koenji-midsummer':'za','koenji-bakumatsu':'za','koenji-cafetalk':'za',
  'kichijoji-hard-problem':'theatre','kichijoji-winter':'theatre',
  'kichijoji-taniguchi':'museum','kichijoji-livepainting':'museum',

@@ -13,6 +13,11 @@ on:
       - 'qa/home_cover_browser_check.js'
       - 'qa/selection_browser_check.js'
       - 'qa/outings_browser_check.js'
+      - 'qa/five_city_browser_check.js'
+      - 'qa/typography_browser_check.js'
+      - 'discover/essays/**'
+      - 'visit/**'
+      - 'tools/design-redesign.js'
       - 'outings/**'
       - 'tools/weekly-outings-source.js'
       - 'discover/selection/**'
@@ -42,6 +47,20 @@ jobs:
           NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/home_cover_browser_check.js
           NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/selection_browser_check.js
           NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/outings_browser_check.js
+      - name: Verify five-city covers and article typography
+        if: success() || failure()
+        env:
+          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/five_city_browser_check.js
+          python3 -m http.server 8765 --bind 127.0.0.1 > "$RUNNER_TEMP/typography-server.log" 2>&1 &
+          PREVIEW_PID=$!
+          trap 'kill "$PREVIEW_PID" 2>/dev/null || true' EXIT
+          for attempt in 1 2 3 4 5; do
+            if curl --fail --silent http://127.0.0.1:8765/ > /dev/null; then break; fi
+            sleep 1
+          done
+          NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/typography_browser_check.js
       - name: Save screenshots and non-secret verification report
         if: always()
         uses: actions/upload-artifact@v4
@@ -54,5 +73,9 @@ jobs:
             qa/artifacts/selection/report.json
             qa/artifacts/outings/*.png
             qa/artifacts/outings/report.json
+            qa/artifacts/five-city/*.png
+            qa/artifacts/five-city/report.json
+            qa/artifacts/typography/*.png
+            qa/artifacts/typography/report.json
           if-no-files-found: error
           retention-days: 7

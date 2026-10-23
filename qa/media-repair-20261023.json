@@ -1,0 +1,146 @@
+{
+  "checkedAt": "2026-10-23",
+  "scope": "Local preparation, not publication. Exact provider metadata is not playback.",
+  "openbd": {
+    "termsUrl": "https://openbd.jp/terms/",
+    "termsOpened": true,
+    "purpose": "Book introduction only; no arbitrary image modification; honor correction/removal requests",
+    "entries": [
+      {
+        "isbn": "9784408557588",
+        "title": "下北沢インディーズ : ライブハウスの名探偵",
+        "publisher": "実業之日本社",
+        "cover": ""
+      },
+      {
+        "isbn": "9784867168523",
+        "title": "待ち合わせは〈本の庭〉で : 吉祥寺・シェア型書店の小さな謎",
+        "publisher": "マイクロマガジン社",
+        "cover": ""
+      },
+      {
+        "isbn": "9784911484036",
+        "title": "次郎吉 to JIROKICHI  -高円寺のライブハウスが歩んだ50年-",
+        "publisher": "日販アイ・ピー・エス",
+        "cover": ""
+      },
+      {
+        "isbn": "9784101021126",
+        "title": "高円寺純情商店街",
+        "publisher": "新潮社",
+        "cover": ""
+      },
+      {
+        "isbn": "9784094064957",
+        "title": "君のいない町が白く染まる",
+        "publisher": "小学館",
+        "cover": ""
+      },
+      {
+        "isbn": "9784901998727",
+        "title": "下北沢祝祭行 : レディ・ジェーンは夜の扉",
+        "publisher": "幻戯書房",
+        "cover": ""
+      },
+      {
+        "isbn": "9784835638492",
+        "title": "「演劇の街」をつくった男 : 本多一夫と下北沢",
+        "publisher": "ぴあ",
+        "cover": ""
+      },
+      {
+        "isbn": "9784160089457",
+        "title": "吉祥寺に育てられた映画館 : イノカン・MEG・バウス吉祥寺っ子映画館三代記",
+        "publisher": "文藝春秋 ",
+        "cover": ""
+      },
+      {
+        "isbn": "9784048532587",
+        "title": "グーグーだって猫である",
+        "publisher": "角川書店",
+        "cover": ""
+      },
+      {
+        "isbn": "9784093867658",
+        "title": "森崎書店の日々",
+        "publisher": "小学館",
+        "cover": ""
+      },
+      {
+        "isbn": "9784093867665",
+        "title": "森崎書店の日々. 続",
+        "publisher": "小学館",
+        "cover": ""
+      },
+      {
+        "isbn": "9784488406080",
+        "title": "神保町の怪人",
+        "publisher": "東京創元社",
+        "cover": ""
+      }
+    ]
+  },
+  "coverBlockers": [
+    {
+      "key": "shimokitazawa/indies",
+      "reason": "Existing official image HTTP403. Current publisher page uses same image. Existing FAQ permission record remains scoped; no allowed fresh asset delivered. OpenBD exact ISBN has no cover.",
+      "notFixedByFallback": true
+    },
+    {
+      "key": "koenji/jirokichi",
+      "reason": "OpenBD exact ISBN has no cover. Existing Hanmoto permission unknown. Publisher display is not reuse license.",
+      "notFixedByFallback": true
+    }
+  ],
+  "prototypeLinks": {
+    "decision": "Keep functioning comparison until canonical equivalent migrated; no blind redirect to unrelated single-work page.",
+    "origins": [
+      "/discover/",
+      "/discover/kichijoji/film.html",
+      "/discover/kichijoji/parks.html",
+      "/work-music.html",
+      "/works.html"
+    ],
+    "functionalRoutes": [
+      "/v3-prototype/culture-experience-r2/shimokitazawa/?recording=shelter",
+      "/v3-prototype/culture-experience-r2/kichijoji/?scene=film",
+      "/v3-prototype/culture-experience-r2/index.html"
+    ]
+  },
+  "preparedFiles": [
+    "tools/work-media.js",
+    "tools/media-availability-source.json",
+    "tools/work-cover-source.json",
+    "qa/media_availability_check.js",
+    "assets/book-covers/9784101021126.jpg",
+    "assets/book-covers/9784101001630.png",
+    "credits.html",
+    "assets/book-covers/9784048532587.webp",
+    "assets/book-covers/9784867168523.jpg",
+    "assets/book-covers/9784835638492.jpg"
+  ],
+  "tests": [
+    "node qa/media_availability_check.js PASS",
+    "Gougou official 200 image/webp, unchanged bytes, decoded 180x254 and visually inspected; native right-click save eligibility confirmed by parent",
+    "Honnoniwa 945x1350 and Honda 312x450 publisher-release JPEG200 originals decoded and visually inspected; no image modification",
+    "Five new local covers retain their original bytes; renderer output checked. Existing Kaijin cover remains at its original publisher URL."
+  ],
+  "notRun": [
+    "Full generator",
+    "Browser render and actual playback",
+    "Publication"
+  ],
+  "newVisibleCovers": [
+    "koenji/junjo",
+    "koenji/1q84",
+    "kichijoji/gou-gou-book",
+    "kichijoji/honnoniwa",
+    "shimokitazawa/honda"
+  ],
+  "newVisibleCoverSource": "https://www.shinchosha.co.jp/help/ask.html section B5; opened 2026-10-23",
+  "kadokawaSource": "https://www.kadokawa.co.jp/support/b/media/; native context menu save enabled verified 2026-10-23 05:01 UTC; exact image source and special conditions recorded in work-cover-source",
+  "pressReleaseScope": "PR TIMES basic terms 3(8) and reporting terms 3(1), opened 2026-10-23: public publisher release content used only for unpaid editorial reporting about this exact book. No registration required for reporting-purpose users. Public release has no individual restriction or unexpired embargo observed. Not a blanket publisher-image license.",
+  "remainingDeliveryWork": [
+    "Kaijin local caching was omitted from this release because original file metadata was not suitable for redistribution. Original publisher-hosted image remains unchanged. Any future local version requires an independently permitted and privacy-safe source."
+  ]
+}

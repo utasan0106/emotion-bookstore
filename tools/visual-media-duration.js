@@ -19,7 +19,8 @@ const durations = {
   WkKHB5toNIg: 274,
   '5riinr6xpWo': 15,
   jFCmoShi5ns: 712,
-  K_LDvvjC8Uw: 180,
+  // 2026-10-23 public watch metadata: maximum stream duration 180442 ms; ceil = 181 seconds.
+  K_LDvvjC8Uw: 181,
   '9lvk-4mVjC0': 104,
   PJ3RKuybYzU: 60,
   rakrdG7P2Jo: 82,

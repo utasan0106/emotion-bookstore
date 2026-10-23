@@ -18,10 +18,10 @@ for(const city of Object.keys(cities)){
  assert.equal(select(fixtures,{now,city,week:'2026-09-14'}).length,1,city+' explicit future-week filter');
 }
 assert.ok(!select(events,{now,city:'kichijoji',week:'2026-09-14'}).some(e=>e.id==='kichijoji-winter'),'Retired Kichijoji performance stays out of recommendations');
-assert.equal(select(fixtures,{now,week:'2026-09-14'}).length,4,'Future week selects only its dates');
+assert.equal(select(fixtures,{now,week:'2026-09-14'}).length,Object.keys(cities).length,'Future week selects only its dates');
 assert.ok(select(fixtures,{now}).every(e=>!e.id.endsWith('-15')));
 assert.ok(select(fixtures,{now:Date.parse('2026-09-14T00:00:00+09:00')}).every(e=>e.id.endsWith('-15')),'Ended event dates excluded');
-assert.equal(select(fixtures,{now,audience:'children'}).length,4,'Audience filter is nonempty and exact');
+assert.equal(select(fixtures,{now,audience:'children'}).length,Object.keys(cities).length,'Audience filter is nonempty and exact');
 assert.ok(select(fixtures,{now,audience:'children'}).every(e=>e.audiences.includes('children')));
 // All dates is a date-range choice, not a relaxation of the publication gates.
 const allFixture={id:'multi',city:'koenji',status:'scheduled',editorialReview:'approved',checkedAt:'2026-09-01',reviewThrough:'2026-12-31',dates:['2026-09-10','2026-09-11','2026-09-15','2026-11-20'],audiences:['solo'],browseKinds:['live']};
@@ -117,7 +117,7 @@ for(const card of index.matchAll(/<article class="event-card"[\s\S]*?<\/article>
  assert.match(card[0],/内容・詳しい日程を読む/);
  assert.match(card[0],/class="event-official"[^>]*target="_blank"/);
 }
-assert.match(index,/複数日開催 · 09\/13〜10\/17の指定日/);
+if(currentRuntime.some(e=>e.id==='koenji-midsummer'))assert.match(index,/複数日開催 · 09\/13〜10\/17の指定日/);
 assert.match(index,/会期 09\/19〜11\/03 · 休館日あり/);
 const noScript=index.match(/<noscript>([\s\S]*?)<\/noscript>/)[1];
 for(const e of currentRuntime)assert.ok(noScript.includes(e.schedule.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')),'No-JS preserves the complete official schedule: '+e.id);

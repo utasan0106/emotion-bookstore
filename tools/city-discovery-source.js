@@ -2,17 +2,17 @@
 'use strict';
 const visualMedia = require('./visual-media-duration');
 const items = [];
-const commonVideosWeekOf = '2026-10-05';
+const commonVideosWeekOf = '2026-10-19';
 const commonVideos = [
   {
-    id: 'thanks-tokyo', title: 'THANKS,TOKYO.【30秒ver】', creator: '東京都産業労働局 / 30秒',
-    hook: '東京を楽しむ人と、街を支える観光の仕事を30秒で見る。',
-    note: '東京都産業労働局公式チャンネルが公開する30秒版。短い時間で東京へ出る入口として使います。',
-    videoId: 'pCDd7LkhkfE', durationSeconds: 30,
-    durationSource: 'https://www.youtube.com/watch?v=pCDd7LkhkfE',
-    sources: ['https://www.youtube.com/watch?v=pCDd7LkhkfE'],
-    checkedAt: '2026-10-06', rotatedAt: '2026-10-05',
-    playbackChecked: true, playbackCheckedAt: '2026-10-06'
+    id: 'tefu-1500', title: '下北沢で仕事もする人たち｜15:00', creator: '小田急電鉄公式チャンネル「OdakyuMovie」 / 15秒',
+    hook: '午後の下北沢を舞台にした、短い映像から。',
+    note: '下北線路街の企画で制作された(tefu) lounge・BONUS TRACKのWeb CMです。取材記録ではなく演出のある作品です。',
+    videoId: '5riinr6xpWo', durationSeconds: 15,
+    durationSource: 'https://www.youtube.com/watch?v=5riinr6xpWo',
+    sources: ['https://senrogai.com/event/by-tefu-lounge-bonus-track-members/', 'https://www.youtube.com/watch?v=5riinr6xpWo'],
+    checkedAt: '2026-10-23', rotatedAt: '2026-10-19',
+    playbackChecked: false
   },
   {
     id: 'find-my-tokyo-akasaka', title: 'Find my Tokyo.「赤坂_ツウな人生のはじまり」篇', creator: '東京メトロ / 15秒',
@@ -21,7 +21,7 @@ const commonVideos = [
     videoId: 'TZRBBxcktuU', durationSeconds: 15,
     durationSource: 'https://www.youtube.com/watch?v=TZRBBxcktuU',
     sources: ['https://www.youtube.com/watch?v=TZRBBxcktuU'],
-    checkedAt: '2026-09-22'
+    checkedAt: '2026-10-23'
   },
   {
     id: 'musashino-green', title: '緑あふれるまち 武蔵野市', creator: '武蔵野市 / 2022年掲載',
@@ -30,7 +30,7 @@ const commonVideos = [
     videoId: 'TFGQrtHflSg', durationSeconds: 104,
     durationSource: 'https://www.youtube.com/watch?v=TFGQrtHflSg',
     sources: ['https://www.city.musashino.lg.jp/gomi_kankyo/midori_koen/tokyonomoriwomamorutorikumi/1037102.html'],
-    checkedAt: '2026-09-28', rotatedAt: '2026-09-28'
+    checkedAt: '2026-10-23', rotatedAt: '2026-09-28'
   }
 ].map(video => ({...video, url: 'https://www.youtube.com/watch?v=' + video.videoId, checkedAt: video.checkedAt || '2026-09-22', playbackChecked: video.playbackChecked === true}));
 const add = (city, kind, id, title, creator, hook, relation, relationNote, url, action, sources = [], videoId = '') => items.push({
@@ -126,6 +126,9 @@ film('kichijoji', 'baus', 'BAUS 映画から船出した映画館', '甫木元�
 film('kichijoji', 'gou-gou-film', 'グーグーだって猫である', '犬童一心 監督 / 2008', '猫との出会いから、止まっていた日常が動き出す。', '物語の舞台', '吉祥寺が舞台の2008年の映画。後年のテレビドラマ版とは別作品です。', 'https://www.wowow.co.jp/detail/021429', 'WOWOWで作品・視聴案内を見る');
 film('kichijoji', 'asahina', '吉祥寺の朝日奈くん', '加藤章一 監督 / 2011', 'いつもの道と店から始まる、恋の物語。', '撮影された街', '武蔵野市観光機構が、全編吉祥寺での撮影とバウスシアターでの上映を紹介しています。', 'https://movie-tsutaya.tsite.jp/netdvd/dvd/goodsDetail.do?titleID=1745549881', 'TSUTAYAでDVDの案内を見る', ['https://blog.musashino-kanko.com/?p=8101']);
 film('kichijoji', 'rocky-horror', 'ロッキー・ホラー・ショー', 'ジム・シャーマン 監督 / 1975', '音楽と奇妙な世界を楽しむ、映画館の記憶への寄り道。', 'バウスシアターの上映文化', 'バウス館主の著書を紹介する出版社ページに、この映画の上映にまつわる項目があります。映画の撮影地が吉祥寺という意味ではありません。', 'https://www.20thcenturystudios.jp/movies/rocky-horror-show', '配給元で映画・視聴案内を見る', [bausBook]);
+
+// Existing published selections: publisher/official-source and video availability rechecked, not new editorial approval.
+for (const item of items.filter(item => ['indies', 'jirokichi', 'baus', 'kaho-asa', 'tefu-1500'].includes(item.id))) item.checkedAt = '2026-10-23';
 
 const library = '千代田区立図書館公式チャンネル';
 video('jinbocho', 'gyokueido', '古書っと神保町｜玉英堂書店・前編', library, '古書店の人に案内されながら、本の世界を覗く。', '街の古書店の取材', '千代田区立図書館の「古書っと神保町」vol.1。玉英堂書店を紹介しています。', 'zQJz9x7XzxI');
@@ -228,13 +231,16 @@ for(const item of items) {
   item.action=review.action||(item.id==='honnoniwa'?'出版社で紹介・試し読みを見る':'出版社で書籍情報を見る');
 }
 const covers = require('./work-cover-source.json');
+// These five editions have individually verified, scoped cover-use bases.
+for (const item of items) if (['koenji/junjo','koenji/1q84','kichijoji/gou-gou-book','kichijoji/honnoniwa','shimokitazawa/honda'].includes(item.city+'/'+item.id) && covers[item.city+'/'+item.id]?.status==='usable') delete item.presentation;
+
 // 公開日。`checkedAt` は出典を読んだ日で、棚に出した日ではない。読者にとっての
 // 「新しく入った」はこちらで決まるので、別に持つ。
 //
 // git 履歴からは導出できない。引き継ぎでリポジトリの履歴が2026-09-08までしか無く、
 // そこから見ると全77件が同じ週の追加になってしまう。だから今日から積む。
 //
-// **作品を足したら必ずここに書く。** 書かなければ新着にもRSSにも出ない（落ちはしない）。
+// **作品を足したら必ずここに書く。** 書かなければ新着には出ない（落ちはしない）。
 const publishedAt = {
   'koenji/monterey-pop':    '2026-09-10',
   'shimokitazawa/zawazawa': '2026-09-10',

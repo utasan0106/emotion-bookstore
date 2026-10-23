@@ -21,7 +21,12 @@ for(const item of items){
  assert.ok(list.includes('href="'+item.url.replace(/&/g,'&amp;')+'"'),'One-click destination '+item.id);
  const id=item.videoId||item.trailerVideoId;
  if(id)for(const html of [detail,list]){
-  assert.ok(html.includes('data-video-id="'+id+'"'),'Correct work preview '+item.id);
+  if (id==='Np7r73nw_iY') {
+   assert.equal(require('../tools/media-availability-source.json').youtube[id].inlinePlayback,'hold');
+   assert.ok(!html.includes('data-video-id="'+id+'"'),'Held recording must not offer inline playback');
+   assert.ok(html.includes('視聴条件を確認中'),'Held recording must explain unavailable playback');
+   assert.ok(html.includes('https://www.youtube.com/watch?v='+id),'Held recording keeps exact official fallback');
+  } else assert.ok(html.includes('data-video-id="'+id+'"'),'Correct work preview '+item.id);
   // Click-to-load: the provider URL is built by the click, never shipped in the page.
   assert.ok(!html.includes('youtube-nocookie.com/embed/'+id),'No provider contact before the click '+item.id);
  }

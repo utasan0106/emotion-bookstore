@@ -15,8 +15,9 @@ const config=JSON.parse(read('vercel.json'));
 const legacyRedirect=(config.redirects||[]).find(r=>(r.has||[]).some(h=>h.type==='host'&&h.value==='emotion-bookstore.vercel.app'));
 assert.ok(legacyRedirect,'legacy Vercel hostname must redirect');
 assert.equal(legacyRedirect.permanent,true,'legacy host redirect must be permanent');
-assert.equal(legacyRedirect.destination,'https://emotionbookstore.com/:path*');
-assert.equal(legacyRedirect.source,'/:path*');
+assert.equal(legacyRedirect.destination,'https://emotionbookstore.com/:path');
+// Strict segment wildcards omit root and trailing-slash directory URLs.
+assert.equal(legacyRedirect.source,'/:path(.*)');
 
 // Robots + sitemap.
 const robots=read('robots.txt');
@@ -77,7 +78,7 @@ for(const city of ['高円寺','下北沢','吉祥寺','神保町']){
  assert.match(read('discover/'+file+'/index.html'),new RegExp('<title>'+city+'の本・映画・音楽・映像'));
 }
 assert.match(read('discover/weekly/index.html'),/<title>今週の東京カルチャー/);
-assert.match(read('outings/index.html'),/<title>高円寺・下北沢・吉祥寺・神保町の文化イベント/);
+assert.match(read('outings/index.html'),/<title>高円寺・下北沢・吉祥寺・神保町・清澄白河の文化イベント/);
 
 // Unreviewed events must never become acquisition landing links.
 const inventory=require('../tools/weekly-outings-source');

@@ -1,6 +1,6 @@
 'use strict';
 // Editorial-only inventory. Does not fetch, approve, publish, or change source data.
-const {items,excludedItems}=require('./city-discovery-source');
+const {items,excludedItems,visualMedia}=require('./city-discovery-source');
 const covers=require('./work-cover-source.json');
 const cities={koenji:'高円寺',kichijoji:'吉祥寺',shimokitazawa:'下北沢',jinbocho:'神保町'};
 const kinds={audio:'音楽',video:'映像',book:'本・漫画',film:'映画'};
@@ -12,12 +12,13 @@ function inventory() {
   }));
   const candidates=excludedItems.map(i=>{
     const cover=covers[i.city+'/'+i.id];
+    const durationHeld=i.kind==='video'&&!visualMedia.allowed(i.videoId);
     return {id:i.city+'/'+i.id,title:i.title,creator:i.creator,kind:i.kind,relation:i.relation,
       relationNote:i.relationNote,sources:i.sources,checkedAt:i.checkedAt,
-      status:'hold',reason:i.kind==='book'?'usable-cover-unconfirmed':'usable-media-unconfirmed',
+      status:'hold',reason:durationHeld?'duration-policy-excluded':i.kind==='book'?'usable-cover-unconfirmed':'usable-media-unconfirmed',
       coverStatus:cover?.status||'not-recorded',
       mediaReview:cover?{checkedAt:cover.checkedAt,sourceUrl:cover.sourceUrl,note:cover.reviewNote}:null,
-      nextCheck:cover?.nextCheck||(i.kind==='book'?'出版社等で版・書影利用条件・画像と紹介対象の一致を確認':'公式予告・公開元・作品一致・再生可否を確認'),
+      nextCheck:durationHeld?('公式動画は'+visualMedia.durationFor(i.videoId)+'秒。掲載時間の基準を満たさず保留。短い公式版または明示的な編集判断を確認。URLの失効とは判定していない。'):cover?.nextCheck||(i.kind==='book'?'出版社等で版・書影利用条件・画像と紹介対象の一致を確認':'公式予告・公開元・作品一致・再生可否を確認'),
       autoPublish:false};
   });
   return {published:items.length,held:excludedItems.length,rows,candidates};
