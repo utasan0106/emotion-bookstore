@@ -15,6 +15,8 @@ on:
       - 'qa/outings_browser_check.js'
       - 'qa/five_city_browser_check.js'
       - 'qa/typography_browser_check.js'
+      - 'qa/editorial_preview_browser_check.js'
+      - 'qa/editorial-preview/**'
       - 'discover/essays/**'
       - 'visit/**'
       - 'tools/design-redesign.js'
@@ -61,6 +63,11 @@ jobs:
             sleep 1
           done
           NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/typography_browser_check.js
+      - name: Render isolated editorial preview without changing the public home
+        if: success() || failure()
+        env:
+          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_preview_browser_check.js
       - name: Save screenshots and non-secret verification report
         if: always()
         uses: actions/upload-artifact@v4
@@ -77,5 +84,7 @@ jobs:
             qa/artifacts/five-city/report.json
             qa/artifacts/typography/*.png
             qa/artifacts/typography/report.json
+            qa/artifacts/editorial-preview/*.png
+            qa/artifacts/editorial-preview/report.json
           if-no-files-found: error
           retention-days: 7
