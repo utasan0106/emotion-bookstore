@@ -68,8 +68,8 @@ check('Existing source limitation, video privacy and art disclosure retained',al
 css_without_comments=re.sub(r'/\*.*?\*/','',css,flags=re.S)
 check('CSS brace-balance smoke check',css_without_comments.count('{')==css_without_comments.count('}'))
 pins={
-'qa/editorial-study-c3/assets/zen-kaku-gothic-400.woff2':'9fe94eb29da9e3713be2dd333619ee7f8dcd5eeb973514103f0c41d8b191e547',
-'qa/editorial-study-c3/assets/zen-kaku-gothic-700.woff2':'de092db94395d22acf2dfa79e040ce32301c7085798ed9706702f872aeae4fee',
+'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-400.woff2':'c8149fec9ec507a52be9978786657c154c5abe2130d5d7a8c4b0c1782ea44877',
+'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-700.woff2':'ba70c5009f2c16d643ba45fff61114bcd37a4fcffac1202305cfaa9b9f98ad72',
 'qa/editorial-study-desk/assets/editor-desk.webp':'7cb8e1ca97cf9e5287fa62654d31a197825433a384f4ccc4dd96dc7018083a9d'}
 check('Original artwork and final candidate font bytes pinned',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in pins.items()))
 report={'passed':all(x['passed'] for x in checks),'kind':'offline source checks only','browserExecuted':False,'visualApproval':False,'fontApproval':False,'fontStatus':'Reference-led Zen Kaku 700/400 candidate, pending actual browser screenshots and independent visual review.','checks':checks}

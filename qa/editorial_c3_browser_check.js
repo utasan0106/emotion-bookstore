@@ -12,8 +12,8 @@ const {validateRenderedFonts} = require('./editorial-c3-font-contract.cjs');
 const {validateOverview} = require('./editorial-c3-layout-contract.cjs');
 const root = path.resolve(__dirname, '..');
 const assetPins={
-  'qa/editorial-study-c3/assets/zen-kaku-gothic-400.woff2':'9fe94eb29da9e3713be2dd333619ee7f8dcd5eeb973514103f0c41d8b191e547',
-  'qa/editorial-study-c3/assets/zen-kaku-gothic-700.woff2':'de092db94395d22acf2dfa79e040ce32301c7085798ed9706702f872aeae4fee',
+  'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-400.woff2':'c8149fec9ec507a52be9978786657c154c5abe2130d5d7a8c4b0c1782ea44877',
+  'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-700.woff2':'ba70c5009f2c16d643ba45fff61114bcd37a4fcffac1202305cfaa9b9f98ad72',
   'qa/editorial-study-desk/assets/editor-desk.webp':'7cb8e1ca97cf9e5287fa62654d31a197825433a384f4ccc4dd96dc7018083a9d'
 };
 for(const [file,expected] of Object.entries(assetPins)) {
@@ -337,7 +337,7 @@ async function checkCoverNavigation(browser,origin) {
             if(![...el.childNodes].some(n=>n.nodeType===Node.TEXT_NODE&&n.textContent.trim())) continue;
             const role=el.closest('#theme')?'hero':el.matches('.brand-name')?'brand':el.closest('.choice-title,.book-title')?'bookTitle':el.matches('.selection-reason')?'body':'other';
             const id=String(rows.length);el.setAttribute('data-qa-font-node',id);
-            rows.push({id,role,text:el.textContent.trim().slice(0,100)});
+            rows.push({id,role,text:el.textContent.trim().slice(0,100),fontSynthesis:getComputedStyle(el).fontSynthesis});
           }
           return rows;
         });
@@ -351,7 +351,7 @@ async function checkCoverNavigation(browser,origin) {
             const fonts=(await fontSession.send('CSS.getPlatformFontsForNode',{nodeId})).fonts.filter(f=>f.glyphCount>0);
             const {computedStyle}=await fontSession.send('CSS.getComputedStyleForNode',{nodeId});
             const value=name=>computedStyle.find(p=>p.name===name)?.value||'';
-            const family=value('font-family'),weight=value('font-weight'),fontSynthesis=value('font-synthesis');
+            const family=value('font-family'),weight=value('font-weight'),fontSynthesis=item.fontSynthesis;
             rows.push({...item,nodeId,family,weight,fontSynthesis,fonts});
           }
           result.studyFont={method:'Actual rendered glyph fonts for every visible direct-text parent, with role-specific 700/400 checks; no system fallback permitted.',

@@ -26,6 +26,7 @@ on:
       - 'qa/editorial-study-c3/**'
       - 'qa/editorial_c3*'
       - 'qa/editorial-c3-*.cjs'
+      - 'qa/editorial-c3-*.json'
       - 'qa/editorial_c2_browser_check.js'
       - 'qa/editorial-c2-layout-contract*.cjs'
       - 'qa/editorial-type-font-contract*.cjs'
@@ -105,6 +106,13 @@ jobs:
           node qa/editorial-c3-layout-contract.test.cjs
           node qa/editorial-c3-font-contract.test.cjs
           NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_c3_browser_check.js
+      - name: Render isolated C3 deep pages and native return paths
+        if: success() || failure()
+        env:
+          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          node qa/editorial-c3-deep-contract.test.cjs
+          NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_c3_deep_browser_check.js
       - name: Save screenshots and non-secret verification report
         if: always()
         uses: actions/upload-artifact@v4
@@ -132,6 +140,8 @@ jobs:
             qa/artifacts/editorial-c2/*.json
             qa/artifacts/editorial-c3/*.png
             qa/artifacts/editorial-c3/*.json
+            qa/artifacts/editorial-c3-deep/*.png
+            qa/artifacts/editorial-c3-deep/*.json
           if-no-files-found: error
           retention-days: 7
 

@@ -7,7 +7,7 @@ const good=()=>[row('hero',700),row('brand',700),...Array.from({length:6},()=>ro
 const check=(data,expected,message)=>{assert.equal(validateRenderedFonts(data),expected,message);checks++;};
 check(good(),true,'correct actual role fonts pass');
 check([],false,'empty actual-font evidence fails');
-for(const [property,value] of [['family','Arial, sans-serif'],['weight','500'],['fontSynthesis','weight'],['role','unknown']]){let r=good();r[2][property]=value;check(r,false,property+' drift fails');}
+for(const [property,value] of [['family','Arial, sans-serif'],['weight','500'],['fontSynthesis','weight'],['fontSynthesis',''],['role','unknown']]){let r=good();r[2][property]=value;check(r,false,property+' drift fails');}
 for(const [property,value] of [['postScriptName','NotoSansJP-Thin'],['isCustomFont',false],['glyphCount',0]]){let r=good();r[1].fonts[0][property]=value;check(r,false,property+' fails');}
 let r=good();r[0]=row('hero',400);check(r,false,'regular hero cannot silently pass');
 r=good();r[8]=row('body',700);check(r,false,'body cannot silently become bold');

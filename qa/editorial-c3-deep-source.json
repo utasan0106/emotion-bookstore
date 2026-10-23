@@ -1,0 +1,43 @@
+{
+  "scope": "Four isolated C3 routes integrated with C3 home. Frozen original-route text is preserved; only C3 files and CI are changed.",
+  "browser_verification": "Not run. Source-only build and checks.",
+  "source_root": ".",
+  "header_source": "qa/editorial-study-c3/index.html",
+  "header_source_sha256": "84cf501635cbac3abfcb5386c682d060487ec651ccafd06dede0133a4e75c0d7",
+  "sources": [
+    {
+      "output": "books/naruse.html",
+      "source": "qa/editorial-preview-v4/books/naruse-wa-tenka-wo-toriniiku.html",
+      "source_sha256": "430f663db24290003de3177951352a689b12e2e2e5f8bb15edcc3614b3ba59a1"
+    },
+    {
+      "output": "books/omowazu.html",
+      "source": "qa/editorial-preview-v4/books/omowazu-kangaechau.html",
+      "source_sha256": "e5ebf761b51b4e62b3009e57ba10a8d3e175aa5bcb143d78f6f27c25ebb7aef4"
+    },
+    {
+      "output": "books/junjo.html",
+      "source": "discover/koenji/junjo.html",
+      "source_sha256": "37d48eb3623eb87c48dc101e55e21cbfa308b2b47f814304fd8f78af1c4b2e23"
+    },
+    {
+      "output": "shelves/places-to-share.html",
+      "source": "qa/editorial-preview-v4/shelves/places-to-share.html",
+      "source_sha256": "d12ffdcaa66a8331cb1f0679881ce38073afc4151b0e257fc0033e5ddee443bd"
+    }
+  ],
+  "omissions": [
+    "The junjo draft omits the production memory UI and memory-note.js entirely. No localStorage access, adapter, migration, read, write or deletion.",
+    "Original-page link leads to the unchanged production page with its existing memory functionality.",
+    "Repeated navigation/location scaffolding and redundant helper labels are not reproduced. Work descriptions, source links, credits and factual limitations are retained."
+  ],
+  "route_mapping": {
+    "/qa/editorial-preview-v4/books/naruse-wa-tenka-wo-toriniiku.html": "/qa/editorial-study-c3/books/naruse.html",
+    "/qa/editorial-preview-v4/books/omowazu-kangaechau.html": "/qa/editorial-study-c3/books/omowazu.html",
+    "/discover/koenji/junjo.html": "/qa/editorial-study-c3/books/junjo.html",
+    "/qa/editorial-preview-v4/shelves/places-to-share.html": "/qa/editorial-study-c3/shelves/places-to-share.html",
+    "/qa/editorial-preview-v4/index.html": "/qa/editorial-study-c3/index.html",
+    "/qa/editorial-preview-v4/shelves/ordinary-day-curiosities.html": "/qa/editorial-study-c3/index.html#shelves"
+  },
+  "header_source_revision": "67188b2e2ba1523510d55b6ab8d941c7b7dc22e5 (initial C3 before integration; hash is historical provenance)"
+}

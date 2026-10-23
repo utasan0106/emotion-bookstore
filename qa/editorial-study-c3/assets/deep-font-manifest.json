@@ -1,0 +1,83 @@
+{
+  "created_utc": "2026-10-23T16:21:02.285813+00:00",
+  "license": "SIL Open Font License 1.1. Original copyright and full OFL notice included. No Reserved Font Names declared in source copyright notice. These are modified subsets; name/license metadata retained.",
+  "license_source": "https://raw.githubusercontent.com/google/fonts/main/ofl/zenkakugothicnew/OFL.txt",
+  "license_sha256": "c0ed0251510de79fe742bebb467d8b4ce6995dd306a55450eb97cb1e0359e7dd",
+  "pages": [
+    {
+      "route": "/qa/editorial-study-c3/index.html",
+      "source_path": "qa/editorial-study-c3/index.html",
+      "sha256": "a18ea8afb4546d34612eb52c3e1fbf70b3e46d061da1fae72098913294989332",
+      "visible_text_sha256": "fa96154d960afac4f31c68254c30c30e3b49076730c20aa7282d95ba0e38a920",
+      "corpus_text_sha256": "d238bca2a24a2099732c9579acf1f84e89fe554bd002cc59e6b2ac0e0408a2c3"
+    },
+    {
+      "route": "/qa/editorial-study-c3/books/junjo.html",
+      "source_path": "qa/editorial-study-c3/books/junjo.html",
+      "sha256": "ceac183501f4c288aaddaac1a3d551fdbc086b54d45fcd48ea3fdf20509dedda",
+      "visible_text_sha256": "1ba1107095c2fdb75d541d65403f5a25eabf603adf9cdee74f8f4528199a15bb",
+      "corpus_text_sha256": "e419885059b279ac3c551c270f442234e6ab90a8f3cebb70c006b8e443f9135f"
+    },
+    {
+      "route": "/qa/editorial-study-c3/books/naruse.html",
+      "source_path": "qa/editorial-study-c3/books/naruse.html",
+      "sha256": "80e19b337fe0da18ff84acb291d627847856578b5c918cab20b36747c874a5df",
+      "visible_text_sha256": "f63c185f2f1c3fc23d7dd05360667a07f8dec7abe39521f147a4bf6da112cf5d",
+      "corpus_text_sha256": "2e2a0e6816cd1d6b0eeeaa6c5d6159bb408dac6171751613e26562bfc91e436c"
+    },
+    {
+      "route": "/qa/editorial-study-c3/books/omowazu.html",
+      "source_path": "qa/editorial-study-c3/books/omowazu.html",
+      "sha256": "4d22331beed9a61daea2a93bd08bf2bec28ff833f621ee7910830a39fd972111",
+      "visible_text_sha256": "be0184af8202686ddc56863db19e6f9c2edc9730ebbbb6dff4d01d1f2d4ef9bd",
+      "corpus_text_sha256": "6bbdf068c3c6f80ee88062fd85a0745417c269494863183f4acc96faebd502dc"
+    },
+    {
+      "route": "/qa/editorial-study-c3/shelves/places-to-share.html",
+      "source_path": "qa/editorial-study-c3/shelves/places-to-share.html",
+      "sha256": "9703484273d4d66651281033afcad4e860a3ca238d07b6e44cf2a2cb663b5495",
+      "visible_text_sha256": "a7333d2faa312b5fe488f11b44c2f2d3430a1ec25f62f6b1228e201572c8f96c",
+      "corpus_text_sha256": "63fd0a0e724d0d91c7f2ca50aabde1a2703c50eb6ccb17e0950dc59bf759eee4"
+    }
+  ],
+  "corpus_file": "deep-font-corpus.txt",
+  "corpus_sha256": "10f95d900d07de705321adebcd0f15bf90d3328c01cf6e0924fb2ca27bd308b0",
+  "required_unique_codepoints": 449,
+  "extra_coverage": "Printable ASCII plus supported Japanese kana. New kanji require regeneration.",
+  "fonts": [
+    {
+      "file": "deep-zen-kaku-gothic-400.woff2",
+      "bytes": 70388,
+      "sha256": "c8149fec9ec507a52be9978786657c154c5abe2130d5d7a8c4b0c1782ea44877",
+      "postscript_name": "ZenKakuGothicNew-Regular",
+      "weight": 400,
+      "covered_codepoints": 592,
+      "missing_required_codepoints": [],
+      "original_file": "ZenKakuGothicNew-Regular.ttf",
+      "original_sha256": "b840cd07a67d89cacca44249ae49aa99ee7640eb5ce623be8d8983d6aabac801",
+      "official_source": "https://raw.githubusercontent.com/google/fonts/main/ofl/zenkakugothicnew/ZenKakuGothicNew-Regular.ttf"
+    },
+    {
+      "file": "deep-zen-kaku-gothic-700.woff2",
+      "bytes": 70728,
+      "sha256": "ba70c5009f2c16d643ba45fff61114bcd37a4fcffac1202305cfaa9b9f98ad72",
+      "postscript_name": "ZenKakuGothicNew-Bold",
+      "weight": 700,
+      "covered_codepoints": 592,
+      "missing_required_codepoints": [],
+      "original_file": "ZenKakuGothicNew-Bold.ttf",
+      "original_sha256": "0081cedabc4921982fcd061f845a005664ac7fb642af2dd34b4007bc63ccd235",
+      "official_source": "https://raw.githubusercontent.com/google/fonts/main/ofl/zenkakugothicnew/ZenKakuGothicNew-Bold.ttf"
+    }
+  ],
+  "verification": "FontTools cmap/name/weight checks only. Browser font selection and rendering not run.",
+  "role_contract": {
+    "h1_h2_h3_brand_navigation": "ZenKakuGothicNew-Bold, custom font, CSS weight 700",
+    "body_reason_credit": "ZenKakuGothicNew-Regular, custom font, CSS weight 400",
+    "external_arrows": "Inline aria-hidden SVG; never an unsupported text glyph"
+  },
+  "corpus_scope": "All five HTML documents, including document titles and accessible names; scripts/styles excluded.",
+  "original_license_sha256": "0fac78a235c98d640cb06332eb5362c211d86fa03c011df438c35005d22ad2c7",
+  "integration_rebuild_utc": "2026-10-23T16:24:58Z",
+  "integration_note": "Regenerated offline from the same pinned official originals to include all five document titles, including U+FF5C. No new font source or dependency was downloaded."
+}

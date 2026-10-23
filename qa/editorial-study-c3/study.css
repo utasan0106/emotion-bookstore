@@ -4,8 +4,8 @@
  * C / C2, artwork and SVG symbol are unchanged. Zen Kaku 700 gives the hero,
  * books and brand a clear hierarchy, with real 400 for reading. No synthetic weight.
  */
-@font-face { font-family: EditorialReading; src: url('assets/zen-kaku-gothic-400.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: swap; }
-@font-face { font-family: EditorialReading; src: url('assets/zen-kaku-gothic-700.woff2') format('woff2'); font-style: normal; font-weight: 700; font-display: swap; }
+@font-face { font-family: EditorialReading; src: url('assets/deep-zen-kaku-gothic-400.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: EditorialReading; src: url('assets/deep-zen-kaku-gothic-700.woff2') format('woff2'); font-style: normal; font-weight: 700; font-display: swap; }
 :root { --navy: #202e43; --paper: #fbf2df; --rust: #a4372b; --muted: #52606b; --rule: #b7b7ac; --music: #cbd9dd; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -58,11 +58,11 @@ nav a { display: flex; align-items: center; justify-content: center; min-width: 
 .desk-books { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; list-style: none; padding: 30px 0 0; }
 .book-choice { min-width: 0; text-align: center; }
 .book-choice-link { display: block; text-decoration: none; }
-.choice-title { margin-top: 12px; font-size: 1.125rem; font-weight: 700; line-height: 1.6; }
+.choice-title { margin-top: 12px; font-size: 1.125rem; font-weight: 700; line-height: 1.6; text-wrap: balance; }
 .book-choice-link:hover .choice-title { text-decoration: underline; }
 .work-art { height: 236px; display: flex; align-items: flex-end; justify-content: center; }
 .work-art img { width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; object-position: 50% 100%; }
-.book-selections { list-style: none; margin-top: 64px; padding: 0; border-top: 1px solid var(--rule); }
+.book-selections { list-style: none; margin-top: 48px; padding: 0; border-top: 1px solid var(--rule); }
 .book-selections > li { border-bottom: 1px solid var(--rule); }
 .book-selection { padding: 25px 0 14px; }
 .reason-body { min-width: 0; }
@@ -125,6 +125,7 @@ footer p + p { margin-top: 6px; }
   .desk-books { gap: 12px; padding-top: 22px; }
   .work-art { height: clamp(136px, 37vw, 200px); }
   .choice-title { margin-top: 10px; font-size: 1.125rem; line-height: 1.55; }
+  .book-selections { margin-top: 32px; }
   .book-selection { padding-top: 22px; }
   .book-selection h2 { font-size: 1.125rem; }
   .book-author, .book-publisher { font-size: .8125rem; }
@@ -141,7 +142,7 @@ footer p + p { margin-top: 6px; }
   .reading-paper { width: calc(100% - 16px); }
   .shelf { padding-inline: 12px; }
   .desk-books { gap: 10px; }
-  .work-art { height: 120px; }
+  .work-art { height: 121px; }
   .choice-title { font-size: 1.125rem; }
   .music { padding-inline: 16px; }
 }
