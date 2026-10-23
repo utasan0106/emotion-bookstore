@@ -1,0 +1,44 @@
+{
+  "license": "SIL OFL 1.1; complete original notice retained. Modified character subsets retain original font names and metadata. Supplied notice declares no Reserved Font Names.",
+  "corpus": "qa/editorial-study-c3/index.html",
+  "corpus_sha256": "84cf501635cbac3abfcb5386c682d060487ec651ccafd06dede0133a4e75c0d7",
+  "font_synthesis": "none",
+  "decorative_symbols": "Arrow and play icons are original inline SVG; no system-font fallback.",
+  "visualApproval": false,
+  "browserVerification": "Not run; exact assets must be checked by role with actual CDP platform-font evidence.",
+  "fonts": [
+    {
+      "file": "zen-kaku-gothic-400.woff2",
+      "weight": 400,
+      "postScriptName": "ZenKakuGothicNew-Regular",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/zenkakugothicnew/ZenKakuGothicNew-Regular.ttf",
+      "license": "SIL OFL 1.1",
+      "original_sha256": "b840cd07a67d89cacca44249ae49aa99ee7640eb5ce623be8d8983d6aabac801",
+      "subset_sha256": "9fe94eb29da9e3713be2dd333619ee7f8dcd5eeb973514103f0c41d8b191e547",
+      "bytes": 35256,
+      "glyph_coverage_codepoints": 305,
+      "scope": "Entire C3 visible/accessibility text plus printable ASCII",
+      "missing_characters": []
+    },
+    {
+      "file": "zen-kaku-gothic-700.woff2",
+      "weight": 700,
+      "postScriptName": "ZenKakuGothicNew-Bold",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/zenkakugothicnew/ZenKakuGothicNew-Bold.ttf",
+      "license": "SIL OFL 1.1",
+      "original_sha256": "0081cedabc4921982fcd061f845a005664ac7fb642af2dd34b4007bc63ccd235",
+      "subset_sha256": "de092db94395d22acf2dfa79e040ce32301c7085798ed9706702f872aeae4fee",
+      "bytes": 35224,
+      "glyph_coverage_codepoints": 305,
+      "scope": "Entire C3 visible/accessibility text plus printable ASCII",
+      "missing_characters": []
+    }
+  ],
+  "license_notice": {
+    "file": "OFL.txt",
+    "source": "https://github.com/google/fonts/blob/main/ofl/zenkakugothicnew/OFL.txt",
+    "original_sha256": "0fac78a235c98d640cb06332eb5362c211d86fa03c011df438c35005d22ad2c7",
+    "sha256": "c0ed0251510de79fe742bebb467d8b4ce6995dd306a55450eb97cb1e0359e7dd",
+    "formatting": "Trailing line whitespace normalized; the complete notice wording is unchanged."
+  }
+}
