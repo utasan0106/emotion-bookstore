@@ -101,3 +101,11 @@ summary{cursor:pointer;min-height:44px;padding:8px 0;font-size:.9375rem;font-wei
 }
 @media(max-width:360px){.masthead{padding-inline:12px}.deep-shell{width:calc(100% - 32px)}.book-intro h1,.shelf-heading h1{font-size:1.875rem}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.book-intro h1 { text-wrap: balance; }
+.title-phrase { display: inline-block; max-width: 100%; overflow-wrap: anywhere; text-wrap: balance; }
+/* The supplied 180 x 254 cover is already at native size, never enlarge it. */
+.cover img[src$="9784048532587.webp"] { max-width: min(100%, 180px); max-height: 254px; }
+
+/* Official publisher wording must remain a single unbroken full-width name. */
+.publisher-name { white-space: nowrap; }

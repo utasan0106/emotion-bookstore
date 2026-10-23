@@ -48,6 +48,8 @@ for row in source_manifest['sources']:
  missing=[]
  for p in original_paragraphs:
   original=norm(''.join(p.itertext()))
+  # Exact, owner-requested third-person normalization; no other source prose exception.
+  if label=='books/junjo.html':original=original.replace('当商店街で少年時代を過ごした','高円寺の商店街で少年時代を過ごした')
   if original and original not in omitted and original not in text:missing.append(original)
  check(label+': original work paragraphs retained',not missing,missing)
  # All actual image files are unchanged, uncropped by CSS, and have text alternatives.
@@ -93,9 +95,9 @@ for f in font_manifest['fonts']:
   missing=sorted({c for c in body if not c.isspace() and ord(c) not in font.getBestCmap()})
   coverage.append({'font':f['file'],'page':page['route'],'missing':missing})
   check(f['file']+': covers '+page['route'],not missing,missing)
- check(f['file']+': five source hashes current',all(sha256((ROOT/p['source_path']).read_bytes()).hexdigest()==p['sha256'] for p in font_manifest['pages']))
+ check(f['file']+': all seven source hashes current',all(sha256((ROOT/p['source_path']).read_bytes()).hexdigest()==p['sha256'] for p in font_manifest['pages']))
 
-report={'browser_run':False,'checks':checks,'passed':sum(c['passed'] for c in checks),'total':len(checks),'font_coverage':coverage,'outside_study_routes_preserved':sorted(outgoing),'limitations':['No actual browser layout, platform font selection, keyboard, zoom or image-decode evidence.','Intentionally no memory UI or storage access in junjo draft. Original production feature remains unchanged.','External source truth/status not re-researched; text and links preserved from frozen source.','C3 home route references are not edited here; integration must wire the four new routes.']}
+report={'browser_run':False,'checks':checks,'passed':sum(c['passed'] for c in checks),'total':len(checks),'font_coverage':coverage,'outside_study_routes_preserved':sorted(outgoing),'limitations':['No actual browser layout, platform font selection, keyboard, zoom or image-decode evidence.','Intentionally no memory UI or storage access in junjo draft. Original production feature remains unchanged.','External source truth/status not re-researched; text and links preserved from frozen source.','C3 home links are integrated; browser interaction evidence is collected separately.']}
 (ROOT/'qa/artifacts').mkdir(parents=True,exist_ok=True)
 (ROOT/'qa/artifacts/editorial-c3-deep-static.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
 print(json.dumps({'passed':report['passed'],'total':report['total'],'failures':[c for c in checks if not c['passed']],'outside_study_routes_preserved':sorted(outgoing)},ensure_ascii=False,indent=2))

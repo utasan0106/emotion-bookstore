@@ -21,9 +21,11 @@ function validateOverview(data, {width,fontPercent,viewportHeight}) {
       [row.cover,row.bookTitle,row.target,row.reason].every(r=>inWidth(r,width)))) return false;
   // Proportion/cropping, all glyph fonts, contrast, keyboard and privacy remain
   // independently checked by the browser runner. No geometry fixture replaces them.
+  // Owner changed mobile captions to16 after actual390 screenshots showed poor
+  // semantic wraps at18. Desktop18 and all zoom/cover/link requirements remain.
   if(fontPercent===100) {
     const minHeight=width<=360?120:width<=700?136:190;
-    if(data.mappings.some(row=>row.cover.height<minHeight||row.bookTitleSize<18)) return false;
+    if(data.mappings.some(row=>row.cover.height<minHeight||row.bookTitleSize<(width<=700?16:18))) return false;
     if(Math.max(...data.mappings.map(row=>row.cover.height))-Math.min(...data.mappings.map(row=>row.cover.height))>2) return false;
     if(width===390&&(data.heroFontSize<32||data.heroFontSize>36)) return false;
     if(width===1440&&(data.heroFontSize<56||data.heroFontSize>64)) return false;

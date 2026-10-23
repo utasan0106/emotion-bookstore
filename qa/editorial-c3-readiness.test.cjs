@@ -1,0 +1,11 @@
+'use strict';
+const assert=require('node:assert/strict'),{readPaintedFonts}=require('./editorial-c3-readiness.cjs');
+(async()=>{let n=0,probes=0,prepares=0;const custom={glyphCount:5,isCustomFont:true,postScriptName:'ZenKakuGothicNew-Regular'};
+let r=await readPaintedFonts(async()=>{probes++;return [custom];},async()=>{prepares++;});assert.equal(probes,1);assert.equal(prepares,0);assert.deepEqual(r.fonts,[custom]);n++;
+probes=prepares=0;r=await readPaintedFonts(async()=>++probes===1?[]:[custom],async()=>{prepares++;});assert.equal(probes,2);assert.equal(prepares,1);assert.deepEqual(r.fonts,[custom]);n++;
+probes=prepares=0;r=await readPaintedFonts(async()=>{probes++;return [];},async()=>{prepares++;});assert.equal(probes,3);assert.equal(prepares,2);assert.deepEqual(r.fonts,[]);n++;
+probes=prepares=0;const fallback={glyphCount:1,isCustomFont:false,postScriptName:'Arial'};r=await readPaintedFonts(async()=>{probes++;return [fallback];},async()=>{prepares++;});assert.equal(probes,1);assert.equal(prepares,0);assert.deepEqual(r.fonts,[fallback]);n++;
+await assert.rejects(()=>readPaintedFonts(async()=>[],async()=>{throw Error('paint timeout');}),/paint timeout/);n++;
+await assert.rejects(()=>readPaintedFonts(async()=>[],async()=>{},4),/Invalid/);n++;
+console.log('PASS '+n+' bounded readiness fixtures; empty and fallback evidence never waived.');
+})().catch(e=>{console.error(e);process.exitCode=1;});

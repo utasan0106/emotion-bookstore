@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 'use strict';
 // CI-only local-checkout runner. Never navigates to an external origin or executes
-// out-of-scope production pages. Four routes x three widths x two text sizes.
+// out-of-scope production pages. Six routes x three widths x two text sizes.
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const {execFileSync}=require('node:child_process'),{createHash}=require('node:crypto');
 const {chromium}=require('playwright');
 const {measureContrast,measureImages}=require('./editorial-c3-deep-browser-helpers.cjs');
 const {validateDeepFonts,validateDeepContent}=require('./editorial-c3-deep-contract.cjs');
+const {readPaintedFonts}=require('./editorial-c3-readiness.cjs');
 const expected=require('./editorial-c3-deep-content.json');
 const root=path.resolve(__dirname,'..'),out=path.join(__dirname,'artifacts/editorial-c3-deep');
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'qa/editorial-study-c3/assets/deep-font-manifest.json')));
@@ -14,7 +15,7 @@ for(const f of manifest.fonts){if(createHash('sha256').update(fs.readFileSync(pa
 for(const p of manifest.pages){if(createHash('sha256').update(fs.readFileSync(path.join(root,p.route))).digest('hex')!==p.sha256)throw Error('Font corpus page hash mismatch: '+p.route);}
 fs.mkdirSync(out,{recursive:true});
 const widths=[320,390,1440],fontPercents=[100,200];
-const report={sourceSha:process.env.QA_SOURCE_SHA||null,checkoutSha:null,widths,fontPercents,expectedCases:24,cases:[],roundTrips:[],errors:[],passed:false,visualApproval:false,
+const report={sourceSha:process.env.QA_SOURCE_SHA||null,checkoutSha:null,widths,fontPercents,expectedCases:36,cases:[],roundTrips:[],errors:[],passed:false,visualApproval:false,
  method:'Fresh isolated context per render. All external HTTP/WebSocket requests blocked. Native disclosures are opened with Enter, closed with Space, reopened with Enter. Every visible glyph after opening is checked via CDP. No production saved-memory page is executed; its unchanged local route is checked as a static HTTP response only.'};
 try{report.checkoutSha=execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();}catch(_){}
 const save=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');
@@ -41,29 +42,51 @@ async function fresh(browser,origin,row,width=390){
   page.on('request',r=>{if(r.url().startsWith(origin+'/'))row.pageRequests.push({url:r.url(),type:r.resourceType()});});
   return {context,page};
 }
-async function actualFonts(context,page){
+async function waitForLocalReady(page){
+  const result=await page.evaluate(async()=>{
+    const bounded=(promise,label)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(Error(label+' readiness timeout')),15000))]);
+    for(const img of document.images)img.loading='eager';
+    await bounded(document.fonts.ready,'font');
+    await Promise.all([...document.images].map(img=>bounded(img.decode(),'image '+img.getAttribute('src'))));
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+    return {images:document.images.length,fonts:document.fonts.status};
+  });
+  await page.waitForLoadState('networkidle',{timeout:15000});
+  return result;
+}
+async function twoPaintFrames(page){await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));}
+async function actualFonts(context,page,profile="books"){
   const inventory=await page.evaluate(()=>{
+    window.__qaFontView={x:scrollX,y:scrollY,focus:document.activeElement};
     const list=[],walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;
     while((n=walker.nextNode())){const el=n.parentElement;if(!n.textContent.trim()||!el||['SCRIPT','STYLE','NOSCRIPT'].includes(el.tagName)||!el.checkVisibility({checkOpacity:true,checkVisibilityCSS:true}))continue;const range=document.createRange();range.selectNode(n);if(![...range.getClientRects()].some(r=>r.width&&r.height))continue;list.push(n);}
     return list.map((node,id)=>{const el=node.parentElement;
-      const role=el.closest('h1,h2,h3')?'heading':el.closest('.brand-name')?'brand':el.closest('.masthead nav')?'nav':el.closest('summary')?'summary':el.closest('strong')?'emphasis':el.closest('.actions > a')?'action':el.closest('.credit')?'credit':el.closest('.selection-reason,.book-fact,.connection-copy,.source-copy,.author,.shelf-lead,.book-meta')?'body':'other';
+      const role=el.closest('h1,h2,h3')?'heading':el.closest('.brand-name')?'brand':el.closest('.masthead nav')?'nav':el.closest('summary')?'summary':el.closest('strong')?'emphasis':el.closest('.actions > a,.route-primary')?'action':el.closest('.credit,.route-source,.route-caution,.street-photo figcaption')?'credit':el.closest('.selection-reason,.book-fact,.connection-copy,.source-copy,.author,.shelf-lead,.book-meta,.route-lead')?'body':'other';
       const span=document.createElement('span');span.dataset.qaFontRun=String(id);node.replaceWith(span);span.appendChild(node);const css=getComputedStyle(span);
-      return {id,role,text:node.textContent.trim().slice(0,180),family:css.fontFamily,weight:css.fontWeight,fontSynthesis:css.fontSynthesis};
+      return {id,role,isSkip:!!el.closest('.skip'),text:node.textContent.trim().slice(0,180),family:css.fontFamily,weight:css.fontWeight,fontSynthesis:css.fontSynthesis};
     });
   });
-  const session=await context.newCDPSession(page),rows=[];
+  await page.evaluate(()=>document.fonts.ready);await twoPaintFrames(page);
+  const session=await context.newCDPSession(page),rows=[];let restoration=null;
   try{await session.send('DOM.enable');await session.send('CSS.enable');const {root:doc}=await session.send('DOM.getDocument');
-    for(const item of inventory){const {nodeId}=await session.send('DOM.querySelector',{nodeId:doc.nodeId,selector:'[data-qa-font-run="'+item.id+'"]'});const {fonts}=await session.send('CSS.getPlatformFontsForNode',{nodeId});rows.push({...item,fonts:fonts.filter(f=>f.glyphCount>0)});}
-  }finally{await session.detach();await page.evaluate(()=>document.querySelectorAll('[data-qa-font-run]').forEach(el=>el.replaceWith(...el.childNodes)));}
-  return {passed:validateDeepFonts(rows),rows,method:'Temporary unstyled inline spans isolate each original visible text node, including mixed-weight parents; removed before screenshots/geometry. Real custom CDP font for every nonzero glyph. getComputedStyle fontSynthesis must be none; empty never accepted.'};
+    for(const item of inventory){
+      const selector='[data-qa-font-run="'+item.id+'"]';
+      const prepare=async()=>{await page.locator(selector).evaluate(el=>{const skip=el.closest('.skip');if(skip)skip.focus();else el.scrollIntoView({block:'center',inline:'nearest'});});await page.evaluate(()=>document.fonts.ready);await twoPaintFrames(page);};
+      if(item.isSkip)await prepare();
+      const {nodeId}=await session.send('DOM.querySelector',{nodeId:doc.nodeId,selector});
+      const evidence=await readPaintedFonts(async()=>{const {fonts}=await session.send('CSS.getPlatformFontsForNode',{nodeId});return fonts.filter(f=>f.glyphCount>0);},prepare,3);
+      rows.push({...item,...evidence});
+    }
+  }finally{await session.detach();restoration=await page.evaluate(()=>{document.querySelectorAll('[data-qa-font-run]').forEach(el=>el.replaceWith(...el.childNodes));const state=window.__qaFontView;if(state?.focus===document.body){const old=document.body.getAttribute('tabindex');document.body.tabIndex=-1;document.body.focus({preventScroll:true});if(old===null)document.body.removeAttribute('tabindex');else document.body.setAttribute('tabindex',old);}else if(state?.focus?.isConnected)state.focus.focus({preventScroll:true});if(state)scrollTo(state.x,state.y);const result={focusRestored:!state||document.activeElement===state.focus,scrollRestored:!state||(Math.abs(scrollX-state.x)<1&&Math.abs(scrollY-state.y)<1)};result.passed=result.focusRestored&&result.scrollRestored;delete window.__qaFontView;return result;});await twoPaintFrames(page);}
+  return {passed:validateDeepFonts(rows,profile)&&restoration?.passed,rows,restoration,method:'Temporary unstyled inline spans isolate each original visible text node, including mixed-weight parents; removed before screenshots/geometry. Real custom CDP font for every nonzero glyph. getComputedStyle fontSynthesis must be none; empty never accepted.'};
 }
 function contentSnapshot(){
   const text=sel=>[...document.querySelectorAll(sel)].map(e=>e.textContent.trim());const ids=[...document.querySelectorAll('[id]')].map(e=>e.id);
   const unresolvedAria=[...document.querySelectorAll('[aria-labelledby],[aria-describedby]')].flatMap(e=>[e.getAttribute('aria-labelledby'),e.getAttribute('aria-describedby')].filter(Boolean).flatMap(s=>s.split(/\s+/))).filter(id=>!document.getElementById(id));
-  return {noindex:!!document.querySelector('meta[name="robots"][content="noindex,nofollow"]'),mainCount:document.querySelectorAll('main').length,h1Count:document.querySelectorAll('h1').length,title:document.querySelector('h1')?.textContent.trim(),covers:[...document.querySelectorAll('main img')].map(e=>e.getAttribute('src')),reasons:text('.selection-reason'),credits:text('p.credit'),relatedLinks:[...document.querySelectorAll('.related-book h3 a,.shelf-book h2 a')].map(a=>a.getAttribute('href')),detailsCount:document.querySelectorAll('details').length,backHref:document.querySelector('.back')?.getAttribute('href'),brandHref:document.querySelector('.brand')?.getAttribute('href'),originalHref:document.querySelector('.original-page a')?.getAttribute('href')||null,duplicateIds:ids.filter((id,i)=>ids.indexOf(id)!==i),unresolvedAria,scripts:[...document.scripts].map(s=>s.src||'inline'),facades:document.querySelectorAll('form,button,input,textarea,[data-memory-note]').length,eagerMedia:document.querySelectorAll('iframe,audio,video').length,remoteResources:[...document.querySelectorAll('img[src],script[src],link[rel="stylesheet"][href],link[rel="preload"][href]')].map(e=>e.src||e.href).filter(url=>new URL(url).origin!==location.origin),reducedMotion:matchMedia('(prefers-reduced-motion: reduce)').matches,scrollBehavior:getComputedStyle(document.documentElement).scrollBehavior,animations:document.getAnimations().filter(a=>a.playState==='running').length};
+  return {paragraphs:text('main p'),headingTexts:text('main h2,main h3'),captions:text('main figcaption'),allLinks:[...document.querySelectorAll('a[href]')].map(a=>a.getAttribute('href')),noindex:!!document.querySelector('meta[name="robots"][content="noindex,nofollow"]'),mainCount:document.querySelectorAll('main').length,h1Count:document.querySelectorAll('h1').length,title:document.querySelector('h1')?.textContent.trim(),covers:[...document.querySelectorAll('main img')].map(e=>e.getAttribute('src')),reasons:text('.selection-reason'),credits:text('p.credit'),relatedLinks:[...document.querySelectorAll('.related-book h3 a,.shelf-book h2 a')].map(a=>a.getAttribute('href')),detailsCount:document.querySelectorAll('details').length,backHref:document.querySelector('.back,.route-back')?.getAttribute('href'),brandHref:document.querySelector('.brand')?.getAttribute('href'),originalHref:document.querySelector('.original-page a')?.getAttribute('href')||null,duplicateIds:ids.filter((id,i)=>ids.indexOf(id)!==i),unresolvedAria,scripts:[...document.scripts].map(s=>s.src||'inline'),facades:document.querySelectorAll('form,button,input,textarea,[data-memory-note]').length,eagerMedia:document.querySelectorAll('iframe,audio,video').length,remoteResources:[...document.querySelectorAll('img[src],script[src],link[rel="stylesheet"][href],link[rel="preload"][href]')].map(e=>e.src||e.href).filter(url=>new URL(url).origin!==location.origin),reducedMotion:matchMedia('(prefers-reduced-motion: reduce)').matches,scrollBehavior:getComputedStyle(document.documentElement).scrollBehavior,animations:document.getAnimations().filter(a=>a.playState==='running').length};
 }
 const layoutSnapshot=()=>({width:innerWidth,scrollWidth:Math.max(document.documentElement.scrollWidth,document.body.scrollWidth),passed:Math.max(document.documentElement.scrollWidth,document.body.scrollWidth)<=innerWidth+1});
-async function disclosures(page){
+async function disclosures(page,expectedCount){
   const rows=[],details=page.locator('details');
   for(let i=0;i<await details.count();i++){
     const d=details.nth(i),summary=d.locator('summary').first();const r={index:i,initiallyClosed:!await d.getAttribute('open').then(v=>v!==null)};
@@ -72,7 +95,7 @@ async function disclosures(page){
     await page.keyboard.press('Space');r.spaceCloses=await d.evaluate(e=>!e.open);await page.keyboard.press('Enter');r.reopens=await d.evaluate(e=>e.open);
     r.passed=r.initiallyClosed&&r.focused&&r.enterOpens&&r.contentVisible&&r.spaceCloses&&r.reopens;rows.push(r);
   }
-  return {passed:rows.length>0&&rows.every(r=>r.passed),rows};
+  return {passed:rows.length===expectedCount&&rows.every(r=>r.passed),rows};
 }
 async function keyboardFocus(page){
   await page.evaluate(()=>{document.body.tabIndex=-1;document.body.focus();document.body.removeAttribute('tabindex');});
@@ -86,16 +109,16 @@ async function localLinks(context,page,origin,cache){
   }return {passed:rows.length>0&&rows.every(r=>r.passed),rows,method:'Local HTTP/fragment only for routes outside C3; never executes their scripts or storage.'};
 }
 async function roundTrips(browser,origin){
-  // Reuse four extra contexts only, not 24 additional render matrices.
+  // Reuse six extra contexts only, not additional viewport matrices.
   for(const exp of expected){const r={route:exp.route,externalRequests:[],pageErrors:[],failedLocalRequests:[],pageRequests:[],errors:[],links:[],passed:false};report.roundTrips.push(r);let context,page;
-    try{({context,page}=await fresh(browser,origin,r));await page.goto(origin+exp.route,{waitUntil:'networkidle'});
-      const targets=await page.locator('a[href]').evaluateAll(links=>[...new Set(links.map(a=>a.getAttribute('href')).filter(h=>h?.startsWith('/qa/editorial-study-c3/')&&!h.endsWith('#listen')))]);
-      for(const href of targets){const item={href};const anchor=page.locator('a[href="'+href+'"]').first();await anchor.focus();await Promise.all([page.waitForURL(origin+href),page.keyboard.press('Enter')]);item.forward=page.url()===origin+href;
+    try{({context,page}=await fresh(browser,origin,r));await page.goto(origin+exp.route,{waitUntil:'networkidle'});r.initialReadiness=await waitForLocalReady(page);
+      const targets=await page.locator('a[href]').evaluateAll(links=>[...new Set(links.map(a=>a.getAttribute('href')).filter(h=>h?.startsWith('/qa/editorial-study-c3/')&&!h.endsWith('#listen')&&h!==location.pathname))]);
+      for(const href of targets){const item={href};const anchor=page.locator('a[href="'+href+'"]').first();await anchor.focus();await Promise.all([page.waitForURL(origin+href),page.keyboard.press('Enter')]);item.forwardReadiness=await waitForLocalReady(page);item.forward=page.url()===origin+href;
         if(href.includes('#'))item.target=await page.evaluate(()=>{const e=document.getElementById(decodeURIComponent(location.hash.slice(1)));return !!e&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true});});else item.target=await page.locator('h1').count()===1;
-        item.storageForward=await page.evaluate(()=>window.__qaStorageAccesses.slice());await page.goBack({waitUntil:'domcontentloaded'});item.back=page.url()===origin+exp.route;item.passed=item.forward&&item.target&&item.back&&!item.storageForward.length;r.links.push(item);
+        item.storageForward=await page.evaluate(()=>window.__qaStorageAccesses.slice());await page.goBack({waitUntil:'domcontentloaded'});item.backReadiness=await waitForLocalReady(page);item.back=page.url()===origin+exp.route;item.passed=item.forward&&item.target&&item.back&&!item.storageForward.length;r.links.push(item);
       }
       // The shelf's three local connection anchors are genuine keyboard paths.
-      if(exp.route.includes('/shelves/')){await page.locator('details').evaluateAll(ds=>ds.forEach(d=>d.open=true));for(const href of ['#honnoniwa','#honda','#gou-gou-book']){const a=page.locator('a[href="'+href+'"]').first();await a.focus();await page.keyboard.press('Enter');const target=await page.evaluate(()=>{const e=document.getElementById(location.hash.slice(1)),b=e?.getBoundingClientRect();return !!e&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true})&&b.top>=-1&&b.top<innerHeight;});await page.goBack({waitUntil:'domcontentloaded'});r.links.push({href,passed:target&&page.url()===origin+exp.route});}}
+      if(exp.route.includes('/shelves/')){await page.locator('details').evaluateAll(ds=>ds.forEach(d=>d.open=true));for(const href of ['#honnoniwa','#honda','#gou-gou-book']){const a=page.locator('a[href="'+href+'"]').first();await a.focus();await page.keyboard.press('Enter');const target=await page.evaluate(()=>{const e=document.getElementById(location.hash.slice(1)),b=e?.getBoundingClientRect();return !!e&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true})&&b.top>=-1&&b.top<innerHeight;});await page.goBack({waitUntil:'domcontentloaded'});await waitForLocalReady(page);r.links.push({href,passed:target&&page.url()===origin+exp.route});}}
       r.storage=await page.evaluate(()=>window.__qaStorageAccesses.slice());r.passed=r.links.length>0&&r.links.every(l=>l.passed)&&!r.storage.length&&!r.storageAttempts.length&&!r.externalRequests.length&&!r.pageErrors.length&&!r.failedLocalRequests.length;
     }catch(e){r.errors.push(e.stack||String(e));}finally{if(context)await context.close();if(r.errors.length)r.passed=false;save();console.log((r.passed?'PASS':'FAIL')+' deep round trips '+exp.route);}
   }
@@ -106,17 +129,23 @@ async function roundTrips(browser,origin){
   for(const exp of expected)for(const width of widths)for(const fontPercent of fontPercents){const r={route:exp.route,width,fontPercent,externalRequests:[],pageErrors:[],failedLocalRequests:[],pageRequests:[],errors:[],passed:false};report.cases.push(r);let context,page;
     try{({context,page}=await fresh(browser,origin,r,width));const response=await page.goto(origin+exp.route,{waitUntil:'networkidle',timeout:30000});r.navigation={passed:response?.ok(),status:response?.status()};
       if(fontPercent===200)await page.evaluate(()=>{const sizes=[...document.querySelectorAll('*')].map(e=>[e,parseFloat(getComputedStyle(e).fontSize)]);for(const [e,s] of sizes)if(Number.isFinite(s))e.style.setProperty('font-size',s*2+'px','important');});await page.evaluate(()=>document.fonts.ready);
-      r.content=await page.evaluate(contentSnapshot);r.content.passed=validateDeepContent(r.content,exp);r.images=await page.evaluate(measureImages);r.closedLayout=await page.evaluate(layoutSnapshot);r.closedContrast=await page.evaluate(measureContrast);
+      r.initialReadiness=await waitForLocalReady(page);await page.evaluate(()=>scrollTo(0,0));await twoPaintFrames(page);
+      r.content=await page.evaluate(contentSnapshot);r.content.passed=validateDeepContent(r.content,exp);r.images=await page.evaluate(measureImages);
+      for(const image of r.images.rows)if(image.src.endsWith('/9784048532587.webp')){image.nativeSizePassed=image.renderedWidth<=image.naturalWidth+1&&image.renderedHeight<=image.naturalHeight+1;r.images.passed=r.images.passed&&image.nativeSizePassed;}
+      if(exp.kind==='culture-film')r.images.passed=r.images.passed&&r.images.rows.filter(i=>i.src.endsWith('/assets/city-jinbocho-suzuran.jpg')).every(i=>!i.objectCropped&&!i.stretched);
+      r.closedLayout=await page.evaluate(layoutSnapshot);r.closedContrast=await page.evaluate(measureContrast);
       const prefix=exp.route.split('/').at(-1).replace('.html','')+'-'+width+'-'+fontPercent;
       r.firstViewportScreenshot=prefix+'-first-viewport.png';await page.screenshot({path:path.join(out,r.firstViewportScreenshot),fullPage:false});r.closedScreenshot=prefix+'-fullpage.png';await page.screenshot({path:path.join(out,r.closedScreenshot),fullPage:true});
-      r.disclosures=await disclosures(page);await page.evaluate(()=>document.fonts.ready);r.studyFont=await actualFonts(context,page);r.openLayout=await page.evaluate(layoutSnapshot);r.openContrast=await page.evaluate(measureContrast);r.links=await localLinks(context,page,origin,cache);r.safeFocus=await keyboardFocus(page);
-      if(width===390&&fontPercent===100){r.openScreenshot=prefix+'-disclosures-open.png';await page.screenshot({path:path.join(out,r.openScreenshot),fullPage:true});}
+      r.disclosures=await disclosures(page,exp.detailsCount);await page.evaluate(()=>document.fonts.ready);r.studyFont=await actualFonts(context,page,exp.kind||"books");
+      r.publisherNames=await page.evaluate(()=>{const rows=[...document.querySelectorAll('.publisher-name')].map(el=>{const r=el.getBoundingClientRect();return {text:el.textContent,nowrap:getComputedStyle(el).whiteSpace==='nowrap',visible:el.checkVisibility({checkOpacity:true,checkVisibilityCSS:true}),withinWidth:r.width>0&&r.left>=-1&&r.right<=innerWidth+1};});return {rows};});
+      r.publisherNames.passed=JSON.stringify(r.publisherNames.rows.map(r=>r.text))===JSON.stringify(exp.publisherNames)&&r.publisherNames.rows.every(r=>r.nowrap&&r.visible&&r.withinWidth);r.openLayout=await page.evaluate(layoutSnapshot);r.openContrast=await page.evaluate(measureContrast);r.links=await localLinks(context,page,origin,cache);r.safeFocus=await keyboardFocus(page);
+      if(width===390&&fontPercent===100&&exp.detailsCount>0){r.openScreenshot=prefix+'-disclosures-open.png';await page.screenshot({path:path.join(out,r.openScreenshot),fullPage:true});}
       r.storage={accesses:await page.evaluate(()=>window.__qaStorageAccesses.slice())};r.storage.passed=r.storage.accesses.length===0&&r.storageAttempts.length===0;
       r.privacy={passed:r.externalRequests.length===0&&r.content.scripts.length===0&&!r.pageRequests.some(x=>x.type==='script'),externalRequestsBlocked:true,pageScriptElements:r.content.scripts.length,pageScriptRequests:r.pageRequests.filter(x=>x.type==='script')};r.runtime={passed:!r.pageErrors.length&&!r.failedLocalRequests.length};
-      r.passed=['navigation','content','images','closedLayout','closedContrast','disclosures','studyFont','openLayout','openContrast','links','safeFocus','storage','privacy','runtime'].every(k=>r[k]?.passed);
+      r.passed=['navigation','content','images','closedLayout','closedContrast','disclosures','studyFont','openLayout','openContrast','links','safeFocus','publisherNames','storage','privacy','runtime'].every(k=>r[k]?.passed);
     }catch(e){r.errors.push(e.stack||String(e));}finally{if(context)await context.close().catch(e=>r.errors.push(e.message));if(r.errors.length)r.passed=false;save();console.log((r.passed?'PASS':'FAIL')+' deep '+exp.route+' '+width+' '+fontPercent+'%');}
   }
-  await roundTrips(browser,origin);report.passed=report.cases.length===24&&report.cases.every(r=>r.passed)&&report.roundTrips.length===4&&report.roundTrips.every(r=>r.passed);
+  await roundTrips(browser,origin);report.passed=report.cases.length===36&&report.cases.every(r=>r.passed)&&report.roundTrips.length===6&&report.roundTrips.every(r=>r.passed);
 }catch(e){report.errors.push(e.stack||String(e));}finally{if(browser)await browser.close();if(server.listening)await new Promise(resolve=>server.close(resolve));if(report.errors.length)report.passed=false;save();}
-console.log((report.passed?'PASS':'FAIL')+' C3 deep pages '+report.cases.filter(r=>r.passed).length+'/24; actual screenshot review still pending.');if(!report.passed)process.exitCode=1;
+console.log((report.passed?'PASS':'FAIL')+' C3 deep pages '+report.cases.filter(r=>r.passed).length+'/36; actual screenshot review still pending.');if(!report.passed)process.exitCode=1;
 })().catch(e=>{report.errors.push(e.stack||String(e));save();console.error(e);process.exitCode=1;});

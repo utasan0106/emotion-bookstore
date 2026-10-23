@@ -9,11 +9,12 @@ const http = require('node:http');
 const {execFileSync} = require('node:child_process');
 const {chromium} = require('playwright');
 const {validateRenderedFonts} = require('./editorial-c3-font-contract.cjs');
+const {validatePolish}=require('./editorial-c3-polish-contract.cjs');
 const {validateOverview} = require('./editorial-c3-layout-contract.cjs');
 const root = path.resolve(__dirname, '..');
 const assetPins={
-  'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-400.woff2':'c8149fec9ec507a52be9978786657c154c5abe2130d5d7a8c4b0c1782ea44877',
-  'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-700.woff2':'ba70c5009f2c16d643ba45fff61114bcd37a4fcffac1202305cfaa9b9f98ad72',
+  'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-400.woff2':'a48185045464e9aa8d4afea727a4faa0b16e0757159558df1a618bc1bf4ba8aa',
+  'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-700.woff2':'ebed3875e5f8b0e78e5dae919c1ac1f658a43bcd929e6b668f7eb0880d3986ed',
   'qa/editorial-study-desk/assets/editor-desk.webp':'7cb8e1ca97cf9e5287fa62654d31a197825433a384f4ccc4dd96dc7018083a9d'
 };
 for(const [file,expected] of Object.entries(assetPins)) {
@@ -488,7 +489,7 @@ async function checkCoverNavigation(browser,origin) {
             const image=choice.querySelector('.work-art img'),link=choice.querySelector('.book-choice-link');
             const target=document.getElementById(choice.dataset.bookId),article=target?.closest('.book-selection');
             const reason=article?.querySelector('.selection-reason');
-            return {cover:box(image),coverSrc:image?.getAttribute('src'),bookTitleSize:parseFloat(getComputedStyle(choice.querySelector('.choice-title')).fontSize),bookTitle:box(choice.querySelector('.choice-title')),bookTitleText:choice.querySelector('.choice-title')?.textContent.trim(),
+            return {choiceBox:box(choice),selectionBox:box(article),cover:box(image),coverSrc:image?.getAttribute('src'),bookTitleSize:parseFloat(getComputedStyle(choice.querySelector('.choice-title')).fontSize),bookTitle:box(choice.querySelector('.choice-title')),bookTitleText:choice.querySelector('.choice-title')?.textContent.trim(),
               visible:visible(image)&&visible(choice.querySelector('.choice-title')),
               href:link?.getAttribute('href'),targetId:choice.dataset.bookId,
               accessibleName:link?.getAttribute('aria-label')||image?.alt||'',
@@ -496,7 +497,7 @@ async function checkCoverNavigation(browser,origin) {
               reasonText:reason?.textContent.trim(),credit:article?.querySelector('.book-credit a')?.getAttribute('href'),
               workHref:target?.querySelector('a')?.getAttribute('href')};
           });
-          const selection=[...document.querySelectorAll('footer .other-entry')];
+          const selection=[...document.querySelectorAll('.shelf > .other-entry')];
           const staleLabels=['いま、ひらく棚','表紙を押すと、作品紹介へ。','一冊ずつ、選んだ理由。'];
           const obsoleteInstructionLabels=staleLabels.filter(text=>document.body.innerText.includes(text));
           const venue=document.querySelector('.venue-note'),video=document.querySelector('.v3-video');
@@ -506,19 +507,26 @@ async function checkCoverNavigation(browser,origin) {
           const headings=[...document.querySelectorAll('h1,h2,h3')].map(el=>({tag:el.tagName,text:el.textContent.trim(),visible:visible(el)}));
           const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
           const animations=document.getAnimations().filter(a=>a.playState==='running');
-          return {heroFontSize:parseFloat(getComputedStyle(document.querySelector('#theme')).fontSize),nextShelf:box(nextShelf),header:box(document.querySelector('.masthead')),theme:box(document.querySelector('#theme')),
+          const scene=document.querySelector('.desk-scene'),deskArt=document.querySelector('.desk-art'),shelf=document.querySelector('.shelf');
+          const culture=document.querySelector('.culture-continuation');
+          const cultureLinks=[...culture.querySelectorAll('.culture-continuation-links > a')].map(a=>a.getAttribute('href'));
+          const musicButton=document.querySelectorAll('.music .v3-video-load');
+          const secondary=document.querySelector('.music .music-external');
+          return {scene:box(scene),deskArt:box(deskArt),shelf:box(shelf),musicBox:box(document.querySelector('.music')),photoBox:box(venue.querySelector('img')),musicButtonBox:box(musicButton[0]),
+            visualPolish:{cultureLinks,primaryMusicControls:musicButton.length,secondaryHref:secondary?.getAttribute('href'),secondaryFontSize:parseFloat(getComputedStyle(secondary).fontSize),buttonFontSize:parseFloat(getComputedStyle(musicButton[0]).fontSize),privacy:document.querySelector('.privacy').textContent.trim()},heroFontSize:parseFloat(getComputedStyle(document.querySelector('#theme')).fontSize),nextShelf:box(nextShelf),header:box(document.querySelector('.masthead')),theme:box(document.querySelector('#theme')),
             credits,mappings,headings,obsoleteInstructionLabels,documentarySeparation,fontPercent,viewportHeight:innerHeight,
             contractVersion:'C3: 390/1440 at 100% show all three full-sized cover choices and their exact titles; compact header; native same-page cover links reach their own full reason. No redundant instruction labels or numbered interface scaffolding. 200% permits vertical growth, never clipping.',
             reducedMotion:reduced,scrollBehavior:getComputedStyle(document.documentElement).scrollBehavior,requireInitial,
             passed:visible(nextShelf)&&!document.querySelector('.read-cta')&&credits.length===3&&credits.every(c=>c.visible)&&required.every((text,i)=>credits[i]?.text.includes(text))&&
               !obsoleteInstructionLabels.length&&!document.querySelector('.book-number,.reason-number')&&documentarySeparation&&
-              headings.filter(h=>h.tag==='H1').length===1&&headings.filter(h=>h.tag==='H2').length===4&&headings.every(h=>h.visible)&&
-              selection.length===1&&selection[0].getAttribute('href')==='/discover/selection/'&&selection[0].relList.contains('noreferrer')&&
+              headings.filter(h=>h.tag==='H1').length===1&&headings.filter(h=>h.tag==='H2').length===5&&headings.some(h=>h.text==='本の続きは、街で。')&&headings.every(h=>h.visible)&&
+              selection.length===1&&document.querySelectorAll('.other-entry').length===1&&selection[0].previousElementSibling?.classList.contains('next-shelf')&&selection[0].getBoundingClientRect().height>=44&&selection[0].getAttribute('href')==='/discover/selection/'&&selection[0].relList.contains('noreferrer')&&
               ![...selection[0].attributes].some(a=>a.name.startsWith('data-')||a.name.startsWith('on'))&&!selection[0].hasAttribute('ping')&&
               reduced&&getComputedStyle(document.documentElement).scrollBehavior==='auto'&&!animations.length&&!document.querySelector('video[autoplay],audio[autoplay]')};
         },{requireInitial:fontPercent===100&&(width===390||width===1440),fontPercent});
         result.studyContract.overviewPassed=validateOverview(result.studyContract,{width,fontPercent,viewportHeight:result.studyContract.viewportHeight});
-        result.studyContract.passed=result.studyContract.passed&&result.studyContract.overviewPassed;
+        result.studyContract.polishPassed=validatePolish(result.studyContract,{width,fontPercent});
+        result.studyContract.passed=result.studyContract.passed&&result.studyContract.overviewPassed&&result.studyContract.polishPassed;
         const prefix=route.split('/').at(-2)+'-'+width+'-'+fontPercent;
         await page.screenshot({path:path.join(out,prefix+'-first-viewport.png'),fullPage:false});
         result.firstViewportScreenshot=prefix+'-first-viewport.png';

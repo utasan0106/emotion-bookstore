@@ -47,7 +47,7 @@ check('Only the selected Zen family; Noto, Dela and rejected serif absent',all(x
 weights=re.findall(r'font-weight:\s*([^;}]+)',css)
 check('Only real 400 and 700 weights, without synthesis',all(w.strip() in ('400','700','inherit') for w in weights) and 'font-synthesis: none' in css,weights)
 check('Font manifest matches exact final HTML corpus and OFL notice',manifest['corpus_sha256']==hashlib.sha256(PAGE.read_bytes()).hexdigest() and 'SIL OPEN FONT LICENSE Version 1.1' in (ROOT/'qa/editorial-study-c3/assets/OFL.txt').read_text())
-check('Decorative play/arrow icons are SVG, not fallback glyphs',all(c not in ''.join(page.text) for c in ('↗','▶','→')) and source.count('<svg class="icon')==4)
+check('Decorative play/arrow icons are SVG, not fallback glyphs',all(c not in ''.join(page.text) for c in ('↗','▶','→')) and source.count('<svg class="icon')==6)
 original=(ROOT/'qa/editorial-study-c2/index.html').read_text()
 reasons=lambda html:re.findall(r'<p class="selection-reason">(.*?)</p>',html)
 check('All three complete reasons remain verbatim from C2',len(reasons(source))==3 and reasons(source)==reasons(original))
@@ -55,21 +55,22 @@ credits=lambda html:[re.sub('<[^>]+>','',x) for x in re.findall(r'<h[23] id="boo
 check('Author/title/publisher credits remain exact',len(credits(source))==3 and credits(source)==credits(original),credits(source))
 check('Three native cover-to-reason links',all(re.search(r'class="book-choice-link" href="#book-'+x+r'-title" aria-label="[^"]+"',source) for x in ('one','two','three')))
 check('Obsolete instruction labels and numbered interface scaffolding removed',all(x not in source for x in ('いま、ひらく棚','表紙を押すと、作品紹介へ','一冊ずつ、選んだ理由。','book-number','reason-number')))
-check('Specific semantic heading hierarchy',sum(t=='h1' for t,_ in page.tags)==1 and sum(t=='h2' for t,_ in page.tags)==4 and not any(t=='h3' for t,_ in page.tags))
-check('Three exact titles immediately follow their covers',all('<p class="choice-title">'+title+'</p>' in source for title in ('成瀬は天下を取りにいく','思わず考えちゃう','高円寺純情商店街')) and 'book-perspective' not in source)
+check('Specific semantic heading hierarchy',sum(t=='h1' for t,_ in page.tags)==1 and sum(t=='h2' for t,_ in page.tags)==5 and not any(t=='h3' for t,_ in page.tags))
+check('Three exact titles immediately follow their covers',all('<p class="choice-title">'+title+'</p>' in re.sub(r'<span class="title-phrase">(.*?)</span>',r'\1',source) for title in ('成瀬は天下を取りにいく','思わず考えちゃう','高円寺純情商店街')) and 'book-perspective' not in source)
 check('Duplicate reasons CTA removed; next shelf retained','read-cta' not in source and 'class="next-shelf"' in source)
-check('Off-theme entry remains outside primary content',re.search(r'<footer>.*href="/discover/selection/" rel="noreferrer"',source,re.S) is not None)
+check('Mood entry follows the next shelf before music, with no footer duplicate',source.count('class="other-entry"')==1 and source.index('class="next-shelf"')<source.index('class="other-entry"')<source.index('class="music"') and 'href="/discover/selection/" rel="noreferrer"' in source and not re.search(r'<footer>.*class="other-entry"',source,re.S))
 check('Only original click-to-load script, no new storage/tracker',[(t,a['src']) for t,a in page.tags if t=='script' and 'src' in a]==[('script','/video-embed.js')] and not re.search(r'localStorage|sessionStorage|analytics|googletagmanager|<iframe|<video|<audio',source))
 check('No automatic external asset requests',not any(t in ('img','script','source','audio','video','iframe') and a.get('src','').startswith(('https://','http://')) for t,a in page.tags))
 check('Noindex and nofollow retained','content="noindex,nofollow"' in source)
-check('Existing source limitation, video privacy and art disclosure retained',all(x in source for x in ('全編読了の感想ではありません。','押すまでYouTubeへ接続しません。','AI生成イラスト','会場入口の記録写真')))
+check('Existing source limitation, video privacy and art disclosure retained',all(x in source for x in ('全編読了の感想ではありません。','押すまでYouTubeへ接続せず、自動再生もしません。','AI生成イラスト','会場入口の記録写真')))
+check('Culture entry points are exact native links; expiry-managed events stay a link',all(x in source for x in ('id="culture-continuation-title"','href="/qa/editorial-study-c3/film-and-books.html"','href="/qa/editorial-study-c3/outings.html"','href="/outings/"')) and 'events-data' not in source)
 # Syntax smoke only. The browser runner remains responsible for actual CSS parsing,
 # computed geometry, glyph fonts, contrast, focus and provider activation behavior.
 css_without_comments=re.sub(r'/\*.*?\*/','',css,flags=re.S)
 check('CSS brace-balance smoke check',css_without_comments.count('{')==css_without_comments.count('}'))
 pins={
-'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-400.woff2':'c8149fec9ec507a52be9978786657c154c5abe2130d5d7a8c4b0c1782ea44877',
-'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-700.woff2':'ba70c5009f2c16d643ba45fff61114bcd37a4fcffac1202305cfaa9b9f98ad72',
+'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-400.woff2':'a48185045464e9aa8d4afea727a4faa0b16e0757159558df1a618bc1bf4ba8aa',
+'qa/editorial-study-c3/assets/deep-zen-kaku-gothic-700.woff2':'ebed3875e5f8b0e78e5dae919c1ac1f658a43bcd929e6b668f7eb0880d3986ed',
 'qa/editorial-study-desk/assets/editor-desk.webp':'7cb8e1ca97cf9e5287fa62654d31a197825433a384f4ccc4dd96dc7018083a9d'}
 check('Original artwork and final candidate font bytes pinned',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in pins.items()))
 report={'passed':all(x['passed'] for x in checks),'kind':'offline source checks only','browserExecuted':False,'visualApproval':False,'fontApproval':False,'fontStatus':'Reference-led Zen Kaku 700/400 candidate, pending actual browser screenshots and independent visual review.','checks':checks}

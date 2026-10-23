@@ -1,0 +1,12 @@
+/* Optional homepage section only. Reuses C3 color, font and icon definitions. */
+.culture-continuation { padding: 32px 40px 24px; background: var(--paper); }
+.culture-continuation h2 { font-size: 1.75rem; font-weight: 700; line-height: 1.6; }
+.culture-continuation-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; margin-top: 22px; }
+.culture-continuation-links > a { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; padding: 18px 0 22px; border-top: 1px solid var(--rule); text-decoration: none; }
+.culture-continuation-links strong { grid-column: 1; font-size: 1.25rem; font-weight: 700; line-height: 1.6; text-decoration: underline; text-decoration-thickness: .05em; text-underline-offset: .22em; }
+.culture-continuation-links span { grid-column: 1; font-size: .875rem; line-height: 1.85; }
+.culture-continuation-links .icon { grid-column: 2; grid-row: 1 / 3; align-self: center; color: var(--rust); }
+.culture-continuation-more { display: flex; flex-wrap: wrap; gap: 0 24px; border-top: 1px solid var(--rule); padding-top: 8px; }
+.culture-continuation-more a { display: inline-flex; align-items: center; min-height: 44px; font-size: .875rem; }
+@media (max-width: 1100px) { .culture-continuation { padding-inline: 28px; } .culture-continuation-links { gap: 24px; } }
+@media (max-width: 700px) { .culture-continuation { padding: 28px 20px 20px; } .culture-continuation h2 { font-size: 1.5rem; } .culture-continuation-links { grid-template-columns: 1fr; gap: 0; margin-top: 20px; } }

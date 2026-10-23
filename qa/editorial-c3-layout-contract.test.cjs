@@ -34,4 +34,7 @@ d=good();d.mappings[1].coverSrc='/wrong-book.jpg';check(validateOverview(d,optio
 d=good();d.mappings[1].cover=box(140,300,100,144);check(validateOverview(d,options()),false,'unequal cover heights fail');
 d=good();d.mappings[1].bookTitleSize=13;check(validateOverview(d,options()),false,'tiny cover title fails');
 d=good();d.heroFontSize=28;check(validateOverview(d,options()),false,'mobile hero hierarchy not restored');
+d=good();d.mappings.forEach(m=>m.bookTitleSize=16);check(validateOverview(d,options()),true,'reference-reviewed mobile16 captions pass without shrinking body');
+d=good();d.mappings[0].bookTitleSize=15.9;check(validateOverview(d,options()),false,'mobile captions below16 fail');
+d=good(1440);d.mappings[0].bookTitleSize=17;check(validateOverview(d,options(1440)),false,'desktop captions still require18');
 console.log(`PASS ${checks} C3 geometry/semantic fixture cases; no browser executed.`);

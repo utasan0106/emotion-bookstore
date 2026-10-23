@@ -1,7 +1,7 @@
 {
   "license": "SIL OFL 1.1; complete original notice retained. Modified character subsets retain original font names and metadata. Supplied notice declares no Reserved Font Names.",
   "corpus": "qa/editorial-study-c3/index.html",
-  "corpus_sha256": "a18ea8afb4546d34612eb52c3e1fbf70b3e46d061da1fae72098913294989332",
+  "corpus_sha256": "32c73dacfaafcf0a2df0d0325426d2edaa24d3981e2018b3a8e0fe60e761855b",
   "font_synthesis": "none",
   "decorative_symbols": "Arrow and play icons are original inline SVG; no system-font fallback.",
   "visualApproval": false,
@@ -9,29 +9,29 @@
   "fonts": [
     {
       "file": "deep-zen-kaku-gothic-400.woff2",
-      "bytes": 70388,
-      "sha256": "c8149fec9ec507a52be9978786657c154c5abe2130d5d7a8c4b0c1782ea44877",
+      "bytes": 77644,
+      "sha256": "a48185045464e9aa8d4afea727a4faa0b16e0757159558df1a618bc1bf4ba8aa",
       "postscript_name": "ZenKakuGothicNew-Regular",
       "weight": 400,
-      "covered_codepoints": 592,
+      "covered_codepoints": 652,
       "missing_required_codepoints": [],
       "original_file": "ZenKakuGothicNew-Regular.ttf",
       "original_sha256": "b840cd07a67d89cacca44249ae49aa99ee7640eb5ce623be8d8983d6aabac801",
       "official_source": "https://raw.githubusercontent.com/google/fonts/main/ofl/zenkakugothicnew/ZenKakuGothicNew-Regular.ttf",
-      "subset_sha256": "c8149fec9ec507a52be9978786657c154c5abe2130d5d7a8c4b0c1782ea44877"
+      "subset_sha256": "a48185045464e9aa8d4afea727a4faa0b16e0757159558df1a618bc1bf4ba8aa"
     },
     {
       "file": "deep-zen-kaku-gothic-700.woff2",
-      "bytes": 70728,
-      "sha256": "ba70c5009f2c16d643ba45fff61114bcd37a4fcffac1202305cfaa9b9f98ad72",
+      "bytes": 77984,
+      "sha256": "ebed3875e5f8b0e78e5dae919c1ac1f658a43bcd929e6b668f7eb0880d3986ed",
       "postscript_name": "ZenKakuGothicNew-Bold",
       "weight": 700,
-      "covered_codepoints": 592,
+      "covered_codepoints": 652,
       "missing_required_codepoints": [],
       "original_file": "ZenKakuGothicNew-Bold.ttf",
       "original_sha256": "0081cedabc4921982fcd061f845a005664ac7fb642af2dd34b4007bc63ccd235",
       "official_source": "https://raw.githubusercontent.com/google/fonts/main/ofl/zenkakugothicnew/ZenKakuGothicNew-Bold.ttf",
-      "subset_sha256": "ba70c5009f2c16d643ba45fff61114bcd37a4fcffac1202305cfaa9b9f98ad72"
+      "subset_sha256": "ebed3875e5f8b0e78e5dae919c1ac1f658a43bcd929e6b668f7eb0880d3986ed"
     }
   ],
   "license_notice": {
@@ -42,5 +42,5 @@
     "formatting": "Trailing line whitespace normalized; the complete notice wording is unchanged."
   },
   "active_corpus_manifest": "deep-font-manifest.json",
-  "scope": "Shared union fonts for C3 home and four deep pages. Original home-only subset files remain unreferenced."
+  "scope": "Shared union fonts for C3 home and six deep routes. Original home-only subsets are unreferenced."
 }

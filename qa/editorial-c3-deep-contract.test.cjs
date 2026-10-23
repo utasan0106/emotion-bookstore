@@ -16,4 +16,12 @@ const e={title:'作品',covers:['cover.jpg'],reasons:['理由'],credits:['出典
 const d={...e,noindex:true,mainCount:1,h1Count:1,backHref:'/qa/editorial-study-c3/index.html#shelves',brandHref:'/qa/editorial-study-c3/index.html',duplicateIds:[],unresolvedAria:[],scripts:[],facades:0,eagerMedia:0,remoteResources:[],reducedMotion:true,scrollBehavior:'auto',animations:0};
 test('exact deep content',()=>assert(validateDeepContent(d,e)));
 for(const [key,value] of Object.entries({noindex:false,mainCount:2,h1Count:0,title:'wrong',covers:[],reasons:[],credits:[],relatedLinks:[],backHref:'/',brandHref:'/',detailsCount:0,duplicateIds:['x'],unresolvedAria:['x'],scripts:['memory-note.js'],facades:1,eagerMedia:1,remoteResources:['https://x'],reducedMotion:false,scrollBehavior:'smooth',animations:1,originalHref:'/self'}))test('reject '+key,()=>assert(!validateDeepContent({...d,[key]:value},e)));
+test('outings explicitly has no disclosure',()=>assert(validateDeepFonts(valid.filter(r=>r.role!=='summary'),'culture-outings')));
+test('book still requires disclosure',()=>assert(!validateDeepFonts(valid.filter(r=>r.role!=='summary'),'books')));
+test('film requires disclosure',()=>assert(!validateDeepFonts(valid.filter(r=>r.role!=='summary'),'culture-film')));
+test('unknown profile rejected',()=>assert(!validateDeepFonts(valid,'other')));
+const ce={...e,kind:'culture-film',paragraphs:['fact'],headingTexts:['title'],captions:['CC BY-SA'],allLinks:['/verified']};
+const cd={...d,...ce};
+test('culture exact evidence inventory',()=>assert(validateDeepContent(cd,ce)));
+for(const key of ['paragraphs','headingTexts','captions','allLinks'])test('culture '+key+' cannot disappear',()=>assert(!validateDeepContent({...cd,[key]:[]},ce)));
 console.log(n+' C3 deep contract fixtures passed; not browser evidence.');

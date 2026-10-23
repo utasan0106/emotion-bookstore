@@ -1,0 +1,84 @@
+/* Additive C3 route styles. Load after study.css; no changes to its fonts/assets. */
+.culture-route .masthead nav a[aria-current="page"] { text-decoration: underline; text-decoration-thickness: .1em; text-underline-offset: .3em; }
+.culture-route .route-paper {
+  width: 80%;
+  max-width: 1152px;
+  margin: 40px auto 0;
+  background: var(--paper);
+}
+.culture-route .route-heading { padding: 24px 40px 36px; }
+.culture-route .route-back { display: inline-flex; align-items: center; min-height: 44px; margin-bottom: 24px; font-size: .875rem; }
+.culture-route h1 { font-size: clamp(2.75rem, 4.5vw, 4rem); line-height: 1.25; letter-spacing: .01em; font-weight: 700; }
+.culture-route .route-lead { margin-top: 22px; max-width: 40em; font-size: 1.0625rem; line-height: 1.9; }
+.culture-route .work-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; margin: 0 40px; padding-bottom: 40px; }
+.culture-route .paired-work { min-width: 0; padding-top: 20px; border-top: 1px solid var(--rule); }
+.culture-route .work-byline { font-size: .875rem; }
+.culture-route .paired-work h2 { margin: 10px 0 16px; font-size: 1.375rem; font-weight: 700; line-height: 1.65; }
+.culture-route .route-source { display: inline-flex; align-items: center; min-height: 44px; margin-top: 12px; font-size: .8125rem; line-height: 1.8; }
+.culture-route .street-return { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: 32px; padding: 36px 40px; background: var(--music); }
+.culture-route .street-reading, .culture-route .street-photo { min-width: 0; }
+.culture-route .street-reading h2, .culture-route .city-stops > h2 { margin-bottom: 20px; font-size: 1.75rem; font-weight: 700; line-height: 1.6; }
+.culture-route .route-caution { margin-top: 18px; font-size: .875rem; line-height: 1.9; color: #46555f; }
+.culture-route .route-primary { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; margin-top: 22px; font-size: 1.25rem; font-weight: 700; }
+.culture-route .street-photo img { width: 100%; height: auto; }
+.culture-route .street-photo figcaption { margin-top: 10px; font-size: .8125rem; line-height: 1.9; color: #46555f; }
+.culture-route .street-photo a { display: inline-flex; align-items: center; min-height: 44px; }
+.culture-route .city-stops { padding: 36px 40px 20px; }
+.culture-route .city-stop { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 12px 32px; padding: 20px 0; border-top: 1px solid var(--rule); }
+.culture-route .city-stop h3 { min-width: 0; font-size: 1.25rem; line-height: 1.6; font-weight: 700; }
+.culture-route .city-stop h3 a { display: inline-flex; align-items: center; min-height: 44px; }
+.culture-route .city-stop p { padding-top: 6px; }
+.culture-route .route-evidence { margin: 0 40px; padding: 12px 0 20px; font-size: .875rem; border-bottom: 1px solid var(--rule); }
+.culture-route .route-evidence summary { display: list-item; min-height: 44px; padding: 8px 0; font-weight: 700; cursor: pointer; }
+.culture-route .route-evidence summary:focus-visible { outline: 3px solid var(--rust); outline-offset: 4px; }
+.culture-route .route-evidence ul { padding-left: 1.4em; }
+.culture-route .route-evidence li + li { margin-top: 12px; }
+.culture-route .route-evidence p + p { margin-top: 10px; }
+.culture-route .route-next { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin: 0 40px; padding: 26px 0 32px; text-decoration: none; }
+.culture-route .route-next strong { display: block; font-size: 1.5rem; line-height: 1.6; font-weight: 700; text-decoration: underline; text-decoration-thickness: .05em; text-underline-offset: .22em; }
+.culture-route .route-next span > span { display: block; margin-top: 6px; font-size: .875rem; }
+.culture-route .route-next > .icon { width: 1.5em; height: 1.5em; color: var(--rust); }
+.culture-route footer nav { gap: 4px 24px; }
+.culture-route footer nav a { justify-content: flex-start; font-weight: 400; text-decoration: underline; }
+.culture-route .outing-stops { list-style: none; padding: 0 40px; }
+.culture-route .outing-stop { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 20px 48px; padding: 28px 0 32px; border-top: 1px solid var(--rule); }
+.culture-route .outing-stop h2 { min-width: 0; font-size: 1.75rem; line-height: 1.6; font-weight: 700; }
+.culture-route .outing-stop h2 a { display: inline-flex; align-items: center; min-height: 44px; }
+.culture-route .outing-stop p + p { margin-top: 12px; }
+.culture-route .outing-pause { margin-inline: -40px; padding: 28px 40px 32px; border-top: 0; background: var(--music); }
+.culture-route .outing-notes { padding: 4px 40px 22px; }
+.culture-route .outing-paper .route-next { border-top: 1px solid var(--rule); }
+@media (max-width: 1100px) {
+  .culture-route .route-paper { width: 86%; }
+  .culture-route .route-heading, .culture-route .street-return, .culture-route .city-stops, .culture-route .outing-notes { padding-inline: 28px; }
+  .culture-route .work-pair, .culture-route .route-evidence, .culture-route .route-next { margin-inline: 28px; }
+  .culture-route .work-pair, .culture-route .street-return { gap: 24px; }
+  .culture-route .outing-stops { padding-inline: 28px; }
+  .culture-route .outing-stop { gap: 20px 28px; }
+  .culture-route .outing-pause { margin-inline: -28px; padding-inline: 28px; }
+}
+@media (max-width: 700px) {
+  .culture-route .route-paper { width: calc(100% - 24px); margin-top: 24px; }
+  .culture-route .route-heading { padding: 14px 20px 28px; }
+  .culture-route .route-back { margin-bottom: 20px; }
+  .culture-route h1 { font-size: clamp(2rem, 7.8vw, 2.75rem); line-height: 1.3; }
+  .culture-route .route-lead { margin-top: 18px; font-size: 1rem; }
+  .culture-route .work-pair { grid-template-columns: 1fr; gap: 24px; margin-inline: 20px; padding-bottom: 28px; }
+  .culture-route .paired-work h2 { font-size: 1.25rem; }
+  .culture-route .street-return { grid-template-columns: 1fr; padding: 28px 20px; gap: 24px; }
+  .culture-route .street-reading h2, .culture-route .city-stops > h2, .culture-route .outing-stop h2 { font-size: 1.5rem; }
+  .culture-route .street-photo { max-width: 560px; }
+  .culture-route .city-stops { padding: 28px 20px 20px; }
+  .culture-route .city-stop { grid-template-columns: 1fr; gap: 6px; }
+  .culture-route .city-stop p { padding-top: 0; }
+  .culture-route .route-evidence, .culture-route .route-next { margin-inline: 20px; }
+  .culture-route .route-next { gap: 18px; padding-block: 24px 28px; }
+  .culture-route .route-next strong { font-size: 1.25rem; }
+  .culture-route .outing-stops { padding-inline: 20px; }
+  .culture-route .outing-stop { grid-template-columns: 1fr; gap: 14px; padding-block: 22px 26px; }
+  .culture-route .outing-pause { margin-inline: -20px; padding-inline: 20px; }
+  .culture-route .outing-notes { padding-inline: 20px; }
+}
+@media (max-width: 360px) {
+  .culture-route .route-paper { width: calc(100% - 16px); }
+}
