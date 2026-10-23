@@ -21,3 +21,8 @@
 /* Text-size-aware shelf reflow, without clipping or shrinking enlarged text. */
 .trio{grid-template-columns:repeat(auto-fit,minmax(min(100%,5.5rem),1fr))}.work{overflow-wrap:anywhere}.detail-works .work{grid-template-columns:200px minmax(0,1fr)}.detail-works .work>div,.related-work>div{min-width:0}.book-focus,.related-work,.book-record{overflow-wrap:anywhere}
 @media(max-width:650px){.detail-works .work{grid-template-columns:100px minmax(0,1fr)}}
+
+/* Homepage is a shelf preview, not three miniature bibliography pages. */
+.compact-trio{max-width:800px;margin-inline:auto;gap:24px}.compact-work .work-art{height:210px;margin-bottom:13px}.compact-work .work-art img{max-height:210px}.compact-work h3{font-size:1rem;line-height:1.6;font-weight:650}.compact-work .type-art{max-width:197px;background:transparent;border-top:1px solid;border-bottom:1px solid}.compact-trio+.editor-note{max-width:800px;margin:24px auto 0}.shelf-sources{max-width:900px;padding:14px 0 0;margin:18px 0 0;list-style:none;border-top:1px solid #9a9f8a;font-size:.75rem;line-height:1.75;color:#424a3e;overflow-wrap:anywhere}.shelf-sources li+li{margin-top:6px}.shelf-sources a{white-space:nowrap}.shelf-header .eyebrow{margin-bottom:8px}
+@media(max-width:650px){.compact-trio{gap:12px}.compact-work .work-art{height:145px;margin-bottom:10px}.compact-work .work-art img{max-height:145px}.compact-work h3{font-size:.875rem;line-height:1.55}.compact-trio+.editor-note{margin-top:20px;font-size:.875rem}.shelf-sources{margin-top:16px;padding-top:12px;line-height:1.65}.shelf-sources li+li{margin-top:8px}}
+@media(max-width:350px){.compact-trio{gap:10px}.compact-work .work-art,.compact-work .work-art img{max-height:125px}}
