@@ -151,6 +151,8 @@ for filename in HTML + CSS:
 
 # works.html/work-film.html pins include the already published 135db73 five-city
 # menu fix (4->5 and Kiyosumi entry); work/film evidence prose was unchanged.
+# works.html also localizes only the reviewed kaijin cover URL (2026-10-23);
+# its complete credit, official link, prose and the other five pins are unchanged.
 before = json.loads((ROOT / 'qa/editorial-c3-culture-source.json').read_text())
 snapshots = {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == digest for name, digest in before.items()}
 errors += [name + ': frozen source hash changed' for name, unchanged in snapshots.items() if not unchanged]

@@ -167,8 +167,8 @@ assert.match(emptyDiscovery,/現在、掲載できる街の動きはありませ
    await page.clock.setFixedTime(new Date(expiredAsOf));await page.reload({waitUntil:'networkidle'});assert.equal(await page.locator('[data-event-card]:visible').count(),0,'Expired events disappear');assert.ok(await page.locator('#event-empty').isVisible());
    for(const e of source.events.filter(e=>!source.isPublishableEvent(e)))assert.equal(await page.locator('[data-event-card="'+e.id+'"]').count(),0,'Pending has no runtime card');
    assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);assert.ok(external.filter(x=>x.phase==='reviewed-outings').every(x=>x.navigation),'Reviewed outings and empty-state flows load no automatic external resources');
-   const legacyCovers=['https://www.j-n.co.jp/wp/wp-content/uploads/2022/09/R978-4-408-55758-8.jpg','https://www.tsogen.co.jp/img/cover_image_l/40608.jpg'];
-   assert.ok(external.filter(x=>!x.navigation).every(x=>x.phase==='existing-city'&&legacyCovers.includes(x.url)),'Only the two pre-existing city catalogue publisher covers may be requested; they are blocked in CI');
+   const legacyCovers=['https://www.j-n.co.jp/wp/wp-content/uploads/2022/09/R978-4-408-55758-8.jpg'];
+   assert.ok(external.filter(x=>!x.navigation).every(x=>x.phase==='existing-city'&&legacyCovers.includes(x.url)),'Only the remaining pre-existing Indies publisher cover may be requested; it is blocked in CI, not verified as displayed');
    report.viewports.push({...viewport,passed:true,flows,externalTargets:external,missing,errors});console.log('PASS '+viewport.name+': five cities, month-neutral menu, Kiyosumi filtered route, eight current reviewed cards/official targets/Back, Oct 23 current/next-week supply and expiry');
   }catch(e){await page.screenshot({path:path.join(out,viewport.name+'-failure.png'),fullPage:true}).catch(()=>{});report.viewports.push({...viewport,passed:false,error:e.message,flows,external,missing,errors});throw e;}
   finally{await context.close();}
