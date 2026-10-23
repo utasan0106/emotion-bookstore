@@ -1,0 +1,113 @@
+[
+  {
+    "id": "books/naruse-wa-tenka-wo-toriniiku",
+    "slug": "naruse-wa-tenka-wo-toriniiku",
+    "kind": "book",
+    "editorialReview": "pending",
+    "adoption": null,
+    "path": "/books/naruse-wa-tenka-wo-toriniiku.html",
+    "title": "成瀬は天下を取りにいく",
+    "creator": "宮島未奈",
+    "author": "宮島未奈",
+    "publisher": "新潮社",
+    "editionLabel": "新潮社・単行本 · ISBN 9784103549512",
+    "isbn": "9784103549512",
+    "bookPublishedOn": "2023-03-17",
+    "sourceUrl": "https://www.shinchosha.co.jp/book/354951/",
+    "sourceCheckedOn": "2026-10-23",
+    "sources": [
+      {
+        "label": "出版社の作品紹介",
+        "url": "https://www.shinchosha.co.jp/book/354951/"
+      },
+      {
+        "label": "出版社で試し読み",
+        "url": "https://www.shinchosha.co.jp/book/354951/preview/"
+      }
+    ],
+    "fact": "中学2年生の成瀬が、閉店前の百貨店に毎日通うと宣言。友人の島崎を巻き込む計画から始まる青春小説です。",
+    "reason": "何かを始めたい日は、成瀬の思いつきから。閉店前の店に通う計画と、そばで見守る友人のやりとりを入口に。",
+    "basisNote": "出版社の作品紹介と、公開されている試し読みをもとに選んでいます。",
+    "readingScope": "公式試読「ありがとう西武大津店」の冒頭。夏の計画の宣言、島崎による成瀬の人物紹介、閉店前の店と中継の計画、母が同行を勧め、島崎が店へ向かう部分までを公開テキストで確認。試読全5ページ・一篇全文・全編の読了ではない。",
+    "cities": [],
+    "placeRelations": [
+      {
+        "name": "滋賀県大津市",
+        "type": "story-setting",
+        "note": "出版社紹介と試読本文で確認した物語の舞台。街フィルターへの強制所属はしない。",
+        "sourceUrl": "https://www.shinchosha.co.jp/book/354951/preview/"
+      }
+    ],
+    "relatedWorks": [
+      {
+        "id": "koenji/junjo",
+        "label": "店のある暮らしを、別の目で。",
+        "reason": "閉店前の店へ通う少女から、乾物屋の家で育つ少年へ。同じ「店と人」の関係を、暮らす側の視点で読み替えます。"
+      },
+      {
+        "id": "books/omowazu-kangaechau",
+        "label": "やってみる人の次は、考えちゃう人。",
+        "reason": "思いつきを行動にする成瀬の次は、日常の小さな疑問をスケッチする人へ。物語から短いエッセイへ、読み方も変えられます。"
+      }
+    ],
+    "cover": {
+      "file": "9784103549512.jpg",
+      "path": "/assets/editorial-books/9784103549512.jpg",
+      "width": 197,
+      "height": 290,
+      "credit": "宮島未奈『成瀬は天下を取りにいく』（新潮社刊）"
+    }
+  },
+  {
+    "id": "books/omowazu-kangaechau",
+    "slug": "omowazu-kangaechau",
+    "kind": "book",
+    "editorialReview": "pending",
+    "adoption": null,
+    "path": "/books/omowazu-kangaechau.html",
+    "title": "思わず考えちゃう",
+    "creator": "ヨシタケシンスケ",
+    "author": "ヨシタケシンスケ",
+    "publisher": "新潮社",
+    "editionLabel": "新潮社・単行本 · ISBN 9784103524519",
+    "isbn": "9784103524519",
+    "bookPublishedOn": "2019-03-29",
+    "sourceUrl": "https://www.shinchosha.co.jp/book/352451/",
+    "sourceCheckedOn": "2026-10-23",
+    "sources": [
+      {
+        "label": "出版社の作品紹介",
+        "url": "https://www.shinchosha.co.jp/book/352451/"
+      },
+      {
+        "label": "出版社で試し読み",
+        "url": "https://www.shinchosha.co.jp/book/352451/preview/"
+      }
+    ],
+    "fact": "日常の小さな疑問や子育て中の気づきを、スケッチと短い文章でつづるエッセイ集。100点以上のイラストを収録しています。",
+    "reason": "いつもの暮らしにも、まだ気になることがある。小さな疑問を描いたスケッチと短文から、今日は一つだけ。",
+    "basisNote": "出版社の作品紹介と、公開されている試し読みをもとに選んでいます。",
+    "readingScope": "公式試読の本編見本3点。トイレで触れる場所を気にする話、子が飲んだ水を観察する話、若い頃の無茶について自分を振り返る話の公開テキストを確認。画像版全頁の確認・全編読了ではない。",
+    "cities": [],
+    "placeRelations": [],
+    "relatedWorks": [
+      {
+        "id": "books/naruse-wa-tenka-wo-toriniiku",
+        "label": "考えた後は、やってみる人の隣へ。",
+        "reason": "小さな疑問を眺めるエッセイから、思いついた計画を動かす少女の物語へ。日常への関わり方を、別の形で読みます。"
+      },
+      {
+        "id": "kichijoji/honnoniwa",
+        "label": "小さな気づきから、小さな謎へ。",
+        "reason": "日常の疑問から、本に残された書き込みや記憶をめぐる謎へ。見過ごしていたものに目を向ける関心をつなぎます。"
+      }
+    ],
+    "cover": {
+      "file": "9784103524519.jpg",
+      "path": "/assets/editorial-books/9784103524519.jpg",
+      "width": 197,
+      "height": 290,
+      "credit": "ヨシタケシンスケ『思わず考えちゃう』（新潮社刊）"
+    }
+  }
+]

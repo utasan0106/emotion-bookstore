@@ -14,5 +14,5 @@ assert.equal(new Set(expected).size,expected.length,'No duplicate checks');
 for(const args of calls)assert.equal(args.filter(a=>a.endsWith('.js')).length,1,'Node accepts one entry script, not a list of checks');
 assert.equal(state.exitCode,0);
 assert.equal(inspect('qa/social_card_check.js').state.exitCode,1,'A formerly skipped check must fail the aggregate');
-for(const script of ['tools/build-work-pages.js','tools/build-city-discovery.js','tools/build-weekly-outings.js'])assert.ok(calls.find(a=>a[0]===script).includes('--check'),'Builders must stay read-only');
+for(const script of ['tools/build-work-pages.js','tools/build-city-discovery.js','tools/build-weekly-outings.js','tools/build-editorial-pages.js'])assert.ok(calls.find(a=>a[0]===script).includes('--check'),'Builders must stay read-only');
 console.log(`PASS runner executes ${calls.length} distinct scripts, preserves --check, propagates failures`);

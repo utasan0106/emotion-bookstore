@@ -26,6 +26,12 @@ const sitemap=read('sitemap.xml');
 assert.doesNotMatch(sitemap,/emotion-bookstore\.vercel\.app/,'sitemap must use canonical domain');
 assert.doesNotMatch(sitemap,/<loc>[^<]*\?[^<]*<\/loc>/,'query-state URLs do not belong in sitemap');
 const locs=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1]);
+const editorial=require('../tools/work-catalogue').catalogue();
+for(const route of editorial.managedPaths) {
+  const eligible=editorial.publishablePaths.has(route), url='https://emotionbookstore.com'+route;
+  assert.equal(locs.includes(url),eligible,'Only adopted editorial URLs enter sitemap: '+route);
+  if(!eligible) assert.ok(!exists(route.slice(1)),'Pending editorial page must not remain public: '+route);
+}
 assert.equal(new Set(locs).size,locs.length,'sitemap URLs must be unique');
 for(const required of [
   'https://emotionbookstore.com/',
@@ -59,6 +65,7 @@ const critical=[
  ['discover/weekly/index.html','https://emotionbookstore.com/discover/weekly/'],
  ['outings/index.html','https://emotionbookstore.com/outings/']
 ];
+for(const route of editorial.publishablePaths) critical.push([route.slice(1),'https://emotionbookstore.com'+route]);
 const titles=[];
 for(const [file,url] of critical){
  const html=read(file);

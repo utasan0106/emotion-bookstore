@@ -10,6 +10,13 @@ on:
       - 'release*.js'
       - 'assets/**'
       - 'tools/weekly-home-ledger.json'
+      - 'tools/build-editorial-pages.js'
+      - 'tools/build-work-pages.js'
+      - 'tools/work-catalogue.js'
+      - 'tools/editorial-proposals/**'
+      - 'tools/refresh-sitemap.js'
+      - 'qa/editorial_*.js'
+      - 'qa/outings_state_ready*.js'
       - 'qa/home_cover_browser_check.js'
       - 'qa/selection_browser_check.js'
       - 'qa/outings_browser_check.js'
@@ -61,6 +68,11 @@ jobs:
             sleep 1
           done
           NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/typography_browser_check.js
+      - name: Render generated editorial fixture without adopting proposals
+        if: success() || failure()
+        env:
+          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_generated_browser_check.js
       - name: Save screenshots and non-secret verification report
         if: always()
         uses: actions/upload-artifact@v4
@@ -77,5 +89,7 @@ jobs:
             qa/artifacts/five-city/report.json
             qa/artifacts/typography/*.png
             qa/artifacts/typography/report.json
+            qa/artifacts/editorial-generated-books-first/*.png
+            qa/artifacts/editorial-generated-books-first/*.json
           if-no-files-found: error
           retention-days: 7

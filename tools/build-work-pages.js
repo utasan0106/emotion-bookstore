@@ -6,7 +6,8 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const source = fs.readFileSync(path.join(__dirname, 'work-entry-source.html'), 'utf8');
 const media=require('./work-media');
-const {items:cityItems}=require('./city-discovery-source');
+const catalogue=require('./work-catalogue').catalogue();
+const catalogueItems=catalogue.works;
 const cityNames={koenji:'高円寺',shimokitazawa:'下北沢',kichijoji:'吉祥寺',jinbocho:'神保町'};
 const catalogueKind={book:'book', film:'film', music:'audio'};
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -28,18 +29,19 @@ function cityLink(entryId, section){
 function kindCount(entryId){
   const kind=catalogueKind[entryId];
   const led=featuredCatalogueId[entryId];
-  const total=cityItems.filter(i=>i.kind===kind).length + (led?0:1);
+  const total=catalogueItems.filter(i=>i.kind===kind).length + (led?0:1);
   const label={book:'本', film:'映画', music:'音楽'}[entryId];
   return `<span class="wk-count">${label} ${total}件</span>`;
 }
 function collection(entryId, section){
   const kind=catalogueKind[entryId];
   const led=featuredCatalogueId[entryId];
-  const rows=cityItems.filter(i=>i.kind===kind&&`${i.city}/${i.id}`!==led&&!section.includes(`/discover/${i.city}/${i.id}.html`));
+  const rows=catalogueItems.filter(i=>i.kind===kind&&i.key!==led&&!section.includes(i.path));
   if(!rows.length) return '';
   const label={book:'本', film:'映画', music:'音楽'}[entryId];
-  const list=rows.map(i=>`<li><a href="/discover/${i.city}/${i.id}.html">${esc(i.title)}</a><span class="wk-list-by">${esc(i.creator)}</span><span class="wk-list-rel">${esc(cityNames[i.city])} · ${esc(i.relation)}</span></li>`).join('');
-  return `<section class="wk-list" aria-label="ほかの${label}"><h2>ほかの${label}</h2><p class="wk-list-lead">街ごとに、関係を確かめたものだけを並べています。</p><ul>${list}</ul></section>`;
+  const list=rows.map(i=>`<li><a href="${i.path}">${esc(i.title)}</a><span class="wk-list-by">${esc(i.creator)}</span><span class="wk-list-rel">${i.origin==='city'?esc(cityNames[i.city])+' · '+esc(i.relation):esc(i.editionLabel)}</span></li>`).join('');
+  const lead=rows.some(i=>i.origin==='editorial')?'紹介中の作品を、選んだ理由や出典とともに辿れます。':'街ごとに、関係を確かめたものだけを並べています。';
+  return `<section class="wk-list" aria-label="ほかの${label}"><h2>ほかの${label}</h2><p class="wk-list-lead">${lead}</p><ul>${list}</ul></section>`;
 }
 // 本の公式の行き先。カードの行動リンクと表紙の出典が同じページなので、一箇所で持つ。
 const BOOK_OFFICIAL='https://www.tsogen.co.jp/np/isbn/9784488406080';
@@ -112,8 +114,8 @@ const cards = entries.map(e => `      <section id="${e.id}" class="wk-entry" ari
         <p class="wk-primary"><a class="wk-route" href="./work-${e.id}.html">${e.action}<span aria-hidden="true"> →</span></a>${kindCount(e.id)}</p>
       </section>`).join('\n');
 const worksHeader=seoHeader(header,{
-  title:'東京の本・映画・音楽｜みんなの感情書店',
-  description:'高円寺・下北沢・吉祥寺・神保町にゆかりのある本・映画・音楽を、街との関係から選べる文化案内。',
+  title:catalogue.books.length?'本・映画・音楽｜みんなの感情書店':'東京の本・映画・音楽｜みんなの感情書店',
+  description:catalogue.books.length?'本・映画・音楽を、選書の理由や作品同士のつながり、ゆかりの街から辿る文化案内。':'高円寺・下北沢・吉祥寺・神保町にゆかりのある本・映画・音楽を、街との関係から選べる文化案内。',
   canonical:'https://emotionbookstore.com/works.html'
 });
 write('works.html', worksHeader + `  <main id="main"><div class="wk-root">
@@ -126,6 +128,7 @@ write('works.html', worksHeader + `  <main id="main"><div class="wk-root">
     <div class="wk-entry-grid">
 ${cards}
     </div>
+${catalogue.shelves.length?'    <section id="editorial-shelves" aria-label="3作品の棚"><h2>3つの作品をひとつの棚に</h2><ul>'+catalogue.shelves.map(s=>'<li><a href="'+s.path+'">'+esc(s.title)+'</a></li>').join('')+'</ul></section>\n':''}\
     <div class="wk-exit"><p class="end-exit"><a class="other-shelves" href="./index.html">入口へ戻る</a></p></div>
   </div></main>
 

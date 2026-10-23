@@ -1,0 +1,83 @@
+{
+  "proposal": "B books-first; not adopted",
+  "referenceCheckedOn": "2026-10-23",
+  "cssSha256": "ddcbf3d71e79bde5cb0d9712ee16e66cabe1db1065b10ff95973c5078c27c029",
+  "sourceFiles": {
+    "shelves.css": "6cb7d4043e7b57b377d7e622dc324e2d9d6df2217441ab1bbdbe83a3540f6843",
+    "editorial-home.css": "23c83ee19823c9be1caf1b6efe4480b5f7b8f8ae09da3df98d5d932933d6ed9a",
+    "index.html": "1bd568ad470b87eb98bb5aa82df697eeb28b9c251e4bbd3c4193560195413648",
+    "outings.html": "59c58e9f915eed96e8c1bfacf6399d426aef606721f89ca12b405ddb6ba9880b",
+    "books/naruse-wa-tenka-wo-toriniiku.html": "430f663db24290003de3177951352a689b12e2e2e5f8bb15edcc3614b3ba59a1",
+    "books/omowazu-kangaechau.html": "e5ebf761b51b4e62b3009e57ba10a8d3e175aa5bcb143d78f6f27c25ebb7aef4",
+    "shelves/ordinary-day-curiosities.html": "c5107668a8881040e4f6cda12b5e6fbe1f9b62dcd9a371bbe297013dd79ee536",
+    "shelves/after-a-good-day.html": "752879e951ba5f728fd1eefd46b6140a16ab13a6355f707ef0a504e4ae345cc0",
+    "shelves/places-to-share.html": "d12ffdcaa66a8331cb1f0679881ce38073afc4151b0e257fc0033e5ddee443bd",
+    "shelves/people-behind-the-place.html": "69a605a1d2848c673b13bde7df602deb8a70d6ad6e5fae9d0508d2557271b8e4"
+  },
+  "existingDisplay": {
+    "koenji/junjo": {
+      "title": "高円寺純情商店街",
+      "edition": "新潮文庫 · ISBN 9784101021126",
+      "sourceUrl": "https://www.shinchosha.co.jp/book/102112/",
+      "noMediaNote": null,
+      "referenceTitle": "高円寺純情商店街"
+    },
+    "kichijoji/honnoniwa": {
+      "title": "待ち合わせは〈本の庭〉で",
+      "edition": "ことのは文庫／マイクロマガジン社 · ISBN 9784867168523",
+      "sourceUrl": "https://prtimes.jp/main/html/rd/p/000002412.000048095.html",
+      "noMediaNote": null,
+      "referenceTitle": "待ち合わせは〈本の庭〉で 吉祥寺・シェア型書店の小さな謎"
+    },
+    "shimokitazawa/indies": {
+      "title": "下北沢インディーズ ライブハウスの名探偵",
+      "edition": "実業之日本社文庫 · ISBN 9784408557588",
+      "sourceUrl": "https://www.j-n.co.jp/books/978-4-408-55758-8/",
+      "noMediaNote": "書影は使用せず、文字で紹介しています。",
+      "referenceTitle": "下北沢インディーズ ライブハウスの名探偵"
+    },
+    "shimokitazawa/honda": {
+      "title": "「演劇の街」をつくった男 本多一夫と下北沢",
+      "edition": "ぴあ · ISBN 9784835638492",
+      "sourceUrl": "https://prtimes.jp/main/html/rd/p/000000987.000011710.html",
+      "noMediaNote": null,
+      "referenceTitle": "「演劇の街」をつくった男 本多一夫と下北沢"
+    },
+    "kichijoji/baus": {
+      "title": "BAUS 映画から船出した映画館",
+      "edition": "2025年作品",
+      "sourceUrl": "https://bausmovie.com/",
+      "noMediaNote": "画像・予告の埋め込みは使用していません。",
+      "referenceTitle": "BAUS 映画から船出した映画館"
+    },
+    "koenji/jirokichi": {
+      "title": "次郎吉 to JIROKICHI",
+      "edition": "ele-king books · ISBN 9784911484036",
+      "sourceUrl": "https://www.ele-king.net/books/012100/",
+      "noMediaNote": "書影の使用は保留し、文字で紹介しています。",
+      "referenceTitle": "次郎吉 to JIROKICHI ―高円寺のライブハウスが歩んだ50年―"
+    },
+    "kichijoji/gou-gou-book": {
+      "title": "グーグーだって猫である",
+      "edition": "ＫＡＤＯＫＡＷＡ · ISBN 9784048532587",
+      "sourceUrl": "https://www.kadokawa.co.jp/product/199999853258/",
+      "noMediaNote": null,
+      "referenceTitle": "グーグーだって猫である"
+    }
+  },
+  "intentionalAdaptations": [
+    "No new homepage/outings output or unsupported public anchors",
+    "Text-only three-entry navigation reused from B home; labels and destinations reflect available approved content",
+    "Full existing rights credits and original creator roles preserved",
+    "Canonical/schema/publication metadata is generated only for isolated approval fixtures; actual proposals stay pending",
+    "Existing city display titles/roles stay authoritative even where B uses a longer bibliographic title"
+  ],
+  "referenceCssSha256": "6cb7d4043e7b57b377d7e622dc324e2d9d6df2217441ab1bbdbe83a3540f6843",
+  "detailAdaptation": {
+    "date": "2026-10-23",
+    "trigger": "Actual 0ca99 generated mobile screenshot: places-to-share title orphan final る and long prose constrained beside cover despite prior 40/40 CI.",
+    "scope": "All four shelf detail templates. Full-width mobile title, cover + short bibliography, full-width explanation/source/credits/bridge. Desktop card cover-left/text-right maintained.",
+    "contentOrder": "Short shelf introduction, actual works, then visible selection/method disclosure. Book introduction note unchanged.",
+    "constraints": "No font reduction, title truncation, nowrap or hidden content. Full rights credits/roles/IDs retained. CSS is now a documented detail adaptation, not byte-identical to original B."
+  }
+}

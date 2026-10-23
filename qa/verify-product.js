@@ -35,6 +35,7 @@ const checks=[
  ['qa/city_discovery_player_check.js'],
  ['qa/work_page_check.js'],
  ['qa/work_schema_check.js'],
+ ['qa/editorial_catalogue_check.js'],
  ['qa/breadcrumb_check.js'],
  ['qa/social_post_check.js'],
  ['qa/culture_delivery_csp_check.js'],
@@ -42,6 +43,7 @@ const checks=[
  ['qa/social_card_check.js'],
  ['qa/duplicate_text_check.js'],
  ['tools/build-work-pages.js','--check'],
+ ['tools/build-editorial-pages.js','--check'],
  ['tools/build-city-discovery.js','--check'],
  ['qa/ga4_v3_client_selftest.js'],
  /* 2026-09-11 追加。ここまで45本中22本しか回っていなかった。**通るのに誰も

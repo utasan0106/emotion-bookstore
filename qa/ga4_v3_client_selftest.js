@@ -5,6 +5,9 @@ const ROOT=path.resolve(__dirname,'..');
 // Runner regression checks do not add analytics, network, or storage behavior.
 const allowed=new Set(['index.html','shelf.html','suggest.html','data.html','credits.html','explore.html','vercel.json','analytics-v3.js','video-embed.js','atlas/index.html','weekly-video.js','weekly-video.css','growth-improvements.js','qa/growth_improvements.js','qa/ga4_v3_client_selftest.js','qa/measurement_v04_selftest.js','qa/release_check.js','qa/browser_qa.js','qa/home_canonical_check.js','qa/thread_check.js','qa/works_check.js','qa/atlas_check.js','qa/atlas_browser_qa.js']);
 for(const file of ['qa/verify_product_runner_check.js','qa/memory_note_check.js']) allowed.add(file);
+// Local editorial foundation only. The unchanged runtime/payload/privacy tests
+// below still apply; proposed data are explicitly excluded from deployment.
+for(const file of ['.vercelignore','tools/work-catalogue.js','tools/build-editorial-pages.js','tools/refresh-sitemap.js','qa/editorial_catalogue_check.js','qa/editorial_output_safety.js','qa/editorial_ui_contract.js','qa/editorial_generated_browser_check.js']) allowed.add(file);
 // Founder-requested Stage B presentation review. Measurement/storage checks below remain unchanged.
 for(const file of ['design-redesign.css','tools/design-redesign.js','docs/design-redesign-20260910.md','qa/design-redesign/','qa/design-redesign/index.html','qa/design-redesign/before-home.html','qa/design-redesign/before-city.html','qa/design-redesign/before-article.html']) allowed.add(file);
 for(const f of ['index.html','kichijoji/index.html','shimokitazawa/index.html','link-list/film.html','link-list/music.html']) allowed.add('v3-prototype/culture-experience-r2/'+f);
@@ -311,6 +314,23 @@ const rebuiltByEvents=p=>p.startsWith('outings/events/')||p.startsWith('discover
    中身が正しいかは build の --check と作品・催しの schema テストが別に固定する。 */
 const generatedPage=p=>/^discover\/.+\.html$/.test(p)||p.startsWith('outings/events/');
 const measurementToken=/gtag|dataLayer|localStorage|sessionStorage|analytics-v3|G-[A-Z0-9]{6,}/;
+const editorialCatalogue=require('../tools/work-catalogue').catalogue();
+const editorialIgnore=['/tools/editorial-proposals/','/tools/work-catalogue.js','/tools/build-editorial-pages.js'];
+for(const rule of editorialIgnore) assert(read('.vercelignore').split(/\r?\n/).includes(rule),'Editorial input must not be deployed: '+rule);
+for(const line of git(['diff','--unified=0','HEAD','--','.vercelignore']).split(/\r?\n/).filter(l=>/^[+-]/.test(l)&&! /^(\+\+\+|---)/.test(l))) {
+  if(!line.slice(1).trim()||/^\s*#/.test(line.slice(1))) continue;
+  assert(line[0]==='+'&&editorialIgnore.includes(line.slice(1)),'.vercelignore may only add the reviewed private editorial exclusions');
+}
+function editorialArtifact(p) {
+  const ownership=require('../tools/editorial-proposals/generated-outputs.json').outputs['/'+p];
+  const owned=()=>ownership&&fs.existsSync(path.join(ROOT,p))&&require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(ROOT,p))).digest('hex')===ownership;
+  const safety=require('./editorial_output_safety');
+  if(/^\/(?:books|shelves)\//.test('/'+p)) return editorialCatalogue.publishablePaths.has('/'+p)&&owned()&&safety.staticHtml(read(p))&&generatedStaysClear(p);
+  const expectedAssets=new Set(editorialCatalogue.books.map(b=>b.cover.path));
+  if(editorialCatalogue.books.length||editorialCatalogue.shelves.length) expectedAssets.add('/assets/editorial-books/shelves.css');
+  if(!expectedAssets.has('/'+p)) return false;
+  return owned()&&(!p.endsWith('.css')||safety.staticStylesheet(read(p)));
+}
 function generatedStaysClear(p){
   // 新しく作られたページは差分が無い。その場合は中身を丸ごと見る。
   const added=fs.existsSync(path.join(ROOT,p))&&git(['ls-files','--',p])==='';
@@ -325,5 +345,5 @@ for(const p of ['release.js','release_content.js']){
     .filter(l=>/^[+-]/.test(l)&&! /^(\+\+\+|---)/.test(l));
   for(const line of changed) assert(!measurementToken.test(line),p+' shelf expiry/archive change touches measurement or storage: '+line);
 }
-git(['diff','--check']); const status=git(['status','--porcelain']); if(status)for(const line of status.split(/\r?\n/)){let rel=line.slice(3).trim();if(rel.includes(' -> '))rel=rel.split(' -> ',2)[1];assert((rel==='feed.xml'&&!fs.existsSync(path.join(ROOT,rel)))||allowed.has(rel)||rebuiltByEvents(rel)||internalDoc(rel)||(generatedPage(rel)&&generatedStaysClear(rel)),'unexpected '+rel)}
+git(['diff','--check']); const status=git(['status','--porcelain','--untracked-files=all']); if(status)for(const line of status.split(/\r?\n/)){let rel=line.slice(3).trim();if(rel.includes(' -> '))rel=rel.split(' -> ',2)[1];assert((rel==='feed.xml'&&!fs.existsSync(path.join(ROOT,rel)))||allowed.has(rel)||rebuiltByEvents(rel)||internalDoc(rel)||rel.startsWith('tools/editorial-proposals/')||editorialArtifact(rel)||(generatedPage(rel)&&generatedStaysClear(rel)),'unexpected '+rel)}
 console.log('V3_RELEASE_GROWTH_SELFTEST_GO');

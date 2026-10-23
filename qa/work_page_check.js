@@ -8,20 +8,22 @@ const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const clean = s => s.replace(/<!--[\s\S]*?-->/g, '');
 const main = s => s.match(/<main\b[\s\S]*?<\/main>/)[0];
 const entries = ['book', 'film', 'music'];
-const {items:cityItems}=require('../tools/city-discovery-source');
+const catalogue=require('../tools/work-catalogue').catalogue();
 // The entry pages used to lead with one work and stop. Every published object of that
 // kind has to be reachable from its own entry page, not only through the city pages.
 {
  const catalogueKind={book:'book', film:'film', music:'audio'};
  for(const [id,kind] of Object.entries(catalogueKind)){
   const html=read('work-'+id+'.html');
-  const missing=cityItems.filter(i=>i.kind===kind&&!html.includes(`/discover/${i.city}/${i.id}.html`));
-  assert.deepEqual(missing.map(i=>i.city+'/'+i.id),[],'work-'+id+'.html must reach every published '+kind);
+  const missing=catalogue.works.filter(i=>i.kind===kind&&!html.includes(i.path));
+  assert.deepEqual(missing.map(i=>i.key),[],'work-'+id+'.html must reach every published '+kind);
   const listed=(html.match(/<li><a href="\/discover\//g)||[]).length;
   assert.ok(listed>=10,'work-'+id+'.html lists only '+listed+' of them');
  }
 }
 const directory = main(read('works.html'));
+assert.ok(directory.includes('本 '+catalogue.works.filter(w=>w.kind==='book').length+'件'),'Book count covers the complete catalogue without city duplicates');
+for(const shelf of catalogue.shelves) assert.ok(directory.includes('href="'+shelf.path+'"'),'Approved shelf is reachable from the work directory');
 // The retired overlong video is absent; the remaining directory contacts no provider on load.
 assert.doesNotMatch(directory, /class="wk-work"|class="wk-reading"|class="wk-info"|<iframe/);
 assert.equal((directory.match(/class="wk-entry"/g) || []).length, 3);
