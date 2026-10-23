@@ -120,8 +120,9 @@ footer p + p { margin-top: 6px; }
   .shelf-introduction { margin-top: 12px; font-size: 1rem; line-height: 1.85; }
   /* Finite native shelf: two complete cards and the third edge at390px.
    * Text zoom grows the rem card width, capped to the available shelf width.
+   * A fixed track, not zero-minimum minmax, prevents shrinking into 3 narrow columns.
    * No auto advance, repeated slides, hidden copy or JavaScript scrolling. */
-  .desk-books { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, min(9rem, 100%)); gap: 16px; margin-inline: -16px; padding: 22px 16px 12px; overflow-x: auto; overscroll-behavior-x: contain; scroll-padding-inline: 16px; }
+  .desk-books { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: min(9rem, 100%); gap: 16px; margin-inline: -16px; padding: 22px 16px 12px; overflow-x: auto; overscroll-behavior-x: contain; scroll-padding-inline: 16px; }
   .book-choice { text-align: left; }
   .choice-title a { justify-content: flex-start; }
   .selection-reason { margin-top: 10px; }

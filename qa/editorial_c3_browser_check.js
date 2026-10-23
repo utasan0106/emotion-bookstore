@@ -251,23 +251,54 @@ async function settleLocalPage(page){
 }
 async function saveView(page){await page.evaluate(()=>{window.__qaSavedView={x:scrollX,y:scrollY,focus:document.activeElement,shelf:document.querySelector('.desk-books')?.scrollLeft||0};});}
 async function restoreView(page){return page.evaluate(async()=>{const s=window.__qaSavedView;if(!s)return false;const shelf=document.querySelector('.desk-books');if(s.focus===document.body){const old=document.body.getAttribute('tabindex');document.body.tabIndex=-1;document.body.focus({preventScroll:true});if(old===null)document.body.removeAttribute('tabindex');else document.body.setAttribute('tabindex',old);}else s.focus?.focus({preventScroll:true});if(shelf)shelf.scrollLeft=s.shelf;scrollTo(s.x,s.y);await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));const ok=document.activeElement===s.focus&&Math.abs(scrollX-s.x)<1&&Math.abs(scrollY-s.y)<1&&(!shelf||Math.abs(shelf.scrollLeft-s.shelf)<1);delete window.__qaSavedView;return ok;});}
+// Read-only evidence of the exact control and native history/scroll state.
+// No focus/scroll repair, storage, retries into success or tolerance change.
+function shelfLinkSnapshot(el,href){
+ const rect=e=>{const r=e?.getBoundingClientRect();return r?{left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height}:null;};
+ const b=rect(el),shelf=el.closest('.desk-books'),s=rect(shelf),visible=el.checkVisibility({checkOpacity:true,checkVisibilityCSS:true});
+ const horizontalWithinViewport=b.left>=-1&&b.right<=innerWidth+1,verticalWithinViewport=b.top>=-1&&b.bottom<=innerHeight+1;
+ const horizontalUnclipped=b.left>=s.left-1&&b.right<=s.right+1,verticalUnclipped=b.top>=s.top-1&&b.bottom<=s.bottom+1;
+ const inViewport=horizontalWithinViewport&&verticalWithinViewport,unclipped=horizontalUnclipped&&verticalUnclipped;
+ return {url:location.pathname,bodyTextSize:parseFloat(getComputedStyle(document.body).fontSize),rootTextSize:parseFloat(getComputedStyle(document.documentElement).fontSize),zoomMarker:window.__qaNavigationTextZoom,
+  inViewport,unclipped,horizontalWithinViewport,verticalWithinViewport,horizontalUnclipped,verticalUnclipped,viewportOvershoot:{left:Math.max(0,-b.left),right:Math.max(0,b.right-innerWidth),top:Math.max(0,-b.top),bottom:Math.max(0,b.bottom-innerHeight)},visible,focusRestored:document.activeElement===el,hrefMatches:el.getAttribute('href')===href,
+  linkBox:b,shelfBox:s,coverBox:rect(el.closest('.book-choice').querySelector('.work-art img')),linkDocumentTop:b.top+scrollY,
+  scrollX,scrollY,scrollLeft:shelf.scrollLeft,scrollTop:shelf.scrollTop,shelfClientWidth:shelf.clientWidth,shelfScrollWidth:shelf.scrollWidth,
+  pageWidth:innerWidth,pageHeight:innerHeight,documentHeight:document.documentElement.scrollHeight,fontsStatus:document.fonts.status,
+  historyScrollRestoration:history.scrollRestoration,navigationType:performance.getEntriesByType('navigation')[0]?.type||null,
+  lifecycle:window.__qaNavigationDiagnostics||[],passed:el.getAttribute('href')===href&&visible&&inViewport&&unclipped};
+}
 async function checkCoverNavigation(browser,origin){
  for(const route of routes)for(const width of [320,390])for(const fontPercent of [100,200])for(let index=0;index<3;index++)for(const trigger of ['cover','title']){
   const book=homeBooks[index],row={route,width,fontPercent,index,trigger,href:null,externalRequests:[],failedLocalRequests:[],pageErrors:[],errors:[],passed:false};coverNavigationReport.cases.push(row);let context;
   try{
    context=await browser.newContext({viewport:{width,height:844},reducedMotion:'reduce',serviceWorkers:'block'});
    // Persist the existing text-only zoom emulation across every navigation,
-   // before native history scroll restoration. Never manually repair shelf scroll.
-   await context.addInitScript(({fontPercent})=>{document.addEventListener('DOMContentLoaded',()=>{if(fontPercent===200){const sizes=[...document.querySelectorAll('*')].map(el=>[el,parseFloat(getComputedStyle(el).fontSize)]);for(const [el,size] of sizes)if(Number.isFinite(size))el.style.setProperty('font-size',size*2+'px','important');}window.__qaNavigationTextZoom=fontPercent;},{once:true});},{fontPercent});
+   // on each newly constructed document. Lifecycle order is observed, not assumed.
+   // Never manually repair shelf scroll to change the Back outcome.
+   await context.addInitScript(({fontPercent})=>{
+    window.__qaNavigationDiagnostics=[];
+    const record=(phase,persisted=null)=>{window.__qaNavigationDiagnostics.push({phase,persisted,time:performance.now(),scrollX,scrollY,shelfScrollLeft:document.querySelector('.desk-books')?.scrollLeft??null,bodyTextSize:document.body?parseFloat(getComputedStyle(document.body).fontSize):null,fontsStatus:document.fonts.status});};
+    addEventListener('pageshow',e=>record('pageshow',e.persisted));
+    // pagehide is BFCache-compatible; no unload/beforeunload listener is added.
+    addEventListener('pagehide',e=>record('pagehide',e.persisted));
+    document.addEventListener('DOMContentLoaded',()=>{record('before-text-zoom');if(fontPercent===200){const sizes=[...document.querySelectorAll('*')].map(el=>[el,parseFloat(getComputedStyle(el).fontSize)]);for(const [el,size] of sizes)if(Number.isFinite(size))el.style.setProperty('font-size',size*2+'px','important');}window.__qaNavigationTextZoom=fontPercent;record('after-text-zoom');document.fonts.ready.then(()=>record('fonts-ready-after-dom'));},{once:true});
+   },{fontPercent});
    await context.route('**/*',r=>{const url=r.request().url();if(new URL(url).origin===origin)return r.continue();row.externalRequests.push(url);return r.abort('blockedbyclient');});
    await context.routeWebSocket('**/*',ws=>{row.externalRequests.push(ws.url());ws.close();});
    const page=await context.newPage();page.on('pageerror',e=>row.pageErrors.push(e.message));page.on('requestfailed',r=>{if(r.url().startsWith(origin+'/'))row.failedLocalRequests.push({url:r.url(),failure:r.failure()});});page.on('response',r=>{if(r.url().startsWith(origin+'/')&&r.status()>=400)row.failedLocalRequests.push({url:r.url(),status:r.status()});});
    await page.goto(origin+route,{waitUntil:'networkidle'});await page.waitForFunction(p=>window.__qaNavigationTextZoom===p,fontPercent,{timeout:5000});await settleLocalPage(page);row.homeTextSize=await page.evaluate(()=>parseFloat(getComputedStyle(document.body).fontSize));
    const selector=trigger==='cover'?'.book-choice-link':'.choice-title a';const link=page.locator(selector).nth(index);row.href=await link.getAttribute('href');
-   await link.focus();row.focus=await link.evaluate(el=>{const b=el.getBoundingClientRect(),s=el.closest('.desk-books').getBoundingClientRect();return {passed:document.activeElement===el&&b.left>=s.left-1&&b.right<=s.right+1&&b.left>=-1&&b.right<=innerWidth+1&&b.top>=-1&&b.bottom<=innerHeight+1,scrollLeft:el.closest('.desk-books').scrollLeft};});await Promise.all([page.waitForURL(origin+book.href),page.keyboard.press('Enter')]);await page.waitForFunction(p=>window.__qaNavigationTextZoom===p,fontPercent,{timeout:5000});await settleLocalPage(page);
+   await link.focus();row.focus=await link.evaluate(shelfLinkSnapshot,book.href);row.focus.passed=row.focus.passed&&row.focus.focusRestored;await Promise.all([page.waitForURL(origin+book.href),page.keyboard.press('Enter')]);await page.waitForFunction(p=>window.__qaNavigationTextZoom===p,fontPercent,{timeout:5000});await settleLocalPage(page);
    row.target=await page.evaluate(book=>{const title=document.querySelector('h1'),reason=[...document.querySelectorAll('.selection-reason')].find(e=>e.textContent.trim()===book.reason),cover=document.querySelector('main .cover img'),source=[...document.querySelectorAll('main a[href]')].find(e=>e.getAttribute('href')===book.source),visible=e=>!!e&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true});return {bodyTextSize:parseFloat(getComputedStyle(document.body).fontSize),title:title?.textContent.trim(),titleVisible:visible(title),reason:reason?.textContent.trim(),reasonVisible:visible(reason),cover:cover?.getAttribute('src'),coverVisible:visible(cover),source:source?.getAttribute('href'),sourceVisible:visible(source)};},book);
    Object.assign(row.target,{localErrors:row.failedLocalRequests.length,externalRequests:row.externalRequests.length});row.target.passed=validateDestination(row.target,book)&&page.url()===origin+book.href;
-   await page.goBack({waitUntil:'domcontentloaded'});await page.waitForFunction(p=>window.__qaNavigationTextZoom===p,fontPercent,{timeout:5000});await settleLocalPage(page);row.back=await page.locator(selector).nth(index).evaluate((e,href)=>{const b=e.getBoundingClientRect(),shelf=e.closest('.desk-books'),s=shelf.getBoundingClientRect(),inViewport=b.left>=-1&&b.right<=innerWidth+1&&b.top>=-1&&b.bottom<=innerHeight+1,unclipped=b.left>=s.left-1&&b.right<=s.right+1&&b.top>=s.top-1&&b.bottom<=s.bottom+1;return {bodyTextSize:parseFloat(getComputedStyle(document.body).fontSize),url:location.pathname,inViewport,unclipped,scrollLeft:shelf.scrollLeft,focusRestored:document.activeElement===e,passed:e.getAttribute('href')===href&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true})&&inViewport&&unclipped};},book.href);row.back.passed=row.back.passed&&page.url()===origin+route;
+   await page.goBack({waitUntil:'domcontentloaded'});await page.waitForFunction(p=>window.__qaNavigationTextZoom===p,fontPercent,{timeout:5000});
+   const returnedLink=page.locator(selector).nth(index);
+   row.backBeforeReady=await returnedLink.evaluate(shelfLinkSnapshot,book.href);
+   await settleLocalPage(page);row.back=await returnedLink.evaluate(shelfLinkSnapshot,book.href);row.back.passed=row.back.passed&&page.url()===origin+route;
+   // A later diagnostic cannot replace or turn a failed authoritative Back check green.
+   await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+   row.backAfterDiagnosticFrames=await returnedLink.evaluate(shelfLinkSnapshot,book.href);
+   if(!row.back.passed){const file='direct-'+width+'-'+fontPercent+'-'+index+'-'+trigger+'-back.png';await page.screenshot({path:path.join(out,file),fullPage:false});row.backScreenshot={file,point:'After two diagnostic frames; pass/fail still uses the earlier readiness snapshot.'};}
    row.textZoomPassed=[row.homeTextSize,row.target.bodyTextSize,row.back.bodyTextSize].every(v=>Math.abs(v-16*fontPercent/100)<.01);
    row.passed=row.textZoomPassed&&row.href===book.href&&row.focus.passed&&row.target.passed&&row.back.passed&&!row.externalRequests.length&&!row.failedLocalRequests.length&&!row.pageErrors.length;
   }catch(e){row.errors.push(e.stack||String(e));}finally{if(context)await context.close().catch(e=>row.errors.push(e.message));if(row.errors.length)row.passed=false;save();console.log((row.passed?'PASS':'FAIL')+' direct detail '+width+'/'+fontPercent+' '+trigger+' '+index);}
@@ -492,7 +523,8 @@ async function checkCoverNavigation(browser,origin){
           };
           const shelfViewport=document.querySelector('.desk-books');
           const initialCards=[...document.querySelectorAll('.book-choice')].map(c=>({card:box(c),cover:box(c.querySelector('.work-art img')),title:box(c.querySelector('.choice-title'))}));
-          const initialShelf={shelfViewport:box(shelfViewport),shelfOverflowX:getComputedStyle(shelfViewport).overflowX,shelfScrollLeft:shelfViewport.scrollLeft,shelfScrollWidth:shelfViewport.scrollWidth,shelfClientWidth:shelfViewport.clientWidth,shelfScrollHeight:shelfViewport.scrollHeight,shelfClientHeight:shelfViewport.clientHeight};
+          const shelfStyle=getComputedStyle(shelfViewport);
+          const initialShelf={rootFontSize:parseFloat(getComputedStyle(document.documentElement).fontSize),shelfContentWidth:shelfViewport.clientWidth-parseFloat(shelfStyle.paddingLeft)-parseFloat(shelfStyle.paddingRight),gridSizing:{display:shelfStyle.display,templateColumns:shelfStyle.gridTemplateColumns,autoColumns:shelfStyle.gridAutoColumns,autoFlow:shelfStyle.gridAutoFlow,columnGap:shelfStyle.columnGap,paddingLeft:shelfStyle.paddingLeft,paddingRight:shelfStyle.paddingRight},shelfViewport:box(shelfViewport),shelfOverflowX:getComputedStyle(shelfViewport).overflowX,shelfScrollLeft:shelfViewport.scrollLeft,shelfScrollWidth:shelfViewport.scrollWidth,shelfClientWidth:shelfViewport.clientWidth,shelfScrollHeight:shelfViewport.scrollHeight,shelfClientHeight:shelfViewport.clientHeight};
           const mappings=[];
           for(const choice of document.querySelectorAll('.book-choice')){choice.querySelector('.book-choice-link').focus();await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));mappings.push(readCard(choice));}
           // Full card geometry belongs to its revealed state; global scene/header
