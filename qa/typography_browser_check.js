@@ -18,7 +18,7 @@ const out=path.join(__dirname,'artifacts/typography');fs.mkdirSync(out,{recursiv
    const layout=await page.evaluate(()=>{
     const heading=document.querySelector('#hd-feature-title')||document.querySelector('.dr-article-opening h1');
     const spans=[...heading.querySelectorAll('.hd-title-phrase,.dr-title-phrase')];
-    return {text:heading.textContent,viewport:innerWidth,scrollWidth:document.documentElement.scrollWidth,font:getComputedStyle(heading).fontFamily,spans:spans.map(el=>{
+    return {text:heading.textContent,viewport:innerWidth,scrollWidth:document.documentElement.scrollWidth,font:getComputedStyle(heading).fontFamily,weight:getComputedStyle(heading).fontWeight,publicGothic:document.body.classList.contains('public-gothic'),spans:spans.map(el=>{
      const r=document.createRange();r.selectNodeContents(el);const rects=[...r.getClientRects()];
      return {text:el.textContent,width:el.getBoundingClientRect().width,lines:new Set(rects.map(r=>Math.round(r.top))).size};
     })};
@@ -26,7 +26,12 @@ const out=path.join(__dirname,'artifacts/typography');fs.mkdirSync(out,{recursiv
    assert.ok(layout.scrollWidth<=width+1,`${route} ${width} ${fontPercent}% overflow`);
    assert.ok(layout.spans.length>=2,'Semantic title phrases must exist');
    if(fontPercent===100)for(const span of layout.spans)assert.equal(span.lines,1,`${span.text}: no character-level break at normal size`);
-   assert.ok(layout.font.includes('EB Display'),'Preserve established display type');
+   // HOME stays frozen; only the two opted-in articles change to real Gothic Bold.
+   // Actual rendered PostScript identity is checked by public_typography_browser_check.
+   const bridged=route!=='/';
+   assert.equal(layout.publicGothic,bridged,'Only approved article routes use the bridge');
+   assert.ok(layout.font.includes(bridged?'EB Public Gothic':'EB Display'),'Preserve the route-specific display contract');
+   assert.equal(layout.weight,bridged?'700':'500','Use the actual intended font weight');
    await page.screenshot({path:path.join(out,`${route==='/'?'home':path.basename(route,'.html')}-${width}-${fontPercent}.png`)});
    results.push({route,width,fontPercent,layout,passed:true});await context.close();
   }

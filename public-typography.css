@@ -1,0 +1,36 @@
+/* Route-scoped bridge to C3's real 400/700 gothic hierarchy.
+   Existing artwork, palette, grids, rights text, controls and C3 stay unchanged.
+   OFL, pinned originals and complete corpus evidence: assets/fonts/public-gothic/. */
+@font-face{font-family:"EB Public Gothic";src:url('/assets/fonts/public-gothic/eb-public-gothic-400.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:"EB Public Gothic";src:url('/assets/fonts/public-gothic/eb-public-gothic-700.woff2') format('woff2');font-style:normal;font-weight:700;font-display:swap}
+body.design-redesign.site-polished.public-gothic{
+  --font-body:"EB Public Gothic",-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Noto Sans CJK JP","Yu Gothic",Meiryo,sans-serif;
+  --font-display:var(--font-body);
+  --sans:var(--font-body);--serif:var(--font-body);
+  --dr-body:var(--font-body);--dr-display:var(--font-body);
+  --type-page-title:clamp(2rem,1.65rem + 1.3vw,2.625rem);
+  --type-section-title:1.5rem;--type-card-title:1.375rem;
+  --leading-heading:1.4;--leading-body:1.9;
+  font-family:var(--font-body);font-weight:400;font-synthesis:none;
+  font-size:1rem;line-height:1.9;letter-spacing:.015em;line-break:strict;
+}
+body.design-redesign.site-polished.public-gothic :is(h1,h2,h3,h4,.wk-object,.wk-title,.th-title,.th-object-title){
+  font-family:var(--font-body);font-weight:700;
+  letter-spacing:.015em;font-feature-settings:normal;
+  word-break:normal;overflow-wrap:anywhere;text-wrap:pretty;
+}
+body.design-redesign.site-polished.public-gothic :is(h1,.intro h1,.detail h1,.event-detail h1,.wk-title){font-size:var(--type-page-title);line-height:1.35}
+/* Legacy city subtitle spans set font:400 themselves; retain their size, not weight. */
+body.design-redesign.site-polished.public-gothic .city-heading h1 span{font-weight:700}
+body.design-redesign.site-polished.public-gothic :is(h2,.city-caption h2,.research-card h2,.event-context h2,.event-connections h2){font-size:1.5rem;line-height:1.5}
+body.design-redesign.site-polished.public-gothic :is(h3,.card-body h2,.wk-entry .wk-object,.wk-work>.wk-object){font-size:1.375rem;line-height:1.5}
+/* The event's identity/date remain before its image and retain the 24px minimum. */
+body.design-redesign.site-polished.public-gothic .event-card .event-card-heading h2{font-size:clamp(1.5rem,2.2vw,1.875rem);line-height:1.5}
+body.design-redesign.site-polished.public-gothic :is(p,li,dd,label,input,select,textarea,figcaption,.creator,.detail-creator,.wk-byline,.eyebrow,.checked,.source){font-weight:400}
+body.design-redesign.site-polished.public-gothic :is(.lead,.collection-lead,.wk-lead,.detail-hook,.card-hook,.wk-reading-text,.wk-info-text,.wk-relation,.event-context p){font-size:1rem;line-height:1.9}
+body.design-redesign.site-polished.public-gothic :is(button,summary,strong,b,.primary,.official-action,.wk-route,.work-official>a,.card-action,.event-detail-link,.site-sections a,.category-nav a,.category-nav span,.page-tools a,.site-menu-title,.site-menu-link,.site-menu-close,.site-menu-secondary-link,.wk-list li a,.dr-section-label>span){font-family:var(--font-body);font-weight:700}
+body.design-redesign.site-polished.public-gothic .event-card .event-date>span{font:700 1.0625rem/1.65 var(--font-body);font-variant-numeric:tabular-nums}
+body.design-redesign.site-polished.public-gothic .event-date small{font-weight:400}
+body.design-redesign.site-polished.public-gothic :is(.site-sections a,.category-nav a,.category-nav span){font-size:.875rem;line-height:1.6}
+body.design-redesign.site-polished.public-gothic :is(.creator,.detail-creator,.wk-byline,.checked,.source,.official-media figcaption){font-size:.8125rem;line-height:1.8}
+/* No fixed line breaks/nowrap: Japanese and Latin titles must survive text enlargement. */

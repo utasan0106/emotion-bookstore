@@ -119,7 +119,7 @@ assert.match(emptyDiscovery,/現在、掲載できる街の動きはありませ
 
    for(const card of await page.locator('[data-event-card]:visible').all()){
     const title=await card.locator('h2').boundingBox(),dateBox=await card.locator('.event-date').boundingBox(),photoBox=await card.locator('figure').boundingBox();
-    assert.ok(await card.locator('h2').evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=24&&document.fonts.check('500 24px \"EB Display\"')),'Loaded Mincho title stays at least 24px');
+    assert.ok(await card.locator('h2').evaluate(el=>{const css=getComputedStyle(el);return parseFloat(css.fontSize)>=24&&css.fontFamily.includes('EB Public Gothic')&&css.fontWeight==='700'&&css.fontSynthesis==='none'&&document.fonts.check('700 24px "EB Public Gothic"');}),'Real Gothic Bold title stays at least 24px without synthetic weight');
     assert.ok(title.y+title.height<=photoBox.y&&dateBox.y+dateBox.height<=photoBox.y,'Title and complete date summary precede the contextual image');
     assert.ok((await card.locator('[data-next-date]').innerText()).includes('開催予定'),'Next date includes its meaning');
     const id=await card.getAttribute('data-event-card'),e=source.events.find(e=>e.id===id);

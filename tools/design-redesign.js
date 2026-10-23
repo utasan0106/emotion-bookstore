@@ -35,5 +35,5 @@ module.exports = function redesign(file, html) {
     html = html.replace('</h1><p class="detail-hook">', '</h1>' + figure + '<p class="detail-hook">');
   }
   html=html.replace('<a class="brand" href="/">みんなの感情書店<span>', '<a class="brand dr-outings-brand" href="/"><img src="/assets/brand/emotion-bookstore-lockup-reversed.png" alt="" width="1429" height="331"><span class="sr-only">みんなの感情書店</span><span>');
-  return html;
+  return require('./public-typography')(html);
 };

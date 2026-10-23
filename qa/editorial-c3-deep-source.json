@@ -18,7 +18,7 @@
     {
       "output": "books/junjo.html",
       "source": "discover/koenji/junjo.html",
-      "source_sha256": "37d48eb3623eb87c48dc101e55e21cbfa308b2b47f814304fd8f78af1c4b2e23"
+      "source_sha256": "ae05d3ee2faf837faf4e1a1e36ff856588dccb6a1e775e18f31583fb1d0ce182"
     },
     {
       "output": "shelves/places-to-share.html",
