@@ -300,10 +300,10 @@ async function checkInteractions(browser, origin) {
         await context.route('**/*', async r => {
           const url=r.request().url();
           if (new URL(url).origin===origin) return r.continue();
-          result.externalRequests.push({url,resourceType:r.request().resourceType(),phase:'before interaction'});
+          result.externalRequests.push({url,resourceType:r.request().resourceType(),phase:'render and keyboard validation; no activation'});
           return r.abort('blockedbyclient');
         });
-        await context.routeWebSocket('**/*', ws=>{result.externalRequests.push({url:ws.url(),resourceType:'websocket',phase:'before interaction'});ws.close();});
+        await context.routeWebSocket('**/*', ws=>{result.externalRequests.push({url:ws.url(),resourceType:'websocket',phase:'render and keyboard validation; no activation'});ws.close();});
         page=await context.newPage();
         page.on('pageerror', e=>result.pageErrors.push(e.message));
         page.on('response', r=>{if(r.url().startsWith(origin+'/') && r.status()>=400) result.failedLocalRequests.push({url:r.url(),status:r.status()});});
@@ -494,10 +494,14 @@ async function checkInteractions(browser, origin) {
           }
           result.shelfNavigation.passed=result.shelfNavigation.passed&&result.shelfNavigation.tabOrder.every(Boolean);
         }
-        // Geometry works for off-screen text too; no click, scroll, or provider interaction.
+        // Geometry covers off-screen text; prior focus/Tab navigation may scroll, but does not activate links or providers.
         result.contrast=await page.evaluate(measureContrast);
         // networkidle and decoded images already establish render readiness.
-        result.privacy={passed:result.externalRequests.length===0,interactionPerformed:false};
+        result.privacy={passed:result.externalRequests.length===0,
+          interactionPerformed:!!result.shelfNavigation,
+          interactionType:result.shelfNavigation?'keyboard focus and Tab navigation only':'none',
+          focusMayScroll:!!result.shelfNavigation,activationPerformed:false,
+          providerActivationPerformed:false,externalRequestsBlocked:true};
         result.runtime={passed:result.pageErrors.length===0&&result.failedLocalRequests.length===0};
         result.passed=['navigation','invariants','images','layout','links','contrast','privacy','runtime'].every(k=>result[k].passed);
         if(result.editorialFont) result.passed=result.passed&&result.editorialFont.passed;
