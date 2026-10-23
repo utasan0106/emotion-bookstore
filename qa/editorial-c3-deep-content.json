@@ -1,0 +1,221 @@
+[
+  {
+    "route": "/qa/editorial-study-c3/books/junjo.html",
+    "title": "高円寺純情商店街",
+    "covers": [
+      "/assets/book-covers/9784101021126.jpg"
+    ],
+    "reasons": [
+      "まずは店先へ。商店街で暮らす人の話から、ほかの誰かの日常をのぞく。"
+    ],
+    "credits": [
+      "ねじめ正一『高円寺純情商店街』（新潮文庫刊） · 書籍情報"
+    ],
+    "relatedLinks": [],
+    "detailsCount": 1,
+    "originalHref": "/discover/koenji/junjo.html",
+    "publisherNames": [],
+    "homeReason": "まずは店先へ。商店街で暮らす人の話から、ほかの誰かの日常をのぞく。"
+  },
+  {
+    "route": "/qa/editorial-study-c3/books/naruse.html",
+    "title": "成瀬は天下を取りにいく",
+    "covers": [
+      "/qa/editorial-preview-v4/assets/book-covers/9784103549512.jpg",
+      "/assets/book-covers/9784101021126.jpg",
+      "/qa/editorial-preview-v4/assets/book-covers/9784103524519.jpg"
+    ],
+    "reasons": [
+      "何かを始めたい日は、成瀬の思いつきから。閉店前の店に通う計画と、そばで見守る友人のやりとりを入口に。"
+    ],
+    "credits": [
+      "宮島未奈『成瀬は天下を取りにいく』（新潮社刊）",
+      "ねじめ正一『高円寺純情商店街』（新潮文庫刊） 出典",
+      "ヨシタケシンスケ『思わず考えちゃう』（新潮社刊） 出典",
+      "作品同士のつながりは、公開資料を手がかりにした編集上の提案です。原作・続編・公式提携を意味しません。",
+      "公開試読の一部と出版社紹介を確認した選書です。全編読了の感想ではありません。刊行日と感情書店への掲載日は別です。このページは未公開試作です。"
+    ],
+    "relatedLinks": [
+      "/qa/editorial-study-c3/books/junjo.html",
+      "/qa/editorial-study-c3/books/omowazu.html"
+    ],
+    "detailsCount": 1,
+    "originalHref": null,
+    "publisherNames": [],
+    "homeReason": "何かを始めたい日は、成瀬の思いつきから。閉店前の店に通う計画と、そばで見守る友人のやりとりを入口に。"
+  },
+  {
+    "route": "/qa/editorial-study-c3/books/omowazu.html",
+    "title": "思わず考えちゃう",
+    "covers": [
+      "/qa/editorial-preview-v4/assets/book-covers/9784103524519.jpg",
+      "/qa/editorial-preview-v4/assets/book-covers/9784103549512.jpg",
+      "/assets/book-covers/9784867168523.jpg"
+    ],
+    "reasons": [
+      "いつもの暮らしにも、まだ気になることがある。小さな疑問を描いたスケッチと短文から、今日は一つだけ。"
+    ],
+    "credits": [
+      "ヨシタケシンスケ『思わず考えちゃう』（新潮社刊）",
+      "宮島未奈『成瀬は天下を取りにいく』（新潮社刊） 出典",
+      "ことのは文庫／マイクロマガジン社 · 装画：にーな · 出典：出版社発表 出典",
+      "作品同士のつながりは、公開資料を手がかりにした編集上の提案です。原作・続編・公式提携を意味しません。",
+      "公開試読の一部と出版社紹介を確認した選書です。全編読了の感想ではありません。刊行日と感情書店への掲載日は別です。このページは未公開試作です。"
+    ],
+    "relatedLinks": [
+      "/qa/editorial-study-c3/books/naruse.html",
+      "/discover/kichijoji/honnoniwa.html"
+    ],
+    "detailsCount": 1,
+    "originalHref": null,
+    "publisherNames": [],
+    "homeReason": "いつもの暮らしにも、まだ気になることがある。小さな疑問を描いたスケッチと短文から、今日は一つだけ。"
+  },
+  {
+    "route": "/qa/editorial-study-c3/shelves/places-to-share.html",
+    "title": "居場所をめぐる三冊。",
+    "covers": [
+      "/assets/book-covers/9784048532587.webp",
+      "/assets/book-covers/9784867168523.jpg",
+      "/assets/book-covers/9784835638492.jpg"
+    ],
+    "reasons": [
+      "人が集まる店や劇場の前に、猫と暮らす日々へ。同じ場所で過ごす相手から、この棚を始めます。",
+      "次に読む本を、ランキングではなく誰かの本棚から決めてみたい日に。",
+      "舞台の上から、舞台をつくった人へ。客席では見えない仕事をたどりたくなったら。"
+    ],
+    "credits": [
+      "大島弓子『グーグーだって猫である』（ＫＡＤＯＫＡＷＡ刊） 出典",
+      "ことのは文庫／マイクロマガジン社 · 装画：にーな · 出典：出版社発表 出典",
+      "本多一夫［語り］・徳永京子［著］／ぴあ · 出典：出版社発表 出典",
+      "資料確認：2026年10月23日。刊行日と、この試作の作成日は別です。"
+    ],
+    "relatedLinks": [
+      "/discover/kichijoji/gou-gou-book.html",
+      "/discover/kichijoji/honnoniwa.html",
+      "/discover/shimokitazawa/honda.html"
+    ],
+    "detailsCount": 4,
+    "originalHref": null,
+    "publisherNames": [
+      "ＫＡＤＯＫＡＷＡ",
+      "ＫＡＤＯＫＡＷＡ"
+    ],
+    "homeReason": null
+  },
+  {
+    "kind": "culture-film",
+    "route": "/qa/editorial-study-c3/film-and-books.html",
+    "title": "本と映画、その先の街。",
+    "covers": [
+      "/assets/city-jinbocho-suzuran.jpg"
+    ],
+    "reasons": [],
+    "credits": [],
+    "relatedLinks": [],
+    "detailsCount": 1,
+    "originalHref": null,
+    "paragraphs": [
+      "二つの『森崎書店の日々』から、神保町へ。",
+      "八木沢里志の小説",
+      "神保町の古書店を、物語の中心にした一冊。",
+      "日向朝子 監督・脚本／2010年",
+      "八木沢里志の小説をもとにした、109分の映画。",
+      "小説の舞台になった神保町は、映画が撮られた場所でもあります。街中に「森崎書店」のロケセットを組んで撮影されました。",
+      "森崎書店は作中の書店です。撮影用のセットは、いま神保町にある店ではありません。案内するのは神保町の街の範囲で、特定の撮影地点ではありません。",
+      "神保町の専門古書店の一例です。作品との関係が確認された店ではなく、作中の「森崎書店」とは別の店です。",
+      "『森崎書店の日々』を上映プログラムで扱ってきた映画館。リンク先は現在のプログラムです。この作品の上映中を示すものではありません。",
+      "訪問前に、各店・施設の公式情報をご確認ください。在庫や当日の営業は確認していません。",
+      "作品資料の確認日：2026年9月5日。公開資料に基づく案内で、読了・鑑賞・訪問の体験談ではありません。各店・施設との提携を示すものではありません。",
+      "本から辿る · 映画から辿る"
+    ],
+    "headingTexts": [
+      "『森崎書店の日々』",
+      "『森崎書店の日々』",
+      "物語の街を、歩く。",
+      "本屋と、映画館へ。",
+      "矢口書店",
+      "神保町シアター"
+    ],
+    "captions": [
+      "神保町・すずらん通り、2023年4月2日。映画の場面や撮影セットの写真ではありません。写真：Fred Cherrygarden／CC BY-SA 4.0。縮小版を使用。切り抜き・色調変更なし。"
+    ],
+    "allLinks": [
+      "#main",
+      "/qa/editorial-study-c3/index.html",
+      "/qa/editorial-study-c3/index.html#shelves",
+      "/qa/editorial-study-c3/index.html#listen",
+      "/qa/editorial-study-c3/film-and-books.html",
+      "/qa/editorial-study-c3/outings.html",
+      "/qa/editorial-study-c3/index.html#shelves",
+      "https://commons.wikimedia.org/wiki/File:Suzuran_Street_Jimbocho.jpg",
+      "https://creativecommons.org/licenses/by-sa/4.0/",
+      "/thread.html?thread=morisaki-book",
+      "https://ndlsearch.ndl.go.jp/books/R100000002-I034360568",
+      "/work-film.html",
+      "https://www.youtube.com/watch?v=6M0vx8wLEbM",
+      "https://jimbou.info/map/",
+      "https://yaguchishoten.jp/",
+      "https://www.shogakukan.co.jp/jinbocho-theater/features/",
+      "https://jfdb.jp/title/2240",
+      "https://ndlsearch.ndl.go.jp/books/R100000002-I034360568",
+      "https://www.shogakukan.co.jp/jinbocho-theater/archive/program/towns-b_list.html",
+      "/thread.html?thread=morisaki-book",
+      "/thread.html?thread=morisaki-film",
+      "/qa/editorial-study-c3/outings.html",
+      "/qa/editorial-study-c3/index.html",
+      "/discover/",
+      "/outings/",
+      "/credits.html"
+    ],
+    "publisherNames": [],
+    "homeReason": null
+  },
+  {
+    "kind": "culture-outings",
+    "route": "/qa/editorial-study-c3/outings.html",
+    "title": "一冊を選んだら、荻窪を歩こう。",
+    "covers": [],
+    "reasons": [],
+    "credits": [],
+    "relatedLinks": [],
+    "detailsCount": 0,
+    "originalHref": null,
+    "paragraphs": [
+      "本屋で選び、街を歩き、本を開く。",
+      "文学、哲学、芸術も含めた「生活」を、選書の軸にしている本屋です。",
+      "どんな一冊と出会えるか。まずは店の選書方針から。",
+      "食堂、パン屋、古書店、公園。Titleの公式アクセスページには、近くの場所を紹介するマップがあります。",
+      "一冊を選んだら、店が案内する街へ。",
+      "近隣の本屋で見つけた一冊を持参する過ごし方を、公式に案内しています。",
+      "選んだ本を持って、寄り道の続きを。",
+      "掲載作品の在庫、席の空き、当日の営業は確認していません。訪ねる前に、それぞれの公式情報をお確かめください。",
+      "公式資料確認：2026年10月23日。訪問体験や提携先の紹介ではありません。"
+    ],
+    "headingTexts": [
+      "荻窪の本屋 Title",
+      "荻窪おすすめマップ",
+      "Via"
+    ],
+    "captions": [],
+    "allLinks": [
+      "#main",
+      "/qa/editorial-study-c3/index.html",
+      "/qa/editorial-study-c3/index.html#shelves",
+      "/qa/editorial-study-c3/index.html#listen",
+      "/qa/editorial-study-c3/film-and-books.html",
+      "/qa/editorial-study-c3/outings.html",
+      "/qa/editorial-study-c3/index.html#shelves",
+      "https://www.title-books.com/about",
+      "https://www.title-books.com/access",
+      "https://via-ogikubo.com/bookstore",
+      "/qa/editorial-study-c3/film-and-books.html",
+      "/qa/editorial-study-c3/index.html",
+      "/discover/",
+      "/outings/",
+      "/credits.html"
+    ],
+    "publisherNames": [],
+    "homeReason": null
+  }
+]

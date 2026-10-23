@@ -1,0 +1,153 @@
+/* C3: one existing illustrated desk, a finite three-book shelf, complete reasons and direct details.
+ * Owner direction: no redundant secondary labels or numbered interface scaffolding.
+ * Comparison candidate only. Browser evidence and human visual review pending.
+ * C / C2, artwork and SVG symbol are unchanged. Zen Kaku 700 gives the hero,
+ * books and brand a clear hierarchy, with real 400 for reading. No synthetic weight.
+ */
+@font-face { font-family: EditorialReading; src: url('assets/deep-zen-kaku-gothic-400.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: EditorialReading; src: url('assets/deep-zen-kaku-gothic-700.woff2') format('woff2'); font-style: normal; font-weight: 700; font-display: swap; }
+:root { --navy: #202e43; --paper: #fbf2df; --rust: #a4372b; --muted: #52606b; --rule: #b7b7ac; --music: #cbd9dd; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--navy);
+  color: var(--navy);
+  font-family: EditorialReading, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.9;
+  letter-spacing: .015em;
+  font-synthesis: none;
+  font-kerning: normal;
+  line-break: strict;
+  word-break: normal;
+}
+h1, h2, h3, p, ol, figure { margin: 0; }
+a { color: inherit; text-underline-offset: .22em; }
+a:hover { text-decoration-thickness: 2px; }
+img { display: block; max-width: 100%; height: auto; }
+button { font: inherit; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--rust); outline-offset: 4px; box-shadow: 0 0 0 7px var(--paper); }
+footer a:focus-visible { outline-color: var(--paper); box-shadow: 0 0 0 7px var(--navy); }
+.skip { position: absolute; left: -9999px; background: var(--paper); color: var(--navy); }
+.skip:focus { left: 12px; top: 12px; z-index: 10; padding: 12px; }
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 24px;
+  padding: 12px max(24px, calc((100% - 1208px) / 2));
+  min-height: 72px;
+  background: var(--paper);
+}
+.brand { display: inline-flex; align-items: center; gap: 10px; max-width: 100%; min-width: 0; min-height: 44px; text-decoration: none; }
+.brand img { width: 38px; flex: 0 0 38px; height: auto; }
+.brand-name { min-width: 0; font-size: 1.125rem; font-weight: 700; line-height: 1.6; letter-spacing: .015em; }
+nav { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+nav a { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; font-size: .875rem; font-weight: 700; text-decoration: none; }
+.desk-scene { position: relative; isolation: isolate; max-width: 1440px; margin-inline: auto; padding-top: clamp(56px, 8vw, 116px); }
+.desk-art { position: absolute; z-index: -1; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; pointer-events: none; }
+.reading-paper { position: relative; width: 80%; max-width: 1152px; margin: 0 auto; background: var(--paper); }
+.shelf { padding: 30px 40px 0; }
+.paper-heading { text-align: center; }
+.paper-heading h1 { margin-top: 0; font-family: EditorialReading, sans-serif; font-size: clamp(3.5rem, 4.5vw, 4rem); font-weight: 700; line-height: 1.2; letter-spacing: .01em; }
+.paper-heading h1 span { display: inline; }
+.shelf-introduction { max-width: 40em; margin: 16px auto 0; font-size: 1rem; line-height: 1.9; }
+.desk-books { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; list-style: none; padding: 30px 0 0; }
+.book-choice { min-width: 0; text-align: center; }
+.book-choice-link { display: block; text-decoration: none; }
+.choice-title { margin-top: 12px; font-size: 1.125rem; font-weight: 700; line-height: 1.6; text-wrap: balance; }
+.book-choice-link:hover .choice-title { text-decoration: underline; }
+.work-art { height: 236px; display: flex; align-items: flex-end; justify-content: center; }
+.work-art img { width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; object-position: 50% 100%; }
+.book-card { min-width: 0; }
+.choice-title a { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; min-height: 44px; text-decoration: none; }
+.choice-title a:hover { text-decoration: underline; }
+.book-author, .book-publisher { display: inline; }
+.selection-reason { margin-top: 12px; font-size: 1rem; line-height: 1.8; text-align: left; }
+.book-credit { margin-top: 8px; font-size: .8125rem; line-height: 1.8; font-weight: 400; color: var(--muted); text-align: left; }
+.book-credit a { display: inline-flex; align-items: center; max-width: 100%; min-height: 44px; }
+.basis { max-width: 64em; margin-top: 20px; font-size: .8125rem; line-height: 1.9; color: var(--muted); }
+.next-shelf { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 20px; margin-top: 24px; padding: 20px 0 32px; border-top: 2px solid var(--rust); text-decoration: none; }
+.next-description { font-size: .875rem; line-height: 1.85; }
+.next-shelf strong { grid-column: 1; font-size: 1.5rem; line-height: 1.65; font-weight: 700; text-decoration: underline; text-decoration-thickness: .05em; text-underline-offset: .22em; }
+.next-description { grid-column: 1; }
+.next-arrow { grid-column: 2; grid-row: 1 / 4; align-self: center; font-size: 1.75rem; color: var(--rust); }
+.music { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 40px; align-items: start; padding: 32px 40px; background: var(--music); }
+.music-description, .music-player, .venue-note { min-width: 0; }
+.music h2 { margin: 0 0 12px; font-size: 1.75rem; font-weight: 700; line-height: 1.6; }
+.music p { font-size: .875rem; line-height: 1.85; }
+.music a { display: inline-flex; gap: 6px; align-items: center; min-height: 44px; font-size: .875rem; }
+.music-player { margin-top: 22px; }
+.music .privacy { margin-top: 10px; font-size: .8125rem; }
+.music .music-external { margin-top: 2px; font-size: .8125rem; }
+.v3-video-frame { position: relative; }
+.v3-video-load { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 60px; padding: 16px 20px; border: 1px solid var(--navy); background: var(--navy); color: var(--paper); font-size: .875rem; font-weight: 400; line-height: 1.8; text-align: left; cursor: pointer; }
+.v3-video[data-video-state="loaded"] .v3-video-frame { aspect-ratio: 16 / 9; background: var(--navy); }
+.v3-video-iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.music .venue-label { margin-bottom: 10px; font-size: .8125rem; font-weight: 400; }
+.venue-note { width: 220px; max-width: 100%; }
+.venue-note > img { width: 100%; height: auto; }
+.photo-credit { margin-top: 8px; font-size: .8125rem; line-height: 1.85; color: #46555f; }
+.photo-credit a { font-size: inherit; }
+footer { max-width: 1152px; width: 80%; margin: 0 auto; padding: 22px 0 28px; color: var(--paper); font-size: .8125rem; line-height: 1.9; }
+footer a { display: inline-flex; gap: 6px; align-items: center; min-height: 44px; }
+footer p + p { margin-top: 6px; }
+.other-entry { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-bottom: 22px; font-size: .875rem; }
+.icon { display: inline-block; width: 1.2em; height: 1.2em; flex: 0 0 1.2em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.icon-play { fill: currentColor; stroke: none; }
+@media (max-width: 1100px) {
+  .reading-paper, footer { width: 86%; }
+  .shelf { padding-inline: 28px; }
+  .paper-heading h1 span { display: block; }
+  .desk-books { gap: 24px; }
+  .music { padding-inline: 28px; gap: 24px; }
+}
+@media (max-width: 700px) {
+  .masthead { min-height: 60px; padding: 8px 16px; gap: 4px 12px; }
+  .brand { gap: 8px; }
+  .brand img { width: 28px; flex-basis: 28px; }
+  .brand-name { font-size: 1rem; }
+  nav { gap: 4px 6px; }
+  nav a { font-size: .875rem; }
+  .desk-scene { padding-top: 48px; }
+  .reading-paper { width: calc(100% - 24px); }
+  .shelf { padding: 20px 16px 0; }
+  .paper-heading { text-align: left; }
+  .paper-heading h1 { font-size: clamp(2rem, 8.8vw, 2.25rem); line-height: 1.25; margin-top: 0; }
+  .shelf-introduction { margin-top: 12px; font-size: 1rem; line-height: 1.85; }
+  /* Finite native shelf: two complete cards and the third edge at390px.
+   * Text zoom grows the rem card width, capped to the available shelf width.
+   * A fixed track, not zero-minimum minmax, prevents shrinking into 3 narrow columns.
+   * No auto advance, repeated slides, hidden copy or JavaScript scrolling. */
+  .desk-books { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: min(9rem, 100%); gap: 16px; margin-inline: -16px; padding: 22px 16px 12px; overflow-x: auto; overscroll-behavior-x: contain; scroll-padding-inline: 16px; }
+  .book-choice { text-align: left; }
+  .choice-title a { justify-content: flex-start; }
+  .selection-reason { margin-top: 10px; }
+  .book-credit { margin-top: 10px; letter-spacing: 0; }
+  .work-art { height: 180px; justify-content: flex-start; }
+  .choice-title { margin-top: 10px; font-size: 1rem; line-height: 1.55; }
+  .next-shelf { padding-bottom: 26px; gap: 4px 14px; }
+  .next-shelf strong { font-size: 1.25rem; }
+  .music { grid-template-columns: 1fr; padding: 26px 20px; gap: 26px; }
+  .music h2 { font-size: 1.625rem; }
+  .venue-note { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 0 12px; width: 100%; max-width: 360px; }
+  .venue-note > img { grid-column: 1; grid-row: 1 / 3; width: 112px; }
+  .music .venue-label { grid-column: 2; margin-bottom: 4px; }
+  .photo-credit { grid-column: 2; margin-top: 0; }
+  footer { width: auto; margin: 0; padding: 22px 20px 28px; }
+}
+@media (max-width: 360px) {
+  .masthead { padding-inline: 12px; }
+  .reading-paper { width: calc(100% - 16px); }
+  .shelf { padding-inline: 12px; }
+  .desk-books { margin-inline: -12px; padding-inline: 12px; scroll-padding-inline: 12px; }
+  .choice-title { font-size: 1rem; }
+  .music { padding-inline: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+
+.title-phrase { display: inline-block; max-width: 100%; overflow-wrap: anywhere; text-wrap: balance; }

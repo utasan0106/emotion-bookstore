@@ -127,6 +127,9 @@ for(const file of files){
 // 2026-09-10：トップのカテゴリはページ内の絞り込みだった。押しても1件しか出ず、
 // 読者が離脱する。全件のある一覧へ向け直した。
 const retiredDestinations={
+  // 2026-10-23: same ISBN/edition and unchanged reviewed bytes now served locally.
+  // qa/kaijin_cover_check.js pins the original SHA-256 and all five credited routes.
+  'https://www.tsogen.co.jp/img/cover_image_l/40608.jpg': '/assets/book-covers/9784488406080.jpg',
   // Restricted playback uses the exact provider page, not an unverified inline player.
   'https://www.youtube-nocookie.com/embed/Np7r73nw_iY?autoplay=0&amp;playsinline=1&amp;rel=0': 'https://www.youtube.com/watch?v=Np7r73nw_iY',
   // 2026-10-23 weekly home rotation replaces the prior pond photograph; asset is retained.

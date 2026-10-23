@@ -1,0 +1,84 @@
+{
+  "checkedAt": "2026-10-23",
+  "assets": [
+    {
+      "isbn": "9784103549512",
+      "title": "成瀬は天下を取りにいく",
+      "author": "宮島未奈",
+      "edition": "新潮社単行本",
+      "artworkCredits": "ざしきわらし／装画、新潮社装幀室／装幀",
+      "file": "9784103549512.jpg",
+      "sourcePage": "https://www.shinchosha.co.jp/book/354951/",
+      "originalImageUrl": "https://www.shinchosha.co.jp/images_v2/book/cover/354951/354951_m.jpg",
+      "discovery": "Opened actual cover-image link 16 on official product page; no guessed size variant",
+      "retrievedAt": "2026-10-23T08:13:00Z",
+      "httpStatus": 200,
+      "mime": "image/jpeg",
+      "bytes": 66588,
+      "sha256": "31e19877a819a39c20125345bb891fa8b2060c7bb80085c60b60af19553e7395",
+      "width": 197,
+      "height": 290,
+      "originalBytesUnmodified": true,
+      "visualReview": "Title, author and publisher visible; complete front cover without obi; matches official product image and associated ISBN. ISBN established from product metadata, not printed on front artwork.",
+      "credit": "宮島未奈『成瀬は天下を取りにいく』（新潮社刊）",
+      "policyUrl": "https://www.shinchosha.co.jp/help/ask.html",
+      "policySection": "B5",
+      "scope": "Associated book introduction on website; use official cover unchanged with specified credit. No cropping, recoloring, extraction of artwork, generic branding or interior-illustration reuse.",
+      "privacyReview": {
+        "metadataCategories": [
+          "JFIF",
+          "COM encoder identification"
+        ],
+        "EXIF": false,
+        "XMP": false,
+        "IPTCPhotoshop": false,
+        "privatePathPatternDetected": false,
+        "commentReviewed": "gd-jpeg / IJG encoder and quality only",
+        "sanitizationPerformed": false
+      },
+      "presentationLimit": "197x290 source; appropriate for modest book card, not large hero; no guessed high-resolution URL",
+      "published": false,
+      "uploaded": false
+    },
+    {
+      "isbn": "9784103524519",
+      "title": "思わず考えちゃう",
+      "author": "ヨシタケシンスケ",
+      "edition": "新潮社単行本",
+      "artworkCredits": "浅妻健司／ブックデザイン・彩色、ヨシタケシンスケ／装画",
+      "file": "9784103524519.jpg",
+      "sourcePage": "https://www.shinchosha.co.jp/book/352451/",
+      "originalImageUrl": "https://www.shinchosha.co.jp/images_v2/book/cover/352451/352451_m.jpg",
+      "discovery": "Opened actual cover-image link 16 on official product page; no guessed size variant",
+      "retrievedAt": "2026-10-23T08:13:00Z",
+      "httpStatus": 200,
+      "mime": "image/jpeg",
+      "bytes": 49807,
+      "sha256": "2a92f471b64d85f0a2efb50a0555b8ec16fd6634c226ba714f4e5214243aad71",
+      "width": 197,
+      "height": 290,
+      "originalBytesUnmodified": true,
+      "visualReview": "Title, author and publisher visible; complete front cover without obi; matches official product image and associated ISBN. ISBN established from product metadata, not printed on front artwork.",
+      "credit": "ヨシタケシンスケ『思わず考えちゃう』（新潮社刊）",
+      "policyUrl": "https://www.shinchosha.co.jp/help/ask.html",
+      "policySection": "B5",
+      "scope": "Associated book introduction on website; use official cover unchanged with specified credit. No cropping, recoloring, extraction of artwork, generic branding or interior-illustration reuse.",
+      "privacyReview": {
+        "metadataCategories": [
+          "JFIF",
+          "COM encoder identification"
+        ],
+        "EXIF": false,
+        "XMP": false,
+        "IPTCPhotoshop": false,
+        "privatePathPatternDetected": false,
+        "commentReviewed": "gd-jpeg / IJG encoder and quality only",
+        "sanitizationPerformed": false
+      },
+      "presentationLimit": "197x290 source; appropriate for modest book card, not large hero; no guessed high-resolution URL",
+      "published": false,
+      "uploaded": false
+    }
+  ],
+  "repoModified": false
+}

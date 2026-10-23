@@ -3,6 +3,8 @@
 // Exact checkout, deterministic October 23 reviewed inventory. External navigation is intercepted.
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),http=require('node:http'),cp=require('node:child_process');
 const {chromium}=require('playwright');
+const outingsStateReady=require('./outings_state_ready');
+require('./outings_state_ready_check');
 const root=path.resolve(__dirname,'..'),out=path.join(__dirname,'artifacts/outings');
 const source=require('../tools/weekly-outings-source'),week=require('../outings/week');
 // Freeze both source publication eligibility and the browser clock at the reviewed build.
@@ -117,7 +119,7 @@ assert.match(emptyDiscovery,/現在、掲載できる街の動きはありませ
 
    for(const card of await page.locator('[data-event-card]:visible').all()){
     const title=await card.locator('h2').boundingBox(),dateBox=await card.locator('.event-date').boundingBox(),photoBox=await card.locator('figure').boundingBox();
-    assert.ok(await card.locator('h2').evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=24&&document.fonts.check('500 24px \"EB Display\"')),'Loaded Mincho title stays at least 24px');
+    assert.ok(await card.locator('h2').evaluate(el=>{const css=getComputedStyle(el);return parseFloat(css.fontSize)>=24&&css.fontFamily.includes('EB Public Gothic')&&css.fontWeight==='700'&&css.fontSynthesis==='none'&&document.fonts.check('700 24px "EB Public Gothic"');}),'Real Gothic Bold title stays at least 24px without synthetic weight');
     assert.ok(title.y+title.height<=photoBox.y&&dateBox.y+dateBox.height<=photoBox.y,'Title and complete date summary precede the contextual image');
     assert.ok((await card.locator('[data-next-date]').innerText()).includes('開催予定'),'Next date includes its meaning');
     const id=await card.getAttribute('data-event-card'),e=source.events.find(e=>e.id===id);
@@ -141,7 +143,13 @@ assert.match(emptyDiscovery,/現在、掲載できる街の動きはありませ
    assert.equal(await page.locator('[data-event-status]').innerText(),'次の開催予定 10/28','All dates detail does not claim a selected week or parse all as a date');
    const allDetailUrl=page.url();await page.goBack({waitUntil:'networkidle'});assert.equal(page.url(),allListUrl);assert.deepEqual(await visibleIds(),combined);
    for(const [name,value] of [['week','all'],['city','koenji'],['kind','stage'],['with','solo']])assert.equal(await page.locator('select[name='+name+']').inputValue(),value,'Back retains '+name);
-   await page.goForward({waitUntil:'networkidle'});assert.equal(page.url(),allDetailUrl);await page.locator('[data-event-back]').click();await page.waitForLoadState('networkidle');assert.equal(page.url(),allListUrl);assert.deepEqual(await visibleIds(),combined,'Detail return retains all four filters');
+   await page.goForward({waitUntil:'networkidle'});assert.equal(page.url(),allDetailUrl);
+   // A click followed by networkidle can observe the preceding document's idle state.
+   // Wait for the destination and its exact rendered contract, never an arbitrary sleep.
+   await Promise.all([page.waitForURL(allListUrl,{waitUntil:'load'}),page.locator('[data-event-back]').click()]);
+   await page.waitForFunction(outingsStateReady,{url:allListUrl,filters:{week:'all',city:'koenji',kind:'stage',with:'solo'},ids:combined},{timeout:15000});
+   assert.equal(page.url(),allListUrl);assert.deepEqual(await visibleIds(),combined,'Detail return retains all four filters');
+   for(const [name,value] of [['week','all'],['city','koenji'],['kind','stage'],['with','solo']])assert.equal(await page.locator('select[name='+name+']').inputValue(),value,'Detail return retains '+name);
    await page.locator('select[name=with]').selectOption('children');assert.equal((await visibleIds()).length,0);assert.ok(await page.locator('#event-empty').isVisible());await screen('all-dates-empty');
    await page.goto(origin+'/outings/?kind=stage',{waitUntil:'networkidle'});assert.equal(await page.locator('select[name=week]').inputValue(),currentWeek,'Category-only entry still picks the nearest matching week, not all dates');
    await page.goto(origin+'/outings/?week=all',{waitUntil:'networkidle'});
@@ -159,8 +167,8 @@ assert.match(emptyDiscovery,/現在、掲載できる街の動きはありませ
    await page.clock.setFixedTime(new Date(expiredAsOf));await page.reload({waitUntil:'networkidle'});assert.equal(await page.locator('[data-event-card]:visible').count(),0,'Expired events disappear');assert.ok(await page.locator('#event-empty').isVisible());
    for(const e of source.events.filter(e=>!source.isPublishableEvent(e)))assert.equal(await page.locator('[data-event-card="'+e.id+'"]').count(),0,'Pending has no runtime card');
    assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);assert.ok(external.filter(x=>x.phase==='reviewed-outings').every(x=>x.navigation),'Reviewed outings and empty-state flows load no automatic external resources');
-   const legacyCovers=['https://www.j-n.co.jp/wp/wp-content/uploads/2022/09/R978-4-408-55758-8.jpg','https://www.tsogen.co.jp/img/cover_image_l/40608.jpg'];
-   assert.ok(external.filter(x=>!x.navigation).every(x=>x.phase==='existing-city'&&legacyCovers.includes(x.url)),'Only the two pre-existing city catalogue publisher covers may be requested; they are blocked in CI');
+   const legacyCovers=['https://www.j-n.co.jp/wp/wp-content/uploads/2022/09/R978-4-408-55758-8.jpg'];
+   assert.ok(external.filter(x=>!x.navigation).every(x=>x.phase==='existing-city'&&legacyCovers.includes(x.url)),'Only the remaining pre-existing Indies publisher cover may be requested; it is blocked in CI, not verified as displayed');
    report.viewports.push({...viewport,passed:true,flows,externalTargets:external,missing,errors});console.log('PASS '+viewport.name+': five cities, month-neutral menu, Kiyosumi filtered route, eight current reviewed cards/official targets/Back, Oct 23 current/next-week supply and expiry');
   }catch(e){await page.screenshot({path:path.join(out,viewport.name+'-failure.png'),fullPage:true}).catch(()=>{});report.viewports.push({...viewport,passed:false,error:e.message,flows,external,missing,errors});throw e;}
   finally{await context.close();}

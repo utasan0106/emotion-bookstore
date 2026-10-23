@@ -1,0 +1,17 @@
+Noto Sans JP variable font subset — editorial study
+
+Original font: NotoSansJP[wght].ttf, Google Fonts official repository.
+Source: https://github.com/google/fonts/tree/main/ofl/notosansjp
+Original download: https://raw.githubusercontent.com/google/fonts/main/ofl/notosansjp/NotoSansJP%5Bwght%5D.ttf
+License source: https://github.com/google/fonts/blob/main/ofl/notosansjp/OFL.txt
+Retrieved: 2026-10-23 UTC.
+Original SHA-256: c2f3b4d463500a2ddcd3849cded1fceeb9fd6d1c32e6cbecd568453ba50fc68f
+
+Copyright 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'.
+Licensed under the SIL Open Font License, Version 1.1. See accompanying NotoSansJP-OFL.txt for the complete license and conditions. This subset remains under OFL 1.1. No endorsement by the font authors is implied.
+
+Modification: character subset created with fontTools; original name, copyright, license metadata and variable weight axis 100–900 preserved. This is a modified font, not the complete original font.
+Subset SHA-256: 7f42ad763c6f7750d30d107f0f950d62bd30247b5fec6914abcd68d8da0c3c84
+Subset size: 299140 bytes.
+
+Coverage: 375 unique source characters from the study's complete HTML (including alt and aria text), CSS, and video-embed.js, plus printable ASCII and 疑. Checked against the subset's character map with no missing characters. CSS counter output is covered by the included ASCII digits. This is static-study coverage only, not full Japanese coverage or arbitrary future Bluesky text. Regenerate and recheck when content changes. Character-map coverage does not prove actual browser font selection; rendering must be tested separately.

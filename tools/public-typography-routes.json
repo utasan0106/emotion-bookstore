@@ -1,0 +1,514 @@
+{
+  "version": 1,
+  "scope": "Existing public catalogue, city, article and event routes only. Frozen C3, home, selection composition, English visit, saved thoughts and historical experiments excluded.",
+  "routes": [
+    {
+      "file": "works.html",
+      "canonical_path": "/works.html"
+    },
+    {
+      "file": "work-book.html",
+      "canonical_path": "/work-book.html"
+    },
+    {
+      "file": "work-film.html",
+      "canonical_path": "/work-film.html"
+    },
+    {
+      "file": "work-music.html",
+      "canonical_path": "/work-music.html"
+    },
+    {
+      "file": "discover/essays/index.html",
+      "canonical_path": "/discover/essays/"
+    },
+    {
+      "file": "discover/essays/kichijoji-advertising.html",
+      "canonical_path": "/discover/essays/kichijoji-advertising.html"
+    },
+    {
+      "file": "discover/essays/shimokitazawa-railway.html",
+      "canonical_path": "/discover/essays/shimokitazawa-railway.html"
+    },
+    {
+      "file": "discover/index.html",
+      "canonical_path": "/discover/"
+    },
+    {
+      "file": "discover/jinbocho/audio.html",
+      "canonical_path": "/discover/jinbocho/audio.html"
+    },
+    {
+      "file": "discover/jinbocho/book.html",
+      "canonical_path": "/discover/jinbocho/book.html"
+    },
+    {
+      "file": "discover/jinbocho/chikuon-beautiful.html",
+      "canonical_path": "/discover/jinbocho/chikuon-beautiful.html"
+    },
+    {
+      "file": "discover/jinbocho/film.html",
+      "canonical_path": "/discover/jinbocho/film.html"
+    },
+    {
+      "file": "discover/jinbocho/furuhon-sequel.html",
+      "canonical_path": "/discover/jinbocho/furuhon-sequel.html"
+    },
+    {
+      "file": "discover/jinbocho/furuhon.html",
+      "canonical_path": "/discover/jinbocho/furuhon.html"
+    },
+    {
+      "file": "discover/jinbocho/ginga.html",
+      "canonical_path": "/discover/jinbocho/ginga.html"
+    },
+    {
+      "file": "discover/jinbocho/gorilla-secret.html",
+      "canonical_path": "/discover/jinbocho/gorilla-secret.html"
+    },
+    {
+      "file": "discover/jinbocho/honobe-girl.html",
+      "canonical_path": "/discover/jinbocho/honobe-girl.html"
+    },
+    {
+      "file": "discover/jinbocho/index.html",
+      "canonical_path": "/discover/jinbocho/"
+    },
+    {
+      "file": "discover/jinbocho/iwanami-hall.html",
+      "canonical_path": "/discover/jinbocho/iwanami-hall.html"
+    },
+    {
+      "file": "discover/jinbocho/jinbocho-1960s.html",
+      "canonical_path": "/discover/jinbocho/jinbocho-1960s.html"
+    },
+    {
+      "file": "discover/jinbocho/kaijin.html",
+      "canonical_path": "/discover/jinbocho/kaijin.html"
+    },
+    {
+      "file": "discover/jinbocho/morisaki-film.html",
+      "canonical_path": "/discover/jinbocho/morisaki-film.html"
+    },
+    {
+      "file": "discover/jinbocho/morisaki-sequel.html",
+      "canonical_path": "/discover/jinbocho/morisaki-sequel.html"
+    },
+    {
+      "file": "discover/jinbocho/morisaki.html",
+      "canonical_path": "/discover/jinbocho/morisaki.html"
+    },
+    {
+      "file": "discover/jinbocho/motoki-tongping.html",
+      "canonical_path": "/discover/jinbocho/motoki-tongping.html"
+    },
+    {
+      "file": "discover/jinbocho/sunshin-anniversary.html",
+      "canonical_path": "/discover/jinbocho/sunshin-anniversary.html"
+    },
+    {
+      "file": "discover/jinbocho/ugetsu.html",
+      "canonical_path": "/discover/jinbocho/ugetsu.html"
+    },
+    {
+      "file": "discover/jinbocho/used-book-festival.html",
+      "canonical_path": "/discover/jinbocho/used-book-festival.html"
+    },
+    {
+      "file": "discover/jinbocho/video.html",
+      "canonical_path": "/discover/jinbocho/video.html"
+    },
+    {
+      "file": "discover/kichijoji/asahina.html",
+      "canonical_path": "/discover/kichijoji/asahina.html"
+    },
+    {
+      "file": "discover/kichijoji/audio.html",
+      "canonical_path": "/discover/kichijoji/audio.html"
+    },
+    {
+      "file": "discover/kichijoji/baus.html",
+      "canonical_path": "/discover/kichijoji/baus.html"
+    },
+    {
+      "file": "discover/kichijoji/book.html",
+      "canonical_path": "/discover/kichijoji/book.html"
+    },
+    {
+      "file": "discover/kichijoji/cinema-history.html",
+      "canonical_path": "/discover/kichijoji/cinema-history.html"
+    },
+    {
+      "file": "discover/kichijoji/film.html",
+      "canonical_path": "/discover/kichijoji/film.html"
+    },
+    {
+      "file": "discover/kichijoji/gou-gou-book.html",
+      "canonical_path": "/discover/kichijoji/gou-gou-book.html"
+    },
+    {
+      "file": "discover/kichijoji/gou-gou-film.html",
+      "canonical_path": "/discover/kichijoji/gou-gou-film.html"
+    },
+    {
+      "file": "discover/kichijoji/honnoniwa.html",
+      "canonical_path": "/discover/kichijoji/honnoniwa.html"
+    },
+    {
+      "file": "discover/kichijoji/index.html",
+      "canonical_path": "/discover/kichijoji/"
+    },
+    {
+      "file": "discover/kichijoji/kobayashi-kokuhaku.html",
+      "canonical_path": "/discover/kichijoji/kobayashi-kokuhaku.html"
+    },
+    {
+      "file": "discover/kichijoji/musashino-green.html",
+      "canonical_path": "/discover/kichijoji/musashino-green.html"
+    },
+    {
+      "file": "discover/kichijoji/park-voice.html",
+      "canonical_path": "/discover/kichijoji/park-voice.html"
+    },
+    {
+      "file": "discover/kichijoji/parks.html",
+      "canonical_path": "/discover/kichijoji/parks.html"
+    },
+    {
+      "file": "discover/kichijoji/rocky-horror.html",
+      "canonical_path": "/discover/kichijoji/rocky-horror.html"
+    },
+    {
+      "file": "discover/kichijoji/takeuchi-ai-rain.html",
+      "canonical_path": "/discover/kichijoji/takeuchi-ai-rain.html"
+    },
+    {
+      "file": "discover/kichijoji/uchu-mao-haircolor.html",
+      "canonical_path": "/discover/kichijoji/uchu-mao-haircolor.html"
+    },
+    {
+      "file": "discover/kichijoji/uplink.html",
+      "canonical_path": "/discover/kichijoji/uplink.html"
+    },
+    {
+      "file": "discover/kichijoji/video.html",
+      "canonical_path": "/discover/kichijoji/video.html"
+    },
+    {
+      "file": "discover/kichijoji/yoshida-night-edge.html",
+      "canonical_path": "/discover/kichijoji/yoshida-night-edge.html"
+    },
+    {
+      "file": "discover/kichijoji/yoshida-tinderness.html",
+      "canonical_path": "/discover/kichijoji/yoshida-tinderness.html"
+    },
+    {
+      "file": "discover/kiyosumi/index.html",
+      "canonical_path": "/discover/kiyosumi/"
+    },
+    {
+      "file": "discover/koenji/1q84.html",
+      "canonical_path": "/discover/koenji/1q84.html"
+    },
+    {
+      "file": "discover/koenji/audio.html",
+      "canonical_path": "/discover/koenji/audio.html"
+    },
+    {
+      "file": "discover/koenji/big-the-grape.html",
+      "canonical_path": "/discover/koenji/big-the-grape.html"
+    },
+    {
+      "file": "discover/koenji/book.html",
+      "canonical_path": "/discover/koenji/book.html"
+    },
+    {
+      "file": "discover/koenji/film.html",
+      "canonical_path": "/discover/koenji/film.html"
+    },
+    {
+      "file": "discover/koenji/index.html",
+      "canonical_path": "/discover/koenji/"
+    },
+    {
+      "file": "discover/koenji/jirokichi.html",
+      "canonical_path": "/discover/koenji/jirokichi.html"
+    },
+    {
+      "file": "discover/koenji/junjo.html",
+      "canonical_path": "/discover/koenji/junjo.html"
+    },
+    {
+      "file": "discover/koenji/monterey-pop.html",
+      "canonical_path": "/discover/koenji/monterey-pop.html"
+    },
+    {
+      "file": "discover/koenji/moon-in-june-play.html",
+      "canonical_path": "/discover/koenji/moon-in-june-play.html"
+    },
+    {
+      "file": "discover/koenji/night-glory-scarlet.html",
+      "canonical_path": "/discover/koenji/night-glory-scarlet.html"
+    },
+    {
+      "file": "discover/koenji/pal-street.html",
+      "canonical_path": "/discover/koenji/pal-street.html"
+    },
+    {
+      "file": "discover/koenji/pink-minds-live.html",
+      "canonical_path": "/discover/koenji/pink-minds-live.html"
+    },
+    {
+      "file": "discover/koenji/ramen-heads.html",
+      "canonical_path": "/discover/koenji/ramen-heads.html"
+    },
+    {
+      "file": "discover/koenji/rokkoku-kitchen.html",
+      "canonical_path": "/discover/koenji/rokkoku-kitchen.html"
+    },
+    {
+      "file": "discover/koenji/seabirth-live.html",
+      "canonical_path": "/discover/koenji/seabirth-live.html"
+    },
+    {
+      "file": "discover/koenji/shiroku-somaru.html",
+      "canonical_path": "/discover/koenji/shiroku-somaru.html"
+    },
+    {
+      "file": "discover/koenji/shogakko.html",
+      "canonical_path": "/discover/koenji/shogakko.html"
+    },
+    {
+      "file": "discover/koenji/unnameable-dance.html",
+      "canonical_path": "/discover/koenji/unnameable-dance.html"
+    },
+    {
+      "file": "discover/koenji/video.html",
+      "canonical_path": "/discover/koenji/video.html"
+    },
+    {
+      "file": "discover/listening/index.html",
+      "canonical_path": "/discover/listening/"
+    },
+    {
+      "file": "discover/outing/index.html",
+      "canonical_path": "/discover/outing/"
+    },
+    {
+      "file": "discover/places/index.html",
+      "canonical_path": "/discover/places/"
+    },
+    {
+      "file": "discover/reading/index.html",
+      "canonical_path": "/discover/reading/"
+    },
+    {
+      "file": "discover/shimokitazawa/aterui.html",
+      "canonical_path": "/discover/shimokitazawa/aterui.html"
+    },
+    {
+      "file": "discover/shimokitazawa/audio.html",
+      "canonical_path": "/discover/shimokitazawa/audio.html"
+    },
+    {
+      "file": "discover/shimokitazawa/bilingualboy-love.html",
+      "canonical_path": "/discover/shimokitazawa/bilingualboy-love.html"
+    },
+    {
+      "file": "discover/shimokitazawa/blazer.html",
+      "canonical_path": "/discover/shimokitazawa/blazer.html"
+    },
+    {
+      "file": "discover/shimokitazawa/bocchi-main-pv.html",
+      "canonical_path": "/discover/shimokitazawa/bocchi-main-pv.html"
+    },
+    {
+      "file": "discover/shimokitazawa/book.html",
+      "canonical_path": "/discover/shimokitazawa/book.html"
+    },
+    {
+      "file": "discover/shimokitazawa/film.html",
+      "canonical_path": "/discover/shimokitazawa/film.html"
+    },
+    {
+      "file": "discover/shimokitazawa/gekijyo.html",
+      "canonical_path": "/discover/shimokitazawa/gekijyo.html"
+    },
+    {
+      "file": "discover/shimokitazawa/honda.html",
+      "canonical_path": "/discover/shimokitazawa/honda.html"
+    },
+    {
+      "file": "discover/shimokitazawa/index.html",
+      "canonical_path": "/discover/shimokitazawa/"
+    },
+    {
+      "file": "discover/shimokitazawa/indies.html",
+      "canonical_path": "/discover/shimokitazawa/indies.html"
+    },
+    {
+      "file": "discover/shimokitazawa/kaho-asa.html",
+      "canonical_path": "/discover/shimokitazawa/kaho-asa.html"
+    },
+    {
+      "file": "discover/shimokitazawa/kitazawa-guide.html",
+      "canonical_path": "/discover/shimokitazawa/kitazawa-guide.html"
+    },
+    {
+      "file": "discover/shimokitazawa/lady-jane.html",
+      "canonical_path": "/discover/shimokitazawa/lady-jane.html"
+    },
+    {
+      "file": "discover/shimokitazawa/mabuta-roundabout.html",
+      "canonical_path": "/discover/shimokitazawa/mabuta-roundabout.html"
+    },
+    {
+      "file": "discover/shimokitazawa/machinouede.html",
+      "canonical_path": "/discover/shimokitazawa/machinouede.html"
+    },
+    {
+      "file": "discover/shimokitazawa/metrois-tokyo.html",
+      "canonical_path": "/discover/shimokitazawa/metrois-tokyo.html"
+    },
+    {
+      "file": "discover/shimokitazawa/nekomachi.html",
+      "canonical_path": "/discover/shimokitazawa/nekomachi.html"
+    },
+    {
+      "file": "discover/shimokitazawa/sleepinside-recycle.html",
+      "canonical_path": "/discover/shimokitazawa/sleepinside-recycle.html"
+    },
+    {
+      "file": "discover/shimokitazawa/tefu-1500.html",
+      "canonical_path": "/discover/shimokitazawa/tefu-1500.html"
+    },
+    {
+      "file": "discover/shimokitazawa/video.html",
+      "canonical_path": "/discover/shimokitazawa/video.html"
+    },
+    {
+      "file": "discover/shimokitazawa/zawazawa.html",
+      "canonical_path": "/discover/shimokitazawa/zawazawa.html"
+    },
+    {
+      "file": "discover/short-films/find-my-tokyo-akasaka.html",
+      "canonical_path": "/discover/short-films/find-my-tokyo-akasaka.html"
+    },
+    {
+      "file": "discover/short-films/index.html",
+      "canonical_path": "/discover/short-films/"
+    },
+    {
+      "file": "discover/short-films/musashino-green.html",
+      "canonical_path": "/discover/short-films/musashino-green.html"
+    },
+    {
+      "file": "discover/short-films/tefu-1500.html",
+      "canonical_path": "/discover/short-films/tefu-1500.html"
+    },
+    {
+      "file": "discover/venue/jinbocho-theater/index.html",
+      "canonical_path": "/discover/venue/jinbocho-theater/"
+    },
+    {
+      "file": "discover/venue/jirokichi/index.html",
+      "canonical_path": "/discover/venue/jirokichi/"
+    },
+    {
+      "file": "discover/venue/shelter/index.html",
+      "canonical_path": "/discover/venue/shelter/"
+    },
+    {
+      "file": "discover/venue/star-pines-cafe/index.html",
+      "canonical_path": "/discover/venue/star-pines-cafe/"
+    },
+    {
+      "file": "discover/venue/za-koenji/index.html",
+      "canonical_path": "/discover/venue/za-koenji/"
+    },
+    {
+      "file": "discover/weekly/index.html",
+      "canonical_path": "/discover/weekly/"
+    },
+    {
+      "file": "outings/2026-09-07/inokashira-zoo.html",
+      "canonical_path": "/outings/2026-09-07/inokashira-zoo.html"
+    },
+    {
+      "file": "outings/2026-09-07/inokashira.html",
+      "canonical_path": "/outings/2026-09-07/inokashira.html"
+    },
+    {
+      "file": "outings/2026-09-07/jimbocho-bookcenter.html",
+      "canonical_path": "/outings/2026-09-07/jimbocho-bookcenter.html"
+    },
+    {
+      "file": "outings/2026-09-07/kichijoji-museum.html",
+      "canonical_path": "/outings/2026-09-07/kichijoji-museum.html"
+    },
+    {
+      "file": "outings/2026-09-07/za-koenji.html",
+      "canonical_path": "/outings/2026-09-07/za-koenji.html"
+    },
+    {
+      "file": "outings/children.html",
+      "canonical_path": "/outings/children.html"
+    },
+    {
+      "file": "outings/couple.html",
+      "canonical_path": "/outings/couple.html"
+    },
+    {
+      "file": "outings/events/jinbocho-tabishite2026.html",
+      "canonical_path": "/outings/events/jinbocho-tabishite2026.html"
+    },
+    {
+      "file": "outings/events/jinbocho-yumemidori2026.html",
+      "canonical_path": "/outings/events/jinbocho-yumemidori2026.html"
+    },
+    {
+      "file": "outings/events/kichijoji-taniguchi.html",
+      "canonical_path": "/outings/events/kichijoji-taniguchi.html"
+    },
+    {
+      "file": "outings/events/kiyosumi-tada2026.html",
+      "canonical_path": "/outings/events/kiyosumi-tada2026.html"
+    },
+    {
+      "file": "outings/events/koenji-akame2026.html",
+      "canonical_path": "/outings/events/koenji-akame2026.html"
+    },
+    {
+      "file": "outings/events/koenji-dna2026.html",
+      "canonical_path": "/outings/events/koenji-dna2026.html"
+    },
+    {
+      "file": "outings/events/shimokita-design2026.html",
+      "canonical_path": "/outings/events/shimokita-design2026.html"
+    },
+    {
+      "file": "outings/events/shimokita-gun-island2026.html",
+      "canonical_path": "/outings/events/shimokita-gun-island2026.html"
+    },
+    {
+      "file": "outings/events/shimokita-kotoba2026.html",
+      "canonical_path": "/outings/events/shimokita-kotoba2026.html"
+    },
+    {
+      "file": "outings/family.html",
+      "canonical_path": "/outings/family.html"
+    },
+    {
+      "file": "outings/friends.html",
+      "canonical_path": "/outings/friends.html"
+    },
+    {
+      "file": "outings/index.html",
+      "canonical_path": "/outings/"
+    },
+    {
+      "file": "outings/solo.html",
+      "canonical_path": "/outings/solo.html"
+    }
+  ]
+}

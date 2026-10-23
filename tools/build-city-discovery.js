@@ -4,6 +4,12 @@ const path = require('node:path');
 const vm = require('node:vm');
 const {items, excludedItems, commonVideos, checkedAt} = require('./city-discovery-source');
 const workMedia=require('./work-media');
+// Reuse the verified inventory for both the overview teaser and its destination.
+const {verify: verifyPlaces, kinds: placeKinds} = require('./places-source');
+const placeGroups = verifyPlaces(items);
+const placeTotal = placeGroups.reduce((n, group) => n + group.works.length, 0);
+const placeCityCount = new Set(placeGroups.flatMap(group => group.works.map(key => key.split('/')[0]))).size;
+const cityCount = list => new Set(list.map(item => item.city)).size;
 const siteOgp=require('./site-ogp');
 const profiles=require('./artist-profiles');
 const research=require('./city-research');
@@ -146,9 +152,9 @@ const readingBooks = seriesItems(readingBookIds, 'book', '読みたくなる本'
 const listeningAudio = seriesItems(listeningAudioIds, 'audio', '聴きたくなる音楽', true);
 function seriesEntry(kind) {
   const e = {
-    video: ['outing', '街へ出かけたくなる映像', 'いま行ける場所が写っている' + outingVideos.length + '本を、4つの街から選びました。', outingVideos.length + '本を見る'],
-    book:  ['reading', '読みたくなる、街の本', '背景を知ると、その街の本だと分かる' + readingBooks.length + '冊。4つの街ぶんをまとめて置いています。', readingBooks.length + '冊を見る'],
-    audio: ['listening', '聴きたくなる、街の音', 'その街で実際に鳴った演奏' + listeningAudio.length + '曲。4つの街ぶんをまとめて置いています。', listeningAudio.length + '曲を聴く']
+    video: ['outing', '街へ出かけたくなる映像', 'いま行ける場所が写っている' + outingVideos.length + '本を、' + cityCount(outingVideos) + 'つの街から選びました。', outingVideos.length + '本を見る'],
+    book:  ['reading', '読みたくなる、街の本', '背景を知ると、その街の本だと分かる' + readingBooks.length + '冊。' + cityCount(readingBooks) + 'つの街ぶんをまとめて置いています。', readingBooks.length + '冊を見る'],
+    audio: ['listening', '聴きたくなる、街の音', 'その街で実際に鳴った演奏' + listeningAudio.length + '曲。' + cityCount(listeningAudio) + 'つの街ぶんをまとめて置いています。', listeningAudio.length + '曲を聴く']
   }[kind];
   if (!e) return '';
   return `<section class="quick"><h2>${e[1]}</h2><p>${e[2]}</p><a href="/discover/${e[0]}/">${e[3]} →</a></section>`;
@@ -426,7 +432,7 @@ write('index.html', shell('東京5街から本・映画・音楽・文化を探�
 <section class="city-grid" aria-label="街を選ぶ">${cities.map(c=>`<a class="city-card" href="/discover/${c}/"><div class="city-image">${photo(c)}</div><div class="city-caption"><h2>${cityNames[c]}</h2><p>音楽 ${items.filter(i=>i.city===c&&i.kind==='audio').length} / 映像 ${items.filter(i=>i.city===c&&i.kind==='video').length} / 本・漫画 ${items.filter(i=>i.city===c&&i.kind==='book').length} / 映画 ${items.filter(i=>i.city===c&&i.kind==='film').length}</p><span>${cityNames[c]}の作品を選ぶ →</span></div></a>`).join('')}<a class="city-card" href="/discover/kiyosumi/"><div class="city-image">${photo('kiyosumi')}</div><div class="city-caption"><h2>清澄白河</h2><p>庭園 / 美術館 / 江戸文化</p><span>清澄白河の場所・作品を選ぶ →</span></div></a></section>${watchNow}${signals}${researchSpotlight}
 <section class="quick"><p class="eyebrow">今週</p><h2>今週の感情書店。</h2><div class="quick-grid"><a href="/discover/weekly/index.html"><strong>今週で終わる催しと、新しく入った作品 →</strong><span>街の作品と、開催日を確認した催しを紹介します。</span></a></div></section>
 <section class="quick"><p class="eyebrow">街をまたいで選ぶ</p><h2>観る、読む、聴く。</h2><div class="quick-grid"><a href="/discover/outing/index.html"><strong>街へ出かけたくなる映像 ${outingVideos.length}本 →</strong><span>公園・商店街・ライブハウス・古書店。いま行ける場所が写っているもの</span></a><a href="/discover/reading/index.html"><strong>読みたくなる、街の本 ${readingBooks.length}冊 →</strong><span>書名に街の名前が無くても、背景を知るとその街の本だと分かる</span></a><a href="/discover/listening/index.html"><strong>聴きたくなる、街の音 ${listeningAudio.length}曲 →</strong><span>その街のライブハウスや路上で、実際に鳴った演奏</span></a></div></section>
-<section class="quick"><p class="eyebrow">街をまたいで、場所から</p><h2>本屋、映画館、ライブハウス、劇場。</h2><div class="quick-grid"><a href="/discover/places/index.html"><strong>場所そのものを扱った作品 18件 →</strong><span>作品の舞台としてではなく、その場所自体の記録と物語。記録と物語は分けています</span></a></div></section>
+<section class="quick"><p class="eyebrow">街をまたいで、場所から</p><h2>本屋、映画館、ライブハウス、劇場。</h2><div class="quick-grid"><a href="/discover/places/index.html"><strong>場所そのものを扱った作品 ${placeTotal}件 →</strong><span>作品の舞台としてではなく、その場所自体の記録と物語。記録と物語は分けています</span></a></div></section>
 <section class="quick"><p class="eyebrow">街を決めずに観る</p><h2>街へ出たくなる、${commonVideos.length}つの短編。</h2><div class="quick-grid"><a href="/discover/short-films/index.html"><strong>人・移動・出会いを描く映像へ →</strong><span>企業広告も、単体で心に残る映像作品として選びました</span></a></div></section>
 <section class="quick"><p class="eyebrow">短い体験から</p><h2>同じ場所、違う聴こえ方。</h2><div class="quick-grid"><a href="/v3-prototype/culture-experience-r2/shimokitazawa/?recording=shelter"><strong>「夕暮れのジャイロ」を聴き比べる →</strong><span>下北沢SHELTERのライブとソロ盤</span></a><a href="/v3-prototype/culture-experience-r2/kichijoji/?scene=film"><strong>『PARKS』の予告と公園の声へ →</strong><span>吉祥寺・井の頭公園 / 1分59秒と57秒</span></a></div></section>${credits(cities)}`));
 
@@ -444,13 +450,13 @@ function seriesPage(slug, title, eyebrow, heading, lead, list, extraExit) {
     `<section class="intro"><p class="eyebrow">${eyebrow}</p><h1>${heading}</h1><p class="lead">${lead}</p></section><div class="collection">${sections}<p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p>${extraExit}</div>`,
     '<a href="/discover/index.html">街から探す ←</a>'));
 }
-seriesPage('outing', '街へ出かけたくなる映像', `4つの街 / ${outingVideos.length}本`, '街へ出かけたく、<br>なる映像。',
+seriesPage('outing', '街へ出かけたくなる映像', `${cityCount(outingVideos)}つの街 / ${outingVideos.length}本`, '街へ出かけたく、<br>なる映像。',
   '公園、商店街、ライブハウス、古書店、映画館。いま行ける場所が写っている映像を選びました。閉じた施設や、過ぎた出来事そのものを扱う映像は入れていません。',
   outingVideos, '<p class="city-exit"><a href="/discover/short-films/">街を決めずに観る短編へ →</a></p>');
-seriesPage('reading', '読みたくなる本', `4つの街 / ${readingBooks.length}冊`, '読みたくなる、<br>街の本。',
+seriesPage('reading', '読みたくなる本', `${cityCount(readingBooks)}つの街 / ${readingBooks.length}冊`, '読みたくなる、<br>街の本。',
   '街の名前が書名に無くても、背景を知るとその街の本だと分かる。そういう一冊から並べています。棚に出す時点で関係を確かめているので、ここには全部あります。',
   readingBooks, '<p class="city-exit"><a href="/works.html#book">本の紹介から入る →</a></p>');
-seriesPage('listening', '聴きたくなる音楽', `4つの街 / ${listeningAudio.length}曲`, '聴きたくなる、<br>街の音。',
+seriesPage('listening', '聴きたくなる音楽', `${cityCount(listeningAudio)}つの街 / ${listeningAudio.length}曲`, '聴きたくなる、<br>街の音。',
   'その街のライブハウスや路上で、実際に鳴った演奏です。街の紹介曲ではなく、そこで録られた音を選んでいます。',
   listeningAudio, '<p class="city-exit"><a href="/works.html#music">音楽の紹介から入る →</a></p>');
 write('short-films/index.html', shell('街へ出たくなる短編映像', `<section class="intro"><p class="eyebrow">全街共通 / 3分以内</p><h1>街へ出たくなる、<br>${commonVideos.length}つの短編。</h1><p class="lead">人との出会いや移動、暮らしを描く短編を選びました。特定の街の観光案内ではなく、企業広告を含む映像作品です。</p></section><div class="collection"><section class="work-grid" aria-label="共通の短編映像${commonVideos.length}件">${commonCards}</section><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p></div>`, '<a href="/discover/index.html">街から探す ←</a>'));
@@ -520,9 +526,6 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
 // 場所そのものを扱った作品のコーナー。街ではなく、文化が生まれる場所との関係で並べる。
 // 基準と、記録／物語の区別は tools/places-source.js に書いてある。
 {
-  const {verify: verifyPlaces, kinds: placeKinds} = require('./places-source');
-  const placeGroups = verifyPlaces(items);
-  const total = placeGroups.reduce((n, g) => n + g.works.length, 0);
   const sections = placeGroups.map(g => {
     const rows = g.works.map(key => {
       const [city, id] = key.split('/');
@@ -532,7 +535,7 @@ write('short-films/index.html', shell('街へ出たくなる短編映像', `<sec
     return `<section class="wk-list" aria-label="${g.title}${g.works.length}件"><h2>${g.title}</h2><p class="lead">${g.lead}</p><ul>${rows}</ul></section>`;
   }).join('');
   write('places/index.html', shell('本屋、映画館、ライブハウス、劇場',
-    `<section class="intro"><p class="eyebrow">4つの街をまたいで / ${total}件</p><h1>文化が生まれる、<br>場所そのものの話。</h1><p class="lead">${placeKinds.filter((k,n)=>n!==1&&n!==3).join('・')}。作品の舞台としてではなく、その場所自体を扱った本・映像・映画を集めました。記録と物語は分けています。</p></section><div class="collection">${sections}<p class="city-exit"><a href="/discover/venue/jirokichi/">実在の会場から辿る →</a></p><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p></div>`,
+    `<section class="intro"><p class="eyebrow">${placeCityCount}つの街をまたいで / ${placeTotal}件</p><h1>文化が生まれる、<br>場所そのものの話。</h1><p class="lead">${placeKinds.filter((k,n)=>n!==1&&n!==3).join('・')}。作品の舞台としてではなく、その場所自体を扱った本・映像・映画を集めました。記録と物語は分けています。</p></section><div class="collection">${sections}<p class="city-exit"><a href="/discover/venue/jirokichi/">実在の会場から辿る →</a></p><p class="city-exit"><a href="/discover/index.html">街から作品を探す →</a></p></div>`,
     '<a href="/discover/index.html">街から探す ←</a>'));
 }
 

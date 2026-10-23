@@ -15,6 +15,21 @@ on:
       - 'qa/outings_browser_check.js'
       - 'qa/five_city_browser_check.js'
       - 'qa/typography_browser_check.js'
+      - 'qa/editorial_preview_v4_browser_check.js'
+      - 'qa/editorial-preview-v4/**'
+      - 'qa/editorial-study-a/**'
+      - 'qa/editorial-study-foldbook/**'
+      - 'qa/editorial_art_direction_browser_check.js'
+      - 'qa/editorial-study-desk/**'
+      - 'qa/editorial_desk_browser_check.js'
+      - 'qa/editorial-study-c2/**'
+      - 'qa/editorial-study-c3/**'
+      - 'qa/editorial_c3*'
+      - 'qa/editorial-c3-*.cjs'
+      - 'qa/editorial-c3-*.json'
+      - 'qa/editorial_c2_browser_check.js'
+      - 'qa/editorial-c2-layout-contract*.cjs'
+      - 'qa/editorial-type-font-contract*.cjs'
       - 'discover/essays/**'
       - 'visit/**'
       - 'tools/design-redesign.js'
@@ -61,6 +76,47 @@ jobs:
             sleep 1
           done
           NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/typography_browser_check.js
+      - name: Render isolated V4 editorial study without changing public home
+        if: success() || failure()
+        env:
+          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_preview_v4_browser_check.js
+      - name: Render two isolated art-direction studies
+        if: success() || failure()
+        env:
+          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_art_direction_browser_check.js
+      - name: Render isolated editorial desk study
+        if: success() || failure()
+        env:
+          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_desk_browser_check.js
+      - name: Render isolated C2 layout and native-header comparison
+        if: success() || failure()
+        env:
+          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          node --test qa/editorial-type-font-contract.test.cjs qa/editorial-c2-layout-contract.test.cjs
+          NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_c2_browser_check.js
+      - name: Render isolated C3 cards and direct detail paths
+        if: success() || failure()
+        env:
+          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          node qa/editorial-c3-direct-detail-contract.test.cjs
+          node qa/editorial-c3-navigation-contract.test.cjs
+          node qa/editorial-c3-font-contract.test.cjs
+          node qa/editorial-c3-polish-contract.test.cjs
+          NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_c3_browser_check.js
+      - name: Render isolated C3 deep pages and native return paths
+        if: success() || failure()
+        env:
+          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          node qa/editorial-c3-deep-contract.test.cjs
+          node qa/editorial-c3-readiness.test.cjs
+          node qa/editorial-c3-route-structure-contract.test.cjs
+          NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_c3_deep_browser_check.js
       - name: Save screenshots and non-secret verification report
         if: always()
         uses: actions/upload-artifact@v4
@@ -77,5 +133,19 @@ jobs:
             qa/artifacts/five-city/report.json
             qa/artifacts/typography/*.png
             qa/artifacts/typography/report.json
+            qa/artifacts/editorial-preview-v4/*.png
+            qa/artifacts/editorial-preview-v4/report.json
+            qa/artifacts/editorial-preview-v4/interaction-report.json
+            qa/artifacts/editorial-art-direction/*.png
+            qa/artifacts/editorial-art-direction/*.json
+            qa/artifacts/editorial-desk/*.png
+            qa/artifacts/editorial-desk/*.json
+            qa/artifacts/editorial-c2/*.png
+            qa/artifacts/editorial-c2/*.json
+            qa/artifacts/editorial-c3/*.png
+            qa/artifacts/editorial-c3/*.json
+            qa/artifacts/editorial-c3-deep/*.png
+            qa/artifacts/editorial-c3-deep/*.json
           if-no-files-found: error
           retention-days: 7
+

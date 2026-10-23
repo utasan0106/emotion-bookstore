@@ -1,0 +1,54 @@
+name: Public typography check
+on:
+  pull_request:
+    paths:
+      - 'public-typography.css'
+      - 'assets/fonts/public-gothic/**'
+      - 'tools/public-typography*'
+      - 'tools/build-public-gothic-fonts.py'
+      - 'tools/design-redesign.js'
+      - 'qa/public*'
+      - 'works.html'
+      - 'work-*.html'
+      - 'discover/**'
+      - 'outings/**'
+      - '.github/workflows/public-typography-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-typography:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check explicit typography scope and negative fixtures
+        env:
+          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          node qa/public_typography_contract_check.js
+          node --test qa/public-typography-font-contract.test.cjs
+          node qa/public_typography_browser_check.js --preflight-only
+      - name: Install existing pinned browser dependency outside checkout
+        run: |
+          npm install --prefix "$RUNNER_TEMP/cover-browser" --no-audit --no-fund --ignore-scripts --package-lock=false playwright@1.57.0
+          "$RUNNER_TEMP/cover-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Verify actual public typography and bounded failure fixtures
+        env:
+          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/public_typography_browser_check.js
+      - name: Save typography screenshots and non-secret report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-typography-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            qa/artifacts/public-typography/*.png
+            qa/artifacts/public-typography/*.json
+          if-no-files-found: error
+          retention-days: 7

@@ -21,6 +21,9 @@ jobs:
         run: |
           node qa/freshness_workflow_check.js
           node qa/verify-product.js
+      - name: Verify city menus and inventory-derived counts
+        if: success() || failure()
+        run: node qa/city_count_contract.cjs
       - name: Scout Michiyomi around Koenji for research only
         if: startsWith(github.ref_name, 'astra/michiyomi-integration-spike-')
         run: |

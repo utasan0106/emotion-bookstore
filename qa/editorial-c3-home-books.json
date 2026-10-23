@@ -1,0 +1,32 @@
+[
+  {
+    "id": "book-one-title",
+    "title": "成瀬は天下を取りにいく",
+    "author": "宮島未奈",
+    "publisher": "（新潮社刊）",
+    "href": "/qa/editorial-study-c3/books/naruse.html",
+    "cover": "/qa/editorial-preview-v4/assets/book-covers/9784103549512.jpg",
+    "reason": "何かを始めたい日は、成瀬の思いつきから。閉店前の店に通う計画と、そばで見守る友人のやりとりを入口に。",
+    "source": "https://www.shinchosha.co.jp/book/354951/"
+  },
+  {
+    "id": "book-two-title",
+    "title": "思わず考えちゃう",
+    "author": "ヨシタケシンスケ",
+    "publisher": "（新潮社刊）",
+    "href": "/qa/editorial-study-c3/books/omowazu.html",
+    "cover": "/qa/editorial-preview-v4/assets/book-covers/9784103524519.jpg",
+    "reason": "いつもの暮らしにも、まだ気になることがある。小さな疑問を描いたスケッチと短文から、今日は一つだけ。",
+    "source": "https://www.shinchosha.co.jp/book/352451/"
+  },
+  {
+    "id": "book-three-title",
+    "title": "高円寺純情商店街",
+    "author": "ねじめ正一",
+    "publisher": "（新潮文庫刊）",
+    "href": "/qa/editorial-study-c3/books/junjo.html",
+    "cover": "/assets/book-covers/9784101021126.jpg",
+    "reason": "まずは店先へ。商店街で暮らす人の話から、ほかの誰かの日常をのぞく。",
+    "source": "https://www.shinchosha.co.jp/book/102112/"
+  }
+]
