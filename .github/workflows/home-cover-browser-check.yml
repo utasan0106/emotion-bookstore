@@ -17,6 +17,9 @@ on:
       - 'qa/typography_browser_check.js'
       - 'qa/editorial_preview_v4_browser_check.js'
       - 'qa/editorial-preview-v4/**'
+      - 'qa/editorial-study-a/**'
+      - 'qa/editorial-study-foldbook/**'
+      - 'qa/editorial_art_direction_browser_check.js'
       - 'discover/essays/**'
       - 'visit/**'
       - 'tools/design-redesign.js'
@@ -68,6 +71,11 @@ jobs:
         env:
           QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_preview_v4_browser_check.js
+      - name: Render two isolated art-direction studies
+        if: success() || failure()
+        env:
+          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: NODE_PATH="$RUNNER_TEMP/cover-browser/node_modules" node qa/editorial_art_direction_browser_check.js
       - name: Save screenshots and non-secret verification report
         if: always()
         uses: actions/upload-artifact@v4
@@ -87,5 +95,7 @@ jobs:
             qa/artifacts/editorial-preview-v4/*.png
             qa/artifacts/editorial-preview-v4/report.json
             qa/artifacts/editorial-preview-v4/interaction-report.json
+            qa/artifacts/editorial-art-direction/*.png
+            qa/artifacts/editorial-art-direction/*.json
           if-no-files-found: error
           retention-days: 7
