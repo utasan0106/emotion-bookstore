@@ -1,4 +1,4 @@
-/* C3: one existing illustrated desk, three visible choices, linked full reasons.
+/* C3: one existing illustrated desk, a finite three-book shelf, complete reasons and direct details.
  * Owner direction: no redundant secondary labels or numbered interface scaffolding.
  * Comparison candidate only. Browser evidence and human visual review pending.
  * C / C2, artwork and SVG symbol are unchanged. Zen Kaku 700 gives the hero,
@@ -68,7 +68,7 @@ nav a { display: flex; align-items: center; justify-content: center; min-width: 
 .book-author, .book-publisher { display: inline; }
 .selection-reason { margin-top: 12px; font-size: 1rem; line-height: 1.8; text-align: left; }
 .book-credit { margin-top: 8px; font-size: .8125rem; line-height: 1.8; font-weight: 400; color: var(--muted); text-align: left; }
-.book-credit a { display: block; min-height: 44px; }
+.book-credit a { display: inline-flex; align-items: center; max-width: 100%; min-height: 44px; }
 .basis { max-width: 64em; margin-top: 20px; font-size: .8125rem; line-height: 1.9; color: var(--muted); }
 .next-shelf { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 20px; margin-top: 24px; padding: 20px 0 32px; border-top: 2px solid var(--rust); text-decoration: none; }
 .next-description { font-size: .875rem; line-height: 1.85; }
@@ -118,10 +118,16 @@ footer p + p { margin-top: 6px; }
   .paper-heading { text-align: left; }
   .paper-heading h1 { font-size: clamp(2rem, 8.8vw, 2.25rem); line-height: 1.25; margin-top: 0; }
   .shelf-introduction { margin-top: 12px; font-size: 1rem; line-height: 1.85; }
-  .desk-books { gap: 12px; padding-top: 22px; }
-  .work-art { height: clamp(136px, 37vw, 200px); }
+  /* Finite native shelf: two complete cards and the third edge at390px.
+   * Text zoom grows the rem card width, capped to the available shelf width.
+   * No auto advance, repeated slides, hidden copy or JavaScript scrolling. */
+  .desk-books { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, min(9rem, 100%)); gap: 16px; margin-inline: -16px; padding: 22px 16px 12px; overflow-x: auto; overscroll-behavior-x: contain; scroll-padding-inline: 16px; }
+  .book-choice { text-align: left; }
+  .choice-title a { justify-content: flex-start; }
+  .selection-reason { margin-top: 10px; }
+  .book-credit { margin-top: 10px; letter-spacing: 0; }
+  .work-art { height: 180px; justify-content: flex-start; }
   .choice-title { margin-top: 10px; font-size: 1rem; line-height: 1.55; }
-    .book-card .selection-reason { display: none; }
   .next-shelf { padding-bottom: 26px; gap: 4px 14px; }
   .next-shelf strong { font-size: 1.25rem; }
   .music { grid-template-columns: 1fr; padding: 26px 20px; gap: 26px; }
@@ -136,8 +142,7 @@ footer p + p { margin-top: 6px; }
   .masthead { padding-inline: 12px; }
   .reading-paper { width: calc(100% - 16px); }
   .shelf { padding-inline: 12px; }
-  .desk-books { gap: 10px; }
-  .work-art { height: 121px; }
+  .desk-books { margin-inline: -12px; padding-inline: 12px; scroll-padding-inline: 12px; }
   .choice-title { font-size: 1rem; }
   .music { padding-inline: 16px; }
 }

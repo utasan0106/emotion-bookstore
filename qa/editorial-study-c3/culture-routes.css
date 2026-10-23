@@ -101,3 +101,7 @@
   .culture-route .outing-stop:first-child h2 { font-size: 2rem; }
   .culture-route .outing-stop:first-child p:first-child { font-size: 1rem; }
 }
+
+/* Documentary information remains complete, but secondary to the photograph. */
+.culture-route .street-photo figcaption { margin-top: 8px; font-size: .8125rem; line-height: 1.65; letter-spacing: 0; }
+.culture-route .street-photo figcaption a { font-size: inherit; }

@@ -3,11 +3,13 @@
 // C3 comparison candidate. Owner references inform a Zen Kaku 700/400 hierarchy; actual visual approval is still pending. Rendering and visual approval are separate checks.
 // Original C and C2 checkers are preserved unchanged. C3 first-fold/navigation contract is explicit and separately tested.
 // CI-only render evidence. This script starts a server for THIS checkout; no remote origin override.
+const {observeLocalLcp,readLocalLcp,summarizeLocalLcp}=require('./editorial-c3-local-performance.cjs');
 const fs = require('node:fs');
 const path = require('node:path');
 const http = require('node:http');
 const {execFileSync} = require('node:child_process');
 const {chromium} = require('playwright');
+const {readPaintedFonts}=require('./editorial-c3-readiness.cjs');
 const {validateRenderedFonts} = require('./editorial-c3-font-contract.cjs');
 const {validatePolish}=require('./editorial-c3-polish-contract.cjs');
 const {validateDirectDetail,validateDestination}=require('./editorial-c3-direct-detail-contract.cjs');
@@ -36,7 +38,7 @@ try { report.checkoutSha = execFileSync('git', ['rev-parse', 'HEAD'], {cwd: root
 const interactionReport = {sourceSha: report.sourceSha, checkoutSha: report.checkoutSha,
   method: 'Fresh page per host and keyboard key (Enter/Space). External HTTP and WebSocket requests remain blocked. Verifies iframe DOM creation, URL, no autoplay, idempotence, focus, and top-level navigation only; actual playback is neither attempted nor verified.',
   widths: [390], fontPercents: [100], keys: ['Enter', 'Space'], inventory: [], expectedCases: 0, cases: [], errors: [], passed: false};
-const coverNavigationReport={sourceSha:report.sourceSha,checkoutSha:report.checkoutSha,method:'Enter activates each cover and title directly into its own C3 detail. The visible full reason must equal the home source text, including mobile-hidden home reasons. Browser Back returns home with the originating card link in the viewport; focus restoration is recorded, not assumed. External requests remain blocked.',expectedCases:routes.length*6,cases:[],passed:false};
+const coverNavigationReport={sourceSha:report.sourceSha,checkoutSha:report.checkoutSha,method:'Enter activates each cover and title directly into its own C3 detail. The visible full reason must equal the home source text, with the whole same reason visible on the finite mobile shelf. Browser Back returns home with the originating card link in the viewport; focus restoration is recorded, not assumed. External requests remain blocked.',widths:[320,390],fontPercents:[100,200],expectedCases:routes.length*24,cases:[],passed:false};
 function save() {
   fs.writeFileSync(path.join(out, 'direct-detail-navigation-report.json'), JSON.stringify(coverNavigationReport, null, 2) + '\n');
   fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(report, null, 2) + '\n');
@@ -247,22 +249,28 @@ async function settleLocalPage(page){
   await page.evaluate(async()=>{const bound=(promise,label)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(Error(label+' readiness timeout')),15000))]);for(const img of document.images)img.loading='eager';await bound(document.fonts.ready,'font');await Promise.all([...document.images].map(img=>bound(img.decode(),'image')));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));});
   await page.waitForLoadState('networkidle',{timeout:15000});
 }
+async function saveView(page){await page.evaluate(()=>{window.__qaSavedView={x:scrollX,y:scrollY,focus:document.activeElement,shelf:document.querySelector('.desk-books')?.scrollLeft||0};});}
+async function restoreView(page){return page.evaluate(async()=>{const s=window.__qaSavedView;if(!s)return false;const shelf=document.querySelector('.desk-books');if(s.focus===document.body){const old=document.body.getAttribute('tabindex');document.body.tabIndex=-1;document.body.focus({preventScroll:true});if(old===null)document.body.removeAttribute('tabindex');else document.body.setAttribute('tabindex',old);}else s.focus?.focus({preventScroll:true});if(shelf)shelf.scrollLeft=s.shelf;scrollTo(s.x,s.y);await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));const ok=document.activeElement===s.focus&&Math.abs(scrollX-s.x)<1&&Math.abs(scrollY-s.y)<1&&(!shelf||Math.abs(shelf.scrollLeft-s.shelf)<1);delete window.__qaSavedView;return ok;});}
 async function checkCoverNavigation(browser,origin){
- for(const route of routes)for(let index=0;index<3;index++)for(const trigger of ['cover','title']){
-  const book=homeBooks[index],row={route,index,trigger,href:null,externalRequests:[],failedLocalRequests:[],pageErrors:[],errors:[],passed:false};coverNavigationReport.cases.push(row);let context;
+ for(const route of routes)for(const width of [320,390])for(const fontPercent of [100,200])for(let index=0;index<3;index++)for(const trigger of ['cover','title']){
+  const book=homeBooks[index],row={route,width,fontPercent,index,trigger,href:null,externalRequests:[],failedLocalRequests:[],pageErrors:[],errors:[],passed:false};coverNavigationReport.cases.push(row);let context;
   try{
-   context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce',serviceWorkers:'block'});
+   context=await browser.newContext({viewport:{width,height:844},reducedMotion:'reduce',serviceWorkers:'block'});
+   // Persist the existing text-only zoom emulation across every navigation,
+   // before native history scroll restoration. Never manually repair shelf scroll.
+   await context.addInitScript(({fontPercent})=>{document.addEventListener('DOMContentLoaded',()=>{if(fontPercent===200){const sizes=[...document.querySelectorAll('*')].map(el=>[el,parseFloat(getComputedStyle(el).fontSize)]);for(const [el,size] of sizes)if(Number.isFinite(size))el.style.setProperty('font-size',size*2+'px','important');}window.__qaNavigationTextZoom=fontPercent;},{once:true});},{fontPercent});
    await context.route('**/*',r=>{const url=r.request().url();if(new URL(url).origin===origin)return r.continue();row.externalRequests.push(url);return r.abort('blockedbyclient');});
    await context.routeWebSocket('**/*',ws=>{row.externalRequests.push(ws.url());ws.close();});
    const page=await context.newPage();page.on('pageerror',e=>row.pageErrors.push(e.message));page.on('requestfailed',r=>{if(r.url().startsWith(origin+'/'))row.failedLocalRequests.push({url:r.url(),failure:r.failure()});});page.on('response',r=>{if(r.url().startsWith(origin+'/')&&r.status()>=400)row.failedLocalRequests.push({url:r.url(),status:r.status()});});
-   await page.goto(origin+route,{waitUntil:'networkidle'});await settleLocalPage(page);
+   await page.goto(origin+route,{waitUntil:'networkidle'});await page.waitForFunction(p=>window.__qaNavigationTextZoom===p,fontPercent,{timeout:5000});await settleLocalPage(page);row.homeTextSize=await page.evaluate(()=>parseFloat(getComputedStyle(document.body).fontSize));
    const selector=trigger==='cover'?'.book-choice-link':'.choice-title a';const link=page.locator(selector).nth(index);row.href=await link.getAttribute('href');
-   await link.focus();await Promise.all([page.waitForURL(origin+book.href),page.keyboard.press('Enter')]);await settleLocalPage(page);
-   row.target=await page.evaluate(book=>{const title=document.querySelector('h1'),reason=[...document.querySelectorAll('.selection-reason')].find(e=>e.textContent.trim()===book.reason),cover=document.querySelector('main .cover img'),source=[...document.querySelectorAll('main a[href]')].find(e=>e.getAttribute('href')===book.source),visible=e=>!!e&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true});return {title:title?.textContent.trim(),titleVisible:visible(title),reason:reason?.textContent.trim(),reasonVisible:visible(reason),cover:cover?.getAttribute('src'),coverVisible:visible(cover),source:source?.getAttribute('href'),sourceVisible:visible(source)};},book);
+   await link.focus();row.focus=await link.evaluate(el=>{const b=el.getBoundingClientRect(),s=el.closest('.desk-books').getBoundingClientRect();return {passed:document.activeElement===el&&b.left>=s.left-1&&b.right<=s.right+1&&b.left>=-1&&b.right<=innerWidth+1&&b.top>=-1&&b.bottom<=innerHeight+1,scrollLeft:el.closest('.desk-books').scrollLeft};});await Promise.all([page.waitForURL(origin+book.href),page.keyboard.press('Enter')]);await page.waitForFunction(p=>window.__qaNavigationTextZoom===p,fontPercent,{timeout:5000});await settleLocalPage(page);
+   row.target=await page.evaluate(book=>{const title=document.querySelector('h1'),reason=[...document.querySelectorAll('.selection-reason')].find(e=>e.textContent.trim()===book.reason),cover=document.querySelector('main .cover img'),source=[...document.querySelectorAll('main a[href]')].find(e=>e.getAttribute('href')===book.source),visible=e=>!!e&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true});return {bodyTextSize:parseFloat(getComputedStyle(document.body).fontSize),title:title?.textContent.trim(),titleVisible:visible(title),reason:reason?.textContent.trim(),reasonVisible:visible(reason),cover:cover?.getAttribute('src'),coverVisible:visible(cover),source:source?.getAttribute('href'),sourceVisible:visible(source)};},book);
    Object.assign(row.target,{localErrors:row.failedLocalRequests.length,externalRequests:row.externalRequests.length});row.target.passed=validateDestination(row.target,book)&&page.url()===origin+book.href;
-   await page.goBack({waitUntil:'domcontentloaded'});await settleLocalPage(page);row.back=await page.locator(selector).nth(index).evaluate((e,href)=>{const b=e.getBoundingClientRect(),inViewport=b.left>=-1&&b.right<=innerWidth+1&&b.top>=-1&&b.bottom<=innerHeight+1;return {url:location.pathname,inViewport,focusRestored:document.activeElement===e,passed:e.getAttribute('href')===href&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true})&&inViewport};},book.href);row.back.passed=row.back.passed&&page.url()===origin+route;
-   row.passed=row.href===book.href&&row.target.passed&&row.back.passed&&!row.externalRequests.length&&!row.failedLocalRequests.length&&!row.pageErrors.length;
-  }catch(e){row.errors.push(e.stack||String(e));}finally{if(context)await context.close().catch(e=>row.errors.push(e.message));if(row.errors.length)row.passed=false;save();console.log((row.passed?'PASS':'FAIL')+' direct detail '+trigger+' '+index);}
+   await page.goBack({waitUntil:'domcontentloaded'});await page.waitForFunction(p=>window.__qaNavigationTextZoom===p,fontPercent,{timeout:5000});await settleLocalPage(page);row.back=await page.locator(selector).nth(index).evaluate((e,href)=>{const b=e.getBoundingClientRect(),shelf=e.closest('.desk-books'),s=shelf.getBoundingClientRect(),inViewport=b.left>=-1&&b.right<=innerWidth+1&&b.top>=-1&&b.bottom<=innerHeight+1,unclipped=b.left>=s.left-1&&b.right<=s.right+1&&b.top>=s.top-1&&b.bottom<=s.bottom+1;return {bodyTextSize:parseFloat(getComputedStyle(document.body).fontSize),url:location.pathname,inViewport,unclipped,scrollLeft:shelf.scrollLeft,focusRestored:document.activeElement===e,passed:e.getAttribute('href')===href&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true})&&inViewport&&unclipped};},book.href);row.back.passed=row.back.passed&&page.url()===origin+route;
+   row.textZoomPassed=[row.homeTextSize,row.target.bodyTextSize,row.back.bodyTextSize].every(v=>Math.abs(v-16*fontPercent/100)<.01);
+   row.passed=row.textZoomPassed&&row.href===book.href&&row.focus.passed&&row.target.passed&&row.back.passed&&!row.externalRequests.length&&!row.failedLocalRequests.length&&!row.pageErrors.length;
+  }catch(e){row.errors.push(e.stack||String(e));}finally{if(context)await context.close().catch(e=>row.errors.push(e.message));if(row.errors.length)row.passed=false;save();console.log((row.passed?'PASS':'FAIL')+' direct detail '+width+'/'+fontPercent+' '+trigger+' '+index);}
  }
  coverNavigationReport.passed=coverNavigationReport.cases.length===coverNavigationReport.expectedCases&&coverNavigationReport.cases.every(r=>r.passed);
 }
@@ -288,11 +296,13 @@ async function checkCoverNavigation(browser,origin){
           return r.abort('blockedbyclient');
         });
         await context.routeWebSocket('**/*', ws=>{result.externalRequests.push({url:ws.url(),resourceType:'websocket',phase:'render and keyboard validation; no activation'});ws.close();});
+        await context.addInitScript(observeLocalLcp);
         page=await context.newPage();
         page.on('pageerror', e=>result.pageErrors.push(e.message));
         page.on('response', r=>{if(r.url().startsWith(origin+'/') && r.status()>=400) result.failedLocalRequests.push({url:r.url(),status:r.status()});});
         page.on('requestfailed', r=>{if(r.url().startsWith(origin+'/')) result.failedLocalRequests.push({url:r.url(),error:r.failure()});});
         const response=await page.goto(origin+route,{waitUntil:'networkidle',timeout:30000});
+        result.localNavigationLcp=summarizeLocalLcp(await page.evaluate(readLocalLcp));
         result.invariants=await page.evaluate(origin=>{
           const ids=[...document.querySelectorAll('[id]')].map(el=>el.id);
           const duplicateIds=[...new Set(ids.filter((id,index)=>ids.indexOf(id)!==index))];
@@ -310,6 +320,7 @@ async function checkCoverNavigation(browser,origin){
           for(const [el,size] of sizes) if(Number.isFinite(size)) el.style.setProperty('font-size',size*2+'px','important');
         });
         await page.evaluate(()=>document.fonts.ready);
+        await saveView(page);
         // Inspect only elements with their own visible text nodes. Each receives
         // a temporary test-only identity, so ancestor aggregation cannot disguise
         // a single wrong glyph font or misclassify a bold descendant as body text.
@@ -331,17 +342,21 @@ async function checkCoverNavigation(browser,origin){
           const rows=[];
           for(const item of fontInventory) {
             const {nodeId}=await fontSession.send('DOM.querySelector',{nodeId:doc.nodeId,selector:'[data-qa-font-node="'+item.id+'"]'});
-            const fonts=(await fontSession.send('CSS.getPlatformFontsForNode',{nodeId})).fonts.filter(f=>f.glyphCount>0);
+            const prepare=async()=>{await page.locator('[data-qa-font-node="'+item.id+'"]').evaluate(el=>{if(el.closest('.skip'))el.closest('.skip').focus();else el.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'});});await page.evaluate(async()=>{await document.fonts.ready;await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));});};
+            await prepare();
+            const evidence=await readPaintedFonts(async()=>(await fontSession.send('CSS.getPlatformFontsForNode',{nodeId})).fonts.filter(f=>f.glyphCount>0),prepare,3);
+            const fonts=evidence.fonts;
             const {computedStyle}=await fontSession.send('CSS.getComputedStyleForNode',{nodeId});
             const value=name=>computedStyle.find(p=>p.name===name)?.value||'';
             const family=value('font-family'),weight=value('font-weight'),fontSynthesis=item.fontSynthesis;
-            rows.push({...item,nodeId,family,weight,fontSynthesis,fonts});
+            rows.push({...item,nodeId,family,weight,fontSynthesis,fonts,attempts:evidence.attempts});
           }
           result.studyFont={method:'Actual rendered glyph fonts for every visible direct-text parent, with role-specific 700/400 checks; no system fallback permitted.',
             designApproval:false,fontStatus:'reference-led candidate only; actual screenshots still require visual review',rows,passed:validateRenderedFonts(rows,{width})};
         } finally {
           await fontSession.detach();
           await page.evaluate(()=>document.querySelectorAll('[data-qa-font-node]').forEach(el=>el.removeAttribute('data-qa-font-node')));
+          const restored=await restoreView(page);if(result.studyFont){result.studyFont.restorationPassed=restored;result.studyFont.passed=result.studyFont.passed&&restored;}
         }
         result.images=await page.evaluate(async()=>{
           const rows=[];
@@ -352,8 +367,10 @@ async function checkCoverNavigation(browser,origin){
             try {await Promise.race([img.decode(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Image decode timeout')),15000))]);}
             catch(e) {decodeErrors.set(img,e.message);}
           }));
-          // Range rectangles cover text glyph runs, not broad parent boxes. This
-          // permits contain letterboxing while catching cover intrusion into text.
+          const oldView={x:scrollX,y:scrollY,shelf:document.querySelector('.desk-books').scrollLeft};
+          for(const img of document.images) {
+            if(img.closest('.desk-books')){img.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));}
+            // Recompute glyph geometry after scrolling; stale positions are not evidence.
           const textRects=[];
           const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
           for(let node;(node=walker.nextNode());) {
@@ -362,7 +379,6 @@ async function checkCoverNavigation(browser,origin){
             const range=document.createRange();range.selectNodeContents(node);
             for(const r of range.getClientRects()) if(r.width&&r.height) textRects.push({el,text:node.textContent.trim().slice(0,100),left:r.left,top:r.top,right:r.right,bottom:r.bottom});
           }
-          for(const img of document.images) {
             const error=decodeErrors.get(img)||null;
             const box=img.getBoundingClientRect(),style=getComputedStyle(img);
             const px=k=>parseFloat(style[k])||0;
@@ -433,7 +449,9 @@ async function checkCoverNavigation(browser,origin){
               expectedRatio,actualRatio,declaredRatioPassed,coverIssues:[...new Set(coverIssues)],ratioPassed,error,
               passed:!error&&img.naturalWidth>0&&img.naturalHeight>0&&contentWidth>0&&contentHeight>0&&ratioPassed});
           }
-          return {passed:rows.length>0&&rows.every(x=>x.passed),rows};
+          document.querySelector('.desk-books').scrollLeft=oldView.shelf;scrollTo(oldView.x,oldView.y);await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+          const restored=Math.abs(scrollX-oldView.x)<1&&Math.abs(scrollY-oldView.y)<1&&Math.abs(document.querySelector('.desk-books').scrollLeft-oldView.shelf)<1;
+          return {passed:rows.length>0&&rows.every(x=>x.passed)&&restored,restorationPassed:restored,method:'Each shelf cover revealed before strict whole-image/ancestor-clip/ratio checks, then initial scroll restored; no clipping exception.',rows};
         });
         result.layout=await page.evaluate(()=>({viewport:innerWidth,scrollWidth:Math.max(document.documentElement.scrollWidth,document.body.scrollWidth),passed:Math.max(document.documentElement.scrollWidth,document.body.scrollWidth)<=innerWidth+1}));
         const links=await page.evaluate(()=>[...new Set([...document.querySelectorAll('a[href]')].map(a=>a.href))]);
@@ -461,16 +479,25 @@ async function checkCoverNavigation(browser,origin){
             await response.dispose();
           } catch(e) {result.links.rows.push({href,passed:false,error:e.message});result.links.passed=false;}
         }
-        result.studyContract=await page.evaluate(({requireInitial,fontPercent})=>{
+        await saveView(page);
+        result.studyContract=await page.evaluate(async({requireInitial,fontPercent})=>{
           const box=el=>{const r=el?.getBoundingClientRect();return r?{left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height}:null;};
           const visible=el=>!!el&&el.checkVisibility({checkOpacity:true,checkVisibilityCSS:true});
           const nextShelf=document.querySelector('.next-shelf');
-          const mappings=[...document.querySelectorAll('.book-choice')].map(choice=>{
+          const readCard=choice=>{
             const article=choice.querySelector('.book-card'),image=choice.querySelector('.work-art img'),link=choice.querySelector('.book-choice-link'),title=choice.querySelector('.choice-title'),titleLink=title?.querySelector('a'),author=choice.querySelector('.book-author'),publisher=choice.querySelector('.book-publisher'),creditTitle=choice.querySelector('.credit-title'),source=choice.querySelector('.book-credit a'),reason=choice.querySelector('.selection-reason');
             return {id:choice.dataset.bookId,choiceBox:box(choice),cardBox:box(article),cover:box(image),coverSrc:image?.getAttribute('src'),bookTitleSize:parseFloat(getComputedStyle(title).fontSize),bookTitle:box(title),bookTitleText:title?.textContent.trim(),visibleTitleCount:[...choice.querySelectorAll('h2')].filter(visible).length,
-              visible:visible(image)&&visible(title),authorText:author?.textContent.trim(),publisherText:publisher?.textContent.trim(),authorVisible:visible(author),publisherVisible:visible(publisher),creditTitleVisible:visible(creditTitle),creditTitleBox:box(creditTitle),authorBox:box(author),publisherBox:box(publisher),authorSize:parseFloat(getComputedStyle(author).fontSize),publisherSize:parseFloat(getComputedStyle(publisher).fontSize),sourceVisible:visible(source),creditText:source?.textContent.trim(),creditSize:parseFloat(getComputedStyle(source).fontSize),sourceBox:box(source),coverLinkBox:box(link),titleLinkBox:box(titleLink),
-              href:link?.getAttribute('href'),titleHref:titleLink?.getAttribute('href'),accessibleName:link?.getAttribute('aria-label'),reasonVisible:visible(reason),reasonDisplay:getComputedStyle(reason).display,reason:box(reason),reasonText:reason?.textContent.trim(),credit:source?.getAttribute('href')};
-          });
+              visible:visible(image)&&visible(title),authorText:author?.textContent.trim(),publisherText:publisher?.textContent.trim(),authorVisible:visible(author),publisherVisible:visible(publisher),creditTitleVisible:visible(creditTitle),creditTitleBox:box(creditTitle),authorBox:box(author),publisherBox:box(publisher),authorSize:parseFloat(getComputedStyle(author).fontSize),publisherSize:parseFloat(getComputedStyle(publisher).fontSize),sourceVisible:visible(source),creditText:choice.querySelector('.book-credit')?.textContent.trim(),sourceText:source?.textContent.trim(),creditLinks:choice.querySelectorAll('.book-credit a').length,creditDecoration:getComputedStyle(choice.querySelector('.book-credit')).textDecorationLine,creditSize:parseFloat(getComputedStyle(choice.querySelector('.book-credit')).fontSize),sourceBox:box(source),coverLinkBox:box(link),titleLinkBox:box(titleLink),
+              href:link?.getAttribute('href'),titleHref:titleLink?.getAttribute('href'),accessibleName:link?.getAttribute('aria-label'),reasonVisible:visible(reason),reasonDisplay:getComputedStyle(reason).display,reasonSize:parseFloat(getComputedStyle(reason).fontSize),reasonClamp:getComputedStyle(reason).webkitLineClamp,reasonOverflow:getComputedStyle(reason).overflow,reachFocused:document.activeElement===link,reachShelfBox:box(choice.closest('.desk-books')),reason:box(reason),reasonText:reason?.textContent.trim(),credit:source?.getAttribute('href')};
+          };
+          const shelfViewport=document.querySelector('.desk-books');
+          const initialCards=[...document.querySelectorAll('.book-choice')].map(c=>({card:box(c),cover:box(c.querySelector('.work-art img')),title:box(c.querySelector('.choice-title'))}));
+          const initialShelf={shelfViewport:box(shelfViewport),shelfOverflowX:getComputedStyle(shelfViewport).overflowX,shelfScrollLeft:shelfViewport.scrollLeft,shelfScrollWidth:shelfViewport.scrollWidth,shelfClientWidth:shelfViewport.clientWidth,shelfScrollHeight:shelfViewport.scrollHeight,shelfClientHeight:shelfViewport.clientHeight};
+          const mappings=[];
+          for(const choice of document.querySelectorAll('.book-choice')){choice.querySelector('.book-choice-link').focus();await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));mappings.push(readCard(choice));}
+          // Full card geometry belongs to its revealed state; global scene/header
+          // geometry below belongs to the untouched initial position.
+          shelfViewport.scrollLeft=window.__qaSavedView.shelf;scrollTo(window.__qaSavedView.x,window.__qaSavedView.y);await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
           const selection=[...document.querySelectorAll('.shelf > .other-entry')];
           const staleLabels=['いま、ひらく棚','表紙を押すと、作品紹介へ。','一冊ずつ、選んだ理由。'];
           const obsoleteInstructionLabels=staleLabels.filter(text=>document.body.innerText.includes(text));
@@ -486,10 +513,10 @@ async function checkCoverNavigation(browser,origin){
           const cultureLinks=[...culture.querySelectorAll('.culture-continuation-links > a')].map(a=>a.getAttribute('href'));
           const musicButton=document.querySelectorAll('.music .v3-video-load');
           const secondary=document.querySelector('.music .music-external');
-          return {scene:box(scene),deskArt:box(deskArt),shelf:box(shelf),musicBox:box(document.querySelector('.music')),photoBox:box(venue.querySelector('img')),musicButtonBox:box(musicButton[0]),
+          return {...initialShelf,initialCards,scene:box(scene),deskArt:box(deskArt),shelf:box(shelf),musicBox:box(document.querySelector('.music')),photoBox:box(venue.querySelector('img')),musicButtonBox:box(musicButton[0]),
             visualPolish:{cultureLinks,primaryMusicControls:musicButton.length,secondaryHref:secondary?.getAttribute('href'),secondaryFontSize:parseFloat(getComputedStyle(secondary).fontSize),buttonFontSize:parseFloat(getComputedStyle(musicButton[0]).fontSize),privacy:document.querySelector('.privacy').textContent.trim()},heroFontSize:parseFloat(getComputedStyle(document.querySelector('#theme')).fontSize),nextShelf:box(nextShelf),header:box(document.querySelector('.masthead')),theme:box(document.querySelector('#theme')),
             cardCount:document.querySelectorAll('.book-card').length,bookListCount:document.querySelectorAll('.desk-books').length,retiredDetailListCount:document.querySelectorAll('.book-selections,.book-selection').length,mappings,headings,obsoleteInstructionLabels,documentarySeparation,fontPercent,viewportHeight:innerHeight,
-            contractVersion:'C3 direct-detail: one visible title/author/publisher/source per card; all three full-size covers/titles initially visible at390/1440. Mobile<=700 hides home reasons, requiring exact full reason on the direct destination. Four stable navigation items may wrap. 200% permits vertical growth, never clipping.',
+            contractVersion:'C3 finite mobile shelf: exactly three cards; whole reasons and full credits always displayed. At390/100 two full covers/titles plus third-cover edge initially, each whole card reachable through native focus. Desktop retains three columns. All six direct links and full destination reasons retained. 200% may scroll within the shelf, never body overflow or hidden text.',
             reducedMotion:reduced,scrollBehavior:getComputedStyle(document.documentElement).scrollBehavior,requireInitial,
             passed:visible(nextShelf)&&!document.querySelector('.read-cta')&&
               !obsoleteInstructionLabels.length&&!document.querySelector('.book-number,.reason-number')&&documentarySeparation&&
@@ -498,6 +525,7 @@ async function checkCoverNavigation(browser,origin){
               ![...selection[0].attributes].some(a=>a.name.startsWith('data-')||a.name.startsWith('on'))&&!selection[0].hasAttribute('ping')&&
               reduced&&getComputedStyle(document.documentElement).scrollBehavior==='auto'&&!animations.length&&!document.querySelector('video[autoplay],audio[autoplay]')};
         },{requireInitial:fontPercent===100&&(width===390||width===1440),fontPercent});
+        result.studyContract.restoredShelf=await restoreView(page);
         result.navigationItems=await page.evaluate(navigationSnapshot);result.navigationItems.passed=validateNavigation(result.navigationItems,route);
         result.studyContract.directDetailPassed=validateDirectDetail(result.studyContract,{width,fontPercent,viewportHeight:result.studyContract.viewportHeight});
         result.studyContract.polishPassed=validatePolish(result.studyContract,{width,fontPercent});
@@ -505,7 +533,7 @@ async function checkCoverNavigation(browser,origin){
         const prefix=route.split('/').at(-2)+'-'+width+'-'+fontPercent;
         await page.screenshot({path:path.join(out,prefix+'-first-viewport.png'),fullPage:false});
         result.firstViewportScreenshot=prefix+'-first-viewport.png';
-        result.safeFocus={passed:true,rows:[]};
+        result.safeFocus={passed:true,rows:[]};result.shelfScreenshots=[];
         const controls=page.locator('a[href],button');
         const count=await controls.count();
         if(!count) result.safeFocus.passed=false;
@@ -513,14 +541,17 @@ async function checkCoverNavigation(browser,origin){
         for(let i=0;i<count;i++) {
           const row=await controls.nth(i).evaluate(el=>{
             const s=getComputedStyle(el),r=el.getBoundingClientRect();
-            return {text:el.textContent.trim(),focused:document.activeElement===el,visible:el.checkVisibility({checkOpacity:true,checkVisibilityCSS:true}),
+            return {text:el.textContent.trim(),isCoverLink:el.classList.contains('book-choice-link'),focused:document.activeElement===el,visible:el.checkVisibility({checkOpacity:true,checkVisibilityCSS:true}),
               withinViewport:r.left>=-1&&r.right<=innerWidth+1&&r.top>=-1&&r.bottom<=innerHeight+1,
-              indicator:s.outlineStyle!=='none'&&parseFloat(s.outlineWidth)>0};
+              indicator:s.outlineStyle!=='none'&&parseFloat(s.outlineWidth)>0,shelf:el.closest('.desk-books')?(()=>{const c=el.closest('.desk-books'),b=c.getBoundingClientRect();return {bookId:el.closest('.book-choice')?.dataset.bookId,scrollLeft:c.scrollLeft,unclipped:r.left>=b.left-1&&r.right<=b.right+1&&r.top>=b.top-1&&r.bottom<=b.bottom+1};})():null};
           });
           result.safeFocus.rows.push(row);
-          if(!row.focused||!row.visible||!row.withinViewport||!row.indicator) result.safeFocus.passed=false;
+          if(width<=390&&row.isCoverLink&&row.focused){const file=prefix+'-'+row.shelf.bookId+'-focused.png';await page.screenshot({path:path.join(out,file),fullPage:false});result.shelfScreenshots.push({bookId:row.shelf.bookId,file,scrollLeft:row.shelf.scrollLeft});}
+          if(!row.focused||!row.visible||!row.withinViewport||!row.indicator||(row.shelf&&!row.shelf.unclipped)) result.safeFocus.passed=false;
           if(i+1<count) await page.keyboard.press('Tab');
         }
+        result.safeFocus.shelfBookIds=[...new Set(result.safeFocus.rows.filter(r=>r.shelf).map(r=>r.shelf.bookId))];
+        result.safeFocus.passed=result.safeFocus.passed&&result.safeFocus.shelfBookIds.length===3;
         // Geometry covers off-screen text; prior focus/Tab navigation may scroll, but does not activate links or providers.
         result.contrast=await page.evaluate(measureContrast);
         // networkidle and decoded images already establish render readiness.
@@ -535,7 +566,7 @@ async function checkCoverNavigation(browser,origin){
       finally {
         if(page) {
           const filename=route.split('/').at(-2)+'-'+width+'-'+fontPercent+'-fullpage.png';
-          try {await page.screenshot({path:path.join(out,filename),fullPage:true,timeout:30000});result.screenshot=filename;}
+          try {await page.evaluate(()=>{const shelf=document.querySelector('.desk-books');if(shelf)shelf.scrollLeft=0;});await page.screenshot({path:path.join(out,filename),fullPage:true,timeout:30000});result.screenshot=filename;}
           catch(e) {result.errors.push('Screenshot: '+e.message);result.passed=false;}
         }
         if(context) await context.close().catch(e=>result.errors.push('Context close: '+e.message));

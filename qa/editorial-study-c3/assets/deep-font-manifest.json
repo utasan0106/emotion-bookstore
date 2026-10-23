@@ -7,8 +7,8 @@
     {
       "route": "/qa/editorial-study-c3/index.html",
       "source_path": "qa/editorial-study-c3/index.html",
-      "sha256": "a62302dcfe88dedf01c4b0daeef033ea3025e34013a68e114bfe096a7ac896fa",
-      "corpus_text_sha256": "fbc221a731fe09a64ff8158184ca103420c985d56c0d77395394f61838927826"
+      "sha256": "025408f7a7578301fb452b86d2218bc6b5ccbdea1e75a300618cb5263bc6194d",
+      "corpus_text_sha256": "e16e7fc7ad7423381d023370dea1f2bd8c0133a6abe0e992d5be7e976bcda60c"
     },
     {
       "route": "/qa/editorial-study-c3/books/junjo.html",
@@ -43,12 +43,12 @@
     {
       "route": "/qa/editorial-study-c3/outings.html",
       "source_path": "qa/editorial-study-c3/outings.html",
-      "sha256": "16cac6eb3f47f63cc84b08acf774a8ed2e2975f1b3602fb290c2576fe31aa6c0",
-      "corpus_text_sha256": "38ca2af0fa71b605f44def09c006fdbc3b916607bdc47543789f72fa116778d0"
+      "sha256": "04604b3b8242f73403fd6204a2fbee1e7e340c8cdbf60e6db58c82c951d72cfb",
+      "corpus_text_sha256": "93436969783290606e8f89e3ec7a7d674a546074af3f91b98fc6e9f8c7141300"
     }
   ],
   "corpus_file": "deep-font-corpus.txt",
-  "corpus_sha256": "1ee46775ca2bd9f2b1c967300d12a41a0d19b05f51fb87fb0f611561c17b9574",
+  "corpus_sha256": "f049f07abc8dfd300706a5bd2369c6c73e35f2173a6cbc171edf699eb1066e92",
   "required_unique_codepoints": 515,
   "extra_coverage": "Printable ASCII plus supported Japanese kana. New kanji require regeneration.",
   "fonts": [
@@ -85,6 +85,6 @@
   },
   "corpus_scope": "Seven complete C3 HTML documents including titles and accessible text. Home culture fragment is represented in the integrated home.",
   "original_license_sha256": "0fac78a235c98d640cb06332eb5362c211d86fa03c011df438c35005d22ad2c7",
-  "integration_rebuild_utc": "2026-10-23T17:35:53.455956+00:00",
+  "integration_rebuild_utc": "2026-10-23T18:11:21.352101+00:00",
   "integration_note": "Offline union regeneration from the same pinned official originals after culture integration, phrase markup and limited owner-approved wording changes. No new font source or dependency."
 }

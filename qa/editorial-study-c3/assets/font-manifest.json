@@ -1,7 +1,7 @@
 {
   "license": "SIL OFL 1.1; complete original notice retained. Modified character subsets retain original font names and metadata. Supplied notice declares no Reserved Font Names.",
   "corpus": "qa/editorial-study-c3/index.html",
-  "corpus_sha256": "a62302dcfe88dedf01c4b0daeef033ea3025e34013a68e114bfe096a7ac896fa",
+  "corpus_sha256": "025408f7a7578301fb452b86d2218bc6b5ccbdea1e75a300618cb5263bc6194d",
   "font_synthesis": "none",
   "decorative_symbols": "Arrow and play icons are original inline SVG; no system-font fallback.",
   "visualApproval": false,

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 'use strict';
+const {observeLocalLcp,readLocalLcp,summarizeLocalLcp}=require('./editorial-c3-local-performance.cjs');
 // CI-only local-checkout runner. Never navigates to an external origin or executes
 // out-of-scope production pages. Six routes x three widths x two text sizes.
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
@@ -35,6 +36,7 @@ async function fresh(browser,origin,row,width=390){
   row.storageAttempts=[];
   await context.exposeBinding('__qaRecordStorage',(source,name)=>{row.storageAttempts.push({url:source.frame.url(),name});});
   await context.addInitScript(prohibitStorage);
+  await context.addInitScript(observeLocalLcp);
   await context.route('**/*',r=>{const u=r.request().url();if(new URL(u).origin===origin)return r.continue();row.externalRequests.push(u);return r.abort('blockedbyclient');});
   await context.routeWebSocket('**/*',ws=>{row.externalRequests.push(ws.url());ws.close();});
   const page=await context.newPage();
@@ -130,6 +132,7 @@ async function roundTrips(browser,origin){
   browser=await chromium.launch({headless:true,...((process.env.CHROMIUM_EXECUTABLE_PATH||process.env.CHROMIUM_PATH)?{executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||process.env.CHROMIUM_PATH}:{})});const cache=new Map();
   for(const exp of expected)for(const width of widths)for(const fontPercent of fontPercents){const r={route:exp.route,width,fontPercent,externalRequests:[],pageErrors:[],failedLocalRequests:[],pageRequests:[],errors:[],passed:false};report.cases.push(r);let context,page;
     try{({context,page}=await fresh(browser,origin,r,width));const response=await page.goto(origin+exp.route,{waitUntil:'networkidle',timeout:30000});r.navigation={passed:response?.ok(),status:response?.status()};
+      r.localNavigationLcp=summarizeLocalLcp(await page.evaluate(readLocalLcp));
       if(fontPercent===200)await page.evaluate(()=>{const sizes=[...document.querySelectorAll('*')].map(e=>[e,parseFloat(getComputedStyle(e).fontSize)]);for(const [e,s] of sizes)if(Number.isFinite(s))e.style.setProperty('font-size',s*2+'px','important');});await page.evaluate(()=>document.fonts.ready);
       r.initialReadiness=await waitForLocalReady(page);await page.evaluate(()=>scrollTo(0,0));await twoPaintFrames(page);
       r.navigationItems=await page.evaluate(navigationSnapshot);r.navigationItems.passed=validateNavigation(r.navigationItems,exp.route);
@@ -140,7 +143,7 @@ async function roundTrips(browser,origin){
         let hero=null;
         if(kind==='culture-film'){
           const photo=document.querySelector('.route-hero-photo'),pair=document.querySelector('.work-pair'),image=photo?.querySelector('img'),caption=photo?.querySelector('figcaption'),b=image?.getBoundingClientRect(),c=caption?.getBoundingClientRect(),p=pair?.getBoundingClientRect(),visible=e=>!!e&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true});
-          hero={imageVisible:visible(image),captionVisible:visible(caption),caption:caption?.textContent.trim(),imageCount:document.querySelectorAll('img[src="/assets/city-jinbocho-suzuran.jpg"]').length,imageTop:b?.top,imageBottom:b?.bottom,imageLeft:b?.left,imageRight:b?.right,captionBottom:c?.bottom,pairTop:p?.top,width:b?.width,height:b?.height};
+          hero={imageVisible:visible(image),captionVisible:visible(caption),caption:caption?.textContent.trim(),imageCount:document.querySelectorAll('img[src="/assets/city-jinbocho-suzuran.jpg"]').length,imageTop:b?.top,imageBottom:b?.bottom,imageLeft:b?.left,imageRight:b?.right,captionFontSize:caption?parseFloat(getComputedStyle(caption).fontSize):null,captionLineHeight:caption?parseFloat(getComputedStyle(caption).lineHeight):null,captionLetterSpacing:caption?getComputedStyle(caption).letterSpacing:null,captionBottom:c?.bottom,pairTop:p?.top,width:b?.width,height:b?.height};
         }
         if(kind==='culture-outings'){const headings=[...document.querySelectorAll('.outing-stop h2')];hero={type:'typographic',headingTexts:headings.map(e=>e.textContent.trim()),sizes:headings.map(e=>parseFloat(getComputedStyle(e).fontSize)),mainImageCount:document.querySelectorAll('main img').length};}
         return {hero,viewportHeight:innerHeight};
