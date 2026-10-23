@@ -1,7 +1,7 @@
 {
   "proposal": "B books-first; not adopted",
   "referenceCheckedOn": "2026-10-23",
-  "cssSha256": "6cb7d4043e7b57b377d7e622dc324e2d9d6df2217441ab1bbdbe83a3540f6843",
+  "cssSha256": "ddcbf3d71e79bde5cb0d9712ee16e66cabe1db1065b10ff95973c5078c27c029",
   "sourceFiles": {
     "shelves.css": "6cb7d4043e7b57b377d7e622dc324e2d9d6df2217441ab1bbdbe83a3540f6843",
     "editorial-home.css": "23c83ee19823c9be1caf1b6efe4480b5f7b8f8ae09da3df98d5d932933d6ed9a",
@@ -71,5 +71,13 @@
     "Full existing rights credits and original creator roles preserved",
     "Canonical/schema/publication metadata is generated only for isolated approval fixtures; actual proposals stay pending",
     "Existing city display titles/roles stay authoritative even where B uses a longer bibliographic title"
-  ]
+  ],
+  "referenceCssSha256": "6cb7d4043e7b57b377d7e622dc324e2d9d6df2217441ab1bbdbe83a3540f6843",
+  "detailAdaptation": {
+    "date": "2026-10-23",
+    "trigger": "Actual 0ca99 generated mobile screenshot: places-to-share title orphan final る and long prose constrained beside cover despite prior 40/40 CI.",
+    "scope": "All four shelf detail templates. Full-width mobile title, cover + short bibliography, full-width explanation/source/credits/bridge. Desktop card cover-left/text-right maintained.",
+    "contentOrder": "Short shelf introduction, actual works, then visible selection/method disclosure. Book introduction note unchanged.",
+    "constraints": "No font reduction, title truncation, nowrap or hidden content. Full rights credits/roles/IDs retained. CSS is now a documented detail adaptation, not byte-identical to original B."
+  }
 }

@@ -315,6 +315,41 @@ if(process.argv.includes('--prepare-only')) {
           return {passed:rows.length>0&&rows.every(x=>x.passed),rows};
         });
         result.layout=await page.evaluate(()=>({viewport:innerWidth,scrollWidth:Math.max(document.documentElement.scrollWidth,document.body.scrollWidth),passed:Math.max(document.documentElement.scrollWidth,document.body.scrollWidth)<=innerWidth+1}));
+        if(route.startsWith('/shelves/')) {
+          result.shelfLayout=await page.evaluate(fontPercent=>{
+            const near=(a,b)=>Math.abs(a-b)<=1;
+            const rows=[...document.querySelectorAll('.detail-works > article.work')].map(card=>{
+              const title=card.querySelector(':scope > .work-title'),art=card.querySelector(':scope > .work-art'),meta=card.querySelector(':scope > .meta'),copy=card.querySelector(':scope > .work-copy');
+              if(!title||!art||!meta||!copy)return {passed:false,error:'Missing direct card child'};
+              const box=card.getBoundingClientRect(),style=getComputedStyle(card),t=title.getBoundingClientRect(),a=art.getBoundingClientRect(),m=meta.getBoundingClientRect(),c=copy.getBoundingClientRect();
+              const left=box.left+card.clientLeft+(parseFloat(style.paddingLeft)||0),right=box.left+card.clientLeft+card.clientWidth-(parseFloat(style.paddingRight)||0);
+              const children=[...card.children].map(el=>el.className);
+              const domOrder=children.join('|')==='work-title|work-art|meta|work-copy';
+              const fullTitle=near(t.left,left)&&near(t.right,right),fullCopy=near(c.left,left)&&near(c.right,right);
+              const mobile=innerWidth<=650;
+              const geometry=mobile?fullTitle&&fullCopy&&t.bottom<=Math.min(a.top,m.top)+1&&c.top>=Math.max(a.bottom,m.bottom)-1:
+                near(a.left,left)&&a.right<t.left&&near(t.left,m.left)&&near(m.left,c.left)&&t.bottom<=m.top+1&&m.bottom<=c.top+1;
+              const lines=[],walker=document.createTreeWalker(title,NodeFilter.SHOW_TEXT);
+              for(let node;(node=walker.nextNode());){let offset=0;for(const char of node.textContent){const start=offset;offset+=char.length;if(!char.trim())continue;const range=document.createRange();range.setStart(node,start);range.setEnd(node,offset);const r=range.getBoundingClientRect();let line=lines.find(l=>Math.abs(l.top-r.top)<1);if(!line){line={top:r.top,text:''};lines.push(line);}line.text+=char;}}
+              lines.sort((x,y)=>x.top-y.top);
+              const orphanFree=!mobile||fontPercent!==100||lines.length<2||[...lines.at(-1).text].length>1;
+              const titleStyle=getComputedStyle(title),noTruncation=titleStyle.whiteSpace!=='nowrap'&&titleStyle.textOverflow!=='ellipsis'&&!['hidden','clip'].includes(titleStyle.overflowX)&&parseFloat(titleStyle.fontSize)>=20*fontPercent/100;
+              const artLinks=[...art.querySelectorAll('a[href]')],titleLink=title.querySelector('a[href]');
+              const artHrefMatches=art.querySelector('img')?artLinks.length===1&&artLinks[0].getAttribute('href')===titleLink?.getAttribute('href')&&artLinks[0].tabIndex===0:artLinks.length===0;
+              return {title:title.textContent,children,mobile,fullTitle,fullCopy,lines,orphanFree,geometry,noTruncation,artHrefMatches,passed:domOrder&&geometry&&orphanFree&&noTruncation&&artHrefMatches};
+            });
+            const works=document.querySelector('.detail-works'),method=document.querySelector('.shelf-method'),exits=document.querySelector('.shelf-exits');
+            const methodAfterWorks=!!works&&!!method&&!!exits&&method.checkVisibility({checkOpacity:true,checkVisibilityCSS:true})&&method.getBoundingClientRect().top>=works.getBoundingClientRect().bottom-1&&exits.getBoundingClientRect().top>=method.getBoundingClientRect().bottom-1&&!document.querySelector('.detail-top .editor-note');
+            return {rows,methodAfterWorks,passed:rows.length===3&&rows.every(r=>r.passed)&&methodAfterWorks};
+          },fontPercent);
+          result.shelfTabOrder=[];
+          const cardLinks=page.locator('.detail-works a[href]');await cardLinks.first().focus();
+          for(let i=0;i<await cardLinks.count();i++) {
+            result.shelfTabOrder.push(await cardLinks.nth(i).evaluate(el=>el===document.activeElement));
+            if(i+1<await cardLinks.count())await page.keyboard.press('Tab');
+          }
+          result.shelfLayout.passed=result.shelfLayout.passed&&result.shelfTabOrder.length>0&&result.shelfTabOrder.every(Boolean);
+        }
         const links=await page.evaluate(()=>[...new Set([...document.querySelectorAll('a[href]')].map(a=>a.href))]);
         result.links={passed:true,rows:[]};
         for(const href of links) {
@@ -360,7 +395,7 @@ if(process.argv.includes('--prepare-only')) {
         result.keyboard.skipBypassesHeader=await page.evaluate(()=>document.querySelector('#main').contains(document.activeElement));
         result.keyboard.passed=result.keyboard.navOrder.length===3&&result.keyboard.navOrder.every(Boolean)&&result.keyboard.skipVisible&&result.keyboard.skipDestination&&result.keyboard.skipBypassesHeader;
         await page.evaluate(()=>{document.activeElement?.blur();scrollTo(0,0);});
-        result.passed=['navigation','invariants','images','layout','links','contrast','privacy','runtime','uiContract','keyboard'].every(k=>result[k].passed);
+        result.passed=['navigation','invariants','images','layout','links','contrast','privacy','runtime','uiContract','keyboard'].every(k=>result[k].passed)&&(!result.shelfLayout||result.shelfLayout.passed);
       } catch(e) {result.errors.push(e.stack||String(e));}
       finally {
         if(page) {

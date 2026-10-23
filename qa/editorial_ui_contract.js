@@ -27,6 +27,24 @@ function checkUi(html,route,cat) {
     assert.ok(html.includes('<p class="eyebrow">3作品の棚 / 公開資料に基づく選書</p>'),'B UI: shelf scope');
     assert.ok(html.includes('<strong>選び方について</strong>'),'B UI: shelf selection explanation');
     assert.equal((html.match(/<article class="work"/g)||[]).length,3,'B UI: three shelf works');
+    const cards=[...html.matchAll(/<article class="work"[^>]*>([\s\S]*?)<\/article>/g)].map(m=>m[1]);
+    const top=html.match(/<div class="detail-top">([\s\S]*?)<\/div><div class="detail-works">/)?.[1];
+    assert.ok(top&&!top.includes('<aside'),'B UI: works precede selection-method disclosure');
+    assert.ok(html.indexOf('<aside class="editor-note shelf-method">')>html.lastIndexOf('</article>'),'B UI: method disclosure follows all works');
+    assert.equal((html.match(/<aside class="editor-note shelf-method">/g)||[]).length,1,'B UI: method disclosure retained exactly once');
+    assert.ok(html.includes('<strong>選び方について</strong>'+esc(shelf.note)+'</aside>'),'B UI: complete method disclosure remains visible');
+    for(let i=0;i<cards.length;i++) {
+      const card=cards[i],work=cat.byId.get(shelf.works[i].id);
+      const order=['<h2 class="work-title"','<div class="work-art">','<p class="meta">','<div class="work-copy">'].map(token=>card.indexOf(token));
+      assert.ok(order[0]===0&&order.every((x,j)=>x>=0&&(j===0||x>order[j-1])),'B UI: title art metadata copy DOM order');
+      assert.ok(card.slice(0,order[1]).includes('<a href="'+work.path+'">'+esc(work.title)+'</a>'),'B UI: full unchanged work title and destination');
+      const artwork=card.slice(order[1],order[2]);
+      if(artwork.includes('<img ')) assert.ok(artwork.includes('<a href="'+esc(work.path)+'"><img '),'B UI: shelf cover preserves its work link');
+      assert.doesNotMatch(artwork,/tabindex=/,'B UI: shelf cover preserves natural Tab order');
+      const copy=card.slice(order[3]);
+      const texts=['class="reason"','class="source"','class="credit"','class="bridge"'].map(token=>copy.indexOf(token));
+      assert.ok(texts.slice(0,3).every((x,j)=>x>=0&&(j===0||x>texts[j-1]))&&(!shelf.works[i].next||texts[3]>texts[2]),'B UI: explanation source rights bridge DOM order');
+    }
     for(const item of shelf.works) {
       const work=cat.byId.get(item.id),edition=work.origin==='editorial'?work.editionLabel:reference.existingDisplay[work.key].edition;
       assert.ok(html.includes(`<p class="meta">${esc(work.creator)}<br>${esc(edition)}</p>`),'B UI: creator role and edition visible');

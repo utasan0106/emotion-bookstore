@@ -26,3 +26,22 @@
 .compact-trio{max-width:800px;margin-inline:auto;gap:24px}.compact-work .work-art{height:210px;margin-bottom:13px}.compact-work .work-art img{max-height:210px}.compact-work h3{font-size:1rem;line-height:1.6;font-weight:650}.compact-work .type-art{max-width:197px;background:transparent;border-top:1px solid;border-bottom:1px solid}.compact-trio+.editor-note{max-width:800px;margin:24px auto 0}.shelf-sources{max-width:900px;padding:14px 0 0;margin:18px 0 0;list-style:none;border-top:1px solid #9a9f8a;font-size:.75rem;line-height:1.75;color:#424a3e;overflow-wrap:anywhere}.shelf-sources li+li{margin-top:6px}.shelf-sources a{white-space:nowrap}.shelf-header .eyebrow{margin-bottom:8px}
 @media(max-width:650px){.compact-trio{gap:12px}.compact-work .work-art{height:145px;margin-bottom:10px}.compact-work .work-art img{max-height:145px}.compact-work h3{font-size:.875rem;line-height:1.55}.compact-trio+.editor-note{margin-top:20px;font-size:.875rem}.shelf-sources{margin-top:16px;padding-top:12px;line-height:1.65}.shelf-sources li+li{margin-top:8px}}
 @media(max-width:350px){.compact-trio{gap:10px}.compact-work .work-art,.compact-work .work-art img{max-height:125px}}
+
+/* Generated detail adaptation, 2026-10-23: keep the full title and prose out
+   of the narrow mobile cover column. DOM order is title, art, bibliography,
+   then explanation/source/bridge; existing cover links remain functional.
+   Desktop retains the existing cover-left/text-right arrangement. */
+.detail-works .work{grid-template-rows:auto auto 1fr;column-gap:30px;row-gap:0}
+.detail-works .work-title{grid-column:2;grid-row:1;min-width:0;text-wrap:balance}
+.detail-works .work>.work-art{grid-column:1;grid-row:1 / span 3;margin-bottom:0;align-self:start}
+.detail-works .work>.meta{grid-column:2;grid-row:2;min-width:0}
+.detail-works .work-copy{grid-column:2;grid-row:3;min-width:0}
+.shelf-method{margin-top:4px;margin-bottom:28px}
+@media(max-width:650px){
+ .detail-works .work{grid-template-columns:100px minmax(0,1fr);column-gap:18px;row-gap:18px}
+ .detail-works .work-title{grid-column:1 / -1;grid-row:1}
+ .detail-works .work>.work-art{grid-column:1;grid-row:2}
+ .detail-works .work>.meta{grid-column:2;grid-row:2;margin-top:0;align-self:start}
+ .detail-works .work-copy{grid-column:1 / -1;grid-row:3}
+ .detail-works .work-copy>.reason{margin-top:0}
+}

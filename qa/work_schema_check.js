@@ -121,7 +121,9 @@ for(const book of require('../tools/work-catalogue').catalogue().books) {
   assert.deepEqual(work.publisher,{'@type':'Organization',name:'新潮社'});
   assert.equal(work.datePublished,expected.date);assert.equal(work.sameAs,book.sourceUrl);
   assert.deepEqual(page.citation,book.sources.map(s=>s.url));
-  for(const value of [expected.title,expected.author,work.isbn,expected.date,book.editionLabel,book.sourceCheckedOn]) assert.ok(html.includes(escaped(value)),'Visible edition fact missing: '+value);
+  for(const value of [expected.title,expected.author,work.isbn,expected.date,book.editionLabel.split(' · ISBN ')[0],book.sourceCheckedOn]) assert.ok(html.includes(escaped(value)),'Visible edition fact missing: '+value);
+  assert.ok(html.includes('<dt>版</dt><dd>'+escaped(book.editionLabel.split(' · ISBN ')[0])+'</dd>'),'Edition row has no duplicate ISBN');
+  assert.ok(html.includes('<dt>ISBN</dt><dd>'+book.isbn+'</dd>'),'Dedicated ISBN row preserved');
   for(const field of ['review','aggregateRating','offers','locationCreated','contentLocation']) assert.ok(!(field in work));
   assert.ok(!('datePublished' in page)&&!('dateModified' in page),'Book publication/source checks cannot fabricate a page publication date');
 }

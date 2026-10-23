@@ -8,7 +8,7 @@ const {catalogue,bookProposals,shelfProposals}=require('../tools/work-catalogue'
 const cityItems=require('../tools/city-discovery-source').items;
 const safety=require('./editorial_output_safety');
 const ui=require('./editorial_ui_contract');
-assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'tools/editorial-proposals/shelves.css'))).digest('hex'),ui.cssSha256,'B shared CSS remains byte-identical');
+assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'tools/editorial-proposals/shelves.css'))).digest('hex'),ui.cssSha256,'Reviewed detail-adaptation CSS matches recorded hash');
 const clone=x=>JSON.parse(JSON.stringify(x));
 const pending=list=>clone(list).map(x=>({...x,editorialReview:'pending',adoption:null}));
 const approved=list=>clone(list).map(x=>({...x,editorialReview:'approved',adoption:{reference:'ISOLATED TEST FIXTURE, NOT OWNER ADOPTION',confirmedOn:'2026-10-23'}}));
@@ -201,6 +201,9 @@ try {
   }
   const shelfHtml=read('shelves/places-to-share.html');
   assert.throws(()=>ui.checkUi(shelfHtml.replace('class="meta"','class="old-meta"'),'/shelves/places-to-share.html',approvedCat),/B UI:/);negatives++;
+  for(const corrupted of [shelfHtml.replace('class="work-title"','class="old-title"'),shelfHtml.replace(/(<div class="work-art"><a href=")[^"]+/, '$1/works.html'),shelfHtml.replace(/(<div class="work-art">)<a[^>]*>(<img[^>]*>)<\/a>/,'$1$2'),shelfHtml.replace('class="editor-note shelf-method"','class="editor-note old-method"')]) {
+    assert.throws(()=>ui.checkUi(corrupted,'/shelves/places-to-share.html',approvedCat),/B UI:/);negatives++;
+  }
   write('books/naruse-wa-tenka-wo-toriniiku.html',generated.replace('"isbn":"9784103549512"','"isbn":"9784103524519"'));
   run('qa/work_schema_check.js',[],/Independent Book ISBN matches its reviewed edition/);write('books/naruse-wa-tenka-wo-toriniiku.html',generated);
   const directory=read('work-book.html');write('work-book.html',directory.replaceAll('/books/naruse-wa-tenka-wo-toriniiku.html','/books/not-in-catalogue.html'));run('qa/work_page_check.js',[],/work-book\.html must reach every published book/);write('work-book.html',directory);
