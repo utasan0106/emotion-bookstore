@@ -124,6 +124,61 @@ function measureContrast() {
   return {passed:rows.length>0 && rows.every(x=>x.status==='pass'),checked:rows.length,rows};
 }
 
+// Font coverage is tied to the actual bundled subset, not the CSS family label.
+// Source: scene prototype FONT_COVERAGE.json (fc-query on this WOFF2).
+const editorialFontCoverage = {
+  file: 'assets/fonts/shippori-mincho-500.woff2',
+  sha256: '49c5496bb9ed305f77b546f8bb3af7d7ad963ae986120e98f81822cb3456181b',
+  coveredTexts: ['本から、本へ。ときどき、街へ。', '何でもない一日を、おもしろがる。', '本屋で、街と出会う。']
+};
+async function checkEditorialFont(context, page) {
+  const selectors=['.opening h1','.main-shelf h2','.onward-title h2'];
+  const evidence={passed:false,status:'unverified',method:'FontFaceSet loaded status plus Chromium CSS.getPlatformFontsForNode actual custom-font glyph usage on heading and descendant elements; CSS family alone is not proof.',
+    coverage:{...editorialFontCoverage,method:'Actual heading code points checked against fc-query-verified texts, with bundled WOFF2 SHA-256 pinned.'},headings:[],errors:[]};
+  let cdp;
+  try {
+    evidence.coverage.actualSha256=require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(root,editorialFontCoverage.file))).digest('hex');
+    evidence.coverage.passed=evidence.coverage.actualSha256===editorialFontCoverage.sha256;
+    evidence.fontFaces=await page.evaluate(()=>[...document.fonts].filter(f=>f.family.replace(/['"]/g,'')==='EditorialMincho').map(f=>({family:f.family,status:f.status,weight:f.weight,style:f.style})));
+    evidence.loaded=evidence.fontFaces.some(f=>f.status==='loaded'&&f.weight==='500');
+    cdp=await context.newCDPSession(page);
+    await cdp.send('DOM.enable');
+    await cdp.send('CSS.enable');
+    const {root:documentNode}=await cdp.send('DOM.getDocument');
+    const covered=new Set(editorialFontCoverage.coveredTexts.join(''));
+    for(const selector of [...selectors,'.other-layout h2']) {
+      const intendedCustom=selectors.includes(selector);
+      const row=await page.evaluate(selector=>{
+        const matches=[...document.querySelectorAll(selector)],el=matches[0];
+        return {selector,count:matches.length,text:el?.textContent||'',cssFamily:el?getComputedStyle(el).fontFamily:null};
+      },selector);
+      row.intendedCustom=intendedCustom;
+      row.missingCoverageCharacters=intendedCustom?[...new Set([...row.text].filter(c=>! /\s/u.test(c)&&!covered.has(c)))]:[];
+      row.fontNodes=[];
+      // CDP counts immediate text children, so inspect nested spans as well.
+      const {nodeIds}=await cdp.send('DOM.querySelectorAll',{nodeId:documentNode.nodeId,selector:selector+', '+selector+' *'});
+      for(const nodeId of nodeIds) {
+        const {fonts}=await cdp.send('CSS.getPlatformFontsForNode',{nodeId});
+        row.fontNodes.push({nodeId,fonts});
+      }
+      const used=row.fontNodes.flatMap(n=>n.fonts).filter(f=>f.glyphCount>0);
+      row.customGlyphCount=used.filter(f=>f.isCustomFont).reduce((n,f)=>n+f.glyphCount,0);
+      row.fallbackFonts=used.filter(f=>!f.isCustomFont);
+      row.passed=row.count===1&&used.length>0&&(intendedCustom
+        ? row.missingCoverageCharacters.length===0&&row.customGlyphCount>0&&used.every(f=>f.isCustomFont&&f.postScriptName==='ShipporiMincho-Medium')
+        : row.customGlyphCount===0&&!/EditorialMincho/.test(row.cssFamily||''));
+      evidence.headings.push(row);
+    }
+    evidence.passed=evidence.loaded&&evidence.coverage.passed&&evidence.headings.every(h=>h.passed);
+    evidence.status=evidence.passed?'verified':'failed';
+  } catch(e) {
+    // Unsupported CDP or any missing evidence must never silently pass.
+    evidence.status='unverified';evidence.errors.push(e.message);
+  } finally {if(cdp) await cdp.detach().catch(e=>evidence.errors.push(e.message));}
+  if(evidence.errors.length) evidence.passed=false;
+  return evidence;
+}
+
 // Kept separate from the 70 untouched pre-interaction render cases.
 async function checkInteractions(browser, origin) {
   for(const route of routes) {
@@ -271,6 +326,7 @@ async function checkInteractions(browser, origin) {
           for(const [el,size] of sizes) if(Number.isFinite(size)) el.style.setProperty('font-size',size*2+'px','important');
         });
         await page.evaluate(()=>document.fonts.ready);
+        if(route===routes[0]) result.editorialFont=await checkEditorialFont(context,page);
         result.images=await page.evaluate(async()=>{
           const rows=[];
           // Finish lazy image layout before capturing adjacent text rectangles.
@@ -395,6 +451,7 @@ async function checkInteractions(browser, origin) {
         result.privacy={passed:result.externalRequests.length===0,interactionPerformed:false};
         result.runtime={passed:result.pageErrors.length===0&&result.failedLocalRequests.length===0};
         result.passed=['navigation','invariants','images','layout','links','contrast','privacy','runtime'].every(k=>result[k].passed);
+        if(result.editorialFont) result.passed=result.passed&&result.editorialFont.passed;
       } catch(e) {result.errors.push(e.stack||String(e));}
       finally {
         if(page) {
