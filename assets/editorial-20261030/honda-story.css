@@ -1,0 +1,55 @@
+/* A life changes direction. Paper / navy / vermilion. */
+.honda-page{font-family:var(--book-sans,'Hiragino Sans','Noto Sans CJK JP',sans-serif);background:#f7f3e9;color:#142b42;--honda-rule:#c7c0b2}
+.honda-page .site-identity,.honda-page .site-menu-card h2{font-family:inherit}
+.honda-page .site-header{border-bottom:1px solid var(--honda-rule)}
+.honda-opening{max-width:1440px;margin:auto;display:grid;grid-template-columns:42% 58%;align-items:center;padding:66px 40px 36px;position:relative}
+.honda-opening-copy{position:relative;z-index:1;align-self:start;padding:10px 0 0 15px}
+.honda-overline{font-size:13px;letter-spacing:.06em;color:#b5482c;font-weight:700}
+.honda-opening h1{font-size:clamp(33px,3.9vw,58px);font-weight:700;line-height:1.44;letter-spacing:-.055em;margin:24px -25px 0 0}
+.honda-opening h1 span{display:block;white-space:nowrap}
+.honda-title-end{color:#b5482c}
+.honda-opening-note{font-size:17px;line-height:1.9;margin-top:27px}
+.honda-stage{margin:65px -40px 0 -15px;min-width:0}
+.honda-stage img{width:100%;height:auto;mix-blend-mode:multiply}
+.honda-stage figcaption{font-size:11px;line-height:1.7;color:#59616a;padding:12px 35px 0 35px;max-width:640px;margin-left:auto}
+.honda-story-start{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:30px;text-decoration:none;border-top:1px solid var(--honda-rule);font-size:14px;margin:45px 15px 0;padding:20px 0 0}
+.honda-story-start span{font-size:27px;color:#b5482c}
+.honda-turns{max-width:1120px;margin:80px auto 100px;padding:0 40px;scroll-margin-top:30px}
+.honda-turns-intro{display:flex;justify-content:space-between;align-items:baseline;gap:30px;margin-bottom:64px}
+.honda-turns-intro h2{font-size:26px;line-height:1.6;letter-spacing:-.03em}
+.honda-turns-intro>span{font-size:12px;color:#59616a}
+.honda-turn{display:grid;grid-template-columns:210px minmax(0,1fr);align-items:start;gap:45px;position:relative;width:82%;padding:33px 0 55px;border-top:2px solid #142b42}
+.honda-turn p{max-width:33em;font-size:17px;line-height:2.1;padding-top:6px}
+.honda-turn h3{font-size:64px;line-height:1.3;letter-spacing:-.07em;margin-top:7px}
+.honda-count{font-size:13px;letter-spacing:.07em}
+.honda-food{margin:0 0 0 auto;border-top-color:#b5482c}
+.honda-food .honda-turn-name{color:#b5482c}
+.honda-food:before{content:'→';position:absolute;left:-85px;top:8px;font-size:58px;color:#b5482c;font-weight:400}
+.honda-theatre{margin-top:12px;width:100%;padding:42px 45px 44px;background:#142b42;color:#f7f3e9;border:0;grid-template-columns:210px minmax(0,1fr);gap:45px}
+.honda-theatre h3{font-size:78px}
+.honda-theatre .honda-count{color:#f1b49b}
+.honda-book{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:150px minmax(0,1fr);gap:65px;padding:0 45px 85px;align-items:center}
+.honda-book-image img{width:150px;box-shadow:6px 8px 0 #142b4212}
+.honda-book h2{font-size:30px;line-height:1.6;margin:12px 0 14px;letter-spacing:-.035em}
+.honda-book h2 small{display:block;font-size:19px;margin-top:4px;font-weight:400}
+.honda-bibliography{font-size:14px;line-height:1.9}
+.honda-bibliography span{font-size:12px}
+.honda-official{display:inline-flex;gap:70px;align-items:center;justify-content:space-between;min-height:57px;background:#b5482c;color:#f7f3e9;padding:13px 23px;text-decoration:none;margin-top:25px;font-size:16px;transition:background .2s}
+.honda-official:hover{background:#8e3520}
+.honda-next{background:#eae4d6;padding:40px max(40px,calc((100% - 950px)/2));display:grid;grid-template-columns:1fr 1.5fr;align-items:center;gap:30px}
+.honda-next p{font-size:14px}
+.honda-next a{font-size:32px;font-weight:700;line-height:1.6;letter-spacing:-.03em;text-decoration:none;position:relative;padding-right:60px}
+.honda-next a span{position:absolute;right:0;top:25%;color:#b5482c;font-size:40px;transition:transform .2s}
+.honda-next a:hover span{transform:translateX(5px)}
+.honda-end{max-width:1040px;padding:45px;margin:auto}
+.honda-notes{font-size:13px;color:#52606a;border-bottom:1px solid var(--honda-rule);padding-bottom:22px}
+.honda-notes summary{cursor:pointer;min-height:44px;padding:10px 0;color:#142b42}
+.honda-notes summary:focus-visible{outline:3px solid #b5482c;outline-offset:4px}
+.honda-notes p{margin-top:15px;line-height:2}
+.honda-return{display:flex;justify-content:space-between;flex-wrap:wrap;gap:15px;margin-top:20px;font-size:14px}
+.honda-return a{display:flex;align-items:center;min-height:44px}
+.honda-footer{display:flex;gap:30px;justify-content:space-between;align-items:center;padding:25px 40px 95px;border-top:1px solid var(--honda-rule);font-size:13px}
+.honda-footer>a{text-decoration:none;font-weight:700}.honda-footer>span{font-size:11px}
+@media(max-width:900px){.honda-opening{padding:40px 25px 25px}.honda-opening-copy{padding-left:0}.honda-opening h1{font-size:clamp(30px,4.2vw,40px)}.honda-stage{margin:60px -25px 0 0}.honda-opening-note{font-size:15px}.honda-turn{width:91%;grid-template-columns:160px 1fr;gap:30px}.honda-turn h3{font-size:54px}.honda-food:before{left:-50px;font-size:38px}.honda-theatre{width:100%;padding:30px}.honda-turns-intro{display:block}.honda-turns-intro>span{display:block;margin-top:10px}}
+@media(max-width:600px){.honda-opening{display:flex;flex-direction:column;align-items:stretch;padding:25px 20px 0}.honda-opening-copy{display:contents}.honda-opening .honda-overline{font-size:11px;order:0}.honda-opening h1{order:1;font-size:clamp(31px,8.4vw,45px);line-height:1.4;margin:14px 0 0;letter-spacing:-.045em}.honda-opening h1 span:first-child{display:inline}.honda-opening h1 span:nth-child(2){display:inline}.honda-opening h1 span:last-child{display:block}.honda-stage{order:2;margin:17px -20px 0}.honda-stage img{width:100%}.honda-stage figcaption{font-size:10px;padding:9px 20px 0;line-height:1.7}.honda-opening-note{order:3;font-size:16px;margin:24px 0 0}.honda-opening-note br{display:none}.honda-story-start{order:4;margin:25px 0 0;padding-top:12px;font-size:13px}.honda-turns{padding:0 22px;margin:50px auto 55px}.honda-turns-intro{margin-bottom:32px}.honda-turns-intro h2{font-size:24px}.honda-turns-intro>span{font-size:11px}.honda-turn{display:block;width:100%;padding:25px 0 35px}.honda-turn-name{margin-bottom:17px}.honda-turn h3{font-size:54px;margin-top:3px}.honda-count{font-size:12px}.honda-turn p{font-size:16px;line-height:2.05;padding:0;max-width:none}.honda-food{width:calc(100% - 28px);margin-left:28px}.honda-food:before{left:-30px;top:15px;font-size:25px}.honda-theatre{margin:7px -22px 0;width:calc(100% + 44px);padding:30px 22px 35px}.honda-theatre h3{font-size:64px}.honda-book{padding:0 22px 45px;gap:20px;grid-template-columns:85px minmax(0,1fr);align-items:start}.honda-book-image{padding-top:5px}.honda-book-image img{width:85px}.honda-book .honda-overline{font-size:11px}.honda-book h2{font-size:21px;line-height:1.5;margin-top:9px}.honda-book h2 small{font-size:15px;margin-top:8px}.honda-bibliography{font-size:12px}.honda-bibliography span{font-size:10px}.honda-official{font-size:14px;gap:20px;padding:12px 14px;min-height:50px}.honda-next{padding:30px 22px;display:block}.honda-next p{font-size:12px;margin-bottom:15px}.honda-next a{display:block;font-size:28px}.honda-next a span{right:10px}.honda-end{padding:27px 22px 30px}.honda-notes{font-size:12px}.honda-return{font-size:12px;gap:8px}.honda-footer{padding:22px 22px 100px;gap:15px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){.honda-page{scroll-behavior:auto}.honda-page *{transition:none!important}.honda-next a:hover span{transform:none}}
