@@ -29,6 +29,8 @@
     if (!locked) floatingTrigger.hidden = entry.isIntersecting || entry.boundingClientRect.bottom > 0;
   }, {threshold: 0});
   observer.observe(header);
+  window.addEventListener('scroll', syncFloating, {passive:true});
+  window.addEventListener('resize', syncFloating);
   syncFloating();
   function unlock() {
     if (!locked) return;

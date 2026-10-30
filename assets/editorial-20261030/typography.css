@@ -1,6 +1,6 @@
 /* Local Noto Sans CJK JP derived subset. License: fonts/kanjou-book-sans/. */
-@font-face{font-family:'Kanjou Book Sans';src:url('fonts/kanjou-book-sans/kanjou-book-sans-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'Kanjou Book Sans';src:url('fonts/kanjou-book-sans/kanjou-book-sans-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'Kanjou Book Sans';src:url('fonts/kanjou-book-sans/kanjou-book-sans-400.woff2?v=20261030-5') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Kanjou Book Sans';src:url('fonts/kanjou-book-sans/kanjou-book-sans-700.woff2?v=20261030-5') format('woff2');font-weight:700;font-style:normal;font-display:swap}
 :root{--book-sans:'Kanjou Book Sans','Hiragino Sans','Noto Sans CJK JP',sans-serif;--book-display:var(--book-sans);--serif:var(--book-sans)}
 body,button,input,select,textarea{font-family:var(--book-sans);font-synthesis:none}
 .site-identity{font-family:var(--book-sans);font-weight:700;letter-spacing:-.035em}

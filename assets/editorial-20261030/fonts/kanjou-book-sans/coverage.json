@@ -1,0 +1,30 @@
+{
+  "400": {
+    "source": "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+    "source_sha256": "b76b0433203017ca80401b2ee0dd69350349871c4b19d504c34dbdd80541690a",
+    "old_glyph_coverage": 931,
+    "new_glyph_coverage": 999,
+    "missing": 0,
+    "existing_advance_and_outline_differences": 0,
+    "output_bytes": 374688,
+    "output_sha256": "44ba81931bb35780566e433dea5eaf8b88a4fe2f9e81e37f88eadde014f3af10",
+    "source_version": "Version 2.004;hotconv 1.0.118;makeotfexe 2.5.65603",
+    "license": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This Font Software is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the SIL Open Font License for the specific language, permissions and limitations governing your use of this Font Software.",
+    "license_url": "http://scripts.sil.org/OFL",
+    "cff_names_renamed": true
+  },
+  "700": {
+    "source": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+    "source_sha256": "faa5f3656a78b2e2d450d27fe8382c778bc2b6bb5ea29c986664a6a435056ceb",
+    "old_glyph_coverage": 931,
+    "new_glyph_coverage": 999,
+    "missing": 0,
+    "existing_advance_and_outline_differences": 0,
+    "output_bytes": 383420,
+    "output_sha256": "def1904be83b75b50bb3300306e46e0f127bafc11c660dd744618d8098fbfed4",
+    "source_version": "Version 2.004;hotconv 1.0.118;makeotfexe 2.5.65603",
+    "license": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This Font Software is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the SIL Open Font License for the specific language, permissions and limitations governing your use of this Font Software.",
+    "license_url": "http://scripts.sil.org/OFL",
+    "cff_names_renamed": true
+  }
+}
