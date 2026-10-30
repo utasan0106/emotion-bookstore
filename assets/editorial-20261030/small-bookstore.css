@@ -14,3 +14,5 @@
  .moss-title-block h1{font-size:clamp(30px,4.5vw,64px);white-space:nowrap}
  .moss-hero-art{width:100%;max-width:100%;margin-left:0;min-width:0}
 }
+
+.moss-visit{border-top:1px solid var(--line);padding:42px 0}.moss-visit h2{font-family:var(--book-sans);font-weight:700;font-size:clamp(25px,3vw,34px);line-height:1.5;margin-bottom:18px}.moss-visit p{font-size:16px;line-height:2;max-width:38em}.moss-visit .moss-official{display:inline-flex;margin:22px 0 14px}.moss-visit-links{display:flex;flex-wrap:wrap;gap:10px 28px;font-size:14px}.moss-visit-links a{display:inline-block;padding:10px 0;overflow-wrap:anywhere}
