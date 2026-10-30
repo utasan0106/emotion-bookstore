@@ -343,7 +343,7 @@ async function elementShot(page, selector, name, width) {
     /* menu: open / Escape / focus return（release.js の共通 dialog） */
     await page.click('#siteMenuButton');
     await page.waitForSelector('#siteMenu[open]');
-    const menu = await page.evaluate(() => ({ open: document.getElementById('siteMenu').open, focusInside: document.getElementById('siteMenu').contains(document.activeElement), overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth, credits: !!document.querySelector('#siteMenu a[href="./credits.html"]'), thread: !!document.querySelector('#siteMenu a[href="./index.html#hc-thread"]') }));
+    const menu = await page.evaluate(() => ({ open: document.getElementById('siteMenu').open, focusInside: document.getElementById('siteMenu').contains(document.activeElement), overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth, credits: !!document.querySelector('#siteMenu a[href="./credits.html"]'), thread: !!document.querySelector('#siteMenu a[href="./thread.html?thread=koenji-dance-history"]') }));
     await page.keyboard.press('Escape');
     await page.waitForTimeout(150);
     const afterMenu = await page.evaluate(() => ({ open: document.getElementById('siteMenu').open, focus: document.activeElement && document.activeElement.id }));

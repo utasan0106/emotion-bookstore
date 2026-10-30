@@ -587,7 +587,7 @@ function serve() {
         menu: {
           credits: !!document.querySelector('#siteMenu a[href="./credits.html"]'),
           works: !!document.querySelector('#siteMenu a[href="./index.html#hc-works"]'),
-          thread: !!document.querySelector('#siteMenu a[href="./index.html#hc-thread"]'),
+          thread: !!document.querySelector('#siteMenu a[href="./thread.html?thread=koenji-dance-history"]'),
           retired: document.querySelectorAll('#siteMenu a[href*="#by-kind"], #siteMenu a[href*="#weekly-detour"]').length
         },
         listing: document.querySelectorAll('.result-row, .object-card, .category-link, .detour-item, .weekly-video, .shelf-tagline, #categoryIndex, #archive').length,

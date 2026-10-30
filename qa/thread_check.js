@@ -95,7 +95,7 @@ for (const copy of ['高円寺の踊りは、どう始まった？', '阿波お�
 }
 for (const hook of ['class="skip-link" href="#main"', 'id="siteMenuButton"', 'id="siteMenu"', 'id="siteMenuClose"', 'id="siteMenuFavorites"',
   'class="site-menu-secondary"', 'id="main"', 'id="live"', 'class="site-footer"', 'class="footer-brand"', 'class="brand-lockup-image"',
-  'href="./data.html"', 'href="./credits.html"', 'href="./index.html#hc-thread"', 'referrer" content="no-referrer']) {
+  'href="./data.html"', 'href="./credits.html"', 'href="./thread.html?thread=koenji-dance-history"', 'referrer" content="no-referrer']) {
   check(html.includes(hook), `shell hook missing: ${hook}`);
 }
 for (const id of ['kichijoji', 'koenji', 'shimokitazawa', 'jinbocho']) check(html.includes(`data-menu-shelf="${id}"`), `menu shelf link missing: ${id}`);

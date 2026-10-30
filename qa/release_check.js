@@ -300,7 +300,7 @@ for (const page of MENU_PAGES) {
   for (const label of ['作品を探す','踊りから、街の歴史へ','作品・催しを紹介する','気になるリスト','データの扱い','写真・出典']) {
     if (!src.includes(label)) failures.push(`${page}: MENU missing ${label}`);
   }
-  for (const [href, label] of [['/works.html','作品を探す'],['./index.html#hc-thread','踊りから、街の歴史へ'],['./credits.html','写真・出典'],['./suggest.html','作品・催しを紹介する'],['./data.html','データの扱い']]) {
+  for (const [href, label] of [['/works.html','作品を探す'],['./thread.html?thread=koenji-dance-history','踊りから、街の歴史へ'],['./credits.html','写真・出典'],['./suggest.html','作品・催しを紹介する'],['./data.html','データの扱い']]) {
     if (!src.includes(`href="${href}"`)) failures.push(`${page}: MENU link missing ${label} → ${href}`);
   }
   for (const retired of ['<span>今週の寄り道</span>','<span>種類から見る</span>','#weekly-detour','#by-kind']) {

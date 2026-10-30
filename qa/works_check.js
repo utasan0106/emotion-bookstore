@@ -95,7 +95,7 @@ check(html.includes('<meta name="referrer" content="no-referrer">'), 'works.html
   check(!/<(input|select|textarea|form)\b/.test(main) && (main.match(/<button\b/g) || []).length === 1 && main.includes('<button class="v3-video-load wk-video-load" type="button">'), '<main> of works.html carries exactly one control besides links: the click-to-load video button');
   for (const hook of ['class="skip-link" href="#main"', 'id="siteMenuButton"', 'id="siteMenu"', 'id="siteMenuClose"', 'id="siteMenuFavorites"',
     'class="site-menu-secondary"', 'id="main"', 'id="live"', 'class="site-footer"', 'class="footer-brand"', 'class="brand-lockup-image"',
-    'href="./data.html"', 'href="./credits.html"', 'href="./index.html#hc-works"', 'href="./index.html#hc-thread"']) {
+    'href="./data.html"', 'href="./credits.html"', 'href="/works.html"', 'href="./thread.html?thread=koenji-dance-history"']) {
     check(html.includes(hook), `shell hook missing: ${hook}`);
   }
   for (const id of ['kichijoji', 'koenji', 'shimokitazawa', 'jinbocho']) check(html.includes(`data-menu-shelf="${id}"`), `menu shelf link missing: ${id}`);
@@ -152,7 +152,7 @@ const EXTERNAL_SET = {
   for (const m of stripHtml(html).matchAll(/href="(https?:\/\/[^"]+)"/g)) check(!!EXTERNAL_SET[m[1].replace(/&amp;/g, '&')], `every external href must be a frozen destination: ${m[1]}`);
 }
 {
-  const routes = internalLinks.filter((l) => /thread\.html/.test(l.href));
+  const routes = internalLinks.filter((l) => /\bwk-route\b/.test(l.cls) && /thread\.html/.test(l.href));
   check(routes.length === 2 && routes[0].href === './thread.html?thread=morisaki-book' && routes[0].label === 'この本から辿る →' &&
     routes[1].href === './thread.html?thread=morisaki-film' && routes[1].label === 'この映画から辿る →', `Book / Film internal routes must be exactly この本から辿る → morisaki-book, この映画から辿る → morisaki-film (got ${flat(routes.map((r) => [r.href, r.label]))})`);
   for (const r of routes) {
@@ -160,8 +160,9 @@ const EXTERNAL_SET = {
     check(/^wk-route$/.test(r.cls), `internal Thread route must carry only .wk-route (no official-action / shelf-entry): ${r.href}`);
   }
   check(textOf(sectionOf('book')).includes('この本から辿る') && textOf(sectionOf('film')).includes('この映画から辿る'), 'internal routes must sit in #book / #film');
-  check(!/thread=koenji/.test(html), 'works.html must not route to the Koenji Thread');
-  check(!/thread\.html\?thread=(?!morisaki-(book|film))/.test(html), 'only the two Morisaki Threads are routed from works.html');
+  const main = (html.match(/<main[\s\S]*?<\/main>/) || [''])[0];
+  check(!/thread=koenji/.test(main), 'works.html main content must not route to the Koenji Thread');
+  check(!/thread\.html\?thread=(?!morisaki-(book|film))/.test(main), 'only the two Morisaki Threads are routed from works.html main content');
   check(html.includes('<a class="other-shelves" href="./index.html">入口へ戻る</a>'), 'finite exit 入口へ戻る → ./index.html');
 }
 

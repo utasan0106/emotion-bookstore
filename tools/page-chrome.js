@@ -1,6 +1,8 @@
 'use strict';
 function chrome(html){
- html=html.replaceAll('href="./index.html#hc-works"','href="/works.html"').replaceAll('<span>作品から入る</span>','<span>作品を探す</span>');
+ html=html.replaceAll('href="./index.html#hc-works"','href="/works.html"')
+  .replaceAll('href="./index.html#hc-thread"','href="./thread.html?thread=koenji-dance-history"')
+  .replaceAll('<span>作品から入る</span>','<span>作品を探す</span>');
  // One shared visual contract for the public catalogue and its reading pages.
  // Keep the accepted home and historical experiments on their own stylesheets.
  const polished=/href="\/discover\/discover\.css"|<body class="(?:works-page|thread-page|shelf-page|suggest-page)/.test(html);

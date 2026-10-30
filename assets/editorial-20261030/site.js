@@ -11,6 +11,16 @@
   let savedScroll = 0;
   let savedBodyStyle = null;
   let savedRootScrollBehavior = '';
+  function enableCollectionJump() {
+    const link = document.querySelector('.collection-jump');
+    const list = document.getElementById('works-list');
+    if (!link || !list) return;
+    link.addEventListener('click', () => {
+      list.open = true;
+    });
+  }
+
+  enableCollectionJump();
   const headerVisible = () => header.getBoundingClientRect().bottom > 0;
   const syncFloating = () => {
     if (!locked) floatingTrigger.hidden = headerVisible();
